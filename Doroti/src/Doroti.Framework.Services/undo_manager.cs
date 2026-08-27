@@ -28,6 +28,8 @@ public class UndoManager
 
     public UndoManager()
     {
+        _channel = SystemChannels.undoManager;
+        _channel.setMethodCallHandler(_handleUndoManagerInvocation);
     }
 
     public static void setChannel(MethodChannel newChannel)

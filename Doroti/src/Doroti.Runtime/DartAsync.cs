@@ -128,6 +128,60 @@ public static class DartAsyncRuntime
         scheduler(callback);
     }
 
+    internal static Task dispatchCapturedAsync(Action<Action>? scheduler, Action callback)
+    {
+        if (scheduler is null) return Task.Run(callback);
+
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        try
+        {
+            scheduler(() =>
+            {
+                try
+                {
+                    callback();
+                    completion.TrySetResult();
+                }
+                catch (Exception exception)
+                {
+                    completion.TrySetException(exception);
+                }
+            });
+        }
+        catch (Exception exception)
+        {
+            completion.TrySetException(exception);
+        }
+        return completion.Task;
+    }
+
+    internal static Task<T> dispatchCapturedAsync<T>(Action<Action>? scheduler, Func<T> callback)
+    {
+        ArgumentNullException.ThrowIfNull(callback);
+        if (scheduler is null) return Task.Run(callback);
+
+        var completion = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+        try
+        {
+            scheduler(() =>
+            {
+                try
+                {
+                    completion.TrySetResult(callback());
+                }
+                catch (Exception exception)
+                {
+                    completion.TrySetException(exception);
+                }
+            });
+        }
+        catch (Exception exception)
+        {
+            completion.TrySetException(exception);
+        }
+        return completion.Task;
+    }
+
     public static void scheduleMicrotask(Action<Duration?> callback) =>
         scheduleMicrotask(() => callback(null));
 
@@ -252,13 +306,15 @@ public class Future<T> : Future
     public Future<TResult> then<TResult>(Func<T, TResult> callback)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        return Future<TResult>.fromTask(ThenAsync(_typedTask, callback));
+        return Future<TResult>.fromTask(ThenAsync(
+            _typedTask, callback, DartAsyncRuntime.captureMicrotaskScheduler()));
     }
 
     public Future<TResult> then<TResult>(Func<T, Future<TResult>> callback, Delegate? onError = null)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        return Future<TResult>.fromTask(ThenFutureAsync(_typedTask, callback, onError));
+        return Future<TResult>.fromTask(ThenFutureAsync(
+            _typedTask, callback, onError, DartAsyncRuntime.captureMicrotaskScheduler()));
     }
 
     public Future<TResult> then<TResult>(Func<T, Future<TResult>> callback, Action<Exception, System.Diagnostics.StackTrace> onError) =>
@@ -267,13 +323,15 @@ public class Future<T> : Future
     public Future<TResult> then<TResult>(Func<T, object?> callback, Delegate? onError = null)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        return Future<TResult>.fromTask(ThenFutureOrAsync<TResult>(_typedTask, callback, onError));
+        return Future<TResult>.fromTask(ThenFutureOrAsync<TResult>(
+            _typedTask, callback, onError, DartAsyncRuntime.captureMicrotaskScheduler()));
     }
 
     public Future then(Action<T> callback, Delegate? onError = null)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        return Future.fromTask(ThenActionAsync(_typedTask, callback, onError));
+        return Future.fromTask(ThenActionAsync(
+            _typedTask, callback, onError, DartAsyncRuntime.captureMicrotaskScheduler()));
     }
 
     public Future then(Action<T> callback, Action<Exception, System.Diagnostics.StackTrace> onError) => then(callback, (Delegate)onError);
@@ -321,20 +379,41 @@ public class Future<T> : Future
     public Future<T> timeout(Duration timeLimit, Func<object> onTimeout) =>
         fromTask(TimeoutFutureOrAsync(_typedTask, timeLimit, onTimeout));
 
-    public Future<T> whenComplete(Func<object> action) =>
-        fromTask(WhenCompleteAsync(_typedTask, action));
+    public Future<T> whenComplete(Func<object> action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        return fromTask(WhenCompleteAsync(_typedTask, action, DartAsyncRuntime.captureMicrotaskScheduler()));
+    }
 
-    public new Future<T> whenComplete(Action action) =>
-        fromTask(WhenCompleteAsync(_typedTask, () => { action(); return null!; }));
+    public new Future<T> whenComplete(Action action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        return fromTask(WhenCompleteAsync(
+            _typedTask,
+            () => { action(); return null!; },
+            DartAsyncRuntime.captureMicrotaskScheduler()));
+    }
 
-    private static async Task<TResult> ThenAsync<TResult>(Task<T> task, Func<T, TResult> callback) =>
-        callback(await task.ConfigureAwait(false));
+    private static async Task<TResult> ThenAsync<TResult>(
+        Task<T> task,
+        Func<T, TResult> callback,
+        Action<Action>? scheduler)
+    {
+        var value = await task.ConfigureAwait(false);
+        return await DartAsyncRuntime.dispatchCapturedAsync(scheduler, () => callback(value)).ConfigureAwait(false);
+    }
 
-    private static async Task<TResult> ThenFutureAsync<TResult>(Task<T> task, Func<T, Future<TResult>> callback, Delegate? onError)
+    private static async Task<TResult> ThenFutureAsync<TResult>(
+        Task<T> task,
+        Func<T, Future<TResult>> callback,
+        Delegate? onError,
+        Action<Action>? scheduler)
     {
         try
         {
-            return await callback(await task.ConfigureAwait(false));
+            var value = await task.ConfigureAwait(false);
+            var next = await DartAsyncRuntime.dispatchCapturedAsync(scheduler, () => callback(value)).ConfigureAwait(false);
+            return await next.asTask().ConfigureAwait(false);
         }
         catch (Exception error) when (onError is not null)
         {
@@ -343,15 +422,20 @@ public class Future<T> : Future
         }
     }
 
-    private static async Task<TResult> ThenFutureOrAsync<TResult>(Task<T> task, Func<T, object?> callback, Delegate? onError)
+    private static async Task<TResult> ThenFutureOrAsync<TResult>(
+        Task<T> task,
+        Func<T, object?> callback,
+        Delegate? onError,
+        Action<Action>? scheduler)
     {
         try
         {
-            var result = callback(await task.ConfigureAwait(false));
+            var value = await task.ConfigureAwait(false);
+            var result = await DartAsyncRuntime.dispatchCapturedAsync(scheduler, () => callback(value)).ConfigureAwait(false);
             return result switch
             {
                 Future<TResult> future => await future,
-                TResult value => value,
+                TResult typedResult => typedResult,
                 _ => default!,
             };
         }
@@ -362,9 +446,17 @@ public class Future<T> : Future
         }
     }
 
-    private static async Task ThenActionAsync(Task<T> task, Action<T> callback, Delegate? onError)
+    private static async Task ThenActionAsync(
+        Task<T> task,
+        Action<T> callback,
+        Delegate? onError,
+        Action<Action>? scheduler)
     {
-        try { callback(await task.ConfigureAwait(false)); }
+        try
+        {
+            var value = await task.ConfigureAwait(false);
+            await DartAsyncRuntime.dispatchCapturedAsync(scheduler, () => callback(value)).ConfigureAwait(false);
+        }
         catch (Exception error) when (onError is not null) { await DartAsyncRuntime.InvokeErrorHandlerAsync(onError!, error); }
     }
 
@@ -418,7 +510,10 @@ public class Future<T> : Future
         }
     }
 
-    private static async Task<T> WhenCompleteAsync(Task<T> task, Func<object> action)
+    private static async Task<T> WhenCompleteAsync(
+        Task<T> task,
+        Func<object> action,
+        Action<Action>? scheduler)
     {
         try
         {
@@ -426,7 +521,11 @@ public class Future<T> : Future
         }
         finally
         {
-            _ = action();
+            // Dart Future callbacks remain on their originating isolate event
+            // loop. A .NET Task continuation otherwise runs on the ThreadPool,
+            // outside PlatformDispatcher scope, which stops repeating tickers
+            // such as EditableText's iOS caret animation after one cycle.
+            await DartAsyncRuntime.dispatchCapturedAsync(scheduler, () => _ = action()).ConfigureAwait(false);
         }
     }
 }
@@ -464,12 +563,19 @@ public class Future
 
     public Task asTask() => _task;
 
-    public Future whenComplete(Action action) => fromTask(WhenCompleteAsync(_task, action));
+    public Future whenComplete(Action action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+        return fromTask(WhenCompleteAsync(_task, action, DartAsyncRuntime.captureMicrotaskScheduler()));
+    }
 
-    private static async Task WhenCompleteAsync(Task task, Action action)
+    private static async Task WhenCompleteAsync(
+        Task task,
+        Action action,
+        Action<Action>? scheduler)
     {
         try { await task.ConfigureAwait(false); }
-        finally { action(); }
+        finally { await DartAsyncRuntime.dispatchCapturedAsync(scheduler, action).ConfigureAwait(false); }
     }
 
     internal virtual async Task<object?> asObjectTask()
@@ -481,13 +587,16 @@ public class Future
     public TaskAwaiter GetAwaiter() => _task.GetAwaiter();
 
     public Future then(Action<object> onValue, Delegate? onError = null) =>
-        fromTask(ThenAsync(asObjectTask(), onValue, onError));
+        fromTask(ThenAsync(
+            asObjectTask(), onValue, onError, DartAsyncRuntime.captureMicrotaskScheduler()));
 
     public Future<TResult> then<TResult>(Func<object?, object?> onValue, Delegate? onError = null) =>
-        Future<TResult>.fromTask(ThenFutureOrAsync<TResult>(asObjectTask(), onValue, onError));
+        Future<TResult>.fromTask(ThenFutureOrAsync<TResult>(
+            asObjectTask(), onValue, onError, DartAsyncRuntime.captureMicrotaskScheduler()));
 
     public Future<object?> then(Func<object?, object?> onValue, Delegate? onError = null) =>
-        Future<object?>.fromTask(ThenFutureOrAsync<object?>(asObjectTask(), onValue, onError));
+        Future<object?>.fromTask(ThenFutureOrAsync<object?>(
+            asObjectTask(), onValue, onError, DartAsyncRuntime.captureMicrotaskScheduler()));
 
     public Future then(Action<object> onValue, Action<Exception, System.Diagnostics.StackTrace> onError) => then(onValue, (Delegate)onError);
 
@@ -505,11 +614,16 @@ public class Future
     public Future onError(Action<object, System.Diagnostics.StackTrace?> onError, Func<object, bool>? test = null) =>
         catchError((Delegate)onError, test);
 
-    private static async Task ThenAsync(Task<object?> task, Action<object> onValue, Delegate? onError)
+    private static async Task ThenAsync(
+        Task<object?> task,
+        Action<object> onValue,
+        Delegate? onError,
+        Action<Action>? scheduler)
     {
         try
         {
-            onValue((await task.ConfigureAwait(false))!);
+            var value = await task.ConfigureAwait(false);
+            await DartAsyncRuntime.dispatchCapturedAsync(scheduler, () => onValue(value!)).ConfigureAwait(false);
         }
         catch (Exception error) when (onError is not null)
         {
@@ -517,15 +631,20 @@ public class Future
         }
     }
 
-    private static async Task<TResult> ThenFutureOrAsync<TResult>(Task<object?> task, Func<object?, object?> onValue, Delegate? onError)
+    private static async Task<TResult> ThenFutureOrAsync<TResult>(
+        Task<object?> task,
+        Func<object?, object?> onValue,
+        Delegate? onError,
+        Action<Action>? scheduler)
     {
         try
         {
-            var result = onValue(await task.ConfigureAwait(false));
+            var value = await task.ConfigureAwait(false);
+            var result = await DartAsyncRuntime.dispatchCapturedAsync(scheduler, () => onValue(value)).ConfigureAwait(false);
             return result switch
             {
                 Future<TResult> future => await future,
-                TResult value => value,
+                TResult typedResult => typedResult,
                 _ => default!,
             };
         }

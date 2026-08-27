@@ -1,4 +1,5 @@
 #if IOS && !MACCATALYST
+using CoreAnimation;
 using Foundation;
 using Microsoft.Maui;
 using Microsoft.Maui.Handlers;
@@ -31,6 +32,7 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
         };
 
     private DorotiIosTouchRecognizer? _touchRecognizer;
+    private CADisplayLink? _pendingDisplayLink;
     private SKSizeI _lastCanvasSize;
     private GRContext? _lastContext;
 
@@ -54,6 +56,9 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
 
     protected override void DisconnectHandler(SKMetalView platformView)
     {
+        _pendingDisplayLink?.Invalidate();
+        _pendingDisplayLink?.Dispose();
+        _pendingDisplayLink = null;
         platformView.PaintSurface -= HandlePaintSurface;
         if (_touchRecognizer is not null)
         {
@@ -73,8 +78,24 @@ public sealed class DorotiIosMetalViewHandler : ViewHandler<ISKGLView, SKMetalVi
     {
         _ = view;
         _ = args;
-        if (handler.PlatformView is { Paused: true, EnableSetNeedsDisplay: true } platformView)
-            platformView.SetNeedsDisplay();
+        handler.RequestFrame();
+    }
+
+    private void RequestFrame()
+    {
+        if (_pendingDisplayLink is not null ||
+            PlatformView is not { Paused: true, EnableSetNeedsDisplay: true }) return;
+
+        _pendingDisplayLink = CADisplayLink.Create(() =>
+        {
+            var displayLink = _pendingDisplayLink;
+            _pendingDisplayLink = null;
+            displayLink?.Invalidate();
+            displayLink?.Dispose();
+            if (PlatformView is { Paused: true, EnableSetNeedsDisplay: true } platformView)
+                platformView.SetNeedsDisplay();
+        });
+        _pendingDisplayLink.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Common);
     }
 
     private static void MapHasRenderLoop(DorotiIosMetalViewHandler handler, ISKGLView view)

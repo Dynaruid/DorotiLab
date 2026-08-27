@@ -528,7 +528,38 @@ public class EditableText : StatefulWidget
         if (((onPaste is null) || (!object.Equals(clipboardStatus, ClipboardStatus.unknown))))
         {
             var showShareBeforeSelectAll = (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.android));
-            resultButtonItem.AddRange(new List<ContextMenuButtonItem>().Cast<ContextMenuButtonItem>());
+            if (onCut is not null)
+            {
+                resultButtonItem.Add(new ContextMenuButtonItem(onPressed: onCut, type: ContextMenuButtonType.cut));
+            }
+            if (onCopy is not null)
+            {
+                resultButtonItem.Add(new ContextMenuButtonItem(onPressed: onCopy, type: ContextMenuButtonType.copy));
+            }
+            if (onPaste is not null)
+            {
+                resultButtonItem.Add(new ContextMenuButtonItem(onPressed: onPaste, type: ContextMenuButtonType.paste));
+            }
+            if ((onShare is not null) && showShareBeforeSelectAll)
+            {
+                resultButtonItem.Add(new ContextMenuButtonItem(onPressed: onShare, type: ContextMenuButtonType.share));
+            }
+            if (onSelectAll is not null)
+            {
+                resultButtonItem.Add(new ContextMenuButtonItem(onPressed: onSelectAll, type: ContextMenuButtonType.selectAll));
+            }
+            if (onLookUp is not null)
+            {
+                resultButtonItem.Add(new ContextMenuButtonItem(onPressed: onLookUp, type: ContextMenuButtonType.lookUp));
+            }
+            if (onSearchWeb is not null)
+            {
+                resultButtonItem.Add(new ContextMenuButtonItem(onPressed: onSearchWeb, type: ContextMenuButtonType.searchWeb));
+            }
+            if ((onShare is not null) && !showShareBeforeSelectAll)
+            {
+                resultButtonItem.Add(new ContextMenuButtonItem(onPressed: onShare, type: ContextMenuButtonType.share));
+            }
         }
         if ((onLiveTextInput is not null))
         {
@@ -974,6 +1005,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     }
     internal virtual void _onChangedClipboardStatus()
     {
+        this._selectionOverlay?.markNeedsBuild();
         setState(((global::System.Action)(() =>
         {
         })));
@@ -1301,7 +1333,24 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             return ((List<ContextMenuButtonItem>)(object)null);
         }
-        return new List<ContextMenuButtonItem>();
+        var buttonItems = new List<ContextMenuButtonItem>();
+        if (toolbarOptionsLocal.cut && cutEnabled)
+        {
+            buttonItems.Add(new ContextMenuButtonItem(onPressed: () => cutSelection(global::Doroti.Framework.Services.SelectionChangedCause.toolbar), type: ContextMenuButtonType.cut));
+        }
+        if (toolbarOptionsLocal.copy && copyEnabled)
+        {
+            buttonItems.Add(new ContextMenuButtonItem(onPressed: () => copySelection(global::Doroti.Framework.Services.SelectionChangedCause.toolbar), type: ContextMenuButtonType.copy));
+        }
+        if (toolbarOptionsLocal.paste && pasteEnabled)
+        {
+            buttonItems.Add(new ContextMenuButtonItem(onPressed: () => { _ = _pasteTextWithReporting(global::Doroti.Framework.Services.SelectionChangedCause.toolbar); }, type: ContextMenuButtonType.paste));
+        }
+        if (toolbarOptionsLocal.selectAll && selectAllEnabled)
+        {
+            buttonItems.Add(new ContextMenuButtonItem(onPressed: () => selectAll(global::Doroti.Framework.Services.SelectionChangedCause.toolbar), type: ContextMenuButtonType.selectAll));
+        }
+        return buttonItems;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1392,10 +1441,10 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             _ensureKeepAlive();
         }
-        this._liveTextInputStatus?.addListener(() => this._onChangedLiveTextInputStatus());
-        this.clipboardStatus.addListener(() => this._onChangedClipboardStatus());
-        ((EditableText)(object)this.widget).controller.addListener(() => this._didChangeTextEditingValue());
-        ((EditableText)(object)this.widget).focusNode.addListener(() => this._handleFocusChanged());
+        this._liveTextInputStatus?.addListener(this._onChangedLiveTextInputStatus);
+        this.clipboardStatus.addListener(this._onChangedClipboardStatus);
+        ((EditableText)(object)this.widget).controller.addListener(this._didChangeTextEditingValue);
+        ((EditableText)(object)this.widget).focusNode.addListener(this._handleFocusChanged);
         this._cursorVisibilityNotifier.value = ((EditableText)(object)this.widget).showCursor;
         _spellCheckConfiguration = EditableTextState._inferSpellCheckConfiguration(((EditableText)(object)this.widget).spellCheckConfiguration, obscureText: ((EditableText)(object)this.widget).obscureText, keyboardType: ((EditableText)(object)this.widget).keyboardType, autofillHints: ((EditableText)(object)this.widget).autofillHints.Cast<string>());
         _appLifecycleListener = new AppLifecycleListener(onResume: () => this._onResume());
@@ -1511,8 +1560,8 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((EditableText)(object)this.widget).controller, ((EditableText)oldWidget).controller)))
         {
-            ((EditableText)oldWidget).controller.removeListener(() => this._didChangeTextEditingValue());
-            ((EditableText)(object)this.widget).controller.addListener(() => this._didChangeTextEditingValue());
+            ((EditableText)oldWidget).controller.removeListener(this._didChangeTextEditingValue);
+            ((EditableText)(object)this.widget).controller.addListener(this._didChangeTextEditingValue);
             _updateRemoteEditingValueIfNeeded();
         }
         TextSelectionOverlay? selectionOverlay = this._selectionOverlay;
@@ -1562,8 +1611,8 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         }
         if ((!object.Equals(((EditableText)(object)this.widget).focusNode, ((EditableText)oldWidget).focusNode)))
         {
-            ((EditableText)oldWidget).focusNode.removeListener(() => this._handleFocusChanged());
-            ((EditableText)(object)this.widget).focusNode.addListener(() => this._handleFocusChanged());
+            ((EditableText)oldWidget).focusNode.removeListener(this._handleFocusChanged);
+            ((EditableText)(object)this.widget).focusNode.addListener(this._handleFocusChanged);
             updateKeepAlive();
         }
         if (!this._shouldCreateInputConnection)
@@ -1663,7 +1712,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     {
         this._internalScrollController?.dispose();
         this._currentAutofillScope?.unregister(this.autofillId);
-        ((EditableText)(object)this.widget).controller.removeListener(() => this._didChangeTextEditingValue());
+        ((EditableText)(object)this.widget).controller.removeListener(this._didChangeTextEditingValue);
         this._floatingCursorResetController?.dispose();
         _floatingCursorResetController = null;
         _closeInputConnectionIfNeeded();
@@ -1674,11 +1723,11 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         _backingCursorBlinkOpacityController = null;
         this._selectionOverlay?.dispose();
         _selectionOverlay = null;
-        ((EditableText)(object)this.widget).focusNode.removeListener(() => this._handleFocusChanged());
+        ((EditableText)(object)this.widget).focusNode.removeListener(this._handleFocusChanged);
         WidgetsBinding.instance.removeObserver(this);
-        this._liveTextInputStatus?.removeListener(() => this._onChangedLiveTextInputStatus());
+        this._liveTextInputStatus?.removeListener(this._onChangedLiveTextInputStatus);
         this._liveTextInputStatus?.dispose();
-        this.clipboardStatus.removeListener(() => this._onChangedClipboardStatus());
+        this.clipboardStatus.removeListener(this._onChangedClipboardStatus);
         this.clipboardStatus.dispose();
         this._cursorVisibilityNotifier.dispose();
         this._appLifecycleListener.dispose();
@@ -2745,9 +2794,9 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     {
         if ((this._hasFocus && !((global::Doroti.Framework.Services.TextEditingValue)this._value).selection.isValid))
         {
-            ((EditableText)(object)this.widget).controller.removeListener(() => this._didChangeTextEditingValue());
+            ((EditableText)(object)this.widget).controller.removeListener(this._didChangeTextEditingValue);
             ((EditableText)(object)this.widget).controller.selection = _adjustedSelectionWhenFocused()!;
-            ((EditableText)(object)this.widget).controller.addListener(() => this._didChangeTextEditingValue());
+            ((EditableText)(object)this.widget).controller.addListener(this._didChangeTextEditingValue);
         }
         _updateRemoteEditingValueIfNeeded();
         _startOrStopCursorTimerIfNeeded();

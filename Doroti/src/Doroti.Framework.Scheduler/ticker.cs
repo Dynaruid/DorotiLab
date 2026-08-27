@@ -158,6 +158,10 @@ public class Ticker
     {
         DartRuntimePrimitives.Assert(() => !scheduled);
         DartRuntimePrimitives.Assert(() => shouldScheduleTick);
+        // The MAUI host can service an invalidation synchronously. Register the
+        // callback first so that a frame cannot be painted before the ticker is
+        // visible to the scheduler.
+        _animationId = SchedulerBinding.instance.scheduleFrameCallback(_tick, rescheduling: rescheduling, scheduleNewFrame: false);
         if (forceFrames)
         {
             SchedulerBinding.instance.scheduleForcedFrame();
@@ -166,7 +170,6 @@ public class Ticker
         {
             SchedulerBinding.instance.scheduleFrame();
         }
-        _animationId = SchedulerBinding.instance.scheduleFrameCallback(_tick, rescheduling: rescheduling, scheduleNewFrame: false);
     }
 
     public virtual void unscheduleTick()

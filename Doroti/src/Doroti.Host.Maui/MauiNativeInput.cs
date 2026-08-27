@@ -239,6 +239,7 @@ internal static class MauiNativeInput
     private sealed class NativeKeyboardSubscription : IDisposable
     {
         private readonly SKGLView _view;
+        private readonly MauiTextInputBridge _textInput;
         private readonly ulong _viewId;
         private readonly Action<KeyData> _dispatch;
         private DorotiKeyboardView? _keyboardView;
@@ -246,7 +247,7 @@ internal static class MauiNativeInput
         internal NativeKeyboardSubscription(SKGLView view, MauiTextInputBridge textInput, ulong viewId, Action<KeyData> dispatch)
         {
             _view = view;
-            _ = textInput;
+            _textInput = textInput;
             _viewId = viewId;
             _dispatch = dispatch;
             _view.HandlerChanged += HandleHandlerChanged;
@@ -256,7 +257,14 @@ internal static class MauiNativeInput
 
         private void HandleHandlerChanged(object? sender, EventArgs args) => AttachCurrent();
         private void HandleFocused(object? sender, Microsoft.Maui.Controls.FocusEventArgs args) =>
-            _keyboardView?.BecomeFirstResponder();
+            FocusHardwareKeyboardViewIfAvailable();
+
+        private void FocusHardwareKeyboardViewIfAvailable()
+        {
+            // DorotiKeyboardView only receives physical-key presses. It must never
+            // take first responder from the Entry/Editor that owns the software IME.
+            if (!_textInput.HasClient) _keyboardView?.BecomeFirstResponder();
+        }
 
         private void AttachCurrent()
         {
@@ -272,7 +280,7 @@ internal static class MauiNativeInput
                 AutoresizingMask = UIKit.UIViewAutoresizing.FlexibleDimensions,
             };
             native.AddSubview(_keyboardView);
-            _keyboardView.BecomeFirstResponder();
+            FocusHardwareKeyboardViewIfAvailable();
         }
 
         public void Dispose()

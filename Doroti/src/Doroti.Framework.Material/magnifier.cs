@@ -53,6 +53,7 @@ public class TextMagnifier : global::Doroti.Framework.Widgets.StatefulWidget
 
 internal class _TextMagnifierState__magnifier : global::Doroti.Framework.Widgets.State<TextMagnifier>
 {
+    internal virtual global::System.Action _magnifierInfoListener { get; set; } = default!;
     internal virtual Offset? _magnifierPosition { get; set; } = default;
     internal virtual Timer? _positionShouldBeAnimatedTimer { get; set; } = default;
     internal virtual Offset _extraFocalPointOffset { get; set; } = Offset.zero;
@@ -61,12 +62,13 @@ internal class _TextMagnifierState__magnifier : global::Doroti.Framework.Widgets
     public override void initState()
     {
         base.initState();
-        ((TextMagnifier)this.widget).magnifierInfo.addListener(() => this._determineMagnifierPositionAndFocalPoint());
+        _magnifierInfoListener = this._determineMagnifierPositionAndFocalPoint;
+        ((TextMagnifier)this.widget).magnifierInfo.addListener(this._magnifierInfoListener);
     }
 
     public override void dispose()
     {
-        ((TextMagnifier)this.widget).magnifierInfo.removeListener(() => this._determineMagnifierPositionAndFocalPoint());
+        ((TextMagnifier)this.widget).magnifierInfo.removeListener(this._magnifierInfoListener);
         this._positionShouldBeAnimatedTimer?.cancel();
         base.dispose();
     }
@@ -81,8 +83,8 @@ internal class _TextMagnifierState__magnifier : global::Doroti.Framework.Widgets
     {
         if ((!object.Equals(((TextMagnifier)oldWidget).magnifierInfo, ((TextMagnifier)this.widget).magnifierInfo)))
         {
-            ((TextMagnifier)oldWidget).magnifierInfo.removeListener(() => this._determineMagnifierPositionAndFocalPoint());
-            ((TextMagnifier)this.widget).magnifierInfo.addListener(() => this._determineMagnifierPositionAndFocalPoint());
+            ((TextMagnifier)oldWidget).magnifierInfo.removeListener(this._magnifierInfoListener);
+            ((TextMagnifier)this.widget).magnifierInfo.addListener(this._magnifierInfoListener);
         }
         base.didUpdateWidget(oldWidget);
     }

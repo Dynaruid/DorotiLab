@@ -43,6 +43,7 @@ public sealed class MauiTextInputBridge : IDisposable
     internal event Action<DorotiTextInputAction>? ActionPerformed;
     internal event Action<bool>? FocusChanged;
     internal IReadOnlyList<InputView> Inputs => [_entry, _editor];
+    internal bool HasClient => _hasClient;
 
     internal void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState state)
     {
@@ -195,9 +196,14 @@ public sealed class MauiTextInputBridge : IDisposable
     private void HandleTextChanged(object? sender, TextChangedEventArgs args)
     {
         if (_updating || !ReferenceEquals(sender, _active)) return;
-        var start = _active.CursorPosition;
-        EditingStateChanged?.Invoke(new(args.NewTextValue ?? string.Empty,
-            new(start, start + _active.SelectionLength), null));
+        var text = args.NewTextValue ?? string.Empty;
+        // UIKit can publish TextChanged before MAUI has normalized the native
+        // selection for the new composing value. Flutter editing offsets must
+        // always stay inside the value they accompany, otherwise the selection
+        // overlay (and therefore the iOS magnifier) cannot be updated safely.
+        var start = Math.Clamp(_active.CursorPosition, 0, text.Length);
+        var end = Math.Clamp(start + Math.Max(0, _active.SelectionLength), start, text.Length);
+        EditingStateChanged?.Invoke(new(text, new(start, end), null));
     }
 
     private void HandleCompleted(object? sender, EventArgs args)

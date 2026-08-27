@@ -45,12 +45,16 @@ internal class _CupertinoTextMagnifierState__magnifier : global::Doroti.Framewor
     internal virtual global::Doroti.Framework.Animation.AnimationController _ioAnimationController { get; private set; } = default!;
     internal virtual global::Doroti.Framework.Animation.Animation<double> _ioAnimation { get; private set; } = default!;
     internal virtual global::Doroti.Framework.Animation.CurvedAnimation _ioCurvedAnimation { get; private set; } = default!;
+    internal virtual global::System.Action _magnifierInfoListener { get; set; } = default!;
+    internal virtual global::System.Action _tickerModeListener { get; set; } = default!;
     public virtual global::Doroti.Framework.Scheduler.Ticker? _ticker { get; set; } = default;
     public virtual global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>? _tickerModeNotifier { get; set; } = default;
 
     public override void initState()
     {
         base.initState();
+        _magnifierInfoListener = this._determineMagnifierPositionAndFocalPoint;
+        _tickerModeListener = this._updateTicker;
         _ioAnimationController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(value: 0, vsync: this, duration: CupertinoMagnifier._kInOutAnimationDuration);
@@ -63,17 +67,18 @@ internal class _CupertinoTextMagnifierState__magnifier : global::Doroti.Framewor
     return __cascade;
 }))();
         ((CupertinoTextMagnifier)this.widget).controller.animationController = this._ioAnimationController;
-        ((CupertinoTextMagnifier)this.widget).magnifierInfo.addListener(() => this._determineMagnifierPositionAndFocalPoint());
+        ((CupertinoTextMagnifier)this.widget).magnifierInfo.addListener(this._magnifierInfoListener);
         _ioCurvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._ioAnimationController, curve: ((CupertinoTextMagnifier)this.widget).animationCurve);
         _ioAnimation = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 1.0).animate(this._ioCurvedAnimation);
     }
 
     public override void dispose()
     {
+        ((CupertinoTextMagnifier)this.widget).magnifierInfo.removeListener(this._magnifierInfoListener);
+        this._tickerModeNotifier?.removeListener(this._tickerModeListener);
         ((CupertinoTextMagnifier)this.widget).controller.animationController = null;
         this._ioAnimationController.dispose();
         this._ioCurvedAnimation.dispose();
-        ((CupertinoTextMagnifier)this.widget).magnifierInfo.removeListener(() => this._determineMagnifierPositionAndFocalPoint());
         DartRuntimePrimitives.Assert(() =>
             {
                 if (((this._ticker is null) || !this._ticker!.isActive))
@@ -82,7 +87,6 @@ internal class _CupertinoTextMagnifierState__magnifier : global::Doroti.Framewor
                 }
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -91,8 +95,8 @@ internal class _CupertinoTextMagnifierState__magnifier : global::Doroti.Framewor
     {
         if ((!object.Equals(((CupertinoTextMagnifier)oldWidget).magnifierInfo, ((CupertinoTextMagnifier)this.widget).magnifierInfo)))
         {
-            ((CupertinoTextMagnifier)oldWidget).magnifierInfo.removeListener(() => this._determineMagnifierPositionAndFocalPoint());
-            ((CupertinoTextMagnifier)this.widget).magnifierInfo.addListener(() => this._determineMagnifierPositionAndFocalPoint());
+            ((CupertinoTextMagnifier)oldWidget).magnifierInfo.removeListener(this._magnifierInfoListener);
+            ((CupertinoTextMagnifier)this.widget).magnifierInfo.addListener(this._magnifierInfoListener);
         }
         base.didUpdateWidget(oldWidget);
     }
@@ -178,8 +182,8 @@ internal class _CupertinoTextMagnifierState__magnifier : global::Doroti.Framewor
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._tickerModeListener);
+        newNotifier.addListener(this._tickerModeListener);
         this._tickerModeNotifier = newNotifier;
     }
 

@@ -279,6 +279,11 @@ public class TextSelectionOverlay
         this._selectionOverlay.markNeedsBuild();
     }
 
+    public virtual void markNeedsBuild()
+    {
+        this._selectionOverlay.markNeedsBuild();
+    }
+
     public virtual bool handlesAreVisible => DartRuntimePrimitives.ConvertValue<bool>(((((SelectionOverlay)this._selectionOverlay)._handles is not null) && this.handlesVisible));
     public virtual bool toolbarIsVisible => ((SelectionOverlay)this._selectionOverlay).toolbarIsVisible;
     public virtual bool magnifierIsVisible => ((SelectionOverlay)this._selectionOverlay).magnifierIsVisible;
@@ -290,8 +295,8 @@ public class TextSelectionOverlay
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         this._selectionOverlay.dispose();
-        ((global::Doroti.Framework.Rendering.RenderEditable)this.renderObject).selectionStartInViewport.removeListener(() => this._updateTextSelectionOverlayVisibilities());
-        ((global::Doroti.Framework.Rendering.RenderEditable)this.renderObject).selectionEndInViewport.removeListener(() => this._updateTextSelectionOverlayVisibilities());
+        ((global::Doroti.Framework.Rendering.RenderEditable)this.renderObject).selectionStartInViewport.removeListener(this._updateTextSelectionOverlayVisibilities);
+        ((global::Doroti.Framework.Rendering.RenderEditable)this.renderObject).selectionEndInViewport.removeListener(this._updateTextSelectionOverlayVisibilities);
         this._effectiveToolbarVisibility.dispose();
         this._effectiveStartHandleVisibility.dispose();
         this._effectiveEndHandleVisibility.dispose();
@@ -939,7 +944,7 @@ public class SelectionOverlay
 
     public virtual void markNeedsBuild()
     {
-        if (((this._handles is null) && (this._toolbar is null)))
+        if (((this._handles is null) && (this._toolbar is null) && !this._contextMenuController.isShown && !this._spellCheckToolbarController.isShown))
         {
             return;
         }

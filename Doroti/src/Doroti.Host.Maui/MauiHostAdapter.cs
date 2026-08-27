@@ -85,7 +85,6 @@ internal sealed class MauiHostAdapter :
         _surface.FocusChanged += HandleFocusChanged;
         _textInput.EditingStateChanged += HandleEditingStateChanged;
         _textInput.ActionPerformed += HandleActionPerformed;
-        _textInput.FocusChanged += HandleTextFocusChanged;
         if (Application.Current is { } application)
             application.RequestedThemeChanged += HandleRequestedThemeChanged;
         _nativeInput = _surface;
@@ -625,7 +624,6 @@ internal sealed class MauiHostAdapter :
         _surface.FocusChanged -= HandleFocusChanged;
         _textInput.EditingStateChanged -= HandleEditingStateChanged;
         _textInput.ActionPerformed -= HandleActionPerformed;
-        _textInput.FocusChanged -= HandleTextFocusChanged;
         if (Application.Current is { } application)
             application.RequestedThemeChanged -= HandleRequestedThemeChanged;
         _nativeInput.Dispose();
@@ -744,11 +742,15 @@ internal sealed class MauiHostAdapter :
 
     private void HandleKey(KeyData data) => KeyData?.Invoke(data);
 
-    private void HandleFocusChanged(bool focused) =>
+    private void HandleFocusChanged(bool focused)
+    {
+        // Entry/Editor is a hidden native IME endpoint inside this Doroti view.
+        // Moving UIKit/MAUI focus from the Skia surface to that endpoint must not
+        // be reported as the whole Flutter view losing focus: View.didChangeViewFocus
+        // would move focus to the root scope and immediately close the text client.
+        if (!focused && _textInput.HasClient) return;
         FocusData?.Invoke(new(_viewId, focused, DorotiFrameClock.Now));
-
-    private void HandleTextFocusChanged(bool focused) =>
-        FocusData?.Invoke(new(_viewId, focused, DorotiFrameClock.Now));
+    }
 
     private void HandleEditingStateChanged(DorotiTextEditingState state) => EditingStateChanged?.Invoke(state);
     private void HandleActionPerformed(DorotiTextInputAction action) => ActionPerformed?.Invoke(action);
