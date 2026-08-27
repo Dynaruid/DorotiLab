@@ -239,21 +239,25 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
         // UIKit layout and MTKView's drawable resize are separate callbacks.
         // Do not publish an estimated physical size from the layout callback:
         // the next Metal paint publishes the exact drawable dimensions first.
-        BeginMacCatalystResizeLoop();
+        ScheduleMacCatalystResizeCompletion();
 #else
         SizeChanged?.Invoke(null);
 #endif
     }
 
 #if MACCATALYST
-    private void BeginMacCatalystResizeLoop()
+    private void ScheduleMacCatalystResizeCompletion()
     {
         var pulse = checked(++_macCatalystResizePulse);
-        if (!_view.HasRenderLoop) _view.HasRenderLoop = true;
+        // DorotiMacCatalystMetalView draws synchronously from LayoutSubviews.
+        // Do not also start MTKView's display-link loop: its independent paint
+        // can present between the window-origin and drawable-size commits when
+        // the bottom edge is moving, producing a one-frame vertical jump.
         Dispatcher.DispatchDelayed(MacCatalystResizeQuiescence, () =>
         {
             if (_disposed || pulse != _macCatalystResizePulse) return;
-            _view.HasRenderLoop = false;
+            // Retain one final invalidation after live resize so a drawable
+            // that was temporarily unavailable is retried at the settled size.
             _view.InvalidateSurface();
         });
     }
