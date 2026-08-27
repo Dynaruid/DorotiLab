@@ -17,19 +17,20 @@ Doroti는 Flutter를 WebView에 넣지 않으며 플랫폼 UI control tree로 UI
 
 현재 `Doroti/src/Doroti.Framework.*`는 제품이 직접 소유하는 C# source이며 namespace, assembly, package는 `Doroti.Framework.*`로 일치합니다. 기능과 수정은 소유 framework/runtime/renderer/host 계약에서 직접 개발합니다. Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·reference differential 도구로 남고 제품 source를 덮어쓰지 않습니다. `DorotiDemoApp`과 생성된 `doroti-app` project는 C# 전용이며 활성 validation은 그 내부에 Dart package를 만들지 않습니다.
 
-자세한 source 소유권은 [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md), 기본 native bridge graph는 [ADR-022](Doroti/docs/adr/ADR-022-default-native-platform-bridge.md)를 참고하세요.
+자세한 source 소유권은 [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md), 기본 native bridge graph는 [ADR-022](Doroti/docs/adr/ADR-022-default-native-platform-bridge.md), 현재 Windows host 결정은 [ADR-025](Doroti/docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md)를 참고하세요.
 
 ## 현재 동작 범위
 
 - 공용 Material/Cupertino widget, element, layout, paint, semantics, state 기반
 - 플랫폼 중립 C# 앱 library와 `macos`(AppKit), `maccatalyst`(UIKit)를 분리한 고정 target runner project
 - 하나의 public target-neutral `Program` startup, host 소유 native 초기화, runner-local generated bootstrap code
-- Windows WinUI 3 `MauiSKSwapChainPanel`과 Web WebGL2를 통한 strict Skia GPU rendering
+- Windows 기본값인 self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host와 managed hardware-D3D11 ANGLE/EGL Skia 경로. Windows MAUI는 명시적 독립 backend로 유지
+- Web WebGL2를 통한 strict Skia GPU rendering
 - native AppKit macOS/osx-arm64와 별도로 유지되는 Mac Catalyst를 포함한 고정 runner 빌드
 - Linux x64의 Qt 6 `QOpenGLWindow`, versioned C ABI v2, Qt framebuffer 직접 Skia rendering
 - 두 Apple desktop runner/binding을 포함하는 package-only template(총 12개 project)
 
-현재 evidence에는 AppKit native launch/Metal presentation과 Kubuntu VMware의 Wayland 및 XWayland Qt live 실행이 포함됩니다. 물리 Linux와 실제 X11 session, Linux 한글 IME/Orca, context 재생성, 장기 성능, 미실행 target의 native/browser/physical/accessibility/signing/store 및 cross-target parity는 각각 독립적인 `notVerified` gate입니다.
+현재 evidence에는 AppKit native launch/Metal presentation, Kubuntu VMware의 Wayland/XWayland Qt live 실행, Windows App SDK 기본 전환이 포함됩니다. 확인한 Windows 실제 resize와 mixed-DPI monitor 경계 이동은 사용자 acceptance를 받았지만 strict synthetic capture/pixel/cadence FAIL은 그대로 유지합니다. Windows 실제 한글 IME/Narrator와 더 넓은 DPI/device/window-management matrix, 물리 Linux와 실제 X11 session, Linux 한글 IME/Orca, context 재생성, 장기 성능, 미실행 target의 native/browser/physical/accessibility/signing/store 및 cross-target parity는 각각 독립적인 `notVerified` gate입니다.
 
 ## 구조
 
@@ -41,7 +42,8 @@ Doroti는 Flutter를 WebView에 넣지 않으며 플랫폼 UI control tree로 UI
                  │
                  ▼
          target host + GPU surface
-   Windows MAUI · AppKit · Mac Catalyst · WebGL2 · Linux Qt/Skia GL
+  Windows App SDK/ANGLE · Windows MAUI · AppKit · Mac Catalyst
+                 WebGL2 · Linux Qt/Skia GL
 ```
 
 Flutter source는 fidelity 작업에서 동작 reference가 필요할 때 사용합니다. Compiler output은 격리된 candidate이며 제품 source of truth가 아닙니다.
@@ -51,9 +53,11 @@ Flutter source는 fidelity 작업에서 동작 reference가 필요할 때 사용
 .NET SDK 10.0.400, 일치하는 10.0.11 runtime/workload와 PowerShell 7이 필요합니다.
 
 ```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 build
+pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 ```
+
+Windows 명령은 기본적으로 Windows App SDK/`HwndExactCpp`를 선택합니다. 독립 Windows MAUI runner가 필요할 때만 `-WindowsBackend Maui`를 명시합니다.
 
 ## Repository 구성
 

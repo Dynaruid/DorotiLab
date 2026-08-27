@@ -17,19 +17,20 @@ The project began by translating large Flutter source slices through a semantic 
 
 Today `Doroti/src/Doroti.Framework.*` is product-owned C# source with matching `Doroti.Framework.*` namespaces, assemblies, and packages. Features and fixes are developed directly in the owning framework/runtime/renderer/host contract. The Dart-to-C# compiler and pinned Flutter checkout remain optional import and reference-differential tools; they never overwrite product source. `DorotiDemoApp` and generated `doroti-app` projects are C#-only, and active validation never creates a Dart package inside them.
 
-See [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md) and [ADR-022](Doroti/docs/adr/ADR-022-default-native-platform-bridge.md).
+See [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md), [ADR-022](Doroti/docs/adr/ADR-022-default-native-platform-bridge.md), and the current [Windows host decision](Doroti/docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md).
 
 ## What works today
 
 - Shared Material/Cupertino widget, element, layout, paint, semantics, and state infrastructure
 - A platform-neutral C# application library plus fixed-target runners; `macos` selects native AppKit and `maccatalyst` selects UIKit Mac Catalyst
 - One public target-neutral `Program` startup, host-owned native initialization, and runner-local generated bootstrap code
-- Strict Skia GPU rendering through WinUI 3 `MauiSKSwapChainPanel` on Windows and WebGL2 on the Web
+- Windows defaults to a self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host with managed hardware-D3D11 ANGLE/EGL and Skia; Windows MAUI remains an explicit independent backend
+- Strict Skia GPU rendering through WebGL2 on the Web
 - Automated fixed-runner builds include native AppKit macOS/osx-arm64 and the independently retained Mac Catalyst product
 - Linux x64 uses a Qt 6 `QOpenGLWindow`, a versioned C ABI v2, and direct Skia rendering into the Qt framebuffer
 - Package-only template creation includes both Apple desktop runners and their native bindings (twelve projects total)
 
-Current evidence includes AppKit native launch/Metal presentation and Qt live runs under Wayland and XWayland on a Kubuntu VMware guest. Physical Linux and a real X11 session, Linux Korean IME/Orca, context recreation, long-running performance, unrun target-specific native/browser/physical/accessibility/signing/store acceptance, and cross-target parity remain independent `notVerified` gates.
+Current evidence includes AppKit native launch/Metal presentation, Qt live runs under Wayland and XWayland on a Kubuntu VMware guest, and the Windows App SDK default cutover. The tested Windows physical resize and mixed-DPI monitor-boundary behavior received user acceptance, while strict synthetic capture/pixel/cadence failures remain failures. Physical Windows Korean IME/Narrator coverage, the broader Windows DPI/device/window-management matrix, physical Linux and a real X11 session, Linux Korean IME/Orca, context recreation, long-running performance, unrun target-specific native/browser/physical/accessibility/signing/store acceptance, and cross-target parity remain independent `notVerified` gates.
 
 ## Architecture
 
@@ -41,7 +42,8 @@ product-owned Doroti.Framework.* source
                  │
                  ▼
         target host + GPU surface
-  Windows MAUI · AppKit · Mac Catalyst · WebGL2 · Linux Qt/Skia GL
+  Windows App SDK/ANGLE · Windows MAUI · AppKit · Mac Catalyst
+                 WebGL2 · Linux Qt/Skia GL
 ```
 
 Flutter source is consulted when fidelity work needs a behavioral reference. Compiler output is an isolated candidate, not the product source of truth.
@@ -51,9 +53,11 @@ Flutter source is consulted when fidelity work needs a behavioral reference. Com
 Requires .NET SDK 10.0.400, matching 10.0.11 runtimes/workloads, and PowerShell 7.
 
 ```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 build
+pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 ```
+
+The Windows command selects Windows App SDK/`HwndExactCpp` by default. Use `-WindowsBackend Maui` only when the independent Windows MAUI runner is intended.
 
 ## Repository layout
 

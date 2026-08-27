@@ -14,8 +14,23 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 
 - Upstream: https://github.com/mono/SkiaSharp
 - Package: `SkiaSharp` 4.151.1; platform-native assets are selected transitively by the target RID graph
-- Use: GPU surface implementation behind the MAUI and Web hosts
+- Use: GPU surface implementation behind the Windows App SDK, MAUI, AppKit, Web, and Linux/Qt hosts
 - License: MIT; package license metadata is preserved by NuGet restore and distribution packaging
+
+## ANGLE Windows runtime
+
+- Upstream: https://github.com/AvaloniaUI/angle
+- Package: `Avalonia.Angle.Windows.Natives` 2.1.27548.20260419
+- Upstream package commit: `1c89805903c1482166356d3b950d474973180e61`
+- Use: x64 EGL/GLES runtime for the default Windows App SDK hardware-D3D11 presenter
+- License: BSD-style ANGLE license; the package `LICENSE` file and required binary-redistribution notice must be preserved
+
+## Microsoft Windows App SDK
+
+- Upstream: https://github.com/microsoft/windowsappsdk
+- Package: `Microsoft.WindowsAppSDK` 2.4.0 for the Windows App SDK host (the repository-wide central version is overridden by this host)
+- Use: AppWindow, self-contained Windows App Runtime bootstrap/runtime, and native metadata used by the `HwndExactCpp` target
+- License: Microsoft Windows App SDK package license terms; the restored `license.txt` and licenses for included Microsoft components govern use and redistribution
 
 ## Wayland background-effect protocol
 

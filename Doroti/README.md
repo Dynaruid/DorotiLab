@@ -2,7 +2,7 @@
 
 **English** | [한국어](README.ko.md)
 
-Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semantics, and rendering pipeline for MAUI Windows, native AppKit macOS, Mac Catalyst, Android, iOS, Blazor WebAssembly, and Linux/Qt.
+Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semantics, and rendering pipeline for Windows App SDK, optional Windows MAUI, native AppKit macOS, Mac Catalyst, Android, iOS, Blazor WebAssembly, and Linux/Qt.
 
 ## Development model
 
@@ -10,7 +10,7 @@ Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semanti
 
 The Dart-to-C# compiler and pinned Flutter checkout remain optional import and behavior-reference tools. They do not overwrite product source and are not required for ordinary builds. Compiler output stays in isolated workspaces until explicitly reviewed and adopted.
 
-See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for source ownership and [ADR-022](docs/adr/ADR-022-default-native-platform-bridge.md) for the default native bridge graph.
+See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for source ownership, [ADR-022](docs/adr/ADR-022-default-native-platform-bridge.md) for the default native bridge graph, and [ADR-025](docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md) for the current Windows host.
 
 ## Current product boundary
 
@@ -20,7 +20,9 @@ See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for source
 - `Doroti.Runner.Sdk`: fixed-target runner validation plus runner-local native/Web bootstrap and plugin registration
 - `Doroti.Skia.RuntimeEffects`: shared fail-closed SkSL compiler and uniform/image-sampler binder used by native and Web hosts
 - `Doroti.Skia.Rendering`: host-neutral scene, paragraph, image, runtime-effect, semantics, cache, and terminal-ACK renderer shared by native GPU hosts
-- `Doroti.Host.Maui`: shared MAUI lifecycle plus independent SKGLView and AppKit-owned MTKView/Metal surface adapters
+- `Doroti.Host.WindowsAppSdk` + `Doroti.Host.WindowsAppSdk.Native`: default Windows App SDK 2.4 host; native C++ owns the top-level/child/task HWNDs and ingress, while managed code owns the Doroti framework and hardware-D3D11 ANGLE/EGL/Skia presentation
+- `Doroti.Target.Windows.WindowsAppSdk.win-x64`: self-contained unpackaged Windows target with `HwndExactCpp`, native host/bootstrap, and app-directory ANGLE runtime
+- `Doroti.Host.Maui`: MAUI lifecycle and SKGLView/AppKit-owned MTKView/Metal adapters for Android, iOS, Mac Catalyst, AppKit, and the explicit alternative Windows MAUI backend
 - `Doroti.Host.Web`: host-owned Blazor composition, WebGL2 canvas, input, accessibility, and resource bridge
 - `Doroti.Host.Qt`: managed-owned Linux process with a Qt 6 `QOpenGLWindow`, versioned C ABI v2, GPU surface, input, IME, desktop services, and an accessibility adapter
 
@@ -37,6 +39,8 @@ Android, iOS, native AppKit macOS, and Mac Catalyst runners each reference a def
 - .NET/ASP.NET/WindowsDesktop and browser-wasm runtime packs at 10.0.11, with matching MAUI/WebAssembly workloads
 - `Microsoft.TypeScript.MSBuild` 7.0.0 restored only by a Web runner that contains `web/tsconfig.json`
 
+Building the default Windows target also requires Visual Studio MSBuild with the MSVC v145 C++ toolset and Windows SDK 10.0.26100.0. Windows App SDK 2.4 and the ANGLE runtime are restored and deployed self-contained with the target; no machine-wide Windows App Runtime or presenter fallback is assumed.
+
 The Linux runner uses system dependencies on a Linux x64 host: Qt 6.5 or newer Core/Gui/Widgets/OpenGL, CMake, a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, and the QPA plugin used at runtime (`wayland` or `xcb`).
 
 The `reference/flutter-master` checkout is needed only for explicit Flutter reference comparison. Prepare Flutter for that work with `pwsh -File ./Doroti/eng/prepare-flutter-sdk.ps1`.
@@ -47,7 +51,7 @@ Run from the repository root:
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 doctor
-pwsh -File ./Doroti/eng/doroti.ps1 build
+pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows
 ```
 
 The active command surface is intentionally small:
@@ -58,15 +62,20 @@ The active command surface is intentionally small:
 | `build` | Build `Doroti.Product.slnx` |
 | `build/run/publish -App <path> -Platform <alias>` | Resolve and execute one runner from `doroti-workspace.json` |
 | `native doctor\|build\|open\|add -App <path> -Platform android\|ios\|macos\|maccatalyst` | Inspect, build, locate, or extend the default native bridge workspace |
+| `validate -ValidationSuite <suite>` | Run the supported aggregate validation entry point (`Developer` by default) |
+| `audit` | Check local-storage policy and source validation |
+| `release` | Run Release validation/audit and pack product artifacts |
 | `clean` | Remove Doroti build output, artifacts, and temporary local state |
 
-`eng` no longer provides standalone validation-suite entry points. Retained validation contracts and evidence are described under [validation](validation/README.md), while previous run results remain under `history/` at the repository root.
+For Windows, `-Platform windows` selects Windows App SDK/`HwndExactCpp`; add `-WindowsBackend Maui` to select the independent MAUI runner. Target-specific scripts under `eng/` are maintainer diagnostics, not interchangeable product commands. Their contracts and evidence boundaries are described under [validation](validation/README.md), while previous run results remain under `history/` at the repository root.
 
 ## Platform evidence boundaries
 
-The shared renderer, real Material gallery, swap-based terminal ACK, basic input callbacks, semantics tree, and framework-dependent/self-contained publish paths were exercised for Linux Qt under Wayland and XWayland on a Kubuntu 26.04 VMware guest. Physical Linux, a real X11 session, Korean IME/Orca, forced context recreation, long soaks, and performance remain `notVerified`. See the [Linux Qt live evidence](validation/evidence/linux-qt/kubuntu-vmware-spike.json) and [packaging evidence](validation/evidence/linux-qt/kubuntu-packaging.json).
+The Windows App SDK target, package, default CLI route, hardware-D3D11 ANGLE runtime, first-frame ordering, and tested physical resize/mixed-DPI boundary behavior have current evidence. C10 is a user-acceptance PASS for the observed conditions; strict synthetic resize qualification and pixel/cadence failures remain failures. Physical Korean IME candidate/caret behavior, Narrator/Accessibility Insights, untested edge/speed combinations, the full DPI/monitor/window-management/device-removal/shutdown matrix, and installer/MSIX remain `notVerified`. The last full `Doroti.Product.slnx` Release run on Windows failed only after the Windows target passed, when a macOS project invoked unavailable `sips`; the Windows PASS and global FAIL remain separate.
 
-AppKit live coverage and its remaining gates are recorded separately in the [AppKit product live record](validation/evidence/appkit-macos/product-live.json). Build, native-live, browser-live, physical/device, and accessibility evidence do not substitute for one another.
+The shared renderer, real Material gallery, swap-based terminal ACK, basic input callbacks, semantics tree, and framework-dependent/self-contained publish paths were exercised for Linux Qt under Wayland and XWayland on a Kubuntu 26.04 VMware guest. Physical Linux, a real X11 session, Korean IME/Orca, forced context recreation, long soaks, and performance remain `notVerified`. See the archived [Linux Qt backend summary](../history/26-08-20/linux-qt-backend-summary.md).
+
+AppKit live coverage and its remaining gates are recorded separately in the archived [AppKit dual-backend summary](../history/26-08-20/macos-appkit-dual-backend-summary.md). Build, native-live, browser-live, physical/device, and accessibility evidence do not substitute for one another.
 
 ## Source and artifact policy
 
@@ -74,7 +83,7 @@ AppKit live coverage and its remaining gates are recorded separately in the [App
 - Fix shared behavior at the lowest owning framework/runtime/rendering/host contract.
 - Keep reference comparison, build, native live, browser live, physical, and cross-target claims distinct.
 - `validation/contracts/` stores small machine-readable contracts consumed by active validators.
-- `validation/evidence/` stores committed summaries produced by active target and Web validators.
+- `validation/evidence/` is reserved for deliberately committed machine-readable summaries; it is currently empty.
 - `.doroti/` and `artifacts/` store transient tool and validation output.
 - All repository JSON uses `System.Text.Json`.
 
@@ -86,7 +95,7 @@ AppKit live coverage and its remaining gates are recorded separately in the [App
 | [`templates/`](templates/) | The seven-runner plus four-binding `doroti-app` platform workspace template |
 | [`eng/`](eng/) | Compact build, validation, release, storage, and optional reference workflows |
 | [`tools/`](tools/) | Optional Dart/Flutter compiler and shared tooling |
-| [`validation/`](validation/) | Active validation contracts, fixtures, and committed evidence |
-| [`docs/`](docs/) | Current ADRs plus historical architecture records |
+| [`validation/`](validation/) | Active validation contracts and fixtures; generated evidence goes to `.doroti/` or `artifacts/` unless explicitly promoted |
+| [`docs/`](docs/) | Current ADRs, including the Windows host decision, plus historical architecture records |
 
 Doroti is distributed under the repository BSD 3-Clause license. See [third-party notices](THIRD-PARTY-NOTICES.md) for upstream source and package attribution.

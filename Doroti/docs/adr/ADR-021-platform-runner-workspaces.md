@@ -2,12 +2,15 @@
 
 - Status: accepted
 - Date: 2026-08-19
+- Amended: 2026-08-26 by [ADR-025](ADR-025-windowsappsdk-hwndexact-angle.md)
 
 ## Decision
 
 Doroti applications are split into a target-neutral application assembly and one fixed-target runner project per platform workspace. The application owns `Program : IDorotiApplicationStartup`, shared widget source, and shared logical assets. A runner owns its native entry point, package manifest, platform resources, target framework, runtime identifier, host package, and generated bootstrap.
 
 The workspace aliases are `android`, `ios`, `linux`, `macos`, `maccatalyst`, `web`, and `windows`. Their canonical targets are `Android`, `iOS`, `Linux`, `macOS`, `MacCatalyst`, `Web`, and `Windows`. Per ADR-024, `macos` selects only native AppKit (`net10.0-macos/osx-arm64`) and `maccatalyst` selects only UIKit Mac Catalyst; neither may fall back to the other.
+
+Per ADR-025, `windows` selects the Windows App SDK 2.4 `HwndExactCpp`/ANGLE `win-x64` runner. A workspace may retain one independent Windows MAUI runner, selected explicitly with `-WindowsBackend Maui`; the MAUI runner is not a second workspace alias or a runtime fallback.
 
 `doroti-workspace.json` is only a path index. Runner project files and their single `DorotiTargetDescriptor` remain the source of truth for TFM, RID, host, native entry kind, and target package.
 
@@ -23,7 +26,7 @@ It is not an application runner and does not start the .NET runtime from Kotlin 
 
 ## Runtime ownership
 
-- Windows, Android, iOS, native AppKit macOS, and Mac Catalyst runners own native lifecycle entry points and initialize the shared renderer through platform-specific surface adapters.
+- Windows App SDK, Windows MAUI, Android, iOS, native AppKit macOS, and Mac Catalyst runners own native lifecycle entry points and initialize the shared renderer through platform-specific surface adapters. The Windows App SDK runner splits ownership between native C++ HWND/lifecycle/input ingress and managed ANGLE/Skia framework and presentation code as defined by ADR-025.
 - The Web runner owns Blazor startup and exactly one loader-owned `Blazor.start()` call.
 - Linux uses a managed-owned process with a Qt C ABI shim. Managed code owns startup and Doroti lifetime; Qt owns the native event loop, window, display backend, and native input/IME/clipboard/accessibility integration.
 - Framework host code stays in `Doroti.Host.*`; app platform folders contain only runner entry points, manifests, resources, and explicit customization hooks.
