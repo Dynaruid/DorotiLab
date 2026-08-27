@@ -158,7 +158,7 @@ internal class _FadeInImageState__fade_in_image : State<FadeInImage>
 
     public override Widget build(BuildContext context)
     {
-        Widget result__17561 = ((Widget)(object?)_image(image: ((FadeInImage)this.widget).image, errorBuilder: (global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>?)((FadeInImage)this.widget).imageErrorBuilder, opacity: this._imageAnimation, fit: ((FadeInImage)this.widget).fit, color: ((FadeInImage)this.widget).color, colorBlendMode: ((FadeInImage)this.widget).colorBlendMode, filterQuality: ((FadeInImage)this.widget).filterQuality, frameBuilder: ((global::System.Func<BuildContext, Widget, long?, bool, Widget>?)((context, child, frame, wasSynchronouslyLoaded) =>
+        Widget result = ((Widget)(object?)_image(image: ((FadeInImage)this.widget).image, errorBuilder: (global::System.Func<BuildContext, object, global::System.Diagnostics.StackTrace?, Widget>?)((FadeInImage)this.widget).imageErrorBuilder, opacity: this._imageAnimation, fit: ((FadeInImage)this.widget).fit, color: ((FadeInImage)this.widget).color, colorBlendMode: ((FadeInImage)this.widget).colorBlendMode, filterQuality: ((FadeInImage)this.widget).filterQuality, frameBuilder: ((global::System.Func<BuildContext, Widget, long?, bool, Widget>?)((context, child, frame, wasSynchronouslyLoaded) =>
         {
             if ((wasSynchronouslyLoaded || (frame is not null)))
             {
@@ -169,9 +169,9 @@ internal class _FadeInImageState__fade_in_image : State<FadeInImage>
         }))));
         if (!((FadeInImage)this.widget).excludeFromSemantics)
         {
-            result__17561 = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(container: (((FadeInImage)this.widget).imageSemanticLabel is not null), image: true, label: (((FadeInImage)this.widget).imageSemanticLabel ?? ""), child: result__17561));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(container: (((FadeInImage)this.widget).imageSemanticLabel is not null), image: true, label: (((FadeInImage)this.widget).imageSemanticLabel ?? ""), child: result));
         }
-        return result__17561;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

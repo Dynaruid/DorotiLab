@@ -66,10 +66,10 @@ public static partial class Ink_rippleLibrary
 {
     internal static double _getTargetRadius(global::Doroti.Framework.Rendering.RenderBox referenceBox, bool containedInkWell, global::System.Func<Rect>? rectCallback, Offset position)
     {
-        global::Doroti.Ui.Size size__1363 = ((global::Doroti.Ui.Size)(object?)((rectCallback is not null) ? rectCallback().size : ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).size));
-        double d1__1449 = size__1363.bottomRight(Offset.zero).distance;
-        double d2__1509 = ((size__1363.topRight(Offset.zero) - size__1363.bottomLeft(Offset.zero))).distance;
-        return (Math.Max(d1__1449, d2__1509) / 2.0);
+        global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)((rectCallback is not null) ? rectCallback().size : ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).size));
+        double d1 = sizeLocal.bottomRight(Offset.zero).distance;
+        double d2 = ((sizeLocal.topRight(Offset.zero) - sizeLocal.bottomLeft(Offset.zero))).distance;
+        return (Math.Max(d1, d2) / 2.0);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -155,9 +155,9 @@ public class InkRipple : InteractiveInkFeature
     public override void cancel()
     {
         this._fadeInController.stop();
-        double fadeOutValue__7753 = (1.0 - ((global::Doroti.Framework.Animation.AnimationController)this._fadeInController).value);
-        this._fadeOutController.value = fadeOutValue__7753;
-        if ((fadeOutValue__7753 < 1.0))
+        double fadeOutValue = (1.0 - ((global::Doroti.Framework.Animation.AnimationController)this._fadeInController).value);
+        this._fadeOutController.value = fadeOutValue;
+        if ((fadeOutValue < 1.0))
         {
             this._fadeOutController.animateTo(1.0, duration: Ink_rippleLibrary._kCancelDuration);
         }
@@ -181,16 +181,16 @@ public class InkRipple : InteractiveInkFeature
 
     public override void paintFeature(Canvas canvas, Matrix4 transform)
     {
-        long alpha__8310 = (((global::Doroti.Framework.Animation.AnimationController)this._fadeInController).isAnimating ? ((global::Doroti.Framework.Animation.Animation<long>)this._fadeIn).value : ((global::Doroti.Framework.Animation.Animation<long>)this._fadeOut).value);
-        var paint__8392 = ((Func<Paint>)(() =>
+        long alpha = (((global::Doroti.Framework.Animation.AnimationController)this._fadeInController).isAnimating ? ((global::Doroti.Framework.Animation.Animation<long>)this._fadeIn).value : ((global::Doroti.Framework.Animation.Animation<long>)this._fadeOut).value);
+        var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = this.color.withAlpha(alpha__8310);
+    __cascade.color = this.color.withAlpha(alpha);
     return __cascade;
 }))();
-        global::Doroti.Ui.Rect? rect__8457 = ((global::Doroti.Ui.Rect?)(object?)this._clipCallback?.Invoke());
-        global::Doroti.Ui.Offset center__8560 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(this._position, ((rect__8457 is not null) ? ((Offset)((dynamic)DartRuntimePrimitives.RequireValue(rect__8457)).center) : ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.center(Offset.zero)), global::Doroti.Framework.Animation.Curves.ease.transform(((global::Doroti.Framework.Animation.AnimationController)this._radiusController).value))));
-        paintInkCircle(canvas: canvas, transform: transform, paint: paint__8392, center: center__8560, textDirection: this._textDirection, radius: ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value, customBorder: this.customBorder, borderRadius: this._borderRadius, clipCallback: (global::System.Func<Rect>?)this._clipCallback);
+        global::Doroti.Ui.Rect? rect = ((global::Doroti.Ui.Rect?)(object?)this._clipCallback?.Invoke());
+        global::Doroti.Ui.Offset centerLocal = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(this._position, ((rect is not null) ? ((Offset)((dynamic)DartRuntimePrimitives.RequireValue(rect)).center) : ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.center(Offset.zero)), global::Doroti.Framework.Animation.Curves.ease.transform(((global::Doroti.Framework.Animation.AnimationController)this._radiusController).value))));
+        paintInkCircle(canvas: canvas, transform: transform, paint: paintLocal, center: centerLocal, textDirection: this._textDirection, radius: ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value, customBorder: this.customBorder, borderRadius: this._borderRadius, clipCallback: (global::System.Func<Rect>?)this._clipCallback);
     }
 
 }

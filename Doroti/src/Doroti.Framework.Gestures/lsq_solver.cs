@@ -50,12 +50,12 @@ public class _Vector__lsq_solver
 
     public virtual double op_Multiply(_Vector__lsq_solver a)
     {
-        var result__776 = 0.0;
-        for (var i__803 = 0L; (i__803 < this._length); i__803 += 1L)
+        var result = 0.0;
+        for (var i = 0L; (i < this._length); i += 1L)
         {
-            result__776 += (this[i__803] * a[i__803]);
+            result += (this[i] * a[i]);
         }
-        return result__776;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -94,8 +94,8 @@ public class PolynomialFit
 
     public override string ToString()
     {
-        var coefficientString__2255 = this.coefficients.map<double, string>(((c) => c.toStringAsPrecision(3L))).ToList().ToString();
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "PolynomialFit"))}({coefficientString__2255}, confidence: {this.confidence.toStringAsFixed(3L)})";
+        var coefficientString = this.coefficients.map<double, string>(((c) => c.toStringAsPrecision(3L))).ToList().ToString();
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "PolynomialFit"))}({coefficientString}, confidence: {this.confidence.toStringAsFixed(3L)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -122,86 +122,86 @@ public class LeastSquaresSolver
         {
             return null;
         }
-        var result__3259 = new PolynomialFit(degree);
-        long m__3386 = checked((long)(this.x.Count));
-        long n__3414 = (degree + 1L);
-        var a__3514 = new _Matrix__lsq_solver(n__3414, m__3386);
-        for (var h__3546 = 0L; (h__3546 < m__3386); h__3546 += 1L)
+        var result = new PolynomialFit(degree);
+        long m = checked((long)(this.x.Count));
+        long n = (degree + 1L);
+        var a = new _Matrix__lsq_solver(n, m);
+        for (var h = 0L; (h < m); h += 1L)
         {
-            a__3514.set(0L, h__3546, this.w[(int)(h__3546)]);
-            for (var i__3610 = 1L; (i__3610 < n__3414); i__3610 += 1L)
+            a.set(0L, h, this.w[(int)(h)]);
+            for (var i = 1L; (i < n); i += 1L)
             {
-                a__3514.set(i__3610, h__3546, (a__3514.get((i__3610 - 1L), h__3546) * this.x[(int)(h__3546)]));
+                a.set(i, h, (a.get((i - 1L), h) * this.x[(int)(h)]));
             }
         }
-        var q__3832 = new _Matrix__lsq_solver(n__3414, m__3386);
-        var r__3910 = new _Matrix__lsq_solver(n__3414, n__3414);
-        for (var j__3942 = 0L; (j__3942 < n__3414); j__3942 += 1L)
+        var q = new _Matrix__lsq_solver(n, m);
+        var r = new _Matrix__lsq_solver(n, n);
+        for (var j = 0L; (j < n); j += 1L)
         {
-            for (var h__3981 = 0L; (h__3981 < m__3386); h__3981 += 1L)
+            for (var hLocal = 0L; (hLocal < m); hLocal += 1L)
             {
-                q__3832.set(j__3942, h__3981, a__3514.get(j__3942, h__3981));
+                q.set(j, hLocal, a.get(j, hLocal));
             }
-            for (var i__4062 = 0L; (i__4062 < j__3942); i__4062 += 1L)
+            for (var iLocal = 0L; (iLocal < j); iLocal += 1L)
             {
-                double dot__4107 = (q__3832.getRow(j__3942).op_Multiply(q__3832.getRow(i__4062)));
-                for (var h__4157 = 0L; (h__4157 < m__3386); h__4157 += 1L)
+                double dot = (q.getRow(j).op_Multiply(q.getRow(iLocal)));
+                for (var hAlternate = 0L; (hAlternate < m); hAlternate += 1L)
                 {
-                    q__3832.set(j__3942, h__4157, (q__3832.get(j__3942, h__4157) - (dot__4107 * q__3832.get(i__4062, h__4157))));
+                    q.set(j, hAlternate, (q.get(j, hAlternate) - (dot * q.get(iLocal, hAlternate))));
                 }
             }
-            double norm__4275 = q__3832.getRow(j__3942).norm();
-            if ((norm__4275 < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+            double normLocal = q.getRow(j).norm();
+            if ((normLocal < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
             {
                 return null;
             }
-            double inverseNorm__4461 = (1.0 / norm__4275);
-            for (var h__4502 = 0L; (h__4502 < m__3386); h__4502 += 1L)
+            double inverseNorm = (1.0 / normLocal);
+            for (var hNested = 0L; (hNested < m); hNested += 1L)
             {
-                q__3832.set(j__3942, h__4502, (q__3832.get(j__3942, h__4502) * inverseNorm__4461));
+                q.set(j, hNested, (q.get(j, hNested) * inverseNorm));
             }
-            for (var i__4597 = 0L; (i__4597 < n__3414); i__4597 += 1L)
+            for (var iAlternate = 0L; (iAlternate < n); iAlternate += 1L)
             {
-                r__3910.set(j__3942, i__4597, ((i__4597 < j__3942) ? 0.0 : (q__3832.getRow(j__3942).op_Multiply(a__3514.getRow(i__4597)))));
+                r.set(j, iAlternate, ((iAlternate < j) ? 0.0 : (q.getRow(j).op_Multiply(a.getRow(iAlternate)))));
             }
         }
-        var wy__4869 = new _Vector__lsq_solver(m__3386);
-        for (var h__4899 = 0L; (h__4899 < m__3386); h__4899 += 1L)
+        var wy = new _Vector__lsq_solver(m);
+        for (var hCurrent = 0L; (hCurrent < m); hCurrent += 1L)
         {
-            wy__4869[h__4899] = (this.y[(int)(h__4899)] * this.w[(int)(h__4899)]);
+            wy[hCurrent] = (this.y[(int)(hCurrent)] * this.w[(int)(hCurrent)]);
         }
-        for (long i__4969 = (n__3414 - 1L); (i__4969 >= 0L); i__4969 -= 1L)
+        for (long iNested = (n - 1L); (iNested >= 0L); iNested -= 1L)
         {
-            ((PolynomialFit)result__3259).coefficients[(int)(i__4969)] = (q__3832.getRow(i__4969).op_Multiply(wy__4869));
-            for (long j__5062 = (n__3414 - 1L); (j__5062 > i__4969); j__5062 -= 1L)
+            ((PolynomialFit)result).coefficients[(int)(iNested)] = (q.getRow(iNested).op_Multiply(wy));
+            for (long jLocal = (n - 1L); (jLocal > iNested); jLocal -= 1L)
             {
-                ((PolynomialFit)result__3259).coefficients[(int)(i__4969)] -= (r__3910.get(i__4969, j__5062) * ((PolynomialFit)result__3259).coefficients[(int)(j__5062)]);
+                ((PolynomialFit)result).coefficients[(int)(iNested)] -= (r.get(iNested, jLocal) * ((PolynomialFit)result).coefficients[(int)(jLocal)]);
             }
-            ((PolynomialFit)result__3259).coefficients[(int)(i__4969)] /= r__3910.get(i__4969, i__4969);
+            ((PolynomialFit)result).coefficients[(int)(iNested)] /= r.get(iNested, iNested);
         }
-        var yMean__5549 = 0.0;
-        for (var h__5575 = 0L; (h__5575 < m__3386); h__5575 += 1L)
+        var yMean = 0.0;
+        for (var hNext = 0L; (hNext < m); hNext += 1L)
         {
-            yMean__5549 += this.y[(int)(h__5575)];
+            yMean += this.y[(int)(hNext)];
         }
-        yMean__5549 /= m__3386;
-        var sumSquaredError__5651 = 0.0;
-        var sumSquaredTotal__5682 = 0.0;
-        for (var h__5718 = 0L; (h__5718 < m__3386); h__5718 += 1L)
+        yMean /= m;
+        var sumSquaredError = 0.0;
+        var sumSquaredTotal = 0.0;
+        for (var hCandidate = 0L; (hCandidate < m); hCandidate += 1L)
         {
-            var term__5752 = 1.0;
-            double err__5777 = (this.y[(int)(h__5718)] - ((PolynomialFit)result__3259).coefficients[(int)(0L)]);
-            for (var i__5829 = 1L; (i__5829 < n__3414); i__5829 += 1L)
+            var term = 1.0;
+            double err = (this.y[(int)(hCandidate)] - ((PolynomialFit)result).coefficients[(int)(0L)]);
+            for (var iCurrent = 1L; (iCurrent < n); iCurrent += 1L)
             {
-                term__5752 *= this.x[(int)(h__5718)];
-                err__5777 -= (term__5752 * ((PolynomialFit)result__3259).coefficients[(int)(i__5829)]);
+                term *= this.x[(int)(hCandidate)];
+                err -= (term * ((PolynomialFit)result).coefficients[(int)(iCurrent)]);
             }
-            sumSquaredError__5651 += (((this.w[(int)(h__5718)] * this.w[(int)(h__5718)]) * err__5777) * err__5777);
-            double v__5998 = (this.y[(int)(h__5718)] - yMean__5549);
-            sumSquaredTotal__5682 += (((this.w[(int)(h__5718)] * this.w[(int)(h__5718)]) * v__5998) * v__5998);
+            sumSquaredError += (((this.w[(int)(hCandidate)] * this.w[(int)(hCandidate)]) * err) * err);
+            double v = (this.y[(int)(hCandidate)] - yMean);
+            sumSquaredTotal += (((this.w[(int)(hCandidate)] * this.w[(int)(hCandidate)]) * v) * v);
         }
-        result__3259.confidence = ((sumSquaredTotal__5682 <= global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) ? 1.0 : (1.0 - ((sumSquaredError__5651 / sumSquaredTotal__5682))));
-        return result__3259;
+        result.confidence = ((sumSquaredTotal <= global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) ? 1.0 : (1.0 - ((sumSquaredError / sumSquaredTotal))));
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

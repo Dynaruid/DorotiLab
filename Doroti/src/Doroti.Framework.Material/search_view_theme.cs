@@ -119,13 +119,13 @@ public class SearchViewThemeData : global::Doroti.Framework.Foundation.Diagnosti
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -148,8 +148,8 @@ public class SearchViewTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static SearchViewThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        SearchViewTheme? searchViewTheme__9797 = ((SearchViewTheme?)(object?)context.dependOnInheritedWidgetOfExactType<SearchViewTheme>());
-        return (searchViewTheme__9797?.data ?? Theme.of(context).searchViewTheme);
+        SearchViewTheme? searchViewThemeLocal = ((SearchViewTheme?)(object?)context.dependOnInheritedWidgetOfExactType<SearchViewTheme>());
+        return (searchViewThemeLocal?.data ?? Theme.of(context).searchViewTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

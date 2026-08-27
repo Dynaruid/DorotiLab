@@ -273,12 +273,12 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        RenderBox? child__181803 = this._firstChild;
-        while ((child__181803 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            child__181803.attach(owner);
-            var childParentData__181891 = ((ListWheelParentData?)(object?)child__181803.parentData!)!;
-            child__181803 = childParentData__181891.nextSibling;
+            child.attach(owner);
+            var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
         this._offset.addListener(this._hasScrolled);
     }
@@ -287,12 +287,12 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     {
         this._offset.removeListener(this._hasScrolled);
         base.detach();
-        RenderBox? child__182065 = this._firstChild;
-        while ((child__182065 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            child__182065.detach();
-            var childParentData__182148 = ((ListWheelParentData?)(object?)child__182065.parentData!)!;
-            child__182065 = childParentData__182148.nextSibling;
+            child.detach();
+            var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
@@ -361,14 +361,14 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     }
     internal virtual double _getIntrinsicCrossAxis(Func<RenderBox, double> childSize)
     {
-        var extent__21784 = 0.0;
-        RenderBox? child__21813 = firstChild;
-        while ((child__21813 is not null))
+        var extent = 0.0;
+        RenderBox? child = firstChild;
+        while ((child is not null))
         {
-            extent__21784 = Math.Max(extent__21784, childSize(child__21813));
-            child__21813 = childAfter(child__21813);
+            extent = Math.Max(extent, childSize(child));
+            child = childAfter(child);
         }
-        return extent__21784;
+        return extent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -413,9 +413,9 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public virtual long indexOf(RenderBox child)
     {
-        var childParentData__23034 = ((ListWheelParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (((ListWheelParentData)childParentData__23034).index is not null));
-        return DartRuntimePrimitives.RequireValue(((ListWheelParentData)childParentData__23034).index);
+        var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+        DartRuntimePrimitives.Assert(() => (((ListWheelParentData)childParentData).index is not null));
+        return DartRuntimePrimitives.RequireValue(((ListWheelParentData)childParentData).index);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -442,9 +442,9 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     internal virtual void _layoutChild(RenderBox child, BoxConstraints constraints, long index)
     {
         child.layout(constraints, parentUsesSize: true);
-        var childParentData__24044 = ((ListWheelParentData?)(object?)child.parentData!)!;
-        double crossPosition__24160 = ((size.width / 2.0) - (((RenderBox)child).size.width / 2.0));
-        childParentData__24044.offset = new global::Doroti.Ui.Offset(crossPosition__24160, indexToScrollOffset(index));
+        var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+        double crossPosition = ((size.width / 2.0) - (((RenderBox)child).size.width / 2.0));
+        childParentData.offset = new global::Doroti.Ui.Offset(crossPosition, indexToScrollOffset(index));
     }
 
     public override void performLayout()
@@ -454,28 +454,28 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         {
             this.offset.applyContentDimensions(this._minEstimatedScrollExtent, this._maxEstimatedScrollExtent);
         }
-        double visibleHeight__25494 = (size.height * this._squeeze);
+        double visibleHeight = (size.height * this._squeeze);
         if (this.renderChildrenOutsideViewport)
         {
-            visibleHeight__25494 *= 2L;
+            visibleHeight *= 2L;
         }
-        double firstVisibleOffset__25818 = ((((ViewportOffset)this.offset).pixels + (this._itemExtent / 2L)) - (visibleHeight__25494 / 2L));
-        double lastVisibleOffset__25909 = (firstVisibleOffset__25818 + visibleHeight__25494);
-        long targetFirstIndex__26118 = scrollOffsetToIndex(firstVisibleOffset__25818);
-        long targetLastIndex__26186 = scrollOffsetToIndex(lastVisibleOffset__25909);
-        if (((targetLastIndex__26186 * this._itemExtent) == lastVisibleOffset__25909))
+        double firstVisibleOffset = ((((ViewportOffset)this.offset).pixels + (this._itemExtent / 2L)) - (visibleHeight / 2L));
+        double lastVisibleOffset = (firstVisibleOffset + visibleHeight);
+        long targetFirstIndex = scrollOffsetToIndex(firstVisibleOffset);
+        long targetLastIndex = scrollOffsetToIndex(lastVisibleOffset);
+        if (((targetLastIndex * this._itemExtent) == lastVisibleOffset))
         {
-            targetLastIndex__26186--;
+            targetLastIndex--;
         }
-        while ((!this.childManager.childExistsAt(targetFirstIndex__26118) && (targetFirstIndex__26118 <= targetLastIndex__26186)))
+        while ((!this.childManager.childExistsAt(targetFirstIndex) && (targetFirstIndex <= targetLastIndex)))
         {
-            targetFirstIndex__26118++;
+            targetFirstIndex++;
         }
-        while ((!this.childManager.childExistsAt(targetLastIndex__26186) && (targetFirstIndex__26118 <= targetLastIndex__26186)))
+        while ((!this.childManager.childExistsAt(targetLastIndex) && (targetFirstIndex <= targetLastIndex)))
         {
-            targetLastIndex__26186--;
+            targetLastIndex--;
         }
-        if ((targetFirstIndex__26118 > targetLastIndex__26186))
+        if ((targetFirstIndex > targetLastIndex))
         {
             while ((firstChild is not null))
             {
@@ -483,57 +483,57 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
             }
             return;
         }
-        if (((childCount > 0L) && (((indexOf(firstChild!) > targetLastIndex__26186) || (indexOf(lastChild!) < targetFirstIndex__26118)))))
+        if (((childCount > 0L) && (((indexOf(firstChild!) > targetLastIndex) || (indexOf(lastChild!) < targetFirstIndex)))))
         {
             while ((firstChild is not null))
             {
                 _destroyChild(firstChild!);
             }
         }
-        BoxConstraints childConstraints__27719 = constraints.copyWith(minHeight: this._itemExtent, maxHeight: this._itemExtent, minWidth: 0.0);
+        BoxConstraints childConstraints = constraints.copyWith(minHeight: this._itemExtent, maxHeight: this._itemExtent, minWidth: 0.0);
         if ((childCount == 0L))
         {
-            _createChild(targetFirstIndex__26118);
-            _layoutChild(firstChild!, childConstraints__27719, targetFirstIndex__26118);
+            _createChild(targetFirstIndex);
+            _layoutChild(firstChild!, childConstraints, targetFirstIndex);
         }
-        long currentFirstIndex__28093 = indexOf(firstChild!);
-        long currentLastIndex__28143 = indexOf(lastChild!);
-        while ((currentFirstIndex__28093 < targetFirstIndex__26118))
+        long currentFirstIndex = indexOf(firstChild!);
+        long currentLastIndex = indexOf(lastChild!);
+        while ((currentFirstIndex < targetFirstIndex))
         {
             _destroyChild(firstChild!);
-            currentFirstIndex__28093++;
+            currentFirstIndex++;
         }
-        while ((currentLastIndex__28143 > targetLastIndex__26186))
+        while ((currentLastIndex > targetLastIndex))
         {
             _destroyChild(lastChild!);
-            currentLastIndex__28143--;
+            currentLastIndex--;
         }
-        RenderBox? child__28573 = firstChild;
-        var index__28601 = currentFirstIndex__28093;
-        while ((child__28573 is not null))
+        RenderBox? child = firstChild;
+        var index = currentFirstIndex;
+        while ((child is not null))
         {
-            _layoutChild(child__28573, childConstraints__27719, index__28601++);
-            child__28573 = childAfter(child__28573);
+            _layoutChild(child, childConstraints, index++);
+            child = childAfter(child);
         }
-        while ((currentFirstIndex__28093 > targetFirstIndex__26118))
+        while ((currentFirstIndex > targetFirstIndex))
         {
-            _createChild((currentFirstIndex__28093 - 1L));
-            _layoutChild(firstChild!, childConstraints__27719, --currentFirstIndex__28093);
+            _createChild((currentFirstIndex - 1L));
+            _layoutChild(firstChild!, childConstraints, --currentFirstIndex);
         }
-        while ((currentLastIndex__28143 < targetLastIndex__26186))
+        while ((currentLastIndex < targetLastIndex))
         {
-            _createChild((currentLastIndex__28143 + 1L), after: lastChild);
-            _layoutChild(lastChild!, childConstraints__27719, ++currentLastIndex__28143);
+            _createChild((currentLastIndex + 1L), after: lastChild);
+            _layoutChild(lastChild!, childConstraints, ++currentLastIndex);
         }
-        double minScrollExtent__29535 = (this.childManager.childExistsAt((targetFirstIndex__26118 - 1L)) ? this._minEstimatedScrollExtent : indexToScrollOffset(targetFirstIndex__26118));
-        double maxScrollExtent__29704 = (this.childManager.childExistsAt((targetLastIndex__26186 + 1L)) ? this._maxEstimatedScrollExtent : indexToScrollOffset(targetLastIndex__26186));
-        this.offset.applyContentDimensions(minScrollExtent__29535, maxScrollExtent__29704);
+        double minScrollExtent = (this.childManager.childExistsAt((targetFirstIndex - 1L)) ? this._minEstimatedScrollExtent : indexToScrollOffset(targetFirstIndex));
+        double maxScrollExtent = (this.childManager.childExistsAt((targetLastIndex + 1L)) ? this._maxEstimatedScrollExtent : indexToScrollOffset(targetLastIndex));
+        this.offset.applyContentDimensions(minScrollExtent, maxScrollExtent);
     }
 
     internal virtual bool _shouldClipAtCurrentOffset()
     {
-        double highestUntransformedPaintY__29983 = _getUntransformedPaintingCoordinateY(0.0);
-        return ((highestUntransformedPaintY__29983 < 0.0) || (size.height < ((highestUntransformedPaintY__29983 + this._maxEstimatedScrollExtent) + this._itemExtent)));
+        double highestUntransformedPaintY = _getUntransformedPaintingCoordinateY(0.0);
+        return ((highestUntransformedPaintY < 0.0) || (size.height < ((highestUntransformedPaintY + this._maxEstimatedScrollExtent) + this._itemExtent)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -576,51 +576,51 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     internal virtual void _paintAllChildren(PaintingContext context, Offset offset, bool? center = null)
     {
-        RenderBox? childToPaint__31912 = firstChild;
-        while ((childToPaint__31912 is not null))
+        RenderBox? childToPaint = firstChild;
+        while ((childToPaint is not null))
         {
-            var childParentData__31986 = ((ListWheelParentData?)(object?)childToPaint__31912.parentData!)!;
-            _paintTransformedChild(childToPaint__31912, context, offset, childParentData__31986.offset, center: center);
-            childToPaint__31912 = childAfter(childToPaint__31912);
+            var childParentData = ((ListWheelParentData?)(object?)childToPaint.parentData!)!;
+            _paintTransformedChild(childToPaint, context, offset, childParentData.offset, center: center);
+            childToPaint = childAfter(childToPaint);
         }
     }
 
     internal virtual void _paintTransformedChild(RenderBox child, PaintingContext context, Offset offset, Offset layoutOffset, bool? center)
     {
-        global::Doroti.Ui.Offset untransformedPaintingCoordinates__32680 = (offset + new global::Doroti.Ui.Offset(layoutOffset.dx, _getUntransformedPaintingCoordinateY(layoutOffset.dy)));
-        double fractionalY__32896 = (((untransformedPaintingCoordinates__32680.dy + (this._itemExtent / 2.0))) / size.height);
-        double angle__33008 = (((-((fractionalY__32896 - 0.5)) * 2.0) * this._maxVisibleRadian) / this.squeeze);
-        if ((((angle__33008 > (Dart_mathLibrary.pi / 2.0)) || (angle__33008 < (-Dart_mathLibrary.pi / 2.0))) || double.IsNaN(angle__33008)))
+        global::Doroti.Ui.Offset untransformedPaintingCoordinates = (offset + new global::Doroti.Ui.Offset(layoutOffset.dx, _getUntransformedPaintingCoordinateY(layoutOffset.dy)));
+        double fractionalY = (((untransformedPaintingCoordinates.dy + (this._itemExtent / 2.0))) / size.height);
+        double angleLocal = (((-((fractionalY - 0.5)) * 2.0) * this._maxVisibleRadian) / this.squeeze);
+        if ((((angleLocal > (Dart_mathLibrary.pi / 2.0)) || (angleLocal < (-Dart_mathLibrary.pi / 2.0))) || double.IsNaN(angleLocal)))
         {
             return;
         }
-        Matrix4 transform__33408 = MatrixUtils.createCylindricalProjectionTransform(radius: ((size.height * this._diameterRatio) / 2.0), angle: angle__33008, perspective: this._perspective);
-        var offsetToCenter__33668 = new global::Doroti.Ui.Offset(untransformedPaintingCoordinates__32680.dx, -this._topScrollMarginExtent);
-        bool shouldApplyOffCenterDim__33771 = (this.overAndUnderCenterOpacity < 1L);
-        if ((this.useMagnifier || shouldApplyOffCenterDim__33771))
+        Matrix4 transform = MatrixUtils.createCylindricalProjectionTransform(radius: ((size.height * this._diameterRatio) / 2.0), angle: angleLocal, perspective: this._perspective);
+        var offsetToCenter = new global::Doroti.Ui.Offset(untransformedPaintingCoordinates.dx, -this._topScrollMarginExtent);
+        bool shouldApplyOffCenterDim = (this.overAndUnderCenterOpacity < 1L);
+        if ((this.useMagnifier || shouldApplyOffCenterDim))
         {
-            _paintChildWithMagnifier(context, offset, child, transform__33408, offsetToCenter__33668, untransformedPaintingCoordinates__32680, center: center);
+            _paintChildWithMagnifier(context, offset, child, transform, offsetToCenter, untransformedPaintingCoordinates, center: center);
         }
         else
         {
             DartRuntimePrimitives.Assert(() => (center is null));
-            _paintChildCylindrically(context, offset, child, transform__33408, offsetToCenter__33668);
+            _paintChildCylindrically(context, offset, child, transform, offsetToCenter);
         }
     }
 
     internal virtual void _paintChildWithMagnifier(PaintingContext context, Offset offset, RenderBox child, Matrix4 cylindricalTransform, Offset offsetToCenter, Offset untransformedPaintingCoordinates, bool? center)
     {
-        double magnifierTopLinePosition__35216 = ((size.height / 2L) - ((this._itemExtent * this._magnification) / 2L));
-        double magnifierBottomLinePosition__35312 = ((size.height / 2L) + ((this._itemExtent * this._magnification) / 2L));
-        bool isAfterMagnifierTopLine__35410 = (untransformedPaintingCoordinates.dy >= (magnifierTopLinePosition__35216 - (this._itemExtent * this._magnification)));
-        bool isBeforeMagnifierBottomLine__35563 = (untransformedPaintingCoordinates.dy <= magnifierBottomLinePosition__35312);
-        var centerRect__35680 = global::Doroti.Ui.Rect.fromLTWH(0.0, magnifierTopLinePosition__35216, size.width, (this._itemExtent * this._magnification));
-        var topHalfRect__35822 = global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, size.width, magnifierTopLinePosition__35216);
-        var bottomHalfRect__35909 = global::Doroti.Ui.Rect.fromLTWH(0.0, magnifierBottomLinePosition__35312, size.width, magnifierTopLinePosition__35216);
-        bool inCenter__36117 = (isAfterMagnifierTopLine__35410 && isBeforeMagnifierBottomLine__35563);
-        if (((((center is null) || DartRuntimePrimitives.RequireValue(center))) && inCenter__36117))
+        double magnifierTopLinePosition = ((size.height / 2L) - ((this._itemExtent * this._magnification) / 2L));
+        double magnifierBottomLinePosition = ((size.height / 2L) + ((this._itemExtent * this._magnification) / 2L));
+        bool isAfterMagnifierTopLine = (untransformedPaintingCoordinates.dy >= (magnifierTopLinePosition - (this._itemExtent * this._magnification)));
+        bool isBeforeMagnifierBottomLine = (untransformedPaintingCoordinates.dy <= magnifierBottomLinePosition);
+        var centerRect = global::Doroti.Ui.Rect.fromLTWH(0.0, magnifierTopLinePosition, size.width, (this._itemExtent * this._magnification));
+        var topHalfRect = global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, size.width, magnifierTopLinePosition);
+        var bottomHalfRect = global::Doroti.Ui.Rect.fromLTWH(0.0, magnifierBottomLinePosition, size.width, magnifierTopLinePosition);
+        bool inCenter = (isAfterMagnifierTopLine && isBeforeMagnifierBottomLine);
+        if (((((center is null) || DartRuntimePrimitives.RequireValue(center))) && inCenter))
         {
-            context.pushClipRect(needsCompositing, offset, centerRect__35680, ((Action<PaintingContext, Offset>)((context, offset) =>
+            context.pushClipRect(needsCompositing, offset, centerRect, ((Action<PaintingContext, Offset>)((context, offset) =>
             {
                 context.pushTransform(needsCompositing, offset, _magnifyTransform(), ((Action<PaintingContext, Offset>)((context, offset) =>
                 {
@@ -628,14 +628,14 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
                 })));
             })));
         }
-        if (((((center is null) || !DartRuntimePrimitives.RequireValue(center))) && inCenter__36117))
+        if (((((center is null) || !DartRuntimePrimitives.RequireValue(center))) && inCenter))
         {
-            context.pushClipRect(needsCompositing, offset, ((untransformedPaintingCoordinates.dy <= magnifierTopLinePosition__35216) ? topHalfRect__35822 : bottomHalfRect__35909), ((Action<PaintingContext, Offset>)((context, offset) =>
+            context.pushClipRect(needsCompositing, offset, ((untransformedPaintingCoordinates.dy <= magnifierTopLinePosition) ? topHalfRect : bottomHalfRect), ((Action<PaintingContext, Offset>)((context, offset) =>
             {
                 _paintChildCylindrically(context, offset, child, cylindricalTransform, offsetToCenter);
             })));
         }
-        if (((((center is null) || !DartRuntimePrimitives.RequireValue(center))) && !inCenter__36117))
+        if (((((center is null) || !DartRuntimePrimitives.RequireValue(center))) && !inCenter))
         {
             _paintChildCylindrically(context, offset, child, cylindricalTransform, offsetToCenter);
         }
@@ -643,20 +643,20 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     internal virtual void _paintChildCylindrically(PaintingContext context, Offset offset, RenderBox child, Matrix4 cylindricalTransform, Offset offsetToCenter)
     {
-        global::Doroti.Ui.Offset paintOriginOffset__37569 = (offset + offsetToCenter);
+        global::Doroti.Ui.Offset paintOriginOffset = (offset + offsetToCenter);
         void painter(PaintingContext context, Offset offset)
         {
-            context.paintChild(child, paintOriginOffset__37569);
+            context.paintChild(child, paintOriginOffset);
         }
         context.pushTransform(needsCompositing, offset, _centerOriginTransform(cylindricalTransform), (Action<PaintingContext, Offset>)painter);
-        var childParentData__38097 = ((ListWheelParentData?)(object?)child.parentData!)!;
-        Matrix4 transform__38268 = ((Func<Matrix4>)(() =>
+        var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+        Matrix4 transformLocal = ((Func<Matrix4>)(() =>
 {
     var __cascade = _centerOriginTransform(cylindricalTransform);
-    __cascade.translateByDouble(paintOriginOffset__37569.dx, paintOriginOffset__37569.dy, 0, 1);
+    __cascade.translateByDouble(paintOriginOffset.dx, paintOriginOffset.dy, 0, 1);
     return __cascade;
 }))();
-        childParentData__38097.transform = transform__38268;
+        childParentData.transform = transformLocal;
     }
 
     internal virtual Matrix4 _magnifyTransform()
@@ -674,12 +674,12 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     internal virtual Matrix4 _centerOriginTransform(Matrix4 originalMatrix)
     {
-        var result__39096 = Matrix4.identity();
-        global::Doroti.Ui.Offset centerOriginTranslation__39142 = global::Doroti.Framework.Painting.Alignment.center.alongSize(size);
-        result__39096.translateByDouble((centerOriginTranslation__39142.dx * (((-this._offAxisFraction * 2L) + 1L))), centerOriginTranslation__39142.dy, 0, 1);
-        result__39096.multiply(originalMatrix);
-        result__39096.translateByDouble((-centerOriginTranslation__39142.dx * (((-this._offAxisFraction * 2L) + 1L))), -centerOriginTranslation__39142.dy, 0, 1);
-        return result__39096;
+        var result = Matrix4.identity();
+        global::Doroti.Ui.Offset centerOriginTranslation = global::Doroti.Framework.Painting.Alignment.center.alongSize(size);
+        result.translateByDouble((centerOriginTranslation.dx * (((-this._offAxisFraction * 2L) + 1L))), centerOriginTranslation.dy, 0, 1);
+        result.multiply(originalMatrix);
+        result.translateByDouble((-centerOriginTranslation.dx * (((-this._offAxisFraction * 2L) + 1L))), -centerOriginTranslation.dy, 0, 1);
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -696,11 +696,11 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
         var __child = (RenderBox)(object)child;
-        var parentData__39912 = ((ListWheelParentData?)(object?)__child.parentData!)!;
-        Matrix4? paintTransform__39986 = ((ListWheelParentData)parentData__39912).transform;
-        if ((paintTransform__39986 is not null))
+        var parentDataLocal = ((ListWheelParentData?)(object?)__child.parentData!)!;
+        Matrix4? paintTransform = ((ListWheelParentData)parentDataLocal).transform;
+        if ((paintTransform is not null))
         {
-            transform.multiply(paintTransform__39986);
+            transform.multiply(paintTransform);
         }
     }
 
@@ -716,33 +716,33 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        RenderBox? child__40389 = lastChild;
-        while ((child__40389 is not null))
+        RenderBox? child = lastChild;
+        while ((child is not null))
         {
-            var childParentData__40448 = ((ListWheelParentData?)(object?)child__40389.parentData!)!;
-            Matrix4? transform__40529 = ((ListWheelParentData)childParentData__40448).transform;
-            if ((transform__40529 is not null))
+            var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+            Matrix4? transformLocal = ((ListWheelParentData)childParentData).transform;
+            if ((transformLocal is not null))
             {
-                bool isHit__40653 = result.addWithPaintTransform(transform: transform__40529, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
+                bool isHit = result.addWithPaintTransform(transform: transformLocal, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
                 {
                     DartRuntimePrimitives.Assert(() =>
                         {
-                            Matrix4? inverted__40873 = Matrix4.tryInvert(PointerEvent.removePerspectiveTransform(transform__40529));
-                            if ((inverted__40873 is null))
+                            Matrix4? inverted = Matrix4.tryInvert(PointerEvent.removePerspectiveTransform(transformLocal));
+                            if ((inverted is null))
                             {
                                 return _debugAssertValidHitTestOffsets("Null inverted transform", transformed, position);
                             }
-                            return _debugAssertValidHitTestOffsets("MatrixUtils.transformPoint", transformed, MatrixUtils.transformPoint(inverted__40873, position));
+                            return _debugAssertValidHitTestOffsets("MatrixUtils.transformPoint", transformed, MatrixUtils.transformPoint(inverted, position));
                         });
-                    return child__40389!.hitTest(result, position: transformed);
+                    return child!.hitTest(result, position: transformed);
                     return default;
                 })));
-                if (isHit__40653)
+                if (isHit)
                 {
                     return true;
                 }
             }
-            child__40389 = childParentData__40448.previousSibling;
+            child = childParentData.previousSibling;
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -751,17 +751,17 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     public virtual RevealedOffset getOffsetToReveal(RenderObject target, double alignment, Rect? rect = null, global::Doroti.Framework.Painting.Axis? axis = null)
     {
         rect ??= ((RenderObject)target).paintBounds;
-        var child__42246 = target;
-        while ((!object.Equals(((RenderObject)child__42246).parent, this)))
+        var child = target;
+        while ((!object.Equals(((RenderObject)child).parent, this)))
         {
-            child__42246 = ((RenderObject)child__42246).parent!;
+            child = ((RenderObject)child).parent!;
         }
-        var parentData__42343 = ((ListWheelParentData?)(object?)((RenderObject)child__42246).parentData!)!;
-        double targetOffset__42415 = parentData__42343.offset.dy;
-        Matrix4 transform__42505 = target.getTransformTo(child__42246);
-        global::Doroti.Ui.Rect bounds__42562 = MatrixUtils.transformRect(transform__42505, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
-        global::Doroti.Ui.Rect targetRect__42630 = bounds__42562.translate(0.0, (((size.height - this.itemExtent)) / 2L));
-        return new RevealedOffset(offset: targetOffset__42415, rect: targetRect__42630);
+        var parentDataLocal = ((ListWheelParentData?)(object?)((RenderObject)child).parentData!)!;
+        double targetOffset = parentDataLocal.offset.dy;
+        Matrix4 transform = target.getTransformTo(child);
+        global::Doroti.Ui.Rect bounds = MatrixUtils.transformRect(transform, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect)));
+        global::Doroti.Ui.Rect targetRect = bounds.translate(0.0, (((size.height - this.itemExtent)) / 2L));
+        return new RevealedOffset(offset: targetOffset, rect: targetRect);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -769,28 +769,28 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     {
         if ((descendant is not null))
         {
-            RevealedOffset revealedOffset__43048 = getOffsetToReveal(descendant, 0.5, rect: rect);
+            RevealedOffset revealedOffset = getOffsetToReveal(descendant, 0.5, rect: rect);
             if ((object.Equals(duration, Duration.zero)))
             {
-                this.offset.jumpTo(((RevealedOffset)revealedOffset__43048).offset);
+                this.offset.jumpTo(((RevealedOffset)revealedOffset).offset);
             }
             else
             {
-                _ = this.offset.animateTo(((RevealedOffset)revealedOffset__43048).offset, duration: duration, curve: curve);
+                _ = this.offset.animateTo(((RevealedOffset)revealedOffset).offset, duration: duration, curve: curve);
             }
-            rect = ((RevealedOffset)revealedOffset__43048).rect;
+            rect = ((RevealedOffset)revealedOffset).rect;
         }
         base.showOnScreen(rect: rect, duration: duration, curve: curve);
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData__173585 = ((ListWheelParentData?)(object?)child.parentData!)!;
-        while ((childParentData__173585.previousSibling is not null))
+        var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+        while ((childParentData.previousSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData__173585.previousSibling, child)));
-            child = childParentData__173585.previousSibling!;
-            childParentData__173585 = ((ListWheelParentData?)(object?)child.parentData!)!;
+            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.previousSibling, child)));
+            child = childParentData.previousSibling!;
+            childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         }
         return (object.Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -798,12 +798,12 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData__173981 = ((ListWheelParentData?)(object?)child.parentData!)!;
-        while ((childParentData__173981.nextSibling is not null))
+        var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+        while ((childParentData.nextSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData__173981.nextSibling, child)));
-            child = childParentData__173981.nextSibling!;
-            childParentData__173981 = ((ListWheelParentData?)(object?)child.parentData!)!;
+            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.nextSibling, child)));
+            child = childParentData.nextSibling!;
+            childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         }
         return (object.Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -826,18 +826,18 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
-        var childParentData__175971 = ((ListWheelParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData__175971.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData__175971.previousSibling is null));
+        var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
+        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
         this._childCount += 1L;
         DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
         if ((after is null))
         {
-            childParentData__175971.nextSibling = this._firstChild;
+            childParentData.nextSibling = this._firstChild;
             if ((this._firstChild is not null))
             {
-                var firstChildParentData__176343 = ((ListWheelParentData?)(object?)this._firstChild!.parentData!)!;
-                firstChildParentData__176343.previousSibling = child;
+                var firstChildParentData = ((ListWheelParentData?)(object?)this._firstChild!.parentData!)!;
+                firstChildParentData.previousSibling = child;
             }
             this._firstChild = child;
             this._lastChild ??= child;
@@ -848,23 +848,23 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
             DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
             DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
             DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
-            var afterParentData__176766 = ((ListWheelParentData?)(object?)after.parentData!)!;
-            if ((afterParentData__176766.nextSibling is null))
+            var afterParentData = ((ListWheelParentData?)(object?)after.parentData!)!;
+            if ((afterParentData.nextSibling is null))
             {
                 DartRuntimePrimitives.Assert(() => (object.Equals(after, this._lastChild)));
-                childParentData__175971.previousSibling = after;
-                afterParentData__176766.nextSibling = child;
+                childParentData.previousSibling = after;
+                afterParentData.nextSibling = child;
                 this._lastChild = child;
             }
             else
             {
-                childParentData__175971.nextSibling = afterParentData__176766.nextSibling;
-                childParentData__175971.previousSibling = after;
-                var childPreviousSiblingParentData__177424 = ((ListWheelParentData?)(object?)childParentData__175971.previousSibling!.parentData!)!;
-                var childNextSiblingParentData__177547 = ((ListWheelParentData?)(object?)childParentData__175971.nextSibling!.parentData!)!;
-                childPreviousSiblingParentData__177424.nextSibling = child;
-                childNextSiblingParentData__177547.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData__176766.nextSibling, child)));
+                childParentData.nextSibling = afterParentData.nextSibling;
+                childParentData.previousSibling = after;
+                var childPreviousSiblingParentData = ((ListWheelParentData?)(object?)childParentData.previousSibling!.parentData!)!;
+                var childNextSiblingParentData = ((ListWheelParentData?)(object?)childParentData.nextSibling!.parentData!)!;
+                childPreviousSiblingParentData.nextSibling = child;
+                childNextSiblingParentData.previousSibling = child;
+                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData.nextSibling, child)));
             }
         }
     }
@@ -893,32 +893,32 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public virtual void _removeFromChildList(RenderBox child)
     {
-        var childParentData__179226 = ((ListWheelParentData?)(object?)child.parentData!)!;
+        var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
         DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
         DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData__179226.previousSibling is null))
+        if ((childParentData.previousSibling is null))
         {
             DartRuntimePrimitives.Assert(() => (object.Equals(this._firstChild, child)));
-            this._firstChild = childParentData__179226.nextSibling;
+            this._firstChild = childParentData.nextSibling;
         }
         else
         {
-            var childPreviousSiblingParentData__179613 = ((ListWheelParentData?)(object?)childParentData__179226.previousSibling!.parentData!)!;
-            childPreviousSiblingParentData__179613.nextSibling = childParentData__179226.nextSibling;
+            var childPreviousSiblingParentData = ((ListWheelParentData?)(object?)childParentData.previousSibling!.parentData!)!;
+            childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData__179226.nextSibling is null))
+        if ((childParentData.nextSibling is null))
         {
             DartRuntimePrimitives.Assert(() => (object.Equals(this._lastChild, child)));
-            this._lastChild = childParentData__179226.previousSibling;
+            this._lastChild = childParentData.previousSibling;
         }
         else
         {
-            var childNextSiblingParentData__179965 = ((ListWheelParentData?)(object?)childParentData__179226.nextSibling!.parentData!)!;
-            childNextSiblingParentData__179965.previousSibling = childParentData__179226.previousSibling;
+            var childNextSiblingParentData = ((ListWheelParentData?)(object?)childParentData.nextSibling!.parentData!)!;
+            childNextSiblingParentData.previousSibling = childParentData.previousSibling;
         }
-        childParentData__179226.previousSibling = null;
-        childParentData__179226.nextSibling = null;
+        childParentData.previousSibling = null;
+        childParentData.nextSibling = null;
         this._childCount -= 1L;
     }
 
@@ -930,15 +930,15 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public virtual void removeAll()
     {
-        RenderBox? child__180623 = this._firstChild;
-        while ((child__180623 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            var childParentData__180684 = ((ListWheelParentData?)(object?)child__180623.parentData!)!;
-            RenderBox? next__180762 = childParentData__180684.nextSibling;
-            childParentData__180684.previousSibling = null;
-            childParentData__180684.nextSibling = null;
-            dropChild(child__180623);
-            child__180623 = next__180762;
+            var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+            RenderBox? next = childParentData.nextSibling;
+            childParentData.previousSibling = null;
+            childParentData.nextSibling = null;
+            dropChild(child);
+            child = next;
         }
         this._firstChild = null;
         this._lastChild = null;
@@ -951,8 +951,8 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
         DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
         DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__181479 = ((ListWheelParentData?)(object?)child.parentData!)!;
-        if ((object.Equals(childParentData__181479.previousSibling, after)))
+        var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+        if ((object.Equals(childParentData.previousSibling, after)))
         {
             return;
         }
@@ -963,23 +963,23 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
 
     public override void redepthChildren()
     {
-        RenderBox? child__182311 = this._firstChild;
-        while ((child__182311 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            redepthChild(child__182311);
-            var childParentData__182399 = ((ListWheelParentData?)(object?)child__182311.parentData!)!;
-            child__182311 = childParentData__182399.nextSibling;
+            redepthChild(child);
+            var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
     public override void visitChildren(Action<RenderObject> visitor)
     {
-        RenderBox? child__182587 = this._firstChild;
-        while ((child__182587 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            visitor(child__182587);
-            var childParentData__182670 = ((ListWheelParentData?)(object?)child__182587.parentData!)!;
-            child__182587 = childParentData__182670.nextSibling;
+            visitor(child);
+            var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
@@ -988,39 +988,39 @@ public class RenderListWheelViewport : RenderBox, ContainerRenderObjectMixin<Ren
     public virtual RenderBox? childBefore(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__183103 = ((ListWheelParentData?)(object?)child.parentData!)!;
-        return childParentData__183103.previousSibling;
+        var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+        return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__183356 = ((ListWheelParentData?)(object?)child.parentData!)!;
-        return childParentData__183356.nextSibling;
+        var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+        return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        var children__183528 = new List<DiagnosticsNode>();
+        var children = new List<DiagnosticsNode>();
         if ((this.firstChild is not null))
         {
-            RenderBox child__183606 = this.firstChild!;
-            var count__183637 = 1L;
+            RenderBox child = this.firstChild!;
+            var count = 1L;
             while (true)
             {
-                children__183528.Add(((Diagnosticable)child__183606).toDiagnosticsNode(name: $"child__183606 {count__183637}"));
-                if ((object.Equals(child__183606, this.lastChild)))
+                children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
+                if ((object.Equals(child, this.lastChild)))
                 {
                     break;
                 }
-                count__183637 += 1L;
-                var childParentData__183833 = ((ListWheelParentData?)(object?)child__183606.parentData!)!;
-                child__183606 = childParentData__183833.nextSibling!;
+                count += 1L;
+                var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
+                child = childParentData.nextSibling!;
             }
         }
-        return children__183528;
+        return children;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

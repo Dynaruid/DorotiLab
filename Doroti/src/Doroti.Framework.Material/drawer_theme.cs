@@ -87,13 +87,13 @@ public class DrawerThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -116,8 +116,8 @@ public class DrawerTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static DrawerThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DrawerTheme? drawerTheme__6803 = ((DrawerTheme?)(object?)context.dependOnInheritedWidgetOfExactType<DrawerTheme>());
-        return (drawerTheme__6803?.data ?? Theme.of(context).drawerTheme);
+        DrawerTheme? drawerThemeLocal = ((DrawerTheme?)(object?)context.dependOnInheritedWidgetOfExactType<DrawerTheme>());
+        return (drawerThemeLocal?.data ?? Theme.of(context).drawerTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

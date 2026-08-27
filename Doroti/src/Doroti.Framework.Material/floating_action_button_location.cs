@@ -75,8 +75,8 @@ public abstract class StandardFabLocation : FloatingActionButtonLocation
     public virtual bool isMini() => false;
     public override Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry)
     {
-        double adjustment__24552 = (isMini() ? Floating_action_button_locationLibrary.kMiniButtonOffsetAdjustment : 0.0);
-        return new global::Doroti.Ui.Offset(getOffsetX(scaffoldGeometry, adjustment__24552), getOffsetY(scaffoldGeometry, adjustment__24552));
+        double adjustment = (isMini() ? Floating_action_button_locationLibrary.kMiniButtonOffsetAdjustment : 0.0);
+        return new global::Doroti.Ui.Offset(getOffsetX(scaffoldGeometry, adjustment), getOffsetY(scaffoldGeometry, adjustment));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -152,8 +152,8 @@ internal class _StartTopFabLocation__floating_action_button_location : StandardF
     {
         if ((scaffoldGeometry.contentTop > scaffoldGeometry.minViewPadding.top))
         {
-            double fabHalfHeight__26280 = (scaffoldGeometry.floatingActionButtonSize.height / 2.0);
-            return (scaffoldGeometry.contentTop - fabHalfHeight__26280);
+            double fabHalfHeight = (scaffoldGeometry.floatingActionButtonSize.height / 2.0);
+            return (scaffoldGeometry.contentTop - fabHalfHeight);
         }
         return scaffoldGeometry.minViewPadding.top;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -180,8 +180,8 @@ internal class _MiniStartTopFabLocation__floating_action_button_location : Stand
     {
         if ((scaffoldGeometry.contentTop > scaffoldGeometry.minViewPadding.top))
         {
-            double fabHalfHeight__26280 = (scaffoldGeometry.floatingActionButtonSize.height / 2.0);
-            return (scaffoldGeometry.contentTop - fabHalfHeight__26280);
+            double fabHalfHeight = (scaffoldGeometry.floatingActionButtonSize.height / 2.0);
+            return (scaffoldGeometry.contentTop - fabHalfHeight);
         }
         return scaffoldGeometry.minViewPadding.top;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -207,8 +207,8 @@ internal class _CenterTopFabLocation__floating_action_button_location : Standard
     {
         if ((scaffoldGeometry.contentTop > scaffoldGeometry.minViewPadding.top))
         {
-            double fabHalfHeight__26280 = (scaffoldGeometry.floatingActionButtonSize.height / 2.0);
-            return (scaffoldGeometry.contentTop - fabHalfHeight__26280);
+            double fabHalfHeight = (scaffoldGeometry.floatingActionButtonSize.height / 2.0);
+            return (scaffoldGeometry.contentTop - fabHalfHeight);
         }
         return scaffoldGeometry.minViewPadding.top;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -235,8 +235,8 @@ internal class _MiniCenterTopFabLocation__floating_action_button_location : Stan
     {
         if ((scaffoldGeometry.contentTop > scaffoldGeometry.minViewPadding.top))
         {
-            double fabHalfHeight__26280 = (scaffoldGeometry.floatingActionButtonSize.height / 2.0);
-            return (scaffoldGeometry.contentTop - fabHalfHeight__26280);
+            double fabHalfHeight = (scaffoldGeometry.floatingActionButtonSize.height / 2.0);
+            return (scaffoldGeometry.contentTop - fabHalfHeight);
         }
         return scaffoldGeometry.minViewPadding.top;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -262,8 +262,8 @@ internal class _EndTopFabLocation__floating_action_button_location : StandardFab
     {
         if ((scaffoldGeometry.contentTop > scaffoldGeometry.minViewPadding.top))
         {
-            double fabHalfHeight__26280 = (scaffoldGeometry.floatingActionButtonSize.height / 2.0);
-            return (scaffoldGeometry.contentTop - fabHalfHeight__26280);
+            double fabHalfHeight = (scaffoldGeometry.floatingActionButtonSize.height / 2.0);
+            return (scaffoldGeometry.contentTop - fabHalfHeight);
         }
         return scaffoldGeometry.minViewPadding.top;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -290,8 +290,8 @@ internal class _MiniEndTopFabLocation__floating_action_button_location : Standar
     {
         if ((scaffoldGeometry.contentTop > scaffoldGeometry.minViewPadding.top))
         {
-            double fabHalfHeight__26280 = (scaffoldGeometry.floatingActionButtonSize.height / 2.0);
-            return (scaffoldGeometry.contentTop - fabHalfHeight__26280);
+            double fabHalfHeight = (scaffoldGeometry.floatingActionButtonSize.height / 2.0);
+            return (scaffoldGeometry.contentTop - fabHalfHeight);
         }
         return scaffoldGeometry.minViewPadding.top;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -315,22 +315,22 @@ internal class _StartFloatFabLocation__floating_action_button_location : Standar
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__26920 = scaffoldGeometry.contentBottom;
-        double bottomContentHeight__26985 = (scaffoldGeometry.scaffoldSize.height - contentBottom__26920);
-        double bottomSheetHeight__27078 = scaffoldGeometry.bottomSheetSize.height;
-        double fabHeight__27156 = scaffoldGeometry.floatingActionButtonSize.height;
-        double snackBarHeight__27235 = scaffoldGeometry.snackBarSize.height;
-        double safeMargin__27307 = Math.Max(Floating_action_button_locationLibrary.kFloatingActionButtonMargin, ((scaffoldGeometry.minViewPadding.bottom - bottomContentHeight__26985) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
-        double fabY__27482 = ((contentBottom__26920 - fabHeight__27156) - safeMargin__27307);
-        if ((snackBarHeight__27235 > 0.0))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double bottomContentHeight = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+        double safeMargin = Math.Max(Floating_action_button_locationLibrary.kFloatingActionButtonMargin, ((scaffoldGeometry.minViewPadding.bottom - bottomContentHeight) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+        double fabY = ((contentBottomLocal - fabHeight) - safeMargin);
+        if ((snackBarHeight > 0.0))
         {
-            fabY__27482 = Math.Min(fabY__27482, (((contentBottom__26920 - snackBarHeight__27235) - fabHeight__27156) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+            fabY = Math.Min(fabY, (((contentBottomLocal - snackBarHeight) - fabHeight) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
         }
-        if ((bottomSheetHeight__27078 > 0.0))
+        if ((bottomSheetHeight > 0.0))
         {
-            fabY__27482 = Math.Min(fabY__27482, ((contentBottom__26920 - bottomSheetHeight__27078) - (fabHeight__27156 / 2.0)));
+            fabY = Math.Min(fabY, ((contentBottomLocal - bottomSheetHeight) - (fabHeight / 2.0)));
         }
-        return (fabY__27482 + adjustment);
+        return (fabY + adjustment);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -353,22 +353,22 @@ internal class _MiniStartFloatFabLocation__floating_action_button_location : Sta
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__26920 = scaffoldGeometry.contentBottom;
-        double bottomContentHeight__26985 = (scaffoldGeometry.scaffoldSize.height - contentBottom__26920);
-        double bottomSheetHeight__27078 = scaffoldGeometry.bottomSheetSize.height;
-        double fabHeight__27156 = scaffoldGeometry.floatingActionButtonSize.height;
-        double snackBarHeight__27235 = scaffoldGeometry.snackBarSize.height;
-        double safeMargin__27307 = Math.Max(Floating_action_button_locationLibrary.kFloatingActionButtonMargin, ((scaffoldGeometry.minViewPadding.bottom - bottomContentHeight__26985) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
-        double fabY__27482 = ((contentBottom__26920 - fabHeight__27156) - safeMargin__27307);
-        if ((snackBarHeight__27235 > 0.0))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double bottomContentHeight = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+        double safeMargin = Math.Max(Floating_action_button_locationLibrary.kFloatingActionButtonMargin, ((scaffoldGeometry.minViewPadding.bottom - bottomContentHeight) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+        double fabY = ((contentBottomLocal - fabHeight) - safeMargin);
+        if ((snackBarHeight > 0.0))
         {
-            fabY__27482 = Math.Min(fabY__27482, (((contentBottom__26920 - snackBarHeight__27235) - fabHeight__27156) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+            fabY = Math.Min(fabY, (((contentBottomLocal - snackBarHeight) - fabHeight) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
         }
-        if ((bottomSheetHeight__27078 > 0.0))
+        if ((bottomSheetHeight > 0.0))
         {
-            fabY__27482 = Math.Min(fabY__27482, ((contentBottom__26920 - bottomSheetHeight__27078) - (fabHeight__27156 / 2.0)));
+            fabY = Math.Min(fabY, ((contentBottomLocal - bottomSheetHeight) - (fabHeight / 2.0)));
         }
-        return (fabY__27482 + adjustment);
+        return (fabY + adjustment);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -390,22 +390,22 @@ internal class _CenterFloatFabLocation__floating_action_button_location : Standa
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__26920 = scaffoldGeometry.contentBottom;
-        double bottomContentHeight__26985 = (scaffoldGeometry.scaffoldSize.height - contentBottom__26920);
-        double bottomSheetHeight__27078 = scaffoldGeometry.bottomSheetSize.height;
-        double fabHeight__27156 = scaffoldGeometry.floatingActionButtonSize.height;
-        double snackBarHeight__27235 = scaffoldGeometry.snackBarSize.height;
-        double safeMargin__27307 = Math.Max(Floating_action_button_locationLibrary.kFloatingActionButtonMargin, ((scaffoldGeometry.minViewPadding.bottom - bottomContentHeight__26985) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
-        double fabY__27482 = ((contentBottom__26920 - fabHeight__27156) - safeMargin__27307);
-        if ((snackBarHeight__27235 > 0.0))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double bottomContentHeight = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+        double safeMargin = Math.Max(Floating_action_button_locationLibrary.kFloatingActionButtonMargin, ((scaffoldGeometry.minViewPadding.bottom - bottomContentHeight) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+        double fabY = ((contentBottomLocal - fabHeight) - safeMargin);
+        if ((snackBarHeight > 0.0))
         {
-            fabY__27482 = Math.Min(fabY__27482, (((contentBottom__26920 - snackBarHeight__27235) - fabHeight__27156) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+            fabY = Math.Min(fabY, (((contentBottomLocal - snackBarHeight) - fabHeight) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
         }
-        if ((bottomSheetHeight__27078 > 0.0))
+        if ((bottomSheetHeight > 0.0))
         {
-            fabY__27482 = Math.Min(fabY__27482, ((contentBottom__26920 - bottomSheetHeight__27078) - (fabHeight__27156 / 2.0)));
+            fabY = Math.Min(fabY, ((contentBottomLocal - bottomSheetHeight) - (fabHeight / 2.0)));
         }
-        return (fabY__27482 + adjustment);
+        return (fabY + adjustment);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -428,22 +428,22 @@ internal class _MiniCenterFloatFabLocation__floating_action_button_location : St
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__26920 = scaffoldGeometry.contentBottom;
-        double bottomContentHeight__26985 = (scaffoldGeometry.scaffoldSize.height - contentBottom__26920);
-        double bottomSheetHeight__27078 = scaffoldGeometry.bottomSheetSize.height;
-        double fabHeight__27156 = scaffoldGeometry.floatingActionButtonSize.height;
-        double snackBarHeight__27235 = scaffoldGeometry.snackBarSize.height;
-        double safeMargin__27307 = Math.Max(Floating_action_button_locationLibrary.kFloatingActionButtonMargin, ((scaffoldGeometry.minViewPadding.bottom - bottomContentHeight__26985) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
-        double fabY__27482 = ((contentBottom__26920 - fabHeight__27156) - safeMargin__27307);
-        if ((snackBarHeight__27235 > 0.0))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double bottomContentHeight = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+        double safeMargin = Math.Max(Floating_action_button_locationLibrary.kFloatingActionButtonMargin, ((scaffoldGeometry.minViewPadding.bottom - bottomContentHeight) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+        double fabY = ((contentBottomLocal - fabHeight) - safeMargin);
+        if ((snackBarHeight > 0.0))
         {
-            fabY__27482 = Math.Min(fabY__27482, (((contentBottom__26920 - snackBarHeight__27235) - fabHeight__27156) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+            fabY = Math.Min(fabY, (((contentBottomLocal - snackBarHeight) - fabHeight) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
         }
-        if ((bottomSheetHeight__27078 > 0.0))
+        if ((bottomSheetHeight > 0.0))
         {
-            fabY__27482 = Math.Min(fabY__27482, ((contentBottom__26920 - bottomSheetHeight__27078) - (fabHeight__27156 / 2.0)));
+            fabY = Math.Min(fabY, ((contentBottomLocal - bottomSheetHeight) - (fabHeight / 2.0)));
         }
-        return (fabY__27482 + adjustment);
+        return (fabY + adjustment);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -465,22 +465,22 @@ internal class _EndFloatFabLocation__floating_action_button_location : StandardF
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__26920 = scaffoldGeometry.contentBottom;
-        double bottomContentHeight__26985 = (scaffoldGeometry.scaffoldSize.height - contentBottom__26920);
-        double bottomSheetHeight__27078 = scaffoldGeometry.bottomSheetSize.height;
-        double fabHeight__27156 = scaffoldGeometry.floatingActionButtonSize.height;
-        double snackBarHeight__27235 = scaffoldGeometry.snackBarSize.height;
-        double safeMargin__27307 = Math.Max(Floating_action_button_locationLibrary.kFloatingActionButtonMargin, ((scaffoldGeometry.minViewPadding.bottom - bottomContentHeight__26985) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
-        double fabY__27482 = ((contentBottom__26920 - fabHeight__27156) - safeMargin__27307);
-        if ((snackBarHeight__27235 > 0.0))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double bottomContentHeight = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+        double safeMargin = Math.Max(Floating_action_button_locationLibrary.kFloatingActionButtonMargin, ((scaffoldGeometry.minViewPadding.bottom - bottomContentHeight) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+        double fabY = ((contentBottomLocal - fabHeight) - safeMargin);
+        if ((snackBarHeight > 0.0))
         {
-            fabY__27482 = Math.Min(fabY__27482, (((contentBottom__26920 - snackBarHeight__27235) - fabHeight__27156) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+            fabY = Math.Min(fabY, (((contentBottomLocal - snackBarHeight) - fabHeight) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
         }
-        if ((bottomSheetHeight__27078 > 0.0))
+        if ((bottomSheetHeight > 0.0))
         {
-            fabY__27482 = Math.Min(fabY__27482, ((contentBottom__26920 - bottomSheetHeight__27078) - (fabHeight__27156 / 2.0)));
+            fabY = Math.Min(fabY, ((contentBottomLocal - bottomSheetHeight) - (fabHeight / 2.0)));
         }
-        return (fabY__27482 + adjustment);
+        return (fabY + adjustment);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -503,22 +503,22 @@ internal class _MiniEndFloatFabLocation__floating_action_button_location : Stand
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__26920 = scaffoldGeometry.contentBottom;
-        double bottomContentHeight__26985 = (scaffoldGeometry.scaffoldSize.height - contentBottom__26920);
-        double bottomSheetHeight__27078 = scaffoldGeometry.bottomSheetSize.height;
-        double fabHeight__27156 = scaffoldGeometry.floatingActionButtonSize.height;
-        double snackBarHeight__27235 = scaffoldGeometry.snackBarSize.height;
-        double safeMargin__27307 = Math.Max(Floating_action_button_locationLibrary.kFloatingActionButtonMargin, ((scaffoldGeometry.minViewPadding.bottom - bottomContentHeight__26985) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
-        double fabY__27482 = ((contentBottom__26920 - fabHeight__27156) - safeMargin__27307);
-        if ((snackBarHeight__27235 > 0.0))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double bottomContentHeight = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+        double safeMargin = Math.Max(Floating_action_button_locationLibrary.kFloatingActionButtonMargin, ((scaffoldGeometry.minViewPadding.bottom - bottomContentHeight) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+        double fabY = ((contentBottomLocal - fabHeight) - safeMargin);
+        if ((snackBarHeight > 0.0))
         {
-            fabY__27482 = Math.Min(fabY__27482, (((contentBottom__26920 - snackBarHeight__27235) - fabHeight__27156) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+            fabY = Math.Min(fabY, (((contentBottomLocal - snackBarHeight) - fabHeight) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
         }
-        if ((bottomSheetHeight__27078 > 0.0))
+        if ((bottomSheetHeight > 0.0))
         {
-            fabY__27482 = Math.Min(fabY__27482, ((contentBottom__26920 - bottomSheetHeight__27078) - (fabHeight__27156 / 2.0)));
+            fabY = Math.Min(fabY, ((contentBottomLocal - bottomSheetHeight) - (fabHeight / 2.0)));
         }
-        return (fabY__27482 + adjustment);
+        return (fabY + adjustment);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -540,40 +540,40 @@ internal class _StartDockedFabLocation__floating_action_button_location : Standa
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__28349 = scaffoldGeometry.contentBottom;
-        double contentMargin__28414 = (scaffoldGeometry.scaffoldSize.height - contentBottom__28349);
-        double bottomViewPadding__28501 = scaffoldGeometry.minViewPadding.bottom;
-        double bottomSheetHeight__28578 = scaffoldGeometry.bottomSheetSize.height;
-        double fabHeight__28656 = scaffoldGeometry.floatingActionButtonSize.height;
-        double snackBarHeight__28735 = scaffoldGeometry.snackBarSize.height;
-        double bottomMinInset__28807 = scaffoldGeometry.minInsets.bottom;
-        double safeMargin__28871 = default!;
-        if ((contentMargin__28414 > (bottomMinInset__28807 + (fabHeight__28656 / 2.0))))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double contentMargin = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomViewPadding = scaffoldGeometry.minViewPadding.bottom;
+        double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+        double bottomMinInset = scaffoldGeometry.minInsets.bottom;
+        double safeMargin = default!;
+        if ((contentMargin > (bottomMinInset + (fabHeight / 2.0))))
         {
-            safeMargin__28871 = 0.0;
+            safeMargin = 0.0;
         }
         else
         {
-            if ((bottomMinInset__28807 == 0.0))
+            if ((bottomMinInset == 0.0))
             {
-                safeMargin__28871 = bottomViewPadding__28501;
+                safeMargin = bottomViewPadding;
             }
             else
             {
-                safeMargin__28871 = ((fabHeight__28656 / 2.0) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin);
+                safeMargin = ((fabHeight / 2.0) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin);
             }
         }
-        double fabY__29506 = ((contentBottom__28349 - (fabHeight__28656 / 2.0)) - safeMargin__28871);
-        if ((snackBarHeight__28735 > 0.0))
+        double fabY = ((contentBottomLocal - (fabHeight / 2.0)) - safeMargin);
+        if ((snackBarHeight > 0.0))
         {
-            fabY__29506 = Math.Min(fabY__29506, (((contentBottom__28349 - snackBarHeight__28735) - fabHeight__28656) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+            fabY = Math.Min(fabY, (((contentBottomLocal - snackBarHeight) - fabHeight) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
         }
-        if ((bottomSheetHeight__28578 > 0.0))
+        if ((bottomSheetHeight > 0.0))
         {
-            fabY__29506 = Math.Min(fabY__29506, ((contentBottom__28349 - bottomSheetHeight__28578) - (fabHeight__28656 / 2.0)));
+            fabY = Math.Min(fabY, ((contentBottomLocal - bottomSheetHeight) - (fabHeight / 2.0)));
         }
-        double maxFabY__30018 = ((scaffoldGeometry.scaffoldSize.height - fabHeight__28656) - safeMargin__28871);
-        return Math.Min(maxFabY__30018, fabY__29506);
+        double maxFabY = ((scaffoldGeometry.scaffoldSize.height - fabHeight) - safeMargin);
+        return Math.Min(maxFabY, fabY);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -596,40 +596,40 @@ internal class _MiniStartDockedFabLocation__floating_action_button_location : St
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__28349 = scaffoldGeometry.contentBottom;
-        double contentMargin__28414 = (scaffoldGeometry.scaffoldSize.height - contentBottom__28349);
-        double bottomViewPadding__28501 = scaffoldGeometry.minViewPadding.bottom;
-        double bottomSheetHeight__28578 = scaffoldGeometry.bottomSheetSize.height;
-        double fabHeight__28656 = scaffoldGeometry.floatingActionButtonSize.height;
-        double snackBarHeight__28735 = scaffoldGeometry.snackBarSize.height;
-        double bottomMinInset__28807 = scaffoldGeometry.minInsets.bottom;
-        double safeMargin__28871 = default!;
-        if ((contentMargin__28414 > (bottomMinInset__28807 + (fabHeight__28656 / 2.0))))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double contentMargin = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomViewPadding = scaffoldGeometry.minViewPadding.bottom;
+        double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+        double bottomMinInset = scaffoldGeometry.minInsets.bottom;
+        double safeMargin = default!;
+        if ((contentMargin > (bottomMinInset + (fabHeight / 2.0))))
         {
-            safeMargin__28871 = 0.0;
+            safeMargin = 0.0;
         }
         else
         {
-            if ((bottomMinInset__28807 == 0.0))
+            if ((bottomMinInset == 0.0))
             {
-                safeMargin__28871 = bottomViewPadding__28501;
+                safeMargin = bottomViewPadding;
             }
             else
             {
-                safeMargin__28871 = ((fabHeight__28656 / 2.0) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin);
+                safeMargin = ((fabHeight / 2.0) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin);
             }
         }
-        double fabY__29506 = ((contentBottom__28349 - (fabHeight__28656 / 2.0)) - safeMargin__28871);
-        if ((snackBarHeight__28735 > 0.0))
+        double fabY = ((contentBottomLocal - (fabHeight / 2.0)) - safeMargin);
+        if ((snackBarHeight > 0.0))
         {
-            fabY__29506 = Math.Min(fabY__29506, (((contentBottom__28349 - snackBarHeight__28735) - fabHeight__28656) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+            fabY = Math.Min(fabY, (((contentBottomLocal - snackBarHeight) - fabHeight) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
         }
-        if ((bottomSheetHeight__28578 > 0.0))
+        if ((bottomSheetHeight > 0.0))
         {
-            fabY__29506 = Math.Min(fabY__29506, ((contentBottom__28349 - bottomSheetHeight__28578) - (fabHeight__28656 / 2.0)));
+            fabY = Math.Min(fabY, ((contentBottomLocal - bottomSheetHeight) - (fabHeight / 2.0)));
         }
-        double maxFabY__30018 = ((scaffoldGeometry.scaffoldSize.height - fabHeight__28656) - safeMargin__28871);
-        return Math.Min(maxFabY__30018, fabY__29506);
+        double maxFabY = ((scaffoldGeometry.scaffoldSize.height - fabHeight) - safeMargin);
+        return Math.Min(maxFabY, fabY);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -651,40 +651,40 @@ internal class _CenterDockedFabLocation__floating_action_button_location : Stand
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__28349 = scaffoldGeometry.contentBottom;
-        double contentMargin__28414 = (scaffoldGeometry.scaffoldSize.height - contentBottom__28349);
-        double bottomViewPadding__28501 = scaffoldGeometry.minViewPadding.bottom;
-        double bottomSheetHeight__28578 = scaffoldGeometry.bottomSheetSize.height;
-        double fabHeight__28656 = scaffoldGeometry.floatingActionButtonSize.height;
-        double snackBarHeight__28735 = scaffoldGeometry.snackBarSize.height;
-        double bottomMinInset__28807 = scaffoldGeometry.minInsets.bottom;
-        double safeMargin__28871 = default!;
-        if ((contentMargin__28414 > (bottomMinInset__28807 + (fabHeight__28656 / 2.0))))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double contentMargin = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomViewPadding = scaffoldGeometry.minViewPadding.bottom;
+        double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+        double bottomMinInset = scaffoldGeometry.minInsets.bottom;
+        double safeMargin = default!;
+        if ((contentMargin > (bottomMinInset + (fabHeight / 2.0))))
         {
-            safeMargin__28871 = 0.0;
+            safeMargin = 0.0;
         }
         else
         {
-            if ((bottomMinInset__28807 == 0.0))
+            if ((bottomMinInset == 0.0))
             {
-                safeMargin__28871 = bottomViewPadding__28501;
+                safeMargin = bottomViewPadding;
             }
             else
             {
-                safeMargin__28871 = ((fabHeight__28656 / 2.0) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin);
+                safeMargin = ((fabHeight / 2.0) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin);
             }
         }
-        double fabY__29506 = ((contentBottom__28349 - (fabHeight__28656 / 2.0)) - safeMargin__28871);
-        if ((snackBarHeight__28735 > 0.0))
+        double fabY = ((contentBottomLocal - (fabHeight / 2.0)) - safeMargin);
+        if ((snackBarHeight > 0.0))
         {
-            fabY__29506 = Math.Min(fabY__29506, (((contentBottom__28349 - snackBarHeight__28735) - fabHeight__28656) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+            fabY = Math.Min(fabY, (((contentBottomLocal - snackBarHeight) - fabHeight) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
         }
-        if ((bottomSheetHeight__28578 > 0.0))
+        if ((bottomSheetHeight > 0.0))
         {
-            fabY__29506 = Math.Min(fabY__29506, ((contentBottom__28349 - bottomSheetHeight__28578) - (fabHeight__28656 / 2.0)));
+            fabY = Math.Min(fabY, ((contentBottomLocal - bottomSheetHeight) - (fabHeight / 2.0)));
         }
-        double maxFabY__30018 = ((scaffoldGeometry.scaffoldSize.height - fabHeight__28656) - safeMargin__28871);
-        return Math.Min(maxFabY__30018, fabY__29506);
+        double maxFabY = ((scaffoldGeometry.scaffoldSize.height - fabHeight) - safeMargin);
+        return Math.Min(maxFabY, fabY);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -707,40 +707,40 @@ internal class _MiniCenterDockedFabLocation__floating_action_button_location : S
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__28349 = scaffoldGeometry.contentBottom;
-        double contentMargin__28414 = (scaffoldGeometry.scaffoldSize.height - contentBottom__28349);
-        double bottomViewPadding__28501 = scaffoldGeometry.minViewPadding.bottom;
-        double bottomSheetHeight__28578 = scaffoldGeometry.bottomSheetSize.height;
-        double fabHeight__28656 = scaffoldGeometry.floatingActionButtonSize.height;
-        double snackBarHeight__28735 = scaffoldGeometry.snackBarSize.height;
-        double bottomMinInset__28807 = scaffoldGeometry.minInsets.bottom;
-        double safeMargin__28871 = default!;
-        if ((contentMargin__28414 > (bottomMinInset__28807 + (fabHeight__28656 / 2.0))))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double contentMargin = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomViewPadding = scaffoldGeometry.minViewPadding.bottom;
+        double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+        double bottomMinInset = scaffoldGeometry.minInsets.bottom;
+        double safeMargin = default!;
+        if ((contentMargin > (bottomMinInset + (fabHeight / 2.0))))
         {
-            safeMargin__28871 = 0.0;
+            safeMargin = 0.0;
         }
         else
         {
-            if ((bottomMinInset__28807 == 0.0))
+            if ((bottomMinInset == 0.0))
             {
-                safeMargin__28871 = bottomViewPadding__28501;
+                safeMargin = bottomViewPadding;
             }
             else
             {
-                safeMargin__28871 = ((fabHeight__28656 / 2.0) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin);
+                safeMargin = ((fabHeight / 2.0) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin);
             }
         }
-        double fabY__29506 = ((contentBottom__28349 - (fabHeight__28656 / 2.0)) - safeMargin__28871);
-        if ((snackBarHeight__28735 > 0.0))
+        double fabY = ((contentBottomLocal - (fabHeight / 2.0)) - safeMargin);
+        if ((snackBarHeight > 0.0))
         {
-            fabY__29506 = Math.Min(fabY__29506, (((contentBottom__28349 - snackBarHeight__28735) - fabHeight__28656) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+            fabY = Math.Min(fabY, (((contentBottomLocal - snackBarHeight) - fabHeight) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
         }
-        if ((bottomSheetHeight__28578 > 0.0))
+        if ((bottomSheetHeight > 0.0))
         {
-            fabY__29506 = Math.Min(fabY__29506, ((contentBottom__28349 - bottomSheetHeight__28578) - (fabHeight__28656 / 2.0)));
+            fabY = Math.Min(fabY, ((contentBottomLocal - bottomSheetHeight) - (fabHeight / 2.0)));
         }
-        double maxFabY__30018 = ((scaffoldGeometry.scaffoldSize.height - fabHeight__28656) - safeMargin__28871);
-        return Math.Min(maxFabY__30018, fabY__29506);
+        double maxFabY = ((scaffoldGeometry.scaffoldSize.height - fabHeight) - safeMargin);
+        return Math.Min(maxFabY, fabY);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -762,40 +762,40 @@ internal class _EndDockedFabLocation__floating_action_button_location : Standard
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__28349 = scaffoldGeometry.contentBottom;
-        double contentMargin__28414 = (scaffoldGeometry.scaffoldSize.height - contentBottom__28349);
-        double bottomViewPadding__28501 = scaffoldGeometry.minViewPadding.bottom;
-        double bottomSheetHeight__28578 = scaffoldGeometry.bottomSheetSize.height;
-        double fabHeight__28656 = scaffoldGeometry.floatingActionButtonSize.height;
-        double snackBarHeight__28735 = scaffoldGeometry.snackBarSize.height;
-        double bottomMinInset__28807 = scaffoldGeometry.minInsets.bottom;
-        double safeMargin__28871 = default!;
-        if ((contentMargin__28414 > (bottomMinInset__28807 + (fabHeight__28656 / 2.0))))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double contentMargin = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomViewPadding = scaffoldGeometry.minViewPadding.bottom;
+        double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+        double bottomMinInset = scaffoldGeometry.minInsets.bottom;
+        double safeMargin = default!;
+        if ((contentMargin > (bottomMinInset + (fabHeight / 2.0))))
         {
-            safeMargin__28871 = 0.0;
+            safeMargin = 0.0;
         }
         else
         {
-            if ((bottomMinInset__28807 == 0.0))
+            if ((bottomMinInset == 0.0))
             {
-                safeMargin__28871 = bottomViewPadding__28501;
+                safeMargin = bottomViewPadding;
             }
             else
             {
-                safeMargin__28871 = ((fabHeight__28656 / 2.0) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin);
+                safeMargin = ((fabHeight / 2.0) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin);
             }
         }
-        double fabY__29506 = ((contentBottom__28349 - (fabHeight__28656 / 2.0)) - safeMargin__28871);
-        if ((snackBarHeight__28735 > 0.0))
+        double fabY = ((contentBottomLocal - (fabHeight / 2.0)) - safeMargin);
+        if ((snackBarHeight > 0.0))
         {
-            fabY__29506 = Math.Min(fabY__29506, (((contentBottom__28349 - snackBarHeight__28735) - fabHeight__28656) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+            fabY = Math.Min(fabY, (((contentBottomLocal - snackBarHeight) - fabHeight) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
         }
-        if ((bottomSheetHeight__28578 > 0.0))
+        if ((bottomSheetHeight > 0.0))
         {
-            fabY__29506 = Math.Min(fabY__29506, ((contentBottom__28349 - bottomSheetHeight__28578) - (fabHeight__28656 / 2.0)));
+            fabY = Math.Min(fabY, ((contentBottomLocal - bottomSheetHeight) - (fabHeight / 2.0)));
         }
-        double maxFabY__30018 = ((scaffoldGeometry.scaffoldSize.height - fabHeight__28656) - safeMargin__28871);
-        return Math.Min(maxFabY__30018, fabY__29506);
+        double maxFabY = ((scaffoldGeometry.scaffoldSize.height - fabHeight) - safeMargin);
+        return Math.Min(maxFabY, fabY);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -818,40 +818,40 @@ internal class _MiniEndDockedFabLocation__floating_action_button_location : Stan
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__28349 = scaffoldGeometry.contentBottom;
-        double contentMargin__28414 = (scaffoldGeometry.scaffoldSize.height - contentBottom__28349);
-        double bottomViewPadding__28501 = scaffoldGeometry.minViewPadding.bottom;
-        double bottomSheetHeight__28578 = scaffoldGeometry.bottomSheetSize.height;
-        double fabHeight__28656 = scaffoldGeometry.floatingActionButtonSize.height;
-        double snackBarHeight__28735 = scaffoldGeometry.snackBarSize.height;
-        double bottomMinInset__28807 = scaffoldGeometry.minInsets.bottom;
-        double safeMargin__28871 = default!;
-        if ((contentMargin__28414 > (bottomMinInset__28807 + (fabHeight__28656 / 2.0))))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double contentMargin = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomViewPadding = scaffoldGeometry.minViewPadding.bottom;
+        double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double snackBarHeight = scaffoldGeometry.snackBarSize.height;
+        double bottomMinInset = scaffoldGeometry.minInsets.bottom;
+        double safeMargin = default!;
+        if ((contentMargin > (bottomMinInset + (fabHeight / 2.0))))
         {
-            safeMargin__28871 = 0.0;
+            safeMargin = 0.0;
         }
         else
         {
-            if ((bottomMinInset__28807 == 0.0))
+            if ((bottomMinInset == 0.0))
             {
-                safeMargin__28871 = bottomViewPadding__28501;
+                safeMargin = bottomViewPadding;
             }
             else
             {
-                safeMargin__28871 = ((fabHeight__28656 / 2.0) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin);
+                safeMargin = ((fabHeight / 2.0) + Floating_action_button_locationLibrary.kFloatingActionButtonMargin);
             }
         }
-        double fabY__29506 = ((contentBottom__28349 - (fabHeight__28656 / 2.0)) - safeMargin__28871);
-        if ((snackBarHeight__28735 > 0.0))
+        double fabY = ((contentBottomLocal - (fabHeight / 2.0)) - safeMargin);
+        if ((snackBarHeight > 0.0))
         {
-            fabY__29506 = Math.Min(fabY__29506, (((contentBottom__28349 - snackBarHeight__28735) - fabHeight__28656) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
+            fabY = Math.Min(fabY, (((contentBottomLocal - snackBarHeight) - fabHeight) - Floating_action_button_locationLibrary.kFloatingActionButtonMargin));
         }
-        if ((bottomSheetHeight__28578 > 0.0))
+        if ((bottomSheetHeight > 0.0))
         {
-            fabY__29506 = Math.Min(fabY__29506, ((contentBottom__28349 - bottomSheetHeight__28578) - (fabHeight__28656 / 2.0)));
+            fabY = Math.Min(fabY, ((contentBottomLocal - bottomSheetHeight) - (fabHeight / 2.0)));
         }
-        double maxFabY__30018 = ((scaffoldGeometry.scaffoldSize.height - fabHeight__28656) - safeMargin__28871);
-        return Math.Min(maxFabY__30018, fabY__29506);
+        double maxFabY = ((scaffoldGeometry.scaffoldSize.height - fabHeight) - safeMargin);
+        return Math.Min(maxFabY, fabY);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -873,23 +873,23 @@ internal class _EndContainedFabLocation__floating_action_button_location : Stand
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
     {
-        double contentBottom__30640 = scaffoldGeometry.contentBottom;
-        double contentMargin__30705 = (scaffoldGeometry.scaffoldSize.height - contentBottom__30640);
-        double bottomViewPadding__30792 = scaffoldGeometry.minViewPadding.bottom;
-        double fabHeight__30869 = scaffoldGeometry.floatingActionButtonSize.height;
-        double safeMargin__30943 = default!;
-        if ((contentMargin__30705 > (bottomViewPadding__30792 + fabHeight__30869)))
+        double contentBottomLocal = scaffoldGeometry.contentBottom;
+        double contentMargin = (scaffoldGeometry.scaffoldSize.height - contentBottomLocal);
+        double bottomViewPadding = scaffoldGeometry.minViewPadding.bottom;
+        double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
+        double safeMargin = default!;
+        if ((contentMargin > (bottomViewPadding + fabHeight)))
         {
-            safeMargin__30943 = 0.0;
+            safeMargin = 0.0;
         }
         else
         {
-            safeMargin__30943 = bottomViewPadding__30792;
+            safeMargin = bottomViewPadding;
         }
-        double contentBottomToFabTop__31426 = ((((contentMargin__30705 - bottomViewPadding__30792) - fabHeight__30869)) / 2.0);
-        double fabY__31522 = (contentBottom__30640 + contentBottomToFabTop__31426);
-        double maxFabY__31585 = ((scaffoldGeometry.scaffoldSize.height - fabHeight__30869) - safeMargin__30943);
-        return Math.Min(maxFabY__31585, fabY__31522);
+        double contentBottomToFabTop = ((((contentMargin - bottomViewPadding) - fabHeight)) / 2.0);
+        double fabY = (contentBottomLocal + contentBottomToFabTop);
+        double maxFabY = ((scaffoldGeometry.scaffoldSize.height - fabHeight) - safeMargin);
+        return Math.Min(maxFabY, fabY);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -935,8 +935,8 @@ internal class _ScalingFabMotionAnimator__floating_action_button_location : Floa
 
     public override global::Doroti.Framework.Animation.Animation<double> getScaleAnimation(global::Doroti.Framework.Animation.Animation<double> parent)
     {
-        global::Doroti.Framework.Animation.Curve curve__43656 = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Interval(0.5, 1.0, curve: global::Doroti.Framework.Animation.Curves.ease));
-        return ((global::Doroti.Framework.Animation.Animation<double>)(object?)new _AnimationSwap__floating_action_button_location<double>(new global::Doroti.Framework.Animation.ReverseAnimation(parent.drive(new global::Doroti.Framework.Animation.CurveTween(curve: ((global::Doroti.Framework.Animation.Curve)curve__43656).flipped))), parent.drive(new global::Doroti.Framework.Animation.CurveTween(curve: curve__43656)), parent, 0.5));
+        global::Doroti.Framework.Animation.Curve curveLocal = ((global::Doroti.Framework.Animation.Curve)(object?)new global::Doroti.Framework.Animation.Interval(0.5, 1.0, curve: global::Doroti.Framework.Animation.Curves.ease));
+        return ((global::Doroti.Framework.Animation.Animation<double>)(object?)new _AnimationSwap__floating_action_button_location<double>(new global::Doroti.Framework.Animation.ReverseAnimation(parent.drive(new global::Doroti.Framework.Animation.CurveTween(curve: ((global::Doroti.Framework.Animation.Curve)curveLocal).flipped))), parent.drive(new global::Doroti.Framework.Animation.CurveTween(curve: curveLocal)), parent, 0.5));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

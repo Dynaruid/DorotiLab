@@ -29,8 +29,8 @@ public class SystemContextMenu : StatefulWidget
 
     public static SystemContextMenu CreateEditableText(global::Doroti.Framework.Foundation.Key? key = null, EditableTextState editableTextState = default!, List<IOSSystemContextMenuItem>? items = null)
     {
-        var (startGlyphHeight__2775, endGlyphHeight__2816) = editableTextState.getGlyphHeights();
-        return new SystemContextMenu(key: key, anchor: TextSelectionToolbarAnchors.getSelectionRect(((EditableTextState)editableTextState).renderEditable, startGlyphHeight__2775, endGlyphHeight__2816, ((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)((dynamic)((EditableTextState)editableTextState).renderEditable).getEndpointsForSelection(((EditableTextState)editableTextState).textEditingValue.selection))), items: ((items ?? (List<IOSSystemContextMenuItem>)SystemContextMenu.getDefaultItems(editableTextState))), onSystemHide: ((global::System.Action)(() => { editableTextState.hideToolbar(false); })));
+        var (startGlyphHeight, endGlyphHeight) = editableTextState.getGlyphHeights();
+        return new SystemContextMenu(key: key, anchor: TextSelectionToolbarAnchors.getSelectionRect(((EditableTextState)editableTextState).renderEditable, startGlyphHeight, endGlyphHeight, ((List<global::Doroti.Framework.Rendering.TextSelectionPoint>)((dynamic)((EditableTextState)editableTextState).renderEditable).getEndpointsForSelection(((EditableTextState)editableTextState).textEditingValue.selection))), items: ((items ?? (List<IOSSystemContextMenuItem>)SystemContextMenu.getDefaultItems(editableTextState))), onSystemHide: ((global::System.Action)(() => { editableTextState.hideToolbar(false); })));
     }
 
     public static bool isSupported(BuildContext context)
@@ -47,49 +47,49 @@ public class SystemContextMenu : StatefulWidget
 
     public static List<IOSSystemContextMenuItem> getDefaultItems(EditableTextState editableTextState)
     {
-        var items__6245 = new List<IOSSystemContextMenuItem>();
-        foreach (ContextMenuButtonItem button__6411 in ((EditableTextState)editableTextState).contextMenuButtonItems)
+        var items = new List<IOSSystemContextMenuItem>();
+        foreach (ContextMenuButtonItem button in ((EditableTextState)editableTextState).contextMenuButtonItems)
         {
-            switch (((ContextMenuButtonItem)button__6411).type)
+            switch (((ContextMenuButtonItem)button).type)
             {
                 case ContextMenuButtonType.copy:
                     {
-                        items__6245.Add(new IOSSystemContextMenuItemCopy());
+                        items.Add(new IOSSystemContextMenuItemCopy());
                         break;
                     }
                 case ContextMenuButtonType.cut:
                     {
-                        items__6245.Add(new IOSSystemContextMenuItemCut());
+                        items.Add(new IOSSystemContextMenuItemCut());
                         break;
                     }
                 case ContextMenuButtonType.paste:
                     {
-                        items__6245.Add(new IOSSystemContextMenuItemPaste());
+                        items.Add(new IOSSystemContextMenuItemPaste());
                         break;
                     }
                 case ContextMenuButtonType.selectAll:
                     {
-                        items__6245.Add(new IOSSystemContextMenuItemSelectAll());
+                        items.Add(new IOSSystemContextMenuItemSelectAll());
                         break;
                     }
                 case ContextMenuButtonType.lookUp:
                     {
-                        items__6245.Add(new IOSSystemContextMenuItemLookUp());
+                        items.Add(new IOSSystemContextMenuItemLookUp());
                         break;
                     }
                 case ContextMenuButtonType.searchWeb:
                     {
-                        items__6245.Add(new IOSSystemContextMenuItemSearchWeb());
+                        items.Add(new IOSSystemContextMenuItemSearchWeb());
                         break;
                     }
                 case ContextMenuButtonType.share:
                     {
-                        items__6245.Add(new IOSSystemContextMenuItemShare());
+                        items.Add(new IOSSystemContextMenuItemShare());
                         break;
                     }
                 case ContextMenuButtonType.liveTextInput:
                     {
-                        items__6245.Add(new IOSSystemContextMenuItemLiveText());
+                        items.Add(new IOSSystemContextMenuItemLiveText());
                         break;
                     }
                 case ContextMenuButtonType.delete:
@@ -97,7 +97,7 @@ public class SystemContextMenu : StatefulWidget
                     break;
             }
         }
-        return items__6245;
+        return items;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -125,9 +125,9 @@ internal class _SystemContextMenuState__system_context_menu : State<SystemContex
         DartRuntimePrimitives.Assert(() => SystemContextMenu.isSupported(context));
         if (System.Linq.Enumerable.Any(((SystemContextMenu)this.widget).items))
         {
-            WidgetsLocalizations localizations__8340 = ((WidgetsLocalizations)(object?)WidgetsLocalizations.of(context));
-            List<global::Doroti.Framework.Services.IOSSystemContextMenuItemData> itemDatas__8437 = ((SystemContextMenu)this.widget).items.map<IOSSystemContextMenuItem, global::Doroti.Framework.Services.IOSSystemContextMenuItemData>(((item) => item.getData(localizations__8340))).ToList().ToList();
-            DartRuntimePrimitives.Ignore(this._systemContextMenuController.showWithItems(((SystemContextMenu)this.widget).anchor, itemDatas__8437));
+            WidgetsLocalizations localizations = ((WidgetsLocalizations)(object?)WidgetsLocalizations.of(context));
+            List<global::Doroti.Framework.Services.IOSSystemContextMenuItemData> itemDatas = ((SystemContextMenu)this.widget).items.map<IOSSystemContextMenuItem, global::Doroti.Framework.Services.IOSSystemContextMenuItemData>(((item) => item.getData(localizations))).ToList().ToList();
+            DartRuntimePrimitives.Ignore(this._systemContextMenuController.showWithItems(((SystemContextMenu)this.widget).anchor, itemDatas));
         }
         return ((Widget)(object?)SizedBox.CreateShrink());
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -241,14 +241,14 @@ public class IOSSystemContextMenuItemLookUp : IOSSystemContextMenuItem, global::
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -284,14 +284,14 @@ public class IOSSystemContextMenuItemSearchWeb : IOSSystemContextMenuItem, globa
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -327,14 +327,14 @@ public class IOSSystemContextMenuItemShare : IOSSystemContextMenuItem, global::D
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -399,14 +399,14 @@ public class IOSSystemContextMenuItemCustom : IOSSystemContextMenuItem, global::
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

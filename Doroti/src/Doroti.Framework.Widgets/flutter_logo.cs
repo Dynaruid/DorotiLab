@@ -36,9 +36,9 @@ public class FlutterLogo : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        IconThemeData iconTheme__2364 = ((IconThemeData)(object?)IconTheme.of(context));
-        double? iconSize__2417 = (this.size ?? ((IconThemeData)iconTheme__2364).size);
-        return ((Widget)(object?)new AnimatedContainer(width: iconSize__2417, height: iconSize__2417, duration: DartRuntimePrimitives.RequireValue(this.duration), curve: this.curve, decoration: new global::Doroti.Framework.Painting.FlutterLogoDecoration(style: this.style, textColor: this.textColor)));
+        IconThemeData iconTheme = ((IconThemeData)(object?)IconTheme.of(context));
+        double? iconSize = (this.size ?? ((IconThemeData)iconTheme).size);
+        return ((Widget)(object?)new AnimatedContainer(width: iconSize, height: iconSize, duration: DartRuntimePrimitives.RequireValue(this.duration), curve: this.curve, decoration: new global::Doroti.Framework.Painting.FlutterLogoDecoration(style: this.style, textColor: this.textColor)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

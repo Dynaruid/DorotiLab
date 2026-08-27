@@ -96,10 +96,10 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     public virtual void goBallistic(double velocity)
     {
         DartRuntimePrimitives.Assert(() => this.hasPixels);
-        global::Doroti.Framework.Physics.Simulation? simulation__4988 = ((global::Doroti.Framework.Physics.Simulation?)(object?)this.physics.createBallisticSimulation(this, velocity));
-        if ((simulation__4988 is not null))
+        global::Doroti.Framework.Physics.Simulation? simulation = ((global::Doroti.Framework.Physics.Simulation?)(object?)this.physics.createBallisticSimulation(this, velocity));
+        if ((simulation is not null))
         {
-            beginActivity(new BallisticScrollActivity(this, simulation__4988, ((ScrollContext)this.context).vsync, this.shouldIgnorePointer));
+            beginActivity(new BallisticScrollActivity(this, simulation, ((ScrollContext)this.context).vsync, this.shouldIgnorePointer));
         }
         else
         {
@@ -125,9 +125,9 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
             jumpTo(to);
             return Future.value();
         }
-        var activity__6055 = new DrivenScrollActivity(this, from: this.pixels, to: to, duration: duration, curve: curve, vsync: ((ScrollContext)this.context).vsync);
-        beginActivity(activity__6055);
-        return ((DrivenScrollActivity)activity__6055).done;
+        var activity = new DrivenScrollActivity(this, from: this.pixels, to: to, duration: duration, curve: curve, vsync: ((ScrollContext)this.context).vsync);
+        beginActivity(activity);
+        return ((DrivenScrollActivity)activity).done;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -136,10 +136,10 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         goIdle();
         if ((this.pixels != pixels))
         {
-            double oldPixels__6377 = this.pixels;
+            double oldPixels = this.pixels;
             forcePixels(pixels);
             didStartScroll();
-            didUpdateScrollPositionBy((this.pixels - oldPixels__6377));
+            didUpdateScrollPositionBy((this.pixels - oldPixels));
             didEndScroll();
         }
         goBallistic(0.0);
@@ -152,16 +152,16 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
             goBallistic(0.0);
             return;
         }
-        double targetPixels__6858 = Math.Min(Math.Max((this.pixels + delta), this.minScrollExtent), this.maxScrollExtent);
-        if ((targetPixels__6858 != this.pixels))
+        double targetPixels = Math.Min(Math.Max((this.pixels + delta), this.minScrollExtent), this.maxScrollExtent);
+        if ((targetPixels != this.pixels))
         {
             goIdle();
             updateUserScrollDirection(((-delta > 0.0) ? global::Doroti.Framework.Rendering.ScrollDirection.forward : global::Doroti.Framework.Rendering.ScrollDirection.reverse));
-            double oldPixels__7130 = this.pixels;
+            double oldPixels = this.pixels;
             this.isScrollingNotifier.value = true;
-            forcePixels(targetPixels__6858);
+            forcePixels(targetPixels);
             didStartScroll();
-            didUpdateScrollPositionBy((this.pixels - oldPixels__7130));
+            didUpdateScrollPositionBy((this.pixels - oldPixels));
             didEndScroll();
             goBallistic(0.0);
         }
@@ -172,31 +172,31 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         goIdle();
         if ((this.pixels != value))
         {
-            double oldPixels__7724 = this.pixels;
+            double oldPixels = this.pixels;
             forcePixels(value);
             didStartScroll();
-            didUpdateScrollPositionBy((this.pixels - oldPixels__7724));
+            didUpdateScrollPositionBy((this.pixels - oldPixels));
             didEndScroll();
         }
     }
 
     public override ScrollHoldController hold(global::System.Action holdCancelCallback)
     {
-        double previousVelocity__7972 = this.activity!.velocity;
-        var holdActivity__8021 = new HoldScrollActivity(@delegate: this, onHoldCanceled: () => holdCancelCallback());
-        beginActivity(holdActivity__8021);
-        _heldPreviousVelocity = previousVelocity__7972;
-        return ((ScrollHoldController)(object?)holdActivity__8021);
+        double previousVelocity = this.activity!.velocity;
+        var holdActivity = new HoldScrollActivity(@delegate: this, onHoldCanceled: () => holdCancelCallback());
+        beginActivity(holdActivity);
+        _heldPreviousVelocity = previousVelocity;
+        return ((ScrollHoldController)(object?)holdActivity);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Gestures.Drag drag(global::Doroti.Framework.Gestures.DragStartDetails details, global::System.Action dragCancelCallback)
     {
-        var drag__8351 = new ScrollDragController(@delegate: this, details: details, onDragCanceled: () => dragCancelCallback(), carriedVelocity: this.physics.carriedMomentum(this._heldPreviousVelocity), motionStartDistanceThreshold: ((ScrollPhysics)this.physics).dragStartDistanceMotionThreshold);
-        beginActivity(new DragScrollActivity(this, drag__8351));
+        var dragLocal = new ScrollDragController(@delegate: this, details: details, onDragCanceled: () => dragCancelCallback(), carriedVelocity: this.physics.carriedMomentum(this._heldPreviousVelocity), motionStartDistanceThreshold: ((ScrollPhysics)this.physics).dragStartDistanceMotionThreshold);
+        beginActivity(new DragScrollActivity(this, dragLocal));
         DartRuntimePrimitives.Assert(() => (this._currentDrag is null));
-        _currentDrag = drag__8351;
-        return ((global::Doroti.Framework.Gestures.Drag)(object?)drag__8351);
+        _currentDrag = dragLocal;
+        return ((global::Doroti.Framework.Gestures.Drag)(object?)dragLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

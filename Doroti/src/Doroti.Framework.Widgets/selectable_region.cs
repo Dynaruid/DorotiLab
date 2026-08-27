@@ -46,11 +46,11 @@ public class SelectableRegion : StatefulWidget
 
     public static List<ContextMenuButtonItem> getSelectableButtonItems(global::Doroti.Framework.Rendering.SelectionGeometry selectionGeometry, global::System.Action onCopy, global::System.Action onSelectAll, global::System.Action? onShare)
     {
-        var canCopy__12928 = (object.Equals(((global::Doroti.Framework.Rendering.SelectionGeometry)selectionGeometry).status, global::Doroti.Framework.Rendering.SelectionStatus.uncollapsed));
-        bool canSelectAll__13010 = ((global::Doroti.Framework.Rendering.SelectionGeometry)selectionGeometry).hasContent;
-        bool platformCanShare__13123 = (!global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb && (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform switch { global::Doroti.Framework.Foundation.TargetPlatform.android => (object.Equals(((global::Doroti.Framework.Rendering.SelectionGeometry)selectionGeometry).status, global::Doroti.Framework.Rendering.SelectionStatus.uncollapsed)), global::Doroti.Framework.Foundation.TargetPlatform.macOS or global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or global::Doroti.Framework.Foundation.TargetPlatform.linux => false, global::Doroti.Framework.Foundation.TargetPlatform.windows => false, global::Doroti.Framework.Foundation.TargetPlatform.iOS => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        bool canShare__13790 = ((onShare is not null) && platformCanShare__13123);
-        var showShareBeforeSelectAll__13918 = (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.android));
+        var canCopy = (object.Equals(((global::Doroti.Framework.Rendering.SelectionGeometry)selectionGeometry).status, global::Doroti.Framework.Rendering.SelectionStatus.uncollapsed));
+        bool canSelectAll = ((global::Doroti.Framework.Rendering.SelectionGeometry)selectionGeometry).hasContent;
+        bool platformCanShare = (!global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb && (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform switch { global::Doroti.Framework.Foundation.TargetPlatform.android => (object.Equals(((global::Doroti.Framework.Rendering.SelectionGeometry)selectionGeometry).status, global::Doroti.Framework.Rendering.SelectionStatus.uncollapsed)), global::Doroti.Framework.Foundation.TargetPlatform.macOS or global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or global::Doroti.Framework.Foundation.TargetPlatform.linux => false, global::Doroti.Framework.Foundation.TargetPlatform.windows => false, global::Doroti.Framework.Foundation.TargetPlatform.iOS => false, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        bool canShare = ((onShare is not null) && platformCanShare);
+        var showShareBeforeSelectAll = (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.android));
         return new List<ContextMenuButtonItem>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -144,15 +144,15 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
         }
-        Orientation orientation__20389 = MediaQuery.orientationOf(this.context);
+        Orientation orientation = MediaQuery.orientationOf(this.context);
         if ((this._lastOrientation is null))
         {
-            _lastOrientation = orientation__20389;
+            _lastOrientation = orientation;
             return;
         }
-        if ((!object.Equals(orientation__20389, this._lastOrientation)))
+        if ((!object.Equals(orientation, this._lastOrientation)))
         {
-            _lastOrientation = orientation__20389;
+            _lastOrientation = orientation;
             hideToolbar((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.android)));
         }
     }
@@ -215,9 +215,9 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _updateSelectionStatus()
     {
-        global::Doroti.Framework.Rendering.SelectionGeometry geometry__22896 = this._selectionDelegate.value;
-        global::Doroti.Framework.Services.TextSelection selection__22957 = (((global::Doroti.Framework.Rendering.SelectionGeometry)geometry__22896).status switch { global::Doroti.Framework.Rendering.SelectionStatus.uncollapsed => new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: 1L), global::Doroti.Framework.Rendering.SelectionStatus.collapsed => new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: 1L), global::Doroti.Framework.Rendering.SelectionStatus.none => global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: 1L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        textEditingValue = new global::Doroti.Framework.Services.TextEditingValue(text: "__", selection: selection__22957);
+        global::Doroti.Framework.Rendering.SelectionGeometry geometry = this._selectionDelegate.value;
+        global::Doroti.Framework.Services.TextSelection selectionLocal = (((global::Doroti.Framework.Rendering.SelectionGeometry)geometry).status switch { global::Doroti.Framework.Rendering.SelectionStatus.uncollapsed => new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: 1L), global::Doroti.Framework.Rendering.SelectionStatus.collapsed => new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: 1L), global::Doroti.Framework.Rendering.SelectionStatus.none => global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: 1L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        textEditingValue = new global::Doroti.Framework.Services.TextEditingValue(text: "__", selection: selectionLocal);
         if (this._hasSelectionOverlayGeometry)
         {
             _updateSelectionOverlay();
@@ -262,7 +262,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual long _getEffectiveConsecutiveTapCount(long rawCount)
     {
-        var maxConsecutiveTap__25100 = 3L;
+        var maxConsecutiveTap = 3L;
         switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
             case global::Doroti.Framework.Foundation.TargetPlatform.android:
@@ -270,19 +270,19 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                 {
                     if (((this._lastPointerDeviceKind is not null) && (!object.Equals(this._lastPointerDeviceKind, PointerDeviceKind.mouse))))
                     {
-                        maxConsecutiveTap__25100 = 2L;
+                        maxConsecutiveTap = 2L;
                     }
-                    return ((rawCount <= maxConsecutiveTap__25100) ? rawCount : ((((rawCount % maxConsecutiveTap__25100) == 0L) ? maxConsecutiveTap__25100 : (rawCount % maxConsecutiveTap__25100))));
+                    return ((rawCount <= maxConsecutiveTap) ? rawCount : ((((rawCount % maxConsecutiveTap) == 0L) ? maxConsecutiveTap : (rawCount % maxConsecutiveTap))));
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.linux:
                 {
-                    return ((rawCount <= maxConsecutiveTap__25100) ? rawCount : ((((rawCount % maxConsecutiveTap__25100) == 0L) ? maxConsecutiveTap__25100 : (rawCount % maxConsecutiveTap__25100))));
+                    return ((rawCount <= maxConsecutiveTap) ? rawCount : ((((rawCount % maxConsecutiveTap) == 0L) ? maxConsecutiveTap : (rawCount % maxConsecutiveTap))));
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
             case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
             case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                 {
-                    return Math.Min(rawCount, maxConsecutiveTap__25100);
+                    return Math.Min(rawCount, maxConsecutiveTap);
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -377,8 +377,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                         case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                             {
                                 hideToolbar();
-                                bool isShiftPressedValid__32233 = (this._isShiftPressed && (this._selectionDelegate.value.startSelectionPoint is not null));
-                                if (isShiftPressedValid__32233)
+                                bool isShiftPressedValid = (this._isShiftPressed && (this._selectionDelegate.value.startSelectionPoint is not null));
+                                if (isShiftPressedValid)
                                 {
                                     _selectEndTo(offset: ((global::Doroti.Framework.Gestures.TapDragDownDetails)details).globalPosition);
                                     this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
@@ -559,14 +559,14 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     internal virtual void _handleMouseDragEnd(global::Doroti.Framework.Gestures.TapDragEndDetails details)
     {
         DartRuntimePrimitives.Assert(() => (this._lastPointerDeviceKind is not null));
-        bool isPointerPrecise__38694 = SelectableRegionState._isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(this._lastPointerDeviceKind));
-        bool shouldShowSelectionOverlayOnMobile__39052 = !isPointerPrecise__38694;
+        bool isPointerPrecise = SelectableRegionState._isPrecisePointerDevice(DartRuntimePrimitives.RequireValue(this._lastPointerDeviceKind));
+        bool shouldShowSelectionOverlayOnMobile = !isPointerPrecise;
         switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
             case global::Doroti.Framework.Foundation.TargetPlatform.android:
             case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
                 {
-                    if (shouldShowSelectionOverlayOnMobile__39052)
+                    if (shouldShowSelectionOverlayOnMobile)
                     {
                         _showHandles();
                         _showToolbar();
@@ -575,7 +575,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
                 {
-                    if (shouldShowSelectionOverlayOnMobile__39052)
+                    if (shouldShowSelectionOverlayOnMobile)
                     {
                         _showToolbar();
                     }
@@ -597,8 +597,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     {
         if (((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) && _positionIsOnActiveSelection(globalPosition: ((global::Doroti.Framework.Gestures.TapDragUpDetails)details).globalPosition)))
         {
-            bool toolbarIsVisible__40099 = (this._selectionOverlay?.toolbarIsVisible ?? false);
-            if (toolbarIsVisible__40099)
+            bool toolbarIsVisibleLocal = (this._selectionOverlay?.toolbarIsVisible ?? false);
+            if (toolbarIsVisibleLocal)
             {
                 hideToolbar(false);
             }
@@ -632,13 +632,13 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                 }
             case 2L:
                 {
-                    bool isPointerPrecise__40938 = SelectableRegionState._isPrecisePointerDevice(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).kind);
+                    bool isPointerPrecise = SelectableRegionState._isPrecisePointerDevice(((global::Doroti.Framework.Gestures.TapDragUpDetails)details).kind);
                     switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
                     {
                         case global::Doroti.Framework.Foundation.TargetPlatform.android:
                         case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
                             {
-                                if (!isPointerPrecise__40938)
+                                if (!isPointerPrecise)
                                 {
                                     _showHandles();
                                     _showToolbar();
@@ -647,7 +647,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                             }
                         case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
                             {
-                                if (!isPointerPrecise__40938)
+                                if (!isPointerPrecise)
                                 {
                                     if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
                                     {
@@ -677,10 +677,10 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         {
             return;
         }
-        global::Doroti.Framework.Rendering.SelectedContent? content__42306 = ((global::Doroti.Framework.Rendering.SelectedContent?)(object?)this._selectable?.getSelectedContent());
-        if ((this._lastSelectedContent?.plainText != content__42306?.plainText))
+        global::Doroti.Framework.Rendering.SelectedContent? content = ((global::Doroti.Framework.Rendering.SelectedContent?)(object?)this._selectable?.getSelectedContent());
+        if ((this._lastSelectedContent?.plainText != content?.plainText))
         {
-            _lastSelectedContent = content__42306;
+            _lastSelectedContent = content;
             ((SelectableRegion)(object)this.widget).onSelectionChanged!?.Invoke(this._lastSelectedContent);
         }
     }
@@ -719,11 +719,11 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual bool _positionIsOnActiveSelection(Offset globalPosition)
     {
-        foreach (global::Doroti.Ui.Rect selectionRect__43815 in this._selectionDelegate.value.selectionRects)
+        foreach (global::Doroti.Ui.Rect selectionRect in this._selectionDelegate.value.selectionRects)
         {
-            Matrix4 transform__43895 = ((Matrix4)(object?)this._selectable!.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
-            global::Doroti.Ui.Rect globalRect__43959 = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform__43895, selectionRect__43815));
-            if (globalRect__43959.contains(globalPosition))
+            Matrix4 transform = ((Matrix4)(object?)this._selectable!.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
+            global::Doroti.Ui.Rect globalRect = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform, selectionRect));
+            if (globalRect.contains(globalPosition))
             {
                 return true;
             }
@@ -734,8 +734,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _handleRightClickDown(global::Doroti.Framework.Gestures.TapDownDetails details)
     {
-        global::Doroti.Ui.Offset? previousSecondaryTapDownPosition__44205 = ((global::Doroti.Ui.Offset?)(object?)this._lastSecondaryTapDownPosition);
-        bool toolbarIsVisible__44286 = (this._selectionOverlay?.toolbarIsVisible ?? false);
+        global::Doroti.Ui.Offset? previousSecondaryTapDownPosition = ((global::Doroti.Ui.Offset?)(object?)this._lastSecondaryTapDownPosition);
+        bool toolbarIsVisibleLocal = (this._selectionOverlay?.toolbarIsVisible ?? false);
         _lastSecondaryTapDownPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition;
         this._focusNode.requestFocus();
         switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
@@ -744,8 +744,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
             case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
             case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                 {
-                    bool lastSecondaryTapDownPositionWasOnActiveSelection__44748 = _positionIsOnActiveSelection(globalPosition: ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition);
-                    if (lastSecondaryTapDownPositionWasOnActiveSelection__44748)
+                    bool lastSecondaryTapDownPositionWasOnActiveSelection = _positionIsOnActiveSelection(globalPosition: ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition);
+                    if (lastSecondaryTapDownPositionWasOnActiveSelection)
                     {
                         _lastSecondaryTapDownPosition = ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition;
                         _showHandles();
@@ -763,7 +763,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                 {
-                    if (((object.Equals(previousSecondaryTapDownPosition__44205, this._lastSecondaryTapDownPosition)) && toolbarIsVisible__44286))
+                    if (((object.Equals(previousSecondaryTapDownPosition, this._lastSecondaryTapDownPosition)) && toolbarIsVisibleLocal))
                     {
                         hideToolbar();
                         return;
@@ -773,13 +773,13 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.linux:
                 {
-                    if (toolbarIsVisible__44286)
+                    if (toolbarIsVisibleLocal)
                     {
                         hideToolbar();
                         return;
                     }
-                    bool lastSecondaryTapDownPositionWasOnActiveSelection__46006 = _positionIsOnActiveSelection(globalPosition: ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition);
-                    if (!lastSecondaryTapDownPositionWasOnActiveSelection__46006)
+                    bool lastSecondaryTapDownPositionWasOnActiveSelectionLocal = _positionIsOnActiveSelection(globalPosition: ((global::Doroti.Framework.Gestures.TapDownDetails)details).globalPosition);
+                    if (!lastSecondaryTapDownPositionWasOnActiveSelectionLocal)
                     {
                         _collapseSelectionAt(offset: DartRuntimePrimitives.RequireValue(this._lastSecondaryTapDownPosition));
                     }
@@ -819,8 +819,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual void _onAnyDragEnd(global::Doroti.Framework.Gestures.DragEndDetails details)
     {
-        bool draggingHandles__48379 = ((this._selectionOverlay is not null) && ((this._selectionOverlay!.isDraggingStartHandle || this._selectionOverlay!.isDraggingEndHandle)));
-        if (!draggingHandles__48379)
+        bool draggingHandles = ((this._selectionOverlay is not null) && ((this._selectionOverlay!.isDraggingStartHandle || this._selectionOverlay!.isDraggingEndHandle)));
+        if (!draggingHandles)
         {
             this._selectionOverlay!.hideMagnifier();
             _showToolbar();
@@ -868,9 +868,9 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     internal virtual void _handleSelectionStartHandleDragStart(global::Doroti.Framework.Gestures.DragStartDetails details)
     {
         DartRuntimePrimitives.Assert(() => (this._selectionDelegate.value.startSelectionPoint is not null));
-        global::Doroti.Ui.Offset localPosition__50870 = ((global::Doroti.Ui.Offset)(object?)this._selectionDelegate.value.startSelectionPoint!.localPosition);
-        Matrix4 globalTransform__50965 = ((Matrix4)(object?)this._selectable!.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
-        _selectionStartHandleDragPosition = MatrixUtils.transformPoint(globalTransform__50965, localPosition__50870);
+        global::Doroti.Ui.Offset localPositionLocal = ((global::Doroti.Ui.Offset)(object?)this._selectionDelegate.value.startSelectionPoint!.localPosition);
+        Matrix4 globalTransform = ((Matrix4)(object?)this._selectable!.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
+        _selectionStartHandleDragPosition = MatrixUtils.transformPoint(globalTransform, localPositionLocal);
         this._selectionOverlay!.showMagnifier(_buildInfoForMagnifier(((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition, this._selectionDelegate.value.startSelectionPoint!));
         _updateSelectedContentIfNeeded();
     }
@@ -888,9 +888,9 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     internal virtual void _handleSelectionEndHandleDragStart(global::Doroti.Framework.Gestures.DragStartDetails details)
     {
         DartRuntimePrimitives.Assert(() => (this._selectionDelegate.value.endSelectionPoint is not null));
-        global::Doroti.Ui.Offset localPosition__52237 = ((global::Doroti.Ui.Offset)(object?)this._selectionDelegate.value.endSelectionPoint!.localPosition);
-        Matrix4 globalTransform__52330 = ((Matrix4)(object?)this._selectable!.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
-        _selectionEndHandleDragPosition = MatrixUtils.transformPoint(globalTransform__52330, localPosition__52237);
+        global::Doroti.Ui.Offset localPositionLocal = ((global::Doroti.Ui.Offset)(object?)this._selectionDelegate.value.endSelectionPoint!.localPosition);
+        Matrix4 globalTransform = ((Matrix4)(object?)this._selectable!.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
+        _selectionEndHandleDragPosition = MatrixUtils.transformPoint(globalTransform, localPositionLocal);
         this._selectionOverlay!.showMagnifier(_buildInfoForMagnifier(((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition, this._selectionDelegate.value.endSelectionPoint!));
         _updateSelectedContentIfNeeded();
     }
@@ -907,11 +907,11 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal virtual MagnifierInfo _buildInfoForMagnifier(Offset globalGesturePosition, global::Doroti.Framework.Rendering.SelectionPoint selectionPoint)
     {
-        Vector3 globalTransform__53564 = this._selectable!.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)).getTranslation();
-        var globalTransformAsOffset__53644 = new global::Doroti.Ui.Offset(globalTransform__53564.x, globalTransform__53564.y);
-        global::Doroti.Ui.Offset globalSelectionPointPosition__53733 = ((global::Doroti.Ui.Offset)(object?)(((global::Doroti.Framework.Rendering.SelectionPoint)selectionPoint).localPosition + globalTransformAsOffset__53644));
-        var caretRect__53838 = global::Doroti.Ui.Rect.fromLTWH(globalSelectionPointPosition__53733.dx, (globalSelectionPointPosition__53733.dy - ((global::Doroti.Framework.Rendering.SelectionPoint)selectionPoint).lineHeight), 0, ((global::Doroti.Framework.Rendering.SelectionPoint)selectionPoint).lineHeight);
-        return new MagnifierInfo(globalGesturePosition: globalGesturePosition, caretRect: caretRect__53838, fieldBounds: (globalTransformAsOffset__53644 & this._selectable!.size), currentLineBoundaries: (globalTransformAsOffset__53644 & this._selectable!.size));
+        Vector3 globalTransform = this._selectable!.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)).getTranslation();
+        var globalTransformAsOffset = new global::Doroti.Ui.Offset(globalTransform.x, globalTransform.y);
+        global::Doroti.Ui.Offset globalSelectionPointPosition = ((global::Doroti.Ui.Offset)(object?)(((global::Doroti.Framework.Rendering.SelectionPoint)selectionPoint).localPosition + globalTransformAsOffset));
+        var caretRectLocal = global::Doroti.Ui.Rect.fromLTWH(globalSelectionPointPosition.dx, (globalSelectionPointPosition.dy - ((global::Doroti.Framework.Rendering.SelectionPoint)selectionPoint).lineHeight), 0, ((global::Doroti.Framework.Rendering.SelectionPoint)selectionPoint).lineHeight);
+        return new MagnifierInfo(globalGesturePosition: globalGesturePosition, caretRect: caretRectLocal, fieldBounds: (globalTransformAsOffset & this._selectable!.size), currentLineBoundaries: (globalTransformAsOffset & this._selectable!.size));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -922,9 +922,9 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         {
             return;
         }
-        global::Doroti.Framework.Rendering.SelectionPoint? start__54437 = this._selectionDelegate.value.startSelectionPoint;
-        global::Doroti.Framework.Rendering.SelectionPoint? end__54517 = this._selectionDelegate.value.endSelectionPoint;
-        _selectionOverlay = new SelectionOverlay(context: this.context, debugRequiredFor: this.widget, startHandleType: (start__54437?.handleType ?? global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed), lineHeightAtStart: (start__54437?.lineHeight ?? end__54517!.lineHeight), onStartHandleDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleSelectionStartHandleDragStart, onStartHandleDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleSelectionStartHandleDragUpdate, onStartHandleDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._onAnyDragEnd, endHandleType: (end__54517?.handleType ?? global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed), lineHeightAtEnd: (end__54517?.lineHeight ?? start__54437!.lineHeight), onEndHandleDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleSelectionEndHandleDragStart, onEndHandleDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleSelectionEndHandleDragUpdate, onEndHandleDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._onAnyDragEnd, selectionEndpoints: this.selectionEndpoints, selectionControls: ((SelectableRegion)(object)this.widget).selectionControls, selectionDelegate: this, clipboardStatus: ((ClipboardStatusNotifier)(object)null), startHandleLayerLink: this._startHandleLayerLink, endHandleLayerLink: this._endHandleLayerLink, toolbarLayerLink: this._toolbarLayerLink, magnifierConfiguration: ((SelectableRegion)(object)this.widget).magnifierConfiguration);
+        global::Doroti.Framework.Rendering.SelectionPoint? start = this._selectionDelegate.value.startSelectionPoint;
+        global::Doroti.Framework.Rendering.SelectionPoint? end = this._selectionDelegate.value.endSelectionPoint;
+        _selectionOverlay = new SelectionOverlay(context: this.context, debugRequiredFor: this.widget, startHandleType: (start?.handleType ?? global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed), lineHeightAtStart: (start?.lineHeight ?? end!.lineHeight), onStartHandleDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleSelectionStartHandleDragStart, onStartHandleDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleSelectionStartHandleDragUpdate, onStartHandleDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._onAnyDragEnd, endHandleType: (end?.handleType ?? global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed), lineHeightAtEnd: (end?.lineHeight ?? start!.lineHeight), onEndHandleDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleSelectionEndHandleDragStart, onEndHandleDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleSelectionEndHandleDragUpdate, onEndHandleDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._onAnyDragEnd, selectionEndpoints: this.selectionEndpoints, selectionControls: ((SelectableRegion)(object)this.widget).selectionControls, selectionDelegate: this, clipboardStatus: ((ClipboardStatusNotifier)(object)null), startHandleLayerLink: this._startHandleLayerLink, endHandleLayerLink: this._endHandleLayerLink, toolbarLayerLink: this._toolbarLayerLink, magnifierConfiguration: ((SelectableRegion)(object)this.widget).magnifierConfiguration);
     }
 
     internal virtual void _updateSelectionOverlay()
@@ -934,15 +934,15 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
             return;
         }
         DartRuntimePrimitives.Assert(() => this._hasSelectionOverlayGeometry);
-        global::Doroti.Framework.Rendering.SelectionPoint? start__55826 = this._selectionDelegate.value.startSelectionPoint;
-        global::Doroti.Framework.Rendering.SelectionPoint? end__55906 = this._selectionDelegate.value.endSelectionPoint;
+        global::Doroti.Framework.Rendering.SelectionPoint? start = this._selectionDelegate.value.startSelectionPoint;
+        global::Doroti.Framework.Rendering.SelectionPoint? end = this._selectionDelegate.value.endSelectionPoint;
         DartRuntimePrimitives.Ignore(((Func<SelectionOverlay>)(() =>
 {
     var __cascade = this._selectionOverlay!;
-    __cascade.startHandleType = (start__55826?.handleType ?? global::Doroti.Framework.Rendering.TextSelectionHandleType.left);
-    __cascade.lineHeightAtStart = (start__55826?.lineHeight ?? end__55906!.lineHeight);
-    __cascade.endHandleType = (end__55906?.handleType ?? global::Doroti.Framework.Rendering.TextSelectionHandleType.right);
-    __cascade.lineHeightAtEnd = (end__55906?.lineHeight ?? start__55826!.lineHeight);
+    __cascade.startHandleType = (start?.handleType ?? global::Doroti.Framework.Rendering.TextSelectionHandleType.left);
+    __cascade.lineHeightAtStart = (start?.lineHeight ?? end!.lineHeight);
+    __cascade.endHandleType = (end?.handleType ?? global::Doroti.Framework.Rendering.TextSelectionHandleType.right);
+    __cascade.lineHeightAtEnd = (end?.lineHeight ?? start!.lineHeight);
     __cascade.selectionEndpoints = this.selectionEndpoints;
     return __cascade;
 }))());
@@ -1059,22 +1059,22 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
 
     internal async virtual Future _copy()
     {
-        global::Doroti.Framework.Rendering.SelectedContent? data__66534 = ((global::Doroti.Framework.Rendering.SelectedContent?)(object?)this._selectable?.getSelectedContent());
-        if ((data__66534 is null))
+        global::Doroti.Framework.Rendering.SelectedContent? data = ((global::Doroti.Framework.Rendering.SelectedContent?)(object?)this._selectable?.getSelectedContent());
+        if ((data is null))
         {
             return;
         }
-        await Clipboard.setData(new global::Doroti.Framework.Services.ClipboardData(text: ((global::Doroti.Framework.Rendering.SelectedContent)data__66534).plainText));
+        await Clipboard.setData(new global::Doroti.Framework.Services.ClipboardData(text: ((global::Doroti.Framework.Rendering.SelectedContent)data).plainText));
     }
 
     internal async virtual Future _share()
     {
-        global::Doroti.Framework.Rendering.SelectedContent? data__66750 = ((global::Doroti.Framework.Rendering.SelectedContent?)(object?)this._selectable?.getSelectedContent());
-        if ((data__66750 is null))
+        global::Doroti.Framework.Rendering.SelectedContent? data = ((global::Doroti.Framework.Rendering.SelectedContent?)(object?)this._selectable?.getSelectedContent());
+        if ((data is null))
         {
             return;
         }
-        await global::Doroti.Framework.Services.SystemChannels.platform.invokeMethod<object>("Share.invoke", ((global::Doroti.Framework.Rendering.SelectedContent)data__66750).plainText);
+        await global::Doroti.Framework.Services.SystemChannels.platform.invokeMethod<object>("Share.invoke", ((global::Doroti.Framework.Rendering.SelectedContent)data).plainText);
     }
 
     public virtual TextSelectionToolbarAnchors contextMenuAnchors
@@ -1083,12 +1083,12 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         {
             if ((this._lastSecondaryTapDownPosition is not null))
             {
-                var anchors__67246 = new TextSelectionToolbarAnchors(primaryAnchor: DartRuntimePrimitives.RequireValue(this._lastSecondaryTapDownPosition));
+                var anchors = new TextSelectionToolbarAnchors(primaryAnchor: DartRuntimePrimitives.RequireValue(this._lastSecondaryTapDownPosition));
                 _lastSecondaryTapDownPosition = null;
-                return anchors__67246;
+                return anchors;
             }
-            var renderBox__67586 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-            return TextSelectionToolbarAnchors.CreateFromSelection(renderBox: renderBox__67586, startGlyphHeight: this.startGlyphHeight, endGlyphHeight: this.endGlyphHeight, selectionEndpoints: this.selectionEndpoints);
+            var renderBoxLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
+            return TextSelectionToolbarAnchors.CreateFromSelection(renderBox: renderBoxLocal, startGlyphHeight: this.startGlyphHeight, endGlyphHeight: this.endGlyphHeight, selectionEndpoints: this.selectionEndpoints);
             return default!;
         }
     }
@@ -1098,25 +1098,25 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         {
             return DartRuntimePrimitives.RequireValue(this._adjustingSelectionEnd);
         }
-        bool isReversed__68050 = default!;
-        global::Doroti.Framework.Rendering.SelectionPoint start__68087 = this._selectionDelegate.value.startSelectionPoint!;
-        global::Doroti.Framework.Rendering.SelectionPoint end__68167 = this._selectionDelegate.value.endSelectionPoint!;
-        if ((((global::Doroti.Framework.Rendering.SelectionPoint)start__68087).localPosition.dy > ((global::Doroti.Framework.Rendering.SelectionPoint)end__68167).localPosition.dy))
+        bool isReversed = default!;
+        global::Doroti.Framework.Rendering.SelectionPoint start = this._selectionDelegate.value.startSelectionPoint!;
+        global::Doroti.Framework.Rendering.SelectionPoint end = this._selectionDelegate.value.endSelectionPoint!;
+        if ((((global::Doroti.Framework.Rendering.SelectionPoint)start).localPosition.dy > ((global::Doroti.Framework.Rendering.SelectionPoint)end).localPosition.dy))
         {
-            isReversed__68050 = true;
+            isReversed = true;
         }
         else
         {
-            if ((((global::Doroti.Framework.Rendering.SelectionPoint)start__68087).localPosition.dy < ((global::Doroti.Framework.Rendering.SelectionPoint)end__68167).localPosition.dy))
+            if ((((global::Doroti.Framework.Rendering.SelectionPoint)start).localPosition.dy < ((global::Doroti.Framework.Rendering.SelectionPoint)end).localPosition.dy))
             {
-                isReversed__68050 = false;
+                isReversed = false;
             }
             else
             {
-                isReversed__68050 = (((global::Doroti.Framework.Rendering.SelectionPoint)start__68087).localPosition.dx > ((global::Doroti.Framework.Rendering.SelectionPoint)end__68167).localPosition.dx);
+                isReversed = (((global::Doroti.Framework.Rendering.SelectionPoint)start).localPosition.dx > ((global::Doroti.Framework.Rendering.SelectionPoint)end).localPosition.dx);
             }
         }
-        return DartRuntimePrimitives.RequireValue(_adjustingSelectionEnd = (forward != isReversed__68050));
+        return DartRuntimePrimitives.RequireValue(_adjustingSelectionEnd = (forward != isReversed));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1139,11 +1139,11 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         {
             return;
         }
-        bool adjustingSelectionExtend__69361 = _determineIsAdjustingSelectionEnd(forward);
-        global::Doroti.Framework.Rendering.SelectionPoint baseLinePoint__69457 = (adjustingSelectionExtend__69361 ? this._selectionDelegate.value.endSelectionPoint! : this._selectionDelegate.value.startSelectionPoint!);
-        _directionalHorizontalBaseline ??= ((global::Doroti.Framework.Rendering.SelectionPoint)baseLinePoint__69457).localPosition.dx;
-        global::Doroti.Ui.Offset globalSelectionPointOffset__69697 = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)((dynamic)this.context.findRenderObject()!).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(this._directionalHorizontalBaseline), 0)));
-        this._selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent(isEnd: DartRuntimePrimitives.RequireValue(this._adjustingSelectionEnd), direction: (forward ? global::Doroti.Framework.Rendering.SelectionExtendDirection.nextLine : global::Doroti.Framework.Rendering.SelectionExtendDirection.previousLine), dx: globalSelectionPointOffset__69697.dx));
+        bool adjustingSelectionExtend = _determineIsAdjustingSelectionEnd(forward);
+        global::Doroti.Framework.Rendering.SelectionPoint baseLinePoint = (adjustingSelectionExtend ? this._selectionDelegate.value.endSelectionPoint! : this._selectionDelegate.value.startSelectionPoint!);
+        _directionalHorizontalBaseline ??= ((global::Doroti.Framework.Rendering.SelectionPoint)baseLinePoint).localPosition.dx;
+        global::Doroti.Ui.Offset globalSelectionPointOffset = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(((Matrix4)((dynamic)this.context.findRenderObject()!).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null))), new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(this._directionalHorizontalBaseline), 0)));
+        this._selectable?.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent(isEnd: DartRuntimePrimitives.RequireValue(this._adjustingSelectionEnd), direction: (forward ? global::Doroti.Framework.Rendering.SelectionExtendDirection.nextLine : global::Doroti.Framework.Rendering.SelectionExtendDirection.previousLine), dx: globalSelectionPointOffset.dx));
         _updateSelectedContentIfNeeded();
         this._selectionStatusNotifier.value = SelectableRegionSelectionStatus.changing;
         _finalizeSelectableRegionStatus();
@@ -1238,25 +1238,25 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     {
         get
         {
-            var buttonItems__73199 = new List<ContextMenuButtonItem>();
-            global::Doroti.Framework.Rendering.SelectedContent? data__73267 = ((global::Doroti.Framework.Rendering.SelectedContent?)(object?)this._selectable?.getSelectedContent());
-            if ((data__73267 is null))
+            var buttonItems = new List<ContextMenuButtonItem>();
+            global::Doroti.Framework.Rendering.SelectedContent? data = ((global::Doroti.Framework.Rendering.SelectedContent?)(object?)this._selectable?.getSelectedContent());
+            if ((data is null))
             {
-                return buttonItems__73199;
+                return buttonItems;
             }
-            foreach (global::Doroti.Framework.Services.ProcessTextAction action__73399 in this._processTextActions)
+            foreach (global::Doroti.Framework.Services.ProcessTextAction action in this._processTextActions)
             {
-                buttonItems__73199.Add(new ContextMenuButtonItem(label: ((global::Doroti.Framework.Services.ProcessTextAction)action__73399).label, onPressed: ((global::System.Action)(async () =>
+                buttonItems.Add(new ContextMenuButtonItem(label: ((global::Doroti.Framework.Services.ProcessTextAction)action).label, onPressed: ((global::System.Action)(async () =>
                 {
-                    string selectedText__73574 = ((global::Doroti.Framework.Rendering.SelectedContent)data__73267).plainText;
-                    if ((selectedText__73574.Length != 0))
+                    string selectedText = ((global::Doroti.Framework.Rendering.SelectedContent)data).plainText;
+                    if ((selectedText.Length != 0))
                     {
-                        await this._processTextService.processTextAction(((global::Doroti.Framework.Services.ProcessTextAction)action__73399).id, selectedText__73574, true);
+                        await this._processTextService.processTextAction(((global::Doroti.Framework.Services.ProcessTextAction)action).id, selectedText, true);
                         hideToolbar();
                     }
                 }))));
             }
-            return buttonItems__73199;
+            return buttonItems;
             return default!;
         }
     }
@@ -1280,20 +1280,20 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     {
         get
         {
-            global::Doroti.Framework.Rendering.SelectionPoint? start__74334 = this._selectionDelegate.value.startSelectionPoint;
-            global::Doroti.Framework.Rendering.SelectionPoint? end__74414 = this._selectionDelegate.value.endSelectionPoint;
-            List<global::Doroti.Framework.Rendering.TextSelectionPoint> points__74498 = default!;
-            global::Doroti.Ui.Offset startLocalPosition__74523 = ((global::Doroti.Ui.Offset)(object?)(start__74334?.localPosition ?? end__74414!.localPosition));
-            global::Doroti.Ui.Offset endLocalPosition__74605 = ((global::Doroti.Ui.Offset)(object?)(end__74414?.localPosition ?? start__74334!.localPosition));
-            if ((startLocalPosition__74523.dy > endLocalPosition__74605.dy))
+            global::Doroti.Framework.Rendering.SelectionPoint? start = this._selectionDelegate.value.startSelectionPoint;
+            global::Doroti.Framework.Rendering.SelectionPoint? end = this._selectionDelegate.value.endSelectionPoint;
+            List<global::Doroti.Framework.Rendering.TextSelectionPoint> points = default!;
+            global::Doroti.Ui.Offset startLocalPosition = ((global::Doroti.Ui.Offset)(object?)(start?.localPosition ?? end!.localPosition));
+            global::Doroti.Ui.Offset endLocalPosition = ((global::Doroti.Ui.Offset)(object?)(end?.localPosition ?? start!.localPosition));
+            if ((startLocalPosition.dy > endLocalPosition.dy))
             {
-                points__74498 = new List<global::Doroti.Framework.Rendering.TextSelectionPoint> { new global::Doroti.Framework.Rendering.TextSelectionPoint(endLocalPosition__74605, TextDirection.ltr), new global::Doroti.Framework.Rendering.TextSelectionPoint(startLocalPosition__74523, TextDirection.ltr) };
+                points = new List<global::Doroti.Framework.Rendering.TextSelectionPoint> { new global::Doroti.Framework.Rendering.TextSelectionPoint(endLocalPosition, TextDirection.ltr), new global::Doroti.Framework.Rendering.TextSelectionPoint(startLocalPosition, TextDirection.ltr) };
             }
             else
             {
-                points__74498 = new List<global::Doroti.Framework.Rendering.TextSelectionPoint> { new global::Doroti.Framework.Rendering.TextSelectionPoint(startLocalPosition__74523, TextDirection.ltr), new global::Doroti.Framework.Rendering.TextSelectionPoint(endLocalPosition__74605, TextDirection.ltr) };
+                points = new List<global::Doroti.Framework.Rendering.TextSelectionPoint> { new global::Doroti.Framework.Rendering.TextSelectionPoint(startLocalPosition, TextDirection.ltr), new global::Doroti.Framework.Rendering.TextSelectionPoint(endLocalPosition, TextDirection.ltr) };
             }
-            return points__74498;
+            return points;
             return default!;
         }
     }
@@ -1397,10 +1397,10 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasOverlay(context));
-        Widget result__79288 = ((Widget)(object?)new SelectableRegionSelectionStatusScope(selectionStatusNotifier: this._selectionStatusNotifier, child: new SelectionContainer(registrar: this, @delegate: this._selectionDelegate, child: ((SelectableRegion)(object)this.widget).child)));
+        Widget result = ((Widget)(object?)new SelectableRegionSelectionStatusScope(selectionStatusNotifier: this._selectionStatusNotifier, child: new SelectionContainer(registrar: this, @delegate: this._selectionDelegate, child: ((SelectableRegion)(object)this.widget).child)));
         if (this._webContextMenuEnabled)
         {
-            result__79288 = DartRuntimePrimitives.ConvertValue<Widget>(new PlatformSelectableRegionContextMenuIo(child: result__79288));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new PlatformSelectableRegionContextMenuIo(child: result));
         }
         return ((Widget)(object?)new TapRegion(groupId: typeof(SelectableRegion), onTapOutside: ((global::System.Action<global::Doroti.Framework.Gestures.PointerDownEvent>)((@event) =>
         {
@@ -1408,7 +1408,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
             {
                 this._focusNode.unfocus();
             }
-        })), child: new CompositedTransformTarget(link: this._toolbarLayerLink, child: new RawGestureDetector(gestures: this._gestureRecognizers, behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, excludeFromSemantics: true, child: new Actions(actions: this._actions, child: Focus.CreateWithExternalFocusNode(includeSemantics: false, focusNode: this._focusNode, child: result__79288))))));
+        })), child: new CompositedTransformTarget(link: this._toolbarLayerLink, child: new RawGestureDetector(gestures: this._gestureRecognizers, behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, excludeFromSemantics: true, child: new Actions(actions: this._actions, child: Focus.CreateWithExternalFocusNode(includeSemantics: false, focusNode: this._focusNode, child: result))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1425,9 +1425,9 @@ internal abstract class _NonOverrideAction__selectable_region<T> : ContextAction
     public abstract object? invokeAction(T intent, BuildContext? context = null);
     public override object? invoke(T intent, BuildContext? context = null)
     {
-        if (this.callingAction is object callingAction__81081)
+        if (this.callingAction is object callingActionLocal)
         {
-            return ((dynamic)callingAction__81081).invoke(intent);
+            return ((dynamic)callingActionLocal).invoke(intent);
         }
         return invokeAction(intent, context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1568,11 +1568,11 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
         {
             return;
         }
-        long start__86948 = Math.Min(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
-        long end__87029 = Math.Max(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
-        for (var index__87107 = start__86948; (index__87107 <= end__87029); index__87107 += 1L)
+        long start = Math.Min(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
+        long end = Math.Max(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
+        for (var index = start; (index <= end); index += 1L)
         {
-            didReceiveSelectionEventFor(selectable: this.selectables[(int)(index__87107)]);
+            didReceiveSelectionEventFor(selectable: this.selectables[(int)(index)]);
         }
         _updateLastSelectionEdgeLocationsFromGeometries();
     }
@@ -1593,15 +1593,15 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
     {
         if (((this.currentSelectionStartIndex != -1L) && this.selectables[(int)(this.currentSelectionStartIndex)].value.hasSelection))
         {
-            global::Doroti.Framework.Rendering.Selectable start__88061 = this.selectables[(int)(this.currentSelectionStartIndex)];
-            global::Doroti.Ui.Offset localStartEdge__88129 = ((global::Doroti.Ui.Offset)(object?)(start__88061.value.startSelectionPoint!.localPosition + new global::Doroti.Ui.Offset(0, (-start__88061.value.startSelectionPoint!.lineHeight / 2L))));
-            updateLastSelectionEdgeLocation(globalSelectionEdgeLocation: MatrixUtils.transformPoint(start__88061.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)), localStartEdge__88129), forEnd: false);
+            global::Doroti.Framework.Rendering.Selectable start = this.selectables[(int)(this.currentSelectionStartIndex)];
+            global::Doroti.Ui.Offset localStartEdge = ((global::Doroti.Ui.Offset)(object?)(start.value.startSelectionPoint!.localPosition + new global::Doroti.Ui.Offset(0, (-start.value.startSelectionPoint!.lineHeight / 2L))));
+            updateLastSelectionEdgeLocation(globalSelectionEdgeLocation: MatrixUtils.transformPoint(start.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)), localStartEdge), forEnd: false);
         }
         if (((this.currentSelectionEndIndex != -1L) && this.selectables[(int)(this.currentSelectionEndIndex)].value.hasSelection))
         {
-            global::Doroti.Framework.Rendering.Selectable end__88626 = this.selectables[(int)(this.currentSelectionEndIndex)];
-            global::Doroti.Ui.Offset localEndEdge__88690 = ((global::Doroti.Ui.Offset)(object?)(end__88626.value.endSelectionPoint!.localPosition + new global::Doroti.Ui.Offset(0, (-end__88626.value.endSelectionPoint!.lineHeight / 2L))));
-            updateLastSelectionEdgeLocation(globalSelectionEdgeLocation: MatrixUtils.transformPoint(end__88626.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)), localEndEdge__88690), forEnd: true);
+            global::Doroti.Framework.Rendering.Selectable end = this.selectables[(int)(this.currentSelectionEndIndex)];
+            global::Doroti.Ui.Offset localEndEdge = ((global::Doroti.Ui.Offset)(object?)(end.value.endSelectionPoint!.localPosition + new global::Doroti.Ui.Offset(0, (-end.value.endSelectionPoint!.lineHeight / 2L))));
+            updateLastSelectionEdgeLocation(globalSelectionEdgeLocation: MatrixUtils.transformPoint(end.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)), localEndEdge), forEnd: true);
         }
     }
 
@@ -1626,33 +1626,33 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
 
     public override global::Doroti.Framework.Rendering.SelectionResult handleSelectAll(global::Doroti.Framework.Rendering.SelectAllSelectionEvent @event)
     {
-        global::Doroti.Framework.Rendering.SelectionResult result__90287 = base.handleSelectAll(@event);
+        global::Doroti.Framework.Rendering.SelectionResult result = base.handleSelectAll(@event);
         didReceiveSelectionBoundaryEvents();
-        return result__90287;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Rendering.SelectionResult handleSelectWord(global::Doroti.Framework.Rendering.SelectWordSelectionEvent @event)
     {
-        global::Doroti.Framework.Rendering.SelectionResult result__90498 = base.handleSelectWord(@event);
+        global::Doroti.Framework.Rendering.SelectionResult result = base.handleSelectWord(@event);
         didReceiveSelectionBoundaryEvents();
-        return result__90498;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Rendering.SelectionResult handleSelectParagraph(global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent @event)
     {
-        global::Doroti.Framework.Rendering.SelectionResult result__90720 = base.handleSelectParagraph(@event);
+        global::Doroti.Framework.Rendering.SelectionResult result = base.handleSelectParagraph(@event);
         didReceiveSelectionBoundaryEvents();
-        return result__90720;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Rendering.SelectionResult handleClearSelection(global::Doroti.Framework.Rendering.ClearSelectionEvent @event)
     {
-        global::Doroti.Framework.Rendering.SelectionResult result__90936 = base.handleClearSelection(@event);
+        global::Doroti.Framework.Rendering.SelectionResult result = base.handleClearSelection(@event);
         clearInternalSelectionState();
-        return result__90936;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1712,21 +1712,21 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
     {
         if (((this._lastEndEdgeUpdateGlobalPosition is not null) && this._hasReceivedEndEvent.Add(selectable)))
         {
-            var synthesizedEvent__93145 = global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: DartRuntimePrimitives.RequireValue(this._lastEndEdgeUpdateGlobalPosition));
+            var synthesizedEvent = global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: DartRuntimePrimitives.RequireValue(this._lastEndEdgeUpdateGlobalPosition));
             if ((this.currentSelectionEndIndex == -1L))
             {
-                handleSelectionEdgeUpdate(synthesizedEvent__93145);
+                handleSelectionEdgeUpdate(synthesizedEvent);
             }
-            selectable.dispatchSelectionEvent(synthesizedEvent__93145);
+            selectable.dispatchSelectionEvent(synthesizedEvent);
         }
         if (((this._lastStartEdgeUpdateGlobalPosition is not null) && this._hasReceivedStartEvent.Add(selectable)))
         {
-            var synthesizedEvent__93543 = new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: DartRuntimePrimitives.RequireValue(this._lastStartEdgeUpdateGlobalPosition));
+            var synthesizedEventLocal = new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: DartRuntimePrimitives.RequireValue(this._lastStartEdgeUpdateGlobalPosition));
             if ((this.currentSelectionStartIndex == -1L))
             {
-                handleSelectionEdgeUpdate(synthesizedEvent__93543);
+                handleSelectionEdgeUpdate(synthesizedEventLocal);
             }
-            selectable.dispatchSelectionEvent(synthesizedEvent__93543);
+            selectable.dispatchSelectionEvent(synthesizedEventLocal);
         }
     }
 
@@ -1740,9 +1740,9 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
         {
             handleSelectionEdgeUpdate(new global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent(globalPosition: DartRuntimePrimitives.RequireValue(this._lastStartEdgeUpdateGlobalPosition)));
         }
-        HashSet<global::Doroti.Framework.Rendering.Selectable> selectableSet__94304 = this.selectables.toSet();
-        this._hasReceivedEndEvent.removeWhere(((selectable) => !selectableSet__94304.Contains(selectable)));
-        this._hasReceivedStartEvent.removeWhere(((selectable) => !selectableSet__94304.Contains(selectable)));
+        HashSet<global::Doroti.Framework.Rendering.Selectable> selectableSet = this.selectables.toSet();
+        this._hasReceivedEndEvent.removeWhere(((selectable) => !selectableSet.Contains(selectable)));
+        this._hasReceivedStartEvent.removeWhere(((selectable) => !selectableSet.Contains(selectable)));
         base.didChangeSelectables();
     }
 
@@ -1827,63 +1827,63 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     internal virtual void _flushAdditions()
     {
-        List<global::Doroti.Framework.Rendering.Selectable> mergingSelectables__98387 = ((Func<List<global::Doroti.Framework.Rendering.Selectable>>)(() =>
+        List<global::Doroti.Framework.Rendering.Selectable> mergingSelectables = ((Func<List<global::Doroti.Framework.Rendering.Selectable>>)(() =>
 {
     var __cascade = this._additions.ToList();
     __cascade.sort(this.compareOrder);
     return __cascade;
 }))().ToList();
-        List<global::Doroti.Framework.Rendering.Selectable> existingSelectables__98476 = this.selectables.ToList();
+        List<global::Doroti.Framework.Rendering.Selectable> existingSelectables = this.selectables.ToList();
         selectables = new List<global::Doroti.Framework.Rendering.Selectable>();
-        var mergingIndex__98553 = 0L;
-        var existingIndex__98579 = 0L;
-        long selectionStartIndex__98606 = this.currentSelectionStartIndex;
-        long selectionEndIndex__98664 = this.currentSelectionEndIndex;
-        while (((mergingIndex__98553 < checked((long)(mergingSelectables__98387.Count))) || (existingIndex__98579 < checked((long)(existingSelectables__98476.Count)))))
+        var mergingIndex = 0L;
+        var existingIndex = 0L;
+        long selectionStartIndex = this.currentSelectionStartIndex;
+        long selectionEndIndex = this.currentSelectionEndIndex;
+        while (((mergingIndex < checked((long)(mergingSelectables.Count))) || (existingIndex < checked((long)(existingSelectables.Count)))))
         {
-            if (((mergingIndex__98553 >= checked((long)(mergingSelectables__98387.Count))) || (((existingIndex__98579 < checked((long)(existingSelectables__98476.Count))) && (this.compareOrder(existingSelectables__98476[(int)(existingIndex__98579)], mergingSelectables__98387[(int)(mergingIndex__98553)]) < 0L)))))
+            if (((mergingIndex >= checked((long)(mergingSelectables.Count))) || (((existingIndex < checked((long)(existingSelectables.Count))) && (this.compareOrder(existingSelectables[(int)(existingIndex)], mergingSelectables[(int)(mergingIndex)]) < 0L)))))
             {
-                if ((existingIndex__98579 == this.currentSelectionStartIndex))
+                if ((existingIndex == this.currentSelectionStartIndex))
                 {
-                    selectionStartIndex__98606 = checked((long)(this.selectables.Count));
+                    selectionStartIndex = checked((long)(this.selectables.Count));
                 }
-                if ((existingIndex__98579 == this.currentSelectionEndIndex))
+                if ((existingIndex == this.currentSelectionEndIndex))
                 {
-                    selectionEndIndex__98664 = checked((long)(this.selectables.Count));
+                    selectionEndIndex = checked((long)(this.selectables.Count));
                 }
-                this.selectables.Add(existingSelectables__98476[(int)(existingIndex__98579)]);
-                existingIndex__98579 += 1L;
+                this.selectables.Add(existingSelectables[(int)(existingIndex)]);
+                existingIndex += 1L;
                 continue;
             }
-            global::Doroti.Framework.Rendering.Selectable mergingSelectable__99565 = mergingSelectables__98387[(int)(mergingIndex__98553)];
-            if (((existingIndex__98579 < Math.Max(this.currentSelectionStartIndex, this.currentSelectionEndIndex)) && (existingIndex__98579 > Math.Min(this.currentSelectionStartIndex, this.currentSelectionEndIndex))))
+            global::Doroti.Framework.Rendering.Selectable mergingSelectable = mergingSelectables[(int)(mergingIndex)];
+            if (((existingIndex < Math.Max(this.currentSelectionStartIndex, this.currentSelectionEndIndex)) && (existingIndex > Math.Min(this.currentSelectionStartIndex, this.currentSelectionEndIndex))))
             {
-                ensureChildUpdated(mergingSelectable__99565);
+                ensureChildUpdated(mergingSelectable);
             }
-            mergingSelectable__99565.addListener(() => this._handleSelectableGeometryChange());
-            this.selectables.Add(mergingSelectable__99565);
-            mergingIndex__98553 += 1L;
+            mergingSelectable.addListener(() => this._handleSelectableGeometryChange());
+            this.selectables.Add(mergingSelectable);
+            mergingIndex += 1L;
         }
-        DartRuntimePrimitives.Assert(() => (((mergingIndex__98553 == checked((long)(mergingSelectables__98387.Count))) && (existingIndex__98579 == checked((long)(existingSelectables__98476.Count)))) && (checked((long)(this.selectables.Count)) == (existingIndex__98579 + mergingIndex__98553))));
-        DartRuntimePrimitives.Assert(() => ((selectionStartIndex__98606 >= -1L) || (selectionStartIndex__98606 < checked((long)(this.selectables.Count)))));
-        DartRuntimePrimitives.Assert(() => ((selectionEndIndex__98664 >= -1L) || (selectionEndIndex__98664 < checked((long)(this.selectables.Count)))));
-        DartRuntimePrimitives.Assert(() => (((this.currentSelectionStartIndex == -1L)) == ((selectionStartIndex__98606 == -1L))));
-        DartRuntimePrimitives.Assert(() => (((this.currentSelectionEndIndex == -1L)) == ((selectionEndIndex__98664 == -1L))));
-        currentSelectionEndIndex = selectionEndIndex__98664;
-        currentSelectionStartIndex = selectionStartIndex__98606;
+        DartRuntimePrimitives.Assert(() => (((mergingIndex == checked((long)(mergingSelectables.Count))) && (existingIndex == checked((long)(existingSelectables.Count)))) && (checked((long)(this.selectables.Count)) == (existingIndex + mergingIndex))));
+        DartRuntimePrimitives.Assert(() => ((selectionStartIndex >= -1L) || (selectionStartIndex < checked((long)(this.selectables.Count)))));
+        DartRuntimePrimitives.Assert(() => ((selectionEndIndex >= -1L) || (selectionEndIndex < checked((long)(this.selectables.Count)))));
+        DartRuntimePrimitives.Assert(() => (((this.currentSelectionStartIndex == -1L)) == ((selectionStartIndex == -1L))));
+        DartRuntimePrimitives.Assert(() => (((this.currentSelectionEndIndex == -1L)) == ((selectionEndIndex == -1L))));
+        currentSelectionEndIndex = selectionEndIndex;
+        currentSelectionStartIndex = selectionStartIndex;
         _additions = new HashSet<global::Doroti.Framework.Rendering.Selectable>();
     }
 
     internal virtual void _removeSelectable(global::Doroti.Framework.Rendering.Selectable selectable)
     {
         DartRuntimePrimitives.Assert(() => this.selectables.Contains(selectable), () => (object?)"The selectable is not in this registrar.");
-        long index__100870 = ((long)((dynamic)this.selectables).IndexOf(selectable));
-        this.selectables.removeAt(index__100870);
-        if ((index__100870 <= this.currentSelectionEndIndex))
+        long index = ((long)((dynamic)this.selectables).IndexOf(selectable));
+        this.selectables.removeAt(index);
+        if ((index <= this.currentSelectionEndIndex))
         {
             currentSelectionEndIndex -= 1L;
         }
-        if ((index__100870 <= this.currentSelectionStartIndex))
+        if ((index <= this.currentSelectionStartIndex))
         {
             currentSelectionStartIndex -= 1L;
         }
@@ -1898,10 +1898,10 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
     public virtual global::Doroti.Framework.Rendering.SelectionGeometry value => this._selectionGeometry;
     internal virtual void _updateSelectionGeometry()
     {
-        global::Doroti.Framework.Rendering.SelectionGeometry newValue__101696 = ((global::Doroti.Framework.Rendering.SelectionGeometry)(object?)getSelectionGeometry());
-        if ((!object.Equals(this._selectionGeometry, newValue__101696)))
+        global::Doroti.Framework.Rendering.SelectionGeometry newValue = ((global::Doroti.Framework.Rendering.SelectionGeometry)(object?)getSelectionGeometry());
+        if ((!object.Equals(this._selectionGeometry, newValue)))
         {
-            _selectionGeometry = newValue__101696;
+            _selectionGeometry = newValue;
             notifyListeners();
         }
         _updateHandleLayersAndOwners();
@@ -1909,26 +1909,26 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     internal static global::Doroti.Ui.Rect _getBoundingBox(global::Doroti.Framework.Rendering.Selectable selectable)
     {
-        global::Doroti.Ui.Rect result__101946 = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Rendering.Selectable)selectable).boundingBoxes.First());
-        for (var index__102000 = 1L; (index__102000 < checked((long)(((global::Doroti.Framework.Rendering.Selectable)selectable).boundingBoxes.Count))); index__102000 += 1L)
+        global::Doroti.Ui.Rect result = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Rendering.Selectable)selectable).boundingBoxes.First());
+        for (var index = 1L; (index < checked((long)(((global::Doroti.Framework.Rendering.Selectable)selectable).boundingBoxes.Count))); index += 1L)
         {
-            result__101946 = result__101946.expandToInclude(((global::Doroti.Framework.Rendering.Selectable)selectable).boundingBoxes[(int)(index__102000)]);
+            result = result.expandToInclude(((global::Doroti.Framework.Rendering.Selectable)selectable).boundingBoxes[(int)(index)]);
         }
-        return result__101946;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Comparison<global::Doroti.Framework.Rendering.Selectable> compareOrder => new Comparison<global::Doroti.Framework.Rendering.Selectable>((left, right) => checked((int)_compareScreenOrder(left, right)));
     internal static long _compareScreenOrder(global::Doroti.Framework.Rendering.Selectable a, global::Doroti.Framework.Rendering.Selectable b)
     {
-        global::Doroti.Ui.Rect rectA__102472 = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(a.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)), MultiSelectableSelectionContainerDelegate._getBoundingBox(a)));
-        global::Doroti.Ui.Rect rectB__102566 = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(b.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)), MultiSelectableSelectionContainerDelegate._getBoundingBox(b)));
-        long result__102659 = MultiSelectableSelectionContainerDelegate._compareVertically(rectA__102472, rectB__102566);
-        if ((result__102659 != 0L))
+        global::Doroti.Ui.Rect rectA = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(a.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)), MultiSelectableSelectionContainerDelegate._getBoundingBox(a)));
+        global::Doroti.Ui.Rect rectB = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(b.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)), MultiSelectableSelectionContainerDelegate._getBoundingBox(b)));
+        long result = MultiSelectableSelectionContainerDelegate._compareVertically(rectA, rectB);
+        if ((result != 0L))
         {
-            return result__102659;
+            return result;
         }
-        return MultiSelectableSelectionContainerDelegate._compareHorizontally(rectA__102472, rectB__102566);
+        return MultiSelectableSelectionContainerDelegate._compareHorizontally(rectA, rectB);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1984,69 +1984,69 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             currentSelectionStartIndex = _adjustSelectionIndexBasedOnSelectionGeometry(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
             currentSelectionEndIndex = _adjustSelectionIndexBasedOnSelectionGeometry(this.currentSelectionEndIndex, this.currentSelectionStartIndex);
         }
-        global::Doroti.Framework.Rendering.SelectionGeometry startGeometry__105529 = this.selectables[(int)(this.currentSelectionStartIndex)].value;
-        bool forwardSelection__105607 = (this.currentSelectionEndIndex >= this.currentSelectionStartIndex);
-        long startIndexWalker__105690 = this.currentSelectionStartIndex;
-        while (((startIndexWalker__105690 != this.currentSelectionEndIndex) && (((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry__105529).startSelectionPoint is null)))
+        global::Doroti.Framework.Rendering.SelectionGeometry startGeometry = this.selectables[(int)(this.currentSelectionStartIndex)].value;
+        bool forwardSelection = (this.currentSelectionEndIndex >= this.currentSelectionStartIndex);
+        long startIndexWalker = this.currentSelectionStartIndex;
+        while (((startIndexWalker != this.currentSelectionEndIndex) && (((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry).startSelectionPoint is null)))
         {
-            startIndexWalker__105690 += (forwardSelection__105607 ? 1L : -1L);
-            startGeometry__105529 = this.selectables[(int)(startIndexWalker__105690)].value;
+            startIndexWalker += (forwardSelection ? 1L : -1L);
+            startGeometry = this.selectables[(int)(startIndexWalker)].value;
         }
-        global::Doroti.Framework.Rendering.SelectionPoint? startPoint__105988 = default!;
-        if ((((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry__105529).startSelectionPoint is not null))
+        global::Doroti.Framework.Rendering.SelectionPoint? startPoint = default!;
+        if ((((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry).startSelectionPoint is not null))
         {
-            Matrix4 startTransform__106073 = ((Matrix4)(object?)getTransformFrom(this.selectables[(int)(startIndexWalker__105690)]));
-            global::Doroti.Ui.Offset start__106158 = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(startTransform__106073, ((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry__105529).startSelectionPoint!.localPosition));
-            if (start__106158.isFinite)
+            Matrix4 startTransform = ((Matrix4)(object?)getTransformFrom(this.selectables[(int)(startIndexWalker)]));
+            global::Doroti.Ui.Offset start = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(startTransform, ((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry).startSelectionPoint!.localPosition));
+            if (start.isFinite)
             {
-                startPoint__105988 = new global::Doroti.Framework.Rendering.SelectionPoint(localPosition: start__106158, lineHeight: ((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry__105529).startSelectionPoint!.lineHeight, handleType: ((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry__105529).startSelectionPoint!.handleType);
+                startPoint = new global::Doroti.Framework.Rendering.SelectionPoint(localPosition: start, lineHeight: ((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry).startSelectionPoint!.lineHeight, handleType: ((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry).startSelectionPoint!.handleType);
             }
         }
-        global::Doroti.Framework.Rendering.SelectionGeometry endGeometry__106678 = this.selectables[(int)(this.currentSelectionEndIndex)].value;
-        long endIndexWalker__106745 = this.currentSelectionEndIndex;
-        while (((endIndexWalker__106745 != this.currentSelectionStartIndex) && (((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry__106678).endSelectionPoint is null)))
+        global::Doroti.Framework.Rendering.SelectionGeometry endGeometry = this.selectables[(int)(this.currentSelectionEndIndex)].value;
+        long endIndexWalker = this.currentSelectionEndIndex;
+        while (((endIndexWalker != this.currentSelectionStartIndex) && (((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry).endSelectionPoint is null)))
         {
-            endIndexWalker__106745 += (forwardSelection__105607 ? -1L : 1L);
-            endGeometry__106678 = this.selectables[(int)(endIndexWalker__106745)].value;
+            endIndexWalker += (forwardSelection ? -1L : 1L);
+            endGeometry = this.selectables[(int)(endIndexWalker)].value;
         }
-        global::Doroti.Framework.Rendering.SelectionPoint? endPoint__107020 = default!;
-        if ((((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry__106678).endSelectionPoint is not null))
+        global::Doroti.Framework.Rendering.SelectionPoint? endPoint = default!;
+        if ((((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry).endSelectionPoint is not null))
         {
-            Matrix4 endTransform__107099 = ((Matrix4)(object?)getTransformFrom(this.selectables[(int)(endIndexWalker__106745)]));
-            global::Doroti.Ui.Offset end__107180 = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(endTransform__107099, ((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry__106678).endSelectionPoint!.localPosition));
-            if (end__107180.isFinite)
+            Matrix4 endTransform = ((Matrix4)(object?)getTransformFrom(this.selectables[(int)(endIndexWalker)]));
+            global::Doroti.Ui.Offset end = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(endTransform, ((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry).endSelectionPoint!.localPosition));
+            if (end.isFinite)
             {
-                endPoint__107020 = new global::Doroti.Framework.Rendering.SelectionPoint(localPosition: end__107180, lineHeight: ((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry__106678).endSelectionPoint!.lineHeight, handleType: ((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry__106678).endSelectionPoint!.handleType);
+                endPoint = new global::Doroti.Framework.Rendering.SelectionPoint(localPosition: end, lineHeight: ((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry).endSelectionPoint!.lineHeight, handleType: ((global::Doroti.Framework.Rendering.SelectionGeometry)endGeometry).endSelectionPoint!.handleType);
             }
         }
-        var selectionRects__107752 = new List<global::Doroti.Ui.Rect>();
-        global::Doroti.Ui.Rect? drawableArea__107795 = ((global::Doroti.Ui.Rect?)(object?)(this.hasSize ? global::Doroti.Ui.Rect.fromLTWH(0, 0, this.containerSize.width, this.containerSize.height) : null));
-        for (long index__107920 = this.currentSelectionStartIndex; (index__107920 <= this.currentSelectionEndIndex); index__107920++)
+        var selectionRectsLocal = new List<global::Doroti.Ui.Rect>();
+        global::Doroti.Ui.Rect? drawableArea = ((global::Doroti.Ui.Rect?)(object?)(this.hasSize ? global::Doroti.Ui.Rect.fromLTWH(0, 0, this.containerSize.width, this.containerSize.height) : null));
+        for (long index = this.currentSelectionStartIndex; (index <= this.currentSelectionEndIndex); index++)
         {
-            List<global::Doroti.Ui.Rect> currSelectableSelectionRects__108025 = this.selectables[(int)(index__107920)].value.selectionRects.Cast<global::Doroti.Ui.Rect>().ToList();
-            List<global::Doroti.Ui.Rect> selectionRectsWithinDrawableArea__108120 = currSelectableSelectionRects__108025.map<Rect, Rect>(((selectionRect) =>
+            List<global::Doroti.Ui.Rect> currSelectableSelectionRects = this.selectables[(int)(index)].value.selectionRects.Cast<global::Doroti.Ui.Rect>().ToList();
+            List<global::Doroti.Ui.Rect> selectionRectsWithinDrawableArea = currSelectableSelectionRects.map<Rect, Rect>(((selectionRect) =>
             {
-                Matrix4 transform__108248 = ((Matrix4)(object?)getTransformFrom(this.selectables[(int)(index__107920)]));
-                global::Doroti.Ui.Rect localRect__108321 = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform__108248, selectionRect));
-                return (drawableArea__107795?.intersect(localRect__108321) ?? localRect__108321);
+                Matrix4 transform = ((Matrix4)(object?)getTransformFrom(this.selectables[(int)(index)]));
+                global::Doroti.Ui.Rect localRect = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform, selectionRect));
+                return (drawableArea?.intersect(localRect) ?? localRect);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })).where(((selectionRect) =>
             {
                 return (selectionRect.isFinite && !selectionRect.isEmpty);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })).ToList().Cast<global::Doroti.Ui.Rect>().ToList();
-            selectionRects__107752.AddRange(selectionRectsWithinDrawableArea__108120.Cast<Rect>());
+            selectionRectsLocal.AddRange(selectionRectsWithinDrawableArea.Cast<Rect>());
         }
-        return new global::Doroti.Framework.Rendering.SelectionGeometry(startSelectionPoint: startPoint__105988, endSelectionPoint: endPoint__107020, selectionRects: selectionRects__107752, status: ((!object.Equals(startGeometry__105529, endGeometry__106678)) ? global::Doroti.Framework.Rendering.SelectionStatus.uncollapsed : ((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry__105529).status), hasContent: true);
+        return new global::Doroti.Framework.Rendering.SelectionGeometry(startSelectionPoint: startPoint, endSelectionPoint: endPoint, selectionRects: selectionRectsLocal, status: ((!object.Equals(startGeometry, endGeometry)) ? global::Doroti.Framework.Rendering.SelectionStatus.uncollapsed : ((global::Doroti.Framework.Rendering.SelectionGeometry)startGeometry).status), hasContent: true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual long _adjustSelectionIndexBasedOnSelectionGeometry(long currentIndex, long towardIndex)
     {
-        bool forward__109610 = (towardIndex > currentIndex);
+        bool forward = (towardIndex > currentIndex);
         while (((currentIndex != towardIndex) && (!object.Equals(this.selectables[(int)(currentIndex)].value.status, global::Doroti.Framework.Rendering.SelectionStatus.uncollapsed))))
         {
-            currentIndex += (forward__109610 ? 1L : -1L);
+            currentIndex += (forward ? 1L : -1L);
         }
         return currentIndex;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2065,15 +2065,15 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     internal virtual void _updateHandleLayersAndOwners()
     {
-        global::Doroti.Framework.Rendering.LayerLink? effectiveStartHandle__110533 = this._startHandleLayer;
-        global::Doroti.Framework.Rendering.LayerLink? effectiveEndHandle__110590 = this._endHandleLayer;
-        if (((effectiveStartHandle__110533 is not null) || (effectiveEndHandle__110590 is not null)))
+        global::Doroti.Framework.Rendering.LayerLink? effectiveStartHandle = this._startHandleLayer;
+        global::Doroti.Framework.Rendering.LayerLink? effectiveEndHandle = this._endHandleLayer;
+        if (((effectiveStartHandle is not null) || (effectiveEndHandle is not null)))
         {
-            global::Doroti.Ui.Rect? drawableArea__110716 = ((global::Doroti.Ui.Rect?)(object?)(this.hasSize ? global::Doroti.Ui.Rect.fromLTWH(0, 0, this.containerSize.width, this.containerSize.height).inflate(_kSelectionHandleDrawableAreaPadding) : null));
-            bool hideStartHandle__110966 = (((((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).startSelectionPoint is null) || (drawableArea__110716 is null)) || !DartRuntimePrimitives.RequireValue(drawableArea__110716).contains(((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).startSelectionPoint!.localPosition));
-            bool hideEndHandle__111158 = (((((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).endSelectionPoint is null) || (drawableArea__110716 is null)) || !DartRuntimePrimitives.RequireValue(drawableArea__110716).contains(((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).endSelectionPoint!.localPosition));
-            effectiveStartHandle__110533 = (hideStartHandle__110966 ? null : this._startHandleLayer);
-            effectiveEndHandle__110590 = (hideEndHandle__111158 ? null : this._endHandleLayer);
+            global::Doroti.Ui.Rect? drawableArea = ((global::Doroti.Ui.Rect?)(object?)(this.hasSize ? global::Doroti.Ui.Rect.fromLTWH(0, 0, this.containerSize.width, this.containerSize.height).inflate(_kSelectionHandleDrawableAreaPadding) : null));
+            bool hideStartHandle = (((((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).startSelectionPoint is null) || (drawableArea is null)) || !DartRuntimePrimitives.RequireValue(drawableArea).contains(((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).startSelectionPoint!.localPosition));
+            bool hideEndHandle = (((((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).endSelectionPoint is null) || (drawableArea is null)) || !DartRuntimePrimitives.RequireValue(drawableArea).contains(((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).endSelectionPoint!.localPosition));
+            effectiveStartHandle = (hideStartHandle ? null : this._startHandleLayer);
+            effectiveEndHandle = (hideEndHandle ? null : this._endHandleLayer);
         }
         if (((this.currentSelectionStartIndex == -1L) || (this.currentSelectionEndIndex == -1L)))
         {
@@ -2101,27 +2101,27 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         if ((this.currentSelectionStartIndex == this.currentSelectionEndIndex))
         {
             _endHandleLayerOwner = this._startHandleLayerOwner;
-            this._startHandleLayerOwner!.pushHandleLayers(effectiveStartHandle__110533, effectiveEndHandle__110590);
+            this._startHandleLayerOwner!.pushHandleLayers(effectiveStartHandle, effectiveEndHandle);
             return;
         }
-        this._startHandleLayerOwner!.pushHandleLayers(effectiveStartHandle__110533, ((global::Doroti.Framework.Rendering.LayerLink)(object)null));
+        this._startHandleLayerOwner!.pushHandleLayers(effectiveStartHandle, ((global::Doroti.Framework.Rendering.LayerLink)(object)null));
         _endHandleLayerOwner = this.selectables[(int)(this.currentSelectionEndIndex)];
-        this._endHandleLayerOwner!.pushHandleLayers(((global::Doroti.Framework.Rendering.LayerLink)(object)null), effectiveEndHandle__110590);
+        this._endHandleLayerOwner!.pushHandleLayers(((global::Doroti.Framework.Rendering.LayerLink)(object)null), effectiveEndHandle);
     }
 
     public virtual global::Doroti.Framework.Rendering.SelectedContent? getSelectedContent()
     {
-        var selections__112871 = new List<global::Doroti.Framework.Rendering.SelectedContent>();
-        if (!System.Linq.Enumerable.Any(selections__112871))
+        var selections = new List<global::Doroti.Framework.Rendering.SelectedContent>();
+        if (!System.Linq.Enumerable.Any(selections))
         {
             return ((global::Doroti.Framework.Rendering.SelectedContent)(object)null);
         }
-        var buffer__113113 = new StringBuffer();
-        foreach (var selection__113153 in selections__112871)
+        var buffer = new StringBuffer();
+        foreach (var selection in selections)
         {
-            buffer__113113.write(((global::Doroti.Framework.Rendering.SelectedContent)selection__113153).plainText);
+            buffer.write(((global::Doroti.Framework.Rendering.SelectedContent)selection).plainText);
         }
-        return new global::Doroti.Framework.Rendering.SelectedContent(plainText: buffer__113113.ToString());
+        return new global::Doroti.Framework.Rendering.SelectedContent(plainText: buffer.ToString());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2132,50 +2132,50 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         {
             return ((global::Doroti.Framework.Rendering.SelectedContentRange)(object)null);
         }
-        var startOffset__114172 = 0L;
-        var endOffset__114197 = 0L;
-        var foundStart__114220 = false;
-        bool forwardSelection__114249 = (this.currentSelectionEndIndex >= this.currentSelectionStartIndex);
+        var startOffsetLocal = 0L;
+        var endOffsetLocal = 0L;
+        var foundStart = false;
+        bool forwardSelection = (this.currentSelectionEndIndex >= this.currentSelectionStartIndex);
         if ((this.currentSelectionEndIndex == this.currentSelectionStartIndex))
         {
-            global::Doroti.Framework.Rendering.SelectedContentRange rangeAtSelectableInSelection__114649 = this.selectables[(int)(this.currentSelectionStartIndex)].getSelection()!;
-            forwardSelection__114249 = (((global::Doroti.Framework.Rendering.SelectedContentRange)rangeAtSelectableInSelection__114649).endOffset >= ((global::Doroti.Framework.Rendering.SelectedContentRange)rangeAtSelectableInSelection__114649).startOffset);
+            global::Doroti.Framework.Rendering.SelectedContentRange rangeAtSelectableInSelection = this.selectables[(int)(this.currentSelectionStartIndex)].getSelection()!;
+            forwardSelection = (((global::Doroti.Framework.Rendering.SelectedContentRange)rangeAtSelectableInSelection).endOffset >= ((global::Doroti.Framework.Rendering.SelectedContentRange)rangeAtSelectableInSelection).startOffset);
         }
-        for (var index__114885 = 0L; (index__114885 < checked((long)(selections.Count))); index__114885++)
+        for (var index = 0L; (index < checked((long)(selections.Count))); index++)
         {
-            (long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range) selection__114961 = selections[(int)(index__114885)];
-            if ((selection__114961.range is null))
+            (long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range) selection = selections[(int)(index)];
+            if ((selection.range is null))
             {
-                if (foundStart__114220)
+                if (foundStart)
                 {
-                    return new global::Doroti.Framework.Rendering.SelectedContentRange(startOffset: (forwardSelection__114249 ? startOffset__114172 : endOffset__114197), endOffset: (forwardSelection__114249 ? endOffset__114197 : startOffset__114172));
+                    return new global::Doroti.Framework.Rendering.SelectedContentRange(startOffset: (forwardSelection ? startOffsetLocal : endOffsetLocal), endOffset: (forwardSelection ? endOffsetLocal : startOffsetLocal));
                 }
-                startOffset__114172 += selection__114961.contentLength;
-                endOffset__114197 = startOffset__114172;
+                startOffsetLocal += selection.contentLength;
+                endOffsetLocal = startOffsetLocal;
                 continue;
             }
-            long selectionStartNormalized__115376 = Math.Min(selection__114961.range!.startOffset, selection__114961.range!.endOffset);
-            long selectionEndNormalized__115507 = Math.Max(selection__114961.range!.startOffset, selection__114961.range!.endOffset);
-            if (!foundStart__114220)
+            long selectionStartNormalized = Math.Min(selection.range!.startOffset, selection.range!.endOffset);
+            long selectionEndNormalized = Math.Max(selection.range!.startOffset, selection.range!.endOffset);
+            if (!foundStart)
             {
-                startOffset__114172 += selectionStartNormalized__115376;
-                endOffset__114197 = (startOffset__114172 + ((selectionEndNormalized__115507 - selectionStartNormalized__115376)).abs());
-                foundStart__114220 = true;
+                startOffsetLocal += selectionStartNormalized;
+                endOffsetLocal = (startOffsetLocal + ((selectionEndNormalized - selectionStartNormalized)).abs());
+                foundStart = true;
             }
             else
             {
-                endOffset__114197 += ((selectionEndNormalized__115507 - selectionStartNormalized__115376)).abs();
+                endOffsetLocal += ((selectionEndNormalized - selectionStartNormalized)).abs();
             }
         }
-        DartRuntimePrimitives.Assert(() => foundStart__114220, () => (object?)"The start of the selection has not been found despite this selection delegate having an existing currentSelectionStartIndex and currentSelectionEndIndex.");
-        return new global::Doroti.Framework.Rendering.SelectedContentRange(startOffset: (forwardSelection__114249 ? startOffset__114172 : endOffset__114197), endOffset: (forwardSelection__114249 ? endOffset__114197 : startOffset__114172));
+        DartRuntimePrimitives.Assert(() => foundStart, () => (object?)"The start of the selection has not been found despite this selection delegate having an existing currentSelectionStartIndex and currentSelectionEndIndex.");
+        return new global::Doroti.Framework.Rendering.SelectedContentRange(startOffset: (forwardSelection ? startOffsetLocal : endOffsetLocal), endOffset: (forwardSelection ? endOffsetLocal : startOffsetLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Rendering.SelectedContentRange? getSelection()
     {
-        var selections__116615 = new List<(long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range)>();
-        return ((global::Doroti.Framework.Rendering.SelectedContentRange?)(object?)_calculateLocalRange(selections__116615));
+        var selections = new List<(long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range)>();
+        return ((global::Doroti.Framework.Rendering.SelectedContentRange?)(object?)_calculateLocalRange(selections));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2187,27 +2187,27 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         }
         if (((this.currentSelectionStartIndex == -1L) || (this.currentSelectionEndIndex == -1L)))
         {
-            long skipIndex__117406 = ((this.currentSelectionStartIndex == -1L) ? this.currentSelectionEndIndex : this.currentSelectionStartIndex);
-            _clearSelectables(skipIndex: DartRuntimePrimitives.RequireValue(skipIndex__117406));
+            long skipIndexLocal = ((this.currentSelectionStartIndex == -1L) ? this.currentSelectionEndIndex : this.currentSelectionStartIndex);
+            _clearSelectables(skipIndex: DartRuntimePrimitives.RequireValue(skipIndexLocal));
             return;
         }
-        long skipStart__117609 = Math.Min(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
-        long skipEnd__117694 = Math.Max(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
-        for (var index__117776 = 0L; (index__117776 < checked((long)(this.selectables.Count))); index__117776 += 1L)
+        long skipStart = Math.Min(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
+        long skipEnd = Math.Max(this.currentSelectionStartIndex, this.currentSelectionEndIndex);
+        for (var index = 0L; (index < checked((long)(this.selectables.Count))); index += 1L)
         {
-            if (((index__117776 >= skipStart__117609) && (index__117776 <= skipEnd__117694)))
+            if (((index >= skipStart) && (index <= skipEnd)))
             {
                 continue;
             }
-            dispatchSelectionEventToChild(this.selectables[(int)(index__117776)], new global::Doroti.Framework.Rendering.ClearSelectionEvent());
+            dispatchSelectionEventToChild(this.selectables[(int)(index)], new global::Doroti.Framework.Rendering.ClearSelectionEvent());
         }
     }
 
     public virtual global::Doroti.Framework.Rendering.SelectionResult handleSelectAll(global::Doroti.Framework.Rendering.SelectAllSelectionEvent @event)
     {
-        foreach (global::Doroti.Framework.Rendering.Selectable selectable__118159 in this.selectables)
+        foreach (global::Doroti.Framework.Rendering.Selectable selectable in this.selectables)
         {
-            dispatchSelectionEventToChild(selectable__118159, @event);
+            dispatchSelectionEventToChild(selectable, @event);
         }
         currentSelectionStartIndex = 0L;
         currentSelectionEndIndex = (checked((long)(this.selectables.Count)) - 1L);
@@ -2217,85 +2217,85 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     internal virtual void _clearSelectables(long? skipIndex = null)
     {
-        for (var i__118547 = 0L; (i__118547 < checked((long)(this.selectables.Count))); i__118547++)
+        for (var i = 0L; (i < checked((long)(this.selectables.Count))); i++)
         {
-            if ((i__118547 == skipIndex))
+            if ((i == skipIndex))
             {
                 continue;
             }
-            dispatchSelectionEventToChild(this.selectables[(int)(i__118547)], new global::Doroti.Framework.Rendering.ClearSelectionEvent());
+            dispatchSelectionEventToChild(this.selectables[(int)(i)], new global::Doroti.Framework.Rendering.ClearSelectionEvent());
         }
     }
 
     internal virtual global::Doroti.Framework.Rendering.SelectionResult _handleSelectBoundary(global::Doroti.Framework.Rendering.SelectionEvent @event)
     {
         DartRuntimePrimitives.Assert(() => ((@event is global::Doroti.Framework.Rendering.SelectWordSelectionEvent) || (@event is global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent)), () => (object?)"This method should only be given selection events that select text boundaries.");
-        global::Doroti.Ui.Offset effectiveGlobalPosition__119003 = ((global::Doroti.Ui.Offset)(object?)(@event switch { global::Doroti.Framework.Rendering.SelectWordSelectionEvent { globalPosition: object globalPosition__119084 } __object119052 => globalPosition__119084, global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent { globalPosition: object globalPosition__119162 } __object119125 => globalPosition__119162, _ => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Unsupported selection event: {@event}")) }));
-        global::Doroti.Framework.Rendering.SelectionResult? lastSelectionResult__119296 = default!;
-        double minDistanceSquared__119408 = double.PositiveInfinity;
-        var nearestIndex__119454 = 0L;
-        for (var index__119485 = 0L; (index__119485 < checked((long)(this.selectables.Count))); index__119485 += 1L)
+        global::Doroti.Ui.Offset effectiveGlobalPosition = ((global::Doroti.Ui.Offset)(object?)(@event switch { global::Doroti.Framework.Rendering.SelectWordSelectionEvent { globalPosition: object globalPositionLocal } __object119052 => globalPositionLocal, global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent { globalPosition: object globalPositionAlternate } __object119125 => globalPositionAlternate, _ => throw DartRuntimePrimitives.AsException(new DartArgumentError($"Unsupported selection event: {@event}")) }));
+        global::Doroti.Framework.Rendering.SelectionResult? lastSelectionResult = default!;
+        double minDistanceSquared = double.PositiveInfinity;
+        var nearestIndex = 0L;
+        for (var index = 0L; (index < checked((long)(this.selectables.Count))); index += 1L)
         {
-            var globalRectsContainPosition__119548 = false;
-            Matrix4 transform__119604 = ((Matrix4)(object?)this.selectables[(int)(index__119485)].getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
-            foreach (global::Doroti.Ui.Rect rect__119679 in this.selectables[(int)(index__119485)].boundingBoxes)
+            var globalRectsContainPosition = false;
+            Matrix4 transform = ((Matrix4)(object?)this.selectables[(int)(index)].getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
+            foreach (global::Doroti.Ui.Rect rect in this.selectables[(int)(index)].boundingBoxes)
             {
-                global::Doroti.Ui.Rect globalRect__119742 = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform__119604, rect__119679));
-                if (globalRect__119742.contains(effectiveGlobalPosition__119003))
+                global::Doroti.Ui.Rect globalRect = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(transform, rect));
+                if (globalRect.contains(effectiveGlobalPosition))
                 {
-                    globalRectsContainPosition__119548 = true;
+                    globalRectsContainPosition = true;
                     break;
                 }
-                double dx__119952 = (effectiveGlobalPosition__119003.dx - Dart_uiLibrary.clampDouble(effectiveGlobalPosition__119003.dx, globalRect__119742.left, globalRect__119742.right));
-                double dy__120107 = (effectiveGlobalPosition__119003.dy - Dart_uiLibrary.clampDouble(effectiveGlobalPosition__119003.dy, globalRect__119742.top, globalRect__119742.bottom));
-                double distanceSquared__120262 = ((dx__119952 * dx__119952) + (dy__120107 * dy__120107));
-                if ((distanceSquared__120262 < minDistanceSquared__119408))
+                double dxLocal = (effectiveGlobalPosition.dx - Dart_uiLibrary.clampDouble(effectiveGlobalPosition.dx, globalRect.left, globalRect.right));
+                double dyLocal = (effectiveGlobalPosition.dy - Dart_uiLibrary.clampDouble(effectiveGlobalPosition.dy, globalRect.top, globalRect.bottom));
+                double distanceSquared = ((dxLocal * dxLocal) + (dyLocal * dyLocal));
+                if ((distanceSquared < minDistanceSquared))
                 {
-                    minDistanceSquared__119408 = distanceSquared__120262;
-                    nearestIndex__119454 = index__119485;
+                    minDistanceSquared = distanceSquared;
+                    nearestIndex = index;
                 }
             }
-            if (globalRectsContainPosition__119548)
+            if (globalRectsContainPosition)
             {
-                global::Doroti.Framework.Rendering.SelectionGeometry existingGeometry__120521 = this.selectables[(int)(index__119485)].value;
-                lastSelectionResult__119296 = dispatchSelectionEventToChild(this.selectables[(int)(index__119485)], @event);
-                if (((index__119485 == (checked((long)(this.selectables.Count)) - 1L)) && (object.Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult__119296), global::Doroti.Framework.Rendering.SelectionResult.next))))
+                global::Doroti.Framework.Rendering.SelectionGeometry existingGeometry = this.selectables[(int)(index)].value;
+                lastSelectionResult = dispatchSelectionEventToChild(this.selectables[(int)(index)], @event);
+                if (((index == (checked((long)(this.selectables.Count)) - 1L)) && (object.Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), global::Doroti.Framework.Rendering.SelectionResult.next))))
                 {
                     return global::Doroti.Framework.Rendering.SelectionResult.next;
                 }
-                if ((object.Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult__119296), global::Doroti.Framework.Rendering.SelectionResult.next)))
+                if ((object.Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), global::Doroti.Framework.Rendering.SelectionResult.next)))
                 {
                     continue;
                 }
-                if (((index__119485 == 0L) && (object.Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult__119296), global::Doroti.Framework.Rendering.SelectionResult.previous))))
+                if (((index == 0L) && (object.Equals(DartRuntimePrimitives.RequireValue(lastSelectionResult), global::Doroti.Framework.Rendering.SelectionResult.previous))))
                 {
                     return global::Doroti.Framework.Rendering.SelectionResult.previous;
                 }
-                if ((!object.Equals(this.selectables[(int)(index__119485)].value, existingGeometry__120521)))
+                if ((!object.Equals(this.selectables[(int)(index)].value, existingGeometry)))
                 {
-                    _clearSelectables(skipIndex: index__119485);
-                    currentSelectionStartIndex = currentSelectionEndIndex = index__119485;
+                    _clearSelectables(skipIndex: index);
+                    currentSelectionStartIndex = currentSelectionEndIndex = index;
                 }
                 return global::Doroti.Framework.Rendering.SelectionResult.end;
             }
             else
             {
-                if ((object.Equals(lastSelectionResult__119296, global::Doroti.Framework.Rendering.SelectionResult.next)))
+                if ((object.Equals(lastSelectionResult, global::Doroti.Framework.Rendering.SelectionResult.next)))
                 {
-                    currentSelectionStartIndex = currentSelectionEndIndex = (index__119485 - 1L);
+                    currentSelectionStartIndex = currentSelectionEndIndex = (index - 1L);
                     return global::Doroti.Framework.Rendering.SelectionResult.end;
                 }
             }
         }
-        DartRuntimePrimitives.Assert(() => (lastSelectionResult__119296 is null));
+        DartRuntimePrimitives.Assert(() => (lastSelectionResult is null));
         if (System.Linq.Enumerable.Any(this.selectables))
         {
-            global::Doroti.Framework.Rendering.SelectionGeometry existingGeometry__121882 = this.selectables[(int)(nearestIndex__119454)].value;
-            dispatchSelectionEventToChild(this.selectables[(int)(nearestIndex__119454)], @event);
-            if ((!object.Equals(this.selectables[(int)(nearestIndex__119454)].value, existingGeometry__121882)))
+            global::Doroti.Framework.Rendering.SelectionGeometry existingGeometryLocal = this.selectables[(int)(nearestIndex)].value;
+            dispatchSelectionEventToChild(this.selectables[(int)(nearestIndex)], @event);
+            if ((!object.Equals(this.selectables[(int)(nearestIndex)].value, existingGeometryLocal)))
             {
-                _clearSelectables(skipIndex: nearestIndex__119454);
-                currentSelectionStartIndex = currentSelectionEndIndex = nearestIndex__119454;
+                _clearSelectables(skipIndex: nearestIndex);
+                currentSelectionStartIndex = currentSelectionEndIndex = nearestIndex;
             }
         }
         return global::Doroti.Framework.Rendering.SelectionResult.end;
@@ -2316,9 +2316,9 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     public virtual global::Doroti.Framework.Rendering.SelectionResult handleClearSelection(global::Doroti.Framework.Rendering.ClearSelectionEvent @event)
     {
-        foreach (global::Doroti.Framework.Rendering.Selectable selectable__123061 in this.selectables)
+        foreach (global::Doroti.Framework.Rendering.Selectable selectable in this.selectables)
         {
-            dispatchSelectionEventToChild(selectable__123061, @event);
+            dispatchSelectionEventToChild(selectable, @event);
         }
         currentSelectionEndIndex = -1L;
         currentSelectionStartIndex = -1L;
@@ -2340,37 +2340,37 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                 currentSelectionStartIndex = currentSelectionEndIndex = (checked((long)(this.selectables.Count)) - 1L);
             }
         }
-        long targetIndex__123775 = (((global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent)@event).isEnd ? this.currentSelectionEndIndex : this.currentSelectionStartIndex);
-        global::Doroti.Framework.Rendering.SelectionResult result__123878 = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex__123775)], @event);
+        long targetIndex = (((global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent)@event).isEnd ? this.currentSelectionEndIndex : this.currentSelectionStartIndex);
+        global::Doroti.Framework.Rendering.SelectionResult result = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex)], @event);
         if (((global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent)@event).forward)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(result__123878, global::Doroti.Framework.Rendering.SelectionResult.previous)));
-            while (((targetIndex__123775 < (checked((long)(this.selectables.Count)) - 1L)) && (object.Equals(result__123878, global::Doroti.Framework.Rendering.SelectionResult.next))))
+            DartRuntimePrimitives.Assert(() => (!object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.previous)));
+            while (((targetIndex < (checked((long)(this.selectables.Count)) - 1L)) && (object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.next))))
             {
-                targetIndex__123775 += 1L;
-                result__123878 = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex__123775)], @event);
-                DartRuntimePrimitives.Assert(() => (!object.Equals(result__123878, global::Doroti.Framework.Rendering.SelectionResult.previous)));
+                targetIndex += 1L;
+                result = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex)], @event);
+                DartRuntimePrimitives.Assert(() => (!object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.previous)));
             }
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(result__123878, global::Doroti.Framework.Rendering.SelectionResult.next)));
-            while (((targetIndex__123775 > 0L) && (object.Equals(result__123878, global::Doroti.Framework.Rendering.SelectionResult.previous))))
+            DartRuntimePrimitives.Assert(() => (!object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.next)));
+            while (((targetIndex > 0L) && (object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.previous))))
             {
-                targetIndex__123775 -= 1L;
-                result__123878 = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex__123775)], @event);
-                DartRuntimePrimitives.Assert(() => (!object.Equals(result__123878, global::Doroti.Framework.Rendering.SelectionResult.next)));
+                targetIndex -= 1L;
+                result = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex)], @event);
+                DartRuntimePrimitives.Assert(() => (!object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.next)));
             }
         }
         if (((global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent)@event).isEnd)
         {
-            currentSelectionEndIndex = targetIndex__123775;
+            currentSelectionEndIndex = targetIndex;
         }
         else
         {
-            currentSelectionStartIndex = targetIndex__123775;
+            currentSelectionStartIndex = targetIndex;
         }
-        return result__123878;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2381,34 +2381,34 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         {
             currentSelectionStartIndex = currentSelectionEndIndex = (((global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent)@event).direction switch { global::Doroti.Framework.Rendering.SelectionExtendDirection.previousLine => (checked((long)(this.selectables.Count)) - 1L), global::Doroti.Framework.Rendering.SelectionExtendDirection.backward => (checked((long)(this.selectables.Count)) - 1L), global::Doroti.Framework.Rendering.SelectionExtendDirection.nextLine => 0L, global::Doroti.Framework.Rendering.SelectionExtendDirection.forward => 0L, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
-        long targetIndex__125352 = (((global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent)@event).isEnd ? this.currentSelectionEndIndex : this.currentSelectionStartIndex);
-        global::Doroti.Framework.Rendering.SelectionResult result__125455 = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex__125352)], @event);
+        long targetIndex = (((global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent)@event).isEnd ? this.currentSelectionEndIndex : this.currentSelectionStartIndex);
+        global::Doroti.Framework.Rendering.SelectionResult result = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex)], @event);
         switch (((global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent)@event).direction)
         {
             case global::Doroti.Framework.Rendering.SelectionExtendDirection.previousLine:
                 {
-                    DartRuntimePrimitives.Assert(() => ((object.Equals(result__125455, global::Doroti.Framework.Rendering.SelectionResult.end)) || (object.Equals(result__125455, global::Doroti.Framework.Rendering.SelectionResult.previous))));
-                    if ((object.Equals(result__125455, global::Doroti.Framework.Rendering.SelectionResult.previous)))
+                    DartRuntimePrimitives.Assert(() => ((object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.end)) || (object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.previous))));
+                    if ((object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.previous)))
                     {
-                        if ((targetIndex__125352 > 0L))
+                        if ((targetIndex > 0L))
                         {
-                            targetIndex__125352 -= 1L;
-                            result__125455 = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex__125352)], @event.copyWith(direction: global::Doroti.Framework.Rendering.SelectionExtendDirection.backward));
-                            DartRuntimePrimitives.Assert(() => (object.Equals(result__125455, global::Doroti.Framework.Rendering.SelectionResult.end)));
+                            targetIndex -= 1L;
+                            result = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex)], @event.copyWith(direction: global::Doroti.Framework.Rendering.SelectionExtendDirection.backward));
+                            DartRuntimePrimitives.Assert(() => (object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.end)));
                         }
                     }
                     break;
                 }
             case global::Doroti.Framework.Rendering.SelectionExtendDirection.nextLine:
                 {
-                    DartRuntimePrimitives.Assert(() => ((object.Equals(result__125455, global::Doroti.Framework.Rendering.SelectionResult.end)) || (object.Equals(result__125455, global::Doroti.Framework.Rendering.SelectionResult.next))));
-                    if ((object.Equals(result__125455, global::Doroti.Framework.Rendering.SelectionResult.next)))
+                    DartRuntimePrimitives.Assert(() => ((object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.end)) || (object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.next))));
+                    if ((object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.next)))
                     {
-                        if ((targetIndex__125352 < (checked((long)(this.selectables.Count)) - 1L)))
+                        if ((targetIndex < (checked((long)(this.selectables.Count)) - 1L)))
                         {
-                            targetIndex__125352 += 1L;
-                            result__125455 = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex__125352)], @event.copyWith(direction: global::Doroti.Framework.Rendering.SelectionExtendDirection.forward));
-                            DartRuntimePrimitives.Assert(() => (object.Equals(result__125455, global::Doroti.Framework.Rendering.SelectionResult.end)));
+                            targetIndex += 1L;
+                            result = dispatchSelectionEventToChild(this.selectables[(int)(targetIndex)], @event.copyWith(direction: global::Doroti.Framework.Rendering.SelectionExtendDirection.forward));
+                            DartRuntimePrimitives.Assert(() => (object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.end)));
                         }
                     }
                     break;
@@ -2416,19 +2416,19 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             case global::Doroti.Framework.Rendering.SelectionExtendDirection.forward:
             case global::Doroti.Framework.Rendering.SelectionExtendDirection.backward:
                 {
-                    DartRuntimePrimitives.Assert(() => (object.Equals(result__125455, global::Doroti.Framework.Rendering.SelectionResult.end)));
+                    DartRuntimePrimitives.Assert(() => (object.Equals(result, global::Doroti.Framework.Rendering.SelectionResult.end)));
                     break;
                 }
         }
         if (((global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent)@event).isEnd)
         {
-            currentSelectionEndIndex = targetIndex__125352;
+            currentSelectionEndIndex = targetIndex;
         }
         else
         {
-            currentSelectionStartIndex = targetIndex__125352;
+            currentSelectionStartIndex = targetIndex;
         }
-        return result__125455;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2444,71 +2444,71 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
 
     public virtual global::Doroti.Framework.Rendering.SelectionResult dispatchSelectionEvent(global::Doroti.Framework.Rendering.SelectionEvent @event)
     {
-        var selectionWillBeInProgress__127441 = (@event is not global::Doroti.Framework.Rendering.ClearSelectionEvent);
-        if ((!this._selectionInProgress && selectionWillBeInProgress__127441))
+        var selectionWillBeInProgress = (@event is not global::Doroti.Framework.Rendering.ClearSelectionEvent);
+        if ((!this._selectionInProgress && selectionWillBeInProgress))
         {
             this.selectables.sort(this.compareOrder);
         }
-        _selectionInProgress = selectionWillBeInProgress__127441;
+        _selectionInProgress = selectionWillBeInProgress;
         _isHandlingSelectionEvent = true;
-        global::Doroti.Framework.Rendering.SelectionResult result__127782 = default!;
+        global::Doroti.Framework.Rendering.SelectionResult result = default!;
         switch (((global::Doroti.Framework.Rendering.SelectionEvent)@event).type)
         {
             case global::Doroti.Framework.Rendering.SelectionEventType.startEdgeUpdate:
             case global::Doroti.Framework.Rendering.SelectionEventType.endEdgeUpdate:
                 {
                     _extendSelectionInProgress = false;
-                    result__127782 = handleSelectionEdgeUpdate(((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent?)(object?)@event)!);
+                    result = handleSelectionEdgeUpdate(((global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent?)(object?)@event)!);
                     break;
                 }
             case global::Doroti.Framework.Rendering.SelectionEventType.clear:
                 {
                     _extendSelectionInProgress = false;
-                    result__127782 = handleClearSelection(((global::Doroti.Framework.Rendering.ClearSelectionEvent?)(object?)@event)!);
+                    result = handleClearSelection(((global::Doroti.Framework.Rendering.ClearSelectionEvent?)(object?)@event)!);
                     break;
                 }
             case global::Doroti.Framework.Rendering.SelectionEventType.selectAll:
                 {
                     _extendSelectionInProgress = false;
-                    result__127782 = handleSelectAll(((global::Doroti.Framework.Rendering.SelectAllSelectionEvent?)(object?)@event)!);
+                    result = handleSelectAll(((global::Doroti.Framework.Rendering.SelectAllSelectionEvent?)(object?)@event)!);
                     break;
                 }
             case global::Doroti.Framework.Rendering.SelectionEventType.selectWord:
                 {
                     _extendSelectionInProgress = false;
-                    result__127782 = handleSelectWord(((global::Doroti.Framework.Rendering.SelectWordSelectionEvent?)(object?)@event)!);
+                    result = handleSelectWord(((global::Doroti.Framework.Rendering.SelectWordSelectionEvent?)(object?)@event)!);
                     break;
                 }
             case global::Doroti.Framework.Rendering.SelectionEventType.selectParagraph:
                 {
                     _extendSelectionInProgress = false;
-                    result__127782 = handleSelectParagraph(((global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent?)(object?)@event)!);
+                    result = handleSelectParagraph(((global::Doroti.Framework.Rendering.SelectParagraphSelectionEvent?)(object?)@event)!);
                     break;
                 }
             case global::Doroti.Framework.Rendering.SelectionEventType.granularlyExtendSelection:
                 {
                     _extendSelectionInProgress = true;
-                    result__127782 = handleGranularlyExtendSelection(((global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent?)(object?)@event)!);
+                    result = handleGranularlyExtendSelection(((global::Doroti.Framework.Rendering.GranularlyExtendSelectionEvent?)(object?)@event)!);
                     break;
                 }
             case global::Doroti.Framework.Rendering.SelectionEventType.directionallyExtendSelection:
                 {
                     _extendSelectionInProgress = true;
-                    result__127782 = handleDirectionallyExtendSelection(((global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent?)(object?)@event)!);
+                    result = handleDirectionallyExtendSelection(((global::Doroti.Framework.Rendering.DirectionallyExtendSelectionEvent?)(object?)@event)!);
                     break;
                 }
         }
         _isHandlingSelectionEvent = false;
         _updateSelectionGeometry();
-        return result__127782;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void dispose()
     {
-        foreach (global::Doroti.Framework.Rendering.Selectable selectable__129210 in this.selectables)
+        foreach (global::Doroti.Framework.Rendering.Selectable selectable in this.selectables)
         {
-            selectable__129210.removeListener(() => this._handleSelectableGeometryChange());
+            selectable.removeListener(() => this._handleSelectableGeometryChange());
         }
         selectables = new List<global::Doroti.Framework.Rendering.Selectable>();
         _scheduledSelectableUpdate = false;
@@ -2525,94 +2525,94 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
     internal virtual global::Doroti.Framework.Rendering.SelectionResult _initSelection(global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent @event, bool isEnd)
     {
         DartRuntimePrimitives.Assert(() => (((isEnd && (this.currentSelectionEndIndex == -1L))) || ((!isEnd && (this.currentSelectionStartIndex == -1L)))));
-        var newIndex__131012 = -1L;
-        var hasFoundEdgeIndex__131035 = false;
-        global::Doroti.Framework.Rendering.SelectionResult? result__131083 = default!;
-        bool? forward__131101 = default!;
-        long oppositeEdgeIndex__131278 = (isEnd ? this.currentSelectionStartIndex : this.currentSelectionEndIndex);
-        long index__131369 = Math.Max(oppositeEdgeIndex__131278, 0L);
-        while (((index__131369 >= 0L) && (index__131369 < checked((long)(this.selectables.Count)))))
+        var newIndex = -1L;
+        var hasFoundEdgeIndex = false;
+        global::Doroti.Framework.Rendering.SelectionResult? result = default!;
+        bool? forward = default!;
+        long oppositeEdgeIndex = (isEnd ? this.currentSelectionStartIndex : this.currentSelectionEndIndex);
+        long index = Math.Max(oppositeEdgeIndex, 0L);
+        while (((index >= 0L) && (index < checked((long)(this.selectables.Count)))))
         {
-            global::Doroti.Framework.Rendering.Selectable child__131483 = this.selectables[(int)(index__131369)];
-            global::Doroti.Framework.Rendering.SelectionResult childResult__131539 = dispatchSelectionEventToChild(child__131483, @event);
-            switch (childResult__131539)
+            global::Doroti.Framework.Rendering.Selectable child = this.selectables[(int)(index)];
+            global::Doroti.Framework.Rendering.SelectionResult childResult = dispatchSelectionEventToChild(child, @event);
+            switch (childResult)
             {
                 case global::Doroti.Framework.Rendering.SelectionResult.next:
                     {
-                        if ((forward__131101 == false))
+                        if ((forward == false))
                         {
-                            hasFoundEdgeIndex__131035 = true;
-                            result__131083 = global::Doroti.Framework.Rendering.SelectionResult.end;
+                            hasFoundEdgeIndex = true;
+                            result = global::Doroti.Framework.Rendering.SelectionResult.end;
                         }
                         else
                         {
-                            forward__131101 = true;
-                            newIndex__131012 = index__131369;
+                            forward = true;
+                            newIndex = index;
                         }
                         break;
                     }
                 case global::Doroti.Framework.Rendering.SelectionResult.none:
                     {
-                        newIndex__131012 = index__131369;
+                        newIndex = index;
                         break;
                     }
                 case global::Doroti.Framework.Rendering.SelectionResult.end:
                     {
-                        newIndex__131012 = index__131369;
-                        result__131083 = global::Doroti.Framework.Rendering.SelectionResult.end;
-                        hasFoundEdgeIndex__131035 = true;
+                        newIndex = index;
+                        result = global::Doroti.Framework.Rendering.SelectionResult.end;
+                        hasFoundEdgeIndex = true;
                         break;
                     }
                 case global::Doroti.Framework.Rendering.SelectionResult.previous:
                     {
-                        if ((index__131369 == 0L))
+                        if ((index == 0L))
                         {
-                            hasFoundEdgeIndex__131035 = true;
-                            newIndex__131012 = 0L;
-                            result__131083 = global::Doroti.Framework.Rendering.SelectionResult.previous;
+                            hasFoundEdgeIndex = true;
+                            newIndex = 0L;
+                            result = global::Doroti.Framework.Rendering.SelectionResult.previous;
                             break;
                         }
-                        if ((forward__131101 ?? false))
+                        if ((forward ?? false))
                         {
-                            hasFoundEdgeIndex__131035 = true;
-                            result__131083 = global::Doroti.Framework.Rendering.SelectionResult.end;
+                            hasFoundEdgeIndex = true;
+                            result = global::Doroti.Framework.Rendering.SelectionResult.end;
                         }
                         else
                         {
-                            forward__131101 = false;
-                            newIndex__131012 = index__131369;
+                            forward = false;
+                            newIndex = index;
                         }
                         break;
                     }
                 case global::Doroti.Framework.Rendering.SelectionResult.pending:
                     {
-                        newIndex__131012 = index__131369;
-                        result__131083 = global::Doroti.Framework.Rendering.SelectionResult.pending;
-                        hasFoundEdgeIndex__131035 = true;
+                        newIndex = index;
+                        result = global::Doroti.Framework.Rendering.SelectionResult.pending;
+                        hasFoundEdgeIndex = true;
                         break;
                     }
             }
-            if (hasFoundEdgeIndex__131035)
+            if (hasFoundEdgeIndex)
             {
                 break;
             }
-            index__131369 += (((forward__131101 ?? true)) ? 1L : -1L);
+            index += (((forward ?? true)) ? 1L : -1L);
         }
-        if ((newIndex__131012 == -1L))
+        if ((newIndex == -1L))
         {
             DartRuntimePrimitives.Assert(() => !System.Linq.Enumerable.Any(this.selectables));
             return global::Doroti.Framework.Rendering.SelectionResult.none;
         }
         if (isEnd)
         {
-            currentSelectionEndIndex = newIndex__131012;
+            currentSelectionEndIndex = newIndex;
         }
         else
         {
-            currentSelectionStartIndex = newIndex__131012;
+            currentSelectionStartIndex = newIndex;
         }
         _flushInactiveSelections();
-        return (result__131083 ?? global::Doroti.Framework.Rendering.SelectionResult.next);
+        return (result ?? global::Doroti.Framework.Rendering.SelectionResult.next);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2629,62 +2629,62 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        global::Doroti.Framework.Rendering.SelectionResult? finalResult__134047 = default!;
-        var isCurrentEdgeWithinViewport__134647 = (isEnd ? (((global::Doroti.Framework.Rendering.SelectionGeometry)this._selectionGeometry).endSelectionPoint is not null) : (((global::Doroti.Framework.Rendering.SelectionGeometry)this._selectionGeometry).startSelectionPoint is not null));
-        var isOppositeEdgeWithinViewport__134806 = (isEnd ? (((global::Doroti.Framework.Rendering.SelectionGeometry)this._selectionGeometry).startSelectionPoint is not null) : (((global::Doroti.Framework.Rendering.SelectionGeometry)this._selectionGeometry).endSelectionPoint is not null));
-        long newIndex__134964 = ((isEnd, isCurrentEdgeWithinViewport__134647, isOppositeEdgeWithinViewport__134806) switch { (true, true, true) => this.currentSelectionEndIndex, (true, true, false) => this.currentSelectionEndIndex, (true, false, true) => this.currentSelectionStartIndex, (true, false, false) => 0L, (false, true, true) => this.currentSelectionStartIndex, (false, true, false) => this.currentSelectionStartIndex, (false, false, true) => this.currentSelectionEndIndex, (false, false, false) => 0L });
-        bool? forward__135474 = default!;
-        global::Doroti.Framework.Rendering.SelectionResult currentSelectableResult__135508 = default!;
-        while ((((newIndex__134964 < checked((long)(this.selectables.Count))) && (newIndex__134964 >= 0L)) && (finalResult__134047 is null)))
+        global::Doroti.Framework.Rendering.SelectionResult? finalResult = default!;
+        var isCurrentEdgeWithinViewport = (isEnd ? (((global::Doroti.Framework.Rendering.SelectionGeometry)this._selectionGeometry).endSelectionPoint is not null) : (((global::Doroti.Framework.Rendering.SelectionGeometry)this._selectionGeometry).startSelectionPoint is not null));
+        var isOppositeEdgeWithinViewport = (isEnd ? (((global::Doroti.Framework.Rendering.SelectionGeometry)this._selectionGeometry).startSelectionPoint is not null) : (((global::Doroti.Framework.Rendering.SelectionGeometry)this._selectionGeometry).endSelectionPoint is not null));
+        long newIndex = ((isEnd, isCurrentEdgeWithinViewport, isOppositeEdgeWithinViewport) switch { (true, true, true) => this.currentSelectionEndIndex, (true, true, false) => this.currentSelectionEndIndex, (true, false, true) => this.currentSelectionStartIndex, (true, false, false) => 0L, (false, true, true) => this.currentSelectionStartIndex, (false, true, false) => this.currentSelectionStartIndex, (false, false, true) => this.currentSelectionEndIndex, (false, false, false) => 0L });
+        bool? forward = default!;
+        global::Doroti.Framework.Rendering.SelectionResult currentSelectableResult = default!;
+        while ((((newIndex < checked((long)(this.selectables.Count))) && (newIndex >= 0L)) && (finalResult is null)))
         {
-            currentSelectableResult__135508 = dispatchSelectionEventToChild(this.selectables[(int)(newIndex__134964)], @event);
-            switch (currentSelectableResult__135508)
+            currentSelectableResult = dispatchSelectionEventToChild(this.selectables[(int)(newIndex)], @event);
+            switch (currentSelectableResult)
             {
                 case global::Doroti.Framework.Rendering.SelectionResult.end:
                 case global::Doroti.Framework.Rendering.SelectionResult.pending:
                 case global::Doroti.Framework.Rendering.SelectionResult.none:
                     {
-                        finalResult__134047 = currentSelectableResult__135508;
+                        finalResult = currentSelectableResult;
                         break;
                     }
                 case global::Doroti.Framework.Rendering.SelectionResult.next:
                     {
-                        if ((forward__135474 == false))
+                        if ((forward == false))
                         {
-                            newIndex__134964 += 1L;
-                            finalResult__134047 = global::Doroti.Framework.Rendering.SelectionResult.end;
+                            newIndex += 1L;
+                            finalResult = global::Doroti.Framework.Rendering.SelectionResult.end;
                         }
                         else
                         {
-                            if ((newIndex__134964 == (checked((long)(this.selectables.Count)) - 1L)))
+                            if ((newIndex == (checked((long)(this.selectables.Count)) - 1L)))
                             {
-                                finalResult__134047 = currentSelectableResult__135508;
+                                finalResult = currentSelectableResult;
                             }
                             else
                             {
-                                forward__135474 = true;
-                                newIndex__134964 += 1L;
+                                forward = true;
+                                newIndex += 1L;
                             }
                         }
                         break;
                     }
                 case global::Doroti.Framework.Rendering.SelectionResult.previous:
                     {
-                        if ((forward__135474 ?? false))
+                        if ((forward ?? false))
                         {
-                            newIndex__134964 -= 1L;
-                            finalResult__134047 = global::Doroti.Framework.Rendering.SelectionResult.end;
+                            newIndex -= 1L;
+                            finalResult = global::Doroti.Framework.Rendering.SelectionResult.end;
                         }
                         else
                         {
-                            if ((newIndex__134964 == 0L))
+                            if ((newIndex == 0L))
                             {
-                                finalResult__134047 = currentSelectableResult__135508;
+                                finalResult = currentSelectableResult;
                             }
                             else
                             {
-                                forward__135474 = false;
-                                newIndex__134964 -= 1L;
+                                forward = false;
+                                newIndex -= 1L;
                             }
                         }
                         break;
@@ -2693,14 +2693,14 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         }
         if (isEnd)
         {
-            currentSelectionEndIndex = newIndex__134964;
+            currentSelectionEndIndex = newIndex;
         }
         else
         {
-            currentSelectionStartIndex = newIndex__134964;
+            currentSelectionStartIndex = newIndex;
         }
         _flushInactiveSelections();
-        return DartRuntimePrimitives.RequireValue(finalResult__134047);
+        return DartRuntimePrimitives.RequireValue(finalResult);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

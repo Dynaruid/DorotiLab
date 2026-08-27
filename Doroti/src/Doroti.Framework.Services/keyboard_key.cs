@@ -539,10 +539,10 @@ public class LogicalKeyboardKey : KeyboardKey
                     result = _keyLabels.GetValueOrDefault(keyId);
                     if ((result is null))
                     {
-                        string? unicodeKeyLabel__6559 = _unicodeKeyLabel(keyId);
-                        if ((unicodeKeyLabel__6559 is not null))
+                        string? unicodeKeyLabel = _unicodeKeyLabel(keyId);
+                        if ((unicodeKeyLabel is not null))
                         {
-                            result = $"Key {unicodeKeyLabel__6559}";
+                            result = $"Key {unicodeKeyLabel}";
                         }
                         else
                         {

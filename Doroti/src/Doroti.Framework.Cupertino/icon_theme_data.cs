@@ -23,8 +23,8 @@ public class CupertinoIconThemeData : global::Doroti.Framework.Widgets.IconTheme
 
     public override global::Doroti.Framework.Widgets.IconThemeData resolve(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color? resolvedColor__871 = ((global::Doroti.Ui.Color?)(object?)CupertinoDynamicColor.maybeResolve(this.color, context));
-        return ((global::Doroti.Framework.Widgets.IconThemeData)(object?)((object.Equals(resolvedColor__871, this.color)) ? this : copyWith(color: resolvedColor__871)));
+        global::Doroti.Ui.Color? resolvedColor = ((global::Doroti.Ui.Color?)(object?)CupertinoDynamicColor.maybeResolve(this.color, context));
+        return ((global::Doroti.Framework.Widgets.IconThemeData)(object?)((object.Equals(resolvedColor, this.color)) ? this : copyWith(color: resolvedColor)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -42,13 +42,13 @@ public class CupertinoIconThemeData : global::Doroti.Framework.Widgets.IconTheme
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

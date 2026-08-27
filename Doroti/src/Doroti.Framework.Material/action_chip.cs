@@ -117,8 +117,8 @@ public class ActionChip : global::Doroti.Framework.Widgets.StatelessWidget, Chip
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        ChipThemeData? defaults__7067 = ((ChipThemeData?)(object?)(Theme.of(context).useMaterial3 ? new _ActionChipDefaultsM3__action_chip(context, this.isEnabled, this._chipVariant) : null));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new RawChip(defaultProperties: defaults__7067, avatar: this.avatar, label: this.label, onPressed: () => this.onPressed(), pressElevation: this.pressElevation, tooltip: this.tooltip, labelStyle: this.labelStyle, color: this.color, backgroundColor: this.backgroundColor, side: this.side, shape: this.shape, clipBehavior: this.clipBehavior, focusNode: this.focusNode, autofocus: this.autofocus, disabledColor: this.disabledColor, padding: this.padding, visualDensity: this.visualDensity, isEnabled: this.isEnabled, labelPadding: this.labelPadding, materialTapTargetSize: this.materialTapTargetSize, elevation: this.elevation, shadowColor: this.shadowColor, surfaceTintColor: this.surfaceTintColor, iconTheme: this.iconTheme, avatarBoxConstraints: this.avatarBoxConstraints, chipAnimationStyle: this.chipAnimationStyle, mouseCursor: this.mouseCursor));
+        ChipThemeData? defaults = ((ChipThemeData?)(object?)(Theme.of(context).useMaterial3 ? new _ActionChipDefaultsM3__action_chip(context, this.isEnabled, this._chipVariant) : null));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new RawChip(defaultProperties: defaults, avatar: this.avatar, label: this.label, onPressed: () => this.onPressed(), pressElevation: this.pressElevation, tooltip: this.tooltip, labelStyle: this.labelStyle, color: this.color, backgroundColor: this.backgroundColor, side: this.side, shape: this.shape, clipBehavior: this.clipBehavior, focusNode: this.focusNode, autofocus: this.autofocus, disabledColor: this.disabledColor, padding: this.padding, visualDensity: this.visualDensity, isEnabled: this.isEnabled, labelPadding: this.labelPadding, materialTapTargetSize: this.materialTapTargetSize, elevation: this.elevation, shadowColor: this.shadowColor, surfaceTintColor: this.surfaceTintColor, iconTheme: this.iconTheme, avatarBoxConstraints: this.avatarBoxConstraints, chipAnimationStyle: this.chipAnimationStyle, mouseCursor: this.mouseCursor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -188,9 +188,9 @@ internal class _ActionChipDefaultsM3__action_chip : ChipThemeData
     {
         get
         {
-            double fontSize__10893 = (this.labelStyle?.fontSize ?? 14.0);
-            double fontSizeRatio__10951 = (MediaQuery.textScalerOf(this.context).scale(fontSize__10893) / 14.0);
-            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)EdgeInsets.lerp(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((fontSizeRatio__10951 - 1.0), 0.0, 1.0))!);
+            double fontSizeLocal = (this.labelStyle?.fontSize ?? 14.0);
+            double fontSizeRatio = (MediaQuery.textScalerOf(this.context).scale(fontSizeLocal) / 14.0);
+            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)EdgeInsets.lerp(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((fontSizeRatio - 1.0), 0.0, 1.0))!);
             return default!;
         }
     }

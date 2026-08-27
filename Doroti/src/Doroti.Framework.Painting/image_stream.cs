@@ -137,10 +137,10 @@ public class ImageStream : Diagnosticable
         _completer = value;
         if ((this._listeners is not null))
         {
-            List<ImageStreamListener> initialListeners__14296 = this._listeners!;
+            List<ImageStreamListener> initialListeners = this._listeners!;
             _listeners = null;
             this._completer!._addingInitialListeners = true;
-            initialListeners__14296.forEach(this._completer!.addListener);
+            initialListeners.forEach(this._completer!.addListener);
             this._completer!._addingInitialListeners = false;
         }
     }
@@ -164,11 +164,11 @@ public class ImageStream : Diagnosticable
             return;
         }
         DartRuntimePrimitives.Assert(() => (this._listeners is not null));
-        for (var i__16247 = 0L; (i__16247 < checked((long)(this._listeners!.Count))); i__16247 += 1L)
+        for (var i = 0L; (i < checked((long)(this._listeners!.Count))); i += 1L)
         {
-            if ((object.Equals(this._listeners![(int)(i__16247)], listener)))
+            if ((object.Equals(this._listeners![(int)(i)], listener)))
             {
-                this._listeners!.removeAt(i__16247);
+                this._listeners!.removeAt(i);
                 break;
             }
         }
@@ -236,10 +236,10 @@ public abstract class ImageStreamCompleter : Diagnosticable
             {
                 listener.onImage(this._currentImage!.clone(), !this._addingInitialListeners);
             }
-            catch (Exception exception__22664)
+            catch (Exception exceptionLocal)
             {
-                var stack__22675 = new System.Diagnostics.StackTrace();
-                reportError(context: new ErrorDescription("by a synchronously-called image listener"), exception: exception__22664, stack: stack__22675);
+                var stackLocal = new System.Diagnostics.StackTrace();
+                reportError(context: new ErrorDescription("by a synchronously-called image listener"), exception: exceptionLocal, stack: stackLocal);
             }
         }
         if (((this._currentError is not null) && (((ImageStreamListener)listener).onError is not null)))
@@ -248,12 +248,12 @@ public abstract class ImageStreamCompleter : Diagnosticable
             {
                 ((ImageStreamListener)listener).onError!(this._currentError!.exception, this._currentError!.stack);
             }
-            catch (Exception newException__23030)
+            catch (Exception newException)
             {
-                var newStack__23044 = new System.Diagnostics.StackTrace();
-                if ((!object.Equals(newException__23030, this._currentError!.exception)))
+                var newStack = new System.Diagnostics.StackTrace();
+                if ((!object.Equals(newException, this._currentError!.exception)))
                 {
-                    FlutterError.reportError(new FlutterErrorDetails(exception: newException__23030, library: "image resource service", context: new ErrorDescription("by a synchronously-called image error listener"), stack: newStack__23044));
+                    FlutterError.reportError(new FlutterErrorDetails(exception: newException, library: "image resource service", context: new ErrorDescription("by a synchronously-called image error listener"), stack: newStack));
                 }
             }
         }
@@ -268,12 +268,12 @@ public abstract class ImageStreamCompleter : Diagnosticable
             {
                 listener(this._currentError!.exception, this._currentError!.stack);
             }
-            catch (Exception newException__25108)
+            catch (Exception newException)
             {
-                var newStack__25122 = new System.Diagnostics.StackTrace();
-                if ((!object.Equals(newException__25108, this._currentError!.exception)))
+                var newStack = new System.Diagnostics.StackTrace();
+                if ((!object.Equals(newException, this._currentError!.exception)))
                 {
-                    FlutterError.reportError(new FlutterErrorDetails(exception: newException__25108, library: "image resource service", context: new ErrorDescription("by a synchronously-called image error listener"), stack: newStack__25122));
+                    FlutterError.reportError(new FlutterErrorDetails(exception: newException, library: "image resource service", context: new ErrorDescription("by a synchronously-called image error listener"), stack: newStack));
                 }
             }
         }
@@ -296,20 +296,20 @@ public abstract class ImageStreamCompleter : Diagnosticable
     public virtual void removeListener(ImageStreamListener listener)
     {
         _checkDisposed();
-        for (var i__26755 = 0L; (i__26755 < checked((long)(this._listeners.Count))); i__26755 += 1L)
+        for (var i = 0L; (i < checked((long)(this._listeners.Count))); i += 1L)
         {
-            if ((object.Equals(this._listeners[(int)(i__26755)], listener)))
+            if ((object.Equals(this._listeners[(int)(i)], listener)))
             {
-                this._listeners.removeAt(i__26755);
+                this._listeners.removeAt(i);
                 break;
             }
         }
         if ((checked((long)(this._listeners.Count)) == 0))
         {
-            List<Action> callbacks__26956 = this._onLastListenerRemovedCallbacks.ToList();
-            foreach (var callback__27027 in callbacks__26956)
+            List<Action> callbacks = this._onLastListenerRemovedCallbacks.ToList();
+            foreach (var callback in callbacks)
             {
-                callback__27027();
+                callback();
             }
             this._onLastListenerRemovedCallbacks.Clear();
             _maybeDispose();
@@ -368,17 +368,17 @@ public abstract class ImageStreamCompleter : Diagnosticable
         {
             return;
         }
-        var localListeners__29575 = new List<ImageStreamListener>(this._listeners);
-        foreach (var listener__29649 in localListeners__29575)
+        var localListeners = new List<ImageStreamListener>(this._listeners);
+        foreach (var listener in localListeners)
         {
             try
             {
-                listener__29649.onImage(image.clone(), false);
+                listener.onImage(image.clone(), false);
             }
-            catch (Exception exception__29754)
+            catch (Exception exceptionLocal)
             {
-                var stack__29765 = new System.Diagnostics.StackTrace();
-                reportError(context: new ErrorDescription("by an image listener"), exception: exception__29754, stack: stack__29765);
+                var stackLocal = new System.Diagnostics.StackTrace();
+                reportError(context: new ErrorDescription("by an image listener"), exception: exceptionLocal, stack: stackLocal);
             }
         }
     }
@@ -386,26 +386,26 @@ public abstract class ImageStreamCompleter : Diagnosticable
     public virtual void reportError(DiagnosticsNode? context = null, object exception = default!, global::System.Diagnostics.StackTrace? stack = null, InformationCollector? informationCollector = null, bool silent = false)
     {
         _currentError = new FlutterErrorDetails(exception: exception, stack: stack, library: "image resource service", context: context, informationCollector: informationCollector, silent: silent);
-        var localErrorListeners__32351 = new List<Action<object, global::System.Diagnostics.StackTrace?>>();
+        var localErrorListeners = new List<Action<object, global::System.Diagnostics.StackTrace?>>();
         this._ephemeralErrorListeners.Clear();
-        var handled__32637 = false;
-        foreach (var errorListener__32669 in localErrorListeners__32351)
+        var handled = false;
+        foreach (var errorListener in localErrorListeners)
         {
             try
             {
-                errorListener__32669(exception, stack);
-                handled__32637 = true;
+                errorListener(exception, stack);
+                handled = true;
             }
-            catch (Exception newException__32801)
+            catch (Exception newException)
             {
-                var newStack__32815 = new System.Diagnostics.StackTrace();
-                if ((!object.Equals(newException__32801, exception)))
+                var newStack = new System.Diagnostics.StackTrace();
+                if ((!object.Equals(newException, exception)))
                 {
-                    FlutterError.reportError(new FlutterErrorDetails(context: new ErrorDescription("when reporting an error to an image listener"), library: "image resource service", exception: newException__32801, stack: newStack__32815));
+                    FlutterError.reportError(new FlutterErrorDetails(context: new ErrorDescription("when reporting an error to an image listener"), library: "image resource service", exception: newException, stack: newStack));
                 }
             }
         }
-        if (!handled__32637)
+        if (!handled)
         {
             if (this._hadErrorListener)
             {
@@ -420,10 +420,10 @@ public abstract class ImageStreamCompleter : Diagnosticable
         _checkDisposed();
         if (this.hasListeners)
         {
-            List<Action<ImageChunkEvent>> localListeners__33907 = this._listeners.map<ImageStreamListener, Action<ImageChunkEvent>?>(((listener) => ((ImageStreamListener)listener).onChunk)).OfType<Action<ImageChunkEvent>>().ToList();
-            foreach (var listener__34104 in localListeners__33907)
+            List<Action<ImageChunkEvent>> localListeners = this._listeners.map<ImageStreamListener, Action<ImageChunkEvent>?>(((listener) => ((ImageStreamListener)listener).onChunk)).OfType<Action<ImageChunkEvent>>().ToList();
+            foreach (var listenerLocal in localListeners)
             {
-                listener__34104(@event);
+                listenerLocal(@event);
             }
         }
     }
@@ -504,8 +504,8 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
             {
                 return;
             }
-            long completedCycles__41595 = (checked((long)(this._framesEmitted / this._codec!.frameCount)));
-            if (((this._codec!.repetitionCount == -1L) || (completedCycles__41595 <= this._codec!.repetitionCount)))
+            long completedCycles = (checked((long)(this._framesEmitted / this._codec!.frameCount)));
+            if (((this._codec!.repetitionCount == -1L) || (completedCycles <= this._codec!.repetitionCount)))
             {
                 _ = _decodeNextFrameAndSchedule();
                 return;
@@ -514,8 +514,8 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
             _codec = null;
             return;
         }
-        Duration delay__41889 = (DartRuntimePrimitives.RequireValue(this._frameDuration) - ((timestamp - this._shownTimestamp)));
-        _timer = new Timer((delay__41889 * global::Doroti.Framework.Scheduler.BindingLibrary.timeDilation), (() =>
+        Duration delay = (DartRuntimePrimitives.RequireValue(this._frameDuration) - ((timestamp - this._shownTimestamp)));
+        _timer = new Timer((delay * global::Doroti.Framework.Scheduler.BindingLibrary.timeDilation), (() =>
         {
             _scheduleAppFrame();
         }));
@@ -541,10 +541,10 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
         {
             _nextFrame = await this._codec!.getNextFrame();
         }
-        catch (Exception exception__42499)
+        catch (Exception exceptionLocal)
         {
-            var stack__42510 = new System.Diagnostics.StackTrace();
-            reportError(context: new ErrorDescription("resolving an image frame"), exception: exception__42499, stack: stack__42510, informationCollector: (InformationCollector?)this._informationCollector, silent: true);
+            var stackLocal = new System.Diagnostics.StackTrace();
+            reportError(context: new ErrorDescription("resolving an image frame"), exception: exceptionLocal, stack: stackLocal, informationCollector: (InformationCollector?)this._informationCollector, silent: true);
             return;
         }
         if ((this._codec is null))

@@ -71,13 +71,13 @@ public class StadiumBorder : OutlinedBorder
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        var radius__2530 = global::Doroti.Ui.Radius.circular((rect.shortestSide / 2.0));
-        var borderRect__2591 = global::Doroti.Ui.RRect.fromRectAndRadius(rect, radius__2530);
-        global::Doroti.Ui.RRect adjustedRect__2659 = borderRect__2591.deflate(((BorderSide)side).strokeInset);
+        var radius = global::Doroti.Ui.Radius.circular((rect.shortestSide / 2.0));
+        var borderRect = global::Doroti.Ui.RRect.fromRectAndRadius(rect, radius);
+        global::Doroti.Ui.RRect adjustedRect = borderRect.deflate(((BorderSide)side).strokeInset);
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addRRect(adjustedRect__2659);
+    __cascade.addRRect(adjustedRect);
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -85,11 +85,11 @@ public class StadiumBorder : OutlinedBorder
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
-        var radius__2847 = global::Doroti.Ui.Radius.circular((rect.shortestSide / 2.0));
+        var radius = global::Doroti.Ui.Radius.circular((rect.shortestSide / 2.0));
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addRRect(global::Doroti.Ui.RRect.fromRectAndRadius(rect, radius__2847));
+    __cascade.addRRect(global::Doroti.Ui.RRect.fromRectAndRadius(rect, radius));
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -97,15 +97,15 @@ public class StadiumBorder : OutlinedBorder
 
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
-        var radius__3070 = global::Doroti.Ui.Radius.circular((rect.shortestSide / 2.0));
-        return global::Doroti.Ui.RRect.fromRectAndRadius(rect, radius__3070).contains(position);
+        var radius = global::Doroti.Ui.Radius.circular((rect.shortestSide / 2.0));
+        return global::Doroti.Ui.RRect.fromRectAndRadius(rect, radius).contains(position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paintInterior(Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection = null)
     {
-        var radius__3311 = global::Doroti.Ui.Radius.circular((rect.shortestSide / 2.0));
-        canvas.drawRRect(global::Doroti.Ui.RRect.fromRectAndRadius(rect, radius__3311), paint);
+        var radius = global::Doroti.Ui.Radius.circular((rect.shortestSide / 2.0));
+        canvas.drawRRect(global::Doroti.Ui.RRect.fromRectAndRadius(rect, radius), paint);
     }
 
     public override bool preferPaintInterior => true;
@@ -119,9 +119,9 @@ public class StadiumBorder : OutlinedBorder
                 }
             case BorderStyle.solid:
                 {
-                    var radius__3687 = global::Doroti.Ui.Radius.circular((rect.shortestSide / 2L));
-                    var borderRect__3750 = global::Doroti.Ui.RRect.fromRectAndRadius(rect, radius__3687);
-                    canvas.drawRRect(borderRect__3750.inflate((((BorderSide)side).strokeOffset / 2L)), side.toPaint());
+                    var radius = global::Doroti.Ui.Radius.circular((rect.shortestSide / 2L));
+                    var borderRect = global::Doroti.Ui.RRect.fromRectAndRadius(rect, radius);
+                    canvas.drawRRect(borderRect.inflate((((BorderSide)side).strokeOffset / 2L)), side.toPaint());
                     break;
                 }
         }
@@ -214,34 +214,34 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
         }
         if ((rect.width < rect.height))
         {
-            double partialDelta__6458 = (((rect.height - rect.width)) / 2L);
-            double delta__6524 = ((this.circularity * partialDelta__6458) * ((1.0 - this.eccentricity)));
-            return global::Doroti.Ui.Rect.fromLTRB(rect.left, (rect.top + delta__6524), rect.right, (rect.bottom - delta__6524));
+            double partialDelta = (((rect.height - rect.width)) / 2L);
+            double delta = ((this.circularity * partialDelta) * ((1.0 - this.eccentricity)));
+            return global::Doroti.Ui.Rect.fromLTRB(rect.left, (rect.top + delta), rect.right, (rect.bottom - delta));
         }
         else
         {
-            double partialDelta__6705 = (((rect.width - rect.height)) / 2L);
-            double delta__6771 = ((this.circularity * partialDelta__6705) * ((1.0 - this.eccentricity)));
-            return global::Doroti.Ui.Rect.fromLTRB((rect.left + delta__6771), rect.top, (rect.right - delta__6771), rect.bottom);
+            double partialDeltaLocal = (((rect.width - rect.height)) / 2L);
+            double deltaLocal = ((this.circularity * partialDeltaLocal) * ((1.0 - this.eccentricity)));
+            return global::Doroti.Ui.Rect.fromLTRB((rect.left + deltaLocal), rect.top, (rect.right - deltaLocal), rect.bottom);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual BorderRadius _adjustBorderRadius(Rect rect)
     {
-        var circleRadius__6989 = BorderRadius.CreateCircular((rect.shortestSide / 2L));
+        var circleRadius = BorderRadius.CreateCircular((rect.shortestSide / 2L));
         if ((this.eccentricity != 0.0))
         {
             if ((rect.width < rect.height))
             {
-                return BorderRadius.lerp(circleRadius__6989, BorderRadius.CreateAll(global::Doroti.Ui.Radius.elliptical((rect.width / 2L), ((((0.5 + (this.eccentricity / 2L))) * rect.height) / 2L))), DartRuntimePrimitives.RequireValue(this.circularity))!;
+                return BorderRadius.lerp(circleRadius, BorderRadius.CreateAll(global::Doroti.Ui.Radius.elliptical((rect.width / 2L), ((((0.5 + (this.eccentricity / 2L))) * rect.height) / 2L))), DartRuntimePrimitives.RequireValue(this.circularity))!;
             }
             else
             {
-                return BorderRadius.lerp(circleRadius__6989, BorderRadius.CreateAll(global::Doroti.Ui.Radius.elliptical(((((0.5 + (this.eccentricity / 2L))) * rect.width) / 2L), (rect.height / 2L))), DartRuntimePrimitives.RequireValue(this.circularity))!;
+                return BorderRadius.lerp(circleRadius, BorderRadius.CreateAll(global::Doroti.Ui.Radius.elliptical(((((0.5 + (this.eccentricity / 2L))) * rect.width) / 2L), (rect.height / 2L))), DartRuntimePrimitives.RequireValue(this.circularity))!;
             }
         }
-        return circleRadius__6989;
+        return circleRadius;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -295,8 +295,8 @@ internal class _StadiumToCircleBorder__stadium_border : OutlinedBorder
                 }
             case BorderStyle.solid:
                 {
-                    global::Doroti.Ui.RRect borderRect__8917 = _adjustBorderRadius(rect).toRRect(_adjustRect(rect));
-                    canvas.drawRRect(borderRect__8917.inflate((((BorderSide)side).strokeOffset / 2L)), side.toPaint());
+                    global::Doroti.Ui.RRect borderRect = _adjustBorderRadius(rect).toRRect(_adjustRect(rect));
+                    canvas.drawRRect(borderRect.inflate((((BorderSide)side).strokeOffset / 2L)), side.toPaint());
                     break;
                 }
         }
@@ -394,12 +394,12 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        global::Doroti.Ui.RRect borderRect__12404 = _adjustBorderRadius(rect).resolve(textDirection).toRRect(rect);
-        global::Doroti.Ui.RRect adjustedRect__12497 = borderRect__12404.deflate(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((BorderSide)side).width, 0L, ((BorderSide)side).strokeAlign)));
+        global::Doroti.Ui.RRect borderRect = _adjustBorderRadius(rect).resolve(textDirection).toRRect(rect);
+        global::Doroti.Ui.RRect adjustedRect = borderRect.deflate(DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((BorderSide)side).width, 0L, ((BorderSide)side).strokeAlign)));
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addRRect(adjustedRect__12497);
+    __cascade.addRRect(adjustedRect);
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -418,25 +418,25 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
 
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
-        BorderRadius adjustedBorderRadius__12916 = _adjustBorderRadius(rect).resolve(textDirection);
-        if ((object.Equals(adjustedBorderRadius__12916, BorderRadius.zero)))
+        BorderRadius adjustedBorderRadius = _adjustBorderRadius(rect).resolve(textDirection);
+        if ((object.Equals(adjustedBorderRadius, BorderRadius.zero)))
         {
             return rect.contains(position);
         }
-        return adjustedBorderRadius__12916.toRRect(rect).contains(position);
+        return adjustedBorderRadius.toRRect(rect).contains(position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paintInterior(Canvas canvas, Rect rect, Paint paint, TextDirection? textDirection = null)
     {
-        BorderRadiusGeometry adjustedBorderRadius__13294 = _adjustBorderRadius(rect);
-        if ((object.Equals(adjustedBorderRadius__13294, BorderRadius.zero)))
+        BorderRadiusGeometry adjustedBorderRadius = _adjustBorderRadius(rect);
+        if ((object.Equals(adjustedBorderRadius, BorderRadius.zero)))
         {
             canvas.drawRect(rect, paint);
         }
         else
         {
-            canvas.drawRRect(adjustedBorderRadius__13294.resolve(textDirection).toRRect(rect), paint);
+            canvas.drawRRect(adjustedBorderRadius.resolve(textDirection).toRRect(rect), paint);
         }
     }
 
@@ -457,9 +457,9 @@ internal class _StadiumToRoundedRectangleBorder__stadium_border : OutlinedBorder
                 }
             case BorderStyle.solid:
                 {
-                    BorderRadiusGeometry adjustedBorderRadius__14179 = _adjustBorderRadius(rect);
-                    global::Doroti.Ui.RRect borderRect__14249 = adjustedBorderRadius__14179.resolve(textDirection).toRRect(rect);
-                    canvas.drawRRect(borderRect__14249.inflate((((BorderSide)side).strokeOffset / 2L)), side.toPaint());
+                    BorderRadiusGeometry adjustedBorderRadius = _adjustBorderRadius(rect);
+                    global::Doroti.Ui.RRect borderRect = adjustedBorderRadius.resolve(textDirection).toRRect(rect);
+                    canvas.drawRRect(borderRect.inflate((((BorderSide)side).strokeOffset / 2L)), side.toPaint());
                     break;
                 }
         }

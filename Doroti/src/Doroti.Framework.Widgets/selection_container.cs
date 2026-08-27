@@ -38,8 +38,8 @@ public class SelectionContainer : StatefulWidget
 
     public static global::Doroti.Framework.Rendering.SelectionRegistrar? maybeOf(BuildContext context)
     {
-        SelectionRegistrarScope? scope__3536 = ((SelectionRegistrarScope?)(object?)context.dependOnInheritedWidgetOfExactType<SelectionRegistrarScope>());
-        return scope__3536?.registrar;
+        SelectionRegistrarScope? scope = ((SelectionRegistrarScope?)(object?)context.dependOnInheritedWidgetOfExactType<SelectionRegistrarScope>());
+        return scope?.registrar;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -84,9 +84,9 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
             }
             if ((!object.Equals(((global::Doroti.Framework.Rendering.SelectionGeometry?)((dynamic)((SelectionContainer)oldWidget).@delegate)?.value), ((global::Doroti.Framework.Rendering.SelectionGeometry?)((dynamic)((SelectionContainer)this.widget).@delegate)?.value))))
             {
-                foreach (global::System.Action listener__4952 in this._listeners.ToList())
+                foreach (global::System.Action listener in this._listeners.ToList())
                 {
-                    listener__4952();
+                    listener();
                 }
             }
         }
@@ -303,8 +303,8 @@ public abstract class SelectionContainerDelegate : global::Doroti.Framework.Rend
     public virtual Matrix4 getTransformTo(global::Doroti.Framework.Rendering.RenderObject? ancestor)
     {
         DartRuntimePrimitives.Assert(() => (this._selectionContainerContext?.findRenderObject() is not null), () => (object?)"getTransformTo cannot be called before SelectionContainer is laid out.");
-        var box__10212 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
-        return ((Matrix4)(object?)box__10212.getTransformTo(ancestor));
+        var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
+        return ((Matrix4)(object?)box.getTransformTo(ancestor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -313,8 +313,8 @@ public abstract class SelectionContainerDelegate : global::Doroti.Framework.Rend
         get
         {
             DartRuntimePrimitives.Assert(() => (this._selectionContainerContext?.findRenderObject() is not null), () => (object?)"The _selectionContainerContext must have a renderObject, such as after the first build has completed.");
-            var box__10724 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
-            return ((global::Doroti.Framework.Rendering.RenderBox)box__10724).hasSize;
+            var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
+            return ((global::Doroti.Framework.Rendering.RenderBox)box).hasSize;
             return default!;
         }
     }
@@ -323,8 +323,8 @@ public abstract class SelectionContainerDelegate : global::Doroti.Framework.Rend
         get
         {
             DartRuntimePrimitives.Assert(() => this.hasSize, () => (object?)"containerSize cannot be called before SelectionContainer is laid out.");
-            var box__11089 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
-            return ((global::Doroti.Framework.Rendering.RenderBox)box__11089).size;
+            var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._selectionContainerContext!.findRenderObject()!)!;
+            return ((global::Doroti.Framework.Rendering.RenderBox)box).size;
             return default!;
         }
     }

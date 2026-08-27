@@ -35,15 +35,15 @@ public class IconTheme : InheritedTheme
 
     public static IconThemeData of(BuildContext context)
     {
-        IconThemeData iconThemeData__2243 = ((IconThemeData)(object?)IconTheme._getInheritedIconThemeData(context).resolve(context));
-        return (((IconThemeData)iconThemeData__2243).isConcrete ? iconThemeData__2243 : iconThemeData__2243.copyWith(size: (((IconThemeData)iconThemeData__2243).size ?? IconThemeData.CreateFallback().size), fill: (((IconThemeData)iconThemeData__2243).fill ?? IconThemeData.CreateFallback().fill), weight: (((IconThemeData)iconThemeData__2243).weight ?? IconThemeData.CreateFallback().weight), grade: (((IconThemeData)iconThemeData__2243).grade ?? IconThemeData.CreateFallback().grade), opticalSize: (((IconThemeData)iconThemeData__2243).opticalSize ?? IconThemeData.CreateFallback().opticalSize), color: (((IconThemeData)iconThemeData__2243).color ?? IconThemeData.CreateFallback().color), opacity: (((IconThemeData)iconThemeData__2243).opacity ?? IconThemeData.CreateFallback().opacity), shadows: (((IconThemeData)iconThemeData__2243).shadows ?? IconThemeData.CreateFallback().shadows), applyTextScaling: (((IconThemeData)iconThemeData__2243).applyTextScaling ?? IconThemeData.CreateFallback().applyTextScaling)));
+        IconThemeData iconThemeData = ((IconThemeData)(object?)IconTheme._getInheritedIconThemeData(context).resolve(context));
+        return (((IconThemeData)iconThemeData).isConcrete ? iconThemeData : iconThemeData.copyWith(size: (((IconThemeData)iconThemeData).size ?? IconThemeData.CreateFallback().size), fill: (((IconThemeData)iconThemeData).fill ?? IconThemeData.CreateFallback().fill), weight: (((IconThemeData)iconThemeData).weight ?? IconThemeData.CreateFallback().weight), grade: (((IconThemeData)iconThemeData).grade ?? IconThemeData.CreateFallback().grade), opticalSize: (((IconThemeData)iconThemeData).opticalSize ?? IconThemeData.CreateFallback().opticalSize), color: (((IconThemeData)iconThemeData).color ?? IconThemeData.CreateFallback().color), opacity: (((IconThemeData)iconThemeData).opacity ?? IconThemeData.CreateFallback().opacity), shadows: (((IconThemeData)iconThemeData).shadows ?? IconThemeData.CreateFallback().shadows), applyTextScaling: (((IconThemeData)iconThemeData).applyTextScaling ?? IconThemeData.CreateFallback().applyTextScaling)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static IconThemeData _getInheritedIconThemeData(BuildContext context)
     {
-        IconTheme? iconTheme__3316 = ((IconTheme?)(object?)context.dependOnInheritedWidgetOfExactType<IconTheme>());
-        return (iconTheme__3316?.data ?? IconThemeData.CreateFallback());
+        IconTheme? iconTheme = ((IconTheme?)(object?)context.dependOnInheritedWidgetOfExactType<IconTheme>());
+        return (iconTheme?.data ?? IconThemeData.CreateFallback());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

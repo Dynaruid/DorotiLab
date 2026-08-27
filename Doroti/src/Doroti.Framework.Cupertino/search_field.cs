@@ -142,18 +142,18 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__41020 = this._bucket;
-        bool needsRestore__41056 = this.restorePending;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
+        bool needsRestore = this.restorePending;
         _currentParent = RestorationScope.maybeOf(this.context);
-        bool didReplaceBucket__41159 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore__41056);
-        if (needsRestore__41056)
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore);
+        if (needsRestore)
         {
-            _doRestore(oldBucket__41020);
+            _doRestore(oldBucket);
         }
-        if (didReplaceBucket__41159)
+        if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket__41020, this._bucket)));
-            oldBucket__41020?.dispose();
+            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            oldBucket?.dispose();
         }
         this._scrollNotificationObserver?.removeListener((global::System.Action<global::Doroti.Framework.Widgets.ScrollNotification>)this._handleScrollNotification);
         _scrollNotificationObserver = ScrollNotificationObserver.maybeOf(this.context);
@@ -245,9 +245,9 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
     public virtual string? restorationId => ((CupertinoSearchTextField)this.widget).restorationId;
     internal virtual void _defaultOnSuffixTap()
     {
-        bool textChanged__17432 = (((global::Doroti.Framework.Widgets.TextEditingController)this._effectiveController).text.Length != 0);
+        bool textChanged = (((global::Doroti.Framework.Widgets.TextEditingController)this._effectiveController).text.Length != 0);
         this._effectiveController.clear();
-        if (((((CupertinoSearchTextField)this.widget).onChanged is not null) && textChanged__17432))
+        if (((((CupertinoSearchTextField)this.widget).onChanged is not null) && textChanged))
         {
             ((CupertinoSearchTextField)this.widget).onChanged!(((global::Doroti.Framework.Widgets.TextEditingController)this._effectiveController).text);
         }
@@ -258,32 +258,32 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
         if ((notification is global::Doroti.Framework.Widgets.ScrollUpdateNotification))
         {
             global::Doroti.Framework.Widgets.ScrollUpdateNotification notification__as17708 = (global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification;
-            double currentHeight__17771 = (((global::Doroti.Framework.Widgets.BuildContext)this.context).size?.height ?? 0.0);
+            double currentHeight = (((global::Doroti.Framework.Widgets.BuildContext)this.context).size?.height ?? 0.0);
             setState(((global::System.Action)(() =>
             {
-                _fadeExtent = _CupertinoSearchTextFieldState__search_field._calculateScrollOpacity(currentHeight__17771, (this._scaledIconSize + Math.Max(((CupertinoSearchTextField)this.widget).prefixInsets.vertical, ((CupertinoSearchTextField)this.widget).suffixInsets.vertical)));
+                _fadeExtent = _CupertinoSearchTextFieldState__search_field._calculateScrollOpacity(currentHeight, (this._scaledIconSize + Math.Max(((CupertinoSearchTextField)this.widget).prefixInsets.vertical, ((CupertinoSearchTextField)this.widget).suffixInsets.vertical)));
             })));
         }
     }
 
     internal static double _calculateScrollOpacity(double currentHeight, double maxHeight)
     {
-        double thresholdHeight__18137 = (maxHeight * Search_fieldLibrary._kMinHeightBeforeTotalTransparency);
+        double thresholdHeight = (maxHeight * Search_fieldLibrary._kMinHeightBeforeTotalTransparency);
         if ((currentHeight >= maxHeight))
         {
             return 0.0;
         }
         else
         {
-            if ((currentHeight <= thresholdHeight__18137))
+            if ((currentHeight <= thresholdHeight))
             {
                 return 1.0;
             }
             else
             {
-                double range__18360 = (maxHeight - thresholdHeight__18137);
-                double progress__18416 = (((currentHeight - thresholdHeight__18137)) / range__18360);
-                return (1.0 - progress__18416);
+                double range = (maxHeight - thresholdHeight);
+                double progress = (((currentHeight - thresholdHeight)) / range);
+                return (1.0 - progress);
             }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -291,25 +291,25 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
 
     internal virtual global::Doroti.Framework.Painting.EdgeInsetsGeometry _animatedInsets(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Painting.EdgeInsetsGeometry insets)
     {
-        global::Doroti.Framework.Painting.EdgeInsets currentInsets__18756 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)insets.resolve(Directionality.of(context)));
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? animatedInsets__18846 = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)EdgeInsetsGeometry.lerp(insets, currentInsets__18756.copyWith(top: (((global::Doroti.Framework.Painting.EdgeInsets)currentInsets__18756).top / 2L)), this._fadeExtent));
-        return (animatedInsets__18846 ?? insets);
+        global::Doroti.Framework.Painting.EdgeInsets currentInsets = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)insets.resolve(Directionality.of(context)));
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? animatedInsets = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)EdgeInsetsGeometry.lerp(insets, currentInsets.copyWith(top: (((global::Doroti.Framework.Painting.EdgeInsets)currentInsets).top / 2L)), this._fadeExtent));
+        return (animatedInsets ?? insets);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        string placeholder__19096 = (((CupertinoSearchTextField)this.widget).placeholder ?? CupertinoLocalizations.of(context).searchTextFieldPlaceholderLabel);
-        global::Doroti.Ui.Color defaultPlaceholderColor__19224 = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(CupertinoColors.secondaryLabel, context));
-        global::Doroti.Framework.Painting.TextStyle placeholderStyle__19361 = (((CupertinoSearchTextField)this.widget).placeholderStyle ?? new global::Doroti.Framework.Painting.TextStyle(color: defaultPlaceholderColor__19224.withAlpha(((255L * ((defaultPlaceholderColor__19224.a * ((1L - this._fadeExtent)))))).round())));
+        string placeholderLocal = (((CupertinoSearchTextField)this.widget).placeholder ?? CupertinoLocalizations.of(context).searchTextFieldPlaceholderLabel);
+        global::Doroti.Ui.Color defaultPlaceholderColor = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(CupertinoColors.secondaryLabel, context));
+        global::Doroti.Framework.Painting.TextStyle placeholderStyleLocal = (((CupertinoSearchTextField)this.widget).placeholderStyle ?? new global::Doroti.Framework.Painting.TextStyle(color: defaultPlaceholderColor.withAlpha(((255L * ((defaultPlaceholderColor.a * ((1L - this._fadeExtent)))))).round())));
         _scaledIconSize = MediaQuery.textScalerOf(context).scale(((CupertinoSearchTextField)this.widget).itemSize);
-        global::Doroti.Framework.Painting.BoxDecoration decoration__19947 = (((CupertinoSearchTextField)this.widget).decoration ?? new global::Doroti.Framework.Painting.BoxDecoration(color: (((CupertinoSearchTextField)this.widget).backgroundColor ?? CupertinoColors.tertiarySystemFill), borderRadius: (((CupertinoSearchTextField)this.widget).borderRadius ?? this._kDefaultBorderRadius)));
-        global::Doroti.Ui.Color iconColor__20189 = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(((CupertinoSearchTextField)this.widget).itemColor, context));
-        var suffixIconThemeData__20269 = new global::Doroti.Framework.Widgets.IconThemeData(color: iconColor__20189, size: this._scaledIconSize);
-        var prefixIconThemeData__20357 = new global::Doroti.Framework.Widgets.IconThemeData(color: iconColor__20189, size: (((this._scaledIconSize >= Search_fieldLibrary._kMaxPrefixIconSize) && ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus) ? 0.0 : this._scaledIconSize));
-        global::Doroti.Framework.Widgets.Widget prefix__20571 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Opacity(opacity: (1.0 - this._fadeExtent), child: new global::Doroti.Framework.Widgets.Padding(padding: _animatedInsets(context, ((CupertinoSearchTextField)this.widget).prefixInsets), child: new global::Doroti.Framework.Widgets.IconTheme(data: prefixIconThemeData__20357, child: ((CupertinoSearchTextField)this.widget).prefixIcon))));
-        global::Doroti.Framework.Widgets.Widget suffix__20822 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Opacity(opacity: (1.0 - this._fadeExtent), child: new global::Doroti.Framework.Widgets.Padding(padding: _animatedInsets(context, ((CupertinoSearchTextField)this.widget).suffixInsets), child: new CupertinoButton(onPressed: ((((CupertinoSearchTextField)this.widget).onSuffixTap ?? (global::System.Action)this._defaultOnSuffixTap)), minSize: 0, padding: global::Doroti.Framework.Painting.EdgeInsets.zero, child: new global::Doroti.Framework.Widgets.IconTheme(data: suffixIconThemeData__20269, child: ((CupertinoSearchTextField)this.widget).suffixIcon)))));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoTextField(controller: this._effectiveController, decoration: decoration__19947, style: ((CupertinoSearchTextField)this.widget).style, prefix: prefix__20571, suffix: suffix__20822, keyboardType: ((CupertinoSearchTextField)this.widget).keyboardType, onTap: ((CupertinoSearchTextField)this.widget).onTap, enabled: (((CupertinoSearchTextField)this.widget).enabled ?? true), cursorWidth: ((CupertinoSearchTextField)this.widget).cursorWidth, cursorHeight: ((CupertinoSearchTextField)this.widget).cursorHeight, cursorRadius: ((CupertinoSearchTextField)this.widget).cursorRadius, cursorOpacityAnimates: ((CupertinoSearchTextField)this.widget).cursorOpacityAnimates, cursorColor: ((CupertinoSearchTextField)this.widget).cursorColor, suffixMode: ((CupertinoSearchTextField)this.widget).suffixMode, placeholder: placeholder__19096, placeholderStyle: placeholderStyle__19361, padding: _animatedInsets(context, ((CupertinoSearchTextField)this.widget).padding), onChanged: ((CupertinoSearchTextField)this.widget).onChanged, onSubmitted: ((CupertinoSearchTextField)this.widget).onSubmitted, focusNode: this._effectiveFocusNode, autofocus: ((CupertinoSearchTextField)this.widget).autofocus, autocorrect: ((CupertinoSearchTextField)this.widget).autocorrect, smartQuotesType: ((CupertinoSearchTextField)this.widget).smartQuotesType, smartDashesType: ((CupertinoSearchTextField)this.widget).smartDashesType, enableIMEPersonalizedLearning: ((CupertinoSearchTextField)this.widget).enableIMEPersonalizedLearning, textInputAction: global::Doroti.Framework.Services.TextInputAction.search));
+        global::Doroti.Framework.Painting.BoxDecoration decorationLocal = (((CupertinoSearchTextField)this.widget).decoration ?? new global::Doroti.Framework.Painting.BoxDecoration(color: (((CupertinoSearchTextField)this.widget).backgroundColor ?? CupertinoColors.tertiarySystemFill), borderRadius: (((CupertinoSearchTextField)this.widget).borderRadius ?? this._kDefaultBorderRadius)));
+        global::Doroti.Ui.Color iconColor = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(((CupertinoSearchTextField)this.widget).itemColor, context));
+        var suffixIconThemeData = new global::Doroti.Framework.Widgets.IconThemeData(color: iconColor, size: this._scaledIconSize);
+        var prefixIconThemeData = new global::Doroti.Framework.Widgets.IconThemeData(color: iconColor, size: (((this._scaledIconSize >= Search_fieldLibrary._kMaxPrefixIconSize) && ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus) ? 0.0 : this._scaledIconSize));
+        global::Doroti.Framework.Widgets.Widget prefixLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Opacity(opacity: (1.0 - this._fadeExtent), child: new global::Doroti.Framework.Widgets.Padding(padding: _animatedInsets(context, ((CupertinoSearchTextField)this.widget).prefixInsets), child: new global::Doroti.Framework.Widgets.IconTheme(data: prefixIconThemeData, child: ((CupertinoSearchTextField)this.widget).prefixIcon))));
+        global::Doroti.Framework.Widgets.Widget suffixLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Opacity(opacity: (1.0 - this._fadeExtent), child: new global::Doroti.Framework.Widgets.Padding(padding: _animatedInsets(context, ((CupertinoSearchTextField)this.widget).suffixInsets), child: new CupertinoButton(onPressed: ((((CupertinoSearchTextField)this.widget).onSuffixTap ?? (global::System.Action)this._defaultOnSuffixTap)), minSize: 0, padding: global::Doroti.Framework.Painting.EdgeInsets.zero, child: new global::Doroti.Framework.Widgets.IconTheme(data: suffixIconThemeData, child: ((CupertinoSearchTextField)this.widget).suffixIcon)))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoTextField(controller: this._effectiveController, decoration: decorationLocal, style: ((CupertinoSearchTextField)this.widget).style, prefix: prefixLocal, suffix: suffixLocal, keyboardType: ((CupertinoSearchTextField)this.widget).keyboardType, onTap: ((CupertinoSearchTextField)this.widget).onTap, enabled: (((CupertinoSearchTextField)this.widget).enabled ?? true), cursorWidth: ((CupertinoSearchTextField)this.widget).cursorWidth, cursorHeight: ((CupertinoSearchTextField)this.widget).cursorHeight, cursorRadius: ((CupertinoSearchTextField)this.widget).cursorRadius, cursorOpacityAnimates: ((CupertinoSearchTextField)this.widget).cursorOpacityAnimates, cursorColor: ((CupertinoSearchTextField)this.widget).cursorColor, suffixMode: ((CupertinoSearchTextField)this.widget).suffixMode, placeholder: placeholderLocal, placeholderStyle: placeholderStyleLocal, padding: _animatedInsets(context, ((CupertinoSearchTextField)this.widget).padding), onChanged: ((CupertinoSearchTextField)this.widget).onChanged, onSubmitted: ((CupertinoSearchTextField)this.widget).onSubmitted, focusNode: this._effectiveFocusNode, autofocus: ((CupertinoSearchTextField)this.widget).autofocus, autocorrect: ((CupertinoSearchTextField)this.widget).autocorrect, smartQuotesType: ((CupertinoSearchTextField)this.widget).smartQuotesType, smartDashesType: ((CupertinoSearchTextField)this.widget).smartDashesType, enableIMEPersonalizedLearning: ((CupertinoSearchTextField)this.widget).enableIMEPersonalizedLearning, textInputAction: global::Doroti.Framework.Services.TextInputAction.search));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -323,8 +323,8 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
     {
         DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
         DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
-        bool hasSerializedValue__36723 = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue__36804 = (hasSerializedValue__36723 ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
+        bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
+        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
         if (!((dynamic)property).isRegistered)
         {
             property._register(restorationId, this);
@@ -340,8 +340,8 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue__36804);
-        if (((!hasSerializedValue__36723 && ((dynamic)property).enabled) && (this.bucket is not null)))
+        property.initWithValue((dynamic)initialValue);
+        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -365,14 +365,14 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
         {
             return;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__39230 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
         DartRuntimePrimitives.Assert(() => !this.restorePending);
-        bool didReplaceBucket__39295 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
-        if (didReplaceBucket__39295)
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
+        if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket__39230, this._bucket)));
-            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket__39230 is null)));
-            oldBucket__39230?.dispose();
+            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket is null)));
+            oldBucket?.dispose();
         }
     }
 
@@ -388,8 +388,8 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent__40517 = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
-            return ((!object.Equals(potentialNewParent__40517, this._currentParent)) && ((potentialNewParent__40517?.isReplacing ?? false)));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
+            return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
             return default!;
         }
     }
@@ -418,17 +418,17 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
     {
         if (((this.restorationId is null) || (parent is null)))
         {
-            bool didReplace__42801 = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => (this._bucket is null));
-            return didReplace__42801;
+            return didReplace;
         }
         DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
         if ((restorePending || (this._bucket is null)))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucket__43086 = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
-            bool didReplace__43168 = _setNewBucketIfNecessary(newBucket: newBucket__43086, restorePending: restorePending);
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucket__43086)));
-            return didReplace__43168;
+            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
+            bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
+            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucketLocal)));
+            return didReplaceLocal;
         }
         DartRuntimePrimitives.Assert(() => (this._bucket is not null));
         DartRuntimePrimitives.Assert(() => !restorePending);
@@ -444,7 +444,7 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
         {
             return false;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__43946 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
         this._bucket = newBucket;
         if (!restorePending)
         {
@@ -452,7 +452,7 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
             {
                 this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
             }
-            didToggleBucket(oldBucket__43946);
+            didToggleBucket(oldBucket);
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -472,13 +472,13 @@ internal class _CupertinoSearchTextFieldState__search_field : global::Doroti.Fra
 
     public virtual void _unregister(dynamic property)
     {
-        global::System.Action listener__44576 = this._properties.remove(property)!;
+        global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
             {
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener__44576()));
+        property.removeListener((global::System.Action)(() => listener()));
         property._unregister();
     }
 

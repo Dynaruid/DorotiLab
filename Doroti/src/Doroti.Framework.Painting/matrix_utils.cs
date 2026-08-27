@@ -20,9 +20,9 @@ public abstract class MatrixUtils
 
     public static global::Doroti.Ui.Offset? getAsTranslation(Matrix4 transform)
     {
-        if (transform.storage is [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, double dx__949, double dy__972, 0.0, 1.0])
+        if (transform.storage is [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, double dx, double dy, 0.0, 1.0])
         {
-            return new global::Doroti.Ui.Offset(dx__949, dy__972);
+            return new global::Doroti.Ui.Offset(dx, dy);
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -30,9 +30,9 @@ public abstract class MatrixUtils
 
     public static double? getAsScale(Matrix4 transform)
     {
-        if (transform.storage is [double diagonal1__1451, 0.0, 0.0, 0.0, 0.0, double diagonal2__1525, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] && ((diagonal1__1451 == diagonal2__1525)))
+        if (transform.storage is [double diagonal1, 0.0, 0.0, 0.0, 0.0, double diagonal2, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0] && ((diagonal1 == diagonal2)))
         {
-            return diagonal1__1451;
+            return diagonal1;
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -40,56 +40,56 @@ public abstract class MatrixUtils
 
     public static void multiplyInPlace(Matrix4 a, Matrix4 b)
     {
-        Float64List aStorage__2090 = a.storage;
-        double m00__2129 = aStorage__2090[0L];
-        double m01__2165 = aStorage__2090[4L];
-        double m02__2201 = aStorage__2090[8L];
-        double m03__2237 = aStorage__2090[12L];
-        double m10__2274 = aStorage__2090[1L];
-        double m11__2310 = aStorage__2090[5L];
-        double m12__2346 = aStorage__2090[9L];
-        double m13__2382 = aStorage__2090[13L];
-        double m20__2419 = aStorage__2090[2L];
-        double m21__2455 = aStorage__2090[6L];
-        double m22__2491 = aStorage__2090[10L];
-        double m23__2528 = aStorage__2090[14L];
-        double m30__2565 = aStorage__2090[3L];
-        double m31__2601 = aStorage__2090[7L];
-        double m32__2637 = aStorage__2090[11L];
-        double m33__2674 = aStorage__2090[15L];
-        Float64List bStorage__2716 = b.storage;
-        double n00__2755 = bStorage__2716[0L];
-        double n01__2791 = bStorage__2716[4L];
-        double n02__2827 = bStorage__2716[8L];
-        double n03__2863 = bStorage__2716[12L];
-        double n10__2900 = bStorage__2716[1L];
-        double n11__2936 = bStorage__2716[5L];
-        double n12__2972 = bStorage__2716[9L];
-        double n13__3008 = bStorage__2716[13L];
-        double n20__3045 = bStorage__2716[2L];
-        double n21__3081 = bStorage__2716[6L];
-        double n22__3117 = bStorage__2716[10L];
-        double n23__3154 = bStorage__2716[14L];
-        double n30__3191 = bStorage__2716[3L];
-        double n31__3227 = bStorage__2716[7L];
-        double n32__3263 = bStorage__2716[11L];
-        double n33__3300 = bStorage__2716[15L];
-        bStorage__2716[0L] = (((((m00__2129 * n00__2755)) + ((m01__2165 * n10__2900))) + ((m02__2201 * n20__3045))) + ((m03__2237 * n30__3191)));
-        bStorage__2716[4L] = (((((m00__2129 * n01__2791)) + ((m01__2165 * n11__2936))) + ((m02__2201 * n21__3081))) + ((m03__2237 * n31__3227)));
-        bStorage__2716[8L] = (((((m00__2129 * n02__2827)) + ((m01__2165 * n12__2972))) + ((m02__2201 * n22__3117))) + ((m03__2237 * n32__3263)));
-        bStorage__2716[12L] = (((((m00__2129 * n03__2863)) + ((m01__2165 * n13__3008))) + ((m02__2201 * n23__3154))) + ((m03__2237 * n33__3300)));
-        bStorage__2716[1L] = (((((m10__2274 * n00__2755)) + ((m11__2310 * n10__2900))) + ((m12__2346 * n20__3045))) + ((m13__2382 * n30__3191)));
-        bStorage__2716[5L] = (((((m10__2274 * n01__2791)) + ((m11__2310 * n11__2936))) + ((m12__2346 * n21__3081))) + ((m13__2382 * n31__3227)));
-        bStorage__2716[9L] = (((((m10__2274 * n02__2827)) + ((m11__2310 * n12__2972))) + ((m12__2346 * n22__3117))) + ((m13__2382 * n32__3263)));
-        bStorage__2716[13L] = (((((m10__2274 * n03__2863)) + ((m11__2310 * n13__3008))) + ((m12__2346 * n23__3154))) + ((m13__2382 * n33__3300)));
-        bStorage__2716[2L] = (((((m20__2419 * n00__2755)) + ((m21__2455 * n10__2900))) + ((m22__2491 * n20__3045))) + ((m23__2528 * n30__3191)));
-        bStorage__2716[6L] = (((((m20__2419 * n01__2791)) + ((m21__2455 * n11__2936))) + ((m22__2491 * n21__3081))) + ((m23__2528 * n31__3227)));
-        bStorage__2716[10L] = (((((m20__2419 * n02__2827)) + ((m21__2455 * n12__2972))) + ((m22__2491 * n22__3117))) + ((m23__2528 * n32__3263)));
-        bStorage__2716[14L] = (((((m20__2419 * n03__2863)) + ((m21__2455 * n13__3008))) + ((m22__2491 * n23__3154))) + ((m23__2528 * n33__3300)));
-        bStorage__2716[3L] = (((((m30__2565 * n00__2755)) + ((m31__2601 * n10__2900))) + ((m32__2637 * n20__3045))) + ((m33__2674 * n30__3191)));
-        bStorage__2716[7L] = (((((m30__2565 * n01__2791)) + ((m31__2601 * n11__2936))) + ((m32__2637 * n21__3081))) + ((m33__2674 * n31__3227)));
-        bStorage__2716[11L] = (((((m30__2565 * n02__2827)) + ((m31__2601 * n12__2972))) + ((m32__2637 * n22__3117))) + ((m33__2674 * n32__3263)));
-        bStorage__2716[15L] = (((((m30__2565 * n03__2863)) + ((m31__2601 * n13__3008))) + ((m32__2637 * n23__3154))) + ((m33__2674 * n33__3300)));
+        Float64List aStorage = a.storage;
+        double m00 = aStorage[0L];
+        double m01 = aStorage[4L];
+        double m02 = aStorage[8L];
+        double m03 = aStorage[12L];
+        double m10 = aStorage[1L];
+        double m11 = aStorage[5L];
+        double m12 = aStorage[9L];
+        double m13 = aStorage[13L];
+        double m20 = aStorage[2L];
+        double m21 = aStorage[6L];
+        double m22 = aStorage[10L];
+        double m23 = aStorage[14L];
+        double m30 = aStorage[3L];
+        double m31 = aStorage[7L];
+        double m32 = aStorage[11L];
+        double m33 = aStorage[15L];
+        Float64List bStorage = b.storage;
+        double n00 = bStorage[0L];
+        double n01 = bStorage[4L];
+        double n02 = bStorage[8L];
+        double n03 = bStorage[12L];
+        double n10 = bStorage[1L];
+        double n11 = bStorage[5L];
+        double n12 = bStorage[9L];
+        double n13 = bStorage[13L];
+        double n20 = bStorage[2L];
+        double n21 = bStorage[6L];
+        double n22 = bStorage[10L];
+        double n23 = bStorage[14L];
+        double n30 = bStorage[3L];
+        double n31 = bStorage[7L];
+        double n32 = bStorage[11L];
+        double n33 = bStorage[15L];
+        bStorage[0L] = (((((m00 * n00)) + ((m01 * n10))) + ((m02 * n20))) + ((m03 * n30)));
+        bStorage[4L] = (((((m00 * n01)) + ((m01 * n11))) + ((m02 * n21))) + ((m03 * n31)));
+        bStorage[8L] = (((((m00 * n02)) + ((m01 * n12))) + ((m02 * n22))) + ((m03 * n32)));
+        bStorage[12L] = (((((m00 * n03)) + ((m01 * n13))) + ((m02 * n23))) + ((m03 * n33)));
+        bStorage[1L] = (((((m10 * n00)) + ((m11 * n10))) + ((m12 * n20))) + ((m13 * n30)));
+        bStorage[5L] = (((((m10 * n01)) + ((m11 * n11))) + ((m12 * n21))) + ((m13 * n31)));
+        bStorage[9L] = (((((m10 * n02)) + ((m11 * n12))) + ((m12 * n22))) + ((m13 * n32)));
+        bStorage[13L] = (((((m10 * n03)) + ((m11 * n13))) + ((m12 * n23))) + ((m13 * n33)));
+        bStorage[2L] = (((((m20 * n00)) + ((m21 * n10))) + ((m22 * n20))) + ((m23 * n30)));
+        bStorage[6L] = (((((m20 * n01)) + ((m21 * n11))) + ((m22 * n21))) + ((m23 * n31)));
+        bStorage[10L] = (((((m20 * n02)) + ((m21 * n12))) + ((m22 * n22))) + ((m23 * n32)));
+        bStorage[14L] = (((((m20 * n03)) + ((m21 * n13))) + ((m22 * n23))) + ((m23 * n33)));
+        bStorage[3L] = (((((m30 * n00)) + ((m31 * n10))) + ((m32 * n20))) + ((m33 * n30)));
+        bStorage[7L] = (((((m30 * n01)) + ((m31 * n11))) + ((m32 * n21))) + ((m33 * n31)));
+        bStorage[11L] = (((((m30 * n02)) + ((m31 * n12))) + ((m32 * n22))) + ((m33 * n32)));
+        bStorage[15L] = (((((m30 * n03)) + ((m31 * n13))) + ((m32 * n23))) + ((m33 * n33)));
     }
 
     public static bool matrixEquals(Matrix4? a, Matrix4? b)
@@ -119,154 +119,154 @@ public abstract class MatrixUtils
 
     public static global::Doroti.Ui.Offset transformPoint(Matrix4 transform, Offset point)
     {
-        Float64List storage__6986 = transform.storage;
-        double x__7032 = point.dx;
-        double y__7063 = point.dy;
-        double rx__7246 = (((storage__6986[0L] * x__7032) + (storage__6986[4L] * y__7063)) + storage__6986[12L]);
-        double ry__7315 = (((storage__6986[1L] * x__7032) + (storage__6986[5L] * y__7063)) + storage__6986[13L]);
-        double rw__7384 = (((storage__6986[3L] * x__7032) + (storage__6986[7L] * y__7063)) + storage__6986[15L]);
-        if ((rw__7384 == 1.0))
+        Float64List storageLocal = transform.storage;
+        double x = point.dx;
+        double y = point.dy;
+        double rx = (((storageLocal[0L] * x) + (storageLocal[4L] * y)) + storageLocal[12L]);
+        double ry = (((storageLocal[1L] * x) + (storageLocal[5L] * y)) + storageLocal[13L]);
+        double rw = (((storageLocal[3L] * x) + (storageLocal[7L] * y)) + storageLocal[15L]);
+        if ((rw == 1.0))
         {
-            return new global::Doroti.Ui.Offset(rx__7246, ry__7315);
+            return new global::Doroti.Ui.Offset(rx, ry);
         }
         else
         {
-            return new global::Doroti.Ui.Offset((rx__7246 / rw__7384), (ry__7315 / rw__7384));
+            return new global::Doroti.Ui.Offset((rx / rw), (ry / rw));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static global::Doroti.Ui.Rect _safeTransformRect(Matrix4 transform, Rect rect)
     {
-        Float64List storage__7939 = transform.storage;
-        bool isAffine__7983 = (((storage__7939[3L] == 0.0) && (storage__7939[7L] == 0.0)) && (storage__7939[15L] == 1.0));
-        _accumulate(storage__7939, rect.left, rect.top, true, isAffine__7983);
-        _accumulate(storage__7939, rect.right, rect.top, false, isAffine__7983);
-        _accumulate(storage__7939, rect.left, rect.bottom, false, isAffine__7983);
-        _accumulate(storage__7939, rect.right, rect.bottom, false, isAffine__7983);
+        Float64List storageLocal = transform.storage;
+        bool isAffine = (((storageLocal[3L] == 0.0) && (storageLocal[7L] == 0.0)) && (storageLocal[15L] == 1.0));
+        _accumulate(storageLocal, rect.left, rect.top, true, isAffine);
+        _accumulate(storageLocal, rect.right, rect.top, false, isAffine);
+        _accumulate(storageLocal, rect.left, rect.bottom, false, isAffine);
+        _accumulate(storageLocal, rect.right, rect.bottom, false, isAffine);
         return global::Doroti.Ui.Rect.fromLTRB(_minMax[0L], _minMax[1L], _minMax[2L], _minMax[3L]);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static void _accumulate(Float64List m, double x, double y, bool first, bool isAffine)
     {
-        double w__8560 = (isAffine ? 1.0 : (1.0 / ((((m[3L] * x) + (m[7L] * y)) + m[15L]))));
-        double tx__8635 = (((((m[0L] * x) + (m[4L] * y)) + m[12L])) * w__8560);
-        double ty__8692 = (((((m[1L] * x) + (m[5L] * y)) + m[13L])) * w__8560);
+        double w = (isAffine ? 1.0 : (1.0 / ((((m[3L] * x) + (m[7L] * y)) + m[15L]))));
+        double tx = (((((m[0L] * x) + (m[4L] * y)) + m[12L])) * w);
+        double ty = (((((m[1L] * x) + (m[5L] * y)) + m[13L])) * w);
         if (first)
         {
-            _minMax[0L] = _minMax[2L] = tx__8635;
-            _minMax[1L] = _minMax[3L] = ty__8692;
+            _minMax[0L] = _minMax[2L] = tx;
+            _minMax[1L] = _minMax[3L] = ty;
         }
         else
         {
-            if ((tx__8635 < _minMax[0L]))
+            if ((tx < _minMax[0L]))
             {
-                _minMax[0L] = tx__8635;
+                _minMax[0L] = tx;
             }
-            if ((ty__8692 < _minMax[1L]))
+            if ((ty < _minMax[1L]))
             {
-                _minMax[1L] = ty__8692;
+                _minMax[1L] = ty;
             }
-            if ((tx__8635 > _minMax[2L]))
+            if ((tx > _minMax[2L]))
             {
-                _minMax[2L] = tx__8635;
+                _minMax[2L] = tx;
             }
-            if ((ty__8692 > _minMax[3L]))
+            if ((ty > _minMax[3L]))
             {
-                _minMax[3L] = ty__8692;
+                _minMax[3L] = ty;
             }
         }
     }
 
     public static global::Doroti.Ui.Rect transformRect(Matrix4 transform, Rect rect)
     {
-        Float64List storage__9509 = transform.storage;
-        double x__9555 = rect.left;
-        double y__9587 = rect.top;
-        double w__9618 = (rect.right - x__9555);
-        double h__9655 = (rect.bottom - y__9587);
-        if ((!double.IsFinite(w__9618) || !double.IsFinite(h__9655)))
+        Float64List storageLocal = transform.storage;
+        double x = rect.left;
+        double y = rect.top;
+        double w = (rect.right - x);
+        double h = (rect.bottom - y);
+        if ((!double.IsFinite(w) || !double.IsFinite(h)))
         {
             return _safeTransformRect(transform, rect);
         }
-        double wx__18397 = (storage__9509[0L] * w__9618);
-        double hx__18435 = (storage__9509[4L] * h__9655);
-        double rx__18473 = (((storage__9509[0L] * x__9555) + (storage__9509[4L] * y__9587)) + storage__9509[12L]);
-        double wy__18543 = (storage__9509[1L] * w__9618);
-        double hy__18581 = (storage__9509[5L] * h__9655);
-        double ry__18619 = (((storage__9509[1L] * x__9555) + (storage__9509[5L] * y__9587)) + storage__9509[13L]);
-        if ((((storage__9509[3L] == 0.0) && (storage__9509[7L] == 0.0)) && (storage__9509[15L] == 1.0)))
+        double wx = (storageLocal[0L] * w);
+        double hx = (storageLocal[4L] * h);
+        double rx = (((storageLocal[0L] * x) + (storageLocal[4L] * y)) + storageLocal[12L]);
+        double wy = (storageLocal[1L] * w);
+        double hy = (storageLocal[5L] * h);
+        double ry = (((storageLocal[1L] * x) + (storageLocal[5L] * y)) + storageLocal[13L]);
+        if ((((storageLocal[3L] == 0.0) && (storageLocal[7L] == 0.0)) && (storageLocal[15L] == 1.0)))
         {
-            var left__18754 = rx__18473;
-            var right__18775 = rx__18473;
-            if ((wx__18397 < 0L))
+            var leftLocal = rx;
+            var rightLocal = rx;
+            if ((wx < 0L))
             {
-                left__18754 += wx__18397;
+                leftLocal += wx;
             }
             else
             {
-                right__18775 += wx__18397;
+                rightLocal += wx;
             }
-            if ((hx__18435 < 0L))
+            if ((hx < 0L))
             {
-                left__18754 += hx__18435;
+                leftLocal += hx;
             }
             else
             {
-                right__18775 += hx__18435;
+                rightLocal += hx;
             }
-            var top__18966 = ry__18619;
-            var bottom__18986 = ry__18619;
-            if ((wy__18543 < 0L))
+            var topLocal = ry;
+            var bottomLocal = ry;
+            if ((wy < 0L))
             {
-                top__18966 += wy__18543;
+                topLocal += wy;
             }
             else
             {
-                bottom__18986 += wy__18543;
+                bottomLocal += wy;
             }
-            if ((hy__18581 < 0L))
+            if ((hy < 0L))
             {
-                top__18966 += hy__18581;
+                topLocal += hy;
             }
             else
             {
-                bottom__18986 += hy__18581;
+                bottomLocal += hy;
             }
-            return global::Doroti.Ui.Rect.fromLTRB(left__18754, top__18966, right__18775, bottom__18986);
+            return global::Doroti.Ui.Rect.fromLTRB(leftLocal, topLocal, rightLocal, bottomLocal);
         }
         else
         {
-            double ww__19254 = (storage__9509[3L] * w__9618);
-            double hw__19294 = (storage__9509[7L] * h__9655);
-            double rw__19334 = (((storage__9509[3L] * x__9555) + (storage__9509[7L] * y__9587)) + storage__9509[15L]);
-            double ulx__19406 = (rx__18473 / rw__19334);
-            double uly__19440 = (ry__18619 / rw__19334);
-            double urx__19474 = (((rx__18473 + wx__18397)) / ((rw__19334 + ww__19254)));
-            double ury__19522 = (((ry__18619 + wy__18543)) / ((rw__19334 + ww__19254)));
-            double llx__19570 = (((rx__18473 + hx__18435)) / ((rw__19334 + hw__19294)));
-            double lly__19618 = (((ry__18619 + hy__18581)) / ((rw__19334 + hw__19294)));
-            double lrx__19666 = ((((rx__18473 + wx__18397) + hx__18435)) / (((rw__19334 + ww__19254) + hw__19294)));
-            double lry__19724 = ((((ry__18619 + wy__18543) + hy__18581)) / (((rw__19334 + ww__19254) + hw__19294)));
-            return global::Doroti.Ui.Rect.fromLTRB(_min4(ulx__19406, urx__19474, llx__19570, lrx__19666), _min4(uly__19440, ury__19522, lly__19618, lry__19724), _max4(ulx__19406, urx__19474, llx__19570, lrx__19666), _max4(uly__19440, ury__19522, lly__19618, lry__19724));
+            double ww = (storageLocal[3L] * w);
+            double hw = (storageLocal[7L] * h);
+            double rw = (((storageLocal[3L] * x) + (storageLocal[7L] * y)) + storageLocal[15L]);
+            double ulx = (rx / rw);
+            double uly = (ry / rw);
+            double urx = (((rx + wx)) / ((rw + ww)));
+            double ury = (((ry + wy)) / ((rw + ww)));
+            double llx = (((rx + hx)) / ((rw + hw)));
+            double lly = (((ry + hy)) / ((rw + hw)));
+            double lrx = ((((rx + wx) + hx)) / (((rw + ww) + hw)));
+            double lry = ((((ry + wy) + hy)) / (((rw + ww) + hw)));
+            return global::Doroti.Ui.Rect.fromLTRB(_min4(ulx, urx, llx, lrx), _min4(uly, ury, lly, lry), _max4(ulx, urx, llx, lrx), _max4(uly, ury, lly, lry));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static double _min4(double a, double b, double c, double d)
     {
-        var e__20026 = (((DartRuntimePrimitives.RequireValue(a) < DartRuntimePrimitives.RequireValue(b))) ? DartRuntimePrimitives.RequireValue(a) : DartRuntimePrimitives.RequireValue(b));
-        var f__20057 = (((c < d)) ? c : d);
-        return (((e__20026 < f__20057)) ? e__20026 : f__20057);
+        var e = (((DartRuntimePrimitives.RequireValue(a) < DartRuntimePrimitives.RequireValue(b))) ? DartRuntimePrimitives.RequireValue(a) : DartRuntimePrimitives.RequireValue(b));
+        var f = (((c < d)) ? c : d);
+        return (((e < f)) ? e : f);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static double _max4(double a, double b, double c, double d)
     {
-        var e__20185 = (((DartRuntimePrimitives.RequireValue(a) > DartRuntimePrimitives.RequireValue(b))) ? DartRuntimePrimitives.RequireValue(a) : DartRuntimePrimitives.RequireValue(b));
-        var f__20216 = (((c > d)) ? c : d);
-        return (((e__20185 > f__20216)) ? e__20185 : f__20216);
+        var e = (((DartRuntimePrimitives.RequireValue(a) > DartRuntimePrimitives.RequireValue(b))) ? DartRuntimePrimitives.RequireValue(a) : DartRuntimePrimitives.RequireValue(b));
+        var f = (((c > d)) ? c : d);
+        return (((e > f)) ? e : f);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -289,7 +289,7 @@ public abstract class MatrixUtils
     public static Matrix4 createCylindricalProjectionTransform(double radius, double angle, double perspective = 0.001, Axis orientation = Axis.vertical)
     {
         DartRuntimePrimitives.Assert(() => ((perspective >= 0L) && (perspective <= 1.0)));
-        var result__23848 = ((Func<Matrix4>)(() =>
+        var result = ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.identity();
     __cascade.setEntry(3L, 2L, -perspective);
@@ -297,20 +297,20 @@ public abstract class MatrixUtils
     __cascade.setEntry(3L, 3L, ((perspective * radius) + 1.0));
     return __cascade;
 }))();
-        result__23848 = ((Matrix4?)(object?)(result__23848 * (((orientation switch { Axis.horizontal => Matrix4.rotationY(angle), Axis.vertical => Matrix4.rotationX(angle), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }) * Matrix4.translationValues(0.0, 0.0, radius)))))!;
-        return result__23848;
+        result = ((Matrix4?)(object?)(result * (((orientation switch { Axis.horizontal => Matrix4.rotationY(angle), Axis.vertical => Matrix4.rotationX(angle), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }) * Matrix4.translationValues(0.0, 0.0, radius)))))!;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static Matrix4 forceToPoint(Offset offset)
     {
-        var result__24655 = Matrix4.zero();
-        Float64List storage__24702 = result__24655.storage;
-        storage__24702[10L] = 1;
-        storage__24702[12L] = offset.dx;
-        storage__24702[13L] = offset.dy;
-        storage__24702[15L] = 1;
-        return result__24655;
+        var result = Matrix4.zero();
+        Float64List storageLocal = result.storage;
+        storageLocal[10L] = 1;
+        storageLocal[12L] = offset.dx;
+        storageLocal[13L] = offset.dy;
+        storageLocal[15L] = 1;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -339,8 +339,8 @@ public class TransformProperty : DiagnosticsProperty<Matrix4>
     {
         if (((parentConfiguration is not null) && !parentConfiguration.lineBreakProperties))
         {
-            var values__26772 = new List<string> { $"{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 3L)))}", $"{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 3L)))}", $"{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 3L)))}", $"{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 3L)))}" };
-            return $"[{string.Join("; ", values__26772)}]";
+            var values = new List<string> { $"{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(0L, 3L)))}", $"{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(1L, 3L)))}", $"{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(2L, 3L)))}", $"{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 0L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 1L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 2L)))},{(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(value!.entry(3L, 3L)))}" };
+            return $"[{string.Join("; ", values)}]";
         }
         return string.Join("\n", Matrix_utilsLibrary.debugDescribeTransform(value));
         throw new InvalidOperationException("Dart control flow completed without a value.");

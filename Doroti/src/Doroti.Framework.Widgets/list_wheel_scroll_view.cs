@@ -103,8 +103,8 @@ public class ListWheelChildBuilderDelegate : ListWheelChildDelegate
     {
         if ((this.childCount is null))
         {
-            Widget? child__7876 = this.builder(context, index);
-            return ((Widget?)(object?)((child__7876 is null) ? null : new IndexedSemantics(index: index, child: child__7876)));
+            Widget? childLocal = this.builder(context, index);
+            return ((Widget?)(object?)((childLocal is null) ? null : new IndexedSemantics(index: index, child: childLocal)));
         }
         if (((index < 0L) || (index >= DartRuntimePrimitives.RequireValue(this.childCount))))
         {
@@ -138,8 +138,8 @@ public class FixedExtentScrollController : ScrollController
         {
             DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this.positions), () => (object?)"FixedExtentScrollController.selectedItem cannot be accessed before a " + "scroll view is built with it.");
             DartRuntimePrimitives.Assert(() => (this.positions.Count() == 1L), () => (object?)"The selectedItem property cannot be read when multiple scroll views are " + "attached to the same FixedExtentScrollController.");
-            var position__10372 = ((_FixedExtentScrollPosition__list_wheel_scroll_view?)(object?)this.position)!;
-            return ((_FixedExtentScrollPosition__list_wheel_scroll_view)position__10372).itemIndex;
+            var positionLocal = ((_FixedExtentScrollPosition__list_wheel_scroll_view?)(object?)this.position)!;
+            return ((_FixedExtentScrollPosition__list_wheel_scroll_view)positionLocal).itemIndex;
             return default!;
         }
     }
@@ -154,9 +154,9 @@ public class FixedExtentScrollController : ScrollController
 
     public virtual void jumpToItem(long itemIndex)
     {
-        foreach (_FixedExtentScrollPosition__list_wheel_scroll_view position__11444 in this.positions.cast<_FixedExtentScrollPosition__list_wheel_scroll_view>())
+        foreach (_FixedExtentScrollPosition__list_wheel_scroll_view position in this.positions.cast<_FixedExtentScrollPosition__list_wheel_scroll_view>())
         {
-            position__11444.jumpTo((itemIndex * ((_FixedExtentScrollPosition__list_wheel_scroll_view)position__11444).itemExtent));
+            position.jumpTo((itemIndex * ((_FixedExtentScrollPosition__list_wheel_scroll_view)position).itemExtent));
         }
     }
 
@@ -214,8 +214,8 @@ internal class _FixedExtentScrollPosition__list_wheel_scroll_view : ScrollPositi
 
     internal static double _getItemExtentFromScrollContext(ScrollContext context)
     {
-        var scrollable__15017 = ((_FixedExtentScrollableState__list_wheel_scroll_view?)(object?)context)!;
-        return ((_FixedExtentScrollableState__list_wheel_scroll_view)scrollable__15017).itemExtent;
+        var scrollable = ((_FixedExtentScrollableState__list_wheel_scroll_view?)(object?)context)!;
+        return ((_FixedExtentScrollableState__list_wheel_scroll_view)scrollable).itemExtent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -254,8 +254,8 @@ internal class _FixedExtentScrollableState__list_wheel_scroll_view : ScrollableS
     {
         get
         {
-            var actualWidget__17090 = ((_FixedExtentScrollable__list_wheel_scroll_view?)(object?)this.widget)!;
-            return ((_FixedExtentScrollable__list_wheel_scroll_view)actualWidget__17090).itemExtent;
+            var actualWidget = ((_FixedExtentScrollable__list_wheel_scroll_view?)(object?)this.widget)!;
+            return ((_FixedExtentScrollable__list_wheel_scroll_view)actualWidget).itemExtent;
             return default!;
         }
     }
@@ -276,27 +276,27 @@ public class FixedExtentScrollPhysics : ScrollPhysics
     public override global::Doroti.Framework.Physics.Simulation? createBallisticSimulation(ScrollMetrics position, double velocity)
     {
         DartRuntimePrimitives.Assert(() => (position is _FixedExtentScrollPosition__list_wheel_scroll_view), () => (object?)"FixedExtentScrollPhysics can only be used with Scrollables that uses " + "the FixedExtentScrollController");
-        var metrics__18212 = ((_FixedExtentScrollPosition__list_wheel_scroll_view?)(object?)position)!;
-        if (((((velocity <= 0.0) && (metrics__18212.pixels <= metrics__18212.minScrollExtent))) || (((velocity >= 0.0) && (metrics__18212.pixels >= metrics__18212.maxScrollExtent)))))
+        var metrics = ((_FixedExtentScrollPosition__list_wheel_scroll_view?)(object?)position)!;
+        if (((((velocity <= 0.0) && (metrics.pixels <= metrics.minScrollExtent))) || (((velocity >= 0.0) && (metrics.pixels >= metrics.maxScrollExtent)))))
         {
-            return ((global::Doroti.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics__18212, velocity));
+            return ((global::Doroti.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics, velocity));
         }
-        global::Doroti.Framework.Physics.Simulation? testFrictionSimulation__18812 = ((global::Doroti.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics__18212, velocity));
-        if (((testFrictionSimulation__18812 is not null) && (((testFrictionSimulation__18812.x(double.PositiveInfinity) == metrics__18212.minScrollExtent) || (testFrictionSimulation__18812.x(double.PositiveInfinity) == metrics__18212.maxScrollExtent)))))
+        global::Doroti.Framework.Physics.Simulation? testFrictionSimulation = ((global::Doroti.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics, velocity));
+        if (((testFrictionSimulation is not null) && (((testFrictionSimulation.x(double.PositiveInfinity) == metrics.minScrollExtent) || (testFrictionSimulation.x(double.PositiveInfinity) == metrics.maxScrollExtent)))))
         {
-            return ((global::Doroti.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics__18212, velocity));
+            return ((global::Doroti.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics, velocity));
         }
-        long settlingItemIndex__19471 = List_wheel_scroll_viewLibrary._getItemFromOffset(offset: ((testFrictionSimulation__18812?.x(double.PositiveInfinity) ?? (double)metrics__18212.pixels)), itemExtent: ((_FixedExtentScrollPosition__list_wheel_scroll_view)metrics__18212).itemExtent, minScrollExtent: metrics__18212.minScrollExtent, maxScrollExtent: metrics__18212.maxScrollExtent);
-        double settlingPixels__19746 = (settlingItemIndex__19471 * ((_FixedExtentScrollPosition__list_wheel_scroll_view)metrics__18212).itemExtent);
-        if (((velocity.abs() < toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position)).velocity) && (((settlingPixels__19746 - metrics__18212.pixels)).abs() < toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position)).distance)))
+        long settlingItemIndex = List_wheel_scroll_viewLibrary._getItemFromOffset(offset: ((testFrictionSimulation?.x(double.PositiveInfinity) ?? (double)metrics.pixels)), itemExtent: ((_FixedExtentScrollPosition__list_wheel_scroll_view)metrics).itemExtent, minScrollExtent: metrics.minScrollExtent, maxScrollExtent: metrics.maxScrollExtent);
+        double settlingPixels = (settlingItemIndex * ((_FixedExtentScrollPosition__list_wheel_scroll_view)metrics).itemExtent);
+        if (((velocity.abs() < toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position)).velocity) && (((settlingPixels - metrics.pixels)).abs() < toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position)).distance)))
         {
             return ((global::Doroti.Framework.Physics.Simulation)(object)null);
         }
-        if ((settlingItemIndex__19471 == ((_FixedExtentScrollPosition__list_wheel_scroll_view)metrics__18212).itemIndex))
+        if ((settlingItemIndex == ((_FixedExtentScrollPosition__list_wheel_scroll_view)metrics).itemIndex))
         {
-            return ((global::Doroti.Framework.Physics.Simulation?)(object?)new global::Doroti.Framework.Physics.SpringSimulation(this.spring, metrics__18212.pixels, settlingPixels__19746, velocity, tolerance: toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position))));
+            return ((global::Doroti.Framework.Physics.Simulation?)(object?)new global::Doroti.Framework.Physics.SpringSimulation(this.spring, metrics.pixels, settlingPixels, velocity, tolerance: toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position))));
         }
-        return ((global::Doroti.Framework.Physics.Simulation?)(object?)global::Doroti.Framework.Physics.FrictionSimulation.CreateThrough(metrics__18212.pixels, settlingPixels__19746, velocity, (toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position)).velocity * Math.Sign(velocity))));
+        return ((global::Doroti.Framework.Physics.Simulation?)(object?)global::Doroti.Framework.Physics.FrictionSimulation.CreateThrough(metrics.pixels, settlingPixels, velocity, (toleranceFor(((_FixedExtentScrollPosition__list_wheel_scroll_view)position)).velocity * Math.Sign(velocity))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -398,8 +398,8 @@ internal class _ListWheelScrollViewState__list_wheel_scroll_view : State<ListWhe
         base.initState();
         if ((((ListWheelScrollView)this.widget).controller is FixedExtentScrollController))
         {
-            var controller__28369 = ((FixedExtentScrollController?)(object?)((ListWheelScrollView)this.widget).controller!)!;
-            _lastReportedItemIndex = ((FixedExtentScrollController)controller__28369).initialItem;
+            var controllerLocal = ((FixedExtentScrollController?)(object?)((ListWheelScrollView)this.widget).controller!)!;
+            _lastReportedItemIndex = ((FixedExtentScrollController)controllerLocal).initialItem;
         }
     }
 
@@ -411,13 +411,13 @@ internal class _ListWheelScrollViewState__list_wheel_scroll_view : State<ListWhe
 
     internal virtual void _reportSelectedItemChanged(ScrollNotification notification)
     {
-        var metrics__28669 = ((FixedExtentMetrics?)(object?)((ScrollNotification)notification).metrics)!;
-        long currentItemIndex__28737 = ((FixedExtentMetrics)metrics__28669).itemIndex;
-        if ((currentItemIndex__28737 != this._lastReportedItemIndex))
+        var metricsLocal = ((FixedExtentMetrics?)(object?)((ScrollNotification)notification).metrics)!;
+        long currentItemIndex = ((FixedExtentMetrics)metricsLocal).itemIndex;
+        if ((currentItemIndex != this._lastReportedItemIndex))
         {
-            _lastReportedItemIndex = currentItemIndex__28737;
-            long trueIndex__28894 = ((ListWheelScrollView)this.widget).childDelegate.trueIndexOf(currentItemIndex__28737);
-            ((ListWheelScrollView)this.widget).onSelectedItemChanged!(trueIndex__28894);
+            _lastReportedItemIndex = currentItemIndex;
+            long trueIndex = ((ListWheelScrollView)this.widget).childDelegate.trueIndexOf(currentItemIndex);
+            ((ListWheelScrollView)this.widget).onSelectedItemChanged!(trueIndex);
         }
     }
 
@@ -477,11 +477,11 @@ public class ListWheelElement : RenderObjectElement, global::Doroti.Framework.Re
     public override void update(Widget newWidget)
     {
         var __newWidget = (ListWheelViewport)(object)newWidget;
-        var oldWidget__32216 = ((ListWheelViewport?)(object?)this.widget)!;
+        var oldWidget = ((ListWheelViewport?)(object?)this.widget)!;
         base.update(__newWidget);
-        ListWheelChildDelegate newDelegate__32319 = ((ListWheelViewport)__newWidget).childDelegate;
-        ListWheelChildDelegate oldDelegate__32391 = ((ListWheelViewport)oldWidget__32216).childDelegate;
-        if (((!object.Equals(newDelegate__32319, oldDelegate__32391)) && (((!object.Equals(DartRuntimePrimitives.RuntimeType(newDelegate__32319), DartRuntimePrimitives.RuntimeType(oldDelegate__32391))) || newDelegate__32319.shouldRebuild(oldDelegate__32391)))))
+        ListWheelChildDelegate newDelegate = ((ListWheelViewport)__newWidget).childDelegate;
+        ListWheelChildDelegate oldDelegate = ((ListWheelViewport)oldWidget).childDelegate;
+        if (((!object.Equals(newDelegate, oldDelegate)) && (((!object.Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRebuild(oldDelegate)))))
         {
             performRebuild();
             this.renderObject.markNeedsLayout();
@@ -497,18 +497,18 @@ public class ListWheelElement : RenderObjectElement, global::Doroti.Framework.Re
         {
             return;
         }
-        long firstIndex__32924 = DartRuntimePrimitives.RequireValue(DartCollectionRuntime.FirstKeyOrNull<long, Element>(this._childElements));
-        long lastIndex__32979 = DartRuntimePrimitives.RequireValue(DartCollectionRuntime.LastKeyOrNull<long, Element>(this._childElements));
-        for (var index__33032 = firstIndex__32924; (index__33032 <= lastIndex__32979); ++index__33032)
+        long firstIndex = DartRuntimePrimitives.RequireValue(DartCollectionRuntime.FirstKeyOrNull<long, Element>(this._childElements));
+        long lastIndex = DartRuntimePrimitives.RequireValue(DartCollectionRuntime.LastKeyOrNull<long, Element>(this._childElements));
+        for (var index = firstIndex; (index <= lastIndex); ++index)
         {
-            Element? newChild__33104 = ((Element?)(object?)updateChild(this._childElements.GetValueOrDefault(index__33032), retrieveWidget(index__33032), index__33032));
-            if ((newChild__33104 is not null))
+            Element? newChild = ((Element?)(object?)updateChild(this._childElements.GetValueOrDefault(index), retrieveWidget(index), index));
+            if ((newChild is not null))
             {
-                this._childElements[index__33032] = newChild__33104;
+                this._childElements[index] = newChild;
             }
             else
             {
-                this._childElements.Remove(index__33032);
+                this._childElements.Remove(index);
             }
         }
     }
@@ -524,12 +524,12 @@ public class ListWheelElement : RenderObjectElement, global::Doroti.Framework.Re
     {
         this.owner!.buildScope(this, ((global::System.Action)(() =>
         {
-            var insertFirst__33942 = (after is null);
-            DartRuntimePrimitives.Assert(() => (insertFirst__33942 || (this._childElements.ContainsKey((index - 1L)))));
-            Element? newChild__34056 = ((Element?)(object?)updateChild(this._childElements.GetValueOrDefault(index), retrieveWidget(index), index));
-            if ((newChild__34056 is not null))
+            var insertFirst = (after is null);
+            DartRuntimePrimitives.Assert(() => (insertFirst || (this._childElements.ContainsKey((index - 1L)))));
+            Element? newChild = ((Element?)(object?)updateChild(this._childElements.GetValueOrDefault(index), retrieveWidget(index), index));
+            if ((newChild is not null))
             {
-                this._childElements[index] = newChild__34056;
+                this._childElements[index] = newChild;
             }
             else
             {
@@ -540,49 +540,49 @@ public class ListWheelElement : RenderObjectElement, global::Doroti.Framework.Re
 
     public virtual void removeChild(global::Doroti.Framework.Rendering.RenderBox child)
     {
-        long index__34343 = DartRuntimePrimitives.ConvertValue<long>(((long)((dynamic)this.renderObject).indexOf(child)));
+        long index = DartRuntimePrimitives.ConvertValue<long>(((long)((dynamic)this.renderObject).indexOf(child)));
         this.owner!.buildScope(this, ((global::System.Action)(() =>
         {
-            DartRuntimePrimitives.Assert(() => this._childElements.ContainsKey(index__34343));
-            Element? result__34483 = ((Element?)(object?)updateChild(this._childElements.GetValueOrDefault(index__34343), ((Widget)(object)null), index__34343));
-            DartRuntimePrimitives.Assert(() => (result__34483 is null));
-            this._childElements.Remove(index__34343);
-            DartRuntimePrimitives.Assert(() => !this._childElements.ContainsKey(index__34343));
+            DartRuntimePrimitives.Assert(() => this._childElements.ContainsKey(index));
+            Element? result = ((Element?)(object?)updateChild(this._childElements.GetValueOrDefault(index), ((Widget)(object)null), index));
+            DartRuntimePrimitives.Assert(() => (result is null));
+            this._childElements.Remove(index);
+            DartRuntimePrimitives.Assert(() => !this._childElements.ContainsKey(index));
         })));
     }
 
     public override Element? updateChild(Element? child, Widget? newWidget, object? newSlot)
     {
-        var oldParentData__34769 = ((global::Doroti.Framework.Rendering.ListWheelParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)((dynamic)child?.renderObject)?.parentData))!;
-        Element? newChild__34861 = ((Element?)(object?)base.updateChild(child, newWidget, newSlot));
-        var newParentData__34928 = ((global::Doroti.Framework.Rendering.ListWheelParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)((dynamic)newChild__34861?.renderObject)?.parentData))!;
-        if ((newParentData__34928 is not null))
+        var oldParentData = ((global::Doroti.Framework.Rendering.ListWheelParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)((dynamic)child?.renderObject)?.parentData))!;
+        Element? newChild = ((Element?)(object?)base.updateChild(child, newWidget, newSlot));
+        var newParentData = ((global::Doroti.Framework.Rendering.ListWheelParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)((dynamic)newChild?.renderObject)?.parentData))!;
+        if ((newParentData is not null))
         {
-            newParentData__34928.index = ((long)newSlot!);
-            if ((oldParentData__34769 is not null))
+            newParentData.index = ((long)newSlot!);
+            if ((oldParentData is not null))
             {
-                newParentData__34928.offset = oldParentData__34769.offset;
+                newParentData.offset = oldParentData.offset;
             }
         }
-        return newChild__34861;
+        return newChild;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         long __slot = DartRuntimePrimitives.ConvertValue<long>(slot);
-        global::Doroti.Framework.Rendering.RenderListWheelViewport renderObject__35320 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderListWheelViewport>(this.renderObject);
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)renderObject__35320).debugValidateChild(child)));
-        renderObject__35320.insert(((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!, after: ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._childElements.GetValueOrDefault((__slot - 1L))?.renderObject)!);
-        DartRuntimePrimitives.Assert(() => (object.Equals(renderObject__35320, this.renderObject)));
+        global::Doroti.Framework.Rendering.RenderListWheelViewport renderObjectLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderListWheelViewport>(this.renderObject);
+        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)renderObjectLocal).debugValidateChild(child)));
+        renderObjectLocal.insert(((global::Doroti.Framework.Rendering.RenderBox?)(object?)child)!, after: ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this._childElements.GetValueOrDefault((__slot - 1L))?.renderObject)!);
+        DartRuntimePrimitives.Assert(() => (object.Equals(renderObjectLocal, this.renderObject)));
     }
 
     public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
     {
         long __oldSlot = DartRuntimePrimitives.ConvertValue<long>(oldSlot);
         long __newSlot = DartRuntimePrimitives.ConvertValue<long>(newSlot);
-        var moveChildRenderObjectErrorMessage__35682 = "Currently we maintain the list in contiguous increasing order, so " + "moving children around is not allowed.";
-        DartRuntimePrimitives.Assert(() => false, () => (object?)moveChildRenderObjectErrorMessage__35682);
+        var moveChildRenderObjectErrorMessage = "Currently we maintain the list in contiguous increasing order, so " + "moving children around is not allowed.";
+        DartRuntimePrimitives.Assert(() => false, () => (object?)moveChildRenderObjectErrorMessage);
     }
 
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
@@ -651,8 +651,8 @@ public class ListWheelViewport : RenderObjectWidget
     public override ListWheelElement createElement() => new ListWheelElement(this);
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        var childManager__39973 = ((ListWheelElement?)(object?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderListWheelViewport(childManager: childManager__39973, offset: this.offset, diameterRatio: DartRuntimePrimitives.RequireValue(this.diameterRatio), perspective: DartRuntimePrimitives.RequireValue(this.perspective), offAxisFraction: this.offAxisFraction, useMagnifier: this.useMagnifier, magnification: this.magnification, overAndUnderCenterOpacity: this.overAndUnderCenterOpacity, itemExtent: this.itemExtent, squeeze: this.squeeze, renderChildrenOutsideViewport: this.renderChildrenOutsideViewport, clipBehavior: this.clipBehavior));
+        var childManagerLocal = ((ListWheelElement?)(object?)context)!;
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderListWheelViewport(childManager: childManagerLocal, offset: this.offset, diameterRatio: DartRuntimePrimitives.RequireValue(this.diameterRatio), perspective: DartRuntimePrimitives.RequireValue(this.perspective), offAxisFraction: this.offAxisFraction, useMagnifier: this.useMagnifier, magnification: this.magnification, overAndUnderCenterOpacity: this.overAndUnderCenterOpacity, itemExtent: this.itemExtent, squeeze: this.squeeze, renderChildrenOutsideViewport: this.renderChildrenOutsideViewport, clipBehavior: this.clipBehavior));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

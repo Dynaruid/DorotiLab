@@ -93,11 +93,11 @@ public class RenderImage : RenderBox
                 __value.dispose();
                 return;
             }
-            bool sizeChanged__2889 = ((this._image?.width != __value?.width) || (this._image?.height != __value?.height));
+            bool sizeChanged = ((this._image?.width != __value?.width) || (this._image?.height != __value?.height));
             this._image?.dispose();
             _image = __value;
             markNeedsPaint();
-            if ((sizeChanged__2889 && (((this._width is null) || (this._height is null)))))
+            if ((sizeChanged && (((this._width is null) || (this._height is null)))))
             {
                 markNeedsLayout();
             }

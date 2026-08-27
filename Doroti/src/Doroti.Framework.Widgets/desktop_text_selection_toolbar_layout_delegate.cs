@@ -31,8 +31,8 @@ public class DesktopTextSelectionToolbarLayoutDelegate : global::Doroti.Framewor
 
     public override Offset getPositionForChild(Size size, Size childSize)
     {
-        var overhang__1366 = new global::Doroti.Ui.Offset(((this.anchor.dx + childSize.width) - size.width), ((this.anchor.dy + childSize.height) - size.height));
-        return new global::Doroti.Ui.Offset(((overhang__1366.dx > 0.0) ? (this.anchor.dx - overhang__1366.dx) : this.anchor.dx), ((overhang__1366.dy > 0.0) ? (this.anchor.dy - overhang__1366.dy) : this.anchor.dy));
+        var overhang = new global::Doroti.Ui.Offset(((this.anchor.dx + childSize.width) - size.width), ((this.anchor.dy + childSize.height) - size.height));
+        return new global::Doroti.Ui.Offset(((overhang.dx > 0.0) ? (this.anchor.dx - overhang.dx) : this.anchor.dx), ((overhang.dy > 0.0) ? (this.anchor.dy - overhang.dy) : this.anchor.dy));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

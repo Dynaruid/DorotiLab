@@ -87,60 +87,60 @@ public abstract class BorderRadiusGeometry
     public abstract BorderRadius resolve(TextDirection? direction);
     public override string ToString()
     {
-        string? visual__8889 = default!;
-        string? logical__8897 = default!;
+        string? visual = default!;
+        string? logical = default!;
         if ((((object.Equals(this._topLeft, this._topRight)) && (object.Equals(this._topRight, this._bottomLeft))) && (object.Equals(this._bottomLeft, this._bottomRight))))
         {
             if ((!object.Equals(this._topLeft, Radius.zero)))
             {
                 if ((this._topLeft.x == this._topLeft.y))
                 {
-                    visual__8889 = $"BorderRadius.circular({this._topLeft.x.toStringAsFixed(1L)})";
+                    visual = $"BorderRadius.circular({this._topLeft.x.toStringAsFixed(1L)})";
                 }
                 else
                 {
-                    visual__8889 = $"BorderRadius.all({this._topLeft})";
+                    visual = $"BorderRadius.all({this._topLeft})";
                 }
             }
         }
         else
         {
-            var result__9324 = new StringBuffer();
-            result__9324.write("BorderRadius.only(");
-            var comma__9401 = false;
+            var result = new StringBuffer();
+            result.write("BorderRadius.only(");
+            var comma = false;
             if ((!object.Equals(this._topLeft, Radius.zero)))
             {
-                result__9324.write($"topLeft: {this._topLeft}");
-                comma__9401 = true;
+                result.write($"topLeft: {this._topLeft}");
+                comma = true;
             }
             if ((!object.Equals(this._topRight, Radius.zero)))
             {
-                if (comma__9401)
+                if (comma)
                 {
-                    result__9324.write(", ");
+                    result.write(", ");
                 }
-                result__9324.write($"topRight: {this._topRight}");
-                comma__9401 = true;
+                result.write($"topRight: {this._topRight}");
+                comma = true;
             }
             if ((!object.Equals(this._bottomLeft, Radius.zero)))
             {
-                if (comma__9401)
+                if (comma)
                 {
-                    result__9324.write(", ");
+                    result.write(", ");
                 }
-                result__9324.write($"bottomLeft: {this._bottomLeft}");
-                comma__9401 = true;
+                result.write($"bottomLeft: {this._bottomLeft}");
+                comma = true;
             }
             if ((!object.Equals(this._bottomRight, Radius.zero)))
             {
-                if (comma__9401)
+                if (comma)
                 {
-                    result__9324.write(", ");
+                    result.write(", ");
                 }
-                result__9324.write($"bottomRight: {this._bottomRight}");
+                result.write($"bottomRight: {this._bottomRight}");
             }
-            result__9324.write(")");
-            visual__8889 = result__9324.ToString();
+            result.write(")");
+            visual = result.ToString();
         }
         if ((((object.Equals(this._topStart, this._topEnd)) && (object.Equals(this._topEnd, this._bottomEnd))) && (object.Equals(this._bottomEnd, this._bottomStart))))
         {
@@ -148,58 +148,58 @@ public abstract class BorderRadiusGeometry
             {
                 if ((this._topStart.x == this._topStart.y))
                 {
-                    logical__8897 = $"BorderRadiusDirectional.circular({this._topStart.x.toStringAsFixed(1L)})";
+                    logical = $"BorderRadiusDirectional.circular({this._topStart.x.toStringAsFixed(1L)})";
                 }
                 else
                 {
-                    logical__8897 = $"BorderRadiusDirectional.all({this._topStart})";
+                    logical = $"BorderRadiusDirectional.all({this._topStart})";
                 }
             }
         }
         else
         {
-            var result__10553 = new StringBuffer();
-            result__10553.write("BorderRadiusDirectional.only(");
-            var comma__10641 = false;
+            var resultLocal = new StringBuffer();
+            resultLocal.write("BorderRadiusDirectional.only(");
+            var commaLocal = false;
             if ((!object.Equals(this._topStart, Radius.zero)))
             {
-                result__10553.write($"topStart: {this._topStart}");
-                comma__10641 = true;
+                resultLocal.write($"topStart: {this._topStart}");
+                commaLocal = true;
             }
             if ((!object.Equals(this._topEnd, Radius.zero)))
             {
-                if (comma__10641)
+                if (commaLocal)
                 {
-                    result__10553.write(", ");
+                    resultLocal.write(", ");
                 }
-                result__10553.write($"topEnd: {this._topEnd}");
-                comma__10641 = true;
+                resultLocal.write($"topEnd: {this._topEnd}");
+                commaLocal = true;
             }
             if ((!object.Equals(this._bottomStart, Radius.zero)))
             {
-                if (comma__10641)
+                if (commaLocal)
                 {
-                    result__10553.write(", ");
+                    resultLocal.write(", ");
                 }
-                result__10553.write($"bottomStart: {this._bottomStart}");
-                comma__10641 = true;
+                resultLocal.write($"bottomStart: {this._bottomStart}");
+                commaLocal = true;
             }
             if ((!object.Equals(this._bottomEnd, Radius.zero)))
             {
-                if (comma__10641)
+                if (commaLocal)
                 {
-                    result__10553.write(", ");
+                    resultLocal.write(", ");
                 }
-                result__10553.write($"bottomEnd: {this._bottomEnd}");
+                resultLocal.write($"bottomEnd: {this._bottomEnd}");
             }
-            result__10553.write(")");
-            logical__8897 = result__10553.ToString();
+            resultLocal.write(")");
+            logical = resultLocal.ToString();
         }
-        if (((visual__8889 is not null) && (logical__8897 is not null)))
+        if (((visual is not null) && (logical is not null)))
         {
-            return $"{visual__8889} + {logical__8897}";
+            return $"{visual} + {logical}";
         }
-        return ((visual__8889 ?? logical__8897) ?? "BorderRadius.zero");
+        return ((visual ?? logical) ?? "BorderRadius.zero");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

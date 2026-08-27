@@ -61,29 +61,29 @@ public class ContinuousRectangleBorder : OutlinedBorder
 
     internal virtual global::Doroti.Ui.Path _getPath(RRect rrect)
     {
-        double left__2461 = rrect.left;
-        double right__2497 = rrect.right;
-        double top__2535 = rrect.top;
-        double bottom__2569 = rrect.bottom;
-        double tlRadiusX__2726 = Math.Max(0.0, _clampToShortest(rrect, rrect.tlRadiusX));
-        double tlRadiusY__2812 = Math.Max(0.0, _clampToShortest(rrect, rrect.tlRadiusY));
-        double trRadiusX__2898 = Math.Max(0.0, _clampToShortest(rrect, rrect.trRadiusX));
-        double trRadiusY__2984 = Math.Max(0.0, _clampToShortest(rrect, rrect.trRadiusY));
-        double blRadiusX__3070 = Math.Max(0.0, _clampToShortest(rrect, rrect.blRadiusX));
-        double blRadiusY__3156 = Math.Max(0.0, _clampToShortest(rrect, rrect.blRadiusY));
-        double brRadiusX__3242 = Math.Max(0.0, _clampToShortest(rrect, rrect.brRadiusX));
-        double brRadiusY__3328 = Math.Max(0.0, _clampToShortest(rrect, rrect.brRadiusY));
+        double leftLocal = rrect.left;
+        double rightLocal = rrect.right;
+        double topLocal = rrect.top;
+        double bottomLocal = rrect.bottom;
+        double tlRadiusXLocal = Math.Max(0.0, _clampToShortest(rrect, rrect.tlRadiusX));
+        double tlRadiusYLocal = Math.Max(0.0, _clampToShortest(rrect, rrect.tlRadiusY));
+        double trRadiusXLocal = Math.Max(0.0, _clampToShortest(rrect, rrect.trRadiusX));
+        double trRadiusYLocal = Math.Max(0.0, _clampToShortest(rrect, rrect.trRadiusY));
+        double blRadiusXLocal = Math.Max(0.0, _clampToShortest(rrect, rrect.blRadiusX));
+        double blRadiusYLocal = Math.Max(0.0, _clampToShortest(rrect, rrect.blRadiusY));
+        double brRadiusXLocal = Math.Max(0.0, _clampToShortest(rrect, rrect.brRadiusX));
+        double brRadiusYLocal = Math.Max(0.0, _clampToShortest(rrect, rrect.brRadiusY));
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.moveTo(left__2461, (top__2535 + tlRadiusX__2726));
-    __cascade.cubicTo(left__2461, top__2535, left__2461, top__2535, (left__2461 + tlRadiusY__2812), top__2535);
-    __cascade.lineTo((right__2497 - trRadiusX__2898), top__2535);
-    __cascade.cubicTo(right__2497, top__2535, right__2497, top__2535, right__2497, (top__2535 + trRadiusY__2984));
-    __cascade.lineTo(right__2497, (bottom__2569 - brRadiusX__3242));
-    __cascade.cubicTo(right__2497, bottom__2569, right__2497, bottom__2569, (right__2497 - brRadiusY__3328), bottom__2569);
-    __cascade.lineTo((left__2461 + blRadiusX__3070), bottom__2569);
-    __cascade.cubicTo(left__2461, bottom__2569, left__2461, bottom__2569, left__2461, (bottom__2569 - blRadiusY__3156));
+    __cascade.moveTo(leftLocal, (topLocal + tlRadiusXLocal));
+    __cascade.cubicTo(leftLocal, topLocal, leftLocal, topLocal, (leftLocal + tlRadiusYLocal), topLocal);
+    __cascade.lineTo((rightLocal - trRadiusXLocal), topLocal);
+    __cascade.cubicTo(rightLocal, topLocal, rightLocal, topLocal, rightLocal, (topLocal + trRadiusYLocal));
+    __cascade.lineTo(rightLocal, (bottomLocal - brRadiusXLocal));
+    __cascade.cubicTo(rightLocal, bottomLocal, rightLocal, bottomLocal, (rightLocal - brRadiusYLocal), bottomLocal);
+    __cascade.lineTo((leftLocal + blRadiusXLocal), bottomLocal);
+    __cascade.cubicTo(leftLocal, bottomLocal, leftLocal, bottomLocal, leftLocal, (bottomLocal - blRadiusYLocal));
     __cascade.close();
     return __cascade;
 }))();

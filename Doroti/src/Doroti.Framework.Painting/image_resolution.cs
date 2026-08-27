@@ -36,34 +36,34 @@ public class AssetImage : AssetBundleImageProvider
     public virtual string keyName => ((this.package is null) ? this.assetName : $"packages/{this.package}/{this.assetName}");
     public override Future<AssetBundleImageKey> obtainKey(ImageConfiguration configuration)
     {
-        AssetBundle chosenBundle__11235 = ((this.bundle ?? ((ImageConfiguration)configuration).bundle) ?? global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle);
-        Completer<AssetBundleImageKey>? completer__11332 = default!;
-        Future<AssetBundleImageKey>? result__11376 = default!;
-        _ = AssetManifest.loadFromAssetBundle(chosenBundle__11235).then((Action<AssetManifest>)((manifest) =>
+        AssetBundle chosenBundle = ((this.bundle ?? ((ImageConfiguration)configuration).bundle) ?? global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle);
+        Completer<AssetBundleImageKey>? completer = default!;
+        Future<AssetBundleImageKey>? result = default!;
+        _ = AssetManifest.loadFromAssetBundle(chosenBundle).then((Action<AssetManifest>)((manifest) =>
         {
-            IEnumerable<AssetMetadata>? candidateVariants__11519 = manifest.getAssetVariants(this.keyName);
-            AssetMetadata chosenVariant__11605 = _chooseVariant(this.keyName, configuration, candidateVariants__11519);
-            var key__11745 = new AssetBundleImageKey(bundle: chosenBundle__11235, name: chosenVariant__11605.key, scale: (chosenVariant__11605.targetDevicePixelRatio ?? _naturalResolution));
-            if ((completer__11332 is not null))
+            IEnumerable<AssetMetadata>? candidateVariants = manifest.getAssetVariants(this.keyName);
+            AssetMetadata chosenVariant = _chooseVariant(this.keyName, configuration, candidateVariants);
+            var keyLocal = new AssetBundleImageKey(bundle: chosenBundle, name: chosenVariant.key, scale: (chosenVariant.targetDevicePixelRatio ?? _naturalResolution));
+            if ((completer is not null))
             {
-                completer__11332.complete(key__11745);
+                completer.complete(keyLocal);
             }
             else
             {
-                result__11376 = new SynchronousFuture<AssetBundleImageKey>(key__11745);
+                result = new SynchronousFuture<AssetBundleImageKey>(keyLocal);
             }
         })).onError(((error, stack) =>
         {
-            DartRuntimePrimitives.Assert(() => (completer__11332 is not null));
-            DartRuntimePrimitives.Assert(() => (result__11376 is null));
-            completer__11332!.completeError(error, stack);
+            DartRuntimePrimitives.Assert(() => (completer is not null));
+            DartRuntimePrimitives.Assert(() => (result is null));
+            completer!.completeError(error, stack);
         }));
-        if ((result__11376 is not null))
+        if ((result is not null))
         {
-            return result__11376!;
+            return result!;
         }
-        completer__11332 = new Completer<AssetBundleImageKey>();
-        return completer__11332.future;
+        completer = new Completer<AssetBundleImageKey>();
+        return completer.future;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -73,12 +73,12 @@ public class AssetImage : AssetBundleImageProvider
         {
             return new AssetMetadata(key: mainAssetKey, targetDevicePixelRatio: null, main: true);
         }
-        var candidatesByDevicePixelRatio__13645 = new SortedDictionary<double, AssetMetadata>();
-        foreach (AssetMetadata candidate__13744 in candidateVariants)
+        var candidatesByDevicePixelRatio = new SortedDictionary<double, AssetMetadata>();
+        foreach (AssetMetadata candidate in candidateVariants)
         {
-            candidatesByDevicePixelRatio__13645[(candidate__13744.targetDevicePixelRatio ?? _naturalResolution)] = candidate__13744;
+            candidatesByDevicePixelRatio[(candidate.targetDevicePixelRatio ?? _naturalResolution)] = candidate;
         }
-        return _findBestVariant(candidatesByDevicePixelRatio__13645, DartRuntimePrimitives.RequireValue(((ImageConfiguration)config).devicePixelRatio));
+        return _findBestVariant(candidatesByDevicePixelRatio, DartRuntimePrimitives.RequireValue(((ImageConfiguration)config).devicePixelRatio));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -88,23 +88,23 @@ public class AssetImage : AssetBundleImageProvider
         {
             return candidatesByDpr.GetValueOrDefault(value)!;
         }
-        double? lower__14996 = candidatesByDpr.lastKeyBefore(value);
-        double? upper__15060 = candidatesByDpr.firstKeyAfter(value);
-        if ((lower__14996 is null))
+        double? lower = candidatesByDpr.lastKeyBefore(value);
+        double? upper = candidatesByDpr.firstKeyAfter(value);
+        if ((lower is null))
         {
-            return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(upper__15060))!;
+            return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(upper))!;
         }
-        if ((upper__15060 is null))
+        if ((upper is null))
         {
-            return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(lower__14996))!;
+            return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(lower))!;
         }
-        if (((value < Image_resolutionLibrary._kLowDprLimit) || (value > (((DartRuntimePrimitives.RequireValue(lower__14996) + DartRuntimePrimitives.RequireValue(upper__15060))) / 2L))))
+        if (((value < Image_resolutionLibrary._kLowDprLimit) || (value > (((DartRuntimePrimitives.RequireValue(lower) + DartRuntimePrimitives.RequireValue(upper))) / 2L))))
         {
-            return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(upper__15060))!;
+            return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(upper))!;
         }
         else
         {
-            return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(lower__14996))!;
+            return candidatesByDpr.GetValueOrDefault(DartRuntimePrimitives.RequireValue(lower))!;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

@@ -56,8 +56,8 @@ public class TextSpan : InlineSpan, HitTestTarget
     public override void build(ParagraphBuilder builder, TextScaler textScaler = default!, List<PlaceholderDimensions>? dimensions = null)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        var hasStyle__10432 = (style is not null);
-        if (hasStyle__10432)
+        var hasStyle = (style is not null);
+        if (hasStyle)
         {
             builder.pushStyle(style!.getTextStyle(textScaler: textScaler));
         }
@@ -67,22 +67,22 @@ public class TextSpan : InlineSpan, HitTestTarget
             {
                 builder.addText(this.text!);
             }
-            catch (DartArgumentError exception__10654)
+            catch (DartArgumentError exceptionLocal)
             {
-                var stack__10665 = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception__10654, stack: stack__10665, library: "painting library", context: new ErrorDescription("while building a TextSpan"), silent: true));
+                var stackLocal = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "painting library", context: new ErrorDescription("while building a TextSpan"), silent: true));
                 builder.addText("�");
             }
         }
-        List<InlineSpan>? children__11116 = this.children;
-        if ((children__11116 is not null))
+        List<InlineSpan>? childrenLocal = this.children;
+        if ((childrenLocal is not null))
         {
-            foreach (InlineSpan child__11198 in children__11116)
+            foreach (InlineSpan child in childrenLocal)
             {
-                child__11198.build(builder, textScaler: textScaler, dimensions: dimensions);
+                child.build(builder, textScaler: textScaler, dimensions: dimensions);
             }
         }
-        if (hasStyle__10432)
+        if (hasStyle)
         {
             builder.pop();
         }
@@ -94,12 +94,12 @@ public class TextSpan : InlineSpan, HitTestTarget
         {
             return false;
         }
-        List<InlineSpan>? children__11762 = this.children;
-        if ((children__11762 is not null))
+        List<InlineSpan>? childrenLocal = this.children;
+        if ((childrenLocal is not null))
         {
-            foreach (InlineSpan child__11844 in children__11762)
+            foreach (InlineSpan child in childrenLocal)
             {
-                if (!child__11844.visitChildren((Func<InlineSpan, bool>)visitor))
+                if (!child.visitChildren((Func<InlineSpan, bool>)visitor))
                 {
                     return false;
                 }
@@ -111,12 +111,12 @@ public class TextSpan : InlineSpan, HitTestTarget
 
     public override bool visitDirectChildren(Func<InlineSpan, bool> visitor)
     {
-        List<InlineSpan>? children__12076 = this.children;
-        if ((children__12076 is not null))
+        List<InlineSpan>? childrenLocal = this.children;
+        if ((childrenLocal is not null))
         {
-            foreach (InlineSpan child__12158 in children__12076)
+            foreach (InlineSpan child in childrenLocal)
             {
-                if (!visitor(child__12158))
+                if (!visitor(child))
                 {
                     return false;
                 }
@@ -128,19 +128,19 @@ public class TextSpan : InlineSpan, HitTestTarget
 
     public override InlineSpan? getSpanForPositionVisitor(TextPosition position, Accumulator offset)
     {
-        string? text__12469 = this.text;
-        if (((text__12469 is null) || (text__12469.Length == 0)))
+        string? textLocal = this.text;
+        if (((textLocal is null) || (textLocal.Length == 0)))
         {
             return null;
         }
-        global::Doroti.Ui.TextAffinity affinity__12575 = position.affinity;
-        long targetOffset__12619 = position.offset;
-        long endOffset__12665 = (((Accumulator)offset).value + text__12469.Length);
-        if (((((((Accumulator)offset).value == targetOffset__12619) && (object.Equals(affinity__12575, TextAffinity.downstream))) || ((((Accumulator)offset).value < targetOffset__12619) && (targetOffset__12619 < endOffset__12665))) || ((endOffset__12665 == targetOffset__12619) && (object.Equals(affinity__12575, TextAffinity.upstream)))))
+        global::Doroti.Ui.TextAffinity affinityLocal = position.affinity;
+        long targetOffset = position.offset;
+        long endOffset = (((Accumulator)offset).value + textLocal.Length);
+        if (((((((Accumulator)offset).value == targetOffset) && (object.Equals(affinityLocal, TextAffinity.downstream))) || ((((Accumulator)offset).value < targetOffset) && (targetOffset < endOffset))) || ((endOffset == targetOffset) && (object.Equals(affinityLocal, TextAffinity.upstream)))))
         {
             return this;
         }
-        offset.increment(text__12469.Length);
+        offset.increment(textLocal.Length);
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -161,9 +161,9 @@ public class TextSpan : InlineSpan, HitTestTarget
         }
         if ((this.children is not null))
         {
-            foreach (InlineSpan child__13407 in this.children!)
+            foreach (InlineSpan child in this.children!)
             {
-                child__13407.computeToPlainText(buffer, includeSemanticsLabels: includeSemanticsLabels, includePlaceholders: includePlaceholders);
+                child.computeToPlainText(buffer, includeSemanticsLabels: includeSemanticsLabels, includePlaceholders: includePlaceholders);
             }
         }
     }
@@ -171,26 +171,26 @@ public class TextSpan : InlineSpan, HitTestTarget
     public override void computeSemanticsInformation(List<InlineSpanSemanticsInformation> collector, Locale? inheritedLocale = null, bool inheritedSpellOut = false)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        global::Doroti.Ui.Locale? effectiveLocale__13853 = (this.locale ?? inheritedLocale);
-        bool effectiveSpellOut__13913 = (this.spellOut ?? inheritedSpellOut);
+        global::Doroti.Ui.Locale? effectiveLocale = (this.locale ?? inheritedLocale);
+        bool effectiveSpellOut = (this.spellOut ?? inheritedSpellOut);
         if ((this.text is not null))
         {
-            long textLength__14005 = (this.semanticsLabel?.Length ?? this.text!.Length);
+            long textLength = (this.semanticsLabel?.Length ?? this.text!.Length);
             collector.Add(new InlineSpanSemanticsInformation(this.text!, stringAttributes: new List<global::Doroti.Ui.StringAttribute>(), semanticsLabel: this.semanticsLabel, semanticsIdentifier: this.semanticsIdentifier, recognizer: this.recognizer));
         }
-        List<InlineSpan>? children__14739 = this.children;
-        if ((children__14739 is not null))
+        List<InlineSpan>? childrenLocal = this.children;
+        if ((childrenLocal is not null))
         {
-            foreach (InlineSpan child__14821 in children__14739)
+            foreach (InlineSpan child in childrenLocal)
             {
-                if ((child__14821 is TextSpan))
+                if ((child is TextSpan))
                 {
-                    TextSpan child__14821__as14854 = (TextSpan)child__14821;
-                    ((TextSpan)child__14821__as14854).computeSemanticsInformation(collector, inheritedLocale: effectiveLocale__13853, inheritedSpellOut: effectiveSpellOut__13913);
+                    TextSpan child__14821__as14854 = (TextSpan)child;
+                    ((TextSpan)child__14821__as14854).computeSemanticsInformation(collector, inheritedLocale: effectiveLocale, inheritedSpellOut: effectiveSpellOut);
                 }
                 else
                 {
-                    child__14821.computeSemanticsInformation(collector);
+                    child.computeSemanticsInformation(collector);
                 }
             }
         }
@@ -198,15 +198,15 @@ public class TextSpan : InlineSpan, HitTestTarget
 
     public override long? codeUnitAtVisitor(long index, Accumulator offset)
     {
-        string? text__15242 = this.text;
-        if ((text__15242 is null))
+        string? textLocal = this.text;
+        if ((textLocal is null))
         {
             return null;
         }
-        long localOffset__15323 = (index - ((Accumulator)offset).value);
-        DartRuntimePrimitives.Assert(() => (localOffset__15323 >= 0L));
-        offset.increment(text__15242.Length);
-        return ((localOffset__15323 < text__15242.Length) ? text__15242.codeUnitAt(localOffset__15323) : null);
+        long localOffset = (index - ((Accumulator)offset).value);
+        DartRuntimePrimitives.Assert(() => (localOffset >= 0L));
+        offset.increment(textLocal.Length);
+        return ((localOffset < textLocal.Length) ? textLocal.codeUnitAt(localOffset) : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -216,9 +216,9 @@ public class TextSpan : InlineSpan, HitTestTarget
             {
                 if ((this.children is not null))
                 {
-                    foreach (InlineSpan child__15871 in this.children!)
+                    foreach (InlineSpan child in this.children!)
                     {
-                        DartRuntimePrimitives.Assert(() => child__15871.debugAssertIsValid());
+                        DartRuntimePrimitives.Assert(() => child.debugAssertIsValid());
                     }
                 }
                 return true;
@@ -237,40 +237,40 @@ public class TextSpan : InlineSpan, HitTestTarget
         {
             return RenderComparison.layout;
         }
-        var textSpan__16270 = ((TextSpan?)(object?)other)!;
-        if ((((((TextSpan)textSpan__16270).text != this.text) || (((long?)(this.children?.Count)) != ((long?)(((TextSpan)textSpan__16270).children?.Count)))) || (((style is null)) != ((textSpan__16270.style is null)))))
+        var textSpan = ((TextSpan?)(object?)other)!;
+        if ((((((TextSpan)textSpan).text != this.text) || (((long?)(this.children?.Count)) != ((long?)(((TextSpan)textSpan).children?.Count)))) || (((style is null)) != ((textSpan.style is null)))))
         {
             return RenderComparison.layout;
         }
-        RenderComparison result__16510 = ((object.Equals(this.recognizer, ((TextSpan)textSpan__16270).recognizer)) ? RenderComparison.identical : RenderComparison.metadata);
+        RenderComparison result = ((object.Equals(this.recognizer, ((TextSpan)textSpan).recognizer)) ? RenderComparison.identical : RenderComparison.metadata);
         if ((style is not null))
         {
-            RenderComparison candidate__16681 = style!.compareTo(textSpan__16270.style!);
-            if ((FoundationRuntimePorts.EnumIndex(candidate__16681) > FoundationRuntimePorts.EnumIndex(result__16510)))
+            RenderComparison candidate = style!.compareTo(textSpan.style!);
+            if ((FoundationRuntimePorts.EnumIndex(candidate) > FoundationRuntimePorts.EnumIndex(result)))
             {
-                result__16510 = candidate__16681;
+                result = candidate;
             }
-            if ((object.Equals(result__16510, RenderComparison.layout)))
+            if ((object.Equals(result, RenderComparison.layout)))
             {
-                return result__16510;
+                return result;
             }
         }
         if ((this.children is not null))
         {
-            for (var index__16935 = 0L; (index__16935 < checked((long)(this.children!.Count))); index__16935 += 1L)
+            for (var index = 0L; (index < checked((long)(this.children!.Count))); index += 1L)
             {
-                RenderComparison candidate__17017 = this.children![(int)(index__16935)].compareTo(((TextSpan)textSpan__16270).children![(int)(index__16935)]);
-                if ((FoundationRuntimePorts.EnumIndex(candidate__17017) > FoundationRuntimePorts.EnumIndex(result__16510)))
+                RenderComparison candidateLocal = this.children![(int)(index)].compareTo(((TextSpan)textSpan).children![(int)(index)]);
+                if ((FoundationRuntimePorts.EnumIndex(candidateLocal) > FoundationRuntimePorts.EnumIndex(result)))
                 {
-                    result__16510 = candidate__17017;
+                    result = candidateLocal;
                 }
-                if ((object.Equals(result__16510, RenderComparison.layout)))
+                if ((object.Equals(result, RenderComparison.layout)))
                 {
-                    return result__16510;
+                    return result;
                 }
             }
         }
-        return result__16510;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

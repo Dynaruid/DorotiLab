@@ -33,40 +33,40 @@ public class Theme : global::Doroti.Framework.Widgets.StatelessWidget
 
     public static ThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _InheritedTheme__theme? inheritedTheme__4799 = ((_InheritedTheme__theme?)(object?)context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>());
-        MaterialLocalizations? localizations__4921 = ((MaterialLocalizations?)(object?)Localizations.of<MaterialLocalizations>(context, typeof(MaterialLocalizations)));
-        ScriptCategory category__5054 = (localizations__4921?.scriptCategory ?? ScriptCategory.englishLike);
-        InheritedCupertinoTheme? inheritedCupertinoTheme__5161 = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
-        ThemeData theme__5287 = (inheritedTheme__4799?.theme.data ?? (((inheritedCupertinoTheme__5161 is not null) ? new CupertinoBasedMaterialThemeData(themeData: inheritedCupertinoTheme__5161.theme.data).materialTheme : _kFallbackTheme)));
-        return ((ThemeData)(object?)ThemeData.localize(theme__5287, ((ThemeData)theme__5287).typography.geometryThemeFor(category__5054)));
+        _InheritedTheme__theme? inheritedTheme = ((_InheritedTheme__theme?)(object?)context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>());
+        MaterialLocalizations? localizations = ((MaterialLocalizations?)(object?)Localizations.of<MaterialLocalizations>(context, typeof(MaterialLocalizations)));
+        ScriptCategory category = (localizations?.scriptCategory ?? ScriptCategory.englishLike);
+        InheritedCupertinoTheme? inheritedCupertinoTheme = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
+        ThemeData themeLocal = (inheritedTheme?.theme.data ?? (((inheritedCupertinoTheme is not null) ? new CupertinoBasedMaterialThemeData(themeData: inheritedCupertinoTheme.theme.data).materialTheme : _kFallbackTheme)));
+        return ((ThemeData)(object?)ThemeData.localize(themeLocal, ((ThemeData)themeLocal).typography.geometryThemeFor(category)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _wrapsWidgetThemes(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child)
     {
-        global::Doroti.Framework.Widgets.DefaultSelectionStyle selectionStyle__5926 = ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)(object?)DefaultSelectionStyle.of(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.IconTheme(data: ((ThemeData)this.data).iconTheme, child: new global::Doroti.Framework.Widgets.DefaultSelectionStyle(selectionColor: (((ThemeData)this.data).textSelectionTheme.selectionColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__5926).selectionColor), cursorColor: (((ThemeData)this.data).textSelectionTheme.cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__5926).cursorColor), child: child)));
+        global::Doroti.Framework.Widgets.DefaultSelectionStyle selectionStyle = ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)(object?)DefaultSelectionStyle.of(context));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.IconTheme(data: ((ThemeData)this.data).iconTheme, child: new global::Doroti.Framework.Widgets.DefaultSelectionStyle(selectionColor: (((ThemeData)this.data).textSelectionTheme.selectionColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle).selectionColor), cursorColor: (((ThemeData)this.data).textSelectionTheme.cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle).cursorColor), child: child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual CupertinoThemeData _inheritedCupertinoThemeData(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        InheritedCupertinoTheme? inheritedTheme__6401 = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
-        return ((inheritedTheme__6401?.theme.data ?? new MaterialBasedCupertinoThemeData(materialTheme: this.data))).resolveFrom(context);
+        InheritedCupertinoTheme? inheritedTheme = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
+        return ((inheritedTheme?.theme.data ?? new MaterialBasedCupertinoThemeData(materialTheme: this.data))).resolveFrom(context);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Brightness brightnessOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _InheritedTheme__theme? inheritedTheme__7313 = ((_InheritedTheme__theme?)(object?)context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>());
-        return ((inheritedTheme__7313?.theme.data.brightness ?? (Brightness)MediaQuery.platformBrightnessOf(context)));
+        _InheritedTheme__theme? inheritedTheme = ((_InheritedTheme__theme?)(object?)context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>());
+        return ((inheritedTheme?.theme.data.brightness ?? (Brightness)MediaQuery.platformBrightnessOf(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Brightness? maybeBrightnessOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _InheritedTheme__theme? inheritedTheme__8172 = ((_InheritedTheme__theme?)(object?)context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>());
-        return ((inheritedTheme__8172?.theme.data.brightness ?? (Brightness)MediaQuery.maybePlatformBrightnessOf(context)));
+        _InheritedTheme__theme? inheritedTheme = ((_InheritedTheme__theme?)(object?)context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>());
+        return ((inheritedTheme?.theme.data.brightness ?? (Brightness)MediaQuery.maybePlatformBrightnessOf(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -49,9 +49,9 @@ public class NestedScrollView : StatefulWidget
 
     public static SliverOverlapAbsorberHandle sliverOverlapAbsorberHandleFor(BuildContext context)
     {
-        _InheritedNestedScrollView__nested_scroll_view? target__15340 = ((_InheritedNestedScrollView__nested_scroll_view?)(object?)context.dependOnInheritedWidgetOfExactType<_InheritedNestedScrollView__nested_scroll_view>());
-        DartRuntimePrimitives.Assert(() => (target__15340 is not null), () => (object?)"NestedScrollView.sliverOverlapAbsorberHandleFor must be called with a context that contains a NestedScrollView.");
-        return target__15340!.state._absorberHandle;
+        _InheritedNestedScrollView__nested_scroll_view? target = ((_InheritedNestedScrollView__nested_scroll_view?)(object?)context.dependOnInheritedWidgetOfExactType<_InheritedNestedScrollView__nested_scroll_view>());
+        DartRuntimePrimitives.Assert(() => (target is not null), () => (object?)"NestedScrollView.sliverOverlapAbsorberHandleFor must be called with a context that contains a NestedScrollView.");
+        return target!.state._absorberHandle;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -107,8 +107,8 @@ public class NestedScrollViewState : State<NestedScrollView>
         {
             return;
         }
-        bool newHasScrolledBody__20173 = this._coordinator!.hasScrolledBody;
-        if ((this._lastHasScrolledBody != newHasScrolledBody__20173))
+        bool newHasScrolledBody = this._coordinator!.hasScrolledBody;
+        if ((this._lastHasScrolledBody != newHasScrolledBody))
         {
             setState(((global::System.Action)(() =>
             {
@@ -118,11 +118,11 @@ public class NestedScrollViewState : State<NestedScrollView>
 
     public override Widget build(BuildContext context)
     {
-        ScrollPhysics scrollPhysics__20789 = (((((NestedScrollView)this.widget).physics?.applyTo(new ClampingScrollPhysics()) ?? (ScrollPhysics)((NestedScrollView)this.widget).scrollBehavior?.getScrollPhysics(context).applyTo(new ClampingScrollPhysics()))) ?? new ClampingScrollPhysics());
+        ScrollPhysics scrollPhysics = (((((NestedScrollView)this.widget).physics?.applyTo(new ClampingScrollPhysics()) ?? (ScrollPhysics)((NestedScrollView)this.widget).scrollBehavior?.getScrollPhysics(context).applyTo(new ClampingScrollPhysics()))) ?? new ClampingScrollPhysics());
         return ((Widget)(object?)new _InheritedNestedScrollView__nested_scroll_view(state: this, child: new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
         {
             _lastHasScrolledBody = this._coordinator!.hasScrolledBody;
-            return ((Widget)(object?)new _NestedScrollViewCustomScrollView__nested_scroll_view(dragStartBehavior: ((NestedScrollView)this.widget).dragStartBehavior, scrollDirection: ((NestedScrollView)this.widget).scrollDirection, reverse: ((NestedScrollView)this.widget).reverse, physics: scrollPhysics__20789, scrollBehavior: ((((NestedScrollView)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: false))), controller: this._coordinator!._outerController, slivers: this.widget._buildSlivers(context, this._coordinator!._innerController, DartRuntimePrimitives.RequireValue(this._lastHasScrolledBody)), handle: this._absorberHandle, clipBehavior: ((NestedScrollView)this.widget).clipBehavior, restorationId: ((NestedScrollView)this.widget).restorationId, hitTestBehavior: ((NestedScrollView)this.widget).hitTestBehavior));
+            return ((Widget)(object?)new _NestedScrollViewCustomScrollView__nested_scroll_view(dragStartBehavior: ((NestedScrollView)this.widget).dragStartBehavior, scrollDirection: ((NestedScrollView)this.widget).scrollDirection, reverse: ((NestedScrollView)this.widget).reverse, physics: scrollPhysics, scrollBehavior: ((((NestedScrollView)this.widget).scrollBehavior ?? (ScrollBehavior)ScrollConfiguration.of(context).copyWith(scrollbars: false))), controller: this._coordinator!._outerController, slivers: this.widget._buildSlivers(context, this._coordinator!._innerController, DartRuntimePrimitives.RequireValue(this._lastHasScrolledBody)), handle: this._absorberHandle, clipBehavior: ((NestedScrollView)this.widget).clipBehavior, restorationId: ((NestedScrollView)this.widget).restorationId, hitTestBehavior: ((NestedScrollView)this.widget).hitTestBehavior));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -234,12 +234,12 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
     {
         get
         {
-            _NestedScrollPosition__nested_scroll_view? outer__26121 = this._outerPosition;
-            if ((outer__26121 is null))
+            _NestedScrollPosition__nested_scroll_view? outer = this._outerPosition;
+            if ((outer is null))
             {
                 return true;
             }
-            return (outer__26121.haveDimensions && (outer__26121.extentAfter == 0.0));
+            return (outer.haveDimensions && (outer.extentAfter == 0.0));
             return default!;
         }
     }
@@ -247,15 +247,15 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
     {
         get
         {
-            foreach (_NestedScrollPosition__nested_scroll_view position__26327 in this._innerPositions)
+            foreach (_NestedScrollPosition__nested_scroll_view position in this._innerPositions)
             {
-                if ((!position__26327.hasContentDimensions || !position__26327.hasPixels))
+                if ((!position.hasContentDimensions || !position.hasPixels))
                 {
                     continue;
                 }
                 else
                 {
-                    if ((position__26327.pixels > position__26327.minScrollExtent))
+                    if ((position.pixels > position.minScrollExtent))
                     {
                         return true;
                     }
@@ -279,25 +279,25 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         }
         _userScrollDirection = DartRuntimePrimitives.RequireValue(value);
         this._outerPosition!.didUpdateScrollDirection(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value)));
-        foreach (_NestedScrollPosition__nested_scroll_view position__27296 in this._innerPositions)
+        foreach (_NestedScrollPosition__nested_scroll_view position in this._innerPositions)
         {
-            position__27296.didUpdateScrollDirection(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value)));
+            position.didUpdateScrollDirection(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value)));
         }
     }
 
     public virtual void beginActivity(ScrollActivity newOuterActivity, global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity> innerActivityGetter)
     {
         ((dynamic)this._outerPosition!).beginActivity(newOuterActivity);
-        bool scrolling__27605 = ((ScrollActivity)newOuterActivity).isScrolling;
-        foreach (_NestedScrollPosition__nested_scroll_view position__27684 in this._innerPositions)
+        bool scrolling = ((ScrollActivity)newOuterActivity).isScrolling;
+        foreach (_NestedScrollPosition__nested_scroll_view position in this._innerPositions)
         {
-            ScrollActivity newInnerActivity__27742 = innerActivityGetter(position__27684);
-            ((dynamic)position__27684).beginActivity(newInnerActivity__27742);
-            scrolling__27605 = (scrolling__27605 && ((ScrollActivity)newInnerActivity__27742).isScrolling);
+            ScrollActivity newInnerActivity = innerActivityGetter(position);
+            ((dynamic)position).beginActivity(newInnerActivity);
+            scrolling = (scrolling && ((ScrollActivity)newInnerActivity).isScrolling);
         }
         this._currentDrag?.dispose();
         _currentDrag = null;
-        if (!scrolling__27605)
+        if (!scrolling)
         {
             updateUserScrollDirection(global::Doroti.Framework.Rendering.ScrollDirection.idle);
         }
@@ -326,16 +326,16 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual ScrollActivity createOuterBallisticScrollActivity(double velocity)
     {
-        _NestedScrollPosition__nested_scroll_view? innerPosition__29317 = default!;
+        _NestedScrollPosition__nested_scroll_view? innerPosition = default!;
         if ((velocity != 0.0))
         {
-            foreach (_NestedScrollPosition__nested_scroll_view position__29398 in this._innerPositions)
+            foreach (_NestedScrollPosition__nested_scroll_view position in this._innerPositions)
             {
-                if ((innerPosition__29317 is not null))
+                if ((innerPosition is not null))
                 {
                     if ((velocity > 0.0))
                     {
-                        if ((innerPosition__29317.pixels < position__29398.pixels))
+                        if ((innerPosition.pixels < position.pixels))
                         {
                             continue;
                         }
@@ -343,21 +343,21 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
                     else
                     {
                         DartRuntimePrimitives.Assert(() => (velocity < 0.0));
-                        if ((innerPosition__29317.pixels > position__29398.pixels))
+                        if ((innerPosition.pixels > position.pixels))
                         {
                             continue;
                         }
                     }
                 }
-                innerPosition__29317 = position__29398;
+                innerPosition = position;
             }
         }
-        if ((innerPosition__29317 is null))
+        if ((innerPosition is null))
         {
             return ((ScrollActivity)(object?)this._outerPosition!.createBallisticScrollActivity(this._outerPosition!.physics.createBallisticSimulation(this._outerPosition!, velocity), mode: _NestedBallisticScrollActivityMode__nested_scroll_view.independent));
         }
-        _NestedScrollMetrics__nested_scroll_view metrics__30160 = ((_NestedScrollMetrics__nested_scroll_view)(object?)_getMetrics(innerPosition__29317, velocity));
-        return ((ScrollActivity)(object?)this._outerPosition!.createBallisticScrollActivity(this._outerPosition!.physics.createBallisticSimulation(metrics__30160, velocity), mode: _NestedBallisticScrollActivityMode__nested_scroll_view.outer, metrics: metrics__30160));
+        _NestedScrollMetrics__nested_scroll_view metricsLocal = ((_NestedScrollMetrics__nested_scroll_view)(object?)_getMetrics(innerPosition, velocity));
+        return ((ScrollActivity)(object?)this._outerPosition!.createBallisticScrollActivity(this._outerPosition!.physics.createBallisticSimulation(metricsLocal, velocity), mode: _NestedBallisticScrollActivityMode__nested_scroll_view.outer, metrics: metricsLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -369,73 +369,73 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     internal virtual _NestedScrollMetrics__nested_scroll_view _getMetrics(_NestedScrollPosition__nested_scroll_view innerPosition, double velocity)
     {
-        double pixels__30874 = default!;
-        double minRange__30882 = default!;
-        double maxRange__30892 = default!;
-        double correctionOffset__30902 = default!;
-        var extra__30928 = 0.0;
+        double pixelsLocal = default!;
+        double minRangeLocal = default!;
+        double maxRangeLocal = default!;
+        double correctionOffsetLocal = default!;
+        var extra = 0.0;
         if ((innerPosition.pixels == innerPosition.minScrollExtent))
         {
-            pixels__30874 = Dart_uiLibrary.clampDouble(this._outerPosition!.pixels, this._outerPosition!.minScrollExtent, this._outerPosition!.maxScrollExtent);
-            minRange__30882 = this._outerPosition!.minScrollExtent;
-            maxRange__30892 = this._outerPosition!.maxScrollExtent;
-            DartRuntimePrimitives.Assert(() => (minRange__30882 <= maxRange__30892));
-            correctionOffset__30902 = 0.0;
+            pixelsLocal = Dart_uiLibrary.clampDouble(this._outerPosition!.pixels, this._outerPosition!.minScrollExtent, this._outerPosition!.maxScrollExtent);
+            minRangeLocal = this._outerPosition!.minScrollExtent;
+            maxRangeLocal = this._outerPosition!.maxScrollExtent;
+            DartRuntimePrimitives.Assert(() => (minRangeLocal <= maxRangeLocal));
+            correctionOffsetLocal = 0.0;
         }
         else
         {
             DartRuntimePrimitives.Assert(() => (innerPosition.pixels != innerPosition.minScrollExtent));
             if ((innerPosition.pixels < innerPosition.minScrollExtent))
             {
-                pixels__30874 = ((innerPosition.pixels - innerPosition.minScrollExtent) + this._outerPosition!.minScrollExtent);
+                pixelsLocal = ((innerPosition.pixels - innerPosition.minScrollExtent) + this._outerPosition!.minScrollExtent);
             }
             else
             {
                 DartRuntimePrimitives.Assert(() => (innerPosition.pixels > innerPosition.minScrollExtent));
-                pixels__30874 = ((innerPosition.pixels - innerPosition.minScrollExtent) + this._outerPosition!.maxScrollExtent);
+                pixelsLocal = ((innerPosition.pixels - innerPosition.minScrollExtent) + this._outerPosition!.maxScrollExtent);
             }
             if ((((velocity > 0.0)) && ((innerPosition.pixels > innerPosition.minScrollExtent))))
             {
-                extra__30928 = (this._outerPosition!.maxScrollExtent - this._outerPosition!.pixels);
-                DartRuntimePrimitives.Assert(() => (extra__30928 >= 0.0));
-                minRange__30882 = pixels__30874;
-                maxRange__30892 = (pixels__30874 + extra__30928);
-                DartRuntimePrimitives.Assert(() => (minRange__30882 <= maxRange__30892));
-                correctionOffset__30902 = (this._outerPosition!.pixels - pixels__30874);
+                extra = (this._outerPosition!.maxScrollExtent - this._outerPosition!.pixels);
+                DartRuntimePrimitives.Assert(() => (extra >= 0.0));
+                minRangeLocal = pixelsLocal;
+                maxRangeLocal = (pixelsLocal + extra);
+                DartRuntimePrimitives.Assert(() => (minRangeLocal <= maxRangeLocal));
+                correctionOffsetLocal = (this._outerPosition!.pixels - pixelsLocal);
             }
             else
             {
                 if ((((velocity < 0.0)) && ((innerPosition.pixels < innerPosition.minScrollExtent))))
                 {
-                    extra__30928 = (this._outerPosition!.pixels - this._outerPosition!.minScrollExtent);
-                    DartRuntimePrimitives.Assert(() => (extra__30928 >= 0.0));
-                    minRange__30882 = (pixels__30874 - extra__30928);
-                    maxRange__30892 = pixels__30874;
-                    DartRuntimePrimitives.Assert(() => (minRange__30882 <= maxRange__30892));
-                    correctionOffset__30902 = (this._outerPosition!.pixels - pixels__30874);
+                    extra = (this._outerPosition!.pixels - this._outerPosition!.minScrollExtent);
+                    DartRuntimePrimitives.Assert(() => (extra >= 0.0));
+                    minRangeLocal = (pixelsLocal - extra);
+                    maxRangeLocal = pixelsLocal;
+                    DartRuntimePrimitives.Assert(() => (minRangeLocal <= maxRangeLocal));
+                    correctionOffsetLocal = (this._outerPosition!.pixels - pixelsLocal);
                 }
                 else
                 {
                     if ((velocity > 0.0))
                     {
-                        extra__30928 = (this._outerPosition!.minScrollExtent - this._outerPosition!.pixels);
+                        extra = (this._outerPosition!.minScrollExtent - this._outerPosition!.pixels);
                     }
                     else
                     {
                         if ((velocity < 0.0))
                         {
-                            extra__30928 = (this._outerPosition!.pixels - ((this._outerPosition!.maxScrollExtent - this._outerPosition!.minScrollExtent)));
+                            extra = (this._outerPosition!.pixels - ((this._outerPosition!.maxScrollExtent - this._outerPosition!.minScrollExtent)));
                         }
                     }
-                    DartRuntimePrimitives.Assert(() => (extra__30928 <= 0.0));
-                    minRange__30882 = this._outerPosition!.minScrollExtent;
-                    maxRange__30892 = (this._outerPosition!.maxScrollExtent + extra__30928);
-                    DartRuntimePrimitives.Assert(() => (minRange__30882 <= maxRange__30892));
-                    correctionOffset__30902 = 0.0;
+                    DartRuntimePrimitives.Assert(() => (extra <= 0.0));
+                    minRangeLocal = this._outerPosition!.minScrollExtent;
+                    maxRangeLocal = (this._outerPosition!.maxScrollExtent + extra);
+                    DartRuntimePrimitives.Assert(() => (minRangeLocal <= maxRangeLocal));
+                    correctionOffsetLocal = 0.0;
                 }
             }
         }
-        return new _NestedScrollMetrics__nested_scroll_view(minScrollExtent: this._outerPosition!.minScrollExtent, maxScrollExtent: (((this._outerPosition!.maxScrollExtent + innerPosition.maxScrollExtent) - innerPosition.minScrollExtent) + extra__30928), pixels: pixels__30874, viewportDimension: this._outerPosition!.viewportDimension, axisDirection: this._outerPosition!.axisDirection, minRange: minRange__30882, maxRange: maxRange__30892, correctionOffset: correctionOffset__30902, devicePixelRatio: this._outerPosition!.devicePixelRatio);
+        return new _NestedScrollMetrics__nested_scroll_view(minScrollExtent: this._outerPosition!.minScrollExtent, maxScrollExtent: (((this._outerPosition!.maxScrollExtent + innerPosition.maxScrollExtent) - innerPosition.minScrollExtent) + extra), pixels: pixelsLocal, viewportDimension: this._outerPosition!.viewportDimension, axisDirection: this._outerPosition!.axisDirection, minRange: minRangeLocal, maxRange: maxRangeLocal, correctionOffset: correctionOffsetLocal, devicePixelRatio: this._outerPosition!.devicePixelRatio);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -477,39 +477,39 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         {
             return;
         }
-        var innerCanDrag__35291 = false;
-        foreach (_NestedScrollPosition__nested_scroll_view position__35350 in this._innerPositions)
+        var innerCanDrag = false;
+        foreach (_NestedScrollPosition__nested_scroll_view position in this._innerPositions)
         {
-            if (!position__35350.haveDimensions)
+            if (!position.haveDimensions)
             {
                 return;
             }
-            innerCanDrag__35291 = (innerCanDrag__35291 || position__35350.physics.shouldAcceptUserOffset(position__35350));
+            innerCanDrag = (innerCanDrag || position.physics.shouldAcceptUserOffset(position));
         }
-        this._outerPosition!.updateCanDrag(innerCanDrag__35291);
+        this._outerPosition!.updateCanDrag(innerCanDrag);
     }
 
     public async virtual Future animateTo(double to, Duration duration, global::Doroti.Framework.Animation.Curve curve)
     {
-        DrivenScrollActivity outerActivity__35971 = ((DrivenScrollActivity)(object?)this._outerPosition!.createDrivenScrollActivity(nestOffset(to, this._outerPosition!), duration, curve));
-        var resultFutures__36116 = new List<Future> { ((DrivenScrollActivity)outerActivity__35971).done };
-        beginActivity(outerActivity__35971, ((global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity>)((position) =>
+        DrivenScrollActivity outerActivity = ((DrivenScrollActivity)(object?)this._outerPosition!.createDrivenScrollActivity(nestOffset(to, this._outerPosition!), duration, curve));
+        var resultFutures = new List<Future> { ((DrivenScrollActivity)outerActivity).done };
+        beginActivity(outerActivity, ((global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity>)((position) =>
         {
-            DrivenScrollActivity innerActivity__36269 = ((DrivenScrollActivity)(object?)position.createDrivenScrollActivity(nestOffset(to, position), duration, curve));
-            resultFutures__36116.Add(((DrivenScrollActivity)innerActivity__36269).done);
-            return ((ScrollActivity)(object?)innerActivity__36269);
+            DrivenScrollActivity innerActivity = ((DrivenScrollActivity)(object?)position.createDrivenScrollActivity(nestOffset(to, position), duration, curve));
+            resultFutures.Add(((DrivenScrollActivity)innerActivity).done);
+            return ((ScrollActivity)(object?)innerActivity);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        await global::Doroti.Runtime.DartAsyncRuntime.wait<object?>(resultFutures__36116);
+        await global::Doroti.Runtime.DartAsyncRuntime.wait<object?>(resultFutures);
     }
 
     public virtual void jumpTo(double to)
     {
         goIdle();
         this._outerPosition!.localJumpTo(nestOffset(to, this._outerPosition!));
-        foreach (_NestedScrollPosition__nested_scroll_view position__36672 in this._innerPositions)
+        foreach (_NestedScrollPosition__nested_scroll_view position in this._innerPositions)
         {
-            position__36672.localJumpTo(nestOffset(to, position__36672));
+            position.localJumpTo(nestOffset(to, position));
         }
         goBallistic(0.0);
     }
@@ -525,10 +525,10 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         updateUserScrollDirection(((delta < 0.0) ? global::Doroti.Framework.Rendering.ScrollDirection.forward : global::Doroti.Framework.Rendering.ScrollDirection.reverse));
         this._outerPosition!.isScrollingNotifier.value = true;
         this._outerPosition!.didStartScroll();
-        foreach (_NestedScrollPosition__nested_scroll_view position__37487 in this._innerPositions)
+        foreach (_NestedScrollPosition__nested_scroll_view position in this._innerPositions)
         {
-            position__37487.isScrollingNotifier.value = true;
-            position__37487.didStartScroll();
+            position.isScrollingNotifier.value = true;
+            position.didStartScroll();
         }
         if (!System.Linq.Enumerable.Any(this._innerPositions))
         {
@@ -538,53 +538,53 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         {
             if ((delta > 0.0))
             {
-                var outerDelta__37967 = delta;
-                foreach (_NestedScrollPosition__nested_scroll_view position__38026 in this._innerPositions)
+                var outerDelta = delta;
+                foreach (_NestedScrollPosition__nested_scroll_view positionLocal in this._innerPositions)
                 {
-                    if ((position__38026.pixels < 0.0))
+                    if ((positionLocal.pixels < 0.0))
                     {
-                        double potentialOuterDelta__38168 = position__38026.applyClampedPointerSignalUpdate(delta);
-                        outerDelta__37967 = Math.Max(outerDelta__37967, potentialOuterDelta__38168);
+                        double potentialOuterDelta = positionLocal.applyClampedPointerSignalUpdate(delta);
+                        outerDelta = Math.Max(outerDelta, potentialOuterDelta);
                     }
                 }
-                if ((outerDelta__37967 != 0.0))
+                if ((outerDelta != 0.0))
                 {
-                    double innerDelta__38544 = this._outerPosition!.applyClampedPointerSignalUpdate(outerDelta__37967);
-                    if ((innerDelta__38544 != 0.0))
+                    double innerDelta = this._outerPosition!.applyClampedPointerSignalUpdate(outerDelta);
+                    if ((innerDelta != 0.0))
                     {
-                        foreach (_NestedScrollPosition__nested_scroll_view position__38694 in this._innerPositions)
+                        foreach (_NestedScrollPosition__nested_scroll_view positionAlternate in this._innerPositions)
                         {
-                            position__38694.applyClampedPointerSignalUpdate(innerDelta__38544);
+                            positionAlternate.applyClampedPointerSignalUpdate(innerDelta);
                         }
                     }
                 }
             }
             else
             {
-                var innerDelta__38889 = delta;
+                var innerDeltaLocal = delta;
                 if (this._floatHeaderSlivers)
                 {
-                    innerDelta__38889 = this._outerPosition!.applyClampedPointerSignalUpdate(delta);
+                    innerDeltaLocal = this._outerPosition!.applyClampedPointerSignalUpdate(delta);
                 }
-                if ((innerDelta__38889 != 0.0))
+                if ((innerDeltaLocal != 0.0))
                 {
-                    var outerDelta__39342 = 0.0;
-                    foreach (_NestedScrollPosition__nested_scroll_view position__39438 in this._innerPositions)
+                    var outerDeltaLocal = 0.0;
+                    foreach (_NestedScrollPosition__nested_scroll_view positionNested in this._innerPositions)
                     {
-                        double overscroll__39492 = position__39438.applyClampedPointerSignalUpdate(innerDelta__38889);
-                        outerDelta__39342 = Math.Min(outerDelta__39342, overscroll__39492);
+                        double overscroll = positionNested.applyClampedPointerSignalUpdate(innerDeltaLocal);
+                        outerDeltaLocal = Math.Min(outerDeltaLocal, overscroll);
                     }
-                    if ((outerDelta__39342 != 0.0))
+                    if ((outerDeltaLocal != 0.0))
                     {
-                        this._outerPosition!.applyClampedPointerSignalUpdate(outerDelta__39342);
+                        this._outerPosition!.applyClampedPointerSignalUpdate(outerDeltaLocal);
                     }
                 }
             }
         }
         this._outerPosition!.didEndScroll();
-        foreach (_NestedScrollPosition__nested_scroll_view position__39828 in this._innerPositions)
+        foreach (_NestedScrollPosition__nested_scroll_view positionCurrent in this._innerPositions)
         {
-            position__39828.didEndScroll();
+            positionCurrent.didEndScroll();
         }
         goBallistic(0.0);
     }
@@ -610,11 +610,11 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
 
     public virtual global::Doroti.Framework.Gestures.Drag drag(global::Doroti.Framework.Gestures.DragStartDetails details, global::System.Action dragCancelCallback)
     {
-        var drag__40436 = new ScrollDragController(@delegate: this, details: details, onDragCanceled: () => dragCancelCallback());
-        beginActivity(new DragScrollActivity(this._outerPosition!, drag__40436), ((global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity>)((position) => new DragScrollActivity(position, drag__40436))));
+        var dragLocal = new ScrollDragController(@delegate: this, details: details, onDragCanceled: () => dragCancelCallback());
+        beginActivity(new DragScrollActivity(this._outerPosition!, dragLocal), ((global::System.Func<_NestedScrollPosition__nested_scroll_view, ScrollActivity>)((position) => new DragScrollActivity(position, dragLocal))));
         DartRuntimePrimitives.Assert(() => (this._currentDrag is null));
-        _currentDrag = drag__40436;
-        return ((global::Doroti.Framework.Gestures.Drag)(object?)drag__40436);
+        _currentDrag = dragLocal;
+        return ((global::Doroti.Framework.Gestures.Drag)(object?)dragLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -630,55 +630,55 @@ public class _NestedScrollCoordinator__nested_scroll_view : ScrollActivityDelega
         {
             if ((delta < 0.0))
             {
-                var outerDelta__41259 = delta;
-                foreach (_NestedScrollPosition__nested_scroll_view position__41318 in this._innerPositions)
+                var outerDelta = delta;
+                foreach (_NestedScrollPosition__nested_scroll_view position in this._innerPositions)
                 {
-                    if ((position__41318.pixels < 0.0))
+                    if ((position.pixels < 0.0))
                     {
-                        double potentialOuterDelta__41460 = position__41318.applyClampedDragUpdate(delta);
-                        outerDelta__41259 = Math.Max(outerDelta__41259, potentialOuterDelta__41460);
+                        double potentialOuterDelta = position.applyClampedDragUpdate(delta);
+                        outerDelta = Math.Max(outerDelta, potentialOuterDelta);
                     }
                 }
-                if ((outerDelta__41259.abs() > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+                if ((outerDelta.abs() > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
                 {
-                    double innerDelta__41852 = this._outerPosition!.applyClampedDragUpdate(outerDelta__41259);
-                    if ((innerDelta__41852 != 0.0))
+                    double innerDelta = this._outerPosition!.applyClampedDragUpdate(outerDelta);
+                    if ((innerDelta != 0.0))
                     {
-                        foreach (_NestedScrollPosition__nested_scroll_view position__41993 in this._innerPositions)
+                        foreach (_NestedScrollPosition__nested_scroll_view positionLocal in this._innerPositions)
                         {
-                            position__41993.applyFullDragUpdate(innerDelta__41852);
+                            positionLocal.applyFullDragUpdate(innerDelta);
                         }
                     }
                 }
             }
             else
             {
-                var innerDelta__42176 = delta;
+                var innerDeltaLocal = delta;
                 if (this._floatHeaderSlivers)
                 {
-                    innerDelta__42176 = this._outerPosition!.applyClampedDragUpdate(delta);
+                    innerDeltaLocal = this._outerPosition!.applyClampedDragUpdate(delta);
                 }
-                if ((innerDelta__42176 != 0.0))
+                if ((innerDeltaLocal != 0.0))
                 {
-                    var outerDelta__42620 = 0.0;
-                    var overscrolls__42689 = new List<double>();
-                    List<_NestedScrollPosition__nested_scroll_view> innerPositions__42757 = this._innerPositions.ToList().ToList();
-                    foreach (var position__42819 in innerPositions__42757)
+                    var outerDeltaLocal = 0.0;
+                    var overscrolls = new List<double>();
+                    List<_NestedScrollPosition__nested_scroll_view> innerPositions = this._innerPositions.ToList().ToList();
+                    foreach (var positionAlternate in innerPositions)
                     {
-                        double overscroll__42872 = position__42819.applyClampedDragUpdate(innerDelta__42176);
-                        outerDelta__42620 = Math.Max(outerDelta__42620, overscroll__42872);
-                        overscrolls__42689.Add(overscroll__42872);
+                        double overscroll = positionAlternate.applyClampedDragUpdate(innerDeltaLocal);
+                        outerDeltaLocal = Math.Max(outerDeltaLocal, overscroll);
+                        overscrolls.Add(overscroll);
                     }
-                    if ((outerDelta__42620 != 0.0))
+                    if ((outerDeltaLocal != 0.0))
                     {
-                        outerDelta__42620 -= this._outerPosition!.applyClampedDragUpdate(outerDelta__42620);
+                        outerDeltaLocal -= this._outerPosition!.applyClampedDragUpdate(outerDeltaLocal);
                     }
-                    for (var i__43213 = 0L; (i__43213 < checked((long)(innerPositions__42757.Count))); ++i__43213)
+                    for (var i = 0L; (i < checked((long)(innerPositions.Count))); ++i)
                     {
-                        double remainingDelta__43277 = (overscrolls__42689[(int)(i__43213)] - outerDelta__42620);
-                        if ((remainingDelta__43277 > 0.0))
+                        double remainingDelta = (overscrolls[(int)(i)] - outerDeltaLocal);
+                        if ((remainingDelta > 0.0))
                         {
-                            innerPositions__42757[(int)(i__43213)].applyFullDragUpdate(remainingDelta__43277);
+                            innerPositions[(int)(i)].applyFullDragUpdate(remainingDelta);
                         }
                     }
                 }
@@ -797,52 +797,52 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
     public virtual double applyClampedDragUpdate(double delta)
     {
         DartRuntimePrimitives.Assert(() => (delta != 0.0));
-        double min__48547 = ((delta < 0.0) ? -double.PositiveInfinity : Math.Min(this.minScrollExtent, this.pixels));
-        double max__48700 = ((delta > 0.0) ? double.PositiveInfinity : ((this.pixels < 0.0) ? 0.0 : Math.Max(this.maxScrollExtent, this.pixels)));
-        double oldPixels__48992 = this.pixels;
-        double newPixels__49029 = Dart_uiLibrary.clampDouble((this.pixels - delta), min__48547, max__48700);
-        double clampedDelta__49097 = (newPixels__49029 - this.pixels);
-        if ((clampedDelta__49097 == 0.0))
+        double min = ((delta < 0.0) ? -double.PositiveInfinity : Math.Min(this.minScrollExtent, this.pixels));
+        double max = ((delta > 0.0) ? double.PositiveInfinity : ((this.pixels < 0.0) ? 0.0 : Math.Max(this.maxScrollExtent, this.pixels)));
+        double oldPixels = this.pixels;
+        double newPixels = Dart_uiLibrary.clampDouble((this.pixels - delta), min, max);
+        double clampedDelta = (newPixels - this.pixels);
+        if ((clampedDelta == 0.0))
         {
             return delta;
         }
-        double overscroll__49206 = this.physics.applyBoundaryConditions(this, newPixels__49029);
-        double actualNewPixels__49286 = (newPixels__49029 - overscroll__49206);
-        double offset__49345 = (actualNewPixels__49286 - oldPixels__48992);
-        if ((offset__49345 != 0.0))
+        double overscroll = this.physics.applyBoundaryConditions(this, newPixels);
+        double actualNewPixels = (newPixels - overscroll);
+        double offset = (actualNewPixels - oldPixels);
+        if ((offset != 0.0))
         {
-            forcePixels(actualNewPixels__49286);
-            didUpdateScrollPositionBy(offset__49345);
+            forcePixels(actualNewPixels);
+            didUpdateScrollPositionBy(offset);
         }
-        double result__49509 = (delta + offset__49345);
-        if ((result__49509.abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+        double result = (delta + offset);
+        if ((result.abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
         {
             return 0.0;
         }
-        return result__49509;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual double applyFullDragUpdate(double delta)
     {
         DartRuntimePrimitives.Assert(() => (delta != 0.0));
-        double oldPixels__49749 = this.pixels;
-        double newPixels__49809 = (this.pixels - this.physics.applyPhysicsToUserOffset(this, delta));
-        if ((((oldPixels__49749 - newPixels__49809)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+        double oldPixels = this.pixels;
+        double newPixels = (this.pixels - this.physics.applyPhysicsToUserOffset(this, delta));
+        if ((((oldPixels - newPixels)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
         {
             return 0.0;
         }
-        double overscroll__50057 = this.physics.applyBoundaryConditions(this, newPixels__49809);
-        double actualNewPixels__50137 = (newPixels__49809 - overscroll__50057);
-        if ((actualNewPixels__50137 != oldPixels__49749))
+        double overscroll = this.physics.applyBoundaryConditions(this, newPixels);
+        double actualNewPixels = (newPixels - overscroll);
+        if ((actualNewPixels != oldPixels))
         {
-            forcePixels(actualNewPixels__50137);
-            didUpdateScrollPositionBy((actualNewPixels__50137 - oldPixels__49749));
+            forcePixels(actualNewPixels);
+            didUpdateScrollPositionBy((actualNewPixels - oldPixels));
         }
-        if ((overscroll__50057 != 0.0))
+        if ((overscroll != 0.0))
         {
-            didOverscrollBy(overscroll__50057);
-            return overscroll__50057;
+            didOverscrollBy(overscroll);
+            return overscroll;
         }
         return 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -851,17 +851,17 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
     public virtual double applyClampedPointerSignalUpdate(double delta)
     {
         DartRuntimePrimitives.Assert(() => (delta != 0.0));
-        double min__50794 = ((delta > 0.0) ? -double.PositiveInfinity : Math.Min(this.minScrollExtent, this.pixels));
-        double max__50947 = ((delta < 0.0) ? double.PositiveInfinity : Math.Max(this.maxScrollExtent, this.pixels));
-        double newPixels__51037 = Dart_uiLibrary.clampDouble((this.pixels + delta), min__50794, max__50947);
-        double clampedDelta__51105 = (newPixels__51037 - this.pixels);
-        if ((clampedDelta__51105 == 0.0))
+        double min = ((delta > 0.0) ? -double.PositiveInfinity : Math.Min(this.minScrollExtent, this.pixels));
+        double max = ((delta < 0.0) ? double.PositiveInfinity : Math.Max(this.maxScrollExtent, this.pixels));
+        double newPixels = Dart_uiLibrary.clampDouble((this.pixels + delta), min, max);
+        double clampedDelta = (newPixels - this.pixels);
+        if ((clampedDelta == 0.0))
         {
             return delta;
         }
-        forcePixels(newPixels__51037);
-        didUpdateScrollPositionBy(clampedDelta__51105);
-        return (delta - clampedDelta__51105);
+        forcePixels(newPixels);
+        didUpdateScrollPositionBy(clampedDelta);
+        return (delta - clampedDelta);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -887,12 +887,12 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
 
     public virtual void goBallistic(double velocity)
     {
-        global::Doroti.Framework.Physics.Simulation? simulation__52111 = default!;
+        global::Doroti.Framework.Physics.Simulation? simulation = default!;
         if (((velocity != 0.0) || this.outOfRange))
         {
-            simulation__52111 = this.physics.createBallisticSimulation(this, velocity);
+            simulation = this.physics.createBallisticSimulation(this, velocity);
         }
-        beginActivity(createBallisticScrollActivity(simulation__52111, mode: _NestedBallisticScrollActivityMode__nested_scroll_view.independent));
+        beginActivity(createBallisticScrollActivity(simulation, mode: _NestedBallisticScrollActivityMode__nested_scroll_view.independent));
     }
 
     public virtual ScrollActivity createBallisticScrollActivity(global::Doroti.Framework.Physics.Simulation? simulation, _NestedBallisticScrollActivityMode__nested_scroll_view mode, _NestedScrollMetrics__nested_scroll_view? metrics = null)
@@ -953,10 +953,10 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
     {
         if ((this.pixels != DartRuntimePrimitives.RequireValue(value)))
         {
-            double oldPixels__54071 = this.pixels;
+            double oldPixels = this.pixels;
             forcePixels(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value)));
             didStartScroll();
-            didUpdateScrollPositionBy((this.pixels - oldPixels__54071));
+            didUpdateScrollPositionBy((this.pixels - oldPixels));
             didEndScroll();
         }
     }
@@ -1048,7 +1048,7 @@ internal class _NestedOuterBallisticScrollActivity__nested_scroll_view : Ballist
 
     public override bool applyMoveTo(double value)
     {
-        var done__56939 = false;
+        var done = false;
         if ((this.velocity > 0.0))
         {
             if ((value < ((_NestedScrollMetrics__nested_scroll_view)this.metrics).minRange))
@@ -1058,7 +1058,7 @@ internal class _NestedOuterBallisticScrollActivity__nested_scroll_view : Ballist
             if ((value > ((_NestedScrollMetrics__nested_scroll_view)this.metrics).maxRange))
             {
                 value = ((_NestedScrollMetrics__nested_scroll_view)this.metrics).maxRange;
-                done__56939 = true;
+                done = true;
             }
         }
         else
@@ -1072,18 +1072,18 @@ internal class _NestedOuterBallisticScrollActivity__nested_scroll_view : Ballist
                 if ((value < ((_NestedScrollMetrics__nested_scroll_view)this.metrics).minRange))
                 {
                     value = ((_NestedScrollMetrics__nested_scroll_view)this.metrics).minRange;
-                    done__56939 = true;
+                    done = true;
                 }
             }
             else
             {
                 value = Dart_uiLibrary.clampDouble(value, ((_NestedScrollMetrics__nested_scroll_view)this.metrics).minRange, ((_NestedScrollMetrics__nested_scroll_view)this.metrics).maxRange);
-                done__56939 = true;
+                done = true;
             }
         }
-        bool result__57471 = base.applyMoveTo((value + ((_NestedScrollMetrics__nested_scroll_view)this.metrics).correctionOffset));
-        DartRuntimePrimitives.Assert(() => result__57471);
-        return !done__56939;
+        bool result = base.applyMoveTo((value + ((_NestedScrollMetrics__nested_scroll_view)this.metrics).correctionOffset));
+        DartRuntimePrimitives.Assert(() => result);
+        return !done;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1117,8 +1117,8 @@ public class SliverOverlapAbsorberHandle : global::Doroti.Framework.Foundation.C
     internal virtual void _markNeedsLayout() => notifyListeners();
     public override string ToString()
     {
-        string? extra__61418 = (this._writers switch { 0L => ", orphan", 1L => DartRuntimePrimitives.ConvertValue<string>(null), _ => $", {this._writers} WRITERS ASSIGNED" });
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SliverOverlapAbsorberHandle"))}({this.layoutExtent}{extra__61418})";
+        string? extra = (this._writers switch { 0L => ", orphan", 1L => DartRuntimePrimitives.ConvertValue<string>(null), _ => $", {this._writers} WRITERS ASSIGNED" });
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SliverOverlapAbsorberHandle"))}({this.layoutExtent}{extra})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1205,9 +1205,9 @@ public class RenderSliverOverlapAbsorber : global::Doroti.Framework.Rendering.Re
             return;
         }
         this.child!.layout(this.constraints, parentUsesSize: true);
-        global::Doroti.Framework.Rendering.SliverGeometry childLayoutGeometry__65029 = this.child!.geometry!;
-        geometry = childLayoutGeometry__65029.copyWith(scrollExtent: (((global::Doroti.Framework.Rendering.SliverGeometry)childLayoutGeometry__65029).scrollExtent - ((global::Doroti.Framework.Rendering.SliverGeometry)childLayoutGeometry__65029).maxScrollObstructionExtent), layoutExtent: Math.Max(0, (((global::Doroti.Framework.Rendering.SliverGeometry)childLayoutGeometry__65029).paintExtent - ((global::Doroti.Framework.Rendering.SliverGeometry)childLayoutGeometry__65029).maxScrollObstructionExtent)));
-        this.handle._setExtents(((global::Doroti.Framework.Rendering.SliverGeometry)childLayoutGeometry__65029).maxScrollObstructionExtent, ((global::Doroti.Framework.Rendering.SliverGeometry)childLayoutGeometry__65029).maxScrollObstructionExtent);
+        global::Doroti.Framework.Rendering.SliverGeometry childLayoutGeometry = this.child!.geometry!;
+        geometry = childLayoutGeometry.copyWith(scrollExtent: (((global::Doroti.Framework.Rendering.SliverGeometry)childLayoutGeometry).scrollExtent - ((global::Doroti.Framework.Rendering.SliverGeometry)childLayoutGeometry).maxScrollObstructionExtent), layoutExtent: Math.Max(0, (((global::Doroti.Framework.Rendering.SliverGeometry)childLayoutGeometry).paintExtent - ((global::Doroti.Framework.Rendering.SliverGeometry)childLayoutGeometry).maxScrollObstructionExtent)));
+        this.handle._setExtents(((global::Doroti.Framework.Rendering.SliverGeometry)childLayoutGeometry).maxScrollObstructionExtent, ((global::Doroti.Framework.Rendering.SliverGeometry)childLayoutGeometry).maxScrollObstructionExtent);
     }
 
     public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
@@ -1380,9 +1380,9 @@ public class RenderSliverOverlapInjector : global::Doroti.Framework.Rendering.Re
         _currentLayoutExtent = ((SliverOverlapAbsorberHandle)this.handle).layoutExtent;
         _currentMaxExtent = ((SliverOverlapAbsorberHandle)this.handle).layoutExtent;
         DartRuntimePrimitives.Assert(() => ((this._currentLayoutExtent is not null) && (this._currentMaxExtent is not null)), () => (object?)"SliverOverlapInjector has found no absorbed extent to inject.\n " + "The SliverOverlapAbsorber must be an earlier descendant of a common " + "ancestor Viewport, so that it will always be laid out before the " + "SliverOverlapInjector during a particular frame.\n " + "The SliverOverlapAbsorber is typically contained in the list of slivers " + "provided by NestedScrollView.headerSliverBuilder.\n");
-        double clampedPaintExtent__70242 = Math.Min(DartRuntimePrimitives.RequireValue(this._currentLayoutExtent), ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent);
-        double clampedLayoutExtent__70366 = Math.Min((DartRuntimePrimitives.RequireValue(this._currentLayoutExtent) - ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset), ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent);
-        geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollExtent: DartRuntimePrimitives.RequireValue(this._currentLayoutExtent), paintExtent: Math.Max(0.0, clampedPaintExtent__70242), layoutExtent: Math.Max(0.0, clampedLayoutExtent__70366), maxPaintExtent: DartRuntimePrimitives.RequireValue(this._currentMaxExtent));
+        double clampedPaintExtent = Math.Min(DartRuntimePrimitives.RequireValue(this._currentLayoutExtent), ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent);
+        double clampedLayoutExtent = Math.Min((DartRuntimePrimitives.RequireValue(this._currentLayoutExtent) - ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset), ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent);
+        geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollExtent: DartRuntimePrimitives.RequireValue(this._currentLayoutExtent), paintExtent: Math.Max(0.0, clampedPaintExtent), layoutExtent: Math.Max(0.0, clampedLayoutExtent), maxPaintExtent: DartRuntimePrimitives.RequireValue(this._currentMaxExtent));
     }
 
     public override void debugPaint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
@@ -1391,7 +1391,7 @@ public class RenderSliverOverlapInjector : global::Doroti.Framework.Rendering.Re
             {
                 if (global::Doroti.Framework.Rendering.DebugLibrary.debugPaintSizeEnabled)
                 {
-                    var paint__70876 = ((Func<Paint>)(() =>
+                    var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = new global::Doroti.Ui.Color(4291598643L);
@@ -1399,31 +1399,31 @@ public class RenderSliverOverlapInjector : global::Doroti.Framework.Rendering.Re
     __cascade.style = PaintingStyle.stroke;
     return __cascade;
 }))();
-                    global::Doroti.Ui.Offset start__71023 = default!;
-                    global::Doroti.Ui.Offset end__71030 = default!;
-                    global::Doroti.Ui.Offset delta__71035 = default!;
+                    global::Doroti.Ui.Offset start = default!;
+                    global::Doroti.Ui.Offset end = default!;
+                    global::Doroti.Ui.Offset delta = default!;
                     switch (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis)
                     {
                         case global::Doroti.Framework.Painting.Axis.vertical:
                             {
-                                double x__71133 = (offset.dx + (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).crossAxisExtent / 2.0));
-                                start__71023 = new global::Doroti.Ui.Offset(x__71133, offset.dy);
-                                end__71030 = new global::Doroti.Ui.Offset(x__71133, (offset.dy + this.geometry!.paintExtent));
-                                delta__71035 = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).crossAxisExtent / 5.0), 0.0);
+                                double x = (offset.dx + (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).crossAxisExtent / 2.0));
+                                start = new global::Doroti.Ui.Offset(x, offset.dy);
+                                end = new global::Doroti.Ui.Offset(x, (offset.dy + this.geometry!.paintExtent));
+                                delta = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).crossAxisExtent / 5.0), 0.0);
                                 break;
                             }
                         case global::Doroti.Framework.Painting.Axis.horizontal:
                             {
-                                double y__71415 = (offset.dy + (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).crossAxisExtent / 2.0));
-                                start__71023 = new global::Doroti.Ui.Offset(offset.dx, y__71415);
-                                end__71030 = new global::Doroti.Ui.Offset((offset.dy + this.geometry!.paintExtent), y__71415);
-                                delta__71035 = new global::Doroti.Ui.Offset(0.0, (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).crossAxisExtent / 5.0));
+                                double y = (offset.dy + (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).crossAxisExtent / 2.0));
+                                start = new global::Doroti.Ui.Offset(offset.dx, y);
+                                end = new global::Doroti.Ui.Offset((offset.dy + this.geometry!.paintExtent), y);
+                                delta = new global::Doroti.Ui.Offset(0.0, (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).crossAxisExtent / 5.0));
                                 break;
                             }
                     }
-                    for (var index__71667 = -2L; (index__71667 <= 2L); index__71667 += 1L)
+                    for (var index = -2L; (index <= 2L); index += 1L)
                     {
-                        global::Doroti.Framework.Painting.Paint_utilitiesLibrary.paintZigZag(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, paint__70876, (start__71023 - (delta__71035 * index__71667.toDouble())), (end__71030 - (delta__71035 * index__71667.toDouble())), 10L, 10.0);
+                        global::Doroti.Framework.Painting.Paint_utilitiesLibrary.paintZigZag(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, paint, (start - (delta * index.toDouble())), (end - (delta * index.toDouble())), 10L, 10.0);
                     }
                 }
                 return true;

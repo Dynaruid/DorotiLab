@@ -129,12 +129,12 @@ internal class _CupertinoScrollbarState__scrollbar : global::Doroti.Framework.Wi
     public override void handleThumbPressStart(Offset localPosition)
     {
         base.handleThumbPressStart(localPosition);
-        global::Doroti.Framework.Painting.Axis? direction__7048 = getScrollbarDirection();
-        if ((direction__7048 is null))
+        global::Doroti.Framework.Painting.Axis? direction = getScrollbarDirection();
+        if ((direction is null))
         {
             return;
         }
-        _pressStartAxisPosition = (DartRuntimePrimitives.RequireValue(direction__7048) switch { global::Doroti.Framework.Painting.Axis.vertical => localPosition.dy, global::Doroti.Framework.Painting.Axis.horizontal => localPosition.dx, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        _pressStartAxisPosition = (DartRuntimePrimitives.RequireValue(direction) switch { global::Doroti.Framework.Painting.Axis.vertical => localPosition.dy, global::Doroti.Framework.Painting.Axis.horizontal => localPosition.dx, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     }
 
     public override void handleThumbPress()
@@ -149,15 +149,15 @@ internal class _CupertinoScrollbarState__scrollbar : global::Doroti.Framework.Wi
 
     public override void handleThumbPressEnd(Offset localPosition, global::Doroti.Framework.Gestures.Velocity velocity)
     {
-        global::Doroti.Framework.Painting.Axis? direction__7611 = getScrollbarDirection();
-        if ((direction__7611 is null))
+        global::Doroti.Framework.Painting.Axis? direction = getScrollbarDirection();
+        if ((direction is null))
         {
             return;
         }
         this._thicknessAnimationController.reverse();
         base.handleThumbPressEnd(localPosition, velocity);
-        var (axisPosition__7816, axisVelocity__7837) = (DartRuntimePrimitives.RequireValue(direction__7611) switch { global::Doroti.Framework.Painting.Axis.horizontal => (((double, double))((localPosition.dx, ((global::Doroti.Framework.Gestures.Velocity)velocity).pixelsPerSecond.dx))), global::Doroti.Framework.Painting.Axis.vertical => (((double, double))((localPosition.dy, ((global::Doroti.Framework.Gestures.Velocity)velocity).pixelsPerSecond.dy))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        if (((axisPosition__7816 != this._pressStartAxisPosition) && (axisVelocity__7837.abs() < 10L)))
+        var (axisPosition, axisVelocity) = (DartRuntimePrimitives.RequireValue(direction) switch { global::Doroti.Framework.Painting.Axis.horizontal => (((double, double))((localPosition.dx, ((global::Doroti.Framework.Gestures.Velocity)velocity).pixelsPerSecond.dx))), global::Doroti.Framework.Painting.Axis.vertical => (((double, double))((localPosition.dy, ((global::Doroti.Framework.Gestures.Velocity)velocity).pixelsPerSecond.dy))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        if (((axisPosition != this._pressStartAxisPosition) && (axisVelocity.abs() < 10L)))
         {
             DartRuntimePrimitives.Ignore(HapticFeedback.mediumImpact());
         }

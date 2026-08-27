@@ -47,9 +47,9 @@ public class DecoratedSliver : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string label__3236 = (this.position switch { global::Doroti.Framework.Rendering.DecorationPosition.background => "bg", global::Doroti.Framework.Rendering.DecorationPosition.foreground => "fg", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        string label = (this.position switch { global::Doroti.Framework.Rendering.DecorationPosition.background => "bg", global::Doroti.Framework.Rendering.DecorationPosition.foreground => "fg", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.DecorationPosition>("position", this.position, level: global::Doroti.Framework.Foundation.DiagnosticLevel.hidden));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>(label__3236, this.decoration));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>(label, this.decoration));
     }
 
 }

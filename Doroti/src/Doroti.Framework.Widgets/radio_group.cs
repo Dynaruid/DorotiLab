@@ -116,17 +116,17 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
     public virtual void unregisterClient(RadioClient<T> radio) => this._radios.Remove(radio);
     internal virtual void _toggleFocusedRadio()
     {
-        RadioClient<T>? radio__5357 = this._radios.firstWhereOrNull(((radio) => ((RadioClient<T>)radio).focusNode.hasFocus));
-        if ((radio__5357 is null))
+        RadioClient<T>? radioLocal = this._radios.firstWhereOrNull(((radio) => ((RadioClient<T>)radio).focusNode.hasFocus));
+        if ((radioLocal is null))
         {
             return;
         }
-        if (!EqualityComparer<T>.Default.Equals(((RadioClient<T>)radio__5357).radioValue, ((RadioGroup<T>)(object)this.widget).groupValue))
+        if (!EqualityComparer<T>.Default.Equals(((RadioClient<T>)radioLocal).radioValue, ((RadioGroup<T>)(object)this.widget).groupValue))
         {
-            this.onChanged(((RadioClient<T>)radio__5357).radioValue);
+            this.onChanged(((RadioClient<T>)radioLocal).radioValue);
             return;
         }
-        if (((RadioClient<T>)radio__5357).tristate)
+        if (((RadioClient<T>)radioLocal).tristate)
         {
             this.onChanged(default);
         }
@@ -141,31 +141,31 @@ internal class _RadioGroupState__radio_group<T> : State<RadioGroup<T>>, RadioGro
         {
             return;
         }
-        FocusNode? currentFocus__5978 = this._radios.firstWhereOrNull(((radio) => ((RadioClient<T>)radio).focusNode.hasFocus))?.focusNode;
-        if ((currentFocus__5978 is null))
+        FocusNode? currentFocus = this._radios.firstWhereOrNull(((radio) => ((RadioClient<T>)radio).focusNode.hasFocus))?.focusNode;
+        if ((currentFocus is null))
         {
             return;
         }
-        List<FocusNode> sorted__6257 = ReadingOrderTraversalPolicy.sort(this._radios.where(((radio) => ((RadioClient<T>)radio).enabled)).map<RadioClient<T>, FocusNode>(((radio) => ((RadioClient<T>)radio).focusNode)).Cast<FocusNode>()).ToList().ToList();
-        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(sorted__6257));
-        IEnumerable<FocusNode> nodesInEffectiveOrder__6519 = (forward ? sorted__6257 : System.Linq.Enumerable.Reverse(sorted__6257));
-        IEnumerator<FocusNode> iterator__6610 = nodesInEffectiveOrder__6519.GetEnumerator();
-        FocusNode? nextFocus__6668 = default!;
-        while (iterator__6610.MoveNext())
+        List<FocusNode> sorted = ReadingOrderTraversalPolicy.sort(this._radios.where(((radio) => ((RadioClient<T>)radio).enabled)).map<RadioClient<T>, FocusNode>(((radio) => ((RadioClient<T>)radio).focusNode)).Cast<FocusNode>()).ToList().ToList();
+        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(sorted));
+        IEnumerable<FocusNode> nodesInEffectiveOrder = (forward ? sorted : System.Linq.Enumerable.Reverse(sorted));
+        IEnumerator<FocusNode> iterator = nodesInEffectiveOrder.GetEnumerator();
+        FocusNode? nextFocus = default!;
+        while (iterator.MoveNext())
         {
-            if ((object.Equals(iterator__6610.Current, currentFocus__5978)))
+            if ((object.Equals(iterator.Current, currentFocus)))
             {
-                if (iterator__6610.MoveNext())
+                if (iterator.MoveNext())
                 {
-                    nextFocus__6668 = iterator__6610.Current;
+                    nextFocus = iterator.Current;
                 }
                 break;
             }
         }
-        nextFocus__6668 ??= nodesInEffectiveOrder__6519.First();
-        RadioClient<T> radioToSelect__7016 = this._radios.firstWhere(((radio) => (object.Equals(((RadioClient<T>)radio).focusNode, nextFocus__6668))));
-        this.onChanged(((RadioClient<T>)radioToSelect__7016).radioValue);
-        nextFocus__6668.requestFocus();
+        nextFocus ??= nodesInEffectiveOrder.First();
+        RadioClient<T> radioToSelect = this._radios.firstWhere(((radio) => (object.Equals(((RadioClient<T>)radio).focusNode, nextFocus))));
+        this.onChanged(((RadioClient<T>)radioToSelect).radioValue);
+        nextFocus.requestFocus();
     }
 
     public override Widget build(BuildContext context)
@@ -188,8 +188,8 @@ internal class _RadioGroupShortcutManager__radio_group<T> : ShortcutManager
 
     public override KeyEventResult handleKeypress(BuildContext context, global::Doroti.Framework.Services.KeyEvent @event)
     {
-        bool radioHasFocus__8040 = ((_RadioGroupState__radio_group<T>)this.state)._radios.any(((radio) => ((RadioClient<T>)radio).focusNode.hasFocus));
-        if (!radioHasFocus__8040)
+        bool radioHasFocus = ((_RadioGroupState__radio_group<T>)this.state)._radios.any(((radio) => ((RadioClient<T>)radio).focusNode.hasFocus));
+        if (!radioHasFocus)
         {
             return KeyEventResult.ignored;
         }
@@ -252,31 +252,31 @@ internal class _SkipUnselectedRadioPolicy__radio_group<T> : ReadingOrderTraversa
     internal virtual bool _radioSelected(RadioClient<T> radio) => DartRuntimePrimitives.ConvertValue<bool>(EqualityComparer<T>.Default.Equals(((RadioClient<T>)radio).radioValue, this.groupValue));
     public override IEnumerable<FocusNode> sortDescendants(IEnumerable<FocusNode> descendants, FocusNode currentNode)
     {
-        IEnumerable<FocusNode> nodesInReadOrder__12004 = ((IEnumerable<FocusNode>)(object?)base.sortDescendants(descendants.Cast<FocusNode>(), currentNode));
-        RadioClient<T>? selected__12092 = this.radios.firstWhereOrNull(this._radioSelected);
-        if ((selected__12092 is null))
+        IEnumerable<FocusNode> nodesInReadOrder = ((IEnumerable<FocusNode>)(object?)base.sortDescendants(descendants.Cast<FocusNode>(), currentNode));
+        RadioClient<T>? selected = this.radios.firstWhereOrNull(this._radioSelected);
+        if ((selected is null))
         {
-            var radioFocusNodes__12264 = new DartMap<FocusNode, RadioClient<T>>();
-            foreach (RadioClient<T> radio__12345 in this.radios)
+            var radioFocusNodes = new DartMap<FocusNode, RadioClient<T>>();
+            foreach (RadioClient<T> radioLocal in this.radios)
             {
-                radioFocusNodes__12264[((RadioClient<T>)radio__12345).focusNode] = radio__12345;
+                radioFocusNodes[((RadioClient<T>)radioLocal).focusNode] = radioLocal;
             }
-            foreach (var node__12440 in nodesInReadOrder__12004)
+            foreach (var nodeLocal in nodesInReadOrder)
             {
-                selected__12092 = radioFocusNodes__12264.GetValueOrDefault(node__12440);
-                if ((selected__12092 is not null))
+                selected = radioFocusNodes.GetValueOrDefault(nodeLocal);
+                if ((selected is not null))
                 {
                     break;
                 }
             }
         }
-        if ((selected__12092 is null))
+        if ((selected is null))
         {
-            return nodesInReadOrder__12004;
+            return nodesInReadOrder;
         }
-        HashSet<FocusNode> nodeToSkip__12886 = this.radios.where(((radio) => ((!object.Equals(selected__12092, radio)) && (!object.Equals(((RadioClient<T>)radio).focusNode, currentNode))))).map<RadioClient<T>, FocusNode>(((radio) => ((RadioClient<T>)radio).focusNode)).toSet();
-        IEnumerable<FocusNode> skipsNonSelected__13115 = descendants.where(((node) => !nodeToSkip__12886.Contains(node)));
-        return ((IEnumerable<FocusNode>)(object?)base.sortDescendants(skipsNonSelected__13115.Cast<FocusNode>(), currentNode));
+        HashSet<FocusNode> nodeToSkip = this.radios.where(((radio) => ((!object.Equals(selected, radio)) && (!object.Equals(((RadioClient<T>)radio).focusNode, currentNode))))).map<RadioClient<T>, FocusNode>(((radio) => ((RadioClient<T>)radio).focusNode)).toSet();
+        IEnumerable<FocusNode> skipsNonSelected = descendants.where(((node) => !nodeToSkip.Contains(node)));
+        return ((IEnumerable<FocusNode>)(object?)base.sortDescendants(skipsNonSelected.Cast<FocusNode>(), currentNode));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

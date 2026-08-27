@@ -39,8 +39,8 @@ public class SliverPrototypeExtentList : SliverMultiBoxAdaptorWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        var element__6516 = ((_SliverPrototypeExtentListElement__sliver_prototype_extent_list?)(object?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(childManager: element__6516));
+        var element = ((_SliverPrototypeExtentListElement__sliver_prototype_extent_list?)(object?)context)!;
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(childManager: element));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

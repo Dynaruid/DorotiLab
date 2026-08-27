@@ -94,12 +94,12 @@ public static partial class SheetLibrary
         DartRuntimePrimitives.Assert(() => ((topGap is null) || (((topGap >= 0.0) && (topGap <= 0.9)))), () => (object?)"topGap must be between 0.0 and 0.9");
         DartRuntimePrimitives.Assert(() => (((pageBuilder is not null) || (builder is not null)) || (scrollableBuilder is not null)));
         DartRuntimePrimitives.Assert(() => (((((pageBuilder is null) && (builder is null)) && (scrollableBuilder is not null))) || (scrollableBuilder is null)));
-        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? effectiveBuilder__9579 = ((builder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)pageBuilder));
-        var nestedNavigatorKey__9630 = global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>.Create();
+        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? effectiveBuilder = ((builder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)pageBuilder));
+        var nestedNavigatorKey = global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>.Create();
         if (!useNestedNavigation)
         {
-            global::Doroti.Framework.Widgets.PageRoute<T> route__9733 = ((global::Doroti.Framework.Widgets.PageRoute<T>)(object?)new CupertinoSheetRoute<T>(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)effectiveBuilder__9579, scrollableBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.ScrollController, global::Doroti.Framework.Widgets.Widget>?)scrollableBuilder, settings: settings, enableDrag: enableDrag, topGap: topGap));
-            return ((Future<T?>)(object?)Navigator.of(context, rootNavigator: true).push<T>(route__9733));
+            global::Doroti.Framework.Widgets.PageRoute<T> route = ((global::Doroti.Framework.Widgets.PageRoute<T>)(object?)new CupertinoSheetRoute<T>(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>?)effectiveBuilder, scrollableBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.ScrollController, global::Doroti.Framework.Widgets.Widget>?)scrollableBuilder, settings: settings, enableDrag: enableDrag, topGap: topGap));
+            return ((Future<T?>)(object?)Navigator.of(context, rootNavigator: true).push<T>(route));
         }
         else
         {
@@ -107,8 +107,8 @@ public static partial class SheetLibrary
             {
                 return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NavigatorPopHandler<T>(onPopWithResult: ((global::System.Action<T?>)((result) =>
                 {
-                    DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>)nestedNavigatorKey__9630).currentState!.maybePop<object>());
-                })), child: new global::Doroti.Framework.Widgets.Navigator(key: nestedNavigatorKey__9630, initialRoute: "/", onGenerateInitialRoutes: ((global::System.Func<global::Doroti.Framework.Widgets.NavigatorState, string, List<dynamic>>)((navigator, initialRouteName) =>
+                    DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>)nestedNavigatorKey).currentState!.maybePop<object>());
+                })), child: new global::Doroti.Framework.Widgets.Navigator(key: nestedNavigatorKey, initialRoute: "/", onGenerateInitialRoutes: ((global::System.Func<global::Doroti.Framework.Widgets.NavigatorState, string, List<dynamic>>)((navigator, initialRouteName) =>
                 {
                     return ((List<object>)(object?)new List<global::Doroti.Framework.Widgets.Route<object?>> { new CupertinoPageRoute<object?>(builder: ((context) => {
 return new global::Doroti.Framework.Widgets.PopScope<object>(canPop: false, onPopInvokedWithResult: ((global::System.Action<bool, object>)((didPop, result) => {
@@ -124,8 +124,8 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 })))));
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
-            var route__11017 = new CupertinoSheetRoute<T>(scrollableBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.ScrollController, global::Doroti.Framework.Widgets.Widget>?)((context, controller) => nestedNavigationContent(((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((scrollableBuilder is not null) ? ((context) => scrollableBuilder(context, controller)) : effectiveBuilder__9579!))))), settings: settings, enableDrag: enableDrag, topGap: topGap);
-            return ((Future<T?>)(object?)Navigator.of(context, rootNavigator: true).push<T>(route__11017));
+            var routeLocal = new CupertinoSheetRoute<T>(scrollableBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.ScrollController, global::Doroti.Framework.Widgets.Widget>?)((context, controller) => nestedNavigationContent(((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((scrollableBuilder is not null) ? ((context) => scrollableBuilder(context, controller)) : effectiveBuilder!))))), settings: settings, enableDrag: enableDrag, topGap: topGap);
+            return ((Future<T?>)(object?)Navigator.of(context, rootNavigator: true).push<T>(routeLocal));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -155,24 +155,24 @@ public class CupertinoSheetTransition : global::Doroti.Framework.Widgets.Statefu
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)CupertinoSheetTransition._delegatedCoverSheetSecondaryTransition(secondaryAnimation, child));
         }
-        bool linear__13799 = Navigator.of(context).userGestureInProgress;
-        global::Doroti.Framework.Animation.Curve curve__13870 = (linear__13799 ? global::Doroti.Framework.Animation.Curves.linear : global::Doroti.Framework.Animation.Curves.linearToEaseOut);
-        global::Doroti.Framework.Animation.Curve reverseCurve__13943 = (linear__13799 ? global::Doroti.Framework.Animation.Curves.linear : global::Doroti.Framework.Animation.Curves.easeInToLinear);
-        var curvedAnimation__14016 = new global::Doroti.Framework.Animation.CurvedAnimation(curve: curve__13870, reverseCurve: reverseCurve__13943, parent: secondaryAnimation);
-        double deviceCornerRadius__14164 = (((MediaQuery.maybeViewPaddingOf(context)?.top ?? 0)) * SheetLibrary._kDeviceCornerRadiusSmoothingFactor);
-        bool roundedDeviceCorners__14298 = (deviceCornerRadius__14164 > SheetLibrary._kRoundedDeviceCornersThreshold);
-        global::Doroti.Framework.Animation.Animatable<global::Doroti.Framework.Painting.BorderRadiusGeometry> decorationTween__14419 = ((global::Doroti.Framework.Animation.Animatable<global::Doroti.Framework.Painting.BorderRadiusGeometry>)(object?)new global::Doroti.Framework.Animation.Tween<global::Doroti.Framework.Painting.BorderRadiusGeometry>(begin: global::Doroti.Framework.Painting.BorderRadius.CreateVertical(top: global::Doroti.Ui.Radius.circular((roundedDeviceCorners__14298 ? deviceCornerRadius__14164 : 0))), end: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(12))));
-        global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.BorderRadiusGeometry> radiusAnimation__14694 = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.BorderRadiusGeometry>)(object?)curvedAnimation__14016.drive(decorationTween__14419));
-        global::Doroti.Framework.Animation.Animation<double> opacityAnimation__14780 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)curvedAnimation__14016.drive(SheetLibrary._kOpacityTween));
-        global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> slideAnimation__14866 = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>)(object?)curvedAnimation__14016.drive(SheetLibrary._kTopDownTween));
-        global::Doroti.Framework.Animation.Animation<double> scaleAnimation__14950 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)curvedAnimation__14016.drive(SheetLibrary._kScaleTween));
-        curvedAnimation__14016.dispose();
-        var isDarkMode__15046 = (object.Equals(CupertinoTheme.brightnessOf(context), Brightness.dark));
-        var overlayColor__15126 = (isDarkMode__15046 ? new global::Doroti.Ui.Color(4291348680L) : new global::Doroti.Ui.Color(4278190080L));
-        global::Doroti.Framework.Widgets.Widget? contrastedChild__15224 = (((child is not null) && !((global::Doroti.Framework.Animation.Animation<double>)secondaryAnimation).isDismissed) ? new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(child), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: opacityAnimation__14780, child: new global::Doroti.Framework.Widgets.ColoredBox(color: overlayColor__15126, child: global::Doroti.Framework.Widgets.SizedBox.CreateExpand()))) }) : child);
-        double topGapHeight__15601 = (MediaQuery.sizeOf(context).height * SheetLibrary._kTopGapRatio);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnnotatedRegion<global::Doroti.Framework.Services.SystemUiOverlayStyle>(value: new global::Doroti.Framework.Services.SystemUiOverlayStyle(statusBarBrightness: Brightness.dark, statusBarIconBrightness: Brightness.light), child: new global::Doroti.Framework.Widgets.SizedBox(height: topGapHeight__15601, width: double.PositiveInfinity))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SlideTransition(position: slideAnimation__14866, child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: scaleAnimation__14950, filterQuality: FilterQuality.medium, alignment: global::Doroti.Framework.Painting.Alignment.topCenter, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: radiusAnimation__14694, child: child, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ClipRSuperellipse(borderRadius: (!((global::Doroti.Framework.Animation.Animation<double>)secondaryAnimation).isDismissed ? ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.BorderRadiusGeometry>)radiusAnimation__14694).value : global::Doroti.Framework.Painting.BorderRadius.zero), child: contrastedChild__15224));
+        bool linearLocal = Navigator.of(context).userGestureInProgress;
+        global::Doroti.Framework.Animation.Curve curveLocal = (linearLocal ? global::Doroti.Framework.Animation.Curves.linear : global::Doroti.Framework.Animation.Curves.linearToEaseOut);
+        global::Doroti.Framework.Animation.Curve reverseCurveLocal = (linearLocal ? global::Doroti.Framework.Animation.Curves.linear : global::Doroti.Framework.Animation.Curves.easeInToLinear);
+        var curvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(curve: curveLocal, reverseCurve: reverseCurveLocal, parent: secondaryAnimation);
+        double deviceCornerRadius = (((MediaQuery.maybeViewPaddingOf(context)?.top ?? 0)) * SheetLibrary._kDeviceCornerRadiusSmoothingFactor);
+        bool roundedDeviceCorners = (deviceCornerRadius > SheetLibrary._kRoundedDeviceCornersThreshold);
+        global::Doroti.Framework.Animation.Animatable<global::Doroti.Framework.Painting.BorderRadiusGeometry> decorationTween = ((global::Doroti.Framework.Animation.Animatable<global::Doroti.Framework.Painting.BorderRadiusGeometry>)(object?)new global::Doroti.Framework.Animation.Tween<global::Doroti.Framework.Painting.BorderRadiusGeometry>(begin: global::Doroti.Framework.Painting.BorderRadius.CreateVertical(top: global::Doroti.Ui.Radius.circular((roundedDeviceCorners ? deviceCornerRadius : 0))), end: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(12))));
+        global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.BorderRadiusGeometry> radiusAnimation = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.BorderRadiusGeometry>)(object?)curvedAnimation.drive(decorationTween));
+        global::Doroti.Framework.Animation.Animation<double> opacityAnimation = ((global::Doroti.Framework.Animation.Animation<double>)(object?)curvedAnimation.drive(SheetLibrary._kOpacityTween));
+        global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> slideAnimation = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>)(object?)curvedAnimation.drive(SheetLibrary._kTopDownTween));
+        global::Doroti.Framework.Animation.Animation<double> scaleAnimation = ((global::Doroti.Framework.Animation.Animation<double>)(object?)curvedAnimation.drive(SheetLibrary._kScaleTween));
+        curvedAnimation.dispose();
+        var isDarkMode = (object.Equals(CupertinoTheme.brightnessOf(context), Brightness.dark));
+        var overlayColor = (isDarkMode ? new global::Doroti.Ui.Color(4291348680L) : new global::Doroti.Ui.Color(4278190080L));
+        global::Doroti.Framework.Widgets.Widget? contrastedChild = (((child is not null) && !((global::Doroti.Framework.Animation.Animation<double>)secondaryAnimation).isDismissed) ? new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(child), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: opacityAnimation, child: new global::Doroti.Framework.Widgets.ColoredBox(color: overlayColor, child: global::Doroti.Framework.Widgets.SizedBox.CreateExpand()))) }) : child);
+        double topGapHeight = (MediaQuery.sizeOf(context).height * SheetLibrary._kTopGapRatio);
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.AnnotatedRegion<global::Doroti.Framework.Services.SystemUiOverlayStyle>(value: new global::Doroti.Framework.Services.SystemUiOverlayStyle(statusBarBrightness: Brightness.dark, statusBarIconBrightness: Brightness.light), child: new global::Doroti.Framework.Widgets.SizedBox(height: topGapHeight, width: double.PositiveInfinity))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SlideTransition(position: slideAnimation, child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: scaleAnimation, filterQuality: FilterQuality.medium, alignment: global::Doroti.Framework.Painting.Alignment.topCenter, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: radiusAnimation, child: child, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
+return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ClipRSuperellipse(borderRadius: (!((global::Doroti.Framework.Animation.Animation<double>)secondaryAnimation).isDismissed ? ((global::Doroti.Framework.Animation.Animation<global::Doroti.Framework.Painting.BorderRadiusGeometry>)radiusAnimation).value : global::Doroti.Framework.Painting.BorderRadius.zero), child: contrastedChild));
 throw new InvalidOperationException("Dart closure completed without a value.");
 })))))) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -180,13 +180,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     internal static global::Doroti.Framework.Widgets.Widget _delegatedCoverSheetSecondaryTransition(global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget? child)
     {
-        global::Doroti.Framework.Animation.Curve curve__16871 = ((global::Doroti.Framework.Animation.Curve)(object?)global::Doroti.Framework.Animation.Curves.linearToEaseOut);
-        global::Doroti.Framework.Animation.Curve reverseCurve__16919 = ((global::Doroti.Framework.Animation.Curve)(object?)global::Doroti.Framework.Animation.Curves.easeInToLinear);
-        var curvedAnimation__16967 = new global::Doroti.Framework.Animation.CurvedAnimation(curve: curve__16871, reverseCurve: reverseCurve__16919, parent: secondaryAnimation);
-        global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> slideAnimation__17126 = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>)(object?)curvedAnimation__16967.drive(SheetLibrary._kMidUpTween));
-        global::Doroti.Framework.Animation.Animation<double> scaleAnimation__17208 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)curvedAnimation__16967.drive(SheetLibrary._kScaleTween));
-        curvedAnimation__16967.dispose();
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SlideTransition(position: slideAnimation__17126, transformHitTests: false, child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: scaleAnimation__17208, filterQuality: FilterQuality.medium, alignment: global::Doroti.Framework.Painting.Alignment.topCenter, child: new global::Doroti.Framework.Widgets.ClipRSuperellipse(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateVertical(top: global::Doroti.Ui.Radius.circular(12)), child: child))));
+        global::Doroti.Framework.Animation.Curve curveLocal = ((global::Doroti.Framework.Animation.Curve)(object?)global::Doroti.Framework.Animation.Curves.linearToEaseOut);
+        global::Doroti.Framework.Animation.Curve reverseCurveLocal = ((global::Doroti.Framework.Animation.Curve)(object?)global::Doroti.Framework.Animation.Curves.easeInToLinear);
+        var curvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(curve: curveLocal, reverseCurve: reverseCurveLocal, parent: secondaryAnimation);
+        global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> slideAnimation = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>)(object?)curvedAnimation.drive(SheetLibrary._kMidUpTween));
+        global::Doroti.Framework.Animation.Animation<double> scaleAnimation = ((global::Doroti.Framework.Animation.Animation<double>)(object?)curvedAnimation.drive(SheetLibrary._kScaleTween));
+        curvedAnimation.dispose();
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SlideTransition(position: slideAnimation, transformHitTests: false, child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: scaleAnimation, filterQuality: FilterQuality.medium, alignment: global::Doroti.Framework.Painting.Alignment.topCenter, child: new global::Doroti.Framework.Widgets.ClipRSuperellipse(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateVertical(top: global::Doroti.Ui.Radius.circular(12)), child: child))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -242,9 +242,9 @@ internal class _CupertinoSheetTransitionState__sheet : global::Doroti.Framework.
     {
         _primaryPositionCurve = new global::Doroti.Framework.Animation.CurvedAnimation(curve: global::Doroti.Framework.Animation.Curves.fastEaseInToSlowEaseOut, reverseCurve: global::Doroti.Framework.Animation.Curves.fastEaseInToSlowEaseOut.flipped, parent: ((CupertinoSheetTransition)(object)this.widget).primaryRouteAnimation);
         _secondaryPositionCurve = new global::Doroti.Framework.Animation.CurvedAnimation(curve: global::Doroti.Framework.Animation.Curves.linearToEaseOut, reverseCurve: global::Doroti.Framework.Animation.Curves.easeInToLinear, parent: ((CupertinoSheetTransition)(object)this.widget).secondaryRouteAnimation);
-        double stretchDistance__19870 = (SheetLibrary._kTopGapRatio - SheetLibrary._kStretchedTopGapRatio);
-        double stretchedTopGap__19945 = (((CupertinoSheetTransition)(object)this.widget).topGap - stretchDistance__19870);
-        _stretchDragAnimation = this._stretchDragController.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: ((CupertinoSheetTransition)(object)this.widget).topGap, end: stretchedTopGap__19945));
+        double stretchDistance = (SheetLibrary._kTopGapRatio - SheetLibrary._kStretchedTopGapRatio);
+        double stretchedTopGap = (((CupertinoSheetTransition)(object)this.widget).topGap - stretchDistance);
+        _stretchDragAnimation = this._stretchDragController.drive(new global::Doroti.Framework.Animation.Tween<double>(begin: ((CupertinoSheetTransition)(object)this.widget).topGap, end: stretchedTopGap));
         _secondaryPositionAnimation = this._secondaryPositionCurve!.drive(SheetLibrary._kMidUpTween);
         _secondaryScaleAnimation = this._secondaryPositionCurve!.drive(SheetLibrary._kScaleTween);
     }
@@ -259,11 +259,11 @@ internal class _CupertinoSheetTransitionState__sheet : global::Doroti.Framework.
 
     internal virtual global::Doroti.Framework.Widgets.Widget _coverSheetPrimaryTransition(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, bool linearTransition, global::Doroti.Framework.Widgets.Widget? child)
     {
-        global::Doroti.Framework.Animation.Animatable<global::Doroti.Ui.Offset> offsetTween__20645 = ((global::Doroti.Framework.Animation.Animatable<global::Doroti.Ui.Offset>)(object?)(CupertinoSheetRoute<object>.hasParentSheet(context) ? SheetLibrary._kBottomUpTweenWhenCoveringOtherSheet : SheetLibrary._kBottomUpTween));
-        var curvedAnimation__20789 = new global::Doroti.Framework.Animation.CurvedAnimation(parent: animation, curve: (linearTransition ? global::Doroti.Framework.Animation.Curves.linear : global::Doroti.Framework.Animation.Curves.fastEaseInToSlowEaseOut), reverseCurve: (linearTransition ? global::Doroti.Framework.Animation.Curves.linear : global::Doroti.Framework.Animation.Curves.fastEaseInToSlowEaseOut.flipped));
-        global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> positionAnimation__21060 = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>)(object?)curvedAnimation__20789.drive(offsetTween__20645));
-        curvedAnimation__20789.dispose();
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SlideTransition(position: positionAnimation__21060, child: child));
+        global::Doroti.Framework.Animation.Animatable<global::Doroti.Ui.Offset> offsetTween = ((global::Doroti.Framework.Animation.Animatable<global::Doroti.Ui.Offset>)(object?)(CupertinoSheetRoute<object>.hasParentSheet(context) ? SheetLibrary._kBottomUpTweenWhenCoveringOtherSheet : SheetLibrary._kBottomUpTween));
+        var curvedAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: animation, curve: (linearTransition ? global::Doroti.Framework.Animation.Curves.linear : global::Doroti.Framework.Animation.Curves.fastEaseInToSlowEaseOut), reverseCurve: (linearTransition ? global::Doroti.Framework.Animation.Curves.linear : global::Doroti.Framework.Animation.Curves.fastEaseInToSlowEaseOut.flipped));
+        global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> positionAnimation = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>)(object?)curvedAnimation.drive(offsetTween));
+        curvedAnimation.dispose();
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SlideTransition(position: positionAnimation, child: child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -309,31 +309,31 @@ internal class _CupertinoSheetTransitionState__sheet : global::Doroti.Framework.
 
     public virtual void _updateTicker()
     {
-        TickerModeData values__15157 = this._tickerModeNotifier!.value;
+        TickerModeData values = this._tickerModeNotifier!.value;
         if ((this._ticker is not null))
         {
-            this._ticker!.muted = !((TickerModeData)values__15157).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values__15157).forceFrames;
+            this._ticker!.muted = !((TickerModeData)values).enabled;
+            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier__15400.addListener(() => this._updateTicker());
-        this._tickerModeNotifier = newNotifier__15400;
+        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -397,11 +397,11 @@ public class CupertinoSheetRoute<T> : global::Doroti.Framework.Widgets.PageRoute
         {
             return this._effectiveBuilder(context, controller);
         }
-        var dragHandleTopPadding__27600 = 5.0;
-        var dragHandleHeight__27638 = 5.0;
-        var dragHandleWidth__27672 = 36.0;
-        var dragHandlePadding__27706 = 15.0;
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(fit: global::Doroti.Framework.Rendering.StackFit.expand, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MediaQuery(data: MediaQuery.of(context).copyWith(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: dragHandlePadding__27706)), child: this._effectiveBuilder(context, controller))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.Alignment.topCenter, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsGeometry.CreateOnly(top: dragHandleTopPadding__27600), child: new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadiusGeometry.CreateAll(global::Doroti.Ui.Radius.circular((dragHandleWidth__27672 / 2L)))), color: CupertinoColors.tertiaryLabel), child: new global::Doroti.Framework.Widgets.SizedBox(height: dragHandleHeight__27638, width: dragHandleWidth__27672))))) }));
+        var dragHandleTopPadding = 5.0;
+        var dragHandleHeight = 5.0;
+        var dragHandleWidth = 36.0;
+        var dragHandlePadding = 15.0;
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(fit: global::Doroti.Framework.Rendering.StackFit.expand, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MediaQuery(data: MediaQuery.of(context).copyWith(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: dragHandlePadding)), child: this._effectiveBuilder(context, controller))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.Alignment.topCenter, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsGeometry.CreateOnly(top: dragHandleTopPadding), child: new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadiusGeometry.CreateAll(global::Doroti.Ui.Radius.circular((dragHandleWidth / 2L)))), color: CupertinoColors.tertiaryLabel), child: new global::Doroti.Framework.Widgets.SizedBox(height: dragHandleHeight, width: dragHandleWidth))))) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -503,8 +503,8 @@ public interface _CupertinoSheetRouteTransitionMixin__sheet<T>
     }
     public static global::Doroti.Framework.Widgets.Widget buildPageTransitions<T>(global::Doroti.Framework.Widgets.ModalRoute<T> route, global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget child, bool enableDrag, double topGap)
     {
-        bool linearTransition__32494 = ((global::Doroti.Framework.Widgets.ModalRoute<T>)route).popGestureInProgress;
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoSheetTransition(primaryRouteAnimation: animation, secondaryRouteAnimation: secondaryAnimation, linearTransition: linearTransition__32494, topGap: topGap, child: new _CupertinoDragGestureDetector__sheet<T>(enabledCallback: ((global::System.Func<bool>)(() => enableDrag)), onStartPopGesture: ((global::System.Func<_CupertinoDragGestureController__sheet<T>>)(() => _CupertinoSheetRouteTransitionMixin__sheet<T>._startPopGesture<T>(route, topGap))), child: child)));
+        bool linearTransitionLocal = ((global::Doroti.Framework.Widgets.ModalRoute<T>)route).popGestureInProgress;
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoSheetTransition(primaryRouteAnimation: animation, secondaryRouteAnimation: secondaryAnimation, linearTransition: linearTransitionLocal, topGap: topGap, child: new _CupertinoDragGestureDetector__sheet<T>(enabledCallback: ((global::System.Func<bool>)(() => enableDrag)), onStartPopGesture: ((global::System.Func<_CupertinoDragGestureController__sheet<T>>)(() => _CupertinoSheetRouteTransitionMixin__sheet<T>._startPopGesture<T>(route, topGap))), child: child)));
     }
     public bool canTransitionFrom(dynamic previousRoute);
     public bool canTransitionTo(dynamic nextRoute);
@@ -590,8 +590,8 @@ internal class _CupertinoDragGestureDetectorState__sheet<T> : global::Doroti.Fra
         {
             return;
         }
-        double delta__35982 = ((this.sheetHeight > 0L) ? (DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).primaryDelta) / this.sheetHeight) : 0.0);
-        this._dragGestureController!.dragUpdate(delta__35982, this._stretchDragController!.controller);
+        double delta = ((this.sheetHeight > 0L) ? (DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).primaryDelta) / this.sheetHeight) : 0.0);
+        this._dragGestureController!.dragUpdate(delta, this._stretchDragController!.controller);
     }
 
     internal virtual void _handleDragEnd(global::Doroti.Framework.Gestures.DragEndDetails details)
@@ -603,8 +603,8 @@ internal class _CupertinoDragGestureDetectorState__sheet<T> : global::Doroti.Fra
             _dragGestureController = null;
             return;
         }
-        double velocity__36425 = ((this.sheetHeight > 0L) ? (((global::Doroti.Framework.Gestures.DragEndDetails)details).velocity.pixelsPerSecond.dy / this.sheetHeight) : 0.0);
-        this._dragGestureController!.dragEnd(velocity__36425, this._stretchDragController!.controller);
+        double velocityLocal = ((this.sheetHeight > 0L) ? (((global::Doroti.Framework.Gestures.DragEndDetails)details).velocity.pixelsPerSecond.dy / this.sheetHeight) : 0.0);
+        this._dragGestureController!.dragEnd(velocityLocal, this._stretchDragController!.controller);
         _dragGestureController = null;
     }
 
@@ -658,8 +658,8 @@ public class _CupertinoDragGestureController__sheet<T>
     {
         if ((((upController is not null) && (((global::Doroti.Framework.Animation.AnimationController)this.popDragController).value == 1.0)) && (((((global::Doroti.Framework.Animation.AnimationController)upController).value > 0L) || (delta < 0L)))))
         {
-            double stretchDistance__38359 = (SheetLibrary._kTopGapRatio - SheetLibrary._kStretchedTopGapRatio);
-            upController.value -= (delta / stretchDistance__38359);
+            double stretchDistance = (SheetLibrary._kTopGapRatio - SheetLibrary._kStretchedTopGapRatio);
+            upController.value -= (delta / stretchDistance);
         }
         else
         {
@@ -681,37 +681,37 @@ public class _CupertinoDragGestureController__sheet<T>
             this.navigator.didStopUserGesture();
             return;
         }
-        global::Doroti.Framework.Animation.Curve animationCurve__39383 = ((global::Doroti.Framework.Animation.Curve)(object?)global::Doroti.Framework.Animation.Curves.easeOut);
-        bool isCurrent__39431 = this.getIsCurrent();
-        bool animateForward__39474 = default!;
-        if (!isCurrent__39431)
+        global::Doroti.Framework.Animation.Curve animationCurve = ((global::Doroti.Framework.Animation.Curve)(object?)global::Doroti.Framework.Animation.Curves.easeOut);
+        bool isCurrent = this.getIsCurrent();
+        bool animateForward = default!;
+        if (!isCurrent)
         {
-            animateForward__39474 = this.getIsActive();
+            animateForward = this.getIsActive();
         }
         else
         {
             if ((velocity.abs() >= SheetLibrary._kMinFlingVelocity))
             {
-                animateForward__39474 = (velocity <= 0L);
+                animateForward = (velocity <= 0L);
             }
             else
             {
-                animateForward__39474 = (((global::Doroti.Framework.Animation.AnimationController)this.popDragController).value > 0.52);
+                animateForward = (((global::Doroti.Framework.Animation.AnimationController)this.popDragController).value > 0.52);
             }
         }
-        if (animateForward__39474)
+        if (animateForward)
         {
-            this.popDragController.animateTo(1.0, duration: SheetLibrary._kDroppedSheetDragAnimationDuration, curve: animationCurve__39383);
+            this.popDragController.animateTo(1.0, duration: SheetLibrary._kDroppedSheetDragAnimationDuration, curve: animationCurve);
         }
         else
         {
-            if (isCurrent__39431)
+            if (isCurrent)
             {
                 this.navigator.pop<object>();
             }
             if (((global::Doroti.Framework.Animation.AnimationController)this.popDragController).isAnimating)
             {
-                this.popDragController.animateBack(0.0, duration: SheetLibrary._kDroppedSheetDragAnimationDuration, curve: animationCurve__39383);
+                this.popDragController.animateBack(0.0, duration: SheetLibrary._kDroppedSheetDragAnimationDuration, curve: animationCurve);
             }
         }
         if (((global::Doroti.Framework.Animation.AnimationController)this.popDragController).isAnimating)
@@ -789,18 +789,18 @@ public class _CupertinoSheetScrollPosition__sheet : global::Doroti.Framework.Wid
 
     public override void beginActivity(global::Doroti.Framework.Widgets.ScrollActivity? newActivity)
     {
-        foreach (global::Doroti.Framework.Animation.AnimationController ballisticController__44546 in this._ballisticControllers)
+        foreach (global::Doroti.Framework.Animation.AnimationController ballisticController in this._ballisticControllers)
         {
-            ballisticController__44546.stop();
+            ballisticController.stop();
         }
         base.beginActivity(newActivity);
     }
 
     public override void dispose()
     {
-        foreach (global::Doroti.Framework.Animation.AnimationController ballisticController__44743 in this._ballisticControllers)
+        foreach (global::Doroti.Framework.Animation.AnimationController ballisticController in this._ballisticControllers)
         {
-            ballisticController__44743.dispose();
+            ballisticController.dispose();
         }
         this._ballisticControllers.Clear();
         base.dispose();

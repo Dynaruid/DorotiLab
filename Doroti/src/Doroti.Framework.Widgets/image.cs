@@ -27,28 +27,28 @@ public static partial class ImageLibrary
 {
     public static Future precacheImage(dynamic provider, BuildContext context, Size? size = null, global::System.Action<object, global::System.Diagnostics.StackTrace?>? onError = null)
     {
-        global::Doroti.Framework.Painting.ImageConfiguration config__4859 = ImageLibrary.createLocalImageConfiguration(context, size: size);
-        var completer__4928 = new Completer<object?>();
-        global::Doroti.Framework.Painting.ImageStream stream__4979 = ((global::Doroti.Framework.Painting.ImageStream)(object?)((global::Doroti.Framework.Painting.ImageStream)((dynamic)provider).resolve(config__4859)));
-        global::Doroti.Framework.Painting.ImageStreamListener? listener__5037 = default!;
-        listener__5037 = new global::Doroti.Framework.Painting.ImageStreamListener(((global::System.Action<global::Doroti.Framework.Painting.ImageInfo?, bool>)((image, sync) =>
+        global::Doroti.Framework.Painting.ImageConfiguration config = ImageLibrary.createLocalImageConfiguration(context, size: size);
+        var completer = new Completer<object?>();
+        global::Doroti.Framework.Painting.ImageStream stream = ((global::Doroti.Framework.Painting.ImageStream)(object?)((global::Doroti.Framework.Painting.ImageStream)((dynamic)provider).resolve(config)));
+        global::Doroti.Framework.Painting.ImageStreamListener? listener = default!;
+        listener = new global::Doroti.Framework.Painting.ImageStreamListener(((global::System.Action<global::Doroti.Framework.Painting.ImageInfo?, bool>)((image, sync) =>
         {
-            if (!completer__4928.isCompleted)
+            if (!completer.isCompleted)
             {
-                completer__4928.complete();
+                completer.complete();
             }
             global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((timeStamp) =>
             {
                 image?.dispose();
-                stream__4979.removeListener(listener__5037!);
+                stream.removeListener(listener!);
             })), debugLabel: "precacheImage.removeListener");
         })), onError: ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stackTrace) =>
         {
-            if (!completer__4928.isCompleted)
+            if (!completer.isCompleted)
             {
-                completer__4928.complete();
+                completer.complete();
             }
-            stream__4979.removeListener(listener__5037!);
+            stream.removeListener(listener!);
             if ((onError is not null))
             {
                 onError(exception, stackTrace);
@@ -58,8 +58,8 @@ public static partial class ImageLibrary
                 FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(context: new global::Doroti.Framework.Foundation.ErrorDescription("image failed to precache"), library: "image resource service", exception: exception, stack: stackTrace, silent: true));
             }
         })));
-        stream__4979.addListener(listener__5037);
-        return completer__4928.future;
+        stream.addListener(listener);
+        return completer.future;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -299,9 +299,9 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         base.didUpdateWidget(oldWidget);
         if ((this._isListeningToStream && (((((Image)this.widget).loadingBuilder is null)) != ((((Image)oldWidget).loadingBuilder is null)))))
         {
-            global::Doroti.Framework.Painting.ImageStreamListener oldListener__47573 = ((global::Doroti.Framework.Painting.ImageStreamListener)(object?)_getListener());
+            global::Doroti.Framework.Painting.ImageStreamListener oldListener = ((global::Doroti.Framework.Painting.ImageStreamListener)(object?)_getListener());
             this._imageStream!.addListener(_getListener(recreateListener: true));
-            this._imageStream!.removeListener(oldListener__47573);
+            this._imageStream!.removeListener(oldListener);
         }
         if ((!object.Equals(((Image)this.widget).image, ((Image)oldWidget).image)))
         {
@@ -332,9 +332,9 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
 
     internal virtual void _resolveImage()
     {
-        var provider__48324 = new ScrollAwareImageProvider<object>(context: this._scrollAwareContext, imageProvider: ((Image)this.widget).image);
-        global::Doroti.Framework.Painting.ImageStream newStream__48469 = ((global::Doroti.Framework.Painting.ImageStream)(object?)provider__48324.resolve(ImageLibrary.createLocalImageConfiguration(this.context, size: (((((Image)this.widget).width is not null) && (((Image)this.widget).height is not null)) ? new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(((Image)this.widget).width), DartRuntimePrimitives.RequireValue(((Image)this.widget).height)) : null))));
-        _updateSourceStream(newStream__48469);
+        var provider = new ScrollAwareImageProvider<object>(context: this._scrollAwareContext, imageProvider: ((Image)this.widget).image);
+        global::Doroti.Framework.Painting.ImageStream newStream = ((global::Doroti.Framework.Painting.ImageStream)(object?)provider.resolve(ImageLibrary.createLocalImageConfiguration(this.context, size: (((((Image)this.widget).width is not null) && (((Image)this.widget).height is not null)) ? new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(((Image)this.widget).width), DartRuntimePrimitives.RequireValue(((Image)this.widget).height)) : null))));
+        _updateSourceStream(newStream);
     }
 
     internal virtual global::Doroti.Framework.Painting.ImageStreamListener _getListener(bool recreateListener = false)
@@ -395,10 +395,10 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
 
     internal virtual void _replaceImage(global::Doroti.Framework.Painting.ImageInfo? info)
     {
-        global::Doroti.Framework.Painting.ImageInfo? oldImageInfo__50641 = this._imageInfo;
-        if ((oldImageInfo__50641 is not null))
+        global::Doroti.Framework.Painting.ImageInfo? oldImageInfo = this._imageInfo;
+        if ((oldImageInfo is not null))
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => { oldImageInfo__50641.dispose(); })), debugLabel: "Image.disposeOldInfo");
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) => { oldImageInfo.dispose(); })), debugLabel: "Image.disposeOldInfo");
         }
         _imageInfo = info;
     }
@@ -484,28 +484,28 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
                 return ((Widget)(object?)_debugBuildErrorWidget(context, this._lastException!));
             }
         }
-        Widget result__54531 = default!;
-        if (this._imageInfo is WebImageInfoIo webImage__54582)
+        Widget result = default!;
+        if (this._imageInfo is WebImageInfoIo webImage)
         {
-            result__54531 = DartRuntimePrimitives.ConvertValue<Widget>(new RawWebImageIo(image: webImage__54582, debugImageLabel: this._imageInfo?.debugLabel, width: ((Image)this.widget).width, height: ((Image)this.widget).height, fit: ((Image)this.widget).fit, alignment: ((Image)this.widget).alignment, matchTextDirection: ((Image)this.widget).matchTextDirection));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new RawWebImageIo(image: webImage, debugImageLabel: this._imageInfo?.debugLabel, width: ((Image)this.widget).width, height: ((Image)this.widget).height, fit: ((Image)this.widget).fit, alignment: ((Image)this.widget).alignment, matchTextDirection: ((Image)this.widget).matchTextDirection));
         }
         else
         {
-            result__54531 = DartRuntimePrimitives.ConvertValue<Widget>(new RawImage(image: this._imageInfo?.image, debugImageLabel: this._imageInfo?.debugLabel, width: ((Image)this.widget).width, height: ((Image)this.widget).height, scale: (this._imageInfo?.scale ?? 1.0), color: ((Image)this.widget).color, opacity: ((Image)this.widget).opacity, colorBlendMode: ((Image)this.widget).colorBlendMode, fit: ((Image)this.widget).fit, alignment: ((Image)this.widget).alignment, repeat: ((Image)this.widget).repeat, centerSlice: ((Image)this.widget).centerSlice, matchTextDirection: ((Image)this.widget).matchTextDirection, invertColors: this._invertColors, isAntiAlias: ((Image)this.widget).isAntiAlias, filterQuality: ((Image)this.widget).filterQuality));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new RawImage(image: this._imageInfo?.image, debugImageLabel: this._imageInfo?.debugLabel, width: ((Image)this.widget).width, height: ((Image)this.widget).height, scale: (this._imageInfo?.scale ?? 1.0), color: ((Image)this.widget).color, opacity: ((Image)this.widget).opacity, colorBlendMode: ((Image)this.widget).colorBlendMode, fit: ((Image)this.widget).fit, alignment: ((Image)this.widget).alignment, repeat: ((Image)this.widget).repeat, centerSlice: ((Image)this.widget).centerSlice, matchTextDirection: ((Image)this.widget).matchTextDirection, invertColors: this._invertColors, isAntiAlias: ((Image)this.widget).isAntiAlias, filterQuality: ((Image)this.widget).filterQuality));
         }
         if (!((Image)this.widget).excludeFromSemantics)
         {
-            result__54531 = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(container: (((Image)this.widget).semanticLabel is not null), image: true, label: (((Image)this.widget).semanticLabel ?? ""), child: result__54531));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(container: (((Image)this.widget).semanticLabel is not null), image: true, label: (((Image)this.widget).semanticLabel ?? ""), child: result));
         }
         if ((((Image)this.widget).frameBuilder is not null))
         {
-            result__54531 = ((Image)this.widget).frameBuilder!(context, result__54531, this._frameNumber, this._wasSynchronouslyLoaded);
+            result = ((Image)this.widget).frameBuilder!(context, result, this._frameNumber, this._wasSynchronouslyLoaded);
         }
         if ((((Image)this.widget).loadingBuilder is not null))
         {
-            result__54531 = ((Image)this.widget).loadingBuilder!(context, result__54531, this._loadingProgress);
+            result = ((Image)this.widget).loadingBuilder!(context, result, this._loadingProgress);
         }
-        return result__54531;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

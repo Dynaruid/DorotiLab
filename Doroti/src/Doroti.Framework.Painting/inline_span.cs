@@ -73,33 +73,33 @@ public static partial class Inline_spanLibrary
 {
     public static List<InlineSpanSemanticsInformation> combineSemanticsInfo(List<InlineSpanSemanticsInformation> infoList)
     {
-        var combined__4340 = new List<InlineSpanSemanticsInformation>();
-        var workingText__4393 = "";
-        var workingLabel__4417 = "";
-        var workingAttributes__4442 = new List<global::Doroti.Ui.StringAttribute>();
-        foreach (var info__4499 in infoList)
+        var combined = new List<InlineSpanSemanticsInformation>();
+        var workingText = "";
+        var workingLabel = "";
+        var workingAttributes = new List<global::Doroti.Ui.StringAttribute>();
+        foreach (var info in infoList)
         {
-            if (((InlineSpanSemanticsInformation)info__4499).requiresOwnNode)
+            if (((InlineSpanSemanticsInformation)info).requiresOwnNode)
             {
-                combined__4340.Add(new InlineSpanSemanticsInformation(workingText__4393, semanticsLabel: workingLabel__4417, stringAttributes: workingAttributes__4442));
-                workingText__4393 = "";
-                workingLabel__4417 = "";
-                workingAttributes__4442 = new List<global::Doroti.Ui.StringAttribute>();
-                combined__4340.Add(info__4499);
+                combined.Add(new InlineSpanSemanticsInformation(workingText, semanticsLabel: workingLabel, stringAttributes: workingAttributes));
+                workingText = "";
+                workingLabel = "";
+                workingAttributes = new List<global::Doroti.Ui.StringAttribute>();
+                combined.Add(info);
             }
             else
             {
-                workingText__4393 += ((InlineSpanSemanticsInformation)info__4499).text;
-                string effectiveLabel__4930 = (((InlineSpanSemanticsInformation)info__4499).semanticsLabel ?? ((InlineSpanSemanticsInformation)info__4499).text);
-                foreach (global::Doroti.Ui.StringAttribute infoAttribute__5017 in ((InlineSpanSemanticsInformation)info__4499).stringAttributes)
+                workingText += ((InlineSpanSemanticsInformation)info).text;
+                string effectiveLabel = (((InlineSpanSemanticsInformation)info).semanticsLabel ?? ((InlineSpanSemanticsInformation)info).text);
+                foreach (global::Doroti.Ui.StringAttribute infoAttribute in ((InlineSpanSemanticsInformation)info).stringAttributes)
                 {
-                    workingAttributes__4442.Add(infoAttribute__5017.copy(range: new global::Doroti.Ui.TextRange(start: (infoAttribute__5017.range.start + workingLabel__4417.Length), end: (infoAttribute__5017.range.end + workingLabel__4417.Length))));
+                    workingAttributes.Add(infoAttribute.copy(range: new global::Doroti.Ui.TextRange(start: (infoAttribute.range.start + workingLabel.Length), end: (infoAttribute.range.end + workingLabel.Length))));
                 }
-                workingLabel__4417 += effectiveLabel__4930;
+                workingLabel += effectiveLabel;
             }
         }
-        combined__4340.Add(new InlineSpanSemanticsInformation(workingText__4393, semanticsLabel: workingLabel__4417, stringAttributes: workingAttributes__4442));
-        return combined__4340;
+        combined.Add(new InlineSpanSemanticsInformation(workingText, semanticsLabel: workingLabel, stringAttributes: workingAttributes));
+        return combined;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -119,32 +119,32 @@ public abstract class InlineSpan : DiagnosticableTree
     public virtual InlineSpan? getSpanForPosition(TextPosition position)
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
-        var offset__9680 = new Accumulator();
-        InlineSpan? result__9720 = default!;
+        var offset = new Accumulator();
+        InlineSpan? result = default!;
         visitChildren(((Func<InlineSpan, bool>)((span) =>
         {
-            result__9720 = span.getSpanForPositionVisitor(position, offset__9680);
-            return (result__9720 is null);
+            result = span.getSpanForPositionVisitor(position, offset);
+            return (result is null);
             return default;
         })));
-        return result__9720;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public abstract InlineSpan? getSpanForPositionVisitor(TextPosition position, Accumulator offset);
     public virtual string toPlainText(bool includeSemanticsLabels = true, bool includePlaceholders = true)
     {
-        var buffer__10957 = new StringBuffer();
-        computeToPlainText(buffer__10957, includeSemanticsLabels: includeSemanticsLabels, includePlaceholders: includePlaceholders);
-        return buffer__10957.ToString();
+        var buffer = new StringBuffer();
+        computeToPlainText(buffer, includeSemanticsLabels: includeSemanticsLabels, includePlaceholders: includePlaceholders);
+        return buffer.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual List<InlineSpanSemanticsInformation> getSemanticsInformation()
     {
-        var collector__11467 = new List<InlineSpanSemanticsInformation>();
-        computeSemanticsInformation(collector__11467);
-        return collector__11467;
+        var collector = new List<InlineSpanSemanticsInformation>();
+        computeSemanticsInformation(collector);
+        return collector;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -156,15 +156,15 @@ public abstract class InlineSpan : DiagnosticableTree
         {
             return null;
         }
-        var offset__13233 = new Accumulator();
-        long? result__13266 = default!;
+        var offset = new Accumulator();
+        long? result = default!;
         visitChildren(((Func<InlineSpan, bool>)((span) =>
         {
-            result__13266 = span.codeUnitAtVisitor(index, offset__13233);
-            return (result__13266 is null);
+            result = span.codeUnitAtVisitor(index, offset);
+            return (result is null);
             return default;
         })));
-        return result__13266;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -114,28 +114,28 @@ public static partial class BindingLibrary
         {
             return "No render tree root was added to the binding.";
         }
-        var explanation__30247 = "For performance reasons, the framework only generates semantics when asked to do so by the platform.\n" + "Usually, platforms only ask for semantics when assistive technologies (like screen readers) are running.\n" + "To generate semantics, try turning on an assistive technology (like VoiceOver or TalkBack) on your device.";
-        var trees__30611 = new List<string>();
-        var printedExplanation__30637 = false;
-        foreach (RenderView renderView__30689 in RendererBinding.instance.renderViews)
+        var explanation = "For performance reasons, the framework only generates semantics when asked to do so by the platform.\n" + "Usually, platforms only ask for semantics when assistive technologies (like screen readers) are running.\n" + "To generate semantics, try turning on an assistive technology (like VoiceOver or TalkBack) on your device.";
+        var trees = new List<string>();
+        var printedExplanation = false;
+        foreach (RenderView renderView in RendererBinding.instance.renderViews)
         {
-            string? tree__30761 = renderView__30689.debugSemantics?.toStringDeep(childOrder: childOrder);
-            if ((tree__30761 is not null))
+            string? tree = renderView.debugSemantics?.toStringDeep(childOrder: childOrder);
+            if ((tree is not null))
             {
-                trees__30611.Add(tree__30761);
+                trees.Add(tree);
             }
             else
             {
-                var message__30903 = $"Semantics not generated for {renderView__30689}.";
-                if (!printedExplanation__30637)
+                var message = $"Semantics not generated for {renderView}.";
+                if (!printedExplanation)
                 {
-                    printedExplanation__30637 = true;
-                    message__30903 = $"{message__30903}\n{explanation__30247}";
+                    printedExplanation = true;
+                    message = $"{message}\n{explanation}";
                 }
-                trees__30611.Add(message__30903);
+                trees.Add(message);
             }
         }
-        return string.Join("\n\n", trees__30611);
+        return string.Join("\n\n", trees);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -344,17 +344,17 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
 
     public virtual void _handleSemanticsActionEvent(SemanticsActionEvent action)
     {
-        object? arguments__6642 = action.arguments;
-        global::Doroti.Ui.SemanticsActionEvent decodedAction__6706 = ((arguments__6642 is ByteData) ? action.copyWith(arguments: new StandardMessageCodec().decodeMessage(((ByteData)arguments__6642))) : action);
-        List<Action<global::Doroti.Ui.SemanticsActionEvent>> localListeners__7088 = this._semanticsActionListeners.ToList();
-        foreach (var listener__7180 in localListeners__7088)
+        object? argumentsLocal = action.arguments;
+        global::Doroti.Ui.SemanticsActionEvent decodedAction = ((argumentsLocal is ByteData) ? action.copyWith(arguments: new StandardMessageCodec().decodeMessage(((ByteData)argumentsLocal))) : action);
+        List<Action<global::Doroti.Ui.SemanticsActionEvent>> localListeners = this._semanticsActionListeners.ToList();
+        foreach (var listener in localListeners)
         {
-            if (this._semanticsActionListeners.contains(listener__7180))
+            if (this._semanticsActionListeners.contains(listener))
             {
-                listener__7180(decodedAction__6706);
+                listener(decodedAction);
             }
         }
-        performSemanticsAction(decodedAction__6706);
+        performSemanticsAction(decodedAction);
     }
 
     public virtual void _handleFrameworkSemanticsEnabledChanged()
@@ -378,16 +378,16 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
     {
         get
         {
-            bool value__9471 = this._accessibilityFeatures.disableAnimations;
+            bool value = this._accessibilityFeatures.disableAnimations;
             DartRuntimePrimitives.Assert(() =>
                 {
                     if ((global::Doroti.Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations is not null))
                     {
-                        value__9471 = DartRuntimePrimitives.RequireValue(global::Doroti.Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations);
+                        value = DartRuntimePrimitives.RequireValue(global::Doroti.Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations);
                     }
                     return true;
                 });
-            return value__9471;
+            return value;
             return default!;
         }
     }
@@ -424,9 +424,9 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
     public async virtual Future handleSystemMessage(object systemMessage)
     {
         await base.handleSystemMessage(systemMessage);
-        var message__7319 = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)systemMessage);
-        var type__7378 = ((string?)(object?)message__7319.GetValueOrDefault("type"))!;
-        switch (type__7378)
+        var message = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)systemMessage);
+        var @type = ((string?)(object?)message.GetValueOrDefault("type"))!;
+        switch (@type)
         {
             case "fontsChange":
                 {
@@ -470,9 +470,9 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
                 })));
                 registerBoolServiceExtension(name: RenderingServiceExtensions.repaintRainbow.ToString(), getter: ((Func<Future<bool>>)(async () => global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled)), setter: ((Func<bool, Future>)(async (value) =>
                 {
-                    bool repaint__4659 = (global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled && !value);
+                    bool repaint = (global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled && !value);
                     global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled = value;
-                    if (repaint__4659)
+                    if (repaint)
                     {
                         global::Doroti.Runtime.DartAsyncRuntime.unawaited(_forceRepaint());
                     }
@@ -552,18 +552,18 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
     public virtual IEnumerable<RenderView> renderViews => this._viewIdToRenderView.Values;
     public virtual void addRenderView(RenderView view)
     {
-        object viewId__14388 = checked((long)((RenderView)view).flutterView.viewId);
+        object viewIdLocal = checked((long)((RenderView)view).flutterView.viewId);
         DartRuntimePrimitives.Assert(() => !this._viewIdToRenderView.containsValue(view));
-        DartRuntimePrimitives.Assert(() => !this._viewIdToRenderView.ContainsKey(viewId__14388));
-        this._viewIdToRenderView[viewId__14388] = view;
+        DartRuntimePrimitives.Assert(() => !this._viewIdToRenderView.ContainsKey(viewIdLocal));
+        this._viewIdToRenderView[viewIdLocal] = view;
         view.configuration = createViewConfigurationFor(view);
     }
 
     public virtual void removeRenderView(RenderView view)
     {
-        object viewId__14785 = checked((long)((RenderView)view).flutterView.viewId);
-        DartRuntimePrimitives.Assert(() => (object.Equals(this._viewIdToRenderView.GetValueOrDefault(viewId__14785), view)));
-        this._viewIdToRenderView.remove(viewId__14785);
+        object viewIdLocal = checked((long)((RenderView)view).flutterView.viewId);
+        DartRuntimePrimitives.Assert(() => (object.Equals(this._viewIdToRenderView.GetValueOrDefault(viewIdLocal), view)));
+        this._viewIdToRenderView.remove(viewIdLocal);
     }
 
     public virtual ViewConfiguration createViewConfigurationFor(RenderView renderView)
@@ -577,13 +577,13 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
     public virtual Canvas createCanvas(PictureRecorder recorder) => new global::Doroti.Ui.Canvas(recorder);
     public virtual void handleMetricsChanged()
     {
-        var forceFrame__16782 = false;
-        foreach (RenderView view__16828 in this.renderViews)
+        var forceFrame = false;
+        foreach (RenderView view in this.renderViews)
         {
-            forceFrame__16782 = (forceFrame__16782 || (view__16828.child is not null));
-            view__16828.configuration = createViewConfigurationFor(view__16828);
+            forceFrame = (forceFrame || (view.child is not null));
+            view.configuration = createViewConfigurationFor(view);
         }
-        if (forceFrame__16782)
+        if (forceFrame)
         {
             scheduleForcedFrame();
         }
@@ -602,9 +602,9 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
         this._mouseTracker?.dispose();
         this._mouseTracker = (tracker ?? new MouseTracker(((position, viewId) =>
         {
-            var result__18519 = new HitTestResult();
-            hitTestInView(result__18519, position, viewId);
-            return result__18519;
+            var result = new HitTestResult();
+            hitTestInView(result, position, viewId);
+            return result;
             return default;
         })));
     }
@@ -623,8 +623,8 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
     public virtual void _handleWebFirstFrame(Duration __unused0)
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb);
-        var methodChannel__21314 = new MethodChannel("flutter/service_worker");
-        _ = methodChannel__21314.invokeMethod<object?>("first-frame").then(((_) =>
+        var methodChannel = new MethodChannel("flutter/service_worker");
+        _ = methodChannel.invokeMethod<object?>("first-frame").then(((_) =>
         {
         }), onError: ((error, stack) =>
         {
@@ -687,9 +687,9 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
         this.rootPipelineOwner.flushPaint();
         if (this.sendFramesToEngine)
         {
-            foreach (RenderView renderView__27663 in this.renderViews)
+            foreach (RenderView renderView in this.renderViews)
             {
-                renderView__27663.compositeFrame();
+                renderView.compositeFrame();
             }
             this.rootPipelineOwner.flushSemantics();
             this._firstFrameSent = true;
@@ -705,9 +705,9 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
         }
         try
         {
-            foreach (RenderView renderView__28120 in this.renderViews)
+            foreach (RenderView renderView in this.renderViews)
             {
-                renderView__28120.reassemble();
+                renderView.reassemble();
             }
         }
         finally
@@ -730,15 +730,15 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
 
     public virtual Future _forceRepaint()
     {
-        Action<RenderObject> visitor__28613 = default!;
-        visitor__28613 = ((child) =>
+        Action<RenderObject> visitor = default!;
+        visitor = ((child) =>
         {
             child.markNeedsPaint();
-            child.visitChildren((Action<RenderObject>)visitor__28613);
+            child.visitChildren((Action<RenderObject>)visitor);
         });
-        foreach (RenderView renderView__28758 in this.renderViews)
+        foreach (RenderView renderView in this.renderViews)
         {
-            renderView__28758.visitChildren((Action<RenderObject>)visitor__28613);
+            renderView.visitChildren((Action<RenderObject>)visitor);
         }
         return endOfFrame;
         throw new InvalidOperationException("Dart control flow completed without a value.");

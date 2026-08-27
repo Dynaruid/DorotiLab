@@ -44,10 +44,10 @@ public class ImageCache
             {
                 return;
             }
-            TimelineTask? debugTimelineTask__3943 = default!;
+            TimelineTask? debugTimelineTask = default!;
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask__3943 = ((Func<TimelineTask>)(() =>
+                debugTimelineTask = ((Func<TimelineTask>)(() =>
 {
     var __cascade = new TimelineTask();
     __cascade.start("ImageCache.setMaximumSize", arguments: new DartMap<string, object> { ["value"] = __value });
@@ -61,11 +61,11 @@ public class ImageCache
             }
             else
             {
-                _checkCacheSize(debugTimelineTask__3943);
+                _checkCacheSize(debugTimelineTask);
             }
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask__3943!.finish();
+                debugTimelineTask!.finish();
             }
         }
     }
@@ -81,10 +81,10 @@ public class ImageCache
             {
                 return;
             }
-            TimelineTask? debugTimelineTask__5157 = default!;
+            TimelineTask? debugTimelineTask = default!;
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask__5157 = ((Func<TimelineTask>)(() =>
+                debugTimelineTask = ((Func<TimelineTask>)(() =>
 {
     var __cascade = new TimelineTask();
     __cascade.start("ImageCache.setMaximumSizeBytes", arguments: new DartMap<string, object> { ["value"] = __value });
@@ -98,11 +98,11 @@ public class ImageCache
             }
             else
             {
-                _checkCacheSize(debugTimelineTask__5157);
+                _checkCacheSize(debugTimelineTask);
             }
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask__5157!.finish();
+                debugTimelineTask!.finish();
             }
         }
     }
@@ -113,14 +113,14 @@ public class ImageCache
         {
             Timeline.instantSync("ImageCache.clear", arguments: new DartMap<string, object> { ["pendingImages"] = checked((long)(this._pendingImages.Count)), ["keepAliveImages"] = checked((long)(this._cache.Count)), ["liveImages"] = checked((long)(this._liveImages.Count)), ["currentSizeInBytes"] = this._currentSizeBytes });
         }
-        foreach (_CachedImage__image_cache image__6709 in this._cache.Values)
+        foreach (_CachedImage__image_cache image in this._cache.Values)
         {
-            image__6709.dispose();
+            image.dispose();
         }
         this._cache.Clear();
-        foreach (_PendingImage__image_cache pendingImage__6813 in this._pendingImages.Values)
+        foreach (_PendingImage__image_cache pendingImage in this._pendingImages.Values)
         {
-            pendingImage__6813.removeListener();
+            pendingImage.removeListener();
         }
         this._pendingImages.Clear();
         _currentSizeBytes = 0L;
@@ -130,28 +130,28 @@ public class ImageCache
     {
         if (includeLive)
         {
-            _LiveImage__image_cache? image__9342 = this._liveImages.remove(key);
-            image__9342?.dispose();
+            _LiveImage__image_cache? image = this._liveImages.remove(key);
+            image?.dispose();
         }
-        _PendingImage__image_cache? pendingImage__9430 = this._pendingImages.remove(key);
-        if ((pendingImage__9430 is not null))
+        _PendingImage__image_cache? pendingImage = this._pendingImages.remove(key);
+        if ((pendingImage is not null))
         {
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
                 Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object> { ["type"] = "pending" });
             }
-            pendingImage__9430.removeListener();
+            pendingImage.removeListener();
             return true;
         }
-        _CachedImage__image_cache? image__9725 = this._cache.remove(key);
-        if ((image__9725 is not null))
+        _CachedImage__image_cache? imageLocal = this._cache.remove(key);
+        if ((imageLocal is not null))
         {
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
-                Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object> { ["type"] = "keepAlive", ["sizeInBytes"] = image__9725.sizeBytes });
+                Timeline.instantSync("ImageCache.evict", arguments: new DartMap<string, object> { ["type"] = "keepAlive", ["sizeInBytes"] = imageLocal.sizeBytes });
             }
-            _currentSizeBytes -= DartRuntimePrimitives.RequireValue(image__9725.sizeBytes);
-            image__9725.dispose();
+            _currentSizeBytes -= DartRuntimePrimitives.RequireValue(imageLocal.sizeBytes);
+            imageLocal.dispose();
             return true;
         }
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
@@ -190,61 +190,61 @@ public class ImageCache
 
     public virtual ImageStreamCompleter? putIfAbsent(object key, Func<ImageStreamCompleter> loader, Action<object, global::System.Diagnostics.StackTrace?>? onError = null)
     {
-        TimelineTask? debugTimelineTask__12217 = default!;
+        TimelineTask? debugTimelineTask = default!;
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
-            debugTimelineTask__12217 = ((Func<TimelineTask>)(() =>
+            debugTimelineTask = ((Func<TimelineTask>)(() =>
 {
     var __cascade = new TimelineTask();
     __cascade.start("ImageCache.putIfAbsent", arguments: new DartMap<string, object> { ["key"] = key.ToString() });
     return __cascade;
 }))();
         }
-        ImageStreamCompleter? result__12430 = this._pendingImages.GetValueOrDefault(key)?.completer;
-        if ((result__12430 is not null))
+        ImageStreamCompleter? result = this._pendingImages.GetValueOrDefault(key)?.completer;
+        if ((result is not null))
         {
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask__12217!.finish(arguments: new DartMap<string, object> { ["result"] = "pending" });
+                debugTimelineTask!.finish(arguments: new DartMap<string, object> { ["result"] = "pending" });
             }
-            return result__12430;
+            return result;
         }
-        _CachedImage__image_cache? image__13007 = this._cache.remove(key);
-        if ((image__13007 is not null))
+        _CachedImage__image_cache? imageLocal = this._cache.remove(key);
+        if ((imageLocal is not null))
         {
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask__12217!.finish(arguments: new DartMap<string, object> { ["result"] = "keepAlive" });
+                debugTimelineTask!.finish(arguments: new DartMap<string, object> { ["result"] = "keepAlive" });
             }
-            _trackLiveImage(key, image__13007.completer, image__13007.sizeBytes);
-            this._cache[key] = image__13007;
-            return image__13007.completer;
+            _trackLiveImage(key, imageLocal.completer, imageLocal.sizeBytes);
+            this._cache[key] = imageLocal;
+            return imageLocal.completer;
         }
-        _LiveImage__image_cache? liveImage__13475 = this._liveImages.GetValueOrDefault(key);
-        if ((liveImage__13475 is not null))
+        _LiveImage__image_cache? liveImage = this._liveImages.GetValueOrDefault(key);
+        if ((liveImage is not null))
         {
-            _touch(key, new _CachedImage__image_cache(liveImage__13475.completer, sizeBytes: liveImage__13475.sizeBytes), debugTimelineTask__12217);
+            _touch(key, new _CachedImage__image_cache(liveImage.completer, sizeBytes: liveImage.sizeBytes), debugTimelineTask);
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask__12217!.finish(arguments: new DartMap<string, object> { ["result"] = "keepAlive" });
+                debugTimelineTask!.finish(arguments: new DartMap<string, object> { ["result"] = "keepAlive" });
             }
-            return liveImage__13475.completer;
+            return liveImage.completer;
         }
         try
         {
-            result__12430 = loader();
-            _trackLiveImage(key, result__12430, null);
+            result = loader();
+            _trackLiveImage(key, result, null);
         }
-        catch (Exception error__13926)
+        catch (Exception error)
         {
-            var stackTrace__13933 = new System.Diagnostics.StackTrace();
+            var stackTrace = new System.Diagnostics.StackTrace();
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugTimelineTask__12217!.finish(arguments: new DartMap<string, object> { ["result"] = "error", ["error"] = error__13926.ToString(), ["stackTrace"] = stackTrace__13933.ToString() });
+                debugTimelineTask!.finish(arguments: new DartMap<string, object> { ["result"] = "error", ["error"] = error.ToString(), ["stackTrace"] = stackTrace.ToString() });
             }
             if ((onError is not null))
             {
-                onError(error__13926, stackTrace__13933);
+                onError(error, stackTrace);
                 return null;
             }
             else
@@ -254,54 +254,54 @@ public class ImageCache
         }
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
-            debugTimelineTask__12217!.start("listener");
+            debugTimelineTask!.start("listener");
         }
-        var listenedOnce__14630 = false;
-        bool trackPendingImage__14857 = ((this.maximumSize > 0L) && (this.maximumSizeBytes > 0L));
-        _PendingImage__image_cache pendingImage__14941 = default!;
+        var listenedOnce = false;
+        bool trackPendingImage = ((this.maximumSize > 0L) && (this.maximumSizeBytes > 0L));
+        _PendingImage__image_cache pendingImage = default!;
         void listener(ImageInfo? info, bool syncCall)
         {
-            long? sizeBytes__15018 = default!;
+            long? sizeBytesLocal = default!;
             if ((info is not null))
             {
-                sizeBytes__15018 = ((ImageInfo)info).sizeBytes;
+                sizeBytesLocal = ((ImageInfo)info).sizeBytes;
                 info.dispose();
             }
-            var image__15135 = new _CachedImage__image_cache(result__12430!, sizeBytes: sizeBytes__15018);
-            _trackLiveImage(key, result__12430, sizeBytes__15018);
-            if (trackPendingImage__14857)
+            var imageAlternate = new _CachedImage__image_cache(result!, sizeBytes: sizeBytesLocal);
+            _trackLiveImage(key, result, sizeBytesLocal);
+            if (trackPendingImage)
             {
-                _touch(key, image__15135, debugTimelineTask__12217);
+                _touch(key, imageAlternate, debugTimelineTask);
             }
             else
             {
-                image__15135.dispose();
+                imageAlternate.dispose();
             }
             this._pendingImages.remove(key);
-            if (!listenedOnce__14630)
+            if (!listenedOnce)
             {
-                pendingImage__14941.removeListener();
+                pendingImage.removeListener();
             }
-            if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && !listenedOnce__14630))
+            if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && !listenedOnce))
             {
                 ((Func<TimelineTask>)(() =>
 {
-    var __cascade = debugTimelineTask__12217!;
-    __cascade.finish(arguments: new DartMap<string, object> { ["syncCall"] = syncCall, ["sizeInBytes"] = sizeBytes__15018 });
+    var __cascade = debugTimelineTask!;
+    __cascade.finish(arguments: new DartMap<string, object> { ["syncCall"] = syncCall, ["sizeInBytes"] = sizeBytesLocal });
     __cascade.finish(arguments: new DartMap<string, object> { ["currentSizeBytes"] = this.currentSizeBytes, ["currentSize"] = this.currentSize });
     return __cascade;
 }))();
             }
-            listenedOnce__14630 = true;
+            listenedOnce = true;
         }
-        var streamListener__15956 = new ImageStreamListener((Action<ImageInfo, bool>)((image, synchronousCall) => listener(image, synchronousCall)));
-        pendingImage__14941 = new _PendingImage__image_cache(result__12430, streamListener__15956);
-        if (trackPendingImage__14857)
+        var streamListener = new ImageStreamListener((Action<ImageInfo, bool>)((image, synchronousCall) => listener(image, synchronousCall)));
+        pendingImage = new _PendingImage__image_cache(result, streamListener);
+        if (trackPendingImage)
         {
-            this._pendingImages[key] = pendingImage__14941;
+            this._pendingImages[key] = pendingImage;
         }
-        result__12430.addListener(streamListener__15956);
-        return result__12430;
+        result.addListener(streamListener);
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -321,40 +321,40 @@ public class ImageCache
     public virtual long pendingImageCount => checked((long)(this._pendingImages.Count));
     public virtual void clearLiveImages()
     {
-        foreach (_LiveImage__image_cache image__17785 in this._liveImages.Values)
+        foreach (_LiveImage__image_cache image in this._liveImages.Values)
         {
-            image__17785.dispose();
+            image.dispose();
         }
         this._liveImages.Clear();
     }
 
     internal virtual void _checkCacheSize(TimelineTask? timelineTask)
     {
-        var finishArgs__18051 = new DartMap<string, object>();
+        var finishArgs = new DartMap<string, object>();
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             timelineTask!.start("checkCacheSize");
-            finishArgs__18051["evictedKeys"] = new List<string>();
-            finishArgs__18051["currentSize"] = this.currentSize;
-            finishArgs__18051["currentSizeBytes"] = this.currentSizeBytes;
+            finishArgs["evictedKeys"] = new List<string>();
+            finishArgs["currentSize"] = this.currentSize;
+            finishArgs["currentSizeBytes"] = this.currentSizeBytes;
         }
         while (((this._currentSizeBytes > this._maximumSizeBytes) || (checked((long)(this._cache.Count)) > this._maximumSize)))
         {
-            object key__18414 = this._cache.Keys.First();
-            _CachedImage__image_cache image__18464 = this._cache.GetValueOrDefault(key__18414)!;
-            _currentSizeBytes -= DartRuntimePrimitives.RequireValue(image__18464.sizeBytes);
-            image__18464.dispose();
-            this._cache.remove(key__18414);
+            object key = this._cache.Keys.First();
+            _CachedImage__image_cache image = this._cache.GetValueOrDefault(key)!;
+            _currentSizeBytes -= DartRuntimePrimitives.RequireValue(image.sizeBytes);
+            image.dispose();
+            this._cache.remove(key);
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
-                (((List<string>?)(object?)finishArgs__18051.GetValueOrDefault("evictedKeys"))!).Add(key__18414.ToString());
+                (((List<string>?)(object?)finishArgs.GetValueOrDefault("evictedKeys"))!).Add(key.ToString());
             }
         }
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
-            finishArgs__18051["endSize"] = this.currentSize;
-            finishArgs__18051["endSizeBytes"] = this.currentSizeBytes;
-            timelineTask!.finish(arguments: finishArgs__18051);
+            finishArgs["endSize"] = this.currentSize;
+            finishArgs["endSizeBytes"] = this.currentSizeBytes;
+            timelineTask!.finish(arguments: finishArgs);
         }
         DartRuntimePrimitives.Assert(() => (this._currentSizeBytes >= 0L));
         DartRuntimePrimitives.Assert(() => (checked((long)(this._cache.Count)) <= this.maximumSize));

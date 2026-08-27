@@ -102,13 +102,13 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
 
     internal virtual InformationCollector? _imageStreamInformationCollector(NetworkImageIo key)
     {
-        InformationCollector? collector__3447 = default!;
+        InformationCollector? collector = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                collector__3447 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<NetworkImageIo>("Image key", ((NetworkImageIo?)(object?)key)!) });
+                collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<NetworkImageIo>("Image key", ((NetworkImageIo?)(object?)key)!) });
                 return true;
             });
-        return collector__3447;
+        return collector;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -117,23 +117,23 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
         DartRuntimePrimitives.Assert(() => (object.Equals(key, this)));
         async Future<ImageStreamCompleter> loadViaDecode()
         {
-            global::Doroti.Ui.Codec codec__4201 = await _fetchImageBytes((Func<ImmutableBuffer, Future<Codec>>)decode);
-            return new MultiFrameImageStreamCompleter(codec: Future<global::Doroti.Ui.Codec>.value(codec__4201), scale: key.scale, debugLabel: key.url, informationCollector: _imageStreamInformationCollector(key));
+            global::Doroti.Ui.Codec codecLocal = await _fetchImageBytes((Func<ImmutableBuffer, Future<Codec>>)decode);
+            return new MultiFrameImageStreamCompleter(codec: Future<global::Doroti.Ui.Codec>.value(codecLocal), scale: key.scale, debugLabel: key.url, informationCollector: _imageStreamInformationCollector(key));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         async Future<ImageStreamCompleter> loadViaImgElement()
         {
-            HTMLImageElement imageElement__4668 = _network_image_webLibrary.imgElementFactory();
-            imageElement__4668.src = key.url;
-            await imageElement__4668.decode().toDart;
+            HTMLImageElement imageElement = _network_image_webLibrary.imgElementFactory();
+            imageElement.src = key.url;
+            await imageElement.decode().toDart;
             return ((Func<OneFrameImageStreamCompleter>)(() =>
-{            var __cascade = new OneFrameImageStreamCompleter(Future<ImageInfo>.value(new WebImageInfoIo(imageElement__4668, debugLabel: key.url)), informationCollector: _imageStreamInformationCollector(key));
+{            var __cascade = new OneFrameImageStreamCompleter(Future<ImageInfo>.value(new WebImageInfoIo(imageElement, debugLabel: key.url)), informationCollector: _imageStreamInformationCollector(key));
             __cascade.debugLabel = key.url;
             return __cascade;        }))();
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        bool containsNetworkImageHeaders__5148 = ((((long?)(key.headers?.Count)) is { } __count5178 ? __count5178 != 0 : (bool?)null) ?? false);
-        if (containsNetworkImageHeaders__5148)
+        bool containsNetworkImageHeaders = ((((long?)(key.headers?.Count)) is { } __count5178 ? __count5178 != 0 : (bool?)null) ?? false);
+        if (containsNetworkImageHeaders)
         {
             return await loadViaDecode();
         }
@@ -153,7 +153,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
                     {
                         return await loadViaDecode();
                     }
-                    catch (Exception e__6238)
+                    catch (Exception e)
                     {
                         return await loadViaImgElement();
                     }
@@ -165,43 +165,43 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
 
     internal async virtual Future<global::Doroti.Ui.Codec> _fetchImageBytes(Func<ImmutableBuffer, Future<Codec>> decode)
     {
-        DartUri resolved__6391 = DartUri.@base.resolve(this.url);
-        bool containsNetworkImageHeaders__6441 = ((((long?)(this.headers?.Count)) is { } __count6471 ? __count6471 != 0 : (bool?)null) ?? false);
-        var completer__6512 = new Completer<XMLHttpRequest>();
-        XMLHttpRequest request__6586 = _network_image_webLibrary.httpRequestFactory();
-        request__6586.open("GET", this.url, true);
-        request__6586.responseType = "arraybuffer";
-        if (containsNetworkImageHeaders__6441)
+        DartUri resolved = DartUri.@base.resolve(this.url);
+        bool containsNetworkImageHeaders = ((((long?)(this.headers?.Count)) is { } __count6471 ? __count6471 != 0 : (bool?)null) ?? false);
+        var completer = new Completer<XMLHttpRequest>();
+        XMLHttpRequest request = _network_image_webLibrary.httpRequestFactory();
+        request.open("GET", this.url, true);
+        request.responseType = "arraybuffer";
+        if (containsNetworkImageHeaders)
         {
             this.headers!.forEach(((header, value) => {
-request__6586.setRequestHeader(header, value);
+request.setRequestHeader(header, value);
 }));
         }
-        request__6586.addEventListener("load", ((e) => {
-long status__6941 = request__6586.status;
-bool accepted__6985 = ((status__6941 >= 200L) && (status__6941 < 300L));
-var fileUri__7041 = (status__6941 == 0L);
-var notModified__7112 = (status__6941 == 304L);
-bool unknownRedirect__7160 = ((status__6941 > 307L) && (status__6941 < 400L));
-bool success__7227 = (((accepted__6985 || fileUri__7041) || notModified__7112) || unknownRedirect__7160);
-if (success__7227)
+        request.addEventListener("load", ((e) => {
+long statusLocal = request.status;
+bool accepted = ((statusLocal >= 200L) && (statusLocal < 300L));
+var fileUri = (statusLocal == 0L);
+var notModified = (statusLocal == 304L);
+bool unknownRedirect = ((statusLocal > 307L) && (statusLocal < 400L));
+bool success = (((accepted || fileUri) || notModified) || unknownRedirect);
+if (success)
 {
-    completer__6512.complete(request__6586);
+    completer.complete(request);
 }
 else
 {
-    completer__6512.completeError(new NetworkImageLoadException(statusCode: status__6941, uri: resolved__6391));
+    completer.completeError(new NetworkImageLoadException(statusCode: statusLocal, uri: resolved));
 }
 }).toJS);
-        request__6586.addEventListener("error", (((e) => completer__6512.completeError(new NetworkImageLoadException(statusCode: request__6586.status, uri: resolved__6391)))).toJS);
-        request__6586.send();
-        await completer__6512.future;
-        Uint8List bytes__7820 = (((JSArrayBuffer?)(object?)request__6586.response!)!).toDart.asUint8List();
-        if ((bytes__7820.lengthInBytes == 0L))
+        request.addEventListener("error", (((e) => completer.completeError(new NetworkImageLoadException(statusCode: request.status, uri: resolved)))).toJS);
+        request.send();
+        await completer.future;
+        Uint8List bytes = (((JSArrayBuffer?)(object?)request.response!)!).toDart.asUint8List();
+        if ((bytes.lengthInBytes == 0L))
         {
-            throw new NetworkImageLoadException(statusCode: request__6586.status, uri: resolved__6391);
+            throw new NetworkImageLoadException(statusCode: request.status, uri: resolved);
         }
-        return await decode(await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes__7820));
+        return await decode(await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

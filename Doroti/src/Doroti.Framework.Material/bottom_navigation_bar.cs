@@ -135,41 +135,41 @@ internal class _BottomNavigationTile__bottom_navigation_bar : global::Doroti.Fra
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        long size__20507 = default!;
-        double selectedFontSize__20531 = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.TextStyle)this.selectedLabelStyle).fontSize);
-        double selectedIconSize__20598 = (this.selectedIconTheme?.size ?? this.iconSize);
-        double unselectedIconSize__20671 = (this.unselectedIconTheme?.size ?? this.iconSize);
-        double selectedIconDiff__20906 = Math.Max((selectedIconSize__20598 - unselectedIconSize__20671), 0);
-        double unselectedIconDiff__21157 = Math.Max((unselectedIconSize__20671 - selectedIconSize__20598), 0);
-        string? effectiveTooltip__21331 = ((((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).tooltip == "") ? null : ((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).tooltip);
-        double bottomPadding__21953 = default!;
-        double topPadding__21979 = default!;
+        long sizeLocal = default!;
+        double selectedFontSize = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.TextStyle)this.selectedLabelStyle).fontSize);
+        double selectedIconSize = (this.selectedIconTheme?.size ?? this.iconSize);
+        double unselectedIconSize = (this.unselectedIconTheme?.size ?? this.iconSize);
+        double selectedIconDiff = Math.Max((selectedIconSize - unselectedIconSize), 0);
+        double unselectedIconDiff = Math.Max((unselectedIconSize - selectedIconSize), 0);
+        string? effectiveTooltip = ((((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).tooltip == "") ? null : ((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).tooltip);
+        double bottomPadding = default!;
+        double topPadding = default!;
         if ((this.showSelectedLabels && !this.showUnselectedLabels))
         {
-            bottomPadding__21953 = new global::Doroti.Framework.Animation.Tween<double>(begin: (selectedIconDiff__20906 / 2.0), end: ((selectedFontSize__20531 / 2.0) - (unselectedIconDiff__21157 / 2.0))).evaluate(this.animation);
-            topPadding__21979 = new global::Doroti.Framework.Animation.Tween<double>(begin: (selectedFontSize__20531 + (selectedIconDiff__20906 / 2.0)), end: ((selectedFontSize__20531 / 2.0) - (unselectedIconDiff__21157 / 2.0))).evaluate(this.animation);
+            bottomPadding = new global::Doroti.Framework.Animation.Tween<double>(begin: (selectedIconDiff / 2.0), end: ((selectedFontSize / 2.0) - (unselectedIconDiff / 2.0))).evaluate(this.animation);
+            topPadding = new global::Doroti.Framework.Animation.Tween<double>(begin: (selectedFontSize + (selectedIconDiff / 2.0)), end: ((selectedFontSize / 2.0) - (unselectedIconDiff / 2.0))).evaluate(this.animation);
         }
         else
         {
             if ((!this.showSelectedLabels && !this.showUnselectedLabels))
             {
-                bottomPadding__21953 = new global::Doroti.Framework.Animation.Tween<double>(begin: (selectedIconDiff__20906 / 2.0), end: (unselectedIconDiff__21157 / 2.0)).evaluate(this.animation);
-                topPadding__21979 = new global::Doroti.Framework.Animation.Tween<double>(begin: (selectedFontSize__20531 + (selectedIconDiff__20906 / 2.0)), end: (selectedFontSize__20531 + (unselectedIconDiff__21157 / 2.0))).evaluate(this.animation);
+                bottomPadding = new global::Doroti.Framework.Animation.Tween<double>(begin: (selectedIconDiff / 2.0), end: (unselectedIconDiff / 2.0)).evaluate(this.animation);
+                topPadding = new global::Doroti.Framework.Animation.Tween<double>(begin: (selectedFontSize + (selectedIconDiff / 2.0)), end: (selectedFontSize + (unselectedIconDiff / 2.0))).evaluate(this.animation);
             }
             else
             {
-                bottomPadding__21953 = new global::Doroti.Framework.Animation.Tween<double>(begin: ((selectedFontSize__20531 / 2.0) + (selectedIconDiff__20906 / 2.0)), end: ((selectedFontSize__20531 / 2.0) + (unselectedIconDiff__21157 / 2.0))).evaluate(this.animation);
-                topPadding__21979 = new global::Doroti.Framework.Animation.Tween<double>(begin: ((selectedFontSize__20531 / 2.0) + (selectedIconDiff__20906 / 2.0)), end: ((selectedFontSize__20531 / 2.0) + (unselectedIconDiff__21157 / 2.0))).evaluate(this.animation);
+                bottomPadding = new global::Doroti.Framework.Animation.Tween<double>(begin: ((selectedFontSize / 2.0) + (selectedIconDiff / 2.0)), end: ((selectedFontSize / 2.0) + (unselectedIconDiff / 2.0))).evaluate(this.animation);
+                topPadding = new global::Doroti.Framework.Animation.Tween<double>(begin: ((selectedFontSize / 2.0) + (selectedIconDiff / 2.0)), end: ((selectedFontSize / 2.0) + (unselectedIconDiff / 2.0))).evaluate(this.animation);
             }
         }
-        size__20507 = (this.type switch { BottomNavigationBarType.@fixed => 1L, BottomNavigationBarType.shifting => ((DartRuntimePrimitives.RequireValue(this.flex) * 1000.0)).round(), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Framework.Widgets.Widget result__23347 = ((global::Doroti.Framework.Widgets.Widget)(object?)new InkResponse(onTap: this.onTap, mouseCursor: this.mouseCursor, enableFeedback: this.enableFeedback, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: topPadding__21979, bottom: bottomPadding__21953), child: new _Tile__bottom_navigation_bar(layout: this.layout, icon: new _TileIcon__bottom_navigation_bar(colorTween: this.iconColorTween!, animation: this.animation, iconSize: this.iconSize, selected: this.selected, item: this.item, selectedIconTheme: this.selectedIconTheme, unselectedIconTheme: this.unselectedIconTheme), label: new _Label__bottom_navigation_bar(colorTween: this.labelColorTween!, animation: this.animation, item: this.item, selectedLabelStyle: this.selectedLabelStyle, unselectedLabelStyle: this.unselectedLabelStyle, showSelectedLabels: this.showSelectedLabels, showUnselectedLabels: this.showUnselectedLabels)))));
-        if ((effectiveTooltip__21331 is not null))
+        sizeLocal = (this.type switch { BottomNavigationBarType.@fixed => 1L, BottomNavigationBarType.shifting => ((DartRuntimePrimitives.RequireValue(this.flex) * 1000.0)).round(), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)(object?)new InkResponse(onTap: this.onTap, mouseCursor: this.mouseCursor, enableFeedback: this.enableFeedback, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: topPadding, bottom: bottomPadding), child: new _Tile__bottom_navigation_bar(layout: this.layout, icon: new _TileIcon__bottom_navigation_bar(colorTween: this.iconColorTween!, animation: this.animation, iconSize: this.iconSize, selected: this.selected, item: this.item, selectedIconTheme: this.selectedIconTheme, unselectedIconTheme: this.unselectedIconTheme), label: new _Label__bottom_navigation_bar(colorTween: this.labelColorTween!, animation: this.animation, item: this.item, selectedLabelStyle: this.selectedLabelStyle, unselectedLabelStyle: this.unselectedLabelStyle, showSelectedLabels: this.showSelectedLabels, showUnselectedLabels: this.showUnselectedLabels)))));
+        if ((effectiveTooltip is not null))
         {
-            result__23347 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Tooltip(message: effectiveTooltip__21331, preferBelow: false, verticalOffset: (selectedIconSize__20598 + selectedFontSize__20531), excludeFromSemantics: true, child: result__23347));
+            result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Tooltip(message: effectiveTooltip, preferBelow: false, verticalOffset: (selectedIconSize + selectedFontSize), excludeFromSemantics: true, child: result));
         }
-        result__23347 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(selected: this.selected, button: true, container: true, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(result__23347), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(label: this.indexLabel)) })));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Expanded(flex: size__20507, child: result__23347));
+        result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(selected: this.selected, button: true, container: true, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(result), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(label: this.indexLabel)) })));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Expanded(flex: sizeLocal, child: result));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -223,10 +223,10 @@ internal class _TileIcon__bottom_navigation_bar : global::Doroti.Framework.Widge
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color? iconColor__26647 = ((global::Doroti.Ui.Color?)(object?)this.colorTween.evaluate(this.animation));
-        var defaultIconTheme__26701 = new global::Doroti.Framework.Widgets.IconThemeData(color: iconColor__26647, size: this.iconSize);
-        global::Doroti.Framework.Widgets.IconThemeData iconThemeData__26793 = ((global::Doroti.Framework.Widgets.IconThemeData)(object?)IconThemeData.lerp(defaultIconTheme__26701.merge(this.unselectedIconTheme), defaultIconTheme__26701.merge(this.selectedIconTheme), ((global::Doroti.Framework.Animation.Animation<double>)this.animation).value));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.Alignment.topCenter, heightFactor: 1.0, child: new global::Doroti.Framework.Widgets.IconTheme(data: iconThemeData__26793, child: (this.selected ? ((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).activeIcon : ((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).icon))));
+        global::Doroti.Ui.Color? iconColor = ((global::Doroti.Ui.Color?)(object?)this.colorTween.evaluate(this.animation));
+        var defaultIconTheme = new global::Doroti.Framework.Widgets.IconThemeData(color: iconColor, size: this.iconSize);
+        global::Doroti.Framework.Widgets.IconThemeData iconThemeData = ((global::Doroti.Framework.Widgets.IconThemeData)(object?)IconThemeData.lerp(defaultIconTheme.merge(this.unselectedIconTheme), defaultIconTheme.merge(this.selectedIconTheme), ((global::Doroti.Framework.Animation.Animation<double>)this.animation).value));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.Alignment.topCenter, heightFactor: 1.0, child: new global::Doroti.Framework.Widgets.IconTheme(data: iconThemeData, child: (this.selected ? ((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).activeIcon : ((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).icon))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -255,34 +255,34 @@ internal class _Label__bottom_navigation_bar : global::Doroti.Framework.Widgets.
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        double? selectedFontSize__27771 = ((global::Doroti.Framework.Painting.TextStyle)this.selectedLabelStyle).fontSize;
-        double? unselectedFontSize__27837 = ((global::Doroti.Framework.Painting.TextStyle)this.unselectedLabelStyle).fontSize;
-        global::Doroti.Framework.Painting.TextStyle customStyle__27910 = TextStyle.lerp(this.unselectedLabelStyle, this.selectedLabelStyle, ((global::Doroti.Framework.Animation.Animation<double>)this.animation).value)!;
-        global::Doroti.Framework.Widgets.Widget text__28036 = ((global::Doroti.Framework.Widgets.Widget)(object?)DefaultTextStyle.merge(style: customStyle__27910.copyWith(fontSize: selectedFontSize__27771, color: this.colorTween.evaluate(this.animation)), child: new global::Doroti.Framework.Widgets.Transform(transform: Matrix4.diagonal3(new Vector3(new global::Doroti.Framework.Animation.Tween<double>(begin: (DartRuntimePrimitives.RequireValue(unselectedFontSize__27837) / DartRuntimePrimitives.RequireValue(selectedFontSize__27771)), end: 1.0).evaluate(this.animation))), alignment: global::Doroti.Framework.Painting.Alignment.bottomCenter, child: new global::Doroti.Framework.Widgets.Text(((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).label!, semanticsLabel: ((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).semanticsLabel))));
+        double? selectedFontSize = ((global::Doroti.Framework.Painting.TextStyle)this.selectedLabelStyle).fontSize;
+        double? unselectedFontSize = ((global::Doroti.Framework.Painting.TextStyle)this.unselectedLabelStyle).fontSize;
+        global::Doroti.Framework.Painting.TextStyle customStyle = TextStyle.lerp(this.unselectedLabelStyle, this.selectedLabelStyle, ((global::Doroti.Framework.Animation.Animation<double>)this.animation).value)!;
+        global::Doroti.Framework.Widgets.Widget text = ((global::Doroti.Framework.Widgets.Widget)(object?)DefaultTextStyle.merge(style: customStyle.copyWith(fontSize: selectedFontSize, color: this.colorTween.evaluate(this.animation)), child: new global::Doroti.Framework.Widgets.Transform(transform: Matrix4.diagonal3(new Vector3(new global::Doroti.Framework.Animation.Tween<double>(begin: (DartRuntimePrimitives.RequireValue(unselectedFontSize) / DartRuntimePrimitives.RequireValue(selectedFontSize)), end: 1.0).evaluate(this.animation))), alignment: global::Doroti.Framework.Painting.Alignment.bottomCenter, child: new global::Doroti.Framework.Widgets.Text(((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).label!, semanticsLabel: ((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).semanticsLabel))));
         if ((!this.showUnselectedLabels && !this.showSelectedLabels))
         {
-            text__28036 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.Visibility.CreateMaintain(visible: false, child: text__28036));
+            text = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.Visibility.CreateMaintain(visible: false, child: text));
         }
         else
         {
             if (!this.showUnselectedLabels)
             {
-                text__28036 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(alwaysIncludeSemantics: true, opacity: this.animation, child: text__28036));
+                text = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(alwaysIncludeSemantics: true, opacity: this.animation, child: text));
             }
             else
             {
                 if (!this.showSelectedLabels)
                 {
-                    text__28036 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(alwaysIncludeSemantics: true, opacity: new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0).animate(this.animation), child: text__28036));
+                    text = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(alwaysIncludeSemantics: true, opacity: new global::Doroti.Framework.Animation.Tween<double>(begin: 1.0, end: 0.0).animate(this.animation), child: text));
                 }
             }
         }
-        text__28036 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.Alignment.bottomCenter, heightFactor: 1.0, child: text__28036));
+        text = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.Alignment.bottomCenter, heightFactor: 1.0, child: text));
         if ((((global::Doroti.Framework.Widgets.BottomNavigationBarItem)this.item).label is not null))
         {
-            text__28036 = MediaQuery.withClampedTextScaling(maxScaleFactor: 1.0, child: text__28036);
+            text = MediaQuery.withClampedTextScaling(maxScaleFactor: 1.0, child: text);
         }
-        return text__28036;
+        return text;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -300,17 +300,17 @@ public class _BottomNavigationBarState__bottom_navigation_bar : global::Doroti.F
 
     internal virtual void _resetState()
     {
-        foreach (global::Doroti.Framework.Animation.AnimationController controller__30290 in this._controllers)
+        foreach (global::Doroti.Framework.Animation.AnimationController controller in this._controllers)
         {
-            controller__30290.dispose();
+            controller.dispose();
         }
-        foreach (_Circle__bottom_navigation_bar circle__30377 in this._circles)
+        foreach (_Circle__bottom_navigation_bar circle in this._circles)
         {
-            circle__30377.dispose();
+            circle.dispose();
         }
-        foreach (global::Doroti.Framework.Animation.CurvedAnimation animation__30460 in this._animations)
+        foreach (global::Doroti.Framework.Animation.CurvedAnimation animation in this._animations)
         {
-            animation__30460.dispose();
+            animation.dispose();
         }
         this._circles.Clear();
         _controllers = new List<global::Doroti.Framework.Animation.AnimationController>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(((BottomNavigationBar)this.widget).items.Count)))), ((index) =>
@@ -356,27 +356,27 @@ public class _BottomNavigationBarState__bottom_navigation_bar : global::Doroti.F
 
     public override void dispose()
     {
-        foreach (global::Doroti.Framework.Animation.AnimationController controller__32417 in this._controllers)
+        foreach (global::Doroti.Framework.Animation.AnimationController controller in this._controllers)
         {
-            controller__32417.dispose();
+            controller.dispose();
         }
-        foreach (_Circle__bottom_navigation_bar circle__32504 in this._circles)
+        foreach (_Circle__bottom_navigation_bar circle in this._circles)
         {
-            circle__32504.dispose();
+            circle.dispose();
         }
-        foreach (global::Doroti.Framework.Animation.CurvedAnimation animation__32587 in this._animations)
+        foreach (global::Doroti.Framework.Animation.CurvedAnimation animation in this._animations)
         {
-            animation__32587.dispose();
+            animation.dispose();
         }
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((this._tickers is not null))
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18989 in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
                     {
-                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker__18989).isActive)
+                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker).isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker__18989.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -401,9 +401,9 @@ public class _BottomNavigationBarState__bottom_navigation_bar : global::Doroti.F
         {
             setState(((global::System.Action)(() =>
             {
-                _Circle__bottom_navigation_bar circle__33134 = this._circles.Dequeue();
-                _backgroundColor = ((_Circle__bottom_navigation_bar)circle__33134).color;
-                circle__33134.dispose();
+                _Circle__bottom_navigation_bar circle = this._circles.Dequeue();
+                _backgroundColor = ((_Circle__bottom_navigation_bar)circle).color;
+                circle.dispose();
             })));
         }
     })));
@@ -461,67 +461,67 @@ public class _BottomNavigationBarState__bottom_navigation_bar : global::Doroti.F
 
     internal virtual List<global::Doroti.Framework.Widgets.Widget> _createTiles(BottomNavigationBarLandscapeLayout layout)
     {
-        MaterialLocalizations localizations__35011 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(this.context));
-        ThemeData themeData__35083 = Theme.of(this.context);
-        BottomNavigationBarThemeData bottomTheme__35153 = BottomNavigationBarTheme.of(this.context);
-        global::Doroti.Ui.Color themeColor__35222 = ((global::Doroti.Ui.Color)(object?)(themeData__35083.brightness switch { Brightness.light => themeData__35083.colorScheme.primary, Brightness.dark => themeData__35083.colorScheme.secondary, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        global::Doroti.Framework.Painting.TextStyle effectiveSelectedLabelStyle__35410 = ((global::Doroti.Framework.Painting.TextStyle)(object?)_BottomNavigationBarState__bottom_navigation_bar._effectiveTextStyle((((BottomNavigationBar)this.widget).selectedLabelStyle ?? bottomTheme__35153.selectedLabelStyle), ((BottomNavigationBar)this.widget).selectedFontSize));
-        global::Doroti.Framework.Painting.TextStyle effectiveUnselectedLabelStyle__35587 = ((global::Doroti.Framework.Painting.TextStyle)(object?)_BottomNavigationBarState__bottom_navigation_bar._effectiveTextStyle((((BottomNavigationBar)this.widget).unselectedLabelStyle ?? bottomTheme__35153.unselectedLabelStyle), ((BottomNavigationBar)this.widget).unselectedFontSize));
-        global::Doroti.Framework.Widgets.IconThemeData effectiveSelectedIconTheme__35776 = ((global::Doroti.Framework.Widgets.IconThemeData)(object?)_BottomNavigationBarState__bottom_navigation_bar._effectiveIconTheme((((BottomNavigationBar)this.widget).selectedIconTheme ?? bottomTheme__35153.selectedIconTheme), ((((BottomNavigationBar)this.widget).selectedItemColor ?? bottomTheme__35153.selectedItemColor) ?? themeColor__35222)));
-        global::Doroti.Framework.Widgets.IconThemeData effectiveUnselectedIconTheme__36002 = ((global::Doroti.Framework.Widgets.IconThemeData)(object?)_BottomNavigationBarState__bottom_navigation_bar._effectiveIconTheme((((BottomNavigationBar)this.widget).unselectedIconTheme ?? bottomTheme__35153.unselectedIconTheme), ((((BottomNavigationBar)this.widget).unselectedItemColor ?? bottomTheme__35153.unselectedItemColor) ?? themeData__35083.unselectedWidgetColor)));
-        global::Doroti.Framework.Animation.ColorTween colorTween__36276 = default!;
+        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(this.context));
+        ThemeData themeData = Theme.of(this.context);
+        BottomNavigationBarThemeData bottomTheme = BottomNavigationBarTheme.of(this.context);
+        global::Doroti.Ui.Color themeColor = ((global::Doroti.Ui.Color)(object?)(themeData.brightness switch { Brightness.light => themeData.colorScheme.primary, Brightness.dark => themeData.colorScheme.secondary, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        global::Doroti.Framework.Painting.TextStyle effectiveSelectedLabelStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)_BottomNavigationBarState__bottom_navigation_bar._effectiveTextStyle((((BottomNavigationBar)this.widget).selectedLabelStyle ?? bottomTheme.selectedLabelStyle), ((BottomNavigationBar)this.widget).selectedFontSize));
+        global::Doroti.Framework.Painting.TextStyle effectiveUnselectedLabelStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)_BottomNavigationBarState__bottom_navigation_bar._effectiveTextStyle((((BottomNavigationBar)this.widget).unselectedLabelStyle ?? bottomTheme.unselectedLabelStyle), ((BottomNavigationBar)this.widget).unselectedFontSize));
+        global::Doroti.Framework.Widgets.IconThemeData effectiveSelectedIconTheme = ((global::Doroti.Framework.Widgets.IconThemeData)(object?)_BottomNavigationBarState__bottom_navigation_bar._effectiveIconTheme((((BottomNavigationBar)this.widget).selectedIconTheme ?? bottomTheme.selectedIconTheme), ((((BottomNavigationBar)this.widget).selectedItemColor ?? bottomTheme.selectedItemColor) ?? themeColor)));
+        global::Doroti.Framework.Widgets.IconThemeData effectiveUnselectedIconTheme = ((global::Doroti.Framework.Widgets.IconThemeData)(object?)_BottomNavigationBarState__bottom_navigation_bar._effectiveIconTheme((((BottomNavigationBar)this.widget).unselectedIconTheme ?? bottomTheme.unselectedIconTheme), ((((BottomNavigationBar)this.widget).unselectedItemColor ?? bottomTheme.unselectedItemColor) ?? themeData.unselectedWidgetColor)));
+        global::Doroti.Framework.Animation.ColorTween colorTween = default!;
         switch (this._effectiveType)
         {
             case BottomNavigationBarType.@fixed:
                 {
-                    colorTween__36276 = new global::Doroti.Framework.Animation.ColorTween(begin: ((((BottomNavigationBar)this.widget).unselectedItemColor ?? bottomTheme__35153.unselectedItemColor) ?? themeData__35083.unselectedWidgetColor), end: ((((((BottomNavigationBar)this.widget).selectedItemColor ?? bottomTheme__35153.selectedItemColor) ?? (Color)((BottomNavigationBar)this.widget).fixedColor)) ?? themeColor__35222));
+                    colorTween = new global::Doroti.Framework.Animation.ColorTween(begin: ((((BottomNavigationBar)this.widget).unselectedItemColor ?? bottomTheme.unselectedItemColor) ?? themeData.unselectedWidgetColor), end: ((((((BottomNavigationBar)this.widget).selectedItemColor ?? bottomTheme.selectedItemColor) ?? (Color)((BottomNavigationBar)this.widget).fixedColor)) ?? themeColor));
                     break;
                 }
             case BottomNavigationBarType.shifting:
                 {
-                    colorTween__36276 = new global::Doroti.Framework.Animation.ColorTween(begin: ((((BottomNavigationBar)this.widget).unselectedItemColor ?? bottomTheme__35153.unselectedItemColor) ?? themeData__35083.colorScheme.surface), end: ((((BottomNavigationBar)this.widget).selectedItemColor ?? bottomTheme__35153.selectedItemColor) ?? themeData__35083.colorScheme.surface));
+                    colorTween = new global::Doroti.Framework.Animation.ColorTween(begin: ((((BottomNavigationBar)this.widget).unselectedItemColor ?? bottomTheme.unselectedItemColor) ?? themeData.colorScheme.surface), end: ((((BottomNavigationBar)this.widget).selectedItemColor ?? bottomTheme.selectedItemColor) ?? themeData.colorScheme.surface));
                     break;
                 }
         }
-        global::Doroti.Framework.Animation.ColorTween labelColorTween__37147 = default!;
+        global::Doroti.Framework.Animation.ColorTween labelColorTweenLocal = default!;
         switch (this._effectiveType)
         {
             case BottomNavigationBarType.@fixed:
                 {
-                    labelColorTween__37147 = new global::Doroti.Framework.Animation.ColorTween(begin: (((((global::Doroti.Framework.Painting.TextStyle)effectiveUnselectedLabelStyle__35587).color ?? ((BottomNavigationBar)this.widget).unselectedItemColor) ?? bottomTheme__35153.unselectedItemColor) ?? themeData__35083.unselectedWidgetColor), end: (((((((global::Doroti.Framework.Painting.TextStyle)effectiveSelectedLabelStyle__35410).color ?? ((BottomNavigationBar)this.widget).selectedItemColor) ?? bottomTheme__35153.selectedItemColor) ?? (Color)((BottomNavigationBar)this.widget).fixedColor)) ?? themeColor__35222));
+                    labelColorTweenLocal = new global::Doroti.Framework.Animation.ColorTween(begin: (((((global::Doroti.Framework.Painting.TextStyle)effectiveUnselectedLabelStyle).color ?? ((BottomNavigationBar)this.widget).unselectedItemColor) ?? bottomTheme.unselectedItemColor) ?? themeData.unselectedWidgetColor), end: (((((((global::Doroti.Framework.Painting.TextStyle)effectiveSelectedLabelStyle).color ?? ((BottomNavigationBar)this.widget).selectedItemColor) ?? bottomTheme.selectedItemColor) ?? (Color)((BottomNavigationBar)this.widget).fixedColor)) ?? themeColor));
                     break;
                 }
             case BottomNavigationBarType.shifting:
                 {
-                    labelColorTween__37147 = new global::Doroti.Framework.Animation.ColorTween(begin: (((((global::Doroti.Framework.Painting.TextStyle)effectiveUnselectedLabelStyle__35587).color ?? ((BottomNavigationBar)this.widget).unselectedItemColor) ?? bottomTheme__35153.unselectedItemColor) ?? themeData__35083.colorScheme.surface), end: (((((global::Doroti.Framework.Painting.TextStyle)effectiveSelectedLabelStyle__35410).color ?? ((BottomNavigationBar)this.widget).selectedItemColor) ?? bottomTheme__35153.selectedItemColor) ?? themeColor__35222));
+                    labelColorTweenLocal = new global::Doroti.Framework.Animation.ColorTween(begin: (((((global::Doroti.Framework.Painting.TextStyle)effectiveUnselectedLabelStyle).color ?? ((BottomNavigationBar)this.widget).unselectedItemColor) ?? bottomTheme.unselectedItemColor) ?? themeData.colorScheme.surface), end: (((((global::Doroti.Framework.Painting.TextStyle)effectiveSelectedLabelStyle).color ?? ((BottomNavigationBar)this.widget).selectedItemColor) ?? bottomTheme.selectedItemColor) ?? themeColor));
                     break;
                 }
         }
-        global::Doroti.Framework.Animation.ColorTween iconColorTween__38222 = default!;
+        global::Doroti.Framework.Animation.ColorTween iconColorTweenLocal = default!;
         switch (this._effectiveType)
         {
             case BottomNavigationBarType.@fixed:
                 {
-                    iconColorTween__38222 = new global::Doroti.Framework.Animation.ColorTween(begin: (((((global::Doroti.Framework.Widgets.IconThemeData)effectiveSelectedIconTheme__35776).color ?? ((BottomNavigationBar)this.widget).unselectedItemColor) ?? bottomTheme__35153.unselectedItemColor) ?? themeData__35083.unselectedWidgetColor), end: (((((((global::Doroti.Framework.Widgets.IconThemeData)effectiveUnselectedIconTheme__36002).color ?? ((BottomNavigationBar)this.widget).selectedItemColor) ?? bottomTheme__35153.selectedItemColor) ?? (Color)((BottomNavigationBar)this.widget).fixedColor)) ?? themeColor__35222));
+                    iconColorTweenLocal = new global::Doroti.Framework.Animation.ColorTween(begin: (((((global::Doroti.Framework.Widgets.IconThemeData)effectiveSelectedIconTheme).color ?? ((BottomNavigationBar)this.widget).unselectedItemColor) ?? bottomTheme.unselectedItemColor) ?? themeData.unselectedWidgetColor), end: (((((((global::Doroti.Framework.Widgets.IconThemeData)effectiveUnselectedIconTheme).color ?? ((BottomNavigationBar)this.widget).selectedItemColor) ?? bottomTheme.selectedItemColor) ?? (Color)((BottomNavigationBar)this.widget).fixedColor)) ?? themeColor));
                     break;
                 }
             case BottomNavigationBarType.shifting:
                 {
-                    iconColorTween__38222 = new global::Doroti.Framework.Animation.ColorTween(begin: (((((global::Doroti.Framework.Widgets.IconThemeData)effectiveUnselectedIconTheme__36002).color ?? ((BottomNavigationBar)this.widget).unselectedItemColor) ?? bottomTheme__35153.unselectedItemColor) ?? themeData__35083.colorScheme.surface), end: (((((global::Doroti.Framework.Widgets.IconThemeData)effectiveSelectedIconTheme__35776).color ?? ((BottomNavigationBar)this.widget).selectedItemColor) ?? bottomTheme__35153.selectedItemColor) ?? themeColor__35222));
+                    iconColorTweenLocal = new global::Doroti.Framework.Animation.ColorTween(begin: (((((global::Doroti.Framework.Widgets.IconThemeData)effectiveUnselectedIconTheme).color ?? ((BottomNavigationBar)this.widget).unselectedItemColor) ?? bottomTheme.unselectedItemColor) ?? themeData.colorScheme.surface), end: (((((global::Doroti.Framework.Widgets.IconThemeData)effectiveSelectedIconTheme).color ?? ((BottomNavigationBar)this.widget).selectedItemColor) ?? bottomTheme.selectedItemColor) ?? themeColor));
                     break;
                 }
         }
-        var tiles__39279 = new List<global::Doroti.Framework.Widgets.Widget>();
-        for (var i__39312 = 0L; (i__39312 < checked((long)(((BottomNavigationBar)this.widget).items.Count))); i__39312++)
+        var tiles = new List<global::Doroti.Framework.Widgets.Widget>();
+        for (var i = 0L; (i < checked((long)(((BottomNavigationBar)this.widget).items.Count))); i++)
         {
-            var states__39363 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection39372 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((i__39312 == ((BottomNavigationBar)this.widget).currentIndex)) { __collection39372.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection39372; }))();
-            global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor__39464 = ((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((BottomNavigationBar)this.widget).mouseCursor, states__39363) ?? (global::Doroti.Framework.Services.MouseCursor)bottomTheme__35153.mouseCursor?.resolve(states__39363))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(states__39363)));
-            tiles__39279.Add(new _BottomNavigationTile__bottom_navigation_bar(this._effectiveType, ((BottomNavigationBar)this.widget).items[(int)(i__39312)], this._animations[(int)(i__39312)], ((BottomNavigationBar)this.widget).iconSize, key: ((BottomNavigationBar)this.widget).items[(int)(i__39312)].key, selectedIconTheme: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? (((BottomNavigationBar)this.widget).selectedIconTheme ?? bottomTheme__35153.selectedIconTheme) : effectiveSelectedIconTheme__35776), unselectedIconTheme: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? (((BottomNavigationBar)this.widget).unselectedIconTheme ?? bottomTheme__35153.unselectedIconTheme) : effectiveUnselectedIconTheme__36002), selectedLabelStyle: effectiveSelectedLabelStyle__35410, unselectedLabelStyle: effectiveUnselectedLabelStyle__35587, enableFeedback: ((((BottomNavigationBar)this.widget).enableFeedback ?? bottomTheme__35153.enableFeedback) ?? true), onTap: ((global::System.Action)(() =>
+            var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection39372 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((i == ((BottomNavigationBar)this.widget).currentIndex)) { __collection39372.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection39372; }))();
+            global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = ((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((BottomNavigationBar)this.widget).mouseCursor, states) ?? (global::Doroti.Framework.Services.MouseCursor)bottomTheme.mouseCursor?.resolve(states))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(states)));
+            tiles.Add(new _BottomNavigationTile__bottom_navigation_bar(this._effectiveType, ((BottomNavigationBar)this.widget).items[(int)(i)], this._animations[(int)(i)], ((BottomNavigationBar)this.widget).iconSize, key: ((BottomNavigationBar)this.widget).items[(int)(i)].key, selectedIconTheme: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? (((BottomNavigationBar)this.widget).selectedIconTheme ?? bottomTheme.selectedIconTheme) : effectiveSelectedIconTheme), unselectedIconTheme: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? (((BottomNavigationBar)this.widget).unselectedIconTheme ?? bottomTheme.unselectedIconTheme) : effectiveUnselectedIconTheme), selectedLabelStyle: effectiveSelectedLabelStyle, unselectedLabelStyle: effectiveUnselectedLabelStyle, enableFeedback: ((((BottomNavigationBar)this.widget).enableFeedback ?? bottomTheme.enableFeedback) ?? true), onTap: ((global::System.Action)(() =>
             {
-                ((BottomNavigationBar)this.widget).onTap?.Invoke(i__39312);
-            })), labelColorTween: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? colorTween__36276 : labelColorTween__37147), iconColorTween: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? colorTween__36276 : iconColorTween__38222), flex: _evaluateFlex(this._animations[(int)(i__39312)]), selected: (i__39312 == ((BottomNavigationBar)this.widget).currentIndex), showSelectedLabels: ((((BottomNavigationBar)this.widget).showSelectedLabels ?? bottomTheme__35153.showSelectedLabels) ?? true), showUnselectedLabels: (((((BottomNavigationBar)this.widget).showUnselectedLabels ?? bottomTheme__35153.showUnselectedLabels) ?? (bool)this._defaultShowUnselected)), indexLabel: localizations__35011.tabLabel(tabIndex: (i__39312 + 1L), tabCount: checked((long)(((BottomNavigationBar)this.widget).items.Count))), mouseCursor: effectiveMouseCursor__39464, layout: layout));
+                ((BottomNavigationBar)this.widget).onTap?.Invoke(i);
+            })), labelColorTween: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? colorTween : labelColorTweenLocal), iconColorTween: (((BottomNavigationBar)this.widget).useLegacyColorScheme ? colorTween : iconColorTweenLocal), flex: _evaluateFlex(this._animations[(int)(i)]), selected: (i == ((BottomNavigationBar)this.widget).currentIndex), showSelectedLabels: ((((BottomNavigationBar)this.widget).showSelectedLabels ?? bottomTheme.showSelectedLabels) ?? true), showUnselectedLabels: (((((BottomNavigationBar)this.widget).showUnselectedLabels ?? bottomTheme.showUnselectedLabels) ?? (bool)this._defaultShowUnselected)), indexLabel: localizations.tabLabel(tabIndex: (i + 1L), tabCount: checked((long)(((BottomNavigationBar)this.widget).items.Count))), mouseCursor: effectiveMouseCursor, layout: layout));
         }
-        return tiles__39279;
+        return tiles;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -531,11 +531,11 @@ public class _BottomNavigationBarState__bottom_navigation_bar : global::Doroti.F
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasOverlay(context));
-        BottomNavigationBarThemeData bottomTheme__41544 = BottomNavigationBarTheme.of(context);
-        BottomNavigationBarLandscapeLayout layout__41641 = ((((BottomNavigationBar)this.widget).landscapeLayout ?? bottomTheme__41544.landscapeLayout) ?? BottomNavigationBarLandscapeLayout.spread);
-        double additionalBottomPadding__41791 = MediaQuery.viewPaddingOf(context).bottom;
-        global::Doroti.Ui.Color? backgroundColor__41877 = ((global::Doroti.Ui.Color?)(object?)(this._effectiveType switch { BottomNavigationBarType.@fixed => (((BottomNavigationBar)this.widget).backgroundColor ?? bottomTheme__41544.backgroundColor), BottomNavigationBarType.shifting => this._backgroundColor, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: true, child: new _Bar__bottom_navigation_bar(layout: layout__41641, elevation: ((((BottomNavigationBar)this.widget).elevation ?? bottomTheme__41544.elevation) ?? 8.0), color: backgroundColor__41877, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: (ConstantsLibrary.kBottomNavigationBarHeight + additionalBottomPadding__41791)), child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _RadialPainter__bottom_navigation_bar(circles: this._circles.ToList(), textDirection: Directionality.of(context)), child: new Material(type: MaterialType.transparency, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: additionalBottomPadding__41791), child: global::Doroti.Framework.Widgets.MediaQuery.CreateRemovePadding(context: context, removeBottom: true, child: DefaultTextStyle.merge(overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, child: new global::Doroti.Framework.Widgets.Row(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.spaceBetween, children: _createTiles(layout__41641)))))))))));
+        BottomNavigationBarThemeData bottomTheme = BottomNavigationBarTheme.of(context);
+        BottomNavigationBarLandscapeLayout layoutLocal = ((((BottomNavigationBar)this.widget).landscapeLayout ?? bottomTheme.landscapeLayout) ?? BottomNavigationBarLandscapeLayout.spread);
+        double additionalBottomPadding = MediaQuery.viewPaddingOf(context).bottom;
+        global::Doroti.Ui.Color? backgroundColorLocal = ((global::Doroti.Ui.Color?)(object?)(this._effectiveType switch { BottomNavigationBarType.@fixed => (((BottomNavigationBar)this.widget).backgroundColor ?? bottomTheme.backgroundColor), BottomNavigationBarType.shifting => this._backgroundColor, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: true, child: new _Bar__bottom_navigation_bar(layout: layoutLocal, elevation: ((((BottomNavigationBar)this.widget).elevation ?? bottomTheme.elevation) ?? 8.0), color: backgroundColorLocal, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: (ConstantsLibrary.kBottomNavigationBarHeight + additionalBottomPadding)), child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _RadialPainter__bottom_navigation_bar(circles: this._circles.ToList(), textDirection: Directionality.of(context)), child: new Material(type: MaterialType.transparency, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: additionalBottomPadding), child: global::Doroti.Framework.Widgets.MediaQuery.CreateRemovePadding(context: context, removeBottom: true, child: DefaultTextStyle.merge(overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, child: new global::Doroti.Framework.Widgets.Row(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.spaceBetween, children: _createTiles(layoutLocal)))))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -547,16 +547,16 @@ public class _BottomNavigationBarState__bottom_navigation_bar : global::Doroti.F
         }
         DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values__17506 = this._tickerModeNotifier!.value;
-        var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
+        TickerModeData values = this._tickerModeNotifier!.value;
+        var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
     var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values__17506).enabled;
-    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    __cascade.muted = !((TickerModeData)values).enabled;
+    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result__17553);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
+        this._tickers!.Add(result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -578,26 +578,26 @@ public class _BottomNavigationBarState__bottom_navigation_bar : global::Doroti.F
     {
         if ((this._tickers is not null))
         {
-            TickerModeData values__18318 = this._tickerModeNotifier!.value;
-            bool muted__18372 = !((TickerModeData)values__18318).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
+            TickerModeData values = this._tickerModeNotifier!.value;
+            bool mutedLocal = !((TickerModeData)values).enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
             {
-                ticker__18421.muted = muted__18372;
-                ticker__18421.forceFrames = ((TickerModeData)values__18318).forceFrames;
+                ticker.muted = mutedLocal;
+                ticker.forceFrames = ((TickerModeData)values).forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__18621, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
-        this._tickerModeNotifier = newNotifier__18621;
+        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -625,12 +625,12 @@ internal class _Bar__bottom_navigation_bar : global::Doroti.Framework.Widgets.St
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget alignedChild__43826 = this.child;
+        global::Doroti.Framework.Widgets.Widget alignedChild = this.child;
         if (((object.Equals(MediaQuery.orientationOf(context), global::Doroti.Framework.Widgets.Orientation.landscape)) && (object.Equals(this.layout, BottomNavigationBarLandscapeLayout.centered))))
         {
-            alignedChild__43826 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.Alignment.bottomCenter, heightFactor: 1, child: new global::Doroti.Framework.Widgets.SizedBox(width: MediaQuery.heightOf(context), child: this.child)));
+            alignedChild = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.Alignment.bottomCenter, heightFactor: 1, child: new global::Doroti.Framework.Widgets.SizedBox(width: MediaQuery.heightOf(context), child: this.child)));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(elevation: this.elevation, color: this.color, child: alignedChild__43826));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(elevation: this.elevation, color: this.color, child: alignedChild));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -663,9 +663,9 @@ public class _Circle__bottom_navigation_bar
                 return System.Linq.Enumerable.Aggregate(animations.map<global::Doroti.Framework.Animation.Animation<double>, double>(((_BottomNavigationBarState__bottom_navigation_bar)this.state)._evaluateFlex), (double)0.0, ((sum, value) => (sum + value)));
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
-            double allWeights__45167 = weightSum(((_BottomNavigationBarState__bottom_navigation_bar)this.state)._animations.Cast<global::Doroti.Framework.Animation.Animation<double>>());
-            double leadingWeights__45291 = weightSum(((_BottomNavigationBarState__bottom_navigation_bar)this.state)._animations.GetRange(0L, this.index).Cast<global::Doroti.Framework.Animation.Animation<double>>());
-            return (((leadingWeights__45291 + (this.state._evaluateFlex(((_BottomNavigationBarState__bottom_navigation_bar)this.state)._animations[(int)(this.index)]) / 2.0))) / allWeights__45167);
+            double allWeights = weightSum(((_BottomNavigationBarState__bottom_navigation_bar)this.state)._animations.Cast<global::Doroti.Framework.Animation.Animation<double>>());
+            double leadingWeights = weightSum(((_BottomNavigationBarState__bottom_navigation_bar)this.state)._animations.GetRange(0L, this.index).Cast<global::Doroti.Framework.Animation.Animation<double>>());
+            return (((leadingWeights + (this.state._evaluateFlex(((_BottomNavigationBarState__bottom_navigation_bar)this.state)._animations[(int)(this.index)]) / 2.0))) / allWeights);
             return default!;
         }
     }
@@ -690,9 +690,9 @@ internal class _RadialPainter__bottom_navigation_bar : global::Doroti.Framework.
 
     internal static double _maxRadius(Offset center, Size size)
     {
-        double maxX__46182 = Math.Max(center.dx, (size.width - center.dx));
-        double maxY__46251 = Math.Max(center.dy, (size.height - center.dy));
-        return global::Doroti.Runtime.Dart_mathLibrary.sqrt(((maxX__46182 * maxX__46182) + (maxY__46251 * maxY__46251)));
+        double maxX = Math.Max(center.dx, (size.width - center.dx));
+        double maxY = Math.Max(center.dy, (size.height - center.dy));
+        return global::Doroti.Runtime.Dart_mathLibrary.sqrt(((maxX * maxX) + (maxY * maxY)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -711,9 +711,9 @@ internal class _RadialPainter__bottom_navigation_bar : global::Doroti.Framework.
         {
             return true;
         }
-        for (var i__46658 = 0L; (i__46658 < checked((long)(this.circles.Count))); i__46658 += 1L)
+        for (var i = 0L; (i < checked((long)(this.circles.Count))); i += 1L)
         {
-            if ((!object.Equals(this.circles[(int)(i__46658)], ((_RadialPainter__bottom_navigation_bar)__oldPainter).circles[(int)(i__46658)])))
+            if ((!object.Equals(this.circles[(int)(i)], ((_RadialPainter__bottom_navigation_bar)__oldPainter).circles[(int)(i)])))
             {
                 return true;
             }
@@ -724,20 +724,20 @@ internal class _RadialPainter__bottom_navigation_bar : global::Doroti.Framework.
 
     public override void paint(Canvas canvas, Size size)
     {
-        foreach (_Circle__bottom_navigation_bar circle__46878 in this.circles)
+        foreach (_Circle__bottom_navigation_bar circle in this.circles)
         {
-            var paint__46911 = ((Func<Paint>)(() =>
+            var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = ((_Circle__bottom_navigation_bar)circle__46878).color;
+    __cascade.color = ((_Circle__bottom_navigation_bar)circle).color;
     return __cascade;
 }))();
-            var rect__46962 = global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, size.width, size.height);
-            canvas.clipRect(rect__46962);
-            double leftFraction__47067 = (this.textDirection switch { TextDirection.rtl => (1.0 - ((_Circle__bottom_navigation_bar)circle__46878).horizontalLeadingOffset), TextDirection.ltr => ((_Circle__bottom_navigation_bar)circle__46878).horizontalLeadingOffset, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            var center__47256 = new global::Doroti.Ui.Offset((leftFraction__47067 * size.width), (size.height / 2.0));
-            var radiusTween__47331 = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: _RadialPainter__bottom_navigation_bar._maxRadius(center__47256, size));
-            canvas.drawCircle(center__47256, radiusTween__47331.transform(((_Circle__bottom_navigation_bar)circle__46878).animation.value), paint__46911);
+            var rect = global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, size.width, size.height);
+            canvas.clipRect(rect);
+            double leftFraction = (this.textDirection switch { TextDirection.rtl => (1.0 - ((_Circle__bottom_navigation_bar)circle).horizontalLeadingOffset), TextDirection.ltr => ((_Circle__bottom_navigation_bar)circle).horizontalLeadingOffset, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            var center = new global::Doroti.Ui.Offset((leftFraction * size.width), (size.height / 2.0));
+            var radiusTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: _RadialPainter__bottom_navigation_bar._maxRadius(center, size));
+            canvas.drawCircle(center, radiusTween.transform(((_Circle__bottom_navigation_bar)circle).animation.value), paintLocal);
         }
     }
 

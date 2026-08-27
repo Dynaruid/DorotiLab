@@ -135,13 +135,13 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
         {
             return;
         }
-        T nextValue__6012 = ((((UndoHistory<T>)(object)this.widget).undoStackModifier is null ? ((UndoHistory<T>)(object)this.widget).value.value : ((UndoHistory<T>)(object)this.widget).undoStackModifier.Invoke(((UndoHistory<T>)(object)this.widget).value.value)));
-        if (EqualityComparer<T>.Default.Equals(nextValue__6012, this._lastValue))
+        T nextValue = ((((UndoHistory<T>)(object)this.widget).undoStackModifier is null ? ((UndoHistory<T>)(object)this.widget).value.value : ((UndoHistory<T>)(object)this.widget).undoStackModifier.Invoke(((UndoHistory<T>)(object)this.widget).value.value)));
+        if (EqualityComparer<T>.Default.Equals(nextValue, this._lastValue))
         {
             return;
         }
-        _lastValue = nextValue__6012;
-        _throttleTimer = this._throttledPush(nextValue__6012);
+        _lastValue = nextValue;
+        _throttleTimer = this._throttledPush(nextValue);
     }
 
     internal virtual void _handleFocus()
@@ -387,21 +387,21 @@ public static partial class Undo_historyLibrary
 {
     internal static global::System.Func<T, Timer> _throttle<T>(Duration duration, global::System.Action<T> function)
     {
-        Timer? timer__14360 = default!;
-        T arg__14376 = default!;
+        Timer? timer = default!;
+        T arg = default!;
         return ((global::System.Func<T, Timer>)((currentArg) =>
         {
-            arg__14376 = currentArg;
-            if (((timer__14360 is not null) && timer__14360!.isActive))
+            arg = currentArg;
+            if (((timer is not null) && timer!.isActive))
             {
-                return timer__14360!;
+                return timer!;
             }
-            timer__14360 = new Timer(duration, (() =>
+            timer = new Timer(duration, (() =>
             {
-                function(arg__14376);
-                timer__14360 = null;
+                function(arg);
+                timer = null;
             }));
-            return timer__14360!;
+            return timer!;
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
         throw new InvalidOperationException("Dart control flow completed without a value.");

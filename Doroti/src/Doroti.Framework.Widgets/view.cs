@@ -39,19 +39,19 @@ public class View : StatefulWidget
 
     public static global::Doroti.Ui.DorotiView of(BuildContext context)
     {
-        global::Doroti.Ui.DorotiView? result__7300 = ((global::Doroti.Ui.DorotiView?)(object?)View.maybeOf(context));
+        global::Doroti.Ui.DorotiView? result = ((global::Doroti.Ui.DorotiView?)(object?)View.maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((result__7300 is null))
+                if ((result is null))
                 {
-                    bool hiddenByBoundary__7390 = LookupBoundary.debugIsHidingAncestorWidgetOfExactType<_ViewScope__view>(context);
-                    var information__7511 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorDescription("The context used was:\n" + $"  {context}"), new global::Doroti.Framework.Foundation.ErrorHint("This usually means that the provided context is not associated with a View.") };
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(information__7511));
+                    bool hiddenByBoundary = LookupBoundary.debugIsHidingAncestorWidgetOfExactType<_ViewScope__view>(context);
+                    var information = new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorDescription("The context used was:\n" + $"  {context}"), new global::Doroti.Framework.Foundation.ErrorHint("This usually means that the provided context is not associated with a View.") };
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(information));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((global::Doroti.Ui.DorotiView)(object?)result__7300!);
+        return ((global::Doroti.Ui.DorotiView)(object?)result!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -101,7 +101,7 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
         {
             return;
         }
-        FocusNode nextFocus__10570 = default!;
+        FocusNode nextFocus = default!;
         switch (@event.state)
         {
             case var __constant10619 when (object.Equals(__constant10619, global::Doroti.Ui.ViewFocusState.focused)):
@@ -110,21 +110,21 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
                     {
                         case var __constant10693 when (object.Equals(__constant10693, global::Doroti.Ui.ViewFocusDirection.forward)):
                             {
-                                nextFocus__10570 = (this._policy.findFirstFocus(this._scopeNode, ignoreCurrentFocus: true) ?? this._scopeNode);
+                                nextFocus = (this._policy.findFirstFocus(this._scopeNode, ignoreCurrentFocus: true) ?? this._scopeNode);
                                 break;
                             }
                         case var __constant10836 when (object.Equals(__constant10836, global::Doroti.Ui.ViewFocusDirection.backward)):
                             {
-                                nextFocus__10570 = this._policy.findLastFocus(this._scopeNode, ignoreCurrentFocus: true);
+                                nextFocus = this._policy.findLastFocus(this._scopeNode, ignoreCurrentFocus: true);
                                 break;
                             }
                         case var __constant10965 when (object.Equals(__constant10965, global::Doroti.Ui.ViewFocusDirection.undefined)):
                             {
-                                nextFocus__10570 = DartRuntimePrimitives.ConvertValue<FocusNode>(this._scopeNode);
+                                nextFocus = DartRuntimePrimitives.ConvertValue<FocusNode>(this._scopeNode);
                                 break;
                             }
                     }
-                    nextFocus__10570.requestFocus();
+                    nextFocus.requestFocus();
                     break;
                 }
             case var __constant11086 when (object.Equals(__constant11086, global::Doroti.Ui.ViewFocusState.unfocused)):
@@ -243,16 +243,16 @@ internal class _RawViewElement__view : RenderTreeRootElement
     {
         try
         {
-            Widget child__20598 = (((_RawViewInternal__view?)(object?)this.widget)!).builder(this, this._effectivePipelineOwner);
-            _child = updateChild(this._child, child__20598, null);
+            Widget child = (((_RawViewInternal__view?)(object?)this.widget)!).builder(this, this._effectivePipelineOwner);
+            _child = updateChild(this._child, child, null);
         }
-        catch (Exception e__20737)
+        catch (Exception e)
         {
-            var stack__20740 = new System.Diagnostics.StackTrace();
-            var details__20761 = new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: e__20737, stack: stack__20740, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"building {this}"), informationCollector: ((InformationCollector)(!global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? null : (() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Rendering.DiagnosticsDebugCreator(new DebugCreator(this)) }))));
-            FlutterError.reportError(details__20761);
-            Widget error__21139 = ErrorWidget.builder(details__20761);
-            _child = updateChild(((Element)(object)null), error__21139, this.slot);
+            var stackLocal = new System.Diagnostics.StackTrace();
+            var details = new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: e, stack: stackLocal, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"building {this}"), informationCollector: ((InformationCollector)(!global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? null : (() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Rendering.DiagnosticsDebugCreator(new DebugCreator(this)) }))));
+            FlutterError.reportError(details);
+            Widget error = ErrorWidget.builder(details);
+            _child = updateChild(((Element)(object)null), error, this.slot);
         }
     }
 
@@ -281,11 +281,11 @@ internal class _RawViewElement__view : RenderTreeRootElement
 
     internal virtual void _detachView()
     {
-        global::Doroti.Framework.Rendering.PipelineOwner? parentPipelineOwner__22095 = this._parentPipelineOwner;
-        if ((parentPipelineOwner__22095 is not null))
+        global::Doroti.Framework.Rendering.PipelineOwner? parentPipelineOwner = this._parentPipelineOwner;
+        if ((parentPipelineOwner is not null))
         {
             global::Doroti.Framework.Rendering.RendererBinding.instance.removeRenderView(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderView>(this.renderObject));
-            parentPipelineOwner__22095.dropChild(this._effectivePipelineOwner);
+            parentPipelineOwner.dropChild(this._effectivePipelineOwner);
             _parentPipelineOwner = null;
         }
     }
@@ -297,11 +297,11 @@ internal class _RawViewElement__view : RenderTreeRootElement
         {
             return;
         }
-        global::Doroti.Framework.Rendering.PipelineOwner newParentPipelineOwner__22513 = ((global::Doroti.Framework.Rendering.PipelineOwner)(object?)View.pipelineOwnerOf(this));
-        if ((!object.Equals(newParentPipelineOwner__22513, this._parentPipelineOwner)))
+        global::Doroti.Framework.Rendering.PipelineOwner newParentPipelineOwner = ((global::Doroti.Framework.Rendering.PipelineOwner)(object?)View.pipelineOwnerOf(this));
+        if ((!object.Equals(newParentPipelineOwner, this._parentPipelineOwner)))
         {
             _detachView();
-            _attachView(newParentPipelineOwner__22513);
+            _attachView(newParentPipelineOwner);
         }
     }
 
@@ -460,9 +460,9 @@ internal class _MultiChildComponentElement__view : Element
 
     internal virtual bool _debugAssertChildren()
     {
-        var typedWidget__29063 = ((_MultiChildComponentWidget__view?)(object?)this.widget)!;
-        DartRuntimePrimitives.Assert(() => (checked((long)(this._viewElements.Count)) == checked((long)(((_MultiChildComponentWidget__view)typedWidget__29063)._views.Count))));
-        DartRuntimePrimitives.Assert(() => (((this._childElement is null)) == ((((_MultiChildComponentWidget__view)typedWidget__29063)._child is null))));
+        var typedWidget = ((_MultiChildComponentWidget__view?)(object?)this.widget)!;
+        DartRuntimePrimitives.Assert(() => (checked((long)(this._viewElements.Count)) == checked((long)(((_MultiChildComponentWidget__view)typedWidget)._views.Count))));
+        DartRuntimePrimitives.Assert(() => (((this._childElement is null)) == ((((_MultiChildComponentWidget__view)typedWidget)._child is null))));
         DartRuntimePrimitives.Assert(() => !this._viewElements.Contains(this._childElement));
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -496,24 +496,24 @@ internal class _MultiChildComponentElement__view : Element
         {
             return true;
         }
-        var hasAncestorRenderObjectElement__30315 = false;
-        var ancestorWantsRenderObject__30363 = true;
+        var hasAncestorRenderObjectElement = false;
+        var ancestorWantsRenderObject = true;
         visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
         {
             if (!ancestor.debugExpectsRenderObjectForSlot(slot))
             {
-                ancestorWantsRenderObject__30363 = false;
+                ancestorWantsRenderObject = false;
                 return false;
             }
             if ((ancestor is RenderObjectElement))
             {
-                hasAncestorRenderObjectElement__30315 = true;
+                hasAncestorRenderObjectElement = true;
                 return false;
             }
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        if ((hasAncestorRenderObjectElement__30315 && ancestorWantsRenderObject__30363))
+        if ((hasAncestorRenderObjectElement && ancestorWantsRenderObject))
         {
             FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"The Element for {toStringShort()} cannot be inserted into slot \"{slot}\" of its ancestor. "), new global::Doroti.Framework.Foundation.ErrorDescription($"The ownership chain for the Element in question was:\n  {debugGetCreatorChain(10L)}"), new global::Doroti.Framework.Foundation.ErrorDescription("This Element allows the creation of multiple independent render trees, which cannot " + "be attached to an ancestor in an existing render tree. However, an ancestor RenderObject " + "is expecting that a child will be attached."), new global::Doroti.Framework.Foundation.ErrorHint($"Try moving the subtree that contains the {toStringShort()} widget into the " + "view property of a ViewAnchor widget or to the root of the widget tree, where " + "it is not expected to attach its RenderObject to its ancestor.") })));
         }
@@ -533,10 +533,10 @@ internal class _MultiChildComponentElement__view : Element
     public override bool debugExpectsRenderObjectForSlot(object? slot) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(slot, _viewSlot)));
     public override void performRebuild()
     {
-        var typedWidget__32409 = ((_MultiChildComponentWidget__view?)(object?)this.widget)!;
-        _childElement = updateChild(this._childElement, ((_MultiChildComponentWidget__view)typedWidget__32409)._child, this.slot);
-        List<Widget> views__32560 = ((_MultiChildComponentWidget__view)typedWidget__32409)._views.ToList();
-        _viewElements = updateChildren(this._viewElements, views__32560, forgottenChildren: this._forgottenViewElements, slots: new List<object>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(views__32560.Count)))), ((_) => _viewSlot))));
+        var typedWidget = ((_MultiChildComponentWidget__view?)(object?)this.widget)!;
+        _childElement = updateChild(this._childElement, ((_MultiChildComponentWidget__view)typedWidget)._child, this.slot);
+        List<Widget> views = ((_MultiChildComponentWidget__view)typedWidget)._views.ToList();
+        _viewElements = updateChildren(this._viewElements, views, forgottenChildren: this._forgottenViewElements, slots: new List<object>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(views.Count)))), ((_) => _viewSlot))));
         this._forgottenViewElements.Clear();
         base.performRebuild();
         DartRuntimePrimitives.Assert(() => _debugAssertChildren());
@@ -563,11 +563,11 @@ internal class _MultiChildComponentElement__view : Element
         {
             visitor(this._childElement!);
         }
-        foreach (Element child__33370 in this._viewElements)
+        foreach (Element child in this._viewElements)
         {
-            if (!this._forgottenViewElements.Contains(child__33370))
+            if (!this._forgottenViewElements.Contains(child))
             {
-                visitor(child__33370);
+                visitor(child);
             }
         }
     }

@@ -99,10 +99,10 @@ public class RenderDecoratedSliver : RenderProxySliver
         {
             return;
         }
-        global::Doroti.Ui.Rect paintRect__2850 = getMaxPaintRect();
+        global::Doroti.Ui.Rect paintRect = getMaxPaintRect();
         void paintDecoration()
         {
-            this._painter!.paint(((PaintingContext)context).canvas, (offset + paintRect__2850.topLeft), this.configuration.copyWith(size: paintRect__2850.size));
+            this._painter!.paint(((PaintingContext)context).canvas, (offset + paintRect.topLeft), this.configuration.copyWith(size: paintRect.size));
         }
         switch (this.position)
         {

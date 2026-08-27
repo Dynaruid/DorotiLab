@@ -47,9 +47,9 @@ public class DecoratedBox : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string label__3031 = (this.position switch { global::Doroti.Framework.Rendering.DecorationPosition.background => "bg", global::Doroti.Framework.Rendering.DecorationPosition.foreground => "fg", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        string label = (this.position switch { global::Doroti.Framework.Rendering.DecorationPosition.background => "bg", global::Doroti.Framework.Rendering.DecorationPosition.foreground => "fg", _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.DecorationPosition>("position", this.position, level: global::Doroti.Framework.Foundation.DiagnosticLevel.hidden));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>(label__3031, this.decoration));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.Decoration>(label, this.decoration));
     }
 
 }
@@ -107,53 +107,53 @@ public class Container : StatelessWidget
     }
     public override Widget build(BuildContext context)
     {
-        Widget? current__14769 = this.child;
+        Widget? current = this.child;
         if (((this.child is null) && (((this.constraints is null) || !this.constraints!.isTight))))
         {
-            current__14769 = DartRuntimePrimitives.ConvertValue<Widget>(new LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: new ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateExpand())));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new LimitedBox(maxWidth: 0.0, maxHeight: 0.0, child: new ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateExpand())));
         }
         else
         {
             if ((this.alignment is not null))
             {
-                current__14769 = DartRuntimePrimitives.ConvertValue<Widget>(new Align(alignment: this.alignment!, child: current__14769));
+                current = DartRuntimePrimitives.ConvertValue<Widget>(new Align(alignment: this.alignment!, child: current));
             }
         }
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding__15156 = this._paddingIncludingDecoration;
-        if ((effectivePadding__15156 is not null))
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = this._paddingIncludingDecoration;
+        if ((effectivePadding is not null))
         {
-            current__14769 = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: effectivePadding__15156, child: current__14769));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: effectivePadding, child: current));
         }
         if ((this.color is not null))
         {
-            current__14769 = DartRuntimePrimitives.ConvertValue<Widget>(new ColoredBox(color: this.color!, isAntiAlias: this.isAntiAlias, child: current__14769));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new ColoredBox(color: this.color!, isAntiAlias: this.isAntiAlias, child: current));
         }
         if ((!object.Equals(this.clipBehavior, Clip.none)))
         {
             DartRuntimePrimitives.Assert(() => (this.decoration is not null));
-            current__14769 = DartRuntimePrimitives.ConvertValue<Widget>(new ClipPath(clipper: new _DecorationClipper__container(textDirection: Directionality.maybeOf(context), decoration: this.decoration!), clipBehavior: this.clipBehavior, child: current__14769));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new ClipPath(clipper: new _DecorationClipper__container(textDirection: Directionality.maybeOf(context), decoration: this.decoration!), clipBehavior: this.clipBehavior, child: current));
         }
         if ((this.decoration is not null))
         {
-            current__14769 = DartRuntimePrimitives.ConvertValue<Widget>(new DecoratedBox(decoration: this.decoration!, child: current__14769));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new DecoratedBox(decoration: this.decoration!, child: current));
         }
         if ((this.foregroundDecoration is not null))
         {
-            current__14769 = DartRuntimePrimitives.ConvertValue<Widget>(new DecoratedBox(decoration: this.foregroundDecoration!, position: global::Doroti.Framework.Rendering.DecorationPosition.foreground, child: current__14769));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new DecoratedBox(decoration: this.foregroundDecoration!, position: global::Doroti.Framework.Rendering.DecorationPosition.foreground, child: current));
         }
         if ((this.constraints is not null))
         {
-            current__14769 = DartRuntimePrimitives.ConvertValue<Widget>(new ConstrainedBox(constraints: this.constraints!, child: current__14769));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new ConstrainedBox(constraints: this.constraints!, child: current));
         }
         if ((this.margin is not null))
         {
-            current__14769 = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: this.margin!, child: current__14769));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new Padding(padding: this.margin!, child: current));
         }
         if ((this.transform is not null))
         {
-            current__14769 = DartRuntimePrimitives.ConvertValue<Widget>(new Transform(transform: this.transform!, alignment: this.transformAlignment, child: current__14769));
+            current = DartRuntimePrimitives.ConvertValue<Widget>(new Transform(transform: this.transform!, alignment: this.transformAlignment, child: current));
         }
-        return current__14769!;
+        return current!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

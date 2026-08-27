@@ -276,14 +276,14 @@ internal class _SelectableTextState__selectable_text : global::Doroti.Framework.
 
     internal virtual void _onControllerChanged()
     {
-        bool showSelectionHandles__20544 = (!((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus || !this._controller.selection.isCollapsed);
-        if ((showSelectionHandles__20544 == this._showSelectionHandles))
+        bool showSelectionHandles = (!((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus || !this._controller.selection.isCollapsed);
+        if ((showSelectionHandles == this._showSelectionHandles))
         {
             return;
         }
         setState(((global::System.Action)(() =>
         {
-            _showSelectionHandles = showSelectionHandles__20544;
+            _showSelectionHandles = showSelectionHandles;
         })));
     }
 
@@ -297,12 +297,12 @@ internal class _SelectableTextState__selectable_text : global::Doroti.Framework.
 
     internal virtual void _handleSelectionChanged(global::Doroti.Framework.Services.TextSelection selection, global::Doroti.Framework.Services.SelectionChangedCause? cause)
     {
-        bool willShowSelectionHandles__21638 = _shouldShowSelectionHandles(cause);
-        if ((willShowSelectionHandles__21638 != this._showSelectionHandles))
+        bool willShowSelectionHandles = _shouldShowSelectionHandles(cause);
+        if ((willShowSelectionHandles != this._showSelectionHandles))
         {
             setState(((global::System.Action)(() =>
             {
-                _showSelectionHandles = willShowSelectionHandles__21638;
+                _showSelectionHandles = willShowSelectionHandles;
             })));
         }
         ((SelectableText)this.widget).onSelectionChanged?.Invoke(selection, cause);
@@ -366,79 +366,79 @@ internal class _SelectableTextState__selectable_text : global::Doroti.Framework.
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         DartRuntimePrimitives.Assert(() => !((((((SelectableText)this.widget).style is not null) && !((SelectableText)this.widget).style!.inherit) && (((((SelectableText)this.widget).style!.fontSize is null) || (((SelectableText)this.widget).style!.textBaseline is null))))), () => (object?)"inherit false style must supply fontSize and textBaseline");
-        ThemeData theme__23957 = Theme.of(context);
-        global::Doroti.Framework.Widgets.DefaultSelectionStyle selectionStyle__24016 = ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)(object?)DefaultSelectionStyle.of(context));
-        global::Doroti.Framework.Widgets.FocusNode focusNode__24088 = this._effectiveFocusNode;
-        global::Doroti.Framework.Widgets.TextSelectionControls? textSelectionControls__24149 = ((SelectableText)this.widget).selectionControls;
-        bool paintCursorAboveText__24214 = default!;
-        bool cursorOpacityAnimates__24251 = default!;
-        global::Doroti.Ui.Offset? cursorOffset__24286 = default!;
-        global::Doroti.Ui.Color cursorColor__24316 = default!;
-        global::Doroti.Ui.Color selectionColor__24345 = default!;
-        global::Doroti.Ui.Radius? cursorRadius__24373 = ((global::Doroti.Ui.Radius?)(object?)((SelectableText)this.widget).cursorRadius);
-        switch (theme__23957.platform)
+        ThemeData theme = Theme.of(context);
+        global::Doroti.Framework.Widgets.DefaultSelectionStyle selectionStyle = ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)(object?)DefaultSelectionStyle.of(context));
+        global::Doroti.Framework.Widgets.FocusNode focusNodeLocal = this._effectiveFocusNode;
+        global::Doroti.Framework.Widgets.TextSelectionControls? textSelectionControls = ((SelectableText)this.widget).selectionControls;
+        bool paintCursorAboveTextLocal = default!;
+        bool cursorOpacityAnimatesLocal = default!;
+        global::Doroti.Ui.Offset? cursorOffsetLocal = default!;
+        global::Doroti.Ui.Color cursorColorLocal = default!;
+        global::Doroti.Ui.Color selectionColorLocal = default!;
+        global::Doroti.Ui.Radius? cursorRadiusLocal = ((global::Doroti.Ui.Radius?)(object?)((SelectableText)this.widget).cursorRadius);
+        switch (theme.platform)
         {
             case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
                 {
-                    CupertinoThemeData cupertinoTheme__24504 = CupertinoTheme.of(context);
+                    CupertinoThemeData cupertinoTheme = CupertinoTheme.of(context);
                     forcePressEnabled = true;
-                    textSelectionControls__24149 ??= Text_selectionLibrary.materialTextSelectionHandleControls;
-                    paintCursorAboveText__24214 = true;
-                    cursorOpacityAnimates__24251 = true;
-                    cursorColor__24316 = ((((SelectableText)this.widget).cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__24016).cursorColor) ?? cupertinoTheme__24504.primaryColor);
-                    selectionColor__24345 = (((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__24016).selectionColor ?? cupertinoTheme__24504.primaryColor.withOpacity(0.4));
-                    cursorRadius__24373 ??= global::Doroti.Ui.Radius.circular(2.0);
-                    cursorOffset__24286 = new global::Doroti.Ui.Offset((Selectable_textLibrary.iOSHorizontalOffset / MediaQuery.devicePixelRatioOf(context)), 0);
+                    textSelectionControls ??= Text_selectionLibrary.materialTextSelectionHandleControls;
+                    paintCursorAboveTextLocal = true;
+                    cursorOpacityAnimatesLocal = true;
+                    cursorColorLocal = ((((SelectableText)this.widget).cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle).cursorColor) ?? cupertinoTheme.primaryColor);
+                    selectionColorLocal = (((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle).selectionColor ?? cupertinoTheme.primaryColor.withOpacity(0.4));
+                    cursorRadiusLocal ??= global::Doroti.Ui.Radius.circular(2.0);
+                    cursorOffsetLocal = new global::Doroti.Ui.Offset((Selectable_textLibrary.iOSHorizontalOffset / MediaQuery.devicePixelRatioOf(context)), 0);
                     break;
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                 {
-                    CupertinoThemeData cupertinoTheme__25178 = CupertinoTheme.of(context);
+                    CupertinoThemeData cupertinoThemeLocal = CupertinoTheme.of(context);
                     forcePressEnabled = false;
-                    textSelectionControls__24149 ??= Desktop_text_selectionLibrary.desktopTextSelectionHandleControls;
-                    paintCursorAboveText__24214 = true;
-                    cursorOpacityAnimates__24251 = true;
-                    cursorColor__24316 = ((((SelectableText)this.widget).cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__24016).cursorColor) ?? cupertinoTheme__25178.primaryColor);
-                    selectionColor__24345 = (((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__24016).selectionColor ?? cupertinoTheme__25178.primaryColor.withOpacity(0.4));
-                    cursorRadius__24373 ??= global::Doroti.Ui.Radius.circular(2.0);
-                    cursorOffset__24286 = new global::Doroti.Ui.Offset((Selectable_textLibrary.iOSHorizontalOffset / MediaQuery.devicePixelRatioOf(context)), 0);
+                    textSelectionControls ??= Desktop_text_selectionLibrary.desktopTextSelectionHandleControls;
+                    paintCursorAboveTextLocal = true;
+                    cursorOpacityAnimatesLocal = true;
+                    cursorColorLocal = ((((SelectableText)this.widget).cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle).cursorColor) ?? cupertinoThemeLocal.primaryColor);
+                    selectionColorLocal = (((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle).selectionColor ?? cupertinoThemeLocal.primaryColor.withOpacity(0.4));
+                    cursorRadiusLocal ??= global::Doroti.Ui.Radius.circular(2.0);
+                    cursorOffsetLocal = new global::Doroti.Ui.Offset((Selectable_textLibrary.iOSHorizontalOffset / MediaQuery.devicePixelRatioOf(context)), 0);
                     break;
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.android:
             case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
                 {
                     forcePressEnabled = false;
-                    textSelectionControls__24149 ??= Text_selectionLibrary.materialTextSelectionHandleControls;
-                    paintCursorAboveText__24214 = false;
-                    cursorOpacityAnimates__24251 = false;
-                    cursorColor__24316 = ((((SelectableText)this.widget).cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__24016).cursorColor) ?? theme__23957.colorScheme.primary);
-                    selectionColor__24345 = (((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__24016).selectionColor ?? theme__23957.colorScheme.primary.withOpacity(0.4));
+                    textSelectionControls ??= Text_selectionLibrary.materialTextSelectionHandleControls;
+                    paintCursorAboveTextLocal = false;
+                    cursorOpacityAnimatesLocal = false;
+                    cursorColorLocal = ((((SelectableText)this.widget).cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle).cursorColor) ?? theme.colorScheme.primary);
+                    selectionColorLocal = (((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle).selectionColor ?? theme.colorScheme.primary.withOpacity(0.4));
                     break;
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.linux:
             case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                 {
                     forcePressEnabled = false;
-                    textSelectionControls__24149 ??= Desktop_text_selectionLibrary.desktopTextSelectionHandleControls;
-                    paintCursorAboveText__24214 = false;
-                    cursorOpacityAnimates__24251 = false;
-                    cursorColor__24316 = ((((SelectableText)this.widget).cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__24016).cursorColor) ?? theme__23957.colorScheme.primary);
-                    selectionColor__24345 = (((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle__24016).selectionColor ?? theme__23957.colorScheme.primary.withOpacity(0.4));
+                    textSelectionControls ??= Desktop_text_selectionLibrary.desktopTextSelectionHandleControls;
+                    paintCursorAboveTextLocal = false;
+                    cursorOpacityAnimatesLocal = false;
+                    cursorColorLocal = ((((SelectableText)this.widget).cursorColor ?? ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle).cursorColor) ?? theme.colorScheme.primary);
+                    selectionColorLocal = (((global::Doroti.Framework.Widgets.DefaultSelectionStyle)selectionStyle).selectionColor ?? theme.colorScheme.primary.withOpacity(0.4));
                     break;
                 }
         }
-        global::Doroti.Framework.Widgets.DefaultTextStyle defaultTextStyle__26764 = ((global::Doroti.Framework.Widgets.DefaultTextStyle)(object?)DefaultTextStyle.of(context));
-        global::Doroti.Framework.Painting.TextStyle? effectiveTextStyle__26828 = ((SelectableText)this.widget).style;
-        if (((effectiveTextStyle__26828 is null) || ((global::Doroti.Framework.Painting.TextStyle)effectiveTextStyle__26828).inherit))
+        global::Doroti.Framework.Widgets.DefaultTextStyle defaultTextStyle = ((global::Doroti.Framework.Widgets.DefaultTextStyle)(object?)DefaultTextStyle.of(context));
+        global::Doroti.Framework.Painting.TextStyle? effectiveTextStyle = ((SelectableText)this.widget).style;
+        if (((effectiveTextStyle is null) || ((global::Doroti.Framework.Painting.TextStyle)effectiveTextStyle).inherit))
         {
-            effectiveTextStyle__26828 = ((global::Doroti.Framework.Widgets.DefaultTextStyle)defaultTextStyle__26764).style.merge((((SelectableText)this.widget).style ?? ((_TextSpanEditingController__selectable_text)this._controller)._textSpan.style));
+            effectiveTextStyle = ((global::Doroti.Framework.Widgets.DefaultTextStyle)defaultTextStyle).style.merge((((SelectableText)this.widget).style ?? ((_TextSpanEditingController__selectable_text)this._controller)._textSpan.style));
         }
-        global::Doroti.Framework.Painting.TextScaler? effectiveScaler__27078 = (((SelectableText)this.widget).textScaler ?? (((SelectableText)this.widget).textScaleFactor switch { null => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.TextScaler>(null), double textScaleFactor__27214 => global::Doroti.Framework.Painting.TextScaler.CreateLinear(textScaleFactor__27214) }));
-        global::Doroti.Framework.Widgets.Widget child__27297 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RepaintBoundary(child: new global::Doroti.Framework.Widgets.EditableText(key: this.editableTextKey, style: effectiveTextStyle__26828, readOnly: true, toolbarOptions: ((SelectableText)this.widget).toolbarOptions, textWidthBasis: (((SelectableText)this.widget).textWidthBasis ?? ((global::Doroti.Framework.Widgets.DefaultTextStyle)defaultTextStyle__26764).textWidthBasis), textHeightBehavior: (((SelectableText)this.widget).textHeightBehavior ?? ((global::Doroti.Framework.Widgets.DefaultTextStyle)defaultTextStyle__26764).textHeightBehavior), showSelectionHandles: this._showSelectionHandles, showCursor: ((SelectableText)this.widget).showCursor, controller: this._controller, focusNode: focusNode__24088, strutStyle: (((SelectableText)this.widget).strutStyle ?? new global::Doroti.Framework.Painting.StrutStyle()), textAlign: ((((SelectableText)this.widget).textAlign ?? ((global::Doroti.Framework.Widgets.DefaultTextStyle)defaultTextStyle__26764).textAlign) ?? global::Doroti.Ui.TextAlign.start), textDirection: ((SelectableText)this.widget).textDirection, textScaler: effectiveScaler__27078, autofocus: ((SelectableText)this.widget).autofocus, forceLine: false, minLines: ((SelectableText)this.widget).minLines, maxLines: (((SelectableText)this.widget).maxLines ?? ((global::Doroti.Framework.Widgets.DefaultTextStyle)defaultTextStyle__26764).maxLines), selectionColor: (((SelectableText)this.widget).selectionColor ?? selectionColor__24345), selectionControls: (((SelectableText)this.widget).selectionEnabled ? textSelectionControls__24149 : null), onSelectionChanged: (global::System.Action<global::Doroti.Framework.Services.TextSelection, global::Doroti.Framework.Services.SelectionChangedCause?>)this._handleSelectionChanged, onSelectionHandleTapped: () => this._handleSelectionHandleTapped(), rendererIgnoresPointer: true, cursorWidth: ((SelectableText)this.widget).cursorWidth, cursorHeight: ((SelectableText)this.widget).cursorHeight, cursorRadius: cursorRadius__24373, cursorColor: cursorColor__24316, selectionHeightStyle: ((SelectableText)this.widget).selectionHeightStyle, selectionWidthStyle: ((SelectableText)this.widget).selectionWidthStyle, cursorOpacityAnimates: cursorOpacityAnimates__24251, cursorOffset: cursorOffset__24286, paintCursorAboveText: paintCursorAboveText__24214, backgroundCursorColor: CupertinoColors.inactiveGray, enableInteractiveSelection: ((SelectableText)this.widget).enableInteractiveSelection, magnifierConfiguration: (((SelectableText)this.widget).magnifierConfiguration ?? TextMagnifier.adaptiveMagnifierConfiguration), dragStartBehavior: ((SelectableText)this.widget).dragStartBehavior, scrollPhysics: ((SelectableText)this.widget).scrollPhysics, scrollBehavior: ((SelectableText)this.widget).scrollBehavior, autofillHints: null, contextMenuBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget>?)((SelectableText)this.widget).contextMenuBuilder)));
+        global::Doroti.Framework.Painting.TextScaler? effectiveScaler = (((SelectableText)this.widget).textScaler ?? (((SelectableText)this.widget).textScaleFactor switch { null => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.TextScaler>(null), double textScaleFactorLocal => global::Doroti.Framework.Painting.TextScaler.CreateLinear(textScaleFactorLocal) }));
+        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RepaintBoundary(child: new global::Doroti.Framework.Widgets.EditableText(key: this.editableTextKey, style: effectiveTextStyle, readOnly: true, toolbarOptions: ((SelectableText)this.widget).toolbarOptions, textWidthBasis: (((SelectableText)this.widget).textWidthBasis ?? ((global::Doroti.Framework.Widgets.DefaultTextStyle)defaultTextStyle).textWidthBasis), textHeightBehavior: (((SelectableText)this.widget).textHeightBehavior ?? ((global::Doroti.Framework.Widgets.DefaultTextStyle)defaultTextStyle).textHeightBehavior), showSelectionHandles: this._showSelectionHandles, showCursor: ((SelectableText)this.widget).showCursor, controller: this._controller, focusNode: focusNodeLocal, strutStyle: (((SelectableText)this.widget).strutStyle ?? new global::Doroti.Framework.Painting.StrutStyle()), textAlign: ((((SelectableText)this.widget).textAlign ?? ((global::Doroti.Framework.Widgets.DefaultTextStyle)defaultTextStyle).textAlign) ?? global::Doroti.Ui.TextAlign.start), textDirection: ((SelectableText)this.widget).textDirection, textScaler: effectiveScaler, autofocus: ((SelectableText)this.widget).autofocus, forceLine: false, minLines: ((SelectableText)this.widget).minLines, maxLines: (((SelectableText)this.widget).maxLines ?? ((global::Doroti.Framework.Widgets.DefaultTextStyle)defaultTextStyle).maxLines), selectionColor: (((SelectableText)this.widget).selectionColor ?? selectionColorLocal), selectionControls: (((SelectableText)this.widget).selectionEnabled ? textSelectionControls : null), onSelectionChanged: (global::System.Action<global::Doroti.Framework.Services.TextSelection, global::Doroti.Framework.Services.SelectionChangedCause?>)this._handleSelectionChanged, onSelectionHandleTapped: () => this._handleSelectionHandleTapped(), rendererIgnoresPointer: true, cursorWidth: ((SelectableText)this.widget).cursorWidth, cursorHeight: ((SelectableText)this.widget).cursorHeight, cursorRadius: cursorRadiusLocal, cursorColor: cursorColorLocal, selectionHeightStyle: ((SelectableText)this.widget).selectionHeightStyle, selectionWidthStyle: ((SelectableText)this.widget).selectionWidthStyle, cursorOpacityAnimates: cursorOpacityAnimatesLocal, cursorOffset: cursorOffsetLocal, paintCursorAboveText: paintCursorAboveTextLocal, backgroundCursorColor: CupertinoColors.inactiveGray, enableInteractiveSelection: ((SelectableText)this.widget).enableInteractiveSelection, magnifierConfiguration: (((SelectableText)this.widget).magnifierConfiguration ?? TextMagnifier.adaptiveMagnifierConfiguration), dragStartBehavior: ((SelectableText)this.widget).dragStartBehavior, scrollPhysics: ((SelectableText)this.widget).scrollPhysics, scrollBehavior: ((SelectableText)this.widget).scrollBehavior, autofillHints: null, contextMenuBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.EditableTextState, global::Doroti.Framework.Widgets.Widget>?)((SelectableText)this.widget).contextMenuBuilder)));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(label: ((SelectableText)this.widget).semanticsLabel, excludeSemantics: (((SelectableText)this.widget).semanticsLabel is not null), onLongPress: ((global::System.Action)(() =>
         {
             this._effectiveFocusNode.requestFocus();
-        })), child: this._selectionGestureDetectorBuilder.buildGestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, child: child__27297)));
+        })), child: this._selectionGestureDetectorBuilder.buildGestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, child: childLocal)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -53,9 +53,9 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
     {
         if ((this._handles is not null))
         {
-            foreach (global::Doroti.Framework.Foundation.Listenable handle__4211 in this._handles!.Keys)
+            foreach (global::Doroti.Framework.Foundation.Listenable handle in this._handles!.Keys)
             {
-                handle__4211.removeListener(this._handles!.GetValueOrDefault(handle__4211)!);
+                handle.removeListener(this._handles!.GetValueOrDefault(handle)!);
             }
         }
         base.dispose();
@@ -63,18 +63,18 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
 
     internal virtual bool _addClient(KeepAliveNotification notification)
     {
-        global::Doroti.Framework.Foundation.Listenable handle__4407 = ((KeepAliveNotification)notification).handle;
+        global::Doroti.Framework.Foundation.Listenable handleLocal = ((KeepAliveNotification)notification).handle;
         _handles ??= new DartMap<global::Doroti.Framework.Foundation.Listenable, global::System.Action>();
-        DartRuntimePrimitives.Assert(() => !this._handles!.ContainsKey(handle__4407));
-        this._handles![handle__4407] = (global::System.Action)_createCallback(handle__4407);
-        handle__4407.addListener(this._handles!.GetValueOrDefault(handle__4407)!);
+        DartRuntimePrimitives.Assert(() => !this._handles!.ContainsKey(handleLocal));
+        this._handles![handleLocal] = (global::System.Action)_createCallback(handleLocal);
+        handleLocal.addListener(this._handles!.GetValueOrDefault(handleLocal)!);
         if (!this._keepingAlive)
         {
             _keepingAlive = true;
-            ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>? childElement__4732 = ((ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)_getChildElement());
-            if ((childElement__4732 is not null))
+            ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>? childElement = ((ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)_getChildElement());
+            if ((childElement is not null))
             {
-                _updateParentDataOfChild(childElement__4732);
+                _updateParentDataOfChild(childElement);
             }
             else
             {
@@ -84,9 +84,9 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
                     {
                         return;
                     }
-                    ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>? childElement__5346 = ((ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)_getChildElement());
-                    DartRuntimePrimitives.Assert(() => (childElement__5346 is not null));
-                    _updateParentDataOfChild(childElement__5346!);
+                    ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>? childElementLocal = ((ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)_getChildElement());
+                    DartRuntimePrimitives.Assert(() => (childElementLocal is not null));
+                    _updateParentDataOfChild(childElementLocal!);
                 })), debugLabel: "AutomaticKeepAlive.updateParentData");
             }
         }
@@ -97,14 +97,14 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
     internal virtual ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>? _getChildElement()
     {
         DartRuntimePrimitives.Assert(() => this.mounted);
-        var element__5871 = ((Element?)(object?)this.context)!;
-        Element? childElement__5914 = default!;
-        element__5871.visitChildren(((global::System.Action<Element>)((child) =>
+        var element = ((Element?)(object?)this.context)!;
+        Element? childElement = default!;
+        element.visitChildren(((global::System.Action<Element>)((child) =>
         {
-            childElement__5914 = child;
+            childElement = child;
         })));
-        DartRuntimePrimitives.Assert(() => ((childElement__5914 is null) || (childElement__5914 is ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>)));
-        return ((ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)childElement__5914)!;
+        DartRuntimePrimitives.Assert(() => ((childElement is null) || (childElement is ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>)));
+        return ((ParentDataElement<global::Doroti.Framework.Rendering.KeepAliveParentDataMixin>?)(object?)childElement)!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -115,8 +115,8 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
 
     internal virtual global::System.Action _createCallback(global::Doroti.Framework.Foundation.Listenable handle)
     {
-        global::System.Action callback__7626 = default!;
-        return callback__7626 = (global::System.Action)(() =>
+        global::System.Action callback = default!;
+        return callback = (global::System.Action)(() =>
         {
             DartRuntimePrimitives.Assert(() =>
                 {
@@ -128,7 +128,7 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
             this._handles!.remove(handle);
-            handle.removeListener(() => callback__7626());
+            handle.removeListener(() => callback());
             if (!System.Linq.Enumerable.Any(this._handles!))
             {
                 if ((FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase) < FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))

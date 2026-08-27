@@ -45,9 +45,9 @@ public class DesktopTextSelectionToolbar : global::Doroti.Framework.Widgets.Stat
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        double paddingAbove__2303 = (MediaQuery.paddingOf(context).top + Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding);
-        var localAdjustment__2388 = new global::Doroti.Ui.Offset(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove__2303);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: new global::Doroti.Framework.Painting.EdgeInsets(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove__2303, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding), child: new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new global::Doroti.Framework.Widgets.DesktopTextSelectionToolbarLayoutDelegate(anchor: (this.anchor - localAdjustment__2388)), child: DesktopTextSelectionToolbar._defaultToolbarBuilder(context, new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: this.children)))));
+        double paddingAbove = (MediaQuery.paddingOf(context).top + Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding);
+        var localAdjustment = new global::Doroti.Ui.Offset(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove);
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: new global::Doroti.Framework.Painting.EdgeInsets(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding), child: new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new global::Doroti.Framework.Widgets.DesktopTextSelectionToolbarLayoutDelegate(anchor: (this.anchor - localAdjustment)), child: DesktopTextSelectionToolbar._defaultToolbarBuilder(context, new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: this.children)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

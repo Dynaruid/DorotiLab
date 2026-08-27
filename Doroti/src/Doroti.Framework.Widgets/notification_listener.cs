@@ -29,9 +29,9 @@ public abstract class Notification
 
     public override string ToString()
     {
-        var description__2885 = new List<string>();
-        debugFillDescription(description__2885);
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Notification"))}({string.Join(", ", description__2885)})";
+        var description = new List<string>();
+        debugFillDescription(description);
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "Notification"))}({string.Join(", ", description)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -67,11 +67,11 @@ internal class _NotificationElement__notification_listener<T> : ProxyElement, No
 
     public virtual bool onNotification(Notification notification)
     {
-        var listener__5485 = ((NotificationListener<T>?)(object?)this.widget)!;
-        if (((((NotificationListener<T>)listener__5485).onNotification is not null) && (notification is T)))
+        var listener = ((NotificationListener<T>?)(object?)this.widget)!;
+        if (((((NotificationListener<T>)listener).onNotification is not null) && (notification is T)))
         {
             T notification__as5574 = (T)(object)notification;
-            return ((NotificationListener<T>)listener__5485).onNotification!(notification__as5574);
+            return ((NotificationListener<T>)listener).onNotification!(notification__as5574);
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");

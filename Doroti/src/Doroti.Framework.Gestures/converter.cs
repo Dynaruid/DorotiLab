@@ -48,19 +48,19 @@ public abstract class PointerEventConverter
     {
         return data.where(((datum) => (!object.Equals(datum.signalKind, Dart_uiLibrary.PointerSignalKind.unknown)))).map<PointerData, PointerEvent?>(((datum) =>
         {
-            double? devicePixelRatio__2653 = devicePixelRatioForView(checked((long)datum.viewId));
-            if ((devicePixelRatio__2653 is null))
+            double? devicePixelRatio = devicePixelRatioForView(checked((long)datum.viewId));
+            if ((devicePixelRatio is null))
             {
                 return null;
             }
-            global::Doroti.Ui.Offset position__2856 = (new global::Doroti.Ui.Offset(datum.physicalX, datum.physicalY) / DartRuntimePrimitives.RequireValue(devicePixelRatio__2653));
-            global::Doroti.Ui.Offset delta__2951 = (new global::Doroti.Ui.Offset(datum.physicalDeltaX, datum.physicalDeltaY) / DartRuntimePrimitives.RequireValue(devicePixelRatio__2653));
-            double radiusMinor__3067 = _toLogicalPixels(datum.radiusMinor, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(devicePixelRatio__2653)));
-            double radiusMajor__3159 = _toLogicalPixels(datum.radiusMajor, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(devicePixelRatio__2653)));
-            double radiusMin__3251 = _toLogicalPixels(datum.radiusMin, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(devicePixelRatio__2653)));
-            double radiusMax__3339 = _toLogicalPixels(datum.radiusMax, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(devicePixelRatio__2653)));
-            Duration timeStamp__3429 = datum.timeStamp;
-            global::Doroti.Ui.PointerDeviceKind kind__3492 = datum.kind;
+            global::Doroti.Ui.Offset positionLocal = (new global::Doroti.Ui.Offset(datum.physicalX, datum.physicalY) / DartRuntimePrimitives.RequireValue(devicePixelRatio));
+            global::Doroti.Ui.Offset deltaLocal = (new global::Doroti.Ui.Offset(datum.physicalDeltaX, datum.physicalDeltaY) / DartRuntimePrimitives.RequireValue(devicePixelRatio));
+            double radiusMinorLocal = _toLogicalPixels(datum.radiusMinor, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(devicePixelRatio)));
+            double radiusMajorLocal = _toLogicalPixels(datum.radiusMajor, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(devicePixelRatio)));
+            double radiusMinLocal = _toLogicalPixels(datum.radiusMin, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(devicePixelRatio)));
+            double radiusMaxLocal = _toLogicalPixels(datum.radiusMax, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(devicePixelRatio)));
+            Duration timeStampLocal = datum.timeStamp;
+            global::Doroti.Ui.PointerDeviceKind kindLocal = datum.kind;
             switch ((datum.signalKind ?? Dart_uiLibrary.PointerSignalKind.none))
             {
                 case Dart_uiLibrary.PointerSignalKind.none:
@@ -69,65 +69,65 @@ public abstract class PointerEventConverter
                         {
                             case Dart_uiLibrary.PointerChange.add:
                                 {
-                                    return new PointerAddedEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, kind: kind__3492, device: checked((long)datum.device), position: position__2856, obscured: datum.obscured, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distance: datum.distance, distanceMax: datum.distanceMax, radiusMin: radiusMin__3251, radiusMax: radiusMax__3339, orientation: datum.orientation, tilt: datum.tilt, embedderId: checked((long)datum.embedderId));
+                                    return new PointerAddedEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, kind: kindLocal, device: checked((long)datum.device), position: positionLocal, obscured: datum.obscured, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distance: datum.distance, distanceMax: datum.distanceMax, radiusMin: radiusMinLocal, radiusMax: radiusMaxLocal, orientation: datum.orientation, tilt: datum.tilt, embedderId: checked((long)datum.embedderId));
                                 }
                             case Dart_uiLibrary.PointerChange.hover:
                                 {
-                                    return new PointerHoverEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, kind: kind__3492, device: checked((long)datum.device), position: position__2856, delta: delta__2951, buttons: datum.buttons, obscured: datum.obscured, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distance: datum.distance, distanceMax: datum.distanceMax, size: datum.size, radiusMajor: radiusMajor__3159, radiusMinor: radiusMinor__3067, radiusMin: radiusMin__3251, radiusMax: radiusMax__3339, orientation: datum.orientation, tilt: datum.tilt, synthesized: datum.synthesized, embedderId: checked((long)datum.embedderId));
+                                    return new PointerHoverEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, kind: kindLocal, device: checked((long)datum.device), position: positionLocal, delta: deltaLocal, buttons: datum.buttons, obscured: datum.obscured, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distance: datum.distance, distanceMax: datum.distanceMax, size: datum.size, radiusMajor: radiusMajorLocal, radiusMinor: radiusMinorLocal, radiusMin: radiusMinLocal, radiusMax: radiusMaxLocal, orientation: datum.orientation, tilt: datum.tilt, synthesized: datum.synthesized, embedderId: checked((long)datum.embedderId));
                                 }
                             case Dart_uiLibrary.PointerChange.down:
                                 {
-                                    return new PointerDownEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, pointer: checked((long)datum.pointerIdentifier), kind: kind__3492, device: checked((long)datum.device), position: position__2856, buttons: ConverterLibrary._synthesiseDownButtons(datum.buttons, kind__3492), obscured: datum.obscured, pressure: datum.pressure, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distanceMax: datum.distanceMax, size: datum.size, radiusMajor: radiusMajor__3159, radiusMinor: radiusMinor__3067, radiusMin: radiusMin__3251, radiusMax: radiusMax__3339, orientation: datum.orientation, tilt: datum.tilt, embedderId: checked((long)datum.embedderId));
+                                    return new PointerDownEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, pointer: checked((long)datum.pointerIdentifier), kind: kindLocal, device: checked((long)datum.device), position: positionLocal, buttons: ConverterLibrary._synthesiseDownButtons(datum.buttons, kindLocal), obscured: datum.obscured, pressure: datum.pressure, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distanceMax: datum.distanceMax, size: datum.size, radiusMajor: radiusMajorLocal, radiusMinor: radiusMinorLocal, radiusMin: radiusMinLocal, radiusMax: radiusMaxLocal, orientation: datum.orientation, tilt: datum.tilt, embedderId: checked((long)datum.embedderId));
                                 }
                             case Dart_uiLibrary.PointerChange.move:
                                 {
-                                    return new PointerMoveEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, pointer: checked((long)datum.pointerIdentifier), kind: kind__3492, device: checked((long)datum.device), position: position__2856, delta: delta__2951, buttons: ConverterLibrary._synthesiseDownButtons(datum.buttons, kind__3492), obscured: datum.obscured, pressure: datum.pressure, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distanceMax: datum.distanceMax, size: datum.size, radiusMajor: radiusMajor__3159, radiusMinor: radiusMinor__3067, radiusMin: radiusMin__3251, radiusMax: radiusMax__3339, orientation: datum.orientation, tilt: datum.tilt, platformData: datum.platformData, synthesized: datum.synthesized, embedderId: checked((long)datum.embedderId));
+                                    return new PointerMoveEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, pointer: checked((long)datum.pointerIdentifier), kind: kindLocal, device: checked((long)datum.device), position: positionLocal, delta: deltaLocal, buttons: ConverterLibrary._synthesiseDownButtons(datum.buttons, kindLocal), obscured: datum.obscured, pressure: datum.pressure, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distanceMax: datum.distanceMax, size: datum.size, radiusMajor: radiusMajorLocal, radiusMinor: radiusMinorLocal, radiusMin: radiusMinLocal, radiusMax: radiusMaxLocal, orientation: datum.orientation, tilt: datum.tilt, platformData: datum.platformData, synthesized: datum.synthesized, embedderId: checked((long)datum.embedderId));
                                 }
                             case Dart_uiLibrary.PointerChange.up:
                                 {
-                                    return new PointerUpEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, pointer: checked((long)datum.pointerIdentifier), kind: kind__3492, device: checked((long)datum.device), position: position__2856, buttons: datum.buttons, obscured: datum.obscured, pressure: datum.pressure, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distance: datum.distance, distanceMax: datum.distanceMax, size: datum.size, radiusMajor: radiusMajor__3159, radiusMinor: radiusMinor__3067, radiusMin: radiusMin__3251, radiusMax: radiusMax__3339, orientation: datum.orientation, tilt: datum.tilt, embedderId: checked((long)datum.embedderId));
+                                    return new PointerUpEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, pointer: checked((long)datum.pointerIdentifier), kind: kindLocal, device: checked((long)datum.device), position: positionLocal, buttons: datum.buttons, obscured: datum.obscured, pressure: datum.pressure, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distance: datum.distance, distanceMax: datum.distanceMax, size: datum.size, radiusMajor: radiusMajorLocal, radiusMinor: radiusMinorLocal, radiusMin: radiusMinLocal, radiusMax: radiusMaxLocal, orientation: datum.orientation, tilt: datum.tilt, embedderId: checked((long)datum.embedderId));
                                 }
                             case Dart_uiLibrary.PointerChange.cancel:
                                 {
-                                    return new PointerCancelEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, pointer: checked((long)datum.pointerIdentifier), kind: kind__3492, device: checked((long)datum.device), position: position__2856, buttons: datum.buttons, obscured: datum.obscured, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distance: datum.distance, distanceMax: datum.distanceMax, size: datum.size, radiusMajor: radiusMajor__3159, radiusMinor: radiusMinor__3067, radiusMin: radiusMin__3251, radiusMax: radiusMax__3339, orientation: datum.orientation, tilt: datum.tilt, embedderId: checked((long)datum.embedderId));
+                                    return new PointerCancelEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, pointer: checked((long)datum.pointerIdentifier), kind: kindLocal, device: checked((long)datum.device), position: positionLocal, buttons: datum.buttons, obscured: datum.obscured, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distance: datum.distance, distanceMax: datum.distanceMax, size: datum.size, radiusMajor: radiusMajorLocal, radiusMinor: radiusMinorLocal, radiusMin: radiusMinLocal, radiusMax: radiusMaxLocal, orientation: datum.orientation, tilt: datum.tilt, embedderId: checked((long)datum.embedderId));
                                 }
                             case Dart_uiLibrary.PointerChange.remove:
                                 {
-                                    return new PointerRemovedEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, kind: kind__3492, device: checked((long)datum.device), position: position__2856, obscured: datum.obscured, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distanceMax: datum.distanceMax, radiusMin: radiusMin__3251, radiusMax: radiusMax__3339, embedderId: checked((long)datum.embedderId));
+                                    return new PointerRemovedEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, kind: kindLocal, device: checked((long)datum.device), position: positionLocal, obscured: datum.obscured, pressureMin: datum.pressureMin, pressureMax: datum.pressureMax, distanceMax: datum.distanceMax, radiusMin: radiusMinLocal, radiusMax: radiusMaxLocal, embedderId: checked((long)datum.embedderId));
                                 }
                             case Dart_uiLibrary.PointerChange.panZoomStart:
                                 {
-                                    return new PointerPanZoomStartEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, pointer: checked((long)datum.pointerIdentifier), device: checked((long)datum.device), position: position__2856, embedderId: checked((long)datum.embedderId), synthesized: datum.synthesized);
+                                    return new PointerPanZoomStartEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, pointer: checked((long)datum.pointerIdentifier), device: checked((long)datum.device), position: positionLocal, embedderId: checked((long)datum.embedderId), synthesized: datum.synthesized);
                                 }
                             case Dart_uiLibrary.PointerChange.panZoomUpdate:
                                 {
-                                    global::Doroti.Ui.Offset pan__10925 = (new global::Doroti.Ui.Offset(datum.panX, datum.panY) / DartRuntimePrimitives.RequireValue(devicePixelRatio__2653));
-                                    global::Doroti.Ui.Offset panDelta__11013 = (new global::Doroti.Ui.Offset(datum.panDeltaX, datum.panDeltaY) / DartRuntimePrimitives.RequireValue(devicePixelRatio__2653));
-                                    return new PointerPanZoomUpdateEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, pointer: checked((long)datum.pointerIdentifier), device: checked((long)datum.device), position: position__2856, pan: pan__10925, panDelta: panDelta__11013, scale: datum.scale, rotation: datum.rotation, embedderId: checked((long)datum.embedderId), synthesized: datum.synthesized);
+                                    global::Doroti.Ui.Offset panLocal = (new global::Doroti.Ui.Offset(datum.panX, datum.panY) / DartRuntimePrimitives.RequireValue(devicePixelRatio));
+                                    global::Doroti.Ui.Offset panDeltaLocal = (new global::Doroti.Ui.Offset(datum.panDeltaX, datum.panDeltaY) / DartRuntimePrimitives.RequireValue(devicePixelRatio));
+                                    return new PointerPanZoomUpdateEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, pointer: checked((long)datum.pointerIdentifier), device: checked((long)datum.device), position: positionLocal, pan: panLocal, panDelta: panDeltaLocal, scale: datum.scale, rotation: datum.rotation, embedderId: checked((long)datum.embedderId), synthesized: datum.synthesized);
                                 }
                             case Dart_uiLibrary.PointerChange.panZoomEnd:
                                 {
-                                    return new PointerPanZoomEndEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, pointer: checked((long)datum.pointerIdentifier), device: checked((long)datum.device), position: position__2856, embedderId: checked((long)datum.embedderId), synthesized: datum.synthesized);
+                                    return new PointerPanZoomEndEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, pointer: checked((long)datum.pointerIdentifier), device: checked((long)datum.device), position: positionLocal, embedderId: checked((long)datum.embedderId), synthesized: datum.synthesized);
                                 }
                         }
                         break;
                     }
                 case Dart_uiLibrary.PointerSignalKind.scroll:
                     {
-                        if (((!double.IsFinite(datum.scrollDeltaX) || !double.IsFinite(datum.scrollDeltaY)) || (devicePixelRatio__2653 <= 0L)))
+                        if (((!double.IsFinite(datum.scrollDeltaX) || !double.IsFinite(datum.scrollDeltaY)) || (devicePixelRatio <= 0L)))
                         {
                             return null;
                         }
-                        global::Doroti.Ui.Offset scrollDelta__12377 = (new global::Doroti.Ui.Offset(datum.scrollDeltaX, datum.scrollDeltaY) / DartRuntimePrimitives.RequireValue(devicePixelRatio__2653));
-                        return new PointerScrollEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, kind: kind__3492, device: checked((long)datum.device), position: position__2856, scrollDelta: scrollDelta__12377, embedderId: checked((long)datum.embedderId), onRespond: datum.respond);
+                        global::Doroti.Ui.Offset scrollDeltaLocal = (new global::Doroti.Ui.Offset(datum.scrollDeltaX, datum.scrollDeltaY) / DartRuntimePrimitives.RequireValue(devicePixelRatio));
+                        return new PointerScrollEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, kind: kindLocal, device: checked((long)datum.device), position: positionLocal, scrollDelta: scrollDeltaLocal, embedderId: checked((long)datum.embedderId), onRespond: datum.respond);
                     }
                 case Dart_uiLibrary.PointerSignalKind.scrollInertiaCancel:
                     {
-                        return new PointerScrollInertiaCancelEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, kind: kind__3492, device: checked((long)datum.device), position: position__2856, embedderId: checked((long)datum.embedderId));
+                        return new PointerScrollInertiaCancelEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, kind: kindLocal, device: checked((long)datum.device), position: positionLocal, embedderId: checked((long)datum.embedderId));
                     }
                 case Dart_uiLibrary.PointerSignalKind.scale:
                     {
-                        return new PointerScaleEvent(viewId: checked((long)datum.viewId), timeStamp: timeStamp__3429, kind: kind__3492, device: checked((long)datum.device), position: position__2856, embedderId: checked((long)datum.embedderId), scale: datum.scale);
+                        return new PointerScaleEvent(viewId: checked((long)datum.viewId), timeStamp: timeStampLocal, kind: kindLocal, device: checked((long)datum.device), position: positionLocal, embedderId: checked((long)datum.embedderId), scale: datum.scale);
                     }
                 case Dart_uiLibrary.PointerSignalKind.unknown:
                     {

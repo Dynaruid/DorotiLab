@@ -57,13 +57,13 @@ public class OutlinedButtonThemeData : global::Doroti.Framework.Foundation.Diagn
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -86,8 +86,8 @@ public class OutlinedButtonTheme : global::Doroti.Framework.Widgets.InheritedThe
 
     public static OutlinedButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        OutlinedButtonTheme? buttonTheme__4126 = ((OutlinedButtonTheme?)(object?)context.dependOnInheritedWidgetOfExactType<OutlinedButtonTheme>());
-        return (buttonTheme__4126?.data ?? Theme.of(context).outlinedButtonTheme);
+        OutlinedButtonTheme? buttonTheme = ((OutlinedButtonTheme?)(object?)context.dependOnInheritedWidgetOfExactType<OutlinedButtonTheme>());
+        return (buttonTheme?.data ?? Theme.of(context).outlinedButtonTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

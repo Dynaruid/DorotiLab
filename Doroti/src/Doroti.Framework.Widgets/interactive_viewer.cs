@@ -98,38 +98,38 @@ public class InteractiveViewer : StatefulWidget
 
     public static Vector3 getNearestPointOnLine(Vector3 point, Vector3 l1, Vector3 l2)
     {
-        double lengthSquared__16123 = (global::Doroti.Runtime.Dart_mathLibrary.pow((l2.x - l1.x), 2.0).toDouble() + global::Doroti.Runtime.Dart_mathLibrary.pow((l2.y - l1.y), 2.0).toDouble());
-        if ((lengthSquared__16123 == 0L))
+        double lengthSquared = (global::Doroti.Runtime.Dart_mathLibrary.pow((l2.x - l1.x), 2.0).toDouble() + global::Doroti.Runtime.Dart_mathLibrary.pow((l2.y - l1.y), 2.0).toDouble());
+        if ((lengthSquared == 0L))
         {
             return l1;
         }
-        Vector3 l1P__16427 = (point - l1);
-        Vector3 l1L2__16463 = (l2 - l1);
-        double fraction__16496 = Dart_uiLibrary.clampDouble((l1P__16427.dot(l1L2__16463) / lengthSquared__16123), 0.0, 1.0);
-        return (l1 + (l1L2__16463 * fraction__16496));
+        Vector3 l1P = (point - l1);
+        Vector3 l1L2 = (l2 - l1);
+        double fraction = Dart_uiLibrary.clampDouble((l1P.dot(l1L2) / lengthSquared), 0.0, 1.0);
+        return (l1 + (l1L2 * fraction));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Quad getAxisAlignedBoundingBox(global::Doroti.Ui.Quad quad)
     {
-        double minX__16748 = Math.Min(quad.point0.x, Math.Min(quad.point1.x, Math.Min(quad.point2.x, quad.point3.x)));
-        double minY__16881 = Math.Min(quad.point0.y, Math.Min(quad.point1.y, Math.Min(quad.point2.y, quad.point3.y)));
-        double maxX__17014 = Math.Max(quad.point0.x, Math.Max(quad.point1.x, Math.Max(quad.point2.x, quad.point3.x)));
-        double maxY__17147 = Math.Max(quad.point0.y, Math.Max(quad.point1.y, Math.Max(quad.point2.y, quad.point3.y)));
-        return new global::Doroti.Ui.Quad(new Vector3(minX__16748, minY__16881, 0), new Vector3(maxX__17014, minY__16881, 0), new Vector3(maxX__17014, maxY__17147, 0), new Vector3(minX__16748, maxY__17147, 0));
+        double minX = Math.Min(quad.point0.x, Math.Min(quad.point1.x, Math.Min(quad.point2.x, quad.point3.x)));
+        double minY = Math.Min(quad.point0.y, Math.Min(quad.point1.y, Math.Min(quad.point2.y, quad.point3.y)));
+        double maxX = Math.Max(quad.point0.x, Math.Max(quad.point1.x, Math.Max(quad.point2.x, quad.point3.x)));
+        double maxY = Math.Max(quad.point0.y, Math.Max(quad.point1.y, Math.Max(quad.point2.y, quad.point3.y)));
+        return new global::Doroti.Ui.Quad(new Vector3(minX, minY, 0), new Vector3(maxX, minY, 0), new Vector3(maxX, maxY, 0), new Vector3(minX, maxY, 0));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static bool pointIsInside(Vector3 point, global::Doroti.Ui.Quad quad)
     {
-        Vector3 aM__17671 = (point - quad.point0);
-        Vector3 aB__17715 = (quad.point1 - quad.point0);
-        Vector3 aD__17765 = (quad.point3 - quad.point0);
-        double aMAB__17815 = aM__17671.dot(aB__17715);
-        double aBAB__17851 = aB__17715.dot(aB__17715);
-        double aMAD__17887 = aM__17671.dot(aD__17765);
-        double aDAD__17923 = aD__17765.dot(aD__17765);
-        return ((((0L <= aMAB__17815) && (aMAB__17815 <= aBAB__17851)) && (0L <= aMAD__17887)) && (aMAD__17887 <= aDAD__17923));
+        Vector3 aM = (point - quad.point0);
+        Vector3 aB = (quad.point1 - quad.point0);
+        Vector3 aD = (quad.point3 - quad.point0);
+        double aMAB = aM.dot(aB);
+        double aBAB = aB.dot(aB);
+        double aMAD = aM.dot(aD);
+        double aDAD = aD.dot(aD);
+        return ((((0L <= aMAB) && (aMAB <= aBAB)) && (0L <= aMAD)) && (aMAD <= aDAD));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -139,19 +139,19 @@ public class InteractiveViewer : StatefulWidget
         {
             return point;
         }
-        var closestPoints__18428 = new List<Vector3> { InteractiveViewer.getNearestPointOnLine(point, quad.point0, quad.point1), InteractiveViewer.getNearestPointOnLine(point, quad.point1, quad.point2), InteractiveViewer.getNearestPointOnLine(point, quad.point2, quad.point3), InteractiveViewer.getNearestPointOnLine(point, quad.point3, quad.point0) };
-        double minDistance__18793 = double.PositiveInfinity;
-        Vector3 closestOverall__18841 = default!;
-        foreach (var closePoint__18872 in closestPoints__18428)
+        var closestPoints = new List<Vector3> { InteractiveViewer.getNearestPointOnLine(point, quad.point0, quad.point1), InteractiveViewer.getNearestPointOnLine(point, quad.point1, quad.point2), InteractiveViewer.getNearestPointOnLine(point, quad.point2, quad.point3), InteractiveViewer.getNearestPointOnLine(point, quad.point3, quad.point0) };
+        double minDistance = double.PositiveInfinity;
+        Vector3 closestOverall = default!;
+        foreach (var closePoint in closestPoints)
         {
-            double distance__18922 = global::Doroti.Runtime.Dart_mathLibrary.sqrt((global::Doroti.Runtime.Dart_mathLibrary.pow((point.x - closePoint__18872.x), 2L) + global::Doroti.Runtime.Dart_mathLibrary.pow((point.y - closePoint__18872.y), 2L)));
-            if ((distance__18922 < minDistance__18793))
+            double distance = global::Doroti.Runtime.Dart_mathLibrary.sqrt((global::Doroti.Runtime.Dart_mathLibrary.pow((point.x - closePoint.x), 2L) + global::Doroti.Runtime.Dart_mathLibrary.pow((point.y - closePoint.y), 2L)));
+            if ((distance < minDistance))
             {
-                minDistance__18793 = distance__18922;
-                closestOverall__18841 = closePoint__18872;
+                minDistance = distance;
+                closestOverall = closePoint;
             }
         }
-        return closestOverall__18841;
+        return closestOverall;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -201,12 +201,12 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
             DartRuntimePrimitives.Assert(() => !double.IsNaN(((InteractiveViewer)this.widget).boundaryMargin.right));
             DartRuntimePrimitives.Assert(() => !double.IsNaN(((InteractiveViewer)this.widget).boundaryMargin.top));
             DartRuntimePrimitives.Assert(() => !double.IsNaN(((InteractiveViewer)this.widget).boundaryMargin.bottom));
-            var childRenderBox__20744 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((GlobalKey<IState>)this._childKey).currentContext!.findRenderObject()!)!;
-            global::Doroti.Ui.Size childSize__20836 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Rendering.RenderBox)childRenderBox__20744).size);
-            global::Doroti.Ui.Rect boundaryRect__20884 = ((global::Doroti.Ui.Rect)(object?)((InteractiveViewer)this.widget).boundaryMargin.inflateRect((Offset.zero & childSize__20836)));
-            DartRuntimePrimitives.Assert(() => !boundaryRect__20884.isEmpty, () => (object?)"InteractiveViewer's child must have nonzero dimensions.");
-            DartRuntimePrimitives.Assert(() => (boundaryRect__20884.isFinite || ((((double.IsInfinity(boundaryRect__20884.left) && double.IsInfinity(boundaryRect__20884.top)) && double.IsInfinity(boundaryRect__20884.right)) && double.IsInfinity(boundaryRect__20884.bottom)))), () => (object?)"boundaryRect must either be infinite in all directions or finite in all directions.");
-            return boundaryRect__20884;
+            var childRenderBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((GlobalKey<IState>)this._childKey).currentContext!.findRenderObject()!)!;
+            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Rendering.RenderBox)childRenderBox).size);
+            global::Doroti.Ui.Rect boundaryRect = ((global::Doroti.Ui.Rect)(object?)((InteractiveViewer)this.widget).boundaryMargin.inflateRect((Offset.zero & childSize)));
+            DartRuntimePrimitives.Assert(() => !boundaryRect.isEmpty, () => (object?)"InteractiveViewer's child must have nonzero dimensions.");
+            DartRuntimePrimitives.Assert(() => (boundaryRect.isFinite || ((((double.IsInfinity(boundaryRect.left) && double.IsInfinity(boundaryRect.top)) && double.IsInfinity(boundaryRect.right)) && double.IsInfinity(boundaryRect.bottom)))), () => (object?)"boundaryRect must either be infinite in all directions or finite in all directions.");
+            return boundaryRect;
             return default!;
         }
     }
@@ -215,8 +215,8 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         get
         {
             DartRuntimePrimitives.Assert(() => (((GlobalKey<IState>)this._parentKey).currentContext is not null));
-            var parentRenderBox__21684 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((GlobalKey<IState>)this._parentKey).currentContext!.findRenderObject()!)!;
-            return (Offset.zero & ((global::Doroti.Framework.Rendering.RenderBox)parentRenderBox__21684).size);
+            var parentRenderBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((GlobalKey<IState>)this._parentKey).currentContext!.findRenderObject()!)!;
+            return (Offset.zero & ((global::Doroti.Framework.Rendering.RenderBox)parentRenderBox).size);
             return default!;
         }
     }
@@ -226,56 +226,56 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         {
             return matrix.clone();
         }
-        global::Doroti.Ui.Offset alignedTranslation__22069 = default!;
+        global::Doroti.Ui.Offset alignedTranslation = default!;
         if ((this._currentAxis is not null))
         {
-            alignedTranslation__22069 = (((InteractiveViewer)this.widget).panAxis switch { PanAxis.horizontal => Interactive_viewerLibrary._alignAxis(translation, global::Doroti.Framework.Painting.Axis.horizontal), PanAxis.vertical => Interactive_viewerLibrary._alignAxis(translation, global::Doroti.Framework.Painting.Axis.vertical), PanAxis.aligned => Interactive_viewerLibrary._alignAxis(translation, DartRuntimePrimitives.RequireValue(this._currentAxis)), PanAxis.free => translation, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            alignedTranslation = (((InteractiveViewer)this.widget).panAxis switch { PanAxis.horizontal => Interactive_viewerLibrary._alignAxis(translation, global::Doroti.Framework.Painting.Axis.horizontal), PanAxis.vertical => Interactive_viewerLibrary._alignAxis(translation, global::Doroti.Framework.Painting.Axis.vertical), PanAxis.aligned => Interactive_viewerLibrary._alignAxis(translation, DartRuntimePrimitives.RequireValue(this._currentAxis)), PanAxis.free => translation, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
         else
         {
-            alignedTranslation__22069 = translation;
+            alignedTranslation = translation;
         }
-        Matrix4 nextMatrix__22506 = ((Func<Matrix4>)(() =>
+        Matrix4 nextMatrix = ((Func<Matrix4>)(() =>
 {
     var __cascade = matrix.clone();
-    __cascade.translateByDouble(alignedTranslation__22069.dx, alignedTranslation__22069.dy, 0, 1);
+    __cascade.translateByDouble(alignedTranslation.dx, alignedTranslation.dy, 0, 1);
     return __cascade;
 }))();
-        global::Doroti.Ui.Quad nextViewport__22748 = Interactive_viewerLibrary._transformViewport(nextMatrix__22506, this._viewport);
+        global::Doroti.Ui.Quad nextViewport = Interactive_viewerLibrary._transformViewport(nextMatrix, this._viewport);
         if (this._boundaryRect.isInfinite)
         {
-            return nextMatrix__22506;
+            return nextMatrix;
         }
-        global::Doroti.Ui.Quad boundariesAabbQuad__23279 = Interactive_viewerLibrary._getAxisAlignedBoundingBoxWithRotation(this._boundaryRect, this._currentRotation);
-        global::Doroti.Ui.Offset offendingDistance__23491 = ((global::Doroti.Ui.Offset)(object?)Interactive_viewerLibrary._exceedsBy(boundariesAabbQuad__23279, nextViewport__22748));
-        if ((object.Equals(offendingDistance__23491, Offset.zero)))
+        global::Doroti.Ui.Quad boundariesAabbQuad = Interactive_viewerLibrary._getAxisAlignedBoundingBoxWithRotation(this._boundaryRect, this._currentRotation);
+        global::Doroti.Ui.Offset offendingDistance = ((global::Doroti.Ui.Offset)(object?)Interactive_viewerLibrary._exceedsBy(boundariesAabbQuad, nextViewport));
+        if ((object.Equals(offendingDistance, Offset.zero)))
         {
-            return nextMatrix__22506;
+            return nextMatrix;
         }
-        global::Doroti.Ui.Offset nextTotalTranslation__23757 = ((global::Doroti.Ui.Offset)(object?)Interactive_viewerLibrary._getMatrixTranslation(nextMatrix__22506));
-        double currentScale__23832 = matrix.getMaxScaleOnAxis();
-        var correctedTotalTranslation__23885 = new global::Doroti.Ui.Offset((nextTotalTranslation__23757.dx - (offendingDistance__23491.dx * currentScale__23832)), (nextTotalTranslation__23757.dy - (offendingDistance__23491.dy * currentScale__23832)));
-        Matrix4 correctedMatrix__24417 = ((Func<Matrix4>)(() =>
+        global::Doroti.Ui.Offset nextTotalTranslation = ((global::Doroti.Ui.Offset)(object?)Interactive_viewerLibrary._getMatrixTranslation(nextMatrix));
+        double currentScale = matrix.getMaxScaleOnAxis();
+        var correctedTotalTranslation = new global::Doroti.Ui.Offset((nextTotalTranslation.dx - (offendingDistance.dx * currentScale)), (nextTotalTranslation.dy - (offendingDistance.dy * currentScale)));
+        Matrix4 correctedMatrix = ((Func<Matrix4>)(() =>
 {
     var __cascade = matrix.clone();
-    __cascade.setTranslation(new Vector3(correctedTotalTranslation__23885.dx, correctedTotalTranslation__23885.dy, 0.0));
+    __cascade.setTranslation(new Vector3(correctedTotalTranslation.dx, correctedTotalTranslation.dy, 0.0));
     return __cascade;
 }))();
-        global::Doroti.Ui.Quad correctedViewport__24621 = Interactive_viewerLibrary._transformViewport(correctedMatrix__24417, this._viewport);
-        global::Doroti.Ui.Offset offendingCorrectedDistance__24706 = ((global::Doroti.Ui.Offset)(object?)Interactive_viewerLibrary._exceedsBy(boundariesAabbQuad__23279, correctedViewport__24621));
-        if ((object.Equals(offendingCorrectedDistance__24706, Offset.zero)))
+        global::Doroti.Ui.Quad correctedViewport = Interactive_viewerLibrary._transformViewport(correctedMatrix, this._viewport);
+        global::Doroti.Ui.Offset offendingCorrectedDistance = ((global::Doroti.Ui.Offset)(object?)Interactive_viewerLibrary._exceedsBy(boundariesAabbQuad, correctedViewport));
+        if ((object.Equals(offendingCorrectedDistance, Offset.zero)))
         {
-            return correctedMatrix__24417;
+            return correctedMatrix;
         }
-        if (((offendingCorrectedDistance__24706.dx != 0.0) && (offendingCorrectedDistance__24706.dy != 0.0)))
+        if (((offendingCorrectedDistance.dx != 0.0) && (offendingCorrectedDistance.dy != 0.0)))
         {
             return matrix.clone();
         }
-        var unidirectionalCorrectedTotalTranslation__25349 = new global::Doroti.Ui.Offset(((offendingCorrectedDistance__24706.dx == 0.0) ? correctedTotalTranslation__23885.dx : 0.0), ((offendingCorrectedDistance__24706.dy == 0.0) ? correctedTotalTranslation__23885.dy : 0.0));
+        var unidirectionalCorrectedTotalTranslation = new global::Doroti.Ui.Offset(((offendingCorrectedDistance.dx == 0.0) ? correctedTotalTranslation.dx : 0.0), ((offendingCorrectedDistance.dy == 0.0) ? correctedTotalTranslation.dy : 0.0));
         return ((Func<Matrix4>)(() =>
 {
     var __cascade = matrix.clone();
-    __cascade.setTranslation(new Vector3(unidirectionalCorrectedTotalTranslation__25349.dx, unidirectionalCorrectedTotalTranslation__25349.dy, 0.0));
+    __cascade.setTranslation(new Vector3(unidirectionalCorrectedTotalTranslation.dx, unidirectionalCorrectedTotalTranslation.dy, 0.0));
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -288,14 +288,14 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
             return matrix.clone();
         }
         DartRuntimePrimitives.Assert(() => (scale != 0.0));
-        double currentScale__26103 = this._transformer.value.getMaxScaleOnAxis();
-        double totalScale__26175 = Math.Max((currentScale__26103 * scale), Math.Max((this._viewport.width / this._boundaryRect.width), (this._viewport.height / this._boundaryRect.height)));
-        double clampedTotalScale__26478 = Dart_uiLibrary.clampDouble(totalScale__26175, ((InteractiveViewer)this.widget).minScale, ((InteractiveViewer)this.widget).maxScale);
-        double clampedScale__26574 = (clampedTotalScale__26478 / currentScale__26103);
+        double currentScale = this._transformer.value.getMaxScaleOnAxis();
+        double totalScale = Math.Max((currentScale * scale), Math.Max((this._viewport.width / this._boundaryRect.width), (this._viewport.height / this._boundaryRect.height)));
+        double clampedTotalScale = Dart_uiLibrary.clampDouble(totalScale, ((InteractiveViewer)this.widget).minScale, ((InteractiveViewer)this.widget).maxScale);
+        double clampedScale = (clampedTotalScale / currentScale);
         return ((Func<Matrix4>)(() =>
 {
     var __cascade = matrix.clone();
-    __cascade.scaleByDouble(clampedScale__26574, clampedScale__26574, clampedScale__26574, 1);
+    __cascade.scaleByDouble(clampedScale, clampedScale, clampedScale, 1);
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -307,13 +307,13 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         {
             return matrix.clone();
         }
-        global::Doroti.Ui.Offset focalPointScene__26965 = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(focalPoint));
+        global::Doroti.Ui.Offset focalPointScene = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(focalPoint));
         return ((Func<Matrix4>)(() =>
 {
     var __cascade = matrix.clone();
-    __cascade.translateByDouble(focalPointScene__26965.dx, focalPointScene__26965.dy, 0, 1);
+    __cascade.translateByDouble(focalPointScene.dx, focalPointScene.dy, 0, 1);
     __cascade.rotateZ(-rotation);
-    __cascade.translateByDouble(-focalPointScene__26965.dx, -focalPointScene__26965.dy, 0, 1);
+    __cascade.translateByDouble(-focalPointScene.dx, -focalPointScene.dy, 0, 1);
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -327,15 +327,15 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
 
     internal virtual _GestureType__interactive_viewer _getGestureType(global::Doroti.Framework.Gestures.ScaleUpdateDetails details)
     {
-        double scale__27849 = (!((InteractiveViewer)this.widget).scaleEnabled ? 1.0 : ((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).scale);
-        double rotation__27918 = (!this._rotateEnabled ? 0.0 : ((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).rotation);
-        if ((((scale__27849 - 1L)).abs() > rotation__27918.abs()))
+        double scaleLocal = (!((InteractiveViewer)this.widget).scaleEnabled ? 1.0 : ((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).scale);
+        double rotationLocal = (!this._rotateEnabled ? 0.0 : ((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).rotation);
+        if ((((scaleLocal - 1L)).abs() > rotationLocal.abs()))
         {
             return _GestureType__interactive_viewer.scale;
         }
         else
         {
-            if ((rotation__27918 != 0.0))
+            if ((rotationLocal != 0.0))
             {
                 return _GestureType__interactive_viewer.rotate;
             }
@@ -373,9 +373,9 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
 
     internal virtual void _onScaleUpdate(global::Doroti.Framework.Gestures.ScaleUpdateDetails details)
     {
-        double scale__29196 = this._transformer.value.getMaxScaleOnAxis();
+        double scaleLocal = this._transformer.value.getMaxScaleOnAxis();
         _scaleAnimationFocalPoint = ((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).localFocalPoint;
-        global::Doroti.Ui.Offset focalPointScene__29318 = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).localFocalPoint));
+        global::Doroti.Ui.Offset focalPointScene = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).localFocalPoint));
         if ((object.Equals(this._gestureType, _GestureType__interactive_viewer.pan)))
         {
             _gestureType = _getGestureType(details);
@@ -394,15 +394,15 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
             case _GestureType__interactive_viewer.scale:
                 {
                     DartRuntimePrimitives.Assert(() => (this._scaleStart is not null));
-                    double desiredScale__30231 = (DartRuntimePrimitives.RequireValue(this._scaleStart) * ((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).scale);
-                    double scaleChange__30297 = (desiredScale__30231 / scale__29196);
-                    this._transformer.value = _matrixScale(this._transformer.value, scaleChange__30297);
-                    global::Doroti.Ui.Offset focalPointSceneScaled__30685 = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).localFocalPoint));
-                    this._transformer.value = _matrixTranslate(this._transformer.value, (focalPointSceneScaled__30685 - DartRuntimePrimitives.RequireValue(this._referenceFocalPoint)));
-                    global::Doroti.Ui.Offset focalPointSceneCheck__31273 = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).localFocalPoint));
-                    if ((!object.Equals(Interactive_viewerLibrary._round(DartRuntimePrimitives.RequireValue(this._referenceFocalPoint)), Interactive_viewerLibrary._round(focalPointSceneCheck__31273))))
+                    double desiredScale = (DartRuntimePrimitives.RequireValue(this._scaleStart) * ((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).scale);
+                    double scaleChange = (desiredScale / scaleLocal);
+                    this._transformer.value = _matrixScale(this._transformer.value, scaleChange);
+                    global::Doroti.Ui.Offset focalPointSceneScaled = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).localFocalPoint));
+                    this._transformer.value = _matrixTranslate(this._transformer.value, (focalPointSceneScaled - DartRuntimePrimitives.RequireValue(this._referenceFocalPoint)));
+                    global::Doroti.Ui.Offset focalPointSceneCheck = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).localFocalPoint));
+                    if ((!object.Equals(Interactive_viewerLibrary._round(DartRuntimePrimitives.RequireValue(this._referenceFocalPoint)), Interactive_viewerLibrary._round(focalPointSceneCheck))))
                     {
-                        _referenceFocalPoint = focalPointSceneCheck__31273;
+                        _referenceFocalPoint = focalPointSceneCheck;
                     }
                     break;
                 }
@@ -413,9 +413,9 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
                         ((InteractiveViewer)this.widget).onInteractionUpdate?.Invoke(details);
                         return;
                     }
-                    double desiredRotation__31659 = (DartRuntimePrimitives.RequireValue(this._rotationStart) + ((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).rotation);
-                    this._transformer.value = _matrixRotate(this._transformer.value, (this._currentRotation - desiredRotation__31659), ((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).localFocalPoint);
-                    _currentRotation = desiredRotation__31659;
+                    double desiredRotation = (DartRuntimePrimitives.RequireValue(this._rotationStart) + ((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).rotation);
+                    this._transformer.value = _matrixRotate(this._transformer.value, (this._currentRotation - desiredRotation), ((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).localFocalPoint);
+                    _currentRotation = desiredRotation;
                     break;
                 }
             case _GestureType__interactive_viewer.pan:
@@ -426,9 +426,9 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
                         ((InteractiveViewer)this.widget).onInteractionUpdate?.Invoke(details);
                         return;
                     }
-                    _currentAxis ??= Interactive_viewerLibrary._getPanAxis(DartRuntimePrimitives.RequireValue(this._referenceFocalPoint), focalPointScene__29318);
-                    global::Doroti.Ui.Offset translationChange__32556 = ((global::Doroti.Ui.Offset)(object?)(focalPointScene__29318 - DartRuntimePrimitives.RequireValue(this._referenceFocalPoint)));
-                    this._transformer.value = _matrixTranslate(this._transformer.value, translationChange__32556);
+                    _currentAxis ??= Interactive_viewerLibrary._getPanAxis(DartRuntimePrimitives.RequireValue(this._referenceFocalPoint), focalPointScene);
+                    global::Doroti.Ui.Offset translationChange = ((global::Doroti.Ui.Offset)(object?)(focalPointScene - DartRuntimePrimitives.RequireValue(this._referenceFocalPoint)));
+                    this._transformer.value = _matrixTranslate(this._transformer.value, translationChange);
                     _referenceFocalPoint = this._transformer.toScene(((global::Doroti.Framework.Gestures.ScaleUpdateDetails)details).localFocalPoint);
                     break;
                 }
@@ -460,13 +460,13 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
                         _currentAxis = null;
                         return;
                     }
-                    Vector3 translationVector__33631 = this._transformer.value.getTranslation();
-                    var translation__33702 = new global::Doroti.Ui.Offset(translationVector__33631.x, translationVector__33631.y);
-                    var frictionSimulationX__33780 = new global::Doroti.Framework.Physics.FrictionSimulation(((InteractiveViewer)this.widget).interactionEndFrictionCoefficient, translation__33702.dx, ((global::Doroti.Framework.Gestures.ScaleEndDetails)details).velocity.pixelsPerSecond.dx);
-                    var frictionSimulationY__33972 = new global::Doroti.Framework.Physics.FrictionSimulation(((InteractiveViewer)this.widget).interactionEndFrictionCoefficient, translation__33702.dy, ((global::Doroti.Framework.Gestures.ScaleEndDetails)details).velocity.pixelsPerSecond.dy);
-                    double tFinal__34171 = Interactive_viewerLibrary._getFinalTime(((global::Doroti.Framework.Gestures.ScaleEndDetails)details).velocity.pixelsPerSecond.distance, ((InteractiveViewer)this.widget).interactionEndFrictionCoefficient);
-                    _animation = new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: translation__33702, end: new global::Doroti.Ui.Offset(((global::Doroti.Framework.Physics.FrictionSimulation)frictionSimulationX__33780).finalX, ((global::Doroti.Framework.Physics.FrictionSimulation)frictionSimulationY__33972).finalX)).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.decelerate)).animate(this._controller);
-                    this._controller.duration = Duration.Create(milliseconds: ((tFinal__34171 * 1000L)).round());
+                    Vector3 translationVector = this._transformer.value.getTranslation();
+                    var translation = new global::Doroti.Ui.Offset(translationVector.x, translationVector.y);
+                    var frictionSimulationX = new global::Doroti.Framework.Physics.FrictionSimulation(((InteractiveViewer)this.widget).interactionEndFrictionCoefficient, translation.dx, ((global::Doroti.Framework.Gestures.ScaleEndDetails)details).velocity.pixelsPerSecond.dx);
+                    var frictionSimulationY = new global::Doroti.Framework.Physics.FrictionSimulation(((InteractiveViewer)this.widget).interactionEndFrictionCoefficient, translation.dy, ((global::Doroti.Framework.Gestures.ScaleEndDetails)details).velocity.pixelsPerSecond.dy);
+                    double tFinal = Interactive_viewerLibrary._getFinalTime(((global::Doroti.Framework.Gestures.ScaleEndDetails)details).velocity.pixelsPerSecond.distance, ((InteractiveViewer)this.widget).interactionEndFrictionCoefficient);
+                    _animation = new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: translation, end: new global::Doroti.Ui.Offset(((global::Doroti.Framework.Physics.FrictionSimulation)frictionSimulationX).finalX, ((global::Doroti.Framework.Physics.FrictionSimulation)frictionSimulationY).finalX)).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.decelerate)).animate(this._controller);
+                    this._controller.duration = Duration.Create(milliseconds: ((tFinal * 1000L)).round());
                     this._animation!.addListener(() => this._handleInertiaAnimation());
                     this._controller.forward();
                     break;
@@ -478,11 +478,11 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
                         _currentAxis = null;
                         return;
                     }
-                    double scale__34861 = this._transformer.value.getMaxScaleOnAxis();
-                    var frictionSimulation__34923 = new global::Doroti.Framework.Physics.FrictionSimulation((((InteractiveViewer)this.widget).interactionEndFrictionCoefficient * ((InteractiveViewer)this.widget).scaleFactor), scale__34861, (((global::Doroti.Framework.Gestures.ScaleEndDetails)details).scaleVelocity / 10L));
-                    double tFinal__35124 = Interactive_viewerLibrary._getFinalTime(((global::Doroti.Framework.Gestures.ScaleEndDetails)details).scaleVelocity.abs(), ((InteractiveViewer)this.widget).interactionEndFrictionCoefficient, effectivelyMotionless: 0.1);
-                    _scaleAnimation = new global::Doroti.Framework.Animation.Tween<double>(begin: scale__34861, end: frictionSimulation__34923.x(tFinal__35124)).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.decelerate)).animate(this._scaleController);
-                    this._scaleController.duration = Duration.Create(milliseconds: ((tFinal__35124 * 1000L)).round());
+                    double scaleLocal = this._transformer.value.getMaxScaleOnAxis();
+                    var frictionSimulation = new global::Doroti.Framework.Physics.FrictionSimulation((((InteractiveViewer)this.widget).interactionEndFrictionCoefficient * ((InteractiveViewer)this.widget).scaleFactor), scaleLocal, (((global::Doroti.Framework.Gestures.ScaleEndDetails)details).scaleVelocity / 10L));
+                    double tFinalLocal = Interactive_viewerLibrary._getFinalTime(((global::Doroti.Framework.Gestures.ScaleEndDetails)details).scaleVelocity.abs(), ((InteractiveViewer)this.widget).interactionEndFrictionCoefficient, effectivelyMotionless: 0.1);
+                    _scaleAnimation = new global::Doroti.Framework.Animation.Tween<double>(begin: scaleLocal, end: frictionSimulation.x(tFinalLocal)).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.decelerate)).animate(this._scaleController);
+                    this._scaleController.duration = Duration.Create(milliseconds: ((tFinalLocal * 1000L)).round());
                     this._scaleAnimation!.addListener(() => this._handleScaleAnimation());
                     this._scaleController.forward();
                     break;
@@ -496,26 +496,26 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
 
     internal virtual void _receivedPointerSignal(global::Doroti.Framework.Gestures.PointerSignalEvent @event)
     {
-        global::Doroti.Ui.Offset local__35857 = ((global::Doroti.Ui.Offset)(object?)@event.localPosition);
-        global::Doroti.Ui.Offset global__35903 = ((global::Doroti.Ui.Offset)(object?)@event.position);
-        double scaleChange__35945 = default!;
+        global::Doroti.Ui.Offset local = ((global::Doroti.Ui.Offset)(object?)@event.localPosition);
+        global::Doroti.Ui.Offset @global = ((global::Doroti.Ui.Offset)(object?)@event.position);
+        double scaleChange = default!;
         if ((@event is global::Doroti.Framework.Gestures.PointerScrollEvent))
         {
             global::Doroti.Framework.Gestures.PointerScrollEvent @event__as35966 = (global::Doroti.Framework.Gestures.PointerScrollEvent)@event;
             if (((object.Equals(((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966).kind, PointerDeviceKind.trackpad)) && !((InteractiveViewer)this.widget).trackpadScrollCausesScale))
             {
-                ((InteractiveViewer)this.widget).onInteractionStart?.Invoke(new global::Doroti.Framework.Gestures.ScaleStartDetails(focalPoint: global__35903, localFocalPoint: local__35857));
-                global::Doroti.Ui.Offset localDelta__36285 = ((global::Doroti.Ui.Offset)(object?)PointerEvent.transformDeltaViaPositions(untransformedEndPosition: (global__35903 + ((global::Doroti.Framework.Gestures.PointerScrollEvent)((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966)).scrollDelta), untransformedDelta: ((global::Doroti.Framework.Gestures.PointerScrollEvent)((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966)).scrollDelta, transform: ((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966).transform));
+                ((InteractiveViewer)this.widget).onInteractionStart?.Invoke(new global::Doroti.Framework.Gestures.ScaleStartDetails(focalPoint: @global, localFocalPoint: local));
+                global::Doroti.Ui.Offset localDelta = ((global::Doroti.Ui.Offset)(object?)PointerEvent.transformDeltaViaPositions(untransformedEndPosition: (@global + ((global::Doroti.Framework.Gestures.PointerScrollEvent)((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966)).scrollDelta), untransformedDelta: ((global::Doroti.Framework.Gestures.PointerScrollEvent)((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966)).scrollDelta, transform: ((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966).transform));
                 if (!_gestureIsSupported(_GestureType__interactive_viewer.pan))
                 {
-                    ((InteractiveViewer)this.widget).onInteractionUpdate?.Invoke(new global::Doroti.Framework.Gestures.ScaleUpdateDetails(focalPoint: (global__35903 - ((global::Doroti.Framework.Gestures.PointerScrollEvent)((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966)).scrollDelta), localFocalPoint: (local__35857 - ((global::Doroti.Framework.Gestures.PointerScrollEvent)((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966)).scrollDelta), focalPointDelta: -localDelta__36285));
+                    ((InteractiveViewer)this.widget).onInteractionUpdate?.Invoke(new global::Doroti.Framework.Gestures.ScaleUpdateDetails(focalPoint: (@global - ((global::Doroti.Framework.Gestures.PointerScrollEvent)((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966)).scrollDelta), localFocalPoint: (local - ((global::Doroti.Framework.Gestures.PointerScrollEvent)((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966)).scrollDelta), focalPointDelta: -localDelta));
                     ((InteractiveViewer)this.widget).onInteractionEnd?.Invoke(new global::Doroti.Framework.Gestures.ScaleEndDetails());
                     return;
                 }
-                global::Doroti.Ui.Offset focalPointScene__36926 = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(local__35857));
-                global::Doroti.Ui.Offset newFocalPointScene__36994 = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene((local__35857 - localDelta__36285)));
-                this._transformer.value = _matrixTranslate(this._transformer.value, (newFocalPointScene__36994 - focalPointScene__36926));
-                ((InteractiveViewer)this.widget).onInteractionUpdate?.Invoke(new global::Doroti.Framework.Gestures.ScaleUpdateDetails(focalPoint: (global__35903 - ((global::Doroti.Framework.Gestures.PointerScrollEvent)((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966)).scrollDelta), localFocalPoint: (local__35857 - localDelta__36285), focalPointDelta: -localDelta__36285));
+                global::Doroti.Ui.Offset focalPointScene = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(local));
+                global::Doroti.Ui.Offset newFocalPointScene = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene((local - localDelta)));
+                this._transformer.value = _matrixTranslate(this._transformer.value, (newFocalPointScene - focalPointScene));
+                ((InteractiveViewer)this.widget).onInteractionUpdate?.Invoke(new global::Doroti.Framework.Gestures.ScaleUpdateDetails(focalPoint: (@global - ((global::Doroti.Framework.Gestures.PointerScrollEvent)((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966)).scrollDelta), localFocalPoint: (local - localDelta), focalPointDelta: -localDelta));
                 ((InteractiveViewer)this.widget).onInteractionEnd?.Invoke(new global::Doroti.Framework.Gestures.ScaleEndDetails());
                 return;
             }
@@ -523,32 +523,32 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
             {
                 return;
             }
-            scaleChange__35945 = global::Doroti.Runtime.Dart_mathLibrary.exp((-((global::Doroti.Framework.Gestures.PointerScrollEvent)((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966)).scrollDelta.dy / ((InteractiveViewer)this.widget).scaleFactor));
+            scaleChange = global::Doroti.Runtime.Dart_mathLibrary.exp((-((global::Doroti.Framework.Gestures.PointerScrollEvent)((global::Doroti.Framework.Gestures.PointerScrollEvent)@event__as35966)).scrollDelta.dy / ((InteractiveViewer)this.widget).scaleFactor));
         }
         else
         {
             if ((@event is global::Doroti.Framework.Gestures.PointerScaleEvent))
             {
                 global::Doroti.Framework.Gestures.PointerScaleEvent @event__as37721 = (global::Doroti.Framework.Gestures.PointerScaleEvent)@event;
-                scaleChange__35945 = ((global::Doroti.Framework.Gestures.PointerScaleEvent)((global::Doroti.Framework.Gestures.PointerScaleEvent)@event__as37721)).scale;
+                scaleChange = ((global::Doroti.Framework.Gestures.PointerScaleEvent)((global::Doroti.Framework.Gestures.PointerScaleEvent)@event__as37721)).scale;
             }
             else
             {
                 return;
             }
         }
-        ((InteractiveViewer)this.widget).onInteractionStart?.Invoke(new global::Doroti.Framework.Gestures.ScaleStartDetails(focalPoint: global__35903, localFocalPoint: local__35857));
+        ((InteractiveViewer)this.widget).onInteractionStart?.Invoke(new global::Doroti.Framework.Gestures.ScaleStartDetails(focalPoint: @global, localFocalPoint: local));
         if (!_gestureIsSupported(_GestureType__interactive_viewer.scale))
         {
-            ((InteractiveViewer)this.widget).onInteractionUpdate?.Invoke(new global::Doroti.Framework.Gestures.ScaleUpdateDetails(focalPoint: global__35903, localFocalPoint: local__35857, scale: scaleChange__35945));
+            ((InteractiveViewer)this.widget).onInteractionUpdate?.Invoke(new global::Doroti.Framework.Gestures.ScaleUpdateDetails(focalPoint: @global, localFocalPoint: local, scale: scaleChange));
             ((InteractiveViewer)this.widget).onInteractionEnd?.Invoke(new global::Doroti.Framework.Gestures.ScaleEndDetails());
             return;
         }
-        global::Doroti.Ui.Offset focalPointScene__38205 = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(local__35857));
-        this._transformer.value = _matrixScale(this._transformer.value, scaleChange__35945);
-        global::Doroti.Ui.Offset focalPointSceneScaled__38467 = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(local__35857));
-        this._transformer.value = _matrixTranslate(this._transformer.value, (focalPointSceneScaled__38467 - focalPointScene__38205));
-        ((InteractiveViewer)this.widget).onInteractionUpdate?.Invoke(new global::Doroti.Framework.Gestures.ScaleUpdateDetails(focalPoint: global__35903, localFocalPoint: local__35857, scale: scaleChange__35945));
+        global::Doroti.Ui.Offset focalPointSceneLocal = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(local));
+        this._transformer.value = _matrixScale(this._transformer.value, scaleChange);
+        global::Doroti.Ui.Offset focalPointSceneScaled = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(local));
+        this._transformer.value = _matrixTranslate(this._transformer.value, (focalPointSceneScaled - focalPointSceneLocal));
+        ((InteractiveViewer)this.widget).onInteractionUpdate?.Invoke(new global::Doroti.Framework.Gestures.ScaleUpdateDetails(focalPoint: @global, localFocalPoint: local, scale: scaleChange));
         ((InteractiveViewer)this.widget).onInteractionEnd?.Invoke(new global::Doroti.Framework.Gestures.ScaleEndDetails());
     }
 
@@ -562,9 +562,9 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
             this._controller.reset();
             return;
         }
-        Vector3 translationVector__39159 = this._transformer.value.getTranslation();
-        var translation__39226 = new global::Doroti.Ui.Offset(translationVector__39159.x, translationVector__39159.y);
-        this._transformer.value = _matrixTranslate(this._transformer.value, (this._transformer.toScene(this._animation!.value) - this._transformer.toScene(translation__39226)));
+        Vector3 translationVector = this._transformer.value.getTranslation();
+        var translation = new global::Doroti.Ui.Offset(translationVector.x, translationVector.y);
+        this._transformer.value = _matrixTranslate(this._transformer.value, (this._transformer.toScene(this._animation!.value) - this._transformer.toScene(translation)));
     }
 
     internal virtual void _handleScaleAnimation()
@@ -577,12 +577,12 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
             this._scaleController.reset();
             return;
         }
-        double desiredScale__39716 = this._scaleAnimation!.value;
-        double scaleChange__39772 = (desiredScale__39716 / this._transformer.value.getMaxScaleOnAxis());
-        global::Doroti.Ui.Offset referenceFocalPoint__39858 = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(this._scaleAnimationFocalPoint));
-        this._transformer.value = _matrixScale(this._transformer.value, scaleChange__39772);
-        global::Doroti.Ui.Offset focalPointSceneScaled__40257 = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(this._scaleAnimationFocalPoint));
-        this._transformer.value = _matrixTranslate(this._transformer.value, (focalPointSceneScaled__40257 - referenceFocalPoint__39858));
+        double desiredScale = this._scaleAnimation!.value;
+        double scaleChange = (desiredScale / this._transformer.value.getMaxScaleOnAxis());
+        global::Doroti.Ui.Offset referenceFocalPoint = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(this._scaleAnimationFocalPoint));
+        this._transformer.value = _matrixScale(this._transformer.value, scaleChange);
+        global::Doroti.Ui.Offset focalPointSceneScaled = ((global::Doroti.Ui.Offset)(object?)this._transformer.toScene(this._scaleAnimationFocalPoint));
+        this._transformer.value = _matrixTranslate(this._transformer.value, (focalPointSceneScaled - referenceFocalPoint));
     }
 
     internal virtual void _handleTransformation()
@@ -603,8 +603,8 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
     public override void didUpdateWidget(InteractiveViewer oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        TransformationController? newController__40975 = ((InteractiveViewer)this.widget).transformationController;
-        if ((object.Equals(newController__40975, ((InteractiveViewer)oldWidget).transformationController)))
+        TransformationController? newController = ((InteractiveViewer)this.widget).transformationController;
+        if ((object.Equals(newController, ((InteractiveViewer)oldWidget).transformationController)))
         {
             return;
         }
@@ -613,7 +613,7 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         {
             this._transformer.dispose();
         }
-        _transformer = (newController__40975 ?? new TransformationController());
+        _transformer = (newController ?? new TransformationController());
         this._transformer.addListener(() => this._handleTransformation());
     }
 
@@ -630,11 +630,11 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
             {
                 if ((this._tickers is not null))
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18989 in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
                     {
-                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker__18989).isActive)
+                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker).isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker__18989.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -648,23 +648,23 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
 
     public override Widget build(BuildContext context)
     {
-        Widget child__41696 = default!;
+        Widget childLocal = default!;
         if ((((InteractiveViewer)this.widget).child is not null))
         {
-            child__41696 = DartRuntimePrimitives.ConvertValue<Widget>(new _InteractiveViewerBuilt__interactive_viewer(childKey: this._childKey, clipBehavior: ((InteractiveViewer)this.widget).clipBehavior, constrained: ((InteractiveViewer)this.widget).constrained, matrix: this._transformer.value, alignment: ((InteractiveViewer)this.widget).alignment, child: ((InteractiveViewer)this.widget).child!));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new _InteractiveViewerBuilt__interactive_viewer(childKey: this._childKey, clipBehavior: ((InteractiveViewer)this.widget).clipBehavior, constrained: ((InteractiveViewer)this.widget).constrained, matrix: this._transformer.value, alignment: ((InteractiveViewer)this.widget).alignment, child: ((InteractiveViewer)this.widget).child!));
         }
         else
         {
             DartRuntimePrimitives.Assert(() => (((InteractiveViewer)this.widget).builder is not null));
             DartRuntimePrimitives.Assert(() => !((InteractiveViewer)this.widget).constrained);
-            child__41696 = DartRuntimePrimitives.ConvertValue<Widget>(new LayoutBuilder(builder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, Widget>)((context, constraints) =>
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new LayoutBuilder(builder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, Widget>)((context, constraints) =>
             {
-                Matrix4 matrix__42339 = ((Matrix4)(object?)this._transformer.value);
-                return ((Widget)(object?)new _InteractiveViewerBuilt__interactive_viewer(childKey: this._childKey, clipBehavior: ((InteractiveViewer)this.widget).clipBehavior, constrained: ((InteractiveViewer)this.widget).constrained, alignment: ((InteractiveViewer)this.widget).alignment, matrix: matrix__42339, child: ((InteractiveViewer)this.widget).builder!(context, Interactive_viewerLibrary._transformViewport(matrix__42339, (Offset.zero & ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest)))));
+                Matrix4 matrixLocal = ((Matrix4)(object?)this._transformer.value);
+                return ((Widget)(object?)new _InteractiveViewerBuilt__interactive_viewer(childKey: this._childKey, clipBehavior: ((InteractiveViewer)this.widget).clipBehavior, constrained: ((InteractiveViewer)this.widget).constrained, alignment: ((InteractiveViewer)this.widget).alignment, matrix: matrixLocal, child: ((InteractiveViewer)this.widget).builder!(context, Interactive_viewerLibrary._transformViewport(matrixLocal, (Offset.zero & ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest)))));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }))));
         }
-        return ((Widget)(object?)new Listener(key: this._parentKey, onPointerSignal: (global::System.Action<global::Doroti.Framework.Gestures.PointerSignalEvent>)this._receivedPointerSignal, child: new GestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, onScaleEnd: (global::System.Action<global::Doroti.Framework.Gestures.ScaleEndDetails>)this._onScaleEnd, onScaleStart: (global::System.Action<global::Doroti.Framework.Gestures.ScaleStartDetails>)this._onScaleStart, onScaleUpdate: (global::System.Action<global::Doroti.Framework.Gestures.ScaleUpdateDetails>)this._onScaleUpdate, trackpadScrollCausesScale: ((InteractiveViewer)this.widget).trackpadScrollCausesScale, trackpadScrollToScaleFactor: new global::Doroti.Ui.Offset(0, (-1L / ((InteractiveViewer)this.widget).scaleFactor)), child: child__41696)));
+        return ((Widget)(object?)new Listener(key: this._parentKey, onPointerSignal: (global::System.Action<global::Doroti.Framework.Gestures.PointerSignalEvent>)this._receivedPointerSignal, child: new GestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, onScaleEnd: (global::System.Action<global::Doroti.Framework.Gestures.ScaleEndDetails>)this._onScaleEnd, onScaleStart: (global::System.Action<global::Doroti.Framework.Gestures.ScaleStartDetails>)this._onScaleStart, onScaleUpdate: (global::System.Action<global::Doroti.Framework.Gestures.ScaleUpdateDetails>)this._onScaleUpdate, trackpadScrollCausesScale: ((InteractiveViewer)this.widget).trackpadScrollCausesScale, trackpadScrollToScaleFactor: new global::Doroti.Ui.Offset(0, (-1L / ((InteractiveViewer)this.widget).scaleFactor)), child: childLocal)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -676,16 +676,16 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         }
         DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values__17506 = this._tickerModeNotifier!.value;
-        var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
+        TickerModeData values = this._tickerModeNotifier!.value;
+        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
     var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values__17506).enabled;
-    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    __cascade.muted = !((TickerModeData)values).enabled;
+    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result__17553);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
+        this._tickers!.Add(result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -707,26 +707,26 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
     {
         if ((this._tickers is not null))
         {
-            TickerModeData values__18318 = this._tickerModeNotifier!.value;
-            bool muted__18372 = !((TickerModeData)values__18318).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
+            TickerModeData values = this._tickerModeNotifier!.value;
+            bool mutedLocal = !((TickerModeData)values).enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
             {
-                ticker__18421.muted = muted__18372;
-                ticker__18421.forceFrames = ((TickerModeData)values__18318).forceFrames;
+                ticker.muted = mutedLocal;
+                ticker.forceFrames = ((TickerModeData)values).forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__18621, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
-        this._tickerModeNotifier = newNotifier__18621;
+        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -758,12 +758,12 @@ internal class _InteractiveViewerBuilt__interactive_viewer : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        Widget child__43924 = ((Widget)(object?)new Transform(transform: this.matrix, alignment: this.alignment, child: new KeyedSubtree(key: this.childKey, child: ((Widget)((dynamic)this).child))));
+        Widget childLocal = ((Widget)(object?)new Transform(transform: this.matrix, alignment: this.alignment, child: new KeyedSubtree(key: this.childKey, child: ((Widget)((dynamic)this).child))));
         if (!this.constrained)
         {
-            child__43924 = DartRuntimePrimitives.ConvertValue<Widget>(new OverflowBox(alignment: global::Doroti.Framework.Painting.Alignment.topLeft, minWidth: 0.0, minHeight: 0.0, maxWidth: double.PositiveInfinity, maxHeight: double.PositiveInfinity, child: child__43924));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new OverflowBox(alignment: global::Doroti.Framework.Painting.Alignment.topLeft, minWidth: 0.0, minHeight: 0.0, maxWidth: double.PositiveInfinity, maxHeight: double.PositiveInfinity, child: childLocal));
         }
-        return ((Widget)(object?)new ClipRect(clipBehavior: this.clipBehavior, child: child__43924));
+        return ((Widget)(object?)new ClipRect(clipBehavior: this.clipBehavior, child: childLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -777,9 +777,9 @@ public class TransformationController : global::Doroti.Framework.Foundation.Valu
 
     public virtual global::Doroti.Ui.Offset toScene(Offset viewportPoint)
     {
-        var inverseMatrix__46410 = Matrix4.inverted(this.value);
-        Vector3 untransformed__46469 = inverseMatrix__46410.transform3(new Vector3(viewportPoint.dx, viewportPoint.dy, 0));
-        return new global::Doroti.Ui.Offset(untransformed__46469.x, untransformed__46469.y);
+        var inverseMatrix = Matrix4.inverted(this.value);
+        Vector3 untransformed = inverseMatrix.transform3(new Vector3(viewportPoint.dx, viewportPoint.dy, 0));
+        return new global::Doroti.Ui.Offset(untransformed.x, untransformed.y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -805,8 +805,8 @@ public static partial class Interactive_viewerLibrary
 {
     internal static Offset _getMatrixTranslation(Matrix4 matrix)
     {
-        Vector3 nextTranslation__47225 = matrix.getTranslation();
-        return new global::Doroti.Ui.Offset(nextTranslation__47225.x, nextTranslation__47225.y);
+        Vector3 nextTranslation = matrix.getTranslation();
+        return new global::Doroti.Ui.Offset(nextTranslation.x, nextTranslation.y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -815,13 +815,13 @@ public static partial class Interactive_viewerLibrary
 {
     internal static global::Doroti.Ui.Quad _transformViewport(Matrix4 matrix, Rect viewport)
     {
-        Matrix4 inverseMatrix__47697 = ((Func<Matrix4>)(() =>
+        Matrix4 inverseMatrix = ((Func<Matrix4>)(() =>
 {
     var __cascade = matrix.clone();
     __cascade.invert();
     return __cascade;
 }))();
-        return new global::Doroti.Ui.Quad(inverseMatrix__47697.transform3(new Vector3(viewport.topLeft.dx, viewport.topLeft.dy, 0.0)), inverseMatrix__47697.transform3(new Vector3(viewport.topRight.dx, viewport.topRight.dy, 0.0)), inverseMatrix__47697.transform3(new Vector3(viewport.bottomRight.dx, viewport.bottomRight.dy, 0.0)), inverseMatrix__47697.transform3(new Vector3(viewport.bottomLeft.dx, viewport.bottomLeft.dy, 0.0)));
+        return new global::Doroti.Ui.Quad(inverseMatrix.transform3(new Vector3(viewport.topLeft.dx, viewport.topLeft.dy, 0.0)), inverseMatrix.transform3(new Vector3(viewport.topRight.dx, viewport.topRight.dy, 0.0)), inverseMatrix.transform3(new Vector3(viewport.bottomRight.dx, viewport.bottomRight.dy, 0.0)), inverseMatrix.transform3(new Vector3(viewport.bottomLeft.dx, viewport.bottomLeft.dy, 0.0)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -830,7 +830,7 @@ public static partial class Interactive_viewerLibrary
 {
     internal static global::Doroti.Ui.Quad _getAxisAlignedBoundingBoxWithRotation(Rect rect, double rotation)
     {
-        var rotationMatrix__48311 = ((Func<Matrix4>)(() =>
+        var rotationMatrix = ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.identity();
     __cascade.translateByDouble((rect.size.width / 2L), (rect.size.height / 2L), 0, 1);
@@ -838,8 +838,8 @@ public static partial class Interactive_viewerLibrary
     __cascade.translateByDouble((-rect.size.width / 2L), (-rect.size.height / 2L), 0, 1);
     return __cascade;
 }))();
-        var boundariesRotated__48528 = new global::Doroti.Ui.Quad(rotationMatrix__48311.transform3(new Vector3(rect.left, rect.top, 0.0)), rotationMatrix__48311.transform3(new Vector3(rect.right, rect.top, 0.0)), rotationMatrix__48311.transform3(new Vector3(rect.right, rect.bottom, 0.0)), rotationMatrix__48311.transform3(new Vector3(rect.left, rect.bottom, 0.0)));
-        return ((global::Doroti.Ui.Quad)(object?)InteractiveViewer.getAxisAlignedBoundingBox(boundariesRotated__48528));
+        var boundariesRotated = new global::Doroti.Ui.Quad(rotationMatrix.transform3(new Vector3(rect.left, rect.top, 0.0)), rotationMatrix.transform3(new Vector3(rect.right, rect.top, 0.0)), rotationMatrix.transform3(new Vector3(rect.right, rect.bottom, 0.0)), rotationMatrix.transform3(new Vector3(rect.left, rect.bottom, 0.0)));
+        return ((global::Doroti.Ui.Quad)(object?)InteractiveViewer.getAxisAlignedBoundingBox(boundariesRotated));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -848,22 +848,22 @@ public static partial class Interactive_viewerLibrary
 {
     internal static Offset _exceedsBy(global::Doroti.Ui.Quad boundary, global::Doroti.Ui.Quad viewport)
     {
-        var viewportPoints__49140 = new List<Vector3> { viewport.point0, viewport.point1, viewport.point2, viewport.point3 };
-        global::Doroti.Ui.Offset largestExcess__49266 = ((global::Doroti.Ui.Offset)(object?)Offset.zero);
-        foreach (var point__49308 in viewportPoints__49140)
+        var viewportPoints = new List<Vector3> { viewport.point0, viewport.point1, viewport.point2, viewport.point3 };
+        global::Doroti.Ui.Offset largestExcess = ((global::Doroti.Ui.Offset)(object?)Offset.zero);
+        foreach (var point in viewportPoints)
         {
-            Vector3 pointInside__49353 = ((Vector3)(object?)InteractiveViewer.getNearestPointInside(point__49308, boundary));
-            var excess__49435 = new global::Doroti.Ui.Offset((pointInside__49353.x - point__49308.x), (pointInside__49353.y - point__49308.y));
-            if ((excess__49435.dx.abs() > largestExcess__49266.dx.abs()))
+            Vector3 pointInside = ((Vector3)(object?)InteractiveViewer.getNearestPointInside(point, boundary));
+            var excess = new global::Doroti.Ui.Offset((pointInside.x - point.x), (pointInside.y - point.y));
+            if ((excess.dx.abs() > largestExcess.dx.abs()))
             {
-                largestExcess__49266 = new global::Doroti.Ui.Offset(excess__49435.dx, largestExcess__49266.dy);
+                largestExcess = new global::Doroti.Ui.Offset(excess.dx, largestExcess.dy);
             }
-            if ((excess__49435.dy.abs() > largestExcess__49266.dy.abs()))
+            if ((excess.dy.abs() > largestExcess.dy.abs()))
             {
-                largestExcess__49266 = new global::Doroti.Ui.Offset(largestExcess__49266.dx, excess__49435.dy);
+                largestExcess = new global::Doroti.Ui.Offset(largestExcess.dx, excess.dy);
             }
         }
-        return Interactive_viewerLibrary._round(largestExcess__49266);
+        return Interactive_viewerLibrary._round(largestExcess);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -894,9 +894,9 @@ public static partial class Interactive_viewerLibrary
         {
             return ((global::Doroti.Framework.Painting.Axis)(object)null);
         }
-        double x__50576 = (point2.dx - point1.dx);
-        double y__50618 = (point2.dy - point1.dy);
-        return ((x__50576.abs() > y__50618.abs()) ? global::Doroti.Framework.Painting.Axis.horizontal : global::Doroti.Framework.Painting.Axis.vertical);
+        double x = (point2.dx - point1.dx);
+        double y = (point2.dy - point1.dy);
+        return ((x.abs() > y.abs()) ? global::Doroti.Framework.Painting.Axis.horizontal : global::Doroti.Framework.Painting.Axis.vertical);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

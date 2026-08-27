@@ -30,26 +30,26 @@ public class TableRow
 
     public override string ToString()
     {
-        var result__1714 = new StringBuffer();
-        result__1714.write("TableRow(");
+        var result = new StringBuffer();
+        result.write("TableRow(");
         if ((this.key is not null))
         {
-            result__1714.write($"{this.key}, ");
+            result.write($"{this.key}, ");
         }
         if ((this.decoration is not null))
         {
-            result__1714.write($"{this.decoration}, ");
+            result.write($"{this.decoration}, ");
         }
         if (!System.Linq.Enumerable.Any(this.children))
         {
-            result__1714.write("no children");
+            result.write("no children");
         }
         else
         {
-            result__1714.write($"{this.children}");
+            result.write($"{this.children}");
         }
-        result__1714.write(")");
-        return ((string)(object?)result__1714.ToString());
+        result.write(")");
+        return ((string)(object?)result.ToString());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -105,8 +105,8 @@ public class Table : RenderObjectWidget
         {
             if (System.Linq.Enumerable.Any(__children))
             {
-                long cellCount__4831 = checked((long)(__children.First().children.Count));
-                if (__children.any(((row) => (checked((long)(((TableRow)row).children.Count)) != cellCount__4831))))
+                long cellCount = checked((long)(__children.First().children.Count));
+                if (__children.any(((row) => (checked((long)(((TableRow)row).children.Count)) != cellCount))))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Table contains irregular row lengths.\n" + "Every TableRow in a Table must have the same number of children, so that every cell is filled. " + "Otherwise, the table will contain holes."));
                 }
@@ -167,14 +167,14 @@ internal class _TableElement__table : RenderObjectElement
         DartRuntimePrimitives.Assert(() => !this._doingMountOrUpdate);
         _doingMountOrUpdate = true;
         base.mount(parent, newSlot);
-        var rowIndex__10702 = -1L;
+        var rowIndex = -1L;
         _children = (((Table?)(object?)this.widget)!).children.map<TableRow, _TableElementRow__table>(((row) =>
         {
-            var columnIndex__10822 = 0L;
-            rowIndex__10702 += 1L;
+            var columnIndex = 0L;
+            rowIndex += 1L;
             return new _TableElementRow__table(key: ((TableRow)row).key, children: ((TableRow)row).children.map<Widget, Element>(((child) =>
             {
-                return ((Element)(object?)inflateWidget(child, new _TableSlot__table(columnIndex__10822++, rowIndex__10702)));
+                return ((Element)(object?)inflateWidget(child, new _TableSlot__table(columnIndex++, rowIndex)));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })).ToList());
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -215,49 +215,49 @@ internal class _TableElement__table : RenderObjectElement
         var __newWidget = (Table)(object)newWidget;
         DartRuntimePrimitives.Assert(() => !this._doingMountOrUpdate);
         _doingMountOrUpdate = true;
-        var oldKeyedRows__12202 = new DartMap<global::Doroti.Framework.Foundation.LocalKey, List<Element>>();
-        foreach (_TableElementRow__table row__12278 in this._children)
+        var oldKeyedRows = new DartMap<global::Doroti.Framework.Foundation.LocalKey, List<Element>>();
+        foreach (_TableElementRow__table rowLocal in this._children)
         {
-            if ((((_TableElementRow__table)row__12278).key is not null))
+            if ((((_TableElementRow__table)rowLocal).key is not null))
             {
-                oldKeyedRows__12202[((_TableElementRow__table)row__12278).key!] = ((_TableElementRow__table)row__12278).children;
+                oldKeyedRows[((_TableElementRow__table)rowLocal).key!] = ((_TableElementRow__table)rowLocal).children;
             }
         }
-        IEnumerator<_TableElementRow__table> oldUnkeyedRows__12425 = this._children.where(((row) => (((_TableElementRow__table)row).key is null))).GetEnumerator();
-        var newChildren__12539 = new List<_TableElementRow__table>();
-        var taken__12585 = new HashSet<List<Element>>();
-        for (var rowIndex__12625 = 0L; (rowIndex__12625 < checked((long)(((Table)__newWidget).children.Count))); rowIndex__12625++)
+        IEnumerator<_TableElementRow__table> oldUnkeyedRows = this._children.where(((row) => (((_TableElementRow__table)row).key is null))).GetEnumerator();
+        var newChildren = new List<_TableElementRow__table>();
+        var taken = new HashSet<List<Element>>();
+        for (var rowIndex = 0L; (rowIndex < checked((long)(((Table)__newWidget).children.Count))); rowIndex++)
         {
-            TableRow row__12712 = ((Table)__newWidget).children[(int)(rowIndex__12625)];
-            List<Element> oldChildren__12768 = default!;
-            if (((((TableRow)row__12712).key is not null) && oldKeyedRows__12202.ContainsKey(((TableRow)row__12712).key)))
+            TableRow rowAlternate = ((Table)__newWidget).children[(int)(rowIndex)];
+            List<Element> oldChildren = default!;
+            if (((((TableRow)rowAlternate).key is not null) && oldKeyedRows.ContainsKey(((TableRow)rowAlternate).key)))
             {
-                oldChildren__12768 = oldKeyedRows__12202.GetValueOrDefault(DartRuntimePrimitives.RequireReference(((TableRow)row__12712).key))!;
-                taken__12585.Add(oldChildren__12768);
+                oldChildren = oldKeyedRows.GetValueOrDefault(DartRuntimePrimitives.RequireReference(((TableRow)rowAlternate).key))!;
+                taken.Add(oldChildren);
             }
             else
             {
-                if (((((TableRow)row__12712).key is null) && oldUnkeyedRows__12425.MoveNext()))
+                if (((((TableRow)rowAlternate).key is null) && oldUnkeyedRows.MoveNext()))
                 {
-                    oldChildren__12768 = oldUnkeyedRows__12425.Current.children;
+                    oldChildren = oldUnkeyedRows.Current.children;
                 }
                 else
                 {
-                    oldChildren__12768 = new List<Element>();
+                    oldChildren = new List<Element>();
                 }
             }
-            var slots__13121 = new List<_TableSlot__table>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(((TableRow)row__12712).children.Count)))), ((columnIndex) => new _TableSlot__table(columnIndex, rowIndex__12625))));
-            newChildren__12539.Add(new _TableElementRow__table(key: ((TableRow)row__12712).key, children: updateChildren(oldChildren__12768, ((TableRow)row__12712).children, forgottenChildren: this._forgottenChildren, slots: slots__13121.Cast<object>().ToList())));
+            var slotsLocal = new List<_TableSlot__table>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(((TableRow)rowAlternate).children.Count)))), ((columnIndex) => new _TableSlot__table(columnIndex, rowIndex))));
+            newChildren.Add(new _TableElementRow__table(key: ((TableRow)rowAlternate).key, children: updateChildren(oldChildren, ((TableRow)rowAlternate).children, forgottenChildren: this._forgottenChildren, slots: slotsLocal.Cast<object>().ToList())));
         }
-        while (oldUnkeyedRows__12425.MoveNext())
+        while (oldUnkeyedRows.MoveNext())
         {
-            updateChildren(oldUnkeyedRows__12425.Current.children, new List<Widget>(), forgottenChildren: this._forgottenChildren);
+            updateChildren(oldUnkeyedRows.Current.children, new List<Widget>(), forgottenChildren: this._forgottenChildren);
         }
-        foreach (List<Element> oldChildren__13754 in oldKeyedRows__12202.Values.where(((list) => !taken__12585.Contains(list))))
+        foreach (List<Element> oldChildrenLocal in oldKeyedRows.Values.where(((list) => !taken.Contains(list))))
         {
-            updateChildren(oldChildren__13754, new List<Widget>(), forgottenChildren: this._forgottenChildren);
+            updateChildren(oldChildrenLocal, new List<Widget>(), forgottenChildren: this._forgottenChildren);
         }
-        _children = newChildren__12539;
+        _children = newChildren;
         _updateRenderObjectChildren();
         this._forgottenChildren.Clear();
         base.update(__newWidget);
@@ -272,8 +272,8 @@ internal class _TableElement__table : RenderObjectElement
         {
             return ((_TableElementRow__table)row).children.map<Element, global::Doroti.Framework.Rendering.RenderBox>(((child) =>
             {
-                var box__14458 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((Element)child).renderObject!)!;
-                return box__14458;
+                var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((Element)child).renderObject!)!;
+                return box;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -282,11 +282,11 @@ internal class _TableElement__table : RenderObjectElement
 
     public override void visitChildren(global::System.Action<Element> visitor)
     {
-        foreach (Element child__14645 in this._children.expand(((row) => ((_TableElementRow__table)row).children)))
+        foreach (Element child in this._children.expand(((row) => ((_TableElementRow__table)row).children)))
         {
-            if (!this._forgottenChildren.Contains(child__14645))
+            if (!this._forgottenChildren.Contains(child))
             {
-                visitor(child__14645);
+                visitor(child);
             }
         }
     }
@@ -331,10 +331,10 @@ internal class _TableCell__table : ParentDataWidget<global::Doroti.Framework.Ren
 
     public override void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
-        var parentData__16182 = ((global::Doroti.Framework.Rendering.TableCellParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
-        if ((!object.Equals(((global::Doroti.Framework.Rendering.TableCellParentData)parentData__16182).verticalAlignment, this.verticalAlignment)))
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.TableCellParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
+        if ((!object.Equals(((global::Doroti.Framework.Rendering.TableCellParentData)parentDataLocal).verticalAlignment, this.verticalAlignment)))
         {
-            parentData__16182.verticalAlignment = this.verticalAlignment;
+            parentDataLocal.verticalAlignment = this.verticalAlignment;
             ((dynamic)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
         }
     }
@@ -380,14 +380,14 @@ public class _TableSlot__table : global::Doroti.Framework.Foundation.Diagnostica
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

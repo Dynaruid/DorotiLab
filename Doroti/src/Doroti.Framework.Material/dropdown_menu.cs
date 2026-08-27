@@ -199,10 +199,10 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
         filteredEntries = ((DropdownMenu<T>)(object)this.widget).dropdownMenuEntries;
         buttonItemKeys = DartRuntimePrimitives.CreateList<global::Doroti.Framework.Widgets.GlobalKey<IState>>(checked((long)(this.filteredEntries.Count)), ((index) => global::Doroti.Framework.Widgets.GlobalKey<IState>.Create()));
         _menuHasEnabledItem = this.filteredEntries.any(((entry) => ((DropdownMenuEntry<T>)entry).enabled));
-        long index__28492 = this.filteredEntries.indexWhere(((entry) => EqualityComparer<T>.Default.Equals(((DropdownMenuEntry<T>)entry).value, ((DropdownMenu<T>)(object)this.widget).initialSelection)));
-        if ((index__28492 != -1L))
+        long indexLocal = this.filteredEntries.indexWhere(((entry) => EqualityComparer<T>.Default.Equals(((DropdownMenuEntry<T>)entry).value, ((DropdownMenu<T>)(object)this.widget).initialSelection)));
+        if ((indexLocal != -1L))
         {
-            this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: this.filteredEntries[(int)(index__28492)].label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: this.filteredEntries[(int)(index__28492)].label.Length));
+            this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: this.filteredEntries[(int)(indexLocal)].label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: this.filteredEntries[(int)(indexLocal)].label.Length));
         }
         refreshLeadingPadding();
         _controller = (((DropdownMenu<T>)(object)this.widget).menuController ?? new global::Doroti.Framework.Widgets.MenuController());
@@ -255,10 +255,10 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
         }
         if (!EqualityComparer<T>.Default.Equals(((DropdownMenu<T>)oldWidget).initialSelection, ((DropdownMenu<T>)(object)this.widget).initialSelection))
         {
-            long index__30361 = this.filteredEntries.indexWhere(((entry) => EqualityComparer<T>.Default.Equals(((DropdownMenuEntry<T>)entry).value, ((DropdownMenu<T>)(object)this.widget).initialSelection)));
-            if ((index__30361 != -1L))
+            long indexLocal = this.filteredEntries.indexWhere(((entry) => EqualityComparer<T>.Default.Equals(((DropdownMenuEntry<T>)entry).value, ((DropdownMenu<T>)(object)this.widget).initialSelection)));
+            if ((indexLocal != -1L))
             {
-                this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: this.filteredEntries[(int)(index__30361)].label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: this.filteredEntries[(int)(index__30361)].label.Length));
+                this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: this.filteredEntries[(int)(indexLocal)].label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: this.filteredEntries[(int)(indexLocal)].label.Length));
             }
         }
         if ((!object.Equals(((DropdownMenu<T>)oldWidget).menuController, ((DropdownMenu<T>)(object)this.widget).menuController)))
@@ -294,21 +294,21 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
     {
         global::Doroti.Framework.Widgets.WidgetsBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((_) =>
         {
-            global::Doroti.Framework.Widgets.BuildContext? highlightContext__31715 = this.buttonItemKeys[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].currentContext;
-            if ((highlightContext__31715 is not null))
+            global::Doroti.Framework.Widgets.BuildContext? highlightContext = this.buttonItemKeys[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].currentContext;
+            if ((highlightContext is not null))
             {
-                DartRuntimePrimitives.Ignore(Scrollable.of(highlightContext__31715).position.ensureVisible(highlightContext__31715.findRenderObject()!));
+                DartRuntimePrimitives.Ignore(Scrollable.of(highlightContext).position.ensureVisible(highlightContext.findRenderObject()!));
             }
         })), debugLabel: "DropdownMenu.scrollToHighlight");
     }
 
     public virtual double? getWidth(global::Doroti.Framework.Widgets.GlobalKey<IState> key)
     {
-        global::Doroti.Framework.Widgets.BuildContext? context__32072 = ((global::Doroti.Framework.Widgets.GlobalKey<IState>)key).currentContext;
-        if ((context__32072 is not null))
+        global::Doroti.Framework.Widgets.BuildContext? context = ((global::Doroti.Framework.Widgets.GlobalKey<IState>)key).currentContext;
+        if ((context is not null))
         {
-            var box__32141 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)context__32072.findRenderObject()!)!;
-            return (((global::Doroti.Framework.Rendering.RenderBox)box__32141).hasSize ? ((global::Doroti.Framework.Rendering.RenderBox)box__32141).size.width : null);
+            var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)context.findRenderObject()!)!;
+            return (((global::Doroti.Framework.Rendering.RenderBox)box).hasSize ? ((global::Doroti.Framework.Rendering.RenderBox)box).size.width : null);
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -316,15 +316,15 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
 
     public virtual List<DropdownMenuEntry<T>> filter(List<DropdownMenuEntry<T>> entries, global::Doroti.Framework.Widgets.TextEditingController textEditingController)
     {
-        string filterText__32416 = ((global::Doroti.Framework.Widgets.TextEditingController)textEditingController).text.toLowerCase();
-        return entries.where(((entry) => ((DropdownMenuEntry<T>)entry).label.toLowerCase().contains(filterText__32416))).ToList();
+        string filterText = ((global::Doroti.Framework.Widgets.TextEditingController)textEditingController).text.toLowerCase();
+        return entries.where(((entry) => ((DropdownMenuEntry<T>)entry).label.toLowerCase().contains(filterText))).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _shouldUpdateCurrentHighlight(List<DropdownMenuEntry<T>> entries)
     {
-        string searchText__32701 = this._effectiveTextEditingController.value.text.toLowerCase();
-        if ((searchText__32701.Length == 0))
+        string searchText = this._effectiveTextEditingController.value.text.toLowerCase();
+        if ((searchText.Length == 0))
         {
             return true;
         }
@@ -332,7 +332,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
         {
             return true;
         }
-        if (entries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].label.toLowerCase().contains(searchText__32701))
+        if (entries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].label.toLowerCase().contains(searchText))
         {
             return false;
         }
@@ -342,77 +342,77 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
 
     public virtual long? search(List<DropdownMenuEntry<T>> entries, global::Doroti.Framework.Widgets.TextEditingController textEditingController)
     {
-        string searchText__33307 = textEditingController.value.text.toLowerCase();
-        if ((searchText__33307.Length == 0))
+        string searchText = textEditingController.value.text.toLowerCase();
+        if ((searchText.Length == 0))
         {
             return null;
         }
-        long index__33438 = entries.indexWhere(((entry) => ((DropdownMenuEntry<T>)entry).label.toLowerCase().contains(searchText__33307)));
-        return ((index__33438 != -1L) ? index__33438 : null);
+        long index = entries.indexWhere(((entry) => ((DropdownMenuEntry<T>)entry).label.toLowerCase().contains(searchText)));
+        return ((index != -1L) ? index : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual List<global::Doroti.Framework.Widgets.Widget> _buildButtons(List<DropdownMenuEntry<T>> filteredEntries, TextDirection textDirection, long? focusedIndex = null, bool enableScrollToHighlight = true, bool excludeSemantics = false, bool? useMaterial3 = null)
     {
-        double effectiveInputStartGap__33864 = ((useMaterial3 ?? false) ? Dropdown_menuLibrary._kInputStartGap : 0.0);
-        var result__33946 = new List<global::Doroti.Framework.Widgets.Widget>();
-        for (var i__33980 = 0L; (i__33980 < checked((long)(filteredEntries.Count))); i__33980++)
+        double effectiveInputStartGap = ((useMaterial3 ?? false) ? Dropdown_menuLibrary._kInputStartGap : 0.0);
+        var result = new List<global::Doroti.Framework.Widgets.Widget>();
+        for (var i = 0L; (i < checked((long)(filteredEntries.Count))); i++)
         {
-            DropdownMenuEntry<T> entry__34055 = filteredEntries[(int)(i__33980)];
-            double padding__34534 = ((((DropdownMenuEntry<T>)entry__34055).leadingIcon is null) ? ((this.leadingPadding ?? Dropdown_menuLibrary._kDefaultHorizontalPadding)) : Dropdown_menuLibrary._kDefaultHorizontalPadding);
-            ButtonStyle effectiveStyle__34687 = ((((DropdownMenuEntry<T>)entry__34055).style ?? (ButtonStyle)MenuItemButton.styleFrom(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: padding__34534, end: Dropdown_menuLibrary._kDefaultHorizontalPadding))));
-            ButtonStyle? themeStyle__34902 = MenuButtonTheme.of(this.context).style;
-            global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveForegroundColor__34992 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)(((DropdownMenuEntry<T>)entry__34055).style?.foregroundColor ?? themeStyle__34902?.foregroundColor));
-            global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveIconColor__35131 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)(((DropdownMenuEntry<T>)entry__34055).style?.iconColor ?? themeStyle__34902?.iconColor));
-            global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveOverlayColor__35252 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)(((DropdownMenuEntry<T>)entry__34055).style?.overlayColor ?? themeStyle__34902?.overlayColor));
-            global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveBackgroundColor__35382 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)(((DropdownMenuEntry<T>)entry__34055).style?.backgroundColor ?? themeStyle__34902?.backgroundColor));
-            bool entryIsSelected__35710 = (((DropdownMenuEntry<T>)entry__34055).enabled && (i__33980 == focusedIndex));
-            if (entryIsSelected__35710)
+            DropdownMenuEntry<T> entry = filteredEntries[(int)(i)];
+            double paddingLocal = ((((DropdownMenuEntry<T>)entry).leadingIcon is null) ? ((this.leadingPadding ?? Dropdown_menuLibrary._kDefaultHorizontalPadding)) : Dropdown_menuLibrary._kDefaultHorizontalPadding);
+            ButtonStyle effectiveStyle = ((((DropdownMenuEntry<T>)entry).style ?? (ButtonStyle)MenuItemButton.styleFrom(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: paddingLocal, end: Dropdown_menuLibrary._kDefaultHorizontalPadding))));
+            ButtonStyle? themeStyle = MenuButtonTheme.of(this.context).style;
+            global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveForegroundColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)(((DropdownMenuEntry<T>)entry).style?.foregroundColor ?? themeStyle?.foregroundColor));
+            global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveIconColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)(((DropdownMenuEntry<T>)entry).style?.iconColor ?? themeStyle?.iconColor));
+            global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveOverlayColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)(((DropdownMenuEntry<T>)entry).style?.overlayColor ?? themeStyle?.overlayColor));
+            global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? effectiveBackgroundColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>?)(object?)(((DropdownMenuEntry<T>)entry).style?.backgroundColor ?? themeStyle?.backgroundColor));
+            bool entryIsSelected = (((DropdownMenuEntry<T>)entry).enabled && (i == focusedIndex));
+            if (entryIsSelected)
             {
                 this._highlightedItemStatesController?.dispose();
                 _highlightedItemStatesController = new global::Doroti.Framework.Widgets.WidgetStatesController(new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.focused });
-                ButtonStyle defaultStyle__36204 = ((ButtonStyle)(object?)new MenuItemButton().defaultStyleOf(this.context));
+                ButtonStyle defaultStyle = ((ButtonStyle)(object?)new MenuItemButton().defaultStyleOf(this.context));
                 Color? resolveFocusedColor(global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? colorStateProperty)
                 {
                     return ((Color?)(object?)colorStateProperty?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.focused }));
                     throw new InvalidOperationException("Dart control flow completed without a value.");
                 }
-                global::Doroti.Ui.Color focusedForegroundColor__36467 = ((global::Doroti.Ui.Color)(object?)resolveFocusedColor((effectiveForegroundColor__34992 ?? defaultStyle__36204.foregroundColor!))!);
-                global::Doroti.Ui.Color focusedIconColor__36614 = ((global::Doroti.Ui.Color)(object?)resolveFocusedColor((effectiveIconColor__35131 ?? defaultStyle__36204.iconColor!))!);
-                global::Doroti.Ui.Color focusedOverlayColor__36743 = ((global::Doroti.Ui.Color)(object?)resolveFocusedColor((effectiveOverlayColor__35252 ?? defaultStyle__36204.overlayColor!))!);
-                global::Doroti.Ui.Color focusedBackgroundColor__37026 = ((global::Doroti.Ui.Color)(object?)(resolveFocusedColor(effectiveBackgroundColor__35382) ?? Theme.of(this.context).colorScheme.onSurface.withOpacity(0.12)));
-                effectiveStyle__34687 = effectiveStyle__34687.copyWith(backgroundColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(focusedBackgroundColor__37026), foregroundColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(focusedForegroundColor__36467), iconColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(focusedIconColor__36614), overlayColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(focusedOverlayColor__36743));
+                global::Doroti.Ui.Color focusedForegroundColor = ((global::Doroti.Ui.Color)(object?)resolveFocusedColor((effectiveForegroundColor ?? defaultStyle.foregroundColor!))!);
+                global::Doroti.Ui.Color focusedIconColor = ((global::Doroti.Ui.Color)(object?)resolveFocusedColor((effectiveIconColor ?? defaultStyle.iconColor!))!);
+                global::Doroti.Ui.Color focusedOverlayColor = ((global::Doroti.Ui.Color)(object?)resolveFocusedColor((effectiveOverlayColor ?? defaultStyle.overlayColor!))!);
+                global::Doroti.Ui.Color focusedBackgroundColor = ((global::Doroti.Ui.Color)(object?)(resolveFocusedColor(effectiveBackgroundColor) ?? Theme.of(this.context).colorScheme.onSurface.withOpacity(0.12)));
+                effectiveStyle = effectiveStyle.copyWith(backgroundColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(focusedBackgroundColor), foregroundColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(focusedForegroundColor), iconColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(focusedIconColor), overlayColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(focusedOverlayColor));
             }
             else
             {
-                effectiveStyle__34687 = effectiveStyle__34687.copyWith(backgroundColor: effectiveBackgroundColor__35382, foregroundColor: effectiveForegroundColor__34992, iconColor: effectiveIconColor__35131, overlayColor: effectiveOverlayColor__35252);
+                effectiveStyle = effectiveStyle.copyWith(backgroundColor: effectiveBackgroundColor, foregroundColor: effectiveForegroundColor, iconColor: effectiveIconColor, overlayColor: effectiveOverlayColor);
             }
-            global::Doroti.Framework.Widgets.Widget label__37855 = (((DropdownMenuEntry<T>)entry__34055).labelWidget ?? new global::Doroti.Framework.Widgets.Text(((DropdownMenuEntry<T>)entry__34055).label));
+            global::Doroti.Framework.Widgets.Widget labelLocal = (((DropdownMenuEntry<T>)entry).labelWidget ?? new global::Doroti.Framework.Widgets.Text(((DropdownMenuEntry<T>)entry).label));
             if ((((DropdownMenu<T>)(object)this.widget).width is not null))
             {
-                double horizontalPadding__37958 = ((padding__34534 + Dropdown_menuLibrary._kDefaultHorizontalPadding) + effectiveInputStartGap__33864);
-                label__37855 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: (DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).width) - horizontalPadding__37958)), child: label__37855));
+                double horizontalPadding = ((paddingLocal + Dropdown_menuLibrary._kDefaultHorizontalPadding) + effectiveInputStartGap);
+                labelLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: (DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).width) - horizontalPadding)), child: labelLocal));
             }
-            global::Doroti.Framework.Widgets.Widget menuItemButton__38232 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ExcludeFocus(child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: excludeSemantics, child: new MenuItemButton(key: (enableScrollToHighlight ? this.buttonItemKeys[(int)(i__33980)] : null), statesController: (entryIsSelected__35710 ? this._highlightedItemStatesController : null), style: effectiveStyle__34687, leadingIcon: ((DropdownMenuEntry<T>)entry__34055).leadingIcon, trailingIcon: ((DropdownMenuEntry<T>)entry__34055).trailingIcon, closeOnActivate: (object.Equals(((DropdownMenu<T>)(object)this.widget).closeBehavior, DropdownMenuCloseBehavior.all)), onPressed: ((global::System.Action)((((DropdownMenuEntry<T>)entry__34055).enabled && ((DropdownMenu<T>)(object)this.widget).enabled) ? (() =>
+            global::Doroti.Framework.Widgets.Widget menuItemButton = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ExcludeFocus(child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: excludeSemantics, child: new MenuItemButton(key: (enableScrollToHighlight ? this.buttonItemKeys[(int)(i)] : null), statesController: (entryIsSelected ? this._highlightedItemStatesController : null), style: effectiveStyle, leadingIcon: ((DropdownMenuEntry<T>)entry).leadingIcon, trailingIcon: ((DropdownMenuEntry<T>)entry).trailingIcon, closeOnActivate: (object.Equals(((DropdownMenu<T>)(object)this.widget).closeBehavior, DropdownMenuCloseBehavior.all)), onPressed: ((global::System.Action)((((DropdownMenuEntry<T>)entry).enabled && ((DropdownMenu<T>)(object)this.widget).enabled) ? (() =>
             {
                 if (!this.mounted)
                 {
-                    ((DropdownMenu<T>)(object)this.widget).controller?.value = new global::Doroti.Framework.Services.TextEditingValue(text: ((DropdownMenuEntry<T>)entry__34055).label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: ((DropdownMenuEntry<T>)entry__34055).label.Length));
-                    ((DropdownMenu<T>)(object)this.widget).onSelected?.Invoke(((DropdownMenuEntry<T>)entry__34055).value);
+                    ((DropdownMenu<T>)(object)this.widget).controller?.value = new global::Doroti.Framework.Services.TextEditingValue(text: ((DropdownMenuEntry<T>)entry).label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: ((DropdownMenuEntry<T>)entry).label.Length));
+                    ((DropdownMenu<T>)(object)this.widget).onSelected?.Invoke(((DropdownMenuEntry<T>)entry).value);
                     return;
                 }
-                this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: ((DropdownMenuEntry<T>)entry__34055).label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: ((DropdownMenuEntry<T>)entry__34055).label.Length));
-                currentHighlight = (((DropdownMenu<T>)(object)this.widget).enableSearch ? i__33980 : null);
-                ((DropdownMenu<T>)(object)this.widget).onSelected?.Invoke(((DropdownMenuEntry<T>)entry__34055).value);
+                this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: ((DropdownMenuEntry<T>)entry).label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: ((DropdownMenuEntry<T>)entry).label.Length));
+                currentHighlight = (((DropdownMenu<T>)(object)this.widget).enableSearch ? i : null);
+                ((DropdownMenu<T>)(object)this.widget).onSelected?.Invoke(((DropdownMenuEntry<T>)entry).value);
                 _enableFilter = false;
                 if ((object.Equals(((DropdownMenu<T>)(object)this.widget).closeBehavior, DropdownMenuCloseBehavior.self)))
                 {
                     this._controller.close();
                 }
-            }) : null)), requestFocusOnHover: false, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: effectiveInputStartGap__33864), child: label__37855)))));
-            result__33946.Add(menuItemButton__38232);
+            }) : null)), requestFocusOnHover: false, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: effectiveInputStartGap), child: labelLocal)))));
+            result.Add(menuItemButton);
         }
-        return result__33946;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -432,8 +432,8 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
             {
                 currentHighlight = (((DartRuntimePrimitives.RequireValue(this.currentHighlight) - 1L)) % checked((long)(this.filteredEntries.Count)));
             }
-            string currentLabel__41369 = this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].label;
-            this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: currentLabel__41369, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: currentLabel__41369.Length));
+            string currentLabel = this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].label;
+            this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: currentLabel, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: currentLabel.Length));
         })));
     }
 
@@ -453,8 +453,8 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
             {
                 currentHighlight = (((DartRuntimePrimitives.RequireValue(this.currentHighlight) + 1L)) % checked((long)(this.filteredEntries.Count)));
             }
-            string currentLabel__42102 = this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].label;
-            this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: currentLabel__42102, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: currentLabel__42102.Length));
+            string currentLabel = this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))].label;
+            this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: currentLabel, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: currentLabel.Length));
         })));
     }
 
@@ -497,11 +497,11 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
     {
         if ((this.currentHighlight is not null))
         {
-            DropdownMenuEntry<T> entry__43097 = this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))];
-            if (((DropdownMenuEntry<T>)entry__43097).enabled)
+            DropdownMenuEntry<T> entry = this.filteredEntries[(int)(DartRuntimePrimitives.RequireValue(this.currentHighlight))];
+            if (((DropdownMenuEntry<T>)entry).enabled)
             {
-                this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: ((DropdownMenuEntry<T>)entry__43097).label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: ((DropdownMenuEntry<T>)entry__43097).label.Length));
-                ((DropdownMenu<T>)(object)this.widget).onSelected?.Invoke(((DropdownMenuEntry<T>)entry__43097).value);
+                this._effectiveTextEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(text: ((DropdownMenuEntry<T>)entry).label, selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: ((DropdownMenuEntry<T>)entry).label.Length));
+                ((DropdownMenu<T>)(object)this.widget).onSelected?.Invoke(((DropdownMenuEntry<T>)entry).value);
             }
         }
         else
@@ -520,11 +520,11 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        bool useMaterial3__43665 = Theme.of(context).useMaterial3;
-        global::Doroti.Ui.TextDirection textDirection__43736 = Directionality.of(context);
-        _initialMenu ??= _buildButtons(((DropdownMenu<T>)(object)this.widget).dropdownMenuEntries, textDirection__43736, enableScrollToHighlight: false, excludeSemantics: true, useMaterial3: DartRuntimePrimitives.RequireValue(useMaterial3__43665));
-        DropdownMenuThemeData theme__44092 = DropdownMenuTheme.of(context);
-        DropdownMenuThemeData defaults__44163 = ((DropdownMenuThemeData)(object?)new _DropdownMenuDefaultsM3__dropdown_menu(context));
+        bool useMaterial3Local = Theme.of(context).useMaterial3;
+        global::Doroti.Ui.TextDirection textDirection = Directionality.of(context);
+        _initialMenu ??= _buildButtons(((DropdownMenu<T>)(object)this.widget).dropdownMenuEntries, textDirection, enableScrollToHighlight: false, excludeSemantics: true, useMaterial3: DartRuntimePrimitives.RequireValue(useMaterial3Local));
+        DropdownMenuThemeData theme = DropdownMenuTheme.of(context);
+        DropdownMenuThemeData defaults = ((DropdownMenuThemeData)(object?)new _DropdownMenuDefaultsM3__dropdown_menu(context));
         if (this._enableFilter)
         {
             filteredEntries = ((((DropdownMenu<T>)(object)this.widget).filterCallback is null ? filter(((DropdownMenu<T>)(object)this.widget).dropdownMenuEntries, this._effectiveTextEditingController) : ((DropdownMenu<T>)(object)this.widget).filterCallback.Invoke(this.filteredEntries, ((global::Doroti.Framework.Widgets.TextEditingController)this._effectiveTextEditingController).text)));
@@ -538,8 +538,8 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
             }
             else
             {
-                bool shouldUpdateCurrentHighlight__44773 = _shouldUpdateCurrentHighlight(this.filteredEntries);
-                if (shouldUpdateCurrentHighlight__44773)
+                bool shouldUpdateCurrentHighlight = _shouldUpdateCurrentHighlight(this.filteredEntries);
+                if (shouldUpdateCurrentHighlight)
                 {
                     currentHighlight = search(this.filteredEntries, this._effectiveTextEditingController);
                 }
@@ -549,59 +549,59 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
                 scrollToHighlight();
             }
         }
-        List<global::Doroti.Framework.Widgets.Widget> menu__45106 = ((List<global::Doroti.Framework.Widgets.Widget>)(object?)_buildButtons(this.filteredEntries, textDirection__43736, focusedIndex: this.currentHighlight, useMaterial3: DartRuntimePrimitives.RequireValue(useMaterial3__43665)));
-        global::Doroti.Framework.Painting.TextStyle? baseTextStyle__45273 = ((((DropdownMenu<T>)(object)this.widget).textStyle ?? theme__44092.textStyle) ?? defaults__44163.textStyle);
-        global::Doroti.Ui.Color? disabledColor__45365 = ((global::Doroti.Ui.Color?)(object?)(theme__44092.disabledColor ?? defaults__44163.disabledColor));
-        global::Doroti.Framework.Painting.TextStyle? effectiveTextStyle__45449 = (((DropdownMenu<T>)(object)this.widget).enabled ? baseTextStyle__45273 : (baseTextStyle__45273?.copyWith(color: disabledColor__45365) ?? new global::Doroti.Framework.Painting.TextStyle(color: disabledColor__45365)));
-        MenuStyle? effectiveMenuStyle__45617 = ((((DropdownMenu<T>)(object)this.widget).menuStyle ?? theme__44092.menuStyle) ?? defaults__44163.menuStyle!);
-        double? anchorWidth__45717 = getWidth(this._anchorKey);
+        List<global::Doroti.Framework.Widgets.Widget> menu = ((List<global::Doroti.Framework.Widgets.Widget>)(object?)_buildButtons(this.filteredEntries, textDirection, focusedIndex: this.currentHighlight, useMaterial3: DartRuntimePrimitives.RequireValue(useMaterial3Local)));
+        global::Doroti.Framework.Painting.TextStyle? baseTextStyle = ((((DropdownMenu<T>)(object)this.widget).textStyle ?? theme.textStyle) ?? defaults.textStyle);
+        global::Doroti.Ui.Color? disabledColorLocal = ((global::Doroti.Ui.Color?)(object?)(theme.disabledColor ?? defaults.disabledColor));
+        global::Doroti.Framework.Painting.TextStyle? effectiveTextStyle = (((DropdownMenu<T>)(object)this.widget).enabled ? baseTextStyle : (baseTextStyle?.copyWith(color: disabledColorLocal) ?? new global::Doroti.Framework.Painting.TextStyle(color: disabledColorLocal)));
+        MenuStyle? effectiveMenuStyle = ((((DropdownMenu<T>)(object)this.widget).menuStyle ?? theme.menuStyle) ?? defaults.menuStyle!);
+        double? anchorWidth = getWidth(this._anchorKey);
         if ((((DropdownMenu<T>)(object)this.widget).width is not null))
         {
-            effectiveMenuStyle__45617 = effectiveMenuStyle__45617.copyWith(minimumSize: WidgetStateProperty.resolveWith<global::Doroti.Ui.Size?>((states) =>
+            effectiveMenuStyle = effectiveMenuStyle.copyWith(minimumSize: WidgetStateProperty.resolveWith<global::Doroti.Ui.Size?>((states) =>
             {
-                double? effectiveMaximumWidth__45953 = effectiveMenuStyle__45617!.maximumSize?.resolve(states)?.width;
-                return new global::Doroti.Ui.Size(Math.Min(DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).width), (effectiveMaximumWidth__45953 ?? DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).width))), 0.0);
+                double? effectiveMaximumWidth = effectiveMenuStyle!.maximumSize?.resolve(states)?.width;
+                return new global::Doroti.Ui.Size(Math.Min(DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).width), (effectiveMaximumWidth ?? DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).width))), 0.0);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
         }
         else
         {
-            if ((anchorWidth__45717 is not null))
+            if ((anchorWidth is not null))
             {
-                double anchorWidth__45717__value46193 = DartRuntimePrimitives.RequireValue(anchorWidth__45717);
-                effectiveMenuStyle__45617 = effectiveMenuStyle__45617.copyWith(minimumSize: WidgetStateProperty.resolveWith<global::Doroti.Ui.Size?>((states) =>
+                double anchorWidth__45717__value46193 = DartRuntimePrimitives.RequireValue(anchorWidth);
+                effectiveMenuStyle = effectiveMenuStyle.copyWith(minimumSize: WidgetStateProperty.resolveWith<global::Doroti.Ui.Size?>((states) =>
                 {
-                    double? effectiveMaximumWidth__46384 = effectiveMenuStyle__45617!.maximumSize?.resolve(states)?.width;
-                    return new global::Doroti.Ui.Size(Math.Min(DartRuntimePrimitives.RequireValue(anchorWidth__45717__value46193), (effectiveMaximumWidth__46384 ?? DartRuntimePrimitives.RequireValue(anchorWidth__45717__value46193))), 0.0);
+                    double? effectiveMaximumWidthLocal = effectiveMenuStyle!.maximumSize?.resolve(states)?.width;
+                    return new global::Doroti.Ui.Size(Math.Min(DartRuntimePrimitives.RequireValue(anchorWidth__45717__value46193), (effectiveMaximumWidthLocal ?? DartRuntimePrimitives.RequireValue(anchorWidth__45717__value46193))), 0.0);
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 }));
             }
         }
         if ((((DropdownMenu<T>)(object)this.widget).menuHeight is not null))
         {
-            effectiveMenuStyle__45617 = effectiveMenuStyle__45617.copyWith(maximumSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(new global::Doroti.Ui.Size(double.PositiveInfinity, DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).menuHeight))));
+            effectiveMenuStyle = effectiveMenuStyle.copyWith(maximumSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(new global::Doroti.Ui.Size(double.PositiveInfinity, DartRuntimePrimitives.RequireValue(((DropdownMenu<T>)(object)this.widget).menuHeight))));
         }
-        InputDecorationThemeData effectiveInputDecorationTheme__46851 = ((((DropdownMenu<T>)(object)this.widget).inputDecorationTheme ?? theme__44092.inputDecorationTheme) ?? defaults__44163.inputDecorationTheme!);
-        global::Doroti.Framework.Services.MouseCursor? effectiveMouseCursor__47008 = ((global::Doroti.Framework.Services.MouseCursor?)(object?)(((object)((DropdownMenu<T>)(object)this.widget).enabled) switch { true => (this.isButton ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.SystemMouseCursors.text), false => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.SystemMouseCursor>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        global::Doroti.Framework.Widgets.Widget menuAnchor__47174 = ((global::Doroti.Framework.Widgets.Widget)(object?)new MenuAnchor(style: effectiveMenuStyle__45617, alignmentOffset: ((DropdownMenu<T>)(object)this.widget).alignmentOffset, reservedPadding: global::Doroti.Framework.Painting.EdgeInsets.zero, controller: this._controller, menuChildren: menu__45106, crossAxisUnconstrained: false, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>?)((context, controller, child) =>
+        InputDecorationThemeData effectiveInputDecorationTheme = ((((DropdownMenu<T>)(object)this.widget).inputDecorationTheme ?? theme.inputDecorationTheme) ?? defaults.inputDecorationTheme!);
+        global::Doroti.Framework.Services.MouseCursor? effectiveMouseCursor = ((global::Doroti.Framework.Services.MouseCursor?)(object?)(((object)((DropdownMenu<T>)(object)this.widget).enabled) switch { true => (this.isButton ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.SystemMouseCursors.text), false => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Services.SystemMouseCursor>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        global::Doroti.Framework.Widgets.Widget menuAnchor = ((global::Doroti.Framework.Widgets.Widget)(object?)new MenuAnchor(style: effectiveMenuStyle, alignmentOffset: ((DropdownMenu<T>)(object)this.widget).alignmentOffset, reservedPadding: global::Doroti.Framework.Painting.EdgeInsets.zero, controller: this._controller, menuChildren: menu, crossAxisUnconstrained: false, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>?)((context, controller, child) =>
         {
             DartRuntimePrimitives.Assert(() => (this._initialMenu is not null));
-            global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, InputDecoration> decorationBuilder__47577 = ((((DropdownMenu<T>)(object)this.widget).decorationBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, InputDecoration>)this._buildDefaultDecoration));
-            InputDecoration decoration__47686 = decorationBuilder__47577(context, controller);
-            if ((((InputDecoration)decoration__47686).suffixIcon is null))
+            global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, InputDecoration> decorationBuilderLocal = ((((DropdownMenu<T>)(object)this.widget).decorationBuilder ?? (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, InputDecoration>)this._buildDefaultDecoration));
+            InputDecoration decorationLocal = decorationBuilderLocal(context, controller);
+            if ((((InputDecoration)decorationLocal).suffixIcon is null))
             {
-                decoration__47686 = decoration__47686.copyWith(suffixIcon: _buildDefaultSuffixIcon(context, controller));
+                decorationLocal = decorationLocal.copyWith(suffixIcon: _buildDefaultSuffixIcon(context, controller));
             }
-            InputDecoration effectiveDecoration__48040 = ((InputDecoration)(object?)decoration__47686.applyDefaults(effectiveInputDecorationTheme__46851));
-            InputDecoration textFieldDecoration__48170 = ((((InputDecoration)effectiveDecoration__48040).prefixIcon is null) ? effectiveDecoration__48040 : effectiveDecoration__48040.copyWith(prefixIcon: new global::Doroti.Framework.Widgets.SizedBox(key: this._leadingKey, child: ((InputDecoration)effectiveDecoration__48040).prefixIcon)));
-            MaterialLocalizations localizations__48566 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
-            global::Doroti.Framework.Widgets.Widget textField__48638 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(button: this.isButton, hint: ((object.Equals(Theme.of(context).platform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) ? (((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen ? ((MaterialLocalizations)localizations__48566).collapsedHint : ((MaterialLocalizations)localizations__48566).expandedHint) : null), expanded: ((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen, onExpand: ((global::System.Action)(((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen ? null : (() =>
+            InputDecoration effectiveDecoration = ((InputDecoration)(object?)decorationLocal.applyDefaults(effectiveInputDecorationTheme));
+            InputDecoration textFieldDecoration = ((((InputDecoration)effectiveDecoration).prefixIcon is null) ? effectiveDecoration : effectiveDecoration.copyWith(prefixIcon: new global::Doroti.Framework.Widgets.SizedBox(key: this._leadingKey, child: ((InputDecoration)effectiveDecoration).prefixIcon)));
+            MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+            global::Doroti.Framework.Widgets.Widget textField = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(button: this.isButton, hint: ((object.Equals(Theme.of(context).platform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) ? (((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen ? ((MaterialLocalizations)localizations).collapsedHint : ((MaterialLocalizations)localizations).expandedHint) : null), expanded: ((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen, onExpand: ((global::System.Action)(((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen ? null : (() =>
             {
                 this._controller.open();
             }))), onCollapse: ((global::System.Action)(!((global::Doroti.Framework.Widgets.MenuController)this._controller).isOpen ? null : (() =>
             {
                 this._controller.close();
-            }))), child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: (this.isButton && global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb), child: new TextField(key: this._anchorKey, enabled: ((DropdownMenu<T>)(object)this.widget).enabled, mouseCursor: effectiveMouseCursor__47008, focusNode: ((DropdownMenu<T>)(object)this.widget).focusNode, canRequestFocus: canRequestFocus(), enableInteractiveSelection: !this.isButton, readOnly: this.isButton, keyboardType: ((DropdownMenu<T>)(object)this.widget).keyboardType, textAlign: ((DropdownMenu<T>)(object)this.widget).textAlign, textAlignVertical: global::Doroti.Framework.Painting.TextAlignVertical.center, maxLines: ((DropdownMenu<T>)(object)this.widget).maxLines, textInputAction: ((DropdownMenu<T>)(object)this.widget).textInputAction, cursorHeight: ((DropdownMenu<T>)(object)this.widget).cursorHeight, style: effectiveTextStyle__45449, controller: this._effectiveTextEditingController, onSubmitted: ((_) => { _handleSubmitted(); }), onTap: ((global::System.Action)(!((DropdownMenu<T>)(object)this.widget).enabled ? null : (() =>
+            }))), child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: (this.isButton && global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb), child: new TextField(key: this._anchorKey, enabled: ((DropdownMenu<T>)(object)this.widget).enabled, mouseCursor: effectiveMouseCursor, focusNode: ((DropdownMenu<T>)(object)this.widget).focusNode, canRequestFocus: canRequestFocus(), enableInteractiveSelection: !this.isButton, readOnly: this.isButton, keyboardType: ((DropdownMenu<T>)(object)this.widget).keyboardType, textAlign: ((DropdownMenu<T>)(object)this.widget).textAlign, textAlignVertical: global::Doroti.Framework.Painting.TextAlignVertical.center, maxLines: ((DropdownMenu<T>)(object)this.widget).maxLines, textInputAction: ((DropdownMenu<T>)(object)this.widget).textInputAction, cursorHeight: ((DropdownMenu<T>)(object)this.widget).cursorHeight, style: effectiveTextStyle, controller: this._effectiveTextEditingController, onSubmitted: ((_) => { _handleSubmitted(); }), onTap: ((global::System.Action)(!((DropdownMenu<T>)(object)this.widget).enabled ? null : (() =>
             {
                 handlePressed(controller, focusForKeyboard: !canRequestFocus());
             }))), onChanged: ((text) =>
@@ -613,18 +613,18 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
                     _enableFilter = ((DropdownMenu<T>)(object)this.widget).enableFilter;
                     _enableSearch = ((DropdownMenu<T>)(object)this.widget).enableSearch;
                 })));
-            }), inputFormatters: ((DropdownMenu<T>)(object)this.widget).inputFormatters, decoration: textFieldDecoration__48170, restorationId: ((DropdownMenu<T>)(object)this.widget).restorationId, scrollPadding: ((DropdownMenu<T>)(object)this.widget).scrollPadding))));
-            global::Doroti.Framework.Widgets.Widget? effectiveLabel__51312 = (((InputDecoration)effectiveDecoration__48040).label ?? (((((InputDecoration)effectiveDecoration__48040).labelText is not null) ? new global::Doroti.Framework.Widgets.Text(((InputDecoration)effectiveDecoration__48040).labelText!) : null)));
-            global::Doroti.Framework.Widgets.Widget body__51699 = ((((DropdownMenu<T>)(object)this.widget).expandedInsets is not null) ? textField__48638 : new _DropdownMenuBody__dropdown_menu(width: ((DropdownMenu<T>)(object)this.widget).width, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection52521 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(textField__48638)); __collection52521.AddRange(this._initialMenu!); if ((effectiveLabel__51312 is not null)) { __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: effectiveTextStyle__45449!, child: effectiveLabel__51312))))); } __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>((((InputDecoration)effectiveDecoration__48040).suffixIcon ?? global::Doroti.Framework.Widgets.SizedBox.CreateShrink()))); __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(8.0), child: (((InputDecoration)effectiveDecoration__48040).prefixIcon ?? global::Doroti.Framework.Widgets.SizedBox.CreateShrink())))); return __collection52521; }))()));
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: (this.selectOnly ? _selectOnlyShortcuts : _editableShortcuts), child: body__51699));
+            }), inputFormatters: ((DropdownMenu<T>)(object)this.widget).inputFormatters, decoration: textFieldDecoration, restorationId: ((DropdownMenu<T>)(object)this.widget).restorationId, scrollPadding: ((DropdownMenu<T>)(object)this.widget).scrollPadding))));
+            global::Doroti.Framework.Widgets.Widget? effectiveLabel = (((InputDecoration)effectiveDecoration).label ?? (((((InputDecoration)effectiveDecoration).labelText is not null) ? new global::Doroti.Framework.Widgets.Text(((InputDecoration)effectiveDecoration).labelText!) : null)));
+            global::Doroti.Framework.Widgets.Widget body = ((((DropdownMenu<T>)(object)this.widget).expandedInsets is not null) ? textField : new _DropdownMenuBody__dropdown_menu(width: ((DropdownMenu<T>)(object)this.widget).width, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection52521 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(textField)); __collection52521.AddRange(this._initialMenu!); if ((effectiveLabel is not null)) { __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: effectiveTextStyle!, child: effectiveLabel))))); } __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>((((InputDecoration)effectiveDecoration).suffixIcon ?? global::Doroti.Framework.Widgets.SizedBox.CreateShrink()))); __collection52521.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(8.0), child: (((InputDecoration)effectiveDecoration).prefixIcon ?? global::Doroti.Framework.Widgets.SizedBox.CreateShrink())))); return __collection52521; }))()));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: (this.selectOnly ? _selectOnlyShortcuts : _editableShortcuts), child: body));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
-        if (((DropdownMenu<T>)(object)this.widget).expandedInsets is global::Doroti.Framework.Painting.EdgeInsetsGeometry padding__53820)
+        if (((DropdownMenu<T>)(object)this.widget).expandedInsets is global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal)
         {
-            menuAnchor__47174 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: padding__53820.clamp(global::Doroti.Framework.Painting.EdgeInsets.zero, global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: double.PositiveInfinity, right: double.PositiveInfinity).add(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(end: double.PositiveInfinity, start: double.PositiveInfinity))), child: menuAnchor__47174));
+            menuAnchor = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: paddingLocal.clamp(global::Doroti.Framework.Painting.EdgeInsets.zero, global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: double.PositiveInfinity, right: double.PositiveInfinity).add(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(end: double.PositiveInfinity, start: double.PositiveInfinity))), child: menuAnchor));
         }
-        menuAnchor__47174 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.topStart, widthFactor: 1.0, heightFactor: 1.0, child: menuAnchor__47174));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Actions(actions: new DartMap<Type, dynamic> { [typeof(_ArrowUpIntent__dropdown_menu)] = new global::Doroti.Framework.Widgets.CallbackAction<_ArrowUpIntent__dropdown_menu>(onInvoke: (__arg0) => { ((global::System.Action<_ArrowUpIntent__dropdown_menu>)this.handleUpKey)(__arg0); return default!; }), [typeof(_ArrowDownIntent__dropdown_menu)] = new global::Doroti.Framework.Widgets.CallbackAction<_ArrowDownIntent__dropdown_menu>(onInvoke: (__arg0) => { ((global::System.Action<_ArrowDownIntent__dropdown_menu>)this.handleDownKey)(__arg0); return default!; }), [typeof(_EnterIntent__dropdown_menu)] = new global::Doroti.Framework.Widgets.CallbackAction<_EnterIntent__dropdown_menu>(onInvoke: (__arg0) => { ((global::System.Action<_EnterIntent__dropdown_menu>)this.handleEnterKey)(__arg0); return default!; }), [typeof(global::Doroti.Framework.Widgets.DismissIntent)] = new global::Doroti.Framework.Widgets.DismissMenuAction(controller: this._controller) }, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: new DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> { [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new _ArrowUpIntent__dropdown_menu()), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new _ArrowDownIntent__dropdown_menu()), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.enter)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new _EnterIntent__dropdown_menu()), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.escape)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new global::Doroti.Framework.Widgets.DismissIntent()) }, child: new global::Doroti.Framework.Widgets.Focus(focusNode: this._internalFocusNode, skipTraversal: true, child: global::Doroti.Framework.Widgets.SizedBox.CreateShrink()))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(menuAnchor__47174) })));
+        menuAnchor = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.topStart, widthFactor: 1.0, heightFactor: 1.0, child: menuAnchor));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Actions(actions: new DartMap<Type, dynamic> { [typeof(_ArrowUpIntent__dropdown_menu)] = new global::Doroti.Framework.Widgets.CallbackAction<_ArrowUpIntent__dropdown_menu>(onInvoke: (__arg0) => { ((global::System.Action<_ArrowUpIntent__dropdown_menu>)this.handleUpKey)(__arg0); return default!; }), [typeof(_ArrowDownIntent__dropdown_menu)] = new global::Doroti.Framework.Widgets.CallbackAction<_ArrowDownIntent__dropdown_menu>(onInvoke: (__arg0) => { ((global::System.Action<_ArrowDownIntent__dropdown_menu>)this.handleDownKey)(__arg0); return default!; }), [typeof(_EnterIntent__dropdown_menu)] = new global::Doroti.Framework.Widgets.CallbackAction<_EnterIntent__dropdown_menu>(onInvoke: (__arg0) => { ((global::System.Action<_EnterIntent__dropdown_menu>)this.handleEnterKey)(__arg0); return default!; }), [typeof(global::Doroti.Framework.Widgets.DismissIntent)] = new global::Doroti.Framework.Widgets.DismissMenuAction(controller: this._controller) }, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: new DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> { [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new _ArrowUpIntent__dropdown_menu()), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new _ArrowDownIntent__dropdown_menu()), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.enter)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new _EnterIntent__dropdown_menu()), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.escape)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new global::Doroti.Framework.Widgets.DismissIntent()) }, child: new global::Doroti.Framework.Widgets.Focus(focusNode: this._internalFocusNode, skipTraversal: true, child: global::Doroti.Framework.Widgets.SizedBox.CreateShrink()))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(menuAnchor) })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -636,8 +636,8 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
 
     internal virtual global::Doroti.Framework.Widgets.Widget? _buildDefaultSuffixIcon(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.MenuController controller)
     {
-        bool isCollapsed__56223 = (((DropdownMenu<T>)(object)this.widget).inputDecorationTheme?.isCollapsed ?? false);
-        return ((global::Doroti.Framework.Widgets.Widget?)(object?)(((DropdownMenu<T>)(object)this.widget).showTrailingIcon ? new global::Doroti.Framework.Widgets.Padding(padding: (isCollapsed__56223 ? global::Doroti.Framework.Painting.EdgeInsets.zero : global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0)), child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: this.isButton, child: new IconButton(focusNode: this._trailingIconButtonFocusNode, isSelected: ((global::Doroti.Framework.Widgets.MenuController)controller).isOpen, constraints: ((DropdownMenu<T>)(object)this.widget).inputDecorationTheme?.suffixIconConstraints, padding: (isCollapsed__56223 ? global::Doroti.Framework.Painting.EdgeInsets.zero : null), icon: (((DropdownMenu<T>)(object)this.widget).trailingIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.arrow_drop_down)), selectedIcon: (((DropdownMenu<T>)(object)this.widget).selectedTrailingIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.arrow_drop_up)), onPressed: ((global::System.Action)(!((DropdownMenu<T>)(object)this.widget).enabled ? null : (() =>
+        bool isCollapsedLocal = (((DropdownMenu<T>)(object)this.widget).inputDecorationTheme?.isCollapsed ?? false);
+        return ((global::Doroti.Framework.Widgets.Widget?)(object?)(((DropdownMenu<T>)(object)this.widget).showTrailingIcon ? new global::Doroti.Framework.Widgets.Padding(padding: (isCollapsedLocal ? global::Doroti.Framework.Painting.EdgeInsets.zero : global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0)), child: new global::Doroti.Framework.Widgets.ExcludeSemantics(excluding: this.isButton, child: new IconButton(focusNode: this._trailingIconButtonFocusNode, isSelected: ((global::Doroti.Framework.Widgets.MenuController)controller).isOpen, constraints: ((DropdownMenu<T>)(object)this.widget).inputDecorationTheme?.suffixIconConstraints, padding: (isCollapsedLocal ? global::Doroti.Framework.Painting.EdgeInsets.zero : null), icon: (((DropdownMenu<T>)(object)this.widget).trailingIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.arrow_drop_down)), selectedIcon: (((DropdownMenu<T>)(object)this.widget).selectedTrailingIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.arrow_drop_up)), onPressed: ((global::System.Action)(!((DropdownMenu<T>)(object)this.widget).enabled ? null : (() =>
         {
             handlePressed(controller);
         })))))) : null));
@@ -734,167 +734,167 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
 
     public override void performLayout()
     {
-        global::Doroti.Framework.Rendering.BoxConstraints constraints__59353 = this.constraints;
-        var maxWidth__59393 = 0.0;
-        double? maxHeight__59421 = default!;
-        global::Doroti.Framework.Rendering.RenderBox? child__59447 = this.firstChild;
-        double intrinsicWidth__59485 = ((this.width ?? (double)getMaxIntrinsicWidth(((global::Doroti.Framework.Rendering.BoxConstraints)constraints__59353).maxHeight)));
-        double widthConstraint__59573 = Math.Min(intrinsicWidth__59485, ((global::Doroti.Framework.Rendering.BoxConstraints)constraints__59353).maxWidth);
-        var innerConstraints__59649 = new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: widthConstraint__59573, maxHeight: getMaxIntrinsicHeight(widthConstraint__59573));
-        while ((child__59447 is not null))
+        global::Doroti.Framework.Rendering.BoxConstraints constraintsLocal = this.constraints;
+        var maxWidthLocal = 0.0;
+        double? maxHeightLocal = default!;
+        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        double intrinsicWidth = ((this.width ?? (double)getMaxIntrinsicWidth(((global::Doroti.Framework.Rendering.BoxConstraints)constraintsLocal).maxHeight)));
+        double widthConstraint = Math.Min(intrinsicWidth, ((global::Doroti.Framework.Rendering.BoxConstraints)constraintsLocal).maxWidth);
+        var innerConstraints = new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: widthConstraint, maxHeight: getMaxIntrinsicHeight(widthConstraint));
+        while ((child is not null))
         {
-            if ((object.Equals(child__59447, this.firstChild)))
+            if ((object.Equals(child, this.firstChild)))
             {
-                child__59447.layout(innerConstraints__59649, parentUsesSize: true);
-                maxHeight__59421 ??= ((global::Doroti.Framework.Rendering.RenderBox)child__59447).size.height;
-                var childParentData__59959 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__59447.parentData!)!;
-                DartRuntimePrimitives.Assert(() => (object.Equals(child__59447.parentData, childParentData__59959)));
-                child__59447 = childParentData__59959.nextSibling;
+                child.layout(innerConstraints, parentUsesSize: true);
+                maxHeightLocal ??= ((global::Doroti.Framework.Rendering.RenderBox)child).size.height;
+                var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+                DartRuntimePrimitives.Assert(() => (object.Equals(child.parentData, childParentData)));
+                child = childParentData.nextSibling;
                 continue;
             }
-            child__59447.layout(innerConstraints__59649, parentUsesSize: true);
-            var childParentData__60223 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__59447.parentData!)!;
-            childParentData__60223.offset = Offset.zero;
-            maxWidth__59393 = Math.Max(maxWidth__59393, ((global::Doroti.Framework.Rendering.RenderBox)child__59447).size.width);
-            maxHeight__59421 ??= ((global::Doroti.Framework.Rendering.RenderBox)child__59447).size.height;
-            DartRuntimePrimitives.Assert(() => (object.Equals(child__59447.parentData, childParentData__60223)));
-            child__59447 = childParentData__60223.nextSibling;
+            child.layout(innerConstraints, parentUsesSize: true);
+            var childParentDataLocal = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            childParentDataLocal.offset = Offset.zero;
+            maxWidthLocal = Math.Max(maxWidthLocal, ((global::Doroti.Framework.Rendering.RenderBox)child).size.width);
+            maxHeightLocal ??= ((global::Doroti.Framework.Rendering.RenderBox)child).size.height;
+            DartRuntimePrimitives.Assert(() => (object.Equals(child.parentData, childParentDataLocal)));
+            child = childParentDataLocal.nextSibling;
         }
-        DartRuntimePrimitives.Assert(() => (maxHeight__59421 is not null));
-        maxWidth__59393 = Math.Max(Dropdown_menuLibrary._kMinimumWidth, maxWidth__59393);
-        size = constraints__59353.constrain(new global::Doroti.Ui.Size((this.width ?? maxWidth__59393), DartRuntimePrimitives.RequireValue(maxHeight__59421)));
+        DartRuntimePrimitives.Assert(() => (maxHeightLocal is not null));
+        maxWidthLocal = Math.Max(Dropdown_menuLibrary._kMinimumWidth, maxWidthLocal);
+        size = constraintsLocal.constrain(new global::Doroti.Ui.Size((this.width ?? maxWidthLocal), DartRuntimePrimitives.RequireValue(maxHeightLocal)));
     }
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__60776 = this.firstChild;
-        if ((child__60776 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        if ((child is not null))
         {
-            var childParentData__60833 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__60776.parentData!)!;
-            context.paintChild(child__60776, (offset + childParentData__60833.offset));
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            context.paintChild(child, (offset + childParentData.offset));
         }
     }
 
     public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        var maxWidth__61052 = 0.0;
-        double? maxHeight__61080 = default!;
-        global::Doroti.Framework.Rendering.RenderBox? child__61106 = this.firstChild;
-        double intrinsicWidth__61143 = ((this.width ?? (double)getMaxIntrinsicWidth(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight)));
-        double widthConstraint__61231 = Math.Min(intrinsicWidth__61143, ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth);
-        var innerConstraints__61307 = new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: widthConstraint__61231, maxHeight: getMaxIntrinsicHeight(widthConstraint__61231));
-        while ((child__61106 is not null))
+        var maxWidthLocal = 0.0;
+        double? maxHeightLocal = default!;
+        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        double intrinsicWidth = ((this.width ?? (double)getMaxIntrinsicWidth(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight)));
+        double widthConstraint = Math.Min(intrinsicWidth, ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth);
+        var innerConstraints = new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: widthConstraint, maxHeight: getMaxIntrinsicHeight(widthConstraint));
+        while ((child is not null))
         {
-            global::Doroti.Ui.Size childSize__61485 = ((global::Doroti.Ui.Size)(object?)child__61106.getDryLayout(innerConstraints__61307));
-            if ((!object.Equals(child__61106, this.firstChild)))
+            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)child.getDryLayout(innerConstraints));
+            if ((!object.Equals(child, this.firstChild)))
             {
-                maxWidth__61052 = Math.Max(maxWidth__61052, childSize__61485.width);
+                maxWidthLocal = Math.Max(maxWidthLocal, childSize.width);
             }
-            var childParentData__61756 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__61106.parentData!)!;
-            maxHeight__61080 ??= childSize__61485.height;
-            child__61106 = childParentData__61756.nextSibling;
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            maxHeightLocal ??= childSize.height;
+            child = childParentData.nextSibling;
         }
-        DartRuntimePrimitives.Assert(() => (maxHeight__61080 is not null));
-        maxWidth__61052 = Math.Max(Dropdown_menuLibrary._kMinimumWidth, maxWidth__61052);
-        return constraints.constrain(new global::Doroti.Ui.Size((this.width ?? maxWidth__61052), DartRuntimePrimitives.RequireValue(maxHeight__61080)));
+        DartRuntimePrimitives.Assert(() => (maxHeightLocal is not null));
+        maxWidthLocal = Math.Max(Dropdown_menuLibrary._kMinimumWidth, maxWidthLocal);
+        return constraints.constrain(new global::Doroti.Ui.Size((this.width ?? maxWidthLocal), DartRuntimePrimitives.RequireValue(maxHeightLocal)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__62148 = this.firstChild;
-        double width__62179 = 0;
-        while ((child__62148 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        double width = 0;
+        while ((child is not null))
         {
-            if ((object.Equals(child__62148, this.firstChild)))
+            if ((object.Equals(child, this.firstChild)))
             {
-                var childParentData__62265 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__62148.parentData!)!;
-                child__62148 = childParentData__62265.nextSibling;
+                var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+                child = childParentData.nextSibling;
                 continue;
             }
-            double minIntrinsicWidth__62423 = child__62148.getMinIntrinsicWidth(height);
-            if ((object.Equals(child__62148, this.lastChild)))
+            double minIntrinsicWidth = child.getMinIntrinsicWidth(height);
+            if ((object.Equals(child, this.lastChild)))
             {
-                width__62179 += minIntrinsicWidth__62423;
+                width += minIntrinsicWidth;
             }
-            if ((object.Equals(child__62148, childBefore(this.lastChild!))))
+            if ((object.Equals(child, childBefore(this.lastChild!))))
             {
-                width__62179 += minIntrinsicWidth__62423;
+                width += minIntrinsicWidth;
             }
-            width__62179 = Math.Max(DartRuntimePrimitives.RequireValue(width__62179), minIntrinsicWidth__62423);
-            var childParentData__62788 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__62148.parentData!)!;
-            child__62148 = childParentData__62788.nextSibling;
+            width = Math.Max(DartRuntimePrimitives.RequireValue(width), minIntrinsicWidth);
+            var childParentDataLocal = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            child = childParentDataLocal.nextSibling;
         }
-        return Math.Max(DartRuntimePrimitives.RequireValue(width__62179), Dropdown_menuLibrary._kMinimumWidth);
+        return Math.Max(DartRuntimePrimitives.RequireValue(width), Dropdown_menuLibrary._kMinimumWidth);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__63033 = this.firstChild;
-        double width__63064 = 0;
-        while ((child__63033 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        double width = 0;
+        while ((child is not null))
         {
-            if ((object.Equals(child__63033, this.firstChild)))
+            if ((object.Equals(child, this.firstChild)))
             {
-                var childParentData__63150 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__63033.parentData!)!;
-                child__63033 = childParentData__63150.nextSibling;
+                var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+                child = childParentData.nextSibling;
                 continue;
             }
-            double maxIntrinsicWidth__63308 = child__63033.getMaxIntrinsicWidth(height);
-            if ((object.Equals(child__63033, this.lastChild)))
+            double maxIntrinsicWidth = child.getMaxIntrinsicWidth(height);
+            if ((object.Equals(child, this.lastChild)))
             {
-                width__63064 += maxIntrinsicWidth__63308;
+                width += maxIntrinsicWidth;
             }
-            if ((object.Equals(child__63033, childBefore(this.lastChild!))))
+            if ((object.Equals(child, childBefore(this.lastChild!))))
             {
-                width__63064 += maxIntrinsicWidth__63308;
+                width += maxIntrinsicWidth;
             }
-            width__63064 = Math.Max(DartRuntimePrimitives.RequireValue(width__63064), maxIntrinsicWidth__63308);
-            var childParentData__63673 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__63033.parentData!)!;
-            child__63033 = childParentData__63673.nextSibling;
+            width = Math.Max(DartRuntimePrimitives.RequireValue(width), maxIntrinsicWidth);
+            var childParentDataLocal = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            child = childParentDataLocal.nextSibling;
         }
-        return Math.Max(DartRuntimePrimitives.RequireValue(width__63064), Dropdown_menuLibrary._kMinimumWidth);
+        return Math.Max(DartRuntimePrimitives.RequireValue(width), Dropdown_menuLibrary._kMinimumWidth);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__63924 = this.firstChild;
-        double width__63955 = 0;
-        if ((child__63924 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        double widthLocal = 0;
+        if ((child is not null))
         {
-            width__63955 = Math.Max(DartRuntimePrimitives.RequireValue(width__63955), child__63924.getMinIntrinsicHeight(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(width__63955))));
+            widthLocal = Math.Max(DartRuntimePrimitives.RequireValue(widthLocal), child.getMinIntrinsicHeight(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(widthLocal))));
         }
-        return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(width__63955));
+        return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(widthLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__64171 = this.firstChild;
-        double width__64202 = 0;
-        if ((child__64171 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        double widthLocal = 0;
+        if ((child is not null))
         {
-            width__64202 = Math.Max(DartRuntimePrimitives.RequireValue(width__64202), child__64171.getMaxIntrinsicHeight(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(width__64202))));
+            widthLocal = Math.Max(DartRuntimePrimitives.RequireValue(widthLocal), child.getMaxIntrinsicHeight(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(widthLocal))));
         }
-        return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(width__64202));
+        return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(widthLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__64445 = this.firstChild;
-        if ((child__64445 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        if ((child is not null))
         {
-            var childParentData__64502 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__64445.parentData!)!;
-            bool isHit__64587 = result.addWithPaintOffset(offset: childParentData__64502.offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__64502.offset))));
-                return child__64445.hitTest(result, position: transformed);
+                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData.offset))));
+                return child.hitTest(result, position: transformed);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
-            if (isHit__64587)
+            if (isHit)
             {
                 return true;
             }
@@ -907,8 +907,8 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
     {
         visitChildren(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObjectChild) =>
         {
-            var child__65228 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)renderObjectChild)!;
-            if ((object.Equals(child__65228, this.firstChild)))
+            var child = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)renderObjectChild)!;
+            if ((object.Equals(child, this.firstChild)))
             {
                 visitor(((global::Doroti.Framework.Rendering.RenderBox)renderObjectChild));
             }
@@ -917,12 +917,12 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData__173585 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
-        while ((childParentData__173585.previousSibling is not null))
+        var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+        while ((childParentData.previousSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData__173585.previousSibling, child)));
-            child = childParentData__173585.previousSibling!;
-            childParentData__173585 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.previousSibling, child)));
+            child = childParentData.previousSibling!;
+            childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
         }
         return (object.Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -930,12 +930,12 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData__173981 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
-        while ((childParentData__173981.nextSibling is not null))
+        var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+        while ((childParentData.nextSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData__173981.nextSibling, child)));
-            child = childParentData__173981.nextSibling!;
-            childParentData__173981 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.nextSibling, child)));
+            child = childParentData.nextSibling!;
+            childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
         }
         return (object.Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -958,18 +958,18 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
-        var childParentData__175971 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData__175971.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData__175971.previousSibling is null));
+        var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
+        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
         this._childCount += 1L;
         DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
         if ((after is null))
         {
-            childParentData__175971.nextSibling = this._firstChild;
+            childParentData.nextSibling = this._firstChild;
             if ((this._firstChild is not null))
             {
-                var firstChildParentData__176343 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)this._firstChild!.parentData!)!;
-                firstChildParentData__176343.previousSibling = child;
+                var firstChildParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)this._firstChild!.parentData!)!;
+                firstChildParentData.previousSibling = child;
             }
             this._firstChild = child;
             this._lastChild ??= child;
@@ -980,23 +980,23 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
             DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
             DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
             DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
-            var afterParentData__176766 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)after.parentData!)!;
-            if ((afterParentData__176766.nextSibling is null))
+            var afterParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)after.parentData!)!;
+            if ((afterParentData.nextSibling is null))
             {
                 DartRuntimePrimitives.Assert(() => (object.Equals(after, this._lastChild)));
-                childParentData__175971.previousSibling = after;
-                afterParentData__176766.nextSibling = child;
+                childParentData.previousSibling = after;
+                afterParentData.nextSibling = child;
                 this._lastChild = child;
             }
             else
             {
-                childParentData__175971.nextSibling = afterParentData__176766.nextSibling;
-                childParentData__175971.previousSibling = after;
-                var childPreviousSiblingParentData__177424 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)childParentData__175971.previousSibling!.parentData!)!;
-                var childNextSiblingParentData__177547 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)childParentData__175971.nextSibling!.parentData!)!;
-                childPreviousSiblingParentData__177424.nextSibling = child;
-                childNextSiblingParentData__177547.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData__176766.nextSibling, child)));
+                childParentData.nextSibling = afterParentData.nextSibling;
+                childParentData.previousSibling = after;
+                var childPreviousSiblingParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)childParentData.previousSibling!.parentData!)!;
+                var childNextSiblingParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)childParentData.nextSibling!.parentData!)!;
+                childPreviousSiblingParentData.nextSibling = child;
+                childNextSiblingParentData.previousSibling = child;
+                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData.nextSibling, child)));
             }
         }
     }
@@ -1025,32 +1025,32 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
 
     public virtual void _removeFromChildList(RenderBox child)
     {
-        var childParentData__179226 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+        var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
         DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
         DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
         DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData__179226.previousSibling is null))
+        if ((childParentData.previousSibling is null))
         {
             DartRuntimePrimitives.Assert(() => (object.Equals(this._firstChild, child)));
-            this._firstChild = childParentData__179226.nextSibling;
+            this._firstChild = childParentData.nextSibling;
         }
         else
         {
-            var childPreviousSiblingParentData__179613 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)childParentData__179226.previousSibling!.parentData!)!;
-            childPreviousSiblingParentData__179613.nextSibling = childParentData__179226.nextSibling;
+            var childPreviousSiblingParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)childParentData.previousSibling!.parentData!)!;
+            childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData__179226.nextSibling is null))
+        if ((childParentData.nextSibling is null))
         {
             DartRuntimePrimitives.Assert(() => (object.Equals(this._lastChild, child)));
-            this._lastChild = childParentData__179226.previousSibling;
+            this._lastChild = childParentData.previousSibling;
         }
         else
         {
-            var childNextSiblingParentData__179965 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)childParentData__179226.nextSibling!.parentData!)!;
-            childNextSiblingParentData__179965.previousSibling = childParentData__179226.previousSibling;
+            var childNextSiblingParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)childParentData.nextSibling!.parentData!)!;
+            childNextSiblingParentData.previousSibling = childParentData.previousSibling;
         }
-        childParentData__179226.previousSibling = null;
-        childParentData__179226.nextSibling = null;
+        childParentData.previousSibling = null;
+        childParentData.nextSibling = null;
         this._childCount -= 1L;
     }
 
@@ -1062,15 +1062,15 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
 
     public virtual void removeAll()
     {
-        RenderBox? child__180623 = this._firstChild;
-        while ((child__180623 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            var childParentData__180684 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__180623.parentData!)!;
-            RenderBox? next__180762 = childParentData__180684.nextSibling;
-            childParentData__180684.previousSibling = null;
-            childParentData__180684.nextSibling = null;
-            dropChild(child__180623);
-            child__180623 = next__180762;
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            RenderBox? next = childParentData.nextSibling;
+            childParentData.previousSibling = null;
+            childParentData.nextSibling = null;
+            dropChild(child);
+            child = next;
         }
         this._firstChild = null;
         this._lastChild = null;
@@ -1083,8 +1083,8 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
         DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
         DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__181479 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
-        if ((object.Equals(childParentData__181479.previousSibling, after)))
+        var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+        if ((object.Equals(childParentData.previousSibling, after)))
         {
             return;
         }
@@ -1096,46 +1096,46 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        RenderBox? child__181803 = this._firstChild;
-        while ((child__181803 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            ((dynamic)child__181803).attach(owner);
-            var childParentData__181891 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__181803.parentData!)!;
-            child__181803 = childParentData__181891.nextSibling;
+            ((dynamic)child).attach(owner);
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
     public override void detach()
     {
         base.detach();
-        RenderBox? child__182065 = this._firstChild;
-        while ((child__182065 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            ((dynamic)child__182065).detach();
-            var childParentData__182148 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__182065.parentData!)!;
-            child__182065 = childParentData__182148.nextSibling;
+            ((dynamic)child).detach();
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
     public override void redepthChildren()
     {
-        RenderBox? child__182311 = this._firstChild;
-        while ((child__182311 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            redepthChild(child__182311);
-            var childParentData__182399 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__182311.parentData!)!;
-            child__182311 = childParentData__182399.nextSibling;
+            redepthChild(child);
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
     public override void visitChildren(global::System.Action<RenderObject> visitor)
     {
-        RenderBox? child__182587 = this._firstChild;
-        while ((child__182587 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            visitor(child__182587);
-            var childParentData__182670 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__182587.parentData!)!;
-            child__182587 = childParentData__182670.nextSibling;
+            visitor(child);
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
@@ -1144,56 +1144,56 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
     public virtual RenderBox? childBefore(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__183103 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
-        return childParentData__183103.previousSibling;
+        var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+        return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__183356 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
-        return childParentData__183356.nextSibling;
+        var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+        return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
-        var children__183528 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
+        var children = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
         if ((this.firstChild is not null))
         {
-            RenderBox child__183606 = this.firstChild!;
-            var count__183637 = 1L;
+            RenderBox child = this.firstChild!;
+            var count = 1L;
             while (true)
             {
-                children__183528.Add(((Diagnosticable)child__183606).toDiagnosticsNode(name: $"child__183606 {count__183637}"));
-                if ((object.Equals(child__183606, this.lastChild)))
+                children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
+                if ((object.Equals(child, this.lastChild)))
                 {
                     break;
                 }
-                count__183637 += 1L;
-                var childParentData__183833 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__183606.parentData!)!;
-                child__183606 = childParentData__183833.nextSibling!;
+                count += 1L;
+                var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+                child = childParentData.nextSibling!;
             }
         }
-        return children__183528;
+        return children;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => !this.debugNeedsLayout);
-        RenderBox? child__138717 = this.firstChild;
-        while ((child__138717 is not null))
+        RenderBox? child = this.firstChild;
+        while ((child is not null))
         {
-            var childParentData__138777 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__138717.parentData!)!;
-            double? result__138852 = child__138717.getDistanceToActualBaseline(baseline);
-            if ((result__138852 is not null))
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            double? result = child.getDistanceToActualBaseline(baseline);
+            if ((result is not null))
             {
-                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result__138852);
-                return (DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData__138777.offset.dy);
+                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
+                return (DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData.offset.dy);
             }
-            child__138717 = childParentData__138777.nextSibling;
+            child = childParentData.nextSibling;
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1202,36 +1202,36 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => !this.debugNeedsLayout);
-        BaselineOffset minBaseline__139372 = BaselineOffset.noBaseline;
-        RenderBox? child__139428 = this.firstChild;
-        while ((child__139428 is not null))
+        BaselineOffset minBaseline = BaselineOffset.noBaseline;
+        RenderBox? child = this.firstChild;
+        while ((child is not null))
         {
-            var childParentData__139488 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__139428.parentData!)!;
-            BaselineOffset candidate__139570 = (new BaselineOffset(child__139428.getDistanceToActualBaseline(baseline)).op_Add(childParentData__139488.offset.dy));
-            minBaseline__139372 = minBaseline__139372.minOf(candidate__139570);
-            child__139428 = childParentData__139488.nextSibling;
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            BaselineOffset candidate = (new BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy));
+            minBaseline = minBaseline.minOf(candidate);
+            child = childParentData.nextSibling;
         }
-        return minBaseline__139372.offset;
+        return minBaseline.offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
     {
-        RenderBox? child__140279 = this.lastChild;
-        while ((child__140279 is not null))
+        RenderBox? child = this.lastChild;
+        while ((child is not null))
         {
-            var childParentData__140418 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__140279.parentData!)!;
-            bool isHit__140490 = result.addWithPaintOffset(offset: childParentData__140418.offset, position: position, hitTest: ((global::System.Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((global::System.Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__140418.offset))));
-                return child__140279!.hitTest(result, position: transformed);
+                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData.offset))));
+                return child!.hitTest(result, position: transformed);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
-            if (isHit__140490)
+            if (isHit)
             {
                 return true;
             }
-            child__140279 = childParentData__140418.previousSibling;
+            child = childParentData.previousSibling;
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1239,26 +1239,26 @@ public class _RenderDropdownMenuBody__dropdown_menu : global::Doroti.Framework.R
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
     {
-        RenderBox? child__141240 = this.firstChild;
-        while ((child__141240 is not null))
+        RenderBox? child = this.firstChild;
+        while ((child is not null))
         {
-            var childParentData__141300 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__141240.parentData!)!;
-            context.paintChild(child__141240, (childParentData__141300.offset + offset));
-            child__141240 = childParentData__141300.nextSibling;
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            context.paintChild(child, (childParentData.offset + offset));
+            child = childParentData.nextSibling;
         }
     }
 
     public virtual List<RenderBox> getChildrenAsList()
     {
-        var result__141793 = new List<RenderBox>();
-        RenderBox? child__141832 = this.firstChild;
-        while ((child__141832 is not null))
+        var result = new List<RenderBox>();
+        RenderBox? child = this.firstChild;
+        while ((child is not null))
         {
-            var childParentData__141892 = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child__141832.parentData!)!;
-            result__141793.Add(((RenderBox?)(object?)child__141832)!);
-            child__141832 = childParentData__141892.nextSibling;
+            var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)(object?)child.parentData!)!;
+            result.Add(((RenderBox?)(object?)child)!);
+            child = childParentData.nextSibling;
         }
-        return result__141793;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -89,13 +89,13 @@ public class ButtonBarThemeData : global::Doroti.Framework.Foundation.Diagnostic
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -118,8 +118,8 @@ public class ButtonBarTheme : global::Doroti.Framework.Widgets.InheritedWidget
 
     public static ButtonBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ButtonBarTheme? buttonBarTheme__10396 = ((ButtonBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ButtonBarTheme>());
-        return (buttonBarTheme__10396?.data ?? Theme.of(context).buttonBarTheme);
+        ButtonBarTheme? buttonBarThemeLocal = ((ButtonBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ButtonBarTheme>());
+        return (buttonBarThemeLocal?.data ?? Theme.of(context).buttonBarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

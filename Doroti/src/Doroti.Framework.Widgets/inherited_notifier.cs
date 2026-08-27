@@ -44,12 +44,12 @@ internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedEleme
     public override void update(Widget newWidget)
     {
         var __newWidget = (InheritedNotifier<T>)(object)newWidget;
-        T? oldNotifier__4353 = (((InheritedNotifier<T>?)(object?)this.widget)!).notifier;
-        T? newNotifier__4423 = ((InheritedNotifier<T>)__newWidget).notifier;
-        if (!EqualityComparer<T>.Default.Equals(oldNotifier__4353, newNotifier__4423))
+        T? oldNotifier = (((InheritedNotifier<T>?)(object?)this.widget)!).notifier;
+        T? newNotifier = ((InheritedNotifier<T>)__newWidget).notifier;
+        if (!EqualityComparer<T>.Default.Equals(oldNotifier, newNotifier))
         {
-            oldNotifier__4353?.removeListener(() => this._handleUpdate());
-            newNotifier__4423?.addListener(() => this._handleUpdate());
+            oldNotifier?.removeListener(() => this._handleUpdate());
+            newNotifier?.addListener(() => this._handleUpdate());
         }
         base.update(__newWidget);
     }

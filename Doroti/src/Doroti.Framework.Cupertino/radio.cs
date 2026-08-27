@@ -142,10 +142,10 @@ internal class _CupertinoRadioState__radio<T> : global::Doroti.Framework.Widgets
             {
                 return ((CupertinoRadio<T>)(object)this.widget).groupRegistry!;
             }
-            global::Doroti.Framework.Widgets.RadioGroupRegistry<T>? inheritedRegistry__8523 = ((global::Doroti.Framework.Widgets.RadioGroupRegistry<T>?)(object?)RadioGroup.maybeOf<T>(this.context));
-            if ((inheritedRegistry__8523 is not null))
+            global::Doroti.Framework.Widgets.RadioGroupRegistry<T>? inheritedRegistry = ((global::Doroti.Framework.Widgets.RadioGroupRegistry<T>?)(object?)RadioGroup.maybeOf<T>(this.context));
+            if ((inheritedRegistry is not null))
             {
-                return inheritedRegistry__8523;
+                return inheritedRegistry;
             }
             return _internalRadioRegistry ??= new _RadioRegistry__radio<T>(this);
             return default!;
@@ -160,12 +160,12 @@ internal class _CupertinoRadioState__radio<T> : global::Doroti.Framework.Widgets
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => (((!((((CupertinoRadio<T>)(object)this.widget).enabled ?? false)) || (((CupertinoRadio<T>)(object)this.widget).onChanged is not null)) || (((CupertinoRadio<T>)(object)this.widget).groupRegistry is not null)) || (RadioGroup.maybeOf<T>(context) is not null)), () => (object?)"Radio is enabled but has no CupertinoRadio.onChange, " + "CupertinoRadio.groupRegistry, or RadioGroup above");
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor__9242 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Services.MouseCursor>)((states) =>
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, global::Doroti.Framework.Services.MouseCursor>)((states) =>
         {
             return ((global::Doroti.Framework.Services.MouseCursor)(object?)(WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((CupertinoRadio<T>)(object)this.widget).mouseCursor, states) ?? (((!states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) && global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb) ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.SystemMouseCursors.basic))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RawRadio<T>(value: ((CupertinoRadio<T>)(object)this.widget).value, groupRegistry: this._effectiveRegistry, mouseCursor: effectiveMouseCursor__9242, toggleable: ((CupertinoRadio<T>)(object)this.widget).toggleable, focusNode: this._effectiveFocusNode, autofocus: ((CupertinoRadio<T>)(object)this.widget).autofocus, enabled: this._enabled, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, dynamic, global::Doroti.Framework.Widgets.Widget>)((context, state) =>
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RawRadio<T>(value: ((CupertinoRadio<T>)(object)this.widget).value, groupRegistry: this._effectiveRegistry, mouseCursor: effectiveMouseCursor, toggleable: ((CupertinoRadio<T>)(object)this.widget).toggleable, focusNode: this._effectiveFocusNode, autofocus: ((CupertinoRadio<T>)(object)this.widget).autofocus, enabled: this._enabled, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, dynamic, global::Doroti.Framework.Widgets.Widget>)((context, state) =>
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new _RadioPaint__radio(activeColor: ((CupertinoRadio<T>)(object)this.widget).activeColor, inactiveColor: ((CupertinoRadio<T>)(object)this.widget).inactiveColor, fillColor: ((CupertinoRadio<T>)(object)this.widget).fillColor, focusColor: ((CupertinoRadio<T>)(object)this.widget).focusColor, useCheckmarkStyle: ((CupertinoRadio<T>)(object)this.widget).useCheckmarkStyle, isActive: this._enabled, toggleableState: state, focused: ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus));
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -294,39 +294,39 @@ internal class _RadioPaintState__radio : global::Doroti.Framework.Widgets.State<
     }
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> activeStates__13367 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> activeStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.selected);
     return __cascade;
 }))();
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> inactiveStates__13467 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> inactiveStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
     __cascade.Remove(global::Doroti.Framework.Widgets.WidgetState.selected);
     return __cascade;
 }))();
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> currentStates__13708 = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
-        global::Doroti.Ui.Color effectiveActiveColor__13772 = ((global::Doroti.Ui.Color)(object?)this._defaultOuterColor.resolve(activeStates__13367));
-        global::Doroti.Ui.Color effectiveInactiveColor__13854 = ((global::Doroti.Ui.Color)(object?)this._defaultOuterColor.resolve(inactiveStates__13467));
-        global::Doroti.Ui.Color effectiveFocusOverlayColor__13940 = ((global::Doroti.Ui.Color)(object?)((((_RadioPaint__radio)(object)this.widget).focusColor ?? (Color)global::Doroti.Framework.Painting.HSLColor.CreateFromColor(effectiveActiveColor__13772.withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)).withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness).withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation).toColor())));
-        global::Doroti.Ui.Color effectiveFillColor__14248 = ((global::Doroti.Ui.Color)(object?)this._defaultInnerColor.resolve(currentStates__13708));
-        global::Doroti.Ui.Color effectiveBorderColor__14329 = ((global::Doroti.Ui.Color)(object?)this._defaultBorderColor.resolve(currentStates__13708));
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> currentStates = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
+        global::Doroti.Ui.Color effectiveActiveColor = ((global::Doroti.Ui.Color)(object?)this._defaultOuterColor.resolve(activeStates));
+        global::Doroti.Ui.Color effectiveInactiveColor = ((global::Doroti.Ui.Color)(object?)this._defaultOuterColor.resolve(inactiveStates));
+        global::Doroti.Ui.Color effectiveFocusOverlayColor = ((global::Doroti.Ui.Color)(object?)((((_RadioPaint__radio)(object)this.widget).focusColor ?? (Color)global::Doroti.Framework.Painting.HSLColor.CreateFromColor(effectiveActiveColor.withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)).withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness).withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation).toColor())));
+        global::Doroti.Ui.Color effectiveFillColor = ((global::Doroti.Ui.Color)(object?)this._defaultInnerColor.resolve(currentStates));
+        global::Doroti.Ui.Color effectiveBorderColor = ((global::Doroti.Ui.Color)(object?)this._defaultBorderColor.resolve(currentStates));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomPaint(size: RadioLibrary._size, painter: ((Func<_RadioPainter__radio>)(() =>
 {
     var __cascade = this._painter;
     __cascade.position = ((global::Doroti.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).position);
     __cascade.reaction = ((global::Doroti.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).reaction);
-    __cascade.focusColor = effectiveFocusOverlayColor__13940;
+    __cascade.focusColor = effectiveFocusOverlayColor;
     __cascade.downPosition = ((Offset?)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).downPosition);
     __cascade.isFocused = ((_RadioPaint__radio)(object)this.widget).focused;
-    __cascade.activeColor = effectiveActiveColor__13772;
-    __cascade.inactiveColor = effectiveInactiveColor__13854;
-    __cascade.fillColor = effectiveFillColor__14248;
+    __cascade.activeColor = effectiveActiveColor;
+    __cascade.inactiveColor = effectiveInactiveColor;
+    __cascade.fillColor = effectiveFillColor;
     __cascade.value = ((bool?)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).value);
     __cascade.checkmarkStyle = ((_RadioPaint__radio)(object)this.widget).useCheckmarkStyle;
     __cascade.isActive = ((_RadioPaint__radio)(object)this.widget).isActive;
-    __cascade.borderColor = effectiveBorderColor__14329;
+    __cascade.borderColor = effectiveBorderColor;
     __cascade.brightness = CupertinoTheme.of(context).brightness;
     return __cascade;
 }))()));
@@ -415,36 +415,36 @@ internal class _RadioPainter__radio : global::Doroti.Framework.Widgets.Toggleabl
     }
     internal virtual void _drawPressedOverlay(Canvas canvas, Offset center, double radius)
     {
-        var pressedPaint__16248 = ((Func<Paint>)(() =>
+        var pressedPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = ((object.Equals(this.brightness, Brightness.light)) ? CupertinoColors.black.withOpacity(CheckboxLibrary._kPressedOverlayOpacity) : CupertinoColors.white.withOpacity(CheckboxLibrary._kPressedOverlayOpacity));
     return __cascade;
 }))();
-        canvas.drawCircle(center, radius, pressedPaint__16248);
+        canvas.drawCircle(center, radius, pressedPaint);
     }
 
     internal virtual void _drawFillGradient(Canvas canvas, Offset center, double radius, Color topColor, Color bottomColor)
     {
-        var fillGradient__16661 = new global::Doroti.Framework.Painting.LinearGradient(begin: global::Doroti.Framework.Painting.Alignment.topCenter, end: global::Doroti.Framework.Painting.Alignment.bottomCenter, colors: new List<global::Doroti.Ui.Color> { topColor, bottomColor });
-        var circleRect__16824 = global::Doroti.Ui.Rect.fromCircle(center: center, radius: radius);
-        var gradientPaint__16896 = ((Func<Paint>)(() =>
+        var fillGradient = new global::Doroti.Framework.Painting.LinearGradient(begin: global::Doroti.Framework.Painting.Alignment.topCenter, end: global::Doroti.Framework.Painting.Alignment.bottomCenter, colors: new List<global::Doroti.Ui.Color> { topColor, bottomColor });
+        var circleRect = global::Doroti.Ui.Rect.fromCircle(center: center, radius: radius);
+        var gradientPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.shader = fillGradient__16661.createShader(circleRect__16824);
+    __cascade.shader = fillGradient.createShader(circleRect);
     return __cascade;
 }))();
         canvas.drawPath(((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addOval(circleRect__16824);
+    __cascade.addOval(circleRect);
     return __cascade;
-}))(), gradientPaint__16896);
+}))(), gradientPaint);
     }
 
     internal virtual void _drawOuterBorder(Canvas canvas, Offset center)
     {
-        var borderPaint__17105 = ((Func<Paint>)(() =>
+        var borderPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.style = PaintingStyle.stroke;
@@ -452,18 +452,18 @@ internal class _RadioPainter__radio : global::Doroti.Framework.Widgets.Toggleabl
     __cascade.strokeWidth = RadioLibrary._kBorderOutlineStrokeWidth;
     return __cascade;
 }))();
-        canvas.drawCircle(center, RadioLibrary._kOuterRadius, borderPaint__17105);
+        canvas.drawCircle(center, RadioLibrary._kOuterRadius, borderPaint);
     }
 
     public override void paint(Canvas canvas, Size size)
     {
-        global::Doroti.Ui.Offset center__17376 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)((Offset.zero & size))).center));
+        global::Doroti.Ui.Offset centerLocal = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)((Offset.zero & size))).center));
         if (this.checkmarkStyle)
         {
             if ((this.value ?? false))
             {
-                var path__17483 = new global::Doroti.Ui.Path();
-                var checkPaint__17512 = ((Func<Paint>)(() =>
+                var path = new global::Doroti.Ui.Path();
+                var checkPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = this.activeColor;
@@ -472,24 +472,24 @@ internal class _RadioPainter__radio : global::Doroti.Framework.Widgets.Toggleabl
     __cascade.strokeCap = StrokeCap.round;
     return __cascade;
 }))();
-                double width__17717 = RadioLibrary._size.width;
-                var origin__17752 = new global::Doroti.Ui.Offset((center__17376.dx - ((width__17717 / 2L))), (center__17376.dy - ((width__17717 / 2L))));
-                var start__17833 = new global::Doroti.Ui.Offset((width__17717 * 0.25), (width__17717 * 0.52));
-                var mid__17891 = new global::Doroti.Ui.Offset((width__17717 * 0.46), (width__17717 * 0.75));
-                var end__17947 = new global::Doroti.Ui.Offset((width__17717 * 0.85), (width__17717 * 0.29));
-                path__17483.moveTo((origin__17752.dx + start__17833.dx), (origin__17752.dy + start__17833.dy));
-                path__17483.lineTo((origin__17752.dx + mid__17891.dx), (origin__17752.dy + mid__17891.dy));
-                canvas.drawPath(path__17483, checkPaint__17512);
-                path__17483.moveTo((origin__17752.dx + mid__17891.dx), (origin__17752.dy + mid__17891.dy));
-                path__17483.lineTo((origin__17752.dx + end__17947.dx), (origin__17752.dy + end__17947.dy));
-                canvas.drawPath(path__17483, checkPaint__17512);
+                double widthLocal = RadioLibrary._size.width;
+                var origin = new global::Doroti.Ui.Offset((centerLocal.dx - ((widthLocal / 2L))), (centerLocal.dy - ((widthLocal / 2L))));
+                var start = new global::Doroti.Ui.Offset((widthLocal * 0.25), (widthLocal * 0.52));
+                var mid = new global::Doroti.Ui.Offset((widthLocal * 0.46), (widthLocal * 0.75));
+                var end = new global::Doroti.Ui.Offset((widthLocal * 0.85), (widthLocal * 0.29));
+                path.moveTo((origin.dx + start.dx), (origin.dy + start.dy));
+                path.lineTo((origin.dx + mid.dx), (origin.dy + mid.dy));
+                canvas.drawPath(path, checkPaint);
+                path.moveTo((origin.dx + mid.dx), (origin.dy + mid.dy));
+                path.lineTo((origin.dx + end.dx), (origin.dy + end.dy));
+                canvas.drawPath(path, checkPaint);
             }
         }
         else
         {
             if ((this.value ?? false))
             {
-                var outerPaint__18386 = ((Func<Paint>)(() =>
+                var outerPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = this.activeColor;
@@ -497,50 +497,50 @@ internal class _RadioPainter__radio : global::Doroti.Framework.Widgets.Toggleabl
 }))();
                 if (((object.Equals(this.brightness, Brightness.dark)) && !this.isActive))
                 {
-                    _drawFillGradient(canvas, center__17376, RadioLibrary._kOuterRadius, outerPaint__18386.color.withOpacity((this.isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)(0L)] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)(0L)])), outerPaint__18386.color.withOpacity((this.isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)(1L)] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)(1L)])));
+                    _drawFillGradient(canvas, centerLocal, RadioLibrary._kOuterRadius, outerPaint.color.withOpacity((this.isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)(0L)] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)(0L)])), outerPaint.color.withOpacity((this.isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)(1L)] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)(1L)])));
                 }
                 else
                 {
-                    canvas.drawCircle(center__17376, RadioLibrary._kOuterRadius, outerPaint__18386);
+                    canvas.drawCircle(centerLocal, RadioLibrary._kOuterRadius, outerPaint);
                 }
                 if ((this.downPosition is not null))
                 {
-                    _drawPressedOverlay(canvas, center__17376, RadioLibrary._kOuterRadius);
+                    _drawPressedOverlay(canvas, centerLocal, RadioLibrary._kOuterRadius);
                 }
-                var innerPaint__19242 = ((Func<Paint>)(() =>
+                var innerPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = this.fillColor;
     return __cascade;
 }))();
-                canvas.drawCircle(center__17376, RadioLibrary._kInnerRadius, innerPaint__19242);
+                canvas.drawCircle(centerLocal, RadioLibrary._kInnerRadius, innerPaint);
                 if (!this.isActive)
                 {
-                    _drawOuterBorder(canvas, center__17376);
+                    _drawOuterBorder(canvas, centerLocal);
                 }
             }
             else
             {
-                var paint__19524 = new global::Doroti.Ui.Paint();
-                paint__19524.color = (this.isActive ? this.inactiveColor : RadioLibrary._kDisabledOuterColor);
+                var paintLocal = new global::Doroti.Ui.Paint();
+                paintLocal.color = (this.isActive ? this.inactiveColor : RadioLibrary._kDisabledOuterColor);
                 if ((object.Equals(this.brightness, Brightness.dark)))
                 {
-                    _drawFillGradient(canvas, center__17376, RadioLibrary._kOuterRadius, paint__19524.color.withOpacity((this.isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)(0L)] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)(0L)])), paint__19524.color.withOpacity((this.isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)(1L)] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)(1L)])));
+                    _drawFillGradient(canvas, centerLocal, RadioLibrary._kOuterRadius, paintLocal.color.withOpacity((this.isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)(0L)] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)(0L)])), paintLocal.color.withOpacity((this.isActive ? CheckboxLibrary._kDarkGradientOpacities[(int)(1L)] : CheckboxLibrary._kDisabledDarkGradientOpacities[(int)(1L)])));
                 }
                 else
                 {
-                    canvas.drawCircle(center__17376, RadioLibrary._kOuterRadius, paint__19524);
+                    canvas.drawCircle(centerLocal, RadioLibrary._kOuterRadius, paintLocal);
                 }
                 if ((this.downPosition is not null))
                 {
-                    _drawPressedOverlay(canvas, center__17376, RadioLibrary._kOuterRadius);
+                    _drawPressedOverlay(canvas, centerLocal, RadioLibrary._kOuterRadius);
                 }
-                _drawOuterBorder(canvas, center__17376);
+                _drawOuterBorder(canvas, centerLocal);
             }
         }
         if (this.isFocused)
         {
-            var focusPaint__20407 = ((Func<Paint>)(() =>
+            var focusPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.style = PaintingStyle.stroke;
@@ -548,7 +548,7 @@ internal class _RadioPainter__radio : global::Doroti.Framework.Widgets.Toggleabl
     __cascade.strokeWidth = RadioLibrary._kFocusOutlineStrokeWidth;
     return __cascade;
 }))();
-            canvas.drawCircle(center__17376, (RadioLibrary._kOuterRadius + (RadioLibrary._kFocusOutlineStrokeWidth / 2L)), focusPaint__20407);
+            canvas.drawCircle(centerLocal, (RadioLibrary._kOuterRadius + (RadioLibrary._kFocusOutlineStrokeWidth / 2L)), focusPaint);
         }
     }
 

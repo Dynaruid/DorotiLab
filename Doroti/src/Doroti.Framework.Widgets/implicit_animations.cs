@@ -78,18 +78,18 @@ public class Matrix4Tween : global::Doroti.Framework.Animation.Tween<Matrix4>
     {
         DartRuntimePrimitives.Assert(() => (this.begin is not null));
         DartRuntimePrimitives.Assert(() => (this.end is not null));
-        var beginTranslation__6685 = new Vector3();
-        var endTranslation__6730 = new Vector3();
-        var beginRotation__6773 = new Quaternion();
-        var endRotation__6822 = new Quaternion();
-        var beginScale__6869 = new Vector3();
-        var endScale__6908 = new Vector3();
-        this.begin!.decompose(beginTranslation__6685, beginRotation__6773, beginScale__6869);
-        this.end!.decompose(endTranslation__6730, endRotation__6822, endScale__6908);
-        Vector3 lerpTranslation__7079 = ((beginTranslation__6685 * ((1.0 - t))) + (endTranslation__6730 * t));
-        Quaternion lerpRotation__7232 = ((beginRotation__6773.scaled((1.0 - t)) + endRotation__6822.scaled(t))).normalized();
-        Vector3 lerpScale__7344 = ((beginScale__6869 * ((1.0 - t))) + (endScale__6908 * t));
-        return Matrix4.compose(lerpTranslation__7079, lerpRotation__7232, lerpScale__7344);
+        var beginTranslation = new Vector3();
+        var endTranslation = new Vector3();
+        var beginRotation = new Quaternion();
+        var endRotation = new Quaternion();
+        var beginScale = new Vector3();
+        var endScale = new Vector3();
+        this.begin!.decompose(beginTranslation, beginRotation, beginScale);
+        this.end!.decompose(endTranslation, endRotation, endScale);
+        Vector3 lerpTranslation = ((beginTranslation * ((1.0 - t))) + (endTranslation * t));
+        Quaternion lerpRotation = ((beginRotation.scaled((1.0 - t)) + endRotation.scaled(t))).normalized();
+        Vector3 lerpScale = ((beginScale * ((1.0 - t))) + (endScale * t));
+        return Matrix4.compose(lerpTranslation, lerpRotation, lerpScale);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -234,7 +234,7 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
 
     internal virtual bool _constructTweens()
     {
-        var shouldStartAnimation__16124 = false;
+        var shouldStartAnimation = false;
         forEachTween(((global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?>)((tween, targetValue, constructor) =>
         {
             if ((targetValue is not null))
@@ -242,7 +242,7 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
                 tween ??= constructor(targetValue);
                 if ((!object.Equals(targetValue, ((tween.end ?? tween.begin)))))
                 {
-                    shouldStartAnimation__16124 = true;
+                    shouldStartAnimation = true;
                 }
                 else
                 {
@@ -256,7 +256,7 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
             return tween;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        return shouldStartAnimation__16124;
+        return shouldStartAnimation;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -292,31 +292,31 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
 
     public virtual void _updateTicker()
     {
-        TickerModeData values__15157 = this._tickerModeNotifier!.value;
+        TickerModeData values = this._tickerModeNotifier!.value;
         if ((this._ticker is not null))
         {
-            this._ticker!.muted = !((TickerModeData)values__15157).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values__15157).forceFrames;
+            this._ticker!.muted = !((TickerModeData)values).enabled;
+            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier__15400.addListener(() => this._updateTicker());
-        this._tickerModeNotifier = newNotifier__15400;
+        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -412,8 +412,8 @@ internal class _AnimatedContainerState__implicit_animations : AnimatedWidgetBase
 
     public override Widget build(BuildContext context)
     {
-        global::Doroti.Framework.Animation.Animation<double> animation__31381 = this.animation;
-        return ((Widget)(object?)new Container(alignment: this._alignment?.evaluate(animation__31381), padding: this._padding?.evaluate(animation__31381), decoration: this._decoration?.evaluate(animation__31381), foregroundDecoration: this._foregroundDecoration?.evaluate(animation__31381), constraints: this._constraints?.evaluate(animation__31381), margin: this._margin?.evaluate(animation__31381), transform: this._transform?.evaluate(animation__31381), transformAlignment: this._transformAlignment?.evaluate(animation__31381), clipBehavior: ((AnimatedContainer)(object)this.widget).clipBehavior, child: ((AnimatedContainer)(object)this.widget).child));
+        global::Doroti.Framework.Animation.Animation<double> animationLocal = this.animation;
+        return ((Widget)(object?)new Container(alignment: this._alignment?.evaluate(animationLocal), padding: this._padding?.evaluate(animationLocal), decoration: this._decoration?.evaluate(animationLocal), foregroundDecoration: this._foregroundDecoration?.evaluate(animationLocal), constraints: this._constraints?.evaluate(animationLocal), margin: this._margin?.evaluate(animationLocal), transform: this._transform?.evaluate(animationLocal), transformAlignment: this._transformAlignment?.evaluate(animationLocal), clipBehavior: ((AnimatedContainer)(object)this.widget).clipBehavior, child: ((AnimatedContainer)(object)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

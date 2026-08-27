@@ -135,31 +135,31 @@ internal class _CupertinoActivityIndicatorState__activity_indicator : global::Do
 
     public virtual void _updateTicker()
     {
-        TickerModeData values__15157 = this._tickerModeNotifier!.value;
+        TickerModeData values = this._tickerModeNotifier!.value;
         if ((this._ticker is not null))
         {
-            this._ticker!.muted = !((TickerModeData)values__15157).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values__15157).forceFrames;
+            this._ticker!.muted = !((TickerModeData)values).enabled;
+            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier__15400.addListener(() => this._updateTicker());
-        this._tickerModeNotifier = newNotifier__15400;
+        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -198,17 +198,17 @@ internal class _CupertinoActivityIndicatorPainter__activity_indicator : global::
 
     public override void paint(Canvas canvas, Size size)
     {
-        var paint__5188 = new global::Doroti.Ui.Paint();
-        long tickCount__5219 = checked((long)(Activity_indicatorLibrary._kAlphaValues.Count));
+        var paintLocal = new global::Doroti.Ui.Paint();
+        long tickCount = checked((long)(Activity_indicatorLibrary._kAlphaValues.Count));
         canvas.save();
         canvas.translate((size.width / 2.0), (size.height / 2.0));
-        long activeTick__5347 = ((tickCount__5219 * ((global::Doroti.Framework.Animation.Animation<double>)this.position).value)).floor();
-        for (var i__5412 = 0L; (i__5412 < (tickCount__5219 * this.progress)); ++i__5412)
+        long activeTick = ((tickCount * ((global::Doroti.Framework.Animation.Animation<double>)this.position).value)).floor();
+        for (var i = 0L; (i < (tickCount * this.progress)); ++i)
         {
-            long t__5468 = (((i__5412 - activeTick__5347)) % tickCount__5219);
-            paint__5188.color = this.activeColor.withAlpha(((this.progress < 1L) ? Activity_indicatorLibrary._partiallyRevealedAlpha : Activity_indicatorLibrary._kAlphaValues[(int)(t__5468)]));
-            canvas.drawRRect(this.tickFundamentalShape, paint__5188);
-            canvas.rotate((Activity_indicatorLibrary._kTwoPI / tickCount__5219));
+            long t = (((i - activeTick)) % tickCount);
+            paintLocal.color = this.activeColor.withAlpha(((this.progress < 1L) ? Activity_indicatorLibrary._partiallyRevealedAlpha : Activity_indicatorLibrary._kAlphaValues[(int)(t)]));
+            canvas.drawRRect(this.tickFundamentalShape, paintLocal);
+            canvas.rotate((Activity_indicatorLibrary._kTwoPI / tickCount));
         }
         canvas.restore();
     }

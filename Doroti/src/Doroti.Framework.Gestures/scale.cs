@@ -194,8 +194,8 @@ public static partial class ScaleLibrary
 {
     internal static bool _isFlingGesture(Velocity velocity)
     {
-        double speedSquared__10727 = ((Velocity)velocity).pixelsPerSecond.distanceSquared;
-        return (speedSquared__10727 > (global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity * global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity));
+        double speedSquared = ((Velocity)velocity).pixelsPerSecond.distanceSquared;
+        return (speedSquared > (global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity * global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -272,12 +272,12 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
     {
         get
         {
-            double scale__17025 = this._pointerScaleFactor;
-            foreach (_PointerPanZoomData__scale p__17089 in this._pointerPanZooms.Values)
+            double scaleLocal = this._pointerScaleFactor;
+            foreach (_PointerPanZoomData__scale p in this._pointerPanZooms.Values)
             {
-                scale__17025 *= (((_PointerPanZoomData__scale)p__17089).scale / this._initialPanZoomScaleFactor);
+                scaleLocal *= (((_PointerPanZoomData__scale)p).scale / this._initialPanZoomScaleFactor);
             }
-            return scale__17025;
+            return scaleLocal;
             return default!;
         }
     }
@@ -285,12 +285,12 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
     {
         get
         {
-            double scale__17252 = this._pointerHorizontalScaleFactor;
-            foreach (_PointerPanZoomData__scale p__17326 in this._pointerPanZooms.Values)
+            double scaleLocal = this._pointerHorizontalScaleFactor;
+            foreach (_PointerPanZoomData__scale p in this._pointerPanZooms.Values)
             {
-                scale__17252 *= (((_PointerPanZoomData__scale)p__17326).scale / this._initialPanZoomScaleFactor);
+                scaleLocal *= (((_PointerPanZoomData__scale)p).scale / this._initialPanZoomScaleFactor);
             }
-            return scale__17252;
+            return scaleLocal;
             return default!;
         }
     }
@@ -298,38 +298,38 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
     {
         get
         {
-            double scale__17487 = this._pointerVerticalScaleFactor;
-            foreach (_PointerPanZoomData__scale p__17559 in this._pointerPanZooms.Values)
+            double scaleLocal = this._pointerVerticalScaleFactor;
+            foreach (_PointerPanZoomData__scale p in this._pointerPanZooms.Values)
             {
-                scale__17487 *= (((_PointerPanZoomData__scale)p__17559).scale / this._initialPanZoomScaleFactor);
+                scaleLocal *= (((_PointerPanZoomData__scale)p).scale / this._initialPanZoomScaleFactor);
             }
-            return scale__17487;
+            return scaleLocal;
             return default!;
         }
     }
     internal virtual double _computeRotationFactor()
     {
-        var factor__17717 = 0.0;
+        var factor = 0.0;
         if (((this._initialLine is not null) && (this._currentLine is not null)))
         {
-            double fx__17806 = this._initialLine!.pointerStartLocation.dx;
-            double fy__17869 = this._initialLine!.pointerStartLocation.dy;
-            double sx__17932 = this._initialLine!.pointerEndLocation.dx;
-            double sy__17993 = this._initialLine!.pointerEndLocation.dy;
-            double nfx__18055 = this._currentLine!.pointerStartLocation.dx;
-            double nfy__18119 = this._currentLine!.pointerStartLocation.dy;
-            double nsx__18183 = this._currentLine!.pointerEndLocation.dx;
-            double nsy__18245 = this._currentLine!.pointerEndLocation.dy;
-            double angle1__18308 = global::Doroti.Runtime.Dart_mathLibrary.atan2((fy__17869 - sy__17993), (fx__17806 - sx__17932));
-            double angle2__18366 = global::Doroti.Runtime.Dart_mathLibrary.atan2((nfy__18119 - nsy__18245), (nfx__18055 - nsx__18183));
-            factor__17717 = (angle2__18366 - angle1__18308);
+            double fx = this._initialLine!.pointerStartLocation.dx;
+            double fy = this._initialLine!.pointerStartLocation.dy;
+            double sx = this._initialLine!.pointerEndLocation.dx;
+            double sy = this._initialLine!.pointerEndLocation.dy;
+            double nfx = this._currentLine!.pointerStartLocation.dx;
+            double nfy = this._currentLine!.pointerStartLocation.dy;
+            double nsx = this._currentLine!.pointerEndLocation.dx;
+            double nsy = this._currentLine!.pointerEndLocation.dy;
+            double angle1 = global::Doroti.Runtime.Dart_mathLibrary.atan2((fy - sy), (fx - sx));
+            double angle2 = global::Doroti.Runtime.Dart_mathLibrary.atan2((nfy - nsy), (nfx - nsx));
+            factor = (angle2 - angle1);
         }
-        foreach (_PointerPanZoomData__scale p__18483 in this._pointerPanZooms.Values)
+        foreach (_PointerPanZoomData__scale p in this._pointerPanZooms.Values)
         {
-            factor__17717 += ((_PointerPanZoomData__scale)p__18483).rotation;
+            factor += ((_PointerPanZoomData__scale)p).rotation;
         }
-        factor__17717 -= this._initialPanZoomRotationFactor;
-        return factor__17717;
+        factor -= this._initialPanZoomRotationFactor;
+        return factor;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -368,17 +368,17 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
     public override void handleEvent(PointerEvent @event)
     {
         DartRuntimePrimitives.Assert(() => (!object.Equals(this._state, _ScaleState__scale.ready)));
-        var didChangeConfiguration__19778 = false;
-        var shouldStartIfAccepted__19818 = false;
+        var didChangeConfiguration = false;
+        var shouldStartIfAccepted = false;
         if ((@event is PointerMoveEvent))
         {
-            VelocityTracker tracker__19914 = this._velocityTrackers.GetValueOrDefault(((PointerMoveEvent)@event).pointer)!;
+            VelocityTracker tracker = this._velocityTrackers.GetValueOrDefault(((PointerMoveEvent)@event).pointer)!;
             if (!((PointerMoveEvent)@event).synthesized)
             {
-                tracker__19914.addPosition(((PointerMoveEvent)@event).timeStamp, ((PointerMoveEvent)@event).position);
+                tracker.addPosition(((PointerMoveEvent)@event).timeStamp, ((PointerMoveEvent)@event).position);
             }
             this._pointerLocations[@event.pointer] = ((PointerMoveEvent)@event).position;
-            shouldStartIfAccepted__19818 = true;
+            shouldStartIfAccepted = true;
             _lastTransform = ((PointerMoveEvent)@event).transform;
         }
         else
@@ -387,8 +387,8 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
             {
                 this._pointerLocations[@event.pointer] = ((PointerDownEvent)@event).position;
                 this._pointerQueue.Add(((PointerDownEvent)@event).pointer);
-                didChangeConfiguration__19778 = true;
-                shouldStartIfAccepted__19818 = true;
+                didChangeConfiguration = true;
+                shouldStartIfAccepted = true;
                 _lastTransform = ((PointerDownEvent)@event).transform;
             }
             else
@@ -397,7 +397,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                 {
                     this._pointerLocations.remove(((PointerEvent)@event).pointer);
                     this._pointerQueue.Remove(((PointerEvent)@event).pointer);
-                    didChangeConfiguration__19778 = true;
+                    didChangeConfiguration = true;
                     _lastTransform = ((PointerEvent)@event).transform;
                 }
                 else
@@ -406,8 +406,8 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                     {
                         DartRuntimePrimitives.Assert(() => (!this._pointerPanZooms.ContainsKey(((PointerPanZoomStartEvent)@event).pointer)));
                         this._pointerPanZooms[@event.pointer] = new _PointerPanZoomData__scale(this, ((PointerPanZoomStartEvent)@event));
-                        didChangeConfiguration__19778 = true;
-                        shouldStartIfAccepted__19818 = true;
+                        didChangeConfiguration = true;
+                        shouldStartIfAccepted = true;
                         _lastTransform = ((PointerPanZoomStartEvent)@event).transform;
                     }
                     else
@@ -421,7 +421,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                             }
                             this._pointerPanZooms[@event.pointer] = _PointerPanZoomData__scale.CreateFromUpdateEvent(this, ((PointerPanZoomUpdateEvent)@event));
                             _lastTransform = ((PointerPanZoomUpdateEvent)@event).transform;
-                            shouldStartIfAccepted__19818 = true;
+                            shouldStartIfAccepted = true;
                         }
                         else
                         {
@@ -430,7 +430,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                                 PointerPanZoomEndEvent @event__as21439 = (PointerPanZoomEndEvent)@event;
                                 DartRuntimePrimitives.Assert(() => (this._pointerPanZooms.ContainsKey(((PointerPanZoomEndEvent)@event__as21439).pointer)));
                                 this._pointerPanZooms.remove(((PointerPanZoomEndEvent)@event__as21439).pointer);
-                                didChangeConfiguration__19778 = true;
+                                didChangeConfiguration = true;
                             }
                         }
                     }
@@ -439,66 +439,66 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         }
         _updateLines();
         _update();
-        if ((!didChangeConfiguration__19778 || _reconfigure(((PointerEvent)@event).pointer)))
+        if ((!didChangeConfiguration || _reconfigure(((PointerEvent)@event).pointer)))
         {
-            _advanceStateMachine(shouldStartIfAccepted__19818, @event);
+            _advanceStateMachine(shouldStartIfAccepted, @event);
         }
         stopTrackingIfPointerNoLongerDown(@event);
     }
 
     internal virtual void _update()
     {
-        global::Doroti.Ui.Offset? previousFocalPoint__21873 = this._currentFocalPoint;
-        global::Doroti.Ui.Offset focalPoint__21957 = Offset.zero;
-        foreach (long pointer__22002 in this._pointerLocations.Keys)
+        global::Doroti.Ui.Offset? previousFocalPoint = this._currentFocalPoint;
+        global::Doroti.Ui.Offset focalPointLocal = Offset.zero;
+        foreach (long pointer in this._pointerLocations.Keys)
         {
-            focalPoint__21957 += DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointer__22002));
+            focalPointLocal += DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointer));
         }
-        foreach (_PointerPanZoomData__scale p__22129 in this._pointerPanZooms.Values)
+        foreach (_PointerPanZoomData__scale p in this._pointerPanZooms.Values)
         {
-            focalPoint__21957 += ((_PointerPanZoomData__scale)p__22129).focalPoint;
+            focalPointLocal += ((_PointerPanZoomData__scale)p).focalPoint;
         }
-        _currentFocalPoint = (focalPoint__21957 / Math.Max(1L, (checked((long)(this._pointerLocations.Count)) + checked((long)(this._pointerPanZooms.Count)))).toDouble());
-        if ((previousFocalPoint__21873 is null))
+        _currentFocalPoint = (focalPointLocal / Math.Max(1L, (checked((long)(this._pointerLocations.Count)) + checked((long)(this._pointerPanZooms.Count)))).toDouble());
+        if ((previousFocalPoint is null))
         {
             _localFocalPoint = PointerEvent.transformPosition(this._lastTransform, DartRuntimePrimitives.RequireValue(this._currentFocalPoint));
             _delta = Offset.zero;
         }
         else
         {
-            global::Doroti.Ui.Offset localPreviousFocalPoint__22516 = this._localFocalPoint;
+            global::Doroti.Ui.Offset localPreviousFocalPoint = this._localFocalPoint;
             _localFocalPoint = PointerEvent.transformPosition(this._lastTransform, DartRuntimePrimitives.RequireValue(this._currentFocalPoint));
-            _delta = (this._localFocalPoint - localPreviousFocalPoint__22516);
+            _delta = (this._localFocalPoint - localPreviousFocalPoint);
         }
-        long count__22734 = this._pointerLocations.Keys.Count();
-        global::Doroti.Ui.Offset pointerFocalPoint__22785 = Offset.zero;
-        foreach (long pointer__22837 in this._pointerLocations.Keys)
+        long count = this._pointerLocations.Keys.Count();
+        global::Doroti.Ui.Offset pointerFocalPoint = Offset.zero;
+        foreach (long pointerLocal in this._pointerLocations.Keys)
         {
-            pointerFocalPoint__22785 += DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointer__22837));
+            pointerFocalPoint += DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointerLocal));
         }
-        if ((count__22734 > 0L))
+        if ((count > 0L))
         {
-            pointerFocalPoint__22785 = (pointerFocalPoint__22785 / count__22734.toDouble());
+            pointerFocalPoint = (pointerFocalPoint / count.toDouble());
         }
-        var totalDeviation__23236 = 0.0;
-        var totalHorizontalDeviation__23266 = 0.0;
-        var totalVerticalDeviation__23306 = 0.0;
-        foreach (long pointer__23355 in this._pointerLocations.Keys)
+        var totalDeviation = 0.0;
+        var totalHorizontalDeviation = 0.0;
+        var totalVerticalDeviation = 0.0;
+        foreach (long pointerAlternate in this._pointerLocations.Keys)
         {
-            totalDeviation__23236 += ((pointerFocalPoint__22785 - DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointer__23355)))).distance;
-            totalHorizontalDeviation__23266 += ((pointerFocalPoint__22785.dx - DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointer__23355)).dx)).abs();
-            totalVerticalDeviation__23306 += ((pointerFocalPoint__22785.dy - DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointer__23355)).dy)).abs();
+            totalDeviation += ((pointerFocalPoint - DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointerAlternate)))).distance;
+            totalHorizontalDeviation += ((pointerFocalPoint.dx - DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointerAlternate)).dx)).abs();
+            totalVerticalDeviation += ((pointerFocalPoint.dy - DartRuntimePrimitives.RequireValue(this._pointerLocations.GetValueOrDefault(pointerAlternate)).dy)).abs();
         }
-        _currentSpan = ((count__22734 > 0L) ? (totalDeviation__23236 / count__22734) : 0.0);
-        _currentHorizontalSpan = ((count__22734 > 0L) ? (totalHorizontalDeviation__23266 / count__22734) : 0.0);
-        _currentVerticalSpan = ((count__22734 > 0L) ? (totalVerticalDeviation__23306 / count__22734) : 0.0);
+        _currentSpan = ((count > 0L) ? (totalDeviation / count) : 0.0);
+        _currentHorizontalSpan = ((count > 0L) ? (totalHorizontalDeviation / count) : 0.0);
+        _currentVerticalSpan = ((count > 0L) ? (totalVerticalDeviation / count) : 0.0);
     }
 
     internal virtual void _updateLines()
     {
-        long count__24047 = this._pointerLocations.Keys.Count();
-        DartRuntimePrimitives.Assert(() => (checked((long)(this._pointerQueue.Count)) >= count__24047));
-        if ((count__24047 < 2L))
+        long count = this._pointerLocations.Keys.Count();
+        DartRuntimePrimitives.Assert(() => (checked((long)(this._pointerQueue.Count)) >= count));
+        if ((count < 2L))
         {
             _initialLine = this._currentLine;
         }
@@ -537,16 +537,16 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         {
             if ((this.onEnd is not null))
             {
-                VelocityTracker tracker__25857 = this._velocityTrackers.GetValueOrDefault(pointer)!;
-                Velocity velocity__25914 = tracker__25857.getVelocity();
-                if (ScaleLibrary._isFlingGesture(velocity__25914))
+                VelocityTracker tracker = this._velocityTrackers.GetValueOrDefault(pointer)!;
+                Velocity velocityLocal = tracker.getVelocity();
+                if (ScaleLibrary._isFlingGesture(velocityLocal))
                 {
-                    global::Doroti.Ui.Offset pixelsPerSecond__26012 = ((Velocity)velocity__25914).pixelsPerSecond;
-                    if ((pixelsPerSecond__26012.distanceSquared > (global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity * global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity)))
+                    global::Doroti.Ui.Offset pixelsPerSecondLocal = ((Velocity)velocityLocal).pixelsPerSecond;
+                    if ((pixelsPerSecondLocal.distanceSquared > (global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity * global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity)))
                     {
-                        velocity__25914 = new Velocity(pixelsPerSecond: (((pixelsPerSecond__26012 / pixelsPerSecond__26012.distance)) * global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity));
+                        velocityLocal = new Velocity(pixelsPerSecond: (((pixelsPerSecondLocal / pixelsPerSecondLocal.distance)) * global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity));
                     }
-                    invokeCallback<object?>("onEnd", () => { ((Action)((() => this.onEnd!(new ScaleEndDetails(velocity: velocity__25914, scaleVelocity: (this._scaleVelocityTracker?.getVelocity().pixelsPerSecond.dx ?? -1), pointerCount: this.pointerCount)))))(); return null; });
+                    invokeCallback<object?>("onEnd", () => { ((Action)((() => this.onEnd!(new ScaleEndDetails(velocity: velocityLocal, scaleVelocity: (this._scaleVelocityTracker?.getVelocity().pixelsPerSecond.dx ?? -1), pointerCount: this.pointerCount)))))(); return null; });
                 }
                 else
                 {
@@ -570,9 +570,9 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         }
         if ((object.Equals(this._state, _ScaleState__scale.possible)))
         {
-            double spanDelta__27518 = ((this._currentSpan - this._initialSpan)).abs();
-            double focalPointDelta__27586 = ((DartRuntimePrimitives.RequireValue(this._currentFocalPoint) - this._initialFocalPoint)).distance;
-            if ((((spanDelta__27518 > global::Doroti.Framework.Gestures.EventsLibrary.computeScaleSlop(((PointerEvent)@event).kind)) || (focalPointDelta__27586 > global::Doroti.Framework.Gestures.EventsLibrary.computePanSlop(((PointerEvent)@event).kind, gestureSettings))) || (Math.Max((this._scaleFactor / this._pointerScaleFactor), (this._pointerScaleFactor / this._scaleFactor)) > 1.05)))
+            double spanDelta = ((this._currentSpan - this._initialSpan)).abs();
+            double focalPointDeltaLocal = ((DartRuntimePrimitives.RequireValue(this._currentFocalPoint) - this._initialFocalPoint)).distance;
+            if ((((spanDelta > global::Doroti.Framework.Gestures.EventsLibrary.computeScaleSlop(((PointerEvent)@event).kind)) || (focalPointDeltaLocal > global::Doroti.Framework.Gestures.EventsLibrary.computePanSlop(((PointerEvent)@event).kind, gestureSettings))) || (Math.Max((this._scaleFactor / this._pointerScaleFactor), (this._pointerScaleFactor / this._scaleFactor)) > 1.05)))
             {
                 resolve(GestureDisposition.accepted);
             }

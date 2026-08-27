@@ -52,8 +52,8 @@ internal class _SliverFillViewportRenderObjectWidget__sliver_fill : SliverMultiB
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        var element__3536 = ((SliverMultiBoxAdaptorElement?)(object?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderSliverFillViewport(childManager: element__3536, viewportFraction: this.viewportFraction, allowImplicitScrolling: this.allowImplicitScrolling));
+        var element = ((SliverMultiBoxAdaptorElement?)(object?)context)!;
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new global::Doroti.Framework.Rendering.RenderSliverFillViewport(childManager: element, viewportFraction: this.viewportFraction, allowImplicitScrolling: this.allowImplicitScrolling));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -126,9 +126,9 @@ public class _RenderSliverFractionalPadding__sliver_fill : global::Doroti.Framew
         {
             return;
         }
-        double paddingValue__5477 = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).viewportMainAxisExtent * this.viewportFraction);
+        double paddingValue = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).viewportMainAxisExtent * this.viewportFraction);
         _lastResolvedConstraints = this.constraints;
-        _resolvedPadding = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis switch { global::Doroti.Framework.Painting.Axis.horizontal => global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: paddingValue__5477), global::Doroti.Framework.Painting.Axis.vertical => global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: paddingValue__5477), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        _resolvedPadding = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).axis switch { global::Doroti.Framework.Painting.Axis.horizontal => global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: paddingValue), global::Doroti.Framework.Painting.Axis.vertical => global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: paddingValue), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         return;
     }
 
@@ -171,12 +171,12 @@ public class SliverFillRemaining : StatelessWidget
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Widget>("child", this.child));
-        var flags__12078 = new List<string>();
-        if (!System.Linq.Enumerable.Any(flags__12078))
+        var flags = new List<string>();
+        if (!System.Linq.Enumerable.Any(flags))
         {
-            flags__12078.Add("nonscrollable");
+            flags.Add("nonscrollable");
         }
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("mode", flags__12078.Cast<string>()));
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("mode", flags.Cast<string>()));
     }
 
 }

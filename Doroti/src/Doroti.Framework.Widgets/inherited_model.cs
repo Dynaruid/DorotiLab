@@ -25,30 +25,30 @@ public abstract class InheritedModel<T> : InheritedWidget where T : notnull
     public virtual bool isSupportedAspect(object aspect) => true;
     internal static void _findModels<T>(BuildContext context, object aspect, List<InheritedElement> results) where T : InheritedWidget
     {
-        InheritedElement? model__6012 = ((InheritedElement?)(object?)context.getElementForInheritedWidgetOfExactType<T>());
-        if ((model__6012 is null))
+        InheritedElement? model = ((InheritedElement?)(object?)context.getElementForInheritedWidgetOfExactType<T>());
+        if ((model is null))
         {
             return;
         }
-        results.Add(model__6012);
-        DartRuntimePrimitives.Assert(() => (model__6012.widget is T));
-        var modelWidget__6186 = ((T?)(object?)model__6012.widget)!;
-        if (((bool)((dynamic)modelWidget__6186).isSupportedAspect(aspect)))
+        results.Add(model);
+        DartRuntimePrimitives.Assert(() => (model.widget is T));
+        var modelWidget = ((T?)(object?)model.widget)!;
+        if (((bool)((dynamic)modelWidget).isSupportedAspect(aspect)))
         {
             return;
         }
-        Element? modelParent__6302 = default!;
-        model__6012.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
+        Element? modelParent = default!;
+        model.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
         {
-            modelParent__6302 = ancestor;
+            modelParent = ancestor;
             return false;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        if ((modelParent__6302 is null))
+        if ((modelParent is null))
         {
             return;
         }
-        InheritedModel<T>._findModels<T>(modelParent__6302!, aspect, results);
+        InheritedModel<T>._findModels<T>(modelParent!, aspect, results);
     }
 
     public static T? inheritFrom<T>(BuildContext context, object? aspect = null) where T : InheritedWidget
@@ -57,19 +57,19 @@ public abstract class InheritedModel<T> : InheritedWidget where T : notnull
         {
             return ((T?)(object?)context.dependOnInheritedWidgetOfExactType<T>());
         }
-        var models__7571 = new List<InheritedElement>();
-        InheritedModel<T>._findModels<T>(context, aspect, models__7571);
-        if (!System.Linq.Enumerable.Any(models__7571))
+        var models = new List<InheritedElement>();
+        InheritedModel<T>._findModels<T>(context, aspect, models);
+        if (!System.Linq.Enumerable.Any(models))
         {
             return default;
         }
-        InheritedElement lastModel__7726 = models__7571.Last();
-        foreach (var model__7766 in models__7571)
+        InheritedElement lastModel = models.Last();
+        foreach (var model in models)
         {
-            var value__7797 = ((T?)(object?)context.dependOnInheritedElement(model__7766, aspect: aspect))!;
-            if ((object.Equals(model__7766, lastModel__7726)))
+            var value = ((T?)(object?)context.dependOnInheritedElement(model, aspect: aspect))!;
+            if ((object.Equals(model, lastModel)))
             {
-                return value__7797;
+                return value;
             }
         }
         DartRuntimePrimitives.Assert(() => false);
@@ -87,8 +87,8 @@ public class InheritedModelElement<T> : InheritedElement
 
     public override void updateDependencies(Element dependent, object? aspect)
     {
-        var dependencies__8322 = ((HashSet<T>?)(object?)getDependencies(dependent))!;
-        if (((dependencies__8322 is not null) && !System.Linq.Enumerable.Any(dependencies__8322)))
+        var dependencies = ((HashSet<T>?)(object?)getDependencies(dependent))!;
+        if (((dependencies is not null) && !System.Linq.Enumerable.Any(dependencies)))
         {
             return;
         }
@@ -101,7 +101,7 @@ public class InheritedModelElement<T> : InheritedElement
             DartRuntimePrimitives.Assert(() => (aspect is T));
             setDependencies(dependent, ((Func<HashSet<T>>)(() =>
 {
-    var __cascade = ((dependencies__8322 ?? new HashSet<T>()));
+    var __cascade = ((dependencies ?? new HashSet<T>()));
     __cascade.Add(((T?)(object?)aspect)!);
     return __cascade;
 }))());
@@ -111,12 +111,12 @@ public class InheritedModelElement<T> : InheritedElement
     public override void notifyDependent(InheritedWidget oldWidget, Element dependent)
     {
         var __oldWidget = (InheritedModel<T>)(object)oldWidget;
-        var dependencies__8757 = ((HashSet<T>?)(object?)getDependencies(dependent))!;
-        if ((dependencies__8757 is null))
+        var dependencies = ((HashSet<T>?)(object?)getDependencies(dependent))!;
+        if ((dependencies is null))
         {
             return;
         }
-        if ((!System.Linq.Enumerable.Any(dependencies__8757) || (((InheritedModel<T>?)(object?)this.widget)!).updateShouldNotifyDependent(__oldWidget, dependencies__8757)))
+        if ((!System.Linq.Enumerable.Any(dependencies) || (((InheritedModel<T>?)(object?)this.widget)!).updateShouldNotifyDependent(__oldWidget, dependencies)))
         {
             dependent.didChangeDependencies();
         }

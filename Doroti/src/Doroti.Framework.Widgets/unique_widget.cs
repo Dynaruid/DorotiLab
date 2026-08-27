@@ -25,8 +25,8 @@ public abstract class UniqueWidget<T> : StatefulWidget where T : IState
     {
         get
         {
-            var globalKey__1354 = ((GlobalKey<T>?)(object?)this.key!)!;
-            return ((GlobalKey<T>)globalKey__1354).currentState;
+            var globalKey = ((GlobalKey<T>?)(object?)this.key!)!;
+            return ((GlobalKey<T>)globalKey).currentState;
             return default!;
         }
     }

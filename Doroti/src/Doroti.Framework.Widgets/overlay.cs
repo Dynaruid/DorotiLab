@@ -101,23 +101,23 @@ public class OverlayEntry : global::Doroti.Framework.Foundation.Listenable
     {
         DartRuntimePrimitives.Assert(() => (this._overlay is not null), () => (object?)"An OverlayEntry should be removed only once.");
         DartRuntimePrimitives.Assert(() => !this._disposedByOwner);
-        OverlayState overlay__9592 = this._overlay!;
+        OverlayState overlay = this._overlay!;
         _overlay = null;
-        if (!overlay__9592.mounted)
+        if (!overlay.mounted)
         {
             return;
         }
-        ((OverlayState)overlay__9592)._entries.Remove(this);
+        ((OverlayState)overlay)._entries.Remove(this);
         if ((object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
         {
             global::Doroti.Framework.Scheduler.SchedulerBinding.instance.addPostFrameCallback(((global::System.Action<Duration>)((duration) =>
             {
-                overlay__9592._markDirty();
+                overlay._markDirty();
             })), debugLabel: "OverlayEntry.markDirty");
         }
         else
         {
-            overlay__9592._markDirty();
+            overlay._markDirty();
         }
     }
 
@@ -205,46 +205,46 @@ public class _OverlayEntryWidgetState__overlay : State<_OverlayEntryWidget__over
     internal virtual void _add(_OverlayEntryLocation__overlay child)
     {
         DartRuntimePrimitives.Assert(() => this.mounted);
-        DartLinkedList<_OverlayEntryLocation__overlay> children__13460 = _sortedTheaterSiblings ??= new DartLinkedList<_OverlayEntryLocation__overlay>();
-        DartRuntimePrimitives.Assert(() => !children__13460.contains(child));
-        _OverlayEntryLocation__overlay? insertPosition__13609 = (children__13460.isEmpty ? null : children__13460.last);
-        while (((insertPosition__13609 is not null) && (((_OverlayEntryLocation__overlay)insertPosition__13609)._zOrderIndex > ((_OverlayEntryLocation__overlay)child)._zOrderIndex)))
+        DartLinkedList<_OverlayEntryLocation__overlay> children = _sortedTheaterSiblings ??= new DartLinkedList<_OverlayEntryLocation__overlay>();
+        DartRuntimePrimitives.Assert(() => !children.contains(child));
+        _OverlayEntryLocation__overlay? insertPosition = (children.isEmpty ? null : children.last);
+        while (((insertPosition is not null) && (((_OverlayEntryLocation__overlay)insertPosition)._zOrderIndex > ((_OverlayEntryLocation__overlay)child)._zOrderIndex)))
         {
-            insertPosition__13609 = insertPosition__13609.previous;
+            insertPosition = insertPosition.previous;
         }
-        if ((insertPosition__13609 is null))
+        if ((insertPosition is null))
         {
-            children__13460.addFirst(child);
+            children.addFirst(child);
         }
         else
         {
-            insertPosition__13609.insertAfter(child);
+            insertPosition.insertAfter(child);
         }
-        DartRuntimePrimitives.Assert(() => children__13460.contains(child));
+        DartRuntimePrimitives.Assert(() => children.contains(child));
     }
 
     internal virtual void _remove(_OverlayEntryLocation__overlay child)
     {
         DartRuntimePrimitives.Assert(() => (this._sortedTheaterSiblings is not null));
-        bool wasInCollection__14084 = (this._sortedTheaterSiblings?.remove(child) ?? false);
-        DartRuntimePrimitives.Assert(() => wasInCollection__14084);
+        bool wasInCollection = (this._sortedTheaterSiblings?.remove(child) ?? false);
+        DartRuntimePrimitives.Assert(() => wasInCollection);
     }
 
     internal virtual IEnumerable<_RenderDeferredLayoutBox__overlay> _createChildIterable(bool reversed)
     {
-        DartLinkedList<_OverlayEntryLocation__overlay>? children__15285 = this._sortedTheaterSiblings;
-        if (((children__15285 is null) || children__15285.isEmpty))
+        DartLinkedList<_OverlayEntryLocation__overlay>? children = this._sortedTheaterSiblings;
+        if (((children is null) || children.isEmpty))
         {
             yield break;
         }
-        _OverlayEntryLocation__overlay? candidate__15415 = (reversed ? children__15285.last : children__15285.first);
-        while ((candidate__15415 is not null))
+        _OverlayEntryLocation__overlay? candidate = (reversed ? children.last : children.first);
+        while ((candidate is not null))
         {
-            _RenderDeferredLayoutBox__overlay? renderBox__15540 = ((_OverlayEntryLocation__overlay)candidate__15415)._overlayChildRenderBox;
-            candidate__15415 = (reversed ? candidate__15415.previous : candidate__15415.next);
-            if ((renderBox__15540 is not null))
+            _RenderDeferredLayoutBox__overlay? renderBox = ((_OverlayEntryLocation__overlay)candidate)._overlayChildRenderBox;
+            candidate = (reversed ? candidate.previous : candidate.next);
+            if ((renderBox is not null))
             {
-                yield return renderBox__15540;
+                yield return renderBox;
             }
         }
     }
@@ -263,9 +263,9 @@ public class _OverlayEntryWidgetState__overlay : State<_OverlayEntryWidget__over
         DartRuntimePrimitives.Assert(() => (object.Equals(((_OverlayEntryWidget__overlay)oldWidget).entry, ((_OverlayEntryWidget__overlay)this.widget).entry)));
         if ((!object.Equals(((_OverlayEntryWidget__overlay)oldWidget).overlayState, ((_OverlayEntryWidget__overlay)this.widget).overlayState)))
         {
-            _RenderTheater__overlay newTheater__16363 = this.context.findAncestorRenderObjectOfType<_RenderTheater__overlay>()!;
-            DartRuntimePrimitives.Assert(() => (!object.Equals(this._theater, newTheater__16363)));
-            _theater = newTheater__16363;
+            _RenderTheater__overlay newTheater = this.context.findAncestorRenderObjectOfType<_RenderTheater__overlay>()!;
+            DartRuntimePrimitives.Assert(() => (!object.Equals(this._theater, newTheater)));
+            _theater = newTheater;
         }
     }
 
@@ -314,19 +314,19 @@ public class Overlay : StatefulWidget
 
     public static OverlayState of(BuildContext context, bool rootOverlay = false, Widget? debugRequiredFor = null)
     {
-        OverlayState? result__23195 = ((OverlayState?)(object?)Overlay.maybeOf(context, rootOverlay: rootOverlay));
+        OverlayState? result = ((OverlayState?)(object?)Overlay.maybeOf(context, rootOverlay: rootOverlay));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((result__23195 is null))
+                if ((result is null))
                 {
-                    bool hiddenByBoundary__23311 = LookupBoundary.debugIsHidingAncestorStateOfType<OverlayState>(context);
-                    var information__23437 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"No Overlay widget found{(hiddenByBoundary__23311 ? " within the closest LookupBoundary" : "")}."), new global::Doroti.Framework.Foundation.ErrorDescription($"{(((object?)DartRuntimePrimitives.RuntimeType(debugRequiredFor) ?? (object?)"Some"))} widgets require an Overlay widget ancestor for correct operation."), new global::Doroti.Framework.Foundation.ErrorHint("The most common way to add an Overlay to an application is to include a MaterialApp, CupertinoApp or Navigator widget in the runApp() call.") };
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(information__23437));
+                    bool hiddenByBoundary = LookupBoundary.debugIsHidingAncestorStateOfType<OverlayState>(context);
+                    var information = new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"No Overlay widget found{(hiddenByBoundary ? " within the closest LookupBoundary" : "")}."), new global::Doroti.Framework.Foundation.ErrorDescription($"{(((object?)DartRuntimePrimitives.RuntimeType(debugRequiredFor) ?? (object?)"Some"))} widgets require an Overlay widget ancestor for correct operation."), new global::Doroti.Framework.Foundation.ErrorHint("The most common way to add an Overlay to an application is to include a MaterialApp, CupertinoApp or Navigator widget in the runApp() call.") };
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(information));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return result__23195!;
+        return result!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -368,23 +368,23 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
 
     internal virtual bool _debugCanInsertEntry(OverlayEntry entry)
     {
-        var operandsInformation__26243 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<OverlayEntry>("The OverlayEntry was", entry, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.DiagnosticsProperty<OverlayState>("The Overlay the OverlayEntry was trying to insert to was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) };
+        var operandsInformation = new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<OverlayEntry>("The OverlayEntry was", entry, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.DiagnosticsProperty<OverlayState>("The Overlay the OverlayEntry was trying to insert to was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) };
         if (!this.mounted)
         {
             throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Attempted to insert an OverlayEntry to an already disposed Overlay.") }));
         }
-        OverlayState? currentOverlay__26863 = ((OverlayEntry)entry)._overlay;
-        bool alreadyContainsEntry__26911 = this._entries.Contains(entry);
-        if (alreadyContainsEntry__26911)
+        OverlayState? currentOverlay = ((OverlayEntry)entry)._overlay;
+        bool alreadyContainsEntry = this._entries.Contains(entry);
+        if (alreadyContainsEntry)
         {
-            bool inconsistentOverlayState__27010 = !DartRuntimePrimitives.Identical(currentOverlay__26863, this);
+            bool inconsistentOverlayState = !DartRuntimePrimitives.Identical(currentOverlay, this);
             throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("The specified entry is already present in the target Overlay.") }));
         }
-        if ((currentOverlay__26863 is null))
+        if ((currentOverlay is null))
         {
             return true;
         }
-        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("The specified entry is already present in a different Overlay."), new global::Doroti.Framework.Foundation.DiagnosticsProperty<OverlayState>("The OverlayEntry's current Overlay was", currentOverlay__26863, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorHint("Consider calling remove on the OverlayEntry before inserting it to a different Overlay, " + "or switching to the OverlayPortal API to avoid manual OverlayEntry management.") }));
+        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("The specified entry is already present in a different Overlay."), new global::Doroti.Framework.Foundation.DiagnosticsProperty<OverlayState>("The OverlayEntry's current Overlay was", currentOverlay, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty), new global::Doroti.Framework.Foundation.ErrorHint("Consider calling remove on the OverlayEntry before inserting it to a different Overlay, " + "or switching to the OverlayPortal API to avoid manual OverlayEntry management.") }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -407,10 +407,10 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
         {
             return;
         }
-        foreach (var entry__29663 in entries)
+        foreach (var entry in entries)
         {
-            DartRuntimePrimitives.Assert(() => (((OverlayEntry)entry__29663)._overlay is null));
-            entry__29663._overlay = this;
+            DartRuntimePrimitives.Assert(() => (((OverlayEntry)entry)._overlay is null));
+            entry._overlay = this;
         }
         setState(((global::System.Action)(() =>
         {
@@ -429,29 +429,29 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
 
     public virtual void rearrange(IEnumerable<OverlayEntry> newEntries, OverlayEntry? below = null, OverlayEntry? above = null)
     {
-        List<OverlayEntry> newEntriesList__31689 = ((newEntries is List<OverlayEntry>) ? newEntries : newEntries.ToList()).ToList();
-        DartRuntimePrimitives.Assert(() => _debugVerifyInsertPosition(above, below, newEntries: newEntriesList__31689.Cast<OverlayEntry>()));
-        DartRuntimePrimitives.Assert(() => newEntriesList__31689.All(((entry) => ((((OverlayEntry)entry)._overlay is null) || (object.Equals(((OverlayEntry)entry)._overlay, this))))), () => (object?)"One or more of the specified entries are already present in another Overlay.");
-        DartRuntimePrimitives.Assert(() => newEntriesList__31689.All(((entry) => (((long)((dynamic)this._entries).IndexOf(entry)) == this._entries.LastIndexOf(entry)))), () => (object?)"One or more of the specified entries are specified multiple times.");
-        if (!System.Linq.Enumerable.Any(newEntriesList__31689))
+        List<OverlayEntry> newEntriesList = ((newEntries is List<OverlayEntry>) ? newEntries : newEntries.ToList()).ToList();
+        DartRuntimePrimitives.Assert(() => _debugVerifyInsertPosition(above, below, newEntries: newEntriesList.Cast<OverlayEntry>()));
+        DartRuntimePrimitives.Assert(() => newEntriesList.All(((entry) => ((((OverlayEntry)entry)._overlay is null) || (object.Equals(((OverlayEntry)entry)._overlay, this))))), () => (object?)"One or more of the specified entries are already present in another Overlay.");
+        DartRuntimePrimitives.Assert(() => newEntriesList.All(((entry) => (((long)((dynamic)this._entries).IndexOf(entry)) == this._entries.LastIndexOf(entry)))), () => (object?)"One or more of the specified entries are specified multiple times.");
+        if (!System.Linq.Enumerable.Any(newEntriesList))
         {
             return;
         }
-        if (global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(this._entries, newEntriesList__31689))
+        if (global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(this._entries, newEntriesList))
         {
             return;
         }
-        var old__32464 = new HashSet<OverlayEntry>(this._entries);
-        foreach (var entry__32527 in newEntriesList__31689)
+        var old = new HashSet<OverlayEntry>(this._entries);
+        foreach (var entryLocal in newEntriesList)
         {
-            entry__32527._overlay ??= this;
+            entryLocal._overlay ??= this;
         }
         setState(((global::System.Action)(() =>
         {
             this._entries.Clear();
-            this._entries.AddRange(newEntriesList__31689.Cast<OverlayEntry>());
-            old__32464.ExceptWith(newEntriesList__31689);
-            this._entries.InsertRange(checked((int)_insertionIndex(below, above)), old__32464);
+            this._entries.AddRange(newEntriesList.Cast<OverlayEntry>());
+            old.ExceptWith(newEntriesList);
+            this._entries.InsertRange(checked((int)_insertionIndex(below, above)), old);
         })));
     }
 
@@ -467,19 +467,19 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
 
     public virtual bool debugIsVisible(OverlayEntry entry)
     {
-        var result__33240 = false;
+        var result = false;
         DartRuntimePrimitives.Assert(() => this._entries.Contains(entry));
         DartRuntimePrimitives.Assert(() =>
             {
-                for (long i__33325 = (checked((long)(this._entries.Count)) - 1L); (i__33325 > 0L); i__33325 -= 1L)
+                for (long i = (checked((long)(this._entries.Count)) - 1L); (i > 0L); i -= 1L)
                 {
-                    OverlayEntry candidate__33394 = this._entries[(int)(i__33325)];
-                    if ((object.Equals(candidate__33394, entry)))
+                    OverlayEntry candidate = this._entries[(int)(i)];
+                    if ((object.Equals(candidate, entry)))
                     {
-                        result__33240 = true;
+                        result = true;
                         break;
                     }
-                    if (((OverlayEntry)candidate__33394).opaque)
+                    if (((OverlayEntry)candidate).opaque)
                     {
                         break;
                     }
@@ -487,7 +487,7 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return result__33240;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -500,29 +500,29 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
 
     public override Widget build(BuildContext context)
     {
-        var children__33975 = new List<_OverlayEntryWidget__overlay>();
-        var onstage__34019 = true;
-        var onstageCount__34043 = 0L;
-        foreach (OverlayEntry entry__34089 in System.Linq.Enumerable.Reverse(this._entries))
+        var childrenLocal = new List<_OverlayEntryWidget__overlay>();
+        var onstage = true;
+        var onstageCount = 0L;
+        foreach (OverlayEntry entryLocal in System.Linq.Enumerable.Reverse(this._entries))
         {
-            if (onstage__34019)
+            if (onstage)
             {
-                onstageCount__34043 += 1L;
-                children__33975.Add(new _OverlayEntryWidget__overlay(key: ((OverlayEntry)entry__34089)._key, overlayState: this, entry: entry__34089));
-                if (((OverlayEntry)entry__34089).opaque)
+                onstageCount += 1L;
+                childrenLocal.Add(new _OverlayEntryWidget__overlay(key: ((OverlayEntry)entryLocal)._key, overlayState: this, entry: entryLocal));
+                if (((OverlayEntry)entryLocal).opaque)
                 {
-                    onstage__34019 = false;
+                    onstage = false;
                 }
             }
             else
             {
-                if (((OverlayEntry)entry__34089).maintainState)
+                if (((OverlayEntry)entryLocal).maintainState)
                 {
-                    children__33975.Add(new _OverlayEntryWidget__overlay(key: ((OverlayEntry)entry__34089)._key, overlayState: this, entry: entry__34089, tickerEnabled: false));
+                    childrenLocal.Add(new _OverlayEntryWidget__overlay(key: ((OverlayEntry)entryLocal)._key, overlayState: this, entry: entryLocal, tickerEnabled: false));
                 }
             }
         }
-        return ((Widget)(object?)new _Theater__overlay(skipCount: (checked((long)(children__33975.Count)) - onstageCount__34043), clipBehavior: ((Overlay)this.widget).clipBehavior, alwaysSizeToContent: ((Overlay)this.widget).alwaysSizeToContent, children: System.Linq.Enumerable.Reverse(children__33975).ToList()));
+        return ((Widget)(object?)new _Theater__overlay(skipCount: (checked((long)(childrenLocal.Count)) - onstageCount), clipBehavior: ((Overlay)this.widget).clipBehavior, alwaysSizeToContent: ((Overlay)this.widget).alwaysSizeToContent, children: System.Linq.Enumerable.Reverse(childrenLocal).ToList()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -541,16 +541,16 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
         }
         DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values__17506 = this._tickerModeNotifier!.value;
-        var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
+        TickerModeData values = this._tickerModeNotifier!.value;
+        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
     var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values__17506).enabled;
-    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    __cascade.muted = !((TickerModeData)values).enabled;
+    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result__17553);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
+        this._tickers!.Add(result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -572,26 +572,26 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
     {
         if ((this._tickers is not null))
         {
-            TickerModeData values__18318 = this._tickerModeNotifier!.value;
-            bool muted__18372 = !((TickerModeData)values__18318).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
+            TickerModeData values = this._tickerModeNotifier!.value;
+            bool mutedLocal = !((TickerModeData)values).enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
             {
-                ticker__18421.muted = muted__18372;
-                ticker__18421.forceFrames = ((TickerModeData)values__18318).forceFrames;
+                ticker.muted = mutedLocal;
+                ticker.forceFrames = ((TickerModeData)values).forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__18621, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
-        this._tickerModeNotifier = newNotifier__18621;
+        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void dispose()
@@ -600,11 +600,11 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
             {
                 if ((this._tickers is not null))
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18989 in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
                     {
-                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker__18989).isActive)
+                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker).isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker__18989.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -737,9 +737,9 @@ public class _TheaterElement__overlay : MultiChildRenderObjectElement
         var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
         var __slot = (IndexedSlot<Element?>)(object)slot;
         base.insertRenderObjectChild(__child, __slot);
-        var parentData__37957 = ((_TheaterParentData__overlay?)(object?)__child.parentData!)!;
-        parentData__37957.overlayEntry = (((_OverlayEntryWidget__overlay?)(object?)(((_Theater__overlay?)(object?)this.widget)!).children[(int)(((IndexedSlot<Element?>)__slot).index)])!).entry;
-        DartRuntimePrimitives.Assert(() => (((_TheaterParentData__overlay)parentData__37957).overlayEntry is not null));
+        var parentDataLocal = ((_TheaterParentData__overlay?)(object?)__child.parentData!)!;
+        parentDataLocal.overlayEntry = (((_OverlayEntryWidget__overlay?)(object?)(((_Theater__overlay?)(object?)this.widget)!).children[(int)(((IndexedSlot<Element?>)__slot).index)])!).entry;
+        DartRuntimePrimitives.Assert(() => (((_TheaterParentData__overlay)parentDataLocal).overlayEntry is not null));
     }
 
     public override void moveRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? oldSlot, object? newSlot)
@@ -750,9 +750,9 @@ public class _TheaterElement__overlay : MultiChildRenderObjectElement
         base.moveRenderObjectChild(__child, __oldSlot, __newSlot);
         DartRuntimePrimitives.Assert(() =>
             {
-                var parentData__38398 = ((_TheaterParentData__overlay?)(object?)__child.parentData!)!;
-                OverlayEntry entryAtNewSlot__38477 = (((_OverlayEntryWidget__overlay?)(object?)(((_Theater__overlay?)(object?)this.widget)!).children[(int)(((IndexedSlot<Element?>)__newSlot).index)])!).entry;
-                DartRuntimePrimitives.Assert(() => (object.Equals(((_TheaterParentData__overlay)parentData__38398).overlayEntry, entryAtNewSlot__38477)));
+                var parentDataLocal = ((_TheaterParentData__overlay?)(object?)__child.parentData!)!;
+                OverlayEntry entryAtNewSlot = (((_OverlayEntryWidget__overlay?)(object?)(((_Theater__overlay?)(object?)this.widget)!).children[(int)(((IndexedSlot<Element?>)__newSlot).index)])!).entry;
+                DartRuntimePrimitives.Assert(() => (object.Equals(((_TheaterParentData__overlay)parentDataLocal).overlayEntry, entryAtNewSlot)));
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
@@ -760,9 +760,9 @@ public class _TheaterElement__overlay : MultiChildRenderObjectElement
 
     public override void debugVisitOnstageChildren(global::System.Action<Element> visitor)
     {
-        var theater__38753 = ((_Theater__overlay?)(object?)this.widget)!;
-        DartRuntimePrimitives.Assert(() => (this.children.Count() >= ((_Theater__overlay)theater__38753).skipCount));
-        this.children.skip(((_Theater__overlay)theater__38753).skipCount).forEach((__arg0) => ((global::System.Action<Element>)visitor)(__arg0));
+        var theater = ((_Theater__overlay?)(object?)this.widget)!;
+        DartRuntimePrimitives.Assert(() => (this.children.Count() >= ((_Theater__overlay)theater).skipCount));
+        this.children.skip(((_Theater__overlay)theater).skipCount).forEach((__arg0) => ((global::System.Action<Element>)visitor)(__arg0));
     }
 
 }
@@ -776,15 +776,15 @@ internal interface _RenderTheaterMixin__overlay
     public double? computeDistanceToActualBaseline(TextBaseline baseline);
     public static double? baselineForChild(global::Doroti.Framework.Rendering.RenderBox child, Size theaterSize, global::Doroti.Framework.Rendering.BoxConstraints nonPositionedChildConstraints, global::Doroti.Framework.Painting.Alignment alignment, TextBaseline baseline)
     {
-        var childParentData__40101 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
-        global::Doroti.Framework.Rendering.BoxConstraints childConstraints__40182 = (((global::Doroti.Framework.Rendering.StackParentData)childParentData__40101).isPositioned ? childParentData__40101.positionedChildConstraints(theaterSize) : nonPositionedChildConstraints);
-        double? baselineOffset__40355 = child.getDryBaseline(childConstraints__40182, baseline);
-        if ((baselineOffset__40355 is null))
+        var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = (((global::Doroti.Framework.Rendering.StackParentData)childParentData).isPositioned ? childParentData.positionedChildConstraints(theaterSize) : nonPositionedChildConstraints);
+        double? baselineOffset = child.getDryBaseline(childConstraints, baseline);
+        if ((baselineOffset is null))
         {
             return null;
         }
-        double y__40498 = (childParentData__40101 switch { global::Doroti.Framework.Rendering.StackParentData { top: double top__40565 } __object40535 => top__40565, global::Doroti.Framework.Rendering.StackParentData { bottom: double bottom__40615 } __object40585 => ((theaterSize.height - bottom__40615) - child.getDryLayout(childConstraints__40182).height), global::Doroti.Framework.Rendering.StackParentData __object40716 => alignment.alongOffset((theaterSize - child.getDryLayout(childConstraints__40182))).dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return (DartRuntimePrimitives.RequireValue(baselineOffset__40355) + y__40498);
+        double y = (childParentData switch { global::Doroti.Framework.Rendering.StackParentData { top: double topLocal } __object40535 => topLocal, global::Doroti.Framework.Rendering.StackParentData { bottom: double bottomLocal } __object40585 => ((theaterSize.height - bottomLocal) - child.getDryLayout(childConstraints).height), global::Doroti.Framework.Rendering.StackParentData __object40716 => alignment.alongOffset((theaterSize - child.getDryLayout(childConstraints))).dy, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return (DartRuntimePrimitives.RequireValue(baselineOffset) + y);
     }
     public void layoutChild(global::Doroti.Framework.Rendering.RenderBox child, global::Doroti.Framework.Rendering.BoxConstraints nonPositionedChildConstraints);
     public bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position);
@@ -836,26 +836,26 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
     public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
     {
         base.attach(owner);
-        global::Doroti.Framework.Rendering.RenderBox? child__181803 = this._firstChild;
-        while ((child__181803 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            child__181803.attach(owner);
-            var childParentData__181891 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child__181803.parentData!)!;
-            child__181803 = childParentData__181891.nextSibling;
+            child.attach(owner);
+            var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
-        global::Doroti.Framework.Rendering.RenderBox? child__44958 = this.firstChild;
-        while ((child__44958 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = this.firstChild;
+        while ((childLocal is not null))
         {
-            var childParentData__45018 = ((_TheaterParentData__overlay?)(object?)child__44958.parentData!)!;
-            IEnumerator<global::Doroti.Framework.Rendering.RenderBox>? iterator__45110 = ((IEnumerator<global::Doroti.Framework.Rendering.RenderBox>?)(object?)((_TheaterParentData__overlay)childParentData__45018).paintOrderIterator);
-            if ((iterator__45110 is not null))
+            var childParentDataLocal = ((_TheaterParentData__overlay?)(object?)childLocal.parentData!)!;
+            IEnumerator<global::Doroti.Framework.Rendering.RenderBox>? iterator = ((IEnumerator<global::Doroti.Framework.Rendering.RenderBox>?)(object?)((_TheaterParentData__overlay)childParentDataLocal).paintOrderIterator);
+            if ((iterator is not null))
             {
-                while (iterator__45110.MoveNext())
+                while (iterator.MoveNext())
                 {
-                    iterator__45110.Current.attach(owner);
+                    iterator.Current.attach(owner);
                 }
             }
-            child__44958 = childParentData__45018.nextSibling;
+            childLocal = childParentDataLocal.nextSibling;
         }
     }
 
@@ -863,19 +863,19 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
     public override void detach()
     {
         base.detach();
-        global::Doroti.Framework.Rendering.RenderBox? child__182065 = this._firstChild;
-        while ((child__182065 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            child__182065.detach();
-            var childParentData__182148 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child__182065.parentData!)!;
-            child__182065 = childParentData__182148.nextSibling;
+            child.detach();
+            var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
-        global::Doroti.Framework.Rendering.RenderBox? child__45471 = this.firstChild;
-        while ((child__45471 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = this.firstChild;
+        while ((childLocal is not null))
         {
-            var childParentData__45531 = ((_TheaterParentData__overlay?)(object?)child__45471.parentData!)!;
-            childParentData__45531.visitOverlayPortalChildrenOnOverlayEntry((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)_detachChild);
-            child__45471 = childParentData__45531.nextSibling;
+            var childParentDataLocal = ((_TheaterParentData__overlay?)(object?)childLocal.parentData!)!;
+            childParentDataLocal.visitOverlayPortalChildrenOnOverlayEntry((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)_detachChild);
+            childLocal = childParentDataLocal.nextSibling;
         }
     }
 
@@ -976,14 +976,14 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
             {
                 return ((global::Doroti.Framework.Rendering.RenderBox)(object)null);
             }
-            global::Doroti.Framework.Rendering.RenderBox? child__48824 = this.firstChild;
-            for (long toSkip__48863 = this.skipCount; (toSkip__48863 > 0L); toSkip__48863--)
+            global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+            for (long toSkip = this.skipCount; (toSkip > 0L); toSkip--)
             {
-                var childParentData__48919 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child__48824!.parentData!)!;
-                child__48824 = childParentData__48919.nextSibling;
-                DartRuntimePrimitives.Assert(() => (child__48824 is not null));
+                var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child!.parentData!)!;
+                child = childParentData.nextSibling;
+                DartRuntimePrimitives.Assert(() => (child is not null));
             }
-            return child__48824;
+            return child;
             return default!;
         }
     }
@@ -1014,15 +1014,15 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Ui.Size size__50115 = ((global::Doroti.Ui.Size)(object?)((!this.alwaysSizeToContent && ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest.isFinite) ? ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest : _findSizeDeterminingChild().getDryLayout(constraints)));
-        var nonPositionedChildConstraints__50280 = global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(this.size);
-        global::Doroti.Framework.Painting.Alignment alignment__50360 = ((_RenderTheater__overlay)this.theater)._resolvedAlignment;
-        global::Doroti.Framework.Rendering.BaselineOffset baselineOffset__50420 = global::Doroti.Framework.Rendering.BaselineOffset.noBaseline;
-        foreach (global::Doroti.Framework.Rendering.RenderBox child__50489 in _childrenInPaintOrder())
+        global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)((!this.alwaysSizeToContent && ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest.isFinite) ? ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest : _findSizeDeterminingChild().getDryLayout(constraints)));
+        var nonPositionedChildConstraints = global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(this.size);
+        global::Doroti.Framework.Painting.Alignment alignment = ((_RenderTheater__overlay)this.theater)._resolvedAlignment;
+        global::Doroti.Framework.Rendering.BaselineOffset baselineOffset = global::Doroti.Framework.Rendering.BaselineOffset.noBaseline;
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in _childrenInPaintOrder())
         {
-            baselineOffset__50420 = baselineOffset__50420.minOf(new global::Doroti.Framework.Rendering.BaselineOffset(_RenderTheaterMixin__overlay.baselineForChild(child__50489, this.size, nonPositionedChildConstraints__50280, alignment__50360, baseline)));
+            baselineOffset = baselineOffset.minOf(new global::Doroti.Framework.Rendering.BaselineOffset(_RenderTheaterMixin__overlay.baselineForChild(child, this.size, nonPositionedChildConstraints, alignment, baseline)));
         }
-        return baselineOffset__50420.offset;
+        return baselineOffset.offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1038,81 +1038,81 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
 
     public virtual IEnumerable<global::Doroti.Framework.Rendering.RenderBox> _childrenInPaintOrder()
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__51268 = this._firstOnstageChild;
-        while ((child__51268 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this._firstOnstageChild;
+        while ((child is not null))
         {
-            yield return child__51268;
-            var childParentData__51355 = ((_TheaterParentData__overlay?)(object?)child__51268.parentData!)!;
-            IEnumerator<global::Doroti.Framework.Rendering.RenderBox>? innerIterator__51447 = ((IEnumerator<global::Doroti.Framework.Rendering.RenderBox>?)(object?)((_TheaterParentData__overlay)childParentData__51355).paintOrderIterator);
-            if ((innerIterator__51447 is not null))
+            yield return child;
+            var childParentData = ((_TheaterParentData__overlay?)(object?)child.parentData!)!;
+            IEnumerator<global::Doroti.Framework.Rendering.RenderBox>? innerIterator = ((IEnumerator<global::Doroti.Framework.Rendering.RenderBox>?)(object?)((_TheaterParentData__overlay)childParentData).paintOrderIterator);
+            if ((innerIterator is not null))
             {
-                while (innerIterator__51447.MoveNext())
+                while (innerIterator.MoveNext())
                 {
-                    yield return innerIterator__51447.Current;
+                    yield return innerIterator.Current;
                 }
             }
-            child__51268 = childParentData__51355.nextSibling;
+            child = childParentData.nextSibling;
         }
     }
 
     public virtual IEnumerable<global::Doroti.Framework.Rendering.RenderBox> _childrenInHitTestOrder()
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__51837 = this._lastOnstageChild;
-        long childLeft__51872 = (this.childCount - this.skipCount);
-        while ((child__51837 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this._lastOnstageChild;
+        long childLeft = (this.childCount - this.skipCount);
+        while ((child is not null))
         {
-            var childParentData__51948 = ((_TheaterParentData__overlay?)(object?)child__51837.parentData!)!;
-            IEnumerator<global::Doroti.Framework.Rendering.RenderBox>? innerIterator__52040 = ((IEnumerator<global::Doroti.Framework.Rendering.RenderBox>?)(object?)((_TheaterParentData__overlay)childParentData__51948).hitTestOrderIterator);
-            if ((innerIterator__52040 is not null))
+            var childParentData = ((_TheaterParentData__overlay?)(object?)child.parentData!)!;
+            IEnumerator<global::Doroti.Framework.Rendering.RenderBox>? innerIterator = ((IEnumerator<global::Doroti.Framework.Rendering.RenderBox>?)(object?)((_TheaterParentData__overlay)childParentData).hitTestOrderIterator);
+            if ((innerIterator is not null))
             {
-                while (innerIterator__52040.MoveNext())
+                while (innerIterator.MoveNext())
                 {
-                    yield return innerIterator__52040.Current;
+                    yield return innerIterator.Current;
                 }
             }
-            yield return child__51837;
-            childLeft__51872 -= 1L;
-            child__51837 = ((childLeft__51872 <= 0L) ? null : childParentData__51948.previousSibling);
+            yield return child;
+            childLeft -= 1L;
+            child = ((childLeft <= 0L) ? null : childParentData.previousSibling);
         }
     }
 
     public override bool sizedByParent => false;
     public override void performLayout()
     {
-        global::Doroti.Framework.Rendering.RenderBox? sizeDeterminingChild__52499 = default!;
+        global::Doroti.Framework.Rendering.RenderBox? sizeDeterminingChild = default!;
         if ((!this.alwaysSizeToContent && ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).biggest.isFinite))
         {
             this.size = ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).biggest;
         }
         else
         {
-            sizeDeterminingChild__52499 = _findSizeDeterminingChild();
+            sizeDeterminingChild = _findSizeDeterminingChild();
             _layingOutSizeDeterminingChild = true;
-            layoutChild(sizeDeterminingChild__52499, this.constraints);
+            layoutChild(sizeDeterminingChild, this.constraints);
             _layingOutSizeDeterminingChild = false;
-            this.size = ((global::Doroti.Framework.Rendering.RenderBox)sizeDeterminingChild__52499).size;
+            this.size = ((global::Doroti.Framework.Rendering.RenderBox)sizeDeterminingChild).size;
         }
-        var nonPositionedChildConstraints__52969 = global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(this.size);
-        foreach (global::Doroti.Framework.Rendering.RenderBox child__53054 in _childrenInPaintOrder())
+        var nonPositionedChildConstraints = global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(this.size);
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in _childrenInPaintOrder())
         {
-            if ((!object.Equals(child__53054, sizeDeterminingChild__52499)))
+            if ((!object.Equals(child, sizeDeterminingChild)))
             {
-                layoutChild(child__53054, nonPositionedChildConstraints__52969);
+                layoutChild(child, nonPositionedChildConstraints);
             }
         }
     }
 
     internal virtual global::Doroti.Framework.Rendering.RenderBox _findSizeDeterminingChild()
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__53268 = this._lastOnstageChild;
-        while ((child__53268 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this._lastOnstageChild;
+        while ((child is not null))
         {
-            var childParentData__53335 = ((_TheaterParentData__overlay?)(object?)child__53268.parentData!)!;
-            if ((((((_TheaterParentData__overlay)childParentData__53335).overlayEntry?.canSizeOverlay ?? false)) && !childParentData__53335.isPositioned))
+            var childParentData = ((_TheaterParentData__overlay?)(object?)child.parentData!)!;
+            if ((((((_TheaterParentData__overlay)childParentData).overlayEntry?.canSizeOverlay ?? false)) && !childParentData.isPositioned))
             {
-                return child__53268;
+                return child;
             }
-            child__53268 = childParentData__53335.previousSibling;
+            child = childParentData.previousSibling;
         }
         if (this.alwaysSizeToContent)
         {
@@ -1138,10 +1138,10 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
         else
         {
             this._clipRectLayer.layer = null;
-            foreach (global::Doroti.Framework.Rendering.RenderBox child__42320 in _childrenInPaintOrder())
+            foreach (global::Doroti.Framework.Rendering.RenderBox childLocal in _childrenInPaintOrder())
             {
-                var childParentData__42368 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child__42320.parentData!)!;
-                context.paintChild(child__42320, (childParentData__42368.offset + offset));
+                var childParentDataLocal = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)childLocal.parentData!)!;
+                context.paintChild(childLocal, (childParentDataLocal.offset + offset));
             }
         }
     }
@@ -1154,25 +1154,25 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
 
     public override void visitChildren(global::System.Action<global::Doroti.Framework.Rendering.RenderObject> visitor)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__55587 = this.firstChild;
-        while ((child__55587 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        while ((child is not null))
         {
-            visitor(child__55587);
-            var childParentData__55669 = ((_TheaterParentData__overlay?)(object?)child__55587.parentData!)!;
-            childParentData__55669.visitOverlayPortalChildrenOnOverlayEntry((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)visitor);
-            child__55587 = childParentData__55669.nextSibling;
+            visitor(child);
+            var childParentData = ((_TheaterParentData__overlay?)(object?)child.parentData!)!;
+            childParentData.visitOverlayPortalChildrenOnOverlayEntry((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)visitor);
+            child = childParentData.nextSibling;
         }
     }
 
     public override void visitChildrenForSemantics(global::System.Action<global::Doroti.Framework.Rendering.RenderObject> visitor)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__55946 = this._firstOnstageChild;
-        while ((child__55946 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = this._firstOnstageChild;
+        while ((child is not null))
         {
-            visitor(child__55946);
-            var childParentData__56036 = ((_TheaterParentData__overlay?)(object?)child__55946.parentData!)!;
-            childParentData__56036.visitOverlayPortalChildrenOnOverlayEntry((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)visitor);
-            child__55946 = childParentData__56036.nextSibling;
+            visitor(child);
+            var childParentData = ((_TheaterParentData__overlay?)(object?)child.parentData!)!;
+            childParentData.visitOverlayPortalChildrenOnOverlayEntry((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)visitor);
+            child = childParentData.nextSibling;
         }
     }
 
@@ -1205,44 +1205,44 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
 
     public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
-        var offstageChildren__56843 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
-        var onstageChildren__56893 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
-        var count__56941 = 1L;
-        var onstage__56960 = false;
-        global::Doroti.Framework.Rendering.RenderBox? child__56992 = this.firstChild;
-        global::Doroti.Framework.Rendering.RenderBox? firstOnstageChild__57033 = this._firstOnstageChild;
-        while ((child__56992 is not null))
+        var offstageChildren = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
+        var onstageChildren = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
+        var count = 1L;
+        var onstage = false;
+        global::Doroti.Framework.Rendering.RenderBox? child = this.firstChild;
+        global::Doroti.Framework.Rendering.RenderBox? firstOnstageChild = this._firstOnstageChild;
+        while ((child is not null))
         {
-            var childParentData__57113 = ((_TheaterParentData__overlay?)(object?)child__56992.parentData!)!;
-            if ((object.Equals(child__56992, firstOnstageChild__57033)))
+            var childParentData = ((_TheaterParentData__overlay?)(object?)child.parentData!)!;
+            if ((object.Equals(child, firstOnstageChild)))
             {
-                onstage__56960 = true;
-                count__56941 = 1L;
+                onstage = true;
+                count = 1L;
             }
-            if (onstage__56960)
+            if (onstage)
             {
-                onstageChildren__56893.Add(((Diagnosticable)child__56992).toDiagnosticsNode(name: $"onstage {count__56941}"));
+                onstageChildren.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"onstage {count}"));
             }
             else
             {
-                offstageChildren__56843.Add(((Diagnosticable)child__56992).toDiagnosticsNode(name: $"offstage {count__56941}", style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.offstage));
+                offstageChildren.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"offstage {count}", style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.offstage));
             }
-            var subcount__57536 = 1L;
-            childParentData__57113.visitOverlayPortalChildrenOnOverlayEntry(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObject) =>
+            var subcount = 1L;
+            childParentData.visitOverlayPortalChildrenOnOverlayEntry(((global::System.Action<global::Doroti.Framework.Rendering.RenderObject>)((renderObject) =>
             {
-                var child__57657 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)renderObject)!;
-                if (onstage__56960)
+                var childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)renderObject)!;
+                if (onstage)
                 {
-                    onstageChildren__56893.Add(((Diagnosticable)child__57657).toDiagnosticsNode(name: $"onstage {count__56941} - {subcount__57536}"));
+                    onstageChildren.Add(((Diagnosticable)childLocal).toDiagnosticsNode(name: $"onstage {count} - {subcount}"));
                 }
                 else
                 {
-                    offstageChildren__56843.Add(((Diagnosticable)child__57657).toDiagnosticsNode(name: $"offstage {count__56941} - {subcount__57536}", style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.offstage));
+                    offstageChildren.Add(((Diagnosticable)childLocal).toDiagnosticsNode(name: $"offstage {count} - {subcount}", style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.offstage));
                 }
-                subcount__57536 += 1L;
+                subcount += 1L;
             })));
-            child__56992 = childParentData__57113.nextSibling;
-            count__56941 += 1L;
+            child = childParentData.nextSibling;
+            count += 1L;
         }
         return new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1250,12 +1250,12 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData__173585 = ((StackParentData?)(object?)child.parentData!)!;
-        while ((childParentData__173585.previousSibling is not null))
+        var childParentData = ((StackParentData?)(object?)child.parentData!)!;
+        while ((childParentData.previousSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData__173585.previousSibling, child)));
-            child = childParentData__173585.previousSibling!;
-            childParentData__173585 = ((StackParentData?)(object?)child.parentData!)!;
+            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.previousSibling, child)));
+            child = childParentData.previousSibling!;
+            childParentData = ((StackParentData?)(object?)child.parentData!)!;
         }
         return (object.Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1263,12 +1263,12 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData__173981 = ((StackParentData?)(object?)child.parentData!)!;
-        while ((childParentData__173981.nextSibling is not null))
+        var childParentData = ((StackParentData?)(object?)child.parentData!)!;
+        while ((childParentData.nextSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData__173981.nextSibling, child)));
-            child = childParentData__173981.nextSibling!;
-            childParentData__173981 = ((StackParentData?)(object?)child.parentData!)!;
+            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.nextSibling, child)));
+            child = childParentData.nextSibling!;
+            childParentData = ((StackParentData?)(object?)child.parentData!)!;
         }
         return (object.Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1292,18 +1292,18 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
-        var childParentData__175971 = ((StackParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData__175971.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData__175971.previousSibling is null));
+        var childParentData = ((StackParentData?)(object?)child.parentData!)!;
+        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
+        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
         this._childCount += 1L;
         DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
         if ((after is null))
         {
-            childParentData__175971.nextSibling = this._firstChild;
+            childParentData.nextSibling = this._firstChild;
             if ((this._firstChild is not null))
             {
-                var firstChildParentData__176343 = ((StackParentData?)(object?)this._firstChild!.parentData!)!;
-                firstChildParentData__176343.previousSibling = child;
+                var firstChildParentData = ((StackParentData?)(object?)this._firstChild!.parentData!)!;
+                firstChildParentData.previousSibling = child;
             }
             this._firstChild = child;
             this._lastChild ??= child;
@@ -1314,23 +1314,23 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
             DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
             DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
             DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
-            var afterParentData__176766 = ((StackParentData?)(object?)after.parentData!)!;
-            if ((afterParentData__176766.nextSibling is null))
+            var afterParentData = ((StackParentData?)(object?)after.parentData!)!;
+            if ((afterParentData.nextSibling is null))
             {
                 DartRuntimePrimitives.Assert(() => (object.Equals(after, this._lastChild)));
-                childParentData__175971.previousSibling = after;
-                afterParentData__176766.nextSibling = child;
+                childParentData.previousSibling = after;
+                afterParentData.nextSibling = child;
                 this._lastChild = child;
             }
             else
             {
-                childParentData__175971.nextSibling = afterParentData__176766.nextSibling;
-                childParentData__175971.previousSibling = after;
-                var childPreviousSiblingParentData__177424 = ((StackParentData?)(object?)childParentData__175971.previousSibling!.parentData!)!;
-                var childNextSiblingParentData__177547 = ((StackParentData?)(object?)childParentData__175971.nextSibling!.parentData!)!;
-                childPreviousSiblingParentData__177424.nextSibling = child;
-                childNextSiblingParentData__177547.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData__176766.nextSibling, child)));
+                childParentData.nextSibling = afterParentData.nextSibling;
+                childParentData.previousSibling = after;
+                var childPreviousSiblingParentData = ((StackParentData?)(object?)childParentData.previousSibling!.parentData!)!;
+                var childNextSiblingParentData = ((StackParentData?)(object?)childParentData.nextSibling!.parentData!)!;
+                childPreviousSiblingParentData.nextSibling = child;
+                childNextSiblingParentData.previousSibling = child;
+                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData.nextSibling, child)));
             }
         }
     }
@@ -1359,32 +1359,32 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
 
     public virtual void _removeFromChildList(RenderBox child)
     {
-        var childParentData__179226 = ((StackParentData?)(object?)child.parentData!)!;
+        var childParentData = ((StackParentData?)(object?)child.parentData!)!;
         DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
         DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
         DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData__179226.previousSibling is null))
+        if ((childParentData.previousSibling is null))
         {
             DartRuntimePrimitives.Assert(() => (object.Equals(this._firstChild, child)));
-            this._firstChild = childParentData__179226.nextSibling;
+            this._firstChild = childParentData.nextSibling;
         }
         else
         {
-            var childPreviousSiblingParentData__179613 = ((StackParentData?)(object?)childParentData__179226.previousSibling!.parentData!)!;
-            childPreviousSiblingParentData__179613.nextSibling = childParentData__179226.nextSibling;
+            var childPreviousSiblingParentData = ((StackParentData?)(object?)childParentData.previousSibling!.parentData!)!;
+            childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData__179226.nextSibling is null))
+        if ((childParentData.nextSibling is null))
         {
             DartRuntimePrimitives.Assert(() => (object.Equals(this._lastChild, child)));
-            this._lastChild = childParentData__179226.previousSibling;
+            this._lastChild = childParentData.previousSibling;
         }
         else
         {
-            var childNextSiblingParentData__179965 = ((StackParentData?)(object?)childParentData__179226.nextSibling!.parentData!)!;
-            childNextSiblingParentData__179965.previousSibling = childParentData__179226.previousSibling;
+            var childNextSiblingParentData = ((StackParentData?)(object?)childParentData.nextSibling!.parentData!)!;
+            childNextSiblingParentData.previousSibling = childParentData.previousSibling;
         }
-        childParentData__179226.previousSibling = null;
-        childParentData__179226.nextSibling = null;
+        childParentData.previousSibling = null;
+        childParentData.nextSibling = null;
         this._childCount -= 1L;
     }
 
@@ -1396,15 +1396,15 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
 
     public virtual void removeAll()
     {
-        RenderBox? child__180623 = this._firstChild;
-        while ((child__180623 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            var childParentData__180684 = ((StackParentData?)(object?)child__180623.parentData!)!;
-            RenderBox? next__180762 = childParentData__180684.nextSibling;
-            childParentData__180684.previousSibling = null;
-            childParentData__180684.nextSibling = null;
-            dropChild(child__180623);
-            child__180623 = next__180762;
+            var childParentData = ((StackParentData?)(object?)child.parentData!)!;
+            RenderBox? next = childParentData.nextSibling;
+            childParentData.previousSibling = null;
+            childParentData.nextSibling = null;
+            dropChild(child);
+            child = next;
         }
         this._firstChild = null;
         this._lastChild = null;
@@ -1417,8 +1417,8 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
         DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
         DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__181479 = ((StackParentData?)(object?)child.parentData!)!;
-        if ((object.Equals(childParentData__181479.previousSibling, after)))
+        var childParentData = ((StackParentData?)(object?)child.parentData!)!;
+        if ((object.Equals(childParentData.previousSibling, after)))
         {
             return;
         }
@@ -1432,67 +1432,67 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
     public virtual RenderBox? childBefore(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__183103 = ((StackParentData?)(object?)child.parentData!)!;
-        return childParentData__183103.previousSibling;
+        var childParentData = ((StackParentData?)(object?)child.parentData!)!;
+        return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__183356 = ((StackParentData?)(object?)child.parentData!)!;
-        return childParentData__183356.nextSibling;
+        var childParentData = ((StackParentData?)(object?)child.parentData!)!;
+        return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => !this.debugNeedsLayout);
-        global::Doroti.Framework.Rendering.BaselineOffset baselineOffset__39497 = global::Doroti.Framework.Rendering.BaselineOffset.noBaseline;
-        foreach (global::Doroti.Framework.Rendering.RenderBox child__39566 in _childrenInPaintOrder())
+        global::Doroti.Framework.Rendering.BaselineOffset baselineOffset = global::Doroti.Framework.Rendering.BaselineOffset.noBaseline;
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in _childrenInPaintOrder())
         {
-            DartRuntimePrimitives.Assert(() => !child__39566.debugNeedsLayout);
-            var childParentData__39653 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child__39566.parentData!)!;
-            baselineOffset__39497 = baselineOffset__39497.minOf((new global::Doroti.Framework.Rendering.BaselineOffset(child__39566.getDistanceToActualBaseline(baseline)).op_Add(childParentData__39653.offset.dy)));
+            DartRuntimePrimitives.Assert(() => !child.debugNeedsLayout);
+            var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+            baselineOffset = baselineOffset.minOf((new global::Doroti.Framework.Rendering.BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy)));
         }
-        return baselineOffset__39497.offset;
+        return baselineOffset.offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void layoutChild(global::Doroti.Framework.Rendering.RenderBox child, global::Doroti.Framework.Rendering.BoxConstraints nonPositionedChildConstraints)
     {
-        var childParentData__40970 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
-        global::Doroti.Framework.Painting.Alignment alignment__41046 = ((_RenderTheater__overlay)this.theater)._resolvedAlignment;
-        if (!((global::Doroti.Framework.Rendering.StackParentData)childParentData__40970).isPositioned)
+        var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+        global::Doroti.Framework.Painting.Alignment alignment = ((_RenderTheater__overlay)this.theater)._resolvedAlignment;
+        if (!((global::Doroti.Framework.Rendering.StackParentData)childParentData).isPositioned)
         {
             child.layout(nonPositionedChildConstraints, parentUsesSize: true);
-            childParentData__40970.offset = Offset.zero;
+            childParentData.offset = Offset.zero;
         }
         else
         {
             DartRuntimePrimitives.Assert(() => (child is not _RenderDeferredLayoutBox__overlay), () => (object?)"all _RenderDeferredLayoutBoxes must be non-positioned children.");
-            RenderStack.layoutPositionedChild(child, childParentData__40970, this.size, alignment__41046);
+            RenderStack.layoutPositionedChild(child, childParentData, this.size, alignment);
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parentData, childParentData__40970)));
+        DartRuntimePrimitives.Assert(() => (object.Equals(child.parentData, childParentData)));
     }
 
     public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
     {
-        IEnumerator<global::Doroti.Framework.Rendering.RenderBox> iterator__41661 = _childrenInHitTestOrder().GetEnumerator();
-        var isHit__41716 = false;
-        while ((!isHit__41716 && iterator__41661.MoveNext()))
+        IEnumerator<global::Doroti.Framework.Rendering.RenderBox> iterator = _childrenInHitTestOrder().GetEnumerator();
+        var isHit = false;
+        while ((!isHit && iterator.MoveNext()))
         {
-            global::Doroti.Framework.Rendering.RenderBox child__41797 = iterator__41661.Current;
-            var childParentData__41835 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child__41797.parentData!)!;
-            var localChild__41903 = child__41797;
+            global::Doroti.Framework.Rendering.RenderBox child = iterator.Current;
+            var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+            var localChild = child;
             bool childHitTest(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
             {
-                return localChild__41903.hitTest(result, position: position);
+                return localChild.hitTest(result, position: position);
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
-            isHit__41716 = result.addWithPaintOffset(offset: childParentData__41835.offset, position: position, hitTest: (global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)childHitTest);
+            isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)childHitTest);
         }
-        return isHit__41716;
+        return isHit;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1512,19 +1512,19 @@ public class OverlayPortalController
 
     internal virtual long _now()
     {
-        long now__61102 = _wallTime += 1L;
-        DartRuntimePrimitives.Assert(() => ((this._zOrderIndex is null) || (DartRuntimePrimitives.RequireValue(this._zOrderIndex) < now__61102)));
-        DartRuntimePrimitives.Assert(() => ((this._attachTarget?._zOrderIndex is null) || (DartRuntimePrimitives.RequireValue(this._attachTarget!._zOrderIndex) < now__61102)));
-        return now__61102;
+        long now = _wallTime += 1L;
+        DartRuntimePrimitives.Assert(() => ((this._zOrderIndex is null) || (DartRuntimePrimitives.RequireValue(this._zOrderIndex) < now)));
+        DartRuntimePrimitives.Assert(() => ((this._attachTarget?._zOrderIndex is null) || (DartRuntimePrimitives.RequireValue(this._attachTarget!._zOrderIndex) < now)));
+        return now;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void show()
     {
-        _OverlayPortalState__overlay? state__61892 = this._attachTarget;
-        if ((state__61892 is not null))
+        _OverlayPortalState__overlay? state = this._attachTarget;
+        if ((state is not null))
         {
-            state__61892.show(_now());
+            state.show(_now());
         }
         else
         {
@@ -1534,10 +1534,10 @@ public class OverlayPortalController
 
     public virtual void hide()
     {
-        _OverlayPortalState__overlay? state__62418 = this._attachTarget;
-        if ((state__62418 is not null))
+        _OverlayPortalState__overlay? state = this._attachTarget;
+        if ((state is not null))
         {
-            state__62418.hide();
+            state.hide();
         }
         else
         {
@@ -1550,18 +1550,18 @@ public class OverlayPortalController
     {
         get
         {
-            _OverlayPortalState__overlay? state__62752 = this._attachTarget;
-            return ((state__62752 is not null) ? (((_OverlayPortalState__overlay)state__62752)._zOrderIndex is not null) : (this._zOrderIndex is not null));
+            _OverlayPortalState__overlay? state = this._attachTarget;
+            return ((state is not null) ? (((_OverlayPortalState__overlay)state)._zOrderIndex is not null) : (this._zOrderIndex is not null));
             return default!;
         }
     }
     public virtual void toggle() => ((Action)(() => { if (this.isShowing) { hide(); } else { show(); } }))();
     public override string ToString()
     {
-        string? debugLabel__63130 = this._debugLabel;
-        var label__63166 = ((debugLabel__63130 is null) ? "" : $"({debugLabel__63130})");
-        var isDetached__63227 = ((this._attachTarget is not null) ? "" : " DETACHED");
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "OverlayPortalController"))}{label__63166}{isDetached__63227}";
+        string? debugLabel = this._debugLabel;
+        var label = ((debugLabel is null) ? "" : $"({debugLabel})");
+        var isDetached = ((this._attachTarget is not null) ? "" : " DETACHED");
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "OverlayPortalController"))}{label}{isDetached}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1620,20 +1620,20 @@ internal class _OverlayPortalState__overlay : State<OverlayPortal>
 
     internal virtual _OverlayEntryLocation__overlay _getLocation(long zOrderIndex, OverlayChildLocation overlayLocation)
     {
-        _OverlayEntryLocation__overlay? cachedLocation__73881 = this._locationCache;
-        _RenderTheaterMarker__overlay marker__73950 = ((_RenderTheaterMarker__overlay)(object?)_RenderTheaterMarker__overlay.of(this.context, targetRootOverlay: (object.Equals(overlayLocation, OverlayChildLocation.rootOverlay))));
-        bool isCacheValid__74099 = ((cachedLocation__73881 is not null) && ((!this._childModelMayHaveChanged || _OverlayPortalState__overlay._isTheSameLocation(cachedLocation__73881, marker__73950))));
+        _OverlayEntryLocation__overlay? cachedLocation = this._locationCache;
+        _RenderTheaterMarker__overlay marker = ((_RenderTheaterMarker__overlay)(object?)_RenderTheaterMarker__overlay.of(this.context, targetRootOverlay: (object.Equals(overlayLocation, OverlayChildLocation.rootOverlay))));
+        bool isCacheValid = ((cachedLocation is not null) && ((!this._childModelMayHaveChanged || _OverlayPortalState__overlay._isTheSameLocation(cachedLocation, marker))));
         _childModelMayHaveChanged = false;
-        if (isCacheValid__74099)
+        if (isCacheValid)
         {
-            DartRuntimePrimitives.Assert(() => (((_OverlayEntryLocation__overlay)cachedLocation__73881)._zOrderIndex == zOrderIndex));
-            DartRuntimePrimitives.Assert(() => cachedLocation__73881._debugIsLocationValid());
-            return cachedLocation__73881;
+            DartRuntimePrimitives.Assert(() => (((_OverlayEntryLocation__overlay)cachedLocation)._zOrderIndex == zOrderIndex));
+            DartRuntimePrimitives.Assert(() => cachedLocation._debugIsLocationValid());
+            return cachedLocation;
         }
-        cachedLocation__73881?._debugMarkLocationInvalid();
-        var newLocation__74566 = new _OverlayEntryLocation__overlay(zOrderIndex, ((_RenderTheaterMarker__overlay)marker__73950).overlayEntryWidgetState, ((_RenderTheaterMarker__overlay)marker__73950).theater);
-        DartRuntimePrimitives.Assert(() => (((_OverlayEntryLocation__overlay)newLocation__74566)._zOrderIndex == zOrderIndex));
-        return _locationCache = newLocation__74566;
+        cachedLocation?._debugMarkLocationInvalid();
+        var newLocation = new _OverlayEntryLocation__overlay(zOrderIndex, ((_RenderTheaterMarker__overlay)marker).overlayEntryWidgetState, ((_RenderTheaterMarker__overlay)marker).theater);
+        DartRuntimePrimitives.Assert(() => (((_OverlayEntryLocation__overlay)newLocation)._zOrderIndex == zOrderIndex));
+        return _locationCache = newLocation;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1646,11 +1646,11 @@ internal class _OverlayPortalState__overlay : State<OverlayPortal>
     internal virtual void _setupController(OverlayPortalController controller)
     {
         DartRuntimePrimitives.Assert(() => ((object.Equals(((OverlayPortalController)controller)._attachTarget, this)) || !(((((StatefulElement?)(object?)((OverlayPortalController)controller)._attachTarget?.context)!)?.debugIsActive ?? false))), () => (object?)$"Failed to attach {controller} to {this}. It is already attached to {((OverlayPortalController)controller)._attachTarget}.");
-        long? controllerZOrderIndex__75225 = ((OverlayPortalController)controller)._zOrderIndex;
-        long? zOrderIndex__75289 = this._zOrderIndex;
-        if (((zOrderIndex__75289 is null) || (((controllerZOrderIndex__75225 is not null) && (DartRuntimePrimitives.RequireValue(controllerZOrderIndex__75225) > DartRuntimePrimitives.RequireValue(zOrderIndex__75289))))))
+        long? controllerZOrderIndex = ((OverlayPortalController)controller)._zOrderIndex;
+        long? zOrderIndex = this._zOrderIndex;
+        if (((zOrderIndex is null) || (((controllerZOrderIndex is not null) && (DartRuntimePrimitives.RequireValue(controllerZOrderIndex) > DartRuntimePrimitives.RequireValue(zOrderIndex))))))
         {
-            _zOrderIndex = controllerZOrderIndex__75225;
+            _zOrderIndex = controllerZOrderIndex;
         }
         controller._zOrderIndex = null;
         controller._attachTarget = this;
@@ -1711,15 +1711,15 @@ internal class _OverlayPortalState__overlay : State<OverlayPortal>
 
     public override Widget build(BuildContext context)
     {
-        long? zOrderIndex__77017 = this._zOrderIndex;
-        if ((zOrderIndex__77017 is null))
+        long? zOrderIndex = this._zOrderIndex;
+        if ((zOrderIndex is null))
         {
             return ((Widget)(object?)new _OverlayPortal__overlay(overlayLocation: ((_OverlayEntryLocation__overlay)(object)null), overlayChild: ((Widget)(object)null), child: new Semantics(traversalParentIdentifier: this, child: ((OverlayPortal)this.widget).child)));
         }
-        _OverlayEntryLocation__overlay overlayLocation__77292 = ((_OverlayEntryLocation__overlay)(object?)_getLocation(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(zOrderIndex__77017)), ((OverlayPortal)this.widget).overlayLocation));
-        MediaQueryData overlayData__77386 = ((MediaQueryData)(object?)MediaQuery.of(((_OverlayEntryLocation__overlay)overlayLocation__77292)._childModel.context));
-        MediaQueryData data__77477 = ((MediaQueryData)(object?)MediaQuery.of(context).copyWith(padding: ((MediaQueryData)overlayData__77386).padding, viewInsets: ((MediaQueryData)overlayData__77386).viewInsets, viewPadding: ((MediaQueryData)overlayData__77386).viewPadding));
-        return ((Widget)(object?)new _OverlayPortal__overlay(overlayLocation: overlayLocation__77292, overlayChild: new _DeferredLayout__overlay(childIdentifier: this, child: new MediaQuery(data: data__77477, child: new Builder(builder: (global::System.Func<BuildContext, Widget>)((OverlayPortal)this.widget).overlayChildBuilder))), child: new Semantics(traversalParentIdentifier: this, child: ((OverlayPortal)this.widget).child)));
+        _OverlayEntryLocation__overlay overlayLocationLocal = ((_OverlayEntryLocation__overlay)(object?)_getLocation(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(zOrderIndex)), ((OverlayPortal)this.widget).overlayLocation));
+        MediaQueryData overlayData = ((MediaQueryData)(object?)MediaQuery.of(((_OverlayEntryLocation__overlay)overlayLocationLocal)._childModel.context));
+        MediaQueryData dataLocal = ((MediaQueryData)(object?)MediaQuery.of(context).copyWith(padding: ((MediaQueryData)overlayData).padding, viewInsets: ((MediaQueryData)overlayData).viewInsets, viewPadding: ((MediaQueryData)overlayData).viewPadding));
+        return ((Widget)(object?)new _OverlayPortal__overlay(overlayLocation: overlayLocationLocal, overlayChild: new _DeferredLayout__overlay(childIdentifier: this, child: new MediaQuery(data: dataLocal, child: new Builder(builder: (global::System.Func<BuildContext, Widget>)((OverlayPortal)this.widget).overlayChildBuilder))), child: new Semantics(traversalParentIdentifier: this, child: ((OverlayPortal)this.widget).child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1780,14 +1780,14 @@ public class _OverlayEntryLocation__overlay : DartLinkedListEntry<_OverlayEntryL
     {
         DartRuntimePrimitives.Assert(() => (!object.Equals(fromLocation, this)));
         DartRuntimePrimitives.Assert(() => _debugIsLocationValid());
-        _RenderTheater__overlay fromTheater__81283 = ((_OverlayEntryLocation__overlay)fromLocation)._theater;
-        _OverlayEntryWidgetState__overlay fromModel__81355 = ((_OverlayEntryLocation__overlay)fromLocation)._childModel;
-        if ((!object.Equals(fromTheater__81283, this._theater)))
+        _RenderTheater__overlay fromTheater = ((_OverlayEntryLocation__overlay)fromLocation)._theater;
+        _OverlayEntryWidgetState__overlay fromModel = ((_OverlayEntryLocation__overlay)fromLocation)._childModel;
+        if ((!object.Equals(fromTheater, this._theater)))
         {
-            fromTheater__81283._removeDeferredChild(child);
+            fromTheater._removeDeferredChild(child);
             this._theater._addDeferredChild(child);
         }
-        if (((!object.Equals(fromModel__81355, this._childModel)) || (((_OverlayEntryLocation__overlay)fromLocation)._zOrderIndex != this._zOrderIndex)))
+        if (((!object.Equals(fromModel, this._childModel)) || (((_OverlayEntryLocation__overlay)fromLocation)._zOrderIndex != this._zOrderIndex)))
         {
             fromLocation._removeFromChildModel(child);
             _addToChildModel(child);
@@ -1851,10 +1851,10 @@ internal class _RenderTheaterMarker__overlay : InheritedWidget
 
     public static _RenderTheaterMarker__overlay of(BuildContext context, bool targetRootOverlay = false)
     {
-        _RenderTheaterMarker__overlay? marker__85264 = ((_RenderTheaterMarker__overlay?)(object?)_RenderTheaterMarker__overlay.maybeOf(context, targetRootOverlay: targetRootOverlay));
-        if ((marker__85264 is not null))
+        _RenderTheaterMarker__overlay? marker = ((_RenderTheaterMarker__overlay?)(object?)_RenderTheaterMarker__overlay.maybeOf(context, targetRootOverlay: targetRootOverlay));
+        if ((marker is not null))
         {
-            return marker__85264;
+            return marker;
         }
         throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("No Overlay widget found."), new global::Doroti.Framework.Foundation.ErrorDescription($"{DartRuntimePrimitives.RuntimeType(((BuildContext)context).widget)} widgets require an Overlay widget ancestor.\n" + "An overlay lets widgets float on top of other widget children."), new global::Doroti.Framework.Foundation.ErrorHint("To introduce an Overlay widget, you can either directly " + "include one, or use a widget that contains an Overlay itself, " + "such as a Navigator, WidgetApp, MaterialApp, or CupertinoApp.") }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1864,17 +1864,17 @@ internal class _RenderTheaterMarker__overlay : InheritedWidget
     {
         if (targetRootOverlay)
         {
-            InheritedElement? ancestor__86204 = ((InheritedElement?)(object?)_RenderTheaterMarker__overlay._rootRenderTheaterMarkerOf(LookupBoundary.getElementForInheritedWidgetOfExactType<_RenderTheaterMarker__overlay>(context)));
-            DartRuntimePrimitives.Assert(() => ((ancestor__86204 is null) || (ancestor__86204.widget is _RenderTheaterMarker__overlay)));
-            if ((ancestor__86204 is null))
+            InheritedElement? ancestor = ((InheritedElement?)(object?)_RenderTheaterMarker__overlay._rootRenderTheaterMarkerOf(LookupBoundary.getElementForInheritedWidgetOfExactType<_RenderTheaterMarker__overlay>(context)));
+            DartRuntimePrimitives.Assert(() => ((ancestor is null) || (ancestor.widget is _RenderTheaterMarker__overlay)));
+            if ((ancestor is null))
             {
                 return ((_RenderTheaterMarker__overlay)(object)null);
             }
             if (createDependency)
             {
-                return ((_RenderTheaterMarker__overlay?)(object?)context.dependOnInheritedElement(ancestor__86204))!;
+                return ((_RenderTheaterMarker__overlay?)(object?)context.dependOnInheritedElement(ancestor))!;
             }
-            return ((_RenderTheaterMarker__overlay?)(object?)ancestor__86204.widget)!;
+            return ((_RenderTheaterMarker__overlay?)(object?)ancestor.widget)!;
         }
         if (createDependency)
         {
@@ -1891,14 +1891,14 @@ internal class _RenderTheaterMarker__overlay : InheritedWidget
         {
             return ((InheritedElement)(object)null);
         }
-        InheritedElement? ancestor__87166 = default!;
+        InheritedElement? ancestor = default!;
         theaterMarkerElement.visitAncestorElements(((global::System.Func<Element, bool>)((element) =>
         {
-            ancestor__87166 = LookupBoundary.getElementForInheritedWidgetOfExactType<_RenderTheaterMarker__overlay>(element);
+            ancestor = LookupBoundary.getElementForInheritedWidgetOfExactType<_RenderTheaterMarker__overlay>(element);
             return false;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        return ((ancestor__87166 is null) ? theaterMarkerElement : _RenderTheaterMarker__overlay._rootRenderTheaterMarkerOf(ancestor__87166));
+        return ((ancestor is null) ? theaterMarkerElement : _RenderTheaterMarker__overlay._rootRenderTheaterMarkerOf(ancestor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1942,9 +1942,9 @@ internal class _OverlayPortalElement__overlay : RenderObjectElement
     public override void mount(Element? parent, object? newSlot)
     {
         base.mount(parent, newSlot);
-        var widget__88917 = ((_OverlayPortal__overlay?)(object?)this.widget)!;
-        _child = updateChild(this._child, ((_OverlayPortal__overlay)widget__88917).child, null);
-        _overlayChild = updateChild(this._overlayChild, ((_OverlayPortal__overlay)widget__88917).overlayChild, ((_OverlayPortal__overlay)widget__88917).overlayLocation);
+        var widgetLocal = ((_OverlayPortal__overlay?)(object?)this.widget)!;
+        _child = updateChild(this._child, ((_OverlayPortal__overlay)widgetLocal).child, null);
+        _overlayChild = updateChild(this._overlayChild, ((_OverlayPortal__overlay)widgetLocal).overlayChild, ((_OverlayPortal__overlay)widgetLocal).overlayLocation);
     }
 
     public override void update(Widget newWidget)
@@ -1964,15 +1964,15 @@ internal class _OverlayPortalElement__overlay : RenderObjectElement
 
     public override void visitChildren(global::System.Action<Element> visitor)
     {
-        Element? child__89756 = this._child;
-        Element? overlayChild__89791 = this._overlayChild;
-        if ((child__89756 is not null))
+        Element? child = this._child;
+        Element? overlayChild = this._overlayChild;
+        if ((child is not null))
         {
-            visitor(child__89756);
+            visitor(child);
         }
-        if ((overlayChild__89791 is not null))
+        if ((overlayChild is not null))
         {
-            visitor(overlayChild__89791);
+            visitor(overlayChild);
         }
     }
 
@@ -2045,10 +2045,10 @@ internal class _DeferredLayout__overlay : SingleChildRenderObjectWidget
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
     {
-        _RenderLayoutSurrogateProxyBox__overlay parent__92310 = ((_RenderLayoutSurrogateProxyBox__overlay)(object?)getLayoutParent(context));
-        var renderObject__92355 = new _RenderDeferredLayoutBox__overlay(parent__92310, this.childIdentifier);
-        ((dynamic)parent__92310)._deferredLayoutChild = renderObject__92355;
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)renderObject__92355);
+        _RenderLayoutSurrogateProxyBox__overlay parent = ((_RenderLayoutSurrogateProxyBox__overlay)(object?)getLayoutParent(context));
+        var renderObject = new _RenderDeferredLayoutBox__overlay(parent, this.childIdentifier);
+        ((dynamic)parent)._deferredLayoutChild = renderObject;
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)renderObject);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2092,13 +2092,13 @@ public class _RenderDeferredLayoutBox__overlay : global::Doroti.Framework.Render
     }
     public virtual IEnumerable<global::Doroti.Framework.Rendering.RenderBox> _childrenInPaintOrder()
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__94663 = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
-        return ((child__94663 is null) ? System.Linq.Enumerable.Empty<global::Doroti.Framework.Rendering.RenderBox>() : System.Linq.Enumerable.Range(0, checked((int)1L)).Select(__index => ((Func<long, global::Doroti.Framework.Rendering.RenderBox>)((i) => child__94663))(checked((long)__index))));
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        return ((childLocal is null) ? System.Linq.Enumerable.Empty<global::Doroti.Framework.Rendering.RenderBox>() : System.Linq.Enumerable.Range(0, checked((int)1L)).Select(__index => ((Func<long, global::Doroti.Framework.Rendering.RenderBox>)((i) => childLocal))(checked((long)__index))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual IEnumerable<global::Doroti.Framework.Rendering.RenderBox> _childrenInHitTestOrder() => _childrenInPaintOrder();
-    public virtual _RenderTheater__overlay theater => (this.parent switch { _RenderTheater__overlay parent__94994 => parent__94994, _ => throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"{this.parent} of {this} is not a _RenderTheater")) });
+    public virtual _RenderTheater__overlay theater => (this.parent switch { _RenderTheater__overlay parentLocal => parentLocal, _ => throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"{this.parent} of {this} is not a _RenderTheater")) });
     public override void redepthChildren()
     {
         if (this._layoutSurrogate.attached)
@@ -2126,19 +2126,19 @@ public class _RenderDeferredLayoutBox__overlay : global::Doroti.Framework.Render
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__95899 = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
-        if ((child__95899 is null))
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        if ((childLocal is null))
         {
             return null;
         }
-        return _RenderTheaterMixin__overlay.baselineForChild(child__95899, ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest, constraints, ((_RenderTheater__overlay)this.theater)._resolvedAlignment, baseline);
+        return _RenderTheaterMixin__overlay.baselineForChild(childLocal, ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest, constraints, ((_RenderTheater__overlay)this.theater)._resolvedAlignment, baseline);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject? debugLayoutParent => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderObject>(this._layoutSurrogate);
     internal virtual void _doLayoutFrom(global::Doroti.Framework.Rendering.RenderObject treewalkParent, global::Doroti.Framework.Rendering.Constraints constraints)
     {
-        bool shouldAddToDirtyList__96504 = (this.needsLayout || (!object.Equals(this.constraints, constraints)));
+        bool shouldAddToDirtyList = (this.needsLayout || (!object.Equals(this.constraints, constraints)));
         DartRuntimePrimitives.Assert(() => !this._doingLayoutFromTreeWalk);
         _doingLayoutFromTreeWalk = true;
         base.layout(constraints);
@@ -2146,7 +2146,7 @@ public class _RenderDeferredLayoutBox__overlay : global::Doroti.Framework.Render
         _doingLayoutFromTreeWalk = false;
         _needsLayout = false;
         DartRuntimePrimitives.Assert(() => !this.debugNeedsLayout);
-        if (shouldAddToDirtyList__96504)
+        if (shouldAddToDirtyList)
         {
             ((dynamic)treewalkParent).invokeLayoutCallback(((global::System.Action<global::Doroti.Framework.Rendering.BoxConstraints>)((_) =>
             {
@@ -2180,14 +2180,14 @@ public class _RenderDeferredLayoutBox__overlay : global::Doroti.Framework.Render
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         DartRuntimePrimitives.Assert(() => (this.parent is not null));
-        global::Doroti.Framework.Rendering.RenderBox? child__98700 = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
-        if ((child__98700 is null))
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        if ((childLocal is null))
         {
             _needsLayout = false;
             return;
         }
         DartRuntimePrimitives.Assert(() => ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).isTight);
-        layoutChild(child__98700, this.constraints);
+        layoutChild(childLocal, this.constraints);
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugMutationsLocked = false;
@@ -2209,9 +2209,9 @@ public class _RenderDeferredLayoutBox__overlay : global::Doroti.Framework.Render
     public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
-        var childParentData__99299 = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)__child.parentData!)!;
-        global::Doroti.Ui.Offset offset__99370 = ((global::Doroti.Ui.Offset)(object?)((global::Doroti.Framework.Rendering.BoxParentData)childParentData__99299).offset);
-        transform.translateByDouble(offset__99370.dx, offset__99370.dy, 0, 1);
+        var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)__child.parentData!)!;
+        global::Doroti.Ui.Offset offsetLocal = ((global::Doroti.Ui.Offset)(object?)((global::Doroti.Framework.Rendering.BoxParentData)childParentData).offset);
+        transform.translateByDouble(offsetLocal.dx, offsetLocal.dy, 0, 1);
     }
 
     public override void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)
@@ -2226,60 +2226,60 @@ public class _RenderDeferredLayoutBox__overlay : global::Doroti.Framework.Render
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => !this.debugNeedsLayout);
-        global::Doroti.Framework.Rendering.BaselineOffset baselineOffset__39497 = global::Doroti.Framework.Rendering.BaselineOffset.noBaseline;
-        foreach (global::Doroti.Framework.Rendering.RenderBox child__39566 in _childrenInPaintOrder())
+        global::Doroti.Framework.Rendering.BaselineOffset baselineOffset = global::Doroti.Framework.Rendering.BaselineOffset.noBaseline;
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in _childrenInPaintOrder())
         {
-            DartRuntimePrimitives.Assert(() => !child__39566.debugNeedsLayout);
-            var childParentData__39653 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child__39566.parentData!)!;
-            baselineOffset__39497 = baselineOffset__39497.minOf((new global::Doroti.Framework.Rendering.BaselineOffset(child__39566.getDistanceToActualBaseline(baseline)).op_Add(childParentData__39653.offset.dy)));
+            DartRuntimePrimitives.Assert(() => !child.debugNeedsLayout);
+            var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+            baselineOffset = baselineOffset.minOf((new global::Doroti.Framework.Rendering.BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy)));
         }
-        return baselineOffset__39497.offset;
+        return baselineOffset.offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void layoutChild(global::Doroti.Framework.Rendering.RenderBox child, global::Doroti.Framework.Rendering.BoxConstraints nonPositionedChildConstraints)
     {
-        var childParentData__40970 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
-        global::Doroti.Framework.Painting.Alignment alignment__41046 = ((_RenderTheater__overlay)this.theater)._resolvedAlignment;
-        if (!((global::Doroti.Framework.Rendering.StackParentData)childParentData__40970).isPositioned)
+        var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+        global::Doroti.Framework.Painting.Alignment alignment = ((_RenderTheater__overlay)this.theater)._resolvedAlignment;
+        if (!((global::Doroti.Framework.Rendering.StackParentData)childParentData).isPositioned)
         {
             child.layout(nonPositionedChildConstraints, parentUsesSize: true);
-            childParentData__40970.offset = Offset.zero;
+            childParentData.offset = Offset.zero;
         }
         else
         {
             DartRuntimePrimitives.Assert(() => (child is not _RenderDeferredLayoutBox__overlay), () => (object?)"all _RenderDeferredLayoutBoxes must be non-positioned children.");
-            RenderStack.layoutPositionedChild(child, childParentData__40970, this.size, alignment__41046);
+            RenderStack.layoutPositionedChild(child, childParentData, this.size, alignment);
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parentData, childParentData__40970)));
+        DartRuntimePrimitives.Assert(() => (object.Equals(child.parentData, childParentData)));
     }
 
     public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
     {
-        IEnumerator<global::Doroti.Framework.Rendering.RenderBox> iterator__41661 = _childrenInHitTestOrder().GetEnumerator();
-        var isHit__41716 = false;
-        while ((!isHit__41716 && iterator__41661.MoveNext()))
+        IEnumerator<global::Doroti.Framework.Rendering.RenderBox> iterator = _childrenInHitTestOrder().GetEnumerator();
+        var isHit = false;
+        while ((!isHit && iterator.MoveNext()))
         {
-            global::Doroti.Framework.Rendering.RenderBox child__41797 = iterator__41661.Current;
-            var childParentData__41835 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child__41797.parentData!)!;
-            var localChild__41903 = child__41797;
+            global::Doroti.Framework.Rendering.RenderBox child = iterator.Current;
+            var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+            var localChild = child;
             bool childHitTest(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
             {
-                return localChild__41903.hitTest(result, position: position);
+                return localChild.hitTest(result, position: position);
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
-            isHit__41716 = result.addWithPaintOffset(offset: childParentData__41835.offset, position: position, hitTest: (global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)childHitTest);
+            isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)childHitTest);
         }
-        return isHit__41716;
+        return isHit;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        foreach (global::Doroti.Framework.Rendering.RenderBox child__42320 in _childrenInPaintOrder())
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in _childrenInPaintOrder())
         {
-            var childParentData__42368 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child__42320.parentData!)!;
-            context.paintChild(child__42320, (childParentData__42368.offset + offset));
+            var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+            context.paintChild(child, (childParentData.offset + offset));
         }
     }
 
@@ -2317,9 +2317,9 @@ public class _RenderLayoutSurrogateProxyBox__overlay : global::Doroti.Framework.
 
     public override void detach()
     {
-        if (this._deferredLayoutChild is object deferredChild__101178 && (((_RenderDeferredLayoutBox__overlay)deferredChild__101178).theater.attached))
+        if (this._deferredLayoutChild is object deferredChild && (((_RenderDeferredLayoutBox__overlay)deferredChild).theater.attached))
         {
-            this.overlayLocation!._detachFromLayoutSurrogate(DartRuntimePrimitives.ConvertValue<_RenderDeferredLayoutBox__overlay>(deferredChild__101178));
+            this.overlayLocation!._detachFromLayoutSurrogate(DartRuntimePrimitives.ConvertValue<_RenderDeferredLayoutBox__overlay>(deferredChild));
             _didDetachDeferredChild = true;
         }
         base.detach();
@@ -2328,27 +2328,27 @@ public class _RenderLayoutSurrogateProxyBox__overlay : global::Doroti.Framework.
     public override void redepthChildren()
     {
         base.redepthChildren();
-        _RenderDeferredLayoutBox__overlay? child__101471 = this._deferredLayoutChild;
-        if (((child__101471 is not null) && child__101471.attached))
+        _RenderDeferredLayoutBox__overlay? child = this._deferredLayoutChild;
+        if (((child is not null) && child.attached))
         {
-            redepthChild(child__101471);
+            redepthChild(child);
         }
     }
 
     public override void performLayout()
     {
         base.performLayout();
-        _RenderDeferredLayoutBox__overlay? deferredChild__101817 = this._deferredLayoutChild;
-        if ((deferredChild__101817 is null))
+        _RenderDeferredLayoutBox__overlay? deferredChild = this._deferredLayoutChild;
+        if ((deferredChild is null))
         {
             return;
         }
-        var theater__102533 = ((_RenderTheater__overlay?)(object?)deferredChild__101817.parent!)!;
-        if (!((_RenderTheater__overlay)theater__102533)._layingOutSizeDeterminingChild)
+        var theater = ((_RenderTheater__overlay?)(object?)deferredChild.parent!)!;
+        if (!((_RenderTheater__overlay)theater)._layingOutSizeDeterminingChild)
         {
-            global::Doroti.Framework.Rendering.BoxConstraints theaterConstraints__103066 = theater__102533.constraints;
-            global::Doroti.Ui.Size boxSize__103125 = ((global::Doroti.Ui.Size)(object?)(((global::Doroti.Framework.Rendering.BoxConstraints)theaterConstraints__103066).biggest.isFinite ? ((global::Doroti.Framework.Rendering.BoxConstraints)theaterConstraints__103066).biggest : theater__102533.size));
-            deferredChild__101817._doLayoutFrom(this, constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(boxSize__103125));
+            global::Doroti.Framework.Rendering.BoxConstraints theaterConstraints = theater.constraints;
+            global::Doroti.Ui.Size boxSize = ((global::Doroti.Ui.Size)(object?)(((global::Doroti.Framework.Rendering.BoxConstraints)theaterConstraints).biggest.isFinite ? ((global::Doroti.Framework.Rendering.BoxConstraints)theaterConstraints).biggest : theater.size));
+            deferredChild._doLayoutFrom(this, constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(boxSize));
         }
     }
 
@@ -2376,52 +2376,52 @@ internal class _RenderLayoutBuilder__overlay : global::Doroti.Framework.Renderin
 
     public virtual IEnumerable<global::Doroti.Framework.Rendering.RenderBox> _childrenInPaintOrder()
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__104594 = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
-        return ((child__104594 is null) ? System.Linq.Enumerable.Empty<global::Doroti.Framework.Rendering.RenderBox>() : System.Linq.Enumerable.Range(0, checked((int)1L)).Select(__index => ((Func<long, global::Doroti.Framework.Rendering.RenderBox>)((i) => child__104594))(checked((long)__index))));
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        return ((childLocal is null) ? System.Linq.Enumerable.Empty<global::Doroti.Framework.Rendering.RenderBox>() : System.Linq.Enumerable.Range(0, checked((int)1L)).Select(__index => ((Func<long, global::Doroti.Framework.Rendering.RenderBox>)((i) => childLocal))(checked((long)__index))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual IEnumerable<global::Doroti.Framework.Rendering.RenderBox> _childrenInHitTestOrder() => _childrenInPaintOrder();
-    public virtual _RenderTheater__overlay theater => (this.parent switch { _RenderDeferredLayoutBox__overlay parent__104935 => ((_RenderDeferredLayoutBox__overlay)parent__104935).theater, _ => throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"{this.parent} of {this} is not a _RenderDeferredLayoutBox")) });
+    public virtual _RenderTheater__overlay theater => (this.parent switch { _RenderDeferredLayoutBox__overlay parentLocal => ((_RenderDeferredLayoutBox__overlay)parentLocal).theater, _ => throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"{this.parent} of {this} is not a _RenderDeferredLayoutBox")) });
     public override bool sizedByParent => true;
     public override void performResize() => size = ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).biggest;
     public virtual void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
-        var childParentData__105251 = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)__child.parentData!)!;
-        global::Doroti.Ui.Offset offset__105322 = ((global::Doroti.Ui.Offset)(object?)((global::Doroti.Framework.Rendering.BoxParentData)childParentData__105251).offset);
-        transform.translateByDouble(offset__105322.dx, offset__105322.dy, 0, 1);
+        var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)__child.parentData!)!;
+        global::Doroti.Ui.Offset offsetLocal = ((global::Doroti.Ui.Offset)(object?)((global::Doroti.Framework.Rendering.BoxParentData)childParentData).offset);
+        transform.translateByDouble(offsetLocal.dx, offsetLocal.dy, 0, 1);
     }
 
     public virtual OverlayChildLayoutInfo layoutInfo => DartRuntimePrimitives.ConvertValue<OverlayChildLayoutInfo>(this._layoutInfo!);
     internal virtual OverlayChildLayoutInfo _computeNewLayoutInfo()
     {
-        _RenderTheater__overlay theater__105710 = this.theater;
-        var parent__105744 = ((_RenderDeferredLayoutBox__overlay?)(object?)this.parent!)!;
-        _RenderLayoutSurrogateProxyBox__overlay layoutSurrogate__105836 = ((_RenderDeferredLayoutBox__overlay)parent__105744)._layoutSurrogate;
+        _RenderTheater__overlay theaterLocal = this.theater;
+        var parentLocal = ((_RenderDeferredLayoutBox__overlay?)(object?)this.parent!)!;
+        _RenderLayoutSurrogateProxyBox__overlay layoutSurrogate = ((_RenderDeferredLayoutBox__overlay)parentLocal)._layoutSurrogate;
         DartRuntimePrimitives.Assert(() =>
             {
-                for (global::Doroti.Framework.Rendering.RenderObject? node__105929 = layoutSurrogate__105836; ((node__105929 is not null) && (!object.Equals(node__105929, theater__105710))); node__105929 = ((global::Doroti.Framework.Rendering.RenderObject)node__105929).parent)
+                for (global::Doroti.Framework.Rendering.RenderObject? node = layoutSurrogate; ((node is not null) && (!object.Equals(node, theaterLocal))); node = ((global::Doroti.Framework.Rendering.RenderObject)node).parent)
                 {
-                    if ((node__105929 is global::Doroti.Framework.Rendering.RenderFollowerLayer))
+                    if ((node is global::Doroti.Framework.Rendering.RenderFollowerLayer))
                     {
-                        global::Doroti.Framework.Rendering.RenderFollowerLayer node__105929__as106043 = (global::Doroti.Framework.Rendering.RenderFollowerLayer)node__105929;
+                        global::Doroti.Framework.Rendering.RenderFollowerLayer node__105929__as106043 = (global::Doroti.Framework.Rendering.RenderFollowerLayer)node;
                         throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("The paint transform cannot be reliably computed because of RenderFollowerLayer(s)"), ((global::Doroti.Framework.Rendering.RenderFollowerLayer)node__105929__as106043).describeForError("The RenderFollowerLayer was"), new global::Doroti.Framework.Foundation.ErrorDescription("RenderFollowerLayer establishes its paint transform only after the layout phase."), new global::Doroti.Framework.Foundation.ErrorHint("Consider replacing the corresponding CompositedTransformFollower with OverlayPortal.overlayChildLayoutBuilder if possible.") }));
                     }
-                    DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderObject)node__105929).depth > theater__105710.depth));
+                    DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderObject)node).depth > theaterLocal.depth));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        DartRuntimePrimitives.Assert(() => layoutSurrogate__105836.hasSize);
-        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)layoutSurrogate__105836).child)?.hasSize ?? true));
-        DartRuntimePrimitives.Assert(() => ((((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)layoutSurrogate__105836).child) is null) || (object.Equals(((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)layoutSurrogate__105836).child)!.size, layoutSurrogate__105836.size))));
-        DartRuntimePrimitives.Assert(() => (object.Equals(this.size, theater__105710.size)));
-        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)layoutSurrogate__105836).child)?.getTransformTo(layoutSurrogate__105836).isIdentity() ?? true));
-        DartRuntimePrimitives.Assert(() => getTransformTo(theater__105710).isIdentity());
-        global::Doroti.Ui.Size overlayPortalSize__107271 = ((global::Doroti.Ui.Size)(object?)((_RenderDeferredLayoutBox__overlay)parent__105744)._layoutSurrogate.size);
-        Matrix4 paintTransform__107339 = ((Matrix4)(object?)layoutSurrogate__105836.getTransformTo(theater__105710));
-        return OverlayChildLayoutInfo.Create_((overlayPortalSize__107271, paintTransform__107339, this.size));
+        DartRuntimePrimitives.Assert(() => layoutSurrogate.hasSize);
+        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)layoutSurrogate).child)?.hasSize ?? true));
+        DartRuntimePrimitives.Assert(() => ((((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)layoutSurrogate).child) is null) || (object.Equals(((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)layoutSurrogate).child)!.size, layoutSurrogate.size))));
+        DartRuntimePrimitives.Assert(() => (object.Equals(this.size, theaterLocal.size)));
+        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)layoutSurrogate).child)?.getTransformTo(layoutSurrogate).isIdentity() ?? true));
+        DartRuntimePrimitives.Assert(() => getTransformTo(theaterLocal).isIdentity());
+        global::Doroti.Ui.Size overlayPortalSize = ((global::Doroti.Ui.Size)(object?)((_RenderDeferredLayoutBox__overlay)parentLocal)._layoutSurrogate.size);
+        Matrix4 paintTransform = ((Matrix4)(object?)layoutSurrogate.getTransformTo(theaterLocal));
+        return OverlayChildLayoutInfo.Create_((overlayPortalSize, paintTransform, this.size));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2434,9 +2434,9 @@ internal class _RenderLayoutBuilder__overlay : global::Doroti.Framework.Renderin
     public override void performLayout()
     {
         runLayoutCallback();
-        if (this.child is global::Doroti.Framework.Rendering.RenderBox child__107737)
+        if (this.child is global::Doroti.Framework.Rendering.RenderBox childLocal)
         {
-            layoutChild(child__107737, this.constraints);
+            layoutChild(childLocal, this.constraints);
         }
         DartRuntimePrimitives.Assert(() => (this._callbackId is null));
         _callbackId ??= global::Doroti.Framework.Scheduler.SchedulerBinding.instance.scheduleFrameCallback((global::System.Action<Duration>)this._frameCallback, scheduleNewFrame: false);
@@ -2493,9 +2493,9 @@ internal class _RenderLayoutBuilder__overlay : global::Doroti.Framework.Renderin
 
     public override void dispose()
     {
-        if (this._callbackId is long callbackId__109858)
+        if (this._callbackId is long callbackId)
         {
-            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.cancelFrameCallbackWithId(callbackId__109858);
+            global::Doroti.Framework.Scheduler.SchedulerBinding.instance.cancelFrameCallbackWithId(callbackId);
         }
         base.dispose();
     }
@@ -2512,60 +2512,60 @@ internal class _RenderLayoutBuilder__overlay : global::Doroti.Framework.Renderin
     public virtual double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => !this.debugNeedsLayout);
-        global::Doroti.Framework.Rendering.BaselineOffset baselineOffset__39497 = global::Doroti.Framework.Rendering.BaselineOffset.noBaseline;
-        foreach (global::Doroti.Framework.Rendering.RenderBox child__39566 in _childrenInPaintOrder())
+        global::Doroti.Framework.Rendering.BaselineOffset baselineOffset = global::Doroti.Framework.Rendering.BaselineOffset.noBaseline;
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in _childrenInPaintOrder())
         {
-            DartRuntimePrimitives.Assert(() => !child__39566.debugNeedsLayout);
-            var childParentData__39653 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child__39566.parentData!)!;
-            baselineOffset__39497 = baselineOffset__39497.minOf((new global::Doroti.Framework.Rendering.BaselineOffset(child__39566.getDistanceToActualBaseline(baseline)).op_Add(childParentData__39653.offset.dy)));
+            DartRuntimePrimitives.Assert(() => !child.debugNeedsLayout);
+            var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+            baselineOffset = baselineOffset.minOf((new global::Doroti.Framework.Rendering.BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy)));
         }
-        return baselineOffset__39497.offset;
+        return baselineOffset.offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void layoutChild(global::Doroti.Framework.Rendering.RenderBox child, global::Doroti.Framework.Rendering.BoxConstraints nonPositionedChildConstraints)
     {
-        var childParentData__40970 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
-        global::Doroti.Framework.Painting.Alignment alignment__41046 = ((_RenderTheater__overlay)this.theater)._resolvedAlignment;
-        if (!((global::Doroti.Framework.Rendering.StackParentData)childParentData__40970).isPositioned)
+        var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+        global::Doroti.Framework.Painting.Alignment alignment = ((_RenderTheater__overlay)this.theater)._resolvedAlignment;
+        if (!((global::Doroti.Framework.Rendering.StackParentData)childParentData).isPositioned)
         {
             child.layout(nonPositionedChildConstraints, parentUsesSize: true);
-            childParentData__40970.offset = Offset.zero;
+            childParentData.offset = Offset.zero;
         }
         else
         {
             DartRuntimePrimitives.Assert(() => (child is not _RenderDeferredLayoutBox__overlay), () => (object?)"all _RenderDeferredLayoutBoxes must be non-positioned children.");
-            RenderStack.layoutPositionedChild(child, childParentData__40970, this.size, alignment__41046);
+            RenderStack.layoutPositionedChild(child, childParentData, this.size, alignment);
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals(child.parentData, childParentData__40970)));
+        DartRuntimePrimitives.Assert(() => (object.Equals(child.parentData, childParentData)));
     }
 
     public virtual bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
     {
-        IEnumerator<global::Doroti.Framework.Rendering.RenderBox> iterator__41661 = _childrenInHitTestOrder().GetEnumerator();
-        var isHit__41716 = false;
-        while ((!isHit__41716 && iterator__41661.MoveNext()))
+        IEnumerator<global::Doroti.Framework.Rendering.RenderBox> iterator = _childrenInHitTestOrder().GetEnumerator();
+        var isHit = false;
+        while ((!isHit && iterator.MoveNext()))
         {
-            global::Doroti.Framework.Rendering.RenderBox child__41797 = iterator__41661.Current;
-            var childParentData__41835 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child__41797.parentData!)!;
-            var localChild__41903 = child__41797;
+            global::Doroti.Framework.Rendering.RenderBox child = iterator.Current;
+            var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+            var localChild = child;
             bool childHitTest(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
             {
-                return localChild__41903.hitTest(result, position: position);
+                return localChild.hitTest(result, position: position);
                 throw new InvalidOperationException("Dart control flow completed without a value.");
             }
-            isHit__41716 = result.addWithPaintOffset(offset: childParentData__41835.offset, position: position, hitTest: (global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)childHitTest);
+            isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: (global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)childHitTest);
         }
-        return isHit__41716;
+        return isHit;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        foreach (global::Doroti.Framework.Rendering.RenderBox child__42320 in _childrenInPaintOrder())
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in _childrenInPaintOrder())
         {
-            var childParentData__42368 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child__42320.parentData!)!;
-            context.paintChild(child__42320, (childParentData__42368.offset + offset));
+            var childParentData = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)child.parentData!)!;
+            context.paintChild(child, (childParentData.offset + offset));
         }
     }
 

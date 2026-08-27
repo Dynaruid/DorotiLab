@@ -24,22 +24,22 @@ public static partial class Paint_utilitiesLibrary
         canvas.translate(start.dx, start.dy);
         end = (end - start);
         canvas.rotate(global::Doroti.Runtime.Dart_mathLibrary.atan2(end.dy, end.dx));
-        double length__1140 = end.distance;
-        double spacing__1178 = (length__1140 / ((zigs * 2.0)));
-        var path__1219 = ((Func<Path>)(() =>
+        double length = end.distance;
+        double spacing = (length / ((zigs * 2.0)));
+        var path = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
     __cascade.moveTo(0.0, 0.0);
     return __cascade;
 }))();
-        for (var index__1263 = 0L; (index__1263 < zigs); index__1263 += 1L)
+        for (var index = 0L; (index < zigs); index += 1L)
         {
-            double x__1319 = ((((index__1263 * 2.0) + 1.0)) * spacing__1178);
-            double y__1371 = (width * (((((index__1263 % 2.0)) * 2.0) - 1.0)));
-            path__1219.lineTo(x__1319, y__1371);
+            double x = ((((index * 2.0) + 1.0)) * spacing);
+            double y = (width * (((((index % 2.0)) * 2.0) - 1.0)));
+            path.lineTo(x, y);
         }
-        path__1219.lineTo(length__1140, 0.0);
-        canvas.drawPath(path__1219, paint);
+        path.lineTo(length, 0.0);
+        canvas.drawPath(path, paint);
         canvas.restore();
     }
 }

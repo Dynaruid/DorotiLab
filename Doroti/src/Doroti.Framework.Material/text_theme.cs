@@ -103,34 +103,34 @@ public class TextTheme : global::Doroti.Framework.Foundation.Diagnosticable
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.displayLarge, this.displayMedium, this.displaySmall, this.headlineLarge, this.headlineMedium, this.headlineSmall, this.titleLarge, this.titleMedium, this.titleSmall, this.bodyLarge, this.bodyMedium, this.bodySmall, this.labelLarge, this.labelMedium, this.labelSmall));
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        TextTheme defaultTheme__29959 = Typography.CreateMaterial2018(platform: global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform).black;
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displayLarge", this.displayLarge, defaultValue: ((TextTheme)defaultTheme__29959).displayLarge));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displayMedium", this.displayMedium, defaultValue: ((TextTheme)defaultTheme__29959).displayMedium));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displaySmall", this.displaySmall, defaultValue: ((TextTheme)defaultTheme__29959).displaySmall));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("headlineLarge", this.headlineLarge, defaultValue: ((TextTheme)defaultTheme__29959).headlineLarge));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("headlineMedium", this.headlineMedium, defaultValue: ((TextTheme)defaultTheme__29959).headlineMedium));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("headlineSmall", this.headlineSmall, defaultValue: ((TextTheme)defaultTheme__29959).headlineSmall));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleLarge", this.titleLarge, defaultValue: ((TextTheme)defaultTheme__29959).titleLarge));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleMedium", this.titleMedium, defaultValue: ((TextTheme)defaultTheme__29959).titleMedium));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleSmall", this.titleSmall, defaultValue: ((TextTheme)defaultTheme__29959).titleSmall));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("bodyLarge", this.bodyLarge, defaultValue: ((TextTheme)defaultTheme__29959).bodyLarge));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("bodyMedium", this.bodyMedium, defaultValue: ((TextTheme)defaultTheme__29959).bodyMedium));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("bodySmall", this.bodySmall, defaultValue: ((TextTheme)defaultTheme__29959).bodySmall));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("labelLarge", this.labelLarge, defaultValue: ((TextTheme)defaultTheme__29959).labelLarge));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("labelMedium", this.labelMedium, defaultValue: ((TextTheme)defaultTheme__29959).labelMedium));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("labelSmall", this.labelSmall, defaultValue: ((TextTheme)defaultTheme__29959).labelSmall));
+        TextTheme defaultTheme = Typography.CreateMaterial2018(platform: global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform).black;
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displayLarge", this.displayLarge, defaultValue: ((TextTheme)defaultTheme).displayLarge));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displayMedium", this.displayMedium, defaultValue: ((TextTheme)defaultTheme).displayMedium));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displaySmall", this.displaySmall, defaultValue: ((TextTheme)defaultTheme).displaySmall));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("headlineLarge", this.headlineLarge, defaultValue: ((TextTheme)defaultTheme).headlineLarge));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("headlineMedium", this.headlineMedium, defaultValue: ((TextTheme)defaultTheme).headlineMedium));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("headlineSmall", this.headlineSmall, defaultValue: ((TextTheme)defaultTheme).headlineSmall));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleLarge", this.titleLarge, defaultValue: ((TextTheme)defaultTheme).titleLarge));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleMedium", this.titleMedium, defaultValue: ((TextTheme)defaultTheme).titleMedium));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("titleSmall", this.titleSmall, defaultValue: ((TextTheme)defaultTheme).titleSmall));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("bodyLarge", this.bodyLarge, defaultValue: ((TextTheme)defaultTheme).bodyLarge));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("bodyMedium", this.bodyMedium, defaultValue: ((TextTheme)defaultTheme).bodyMedium));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("bodySmall", this.bodySmall, defaultValue: ((TextTheme)defaultTheme).bodySmall));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("labelLarge", this.labelLarge, defaultValue: ((TextTheme)defaultTheme).labelLarge));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("labelMedium", this.labelMedium, defaultValue: ((TextTheme)defaultTheme).labelMedium));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("labelSmall", this.labelSmall, defaultValue: ((TextTheme)defaultTheme).labelSmall));
     }
 
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

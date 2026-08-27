@@ -63,10 +63,10 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 {
     internal static FlutterError? _checkSemanticsData(SemanticsNode node)
     {
-        FlutterError? error__5693 = ((Func<SemanticsNode, FlutterError?>)(((SemanticsNode)node).role switch { SemanticsRole.alertDialog => _noCheckRequired, SemanticsRole.dialog => _noCheckRequired, SemanticsRole.none => _noCheckRequired, SemanticsRole.tab => _semanticsTab, SemanticsRole.tabBar => _semanticsTabBar, SemanticsRole.tabPanel => _noCheckRequired, SemanticsRole.table => _semanticsTable, SemanticsRole.cell => _semanticsCell, SemanticsRole.row => _semanticsRow, SemanticsRole.columnHeader => _semanticsColumnHeader, SemanticsRole.radioGroup => _semanticsRadioGroup, SemanticsRole.menu => _semanticsMenu, SemanticsRole.menuBar => _semanticsMenuBar, SemanticsRole.menuItem => _semanticsMenuItem, SemanticsRole.menuItemCheckbox => _semanticsMenuItemCheckbox, SemanticsRole.menuItemRadio => _semanticsMenuItemRadio, SemanticsRole.alert => _noLiveRegion, SemanticsRole.status => _noLiveRegion, SemanticsRole.list => _noCheckRequired, SemanticsRole.listItem => _semanticsListItem, SemanticsRole.complementary => _semanticsComplementary, SemanticsRole.contentInfo => _semanticsContentInfo, SemanticsRole.main => _semanticsMain, SemanticsRole.navigation => _semanticsNavigation, SemanticsRole.region => _semanticsRegion, SemanticsRole.form => _noCheckRequired, SemanticsRole.loadingSpinner => _noCheckRequired, SemanticsRole.progressBar => _semanticsProgressBar, SemanticsRole.dragHandle => _unimplemented, SemanticsRole.spinButton => _unimplemented, SemanticsRole.comboBox => _unimplemented, SemanticsRole.tooltip => _unimplemented, SemanticsRole.hotKey => _unimplemented, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }))(node);
-        if ((error__5693 is not null))
+        FlutterError? error = ((Func<SemanticsNode, FlutterError?>)(((SemanticsNode)node).role switch { SemanticsRole.alertDialog => _noCheckRequired, SemanticsRole.dialog => _noCheckRequired, SemanticsRole.none => _noCheckRequired, SemanticsRole.tab => _semanticsTab, SemanticsRole.tabBar => _semanticsTabBar, SemanticsRole.tabPanel => _noCheckRequired, SemanticsRole.table => _semanticsTable, SemanticsRole.cell => _semanticsCell, SemanticsRole.row => _semanticsRow, SemanticsRole.columnHeader => _semanticsColumnHeader, SemanticsRole.radioGroup => _semanticsRadioGroup, SemanticsRole.menu => _semanticsMenu, SemanticsRole.menuBar => _semanticsMenuBar, SemanticsRole.menuItem => _semanticsMenuItem, SemanticsRole.menuItemCheckbox => _semanticsMenuItemCheckbox, SemanticsRole.menuItemRadio => _semanticsMenuItemRadio, SemanticsRole.alert => _noLiveRegion, SemanticsRole.status => _noLiveRegion, SemanticsRole.list => _noCheckRequired, SemanticsRole.listItem => _semanticsListItem, SemanticsRole.complementary => _semanticsComplementary, SemanticsRole.contentInfo => _semanticsContentInfo, SemanticsRole.main => _semanticsMain, SemanticsRole.navigation => _semanticsNavigation, SemanticsRole.region => _semanticsRegion, SemanticsRole.form => _noCheckRequired, SemanticsRole.loadingSpinner => _noCheckRequired, SemanticsRole.progressBar => _semanticsProgressBar, SemanticsRole.dragHandle => _unimplemented, SemanticsRole.spinButton => _unimplemented, SemanticsRole.comboBox => _unimplemented, SemanticsRole.tooltip => _unimplemented, SemanticsRole.hotKey => _unimplemented, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }))(node);
+        if ((error is not null))
         {
-            return error__5693;
+            return error;
         }
         return _semanticsGeneral(node);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -76,36 +76,36 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
     internal static FlutterError? _noCheckRequired(SemanticsNode node) => null;
     internal static FlutterError? _semanticsProgressBar(SemanticsNode node)
     {
-        SemanticsData data__7931 = node.getSemanticsData();
-        if ((((((SemanticsData)data__7931).value.Length == 0) || (((((SemanticsData)data__7931).minValue is null ? (bool?)null : ((SemanticsData)data__7931).minValue.Length == 0) ?? true))) || (((((SemanticsData)data__7931).maxValue is null ? (bool?)null : ((SemanticsData)data__7931).maxValue.Length == 0) ?? true))))
+        SemanticsData data = node.getSemanticsData();
+        if ((((((SemanticsData)data).value.Length == 0) || (((((SemanticsData)data).minValue is null ? (bool?)null : ((SemanticsData)data).minValue.Length == 0) ?? true))) || (((((SemanticsData)data).maxValue is null ? (bool?)null : ((SemanticsData)data).maxValue.Length == 0) ?? true))))
         {
             return new FlutterError("A progress bar must have a value, a minValue, a maxValue.");
         }
-        double? minVal__8228 = Dart_coreLibrary.tryParse(((SemanticsData)data__7931).minValue!);
-        double? maxVal__8288 = Dart_coreLibrary.tryParse(((SemanticsData)data__7931).maxValue!);
-        double? currentValue__8479 = Dart_coreLibrary.tryParse(((SemanticsData)data__7931).value);
-        double? percentValue__8541 = (((SemanticsData)data__7931).value.endsWith("%") ? Dart_coreLibrary.tryParse(((SemanticsData)data__7931).value.substring(0L, (((SemanticsData)data__7931).value.Length - 1L))) : null);
-        if ((((minVal__8228 is null) || (maxVal__8288 is null)) || (((currentValue__8479 is null) && (percentValue__8541 is null)))))
+        double? minVal = Dart_coreLibrary.tryParse(((SemanticsData)data).minValue!);
+        double? maxVal = Dart_coreLibrary.tryParse(((SemanticsData)data).maxValue!);
+        double? currentValue = Dart_coreLibrary.tryParse(((SemanticsData)data).value);
+        double? percentValue = (((SemanticsData)data).value.endsWith("%") ? Dart_coreLibrary.tryParse(((SemanticsData)data).value.substring(0L, (((SemanticsData)data).value.Length - 1L))) : null);
+        if ((((minVal is null) || (maxVal is null)) || (((currentValue is null) && (percentValue is null)))))
         {
-            return new FlutterError("Progress bar value, minValue, and maxValue must be valid numbers. " + $"value: \"{((SemanticsData)data__7931).value}\", minValue: \"{((SemanticsData)data__7931).minValue}\", maxValue: \"{((SemanticsData)data__7931).maxValue}\"");
+            return new FlutterError("Progress bar value, minValue, and maxValue must be valid numbers. " + $"value: \"{((SemanticsData)data).value}\", minValue: \"{((SemanticsData)data).minValue}\", maxValue: \"{((SemanticsData)data).maxValue}\"");
         }
-        if ((minVal__8228 >= DartRuntimePrimitives.RequireValue(maxVal__8288)))
+        if ((minVal >= DartRuntimePrimitives.RequireValue(maxVal)))
         {
-            return new FlutterError($"Progress bar minValue ({((SemanticsData)data__7931).minValue}) must be less than maxValue ({((SemanticsData)data__7931).maxValue})");
+            return new FlutterError($"Progress bar minValue ({((SemanticsData)data).minValue}) must be less than maxValue ({((SemanticsData)data).maxValue})");
         }
-        if ((currentValue__8479 is not null))
+        if ((currentValue is not null))
         {
-            double currentValue__8479__value9301 = DartRuntimePrimitives.RequireValue(currentValue__8479);
-            if (((DartRuntimePrimitives.RequireValue(currentValue__8479__value9301) < DartRuntimePrimitives.RequireValue(minVal__8228)) || (DartRuntimePrimitives.RequireValue(currentValue__8479__value9301) > DartRuntimePrimitives.RequireValue(maxVal__8288))))
+            double currentValue__8479__value9301 = DartRuntimePrimitives.RequireValue(currentValue);
+            if (((DartRuntimePrimitives.RequireValue(currentValue__8479__value9301) < DartRuntimePrimitives.RequireValue(minVal)) || (DartRuntimePrimitives.RequireValue(currentValue__8479__value9301) > DartRuntimePrimitives.RequireValue(maxVal))))
             {
-                return new FlutterError($"Progress bar value ({((SemanticsData)data__7931).value}) must be between minValue ({((SemanticsData)data__7931).minValue}) and maxValue ({((SemanticsData)data__7931).maxValue})");
+                return new FlutterError($"Progress bar value ({((SemanticsData)data).value}) must be between minValue ({((SemanticsData)data).minValue}) and maxValue ({((SemanticsData)data).maxValue})");
             }
             return null;
         }
-        if (((percentValue__8541 is not null) && (((DartRuntimePrimitives.RequireValue(percentValue__8541) < 0L) || (DartRuntimePrimitives.RequireValue(percentValue__8541) > 100L)))))
+        if (((percentValue is not null) && (((DartRuntimePrimitives.RequireValue(percentValue) < 0L) || (DartRuntimePrimitives.RequireValue(percentValue) > 100L)))))
         {
-            double percentValue__8541__value9681 = DartRuntimePrimitives.RequireValue(percentValue__8541);
-            return new FlutterError($"Progress bar percentage value ({((SemanticsData)data__7931).value}) must be between 0% and 100%");
+            double percentValue__8541__value9681 = DartRuntimePrimitives.RequireValue(percentValue);
+            return new FlutterError($"Progress bar percentage value ({((SemanticsData)data).value}) must be between 0% and 100%");
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -113,8 +113,8 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _semanticsTab(SemanticsNode node)
     {
-        SemanticsData data__9982 = node.getSemanticsData();
-        if ((object.Equals(((SemanticsData)data__9982).flagsCollection.isSelected, Tristate.none)))
+        SemanticsData data = node.getSemanticsData();
+        if ((object.Equals(((SemanticsData)data).flagsCollection.isSelected, Tristate.none)))
         {
             return new FlutterError("A tab needs selected states");
         }
@@ -122,7 +122,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
         {
             return null;
         }
-        if (((!object.Equals(((SemanticsData)data__9982).flagsCollection.isEnabled, Tristate.isFalse)) && !data__9982.hasAction(SemanticsAction.tap)))
+        if (((!object.Equals(((SemanticsData)data).flagsCollection.isEnabled, Tristate.isFalse)) && !data.hasAction(SemanticsAction.tap)))
         {
             return new FlutterError("A tab must have a tap action");
         }
@@ -136,33 +136,33 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
         {
             return new FlutterError("a TabBar cannot be empty");
         }
-        FlutterError? error__10576 = default!;
+        FlutterError? error = default!;
         node.visitChildren(((Func<SemanticsNode, bool>)((child) =>
         {
             if ((!object.Equals(child.getSemanticsData().role, SemanticsRole.tab)))
             {
-                error__10576 = new FlutterError("Children of TabBar must have the tab role");
+                error = new FlutterError("Children of TabBar must have the tab role");
             }
-            return (error__10576 is null);
+            return (error is null);
             return default;
         })));
-        return error__10576;
+        return error;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static FlutterError? _semanticsTable(SemanticsNode node)
     {
-        FlutterError? error__10915 = default!;
+        FlutterError? error = default!;
         node.visitChildren(((Func<SemanticsNode, bool>)((child) =>
         {
             if ((!object.Equals(child.getSemanticsData().role, SemanticsRole.row)))
             {
-                error__10915 = new FlutterError("Children of Table must have the row role");
+                error = new FlutterError("Children of Table must have the row role");
             }
-            return (error__10915 is null);
+            return (error is null);
             return default;
         })));
-        return error__10915;
+        return error;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -172,17 +172,17 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
         {
             return new FlutterError("A row must be a child of a table");
         }
-        FlutterError? error__11372 = default!;
+        FlutterError? error = default!;
         node.visitChildren(((Func<SemanticsNode, bool>)((child) =>
         {
             if (((!object.Equals(child.getSemanticsData().role, SemanticsRole.cell)) && (!object.Equals(child.getSemanticsData().role, SemanticsRole.columnHeader))))
             {
-                error__11372 = new FlutterError("Children of Row must have the cell or columnHeader role");
+                error = new FlutterError("Children of Row must have the cell or columnHeader role");
             }
-            return (error__11372 is null);
+            return (error is null);
             return default;
         })));
-        return error__11372;
+        return error;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -208,35 +208,35 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _semanticsRadioGroup(SemanticsNode node)
     {
-        FlutterError? error__12329 = default!;
-        var hasCheckedChild__12344 = false;
+        FlutterError? error = default!;
+        var hasCheckedChild = false;
         bool validateRadioGroupChildren(SemanticsNode node)
         {
-            SemanticsData data__12453 = node.getSemanticsData();
-            if ((object.Equals(((SemanticsData)data__12453).role, SemanticsRole.radioGroup)))
+            SemanticsData data = node.getSemanticsData();
+            if ((object.Equals(((SemanticsData)data).role, SemanticsRole.radioGroup)))
             {
-                return (error__12329 is null);
+                return (error is null);
             }
-            if (!((SemanticsData)data__12453).flagsCollection.isInMutuallyExclusiveGroup)
+            if (!((SemanticsData)data).flagsCollection.isInMutuallyExclusiveGroup)
             {
                 node.visitChildren((Func<SemanticsNode, bool>)validateRadioGroupChildren);
-                return (error__12329 is null);
+                return (error is null);
             }
-            if ((object.Equals(((SemanticsData)data__12453).flagsCollection.isChecked, CheckedState.isTrue)))
+            if ((object.Equals(((SemanticsData)data).flagsCollection.isChecked, CheckedState.isTrue)))
             {
-                if (hasCheckedChild__12344)
+                if (hasCheckedChild)
                 {
-                    error__12329 = new FlutterError("Radio groups must not have multiple checked children");
+                    error = new FlutterError("Radio groups must not have multiple checked children");
                     return false;
                 }
-                hasCheckedChild__12344 = true;
+                hasCheckedChild = true;
             }
-            DartRuntimePrimitives.Assert(() => (error__12329 is null));
+            DartRuntimePrimitives.Assert(() => (error is null));
             return true;
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         node.visitChildren((Func<SemanticsNode, bool>)validateRadioGroupChildren);
-        return error__12329;
+        return error;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -262,14 +262,14 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _semanticsMenuItem(SemanticsNode node)
     {
-        SemanticsNode? currentNode__13642 = node;
-        while ((currentNode__13642?.parent is not null))
+        SemanticsNode? currentNode = node;
+        while ((currentNode?.parent is not null))
         {
-            if (((object.Equals(currentNode__13642?.parent?.role, SemanticsRole.menu)) || (object.Equals(currentNode__13642?.parent?.role, SemanticsRole.menuBar))))
+            if (((object.Equals(currentNode?.parent?.role, SemanticsRole.menu)) || (object.Equals(currentNode?.parent?.role, SemanticsRole.menuBar))))
             {
                 return null;
             }
-            currentNode__13642 = currentNode__13642?.parent;
+            currentNode = currentNode?.parent;
         }
         return new FlutterError("A menu item must be a child of a menu or a menu bar");
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -277,19 +277,19 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _semanticsMenuItemCheckbox(SemanticsNode node)
     {
-        SemanticsData data__14086 = node.getSemanticsData();
-        if ((object.Equals(((SemanticsData)data__14086).flagsCollection.isChecked, CheckedState.none)))
+        SemanticsData data = node.getSemanticsData();
+        if ((object.Equals(((SemanticsData)data).flagsCollection.isChecked, CheckedState.none)))
         {
             return new FlutterError("a menu item checkbox must be checkable");
         }
-        SemanticsNode? currentNode__14276 = node;
-        while ((currentNode__14276?.parent is not null))
+        SemanticsNode? currentNode = node;
+        while ((currentNode?.parent is not null))
         {
-            if (((object.Equals(currentNode__14276?.parent?.role, SemanticsRole.menu)) || (object.Equals(currentNode__14276?.parent?.role, SemanticsRole.menuBar))))
+            if (((object.Equals(currentNode?.parent?.role, SemanticsRole.menu)) || (object.Equals(currentNode?.parent?.role, SemanticsRole.menuBar))))
             {
                 return null;
             }
-            currentNode__14276 = currentNode__14276?.parent;
+            currentNode = currentNode?.parent;
         }
         return new FlutterError("A menu item checkbox must be a child of a menu or a menu bar");
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -297,19 +297,19 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _semanticsMenuItemRadio(SemanticsNode node)
     {
-        SemanticsData data__14726 = node.getSemanticsData();
-        if ((object.Equals(((SemanticsData)data__14726).flagsCollection.isChecked, CheckedState.none)))
+        SemanticsData data = node.getSemanticsData();
+        if ((object.Equals(((SemanticsData)data).flagsCollection.isChecked, CheckedState.none)))
         {
             return new FlutterError("a menu item radio must be checkable");
         }
-        SemanticsNode? currentNode__14913 = node;
-        while ((currentNode__14913?.parent is not null))
+        SemanticsNode? currentNode = node;
+        while ((currentNode?.parent is not null))
         {
-            if (((object.Equals(currentNode__14913?.parent?.role, SemanticsRole.menu)) || (object.Equals(currentNode__14913?.parent?.role, SemanticsRole.menuBar))))
+            if (((object.Equals(currentNode?.parent?.role, SemanticsRole.menu)) || (object.Equals(currentNode?.parent?.role, SemanticsRole.menuBar))))
             {
                 return null;
             }
-            currentNode__14913 = currentNode__14913?.parent;
+            currentNode = currentNode?.parent;
         }
         return new FlutterError("A menu item radio must be a child of a menu or a menu bar");
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -317,10 +317,10 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _noLiveRegion(SemanticsNode node)
     {
-        SemanticsData data__15350 = node.getSemanticsData();
-        if (((SemanticsData)data__15350).flagsCollection.isLiveRegion)
+        SemanticsData data = node.getSemanticsData();
+        if (((SemanticsData)data).flagsCollection.isLiveRegion)
         {
-            return new FlutterError($"Node {((SemanticsNode)node).id} has role {((SemanticsData)data__15350).role} but is also a live region. " + $"A node can not have {((SemanticsData)data__15350).role} and be live region at the same time. " + "Either remove the role or the live region");
+            return new FlutterError($"Node {((SemanticsNode)node).id} has role {((SemanticsData)data).role} but is also a live region. " + $"A node can not have {((SemanticsData)data).role} and be live region at the same time. " + "Either remove the role or the live region");
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -328,16 +328,16 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _semanticsListItem(SemanticsNode node)
     {
-        SemanticsData data__15789 = node.getSemanticsData();
-        SemanticsNode? parent__15846 = ((SemanticsNode)node).parent;
-        if ((parent__15846 is null))
+        SemanticsData data = node.getSemanticsData();
+        SemanticsNode? parentLocal = ((SemanticsNode)node).parent;
+        if ((parentLocal is null))
         {
-            return new FlutterError($"Semantics node {((SemanticsNode)node).id} has role {((SemanticsData)data__15789).role} but doesn't have a parent");
+            return new FlutterError($"Semantics node {((SemanticsNode)node).id} has role {((SemanticsData)data).role} but doesn't have a parent");
         }
-        SemanticsData parentSemanticsData__16045 = parent__15846.getSemanticsData();
-        if ((!object.Equals(((SemanticsData)parentSemanticsData__16045).role, SemanticsRole.list)))
+        SemanticsData parentSemanticsData = parentLocal.getSemanticsData();
+        if ((!object.Equals(((SemanticsData)parentSemanticsData).role, SemanticsRole.list)))
         {
-            return new FlutterError($"Semantics node {((SemanticsNode)node).id} has role {((SemanticsData)data__15789).role}, but its " + $"parent node {((SemanticsNode)parent__15846).id} doesn't have the role {SemanticsRole.list}. " + $"Please assign the {SemanticsRole.list} to node {((SemanticsNode)parent__15846).id}");
+            return new FlutterError($"Semantics node {((SemanticsNode)node).id} has role {((SemanticsData)data).role}, but its " + $"parent node {((SemanticsNode)parentLocal).id} doesn't have the role {SemanticsRole.list}. " + $"Please assign the {SemanticsRole.list} to node {((SemanticsNode)parentLocal).id}");
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -346,14 +346,14 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
     internal static bool _isLandmarkRole(SemanticsData nodeData) => (((((object.Equals(((SemanticsData)nodeData).role, SemanticsRole.complementary)) || (object.Equals(((SemanticsData)nodeData).role, SemanticsRole.contentInfo))) || (object.Equals(((SemanticsData)nodeData).role, SemanticsRole.main))) || (object.Equals(((SemanticsData)nodeData).role, SemanticsRole.navigation))) || (object.Equals(((SemanticsData)nodeData).role, SemanticsRole.region)));
     internal static bool _isSameRoleExisted(SemanticsNode semanticsNode)
     {
-        DartMap<long, SemanticsNode> treeNodes__16840 = ((SemanticsNode)semanticsNode).owner!._nodes;
-        var sameRoleCount__16889 = 0L;
-        foreach (long id__16927 in treeNodes__16840.Keys)
+        DartMap<long, SemanticsNode> treeNodes = ((SemanticsNode)semanticsNode).owner!._nodes;
+        var sameRoleCount = 0L;
+        foreach (long id in treeNodes.Keys)
         {
-            if ((object.Equals(treeNodes__16840.GetValueOrDefault(id__16927)?.getSemanticsData().role, ((SemanticsNode)semanticsNode).role)))
+            if ((object.Equals(treeNodes.GetValueOrDefault(id)?.getSemanticsData().role, ((SemanticsNode)semanticsNode).role)))
             {
-                sameRoleCount__16889++;
-                if ((sameRoleCount__16889 > 1L))
+                sameRoleCount++;
+                if ((sameRoleCount > 1L))
                 {
                     return true;
                 }
@@ -365,17 +365,17 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _semanticsComplementary(SemanticsNode node)
     {
-        SemanticsNode? currentNode__17241 = ((SemanticsNode)node).parent;
-        while ((currentNode__17241 is not null))
+        SemanticsNode? currentNode = ((SemanticsNode)node).parent;
+        while ((currentNode is not null))
         {
-            if (_isLandmarkRole(currentNode__17241.getSemanticsData()))
+            if (_isLandmarkRole(currentNode.getSemanticsData()))
             {
                 return new FlutterError("The complementary landmark role should not contained within any other landmark roles.");
             }
-            currentNode__17241 = ((SemanticsNode)currentNode__17241).parent;
+            currentNode = ((SemanticsNode)currentNode).parent;
         }
-        SemanticsData data__17581 = node.getSemanticsData();
-        if ((_isSameRoleExisted(node) && (((SemanticsData)data__17581).label.Length == 0)))
+        SemanticsData data = node.getSemanticsData();
+        if ((_isSameRoleExisted(node) && (((SemanticsData)data).label.Length == 0)))
         {
             return new FlutterError("The complementary landmark role should have a unique label as it is used more than once.");
         }
@@ -385,17 +385,17 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _semanticsContentInfo(SemanticsNode node)
     {
-        SemanticsNode? currentNode__17921 = ((SemanticsNode)node).parent;
-        while ((currentNode__17921 is not null))
+        SemanticsNode? currentNode = ((SemanticsNode)node).parent;
+        while ((currentNode is not null))
         {
-            if (_isLandmarkRole(currentNode__17921.getSemanticsData()))
+            if (_isLandmarkRole(currentNode.getSemanticsData()))
             {
                 return new FlutterError("The contentInfo landmark role should not contained within any other landmark roles.");
             }
-            currentNode__17921 = ((SemanticsNode)currentNode__17921).parent;
+            currentNode = ((SemanticsNode)currentNode).parent;
         }
-        SemanticsData data__18259 = node.getSemanticsData();
-        if ((_isSameRoleExisted(node) && (((SemanticsData)data__18259).label.Length == 0)))
+        SemanticsData data = node.getSemanticsData();
+        if ((_isSameRoleExisted(node) && (((SemanticsData)data).label.Length == 0)))
         {
             return new FlutterError("The contentInfo landmark role should have a unique label as it is used more than once.");
         }
@@ -405,17 +405,17 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _semanticsMain(SemanticsNode node)
     {
-        SemanticsNode? currentNode__18590 = ((SemanticsNode)node).parent;
-        while ((currentNode__18590 is not null))
+        SemanticsNode? currentNode = ((SemanticsNode)node).parent;
+        while ((currentNode is not null))
         {
-            if (_isLandmarkRole(currentNode__18590.getSemanticsData()))
+            if (_isLandmarkRole(currentNode.getSemanticsData()))
             {
                 return new FlutterError("The main landmark role should not contained within any other landmark roles.");
             }
-            currentNode__18590 = ((SemanticsNode)currentNode__18590).parent;
+            currentNode = ((SemanticsNode)currentNode).parent;
         }
-        SemanticsData data__18921 = node.getSemanticsData();
-        if ((_isSameRoleExisted(node) && (((SemanticsData)data__18921).label.Length == 0)))
+        SemanticsData data = node.getSemanticsData();
+        if ((_isSameRoleExisted(node) && (((SemanticsData)data).label.Length == 0)))
         {
             return new FlutterError("The main landmark role should have a unique label as it is used more than once.");
         }
@@ -425,8 +425,8 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _semanticsNavigation(SemanticsNode node)
     {
-        SemanticsData data__19256 = node.getSemanticsData();
-        if ((_isSameRoleExisted(node) && (((SemanticsData)data__19256).label.Length == 0)))
+        SemanticsData data = node.getSemanticsData();
+        if ((_isSameRoleExisted(node) && (((SemanticsData)data).label.Length == 0)))
         {
             return new FlutterError("The navigation landmark role should have a unique label as it is used more than once.");
         }
@@ -436,8 +436,8 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _semanticsRegion(SemanticsNode node)
     {
-        SemanticsData data__19593 = node.getSemanticsData();
-        if ((((SemanticsData)data__19593).label.Length == 0))
+        SemanticsData data = node.getSemanticsData();
+        if ((((SemanticsData)data).label.Length == 0))
         {
             return new FlutterError("A region role should include a label that describes the purpose of the content.");
         }
@@ -447,27 +447,27 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
 
     internal static FlutterError? _semanticsGeneral(SemanticsNode node)
     {
-        SemanticsData data__19898 = node.getSemanticsData();
-        bool? isExpanded__19946 = ((SemanticsData)data__19898).flagsCollection.isExpanded.toBoolOrNull();
-        if ((isExpanded__19946 is not null))
+        SemanticsData data = node.getSemanticsData();
+        bool? isExpandedLocal = ((SemanticsData)data).flagsCollection.isExpanded.toBoolOrNull();
+        if ((isExpandedLocal is not null))
         {
-            bool isExpanded__19946__value20016 = DartRuntimePrimitives.RequireValue(isExpanded__19946);
-            bool hasExpandAction__20055 = data__19898.hasAction(SemanticsAction.expand);
-            bool hasCollapseAction__20130 = data__19898.hasAction(SemanticsAction.collapse);
-            if ((hasExpandAction__20055 && hasCollapseAction__20130))
+            bool isExpanded__19946__value20016 = DartRuntimePrimitives.RequireValue(isExpandedLocal);
+            bool hasExpandAction = data.hasAction(SemanticsAction.expand);
+            bool hasCollapseAction = data.hasAction(SemanticsAction.collapse);
+            if ((hasExpandAction && hasCollapseAction))
             {
                 return new FlutterError("An expandable node cannot have both expand and collapse actions set at the same time.");
             }
-            if ((DartRuntimePrimitives.RequireValue(isExpanded__19946__value20016) && hasExpandAction__20055))
+            if ((DartRuntimePrimitives.RequireValue(isExpanded__19946__value20016) && hasExpandAction))
             {
                 return new FlutterError("An expanded node cannot have an expand action.");
             }
-            if ((!DartRuntimePrimitives.RequireValue(isExpanded__19946__value20016) && hasCollapseAction__20130))
+            if ((!DartRuntimePrimitives.RequireValue(isExpanded__19946__value20016) && hasCollapseAction))
             {
                 return new FlutterError("A collapsed node cannot have a collapse action.");
             }
         }
-        if ((((SemanticsData)data__19898).flagsCollection.isAccessibilityFocusBlocked && (!object.Equals(((SemanticsData)data__19898).flagsCollection.isFocused, Tristate.none))))
+        if ((((SemanticsData)data).flagsCollection.isAccessibilityFocusBlocked && (!object.Equals(((SemanticsData)data).flagsCollection.isFocused, Tristate.none))))
         {
             return new FlutterError("A node that is keyboard focusable cannot be set to accessibility unfocusable");
         }
@@ -517,10 +517,10 @@ public class ChildSemanticsConfigurationsResultBuilder
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                var seenConfigs__25579 = new HashSet<SemanticsConfiguration>();
-                foreach (var config__25638 in new List<SemanticsConfiguration>())
+                var seenConfigs = new HashSet<SemanticsConfiguration>();
+                foreach (var config in new List<SemanticsConfiguration>())
                 {
-                    DartRuntimePrimitives.Assert(() => seenConfigs__25579.Add(config__25638));
+                    DartRuntimePrimitives.Assert(() => seenConfigs.Add(config));
                 }
                 return true;
             });
@@ -576,13 +576,13 @@ public class CustomSemanticsAction
 
     public static long getIdentifier(CustomSemanticsAction action)
     {
-        if (!_ids.TryGetValue(action, out var result__28793))
+        if (!_ids.TryGetValue(action, out var result))
         {
-            result__28793 = _nextId++;
-            _ids[DartRuntimePrimitives.RequireReference(action)] = result__28793;
-            _actions[result__28793] = action;
+            result = _nextId++;
+            _ids[DartRuntimePrimitives.RequireReference(action)] = result;
+            _actions[result] = action;
         }
-        return result__28793;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -618,9 +618,9 @@ public class AttributedString
         System.Diagnostics.Debug.Assert(((@string.Length != 0) || (checked((long)(__attributes.Count)) == 0)));
         System.Diagnostics.Debug.Assert(((Func<bool>)(() =>
         {
-            foreach (var attribute__29828 in __attributes)
+            foreach (var attribute in __attributes)
             {
-                DartRuntimePrimitives.Assert(() => ((@string.Length >= attribute__29828.range.start) && (@string.Length >= attribute__29828.range.end)));
+                DartRuntimePrimitives.Assert(() => ((@string.Length >= attribute.range.start) && (@string.Length >= attribute.range.end)));
             }
             return true;
             return default;
@@ -637,19 +637,19 @@ public class AttributedString
         {
             return this;
         }
-        string newString__30778 = (this.@string + ((AttributedString)other).@string);
-        var newAttributes__30823 = new List<global::Doroti.Ui.StringAttribute>(this.attributes);
+        string newString = (this.@string + ((AttributedString)other).@string);
+        var newAttributes = new List<global::Doroti.Ui.StringAttribute>(this.attributes);
         if ((checked((long)(((AttributedString)other).attributes.Count)) != 0))
         {
-            long offset__30932 = this.@string.Length;
-            foreach (global::Doroti.Ui.StringAttribute attribute__30989 in ((AttributedString)other).attributes)
+            long offset = this.@string.Length;
+            foreach (global::Doroti.Ui.StringAttribute attribute in ((AttributedString)other).attributes)
             {
-                var newRange__31036 = new global::Doroti.Ui.TextRange(start: (attribute__30989.range.start + offset__30932), end: (attribute__30989.range.end + offset__30932));
-                global::Doroti.Ui.StringAttribute adjustedAttribute__31193 = attribute__30989.copy(range: newRange__31036);
-                newAttributes__30823.Add(adjustedAttribute__31193);
+                var newRange = new global::Doroti.Ui.TextRange(start: (attribute.range.start + offset), end: (attribute.range.end + offset));
+                global::Doroti.Ui.StringAttribute adjustedAttribute = attribute.copy(range: newRange);
+                newAttributes.Add(adjustedAttribute);
             }
         }
-        return new AttributedString(newString__30778, attributes: newAttributes__30823);
+        return new AttributedString(newString, attributes: newAttributes);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -685,16 +685,16 @@ public class AttributedStringProperty : DiagnosticsProperty<AttributedString>
         {
             return "null";
         }
-        string text__32930 = value!.@string;
+        string text = value!.@string;
         if (((parentConfiguration is not null) && !parentConfiguration.lineBreakProperties))
         {
-            text__32930 = text__32930.replaceAll("\n", "\\n");
+            text = text.replaceAll("\n", "\\n");
         }
         if ((checked((long)(value!.attributes.Count)) == 0))
         {
-            return $"\"{text__32930}\"";
+            return $"\"{text}\"";
         }
-        return $"\"{text__32930}\" {value!.attributes}";
+        return $"\"{text}\" {value!.attributes}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -732,30 +732,30 @@ public class SemanticsLabelBuilder
         }
         if ((checked((long)(this._parts.Count)) == 1L))
         {
-            var (text__35608, _) = this._parts.First();
-            return text__35608;
+            var (text, _) = this._parts.First();
+            return text;
         }
-        var buffer__35754 = new StringBuffer();
-        var (firstText__35797, _) = this._parts.First();
-        buffer__35754.write(firstText__35797);
-        foreach (var (partText__35895, partTextDirection__35920) in this._parts.skip(1L))
+        var buffer = new StringBuffer();
+        var (firstText, _) = this._parts.First();
+        buffer.write(firstText);
+        foreach (var (partText, partTextDirection) in this._parts.skip(1L))
         {
-            global::Doroti.Ui.TextDirection? partDirection__35987 = (partTextDirection__35920 ?? this.textDirection);
+            global::Doroti.Ui.TextDirection? partDirection = (partTextDirection ?? this.textDirection);
             if ((this.separator.Length != 0))
             {
-                buffer__35754.write(this.separator);
+                buffer.write(this.separator);
             }
-            var processedText__36126 = partText__35895;
-            if ((((this.textDirection is not null) && (partDirection__35987 is not null)) && (!object.Equals(this.textDirection, DartRuntimePrimitives.RequireValue(partDirection__35987)))))
+            var processedText = partText;
+            if ((((this.textDirection is not null) && (partDirection is not null)) && (!object.Equals(this.textDirection, DartRuntimePrimitives.RequireValue(partDirection)))))
             {
                 TextDirection textDirection__value36162 = DartRuntimePrimitives.RequireValue(textDirection);
-                TextDirection partDirection__35987__value36187 = DartRuntimePrimitives.RequireValue(partDirection__35987);
-                string directionalEmbedding__36267 = (DartRuntimePrimitives.RequireValue(partDirection__35987__value36187) switch { TextDirection.rtl => Unicode.RLE, TextDirection.ltr => Unicode.LRE, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-                processedText__36126 = ((directionalEmbedding__36267 + partText__35895) + Unicode.PDF);
+                TextDirection partDirection__35987__value36187 = DartRuntimePrimitives.RequireValue(partDirection);
+                string directionalEmbedding = (DartRuntimePrimitives.RequireValue(partDirection__35987__value36187) switch { TextDirection.rtl => Unicode.RLE, TextDirection.ltr => Unicode.LRE, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                processedText = ((directionalEmbedding + partText) + Unicode.PDF);
             }
-            buffer__35754.write(processedText__36126);
+            buffer.write(processedText);
         }
-        return buffer__35754.ToString();
+        return buffer.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -865,12 +865,12 @@ public class SemanticsData : Diagnosticable
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("rect", this.rect, showName: false));
         properties.add(new global::Doroti.Framework.Painting.TransformProperty("transform", this.transform, showName: false, defaultValue: null));
-        var actionSummary__49230 = new List<string>();
-        List<string?> customSemanticsActionSummary__49410 = this.customSemanticsActionIds!.map<long, string?>(((actionId) => CustomSemanticsAction.getAction(actionId)!.label)).ToList();
-        properties.add(new IterableProperty<string>("actions", actionSummary__49230, ifEmpty: null));
-        properties.add(new IterableProperty<string?>("customActions", customSemanticsActionSummary__49410, ifEmpty: null));
-        List<string> flagSummary__49809 = this.flagsCollection.toStrings();
-        properties.add(new IterableProperty<string>("flags", flagSummary__49809, ifEmpty: null));
+        var actionSummary = new List<string>();
+        List<string?> customSemanticsActionSummary = this.customSemanticsActionIds!.map<long, string?>(((actionId) => CustomSemanticsAction.getAction(actionId)!.label)).ToList();
+        properties.add(new IterableProperty<string>("actions", actionSummary, ifEmpty: null));
+        properties.add(new IterableProperty<string?>("customActions", customSemanticsActionSummary, ifEmpty: null));
+        List<string> flagSummary = this.flagsCollection.toStrings();
+        properties.add(new IterableProperty<string>("flags", flagSummary, ifEmpty: null));
         properties.add(new StringProperty("identifier", this.identifier, defaultValue: ""));
         properties.add(new DiagnosticsProperty<object>("traversalParentIdentifier", this.traversalParentIdentifier, defaultValue: null));
         properties.add(new DiagnosticsProperty<object>("traversalChildIdentifier", this.traversalChildIdentifier, defaultValue: null));
@@ -931,9 +931,9 @@ public class SemanticsData : Diagnosticable
             {
                 return false;
             }
-            for (var i__55721 = 0L; (i__55721 < checked((long)(left.Count))); i__55721++)
+            for (var i = 0L; (i < checked((long)(left.Count))); i++)
             {
-                if ((left[(int)(i__55721)] != right[(int)(i__55721)]))
+                if ((left[(int)(i)] != right[(int)(i)]))
                 {
                     return false;
                 }
@@ -1369,105 +1369,105 @@ public class SemanticsNode : DiagnosticableTreeMixin
         DartRuntimePrimitives.Assert(() => !newChildren.any(((child) => (object.Equals(child, this)))));
         DartRuntimePrimitives.Assert(() =>
             {
-                var seenChildren__112516 = new HashSet<SemanticsNode>();
-                foreach (var child__112567 in newChildren)
+                var seenChildren = new HashSet<SemanticsNode>();
+                foreach (var childLocal in newChildren)
                 {
-                    DartRuntimePrimitives.Assert(() => seenChildren__112516.Add(child__112567));
+                    DartRuntimePrimitives.Assert(() => seenChildren.Add(childLocal));
                 }
                 return true;
             });
         if ((this._children is not null))
         {
-            foreach (SemanticsNode child__112814 in this._children!)
+            foreach (SemanticsNode childAlternate in this._children!)
             {
-                child__112814._dead = true;
+                childAlternate._dead = true;
             }
         }
-        foreach (var child__112894 in newChildren)
+        foreach (var childNested in newChildren)
         {
-            child__112894._dead = false;
+            childNested._dead = false;
         }
-        var sawChange__112959 = false;
+        var sawChange = false;
         if ((this._children is not null))
         {
-            foreach (SemanticsNode child__113038 in this._children!)
+            foreach (SemanticsNode childCurrent in this._children!)
             {
-                if (((SemanticsNode)child__113038)._dead)
+                if (((SemanticsNode)childCurrent)._dead)
                 {
-                    if ((object.Equals(((SemanticsNode)child__113038).parent, this)))
+                    if ((object.Equals(((SemanticsNode)childCurrent).parent, this)))
                     {
-                        _dropChild(child__113038);
+                        _dropChild(childCurrent);
                     }
-                    sawChange__112959 = true;
+                    sawChange = true;
                 }
             }
         }
-        foreach (var child__113361 in newChildren)
+        foreach (var childNext in newChildren)
         {
-            if ((!object.Equals(((SemanticsNode)child__113361).parent, this)))
+            if ((!object.Equals(((SemanticsNode)childNext).parent, this)))
             {
-                if ((((SemanticsNode)child__113361).parent is not null))
+                if ((((SemanticsNode)childNext).parent is not null))
                 {
-                    ((SemanticsNode)child__113361).parent?._dropChild(child__113361);
+                    ((SemanticsNode)childNext).parent?._dropChild(childNext);
                 }
-                DartRuntimePrimitives.Assert(() => !((SemanticsNode)child__113361).attached);
-                _adoptChild(child__113361);
-                sawChange__112959 = true;
+                DartRuntimePrimitives.Assert(() => !((SemanticsNode)childNext).attached);
+                _adoptChild(childNext);
+                sawChange = true;
             }
         }
         DartRuntimePrimitives.Assert(() =>
             {
                 if (DartRuntimePrimitives.Identical(newChildren, this._children))
                 {
-                    var mutationErrors__114129 = new List<DiagnosticsNode>();
+                    var mutationErrors = new List<DiagnosticsNode>();
                     if ((checked((long)(newChildren.Count)) != checked((long)(this._debugPreviousSnapshot.Count))))
                     {
-                        mutationErrors__114129.Add(new ErrorDescription($"The list's length has changed from {checked((long)(this._debugPreviousSnapshot.Count))} " + $"to {checked((long)(newChildren.Count))}."));
+                        mutationErrors.Add(new ErrorDescription($"The list's length has changed from {checked((long)(this._debugPreviousSnapshot.Count))} " + $"to {checked((long)(newChildren.Count))}."));
                     }
                     else
                     {
-                        for (var i__114486 = 0L; (i__114486 < checked((long)(newChildren.Count))); i__114486++)
+                        for (var i = 0L; (i < checked((long)(newChildren.Count))); i++)
                         {
-                            if (!DartRuntimePrimitives.Identical(newChildren[(int)(i__114486)], this._debugPreviousSnapshot[(int)(i__114486)]))
+                            if (!DartRuntimePrimitives.Identical(newChildren[(int)(i)], this._debugPreviousSnapshot[(int)(i)]))
                             {
-                                if ((checked((long)(mutationErrors__114129.Count)) != 0))
+                                if ((checked((long)(mutationErrors.Count)) != 0))
                                 {
-                                    mutationErrors__114129.Add(new ErrorSpacer());
+                                    mutationErrors.Add(new ErrorSpacer());
                                 }
-                                mutationErrors__114129.Add(new ErrorDescription($"Child node at position {i__114486} was replaced:"));
-                                mutationErrors__114129.Add(((Diagnosticable)this._debugPreviousSnapshot[(int)(i__114486)]).toDiagnosticsNode(name: "Previous child", style: DiagnosticsTreeStyle.singleLine));
-                                mutationErrors__114129.Add(((Diagnosticable)newChildren[(int)(i__114486)]).toDiagnosticsNode(name: "New child", style: DiagnosticsTreeStyle.singleLine));
+                                mutationErrors.Add(new ErrorDescription($"Child node at position {i} was replaced:"));
+                                mutationErrors.Add(((Diagnosticable)this._debugPreviousSnapshot[(int)(i)]).toDiagnosticsNode(name: "Previous child", style: DiagnosticsTreeStyle.singleLine));
+                                mutationErrors.Add(((Diagnosticable)newChildren[(int)(i)]).toDiagnosticsNode(name: "New child", style: DiagnosticsTreeStyle.singleLine));
                             }
                         }
                     }
-                    if ((checked((long)(mutationErrors__114129.Count)) != 0))
+                    if ((checked((long)(mutationErrors.Count)) != 0))
                     {
                         throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Failed to replace child semantics nodes because the list of `SemanticsNode`s was mutated."), new ErrorHint("Instead of mutating the existing list, create a new list containing the desired `SemanticsNode`s."), new ErrorDescription("Error details:") });
                     }
                 }
                 _debugPreviousSnapshot = new List<SemanticsNode>(newChildren);
-                var ancestor__115878 = this;
-                while ((((SemanticsNode)ancestor__115878).parent is SemanticsNode))
+                var ancestor = this;
+                while ((((SemanticsNode)ancestor).parent is SemanticsNode))
                 {
-                    ancestor__115878 = ((SemanticsNode)ancestor__115878).parent!;
+                    ancestor = ((SemanticsNode)ancestor).parent!;
                 }
-                DartRuntimePrimitives.Assert(() => !newChildren.any(((child) => (object.Equals(child, ancestor__115878)))));
+                DartRuntimePrimitives.Assert(() => !newChildren.any(((child) => (object.Equals(child, ancestor)))));
                 return true;
             });
-        if ((!sawChange__112959 && (this._children is not null)))
+        if ((!sawChange && (this._children is not null)))
         {
             DartRuntimePrimitives.Assert(() => (checked((long)(newChildren.Count)) == checked((long)(this._children!.Count))));
-            for (var i__116239 = 0L; (i__116239 < checked((long)(this._children!.Count))); i__116239++)
+            for (var iLocal = 0L; (iLocal < checked((long)(this._children!.Count))); iLocal++)
             {
-                if ((this._children![(int)(i__116239)].id != newChildren[(int)(i__116239)].id))
+                if ((this._children![(int)(iLocal)].id != newChildren[(int)(iLocal)].id))
                 {
-                    sawChange__112959 = true;
+                    sawChange = true;
                     break;
                 }
             }
         }
         _children = newChildren;
-        if (sawChange__112959)
+        if (sawChange)
         {
             _markDirty();
         }
@@ -1480,9 +1480,9 @@ public class SemanticsNode : DiagnosticableTreeMixin
     {
         if ((this._children is not null))
         {
-            foreach (SemanticsNode child__117159 in this._children!)
+            foreach (SemanticsNode child in this._children!)
             {
-                if (!visitor(child__117159))
+                if (!visitor(child))
                 {
                     return;
                 }
@@ -1494,9 +1494,9 @@ public class SemanticsNode : DiagnosticableTreeMixin
     {
         if ((this._children is not null))
         {
-            foreach (SemanticsNode child__117627 in this._children!)
+            foreach (SemanticsNode child in this._children!)
             {
-                if ((!visitor(child__117627) || !child__117627._visitDescendants((Func<SemanticsNode, bool>)visitor)))
+                if ((!visitor(child) || !child._visitDescendants((Func<SemanticsNode, bool>)visitor)))
                 {
                     return false;
                 }
@@ -1542,12 +1542,12 @@ public class SemanticsNode : DiagnosticableTreeMixin
     internal virtual void _updateChildMergeFlagRecursively(SemanticsNode child)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(((SemanticsNode)child).owner, this.owner)));
-        bool childShouldMergeToParent__120105 = this.isPartOfNodeMerging;
-        if ((childShouldMergeToParent__120105 == ((SemanticsNode)child).isMergedIntoParent))
+        bool childShouldMergeToParent = this.isPartOfNodeMerging;
+        if ((childShouldMergeToParent == ((SemanticsNode)child).isMergedIntoParent))
         {
             return;
         }
-        child.isMergedIntoParent = childShouldMergeToParent__120105;
+        child.isMergedIntoParent = childShouldMergeToParent;
         if (((SemanticsNode)child).mergeAllDescendantsIntoThisNode)
         {
         }
@@ -1567,12 +1567,12 @@ public class SemanticsNode : DiagnosticableTreeMixin
         DartRuntimePrimitives.Assert(() => (((SemanticsNode)child)._parent is null));
         DartRuntimePrimitives.Assert(() =>
             {
-                var node__120695 = this;
-                while ((((SemanticsNode)node__120695).parent is not null))
+                var node = this;
+                while ((((SemanticsNode)node).parent is not null))
                 {
-                    node__120695 = ((SemanticsNode)node__120695).parent!;
+                    node = ((SemanticsNode)node).parent!;
                 }
-                DartRuntimePrimitives.Assert(() => (!object.Equals(node__120695, child)));
+                DartRuntimePrimitives.Assert(() => (!object.Equals(node, child)));
                 return true;
             });
         child._parent = this;
@@ -1612,9 +1612,9 @@ public class SemanticsNode : DiagnosticableTreeMixin
         }
         if ((this._children is not null))
         {
-            foreach (SemanticsNode child__122164 in this._children!)
+            foreach (SemanticsNode child in this._children!)
             {
-                child__122164.attach(owner);
+                child.attach(owner);
             }
         }
     }
@@ -1626,25 +1626,25 @@ public class SemanticsNode : DiagnosticableTreeMixin
         DartRuntimePrimitives.Assert(() => !this.owner!._detachedNodes.Contains(this));
         this.owner!._nodes.remove(this.id);
         this.owner!._detachedNodes.Add(this);
-        if (this._traversalChildIdentifier is object identifier__122565)
+        if (this._traversalChildIdentifier is object identifier)
         {
-            this.owner!._traversalParentNodes.GetValueOrDefault(identifier__122565)?._markDirty();
+            this.owner!._traversalParentNodes.GetValueOrDefault(identifier)?._markDirty();
         }
         this.owner!._traversalParentNodes.removeWhere(((key, node) => (object.Equals(node, this))));
-        foreach (HashSet<SemanticsNode> childSet__122931 in this.owner!._traversalChildNodes.Values)
+        foreach (HashSet<SemanticsNode> childSet in this.owner!._traversalChildNodes.Values)
         {
-            childSet__122931.removeWhere(((node) => (object.Equals(node, this))));
+            childSet.removeWhere(((node) => (object.Equals(node, this))));
         }
         this.owner!._traversalChildNodes.removeWhere(((key, value) => (checked((long)(value.Count)) == 0)));
         _owner = null;
         DartRuntimePrimitives.Assert(() => ((this.parent is null) || (this.attached == this.parent!.attached)));
         if ((this._children is not null))
         {
-            foreach (SemanticsNode child__123308 in this._children!)
+            foreach (SemanticsNode child in this._children!)
             {
-                if ((object.Equals(((SemanticsNode)child__123308).parent, this)))
+                if ((object.Equals(((SemanticsNode)child).parent, this)))
                 {
-                    child__123308.detach();
+                    child.detach();
                 }
             }
         }
@@ -1669,13 +1669,13 @@ public class SemanticsNode : DiagnosticableTreeMixin
     {
         get
         {
-            bool? isDirty__124263 = default!;
+            bool? isDirty = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    isDirty__124263 = this._dirty;
+                    isDirty = this._dirty;
                     return true;
                 });
-            return isDirty__124263;
+            return isDirty;
             return default!;
         }
     }
@@ -1731,8 +1731,8 @@ public class SemanticsNode : DiagnosticableTreeMixin
     internal virtual bool _canPerformAction(SemanticsAction action) => this._actions.ContainsKey(action);
     internal virtual bool _canPerformCustomAction(long actionId)
     {
-        CustomSemanticsAction? customAction__138638 = CustomSemanticsAction.getAction(actionId);
-        return ((customAction__138638 is not null) && this._customSemanticsActions.ContainsKey(customAction__138638));
+        CustomSemanticsAction? customAction = CustomSemanticsAction.getAction(actionId);
+        return ((customAction is not null) && this._customSemanticsActions.ContainsKey(customAction));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1754,7 +1754,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
             _markDirty();
         }
         DartRuntimePrimitives.Assert(() => (((((SemanticsConfiguration)config).platformViewId is null) || (childrenInInversePaintOrder is null)) || (checked((long)(childrenInInversePaintOrder.Count)) == 0)));
-        var mergeAllDescendantsIntoThisNodeValueChanged__140260 = (this._mergeAllDescendantsIntoThisNode != ((SemanticsConfiguration)config).isMergingSemanticsOfDescendants);
+        var mergeAllDescendantsIntoThisNodeValueChanged = (this._mergeAllDescendantsIntoThisNode != ((SemanticsConfiguration)config).isMergingSemanticsOfDescendants);
         _identifier = ((SemanticsConfiguration)config).identifier;
         _traversalParentIdentifier = ((SemanticsConfiguration)config).traversalParentIdentifier;
         _traversalChildIdentifier = ((SemanticsConfiguration)config).traversalChildIdentifier;
@@ -1795,7 +1795,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
         _minValue = ((SemanticsConfiguration)config).minValue;
         _maxValue = ((SemanticsConfiguration)config).maxValue;
         _replaceChildren((childrenInInversePaintOrder ?? new List<SemanticsNode>()));
-        if (mergeAllDescendantsIntoThisNodeValueChanged__140260)
+        if (mergeAllDescendantsIntoThisNodeValueChanged)
         {
             _updateChildrenMergeFlags();
         }
@@ -1805,54 +1805,54 @@ public class SemanticsNode : DiagnosticableTreeMixin
 
     public virtual SemanticsData getSemanticsData()
     {
-        global::Doroti.Ui.SemanticsFlags flags__143252 = this._flags;
-        long actions__143411 = this._actionsAsBits;
-        string identifier__143448 = this._identifier;
-        object? traversalParentIdentifier__143486 = this._traversalParentIdentifier;
-        object? traversalChildIdentifier__143554 = this._traversalChildIdentifier;
-        AttributedString attributedLabel__143629 = this._attributedLabel;
-        AttributedString attributedValue__143686 = this._attributedValue;
-        AttributedString attributedIncreasedValue__143743 = this._attributedIncreasedValue;
-        AttributedString attributedDecreasedValue__143818 = this._attributedDecreasedValue;
-        AttributedString attributedHint__143893 = this._attributedHint;
-        string tooltip__143938 = this._tooltip;
-        global::Doroti.Ui.TextDirection? textDirection__143977 = this._textDirection;
-        HashSet<SemanticsTag>? mergedTags__144032 = ((this.tags is null) ? null : new HashSet<SemanticsTag>(this.tags!));
-        TextSelection? textSelection__144115 = this._textSelection;
-        long? scrollChildCount__144156 = this._scrollChildCount;
-        long? scrollIndex__144203 = this._scrollIndex;
-        double? scrollPosition__144243 = this._scrollPosition;
-        double? scrollExtentMax__144289 = this._scrollExtentMax;
-        double? scrollExtentMin__144337 = this._scrollExtentMin;
-        long? platformViewId__144382 = this._platformViewId;
-        long? maxValueLength__144425 = this._maxValueLength;
-        long? currentValueLength__144468 = this._currentValueLength;
-        long headingLevel__144518 = this._headingLevel;
-        DartUri? linkUrl__144557 = this._linkUrl;
-        global::Doroti.Ui.SemanticsRole role__144595 = this._role;
-        HashSet<string>? controlsNodes__144626 = this._controlsNodes;
-        global::Doroti.Ui.SemanticsValidationResult validationResult__144688 = this._validationResult;
-        global::Doroti.Ui.SemanticsHitTestBehavior hitTestBehavior__144758 = this._hitTestBehavior;
-        global::Doroti.Ui.SemanticsInputType inputType__144817 = this._inputType;
-        global::Doroti.Ui.Locale? locale__144859 = this._locale;
-        var customSemanticsActionIds__144887 = new HashSet<long>();
-        string? minValue__144935 = this._minValue;
-        string? maxValue__144969 = this._maxValue;
-        foreach (CustomSemanticsAction action__145028 in this._customSemanticsActions.Keys)
+        global::Doroti.Ui.SemanticsFlags flags = this._flags;
+        long actionsLocal = this._actionsAsBits;
+        string identifierLocal = this._identifier;
+        object? traversalParentIdentifierLocal = this._traversalParentIdentifier;
+        object? traversalChildIdentifierLocal = this._traversalChildIdentifier;
+        AttributedString attributedLabelLocal = this._attributedLabel;
+        AttributedString attributedValueLocal = this._attributedValue;
+        AttributedString attributedIncreasedValueLocal = this._attributedIncreasedValue;
+        AttributedString attributedDecreasedValueLocal = this._attributedDecreasedValue;
+        AttributedString attributedHintLocal = this._attributedHint;
+        string tooltipLocal = this._tooltip;
+        global::Doroti.Ui.TextDirection? textDirectionLocal = this._textDirection;
+        HashSet<SemanticsTag>? mergedTags = ((this.tags is null) ? null : new HashSet<SemanticsTag>(this.tags!));
+        TextSelection? textSelectionLocal = this._textSelection;
+        long? scrollChildCountLocal = this._scrollChildCount;
+        long? scrollIndexLocal = this._scrollIndex;
+        double? scrollPositionLocal = this._scrollPosition;
+        double? scrollExtentMaxLocal = this._scrollExtentMax;
+        double? scrollExtentMinLocal = this._scrollExtentMin;
+        long? platformViewIdLocal = this._platformViewId;
+        long? maxValueLengthLocal = this._maxValueLength;
+        long? currentValueLengthLocal = this._currentValueLength;
+        long headingLevelLocal = this._headingLevel;
+        DartUri? linkUrlLocal = this._linkUrl;
+        global::Doroti.Ui.SemanticsRole roleLocal = this._role;
+        HashSet<string>? controlsNodesLocal = this._controlsNodes;
+        global::Doroti.Ui.SemanticsValidationResult validationResultLocal = this._validationResult;
+        global::Doroti.Ui.SemanticsHitTestBehavior hitTestBehaviorLocal = this._hitTestBehavior;
+        global::Doroti.Ui.SemanticsInputType inputTypeLocal = this._inputType;
+        global::Doroti.Ui.Locale? localeLocal = this._locale;
+        var customSemanticsActionIdsLocal = new HashSet<long>();
+        string? minValueLocal = this._minValue;
+        string? maxValueLocal = this._maxValue;
+        foreach (CustomSemanticsAction actionLocal in this._customSemanticsActions.Keys)
         {
-            customSemanticsActionIds__144887.Add(CustomSemanticsAction.getIdentifier(action__145028));
+            customSemanticsActionIdsLocal.Add(CustomSemanticsAction.getIdentifier(actionLocal));
         }
         if ((this.hintOverrides is not null))
         {
             if ((this.hintOverrides!.onTapHint is not null))
             {
-                var action__145250 = CustomSemanticsAction.CreateOverridingAction(hint: this.hintOverrides!.onTapHint!, action: SemanticsAction.tap);
-                customSemanticsActionIds__144887.Add(CustomSemanticsAction.getIdentifier(action__145250));
+                var actionAlternate = CustomSemanticsAction.CreateOverridingAction(hint: this.hintOverrides!.onTapHint!, action: SemanticsAction.tap);
+                customSemanticsActionIdsLocal.Add(CustomSemanticsAction.getIdentifier(actionAlternate));
             }
             if ((this.hintOverrides!.onLongPressHint is not null))
             {
-                var action__145549 = CustomSemanticsAction.CreateOverridingAction(hint: this.hintOverrides!.onLongPressHint!, action: SemanticsAction.longPress);
-                customSemanticsActionIds__144887.Add(CustomSemanticsAction.getIdentifier(action__145549));
+                var actionNested = CustomSemanticsAction.CreateOverridingAction(hint: this.hintOverrides!.onLongPressHint!, action: SemanticsAction.longPress);
+                customSemanticsActionIdsLocal.Add(CustomSemanticsAction.getIdentifier(actionNested));
             }
         }
         if (this.mergeAllDescendantsIntoThisNode)
@@ -1860,102 +1860,102 @@ public class SemanticsNode : DiagnosticableTreeMixin
             _visitDescendants(((Func<SemanticsNode, bool>)((node) =>
             {
                 DartRuntimePrimitives.Assert(() => ((SemanticsNode)node).isMergedIntoParent);
-                flags__143252 = flags__143252.merge(((SemanticsNode)node)._flags);
-                actions__143411 |= ((SemanticsNode)node)._effectiveActionsAsBits;
-                textDirection__143977 ??= ((SemanticsNode)node)._textDirection;
-                textSelection__144115 ??= ((SemanticsNode)node)._textSelection;
-                scrollChildCount__144156 ??= ((SemanticsNode)node)._scrollChildCount;
-                scrollIndex__144203 ??= ((SemanticsNode)node)._scrollIndex;
-                scrollPosition__144243 ??= ((SemanticsNode)node)._scrollPosition;
-                scrollExtentMax__144289 ??= ((SemanticsNode)node)._scrollExtentMax;
-                scrollExtentMin__144337 ??= ((SemanticsNode)node)._scrollExtentMin;
-                platformViewId__144382 ??= ((SemanticsNode)node)._platformViewId;
-                maxValueLength__144425 ??= ((SemanticsNode)node)._maxValueLength;
-                currentValueLength__144468 ??= ((SemanticsNode)node)._currentValueLength;
-                linkUrl__144557 ??= ((SemanticsNode)node)._linkUrl;
-                headingLevel__144518 = SemanticsLibrary._mergeHeadingLevels(sourceLevel: ((SemanticsNode)node)._headingLevel, targetLevel: headingLevel__144518);
-                if ((identifier__143448 == ""))
+                flags = flags.merge(((SemanticsNode)node)._flags);
+                actionsLocal |= ((SemanticsNode)node)._effectiveActionsAsBits;
+                textDirectionLocal ??= ((SemanticsNode)node)._textDirection;
+                textSelectionLocal ??= ((SemanticsNode)node)._textSelection;
+                scrollChildCountLocal ??= ((SemanticsNode)node)._scrollChildCount;
+                scrollIndexLocal ??= ((SemanticsNode)node)._scrollIndex;
+                scrollPositionLocal ??= ((SemanticsNode)node)._scrollPosition;
+                scrollExtentMaxLocal ??= ((SemanticsNode)node)._scrollExtentMax;
+                scrollExtentMinLocal ??= ((SemanticsNode)node)._scrollExtentMin;
+                platformViewIdLocal ??= ((SemanticsNode)node)._platformViewId;
+                maxValueLengthLocal ??= ((SemanticsNode)node)._maxValueLength;
+                currentValueLengthLocal ??= ((SemanticsNode)node)._currentValueLength;
+                linkUrlLocal ??= ((SemanticsNode)node)._linkUrl;
+                headingLevelLocal = SemanticsLibrary._mergeHeadingLevels(sourceLevel: ((SemanticsNode)node)._headingLevel, targetLevel: headingLevelLocal);
+                if ((identifierLocal == ""))
                 {
-                    identifier__143448 = ((SemanticsNode)node)._identifier;
+                    identifierLocal = ((SemanticsNode)node)._identifier;
                 }
-                traversalParentIdentifier__143486 ??= ((SemanticsNode)node).traversalParentIdentifier;
-                traversalChildIdentifier__143554 ??= ((SemanticsNode)node).traversalChildIdentifier;
-                if ((((AttributedString)attributedValue__143686).@string == ""))
+                traversalParentIdentifierLocal ??= ((SemanticsNode)node).traversalParentIdentifier;
+                traversalChildIdentifierLocal ??= ((SemanticsNode)node).traversalChildIdentifier;
+                if ((((AttributedString)attributedValueLocal).@string == ""))
                 {
-                    attributedValue__143686 = ((SemanticsNode)node)._attributedValue;
+                    attributedValueLocal = ((SemanticsNode)node)._attributedValue;
                 }
-                if ((((AttributedString)attributedIncreasedValue__143743).@string == ""))
+                if ((((AttributedString)attributedIncreasedValueLocal).@string == ""))
                 {
-                    attributedIncreasedValue__143743 = ((SemanticsNode)node)._attributedIncreasedValue;
+                    attributedIncreasedValueLocal = ((SemanticsNode)node)._attributedIncreasedValue;
                 }
-                if ((((AttributedString)attributedDecreasedValue__143818).@string == ""))
+                if ((((AttributedString)attributedDecreasedValueLocal).@string == ""))
                 {
-                    attributedDecreasedValue__143818 = ((SemanticsNode)node)._attributedDecreasedValue;
+                    attributedDecreasedValueLocal = ((SemanticsNode)node)._attributedDecreasedValue;
                 }
-                if ((object.Equals(role__144595, SemanticsRole.none)))
+                if ((object.Equals(roleLocal, SemanticsRole.none)))
                 {
-                    role__144595 = ((SemanticsNode)node)._role;
+                    roleLocal = ((SemanticsNode)node)._role;
                 }
-                if ((object.Equals(inputType__144817, SemanticsInputType.none)))
+                if ((object.Equals(inputTypeLocal, SemanticsInputType.none)))
                 {
-                    inputType__144817 = ((SemanticsNode)node)._inputType;
+                    inputTypeLocal = ((SemanticsNode)node)._inputType;
                 }
-                if ((object.Equals(hitTestBehavior__144758, Dart_uiLibrary.SemanticsHitTestBehavior.defer)))
+                if ((object.Equals(hitTestBehaviorLocal, Dart_uiLibrary.SemanticsHitTestBehavior.defer)))
                 {
-                    hitTestBehavior__144758 = ((SemanticsNode)node)._hitTestBehavior;
+                    hitTestBehaviorLocal = ((SemanticsNode)node)._hitTestBehavior;
                 }
-                if ((tooltip__143938 == ""))
+                if ((tooltipLocal == ""))
                 {
-                    tooltip__143938 = ((SemanticsNode)node)._tooltip;
+                    tooltipLocal = ((SemanticsNode)node)._tooltip;
                 }
                 if ((((SemanticsNode)node).tags is not null))
                 {
-                    mergedTags__144032 ??= new HashSet<SemanticsTag>();
-                    mergedTags__144032!.UnionWith(((SemanticsNode)node).tags!);
+                    mergedTags ??= new HashSet<SemanticsTag>();
+                    mergedTags!.UnionWith(((SemanticsNode)node).tags!);
                 }
-                foreach (CustomSemanticsAction action__147834 in ((SemanticsNode)node)._customSemanticsActions.Keys)
+                foreach (CustomSemanticsAction actionCurrent in ((SemanticsNode)node)._customSemanticsActions.Keys)
                 {
-                    customSemanticsActionIds__144887.Add(CustomSemanticsAction.getIdentifier(action__147834));
+                    customSemanticsActionIdsLocal.Add(CustomSemanticsAction.getIdentifier(actionCurrent));
                 }
                 if ((((SemanticsNode)node).hintOverrides is not null))
                 {
                     if ((((SemanticsNode)node).hintOverrides!.onTapHint is not null))
                     {
-                        var action__148091 = CustomSemanticsAction.CreateOverridingAction(hint: ((SemanticsNode)node).hintOverrides!.onTapHint!, action: SemanticsAction.tap);
-                        customSemanticsActionIds__144887.Add(CustomSemanticsAction.getIdentifier(action__148091));
+                        var actionNext = CustomSemanticsAction.CreateOverridingAction(hint: ((SemanticsNode)node).hintOverrides!.onTapHint!, action: SemanticsAction.tap);
+                        customSemanticsActionIdsLocal.Add(CustomSemanticsAction.getIdentifier(actionNext));
                     }
                     if ((((SemanticsNode)node).hintOverrides!.onLongPressHint is not null))
                     {
-                        var action__148428 = CustomSemanticsAction.CreateOverridingAction(hint: ((SemanticsNode)node).hintOverrides!.onLongPressHint!, action: SemanticsAction.longPress);
-                        customSemanticsActionIds__144887.Add(CustomSemanticsAction.getIdentifier(action__148428));
+                        var actionCandidate = CustomSemanticsAction.CreateOverridingAction(hint: ((SemanticsNode)node).hintOverrides!.onLongPressHint!, action: SemanticsAction.longPress);
+                        customSemanticsActionIdsLocal.Add(CustomSemanticsAction.getIdentifier(actionCandidate));
                     }
                 }
-                attributedLabel__143629 = SemanticsLibrary._concatAttributedString(thisAttributedString: attributedLabel__143629, thisTextDirection: textDirection__143977, otherAttributedString: ((SemanticsNode)node)._attributedLabel, otherTextDirection: ((SemanticsNode)node)._textDirection);
-                attributedHint__143893 = SemanticsLibrary._concatAttributedString(thisAttributedString: attributedHint__143893, thisTextDirection: textDirection__143977, otherAttributedString: ((SemanticsNode)node)._attributedHint, otherTextDirection: ((SemanticsNode)node)._textDirection);
-                if ((controlsNodes__144626 is null))
+                attributedLabelLocal = SemanticsLibrary._concatAttributedString(thisAttributedString: attributedLabelLocal, thisTextDirection: textDirectionLocal, otherAttributedString: ((SemanticsNode)node)._attributedLabel, otherTextDirection: ((SemanticsNode)node)._textDirection);
+                attributedHintLocal = SemanticsLibrary._concatAttributedString(thisAttributedString: attributedHintLocal, thisTextDirection: textDirectionLocal, otherAttributedString: ((SemanticsNode)node)._attributedHint, otherTextDirection: ((SemanticsNode)node)._textDirection);
+                if ((controlsNodesLocal is null))
                 {
-                    controlsNodes__144626 = ((SemanticsNode)node)._controlsNodes;
+                    controlsNodesLocal = ((SemanticsNode)node)._controlsNodes;
                 }
                 else
                 {
                     if ((((SemanticsNode)node)._controlsNodes is not null))
                     {
-                        controlsNodes__144626 = new HashSet<string>();
+                        controlsNodesLocal = new HashSet<string>();
                     }
                 }
-                minValue__144935 ??= ((SemanticsNode)node)._minValue;
-                maxValue__144969 ??= ((SemanticsNode)node)._maxValue;
-                if ((object.Equals(validationResult__144688, SemanticsValidationResult.none)))
+                minValueLocal ??= ((SemanticsNode)node)._minValue;
+                maxValueLocal ??= ((SemanticsNode)node)._maxValue;
+                if ((object.Equals(validationResultLocal, SemanticsValidationResult.none)))
                 {
-                    validationResult__144688 = ((SemanticsNode)node)._validationResult;
+                    validationResultLocal = ((SemanticsNode)node)._validationResult;
                 }
                 else
                 {
-                    if ((object.Equals(validationResult__144688, SemanticsValidationResult.valid)))
+                    if ((object.Equals(validationResultLocal, SemanticsValidationResult.valid)))
                     {
                         if (((!object.Equals(((SemanticsNode)node)._validationResult, SemanticsValidationResult.none)) && (!object.Equals(((SemanticsNode)node)._validationResult, SemanticsValidationResult.valid))))
                         {
-                            validationResult__144688 = ((SemanticsNode)node)._validationResult;
+                            validationResultLocal = ((SemanticsNode)node)._validationResult;
                         }
                     }
                 }
@@ -1963,67 +1963,67 @@ public class SemanticsNode : DiagnosticableTreeMixin
                 return default;
             })));
         }
-        return new SemanticsData(flagsCollection: flags__143252, actions: (this._areUserActionsBlocked ? (actions__143411 & SemanticsLibrary._kUnblockedUserActions) : actions__143411), identifier: identifier__143448, traversalParentIdentifier: traversalParentIdentifier__143486, traversalChildIdentifier: traversalChildIdentifier__143554, attributedLabel: attributedLabel__143629, attributedValue: attributedValue__143686, attributedIncreasedValue: attributedIncreasedValue__143743, attributedDecreasedValue: attributedDecreasedValue__143818, attributedHint: attributedHint__143893, tooltip: tooltip__143938, textDirection: textDirection__143977, rect: this.rect, transform: this.transform, tags: mergedTags__144032, textSelection: textSelection__144115, scrollChildCount: scrollChildCount__144156, scrollIndex: scrollIndex__144203, scrollPosition: scrollPosition__144243, scrollExtentMax: scrollExtentMax__144289, scrollExtentMin: scrollExtentMin__144337, platformViewId: platformViewId__144382, maxValueLength: maxValueLength__144425, currentValueLength: currentValueLength__144468, customSemanticsActionIds: ((Func<List<long>>)(() =>
+        return new SemanticsData(flagsCollection: flags, actions: (this._areUserActionsBlocked ? (actionsLocal & SemanticsLibrary._kUnblockedUserActions) : actionsLocal), identifier: identifierLocal, traversalParentIdentifier: traversalParentIdentifierLocal, traversalChildIdentifier: traversalChildIdentifierLocal, attributedLabel: attributedLabelLocal, attributedValue: attributedValueLocal, attributedIncreasedValue: attributedIncreasedValueLocal, attributedDecreasedValue: attributedDecreasedValueLocal, attributedHint: attributedHintLocal, tooltip: tooltipLocal, textDirection: textDirectionLocal, rect: this.rect, transform: this.transform, tags: mergedTags, textSelection: textSelectionLocal, scrollChildCount: scrollChildCountLocal, scrollIndex: scrollIndexLocal, scrollPosition: scrollPositionLocal, scrollExtentMax: scrollExtentMaxLocal, scrollExtentMin: scrollExtentMinLocal, platformViewId: platformViewIdLocal, maxValueLength: maxValueLengthLocal, currentValueLength: currentValueLengthLocal, customSemanticsActionIds: ((Func<List<long>>)(() =>
 {
-    var __cascade = customSemanticsActionIds__144887.ToList();
+    var __cascade = customSemanticsActionIdsLocal.ToList();
     __cascade.sort();
     return __cascade;
-}))(), headingLevel: headingLevel__144518, linkUrl: linkUrl__144557, role: role__144595, controlsNodes: controlsNodes__144626, validationResult: validationResult__144688, hitTestBehavior: hitTestBehavior__144758, inputType: inputType__144817, locale: locale__144859, minValue: minValue__144935, maxValue: maxValue__144969);
+}))(), headingLevel: headingLevelLocal, linkUrl: linkUrlLocal, role: roleLocal, controlsNodes: controlsNodesLocal, validationResult: validationResultLocal, hitTestBehavior: hitTestBehaviorLocal, inputType: inputTypeLocal, locale: localeLocal, minValue: minValueLocal, maxValue: maxValueLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static Matrix4 _computeTraversalTransform(SemanticsNode parent, SemanticsNode child)
     {
-        var traversalTransform__151843 = Matrix4.identity();
-        Matrix4? parentToCommonAncestorTransform__151897 = default!;
-        var fromNode__151938 = child;
-        var toNode__151964 = parent;
-        while (!DartRuntimePrimitives.Identical(fromNode__151938, toNode__151964))
+        var traversalTransform = Matrix4.identity();
+        Matrix4? parentToCommonAncestorTransform = default!;
+        var fromNode = child;
+        var toNode = parent;
+        while (!DartRuntimePrimitives.Identical(fromNode, toNode))
         {
-            long fromDepth__152074 = ((SemanticsNode)fromNode__151938).depth;
-            long toDepth__152118 = ((SemanticsNode)toNode__151964).depth;
-            if ((fromDepth__152074 >= toDepth__152118))
+            long fromDepth = ((SemanticsNode)fromNode).depth;
+            long toDepth = ((SemanticsNode)toNode).depth;
+            if ((fromDepth >= toDepth))
             {
-                if (((SemanticsNode)fromNode__151938).transform is Matrix4 transform__152227)
+                if (((SemanticsNode)fromNode).transform is Matrix4 transformLocal)
                 {
-                    traversalTransform__151843.multiply(transform__152227);
+                    traversalTransform.multiply(transformLocal);
                 }
-                fromNode__151938 = ((SemanticsNode)fromNode__151938).parent!;
+                fromNode = ((SemanticsNode)fromNode).parent!;
             }
-            if ((fromDepth__152074 <= toDepth__152118))
+            if ((fromDepth <= toDepth))
             {
-                parentToCommonAncestorTransform__151897 ??= Matrix4.identity();
-                if (((SemanticsNode)toNode__151964).transform is Matrix4 transform__152492)
+                parentToCommonAncestorTransform ??= Matrix4.identity();
+                if (((SemanticsNode)toNode).transform is Matrix4 transformAlternate)
                 {
-                    parentToCommonAncestorTransform__151897.multiply(transform__152492);
+                    parentToCommonAncestorTransform.multiply(transformAlternate);
                 }
-                toNode__151964 = ((SemanticsNode)toNode__151964).parent!;
+                toNode = ((SemanticsNode)toNode).parent!;
             }
         }
-        if ((parentToCommonAncestorTransform__151897 is not null))
+        if ((parentToCommonAncestorTransform is not null))
         {
-            if ((parentToCommonAncestorTransform__151897.invert() != 0L))
+            if ((parentToCommonAncestorTransform.invert() != 0L))
             {
-                traversalTransform__151843.multiply(parentToCommonAncestorTransform__151897);
+                traversalTransform.multiply(parentToCommonAncestorTransform);
             }
             else
             {
-                traversalTransform__151843.setZero();
+                traversalTransform.setZero();
             }
         }
-        return traversalTransform__151843;
+        return traversalTransform;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual Int32List _childrenIdInTraversalOrder()
     {
-        List<SemanticsNode> sortedChildren__152984 = _childrenInTraversalOrder();
-        var childrenInTraversalOrder__153041 = new Int32List(checked((long)(sortedChildren__152984.Count)));
-        for (var i__153115 = 0L; (i__153115 < checked((long)(sortedChildren__152984.Count))); i__153115 += 1L)
+        List<SemanticsNode> sortedChildren = _childrenInTraversalOrder();
+        var childrenInTraversalOrder = new Int32List(checked((long)(sortedChildren.Count)));
+        for (var i = 0L; (i < checked((long)(sortedChildren.Count))); i += 1L)
         {
-            childrenInTraversalOrder__153041[i__153115] = checked((int)(sortedChildren__152984[(int)(i__153115)].id));
+            childrenInTraversalOrder[i] = checked((int)(sortedChildren[(int)(i)].id));
         }
-        return childrenInTraversalOrder__153041;
+        return childrenInTraversalOrder;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2041,8 +2041,8 @@ public class SemanticsNode : DiagnosticableTreeMixin
         {
             if (((SemanticsNode)child)._isTraversalChild)
             {
-                SemanticsNode? traversalParent__153819 = this.owner!._traversalParentNodes.GetValueOrDefault(DartRuntimePrimitives.RequireReference(child.getSemanticsData().traversalChildIdentifier));
-                return (traversalParent__153819 is not null);
+                SemanticsNode? traversalParent = this.owner!._traversalParentNodes.GetValueOrDefault(DartRuntimePrimitives.RequireReference(child.getSemanticsData().traversalChildIdentifier));
+                return (traversalParent is not null);
             }
             return true;
             throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2053,89 +2053,89 @@ public class SemanticsNode : DiagnosticableTreeMixin
 
     internal virtual Int32List _childrenIdInHitTestOrder()
     {
-        List<SemanticsNode> children__154143 = _childrenInHitTestOrder();
-        return new Int32List(System.Linq.Enumerable.Reverse(children__154143).map<SemanticsNode, long>(((node) => ((SemanticsNode)node).id)).ToList());
+        List<SemanticsNode> children = _childrenInHitTestOrder();
+        return new Int32List(System.Linq.Enumerable.Reverse(children).map<SemanticsNode, long>(((node) => ((SemanticsNode)node).id)).ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _addToUpdate(SemanticsUpdateBuilder builder, HashSet<long> customSemanticsActionIdsUpdate)
     {
         DartRuntimePrimitives.Assert(() => this._dirty);
-        SemanticsData data__154426 = getSemanticsData();
+        SemanticsData data = getSemanticsData();
         DartRuntimePrimitives.Assert(() =>
             {
-                FlutterError? error__154495 = _DebugSemanticsRoleChecks__semantics._checkSemanticsData(this);
-                if ((error__154495 is not null))
+                FlutterError? error = _DebugSemanticsRoleChecks__semantics._checkSemanticsData(this);
+                if ((error is not null))
                 {
-                    throw error__154495;
+                    throw error;
                 }
                 return true;
             });
-        Int32List childrenInTraversalOrder__154661 = default!;
-        Int32List childrenInHitTestOrder__154707 = default!;
+        Int32List childrenInTraversalOrderLocal = default!;
+        Int32List childrenInHitTestOrderLocal = default!;
         if ((!this.hasChildren || this.mergeAllDescendantsIntoThisNode))
         {
             if ((this._isTraversalParent && !global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb))
             {
                 if (((this.owner is not null) && this.owner!._traversalChildNodes.ContainsKey(this.traversalParentIdentifier)))
                 {
-                    HashSet<SemanticsNode> traversalChildren__155192 = this.owner!._traversalChildNodes.GetValueOrDefault(DartRuntimePrimitives.RequireReference(this.traversalParentIdentifier))!;
-                    var index__155297 = 0L;
-                    childrenInTraversalOrder__154661 = new Int32List(checked((long)(traversalChildren__155192.Count)));
-                    foreach (var node__155403 in traversalChildren__155192)
+                    HashSet<SemanticsNode> traversalChildren = this.owner!._traversalChildNodes.GetValueOrDefault(DartRuntimePrimitives.RequireReference(this.traversalParentIdentifier))!;
+                    var index = 0L;
+                    childrenInTraversalOrderLocal = new Int32List(checked((long)(traversalChildren.Count)));
+                    foreach (var node in traversalChildren)
                     {
-                        if (((SemanticsNode)node__155403).attached)
+                        if (((SemanticsNode)node).attached)
                         {
-                            childrenInTraversalOrder__154661[index__155297] = checked((int)(((SemanticsNode)node__155403).id));
-                            index__155297 += 1L;
+                            childrenInTraversalOrderLocal[index] = checked((int)(((SemanticsNode)node).id));
+                            index += 1L;
                         }
                     }
                 }
                 else
                 {
-                    childrenInTraversalOrder__154661 = _kEmptyChildList;
+                    childrenInTraversalOrderLocal = _kEmptyChildList;
                 }
-                childrenInHitTestOrder__154707 = _kEmptyChildList;
+                childrenInHitTestOrderLocal = _kEmptyChildList;
             }
             else
             {
-                childrenInTraversalOrder__154661 = _kEmptyChildList;
-                childrenInHitTestOrder__154707 = _kEmptyChildList;
+                childrenInTraversalOrderLocal = _kEmptyChildList;
+                childrenInHitTestOrderLocal = _kEmptyChildList;
             }
         }
         else
         {
-            childrenInTraversalOrder__154661 = _childrenIdInTraversalOrder();
-            childrenInHitTestOrder__154707 = _childrenIdInHitTestOrder();
+            childrenInTraversalOrderLocal = _childrenIdInTraversalOrder();
+            childrenInHitTestOrderLocal = _childrenIdInHitTestOrder();
         }
-        Int32List? customSemanticsActionIds__155993 = default!;
-        if (((((long?)(((SemanticsData)data__154426).customSemanticsActionIds?.Count)) is { } __count156027 ? __count156027 != 0 : (bool?)null) ?? false))
+        Int32List? customSemanticsActionIdsLocal = default!;
+        if (((((long?)(((SemanticsData)data).customSemanticsActionIds?.Count)) is { } __count156027 ? __count156027 != 0 : (bool?)null) ?? false))
         {
-            customSemanticsActionIds__155993 = new Int32List(checked((long)(((SemanticsData)data__154426).customSemanticsActionIds!.Count)));
-            for (var i__156179 = 0L; (i__156179 < checked((long)(((SemanticsData)data__154426).customSemanticsActionIds!.Count))); i__156179++)
+            customSemanticsActionIdsLocal = new Int32List(checked((long)(((SemanticsData)data).customSemanticsActionIds!.Count)));
+            for (var i = 0L; (i < checked((long)(((SemanticsData)data).customSemanticsActionIds!.Count))); i++)
             {
-                customSemanticsActionIds__155993[i__156179] = checked((int)(((SemanticsData)data__154426).customSemanticsActionIds![(int)(i__156179)]));
-                customSemanticsActionIdsUpdate.Add(((SemanticsData)data__154426).customSemanticsActionIds![(int)(i__156179)]);
+                customSemanticsActionIdsLocal[i] = checked((int)(((SemanticsData)data).customSemanticsActionIds![(int)(i)]));
+                customSemanticsActionIdsUpdate.Add(((SemanticsData)data).customSemanticsActionIds![(int)(i)]);
             }
         }
-        var traversalParentId__156411 = -1L;
-        if (((SemanticsData)data__154426).traversalChildIdentifier is object identifier__156491)
+        var traversalParentId = -1L;
+        if (((SemanticsData)data).traversalChildIdentifier is object identifierLocal)
         {
-            if (this.owner!._traversalParentNodes.GetValueOrDefault(identifier__156491) is SemanticsNode parentNode__156582)
+            if (this.owner!._traversalParentNodes.GetValueOrDefault(identifierLocal) is SemanticsNode parentNode)
             {
-                traversalParentId__156411 = ((SemanticsNode)parentNode__156582).id;
+                traversalParentId = ((SemanticsNode)parentNode).id;
             }
         }
-        object? childIdentifier__156672 = this.traversalChildIdentifier;
-        if ((childIdentifier__156672 is not null))
+        object? childIdentifier = this.traversalChildIdentifier;
+        if ((childIdentifier is not null))
         {
-            traversalParent = this.owner!._traversalParentNodes.GetValueOrDefault(childIdentifier__156672);
+            traversalParent = this.owner!._traversalParentNodes.GetValueOrDefault(childIdentifier);
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
             {
                 _traversalChildTransform = _computeTraversalTransform(parent: this.traversalParent!, child: this);
             }
         }
-        builder.updateNode(id: this.id, flags: ((SemanticsData)data__154426).flagsCollection, actions: ((SemanticsData)data__154426).actions, rect: ((SemanticsData)data__154426).rect, identifier: ((SemanticsData)data__154426).identifier, label: ((SemanticsData)data__154426).attributedLabel.@string, labelAttributes: ((SemanticsData)data__154426).attributedLabel.attributes, value: ((SemanticsData)data__154426).attributedValue.@string, valueAttributes: ((SemanticsData)data__154426).attributedValue.attributes, increasedValue: ((SemanticsData)data__154426).attributedIncreasedValue.@string, increasedValueAttributes: ((SemanticsData)data__154426).attributedIncreasedValue.attributes, decreasedValue: ((SemanticsData)data__154426).attributedDecreasedValue.@string, decreasedValueAttributes: ((SemanticsData)data__154426).attributedDecreasedValue.attributes, hint: ((SemanticsData)data__154426).attributedHint.@string, hintAttributes: ((SemanticsData)data__154426).attributedHint.attributes, tooltip: ((SemanticsData)data__154426).tooltip, textDirection: ((SemanticsData)data__154426).textDirection, textSelectionBase: ((((SemanticsData)data__154426).textSelection is not null) ? ((SemanticsData)data__154426).textSelection!.baseOffset : -1L), textSelectionExtent: ((((SemanticsData)data__154426).textSelection is not null) ? ((SemanticsData)data__154426).textSelection!.extentOffset : -1L), platformViewId: (((SemanticsData)data__154426).platformViewId ?? -1L), maxValueLength: (((SemanticsData)data__154426).maxValueLength ?? -1L), currentValueLength: (((SemanticsData)data__154426).currentValueLength ?? -1L), scrollChildren: (((SemanticsData)data__154426).scrollChildCount ?? 0L), scrollIndex: (((SemanticsData)data__154426).scrollIndex ?? 0L), scrollPosition: (((SemanticsData)data__154426).scrollPosition ?? double.NaN), scrollExtentMax: (((SemanticsData)data__154426).scrollExtentMax ?? double.NaN), scrollExtentMin: (((SemanticsData)data__154426).scrollExtentMin ?? double.NaN), transform: ((this._traversalTransform ?? _kIdentityTransform)).storage, traversalParent: traversalParentId__156411, hitTestTransform: ((((SemanticsData)data__154426).transform ?? _kIdentityTransform)).storage, childrenInTraversalOrder: childrenInTraversalOrder__154661, childrenInHitTestOrder: childrenInHitTestOrder__154707, additionalActions: (customSemanticsActionIds__155993 ?? _kEmptyCustomSemanticsActionsList), headingLevel: ((SemanticsData)data__154426).headingLevel, linkUrl: (((SemanticsData)data__154426).linkUrl?.ToString() ?? ""), role: ((SemanticsData)data__154426).role, controlsNodes: ((SemanticsData)data__154426).controlsNodes?.ToList(), validationResult: ((SemanticsData)data__154426).validationResult, hitTestBehavior: ((SemanticsData)data__154426).hitTestBehavior, inputType: ((SemanticsData)data__154426).inputType, locale: ((SemanticsData)data__154426).locale, minValue: (((SemanticsData)data__154426).minValue ?? ""), maxValue: (((SemanticsData)data__154426).maxValue ?? ""));
+        builder.updateNode(id: this.id, flags: ((SemanticsData)data).flagsCollection, actions: ((SemanticsData)data).actions, rect: ((SemanticsData)data).rect, identifier: ((SemanticsData)data).identifier, label: ((SemanticsData)data).attributedLabel.@string, labelAttributes: ((SemanticsData)data).attributedLabel.attributes, value: ((SemanticsData)data).attributedValue.@string, valueAttributes: ((SemanticsData)data).attributedValue.attributes, increasedValue: ((SemanticsData)data).attributedIncreasedValue.@string, increasedValueAttributes: ((SemanticsData)data).attributedIncreasedValue.attributes, decreasedValue: ((SemanticsData)data).attributedDecreasedValue.@string, decreasedValueAttributes: ((SemanticsData)data).attributedDecreasedValue.attributes, hint: ((SemanticsData)data).attributedHint.@string, hintAttributes: ((SemanticsData)data).attributedHint.attributes, tooltip: ((SemanticsData)data).tooltip, textDirection: ((SemanticsData)data).textDirection, textSelectionBase: ((((SemanticsData)data).textSelection is not null) ? ((SemanticsData)data).textSelection!.baseOffset : -1L), textSelectionExtent: ((((SemanticsData)data).textSelection is not null) ? ((SemanticsData)data).textSelection!.extentOffset : -1L), platformViewId: (((SemanticsData)data).platformViewId ?? -1L), maxValueLength: (((SemanticsData)data).maxValueLength ?? -1L), currentValueLength: (((SemanticsData)data).currentValueLength ?? -1L), scrollChildren: (((SemanticsData)data).scrollChildCount ?? 0L), scrollIndex: (((SemanticsData)data).scrollIndex ?? 0L), scrollPosition: (((SemanticsData)data).scrollPosition ?? double.NaN), scrollExtentMax: (((SemanticsData)data).scrollExtentMax ?? double.NaN), scrollExtentMin: (((SemanticsData)data).scrollExtentMin ?? double.NaN), transform: ((this._traversalTransform ?? _kIdentityTransform)).storage, traversalParent: traversalParentId, hitTestTransform: ((((SemanticsData)data).transform ?? _kIdentityTransform)).storage, childrenInTraversalOrder: childrenInTraversalOrderLocal, childrenInHitTestOrder: childrenInHitTestOrderLocal, additionalActions: (customSemanticsActionIdsLocal ?? _kEmptyCustomSemanticsActionsList), headingLevel: ((SemanticsData)data).headingLevel, linkUrl: (((SemanticsData)data).linkUrl?.ToString() ?? ""), role: ((SemanticsData)data).role, controlsNodes: ((SemanticsData)data).controlsNodes?.ToList(), validationResult: ((SemanticsData)data).validationResult, hitTestBehavior: ((SemanticsData)data).hitTestBehavior, inputType: ((SemanticsData)data).inputType, locale: ((SemanticsData)data).locale, minValue: (((SemanticsData)data).minValue ?? ""), maxValue: (((SemanticsData)data).maxValue ?? ""));
         _dirty = false;
     }
 
@@ -2145,98 +2145,98 @@ public class SemanticsNode : DiagnosticableTreeMixin
         {
             return this._children;
         }
-        var updatedChildren__159815 = new List<SemanticsNode>();
-        foreach (SemanticsNode child__159881 in this._children!)
+        var updatedChildren = new List<SemanticsNode>();
+        foreach (SemanticsNode child in this._children!)
         {
-            if ((((SemanticsNode)child__159881)._isTraversalChild && !this._isTraversalParent))
+            if ((((SemanticsNode)child)._isTraversalChild && !this._isTraversalParent))
             {
-                SemanticsNode? traversalParent__160618 = this.owner!._traversalParentNodes.GetValueOrDefault(DartRuntimePrimitives.RequireReference(child__159881.getSemanticsData().traversalChildIdentifier));
-                long? traversalParentId__160748 = traversalParent__160618?.id;
-                while ((traversalParent__160618 is not null))
+                SemanticsNode? traversalParent = this.owner!._traversalParentNodes.GetValueOrDefault(DartRuntimePrimitives.RequireReference(child.getSemanticsData().traversalChildIdentifier));
+                long? traversalParentId = traversalParent?.id;
+                while ((traversalParent is not null))
                 {
-                    if ((object.Equals(traversalParent__160618, child__159881)))
+                    if ((object.Equals(traversalParent, child)))
                     {
-                        throw new FlutterError($"The traversalParent__160618 {traversalParentId__160748} cannot be the child of the traversalChild {((SemanticsNode)child__159881).id} in hit-test order");
+                        throw new FlutterError($"The traversalParent__160618 {traversalParentId} cannot be the child of the traversalChild {((SemanticsNode)child).id} in hit-test order");
                     }
-                    traversalParent__160618 = ((SemanticsNode)traversalParent__160618).parent;
+                    traversalParent = ((SemanticsNode)traversalParent).parent;
                 }
                 continue;
             }
-            updatedChildren__159815.Add(child__159881);
+            updatedChildren.Add(child);
         }
         if (this._isTraversalParent)
         {
-            HashSet<SemanticsNode>? traversalChildren__161600 = this.owner?._traversalChildNodes.GetValueOrDefault(this.traversalParentIdentifier!);
-            if ((traversalChildren__161600 is not null))
+            HashSet<SemanticsNode>? traversalChildren = this.owner?._traversalChildNodes.GetValueOrDefault(this.traversalParentIdentifier!);
+            if ((traversalChildren is not null))
             {
-                var currentNode__161936 = this;
-                while ((((SemanticsNode)currentNode__161936).parent is not null))
+                var currentNode = this;
+                while ((((SemanticsNode)currentNode).parent is not null))
                 {
-                    currentNode__161936 = ((SemanticsNode)currentNode__161936).parent!;
-                    if (traversalChildren__161600.Contains(currentNode__161936))
+                    currentNode = ((SemanticsNode)currentNode).parent!;
+                    if (traversalChildren.Contains(currentNode))
                     {
-                        throw new FlutterError($"The traversalParent {this.id} cannot be the child of the traversalChild {((SemanticsNode)currentNode__161936).id} in hit-test order");
+                        throw new FlutterError($"The traversalParent {this.id} cannot be the child of the traversalChild {((SemanticsNode)currentNode).id} in hit-test order");
                     }
                 }
-                foreach (SemanticsNode node__162324 in traversalChildren__161600)
+                foreach (SemanticsNode node in traversalChildren)
                 {
-                    if (((SemanticsNode)node__162324).attached)
+                    if (((SemanticsNode)node).attached)
                     {
-                        updatedChildren__159815.Add(node__162324);
+                        updatedChildren.Add(node);
                     }
                 }
             }
         }
-        return updatedChildren__159815;
+        return updatedChildren;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual List<SemanticsNode> _childrenInTraversalOrder()
     {
-        List<SemanticsNode>? updatedChildren__162656 = _updateChildrenInTraversalOrder();
-        global::Doroti.Ui.TextDirection? inheritedTextDirection__162729 = this.textDirection;
-        SemanticsNode? ancestor__162788 = this.parent;
-        while (((inheritedTextDirection__162729 is null) && (ancestor__162788 is not null)))
+        List<SemanticsNode>? updatedChildren = _updateChildrenInTraversalOrder();
+        global::Doroti.Ui.TextDirection? inheritedTextDirection = this.textDirection;
+        SemanticsNode? ancestor = this.parent;
+        while (((inheritedTextDirection is null) && (ancestor is not null)))
         {
-            inheritedTextDirection__162729 = ((SemanticsNode)ancestor__162788).textDirection;
-            ancestor__162788 = ((SemanticsNode)ancestor__162788).parent;
+            inheritedTextDirection = ((SemanticsNode)ancestor).textDirection;
+            ancestor = ((SemanticsNode)ancestor).parent;
         }
-        List<SemanticsNode>? childrenInDefaultOrder__162993 = default!;
-        if ((inheritedTextDirection__162729 is not null))
+        List<SemanticsNode>? childrenInDefaultOrder = default!;
+        if ((inheritedTextDirection is not null))
         {
-            TextDirection inheritedTextDirection__162729__value163025 = DartRuntimePrimitives.RequireValue(inheritedTextDirection__162729);
-            childrenInDefaultOrder__162993 = SemanticsLibrary._childrenInDefaultOrder(updatedChildren__162656!, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(inheritedTextDirection__162729__value163025)));
+            TextDirection inheritedTextDirection__162729__value163025 = DartRuntimePrimitives.RequireValue(inheritedTextDirection);
+            childrenInDefaultOrder = SemanticsLibrary._childrenInDefaultOrder(updatedChildren!, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(inheritedTextDirection__162729__value163025)));
         }
         else
         {
-            childrenInDefaultOrder__162993 = updatedChildren__162656;
+            childrenInDefaultOrder = updatedChildren;
         }
-        var everythingSorted__163606 = new List<_TraversalSortNode__semantics>();
-        var sortNodes__163659 = new List<_TraversalSortNode__semantics>();
-        SemanticsSortKey? lastSortKey__163717 = default!;
-        for (var position__163743 = 0L; (position__163743 < checked((long)(childrenInDefaultOrder__162993!.Count))); position__163743 += 1L)
+        var everythingSorted = new List<_TraversalSortNode__semantics>();
+        var sortNodes = new List<_TraversalSortNode__semantics>();
+        SemanticsSortKey? lastSortKey = default!;
+        for (var positionLocal = 0L; (positionLocal < checked((long)(childrenInDefaultOrder!.Count))); positionLocal += 1L)
         {
-            SemanticsNode child__163843 = childrenInDefaultOrder__162993[(int)(position__163743)];
-            SemanticsSortKey? sortKey__163915 = ((SemanticsNode)child__163843).sortKey;
-            lastSortKey__163717 = ((position__163743 > 0L) ? childrenInDefaultOrder__162993[(int)((position__163743 - 1L))].sortKey : null);
-            bool isCompatibleWithPreviousSortKey__164045 = ((position__163743 == 0L) || ((object.Equals(DartRuntimePrimitives.RuntimeType(sortKey__163915), DartRuntimePrimitives.RuntimeType(lastSortKey__163717))) && (((sortKey__163915 is null) || (((SemanticsSortKey)sortKey__163915).name == lastSortKey__163717!.ToString())))));
-            if ((!isCompatibleWithPreviousSortKey__164045 && (checked((long)(sortNodes__163659.Count)) != 0)))
+            SemanticsNode child = childrenInDefaultOrder[(int)(positionLocal)];
+            SemanticsSortKey? sortKeyLocal = ((SemanticsNode)child).sortKey;
+            lastSortKey = ((positionLocal > 0L) ? childrenInDefaultOrder[(int)((positionLocal - 1L))].sortKey : null);
+            bool isCompatibleWithPreviousSortKey = ((positionLocal == 0L) || ((object.Equals(DartRuntimePrimitives.RuntimeType(sortKeyLocal), DartRuntimePrimitives.RuntimeType(lastSortKey))) && (((sortKeyLocal is null) || (((SemanticsSortKey)sortKeyLocal).name == lastSortKey!.ToString())))));
+            if ((!isCompatibleWithPreviousSortKey && (checked((long)(sortNodes.Count)) != 0)))
             {
-                if ((lastSortKey__163717 is not null))
+                if ((lastSortKey is not null))
                 {
-                    sortNodes__163659.sort();
+                    sortNodes.sort();
                 }
-                everythingSorted__163606.AddRange(sortNodes__163659);
-                sortNodes__163659.Clear();
+                everythingSorted.AddRange(sortNodes);
+                sortNodes.Clear();
             }
-            sortNodes__163659.Add(new _TraversalSortNode__semantics(node: child__163843, sortKey: sortKey__163915, position: position__163743));
+            sortNodes.Add(new _TraversalSortNode__semantics(node: child, sortKey: sortKeyLocal, position: positionLocal));
         }
-        if ((lastSortKey__163717 is not null))
+        if ((lastSortKey is not null))
         {
-            sortNodes__163659.sort();
+            sortNodes.sort();
         }
-        everythingSorted__163606.AddRange(sortNodes__163659);
-        return everythingSorted__163606.map<_TraversalSortNode__semantics, SemanticsNode>(((sortNode) => ((_TraversalSortNode__semantics)sortNode).node)).ToList();
+        everythingSorted.AddRange(sortNodes);
+        return everythingSorted.map<_TraversalSortNode__semantics, SemanticsNode>(((sortNode) => ((_TraversalSortNode__semantics)sortNode).node)).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2256,13 +2256,13 @@ public class SemanticsNode : DiagnosticableTreeMixin
 
     internal virtual bool _debugIsActionBlocked(SemanticsAction action)
     {
-        var result__166089 = false;
+        var result = false;
         DartRuntimePrimitives.Assert(() =>
             {
-                result__166089 = ((this._effectiveActionsAsBits & (long)action) == 0L);
+                result = ((this._effectiveActionsAsBits & (long)action) == 0L);
                 return true;
             });
-        return result__166089;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2270,55 +2270,55 @@ public class SemanticsNode : DiagnosticableTreeMixin
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        var hideOwner__166460 = true;
+        var hideOwner = true;
         if (this._dirty)
         {
-            bool inDirtyNodes__166513 = ((this.owner is not null) && this.owner!._dirtyNodes.Contains(this));
-            properties.add(new FlagProperty("inDirtyNodes", value: inDirtyNodes__166513, ifTrue: "dirty", ifFalse: "STALE"));
-            hideOwner__166460 = inDirtyNodes__166513;
+            bool inDirtyNodes = ((this.owner is not null) && this.owner!._dirtyNodes.Contains(this));
+            properties.add(new FlagProperty("inDirtyNodes", value: inDirtyNodes, ifTrue: "dirty", ifFalse: "STALE"));
+            hideOwner = inDirtyNodes;
         }
-        properties.add(new DiagnosticsProperty<SemanticsOwner>("owner", this.owner, level: (hideOwner__166460 ? DiagnosticLevel.hidden : DiagnosticLevel.info)));
+        properties.add(new DiagnosticsProperty<SemanticsOwner>("owner", this.owner, level: (hideOwner ? DiagnosticLevel.hidden : DiagnosticLevel.info)));
         properties.add(new FlagProperty("isMergedIntoParent", value: this.isMergedIntoParent, ifTrue: "merged up ⬆️"));
         properties.add(new FlagProperty("mergeAllDescendantsIntoThisNode", value: this.mergeAllDescendantsIntoThisNode, ifTrue: "merge boundary ⛔️"));
         if ((this._locale is not null))
         {
             properties.add(new StringProperty("locale", this._locale.ToString()));
         }
-        global::Doroti.Ui.Offset? offset__167351 = ((this.transform is not null) ? MatrixUtils.getAsTranslation(this.transform!) : null);
-        if ((offset__167351 is not null))
+        global::Doroti.Ui.Offset? offset = ((this.transform is not null) ? MatrixUtils.getAsTranslation(this.transform!) : null);
+        if ((offset is not null))
         {
-            Offset offset__167351__value167437 = DartRuntimePrimitives.RequireValue(offset__167351);
+            Offset offset__167351__value167437 = DartRuntimePrimitives.RequireValue(offset);
             properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("rect", this.rect.shift(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(offset__167351__value167437))), showName: false));
         }
         else
         {
-            double? scale__167582 = ((this.transform is not null) ? MatrixUtils.getAsScale(this.transform!) : null);
-            string? description__167667 = default!;
-            if ((scale__167582 is not null))
+            double? scale = ((this.transform is not null) ? MatrixUtils.getAsScale(this.transform!) : null);
+            string? descriptionLocal = default!;
+            if ((scale is not null))
             {
-                double scale__167582__value167690 = DartRuntimePrimitives.RequireValue(scale__167582);
-                description__167667 = $"{this.rect} scaled by {DartRuntimePrimitives.RequireValue(scale__167582__value167690).toStringAsFixed(1L)}x";
+                double scale__167582__value167690 = DartRuntimePrimitives.RequireValue(scale);
+                descriptionLocal = $"{this.rect} scaled by {DartRuntimePrimitives.RequireValue(scale__167582__value167690).toStringAsFixed(1L)}x";
             }
             else
             {
                 if (((this.transform is not null) && !MatrixUtils.isIdentity(this.transform!)))
                 {
-                    string matrix__167875 = string.Join("; ", this.transform.ToString().split("\n").take(4L).map<string, string>(((line) => line.substring(4L))));
-                    description__167667 = $"{this.rect} with transform [{matrix__167875}]";
+                    string matrix = string.Join("; ", this.transform.ToString().split("\n").take(4L).map<string, string>(((line) => line.substring(4L))));
+                    descriptionLocal = $"{this.rect} with transform [{matrix}]";
                 }
             }
-            properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("rect", this.rect, description: description__167667, showName: false));
+            properties.add(new DiagnosticsProperty<global::Doroti.Ui.Rect>("rect", this.rect, description: descriptionLocal, showName: false));
         }
         properties.add(new IterableProperty<string>("tags", this.tags?.map<SemanticsTag, string>(((tag) => ((SemanticsTag)tag).name)), defaultValue: null));
-        List<string> actions__168429 = ((Func<List<string>>)(() =>
+        List<string> actions = ((Func<List<string>>)(() =>
 {
     var __cascade = this._actions.Keys.map<SemanticsAction, string>(((action) => $"{action.ToString()}{(_debugIsActionBlocked(action) ? "🚫️" : "")}")).ToList();
     __cascade.sort();
     return __cascade;
 }))();
-        List<string?> customSemanticsActions__168690 = this._customSemanticsActions.Keys.map<CustomSemanticsAction, string?>(((action) => ((CustomSemanticsAction)action).label)).ToList();
-        properties.add(new IterableProperty<string>("actions", actions__168429, ifEmpty: null));
-        properties.add(new IterableProperty<string?>("customActions", customSemanticsActions__168690, ifEmpty: null));
+        List<string?> customSemanticsActions = this._customSemanticsActions.Keys.map<CustomSemanticsAction, string?>(((action) => ((CustomSemanticsAction)action).label)).ToList();
+        properties.add(new IterableProperty<string>("actions", actions, ifEmpty: null));
+        properties.add(new IterableProperty<string?>("customActions", customSemanticsActions, ifEmpty: null));
         properties.add(new IterableProperty<string>("flags", this.flagsCollection.toStrings(), ifEmpty: null));
         properties.add(new FlagProperty("isInvisible", value: this.isInvisible, ifTrue: "invisible"));
         properties.add(new FlagProperty("isHidden", value: this.flagsCollection.isHidden, ifTrue: "HIDDEN"));
@@ -2436,41 +2436,41 @@ internal class _SemanticsSortGroup__semantics : IComparable<_SemanticsSortGroup_
 
     public virtual List<SemanticsNode> sortedWithinVerticalGroup()
     {
-        var edges__176589 = new List<_BoxEdge__semantics>();
-        foreach (SemanticsNode child__176640 in this.nodes)
+        var edges = new List<_BoxEdge__semantics>();
+        foreach (SemanticsNode child in this.nodes)
         {
-            global::Doroti.Ui.Rect childRect__176753 = ((SemanticsNode)child__176640).rect.deflate(0.1);
-            edges__176589.Add(new _BoxEdge__semantics(isLeadingEdge: true, offset: SemanticsLibrary._pointInParentCoordinates(child__176640, childRect__176753.topLeft).dx, node: child__176640));
-            edges__176589.Add(new _BoxEdge__semantics(isLeadingEdge: false, offset: SemanticsLibrary._pointInParentCoordinates(child__176640, childRect__176753.bottomRight).dx, node: child__176640));
+            global::Doroti.Ui.Rect childRect = ((SemanticsNode)child).rect.deflate(0.1);
+            edges.Add(new _BoxEdge__semantics(isLeadingEdge: true, offset: SemanticsLibrary._pointInParentCoordinates(child, childRect.topLeft).dx, node: child));
+            edges.Add(new _BoxEdge__semantics(isLeadingEdge: false, offset: SemanticsLibrary._pointInParentCoordinates(child, childRect.bottomRight).dx, node: child));
         }
-        edges__176589.sort();
-        var horizontalGroups__177194 = new List<_SemanticsSortGroup__semantics>();
-        _SemanticsSortGroup__semantics? group__177263 = default!;
-        var depth__177278 = 0L;
-        foreach (var edge__177304 in edges__176589)
+        edges.sort();
+        var horizontalGroups = new List<_SemanticsSortGroup__semantics>();
+        _SemanticsSortGroup__semantics? groupLocal = default!;
+        var depth = 0L;
+        foreach (var edge in edges)
         {
-            if (((_BoxEdge__semantics)edge__177304).isLeadingEdge)
+            if (((_BoxEdge__semantics)edge).isLeadingEdge)
             {
-                depth__177278 += 1L;
-                group__177263 ??= new _SemanticsSortGroup__semantics(startOffset: ((_BoxEdge__semantics)edge__177304).offset, textDirection: this.textDirection);
-                ((_SemanticsSortGroup__semantics)group__177263).nodes.Add(((_BoxEdge__semantics)edge__177304).node);
+                depth += 1L;
+                groupLocal ??= new _SemanticsSortGroup__semantics(startOffset: ((_BoxEdge__semantics)edge).offset, textDirection: this.textDirection);
+                ((_SemanticsSortGroup__semantics)groupLocal).nodes.Add(((_BoxEdge__semantics)edge).node);
             }
             else
             {
-                depth__177278 -= 1L;
+                depth -= 1L;
             }
-            if ((depth__177278 == 0L))
+            if ((depth == 0L))
             {
-                horizontalGroups__177194.Add(group__177263!);
-                group__177263 = null;
+                horizontalGroups.Add(groupLocal!);
+                groupLocal = null;
             }
         }
-        horizontalGroups__177194.sort();
+        horizontalGroups.sort();
         if ((object.Equals(this.textDirection, TextDirection.rtl)))
         {
-            horizontalGroups__177194 = System.Linq.Enumerable.Reverse(horizontalGroups__177194).ToList();
+            horizontalGroups = System.Linq.Enumerable.Reverse(horizontalGroups).ToList();
         }
-        return horizontalGroups__177194.expand(((group) => group.sortedWithinKnot())).ToList();
+        return horizontalGroups.expand(((group) => group.sortedWithinKnot())).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2480,63 +2480,63 @@ internal class _SemanticsSortGroup__semantics : IComparable<_SemanticsSortGroup_
         {
             return this.nodes;
         }
-        var nodeMap__178896 = new DartMap<long, SemanticsNode>();
-        var edges__178940 = new DartMap<long, long>();
-        foreach (SemanticsNode node__178991 in this.nodes)
+        var nodeMap = new DartMap<long, SemanticsNode>();
+        var edges = new DartMap<long, long>();
+        foreach (SemanticsNode nodeLocal in this.nodes)
         {
-            nodeMap__178896[((SemanticsNode)node__178991).id] = node__178991;
-            global::Doroti.Ui.Offset center__179058 = SemanticsLibrary._pointInParentCoordinates(node__178991, ((SemanticsNode)node__178991).rect.center);
-            foreach (SemanticsNode nextNode__179149 in this.nodes)
+            nodeMap[((SemanticsNode)nodeLocal).id] = nodeLocal;
+            global::Doroti.Ui.Offset centerLocal = SemanticsLibrary._pointInParentCoordinates(nodeLocal, ((SemanticsNode)nodeLocal).rect.center);
+            foreach (SemanticsNode nextNode in this.nodes)
             {
-                if ((DartRuntimePrimitives.Identical(node__178991, nextNode__179149) || (edges__178940.GetValueOrDefault(((SemanticsNode)nextNode__179149).id) == ((SemanticsNode)node__178991).id)))
+                if ((DartRuntimePrimitives.Identical(nodeLocal, nextNode) || (edges.GetValueOrDefault(((SemanticsNode)nextNode).id) == ((SemanticsNode)nodeLocal).id)))
                 {
                     continue;
                 }
-                global::Doroti.Ui.Offset nextCenter__179409 = SemanticsLibrary._pointInParentCoordinates(nextNode__179149, ((SemanticsNode)nextNode__179149).rect.center);
-                global::Doroti.Ui.Offset centerDelta__179502 = (nextCenter__179409 - center__179058);
-                double direction__179610 = centerDelta__179502.direction;
-                bool isLtrAndForward__179664 = (((object.Equals(this.textDirection, TextDirection.ltr)) && ((-Dart_mathLibrary.pi / 4L) < direction__179610)) && (direction__179610 < ((3L * Dart_mathLibrary.pi) / 4L)));
-                bool isRtlAndForward__179832 = ((object.Equals(this.textDirection, TextDirection.rtl)) && (((direction__179610 < ((-3L * Dart_mathLibrary.pi) / 4L)) || (direction__179610 > ((3L * Dart_mathLibrary.pi) / 4L)))));
-                if ((isLtrAndForward__179664 || isRtlAndForward__179832))
+                global::Doroti.Ui.Offset nextCenter = SemanticsLibrary._pointInParentCoordinates(nextNode, ((SemanticsNode)nextNode).rect.center);
+                global::Doroti.Ui.Offset centerDelta = (nextCenter - centerLocal);
+                double directionLocal = centerDelta.direction;
+                bool isLtrAndForward = (((object.Equals(this.textDirection, TextDirection.ltr)) && ((-Dart_mathLibrary.pi / 4L) < directionLocal)) && (directionLocal < ((3L * Dart_mathLibrary.pi) / 4L)));
+                bool isRtlAndForward = ((object.Equals(this.textDirection, TextDirection.rtl)) && (((directionLocal < ((-3L * Dart_mathLibrary.pi) / 4L)) || (directionLocal > ((3L * Dart_mathLibrary.pi) / 4L)))));
+                if ((isLtrAndForward || isRtlAndForward))
                 {
-                    edges__178940[((SemanticsNode)node__178991).id] = ((SemanticsNode)nextNode__179149).id;
+                    edges[((SemanticsNode)nodeLocal).id] = ((SemanticsNode)nextNode).id;
                 }
             }
         }
-        var sortedIds__180100 = new List<long>();
-        var visitedIds__180131 = new HashSet<long>();
-        List<SemanticsNode> startNodes__180183 = ((Func<List<SemanticsNode>>)(() =>
+        var sortedIds = new List<long>();
+        var visitedIds = new HashSet<long>();
+        List<SemanticsNode> startNodes = ((Func<List<SemanticsNode>>)(() =>
 {
     var __cascade = this.nodes.ToList();
     __cascade.sort(((a, b) =>
     {
-        global::Doroti.Ui.Offset aTopLeft__180282 = SemanticsLibrary._pointInParentCoordinates(a, ((SemanticsNode)a).rect.topLeft);
-        global::Doroti.Ui.Offset bTopLeft__180360 = SemanticsLibrary._pointInParentCoordinates(b, ((SemanticsNode)b).rect.topLeft);
-        long verticalDiff__180435 = aTopLeft__180282.dy.CompareTo(bTopLeft__180360.dy);
-        if ((verticalDiff__180435 != 0L))
+        global::Doroti.Ui.Offset aTopLeft = SemanticsLibrary._pointInParentCoordinates(a, ((SemanticsNode)a).rect.topLeft);
+        global::Doroti.Ui.Offset bTopLeft = SemanticsLibrary._pointInParentCoordinates(b, ((SemanticsNode)b).rect.topLeft);
+        long verticalDiff = aTopLeft.dy.CompareTo(bTopLeft.dy);
+        if ((verticalDiff != 0L))
         {
-            return -verticalDiff__180435;
+            return -verticalDiff;
         }
-        return -aTopLeft__180282.dx.CompareTo(bTopLeft__180360.dx);
+        return -aTopLeft.dx.CompareTo(bTopLeft.dx);
         return default;
     }));
     return __cascade;
 }))();
         void search(long id)
         {
-            if (visitedIds__180131.Contains(id))
+            if (visitedIds.Contains(id))
             {
                 return;
             }
-            visitedIds__180131.Add(id);
-            if (edges__178940.ContainsKey(id))
+            visitedIds.Add(id);
+            if (edges.ContainsKey(id))
             {
-                search(DartRuntimePrimitives.RequireValue(edges__178940.GetValueOrDefault(id)));
+                search(DartRuntimePrimitives.RequireValue(edges.GetValueOrDefault(id)));
             }
-            sortedIds__180100.Add(id);
+            sortedIds.Add(id);
         }
-        startNodes__180183.map<SemanticsNode, long>(((node) => ((SemanticsNode)node).id)).forEach(search);
-        return System.Linq.Enumerable.Reverse(sortedIds__180100.map<long, SemanticsNode>(((id) => nodeMap__178896.GetValueOrDefault(id)!)).ToList()).ToList();
+        startNodes.map<SemanticsNode, long>(((node) => ((SemanticsNode)node).id)).forEach(search);
+        return System.Linq.Enumerable.Reverse(sortedIds.map<long, SemanticsNode>(((id) => nodeMap.GetValueOrDefault(id)!)).ToList()).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2547,14 +2547,14 @@ public static partial class SemanticsLibrary
 {
     internal static Offset _pointInParentCoordinates(SemanticsNode node, Offset point)
     {
-        Matrix4? traversalTransform__181166 = ((SemanticsNode)node)._traversalTransform;
-        if ((traversalTransform__181166 is null))
+        Matrix4? traversalTransform = ((SemanticsNode)node)._traversalTransform;
+        if ((traversalTransform is null))
         {
             return point;
         }
-        var vector__181279 = new Vector3(point.dx, point.dy, 0.0);
-        traversalTransform__181166.transform3(vector__181279);
-        return new global::Doroti.Ui.Offset(vector__181279.x, vector__181279.y);
+        var vector = new Vector3(point.dx, point.dy, 0.0);
+        traversalTransform.transform3(vector);
+        return new global::Doroti.Ui.Offset(vector.x, vector.y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -2563,38 +2563,38 @@ public static partial class SemanticsLibrary
 {
     internal static List<SemanticsNode> _childrenInDefaultOrder(List<SemanticsNode> children, TextDirection textDirection)
     {
-        var edges__182036 = new List<_BoxEdge__semantics>();
-        foreach (var child__182071 in children)
+        var edges = new List<_BoxEdge__semantics>();
+        foreach (var child in children)
         {
-            DartRuntimePrimitives.Assert(() => ((SemanticsNode)child__182071).rect.isFinite);
-            global::Doroti.Ui.Rect childRect__182216 = ((SemanticsNode)child__182071).rect.deflate(0.1);
-            edges__182036.Add(new _BoxEdge__semantics(isLeadingEdge: true, offset: SemanticsLibrary._pointInParentCoordinates(child__182071, childRect__182216.topLeft).dy, node: child__182071));
-            edges__182036.Add(new _BoxEdge__semantics(isLeadingEdge: false, offset: SemanticsLibrary._pointInParentCoordinates(child__182071, childRect__182216.bottomRight).dy, node: child__182071));
+            DartRuntimePrimitives.Assert(() => ((SemanticsNode)child).rect.isFinite);
+            global::Doroti.Ui.Rect childRect = ((SemanticsNode)child).rect.deflate(0.1);
+            edges.Add(new _BoxEdge__semantics(isLeadingEdge: true, offset: SemanticsLibrary._pointInParentCoordinates(child, childRect.topLeft).dy, node: child));
+            edges.Add(new _BoxEdge__semantics(isLeadingEdge: false, offset: SemanticsLibrary._pointInParentCoordinates(child, childRect.bottomRight).dy, node: child));
         }
-        edges__182036.sort();
-        var verticalGroups__182625 = new List<_SemanticsSortGroup__semantics>();
-        _SemanticsSortGroup__semantics? group__182690 = default!;
-        var depth__182703 = 0L;
-        foreach (var edge__182727 in edges__182036)
+        edges.sort();
+        var verticalGroups = new List<_SemanticsSortGroup__semantics>();
+        _SemanticsSortGroup__semantics? groupLocal = default!;
+        var depth = 0L;
+        foreach (var edge in edges)
         {
-            if (((_BoxEdge__semantics)edge__182727).isLeadingEdge)
+            if (((_BoxEdge__semantics)edge).isLeadingEdge)
             {
-                depth__182703 += 1L;
-                group__182690 ??= new _SemanticsSortGroup__semantics(startOffset: ((_BoxEdge__semantics)edge__182727).offset, textDirection: textDirection);
-                ((_SemanticsSortGroup__semantics)group__182690).nodes.Add(((_BoxEdge__semantics)edge__182727).node);
+                depth += 1L;
+                groupLocal ??= new _SemanticsSortGroup__semantics(startOffset: ((_BoxEdge__semantics)edge).offset, textDirection: textDirection);
+                ((_SemanticsSortGroup__semantics)groupLocal).nodes.Add(((_BoxEdge__semantics)edge).node);
             }
             else
             {
-                depth__182703 -= 1L;
+                depth -= 1L;
             }
-            if ((depth__182703 == 0L))
+            if ((depth == 0L))
             {
-                verticalGroups__182625.Add(group__182690!);
-                group__182690 = null;
+                verticalGroups.Add(groupLocal!);
+                groupLocal = null;
             }
         }
-        verticalGroups__182625.sort();
-        return verticalGroups__182625.expand(((group) => group.sortedWithinVerticalGroup())).ToList();
+        verticalGroups.sort();
+        return verticalGroups.expand(((group) => group.sortedWithinVerticalGroup())).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -2656,12 +2656,12 @@ public class SemanticsOwner : ChangeNotifier
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                var invisibleNodes__186389 = new List<SemanticsNode>();
+                var invisibleNodes = new List<SemanticsNode>();
                 bool findInvisibleNodes(SemanticsNode node)
                 {
                     if (((SemanticsNode)node).rect.isEmpty)
                     {
-                        invisibleNodes__186389.Add(node);
+                        invisibleNodes.Add(node);
                     }
                     else
                     {
@@ -2673,29 +2673,29 @@ public class SemanticsOwner : ChangeNotifier
                     return true;
                     throw new InvalidOperationException("Dart control flow completed without a value.");
                 }
-                SemanticsNode? rootSemanticsNode__186915 = this.rootSemanticsNode;
-                if ((rootSemanticsNode__186915 is not null))
+                SemanticsNode? rootSemanticsNodeLocal = this.rootSemanticsNode;
+                if ((rootSemanticsNodeLocal is not null))
                 {
-                    if (((((SemanticsNode)rootSemanticsNode__186915).childrenCount > 0L) && ((SemanticsNode)rootSemanticsNode__186915).rect.isEmpty))
+                    if (((((SemanticsNode)rootSemanticsNodeLocal).childrenCount > 0L) && ((SemanticsNode)rootSemanticsNodeLocal).rect.isEmpty))
                     {
-                        invisibleNodes__186389.Add(rootSemanticsNode__186915);
+                        invisibleNodes.Add(rootSemanticsNodeLocal);
                     }
                     else
                     {
-                        if (!((SemanticsNode)rootSemanticsNode__186915).mergeAllDescendantsIntoThisNode)
+                        if (!((SemanticsNode)rootSemanticsNodeLocal).mergeAllDescendantsIntoThisNode)
                         {
-                            rootSemanticsNode__186915.visitChildren((Func<SemanticsNode, bool>)findInvisibleNodes);
+                            rootSemanticsNodeLocal.visitChildren((Func<SemanticsNode, bool>)findInvisibleNodes);
                         }
                     }
                 }
-                if ((checked((long)(invisibleNodes__186389.Count)) == 0))
+                if ((checked((long)(invisibleNodes.Count)) == 0))
                 {
                     return true;
                 }
                 List<DiagnosticsNode> nodeToMessage(SemanticsNode invisibleNode)
                 {
-                    SemanticsNode? parent__187532 = ((SemanticsNode)invisibleNode).parent;
-                    return new List<DiagnosticsNode> { ((Diagnosticable)invisibleNode).toDiagnosticsNode(style: DiagnosticsTreeStyle.errorProperty), (((Diagnosticable)parent__187532).toDiagnosticsNode(name: "which was added as a child of", style: DiagnosticsTreeStyle.errorProperty) ?? new ErrorDescription("which was added as the root SemanticsNode")) };
+                    SemanticsNode? parentLocal = ((SemanticsNode)invisibleNode).parent;
+                    return new List<DiagnosticsNode> { ((Diagnosticable)invisibleNode).toDiagnosticsNode(style: DiagnosticsTreeStyle.errorProperty), (((Diagnosticable)parentLocal).toDiagnosticsNode(name: "which was added as a child of", style: DiagnosticsTreeStyle.errorProperty) ?? new ErrorDescription("which was added as the root SemanticsNode")) };
                     throw new InvalidOperationException("Dart control flow completed without a value.");
                 }
                 throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Invisible SemanticsNodes should not be added to the tree."), new ErrorDescription("The following invisible SemanticsNodes were added to the tree:"), new ErrorHint("An invisible SemanticsNode is one whose rect is not on screen hence not reachable for users, " + "and its semantic information is not merged into a visible parent."), new ErrorHint("An invisible SemanticsNode makes the accessibility experience confusing, " + "as it does not provide any visual indication when the user selects it " + "via accessibility technologies."), new ErrorHint("Consider removing the above invisible SemanticsNodes if they were added by your " + "RenderObject.assembleSemanticsNode implementation, or filing a bug on GitHub:\n" + "  https://github.com/flutter/flutter/issues/new?template=02_bug.yml") });
@@ -2704,117 +2704,117 @@ public class SemanticsOwner : ChangeNotifier
         {
             return;
         }
-        var customSemanticsActionIds__189065 = new HashSet<long>();
-        var visitedNodes__189111 = new List<SemanticsNode>();
+        var customSemanticsActionIds = new HashSet<long>();
+        var visitedNodes = new List<SemanticsNode>();
         while ((checked((long)(this._dirtyNodes.Count)) != 0))
         {
-            List<SemanticsNode> localDirtyNodes__189214 = this._dirtyNodes.where(((node) => !this._detachedNodes.Contains(node))).ToList();
+            List<SemanticsNode> localDirtyNodes = this._dirtyNodes.where(((node) => !this._detachedNodes.Contains(node))).ToList();
             this._dirtyNodes.Clear();
             this._detachedNodes.Clear();
-            localDirtyNodes__189214.sort(((a, b) => (((SemanticsNode)a).depth - ((SemanticsNode)b).depth)));
-            visitedNodes__189111.AddRange(localDirtyNodes__189214);
-            foreach (var node__189541 in localDirtyNodes__189214)
+            localDirtyNodes.sort(((a, b) => (((SemanticsNode)a).depth - ((SemanticsNode)b).depth)));
+            visitedNodes.AddRange(localDirtyNodes);
+            foreach (var nodeLocal in localDirtyNodes)
             {
-                DartRuntimePrimitives.Assert(() => ((SemanticsNode)node__189541)._dirty);
-                DartRuntimePrimitives.Assert(() => (((((SemanticsNode)node__189541).parent is null) || !((SemanticsNode)node__189541).parent!.isPartOfNodeMerging) || ((SemanticsNode)node__189541).isMergedIntoParent));
-                if (((SemanticsNode)node__189541).isPartOfNodeMerging)
+                DartRuntimePrimitives.Assert(() => ((SemanticsNode)nodeLocal)._dirty);
+                DartRuntimePrimitives.Assert(() => (((((SemanticsNode)nodeLocal).parent is null) || !((SemanticsNode)nodeLocal).parent!.isPartOfNodeMerging) || ((SemanticsNode)nodeLocal).isMergedIntoParent));
+                if (((SemanticsNode)nodeLocal).isPartOfNodeMerging)
                 {
-                    DartRuntimePrimitives.Assert(() => (((SemanticsNode)node__189541).mergeAllDescendantsIntoThisNode || (((SemanticsNode)node__189541).parent is not null)));
-                    if (((((SemanticsNode)node__189541).parent is not null) && ((SemanticsNode)node__189541).parent!.isPartOfNodeMerging))
+                    DartRuntimePrimitives.Assert(() => (((SemanticsNode)nodeLocal).mergeAllDescendantsIntoThisNode || (((SemanticsNode)nodeLocal).parent is not null)));
+                    if (((((SemanticsNode)nodeLocal).parent is not null) && ((SemanticsNode)nodeLocal).parent!.isPartOfNodeMerging))
                     {
-                        ((SemanticsNode)node__189541).parent!._markDirty();
-                        node__189541._dirty = false;
+                        ((SemanticsNode)nodeLocal).parent!._markDirty();
+                        nodeLocal._dirty = false;
                     }
                 }
-                this._traversalParentNodes.removeWhere(((key, oldNode) => (object.Equals(node__189541, oldNode))));
-                foreach (HashSet<SemanticsNode> childSet__190522 in this._traversalChildNodes.Values)
+                this._traversalParentNodes.removeWhere(((key, oldNode) => (object.Equals(nodeLocal, oldNode))));
+                foreach (HashSet<SemanticsNode> childSet in this._traversalChildNodes.Values)
                 {
-                    childSet__190522.removeWhere(((oldNode) => (object.Equals(node__189541, oldNode))));
+                    childSet.removeWhere(((oldNode) => (object.Equals(nodeLocal, oldNode))));
                 }
                 this._traversalChildNodes.removeWhere(((key, value) => (checked((long)(value.Count)) == 0)));
-                bool isTraversalParent__190769 = ((SemanticsNode)node__189541)._isTraversalParent;
-                bool isTraversalChild__190833 = ((SemanticsNode)node__189541)._isTraversalChild;
-                if (isTraversalParent__190769)
+                bool isTraversalParent = ((SemanticsNode)nodeLocal)._isTraversalParent;
+                bool isTraversalChild = ((SemanticsNode)nodeLocal)._isTraversalChild;
+                if (isTraversalParent)
                 {
-                    DartRuntimePrimitives.Assert(() => (!this._traversalParentNodes.ContainsKey(((SemanticsNode)node__189541)._traversalParentIdentifier) || (object.Equals(this._traversalParentNodes.GetValueOrDefault(((SemanticsNode)node__189541).traversalParentIdentifier!), node__189541))));
-                    this._traversalParentNodes[((SemanticsNode)node__189541).traversalParentIdentifier!] = node__189541;
+                    DartRuntimePrimitives.Assert(() => (!this._traversalParentNodes.ContainsKey(((SemanticsNode)nodeLocal)._traversalParentIdentifier) || (object.Equals(this._traversalParentNodes.GetValueOrDefault(((SemanticsNode)nodeLocal).traversalParentIdentifier!), nodeLocal))));
+                    this._traversalParentNodes[((SemanticsNode)nodeLocal).traversalParentIdentifier!] = nodeLocal;
                 }
                 else
                 {
-                    if (isTraversalChild__190833)
+                    if (isTraversalChild)
                     {
-                        this._traversalChildNodes.putIfAbsent(((SemanticsNode)node__189541).traversalChildIdentifier!, (() => new HashSet<SemanticsNode>())).Add(node__189541);
+                        this._traversalChildNodes.putIfAbsent(((SemanticsNode)nodeLocal).traversalChildIdentifier!, (() => new HashSet<SemanticsNode>())).Add(nodeLocal);
                     }
                 }
                 if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
                 {
-                    if (((SemanticsNode)node__189541)._isTraversalChild)
+                    if (((SemanticsNode)nodeLocal)._isTraversalChild)
                     {
-                        SemanticsNode? parentNode__192289 = this._traversalParentNodes.GetValueOrDefault(DartRuntimePrimitives.RequireReference(((SemanticsNode)node__189541).traversalChildIdentifier));
-                        if (((parentNode__192289 is not null) && !visitedNodes__189111.Contains(parentNode__192289)))
+                        SemanticsNode? parentNode = this._traversalParentNodes.GetValueOrDefault(DartRuntimePrimitives.RequireReference(((SemanticsNode)nodeLocal).traversalChildIdentifier));
+                        if (((parentNode is not null) && !visitedNodes.Contains(parentNode)))
                         {
-                            parentNode__192289._markDirty();
+                            parentNode._markDirty();
                         }
                     }
                 }
             }
         }
-        visitedNodes__189111.sort(((a, b) => (((SemanticsNode)a).depth - ((SemanticsNode)b).depth)));
-        global::Doroti.Ui.SemanticsUpdateBuilder builder__192635 = global::Doroti.Framework.Semantics.SemanticsBinding.instance.createSemanticsUpdateBuilder();
-        foreach (var node__192719 in visitedNodes__189111)
+        visitedNodes.sort(((a, b) => (((SemanticsNode)a).depth - ((SemanticsNode)b).depth)));
+        global::Doroti.Ui.SemanticsUpdateBuilder builder = global::Doroti.Framework.Semantics.SemanticsBinding.instance.createSemanticsUpdateBuilder();
+        foreach (var nodeAlternate in visitedNodes)
         {
-            DartRuntimePrimitives.Assert(() => (((SemanticsNode)node__192719).parent?._dirty != true));
-            if ((((SemanticsNode)node__192719)._dirty && ((SemanticsNode)node__192719).attached))
+            DartRuntimePrimitives.Assert(() => (((SemanticsNode)nodeAlternate).parent?._dirty != true));
+            if ((((SemanticsNode)nodeAlternate)._dirty && ((SemanticsNode)nodeAlternate).attached))
             {
-                node__192719._addToUpdate(builder__192635, customSemanticsActionIds__189065);
+                nodeAlternate._addToUpdate(builder, customSemanticsActionIds);
             }
         }
         this._dirtyNodes.Clear();
-        foreach (var actionId__193907 in customSemanticsActionIds__189065)
+        foreach (var actionId in customSemanticsActionIds)
         {
-            CustomSemanticsAction action__193981 = CustomSemanticsAction.getAction(actionId__193907)!;
-            builder__192635.updateCustomAction(id: actionId__193907, label: ((CustomSemanticsAction)action__193981).label, hint: ((CustomSemanticsAction)action__193981).hint, overrideId: (FoundationRuntimePorts.EnumIndexNullable(((CustomSemanticsAction)action__193981).action) ?? -1L));
+            CustomSemanticsAction actionLocal = CustomSemanticsAction.getAction(actionId)!;
+            builder.updateCustomAction(id: actionId, label: ((CustomSemanticsAction)actionLocal).label, hint: ((CustomSemanticsAction)actionLocal).hint, overrideId: (FoundationRuntimePorts.EnumIndexNullable(((CustomSemanticsAction)actionLocal).action) ?? -1L));
         }
-        this.onSemanticsUpdate(builder__192635.build());
+        this.onSemanticsUpdate(builder.build());
         notifyListeners();
     }
 
     internal virtual Action<object?>? _getSemanticsActionHandlerForId(long id, SemanticsAction action, object? args = null)
     {
-        SemanticsNode? result__194422 = this._nodes.GetValueOrDefault(id);
-        if ((result__194422 is null))
+        SemanticsNode? result = this._nodes.GetValueOrDefault(id);
+        if ((result is null))
         {
             return null;
         }
-        if ((((SemanticsNode)result__194422).isPartOfNodeMerging && !result__194422._canHandleAction(action, args)))
+        if ((((SemanticsNode)result).isPartOfNodeMerging && !result._canHandleAction(action, args)))
         {
-            SemanticsNode? found__194876 = default!;
-            result__194422._visitDescendants(((Func<SemanticsNode, bool>)((node) =>
+            SemanticsNode? found = default!;
+            result._visitDescendants(((Func<SemanticsNode, bool>)((node) =>
             {
                 if (node._canHandleAction(action, args))
                 {
-                    found__194876 = node;
+                    found = node;
                     return false;
                 }
                 return true;
                 return default;
             })));
-            result__194422 = found__194876;
+            result = found;
         }
-        if (((result__194422 is null) || !result__194422._canHandleAction(action, args)))
+        if (((result is null) || !result._canHandleAction(action, args)))
         {
             return null;
         }
-        return ((SemanticsNode)result__194422)._actions.GetValueOrDefault(action);
+        return ((SemanticsNode)result)._actions.GetValueOrDefault(action);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void performAction(long id, SemanticsAction action, object? args = null)
     {
-        Action<object?>? handler__195695 = _getSemanticsActionHandlerForId(id, action, args);
-        if ((handler__195695 is not null))
+        Action<object?>? handler = _getSemanticsActionHandlerForId(id, action, args);
+        if ((handler is not null))
         {
-            handler__195695(args);
+            handler(args);
             return;
         }
         if (((object.Equals(action, SemanticsAction.showOnScreen)) && (this._nodes.GetValueOrDefault(id)?._showOnScreen is not null)))
@@ -2827,12 +2827,12 @@ public class SemanticsOwner : ChangeNotifier
     {
         if ((((SemanticsNode)node).transform is not null))
         {
-            var inverse__196223 = Matrix4.identity();
-            if ((inverse__196223.copyInverse(((SemanticsNode)node).transform!) == 0.0))
+            var inverse = Matrix4.identity();
+            if ((inverse.copyInverse(((SemanticsNode)node).transform!) == 0.0))
             {
                 return null;
             }
-            position = MatrixUtils.transformPoint(inverse__196223, position);
+            position = MatrixUtils.transformPoint(inverse, position);
         }
         if (!((SemanticsNode)node).rect.contains(position))
         {
@@ -2844,27 +2844,27 @@ public class SemanticsOwner : ChangeNotifier
             {
                 return ((SemanticsNode)node)._actions.GetValueOrDefault(action);
             }
-            SemanticsNode? result__196639 = default!;
+            SemanticsNode? result = default!;
             node._visitDescendants(((Func<SemanticsNode, bool>)((child) =>
             {
                 if (child._canHandleAction(action, args))
                 {
-                    result__196639 = child;
+                    result = child;
                     return false;
                 }
                 return true;
                 return default;
             })));
-            return result__196639?._actions.GetValueOrDefault(action);
+            return result?._actions.GetValueOrDefault(action);
         }
         if (((SemanticsNode)node).hasChildren)
         {
-            foreach (SemanticsNode child__196947 in System.Linq.Enumerable.Reverse(((SemanticsNode)node)._children!))
+            foreach (SemanticsNode childLocal in System.Linq.Enumerable.Reverse(((SemanticsNode)node)._children!))
             {
-                Action<object?>? handler__197022 = _getSemanticsActionHandlerForPosition(child__196947, position, action, args);
-                if ((handler__197022 is not null))
+                Action<object?>? handler = _getSemanticsActionHandlerForPosition(childLocal, position, action, args);
+                if ((handler is not null))
                 {
-                    return handler__197022;
+                    return handler;
                 }
             }
         }
@@ -2874,15 +2874,15 @@ public class SemanticsOwner : ChangeNotifier
 
     public virtual void performActionAt(Offset position, SemanticsAction action, object? args = null)
     {
-        SemanticsNode? node__197692 = this.rootSemanticsNode;
-        if ((node__197692 is null))
+        SemanticsNode? node = this.rootSemanticsNode;
+        if ((node is null))
         {
             return;
         }
-        Action<object?>? handler__197796 = _getSemanticsActionHandlerForPosition(node__197692, position, action, args);
-        if ((handler__197796 is not null))
+        Action<object?>? handler = _getSemanticsActionHandlerForPosition(node, position, action, args);
+        if ((handler is not null))
         {
-            handler__197796(args);
+            handler(args);
         }
     }
 
@@ -3081,8 +3081,8 @@ public class SemanticsConfiguration
             DartRuntimePrimitives.Assert(() => (__value is not null));
             _addAction(SemanticsAction.scrollToOffset, ((Action<object?>)((args) =>
             {
-                var list__210415 = ((Float64List?)(object?)args!)!;
-                __value!(new global::Doroti.Ui.Offset(list__210415[0L], list__210415[1L]));
+                var list = ((Float64List?)(object?)args!)!;
+                __value!(new global::Doroti.Ui.Offset(list[0L], list[1L]));
             })));
             _onScrollToOffset = __value;
         }
@@ -3156,8 +3156,8 @@ public class SemanticsConfiguration
             DartRuntimePrimitives.Assert(() => (__value is not null));
             _addAction(SemanticsAction.moveCursorForwardByCharacter, ((Action<object?>)((args) =>
             {
-                var extendSelection__214657 = ((bool)args!);
-                __value!(extendSelection__214657);
+                var extendSelection = ((bool)args!);
+                __value!(extendSelection);
             })));
             _onMoveCursorForwardByCharacter = __value;
         }
@@ -3171,8 +3171,8 @@ public class SemanticsConfiguration
             DartRuntimePrimitives.Assert(() => (__value is not null));
             _addAction(SemanticsAction.moveCursorBackwardByCharacter, ((Action<object?>)((args) =>
             {
-                var extendSelection__215431 = ((bool)args!);
-                __value!(extendSelection__215431);
+                var extendSelection = ((bool)args!);
+                __value!(extendSelection);
             })));
             _onMoveCursorBackwardByCharacter = __value;
         }
@@ -3186,8 +3186,8 @@ public class SemanticsConfiguration
             DartRuntimePrimitives.Assert(() => (__value is not null));
             _addAction(SemanticsAction.moveCursorForwardByWord, ((Action<object?>)((args) =>
             {
-                var extendSelection__216165 = ((bool)args!);
-                __value!(extendSelection__216165);
+                var extendSelection = ((bool)args!);
+                __value!(extendSelection);
             })));
             _onMoveCursorForwardByCharacter = __value;
         }
@@ -3201,8 +3201,8 @@ public class SemanticsConfiguration
             DartRuntimePrimitives.Assert(() => (__value is not null));
             _addAction(SemanticsAction.moveCursorBackwardByWord, ((Action<object?>)((args) =>
             {
-                var extendSelection__216904 = ((bool)args!);
-                __value!(extendSelection__216904);
+                var extendSelection = ((bool)args!);
+                __value!(extendSelection);
             })));
             _onMoveCursorBackwardByCharacter = __value;
         }
@@ -3217,9 +3217,9 @@ public class SemanticsConfiguration
             _addAction(SemanticsAction.setSelection, ((Action<object?>)((args) =>
             {
                 DartRuntimePrimitives.Assert(() => ((args is not null) && (args is System.Collections.IDictionary)));
-                DartMap<string, long> selection__217703 = (DartRuntimePrimitives.ConvertMap<object, object>((System.Collections.IDictionary)args!)).cast<string, long>();
-                DartRuntimePrimitives.Assert(() => ((selection__217703.ContainsKey("base")) && (selection__217703.ContainsKey("extent"))));
-                __value!(new TextSelection(baseOffset: DartRuntimePrimitives.RequireValue(selection__217703.GetValueOrDefault("base")), extentOffset: DartRuntimePrimitives.RequireValue(selection__217703.GetValueOrDefault("extent"))));
+                DartMap<string, long> selection = (DartRuntimePrimitives.ConvertMap<object, object>((System.Collections.IDictionary)args!)).cast<string, long>();
+                DartRuntimePrimitives.Assert(() => ((selection.ContainsKey("base")) && (selection.ContainsKey("extent"))));
+                __value!(new TextSelection(baseOffset: DartRuntimePrimitives.RequireValue(selection.GetValueOrDefault("base")), extentOffset: DartRuntimePrimitives.RequireValue(selection.GetValueOrDefault("extent"))));
             })));
             _onSetSelection = __value;
         }
@@ -3234,8 +3234,8 @@ public class SemanticsConfiguration
             _addAction(SemanticsAction.setText, ((Action<object?>)((args) =>
             {
                 DartRuntimePrimitives.Assert(() => ((args is not null) && (args is string)));
-                var text__218528 = ((string?)(object?)args!)!;
-                __value!(text__218528);
+                var text = ((string?)(object?)args!)!;
+                __value!(text);
             })));
             _onSetText = __value;
         }
@@ -3419,15 +3419,15 @@ public class SemanticsConfiguration
     }
     internal virtual void _onCustomSemanticsAction(object? args)
     {
-        CustomSemanticsAction? action__228295 = CustomSemanticsAction.getAction(((long)args!));
-        if ((action__228295 is null))
+        CustomSemanticsAction? action = CustomSemanticsAction.getAction(((long)args!));
+        if ((action is null))
         {
             return;
         }
-        Action? callback__228421 = this._customSemanticsActions.GetValueOrDefault(action__228295);
-        if ((callback__228421 is not null))
+        Action? callback = this._customSemanticsActions.GetValueOrDefault(action);
+        if ((callback is not null))
         {
-            callback__228421();
+            callback();
         }
     }
 
@@ -4294,8 +4294,8 @@ public static partial class SemanticsLibrary
         if (((!object.Equals(thisTextDirection, otherTextDirection)) && (otherTextDirection is not null)))
         {
             TextDirection otherTextDirection__value266687 = DartRuntimePrimitives.RequireValue(otherTextDirection);
-            AttributedString directionEmbedding__266744 = (DartRuntimePrimitives.RequireValue(otherTextDirection__value266687) switch { TextDirection.rtl => new AttributedString(Unicode.RLE), TextDirection.ltr => new AttributedString(Unicode.LRE), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            otherAttributedString = ((directionEmbedding__266744.op_Add(otherAttributedString)).op_Add(new AttributedString(Unicode.PDF)));
+            AttributedString directionEmbedding = (DartRuntimePrimitives.RequireValue(otherTextDirection__value266687) switch { TextDirection.rtl => new AttributedString(Unicode.RLE), TextDirection.ltr => new AttributedString(Unicode.LRE), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            otherAttributedString = ((directionEmbedding.op_Add(otherAttributedString)).op_Add(new AttributedString(Unicode.PDF)));
         }
         if ((((AttributedString)thisAttributedString).@string.Length == 0))
         {
@@ -4407,132 +4407,132 @@ public static partial class SemanticsLibrary
 {
     internal static long _toBitMask(SemanticsFlags flags)
     {
-        var bitmask__272639 = 0L;
+        var bitmask = 0L;
         if ((!object.Equals(flags.isChecked, CheckedState.none)))
         {
-            bitmask__272639 |= (1L << (int)(0L));
+            bitmask |= (1L << (int)(0L));
         }
         if ((object.Equals(flags.isChecked, CheckedState.isTrue)))
         {
-            bitmask__272639 |= (1L << (int)(1L));
+            bitmask |= (1L << (int)(1L));
         }
         if ((object.Equals(flags.isSelected, Tristate.isTrue)))
         {
-            bitmask__272639 |= (1L << (int)(2L));
+            bitmask |= (1L << (int)(2L));
         }
         if (flags.isButton)
         {
-            bitmask__272639 |= (1L << (int)(3L));
+            bitmask |= (1L << (int)(3L));
         }
         if (flags.isTextField)
         {
-            bitmask__272639 |= (1L << (int)(4L));
+            bitmask |= (1L << (int)(4L));
         }
         if ((object.Equals(flags.isFocused, Tristate.isTrue)))
         {
-            bitmask__272639 |= (1L << (int)(5L));
+            bitmask |= (1L << (int)(5L));
         }
         if ((!object.Equals(flags.isEnabled, Tristate.none)))
         {
-            bitmask__272639 |= (1L << (int)(6L));
+            bitmask |= (1L << (int)(6L));
         }
         if ((object.Equals(flags.isEnabled, Tristate.isTrue)))
         {
-            bitmask__272639 |= (1L << (int)(7L));
+            bitmask |= (1L << (int)(7L));
         }
         if (flags.isInMutuallyExclusiveGroup)
         {
-            bitmask__272639 |= (1L << (int)(8L));
+            bitmask |= (1L << (int)(8L));
         }
         if (flags.isHeader)
         {
-            bitmask__272639 |= (1L << (int)(9L));
+            bitmask |= (1L << (int)(9L));
         }
         if (flags.isObscured)
         {
-            bitmask__272639 |= (1L << (int)(10L));
+            bitmask |= (1L << (int)(10L));
         }
         if (flags.scopesRoute)
         {
-            bitmask__272639 |= (1L << (int)(11L));
+            bitmask |= (1L << (int)(11L));
         }
         if (flags.namesRoute)
         {
-            bitmask__272639 |= (1L << (int)(12L));
+            bitmask |= (1L << (int)(12L));
         }
         if (flags.isHidden)
         {
-            bitmask__272639 |= (1L << (int)(13L));
+            bitmask |= (1L << (int)(13L));
         }
         if (flags.isImage)
         {
-            bitmask__272639 |= (1L << (int)(14L));
+            bitmask |= (1L << (int)(14L));
         }
         if (flags.isLiveRegion)
         {
-            bitmask__272639 |= (1L << (int)(15L));
+            bitmask |= (1L << (int)(15L));
         }
         if ((!object.Equals(flags.isToggled, Tristate.none)))
         {
-            bitmask__272639 |= (1L << (int)(16L));
+            bitmask |= (1L << (int)(16L));
         }
         if ((object.Equals(flags.isToggled, Tristate.isTrue)))
         {
-            bitmask__272639 |= (1L << (int)(17L));
+            bitmask |= (1L << (int)(17L));
         }
         if (flags.hasImplicitScrolling)
         {
-            bitmask__272639 |= (1L << (int)(18L));
+            bitmask |= (1L << (int)(18L));
         }
         if (flags.isMultiline)
         {
-            bitmask__272639 |= (1L << (int)(19L));
+            bitmask |= (1L << (int)(19L));
         }
         if (flags.isReadOnly)
         {
-            bitmask__272639 |= (1L << (int)(20L));
+            bitmask |= (1L << (int)(20L));
         }
         if ((!object.Equals(flags.isFocused, Tristate.none)))
         {
-            bitmask__272639 |= (1L << (int)(21L));
+            bitmask |= (1L << (int)(21L));
         }
         if (flags.isLink)
         {
-            bitmask__272639 |= (1L << (int)(22L));
+            bitmask |= (1L << (int)(22L));
         }
         if (flags.isSlider)
         {
-            bitmask__272639 |= (1L << (int)(23L));
+            bitmask |= (1L << (int)(23L));
         }
         if (flags.isKeyboardKey)
         {
-            bitmask__272639 |= (1L << (int)(24L));
+            bitmask |= (1L << (int)(24L));
         }
         if ((object.Equals(flags.isChecked, CheckedState.mixed)))
         {
-            bitmask__272639 |= (1L << (int)(25L));
+            bitmask |= (1L << (int)(25L));
         }
         if ((!object.Equals(flags.isExpanded, Tristate.none)))
         {
-            bitmask__272639 |= (1L << (int)(26L));
+            bitmask |= (1L << (int)(26L));
         }
         if ((object.Equals(flags.isExpanded, Tristate.isTrue)))
         {
-            bitmask__272639 |= (1L << (int)(27L));
+            bitmask |= (1L << (int)(27L));
         }
         if ((!object.Equals(flags.isSelected, Tristate.none)))
         {
-            bitmask__272639 |= (1L << (int)(28L));
+            bitmask |= (1L << (int)(28L));
         }
         if ((!object.Equals(flags.isRequired, Tristate.none)))
         {
-            bitmask__272639 |= (1L << (int)(29L));
+            bitmask |= (1L << (int)(29L));
         }
         if ((object.Equals(flags.isRequired, Tristate.isTrue)))
         {
-            bitmask__272639 |= (1L << (int)(30L));
+            bitmask |= (1L << (int)(30L));
         }
-        return bitmask__272639;
+        return bitmask;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

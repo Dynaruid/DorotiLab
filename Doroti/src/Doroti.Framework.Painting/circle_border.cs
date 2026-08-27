@@ -72,8 +72,8 @@ public class CircleBorder : OutlinedBorder
 
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
-        global::Doroti.Ui.Rect adjustedRect__3136 = _adjustRect(rect);
-        return global::Doroti.Ui.RRect.fromRectAndRadius(adjustedRect__3136, global::Doroti.Ui.Radius.elliptical((adjustedRect__3136.width / 2.0), (adjustedRect__3136.height / 2.0))).contains(position);
+        global::Doroti.Ui.Rect adjustedRect = _adjustRect(rect);
+        return global::Doroti.Ui.RRect.fromRectAndRadius(adjustedRect, global::Doroti.Ui.Radius.elliptical((adjustedRect.width / 2.0), (adjustedRect.height / 2.0))).contains(position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -112,8 +112,8 @@ public class CircleBorder : OutlinedBorder
                     }
                     else
                     {
-                        global::Doroti.Ui.Rect borderRect__4262 = _adjustRect(rect);
-                        canvas.drawOval(borderRect__4262.inflate((((BorderSide)side).strokeOffset / 2L)), side.toPaint());
+                        global::Doroti.Ui.Rect borderRect = _adjustRect(rect);
+                        canvas.drawOval(borderRect.inflate((((BorderSide)side).strokeOffset / 2L)), side.toPaint());
                     }
                     break;
                 }
@@ -128,13 +128,13 @@ public class CircleBorder : OutlinedBorder
         }
         if ((rect.width < rect.height))
         {
-            double delta__4638 = ((((1.0 - this.eccentricity)) * ((rect.height - rect.width))) / 2.0);
-            return global::Doroti.Ui.Rect.fromLTRB(rect.left, (rect.top + delta__4638), rect.right, (rect.bottom - delta__4638));
+            double delta = ((((1.0 - this.eccentricity)) * ((rect.height - rect.width))) / 2.0);
+            return global::Doroti.Ui.Rect.fromLTRB(rect.left, (rect.top + delta), rect.right, (rect.bottom - delta));
         }
         else
         {
-            double delta__4825 = ((((1.0 - this.eccentricity)) * ((rect.width - rect.height))) / 2.0);
-            return global::Doroti.Ui.Rect.fromLTRB((rect.left + delta__4825), rect.top, (rect.right - delta__4825), rect.bottom);
+            double deltaLocal = ((((1.0 - this.eccentricity)) * ((rect.width - rect.height))) / 2.0);
+            return global::Doroti.Ui.Rect.fromLTRB((rect.left + deltaLocal), rect.top, (rect.right - deltaLocal), rect.bottom);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

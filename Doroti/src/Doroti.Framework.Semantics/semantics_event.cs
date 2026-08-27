@@ -31,32 +31,32 @@ public abstract class SemanticsEvent
 
     public virtual DartMap<string, object> toMap(long? nodeId = null)
     {
-        var @event__1959 = new DartMap<string, object> { ["type"] = this.type, ["data"] = getDataMap() };
+        var @event = new DartMap<string, object> { ["type"] = this.type, ["data"] = getDataMap() };
         if ((nodeId is not null))
         {
             long nodeId__value2030 = DartRuntimePrimitives.RequireValue(nodeId);
-            @event__1959["nodeId"] = DartRuntimePrimitives.RequireValue(nodeId__value2030);
+            @event["nodeId"] = DartRuntimePrimitives.RequireValue(nodeId__value2030);
         }
-        return @event__1959;
+        return @event;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public abstract DartMap<string, object> getDataMap();
     public override string ToString()
     {
-        var pairs__2231 = new List<string>();
-        DartMap<string, object> dataMap__2282 = getDataMap();
-        List<string> sortedKeys__2329 = ((Func<List<string>>)(() =>
+        var pairs = new List<string>();
+        DartMap<string, object> dataMap = getDataMap();
+        List<string> sortedKeys = ((Func<List<string>>)(() =>
 {
-    var __cascade = dataMap__2282.Keys.ToList();
+    var __cascade = dataMap.Keys.ToList();
     __cascade.sort();
     return __cascade;
 }))();
-        foreach (var key__2388 in sortedKeys__2329)
+        foreach (var key in sortedKeys)
         {
-            pairs__2231.Add($"{key__2388}: {dataMap__2282.GetValueOrDefault(key__2388)}");
+            pairs.Add($"{key}: {dataMap.GetValueOrDefault(key)}");
         }
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsEvent"))}({string.Join(", ", pairs__2231)})";
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsEvent"))}({string.Join(", ", pairs)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

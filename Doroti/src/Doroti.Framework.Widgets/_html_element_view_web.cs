@@ -46,8 +46,8 @@ internal class _HtmlElementViewController___html_element_view_web : global::Doro
 
     internal async virtual Future _initialize()
     {
-        var args__3128 = new DartMap<string, object> { ["id"] = this.viewId, ["viewType"] = this.viewType, ["params"] = this.creationParams };
-        await global::Doroti.Framework.Services.SystemChannels.platform_views.invokeMethod<object?>("create", args__3128);
+        var args = new DartMap<string, object> { ["id"] = this.viewId, ["viewType"] = this.viewType, ["params"] = this.creationParams };
+        await global::Doroti.Framework.Services.SystemChannels.platform_views.invokeMethod<object?>("create", args);
         _initialized = true;
     }
 

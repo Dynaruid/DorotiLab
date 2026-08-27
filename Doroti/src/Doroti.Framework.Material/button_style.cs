@@ -91,8 +91,8 @@ public class ButtonStyle : global::Doroti.Framework.Foundation.Diagnosticable
 
     public override int GetHashCode()
     {
-        var values__20150 = new List<object?> { this.textStyle, this.backgroundColor, this.foregroundColor, this.overlayColor, this.shadowColor, this.surfaceTintColor, this.elevation, this.padding, this.minimumSize, this.fixedSize, this.maximumSize, this.iconColor, this.iconSize, this.iconAlignment, this.side, this.shape, this.mouseCursor, this.visualDensity, this.tapTargetSize, this.animationDuration, this.enableFeedback, this.alignment, this.splashFactory, this.backgroundBuilder, this.foregroundBuilder };
-        return FoundationRuntimePorts.ObjectHashAll(values__20150);
+        var values = new List<object?> { this.textStyle, this.backgroundColor, this.foregroundColor, this.overlayColor, this.shadowColor, this.surfaceTintColor, this.elevation, this.padding, this.minimumSize, this.fixedSize, this.maximumSize, this.iconColor, this.iconSize, this.iconAlignment, this.side, this.shape, this.mouseCursor, this.visualDensity, this.tapTargetSize, this.animationDuration, this.enableFeedback, this.alignment, this.splashFactory, this.backgroundBuilder, this.foregroundBuilder };
+        return FoundationRuntimePorts.ObjectHashAll(values);
         return default!;
     }
     public override bool Equals(object? other)
@@ -151,13 +151,13 @@ public class ButtonStyle : global::Doroti.Framework.Foundation.Diagnosticable
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

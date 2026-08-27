@@ -58,13 +58,13 @@ public class BoxDecoration : Decoration
         {
             case BoxShape.circle:
                 {
-                    global::Doroti.Ui.Offset center__8185 = rect.center;
-                    double radius__8228 = (rect.shortestSide / 2.0);
-                    var square__8276 = global::Doroti.Ui.Rect.fromCircle(center: center__8185, radius: radius__8228);
+                    global::Doroti.Ui.Offset centerLocal = rect.center;
+                    double radiusLocal = (rect.shortestSide / 2.0);
+                    var square = global::Doroti.Ui.Rect.fromCircle(center: centerLocal, radius: radiusLocal);
                     return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addOval(square__8276);
+    __cascade.addOval(square);
     return __cascade;
 }))();
                 }
@@ -169,16 +169,16 @@ public class BoxDecoration : Decoration
                 {
                     if ((this.borderRadius is not null))
                     {
-                        global::Doroti.Ui.RRect bounds__13482 = this.borderRadius!.resolve(textDirection).toRRect((Offset.zero & size));
-                        return bounds__13482.contains(position);
+                        global::Doroti.Ui.RRect bounds = this.borderRadius!.resolve(textDirection).toRRect((Offset.zero & size));
+                        return bounds.contains(position);
                     }
                     return true;
                 }
             case BoxShape.circle:
                 {
-                    global::Doroti.Ui.Offset center__13743 = size.center(Offset.zero);
-                    double radius__13799 = (Math.Min(size.width, size.height) / 2.0);
-                    return (((position - center__13743)).distanceSquared <= (radius__13799 * radius__13799));
+                    global::Doroti.Ui.Offset centerLocal = size.center(Offset.zero);
+                    double radius = (Math.Min(size.width, size.height) / 2.0);
+                    return (((position - centerLocal)).distanceSquared <= (radius * radius));
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -210,21 +210,21 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
         DartRuntimePrimitives.Assert(() => ((((BoxDecoration)this._decoration).gradient is not null) || (this._rectForCachedBackgroundPaint is null)));
         if (((this._cachedBackgroundPaint is null) || (((((BoxDecoration)this._decoration).gradient is not null) && (!object.Equals(this._rectForCachedBackgroundPaint, rect))))))
         {
-            var paint__14758 = new global::Doroti.Ui.Paint();
+            var paint = new global::Doroti.Ui.Paint();
             if ((((BoxDecoration)this._decoration).backgroundBlendMode is not null))
             {
-                paint__14758.blendMode = DartRuntimePrimitives.RequireValue(((BoxDecoration)this._decoration).backgroundBlendMode);
+                paint.blendMode = DartRuntimePrimitives.RequireValue(((BoxDecoration)this._decoration).backgroundBlendMode);
             }
             if ((((BoxDecoration)this._decoration).color is not null))
             {
-                paint__14758.color = ((BoxDecoration)this._decoration).color!;
+                paint.color = ((BoxDecoration)this._decoration).color!;
             }
             if ((((BoxDecoration)this._decoration).gradient is not null))
             {
-                paint__14758.shader = ((BoxDecoration)this._decoration).gradient!.createShader(rect, textDirection: textDirection);
+                paint.shader = ((BoxDecoration)this._decoration).gradient!.createShader(rect, textDirection: textDirection);
                 _rectForCachedBackgroundPaint = rect;
             }
-            _cachedBackgroundPaint = paint__14758;
+            _cachedBackgroundPaint = paint;
         }
         return this._cachedBackgroundPaint!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -237,9 +237,9 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             case BoxShape.circle:
                 {
                     DartRuntimePrimitives.Assert(() => (((BoxDecoration)this._decoration).borderRadius is null));
-                    global::Doroti.Ui.Offset center__15608 = rect.center;
-                    double radius__15651 = (rect.shortestSide / 2.0);
-                    canvas.drawCircle(center__15608, radius__15651, paint);
+                    global::Doroti.Ui.Offset centerLocal = rect.center;
+                    double radius = (rect.shortestSide / 2.0);
+                    canvas.drawCircle(centerLocal, radius, paint);
                     break;
                 }
             case BoxShape.rectangle:
@@ -263,23 +263,23 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
         {
             return;
         }
-        foreach (BoxShadow boxShadow__16205 in ((BoxDecoration)this._decoration).boxShadow!)
+        foreach (BoxShadow boxShadowLocal in ((BoxDecoration)this._decoration).boxShadow!)
         {
-            global::Doroti.Ui.Paint paint__16262 = boxShadow__16205.toPaint();
-            global::Doroti.Ui.Rect bounds__16308 = rect.shift(boxShadow__16205.offset).inflate(((BoxShadow)boxShadow__16205).spreadRadius);
+            global::Doroti.Ui.Paint paint = boxShadowLocal.toPaint();
+            global::Doroti.Ui.Rect bounds = rect.shift(boxShadowLocal.offset).inflate(((BoxShadow)boxShadowLocal).spreadRadius);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadow__16205).blurStyle, BlurStyle.outer))))
+                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadowLocal).blurStyle, BlurStyle.outer))))
                     {
                         canvas.save();
-                        canvas.clipRect(bounds__16308);
+                        canvas.clipRect(bounds);
                     }
                     return true;
                 });
-            _paintBox(canvas, bounds__16308, paint__16262, textDirection);
+            _paintBox(canvas, bounds, paint, textDirection);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadow__16205).blurStyle, BlurStyle.outer))))
+                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows && (object.Equals(((BoxShadow)boxShadowLocal).blurStyle, BlurStyle.outer))))
                     {
                         canvas.restore();
                     }
@@ -292,8 +292,8 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
     {
         if (((((BoxDecoration)this._decoration).color is not null) || (((BoxDecoration)this._decoration).gradient is not null)))
         {
-            global::Doroti.Ui.Rect adjustedRect__17136 = _adjustedRectOnOutlinedBorder(rect, textDirection);
-            _paintBox(canvas, adjustedRect__17136, _getBackgroundPaint(rect, textDirection), textDirection);
+            global::Doroti.Ui.Rect adjustedRect = _adjustedRectOnOutlinedBorder(rect, textDirection);
+            _paintBox(canvas, adjustedRect, _getBackgroundPaint(rect, textDirection), textDirection);
         }
     }
 
@@ -315,20 +315,20 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
         }
         if ((((BoxDecoration)this._decoration).border is Border))
         {
-            var border__17683 = ((Border?)(object?)((BoxDecoration)this._decoration).border!)!;
-            EdgeInsets insets__17747 = (new EdgeInsets(_calculateAdjustedSide(((Border)border__17683).left), _calculateAdjustedSide(((Border)border__17683).top), _calculateAdjustedSide(((Border)border__17683).right), _calculateAdjustedSide(((Border)border__17683).bottom)).op_Divide(2));
-            return global::Doroti.Ui.Rect.fromLTRB((rect.left + ((EdgeInsets)insets__17747).left), (rect.top + ((EdgeInsets)insets__17747).top), (rect.right - ((EdgeInsets)insets__17747).right), (rect.bottom - ((EdgeInsets)insets__17747).bottom));
+            var borderLocal = ((Border?)(object?)((BoxDecoration)this._decoration).border!)!;
+            EdgeInsets insets = (new EdgeInsets(_calculateAdjustedSide(((Border)borderLocal).left), _calculateAdjustedSide(((Border)borderLocal).top), _calculateAdjustedSide(((Border)borderLocal).right), _calculateAdjustedSide(((Border)borderLocal).bottom)).op_Divide(2));
+            return global::Doroti.Ui.Rect.fromLTRB((rect.left + ((EdgeInsets)insets).left), (rect.top + ((EdgeInsets)insets).top), (rect.right - ((EdgeInsets)insets).right), (rect.bottom - ((EdgeInsets)insets).bottom));
         }
         else
         {
             if (((((BoxDecoration)this._decoration).border is BorderDirectional) && (textDirection is not null)))
             {
                 TextDirection textDirection__value18244 = DartRuntimePrimitives.RequireValue(textDirection);
-                var border__18281 = ((BorderDirectional?)(object?)((BoxDecoration)this._decoration).border!)!;
-                BorderSide leftSide__18355 = ((object.Equals(DartRuntimePrimitives.RequireValue(textDirection__value18244), TextDirection.rtl)) ? ((BorderDirectional)border__18281).end : ((BorderDirectional)border__18281).start);
-                BorderSide rightSide__18453 = ((object.Equals(DartRuntimePrimitives.RequireValue(textDirection__value18244), TextDirection.rtl)) ? ((BorderDirectional)border__18281).start : ((BorderDirectional)border__18281).end);
-                EdgeInsets insets__18553 = (new EdgeInsets(_calculateAdjustedSide(leftSide__18355), _calculateAdjustedSide(((BorderDirectional)border__18281).top), _calculateAdjustedSide(rightSide__18453), _calculateAdjustedSide(((BorderDirectional)border__18281).bottom)).op_Divide(2));
-                return global::Doroti.Ui.Rect.fromLTRB((rect.left + ((EdgeInsets)insets__18553).left), (rect.top + ((EdgeInsets)insets__18553).top), (rect.right - ((EdgeInsets)insets__18553).right), (rect.bottom - ((EdgeInsets)insets__18553).bottom));
+                var borderAlternate = ((BorderDirectional?)(object?)((BoxDecoration)this._decoration).border!)!;
+                BorderSide leftSide = ((object.Equals(DartRuntimePrimitives.RequireValue(textDirection__value18244), TextDirection.rtl)) ? ((BorderDirectional)borderAlternate).end : ((BorderDirectional)borderAlternate).start);
+                BorderSide rightSide = ((object.Equals(DartRuntimePrimitives.RequireValue(textDirection__value18244), TextDirection.rtl)) ? ((BorderDirectional)borderAlternate).start : ((BorderDirectional)borderAlternate).end);
+                EdgeInsets insetsLocal = (new EdgeInsets(_calculateAdjustedSide(leftSide), _calculateAdjustedSide(((BorderDirectional)borderAlternate).top), _calculateAdjustedSide(rightSide), _calculateAdjustedSide(((BorderDirectional)borderAlternate).bottom)).op_Divide(2));
+                return global::Doroti.Ui.Rect.fromLTRB((rect.left + ((EdgeInsets)insetsLocal).left), (rect.top + ((EdgeInsets)insetsLocal).top), (rect.right - ((EdgeInsets)insetsLocal).right), (rect.bottom - ((EdgeInsets)insetsLocal).bottom));
             }
         }
         return rect;
@@ -342,19 +342,19 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             return;
         }
         _imagePainter ??= ((BoxDecoration)this._decoration).image!.createPainter(onChanged!);
-        global::Doroti.Ui.Path? clipPath__19281 = default!;
+        global::Doroti.Ui.Path? clipPath = default!;
         switch (((BoxDecoration)this._decoration).shape)
         {
             case BoxShape.circle:
                 {
                     DartRuntimePrimitives.Assert(() => (((BoxDecoration)this._decoration).borderRadius is null));
-                    global::Doroti.Ui.Offset center__19549 = rect.center;
-                    double radius__19592 = (rect.shortestSide / 2.0);
-                    var square__19640 = global::Doroti.Ui.Rect.fromCircle(center: center__19549, radius: radius__19592);
-                    clipPath__19281 = ((Func<Path>)(() =>
+                    global::Doroti.Ui.Offset centerLocal = rect.center;
+                    double radiusLocal = (rect.shortestSide / 2.0);
+                    var square = global::Doroti.Ui.Rect.fromCircle(center: centerLocal, radius: radiusLocal);
+                    clipPath = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addOval(square__19640);
+    __cascade.addOval(square);
     return __cascade;
 }))();
                     break;
@@ -363,7 +363,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
                 {
                     if ((((BoxDecoration)this._decoration).borderRadius is not null))
                     {
-                        clipPath__19281 = ((Func<Path>)(() =>
+                        clipPath = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
     __cascade.addRRect(((BoxDecoration)this._decoration).borderRadius!.resolve(((ImageConfiguration)configuration).textDirection).toRRect(rect));
@@ -373,7 +373,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
                     break;
                 }
         }
-        this._imagePainter!.paint(canvas, rect, clipPath__19281, configuration);
+        this._imagePainter!.paint(canvas, rect, clipPath, configuration);
     }
 
     public override void dispose()
@@ -385,12 +385,12 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
     public override void paint(Canvas canvas, Offset offset, ImageConfiguration configuration)
     {
         DartRuntimePrimitives.Assert(() => (((ImageConfiguration)configuration).size is not null));
-        global::Doroti.Ui.Rect rect__20375 = (offset & DartRuntimePrimitives.RequireValue(((ImageConfiguration)configuration).size));
-        global::Doroti.Ui.TextDirection? textDirection__20437 = ((ImageConfiguration)configuration).textDirection;
-        _paintShadows(canvas, rect__20375, textDirection__20437);
-        _paintBackgroundColor(canvas, rect__20375, textDirection__20437);
-        _paintBackgroundImage(canvas, rect__20375, configuration);
-        ((BoxDecoration)this._decoration).border?.paint(canvas, rect__20375, shape: ((BoxDecoration)this._decoration).shape, borderRadius: ((BoxDecoration)this._decoration).borderRadius?.resolve(textDirection__20437), textDirection: ((ImageConfiguration)configuration).textDirection);
+        global::Doroti.Ui.Rect rect = (offset & DartRuntimePrimitives.RequireValue(((ImageConfiguration)configuration).size));
+        global::Doroti.Ui.TextDirection? textDirectionLocal = ((ImageConfiguration)configuration).textDirection;
+        _paintShadows(canvas, rect, textDirectionLocal);
+        _paintBackgroundColor(canvas, rect, textDirectionLocal);
+        _paintBackgroundImage(canvas, rect, configuration);
+        ((BoxDecoration)this._decoration).border?.paint(canvas, rect, shape: ((BoxDecoration)this._decoration).shape, borderRadius: ((BoxDecoration)this._decoration).borderRadius?.resolve(textDirectionLocal), textDirection: ((ImageConfiguration)configuration).textDirection);
     }
 
     public override string ToString()

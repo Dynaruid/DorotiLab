@@ -110,12 +110,12 @@ public abstract class TextEditingDelta : Diagnosticable
         {
             if ((((isDeletingByReplacingWithEmpty || isDeletingInsideComposingRegion)) && !isOriginalComposingRegionTextChanged))
             {
-                var actualStart__9997 = replacementDestinationStart;
+                var actualStart = replacementDestinationStart;
                 if (!isDeletionGreaterThanOne)
                 {
-                    actualStart__9997 = (replacementDestinationEnd - 1L);
+                    actualStart = (replacementDestinationEnd - 1L);
                 }
-                return new TextEditingDeltaDeletion(oldText: oldText, deletedRange: new global::Doroti.Ui.TextRange(start: actualStart__9997, end: replacementDestinationEnd), selection: newSelection, composing: newComposing);
+                return new TextEditingDeltaDeletion(oldText: oldText, deletedRange: new global::Doroti.Ui.TextRange(start: actualStart, end: replacementDestinationEnd), selection: newSelection, composing: newComposing);
             }
             else
             {

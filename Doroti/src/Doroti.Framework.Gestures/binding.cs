@@ -46,8 +46,8 @@ internal class _Resampler__binding
         if ((object.Equals(((PointerEvent)@event).kind, PointerDeviceKind.touch)))
         {
             _lastEventTime = ((PointerEvent)@event).timeStamp;
-            PointerEventResampler resampler__3599 = this._resamplers.putIfAbsent(((PointerEvent)@event).device, (() => new PointerEventResampler()));
-            resampler__3599.addEvent(@event);
+            PointerEventResampler resampler = this._resamplers.putIfAbsent(((PointerEvent)@event).device, (() => new PointerEventResampler()));
+            resampler.addEvent(@event);
         }
         else
         {
@@ -57,7 +57,7 @@ internal class _Resampler__binding
 
     public virtual void sample(Duration samplingOffset, SamplingClock clock)
     {
-        SchedulerBinding scheduler__4132 = SchedulerBinding.instance;
+        SchedulerBinding scheduler = SchedulerBinding.instance;
         if ((object.Equals(this._frameTime, Duration.zero)))
         {
             _frameTime = Duration.Create(milliseconds: new DateTimeOffset(clock.now()).ToUnixTimeMilliseconds());
@@ -72,22 +72,22 @@ internal class _Resampler__binding
         {
             _timer = new Timer(this._samplingInterval, ((_) => _onSampleTimeChanged()));
         }
-        long samplingIntervalUs__4926 = this._samplingInterval.inMicroseconds;
-        long elapsedIntervals__4995 = (checked((long)(this._frameTimeAge.ElapsedTicks / (TimeSpan.TicksPerMillisecond / 1000) / samplingIntervalUs__4926)));
-        long elapsedUs__5085 = (elapsedIntervals__4995 * samplingIntervalUs__4926);
-        Duration frameTime__5155 = (this._frameTime + Duration.Create(microseconds: elapsedUs__5085));
-        Duration sampleTime__5449 = (frameTime__5155 + samplingOffset);
-        Duration nextSampleTime__5611 = (sampleTime__5449 + this._samplingInterval);
-        foreach (PointerEventResampler resampler__5794 in this._resamplers.Values)
+        long samplingIntervalUs = this._samplingInterval.inMicroseconds;
+        long elapsedIntervals = (checked((long)(this._frameTimeAge.ElapsedTicks / (TimeSpan.TicksPerMillisecond / 1000) / samplingIntervalUs)));
+        long elapsedUs = (elapsedIntervals * samplingIntervalUs);
+        Duration frameTime = (this._frameTime + Duration.Create(microseconds: elapsedUs));
+        Duration sampleTime = (frameTime + samplingOffset);
+        Duration nextSampleTime = (sampleTime + this._samplingInterval);
+        foreach (PointerEventResampler resamplerLocal in this._resamplers.Values)
         {
-            resampler__5794.sample(sampleTime__5449, nextSampleTime__5611, (Action<PointerEvent>)this._handlePointerEvent);
+            resamplerLocal.sample(sampleTime, nextSampleTime, (Action<PointerEvent>)this._handlePointerEvent);
         }
         this._resamplers.removeWhere(((key, resampler) =>
         {
             return (!((PointerEventResampler)resampler).hasPendingEvents && !((PointerEventResampler)resampler).isDown);
             return default;
         }));
-        _lastSampleTime = sampleTime__5449;
+        _lastSampleTime = sampleTime;
         if ((checked((long)(this._resamplers.Count)) == 0))
         {
             this._timer!.cancel();
@@ -96,10 +96,10 @@ internal class _Resampler__binding
         if (!this._frameCallbackScheduled)
         {
             _frameCallbackScheduled = true;
-            scheduler__4132.addPostFrameCallback(((_) =>
+            scheduler.addPostFrameCallback(((_) =>
             {
                 _frameCallbackScheduled = false;
-                _frameTime = scheduler__4132.currentSystemFrameTimeStamp;
+                _frameTime = scheduler.currentSystemFrameTimeStamp;
                 this._frameTimeAge.Reset();
                 this._timer?.cancel();
                 _timer = new Timer(this._samplingInterval, ((_) => _onSampleTimeChanged()));
@@ -110,9 +110,9 @@ internal class _Resampler__binding
 
     public virtual void stop()
     {
-        foreach (PointerEventResampler resampler__7468 in this._resamplers.Values)
+        foreach (PointerEventResampler resampler in this._resamplers.Values)
         {
-            resampler__7468.stop((Action<PointerEvent>)this._handlePointerEvent);
+            resampler.stop((Action<PointerEvent>)this._handlePointerEvent);
         }
         this._resamplers.Clear();
         _frameTime = Duration.zero;
@@ -125,8 +125,8 @@ internal class _Resampler__binding
             {
                 if (global::Doroti.Framework.Gestures.DebugLibrary.debugPrintResamplingMargin)
                 {
-                    Duration resamplingMargin__7747 = (this._lastEventTime - this._lastSampleTime);
-                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"{resamplingMargin__7747}");
+                    Duration resamplingMargin = (this._lastEventTime - this._lastSampleTime);
+                    global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"{resamplingMargin}");
                 }
                 return true;
             });
@@ -205,19 +205,19 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
                 _flushPointerEventQueue();
             }
         }
-        catch (Exception error__11993)
+        catch (Exception error)
         {
-            var stack__12000 = new System.Diagnostics.StackTrace();
-            FlutterError.reportError(new FlutterErrorDetails(exception: error__11993, stack: stack__12000, library: "gestures library", context: new ErrorDescription("while handling a pointer data packet")));
+            var stackLocal = new System.Diagnostics.StackTrace();
+            FlutterError.reportError(new FlutterErrorDetails(exception: error, stack: stackLocal, library: "gestures library", context: new ErrorDescription("while handling a pointer data packet")));
         }
     }
 
     internal virtual global::Doroti.Ui.HitTestResponse _handleHitTest(HitTestRequest request)
     {
-        var result__12344 = new HitTestResult();
-        hitTestInView(result__12344, request.offset, checked((long)request.view.viewId));
-        bool hasPlatformView__12504 = ((HitTestResult)result__12344).path.any(((entry) => (((HitTestEntry<HitTestTarget>)entry).target is NativeHitTestTarget)));
-        return new global::Doroti.Ui.HitTestResponse(hasPlatformView: hasPlatformView__12504);
+        var result = new HitTestResult();
+        hitTestInView(result, request.offset, checked((long)request.view.viewId));
+        bool hasPlatformViewLocal = ((HitTestResult)result).path.any(((entry) => (((HitTestEntry<HitTestTarget>)entry).target is NativeHitTestTarget)));
+        return new global::Doroti.Ui.HitTestResponse(hasPlatformView: hasPlatformViewLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -260,21 +260,21 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
 
     internal virtual void _handlePointerEventImmediately(PointerEvent @event)
     {
-        HitTestResult? hitTestResult__15765 = default!;
+        HitTestResult? hitTestResult = default!;
         if (((((@event is PointerDownEvent) || (@event is PointerSignalEvent)) || (@event is PointerHoverEvent)) || (@event is PointerPanZoomStartEvent)))
         {
             DartRuntimePrimitives.Assert(() => !this._hitTests.ContainsKey(((PointerEvent)@event).pointer));
-            hitTestResult__15765 = new HitTestResult();
-            hitTestInView(hitTestResult__15765, ((PointerEvent)@event).position, ((PointerEvent)@event).viewId);
+            hitTestResult = new HitTestResult();
+            hitTestInView(hitTestResult, ((PointerEvent)@event).position, ((PointerEvent)@event).viewId);
             if (((@event is PointerDownEvent) || (@event is PointerPanZoomStartEvent)))
             {
-                this._hitTests[((PointerEvent)@event).pointer] = hitTestResult__15765;
+                this._hitTests[((PointerEvent)@event).pointer] = hitTestResult;
             }
             DartRuntimePrimitives.Assert(() =>
                 {
                     if (global::Doroti.Framework.Gestures.DebugLibrary.debugPrintHitTestResults)
                     {
-                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"{@event.toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.debug)}: {hitTestResult__15765}");
+                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"{@event.toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.debug)}: {hitTestResult}");
                     }
                     return true;
                 });
@@ -283,13 +283,13 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
         {
             if ((((@event is PointerUpEvent) || (@event is PointerCancelEvent)) || (@event is PointerPanZoomEndEvent)))
             {
-                hitTestResult__15765 = this._hitTests.remove(((PointerEvent)@event).pointer);
+                hitTestResult = this._hitTests.remove(((PointerEvent)@event).pointer);
             }
             else
             {
                 if ((((PointerEvent)@event).down || (@event is PointerPanZoomUpdateEvent)))
                 {
-                    hitTestResult__15765 = this._hitTests.GetValueOrDefault(((PointerEvent)@event).pointer);
+                    hitTestResult = this._hitTests.GetValueOrDefault(((PointerEvent)@event).pointer);
                 }
             }
         }
@@ -302,9 +302,9 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
                 }
                 return true;
             });
-        if ((((hitTestResult__15765 is not null) || (@event is PointerAddedEvent)) || (@event is PointerRemovedEvent)))
+        if ((((hitTestResult is not null) || (@event is PointerAddedEvent)) || (@event is PointerRemovedEvent)))
         {
-            dispatchEvent(@event, hitTestResult__15765);
+            dispatchEvent(@event, hitTestResult);
         }
     }
 
@@ -328,23 +328,23 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
             {
                 this.pointerRouter.route(@event);
             }
-            catch (Exception exception__19052)
+            catch (Exception exceptionLocal)
             {
-                var stack__19063 = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetailsForPointerEventDispatcher(exception: exception__19052, stack: stack__19063, library: "gesture library", context: new ErrorDescription("while dispatching a non-hit-tested pointer event"), @event: @event, informationCollector: (() => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerEvent>("Event", @event, style: DiagnosticsTreeStyle.errorProperty) })));
+                var stackLocal = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new FlutterErrorDetailsForPointerEventDispatcher(exception: exceptionLocal, stack: stackLocal, library: "gesture library", context: new ErrorDescription("while dispatching a non-hit-tested pointer event"), @event: @event, informationCollector: (() => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerEvent>("Event", @event, style: DiagnosticsTreeStyle.errorProperty) })));
             }
             return;
         }
-        foreach (HitTestEntry<HitTestTarget> entry__19706 in ((HitTestResult)hitTestResult).path)
+        foreach (HitTestEntry<HitTestTarget> entry in ((HitTestResult)hitTestResult).path)
         {
             try
             {
-                ((HitTestEntry<HitTestTarget>)entry__19706).target.handleEvent(@event.transformed(((HitTestEntry<HitTestTarget>)entry__19706).transform), entry__19706);
+                ((HitTestEntry<HitTestTarget>)entry).target.handleEvent(@event.transformed(((HitTestEntry<HitTestTarget>)entry).transform), entry);
             }
-            catch (Exception exception__19841)
+            catch (Exception exceptionAlternate)
             {
-                var stack__19852 = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetailsForPointerEventDispatcher(exception: exception__19841, stack: stack__19852, library: "gesture library", context: new ErrorDescription("while dispatching a pointer event"), @event: @event, hitTestEntry: entry__19706, informationCollector: (() => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerEvent>("Event", @event, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<HitTestTarget>("Target", ((HitTestEntry<HitTestTarget>)entry__19706).target, style: DiagnosticsTreeStyle.errorProperty) })));
+                var stackAlternate = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new FlutterErrorDetailsForPointerEventDispatcher(exception: exceptionAlternate, stack: stackAlternate, library: "gesture library", context: new ErrorDescription("while dispatching a pointer event"), @event: @event, hitTestEntry: entry, informationCollector: (() => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerEvent>("Event", @event, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<HitTestTarget>("Target", ((HitTestEntry<HitTestTarget>)entry).target, style: DiagnosticsTreeStyle.errorProperty) })));
             }
         }
     }
@@ -398,17 +398,17 @@ public abstract class GestureBinding : global::Doroti.Framework.Services.Service
     {
         get
         {
-            var value__22010 = new SamplingClock();
+            var value = new SamplingClock();
             DartRuntimePrimitives.Assert(() =>
                 {
-                    SamplingClock? debugValue__22078 = this.debugSamplingClock;
-                    if ((debugValue__22078 is not null))
+                    SamplingClock? debugValue = this.debugSamplingClock;
+                    if ((debugValue is not null))
                     {
-                        value__22010 = debugValue__22078;
+                        value = debugValue;
                     }
                     return true;
                 });
-            return value__22010;
+            return value;
             return default!;
         }
     }

@@ -68,8 +68,8 @@ internal class _LinearTextScaler__text_scaler : TextScaler
         DartRuntimePrimitives.Assert(() => !double.IsNaN(maxScaleFactor));
         DartRuntimePrimitives.Assert(() => double.IsFinite(minScaleFactor));
         DartRuntimePrimitives.Assert(() => (minScaleFactor >= 0L));
-        double newScaleFactor__3878 = Dart_uiLibrary.clampDouble(this.textScaleFactor, minScaleFactor, maxScaleFactor);
-        return ((newScaleFactor__3878 == this.textScaleFactor) ? this : new _LinearTextScaler__text_scaler(newScaleFactor__3878));
+        double newScaleFactor = Dart_uiLibrary.clampDouble(this.textScaleFactor, minScaleFactor, maxScaleFactor);
+        return ((newScaleFactor == this.textScaleFactor) ? this : new _LinearTextScaler__text_scaler(newScaleFactor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -117,13 +117,13 @@ internal class _ClampedTextScaler__text_scaler : TextScaler
         DartRuntimePrimitives.Assert(() => !double.IsNaN(maxScaleFactor));
         DartRuntimePrimitives.Assert(() => double.IsFinite(minScaleFactor));
         DartRuntimePrimitives.Assert(() => (minScaleFactor >= 0L));
-        double newMinScale__5223 = Math.Max(this.minScale, minScaleFactor);
-        double newMaxScale__5285 = Math.Min(this.maxScale, maxScaleFactor);
-        if ((newMaxScale__5285 <= newMinScale__5223))
+        double newMinScale = Math.Max(this.minScale, minScaleFactor);
+        double newMaxScale = Math.Min(this.maxScale, maxScaleFactor);
+        if ((newMaxScale <= newMinScale))
         {
             return TextScaler.CreateLinear(Dart_uiLibrary.clampDouble(this.minScale, minScaleFactor, maxScaleFactor));
         }
-        return new _ClampedTextScaler__text_scaler(this.scaler, newMinScale__5223, newMaxScale__5285);
+        return new _ClampedTextScaler__text_scaler(this.scaler, newMinScale, newMaxScale);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

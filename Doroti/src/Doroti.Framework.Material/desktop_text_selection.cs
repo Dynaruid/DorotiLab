@@ -68,8 +68,8 @@ public class DesktopTextSelectionControls : global::Doroti.Framework.Widgets.Tex
 
     public override bool canSelectAll(global::Doroti.Framework.Services.TextSelectionDelegate @delegate)
     {
-        global::Doroti.Framework.Services.TextEditingValue value__3039 = ((global::Doroti.Framework.Services.TextSelectionDelegate)@delegate).textEditingValue;
-        return ((((global::Doroti.Framework.Services.TextSelectionDelegate)@delegate).selectAllEnabled && (((global::Doroti.Framework.Services.TextEditingValue)value__3039).text.Length != 0)) && !(((((global::Doroti.Framework.Services.TextEditingValue)value__3039).selection.start == 0L) && (((global::Doroti.Framework.Services.TextEditingValue)value__3039).selection.end == ((global::Doroti.Framework.Services.TextEditingValue)value__3039).text.Length))));
+        global::Doroti.Framework.Services.TextEditingValue value = ((global::Doroti.Framework.Services.TextSelectionDelegate)@delegate).textEditingValue;
+        return ((((global::Doroti.Framework.Services.TextSelectionDelegate)@delegate).selectAllEnabled && (((global::Doroti.Framework.Services.TextEditingValue)value).text.Length != 0)) && !(((((global::Doroti.Framework.Services.TextEditingValue)value).selection.start == 0L) && (((global::Doroti.Framework.Services.TextEditingValue)value).selection.end == ((global::Doroti.Framework.Services.TextEditingValue)value).text.Length))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -160,35 +160,35 @@ public class _DesktopTextSelectionControlsToolbarState__desktop_text_selection :
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
         }
-        global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding__6385 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
-        var midpointAnchor__6446 = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble((((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).selectionMidpoint.dx - ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).globalEditableRegion.left), ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding__6385).left, (MediaQuery.widthOf(context) - ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding__6385).right)), (((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).selectionMidpoint.dy - ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).globalEditableRegion.top));
-        MaterialLocalizations localizations__6775 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
-        var items__6836 = new List<global::Doroti.Framework.Widgets.Widget>();
+        global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
+        var midpointAnchor = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble((((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).selectionMidpoint.dx - ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).globalEditableRegion.left), ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding).left, (MediaQuery.widthOf(context) - ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding).right)), (((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).selectionMidpoint.dy - ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).globalEditableRegion.top));
+        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        var items = new List<global::Doroti.Framework.Widgets.Widget>();
         void addToolbarButton(string text, global::System.Action onPressed)
         {
-            items__6836.Add(DesktopTextSelectionToolbarButton.CreateText(context: context, onPressed: () => onPressed(), text: text));
+            items.Add(DesktopTextSelectionToolbarButton.CreateText(context: context, onPressed: () => onPressed(), text: text));
         }
         if ((((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCut is not null))
         {
-            addToolbarButton(((MaterialLocalizations)localizations__6775).cutButtonLabel, ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCut!);
+            addToolbarButton(((MaterialLocalizations)localizations).cutButtonLabel, ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCut!);
         }
         if ((((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCopy is not null))
         {
-            addToolbarButton(((MaterialLocalizations)localizations__6775).copyButtonLabel, ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCopy!);
+            addToolbarButton(((MaterialLocalizations)localizations).copyButtonLabel, ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCopy!);
         }
         if (((((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handlePaste is not null) && (object.Equals(((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.value, global::Doroti.Framework.Widgets.ClipboardStatus.pasteable))))
         {
-            addToolbarButton(((MaterialLocalizations)localizations__6775).pasteButtonLabel, ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handlePaste!);
+            addToolbarButton(((MaterialLocalizations)localizations).pasteButtonLabel, ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handlePaste!);
         }
         if ((((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleSelectAll is not null))
         {
-            addToolbarButton(((MaterialLocalizations)localizations__6775).selectAllButtonLabel, ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleSelectAll!);
+            addToolbarButton(((MaterialLocalizations)localizations).selectAllButtonLabel, ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleSelectAll!);
         }
-        if (!System.Linq.Enumerable.Any(items__6836))
+        if (!System.Linq.Enumerable.Any(items))
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new DesktopTextSelectionToolbar(anchor: (((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).lastSecondaryTapDownPosition ?? midpointAnchor__6446), children: items__6836));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new DesktopTextSelectionToolbar(anchor: (((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).lastSecondaryTapDownPosition ?? midpointAnchor), children: items));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

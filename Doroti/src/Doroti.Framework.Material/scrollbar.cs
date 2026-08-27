@@ -116,25 +116,25 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
     {
         get
         {
-            global::Doroti.Ui.Color onSurface__8898 = ((global::Doroti.Ui.Color)(object?)this._colorScheme.onSurface);
-            global::Doroti.Ui.Brightness brightness__8955 = this._colorScheme.brightness;
-            global::Doroti.Ui.Color dragColor__9008 = default!;
-            global::Doroti.Ui.Color hoverColor__9034 = default!;
-            global::Doroti.Ui.Color idleColor__9061 = default!;
-            switch (brightness__8955)
+            global::Doroti.Ui.Color onSurfaceLocal = ((global::Doroti.Ui.Color)(object?)this._colorScheme.onSurface);
+            global::Doroti.Ui.Brightness brightnessLocal = this._colorScheme.brightness;
+            global::Doroti.Ui.Color dragColor = default!;
+            global::Doroti.Ui.Color hoverColor = default!;
+            global::Doroti.Ui.Color idleColor = default!;
+            switch (brightnessLocal)
             {
                 case Brightness.light:
                     {
-                        dragColor__9008 = onSurface__8898.withOpacity(0.6);
-                        hoverColor__9034 = onSurface__8898.withOpacity(0.5);
-                        idleColor__9061 = (this._useAndroidScrollbar ? Theme.of(this.context).highlightColor.withOpacity(1.0) : onSurface__8898.withOpacity(0.1));
+                        dragColor = onSurfaceLocal.withOpacity(0.6);
+                        hoverColor = onSurfaceLocal.withOpacity(0.5);
+                        idleColor = (this._useAndroidScrollbar ? Theme.of(this.context).highlightColor.withOpacity(1.0) : onSurfaceLocal.withOpacity(0.1));
                         break;
                     }
                 case Brightness.dark:
                     {
-                        dragColor__9008 = onSurface__8898.withOpacity(0.75);
-                        hoverColor__9034 = onSurface__8898.withOpacity(0.65);
-                        idleColor__9061 = (this._useAndroidScrollbar ? Theme.of(this.context).highlightColor.withOpacity(1.0) : onSurface__8898.withOpacity(0.3));
+                        dragColor = onSurfaceLocal.withOpacity(0.75);
+                        hoverColor = onSurfaceLocal.withOpacity(0.65);
+                        idleColor = (this._useAndroidScrollbar ? Theme.of(this.context).highlightColor.withOpacity(1.0) : onSurfaceLocal.withOpacity(0.3));
                         break;
                     }
             }
@@ -142,13 +142,13 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
             {
                 if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.dragged))
                 {
-                    return this._scrollbarTheme.thumbColor?.resolve(states) ?? dragColor__9008;
+                    return this._scrollbarTheme.thumbColor?.resolve(states) ?? dragColor;
                 }
                 if (this._trackVisibility.resolve(states))
                 {
-                    return this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034;
+                    return this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor;
                 }
-                return Dart_uiLibrary.Color.lerp((this._scrollbarTheme.thumbColor?.resolve(states) ?? idleColor__9061), (this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor__9034), ((global::Doroti.Framework.Animation.AnimationController)this._hoverAnimationController).value)!;
+                return Dart_uiLibrary.Color.lerp((this._scrollbarTheme.thumbColor?.resolve(states) ?? idleColor), (this._scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor), ((global::Doroti.Framework.Animation.AnimationController)this._hoverAnimationController).value)!;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
             return default!;
@@ -158,13 +158,13 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
     {
         get
         {
-            global::Doroti.Ui.Color onSurface__10380 = ((global::Doroti.Ui.Color)(object?)this._colorScheme.onSurface);
-            global::Doroti.Ui.Brightness brightness__10437 = this._colorScheme.brightness;
+            global::Doroti.Ui.Color onSurfaceLocal = ((global::Doroti.Ui.Color)(object?)this._colorScheme.onSurface);
+            global::Doroti.Ui.Brightness brightnessLocal = this._colorScheme.brightness;
             return WidgetStateProperty.resolveWith<Color>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, Color>)((states) =>
             {
                 if ((this.showScrollbar && this._trackVisibility.resolve(states)))
                 {
-                    return this._scrollbarTheme.trackColor?.resolve(states) ?? (brightness__10437 switch { Brightness.light => onSurface__10380.withOpacity(0.03), Brightness.dark => onSurface__10380.withOpacity(0.05), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                    return this._scrollbarTheme.trackColor?.resolve(states) ?? (brightnessLocal switch { Brightness.light => onSurfaceLocal.withOpacity(0.03), Brightness.dark => onSurfaceLocal.withOpacity(0.05), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                 }
                 return new global::Doroti.Ui.Color(0L);
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -176,13 +176,13 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
     {
         get
         {
-            global::Doroti.Ui.Color onSurface__10973 = ((global::Doroti.Ui.Color)(object?)this._colorScheme.onSurface);
-            global::Doroti.Ui.Brightness brightness__11030 = this._colorScheme.brightness;
+            global::Doroti.Ui.Color onSurfaceLocal = ((global::Doroti.Ui.Color)(object?)this._colorScheme.onSurface);
+            global::Doroti.Ui.Brightness brightnessLocal = this._colorScheme.brightness;
             return WidgetStateProperty.resolveWith<Color>(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, Color>)((states) =>
             {
                 if ((this.showScrollbar && this._trackVisibility.resolve(states)))
                 {
-                    return this._scrollbarTheme.trackBorderColor?.resolve(states) ?? (brightness__11030 switch { Brightness.light => onSurface__10973.withOpacity(0.1), Brightness.dark => onSurface__10973.withOpacity(0.25), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                    return this._scrollbarTheme.trackBorderColor?.resolve(states) ?? (brightnessLocal switch { Brightness.light => onSurfaceLocal.withOpacity(0.1), Brightness.dark => onSurfaceLocal.withOpacity(0.25), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                 }
                 return new global::Doroti.Ui.Color(0L);
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -218,10 +218,10 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
 
     public override void didChangeDependencies()
     {
-        ThemeData theme__12425 = Theme.of(this.context);
-        _colorScheme = theme__12425.colorScheme;
+        ThemeData theme = Theme.of(this.context);
+        _colorScheme = theme.colorScheme;
         _scrollbarTheme = ScrollbarTheme.of(this.context);
-        switch (theme__12425.platform)
+        switch (theme.platform)
         {
             case global::Doroti.Framework.Foundation.TargetPlatform.android:
                 {

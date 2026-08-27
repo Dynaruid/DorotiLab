@@ -78,20 +78,20 @@ public class RawKeyEventDataAndroid : RawKeyEventData
             }
             if (((eventSource & _sourceJoystick) == _sourceJoystick))
             {
-                LogicalKeyboardKey? foundKey__6524 = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
-                if ((object.Equals(foundKey__6524, LogicalKeyboardKey.arrowUp)))
+                LogicalKeyboardKey? foundKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
+                if ((object.Equals(foundKey, LogicalKeyboardKey.arrowUp)))
                 {
                     return PhysicalKeyboardKey.arrowUp;
                 }
-                if ((object.Equals(foundKey__6524, LogicalKeyboardKey.arrowDown)))
+                if ((object.Equals(foundKey, LogicalKeyboardKey.arrowDown)))
                 {
                     return PhysicalKeyboardKey.arrowDown;
                 }
-                if ((object.Equals(foundKey__6524, LogicalKeyboardKey.arrowLeft)))
+                if ((object.Equals(foundKey, LogicalKeyboardKey.arrowLeft)))
                 {
                     return PhysicalKeyboardKey.arrowLeft;
                 }
-                if ((object.Equals(foundKey__6524, LogicalKeyboardKey.arrowRight)))
+                if ((object.Equals(foundKey, LogicalKeyboardKey.arrowRight)))
                 {
                     return PhysicalKeyboardKey.arrowRight;
                 }
@@ -110,9 +110,9 @@ public class RawKeyEventDataAndroid : RawKeyEventData
             }
             if (((keyLabel.Length != 0) && !LogicalKeyboardKey.isControlCharacter(keyLabel)))
             {
-                long combinedCodePoint__7828 = (plainCodePoint & Raw_keyboard_androidLibrary._kCombiningCharacterMask);
-                long keyId__7907 = (LogicalKeyboardKey.unicodePlane | ((combinedCodePoint__7828 & LogicalKeyboardKey.valueMask)));
-                return (LogicalKeyboardKey.findKeyByKeyId(keyId__7907) ?? new LogicalKeyboardKey(keyId__7907));
+                long combinedCodePoint = (plainCodePoint & Raw_keyboard_androidLibrary._kCombiningCharacterMask);
+                long keyId = (LogicalKeyboardKey.unicodePlane | ((combinedCodePoint & LogicalKeyboardKey.valueMask)));
+                return (LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId));
             }
             LogicalKeyboardKey? newKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kAndroidToLogicalKey.GetValueOrDefault(keyCode);
             if ((newKey is not null))

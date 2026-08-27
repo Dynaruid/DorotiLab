@@ -105,9 +105,9 @@ internal class _CupertinoTextMagnifierState__magnifier : global::Doroti.Framewor
 
     internal virtual void _determineMagnifierPositionAndFocalPoint()
     {
-        global::Doroti.Framework.Widgets.MagnifierInfo textEditingContext__5306 = ((CupertinoTextMagnifier)this.widget).magnifierInfo.value;
-        double verticalCenterOfCurrentLine__5427 = ((Offset)((dynamic)((global::Doroti.Framework.Widgets.MagnifierInfo)textEditingContext__5306).caretRect).center).dy;
-        if (((verticalCenterOfCurrentLine__5427 - ((global::Doroti.Framework.Widgets.MagnifierInfo)textEditingContext__5306).globalGesturePosition.dy) < -((CupertinoTextMagnifier)this.widget).hideBelowThreshold))
+        global::Doroti.Framework.Widgets.MagnifierInfo textEditingContext = ((CupertinoTextMagnifier)this.widget).magnifierInfo.value;
+        double verticalCenterOfCurrentLine = ((Offset)((dynamic)((global::Doroti.Framework.Widgets.MagnifierInfo)textEditingContext).caretRect).center).dy;
+        if (((verticalCenterOfCurrentLine - ((global::Doroti.Framework.Widgets.MagnifierInfo)textEditingContext).globalGesturePosition.dy) < -((CupertinoTextMagnifier)this.widget).hideBelowThreshold))
         {
             if (((CupertinoTextMagnifier)this.widget).controller.shown)
             {
@@ -119,21 +119,21 @@ internal class _CupertinoTextMagnifierState__magnifier : global::Doroti.Framewor
         {
             this._ioAnimationController.forward();
         }
-        double verticalPositionOfLens__6199 = Math.Max(verticalCenterOfCurrentLine__5427, (verticalCenterOfCurrentLine__5427 - (((verticalCenterOfCurrentLine__5427 - ((global::Doroti.Framework.Widgets.MagnifierInfo)textEditingContext__5306).globalGesturePosition.dy)) / ((CupertinoTextMagnifier)this.widget).dragResistance)));
-        var rawMagnifierPosition__6504 = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Widgets.MagnifierInfo)textEditingContext__5306).globalGesturePosition.dx - (CupertinoMagnifier.kDefaultSize.width / 2L)), (verticalPositionOfLens__6199 - ((CupertinoMagnifier.kDefaultSize.height - CupertinoMagnifier.kMagnifierAboveFocalPoint))));
-        global::Doroti.Ui.Rect screenRect__6783 = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & MediaQuery.sizeOf(this.context)));
-        global::Doroti.Ui.Offset adjustedMagnifierPosition__6956 = ((global::Doroti.Ui.Offset)(object?)MagnifierController.shiftWithinBounds(bounds: global::Doroti.Ui.Rect.fromLTRB((screenRect__6783.left + ((CupertinoTextMagnifier)this.widget).horizontalScreenEdgePadding), (screenRect__6783.top - ((CupertinoMagnifier.kDefaultSize.height + CupertinoMagnifier.kMagnifierAboveFocalPoint))), (screenRect__6783.right - ((CupertinoTextMagnifier)this.widget).horizontalScreenEdgePadding), (screenRect__6783.bottom + ((CupertinoMagnifier.kDefaultSize.height + CupertinoMagnifier.kMagnifierAboveFocalPoint)))), rect: (rawMagnifierPosition__6504 & CupertinoMagnifier.kDefaultSize)).topLeft);
+        double verticalPositionOfLens = Math.Max(verticalCenterOfCurrentLine, (verticalCenterOfCurrentLine - (((verticalCenterOfCurrentLine - ((global::Doroti.Framework.Widgets.MagnifierInfo)textEditingContext).globalGesturePosition.dy)) / ((CupertinoTextMagnifier)this.widget).dragResistance)));
+        var rawMagnifierPosition = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Widgets.MagnifierInfo)textEditingContext).globalGesturePosition.dx - (CupertinoMagnifier.kDefaultSize.width / 2L)), (verticalPositionOfLens - ((CupertinoMagnifier.kDefaultSize.height - CupertinoMagnifier.kMagnifierAboveFocalPoint))));
+        global::Doroti.Ui.Rect screenRect = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & MediaQuery.sizeOf(this.context)));
+        global::Doroti.Ui.Offset adjustedMagnifierPosition = ((global::Doroti.Ui.Offset)(object?)MagnifierController.shiftWithinBounds(bounds: global::Doroti.Ui.Rect.fromLTRB((screenRect.left + ((CupertinoTextMagnifier)this.widget).horizontalScreenEdgePadding), (screenRect.top - ((CupertinoMagnifier.kDefaultSize.height + CupertinoMagnifier.kMagnifierAboveFocalPoint))), (screenRect.right - ((CupertinoTextMagnifier)this.widget).horizontalScreenEdgePadding), (screenRect.bottom + ((CupertinoMagnifier.kDefaultSize.height + CupertinoMagnifier.kMagnifierAboveFocalPoint)))), rect: (rawMagnifierPosition & CupertinoMagnifier.kDefaultSize)).topLeft);
         setState(((global::System.Action)(() =>
         {
-            _currentAdjustedMagnifierPosition = adjustedMagnifierPosition__6956;
-            _verticalFocalPointAdjustment = (verticalCenterOfCurrentLine__5427 - verticalPositionOfLens__6199);
+            _currentAdjustedMagnifierPosition = adjustedMagnifierPosition;
+            _verticalFocalPointAdjustment = (verticalCenterOfCurrentLine - verticalPositionOfLens);
         })));
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        CupertinoThemeData themeData__8009 = CupertinoTheme.of(context);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedPositioned(duration: CupertinoTextMagnifier._kDragAnimationDuration, curve: ((CupertinoTextMagnifier)this.widget).animationCurve, left: this._currentAdjustedMagnifierPosition.dx, top: this._currentAdjustedMagnifierPosition.dy, child: new CupertinoMagnifier(inOutAnimation: this._ioAnimation, additionalFocalPointOffset: new global::Doroti.Ui.Offset(0, this._verticalFocalPointAdjustment), borderSide: new global::Doroti.Framework.Painting.BorderSide(color: themeData__8009.primaryColor, width: 2.0))));
+        CupertinoThemeData themeData = CupertinoTheme.of(context);
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedPositioned(duration: CupertinoTextMagnifier._kDragAnimationDuration, curve: ((CupertinoTextMagnifier)this.widget).animationCurve, left: this._currentAdjustedMagnifierPosition.dx, top: this._currentAdjustedMagnifierPosition.dy, child: new CupertinoMagnifier(inOutAnimation: this._ioAnimation, additionalFocalPointOffset: new global::Doroti.Ui.Offset(0, this._verticalFocalPointAdjustment), borderSide: new global::Doroti.Framework.Painting.BorderSide(color: themeData.primaryColor, width: 2.0))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -163,31 +163,31 @@ internal class _CupertinoTextMagnifierState__magnifier : global::Doroti.Framewor
 
     public virtual void _updateTicker()
     {
-        TickerModeData values__15157 = this._tickerModeNotifier!.value;
+        TickerModeData values = this._tickerModeNotifier!.value;
         if ((this._ticker is not null))
         {
-            this._ticker!.muted = !((TickerModeData)values__15157).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values__15157).forceFrames;
+            this._ticker!.muted = !((TickerModeData)values).enabled;
+            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier__15400.addListener(() => this._updateTicker());
-        this._tickerModeNotifier = newNotifier__15400;
+        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -225,10 +225,10 @@ public class CupertinoMagnifier : global::Doroti.Framework.Widgets.StatelessWidg
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var focalPointOffset__13317 = new global::Doroti.Ui.Offset(0, (((kDefaultSize.height / 2L)) - kMagnifierAboveFocalPoint));
-        focalPointOffset__13317.scale(1, (this.inOutAnimation?.value ?? 1));
-        focalPointOffset__13317 += this.additionalFocalPointOffset;
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.Transform.CreateTranslate(offset: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(new global::Doroti.Ui.Offset(0, -kMagnifierAboveFocalPoint), Offset.zero, (this.inOutAnimation?.value ?? 1))), child: new global::Doroti.Framework.Widgets.RawMagnifier(size: DartRuntimePrimitives.RequireValue(this.size), focalPointOffset: focalPointOffset__13317, decoration: new global::Doroti.Framework.Widgets.MagnifierDecoration(opacity: (this.inOutAnimation?.value ?? 1), shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: this.borderRadius, side: this.borderSide), shadows: this.shadows), clipBehavior: this.clipBehavior, magnificationScale: this.magnificationScale)));
+        var focalPointOffsetLocal = new global::Doroti.Ui.Offset(0, (((kDefaultSize.height / 2L)) - kMagnifierAboveFocalPoint));
+        focalPointOffsetLocal.scale(1, (this.inOutAnimation?.value ?? 1));
+        focalPointOffsetLocal += this.additionalFocalPointOffset;
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.Transform.CreateTranslate(offset: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(new global::Doroti.Ui.Offset(0, -kMagnifierAboveFocalPoint), Offset.zero, (this.inOutAnimation?.value ?? 1))), child: new global::Doroti.Framework.Widgets.RawMagnifier(size: DartRuntimePrimitives.RequireValue(this.size), focalPointOffset: focalPointOffsetLocal, decoration: new global::Doroti.Framework.Widgets.MagnifierDecoration(opacity: (this.inOutAnimation?.value ?? 1), shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: this.borderRadius, side: this.borderSide), shadows: this.shadows), clipBehavior: this.clipBehavior, magnificationScale: this.magnificationScale)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

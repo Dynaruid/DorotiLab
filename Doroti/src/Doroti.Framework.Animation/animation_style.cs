@@ -118,9 +118,9 @@ internal class _LerpedCurve__animation_style : Curve
 
     public override double transform(double t)
     {
-        double a__4937 = this.first.transform(t);
-        double b__4978 = this.second.transform(t);
-        return ((DartRuntimePrimitives.RequireValue(a__4937) * ((1.0 - this._t))) + (DartRuntimePrimitives.RequireValue(b__4978) * this._t));
+        double a = this.first.transform(t);
+        double b = this.second.transform(t);
+        return ((DartRuntimePrimitives.RequireValue(a) * ((1.0 - this._t))) + (DartRuntimePrimitives.RequireValue(b) * this._t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

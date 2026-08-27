@@ -95,8 +95,8 @@ public class InkHighlight : InteractiveInkFeature
                 {
                     if ((!object.Equals(this._borderRadius, global::Doroti.Framework.Painting.BorderRadius.zero)))
                     {
-                        var clipRRect__3915 = global::Doroti.Ui.RRect.fromRectAndCorners(rect, topLeft: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).topRight, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).bottomRight);
-                        canvas.drawRRect(clipRRect__3915, paint);
+                        var clipRRect = global::Doroti.Ui.RRect.fromRectAndCorners(rect, topLeft: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).topRight, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)this._borderRadius).bottomRight);
+                        canvas.drawRRect(clipRRect, paint);
                     }
                     else
                     {
@@ -110,24 +110,24 @@ public class InkHighlight : InteractiveInkFeature
 
     public override void paintFeature(Canvas canvas, Matrix4 transform)
     {
-        var paint__4400 = ((Func<Paint>)(() =>
+        var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = this.color.withAlpha(((global::Doroti.Framework.Animation.Animation<long>)this._alpha).value);
     return __cascade;
 }))();
-        global::Doroti.Ui.Offset? originOffset__4474 = ((global::Doroti.Ui.Offset?)(object?)MatrixUtils.getAsTranslation(transform));
-        global::Doroti.Ui.Rect rect__4545 = ((global::Doroti.Ui.Rect)(object?)((this._rectCallback is not null) ? this._rectCallback() : (Offset.zero & ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size)));
-        if ((originOffset__4474 is null))
+        global::Doroti.Ui.Offset? originOffset = ((global::Doroti.Ui.Offset?)(object?)MatrixUtils.getAsTranslation(transform));
+        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)((this._rectCallback is not null) ? this._rectCallback() : (Offset.zero & ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size)));
+        if ((originOffset is null))
         {
             canvas.save();
             canvas.transform(transform.storage);
-            _paintHighlight(canvas, rect__4545, paint__4400);
+            _paintHighlight(canvas, rect, paint);
             canvas.restore();
         }
         else
         {
-            _paintHighlight(canvas, rect__4545.shift(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(originOffset__4474))), paint__4400);
+            _paintHighlight(canvas, rect.shift(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(originOffset))), paint);
         }
     }
 

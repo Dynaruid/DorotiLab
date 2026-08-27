@@ -45,17 +45,17 @@ public class BorderSide : Diagnosticable
     public static BorderSide merge(BorderSide a, BorderSide b)
     {
         DartRuntimePrimitives.Assert(() => canMerge(a, b));
-        bool aIsNone__2881 = ((object.Equals(((BorderSide)a).style, BorderStyle.none)) && (((BorderSide)a).width == 0.0));
-        bool bIsNone__2953 = ((object.Equals(((BorderSide)b).style, BorderStyle.none)) && (((BorderSide)b).width == 0.0));
-        if ((aIsNone__2881 && bIsNone__2953))
+        bool aIsNone = ((object.Equals(((BorderSide)a).style, BorderStyle.none)) && (((BorderSide)a).width == 0.0));
+        bool bIsNone = ((object.Equals(((BorderSide)b).style, BorderStyle.none)) && (((BorderSide)b).width == 0.0));
+        if ((aIsNone && bIsNone))
         {
             return BorderSide.none;
         }
-        if (aIsNone__2881)
+        if (aIsNone)
         {
             return b;
         }
-        if (bIsNone__2953)
+        if (bIsNone)
         {
             return a;
         }
@@ -131,22 +131,22 @@ public class BorderSide : Diagnosticable
         {
             return b;
         }
-        double width__9728 = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((BorderSide)a).width, ((BorderSide)b).width, t));
-        if ((DartRuntimePrimitives.RequireValue(width__9728) < 0.0))
+        double widthLocal = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((BorderSide)a).width, ((BorderSide)b).width, t));
+        if ((DartRuntimePrimitives.RequireValue(widthLocal) < 0.0))
         {
             return BorderSide.none;
         }
         if (((object.Equals(((BorderSide)a).style, ((BorderSide)b).style)) && (((BorderSide)a).strokeAlign == ((BorderSide)b).strokeAlign)))
         {
-            return new BorderSide(color: Dart_uiLibrary.Color.lerp(((BorderSide)a).color, ((BorderSide)b).color, t)!, width: DartRuntimePrimitives.RequireValue(width__9728), style: ((BorderSide)a).style, strokeAlign: DartRuntimePrimitives.RequireValue(((BorderSide)a).strokeAlign));
+            return new BorderSide(color: Dart_uiLibrary.Color.lerp(((BorderSide)a).color, ((BorderSide)b).color, t)!, width: DartRuntimePrimitives.RequireValue(widthLocal), style: ((BorderSide)a).style, strokeAlign: DartRuntimePrimitives.RequireValue(((BorderSide)a).strokeAlign));
         }
-        global::Doroti.Ui.Color colorA__10117 = (((BorderSide)a).style switch { BorderStyle.solid => ((BorderSide)a).color, BorderStyle.none => ((BorderSide)a).color.withAlpha(0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Ui.Color colorB__10255 = (((BorderSide)b).style switch { BorderStyle.solid => ((BorderSide)b).color, BorderStyle.none => ((BorderSide)b).color.withAlpha(0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Ui.Color colorA = (((BorderSide)a).style switch { BorderStyle.solid => ((BorderSide)a).color, BorderStyle.none => ((BorderSide)a).color.withAlpha(0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Ui.Color colorB = (((BorderSide)b).style switch { BorderStyle.solid => ((BorderSide)b).color, BorderStyle.none => ((BorderSide)b).color.withAlpha(0L), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         if ((((BorderSide)a).strokeAlign != ((BorderSide)b).strokeAlign))
         {
-            return new BorderSide(color: Dart_uiLibrary.Color.lerp(colorA__10117, colorB__10255, t)!, width: DartRuntimePrimitives.RequireValue(width__9728), strokeAlign: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(((BorderSide)a).strokeAlign), DartRuntimePrimitives.RequireValue(((BorderSide)b).strokeAlign), t)));
+            return new BorderSide(color: Dart_uiLibrary.Color.lerp(colorA, colorB, t)!, width: DartRuntimePrimitives.RequireValue(widthLocal), strokeAlign: DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(((BorderSide)a).strokeAlign), DartRuntimePrimitives.RequireValue(((BorderSide)b).strokeAlign), t)));
         }
-        return new BorderSide(color: Dart_uiLibrary.Color.lerp(colorA__10117, colorB__10255, t)!, width: DartRuntimePrimitives.RequireValue(width__9728), strokeAlign: DartRuntimePrimitives.RequireValue(((BorderSide)a).strokeAlign));
+        return new BorderSide(color: Dart_uiLibrary.Color.lerp(colorA, colorB, t)!, width: DartRuntimePrimitives.RequireValue(widthLocal), strokeAlign: DartRuntimePrimitives.RequireValue(((BorderSide)a).strokeAlign));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -222,8 +222,8 @@ public abstract class ShapeBorder
         {
             return a;
         }
-        ShapeBorder? result__20226 = (((b?.lerpFrom(a, t) ?? a?.lerpTo(b, t)) ?? b?.lerpTo(a, (1.0 - t))) ?? a?.lerpFrom(b, (1.0 - t)));
-        return (result__20226 ?? (((t < 0.5) ? a : b)));
+        ShapeBorder? result = (((b?.lerpFrom(a, t) ?? a?.lerpTo(b, t)) ?? b?.lerpTo(a, (1.0 - t))) ?? a?.lerpFrom(b, (1.0 - t)));
+        return (result ?? (((t < 0.5) ? a : b)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -290,8 +290,8 @@ public abstract class OutlinedBorder : ShapeBorder
         {
             return a;
         }
-        ShapeBorder? result__28715 = (((b?.lerpFrom(a, t) ?? a?.lerpTo(b, t)) ?? b?.lerpTo(a, (1.0 - t))) ?? a?.lerpFrom(b, (1.0 - t)));
-        return (((OutlinedBorder?)(object?)result__28715)! ?? (((t < 0.5) ? a : b)));
+        ShapeBorder? result = (((b?.lerpFrom(a, t) ?? a?.lerpTo(b, t)) ?? b?.lerpTo(a, (1.0 - t))) ?? a?.lerpFrom(b, (1.0 - t)));
+        return (((OutlinedBorder?)(object?)result)! ?? (((t < 0.5) ? a : b)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -324,17 +324,17 @@ internal class _CompoundBorder__borders : ShapeBorder
     {
         if ((other is not _CompoundBorder__borders))
         {
-            ShapeBorder ours__30186 = (reversed ? this.borders.Last() : this.borders.First());
-            ShapeBorder? merged__30259 = (ours__30186.add(other, reversed: reversed) ?? other.add(ours__30186, reversed: !reversed));
-            if ((merged__30259 is not null))
+            ShapeBorder ours = (reversed ? this.borders.Last() : this.borders.First());
+            ShapeBorder? merged = (ours.add(other, reversed: reversed) ?? other.add(ours, reversed: !reversed));
+            if ((merged is not null))
             {
-                var result__30397 = new List<ShapeBorder>();
-                result__30397[(int)((reversed ? (checked((long)(result__30397.Count)) - 1L) : 0L))] = merged__30259;
-                return new _CompoundBorder__borders(result__30397);
+                var result = new List<ShapeBorder>();
+                result[(int)((reversed ? (checked((long)(result.Count)) - 1L) : 0L))] = merged;
+                return new _CompoundBorder__borders(result);
             }
         }
-        var mergedBorders__30629 = new List<ShapeBorder>();
-        return new _CompoundBorder__borders(mergedBorders__30629);
+        var mergedBorders = new List<ShapeBorder>();
+        return new _CompoundBorder__borders(mergedBorders);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -359,41 +359,41 @@ internal class _CompoundBorder__borders : ShapeBorder
     public static _CompoundBorder__borders lerp(ShapeBorder? a, ShapeBorder? b, double t)
     {
         DartRuntimePrimitives.Assert(() => ((a is _CompoundBorder__borders) || (b is _CompoundBorder__borders)));
-        List<ShapeBorder?> aList__31478 = ((a is _CompoundBorder__borders) ? ((_CompoundBorder__borders)((_CompoundBorder__borders)a)).borders : new List<ShapeBorder?> { a });
-        List<ShapeBorder?> bList__31569 = ((b is _CompoundBorder__borders) ? ((_CompoundBorder__borders)((_CompoundBorder__borders)b)).borders : new List<ShapeBorder?> { b });
-        var results__31641 = new List<ShapeBorder>();
-        long length__31682 = Math.Max(checked((long)(aList__31478.Count)), checked((long)(bList__31569.Count)));
-        for (var index__31742 = 0L; (index__31742 < length__31682); index__31742 += 1L)
+        List<ShapeBorder?> aList = ((a is _CompoundBorder__borders) ? ((_CompoundBorder__borders)((_CompoundBorder__borders)a)).borders : new List<ShapeBorder?> { a });
+        List<ShapeBorder?> bList = ((b is _CompoundBorder__borders) ? ((_CompoundBorder__borders)((_CompoundBorder__borders)b)).borders : new List<ShapeBorder?> { b });
+        var results = new List<ShapeBorder>();
+        long length = Math.Max(checked((long)(aList.Count)), checked((long)(bList.Count)));
+        for (var index = 0L; (index < length); index += 1L)
         {
-            ShapeBorder? localA__31808 = ((index__31742 < checked((long)(aList__31478.Count))) ? aList__31478[(int)(index__31742)] : null);
-            ShapeBorder? localB__31886 = ((index__31742 < checked((long)(bList__31569.Count))) ? bList__31569[(int)(index__31742)] : null);
-            if (((localA__31808 is not null) && (localB__31886 is not null)))
+            ShapeBorder? localA = ((index < checked((long)(aList.Count))) ? aList[(int)(index)] : null);
+            ShapeBorder? localB = ((index < checked((long)(bList.Count))) ? bList[(int)(index)] : null);
+            if (((localA is not null) && (localB is not null)))
             {
-                ShapeBorder? localResult__32012 = (localA__31808.lerpTo(localB__31886, t) ?? localB__31886.lerpFrom(localA__31808, t));
-                if ((localResult__32012 is not null))
+                ShapeBorder? localResult = (localA.lerpTo(localB, t) ?? localB.lerpFrom(localA, t));
+                if ((localResult is not null))
                 {
-                    results__31641.Add(localResult__32012);
+                    results.Add(localResult);
                     continue;
                 }
             }
-            if ((localB__31886 is not null))
+            if ((localB is not null))
             {
-                results__31641.Add(localB__31886.scale(t));
+                results.Add(localB.scale(t));
             }
-            if ((localA__31808 is not null))
+            if ((localA is not null))
             {
-                results__31641.Add(localA__31808.scale((1.0 - t)));
+                results.Add(localA.scale((1.0 - t)));
             }
         }
-        return new _CompoundBorder__borders(results__31641);
+        return new _CompoundBorder__borders(results);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        for (var index__32816 = 0L; (index__32816 < (checked((long)(this.borders.Count)) - 1L)); index__32816 += 1L)
+        for (var index = 0L; (index < (checked((long)(this.borders.Count)) - 1L)); index += 1L)
         {
-            rect = this.borders[(int)(index__32816)].dimensions.resolve(textDirection).deflateRect(rect);
+            rect = this.borders[(int)(index)].dimensions.resolve(textDirection).deflateRect(rect);
         }
         return this.borders.Last().getInnerPath(rect, textDirection: textDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -419,10 +419,10 @@ internal class _CompoundBorder__borders : ShapeBorder
     public override bool preferPaintInterior => this.borders.All(((border) => ((ShapeBorder)border).preferPaintInterior));
     public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius = null)
     {
-        foreach (ShapeBorder border__33787 in this.borders)
+        foreach (ShapeBorder border in this.borders)
         {
-            border__33787.paint(canvas, rect, textDirection: textDirection);
-            rect = ((ShapeBorder)border__33787).dimensions.resolve(textDirection).deflateRect(rect);
+            border.paint(canvas, rect, textDirection: textDirection);
+            rect = ((ShapeBorder)border).dimensions.resolve(textDirection).deflateRect(rect);
         }
     }
 
@@ -454,32 +454,32 @@ public static partial class BordersLibrary
 {
     public static void paintBorder(Canvas canvas, Rect rect, BorderSide top = default!, BorderSide right = default!, BorderSide bottom = default!, BorderSide left = default!)
     {
-        var paint__35920 = ((Func<Paint>)(() =>
+        var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.strokeWidth = 0.0;
     return __cascade;
 }))();
-        var path__35965 = new global::Doroti.Ui.Path();
+        var path = new global::Doroti.Ui.Path();
         switch (((BorderSide)top).style)
         {
             case BorderStyle.solid:
                 {
-                    paint__35920.color = ((BorderSide)top).color;
-                    path__35965.reset();
-                    path__35965.moveTo(rect.left, rect.top);
-                    path__35965.lineTo(rect.right, rect.top);
+                    paint.color = ((BorderSide)top).color;
+                    path.reset();
+                    path.moveTo(rect.left, rect.top);
+                    path.lineTo(rect.right, rect.top);
                     if ((((BorderSide)top).width == 0.0))
                     {
-                        paint__35920.style = PaintingStyle.stroke;
+                        paint.style = PaintingStyle.stroke;
                     }
                     else
                     {
-                        paint__35920.style = PaintingStyle.fill;
-                        path__35965.lineTo((rect.right - ((BorderSide)right).width), (rect.top + ((BorderSide)top).width));
-                        path__35965.lineTo((rect.left + ((BorderSide)left).width), (rect.top + ((BorderSide)top).width));
+                        paint.style = PaintingStyle.fill;
+                        path.lineTo((rect.right - ((BorderSide)right).width), (rect.top + ((BorderSide)top).width));
+                        path.lineTo((rect.left + ((BorderSide)left).width), (rect.top + ((BorderSide)top).width));
                     }
-                    canvas.drawPath(path__35965, paint__35920);
+                    canvas.drawPath(path, paint);
                     break;
                 }
             case BorderStyle.none:
@@ -491,21 +491,21 @@ public static partial class BordersLibrary
         {
             case BorderStyle.solid:
                 {
-                    paint__35920.color = ((BorderSide)right).color;
-                    path__35965.reset();
-                    path__35965.moveTo(rect.right, rect.top);
-                    path__35965.lineTo(rect.right, rect.bottom);
+                    paint.color = ((BorderSide)right).color;
+                    path.reset();
+                    path.moveTo(rect.right, rect.top);
+                    path.lineTo(rect.right, rect.bottom);
                     if ((((BorderSide)right).width == 0.0))
                     {
-                        paint__35920.style = PaintingStyle.stroke;
+                        paint.style = PaintingStyle.stroke;
                     }
                     else
                     {
-                        paint__35920.style = PaintingStyle.fill;
-                        path__35965.lineTo((rect.right - ((BorderSide)right).width), (rect.bottom - ((BorderSide)bottom).width));
-                        path__35965.lineTo((rect.right - ((BorderSide)right).width), (rect.top + ((BorderSide)top).width));
+                        paint.style = PaintingStyle.fill;
+                        path.lineTo((rect.right - ((BorderSide)right).width), (rect.bottom - ((BorderSide)bottom).width));
+                        path.lineTo((rect.right - ((BorderSide)right).width), (rect.top + ((BorderSide)top).width));
                     }
-                    canvas.drawPath(path__35965, paint__35920);
+                    canvas.drawPath(path, paint);
                     break;
                 }
             case BorderStyle.none:
@@ -517,21 +517,21 @@ public static partial class BordersLibrary
         {
             case BorderStyle.solid:
                 {
-                    paint__35920.color = ((BorderSide)bottom).color;
-                    path__35965.reset();
-                    path__35965.moveTo(rect.right, rect.bottom);
-                    path__35965.lineTo(rect.left, rect.bottom);
+                    paint.color = ((BorderSide)bottom).color;
+                    path.reset();
+                    path.moveTo(rect.right, rect.bottom);
+                    path.lineTo(rect.left, rect.bottom);
                     if ((((BorderSide)bottom).width == 0.0))
                     {
-                        paint__35920.style = PaintingStyle.stroke;
+                        paint.style = PaintingStyle.stroke;
                     }
                     else
                     {
-                        paint__35920.style = PaintingStyle.fill;
-                        path__35965.lineTo((rect.left + ((BorderSide)left).width), (rect.bottom - ((BorderSide)bottom).width));
-                        path__35965.lineTo((rect.right - ((BorderSide)right).width), (rect.bottom - ((BorderSide)bottom).width));
+                        paint.style = PaintingStyle.fill;
+                        path.lineTo((rect.left + ((BorderSide)left).width), (rect.bottom - ((BorderSide)bottom).width));
+                        path.lineTo((rect.right - ((BorderSide)right).width), (rect.bottom - ((BorderSide)bottom).width));
                     }
-                    canvas.drawPath(path__35965, paint__35920);
+                    canvas.drawPath(path, paint);
                     break;
                 }
             case BorderStyle.none:
@@ -543,21 +543,21 @@ public static partial class BordersLibrary
         {
             case BorderStyle.solid:
                 {
-                    paint__35920.color = ((BorderSide)left).color;
-                    path__35965.reset();
-                    path__35965.moveTo(rect.left, rect.bottom);
-                    path__35965.lineTo(rect.left, rect.top);
+                    paint.color = ((BorderSide)left).color;
+                    path.reset();
+                    path.moveTo(rect.left, rect.bottom);
+                    path.lineTo(rect.left, rect.top);
                     if ((((BorderSide)left).width == 0.0))
                     {
-                        paint__35920.style = PaintingStyle.stroke;
+                        paint.style = PaintingStyle.stroke;
                     }
                     else
                     {
-                        paint__35920.style = PaintingStyle.fill;
-                        path__35965.lineTo((rect.left + ((BorderSide)left).width), (rect.top + ((BorderSide)top).width));
-                        path__35965.lineTo((rect.left + ((BorderSide)left).width), (rect.bottom - ((BorderSide)bottom).width));
+                        paint.style = PaintingStyle.fill;
+                        path.lineTo((rect.left + ((BorderSide)left).width), (rect.top + ((BorderSide)top).width));
+                        path.lineTo((rect.left + ((BorderSide)left).width), (rect.bottom - ((BorderSide)bottom).width));
                     }
-                    canvas.drawPath(path__35965, paint__35920);
+                    canvas.drawPath(path, paint);
                     break;
                 }
             case BorderStyle.none:

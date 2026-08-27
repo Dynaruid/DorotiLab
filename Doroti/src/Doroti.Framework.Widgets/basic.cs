@@ -75,15 +75,15 @@ public class Directionality : _UbiquitousInheritedWidget__basic
     public static global::Doroti.Ui.TextDirection of(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
-        Directionality widget__6574 = context.dependOnInheritedWidgetOfExactType<Directionality>()!;
-        return ((Directionality)widget__6574).textDirection;
+        Directionality widget = context.dependOnInheritedWidgetOfExactType<Directionality>()!;
+        return ((Directionality)widget).textDirection;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.TextDirection? maybeOf(BuildContext context)
     {
-        Directionality? widget__7263 = ((Directionality?)(object?)context.dependOnInheritedWidgetOfExactType<Directionality>());
-        return ((TextDirection?)((dynamic)widget__7263)?.textDirection);
+        Directionality? widget = ((Directionality?)(object?)context.dependOnInheritedWidgetOfExactType<Directionality>());
+        return ((TextDirection?)((dynamic)widget)?.textDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -743,34 +743,34 @@ public class Transform : SingleChildRenderObjectWidget
         {
             return Matrix4.identity();
         }
-        double sin__59610 = global::Doroti.Runtime.Dart_mathLibrary.sin(radians);
-        if ((sin__59610 == 1.0))
+        double sinLocal = global::Doroti.Runtime.Dart_mathLibrary.sin(radians);
+        if ((sinLocal == 1.0))
         {
             return ((Matrix4)(object?)Transform._createZRotation(1.0, 0.0));
         }
-        if ((sin__59610 == -1.0))
+        if ((sinLocal == -1.0))
         {
             return ((Matrix4)(object?)Transform._createZRotation(-1.0, 0.0));
         }
-        double cos__59792 = global::Doroti.Runtime.Dart_mathLibrary.cos(radians);
-        if ((cos__59792 == -1.0))
+        double cosLocal = global::Doroti.Runtime.Dart_mathLibrary.cos(radians);
+        if ((cosLocal == -1.0))
         {
             return ((Matrix4)(object?)Transform._createZRotation(0.0, -1.0));
         }
-        return ((Matrix4)(object?)Transform._createZRotation(sin__59610, cos__59792));
+        return ((Matrix4)(object?)Transform._createZRotation(sinLocal, cosLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static Matrix4 _createZRotation(double sin, double cos)
     {
-        var result__60002 = Matrix4.zero();
-        result__60002.storage[0L] = cos;
-        result__60002.storage[1L] = sin;
-        result__60002.storage[4L] = -sin;
-        result__60002.storage[5L] = cos;
-        result__60002.storage[10L] = 1.0;
-        result__60002.storage[15L] = 1.0;
-        return result__60002;
+        var result = Matrix4.zero();
+        result.storage[0L] = cos;
+        result.storage[1L] = sin;
+        result.storage[4L] = -sin;
+        result.storage[5L] = cos;
+        result.storage[10L] = 1.0;
+        result.storage[15L] = 1.0;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1079,10 +1079,10 @@ public class LayoutId : ParentDataWidget<global::Doroti.Framework.Rendering.Mult
     public override void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData is global::Doroti.Framework.Rendering.MultiChildLayoutParentData));
-        var parentData__92727 = ((global::Doroti.Framework.Rendering.MultiChildLayoutParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
-        if ((!object.Equals(((global::Doroti.Framework.Rendering.MultiChildLayoutParentData)parentData__92727).id, this.id)))
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.MultiChildLayoutParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
+        if ((!object.Equals(((global::Doroti.Framework.Rendering.MultiChildLayoutParentData)parentDataLocal).id, this.id)))
         {
-            parentData__92727.id = this.id;
+            parentDataLocal.id = this.id;
             ((dynamic)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
         }
     }
@@ -1184,25 +1184,25 @@ public class SizedBox : SingleChildRenderObjectWidget
 
     public override string toStringShort()
     {
-        string type__100066 = ((this.width, this.height) switch { (var __constant100107, var __constant100124) when (object.Equals(__constant100107, double.PositiveInfinity)) && (object.Equals(__constant100124, double.PositiveInfinity)) => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox"))}.expand", (0.0, 0.0) => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox"))}.shrink", _ => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox") });
-        return ((this.key is null) ? type__100066 : $"{type__100066}-{this.key}");
+        string @type = ((this.width, this.height) switch { (var __constant100107, var __constant100124) when (object.Equals(__constant100107, double.PositiveInfinity)) && (object.Equals(__constant100124, double.PositiveInfinity)) => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox"))}.expand", (0.0, 0.0) => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox"))}.shrink", _ => global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox") });
+        return ((this.key is null) ? @type : $"{@type}-{this.key}");
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        global::Doroti.Framework.Foundation.DiagnosticLevel level__100518 = default!;
+        global::Doroti.Framework.Foundation.DiagnosticLevel levelLocal = default!;
         if (((((this.width == double.PositiveInfinity) && (this.height == double.PositiveInfinity))) || (((this.width == 0.0) && (this.height == 0.0)))))
         {
-            level__100518 = global::Doroti.Framework.Foundation.DiagnosticLevel.hidden;
+            levelLocal = global::Doroti.Framework.Foundation.DiagnosticLevel.hidden;
         }
         else
         {
-            level__100518 = global::Doroti.Framework.Foundation.DiagnosticLevel.info;
+            levelLocal = global::Doroti.Framework.Foundation.DiagnosticLevel.info;
         }
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null, level: level__100518));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null, level: level__100518));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("width", this.width, defaultValue: null, level: levelLocal));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("height", this.height, defaultValue: null, level: levelLocal));
     }
 
 }
@@ -1288,10 +1288,10 @@ public class ConstraintsTransformBox : SingleChildRenderObjectWidget
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.AlignmentGeometry>("alignment", this.alignment));
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.TextDirection>("textDirection", this.textDirection, defaultValue: null));
-        string? debugTransformLabel__112556 = ((this._debugTransformLabel.Length != 0) ? this._debugTransformLabel : _debugKnownTransforms.GetValueOrDefault(this.constraintsTransform));
-        if ((debugTransformLabel__112556 is not null))
+        string? debugTransformLabel = ((this._debugTransformLabel.Length != 0) ? this._debugTransformLabel : _debugKnownTransforms.GetValueOrDefault(this.constraintsTransform));
+        if ((debugTransformLabel is not null))
         {
-            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("constraints transform", debugTransformLabel__112556));
+            properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<string>("constraints transform", debugTransformLabel));
         }
     }
 
@@ -1747,8 +1747,8 @@ public abstract class _SemanticsBase__basic : SingleChildRenderObjectWidget
         {
             return ((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).textDirection;
         }
-        bool containsText__162694 = (((((((((((((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).label is not null) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedLabel is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).value is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).increasedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedIncreasedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).decreasedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedDecreasedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).hint is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedHint is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).tooltip is not null));
-        if (!containsText__162694)
+        bool containsText = (((((((((((((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).label is not null) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedLabel is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).value is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).increasedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedIncreasedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).decreasedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedDecreasedValue is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).hint is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).attributedHint is not null)) || (((global::Doroti.Framework.Semantics.SemanticsProperties)this.properties).tooltip is not null));
+        if (!containsText)
         {
             return null;
         }
@@ -1804,9 +1804,9 @@ public static partial class BasicLibrary
             case global::Doroti.Framework.Painting.Axis.horizontal:
                 {
                     DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
-                    global::Doroti.Ui.TextDirection textDirection__168392 = Directionality.of(context);
-                    global::Doroti.Framework.Painting.AxisDirection axisDirection__168462 = global::Doroti.Framework.Painting.Basic_typesLibrary.textDirectionToAxisDirection(textDirection__168392);
-                    return (reverse ? global::Doroti.Framework.Painting.Basic_typesLibrary.flipAxisDirection(axisDirection__168462) : axisDirection__168462);
+                    global::Doroti.Ui.TextDirection textDirection = Directionality.of(context);
+                    global::Doroti.Framework.Painting.AxisDirection axisDirection = global::Doroti.Framework.Painting.Basic_typesLibrary.textDirectionToAxisDirection(textDirection);
+                    return (reverse ? global::Doroti.Framework.Painting.Basic_typesLibrary.flipAxisDirection(axisDirection) : axisDirection);
                 }
             case global::Doroti.Framework.Painting.Axis.vertical:
                 {
@@ -1972,46 +1972,46 @@ public class Positioned : ParentDataWidget<global::Doroti.Framework.Rendering.St
 
     public static Positioned CreateDirectional(global::Doroti.Framework.Foundation.Key? key = null, TextDirection textDirection = default!, double? start = null, double? top = null, double? end = null, double? bottom = null, double? width = null, double? height = null, Widget child = default!)
     {
-        var (left__185043, right__185057) = (textDirection switch { TextDirection.rtl => (((double?, double?))((end, start))), TextDirection.ltr => (((double?, double?))((start, end))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return new Positioned(key: key, left: left__185043, top: top, right: right__185057, bottom: bottom, width: width, height: height, child: child);
+        var (leftLocal, rightLocal) = (textDirection switch { TextDirection.rtl => (((double?, double?))((end, start))), TextDirection.ltr => (((double?, double?))((start, end))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return new Positioned(key: key, left: leftLocal, top: top, right: rightLocal, bottom: bottom, width: width, height: height, child: child);
     }
 
     public override void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData is global::Doroti.Framework.Rendering.StackParentData));
-        var parentData__187412 = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
-        var needsLayout__187478 = false;
-        if ((((global::Doroti.Framework.Rendering.StackParentData)parentData__187412).left != this.left))
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.StackParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
+        var needsLayout = false;
+        if ((((global::Doroti.Framework.Rendering.StackParentData)parentDataLocal).left != this.left))
         {
-            parentData__187412.left = this.left;
-            needsLayout__187478 = true;
+            parentDataLocal.left = this.left;
+            needsLayout = true;
         }
-        if ((((global::Doroti.Framework.Rendering.StackParentData)parentData__187412).top != this.top))
+        if ((((global::Doroti.Framework.Rendering.StackParentData)parentDataLocal).top != this.top))
         {
-            parentData__187412.top = this.top;
-            needsLayout__187478 = true;
+            parentDataLocal.top = this.top;
+            needsLayout = true;
         }
-        if ((((global::Doroti.Framework.Rendering.StackParentData)parentData__187412).right != this.right))
+        if ((((global::Doroti.Framework.Rendering.StackParentData)parentDataLocal).right != this.right))
         {
-            parentData__187412.right = this.right;
-            needsLayout__187478 = true;
+            parentDataLocal.right = this.right;
+            needsLayout = true;
         }
-        if ((((global::Doroti.Framework.Rendering.StackParentData)parentData__187412).bottom != this.bottom))
+        if ((((global::Doroti.Framework.Rendering.StackParentData)parentDataLocal).bottom != this.bottom))
         {
-            parentData__187412.bottom = this.bottom;
-            needsLayout__187478 = true;
+            parentDataLocal.bottom = this.bottom;
+            needsLayout = true;
         }
-        if ((((global::Doroti.Framework.Rendering.StackParentData)parentData__187412).width != this.width))
+        if ((((global::Doroti.Framework.Rendering.StackParentData)parentDataLocal).width != this.width))
         {
-            parentData__187412.width = this.width;
-            needsLayout__187478 = true;
+            parentDataLocal.width = this.width;
+            needsLayout = true;
         }
-        if ((((global::Doroti.Framework.Rendering.StackParentData)parentData__187412).height != this.height))
+        if ((((global::Doroti.Framework.Rendering.StackParentData)parentDataLocal).height != this.height))
         {
-            parentData__187412.height = this.height;
-            needsLayout__187478 = true;
+            parentDataLocal.height = this.height;
+            needsLayout = true;
         }
-        if (needsLayout__187478)
+        if (needsLayout)
         {
             ((dynamic)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
         }
@@ -2183,19 +2183,19 @@ public class Flexible : ParentDataWidget<global::Doroti.Framework.Rendering.Flex
     public override void applyParentData(global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData is global::Doroti.Framework.Rendering.FlexParentData));
-        var parentData__228051 = ((global::Doroti.Framework.Rendering.FlexParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
-        var needsLayout__228116 = false;
-        if ((((global::Doroti.Framework.Rendering.FlexParentData)parentData__228051).flex != this.flex))
+        var parentDataLocal = ((global::Doroti.Framework.Rendering.FlexParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parentData!)!;
+        var needsLayout = false;
+        if ((((global::Doroti.Framework.Rendering.FlexParentData)parentDataLocal).flex != this.flex))
         {
-            parentData__228051.flex = this.flex;
-            needsLayout__228116 = true;
+            parentDataLocal.flex = this.flex;
+            needsLayout = true;
         }
-        if ((!object.Equals(((global::Doroti.Framework.Rendering.FlexParentData)parentData__228051).fit, this.fit)))
+        if ((!object.Equals(((global::Doroti.Framework.Rendering.FlexParentData)parentDataLocal).fit, this.fit)))
         {
-            parentData__228051.fit = this.fit;
-            needsLayout__228116 = true;
+            parentDataLocal.fit = this.fit;
+            needsLayout = true;
         }
-        if (needsLayout__228116)
+        if (needsLayout)
         {
             ((dynamic)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
         }
@@ -2354,7 +2354,7 @@ public class RichText : MultiChildRenderObjectWidget
     internal static global::Doroti.Framework.Painting.TextScaler _effectiveTextScalerFrom(global::Doroti.Framework.Painting.TextScaler textScaler, double textScaleFactor)
     {
         textScaler ??= global::Doroti.Framework.Painting.TextScaler.noScaling;
-        return ((textScaler, textScaleFactor) switch { (global::Doroti.Framework.Painting.TextScaler scaler__252109, 1.0) => scaler__252109, (var __constant252140, double textScaleFactor__252175) when (object.Equals(__constant252140, global::Doroti.Framework.Painting.TextScaler.noScaling)) => global::Doroti.Framework.Painting.TextScaler.CreateLinear(textScaleFactor__252175), (global::Doroti.Framework.Painting.TextScaler scaler__252255, _) => scaler__252255 });
+        return ((textScaler, textScaleFactor) switch { (global::Doroti.Framework.Painting.TextScaler scaler, 1.0) => scaler, (var __constant252140, double textScaleFactorLocal) when (object.Equals(__constant252140, global::Doroti.Framework.Painting.TextScaler.noScaling)) => global::Doroti.Framework.Painting.TextScaler.CreateLinear(textScaleFactorLocal), (global::Doroti.Framework.Painting.TextScaler scalerLocal, _) => scalerLocal });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2528,8 +2528,8 @@ public class DefaultAssetBundle : InheritedWidget
 
     public static global::Doroti.Framework.Services.AssetBundle of(BuildContext context)
     {
-        DefaultAssetBundle? result__271303 = ((DefaultAssetBundle?)(object?)context.dependOnInheritedWidgetOfExactType<DefaultAssetBundle>());
-        return (result__271303?.bundle ?? global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle);
+        DefaultAssetBundle? result = ((DefaultAssetBundle?)(object?)context.dependOnInheritedWidgetOfExactType<DefaultAssetBundle>());
+        return (result?.bundle ?? global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2620,8 +2620,8 @@ public class Listener : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        var listeners__278499 = new List<string>();
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("listeners", listeners__278499.Cast<string>(), ifEmpty: "<none>"));
+        var listeners = new List<string>();
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("listeners", listeners.Cast<string>(), ifEmpty: "<none>"));
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Rendering.HitTestBehavior>("behavior", this.behavior));
     }
 
@@ -2672,8 +2672,8 @@ public class MouseRegion : SingleChildRenderObjectWidget
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        var listeners__288286 = new List<string>();
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("listeners", listeners__288286.Cast<string>(), ifEmpty: "<none>"));
+        var listeners = new List<string>();
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("listeners", listeners.Cast<string>(), ifEmpty: "<none>"));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Services.MouseCursor>("cursor", this.cursor, defaultValue: null));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("opaque", this.opaque, defaultValue: true));
     }
@@ -2958,9 +2958,9 @@ public class KeyedSubtree : StatelessWidget
         {
             return items;
         }
-        var itemsWithUniqueKeys__314095 = new List<Widget>();
-        DartRuntimePrimitives.Assert(() => !global::Doroti.Framework.Widgets.DebugLibrary.debugItemsHaveDuplicateKeys(itemsWithUniqueKeys__314095.Cast<Widget>()));
-        return itemsWithUniqueKeys__314095;
+        var itemsWithUniqueKeys = new List<Widget>();
+        DartRuntimePrimitives.Assert(() => !global::Doroti.Framework.Widgets.DebugLibrary.debugItemsHaveDuplicateKeys(itemsWithUniqueKeys.Cast<Widget>()));
+        return itemsWithUniqueKeys;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

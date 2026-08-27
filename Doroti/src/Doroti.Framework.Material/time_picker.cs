@@ -210,14 +210,14 @@ internal class _DialTimePickerHeader__time_picker : global::Doroti.Framework.Wid
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Time_pickerLibrary._debugDialTimePickerEntryMode(context));
-        TimeOfDayFormat timeOfDayFormat__8852 = MaterialLocalizations.of(context).timeOfDayFormat(alwaysUse24HourFormat: _TimePickerModel__time_picker.use24HourFormatOf(context));
-        _TimePickerDefaults__time_picker defaultTheme__9033 = ((_TimePickerDefaults__time_picker)(object?)_TimePickerModel__time_picker.defaultThemeOf(context));
-        global::Doroti.Framework.Widgets.Orientation orientation__9112 = _TimePickerModel__time_picker.orientationOf(context);
-        double dayPeriodHeight__9184 = ((object.Equals(orientation__9112, global::Doroti.Framework.Widgets.Orientation.portrait)) ? ((_TimePickerDefaults__time_picker)defaultTheme__9033).dayPeriodPortraitSize.height : ((_TimePickerDefaults__time_picker)defaultTheme__9033).dayPeriodLandscapeSize.height);
-        double minInteractiveVerticalPadding__9361 = ((object.Equals(orientation__9112, global::Doroti.Framework.Widgets.Orientation.portrait)) ? Math.Max(0, ((2L * global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension) - dayPeriodHeight__9184)) : Math.Max(0, (global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension - dayPeriodHeight__9184)));
-        _HourDialType__time_picker hourDialType__9591 = _TimePickerModel__time_picker.hourDialTypeOf(context);
-        global::Doroti.Framework.Widgets.RenderObjectWidget orientationSpecificHeader__9677 = (orientation__9112 switch { global::Doroti.Framework.Widgets.Orientation.portrait => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.RenderObjectWidget>(new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(bottom: (((_TimePickerModel__time_picker.useMaterial3Of(context) ? 20L : 24L)) - (minInteractiveVerticalPadding__9361 / 2L))), child: new global::Doroti.Framework.Widgets.Text(this.helpText, style: ((_TimePickerModel__time_picker.themeOf(context).helpTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme__9033).helpTextStyle))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(textDirection: ((object.Equals(timeOfDayFormat__8852, TimeOfDayFormat.a_space_h_colon_mm)) ? TextDirection.rtl : TextDirection.ltr), spacing: 12, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection10472 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection10472.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Row(textDirection: TextDirection.ltr, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new _DialHourControl__time_picker())), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _TimeSelectorSeparator__time_picker(timeOfDayFormat: timeOfDayFormat__8852)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new _DialMinuteControl__time_picker())) })))); if ((object.Equals(hourDialType__9591, _HourDialType__time_picker.twelveHour))) { __collection10472.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _DayPeriodControl__time_picker())); } return __collection10472; }))())) })), global::Doroti.Framework.Widgets.Orientation.landscape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.RenderObjectWidget>(new global::Doroti.Framework.Widgets.SizedBox(width: Time_pickerLibrary._kTimePickerHeaderLandscapeWidth, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(this.helpText, style: ((_TimePickerModel__time_picker.themeOf(context).helpTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme__9033).helpTextStyle)))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(verticalDirection: ((object.Equals(timeOfDayFormat__8852, TimeOfDayFormat.a_space_h_colon_mm)) ? global::Doroti.Framework.Painting.VerticalDirection.up : global::Doroti.Framework.Painting.VerticalDirection.down), mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, spacing: Math.Max(0, (16L - (minInteractiveVerticalPadding__9361 / 2L))), children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection11810 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection11810.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(textDirection: TextDirection.ltr, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new _DialHourControl__time_picker())), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _TimeSelectorSeparator__time_picker(timeOfDayFormat: timeOfDayFormat__8852)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new _DialMinuteControl__time_picker())) }))); if ((object.Equals(hourDialType__9591, _HourDialType__time_picker.twelveHour))) { __collection11810.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _DayPeriodControl__time_picker())); } return __collection11810; }))())) }))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(label: MaterialLocalizations.of(context).formatTimeOfDay(_TimePickerModel__time_picker.selectedTimeOf(context), alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context)), child: orientationSpecificHeader__9677));
+        TimeOfDayFormat timeOfDayFormatLocal = MaterialLocalizations.of(context).timeOfDayFormat(alwaysUse24HourFormat: _TimePickerModel__time_picker.use24HourFormatOf(context));
+        _TimePickerDefaults__time_picker defaultTheme = ((_TimePickerDefaults__time_picker)(object?)_TimePickerModel__time_picker.defaultThemeOf(context));
+        global::Doroti.Framework.Widgets.Orientation orientation = _TimePickerModel__time_picker.orientationOf(context);
+        double dayPeriodHeight = ((object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait)) ? ((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodPortraitSize.height : ((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodLandscapeSize.height);
+        double minInteractiveVerticalPadding = ((object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait)) ? Math.Max(0, ((2L * global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension) - dayPeriodHeight)) : Math.Max(0, (global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension - dayPeriodHeight)));
+        _HourDialType__time_picker hourDialType = _TimePickerModel__time_picker.hourDialTypeOf(context);
+        global::Doroti.Framework.Widgets.RenderObjectWidget orientationSpecificHeader = (orientation switch { global::Doroti.Framework.Widgets.Orientation.portrait => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.RenderObjectWidget>(new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(bottom: (((_TimePickerModel__time_picker.useMaterial3Of(context) ? 20L : 24L)) - (minInteractiveVerticalPadding / 2L))), child: new global::Doroti.Framework.Widgets.Text(this.helpText, style: ((_TimePickerModel__time_picker.themeOf(context).helpTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme).helpTextStyle))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(textDirection: ((object.Equals(timeOfDayFormatLocal, TimeOfDayFormat.a_space_h_colon_mm)) ? TextDirection.rtl : TextDirection.ltr), spacing: 12, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection10472 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection10472.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Row(textDirection: TextDirection.ltr, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new _DialHourControl__time_picker())), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _TimeSelectorSeparator__time_picker(timeOfDayFormat: timeOfDayFormatLocal)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new _DialMinuteControl__time_picker())) })))); if ((object.Equals(hourDialType, _HourDialType__time_picker.twelveHour))) { __collection10472.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _DayPeriodControl__time_picker())); } return __collection10472; }))())) })), global::Doroti.Framework.Widgets.Orientation.landscape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.RenderObjectWidget>(new global::Doroti.Framework.Widgets.SizedBox(width: Time_pickerLibrary._kTimePickerHeaderLandscapeWidth, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(this.helpText, style: ((_TimePickerModel__time_picker.themeOf(context).helpTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme).helpTextStyle)))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(verticalDirection: ((object.Equals(timeOfDayFormatLocal, TimeOfDayFormat.a_space_h_colon_mm)) ? global::Doroti.Framework.Painting.VerticalDirection.up : global::Doroti.Framework.Painting.VerticalDirection.down), mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, spacing: Math.Max(0, (16L - (minInteractiveVerticalPadding / 2L))), children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection11810 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection11810.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(textDirection: TextDirection.ltr, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new _DialHourControl__time_picker())), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _TimeSelectorSeparator__time_picker(timeOfDayFormat: timeOfDayFormatLocal)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new _DialMinuteControl__time_picker())) }))); if ((object.Equals(hourDialType, _HourDialType__time_picker.twelveHour))) { __collection11810.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _DayPeriodControl__time_picker())); } return __collection11810; }))())) }))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(label: MaterialLocalizations.of(context).formatTimeOfDay(_TimePickerModel__time_picker.selectedTimeOf(context), alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context)), child: orientationSpecificHeader));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -241,14 +241,14 @@ internal class _DialTimeSelectorControl__time_picker : global::Doroti.Framework.
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Time_pickerLibrary._debugDialTimePickerEntryMode(context));
-        TimePickerThemeData timePickerTheme__13213 = ((TimePickerThemeData)(object?)_TimePickerModel__time_picker.themeOf(context));
-        _TimePickerDefaults__time_picker defaultTheme__13296 = ((_TimePickerDefaults__time_picker)(object?)_TimePickerModel__time_picker.defaultThemeOf(context));
-        global::Doroti.Ui.Color backgroundColor__13369 = ((global::Doroti.Ui.Color)(object?)((timePickerTheme__13213.hourMinuteColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme__13296).hourMinuteColor)));
-        global::Doroti.Framework.Painting.ShapeBorder shape__13474 = ((timePickerTheme__13213.hourMinuteShape ?? (global::Doroti.Framework.Painting.ShapeBorder)((_TimePickerDefaults__time_picker)defaultTheme__13296).hourMinuteShape));
-        var states__13558 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection13567 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (this.isSelected) { __collection13567.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection13567; }))();
-        global::Doroti.Ui.Color effectiveTextColor__13636 = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>((_TimePickerModel__time_picker.themeOf(context).hourMinuteTextColor ?? _TimePickerModel__time_picker.defaultThemeOf(context).hourMinuteTextColor), states__13558));
-        global::Doroti.Framework.Painting.TextStyle effectiveStyle__13871 = ((global::Doroti.Framework.Painting.TextStyle)(object?)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.TextStyle>(((timePickerTheme__13213.hourMinuteTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme__13296).hourMinuteTextStyle)), states__13558).copyWith(color: effectiveTextColor__13636));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: ((_TimePickerDefaults__time_picker)defaultTheme__13296).hourMinuteSize.height, child: new Material(color: WidgetStateProperty.resolveAs(backgroundColor__13369, states__13558), clipBehavior: Clip.antiAlias, shape: shape__13474, child: new InkWell(onTap: this.onTap, onDoubleTap: ((global::System.Action)(this.isSelected ? this.onDoubleTap : null)), child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Text(this.text, style: effectiveStyle__13871, textScaler: global::Doroti.Framework.Painting.TextScaler.noScaling))))));
+        TimePickerThemeData timePickerTheme = ((TimePickerThemeData)(object?)_TimePickerModel__time_picker.themeOf(context));
+        _TimePickerDefaults__time_picker defaultTheme = ((_TimePickerDefaults__time_picker)(object?)_TimePickerModel__time_picker.defaultThemeOf(context));
+        global::Doroti.Ui.Color backgroundColor = ((global::Doroti.Ui.Color)(object?)((timePickerTheme.hourMinuteColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteColor)));
+        global::Doroti.Framework.Painting.ShapeBorder shapeLocal = ((timePickerTheme.hourMinuteShape ?? (global::Doroti.Framework.Painting.ShapeBorder)((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteShape));
+        var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection13567 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (this.isSelected) { __collection13567.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection13567; }))();
+        global::Doroti.Ui.Color effectiveTextColor = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>((_TimePickerModel__time_picker.themeOf(context).hourMinuteTextColor ?? _TimePickerModel__time_picker.defaultThemeOf(context).hourMinuteTextColor), states));
+        global::Doroti.Framework.Painting.TextStyle effectiveStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.TextStyle>(((timePickerTheme.hourMinuteTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteTextStyle)), states).copyWith(color: effectiveTextColor));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: ((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteSize.height, child: new Material(color: WidgetStateProperty.resolveAs(backgroundColor, states), clipBehavior: Clip.antiAlias, shape: shapeLocal, child: new InkWell(onTap: this.onTap, onDoubleTap: ((global::System.Action)(this.isSelected ? this.onDoubleTap : null)), child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Text(this.text, style: effectiveStyle, textScaler: global::Doroti.Framework.Painting.TextScaler.noScaling))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -264,10 +264,10 @@ internal class _DialHourControl__time_picker : global::Doroti.Framework.Widgets.
     {
         DartRuntimePrimitives.Assert(() => Time_pickerLibrary._debugDialTimePickerEntryMode(context));
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        bool alwaysUse24HourFormat__14920 = MediaQuery.alwaysUse24HourFormatOf(context);
-        TimeOfDay selectedTime__15009 = ((TimeOfDay)(object?)_TimePickerModel__time_picker.selectedTimeOf(context));
-        MaterialLocalizations localizations__15098 = MaterialLocalizations.of(context);
-        string formattedHour__15166 = localizations__15098.formatHour(selectedTime__15009, alwaysUse24HourFormat: _TimePickerModel__time_picker.use24HourFormatOf(context));
+        bool alwaysUse24HourFormatLocal = MediaQuery.alwaysUse24HourFormatOf(context);
+        TimeOfDay selectedTime = ((TimeOfDay)(object?)_TimePickerModel__time_picker.selectedTimeOf(context));
+        MaterialLocalizations localizations = MaterialLocalizations.of(context);
+        string formattedHour = localizations.formatHour(selectedTime, alwaysUse24HourFormat: _TimePickerModel__time_picker.use24HourFormatOf(context));
         TimeOfDay hoursFromSelected(long hoursToAdd)
         {
             switch (_TimePickerModel__time_picker.hourDialTypeOf(context))
@@ -275,31 +275,31 @@ internal class _DialHourControl__time_picker : global::Doroti.Framework.Widgets.
                 case _HourDialType__time_picker.twentyFourHour:
                 case _HourDialType__time_picker.twentyFourHourDoubleRing:
                     {
-                        long selectedHour__15534 = ((TimeOfDay)selectedTime__15009).hour;
-                        return ((TimeOfDay)(object?)selectedTime__15009.replacing(hour: (((selectedHour__15534 + hoursToAdd)) % TimeOfDay.hoursPerDay)));
+                        long selectedHour = ((TimeOfDay)selectedTime).hour;
+                        return ((TimeOfDay)(object?)selectedTime.replacing(hour: (((selectedHour + hoursToAdd)) % TimeOfDay.hoursPerDay)));
                     }
                 case _HourDialType__time_picker.twelveHour:
                     {
-                        long periodOffset__15788 = ((TimeOfDay)selectedTime__15009).periodOffset;
-                        long hours__15850 = ((TimeOfDay)selectedTime__15009).hourOfPeriod;
-                        return ((TimeOfDay)(object?)selectedTime__15009.replacing(hour: (periodOffset__15788 + (((hours__15850 + hoursToAdd)) % TimeOfDay.hoursPerPeriod))));
+                        long periodOffsetLocal = ((TimeOfDay)selectedTime).periodOffset;
+                        long hours = ((TimeOfDay)selectedTime).hourOfPeriod;
+                        return ((TimeOfDay)(object?)selectedTime.replacing(hour: (periodOffsetLocal + (((hours + hoursToAdd)) % TimeOfDay.hoursPerPeriod))));
                     }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
             }
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        TimeOfDay nextHour__16056 = hoursFromSelected(1L);
-        string formattedNextHour__16106 = localizations__15098.formatHour(nextHour__16056, alwaysUse24HourFormat: alwaysUse24HourFormat__14920);
-        TimeOfDay previousHour__16247 = hoursFromSelected(-1L);
-        string formattedPreviousHour__16302 = localizations__15098.formatHour(previousHour__16247, alwaysUse24HourFormat: alwaysUse24HourFormat__14920);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(value: $"{localizations__15098.timePickerHourModeAnnouncement} {formattedHour__15166}", excludeSemantics: true, increasedValue: formattedNextHour__16106, onIncrease: ((global::System.Action)(() =>
+        TimeOfDay nextHour = hoursFromSelected(1L);
+        string formattedNextHour = localizations.formatHour(nextHour, alwaysUse24HourFormat: alwaysUse24HourFormatLocal);
+        TimeOfDay previousHour = hoursFromSelected(-1L);
+        string formattedPreviousHour = localizations.formatHour(previousHour, alwaysUse24HourFormat: alwaysUse24HourFormatLocal);
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(value: $"{localizations.timePickerHourModeAnnouncement} {formattedHour}", excludeSemantics: true, increasedValue: formattedNextHour, onIncrease: ((global::System.Action)(() =>
         {
-            _TimePickerModel__time_picker.setSelectedTime(context, nextHour__16056);
-        })), decreasedValue: formattedPreviousHour__16302, onDecrease: ((global::System.Action)(() =>
+            _TimePickerModel__time_picker.setSelectedTime(context, nextHour);
+        })), decreasedValue: formattedPreviousHour, onDecrease: ((global::System.Action)(() =>
         {
-            _TimePickerModel__time_picker.setSelectedTime(context, previousHour__16247);
-        })), child: new _DialTimeSelectorControl__time_picker(isSelected: (object.Equals(_TimePickerModel__time_picker.hourMinuteModeOf(context), _HourMinuteMode__time_picker.hour)), text: formattedHour__15166, onTap: ((global::System.Action)(() => { _TimePickerModel__time_picker.setHourMinuteMode(context, _HourMinuteMode__time_picker.hour); })), onDoubleTap: () => _TimePickerModel__time_picker.of(context, _TimePickerAspect__time_picker.onHourDoubleTapped).onHourDoubleTapped())));
+            _TimePickerModel__time_picker.setSelectedTime(context, previousHour);
+        })), child: new _DialTimeSelectorControl__time_picker(isSelected: (object.Equals(_TimePickerModel__time_picker.hourMinuteModeOf(context), _HourMinuteMode__time_picker.hour)), text: formattedHour, onTap: ((global::System.Action)(() => { _TimePickerModel__time_picker.setHourMinuteMode(context, _HourMinuteMode__time_picker.hour); })), onDoubleTap: () => _TimePickerModel__time_picker.of(context, _TimePickerAspect__time_picker.onHourDoubleTapped).onHourDoubleTapped())));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -317,14 +317,14 @@ internal class _TimeSelectorSeparator__time_picker : global::Doroti.Framework.Wi
     internal virtual string _timeSelectorSeparatorValue(TimeOfDayFormat timeOfDayFormat) => (timeOfDayFormat switch { TimeOfDayFormat.h_colon_mm_space_a or TimeOfDayFormat.a_space_h_colon_mm or TimeOfDayFormat.H_colon_mm => ":", TimeOfDayFormat.HH_colon_mm => ":", TimeOfDayFormat.HH_dot_mm => ".", TimeOfDayFormat.frenchCanadian => "h", _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ThemeData theme__17947 = Theme.of(context);
-        TimePickerThemeData timePickerTheme__18004 = TimePickerTheme.of(context);
-        _TimePickerDefaults__time_picker defaultTheme__18081 = (theme__17947.useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context) : new _TimePickerDefaultsM2__time_picker(context));
-        var states__18208 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>();
-        global::Doroti.Ui.Color effectiveTextColor__18251 = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>((((((timePickerTheme__18004.timeSelectorSeparatorColor?.resolve(states__18208) ?? timePickerTheme__18004.hourMinuteTextColor) ?? (Color)defaultTheme__18081.timeSelectorSeparatorColor?.resolve(states__18208))) ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme__18081).hourMinuteTextColor)), states__18208));
-        global::Doroti.Framework.Painting.TextStyle effectiveStyle__18583 = ((global::Doroti.Framework.Painting.TextStyle)(object?)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.TextStyle>((((((timePickerTheme__18004.timeSelectorSeparatorTextStyle?.resolve(states__18208) ?? timePickerTheme__18004.hourMinuteTextStyle) ?? (global::Doroti.Framework.Painting.TextStyle)defaultTheme__18081.timeSelectorSeparatorTextStyle?.resolve(states__18208))) ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme__18081).hourMinuteTextStyle)), states__18208).copyWith(color: effectiveTextColor__18251, height: 1.0));
-        double height__18970 = (_TimePickerModel__time_picker.entryModeOf(context) switch { TimePickerEntryMode.dial => ((_TimePickerDefaults__time_picker)defaultTheme__18081).hourMinuteSize.height, TimePickerEntryMode.dialOnly => ((_TimePickerDefaults__time_picker)defaultTheme__18081).hourMinuteSize.height, TimePickerEntryMode.input => ((_TimePickerDefaults__time_picker)defaultTheme__18081).hourMinuteInputSize.height, TimePickerEntryMode.inputOnly => ((_TimePickerDefaults__time_picker)defaultTheme__18081).hourMinuteInputSize.height, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.SizedBox(width: ((object.Equals(this.timeOfDayFormat, TimeOfDayFormat.frenchCanadian)) ? 36 : 24), height: height__18970, child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Text(_timeSelectorSeparatorValue(this.timeOfDayFormat), style: effectiveStyle__18583, textScaler: global::Doroti.Framework.Painting.TextScaler.noScaling)))));
+        ThemeData theme = Theme.of(context);
+        TimePickerThemeData timePickerTheme = TimePickerTheme.of(context);
+        _TimePickerDefaults__time_picker defaultTheme = (theme.useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context) : new _TimePickerDefaultsM2__time_picker(context));
+        var states = new HashSet<global::Doroti.Framework.Widgets.WidgetState>();
+        global::Doroti.Ui.Color effectiveTextColor = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>((((((timePickerTheme.timeSelectorSeparatorColor?.resolve(states) ?? timePickerTheme.hourMinuteTextColor) ?? (Color)defaultTheme.timeSelectorSeparatorColor?.resolve(states))) ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteTextColor)), states));
+        global::Doroti.Framework.Painting.TextStyle effectiveStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.TextStyle>((((((timePickerTheme.timeSelectorSeparatorTextStyle?.resolve(states) ?? timePickerTheme.hourMinuteTextStyle) ?? (global::Doroti.Framework.Painting.TextStyle)defaultTheme.timeSelectorSeparatorTextStyle?.resolve(states))) ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteTextStyle)), states).copyWith(color: effectiveTextColor, height: 1.0));
+        double heightLocal = (_TimePickerModel__time_picker.entryModeOf(context) switch { TimePickerEntryMode.dial => ((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteSize.height, TimePickerEntryMode.dialOnly => ((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteSize.height, TimePickerEntryMode.input => ((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteInputSize.height, TimePickerEntryMode.inputOnly => ((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteInputSize.height, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.SizedBox(width: ((object.Equals(this.timeOfDayFormat, TimeOfDayFormat.frenchCanadian)) ? 36 : 24), height: heightLocal, child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Text(_timeSelectorSeparatorValue(this.timeOfDayFormat), style: effectiveStyle, textScaler: global::Doroti.Framework.Painting.TextScaler.noScaling)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -339,20 +339,20 @@ internal class _DialMinuteControl__time_picker : global::Doroti.Framework.Widget
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Time_pickerLibrary._debugDialTimePickerEntryMode(context));
-        MaterialLocalizations localizations__19986 = MaterialLocalizations.of(context);
-        TimeOfDay selectedTime__20057 = ((TimeOfDay)(object?)_TimePickerModel__time_picker.selectedTimeOf(context));
-        string formattedMinute__20131 = localizations__19986.formatMinute(selectedTime__20057);
-        TimeOfDay nextMinute__20211 = ((TimeOfDay)(object?)selectedTime__20057.replacing(minute: (((((TimeOfDay)selectedTime__20057).minute + 1L)) % TimeOfDay.minutesPerHour)));
-        string formattedNextMinute__20340 = localizations__19986.formatMinute(nextMinute__20211);
-        TimeOfDay previousMinute__20422 = ((TimeOfDay)(object?)selectedTime__20057.replacing(minute: (((((TimeOfDay)selectedTime__20057).minute - 1L)) % TimeOfDay.minutesPerHour)));
-        string formattedPreviousMinute__20555 = localizations__19986.formatMinute(previousMinute__20422);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(excludeSemantics: true, value: $"{localizations__19986.timePickerMinuteModeAnnouncement} {formattedMinute__20131}", increasedValue: formattedNextMinute__20340, onIncrease: ((global::System.Action)(() =>
+        MaterialLocalizations localizations = MaterialLocalizations.of(context);
+        TimeOfDay selectedTime = ((TimeOfDay)(object?)_TimePickerModel__time_picker.selectedTimeOf(context));
+        string formattedMinute = localizations.formatMinute(selectedTime);
+        TimeOfDay nextMinute = ((TimeOfDay)(object?)selectedTime.replacing(minute: (((((TimeOfDay)selectedTime).minute + 1L)) % TimeOfDay.minutesPerHour)));
+        string formattedNextMinute = localizations.formatMinute(nextMinute);
+        TimeOfDay previousMinute = ((TimeOfDay)(object?)selectedTime.replacing(minute: (((((TimeOfDay)selectedTime).minute - 1L)) % TimeOfDay.minutesPerHour)));
+        string formattedPreviousMinute = localizations.formatMinute(previousMinute);
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(excludeSemantics: true, value: $"{localizations.timePickerMinuteModeAnnouncement} {formattedMinute}", increasedValue: formattedNextMinute, onIncrease: ((global::System.Action)(() =>
         {
-            _TimePickerModel__time_picker.setSelectedTime(context, nextMinute__20211);
-        })), decreasedValue: formattedPreviousMinute__20555, onDecrease: ((global::System.Action)(() =>
+            _TimePickerModel__time_picker.setSelectedTime(context, nextMinute);
+        })), decreasedValue: formattedPreviousMinute, onDecrease: ((global::System.Action)(() =>
         {
-            _TimePickerModel__time_picker.setSelectedTime(context, previousMinute__20422);
-        })), child: new _DialTimeSelectorControl__time_picker(isSelected: (object.Equals(_TimePickerModel__time_picker.hourMinuteModeOf(context), _HourMinuteMode__time_picker.minute)), text: formattedMinute__20131, onTap: ((global::System.Action)(() => { _TimePickerModel__time_picker.setHourMinuteMode(context, _HourMinuteMode__time_picker.minute); })), onDoubleTap: () => _TimePickerModel__time_picker.of(context, _TimePickerAspect__time_picker.onMinuteDoubleTapped).onMinuteDoubleTapped())));
+            _TimePickerModel__time_picker.setSelectedTime(context, previousMinute);
+        })), child: new _DialTimeSelectorControl__time_picker(isSelected: (object.Equals(_TimePickerModel__time_picker.hourMinuteModeOf(context), _HourMinuteMode__time_picker.minute)), text: formattedMinute, onTap: ((global::System.Action)(() => { _TimePickerModel__time_picker.setHourMinuteMode(context, _HourMinuteMode__time_picker.minute); })), onDoubleTap: () => _TimePickerModel__time_picker.of(context, _TimePickerAspect__time_picker.onMinuteDoubleTapped).onMinuteDoubleTapped())));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -369,23 +369,23 @@ internal class _DayPeriodControl__time_picker : global::Doroti.Framework.Widgets
 
     internal virtual void _togglePeriod(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        TimeOfDay selectedTime__21770 = ((TimeOfDay)(object?)_TimePickerModel__time_picker.selectedTimeOf(context));
-        long newHour__21841 = (((((TimeOfDay)selectedTime__21770).hour + TimeOfDay.hoursPerPeriod)) % TimeOfDay.hoursPerDay);
-        TimeOfDay newTime__21943 = ((TimeOfDay)(object?)selectedTime__21770.replacing(hour: newHour__21841));
+        TimeOfDay selectedTime = ((TimeOfDay)(object?)_TimePickerModel__time_picker.selectedTimeOf(context));
+        long newHour = (((((TimeOfDay)selectedTime).hour + TimeOfDay.hoursPerPeriod)) % TimeOfDay.hoursPerDay);
+        TimeOfDay newTime = ((TimeOfDay)(object?)selectedTime.replacing(hour: newHour));
         if ((this.onPeriodChanged is not null))
         {
-            this.onPeriodChanged!(newTime__21943);
+            this.onPeriodChanged!(newTime);
         }
         else
         {
-            _TimePickerModel__time_picker.setSelectedTime(context, newTime__21943);
+            _TimePickerModel__time_picker.setSelectedTime(context, newTime);
         }
     }
 
     internal virtual void _setAm(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        TimeOfDay selectedTime__22200 = ((TimeOfDay)(object?)_TimePickerModel__time_picker.selectedTimeOf(context));
-        if ((object.Equals(((TimeOfDay)selectedTime__22200).period, DayPeriod.am)))
+        TimeOfDay selectedTime = ((TimeOfDay)(object?)_TimePickerModel__time_picker.selectedTimeOf(context));
+        if ((object.Equals(((TimeOfDay)selectedTime).period, DayPeriod.am)))
         {
             return;
         }
@@ -394,8 +394,8 @@ internal class _DayPeriodControl__time_picker : global::Doroti.Framework.Widgets
 
     internal virtual void _setPm(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        TimeOfDay selectedTime__22415 = ((TimeOfDay)(object?)_TimePickerModel__time_picker.selectedTimeOf(context));
-        if ((object.Equals(((TimeOfDay)selectedTime__22415).period, DayPeriod.pm)))
+        TimeOfDay selectedTime = ((TimeOfDay)(object?)_TimePickerModel__time_picker.selectedTimeOf(context));
+        if ((object.Equals(((TimeOfDay)selectedTime).period, DayPeriod.pm)))
         {
             return;
         }
@@ -404,63 +404,63 @@ internal class _DayPeriodControl__time_picker : global::Doroti.Framework.Widgets
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        MaterialLocalizations materialLocalizations__22655 = MaterialLocalizations.of(context);
-        TimePickerThemeData timePickerTheme__22744 = ((TimePickerThemeData)(object?)_TimePickerModel__time_picker.themeOf(context));
-        _TimePickerDefaults__time_picker defaultTheme__22827 = ((_TimePickerDefaults__time_picker)(object?)_TimePickerModel__time_picker.defaultThemeOf(context));
-        TimeOfDay selectedTime__22904 = ((TimeOfDay)(object?)_TimePickerModel__time_picker.selectedTimeOf(context));
-        var amSelected__22971 = (object.Equals(((TimeOfDay)selectedTime__22904).period, DayPeriod.am));
-        bool pmSelected__23036 = !amSelected__22971;
-        global::Doroti.Framework.Painting.BorderSide resolvedSide__23083 = ((timePickerTheme__22744.dayPeriodBorderSide ?? (global::Doroti.Framework.Painting.BorderSide)((_TimePickerDefaults__time_picker)defaultTheme__22827).dayPeriodBorderSide));
-        global::Doroti.Framework.Painting.OutlinedBorder resolvedShape__23204 = ((global::Doroti.Framework.Painting.OutlinedBorder)(object?)(((timePickerTheme__22744.dayPeriodShape ?? (global::Doroti.Framework.Painting.OutlinedBorder)((_TimePickerDefaults__time_picker)defaultTheme__22827).dayPeriodShape))).copyWith(side: resolvedSide__23083));
-        global::Doroti.Ui.Size dayPeriodSize__23353 = default!;
-        global::Doroti.Framework.Widgets.Orientation orientation__23390 = default!;
+        MaterialLocalizations materialLocalizations = MaterialLocalizations.of(context);
+        TimePickerThemeData timePickerTheme = ((TimePickerThemeData)(object?)_TimePickerModel__time_picker.themeOf(context));
+        _TimePickerDefaults__time_picker defaultTheme = ((_TimePickerDefaults__time_picker)(object?)_TimePickerModel__time_picker.defaultThemeOf(context));
+        TimeOfDay selectedTime = ((TimeOfDay)(object?)_TimePickerModel__time_picker.selectedTimeOf(context));
+        var amSelected = (object.Equals(((TimeOfDay)selectedTime).period, DayPeriod.am));
+        bool pmSelected = !amSelected;
+        global::Doroti.Framework.Painting.BorderSide resolvedSide = ((timePickerTheme.dayPeriodBorderSide ?? (global::Doroti.Framework.Painting.BorderSide)((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodBorderSide));
+        global::Doroti.Framework.Painting.OutlinedBorder resolvedShape = ((global::Doroti.Framework.Painting.OutlinedBorder)(object?)(((timePickerTheme.dayPeriodShape ?? (global::Doroti.Framework.Painting.OutlinedBorder)((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodShape))).copyWith(side: resolvedSide));
+        global::Doroti.Ui.Size dayPeriodSize = default!;
+        global::Doroti.Framework.Widgets.Orientation orientationLocal = default!;
         switch (_TimePickerModel__time_picker.entryModeOf(context))
         {
             case TimePickerEntryMode.dial:
             case TimePickerEntryMode.dialOnly:
                 {
-                    orientation__23390 = _TimePickerModel__time_picker.orientationOf(context);
-                    dayPeriodSize__23353 = (orientation__23390 switch { global::Doroti.Framework.Widgets.Orientation.portrait => ((_TimePickerDefaults__time_picker)defaultTheme__22827).dayPeriodPortraitSize, global::Doroti.Framework.Widgets.Orientation.landscape => ((_TimePickerDefaults__time_picker)defaultTheme__22827).dayPeriodLandscapeSize, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                    orientationLocal = _TimePickerModel__time_picker.orientationOf(context);
+                    dayPeriodSize = (orientationLocal switch { global::Doroti.Framework.Widgets.Orientation.portrait => ((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodPortraitSize, global::Doroti.Framework.Widgets.Orientation.landscape => ((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodLandscapeSize, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                     break;
                 }
             case TimePickerEntryMode.input:
             case TimePickerEntryMode.inputOnly:
                 {
-                    orientation__23390 = global::Doroti.Framework.Widgets.Orientation.portrait;
-                    dayPeriodSize__23353 = ((_TimePickerDefaults__time_picker)defaultTheme__22827).dayPeriodInputSize;
+                    orientationLocal = global::Doroti.Framework.Widgets.Orientation.portrait;
+                    dayPeriodSize = ((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodInputSize;
                     break;
                 }
         }
-        var amShape__23993 = resolvedShape__23204;
-        var pmShape__24026 = resolvedShape__23204;
-        bool hasRoundedBorder__24066 = ((resolvedShape__23204 is global::Doroti.Framework.Painting.RoundedRectangleBorder) && (((global::Doroti.Framework.Painting.RoundedRectangleBorder)((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape__23204)).borderRadius is global::Doroti.Framework.Painting.BorderRadius));
-        switch (orientation__23390)
+        var amShape = resolvedShape;
+        var pmShape = resolvedShape;
+        bool hasRoundedBorder = ((resolvedShape is global::Doroti.Framework.Painting.RoundedRectangleBorder) && (((global::Doroti.Framework.Painting.RoundedRectangleBorder)((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape)).borderRadius is global::Doroti.Framework.Painting.BorderRadius));
+        switch (orientationLocal)
         {
             case global::Doroti.Framework.Widgets.Orientation.portrait:
                 {
-                    if (hasRoundedBorder__24066)
+                    if (hasRoundedBorder)
                     {
-                        var borderRadius__24840 = ((global::Doroti.Framework.Painting.BorderRadius?)(object?)((global::Doroti.Framework.Painting.RoundedRectangleBorder)((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape__23204)).borderRadius)!;
-                        amShape__23993 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape__23204).copyWith(borderRadius: new global::Doroti.Framework.Painting.BorderRadius(topLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius__24840).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius__24840).topRight)));
-                        pmShape__24026 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape__23204).copyWith(borderRadius: new global::Doroti.Framework.Painting.BorderRadius(bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius__24840).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius__24840).bottomRight)));
+                        var borderRadiusLocal = ((global::Doroti.Framework.Painting.BorderRadius?)(object?)((global::Doroti.Framework.Painting.RoundedRectangleBorder)((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape)).borderRadius)!;
+                        amShape = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape).copyWith(borderRadius: new global::Doroti.Framework.Painting.BorderRadius(topLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadiusLocal).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadiusLocal).topRight)));
+                        pmShape = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape).copyWith(borderRadius: new global::Doroti.Framework.Painting.BorderRadius(bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadiusLocal).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadiusLocal).bottomRight)));
                     }
-                    var minInteractiveSize__25354 = new global::Doroti.Ui.Size(dayPeriodSize__23353.width, Math.Max(dayPeriodSize__23353.height, (2L * global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension)));
-                    global::Doroti.Framework.Widgets.Widget amButton__25517 = ((global::Doroti.Framework.Widgets.Widget)(object?)new _AmPmButton__time_picker(selected: amSelected__22971, onPressed: ((global::System.Action)(() => { _setAm(context); })), label: materialLocalizations__22655.anteMeridiemAbbreviation, padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: (((minInteractiveSize__25354.height - dayPeriodSize__23353.height)) / 2L)), shape: amShape__23993));
-                    global::Doroti.Framework.Widgets.Widget pmButton__25838 = ((global::Doroti.Framework.Widgets.Widget)(object?)new _AmPmButton__time_picker(selected: pmSelected__23036, onPressed: ((global::System.Action)(() => { _setPm(context); })), label: materialLocalizations__22655.postMeridiemAbbreviation, padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: (((minInteractiveSize__25354.height - dayPeriodSize__23353.height)) / 2L)), shape: pmShape__24026));
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new _DayPeriodInputPadding__time_picker(minSize: minInteractiveSize__25354, orientation: orientation__23390, child: global::Doroti.Framework.Widgets.SizedBox.CreateFromSize(size: minInteractiveSize__25354, child: new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: amButton__25517)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: pmButton__25838)) }))));
+                    var minInteractiveSize = new global::Doroti.Ui.Size(dayPeriodSize.width, Math.Max(dayPeriodSize.height, (2L * global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension)));
+                    global::Doroti.Framework.Widgets.Widget amButton = ((global::Doroti.Framework.Widgets.Widget)(object?)new _AmPmButton__time_picker(selected: amSelected, onPressed: ((global::System.Action)(() => { _setAm(context); })), label: materialLocalizations.anteMeridiemAbbreviation, padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: (((minInteractiveSize.height - dayPeriodSize.height)) / 2L)), shape: amShape));
+                    global::Doroti.Framework.Widgets.Widget pmButton = ((global::Doroti.Framework.Widgets.Widget)(object?)new _AmPmButton__time_picker(selected: pmSelected, onPressed: ((global::System.Action)(() => { _setPm(context); })), label: materialLocalizations.postMeridiemAbbreviation, padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: (((minInteractiveSize.height - dayPeriodSize.height)) / 2L)), shape: pmShape));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new _DayPeriodInputPadding__time_picker(minSize: minInteractiveSize, orientation: orientationLocal, child: global::Doroti.Framework.Widgets.SizedBox.CreateFromSize(size: minInteractiveSize, child: new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: amButton)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: pmButton)) }))));
                 }
             case global::Doroti.Framework.Widgets.Orientation.landscape:
                 {
-                    if (hasRoundedBorder__24066)
+                    if (hasRoundedBorder)
                     {
-                        var borderRadius__26614 = ((global::Doroti.Framework.Painting.BorderRadius?)(object?)((global::Doroti.Framework.Painting.RoundedRectangleBorder)((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape__23204)).borderRadius)!;
-                        amShape__23993 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape__23204).copyWith(borderRadius: new global::Doroti.Framework.Painting.BorderRadius(topLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius__26614).topLeft, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius__26614).bottomLeft)));
-                        pmShape__24026 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape__23204).copyWith(borderRadius: new global::Doroti.Framework.Painting.BorderRadius(topRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius__26614).topRight, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadius__26614).bottomRight)));
+                        var borderRadiusAlternate = ((global::Doroti.Framework.Painting.BorderRadius?)(object?)((global::Doroti.Framework.Painting.RoundedRectangleBorder)((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape)).borderRadius)!;
+                        amShape = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape).copyWith(borderRadius: new global::Doroti.Framework.Painting.BorderRadius(topLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadiusAlternate).topLeft, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)borderRadiusAlternate).bottomLeft)));
+                        pmShape = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(((global::Doroti.Framework.Painting.RoundedRectangleBorder)resolvedShape).copyWith(borderRadius: new global::Doroti.Framework.Painting.BorderRadius(topRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadiusAlternate).topRight, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)borderRadiusAlternate).bottomRight)));
                     }
-                    var minInteractiveSize__27128 = new global::Doroti.Ui.Size(dayPeriodSize__23353.width, Math.Max(dayPeriodSize__23353.height, global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension));
-                    global::Doroti.Framework.Widgets.Widget amButton__27287 = ((global::Doroti.Framework.Widgets.Widget)(object?)new _AmPmButton__time_picker(selected: amSelected__22971, onPressed: ((global::System.Action)(() => { _setAm(context); })), label: materialLocalizations__22655.anteMeridiemAbbreviation, padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: (((minInteractiveSize__27128.height - dayPeriodSize__23353.height)) / 2L)), shape: amShape__23993));
-                    global::Doroti.Framework.Widgets.Widget pmButton__27643 = ((global::Doroti.Framework.Widgets.Widget)(object?)new _AmPmButton__time_picker(selected: pmSelected__23036, onPressed: ((global::System.Action)(() => { _setPm(context); })), label: materialLocalizations__22655.postMeridiemAbbreviation, padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: (((minInteractiveSize__27128.height - dayPeriodSize__23353.height)) / 2L)), shape: pmShape__24026));
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new _DayPeriodInputPadding__time_picker(minSize: minInteractiveSize__27128, orientation: orientation__23390, child: new global::Doroti.Framework.Widgets.SizedBox(height: minInteractiveSize__27128.height, child: new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: amButton__27287)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: pmButton__27643)) }))));
+                    var minInteractiveSizeLocal = new global::Doroti.Ui.Size(dayPeriodSize.width, Math.Max(dayPeriodSize.height, global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension));
+                    global::Doroti.Framework.Widgets.Widget amButtonLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new _AmPmButton__time_picker(selected: amSelected, onPressed: ((global::System.Action)(() => { _setAm(context); })), label: materialLocalizations.anteMeridiemAbbreviation, padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: (((minInteractiveSizeLocal.height - dayPeriodSize.height)) / 2L)), shape: amShape));
+                    global::Doroti.Framework.Widgets.Widget pmButtonLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new _AmPmButton__time_picker(selected: pmSelected, onPressed: ((global::System.Action)(() => { _setPm(context); })), label: materialLocalizations.postMeridiemAbbreviation, padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: (((minInteractiveSizeLocal.height - dayPeriodSize.height)) / 2L)), shape: pmShape));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new _DayPeriodInputPadding__time_picker(minSize: minInteractiveSizeLocal, orientation: orientationLocal, child: new global::Doroti.Framework.Widgets.SizedBox(height: minInteractiveSizeLocal.height, child: new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: amButtonLocal)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: pmButtonLocal)) }))));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -489,14 +489,14 @@ internal class _AmPmButton__time_picker : global::Doroti.Framework.Widgets.State
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var states__28783 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection28792 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (this.selected) { __collection28792.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection28792; }))();
-        TimePickerThemeData timePickerTheme__28873 = ((TimePickerThemeData)(object?)_TimePickerModel__time_picker.themeOf(context));
-        _TimePickerDefaults__time_picker defaultTheme__28956 = ((_TimePickerDefaults__time_picker)(object?)_TimePickerModel__time_picker.defaultThemeOf(context));
-        global::Doroti.Ui.Color resolvedBackgroundColor__29029 = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>(((timePickerTheme__28873.dayPeriodColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme__28956).dayPeriodColor)), states__28783));
-        global::Doroti.Ui.Color resolvedTextColor__29199 = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>(((timePickerTheme__28873.dayPeriodTextColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme__28956).dayPeriodTextColor)), states__28783));
-        global::Doroti.Framework.Painting.TextStyle? resolvedTextStyle__29376 = ((global::Doroti.Framework.Painting.TextStyle?)(object?)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.TextStyle?>(((timePickerTheme__28873.dayPeriodTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme__28956).dayPeriodTextStyle)), states__28783)?.copyWith(color: resolvedTextColor__29199));
-        global::Doroti.Framework.Painting.TextScaler buttonTextScaler__29594 = ((global::Doroti.Framework.Painting.TextScaler)(object?)MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 2.0));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(selected: ((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) ? this.selected : null), @checked: ((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) ? null : this.selected), inMutuallyExclusiveGroup: true, button: true, child: new global::Doroti.Framework.Widgets.Padding(padding: this.padding, child: new Material(clipBehavior: Clip.antiAlias, color: resolvedBackgroundColor__29029, shape: this.shape, child: new InkWell(onTap: this.onPressed, child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Text(this.label, style: resolvedTextStyle__29376, textScaler: buttonTextScaler__29594)))))));
+        var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection28792 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (this.selected) { __collection28792.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection28792; }))();
+        TimePickerThemeData timePickerTheme = ((TimePickerThemeData)(object?)_TimePickerModel__time_picker.themeOf(context));
+        _TimePickerDefaults__time_picker defaultTheme = ((_TimePickerDefaults__time_picker)(object?)_TimePickerModel__time_picker.defaultThemeOf(context));
+        global::Doroti.Ui.Color resolvedBackgroundColor = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>(((timePickerTheme.dayPeriodColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodColor)), states));
+        global::Doroti.Ui.Color resolvedTextColor = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>(((timePickerTheme.dayPeriodTextColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodTextColor)), states));
+        global::Doroti.Framework.Painting.TextStyle? resolvedTextStyle = ((global::Doroti.Framework.Painting.TextStyle?)(object?)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.TextStyle?>(((timePickerTheme.dayPeriodTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodTextStyle)), states)?.copyWith(color: resolvedTextColor));
+        global::Doroti.Framework.Painting.TextScaler buttonTextScaler = ((global::Doroti.Framework.Painting.TextScaler)(object?)MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 2.0));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(selected: ((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) ? this.selected : null), @checked: ((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)) ? null : this.selected), inMutuallyExclusiveGroup: true, button: true, child: new global::Doroti.Framework.Widgets.Padding(padding: this.padding, child: new Material(clipBehavior: Clip.antiAlias, color: resolvedBackgroundColor, shape: this.shape, child: new InkWell(onTap: this.onPressed, child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Text(this.label, style: resolvedTextStyle, textScaler: buttonTextScaler)))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -616,10 +616,10 @@ public class _RenderInputPadding__time_picker : global::Doroti.Framework.Renderi
     {
         if ((this.child is not null))
         {
-            global::Doroti.Ui.Size childSize__32482 = ((global::Doroti.Ui.Size)(object?)layoutChild(this.child!, constraints));
-            double width__32547 = Math.Max(childSize__32482.width, this.minSize.width);
-            double height__32616 = Math.Max(childSize__32482.height, this.minSize.height);
-            return ((global::Doroti.Ui.Size)(object?)constraints.constrain(new global::Doroti.Ui.Size(width__32547, height__32616)));
+            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)layoutChild(this.child!, constraints));
+            double widthLocal = Math.Max(childSize.width, this.minSize.width);
+            double heightLocal = Math.Max(childSize.height, this.minSize.height);
+            return ((global::Doroti.Ui.Size)(object?)constraints.constrain(new global::Doroti.Ui.Size(widthLocal, heightLocal)));
         }
         return Size.zero;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -633,20 +633,20 @@ public class _RenderInputPadding__time_picker : global::Doroti.Framework.Renderi
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__33053 = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
-        if ((child__33053 is null))
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        if ((childLocal is null))
         {
             return null;
         }
-        double? result__33141 = child__33053.getDryBaseline(constraints, baseline);
-        if ((result__33141 is null))
+        double? result = childLocal.getDryBaseline(constraints, baseline);
+        if ((result is null))
         {
             return null;
         }
-        global::Doroti.Ui.Size drySize__33342 = ((global::Doroti.Ui.Size)(object?)getDryLayout(constraints));
-        global::Doroti.Ui.Size childSize__33394 = ((global::Doroti.Ui.Size)(object?)child__33053.getDryLayout(constraints));
-        global::Doroti.Ui.Offset childOffset__33456 = ((global::Doroti.Ui.Offset)(object?)global::Doroti.Framework.Painting.Alignment.center.alongOffset((drySize__33342 - childSize__33394)));
-        return (DartRuntimePrimitives.RequireValue(result__33141) + childOffset__33456.dy);
+        global::Doroti.Ui.Size drySize = ((global::Doroti.Ui.Size)(object?)getDryLayout(constraints));
+        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)childLocal.getDryLayout(constraints));
+        global::Doroti.Ui.Offset childOffset = ((global::Doroti.Ui.Offset)(object?)global::Doroti.Framework.Painting.Alignment.center.alongOffset((drySize - childSize)));
+        return (DartRuntimePrimitives.RequireValue(result) + childOffset.dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -655,8 +655,8 @@ public class _RenderInputPadding__time_picker : global::Doroti.Framework.Renderi
         size = _computeSize(constraints: this.constraints, layoutChild: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.layoutChild);
         if ((this.child is not null))
         {
-            var childParentData__33741 = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
-            childParentData__33741.offset = global::Doroti.Framework.Painting.Alignment.center.alongOffset((this.size - this.child!.size));
+            var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
+            childParentData.offset = global::Doroti.Framework.Painting.Alignment.center.alongOffset((this.size - this.child!.size));
         }
     }
 
@@ -670,12 +670,12 @@ public class _RenderInputPadding__time_picker : global::Doroti.Framework.Renderi
         {
             return false;
         }
-        global::Doroti.Ui.Offset newPosition__34289 = ((global::Doroti.Ui.Offset)(object?)this.child!.size.center(Offset.zero));
-        newPosition__34289 += (this.orientation switch { global::Doroti.Framework.Widgets.Orientation.portrait when ((position.dy > newPosition__34289.dy)) => new global::Doroti.Ui.Offset(0, 1), global::Doroti.Framework.Widgets.Orientation.landscape when ((position.dx > newPosition__34289.dx)) => new global::Doroti.Ui.Offset(1, 0), global::Doroti.Framework.Widgets.Orientation.portrait => new global::Doroti.Ui.Offset(0, -1), global::Doroti.Framework.Widgets.Orientation.landscape => new global::Doroti.Ui.Offset(-1, 0), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(newPosition__34289), position: newPosition__34289, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
+        global::Doroti.Ui.Offset newPosition = ((global::Doroti.Ui.Offset)(object?)this.child!.size.center(Offset.zero));
+        newPosition += (this.orientation switch { global::Doroti.Framework.Widgets.Orientation.portrait when ((position.dy > newPosition.dy)) => new global::Doroti.Ui.Offset(0, 1), global::Doroti.Framework.Widgets.Orientation.landscape when ((position.dx > newPosition.dx)) => new global::Doroti.Ui.Offset(1, 0), global::Doroti.Framework.Widgets.Orientation.portrait => new global::Doroti.Ui.Offset(0, -1), global::Doroti.Framework.Widgets.Orientation.landscape => new global::Doroti.Ui.Offset(-1, 0), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(newPosition), position: newPosition, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(position, newPosition__34289)));
-            return this.child!.hitTest(result, position: newPosition__34289);
+            DartRuntimePrimitives.Assert(() => (object.Equals(position, newPosition)));
+            return this.child!.hitTest(result, position: newPosition);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -735,13 +735,13 @@ public class _DialPainter__time_picker : global::Doroti.Framework.Rendering.Cust
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
-        foreach (_TappableLabel__time_picker label__36476 in this.primaryLabels)
+        foreach (_TappableLabel__time_picker label in this.primaryLabels)
         {
-            ((_TappableLabel__time_picker)label__36476).painter.dispose();
+            ((_TappableLabel__time_picker)label).painter.dispose();
         }
-        foreach (_TappableLabel__time_picker label__36569 in this.selectedLabels)
+        foreach (_TappableLabel__time_picker labelLocal in this.selectedLabels)
         {
-            ((_TappableLabel__time_picker)label__36569).painter.dispose();
+            ((_TappableLabel__time_picker)labelLocal).painter.dispose();
         }
         this.primaryLabels.Clear();
         this.selectedLabels.Clear();
@@ -749,13 +749,13 @@ public class _DialPainter__time_picker : global::Doroti.Framework.Rendering.Cust
 
     public override void paint(Canvas canvas, Size size)
     {
-        double dialRadius__36763 = Dart_uiLibrary.clampDouble((size.shortestSide / 2L), (Time_pickerLibrary._kTimePickerDialMinRadius + this.dotRadius), double.PositiveInfinity);
-        double labelRadius__36910 = Dart_uiLibrary.clampDouble((dialRadius__36763 - Time_pickerLibrary._kTimePickerDialPadding), Time_pickerLibrary._kTimePickerDialMinRadius, double.PositiveInfinity);
-        double innerLabelRadius__37061 = Dart_uiLibrary.clampDouble((labelRadius__36910 - Time_pickerLibrary._kTimePickerInnerDialOffset), 0, double.PositiveInfinity);
-        double handleRadius__37198 = Dart_uiLibrary.clampDouble((labelRadius__36910 - ((((this.radius < 0.5) ? 1L : 0L)) * ((labelRadius__36910 - innerLabelRadius__37061)))), Time_pickerLibrary._kTimePickerDialMinRadius, double.PositiveInfinity);
-        var center__37378 = new global::Doroti.Ui.Offset((size.width / 2L), (size.height / 2L));
-        var centerPoint__37438 = center__37378;
-        canvas.drawCircle(centerPoint__37438, dialRadius__36763, ((Func<Paint>)(() =>
+        double dialRadius = Dart_uiLibrary.clampDouble((size.shortestSide / 2L), (Time_pickerLibrary._kTimePickerDialMinRadius + this.dotRadius), double.PositiveInfinity);
+        double labelRadius = Dart_uiLibrary.clampDouble((dialRadius - Time_pickerLibrary._kTimePickerDialPadding), Time_pickerLibrary._kTimePickerDialMinRadius, double.PositiveInfinity);
+        double innerLabelRadius = Dart_uiLibrary.clampDouble((labelRadius - Time_pickerLibrary._kTimePickerInnerDialOffset), 0, double.PositiveInfinity);
+        double handleRadius = Dart_uiLibrary.clampDouble((labelRadius - ((((this.radius < 0.5) ? 1L : 0L)) * ((labelRadius - innerLabelRadius)))), Time_pickerLibrary._kTimePickerDialMinRadius, double.PositiveInfinity);
+        var centerLocal = new global::Doroti.Ui.Offset((size.width / 2L), (size.height / 2L));
+        var centerPoint = centerLocal;
+        canvas.drawCircle(centerPoint, dialRadius, ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = this.backgroundColor;
@@ -763,7 +763,7 @@ public class _DialPainter__time_picker : global::Doroti.Framework.Rendering.Cust
 }))());
         Offset getOffsetForTheta(double theta, double radius)
         {
-            return (center__37378 + new global::Doroti.Ui.Offset((radius * global::Doroti.Runtime.Dart_mathLibrary.cos(theta)), (-radius * global::Doroti.Runtime.Dart_mathLibrary.sin(theta))));
+            return (centerLocal + new global::Doroti.Ui.Offset((radius * global::Doroti.Runtime.Dart_mathLibrary.cos(theta)), (-radius * global::Doroti.Runtime.Dart_mathLibrary.sin(theta))));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         void paintLabels(List<_TappableLabel__time_picker> labels, double radius)
@@ -772,14 +772,14 @@ public class _DialPainter__time_picker : global::Doroti.Framework.Rendering.Cust
             {
                 return;
             }
-            double labelThetaIncrement__37831 = (-Time_pickerLibrary._kTwoPi / checked((long)(labels.Count)));
-            double labelTheta__37892 = (Dart_mathLibrary.pi / 2L);
-            foreach (var label__37936 in labels)
+            double labelThetaIncrement = (-Time_pickerLibrary._kTwoPi / checked((long)(labels.Count)));
+            double labelTheta = (Dart_mathLibrary.pi / 2L);
+            foreach (var labelLocal in labels)
             {
-                global::Doroti.Framework.Painting.TextPainter labelPainter__37981 = ((_TappableLabel__time_picker)label__37936).painter;
-                var labelOffset__38025 = new global::Doroti.Ui.Offset((-((global::Doroti.Framework.Painting.TextPainter)labelPainter__37981).width / 2L), (-((global::Doroti.Framework.Painting.TextPainter)labelPainter__37981).height / 2L));
-                labelPainter__37981.paint(canvas, (getOffsetForTheta(labelTheta__37892, radius) + labelOffset__38025));
-                labelTheta__37892 += labelThetaIncrement__37831;
+                global::Doroti.Framework.Painting.TextPainter labelPainter = ((_TappableLabel__time_picker)labelLocal).painter;
+                var labelOffset = new global::Doroti.Ui.Offset((-((global::Doroti.Framework.Painting.TextPainter)labelPainter).width / 2L), (-((global::Doroti.Framework.Painting.TextPainter)labelPainter).height / 2L));
+                labelPainter.paint(canvas, (getOffsetForTheta(labelTheta, radius) + labelOffset));
+                labelTheta += labelThetaIncrement;
             }
         }
         void paintInnerOuterLabels(List<_TappableLabel__time_picker>? labels)
@@ -788,32 +788,32 @@ public class _DialPainter__time_picker : global::Doroti.Framework.Rendering.Cust
             {
                 return;
             }
-            paintLabels(labels.where(((label) => !((_TappableLabel__time_picker)label).inner)).ToList(), labelRadius__36910);
-            paintLabels(labels.where(((label) => ((_TappableLabel__time_picker)label).inner)).ToList(), innerLabelRadius__37061);
+            paintLabels(labels.where(((label) => !((_TappableLabel__time_picker)label).inner)).ToList(), labelRadius);
+            paintLabels(labels.where(((label) => ((_TappableLabel__time_picker)label).inner)).ToList(), innerLabelRadius);
         }
         paintInnerOuterLabels(this.primaryLabels);
-        var selectorPaint__38615 = ((Func<Paint>)(() =>
+        var selectorPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = this.handColor;
     return __cascade;
 }))();
-        global::Doroti.Ui.Offset focusedPoint__38676 = ((global::Doroti.Ui.Offset)(object?)getOffsetForTheta(this.theta, handleRadius__37198));
-        canvas.drawCircle(centerPoint__37438, this.centerRadius, selectorPaint__38615);
-        canvas.drawCircle(focusedPoint__38676, this.dotRadius, selectorPaint__38615);
-        selectorPaint__38615.strokeWidth = this.handWidth;
-        canvas.drawLine(centerPoint__37438, focusedPoint__38676, selectorPaint__38615);
-        double labelThetaIncrement__39290 = (-Time_pickerLibrary._kTwoPi / checked((long)(this.primaryLabels.Count)));
-        if ((((this.theta % labelThetaIncrement__39290) > 0.1) && ((this.theta % labelThetaIncrement__39290) < 0.45)))
+        global::Doroti.Ui.Offset focusedPoint = ((global::Doroti.Ui.Offset)(object?)getOffsetForTheta(this.theta, handleRadius));
+        canvas.drawCircle(centerPoint, this.centerRadius, selectorPaint);
+        canvas.drawCircle(focusedPoint, this.dotRadius, selectorPaint);
+        selectorPaint.strokeWidth = this.handWidth;
+        canvas.drawLine(centerPoint, focusedPoint, selectorPaint);
+        double labelThetaIncrementLocal = (-Time_pickerLibrary._kTwoPi / checked((long)(this.primaryLabels.Count)));
+        if ((((this.theta % labelThetaIncrementLocal) > 0.1) && ((this.theta % labelThetaIncrementLocal) < 0.45)))
         {
-            canvas.drawCircle(focusedPoint__38676, 2, ((Func<Paint>)(() =>
+            canvas.drawCircle(focusedPoint, 2, ((Func<Paint>)(() =>
 {
-    var __cascade = selectorPaint__38615;
+    var __cascade = selectorPaint;
     __cascade.color = this.dotColor;
     return __cascade;
 }))());
         }
-        var focusedRect__39520 = global::Doroti.Ui.Rect.fromCircle(center: focusedPoint__38676, radius: this.dotRadius);
+        var focusedRect = global::Doroti.Ui.Rect.fromCircle(center: focusedPoint, radius: this.dotRadius);
         DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
 {
     var __cascade = canvas;
@@ -821,7 +821,7 @@ public class _DialPainter__time_picker : global::Doroti.Framework.Rendering.Cust
     __cascade.clipPath(((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addOval(focusedRect__39520);
+    __cascade.addOval(focusedRect);
     return __cascade;
 }))());
     return __cascade;
@@ -963,12 +963,12 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
     {
         void animateToValue(double target, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Tween<double> tween, global::Doroti.Framework.Animation.AnimationController controller, double min, double max)
         {
-            double beginValue__42895 = _DialState__time_picker._nearest(target, ((global::Doroti.Framework.Animation.Animation<double>)animation).value, max);
-            beginValue__42895 = _DialState__time_picker._nearest(target, beginValue__42895, min);
+            double beginValue = _DialState__time_picker._nearest(target, ((global::Doroti.Framework.Animation.Animation<double>)animation).value, max);
+            beginValue = _DialState__time_picker._nearest(target, beginValue, min);
             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.Tween<double>>)(() =>
 {
     var __cascade = tween;
-    __cascade.begin = beginValue__42895;
+    __cascade.begin = beginValue;
     __cascade.end = target;
     return __cascade;
 }))());
@@ -1004,53 +1004,53 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
 
     internal virtual double _getThetaForTime(TimeOfDay time)
     {
-        long hoursFactor__43972 = (((_Dial__time_picker)this.widget).hourDialType switch { _HourDialType__time_picker.twentyFourHour => TimeOfDay.hoursPerDay, _HourDialType__time_picker.twentyFourHourDoubleRing => TimeOfDay.hoursPerPeriod, _HourDialType__time_picker.twelveHour => TimeOfDay.hoursPerPeriod, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        double fraction__44236 = (((_Dial__time_picker)this.widget).hourMinuteMode switch { _HourMinuteMode__time_picker.hour => (((((TimeOfDay)time).hour / hoursFactor__43972)) % hoursFactor__43972), _HourMinuteMode__time_picker.minute => (((((TimeOfDay)time).minute / TimeOfDay.minutesPerHour)) % TimeOfDay.minutesPerHour), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return ((((Dart_mathLibrary.pi / 2L) - (fraction__44236 * Time_pickerLibrary._kTwoPi))) % Time_pickerLibrary._kTwoPi);
+        long hoursFactor = (((_Dial__time_picker)this.widget).hourDialType switch { _HourDialType__time_picker.twentyFourHour => TimeOfDay.hoursPerDay, _HourDialType__time_picker.twentyFourHourDoubleRing => TimeOfDay.hoursPerPeriod, _HourDialType__time_picker.twelveHour => TimeOfDay.hoursPerPeriod, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        double fraction = (((_Dial__time_picker)this.widget).hourMinuteMode switch { _HourMinuteMode__time_picker.hour => (((((TimeOfDay)time).hour / hoursFactor)) % hoursFactor), _HourMinuteMode__time_picker.minute => (((((TimeOfDay)time).minute / TimeOfDay.minutesPerHour)) % TimeOfDay.minutesPerHour), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return ((((Dart_mathLibrary.pi / 2L) - (fraction * Time_pickerLibrary._kTwoPi))) % Time_pickerLibrary._kTwoPi);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual TimeOfDay _getTimeForTheta(double theta, bool roundMinutes = false, double radius = default!)
     {
-        double fraction__44636 = (((0.25 - (((theta % Time_pickerLibrary._kTwoPi)) / Time_pickerLibrary._kTwoPi))) % 1L);
+        double fraction = (((0.25 - (((theta % Time_pickerLibrary._kTwoPi)) / Time_pickerLibrary._kTwoPi))) % 1L);
         switch (((_Dial__time_picker)this.widget).hourMinuteMode)
         {
             case _HourMinuteMode__time_picker.hour:
                 {
-                    long newHour__44771 = default!;
+                    long newHour = default!;
                     switch (((_Dial__time_picker)this.widget).hourDialType)
                     {
                         case _HourDialType__time_picker.twentyFourHour:
                             {
-                                newHour__44771 = (((fraction__44636 * TimeOfDay.hoursPerDay)).round() % TimeOfDay.hoursPerDay);
+                                newHour = (((fraction * TimeOfDay.hoursPerDay)).round() % TimeOfDay.hoursPerDay);
                                 break;
                             }
                         case _HourDialType__time_picker.twentyFourHourDoubleRing:
                             {
-                                newHour__44771 = (((fraction__44636 * TimeOfDay.hoursPerPeriod)).round() % TimeOfDay.hoursPerPeriod);
+                                newHour = (((fraction * TimeOfDay.hoursPerPeriod)).round() % TimeOfDay.hoursPerPeriod);
                                 if ((radius < 0.5))
                                 {
-                                    newHour__44771 = (newHour__44771 + TimeOfDay.hoursPerPeriod);
+                                    newHour = (newHour + TimeOfDay.hoursPerPeriod);
                                 }
                                 break;
                             }
                         case _HourDialType__time_picker.twelveHour:
                             {
-                                newHour__44771 = (((fraction__44636 * TimeOfDay.hoursPerPeriod)).round() % TimeOfDay.hoursPerPeriod);
-                                newHour__44771 = (newHour__44771 + ((_Dial__time_picker)this.widget).selectedTime.periodOffset);
+                                newHour = (((fraction * TimeOfDay.hoursPerPeriod)).round() % TimeOfDay.hoursPerPeriod);
+                                newHour = (newHour + ((_Dial__time_picker)this.widget).selectedTime.periodOffset);
                                 break;
                             }
                     }
-                    return ((TimeOfDay)(object?)((_Dial__time_picker)this.widget).selectedTime.replacing(hour: newHour__44771));
+                    return ((TimeOfDay)(object?)((_Dial__time_picker)this.widget).selectedTime.replacing(hour: newHour));
                 }
             case _HourMinuteMode__time_picker.minute:
                 {
-                    long minute__45532 = (((fraction__44636 * TimeOfDay.minutesPerHour)).round() % TimeOfDay.minutesPerHour);
+                    long minuteLocal = (((fraction * TimeOfDay.minutesPerHour)).round() % TimeOfDay.minutesPerHour);
                     if (roundMinutes)
                     {
-                        minute__45532 = ((((checked((long)(((minute__45532 + 2L)) / 5L)))) * 5L) % TimeOfDay.minutesPerHour);
+                        minuteLocal = ((((checked((long)(((minuteLocal + 2L)) / 5L)))) * 5L) % TimeOfDay.minutesPerHour);
                     }
-                    return ((TimeOfDay)(object?)((_Dial__time_picker)this.widget).selectedTime.replacing(minute: minute__45532));
+                    return ((TimeOfDay)(object?)((_Dial__time_picker)this.widget).selectedTime.replacing(minute: minuteLocal));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -1060,16 +1060,16 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
 
     internal virtual TimeOfDay _notifyOnChangedIfNeeded(bool roundMinutes = false)
     {
-        TimeOfDay current__45946 = ((TimeOfDay)(object?)_getTimeForTheta(((global::Doroti.Framework.Animation.Animation<double>)this._theta).value, roundMinutes: roundMinutes, radius: ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value));
+        TimeOfDay current = ((TimeOfDay)(object?)_getTimeForTheta(((global::Doroti.Framework.Animation.Animation<double>)this._theta).value, roundMinutes: roundMinutes, radius: ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value));
         if ((((_Dial__time_picker)this.widget).onChanged is null))
         {
-            return current__45946;
+            return current;
         }
-        if ((!object.Equals(current__45946, ((_Dial__time_picker)this.widget).selectedTime)))
+        if ((!object.Equals(current, ((_Dial__time_picker)this.widget).selectedTime)))
         {
-            ((_Dial__time_picker)this.widget).onChanged!(current__45946);
+            ((_Dial__time_picker)this.widget).onChanged!(current);
         }
-        return current__45946;
+        return current;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1077,27 +1077,27 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
     {
         setState(((global::System.Action)(() =>
         {
-            global::Doroti.Ui.Offset offset__46329 = ((global::Doroti.Ui.Offset)(object?)(DartRuntimePrimitives.RequireValue(this._position) - DartRuntimePrimitives.RequireValue(this._center)));
-            double labelRadius__46380 = ((DartRuntimePrimitives.RequireValue(this._dialSize).shortestSide / 2L) - Time_pickerLibrary._kTimePickerDialPadding);
-            double innerRadius__46468 = (labelRadius__46380 - Time_pickerLibrary._kTimePickerInnerDialOffset);
-            double angle__46538 = (((global::Doroti.Runtime.Dart_mathLibrary.atan2(offset__46329.dx, offset__46329.dy) - (Dart_mathLibrary.pi / 2L))) % Time_pickerLibrary._kTwoPi);
-            double radius__46625 = Dart_uiLibrary.clampDouble((((offset__46329.distance - innerRadius__46468)) / Time_pickerLibrary._kTimePickerInnerDialOffset), 0, 1);
+            global::Doroti.Ui.Offset offset = ((global::Doroti.Ui.Offset)(object?)(DartRuntimePrimitives.RequireValue(this._position) - DartRuntimePrimitives.RequireValue(this._center)));
+            double labelRadius = ((DartRuntimePrimitives.RequireValue(this._dialSize).shortestSide / 2L) - Time_pickerLibrary._kTimePickerDialPadding);
+            double innerRadius = (labelRadius - Time_pickerLibrary._kTimePickerInnerDialOffset);
+            double angle = (((global::Doroti.Runtime.Dart_mathLibrary.atan2(offset.dx, offset.dy) - (Dart_mathLibrary.pi / 2L))) % Time_pickerLibrary._kTwoPi);
+            double radiusLocal = Dart_uiLibrary.clampDouble((((offset.distance - innerRadius)) / Time_pickerLibrary._kTimePickerInnerDialOffset), 0, 1);
             if (roundMinutes)
             {
-                angle__46538 = _getThetaForTime(_getTimeForTheta(angle__46538, roundMinutes: roundMinutes, radius: radius__46625));
+                angle = _getThetaForTime(_getTimeForTheta(angle, roundMinutes: roundMinutes, radius: radiusLocal));
             }
             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.Tween<double>>)(() =>
             {
                 var __cascade = this._thetaTween;
-                __cascade.begin = angle__46538;
-                __cascade.end = angle__46538;
+                __cascade.begin = angle;
+                __cascade.end = angle;
                 return __cascade;
             }))());
             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.Tween<double>>)(() =>
             {
                 var __cascade = this._radiusTween;
-                __cascade.begin = radius__46625;
-                __cascade.end = radius__46625;
+                __cascade.begin = radiusLocal;
+                __cascade.end = radiusLocal;
                 return __cascade;
             }))());
         })));
@@ -1107,9 +1107,9 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
     {
         DartRuntimePrimitives.Assert(() => !this._dragging);
         _dragging = true;
-        var box__47284 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        _position = ((Offset)((dynamic)box__47284).globalToLocal(((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition));
-        _dialSize = ((global::Doroti.Framework.Rendering.RenderBox)box__47284).size;
+        var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
+        _position = ((Offset)((dynamic)box).globalToLocal(((global::Doroti.Framework.Gestures.DragStartDetails)details).globalPosition));
+        _dialSize = ((global::Doroti.Framework.Rendering.RenderBox)box).size;
         _center = DartRuntimePrimitives.RequireValue(this._dialSize).center(Offset.zero);
         _updateThetaForPan();
         _notifyOnChangedIfNeeded();
@@ -1138,18 +1138,18 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
 
     internal virtual void _handleTapUp(global::Doroti.Framework.Gestures.TapUpDetails details)
     {
-        var box__48097 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        _position = ((Offset)((dynamic)box__48097).globalToLocal(((global::Doroti.Framework.Gestures.TapUpDetails)details).globalPosition));
-        _center = ((global::Doroti.Framework.Rendering.RenderBox)box__48097).size.center(Offset.zero);
-        _dialSize = ((global::Doroti.Framework.Rendering.RenderBox)box__48097).size;
+        var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
+        _position = ((Offset)((dynamic)box).globalToLocal(((global::Doroti.Framework.Gestures.TapUpDetails)details).globalPosition));
+        _center = ((global::Doroti.Framework.Rendering.RenderBox)box).size.center(Offset.zero);
+        _dialSize = ((global::Doroti.Framework.Rendering.RenderBox)box).size;
         _updateThetaForPan(roundMinutes: true);
         _notifyOnChangedIfNeeded(roundMinutes: true);
         if ((object.Equals(((_Dial__time_picker)this.widget).hourMinuteMode, _HourMinuteMode__time_picker.hour)))
         {
             ((_Dial__time_picker)this.widget).onHourSelected?.Invoke();
         }
-        TimeOfDay time__48488 = ((TimeOfDay)(object?)_getTimeForTheta(((global::Doroti.Framework.Animation.Animation<double>)this._theta).value, roundMinutes: true, radius: ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value));
-        _animateTo(_getThetaForTime(time__48488), _getRadiusForTime(time__48488));
+        TimeOfDay time = ((TimeOfDay)(object?)_getTimeForTheta(((global::Doroti.Framework.Animation.Animation<double>)this._theta).value, roundMinutes: true, radius: ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value));
+        _animateTo(_getThetaForTime(time), _getRadiusForTime(time));
         _dragging = false;
         _position = null;
         _center = null;
@@ -1158,7 +1158,7 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
 
     internal virtual void _selectHour(long hour)
     {
-        TimeOfDay time__48803 = default!;
+        TimeOfDay time = default!;
         TimeOfDay getAmPmTime()
         {
             return (((_Dial__time_picker)this.widget).selectedTime.period switch { DayPeriod.am => new TimeOfDay(hour: hour, minute: ((_Dial__time_picker)this.widget).selectedTime.minute), DayPeriod.pm => new TimeOfDay(hour: (hour + TimeOfDay.hoursPerPeriod), minute: ((_Dial__time_picker)this.widget).selectedTime.minute), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
@@ -1173,12 +1173,12 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
                         case _HourDialType__time_picker.twentyFourHour:
                         case _HourDialType__time_picker.twentyFourHourDoubleRing:
                             {
-                                time__48803 = new TimeOfDay(hour: hour, minute: ((_Dial__time_picker)this.widget).selectedTime.minute);
+                                time = new TimeOfDay(hour: hour, minute: ((_Dial__time_picker)this.widget).selectedTime.minute);
                                 break;
                             }
                         case _HourDialType__time_picker.twelveHour:
                             {
-                                time__48803 = getAmPmTime();
+                                time = getAmPmTime();
                                 break;
                             }
                     }
@@ -1186,16 +1186,16 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
                 }
             case _HourMinuteMode__time_picker.minute:
                 {
-                    time__48803 = getAmPmTime();
+                    time = getAmPmTime();
                     break;
                 }
         }
-        double angle__49591 = _getThetaForTime(time__48803);
+        double angle = _getThetaForTime(time);
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.Tween<double>>)(() =>
 {
     var __cascade = this._thetaTween;
-    __cascade.begin = angle__49591;
-    __cascade.end = angle__49591;
+    __cascade.begin = angle;
+    __cascade.end = angle;
     return __cascade;
 }))());
         _notifyOnChangedIfNeeded();
@@ -1203,13 +1203,13 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
 
     internal virtual void _selectMinute(long minute)
     {
-        var time__49764 = new TimeOfDay(hour: ((_Dial__time_picker)this.widget).selectedTime.hour, minute: minute);
-        double angle__49847 = _getThetaForTime(time__49764);
+        var time = new TimeOfDay(hour: ((_Dial__time_picker)this.widget).selectedTime.hour, minute: minute);
+        double angle = _getThetaForTime(time);
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.Tween<double>>)(() =>
 {
     var __cascade = this._thetaTween;
-    __cascade.begin = angle__49847;
-    __cascade.end = angle__49847;
+    __cascade.begin = angle;
+    __cascade.end = angle;
     return __cascade;
 }))());
         _notifyOnChangedIfNeeded();
@@ -1232,21 +1232,21 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
         {
             var __collection52599 = new List<_TappableLabel__time_picker>(); if (this.themeData.useMaterial3)
             {
-                foreach (var timeOfDay__52680 in _twentyFourHours)
+                foreach (var timeOfDay in _twentyFourHours)
                 {
-                    __collection52599.Add(_buildTappableLabel(textStyle: textStyle, selectedValue: selectedValue, inner: (((TimeOfDay)timeOfDay__52680).hour >= 12L), value: ((TimeOfDay)timeOfDay__52680).hour, label: ((((TimeOfDay)timeOfDay__52680).hour != 0L) ? this.localizations.formatDecimal(((TimeOfDay)timeOfDay__52680).hour) : this.localizations.formatHour(timeOfDay__52680, alwaysUse24HourFormat: true)), onTap: ((global::System.Action)(() =>
+                    __collection52599.Add(_buildTappableLabel(textStyle: textStyle, selectedValue: selectedValue, inner: (((TimeOfDay)timeOfDay).hour >= 12L), value: ((TimeOfDay)timeOfDay).hour, label: ((((TimeOfDay)timeOfDay).hour != 0L) ? this.localizations.formatDecimal(((TimeOfDay)timeOfDay).hour) : this.localizations.formatHour(timeOfDay, alwaysUse24HourFormat: true)), onTap: ((global::System.Action)(() =>
                     {
-                        _selectHour(((TimeOfDay)timeOfDay__52680).hour);
+                        _selectHour(((TimeOfDay)timeOfDay).hour);
                     }))));
                 }
             }
             if (!this.themeData.useMaterial3)
             {
-                foreach (var timeOfDay__53383 in _twentyFourHoursM2)
+                foreach (var timeOfDayLocal in _twentyFourHoursM2)
                 {
-                    __collection52599.Add(_buildTappableLabel(textStyle: textStyle, selectedValue: selectedValue, inner: false, value: ((TimeOfDay)timeOfDay__53383).hour, label: this.localizations.formatHour(timeOfDay__53383, alwaysUse24HourFormat: true), onTap: ((global::System.Action)(() =>
+                    __collection52599.Add(_buildTappableLabel(textStyle: textStyle, selectedValue: selectedValue, inner: false, value: ((TimeOfDay)timeOfDayLocal).hour, label: this.localizations.formatHour(timeOfDayLocal, alwaysUse24HourFormat: true), onTap: ((global::System.Action)(() =>
                     {
-                        _selectHour(((TimeOfDay)timeOfDay__53383).hour);
+                        _selectHour(((TimeOfDay)timeOfDayLocal).hour);
                     }))));
                 }
             }
@@ -1259,11 +1259,11 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
     {
         return ((Func<List<_TappableLabel__time_picker>>)(() =>
         {
-            var __collection53903 = new List<_TappableLabel__time_picker>(); foreach (var timeOfDay__53948 in _amHours)
+            var __collection53903 = new List<_TappableLabel__time_picker>(); foreach (var timeOfDay in _amHours)
             {
-                __collection53903.Add(_buildTappableLabel(textStyle: textStyle, selectedValue: selectedValue, inner: false, value: ((TimeOfDay)timeOfDay__53948).hour, label: this.localizations.formatHour(timeOfDay__53948, alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(this.context)), onTap: ((global::System.Action)(() =>
+                __collection53903.Add(_buildTappableLabel(textStyle: textStyle, selectedValue: selectedValue, inner: false, value: ((TimeOfDay)timeOfDay).hour, label: this.localizations.formatHour(timeOfDay, alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(this.context)), onTap: ((global::System.Action)(() =>
                 {
-                    _selectHour(((TimeOfDay)timeOfDay__53948).hour);
+                    _selectHour(((TimeOfDay)timeOfDay).hour);
                 }))));
             }
             return __collection53903;
@@ -1273,14 +1273,14 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
 
     internal virtual List<_TappableLabel__time_picker> _buildMinutes(global::Doroti.Framework.Painting.TextStyle? textStyle, long selectedValue)
     {
-        var minuteMarkerValues__54497 = new List<TimeOfDay> { new TimeOfDay(hour: 0L, minute: 0L), new TimeOfDay(hour: 0L, minute: 5L), new TimeOfDay(hour: 0L, minute: 10L), new TimeOfDay(hour: 0L, minute: 15L), new TimeOfDay(hour: 0L, minute: 20L), new TimeOfDay(hour: 0L, minute: 25L), new TimeOfDay(hour: 0L, minute: 30L), new TimeOfDay(hour: 0L, minute: 35L), new TimeOfDay(hour: 0L, minute: 40L), new TimeOfDay(hour: 0L, minute: 45L), new TimeOfDay(hour: 0L, minute: 50L), new TimeOfDay(hour: 0L, minute: 55L) };
+        var minuteMarkerValues = new List<TimeOfDay> { new TimeOfDay(hour: 0L, minute: 0L), new TimeOfDay(hour: 0L, minute: 5L), new TimeOfDay(hour: 0L, minute: 10L), new TimeOfDay(hour: 0L, minute: 15L), new TimeOfDay(hour: 0L, minute: 20L), new TimeOfDay(hour: 0L, minute: 25L), new TimeOfDay(hour: 0L, minute: 30L), new TimeOfDay(hour: 0L, minute: 35L), new TimeOfDay(hour: 0L, minute: 40L), new TimeOfDay(hour: 0L, minute: 45L), new TimeOfDay(hour: 0L, minute: 50L), new TimeOfDay(hour: 0L, minute: 55L) };
         return ((Func<List<_TappableLabel__time_picker>>)(() =>
         {
-            var __collection55004 = new List<_TappableLabel__time_picker>(); foreach (var timeOfDay__55049 in minuteMarkerValues__54497)
+            var __collection55004 = new List<_TappableLabel__time_picker>(); foreach (var timeOfDay in minuteMarkerValues)
             {
-                __collection55004.Add(_buildTappableLabel(textStyle: textStyle, selectedValue: selectedValue, inner: false, value: ((TimeOfDay)timeOfDay__55049).minute, label: this.localizations.formatMinute(timeOfDay__55049), onTap: ((global::System.Action)(() =>
+                __collection55004.Add(_buildTappableLabel(textStyle: textStyle, selectedValue: selectedValue, inner: false, value: ((TimeOfDay)timeOfDay).minute, label: this.localizations.formatMinute(timeOfDay), onTap: ((global::System.Action)(() =>
                 {
-                    _selectMinute(((TimeOfDay)timeOfDay__55049).minute);
+                    _selectMinute(((TimeOfDay)timeOfDay).minute);
                 }))));
             }
             return __collection55004;
@@ -1291,21 +1291,21 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Time_pickerLibrary._debugDialTimePickerEntryMode(context));
-        ThemeData theme__55524 = Theme.of(context);
-        TimePickerThemeData timePickerTheme__55581 = TimePickerTheme.of(context);
-        _TimePickerDefaults__time_picker defaultTheme__55658 = (theme__55524.useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context) : new _TimePickerDefaultsM2__time_picker(context));
-        global::Doroti.Ui.Color backgroundColor__55791 = ((global::Doroti.Ui.Color)(object?)((timePickerTheme__55581.dialBackgroundColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme__55658).dialBackgroundColor)));
-        global::Doroti.Ui.Color dialHandColor__55906 = ((global::Doroti.Ui.Color)(object?)((timePickerTheme__55581.dialHandColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme__55658).dialHandColor)));
-        global::Doroti.Framework.Painting.TextStyle labelStyle__56003 = ((timePickerTheme__55581.dialTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme__55658).dialTextStyle));
-        global::Doroti.Ui.Color dialTextUnselectedColor__56093 = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>(((timePickerTheme__55581.dialTextColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme__55658).dialTextColor)), new HashSet<global::Doroti.Framework.Widgets.WidgetState>()));
-        global::Doroti.Ui.Color dialTextSelectedColor__56270 = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>(((timePickerTheme__55581.dialTextColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme__55658).dialTextColor)), new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.selected }));
-        global::Doroti.Framework.Painting.TextStyle resolvedUnselectedLabelStyle__56469 = ((global::Doroti.Framework.Painting.TextStyle)(object?)labelStyle__56003.copyWith(color: dialTextUnselectedColor__56093));
-        global::Doroti.Framework.Painting.TextStyle resolvedSelectedLabelStyle__56586 = ((global::Doroti.Framework.Painting.TextStyle)(object?)labelStyle__56003.copyWith(color: dialTextSelectedColor__56270));
-        var dotColor__56676 = dialTextSelectedColor__56270;
-        List<_TappableLabel__time_picker> primaryLabels__56736 = default!;
-        List<_TappableLabel__time_picker> selectedLabels__56776 = default!;
-        long selectedDialValue__56806 = default!;
-        double radiusValue__56842 = default!;
+        ThemeData theme = Theme.of(context);
+        TimePickerThemeData timePickerTheme = TimePickerTheme.of(context);
+        _TimePickerDefaults__time_picker defaultTheme = (theme.useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context) : new _TimePickerDefaultsM2__time_picker(context));
+        global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(object?)((timePickerTheme.dialBackgroundColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme).dialBackgroundColor)));
+        global::Doroti.Ui.Color dialHandColorLocal = ((global::Doroti.Ui.Color)(object?)((timePickerTheme.dialHandColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme).dialHandColor)));
+        global::Doroti.Framework.Painting.TextStyle labelStyle = ((timePickerTheme.dialTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme).dialTextStyle));
+        global::Doroti.Ui.Color dialTextUnselectedColor = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>(((timePickerTheme.dialTextColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme).dialTextColor)), new HashSet<global::Doroti.Framework.Widgets.WidgetState>()));
+        global::Doroti.Ui.Color dialTextSelectedColor = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>(((timePickerTheme.dialTextColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme).dialTextColor)), new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.selected }));
+        global::Doroti.Framework.Painting.TextStyle resolvedUnselectedLabelStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)labelStyle.copyWith(color: dialTextUnselectedColor));
+        global::Doroti.Framework.Painting.TextStyle resolvedSelectedLabelStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)labelStyle.copyWith(color: dialTextSelectedColor));
+        var dotColorLocal = dialTextSelectedColor;
+        List<_TappableLabel__time_picker> primaryLabelsLocal = default!;
+        List<_TappableLabel__time_picker> selectedLabelsLocal = default!;
+        long selectedDialValue = default!;
+        double radiusValue = default!;
         switch (((_Dial__time_picker)this.widget).hourMinuteMode)
         {
             case _HourMinuteMode__time_picker.hour:
@@ -1315,18 +1315,18 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
                         case _HourDialType__time_picker.twentyFourHour:
                         case _HourDialType__time_picker.twentyFourHourDoubleRing:
                             {
-                                selectedDialValue__56806 = ((_Dial__time_picker)this.widget).selectedTime.hour;
-                                primaryLabels__56736 = _build24HourRing(textStyle: resolvedUnselectedLabelStyle__56469, selectedValue: selectedDialValue__56806);
-                                selectedLabels__56776 = _build24HourRing(textStyle: resolvedSelectedLabelStyle__56586, selectedValue: selectedDialValue__56806);
-                                radiusValue__56842 = (theme__55524.useMaterial3 ? ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value : 1);
+                                selectedDialValue = ((_Dial__time_picker)this.widget).selectedTime.hour;
+                                primaryLabelsLocal = _build24HourRing(textStyle: resolvedUnselectedLabelStyle, selectedValue: selectedDialValue);
+                                selectedLabelsLocal = _build24HourRing(textStyle: resolvedSelectedLabelStyle, selectedValue: selectedDialValue);
+                                radiusValue = (theme.useMaterial3 ? ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value : 1);
                                 break;
                             }
                         case _HourDialType__time_picker.twelveHour:
                             {
-                                selectedDialValue__56806 = ((_Dial__time_picker)this.widget).selectedTime.hourOfPeriod;
-                                primaryLabels__56736 = _build12HourRing(textStyle: resolvedUnselectedLabelStyle__56469, selectedValue: selectedDialValue__56806);
-                                selectedLabels__56776 = _build12HourRing(textStyle: resolvedSelectedLabelStyle__56586, selectedValue: selectedDialValue__56806);
-                                radiusValue__56842 = 1;
+                                selectedDialValue = ((_Dial__time_picker)this.widget).selectedTime.hourOfPeriod;
+                                primaryLabelsLocal = _build12HourRing(textStyle: resolvedUnselectedLabelStyle, selectedValue: selectedDialValue);
+                                selectedLabelsLocal = _build12HourRing(textStyle: resolvedSelectedLabelStyle, selectedValue: selectedDialValue);
+                                radiusValue = 1;
                                 break;
                             }
                     }
@@ -1334,15 +1334,15 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
                 }
             case _HourMinuteMode__time_picker.minute:
                 {
-                    selectedDialValue__56806 = ((_Dial__time_picker)this.widget).selectedTime.minute;
-                    primaryLabels__56736 = _buildMinutes(textStyle: resolvedUnselectedLabelStyle__56469, selectedValue: selectedDialValue__56806);
-                    selectedLabels__56776 = _buildMinutes(textStyle: resolvedSelectedLabelStyle__56586, selectedValue: selectedDialValue__56806);
-                    radiusValue__56842 = 1;
+                    selectedDialValue = ((_Dial__time_picker)this.widget).selectedTime.minute;
+                    primaryLabelsLocal = _buildMinutes(textStyle: resolvedUnselectedLabelStyle, selectedValue: selectedDialValue);
+                    selectedLabelsLocal = _buildMinutes(textStyle: resolvedSelectedLabelStyle, selectedValue: selectedDialValue);
+                    radiusValue = 1;
                     break;
                 }
         }
         this.painter?.dispose();
-        painter = new _DialPainter__time_picker(selectedValue: selectedDialValue__56806, primaryLabels: primaryLabels__56736, selectedLabels: selectedLabels__56776, backgroundColor: backgroundColor__55791, handColor: dialHandColor__55906, handWidth: ((_TimePickerDefaults__time_picker)defaultTheme__55658).handWidth, dotColor: dotColor__56676, dotRadius: ((_TimePickerDefaults__time_picker)defaultTheme__55658).dotRadius, centerRadius: ((_TimePickerDefaults__time_picker)defaultTheme__55658).centerRadius, theta: ((global::Doroti.Framework.Animation.Animation<double>)this._theta).value, radius: radiusValue__56842, textDirection: Directionality.of(context));
+        painter = new _DialPainter__time_picker(selectedValue: selectedDialValue, primaryLabels: primaryLabelsLocal, selectedLabels: selectedLabelsLocal, backgroundColor: backgroundColorLocal, handColor: dialHandColorLocal, handWidth: ((_TimePickerDefaults__time_picker)defaultTheme).handWidth, dotColor: dotColorLocal, dotRadius: ((_TimePickerDefaults__time_picker)defaultTheme).dotRadius, centerRadius: ((_TimePickerDefaults__time_picker)defaultTheme).centerRadius, theta: ((global::Doroti.Framework.Animation.Animation<double>)this._theta).value, radius: radiusValue, textDirection: Directionality.of(context));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.GestureDetector(excludeFromSemantics: true, onPanStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handlePanStart, onPanUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handlePanUpdate, onPanEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handlePanEnd, onTapUp: (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)this._handleTapUp, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: this.painter)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1373,31 +1373,31 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
 
     public virtual void _updateTicker()
     {
-        TickerModeData values__15157 = this._tickerModeNotifier!.value;
+        TickerModeData values = this._tickerModeNotifier!.value;
         if ((this._ticker is not null))
         {
-            this._ticker!.muted = !((TickerModeData)values__15157).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values__15157).forceFrames;
+            this._ticker!.muted = !((TickerModeData)values).enabled;
+            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier__15400.addListener(() => this._updateTicker());
-        this._tickerModeNotifier = newNotifier__15400;
+        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -1485,27 +1485,27 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
         {
             return null;
         }
-        long? newHour__61598 = DartRuntimePrimitives.ConvertValue<long?>(Dart_coreLibrary.tryParse(value));
-        if ((newHour__61598 is null))
+        long? newHour = DartRuntimePrimitives.ConvertValue<long?>(Dart_coreLibrary.tryParse(value));
+        if ((newHour is null))
         {
             return null;
         }
         if (MediaQuery.alwaysUse24HourFormatOf(this.context))
         {
-            if (((newHour__61598 >= 0L) && (DartRuntimePrimitives.RequireValue(newHour__61598) < 24L)))
+            if (((newHour >= 0L) && (DartRuntimePrimitives.RequireValue(newHour) < 24L)))
             {
-                return DartRuntimePrimitives.RequireValue(newHour__61598);
+                return DartRuntimePrimitives.RequireValue(newHour);
             }
         }
         else
         {
-            if (((DartRuntimePrimitives.RequireValue(newHour__61598) > 0L) && (DartRuntimePrimitives.RequireValue(newHour__61598) < 13L)))
+            if (((DartRuntimePrimitives.RequireValue(newHour) > 0L) && (DartRuntimePrimitives.RequireValue(newHour) < 13L)))
             {
-                if (((((object.Equals(this._selectedTime.value.period, DayPeriod.pm)) && (DartRuntimePrimitives.RequireValue(newHour__61598) != 12L))) || (((object.Equals(this._selectedTime.value.period, DayPeriod.am)) && (DartRuntimePrimitives.RequireValue(newHour__61598) == 12L)))))
+                if (((((object.Equals(this._selectedTime.value.period, DayPeriod.pm)) && (DartRuntimePrimitives.RequireValue(newHour) != 12L))) || (((object.Equals(this._selectedTime.value.period, DayPeriod.am)) && (DartRuntimePrimitives.RequireValue(newHour) == 12L)))))
                 {
-                    newHour__61598 = (((DartRuntimePrimitives.RequireValue(newHour__61598) + TimeOfDay.hoursPerPeriod)) % TimeOfDay.hoursPerDay);
+                    newHour = (((DartRuntimePrimitives.RequireValue(newHour) + TimeOfDay.hoursPerPeriod)) % TimeOfDay.hoursPerDay);
                 }
-                return DartRuntimePrimitives.RequireValue(newHour__61598);
+                return DartRuntimePrimitives.RequireValue(newHour);
             }
         }
         return null;
@@ -1518,14 +1518,14 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
         {
             return null;
         }
-        long? newMinute__62274 = DartRuntimePrimitives.ConvertValue<long?>(Dart_coreLibrary.tryParse(value));
-        if ((newMinute__62274 is null))
+        long? newMinute = DartRuntimePrimitives.ConvertValue<long?>(Dart_coreLibrary.tryParse(value));
+        if ((newMinute is null))
         {
             return null;
         }
-        if (((newMinute__62274 >= 0L) && (DartRuntimePrimitives.RequireValue(newMinute__62274) < 60L)))
+        if (((newMinute >= 0L) && (DartRuntimePrimitives.RequireValue(newMinute) < 60L)))
         {
-            return DartRuntimePrimitives.RequireValue(newMinute__62274);
+            return DartRuntimePrimitives.RequireValue(newMinute);
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1533,10 +1533,10 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
 
     internal virtual void _handleHourSavedSubmitted(string? value)
     {
-        long? newHour__62523 = _parseHour(value);
-        if ((newHour__62523 is not null))
+        long? newHour = _parseHour(value);
+        if ((newHour is not null))
         {
-            long newHour__62523__value62560 = DartRuntimePrimitives.RequireValue(newHour__62523);
+            long newHour__62523__value62560 = DartRuntimePrimitives.RequireValue(newHour);
             this._selectedTime.value = new TimeOfDay(hour: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(newHour__62523__value62560)), minute: this._selectedTime.value.minute);
             _TimePickerModel__time_picker.setSelectedTime(this.context, this._selectedTime.value);
             FocusScope.of(this.context).requestFocus();
@@ -1545,20 +1545,20 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
 
     internal virtual void _handleHourChanged(string value)
     {
-        long? newHour__62852 = _parseHour(value);
-        if (((newHour__62852 is not null) && (value.Length == 2L)))
+        long? newHour = _parseHour(value);
+        if (((newHour is not null) && (value.Length == 2L)))
         {
-            long newHour__62852__value62889 = DartRuntimePrimitives.RequireValue(newHour__62852);
+            long newHour__62852__value62889 = DartRuntimePrimitives.RequireValue(newHour);
             FocusScope.of(this.context).nextFocus();
         }
     }
 
     internal virtual void _handleMinuteSavedSubmitted(string? value)
     {
-        long? newMinute__63120 = _parseMinute(value);
-        if ((newMinute__63120 is not null))
+        long? newMinute = _parseMinute(value);
+        if ((newMinute is not null))
         {
-            long newMinute__63120__value63161 = DartRuntimePrimitives.RequireValue(newMinute__63120);
+            long newMinute__63120__value63161 = DartRuntimePrimitives.RequireValue(newMinute);
             this._selectedTime.value = new TimeOfDay(hour: this._selectedTime.value.hour, minute: Dart_coreLibrary.parse(value!));
             _TimePickerModel__time_picker.setSelectedTime(this.context, this._selectedTime.value);
             FocusScope.of(this.context).unfocus();
@@ -1573,37 +1573,37 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
 
     internal virtual string? _validateHour(string? value)
     {
-        long? newHour__63613 = _parseHour(value);
+        long? newHour = _parseHour(value);
         setState(((global::System.Action)(() =>
         {
-            this.hourHasError.value = (newHour__63613 is null);
+            this.hourHasError.value = (newHour is null);
         })));
-        return ((newHour__63613 is null) ? "" : null);
+        return ((newHour is null) ? "" : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual string? _validateMinute(string? value)
     {
-        long? newMinute__64030 = _parseMinute(value);
+        long? newMinute = _parseMinute(value);
         setState(((global::System.Action)(() =>
         {
-            this.minuteHasError.value = (newMinute__64030 is null);
+            this.minuteHasError.value = (newMinute is null);
         })));
-        return ((newMinute__64030 is null) ? "" : null);
+        return ((newMinute is null) ? "" : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        TimeOfDayFormat timeOfDayFormat__64522 = MaterialLocalizations.of(context).timeOfDayFormat(alwaysUse24HourFormat: _TimePickerModel__time_picker.use24HourFormatOf(context));
-        var use24HourDials__64682 = (!object.Equals(TimeLibrary.hourFormat(of: timeOfDayFormat__64522), HourFormat.h));
-        ThemeData theme__64768 = Theme.of(context);
-        TimePickerThemeData timePickerTheme__64825 = ((TimePickerThemeData)(object?)_TimePickerModel__time_picker.themeOf(context));
-        _TimePickerDefaults__time_picker defaultTheme__64908 = ((_TimePickerDefaults__time_picker)(object?)_TimePickerModel__time_picker.defaultThemeOf(context));
-        global::Doroti.Framework.Painting.TextStyle hourMinuteStyle__64985 = ((timePickerTheme__64825.hourMinuteTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme__64908).hourMinuteTextStyle));
-        double minInteractiveVerticalPadding__65102 = Math.Max(0, ((2L * global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension) - ((_TimePickerDefaults__time_picker)defaultTheme__64908).dayPeriodInputSize.height));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: (_TimePickerModel__time_picker.useMaterial3Of(context) ? global::Doroti.Framework.Painting.EdgeInsets.zero : global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16)), child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection65491 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection65491.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(bottom: (((_TimePickerModel__time_picker.useMaterial3Of(context) ? 20L : 24L)) - (minInteractiveVerticalPadding__65102 / 2L))), child: new global::Doroti.Framework.Widgets.Text(((_TimePickerInput__time_picker)this.widget).helpText, style: (_TimePickerModel__time_picker.themeOf(context).helpTextStyle ?? _TimePickerModel__time_picker.defaultThemeOf(context).helpTextStyle))))); __collection65491.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection66075 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((!use24HourDials__64682 && (object.Equals(timeOfDayFormat__64522, TimeOfDayFormat.a_space_h_colon_mm)))) { __collection66075.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(end: 12), child: new _DayPeriodControl__time_picker(onPeriodChanged: (global::System.Action<TimeOfDay>)this._handleDayPeriodChanged))) }); } __collection66075.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(top: (minInteractiveVerticalPadding__65102 / 2L)), child: new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, textDirection: TextDirection.ltr, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection67027 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection67027.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: 10), child: new _HourTextField__time_picker(restorationId: "hour_text_field", selectedTime: this._selectedTime.value, style: hourMinuteStyle__64985, autofocus: ((_TimePickerInput__time_picker)this.widget).autofocusHour, inputAction: global::Doroti.Framework.Services.TextInputAction.next, validator: (global::System.Func<string?, string?>)this._validateHour, onSavedSubmitted: (global::System.Action<string?>)this._handleHourSavedSubmitted, onChanged: (global::System.Action<string>)this._handleHourChanged, hourLabelText: ((_TimePickerInput__time_picker)this.widget).hourLabelText, emptyInitialTime: ((_TimePickerInput__time_picker)this.widget).emptyInitialTime)))); if ((!this.hourHasError.value && !this.minuteHasError.value)) { __collection67027.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.Text((((_TimePickerInput__time_picker)this.widget).hourLabelText ?? MaterialLocalizations.of(context).timePickerHourLabel), style: theme__64768.textTheme.bodySmall, maxLines: 1L, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis)))); } return __collection67027; }))()))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _TimeSelectorSeparator__time_picker(timeOfDayFormat: timeOfDayFormat__64522)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection68842 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection68842.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: 10), child: new _MinuteTextField__time_picker(restorationId: "minute_text_field", selectedTime: this._selectedTime.value, style: hourMinuteStyle__64985, autofocus: ((_TimePickerInput__time_picker)this.widget).autofocusMinute, inputAction: global::Doroti.Framework.Services.TextInputAction.done, validator: (global::System.Func<string?, string?>)this._validateMinute, onSavedSubmitted: (global::System.Action<string?>)this._handleMinuteSavedSubmitted, minuteLabelText: ((_TimePickerInput__time_picker)this.widget).minuteLabelText, emptyInitialTime: ((_TimePickerInput__time_picker)this.widget).emptyInitialTime)))); if ((!this.hourHasError.value && !this.minuteHasError.value)) { __collection68842.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.Text((((_TimePickerInput__time_picker)this.widget).minuteLabelText ?? MaterialLocalizations.of(context).timePickerMinuteLabel), style: theme__64768.textTheme.bodySmall, maxLines: 1L, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis)))); } return __collection68842; }))()))) }))))); if ((!use24HourDials__64682 && (!object.Equals(timeOfDayFormat__64522, TimeOfDayFormat.a_space_h_colon_mm)))) { __collection66075.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 12), child: new _DayPeriodControl__time_picker(onPeriodChanged: (global::System.Action<TimeOfDay>)this._handleDayPeriodChanged))) }); } return __collection66075; }))()))); if ((this.hourHasError.value || this.minuteHasError.value)) { __collection65491.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text((((_TimePickerInput__time_picker)this.widget).errorInvalidText ?? MaterialLocalizations.of(context).invalidTimeLabel), style: theme__64768.textTheme.bodyMedium!.copyWith(color: theme__64768.colorScheme.error)))); } else { __collection65491.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 2))); } return __collection65491; }))())));
+        TimeOfDayFormat timeOfDayFormatLocal = MaterialLocalizations.of(context).timeOfDayFormat(alwaysUse24HourFormat: _TimePickerModel__time_picker.use24HourFormatOf(context));
+        var use24HourDials = (!object.Equals(TimeLibrary.hourFormat(of: timeOfDayFormatLocal), HourFormat.h));
+        ThemeData theme = Theme.of(context);
+        TimePickerThemeData timePickerTheme = ((TimePickerThemeData)(object?)_TimePickerModel__time_picker.themeOf(context));
+        _TimePickerDefaults__time_picker defaultTheme = ((_TimePickerDefaults__time_picker)(object?)_TimePickerModel__time_picker.defaultThemeOf(context));
+        global::Doroti.Framework.Painting.TextStyle hourMinuteStyle = ((timePickerTheme.hourMinuteTextStyle ?? (global::Doroti.Framework.Painting.TextStyle)((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteTextStyle));
+        double minInteractiveVerticalPadding = Math.Max(0, ((2L * global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension) - ((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodInputSize.height));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: (_TimePickerModel__time_picker.useMaterial3Of(context) ? global::Doroti.Framework.Painting.EdgeInsets.zero : global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16)), child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection65491 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection65491.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(bottom: (((_TimePickerModel__time_picker.useMaterial3Of(context) ? 20L : 24L)) - (minInteractiveVerticalPadding / 2L))), child: new global::Doroti.Framework.Widgets.Text(((_TimePickerInput__time_picker)this.widget).helpText, style: (_TimePickerModel__time_picker.themeOf(context).helpTextStyle ?? _TimePickerModel__time_picker.defaultThemeOf(context).helpTextStyle))))); __collection65491.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection66075 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((!use24HourDials && (object.Equals(timeOfDayFormatLocal, TimeOfDayFormat.a_space_h_colon_mm)))) { __collection66075.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(end: 12), child: new _DayPeriodControl__time_picker(onPeriodChanged: (global::System.Action<TimeOfDay>)this._handleDayPeriodChanged))) }); } __collection66075.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(top: (minInteractiveVerticalPadding / 2L)), child: new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, textDirection: TextDirection.ltr, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection67027 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection67027.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: 10), child: new _HourTextField__time_picker(restorationId: "hour_text_field", selectedTime: this._selectedTime.value, style: hourMinuteStyle, autofocus: ((_TimePickerInput__time_picker)this.widget).autofocusHour, inputAction: global::Doroti.Framework.Services.TextInputAction.next, validator: (global::System.Func<string?, string?>)this._validateHour, onSavedSubmitted: (global::System.Action<string?>)this._handleHourSavedSubmitted, onChanged: (global::System.Action<string>)this._handleHourChanged, hourLabelText: ((_TimePickerInput__time_picker)this.widget).hourLabelText, emptyInitialTime: ((_TimePickerInput__time_picker)this.widget).emptyInitialTime)))); if ((!this.hourHasError.value && !this.minuteHasError.value)) { __collection67027.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.Text((((_TimePickerInput__time_picker)this.widget).hourLabelText ?? MaterialLocalizations.of(context).timePickerHourLabel), style: theme.textTheme.bodySmall, maxLines: 1L, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis)))); } return __collection67027; }))()))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _TimeSelectorSeparator__time_picker(timeOfDayFormat: timeOfDayFormatLocal)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Column(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection68842 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection68842.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: 10), child: new _MinuteTextField__time_picker(restorationId: "minute_text_field", selectedTime: this._selectedTime.value, style: hourMinuteStyle, autofocus: ((_TimePickerInput__time_picker)this.widget).autofocusMinute, inputAction: global::Doroti.Framework.Services.TextInputAction.done, validator: (global::System.Func<string?, string?>)this._validateMinute, onSavedSubmitted: (global::System.Action<string?>)this._handleMinuteSavedSubmitted, minuteLabelText: ((_TimePickerInput__time_picker)this.widget).minuteLabelText, emptyInitialTime: ((_TimePickerInput__time_picker)this.widget).emptyInitialTime)))); if ((!this.hourHasError.value && !this.minuteHasError.value)) { __collection68842.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ExcludeSemantics(child: new global::Doroti.Framework.Widgets.Text((((_TimePickerInput__time_picker)this.widget).minuteLabelText ?? MaterialLocalizations.of(context).timePickerMinuteLabel), style: theme.textTheme.bodySmall, maxLines: 1L, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis)))); } return __collection68842; }))()))) }))))); if ((!use24HourDials && (!object.Equals(timeOfDayFormatLocal, TimeOfDayFormat.a_space_h_colon_mm)))) { __collection66075.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 12), child: new _DayPeriodControl__time_picker(onPeriodChanged: (global::System.Action<TimeOfDay>)this._handleDayPeriodChanged))) }); } return __collection66075; }))()))); if ((this.hourHasError.value || this.minuteHasError.value)) { __collection65491.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text((((_TimePickerInput__time_picker)this.widget).errorInvalidText ?? MaterialLocalizations.of(context).invalidTimeLabel), style: theme.textTheme.bodyMedium!.copyWith(color: theme.colorScheme.error)))); } else { __collection65491.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: 2))); } return __collection65491; }))())));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1617,8 +1617,8 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
     {
         DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
         DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
-        bool hasSerializedValue__36723 = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue__36804 = (hasSerializedValue__36723 ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
+        bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
+        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
         if (!((dynamic)property).isRegistered)
         {
             property._register(restorationId, this);
@@ -1634,8 +1634,8 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue__36804);
-        if (((!hasSerializedValue__36723 && ((dynamic)property).enabled) && (this.bucket is not null)))
+        property.initWithValue((dynamic)initialValue);
+        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -1659,14 +1659,14 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
         {
             return;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__39230 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
         DartRuntimePrimitives.Assert(() => !this.restorePending);
-        bool didReplaceBucket__39295 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
-        if (didReplaceBucket__39295)
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
+        if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket__39230, this._bucket)));
-            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket__39230 is null)));
-            oldBucket__39230?.dispose();
+            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket is null)));
+            oldBucket?.dispose();
         }
     }
 
@@ -1688,8 +1688,8 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent__40517 = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
-            return ((!object.Equals(potentialNewParent__40517, this._currentParent)) && ((potentialNewParent__40517?.isReplacing ?? false)));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
+            return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
             return default!;
         }
     }
@@ -1697,18 +1697,18 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__41020 = this._bucket;
-        bool needsRestore__41056 = this.restorePending;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
+        bool needsRestore = this.restorePending;
         this._currentParent = RestorationScope.maybeOf(this.context);
-        bool didReplaceBucket__41159 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore__41056);
-        if (needsRestore__41056)
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore);
+        if (needsRestore)
         {
-            _doRestore(oldBucket__41020);
+            _doRestore(oldBucket);
         }
-        if (didReplaceBucket__41159)
+        if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket__41020, this._bucket)));
-            oldBucket__41020?.dispose();
+            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            oldBucket?.dispose();
         }
     }
 
@@ -1736,17 +1736,17 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
     {
         if (((this.restorationId is null) || (parent is null)))
         {
-            bool didReplace__42801 = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => (this._bucket is null));
-            return didReplace__42801;
+            return didReplace;
         }
         DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
         if ((restorePending || (this._bucket is null)))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucket__43086 = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
-            bool didReplace__43168 = _setNewBucketIfNecessary(newBucket: newBucket__43086, restorePending: restorePending);
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucket__43086)));
-            return didReplace__43168;
+            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
+            bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
+            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucketLocal)));
+            return didReplaceLocal;
         }
         DartRuntimePrimitives.Assert(() => (this._bucket is not null));
         DartRuntimePrimitives.Assert(() => !restorePending);
@@ -1762,7 +1762,7 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
         {
             return false;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__43946 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
         this._bucket = newBucket;
         if (!restorePending)
         {
@@ -1770,7 +1770,7 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
             {
                 this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
             }
-            didToggleBucket(oldBucket__43946);
+            didToggleBucket(oldBucket);
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1790,13 +1790,13 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
 
     public virtual void _unregister(dynamic property)
     {
-        global::System.Action listener__44576 = this._properties.remove(property)!;
+        global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
             {
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener__44576()));
+        property.removeListener((global::System.Action)(() => listener()));
         property._unregister();
     }
 
@@ -1936,24 +1936,24 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__41020 = this._bucket;
-        bool needsRestore__41056 = this.restorePending;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
+        bool needsRestore = this.restorePending;
         _currentParent = RestorationScope.maybeOf(this.context);
-        bool didReplaceBucket__41159 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore__41056);
-        if (needsRestore__41056)
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore);
+        if (needsRestore)
         {
-            _doRestore(oldBucket__41020);
+            _doRestore(oldBucket);
         }
-        if (didReplaceBucket__41159)
+        if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket__41020, this._bucket)));
-            oldBucket__41020?.dispose();
+            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            oldBucket?.dispose();
         }
         if (!this.controllerHasBeenSet.value)
         {
             this.controllerHasBeenSet.value = true;
-            string initialTextValue__75522 = (((_HourMinuteTextField__time_picker)this.widget).emptyInitialTime ? "" : this._formattedValue);
-            this.controller.value.value = new global::Doroti.Framework.Services.TextEditingValue(text: initialTextValue__75522);
+            string initialTextValue = (((_HourMinuteTextField__time_picker)this.widget).emptyInitialTime ? "" : this._formattedValue);
+            this.controller.value.value = new global::Doroti.Framework.Services.TextEditingValue(text: initialTextValue);
         }
     }
 
@@ -1985,36 +1985,36 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
     {
         get
         {
-            bool alwaysUse24HourFormat__76163 = MediaQuery.alwaysUse24HourFormatOf(this.context);
-            MaterialLocalizations localizations__76264 = MaterialLocalizations.of(this.context);
-            return (!((_HourMinuteTextField__time_picker)this.widget).isHour ? localizations__76264.formatMinute(((_HourMinuteTextField__time_picker)this.widget).selectedTime) : localizations__76264.formatHour(((_HourMinuteTextField__time_picker)this.widget).selectedTime, alwaysUse24HourFormat: alwaysUse24HourFormat__76163));
+            bool alwaysUse24HourFormatLocal = MediaQuery.alwaysUse24HourFormatOf(this.context);
+            MaterialLocalizations localizations = MaterialLocalizations.of(this.context);
+            return (!((_HourMinuteTextField__time_picker)this.widget).isHour ? localizations.formatMinute(((_HourMinuteTextField__time_picker)this.widget).selectedTime) : localizations.formatHour(((_HourMinuteTextField__time_picker)this.widget).selectedTime, alwaysUse24HourFormat: alwaysUse24HourFormatLocal));
             return default!;
         }
     }
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ThemeData theme__76615 = Theme.of(context);
-        TimePickerThemeData timePickerTheme__76672 = TimePickerTheme.of(context);
-        _TimePickerDefaults__time_picker defaultTheme__76749 = (theme__76615.useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context) : new _TimePickerDefaultsM2__time_picker(context));
-        bool alwaysUse24HourFormat__76881 = MediaQuery.alwaysUse24HourFormatOf(context);
-        InputDecorationThemeData inputDecorationTheme__76986 = ((timePickerTheme__76672.inputDecorationTheme ?? (InputDecorationThemeData)((_TimePickerDefaults__time_picker)defaultTheme__76749).inputDecorationTheme));
-        InputDecoration inputDecoration__77112 = new InputDecoration(errorStyle: ((_TimePickerDefaults__time_picker)defaultTheme__76749).inputDecorationTheme.errorStyle).applyDefaults(inputDecorationTheme__76986);
-        string? hintText__77677 = ((((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus || ((_HourMinuteTextField__time_picker)this.widget).emptyInitialTime) ? null : this._formattedValue);
-        global::Doroti.Ui.Color startingFillColor__78218 = ((global::Doroti.Ui.Color)(object?)(((timePickerTheme__76672.inputDecorationTheme?.fillColor ?? timePickerTheme__76672.hourMinuteColor) ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme__76749).hourMinuteColor)));
-        global::Doroti.Ui.Color fillColor__78394 = default!;
-        if (theme__76615.useMaterial3)
+        ThemeData theme = Theme.of(context);
+        TimePickerThemeData timePickerTheme = TimePickerTheme.of(context);
+        _TimePickerDefaults__time_picker defaultTheme = (theme.useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context) : new _TimePickerDefaultsM2__time_picker(context));
+        bool alwaysUse24HourFormat = MediaQuery.alwaysUse24HourFormatOf(context);
+        InputDecorationThemeData inputDecorationThemeLocal = ((timePickerTheme.inputDecorationTheme ?? (InputDecorationThemeData)((_TimePickerDefaults__time_picker)defaultTheme).inputDecorationTheme));
+        InputDecoration inputDecoration = new InputDecoration(errorStyle: ((_TimePickerDefaults__time_picker)defaultTheme).inputDecorationTheme.errorStyle).applyDefaults(inputDecorationThemeLocal);
+        string? hintTextLocal = ((((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus || ((_HourMinuteTextField__time_picker)this.widget).emptyInitialTime) ? null : this._formattedValue);
+        global::Doroti.Ui.Color startingFillColor = ((global::Doroti.Ui.Color)(object?)(((timePickerTheme.inputDecorationTheme?.fillColor ?? timePickerTheme.hourMinuteColor) ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteColor)));
+        global::Doroti.Ui.Color fillColorLocal = default!;
+        if (theme.useMaterial3)
         {
-            fillColor__78394 = WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>(startingFillColor__78218, ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection78509 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus) { __collection78509.Add(global::Doroti.Framework.Widgets.WidgetState.focused); } if (((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus) { __collection78509.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection78509; }))());
+            fillColorLocal = WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>(startingFillColor, ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection78509 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus) { __collection78509.Add(global::Doroti.Framework.Widgets.WidgetState.focused); } if (((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus) { __collection78509.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection78509; }))());
         }
         else
         {
-            fillColor__78394 = (((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus ? Colors.transparent : startingFillColor__78218);
+            fillColorLocal = (((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus ? Colors.transparent : startingFillColor);
         }
-        inputDecoration__77112 = inputDecoration__77112.copyWith(hintText: hintText__77677, fillColor: fillColor__78394);
-        var states__78841 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection78850 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus) { __collection78850.Add(global::Doroti.Framework.Widgets.WidgetState.focused); } if (((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus) { __collection78850.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection78850; }))();
-        global::Doroti.Ui.Color effectiveTextColor__78991 = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>(((timePickerTheme__76672.hourMinuteTextColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme__76749).hourMinuteTextColor)), states__78841));
-        global::Doroti.Framework.Painting.TextStyle effectiveStyle__79170 = ((global::Doroti.Framework.Painting.TextStyle)(object?)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.TextStyle>(((_HourMinuteTextField__time_picker)this.widget).style, states__78841).copyWith(color: effectiveTextColor__78991));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateFromSize(size: (alwaysUse24HourFormat__76881 ? ((_TimePickerDefaults__time_picker)defaultTheme__76749).hourMinuteInputSize24Hour : ((_TimePickerDefaults__time_picker)defaultTheme__76749).hourMinuteInputSize), child: MediaQuery.withNoTextScaling(child: new global::Doroti.Framework.Widgets.UnmanagedRestorationScope(bucket: this.bucket, child: new global::Doroti.Framework.Widgets.Semantics(label: ((_HourMinuteTextField__time_picker)this.widget).semanticHintText, child: new TextFormField(restorationId: "hour_minute_text_form_field", autofocus: (((_HourMinuteTextField__time_picker)this.widget).autofocus ?? false), expands: true, maxLines: null, inputFormatters: new List<global::Doroti.Framework.Services.TextInputFormatter> { new global::Doroti.Framework.Services.LengthLimitingTextInputFormatter(2L) }, focusNode: this.focusNode, textAlign: global::Doroti.Ui.TextAlign.center, textInputAction: ((_HourMinuteTextField__time_picker)this.widget).inputAction, keyboardType: global::Doroti.Framework.Services.TextInputType.number, style: effectiveStyle__79170, controller: this.controller.value, decoration: inputDecoration__77112, validator: (global::System.Func<string?, string?>)((_HourMinuteTextField__time_picker)this.widget).validator, onEditingComplete: ((global::System.Action)(() => { this.widget.onSavedSubmitted(this.controller.value.text); })), onSaved: (global::System.Action<string?>)((_HourMinuteTextField__time_picker)this.widget).onSavedSubmitted, onFieldSubmitted: (global::System.Action<string?>)((_HourMinuteTextField__time_picker)this.widget).onSavedSubmitted, onChanged: (global::System.Action<string>?)((_HourMinuteTextField__time_picker)this.widget).onChanged))))));
+        inputDecoration = inputDecoration.copyWith(hintText: hintTextLocal, fillColor: fillColorLocal);
+        var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection78850 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus) { __collection78850.Add(global::Doroti.Framework.Widgets.WidgetState.focused); } if (((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasFocus) { __collection78850.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection78850; }))();
+        global::Doroti.Ui.Color effectiveTextColor = ((global::Doroti.Ui.Color)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color>(((timePickerTheme.hourMinuteTextColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteTextColor)), states));
+        global::Doroti.Framework.Painting.TextStyle effectiveStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.TextStyle>(((_HourMinuteTextField__time_picker)this.widget).style, states).copyWith(color: effectiveTextColor));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateFromSize(size: (alwaysUse24HourFormat ? ((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteInputSize24Hour : ((_TimePickerDefaults__time_picker)defaultTheme).hourMinuteInputSize), child: MediaQuery.withNoTextScaling(child: new global::Doroti.Framework.Widgets.UnmanagedRestorationScope(bucket: this.bucket, child: new global::Doroti.Framework.Widgets.Semantics(label: ((_HourMinuteTextField__time_picker)this.widget).semanticHintText, child: new TextFormField(restorationId: "hour_minute_text_form_field", autofocus: (((_HourMinuteTextField__time_picker)this.widget).autofocus ?? false), expands: true, maxLines: null, inputFormatters: new List<global::Doroti.Framework.Services.TextInputFormatter> { new global::Doroti.Framework.Services.LengthLimitingTextInputFormatter(2L) }, focusNode: this.focusNode, textAlign: global::Doroti.Ui.TextAlign.center, textInputAction: ((_HourMinuteTextField__time_picker)this.widget).inputAction, keyboardType: global::Doroti.Framework.Services.TextInputType.number, style: effectiveStyle, controller: this.controller.value, decoration: inputDecoration, validator: (global::System.Func<string?, string?>)((_HourMinuteTextField__time_picker)this.widget).validator, onEditingComplete: ((global::System.Action)(() => { this.widget.onSavedSubmitted(this.controller.value.text); })), onSaved: (global::System.Action<string?>)((_HourMinuteTextField__time_picker)this.widget).onSavedSubmitted, onFieldSubmitted: (global::System.Action<string?>)((_HourMinuteTextField__time_picker)this.widget).onSavedSubmitted, onChanged: (global::System.Action<string>?)((_HourMinuteTextField__time_picker)this.widget).onChanged))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2028,8 +2028,8 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
     {
         DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
         DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
-        bool hasSerializedValue__36723 = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue__36804 = (hasSerializedValue__36723 ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
+        bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
+        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
         if (!((dynamic)property).isRegistered)
         {
             property._register(restorationId, this);
@@ -2045,8 +2045,8 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue__36804);
-        if (((!hasSerializedValue__36723 && ((dynamic)property).enabled) && (this.bucket is not null)))
+        property.initWithValue((dynamic)initialValue);
+        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -2070,14 +2070,14 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
         {
             return;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__39230 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
         DartRuntimePrimitives.Assert(() => !this.restorePending);
-        bool didReplaceBucket__39295 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
-        if (didReplaceBucket__39295)
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
+        if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket__39230, this._bucket)));
-            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket__39230 is null)));
-            oldBucket__39230?.dispose();
+            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket is null)));
+            oldBucket?.dispose();
         }
     }
 
@@ -2099,8 +2099,8 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent__40517 = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
-            return ((!object.Equals(potentialNewParent__40517, this._currentParent)) && ((potentialNewParent__40517?.isReplacing ?? false)));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
+            return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
             return default!;
         }
     }
@@ -2129,17 +2129,17 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
     {
         if (((this.restorationId is null) || (parent is null)))
         {
-            bool didReplace__42801 = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => (this._bucket is null));
-            return didReplace__42801;
+            return didReplace;
         }
         DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
         if ((restorePending || (this._bucket is null)))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucket__43086 = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
-            bool didReplace__43168 = _setNewBucketIfNecessary(newBucket: newBucket__43086, restorePending: restorePending);
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucket__43086)));
-            return didReplace__43168;
+            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
+            bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
+            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucketLocal)));
+            return didReplaceLocal;
         }
         DartRuntimePrimitives.Assert(() => (this._bucket is not null));
         DartRuntimePrimitives.Assert(() => !restorePending);
@@ -2155,7 +2155,7 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
         {
             return false;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__43946 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
         this._bucket = newBucket;
         if (!restorePending)
         {
@@ -2163,7 +2163,7 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
             {
                 this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
             }
-            didToggleBucket(oldBucket__43946);
+            didToggleBucket(oldBucket);
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2183,13 +2183,13 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
 
     public virtual void _unregister(dynamic property)
     {
-        global::System.Action listener__44576 = this._properties.remove(property)!;
+        global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
             {
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener__44576()));
+        property.removeListener((global::System.Action)(() => listener()));
         property._unregister();
     }
 
@@ -2398,8 +2398,8 @@ internal class _TimePickerDialogState__time_picker : global::Doroti.Framework.Wi
     {
         if (((object.Equals(this._entryMode.value, TimePickerEntryMode.input)) || (object.Equals(this._entryMode.value, TimePickerEntryMode.inputOnly))))
         {
-            global::Doroti.Framework.Widgets.FormState form__87682 = ((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.FormState>)this._formKey).currentState!;
-            if (!form__87682.validate())
+            global::Doroti.Framework.Widgets.FormState form = ((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.FormState>)this._formKey).currentState!;
+            if (!form.validate())
             {
                 setState(((global::System.Action)(() =>
                 {
@@ -2407,46 +2407,46 @@ internal class _TimePickerDialogState__time_picker : global::Doroti.Framework.Wi
                 })));
                 return;
             }
-            form__87682.save();
+            form.save();
         }
         Navigator.pop<object>(this.context, this._selectedTime.value);
     }
 
     internal virtual global::Doroti.Ui.Size _minDialogSize(global::Doroti.Framework.Widgets.BuildContext context, bool useMaterial3)
     {
-        global::Doroti.Framework.Widgets.Orientation orientation__88039 = ((this._orientation.value ?? (global::Doroti.Framework.Widgets.Orientation)MediaQuery.orientationOf(context)));
+        global::Doroti.Framework.Widgets.Orientation orientation = ((this._orientation.value ?? (global::Doroti.Framework.Widgets.Orientation)MediaQuery.orientationOf(context)));
         switch (this._entryMode.value)
         {
             case TimePickerEntryMode.dial:
             case TimePickerEntryMode.dialOnly:
                 {
-                    return (orientation__88039 switch { global::Doroti.Framework.Widgets.Orientation.portrait => _kTimePickerMinPortraitSize, global::Doroti.Framework.Widgets.Orientation.landscape => _kTimePickerMinLandscapeSize, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                    return (orientation switch { global::Doroti.Framework.Widgets.Orientation.portrait => _kTimePickerMinPortraitSize, global::Doroti.Framework.Widgets.Orientation.landscape => _kTimePickerMinLandscapeSize, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                 }
             case TimePickerEntryMode.input:
             case TimePickerEntryMode.inputOnly:
                 {
-                    MaterialLocalizations localizations__88514 = MaterialLocalizations.of(context);
-                    TimeOfDayFormat timeOfDayFormat__88595 = localizations__88514.timeOfDayFormat(alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context));
-                    double timePickerWidth__88754 = default!;
-                    switch (timeOfDayFormat__88595)
+                    MaterialLocalizations localizations = MaterialLocalizations.of(context);
+                    TimeOfDayFormat timeOfDayFormatLocal = localizations.timeOfDayFormat(alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context));
+                    double timePickerWidth = default!;
+                    switch (timeOfDayFormatLocal)
                     {
                         case TimeOfDayFormat.HH_colon_mm:
                         case TimeOfDayFormat.HH_dot_mm:
                         case TimeOfDayFormat.frenchCanadian:
                         case TimeOfDayFormat.H_colon_mm:
                             {
-                                _TimePickerDefaults__time_picker defaultTheme__89020 = (useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context) : new _TimePickerDefaultsM2__time_picker(context));
-                                timePickerWidth__88754 = ((_kTimePickerMinInputSize.width - ((_TimePickerDefaults__time_picker)defaultTheme__89020).dayPeriodPortraitSize.width) - 12L);
+                                _TimePickerDefaults__time_picker defaultTheme = (useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context) : new _TimePickerDefaultsM2__time_picker(context));
+                                timePickerWidth = ((_kTimePickerMinInputSize.width - ((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodPortraitSize.width) - 12L);
                                 break;
                             }
                         case TimeOfDayFormat.a_space_h_colon_mm:
                         case TimeOfDayFormat.h_colon_mm_space_a:
                             {
-                                timePickerWidth__88754 = (_kTimePickerMinInputSize.width - ((useMaterial3 ? 32L : 0L)));
+                                timePickerWidth = (_kTimePickerMinInputSize.width - ((useMaterial3 ? 32L : 0L)));
                                 break;
                             }
                     }
-                    return new global::Doroti.Ui.Size(timePickerWidth__88754, _kTimePickerMinInputSize.height);
+                    return new global::Doroti.Ui.Size(timePickerWidth, _kTimePickerMinInputSize.height);
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -2456,25 +2456,25 @@ internal class _TimePickerDialogState__time_picker : global::Doroti.Framework.Wi
 
     internal virtual global::Doroti.Ui.Size _dialogSize(global::Doroti.Framework.Widgets.BuildContext context, bool useMaterial3)
     {
-        global::Doroti.Framework.Widgets.Orientation orientation__89650 = ((this._orientation.value ?? (global::Doroti.Framework.Widgets.Orientation)MediaQuery.orientationOf(context)));
-        var fontSizeToScale__90051 = 14.0;
-        double textScaleFactor__90092 = (MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.1).scale(fontSizeToScale__90051) / fontSizeToScale__90051);
-        global::Doroti.Ui.Size timePickerSize__90244 = default!;
+        global::Doroti.Framework.Widgets.Orientation orientation = ((this._orientation.value ?? (global::Doroti.Framework.Widgets.Orientation)MediaQuery.orientationOf(context)));
+        var fontSizeToScale = 14.0;
+        double textScaleFactor = (MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.1).scale(fontSizeToScale) / fontSizeToScale);
+        global::Doroti.Ui.Size timePickerSize = default!;
         switch (this._entryMode.value)
         {
             case TimePickerEntryMode.dial:
             case TimePickerEntryMode.dialOnly:
                 {
-                    switch (orientation__89650)
+                    switch (orientation)
                     {
                         case global::Doroti.Framework.Widgets.Orientation.portrait:
                             {
-                                timePickerSize__90244 = _kTimePickerPortraitSize;
+                                timePickerSize = _kTimePickerPortraitSize;
                                 break;
                             }
                         case global::Doroti.Framework.Widgets.Orientation.landscape:
                             {
-                                timePickerSize__90244 = new global::Doroti.Ui.Size((_kTimePickerLandscapeSize.width * textScaleFactor__90092), (useMaterial3 ? _kTimePickerLandscapeSize.height : _kTimePickerLandscapeSizeM2.height));
+                                timePickerSize = new global::Doroti.Ui.Size((_kTimePickerLandscapeSize.width * textScaleFactor), (useMaterial3 ? _kTimePickerLandscapeSize.height : _kTimePickerLandscapeSizeM2.height));
                                 break;
                             }
                     }
@@ -2483,61 +2483,61 @@ internal class _TimePickerDialogState__time_picker : global::Doroti.Framework.Wi
             case TimePickerEntryMode.input:
             case TimePickerEntryMode.inputOnly:
                 {
-                    MaterialLocalizations localizations__90872 = MaterialLocalizations.of(context);
-                    TimeOfDayFormat timeOfDayFormat__90953 = localizations__90872.timeOfDayFormat(alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context));
-                    double timePickerWidth__91112 = default!;
-                    switch (timeOfDayFormat__90953)
+                    MaterialLocalizations localizations = MaterialLocalizations.of(context);
+                    TimeOfDayFormat timeOfDayFormatLocal = localizations.timeOfDayFormat(alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context));
+                    double timePickerWidth = default!;
+                    switch (timeOfDayFormatLocal)
                     {
                         case TimeOfDayFormat.HH_colon_mm:
                         case TimeOfDayFormat.HH_dot_mm:
                         case TimeOfDayFormat.frenchCanadian:
                         case TimeOfDayFormat.H_colon_mm:
                             {
-                                _TimePickerDefaults__time_picker defaultTheme__91378 = (useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context) : new _TimePickerDefaultsM2__time_picker(context));
-                                timePickerWidth__91112 = ((_kTimePickerInputSize.width - ((_TimePickerDefaults__time_picker)defaultTheme__91378).dayPeriodPortraitSize.width) - 12L);
+                                _TimePickerDefaults__time_picker defaultTheme = (useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context) : new _TimePickerDefaultsM2__time_picker(context));
+                                timePickerWidth = ((_kTimePickerInputSize.width - ((_TimePickerDefaults__time_picker)defaultTheme).dayPeriodPortraitSize.width) - 12L);
                                 break;
                             }
                         case TimeOfDayFormat.a_space_h_colon_mm:
                         case TimeOfDayFormat.h_colon_mm_space_a:
                             {
-                                timePickerWidth__91112 = (_kTimePickerInputSize.width - ((useMaterial3 ? 32L : 0L)));
+                                timePickerWidth = (_kTimePickerInputSize.width - ((useMaterial3 ? 32L : 0L)));
                                 break;
                             }
                     }
-                    timePickerSize__90244 = new global::Doroti.Ui.Size(timePickerWidth__91112, _kTimePickerInputSize.height);
+                    timePickerSize = new global::Doroti.Ui.Size(timePickerWidth, _kTimePickerInputSize.height);
                     break;
                 }
         }
-        return new global::Doroti.Ui.Size(timePickerSize__90244.width, (timePickerSize__90244.height * textScaleFactor__90092));
+        return new global::Doroti.Ui.Size(timePickerSize.width, (timePickerSize.height * textScaleFactor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        ThemeData theme__92111 = Theme.of(context);
-        TimePickerThemeData pickerTheme__92168 = TimePickerTheme.of(context);
-        _TimePickerDefaults__time_picker defaultTheme__92241 = (theme__92111.useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context) : new _TimePickerDefaultsM2__time_picker(context));
-        global::Doroti.Framework.Painting.ShapeBorder shape__92380 = ((pickerTheme__92168.shape ?? (global::Doroti.Framework.Painting.ShapeBorder)((_TimePickerDefaults__time_picker)defaultTheme__92241).shape));
-        global::Doroti.Ui.Color entryModeIconColor__92445 = ((global::Doroti.Ui.Color)(object?)((pickerTheme__92168.entryModeIconColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme__92241).entryModeIconColor)));
-        MaterialLocalizations localizations__92573 = MaterialLocalizations.of(context);
-        global::Doroti.Framework.Widgets.Widget actions__92642 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: (theme__92111.useMaterial3 ? 0 : 4)), child: new global::Doroti.Framework.Widgets.Row(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection92775 = new List<global::Doroti.Framework.Widgets.Widget>(); if (((object.Equals(this._entryMode.value, TimePickerEntryMode.dial)) || (object.Equals(this._entryMode.value, TimePickerEntryMode.input)))) { __collection92775.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButton(color: (theme__92111.useMaterial3 ? null : entryModeIconColor__92445), style: (theme__92111.useMaterial3 ? IconButton.styleFrom(foregroundColor: entryModeIconColor__92445) : null), onPressed: this._toggleEntryMode, icon: ((object.Equals(this._entryMode.value, TimePickerEntryMode.dial)) ? (((TimePickerDialog)this.widget).switchToInputEntryModeIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.keyboard_outlined)) : (((TimePickerDialog)this.widget).switchToTimerEntryModeIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.access_time))), tooltip: ((object.Equals(this._entryMode.value, TimePickerEntryMode.dial)) ? MaterialLocalizations.of(context).inputTimeModeButtonLabel : MaterialLocalizations.of(context).dialModeButtonLabel)))); } __collection92775.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: 36), child: new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerEnd, child: new global::Doroti.Framework.Widgets.OverflowBar(spacing: 8, overflowAlignment: global::Doroti.Framework.Widgets.OverflowBarAlignment.end, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(style: ((pickerTheme__92168.cancelButtonStyle ?? (ButtonStyle)((_TimePickerDefaults__time_picker)defaultTheme__92241).cancelButtonStyle)), onPressed: () => this._handleCancel(), child: new global::Doroti.Framework.Widgets.Text((((TimePickerDialog)this.widget).cancelText ?? ((theme__92111.useMaterial3 ? localizations__92573.cancelButtonLabel : localizations__92573.cancelButtonLabel.toUpperCase())))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(style: ((pickerTheme__92168.confirmButtonStyle ?? (ButtonStyle)((_TimePickerDefaults__time_picker)defaultTheme__92241).confirmButtonStyle)), onPressed: () => this._handleOk(), child: new global::Doroti.Framework.Widgets.Text((((TimePickerDialog)this.widget).confirmText ?? localizations__92573.okButtonLabel)))) })))))); return __collection92775; }))())));
-        global::Doroti.Ui.Offset tapTargetSizeOffset__95218 = ((global::Doroti.Ui.Offset)(object?)(theme__92111.materialTapTargetSize switch { var __constant95285 when (object.Equals(__constant95285, MaterialTapTargetSize.padded)) => Offset.zero, var __constant95381 when (object.Equals(__constant95381, MaterialTapTargetSize.shrinkWrap)) => new global::Doroti.Ui.Offset(0, -12), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        global::Doroti.Ui.Size dialogSize__95461 = ((global::Doroti.Ui.Size)(object?)(_dialogSize(context, useMaterial3: theme__92111.useMaterial3) + tapTargetSizeOffset__95218));
-        global::Doroti.Ui.Size minDialogSize__95575 = ((global::Doroti.Ui.Size)(object?)(_minDialogSize(context, useMaterial3: theme__92111.useMaterial3) + tapTargetSizeOffset__95218));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new Dialog(shape: shape__92380, elevation: ((pickerTheme__92168.elevation ?? (double)((_TimePickerDefaults__time_picker)defaultTheme__92241).elevation)), backgroundColor: ((pickerTheme__92168.backgroundColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme__92241).backgroundColor)), insetPadding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16, vertical: ((((object.Equals(this._entryMode.value, TimePickerEntryMode.input)) || (object.Equals(this._entryMode.value, TimePickerEntryMode.inputOnly)))) ? 0 : 24)), child: new global::Doroti.Framework.Widgets.Padding(padding: ((pickerTheme__92168.padding ?? (global::Doroti.Framework.Painting.EdgeInsetsGeometry)((_TimePickerDefaults__time_picker)defaultTheme__92241).padding)), child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
+        ThemeData theme = Theme.of(context);
+        TimePickerThemeData pickerTheme = TimePickerTheme.of(context);
+        _TimePickerDefaults__time_picker defaultTheme = (theme.useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context) : new _TimePickerDefaultsM2__time_picker(context));
+        global::Doroti.Framework.Painting.ShapeBorder shapeLocal = ((pickerTheme.shape ?? (global::Doroti.Framework.Painting.ShapeBorder)((_TimePickerDefaults__time_picker)defaultTheme).shape));
+        global::Doroti.Ui.Color entryModeIconColorLocal = ((global::Doroti.Ui.Color)(object?)((pickerTheme.entryModeIconColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme).entryModeIconColor)));
+        MaterialLocalizations localizations = MaterialLocalizations.of(context);
+        global::Doroti.Framework.Widgets.Widget actions = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: (theme.useMaterial3 ? 0 : 4)), child: new global::Doroti.Framework.Widgets.Row(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection92775 = new List<global::Doroti.Framework.Widgets.Widget>(); if (((object.Equals(this._entryMode.value, TimePickerEntryMode.dial)) || (object.Equals(this._entryMode.value, TimePickerEntryMode.input)))) { __collection92775.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButton(color: (theme.useMaterial3 ? null : entryModeIconColorLocal), style: (theme.useMaterial3 ? IconButton.styleFrom(foregroundColor: entryModeIconColorLocal) : null), onPressed: this._toggleEntryMode, icon: ((object.Equals(this._entryMode.value, TimePickerEntryMode.dial)) ? (((TimePickerDialog)this.widget).switchToInputEntryModeIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.keyboard_outlined)) : (((TimePickerDialog)this.widget).switchToTimerEntryModeIcon ?? new global::Doroti.Framework.Widgets.Icon(Icons.access_time))), tooltip: ((object.Equals(this._entryMode.value, TimePickerEntryMode.dial)) ? MaterialLocalizations.of(context).inputTimeModeButtonLabel : MaterialLocalizations.of(context).dialModeButtonLabel)))); } __collection92775.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: 36), child: new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerEnd, child: new global::Doroti.Framework.Widgets.OverflowBar(spacing: 8, overflowAlignment: global::Doroti.Framework.Widgets.OverflowBarAlignment.end, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(style: ((pickerTheme.cancelButtonStyle ?? (ButtonStyle)((_TimePickerDefaults__time_picker)defaultTheme).cancelButtonStyle)), onPressed: () => this._handleCancel(), child: new global::Doroti.Framework.Widgets.Text((((TimePickerDialog)this.widget).cancelText ?? ((theme.useMaterial3 ? localizations.cancelButtonLabel : localizations.cancelButtonLabel.toUpperCase())))))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(style: ((pickerTheme.confirmButtonStyle ?? (ButtonStyle)((_TimePickerDefaults__time_picker)defaultTheme).confirmButtonStyle)), onPressed: () => this._handleOk(), child: new global::Doroti.Framework.Widgets.Text((((TimePickerDialog)this.widget).confirmText ?? localizations.okButtonLabel)))) })))))); return __collection92775; }))())));
+        global::Doroti.Ui.Offset tapTargetSizeOffset = ((global::Doroti.Ui.Offset)(object?)(theme.materialTapTargetSize switch { var __constant95285 when (object.Equals(__constant95285, MaterialTapTargetSize.padded)) => Offset.zero, var __constant95381 when (object.Equals(__constant95381, MaterialTapTargetSize.shrinkWrap)) => new global::Doroti.Ui.Offset(0, -12), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        global::Doroti.Ui.Size dialogSize = ((global::Doroti.Ui.Size)(object?)(_dialogSize(context, useMaterial3: theme.useMaterial3) + tapTargetSizeOffset));
+        global::Doroti.Ui.Size minDialogSize = ((global::Doroti.Ui.Size)(object?)(_minDialogSize(context, useMaterial3: theme.useMaterial3) + tapTargetSizeOffset));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new Dialog(shape: shapeLocal, elevation: ((pickerTheme.elevation ?? (double)((_TimePickerDefaults__time_picker)defaultTheme).elevation)), backgroundColor: ((pickerTheme.backgroundColor ?? (Color)((_TimePickerDefaults__time_picker)defaultTheme).backgroundColor)), insetPadding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16, vertical: ((((object.Equals(this._entryMode.value, TimePickerEntryMode.input)) || (object.Equals(this._entryMode.value, TimePickerEntryMode.inputOnly)))) ? 0 : 24)), child: new global::Doroti.Framework.Widgets.Padding(padding: ((pickerTheme.padding ?? (global::Doroti.Framework.Painting.EdgeInsetsGeometry)((_TimePickerDefaults__time_picker)defaultTheme).padding)), child: new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
         {
-            global::Doroti.Ui.Size constrainedSize__96334 = ((global::Doroti.Ui.Size)(object?)constraints.constrain(dialogSize__95461));
-            var allowedSize__96405 = new global::Doroti.Ui.Size(((constrainedSize__96334.width < minDialogSize__95575.width) ? minDialogSize__95575.width : constrainedSize__96334.width), ((constrainedSize__96334.height < minDialogSize__95575.height) ? minDialogSize__95575.height : constrainedSize__96334.height));
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SingleChildScrollView(restorationId: "time_picker_scroll_view_horizontal", scrollDirection: global::Doroti.Framework.Painting.Axis.horizontal, child: new global::Doroti.Framework.Widgets.SingleChildScrollView(restorationId: "time_picker_scroll_view_vertical", child: new global::Doroti.Framework.Widgets.AnimatedContainer(width: allowedSize__96405.width, duration: Time_pickerLibrary._kDialogSizeAnimationDuration, curve: global::Doroti.Framework.Animation.Curves.easeIn, constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: _kTimePickerInputMinimumHeight, maxHeight: allowedSize__96405.height), child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.spaceBetween, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) => {
-global::Doroti.Framework.Widgets.Widget child__97751 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Form(key: this._formKey, autovalidateMode: this._autovalidateMode.value, child: new _TimePicker__time_picker(time: ((TimePickerDialog)this.widget).initialTime, onTimeChanged: (global::System.Action<TimeOfDay>)this._handleTimeChanged, helpText: ((TimePickerDialog)this.widget).helpText, cancelText: ((TimePickerDialog)this.widget).cancelText, confirmText: ((TimePickerDialog)this.widget).confirmText, errorInvalidText: ((TimePickerDialog)this.widget).errorInvalidText, hourLabelText: ((TimePickerDialog)this.widget).hourLabelText, minuteLabelText: ((TimePickerDialog)this.widget).minuteLabelText, restorationId: "time_picker", entryMode: DartRuntimePrimitives.RequireValue(this._entryMode.value), orientation: ((TimePickerDialog)this.widget).orientation, onEntryModeChanged: (global::System.Action<TimePickerEntryMode>)this._handleEntryModeChanged, switchToInputEntryModeIcon: ((TimePickerDialog)this.widget).switchToInputEntryModeIcon, switchToTimerEntryModeIcon: ((TimePickerDialog)this.widget).switchToTimerEntryModeIcon, emptyInitialInput: ((TimePickerDialog)this.widget).emptyInitialInput)));
+            global::Doroti.Ui.Size constrainedSize = ((global::Doroti.Ui.Size)(object?)constraints.constrain(dialogSize));
+            var allowedSize = new global::Doroti.Ui.Size(((constrainedSize.width < minDialogSize.width) ? minDialogSize.width : constrainedSize.width), ((constrainedSize.height < minDialogSize.height) ? minDialogSize.height : constrainedSize.height));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SingleChildScrollView(restorationId: "time_picker_scroll_view_horizontal", scrollDirection: global::Doroti.Framework.Painting.Axis.horizontal, child: new global::Doroti.Framework.Widgets.SingleChildScrollView(restorationId: "time_picker_scroll_view_vertical", child: new global::Doroti.Framework.Widgets.AnimatedContainer(width: allowedSize.width, duration: Time_pickerLibrary._kDialogSizeAnimationDuration, curve: global::Doroti.Framework.Animation.Curves.easeIn, constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: _kTimePickerInputMinimumHeight, maxHeight: allowedSize.height), child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.spaceBetween, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) => {
+global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Form(key: this._formKey, autovalidateMode: this._autovalidateMode.value, child: new _TimePicker__time_picker(time: ((TimePickerDialog)this.widget).initialTime, onTimeChanged: (global::System.Action<TimeOfDay>)this._handleTimeChanged, helpText: ((TimePickerDialog)this.widget).helpText, cancelText: ((TimePickerDialog)this.widget).cancelText, confirmText: ((TimePickerDialog)this.widget).confirmText, errorInvalidText: ((TimePickerDialog)this.widget).errorInvalidText, hourLabelText: ((TimePickerDialog)this.widget).hourLabelText, minuteLabelText: ((TimePickerDialog)this.widget).minuteLabelText, restorationId: "time_picker", entryMode: DartRuntimePrimitives.RequireValue(this._entryMode.value), orientation: ((TimePickerDialog)this.widget).orientation, onEntryModeChanged: (global::System.Action<TimePickerEntryMode>)this._handleEntryModeChanged, switchToInputEntryModeIcon: ((TimePickerDialog)this.widget).switchToInputEntryModeIcon, switchToTimerEntryModeIcon: ((TimePickerDialog)this.widget).switchToTimerEntryModeIcon, emptyInitialInput: ((TimePickerDialog)this.widget).emptyInitialInput)));
 if (((!object.Equals(this._entryMode.value, TimePickerEntryMode.input)) && (!object.Equals(this._entryMode.value, TimePickerEntryMode.inputOnly))))
 {
-    return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Flexible(child: child__97751));
+    return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Flexible(child: childLocal));
 }
-return child__97751;
+return childLocal;
 throw new InvalidOperationException("Dart closure completed without a value.");
-})))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(actions__92642) })))));
+})))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(actions) })))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2553,8 +2553,8 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
         DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
-        bool hasSerializedValue__36723 = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue__36804 = (hasSerializedValue__36723 ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
+        bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
+        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
         if (!((dynamic)property).isRegistered)
         {
             property._register(restorationId, this);
@@ -2570,8 +2570,8 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue__36804);
-        if (((!hasSerializedValue__36723 && ((dynamic)property).enabled) && (this.bucket is not null)))
+        property.initWithValue((dynamic)initialValue);
+        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -2595,14 +2595,14 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         {
             return;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__39230 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
         DartRuntimePrimitives.Assert(() => !this.restorePending);
-        bool didReplaceBucket__39295 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
-        if (didReplaceBucket__39295)
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
+        if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket__39230, this._bucket)));
-            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket__39230 is null)));
-            oldBucket__39230?.dispose();
+            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket is null)));
+            oldBucket?.dispose();
         }
     }
 
@@ -2624,8 +2624,8 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent__40517 = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
-            return ((!object.Equals(potentialNewParent__40517, this._currentParent)) && ((potentialNewParent__40517?.isReplacing ?? false)));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
+            return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
             return default!;
         }
     }
@@ -2633,18 +2633,18 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__41020 = this._bucket;
-        bool needsRestore__41056 = this.restorePending;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
+        bool needsRestore = this.restorePending;
         this._currentParent = RestorationScope.maybeOf(this.context);
-        bool didReplaceBucket__41159 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore__41056);
-        if (needsRestore__41056)
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore);
+        if (needsRestore)
         {
-            _doRestore(oldBucket__41020);
+            _doRestore(oldBucket);
         }
-        if (didReplaceBucket__41159)
+        if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket__41020, this._bucket)));
-            oldBucket__41020?.dispose();
+            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            oldBucket?.dispose();
         }
     }
 
@@ -2672,17 +2672,17 @@ throw new InvalidOperationException("Dart closure completed without a value.");
     {
         if (((this.restorationId is null) || (parent is null)))
         {
-            bool didReplace__42801 = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => (this._bucket is null));
-            return didReplace__42801;
+            return didReplace;
         }
         DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
         if ((restorePending || (this._bucket is null)))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucket__43086 = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
-            bool didReplace__43168 = _setNewBucketIfNecessary(newBucket: newBucket__43086, restorePending: restorePending);
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucket__43086)));
-            return didReplace__43168;
+            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
+            bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
+            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucketLocal)));
+            return didReplaceLocal;
         }
         DartRuntimePrimitives.Assert(() => (this._bucket is not null));
         DartRuntimePrimitives.Assert(() => !restorePending);
@@ -2698,7 +2698,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
         {
             return false;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__43946 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
         this._bucket = newBucket;
         if (!restorePending)
         {
@@ -2706,7 +2706,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
             {
                 this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
             }
-            didToggleBucket(oldBucket__43946);
+            didToggleBucket(oldBucket);
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2726,13 +2726,13 @@ throw new InvalidOperationException("Dart closure completed without a value.");
 
     public virtual void _unregister(dynamic property)
     {
-        global::System.Action listener__44576 = this._properties.remove(property)!;
+        global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
             {
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener__44576()));
+        property.removeListener((global::System.Action)(() => listener()));
         property._unregister();
     }
 
@@ -2846,18 +2846,18 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__41020 = this._bucket;
-        bool needsRestore__41056 = this.restorePending;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
+        bool needsRestore = this.restorePending;
         _currentParent = RestorationScope.maybeOf(this.context);
-        bool didReplaceBucket__41159 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore__41056);
-        if (needsRestore__41056)
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore);
+        if (needsRestore)
         {
-            _doRestore(oldBucket__41020);
+            _doRestore(oldBucket);
         }
-        if (didReplaceBucket__41159)
+        if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket__41020, this._bucket)));
-            oldBucket__41020?.dispose();
+            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            oldBucket?.dispose();
         }
         localizations = MaterialLocalizations.of(this.context);
     }
@@ -2930,19 +2930,19 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
     {
         setState(((global::System.Action)(() =>
         {
-            TimePickerEntryMode newMode__106080 = ((_TimePicker__time_picker)this.widget).entryMode;
+            TimePickerEntryMode newMode = ((_TimePicker__time_picker)this.widget).entryMode;
             switch (((_TimePicker__time_picker)this.widget).entryMode)
             {
                 case TimePickerEntryMode.dial:
                     {
-                        newMode__106080 = TimePickerEntryMode.input;
+                        newMode = TimePickerEntryMode.input;
                         break;
                     }
                 case TimePickerEntryMode.input:
                     {
                         this._autofocusHour.value = false;
                         this._autofocusMinute.value = false;
-                        newMode__106080 = TimePickerEntryMode.dial;
+                        newMode = TimePickerEntryMode.dial;
                         break;
                     }
                 case TimePickerEntryMode.dialOnly:
@@ -2952,7 +2952,7 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
                         break;
                     }
             }
-            _setEntryMode(newMode__106080);
+            _setEntryMode(newMode);
         })));
     }
 
@@ -2989,33 +2989,33 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        TimeOfDayFormat timeOfDayFormat__107229 = this.localizations.timeOfDayFormat(alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context));
-        ThemeData theme__107379 = Theme.of(context);
-        _TimePickerDefaults__time_picker defaultTheme__107436 = (theme__107379.useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context, entryMode: ((_TimePicker__time_picker)this.widget).entryMode) : new _TimePickerDefaultsM2__time_picker(context));
-        global::Doroti.Framework.Widgets.Orientation orientation__107604 = ((this._orientation.value ?? (global::Doroti.Framework.Widgets.Orientation)MediaQuery.orientationOf(context)));
-        HourFormat timeOfDayHour__107696 = TimeLibrary.hourFormat(of: timeOfDayFormat__107229);
-        _HourDialType__time_picker hourMode__107769 = (timeOfDayHour__107696 switch { HourFormat.HH or HourFormat.H when (theme__107379.useMaterial3) => _HourDialType__time_picker.twentyFourHourDoubleRing, HourFormat.HH => _HourDialType__time_picker.twentyFourHour, HourFormat.H => _HourDialType__time_picker.twentyFourHour, HourFormat.h => _HourDialType__time_picker.twelveHour, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        string helpText__108056 = default!;
-        global::Doroti.Framework.Widgets.Widget picker__108083 = default!;
+        TimeOfDayFormat timeOfDayFormatLocal = this.localizations.timeOfDayFormat(alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context));
+        ThemeData themeLocal = Theme.of(context);
+        _TimePickerDefaults__time_picker defaultThemeLocal = (themeLocal.useMaterial3 ? new _TimePickerDefaultsM3__time_picker(context, entryMode: ((_TimePicker__time_picker)this.widget).entryMode) : new _TimePickerDefaultsM2__time_picker(context));
+        global::Doroti.Framework.Widgets.Orientation orientationLocal = ((this._orientation.value ?? (global::Doroti.Framework.Widgets.Orientation)MediaQuery.orientationOf(context)));
+        HourFormat timeOfDayHour = TimeLibrary.hourFormat(of: timeOfDayFormatLocal);
+        _HourDialType__time_picker hourMode = (timeOfDayHour switch { HourFormat.HH or HourFormat.H when (themeLocal.useMaterial3) => _HourDialType__time_picker.twentyFourHourDoubleRing, HourFormat.HH => _HourDialType__time_picker.twentyFourHour, HourFormat.H => _HourDialType__time_picker.twentyFourHour, HourFormat.h => _HourDialType__time_picker.twelveHour, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        string helpTextLocal = default!;
+        global::Doroti.Framework.Widgets.Widget picker = default!;
         switch (((_TimePicker__time_picker)this.widget).entryMode)
         {
             case TimePickerEntryMode.dial:
             case TimePickerEntryMode.dialOnly:
                 {
-                    helpText__108056 = (((_TimePicker__time_picker)this.widget).helpText ?? ((theme__107379.useMaterial3 ? this.localizations.timePickerDialHelpText : this.localizations.timePickerDialHelpText.toUpperCase())));
-                    double portraitMinInteractiveVerticalAdjustment__108658 = Math.Max(0, ((2L * global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension) - ((_TimePickerDefaults__time_picker)defaultTheme__107436).dayPeriodPortraitSize.height));
-                    global::Doroti.Framework.Painting.EdgeInsetsGeometry dialPadding__108852 = (orientation__107604 switch { global::Doroti.Framework.Widgets.Orientation.portrait => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: 12, right: 12, top: (36L - (portraitMinInteractiveVerticalAdjustment__108658 / 2L)))), global::Doroti.Framework.Widgets.Orientation.landscape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 64)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-                    global::Doroti.Framework.Widgets.Widget dial__109179 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: dialPadding__108852, child: new global::Doroti.Framework.Widgets.ExcludeSemantics(child: global::Doroti.Framework.Widgets.SizedBox.CreateFromSize(size: ((_TimePickerDefaults__time_picker)defaultTheme__107436).dialSize, child: new global::Doroti.Framework.Widgets.AspectRatio(aspectRatio: 1, child: new _Dial__time_picker(hourMinuteMode: DartRuntimePrimitives.RequireValue(this._hourMinuteMode.value), hourDialType: hourMode__107769, selectedTime: this._selectedTime.value, onChanged: (global::System.Action<TimeOfDay>)this._handleTimeChanged, onHourSelected: () => this._handleHourSelected()))))));
-                    switch (orientation__107604)
+                    helpTextLocal = (((_TimePicker__time_picker)this.widget).helpText ?? ((themeLocal.useMaterial3 ? this.localizations.timePickerDialHelpText : this.localizations.timePickerDialHelpText.toUpperCase())));
+                    double portraitMinInteractiveVerticalAdjustment = Math.Max(0, ((2L * global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension) - ((_TimePickerDefaults__time_picker)defaultThemeLocal).dayPeriodPortraitSize.height));
+                    global::Doroti.Framework.Painting.EdgeInsetsGeometry dialPadding = (orientationLocal switch { global::Doroti.Framework.Widgets.Orientation.portrait => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: 12, right: 12, top: (36L - (portraitMinInteractiveVerticalAdjustment / 2L)))), global::Doroti.Framework.Widgets.Orientation.landscape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 64)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                    global::Doroti.Framework.Widgets.Widget dialLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: dialPadding, child: new global::Doroti.Framework.Widgets.ExcludeSemantics(child: global::Doroti.Framework.Widgets.SizedBox.CreateFromSize(size: ((_TimePickerDefaults__time_picker)defaultThemeLocal).dialSize, child: new global::Doroti.Framework.Widgets.AspectRatio(aspectRatio: 1, child: new _Dial__time_picker(hourMinuteMode: DartRuntimePrimitives.RequireValue(this._hourMinuteMode.value), hourDialType: hourMode, selectedTime: this._selectedTime.value, onChanged: (global::System.Action<TimeOfDay>)this._handleTimeChanged, onHourSelected: () => this._handleHourSelected()))))));
+                    switch (orientationLocal)
                     {
                         case global::Doroti.Framework.Widgets.Orientation.portrait:
                             {
-                                picker__108083 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: (theme__107379.useMaterial3 ? 0 : 16)), child: new _DialTimePickerHeader__time_picker(helpText: helpText__108056))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: (theme__107379.useMaterial3 ? 0 : 16)), child: dial__109179))) }))) }));
+                                picker = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: (themeLocal.useMaterial3 ? 0 : 16)), child: new _DialTimePickerHeader__time_picker(helpText: helpTextLocal))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: (themeLocal.useMaterial3 ? 0 : 16)), child: dialLocal))) }))) }));
                                 break;
                             }
                         case global::Doroti.Framework.Widgets.Orientation.landscape:
                             {
-                                picker__108083 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: (theme__107379.useMaterial3 ? 0 : 16)), child: new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _DialTimePickerHeader__time_picker(helpText: helpText__108056)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: dial__109179)) })))) }));
+                                picker = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: (themeLocal.useMaterial3 ? 0 : 16)), child: new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _DialTimePickerHeader__time_picker(helpText: helpTextLocal)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: dialLocal)) })))) }));
                                 break;
                             }
                     }
@@ -3024,12 +3024,12 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
             case TimePickerEntryMode.input:
             case TimePickerEntryMode.inputOnly:
                 {
-                    string helpText__111535 = (((_TimePicker__time_picker)this.widget).helpText ?? ((theme__107379.useMaterial3 ? this.localizations.timePickerInputHelpText : this.localizations.timePickerInputHelpText.toUpperCase())));
-                    picker__108083 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _TimePickerInput__time_picker(initialSelectedTime: this._selectedTime.value, errorInvalidText: ((_TimePicker__time_picker)this.widget).errorInvalidText, hourLabelText: ((_TimePicker__time_picker)this.widget).hourLabelText, minuteLabelText: ((_TimePicker__time_picker)this.widget).minuteLabelText, helpText: helpText__111535, autofocusHour: this._autofocusHour.value, autofocusMinute: this._autofocusMinute.value, restorationId: "time_picker_input", emptyInitialTime: ((_TimePicker__time_picker)this.widget).emptyInitialInput)) }));
+                    string helpTextAlternate = (((_TimePicker__time_picker)this.widget).helpText ?? ((themeLocal.useMaterial3 ? this.localizations.timePickerInputHelpText : this.localizations.timePickerInputHelpText.toUpperCase())));
+                    picker = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _TimePickerInput__time_picker(initialSelectedTime: this._selectedTime.value, errorInvalidText: ((_TimePicker__time_picker)this.widget).errorInvalidText, hourLabelText: ((_TimePicker__time_picker)this.widget).hourLabelText, minuteLabelText: ((_TimePicker__time_picker)this.widget).minuteLabelText, helpText: helpTextAlternate, autofocusHour: this._autofocusHour.value, autofocusMinute: this._autofocusMinute.value, restorationId: "time_picker_input", emptyInitialTime: ((_TimePicker__time_picker)this.widget).emptyInitialInput)) }));
                     break;
                 }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _TimePickerModel__time_picker(entryMode: ((_TimePicker__time_picker)this.widget).entryMode, selectedTime: this._selectedTime.value, hourMinuteMode: DartRuntimePrimitives.RequireValue(this._hourMinuteMode.value), orientation: orientation__107604, onHourMinuteModeChanged: (global::System.Action<_HourMinuteMode__time_picker>)this._handleHourMinuteModeChanged, onHourDoubleTapped: () => this._handleHourDoubleTapped(), onMinuteDoubleTapped: () => this._handleMinuteDoubleTapped(), hourDialType: hourMode__107769, onSelectedTimeChanged: (global::System.Action<TimeOfDay>)this._handleTimeChanged, useMaterial3: theme__107379.useMaterial3, use24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context), theme: TimePickerTheme.of(context), defaultTheme: defaultTheme__107436, child: picker__108083));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _TimePickerModel__time_picker(entryMode: ((_TimePicker__time_picker)this.widget).entryMode, selectedTime: this._selectedTime.value, hourMinuteMode: DartRuntimePrimitives.RequireValue(this._hourMinuteMode.value), orientation: orientationLocal, onHourMinuteModeChanged: (global::System.Action<_HourMinuteMode__time_picker>)this._handleHourMinuteModeChanged, onHourDoubleTapped: () => this._handleHourDoubleTapped(), onMinuteDoubleTapped: () => this._handleMinuteDoubleTapped(), hourDialType: hourMode, onSelectedTimeChanged: (global::System.Action<TimeOfDay>)this._handleTimeChanged, useMaterial3: themeLocal.useMaterial3, use24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context), theme: TimePickerTheme.of(context), defaultTheme: defaultThemeLocal, child: picker));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3043,8 +3043,8 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
     {
         DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
         DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
-        bool hasSerializedValue__36723 = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue__36804 = (hasSerializedValue__36723 ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
+        bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
+        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
         if (!((dynamic)property).isRegistered)
         {
             property._register(restorationId, this);
@@ -3060,8 +3060,8 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue__36804);
-        if (((!hasSerializedValue__36723 && ((dynamic)property).enabled) && (this.bucket is not null)))
+        property.initWithValue((dynamic)initialValue);
+        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -3085,14 +3085,14 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
         {
             return;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__39230 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
         DartRuntimePrimitives.Assert(() => !this.restorePending);
-        bool didReplaceBucket__39295 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
-        if (didReplaceBucket__39295)
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
+        if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket__39230, this._bucket)));
-            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket__39230 is null)));
-            oldBucket__39230?.dispose();
+            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket is null)));
+            oldBucket?.dispose();
         }
     }
 
@@ -3108,8 +3108,8 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent__40517 = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
-            return ((!object.Equals(potentialNewParent__40517, this._currentParent)) && ((potentialNewParent__40517?.isReplacing ?? false)));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
+            return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
             return default!;
         }
     }
@@ -3138,17 +3138,17 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
     {
         if (((this.restorationId is null) || (parent is null)))
         {
-            bool didReplace__42801 = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(newBucket: null, restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => (this._bucket is null));
-            return didReplace__42801;
+            return didReplace;
         }
         DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
         if ((restorePending || (this._bucket is null)))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucket__43086 = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
-            bool didReplace__43168 = _setNewBucketIfNecessary(newBucket: newBucket__43086, restorePending: restorePending);
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucket__43086)));
-            return didReplace__43168;
+            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
+            bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
+            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucketLocal)));
+            return didReplaceLocal;
         }
         DartRuntimePrimitives.Assert(() => (this._bucket is not null));
         DartRuntimePrimitives.Assert(() => !restorePending);
@@ -3164,7 +3164,7 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
         {
             return false;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__43946 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
         this._bucket = newBucket;
         if (!restorePending)
         {
@@ -3172,7 +3172,7 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
             {
                 this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
             }
-            didToggleBucket(oldBucket__43946);
+            didToggleBucket(oldBucket);
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -3192,13 +3192,13 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
 
     public virtual void _unregister(dynamic property)
     {
-        global::System.Action listener__44576 = this._properties.remove(property)!;
+        global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
             {
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener__44576()));
+        property.removeListener((global::System.Action)(() => listener()));
         property._unregister();
     }
 
@@ -3209,10 +3209,10 @@ public static partial class Time_pickerLibrary
     public static async Future<TimeOfDay?> showTimePicker(global::Doroti.Framework.Widgets.BuildContext context, TimeOfDay initialTime, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>? builder = null, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, bool useRootNavigator = true, TimePickerEntryMode initialEntryMode = TimePickerEntryMode.dial, string? cancelText = null, string? confirmText = null, string? helpText = null, string? errorInvalidText = null, string? hourLabelText = null, string? minuteLabelText = null, global::Doroti.Framework.Widgets.RouteSettings? routeSettings = null, global::System.Action<TimePickerEntryMode>? onEntryModeChanged = null, Offset? anchorPoint = null, global::Doroti.Framework.Widgets.Orientation? orientation = null, global::Doroti.Framework.Widgets.Icon? switchToInputEntryModeIcon = null, global::Doroti.Framework.Widgets.Icon? switchToTimerEntryModeIcon = null, bool emptyInitialInput = false)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        global::Doroti.Framework.Widgets.Widget dialog__117955 = ((global::Doroti.Framework.Widgets.Widget)(object?)new TimePickerDialog(initialTime: initialTime, initialEntryMode: initialEntryMode, cancelText: cancelText, confirmText: confirmText, helpText: helpText, errorInvalidText: errorInvalidText, hourLabelText: hourLabelText, minuteLabelText: minuteLabelText, orientation: orientation, onEntryModeChanged: (global::System.Action<TimePickerEntryMode>?)onEntryModeChanged, switchToInputEntryModeIcon: switchToInputEntryModeIcon, switchToTimerEntryModeIcon: switchToTimerEntryModeIcon, emptyInitialInput: emptyInitialInput));
+        global::Doroti.Framework.Widgets.Widget dialog = ((global::Doroti.Framework.Widgets.Widget)(object?)new TimePickerDialog(initialTime: initialTime, initialEntryMode: initialEntryMode, cancelText: cancelText, confirmText: confirmText, helpText: helpText, errorInvalidText: errorInvalidText, hourLabelText: hourLabelText, minuteLabelText: minuteLabelText, orientation: orientation, onEntryModeChanged: (global::System.Action<TimePickerEntryMode>?)onEntryModeChanged, switchToInputEntryModeIcon: switchToInputEntryModeIcon, switchToTimerEntryModeIcon: switchToTimerEntryModeIcon, emptyInitialInput: emptyInitialInput));
         return await DialogLibrary.showDialog<TimeOfDay>(context: context, barrierDismissible: barrierDismissible, barrierColor: barrierColor, barrierLabel: barrierLabel, useRootNavigator: useRootNavigator, builder: ((context) =>
         {
-            return ((builder is null) ? dialog__117955 : builder(context, dialog__117955));
+            return ((builder is null) ? dialog : builder(context, dialog));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }), routeSettings: routeSettings, anchorPoint: DartRuntimePrimitives.RequireValue(anchorPoint));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -3604,8 +3604,8 @@ public static partial class Time_pickerLibrary
 {
     internal static bool _debugDialTimePickerEntryMode(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        TimePickerEntryMode entryMode__126420 = _TimePickerModel__time_picker.entryModeOf(context);
-        return ((object.Equals(entryMode__126420, TimePickerEntryMode.dial)) || (object.Equals(entryMode__126420, TimePickerEntryMode.dialOnly)));
+        TimePickerEntryMode entryMode = _TimePickerModel__time_picker.entryModeOf(context);
+        return ((object.Equals(entryMode, TimePickerEntryMode.dial)) || (object.Equals(entryMode, TimePickerEntryMode.dialOnly)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -3871,8 +3871,8 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
         {
             return ((global::Doroti.Framework.Painting.TextStyle)(object?)global::Doroti.Framework.Widgets.WidgetStateTextStyle.CreateResolveWith(((states) =>
             {
-                global::Doroti.Framework.Painting.TextStyle textStyle__130802 = this._textTheme.labelMedium!;
-                return ((global::Doroti.Framework.Painting.TextStyle)(object?)textStyle__130802.copyWith(color: this._colors.onSurfaceVariant));
+                global::Doroti.Framework.Painting.TextStyle textStyle = this._textTheme.labelMedium!;
+                return ((global::Doroti.Framework.Painting.TextStyle)(object?)textStyle.copyWith(color: this._colors.onSurfaceVariant));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
             return default!;
@@ -3894,53 +3894,53 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
             {
                 if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
                 {
-                    global::Doroti.Ui.Color overlayColor__131182 = ((global::Doroti.Ui.Color)(object?)this._colors.primaryContainer);
+                    global::Doroti.Ui.Color overlayColor = ((global::Doroti.Ui.Color)(object?)this._colors.primaryContainer);
                     if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
                     {
-                        overlayColor__131182 = this._colors.onPrimaryContainer;
+                        overlayColor = this._colors.onPrimaryContainer;
                     }
                     else
                     {
                         if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
                         {
-                            var hoverOpacity__131403 = 0.08;
-                            overlayColor__131182 = this._colors.onPrimaryContainer.withOpacity(hoverOpacity__131403);
+                            var hoverOpacity = 0.08;
+                            overlayColor = this._colors.onPrimaryContainer.withOpacity(hoverOpacity);
                         }
                         else
                         {
                             if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
                             {
-                                var focusOpacity__131578 = 0.1;
-                                overlayColor__131182 = this._colors.onPrimaryContainer.withOpacity(focusOpacity__131578);
+                                var focusOpacity = 0.1;
+                                overlayColor = this._colors.onPrimaryContainer.withOpacity(focusOpacity);
                             }
                         }
                     }
-                    return Dart_uiLibrary.Color.alphaBlend(overlayColor__131182, this._colors.primaryContainer);
+                    return Dart_uiLibrary.Color.alphaBlend(overlayColor, this._colors.primaryContainer);
                 }
                 else
                 {
-                    global::Doroti.Ui.Color overlayColor__131789 = ((global::Doroti.Ui.Color)(object?)this._colors.surfaceContainerHighest);
+                    global::Doroti.Ui.Color overlayColorLocal = ((global::Doroti.Ui.Color)(object?)this._colors.surfaceContainerHighest);
                     if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
                     {
-                        overlayColor__131789 = this._colors.onSurface;
+                        overlayColorLocal = this._colors.onSurface;
                     }
                     else
                     {
                         if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
                         {
-                            var hoverOpacity__132008 = 0.08;
-                            overlayColor__131789 = this._colors.onSurface.withOpacity(hoverOpacity__132008);
+                            var hoverOpacityLocal = 0.08;
+                            overlayColorLocal = this._colors.onSurface.withOpacity(hoverOpacityLocal);
                         }
                         else
                         {
                             if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
                             {
-                                var focusOpacity__132174 = 0.1;
-                                overlayColor__131789 = this._colors.onSurface.withOpacity(focusOpacity__132174);
+                                var focusOpacityLocal = 0.1;
+                                overlayColorLocal = this._colors.onSurface.withOpacity(focusOpacityLocal);
                             }
                         }
                     }
-                    return Dart_uiLibrary.Color.alphaBlend(overlayColor__131789, this._colors.surfaceContainerHighest);
+                    return Dart_uiLibrary.Color.alphaBlend(overlayColorLocal, this._colors.surfaceContainerHighest);
                 }
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
@@ -4058,8 +4058,8 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
     {
         get
         {
-            global::Doroti.Framework.Painting.BorderRadius selectorRadius__135431 = ((global::Doroti.Framework.Painting.BorderRadius)(object?)new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(8.0))).borderRadius.resolve(Directionality.of(this.context)));
-            return new InputDecorationThemeData(contentPadding: global::Doroti.Framework.Painting.EdgeInsets.zero, filled: true, fillColor: this.hourMinuteColor, focusColor: this._colors.primaryContainer, enabledBorder: new OutlineInputBorder(borderRadius: selectorRadius__135431, borderSide: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent)), errorBorder: new OutlineInputBorder(borderRadius: selectorRadius__135431, borderSide: new global::Doroti.Framework.Painting.BorderSide(color: this._colors.error, width: 2)), focusedBorder: new OutlineInputBorder(borderRadius: selectorRadius__135431, borderSide: new global::Doroti.Framework.Painting.BorderSide(color: this._colors.primary, width: 2)), focusedErrorBorder: new OutlineInputBorder(borderRadius: selectorRadius__135431, borderSide: new global::Doroti.Framework.Painting.BorderSide(color: this._colors.error, width: 2)), hintStyle: this.hourMinuteTextStyle.copyWith(color: this._colors.onSurface.withOpacity(0.36)), errorStyle: new global::Doroti.Framework.Painting.TextStyle(fontSize: 0));
+            global::Doroti.Framework.Painting.BorderRadius selectorRadius = ((global::Doroti.Framework.Painting.BorderRadius)(object?)new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(8.0))).borderRadius.resolve(Directionality.of(this.context)));
+            return new InputDecorationThemeData(contentPadding: global::Doroti.Framework.Painting.EdgeInsets.zero, filled: true, fillColor: this.hourMinuteColor, focusColor: this._colors.primaryContainer, enabledBorder: new OutlineInputBorder(borderRadius: selectorRadius, borderSide: new global::Doroti.Framework.Painting.BorderSide(color: Colors.transparent)), errorBorder: new OutlineInputBorder(borderRadius: selectorRadius, borderSide: new global::Doroti.Framework.Painting.BorderSide(color: this._colors.error, width: 2)), focusedBorder: new OutlineInputBorder(borderRadius: selectorRadius, borderSide: new global::Doroti.Framework.Painting.BorderSide(color: this._colors.primary, width: 2)), focusedErrorBorder: new OutlineInputBorder(borderRadius: selectorRadius, borderSide: new global::Doroti.Framework.Painting.BorderSide(color: this._colors.error, width: 2)), hintStyle: this.hourMinuteTextStyle.copyWith(color: this._colors.onSurface.withOpacity(0.36)), errorStyle: new global::Doroti.Framework.Painting.TextStyle(fontSize: 0));
             return default!;
         }
     }

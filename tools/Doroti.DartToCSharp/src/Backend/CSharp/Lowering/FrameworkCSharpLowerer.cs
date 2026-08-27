@@ -168,6 +168,7 @@ internal sealed partial class FrameworkCSharpLowerer
         ValidatePlatformNetworkImageContract(source);
         ValidateSemanticsLoweringContracts(source);
         ValidateCustomClipperContract(source);
+        source = CSharpLocalNameNormalizer.Normalize(source);
         return new(source, mappings);
     }
 

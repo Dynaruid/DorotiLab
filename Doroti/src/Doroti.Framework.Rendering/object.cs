@@ -62,39 +62,39 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
                 child.debugRegisterRepaintBoundaryPaint(includedParent: debugAlsoPaintedParent, includedChild: true);
                 return true;
             });
-        var childLayer__4874 = ((OffsetLayer?)(object?)((RenderObject)child)._layerHandle.layer)!;
-        if ((childLayer__4874 is null))
+        var childLayer = ((OffsetLayer?)(object?)((RenderObject)child)._layerHandle.layer)!;
+        if ((childLayer is null))
         {
             DartRuntimePrimitives.Assert(() => debugAlsoPaintedParent);
             DartRuntimePrimitives.Assert(() => (((RenderObject)child)._layerHandle.layer is null));
-            OffsetLayer layer__5336 = child.updateCompositedLayer(oldLayer: null);
-            ((RenderObject)child)._layerHandle.layer = childLayer__4874 = layer__5336;
+            OffsetLayer layerLocal = child.updateCompositedLayer(oldLayer: null);
+            ((RenderObject)child)._layerHandle.layer = childLayer = layerLocal;
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (debugAlsoPaintedParent || childLayer__4874.attached));
-            global::Doroti.Ui.Offset? debugOldOffset__5530 = default!;
+            DartRuntimePrimitives.Assert(() => (debugAlsoPaintedParent || childLayer.attached));
+            global::Doroti.Ui.Offset? debugOldOffset = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    debugOldOffset__5530 = childLayer__4874!.offset;
+                    debugOldOffset = childLayer!.offset;
                     return true;
                 });
-            childLayer__4874.removeAllChildren();
-            OffsetLayer updatedLayer__5704 = child.updateCompositedLayer(oldLayer: childLayer__4874);
-            DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(updatedLayer__5704, childLayer__4874));
-            DartRuntimePrimitives.Assert(() => (object.Equals(debugOldOffset__5530, ((OffsetLayer)updatedLayer__5704).offset)));
+            childLayer.removeAllChildren();
+            OffsetLayer updatedLayer = child.updateCompositedLayer(oldLayer: childLayer);
+            DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(updatedLayer, childLayer));
+            DartRuntimePrimitives.Assert(() => (object.Equals(debugOldOffset, ((OffsetLayer)updatedLayer).offset)));
         }
         child._needsCompositedLayerUpdate = false;
-        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(childLayer__4874, ((RenderObject)child)._layerHandle.layer));
+        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(childLayer, ((RenderObject)child)._layerHandle.layer));
         DartRuntimePrimitives.Assert(() => (((RenderObject)child)._layerHandle.layer is OffsetLayer));
         DartRuntimePrimitives.Assert(() =>
             {
-                childLayer__4874!.debugCreator = (((object?)((RenderObject)child).debugCreator ?? (object?)DartRuntimePrimitives.RuntimeType(child)));
+                childLayer!.debugCreator = (((object?)((RenderObject)child).debugCreator ?? (object?)DartRuntimePrimitives.RuntimeType(child)));
                 return true;
             });
-        childContext ??= new PaintingContext(childLayer__4874, ((RenderObject)child).paintBounds);
+        childContext ??= new PaintingContext(childLayer, ((RenderObject)child).paintBounds);
         child._paintWithContext(childContext, Offset.zero);
-        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(childLayer__4874, ((RenderObject)child)._layerHandle.layer));
+        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(childLayer, ((RenderObject)child)._layerHandle.layer));
         childContext.stopRecordingIfNeeded();
     }
 
@@ -103,16 +103,16 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
         DartRuntimePrimitives.Assert(() => (((RenderObject)child).isRepaintBoundary && ((RenderObject)child)._wasRepaintBoundary));
         DartRuntimePrimitives.Assert(() => !((RenderObject)child)._needsPaint);
         DartRuntimePrimitives.Assert(() => (((RenderObject)child)._layerHandle.layer is not null));
-        var childLayer__7529 = ((OffsetLayer?)(object?)((RenderObject)child)._layerHandle.layer!)!;
-        global::Doroti.Ui.Offset? debugOldOffset__7596 = default!;
+        var childLayer = ((OffsetLayer?)(object?)((RenderObject)child)._layerHandle.layer!)!;
+        global::Doroti.Ui.Offset? debugOldOffset = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                debugOldOffset__7596 = ((OffsetLayer)childLayer__7529).offset;
+                debugOldOffset = ((OffsetLayer)childLayer).offset;
                 return true;
             });
-        OffsetLayer updatedLayer__7721 = child.updateCompositedLayer(oldLayer: childLayer__7529);
-        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(updatedLayer__7721, childLayer__7529));
-        DartRuntimePrimitives.Assert(() => (object.Equals(debugOldOffset__7596, ((OffsetLayer)updatedLayer__7721).offset)));
+        OffsetLayer updatedLayer = child.updateCompositedLayer(oldLayer: childLayer);
+        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(updatedLayer, childLayer));
+        DartRuntimePrimitives.Assert(() => (object.Equals(debugOldOffset, ((OffsetLayer)updatedLayer).offset)));
         child._needsCompositedLayerUpdate = false;
     }
 
@@ -175,9 +175,9 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
                 });
         }
         DartRuntimePrimitives.Assert(() => (((RenderObject)child)._layerHandle.layer is OffsetLayer));
-        var childOffsetLayer__10630 = ((OffsetLayer?)(object?)((RenderObject)child)._layerHandle.layer!)!;
-        childOffsetLayer__10630.offset = offset;
-        appendLayer(childOffsetLayer__10630);
+        var childOffsetLayer = ((OffsetLayer?)(object?)((RenderObject)child)._layerHandle.layer!)!;
+        childOffsetLayer.offset = offset;
+        appendLayer(childOffsetLayer);
     }
 
     public virtual void appendLayer(Layer layer)
@@ -191,10 +191,10 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
     {
         get
         {
-            var hasCanvas__11326 = (this._canvas is not null);
+            var hasCanvas = (this._canvas is not null);
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if (hasCanvas__11326)
+                    if (hasCanvas)
                     {
                         DartRuntimePrimitives.Assert(() => (this._currentLayer is not null));
                         DartRuntimePrimitives.Assert(() => (this._recorder is not null));
@@ -208,7 +208,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
                     }
                     return true;
                 });
-            return hasCanvas__11326;
+            return hasCanvas;
             return default!;
         }
     }
@@ -263,7 +263,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             {
                 if (global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled)
                 {
-                    var paint__14174 = ((Func<Paint>)(() =>
+                    var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.style = PaintingStyle.stroke;
@@ -271,11 +271,11 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
     __cascade.color = global::Doroti.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor.toColor();
     return __cascade;
 }))();
-                    this.canvas.drawRect(this.estimatedBounds.deflate(3.0), paint__14174);
+                    this.canvas.drawRect(this.estimatedBounds.deflate(3.0), paint);
                 }
                 if (global::Doroti.Framework.Rendering.DebugLibrary.debugPaintLayerBordersEnabled)
                 {
-                    var paint__14444 = ((Func<Paint>)(() =>
+                    var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.style = PaintingStyle.stroke;
@@ -283,7 +283,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
     __cascade.color = new global::Doroti.Ui.Color(4294940672L);
     return __cascade;
 }))();
-                    this.canvas.drawRect(this.estimatedBounds, paint__14444);
+                    this.canvas.drawRect(this.estimatedBounds, paintLocal);
                 }
                 return true;
             });
@@ -325,9 +325,9 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
         }
         stopRecordingIfNeeded();
         appendLayer(childLayer);
-        PaintingContext childContext__18877 = createChildContext(childLayer, (childPaintBounds ?? this.estimatedBounds));
-        painter(childContext__18877, offset);
-        childContext__18877.stopRecordingIfNeeded();
+        PaintingContext childContext = createChildContext(childLayer, (childPaintBounds ?? this.estimatedBounds));
+        painter(childContext, offset);
+        childContext.stopRecordingIfNeeded();
     }
 
     public virtual PaintingContext createChildContext(ContainerLayer childLayer, Rect bounds)
@@ -343,23 +343,23 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             painter(this, offset);
             return null;
         }
-        global::Doroti.Ui.Rect offsetClipRect__21651 = clipRect.shift(offset);
+        global::Doroti.Ui.Rect offsetClipRect = clipRect.shift(offset);
         if (needsCompositing)
         {
-            ClipRectLayer layer__21746 = (oldLayer ?? new ClipRectLayer());
+            ClipRectLayer layer = (oldLayer ?? new ClipRectLayer());
             ((Func<ClipRectLayer>)(() =>
 {
-    var __cascade = layer__21746;
-    __cascade.clipRect = offsetClipRect__21651;
+    var __cascade = layer;
+    __cascade.clipRect = offsetClipRect;
     __cascade.clipBehavior = clipBehavior;
     return __cascade;
 }))();
-            pushLayer(layer__21746, (Action<PaintingContext, Offset>)painter, offset, childPaintBounds: offsetClipRect__21651);
-            return layer__21746;
+            pushLayer(layer, (Action<PaintingContext, Offset>)painter, offset, childPaintBounds: offsetClipRect);
+            return layer;
         }
         else
         {
-            clipRectAndPaint(offsetClipRect__21651, clipBehavior, offsetClipRect__21651, ((Action)(() => painter(this, offset))));
+            clipRectAndPaint(offsetClipRect, clipBehavior, offsetClipRect, ((Action)(() => painter(this, offset))));
             return null;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -372,24 +372,24 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             painter(this, offset);
             return null;
         }
-        global::Doroti.Ui.Rect offsetBounds__23331 = bounds.shift(offset);
-        global::Doroti.Ui.RRect offsetClipRRect__23384 = clipRRect.shift(offset);
+        global::Doroti.Ui.Rect offsetBounds = bounds.shift(offset);
+        global::Doroti.Ui.RRect offsetClipRRect = clipRRect.shift(offset);
         if (needsCompositing)
         {
-            ClipRRectLayer layer__23482 = (oldLayer ?? new ClipRRectLayer());
+            ClipRRectLayer layer = (oldLayer ?? new ClipRRectLayer());
             ((Func<ClipRRectLayer>)(() =>
 {
-    var __cascade = layer__23482;
-    __cascade.clipRRect = offsetClipRRect__23384;
+    var __cascade = layer;
+    __cascade.clipRRect = offsetClipRRect;
     __cascade.clipBehavior = clipBehavior;
     return __cascade;
 }))();
-            pushLayer(layer__23482, (Action<PaintingContext, Offset>)painter, offset, childPaintBounds: offsetBounds__23331);
-            return layer__23482;
+            pushLayer(layer, (Action<PaintingContext, Offset>)painter, offset, childPaintBounds: offsetBounds);
+            return layer;
         }
         else
         {
-            clipRRectAndPaint(offsetClipRRect__23384, clipBehavior, offsetBounds__23331, ((Action)(() => painter(this, offset))));
+            clipRRectAndPaint(offsetClipRRect, clipBehavior, offsetBounds, ((Action)(() => painter(this, offset))));
             return null;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -402,24 +402,24 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             painter(this, offset);
             return null;
         }
-        global::Doroti.Ui.Rect offsetBounds__25224 = bounds.shift(offset);
-        global::Doroti.Ui.RSuperellipse offsetShape__25285 = clipRSuperellipse.shift(offset);
+        global::Doroti.Ui.Rect offsetBounds = bounds.shift(offset);
+        global::Doroti.Ui.RSuperellipse offsetShape = clipRSuperellipse.shift(offset);
         if (needsCompositing)
         {
-            ClipRSuperellipseLayer layer__25395 = (oldLayer ?? new ClipRSuperellipseLayer());
+            ClipRSuperellipseLayer layer = (oldLayer ?? new ClipRSuperellipseLayer());
             ((Func<ClipRSuperellipseLayer>)(() =>
 {
-    var __cascade = layer__25395;
-    __cascade.clipRSuperellipse = offsetShape__25285;
+    var __cascade = layer;
+    __cascade.clipRSuperellipse = offsetShape;
     __cascade.clipBehavior = clipBehavior;
     return __cascade;
 }))();
-            pushLayer(layer__25395, (Action<PaintingContext, Offset>)painter, offset, childPaintBounds: offsetBounds__25224);
-            return layer__25395;
+            pushLayer(layer, (Action<PaintingContext, Offset>)painter, offset, childPaintBounds: offsetBounds);
+            return layer;
         }
         else
         {
-            clipRSuperellipseAndPaint(offsetShape__25285, clipBehavior, offsetBounds__25224, ((Action)(() => painter(this, offset))));
+            clipRSuperellipseAndPaint(offsetShape, clipBehavior, offsetBounds, ((Action)(() => painter(this, offset))));
             return null;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -432,24 +432,24 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
             painter(this, offset);
             return null;
         }
-        global::Doroti.Ui.Rect offsetBounds__26993 = bounds.shift(offset);
-        global::Doroti.Ui.Path offsetClipPath__27045 = clipPath.shift(offset);
+        global::Doroti.Ui.Rect offsetBounds = bounds.shift(offset);
+        global::Doroti.Ui.Path offsetClipPath = clipPath.shift(offset);
         if (needsCompositing)
         {
-            ClipPathLayer layer__27140 = (oldLayer ?? new ClipPathLayer());
+            ClipPathLayer layer = (oldLayer ?? new ClipPathLayer());
             ((Func<ClipPathLayer>)(() =>
 {
-    var __cascade = layer__27140;
-    __cascade.clipPath = offsetClipPath__27045;
+    var __cascade = layer;
+    __cascade.clipPath = offsetClipPath;
     __cascade.clipBehavior = clipBehavior;
     return __cascade;
 }))();
-            pushLayer(layer__27140, (Action<PaintingContext, Offset>)painter, offset, childPaintBounds: offsetBounds__26993);
-            return layer__27140;
+            pushLayer(layer, (Action<PaintingContext, Offset>)painter, offset, childPaintBounds: offsetBounds);
+            return layer;
         }
         else
         {
-            clipPathAndPaint(offsetClipPath__27045, clipBehavior, offsetBounds__26993, ((Action)(() => painter(this, offset))));
+            clipPathAndPaint(offsetClipPath, clipBehavior, offsetBounds, ((Action)(() => painter(this, offset))));
             return null;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -457,16 +457,16 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
 
     public virtual ColorFilterLayer pushColorFilter(Offset offset, ColorFilter colorFilter, Action<PaintingContext, Offset> painter, ColorFilterLayer? oldLayer = null)
     {
-        ColorFilterLayer layer__28482 = (oldLayer ?? new ColorFilterLayer());
-        layer__28482.colorFilter = colorFilter;
-        pushLayer(layer__28482, (Action<PaintingContext, Offset>)painter, offset);
-        return layer__28482;
+        ColorFilterLayer layer = (oldLayer ?? new ColorFilterLayer());
+        layer.colorFilter = colorFilter;
+        pushLayer(layer, (Action<PaintingContext, Offset>)painter, offset);
+        return layer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual TransformLayer? pushTransform(bool needsCompositing, Offset offset, Matrix4 transform, Action<PaintingContext, Offset> painter, TransformLayer? oldLayer = null)
     {
-        var effectiveTransform__29518 = ((Func<Matrix4>)(() =>
+        var effectiveTransform = ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.translationValues(offset.dx, offset.dy, 0.0);
     __cascade.multiply(transform);
@@ -475,10 +475,10 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
 }))();
         if (needsCompositing)
         {
-            TransformLayer layer__29732 = (oldLayer ?? new TransformLayer());
-            layer__29732.transform = effectiveTransform__29518;
-            pushLayer(layer__29732, (Action<PaintingContext, Offset>)painter, offset, childPaintBounds: MatrixUtils.inverseTransformRect(effectiveTransform__29518, this.estimatedBounds));
-            return layer__29732;
+            TransformLayer layer = (oldLayer ?? new TransformLayer());
+            layer.transform = effectiveTransform;
+            pushLayer(layer, (Action<PaintingContext, Offset>)painter, offset, childPaintBounds: MatrixUtils.inverseTransformRect(effectiveTransform, this.estimatedBounds));
+            return layer;
         }
         else
         {
@@ -486,7 +486,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
 {
     var __cascade = this.canvas;
     __cascade.save();
-    __cascade.transform(effectiveTransform__29518.storage);
+    __cascade.transform(effectiveTransform.storage);
     return __cascade;
 }))();
             painter(this, offset);
@@ -498,16 +498,16 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
 
     public virtual OpacityLayer pushOpacity(Offset offset, long alpha, Action<PaintingContext, Offset> painter, OpacityLayer? oldLayer = null)
     {
-        OpacityLayer layer__31294 = (oldLayer ?? new OpacityLayer());
+        OpacityLayer layer = (oldLayer ?? new OpacityLayer());
         ((Func<OpacityLayer>)(() =>
 {
-    var __cascade = layer__31294;
+    var __cascade = layer;
     __cascade.alpha = alpha;
     __cascade.offset = offset;
     return __cascade;
 }))();
-        pushLayer(layer__31294, (Action<PaintingContext, Offset>)painter, Offset.zero);
-        return layer__31294;
+        pushLayer(layer, (Action<PaintingContext, Offset>)painter, Offset.zero);
+        return layer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -623,16 +623,16 @@ public class PipelineOwner : DiagnosticableTreeMixin
     {
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
-            DartMap<string, string>? debugTimelineArguments__44535 = default!;
+            DartMap<string, string>? debugTimelineArguments = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
                     if (global::Doroti.Framework.Rendering.DebugLibrary.debugEnhanceLayoutTimelineArguments)
                     {
-                        debugTimelineArguments__44535 = new DartMap<string, string> { ["dirty count"] = $"{checked((long)(this._nodesNeedingLayout.Count))}", ["dirty list"] = $"{this._nodesNeedingLayout}" };
+                        debugTimelineArguments = new DartMap<string, string> { ["dirty count"] = $"{checked((long)(this._nodesNeedingLayout.Count))}", ["dirty list"] = $"{this._nodesNeedingLayout}" };
                     }
                     return true;
                 });
-            FlutterTimeline.startSync($"LAYOUT{this._debugRootSuffixForTimelineEventNames}", arguments: debugTimelineArguments__44535);
+            FlutterTimeline.startSync($"LAYOUT{this._debugRootSuffixForTimelineEventNames}", arguments: debugTimelineArguments);
         }
         DartRuntimePrimitives.Assert(() =>
             {
@@ -644,24 +644,24 @@ public class PipelineOwner : DiagnosticableTreeMixin
             while ((checked((long)(this._nodesNeedingLayout.Count)) != 0))
             {
                 DartRuntimePrimitives.Assert(() => !this._shouldMergeDirtyNodes);
-                List<RenderObject> dirtyNodes__45202 = this._nodesNeedingLayout;
+                List<RenderObject> dirtyNodes = this._nodesNeedingLayout;
                 _nodesNeedingLayout = new List<RenderObject>();
-                dirtyNodes__45202.sort(((a, b) => (((RenderObject)a).depth - ((RenderObject)b).depth)));
-                for (var i__45381 = 0L; (i__45381 < checked((long)(dirtyNodes__45202.Count))); i__45381++)
+                dirtyNodes.sort(((a, b) => (((RenderObject)a).depth - ((RenderObject)b).depth)));
+                for (var i = 0L; (i < checked((long)(dirtyNodes.Count))); i++)
                 {
                     if (this._shouldMergeDirtyNodes)
                     {
                         _shouldMergeDirtyNodes = false;
                         if ((checked((long)(this._nodesNeedingLayout.Count)) != 0))
                         {
-                            this._nodesNeedingLayout.AddRange(dirtyNodes__45202.Skip(checked((int)i__45381)).ToList());
+                            this._nodesNeedingLayout.AddRange(dirtyNodes.Skip(checked((int)i)).ToList());
                             break;
                         }
                     }
-                    RenderObject node__45713 = dirtyNodes__45202[(int)(i__45381)];
-                    if ((((RenderObject)node__45713)._needsLayout && (object.Equals(((RenderObject)node__45713).owner, this))))
+                    RenderObject node = dirtyNodes[(int)(i)];
+                    if ((((RenderObject)node)._needsLayout && (object.Equals(((RenderObject)node).owner, this))))
                     {
-                        node__45713._layoutWithoutResize();
+                        node._layoutWithoutResize();
                     }
                 }
                 _shouldMergeDirtyNodes = false;
@@ -671,9 +671,9 @@ public class PipelineOwner : DiagnosticableTreeMixin
                     _debugDoingChildLayout = true;
                     return true;
                 });
-            foreach (PipelineOwner child__46135 in this._children)
+            foreach (PipelineOwner child in this._children)
             {
-                child__46135.flushLayout();
+                child.flushLayout();
             }
             DartRuntimePrimitives.Assert(() => (checked((long)(this._nodesNeedingLayout.Count)) == 0));
         }
@@ -696,10 +696,10 @@ public class PipelineOwner : DiagnosticableTreeMixin
     internal virtual void _enableMutationsToDirtySubtrees(Action callback)
     {
         DartRuntimePrimitives.Assert(() => this._debugDoingLayout);
-        bool? oldState__47152 = default!;
+        bool? oldState = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                oldState__47152 = this._debugAllowMutationsToDirtySubtrees;
+                oldState = this._debugAllowMutationsToDirtySubtrees;
                 _debugAllowMutationsToDirtySubtrees = true;
                 return true;
             });
@@ -712,7 +712,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
             _shouldMergeDirtyNodes = true;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    _debugAllowMutationsToDirtySubtrees = DartRuntimePrimitives.RequireValue(oldState__47152);
+                    _debugAllowMutationsToDirtySubtrees = DartRuntimePrimitives.RequireValue(oldState);
                     return true;
                 });
         }
@@ -725,17 +725,17 @@ public class PipelineOwner : DiagnosticableTreeMixin
             FlutterTimeline.startSync($"UPDATING COMPOSITING BITS{this._debugRootSuffixForTimelineEventNames}");
         }
         this._nodesNeedingCompositingBitsUpdate.sort(((a, b) => (((RenderObject)a).depth - ((RenderObject)b).depth)));
-        foreach (RenderObject node__48045 in this._nodesNeedingCompositingBitsUpdate)
+        foreach (RenderObject node in this._nodesNeedingCompositingBitsUpdate)
         {
-            if ((((RenderObject)node__48045)._needsCompositingBitsUpdate && (object.Equals(((RenderObject)node__48045).owner, this))))
+            if ((((RenderObject)node)._needsCompositingBitsUpdate && (object.Equals(((RenderObject)node).owner, this))))
             {
-                node__48045._updateCompositingBits();
+                node._updateCompositingBits();
             }
         }
         this._nodesNeedingCompositingBitsUpdate.Clear();
-        foreach (PipelineOwner child__48289 in this._children)
+        foreach (PipelineOwner child in this._children)
         {
-            child__48289.flushCompositingBits();
+            child.flushCompositingBits();
         }
         DartRuntimePrimitives.Assert(() => (checked((long)(this._nodesNeedingCompositingBitsUpdate.Count)) == 0));
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
@@ -750,16 +750,16 @@ public class PipelineOwner : DiagnosticableTreeMixin
     {
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
-            DartMap<string, string>? debugTimelineArguments__49986 = default!;
+            DartMap<string, string>? debugTimelineArguments = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
                     if (global::Doroti.Framework.Rendering.DebugLibrary.debugEnhancePaintTimelineArguments)
                     {
-                        debugTimelineArguments__49986 = new DartMap<string, string> { ["dirty count"] = $"{checked((long)(this._nodesNeedingPaint.Count))}", ["dirty list"] = $"{this._nodesNeedingPaint}" };
+                        debugTimelineArguments = new DartMap<string, string> { ["dirty count"] = $"{checked((long)(this._nodesNeedingPaint.Count))}", ["dirty list"] = $"{this._nodesNeedingPaint}" };
                     }
                     return true;
                 });
-            FlutterTimeline.startSync($"PAINT{this._debugRootSuffixForTimelineEventNames}", arguments: debugTimelineArguments__49986);
+            FlutterTimeline.startSync($"PAINT{this._debugRootSuffixForTimelineEventNames}", arguments: debugTimelineArguments);
         }
         try
         {
@@ -768,39 +768,39 @@ public class PipelineOwner : DiagnosticableTreeMixin
                     _debugDoingPaint = true;
                     return true;
                 });
-            List<RenderObject> dirtyNodes__50566 = this._nodesNeedingPaint;
+            List<RenderObject> dirtyNodes = this._nodesNeedingPaint;
             _nodesNeedingPaint = new List<RenderObject>();
-            foreach (var node__50726 in ((Func<List<RenderObject>>)(() =>
+            foreach (var node in ((Func<List<RenderObject>>)(() =>
 {
-    var __cascade = dirtyNodes__50566;
+    var __cascade = dirtyNodes;
     __cascade.sort(((a, b) => (((RenderObject)b).depth - ((RenderObject)a).depth)));
     return __cascade;
 }))())
             {
-                DartRuntimePrimitives.Assert(() => (((RenderObject)node__50726)._layerHandle.layer is not null));
-                if ((((((RenderObject)node__50726)._needsPaint || ((RenderObject)node__50726)._needsCompositedLayerUpdate)) && (object.Equals(((RenderObject)node__50726).owner, this))))
+                DartRuntimePrimitives.Assert(() => (((RenderObject)node)._layerHandle.layer is not null));
+                if ((((((RenderObject)node)._needsPaint || ((RenderObject)node)._needsCompositedLayerUpdate)) && (object.Equals(((RenderObject)node).owner, this))))
                 {
-                    if (((RenderObject)node__50726)._layerHandle.layer!.attached)
+                    if (((RenderObject)node)._layerHandle.layer!.attached)
                     {
-                        DartRuntimePrimitives.Assert(() => ((RenderObject)node__50726).isRepaintBoundary);
-                        if (((RenderObject)node__50726)._needsPaint)
+                        DartRuntimePrimitives.Assert(() => ((RenderObject)node).isRepaintBoundary);
+                        if (((RenderObject)node)._needsPaint)
                         {
-                            PaintingContext.repaintCompositedChild(node__50726);
+                            PaintingContext.repaintCompositedChild(node);
                         }
                         else
                         {
-                            PaintingContext.updateLayerProperties(node__50726);
+                            PaintingContext.updateLayerProperties(node);
                         }
                     }
                     else
                     {
-                        node__50726._skippedPaintingOnLayer();
+                        node._skippedPaintingOnLayer();
                     }
                 }
             }
-            foreach (PipelineOwner child__51359 in this._children)
+            foreach (PipelineOwner child in this._children)
             {
-                child__51359.flushPaint();
+                child.flushPaint();
             }
             DartRuntimePrimitives.Assert(() => (checked((long)(this._nodesNeedingPaint.Count)) == 0));
         }
@@ -875,7 +875,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
             });
         try
         {
-            List<RenderObject> nodesToProcess__56481 = ((Func<List<RenderObject>>)(() =>
+            List<RenderObject> nodesToProcess = ((Func<List<RenderObject>>)(() =>
 {
     var __cascade = this._nodesNeedingSemanticsUpdate.where(((@object) => (!((RenderObject)@object)._needsLayout && (object.Equals(((RenderObject)@object).owner, this))))).ToList();
     __cascade.sort(((a, b) => (((RenderObject)a).depth - ((RenderObject)b).depth)));
@@ -886,14 +886,14 @@ public class PipelineOwner : DiagnosticableTreeMixin
             {
                 FlutterTimeline.startSync("Semantics.updateChildren");
             }
-            RenderObject? rootNode__56896 = this.rootNode;
-            foreach (var node__56939 in nodesToProcess__56481)
+            RenderObject? rootNodeLocal = this.rootNode;
+            foreach (var node in nodesToProcess)
             {
-                if (((RenderObject)node__56939)._semantics.parentDataDirty)
+                if (((RenderObject)node)._semantics.parentDataDirty)
                 {
                     continue;
                 }
-                ((RenderObject)node__56939)._semantics.updateChildren();
+                ((RenderObject)node)._semantics.updateChildren();
             }
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
@@ -901,10 +901,10 @@ public class PipelineOwner : DiagnosticableTreeMixin
             }
             DartRuntimePrimitives.Assert(() =>
                 {
-                    DartRuntimePrimitives.Assert(() => ((checked((long)(nodesToProcess__56481.Count)) == 0) || (rootNode__56896 is not null)));
-                    if ((rootNode__56896 is not null))
+                    DartRuntimePrimitives.Assert(() => ((checked((long)(nodesToProcess.Count)) == 0) || (rootNodeLocal is not null)));
+                    if ((rootNodeLocal is not null))
                     {
-                        _RenderObjectSemantics__object.debugCheckForParentData(rootNode__56896);
+                        _RenderObjectSemantics__object.debugCheckForParentData(rootNodeLocal);
                     }
                     return true;
                 });
@@ -912,61 +912,61 @@ public class PipelineOwner : DiagnosticableTreeMixin
             {
                 FlutterTimeline.startSync("Semantics.ensureGeometry");
             }
-            List<RenderObject> nodesToProcessGeometry__58239 = this._nodesNeedingSemanticsGeometryUpdate.where(((@object) => ((!((RenderObject)@object)._needsLayout && (object.Equals(((RenderObject)@object).owner, this))) && !((RenderObject)@object)._semantics.parentDataDirty))).ToList();
+            List<RenderObject> nodesToProcessGeometry = this._nodesNeedingSemanticsGeometryUpdate.where(((@object) => ((!((RenderObject)@object)._needsLayout && (object.Equals(((RenderObject)@object).owner, this))) && !((RenderObject)@object)._semantics.parentDataDirty))).ToList();
             this._nodesNeedingSemanticsGeometryUpdate.Clear();
-            foreach (var node__59131 in nodesToProcessGeometry__58239)
+            foreach (var nodeLocal in nodesToProcessGeometry)
             {
-                if ((((RenderObject)node__59131)._semantics.shouldFormSemanticsNode && ((RenderObject)node__59131)._semantics.geometryDirty))
+                if ((((RenderObject)nodeLocal)._semantics.shouldFormSemanticsNode && ((RenderObject)nodeLocal)._semantics.geometryDirty))
                 {
                     continue;
                 }
-                if ((((RenderObject)node__59131)._semantics.shouldFormSemanticsNode && ((((RenderObject)node__59131)._isRelayoutBoundary ?? false))))
+                if ((((RenderObject)nodeLocal)._semantics.shouldFormSemanticsNode && ((((RenderObject)nodeLocal)._isRelayoutBoundary ?? false))))
                 {
-                    ((RenderObject)node__59131)._semantics.geometry = null;
+                    ((RenderObject)nodeLocal)._semantics.geometry = null;
                     continue;
                 }
-                if (!((RenderObject)node__59131)._semantics.contributesToSemanticsTree)
+                if (!((RenderObject)nodeLocal)._semantics.contributesToSemanticsTree)
                 {
-                    foreach (_RenderObjectSemantics__object child__59920 in ((RenderObject)node__59131)._semantics.mergeUp.OfType<_RenderObjectSemantics__object>())
+                    foreach (_RenderObjectSemantics__object child in ((RenderObject)nodeLocal)._semantics.mergeUp.OfType<_RenderObjectSemantics__object>())
                     {
-                        if (((_RenderObjectSemantics__object)child__59920).shouldFormSemanticsNode)
+                        if (((_RenderObjectSemantics__object)child).shouldFormSemanticsNode)
                         {
-                            child__59920.geometry = null;
+                            child.geometry = null;
                         }
                         else
                         {
-                            foreach (_RenderObjectSemantics__object nodeInSubtree__60390 in ((_RenderObjectSemantics__object)child__59920)._children)
+                            foreach (_RenderObjectSemantics__object nodeInSubtree in ((_RenderObjectSemantics__object)child)._children)
                             {
-                                DartRuntimePrimitives.Assert(() => ((_RenderObjectSemantics__object)nodeInSubtree__60390).shouldFormSemanticsNode);
-                                nodeInSubtree__60390.geometry = null;
+                                DartRuntimePrimitives.Assert(() => ((_RenderObjectSemantics__object)nodeInSubtree).shouldFormSemanticsNode);
+                                nodeInSubtree.geometry = null;
                             }
                         }
                     }
                     continue;
                 }
-                foreach (_RenderObjectSemantics__object child__60932 in ((RenderObject)node__59131)._semantics._children)
+                foreach (_RenderObjectSemantics__object childLocal in ((RenderObject)nodeLocal)._semantics._children)
                 {
-                    child__60932.geometry = null;
+                    childLocal.geometry = null;
                 }
             }
-            var treeShapeToken__61432 = new object();
-            var nodeToEnsureGeometry__61472 = new HashSet<_RenderObjectSemantics__object>();
-            foreach (var node__61540 in nodesToProcessGeometry__58239)
+            var treeShapeToken = new object();
+            var nodeToEnsureGeometry = new HashSet<_RenderObjectSemantics__object>();
+            foreach (var nodeAlternate in nodesToProcessGeometry)
             {
-                ((RenderObject)node__61540)._semantics.computeAncestorInfo(treeShapeToken__61432);
-                if ((((RenderObject)node__61540)._semantics.firstAncestorNodeWithCleanGeometry is not null))
+                ((RenderObject)nodeAlternate)._semantics.computeAncestorInfo(treeShapeToken);
+                if ((((RenderObject)nodeAlternate)._semantics.firstAncestorNodeWithCleanGeometry is not null))
                 {
-                    nodeToEnsureGeometry__61472.Add(((RenderObject)node__61540)._semantics.firstAncestorNodeWithCleanGeometry!);
+                    nodeToEnsureGeometry.Add(((RenderObject)nodeAlternate)._semantics.firstAncestorNodeWithCleanGeometry!);
                 }
             }
-            foreach (_RenderObjectSemantics__object node__61922 in ((Func<List<_RenderObjectSemantics__object>>)(() =>
+            foreach (_RenderObjectSemantics__object nodeNested in ((Func<List<_RenderObjectSemantics__object>>)(() =>
 {
-    var __cascade = nodeToEnsureGeometry__61472.ToList();
+    var __cascade = nodeToEnsureGeometry.ToList();
     __cascade.sort(((a, b) => (((_RenderObjectSemantics__object)a).renderObject.depth - ((_RenderObjectSemantics__object)b).renderObject.depth)));
     return __cascade;
 }))())
             {
-                node__61922.ensureGeometry();
+                nodeNested.ensureGeometry();
             }
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
@@ -976,54 +976,54 @@ public class PipelineOwner : DiagnosticableTreeMixin
             {
                 FlutterTimeline.startSync("Semantics.ensureSemanticsNode");
             }
-            foreach (RenderObject node__62368 in System.Linq.Enumerable.Reverse(nodesToProcess__56481))
+            foreach (RenderObject nodeCurrent in System.Linq.Enumerable.Reverse(nodesToProcess))
             {
-                ((RenderObject)node__62368)._semantics.computeAncestorInfo(treeShapeToken__61432);
-                var targets__62478 = new List<_RenderObjectSemantics__object>();
-                if (((RenderObject)node__62368)._semantics.geometryDirty)
+                ((RenderObject)nodeCurrent)._semantics.computeAncestorInfo(treeShapeToken);
+                var targets = new List<_RenderObjectSemantics__object>();
+                if (((RenderObject)nodeCurrent)._semantics.geometryDirty)
                 {
-                    if ((((RenderObject)node__62368)._semantics.firstAncestorNodeWithCleanGeometry is not null))
+                    if ((((RenderObject)nodeCurrent)._semantics.firstAncestorNodeWithCleanGeometry is not null))
                     {
-                        targets__62478.Add(((RenderObject)node__62368)._semantics.firstAncestorNodeWithCleanGeometry!);
+                        targets.Add(((RenderObject)nodeCurrent)._semantics.firstAncestorNodeWithCleanGeometry!);
                     }
                 }
                 else
                 {
-                    if ((!((RenderObject)node__62368)._semantics.geometry!.isVisible && !((RenderObject)node__62368)._semantics.isRoot))
+                    if ((!((RenderObject)nodeCurrent)._semantics.geometry!.isVisible && !((RenderObject)nodeCurrent)._semantics.isRoot))
                     {
-                        _RenderObjectSemantics__object? parentInSemanticsTree__63157 = ((RenderObject)node__62368)._semantics.parentInSemanticsTree;
-                        if ((parentInSemanticsTree__63157 is not null))
+                        _RenderObjectSemantics__object? parentInSemanticsTreeLocal = ((RenderObject)nodeCurrent)._semantics.parentInSemanticsTree;
+                        if ((parentInSemanticsTreeLocal is not null))
                         {
-                            if (!((_RenderObjectSemantics__object)parentInSemanticsTree__63157).geometryDirty)
+                            if (!((_RenderObjectSemantics__object)parentInSemanticsTreeLocal).geometryDirty)
                             {
-                                targets__62478.Add(parentInSemanticsTree__63157);
+                                targets.Add(parentInSemanticsTreeLocal);
                             }
                             else
                             {
-                                _RenderObjectSemantics__object? firstAncestorNodeWithCleanGeometry__63464 = ((_RenderObjectSemantics__object)parentInSemanticsTree__63157).firstAncestorNodeWithCleanGeometry;
-                                if ((firstAncestorNodeWithCleanGeometry__63464 is not null))
+                                _RenderObjectSemantics__object? firstAncestorNodeWithCleanGeometryLocal = ((_RenderObjectSemantics__object)parentInSemanticsTreeLocal).firstAncestorNodeWithCleanGeometry;
+                                if ((firstAncestorNodeWithCleanGeometryLocal is not null))
                                 {
-                                    targets__62478.Add(firstAncestorNodeWithCleanGeometry__63464);
+                                    targets.Add(firstAncestorNodeWithCleanGeometryLocal);
                                 }
                             }
                         }
                     }
-                    targets__62478.Add(((RenderObject)node__62368)._semantics);
+                    targets.Add(((RenderObject)nodeCurrent)._semantics);
                 }
-                foreach (var target__63937 in targets__62478)
+                foreach (var target in targets)
                 {
-                    if (((_RenderObjectSemantics__object)target__63937).parentDataDirty)
+                    if (((_RenderObjectSemantics__object)target).parentDataDirty)
                     {
                         continue;
                     }
-                    target__63937.ensureSemanticsNode();
+                    target.ensureSemanticsNode();
                 }
             }
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((rootNode__56896 is not null))
+                    if ((rootNodeLocal is not null))
                     {
-                        _RenderObjectSemantics__object.debugCheckForBuilds(((RenderObject)rootNode__56896)._semantics);
+                        _RenderObjectSemantics__object.debugCheckForBuilds(((RenderObject)rootNodeLocal)._semantics);
                     }
                     return true;
                 });
@@ -1032,9 +1032,9 @@ public class PipelineOwner : DiagnosticableTreeMixin
                 FlutterTimeline.finishSync();
             }
             this._semanticsOwner!.sendSemanticsUpdate();
-            foreach (PipelineOwner child__64482 in this._children)
+            foreach (PipelineOwner childAlternate in this._children)
             {
-                child__64482.flushSemantics();
+                childAlternate.flushSemantics();
             }
             DartRuntimePrimitives.Assert(() => (checked((long)(this._nodesNeedingSemanticsUpdate.Count)) == 0));
             DartRuntimePrimitives.Assert(() => (checked((long)(this._nodesNeedingSemanticsGeometryUpdate.Count)) == 0));
@@ -1089,9 +1089,9 @@ public class PipelineOwner : DiagnosticableTreeMixin
         _manifold = manifold;
         this._manifold!.addListener(this._updateSemanticsOwner);
         _updateSemanticsOwner();
-        foreach (PipelineOwner child__66280 in this._children)
+        foreach (PipelineOwner child in this._children)
         {
-            child__66280.attach(manifold);
+            child.attach(manifold);
         }
     }
 
@@ -1100,9 +1100,9 @@ public class PipelineOwner : DiagnosticableTreeMixin
         DartRuntimePrimitives.Assert(() => (this._manifold is not null));
         this._manifold!.removeListener(this._updateSemanticsOwner);
         _manifold = null;
-        foreach (PipelineOwner child__66964 in this._children)
+        foreach (PipelineOwner child in this._children)
         {
-            child__66964.detach();
+            child.detach();
         }
     }
 
@@ -1231,13 +1231,13 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
         get
         {
-            bool? disposed__81144 = default!;
+            bool? disposed = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    disposed__81144 = this._debugDisposed;
+                    disposed = this._debugDisposed;
                     return true;
                 });
-            return disposed__81144;
+            return disposed;
             return default!;
         }
     }
@@ -1283,12 +1283,12 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         DartRuntimePrimitives.Assert(() => (((RenderObject)child)._parent is null));
         DartRuntimePrimitives.Assert(() =>
             {
-                var node__86054 = this;
-                while ((((RenderObject)node__86054).parent is not null))
+                var node = this;
+                while ((((RenderObject)node).parent is not null))
                 {
-                    node__86054 = ((RenderObject)node__86054).parent!;
+                    node = ((RenderObject)node).parent!;
                 }
-                DartRuntimePrimitives.Assert(() => (!object.Equals(node__86054, child)));
+                DartRuntimePrimitives.Assert(() => (!object.Equals(node, child)));
                 return true;
             });
         setupParentData(child);
@@ -1338,20 +1338,20 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     public static RenderObject? debugActiveLayout => _debugActiveLayout;
     internal static T _withDebugActiveLayoutCleared<T>(Func<T> inner)
     {
-        RenderObject? debugPreviousActiveLayout__90009 = default!;
+        RenderObject? debugPreviousActiveLayout = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                debugPreviousActiveLayout__90009 = _debugActiveLayout;
+                debugPreviousActiveLayout = _debugActiveLayout;
                 _debugActiveLayout = null;
                 return true;
             });
-        T result__90180 = inner();
+        T result = inner();
         DartRuntimePrimitives.Assert(() =>
             {
-                _debugActiveLayout = debugPreviousActiveLayout__90009;
+                _debugActiveLayout = debugPreviousActiveLayout;
                 return true;
             });
-        return result__90180;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1368,42 +1368,42 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
         get
         {
-            bool isMutationAllowed__92311 = default!;
+            bool isMutationAllowed = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
                     if (this._debugDisposed)
                     {
                         throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("A disposed RenderObject was mutated."), new DiagnosticsProperty<RenderObject>("The disposed RenderObject was", this, style: DiagnosticsTreeStyle.errorProperty) });
                     }
-                    PipelineOwner? owner__92718 = this.owner;
-                    if (((owner__92718 is null) || !((PipelineOwner)owner__92718).debugDoingLayout))
+                    PipelineOwner? ownerLocal = this.owner;
+                    if (((ownerLocal is null) || !((PipelineOwner)ownerLocal).debugDoingLayout))
                     {
-                        isMutationAllowed__92311 = true;
+                        isMutationAllowed = true;
                         return true;
                     }
-                    RenderObject? activeLayoutRoot__93065 = default!;
-                    (activeLayoutRoot__93065, isMutationAllowed__92311) = (this._debugClosestMutationRoot ?? (null, false));
-                    if (isMutationAllowed__92311)
+                    RenderObject? activeLayoutRoot = default!;
+                    (activeLayoutRoot, isMutationAllowed) = (this._debugClosestMutationRoot ?? (null, false));
+                    if (isMutationAllowed)
                     {
                         return true;
                     }
-                    RenderObject debugActiveLayout__93388 = RenderObject.debugActiveLayout!;
-                    var culpritMethodName__93453 = (((RenderObject)debugActiveLayout__93388).debugDoingThisLayout ? "performLayout" : "performResize");
-                    var culpritFullMethodName__93581 = $"{DartRuntimePrimitives.RuntimeType(debugActiveLayout__93388)}.{culpritMethodName__93453}";
-                    if ((activeLayoutRoot__93065 is null))
+                    RenderObject debugActiveLayoutLocal = RenderObject.debugActiveLayout!;
+                    var culpritMethodName = (((RenderObject)debugActiveLayoutLocal).debugDoingThisLayout ? "performLayout" : "performResize");
+                    var culpritFullMethodName = $"{DartRuntimePrimitives.RuntimeType(debugActiveLayoutLocal)}.{culpritMethodName}";
+                    if ((activeLayoutRoot is null))
                     {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} was mutated in {culpritFullMethodName__93581}."), new ErrorDescription("The RenderObject was mutated when none of its ancestors is actively performing layout."), new DiagnosticsProperty<RenderObject>("The RenderObject being mutated was", this, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<RenderObject>($"The RenderObject that was mutating the said {this.GetType()} was", debugActiveLayout__93388, style: DiagnosticsTreeStyle.errorProperty) });
+                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} was mutated in {culpritFullMethodName}."), new ErrorDescription("The RenderObject was mutated when none of its ancestors is actively performing layout."), new DiagnosticsProperty<RenderObject>("The RenderObject being mutated was", this, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<RenderObject>($"The RenderObject that was mutating the said {this.GetType()} was", debugActiveLayoutLocal, style: DiagnosticsTreeStyle.errorProperty) });
                     }
-                    if ((object.Equals(activeLayoutRoot__93065, this)))
+                    if ((object.Equals(activeLayoutRoot, this)))
                     {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} was mutated in its own {culpritMethodName__93453} implementation."), new ErrorDescription("A RenderObject must not re-dirty itself while still being laid out."), new DiagnosticsProperty<RenderObject>("The RenderObject being mutated was", this, style: DiagnosticsTreeStyle.errorProperty), new ErrorHint("Consider using the LayoutBuilder widget to dynamically change a subtree during layout.") });
+                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary($"A {this.GetType()} was mutated in its own {culpritMethodName} implementation."), new ErrorDescription("A RenderObject must not re-dirty itself while still being laid out."), new DiagnosticsProperty<RenderObject>("The RenderObject being mutated was", this, style: DiagnosticsTreeStyle.errorProperty), new ErrorHint("Consider using the LayoutBuilder widget to dynamically change a subtree during layout.") });
                     }
-                    var summary__95044 = new ErrorSummary($"A {this.GetType()} was mutated in {culpritFullMethodName__93581}.");
-                    var isMutatedByAncestor__95137 = (object.Equals(activeLayoutRoot__93065, debugActiveLayout__93388));
-                    var description__95210 = (isMutatedByAncestor__95137 ? $"A RenderObject must not mutate its descendants in its {culpritMethodName__93453} method." : "A RenderObject must not mutate another RenderObject from a different render subtree " + $"in its {culpritMethodName__93453} method.");
-                    throw new FlutterError(new List<DiagnosticsNode> { summary__95044, new ErrorDescription(description__95210), new DiagnosticsProperty<RenderObject>("The RenderObject being mutated was", this, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<RenderObject>($"The {(isMutatedByAncestor__95137 ? "ancestor " : "")}RenderObject that was mutating the said {this.GetType()} was", debugActiveLayout__93388, style: DiagnosticsTreeStyle.errorProperty), new ErrorHint("Mutating the layout of another RenderObject may cause some RenderObjects in its subtree to be laid out more than once. " + "Consider using the LayoutBuilder widget to dynamically mutate a subtree during layout.") });
+                    var summary = new ErrorSummary($"A {this.GetType()} was mutated in {culpritFullMethodName}.");
+                    var isMutatedByAncestor = (object.Equals(activeLayoutRoot, debugActiveLayoutLocal));
+                    var description = (isMutatedByAncestor ? $"A RenderObject must not mutate its descendants in its {culpritMethodName} method." : "A RenderObject must not mutate another RenderObject from a different render subtree " + $"in its {culpritMethodName} method.");
+                    throw new FlutterError(new List<DiagnosticsNode> { summary, new ErrorDescription(description), new DiagnosticsProperty<RenderObject>("The RenderObject being mutated was", this, style: DiagnosticsTreeStyle.errorProperty), new DiagnosticsProperty<RenderObject>($"The {(isMutatedByAncestor ? "ancestor " : "")}RenderObject that was mutating the said {this.GetType()} was", debugActiveLayoutLocal, style: DiagnosticsTreeStyle.errorProperty), new ErrorHint("Mutating the layout of another RenderObject may cause some RenderObjects in its subtree to be laid out more than once. " + "Consider using the LayoutBuilder widget to dynamically mutate a subtree during layout.") });
                 });
-            return isMutationAllowed__92311;
+            return isMutationAllowed;
             return default!;
         }
     }
@@ -1411,13 +1411,13 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
         get
         {
-            RenderObject? layoutParent__97313 = default!;
+            RenderObject? layoutParent = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    layoutParent__97313 = this.parent;
+                    layoutParent = this.parent;
                     return true;
                 });
-            return layoutParent__97313;
+            return layoutParent;
             return default!;
         }
     }
@@ -1484,14 +1484,14 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     public abstract void debugAssertDoesMeetConstraints();
     internal virtual bool _debugRelayoutBoundaryAlreadyMarkedNeedsLayout()
     {
-        for (RenderObject? node__104348 = this; ((node__104348 is not null) && (((RenderObject)node__104348)._isRelayoutBoundary is not null)); node__104348 = ((RenderObject)node__104348).parent)
+        for (RenderObject? node = this; ((node is not null) && (((RenderObject)node)._isRelayoutBoundary is not null)); node = ((RenderObject)node).parent)
         {
-            bool alreadyMarkedNeedsLayout__104467 = (((RenderObject)node__104348)._needsLayout || ((RenderObject)node__104348)._debugDoingThisLayout);
-            if (!alreadyMarkedNeedsLayout__104467)
+            bool alreadyMarkedNeedsLayout = (((RenderObject)node)._needsLayout || ((RenderObject)node)._debugDoingThisLayout);
+            if (!alreadyMarkedNeedsLayout)
             {
                 return false;
             }
-            if (DartRuntimePrimitives.RequireValue(((RenderObject)node__104348)._isRelayoutBoundary))
+            if (DartRuntimePrimitives.RequireValue(((RenderObject)node)._isRelayoutBoundary))
             {
                 return true;
             }
@@ -1509,7 +1509,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             return;
         }
         _needsLayout = true;
-        if (this.owner is PipelineOwner owner__107012 && (((this._isRelayoutBoundary ?? false))))
+        if (this.owner is PipelineOwner ownerLocal && (((this._isRelayoutBoundary ?? false))))
         {
             DartRuntimePrimitives.Assert(() =>
                 {
@@ -1519,8 +1519,8 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                     }
                     return true;
                 });
-            ((PipelineOwner)owner__107012)._nodesNeedingLayout.Add(this);
-            owner__107012.requestVisualUpdate();
+            ((PipelineOwner)ownerLocal)._nodesNeedingLayout.Add(this);
+            ownerLocal.requestVisualUpdate();
         }
         else
         {
@@ -1536,16 +1536,16 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         DartRuntimePrimitives.Assert(() => this._debugCanPerformMutations);
         _needsLayout = true;
         DartRuntimePrimitives.Assert(() => (this.parent is not null));
-        RenderObject parent__107989 = this.parent!;
+        RenderObject parentLocal = this.parent!;
         if (!this._doingThisLayoutWithCallback)
         {
-            parent__107989.markNeedsLayout();
+            parentLocal.markNeedsLayout();
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => ((RenderObject)parent__107989)._debugDoingThisLayout);
+            DartRuntimePrimitives.Assert(() => ((RenderObject)parentLocal)._debugDoingThisLayout);
         }
-        DartRuntimePrimitives.Assert(() => (object.Equals(parent__107989, this.parent)));
+        DartRuntimePrimitives.Assert(() => (object.Equals(parentLocal, this.parent)));
     }
 
     public virtual void markNeedsLayoutForSizedByParentChange()
@@ -1574,7 +1574,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
         DartRuntimePrimitives.Assert(() => this._needsLayout);
         DartRuntimePrimitives.Assert(() => (((this._isRelayoutBoundary ?? false)) || (this is RenderObjectWithLayoutCallbackMixin)));
-        RenderObject? debugPreviousActiveLayout__109468 = default!;
+        RenderObject? debugPreviousActiveLayout = default!;
         DartRuntimePrimitives.Assert(() => !this._debugMutationsLocked);
         DartRuntimePrimitives.Assert(() => !this._doingThisLayoutWithCallback);
         DartRuntimePrimitives.Assert(() => (this._debugCanParentUseSize is not null));
@@ -1582,7 +1582,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             {
                 _debugMutationsLocked = true;
                 _debugDoingThisLayout = true;
-                debugPreviousActiveLayout__109468 = _debugActiveLayout;
+                debugPreviousActiveLayout = _debugActiveLayout;
                 _debugActiveLayout = this;
                 if (global::Doroti.Framework.Rendering.DebugLibrary.debugPrintLayouts)
                 {
@@ -1595,14 +1595,14 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             performLayout();
             markNeedsSemanticsUpdate();
         }
-        catch (Exception e__109998)
+        catch (Exception e)
         {
-            var stack__110001 = new System.Diagnostics.StackTrace();
-            _reportException("performLayout", e__109998, stack__110001);
+            var stack = new System.Diagnostics.StackTrace();
+            _reportException("performLayout", e, stack);
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                _debugActiveLayout = debugPreviousActiveLayout__109468;
+                _debugActiveLayout = debugPreviousActiveLayout;
                 _debugDoingThisLayout = false;
                 _debugMutationsLocked = false;
                 return true;
@@ -1616,44 +1616,44 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         DartRuntimePrimitives.Assert(() => !this._debugDisposed);
         if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled))
         {
-            DartMap<string, string>? debugTimelineArguments__111903 = default!;
+            DartMap<string, string>? debugTimelineArguments = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
                     if (global::Doroti.Framework.Rendering.DebugLibrary.debugEnhanceLayoutTimelineArguments)
                     {
-                        debugTimelineArguments__111903 = toDiagnosticsNode().toTimelineArguments();
+                        debugTimelineArguments = toDiagnosticsNode().toTimelineArguments();
                     }
                     return true;
                 });
-            FlutterTimeline.startSync($"{this.GetType()}", arguments: debugTimelineArguments__111903);
+            FlutterTimeline.startSync($"{this.GetType()}", arguments: debugTimelineArguments);
         }
         DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid(isAppliedConstraint: true, informationCollector: ((InformationCollector)(() =>
         {
-            List<string> stack__112356 = new global::System.Diagnostics.StackTrace(true).ToString().split("\n");
-            long? targetFrame__112422 = default!;
-            Pattern layoutFramePattern__112459 = new RegExp("^#[0-9]+ +Render(?:Object|Box).layout \\(");
-            for (var i__112552 = 0L; (i__112552 < checked((long)(stack__112356.Count))); i__112552 += 1L)
+            List<string> stack = new global::System.Diagnostics.StackTrace(true).ToString().split("\n");
+            long? targetFrame = default!;
+            Pattern layoutFramePattern = new RegExp("^#[0-9]+ +Render(?:Object|Box).layout \\(");
+            for (var i = 0L; (i < checked((long)(stack.Count))); i += 1L)
             {
-                if ((layoutFramePattern__112459.matchAsPrefix(stack__112356[(int)(i__112552)]) is not null))
+                if ((layoutFramePattern.matchAsPrefix(stack[(int)(i)]) is not null))
                 {
-                    targetFrame__112422 = (i__112552 + 1L);
+                    targetFrame = (i + 1L);
                 }
                 else
                 {
-                    if ((targetFrame__112422 is not null))
+                    if ((targetFrame is not null))
                     {
-                        long targetFrame__112422__value112715 = DartRuntimePrimitives.RequireValue(targetFrame__112422);
+                        long targetFrame__112422__value112715 = DartRuntimePrimitives.RequireValue(targetFrame);
                         break;
                     }
                 }
             }
-            if (((targetFrame__112422 is not null) && (DartRuntimePrimitives.RequireValue(targetFrame__112422) < checked((long)(stack__112356.Count)))))
+            if (((targetFrame is not null) && (DartRuntimePrimitives.RequireValue(targetFrame) < checked((long)(stack.Count)))))
             {
-                long targetFrame__112422__value112799 = DartRuntimePrimitives.RequireValue(targetFrame__112422);
-                Pattern targetFramePattern__112878 = new RegExp("^#[0-9]+ +(.+)$");
-                Match? targetFrameMatch__112952 = targetFramePattern__112878.matchAsPrefix(stack__112356[(int)(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(targetFrame__112422__value112799)))]);
-                string? problemFunction__113051 = ((((targetFrameMatch__112952 is not null) && (targetFrameMatch__112952.groupCount > 0L))) ? targetFrameMatch__112952.group(1L) : stack__112356[(int)(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(targetFrame__112422__value112799)))].Trim());
-                return new List<DiagnosticsNode> { new ErrorDescription($"These invalid constraints were provided to {this.GetType()}'s layout() " + "function by the following function, which probably computed the " + "invalid constraints in question:\n" + $"  {problemFunction__113051}") };
+                long targetFrame__112422__value112799 = DartRuntimePrimitives.RequireValue(targetFrame);
+                Pattern targetFramePattern = new RegExp("^#[0-9]+ +(.+)$");
+                Match? targetFrameMatch = targetFramePattern.matchAsPrefix(stack[(int)(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(targetFrame__112422__value112799)))]);
+                string? problemFunction = ((((targetFrameMatch is not null) && (targetFrameMatch.groupCount > 0L))) ? targetFrameMatch.group(1L) : stack[(int)(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(targetFrame__112422__value112799)))].Trim());
+                return new List<DiagnosticsNode> { new ErrorDescription($"These invalid constraints were provided to {this.GetType()}'s layout() " + "function by the following function, which probably computed the " + "invalid constraints in question:\n" + $"  {problemFunction}") };
             }
             return new List<DiagnosticsNode>();
             return default;
@@ -1672,10 +1672,10 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 {
                     _debugDoingThisResize = this.sizedByParent;
                     _debugDoingThisLayout = !this.sizedByParent;
-                    RenderObject? debugPreviousActiveLayout__114281 = _debugActiveLayout;
+                    RenderObject? debugPreviousActiveLayout = _debugActiveLayout;
                     _debugActiveLayout = this;
                     debugResetSize();
-                    _debugActiveLayout = debugPreviousActiveLayout__114281;
+                    _debugActiveLayout = debugPreviousActiveLayout;
                     _debugDoingThisLayout = false;
                     _debugDoingThisResize = false;
                     return true;
@@ -1714,10 +1714,10 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                         return true;
                     });
             }
-            catch (Exception e__115308)
+            catch (Exception e)
             {
-                var stack__115311 = new System.Diagnostics.StackTrace();
-                _reportException("performResize", e__115308, stack__115311);
+                var stackLocal = new System.Diagnostics.StackTrace();
+                _reportException("performResize", e, stackLocal);
             }
             DartRuntimePrimitives.Assert(() =>
                 {
@@ -1725,11 +1725,11 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                     return true;
                 });
         }
-        RenderObject? debugPreviousActiveLayout__115495 = default!;
+        RenderObject? debugPreviousActiveLayoutLocal = default!;
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugDoingThisLayout = true;
-                debugPreviousActiveLayout__115495 = _debugActiveLayout;
+                debugPreviousActiveLayoutLocal = _debugActiveLayout;
                 _debugActiveLayout = this;
                 return true;
             });
@@ -1743,14 +1743,14 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                     return true;
                 });
         }
-        catch (Exception e__115863)
+        catch (Exception eLocal)
         {
-            var stack__115866 = new System.Diagnostics.StackTrace();
-            _reportException("performLayout", e__115863, stack__115866);
+            var stackAlternate = new System.Diagnostics.StackTrace();
+            _reportException("performLayout", eLocal, stackAlternate);
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                _debugActiveLayout = debugPreviousActiveLayout__115495;
+                _debugActiveLayout = debugPreviousActiveLayoutLocal;
                 _debugDoingThisLayout = false;
                 _debugMutationsLocked = false;
                 return true;
@@ -1845,13 +1845,13 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
         get
         {
-            ContainerLayer? result__127483 = default!;
+            ContainerLayer? result = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    result__127483 = ((LayerHandle<ContainerLayer>)this._layerHandle).layer;
+                    result = ((LayerHandle<ContainerLayer>)this._layerHandle).layer;
                     return true;
                 });
-            return result__127483;
+            return result;
             return default!;
         }
     }
@@ -1863,16 +1863,16 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             return;
         }
         _needsCompositingBitsUpdate = true;
-        RenderObject? parent__128718 = this.parent;
-        if ((parent__128718 is not null))
+        RenderObject? parentLocal = this.parent;
+        if ((parentLocal is not null))
         {
-            if (((RenderObject)parent__128718)._needsCompositingBitsUpdate)
+            if (((RenderObject)parentLocal)._needsCompositingBitsUpdate)
             {
                 return;
             }
-            if ((((!this._wasRepaintBoundary || !this.isRepaintBoundary)) && !((RenderObject)parent__128718).isRepaintBoundary))
+            if ((((!this._wasRepaintBoundary || !this.isRepaintBoundary)) && !((RenderObject)parentLocal).isRepaintBoundary))
             {
-                parent__128718.markNeedsCompositingBitsUpdate();
+                parentLocal.markNeedsCompositingBitsUpdate();
                 return;
             }
         }
@@ -1894,7 +1894,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         {
             return;
         }
-        bool oldNeedsCompositing__129786 = this._needsCompositing;
+        bool oldNeedsCompositing = this._needsCompositing;
         _needsCompositing = false;
         visitChildren(((Action<RenderObject>)((child) =>
         {
@@ -1918,7 +1918,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         }
         else
         {
-            if ((oldNeedsCompositing__129786 != this._needsCompositing))
+            if ((oldNeedsCompositing != this._needsCompositing))
             {
                 _needsCompositingBitsUpdate = false;
                 markNeedsPaint();
@@ -2032,22 +2032,22 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         DartRuntimePrimitives.Assert(() => (this._needsPaint || this._needsCompositedLayerUpdate));
         DartRuntimePrimitives.Assert(() => (((LayerHandle<ContainerLayer>)this._layerHandle).layer is not null));
         DartRuntimePrimitives.Assert(() => !((LayerHandle<ContainerLayer>)this._layerHandle).layer!.attached);
-        RenderObject? node__137213 = this.parent;
-        while ((node__137213 is not null))
+        RenderObject? node = this.parent;
+        while ((node is not null))
         {
-            if (((RenderObject)node__137213).isRepaintBoundary)
+            if (((RenderObject)node).isRepaintBoundary)
             {
-                if ((((RenderObject)node__137213)._layerHandle.layer is null))
+                if ((((RenderObject)node)._layerHandle.layer is null))
                 {
                     break;
                 }
-                if (((RenderObject)node__137213)._layerHandle.layer!.attached)
+                if (((RenderObject)node)._layerHandle.layer!.attached)
                 {
                     break;
                 }
-                node__137213._needsPaint = true;
+                node._needsPaint = true;
             }
-            node__137213 = ((RenderObject)node__137213).parent;
+            node = ((RenderObject)node).parent;
         }
     }
 
@@ -2095,46 +2095,46 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         }
         if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && global::Doroti.Framework.Rendering.DebugLibrary.debugProfilePaintsEnabled))
         {
-            DartMap<string, string>? debugTimelineArguments__140237 = default!;
+            DartMap<string, string>? debugTimelineArguments = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
                     if (global::Doroti.Framework.Rendering.DebugLibrary.debugEnhancePaintTimelineArguments)
                     {
-                        debugTimelineArguments__140237 = toDiagnosticsNode().toTimelineArguments();
+                        debugTimelineArguments = toDiagnosticsNode().toTimelineArguments();
                     }
                     return true;
                 });
-            FlutterTimeline.startSync($"{this.GetType()}", arguments: debugTimelineArguments__140237);
+            FlutterTimeline.startSync($"{this.GetType()}", arguments: debugTimelineArguments);
         }
         DartRuntimePrimitives.Assert(() =>
             {
                 if (this._needsCompositingBitsUpdate)
                 {
-                    RenderObject? parent__140625 = this.parent;
-                    if ((parent__140625 is not null))
+                    RenderObject? parentLocal = this.parent;
+                    if ((parentLocal is not null))
                     {
-                        var visitedByParent__140691 = false;
-                        parent__140625.visitChildren(((Action<RenderObject>)((child) =>
+                        var visitedByParent = false;
+                        parentLocal.visitChildren(((Action<RenderObject>)((child) =>
                         {
                             if ((object.Equals(child, this)))
                             {
-                                visitedByParent__140691 = true;
+                                visitedByParent = true;
                             }
                         })));
-                        if (!visitedByParent__140691)
+                        if (!visitedByParent)
                         {
-                            throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("A RenderObject was not visited by the parent's visitChildren " + "during paint."), parent__140625.describeForError("The parent was"), describeForError("The child that was not visited was"), new ErrorDescription("A RenderObject with children must implement visitChildren and " + "call the visitor exactly once for each child; it also should not " + "paint children that were removed with dropChild."), new ErrorHint("This usually indicates an error in the Flutter framework itself.") });
+                            throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("A RenderObject was not visited by the parent's visitChildren " + "during paint."), parentLocal.describeForError("The parent was"), describeForError("The child that was not visited was"), new ErrorDescription("A RenderObject with children must implement visitChildren and " + "call the visitor exactly once for each child; it also should not " + "paint children that were removed with dropChild."), new ErrorHint("This usually indicates an error in the Flutter framework itself.") });
                         }
                     }
                     throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("Tried to paint a RenderObject before its compositing bits were " + "updated."), describeForError("The following RenderObject was marked as having dirty compositing " + "bits at the time that it was painted"), new ErrorDescription("A RenderObject that still has dirty compositing bits cannot be " + "painted because this indicates that the tree has not yet been " + "properly configured for creating the layer tree."), new ErrorHint("This usually indicates an error in the Flutter framework itself.") });
                 }
                 return true;
             });
-        RenderObject? debugLastActivePaint__142446 = default!;
+        RenderObject? debugLastActivePaint = default!;
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugDoingThisPaint = true;
-                debugLastActivePaint__142446 = _debugActivePaint;
+                debugLastActivePaint = _debugActivePaint;
                 _debugActivePaint = this;
                 DartRuntimePrimitives.Assert(() => (!this.isRepaintBoundary || (((LayerHandle<ContainerLayer>)this._layerHandle).layer is not null)));
                 return true;
@@ -2148,15 +2148,15 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             DartRuntimePrimitives.Assert(() => !this._needsLayout);
             DartRuntimePrimitives.Assert(() => !this._needsPaint);
         }
-        catch (Exception e__143033)
+        catch (Exception e)
         {
-            var stack__143036 = new System.Diagnostics.StackTrace();
-            _reportException("paint", e__143033, stack__143036);
+            var stack = new System.Diagnostics.StackTrace();
+            _reportException("paint", e, stack);
         }
         DartRuntimePrimitives.Assert(() =>
             {
                 debugPaint(context, offset);
-                _debugActivePaint = debugLastActivePaint__142446;
+                _debugActivePaint = debugLastActivePaint;
                 _debugDoingThisPaint = false;
                 return true;
             });
@@ -2190,59 +2190,59 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     public virtual Matrix4 getTransformTo(RenderObject? target)
     {
         DartRuntimePrimitives.Assert(() => this.attached);
-        List<RenderObject>? fromPath__148090 = default!;
-        List<RenderObject>? toPath__148226 = default!;
-        var from__148243 = this;
-        RenderObject to__148273 = (target ?? this.owner!.rootNode!);
-        while (!DartRuntimePrimitives.Identical(from__148243, to__148273))
+        List<RenderObject>? fromPath = default!;
+        List<RenderObject>? toPath = default!;
+        var @from = this;
+        RenderObject to = (target ?? this.owner!.rootNode!);
+        while (!DartRuntimePrimitives.Identical(@from, to))
         {
-            long fromDepth__148358 = ((RenderObject)from__148243).depth;
-            long toDepth__148398 = ((RenderObject)to__148273).depth;
-            if ((fromDepth__148358 >= toDepth__148398))
+            long fromDepth = ((RenderObject)@from).depth;
+            long toDepth = ((RenderObject)to).depth;
+            if ((fromDepth >= toDepth))
             {
-                RenderObject fromParent__148480 = (((RenderObject)from__148243).parent ?? throw new FlutterError($"{target} and {this} are not in the same render tree."));
-                (fromPath__148090 ??= new List<RenderObject> { this }).Add(fromParent__148480);
-                from__148243 = fromParent__148480;
+                RenderObject fromParent = (((RenderObject)@from).parent ?? throw new FlutterError($"{target} and {this} are not in the same render tree."));
+                (fromPath ??= new List<RenderObject> { this }).Add(fromParent);
+                @from = fromParent;
             }
-            if ((fromDepth__148358 <= toDepth__148398))
+            if ((fromDepth <= toDepth))
             {
-                RenderObject toParent__148765 = (((RenderObject)to__148273).parent ?? throw new FlutterError($"{target} and {this} are not in the same render tree."));
+                RenderObject toParent = (((RenderObject)to).parent ?? throw new FlutterError($"{target} and {this} are not in the same render tree."));
                 DartRuntimePrimitives.Assert(() => (target is not null));
-                (toPath__148226 ??= new List<RenderObject> { target! }).Add(toParent__148765);
-                to__148273 = toParent__148765;
+                (toPath ??= new List<RenderObject> { target! }).Add(toParent);
+                to = toParent;
             }
         }
-        Matrix4? fromTransform__149121 = default!;
-        if ((fromPath__148090 is not null))
+        Matrix4? fromTransform = default!;
+        if ((fromPath is not null))
         {
-            DartRuntimePrimitives.Assert(() => (checked((long)(fromPath__148090.Count)) > 1L));
-            fromTransform__149121 = Matrix4.identity();
-            long lastIndex__149257 = ((target is null) ? (checked((long)(fromPath__148090.Count)) - 2L) : (checked((long)(fromPath__148090.Count)) - 1L));
-            for (var index__149344 = lastIndex__149257; (index__149344 > 0L); index__149344 -= 1L)
+            DartRuntimePrimitives.Assert(() => (checked((long)(fromPath.Count)) > 1L));
+            fromTransform = Matrix4.identity();
+            long lastIndex = ((target is null) ? (checked((long)(fromPath.Count)) - 2L) : (checked((long)(fromPath.Count)) - 1L));
+            for (var index = lastIndex; (index > 0L); index -= 1L)
             {
-                fromPath__148090[(int)(index__149344)].applyPaintTransform(fromPath__148090[(int)((index__149344 - 1L))], fromTransform__149121);
+                fromPath[(int)(index)].applyPaintTransform(fromPath[(int)((index - 1L))], fromTransform);
             }
         }
-        if ((toPath__148226 is null))
+        if ((toPath is null))
         {
-            return (fromTransform__149121 ?? Matrix4.identity());
+            return (fromTransform ?? Matrix4.identity());
         }
-        DartRuntimePrimitives.Assert(() => (checked((long)(toPath__148226.Count)) > 1L));
-        var toTransform__149607 = Matrix4.identity();
-        for (long index__149654 = (checked((long)(toPath__148226.Count)) - 1L); (index__149654 > 0L); index__149654 -= 1L)
+        DartRuntimePrimitives.Assert(() => (checked((long)(toPath.Count)) > 1L));
+        var toTransform = Matrix4.identity();
+        for (long indexLocal = (checked((long)(toPath.Count)) - 1L); (indexLocal > 0L); indexLocal -= 1L)
         {
-            toPath__148226[(int)(index__149654)].applyPaintTransform(toPath__148226[(int)((index__149654 - 1L))], toTransform__149607);
+            toPath[(int)(indexLocal)].applyPaintTransform(toPath[(int)((indexLocal - 1L))], toTransform);
         }
-        if ((toTransform__149607.invert() == 0L))
+        if ((toTransform.invert() == 0L))
         {
             return Matrix4.zero();
         }
         return ((((Func<Matrix4?>)(() =>
 {
-    var __cascade = fromTransform__149121;
-    __cascade.multiply(toTransform__149607);
+    var __cascade = fromTransform;
+    __cascade.multiply(toTransform);
     return __cascade;
-}))()) ?? toTransform__149607);
+}))()) ?? toTransform);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2271,10 +2271,10 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         {
             return;
         }
-        global::Doroti.Framework.Semantics.SemanticsNode? node__154880 = ((_RenderObjectSemantics__object)this._semantics).cachedSemanticsNode;
-        if (((node__154880 is not null) && !((global::Doroti.Framework.Semantics.SemanticsNode)node__154880).isMergedIntoParent))
+        global::Doroti.Framework.Semantics.SemanticsNode? node = ((_RenderObjectSemantics__object)this._semantics).cachedSemanticsNode;
+        if (((node is not null) && !((global::Doroti.Framework.Semantics.SemanticsNode)node).isMergedIntoParent))
         {
-            node__154880.sendEvent(semanticsEvent);
+            node.sendEvent(semanticsEvent);
         }
         else
         {
@@ -2346,46 +2346,46 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
 
     public virtual string toStringShort()
     {
-        string header__159804 = global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+        string header = global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             if (this._debugDisposed)
             {
-                header__159804 += " DISPOSED";
-                return header__159804;
+                header += " DISPOSED";
+                return header;
             }
-            var count__159963 = 0L;
-            for (RenderObject? node__160008 = this; ((node__160008 is not null) && !((((RenderObject)node__160008)._isRelayoutBoundary ?? false))); node__160008 = ((RenderObject)node__160008).parent)
+            var count = 0L;
+            for (RenderObject? node = this; ((node is not null) && !((((RenderObject)node)._isRelayoutBoundary ?? false))); node = ((RenderObject)node).parent)
             {
-                if ((((RenderObject)node__160008)._isRelayoutBoundary is null))
+                if ((((RenderObject)node)._isRelayoutBoundary is null))
                 {
-                    count__159963 = -1L;
+                    count = -1L;
                     break;
                 }
-                count__159963 += 1L;
+                count += 1L;
             }
-            if ((count__159963 > 0L))
+            if ((count > 0L))
             {
-                header__159804 += $" relayoutBoundary=up{count__159963}";
+                header += $" relayoutBoundary=up{count}";
             }
             if (this._needsLayout)
             {
-                header__159804 += " NEEDS-LAYOUT";
+                header += " NEEDS-LAYOUT";
             }
             if (this._needsPaint)
             {
-                header__159804 += " NEEDS-PAINT";
+                header += " NEEDS-PAINT";
             }
             if (this._needsCompositingBitsUpdate)
             {
-                header__159804 += " NEEDS-COMPOSITING-BITS-UPDATE";
+                header += " NEEDS-COMPOSITING-BITS-UPDATE";
             }
             if (!this.attached)
             {
-                header__159804 += " DETACHED";
+                header += " DETACHED";
             }
         }
-        return header__159804;
+        return header;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2772,32 +2772,32 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         {
             return;
         }
-        _RenderObjectSemantics__object? next__217998 = default!;
+        _RenderObjectSemantics__object? next = default!;
         if (this.shouldFormSemanticsNode)
         {
             if (!this.geometryDirty)
             {
                 firstAncestorNodeWithCleanGeometry = this;
             }
-            next__217998 = this.parentInSemanticsTree;
+            next = this.parentInSemanticsTree;
         }
         else
         {
-            next__217998 = this;
-            while ((!next__217998!.parentDataDirty && !((_RenderObjectSemantics__object)next__217998).shouldFormSemanticsNode))
+            next = this;
+            while ((!next!.parentDataDirty && !((_RenderObjectSemantics__object)next).shouldFormSemanticsNode))
             {
-                next__217998 = ((_RenderObjectSemantics__object)next__217998).parent;
-                DartRuntimePrimitives.Assert(() => (next__217998 is not null));
+                next = ((_RenderObjectSemantics__object)next).parent;
+                DartRuntimePrimitives.Assert(() => (next is not null));
             }
         }
-        if ((next__217998 is null))
+        if ((next is null))
         {
             return;
         }
         if ((this.firstAncestorNodeWithCleanGeometry is null))
         {
-            next__217998.computeAncestorInfo(treeShapeToken);
-            firstAncestorNodeWithCleanGeometry = ((_RenderObjectSemantics__object)next__217998).firstAncestorNodeWithCleanGeometry;
+            next.computeAncestorInfo(treeShapeToken);
+            firstAncestorNodeWithCleanGeometry = ((_RenderObjectSemantics__object)next).firstAncestorNodeWithCleanGeometry;
         }
     }
 
@@ -2875,8 +2875,8 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             }
             this.renderObject.visitChildrenForSemantics(((Action<RenderObject>)((child) =>
             {
-                _RenderObjectSemantics__object childSemantics__221191 = ((RenderObject)child)._semantics;
-                if (((_RenderObjectSemantics__object)childSemantics__221191).isBlockingPreviousSibling)
+                _RenderObjectSemantics__object childSemantics = ((RenderObject)child)._semantics;
+                if (((_RenderObjectSemantics__object)childSemantics).isBlockingPreviousSibling)
                 {
                     _blocksPreviousSibling = true;
                 }
@@ -2893,17 +2893,17 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         {
             return;
         }
-        foreach (List<_SemanticsFragment__object> group__221604 in this.siblingMergeGroups)
+        foreach (List<_SemanticsFragment__object> @group in this.siblingMergeGroups)
         {
-            foreach (_RenderObjectSemantics__object semantics__221675 in group__221604.OfType<_RenderObjectSemantics__object>())
+            foreach (_RenderObjectSemantics__object semantics in @group.OfType<_RenderObjectSemantics__object>())
             {
-                if (((_RenderObjectSemantics__object)semantics__221675).parentDataDirty)
+                if (((_RenderObjectSemantics__object)semantics).parentDataDirty)
                 {
                     continue;
                 }
-                if (!((_RenderObjectSemantics__object)semantics__221675).shouldFormSemanticsNode)
+                if (!((_RenderObjectSemantics__object)semantics).shouldFormSemanticsNode)
                 {
-                    semantics__221675.markNeedsBuild();
+                    semantics.markNeedsBuild();
                 }
             }
         }
@@ -2913,26 +2913,26 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     {
         DartRuntimePrimitives.Assert(() => ((this.parentData is not null) || this.isRoot));
         this.configProvider.reset();
-        HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? tagsForChildren__223131 = _getTagsForChildren();
-        bool explicitChildNodesForChildren__223187 = ((this.isRoot || ((_SemanticsConfigurationProvider__object)this.configProvider).effective.explicitChildNodes) || ((!this.contributesToSemanticsTree && ((this.parentData?.explicitChildNodes ?? true)))));
-        bool blocksUserAction__223532 = (((this.parentData?.blocksUserActions ?? false)) || ((_SemanticsConfigurationProvider__object)this.configProvider).effective.isBlockingUserActions);
-        global::Doroti.Framework.Semantics.AccessibilityFocusBlockType accessibilityFocusBlockType__223684 = default!;
+        HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? tagsForChildrenLocal = _getTagsForChildren();
+        bool explicitChildNodesForChildren = ((this.isRoot || ((_SemanticsConfigurationProvider__object)this.configProvider).effective.explicitChildNodes) || ((!this.contributesToSemanticsTree && ((this.parentData?.explicitChildNodes ?? true)))));
+        bool blocksUserAction = (((this.parentData?.blocksUserActions ?? false)) || ((_SemanticsConfigurationProvider__object)this.configProvider).effective.isBlockingUserActions);
+        global::Doroti.Framework.Semantics.AccessibilityFocusBlockType accessibilityFocusBlockTypeLocal = default!;
         if ((object.Equals(this.parentData?.accessibilityFocusBlockType, global::Doroti.Framework.Semantics.AccessibilityFocusBlockType.blockSubtree)))
         {
-            accessibilityFocusBlockType__223684 = global::Doroti.Framework.Semantics.AccessibilityFocusBlockType.blockSubtree;
+            accessibilityFocusBlockTypeLocal = global::Doroti.Framework.Semantics.AccessibilityFocusBlockType.blockSubtree;
         }
         else
         {
-            accessibilityFocusBlockType__223684 = ((_SemanticsConfigurationProvider__object)this.configProvider).effective.accessibilityFocusBlockType;
+            accessibilityFocusBlockTypeLocal = ((_SemanticsConfigurationProvider__object)this.configProvider).effective.accessibilityFocusBlockType;
         }
-        global::Doroti.Ui.Locale? localeForChildren__224095 = (((_SemanticsConfigurationProvider__object)this.configProvider).effective.localeForSubtree ?? this.parentData?.localeForChildren);
+        global::Doroti.Ui.Locale? localeForChildrenLocal = (((_SemanticsConfigurationProvider__object)this.configProvider).effective.localeForSubtree ?? this.parentData?.localeForChildren);
         this.siblingMergeGroups.Clear();
         this.mergeUp.Clear();
-        var childParentData__224263 = new _SemanticsParentData__object(mergeIntoParent: (((this.parentData?.mergeIntoParent ?? false)) || ((_SemanticsConfigurationProvider__object)this.configProvider).effective.isMergingSemanticsOfDescendants), blocksUserActions: blocksUserAction__223532, accessibilityFocusBlockType: accessibilityFocusBlockType__223684, localeForChildren: localeForChildren__224095, explicitChildNodes: explicitChildNodesForChildren__223187, tagsForChildren: tagsForChildren__223131);
-        (List<_SemanticsFragment__object>, List<List<_SemanticsFragment__object>>) result__224742 = _collectChildMergeUpAndSiblingGroup(childParentData__224263);
-        this.mergeUp.AddRange(result__224742.Item1);
-        this.siblingMergeGroups.AddRange(result__224742.Item2);
-        HashSet<_RenderObjectSemantics__object> oldChildren__224994 = this._children.toSet();
+        var childParentData = new _SemanticsParentData__object(mergeIntoParent: (((this.parentData?.mergeIntoParent ?? false)) || ((_SemanticsConfigurationProvider__object)this.configProvider).effective.isMergingSemanticsOfDescendants), blocksUserActions: blocksUserAction, accessibilityFocusBlockType: accessibilityFocusBlockTypeLocal, localeForChildren: localeForChildrenLocal, explicitChildNodes: explicitChildNodesForChildren, tagsForChildren: tagsForChildrenLocal);
+        (List<_SemanticsFragment__object>, List<List<_SemanticsFragment__object>>) result = _collectChildMergeUpAndSiblingGroup(childParentData);
+        this.mergeUp.AddRange(result.Item1);
+        this.siblingMergeGroups.AddRange(result.Item2);
+        HashSet<_RenderObjectSemantics__object> oldChildren = this._children.toSet();
         this._children.Clear();
         if (!this.contributesToSemanticsTree)
         {
@@ -2940,77 +2940,77 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         }
         _marksConflictsInMergeGroup(this.mergeUp, isMergeUp: true);
         this.siblingMergeGroups.forEach(__fragments => this._marksConflictsInMergeGroup(__fragments));
-        IEnumerable<global::Doroti.Framework.Semantics.SemanticsConfiguration> mergeUpConfigs__225273 = this.mergeUp.map<_SemanticsFragment__object, global::Doroti.Framework.Semantics.SemanticsConfiguration?>(((fragment) => ((_SemanticsFragment__object)fragment).configToMergeUp)).OfType<global::Doroti.Framework.Semantics.SemanticsConfiguration>();
-        this.configProvider.absorbAll(mergeUpConfigs__225273);
+        IEnumerable<global::Doroti.Framework.Semantics.SemanticsConfiguration> mergeUpConfigs = this.mergeUp.map<_SemanticsFragment__object, global::Doroti.Framework.Semantics.SemanticsConfiguration?>(((fragment) => ((_SemanticsFragment__object)fragment).configToMergeUp)).OfType<global::Doroti.Framework.Semantics.SemanticsConfiguration>();
+        this.configProvider.absorbAll(mergeUpConfigs);
         this.mergeUp.Clear();
         this.mergeUp.Add(this);
-        foreach (_RenderObjectSemantics__object childSemantics__225714 in result__224742.Item1.OfType<_RenderObjectSemantics__object>())
+        foreach (_RenderObjectSemantics__object childSemantics in result.Item1.OfType<_RenderObjectSemantics__object>())
         {
-            DartRuntimePrimitives.Assert(() => ((_RenderObjectSemantics__object)childSemantics__225714).contributesToSemanticsTree);
-            if (((_RenderObjectSemantics__object)childSemantics__225714).shouldFormSemanticsNode)
+            DartRuntimePrimitives.Assert(() => ((_RenderObjectSemantics__object)childSemantics).contributesToSemanticsTree);
+            if (((_RenderObjectSemantics__object)childSemantics).shouldFormSemanticsNode)
             {
-                foreach (_RenderObjectSemantics__object child__225940 in ((_RenderObjectSemantics__object)childSemantics__225714)._children)
+                foreach (_RenderObjectSemantics__object child in ((_RenderObjectSemantics__object)childSemantics)._children)
                 {
-                    child__225940.parentInSemanticsTree = childSemantics__225714;
+                    child.parentInSemanticsTree = childSemantics;
                 }
-                if (((_RenderObjectSemantics__object)childSemantics__225714).geometryDirty)
+                if (((_RenderObjectSemantics__object)childSemantics).geometryDirty)
                 {
-                    ((RenderObject)this.renderObject).owner!._nodesNeedingSemanticsGeometryUpdate.Add(((_RenderObjectSemantics__object)childSemantics__225714).renderObject);
+                    ((RenderObject)this.renderObject).owner!._nodesNeedingSemanticsGeometryUpdate.Add(((_RenderObjectSemantics__object)childSemantics).renderObject);
                 }
-                this._children.Add(childSemantics__225714);
+                this._children.Add(childSemantics);
             }
             else
             {
-                this._children.AddRange(((_RenderObjectSemantics__object)childSemantics__225714)._children);
-                this.siblingMergeGroups.AddRange(((_RenderObjectSemantics__object)childSemantics__225714).siblingMergeGroups);
+                this._children.AddRange(((_RenderObjectSemantics__object)childSemantics)._children);
+                this.siblingMergeGroups.AddRange(((_RenderObjectSemantics__object)childSemantics).siblingMergeGroups);
             }
         }
         if ((this.isRoot || ((_SemanticsConfigurationProvider__object)this.configProvider).effective.isSemanticBoundary))
         {
-            foreach (_RenderObjectSemantics__object child__227677 in this._children)
+            foreach (_RenderObjectSemantics__object childLocal in this._children)
             {
-                child__227677.parentInSemanticsTree = this;
+                childLocal.parentInSemanticsTree = this;
             }
         }
-        oldChildren__224994.removeAll(this._children);
-        foreach (var removedChild__227810 in oldChildren__224994)
+        oldChildren.removeAll(this._children);
+        foreach (var removedChild in oldChildren)
         {
-            if ((object.Equals(((_RenderObjectSemantics__object)removedChild__227810).parentInSemanticsTree, this)))
+            if ((object.Equals(((_RenderObjectSemantics__object)removedChild).parentInSemanticsTree, this)))
             {
-                removedChild__227810.parentInSemanticsTree = null;
+                removedChild.parentInSemanticsTree = null;
             }
         }
-        HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? tags__227992 = this.parentData?.tagsForChildren;
-        if ((tags__227992 is not null))
+        HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? tags = this.parentData?.tagsForChildren;
+        if ((tags is not null))
         {
-            DartRuntimePrimitives.Assert(() => (checked((long)(tags__227992.Count)) != 0));
+            DartRuntimePrimitives.Assert(() => (checked((long)(tags.Count)) != 0));
             this.configProvider.updateConfig(((Action<global::Doroti.Framework.Semantics.SemanticsConfiguration>)((config) =>
             {
-                tags__227992.forEach(((global::Doroti.Framework.Semantics.SemanticsConfiguration)config).addTagForChildren);
+                tags.forEach(((global::Doroti.Framework.Semantics.SemanticsConfiguration)config).addTagForChildren);
             })));
         }
-        if ((!object.Equals(accessibilityFocusBlockType__223684, ((_SemanticsConfigurationProvider__object)this.configProvider).effective.accessibilityFocusBlockType)))
-        {
-            this.configProvider.updateConfig(((Action<global::Doroti.Framework.Semantics.SemanticsConfiguration>)((config) =>
-            {
-                config.accessibilityFocusBlockType = accessibilityFocusBlockType__223684;
-            })));
-        }
-        if ((blocksUserAction__223532 != ((_SemanticsConfigurationProvider__object)this.configProvider).effective.isBlockingUserActions))
+        if ((!object.Equals(accessibilityFocusBlockTypeLocal, ((_SemanticsConfigurationProvider__object)this.configProvider).effective.accessibilityFocusBlockType)))
         {
             this.configProvider.updateConfig(((Action<global::Doroti.Framework.Semantics.SemanticsConfiguration>)((config) =>
             {
-                config.isBlockingUserActions = blocksUserAction__223532;
+                config.accessibilityFocusBlockType = accessibilityFocusBlockTypeLocal;
             })));
         }
-        if ((!object.Equals(localeForChildren__224095, ((_SemanticsConfigurationProvider__object)this.configProvider).effective.locale)))
+        if ((blocksUserAction != ((_SemanticsConfigurationProvider__object)this.configProvider).effective.isBlockingUserActions))
         {
             this.configProvider.updateConfig(((Action<global::Doroti.Framework.Semantics.SemanticsConfiguration>)((config) =>
             {
-                config.locale = localeForChildren__224095;
+                config.isBlockingUserActions = blocksUserAction;
             })));
         }
-        if ((!object.Equals(accessibilityFocusBlockType__223684, global::Doroti.Framework.Semantics.AccessibilityFocusBlockType.none)))
+        if ((!object.Equals(localeForChildrenLocal, ((_SemanticsConfigurationProvider__object)this.configProvider).effective.locale)))
+        {
+            this.configProvider.updateConfig(((Action<global::Doroti.Framework.Semantics.SemanticsConfiguration>)((config) =>
+            {
+                config.locale = localeForChildrenLocal;
+            })));
+        }
+        if ((!object.Equals(accessibilityFocusBlockTypeLocal, global::Doroti.Framework.Semantics.AccessibilityFocusBlockType.none)))
         {
             this.configProvider.updateConfig(((Action<global::Doroti.Framework.Semantics.SemanticsConfiguration>)((config) =>
             {
@@ -3021,16 +3021,16 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
 
     internal virtual List<_RenderObjectSemantics__object> _getNonBlockedChildren()
     {
-        var result__229144 = new List<_RenderObjectSemantics__object>();
+        var result = new List<_RenderObjectSemantics__object>();
         this.renderObject.visitChildrenForSemantics(((Action<RenderObject>)((renderChild) =>
         {
             if (((RenderObject)renderChild)._semantics.isBlockingPreviousSibling)
             {
-                result__229144.Clear();
+                result.Clear();
             }
-            result__229144.Add(((RenderObject)renderChild)._semantics);
+            result.Add(((RenderObject)renderChild)._semantics);
         })));
-        return result__229144;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3040,89 +3040,89 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         {
             return ((_SemanticsConfigurationProvider__object)this.configProvider).original.tagsForChildren?.toSet();
         }
-        HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? result__229596 = default!;
+        HashSet<global::Doroti.Framework.Semantics.SemanticsTag>? result = default!;
         if ((((_SemanticsConfigurationProvider__object)this.configProvider).original.tagsForChildren is not null))
         {
-            result__229596 = ((_SemanticsConfigurationProvider__object)this.configProvider).original.tagsForChildren!.toSet();
+            result = ((_SemanticsConfigurationProvider__object)this.configProvider).original.tagsForChildren!.toSet();
         }
         if ((this.parentData?.tagsForChildren is not null))
         {
-            if ((result__229596 is null))
+            if ((result is null))
             {
-                result__229596 = this.parentData!.tagsForChildren;
+                result = this.parentData!.tagsForChildren;
             }
             else
             {
-                result__229596.UnionWith(this.parentData!.tagsForChildren!);
+                result.UnionWith(this.parentData!.tagsForChildren!);
             }
         }
-        return result__229596;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual (List<_SemanticsFragment__object>, List<List<_SemanticsFragment__object>>) _collectChildMergeUpAndSiblingGroup(_SemanticsParentData__object childParentData)
     {
-        var mergeUp__230088 = new List<_SemanticsFragment__object>();
-        var siblingMergeGroups__230132 = new List<List<_SemanticsFragment__object>>();
-        var childConfigurations__230194 = new List<global::Doroti.Framework.Semantics.SemanticsConfiguration>();
-        Func<List<global::Doroti.Framework.Semantics.SemanticsConfiguration>, global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult>? childConfigurationsDelegate__230292 = ((_SemanticsConfigurationProvider__object)this.configProvider).effective.childConfigurationsDelegate;
-        var hasChildConfigurationsDelegate__230394 = (childConfigurationsDelegate__230292 is not null);
-        var configToFragment__230474 = new DartMap<global::Doroti.Framework.Semantics.SemanticsConfiguration, _SemanticsFragment__object>();
-        bool needsToMakeIncompleteFragmentAssumption__231345 = (hasChildConfigurationsDelegate__230394 && ((_SemanticsParentData__object)childParentData).explicitChildNodes);
-        _SemanticsParentData__object effectiveChildParentData__231497 = default!;
-        if (needsToMakeIncompleteFragmentAssumption__231345)
+        var mergeUpLocal = new List<_SemanticsFragment__object>();
+        var siblingMergeGroupsLocal = new List<List<_SemanticsFragment__object>>();
+        var childConfigurations = new List<global::Doroti.Framework.Semantics.SemanticsConfiguration>();
+        Func<List<global::Doroti.Framework.Semantics.SemanticsConfiguration>, global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult>? childConfigurationsDelegateLocal = ((_SemanticsConfigurationProvider__object)this.configProvider).effective.childConfigurationsDelegate;
+        var hasChildConfigurationsDelegate = (childConfigurationsDelegateLocal is not null);
+        var configToFragment = new DartMap<global::Doroti.Framework.Semantics.SemanticsConfiguration, _SemanticsFragment__object>();
+        bool needsToMakeIncompleteFragmentAssumption = (hasChildConfigurationsDelegate && ((_SemanticsParentData__object)childParentData).explicitChildNodes);
+        _SemanticsParentData__object effectiveChildParentData = default!;
+        if (needsToMakeIncompleteFragmentAssumption)
         {
-            effectiveChildParentData__231497 = new _SemanticsParentData__object(mergeIntoParent: ((_SemanticsParentData__object)childParentData).mergeIntoParent, blocksUserActions: ((_SemanticsParentData__object)childParentData).blocksUserActions, accessibilityFocusBlockType: ((_SemanticsParentData__object)childParentData).accessibilityFocusBlockType, explicitChildNodes: false, tagsForChildren: ((_SemanticsParentData__object)childParentData).tagsForChildren, localeForChildren: ((_SemanticsParentData__object)childParentData).localeForChildren);
+            effectiveChildParentData = new _SemanticsParentData__object(mergeIntoParent: ((_SemanticsParentData__object)childParentData).mergeIntoParent, blocksUserActions: ((_SemanticsParentData__object)childParentData).blocksUserActions, accessibilityFocusBlockType: ((_SemanticsParentData__object)childParentData).accessibilityFocusBlockType, explicitChildNodes: false, tagsForChildren: ((_SemanticsParentData__object)childParentData).tagsForChildren, localeForChildren: ((_SemanticsParentData__object)childParentData).localeForChildren);
         }
         else
         {
-            effectiveChildParentData__231497 = childParentData;
+            effectiveChildParentData = childParentData;
         }
-        foreach (_RenderObjectSemantics__object childSemantics__232102 in _getNonBlockedChildren())
+        foreach (_RenderObjectSemantics__object childSemantics in _getNonBlockedChildren())
         {
-            DartRuntimePrimitives.Assert(() => !((_RenderObjectSemantics__object)childSemantics__232102).renderObject._needsLayout);
-            childSemantics__232102._didUpdateParentData(effectiveChildParentData__231497);
-            foreach (_SemanticsFragment__object fragment__232310 in ((_RenderObjectSemantics__object)childSemantics__232102).mergeUp)
+            DartRuntimePrimitives.Assert(() => !((_RenderObjectSemantics__object)childSemantics).renderObject._needsLayout);
+            childSemantics._didUpdateParentData(effectiveChildParentData);
+            foreach (_SemanticsFragment__object fragment in ((_RenderObjectSemantics__object)childSemantics).mergeUp)
             {
-                if ((hasChildConfigurationsDelegate__230394 && (((_SemanticsFragment__object)fragment__232310).configToMergeUp is not null)))
+                if ((hasChildConfigurationsDelegate && (((_SemanticsFragment__object)fragment).configToMergeUp is not null)))
                 {
-                    childConfigurations__230194.Add(((_SemanticsFragment__object)fragment__232310).configToMergeUp!);
-                    configToFragment__230474[((_SemanticsFragment__object)fragment__232310).configToMergeUp!] = fragment__232310;
+                    childConfigurations.Add(((_SemanticsFragment__object)fragment).configToMergeUp!);
+                    configToFragment[((_SemanticsFragment__object)fragment).configToMergeUp!] = fragment;
                 }
                 else
                 {
-                    mergeUp__230088.Add(fragment__232310);
+                    mergeUpLocal.Add(fragment);
                 }
             }
-            if (!((_RenderObjectSemantics__object)childSemantics__232102).contributesToSemanticsTree)
+            if (!((_RenderObjectSemantics__object)childSemantics).contributesToSemanticsTree)
             {
-                siblingMergeGroups__230132.AddRange(((_RenderObjectSemantics__object)childSemantics__232102).siblingMergeGroups);
+                siblingMergeGroupsLocal.AddRange(((_RenderObjectSemantics__object)childSemantics).siblingMergeGroups);
             }
         }
         _containsIncompleteFragment = false;
-        DartRuntimePrimitives.Assert(() => ((childConfigurationsDelegate__230292 is not null) || (checked((long)(configToFragment__230474.Count)) == 0)));
-        if (hasChildConfigurationsDelegate__230394)
+        DartRuntimePrimitives.Assert(() => ((childConfigurationsDelegateLocal is not null) || (checked((long)(configToFragment.Count)) == 0)));
+        if (hasChildConfigurationsDelegate)
         {
-            global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult result__233226 = childConfigurationsDelegate__230292(childConfigurations__230194);
-            mergeUp__230088.AddRange(((global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult)result__233226).mergeUp.map<global::Doroti.Framework.Semantics.SemanticsConfiguration, _SemanticsFragment__object>(((config) =>
+            global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult result = childConfigurationsDelegateLocal(childConfigurations);
+            mergeUpLocal.AddRange(((global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult)result).mergeUp.map<global::Doroti.Framework.Semantics.SemanticsConfiguration, _SemanticsFragment__object>(((config) =>
             {
-                _SemanticsFragment__object? fragment__233441 = configToFragment__230474.GetValueOrDefault(config);
-                if ((fragment__233441 is not null))
+                _SemanticsFragment__object? fragmentLocal = configToFragment.GetValueOrDefault(config);
+                if ((fragmentLocal is not null))
                 {
-                    return fragment__233441;
+                    return fragmentLocal;
                 }
                 _containsIncompleteFragment = true;
                 return new _IncompleteSemanticsFragment__object(config, this);
                 return default;
             })));
-            foreach (IEnumerable<global::Doroti.Framework.Semantics.SemanticsConfiguration> group__233731 in ((global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult)result__233226).siblingMergeGroups)
+            foreach (IEnumerable<global::Doroti.Framework.Semantics.SemanticsConfiguration> @group in ((global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult)result).siblingMergeGroups)
             {
-                siblingMergeGroups__230132.Add(group__233731.map<global::Doroti.Framework.Semantics.SemanticsConfiguration, _SemanticsFragment__object>(((config) =>
+                siblingMergeGroupsLocal.Add(@group.map<global::Doroti.Framework.Semantics.SemanticsConfiguration, _SemanticsFragment__object>(((config) =>
                 {
-                    _SemanticsFragment__object? fragment__233913 = configToFragment__230474.GetValueOrDefault(config);
-                    if ((fragment__233913 is not null))
+                    _SemanticsFragment__object? fragmentAlternate = configToFragment.GetValueOrDefault(config);
+                    if ((fragmentAlternate is not null))
                     {
-                        return fragment__233913;
+                        return fragmentAlternate;
                     }
                     _containsIncompleteFragment = true;
                     return new _IncompleteSemanticsFragment__object(config, this);
@@ -3130,22 +3130,22 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                 })).ToList());
             }
         }
-        if ((!this._containsIncompleteFragment && needsToMakeIncompleteFragmentAssumption__231345))
+        if ((!this._containsIncompleteFragment && needsToMakeIncompleteFragmentAssumption))
         {
-            mergeUp__230088.Clear();
-            siblingMergeGroups__230132.Clear();
-            foreach (_RenderObjectSemantics__object childSemantics__234435 in _getNonBlockedChildren())
+            mergeUpLocal.Clear();
+            siblingMergeGroupsLocal.Clear();
+            foreach (_RenderObjectSemantics__object childSemanticsLocal in _getNonBlockedChildren())
             {
                 DartRuntimePrimitives.Assert(() => ((_SemanticsParentData__object)childParentData).explicitChildNodes);
-                childSemantics__234435._didUpdateParentData(childParentData);
-                mergeUp__230088.AddRange(((_RenderObjectSemantics__object)childSemantics__234435).mergeUp);
-                if (!((_RenderObjectSemantics__object)childSemantics__234435).contributesToSemanticsTree)
+                childSemanticsLocal._didUpdateParentData(childParentData);
+                mergeUpLocal.AddRange(((_RenderObjectSemantics__object)childSemanticsLocal).mergeUp);
+                if (!((_RenderObjectSemantics__object)childSemanticsLocal).contributesToSemanticsTree)
                 {
-                    siblingMergeGroups__230132.AddRange(((_RenderObjectSemantics__object)childSemantics__234435).siblingMergeGroups);
+                    siblingMergeGroupsLocal.AddRange(((_RenderObjectSemantics__object)childSemanticsLocal).siblingMergeGroups);
                 }
             }
         }
-        return (mergeUp__230088, siblingMergeGroups__230132);
+        return (mergeUpLocal, siblingMergeGroupsLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3182,45 +3182,45 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     internal virtual void _updateChildGeometry(bool onlyDirtyChildren = false)
     {
         DartRuntimePrimitives.Assert(() => (this.geometry is not null));
-        _SemanticsGeometry__object parentGeometry__236314 = this.geometry!;
-        foreach (_RenderObjectSemantics__object child__236380 in this._children)
+        _SemanticsGeometry__object parentGeometry = this.geometry!;
+        foreach (_RenderObjectSemantics__object childLocal in this._children)
         {
-            if (child__236380.renderObject is RenderBox childBox__236380 && !childBox__236380.hasSize)
+            if (childLocal.renderObject is RenderBox childBox && !childBox.hasSize)
             {
                 continue;
             }
-            if ((onlyDirtyChildren && !((_RenderObjectSemantics__object)child__236380).geometryDirty))
+            if ((onlyDirtyChildren && !((_RenderObjectSemantics__object)childLocal).geometryDirty))
             {
                 continue;
             }
-            _SemanticsGeometry__object childGeometry__236514 = _SemanticsGeometry__object.computeChildGeometry(parentPaintClipRect: ((_SemanticsGeometry__object)parentGeometry__236314).paintClipRect, parentSemanticsClipRect: ((_SemanticsGeometry__object)parentGeometry__236314).semanticsClipRect, parentTransform: null, parent: this, child: child__236380);
-            child__236380._updateGeometry(newGeometry: childGeometry__236514);
+            _SemanticsGeometry__object childGeometry = _SemanticsGeometry__object.computeChildGeometry(parentPaintClipRect: ((_SemanticsGeometry__object)parentGeometry).paintClipRect, parentSemanticsClipRect: ((_SemanticsGeometry__object)parentGeometry).semanticsClipRect, parentTransform: null, parent: this, child: childLocal);
+            childLocal._updateGeometry(newGeometry: childGeometry);
         }
-        foreach (_RenderObjectSemantics__object explicitSiblingChild__236882 in this.siblingMergeGroups.expand(((group) => group)).OfType<_RenderObjectSemantics__object>().expand(((siblingChild) => (((_RenderObjectSemantics__object)siblingChild).shouldFormSemanticsNode ? new List<_RenderObjectSemantics__object> { siblingChild } : ((_RenderObjectSemantics__object)siblingChild)._children))))
+        foreach (_RenderObjectSemantics__object explicitSiblingChild in this.siblingMergeGroups.expand(((group) => group)).OfType<_RenderObjectSemantics__object>().expand(((siblingChild) => (((_RenderObjectSemantics__object)siblingChild).shouldFormSemanticsNode ? new List<_RenderObjectSemantics__object> { siblingChild } : ((_RenderObjectSemantics__object)siblingChild)._children))))
         {
-            if (explicitSiblingChild__236882.renderObject is RenderBox siblingBox__236882 && !siblingBox__236882.hasSize)
+            if (explicitSiblingChild.renderObject is RenderBox siblingBox && !siblingBox.hasSize)
             {
                 continue;
             }
-            if ((onlyDirtyChildren && !((_RenderObjectSemantics__object)explicitSiblingChild__236882).geometryDirty))
+            if ((onlyDirtyChildren && !((_RenderObjectSemantics__object)explicitSiblingChild).geometryDirty))
             {
                 continue;
             }
-            _SemanticsGeometry__object childGeometry__237425 = _SemanticsGeometry__object.computeChildGeometry(parentPaintClipRect: ((_SemanticsGeometry__object)parentGeometry__236314).paintClipRect, parentSemanticsClipRect: ((_SemanticsGeometry__object)parentGeometry__236314).semanticsClipRect, parentTransform: ((_SemanticsGeometry__object)parentGeometry__236314).transform, parent: this, child: explicitSiblingChild__236882);
-            explicitSiblingChild__236882._updateGeometry(newGeometry: childGeometry__237425);
+            _SemanticsGeometry__object childGeometryLocal = _SemanticsGeometry__object.computeChildGeometry(parentPaintClipRect: ((_SemanticsGeometry__object)parentGeometry).paintClipRect, parentSemanticsClipRect: ((_SemanticsGeometry__object)parentGeometry).semanticsClipRect, parentTransform: ((_SemanticsGeometry__object)parentGeometry).transform, parent: this, child: explicitSiblingChild);
+            explicitSiblingChild._updateGeometry(newGeometry: childGeometryLocal);
         }
     }
 
     internal virtual void _updateGeometry(_SemanticsGeometry__object newGeometry)
     {
-        _SemanticsGeometry__object? currentGeometry__237908 = this.geometry;
+        _SemanticsGeometry__object? currentGeometry = this.geometry;
         geometry = newGeometry;
-        if ((currentGeometry__237908 is not null))
+        if ((currentGeometry is not null))
         {
-            bool isSemanticsHidden__238016 = (((_SemanticsConfigurationProvider__object)this.configProvider).original.isHidden || ((!((this.parentData?.mergeIntoParent ?? false)) && ((_SemanticsGeometry__object)newGeometry).hidden)));
-            var sizeChanged__238169 = (!object.Equals(((_SemanticsGeometry__object)currentGeometry__237908).rect.size, ((_SemanticsGeometry__object)newGeometry).rect.size));
-            var visibilityChanged__238247 = (((_SemanticsConfigurationProvider__object)this.configProvider).effective.isHidden != isSemanticsHidden__238016);
-            if ((!sizeChanged__238169 && !visibilityChanged__238247))
+            bool isSemanticsHidden = (((_SemanticsConfigurationProvider__object)this.configProvider).original.isHidden || ((!((this.parentData?.mergeIntoParent ?? false)) && ((_SemanticsGeometry__object)newGeometry).hidden)));
+            var sizeChanged = (!object.Equals(((_SemanticsGeometry__object)currentGeometry).rect.size, ((_SemanticsGeometry__object)newGeometry).rect.size));
+            var visibilityChanged = (((_SemanticsConfigurationProvider__object)this.configProvider).effective.isHidden != isSemanticsHidden);
+            if ((!sizeChanged && !visibilityChanged))
             {
                 return;
             }
@@ -3248,11 +3248,11 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         DartRuntimePrimitives.Assert(() => this.shouldFormSemanticsNode);
         if ((this.cachedSemanticsNode is not null))
         {
-            foreach (global::Doroti.Framework.Semantics.SemanticsNode node__240151 in this.semanticsNodes)
+            foreach (global::Doroti.Framework.Semantics.SemanticsNode node in this.semanticsNodes)
             {
-                if ((!object.Equals(node__240151, this.cachedSemanticsNode)))
+                if ((!object.Equals(node, this.cachedSemanticsNode)))
                 {
-                    node__240151.tags = null;
+                    node.tags = null;
                 }
             }
         }
@@ -3261,21 +3261,21 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             _produceSemanticsNode(usedSemanticsIds: usedSemanticsIds);
         }
         DartRuntimePrimitives.Assert(() => this.built);
-        global::Doroti.Framework.Semantics.SemanticsNode producedNode__240560 = this.cachedSemanticsNode!;
-        foreach (global::Doroti.Framework.Semantics.SemanticsNode node__240626 in this.semanticsNodes)
+        global::Doroti.Framework.Semantics.SemanticsNode producedNode = this.cachedSemanticsNode!;
+        foreach (global::Doroti.Framework.Semantics.SemanticsNode nodeLocal in this.semanticsNodes)
         {
-            if ((!object.Equals(node__240626, producedNode__240560)))
+            if ((!object.Equals(nodeLocal, producedNode)))
             {
                 if ((this.parentData?.tagsForChildren is not null))
                 {
-                    node__240626.tags ??= new HashSet<global::Doroti.Framework.Semantics.SemanticsTag>();
-                    ((global::Doroti.Framework.Semantics.SemanticsNode)node__240626).tags!.UnionWith(this.parentData!.tagsForChildren!);
+                    nodeLocal.tags ??= new HashSet<global::Doroti.Framework.Semantics.SemanticsTag>();
+                    ((global::Doroti.Framework.Semantics.SemanticsNode)nodeLocal).tags!.UnionWith(this.parentData!.tagsForChildren!);
                 }
                 else
                 {
-                    if (((((long?)(((global::Doroti.Framework.Semantics.SemanticsNode)node__240626).tags?.Count)) is { } __count240857 ? __count240857 == 0 : (bool?)null) ?? false))
+                    if (((((long?)(((global::Doroti.Framework.Semantics.SemanticsNode)nodeLocal).tags?.Count)) is { } __count240857 ? __count240857 == 0 : (bool?)null) ?? false))
                     {
-                        node__240626.tags = null;
+                        nodeLocal.tags = null;
                     }
                 }
             }
@@ -3284,60 +3284,60 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
 
     internal virtual void _buildSemanticsSubtree(HashSet<long> usedSemanticsIds)
     {
-        var children__241093 = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
-        foreach (_RenderObjectSemantics__object child__241161 in this._children)
+        var children = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
+        foreach (_RenderObjectSemantics__object child in this._children)
         {
-            if (child__241161.geometry is null)
+            if (child.geometry is null)
             {
                 continue;
             }
-            if (((_RenderObjectSemantics__object)child__241161).parentDataDirty)
+            if (((_RenderObjectSemantics__object)child).parentDataDirty)
             {
                 continue;
             }
-            DartRuntimePrimitives.Assert(() => ((_RenderObjectSemantics__object)child__241161).shouldFormSemanticsNode);
-            if (((((_RenderObjectSemantics__object)child__241161).cachedSemanticsNode is not null) && usedSemanticsIds.Contains(((_RenderObjectSemantics__object)child__241161).cachedSemanticsNode!.id)))
+            DartRuntimePrimitives.Assert(() => ((_RenderObjectSemantics__object)child).shouldFormSemanticsNode);
+            if (((((_RenderObjectSemantics__object)child).cachedSemanticsNode is not null) && usedSemanticsIds.Contains(((_RenderObjectSemantics__object)child).cachedSemanticsNode!.id)))
             {
-                child__241161.markNeedsBuild();
-                child__241161.cachedSemanticsNode = null;
+                child.markNeedsBuild();
+                child.cachedSemanticsNode = null;
             }
-            child__241161._buildSemantics(usedSemanticsIds: usedSemanticsIds);
-            children__241093.AddRange(((_RenderObjectSemantics__object)child__241161).semanticsNodes);
+            child._buildSemantics(usedSemanticsIds: usedSemanticsIds);
+            children.AddRange(((_RenderObjectSemantics__object)child).semanticsNodes);
         }
-        global::Doroti.Framework.Semantics.SemanticsNode node__241828 = this.cachedSemanticsNode!;
-        children__241093.removeWhere(shouldDrop);
-        bool isSemanticsHidden__241910 = (((_SemanticsConfigurationProvider__object)this.configProvider).original.isHidden || ((!((this.parentData?.mergeIntoParent ?? false)) && this.geometry!.hidden)));
-        if ((((_SemanticsConfigurationProvider__object)this.configProvider).effective.isHidden != isSemanticsHidden__241910))
+        global::Doroti.Framework.Semantics.SemanticsNode node = this.cachedSemanticsNode!;
+        children.removeWhere(shouldDrop);
+        bool isSemanticsHidden = (((_SemanticsConfigurationProvider__object)this.configProvider).original.isHidden || ((!((this.parentData?.mergeIntoParent ?? false)) && this.geometry!.hidden)));
+        if ((((_SemanticsConfigurationProvider__object)this.configProvider).effective.isHidden != isSemanticsHidden))
         {
             this.configProvider.updateConfig(((Action<global::Doroti.Framework.Semantics.SemanticsConfiguration>)((config) =>
             {
-                config.isHidden = isSemanticsHidden__241910;
+                config.isHidden = isSemanticsHidden;
             })));
         }
         if (((_SemanticsConfigurationProvider__object)this.configProvider).effective.isSemanticBoundary)
         {
             if (this._needsMergingSiblingNodesIntoSelf)
             {
-                var innerNode__242640 = new global::Doroti.Framework.Semantics.SemanticsNode(showOnScreen: () => this.renderObject.showOnScreen());
-                this.renderObject.assembleSemanticsNode(innerNode__242640, ((_SemanticsConfigurationProvider__object)this.configProvider).effective, children__241093);
-                var config__242814 = ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
+                var innerNode = new global::Doroti.Framework.Semantics.SemanticsNode(showOnScreen: () => this.renderObject.showOnScreen());
+                this.renderObject.assembleSemanticsNode(innerNode, ((_SemanticsConfigurationProvider__object)this.configProvider).effective, children);
+                var configLocal = ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
     __cascade.isSemanticBoundary = true;
     __cascade.isMergingSemanticsOfDescendants = true;
     return __cascade;
 }))();
-                node__241828.updateWith(config: config__242814, childrenInInversePaintOrder: new List<global::Doroti.Framework.Semantics.SemanticsNode> { innerNode__242640 });
+                node.updateWith(config: configLocal, childrenInInversePaintOrder: new List<global::Doroti.Framework.Semantics.SemanticsNode> { innerNode });
             }
             else
             {
-                this.renderObject.assembleSemanticsNode(node__241828, ((_SemanticsConfigurationProvider__object)this.configProvider).effective, children__241093);
+                this.renderObject.assembleSemanticsNode(node, ((_SemanticsConfigurationProvider__object)this.configProvider).effective, children);
             }
         }
         else
         {
             DartRuntimePrimitives.Assert(() => !((_SemanticsConfigurationProvider__object)this.configProvider).effective.isMergingSemanticsOfDescendants);
-            node__241828.updateWith(config: ((_SemanticsConfigurationProvider__object)this.configProvider).effective, childrenInInversePaintOrder: children__241093);
+            node.updateWith(config: ((_SemanticsConfigurationProvider__object)this.configProvider).effective, childrenInInversePaintOrder: children);
         }
     }
 
@@ -3346,10 +3346,10 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         DartRuntimePrimitives.Assert(() => !this.built);
         this.semanticsNodes.Clear();
         this._producedSiblingNodesAndOwners.Clear();
-        global::Doroti.Framework.Semantics.SemanticsNode node__243633 = cachedSemanticsNode ??= _createSemanticsNode();
+        global::Doroti.Framework.Semantics.SemanticsNode node = cachedSemanticsNode ??= _createSemanticsNode();
         ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
 {
-    var __cascade = node__243633;
+    var __cascade = node;
     __cascade.isMergedIntoParent = ((this.parentData?.mergeIntoParent ?? false));
     __cascade.tags = this.parentData?.tagsForChildren;
     return __cascade;
@@ -3357,7 +3357,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         _updateSemanticsNodeGeometry();
         _mergeSiblingGroup(usedSemanticsIds);
         _buildSemanticsSubtree(usedSemanticsIds: usedSemanticsIds);
-        this.semanticsNodes.Add(node__243633);
+        this.semanticsNodes.Add(node);
         if (!this._needsMergingSiblingNodesIntoSelf)
         {
             this.semanticsNodes.AddRange(this._producedSiblingNodesAndOwners.Keys);
@@ -3377,68 +3377,68 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
 
     internal virtual void _mergeSiblingGroup(HashSet<long> usedSemanticsIds)
     {
-        foreach (List<_SemanticsFragment__object> group__244711 in this.siblingMergeGroups)
+        foreach (List<_SemanticsFragment__object> @group in this.siblingMergeGroups)
         {
-            global::Doroti.Framework.Semantics.SemanticsConfiguration? configuration__244772 = default!;
-            global::Doroti.Framework.Semantics.SemanticsNode? node__244808 = default!;
-            var explicitChildren__244826 = new List<_RenderObjectSemantics__object>();
-            foreach (var fragment__244890 in group__244711)
+            global::Doroti.Framework.Semantics.SemanticsConfiguration? configuration = default!;
+            global::Doroti.Framework.Semantics.SemanticsNode? node = default!;
+            var explicitChildren = new List<_RenderObjectSemantics__object>();
+            foreach (var fragmentLocal in @group)
             {
-                if ((fragment__244890 is _RenderObjectSemantics__object))
+                if ((fragmentLocal is _RenderObjectSemantics__object))
                 {
-                    _RenderObjectSemantics__object fragment__244890__as244923 = (_RenderObjectSemantics__object)fragment__244890;
+                    _RenderObjectSemantics__object fragment__244890__as244923 = (_RenderObjectSemantics__object)fragmentLocal;
                     if (((_RenderObjectSemantics__object)((_RenderObjectSemantics__object)fragment__244890__as244923)).shouldFormSemanticsNode)
                     {
-                        explicitChildren__244826.Add(((_RenderObjectSemantics__object)fragment__244890__as244923));
+                        explicitChildren.Add(((_RenderObjectSemantics__object)fragment__244890__as244923));
                         DartRuntimePrimitives.Assert(() => (((_RenderObjectSemantics__object)((_RenderObjectSemantics__object)fragment__244890__as244923)).configToMergeUp is null));
                         continue;
                     }
-                    explicitChildren__244826.AddRange(((_RenderObjectSemantics__object)((_RenderObjectSemantics__object)fragment__244890__as244923))._children);
+                    explicitChildren.AddRange(((_RenderObjectSemantics__object)((_RenderObjectSemantics__object)fragment__244890__as244923))._children);
                 }
-                if ((((_SemanticsFragment__object)fragment__244890).configToMergeUp is not null))
+                if ((((_SemanticsFragment__object)fragmentLocal).configToMergeUp is not null))
                 {
-                    fragment__244890.mergesToSibling = true;
-                    node__244808 ??= ((_SemanticsFragment__object)fragment__244890).owner.cachedSemanticsNode;
-                    configuration__244772 ??= new global::Doroti.Framework.Semantics.SemanticsConfiguration();
-                    configuration__244772.absorb(((_SemanticsFragment__object)fragment__244890).configToMergeUp!);
+                    fragmentLocal.mergesToSibling = true;
+                    node ??= ((_SemanticsFragment__object)fragmentLocal).owner.cachedSemanticsNode;
+                    configuration ??= new global::Doroti.Framework.Semantics.SemanticsConfiguration();
+                    configuration.absorb(((_SemanticsFragment__object)fragmentLocal).configToMergeUp!);
                 }
             }
-            var childrenNodes__245497 = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
-            foreach (var explicitChild__245549 in explicitChildren__244826)
+            var childrenNodes = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
+            foreach (var explicitChild in explicitChildren)
             {
-                explicitChild__245549._buildSemantics(usedSemanticsIds: usedSemanticsIds);
-                childrenNodes__245497.AddRange(((_RenderObjectSemantics__object)explicitChild__245549).semanticsNodes);
+                explicitChild._buildSemantics(usedSemanticsIds: usedSemanticsIds);
+                childrenNodes.AddRange(((_RenderObjectSemantics__object)explicitChild).semanticsNodes);
             }
-            if ((configuration__244772 is not null))
+            if ((configuration is not null))
             {
-                if (((node__244808 is null) || usedSemanticsIds.Contains(((global::Doroti.Framework.Semantics.SemanticsNode)node__244808).id)))
+                if (((node is null) || usedSemanticsIds.Contains(((global::Doroti.Framework.Semantics.SemanticsNode)node).id)))
                 {
-                    node__244808 = new global::Doroti.Framework.Semantics.SemanticsNode(showOnScreen: () => this.renderObject.showOnScreen());
+                    node = new global::Doroti.Framework.Semantics.SemanticsNode(showOnScreen: () => this.renderObject.showOnScreen());
                 }
-                usedSemanticsIds.Add(((global::Doroti.Framework.Semantics.SemanticsNode)node__244808).id);
-                foreach (var fragment__246056 in group__244711)
+                usedSemanticsIds.Add(((global::Doroti.Framework.Semantics.SemanticsNode)node).id);
+                foreach (var fragmentAlternate in @group)
                 {
-                    if ((((_SemanticsFragment__object)fragment__246056).configToMergeUp is not null))
+                    if ((((_SemanticsFragment__object)fragmentAlternate).configToMergeUp is not null))
                     {
-                        ((_SemanticsFragment__object)fragment__246056).owner.built = true;
-                        ((_SemanticsFragment__object)fragment__246056).owner.cachedSemanticsNode = node__244808;
+                        ((_SemanticsFragment__object)fragmentAlternate).owner.built = true;
+                        ((_SemanticsFragment__object)fragmentAlternate).owner.cachedSemanticsNode = node;
                     }
                 }
-                node__244808.updateWith(config: configuration__244772, childrenInInversePaintOrder: childrenNodes__245497);
-                this._producedSiblingNodesAndOwners[DartRuntimePrimitives.RequireReference(node__244808)] = group__244711;
-                HashSet<global::Doroti.Framework.Semantics.SemanticsTag> tags__246424 = group__244711.map<_SemanticsFragment__object, HashSet<global::Doroti.Framework.Semantics.SemanticsTag>?>(((fragment) => ((_SemanticsFragment__object)fragment).owner.parentData!.tagsForChildren)).OfType<HashSet<global::Doroti.Framework.Semantics.SemanticsTag>>().expand(((tags__246424) => tags__246424)).toSet();
-                if ((checked((long)(tags__246424.Count)) != 0))
+                node.updateWith(config: configuration, childrenInInversePaintOrder: childrenNodes);
+                this._producedSiblingNodesAndOwners[DartRuntimePrimitives.RequireReference(node)] = @group;
+                HashSet<global::Doroti.Framework.Semantics.SemanticsTag> tagsLocal = @group.map<_SemanticsFragment__object, HashSet<global::Doroti.Framework.Semantics.SemanticsTag>?>(((fragment) => ((_SemanticsFragment__object)fragment).owner.parentData!.tagsForChildren)).OfType<HashSet<global::Doroti.Framework.Semantics.SemanticsTag>>().expand(((tagsLocal) => tagsLocal)).toSet();
+                if ((checked((long)(tagsLocal.Count)) != 0))
                 {
-                    if ((((global::Doroti.Framework.Semantics.SemanticsNode)node__244808).tags is null))
+                    if ((((global::Doroti.Framework.Semantics.SemanticsNode)node).tags is null))
                     {
-                        node__244808.tags = tags__246424;
+                        node.tags = tagsLocal;
                     }
                     else
                     {
-                        ((global::Doroti.Framework.Semantics.SemanticsNode)node__244808).tags!.UnionWith(tags__246424);
+                        ((global::Doroti.Framework.Semantics.SemanticsNode)node).tags!.UnionWith(tagsLocal);
                     }
                 }
-                node__244808.isMergedIntoParent = (this.parentData?.mergeIntoParent ?? false);
+                node.isMergedIntoParent = (this.parentData?.mergeIntoParent ?? false);
             }
         }
         _updateSiblingNodesGeometries();
@@ -3446,56 +3446,56 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
 
     internal virtual void _updateSemanticsNodeGeometry()
     {
-        global::Doroti.Framework.Semantics.SemanticsNode node__247586 = this.cachedSemanticsNode!;
-        _SemanticsGeometry__object nodeGeometry__247644 = this.geometry!;
+        global::Doroti.Framework.Semantics.SemanticsNode node = this.cachedSemanticsNode!;
+        _SemanticsGeometry__object nodeGeometry = this.geometry!;
         ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
 {
-    var __cascade = node__247586;
-    __cascade.rect = ((_SemanticsGeometry__object)nodeGeometry__247644).rect;
-    __cascade.transform = ((_SemanticsGeometry__object)nodeGeometry__247644).transform;
-    __cascade.parentSemanticsClipRect = ((_SemanticsGeometry__object)nodeGeometry__247644).semanticsClipRect;
-    __cascade.parentPaintClipRect = ((_SemanticsGeometry__object)nodeGeometry__247644).paintClipRect;
+    var __cascade = node;
+    __cascade.rect = ((_SemanticsGeometry__object)nodeGeometry).rect;
+    __cascade.transform = ((_SemanticsGeometry__object)nodeGeometry).transform;
+    __cascade.parentSemanticsClipRect = ((_SemanticsGeometry__object)nodeGeometry).semanticsClipRect;
+    __cascade.parentPaintClipRect = ((_SemanticsGeometry__object)nodeGeometry).paintClipRect;
     return __cascade;
 }))();
     }
 
     internal virtual void _updateSiblingNodesGeometries()
     {
-        _SemanticsGeometry__object mainGeometry__247953 = this.geometry!;
-        foreach (MapEntry<global::Doroti.Framework.Semantics.SemanticsNode, List<_SemanticsFragment__object>> entry__248044 in this._producedSiblingNodesAndOwners.entries)
+        _SemanticsGeometry__object mainGeometry = this.geometry!;
+        foreach (MapEntry<global::Doroti.Framework.Semantics.SemanticsNode, List<_SemanticsFragment__object>> entry in this._producedSiblingNodesAndOwners.entries)
         {
-            global::Doroti.Ui.Rect? rect__248115 = default!;
-            global::Doroti.Ui.Rect? semanticsClipRect__248133 = default!;
-            global::Doroti.Ui.Rect? paintClipRect__248164 = default!;
-            foreach (_SemanticsFragment__object fragment__248215 in entry__248044.value)
+            global::Doroti.Ui.Rect? rectLocal = default!;
+            global::Doroti.Ui.Rect? semanticsClipRectLocal = default!;
+            global::Doroti.Ui.Rect? paintClipRectLocal = default!;
+            foreach (_SemanticsFragment__object fragment in entry.value)
             {
-                if (((_SemanticsFragment__object)fragment__248215).owner.shouldFormSemanticsNode)
+                if (((_SemanticsFragment__object)fragment).owner.shouldFormSemanticsNode)
                 {
                     continue;
                 }
-                _SemanticsGeometry__object parentGeometry__248359 = _SemanticsGeometry__object.computeChildGeometry(parentTransform: ((_SemanticsGeometry__object)mainGeometry__247953).transform, parentSemanticsClipRect: ((_SemanticsGeometry__object)mainGeometry__247953).semanticsClipRect, parentPaintClipRect: ((_SemanticsGeometry__object)mainGeometry__247953).paintClipRect, parent: this, child: ((_SemanticsFragment__object)fragment__248215).owner);
-                global::Doroti.Ui.Rect rectInFragmentOwnerCoordinates__248681 = (((_SemanticsGeometry__object)parentGeometry__248359).semanticsClipRect?.intersect(((_SemanticsFragment__object)fragment__248215).owner.renderObject.semanticBounds) ?? ((_SemanticsFragment__object)fragment__248215).owner.renderObject.semanticBounds);
-                global::Doroti.Ui.Rect rectInParentCoordinates__248921 = MatrixUtils.transformRect(((_SemanticsGeometry__object)parentGeometry__248359).transform, rectInFragmentOwnerCoordinates__248681);
-                rect__248115 = (rect__248115?.expandToInclude(rectInParentCoordinates__248921) ?? rectInParentCoordinates__248921);
-                if ((((_SemanticsGeometry__object)parentGeometry__248359).semanticsClipRect is not null))
+                _SemanticsGeometry__object parentGeometry = _SemanticsGeometry__object.computeChildGeometry(parentTransform: ((_SemanticsGeometry__object)mainGeometry).transform, parentSemanticsClipRect: ((_SemanticsGeometry__object)mainGeometry).semanticsClipRect, parentPaintClipRect: ((_SemanticsGeometry__object)mainGeometry).paintClipRect, parent: this, child: ((_SemanticsFragment__object)fragment).owner);
+                global::Doroti.Ui.Rect rectInFragmentOwnerCoordinates = (((_SemanticsGeometry__object)parentGeometry).semanticsClipRect?.intersect(((_SemanticsFragment__object)fragment).owner.renderObject.semanticBounds) ?? ((_SemanticsFragment__object)fragment).owner.renderObject.semanticBounds);
+                global::Doroti.Ui.Rect rectInParentCoordinates = MatrixUtils.transformRect(((_SemanticsGeometry__object)parentGeometry).transform, rectInFragmentOwnerCoordinates);
+                rectLocal = (rectLocal?.expandToInclude(rectInParentCoordinates) ?? rectInParentCoordinates);
+                if ((((_SemanticsGeometry__object)parentGeometry).semanticsClipRect is not null))
                 {
-                    global::Doroti.Ui.Rect rect__249230 = MatrixUtils.transformRect(((_SemanticsGeometry__object)parentGeometry__248359).transform, DartRuntimePrimitives.RequireValue(((_SemanticsGeometry__object)parentGeometry__248359).semanticsClipRect));
-                    semanticsClipRect__248133 = (semanticsClipRect__248133?.intersect(rect__249230) ?? rect__249230);
+                    global::Doroti.Ui.Rect rectAlternate = MatrixUtils.transformRect(((_SemanticsGeometry__object)parentGeometry).transform, DartRuntimePrimitives.RequireValue(((_SemanticsGeometry__object)parentGeometry).semanticsClipRect));
+                    semanticsClipRectLocal = (semanticsClipRectLocal?.intersect(rectAlternate) ?? rectAlternate);
                 }
-                if ((((_SemanticsGeometry__object)parentGeometry__248359).paintClipRect is not null))
+                if ((((_SemanticsGeometry__object)parentGeometry).paintClipRect is not null))
                 {
-                    global::Doroti.Ui.Rect rect__249519 = MatrixUtils.transformRect(((_SemanticsGeometry__object)parentGeometry__248359).transform, DartRuntimePrimitives.RequireValue(((_SemanticsGeometry__object)parentGeometry__248359).paintClipRect));
-                    paintClipRect__248164 = (paintClipRect__248164?.intersect(rect__249519) ?? rect__249519);
+                    global::Doroti.Ui.Rect rectNested = MatrixUtils.transformRect(((_SemanticsGeometry__object)parentGeometry).transform, DartRuntimePrimitives.RequireValue(((_SemanticsGeometry__object)parentGeometry).paintClipRect));
+                    paintClipRectLocal = (paintClipRectLocal?.intersect(rectNested) ?? rectNested);
                 }
             }
-            global::Doroti.Framework.Semantics.SemanticsNode node__249757 = entry__248044.key;
+            global::Doroti.Framework.Semantics.SemanticsNode node = entry.key;
             ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
 {
-    var __cascade = node__249757;
-    __cascade.rect = DartRuntimePrimitives.RequireValue(rect__248115);
+    var __cascade = node;
+    __cascade.rect = DartRuntimePrimitives.RequireValue(rectLocal);
     __cascade.transform = null;
-    __cascade.parentSemanticsClipRect = semanticsClipRect__248133;
-    __cascade.parentPaintClipRect = paintClipRect__248164;
+    __cascade.parentSemanticsClipRect = semanticsClipRectLocal;
+    __cascade.parentPaintClipRect = paintClipRectLocal;
     return __cascade;
 }))();
         }
@@ -3504,39 +3504,39 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     public virtual void markNeedsUpdate()
     {
         ((RenderObject)this.renderObject).owner!._nodesNeedingSemanticsGeometryUpdate.Add(this.renderObject);
-        global::Doroti.Framework.Semantics.SemanticsNode? producedSemanticsNode__250232 = this.cachedSemanticsNode;
-        bool wasSemanticsBoundary__250597 = ((producedSemanticsNode__250232 is not null) && ((_SemanticsConfigurationProvider__object)this.configProvider).wasSemanticsBoundary);
+        global::Doroti.Framework.Semantics.SemanticsNode? producedSemanticsNode = this.cachedSemanticsNode;
+        bool wasSemanticsBoundaryLocal = ((producedSemanticsNode is not null) && ((_SemanticsConfigurationProvider__object)this.configProvider).wasSemanticsBoundary);
         this.configProvider.clear();
         _containsIncompleteFragment = false;
-        var mayProduceSiblingNodes__250777 = (((_SemanticsConfigurationProvider__object)this.configProvider).effective.childConfigurationsDelegate is not null);
-        bool isEffectiveSemanticsBoundary__250873 = (((_SemanticsConfigurationProvider__object)this.configProvider).effective.isSemanticBoundary && wasSemanticsBoundary__250597);
-        RenderObject node__250998 = this.renderObject;
-        while (((((RenderObject)node__250998).parent is not null) && ((mayProduceSiblingNodes__250777 || !isEffectiveSemanticsBoundary__250873))))
+        var mayProduceSiblingNodes = (((_SemanticsConfigurationProvider__object)this.configProvider).effective.childConfigurationsDelegate is not null);
+        bool isEffectiveSemanticsBoundary = (((_SemanticsConfigurationProvider__object)this.configProvider).effective.isSemanticBoundary && wasSemanticsBoundaryLocal);
+        RenderObject node = this.renderObject;
+        while (((((RenderObject)node).parent is not null) && ((mayProduceSiblingNodes || !isEffectiveSemanticsBoundary))))
         {
-            if ((((!object.Equals(node__250998, this.renderObject)) && ((RenderObject)node__250998)._semantics.parentDataDirty) && !mayProduceSiblingNodes__250777))
+            if ((((!object.Equals(node, this.renderObject)) && ((RenderObject)node)._semantics.parentDataDirty) && !mayProduceSiblingNodes))
             {
                 break;
             }
-            ((RenderObject)node__250998)._semantics.parentData = null;
-            ((RenderObject)node__250998)._semantics._blocksPreviousSibling = null;
-            if (isEffectiveSemanticsBoundary__250873)
+            ((RenderObject)node)._semantics.parentData = null;
+            ((RenderObject)node)._semantics._blocksPreviousSibling = null;
+            if (isEffectiveSemanticsBoundary)
             {
-                mayProduceSiblingNodes__250777 = false;
+                mayProduceSiblingNodes = false;
             }
-            mayProduceSiblingNodes__250777 |= (((RenderObject)node__250998)._semantics.configProvider.effective.childConfigurationsDelegate is not null);
-            node__250998 = ((RenderObject)node__250998).parent!;
-            isEffectiveSemanticsBoundary__250873 = (((RenderObject)node__250998)._semantics.configProvider.effective.isSemanticBoundary && ((RenderObject)node__250998)._semantics.built);
+            mayProduceSiblingNodes |= (((RenderObject)node)._semantics.configProvider.effective.childConfigurationsDelegate is not null);
+            node = ((RenderObject)node).parent!;
+            isEffectiveSemanticsBoundary = (((RenderObject)node)._semantics.configProvider.effective.isSemanticBoundary && ((RenderObject)node)._semantics.built);
         }
-        if ((((!object.Equals(node__250998, this.renderObject)) && (producedSemanticsNode__250232 is not null)) && ((RenderObject)node__250998)._semantics.parentDataDirty))
+        if ((((!object.Equals(node, this.renderObject)) && (producedSemanticsNode is not null)) && ((RenderObject)node)._semantics.parentDataDirty))
         {
             ((RenderObject)this.renderObject).owner!._nodesNeedingSemanticsUpdate.Remove(this.renderObject);
         }
-        if ((!((RenderObject)node__250998)._semantics.parentDataDirty || ((RenderObject)node__250998)._semantics.isRoot))
+        if ((!((RenderObject)node)._semantics.parentDataDirty || ((RenderObject)node)._semantics.isRoot))
         {
             if ((((RenderObject)this.renderObject).owner is not null))
             {
-                DartRuntimePrimitives.Assert(() => (((RenderObject)node__250998)._semantics.configProvider.effective.isSemanticBoundary || (((RenderObject)node__250998).parent is null)));
-                if (((RenderObject)this.renderObject).owner!._nodesNeedingSemanticsUpdate.Add(node__250998))
+                DartRuntimePrimitives.Assert(() => (((RenderObject)node)._semantics.configProvider.effective.isSemanticBoundary || (((RenderObject)node).parent is null)));
+                if (((RenderObject)this.renderObject).owner!._nodesNeedingSemanticsUpdate.Add(node))
                 {
                     ((RenderObject)this.renderObject).owner!.requestVisualUpdate();
                 }
@@ -3546,33 +3546,33 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
 
     internal virtual void _marksConflictsInMergeGroup(List<_SemanticsFragment__object> mergeGroup, bool isMergeUp = false)
     {
-        var hasSiblingConflict__253975 = new HashSet<_SemanticsFragment__object>();
-        for (var i__254033 = 0L; (i__254033 < checked((long)(mergeGroup.Count))); i__254033 += 1L)
+        var hasSiblingConflict = new HashSet<_SemanticsFragment__object>();
+        for (var i = 0L; (i < checked((long)(mergeGroup.Count))); i += 1L)
         {
-            _SemanticsFragment__object fragment__254104 = mergeGroup[(int)(i__254033)];
-            fragment__254104.markSiblingConfigurationConflict(false);
-            if ((((_SemanticsFragment__object)fragment__254104).configToMergeUp is null))
+            _SemanticsFragment__object fragment = mergeGroup[(int)(i)];
+            fragment.markSiblingConfigurationConflict(false);
+            if ((((_SemanticsFragment__object)fragment).configToMergeUp is null))
             {
                 continue;
             }
-            if ((isMergeUp && !((_SemanticsConfigurationProvider__object)this.configProvider).original.isCompatibleWith(((_SemanticsFragment__object)fragment__254104).configToMergeUp)))
+            if ((isMergeUp && !((_SemanticsConfigurationProvider__object)this.configProvider).original.isCompatibleWith(((_SemanticsFragment__object)fragment).configToMergeUp)))
             {
-                hasSiblingConflict__253975.Add(fragment__254104);
+                hasSiblingConflict.Add(fragment);
             }
-            var siblingLength__254440 = i__254033;
-            for (var j__254474 = 0L; (j__254474 < siblingLength__254440); j__254474 += 1L)
+            var siblingLength = i;
+            for (var j = 0L; (j < siblingLength); j += 1L)
             {
-                _SemanticsFragment__object siblingFragment__254543 = mergeGroup[(int)(j__254474)];
-                if (!((_SemanticsFragment__object)fragment__254104).configToMergeUp!.isCompatibleWith(((_SemanticsFragment__object)siblingFragment__254543).configToMergeUp))
+                _SemanticsFragment__object siblingFragment = mergeGroup[(int)(j)];
+                if (!((_SemanticsFragment__object)fragment).configToMergeUp!.isCompatibleWith(((_SemanticsFragment__object)siblingFragment).configToMergeUp))
                 {
-                    hasSiblingConflict__253975.Add(fragment__254104);
-                    hasSiblingConflict__253975.Add(siblingFragment__254543);
+                    hasSiblingConflict.Add(fragment);
+                    hasSiblingConflict.Add(siblingFragment);
                 }
             }
         }
-        foreach (var fragment__254802 in hasSiblingConflict__253975)
+        foreach (var fragmentLocal in hasSiblingConflict)
         {
-            fragment__254802.markSiblingConfigurationConflict(true);
+            fragmentLocal.markSiblingConfigurationConflict(true);
         }
     }
 
@@ -3606,23 +3606,23 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
         properties.add(new FlagProperty("semanticsBlock", value: ((_SemanticsConfigurationProvider__object)this.configProvider).effective.isBlockingSemanticsOfPreviouslyPaintedNodes, ifTrue: "BLOCK PREVIOUS"));
         if ((!this.parentDataDirty && this.contributesToSemanticsTree))
         {
-            string semanticsNodeStatus__256181 = default!;
+            string semanticsNodeStatus = default!;
             if (this.built)
             {
-                semanticsNodeStatus__256181 = $"formed {this.cachedSemanticsNode?.id}";
+                semanticsNodeStatus = $"formed {this.cachedSemanticsNode?.id}";
             }
             else
             {
                 if (this.shouldFormSemanticsNode)
                 {
-                    semanticsNodeStatus__256181 = "needs build";
+                    semanticsNodeStatus = "needs build";
                 }
                 else
                 {
-                    semanticsNodeStatus__256181 = "no semantics node";
+                    semanticsNodeStatus = "no semantics node";
                 }
             }
-            properties.add(new StringProperty("formedSemanticsNode", semanticsNodeStatus__256181, quoted: false));
+            properties.add(new StringProperty("formedSemanticsNode", semanticsNodeStatus, quoted: false));
         }
         properties.add(new FlagProperty("isSemanticBoundary", value: ((_SemanticsConfigurationProvider__object)this.configProvider).effective.isSemanticBoundary, ifTrue: "semantic boundary"));
         properties.add(new FlagProperty("blocksSemantics", value: this.isBlockingPreviousSibling, ifTrue: "BLOCKS SEMANTICS"));
@@ -3683,56 +3683,56 @@ public class _SemanticsGeometry__object
     public virtual bool isVisible => (!this.rect.isEmpty && !this.transform.isZero());
     public static _SemanticsGeometry__object computeChildGeometry(Matrix4? parentTransform, Rect? parentPaintClipRect, Rect? parentSemanticsClipRect, _RenderObjectSemantics__object parent, _RenderObjectSemantics__object child)
     {
-        RenderObject childRenderObject__259121 = ((_RenderObjectSemantics__object)child).renderObject;
-        RenderObject parentRenderObject__259184 = ((_RenderObjectSemantics__object)parent).renderObject;
-        var childToCommonAncestor__259237 = new List<RenderObject> { childRenderObject__259121 };
-        while ((((RenderObject)childRenderObject__259121).depth > ((RenderObject)parentRenderObject__259184).depth))
+        RenderObject childRenderObject = ((_RenderObjectSemantics__object)child).renderObject;
+        RenderObject parentRenderObject = ((_RenderObjectSemantics__object)parent).renderObject;
+        var childToCommonAncestor = new List<RenderObject> { childRenderObject };
+        while ((((RenderObject)childRenderObject).depth > ((RenderObject)parentRenderObject).depth))
         {
-            DartRuntimePrimitives.Assert(() => (((RenderObject)childRenderObject__259121).parent is not null));
-            childRenderObject__259121 = ((RenderObject)childRenderObject__259121).parent!;
-            childToCommonAncestor__259237.Add(childRenderObject__259121);
+            DartRuntimePrimitives.Assert(() => (((RenderObject)childRenderObject).parent is not null));
+            childRenderObject = ((RenderObject)childRenderObject).parent!;
+            childToCommonAncestor.Add(childRenderObject);
         }
-        DartRuntimePrimitives.Assert(() => (checked((long)(childToCommonAncestor__259237.Count)) >= 2L));
-        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(childRenderObject__259121, parentRenderObject__259184));
-        global::Doroti.Ui.Rect? paintClipRect__259962 = default!;
-        global::Doroti.Ui.Rect? semanticsClipRect__259987 = default!;
-        var transform__260016 = Matrix4.identity();
-        for (long i__260121 = (checked((long)(childToCommonAncestor__259237.Count)) - 1L); (i__260121 > 0L); i__260121 -= 1L)
+        DartRuntimePrimitives.Assert(() => (checked((long)(childToCommonAncestor.Count)) >= 2L));
+        DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(childRenderObject, parentRenderObject));
+        global::Doroti.Ui.Rect? paintClipRectLocal = default!;
+        global::Doroti.Ui.Rect? semanticsClipRectLocal = default!;
+        var transformLocal = Matrix4.identity();
+        for (long i = (checked((long)(childToCommonAncestor.Count)) - 1L); (i > 0L); i -= 1L)
         {
-            RenderObject nodeParent__260201 = childToCommonAncestor__259237[(int)(i__260121)];
-            RenderObject node__260265 = childToCommonAncestor__259237[(int)((i__260121 - 1L))];
-            global::Doroti.Ui.Rect? localPaintClipInParent__260321 = _transformRect(nodeParent__260201.describeApproximatePaintClip(node__260265), transform__260016, (Func<Matrix4, Rect, Rect>)global::Doroti.Framework.Painting.MatrixUtils.transformRect);
-            global::Doroti.Ui.Rect? localSemanticsClipInParent__260553 = _transformRect(nodeParent__260201.describeSemanticsClip(node__260265), transform__260016, (Func<Matrix4, Rect, Rect>)global::Doroti.Framework.Painting.MatrixUtils.transformRect);
-            paintClipRect__259962 = _intersectRects(paintClipRect__259962, localPaintClipInParent__260321);
-            semanticsClipRect__259987 = (localSemanticsClipInParent__260553 ?? semanticsClipRect__259987?.intersect((localPaintClipInParent__260321 ?? DartRuntimePrimitives.RequireValue(semanticsClipRect__259987))));
-            nodeParent__260201.applyPaintTransform(node__260265, transform__260016);
+            RenderObject nodeParent = childToCommonAncestor[(int)(i)];
+            RenderObject node = childToCommonAncestor[(int)((i - 1L))];
+            global::Doroti.Ui.Rect? localPaintClipInParent = _transformRect(nodeParent.describeApproximatePaintClip(node), transformLocal, (Func<Matrix4, Rect, Rect>)global::Doroti.Framework.Painting.MatrixUtils.transformRect);
+            global::Doroti.Ui.Rect? localSemanticsClipInParent = _transformRect(nodeParent.describeSemanticsClip(node), transformLocal, (Func<Matrix4, Rect, Rect>)global::Doroti.Framework.Painting.MatrixUtils.transformRect);
+            paintClipRectLocal = _intersectRects(paintClipRectLocal, localPaintClipInParent);
+            semanticsClipRectLocal = (localSemanticsClipInParent ?? semanticsClipRectLocal?.intersect((localPaintClipInParent ?? DartRuntimePrimitives.RequireValue(semanticsClipRectLocal))));
+            nodeParent.applyPaintTransform(node, transformLocal);
         }
-        semanticsClipRect__259987 = (semanticsClipRect__259987 ?? _intersectRects(paintClipRect__259962, parentSemanticsClipRect));
-        paintClipRect__259962 = _intersectRects(paintClipRect__259962, parentPaintClipRect);
-        if (((paintClipRect__259962 is not null) || (semanticsClipRect__259987 is not null)))
+        semanticsClipRectLocal = (semanticsClipRectLocal ?? _intersectRects(paintClipRectLocal, parentSemanticsClipRect));
+        paintClipRectLocal = _intersectRects(paintClipRectLocal, parentPaintClipRect);
+        if (((paintClipRectLocal is not null) || (semanticsClipRectLocal is not null)))
         {
-            Matrix4 inverted__261373 = transform__260016.clone();
-            var hasInverse__261415 = (inverted__261373.invert() != 0.0);
-            semanticsClipRect__259987 = (hasInverse__261415 ? _transformRect(semanticsClipRect__259987, inverted__261373, (Func<Matrix4, Rect, Rect>)global::Doroti.Framework.Painting.MatrixUtils.transformRect) : null);
-            paintClipRect__259962 = (hasInverse__261415 ? _transformRect(paintClipRect__259962, inverted__261373, (Func<Matrix4, Rect, Rect>)global::Doroti.Framework.Painting.MatrixUtils.transformRect) : null);
+            Matrix4 inverted = transformLocal.clone();
+            var hasInverse = (inverted.invert() != 0.0);
+            semanticsClipRectLocal = (hasInverse ? _transformRect(semanticsClipRectLocal, inverted, (Func<Matrix4, Rect, Rect>)global::Doroti.Framework.Painting.MatrixUtils.transformRect) : null);
+            paintClipRectLocal = (hasInverse ? _transformRect(paintClipRectLocal, inverted, (Func<Matrix4, Rect, Rect>)global::Doroti.Framework.Painting.MatrixUtils.transformRect) : null);
         }
         if ((parentTransform is not null))
         {
-            MatrixUtils.multiplyInPlace(parentTransform, transform__260016);
+            MatrixUtils.multiplyInPlace(parentTransform, transformLocal);
         }
-        global::Doroti.Ui.Rect rect__261843 = (semanticsClipRect__259987?.intersect(((_RenderObjectSemantics__object)child).renderObject.semanticBounds) ?? ((_RenderObjectSemantics__object)child).renderObject.semanticBounds);
-        var isRectHidden__261976 = false;
-        if ((paintClipRect__259962 is not null))
+        global::Doroti.Ui.Rect rectLocal = (semanticsClipRectLocal?.intersect(((_RenderObjectSemantics__object)child).renderObject.semanticBounds) ?? ((_RenderObjectSemantics__object)child).renderObject.semanticBounds);
+        var isRectHidden = false;
+        if ((paintClipRectLocal is not null))
         {
-            Rect paintClipRect__259962__value262006 = DartRuntimePrimitives.RequireValue(paintClipRect__259962);
-            global::Doroti.Ui.Rect paintRect__262048 = DartRuntimePrimitives.RequireValue(paintClipRect__259962__value262006).intersect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rect__261843)));
-            isRectHidden__261976 = (paintRect__262048.isEmpty && !DartRuntimePrimitives.RequireValue(rect__261843).isEmpty);
-            if (!isRectHidden__261976)
+            Rect paintClipRect__259962__value262006 = DartRuntimePrimitives.RequireValue(paintClipRectLocal);
+            global::Doroti.Ui.Rect paintRect = DartRuntimePrimitives.RequireValue(paintClipRect__259962__value262006).intersect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(rectLocal)));
+            isRectHidden = (paintRect.isEmpty && !DartRuntimePrimitives.RequireValue(rectLocal).isEmpty);
+            if (!isRectHidden)
             {
-                rect__261843 = paintRect__262048;
+                rectLocal = paintRect;
             }
         }
-        return new _SemanticsGeometry__object(transform: transform__260016, paintClipRect: paintClipRect__259962, semanticsClipRect: semanticsClipRect__259987, rect: DartRuntimePrimitives.RequireValue(rect__261843), hidden: isRectHidden__261976);
+        return new _SemanticsGeometry__object(transform: transformLocal, paintClipRect: paintClipRectLocal, semanticsClipRect: semanticsClipRectLocal, rect: DartRuntimePrimitives.RequireValue(rectLocal), hidden: isRectHidden);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

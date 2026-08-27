@@ -70,16 +70,16 @@ public static partial class DebugLibrary
 {
     internal static global::Doroti.Framework.Foundation.Key? _firstNonUniqueKey(IEnumerable<Widget> widgets)
     {
-        HashSet<global::Doroti.Framework.Foundation.Key> keySet__8644 = new HashSet<global::Doroti.Framework.Foundation.Key>();
-        foreach (var widget__8682 in widgets)
+        HashSet<global::Doroti.Framework.Foundation.Key> keySet = new HashSet<global::Doroti.Framework.Foundation.Key>();
+        foreach (var widget in widgets)
         {
-            if ((((Widget)widget__8682).key is null))
+            if ((((Widget)widget).key is null))
             {
                 continue;
             }
-            if (!keySet__8644.Add(((Widget)widget__8682).key!))
+            if (!keySet.Add(((Widget)widget).key!))
             {
-                return ((Widget)widget__8682).key;
+                return ((Widget)widget).key;
             }
         }
         return ((global::Doroti.Framework.Foundation.Key)(object)null);
@@ -93,10 +93,10 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                global::Doroti.Framework.Foundation.Key? nonUniqueKey__9671 = DebugLibrary._firstNonUniqueKey(children.Cast<Widget>());
-                if ((nonUniqueKey__9671 is not null))
+                global::Doroti.Framework.Foundation.Key? nonUniqueKey = DebugLibrary._firstNonUniqueKey(children.Cast<Widget>());
+                if ((nonUniqueKey is not null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"{(message ?? "Duplicate keys found.\n" + "If multiple keyed widgets exist as children of another widget, they must have unique keys.")}" + $"\n{parent} has multiple children with key {nonUniqueKey__9671}."));
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"{(message ?? "Duplicate keys found.\n" + "If multiple keyed widgets exist as children of another widget, they must have unique keys.")}" + $"\n{parent} has multiple children with key {nonUniqueKey}."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -112,10 +112,10 @@ public static partial class DebugLibrary
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                global::Doroti.Framework.Foundation.Key? nonUniqueKey__10571 = DebugLibrary._firstNonUniqueKey(items.Cast<Widget>());
-                if ((nonUniqueKey__10571 is not null))
+                global::Doroti.Framework.Foundation.Key? nonUniqueKey = DebugLibrary._firstNonUniqueKey(items.Cast<Widget>());
+                if ((nonUniqueKey is not null))
                 {
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"Duplicate key found: {nonUniqueKey__10571}."));
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"Duplicate key found: {nonUniqueKey}."));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
@@ -226,8 +226,8 @@ public static partial class DebugLibrary
             {
                 if ((LookupBoundary.findAncestorWidgetOfExactType<Overlay>(context) is null))
                 {
-                    bool hiddenByBoundary__20534 = LookupBoundary.debugIsHidingAncestorWidgetOfExactType<Overlay>(context);
-                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"No Overlay widget found{(hiddenByBoundary__20534 ? " within the closest LookupBoundary" : "")}."), new global::Doroti.Framework.Foundation.ErrorDescription($"{DartRuntimePrimitives.RuntimeType(((BuildContext)context).widget)} widgets require an Overlay " + "widget ancestor within the closest LookupBoundary.\n" + "An overlay lets widgets float on top of other widget children."), new global::Doroti.Framework.Foundation.ErrorHint("To introduce an Overlay widget, you can either directly " + "include one, or use a widget that contains an Overlay itself, " + "such as a Navigator, WidgetApp, MaterialApp, or CupertinoApp.") }));
+                    bool hiddenByBoundary = LookupBoundary.debugIsHidingAncestorWidgetOfExactType<Overlay>(context);
+                    throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"No Overlay widget found{(hiddenByBoundary ? " within the closest LookupBoundary" : "")}."), new global::Doroti.Framework.Foundation.ErrorDescription($"{DartRuntimePrimitives.RuntimeType(((BuildContext)context).widget)} widgets require an Overlay " + "widget ancestor within the closest LookupBoundary.\n" + "An overlay lets widgets float on top of other widget children."), new global::Doroti.Framework.Foundation.ErrorHint("To introduce an Overlay widget, you can either directly " + "include one, or use a widget that contains an Overlay itself, " + "such as a Navigator, WidgetApp, MaterialApp, or CupertinoApp.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");

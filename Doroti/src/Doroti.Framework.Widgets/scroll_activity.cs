@@ -221,43 +221,43 @@ public class ScrollDragController : global::Doroti.Framework.Gestures.Drag
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Gestures.DragUpdateDetails)details).primaryDelta is not null));
         _lastDetails = details;
-        double offset__14109 = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).primaryDelta);
-        if ((offset__14109 != 0.0))
+        double offset = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).primaryDelta);
+        if ((offset != 0.0))
         {
             _lastNonStationaryTimestamp = ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).sourceTimeStamp;
         }
-        _maybeLoseMomentum(offset__14109, ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).sourceTimeStamp);
-        offset__14109 = _adjustForScrollStartThreshold(offset__14109, ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).sourceTimeStamp);
-        if ((offset__14109 == 0.0))
+        _maybeLoseMomentum(offset, ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).sourceTimeStamp);
+        offset = _adjustForScrollStartThreshold(offset, ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).sourceTimeStamp);
+        if ((offset == 0.0))
         {
             return;
         }
         if (this._reversed)
         {
-            offset__14109 = -offset__14109;
+            offset = -offset;
         }
-        this.@delegate.applyUserOffset(offset__14109);
+        this.@delegate.applyUserOffset(offset);
     }
 
     public override void end(global::Doroti.Framework.Gestures.DragEndDetails details)
     {
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Gestures.DragEndDetails)details).primaryVelocity is not null));
-        double velocity__15012 = -DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.DragEndDetails)details).primaryVelocity);
+        double velocity = -DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.DragEndDetails)details).primaryVelocity);
         if (this._reversed)
         {
-            velocity__15012 = -velocity__15012;
+            velocity = -velocity;
         }
         _lastDetails = details;
         if (this._retainMomentum)
         {
-            var isFlingingInSameDirection__15237 = (Math.Sign(velocity__15012) == Math.Sign(DartRuntimePrimitives.RequireValue(this.carriedVelocity)));
-            bool isVelocityNotSubstantiallyLessThanCarriedMomentum__15448 = (velocity__15012.abs() > (DartRuntimePrimitives.RequireValue(this.carriedVelocity).abs() * momentumRetainVelocityThresholdFactor));
-            if ((isFlingingInSameDirection__15237 && isVelocityNotSubstantiallyLessThanCarriedMomentum__15448))
+            var isFlingingInSameDirection = (Math.Sign(velocity) == Math.Sign(DartRuntimePrimitives.RequireValue(this.carriedVelocity)));
+            bool isVelocityNotSubstantiallyLessThanCarriedMomentum = (velocity.abs() > (DartRuntimePrimitives.RequireValue(this.carriedVelocity).abs() * momentumRetainVelocityThresholdFactor));
+            if ((isFlingingInSameDirection && isVelocityNotSubstantiallyLessThanCarriedMomentum))
             {
-                velocity__15012 += DartRuntimePrimitives.RequireValue(this.carriedVelocity);
+                velocity += DartRuntimePrimitives.RequireValue(this.carriedVelocity);
             }
         }
-        this.@delegate.goBallistic(velocity__15012);
+        this.@delegate.goBallistic(velocity);
     }
 
     public override void cancel()
@@ -287,29 +287,29 @@ public class DragScrollActivity : ScrollActivity
 
     public override void dispatchScrollStartNotification(ScrollMetrics metrics, BuildContext? context)
     {
-        dynamic lastDetails__16999 = this._controller!.lastDetails;
-        DartRuntimePrimitives.Assert(() => (lastDetails__16999 is global::Doroti.Framework.Gestures.DragStartDetails));
-        new ScrollStartNotification(metrics: metrics, context: context, dragDetails: ((global::Doroti.Framework.Gestures.DragStartDetails?)(object?)lastDetails__16999)!).dispatch(context);
+        dynamic lastDetailsLocal = this._controller!.lastDetails;
+        DartRuntimePrimitives.Assert(() => (lastDetailsLocal is global::Doroti.Framework.Gestures.DragStartDetails));
+        new ScrollStartNotification(metrics: metrics, context: context, dragDetails: ((global::Doroti.Framework.Gestures.DragStartDetails?)(object?)lastDetailsLocal)!).dispatch(context);
     }
 
     public override void dispatchScrollUpdateNotification(ScrollMetrics metrics, BuildContext context, double scrollDelta)
     {
-        dynamic lastDetails__17397 = this._controller!.lastDetails;
-        DartRuntimePrimitives.Assert(() => (lastDetails__17397 is global::Doroti.Framework.Gestures.DragUpdateDetails));
-        new ScrollUpdateNotification(metrics: metrics, context: context, scrollDelta: scrollDelta, dragDetails: ((global::Doroti.Framework.Gestures.DragUpdateDetails?)(object?)lastDetails__17397)!).dispatch(context);
+        dynamic lastDetailsLocal = this._controller!.lastDetails;
+        DartRuntimePrimitives.Assert(() => (lastDetailsLocal is global::Doroti.Framework.Gestures.DragUpdateDetails));
+        new ScrollUpdateNotification(metrics: metrics, context: context, scrollDelta: scrollDelta, dragDetails: ((global::Doroti.Framework.Gestures.DragUpdateDetails?)(object?)lastDetailsLocal)!).dispatch(context);
     }
 
     public override void dispatchOverscrollNotification(ScrollMetrics metrics, BuildContext context, double overscroll)
     {
-        dynamic lastDetails__17827 = this._controller!.lastDetails;
-        DartRuntimePrimitives.Assert(() => (lastDetails__17827 is global::Doroti.Framework.Gestures.DragUpdateDetails));
-        new OverscrollNotification(metrics: metrics, context: context, overscroll: overscroll, dragDetails: ((global::Doroti.Framework.Gestures.DragUpdateDetails?)(object?)lastDetails__17827)!).dispatch(context);
+        dynamic lastDetailsLocal = this._controller!.lastDetails;
+        DartRuntimePrimitives.Assert(() => (lastDetailsLocal is global::Doroti.Framework.Gestures.DragUpdateDetails));
+        new OverscrollNotification(metrics: metrics, context: context, overscroll: overscroll, dragDetails: ((global::Doroti.Framework.Gestures.DragUpdateDetails?)(object?)lastDetailsLocal)!).dispatch(context);
     }
 
     public override void dispatchScrollEndNotification(ScrollMetrics metrics, BuildContext context)
     {
-        dynamic lastDetails__18302 = this._controller!.lastDetails;
-        new ScrollEndNotification(metrics: metrics, context: context, dragDetails: ((lastDetails__18302 is global::Doroti.Framework.Gestures.DragEndDetails) ? ((global::Doroti.Framework.Gestures.DragEndDetails)lastDetails__18302) : null)).dispatch(context);
+        dynamic lastDetailsLocal = this._controller!.lastDetails;
+        new ScrollEndNotification(metrics: metrics, context: context, dragDetails: ((lastDetailsLocal is global::Doroti.Framework.Gestures.DragEndDetails) ? ((global::Doroti.Framework.Gestures.DragEndDetails)lastDetailsLocal) : null)).dispatch(context);
     }
 
     public override bool shouldIgnorePointer => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(this._controller?._kind, PointerDeviceKind.trackpad)));

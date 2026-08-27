@@ -181,21 +181,21 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
 
     internal virtual void _updateCenter()
     {
-        var viewport__11345 = ((Viewport?)(object?)this.widget)!;
-        if ((((Viewport)viewport__11345).center is not null))
+        var viewport = ((Viewport?)(object?)this.widget)!;
+        if ((((Viewport)viewport).center is not null))
         {
-            var elementIndex__11421 = 0L;
-            foreach (Element e__11464 in this.children)
+            var elementIndex = 0L;
+            foreach (Element e in this.children)
             {
-                if ((object.Equals(((Element)e__11464).widget.key, ((Viewport)viewport__11345).center)))
+                if ((object.Equals(((Element)e).widget.key, ((Viewport)viewport).center)))
                 {
-                    ((dynamic)this.renderObject).center = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)((Element)e__11464).renderObject)!;
+                    ((dynamic)this.renderObject).center = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)((Element)e).renderObject)!;
                     break;
                 }
-                elementIndex__11421++;
+                elementIndex++;
             }
-            DartRuntimePrimitives.Assert(() => (elementIndex__11421 < this.children.Count()));
-            _centerSlotIndex = elementIndex__11421;
+            DartRuntimePrimitives.Assert(() => (elementIndex < this.children.Count()));
+            _centerSlotIndex = elementIndex;
         }
         else
         {
@@ -243,8 +243,8 @@ internal class _ViewportElement__viewport : MultiChildRenderObjectElement, Notif
     {
         this.children.where(((e) =>
         {
-            var renderSliver__12947 = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)((Element)e).renderObject!)!;
-            return ((global::Doroti.Framework.Rendering.RenderSliver)renderSliver__12947).geometry!.visible;
+            var renderSliver = ((global::Doroti.Framework.Rendering.RenderSliver?)(object?)((Element)e).renderObject!)!;
+            return ((global::Doroti.Framework.Rendering.RenderSliver)renderSliver).geometry!.visible;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })).forEach((__arg0) => ((global::System.Action<Element>)visitor)(__arg0));
     }

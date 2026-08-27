@@ -138,15 +138,15 @@ public static partial class Platform_channelLibrary
             Platform_channelLibrary._profilePlatformChannelsIsRunning = true;
             await new Future<object>(Platform_channelLibrary._profilePlatformChannelsRate);
             Platform_channelLibrary._profilePlatformChannelsIsRunning = false;
-            var log__4355 = new StringBuffer();
-            log__4355.writeln("Platform Channel Stats:");
-            List<_PlatformChannelStats> allStats__4459 = Platform_channelLibrary._profilePlatformChannelsStats.Values.ToList();
-            allStats__4459.sort(((x, y) => (((y.upBytes + y.downBytes)) - ((x.upBytes + x.downBytes)))));
-            foreach (var stats in allStats__4459)
+            var log = new StringBuffer();
+            log.writeln("Platform Channel Stats:");
+            List<_PlatformChannelStats> allStats = Platform_channelLibrary._profilePlatformChannelsStats.Values.ToList();
+            allStats.sort(((x, y) => (((y.upBytes + y.downBytes)) - ((x.upBytes + x.downBytes)))));
+            foreach (var stats in allStats)
             {
-                log__4355.writeln($"  (name:\"{stats.channel}\" type:\"{stats.type}\" codec:\"{stats.codec}\" upBytes:{stats.upBytes} upBytes_avg:{stats.averageUpPayload.toStringAsFixed(1L)} downBytes:{stats.downBytes} downBytes_avg:{stats.averageDownPayload.toStringAsFixed(1L)})");
+                log.writeln($"  (name:\"{stats.channel}\" type:\"{stats.type}\" codec:\"{stats.codec}\" upBytes:{stats.upBytes} upBytes_avg:{stats.averageUpPayload.toStringAsFixed(1L)} downBytes:{stats.downBytes} downBytes_avg:{stats.averageDownPayload.toStringAsFixed(1L)})");
             }
-            global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(log__4355.ToString());
+            global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(log.ToString());
             Platform_channelLibrary._profilePlatformChannelsStats.Clear();
         }
     }

@@ -272,11 +272,11 @@ internal class _FutureBuilderState__async<T> : State<FutureBuilder<T>>
         {
             return;
         }
-        var callbackIdentity__24941 = new object();
-        _activeCallbackIdentity = callbackIdentity__24941;
+        var callbackIdentity = new object();
+        _activeCallbackIdentity = callbackIdentity;
         DartRuntimePrimitives.Ignore(((FutureBuilder<T>)(object)this.widget).future!.then(((data) =>
         {
-            if ((object.Equals(this._activeCallbackIdentity, callbackIdentity__24941)))
+            if ((object.Equals(this._activeCallbackIdentity, callbackIdentity)))
             {
                 setState(((global::System.Action)(() =>
                 {
@@ -285,7 +285,7 @@ internal class _FutureBuilderState__async<T> : State<FutureBuilder<T>>
             }
         }), onError: ((error, stackTrace) =>
         {
-            if ((object.Equals(this._activeCallbackIdentity, callbackIdentity__24941)))
+            if ((object.Equals(this._activeCallbackIdentity, callbackIdentity)))
             {
                 setState(((global::System.Action)(() =>
                 {

@@ -74,58 +74,58 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
 
     internal override object _evaluate(WidgetsBinding binding)
     {
-        var violations__3192 = new List<ViolationIo>();
-        foreach (global::Doroti.Framework.Rendering.RenderView view__3246 in binding.renderViews)
+        var violations = new List<ViolationIo>();
+        foreach (global::Doroti.Framework.Rendering.RenderView view in binding.renderViews)
         {
-            violations__3192.AddRange(_traverse(((global::Doroti.Framework.Rendering.RenderView)view__3246).flutterView, view__3246.owner!.semanticsOwner!.rootSemanticsNode!));
+            violations.AddRange(_traverse(((global::Doroti.Framework.Rendering.RenderView)view).flutterView, view.owner!.semanticsOwner!.rootSemanticsNode!));
         }
-        return new EvaluationResultIo(violations__3192);
+        return new EvaluationResultIo(violations);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual List<ViolationIo> _traverse(DorotiView view, global::Doroti.Framework.Semantics.SemanticsNode node)
     {
-        var violations__3530 = new List<ViolationIo>();
+        var violations = new List<ViolationIo>();
         node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
         {
-            violations__3530.AddRange(_traverse(view, child));
+            violations.AddRange(_traverse(view, child));
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         if (((global::Doroti.Framework.Semantics.SemanticsNode)node).isMergedIntoParent)
         {
-            return violations__3530;
+            return violations;
         }
         if (shouldSkipNode(node))
         {
-            return violations__3530;
+            return violations;
         }
-        global::Doroti.Ui.Rect paintBounds__3819 = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Semantics.SemanticsNode)node).rect);
-        global::Doroti.Framework.Semantics.SemanticsNode? current__3863 = node;
-        while ((current__3863 is not null))
+        global::Doroti.Ui.Rect paintBounds = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Semantics.SemanticsNode)node).rect);
+        global::Doroti.Framework.Semantics.SemanticsNode? current = node;
+        while ((current is not null))
         {
-            Matrix4? transform__3931 = ((global::Doroti.Framework.Semantics.SemanticsNode)current__3863).transform;
-            if ((transform__3931 is not null))
+            Matrix4? transformLocal = ((global::Doroti.Framework.Semantics.SemanticsNode)current).transform;
+            if ((transformLocal is not null))
             {
-                paintBounds__3819 = MatrixUtils.transformRect(transform__3931, paintBounds__3819);
+                paintBounds = MatrixUtils.transformRect(transformLocal, paintBounds);
             }
-            if ((((global::Doroti.Framework.Semantics.SemanticsNode)current__3863).flagsCollection.hasImplicitScrolling && MinimumTapTargetEvaluationIo._isAtBoundary(paintBounds__3819, ((global::Doroti.Framework.Semantics.SemanticsNode)current__3863).rect)))
+            if ((((global::Doroti.Framework.Semantics.SemanticsNode)current).flagsCollection.hasImplicitScrolling && MinimumTapTargetEvaluationIo._isAtBoundary(paintBounds, ((global::Doroti.Framework.Semantics.SemanticsNode)current).rect)))
             {
-                return violations__3530;
+                return violations;
             }
-            current__3863 = ((global::Doroti.Framework.Semantics.SemanticsNode)current__3863).parent;
+            current = ((global::Doroti.Framework.Semantics.SemanticsNode)current).parent;
         }
-        global::Doroti.Ui.Rect viewRect__4397 = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & view.physicalSize));
-        if (MinimumTapTargetEvaluationIo._isAtBoundary(paintBounds__3819, viewRect__4397))
+        global::Doroti.Ui.Rect viewRect = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & view.physicalSize));
+        if (MinimumTapTargetEvaluationIo._isAtBoundary(paintBounds, viewRect))
         {
-            return violations__3530;
+            return violations;
         }
-        global::Doroti.Ui.Size candidateSize__4573 = ((global::Doroti.Ui.Size)(object?)(paintBounds__3819.size / view.devicePixelRatio));
-        if (((candidateSize__4573.width < (this.size.width - global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)) || (candidateSize__4573.height < (this.size.height - global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))))
+        global::Doroti.Ui.Size candidateSize = ((global::Doroti.Ui.Size)(object?)(paintBounds.size / view.devicePixelRatio));
+        if (((candidateSize.width < (this.size.width - global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)) || (candidateSize.height < (this.size.height - global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))))
         {
-            violations__3530.Add(new ViolationIo(node, $"{node}: expected tap target size of at least {this.size}, " + $"but found {candidateSize__4573}\n"));
+            violations.Add(new ViolationIo(node, $"{node}: expected tap target size of at least {this.size}, " + $"but found {candidateSize}\n"));
         }
-        return violations__3530;
+        return violations;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -141,12 +141,12 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
 
     public virtual bool shouldSkipNode(global::Doroti.Framework.Semantics.SemanticsNode node)
     {
-        global::Doroti.Framework.Semantics.SemanticsData data__5576 = ((global::Doroti.Framework.Semantics.SemanticsData)(object?)node.getSemanticsData());
-        if ((((!data__5576.hasAction(SemanticsAction.longPress) && !data__5576.hasAction(SemanticsAction.tap))) || ((global::Doroti.Framework.Semantics.SemanticsData)data__5576).flagsCollection.isHidden))
+        global::Doroti.Framework.Semantics.SemanticsData data = ((global::Doroti.Framework.Semantics.SemanticsData)(object?)node.getSemanticsData());
+        if ((((!data.hasAction(SemanticsAction.longPress) && !data.hasAction(SemanticsAction.tap))) || ((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isHidden))
         {
             return true;
         }
-        if (((global::Doroti.Framework.Semantics.SemanticsData)data__5576).flagsCollection.isLink)
+        if (((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isLink)
         {
             return true;
         }
@@ -164,38 +164,38 @@ public class LabeledTapTargetEvaluationIo : AccessibilityEvaluationIo
 
     internal override object _evaluate(WidgetsBinding binding)
     {
-        var violations__6393 = new List<ViolationIo>();
-        foreach (global::Doroti.Framework.Rendering.RenderView view__6448 in binding.renderViews)
+        var violations = new List<ViolationIo>();
+        foreach (global::Doroti.Framework.Rendering.RenderView view in binding.renderViews)
         {
-            violations__6393.AddRange(_traverse(view__6448.owner!.semanticsOwner!.rootSemanticsNode!));
+            violations.AddRange(_traverse(view.owner!.semanticsOwner!.rootSemanticsNode!));
         }
-        return new EvaluationResultIo(violations__6393);
+        return new EvaluationResultIo(violations);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual List<ViolationIo> _traverse(global::Doroti.Framework.Semantics.SemanticsNode node)
     {
-        var violations__6676 = new List<ViolationIo>();
+        var violations = new List<ViolationIo>();
         node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
         {
-            violations__6676.AddRange(_traverse(child));
+            violations.AddRange(_traverse(child));
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         if ((((((global::Doroti.Framework.Semantics.SemanticsNode)node).isMergedIntoParent || ((global::Doroti.Framework.Semantics.SemanticsNode)node).isInvisible) || ((global::Doroti.Framework.Semantics.SemanticsNode)node).flagsCollection.isHidden) || ((global::Doroti.Framework.Semantics.SemanticsNode)node).flagsCollection.isTextField))
         {
-            return violations__6676;
+            return violations;
         }
-        global::Doroti.Framework.Semantics.SemanticsData data__7024 = ((global::Doroti.Framework.Semantics.SemanticsData)(object?)node.getSemanticsData());
-        if ((!data__7024.hasAction(SemanticsAction.longPress) && !data__7024.hasAction(SemanticsAction.tap)))
+        global::Doroti.Framework.Semantics.SemanticsData data = ((global::Doroti.Framework.Semantics.SemanticsData)(object?)node.getSemanticsData());
+        if ((!data.hasAction(SemanticsAction.longPress) && !data.hasAction(SemanticsAction.tap)))
         {
-            return violations__6676;
+            return violations;
         }
-        if ((((((global::Doroti.Framework.Semantics.SemanticsData)data__7024).label.Length == 0)) && ((((global::Doroti.Framework.Semantics.SemanticsData)data__7024).tooltip.Length == 0))))
+        if ((((((global::Doroti.Framework.Semantics.SemanticsData)data).label.Length == 0)) && ((((global::Doroti.Framework.Semantics.SemanticsData)data).tooltip.Length == 0))))
         {
-            violations__6676.Add(new ViolationIo(node, $"{node}: expected tappable node to have semantic label, " + "but none was found."));
+            violations.Add(new ViolationIo(node, $"{node}: expected tappable node to have semantic label, " + "but none was found."));
         }
-        return violations__6676;
+        return violations;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -211,52 +211,52 @@ public abstract class _ContrastEvaluation___accessibility_evaluations : Accessib
 
     internal async override Future<EvaluationResultIo> _evaluate(WidgetsBinding binding)
     {
-        var violations__7844 = new List<ViolationIo>();
-        foreach (global::Doroti.Framework.Rendering.RenderView renderView__7898 in binding.renderViews)
+        var violations = new List<ViolationIo>();
+        foreach (global::Doroti.Framework.Rendering.RenderView renderView in binding.renderViews)
         {
-            var layer__7947 = ((global::Doroti.Framework.Rendering.OffsetLayer?)(object?)renderView__7898.debugLayer!)!;
-            global::Doroti.Framework.Semantics.SemanticsNode root__8020 = renderView__7898.owner!.semanticsOwner!.rootSemanticsNode!;
-            double ratio__8101 = (1L / ((global::Doroti.Framework.Rendering.RenderView)renderView__7898).flutterView.devicePixelRatio);
-            global::Doroti.Ui.Image image__8175 = await layer__7947.toImage(((global::Doroti.Framework.Rendering.RenderView)renderView__7898).paintBounds, pixelRatio: ratio__8101);
-            ByteData byteData__8268 = (await image__8175.toByteData())!;
-            violations__7844.AddRange((await _evaluateNode(root__8020, image__8175, byteData__8268, renderView__7898)).Cast<ViolationIo>());
-            image__8175.dispose();
+            var layer = ((global::Doroti.Framework.Rendering.OffsetLayer?)(object?)renderView.debugLayer!)!;
+            global::Doroti.Framework.Semantics.SemanticsNode root = renderView.owner!.semanticsOwner!.rootSemanticsNode!;
+            double ratio = (1L / ((global::Doroti.Framework.Rendering.RenderView)renderView).flutterView.devicePixelRatio);
+            global::Doroti.Ui.Image image = await layer.toImage(((global::Doroti.Framework.Rendering.RenderView)renderView).paintBounds, pixelRatio: ratio);
+            ByteData byteData = (await image.toByteData())!;
+            violations.AddRange((await _evaluateNode(root, image, byteData, renderView)).Cast<ViolationIo>());
+            image.dispose();
         }
-        return new EvaluationResultIo(violations__7844);
+        return new EvaluationResultIo(violations);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal async virtual Future<List<ViolationIo>> _evaluateNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Ui.Image image, ByteData byteData, global::Doroti.Framework.Rendering.RenderView renderView)
     {
-        var violations__8622 = new List<ViolationIo>();
+        var violations = new List<ViolationIo>();
         if (_shouldSkipNodeTraversal(node))
         {
-            return violations__8622;
+            return violations;
         }
-        global::Doroti.Framework.Semantics.SemanticsData data__8749 = ((global::Doroti.Framework.Semantics.SemanticsData)(object?)node.getSemanticsData());
-        var children__8791 = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
+        global::Doroti.Framework.Semantics.SemanticsData data = ((global::Doroti.Framework.Semantics.SemanticsData)(object?)node.getSemanticsData());
+        var children = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
         node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
         {
-            children__8791.Add(child);
+            children.Add(child);
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        foreach (var child__8937 in children__8791)
+        foreach (var childLocal in children)
         {
-            violations__8622.AddRange((await _evaluateNode(child__8937, image, byteData, renderView)).Cast<ViolationIo>());
+            violations.AddRange((await _evaluateNode(childLocal, image, byteData, renderView)).Cast<ViolationIo>());
         }
-        if (_shouldSkipNodeEvaluation(data__8749))
+        if (_shouldSkipNodeEvaluation(data))
         {
-            return violations__8622;
+            return violations;
         }
-        return await evaluateNodeContent(node, data__8749, image, byteData, renderView);
+        return await evaluateNodeContent(node, data, image, byteData, renderView);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _shouldSkipNodeTraversal(global::Doroti.Framework.Semantics.SemanticsNode node)
     {
-        var isDisabled__9264 = (object.Equals(((global::Doroti.Framework.Semantics.SemanticsNode)node).flagsCollection.isEnabled, Tristate.isFalse));
-        return (((((global::Doroti.Framework.Semantics.SemanticsNode)node).isInvisible || ((global::Doroti.Framework.Semantics.SemanticsNode)node).isMergedIntoParent) || ((global::Doroti.Framework.Semantics.SemanticsNode)node).flagsCollection.isHidden) || isDisabled__9264);
+        var isDisabled = (object.Equals(((global::Doroti.Framework.Semantics.SemanticsNode)node).flagsCollection.isEnabled, Tristate.isFalse));
+        return (((((global::Doroti.Framework.Semantics.SemanticsNode)node).isInvisible || ((global::Doroti.Framework.Semantics.SemanticsNode)node).isMergedIntoParent) || ((global::Doroti.Framework.Semantics.SemanticsNode)node).flagsCollection.isHidden) || isDisabled);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -264,8 +264,8 @@ public abstract class _ContrastEvaluation___accessibility_evaluations : Accessib
     public abstract Future<List<ViolationIo>> evaluateNodeContent(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsData data, global::Doroti.Ui.Image image, ByteData byteData, global::Doroti.Framework.Rendering.RenderView renderView);
     internal virtual bool _isNodeOffScreen(Rect paintBounds, DorotiView window)
     {
-        global::Doroti.Ui.Size windowLogicalSize__9904 = ((global::Doroti.Ui.Size)(object?)(window.physicalSize / window.devicePixelRatio));
-        return ((((paintBounds.top < -50.0) || (paintBounds.left < -50.0)) || (paintBounds.bottom > (windowLogicalSize__9904.height + 50.0))) || (paintBounds.right > (windowLogicalSize__9904.width + 50.0)));
+        global::Doroti.Ui.Size windowLogicalSize = ((global::Doroti.Ui.Size)(object?)(window.physicalSize / window.devicePixelRatio));
+        return ((((paintBounds.top < -50.0) || (paintBounds.left < -50.0)) || (paintBounds.bottom > (windowLogicalSize.height + 50.0))) || (paintBounds.right > (windowLogicalSize.width + 50.0)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -290,97 +290,97 @@ public class MinimumTextContrastEvaluationIo : _ContrastEvaluation___accessibili
     internal override bool _shouldSkipNodeEvaluation(global::Doroti.Framework.Semantics.SemanticsData data) => DartRuntimePrimitives.ConvertValue<bool>((((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.scopesRoute || (((((global::Doroti.Framework.Semantics.SemanticsData)data).label.Trim().Length == 0) && (((global::Doroti.Framework.Semantics.SemanticsData)data).value.Trim().Length == 0)))));
     public async override Future<List<ViolationIo>> evaluateNodeContent(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsData data, global::Doroti.Ui.Image image, ByteData byteData, global::Doroti.Framework.Rendering.RenderView renderView)
     {
-        var violations__12542 = new List<ViolationIo>();
-        string text__12587 = ((((global::Doroti.Framework.Semantics.SemanticsData)data).label.Length == 0) ? ((global::Doroti.Framework.Semantics.SemanticsData)data).value : ((global::Doroti.Framework.Semantics.SemanticsData)data).label);
-        IEnumerable<Element> elements__12668 = _accessibility_evaluationsLibrary._collectElementsByText(WidgetsBinding.instance.rootElement!, text__12587);
-        foreach (var element__12781 in elements__12668)
+        var violations = new List<ViolationIo>();
+        string text = ((((global::Doroti.Framework.Semantics.SemanticsData)data).label.Length == 0) ? ((global::Doroti.Framework.Semantics.SemanticsData)data).value : ((global::Doroti.Framework.Semantics.SemanticsData)data).label);
+        IEnumerable<Element> elements = _accessibility_evaluationsLibrary._collectElementsByText(WidgetsBinding.instance.rootElement!, text);
+        foreach (var element in elements)
         {
-            violations__12542.AddRange((await _evaluateElement(node, element__12781, image, byteData, renderView)).Cast<ViolationIo>());
+            violations.AddRange((await _evaluateElement(node, element, image, byteData, renderView)).Cast<ViolationIo>());
         }
-        return violations__12542;
+        return violations;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal async virtual Future<List<ViolationIo>> _evaluateElement(global::Doroti.Framework.Semantics.SemanticsNode node, Element element, global::Doroti.Ui.Image image, ByteData byteData, global::Doroti.Framework.Rendering.RenderView renderView)
     {
-        bool isBold__13192 = default!;
-        double? fontSize__13212 = default!;
-        global::Doroti.Ui.Rect screenBounds__13243 = default!;
-        global::Doroti.Ui.Rect paintBoundsWithOffset__13277 = default!;
-        global::Doroti.Framework.Rendering.RenderObject? renderBox__13325 = ((Element)element).renderObject;
-        if ((renderBox__13325 is not global::Doroti.Framework.Rendering.RenderBox))
+        bool isBold = default!;
+        double? fontSizeLocal = default!;
+        global::Doroti.Ui.Rect screenBounds = default!;
+        global::Doroti.Ui.Rect paintBoundsWithOffset = default!;
+        global::Doroti.Framework.Rendering.RenderObject? renderBox = ((Element)element).renderObject;
+        if ((renderBox is not global::Doroti.Framework.Rendering.RenderBox))
         {
-            throw new InvalidOperationException($"Unexpected renderObject type: {renderBox__13325}");
+            throw new InvalidOperationException($"Unexpected renderObject type: {renderBox}");
         }
-        Matrix4 globalTransform__13487 = ((Matrix4)(object?)((global::Doroti.Framework.Rendering.RenderBox)renderBox__13325).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
-        paintBoundsWithOffset__13277 = MatrixUtils.transformRect(globalTransform__13487, ((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)renderBox__13325)).paintBounds.inflate(4.0));
-        var rootTransform__13878 = Matrix4.identity();
-        renderView.applyPaintTransform(((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)renderView).child)!, rootTransform__13878);
-        rootTransform__13878.multiply(globalTransform__13487);
-        screenBounds__13243 = MatrixUtils.transformRect(rootTransform__13878, ((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)renderBox__13325)).paintBounds);
-        global::Doroti.Ui.Rect nodeBounds__14122 = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Semantics.SemanticsNode)node).rect);
-        global::Doroti.Framework.Semantics.SemanticsNode? current__14165 = node;
-        while ((current__14165 is not null))
+        Matrix4 globalTransform = ((Matrix4)(object?)((global::Doroti.Framework.Rendering.RenderBox)renderBox).getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
+        paintBoundsWithOffset = MatrixUtils.transformRect(globalTransform, ((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)renderBox)).paintBounds.inflate(4.0));
+        var rootTransform = Matrix4.identity();
+        renderView.applyPaintTransform(((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)renderView).child)!, rootTransform);
+        rootTransform.multiply(globalTransform);
+        screenBounds = MatrixUtils.transformRect(rootTransform, ((global::Doroti.Framework.Rendering.RenderBox)((global::Doroti.Framework.Rendering.RenderBox)renderBox)).paintBounds);
+        global::Doroti.Ui.Rect nodeBounds = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Semantics.SemanticsNode)node).rect);
+        global::Doroti.Framework.Semantics.SemanticsNode? current = node;
+        while ((current is not null))
         {
-            Matrix4? transform__14232 = ((global::Doroti.Framework.Semantics.SemanticsNode)current__14165).transform;
-            if ((transform__14232 is not null))
+            Matrix4? transformLocal = ((global::Doroti.Framework.Semantics.SemanticsNode)current).transform;
+            if ((transformLocal is not null))
             {
-                nodeBounds__14122 = MatrixUtils.transformRect(transform__14232, nodeBounds__14122);
+                nodeBounds = MatrixUtils.transformRect(transformLocal, nodeBounds);
             }
-            current__14165 = ((global::Doroti.Framework.Semantics.SemanticsNode)current__14165).parent;
+            current = ((global::Doroti.Framework.Semantics.SemanticsNode)current).parent;
         }
-        global::Doroti.Ui.Rect intersection__14426 = ((global::Doroti.Ui.Rect)(object?)nodeBounds__14122.intersect(screenBounds__13243));
-        if (((intersection__14426.width <= 0L) || (intersection__14426.height <= 0L)))
+        global::Doroti.Ui.Rect intersection = ((global::Doroti.Ui.Rect)(object?)nodeBounds.intersect(screenBounds));
+        if (((intersection.width <= 0L) || (intersection.height <= 0L)))
         {
             return new List<ViolationIo>();
         }
-        Widget widget__14684 = ((Element)element).widget;
-        DefaultTextStyle defaultTextStyle__14736 = ((DefaultTextStyle)(object?)DefaultTextStyle.of(element));
-        if ((widget__14684 is Text))
+        Widget widgetLocal = ((Element)element).widget;
+        DefaultTextStyle defaultTextStyle = ((DefaultTextStyle)(object?)DefaultTextStyle.of(element));
+        if ((widgetLocal is Text))
         {
-            Text widget__14684__as14793 = (Text)widget__14684;
-            global::Doroti.Framework.Painting.TextStyle? style__14834 = ((Text)((Text)widget__14684__as14793)).style;
-            global::Doroti.Framework.Painting.TextStyle effectiveTextStyle__14878 = (((style__14834 is null) || ((global::Doroti.Framework.Painting.TextStyle)style__14834).inherit) ? ((DefaultTextStyle)defaultTextStyle__14736).style.merge(((Text)((Text)widget__14684__as14793)).style) : style__14834);
-            isBold__13192 = (object.Equals(((global::Doroti.Framework.Painting.TextStyle)effectiveTextStyle__14878).fontWeight, FontWeight.bold));
-            fontSize__13212 = ((global::Doroti.Framework.Painting.TextStyle)effectiveTextStyle__14878).fontSize;
+            Text widget__14684__as14793 = (Text)widgetLocal;
+            global::Doroti.Framework.Painting.TextStyle? styleLocal = ((Text)((Text)widget__14684__as14793)).style;
+            global::Doroti.Framework.Painting.TextStyle effectiveTextStyle = (((styleLocal is null) || ((global::Doroti.Framework.Painting.TextStyle)styleLocal).inherit) ? ((DefaultTextStyle)defaultTextStyle).style.merge(((Text)((Text)widget__14684__as14793)).style) : styleLocal);
+            isBold = (object.Equals(((global::Doroti.Framework.Painting.TextStyle)effectiveTextStyle).fontWeight, FontWeight.bold));
+            fontSizeLocal = ((global::Doroti.Framework.Painting.TextStyle)effectiveTextStyle).fontSize;
         }
         else
         {
-            if ((widget__14684 is EditableText))
+            if ((widgetLocal is EditableText))
             {
-                EditableText widget__14684__as15130 = (EditableText)widget__14684;
-                isBold__13192 = (object.Equals(((EditableText)((EditableText)widget__14684__as15130)).style.fontWeight, FontWeight.bold));
-                fontSize__13212 = ((EditableText)((EditableText)widget__14684__as15130)).style.fontSize;
+                EditableText widget__14684__as15130 = (EditableText)widgetLocal;
+                isBold = (object.Equals(((EditableText)((EditableText)widget__14684__as15130)).style.fontWeight, FontWeight.bold));
+                fontSizeLocal = ((EditableText)((EditableText)widget__14684__as15130)).style.fontSize;
             }
             else
             {
-                throw new InvalidOperationException($"Unexpected widget type: {DartRuntimePrimitives.RuntimeType(widget__14684)}");
+                throw new InvalidOperationException($"Unexpected widget type: {DartRuntimePrimitives.RuntimeType(widgetLocal)}");
             }
         }
-        if (_isNodeOffScreen(paintBoundsWithOffset__13277, ((global::Doroti.Framework.Rendering.RenderView)renderView).flutterView))
+        if (_isNodeOffScreen(paintBoundsWithOffset, ((global::Doroti.Framework.Rendering.RenderView)renderView).flutterView))
         {
             return new List<ViolationIo>();
         }
-        DartMap<global::Doroti.Ui.Color, long> colorHistogram__15484 = _accessibility_evaluationsLibrary._colorsWithinRect(byteData, paintBoundsWithOffset__13277, DartRuntimePrimitives.RequireValue(((global::Doroti.Ui.Image)image).width), DartRuntimePrimitives.RequireValue(((global::Doroti.Ui.Image)image).height)).cast<global::Doroti.Ui.Color, long>();
-        if (!System.Linq.Enumerable.Any(colorHistogram__15484))
+        DartMap<global::Doroti.Ui.Color, long> colorHistogram = _accessibility_evaluationsLibrary._colorsWithinRect(byteData, paintBoundsWithOffset, DartRuntimePrimitives.RequireValue(((global::Doroti.Ui.Image)image).width), DartRuntimePrimitives.RequireValue(((global::Doroti.Ui.Image)image).height)).cast<global::Doroti.Ui.Color, long>();
+        if (!System.Linq.Enumerable.Any(colorHistogram))
         {
             return new List<ViolationIo>();
         }
-        var report__15727 = _ContrastReport___accessibility_evaluations.Create(colorHistogram__15484);
-        double contrastRatio__15787 = report__15727.contrastRatio();
-        double targetContrastRatio__15844 = _targetContrastRatio(fontSize__13212, bold: isBold__13192);
-        if (((contrastRatio__15787 - targetContrastRatio__15844) >= _ContrastEvaluation___accessibility_evaluations._kContrastTolerance))
+        var report = _ContrastReport___accessibility_evaluations.Create(colorHistogram);
+        double contrastRatioLocal = report.contrastRatio();
+        double targetContrastRatio = _targetContrastRatio(fontSizeLocal, bold: isBold);
+        if (((contrastRatioLocal - targetContrastRatio) >= _ContrastEvaluation___accessibility_evaluations._kContrastTolerance))
         {
             return new List<ViolationIo>();
         }
-        return new List<ViolationIo> { new ViolationIo(node, $"{node}:\n" + $"Expected contrast ratio of at least {targetContrastRatio__15844} " + $"but found {contrastRatio__15787.toStringAsFixed(2L)} " + $"for a font size of {fontSize__13212}.\n" + "The computed colors were:\n" + $"light - {((_ContrastReport___accessibility_evaluations)report__15727).lightColor}, dark - {((_ContrastReport___accessibility_evaluations)report__15727).darkColor}\n" + "See also: " + "https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html") };
+        return new List<ViolationIo> { new ViolationIo(node, $"{node}:\n" + $"Expected contrast ratio of at least {targetContrastRatio} " + $"but found {contrastRatioLocal.toStringAsFixed(2L)} " + $"for a font size of {fontSizeLocal}.\n" + "The computed colors were:\n" + $"light - {((_ContrastReport___accessibility_evaluations)report).lightColor}, dark - {((_ContrastReport___accessibility_evaluations)report).darkColor}\n" + "See also: " + "https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html") };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _targetContrastRatio(double? fontSize, bool bold)
     {
-        double fontSizeOrDefault__16788 = (fontSize ?? _kDefaultFontSize);
-        if ((((bold && (fontSizeOrDefault__16788 >= kBoldTextMinimumSize))) || (fontSizeOrDefault__16788 >= kLargeTextMinimumSize)))
+        double fontSizeOrDefault = (fontSize ?? _kDefaultFontSize);
+        if ((((bold && (fontSizeOrDefault >= kBoldTextMinimumSize))) || (fontSizeOrDefault >= kLargeTextMinimumSize)))
         {
             return this.minLargeTextContrastRatio;
         }
@@ -404,45 +404,45 @@ public class MinimumNonTextContrastEvaluationIo : _ContrastEvaluation___accessib
         {
             return true;
         }
-        bool isControl__17918 = ((((((((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isButton || ((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isSlider) || ((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isTextField) || (!object.Equals(((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isChecked, CheckedState.none))) || (!object.Equals(((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isToggled, Tristate.none))) || data.hasAction(SemanticsAction.tap)) || data.hasAction(SemanticsAction.longPress));
-        return !isControl__17918;
+        bool isControl = ((((((((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isButton || ((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isSlider) || ((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isTextField) || (!object.Equals(((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isChecked, CheckedState.none))) || (!object.Equals(((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isToggled, Tristate.none))) || data.hasAction(SemanticsAction.tap)) || data.hasAction(SemanticsAction.longPress));
+        return !isControl;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public async override Future<List<ViolationIo>> evaluateNodeContent(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsData data, global::Doroti.Ui.Image image, ByteData byteData, global::Doroti.Framework.Rendering.RenderView renderView)
     {
-        var violations__18516 = new List<ViolationIo>();
-        global::Doroti.Ui.Rect nodeBounds__18553 = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Semantics.SemanticsNode)node).rect);
-        global::Doroti.Framework.Semantics.SemanticsNode? current__18596 = node;
-        while ((current__18596 is not null))
+        var violations = new List<ViolationIo>();
+        global::Doroti.Ui.Rect nodeBounds = ((global::Doroti.Ui.Rect)(object?)((global::Doroti.Framework.Semantics.SemanticsNode)node).rect);
+        global::Doroti.Framework.Semantics.SemanticsNode? current = node;
+        while ((current is not null))
         {
-            Matrix4? transform__18663 = ((global::Doroti.Framework.Semantics.SemanticsNode)current__18596).transform;
-            if (((transform__18663 is not null) && (((global::Doroti.Framework.Semantics.SemanticsNode)current__18596).parent is not null)))
+            Matrix4? transformLocal = ((global::Doroti.Framework.Semantics.SemanticsNode)current).transform;
+            if (((transformLocal is not null) && (((global::Doroti.Framework.Semantics.SemanticsNode)current).parent is not null)))
             {
-                nodeBounds__18553 = MatrixUtils.transformRect(transform__18663, nodeBounds__18553);
+                nodeBounds = MatrixUtils.transformRect(transformLocal, nodeBounds);
             }
-            current__18596 = ((global::Doroti.Framework.Semantics.SemanticsNode)current__18596).parent;
+            current = ((global::Doroti.Framework.Semantics.SemanticsNode)current).parent;
         }
-        double devicePixelRatio__18886 = ((global::Doroti.Framework.Rendering.RenderView)renderView).flutterView.devicePixelRatio;
-        var logicalBounds__18956 = global::Doroti.Ui.Rect.fromLTRB((nodeBounds__18553.left / devicePixelRatio__18886), (nodeBounds__18553.top / devicePixelRatio__18886), (nodeBounds__18553.right / devicePixelRatio__18886), (nodeBounds__18553.bottom / devicePixelRatio__18886));
-        global::Doroti.Ui.Rect inflatedBounds__19180 = ((global::Doroti.Ui.Rect)(object?)logicalBounds__18956.inflate(4.0));
-        if (_isNodeOffScreen(inflatedBounds__19180, ((global::Doroti.Framework.Rendering.RenderView)renderView).flutterView))
+        double devicePixelRatioLocal = ((global::Doroti.Framework.Rendering.RenderView)renderView).flutterView.devicePixelRatio;
+        var logicalBounds = global::Doroti.Ui.Rect.fromLTRB((nodeBounds.left / devicePixelRatioLocal), (nodeBounds.top / devicePixelRatioLocal), (nodeBounds.right / devicePixelRatioLocal), (nodeBounds.bottom / devicePixelRatioLocal));
+        global::Doroti.Ui.Rect inflatedBounds = ((global::Doroti.Ui.Rect)(object?)logicalBounds.inflate(4.0));
+        if (_isNodeOffScreen(inflatedBounds, ((global::Doroti.Framework.Rendering.RenderView)renderView).flutterView))
         {
-            return violations__18516;
+            return violations;
         }
-        DartMap<global::Doroti.Ui.Color, long> colorHistogram__19352 = _accessibility_evaluationsLibrary._colorsWithinRect(byteData, inflatedBounds__19180, DartRuntimePrimitives.RequireValue(((global::Doroti.Ui.Image)image).width), DartRuntimePrimitives.RequireValue(((global::Doroti.Ui.Image)image).height)).cast<global::Doroti.Ui.Color, long>();
-        if ((checked((long)(colorHistogram__19352.Count)) <= 1L))
+        DartMap<global::Doroti.Ui.Color, long> colorHistogram = _accessibility_evaluationsLibrary._colorsWithinRect(byteData, inflatedBounds, DartRuntimePrimitives.RequireValue(((global::Doroti.Ui.Image)image).width), DartRuntimePrimitives.RequireValue(((global::Doroti.Ui.Image)image).height)).cast<global::Doroti.Ui.Color, long>();
+        if ((checked((long)(colorHistogram.Count)) <= 1L))
         {
-            return violations__18516;
+            return violations;
         }
-        var report__19553 = _ContrastReport___accessibility_evaluations.Create(colorHistogram__19352);
-        double contrastRatio__19612 = report__19553.contrastRatio();
-        if (((contrastRatio__19612 - _kMinimumRatioNonText) >= _ContrastEvaluation___accessibility_evaluations._kContrastTolerance))
+        var report = _ContrastReport___accessibility_evaluations.Create(colorHistogram);
+        double contrastRatioLocal = report.contrastRatio();
+        if (((contrastRatioLocal - _kMinimumRatioNonText) >= _ContrastEvaluation___accessibility_evaluations._kContrastTolerance))
         {
-            return violations__18516;
+            return violations;
         }
-        violations__18516.Add(new ViolationIo(node, $"{node}:\n" + $"Expected non-text control contrast ratio of at least {_kMinimumRatioNonText.toStringAsFixed(1L)} " + $"but found {contrastRatio__19612.toStringAsFixed(2L)}.\n" + "The computed colors were:\n" + $"light - {((_ContrastReport___accessibility_evaluations)report__19553).lightColor}, dark - {((_ContrastReport___accessibility_evaluations)report__19553).darkColor}\n" + "See also: " + "https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html"));
-        return violations__18516;
+        violations.Add(new ViolationIo(node, $"{node}:\n" + $"Expected non-text control contrast ratio of at least {_kMinimumRatioNonText.toStringAsFixed(1L)} " + $"but found {contrastRatioLocal.toStringAsFixed(2L)}.\n" + "The computed colors were:\n" + $"light - {((_ContrastReport___accessibility_evaluations)report).lightColor}, dark - {((_ContrastReport___accessibility_evaluations)report).darkColor}\n" + "See also: " + "https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html"));
+        return violations;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -455,37 +455,37 @@ internal class _ContrastReport___accessibility_evaluations
 
     internal static _ContrastReport___accessibility_evaluations Create(DartMap<Color, long> colorHistogram)
     {
-        var totalLightness__20768 = 0.0;
-        var count__20798 = 0L;
-        foreach (MapEntry<global::Doroti.Ui.Color, long> entry__20845 in colorHistogram.entries)
+        var totalLightness = 0.0;
+        var count = 0L;
+        foreach (MapEntry<global::Doroti.Ui.Color, long> entry in colorHistogram.entries)
         {
-            totalLightness__20768 += (global::Doroti.Framework.Painting.HSLColor.CreateFromColor(entry__20845.key).lightness * entry__20845.value);
-            count__20798 += entry__20845.value;
+            totalLightness += (global::Doroti.Framework.Painting.HSLColor.CreateFromColor(entry.key).lightness * entry.value);
+            count += entry.value;
         }
-        double averageLightness__21010 = (totalLightness__20768 / count__20798);
-        DartRuntimePrimitives.Assert(() => !double.IsNaN(averageLightness__21010));
-        MapEntry<global::Doroti.Ui.Color, long>? lightColor__21117 = default!;
-        MapEntry<global::Doroti.Ui.Color, long>? darkColor__21155 = default!;
-        foreach (MapEntry<global::Doroti.Ui.Color, long> entry__21268 in colorHistogram.entries)
+        double averageLightness = (totalLightness / count);
+        DartRuntimePrimitives.Assert(() => !double.IsNaN(averageLightness));
+        MapEntry<global::Doroti.Ui.Color, long>? lightColor = default!;
+        MapEntry<global::Doroti.Ui.Color, long>? darkColor = default!;
+        foreach (MapEntry<global::Doroti.Ui.Color, long> entryLocal in colorHistogram.entries)
         {
-            double lightness__21322 = global::Doroti.Framework.Painting.HSLColor.CreateFromColor(entry__21268.key).lightness;
-            long count__21391 = entry__21268.value;
-            if ((lightness__21322 <= averageLightness__21010))
+            double lightnessLocal = global::Doroti.Framework.Painting.HSLColor.CreateFromColor(entryLocal.key).lightness;
+            long countLocal = entryLocal.value;
+            if ((lightnessLocal <= averageLightness))
             {
-                if ((count__21391 > ((darkColor__21155?.value ?? 0L))))
+                if ((countLocal > ((darkColor?.value ?? 0L))))
                 {
-                    darkColor__21155 = entry__21268;
+                    darkColor = entryLocal;
                 }
             }
             else
             {
-                if ((count__21391 > ((lightColor__21117?.value ?? 0L))))
+                if ((countLocal > ((lightColor?.value ?? 0L))))
                 {
-                    lightColor__21117 = entry__21268;
+                    lightColor = entryLocal;
                 }
             }
         }
-        return new _ContrastReport___accessibility_evaluations((lightColor__21117?.key ?? DartRuntimePrimitives.RequireValue(darkColor__21155).key), (darkColor__21155?.key ?? DartRuntimePrimitives.RequireValue(lightColor__21117).key));
+        return new _ContrastReport___accessibility_evaluations((lightColor?.key ?? DartRuntimePrimitives.RequireValue(darkColor).key), (darkColor?.key ?? DartRuntimePrimitives.RequireValue(lightColor).key));
     }
 
     internal _ContrastReport___accessibility_evaluations(Color lightColor, Color darkColor)
@@ -501,29 +501,29 @@ public static partial class _accessibility_evaluationsLibrary
 {
     internal static DartMap<Color, long> _colorsWithinRect(ByteData data, Rect paintBounds, long width, long height)
     {
-        global::Doroti.Ui.Rect truePaintBounds__22928 = ((global::Doroti.Ui.Rect)(object?)paintBounds.intersect(global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble())));
-        long leftX__23053 = truePaintBounds__22928.left.floor();
-        long rightX__23103 = truePaintBounds__22928.right.ceil();
-        long topY__23154 = truePaintBounds__22928.top.floor();
-        long bottomY__23202 = truePaintBounds__22928.bottom.ceil();
-        var rgbaToCount__23252 = new DartMap<long, long>();
+        global::Doroti.Ui.Rect truePaintBounds = ((global::Doroti.Ui.Rect)(object?)paintBounds.intersect(global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble())));
+        long leftX = truePaintBounds.left.floor();
+        long rightX = truePaintBounds.right.ceil();
+        long topY = truePaintBounds.top.floor();
+        long bottomY = truePaintBounds.bottom.ceil();
+        var rgbaToCount = new DartMap<long, long>();
         long getPixel(ByteData data, long x, long y)
         {
-            long offset__23341 = ((((y * width) + x)) * 4L);
-            return data.getUint32(offset__23341);
+            long offset = ((((y * width) + x)) * 4L);
+            return data.getUint32(offset);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        for (var x__23422 = leftX__23053; (x__23422 < rightX__23103); x__23422++)
+        for (var xLocal = leftX; (xLocal < rightX); xLocal++)
         {
-            for (var y__23465 = topY__23154; (y__23465 < bottomY__23202); y__23465++)
+            for (var yLocal = topY; (yLocal < bottomY); yLocal++)
             {
-                rgbaToCount__23252.update(getPixel(data, x__23422, y__23465), ((count) => (count + 1L)), ifAbsent: (() => 1L));
+                rgbaToCount.update(getPixel(data, xLocal, yLocal), ((count) => (count + 1L)), ifAbsent: (() => 1L));
             }
         }
-        return rgbaToCount__23252.map<long, long, Color, long>(((rgba, count) =>
+        return rgbaToCount.map<long, long, Color, long>(((rgba, count) =>
         {
-            long argb__23674 = (((rgba << (int)(24L))) | (((rgba >> (int)(8L))) & 4294967295L));
-            return new MapEntry<global::Doroti.Ui.Color, long>(new global::Doroti.Ui.Color(argb__23674), count);
+            long argb = (((rgba << (int)(24L))) | (((rgba >> (int)(8L))) & 4294967295L));
+            return new MapEntry<global::Doroti.Ui.Color, long>(new global::Doroti.Ui.Color(argb), count);
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -534,16 +534,16 @@ public static partial class _accessibility_evaluationsLibrary
 {
     internal static IEnumerable<Element> _collectElementsByText(Element root, string text)
     {
-        var result__23862 = new List<Element>();
+        var result = new List<Element>();
         root.visitChildren(((global::System.Action<Element>)((child) =>
         {
             if (((((Element)child).widget is Text) && ((((Text?)(object?)((Element)child).widget)!).data == text)))
             {
-                result__23862.Add(child);
+                result.Add(child);
             }
-            result__23862.AddRange(_accessibility_evaluationsLibrary._collectElementsByText(child, text).Cast<Element>());
+            result.AddRange(_accessibility_evaluationsLibrary._collectElementsByText(child, text).Cast<Element>());
         })));
-        return ((IEnumerable<Element>)(object?)result__23862);
+        return ((IEnumerable<Element>)(object?)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -561,23 +561,23 @@ public static partial class _accessibility_evaluationsLibrary
         {
             return false;
         }
-        global::Doroti.Framework.Semantics.SemanticsData data__25156 = ((global::Doroti.Framework.Semantics.SemanticsData)(object?)node.getSemanticsData());
-        if (((global::Doroti.Framework.Semantics.SemanticsData)data__25156).flagsCollection.scopesRoute)
+        global::Doroti.Framework.Semantics.SemanticsData data = ((global::Doroti.Framework.Semantics.SemanticsData)(object?)node.getSemanticsData());
+        if (((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.scopesRoute)
         {
             return false;
         }
-        var hasNonScrollingAction__25412 = ((((global::Doroti.Framework.Semantics.SemanticsData)data__25156).actions & ~_accessibility_evaluationsLibrary._scrollingActions) != 0L);
-        if (hasNonScrollingAction__25412)
+        var hasNonScrollingAction = ((((global::Doroti.Framework.Semantics.SemanticsData)data).actions & ~_accessibility_evaluationsLibrary._scrollingActions) != 0L);
+        if (hasNonScrollingAction)
         {
             return true;
         }
-        bool hasImportantFlag__25760 = ((((((((!object.Equals(((global::Doroti.Framework.Semantics.SemanticsData)data__25156).flagsCollection.isChecked, CheckedState.none)) || (!object.Equals(((global::Doroti.Framework.Semantics.SemanticsData)data__25156).flagsCollection.isToggled, Tristate.none))) || (!object.Equals(((global::Doroti.Framework.Semantics.SemanticsData)data__25156).flagsCollection.isEnabled, Tristate.none))) || ((global::Doroti.Framework.Semantics.SemanticsData)data__25156).flagsCollection.isButton) || ((global::Doroti.Framework.Semantics.SemanticsData)data__25156).flagsCollection.isTextField) || (!object.Equals(((global::Doroti.Framework.Semantics.SemanticsData)data__25156).flagsCollection.isFocused, Tristate.none))) || ((global::Doroti.Framework.Semantics.SemanticsData)data__25156).flagsCollection.isSlider) || ((global::Doroti.Framework.Semantics.SemanticsData)data__25156).flagsCollection.isInMutuallyExclusiveGroup);
-        if (hasImportantFlag__25760)
+        bool hasImportantFlag = ((((((((!object.Equals(((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isChecked, CheckedState.none)) || (!object.Equals(((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isToggled, Tristate.none))) || (!object.Equals(((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isEnabled, Tristate.none))) || ((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isButton) || ((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isTextField) || (!object.Equals(((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isFocused, Tristate.none))) || ((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isSlider) || ((global::Doroti.Framework.Semantics.SemanticsData)data).flagsCollection.isInMutuallyExclusiveGroup);
+        if (hasImportantFlag)
         {
             return true;
         }
-        bool hasContent__26260 = ((((((global::Doroti.Framework.Semantics.SemanticsData)data__25156).label.Length != 0) || (((global::Doroti.Framework.Semantics.SemanticsData)data__25156).value.Length != 0)) || (((global::Doroti.Framework.Semantics.SemanticsData)data__25156).hint.Length != 0)) || (((global::Doroti.Framework.Semantics.SemanticsData)data__25156).tooltip.Length != 0));
-        if (hasContent__26260)
+        bool hasContent = ((((((global::Doroti.Framework.Semantics.SemanticsData)data).label.Length != 0) || (((global::Doroti.Framework.Semantics.SemanticsData)data).value.Length != 0)) || (((global::Doroti.Framework.Semantics.SemanticsData)data).hint.Length != 0)) || (((global::Doroti.Framework.Semantics.SemanticsData)data).tooltip.Length != 0));
+        if (hasContent)
         {
             return true;
         }
@@ -594,44 +594,44 @@ public class UnlabeledLeafNodeEvaluationIo : AccessibilityEvaluationIo
 
     internal override object _evaluate(WidgetsBinding binding)
     {
-        var violations__26836 = new List<ViolationIo>();
-        foreach (global::Doroti.Framework.Rendering.RenderView view__26890 in binding.renderViews)
+        var violations = new List<ViolationIo>();
+        foreach (global::Doroti.Framework.Rendering.RenderView view in binding.renderViews)
         {
-            violations__26836.AddRange(_traverse(view__26890.owner!.semanticsOwner!.rootSemanticsNode!));
+            violations.AddRange(_traverse(view.owner!.semanticsOwner!.rootSemanticsNode!));
         }
-        return new EvaluationResultIo(violations__26836);
+        return new EvaluationResultIo(violations);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual List<ViolationIo> _traverse(global::Doroti.Framework.Semantics.SemanticsNode node)
     {
-        var violations__27117 = new List<ViolationIo>();
-        var hasChildren__27153 = false;
+        var violations = new List<ViolationIo>();
+        var hasChildren = false;
         node.visitChildren(((global::System.Func<global::Doroti.Framework.Semantics.SemanticsNode, bool>)((child) =>
         {
-            hasChildren__27153 = true;
-            violations__27117.AddRange(_traverse(child));
+            hasChildren = true;
+            violations.AddRange(_traverse(child));
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         if ((((global::Doroti.Framework.Semantics.SemanticsNode)node).isInvisible || ((global::Doroti.Framework.Semantics.SemanticsNode)node).flagsCollection.isHidden))
         {
-            return violations__27117;
+            return violations;
         }
-        if ((hasChildren__27153 && !((global::Doroti.Framework.Semantics.SemanticsNode)node).mergeAllDescendantsIntoThisNode))
+        if ((hasChildren && !((global::Doroti.Framework.Semantics.SemanticsNode)node).mergeAllDescendantsIntoThisNode))
         {
-            return violations__27117;
+            return violations;
         }
         if (!_accessibility_evaluationsLibrary._isImportantForAccessibility(node))
         {
-            return violations__27117;
+            return violations;
         }
-        global::Doroti.Framework.Semantics.SemanticsData data__27679 = ((global::Doroti.Framework.Semantics.SemanticsData)(object?)node.getSemanticsData());
-        if (((((((global::Doroti.Framework.Semantics.SemanticsData)data__27679).label.Trim().Length == 0) && (((global::Doroti.Framework.Semantics.SemanticsData)data__27679).value.Trim().Length == 0)) && (((global::Doroti.Framework.Semantics.SemanticsData)data__27679).hint.Trim().Length == 0)) && (((global::Doroti.Framework.Semantics.SemanticsData)data__27679).tooltip.Trim().Length == 0)))
+        global::Doroti.Framework.Semantics.SemanticsData data = ((global::Doroti.Framework.Semantics.SemanticsData)(object?)node.getSemanticsData());
+        if (((((((global::Doroti.Framework.Semantics.SemanticsData)data).label.Trim().Length == 0) && (((global::Doroti.Framework.Semantics.SemanticsData)data).value.Trim().Length == 0)) && (((global::Doroti.Framework.Semantics.SemanticsData)data).hint.Trim().Length == 0)) && (((global::Doroti.Framework.Semantics.SemanticsData)data).tooltip.Trim().Length == 0)))
         {
-            violations__27117.Add(new ViolationIo(node, $"{node}: expected leaf semantics node to have a label, value, hint, or tooltip, " + "but none was found."));
+            violations.Add(new ViolationIo(node, $"{node}: expected leaf semantics node to have a label, value, hint, or tooltip, " + "but none was found."));
         }
-        return violations__27117;
+        return violations;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -645,13 +645,13 @@ public class TitleEvaluationIo : AccessibilityEvaluationIo
 
     internal override object _evaluate(WidgetsBinding binding)
     {
-        var violations__28502 = new List<ViolationIo>();
+        var violations = new List<ViolationIo>();
         if (((((WidgetsBinding)binding).rootElement is not null) && !_hasTitleWidget(((WidgetsBinding)binding).rootElement!)))
         {
-            global::Doroti.Framework.Semantics.SemanticsNode rootNode__28638 = binding.renderViews.First().owner!.semanticsOwner!.rootSemanticsNode!;
-            violations__28502.Add(new ViolationIo(rootNode__28638, "Expected to find at least one Title widget, but none was found."));
+            global::Doroti.Framework.Semantics.SemanticsNode rootNode = binding.renderViews.First().owner!.semanticsOwner!.rootSemanticsNode!;
+            violations.Add(new ViolationIo(rootNode, "Expected to find at least one Title widget, but none was found."));
         }
-        return new EvaluationResultIo(violations__28502);
+        return new EvaluationResultIo(violations);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -661,15 +661,15 @@ public class TitleEvaluationIo : AccessibilityEvaluationIo
         {
             return true;
         }
-        var found__29018 = false;
+        var found = false;
         element.visitChildren(((global::System.Action<Element>)((child) =>
         {
-            if (!found__29018)
+            if (!found)
             {
-                found__29018 = _hasTitleWidget(child);
+                found = _hasTitleWidget(child);
             }
         })));
-        return found__29018;
+        return found;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

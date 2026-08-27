@@ -65,9 +65,9 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
     public virtual void jumpTo(double value)
     {
         DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._positions), () => (object?)"ScrollController not attached to any scroll views.");
-        foreach (var position__10729 in new List<ScrollPosition>(DartRuntimePrimitives.ConvertEnumerable<ScrollPosition>(this._positions)))
+        foreach (var position in new List<ScrollPosition>(DartRuntimePrimitives.ConvertEnumerable<ScrollPosition>(this._positions)))
         {
-            position__10729.jumpTo(value);
+            position.jumpTo(value);
         }
     }
 
@@ -89,9 +89,9 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
 
     public virtual void dispose()
     {
-        foreach (ScrollPosition position__11669 in this._positions)
+        foreach (ScrollPosition position in this._positions)
         {
-            position__11669.removeListener(this.notifyListeners);
+            position.removeListener(this.notifyListeners);
         }
         base.dispose();
     }
@@ -104,9 +104,9 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
 
     public override string ToString()
     {
-        var description__13707 = new List<string>();
-        debugFillDescription(description__13707);
-        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description__13707)})";
+        var description = new List<string>();
+        debugFillDescription(description);
+        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -181,10 +181,10 @@ public class TrackingScrollController : ScrollController
 
     public override void dispose()
     {
-        foreach (ScrollPosition position__18428 in this.positions)
+        foreach (ScrollPosition position in this.positions)
         {
-            DartRuntimePrimitives.Assert(() => this._positionToListener.ContainsKey(position__18428));
-            position__18428.removeListener(this._positionToListener.GetValueOrDefault(position__18428)!);
+            DartRuntimePrimitives.Assert(() => this._positionToListener.ContainsKey(position));
+            position.removeListener(this._positionToListener.GetValueOrDefault(position)!);
         }
         base.dispose();
     }

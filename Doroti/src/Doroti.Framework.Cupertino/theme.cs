@@ -32,22 +32,22 @@ public class CupertinoTheme : global::Doroti.Framework.Widgets.StatelessWidget
 
     public static CupertinoThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        InheritedCupertinoTheme? inheritedTheme__2778 = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
-        return ((CupertinoThemeData)(object?)((inheritedTheme__2778?.theme.data ?? new CupertinoThemeData())).resolveFrom(context));
+        InheritedCupertinoTheme? inheritedTheme = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
+        return ((CupertinoThemeData)(object?)((inheritedTheme?.theme.data ?? new CupertinoThemeData())).resolveFrom(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Brightness brightnessOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        InheritedCupertinoTheme? inheritedTheme__3818 = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
-        return ((inheritedTheme__3818?.theme.data.brightness ?? (Brightness)MediaQuery.platformBrightnessOf(context)));
+        InheritedCupertinoTheme? inheritedTheme = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
+        return ((inheritedTheme?.theme.data.brightness ?? (Brightness)MediaQuery.platformBrightnessOf(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Brightness? maybeBrightnessOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        InheritedCupertinoTheme? inheritedTheme__4825 = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
-        return ((inheritedTheme__4825?.theme.data.brightness ?? (Brightness)MediaQuery.maybePlatformBrightnessOf(context)));
+        InheritedCupertinoTheme? inheritedTheme = ((InheritedCupertinoTheme?)(object?)context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>());
+        return ((inheritedTheme?.theme.data.brightness ?? (Brightness)MediaQuery.maybePlatformBrightnessOf(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -140,14 +140,14 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, global::Doroti.Fr
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        var defaultData__12086 = new CupertinoThemeData();
+        var defaultData = new CupertinoThemeData();
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Ui.Brightness>("brightness", this.brightness, defaultValue: null));
-        properties.add(ColorsLibrary.createCupertinoColorProperty("primaryColor", this.primaryColor, defaultValue: ((CupertinoThemeData)defaultData__12086).primaryColor));
-        properties.add(ColorsLibrary.createCupertinoColorProperty("primaryContrastingColor", this.primaryContrastingColor, defaultValue: ((CupertinoThemeData)defaultData__12086).primaryContrastingColor));
-        properties.add(ColorsLibrary.createCupertinoColorProperty("barBackgroundColor", this.barBackgroundColor, defaultValue: ((CupertinoThemeData)defaultData__12086).barBackgroundColor));
-        properties.add(ColorsLibrary.createCupertinoColorProperty("scaffoldBackgroundColor", this.scaffoldBackgroundColor, defaultValue: ((CupertinoThemeData)defaultData__12086).scaffoldBackgroundColor));
-        properties.add(ColorsLibrary.createCupertinoColorProperty("selectionHandleColor", this.selectionHandleColor, defaultValue: ((CupertinoThemeData)defaultData__12086).selectionHandleColor));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("applyThemeToAll", this.applyThemeToAll, defaultValue: ((CupertinoThemeData)defaultData__12086).applyThemeToAll));
+        properties.add(ColorsLibrary.createCupertinoColorProperty("primaryColor", this.primaryColor, defaultValue: ((CupertinoThemeData)defaultData).primaryColor));
+        properties.add(ColorsLibrary.createCupertinoColorProperty("primaryContrastingColor", this.primaryContrastingColor, defaultValue: ((CupertinoThemeData)defaultData).primaryContrastingColor));
+        properties.add(ColorsLibrary.createCupertinoColorProperty("barBackgroundColor", this.barBackgroundColor, defaultValue: ((CupertinoThemeData)defaultData).barBackgroundColor));
+        properties.add(ColorsLibrary.createCupertinoColorProperty("scaffoldBackgroundColor", this.scaffoldBackgroundColor, defaultValue: ((CupertinoThemeData)defaultData).scaffoldBackgroundColor));
+        properties.add(ColorsLibrary.createCupertinoColorProperty("selectionHandleColor", this.selectionHandleColor, defaultValue: ((CupertinoThemeData)defaultData).selectionHandleColor));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("applyThemeToAll", this.applyThemeToAll, defaultValue: ((CupertinoThemeData)defaultData).applyThemeToAll));
         this.textTheme.debugFillProperties(properties);
     }
 
@@ -170,13 +170,13 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, global::Doroti.Fr
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

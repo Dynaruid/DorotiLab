@@ -67,10 +67,10 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
     public override void setupParentData(RenderObject child)
     {
         var __child = (RenderBox)(object)child;
-        ParentData? childParentData__8175 = __child.parentData;
-        if ((childParentData__8175 is FlowParentData))
+        ParentData? childParentData = __child.parentData;
+        if ((childParentData is FlowParentData))
         {
-            FlowParentData childParentData__8175__as8219 = (FlowParentData)childParentData__8175;
+            FlowParentData childParentData__8175__as8219 = (FlowParentData)childParentData;
             childParentData__8175__as8219._transform = null;
         }
         else
@@ -89,22 +89,22 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
             {
                 return;
             }
-            FlowDelegate oldDelegate__8960 = this._delegate;
+            FlowDelegate oldDelegate = this._delegate;
             _delegate = newDelegate;
-            if (((!object.Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate__8960))) || newDelegate.shouldRelayout(oldDelegate__8960)))
+            if (((!object.Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRelayout(oldDelegate)))
             {
                 markNeedsLayout();
             }
             else
             {
-                if (newDelegate.shouldRepaint(oldDelegate__8960))
+                if (newDelegate.shouldRepaint(oldDelegate))
                 {
                     markNeedsPaint();
                 }
             }
             if (attached)
             {
-                ((FlowDelegate)oldDelegate__8960)._repaint?.removeListener(markNeedsPaint);
+                ((FlowDelegate)oldDelegate)._repaint?.removeListener(markNeedsPaint);
                 ((FlowDelegate)newDelegate)._repaint?.addListener(markNeedsPaint);
             }
         }
@@ -126,12 +126,12 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        RenderBox? child__181803 = this._firstChild;
-        while ((child__181803 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            child__181803.attach(owner);
-            var childParentData__181891 = ((FlowParentData?)(object?)child__181803.parentData!)!;
-            child__181803 = childParentData__181891.nextSibling;
+            child.attach(owner);
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
         ((FlowDelegate)this._delegate)._repaint?.addListener(markNeedsPaint);
     }
@@ -140,12 +140,12 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
     {
         ((FlowDelegate)this._delegate)._repaint?.removeListener(markNeedsPaint);
         base.detach();
-        RenderBox? child__182065 = this._firstChild;
-        while ((child__182065 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            child__182065.detach();
-            var childParentData__182148 = ((FlowParentData?)(object?)child__182065.parentData!)!;
-            child__182065 = childParentData__182148.nextSibling;
+            child.detach();
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
@@ -159,10 +159,10 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
     public override bool isRepaintBoundary => true;
     public override double computeMinIntrinsicWidth(double height)
     {
-        double width__10539 = _getSize(BoxConstraints.CreateTightForFinite(height: height)).width;
-        if (double.IsFinite(width__10539))
+        double widthLocal = _getSize(BoxConstraints.CreateTightForFinite(height: height)).width;
+        if (double.IsFinite(widthLocal))
         {
-            return width__10539;
+            return widthLocal;
         }
         return 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -170,10 +170,10 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        double width__10763 = _getSize(BoxConstraints.CreateTightForFinite(height: height)).width;
-        if (double.IsFinite(width__10763))
+        double widthLocal = _getSize(BoxConstraints.CreateTightForFinite(height: height)).width;
+        if (double.IsFinite(widthLocal))
         {
-            return width__10763;
+            return widthLocal;
         }
         return 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -181,10 +181,10 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public override double computeMinIntrinsicHeight(double width)
     {
-        double height__10987 = _getSize(BoxConstraints.CreateTightForFinite(width: width)).height;
-        if (double.IsFinite(height__10987))
+        double heightLocal = _getSize(BoxConstraints.CreateTightForFinite(width: width)).height;
+        if (double.IsFinite(heightLocal))
         {
-            return height__10987;
+            return heightLocal;
         }
         return 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -192,10 +192,10 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public override double computeMaxIntrinsicHeight(double width)
     {
-        double height__11213 = _getSize(BoxConstraints.CreateTightForFinite(width: width)).height;
-        if (double.IsFinite(height__11213))
+        double heightLocal = _getSize(BoxConstraints.CreateTightForFinite(width: width)).height;
+        if (double.IsFinite(heightLocal))
         {
-            return height__11213;
+            return heightLocal;
         }
         return 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -209,20 +209,20 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public override void performLayout()
     {
-        BoxConstraints constraints__11549 = this.constraints;
-        size = _getSize(constraints__11549);
-        var i__11623 = 0L;
+        BoxConstraints constraintsLocal = this.constraints;
+        size = _getSize(constraintsLocal);
+        var i = 0L;
         this._randomAccessChildren.Clear();
-        RenderBox? child__11680 = firstChild;
-        while ((child__11680 is not null))
+        RenderBox? child = firstChild;
+        while ((child is not null))
         {
-            this._randomAccessChildren.Add(child__11680);
-            BoxConstraints innerConstraints__11795 = this._delegate.getConstraintsForChild(i__11623, constraints__11549);
-            child__11680.layout(innerConstraints__11795, parentUsesSize: true);
-            var childParentData__11936 = ((FlowParentData?)(object?)child__11680.parentData!)!;
-            childParentData__11936.offset = Offset.zero;
-            child__11680 = childParentData__11936.nextSibling;
-            i__11623 += 1L;
+            this._randomAccessChildren.Add(child);
+            BoxConstraints innerConstraints = this._delegate.getConstraintsForChild(i, constraintsLocal);
+            child.layout(innerConstraints, parentUsesSize: true);
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            childParentData.offset = Offset.zero;
+            child = childParentData.nextSibling;
+            i += 1L;
         }
     }
 
@@ -239,25 +239,25 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
     public virtual void paintChild(long i, Matrix4? transform = null, double opacity = 1.0)
     {
         transform ??= Matrix4.identity();
-        RenderBox child__12707 = this._randomAccessChildren[(int)(i)];
-        var childParentData__12751 = ((FlowParentData?)(object?)child__12707.parentData!)!;
+        RenderBox child = this._randomAccessChildren[(int)(i)];
+        var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((((FlowParentData)childParentData__12751)._transform is not null))
+                if ((((FlowParentData)childParentData)._transform is not null))
                 {
                     throw new FlutterError("Cannot call paintChild twice for the same child.\n" + $"The flow delegate of type {DartRuntimePrimitives.RuntimeType(this._delegate)} attempted to " + $"paint child {i} multiple times, which is not permitted.");
                 }
                 return true;
             });
         this._lastPaintOrder.Add(i);
-        childParentData__12751._transform = transform;
+        childParentData._transform = transform;
         if ((opacity == 0.0))
         {
             return;
         }
         void painter(PaintingContext context, Offset offset)
         {
-            context.paintChild(child__12707, offset);
+            context.paintChild(child, offset);
         }
         if ((opacity == 1.0))
         {
@@ -277,10 +277,10 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
         this._lastPaintOrder.Clear();
         _paintingContext = context;
         _paintingOffset = offset;
-        foreach (RenderBox child__14089 in this._randomAccessChildren)
+        foreach (RenderBox child in this._randomAccessChildren)
         {
-            var childParentData__14135 = ((FlowParentData?)(object?)child__14089.parentData!)!;
-            childParentData__14135._transform = null;
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            childParentData._transform = null;
         }
         try
         {
@@ -306,27 +306,27 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        List<RenderBox> children__14951 = getChildrenAsList();
-        for (long i__14996 = (checked((long)(this._lastPaintOrder.Count)) - 1L); (i__14996 >= 0L); --i__14996)
+        List<RenderBox> children = getChildrenAsList();
+        for (long i = (checked((long)(this._lastPaintOrder.Count)) - 1L); (i >= 0L); --i)
         {
-            long childIndex__15059 = this._lastPaintOrder[(int)(i__14996)];
-            if ((childIndex__15059 >= checked((long)(children__14951.Count))))
+            long childIndex = this._lastPaintOrder[(int)(i)];
+            if ((childIndex >= checked((long)(children.Count))))
             {
                 continue;
             }
-            RenderBox child__15183 = children__14951[(int)(childIndex__15059)];
-            var childParentData__15225 = ((FlowParentData?)(object?)child__15183.parentData!)!;
-            Matrix4? transform__15301 = ((FlowParentData)childParentData__15225)._transform;
-            if ((transform__15301 is null))
+            RenderBox child = children[(int)(childIndex)];
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            Matrix4? transformLocal = ((FlowParentData)childParentData)._transform;
+            if ((transformLocal is null))
             {
                 continue;
             }
-            bool absorbed__15415 = result.addWithPaintTransform(transform: transform__15301, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, position) =>
+            bool absorbed = result.addWithPaintTransform(transform: transformLocal, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, position) =>
             {
-                return child__15183.hitTest(result, position: position);
+                return child.hitTest(result, position: position);
                 return default;
             })));
-            if (absorbed__15415)
+            if (absorbed)
             {
                 return true;
             }
@@ -338,22 +338,22 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
         var __child = (RenderBox)(object)child;
-        var childParentData__15823 = ((FlowParentData?)(object?)__child.parentData!)!;
-        if ((((FlowParentData)childParentData__15823)._transform is not null))
+        var childParentData = ((FlowParentData?)(object?)__child.parentData!)!;
+        if ((((FlowParentData)childParentData)._transform is not null))
         {
-            transform.multiply(((FlowParentData)childParentData__15823)._transform!);
+            transform.multiply(((FlowParentData)childParentData)._transform!);
         }
         base.applyPaintTransform(__child, transform);
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData__173585 = ((FlowParentData?)(object?)child.parentData!)!;
-        while ((childParentData__173585.previousSibling is not null))
+        var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+        while ((childParentData.previousSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData__173585.previousSibling, child)));
-            child = childParentData__173585.previousSibling!;
-            childParentData__173585 = ((FlowParentData?)(object?)child.parentData!)!;
+            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.previousSibling, child)));
+            child = childParentData.previousSibling!;
+            childParentData = ((FlowParentData?)(object?)child.parentData!)!;
         }
         return (object.Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -361,12 +361,12 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData__173981 = ((FlowParentData?)(object?)child.parentData!)!;
-        while ((childParentData__173981.nextSibling is not null))
+        var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+        while ((childParentData.nextSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData__173981.nextSibling, child)));
-            child = childParentData__173981.nextSibling!;
-            childParentData__173981 = ((FlowParentData?)(object?)child.parentData!)!;
+            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.nextSibling, child)));
+            child = childParentData.nextSibling!;
+            childParentData = ((FlowParentData?)(object?)child.parentData!)!;
         }
         return (object.Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -389,18 +389,18 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
-        var childParentData__175971 = ((FlowParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData__175971.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData__175971.previousSibling is null));
+        var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
+        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
         this._childCount += 1L;
         DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
         if ((after is null))
         {
-            childParentData__175971.nextSibling = this._firstChild;
+            childParentData.nextSibling = this._firstChild;
             if ((this._firstChild is not null))
             {
-                var firstChildParentData__176343 = ((FlowParentData?)(object?)this._firstChild!.parentData!)!;
-                firstChildParentData__176343.previousSibling = child;
+                var firstChildParentData = ((FlowParentData?)(object?)this._firstChild!.parentData!)!;
+                firstChildParentData.previousSibling = child;
             }
             this._firstChild = child;
             this._lastChild ??= child;
@@ -411,23 +411,23 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
             DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
             DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
             DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
-            var afterParentData__176766 = ((FlowParentData?)(object?)after.parentData!)!;
-            if ((afterParentData__176766.nextSibling is null))
+            var afterParentData = ((FlowParentData?)(object?)after.parentData!)!;
+            if ((afterParentData.nextSibling is null))
             {
                 DartRuntimePrimitives.Assert(() => (object.Equals(after, this._lastChild)));
-                childParentData__175971.previousSibling = after;
-                afterParentData__176766.nextSibling = child;
+                childParentData.previousSibling = after;
+                afterParentData.nextSibling = child;
                 this._lastChild = child;
             }
             else
             {
-                childParentData__175971.nextSibling = afterParentData__176766.nextSibling;
-                childParentData__175971.previousSibling = after;
-                var childPreviousSiblingParentData__177424 = ((FlowParentData?)(object?)childParentData__175971.previousSibling!.parentData!)!;
-                var childNextSiblingParentData__177547 = ((FlowParentData?)(object?)childParentData__175971.nextSibling!.parentData!)!;
-                childPreviousSiblingParentData__177424.nextSibling = child;
-                childNextSiblingParentData__177547.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData__176766.nextSibling, child)));
+                childParentData.nextSibling = afterParentData.nextSibling;
+                childParentData.previousSibling = after;
+                var childPreviousSiblingParentData = ((FlowParentData?)(object?)childParentData.previousSibling!.parentData!)!;
+                var childNextSiblingParentData = ((FlowParentData?)(object?)childParentData.nextSibling!.parentData!)!;
+                childPreviousSiblingParentData.nextSibling = child;
+                childNextSiblingParentData.previousSibling = child;
+                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData.nextSibling, child)));
             }
         }
     }
@@ -456,32 +456,32 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public virtual void _removeFromChildList(RenderBox child)
     {
-        var childParentData__179226 = ((FlowParentData?)(object?)child.parentData!)!;
+        var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
         DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
         DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
         DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData__179226.previousSibling is null))
+        if ((childParentData.previousSibling is null))
         {
             DartRuntimePrimitives.Assert(() => (object.Equals(this._firstChild, child)));
-            this._firstChild = childParentData__179226.nextSibling;
+            this._firstChild = childParentData.nextSibling;
         }
         else
         {
-            var childPreviousSiblingParentData__179613 = ((FlowParentData?)(object?)childParentData__179226.previousSibling!.parentData!)!;
-            childPreviousSiblingParentData__179613.nextSibling = childParentData__179226.nextSibling;
+            var childPreviousSiblingParentData = ((FlowParentData?)(object?)childParentData.previousSibling!.parentData!)!;
+            childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData__179226.nextSibling is null))
+        if ((childParentData.nextSibling is null))
         {
             DartRuntimePrimitives.Assert(() => (object.Equals(this._lastChild, child)));
-            this._lastChild = childParentData__179226.previousSibling;
+            this._lastChild = childParentData.previousSibling;
         }
         else
         {
-            var childNextSiblingParentData__179965 = ((FlowParentData?)(object?)childParentData__179226.nextSibling!.parentData!)!;
-            childNextSiblingParentData__179965.previousSibling = childParentData__179226.previousSibling;
+            var childNextSiblingParentData = ((FlowParentData?)(object?)childParentData.nextSibling!.parentData!)!;
+            childNextSiblingParentData.previousSibling = childParentData.previousSibling;
         }
-        childParentData__179226.previousSibling = null;
-        childParentData__179226.nextSibling = null;
+        childParentData.previousSibling = null;
+        childParentData.nextSibling = null;
         this._childCount -= 1L;
     }
 
@@ -493,15 +493,15 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public virtual void removeAll()
     {
-        RenderBox? child__180623 = this._firstChild;
-        while ((child__180623 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            var childParentData__180684 = ((FlowParentData?)(object?)child__180623.parentData!)!;
-            RenderBox? next__180762 = childParentData__180684.nextSibling;
-            childParentData__180684.previousSibling = null;
-            childParentData__180684.nextSibling = null;
-            dropChild(child__180623);
-            child__180623 = next__180762;
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            RenderBox? next = childParentData.nextSibling;
+            childParentData.previousSibling = null;
+            childParentData.nextSibling = null;
+            dropChild(child);
+            child = next;
         }
         this._firstChild = null;
         this._lastChild = null;
@@ -514,8 +514,8 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
         DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
         DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__181479 = ((FlowParentData?)(object?)child.parentData!)!;
-        if ((object.Equals(childParentData__181479.previousSibling, after)))
+        var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+        if ((object.Equals(childParentData.previousSibling, after)))
         {
             return;
         }
@@ -526,23 +526,23 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public override void redepthChildren()
     {
-        RenderBox? child__182311 = this._firstChild;
-        while ((child__182311 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            redepthChild(child__182311);
-            var childParentData__182399 = ((FlowParentData?)(object?)child__182311.parentData!)!;
-            child__182311 = childParentData__182399.nextSibling;
+            redepthChild(child);
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
     public override void visitChildren(Action<RenderObject> visitor)
     {
-        RenderBox? child__182587 = this._firstChild;
-        while ((child__182587 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            visitor(child__182587);
-            var childParentData__182670 = ((FlowParentData?)(object?)child__182587.parentData!)!;
-            child__182587 = childParentData__182670.nextSibling;
+            visitor(child);
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
@@ -551,56 +551,56 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
     public virtual RenderBox? childBefore(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__183103 = ((FlowParentData?)(object?)child.parentData!)!;
-        return childParentData__183103.previousSibling;
+        var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+        return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__183356 = ((FlowParentData?)(object?)child.parentData!)!;
-        return childParentData__183356.nextSibling;
+        var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+        return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
-        var children__183528 = new List<DiagnosticsNode>();
+        var children = new List<DiagnosticsNode>();
         if ((this.firstChild is not null))
         {
-            RenderBox child__183606 = this.firstChild!;
-            var count__183637 = 1L;
+            RenderBox child = this.firstChild!;
+            var count = 1L;
             while (true)
             {
-                children__183528.Add(((Diagnosticable)child__183606).toDiagnosticsNode(name: $"child__183606 {count__183637}"));
-                if ((object.Equals(child__183606, this.lastChild)))
+                children.Add(((Diagnosticable)child).toDiagnosticsNode(name: $"child__183606 {count}"));
+                if ((object.Equals(child, this.lastChild)))
                 {
                     break;
                 }
-                count__183637 += 1L;
-                var childParentData__183833 = ((FlowParentData?)(object?)child__183606.parentData!)!;
-                child__183606 = childParentData__183833.nextSibling!;
+                count += 1L;
+                var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+                child = childParentData.nextSibling!;
             }
         }
-        return children__183528;
+        return children;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
-        RenderBox? child__138717 = firstChild;
-        while ((child__138717 is not null))
+        RenderBox? child = firstChild;
+        while ((child is not null))
         {
-            var childParentData__138777 = ((FlowParentData?)(object?)child__138717.parentData!)!;
-            double? result__138852 = child__138717.getDistanceToActualBaseline(baseline);
-            if ((result__138852 is not null))
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            double? result = child.getDistanceToActualBaseline(baseline);
+            if ((result is not null))
             {
-                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result__138852);
-                return (DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData__138777.offset.dy);
+                double result__138852__value138916 = DartRuntimePrimitives.RequireValue(result);
+                return (DartRuntimePrimitives.RequireValue(result__138852__value138916) + childParentData.offset.dy);
             }
-            child__138717 = childParentData__138777.nextSibling;
+            child = childParentData.nextSibling;
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -609,36 +609,36 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
-        BaselineOffset minBaseline__139372 = BaselineOffset.noBaseline;
-        RenderBox? child__139428 = firstChild;
-        while ((child__139428 is not null))
+        BaselineOffset minBaseline = BaselineOffset.noBaseline;
+        RenderBox? child = firstChild;
+        while ((child is not null))
         {
-            var childParentData__139488 = ((FlowParentData?)(object?)child__139428.parentData!)!;
-            BaselineOffset candidate__139570 = (new BaselineOffset(child__139428.getDistanceToActualBaseline(baseline)).op_Add(childParentData__139488.offset.dy));
-            minBaseline__139372 = minBaseline__139372.minOf(candidate__139570);
-            child__139428 = childParentData__139488.nextSibling;
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            BaselineOffset candidate = (new BaselineOffset(child.getDistanceToActualBaseline(baseline)).op_Add(childParentData.offset.dy));
+            minBaseline = minBaseline.minOf(candidate);
+            child = childParentData.nextSibling;
         }
-        return minBaseline__139372.offset;
+        return minBaseline.offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
     {
-        RenderBox? child__140279 = lastChild;
-        while ((child__140279 is not null))
+        RenderBox? child = lastChild;
+        while ((child is not null))
         {
-            var childParentData__140418 = ((FlowParentData?)(object?)child__140279.parentData!)!;
-            bool isHit__140490 = result.addWithPaintOffset(offset: childParentData__140418.offset, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            bool isHit = result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) =>
             {
-                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData__140418.offset))));
-                return child__140279!.hitTest(result, position: transformed);
+                DartRuntimePrimitives.Assert(() => (object.Equals(transformed, (position - childParentData.offset))));
+                return child!.hitTest(result, position: transformed);
                 return default;
             })));
-            if (isHit__140490)
+            if (isHit)
             {
                 return true;
             }
-            child__140279 = childParentData__140418.previousSibling;
+            child = childParentData.previousSibling;
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -646,26 +646,26 @@ public class RenderFlow : RenderBox, ContainerRenderObjectMixin<RenderBox, FlowP
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
     {
-        RenderBox? child__141240 = firstChild;
-        while ((child__141240 is not null))
+        RenderBox? child = firstChild;
+        while ((child is not null))
         {
-            var childParentData__141300 = ((FlowParentData?)(object?)child__141240.parentData!)!;
-            context.paintChild(child__141240, (childParentData__141300.offset + offset));
-            child__141240 = childParentData__141300.nextSibling;
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            context.paintChild(child, (childParentData.offset + offset));
+            child = childParentData.nextSibling;
         }
     }
 
     public virtual List<RenderBox> getChildrenAsList()
     {
-        var result__141793 = new List<RenderBox>();
-        RenderBox? child__141832 = firstChild;
-        while ((child__141832 is not null))
+        var result = new List<RenderBox>();
+        RenderBox? child = firstChild;
+        while ((child is not null))
         {
-            var childParentData__141892 = ((FlowParentData?)(object?)child__141832.parentData!)!;
-            result__141793.Add(((RenderBox?)(object?)child__141832)!);
-            child__141832 = childParentData__141892.nextSibling;
+            var childParentData = ((FlowParentData?)(object?)child.parentData!)!;
+            result.Add(((RenderBox?)(object?)child)!);
+            child = childParentData.nextSibling;
         }
-        return result__141793;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -90,13 +90,13 @@ public class SwitchThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -119,8 +119,8 @@ public class SwitchTheme : global::Doroti.Framework.Widgets.InheritedWidget
 
     public static SwitchThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        SwitchTheme? switchTheme__9535 = ((SwitchTheme?)(object?)context.dependOnInheritedWidgetOfExactType<SwitchTheme>());
-        return (switchTheme__9535?.data ?? Theme.of(context).switchTheme);
+        SwitchTheme? switchThemeLocal = ((SwitchTheme?)(object?)context.dependOnInheritedWidgetOfExactType<SwitchTheme>());
+        return (switchThemeLocal?.data ?? Theme.of(context).switchTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

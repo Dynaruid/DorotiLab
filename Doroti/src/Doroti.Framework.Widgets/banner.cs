@@ -121,8 +121,8 @@ public class BannerPainter : global::Doroti.Framework.Rendering.CustomPainter
     __cascade.drawRect(BannerLibrary._kRect, this._paintBanner);
     return __cascade;
 }))());
-        double width__5113 = (BannerLibrary._kOffset * 2.0);
-        this._textPainter!.layout(minWidth: width__5113, maxWidth: width__5113);
+        double widthLocal = (BannerLibrary._kOffset * 2.0);
+        this._textPainter!.layout(minWidth: widthLocal, maxWidth: widthLocal);
         this._textPainter!.paint(canvas, (BannerLibrary._kRect.topLeft + new global::Doroti.Ui.Offset(0.0, (((BannerLibrary._kRect.height - this._textPainter!.height)) / 2.0))));
     }
 
@@ -228,28 +228,28 @@ public class CheckedModeBanner : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        Widget result__11273 = this.child;
+        Widget result = this.child;
         DartRuntimePrimitives.Assert(() =>
             {
-                result__11273 = DartRuntimePrimitives.ConvertValue<Widget>(new Banner(message: "DEBUG", textDirection: TextDirection.ltr, location: BannerLocation.topEnd, child: result__11273));
+                result = DartRuntimePrimitives.ConvertValue<Widget>(new Banner(message: "DEBUG", textDirection: TextDirection.ltr, location: BannerLocation.topEnd, child: result));
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return result__11273;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        var message__11654 = "disabled";
+        var message = "disabled";
         DartRuntimePrimitives.Assert(() =>
             {
-                message__11654 = "\"DEBUG\"";
+                message = "\"DEBUG\"";
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        properties.add(global::Doroti.Framework.Foundation.DiagnosticsNode.CreateMessage(message__11654));
+        properties.add(global::Doroti.Framework.Foundation.DiagnosticsNode.CreateMessage(message));
     }
 
 }

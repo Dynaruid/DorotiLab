@@ -240,8 +240,8 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
 
     public override void removeListener(Action listener)
     {
-        bool removed__4206 = this._listeners.remove(listener);
-        if (removed__4206)
+        bool removed = this._listeners.remove(listener);
+        if (removed)
         {
             didUnregisterListener();
         }
@@ -254,26 +254,26 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
 
     public virtual void notifyListeners()
     {
-        List<Action> localListeners__4969 = this._listeners.ToList();
-        foreach (var listener__5037 in localListeners__4969)
+        List<Action> localListeners = this._listeners.ToList();
+        foreach (var listener in localListeners)
         {
-            InformationCollector? collector__5095 = default!;
+            InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector__5095 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {this.GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                    collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {this.GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
                     return true;
                 });
             try
             {
-                if (this._listeners.contains(listener__5037))
+                if (this._listeners.contains(listener))
                 {
-                    listener__5037();
+                    listener();
                 }
             }
-            catch (Exception exception__5520)
+            catch (Exception exceptionLocal)
             {
-                var stack__5531 = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception__5520, stack: stack__5531, library: "animation library", context: new ErrorDescription($"while notifying listeners for {this.GetType()}"), informationCollector: collector__5095));
+                var stackLocal = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying listeners for {this.GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -286,8 +286,8 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
 
     public override void removeStatusListener(AnimationStatusListener listener)
     {
-        bool removed__7458 = this._statusListeners.remove(listener);
-        if (removed__7458)
+        bool removed = this._statusListeners.remove(listener);
+        if (removed)
         {
             didUnregisterListener();
         }
@@ -300,26 +300,26 @@ public class ProxyAnimation : Animation<double>, AnimationLazyListenerMixin, Ani
 
     public virtual void notifyStatusListeners(AnimationStatus status)
     {
-        List<AnimationStatusListener> localListeners__8291 = this._statusListeners.ToList();
-        foreach (var listener__8365 in localListeners__8291)
+        List<AnimationStatusListener> localListeners = this._statusListeners.ToList();
+        foreach (var listener in localListeners)
         {
             try
             {
-                if (this._statusListeners.contains(listener__8365))
+                if (this._statusListeners.contains(listener))
                 {
-                    listener__8365(status);
+                    listener(status);
                 }
             }
-            catch (Exception exception__8511)
+            catch (Exception exceptionLocal)
             {
-                var stack__8522 = new System.Diagnostics.StackTrace();
-                InformationCollector? collector__8561 = default!;
+                var stackLocal = new System.Diagnostics.StackTrace();
+                InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector__8561 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
                         return true;
                     });
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception__8511, stack: stack__8522, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector__8561));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -407,8 +407,8 @@ public class ReverseAnimation : Animation<double>, AnimationLazyListenerMixin, A
 
     public override void removeStatusListener(AnimationStatusListener listener)
     {
-        bool removed__7458 = this._statusListeners.remove(listener);
-        if (removed__7458)
+        bool removed = this._statusListeners.remove(listener);
+        if (removed)
         {
             didUnregisterListener();
         }
@@ -421,26 +421,26 @@ public class ReverseAnimation : Animation<double>, AnimationLazyListenerMixin, A
 
     public virtual void notifyStatusListeners(AnimationStatus status)
     {
-        List<AnimationStatusListener> localListeners__8291 = this._statusListeners.ToList();
-        foreach (var listener__8365 in localListeners__8291)
+        List<AnimationStatusListener> localListeners = this._statusListeners.ToList();
+        foreach (var listener in localListeners)
         {
             try
             {
-                if (this._statusListeners.contains(listener__8365))
+                if (this._statusListeners.contains(listener))
                 {
-                    listener__8365(status);
+                    listener(status);
                 }
             }
-            catch (Exception exception__8511)
+            catch (Exception exceptionLocal)
             {
-                var stack__8522 = new System.Diagnostics.StackTrace();
-                InformationCollector? collector__8561 = default!;
+                var stackLocal = new System.Diagnostics.StackTrace();
+                InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector__8561 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
                         return true;
                     });
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception__8511, stack: stack__8522, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector__8561));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -486,27 +486,27 @@ public class CurvedAnimation : Animation<double>, AnimationWithParentMixin<doubl
     {
         get
         {
-            Curve? activeCurve__14481 = (this._useForwardCurve ? this.curve : this.reverseCurve);
-            double t__14554 = ((Animation<double>)this.parent).value;
-            if ((activeCurve__14481 is null))
+            Curve? activeCurve = (this._useForwardCurve ? this.curve : this.reverseCurve);
+            double t = ((Animation<double>)this.parent).value;
+            if ((activeCurve is null))
             {
-                return t__14554;
+                return t;
             }
-            if (((t__14554 == 0.0) || (t__14554 == 1.0)))
+            if (((t == 0.0) || (t == 1.0)))
             {
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        double transformedValue__14696 = activeCurve__14481.transform(t__14554);
-                        double roundedTransformedValue__14762 = transformedValue__14696.round().toDouble();
-                        if ((roundedTransformedValue__14762 != t__14554))
+                        double transformedValue = activeCurve.transform(t);
+                        double roundedTransformedValue = transformedValue.round().toDouble();
+                        if ((roundedTransformedValue != t))
                         {
-                            throw new FlutterError($"Invalid curve endpoint at {t__14554}.\n" + "Curves must map 0.0 to near zero and 1.0 to near one but " + $"{DartRuntimePrimitives.RuntimeType(activeCurve__14481)} mapped {t__14554} to {transformedValue__14696}, which " + $"is near {roundedTransformedValue__14762}.");
+                            throw new FlutterError($"Invalid curve endpoint at {t}.\n" + "Curves must map 0.0 to near zero and 1.0 to near one but " + $"{DartRuntimePrimitives.RuntimeType(activeCurve)} mapped {t} to {transformedValue}, which " + $"is near {roundedTransformedValue}.");
                         }
                         return true;
                     });
-                return t__14554;
+                return t;
             }
-            return activeCurve__14481.transform(t__14554);
+            return activeCurve.transform(t);
             return default!;
         }
     }
@@ -571,12 +571,12 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
     internal virtual void _valueChangeHandler()
     {
         DartRuntimePrimitives.Assert(() => (this._currentTrain is not null));
-        var hop__18975 = false;
+        var hop = false;
         if ((this._nextTrain is not null))
         {
             DartRuntimePrimitives.Assert(() => (this._mode is not null));
-            hop__18975 = (DartRuntimePrimitives.RequireValue(this._mode) switch { _TrainHoppingMode__animations.minimize => (this._nextTrain!.value <= this._currentTrain!.value), _TrainHoppingMode__animations.maximize => (this._nextTrain!.value >= this._currentTrain!.value), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            if (hop__18975)
+            hop = (DartRuntimePrimitives.RequireValue(this._mode) switch { _TrainHoppingMode__animations.minimize => (this._nextTrain!.value <= this._currentTrain!.value), _TrainHoppingMode__animations.maximize => (this._nextTrain!.value >= this._currentTrain!.value), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            if (hop)
             {
                 ((Func<Animation<double>>)(() =>
 {
@@ -591,14 +591,14 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
                 _statusChangeHandler(this._currentTrain!.status);
             }
         }
-        double newValue__19603 = this.value;
-        if ((newValue__19603 != this._lastValue))
+        double newValue = this.value;
+        if ((newValue != this._lastValue))
         {
             notifyListeners();
-            _lastValue = newValue__19603;
+            _lastValue = newValue;
         }
         DartRuntimePrimitives.Assert(() => (this._lastValue is not null));
-        if ((hop__18975 && (this.onSwitchedTrain is not null)))
+        if ((hop && (this.onSwitchedTrain is not null)))
         {
             this.onSwitchedTrain!();
         }
@@ -644,8 +644,8 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
 
     public override void removeListener(Action listener)
     {
-        bool removed__4206 = this._listeners.remove(listener);
-        if (removed__4206)
+        bool removed = this._listeners.remove(listener);
+        if (removed)
         {
             didUnregisterListener();
         }
@@ -658,26 +658,26 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
 
     public virtual void notifyListeners()
     {
-        List<Action> localListeners__4969 = this._listeners.ToList();
-        foreach (var listener__5037 in localListeners__4969)
+        List<Action> localListeners = this._listeners.ToList();
+        foreach (var listener in localListeners)
         {
-            InformationCollector? collector__5095 = default!;
+            InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector__5095 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {this.GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                    collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {this.GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
                     return true;
                 });
             try
             {
-                if (this._listeners.contains(listener__5037))
+                if (this._listeners.contains(listener))
                 {
-                    listener__5037();
+                    listener();
                 }
             }
-            catch (Exception exception__5520)
+            catch (Exception exceptionLocal)
             {
-                var stack__5531 = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception__5520, stack: stack__5531, library: "animation library", context: new ErrorDescription($"while notifying listeners for {this.GetType()}"), informationCollector: collector__5095));
+                var stackLocal = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying listeners for {this.GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -690,8 +690,8 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
 
     public override void removeStatusListener(AnimationStatusListener listener)
     {
-        bool removed__7458 = this._statusListeners.remove(listener);
-        if (removed__7458)
+        bool removed = this._statusListeners.remove(listener);
+        if (removed)
         {
             didUnregisterListener();
         }
@@ -704,26 +704,26 @@ public class TrainHoppingAnimation : Animation<double>, AnimationEagerListenerMi
 
     public virtual void notifyStatusListeners(AnimationStatus status)
     {
-        List<AnimationStatusListener> localListeners__8291 = this._statusListeners.ToList();
-        foreach (var listener__8365 in localListeners__8291)
+        List<AnimationStatusListener> localListeners = this._statusListeners.ToList();
+        foreach (var listener in localListeners)
         {
             try
             {
-                if (this._statusListeners.contains(listener__8365))
+                if (this._statusListeners.contains(listener))
                 {
-                    listener__8365(status);
+                    listener(status);
                 }
             }
-            catch (Exception exception__8511)
+            catch (Exception exceptionLocal)
             {
-                var stack__8522 = new System.Diagnostics.StackTrace();
-                InformationCollector? collector__8561 = default!;
+                var stackLocal = new System.Diagnostics.StackTrace();
+                InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector__8561 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
                         return true;
                     });
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception__8511, stack: stack__8522, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector__8561));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -816,8 +816,8 @@ public abstract class CompoundAnimation<T> : Animation<T>, AnimationLazyListener
 
     public override void removeListener(Action listener)
     {
-        bool removed__4206 = this._listeners.remove(listener);
-        if (removed__4206)
+        bool removed = this._listeners.remove(listener);
+        if (removed)
         {
             didUnregisterListener();
         }
@@ -830,26 +830,26 @@ public abstract class CompoundAnimation<T> : Animation<T>, AnimationLazyListener
 
     public virtual void notifyListeners()
     {
-        List<Action> localListeners__4969 = this._listeners.ToList();
-        foreach (var listener__5037 in localListeners__4969)
+        List<Action> localListeners = this._listeners.ToList();
+        foreach (var listener in localListeners)
         {
-            InformationCollector? collector__5095 = default!;
+            InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector__5095 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {this.GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                    collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {this.GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
                     return true;
                 });
             try
             {
-                if (this._listeners.contains(listener__5037))
+                if (this._listeners.contains(listener))
                 {
-                    listener__5037();
+                    listener();
                 }
             }
-            catch (Exception exception__5520)
+            catch (Exception exceptionLocal)
             {
-                var stack__5531 = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception__5520, stack: stack__5531, library: "animation library", context: new ErrorDescription($"while notifying listeners for {this.GetType()}"), informationCollector: collector__5095));
+                var stackLocal = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying listeners for {this.GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -862,8 +862,8 @@ public abstract class CompoundAnimation<T> : Animation<T>, AnimationLazyListener
 
     public override void removeStatusListener(AnimationStatusListener listener)
     {
-        bool removed__7458 = this._statusListeners.remove(listener);
-        if (removed__7458)
+        bool removed = this._statusListeners.remove(listener);
+        if (removed)
         {
             didUnregisterListener();
         }
@@ -876,26 +876,26 @@ public abstract class CompoundAnimation<T> : Animation<T>, AnimationLazyListener
 
     public virtual void notifyStatusListeners(AnimationStatus status)
     {
-        List<AnimationStatusListener> localListeners__8291 = this._statusListeners.ToList();
-        foreach (var listener__8365 in localListeners__8291)
+        List<AnimationStatusListener> localListeners = this._statusListeners.ToList();
+        foreach (var listener in localListeners)
         {
             try
             {
-                if (this._statusListeners.contains(listener__8365))
+                if (this._statusListeners.contains(listener))
                 {
-                    listener__8365(status);
+                    listener(status);
                 }
             }
-            catch (Exception exception__8511)
+            catch (Exception exceptionLocal)
             {
-                var stack__8522 = new System.Diagnostics.StackTrace();
-                InformationCollector? collector__8561 = default!;
+                var stackLocal = new System.Diagnostics.StackTrace();
+                InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector__8561 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
                         return true;
                     });
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception__8511, stack: stack__8522, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector__8561));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector));
             }
         }
     }

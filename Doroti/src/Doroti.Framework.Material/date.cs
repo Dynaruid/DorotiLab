@@ -184,10 +184,10 @@ public abstract class DateUtils
 
     public static long firstDayOffset(long year, long month, MaterialLocalizations localizations)
     {
-        long weekdayFromMonday__12693 = (DartRuntimePrimitives.CreateDateTime(year, month).DayOfWeek.ToDartWeekday() - 1L);
-        long firstDayOfWeekIndex__12839 = ((MaterialLocalizations)localizations).firstDayOfWeekIndex;
-        firstDayOfWeekIndex__12839 = (((firstDayOfWeekIndex__12839 - 1L)) % 7L);
-        return (((weekdayFromMonday__12693 - firstDayOfWeekIndex__12839)) % 7L);
+        long weekdayFromMonday = (DartRuntimePrimitives.CreateDateTime(year, month).DayOfWeek.ToDartWeekday() - 1L);
+        long firstDayOfWeekIndexLocal = ((MaterialLocalizations)localizations).firstDayOfWeekIndex;
+        firstDayOfWeekIndexLocal = (((firstDayOfWeekIndexLocal - 1L)) % 7L);
+        return (((weekdayFromMonday - firstDayOfWeekIndexLocal)) % 7L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -195,11 +195,11 @@ public abstract class DateUtils
     {
         if ((month == 2L))
         {
-            bool isLeapYear__13703 = (((((year % 4L) == 0L)) && (((year % 100L) != 0L))) || (((year % 400L) == 0L)));
-            return (isLeapYear__13703 ? 29L : 28L);
+            bool isLeapYear = (((((year % 4L) == 0L)) && (((year % 100L) != 0L))) || (((year % 400L) == 0L)));
+            return (isLeapYear ? 29L : 28L);
         }
-        var daysInMonth__13826 = new List<long> { 31L, -1L, 31L, 30L, 31L, 30L, 31L, 31L, 30L, 31L, 30L, 31L };
-        return daysInMonth__13826[(int)((month - 1L))];
+        var daysInMonth = new List<long> { 31L, -1L, 31L, 30L, 31L, 30L, 31L, 31L, 30L, 31L, 30L, 31L };
+        return daysInMonth[(int)((month - 1L))];
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

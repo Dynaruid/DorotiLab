@@ -91,10 +91,10 @@ public abstract class MultiDragPointerState
         DartRuntimePrimitives.Assert(() => (this._client is null));
         DartRuntimePrimitives.Assert(() => (this.pendingDelta is not null));
         _client = client;
-        var details__4668 = new DragUpdateDetails(sourceTimeStamp: this._lastPendingEventTimestamp, delta: DartRuntimePrimitives.RequireValue(this.pendingDelta), globalPosition: this.initialPosition);
+        var details = new DragUpdateDetails(sourceTimeStamp: this._lastPendingEventTimestamp, delta: DartRuntimePrimitives.RequireValue(this.pendingDelta), globalPosition: this.initialPosition);
         _pendingDelta = null;
         _lastPendingEventTimestamp = null;
-        this._client!.update(details__4668);
+        this._client!.update(details);
     }
 
     internal virtual void _up()
@@ -103,10 +103,10 @@ public abstract class MultiDragPointerState
         if ((this._client is not null))
         {
             DartRuntimePrimitives.Assert(() => (this.pendingDelta is null));
-            var details__5090 = new DragEndDetails(velocity: this._velocityTracker.getVelocity());
-            Drag client__5175 = this._client!;
+            var details = new DragEndDetails(velocity: this._velocityTracker.getVelocity());
+            Drag client = this._client!;
             _client = null;
-            client__5175.end(details__5090);
+            client.end(details);
         }
         else
         {
@@ -122,9 +122,9 @@ public abstract class MultiDragPointerState
         if ((this._client is not null))
         {
             DartRuntimePrimitives.Assert(() => (this.pendingDelta is null));
-            Drag client__5551 = this._client!;
+            Drag client = this._client!;
             _client = null;
-            client__5551.cancel();
+            client.cancel();
         }
         else
         {
@@ -162,10 +162,10 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
     {
         DartRuntimePrimitives.Assert(() => (this._pointers is not null));
         DartRuntimePrimitives.Assert(() => !this._pointers!.ContainsKey(@event.pointer));
-        MultiDragPointerState state__8081 = createNewPointerState(@event);
-        this._pointers![@event.pointer] = state__8081;
+        MultiDragPointerState state = createNewPointerState(@event);
+        this._pointers![@event.pointer] = state;
         GestureBinding.instance.pointerRouter.addRoute(@event.pointer, (Action<PointerEvent>)this._handleEvent);
-        state__8081._setArenaEntry(GestureBinding.instance.gestureArena.add(@event.pointer, this));
+        state._setArenaEntry(GestureBinding.instance.gestureArena.add(@event.pointer, this));
     }
 
     public abstract MultiDragPointerState createNewPointerState(PointerDownEvent @event);
@@ -173,11 +173,11 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
     {
         DartRuntimePrimitives.Assert(() => (this._pointers is not null));
         DartRuntimePrimitives.Assert(() => this._pointers!.ContainsKey(((PointerEvent)@event).pointer));
-        MultiDragPointerState state__8726 = this._pointers!.GetValueOrDefault(((PointerEvent)@event).pointer)!;
+        MultiDragPointerState state = this._pointers!.GetValueOrDefault(((PointerEvent)@event).pointer)!;
         if ((@event is PointerMoveEvent))
         {
             PointerMoveEvent @event__as8770 = (PointerMoveEvent)@event;
-            state__8726._move(((PointerMoveEvent)@event__as8770));
+            state._move(((PointerMoveEvent)@event__as8770));
         }
         else
         {
@@ -185,7 +185,7 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
             {
                 PointerUpEvent @event__as8876 = (PointerUpEvent)@event;
                 DartRuntimePrimitives.Assert(() => (object.Equals(((PointerUpEvent)@event__as8876).delta, Offset.zero)));
-                state__8726._up();
+                state._up();
                 _removeState(((PointerUpEvent)@event__as8876).pointer);
             }
             else
@@ -194,7 +194,7 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
                 {
                     PointerCancelEvent @event__as9050 = (PointerCancelEvent)@event;
                     DartRuntimePrimitives.Assert(() => (object.Equals(((PointerCancelEvent)@event__as9050).delta, Offset.zero)));
-                    state__8726._cancel();
+                    state._cancel();
                     _removeState(((PointerCancelEvent)@event__as9050).pointer);
                 }
                 else
@@ -211,33 +211,33 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
     public override void acceptGesture(long pointer)
     {
         DartRuntimePrimitives.Assert(() => (this._pointers is not null));
-        MultiDragPointerState? state__9610 = this._pointers!.GetValueOrDefault(pointer);
-        if ((state__9610 is null))
+        MultiDragPointerState? state = this._pointers!.GetValueOrDefault(pointer);
+        if ((state is null))
         {
             return;
         }
-        state__9610.accepted(((Func<Offset, Drag?>)((initialPosition) => _startDrag(initialPosition, pointer))));
+        state.accepted(((Func<Offset, Drag?>)((initialPosition) => _startDrag(initialPosition, pointer))));
     }
 
     internal virtual Drag? _startDrag(Offset initialPosition, long pointer)
     {
         DartRuntimePrimitives.Assert(() => (this._pointers is not null));
-        MultiDragPointerState state__9975 = this._pointers!.GetValueOrDefault(pointer)!;
-        DartRuntimePrimitives.Assert(() => (((MultiDragPointerState)state__9975)._pendingDelta is not null));
-        Drag? drag__10056 = default!;
+        MultiDragPointerState state = this._pointers!.GetValueOrDefault(pointer)!;
+        DartRuntimePrimitives.Assert(() => (((MultiDragPointerState)state)._pendingDelta is not null));
+        Drag? drag = default!;
         if ((this.onStart is not null))
         {
-            drag__10056 = invokeCallback<Drag?>("onStart", ((Func<Drag?>)(() => this.onStart!(initialPosition))));
+            drag = invokeCallback<Drag?>("onStart", ((Func<Drag?>)(() => this.onStart!(initialPosition))));
         }
-        if ((drag__10056 is not null))
+        if ((drag is not null))
         {
-            state__9975._startDrag(drag__10056);
+            state._startDrag(drag);
         }
         else
         {
             _removeState(pointer);
         }
-        return drag__10056;
+        return drag;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -246,8 +246,8 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
         DartRuntimePrimitives.Assert(() => (this._pointers is not null));
         if (this._pointers!.ContainsKey(pointer))
         {
-            MultiDragPointerState state__10455 = this._pointers!.GetValueOrDefault(pointer)!;
-            state__10455.rejected();
+            MultiDragPointerState state = this._pointers!.GetValueOrDefault(pointer)!;
+            state.rejected();
             _removeState(pointer);
         }
     }

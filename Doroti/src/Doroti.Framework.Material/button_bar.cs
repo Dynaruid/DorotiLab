@@ -49,24 +49,24 @@ public class ButtonBar : global::Doroti.Framework.Widgets.StatelessWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ButtonThemeData parentButtonTheme__8680 = ButtonTheme.of(context);
-        ButtonBarThemeData barTheme__8754 = ButtonBarTheme.of(context);
-        ButtonThemeData buttonTheme__8820 = parentButtonTheme__8680.copyWith(textTheme: ((this.buttonTextTheme ?? barTheme__8754.buttonTextTheme) ?? ButtonTextTheme.primary), minWidth: ((this.buttonMinWidth ?? barTheme__8754.buttonMinWidth) ?? 64.0), height: ((this.buttonHeight ?? barTheme__8754.buttonHeight) ?? 36.0), padding: ((this.buttonPadding ?? barTheme__8754.buttonPadding) ?? global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0)), alignedDropdown: ((this.buttonAlignedDropdown ?? barTheme__8754.buttonAlignedDropdown) ?? false), layoutBehavior: ((this.layoutBehavior ?? barTheme__8754.layoutBehavior) ?? ButtonBarLayoutBehavior.padded));
-        double paddingUnit__9496 = (buttonTheme__8820.padding.horizontal / 4.0);
-        global::Doroti.Framework.Widgets.Widget child__9565 = ((global::Doroti.Framework.Widgets.Widget)(object?)ButtonTheme.CreateFromButtonThemeData(data: buttonTheme__8820, child: new _ButtonBarRow__button_bar(mainAxisAlignment: ((this.alignment ?? barTheme__8754.alignment) ?? global::Doroti.Framework.Rendering.MainAxisAlignment.end), mainAxisSize: ((this.mainAxisSize ?? barTheme__8754.mainAxisSize) ?? global::Doroti.Framework.Rendering.MainAxisSize.max), overflowDirection: ((this.overflowDirection ?? barTheme__8754.overflowDirection) ?? global::Doroti.Framework.Painting.VerticalDirection.down), overflowButtonSpacing: this.overflowButtonSpacing, children: this.children.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>(((child) =>
+        ButtonThemeData parentButtonTheme = ButtonTheme.of(context);
+        ButtonBarThemeData barTheme = ButtonBarTheme.of(context);
+        ButtonThemeData buttonTheme = parentButtonTheme.copyWith(textTheme: ((this.buttonTextTheme ?? barTheme.buttonTextTheme) ?? ButtonTextTheme.primary), minWidth: ((this.buttonMinWidth ?? barTheme.buttonMinWidth) ?? 64.0), height: ((this.buttonHeight ?? barTheme.buttonHeight) ?? 36.0), padding: ((this.buttonPadding ?? barTheme.buttonPadding) ?? global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0)), alignedDropdown: ((this.buttonAlignedDropdown ?? barTheme.buttonAlignedDropdown) ?? false), layoutBehavior: ((this.layoutBehavior ?? barTheme.layoutBehavior) ?? ButtonBarLayoutBehavior.padded));
+        double paddingUnit = (buttonTheme.padding.horizontal / 4.0);
+        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)ButtonTheme.CreateFromButtonThemeData(data: buttonTheme, child: new _ButtonBarRow__button_bar(mainAxisAlignment: ((this.alignment ?? barTheme.alignment) ?? global::Doroti.Framework.Rendering.MainAxisAlignment.end), mainAxisSize: ((this.mainAxisSize ?? barTheme.mainAxisSize) ?? global::Doroti.Framework.Rendering.MainAxisSize.max), overflowDirection: ((this.overflowDirection ?? barTheme.overflowDirection) ?? global::Doroti.Framework.Painting.VerticalDirection.down), overflowButtonSpacing: this.overflowButtonSpacing, children: this.children.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Widgets.Widget>(((child) =>
         {
-            return new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: paddingUnit__9496), child: child);
+            return new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: paddingUnit), child: child);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })).ToList())));
-        switch (buttonTheme__8820.layoutBehavior)
+        switch (buttonTheme.layoutBehavior)
         {
             case var __constant10272 when (object.Equals(__constant10272, ButtonBarLayoutBehavior.padded)):
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: (2.0 * paddingUnit__9496), horizontal: paddingUnit__9496), child: child__9565));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: (2.0 * paddingUnit), horizontal: paddingUnit), child: childLocal));
                 }
             case var __constant10469 when (object.Equals(__constant10469, ButtonBarLayoutBehavior.constrained)):
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: 52.0), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: paddingUnit__9496), child: new global::Doroti.Framework.Widgets.Center(child: child__9565))));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: 52.0), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: paddingUnit), child: new global::Doroti.Framework.Widgets.Center(child: childLocal))));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -136,26 +136,26 @@ public class _RenderButtonBarRow__button_bar : global::Doroti.Framework.Renderin
     }
     public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        global::Doroti.Ui.Size size__14749 = ((global::Doroti.Ui.Size)(object?)base.computeDryLayout(constraints.copyWith(maxWidth: double.PositiveInfinity)));
-        if ((size__14749.width <= ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth))
+        global::Doroti.Ui.Size size = ((global::Doroti.Ui.Size)(object?)base.computeDryLayout(constraints.copyWith(maxWidth: double.PositiveInfinity)));
+        if ((size.width <= ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth))
         {
             return base.computeDryLayout(constraints);
         }
-        var currentHeight__14939 = 0.0;
-        global::Doroti.Framework.Rendering.RenderBox? child__14975 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.firstChild);
-        while ((child__14975 is not null))
+        var currentHeight = 0.0;
+        global::Doroti.Framework.Rendering.RenderBox? child = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.firstChild);
+        while ((child is not null))
         {
-            global::Doroti.Framework.Rendering.BoxConstraints childConstraints__15050 = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.copyWith(minWidth: 0.0));
-            global::Doroti.Ui.Size childSize__15123 = ((global::Doroti.Ui.Size)(object?)child__14975.getDryLayout(childConstraints__15050));
-            currentHeight__14939 += childSize__15123.height;
-            child__14975 = childAfter(child__14975);
-            if (((this.overflowButtonSpacing is not null) && (child__14975 is not null)))
+            global::Doroti.Framework.Rendering.BoxConstraints childConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.copyWith(minWidth: 0.0));
+            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)child.getDryLayout(childConstraints));
+            currentHeight += childSize.height;
+            child = childAfter(child);
+            if (((this.overflowButtonSpacing is not null) && (child is not null)))
             {
                 double overflowButtonSpacing__value15257 = DartRuntimePrimitives.RequireValue(overflowButtonSpacing);
-                currentHeight__14939 += DartRuntimePrimitives.RequireValue(this.overflowButtonSpacing);
+                currentHeight += DartRuntimePrimitives.RequireValue(this.overflowButtonSpacing);
             }
         }
-        return constraints.constrain(new global::Doroti.Ui.Size(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth, currentHeight__14939));
+        return constraints.constrain(new global::Doroti.Ui.Size(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth, currentHeight));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -170,13 +170,13 @@ public class _RenderButtonBarRow__button_bar : global::Doroti.Framework.Renderin
         }
         else
         {
-            global::Doroti.Framework.Rendering.BoxConstraints childConstraints__16242 = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)this.constraints.copyWith(minWidth: 0.0));
-            var currentHeight__16308 = 0.0;
-            global::Doroti.Framework.Rendering.RenderBox? child__16346 = (this.verticalDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => this.firstChild, global::Doroti.Framework.Painting.VerticalDirection.up => this.lastChild, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            while ((child__16346 is not null))
+            global::Doroti.Framework.Rendering.BoxConstraints childConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)this.constraints.copyWith(minWidth: 0.0));
+            var currentHeight = 0.0;
+            global::Doroti.Framework.Rendering.RenderBox? child = (this.verticalDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => this.firstChild, global::Doroti.Framework.Painting.VerticalDirection.up => this.lastChild, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            while ((child is not null))
             {
-                var childParentData__16526 = ((global::Doroti.Framework.Rendering.FlexParentData?)(object?)child__16346.parentData!)!;
-                child__16346.layout(childConstraints__16242, parentUsesSize: true);
+                var childParentData = ((global::Doroti.Framework.Rendering.FlexParentData?)(object?)child.parentData!)!;
+                child.layout(childConstraints, parentUsesSize: true);
                 switch (DartRuntimePrimitives.RequireValue(this.textDirection))
                 {
                     case TextDirection.ltr:
@@ -185,13 +185,13 @@ public class _RenderButtonBarRow__button_bar : global::Doroti.Framework.Renderin
                             {
                                 case global::Doroti.Framework.Rendering.MainAxisAlignment.center:
                                     {
-                                        double midpoint__17224 = (((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth - ((global::Doroti.Framework.Rendering.RenderBox)child__16346).size.width)) / 2.0);
-                                        childParentData__16526.offset = new global::Doroti.Ui.Offset(midpoint__17224, currentHeight__16308);
+                                        double midpoint = (((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth - ((global::Doroti.Framework.Rendering.RenderBox)child).size.width)) / 2.0);
+                                        childParentData.offset = new global::Doroti.Ui.Offset(midpoint, currentHeight);
                                         break;
                                     }
                                 case global::Doroti.Framework.Rendering.MainAxisAlignment.end:
                                     {
-                                        childParentData__16526.offset = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth - ((global::Doroti.Framework.Rendering.RenderBox)child__16346).size.width), currentHeight__16308);
+                                        childParentData.offset = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth - ((global::Doroti.Framework.Rendering.RenderBox)child).size.width), currentHeight);
                                         break;
                                     }
                                 case global::Doroti.Framework.Rendering.MainAxisAlignment.spaceAround:
@@ -199,7 +199,7 @@ public class _RenderButtonBarRow__button_bar : global::Doroti.Framework.Renderin
                                 case global::Doroti.Framework.Rendering.MainAxisAlignment.spaceEvenly:
                                 case global::Doroti.Framework.Rendering.MainAxisAlignment.start:
                                     {
-                                        childParentData__16526.offset = new global::Doroti.Ui.Offset(0, currentHeight__16308);
+                                        childParentData.offset = new global::Doroti.Ui.Offset(0, currentHeight);
                                         break;
                                     }
                             }
@@ -211,13 +211,13 @@ public class _RenderButtonBarRow__button_bar : global::Doroti.Framework.Renderin
                             {
                                 case global::Doroti.Framework.Rendering.MainAxisAlignment.center:
                                     {
-                                        double midpoint__17985 = ((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth / 2.0) - (((global::Doroti.Framework.Rendering.RenderBox)child__16346).size.width / 2.0));
-                                        childParentData__16526.offset = new global::Doroti.Ui.Offset(midpoint__17985, currentHeight__16308);
+                                        double midpointLocal = ((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth / 2.0) - (((global::Doroti.Framework.Rendering.RenderBox)child).size.width / 2.0));
+                                        childParentData.offset = new global::Doroti.Ui.Offset(midpointLocal, currentHeight);
                                         break;
                                     }
                                 case global::Doroti.Framework.Rendering.MainAxisAlignment.end:
                                     {
-                                        childParentData__16526.offset = new global::Doroti.Ui.Offset(0, currentHeight__16308);
+                                        childParentData.offset = new global::Doroti.Ui.Offset(0, currentHeight);
                                         break;
                                     }
                                 case global::Doroti.Framework.Rendering.MainAxisAlignment.spaceAround:
@@ -225,22 +225,22 @@ public class _RenderButtonBarRow__button_bar : global::Doroti.Framework.Renderin
                                 case global::Doroti.Framework.Rendering.MainAxisAlignment.spaceEvenly:
                                 case global::Doroti.Framework.Rendering.MainAxisAlignment.start:
                                     {
-                                        childParentData__16526.offset = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth - ((global::Doroti.Framework.Rendering.RenderBox)child__16346).size.width), currentHeight__16308);
+                                        childParentData.offset = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth - ((global::Doroti.Framework.Rendering.RenderBox)child).size.width), currentHeight);
                                         break;
                                     }
                             }
                             break;
                         }
                 }
-                currentHeight__16308 += ((global::Doroti.Framework.Rendering.RenderBox)child__16346).size.height;
-                child__16346 = (this.verticalDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => childParentData__16526.nextSibling, global::Doroti.Framework.Painting.VerticalDirection.up => childParentData__16526.previousSibling, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-                if (((this.overflowButtonSpacing is not null) && (child__16346 is not null)))
+                currentHeight += ((global::Doroti.Framework.Rendering.RenderBox)child).size.height;
+                child = (this.verticalDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => childParentData.nextSibling, global::Doroti.Framework.Painting.VerticalDirection.up => childParentData.previousSibling, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                if (((this.overflowButtonSpacing is not null) && (child is not null)))
                 {
                     double overflowButtonSpacing__value18856 = DartRuntimePrimitives.RequireValue(overflowButtonSpacing);
-                    currentHeight__16308 += DartRuntimePrimitives.RequireValue(this.overflowButtonSpacing);
+                    currentHeight += DartRuntimePrimitives.RequireValue(this.overflowButtonSpacing);
                 }
             }
-            this.size = this.constraints.constrain(new global::Doroti.Ui.Size(((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth, currentHeight__16308));
+            this.size = this.constraints.constrain(new global::Doroti.Ui.Size(((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).maxWidth, currentHeight));
         }
     }
 

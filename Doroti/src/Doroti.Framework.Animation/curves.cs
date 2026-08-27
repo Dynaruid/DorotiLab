@@ -159,15 +159,15 @@ public class Split : Curve
         }
         if ((t < this.split))
         {
-            double curveProgress__8547 = (t / this.split);
-            double transformed__8593 = this.beginCurve.transform(curveProgress__8547);
-            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0L, this.split, transformed__8593));
+            double curveProgress = (t / this.split);
+            double transformed = this.beginCurve.transform(curveProgress);
+            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0L, this.split, transformed));
         }
         else
         {
-            double curveProgress__8725 = (((t - this.split)) / ((1L - this.split)));
-            double transformed__8787 = this.endCurve.transform(curveProgress__8725);
-            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.split, 1L, transformed__8787));
+            double curveProgressLocal = (((t - this.split)) / ((1L - this.split)));
+            double transformedLocal = this.endCurve.transform(curveProgressLocal);
+            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.split, 1L, transformedLocal));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -235,23 +235,23 @@ public class Cubic : Curve
         {
             return 1.0;
         }
-        var start__16076 = 0.0;
-        var end__16097 = 1.0;
+        var start = 0.0;
+        var end = 1.0;
         while (true)
         {
-            double midpoint__16146 = (((start__16076 + end__16097)) / 2L);
-            double estimate__16195 = _evaluateCubic(this.a, this.c, midpoint__16146);
-            if ((((t - estimate__16195)).abs() < _cubicErrorBound))
+            double midpoint = (((start + end)) / 2L);
+            double estimate = _evaluateCubic(this.a, this.c, midpoint);
+            if ((((t - estimate)).abs() < _cubicErrorBound))
             {
-                return _evaluateCubic(this.b, this.d, midpoint__16146);
+                return _evaluateCubic(this.b, this.d, midpoint);
             }
-            if ((estimate__16195 < t))
+            if ((estimate < t))
             {
-                start__16076 = midpoint__16146;
+                start = midpoint;
             }
             else
             {
-                end__16097 = midpoint__16146;
+                end = midpoint;
             }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -284,17 +284,17 @@ public class ThreePointCubic : Curve
 
     public override double transformInternal(double t)
     {
-        bool firstCurve__19230 = (t < this.midpoint.dx);
-        double scaleX__19277 = (firstCurve__19230 ? this.midpoint.dx : (1.0 - this.midpoint.dx));
-        double scaleY__19349 = (firstCurve__19230 ? this.midpoint.dy : (1.0 - this.midpoint.dy));
-        double scaledT__19421 = (((t - ((firstCurve__19230 ? 0.0 : this.midpoint.dx)))) / scaleX__19277);
-        if (firstCurve__19230)
+        bool firstCurve = (t < this.midpoint.dx);
+        double scaleX = (firstCurve ? this.midpoint.dx : (1.0 - this.midpoint.dx));
+        double scaleY = (firstCurve ? this.midpoint.dy : (1.0 - this.midpoint.dy));
+        double scaledT = (((t - ((firstCurve ? 0.0 : this.midpoint.dx)))) / scaleX);
+        if (firstCurve)
         {
-            return (new Cubic((this.a1.dx / scaleX__19277), (this.a1.dy / scaleY__19349), (this.b1.dx / scaleX__19277), (this.b1.dy / scaleY__19349)).transform(scaledT__19421) * scaleY__19349);
+            return (new Cubic((this.a1.dx / scaleX), (this.a1.dy / scaleY), (this.b1.dx / scaleX), (this.b1.dy / scaleY)).transform(scaledT) * scaleY);
         }
         else
         {
-            return ((new Cubic((((this.a2.dx - this.midpoint.dx)) / scaleX__19277), (((this.a2.dy - this.midpoint.dy)) / scaleY__19349), (((this.b2.dx - this.midpoint.dx)) / scaleX__19277), (((this.b2.dy - this.midpoint.dy)) / scaleY__19349)).transform(scaledT__19421) * scaleY__19349) + this.midpoint.dy);
+            return ((new Cubic((((this.a2.dx - this.midpoint.dx)) / scaleX), (((this.a2.dy - this.midpoint.dy)) / scaleY), (((this.b2.dx - this.midpoint.dx)) / scaleX), (((this.b2.dy - this.midpoint.dy)) / scaleY)).transform(scaledT) * scaleY) + this.midpoint.dy);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -316,66 +316,66 @@ public abstract class Curve2D : ParametricCurve<Offset>
     public virtual IEnumerable<Curve2DSample> generateSamples(double start = 0.0, double end = 1.0, double tolerance = 1e-10)
     {
         DartRuntimePrimitives.Assert(() => (end > start));
-        var rand__23209 = new DartRandom(this.samplingSeed);
+        var rand = new DartRandom(this.samplingSeed);
         bool isFlat(Offset p, Offset q, Offset r)
         {
-            global::Doroti.Ui.Offset pr__23382 = (p - r);
-            global::Doroti.Ui.Offset qr__23413 = (q - r);
-            double z__23444 = ((pr__23382.dx * qr__23413.dy) - (qr__23413.dx * pr__23382.dy));
-            return (((z__23444 * z__23444)) < tolerance);
+            global::Doroti.Ui.Offset pr = (p - r);
+            global::Doroti.Ui.Offset qr = (q - r);
+            double z = ((pr.dx * qr.dy) - (qr.dx * pr.dy));
+            return (((z * z)) < tolerance);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        var first__23530 = new Curve2DSample(start, transform(start));
-        var last__23588 = new Curve2DSample(end, transform(end));
-        var samples__23641 = new List<Curve2DSample> { first__23530 };
+        var first = new Curve2DSample(start, transform(start));
+        var last = new Curve2DSample(end, transform(end));
+        var samples = new List<Curve2DSample> { first };
         void sample(Curve2DSample p, Curve2DSample q, bool forceSubdivide = false)
         {
-            double t__23894 = (((Curve2DSample)p).t + (((0.45 + (0.1 * rand__23209.nextDouble()))) * ((((Curve2DSample)q).t - ((Curve2DSample)p).t))));
-            var r__23964 = new Curve2DSample(t__23894, transform(t__23894));
-            if ((!forceSubdivide && isFlat(((Curve2DSample)p).value, ((Curve2DSample)q).value, ((Curve2DSample)r__23964).value)))
+            double tLocal = (((Curve2DSample)p).t + (((0.45 + (0.1 * rand.nextDouble()))) * ((((Curve2DSample)q).t - ((Curve2DSample)p).t))));
+            var rLocal = new Curve2DSample(tLocal, transform(tLocal));
+            if ((!forceSubdivide && isFlat(((Curve2DSample)p).value, ((Curve2DSample)q).value, ((Curve2DSample)rLocal).value)))
             {
-                samples__23641.Add(q);
+                samples.Add(q);
             }
             else
             {
-                sample(p, r__23964);
-                sample(r__23964, q);
+                sample(p, rLocal);
+                sample(rLocal, q);
             }
         }
-        sample(first__23530, last__23588, forceSubdivide: ((((((Curve2DSample)first__23530).value.dx - ((Curve2DSample)last__23588).value.dx)).abs() < tolerance) && (((((Curve2DSample)first__23530).value.dy - ((Curve2DSample)last__23588).value.dy)).abs() < tolerance)));
-        return samples__23641;
+        sample(first, last, forceSubdivide: ((((((Curve2DSample)first).value.dx - ((Curve2DSample)last).value.dx)).abs() < tolerance) && (((((Curve2DSample)first).value.dy - ((Curve2DSample)last).value.dy)).abs() < tolerance)));
+        return samples;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual long samplingSeed => 0L;
     public virtual double findInverse(double x)
     {
-        var start__25355 = 0.0;
-        var end__25376 = 1.0;
-        double mid__25403 = default!;
+        var start = 0.0;
+        var end = 1.0;
+        double mid = default!;
         double offsetToOrigin(double pos)
         {
             return (x - transform(pos).dx);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        var errorLimit__25599 = 0.000001;
-        var count__25626 = 100L;
-        double startValue__25656 = offsetToOrigin(start__25355);
-        while ((((((end__25376 - start__25355)) / 2.0) > errorLimit__25599) && (count__25626 > 0L)))
+        var errorLimit = 0.000001;
+        var count = 100L;
+        double startValue = offsetToOrigin(start);
+        while ((((((end - start)) / 2.0) > errorLimit) && (count > 0L)))
         {
-            mid__25403 = (((end__25376 + start__25355)) / 2.0);
-            double value__25804 = offsetToOrigin(mid__25403);
-            if ((Math.Sign(value__25804) == Math.Sign(startValue__25656)))
+            mid = (((end + start)) / 2.0);
+            double value = offsetToOrigin(mid);
+            if ((Math.Sign(value) == Math.Sign(startValue)))
             {
-                start__25355 = mid__25403;
+                start = mid;
             }
             else
             {
-                end__25376 = mid__25403;
+                end = mid;
             }
-            count__25626--;
+            count--;
         }
-        return mid__25403;
+        return mid;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -437,37 +437,37 @@ public class CatmullRomSpline : Curve2D
         DartRuntimePrimitives.Assert(() => ((endHandle is null) || DartRuntimePrimitives.RequireValue(endHandle).isFinite));
         DartRuntimePrimitives.Assert(() =>
             {
-                for (var index__31649 = 0L; (index__31649 < checked((long)(controlPoints.Count))); index__31649++)
+                for (var index = 0L; (index < checked((long)(controlPoints.Count))); index++)
                 {
-                    if (!controlPoints[(int)(index__31649)].isFinite)
+                    if (!controlPoints[(int)(index)].isFinite)
                     {
-                        throw new FlutterError($"The provided CatmullRomSpline control point at index {index__31649} is not " + $"finite. The control point given was {controlPoints[(int)(index__31649)]}.");
+                        throw new FlutterError($"The provided CatmullRomSpline control point at index {index} is not " + $"finite. The control point given was {controlPoints[(int)(index)]}.");
                     }
                 }
                 return true;
             });
         startHandle ??= ((controlPoints[(int)(0L)] * 2.0) - controlPoints[(int)(1L)]);
         endHandle ??= ((controlPoints.Last() * 2.0) - controlPoints[(int)((checked((long)(controlPoints.Count)) - 2L))]);
-        var allPoints__32366 = new List<global::Doroti.Ui.Offset> { DartRuntimePrimitives.RequireValue(startHandle), DartRuntimePrimitives.RequireValue(endHandle) };
-        var alpha__32763 = 0.5;
-        double reverseTension__32793 = (1.0 - tension);
-        var result__32835 = new List<List<global::Doroti.Ui.Offset>>();
-        for (var i__32875 = 0L; (i__32875 < (checked((long)(allPoints__32366.Count)) - 3L)); ++i__32875)
+        var allPoints = new List<global::Doroti.Ui.Offset> { DartRuntimePrimitives.RequireValue(startHandle), DartRuntimePrimitives.RequireValue(endHandle) };
+        var alpha = 0.5;
+        double reverseTension = (1.0 - tension);
+        var result = new List<List<global::Doroti.Ui.Offset>>();
+        for (var i = 0L; (i < (checked((long)(allPoints.Count)) - 3L)); ++i)
         {
-            var curve__32927 = new List<global::Doroti.Ui.Offset> { allPoints__32366[(int)(i__32875)], allPoints__32366[(int)((i__32875 + 1L))], allPoints__32366[(int)((i__32875 + 2L))], allPoints__32366[(int)((i__32875 + 3L))] };
-            global::Doroti.Ui.Offset diffCurve10__33032 = (curve__32927[(int)(1L)] - curve__32927[(int)(0L)]);
-            global::Doroti.Ui.Offset diffCurve21__33086 = (curve__32927[(int)(2L)] - curve__32927[(int)(1L)]);
-            global::Doroti.Ui.Offset diffCurve32__33140 = (curve__32927[(int)(3L)] - curve__32927[(int)(2L)]);
-            double t01__33194 = global::Doroti.Runtime.Dart_mathLibrary.pow(diffCurve10__33032.distance, alpha__32763).toDouble();
-            double t12__33269 = global::Doroti.Runtime.Dart_mathLibrary.pow(diffCurve21__33086.distance, alpha__32763).toDouble();
-            double t23__33344 = global::Doroti.Runtime.Dart_mathLibrary.pow(diffCurve32__33140.distance, alpha__32763).toDouble();
-            global::Doroti.Ui.Offset m1__33420 = (((diffCurve21__33086 + ((((diffCurve10__33032 / t01__33194) - (((curve__32927[(int)(2L)] - curve__32927[(int)(0L)])) / ((t01__33194 + t12__33269))))) * t12__33269))) * reverseTension__32793);
-            global::Doroti.Ui.Offset m2__33562 = (((diffCurve21__33086 + ((((diffCurve32__33140 / t23__33344) - (((curve__32927[(int)(3L)] - curve__32927[(int)(1L)])) / ((t12__33269 + t23__33344))))) * t12__33269))) * reverseTension__32793);
-            global::Doroti.Ui.Offset sumM12__33704 = (m1__33420 + m2__33562);
-            var segment__33735 = new List<global::Doroti.Ui.Offset> { ((diffCurve21__33086 * -2.0) + sumM12__33704), (((diffCurve21__33086 * 3.0) - m1__33420) - sumM12__33704), m1__33420, curve__32927[(int)(1L)] };
-            result__32835.Add(segment__33735);
+            var curve = new List<global::Doroti.Ui.Offset> { allPoints[(int)(i)], allPoints[(int)((i + 1L))], allPoints[(int)((i + 2L))], allPoints[(int)((i + 3L))] };
+            global::Doroti.Ui.Offset diffCurve10 = (curve[(int)(1L)] - curve[(int)(0L)]);
+            global::Doroti.Ui.Offset diffCurve21 = (curve[(int)(2L)] - curve[(int)(1L)]);
+            global::Doroti.Ui.Offset diffCurve32 = (curve[(int)(3L)] - curve[(int)(2L)]);
+            double t01 = global::Doroti.Runtime.Dart_mathLibrary.pow(diffCurve10.distance, alpha).toDouble();
+            double t12 = global::Doroti.Runtime.Dart_mathLibrary.pow(diffCurve21.distance, alpha).toDouble();
+            double t23 = global::Doroti.Runtime.Dart_mathLibrary.pow(diffCurve32.distance, alpha).toDouble();
+            global::Doroti.Ui.Offset m1 = (((diffCurve21 + ((((diffCurve10 / t01) - (((curve[(int)(2L)] - curve[(int)(0L)])) / ((t01 + t12))))) * t12))) * reverseTension);
+            global::Doroti.Ui.Offset m2 = (((diffCurve21 + ((((diffCurve32 / t23) - (((curve[(int)(3L)] - curve[(int)(1L)])) / ((t12 + t23))))) * t12))) * reverseTension);
+            global::Doroti.Ui.Offset sumM12 = (m1 + m2);
+            var segment = new List<global::Doroti.Ui.Offset> { ((diffCurve21 * -2.0) + sumM12), (((diffCurve21 * 3.0) - m1) - sumM12), m1, curve[(int)(1L)] };
+            result.Add(segment);
         }
-        return result__32835;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -485,33 +485,33 @@ public class CatmullRomSpline : Curve2D
         get
         {
             _initializeIfNeeded();
-            global::Doroti.Ui.Offset seedPoint__34612 = this._cubicSegments[(int)(0L)][(int)(1L)];
-            return ((((seedPoint__34612.dx + seedPoint__34612.dy)) * 10000L)).round();
+            global::Doroti.Ui.Offset seedPoint = this._cubicSegments[(int)(0L)][(int)(1L)];
+            return ((((seedPoint.dx + seedPoint.dy)) * 10000L)).round();
             return default!;
         }
     }
     public override global::Doroti.Ui.Offset transformInternal(double t)
     {
         _initializeIfNeeded();
-        double length__34806 = checked((long)(this._cubicSegments.Count)).toDouble();
-        double position__34866 = default!;
-        double localT__34893 = default!;
-        long index__34915 = default!;
+        double length = checked((long)(this._cubicSegments.Count)).toDouble();
+        double position = default!;
+        double localT = default!;
+        long index = default!;
         if ((t < 1.0))
         {
-            position__34866 = (t * length__34806);
-            localT__34893 = (position__34866 % 1.0);
-            index__34915 = position__34866.floor();
+            position = (t * length);
+            localT = (position % 1.0);
+            index = position.floor();
         }
         else
         {
-            position__34866 = length__34806;
-            localT__34893 = 1.0;
-            index__34915 = (checked((long)(this._cubicSegments.Count)) - 1L);
+            position = length;
+            localT = 1.0;
+            index = (checked((long)(this._cubicSegments.Count)) - 1L);
         }
-        List<global::Doroti.Ui.Offset> cubicControlPoints__35161 = this._cubicSegments[(int)(index__34915)];
-        double localT2__35222 = (localT__34893 * localT__34893);
-        return (((((cubicControlPoints__35161[(int)(0L)] * localT2__35222) * localT__34893) + (cubicControlPoints__35161[(int)(1L)] * localT2__35222)) + (cubicControlPoints__35161[(int)(2L)] * localT__34893)) + cubicControlPoints__35161[(int)(3L)]);
+        List<global::Doroti.Ui.Offset> cubicControlPoints = this._cubicSegments[(int)(index)];
+        double localT2 = (localT * localT);
+        return (((((cubicControlPoints[(int)(0L)] * localT2) * localT) + (cubicControlPoints[(int)(1L)] * localT2)) + (cubicControlPoints[(int)(2L)] * localT)) + cubicControlPoints[(int)(3L)]);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -577,92 +577,92 @@ public class CatmullRomCurve : Curve
             return false;
         }
         controlPoints = new List<global::Doroti.Ui.Offset> { Offset.zero, new global::Doroti.Ui.Offset(1.0, 1.0) };
-        global::Doroti.Ui.Offset startHandle__42976 = ((controlPoints[(int)(0L)] * 2.0) - controlPoints[(int)(1L)]);
-        global::Doroti.Ui.Offset endHandle__43050 = ((controlPoints.Last() * 2.0) - controlPoints[(int)((checked((long)(controlPoints.Count)) - 2L))]);
-        controlPoints = new List<global::Doroti.Ui.Offset> { startHandle__42976, endHandle__43050 };
-        double lastX__43213 = -double.PositiveInfinity;
-        for (var i__43252 = 0L; (i__43252 < checked((long)(controlPoints.Count))); ++i__43252)
+        global::Doroti.Ui.Offset startHandle = ((controlPoints[(int)(0L)] * 2.0) - controlPoints[(int)(1L)]);
+        global::Doroti.Ui.Offset endHandle = ((controlPoints.Last() * 2.0) - controlPoints[(int)((checked((long)(controlPoints.Count)) - 2L))]);
+        controlPoints = new List<global::Doroti.Ui.Offset> { startHandle, endHandle };
+        double lastX = -double.PositiveInfinity;
+        for (var i = 0L; (i < checked((long)(controlPoints.Count))); ++i)
         {
-            if ((((i__43252 > 1L) && (i__43252 < (checked((long)(controlPoints.Count)) - 2L))) && (((controlPoints[(int)(i__43252)].dx <= 0.0) || (controlPoints[(int)(i__43252)].dx >= 1.0)))))
+            if ((((i > 1L) && (i < (checked((long)(controlPoints.Count)) - 2L))) && (((controlPoints[(int)(i)].dx <= 0.0) || (controlPoints[(int)(i)].dx >= 1.0)))))
             {
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        reasons?.Add("Control points must have X values between 0.0 and 1.0, exclusive. " + $"Point {i__43252} has an x value ({controlPoints![(int)(i__43252)].dx}) which is outside the range.");
+                        reasons?.Add("Control points must have X values between 0.0 and 1.0, exclusive. " + $"Point {i} has an x value ({controlPoints![(int)(i)].dx}) which is outside the range.");
                         return true;
                     });
                 return false;
             }
-            if ((controlPoints[(int)(i__43252)].dx <= lastX__43213))
+            if ((controlPoints[(int)(i)].dx <= lastX))
             {
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        reasons?.Add("Each X coordinate must be greater than the preceding X coordinate " + $"(i.e. must be monotonically increasing in X). Point {i__43252} has an x value of " + $"{controlPoints![(int)(i__43252)].dx}, which is not greater than {lastX__43213}");
+                        reasons?.Add("Each X coordinate must be greater than the preceding X coordinate " + $"(i.e. must be monotonically increasing in X). Point {i} has an x value of " + $"{controlPoints![(int)(i)].dx}, which is not greater than {lastX}");
                         return true;
                     });
                 return false;
             }
-            lastX__43213 = controlPoints[(int)(i__43252)].dx;
+            lastX = controlPoints[(int)(i)].dx;
         }
-        var success__44181 = true;
-        lastX__43213 = -double.PositiveInfinity;
-        var tolerance__44307 = 0.001;
-        var testSpline__44335 = new CatmullRomSpline(controlPoints, tension: tension);
-        double start__44416 = testSpline__44335.findInverse(0.0);
-        double end__44470 = testSpline__44335.findInverse(1.0);
-        IEnumerable<Curve2DSample> samplePoints__44539 = testSpline__44335.generateSamples(start: start__44416, end: end__44470);
-        if (((samplePoints__44539.First().value.dy.abs() > tolerance__44307) || (((1.0 - samplePoints__44539.Last().value.dy)).abs() > tolerance__44307)))
+        var success = true;
+        lastX = -double.PositiveInfinity;
+        var tolerance = 0.001;
+        var testSpline = new CatmullRomSpline(controlPoints, tension: tension);
+        double startLocal = testSpline.findInverse(0.0);
+        double endLocal = testSpline.findInverse(1.0);
+        IEnumerable<Curve2DSample> samplePoints = testSpline.generateSamples(start: startLocal, end: endLocal);
+        if (((samplePoints.First().value.dy.abs() > tolerance) || (((1.0 - samplePoints.Last().value.dy)).abs() > tolerance)))
         {
-            var bail__44881 = true;
-            success__44181 = false;
+            var bail = true;
+            success = false;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    reasons?.Add($"The curve has more than one Y value at X = {samplePoints__44539.First().value.dx}. " + "Try moving some control points further away from this value of X, or increasing " + "the tension.");
-                    bail__44881 = (reasons is null);
+                    reasons?.Add($"The curve has more than one Y value at X = {samplePoints.First().value.dx}. " + "Try moving some control points further away from this value of X, or increasing " + "the tension.");
+                    bail = (reasons is null);
                     return true;
                 });
-            if (bail__44881)
+            if (bail)
             {
                 return false;
             }
         }
-        foreach (var sample__45491 in samplePoints__44539)
+        foreach (var sample in samplePoints)
         {
-            global::Doroti.Ui.Offset point__45536 = ((Curve2DSample)sample__45491).value;
-            double t__45577 = ((Curve2DSample)sample__45491).t;
-            double x__45610 = point__45536.dx;
-            if ((((t__45577 >= start__44416) && (t__45577 <= end__44470)) && (((x__45610 < -0.001) || (x__45610 > (1.0 + 0.001))))))
+            global::Doroti.Ui.Offset point = ((Curve2DSample)sample).value;
+            double tLocal = ((Curve2DSample)sample).t;
+            double x = point.dx;
+            if ((((tLocal >= startLocal) && (tLocal <= endLocal)) && (((x < -0.001) || (x > (1.0 + 0.001))))))
             {
-                var bail__45705 = true;
-                success__44181 = false;
+                var bailLocal = true;
+                success = false;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        reasons?.Add($"The resulting curve has an X value ({x__45610}) which is outside " + "the range [0.0, 1.0], inclusive.");
-                        bail__45705 = (reasons is null);
+                        reasons?.Add($"The resulting curve has an X value ({x}) which is outside " + "the range [0.0, 1.0], inclusive.");
+                        bailLocal = (reasons is null);
                         return true;
                     });
-                if (bail__45705)
+                if (bailLocal)
                 {
                     return false;
                 }
             }
-            if ((x__45610 < lastX__43213))
+            if ((x < lastX))
             {
-                var bail__46277 = true;
-                success__44181 = false;
+                var bailAlternate = true;
+                success = false;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        reasons?.Add($"The curve has more than one Y value at x = {x__45610}. Try moving " + "some control points further apart in X, or increasing the tension.");
-                        bail__46277 = (reasons is null);
+                        reasons?.Add($"The curve has more than one Y value at x = {x}. Try moving " + "some control points further apart in X, or increasing the tension.");
+                        bailAlternate = (reasons is null);
                         return true;
                     });
-                if (bail__46277)
+                if (bailAlternate)
                 {
                     return false;
                 }
             }
-            lastX__43213 = x__45610;
+            lastX = x;
         }
-        return success__44181;
+        return success;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -672,29 +672,29 @@ public class CatmullRomCurve : Curve
         {
             this._precomputedSamples.AddRange(_computeSamples(this.controlPoints, this.tension));
         }
-        var start__47245 = 0L;
-        long end__47264 = (checked((long)(this._precomputedSamples.Count)) - 1L);
-        long mid__47310 = default!;
-        global::Doroti.Ui.Offset value__47326 = default!;
-        global::Doroti.Ui.Offset startValue__47344 = this._precomputedSamples[(int)(start__47245)].value;
-        global::Doroti.Ui.Offset endValue__47402 = this._precomputedSamples[(int)(end__47264)].value;
-        while (((end__47264 - start__47245) > 1L))
+        var start = 0L;
+        long end = (checked((long)(this._precomputedSamples.Count)) - 1L);
+        long mid = default!;
+        global::Doroti.Ui.Offset valueLocal = default!;
+        global::Doroti.Ui.Offset startValue = this._precomputedSamples[(int)(start)].value;
+        global::Doroti.Ui.Offset endValue = this._precomputedSamples[(int)(end)].value;
+        while (((end - start) > 1L))
         {
-            mid__47310 = (checked((long)(((end__47264 + start__47245)) / 2L)));
-            value__47326 = this._precomputedSamples[(int)(mid__47310)].value;
-            if ((t >= value__47326.dx))
+            mid = (checked((long)(((end + start)) / 2L)));
+            valueLocal = this._precomputedSamples[(int)(mid)].value;
+            if ((t >= valueLocal.dx))
             {
-                start__47245 = mid__47310;
-                startValue__47344 = value__47326;
+                start = mid;
+                startValue = valueLocal;
             }
             else
             {
-                end__47264 = mid__47310;
-                endValue__47402 = value__47326;
+                end = mid;
+                endValue = valueLocal;
             }
         }
-        double t2__47882 = (((t - startValue__47344.dx)) / ((endValue__47402.dx - startValue__47344.dx)));
-        return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(startValue__47344.dy, endValue__47402.dy, t2__47882));
+        double t2 = (((t - startValue.dx)) / ((endValue.dx - startValue.dx)));
+        return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(startValue.dy, endValue.dy, t2));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -823,9 +823,9 @@ public class ElasticInCurve : Curve
 
     public override double transformInternal(double t)
     {
-        double s__51838 = (this.period / 4.0);
+        double s = (this.period / 4.0);
         t = (t - 1.0);
-        return (-global::Doroti.Runtime.Dart_mathLibrary.pow(2.0, (10.0 * t)) * global::Doroti.Runtime.Dart_mathLibrary.sin(((((t - s__51838)) * ((Dart_mathLibrary.pi * 2.0))) / this.period)));
+        return (-global::Doroti.Runtime.Dart_mathLibrary.pow(2.0, (10.0 * t)) * global::Doroti.Runtime.Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -848,8 +848,8 @@ public class ElasticOutCurve : Curve
 
     public override double transformInternal(double t)
     {
-        double s__52711 = (this.period / 4.0);
-        return ((global::Doroti.Runtime.Dart_mathLibrary.pow(2.0, (-10L * t)) * global::Doroti.Runtime.Dart_mathLibrary.sin(((((t - s__52711)) * ((Dart_mathLibrary.pi * 2.0))) / this.period))) + 1.0);
+        double s = (this.period / 4.0);
+        return ((global::Doroti.Runtime.Dart_mathLibrary.pow(2.0, (-10L * t)) * global::Doroti.Runtime.Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period))) + 1.0);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -872,15 +872,15 @@ public class ElasticInOutCurve : Curve
 
     public override double transformInternal(double t)
     {
-        double s__53605 = (this.period / 4.0);
+        double s = (this.period / 4.0);
         t = ((2.0 * t) - 1.0);
         if ((t < 0.0))
         {
-            return ((-0.5 * global::Doroti.Runtime.Dart_mathLibrary.pow(2.0, (10.0 * t))) * global::Doroti.Runtime.Dart_mathLibrary.sin(((((t - s__53605)) * ((Dart_mathLibrary.pi * 2.0))) / this.period)));
+            return ((-0.5 * global::Doroti.Runtime.Dart_mathLibrary.pow(2.0, (10.0 * t))) * global::Doroti.Runtime.Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period)));
         }
         else
         {
-            return (((global::Doroti.Runtime.Dart_mathLibrary.pow(2.0, (-10.0 * t)) * global::Doroti.Runtime.Dart_mathLibrary.sin(((((t - s__53605)) * ((Dart_mathLibrary.pi * 2.0))) / this.period))) * 0.5) + 1.0);
+            return (((global::Doroti.Runtime.Dart_mathLibrary.pow(2.0, (-10.0 * t)) * global::Doroti.Runtime.Dart_mathLibrary.sin(((((t - s)) * ((Dart_mathLibrary.pi * 2.0))) / this.period))) * 0.5) + 1.0);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

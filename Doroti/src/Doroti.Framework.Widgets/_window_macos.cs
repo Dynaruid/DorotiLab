@@ -29,33 +29,33 @@ public class WindowingOwnerMacOSIo : WindowingOwnerIo
 
     public virtual WindowControllerIo createWindowController(WindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, string? title = null)
     {
-        var controller__2488 = new WindowControllerMacOSIo(owner: this, @delegate: @delegate, size: size, title: title);
-        this._activeControllers.Add(controller__2488);
-        return ((WindowControllerIo)(object?)controller__2488);
+        var controller = new WindowControllerMacOSIo(owner: this, @delegate: @delegate, size: size, title: title);
+        this._activeControllers.Add(controller);
+        return ((WindowControllerIo)(object?)controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DialogWindowControllerIo createDialogWindowController(DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, BaseWindowControllerIo? parent = null, string? title = null)
     {
-        var controller__2952 = new DialogWindowControllerMacOSIo(owner: this, @delegate: @delegate, size: size, parent: parent, title: title);
-        this._activeControllers.Add(controller__2952);
-        return ((DialogWindowControllerIo)(object?)controller__2952);
+        var controller = new DialogWindowControllerMacOSIo(owner: this, @delegate: @delegate, size: size, parent: parent, title: title);
+        this._activeControllers.Add(controller);
+        return ((DialogWindowControllerIo)(object?)controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual TooltipWindowControllerIo createTooltipWindowController(TooltipWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
     {
-        var controller__3483 = new TooltipWindowControllerMacOSIo(owner: this, @delegate: @delegate, contentSizeConstraints: constraints, anchorRect: anchorRect, positioner: positioner, parent: parent);
-        this._activeControllers.Add(controller__3483);
-        return ((TooltipWindowControllerIo)(object?)controller__3483);
+        var controller = new TooltipWindowControllerMacOSIo(owner: this, @delegate: @delegate, contentSizeConstraints: constraints, anchorRect: anchorRect, positioner: positioner, parent: parent);
+        this._activeControllers.Add(controller);
+        return ((TooltipWindowControllerIo)(object?)controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual PopupWindowControllerIo createPopupWindowController(PopupWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
     {
-        var controller__4074 = new PopupWindowControllerMacOSIo(owner: this, @delegate: @delegate, contentSizeConstraints: constraints, parent: parent, anchorRect: anchorRect, positioner: positioner);
-        this._activeControllers.Add(controller__4074);
-        return ((PopupWindowControllerIo)(object?)controller__4074);
+        var controller = new PopupWindowControllerMacOSIo(owner: this, @delegate: @delegate, contentSizeConstraints: constraints, parent: parent, anchorRect: anchorRect, positioner: positioner);
+        this._activeControllers.Add(controller);
+        return ((PopupWindowControllerIo)(object?)controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -160,13 +160,13 @@ public class TooltipWindowControllerMacOSIo : TooltipWindowControllerIo, _Window
 
     public virtual Pointer<_Rect___window_macos> _handleOnGetWindowPosition(Pointer<_Size___window_macos> childSize, Pointer<_Rect___window_macos> parentRect, Pointer<_Rect___window_macos> outputRect)
     {
-        Pointer<_Rect___window_macos> result__10652 = _window_macosLibrary._allocator();
-        global::Doroti.Ui.Rect targetRect__10697 = ((global::Doroti.Ui.Rect)(object?)this._positioner.placeWindow(childSize: childSize.@ref.toSize(), anchorRect: this._anchorRect.translate(parentRect.@ref.left, parentRect.@ref.top), parentRect: parentRect.@ref.toRect(), displayRect: outputRect.@ref.toRect()));
-        result__10652.@ref.left = targetRect__10697.left;
-        result__10652.@ref.top = targetRect__10697.top;
-        result__10652.@ref.width = childSize.@ref.width;
-        result__10652.@ref.height = childSize.@ref.height;
-        return result__10652;
+        Pointer<_Rect___window_macos> result = _window_macosLibrary._allocator();
+        global::Doroti.Ui.Rect targetRect = ((global::Doroti.Ui.Rect)(object?)this._positioner.placeWindow(childSize: childSize.@ref.toSize(), anchorRect: this._anchorRect.translate(parentRect.@ref.left, parentRect.@ref.top), parentRect: parentRect.@ref.toRect(), displayRect: outputRect.@ref.toRect()));
+        result.@ref.left = targetRect.left;
+        result.@ref.top = targetRect.top;
+        result.@ref.width = childSize.@ref.width;
+        result.@ref.height = childSize.@ref.height;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -223,8 +223,8 @@ public class TooltipWindowControllerMacOSIo : TooltipWindowControllerIo, _Window
         {
             return;
         }
-        Pointer<Void> handle__7953 = this.windowHandle;
-        _MacOSPlatformInterface___window_macos.destroyWindow(handle__7953);
+        Pointer<Void> handle = this.windowHandle;
+        _MacOSPlatformInterface___window_macos.destroyWindow(handle);
     }
 
     public override bool isDestroyed => this._destroyed;
@@ -297,13 +297,13 @@ public class PopupWindowControllerMacOSIo : PopupWindowControllerIo, _WindowCont
 
     public virtual Pointer<_Rect___window_macos> _handleOnGetWindowPosition(Pointer<_Size___window_macos> childSize, Pointer<_Rect___window_macos> parentRect, Pointer<_Rect___window_macos> outputRect)
     {
-        Pointer<_Rect___window_macos> result__13752 = _window_macosLibrary._allocator();
-        global::Doroti.Ui.Rect targetRect__13797 = ((global::Doroti.Ui.Rect)(object?)this._positioner.placeWindow(childSize: childSize.@ref.toSize(), anchorRect: this._anchorRect.translate(parentRect.@ref.left, parentRect.@ref.top), parentRect: parentRect.@ref.toRect(), displayRect: outputRect.@ref.toRect()));
-        result__13752.@ref.left = targetRect__13797.left;
-        result__13752.@ref.top = targetRect__13797.top;
-        result__13752.@ref.width = childSize.@ref.width;
-        result__13752.@ref.height = childSize.@ref.height;
-        return result__13752;
+        Pointer<_Rect___window_macos> result = _window_macosLibrary._allocator();
+        global::Doroti.Ui.Rect targetRect = ((global::Doroti.Ui.Rect)(object?)this._positioner.placeWindow(childSize: childSize.@ref.toSize(), anchorRect: this._anchorRect.translate(parentRect.@ref.left, parentRect.@ref.top), parentRect: parentRect.@ref.toRect(), displayRect: outputRect.@ref.toRect()));
+        result.@ref.left = targetRect.left;
+        result.@ref.top = targetRect.top;
+        result.@ref.width = childSize.@ref.width;
+        result.@ref.height = childSize.@ref.height;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -360,8 +360,8 @@ public class PopupWindowControllerMacOSIo : PopupWindowControllerIo, _WindowCont
         {
             return;
         }
-        Pointer<Void> handle__7953 = this.windowHandle;
-        _MacOSPlatformInterface___window_macos.destroyWindow(handle__7953);
+        Pointer<Void> handle = this.windowHandle;
+        _MacOSPlatformInterface___window_macos.destroyWindow(handle);
     }
 
     public override bool isDestroyed => this._destroyed;
@@ -535,8 +535,8 @@ public class WindowControllerMacOSIo : WindowControllerIo, _WindowControllerMixi
         {
             return;
         }
-        Pointer<Void> handle__7953 = this.windowHandle;
-        _MacOSPlatformInterface___window_macos.destroyWindow(handle__7953);
+        Pointer<Void> handle = this.windowHandle;
+        _MacOSPlatformInterface___window_macos.destroyWindow(handle);
     }
 
     public override bool isDestroyed => this._destroyed;
@@ -683,8 +683,8 @@ public class DialogWindowControllerMacOSIo : DialogWindowControllerIo, _WindowCo
         {
             return;
         }
-        Pointer<Void> handle__7953 = this.windowHandle;
-        _MacOSPlatformInterface___window_macos.destroyWindow(handle__7953);
+        Pointer<Void> handle = this.windowHandle;
+        _MacOSPlatformInterface___window_macos.destroyWindow(handle);
     }
 
     public override bool isDestroyed => this._destroyed;
@@ -758,35 +758,35 @@ internal class _MacOSPlatformInterface___window_macos
     internal abstract static void _setWindowContentSize(Pointer<Void> windowHandle, Pointer<_Size___window_macos> size);
     public static void setWindowContentSize(Pointer<Void> windowHandle, Size size)
     {
-        Pointer<_Size___window_macos> ffiSize__23282 = _window_macosLibrary._allocator();
+        Pointer<_Size___window_macos> ffiSize = _window_macosLibrary._allocator();
         DartRuntimePrimitives.Ignore(((Func<_Size___window_macos>)(() =>
-{            var __cascade = ffiSize__23282.@ref;
+{            var __cascade = ffiSize.@ref;
             __cascade.width = DartRuntimePrimitives.RequireValue(size).width;
             __cascade.height = DartRuntimePrimitives.RequireValue(size).height;
             return __cascade;        }))());
-        _MacOSPlatformInterface___window_macos._setWindowContentSize(windowHandle, ffiSize__23282);
-        _window_macosLibrary._allocator.free(ffiSize__23282);
+        _MacOSPlatformInterface___window_macos._setWindowContentSize(windowHandle, ffiSize);
+        _window_macosLibrary._allocator.free(ffiSize);
     }
 
     internal abstract static void _setWindowConstraints(Pointer<Void> windowHandle, Pointer<_Constraints___window_macos> size);
     public static void setWindowConstraints(Pointer<Void> windowHandle, global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        Pointer<_Constraints___window_macos> ffiConstraints__23833 = _window_macosLibrary._allocator();
+        Pointer<_Constraints___window_macos> ffiConstraints = _window_macosLibrary._allocator();
         DartRuntimePrimitives.Ignore(((Func<_Constraints___window_macos>)(() =>
-{            var __cascade = ffiConstraints__23833.@ref;
+{            var __cascade = ffiConstraints.@ref;
             __cascade.minWidth = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth;
             __cascade.minHeight = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minHeight;
             __cascade.maxWidth = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth;
             __cascade.maxHeight = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight;
             return __cascade;        }))());
-        _MacOSPlatformInterface___window_macos._setWindowConstraints(windowHandle, ffiConstraints__23833);
-        _window_macosLibrary._allocator.free(ffiConstraints__23833);
+        _MacOSPlatformInterface___window_macos._setWindowConstraints(windowHandle, ffiConstraints);
+        _window_macosLibrary._allocator.free(ffiConstraints);
     }
 
     internal abstract static long _createWindow(long engineId, Pointer<_WindowCreationRequest___window_macos> request);
     public static long createWindow(Size? size, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, Pointer<NativeFunction<global::System.Func<Void>>> onShouldClose = default!, Pointer<NativeFunction<global::System.Func<Void>>> onWillClose = default!, Pointer<NativeFunction<global::System.Func<Void>>> onNotifyListeners = default!)
     {
-        Pointer<_WindowCreationRequest___window_macos> request__24820 = ((Func<Pointer<_WindowCreationRequest___window_macos>>)(() =>
+        Pointer<_WindowCreationRequest___window_macos> request = ((Func<Pointer<_WindowCreationRequest___window_macos>>)(() =>
 {            var __cascade = _window_macosLibrary._allocator();
             __cascade.@ref.onShouldClose = onShouldClose;
             __cascade.@ref.onWillClose = onWillClose;
@@ -796,7 +796,7 @@ internal class _MacOSPlatformInterface___window_macos
         {
             Size size__value25007 = DartRuntimePrimitives.RequireValue(size);
             DartRuntimePrimitives.Ignore(((Func<_WindowCreationRequest___window_macos>)(() =>
-{            var __cascade = request__24820.@ref;
+{            var __cascade = request.@ref;
             __cascade.hasSize = true;
             __cascade.contentSize.width = DartRuntimePrimitives.RequireValue(size__value25007).width;
             __cascade.contentSize.height = DartRuntimePrimitives.RequireValue(size__value25007).height;
@@ -805,7 +805,7 @@ internal class _MacOSPlatformInterface___window_macos
         if ((constraints is not null))
         {
             DartRuntimePrimitives.Ignore(((Func<_WindowCreationRequest___window_macos>)(() =>
-{            var __cascade = request__24820.@ref;
+{            var __cascade = request.@ref;
             __cascade.hasConstraints = true;
             __cascade.constraints.minWidth = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth;
             __cascade.constraints.minHeight = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minHeight;
@@ -813,16 +813,16 @@ internal class _MacOSPlatformInterface___window_macos
             __cascade.constraints.maxHeight = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight;
             return __cascade;        }))());
         }
-        long viewId__25480 = _MacOSPlatformInterface___window_macos._createWindow(DartRuntimePrimitives.RequireValue(WidgetsBinding.instance.platformDispatcher.engineId), request__24820);
-        _window_macosLibrary._allocator.free(request__24820);
-        return viewId__25480;
+        long viewId = _MacOSPlatformInterface___window_macos._createWindow(DartRuntimePrimitives.RequireValue(WidgetsBinding.instance.platformDispatcher.engineId), request);
+        _window_macosLibrary._allocator.free(request);
+        return viewId;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal abstract static long _createDialogWindow(long engineId, Pointer<_WindowCreationRequest___window_macos> request);
     public static long createDialogWindow(Size? size, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, long? parentViewId = null, Pointer<NativeFunction<global::System.Func<Void>>> onShouldClose = default!, Pointer<NativeFunction<global::System.Func<Void>>> onWillClose = default!, Pointer<NativeFunction<global::System.Func<Void>>> onNotifyListeners = default!)
     {
-        Pointer<_WindowCreationRequest___window_macos> request__26328 = ((Func<Pointer<_WindowCreationRequest___window_macos>>)(() =>
+        Pointer<_WindowCreationRequest___window_macos> request = ((Func<Pointer<_WindowCreationRequest___window_macos>>)(() =>
 {            var __cascade = _window_macosLibrary._allocator();
             __cascade.@ref.onShouldClose = onShouldClose;
             __cascade.@ref.onWillClose = onWillClose;
@@ -833,7 +833,7 @@ internal class _MacOSPlatformInterface___window_macos
         {
             Size size__value26560 = DartRuntimePrimitives.RequireValue(size);
             DartRuntimePrimitives.Ignore(((Func<_WindowCreationRequest___window_macos>)(() =>
-{            var __cascade = request__26328.@ref;
+{            var __cascade = request.@ref;
             __cascade.hasSize = true;
             __cascade.contentSize.width = DartRuntimePrimitives.RequireValue(size__value26560).width;
             __cascade.contentSize.height = DartRuntimePrimitives.RequireValue(size__value26560).height;
@@ -842,7 +842,7 @@ internal class _MacOSPlatformInterface___window_macos
         if ((constraints is not null))
         {
             DartRuntimePrimitives.Ignore(((Func<_WindowCreationRequest___window_macos>)(() =>
-{            var __cascade = request__26328.@ref;
+{            var __cascade = request.@ref;
             __cascade.hasConstraints = true;
             __cascade.constraints.minWidth = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth;
             __cascade.constraints.minHeight = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minHeight;
@@ -852,12 +852,12 @@ internal class _MacOSPlatformInterface___window_macos
         }
         try
         {
-            long viewId__27045 = _MacOSPlatformInterface___window_macos._createDialogWindow(DartRuntimePrimitives.RequireValue(WidgetsBinding.instance.platformDispatcher.engineId), request__26328);
-            return viewId__27045;
+            long viewId = _MacOSPlatformInterface___window_macos._createDialogWindow(DartRuntimePrimitives.RequireValue(WidgetsBinding.instance.platformDispatcher.engineId), request);
+            return viewId;
         }
         finally
         {
-            _window_macosLibrary._allocator.free(request__26328);
+            _window_macosLibrary._allocator.free(request);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -865,7 +865,7 @@ internal class _MacOSPlatformInterface___window_macos
     internal abstract static long _createTooltipWindow(long engineId, Pointer<_WindowCreationRequest___window_macos> request);
     public static long createTooltipWindow(global::Doroti.Framework.Rendering.BoxConstraints constraints, long parentViewId, Pointer<NativeFunction<global::System.Func<Void>>> onShouldClose, Pointer<NativeFunction<global::System.Func<Void>>> onWillClose, Pointer<NativeFunction<global::System.Func<Void>>> onNotifyListeners, Pointer<NativeFunction<global::System.Func<Pointer<_Size___window_macos>, Pointer<_Rect___window_macos>, Pointer<_Rect___window_macos>, Pointer<_Rect___window_macos>>>> onGetWindowPosition)
     {
-        Pointer<_WindowCreationRequest___window_macos> request__28161 = ((Func<Pointer<_WindowCreationRequest___window_macos>>)(() =>
+        Pointer<_WindowCreationRequest___window_macos> request = ((Func<Pointer<_WindowCreationRequest___window_macos>>)(() =>
 {            var __cascade = _window_macosLibrary._allocator();
             __cascade.@ref.onShouldClose = onShouldClose;
             __cascade.@ref.onWillClose = onWillClose;
@@ -874,23 +874,23 @@ internal class _MacOSPlatformInterface___window_macos
             __cascade.@ref.parentViewId = DartRuntimePrimitives.RequireValue(parentViewId);
             return __cascade;        }))();
         DartRuntimePrimitives.Ignore(((Func<_WindowCreationRequest___window_macos>)(() =>
-{            var __cascade = request__28161.@ref;
+{            var __cascade = request.@ref;
             __cascade.hasConstraints = true;
             __cascade.constraints.minWidth = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth;
             __cascade.constraints.minHeight = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minHeight;
             __cascade.constraints.maxWidth = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth;
             __cascade.constraints.maxHeight = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight;
             return __cascade;        }))());
-        long viewId__28708 = _MacOSPlatformInterface___window_macos._createTooltipWindow(DartRuntimePrimitives.RequireValue(PlatformDispatcher.instance.engineId), request__28161);
-        _window_macosLibrary._allocator.free(request__28161);
-        return viewId__28708;
+        long viewId = _MacOSPlatformInterface___window_macos._createTooltipWindow(DartRuntimePrimitives.RequireValue(PlatformDispatcher.instance.engineId), request);
+        _window_macosLibrary._allocator.free(request);
+        return viewId;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal abstract static long _createPopupWindow(long engineId, Pointer<_WindowCreationRequest___window_macos> request);
     public static long createPopupWindow(global::Doroti.Framework.Rendering.BoxConstraints constraints, long parentViewId, Pointer<NativeFunction<global::System.Func<Void>>> onShouldClose, Pointer<NativeFunction<global::System.Func<Void>>> onWillClose, Pointer<NativeFunction<global::System.Func<Void>>> onNotifyListeners, Pointer<NativeFunction<global::System.Func<Pointer<_Size___window_macos>, Pointer<_Rect___window_macos>, Pointer<_Rect___window_macos>, Pointer<_Rect___window_macos>>>> onGetWindowPosition)
     {
-        Pointer<_WindowCreationRequest___window_macos> request__29753 = ((Func<Pointer<_WindowCreationRequest___window_macos>>)(() =>
+        Pointer<_WindowCreationRequest___window_macos> request = ((Func<Pointer<_WindowCreationRequest___window_macos>>)(() =>
 {            var __cascade = _window_macosLibrary._allocator();
             __cascade.@ref.onShouldClose = onShouldClose;
             __cascade.@ref.onWillClose = onWillClose;
@@ -899,16 +899,16 @@ internal class _MacOSPlatformInterface___window_macos
             __cascade.@ref.parentViewId = DartRuntimePrimitives.RequireValue(parentViewId);
             return __cascade;        }))();
         DartRuntimePrimitives.Ignore(((Func<_WindowCreationRequest___window_macos>)(() =>
-{            var __cascade = request__29753.@ref;
+{            var __cascade = request.@ref;
             __cascade.hasConstraints = true;
             __cascade.constraints.minWidth = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minWidth;
             __cascade.constraints.minHeight = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).minHeight;
             __cascade.constraints.maxWidth = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth;
             __cascade.constraints.maxHeight = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight;
             return __cascade;        }))());
-        long viewId__30300 = _MacOSPlatformInterface___window_macos._createPopupWindow(DartRuntimePrimitives.RequireValue(PlatformDispatcher.instance.engineId), request__29753);
-        _window_macosLibrary._allocator.free(request__29753);
-        return viewId__30300;
+        long viewId = _MacOSPlatformInterface___window_macos._createPopupWindow(DartRuntimePrimitives.RequireValue(PlatformDispatcher.instance.engineId), request);
+        _window_macosLibrary._allocator.free(request);
+        return viewId;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -921,17 +921,17 @@ internal class _MacOSPlatformInterface___window_macos
     internal abstract static _Size___window_macos _getWindowContentSize(Pointer<Void> windowHandle);
     public static global::Doroti.Ui.Size getWindowContentSize(Pointer<Void> windowHandle)
     {
-        _Size___window_macos size__30994 = ((_Size___window_macos)(object?)_MacOSPlatformInterface___window_macos._getWindowContentSize(windowHandle));
-        return new global::Doroti.Ui.Size(((_Size___window_macos)size__30994).width, ((_Size___window_macos)size__30994).height);
+        _Size___window_macos size = ((_Size___window_macos)(object?)_MacOSPlatformInterface___window_macos._getWindowContentSize(windowHandle));
+        return new global::Doroti.Ui.Size(((_Size___window_macos)size).width, ((_Size___window_macos)size).height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal abstract static void _setWindowTitle(Pointer<Void> windowHandle, Pointer<_Utf8___window_macos> title);
     public static void setWindowTitle(Pointer<Void> windowHandle, string title)
     {
-        Pointer<_Utf8___window_macos> titlePointer__31373 = title.toNativeUtf8();
-        _MacOSPlatformInterface___window_macos._setWindowTitle(windowHandle, titlePointer__31373);
-        _window_macosLibrary._allocator.free(titlePointer__31373);
+        Pointer<_Utf8___window_macos> titlePointer = title.toNativeUtf8();
+        _MacOSPlatformInterface___window_macos._setWindowTitle(windowHandle, titlePointer);
+        _window_macosLibrary._allocator.free(titlePointer);
     }
 
     public abstract static void setMaximized(Pointer<Void> windowHandle, bool maximized);
@@ -945,10 +945,10 @@ internal class _MacOSPlatformInterface___window_macos
     internal abstract static Pointer<_Utf8___window_macos> _getTitle(Pointer<Void> windowHandle);
     public static string getTitle(Pointer<Void> windowHandle)
     {
-        Pointer<_Utf8___window_macos> title__32992 = ((Pointer<_Utf8___window_macos>)(object?)_MacOSPlatformInterface___window_macos._getTitle(windowHandle));
-        string result__33042 = title__32992.toDartString();
-        _window_macosLibrary._allocator.free(title__32992);
-        return result__33042;
+        Pointer<_Utf8___window_macos> title = ((Pointer<_Utf8___window_macos>)(object?)_MacOSPlatformInterface___window_macos._getTitle(windowHandle));
+        string result = title.toDartString();
+        _window_macosLibrary._allocator.free(title);
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -979,12 +979,12 @@ internal class _CallocAllocator___window_macos : Allocator
 
     public virtual Pointer<T> allocate<T>(long byteCount, long? alignment = null) where T : NativeType
     {
-        Pointer<T> result__34468 = _posixCalloc(byteCount, 1L).cast<T>();
-        if ((result__34468.address == 0L))
+        Pointer<T> result = _posixCalloc(byteCount, 1L).cast<T>();
+        if ((result.address == 0L))
         {
             throw DartRuntimePrimitives.AsException(new DartArgumentError($"Could not allocate {byteCount} bytes."));
         }
-        return result__34468;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

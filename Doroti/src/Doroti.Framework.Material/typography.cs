@@ -68,17 +68,17 @@ public class Typography : global::Doroti.Framework.Foundation.Diagnosticable
     {
         ColorScheme __colorScheme = colorScheme ?? ColorScheme.CreateLight();
         DartRuntimePrimitives.Assert(() => ((platform is not null) || (((black is not null) && (white is not null)))));
-        var @base__6967 = Typography.Create_withPlatform(platform, black, white, (englishLike ?? englishLike2021), (dense ?? dense2021), (tall ?? tall2021));
-        global::Doroti.Ui.Color dark__7310 = ((global::Doroti.Ui.Color)(object?)((object.Equals(((ColorScheme)__colorScheme).brightness, Brightness.light)) ? ((ColorScheme)__colorScheme).onSurface : ((ColorScheme)__colorScheme).surface));
-        global::Doroti.Ui.Color light__7439 = ((global::Doroti.Ui.Color)(object?)((object.Equals(((ColorScheme)__colorScheme).brightness, Brightness.light)) ? ((ColorScheme)__colorScheme).surface : ((ColorScheme)__colorScheme).onSurface));
-        return ((Typography)(object?)@base__6967.copyWith(black: ((Typography)@base__6967).black.apply(displayColor: dark__7310, bodyColor: dark__7310, decorationColor: dark__7310), white: ((Typography)@base__6967).white.apply(displayColor: light__7439, bodyColor: light__7439, decorationColor: light__7439)));
+        var @base = Typography.Create_withPlatform(platform, black, white, (englishLike ?? englishLike2021), (dense ?? dense2021), (tall ?? tall2021));
+        global::Doroti.Ui.Color dark = ((global::Doroti.Ui.Color)(object?)((object.Equals(((ColorScheme)__colorScheme).brightness, Brightness.light)) ? ((ColorScheme)__colorScheme).onSurface : ((ColorScheme)__colorScheme).surface));
+        global::Doroti.Ui.Color lightLocal = ((global::Doroti.Ui.Color)(object?)((object.Equals(((ColorScheme)__colorScheme).brightness, Brightness.light)) ? ((ColorScheme)__colorScheme).surface : ((ColorScheme)__colorScheme).onSurface));
+        return ((Typography)(object?)@base.copyWith(black: ((Typography)@base).black.apply(displayColor: dark, bodyColor: dark, decorationColor: dark), white: ((Typography)@base).white.apply(displayColor: lightLocal, bodyColor: lightLocal, decorationColor: lightLocal)));
     }
 
     public static Typography Create_withPlatform(global::Doroti.Framework.Foundation.TargetPlatform? platform, TextTheme? black, TextTheme? white, TextTheme englishLike, TextTheme dense, TextTheme tall)
     {
         DartRuntimePrimitives.Assert(() => ((platform is not null) || (((black is not null) && (white is not null)))));
-        var (blackResolved__8047, whiteResolved__8072) = (platform switch { global::Doroti.Framework.Foundation.TargetPlatform.iOS => (((TextTheme, TextTheme))(((black ?? blackCupertino), (white ?? whiteCupertino)))), global::Doroti.Framework.Foundation.TargetPlatform.android => (((TextTheme, TextTheme))(((black ?? blackMountainView), (white ?? whiteMountainView)))), global::Doroti.Framework.Foundation.TargetPlatform.fuchsia => (((TextTheme, TextTheme))(((black ?? blackMountainView), (white ?? whiteMountainView)))), global::Doroti.Framework.Foundation.TargetPlatform.windows => (((TextTheme, TextTheme))(((black ?? blackRedmond), (white ?? whiteRedmond)))), global::Doroti.Framework.Foundation.TargetPlatform.macOS => (((TextTheme, TextTheme))(((black ?? blackRedwoodCity), (white ?? whiteRedwoodCity)))), global::Doroti.Framework.Foundation.TargetPlatform.linux => (((TextTheme, TextTheme))(((black ?? blackHelsinki), (white ?? whiteHelsinki)))), null => (((TextTheme, TextTheme))((black!, white!))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return new Typography(blackResolved__8047, whiteResolved__8072, englishLike, dense, tall);
+        var (blackResolved, whiteResolved) = (platform switch { global::Doroti.Framework.Foundation.TargetPlatform.iOS => (((TextTheme, TextTheme))(((black ?? blackCupertino), (white ?? whiteCupertino)))), global::Doroti.Framework.Foundation.TargetPlatform.android => (((TextTheme, TextTheme))(((black ?? blackMountainView), (white ?? whiteMountainView)))), global::Doroti.Framework.Foundation.TargetPlatform.fuchsia => (((TextTheme, TextTheme))(((black ?? blackMountainView), (white ?? whiteMountainView)))), global::Doroti.Framework.Foundation.TargetPlatform.windows => (((TextTheme, TextTheme))(((black ?? blackRedmond), (white ?? whiteRedmond)))), global::Doroti.Framework.Foundation.TargetPlatform.macOS => (((TextTheme, TextTheme))(((black ?? blackRedwoodCity), (white ?? whiteRedwoodCity)))), global::Doroti.Framework.Foundation.TargetPlatform.linux => (((TextTheme, TextTheme))(((black ?? blackHelsinki), (white ?? whiteHelsinki)))), null => (((TextTheme, TextTheme))((black!, white!))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        return new Typography(blackResolved, whiteResolved, englishLike, dense, tall);
     }
 
     public Typography(TextTheme black, TextTheme white, TextTheme englishLike, TextTheme dense, TextTheme tall)
@@ -130,24 +130,24 @@ public class Typography : global::Doroti.Framework.Foundation.Diagnosticable
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.black, this.white, this.englishLike, this.dense, this.tall));
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        var defaultTypography__12867 = Typography.CreateMaterial2014();
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("black", this.black, defaultValue: ((Typography)defaultTypography__12867).black));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("white", this.white, defaultValue: ((Typography)defaultTypography__12867).white));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("englishLike", this.englishLike, defaultValue: ((Typography)defaultTypography__12867).englishLike));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("dense", this.dense, defaultValue: ((Typography)defaultTypography__12867).dense));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("tall", this.tall, defaultValue: ((Typography)defaultTypography__12867).tall));
+        var defaultTypography = Typography.CreateMaterial2014();
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("black", this.black, defaultValue: ((Typography)defaultTypography).black));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("white", this.white, defaultValue: ((Typography)defaultTypography).white));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("englishLike", this.englishLike, defaultValue: ((Typography)defaultTypography).englishLike));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("dense", this.dense, defaultValue: ((Typography)defaultTypography).dense));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("tall", this.tall, defaultValue: ((Typography)defaultTypography).tall));
     }
 
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

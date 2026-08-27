@@ -39,28 +39,28 @@ public class Divider : global::Doroti.Framework.Widgets.StatelessWidget
 
     public static global::Doroti.Framework.Painting.BorderSide createBorderSide(global::Doroti.Framework.Widgets.BuildContext? context, Color? color = null, double? width = null)
     {
-        DividerThemeData? dividerTheme__5875 = ((context is not null) ? DividerTheme.of(context) : null);
-        DividerThemeData? defaults__5969 = ((context is not null) ? (Theme.of(context).useMaterial3 ? new _DividerDefaultsM3__divider(context) : new _DividerDefaultsM2__divider(context)) : null);
-        global::Doroti.Ui.Color? effectiveColor__6158 = ((global::Doroti.Ui.Color?)(object?)((color ?? dividerTheme__5875?.color) ?? defaults__5969?.color));
-        double effectiveWidth__6241 = (((width ?? dividerTheme__5875?.thickness) ?? defaults__5969?.thickness) ?? 0.0);
-        if ((effectiveColor__6158 is null))
+        DividerThemeData? dividerTheme = ((context is not null) ? DividerTheme.of(context) : null);
+        DividerThemeData? defaults = ((context is not null) ? (Theme.of(context).useMaterial3 ? new _DividerDefaultsM3__divider(context) : new _DividerDefaultsM2__divider(context)) : null);
+        global::Doroti.Ui.Color? effectiveColor = ((global::Doroti.Ui.Color?)(object?)((color ?? dividerTheme?.color) ?? defaults?.color));
+        double effectiveWidth = (((width ?? dividerTheme?.thickness) ?? defaults?.thickness) ?? 0.0);
+        if ((effectiveColor is null))
         {
-            return new global::Doroti.Framework.Painting.BorderSide(width: effectiveWidth__6241);
+            return new global::Doroti.Framework.Painting.BorderSide(width: effectiveWidth);
         }
-        return new global::Doroti.Framework.Painting.BorderSide(color: effectiveColor__6158, width: effectiveWidth__6241);
+        return new global::Doroti.Framework.Painting.BorderSide(color: effectiveColor, width: effectiveWidth);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ThemeData theme__6657 = Theme.of(context);
-        DividerThemeData dividerTheme__6711 = DividerTheme.of(context);
-        DividerThemeData defaults__6779 = (theme__6657.useMaterial3 ? new _DividerDefaultsM3__divider(context) : new _DividerDefaultsM2__divider(context));
-        double height__6903 = ((this.height ?? dividerTheme__6711.space) ?? DartRuntimePrimitives.RequireValue(defaults__6779.space));
-        double thickness__6983 = ((this.thickness ?? dividerTheme__6711.thickness) ?? DartRuntimePrimitives.RequireValue(defaults__6779.thickness));
-        double indent__7077 = ((this.indent ?? dividerTheme__6711.indent) ?? DartRuntimePrimitives.RequireValue(defaults__6779.indent));
-        double endIndent__7159 = ((this.endIndent ?? dividerTheme__6711.endIndent) ?? DartRuntimePrimitives.RequireValue(defaults__6779.endIndent));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: DartRuntimePrimitives.RequireValue(height__6903), child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Container(height: DartRuntimePrimitives.RequireValue(thickness__6983), margin: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: DartRuntimePrimitives.RequireValue(indent__7077), end: DartRuntimePrimitives.RequireValue(endIndent__7159)), decoration: new global::Doroti.Framework.Painting.BoxDecoration(borderRadius: ((this.radius ?? dividerTheme__6711.radius) ?? defaults__6779.radius), border: new global::Doroti.Framework.Painting.Border(bottom: Divider.createBorderSide(context, color: this.color, width: DartRuntimePrimitives.RequireValue(thickness__6983))))))));
+        ThemeData theme = Theme.of(context);
+        DividerThemeData dividerTheme = DividerTheme.of(context);
+        DividerThemeData defaults = (theme.useMaterial3 ? new _DividerDefaultsM3__divider(context) : new _DividerDefaultsM2__divider(context));
+        double heightLocal = ((this.height ?? dividerTheme.space) ?? DartRuntimePrimitives.RequireValue(defaults.space));
+        double thicknessLocal = ((this.thickness ?? dividerTheme.thickness) ?? DartRuntimePrimitives.RequireValue(defaults.thickness));
+        double indentLocal = ((this.indent ?? dividerTheme.indent) ?? DartRuntimePrimitives.RequireValue(defaults.indent));
+        double endIndentLocal = ((this.endIndent ?? dividerTheme.endIndent) ?? DartRuntimePrimitives.RequireValue(defaults.endIndent));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: DartRuntimePrimitives.RequireValue(heightLocal), child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Container(height: DartRuntimePrimitives.RequireValue(thicknessLocal), margin: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: DartRuntimePrimitives.RequireValue(indentLocal), end: DartRuntimePrimitives.RequireValue(endIndentLocal)), decoration: new global::Doroti.Framework.Painting.BoxDecoration(borderRadius: ((this.radius ?? dividerTheme.radius) ?? defaults.radius), border: new global::Doroti.Framework.Painting.Border(bottom: Divider.createBorderSide(context, color: this.color, width: DartRuntimePrimitives.RequireValue(thicknessLocal))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -91,14 +91,14 @@ public class VerticalDivider : global::Doroti.Framework.Widgets.StatelessWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ThemeData theme__11213 = Theme.of(context);
-        DividerThemeData dividerTheme__11267 = DividerTheme.of(context);
-        DividerThemeData defaults__11335 = (theme__11213.useMaterial3 ? new _DividerDefaultsM3__divider(context) : new _DividerDefaultsM2__divider(context));
-        double width__11459 = ((this.width ?? dividerTheme__11267.space) ?? DartRuntimePrimitives.RequireValue(defaults__11335.space));
-        double thickness__11537 = ((this.thickness ?? dividerTheme__11267.thickness) ?? DartRuntimePrimitives.RequireValue(defaults__11335.thickness));
-        double indent__11631 = ((this.indent ?? dividerTheme__11267.indent) ?? DartRuntimePrimitives.RequireValue(defaults__11335.indent));
-        double endIndent__11713 = ((this.endIndent ?? dividerTheme__11267.endIndent) ?? DartRuntimePrimitives.RequireValue(defaults__11335.endIndent));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(width: DartRuntimePrimitives.RequireValue(width__11459), child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Container(width: DartRuntimePrimitives.RequireValue(thickness__11537), margin: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(top: DartRuntimePrimitives.RequireValue(indent__11631), bottom: DartRuntimePrimitives.RequireValue(endIndent__11713)), decoration: new global::Doroti.Framework.Painting.BoxDecoration(borderRadius: ((this.radius ?? dividerTheme__11267.radius) ?? defaults__11335.radius), border: new global::Doroti.Framework.Painting.Border(left: Divider.createBorderSide(context, color: this.color, width: DartRuntimePrimitives.RequireValue(thickness__11537))))))));
+        ThemeData theme = Theme.of(context);
+        DividerThemeData dividerTheme = DividerTheme.of(context);
+        DividerThemeData defaults = (theme.useMaterial3 ? new _DividerDefaultsM3__divider(context) : new _DividerDefaultsM2__divider(context));
+        double widthLocal = ((this.width ?? dividerTheme.space) ?? DartRuntimePrimitives.RequireValue(defaults.space));
+        double thicknessLocal = ((this.thickness ?? dividerTheme.thickness) ?? DartRuntimePrimitives.RequireValue(defaults.thickness));
+        double indentLocal = ((this.indent ?? dividerTheme.indent) ?? DartRuntimePrimitives.RequireValue(defaults.indent));
+        double endIndentLocal = ((this.endIndent ?? dividerTheme.endIndent) ?? DartRuntimePrimitives.RequireValue(defaults.endIndent));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(width: DartRuntimePrimitives.RequireValue(widthLocal), child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Container(width: DartRuntimePrimitives.RequireValue(thicknessLocal), margin: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(top: DartRuntimePrimitives.RequireValue(indentLocal), bottom: DartRuntimePrimitives.RequireValue(endIndentLocal)), decoration: new global::Doroti.Framework.Painting.BoxDecoration(borderRadius: ((this.radius ?? dividerTheme.radius) ?? defaults.radius), border: new global::Doroti.Framework.Painting.Border(left: Divider.createBorderSide(context, color: this.color, width: DartRuntimePrimitives.RequireValue(thicknessLocal))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

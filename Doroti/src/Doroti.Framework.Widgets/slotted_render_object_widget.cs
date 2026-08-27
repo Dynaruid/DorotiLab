@@ -94,64 +94,64 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
 
     internal virtual void _updateChildren()
     {
-        var slottedMultiChildRenderObjectWidgetMixin__9884 = ((SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>?)(object?)this.widget)!;
+        var slottedMultiChildRenderObjectWidgetMixin = ((SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>?)(object?)this.widget)!;
         DartRuntimePrimitives.Assert(() =>
             {
-                _debugPreviousSlots ??= ((SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>)slottedMultiChildRenderObjectWidgetMixin__9884).slots.ToList();
-                return global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(this._debugPreviousSlots, ((SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>)slottedMultiChildRenderObjectWidgetMixin__9884).slots.ToList());
+                _debugPreviousSlots ??= ((SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>)slottedMultiChildRenderObjectWidgetMixin).slots.ToList();
+                return global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(this._debugPreviousSlots, ((SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>)slottedMultiChildRenderObjectWidgetMixin).slots.ToList());
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }, () => (object?)$"{DartRuntimePrimitives.RuntimeType(this.widget)}.slots must not change.");
-        DartRuntimePrimitives.Assert(() => (checked((long)(((SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>)slottedMultiChildRenderObjectWidgetMixin__9884).slots.toSet().Count)) == ((SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>)slottedMultiChildRenderObjectWidgetMixin__9884).slots.Count()), () => (object?)"slots must be unique");
-        DartMap<global::Doroti.Framework.Foundation.Key, Element> oldKeyedElements__10511 = this._keyedChildren;
+        DartRuntimePrimitives.Assert(() => (checked((long)(((SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>)slottedMultiChildRenderObjectWidgetMixin).slots.toSet().Count)) == ((SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>)slottedMultiChildRenderObjectWidgetMixin).slots.Count()), () => (object?)"slots must be unique");
+        DartMap<global::Doroti.Framework.Foundation.Key, Element> oldKeyedElements = this._keyedChildren;
         _keyedChildren = new DartMap<global::Doroti.Framework.Foundation.Key, Element>();
-        DartMap<SlotType, Element> oldSlotToChild__10618 = this._slotToChild;
+        DartMap<SlotType, Element> oldSlotToChild = this._slotToChild;
         _slotToChild = new DartMap<SlotType, Element>();
-        DartMap<global::Doroti.Framework.Foundation.Key, List<Element>>? debugDuplicateKeys__10721 = default!;
-        foreach (SlotType slot__10766 in ((SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>)slottedMultiChildRenderObjectWidgetMixin__9884).slots)
+        DartMap<global::Doroti.Framework.Foundation.Key, List<Element>>? debugDuplicateKeys = default!;
+        foreach (SlotType slotLocal in ((SlottedMultiChildRenderObjectWidgetMixin<SlotType, ChildType>)slottedMultiChildRenderObjectWidgetMixin).slots)
         {
-            Widget? widget__10844 = ((Widget?)(object?)slottedMultiChildRenderObjectWidgetMixin__9884.childForSlot(slot__10766));
-            global::Doroti.Framework.Foundation.Key? newWidgetKey__10931 = widget__10844?.key;
-            Element? oldSlotChild__10981 = oldSlotToChild__10618.GetValueOrDefault(slot__10766);
-            Element? oldKeyChild__11039 = oldKeyedElements__10511.GetValueOrDefault(newWidgetKey__10931);
-            Element? fromElement__11267 = default!;
-            if ((oldKeyChild__11039 is not null))
+            Widget? widgetLocal = ((Widget?)(object?)slottedMultiChildRenderObjectWidgetMixin.childForSlot(slotLocal));
+            global::Doroti.Framework.Foundation.Key? newWidgetKey = widgetLocal?.key;
+            Element? oldSlotChild = oldSlotToChild.GetValueOrDefault(slotLocal);
+            Element? oldKeyChild = oldKeyedElements.GetValueOrDefault(newWidgetKey);
+            Element? fromElement = default!;
+            if ((oldKeyChild is not null))
             {
-                fromElement__11267 = oldSlotToChild__10618.remove(((SlotType?)(object?)((Element)oldKeyChild__11039).slot)!);
+                fromElement = oldSlotToChild.remove(((SlotType?)(object?)((Element)oldKeyChild).slot)!);
             }
             else
             {
-                if ((oldSlotChild__10981?.widget.key is null))
+                if ((oldSlotChild?.widget.key is null))
                 {
-                    fromElement__11267 = oldSlotToChild__10618.remove(slot__10766);
+                    fromElement = oldSlotToChild.remove(slotLocal);
                 }
                 else
                 {
-                    DartRuntimePrimitives.Assert(() => (!object.Equals(oldSlotChild__10981!.widget.key, newWidgetKey__10931)));
-                    fromElement__11267 = null;
+                    DartRuntimePrimitives.Assert(() => (!object.Equals(oldSlotChild!.widget.key, newWidgetKey)));
+                    fromElement = null;
                 }
             }
-            Element? newChild__11705 = ((Element?)(object?)updateChild(fromElement__11267, widget__10844, slot__10766));
-            if ((newChild__11705 is not null))
+            Element? newChild = ((Element?)(object?)updateChild(fromElement, widgetLocal, slotLocal));
+            if ((newChild is not null))
             {
-                this._slotToChild[slot__10766] = newChild__11705;
-                if ((newWidgetKey__10931 is not null))
+                this._slotToChild[slotLocal] = newChild;
+                if ((newWidgetKey is not null))
                 {
                     DartRuntimePrimitives.Assert(() =>
                         {
-                            Element? existingElement__11912 = this._keyedChildren.GetValueOrDefault(newWidgetKey__10931);
-                            if ((existingElement__11912 is not null))
+                            Element? existingElement = this._keyedChildren.GetValueOrDefault(newWidgetKey);
+                            if ((existingElement is not null))
                             {
-                                (debugDuplicateKeys__10721 ??= new DartMap<global::Doroti.Framework.Foundation.Key, List<Element>>()).putIfAbsent(newWidgetKey__10931, (() => new List<Element> { existingElement__11912 })).Add(newChild__11705);
+                                (debugDuplicateKeys ??= new DartMap<global::Doroti.Framework.Foundation.Key, List<Element>>()).putIfAbsent(newWidgetKey, (() => new List<Element> { existingElement })).Add(newChild);
                             }
                             return true;
                             throw new InvalidOperationException("Dart closure completed without a value.");
                         });
-                    this._keyedChildren[DartRuntimePrimitives.RequireReference(newWidgetKey__10931)] = newChild__11705;
+                    this._keyedChildren[DartRuntimePrimitives.RequireReference(newWidgetKey)] = newChild;
                 }
             }
         }
-        oldSlotToChild__10618.Values.forEach((__arg0) => ((global::System.Action<Element>)this.deactivateChild)(__arg0));
-        DartRuntimePrimitives.Assert(() => _debugDuplicateKeys(debugDuplicateKeys__10721));
+        oldSlotToChild.Values.forEach((__arg0) => ((global::System.Action<Element>)this.deactivateChild)(__arg0));
+        DartRuntimePrimitives.Assert(() => _debugDuplicateKeys(debugDuplicateKeys));
         DartRuntimePrimitives.Assert(() => this._keyedChildren.Values.All(this._slotToChild.Values.contains), () => (object?)$"_keyedChildren {this._keyedChildren.Values} should be a subset of {this._slotToChild.Values}");
     }
 
@@ -161,9 +161,9 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
         {
             return true;
         }
-        foreach (MapEntry<global::Doroti.Framework.Foundation.Key, List<Element>> duplicateKey__12777 in debugDuplicateKeys.entries)
+        foreach (MapEntry<global::Doroti.Framework.Foundation.Key, List<Element>> duplicateKey in debugDuplicateKeys.entries)
         {
-            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"Multiple widgets used the same key in {DartRuntimePrimitives.RuntimeType(this.widget)}."), new global::Doroti.Framework.Foundation.ErrorDescription($"The key {duplicateKey__12777.key} was used by multiple widgets. The offending widgets were:\n"), new global::Doroti.Framework.Foundation.ErrorDescription("A key can only be specified on one widget at a time in the same parent widget.") }));
+            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"Multiple widgets used the same key in {DartRuntimePrimitives.RuntimeType(this.widget)}."), new global::Doroti.Framework.Foundation.ErrorDescription($"The key {duplicateKey.key} was used by multiple widgets. The offending widgets were:\n"), new global::Doroti.Framework.Foundation.ErrorDescription("A key can only be specified on one widget at a time in the same parent widget.") }));
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");

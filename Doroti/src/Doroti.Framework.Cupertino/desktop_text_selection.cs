@@ -152,40 +152,40 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
             return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
         }
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding__5870 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
-        var midpointAnchor__5932 = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble((((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).selectionMidpoint.dx - ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).globalEditableRegion.left), ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding__5870).left, (MediaQuery.widthOf(context) - ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding__5870).right)), (((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).selectionMidpoint.dy - ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).globalEditableRegion.top));
-        var items__6239 = new List<global::Doroti.Framework.Widgets.Widget>();
-        CupertinoLocalizations localizations__6292 = CupertinoLocalizations.of(context);
-        global::Doroti.Framework.Widgets.Widget onePhysicalPixelVerticalDivider__6361 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(width: (1.0 / MediaQuery.devicePixelRatioOf(context))));
+        global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
+        var midpointAnchor = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble((((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).selectionMidpoint.dx - ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).globalEditableRegion.left), ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding).left, (MediaQuery.widthOf(context) - ((global::Doroti.Framework.Painting.EdgeInsets)mediaQueryPadding).right)), (((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).selectionMidpoint.dy - ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).globalEditableRegion.top));
+        var items = new List<global::Doroti.Framework.Widgets.Widget>();
+        CupertinoLocalizations localizations = CupertinoLocalizations.of(context);
+        global::Doroti.Framework.Widgets.Widget onePhysicalPixelVerticalDivider = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(width: (1.0 / MediaQuery.devicePixelRatioOf(context))));
         void addToolbarButton(string text, global::System.Action onPressed)
         {
-            if (System.Linq.Enumerable.Any(items__6239))
+            if (System.Linq.Enumerable.Any(items))
             {
-                items__6239.Add(onePhysicalPixelVerticalDivider__6361);
+                items.Add(onePhysicalPixelVerticalDivider);
             }
-            items__6239.Add(CupertinoDesktopTextSelectionToolbarButton.CreateText(onPressed: () => onPressed(), text: text));
+            items.Add(CupertinoDesktopTextSelectionToolbarButton.CreateText(onPressed: () => onPressed(), text: text));
         }
         if ((((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCut is not null))
         {
-            addToolbarButton(localizations__6292.cutButtonLabel, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCut!);
+            addToolbarButton(localizations.cutButtonLabel, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCut!);
         }
         if ((((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCopy is not null))
         {
-            addToolbarButton(localizations__6292.copyButtonLabel, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCopy!);
+            addToolbarButton(localizations.copyButtonLabel, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleCopy!);
         }
         if (((((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handlePaste is not null) && (object.Equals(((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.value, global::Doroti.Framework.Widgets.ClipboardStatus.pasteable))))
         {
-            addToolbarButton(localizations__6292.pasteButtonLabel, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handlePaste!);
+            addToolbarButton(localizations.pasteButtonLabel, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handlePaste!);
         }
         if ((((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleSelectAll is not null))
         {
-            addToolbarButton(localizations__6292.selectAllButtonLabel, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleSelectAll!);
+            addToolbarButton(localizations.selectAllButtonLabel, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).handleSelectAll!);
         }
-        if (!System.Linq.Enumerable.Any(items__6239))
+        if (!System.Linq.Enumerable.Any(items))
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoDesktopTextSelectionToolbar(anchor: (((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).lastSecondaryTapDownPosition ?? midpointAnchor__5932), children: items__6239));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoDesktopTextSelectionToolbar(anchor: (((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).lastSecondaryTapDownPosition ?? midpointAnchor), children: items));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

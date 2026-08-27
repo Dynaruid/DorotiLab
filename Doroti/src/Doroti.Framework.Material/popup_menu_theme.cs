@@ -105,13 +105,13 @@ public class PopupMenuThemeData : global::Doroti.Framework.Foundation.Diagnostic
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -134,8 +134,8 @@ public class PopupMenuTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static PopupMenuThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        PopupMenuTheme? popupMenuTheme__9465 = ((PopupMenuTheme?)(object?)context.dependOnInheritedWidgetOfExactType<PopupMenuTheme>());
-        return (popupMenuTheme__9465?.data ?? Theme.of(context).popupMenuTheme);
+        PopupMenuTheme? popupMenuThemeLocal = ((PopupMenuTheme?)(object?)context.dependOnInheritedWidgetOfExactType<PopupMenuTheme>());
+        return (popupMenuThemeLocal?.data ?? Theme.of(context).popupMenuTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

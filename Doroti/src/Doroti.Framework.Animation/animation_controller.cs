@@ -90,9 +90,9 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
     public virtual Animation<double> view => this;
     public virtual void resync(TickerProvider vsync)
     {
-        Ticker oldTicker__12971 = this._ticker!;
+        Ticker oldTicker = this._ticker!;
         _ticker = vsync.createTicker(this._tick);
-        this._ticker!.absorbTicker(oldTicker__12971);
+        this._ticker!.absorbTicker(oldTicker);
     }
 
     public override double value
@@ -193,12 +193,12 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                Duration? duration__20519 = this.duration;
+                Duration? durationLocal = this.duration;
                 if (isForwardOrCompleted)
                 {
-                    duration__20519 ??= this.reverseDuration;
+                    durationLocal ??= this.reverseDuration;
                 }
-                if ((duration__20519 is null))
+                if ((durationLocal is null))
                 {
                     throw new FlutterError("AnimationController.toggle() called with no default duration.\n" + "The \"duration\" property should be set, either in the constructor or later, before " + "calling the toggle() function.");
                 }
@@ -250,26 +250,26 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
     internal virtual TickerFuture _animateToInternal(double target, Duration? duration = null, Curve curve = default!)
     {
         curve ??= Curves.linear;
-        var scale__25227 = (AnimationBehaviorMembers._enableAnimations(this.animationBehavior) ? 1.0 : 0.05);
-        var simulationDuration__25293 = duration;
-        if ((simulationDuration__25293 is null))
+        var scale = (AnimationBehaviorMembers._enableAnimations(this.animationBehavior) ? 1.0 : 0.05);
+        var simulationDuration = duration;
+        if ((simulationDuration is null))
         {
             DartRuntimePrimitives.Assert(() => !(((this.duration is null) && (object.Equals(this._direction, _AnimationDirection__animation_controller.forward)))));
             DartRuntimePrimitives.Assert(() => !((((this.duration is null) && (object.Equals(this._direction, _AnimationDirection__animation_controller.reverse))) && (this.reverseDuration is null))));
-            double range__25619 = (this.upperBound - this.lowerBound);
-            double remainingFraction__25671 = (double.IsFinite(range__25619) ? (((target - this._value)).abs() / range__25619) : 1.0);
-            Duration directionDuration__25768 = ((((object.Equals(this._direction, _AnimationDirection__animation_controller.reverse)) && (this.reverseDuration is not null))) ? DartRuntimePrimitives.RequireValue(this.reverseDuration) : DartRuntimePrimitives.RequireValue(this.duration));
-            simulationDuration__25293 = (directionDuration__25768 * remainingFraction__25671);
+            double range = (this.upperBound - this.lowerBound);
+            double remainingFraction = (double.IsFinite(range) ? (((target - this._value)).abs() / range) : 1.0);
+            Duration directionDuration = ((((object.Equals(this._direction, _AnimationDirection__animation_controller.reverse)) && (this.reverseDuration is not null))) ? DartRuntimePrimitives.RequireValue(this.reverseDuration) : DartRuntimePrimitives.RequireValue(this.duration));
+            simulationDuration = (directionDuration * remainingFraction);
         }
         else
         {
             if ((target == this.value))
             {
-                simulationDuration__25293 = Duration.zero;
+                simulationDuration = Duration.zero;
             }
         }
         stop();
-        if ((object.Equals(DartRuntimePrimitives.RequireValue(simulationDuration__25293), Duration.zero)))
+        if ((object.Equals(DartRuntimePrimitives.RequireValue(simulationDuration), Duration.zero)))
         {
             if ((this.value != target))
             {
@@ -280,9 +280,9 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
             _checkStatusChanged();
             return new TickerFuture();
         }
-        DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(simulationDuration__25293) > Duration.zero));
+        DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(simulationDuration) > Duration.zero));
         DartRuntimePrimitives.Assert(() => !this.isAnimating);
-        return _startSimulation(new _InterpolationSimulation__animation_controller(this._value, target, DartRuntimePrimitives.RequireValue(simulationDuration__25293), curve, scale__25227));
+        return _startSimulation(new _InterpolationSimulation__animation_controller(this._value, target, DartRuntimePrimitives.RequireValue(simulationDuration), curve, scale));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -318,18 +318,18 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
     {
         springDescription ??= Animation_controllerLibrary._kFlingSpringDescription;
         _direction = ((velocity < 0.0) ? _AnimationDirection__animation_controller.reverse : _AnimationDirection__animation_controller.forward);
-        double target__30559 = ((velocity < 0.0) ? (this.lowerBound - ((global::Doroti.Framework.Physics.Tolerance)Animation_controllerLibrary._kFlingTolerance).distance) : (this.upperBound + ((global::Doroti.Framework.Physics.Tolerance)Animation_controllerLibrary._kFlingTolerance).distance));
-        AnimationBehavior behavior__30710 = (animationBehavior ?? this.animationBehavior);
-        var scale__30871 = (AnimationBehaviorMembers._enableAnimations(behavior__30710) ? 1.0 : 200.0);
-        var simulation__30931 = ((Func<global::Doroti.Framework.Physics.SpringSimulation>)(() =>
+        double target = ((velocity < 0.0) ? (this.lowerBound - ((global::Doroti.Framework.Physics.Tolerance)Animation_controllerLibrary._kFlingTolerance).distance) : (this.upperBound + ((global::Doroti.Framework.Physics.Tolerance)Animation_controllerLibrary._kFlingTolerance).distance));
+        AnimationBehavior behavior = (animationBehavior ?? this.animationBehavior);
+        var scale = (AnimationBehaviorMembers._enableAnimations(behavior) ? 1.0 : 200.0);
+        var simulation = ((Func<global::Doroti.Framework.Physics.SpringSimulation>)(() =>
 {
-    var __cascade = new global::Doroti.Framework.Physics.SpringSimulation(springDescription, this.value, target__30559, (velocity * scale__30871));
+    var __cascade = new global::Doroti.Framework.Physics.SpringSimulation(springDescription, this.value, target, (velocity * scale));
     __cascade.tolerance = Animation_controllerLibrary._kFlingTolerance;
     return __cascade;
 }))();
-        DartRuntimePrimitives.Assert(() => (!object.Equals(((global::Doroti.Framework.Physics.SpringSimulation)simulation__30931).type, global::Doroti.Framework.Physics.SpringType.underDamped)));
+        DartRuntimePrimitives.Assert(() => (!object.Equals(((global::Doroti.Framework.Physics.SpringSimulation)simulation).type, global::Doroti.Framework.Physics.SpringType.underDamped)));
         stop();
-        return _startSimulation(simulation__30931);
+        return _startSimulation(simulation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -357,10 +357,10 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
         _simulation = simulation;
         _lastElapsedDuration = Duration.zero;
         _value = Dart_uiLibrary.clampDouble(simulation.x(0.0), this.lowerBound, this.upperBound);
-        TickerFuture result__33889 = this._ticker!.start();
+        TickerFuture result = this._ticker!.start();
         _status = (((object.Equals(this._direction, _AnimationDirection__animation_controller.forward))) ? AnimationStatus.forward : AnimationStatus.reverse);
         _checkStatusChanged();
-        return result__33889;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -391,21 +391,21 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
 
     internal virtual void _checkStatusChanged()
     {
-        AnimationStatus newStatus__36263 = this.status;
-        if ((!object.Equals(this._lastReportedStatus, newStatus__36263)))
+        AnimationStatus newStatus = this.status;
+        if ((!object.Equals(this._lastReportedStatus, newStatus)))
         {
-            _lastReportedStatus = newStatus__36263;
-            notifyStatusListeners(newStatus__36263);
+            _lastReportedStatus = newStatus;
+            notifyStatusListeners(newStatus);
         }
     }
 
     internal virtual void _tick(Duration elapsed)
     {
         _lastElapsedDuration = elapsed;
-        double elapsedInSeconds__36503 = (elapsed.inMicroseconds.toDouble() / Duration.microsecondsPerSecond);
-        DartRuntimePrimitives.Assert(() => (elapsedInSeconds__36503 >= 0.0));
-        _value = Dart_uiLibrary.clampDouble(this._simulation!.x(elapsedInSeconds__36503), this.lowerBound, this.upperBound);
-        if (this._simulation!.isDone(elapsedInSeconds__36503))
+        double elapsedInSeconds = (elapsed.inMicroseconds.toDouble() / Duration.microsecondsPerSecond);
+        DartRuntimePrimitives.Assert(() => (elapsedInSeconds >= 0.0));
+        _value = Dart_uiLibrary.clampDouble(this._simulation!.x(elapsedInSeconds), this.lowerBound, this.upperBound);
+        if (this._simulation!.isDone(elapsedInSeconds))
         {
             _status = (((object.Equals(this._direction, _AnimationDirection__animation_controller.forward))) ? AnimationStatus.completed : AnimationStatus.dismissed);
             stop(canceled: false);
@@ -416,19 +416,19 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
 
     public override string toStringDetails()
     {
-        var paused__37046 = (this.isAnimating ? "" : "; paused");
-        var ticker__37096 = ((this._ticker is null) ? "; DISPOSED" : ((this._ticker!.muted ? "; silenced" : "")));
-        var label__37184 = "";
+        var paused = (this.isAnimating ? "" : "; paused");
+        var ticker = ((this._ticker is null) ? "; DISPOSED" : ((this._ticker!.muted ? "; silenced" : "")));
+        var label = "";
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((this.debugLabel is not null))
                 {
-                    label__37184 = $"; for {this.debugLabel}";
+                    label = $"; for {this.debugLabel}";
                 }
                 return true;
             });
-        var more__37328 = $"{base.toStringDetails()} {this.value.toStringAsFixed(3L)}";
-        return $"{more__37328}{paused__37046}{ticker__37096}{label__37184}";
+        var more = $"{base.toStringDetails()} {this.value.toStringAsFixed(3L)}";
+        return $"{more}{paused}{ticker}{label}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -448,8 +448,8 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
 
     public override void removeListener(Action listener)
     {
-        bool removed__4206 = this._listeners.remove(listener);
-        if (removed__4206)
+        bool removed = this._listeners.remove(listener);
+        if (removed)
         {
             didUnregisterListener();
         }
@@ -462,26 +462,26 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
 
     public virtual void notifyListeners()
     {
-        List<Action> localListeners__4969 = this._listeners.ToList();
-        foreach (var listener__5037 in localListeners__4969)
+        List<Action> localListeners = this._listeners.ToList();
+        foreach (var listener in localListeners)
         {
-            InformationCollector? collector__5095 = default!;
+            InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector__5095 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {this.GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                    collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalListenersMixin>($"The {this.GetType()} notifying listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
                     return true;
                 });
             try
             {
-                if (this._listeners.contains(listener__5037))
+                if (this._listeners.contains(listener))
                 {
-                    listener__5037();
+                    listener();
                 }
             }
-            catch (Exception exception__5520)
+            catch (Exception exceptionLocal)
             {
-                var stack__5531 = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception__5520, stack: stack__5531, library: "animation library", context: new ErrorDescription($"while notifying listeners for {this.GetType()}"), informationCollector: collector__5095));
+                var stackLocal = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying listeners for {this.GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -494,8 +494,8 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
 
     public override void removeStatusListener(AnimationStatusListener listener)
     {
-        bool removed__7458 = this._statusListeners.remove(listener);
-        if (removed__7458)
+        bool removed = this._statusListeners.remove(listener);
+        if (removed)
         {
             didUnregisterListener();
         }
@@ -508,26 +508,26 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
 
     public virtual void notifyStatusListeners(AnimationStatus status)
     {
-        List<AnimationStatusListener> localListeners__8291 = this._statusListeners.ToList();
-        foreach (var listener__8365 in localListeners__8291)
+        List<AnimationStatusListener> localListeners = this._statusListeners.ToList();
+        foreach (var listener in localListeners)
         {
             try
             {
-                if (this._statusListeners.contains(listener__8365))
+                if (this._statusListeners.contains(listener))
                 {
-                    listener__8365(status);
+                    listener(status);
                 }
             }
-            catch (Exception exception__8511)
+            catch (Exception exceptionLocal)
             {
-                var stack__8522 = new System.Diagnostics.StackTrace();
-                InformationCollector? collector__8561 = default!;
+                var stackLocal = new System.Diagnostics.StackTrace();
+                InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector__8561 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
+                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<AnimationLocalStatusListenersMixin>($"The {this.GetType()} notifying status listeners was", this, style: DiagnosticsTreeStyle.errorProperty) });
                         return true;
                     });
-                FlutterError.reportError(new FlutterErrorDetails(exception: exception__8511, stack: stack__8522, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector__8561));
+                FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "animation library", context: new ErrorDescription($"while notifying status listeners for {this.GetType()}"), informationCollector: collector));
             }
         }
     }
@@ -552,15 +552,15 @@ internal class _InterpolationSimulation__animation_controller : global::Doroti.F
 
     public override double x(double time)
     {
-        double t__37894 = Dart_uiLibrary.clampDouble((time / this._durationInSeconds), 0.0, 1.0);
-        return (t__37894 switch { 0.0 => this._begin, 1.0 => this._end, _ => (this._begin + (((this._end - this._begin)) * this._curve.transform(t__37894))) });
+        double t = Dart_uiLibrary.clampDouble((time / this._durationInSeconds), 0.0, 1.0);
+        return (t switch { 0.0 => this._begin, 1.0 => this._end, _ => (this._begin + (((this._end - this._begin)) * this._curve.transform(t))) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double dx(double time)
     {
-        double epsilon__38157 = ((global::Doroti.Framework.Physics.Tolerance)tolerance).time;
-        return (((x((time + epsilon__38157)) - x((time - epsilon__38157)))) / ((2L * epsilon__38157)));
+        double epsilon = ((global::Doroti.Framework.Physics.Tolerance)tolerance).time;
+        return (((x((time + epsilon)) - x((time - epsilon)))) / ((2L * epsilon)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -608,18 +608,18 @@ internal class _RepeatingSimulation__animation_controller : global::Doroti.Frame
     public override double x(double time)
     {
         DartRuntimePrimitives.Assert(() => (time >= 0.0));
-        double totalTimeInSeconds__39449 = (time + this._initialT);
-        double t__39514 = (((totalTimeInSeconds__39449 / this._periodInSeconds)) % 1.0);
-        bool isPlayingReverse__39580 = ((checked((long)(((checked((long)(totalTimeInSeconds__39449 / this._periodInSeconds)))))) & 1L) != 0L);
-        if ((this.reverse && isPlayingReverse__39580))
+        double totalTimeInSeconds = (time + this._initialT);
+        double t = (((totalTimeInSeconds / this._periodInSeconds)) % 1.0);
+        bool isPlayingReverse = ((checked((long)(((checked((long)(totalTimeInSeconds / this._periodInSeconds)))))) & 1L) != 0L);
+        if ((this.reverse && isPlayingReverse))
         {
             this.directionSetter(_AnimationDirection__animation_controller.reverse);
-            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.max, this.min, t__39514));
+            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.max, this.min, t));
         }
         else
         {
             this.directionSetter(_AnimationDirection__animation_controller.forward);
-            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.min, this.max, t__39514));
+            return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this.min, this.max, t));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

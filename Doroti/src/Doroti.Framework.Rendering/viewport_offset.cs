@@ -67,9 +67,9 @@ public abstract class ViewportOffset : ChangeNotifier
     public abstract bool allowImplicitScrolling { get; }
     public override string ToString()
     {
-        var description__11654 = new List<string>();
-        debugFillDescription(description__11654);
-        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description__11654)})";
+        var description = new List<string>();
+        debugFillDescription(description);
+        return $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({string.Join(", ", description)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

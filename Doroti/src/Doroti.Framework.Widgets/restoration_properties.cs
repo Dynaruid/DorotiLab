@@ -32,9 +32,9 @@ public abstract class RestorableValue<T> : RestorableProperty<T>
             DartRuntimePrimitives.Assert(() => this.isRegistered);
             if (!EqualityComparer<T>.Default.Equals(newValue, this._value))
             {
-                T? oldValue__2833 = this._value;
+                T? oldValue = this._value;
                 _value = newValue;
-                didUpdateValue(oldValue__2833);
+                didUpdateValue(oldValue);
             }
         }
     }
@@ -336,11 +336,11 @@ public class RestorableEnumN<T> : RestorableValue<T?> where T : struct, Enum
         if ((data is string))
         {
             string data__as18369 = (string)data;
-            foreach (T allowed__18406 in this.values)
+            foreach (T allowed in this.values)
             {
-                if ((allowed__18406.ToString() == ((string)data__as18369)))
+                if ((allowed.ToString() == ((string)data__as18369)))
                 {
-                    return allowed__18406;
+                    return allowed;
                 }
             }
             DartRuntimePrimitives.Assert(() => false, () => (object?)$"Attempted to set an unknown enum value \"{((string)data__as18369)}\" that is not null, or " + $"in the valid set of enum values for the {typeof(T)} type: " + $"{this.values.map<T, string>(((value) => value.ToString())).toSet()}");
@@ -384,11 +384,11 @@ public class RestorableEnum<T> : RestorableValue<T> where T : Enum
         if (((data is not null) && (data is string)))
         {
             string data__as21037 = (string)data;
-            foreach (T allowed__21074 in this.values)
+            foreach (T allowed in this.values)
             {
-                if ((allowed__21074.ToString() == ((string)data__as21037)))
+                if ((allowed.ToString() == ((string)data__as21037)))
                 {
-                    return allowed__21074;
+                    return allowed;
                 }
             }
             DartRuntimePrimitives.Assert(() => false, () => (object?)$"Attempted to restore an unknown enum value \"{((string)data__as21037)}\" that is not in the " + $"valid set of enum values for the {typeof(T)} type: " + $"{this.values.map<T, string>(((value) => value.ToString())).toSet()}");

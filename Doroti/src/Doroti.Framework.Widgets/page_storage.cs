@@ -58,29 +58,29 @@ public class PageStorageBucket
 
     internal static bool _maybeAddKey(BuildContext context, List<PageStorageKey<object>> keys)
     {
-        Widget widget__2191 = ((BuildContext)context).widget;
-        global::Doroti.Framework.Foundation.Key? key__2231 = ((Widget)widget__2191).key;
-        if ((key__2231 is PageStorageKey<object>))
+        Widget widgetLocal = ((BuildContext)context).widget;
+        global::Doroti.Framework.Foundation.Key? keyLocal = ((Widget)widgetLocal).key;
+        if ((keyLocal is PageStorageKey<object>))
         {
-            PageStorageKey<object> key__2231__as2257 = (PageStorageKey<object>)key__2231;
+            PageStorageKey<object> key__2231__as2257 = (PageStorageKey<object>)keyLocal;
             keys.Add(((PageStorageKey<object>)key__2231__as2257));
         }
-        return (widget__2191 is not PageStorage);
+        return (widgetLocal is not PageStorage);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual List<PageStorageKey<object>> _allKeys(BuildContext context)
     {
-        var keys__2424 = new List<PageStorageKey<object>>();
-        if (PageStorageBucket._maybeAddKey(context, keys__2424))
+        var keys = new List<PageStorageKey<object>>();
+        if (PageStorageBucket._maybeAddKey(context, keys))
         {
             context.visitAncestorElements(((global::System.Func<Element, bool>)((element) =>
             {
-                return PageStorageBucket._maybeAddKey(element, keys__2424);
+                return PageStorageBucket._maybeAddKey(element, keys);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
         }
-        return keys__2424;
+        return keys;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -99,10 +99,10 @@ public class PageStorageBucket
         }
         else
         {
-            _StorageEntryIdentifier__page_storage contextIdentifier__3473 = ((_StorageEntryIdentifier__page_storage)(object?)_computeIdentifier(context));
-            if (((_StorageEntryIdentifier__page_storage)contextIdentifier__3473).isNotEmpty)
+            _StorageEntryIdentifier__page_storage contextIdentifier = ((_StorageEntryIdentifier__page_storage)(object?)_computeIdentifier(context));
+            if (((_StorageEntryIdentifier__page_storage)contextIdentifier).isNotEmpty)
             {
-                this._storage![contextIdentifier__3473] = data;
+                this._storage![contextIdentifier] = data;
             }
         }
     }
@@ -117,8 +117,8 @@ public class PageStorageBucket
         {
             return this._storage!.GetValueOrDefault(identifier);
         }
-        _StorageEntryIdentifier__page_storage contextIdentifier__4287 = ((_StorageEntryIdentifier__page_storage)(object?)_computeIdentifier(context));
-        return (((_StorageEntryIdentifier__page_storage)contextIdentifier__4287).isNotEmpty ? this._storage!.GetValueOrDefault(contextIdentifier__4287) : null);
+        _StorageEntryIdentifier__page_storage contextIdentifier = ((_StorageEntryIdentifier__page_storage)(object?)_computeIdentifier(context));
+        return (((_StorageEntryIdentifier__page_storage)contextIdentifier).isNotEmpty ? this._storage!.GetValueOrDefault(contextIdentifier) : null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -137,24 +137,24 @@ public class PageStorage : StatelessWidget
 
     public static PageStorageBucket? maybeOf(BuildContext context)
     {
-        PageStorage? widget__7108 = ((PageStorage?)(object?)context.findAncestorWidgetOfExactType<PageStorage>());
-        return widget__7108?.bucket;
+        PageStorage? widget = ((PageStorage?)(object?)context.findAncestorWidgetOfExactType<PageStorage>());
+        return widget?.bucket;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static PageStorageBucket of(BuildContext context)
     {
-        PageStorageBucket? bucket__7884 = ((PageStorageBucket?)(object?)PageStorage.maybeOf(context));
+        PageStorageBucket? bucket = ((PageStorageBucket?)(object?)PageStorage.maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((bucket__7884 is null))
+                if ((bucket is null))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("PageStorage.of() was called with a context that does not contain a " + "PageStorage widget.\n" + "No PageStorage widget ancestor could be found starting from the " + "context that was passed to PageStorage.of(). This can happen " + "because you are using a widget that looks for a PageStorage " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return bucket__7884!;
+        return bucket!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

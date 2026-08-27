@@ -57,13 +57,13 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
     {
         get
         {
-            AnimationController? controller__3791 = default!;
+            AnimationController? controller = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    controller__3791 = this._controller;
+                    controller = this._controller;
                     return true;
                 });
-            return controller__3791;
+            return controller;
             return default!;
         }
     }
@@ -71,13 +71,13 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
     {
         get
         {
-            CurvedAnimation? animation__4225 = default!;
+            CurvedAnimation? animation = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    animation__4225 = this._animation;
+                    animation = this._animation;
                     return true;
                 });
-            return animation__4225;
+            return animation;
             return default!;
         }
     }
@@ -202,16 +202,16 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
     {
         _lastValue = this._controller.value;
         _hasVisualOverflow = false;
-        BoxConstraints constraints__7556 = this.constraints;
-        if (((child is null) || ((BoxConstraints)constraints__7556).isTight))
+        BoxConstraints constraintsLocal = this.constraints;
+        if (((child is null) || ((BoxConstraints)constraintsLocal).isTight))
         {
             this._controller.stop();
-            size = _currentSize = this._sizeTween.begin = this._sizeTween.end = ((BoxConstraints)constraints__7556).smallest;
+            size = _currentSize = this._sizeTween.begin = this._sizeTween.end = ((BoxConstraints)constraintsLocal).smallest;
             _state = RenderAnimatedSizeState.start;
-            child?.layout(constraints__7556);
+            child?.layout(constraintsLocal);
             return;
         }
-        child!.layout(constraints__7556, parentUsesSize: true);
+        child!.layout(constraintsLocal, parentUsesSize: true);
         switch (this._state)
         {
             case RenderAnimatedSizeState.start:
@@ -235,7 +235,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
                     break;
                 }
         }
-        size = _currentSize = constraints__7556.constrain(DartRuntimePrimitives.RequireValue(this._animatedSize));
+        size = _currentSize = constraintsLocal.constrain(DartRuntimePrimitives.RequireValue(this._animatedSize));
         alignChild();
         if (((size.width < DartRuntimePrimitives.RequireValue(this._sizeTween.end).width) || (size.height < DartRuntimePrimitives.RequireValue(this._sizeTween.end).height)))
         {
@@ -249,16 +249,16 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         {
             return ((BoxConstraints)constraints).smallest;
         }
-        global::Doroti.Ui.Size childSize__8826 = child!.getDryLayout(constraints);
+        global::Doroti.Ui.Size childSize = child!.getDryLayout(constraints);
         switch (this._state)
         {
             case RenderAnimatedSizeState.start:
                 {
-                    return constraints.constrain(childSize__8826);
+                    return constraints.constrain(childSize);
                 }
             case RenderAnimatedSizeState.stable:
                 {
-                    if ((!object.Equals(this._sizeTween.end, childSize__8826)))
+                    if ((!object.Equals(this._sizeTween.end, childSize)))
                     {
                         return constraints.constrain(this._currentSize);
                     }
@@ -266,7 +266,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
                     {
                         if ((this._controller.value == this._controller.upperBound))
                         {
-                            return constraints.constrain(childSize__8826);
+                            return constraints.constrain(childSize);
                         }
                     }
                     break;
@@ -274,9 +274,9 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
             case RenderAnimatedSizeState.unstable:
             case RenderAnimatedSizeState.changed:
                 {
-                    if ((!object.Equals(this._sizeTween.end, childSize__8826)))
+                    if ((!object.Equals(this._sizeTween.end, childSize)))
                     {
-                        return constraints.constrain(childSize__8826);
+                        return constraints.constrain(childSize);
                     }
                     break;
                 }
@@ -366,8 +366,8 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
     {
         if ((((child is not null) && this._hasVisualOverflow) && (!object.Equals(this.clipBehavior, Clip.none))))
         {
-            global::Doroti.Ui.Rect rect__12222 = (Offset.zero & size);
-            this._clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, rect__12222, (Action<PaintingContext, Offset>)base.paint, clipBehavior: this.clipBehavior, oldLayer: ((LayerHandle<ClipRectLayer>)this._clipRectLayer).layer);
+            global::Doroti.Ui.Rect rect = (Offset.zero & size);
+            this._clipRectLayer.layer = context.pushClipRect(needsCompositing, offset, rect, (Action<PaintingContext, Offset>)base.paint, clipBehavior: this.clipBehavior, oldLayer: ((LayerHandle<ClipRectLayer>)this._clipRectLayer).layer);
         }
         else
         {
@@ -378,20 +378,20 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
-        RenderBox? child__12682 = this.child;
-        if ((child__12682 is null))
+        RenderBox? childLocal = this.child;
+        if ((childLocal is null))
         {
             return null;
         }
-        double? result__12770 = child__12682.getDryBaseline(constraints, baseline);
-        if ((result__12770 is null))
+        double? result = childLocal.getDryBaseline(constraints, baseline);
+        if ((result is null))
         {
             return null;
         }
-        global::Doroti.Ui.Size childSize__13044 = child__12682.getDryLayout(constraints);
-        global::Doroti.Ui.Size mySize__13104 = getDryLayout(constraints);
-        global::Doroti.Ui.Offset offset__13157 = resolvedAlignment.alongOffset(((mySize__13104 - childSize__13044)));
-        return (DartRuntimePrimitives.RequireValue(result__12770) + offset__13157.dy);
+        global::Doroti.Ui.Size childSize = childLocal.getDryLayout(constraints);
+        global::Doroti.Ui.Size mySize = getDryLayout(constraints);
+        global::Doroti.Ui.Offset offset = resolvedAlignment.alongOffset(((mySize - childSize)));
+        return (DartRuntimePrimitives.RequireValue(result) + offset.dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

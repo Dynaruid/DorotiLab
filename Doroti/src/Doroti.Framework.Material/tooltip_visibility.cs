@@ -45,8 +45,8 @@ public class TooltipVisibility : global::Doroti.Framework.Widgets.StatelessWidge
 
     public static bool of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _TooltipVisibilityScope__tooltip_visibility? visibility__1620 = ((_TooltipVisibilityScope__tooltip_visibility?)(object?)context.dependOnInheritedWidgetOfExactType<_TooltipVisibilityScope__tooltip_visibility>());
-        return (visibility__1620?.visible ?? true);
+        _TooltipVisibilityScope__tooltip_visibility? visibility = ((_TooltipVisibilityScope__tooltip_visibility?)(object?)context.dependOnInheritedWidgetOfExactType<_TooltipVisibilityScope__tooltip_visibility>());
+        return (visibility?.visible ?? true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

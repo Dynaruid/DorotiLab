@@ -141,16 +141,16 @@ public class CupertinoTextThemeData : global::Doroti.Framework.Foundation.Diagno
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        var defaultData__10638 = new CupertinoTextThemeData();
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("textStyle", this.textStyle, defaultValue: ((CupertinoTextThemeData)defaultData__10638).textStyle));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("actionTextStyle", this.actionTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData__10638).actionTextStyle));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("actionSmallTextStyle", this.actionSmallTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData__10638).actionSmallTextStyle));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("tabLabelTextStyle", this.tabLabelTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData__10638).tabLabelTextStyle));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("navTitleTextStyle", this.navTitleTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData__10638).navTitleTextStyle));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("navLargeTitleTextStyle", this.navLargeTitleTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData__10638).navLargeTitleTextStyle));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("navActionTextStyle", this.navActionTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData__10638).navActionTextStyle));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("pickerTextStyle", this.pickerTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData__10638).pickerTextStyle));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("dateTimePickerTextStyle", this.dateTimePickerTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData__10638).dateTimePickerTextStyle));
+        var defaultData = new CupertinoTextThemeData();
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("textStyle", this.textStyle, defaultValue: ((CupertinoTextThemeData)defaultData).textStyle));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("actionTextStyle", this.actionTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData).actionTextStyle));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("actionSmallTextStyle", this.actionSmallTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData).actionSmallTextStyle));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("tabLabelTextStyle", this.tabLabelTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData).tabLabelTextStyle));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("navTitleTextStyle", this.navTitleTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData).navTitleTextStyle));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("navLargeTitleTextStyle", this.navLargeTitleTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData).navLargeTitleTextStyle));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("navActionTextStyle", this.navActionTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData).navActionTextStyle));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("pickerTextStyle", this.pickerTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData).pickerTextStyle));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("dateTimePickerTextStyle", this.dateTimePickerTextStyle, defaultValue: ((CupertinoTextThemeData)defaultData).dateTimePickerTextStyle));
     }
 
     public override bool Equals(object? other)
@@ -172,13 +172,13 @@ public class CupertinoTextThemeData : global::Doroti.Framework.Foundation.Diagno
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -218,9 +218,9 @@ internal class _TextThemeDefaultsBuilder__text_theme
     public virtual global::Doroti.Framework.Painting.TextStyle navActionTextStyle(Color? primaryColor = null) => actionTextStyle(primaryColor: primaryColor);
     public virtual _TextThemeDefaultsBuilder__text_theme resolveFrom(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color resolvedLabelColor__14823 = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(this.labelColor, context));
-        global::Doroti.Ui.Color resolvedInactiveGray__14912 = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(this.inactiveGrayColor, context));
-        return (((object.Equals(resolvedLabelColor__14823, this.labelColor)) && (object.Equals(resolvedInactiveGray__14912, CupertinoColors.inactiveGray))) ? this : new _TextThemeDefaultsBuilder__text_theme(resolvedLabelColor__14823, resolvedInactiveGray__14912));
+        global::Doroti.Ui.Color resolvedLabelColor = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(this.labelColor, context));
+        global::Doroti.Ui.Color resolvedInactiveGray = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(this.inactiveGrayColor, context));
+        return (((object.Equals(resolvedLabelColor, this.labelColor)) && (object.Equals(resolvedInactiveGray, CupertinoColors.inactiveGray))) ? this : new _TextThemeDefaultsBuilder__text_theme(resolvedLabelColor, resolvedInactiveGray));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

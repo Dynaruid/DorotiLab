@@ -108,13 +108,13 @@ public class ProgressIndicatorThemeData : global::Doroti.Framework.Foundation.Di
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -137,8 +137,8 @@ public class ProgressIndicatorTheme : global::Doroti.Framework.Widgets.Inherited
 
     public static ProgressIndicatorThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ProgressIndicatorTheme? progressIndicatorTheme__13497 = ((ProgressIndicatorTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ProgressIndicatorTheme>());
-        return (progressIndicatorTheme__13497?.data ?? Theme.of(context).progressIndicatorTheme);
+        ProgressIndicatorTheme? progressIndicatorThemeLocal = ((ProgressIndicatorTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ProgressIndicatorTheme>());
+        return (progressIndicatorThemeLocal?.data ?? Theme.of(context).progressIndicatorTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

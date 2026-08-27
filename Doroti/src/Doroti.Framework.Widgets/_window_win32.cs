@@ -126,15 +126,15 @@ public class WindowingOwnerWin32Io : WindowingOwnerIo
 
     internal virtual void _onMessage(Pointer<_WindowsMessage___window_win32> message)
     {
-        global::Doroti.Ui.DorotiView flutterView__7409 = ((global::Doroti.Ui.DorotiView)(object?)WidgetsBinding.instance.platformDispatcher.views.firstWhere(((view) => (checked((long)view.viewId) == checked((long)message.@ref.viewId)))));
-        long handlesLength__7569 = checked((long)(this._messageHandlers.Count));
-        foreach (_WindowsMessageHandler___window_win32 handler__7648 in this._messageHandlers)
+        global::Doroti.Ui.DorotiView flutterView = ((global::Doroti.Ui.DorotiView)(object?)WidgetsBinding.instance.platformDispatcher.views.firstWhere(((view) => (checked((long)view.viewId) == checked((long)message.@ref.viewId)))));
+        long handlesLength = checked((long)(this._messageHandlers.Count));
+        foreach (_WindowsMessageHandler___window_win32 handler in this._messageHandlers)
         {
-            DartRuntimePrimitives.Assert(() => (checked((long)(this._messageHandlers.Count)) == handlesLength__7569), () => (object?)$"Message handler list changed while processing message: {message}");
-            long? result__7844 = handler__7648.handleWindowsMessage(flutterView__7409, message.@ref.windowHandle, message.@ref.message, message.@ref.wParam, message.@ref.lParam);
-            if ((result__7844 is not null))
+            DartRuntimePrimitives.Assert(() => (checked((long)(this._messageHandlers.Count)) == handlesLength), () => (object?)$"Message handler list changed while processing message: {message}");
+            long? result = handler.handleWindowsMessage(flutterView, message.@ref.windowHandle, message.@ref.message, message.@ref.wParam, message.@ref.lParam);
+            if ((result is not null))
             {
-                long result__7844__value8042 = DartRuntimePrimitives.RequireValue(result__7844);
+                long result__7844__value8042 = DartRuntimePrimitives.RequireValue(result);
                 message.@ref.handled = true;
                 message.@ref.lResult = DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(result__7844__value8042));
                 return;
@@ -185,9 +185,9 @@ public class WindowControllerWin32Io : WindowControllerIo, BaseWindowControllerW
         get
         {
             _ensureNotDestroyed();
-            _ActualContentSize___window_win32 size__11194 = ((_ActualContentSize___window_win32)(object?)_Win32PlatformInterface___window_win32.getWindowContentSize(this.windowHandle));
-            var result__11271 = new global::Doroti.Ui.Size(((_ActualContentSize___window_win32)size__11194).width, ((_ActualContentSize___window_win32)size__11194).height);
-            return result__11271;
+            _ActualContentSize___window_win32 size = ((_ActualContentSize___window_win32)(object?)_Win32PlatformInterface___window_win32.getWindowContentSize(this.windowHandle));
+            var result = new global::Doroti.Ui.Size(((_ActualContentSize___window_win32)size).width, ((_ActualContentSize___window_win32)size).height);
+            return result;
             return default!;
         }
     }
@@ -339,9 +339,9 @@ public class WindowControllerWin32Io : WindowControllerIo, BaseWindowControllerW
         {
             if ((message == _window_win32Library._WM_DESTROY))
             {
-                bool wasAlreadyDestroyed__14619 = this._destroyed;
+                bool wasAlreadyDestroyed = this._destroyed;
                 _destroyed = true;
-                if (!wasAlreadyDestroyed__14619)
+                if (!wasAlreadyDestroyed)
                 {
                     notifyListeners();
                 }
@@ -401,9 +401,9 @@ public class DialogWindowControllerWin32Io : DialogWindowControllerIo, BaseWindo
         get
         {
             _ensureNotDestroyed();
-            _ActualContentSize___window_win32 size__17765 = ((_ActualContentSize___window_win32)(object?)_Win32PlatformInterface___window_win32.getWindowContentSize(this.windowHandle));
-            var result__17842 = new global::Doroti.Ui.Size(((_ActualContentSize___window_win32)size__17765).width, ((_ActualContentSize___window_win32)size__17765).height);
-            return result__17842;
+            _ActualContentSize___window_win32 size = ((_ActualContentSize___window_win32)(object?)_Win32PlatformInterface___window_win32.getWindowContentSize(this.windowHandle));
+            var result = new global::Doroti.Ui.Size(((_ActualContentSize___window_win32)size).width, ((_ActualContentSize___window_win32)size).height);
+            return result;
             return default!;
         }
     }
@@ -519,9 +519,9 @@ public class DialogWindowControllerWin32Io : DialogWindowControllerIo, BaseWindo
         {
             if ((message == _window_win32Library._WM_DESTROY))
             {
-                bool wasAlreadyDestroyed__20608 = this._destroyed;
+                bool wasAlreadyDestroyed = this._destroyed;
                 _destroyed = true;
-                if (!wasAlreadyDestroyed__20608)
+                if (!wasAlreadyDestroyed)
                 {
                     notifyListeners();
                 }
@@ -567,17 +567,17 @@ public class TooltipWindowControllerWin32Io : TooltipWindowControllerIo, BaseWin
     public override bool isDestroyed => this._destroyed;
     internal virtual Pointer<_Rect___window_win32> _handleGetWindowPosition(Pointer<_Size___window_win32> childSize, Pointer<_Rect___window_win32> parentRect, Pointer<_Rect___window_win32> outputRect)
     {
-        Pointer<_Rect___window_win32> result__23568 = this._owner.allocator();
-        double scale__23621 = PlatformDispatcher.instance.views.firstWhere(((view) => (checked((long)view.viewId) == checked((long)this.rootView.viewId)))).devicePixelRatio;
-        var scaledAnchorRect__23774 = global::Doroti.Ui.Rect.fromLTWH((this._anchorRect.left * scale__23621), (this._anchorRect.top * scale__23621), (this._anchorRect.width * scale__23621), (this._anchorRect.height * scale__23621));
-        global::Doroti.Ui.Offset scaledOffset__23962 = ((global::Doroti.Ui.Offset)(object?)(((WindowPositionerIo)this._positioner).offset * scale__23621));
-        WindowPositionerIo scaledPositioner__24032 = ((WindowPositionerIo)(object?)this._positioner.copyWith(offset: scaledOffset__23962));
-        global::Doroti.Ui.Rect targetRect__24110 = ((global::Doroti.Ui.Rect)(object?)scaledPositioner__24032.placeWindow(childSize: childSize.@ref.toSize(), anchorRect: scaledAnchorRect__23774.translate(parentRect.@ref.left.toDouble(), parentRect.@ref.top.toDouble()), parentRect: parentRect.@ref.toRect(), displayRect: outputRect.@ref.toRect()));
-        result__23568.@ref.left = targetRect__24110.left.toInt();
-        result__23568.@ref.top = targetRect__24110.top.toInt();
-        result__23568.@ref.width = targetRect__24110.width.toInt();
-        result__23568.@ref.height = targetRect__24110.height.toInt();
-        return result__23568;
+        Pointer<_Rect___window_win32> result = this._owner.allocator();
+        double scale = PlatformDispatcher.instance.views.firstWhere(((view) => (checked((long)view.viewId) == checked((long)this.rootView.viewId)))).devicePixelRatio;
+        var scaledAnchorRect = global::Doroti.Ui.Rect.fromLTWH((this._anchorRect.left * scale), (this._anchorRect.top * scale), (this._anchorRect.width * scale), (this._anchorRect.height * scale));
+        global::Doroti.Ui.Offset scaledOffset = ((global::Doroti.Ui.Offset)(object?)(((WindowPositionerIo)this._positioner).offset * scale));
+        WindowPositionerIo scaledPositioner = ((WindowPositionerIo)(object?)this._positioner.copyWith(offset: scaledOffset));
+        global::Doroti.Ui.Rect targetRect = ((global::Doroti.Ui.Rect)(object?)scaledPositioner.placeWindow(childSize: childSize.@ref.toSize(), anchorRect: scaledAnchorRect.translate(parentRect.@ref.left.toDouble(), parentRect.@ref.top.toDouble()), parentRect: parentRect.@ref.toRect(), displayRect: outputRect.@ref.toRect()));
+        result.@ref.left = targetRect.left.toInt();
+        result.@ref.top = targetRect.top.toInt();
+        result.@ref.width = targetRect.width.toInt();
+        result.@ref.height = targetRect.height.toInt();
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -595,8 +595,8 @@ public class TooltipWindowControllerWin32Io : TooltipWindowControllerIo, BaseWin
         get
         {
             _ensureNotDestroyed();
-            _ActualContentSize___window_win32 size__24980 = ((_ActualContentSize___window_win32)(object?)_Win32PlatformInterface___window_win32.getWindowContentSize(this.windowHandle));
-            return new global::Doroti.Ui.Size(((_ActualContentSize___window_win32)size__24980).width, ((_ActualContentSize___window_win32)size__24980).height);
+            _ActualContentSize___window_win32 size = ((_ActualContentSize___window_win32)(object?)_Win32PlatformInterface___window_win32.getWindowContentSize(this.windowHandle));
+            return new global::Doroti.Ui.Size(((_ActualContentSize___window_win32)size).width, ((_ActualContentSize___window_win32)size).height);
             return default!;
         }
     }
@@ -665,9 +665,9 @@ public class TooltipWindowControllerWin32Io : TooltipWindowControllerIo, BaseWin
         {
             if ((message == _window_win32Library._WM_DESTROY))
             {
-                bool wasAlreadyDestroyed__26789 = this._destroyed;
+                bool wasAlreadyDestroyed = this._destroyed;
                 _destroyed = true;
-                if (!wasAlreadyDestroyed__26789)
+                if (!wasAlreadyDestroyed)
                 {
                     notifyListeners();
                 }
@@ -710,17 +710,17 @@ public class PopupWindowControllerWin32Io : PopupWindowControllerIo, _WindowsMes
     public override bool isDestroyed => this._destroyed;
     internal virtual Pointer<_Rect___window_win32> _handleGetWindowPosition(Pointer<_Size___window_win32> childSize, Pointer<_Rect___window_win32> parentRect, Pointer<_Rect___window_win32> outputRect)
     {
-        double scale__29553 = PlatformDispatcher.instance.views.firstWhere(((view) => (checked((long)view.viewId) == checked((long)this.rootView.viewId)))).devicePixelRatio;
-        var scaledAnchorRect__29706 = global::Doroti.Ui.Rect.fromLTWH((this._anchorRect.left * scale__29553), (this._anchorRect.top * scale__29553), (this._anchorRect.width * scale__29553), (this._anchorRect.height * scale__29553));
-        global::Doroti.Ui.Offset scaledOffset__29894 = ((global::Doroti.Ui.Offset)(object?)(((WindowPositionerIo)this._positioner).offset * scale__29553));
-        WindowPositionerIo scaledPositioner__29964 = ((WindowPositionerIo)(object?)this._positioner.copyWith(offset: scaledOffset__29894));
-        global::Doroti.Ui.Rect targetRect__30042 = ((global::Doroti.Ui.Rect)(object?)scaledPositioner__29964.placeWindow(childSize: childSize.@ref.toSize(), anchorRect: scaledAnchorRect__29706.translate(parentRect.@ref.left.toDouble(), parentRect.@ref.top.toDouble()), parentRect: parentRect.@ref.toRect(), displayRect: outputRect.@ref.toRect()));
-        Pointer<_Rect___window_win32> result__30383 = this._owner.allocator();
-        result__30383.@ref.left = targetRect__30042.left.toInt();
-        result__30383.@ref.top = targetRect__30042.top.toInt();
-        result__30383.@ref.width = targetRect__30042.width.toInt();
-        result__30383.@ref.height = targetRect__30042.height.toInt();
-        return result__30383;
+        double scale = PlatformDispatcher.instance.views.firstWhere(((view) => (checked((long)view.viewId) == checked((long)this.rootView.viewId)))).devicePixelRatio;
+        var scaledAnchorRect = global::Doroti.Ui.Rect.fromLTWH((this._anchorRect.left * scale), (this._anchorRect.top * scale), (this._anchorRect.width * scale), (this._anchorRect.height * scale));
+        global::Doroti.Ui.Offset scaledOffset = ((global::Doroti.Ui.Offset)(object?)(((WindowPositionerIo)this._positioner).offset * scale));
+        WindowPositionerIo scaledPositioner = ((WindowPositionerIo)(object?)this._positioner.copyWith(offset: scaledOffset));
+        global::Doroti.Ui.Rect targetRect = ((global::Doroti.Ui.Rect)(object?)scaledPositioner.placeWindow(childSize: childSize.@ref.toSize(), anchorRect: scaledAnchorRect.translate(parentRect.@ref.left.toDouble(), parentRect.@ref.top.toDouble()), parentRect: parentRect.@ref.toRect(), displayRect: outputRect.@ref.toRect()));
+        Pointer<_Rect___window_win32> result = this._owner.allocator();
+        result.@ref.left = targetRect.left.toInt();
+        result.@ref.top = targetRect.top.toInt();
+        result.@ref.width = targetRect.width.toInt();
+        result.@ref.height = targetRect.height.toInt();
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -736,8 +736,8 @@ public class PopupWindowControllerWin32Io : PopupWindowControllerIo, _WindowsMes
         get
         {
             _ensureNotDestroyed();
-            _ActualContentSize___window_win32 size__30978 = ((_ActualContentSize___window_win32)(object?)_Win32PlatformInterface___window_win32.getWindowContentSize(getWindowHandle()));
-            return new global::Doroti.Ui.Size(((_ActualContentSize___window_win32)size__30978).width, ((_ActualContentSize___window_win32)size__30978).height);
+            _ActualContentSize___window_win32 size = ((_ActualContentSize___window_win32)(object?)_Win32PlatformInterface___window_win32.getWindowContentSize(getWindowHandle()));
+            return new global::Doroti.Ui.Size(((_ActualContentSize___window_win32)size).width, ((_ActualContentSize___window_win32)size).height);
             return default!;
         }
     }
@@ -783,11 +783,11 @@ public class PopupWindowControllerWin32Io : PopupWindowControllerIo, _WindowsMes
         get
         {
             _ensureNotDestroyed();
-            Pointer<Void> popupHandle__31848 = ((Pointer<Void>)(object?)getWindowHandle());
-            Pointer<Void> parentHandle__31896 = ((Pointer<Void>)(object?)_Win32PlatformInterface___window_win32.getWindowHandle(DartRuntimePrimitives.RequireValue(PlatformDispatcher.instance.engineId), checked((long)((BaseWindowControllerIo)this.parent).rootView.viewId)));
-            global::Doroti.Ui.Offset physicalOffset__32052 = ((global::Doroti.Ui.Offset)(object?)_Win32PlatformInterface___window_win32.getWindowOffsetFromParent(((WindowingOwnerWin32Io)this._owner).allocator, popupHandle__31848, parentHandle__31896));
-            double scale__32263 = PlatformDispatcher.instance.views.firstWhere(((view) => (checked((long)view.viewId) == checked((long)this.rootView.viewId)))).devicePixelRatio;
-            return (physicalOffset__32052 / scale__32263);
+            Pointer<Void> popupHandle = ((Pointer<Void>)(object?)getWindowHandle());
+            Pointer<Void> parentHandle = ((Pointer<Void>)(object?)_Win32PlatformInterface___window_win32.getWindowHandle(DartRuntimePrimitives.RequireValue(PlatformDispatcher.instance.engineId), checked((long)((BaseWindowControllerIo)this.parent).rootView.viewId)));
+            global::Doroti.Ui.Offset physicalOffset = ((global::Doroti.Ui.Offset)(object?)_Win32PlatformInterface___window_win32.getWindowOffsetFromParent(((WindowingOwnerWin32Io)this._owner).allocator, popupHandle, parentHandle));
+            double scale = PlatformDispatcher.instance.views.firstWhere(((view) => (checked((long)view.viewId) == checked((long)this.rootView.viewId)))).devicePixelRatio;
+            return (physicalOffset / scale);
             return default!;
         }
     }
@@ -795,9 +795,9 @@ public class PopupWindowControllerWin32Io : PopupWindowControllerIo, _WindowsMes
     {
         if ((message == _window_win32Library._WM_DESTROY))
         {
-            bool wasAlreadyDestroyed__32866 = this._destroyed;
+            bool wasAlreadyDestroyed = this._destroyed;
             _destroyed = true;
-            if (!wasAlreadyDestroyed__32866)
+            if (!wasAlreadyDestroyed)
             {
                 notifyListeners();
             }
@@ -820,9 +820,9 @@ public class PopupWindowControllerWin32Io : PopupWindowControllerIo, _WindowsMes
         }
         if ((message == _window_win32Library._WM_ACTIVATE))
         {
-            Pointer<Void> parentHwnd__33898 = ((Pointer<Void>)(object?)_Win32PlatformInterface___window_win32.getWindowHandle(DartRuntimePrimitives.RequireValue(PlatformDispatcher.instance.engineId), checked((long)((BaseWindowControllerIo)this.parent).rootView.viewId)));
-            Pointer<Void> hFocused__34057 = ((Pointer<Void>)(object?)_Win32PlatformInterface___window_win32.getForegroundWindow());
-            if ((((!object.Equals(hFocused__34057, parentHwnd__33898)) && (!object.Equals(hFocused__34057, getWindowHandle()))) && !_Win32PlatformInterface___window_win32.isChild(getWindowHandle(), hFocused__34057)))
+            Pointer<Void> parentHwnd = ((Pointer<Void>)(object?)_Win32PlatformInterface___window_win32.getWindowHandle(DartRuntimePrimitives.RequireValue(PlatformDispatcher.instance.engineId), checked((long)((BaseWindowControllerIo)this.parent).rootView.viewId)));
+            Pointer<Void> hFocused = ((Pointer<Void>)(object?)_Win32PlatformInterface___window_win32.getForegroundWindow());
+            if ((((!object.Equals(hFocused, parentHwnd)) && (!object.Equals(hFocused, getWindowHandle()))) && !_Win32PlatformInterface___window_win32.isChild(getWindowHandle(), hFocused)))
             {
                 DartAsyncRuntime.scheduleMicrotask(this.destroy);
             }
@@ -914,34 +914,34 @@ internal class _Win32PlatformInterface___window_win32
 {
     public static void initializeWindowing(Allocator allocator, long engineId, global::System.Action<Pointer<_WindowsMessage___window_win32>> onMessage)
     {
-        Pointer<_WindowingInitRequest___window_win32> request__36244 = allocator();
+        Pointer<_WindowingInitRequest___window_win32> request = allocator();
         try
         {
-            request__36244.@ref.onMessage = new NativeCallable<global::System.Func<Pointer<_WindowsMessage___window_win32>, Void>>(onMessage).nativeFunction;
-            _Win32PlatformInterface___window_win32._initializeWindowing(engineId, request__36244);
+            request.@ref.onMessage = new NativeCallable<global::System.Func<Pointer<_WindowsMessage___window_win32>, Void>>(onMessage).nativeFunction;
+            _Win32PlatformInterface___window_win32._initializeWindowing(engineId, request);
         }
         finally
         {
-            allocator.free(request__36244);
+            allocator.free(request);
         }
     }
 
     internal abstract static void _initializeWindowing(long engineId, Pointer<_WindowingInitRequest___window_win32> request);
     public static long createWindow(Allocator allocator, long engineId, Size? size, global::Doroti.Framework.Rendering.BoxConstraints? constraints, string? title, bool shrinkWrap, bool resizable)
     {
-        Pointer<_WindowCreationRequest___window_win32> request__37078 = allocator();
+        Pointer<_WindowCreationRequest___window_win32> request = allocator();
         try
         {
-            request__37078.@ref.size.from(size);
-            request__37078.@ref.constraints.from(constraints);
-            request__37078.@ref.title = ((title ?? "Window")).toNativeUtf16(allocator: allocator);
-            request__37078.@ref.shrinkWrap = shrinkWrap;
-            request__37078.@ref.resizable = resizable;
-            return _Win32PlatformInterface___window_win32._createWindow(engineId, request__37078);
+            request.@ref.size.from(size);
+            request.@ref.constraints.from(constraints);
+            request.@ref.title = ((title ?? "Window")).toNativeUtf16(allocator: allocator);
+            request.@ref.shrinkWrap = shrinkWrap;
+            request.@ref.resizable = resizable;
+            return _Win32PlatformInterface___window_win32._createWindow(engineId, request);
         }
         finally
         {
-            allocator.free(request__37078);
+            allocator.free(request);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -949,20 +949,20 @@ internal class _Win32PlatformInterface___window_win32
     internal abstract static long _createWindow(long engineId, Pointer<_WindowCreationRequest___window_win32> request);
     public static long createDialogWindow(Allocator allocator, long engineId, Size? size, global::Doroti.Framework.Rendering.BoxConstraints? constraints, string? title, Pointer<Void>? parent, bool shrinkWrap, bool resizable)
     {
-        Pointer<_DialogWindowCreationRequest___window_win32> request__38033 = allocator();
+        Pointer<_DialogWindowCreationRequest___window_win32> request = allocator();
         try
         {
-            request__38033.@ref.size.from(size);
-            request__38033.@ref.constraints.from(constraints);
-            request__38033.@ref.title = ((title ?? "Dialog window")).toNativeUtf16(allocator: allocator);
-            request__38033.@ref.parentOrNull = (parent ?? new Pointer<Void>(0L));
-            request__38033.@ref.shrinkWrap = shrinkWrap;
-            request__38033.@ref.resizable = resizable;
-            return _Win32PlatformInterface___window_win32._createDialogWindow(engineId, request__38033);
+            request.@ref.size.from(size);
+            request.@ref.constraints.from(constraints);
+            request.@ref.title = ((title ?? "Dialog window")).toNativeUtf16(allocator: allocator);
+            request.@ref.parentOrNull = (parent ?? new Pointer<Void>(0L));
+            request.@ref.shrinkWrap = shrinkWrap;
+            request.@ref.resizable = resizable;
+            return _Win32PlatformInterface___window_win32._createDialogWindow(engineId, request);
         }
         finally
         {
-            allocator.free(request__38033);
+            allocator.free(request);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -970,17 +970,17 @@ internal class _Win32PlatformInterface___window_win32
     internal abstract static long _createDialogWindow(long engineId, Pointer<_DialogWindowCreationRequest___window_win32> request);
     public static long createTooltipWindow(Allocator allocator, long engineId, global::Doroti.Framework.Rendering.BoxConstraints constraints, Pointer<Void> parent, Pointer<NativeFunction<global::System.Func<Pointer<_Size___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>>>> onGetWindowPosition)
     {
-        Pointer<_TooltipWindowCreationRequest___window_win32> request__39280 = allocator();
+        Pointer<_TooltipWindowCreationRequest___window_win32> request = allocator();
         try
         {
-            request__39280.@ref.constraints.from(constraints);
-            request__39280.@ref.parent = parent;
-            request__39280.@ref.onGetWindowPosition = onGetWindowPosition;
-            return _Win32PlatformInterface___window_win32._createTooltipWindow(engineId, request__39280);
+            request.@ref.constraints.from(constraints);
+            request.@ref.parent = parent;
+            request.@ref.onGetWindowPosition = onGetWindowPosition;
+            return _Win32PlatformInterface___window_win32._createTooltipWindow(engineId, request);
         }
         finally
         {
-            allocator.free(request__39280);
+            allocator.free(request);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -988,17 +988,17 @@ internal class _Win32PlatformInterface___window_win32
     internal abstract static long _createTooltipWindow(long engineId, Pointer<_TooltipWindowCreationRequest___window_win32> request);
     public static long createPopupWindow(Allocator allocator, long engineId, global::Doroti.Framework.Rendering.BoxConstraints constraints, Pointer<Void> parent, Pointer<NativeFunction<global::System.Func<Pointer<_Size___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>, Pointer<_Rect___window_win32>>>> onGetWindowPosition)
     {
-        Pointer<_PopupWindowCreationRequest___window_win32> request__40335 = allocator();
+        Pointer<_PopupWindowCreationRequest___window_win32> request = allocator();
         try
         {
-            request__40335.@ref.constraints.from(constraints);
-            request__40335.@ref.parent = parent;
-            request__40335.@ref.onGetWindowPosition = onGetWindowPosition;
-            return _Win32PlatformInterface___window_win32._createPopupWindow(engineId, request__40335);
+            request.@ref.constraints.from(constraints);
+            request.@ref.parent = parent;
+            request.@ref.onGetWindowPosition = onGetWindowPosition;
+            return _Win32PlatformInterface___window_win32._createPopupWindow(engineId, request);
         }
         finally
         {
-            allocator.free(request__40335);
+            allocator.free(request);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1009,44 +1009,44 @@ internal class _Win32PlatformInterface___window_win32
     public abstract static _ActualContentSize___window_win32 getWindowContentSize(Pointer<Void> windowHandle);
     public static void setWindowTitle(Allocator allocator, Pointer<Void> windowHandle, string title)
     {
-        Pointer<_Utf16___window_win32> titlePointer__41636 = title.toNativeUtf16(allocator: allocator);
+        Pointer<_Utf16___window_win32> titlePointer = title.toNativeUtf16(allocator: allocator);
         try
         {
-            _Win32PlatformInterface___window_win32._setWindowTitle(windowHandle, titlePointer__41636);
+            _Win32PlatformInterface___window_win32._setWindowTitle(windowHandle, titlePointer);
         }
         finally
         {
-            allocator.free(titlePointer__41636);
+            allocator.free(titlePointer);
         }
     }
 
     internal abstract static void _setWindowTitle(Pointer<Void> windowHandle, Pointer<_Utf16___window_win32> title);
     public static void setWindowContentSize(Allocator allocator, Pointer<Void> windowHandle, Size? size)
     {
-        Pointer<_WindowSizeRequest___window_win32> request__42126 = allocator();
+        Pointer<_WindowSizeRequest___window_win32> request = allocator();
         try
         {
-            request__42126.@ref.from(size);
-            _Win32PlatformInterface___window_win32._setWindowContentSize(windowHandle, request__42126);
+            request.@ref.from(size);
+            _Win32PlatformInterface___window_win32._setWindowContentSize(windowHandle, request);
         }
         finally
         {
-            allocator.free(request__42126);
+            allocator.free(request);
         }
     }
 
     internal abstract static void _setWindowContentSize(Pointer<Void> windowHandle, Pointer<_WindowSizeRequest___window_win32> size);
     public static void setWindowConstraints(Allocator allocator, Pointer<Void> windowHandle, global::Doroti.Framework.Rendering.BoxConstraints? constraints)
     {
-        Pointer<_WindowConstraintsRequest___window_win32> request__42755 = allocator();
+        Pointer<_WindowConstraintsRequest___window_win32> request = allocator();
         try
         {
-            request__42755.@ref.from(constraints);
-            _Win32PlatformInterface___window_win32._setWindowConstraints(windowHandle, request__42755);
+            request.@ref.from(constraints);
+            _Win32PlatformInterface___window_win32._setWindowConstraints(windowHandle, request);
         }
         finally
         {
-            allocator.free(request__42755);
+            allocator.free(request);
         }
     }
 
@@ -1056,17 +1056,17 @@ internal class _Win32PlatformInterface___window_win32
     public abstract static long isZoomed(Pointer<Void> windowHandle);
     public static void setFullscreen(Allocator allocator, Pointer<Void> windowHandle, bool fullscreen, Display? display = null)
     {
-        Pointer<_WindowFullscreenRequest___window_win32> request__43795 = allocator();
+        Pointer<_WindowFullscreenRequest___window_win32> request = allocator();
         try
         {
-            request__43795.@ref.fullscreen = fullscreen;
-            request__43795.@ref.hasDisplayId = (display is not null);
-            request__43795.@ref.displayId = (display?.id ?? 0L);
-            _Win32PlatformInterface___window_win32._setFullscreen(windowHandle, request__43795);
+            request.@ref.fullscreen = fullscreen;
+            request.@ref.hasDisplayId = (display is not null);
+            request.@ref.displayId = (display?.id ?? 0L);
+            _Win32PlatformInterface___window_win32._setFullscreen(windowHandle, request);
         }
         finally
         {
-            allocator.free(request__43795);
+            allocator.free(request);
         }
     }
 
@@ -1076,21 +1076,21 @@ internal class _Win32PlatformInterface___window_win32
     internal abstract static long _getWindowText(Pointer<Void> windowHandle, Pointer<_Utf16___window_win32> lpString, long maxLength);
     public static string getWindowTitle(Allocator allocator, Pointer<Void> windowHandle)
     {
-        long length__44970 = _Win32PlatformInterface___window_win32._getWindowTextLength(windowHandle);
-        if ((length__44970 == 0L))
+        long length = _Win32PlatformInterface___window_win32._getWindowTextLength(windowHandle);
+        if ((length == 0L))
         {
             return "";
         }
-        Pointer<Uint16> data__45096 = allocator((length__44970 + 1L));
+        Pointer<Uint16> data = allocator((length + 1L));
         try
         {
-            Pointer<_Utf16___window_win32> buffer__45180 = data__45096.cast<_Utf16___window_win32>();
-            _Win32PlatformInterface___window_win32._getWindowText(windowHandle, buffer__45180, (length__44970 + 1L));
-            return buffer__45180.toDartString();
+            Pointer<_Utf16___window_win32> buffer = data.cast<_Utf16___window_win32>();
+            _Win32PlatformInterface___window_win32._getWindowText(windowHandle, buffer, (length + 1L));
+            return buffer.toDartString();
         }
         finally
         {
-            allocator.free(data__45096);
+            allocator.free(data);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1103,20 +1103,20 @@ internal class _Win32PlatformInterface___window_win32
     public abstract static bool clientToScreen(Pointer<Void> windowHandle, Pointer<_Win32Point___window_win32> point);
     public static global::Doroti.Ui.Offset getWindowOffsetFromParent(Allocator allocator, Pointer<Void> windowHandle, Pointer<Void> parentHandle)
     {
-        Pointer<_Win32Rect___window_win32> windowRect__46590 = allocator();
-        Pointer<_Win32Point___window_win32> parentOrigin__46663 = allocator();
+        Pointer<_Win32Rect___window_win32> windowRect = allocator();
+        Pointer<_Win32Point___window_win32> parentOrigin = allocator();
         try
         {
-            _Win32PlatformInterface___window_win32.getWindowRect(windowHandle, windowRect__46590);
-            parentOrigin__46663.@ref.x = 0L;
-            parentOrigin__46663.@ref.y = 0L;
-            _Win32PlatformInterface___window_win32.clientToScreen(parentHandle, parentOrigin__46663);
-            return new global::Doroti.Ui.Offset(((windowRect__46590.@ref.left - parentOrigin__46663.@ref.x)).toDouble(), ((windowRect__46590.@ref.top - parentOrigin__46663.@ref.y)).toDouble());
+            _Win32PlatformInterface___window_win32.getWindowRect(windowHandle, windowRect);
+            parentOrigin.@ref.x = 0L;
+            parentOrigin.@ref.y = 0L;
+            _Win32PlatformInterface___window_win32.clientToScreen(parentHandle, parentOrigin);
+            return new global::Doroti.Ui.Offset(((windowRect.@ref.left - parentOrigin.@ref.x)).toDouble(), ((windowRect.@ref.top - parentOrigin.@ref.y)).toDouble());
         }
         finally
         {
-            allocator.free(windowRect__46590);
-            allocator.free(parentOrigin__46663);
+            allocator.free(windowRect);
+            allocator.free(parentOrigin);
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1252,27 +1252,27 @@ internal class _CallocAllocator___window_win32 : Allocator
 
     internal virtual void _fillMemory(Pointer<NativeType> destination, long length, long fill)
     {
-        Pointer<Uint8> ptr__54924 = destination.cast<Uint8>();
-        for (var i__54974 = 0L; (i__54974 < length); i__54974++)
+        Pointer<Uint8> ptr = destination.cast<Uint8>();
+        for (var i = 0L; (i < length); i++)
         {
-            ptr__54924[i__54974] = fill;
+            ptr[i] = fill;
         }
     }
 
     internal virtual void _zeroMemory(Pointer<NativeType> destination, long length) => _fillMemory(destination, length, 0L);
     public virtual Pointer<T> allocate<T>(long byteCount, long? alignment = null) where T : NativeType
     {
-        Pointer<T> result__55413 = default!;
-        result__55413 = this._winCoTaskMemAlloc(byteCount).cast<T>();
-        if ((result__55413.address == 0L))
+        Pointer<T> result = default!;
+        result = this._winCoTaskMemAlloc(byteCount).cast<T>();
+        if ((result.address == 0L))
         {
             throw DartRuntimePrimitives.AsException(new DartArgumentError($"Could not allocate {byteCount} bytes."));
         }
         if (Platform.isWindows)
         {
-            _zeroMemory(result__55413, byteCount);
+            _zeroMemory(result, byteCount);
         }
-        return result__55413;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

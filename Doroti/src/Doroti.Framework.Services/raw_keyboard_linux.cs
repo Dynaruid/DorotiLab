@@ -44,8 +44,8 @@ public class RawKeyEventDataLinux : RawKeyEventData
         {
             if (specifiedLogicalKey is long specifiedLogicalKey__value3838)
             {
-                long key__3885 = DartRuntimePrimitives.RequireValue(specifiedLogicalKey__value3838);
-                return (LogicalKeyboardKey.findKeyByKeyId(key__3885) ?? new LogicalKeyboardKey(key__3885));
+                long key = DartRuntimePrimitives.RequireValue(specifiedLogicalKey__value3838);
+                return (LogicalKeyboardKey.findKeyByKeyId(key) ?? new LogicalKeyboardKey(key));
             }
             LogicalKeyboardKey? numPadKey = keyHelper.numpadKey(keyCode);
             if ((numPadKey is not null))
@@ -54,8 +54,8 @@ public class RawKeyEventDataLinux : RawKeyEventData
             }
             if (((keyLabel.Length != 0) && !LogicalKeyboardKey.isControlCharacter(keyLabel)))
             {
-                long keyId__4696 = (LogicalKeyboardKey.unicodePlane | ((unicodeScalarValues & LogicalKeyboardKey.valueMask)));
-                return (LogicalKeyboardKey.findKeyByKeyId(keyId__4696) ?? new LogicalKeyboardKey(keyId__4696));
+                long keyId = (LogicalKeyboardKey.unicodePlane | ((unicodeScalarValues & LogicalKeyboardKey.valueMask)));
+                return (LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId));
             }
             LogicalKeyboardKey? newKey = keyHelper.logicalKey(keyCode);
             if ((newKey is not null))

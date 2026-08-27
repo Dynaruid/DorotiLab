@@ -234,33 +234,33 @@ public class StandardMessageCodec : MessageCodec<object?>
                         if (value is string value__as15722)
                         {
                             buffer.putUint8(_valueString);
-                            var asciiBytes__15790 = new Uint8List(((string)value__as15722).Length);
-                            Uint8List? utf8Bytes__15845 = default!;
-                            var utf8Offset__15866 = 0L;
+                            var asciiBytes = new Uint8List(((string)value__as15722).Length);
+                            Uint8List? utf8Bytes = default!;
+                            var utf8Offset = 0L;
                             for (var i = 0L; (i < ((string)value__as15722).Length); i += 1L)
                             {
-                                long @char__16019 = ((string)value__as15722).codeUnitAt(i);
-                                if ((@char__16019 <= 127L))
+                                long @char = ((string)value__as15722).codeUnitAt(i);
+                                if ((@char <= 127L))
                                 {
-                                    asciiBytes__15790[i] = @char__16019;
+                                    asciiBytes[i] = @char;
                                 }
                                 else
                                 {
-                                    utf8Bytes__15845 = global::Doroti.Runtime.Dart_convertLibrary.utf8.encode(((string)value__as15722).substring(i));
-                                    utf8Offset__15866 = i;
+                                    utf8Bytes = global::Doroti.Runtime.Dart_convertLibrary.utf8.encode(((string)value__as15722).substring(i));
+                                    utf8Offset = i;
                                     break;
                                 }
                             }
-                            if ((utf8Bytes__15845 is not null))
+                            if ((utf8Bytes is not null))
                             {
-                                writeSize(buffer, (utf8Offset__15866 + utf8Bytes__15845.Count));
-                                buffer.putUint8List(new Uint8List(asciiBytes__15790, 0L, utf8Offset__15866));
-                                buffer.putUint8List(utf8Bytes__15845);
+                                writeSize(buffer, (utf8Offset + utf8Bytes.Count));
+                                buffer.putUint8List(new Uint8List(asciiBytes, 0L, utf8Offset));
+                                buffer.putUint8List(utf8Bytes);
                             }
                             else
                             {
-                                writeSize(buffer, asciiBytes__15790.Count);
-                                buffer.putUint8List(asciiBytes__15790);
+                                writeSize(buffer, asciiBytes.Count);
+                                buffer.putUint8List(asciiBytes);
                             }
                         }
                         else
@@ -385,53 +385,53 @@ public class StandardMessageCodec : MessageCodec<object?>
             case var __case18817 when object.Equals(__case18817, _valueLargeInt):
             case var __case18844 when object.Equals(__case18844, _valueString):
                 {
-                    long length__18876 = readSize(buffer);
-                    return global::Doroti.Runtime.Dart_convertLibrary.utf8.decoder.convert(buffer.getUint8List(length__18876));
+                    long length = readSize(buffer);
+                    return global::Doroti.Runtime.Dart_convertLibrary.utf8.decoder.convert(buffer.getUint8List(length));
                 }
             case var __case18980 when object.Equals(__case18980, _valueUint8List):
                 {
-                    long length__19015 = readSize(buffer);
-                    return buffer.getUint8List(length__19015);
+                    long lengthLocal = readSize(buffer);
+                    return buffer.getUint8List(lengthLocal);
                 }
             case var __case19097 when object.Equals(__case19097, _valueInt32List):
                 {
-                    long length__19132 = readSize(buffer);
-                    return buffer.getInt32List(length__19132);
+                    long lengthAlternate = readSize(buffer);
+                    return buffer.getInt32List(lengthAlternate);
                 }
             case var __case19214 when object.Equals(__case19214, _valueInt64List):
                 {
-                    long length__19249 = readSize(buffer);
-                    return buffer.getInt64List(length__19249);
+                    long lengthNested = readSize(buffer);
+                    return buffer.getInt64List(lengthNested);
                 }
             case var __case19331 when object.Equals(__case19331, _valueFloat32List):
                 {
-                    long length__19368 = readSize(buffer);
-                    return buffer.getFloat32List(length__19368);
+                    long lengthCurrent = readSize(buffer);
+                    return buffer.getFloat32List(lengthCurrent);
                 }
             case var __case19452 when object.Equals(__case19452, _valueFloat64List):
                 {
-                    long length__19489 = readSize(buffer);
-                    return buffer.getFloat64List(length__19489);
+                    long lengthNext = readSize(buffer);
+                    return buffer.getFloat64List(lengthNext);
                 }
             case var __case19573 when object.Equals(__case19573, _valueList):
                 {
-                    long length__19603 = readSize(buffer);
-                    var result__19644 = new List<object?>(System.Linq.Enumerable.Repeat<object?>(null, checked((int)length__19603)));
-                    for (var i__19706 = 0L; (i__19706 < length__19603); i__19706++)
+                    long lengthCandidate = readSize(buffer);
+                    var result = new List<object?>(System.Linq.Enumerable.Repeat<object?>(null, checked((int)lengthCandidate)));
+                    for (var i = 0L; (i < lengthCandidate); i++)
                     {
-                        result__19644[(int)(i__19706)] = readValue(buffer);
+                        result[(int)(i)] = readValue(buffer);
                     }
-                    return result__19644;
+                    return result;
                 }
             case var __case19817 when object.Equals(__case19817, _valueMap):
                 {
-                    long length__19846 = readSize(buffer);
-                    var result__19887 = new DartMap<object?, object?>();
-                    for (var i__19935 = 0L; (i__19935 < length__19846); i__19935++)
+                    long lengthA = readSize(buffer);
+                    var resultLocal = new DartMap<object?, object?>();
+                    for (var iLocal = 0L; (iLocal < lengthA); iLocal++)
                     {
-                        result__19887[readValue(buffer)] = readValue(buffer);
+                        resultLocal[readValue(buffer)] = readValue(buffer);
                     }
-                    return result__19887;
+                    return resultLocal;
                 }
             default:
                 {

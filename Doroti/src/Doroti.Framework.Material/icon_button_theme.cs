@@ -57,13 +57,13 @@ public class IconButtonThemeData : global::Doroti.Framework.Foundation.Diagnosti
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -86,8 +86,8 @@ public class IconButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static IconButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        IconButtonTheme? buttonTheme__3886 = ((IconButtonTheme?)(object?)context.dependOnInheritedWidgetOfExactType<IconButtonTheme>());
-        return (buttonTheme__3886?.data ?? Theme.of(context).iconButtonTheme);
+        IconButtonTheme? buttonTheme = ((IconButtonTheme?)(object?)context.dependOnInheritedWidgetOfExactType<IconButtonTheme>());
+        return (buttonTheme?.data ?? Theme.of(context).iconButtonTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

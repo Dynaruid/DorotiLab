@@ -73,8 +73,8 @@ public abstract class RenderProxySliver : RenderSliver, RenderObjectWithChildMix
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
     {
-        var childParentData__2838 = ((SliverPhysicalParentData?)(object?)((RenderObject)child).parentData!)!;
-        childParentData__2838.applyPaintTransform(transform);
+        var childParentData = ((SliverPhysicalParentData?)(object?)((RenderObject)child).parentData!)!;
+        childParentData.applyPaintTransform(transform);
     }
 
     public virtual bool debugValidateChild(RenderObject child)
@@ -170,16 +170,16 @@ public class RenderSliverOpacity : RenderProxySliver
             {
                 return;
             }
-            bool didNeedCompositing__4614 = this.alwaysNeedsCompositing;
-            var wasVisible__4669 = (this._alpha != 0L);
+            bool didNeedCompositing = this.alwaysNeedsCompositing;
+            var wasVisible = (this._alpha != 0L);
             _opacity = __value;
             _alpha = Dart_uiLibrary.Color.getAlphaFromOpacity(this._opacity);
-            if ((didNeedCompositing__4614 != this.alwaysNeedsCompositing))
+            if ((didNeedCompositing != this.alwaysNeedsCompositing))
             {
                 markNeedsCompositingBitsUpdate();
             }
             markNeedsPaint();
-            if (((wasVisible__4669 != ((this._alpha != 0L))) && !this.alwaysIncludeSemantics))
+            if (((wasVisible != ((this._alpha != 0L))) && !this.alwaysIncludeSemantics))
             {
                 markNeedsSemanticsUpdate();
             }
@@ -410,9 +410,9 @@ public class RenderSliverAnimatedOpacity : RenderProxySliver, RenderAnimatedOpac
     public override OffsetLayer updateCompositedLayer(OffsetLayer? oldLayer)
     {
         var __oldLayer = oldLayer is null ? null : (OpacityLayer)(object)oldLayer;
-        OpacityLayer updatedLayer__33945 = (__oldLayer ?? new OpacityLayer());
-        updatedLayer__33945.alpha = this._alpha;
-        return updatedLayer__33945;
+        OpacityLayer updatedLayer = (__oldLayer ?? new OpacityLayer());
+        updatedLayer.alpha = this._alpha;
+        return updatedLayer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -467,18 +467,18 @@ public class RenderSliverAnimatedOpacity : RenderProxySliver, RenderAnimatedOpac
 
     public virtual void _updateOpacity()
     {
-        long? oldAlpha__35811 = this._alpha;
+        long? oldAlpha = this._alpha;
         this._alpha = Dart_uiLibrary.Color.getAlphaFromOpacity(this.opacity.value);
-        if ((oldAlpha__35811 != this._alpha))
+        if ((oldAlpha != this._alpha))
         {
-            bool? wasRepaintBoundary__35936 = this._currentlyIsRepaintBoundary;
+            bool? wasRepaintBoundary = this._currentlyIsRepaintBoundary;
             this._currentlyIsRepaintBoundary = (DartRuntimePrimitives.RequireValue(this._alpha) > 0L);
-            if (((child is not null) && (wasRepaintBoundary__35936 != this._currentlyIsRepaintBoundary)))
+            if (((child is not null) && (wasRepaintBoundary != this._currentlyIsRepaintBoundary)))
             {
                 markNeedsCompositingBitsUpdate();
             }
             markNeedsCompositedLayerUpdate();
-            if (((oldAlpha__35811 == 0L) || (this._alpha == 0L)))
+            if (((oldAlpha == 0L) || (this._alpha == 0L)))
             {
                 markNeedsSemanticsUpdate();
             }
@@ -547,8 +547,8 @@ public class RenderSliverConstrainedCrossAxis : RenderProxySliver
         DartRuntimePrimitives.Assert(() => (child is not null));
         DartRuntimePrimitives.Assert(() => (this.maxExtent >= 0.0));
         child!.layout(constraints.copyWith(crossAxisExtent: Math.Min(this._maxExtent, ((SliverConstraints)constraints).crossAxisExtent)), parentUsesSize: true);
-        SliverGeometry childLayoutGeometry__14492 = child!.geometry!;
-        geometry = childLayoutGeometry__14492.copyWith(crossAxisExtent: Math.Min(this._maxExtent, ((SliverConstraints)constraints).crossAxisExtent));
+        SliverGeometry childLayoutGeometry = child!.geometry!;
+        geometry = childLayoutGeometry.copyWith(crossAxisExtent: Math.Min(this._maxExtent, ((SliverConstraints)constraints).crossAxisExtent));
     }
 
 }

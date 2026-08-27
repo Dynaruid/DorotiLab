@@ -87,17 +87,17 @@ public class Card : global::Doroti.Framework.Widgets.StatelessWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        CardThemeData cardTheme__8905 = CardTheme.of(context);
-        CardThemeData defaults__8964 = default!;
+        CardThemeData cardTheme = CardTheme.of(context);
+        CardThemeData defaults = default!;
         if (Theme.of(context).useMaterial3)
         {
-            defaults__8964 = (this._variant switch { _CardVariant__card.elevated => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _CardDefaultsM3__card(context)), _CardVariant__card.filled => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _FilledCardDefaultsM3__card(context)), _CardVariant__card.outlined => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _OutlinedCardDefaultsM3__card(context)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            defaults = (this._variant switch { _CardVariant__card.elevated => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _CardDefaultsM3__card(context)), _CardVariant__card.filled => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _FilledCardDefaultsM3__card(context)), _CardVariant__card.outlined => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _OutlinedCardDefaultsM3__card(context)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
         else
         {
-            defaults__8964 = DartRuntimePrimitives.ConvertValue<CardThemeData>(new _CardDefaultsM2__card(context));
+            defaults = DartRuntimePrimitives.ConvertValue<CardThemeData>(new _CardDefaultsM2__card(context));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: this.semanticContainer, child: new global::Doroti.Framework.Widgets.Padding(padding: ((this.margin ?? cardTheme__8905.margin) ?? defaults__8964.margin!), child: new Material(type: MaterialType.card, color: ((this.color ?? cardTheme__8905.color) ?? defaults__8964.color), shadowColor: ((this.shadowColor ?? cardTheme__8905.shadowColor) ?? defaults__8964.shadowColor), surfaceTintColor: ((this.surfaceTintColor ?? cardTheme__8905.surfaceTintColor) ?? defaults__8964.surfaceTintColor), elevation: ((this.elevation ?? cardTheme__8905.elevation) ?? DartRuntimePrimitives.RequireValue(defaults__8964.elevation)), shape: ((this.shape ?? cardTheme__8905.shape) ?? defaults__8964.shape), borderOnForeground: this.borderOnForeground, clipBehavior: ((this.clipBehavior ?? cardTheme__8905.clipBehavior) ?? DartRuntimePrimitives.RequireValue(defaults__8964.clipBehavior)), child: new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: !this.semanticContainer, child: this.child)))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: this.semanticContainer, child: new global::Doroti.Framework.Widgets.Padding(padding: ((this.margin ?? cardTheme.margin) ?? defaults.margin!), child: new Material(type: MaterialType.card, color: ((this.color ?? cardTheme.color) ?? defaults.color), shadowColor: ((this.shadowColor ?? cardTheme.shadowColor) ?? defaults.shadowColor), surfaceTintColor: ((this.surfaceTintColor ?? cardTheme.surfaceTintColor) ?? defaults.surfaceTintColor), elevation: ((this.elevation ?? cardTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation)), shape: ((this.shape ?? cardTheme.shape) ?? defaults.shape), borderOnForeground: this.borderOnForeground, clipBehavior: ((this.clipBehavior ?? cardTheme.clipBehavior) ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior)), child: new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: !this.semanticContainer, child: this.child)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

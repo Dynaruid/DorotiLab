@@ -27,7 +27,7 @@ internal class _PlaceholderPainter__placeholder : global::Doroti.Framework.Rende
 
     public override void paint(Canvas canvas, Size size)
     {
-        var paint__498 = ((Func<Paint>)(() =>
+        var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = this.color;
@@ -35,16 +35,16 @@ internal class _PlaceholderPainter__placeholder : global::Doroti.Framework.Rende
     __cascade.strokeWidth = this.strokeWidth;
     return __cascade;
 }))();
-        global::Doroti.Ui.Rect rect__623 = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & size));
-        var path__660 = ((Func<Path>)(() =>
+        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & size));
+        var path = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addRect(rect__623);
-    __cascade.addPolygon(new List<global::Doroti.Ui.Offset> { rect__623.topRight, rect__623.bottomLeft }, false);
-    __cascade.addPolygon(new List<global::Doroti.Ui.Offset> { rect__623.topLeft, rect__623.bottomRight }, false);
+    __cascade.addRect(rect);
+    __cascade.addPolygon(new List<global::Doroti.Ui.Offset> { rect.topRight, rect.bottomLeft }, false);
+    __cascade.addPolygon(new List<global::Doroti.Ui.Offset> { rect.topLeft, rect.bottomRight }, false);
     return __cascade;
 }))();
-        canvas.drawPath(path__660, paint__498);
+        canvas.drawPath(path, paintLocal);
     }
 
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)

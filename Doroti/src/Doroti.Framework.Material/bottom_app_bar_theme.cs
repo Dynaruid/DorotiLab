@@ -54,8 +54,8 @@ public class BottomAppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static BottomAppBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        BottomAppBarTheme? bottomAppBarTheme__5895 = ((BottomAppBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<BottomAppBarTheme>());
-        return (bottomAppBarTheme__5895?.data ?? Theme.of(context).bottomAppBarTheme);
+        BottomAppBarTheme? bottomAppBarThemeLocal = ((BottomAppBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<BottomAppBarTheme>());
+        return (bottomAppBarThemeLocal?.data ?? Theme.of(context).bottomAppBarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -79,13 +79,13 @@ public class BottomAppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme
     public override string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -168,13 +168,13 @@ public class BottomAppBarThemeData : global::Doroti.Framework.Foundation.Diagnos
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

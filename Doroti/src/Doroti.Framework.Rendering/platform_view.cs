@@ -135,17 +135,17 @@ public class RenderAndroidView : PlatformViewRenderBox
         }
         _state = _PlatformViewState__platform_view.resizing;
         markNeedsPaint();
-        global::Doroti.Ui.Size targetSize__5863 = default!;
+        global::Doroti.Ui.Size targetSize = default!;
         do
         {
-            targetSize__5863 = size;
-            _currentTextureSize = await this._viewController.setSize(targetSize__5863);
+            targetSize = size;
+            _currentTextureSize = await this._viewController.setSize(targetSize);
             if (this._isDisposed)
             {
                 return;
             }
         }
-        while ((!object.Equals(size, targetSize__5863)));
+        while ((!object.Equals(size, targetSize)));
         _state = _PlatformViewState__platform_view.ready;
         markNeedsPaint();
     }
@@ -171,8 +171,8 @@ public class RenderAndroidView : PlatformViewRenderBox
         {
             return;
         }
-        bool isTextureLargerThanWidget__7874 = ((DartRuntimePrimitives.RequireValue(this._currentTextureSize).width > size.width) || (DartRuntimePrimitives.RequireValue(this._currentTextureSize).height > size.height));
-        if ((isTextureLargerThanWidget__7874 && (!object.Equals(this.clipBehavior, Clip.none))))
+        bool isTextureLargerThanWidget = ((DartRuntimePrimitives.RequireValue(this._currentTextureSize).width > size.width) || (DartRuntimePrimitives.RequireValue(this._currentTextureSize).height > size.height));
+        if ((isTextureLargerThanWidget && (!object.Equals(this.clipBehavior, Clip.none))))
         {
             this._clipRectLayer.layer = context.pushClipRect(true, offset, (offset & size), (Action<PaintingContext, Offset>)this._paintTexture, clipBehavior: this.clipBehavior, oldLayer: ((LayerHandle<ClipRectLayer>)this._clipRectLayer).layer);
             return;
@@ -238,10 +238,10 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox where T : DarwinPl
             {
                 return;
             }
-            var needsSemanticsUpdate__10692 = (this._viewController.id != __value.id);
+            var needsSemanticsUpdate = (this._viewController.id != __value.id);
             _viewController = __value;
             markNeedsPaint();
-            if (needsSemanticsUpdate__10692)
+            if (needsSemanticsUpdate)
             {
                 markNeedsSemanticsUpdate();
             }
@@ -386,9 +386,9 @@ internal class _UiKitViewGestureRecognizer__platform_view : OneSequenceGestureRe
     public override void addAllowedPointer(global::Doroti.Framework.Gestures.PointerDownEvent @event)
     {
         base.addAllowedPointer(@event);
-        foreach (OneSequenceGestureRecognizer recognizer__18992 in this._gestureRecognizers)
+        foreach (OneSequenceGestureRecognizer recognizer in this._gestureRecognizers)
         {
-            recognizer__18992.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event);
+            recognizer.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event);
         }
     }
 
@@ -437,9 +437,9 @@ public class _PlatformViewGestureRecognizer__platform_view : OneSequenceGestureR
     public override void addAllowedPointer(global::Doroti.Framework.Gestures.PointerDownEvent @event)
     {
         base.addAllowedPointer(@event);
-        foreach (OneSequenceGestureRecognizer recognizer__22348 in this._gestureRecognizers)
+        foreach (OneSequenceGestureRecognizer recognizer in this._gestureRecognizers)
         {
-            recognizer__22348.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event);
+            recognizer.addPointer((global::Doroti.Framework.Gestures.PointerDownEvent)(object)@event);
         }
     }
 
@@ -528,10 +528,10 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
             {
                 return;
             }
-            var needsSemanticsUpdate__24873 = (this._controller.viewId != controller.viewId);
+            var needsSemanticsUpdate = (this._controller.viewId != controller.viewId);
             _controller = controller;
             markNeedsPaint();
-            if (needsSemanticsUpdate__24873)
+            if (needsSemanticsUpdate)
             {
                 markNeedsSemanticsUpdate();
             }

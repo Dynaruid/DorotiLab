@@ -82,8 +82,8 @@ public class DecorationImage
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.image, this.colorFilter, this.fit, this.alignment, this.centerSlice, this.repeat, this.matchTextDirection, this.scale, this.opacity, this.filterQuality, this.invertColors, this.isAntiAlias);
     public override string ToString()
     {
-        var properties__7894 = new List<string> { $"{this.image}", $"{this.alignment}", $"scale {this.scale.toStringAsFixed(1L)}", $"opacity {this.opacity.toStringAsFixed(1L)}", $"{this.filterQuality}" };
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "DecorationImage"))}({string.Join(", ", properties__7894)})";
+        var properties = new List<string> { $"{this.image}", $"{this.alignment}", $"scale {this.scale.toStringAsFixed(1L)}", $"opacity {this.opacity.toStringAsFixed(1L)}", $"{this.filterQuality}" };
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "DecorationImage"))}({string.Join(", ", properties)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -124,7 +124,7 @@ internal class _DecorationImagePainter__decoration_image : DecorationImagePainte
 
     public virtual void paint(Canvas canvas, Rect rect, Path? clipPath, ImageConfiguration configuration, double blend = 1.0, BlendMode blendMode = BlendMode.srcOver)
     {
-        var flipHorizontally__12145 = false;
+        var flipHorizontallyLocal = false;
         if (((DecorationImage)this._details).matchTextDirection)
         {
             DartRuntimePrimitives.Assert(() =>
@@ -137,16 +137,16 @@ internal class _DecorationImagePainter__decoration_image : DecorationImagePainte
                 });
             if ((object.Equals(((ImageConfiguration)configuration).textDirection, TextDirection.rtl)))
             {
-                flipHorizontally__12145 = true;
+                flipHorizontallyLocal = true;
             }
         }
-        ImageStream newImageStream__13381 = ((DecorationImage)this._details).image.resolve(configuration);
-        if ((!object.Equals(((ImageStream)newImageStream__13381).key, this._imageStream?.key)))
+        ImageStream newImageStream = ((DecorationImage)this._details).image.resolve(configuration);
+        if ((!object.Equals(((ImageStream)newImageStream).key, this._imageStream?.key)))
         {
-            var listener__13500 = new ImageStreamListener(this._handleImage, onError: ((DecorationImage)this._details).onError);
-            this._imageStream?.removeListener(listener__13500);
-            _imageStream = newImageStream__13381;
-            this._imageStream!.addListener(listener__13500);
+            var listener = new ImageStreamListener(this._handleImage, onError: ((DecorationImage)this._details).onError);
+            this._imageStream?.removeListener(listener);
+            _imageStream = newImageStream;
+            this._imageStream!.addListener(listener);
         }
         if ((this._image is null))
         {
@@ -157,7 +157,7 @@ internal class _DecorationImagePainter__decoration_image : DecorationImagePainte
             canvas.save();
             canvas.clipPath(clipPath);
         }
-        Decoration_imageLibrary.paintImage(canvas: canvas, rect: rect, image: this._image!.image, debugImageLabel: this._image!.debugLabel, scale: (((DecorationImage)this._details).scale * this._image!.scale), colorFilter: ((DecorationImage)this._details).colorFilter, fit: ((DecorationImage)this._details).fit, alignment: ((DecorationImage)this._details).alignment.resolve(((ImageConfiguration)configuration).textDirection), centerSlice: ((DecorationImage)this._details).centerSlice, repeat: ((DecorationImage)this._details).repeat, flipHorizontally: flipHorizontally__12145, opacity: (((DecorationImage)this._details).opacity * blend), filterQuality: ((DecorationImage)this._details).filterQuality, invertColors: ((DecorationImage)this._details).invertColors, isAntiAlias: ((DecorationImage)this._details).isAntiAlias, blendMode: blendMode);
+        Decoration_imageLibrary.paintImage(canvas: canvas, rect: rect, image: this._image!.image, debugImageLabel: this._image!.debugLabel, scale: (((DecorationImage)this._details).scale * this._image!.scale), colorFilter: ((DecorationImage)this._details).colorFilter, fit: ((DecorationImage)this._details).fit, alignment: ((DecorationImage)this._details).alignment.resolve(((ImageConfiguration)configuration).textDirection), centerSlice: ((DecorationImage)this._details).centerSlice, repeat: ((DecorationImage)this._details).repeat, flipHorizontally: flipHorizontallyLocal, opacity: (((DecorationImage)this._details).opacity * blend), filterQuality: ((DecorationImage)this._details).filterQuality, invertColors: ((DecorationImage)this._details).invertColors, isAntiAlias: ((DecorationImage)this._details).isAntiAlias, blendMode: blendMode);
         if ((clipPath is not null))
         {
             canvas.restore();
@@ -230,33 +230,33 @@ public static partial class Decoration_imageLibrary
         {
             return;
         }
-        global::Doroti.Ui.Size outputSize__20013 = rect.size;
-        var inputSize__20043 = new global::Doroti.Ui.Size(image.width.toDouble(), image.height.toDouble());
-        global::Doroti.Ui.Offset? sliceBorder__20120 = default!;
+        global::Doroti.Ui.Size outputSize = rect.size;
+        var inputSize = new global::Doroti.Ui.Size(image.width.toDouble(), image.height.toDouble());
+        global::Doroti.Ui.Offset? sliceBorder = default!;
         if ((centerSlice is not null))
         {
             Rect centerSlice__value20139 = DartRuntimePrimitives.RequireValue(centerSlice);
-            sliceBorder__20120 = ((inputSize__20043 / scale) - DartRuntimePrimitives.RequireValue(centerSlice__value20139).size);
-            outputSize__20013 = (outputSize__20013 - DartRuntimePrimitives.RequireValue(sliceBorder__20120));
-            inputSize__20043 = (inputSize__20043 - (DartRuntimePrimitives.RequireValue(sliceBorder__20120) * scale));
+            sliceBorder = ((inputSize / scale) - DartRuntimePrimitives.RequireValue(centerSlice__value20139).size);
+            outputSize = (outputSize - DartRuntimePrimitives.RequireValue(sliceBorder));
+            inputSize = (inputSize - (DartRuntimePrimitives.RequireValue(sliceBorder) * scale));
         }
         fit ??= ((centerSlice is null) ? BoxFit.scaleDown : BoxFit.fill);
         DartRuntimePrimitives.Assert(() => ((centerSlice is null) || (((!object.Equals(DartRuntimePrimitives.RequireValue(fit), BoxFit.none)) && (!object.Equals(DartRuntimePrimitives.RequireValue(fit), BoxFit.cover))))));
-        FittedSizes fittedSizes__20502 = global::Doroti.Framework.Painting.Box_fitLibrary.applyBoxFit(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(fit)), (inputSize__20043 / scale), outputSize__20013);
-        global::Doroti.Ui.Size sourceSize__20578 = (((FittedSizes)fittedSizes__20502).source * scale);
-        global::Doroti.Ui.Size destinationSize__20626 = ((FittedSizes)fittedSizes__20502).destination;
+        FittedSizes fittedSizes = global::Doroti.Framework.Painting.Box_fitLibrary.applyBoxFit(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(fit)), (inputSize / scale), outputSize);
+        global::Doroti.Ui.Size sourceSize = (((FittedSizes)fittedSizes).source * scale);
+        global::Doroti.Ui.Size destinationSize = ((FittedSizes)fittedSizes).destination;
         if ((centerSlice is not null))
         {
             Rect centerSlice__value20675 = DartRuntimePrimitives.RequireValue(centerSlice);
-            outputSize__20013 += DartRuntimePrimitives.RequireValue(sliceBorder__20120);
-            destinationSize__20626 += DartRuntimePrimitives.RequireValue(sliceBorder__20120);
-            DartRuntimePrimitives.Assert(() => (object.Equals(sourceSize__20578, inputSize__20043)));
+            outputSize += DartRuntimePrimitives.RequireValue(sliceBorder);
+            destinationSize += DartRuntimePrimitives.RequireValue(sliceBorder);
+            DartRuntimePrimitives.Assert(() => (object.Equals(sourceSize, inputSize)));
         }
-        if (((!object.Equals(repeat, ImageRepeat.noRepeat)) && (object.Equals(destinationSize__20626, outputSize__20013))))
+        if (((!object.Equals(repeat, ImageRepeat.noRepeat)) && (object.Equals(destinationSize, outputSize))))
         {
             repeat = ImageRepeat.noRepeat;
         }
-        var paint__21275 = ((Func<Paint>)(() =>
+        var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.isAntiAlias = isAntiAlias;
@@ -264,53 +264,53 @@ public static partial class Decoration_imageLibrary
 }))();
         if ((colorFilter is not null))
         {
-            paint__21275.colorFilter = colorFilter;
+            paint.colorFilter = colorFilter;
         }
-        paint__21275.color = global::Doroti.Ui.Color.fromRGBO(0L, 0L, 0L, Dart_uiLibrary.clampDouble(opacity, 0.0, 1.0));
-        paint__21275.filterQuality = filterQuality;
-        paint__21275.invertColors = invertColors;
-        paint__21275.blendMode = blendMode;
-        double halfWidthDelta__21584 = (((outputSize__20013.width - destinationSize__20626.width)) / 2.0);
-        double halfHeightDelta__21666 = (((outputSize__20013.height - destinationSize__20626.height)) / 2.0);
-        double dx__21751 = (halfWidthDelta__21584 + (((flipHorizontally ? -((Alignment)alignment).x : ((Alignment)alignment).x)) * halfWidthDelta__21584));
-        double dy__21860 = (halfHeightDelta__21666 + (((Alignment)alignment).y * halfHeightDelta__21666));
-        global::Doroti.Ui.Offset destinationPosition__21929 = rect.topLeft.translate(dx__21751, dy__21860);
-        global::Doroti.Ui.Rect destinationRect__21996 = (destinationPosition__21929 & destinationSize__20626);
-        var invertedCanvas__22141 = false;
+        paint.color = global::Doroti.Ui.Color.fromRGBO(0L, 0L, 0L, Dart_uiLibrary.clampDouble(opacity, 0.0, 1.0));
+        paint.filterQuality = filterQuality;
+        paint.invertColors = invertColors;
+        paint.blendMode = blendMode;
+        double halfWidthDelta = (((outputSize.width - destinationSize.width)) / 2.0);
+        double halfHeightDelta = (((outputSize.height - destinationSize.height)) / 2.0);
+        double dx = (halfWidthDelta + (((flipHorizontally ? -((Alignment)alignment).x : ((Alignment)alignment).x)) * halfWidthDelta));
+        double dy = (halfHeightDelta + (((Alignment)alignment).y * halfHeightDelta));
+        global::Doroti.Ui.Offset destinationPosition = rect.topLeft.translate(dx, dy);
+        global::Doroti.Ui.Rect destinationRect = (destinationPosition & destinationSize);
+        var invertedCanvas = false;
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
-            double maxDevicePixelRatio__22909 = System.Linq.Enumerable.Aggregate(PaintingBinding.instance.platformDispatcher.views, (double)0.0, ((previousValue, view) => Math.Max(previousValue, view.devicePixelRatio)));
-            var sizeInfo__23116 = new ImageSizeInfo(source: (debugImageLabel ?? $"<Unknown Image({image.width}×{image.height})>"), imageSize: new global::Doroti.Ui.Size(image.width.toDouble(), image.height.toDouble()), displaySize: (outputSize__20013 * maxDevicePixelRatio__22909));
+            double maxDevicePixelRatio = System.Linq.Enumerable.Aggregate(PaintingBinding.instance.platformDispatcher.views, (double)0.0, ((previousValue, view) => Math.Max(previousValue, view.devicePixelRatio)));
+            var sizeInfo = new ImageSizeInfo(source: (debugImageLabel ?? $"<Unknown Image({image.width}×{image.height})>"), imageSize: new global::Doroti.Ui.Size(image.width.toDouble(), image.height.toDouble()), displaySize: (outputSize * maxDevicePixelRatio));
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugInvertOversizedImages && (((ImageSizeInfo)sizeInfo__23116).decodedSizeInBytes > (((ImageSizeInfo)sizeInfo__23116).displaySizeInBytes + global::Doroti.Framework.Painting.DebugLibrary.debugImageOverheadAllowance))))
+                    if ((global::Doroti.Framework.Painting.DebugLibrary.debugInvertOversizedImages && (((ImageSizeInfo)sizeInfo).decodedSizeInBytes > (((ImageSizeInfo)sizeInfo).displaySizeInBytes + global::Doroti.Framework.Painting.DebugLibrary.debugImageOverheadAllowance))))
                     {
-                        long overheadInKilobytes__23602 = (checked((long)(((((ImageSizeInfo)sizeInfo__23116).decodedSizeInBytes - ((ImageSizeInfo)sizeInfo__23116).displaySizeInBytes)) / 1024L)));
-                        long outputWidth__23723 = ((ImageSizeInfo)sizeInfo__23116).displaySize.width.toInt();
-                        long outputHeight__23791 = ((ImageSizeInfo)sizeInfo__23116).displaySize.height.toInt();
-                        FlutterError.reportError(new FlutterErrorDetails(exception: $"Image {debugImageLabel} has a display size of " + $"{outputWidth__23723}×{outputHeight__23791} but a decode size of " + $"{image.width}×{image.height}, which uses an additional " + $"{overheadInKilobytes__23602}KB (assuming a device pixel ratio of " + $"{maxDevicePixelRatio__22909}).\n\n" + "Consider resizing the asset ahead of time, supplying a cacheWidth " + $"parameter of {outputWidth__23723}, a cacheHeight parameter of " + $"{outputHeight__23791}, or using a ResizeImage.", library: "painting library", context: new ErrorDescription("while painting an image")));
-                        canvas.saveLayer(destinationRect__21996, ((Func<Paint>)(() =>
+                        long overheadInKilobytes = (checked((long)(((((ImageSizeInfo)sizeInfo).decodedSizeInBytes - ((ImageSizeInfo)sizeInfo).displaySizeInBytes)) / 1024L)));
+                        long outputWidth = ((ImageSizeInfo)sizeInfo).displaySize.width.toInt();
+                        long outputHeight = ((ImageSizeInfo)sizeInfo).displaySize.height.toInt();
+                        FlutterError.reportError(new FlutterErrorDetails(exception: $"Image {debugImageLabel} has a display size of " + $"{outputWidth}×{outputHeight} but a decode size of " + $"{image.width}×{image.height}, which uses an additional " + $"{overheadInKilobytes}KB (assuming a device pixel ratio of " + $"{maxDevicePixelRatio}).\n\n" + "Consider resizing the asset ahead of time, supplying a cacheWidth " + $"parameter of {outputWidth}, a cacheHeight parameter of " + $"{outputHeight}, or using a ResizeImage.", library: "painting library", context: new ErrorDescription("while painting an image")));
+                        canvas.saveLayer(destinationRect, ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.colorFilter = global::Doroti.Ui.ColorFilter.matrix(new List<double> { -1, 0, 0, 0, 255, 0, -1, 0, 0, 255, 0, 0, -1, 0, 255, 0, 0, 0, 1, 0 });
     return __cascade;
 }))());
-                        double dy__25222 = -((rect.top + (rect.height / 2.0)));
-                        canvas.translate(0.0, -dy__25222);
+                        double dyLocal = -((rect.top + (rect.height / 2.0)));
+                        canvas.translate(0.0, -dyLocal);
                         canvas.scale(1.0, -1.0);
-                        canvas.translate(0.0, dy__25222);
-                        invertedCanvas__22141 = true;
+                        canvas.translate(0.0, dyLocal);
+                        invertedCanvas = true;
                     }
                     return true;
                 });
-            if (!Decoration_imageLibrary._lastFrameImageSizeInfo.Contains(sizeInfo__23116))
+            if (!Decoration_imageLibrary._lastFrameImageSizeInfo.Contains(sizeInfo))
             {
-                ImageSizeInfo? existingSizeInfo__25597 = Decoration_imageLibrary._pendingImageSizeInfo.GetValueOrDefault(DartRuntimePrimitives.RequireReference(((ImageSizeInfo)sizeInfo__23116).source));
-                if (((existingSizeInfo__25597 is null) || (((ImageSizeInfo)existingSizeInfo__25597).displaySizeInBytes < ((ImageSizeInfo)sizeInfo__23116).displaySizeInBytes)))
+                ImageSizeInfo? existingSizeInfo = Decoration_imageLibrary._pendingImageSizeInfo.GetValueOrDefault(DartRuntimePrimitives.RequireReference(((ImageSizeInfo)sizeInfo).source));
+                if (((existingSizeInfo is null) || (((ImageSizeInfo)existingSizeInfo).displaySizeInBytes < ((ImageSizeInfo)sizeInfo).displaySizeInBytes)))
                 {
-                    Decoration_imageLibrary._pendingImageSizeInfo[((ImageSizeInfo)sizeInfo__23116).source!] = sizeInfo__23116;
+                    Decoration_imageLibrary._pendingImageSizeInfo[((ImageSizeInfo)sizeInfo).source!] = sizeInfo;
                 }
-                global::Doroti.Framework.Painting.DebugLibrary.debugOnPaintImage?.Invoke(sizeInfo__23116);
+                global::Doroti.Framework.Painting.DebugLibrary.debugOnPaintImage?.Invoke(sizeInfo);
                 SchedulerBinding.instance.addPostFrameCallback(((timeStamp) =>
                 {
                     Decoration_imageLibrary._lastFrameImageSizeInfo = Decoration_imageLibrary._pendingImageSizeInfo.Values.toSet();
@@ -323,8 +323,8 @@ public static partial class Decoration_imageLibrary
                 }), debugLabel: "paintImage.recordImageSizes");
             }
         }
-        bool needSave__26468 = (((centerSlice is not null) || (!object.Equals(repeat, ImageRepeat.noRepeat))) || flipHorizontally);
-        if (needSave__26468)
+        bool needSave = (((centerSlice is not null) || (!object.Equals(repeat, ImageRepeat.noRepeat))) || flipHorizontally);
+        if (needSave)
         {
             canvas.save();
         }
@@ -334,23 +334,23 @@ public static partial class Decoration_imageLibrary
         }
         if (flipHorizontally)
         {
-            double dx__26709 = -((rect.left + (rect.width / 2.0)));
-            canvas.translate(-dx__26709, 0.0);
+            double dxLocal = -((rect.left + (rect.width / 2.0)));
+            canvas.translate(-dxLocal, 0.0);
             canvas.scale(-1.0, 1.0);
-            canvas.translate(dx__26709, 0.0);
+            canvas.translate(dxLocal, 0.0);
         }
         if ((centerSlice is null))
         {
-            global::Doroti.Ui.Rect sourceRect__26887 = alignment.inscribe(sourceSize__20578, (Offset.zero & inputSize__20043));
+            global::Doroti.Ui.Rect sourceRect = alignment.inscribe(sourceSize, (Offset.zero & inputSize));
             if ((object.Equals(repeat, ImageRepeat.noRepeat)))
             {
-                canvas.drawImageRect(image, sourceRect__26887, destinationRect__21996, paint__21275);
+                canvas.drawImageRect(image, sourceRect, destinationRect, paint);
             }
             else
             {
-                foreach (global::Doroti.Ui.Rect tileRect__27105 in Decoration_imageLibrary._generateImageTileRects(rect, destinationRect__21996, repeat))
+                foreach (global::Doroti.Ui.Rect tileRect in Decoration_imageLibrary._generateImageTileRects(rect, destinationRect, repeat))
                 {
-                    canvas.drawImageRect(image, sourceRect__26887, tileRect__27105, paint__21275);
+                    canvas.drawImageRect(image, sourceRect, tileRect, paint);
                 }
             }
         }
@@ -359,21 +359,21 @@ public static partial class Decoration_imageLibrary
             canvas.scale((1L / scale));
             if ((object.Equals(repeat, ImageRepeat.noRepeat)))
             {
-                canvas.drawImageNine(image, Decoration_imageLibrary._scaleRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(centerSlice)), scale), Decoration_imageLibrary._scaleRect(destinationRect__21996, scale), paint__21275);
+                canvas.drawImageNine(image, Decoration_imageLibrary._scaleRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(centerSlice)), scale), Decoration_imageLibrary._scaleRect(destinationRect, scale), paint);
             }
             else
             {
-                foreach (global::Doroti.Ui.Rect tileRect__27523 in Decoration_imageLibrary._generateImageTileRects(rect, destinationRect__21996, repeat))
+                foreach (global::Doroti.Ui.Rect tileRectLocal in Decoration_imageLibrary._generateImageTileRects(rect, destinationRect, repeat))
                 {
-                    canvas.drawImageNine(image, Decoration_imageLibrary._scaleRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(centerSlice)), scale), Decoration_imageLibrary._scaleRect(tileRect__27523, scale), paint__21275);
+                    canvas.drawImageNine(image, Decoration_imageLibrary._scaleRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(centerSlice)), scale), Decoration_imageLibrary._scaleRect(tileRectLocal, scale), paint);
                 }
             }
         }
-        if (needSave__26468)
+        if (needSave)
         {
             canvas.restore();
         }
-        if (invertedCanvas__22141)
+        if (invertedCanvas)
         {
             canvas.restore();
         }
@@ -384,21 +384,21 @@ public static partial class Decoration_imageLibrary
 {
     internal static IEnumerable<Rect> _generateImageTileRects(Rect outputRect, Rect fundamentalRect, ImageRepeat repeat)
     {
-        var startX__27971 = 0L;
-        var startY__27989 = 0L;
-        var stopX__28007 = 0L;
-        var stopY__28024 = 0L;
-        double strideX__28050 = fundamentalRect.width;
-        double strideY__28098 = fundamentalRect.height;
+        var startX = 0L;
+        var startY = 0L;
+        var stopX = 0L;
+        var stopY = 0L;
+        double strideX = fundamentalRect.width;
+        double strideY = fundamentalRect.height;
         if (((object.Equals(repeat, ImageRepeat.repeat)) || (object.Equals(repeat, ImageRepeat.repeatX))))
         {
-            startX__27971 = ((((outputRect.left - fundamentalRect.left)) / strideX__28050)).floor();
-            stopX__28007 = ((((outputRect.right - fundamentalRect.right)) / strideX__28050)).ceil();
+            startX = ((((outputRect.left - fundamentalRect.left)) / strideX)).floor();
+            stopX = ((((outputRect.right - fundamentalRect.right)) / strideX)).ceil();
         }
         if (((object.Equals(repeat, ImageRepeat.repeat)) || (object.Equals(repeat, ImageRepeat.repeatY))))
         {
-            startY__27989 = ((((outputRect.top - fundamentalRect.top)) / strideY__28098)).floor();
-            stopY__28024 = ((((outputRect.bottom - fundamentalRect.bottom)) / strideY__28098)).ceil();
+            startY = ((((outputRect.top - fundamentalRect.top)) / strideY)).floor();
+            stopY = ((((outputRect.bottom - fundamentalRect.bottom)) / strideY)).ceil();
         }
         return new List<global::Doroti.Ui.Rect>();
         throw new InvalidOperationException("Dart control flow completed without a value.");

@@ -49,9 +49,9 @@ public class TextSelectionToolbarLayoutDelegate : global::Doroti.Framework.Rende
 
     public override Offset getPositionForChild(Size size, Size childSize)
     {
-        bool fitsAbove__2580 = (this.fitsAbove ?? (this.anchorAbove.dy >= childSize.height));
-        global::Doroti.Ui.Offset anchor__2663 = ((global::Doroti.Ui.Offset)(object?)(DartRuntimePrimitives.RequireValue(fitsAbove__2580) ? this.anchorAbove : this.anchorBelow));
-        return new global::Doroti.Ui.Offset(TextSelectionToolbarLayoutDelegate.centerOn(anchor__2663.dx, childSize.width, size.width), (DartRuntimePrimitives.RequireValue(fitsAbove__2580) ? Math.Max(0.0, (anchor__2663.dy - childSize.height)) : anchor__2663.dy));
+        bool fitsAboveLocal = (this.fitsAbove ?? (this.anchorAbove.dy >= childSize.height));
+        global::Doroti.Ui.Offset anchor = ((global::Doroti.Ui.Offset)(object?)(DartRuntimePrimitives.RequireValue(fitsAboveLocal) ? this.anchorAbove : this.anchorBelow));
+        return new global::Doroti.Ui.Offset(TextSelectionToolbarLayoutDelegate.centerOn(anchor.dx, childSize.width, size.width), (DartRuntimePrimitives.RequireValue(fitsAboveLocal) ? Math.Max(0.0, (anchor.dy - childSize.height)) : anchor.dy));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -92,8 +92,8 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         {
             return ((BoxConstraints)constraints).smallest;
         }
-        global::Doroti.Ui.Size childSize__2401 = child!.getDryLayout((this._isVertical ? ((BoxConstraints)constraints).flipped : constraints));
-        return (this._isVertical ? new global::Doroti.Ui.Size(childSize__2401.height, childSize__2401.width) : childSize__2401);
+        global::Doroti.Ui.Size childSize = child!.getDryLayout((this._isVertical ? ((BoxConstraints)constraints).flipped : constraints));
+        return (this._isVertical ? new global::Doroti.Ui.Size(childSize.height, childSize.width) : childSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -35,16 +35,16 @@ public class ContextMenuController
             return;
         }
         ContextMenuController.removeAny();
-        OverlayState overlayState__2265 = ((OverlayState)(object?)Overlay.of(context, rootOverlay: true, debugRequiredFor: debugRequiredFor));
+        OverlayState overlayState = ((OverlayState)(object?)Overlay.of(context, rootOverlay: true, debugRequiredFor: debugRequiredFor));
         _contextMenuBuilder = (global::System.Func<BuildContext, Widget>)contextMenuBuilder;
         _menuOverlayEntry = new OverlayEntry(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
         {
-            CapturedThemes capturedThemes__2535 = ((CapturedThemes)(object?)InheritedTheme.capture(from: context, to: Navigator.maybeOf(context)?.context));
-            return ((Widget)(object?)capturedThemes__2535.wrap(_contextMenuBuilder!(context)));
+            CapturedThemes capturedThemes = ((CapturedThemes)(object?)InheritedTheme.capture(from: context, to: Navigator.maybeOf(context)?.context));
+            return ((Widget)(object?)capturedThemes.wrap(_contextMenuBuilder!(context)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         _shownInstance = this;
-        overlayState__2265.insert(_menuOverlayEntry!);
+        overlayState.insert(_menuOverlayEntry!);
     }
 
     public static void removeAny()

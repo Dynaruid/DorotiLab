@@ -109,10 +109,10 @@ public class ToggleButtons : global::Doroti.Framework.Widgets.StatelessWidget
 
     internal virtual global::Doroti.Framework.Painting.BorderRadius _getEdgeBorderRadius(long index, long length, TextDirection textDirection, ToggleButtonsThemeData toggleButtonsTheme)
     {
-        global::Doroti.Framework.Painting.BorderRadius resultingBorderRadius__18021 = ((this.borderRadius ?? toggleButtonsTheme.borderRadius) ?? global::Doroti.Framework.Painting.BorderRadius.zero);
+        global::Doroti.Framework.Painting.BorderRadius resultingBorderRadius = ((this.borderRadius ?? toggleButtonsTheme.borderRadius) ?? global::Doroti.Framework.Painting.BorderRadius.zero);
         if ((length == 1L))
         {
-            return resultingBorderRadius__18021;
+            return resultingBorderRadius;
         }
         else
         {
@@ -120,13 +120,13 @@ public class ToggleButtons : global::Doroti.Framework.Widgets.StatelessWidget
             {
                 if (_isFirstButton(index, length, textDirection))
                 {
-                    return new global::Doroti.Framework.Painting.BorderRadius(topLeft: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__18021).topLeft, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__18021).bottomLeft);
+                    return new global::Doroti.Framework.Painting.BorderRadius(topLeft: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).topLeft, bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).bottomLeft);
                 }
                 else
                 {
                     if (_isLastButton(index, length, textDirection))
                     {
-                        return new global::Doroti.Framework.Painting.BorderRadius(topRight: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__18021).topRight, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__18021).bottomRight);
+                        return new global::Doroti.Framework.Painting.BorderRadius(topRight: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).topRight, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).bottomRight);
                     }
                 }
             }
@@ -134,13 +134,13 @@ public class ToggleButtons : global::Doroti.Framework.Widgets.StatelessWidget
             {
                 if (_isFirstButton(index, length, textDirection))
                 {
-                    return new global::Doroti.Framework.Painting.BorderRadius(topLeft: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__18021).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__18021).topRight);
+                    return new global::Doroti.Framework.Painting.BorderRadius(topLeft: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).topLeft, topRight: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).topRight);
                 }
                 else
                 {
                     if (_isLastButton(index, length, textDirection))
                     {
-                        return new global::Doroti.Framework.Painting.BorderRadius(bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__18021).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__18021).bottomRight);
+                        return new global::Doroti.Framework.Painting.BorderRadius(bottomLeft: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).bottomLeft, bottomRight: ((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).bottomRight);
                     }
                 }
             }
@@ -151,11 +151,11 @@ public class ToggleButtons : global::Doroti.Framework.Widgets.StatelessWidget
 
     internal virtual global::Doroti.Framework.Painting.BorderRadius _getClipBorderRadius(long index, long length, TextDirection textDirection, ToggleButtonsThemeData toggleButtonsTheme)
     {
-        global::Doroti.Framework.Painting.BorderRadius resultingBorderRadius__19334 = ((this.borderRadius ?? toggleButtonsTheme.borderRadius) ?? global::Doroti.Framework.Painting.BorderRadius.zero);
-        double resultingBorderWidth__19453 = ((this.borderWidth ?? toggleButtonsTheme.borderWidth) ?? _defaultBorderWidth);
+        global::Doroti.Framework.Painting.BorderRadius resultingBorderRadius = ((this.borderRadius ?? toggleButtonsTheme.borderRadius) ?? global::Doroti.Framework.Painting.BorderRadius.zero);
+        double resultingBorderWidth = ((this.borderWidth ?? toggleButtonsTheme.borderWidth) ?? _defaultBorderWidth);
         if ((length == 1L))
         {
-            return new global::Doroti.Framework.Painting.BorderRadius(topLeft: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__19334).topLeft - global::Doroti.Ui.Radius.circular((resultingBorderWidth__19453 / 2.0))), bottomLeft: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__19334).bottomLeft - global::Doroti.Ui.Radius.circular((resultingBorderWidth__19453 / 2.0))), topRight: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__19334).topRight - global::Doroti.Ui.Radius.circular((resultingBorderWidth__19453 / 2.0))), bottomRight: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__19334).bottomRight - global::Doroti.Ui.Radius.circular((resultingBorderWidth__19453 / 2.0))));
+            return new global::Doroti.Framework.Painting.BorderRadius(topLeft: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).topLeft - global::Doroti.Ui.Radius.circular((resultingBorderWidth / 2.0))), bottomLeft: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).bottomLeft - global::Doroti.Ui.Radius.circular((resultingBorderWidth / 2.0))), topRight: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).topRight - global::Doroti.Ui.Radius.circular((resultingBorderWidth / 2.0))), bottomRight: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).bottomRight - global::Doroti.Ui.Radius.circular((resultingBorderWidth / 2.0))));
         }
         else
         {
@@ -163,13 +163,13 @@ public class ToggleButtons : global::Doroti.Framework.Widgets.StatelessWidget
             {
                 if (_isFirstButton(index, length, textDirection))
                 {
-                    return new global::Doroti.Framework.Painting.BorderRadius(topLeft: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__19334).topLeft - global::Doroti.Ui.Radius.circular((resultingBorderWidth__19453 / 2.0))), bottomLeft: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__19334).bottomLeft - global::Doroti.Ui.Radius.circular((resultingBorderWidth__19453 / 2.0))));
+                    return new global::Doroti.Framework.Painting.BorderRadius(topLeft: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).topLeft - global::Doroti.Ui.Radius.circular((resultingBorderWidth / 2.0))), bottomLeft: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).bottomLeft - global::Doroti.Ui.Radius.circular((resultingBorderWidth / 2.0))));
                 }
                 else
                 {
                     if (_isLastButton(index, length, textDirection))
                     {
-                        return new global::Doroti.Framework.Painting.BorderRadius(topRight: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__19334).topRight - global::Doroti.Ui.Radius.circular((resultingBorderWidth__19453 / 2.0))), bottomRight: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__19334).bottomRight - global::Doroti.Ui.Radius.circular((resultingBorderWidth__19453 / 2.0))));
+                        return new global::Doroti.Framework.Painting.BorderRadius(topRight: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).topRight - global::Doroti.Ui.Radius.circular((resultingBorderWidth / 2.0))), bottomRight: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).bottomRight - global::Doroti.Ui.Radius.circular((resultingBorderWidth / 2.0))));
                     }
                 }
             }
@@ -177,13 +177,13 @@ public class ToggleButtons : global::Doroti.Framework.Widgets.StatelessWidget
             {
                 if (_isFirstButton(index, length, textDirection))
                 {
-                    return new global::Doroti.Framework.Painting.BorderRadius(topLeft: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__19334).topLeft - global::Doroti.Ui.Radius.circular((resultingBorderWidth__19453 / 2.0))), topRight: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__19334).topRight - global::Doroti.Ui.Radius.circular((resultingBorderWidth__19453 / 2.0))));
+                    return new global::Doroti.Framework.Painting.BorderRadius(topLeft: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).topLeft - global::Doroti.Ui.Radius.circular((resultingBorderWidth / 2.0))), topRight: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).topRight - global::Doroti.Ui.Radius.circular((resultingBorderWidth / 2.0))));
                 }
                 else
                 {
                     if (_isLastButton(index, length, textDirection))
                     {
-                        return new global::Doroti.Framework.Painting.BorderRadius(bottomLeft: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__19334).bottomLeft - global::Doroti.Ui.Radius.circular((resultingBorderWidth__19453 / 2.0))), bottomRight: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius__19334).bottomRight - global::Doroti.Ui.Radius.circular((resultingBorderWidth__19453 / 2.0))));
+                        return new global::Doroti.Framework.Painting.BorderRadius(bottomLeft: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).bottomLeft - global::Doroti.Ui.Radius.circular((resultingBorderWidth / 2.0))), bottomRight: (((global::Doroti.Framework.Painting.BorderRadius)resultingBorderRadius).bottomRight - global::Doroti.Ui.Radius.circular((resultingBorderWidth / 2.0))));
                     }
                 }
             }
@@ -198,20 +198,20 @@ public class ToggleButtons : global::Doroti.Framework.Widgets.StatelessWidget
         {
             return global::Doroti.Framework.Painting.BorderSide.none;
         }
-        double resultingBorderWidth__21624 = ((this.borderWidth ?? toggleButtonsTheme.borderWidth) ?? _defaultBorderWidth);
+        double resultingBorderWidth = ((this.borderWidth ?? toggleButtonsTheme.borderWidth) ?? _defaultBorderWidth);
         if (((this.onPressed is not null) && ((this.isSelected[(int)(index)] || (((index != 0L) && this.isSelected[(int)((index - 1L))]))))))
         {
-            return new global::Doroti.Framework.Painting.BorderSide(color: ((this.selectedBorderColor ?? toggleButtonsTheme.selectedBorderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth__21624);
+            return new global::Doroti.Framework.Painting.BorderSide(color: ((this.selectedBorderColor ?? toggleButtonsTheme.selectedBorderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth);
         }
         else
         {
             if (((this.onPressed is not null) && !this.isSelected[(int)(index)]))
             {
-                return new global::Doroti.Framework.Painting.BorderSide(color: ((this.borderColor ?? toggleButtonsTheme.borderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth__21624);
+                return new global::Doroti.Framework.Painting.BorderSide(color: ((this.borderColor ?? toggleButtonsTheme.borderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth);
             }
             else
             {
-                return new global::Doroti.Framework.Painting.BorderSide(color: ((this.disabledBorderColor ?? toggleButtonsTheme.disabledBorderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth__21624);
+                return new global::Doroti.Framework.Painting.BorderSide(color: ((this.disabledBorderColor ?? toggleButtonsTheme.disabledBorderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth);
             }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -223,20 +223,20 @@ public class ToggleButtons : global::Doroti.Framework.Widgets.StatelessWidget
         {
             return global::Doroti.Framework.Painting.BorderSide.none;
         }
-        double resultingBorderWidth__22766 = ((this.borderWidth ?? toggleButtonsTheme.borderWidth) ?? _defaultBorderWidth);
+        double resultingBorderWidth = ((this.borderWidth ?? toggleButtonsTheme.borderWidth) ?? _defaultBorderWidth);
         if (((this.onPressed is not null) && this.isSelected[(int)(index)]))
         {
-            return new global::Doroti.Framework.Painting.BorderSide(color: ((this.selectedBorderColor ?? toggleButtonsTheme.selectedBorderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth__22766);
+            return new global::Doroti.Framework.Painting.BorderSide(color: ((this.selectedBorderColor ?? toggleButtonsTheme.selectedBorderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth);
         }
         else
         {
             if (((this.onPressed is not null) && !this.isSelected[(int)(index)]))
             {
-                return new global::Doroti.Framework.Painting.BorderSide(color: ((this.borderColor ?? toggleButtonsTheme.borderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth__22766);
+                return new global::Doroti.Framework.Painting.BorderSide(color: ((this.borderColor ?? toggleButtonsTheme.borderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth);
             }
             else
             {
-                return new global::Doroti.Framework.Painting.BorderSide(color: ((this.disabledBorderColor ?? toggleButtonsTheme.disabledBorderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth__22766);
+                return new global::Doroti.Framework.Painting.BorderSide(color: ((this.disabledBorderColor ?? toggleButtonsTheme.disabledBorderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth);
             }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -252,20 +252,20 @@ public class ToggleButtons : global::Doroti.Framework.Widgets.StatelessWidget
         {
             return global::Doroti.Framework.Painting.BorderSide.none;
         }
-        double resultingBorderWidth__23967 = ((this.borderWidth ?? toggleButtonsTheme.borderWidth) ?? _defaultBorderWidth);
+        double resultingBorderWidth = ((this.borderWidth ?? toggleButtonsTheme.borderWidth) ?? _defaultBorderWidth);
         if (((this.onPressed is not null) && (this.isSelected[(int)(index)])))
         {
-            return new global::Doroti.Framework.Painting.BorderSide(color: ((this.selectedBorderColor ?? toggleButtonsTheme.selectedBorderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth__23967);
+            return new global::Doroti.Framework.Painting.BorderSide(color: ((this.selectedBorderColor ?? toggleButtonsTheme.selectedBorderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth);
         }
         else
         {
             if (((this.onPressed is not null) && !this.isSelected[(int)(index)]))
             {
-                return new global::Doroti.Framework.Painting.BorderSide(color: ((this.borderColor ?? toggleButtonsTheme.borderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth__23967);
+                return new global::Doroti.Framework.Painting.BorderSide(color: ((this.borderColor ?? toggleButtonsTheme.borderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth);
             }
             else
             {
-                return new global::Doroti.Framework.Painting.BorderSide(color: ((this.disabledBorderColor ?? toggleButtonsTheme.disabledBorderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth__23967);
+                return new global::Doroti.Framework.Painting.BorderSide(color: ((this.disabledBorderColor ?? toggleButtonsTheme.disabledBorderColor) ?? theme.colorScheme.onSurface.withOpacity(0.12)), width: resultingBorderWidth);
             }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -281,70 +281,70 @@ public class ToggleButtons : global::Doroti.Framework.Widgets.StatelessWidget
                 }
                 return true;
             }, () => (object?)"focusNodes.length must match children.length.\n" + $"There are {checked((long)(this.focusNodes!.Count))} focus nodes, while " + $"there are {checked((long)(this.children.Count))} children.");
-        ThemeData theme__25285 = Theme.of(context);
-        ToggleButtonsThemeData toggleButtonsTheme__25345 = ToggleButtonsTheme.of(context);
-        global::Doroti.Ui.TextDirection textDirection__25422 = Directionality.of(context);
-        var buttons__25477 = new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(this.children.Count)))), ((index) =>
+        ThemeData theme = Theme.of(context);
+        ToggleButtonsThemeData toggleButtonsTheme = ToggleButtonsTheme.of(context);
+        global::Doroti.Ui.TextDirection textDirection = Directionality.of(context);
+        var buttons = new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(this.children.Count)))), ((index) =>
         {
-            global::Doroti.Framework.Painting.BorderRadius edgeBorderRadius__25565 = ((global::Doroti.Framework.Painting.BorderRadius)(object?)_getEdgeBorderRadius(index, checked((long)(this.children.Count)), textDirection__25422, toggleButtonsTheme__25345));
-            global::Doroti.Framework.Painting.BorderRadius clipBorderRadius__25731 = ((global::Doroti.Framework.Painting.BorderRadius)(object?)_getClipBorderRadius(index, checked((long)(this.children.Count)), textDirection__25422, toggleButtonsTheme__25345));
-            global::Doroti.Framework.Painting.BorderSide leadingBorderSide__25896 = ((global::Doroti.Framework.Painting.BorderSide)(object?)_getLeadingBorderSide(index, theme__25285, toggleButtonsTheme__25345));
-            global::Doroti.Framework.Painting.BorderSide borderSide__25996 = ((global::Doroti.Framework.Painting.BorderSide)(object?)_getBorderSide(index, theme__25285, toggleButtonsTheme__25345));
-            global::Doroti.Framework.Painting.BorderSide trailingBorderSide__26082 = ((global::Doroti.Framework.Painting.BorderSide)(object?)_getTrailingBorderSide(index, theme__25285, toggleButtonsTheme__25345));
-            var states__26207 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection26216 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((this.isSelected[(int)(index)] && (this.onPressed is not null))) { __collection26216.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } if ((this.onPressed is null)) { __collection26216.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } return __collection26216; }))();
-            global::Doroti.Ui.Color effectiveFillColor__26385 = ((global::Doroti.Ui.Color)(object?)((new _ResolveFillColor__toggle_buttons((this.fillColor ?? toggleButtonsTheme__25345.fillColor)).resolve(states__26207) ?? (Color)new _DefaultFillColor__toggle_buttons(theme__25285.colorScheme).resolve(states__26207))));
-            global::Doroti.Ui.Color currentColor__26578 = default!;
+            global::Doroti.Framework.Painting.BorderRadius edgeBorderRadius = ((global::Doroti.Framework.Painting.BorderRadius)(object?)_getEdgeBorderRadius(index, checked((long)(this.children.Count)), textDirection, toggleButtonsTheme));
+            global::Doroti.Framework.Painting.BorderRadius clipBorderRadius = ((global::Doroti.Framework.Painting.BorderRadius)(object?)_getClipBorderRadius(index, checked((long)(this.children.Count)), textDirection, toggleButtonsTheme));
+            global::Doroti.Framework.Painting.BorderSide leadingBorderSideLocal = ((global::Doroti.Framework.Painting.BorderSide)(object?)_getLeadingBorderSide(index, theme, toggleButtonsTheme));
+            global::Doroti.Framework.Painting.BorderSide borderSideLocal = ((global::Doroti.Framework.Painting.BorderSide)(object?)_getBorderSide(index, theme, toggleButtonsTheme));
+            global::Doroti.Framework.Painting.BorderSide trailingBorderSideLocal = ((global::Doroti.Framework.Painting.BorderSide)(object?)_getTrailingBorderSide(index, theme, toggleButtonsTheme));
+            var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection26216 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((this.isSelected[(int)(index)] && (this.onPressed is not null))) { __collection26216.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } if ((this.onPressed is null)) { __collection26216.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } return __collection26216; }))();
+            global::Doroti.Ui.Color effectiveFillColor = ((global::Doroti.Ui.Color)(object?)((new _ResolveFillColor__toggle_buttons((this.fillColor ?? toggleButtonsTheme.fillColor)).resolve(states) ?? (Color)new _DefaultFillColor__toggle_buttons(theme.colorScheme).resolve(states))));
+            global::Doroti.Ui.Color currentColor = default!;
             if (((this.onPressed is not null) && this.isSelected[(int)(index)]))
             {
-                currentColor__26578 = ((this.selectedColor ?? toggleButtonsTheme__25345.selectedColor) ?? theme__25285.colorScheme.primary);
+                currentColor = ((this.selectedColor ?? toggleButtonsTheme.selectedColor) ?? theme.colorScheme.primary);
             }
             else
             {
                 if (((this.onPressed is not null) && !this.isSelected[(int)(index)]))
                 {
-                    currentColor__26578 = ((this.color ?? toggleButtonsTheme__25345.color) ?? theme__25285.colorScheme.onSurface.withOpacity(0.87));
+                    currentColor = ((this.color ?? toggleButtonsTheme.color) ?? theme.colorScheme.onSurface.withOpacity(0.87));
                 }
                 else
                 {
-                    currentColor__26578 = ((this.disabledColor ?? toggleButtonsTheme__25345.disabledColor) ?? theme__25285.colorScheme.onSurface.withOpacity(0.38));
+                    currentColor = ((this.disabledColor ?? toggleButtonsTheme.disabledColor) ?? theme.colorScheme.onSurface.withOpacity(0.38));
                 }
             }
-            global::Doroti.Framework.Painting.TextStyle currentTextStyle__27142 = ((this.textStyle ?? toggleButtonsTheme__25345.textStyle) ?? theme__25285.textTheme.bodyMedium!);
-            global::Doroti.Framework.Rendering.BoxConstraints? currentConstraints__27273 = (this.constraints ?? toggleButtonsTheme__25345.constraints);
-            global::Doroti.Ui.Size minimumSize__27358 = ((global::Doroti.Ui.Size)(object?)(currentConstraints__27273?.smallest ?? new global::Doroti.Ui.Size(global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension)));
-            global::Doroti.Ui.Size? maximumSize__27477 = ((global::Doroti.Ui.Size?)(object?)currentConstraints__27273?.biggest);
-            global::Doroti.Ui.Size minPaddingSize__27537 = default!;
-            switch ((this.tapTargetSize ?? theme__25285.materialTapTargetSize))
+            global::Doroti.Framework.Painting.TextStyle currentTextStyle = ((this.textStyle ?? toggleButtonsTheme.textStyle) ?? theme.textTheme.bodyMedium!);
+            global::Doroti.Framework.Rendering.BoxConstraints? currentConstraints = (this.constraints ?? toggleButtonsTheme.constraints);
+            global::Doroti.Ui.Size minimumSizeLocal = ((global::Doroti.Ui.Size)(object?)(currentConstraints?.smallest ?? new global::Doroti.Ui.Size(global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension)));
+            global::Doroti.Ui.Size? maximumSizeLocal = ((global::Doroti.Ui.Size?)(object?)currentConstraints?.biggest);
+            global::Doroti.Ui.Size minPaddingSize = default!;
+            switch ((this.tapTargetSize ?? theme.materialTapTargetSize))
             {
                 case var __constant27628 when (object.Equals(__constant27628, MaterialTapTargetSize.padded)):
                     {
-                        minPaddingSize__27537 = (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Size(0.0, global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension), global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Size(global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension, 0.0), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-                        DartRuntimePrimitives.Assert(() => (minPaddingSize__27537.width >= 0.0));
-                        DartRuntimePrimitives.Assert(() => (minPaddingSize__27537.height >= 0.0));
+                        minPaddingSize = (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Size(0.0, global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension), global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Size(global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension, 0.0), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                        DartRuntimePrimitives.Assert(() => (minPaddingSize.width >= 0.0));
+                        DartRuntimePrimitives.Assert(() => (minPaddingSize.height >= 0.0));
                         break;
                     }
                 case var __constant27973 when (object.Equals(__constant27973, MaterialTapTargetSize.shrinkWrap)):
                     {
-                        minPaddingSize__27537 = Size.zero;
+                        minPaddingSize = Size.zero;
                         break;
                     }
             }
-            global::Doroti.Framework.Widgets.Widget button__28067 = ((global::Doroti.Framework.Widgets.Widget)(object?)new _SelectToggleButton__toggle_buttons(leadingBorderSide: leadingBorderSide__25896, borderSide: borderSide__25996, trailingBorderSide: trailingBorderSide__26082, borderRadius: edgeBorderRadius__25565, isFirstButton: (index == 0L), isLastButton: (index == (checked((long)(this.children.Count)) - 1L)), direction: this.direction, verticalDirection: this.verticalDirection, child: new global::Doroti.Framework.Widgets.ClipRRect(borderRadius: clipBorderRadius__25731, child: new TextButton(focusNode: ((this.focusNodes is not null) ? this.focusNodes![(int)(index)] : null), style: new ButtonStyle(backgroundColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color?>(effectiveFillColor__26385), foregroundColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color?>(currentColor__26578), iconSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(24.0), iconColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color?>(currentColor__26578), overlayColor: new _ToggleButtonDefaultOverlay__toggle_buttons(selected: ((this.onPressed is not null) && this.isSelected[(int)(index)]), unselected: ((this.onPressed is not null) && !this.isSelected[(int)(index)]), colorScheme: theme__25285.colorScheme, disabledColor: (this.disabledColor ?? toggleButtonsTheme__25345.disabledColor), focusColor: (this.focusColor ?? toggleButtonsTheme__25345.focusColor), highlightColor: (this.highlightColor ?? toggleButtonsTheme__25345.highlightColor), hoverColor: (this.hoverColor ?? toggleButtonsTheme__25345.hoverColor), splashColor: (this.splashColor ?? toggleButtonsTheme__25345.splashColor)), elevation: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(0), textStyle: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(currentTextStyle__27142.copyWith(color: currentColor__26578)), padding: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.zero), minimumSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Size?>(minimumSize__27358), maximumSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Size?>(maximumSize__27477), shape: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder()), mouseCursor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Services.MouseCursor?>(this.mouseCursor), visualDensity: VisualDensity.standard, tapTargetSize: MaterialTapTargetSize.shrinkWrap, animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: global::Doroti.Framework.Painting.Alignment.center, splashFactory: InkRipple.splashFactory), onPressed: ((global::System.Action)((this.onPressed is not null) ? (() =>
+            global::Doroti.Framework.Widgets.Widget button = ((global::Doroti.Framework.Widgets.Widget)(object?)new _SelectToggleButton__toggle_buttons(leadingBorderSide: leadingBorderSideLocal, borderSide: borderSideLocal, trailingBorderSide: trailingBorderSideLocal, borderRadius: edgeBorderRadius, isFirstButton: (index == 0L), isLastButton: (index == (checked((long)(this.children.Count)) - 1L)), direction: this.direction, verticalDirection: this.verticalDirection, child: new global::Doroti.Framework.Widgets.ClipRRect(borderRadius: clipBorderRadius, child: new TextButton(focusNode: ((this.focusNodes is not null) ? this.focusNodes![(int)(index)] : null), style: new ButtonStyle(backgroundColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color?>(effectiveFillColor), foregroundColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color?>(currentColor), iconSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(24.0), iconColor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color?>(currentColor), overlayColor: new _ToggleButtonDefaultOverlay__toggle_buttons(selected: ((this.onPressed is not null) && this.isSelected[(int)(index)]), unselected: ((this.onPressed is not null) && !this.isSelected[(int)(index)]), colorScheme: theme.colorScheme, disabledColor: (this.disabledColor ?? toggleButtonsTheme.disabledColor), focusColor: (this.focusColor ?? toggleButtonsTheme.focusColor), highlightColor: (this.highlightColor ?? toggleButtonsTheme.highlightColor), hoverColor: (this.hoverColor ?? toggleButtonsTheme.hoverColor), splashColor: (this.splashColor ?? toggleButtonsTheme.splashColor)), elevation: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(0), textStyle: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(currentTextStyle.copyWith(color: currentColor)), padding: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.zero), minimumSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Size?>(minimumSizeLocal), maximumSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Size?>(maximumSizeLocal), shape: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder()), mouseCursor: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Services.MouseCursor?>(this.mouseCursor), visualDensity: VisualDensity.standard, tapTargetSize: MaterialTapTargetSize.shrinkWrap, animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: global::Doroti.Framework.Painting.Alignment.center, splashFactory: InkRipple.splashFactory), onPressed: ((global::System.Action)((this.onPressed is not null) ? (() =>
             {
                 this.onPressed!(index);
             }) : null)), child: this.children[(int)(index)]))));
-            if ((currentConstraints__27273 is not null))
+            if ((currentConstraints is not null))
             {
-                button__28067 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Center(child: button__28067));
+                button = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Center(child: button));
             }
-            return new global::Doroti.Framework.Widgets.MergeSemantics(child: new global::Doroti.Framework.Widgets.Semantics(container: true, @checked: this.isSelected[(int)(index)], enabled: (this.onPressed is not null), child: new _InputPadding__toggle_buttons(minSize: minPaddingSize__27537, direction: this.direction, child: button__28067)));
+            return new global::Doroti.Framework.Widgets.MergeSemantics(child: new global::Doroti.Framework.Widgets.Semantics(container: true, @checked: this.isSelected[(int)(index)], enabled: (this.onPressed is not null), child: new _InputPadding__toggle_buttons(minSize: minPaddingSize, direction: this.direction, child: button)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         if ((object.Equals(this.direction, global::Doroti.Framework.Painting.Axis.vertical)))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.IntrinsicWidth(child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, verticalDirection: this.verticalDirection, children: buttons__25477)));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.IntrinsicWidth(child: new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, verticalDirection: this.verticalDirection, children: buttons)));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.IntrinsicHeight(child: new global::Doroti.Framework.Widgets.Row(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: buttons__25477)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.IntrinsicHeight(child: new global::Doroti.Framework.Widgets.Row(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch, children: buttons)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -395,13 +395,13 @@ internal class _ResolveFillColor__toggle_buttons : global::Doroti.Framework.Widg
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -439,13 +439,13 @@ internal class _DefaultFillColor__toggle_buttons : global::Doroti.Framework.Widg
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -753,8 +753,8 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : global::Doroti.Fr
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
-        var childOffset__42261 = new global::Doroti.Framework.Rendering.BaselineOffset(this.child?.getDistanceToActualBaseline(baseline));
-        return (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => (childOffset__42261.op_Add(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width)), global::Doroti.Framework.Painting.Axis.vertical => (childOffset__42261.op_Add((this.verticalDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width, global::Doroti.Framework.Painting.VerticalDirection.up => ((global::Doroti.Framework.Painting.BorderSide)this.trailingBorderSide).width, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).offset;
+        var childOffset = new global::Doroti.Framework.Rendering.BaselineOffset(this.child?.getDistanceToActualBaseline(baseline));
+        return (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => (childOffset.op_Add(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width)), global::Doroti.Framework.Painting.Axis.vertical => (childOffset.op_Add((this.verticalDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width, global::Doroti.Framework.Painting.VerticalDirection.up => ((global::Doroti.Framework.Painting.BorderSide)this.trailingBorderSide).width, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -799,12 +799,12 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : global::Doroti.Fr
     }
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        double? childBaseline__44718 = this.child?.getDryBaseline(constraints.deflate(this._childPadding), baseline);
-        if ((childBaseline__44718 is null))
+        double? childBaseline = this.child?.getDryBaseline(constraints.deflate(this._childPadding), baseline);
+        if ((childBaseline is null))
         {
             return null;
         }
-        return (DartRuntimePrimitives.RequireValue(childBaseline__44718) + (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width, global::Doroti.Framework.Painting.Axis.vertical => (this.verticalDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width, global::Doroti.Framework.Painting.VerticalDirection.up => ((global::Doroti.Framework.Painting.BorderSide)this.trailingBorderSide).width, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return (DartRuntimePrimitives.RequireValue(childBaseline) + (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width, global::Doroti.Framework.Painting.Axis.vertical => (this.verticalDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width, global::Doroti.Framework.Painting.VerticalDirection.up => ((global::Doroti.Framework.Painting.BorderSide)this.trailingBorderSide).width, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -815,63 +815,63 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : global::Doroti.Fr
         {
             return;
         }
-        var childParentData__45380 = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
+        var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
         if ((object.Equals(this.direction, global::Doroti.Framework.Painting.Axis.horizontal)))
         {
-            childParentData__45380.offset = (this.textDirection switch { TextDirection.ltr => new global::Doroti.Ui.Offset(((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width, ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width), TextDirection.rtl => new global::Doroti.Ui.Offset(((global::Doroti.Framework.Painting.BorderSide)this.trailingBorderSide).width, ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            childParentData.offset = (this.textDirection switch { TextDirection.ltr => new global::Doroti.Ui.Offset(((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width, ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width), TextDirection.rtl => new global::Doroti.Ui.Offset(((global::Doroti.Framework.Painting.BorderSide)this.trailingBorderSide).width, ((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
         else
         {
-            childParentData__45380.offset = (this.verticalDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => new global::Doroti.Ui.Offset(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width, ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width), global::Doroti.Framework.Painting.VerticalDirection.up => new global::Doroti.Ui.Offset(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width, ((global::Doroti.Framework.Painting.BorderSide)this.trailingBorderSide).width), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            childParentData.offset = (this.verticalDirection switch { global::Doroti.Framework.Painting.VerticalDirection.down => new global::Doroti.Ui.Offset(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width, ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width), global::Doroti.Framework.Painting.VerticalDirection.up => new global::Doroti.Ui.Offset(((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width, ((global::Doroti.Framework.Painting.BorderSide)this.trailingBorderSide).width), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
     }
 
     internal virtual global::Doroti.Ui.Size _computeSize(global::Doroti.Framework.Rendering.BoxConstraints constraints, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size> layoutChild)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__46081 = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
-        if ((child__46081 is null))
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        if ((childLocal is null))
         {
-            var horizontalSize__46138 = new global::Doroti.Ui.Size((((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width + ((global::Doroti.Framework.Painting.BorderSide)this.trailingBorderSide).width), (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width * 2.0));
-            return (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => constraints.constrain(horizontalSize__46138), global::Doroti.Framework.Painting.Axis.vertical => constraints.constrain(horizontalSize__46138.flipped), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            var horizontalSize = new global::Doroti.Ui.Size((((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width + ((global::Doroti.Framework.Painting.BorderSide)this.trailingBorderSide).width), (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width * 2.0));
+            return (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => constraints.constrain(horizontalSize), global::Doroti.Framework.Painting.Axis.vertical => constraints.constrain(horizontalSize.flipped), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
-        global::Doroti.Framework.Painting.EdgeInsetsDirectional childPadding__46482 = this._childPadding;
-        global::Doroti.Framework.Rendering.BoxConstraints innerConstraints__46537 = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.deflate(childPadding__46482));
-        return ((global::Doroti.Ui.Size)(object?)constraints.constrain(childPadding__46482.inflateSize(layoutChild(child__46081, innerConstraints__46537))));
+        global::Doroti.Framework.Painting.EdgeInsetsDirectional childPadding = this._childPadding;
+        global::Doroti.Framework.Rendering.BoxConstraints innerConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.deflate(childPadding));
+        return ((global::Doroti.Ui.Size)(object?)constraints.constrain(childPadding.inflateSize(layoutChild(childLocal, innerConstraints))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
         base.paint(context, offset);
-        global::Doroti.Ui.Offset bottomRight__46812 = ((global::Doroti.Ui.Offset)(object?)this.size.bottomRight(offset));
-        var outer__46862 = global::Doroti.Ui.Rect.fromLTRB(offset.dx, offset.dy, bottomRight__46812.dx, bottomRight__46812.dy);
-        global::Doroti.Ui.Rect center__46954 = ((global::Doroti.Ui.Rect)(object?)outer__46862.deflate((((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)));
-        double sweepAngle__47019 = (Dart_mathLibrary.pi / 2.0);
-        global::Doroti.Ui.RRect rrect__47063 = ((global::Doroti.Ui.RRect)(object?)global::Doroti.Ui.RRect.fromRectAndCorners(center__46954, topLeft: ((((((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).topLeft.x * ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).topLeft.y) != 0.0)) ? ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).topLeft : Radius.zero), topRight: ((((((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).topRight.x * ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).topRight.y) != 0.0)) ? ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).topRight : Radius.zero), bottomLeft: ((((((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomLeft.x * ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomLeft.y) != 0.0)) ? ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomLeft : Radius.zero), bottomRight: ((((((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomRight.x * ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomRight.y) != 0.0)) ? ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomRight : Radius.zero)).scaleRadii());
-        var tlCorner__47694 = global::Doroti.Ui.Rect.fromLTWH(rrect__47063.left, rrect__47063.top, (rrect__47063.tlRadiusX * 2.0), (rrect__47063.tlRadiusY * 2.0));
-        var blCorner__47830 = global::Doroti.Ui.Rect.fromLTWH(rrect__47063.left, (rrect__47063.bottom - ((rrect__47063.blRadiusY * 2.0))), (rrect__47063.blRadiusX * 2.0), (rrect__47063.blRadiusY * 2.0));
-        var trCorner__47995 = global::Doroti.Ui.Rect.fromLTWH((rrect__47063.right - ((rrect__47063.trRadiusX * 2L))), rrect__47063.top, (rrect__47063.trRadiusX * 2L), (rrect__47063.trRadiusY * 2L));
-        var brCorner__48152 = global::Doroti.Ui.Rect.fromLTWH((rrect__47063.right - ((rrect__47063.brRadiusX * 2L))), (rrect__47063.bottom - ((rrect__47063.brRadiusY * 2L))), (rrect__47063.brRadiusX * 2L), (rrect__47063.brRadiusY * 2L));
-        global::Doroti.Ui.Paint leadingPaint__48343 = ((global::Doroti.Ui.Paint)(object?)this.leadingBorderSide.toPaint());
+        global::Doroti.Ui.Offset bottomRightLocal = ((global::Doroti.Ui.Offset)(object?)this.size.bottomRight(offset));
+        var outer = global::Doroti.Ui.Rect.fromLTRB(offset.dx, offset.dy, bottomRightLocal.dx, bottomRightLocal.dy);
+        global::Doroti.Ui.Rect center = ((global::Doroti.Ui.Rect)(object?)outer.deflate((((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)));
+        double sweepAngle = (Dart_mathLibrary.pi / 2.0);
+        global::Doroti.Ui.RRect rrect = ((global::Doroti.Ui.RRect)(object?)global::Doroti.Ui.RRect.fromRectAndCorners(center, topLeft: ((((((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).topLeft.x * ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).topLeft.y) != 0.0)) ? ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).topLeft : Radius.zero), topRight: ((((((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).topRight.x * ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).topRight.y) != 0.0)) ? ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).topRight : Radius.zero), bottomLeft: ((((((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomLeft.x * ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomLeft.y) != 0.0)) ? ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomLeft : Radius.zero), bottomRight: ((((((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomRight.x * ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomRight.y) != 0.0)) ? ((global::Doroti.Framework.Painting.BorderRadius)this.borderRadius).bottomRight : Radius.zero)).scaleRadii());
+        var tlCorner = global::Doroti.Ui.Rect.fromLTWH(rrect.left, rrect.top, (rrect.tlRadiusX * 2.0), (rrect.tlRadiusY * 2.0));
+        var blCorner = global::Doroti.Ui.Rect.fromLTWH(rrect.left, (rrect.bottom - ((rrect.blRadiusY * 2.0))), (rrect.blRadiusX * 2.0), (rrect.blRadiusY * 2.0));
+        var trCorner = global::Doroti.Ui.Rect.fromLTWH((rrect.right - ((rrect.trRadiusX * 2L))), rrect.top, (rrect.trRadiusX * 2L), (rrect.trRadiusY * 2L));
+        var brCorner = global::Doroti.Ui.Rect.fromLTWH((rrect.right - ((rrect.brRadiusX * 2L))), (rrect.bottom - ((rrect.brRadiusY * 2L))), (rrect.brRadiusX * 2L), (rrect.brRadiusY * 2L));
+        global::Doroti.Ui.Paint leadingPaint = ((global::Doroti.Ui.Paint)(object?)this.leadingBorderSide.toPaint());
         if ((this.isFirstButton && this.isLastButton))
         {
-            var leadingPath__48464 = new global::Doroti.Ui.Path();
-            double startX__48505 = (((rrect__47063.brRadiusX == 0.0)) ? outer__46862.right : (rrect__47063.right - rrect__47063.brRadiusX));
+            var leadingPath = new global::Doroti.Ui.Path();
+            double startX = (((rrect.brRadiusX == 0.0)) ? outer.right : (rrect.right - rrect.brRadiusX));
             DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = leadingPath__48464;
-    __cascade.moveTo(startX__48505, rrect__47063.bottom);
-    __cascade.lineTo((rrect__47063.left + rrect__47063.blRadiusX), rrect__47063.bottom);
-    __cascade.addArc(blCorner__47830, (Dart_mathLibrary.pi / 2.0), sweepAngle__47019);
-    __cascade.lineTo(rrect__47063.left, (rrect__47063.top + rrect__47063.tlRadiusY));
-    __cascade.addArc(tlCorner__47694, Dart_mathLibrary.pi, sweepAngle__47019);
-    __cascade.lineTo((rrect__47063.right - rrect__47063.trRadiusX), rrect__47063.top);
-    __cascade.addArc(trCorner__47995, ((Dart_mathLibrary.pi * 3.0) / 2.0), sweepAngle__47019);
-    __cascade.lineTo(rrect__47063.right, (rrect__47063.bottom - rrect__47063.brRadiusY));
-    __cascade.addArc(brCorner__48152, 0, sweepAngle__47019);
+    var __cascade = leadingPath;
+    __cascade.moveTo(startX, rrect.bottom);
+    __cascade.lineTo((rrect.left + rrect.blRadiusX), rrect.bottom);
+    __cascade.addArc(blCorner, (Dart_mathLibrary.pi / 2.0), sweepAngle);
+    __cascade.lineTo(rrect.left, (rrect.top + rrect.tlRadiusY));
+    __cascade.addArc(tlCorner, Dart_mathLibrary.pi, sweepAngle);
+    __cascade.lineTo((rrect.right - rrect.trRadiusX), rrect.top);
+    __cascade.addArc(trCorner, ((Dart_mathLibrary.pi * 3.0) / 2.0), sweepAngle);
+    __cascade.lineTo(rrect.right, (rrect.bottom - rrect.brRadiusY));
+    __cascade.addArc(brCorner, 0, sweepAngle);
     return __cascade;
 }))());
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPath__48464, leadingPaint__48343);
+            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPath, leadingPaint);
             return;
         }
         if ((object.Equals(this.direction, global::Doroti.Framework.Painting.Axis.horizontal)))
@@ -882,71 +882,71 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : global::Doroti.Fr
                     {
                         if (this.isLastButton)
                         {
-                            var leftPath__49318 = new global::Doroti.Ui.Path();
+                            var leftPath = new global::Doroti.Ui.Path();
                             DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = leftPath__49318;
-    __cascade.moveTo(rrect__47063.left, (rrect__47063.bottom + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
-    __cascade.lineTo(rrect__47063.left, (rrect__47063.top - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
+    var __cascade = leftPath;
+    __cascade.moveTo(rrect.left, (rrect.bottom + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
+    __cascade.lineTo(rrect.left, (rrect.top - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
     return __cascade;
 }))());
-                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leftPath__49318, leadingPaint__48343);
-                            global::Doroti.Ui.Paint endingPaint__49600 = ((global::Doroti.Ui.Paint)(object?)this.trailingBorderSide.toPaint());
-                            var endingPath__49662 = new global::Doroti.Ui.Path();
+                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leftPath, leadingPaint);
+                            global::Doroti.Ui.Paint endingPaint = ((global::Doroti.Ui.Paint)(object?)this.trailingBorderSide.toPaint());
+                            var endingPath = new global::Doroti.Ui.Path();
                             DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = endingPath__49662;
-    __cascade.moveTo((rrect__47063.left + (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)), rrect__47063.top);
-    __cascade.lineTo((rrect__47063.right - rrect__47063.trRadiusX), rrect__47063.top);
-    __cascade.addArc(trCorner__47995, ((Dart_mathLibrary.pi * 3.0) / 2.0), sweepAngle__47019);
-    __cascade.lineTo(rrect__47063.right, (rrect__47063.bottom - rrect__47063.brRadiusY));
-    __cascade.addArc(brCorner__48152, 0, sweepAngle__47019);
-    __cascade.lineTo((rrect__47063.left + (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)), rrect__47063.bottom);
+    var __cascade = endingPath;
+    __cascade.moveTo((rrect.left + (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)), rrect.top);
+    __cascade.lineTo((rrect.right - rrect.trRadiusX), rrect.top);
+    __cascade.addArc(trCorner, ((Dart_mathLibrary.pi * 3.0) / 2.0), sweepAngle);
+    __cascade.lineTo(rrect.right, (rrect.bottom - rrect.brRadiusY));
+    __cascade.addArc(brCorner, 0, sweepAngle);
+    __cascade.lineTo((rrect.left + (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)), rrect.bottom);
     return __cascade;
 }))());
-                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(endingPath__49662, endingPaint__49600);
+                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(endingPath, endingPaint);
                         }
                         else
                         {
                             if (this.isFirstButton)
                             {
-                                var leadingPath__50217 = new global::Doroti.Ui.Path();
+                                var leadingPathLocal = new global::Doroti.Ui.Path();
                                 DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = leadingPath__50217;
-    __cascade.moveTo(outer__46862.right, rrect__47063.bottom);
-    __cascade.lineTo((rrect__47063.left + rrect__47063.blRadiusX), rrect__47063.bottom);
-    __cascade.addArc(blCorner__47830, (Dart_mathLibrary.pi / 2.0), sweepAngle__47019);
-    __cascade.lineTo(rrect__47063.left, (rrect__47063.top + rrect__47063.tlRadiusY));
-    __cascade.addArc(tlCorner__47694, Dart_mathLibrary.pi, sweepAngle__47019);
-    __cascade.lineTo(outer__46862.right, rrect__47063.top);
+    var __cascade = leadingPathLocal;
+    __cascade.moveTo(outer.right, rrect.bottom);
+    __cascade.lineTo((rrect.left + rrect.blRadiusX), rrect.bottom);
+    __cascade.addArc(blCorner, (Dart_mathLibrary.pi / 2.0), sweepAngle);
+    __cascade.lineTo(rrect.left, (rrect.top + rrect.tlRadiusY));
+    __cascade.addArc(tlCorner, Dart_mathLibrary.pi, sweepAngle);
+    __cascade.lineTo(outer.right, rrect.top);
     return __cascade;
 }))());
-                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPath__50217, leadingPaint__48343);
+                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPathLocal, leadingPaint);
                             }
                             else
                             {
-                                var leadingPath__50707 = new global::Doroti.Ui.Path();
+                                var leadingPathAlternate = new global::Doroti.Ui.Path();
                                 DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = leadingPath__50707;
-    __cascade.moveTo(rrect__47063.left, (rrect__47063.bottom + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
-    __cascade.lineTo(rrect__47063.left, (rrect__47063.top - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
+    var __cascade = leadingPathAlternate;
+    __cascade.moveTo(rrect.left, (rrect.bottom + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
+    __cascade.lineTo(rrect.left, (rrect.top - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
     return __cascade;
 }))());
-                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPath__50707, leadingPaint__48343);
-                                global::Doroti.Ui.Paint horizontalPaint__50998 = ((global::Doroti.Ui.Paint)(object?)this.borderSide.toPaint());
-                                var horizontalPaths__51056 = new global::Doroti.Ui.Path();
+                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPathAlternate, leadingPaint);
+                                global::Doroti.Ui.Paint horizontalPaint = ((global::Doroti.Ui.Paint)(object?)this.borderSide.toPaint());
+                                var horizontalPaths = new global::Doroti.Ui.Path();
                                 DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = horizontalPaths__51056;
-    __cascade.moveTo((rrect__47063.left + (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)), rrect__47063.top);
-    __cascade.lineTo((outer__46862.right - rrect__47063.trRadiusX), rrect__47063.top);
-    __cascade.moveTo(((rrect__47063.left + (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)) + rrect__47063.tlRadiusX), rrect__47063.bottom);
-    __cascade.lineTo((outer__46862.right - rrect__47063.trRadiusX), rrect__47063.bottom);
+    var __cascade = horizontalPaths;
+    __cascade.moveTo((rrect.left + (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)), rrect.top);
+    __cascade.lineTo((outer.right - rrect.trRadiusX), rrect.top);
+    __cascade.moveTo(((rrect.left + (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)) + rrect.tlRadiusX), rrect.bottom);
+    __cascade.lineTo((outer.right - rrect.trRadiusX), rrect.bottom);
     return __cascade;
 }))());
-                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(horizontalPaths__51056, horizontalPaint__50998);
+                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(horizontalPaths, horizontalPaint);
                             }
                         }
                         break;
@@ -955,71 +955,71 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : global::Doroti.Fr
                     {
                         if (this.isLastButton)
                         {
-                            var leadingPath__51570 = new global::Doroti.Ui.Path();
+                            var leadingPathNested = new global::Doroti.Ui.Path();
                             DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = leadingPath__51570;
-    __cascade.moveTo(rrect__47063.right, (rrect__47063.bottom + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
-    __cascade.lineTo(rrect__47063.right, (rrect__47063.top - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
+    var __cascade = leadingPathNested;
+    __cascade.moveTo(rrect.right, (rrect.bottom + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
+    __cascade.lineTo(rrect.right, (rrect.top - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
     return __cascade;
 }))());
-                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPath__51570, leadingPaint__48343);
-                            global::Doroti.Ui.Paint endingPaint__51863 = ((global::Doroti.Ui.Paint)(object?)this.trailingBorderSide.toPaint());
-                            var endingPath__51925 = new global::Doroti.Ui.Path();
+                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPathNested, leadingPaint);
+                            global::Doroti.Ui.Paint endingPaintLocal = ((global::Doroti.Ui.Paint)(object?)this.trailingBorderSide.toPaint());
+                            var endingPathLocal = new global::Doroti.Ui.Path();
                             DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = endingPath__51925;
-    __cascade.moveTo((rrect__47063.right - (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)), rrect__47063.top);
-    __cascade.lineTo((rrect__47063.left + rrect__47063.tlRadiusX), rrect__47063.top);
-    __cascade.addArc(tlCorner__47694, ((Dart_mathLibrary.pi * 3.0) / 2.0), -sweepAngle__47019);
-    __cascade.lineTo(rrect__47063.left, (rrect__47063.bottom - rrect__47063.blRadiusY));
-    __cascade.addArc(blCorner__47830, Dart_mathLibrary.pi, -sweepAngle__47019);
-    __cascade.lineTo((rrect__47063.right - (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)), rrect__47063.bottom);
+    var __cascade = endingPathLocal;
+    __cascade.moveTo((rrect.right - (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)), rrect.top);
+    __cascade.lineTo((rrect.left + rrect.tlRadiusX), rrect.top);
+    __cascade.addArc(tlCorner, ((Dart_mathLibrary.pi * 3.0) / 2.0), -sweepAngle);
+    __cascade.lineTo(rrect.left, (rrect.bottom - rrect.blRadiusY));
+    __cascade.addArc(blCorner, Dart_mathLibrary.pi, -sweepAngle);
+    __cascade.lineTo((rrect.right - (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)), rrect.bottom);
     return __cascade;
 }))());
-                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(endingPath__51925, endingPaint__51863);
+                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(endingPathLocal, endingPaintLocal);
                         }
                         else
                         {
                             if (this.isFirstButton)
                             {
-                                var leadingPath__52488 = new global::Doroti.Ui.Path();
+                                var leadingPathCurrent = new global::Doroti.Ui.Path();
                                 DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = leadingPath__52488;
-    __cascade.moveTo(outer__46862.left, rrect__47063.bottom);
-    __cascade.lineTo((rrect__47063.right - rrect__47063.brRadiusX), rrect__47063.bottom);
-    __cascade.addArc(brCorner__48152, (Dart_mathLibrary.pi / 2.0), -sweepAngle__47019);
-    __cascade.lineTo(rrect__47063.right, (rrect__47063.top + rrect__47063.trRadiusY));
-    __cascade.addArc(trCorner__47995, 0, -sweepAngle__47019);
-    __cascade.lineTo(outer__46862.left, rrect__47063.top);
+    var __cascade = leadingPathCurrent;
+    __cascade.moveTo(outer.left, rrect.bottom);
+    __cascade.lineTo((rrect.right - rrect.brRadiusX), rrect.bottom);
+    __cascade.addArc(brCorner, (Dart_mathLibrary.pi / 2.0), -sweepAngle);
+    __cascade.lineTo(rrect.right, (rrect.top + rrect.trRadiusY));
+    __cascade.addArc(trCorner, 0, -sweepAngle);
+    __cascade.lineTo(outer.left, rrect.top);
     return __cascade;
 }))());
-                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPath__52488, leadingPaint__48343);
+                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPathCurrent, leadingPaint);
                             }
                             else
                             {
-                                var leadingPath__52974 = new global::Doroti.Ui.Path();
+                                var leadingPathNext = new global::Doroti.Ui.Path();
                                 DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = leadingPath__52974;
-    __cascade.moveTo(rrect__47063.right, (rrect__47063.bottom + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
-    __cascade.lineTo(rrect__47063.right, (rrect__47063.top - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
+    var __cascade = leadingPathNext;
+    __cascade.moveTo(rrect.right, (rrect.bottom + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
+    __cascade.lineTo(rrect.right, (rrect.top - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
     return __cascade;
 }))());
-                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPath__52974, leadingPaint__48343);
-                                global::Doroti.Ui.Paint horizontalPaint__53267 = ((global::Doroti.Ui.Paint)(object?)this.borderSide.toPaint());
-                                var horizontalPaths__53325 = new global::Doroti.Ui.Path();
+                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPathNext, leadingPaint);
+                                global::Doroti.Ui.Paint horizontalPaintLocal = ((global::Doroti.Ui.Paint)(object?)this.borderSide.toPaint());
+                                var horizontalPathsLocal = new global::Doroti.Ui.Path();
                                 DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = horizontalPaths__53325;
-    __cascade.moveTo((rrect__47063.right - (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)), rrect__47063.top);
-    __cascade.lineTo((outer__46862.left - rrect__47063.tlRadiusX), rrect__47063.top);
-    __cascade.moveTo(((rrect__47063.right - (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)) + rrect__47063.trRadiusX), rrect__47063.bottom);
-    __cascade.lineTo((outer__46862.left - rrect__47063.tlRadiusX), rrect__47063.bottom);
+    var __cascade = horizontalPathsLocal;
+    __cascade.moveTo((rrect.right - (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)), rrect.top);
+    __cascade.lineTo((outer.left - rrect.tlRadiusX), rrect.top);
+    __cascade.moveTo(((rrect.right - (((global::Doroti.Framework.Painting.BorderSide)this.borderSide).width / 2.0)) + rrect.trRadiusX), rrect.bottom);
+    __cascade.lineTo((outer.left - rrect.tlRadiusX), rrect.bottom);
     return __cascade;
 }))());
-                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(horizontalPaths__53325, horizontalPaint__53267);
+                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(horizontalPathsLocal, horizontalPaintLocal);
                             }
                         }
                         break;
@@ -1034,71 +1034,71 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : global::Doroti.Fr
                     {
                         if (this.isLastButton)
                         {
-                            var topPath__53900 = new global::Doroti.Ui.Path();
+                            var topPath = new global::Doroti.Ui.Path();
                             DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = topPath__53900;
-    __cascade.moveTo(outer__46862.left, (outer__46862.top + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
-    __cascade.lineTo(outer__46862.right, (outer__46862.top + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
+    var __cascade = topPath;
+    __cascade.moveTo(outer.left, (outer.top + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
+    __cascade.lineTo(outer.right, (outer.top + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
     return __cascade;
 }))());
-                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(topPath__53900, leadingPaint__48343);
-                            global::Doroti.Ui.Paint endingPaint__54177 = ((global::Doroti.Ui.Paint)(object?)this.trailingBorderSide.toPaint());
-                            var endingPath__54239 = new global::Doroti.Ui.Path();
+                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(topPath, leadingPaint);
+                            global::Doroti.Ui.Paint endingPaintAlternate = ((global::Doroti.Ui.Paint)(object?)this.trailingBorderSide.toPaint());
+                            var endingPathAlternate = new global::Doroti.Ui.Path();
                             DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = endingPath__54239;
-    __cascade.moveTo(rrect__47063.left, (rrect__47063.top + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
-    __cascade.lineTo(rrect__47063.left, (rrect__47063.bottom - rrect__47063.blRadiusY));
-    __cascade.addArc(blCorner__47830, (Dart_mathLibrary.pi * 3.0), -sweepAngle__47019);
-    __cascade.lineTo((rrect__47063.right - rrect__47063.blRadiusX), rrect__47063.bottom);
-    __cascade.addArc(brCorner__48152, (Dart_mathLibrary.pi / 2.0), -sweepAngle__47019);
-    __cascade.lineTo(rrect__47063.right, (rrect__47063.top + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
+    var __cascade = endingPathAlternate;
+    __cascade.moveTo(rrect.left, (rrect.top + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
+    __cascade.lineTo(rrect.left, (rrect.bottom - rrect.blRadiusY));
+    __cascade.addArc(blCorner, (Dart_mathLibrary.pi * 3.0), -sweepAngle);
+    __cascade.lineTo((rrect.right - rrect.blRadiusX), rrect.bottom);
+    __cascade.addArc(brCorner, (Dart_mathLibrary.pi / 2.0), -sweepAngle);
+    __cascade.lineTo(rrect.right, (rrect.top + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
     return __cascade;
 }))());
-                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(endingPath__54239, endingPaint__54177);
+                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(endingPathAlternate, endingPaintAlternate);
                         }
                         else
                         {
                             if (this.isFirstButton)
                             {
-                                var leadingPath__54816 = new global::Doroti.Ui.Path();
+                                var leadingPathCandidate = new global::Doroti.Ui.Path();
                                 DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = leadingPath__54816;
-    __cascade.moveTo(rrect__47063.left, outer__46862.bottom);
-    __cascade.lineTo(rrect__47063.left, (rrect__47063.top + rrect__47063.tlRadiusX));
-    __cascade.addArc(tlCorner__47694, Dart_mathLibrary.pi, sweepAngle__47019);
-    __cascade.lineTo((rrect__47063.right - rrect__47063.trRadiusX), rrect__47063.top);
-    __cascade.addArc(trCorner__47995, ((Dart_mathLibrary.pi * 3.0) / 2.0), sweepAngle__47019);
-    __cascade.lineTo(rrect__47063.right, outer__46862.bottom);
+    var __cascade = leadingPathCandidate;
+    __cascade.moveTo(rrect.left, outer.bottom);
+    __cascade.lineTo(rrect.left, (rrect.top + rrect.tlRadiusX));
+    __cascade.addArc(tlCorner, Dart_mathLibrary.pi, sweepAngle);
+    __cascade.lineTo((rrect.right - rrect.trRadiusX), rrect.top);
+    __cascade.addArc(trCorner, ((Dart_mathLibrary.pi * 3.0) / 2.0), sweepAngle);
+    __cascade.lineTo(rrect.right, outer.bottom);
     return __cascade;
 }))());
-                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPath__54816, leadingPaint__48343);
+                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPathCandidate, leadingPaint);
                             }
                             else
                             {
-                                var topPath__55312 = new global::Doroti.Ui.Path();
+                                var topPathLocal = new global::Doroti.Ui.Path();
                                 DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = topPath__55312;
-    __cascade.moveTo(outer__46862.left, (outer__46862.top + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
-    __cascade.lineTo(outer__46862.right, (outer__46862.top + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
+    var __cascade = topPathLocal;
+    __cascade.moveTo(outer.left, (outer.top + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
+    __cascade.lineTo(outer.right, (outer.top + (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2L)));
     return __cascade;
 }))());
-                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(topPath__55312, leadingPaint__48343);
-                                global::Doroti.Ui.Paint paint__55589 = ((global::Doroti.Ui.Paint)(object?)this.borderSide.toPaint());
-                                var paths__55637 = new global::Doroti.Ui.Path();
+                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(topPathLocal, leadingPaint);
+                                global::Doroti.Ui.Paint paintLocal = ((global::Doroti.Ui.Paint)(object?)this.borderSide.toPaint());
+                                var paths = new global::Doroti.Ui.Path();
                                 DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = paths__55637;
-    __cascade.moveTo(rrect__47063.left, (outer__46862.top + ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width));
-    __cascade.lineTo(rrect__47063.left, outer__46862.bottom);
-    __cascade.moveTo(rrect__47063.right, (outer__46862.top + ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width));
-    __cascade.lineTo(rrect__47063.right, outer__46862.bottom);
+    var __cascade = paths;
+    __cascade.moveTo(rrect.left, (outer.top + ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width));
+    __cascade.lineTo(rrect.left, outer.bottom);
+    __cascade.moveTo(rrect.right, (outer.top + ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width));
+    __cascade.lineTo(rrect.right, outer.bottom);
     return __cascade;
 }))());
-                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(paths__55637, paint__55589);
+                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(paths, paintLocal);
                             }
                         }
                         break;
@@ -1107,71 +1107,71 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : global::Doroti.Fr
                     {
                         if (this.isLastButton)
                         {
-                            var bottomPath__56089 = new global::Doroti.Ui.Path();
+                            var bottomPath = new global::Doroti.Ui.Path();
                             DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = bottomPath__56089;
-    __cascade.moveTo(outer__46862.left, (outer__46862.bottom - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
-    __cascade.lineTo(outer__46862.right, (outer__46862.bottom - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
+    var __cascade = bottomPath;
+    __cascade.moveTo(outer.left, (outer.bottom - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
+    __cascade.lineTo(outer.right, (outer.bottom - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
     return __cascade;
 }))());
-                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(bottomPath__56089, leadingPaint__48343);
-                            global::Doroti.Ui.Paint endingPaint__56385 = ((global::Doroti.Ui.Paint)(object?)this.trailingBorderSide.toPaint());
-                            var endingPath__56447 = new global::Doroti.Ui.Path();
+                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(bottomPath, leadingPaint);
+                            global::Doroti.Ui.Paint endingPaintNested = ((global::Doroti.Ui.Paint)(object?)this.trailingBorderSide.toPaint());
+                            var endingPathNested = new global::Doroti.Ui.Path();
                             DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = endingPath__56447;
-    __cascade.moveTo(rrect__47063.left, (rrect__47063.bottom - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
-    __cascade.lineTo(rrect__47063.left, (rrect__47063.top + rrect__47063.tlRadiusY));
-    __cascade.addArc(tlCorner__47694, Dart_mathLibrary.pi, sweepAngle__47019);
-    __cascade.lineTo((rrect__47063.right - rrect__47063.trRadiusX), rrect__47063.top);
-    __cascade.addArc(trCorner__47995, ((Dart_mathLibrary.pi * 3.0) / 2.0), sweepAngle__47019);
-    __cascade.lineTo(rrect__47063.right, (rrect__47063.bottom - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
+    var __cascade = endingPathNested;
+    __cascade.moveTo(rrect.left, (rrect.bottom - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
+    __cascade.lineTo(rrect.left, (rrect.top + rrect.tlRadiusY));
+    __cascade.addArc(tlCorner, Dart_mathLibrary.pi, sweepAngle);
+    __cascade.lineTo((rrect.right - rrect.trRadiusX), rrect.top);
+    __cascade.addArc(trCorner, ((Dart_mathLibrary.pi * 3.0) / 2.0), sweepAngle);
+    __cascade.lineTo(rrect.right, (rrect.bottom - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
     return __cascade;
 }))());
-                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(endingPath__56447, endingPaint__56385);
+                            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(endingPathNested, endingPaintNested);
                         }
                         else
                         {
                             if (this.isFirstButton)
                             {
-                                var leadingPath__57022 = new global::Doroti.Ui.Path();
+                                var leadingPathA = new global::Doroti.Ui.Path();
                                 DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = leadingPath__57022;
-    __cascade.moveTo(rrect__47063.left, outer__46862.top);
-    __cascade.lineTo(rrect__47063.left, (rrect__47063.bottom - rrect__47063.blRadiusY));
-    __cascade.addArc(blCorner__47830, Dart_mathLibrary.pi, -sweepAngle__47019);
-    __cascade.lineTo((rrect__47063.right - rrect__47063.brRadiusX), rrect__47063.bottom);
-    __cascade.addArc(brCorner__48152, (Dart_mathLibrary.pi / 2.0), -sweepAngle__47019);
-    __cascade.lineTo(rrect__47063.right, outer__46862.top);
+    var __cascade = leadingPathA;
+    __cascade.moveTo(rrect.left, outer.top);
+    __cascade.lineTo(rrect.left, (rrect.bottom - rrect.blRadiusY));
+    __cascade.addArc(blCorner, Dart_mathLibrary.pi, -sweepAngle);
+    __cascade.lineTo((rrect.right - rrect.brRadiusX), rrect.bottom);
+    __cascade.addArc(brCorner, (Dart_mathLibrary.pi / 2.0), -sweepAngle);
+    __cascade.lineTo(rrect.right, outer.top);
     return __cascade;
 }))());
-                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPath__57022, leadingPaint__48343);
+                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(leadingPathA, leadingPaint);
                             }
                             else
                             {
-                                var bottomPath__57514 = new global::Doroti.Ui.Path();
+                                var bottomPathLocal = new global::Doroti.Ui.Path();
                                 DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = bottomPath__57514;
-    __cascade.moveTo(outer__46862.left, (outer__46862.bottom - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
-    __cascade.lineTo(outer__46862.right, (outer__46862.bottom - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
+    var __cascade = bottomPathLocal;
+    __cascade.moveTo(outer.left, (outer.bottom - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
+    __cascade.lineTo(outer.right, (outer.bottom - (((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width / 2.0)));
     return __cascade;
 }))());
-                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(bottomPath__57514, leadingPaint__48343);
-                                global::Doroti.Ui.Paint paint__57810 = ((global::Doroti.Ui.Paint)(object?)this.borderSide.toPaint());
-                                var paths__57858 = new global::Doroti.Ui.Path();
+                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(bottomPathLocal, leadingPaint);
+                                global::Doroti.Ui.Paint paintAlternate = ((global::Doroti.Ui.Paint)(object?)this.borderSide.toPaint());
+                                var pathsLocal = new global::Doroti.Ui.Path();
                                 DartRuntimePrimitives.Ignore(((Func<Path>)(() =>
 {
-    var __cascade = paths__57858;
-    __cascade.moveTo(rrect__47063.left, outer__46862.top);
-    __cascade.lineTo(rrect__47063.left, (outer__46862.bottom - ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width));
-    __cascade.moveTo(rrect__47063.right, outer__46862.top);
-    __cascade.lineTo(rrect__47063.right, (outer__46862.bottom - ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width));
+    var __cascade = pathsLocal;
+    __cascade.moveTo(rrect.left, outer.top);
+    __cascade.lineTo(rrect.left, (outer.bottom - ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width));
+    __cascade.moveTo(rrect.right, outer.top);
+    __cascade.lineTo(rrect.right, (outer.bottom - ((global::Doroti.Framework.Painting.BorderSide)this.leadingBorderSide).width));
     return __cascade;
 }))());
-                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(paths__57858, paint__57810);
+                                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(pathsLocal, paintAlternate);
                             }
                         }
                         break;
@@ -1291,10 +1291,10 @@ public class _RenderInputPadding__toggle_buttons : global::Doroti.Framework.Rend
     {
         if ((this.child is not null))
         {
-            global::Doroti.Ui.Size childSize__60615 = ((global::Doroti.Ui.Size)(object?)layoutChild(this.child!, constraints));
-            double width__60680 = Math.Max(childSize__60615.width, this.minSize.width);
-            double height__60749 = Math.Max(childSize__60615.height, this.minSize.height);
-            return ((global::Doroti.Ui.Size)(object?)constraints.constrain(new global::Doroti.Ui.Size(width__60680, height__60749)));
+            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)layoutChild(this.child!, constraints));
+            double widthLocal = Math.Max(childSize.width, this.minSize.width);
+            double heightLocal = Math.Max(childSize.height, this.minSize.height);
+            return ((global::Doroti.Ui.Size)(object?)constraints.constrain(new global::Doroti.Ui.Size(widthLocal, heightLocal)));
         }
         return Size.zero;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1308,20 +1308,20 @@ public class _RenderInputPadding__toggle_buttons : global::Doroti.Framework.Rend
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__61186 = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
-        if ((child__61186 is null))
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        if ((childLocal is null))
         {
             return null;
         }
-        double? result__61274 = child__61186.getDryBaseline(constraints, baseline);
-        if ((result__61274 is null))
+        double? result = childLocal.getDryBaseline(constraints, baseline);
+        if ((result is null))
         {
             return null;
         }
-        global::Doroti.Ui.Size drySize__61475 = ((global::Doroti.Ui.Size)(object?)getDryLayout(constraints));
-        global::Doroti.Ui.Size childSize__61527 = ((global::Doroti.Ui.Size)(object?)child__61186.getDryLayout(constraints));
-        global::Doroti.Ui.Offset childOffset__61589 = ((global::Doroti.Ui.Offset)(object?)global::Doroti.Framework.Painting.Alignment.center.alongOffset((drySize__61475 - childSize__61527)));
-        return (DartRuntimePrimitives.RequireValue(result__61274) + childOffset__61589.dy);
+        global::Doroti.Ui.Size drySize = ((global::Doroti.Ui.Size)(object?)getDryLayout(constraints));
+        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)childLocal.getDryLayout(constraints));
+        global::Doroti.Ui.Offset childOffset = ((global::Doroti.Ui.Offset)(object?)global::Doroti.Framework.Painting.Alignment.center.alongOffset((drySize - childSize)));
+        return (DartRuntimePrimitives.RequireValue(result) + childOffset.dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1330,8 +1330,8 @@ public class _RenderInputPadding__toggle_buttons : global::Doroti.Framework.Rend
         size = _computeSize(constraints: this.constraints, layoutChild: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.layoutChild);
         if ((this.child is not null))
         {
-            var childParentData__61874 = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
-            childParentData__61874.offset = global::Doroti.Framework.Painting.Alignment.center.alongOffset((this.size - this.child!.size));
+            var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
+            childParentData.offset = global::Doroti.Framework.Painting.Alignment.center.alongOffset((this.size - this.child!.size));
         }
     }
 
@@ -1341,11 +1341,11 @@ public class _RenderInputPadding__toggle_buttons : global::Doroti.Framework.Rend
         {
             return false;
         }
-        global::Doroti.Ui.Offset center__62432 = ((global::Doroti.Ui.Offset)(object?)(this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset(position.dx, (this.child!.size.height / 2L)), global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset((this.child!.size.width / 2L), position.dy), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(center__62432), position: center__62432, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
+        global::Doroti.Ui.Offset center = ((global::Doroti.Ui.Offset)(object?)(this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => new global::Doroti.Ui.Offset(position.dx, (this.child!.size.height / 2L)), global::Doroti.Framework.Painting.Axis.vertical => new global::Doroti.Ui.Offset((this.child!.size.width / 2L), position.dy), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(center), position: center, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(position, center__62432)));
-            return this.child!.hitTest(result, position: center__62432);
+            DartRuntimePrimitives.Assert(() => (object.Equals(position, center)));
+            return this.child!.hitTest(result, position: center);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");

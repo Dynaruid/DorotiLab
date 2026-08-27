@@ -37,16 +37,16 @@ internal class _ZoomPageTransition__page_transitions_theme : global::Doroti.Fram
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color enterTransitionBackgroundColor__4001 = ((global::Doroti.Ui.Color)(object?)(this.backgroundColor ?? Theme.of(context).colorScheme.surface));
+        global::Doroti.Ui.Color enterTransitionBackgroundColor = ((global::Doroti.Ui.Color)(object?)(this.backgroundColor ?? Theme.of(context).colorScheme.surface));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DualTransitionBuilder(animation: this.animation, forwardBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, animation, child) =>
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ZoomEnterTransition__page_transitions_theme(animation: animation, allowSnapshotting: (this.allowSnapshotting && this.allowEnterRouteSnapshotting), backgroundColor: enterTransitionBackgroundColor__4001, child: child));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ZoomEnterTransition__page_transitions_theme(animation: animation, allowSnapshotting: (this.allowSnapshotting && this.allowEnterRouteSnapshotting), backgroundColor: enterTransitionBackgroundColor, child: child));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), reverseBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, animation, child) =>
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ZoomExitTransition__page_transitions_theme(animation: animation, allowSnapshotting: this.allowSnapshotting, reverse: true, child: child));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), child: ZoomPageTransitionsBuilder._snapshotAwareDelegatedTransition(context, this.animation, this.secondaryAnimation, this.child, this.allowSnapshotting, this.allowEnterRouteSnapshotting, enterTransitionBackgroundColor__4001)));
+        })), child: ZoomPageTransitionsBuilder._snapshotAwareDelegatedTransition(context, this.animation, this.secondaryAnimation, this.child, this.allowSnapshotting, this.allowEnterRouteSnapshotting, enterTransitionBackgroundColor)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -289,7 +289,7 @@ public class FadeForwardsPageTransitionsBuilder : global::Doroti.Framework.Widge
     public override global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>? delegatedTransition => ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>?)((context, animation, secondaryAnimation, allowSnapshotting, child) => FadeForwardsPageTransitionsBuilder._delegatedTransition(context, secondaryAnimation, this.backgroundColor, child)));
     internal static global::Doroti.Framework.Widgets.Widget _delegatedTransition(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, Color? backgroundColor, global::Doroti.Framework.Widgets.Widget? child)
     {
-        global::Doroti.Framework.Widgets.Widget builder__17626 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DualTransitionBuilder(animation: new global::Doroti.Framework.Animation.ReverseAnimation(secondaryAnimation), forwardBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, animation, child) =>
+        global::Doroti.Framework.Widgets.Widget builder = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DualTransitionBuilder(animation: new global::Doroti.Framework.Animation.ReverseAnimation(secondaryAnimation), forwardBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, animation, child) =>
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FadeTransition(opacity: _fadeInTransition.animate(animation), child: new global::Doroti.Framework.Widgets.SlideTransition(position: _secondaryForwardTranslationTween.animate(animation), child: child)));
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -298,12 +298,12 @@ public class FadeForwardsPageTransitionsBuilder : global::Doroti.Framework.Widge
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FadeTransition(opacity: _fadeOutTransition.animate(animation), child: new global::Doroti.Framework.Widgets.SlideTransition(position: _secondaryBackwardTranslationTween.animate(animation), child: child)));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), child: child));
-        bool isOpaque__18455 = (global::Doroti.Framework.Widgets.ModalRoute<object>.opaqueOf(context) ?? true);
-        if (!isOpaque__18455)
+        bool isOpaque = (global::Doroti.Framework.Widgets.ModalRoute<object>.opaqueOf(context) ?? true);
+        if (!isOpaque)
         {
-            return builder__17626;
+            return builder;
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ColoredBox(color: (((global::Doroti.Framework.Animation.Animation<double>)secondaryAnimation).isAnimating ? (backgroundColor ?? ColorScheme.of(context).surface) : Colors.transparent), child: builder__17626));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ColoredBox(color: (((global::Doroti.Framework.Animation.Animation<double>)secondaryAnimation).isAnimating ? (backgroundColor ?? ColorScheme.of(context).surface) : Colors.transparent), child: builder));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -332,10 +332,10 @@ public class ZoomPageTransitionsBuilder : global::Doroti.Framework.Widgets.PageT
     public override global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>? delegatedTransition => ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>?)((context, animation, secondaryAnimation, allowSnapshotting, child) => ZoomPageTransitionsBuilder._snapshotAwareDelegatedTransition(context, animation, secondaryAnimation, child, (allowSnapshotting && this.allowSnapshotting), this.allowEnterRouteSnapshotting, this.backgroundColor)));
     internal static global::Doroti.Framework.Widgets.Widget _snapshotAwareDelegatedTransition(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation, global::Doroti.Framework.Widgets.Widget? child, bool allowSnapshotting, bool allowEnterRouteSnapshotting, Color? backgroundColor)
     {
-        global::Doroti.Ui.Color enterTransitionBackgroundColor__23169 = ((global::Doroti.Ui.Color)(object?)(backgroundColor ?? Theme.of(context).colorScheme.surface));
+        global::Doroti.Ui.Color enterTransitionBackgroundColor = ((global::Doroti.Ui.Color)(object?)(backgroundColor ?? Theme.of(context).colorScheme.surface));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DualTransitionBuilder(animation: new global::Doroti.Framework.Animation.ReverseAnimation(secondaryAnimation), forwardBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, animation, child) =>
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ZoomEnterTransition__page_transitions_theme(animation: animation, allowSnapshotting: (allowSnapshotting && allowEnterRouteSnapshotting), reverse: true, backgroundColor: enterTransitionBackgroundColor__23169, child: child));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ZoomEnterTransition__page_transitions_theme(animation: animation, allowSnapshotting: (allowSnapshotting && allowEnterRouteSnapshotting), reverse: true, backgroundColor: enterTransitionBackgroundColor, child: child));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), reverseBuilder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, animation, child) =>
         {
@@ -377,8 +377,8 @@ public class PageTransitionsTheme : global::Doroti.Framework.Foundation.Diagnost
 
     public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>? delegatedTransition(global::Doroti.Framework.Foundation.TargetPlatform platform)
     {
-        global::Doroti.Framework.Widgets.PageTransitionsBuilder matchingBuilder__28223 = (this.builders.GetValueOrDefault(platform) ?? new ZoomPageTransitionsBuilder());
-        return ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>)((global::Doroti.Framework.Widgets.PageTransitionsBuilder)matchingBuilder__28223).delegatedTransition);
+        global::Doroti.Framework.Widgets.PageTransitionsBuilder matchingBuilder = (this.builders.GetValueOrDefault(platform) ?? new ZoomPageTransitionsBuilder());
+        return ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Animation.Animation<double>, bool, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget?>)((global::Doroti.Framework.Widgets.PageTransitionsBuilder)matchingBuilder).delegatedTransition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -417,13 +417,13 @@ public class PageTransitionsTheme : global::Doroti.Framework.Foundation.Diagnost
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -461,18 +461,18 @@ internal class _PageTransitionsThemeTransitionsState__page_transitions_theme<T> 
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Foundation.TargetPlatform platform__30280 = Theme.of(context).platform;
+        global::Doroti.Framework.Foundation.TargetPlatform platformLocal = Theme.of(context).platform;
         if (((_PageTransitionsThemeTransitions__page_transitions_theme<T>)(object)this.widget).route.popGestureInProgress)
         {
-            _transitionPlatform ??= platform__30280;
-            platform__30280 = DartRuntimePrimitives.RequireValue(this._transitionPlatform);
+            _transitionPlatform ??= platformLocal;
+            platformLocal = DartRuntimePrimitives.RequireValue(this._transitionPlatform);
         }
         else
         {
             _transitionPlatform = null;
         }
-        global::Doroti.Framework.Widgets.PageTransitionsBuilder matchingBuilder__30689 = (((_PageTransitionsThemeTransitions__page_transitions_theme<T>)(object)this.widget).builders.GetValueOrDefault(platform__30280) ?? (platform__30280 switch { global::Doroti.Framework.Foundation.TargetPlatform.iOS => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new CupertinoPageTransitionsBuilder()), global::Doroti.Framework.Foundation.TargetPlatform.android or global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or global::Doroti.Framework.Foundation.TargetPlatform.windows or global::Doroti.Framework.Foundation.TargetPlatform.macOS => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new ZoomPageTransitionsBuilder()), global::Doroti.Framework.Foundation.TargetPlatform.linux => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new ZoomPageTransitionsBuilder()), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)matchingBuilder__30689.buildTransitions<T>(((_PageTransitionsThemeTransitions__page_transitions_theme<T>)(object)this.widget).route, context, ((_PageTransitionsThemeTransitions__page_transitions_theme<T>)(object)this.widget).animation, ((_PageTransitionsThemeTransitions__page_transitions_theme<T>)(object)this.widget).secondaryAnimation, ((_PageTransitionsThemeTransitions__page_transitions_theme<T>)(object)this.widget).child));
+        global::Doroti.Framework.Widgets.PageTransitionsBuilder matchingBuilder = (((_PageTransitionsThemeTransitions__page_transitions_theme<T>)(object)this.widget).builders.GetValueOrDefault(platformLocal) ?? (platformLocal switch { global::Doroti.Framework.Foundation.TargetPlatform.iOS => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new CupertinoPageTransitionsBuilder()), global::Doroti.Framework.Foundation.TargetPlatform.android or global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or global::Doroti.Framework.Foundation.TargetPlatform.windows or global::Doroti.Framework.Foundation.TargetPlatform.macOS => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new ZoomPageTransitionsBuilder()), global::Doroti.Framework.Foundation.TargetPlatform.linux => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new ZoomPageTransitionsBuilder()), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)matchingBuilder.buildTransitions<T>(((_PageTransitionsThemeTransitions__page_transitions_theme<T>)(object)this.widget).route, context, ((_PageTransitionsThemeTransitions__page_transitions_theme<T>)(object)this.widget).animation, ((_PageTransitionsThemeTransitions__page_transitions_theme<T>)(object)this.widget).secondaryAnimation, ((_PageTransitionsThemeTransitions__page_transitions_theme<T>)(object)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -486,21 +486,21 @@ public static partial class Page_transitions_themeLibrary
         {
             return;
         }
-        var paint__31543 = ((Func<Paint>)(() =>
+        var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.filterQuality = FilterQuality.medium;
     __cascade.color = global::Doroti.Ui.Color.fromRGBO(0L, 0L, 0L, opacity);
     return __cascade;
 }))();
-        double logicalWidth__31668 = (image.width / pixelRatio);
-        double logicalHeight__31724 = (image.height / pixelRatio);
-        double scaledLogicalWidth__31782 = (logicalWidth__31668 * scale);
-        double scaledLogicalHeight__31840 = (logicalHeight__31724 * scale);
-        double left__31900 = (((logicalWidth__31668 - scaledLogicalWidth__31782)) / 2L);
-        double top__31963 = (((logicalHeight__31724 - scaledLogicalHeight__31840)) / 2L);
-        var dst__32020 = global::Doroti.Ui.Rect.fromLTWH(left__31900, top__31963, scaledLogicalWidth__31782, scaledLogicalHeight__31840);
-        ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawImageRect(image, global::Doroti.Ui.Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()), dst__32020, paint__31543);
+        double logicalWidth = (image.width / pixelRatio);
+        double logicalHeight = (image.height / pixelRatio);
+        double scaledLogicalWidth = (logicalWidth * scale);
+        double scaledLogicalHeight = (logicalHeight * scale);
+        double left = (((logicalWidth - scaledLogicalWidth)) / 2L);
+        double top = (((logicalHeight - scaledLogicalHeight)) / 2L);
+        var dst = global::Doroti.Ui.Rect.fromLTWH(left, top, scaledLogicalWidth, scaledLogicalHeight);
+        ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawImageRect(image, global::Doroti.Ui.Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()), dst, paint);
     }
 }
 
@@ -514,9 +514,9 @@ public static partial class Page_transitions_themeLibrary
             return;
         }
         transform.scaleByDouble(scale, scale, scale, 1);
-        double dx__32443 = (((((size.width * scale)) - size.width)) / 2L);
-        double dy__32504 = (((((size.height * scale)) - size.height)) / 2L);
-        transform.translateByDouble(-dx__32443, -dy__32504, 0, 1);
+        double dx = (((((size.width * scale)) - size.width)) / 2L);
+        double dy = (((((size.height * scale)) - size.height)) / 2L);
+        transform.translateByDouble(-dx, -dy, 0, 1);
     }
 }
 
@@ -563,18 +563,18 @@ public class _ZoomEnterTransitionPainter__page_transitions_theme : global::Dorot
 
     internal virtual void _drawScrim(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset, Size size)
     {
-        var scrimOpacity__34468 = 0.0;
+        var scrimOpacity = 0.0;
         if ((!this.reverse && !((global::Doroti.Framework.Animation.Animation<double>)this.animation).isCompleted))
         {
-            scrimOpacity__34468 = DartRuntimePrimitives.RequireValue(_ZoomEnterTransitionState__page_transitions_theme._scrimOpacityTween.evaluate(this.animation));
+            scrimOpacity = DartRuntimePrimitives.RequireValue(_ZoomEnterTransitionState__page_transitions_theme._scrimOpacityTween.evaluate(this.animation));
         }
-        DartRuntimePrimitives.Assert(() => (!this.reverse || (scrimOpacity__34468 == 0.0)));
-        if ((scrimOpacity__34468 > 0.0))
+        DartRuntimePrimitives.Assert(() => (!this.reverse || (scrimOpacity == 0.0)));
+        if ((scrimOpacity > 0.0))
         {
             ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect((offset & size), ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = this.backgroundColor.withOpacity(scrimOpacity__34468);
+    __cascade.color = this.backgroundColor.withOpacity(scrimOpacity);
     return __cascade;
 }))());
         }
@@ -737,18 +737,18 @@ internal class _ZoomEnterTransitionNoCache__page_transitions_theme : global::Dor
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        double opacity__41956 = 0;
+        double opacityLocal = 0;
         if ((!this.reverse && !((global::Doroti.Framework.Animation.Animation<double>)this.animation).isCompleted))
         {
-            opacity__41956 = DartRuntimePrimitives.RequireValue(_ZoomEnterTransitionState__page_transitions_theme._scrimOpacityTween.evaluate(this.animation));
+            opacityLocal = DartRuntimePrimitives.RequireValue(_ZoomEnterTransitionState__page_transitions_theme._scrimOpacityTween.evaluate(this.animation));
         }
-        global::Doroti.Framework.Animation.Animation<double> fadeTransition__42705 = (this.reverse ? global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysCompleteAnimation : _ZoomEnterTransitionState__page_transitions_theme._fadeInTransition.animate(this.animation));
-        global::Doroti.Framework.Animation.Animation<double> scaleTransition__42868 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)((this.reverse ? _ZoomEnterTransitionState__page_transitions_theme._scaleDownTransition : _ZoomEnterTransitionState__page_transitions_theme._scaleUpTransition)).animate(this.animation));
+        global::Doroti.Framework.Animation.Animation<double> fadeTransition = (this.reverse ? global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysCompleteAnimation : _ZoomEnterTransitionState__page_transitions_theme._fadeInTransition.animate(this.animation));
+        global::Doroti.Framework.Animation.Animation<double> scaleTransition = ((global::Doroti.Framework.Animation.Animation<double>)(object?)((this.reverse ? _ZoomEnterTransitionState__page_transitions_theme._scaleDownTransition : _ZoomEnterTransitionState__page_transitions_theme._scaleUpTransition)).animate(this.animation));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this.animation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ColoredBox(color: Colors.black.withOpacity(opacity__41956), child: child));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ColoredBox(color: Colors.black.withOpacity(opacityLocal), child: child));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeTransition__42705, child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: scaleTransition__42868, filterQuality: FilterQuality.medium, child: this.child))));
+        })), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeTransition, child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: scaleTransition, filterQuality: FilterQuality.medium, child: this.child))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -769,9 +769,9 @@ internal class _ZoomExitTransitionNoCache__page_transitions_theme : global::Doro
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Animation.Animation<double> fadeTransition__43821 = (this.reverse ? _ZoomExitTransitionState__page_transitions_theme._fadeOutTransition.animate(this.animation) : global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysCompleteAnimation);
-        global::Doroti.Framework.Animation.Animation<double> scaleTransition__43983 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)((this.reverse ? _ZoomExitTransitionState__page_transitions_theme._scaleDownTransition : _ZoomExitTransitionState__page_transitions_theme._scaleUpTransition)).animate(this.animation));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeTransition__43821, child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: scaleTransition__43983, filterQuality: FilterQuality.medium, child: this.child)));
+        global::Doroti.Framework.Animation.Animation<double> fadeTransition = (this.reverse ? _ZoomExitTransitionState__page_transitions_theme._fadeOutTransition.animate(this.animation) : global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysCompleteAnimation);
+        global::Doroti.Framework.Animation.Animation<double> scaleTransition = ((global::Doroti.Framework.Animation.Animation<double>)(object?)((this.reverse ? _ZoomExitTransitionState__page_transitions_theme._scaleDownTransition : _ZoomExitTransitionState__page_transitions_theme._scaleUpTransition)).animate(this.animation));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FadeTransition(opacity: fadeTransition, child: new global::Doroti.Framework.Widgets.ScaleTransition(scale: scaleTransition, filterQuality: FilterQuality.medium, child: this.child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

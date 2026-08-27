@@ -167,9 +167,9 @@ public abstract class PointerEvent : global::Doroti.Runtime.IPointerEvent, Diagn
         {
             return DartRuntimePrimitives.RequireValue(position);
         }
-        var position3__22131 = new Vector3(DartRuntimePrimitives.RequireValue(position).dx, DartRuntimePrimitives.RequireValue(position).dy, 0.0);
-        Vector3 transformed3__22201 = transform.perspectiveTransform(position3__22131);
-        return new global::Doroti.Ui.Offset(transformed3__22201.x, transformed3__22201.y);
+        var position3 = new Vector3(DartRuntimePrimitives.RequireValue(position).dx, DartRuntimePrimitives.RequireValue(position).dy, 0.0);
+        Vector3 transformed3 = transform.perspectiveTransform(position3);
+        return new global::Doroti.Ui.Offset(transformed3.x, transformed3.y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -180,19 +180,19 @@ public abstract class PointerEvent : global::Doroti.Runtime.IPointerEvent, Diagn
             return untransformedDelta;
         }
         transformedEndPosition ??= transformPosition(transform, untransformedEndPosition);
-        global::Doroti.Ui.Offset transformedStartPosition__23354 = transformPosition(transform, (untransformedEndPosition - untransformedDelta));
-        return (DartRuntimePrimitives.RequireValue(transformedEndPosition) - transformedStartPosition__23354);
+        global::Doroti.Ui.Offset transformedStartPosition = transformPosition(transform, (untransformedEndPosition - untransformedDelta));
+        return (DartRuntimePrimitives.RequireValue(transformedEndPosition) - transformedStartPosition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static Matrix4 removePerspectiveTransform(Matrix4 transform)
     {
-        var vector__24073 = new global::System.Numerics.Vector4(checked((float)0), checked((float)0), checked((float)1), checked((float)0));
+        var vector = new global::System.Numerics.Vector4(checked((float)0), checked((float)0), checked((float)1), checked((float)0));
         return ((Func<Matrix4>)(() =>
 {
     var __cascade = transform.clone();
-    __cascade.setColumn(2L, vector__24073);
-    __cascade.setRow(2L, vector__24073);
+    __cascade.setColumn(2L, vector);
+    __cascade.setRow(2L, vector);
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");

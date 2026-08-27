@@ -324,21 +324,21 @@ internal class _LerpSides__widget_state : WidgetStateProperty<global::Doroti.Fra
 
     public virtual global::Doroti.Framework.Painting.BorderSide? resolve(HashSet<WidgetState> states)
     {
-        global::Doroti.Framework.Painting.BorderSide? resolvedA__22323 = ((global::Doroti.Framework.Painting.BorderSide?)(object?)this.a?.resolve(states));
-        global::Doroti.Framework.Painting.BorderSide? resolvedB__22377 = ((global::Doroti.Framework.Painting.BorderSide?)(object?)this.b?.resolve(states));
-        if (((resolvedA__22323 is null) && (resolvedB__22377 is null)))
+        global::Doroti.Framework.Painting.BorderSide? resolvedA = ((global::Doroti.Framework.Painting.BorderSide?)(object?)this.a?.resolve(states));
+        global::Doroti.Framework.Painting.BorderSide? resolvedB = ((global::Doroti.Framework.Painting.BorderSide?)(object?)this.b?.resolve(states));
+        if (((resolvedA is null) && (resolvedB is null)))
         {
             return ((global::Doroti.Framework.Painting.BorderSide)(object)null);
         }
-        if ((resolvedA__22323 is null))
+        if ((resolvedA is null))
         {
-            return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(new global::Doroti.Framework.Painting.BorderSide(width: 0, color: resolvedB__22377!.color.withAlpha(0L)), resolvedB__22377, this.t));
+            return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(new global::Doroti.Framework.Painting.BorderSide(width: 0, color: resolvedB!.color.withAlpha(0L)), resolvedB, this.t));
         }
-        if ((resolvedB__22377 is null))
+        if ((resolvedB is null))
         {
-            return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(resolvedA__22323, new global::Doroti.Framework.Painting.BorderSide(width: 0, color: ((global::Doroti.Framework.Painting.BorderSide)resolvedA__22323).color.withAlpha(0L)), this.t));
+            return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(resolvedA, new global::Doroti.Framework.Painting.BorderSide(width: 0, color: ((global::Doroti.Framework.Painting.BorderSide)resolvedA).color.withAlpha(0L)), this.t));
         }
-        return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(resolvedA__22323, resolvedB__22377, this.t));
+        return ((global::Doroti.Framework.Painting.BorderSide?)(object?)BorderSide.lerp(resolvedA, resolvedB, this.t));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -455,8 +455,8 @@ public interface WidgetStateProperty<T>
         if ((value is WidgetStateProperty<T>))
         {
             WidgetStateProperty<T> value__as32591 = (WidgetStateProperty<T>)value;
-            WidgetStateProperty<T> property__32661 = ((WidgetStateProperty<T>)(object?)value__as32591);
-            return ((T)(object?)property__32661.resolve(states));
+            WidgetStateProperty<T> @property = ((WidgetStateProperty<T>)(object?)value__as32591);
+            return ((T)(object?)@property.resolve(states));
         }
         return value;
     }
@@ -500,9 +500,9 @@ internal class _LerpProperties__widget_state<T> : WidgetStateProperty<T?>
 
     public virtual T? resolve(HashSet<WidgetState> states)
     {
-        T? resolvedA__34542 = ((T?)(object?)DartRuntimePrimitives.NullAware(this.a, __target => __target.resolve(states)));
-        T? resolvedB__34587 = ((T?)(object?)DartRuntimePrimitives.NullAware(this.b, __target => __target.resolve(states)));
-        return this.lerpFunction(resolvedA__34542, resolvedB__34587, this.t);
+        T? resolvedA = ((T?)(object?)DartRuntimePrimitives.NullAware(this.a, __target => __target.resolve(states)));
+        T? resolvedB = ((T?)(object?)DartRuntimePrimitives.NullAware(this.b, __target => __target.resolve(states)));
+        return this.lerpFunction(resolvedA, resolvedB, this.t);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -533,11 +533,11 @@ public class WidgetStateMapper<T> : global::Doroti.Framework.Foundation.Diagnost
 
     public virtual T resolve(HashSet<WidgetState> states)
     {
-        foreach (MapEntry<WidgetStatesConstraint, T> entry__38429 in this._map.entries)
+        foreach (MapEntry<WidgetStatesConstraint, T> entry in this._map.entries)
         {
-            if (entry__38429.key.isSatisfiedBy(states))
+            if (entry.key.isSatisfiedBy(states))
             {
-                return entry__38429.value;
+                return entry.value;
             }
         }
         try
@@ -627,8 +627,8 @@ public class WidgetStatesController : global::Doroti.Framework.Foundation.ValueN
 
     public virtual void update(WidgetState state, bool add)
     {
-        bool valueChanged__43279 = (add ? this.value.Add(state) : this.value.Remove(state));
-        if (valueChanged__43279)
+        bool valueChanged = (add ? this.value.Add(state) : this.value.Remove(state));
+        if (valueChanged)
         {
             notifyListeners();
         }

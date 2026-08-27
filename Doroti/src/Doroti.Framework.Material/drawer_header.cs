@@ -46,9 +46,9 @@ public class DrawerHeader : global::Doroti.Framework.Widgets.StatelessWidget
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        ThemeData theme__2776 = Theme.of(context);
-        double statusBarHeight__2820 = MediaQuery.paddingOf(context).top;
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Container(height: (statusBarHeight__2820 + Drawer_headerLibrary._kDrawerHeaderHeight), margin: this.margin, decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(bottom: Divider.createBorderSide(context))), child: new global::Doroti.Framework.Widgets.AnimatedContainer(padding: this.padding.add(global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: statusBarHeight__2820)), decoration: this.decoration, duration: DartRuntimePrimitives.RequireValue(this.duration), curve: this.curve, child: ((this.child is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: theme__2776.textTheme.bodyLarge!, child: global::Doroti.Framework.Widgets.MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: this.child!))))));
+        ThemeData theme = Theme.of(context);
+        double statusBarHeight = MediaQuery.paddingOf(context).top;
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Container(height: (statusBarHeight + Drawer_headerLibrary._kDrawerHeaderHeight), margin: this.margin, decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: new global::Doroti.Framework.Painting.Border(bottom: Divider.createBorderSide(context))), child: new global::Doroti.Framework.Widgets.AnimatedContainer(padding: this.padding.add(global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: statusBarHeight)), decoration: this.decoration, duration: DartRuntimePrimitives.RequireValue(this.duration), curve: this.curve, child: ((this.child is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: theme.textTheme.bodyLarge!, child: global::Doroti.Framework.Widgets.MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: this.child!))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -60,10 +60,10 @@ public class TabController : global::Doroti.Framework.Foundation.ChangeNotifier
             long index__value5320 = DartRuntimePrimitives.RequireValue(index);
             this._animationController!.value = DartRuntimePrimitives.RequireValue(index__value5320).toDouble();
         }
-        var result__5407 = TabController.Create_(index: (index ?? this._index), length: (length ?? this.length), animationController: this._animationController, previousIndex: (previousIndex ?? this._previousIndex), animationDuration: (animationDuration ?? this._animationDuration));
+        var result = TabController.Create_(index: (index ?? this._index), length: (length ?? this.length), animationController: this._animationController, previousIndex: (previousIndex ?? this._previousIndex), animationDuration: (animationDuration ?? this._animationDuration));
         _animationController = null;
         dispose();
-        return result__5407;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -188,16 +188,16 @@ public class DefaultTabController : global::Doroti.Framework.Widgets.StatefulWid
 
     public static TabController of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        TabController? controller__14638 = ((TabController?)(object?)DefaultTabController.maybeOf(context));
+        TabController? controller = ((TabController?)(object?)DefaultTabController.maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((controller__14638 is null))
+                if ((controller is null))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("DefaultTabController.of() was called with a context that does not " + "contain a DefaultTabController widget.\n" + "No DefaultTabController widget ancestor could be found starting from " + "the context that was passed to DefaultTabController.of(). This can " + "happen because you are using a widget that looks for a DefaultTabController " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
             });
-        return controller__14638!;
+        return controller!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -243,14 +243,14 @@ internal class _DefaultTabControllerState__tab_controller : global::Doroti.Frame
         base.didUpdateWidget(oldWidget);
         if ((((DefaultTabController)oldWidget).length != ((DefaultTabController)this.widget).length))
         {
-            long? newIndex__16396 = default!;
-            long previousIndex__16416 = ((TabController)this._controller).previousIndex;
+            long? newIndex = default!;
+            long previousIndexLocal = ((TabController)this._controller).previousIndex;
             if ((((TabController)this._controller).index >= ((DefaultTabController)this.widget).length))
             {
-                newIndex__16396 = Math.Max(0L, (((DefaultTabController)this.widget).length - 1L));
-                previousIndex__16416 = ((TabController)this._controller).index;
+                newIndex = Math.Max(0L, (((DefaultTabController)this.widget).length - 1L));
+                previousIndexLocal = ((TabController)this._controller).index;
             }
-            _controller = this._controller._copyWithAndDispose(length: ((DefaultTabController)this.widget).length, animationDuration: ((DefaultTabController)this.widget).animationDuration, index: newIndex__16396, previousIndex: previousIndex__16416);
+            _controller = this._controller._copyWithAndDispose(length: ((DefaultTabController)this.widget).length, animationDuration: ((DefaultTabController)this.widget).animationDuration, index: newIndex, previousIndex: previousIndexLocal);
         }
         if ((!object.Equals(((DefaultTabController)oldWidget).animationDuration, ((DefaultTabController)this.widget).animationDuration)))
         {
@@ -284,31 +284,31 @@ internal class _DefaultTabControllerState__tab_controller : global::Doroti.Frame
 
     public virtual void _updateTicker()
     {
-        TickerModeData values__15157 = this._tickerModeNotifier!.value;
+        TickerModeData values = this._tickerModeNotifier!.value;
         if ((this._ticker is not null))
         {
-            this._ticker!.muted = !((TickerModeData)values__15157).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values__15157).forceFrames;
+            this._ticker!.muted = !((TickerModeData)values).enabled;
+            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier__15400.addListener(() => this._updateTicker());
-        this._tickerModeNotifier = newNotifier__15400;
+        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }

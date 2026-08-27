@@ -56,17 +56,17 @@ public class ScrollNotificationObserver : StatefulWidget
 
     public static ScrollNotificationObserverState of(BuildContext context)
     {
-        ScrollNotificationObserverState? observerState__4708 = ((ScrollNotificationObserverState?)(object?)ScrollNotificationObserver.maybeOf(context));
+        ScrollNotificationObserverState? observerState = ((ScrollNotificationObserverState?)(object?)ScrollNotificationObserver.maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((observerState__4708 is null))
+                if ((observerState is null))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("ScrollNotificationObserver.of() was called with a context that does not contain a " + "ScrollNotificationObserver widget.\n" + "No ScrollNotificationObserver widget ancestor could be found starting from the " + "context that was passed to ScrollNotificationObserver.of(). This can happen " + "because you are using a widget that looks for a ScrollNotificationObserver " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return observerState__4708!;
+        return observerState!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -101,11 +101,11 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
     public virtual void removeListener(global::System.Action<ScrollNotification> listener)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
-        foreach (_ListenerEntry__scroll_notification_observer entry__6800 in this._listeners!)
+        foreach (_ListenerEntry__scroll_notification_observer entry in this._listeners!)
         {
-            if ((object.Equals((global::System.Action<ScrollNotification>)((_ListenerEntry__scroll_notification_observer)entry__6800).listener, (global::System.Action<ScrollNotification>)listener)))
+            if ((object.Equals((global::System.Action<ScrollNotification>)((_ListenerEntry__scroll_notification_observer)entry).listener, (global::System.Action<ScrollNotification>)listener)))
             {
-                entry__6800.unlink();
+                entry.unlink();
                 return;
             }
         }
@@ -118,20 +118,20 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
         {
             return;
         }
-        var localListeners__7083 = new List<_ListenerEntry__scroll_notification_observer>(this._listeners!);
-        foreach (var entry__7153 in localListeners__7083)
+        var localListeners = new List<_ListenerEntry__scroll_notification_observer>(this._listeners!);
+        foreach (var entry in localListeners)
         {
             try
             {
-                if ((((DartLinkedList<_ListenerEntry__scroll_notification_observer>?)((dynamic)entry__7153).list) is not null))
+                if ((((DartLinkedList<_ListenerEntry__scroll_notification_observer>?)((dynamic)entry).list) is not null))
                 {
-                    entry__7153.listener(notification);
+                    entry.listener(notification);
                 }
             }
-            catch (Exception exception__7291)
+            catch (Exception exceptionLocal)
             {
-                var stack__7302 = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__7291, stack: stack__7302, library: "widget library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"while dispatching notifications for {this.GetType()}"), informationCollector: ((InformationCollector)(() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollNotificationObserverState>($"The {this.GetType()} sending notification was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }))));
+                var stackLocal = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widget library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"while dispatching notifications for {this.GetType()}"), informationCollector: ((InformationCollector)(() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollNotificationObserverState>($"The {this.GetType()} sending notification was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) }))));
             }
         }
     }

@@ -66,9 +66,9 @@ internal class _ImageFilterRenderObject__image_filter : global::Doroti.Framework
             {
                 return;
             }
-            bool wasRepaintBoundary__2837 = this.isRepaintBoundary;
+            bool wasRepaintBoundary = this.isRepaintBoundary;
             _enabled = __value;
-            if ((this.isRepaintBoundary != wasRepaintBoundary__2837))
+            if ((this.isRepaintBoundary != wasRepaintBoundary))
             {
                 markNeedsCompositingBitsUpdate();
             }
@@ -93,10 +93,10 @@ internal class _ImageFilterRenderObject__image_filter : global::Doroti.Framework
     public override global::Doroti.Framework.Rendering.OffsetLayer updateCompositedLayer(global::Doroti.Framework.Rendering.OffsetLayer? oldLayer)
     {
         var __oldLayer = oldLayer is null ? null : (global::Doroti.Framework.Rendering.ImageFilterLayer)(object)oldLayer;
-        global::Doroti.Framework.Rendering.ImageFilterLayer layer__3520 = (__oldLayer ?? new global::Doroti.Framework.Rendering.ImageFilterLayer());
-        layer__3520.imageFilter = this.imageFilter;
-        layer__3520.bounds = this.paintBounds;
-        return ((global::Doroti.Framework.Rendering.OffsetLayer)(object?)layer__3520);
+        global::Doroti.Framework.Rendering.ImageFilterLayer layer = (__oldLayer ?? new global::Doroti.Framework.Rendering.ImageFilterLayer());
+        layer.imageFilter = this.imageFilter;
+        layer.bounds = this.paintBounds;
+        return ((global::Doroti.Framework.Rendering.OffsetLayer)(object?)layer);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

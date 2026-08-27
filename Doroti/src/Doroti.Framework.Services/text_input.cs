@@ -811,25 +811,25 @@ public class TextInput
         {
             case var __case81975 when object.Equals(__case81975, "TextInputClient.focusElement"):
                 {
-                    var args__82021 = ((List<object>?)methodCall.arguments)!;
-                    _scribbleClients.GetValueOrDefault(args__82021[(int)(0L)])?.onScribbleFocus(new global::Doroti.Ui.Offset((((double)args__82021[(int)(1L)])).toDouble(), (((double)args__82021[(int)(2L)])).toDouble()));
+                    var argsLocal = ((List<object>?)methodCall.arguments)!;
+                    _scribbleClients.GetValueOrDefault(argsLocal[(int)(0L)])?.onScribbleFocus(new global::Doroti.Ui.Offset((((double)argsLocal[(int)(1L)])).toDouble(), (((double)argsLocal[(int)(2L)])).toDouble()));
                     return default!;
                 }
             case var __case82233 when object.Equals(__case82233, "TextInputClient.requestElementsInRect"):
                 {
-                    List<double> args__82301 = (((List<object>?)methodCall.arguments)!).cast<double>().map(((value) => value.toDouble())).ToList();
+                    List<double> argsAlternate = (((List<object>?)methodCall.arguments)!).cast<double>().map(((value) => value.toDouble())).ToList();
                     return _scribbleClients.Keys.where(((elementIdentifier) =>
                     {
-                        var rect__82559 = new global::Doroti.Ui.Rect(args__82301[(int)(0L)], args__82301[(int)(1L)], args__82301[(int)(2L)], args__82301[(int)(3L)]);
-                        if (!((_scribbleClients.GetValueOrDefault(elementIdentifier)?.isInScribbleRect(rect__82559) ?? false)))
+                        var rect = new global::Doroti.Ui.Rect(argsAlternate[(int)(0L)], argsAlternate[(int)(1L)], argsAlternate[(int)(2L)], argsAlternate[(int)(3L)]);
+                        if (!((_scribbleClients.GetValueOrDefault(elementIdentifier)?.isInScribbleRect(rect) ?? false)))
                         {
                             return false;
                         }
-                        global::Doroti.Ui.Rect bounds__82781 = (_scribbleClients.GetValueOrDefault(elementIdentifier)?.bounds ?? Rect.zero);
-                        return !((((object.Equals(bounds__82781, Rect.zero)) || bounds__82781.hasNaN) || bounds__82781.isInfinite));
+                        global::Doroti.Ui.Rect boundsLocal = (_scribbleClients.GetValueOrDefault(elementIdentifier)?.bounds ?? Rect.zero);
+                        return !((((object.Equals(boundsLocal, Rect.zero)) || boundsLocal.hasNaN) || boundsLocal.isInfinite));
                     })).map(((elementIdentifier) =>
                     {
-                        global::Doroti.Ui.Rect bounds__82781 = _scribbleClients.GetValueOrDefault(elementIdentifier)!.bounds;
+                        global::Doroti.Ui.Rect boundsLocal = _scribbleClients.GetValueOrDefault(elementIdentifier)!.bounds;
                         return new List<object> { elementIdentifier };
                     })).ToList();
                 }
@@ -845,9 +845,9 @@ public class TextInput
                 }
             case var __case83506 when object.Equals(__case83506, "TextInputClient.onFocusReceived"):
                 {
-                    var args__83555 = ((List<object>?)methodCall.arguments)!;
-                    var clientId__83615 = ((long)args__83555[(int)(0L)]);
-                    if (((_lastConnection is not null) && (_lastConnection!._id == clientId__83615)))
+                    var argsNested = ((List<object>?)methodCall.arguments)!;
+                    var clientId = ((long)argsNested[(int)(0L)]);
+                    if (((_lastConnection is not null) && (_lastConnection!._id == clientId)))
                     {
                         return _lastConnection!._client.onFocusReceived();
                     }
@@ -861,26 +861,26 @@ public class TextInput
         if ((method == "TextInputClient.requestExistingInputState"))
         {
             _attach(_currentConnection!, _currentConfiguration);
-            TextEditingValue? editingValue__84171 = _currentConnection!._client.currentTextEditingValue;
-            if ((editingValue__84171 is not null))
+            TextEditingValue? editingValue = _currentConnection!._client.currentTextEditingValue;
+            if ((editingValue is not null))
             {
-                _setEditingState(editingValue__84171);
+                _setEditingState(editingValue);
             }
             return default!;
         }
         var args = ((List<object>?)methodCall.arguments)!;
         if ((method == "TextInputClient.updateEditingStateWithTag"))
         {
-            TextInputClient client__84620 = _currentConnection!._client;
-            AutofillScope? scope__84685 = client__84620.currentAutofillScope;
-            var editingValue__84734 = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(1L)]);
-            foreach (string tag in editingValue__84734.Keys)
+            TextInputClient clientLocal = _currentConnection!._client;
+            AutofillScope? scope = clientLocal.currentAutofillScope;
+            var editingValueLocal = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(1L)]);
+            foreach (string tag in editingValueLocal.Keys)
             {
-                var textEditingValue__84848 = TextEditingValue.CreateFromJSON(DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)editingValue__84734.GetValueOrDefault(tag)));
-                AutofillClient? client__84988 = scope__84685?.getAutofillClient(tag);
-                if (((client__84988 is not null) && client__84988.textInputConfiguration.autofillConfiguration.enabled))
+                var textEditingValue = TextEditingValue.CreateFromJSON(DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)editingValueLocal.GetValueOrDefault(tag)));
+                AutofillClient? clientAlternate = scope?.getAutofillClient(tag);
+                if (((clientAlternate is not null) && clientAlternate.textInputConfiguration.autofillConfiguration.enabled))
                 {
-                    client__84988.autofill(textEditingValue__84848);
+                    clientAlternate.autofill(textEditingValue);
                 }
             }
             return default!;
@@ -888,16 +888,16 @@ public class TextInput
         var client = ((long)args[(int)(0L)]);
         if ((DartRuntimePrimitives.RequireValue(client) != _currentConnection!._id))
         {
-            var debugAllowAnyway__85394 = false;
+            var debugAllowAnyway = false;
             DartRuntimePrimitives.Assert(() =>
                 {
                     if ((DartRuntimePrimitives.RequireValue(client) == -1L))
                     {
-                        debugAllowAnyway__85394 = true;
+                        debugAllowAnyway = true;
                     }
                     return true;
                 });
-            if (!debugAllowAnyway__85394)
+            if (!debugAllowAnyway)
             {
                 return default!;
             }
@@ -906,24 +906,24 @@ public class TextInput
         {
             case var __case85861 when object.Equals(__case85861, "TextInputClient.updateEditingState"):
                 {
-                    var value__85913 = TextEditingValue.CreateFromJSON(DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(1L)]));
-                    TextInput._instance._updateEditingValue(value__85913, exclude: _PlatformTextInputControl.instance);
+                    var valueLocal = TextEditingValue.CreateFromJSON(DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(1L)]));
+                    TextInput._instance._updateEditingValue(valueLocal, exclude: _PlatformTextInputControl.instance);
                     break;
                 }
             case var __case86093 when object.Equals(__case86093, "TextInputClient.updateEditingStateWithDeltas"):
                 {
                     DartRuntimePrimitives.Assert(() => (_currentConnection!._client is DeltaTextInputClient));
-                    var encoded__86357 = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(1L)]);
-                    var deltas__86414 = new List<TextEditingDelta>();
-                    (((DeltaTextInputClient?)_currentConnection!._client)!).updateEditingValueWithDeltas(deltas__86414);
+                    var encoded = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(1L)]);
+                    var deltas = new List<TextEditingDelta>();
+                    (((DeltaTextInputClient?)_currentConnection!._client)!).updateEditingValueWithDeltas(deltas);
                     break;
                 }
             case var __case86724 when object.Equals(__case86724, "TextInputClient.performAction"):
                 {
                     if ((((string?)args[(int)(1L)])! == "TextInputAction.commitContent"))
                     {
-                        var content__86841 = KeyboardInsertedContent.CreateFromJson(DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(2L)]));
-                        _currentConnection!._client.insertContent(content__86841);
+                        var content = KeyboardInsertedContent.CreateFromJson(DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(2L)]));
+                        _currentConnection!._client.insertContent(content);
                     }
                     else
                     {
@@ -933,14 +933,14 @@ public class TextInput
                 }
             case var __case87110 when object.Equals(__case87110, "TextInputClient.performSelectors"):
                 {
-                    List<string> selectors__87173 = (((List<object>?)args[(int)(1L)])!).cast<string>().ToList();
-                    selectors__87173.forEach(_currentConnection!._client.performSelector);
+                    List<string> selectors = (((List<object>?)args[(int)(1L)])!).cast<string>().ToList();
+                    selectors.forEach(_currentConnection!._client.performSelector);
                     break;
                 }
             case var __case87311 when object.Equals(__case87311, "TextInputClient.performPrivateCommand"):
                 {
-                    var firstArg__87366 = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(1L)]);
-                    _currentConnection!._client.performPrivateCommand(((string?)firstArg__87366.GetValueOrDefault("action"))!, ((firstArg__87366.GetValueOrDefault("data") is null) ? new DartMap<string, object>() : DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)firstArg__87366.GetValueOrDefault("data"))));
+                    var firstArg = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)args[(int)(1L)]);
+                    _currentConnection!._client.performPrivateCommand(((string?)firstArg.GetValueOrDefault("action"))!, ((firstArg.GetValueOrDefault("data") is null) ? new DartMap<string, object>() : DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)firstArg.GetValueOrDefault("data"))));
                     break;
                 }
             case var __case87632 when object.Equals(__case87632, "TextInputClient.updateFloatingCursor"):
@@ -1360,12 +1360,12 @@ internal class _PlatformTextInputControl : TextInputControl
         DartMap<string, object> json = configuration.toJson();
         if ((!object.Equals(TextInput._instance._currentControl, _PlatformTextInputControl.instance)))
         {
-            DartMap<string, object> none__100409 = TextInputType.none.toJson();
+            DartMap<string, object> noneLocal = TextInputType.none.toJson();
             if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
             {
-                none__100409["isMultiline"] = (object.Equals(configuration.inputType, TextInputType.multiline));
+                noneLocal["isMultiline"] = (object.Equals(configuration.inputType, TextInputType.multiline));
             }
-            json["inputType"] = none__100409;
+            json["inputType"] = noneLocal;
         }
         return json;
         throw new InvalidOperationException("Dart control flow completed without a value.");

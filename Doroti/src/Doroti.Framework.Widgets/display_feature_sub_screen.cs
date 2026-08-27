@@ -28,13 +28,13 @@ public class DisplayFeatureSubScreen : StatelessWidget
     public override Widget build(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => ((this.anchorPoint is not null) || global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context, why: "to determine which sub-screen DisplayFeatureSubScreen uses", alternative: "Alternatively, consider specifying the 'anchorPoint' argument on the DisplayFeatureSubScreen.")));
-        MediaQueryData mediaQuery__4178 = ((MediaQueryData)(object?)MediaQuery.of(context));
-        global::Doroti.Ui.Size parentSize__4230 = ((global::Doroti.Ui.Size)(object?)((MediaQueryData)mediaQuery__4178).size);
-        global::Doroti.Ui.Rect wantedBounds__4275 = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & parentSize__4230));
-        global::Doroti.Ui.Offset resolvedAnchorPoint__4333 = ((global::Doroti.Ui.Offset)(object?)DisplayFeatureSubScreen._capOffset(((this.anchorPoint ?? (Offset)DisplayFeatureSubScreen._fallbackAnchorPoint(context))), parentSize__4230));
-        IEnumerable<global::Doroti.Ui.Rect> subScreens__4469 = ((IEnumerable<global::Doroti.Ui.Rect>)(object?)DisplayFeatureSubScreen.subScreensInBounds(wantedBounds__4275, DisplayFeatureSubScreen.avoidBounds(mediaQuery__4178)));
-        global::Doroti.Ui.Rect closestSubScreen__4556 = ((global::Doroti.Ui.Rect)(object?)DisplayFeatureSubScreen._closestToAnchorPoint(subScreens__4469.Cast<Rect>(), resolvedAnchorPoint__4333));
-        return ((Widget)(object?)new Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: closestSubScreen__4556.left, top: closestSubScreen__4556.top, right: (parentSize__4230.width - closestSubScreen__4556.right), bottom: (parentSize__4230.height - closestSubScreen__4556.bottom)), child: new MediaQuery(data: mediaQuery__4178.removeDisplayFeatures(closestSubScreen__4556), child: this.child)));
+        MediaQueryData mediaQuery = ((MediaQueryData)(object?)MediaQuery.of(context));
+        global::Doroti.Ui.Size parentSize = ((global::Doroti.Ui.Size)(object?)((MediaQueryData)mediaQuery).size);
+        global::Doroti.Ui.Rect wantedBounds = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & parentSize));
+        global::Doroti.Ui.Offset resolvedAnchorPoint = ((global::Doroti.Ui.Offset)(object?)DisplayFeatureSubScreen._capOffset(((this.anchorPoint ?? (Offset)DisplayFeatureSubScreen._fallbackAnchorPoint(context))), parentSize));
+        IEnumerable<global::Doroti.Ui.Rect> subScreens = ((IEnumerable<global::Doroti.Ui.Rect>)(object?)DisplayFeatureSubScreen.subScreensInBounds(wantedBounds, DisplayFeatureSubScreen.avoidBounds(mediaQuery)));
+        global::Doroti.Ui.Rect closestSubScreen = ((global::Doroti.Ui.Rect)(object?)DisplayFeatureSubScreen._closestToAnchorPoint(subScreens.Cast<Rect>(), resolvedAnchorPoint));
+        return ((Widget)(object?)new Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: closestSubScreen.left, top: closestSubScreen.top, right: (parentSize.width - closestSubScreen.right), bottom: (parentSize.height - closestSubScreen.bottom)), child: new MediaQuery(data: mediaQuery.removeDisplayFeatures(closestSubScreen), child: this.child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -52,18 +52,18 @@ public class DisplayFeatureSubScreen : StatelessWidget
 
     internal static global::Doroti.Ui.Rect _closestToAnchorPoint(IEnumerable<Rect> subScreens, Offset anchorPoint)
     {
-        global::Doroti.Ui.Rect closestScreen__5906 = ((global::Doroti.Ui.Rect)(object?)subScreens.First());
-        double closestDistance__5951 = DisplayFeatureSubScreen._distanceFromPointToRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorPoint)), closestScreen__5906);
-        foreach (var screen__6038 in subScreens)
+        global::Doroti.Ui.Rect closestScreen = ((global::Doroti.Ui.Rect)(object?)subScreens.First());
+        double closestDistance = DisplayFeatureSubScreen._distanceFromPointToRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorPoint)), closestScreen);
+        foreach (var screen in subScreens)
         {
-            double subScreenDistance__6081 = DisplayFeatureSubScreen._distanceFromPointToRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorPoint)), screen__6038);
-            if ((subScreenDistance__6081 < closestDistance__5951))
+            double subScreenDistance = DisplayFeatureSubScreen._distanceFromPointToRect(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorPoint)), screen);
+            if ((subScreenDistance < closestDistance))
             {
-                closestScreen__5906 = screen__6038;
-                closestDistance__5951 = subScreenDistance__6081;
+                closestScreen = screen;
+                closestDistance = subScreenDistance;
             }
         }
-        return closestScreen__5906;
+        return closestScreen;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -131,45 +131,45 @@ public class DisplayFeatureSubScreen : StatelessWidget
 
     public static IEnumerable<global::Doroti.Ui.Rect> subScreensInBounds(Rect wantedBounds, IEnumerable<Rect> avoidBounds)
     {
-        IEnumerable<global::Doroti.Ui.Rect> subScreens__7651 = ((IEnumerable<global::Doroti.Ui.Rect>)(object?)new List<global::Doroti.Ui.Rect> { wantedBounds });
-        foreach (var bounds__7701 in avoidBounds)
+        IEnumerable<global::Doroti.Ui.Rect> subScreens = ((IEnumerable<global::Doroti.Ui.Rect>)(object?)new List<global::Doroti.Ui.Rect> { wantedBounds });
+        foreach (var bounds in avoidBounds)
         {
-            var newSubScreens__7738 = new List<global::Doroti.Ui.Rect>();
-            foreach (var screen__7781 in subScreens__7651)
+            var newSubScreens = new List<global::Doroti.Ui.Rect>();
+            foreach (var screen in subScreens)
             {
-                if (((screen__7781.top >= bounds__7701.top) && (screen__7781.bottom <= bounds__7701.bottom)))
+                if (((screen.top >= bounds.top) && (screen.bottom <= bounds.bottom)))
                 {
-                    if ((screen__7781.left < bounds__7701.left))
+                    if ((screen.left < bounds.left))
                     {
-                        newSubScreens__7738.Add(global::Doroti.Ui.Rect.fromLTWH(screen__7781.left, screen__7781.top, (bounds__7701.left - screen__7781.left), screen__7781.height));
+                        newSubScreens.Add(global::Doroti.Ui.Rect.fromLTWH(screen.left, screen.top, (bounds.left - screen.left), screen.height));
                     }
-                    if ((screen__7781.right > bounds__7701.right))
+                    if ((screen.right > bounds.right))
                     {
-                        newSubScreens__7738.Add(global::Doroti.Ui.Rect.fromLTWH(bounds__7701.right, screen__7781.top, (screen__7781.right - bounds__7701.right), screen__7781.height));
+                        newSubScreens.Add(global::Doroti.Ui.Rect.fromLTWH(bounds.right, screen.top, (screen.right - bounds.right), screen.height));
                     }
                 }
                 else
                 {
-                    if (((screen__7781.left >= bounds__7701.left) && (screen__7781.right <= bounds__7701.right)))
+                    if (((screen.left >= bounds.left) && (screen.right <= bounds.right)))
                     {
-                        if ((screen__7781.top < bounds__7701.top))
+                        if ((screen.top < bounds.top))
                         {
-                            newSubScreens__7738.Add(global::Doroti.Ui.Rect.fromLTWH(screen__7781.left, screen__7781.top, screen__7781.width, (bounds__7701.top - screen__7781.top)));
+                            newSubScreens.Add(global::Doroti.Ui.Rect.fromLTWH(screen.left, screen.top, screen.width, (bounds.top - screen.top)));
                         }
-                        if ((screen__7781.bottom > bounds__7701.bottom))
+                        if ((screen.bottom > bounds.bottom))
                         {
-                            newSubScreens__7738.Add(global::Doroti.Ui.Rect.fromLTWH(screen__7781.left, bounds__7701.bottom, screen__7781.width, (screen__7781.bottom - bounds__7701.bottom)));
+                            newSubScreens.Add(global::Doroti.Ui.Rect.fromLTWH(screen.left, bounds.bottom, screen.width, (screen.bottom - bounds.bottom)));
                         }
                     }
                     else
                     {
-                        newSubScreens__7738.Add(screen__7781);
+                        newSubScreens.Add(screen);
                     }
                 }
             }
-            subScreens__7651 = DartRuntimePrimitives.ConvertValue<IEnumerable<Rect>>(newSubScreens__7738);
+            subScreens = DartRuntimePrimitives.ConvertValue<IEnumerable<Rect>>(newSubScreens);
         }
-        return ((IEnumerable<global::Doroti.Ui.Rect>)(object?)subScreens__7651);
+        return ((IEnumerable<global::Doroti.Ui.Rect>)(object?)subScreens);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

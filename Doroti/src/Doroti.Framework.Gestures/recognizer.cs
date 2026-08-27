@@ -126,33 +126,33 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
     public abstract string debugDescription { get; }
     public virtual T? invokeCallback<T>(string name, Func<T> callback, Func<string>? debugReport = null)
     {
-        T? result__13841 = default!;
+        T? result = default!;
         try
         {
             DartRuntimePrimitives.Assert(() =>
                 {
                     if (global::Doroti.Framework.Gestures.DebugLibrary.debugPrintRecognizerCallbacksTrace)
                     {
-                        string? report__13951 = ((debugReport is not null) ? debugReport() : null);
-                        var prefix__14141 = (global::Doroti.Framework.Gestures.DebugLibrary.debugPrintGestureArenaDiagnostics ? $"{DartCoreExtensions.repeat(" ", 19L)}❙ " : "");
-                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"{prefix__14141}{this} calling {name} callback.{((((report__13951 is null ? (bool?)null : report__13951.Length != 0) ?? false)) ? $" {report__13951}" : "")}");
+                        string? report = ((debugReport is not null) ? debugReport() : null);
+                        var prefix = (global::Doroti.Framework.Gestures.DebugLibrary.debugPrintGestureArenaDiagnostics ? $"{DartCoreExtensions.repeat(" ", 19L)}❙ " : "");
+                        global::Doroti.Framework.Foundation.PrintLibrary.debugPrint($"{prefix}{this} calling {name} callback.{((((report is null ? (bool?)null : report.Length != 0) ?? false)) ? $" {report}" : "")}");
                     }
                     return true;
                 });
-            result__13841 = callback();
+            result = callback();
         }
-        catch (Exception exception__14428)
+        catch (Exception exceptionLocal)
         {
-            var stack__14439 = new System.Diagnostics.StackTrace();
-            InformationCollector? collector__14476 = default!;
+            var stackLocal = new System.Diagnostics.StackTrace();
+            InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector__14476 = (() => new List<DiagnosticsNode> { new StringProperty("Handler", name), new DiagnosticsProperty<GestureRecognizer>("Recognizer", this, style: DiagnosticsTreeStyle.errorProperty) });
+                    collector = (() => new List<DiagnosticsNode> { new StringProperty("Handler", name), new DiagnosticsProperty<GestureRecognizer>("Recognizer", this, style: DiagnosticsTreeStyle.errorProperty) });
                     return true;
                 });
-            FlutterError.reportError(new FlutterErrorDetails(exception: exception__14428, stack: stack__14439, library: "gesture", context: new ErrorDescription("while handling a gesture"), informationCollector: collector__14476));
+            FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "gesture", context: new ErrorDescription("while handling a gesture"), informationCollector: collector));
         }
-        return result__13841;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -198,30 +198,30 @@ public abstract class OneSequenceGestureRecognizer : GestureRecognizer
     public abstract void didStopTrackingLastPointer(long pointer);
     public virtual void resolve(GestureDisposition disposition)
     {
-        var localEntries__17819 = new List<GestureArenaEntry>(DartRuntimePrimitives.ConvertEnumerable<GestureArenaEntry>(this._entries.Values));
+        var localEntries = new List<GestureArenaEntry>(DartRuntimePrimitives.ConvertEnumerable<GestureArenaEntry>(this._entries.Values));
         this._entries.Clear();
-        foreach (var entry__17916 in localEntries__17819)
+        foreach (var entry in localEntries)
         {
-            entry__17916.resolve(disposition);
+            entry.resolve(disposition);
         }
     }
 
     public virtual void resolvePointer(long pointer, GestureDisposition disposition)
     {
-        GestureArenaEntry? entry__18222 = this._entries.GetValueOrDefault(pointer);
-        if ((entry__18222 is not null))
+        GestureArenaEntry? entry = this._entries.GetValueOrDefault(pointer);
+        if ((entry is not null))
         {
             this._entries.remove(pointer);
-            entry__18222.resolve(disposition);
+            entry.resolve(disposition);
         }
     }
 
     public override void dispose()
     {
         resolve(GestureDisposition.rejected);
-        foreach (long pointer__18443 in this._trackedPointers)
+        foreach (long pointer in this._trackedPointers)
         {
-            GestureBinding.instance.pointerRouter.removeRoute(pointer__18443, (Action<PointerEvent>)this.handleEvent);
+            GestureBinding.instance.pointerRouter.removeRoute(pointer, (Action<PointerEvent>)this.handleEvent);
         }
         this._trackedPointers.Clear();
         DartRuntimePrimitives.Assert(() => (checked((long)(this._entries.Count)) == 0));
@@ -346,9 +346,9 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
         DartRuntimePrimitives.Assert(() => (!object.Equals(this.state, GestureRecognizerState.ready)));
         if (((object.Equals(this.state, GestureRecognizerState.possible)) && (((PointerEvent)@event).pointer == this.primaryPointer)))
         {
-            bool isPreAcceptSlopPastTolerance__28466 = ((!this._gestureAccepted && (this.preAcceptSlopTolerance is not null)) && (_getGlobalDistance(@event) > DartRuntimePrimitives.RequireValue(this.preAcceptSlopTolerance)));
-            bool isPostAcceptSlopPastTolerance__28652 = ((this._gestureAccepted && (this.postAcceptSlopTolerance is not null)) && (_getGlobalDistance(@event) > DartRuntimePrimitives.RequireValue(this.postAcceptSlopTolerance)));
-            if (((@event is PointerMoveEvent) && ((isPreAcceptSlopPastTolerance__28466 || isPostAcceptSlopPastTolerance__28652))))
+            bool isPreAcceptSlopPastTolerance = ((!this._gestureAccepted && (this.preAcceptSlopTolerance is not null)) && (_getGlobalDistance(@event) > DartRuntimePrimitives.RequireValue(this.preAcceptSlopTolerance)));
+            bool isPostAcceptSlopPastTolerance = ((this._gestureAccepted && (this.postAcceptSlopTolerance is not null)) && (_getGlobalDistance(@event) > DartRuntimePrimitives.RequireValue(this.postAcceptSlopTolerance)));
+            if (((@event is PointerMoveEvent) && ((isPreAcceptSlopPastTolerance || isPostAcceptSlopPastTolerance))))
             {
                 PointerMoveEvent @event__as28834 = (PointerMoveEvent)@event;
                 resolve(GestureDisposition.rejected);
@@ -417,8 +417,8 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
 
     internal virtual double _getGlobalDistance(PointerEvent @event)
     {
-        global::Doroti.Ui.Offset offset__30873 = (((PointerEvent)@event).position - this.initialPosition!.global);
-        return offset__30873.distance;
+        global::Doroti.Ui.Offset offset = (((PointerEvent)@event).position - this.initialPosition!.global);
+        return offset.distance;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

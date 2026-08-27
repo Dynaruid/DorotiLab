@@ -49,8 +49,8 @@ public class MenuStyle : global::Doroti.Framework.Foundation.Diagnosticable
 
     public override int GetHashCode()
     {
-        var values__7168 = new List<object?> { this.backgroundColor, this.shadowColor, this.surfaceTintColor, this.elevation, this.padding, this.minimumSize, this.fixedSize, this.maximumSize, this.side, this.shape, this.mouseCursor, this.visualDensity, this.alignment };
-        return FoundationRuntimePorts.ObjectHashAll(values__7168);
+        var values = new List<object?> { this.backgroundColor, this.shadowColor, this.surfaceTintColor, this.elevation, this.padding, this.minimumSize, this.fixedSize, this.maximumSize, this.side, this.shape, this.mouseCursor, this.visualDensity, this.alignment };
+        return FoundationRuntimePorts.ObjectHashAll(values);
         return default!;
     }
     public override bool Equals(object? other)
@@ -114,13 +114,13 @@ public class MenuStyle : global::Doroti.Framework.Foundation.Diagnosticable
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

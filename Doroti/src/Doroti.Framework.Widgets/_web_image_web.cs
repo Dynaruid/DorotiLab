@@ -30,16 +30,16 @@ public class ImgElementPlatformViewIo : StatelessWidget
         DartRuntimePrimitives.Assert(() => !_registered);
         _registered = true;
         Dart_ui_webLibrary.platformViewRegistry.registerViewFactory(global::Doroti.Framework.Widgets._platform_selectable_region_context_menu_webLibrary._viewType, ((viewId, arg1) => {
-var paramsMap__1130 = DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)@params!);
-var img__1319 = ((HTMLImageElement?)(object?)WebLibrary.document.createElement("img"))!;
-img__1319.src = ((string?)(object?)paramsMap__1130.GetValueOrDefault("src")!)!;
+var paramsMap = DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)@params!);
+var img = ((HTMLImageElement?)(object?)WebLibrary.document.createElement("img"))!;
+img.src = ((string?)(object?)paramsMap.GetValueOrDefault("src")!)!;
 DartRuntimePrimitives.Ignore(((Func<CSSStyleDeclaration>)(() =>
-{            var __cascade = img__1319.style;
+{            var __cascade = img.style;
             __cascade.width = "100%";
             __cascade.height = "100%";
             __cascade.pointerEvents = "none";
             return __cascade;        }))());
-return img__1319;
+return img;
 throw new InvalidOperationException("Dart closure completed without a value.");
 }));
     }
@@ -185,10 +185,10 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
             {
                 return;
             }
-            bool sizeChanged__6847 = ((this._image.naturalWidth != __value.naturalWidth) || (this._image.naturalHeight != __value.naturalHeight));
+            bool sizeChanged = ((this._image.naturalWidth != __value.naturalWidth) || (this._image.naturalHeight != __value.naturalHeight));
             _image = __value;
             markNeedsPaint();
-            if ((sizeChanged__6847 && (((this._width is null) || (this._height is null)))))
+            if ((sizeChanged && (((this._width is null) || (this._height is null)))))
             {
                 markNeedsLayout();
             }
@@ -310,33 +310,33 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
         {
             return;
         }
-        var inputSize__11026 = new global::Doroti.Ui.Size(this.image.naturalWidth.toDouble(), this.image.naturalHeight.toDouble());
-        global::Doroti.Framework.Painting.BoxFit resolvedFit__11124 = (this.fit ?? global::Doroti.Framework.Painting.BoxFit.scaleDown);
-        global::Doroti.Framework.Painting.FittedSizes fittedSizes__11185 = global::Doroti.Framework.Painting.Box_fitLibrary.applyBoxFit(resolvedFit__11124, inputSize__11026, this.size);
-        if ((object.Equals(((global::Doroti.Framework.Painting.FittedSizes)fittedSizes__11185).source, inputSize__11026)))
+        var inputSize = new global::Doroti.Ui.Size(this.image.naturalWidth.toDouble(), this.image.naturalHeight.toDouble());
+        global::Doroti.Framework.Painting.BoxFit resolvedFit = (this.fit ?? global::Doroti.Framework.Painting.BoxFit.scaleDown);
+        global::Doroti.Framework.Painting.FittedSizes fittedSizes = global::Doroti.Framework.Painting.Box_fitLibrary.applyBoxFit(resolvedFit, inputSize, this.size);
+        if ((object.Equals(((global::Doroti.Framework.Painting.FittedSizes)fittedSizes).source, inputSize)))
         {
-            global::Doroti.Ui.Size childSize__11527 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Painting.FittedSizes)fittedSizes__11185).destination);
-            this.child!.layout(global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(childSize__11527));
-            double halfWidthDelta__11919 = (((this.size.width - childSize__11527.width)) / 2.0);
-            double halfHeightDelta__11993 = (((this.size.height - childSize__11527.height)) / 2.0);
-            double dx__12070 = (halfWidthDelta__11919 + (((DartRuntimePrimitives.RequireValue(this._flipHorizontally) ? -this._resolvedAlignment!.x : this._resolvedAlignment!.x)) * halfWidthDelta__11919));
-            double dy__12219 = (halfHeightDelta__11993 + (this._resolvedAlignment!.y * halfHeightDelta__11993));
-            var childParentData__12295 = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
-            childParentData__12295.offset = new global::Doroti.Ui.Offset(dx__12070, dy__12219);
+            global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Painting.FittedSizes)fittedSizes).destination);
+            this.child!.layout(global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(childSize));
+            double halfWidthDelta = (((this.size.width - childSize.width)) / 2.0);
+            double halfHeightDelta = (((this.size.height - childSize.height)) / 2.0);
+            double dx = (halfWidthDelta + (((DartRuntimePrimitives.RequireValue(this._flipHorizontally) ? -this._resolvedAlignment!.x : this._resolvedAlignment!.x)) * halfWidthDelta));
+            double dy = (halfHeightDelta + (this._resolvedAlignment!.y * halfHeightDelta));
+            var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
+            childParentData.offset = new global::Doroti.Ui.Offset(dx, dy);
             _needsClip = false;
         }
         else
         {
-            global::Doroti.Ui.Size sourceSize__12917 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Painting.FittedSizes)fittedSizes__11185).source);
-            global::Doroti.Ui.Size destinationSize__12967 = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Painting.FittedSizes)fittedSizes__11185).destination);
-            DartRuntimePrimitives.Assert(() => (((sourceSize__12917.aspectRatio - destinationSize__12967.aspectRatio)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance));
-            double scale__13997 = (destinationSize__12967.width / sourceSize__12917.width);
-            global::Doroti.Ui.Size childSize__14064 = ((global::Doroti.Ui.Size)(object?)(inputSize__11026 * scale__13997));
-            this.child!.layout(global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(childSize__14064));
-            global::Doroti.Ui.Rect sourceRect__14845 = ((global::Doroti.Ui.Rect)(object?)this._resolvedAlignment!.inscribe(sourceSize__12917, (Offset.zero & inputSize__11026)));
-            global::Doroti.Ui.Offset childOffset__14944 = ((global::Doroti.Ui.Offset)(object?)(new global::Doroti.Ui.Offset(-sourceRect__14845.left, -sourceRect__14845.top) * scale__13997));
-            var childParentData__15021 = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
-            childParentData__15021.offset = childOffset__14944;
+            global::Doroti.Ui.Size sourceSize = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Painting.FittedSizes)fittedSizes).source);
+            global::Doroti.Ui.Size destinationSize = ((global::Doroti.Ui.Size)(object?)((global::Doroti.Framework.Painting.FittedSizes)fittedSizes).destination);
+            DartRuntimePrimitives.Assert(() => (((sourceSize.aspectRatio - destinationSize.aspectRatio)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance));
+            double scale = (destinationSize.width / sourceSize.width);
+            global::Doroti.Ui.Size childSizeLocal = ((global::Doroti.Ui.Size)(object?)(inputSize * scale));
+            this.child!.layout(global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(childSizeLocal));
+            global::Doroti.Ui.Rect sourceRect = ((global::Doroti.Ui.Rect)(object?)this._resolvedAlignment!.inscribe(sourceSize, (Offset.zero & inputSize)));
+            global::Doroti.Ui.Offset childOffset = ((global::Doroti.Ui.Offset)(object?)(new global::Doroti.Ui.Offset(-sourceRect.left, -sourceRect.top) * scale));
+            var childParentDataLocal = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)this.child!.parentData!)!;
+            childParentDataLocal.offset = childOffset;
             _needsClip = true;
         }
     }
@@ -349,8 +349,8 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
         }
         if (this._needsClip)
         {
-            global::Doroti.Ui.Rect destinationRect__15307 = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & this.size));
-            context.pushClipRect(this.needsCompositing, offset, destinationRect__15307, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint);
+            global::Doroti.Ui.Rect destinationRect = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & this.size));
+            context.pushClipRect(this.needsCompositing, offset, destinationRect, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint);
         }
         else
         {

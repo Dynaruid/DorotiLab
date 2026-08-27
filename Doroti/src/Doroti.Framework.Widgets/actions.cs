@@ -18,14 +18,14 @@ public static partial class ActionsLibrary
 {
     internal static BuildContext _getParent(BuildContext context)
     {
-        BuildContext parent__1462 = default!;
+        BuildContext parent = default!;
         context.visitAncestorElements(((global::System.Func<Element, bool>)((ancestor) =>
         {
-            parent__1462 = DartRuntimePrimitives.ConvertValue<BuildContext>(ancestor);
+            parent = DartRuntimePrimitives.ConvertValue<BuildContext>(ancestor);
             return false;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        return parent__1462;
+        return parent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -41,14 +41,14 @@ public abstract class Intent : global::Doroti.Framework.Foundation.Diagnosticabl
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -99,16 +99,16 @@ public abstract class Action<T> : global::Doroti.Framework.Foundation.Diagnostic
 
     internal virtual bool _debugCanHandleIntent<I>(I? intent) where I : Intent
     {
-        object? badIntentString__8900 = (intent switch { T __object8942 => (object?)null, object runtimeType__8975 => (object?)runtimeType__8975, null when ((new List<I>() is List<T>)) => (object?)null, null => (object?)typeof(I).ToString() });
-        DartRuntimePrimitives.Assert(() => (badIntentString__8900 is null), () => (object?)$"An Intent of type {badIntentString__8900} cannot be handled by {this.GetType()}: the Intent must be of a subtype of {typeof(T)}.");
-        return (badIntentString__8900 is null);
+        object? badIntentString = (intent switch { T __object8942 => (object?)null, object runtimeType => (object?)runtimeType, null when ((new List<I>() is List<T>)) => (object?)null, null => (object?)typeof(I).ToString() });
+        DartRuntimePrimitives.Assert(() => (badIntentString is null), () => (object?)$"An Intent of type {badIntentString} cannot be handled by {this.GetType()}: the Intent must be of a subtype of {typeof(T)}.");
+        return (badIntentString is null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual Action<T>? callingAction => ((Action<T>?)(object?)this._currentCallingAction)!;
     public virtual Type intentType => typeof(T);
     public virtual bool isEnabled(T intent, BuildContext? context = null) => this.isActionEnabled;
-    internal virtual bool _isEnabled(T intent, BuildContext? context) => (this switch { ContextAction<T> action__11816 => action__11816.isEnabled(intent, context), _ => isEnabled(intent) });
+    internal virtual bool _isEnabled(T intent, BuildContext? context) => (this switch { ContextAction<T> action => action.isEnabled(intent, context), _ => isEnabled(intent) });
     public virtual bool isActionEnabled => true;
     public virtual bool consumesKey(T intent) => true;
     public virtual KeyEventResult toKeyEventResult(T intent, object? invokeResult)
@@ -118,7 +118,7 @@ public abstract class Action<T> : global::Doroti.Framework.Foundation.Diagnostic
     }
 
     public abstract object? invoke(T intent, BuildContext? context = null);
-    internal virtual object? _invoke(T intent, BuildContext? context) => (this switch { ContextAction<T> action__15245 => (object?)action__15245.invoke(intent, context), _ => (object?)invoke(intent) });
+    internal virtual object? _invoke(T intent, BuildContext? context) => (this switch { ContextAction<T> action => (object?)action.invoke(intent, context), _ => (object?)invoke(intent) });
     bool IIntentAction.IsEnabledForIntent(Intent intent, BuildContext? context) => _isEnabled((T)intent, context);
     object? IIntentAction.InvokeIntent(Intent intent, BuildContext? context) => _invoke((T)intent, context);
     public virtual void addActionListener(global::System.Action<dynamic> listener) => this._listeners.add((global::System.Action<dynamic>)listener);
@@ -129,27 +129,27 @@ public abstract class Action<T> : global::Doroti.Framework.Foundation.Diagnostic
         {
             return;
         }
-        var localListeners__18249 = new List<global::System.Action<dynamic>>(this._listeners);
-        foreach (var listener__18326 in localListeners__18249)
+        var localListeners = new List<global::System.Action<dynamic>>(this._listeners);
+        foreach (var listener in localListeners)
         {
-            InformationCollector? collector__18384 = default!;
+            InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector__18384 = (() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<Action<T>>($"The {this.GetType()} sending notification was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) });
+                    collector = (() => new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.DiagnosticsProperty<Action<T>>($"The {this.GetType()} sending notification was", this, style: global::Doroti.Framework.Foundation.DiagnosticsTreeStyle.errorProperty) });
                     return true;
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
             try
             {
-                if (this._listeners.contains((global::System.Action<dynamic>)listener__18326))
+                if (this._listeners.contains((global::System.Action<dynamic>)listener))
                 {
-                    listener__18326(this);
+                    listener(this);
                 }
             }
-            catch (Exception exception__18795)
+            catch (Exception exceptionLocal)
             {
-                var stack__18806 = new System.Diagnostics.StackTrace();
-                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__18795, stack: stack__18806, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"while dispatching notifications for {this.GetType()}"), informationCollector: (InformationCollector?)collector__18384));
+                var stackLocal = new System.Diagnostics.StackTrace();
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription($"while dispatching notifications for {this.GetType()}"), informationCollector: (InformationCollector?)collector));
             }
         }
     }
@@ -163,14 +163,14 @@ public abstract class Action<T> : global::Doroti.Framework.Foundation.Diagnostic
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -275,20 +275,20 @@ public class ActionDispatcher : global::Doroti.Framework.Foundation.Diagnosticab
 
     public virtual object? invokeAction(dynamic action, Intent intent, BuildContext? context = null)
     {
-        BuildContext? target__26983 = (context ?? global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus?.context);
+        BuildContext? target = (context ?? global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus?.context);
         var intentAction = (IIntentAction)action;
-        DartRuntimePrimitives.Assert(() => intentAction.IsEnabledForIntent(intent, target__26983), () => (object?)"Action must be enabled when calling invokeAction");
-        return intentAction.InvokeIntent(intent, target__26983);
+        DartRuntimePrimitives.Assert(() => intentAction.IsEnabledForIntent(intent, target), () => (object?)"Action must be enabled when calling invokeAction");
+        return intentAction.InvokeIntent(intent, target);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual (bool, object?) invokeActionIfEnabled(dynamic action, Intent intent, BuildContext? context = null)
     {
-        BuildContext? target__28148 = (context ?? global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus?.context);
+        BuildContext? target = (context ?? global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus?.context);
         var intentAction = (IIntentAction)action;
-        if (intentAction.IsEnabledForIntent(intent, target__28148))
+        if (intentAction.IsEnabledForIntent(intent, target))
         {
-            return (true, intentAction.InvokeIntent(intent, target__28148));
+            return (true, intentAction.InvokeIntent(intent, target));
         }
         return (false, null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -297,14 +297,14 @@ public class ActionDispatcher : global::Doroti.Framework.Foundation.Diagnosticab
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -339,48 +339,48 @@ public class Actions : StatefulWidget
         {
             return false;
         }
-        InheritedElement? actionsElement__31546 = ((InheritedElement?)(object?)context.getElementForInheritedWidgetOfExactType<_ActionsScope__actions>());
-        while ((actionsElement__31546 is not null))
+        InheritedElement? actionsElement = ((InheritedElement?)(object?)context.getElementForInheritedWidgetOfExactType<_ActionsScope__actions>());
+        while ((actionsElement is not null))
         {
-            if (visitor(actionsElement__31546))
+            if (visitor(actionsElement))
             {
                 break;
             }
-            BuildContext parent__31929 = ActionsLibrary._getParent(actionsElement__31546);
-            actionsElement__31546 = parent__31929.getElementForInheritedWidgetOfExactType<_ActionsScope__actions>();
+            BuildContext parent = ActionsLibrary._getParent(actionsElement);
+            actionsElement = parent.getElementForInheritedWidgetOfExactType<_ActionsScope__actions>();
         }
-        return (actionsElement__31546 is not null);
+        return (actionsElement is not null);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static ActionDispatcher _findDispatcher(BuildContext context)
     {
-        ActionDispatcher? dispatcher__32285 = default!;
+        ActionDispatcher? dispatcherLocal = default!;
         Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) =>
         {
-            ActionDispatcher? found__32392 = (((_ActionsScope__actions?)(object?)element.widget)!).dispatcher;
-            if ((found__32392 is not null))
+            ActionDispatcher? found = (((_ActionsScope__actions?)(object?)element.widget)!).dispatcher;
+            if ((found is not null))
             {
-                dispatcher__32285 = found__32392;
+                dispatcherLocal = found;
                 return true;
             }
             return false;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        return (dispatcher__32285 ?? new ActionDispatcher());
+        return (dispatcherLocal ?? new ActionDispatcher());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::System.Action? handler<T>(BuildContext context, T intent) where T : Intent
     {
-        dynamic action__33514 = Actions.maybeFind<T>(context);
-        if (((action__33514 is not null) && ((bool)((dynamic)action__33514)._isEnabled(intent, context))))
+        dynamic action = Actions.maybeFind<T>(context);
+        if (((action is not null) && ((bool)((dynamic)action)._isEnabled(intent, context))))
         {
             return ((global::System.Action)(() =>
             {
-                if (((bool)((dynamic)action__33514)._isEnabled(intent, context)))
+                if (((bool)((dynamic)action)._isEnabled(intent, context)))
                 {
-                    Actions.of(context).invokeAction(action__33514, intent, context);
+                    Actions.of(context).invokeAction(action, intent, context);
                 }
             }));
         }
@@ -390,44 +390,44 @@ public class Actions : StatefulWidget
 
     public static Action<T> find<T>(BuildContext context, T? intent = default) where T : Intent
     {
-        Action<T>? action__34857 = ((Action<T>?)(object?)Actions.maybeFind<T>(context, intent: intent));
+        Action<T>? action = ((Action<T>?)(object?)Actions.maybeFind<T>(context, intent: intent));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((action__34857 is null))
+                if ((action is null))
                 {
-                    Type type__34966 = (DartRuntimePrimitives.RuntimeType(intent) ?? typeof(T));
-                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"Unable to find an action for a {type__34966} in an {typeof(Actions)} widget " + "in the given context.\n" + $"{typeof(Actions)}.find() was called on a context that doesn't contain an " + $"{typeof(Actions)} widget with a mapping for the given intent type.\n" + "The context used was:\n" + $"  {context}\n" + "The intent type requested was:\n" + $"  {type__34966}"));
+                    Type @type = (DartRuntimePrimitives.RuntimeType(intent) ?? typeof(T));
+                    throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"Unable to find an action for a {@type} in an {typeof(Actions)} widget " + "in the given context.\n" + $"{typeof(Actions)}.find() was called on a context that doesn't contain an " + $"{typeof(Actions)} widget with a mapping for the given intent type.\n" + "The context used was:\n" + $"  {context}\n" + "The intent type requested was:\n" + $"  {@type}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return action__34857!;
+        return action!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static Action<T>? maybeFind<T>(BuildContext context, T? intent = default) where T : Intent
     {
-        dynamic action__37058 = default!;
+        dynamic action = default!;
         Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) =>
         {
-            var actions__37143 = ((_ActionsScope__actions?)(object?)element.widget)!;
-            dynamic result__37214 = Actions._getActionForIntent<T>(actions__37143, intent);
-            if ((result__37214 is not null))
+            var actions = ((_ActionsScope__actions?)(object?)element.widget)!;
+            dynamic result = Actions._getActionForIntent<T>(actions, intent);
+            if ((result is not null))
             {
                 context.dependOnInheritedElement(element);
-                action__37058 = result__37214;
+                action = result;
                 return true;
             }
             return false;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        if (action__37058 is Action<T> action__37464)
+        if (action is Action<T> actionLocal)
         {
-            return action__37464;
+            return actionLocal;
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"An {DartRuntimePrimitives.RuntimeType(action__37058)} cannot be cast to an Action<{typeof(T)}>."), new global::Doroti.Framework.Foundation.ErrorDescription($"A valid action {action__37058} was found but could not be returned by Actions.maybeFind<{typeof(T)}>."), new global::Doroti.Framework.Foundation.ErrorHint("This is a current limitation of the Actions widget, " + "see https://github.com/flutter/flutter/issues/180871 for more details. " + "As a workaround, consider using Actions.invoke or Actions.maybeInvoke instead, " + "or explicitly set the type parameter to Intent: " + "Actions.maybeFind<Intent>(context, intent)") }));
+                throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"An {DartRuntimePrimitives.RuntimeType(action)} cannot be cast to an Action<{typeof(T)}>."), new global::Doroti.Framework.Foundation.ErrorDescription($"A valid action {action} was found but could not be returned by Actions.maybeFind<{typeof(T)}>."), new global::Doroti.Framework.Foundation.ErrorHint("This is a current limitation of the Actions widget, " + "see https://github.com/flutter/flutter/issues/180871 for more details. " + "As a workaround, consider using Actions.invoke or Actions.maybeInvoke instead, " + "or explicitly set the type parameter to Intent: " + "Actions.maybeFind<Intent>(context, intent)") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         return ((Action<T>)(object)null);
@@ -436,80 +436,80 @@ public class Actions : StatefulWidget
 
     internal static dynamic _maybeFindWithoutDependingOn<T>(BuildContext context, T? intent) where T : Intent
     {
-        dynamic action__38359 = default!;
+        dynamic action = default!;
         Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) =>
         {
-            var actions__38445 = ((_ActionsScope__actions?)(object?)element.widget)!;
-            dynamic result__38516 = Actions._getActionForIntent<T>(actions__38445, intent);
-            if ((result__38516 is not null))
+            var actions = ((_ActionsScope__actions?)(object?)element.widget)!;
+            dynamic result = Actions._getActionForIntent<T>(actions, intent);
+            if ((result is not null))
             {
-                action__38359 = result__38516;
+                action = result;
                 return true;
             }
             return false;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        return action__38359;
+        return action;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static dynamic _getActionForIntent<T>(_ActionsScope__actions actionsMarker, T? intent) where T : Intent
     {
-        dynamic mappedAction__38845 = ((_ActionsScope__actions)actionsMarker).actions.GetValueOrDefault((DartRuntimePrimitives.RuntimeType(intent) ?? typeof(T)));
-        DartRuntimePrimitives.Assert(() => (((bool?)((dynamic)mappedAction__38845)?._debugCanHandleIntent(intent)) ?? true));
-        return mappedAction__38845;
+        dynamic mappedAction = ((_ActionsScope__actions)actionsMarker).actions.GetValueOrDefault((DartRuntimePrimitives.RuntimeType(intent) ?? typeof(T)));
+        DartRuntimePrimitives.Assert(() => (((bool?)((dynamic)mappedAction)?._debugCanHandleIntent(intent)) ?? true));
+        return mappedAction;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static ActionDispatcher of(BuildContext context)
     {
-        _ActionsScope__actions? marker__39321 = ((_ActionsScope__actions?)(object?)context.dependOnInheritedWidgetOfExactType<_ActionsScope__actions>());
-        return ((marker__39321?.dispatcher ?? (ActionDispatcher)Actions._findDispatcher(context)));
+        _ActionsScope__actions? marker = ((_ActionsScope__actions?)(object?)context.dependOnInheritedWidgetOfExactType<_ActionsScope__actions>());
+        return ((marker?.dispatcher ?? (ActionDispatcher)Actions._findDispatcher(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static object? invoke<T>(BuildContext context, T intent) where T : Intent
     {
-        object? returnValue__40136 = default!;
-        bool actionFound__40165 = Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) =>
+        object? returnValue = default!;
+        bool actionFound = Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) =>
         {
-            var actions__40252 = ((_ActionsScope__actions?)(object?)element.widget)!;
-            dynamic result__40323 = Actions._getActionForIntent(actions__40252, intent);
-            if (((result__40323 is not null) && ((bool)((dynamic)result__40323)._isEnabled(intent, context))))
+            var actions = ((_ActionsScope__actions?)(object?)element.widget)!;
+            dynamic result = Actions._getActionForIntent(actions, intent);
+            if (((result is not null) && ((bool)((dynamic)result)._isEnabled(intent, context))))
             {
-                returnValue__40136 = Actions._findDispatcher(element).invokeAction(result__40323, intent, context);
+                returnValue = Actions._findDispatcher(element).invokeAction(result, intent, context);
             }
-            return (result__40323 is not null);
+            return (result is not null);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         DartRuntimePrimitives.Assert(() =>
             {
-                if (!actionFound__40165)
+                if (!actionFound)
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Unable to find an action for an Intent with type " + $"{DartRuntimePrimitives.RuntimeType(intent)} in an {typeof(Actions)} widget in the given context.\n" + $"{typeof(Actions)}.invoke() was unable to find an {typeof(Actions)} widget that " + "contained a mapping for the given intent, or the intent type isn't the " + $"same as the type argument to invoke (which is {typeof(T)} - try supplying a " + "type argument to invoke if one was not given)\n" + "The context used was:\n" + $"  {context}\n" + "The intent type requested was:\n" + $"  {DartRuntimePrimitives.RuntimeType(intent)}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return returnValue__40136;
+        return returnValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static object? maybeInvoke<T>(BuildContext context, T intent) where T : Intent
     {
-        object? returnValue__42255 = default!;
+        object? returnValue = default!;
         Actions._visitActionsAncestors(context, ((global::System.Func<InheritedElement, bool>)((element) =>
         {
-            var actions__42345 = ((_ActionsScope__actions?)(object?)element.widget)!;
-            dynamic result__42416 = Actions._getActionForIntent(actions__42345, intent);
-            if (((result__42416 is not null) && ((bool)((dynamic)result__42416)._isEnabled(intent, context))))
+            var actions = ((_ActionsScope__actions?)(object?)element.widget)!;
+            dynamic result = Actions._getActionForIntent(actions, intent);
+            if (((result is not null) && ((bool)((dynamic)result)._isEnabled(intent, context))))
             {
-                returnValue__42255 = Actions._findDispatcher(element).invokeAction(result__42416, intent, context);
+                returnValue = Actions._findDispatcher(element).invokeAction(result, intent, context);
             }
-            return (result__42416 is not null);
+            return (result is not null);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        return returnValue__42255;
+        return returnValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -544,20 +544,20 @@ internal class _ActionsState__actions : State<Actions>
 
     internal virtual void _updateActionListeners()
     {
-        HashSet<object> widgetActions__43828 = ((HashSet<object>)(object?)((Actions)(object)this.widget).actions.Values.toSet());
-        HashSet<object> removedActions__43905 = ((HashSet<object>)(object?)this.listenedActions!.difference<dynamic>(widgetActions__43828));
-        HashSet<object> addedActions__43996 = ((HashSet<object>)(object?)widgetActions__43828.difference<dynamic>(this.listenedActions!));
-        foreach (var action__44071 in removedActions__43905)
+        HashSet<object> widgetActions = ((HashSet<object>)(object?)((Actions)(object)this.widget).actions.Values.toSet());
+        HashSet<object> removedActions = ((HashSet<object>)(object?)this.listenedActions!.difference<dynamic>(widgetActions));
+        HashSet<object> addedActions = ((HashSet<object>)(object?)widgetActions.difference<dynamic>(this.listenedActions!));
+        foreach (var action in removedActions)
         {
-            if (action__44071 is IActionListenerSource source)
+            if (action is IActionListenerSource source)
                 source.removeActionListener((global::System.Action<dynamic>)this._handleActionChanged);
         }
-        foreach (var action__44177 in addedActions__43996)
+        foreach (var actionLocal in addedActions)
         {
-            if (action__44177 is IActionListenerSource source)
+            if (actionLocal is IActionListenerSource source)
                 source.addActionListener((global::System.Action<dynamic>)this._handleActionChanged);
         }
-        listenedActions = widgetActions__43828;
+        listenedActions = widgetActions;
     }
 
     public override void didUpdateWidget(Actions oldWidget)
@@ -569,9 +569,9 @@ internal class _ActionsState__actions : State<Actions>
     public override void dispose()
     {
         base.dispose();
-        foreach (dynamic action__44516 in this.listenedActions!)
+        foreach (dynamic action in this.listenedActions!)
         {
-            if (action__44516 is IActionListenerSource source)
+            if (action is IActionListenerSource source)
                 source.removeActionListener((global::System.Action<dynamic>)this._handleActionChanged);
         }
         listenedActions = null;
@@ -736,19 +736,19 @@ internal class _FocusableActionDetectorState__actions : State<FocusableActionDet
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         DartRuntimePrimitives.Assert(() => (!object.Equals(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase, global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)));
-        FocusableActionDetector oldTarget__52743 = ((oldWidget ?? (FocusableActionDetector)this.widget));
-        bool didShowHoverHighlight__52791 = shouldShowHoverHighlight(oldTarget__52743);
-        bool didShowFocusHighlight__52867 = shouldShowFocusHighlight(oldTarget__52743);
+        FocusableActionDetector oldTarget = ((oldWidget ?? (FocusableActionDetector)this.widget));
+        bool didShowHoverHighlight = shouldShowHoverHighlight(oldTarget);
+        bool didShowFocusHighlight = shouldShowFocusHighlight(oldTarget);
         task?.Invoke();
-        bool doShowHoverHighlight__52961 = shouldShowHoverHighlight(this.widget);
-        bool doShowFocusHighlight__53033 = shouldShowFocusHighlight(this.widget);
-        if ((didShowFocusHighlight__52867 != doShowFocusHighlight__53033))
+        bool doShowHoverHighlight = shouldShowHoverHighlight(this.widget);
+        bool doShowFocusHighlight = shouldShowFocusHighlight(this.widget);
+        if ((didShowFocusHighlight != doShowFocusHighlight))
         {
-            ((FocusableActionDetector)(object)this.widget).onShowFocusHighlight?.Invoke(doShowFocusHighlight__53033);
+            ((FocusableActionDetector)(object)this.widget).onShowFocusHighlight?.Invoke(doShowFocusHighlight);
         }
-        if ((didShowHoverHighlight__52791 != doShowHoverHighlight__52961))
+        if ((didShowHoverHighlight != doShowHoverHighlight))
         {
-            ((FocusableActionDetector)(object)this.widget).onShowHoverHighlight?.Invoke(doShowHoverHighlight__52961);
+            ((FocusableActionDetector)(object)this.widget).onShowHoverHighlight?.Invoke(doShowHoverHighlight);
         }
     }
 
@@ -767,16 +767,16 @@ internal class _FocusableActionDetectorState__actions : State<FocusableActionDet
     internal virtual bool _canRequestFocus => (MediaQuery.maybeNavigationModeOf(this.context) switch { NavigationMode.traditional => ((FocusableActionDetector)(object)this.widget).enabled, null => ((FocusableActionDetector)(object)this.widget).enabled, NavigationMode.directional => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     public override Widget build(BuildContext context)
     {
-        Widget child__54279 = ((Widget)(object?)new MouseRegion(key: this._mouseRegionKey, onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)this._handleMouseEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)this._handleMouseExit, cursor: ((FocusableActionDetector)(object)this.widget).mouseCursor, child: new Focus(focusNode: ((FocusableActionDetector)(object)this.widget).focusNode, autofocus: ((FocusableActionDetector)(object)this.widget).autofocus, descendantsAreFocusable: ((FocusableActionDetector)(object)this.widget).descendantsAreFocusable, descendantsAreTraversable: ((FocusableActionDetector)(object)this.widget).descendantsAreTraversable, canRequestFocus: this._canRequestFocus, onFocusChange: (global::System.Action<bool>)this._handleFocusChange, includeSemantics: ((FocusableActionDetector)(object)this.widget).includeFocusSemantics, child: ((FocusableActionDetector)(object)this.widget).child)));
+        Widget childLocal = ((Widget)(object?)new MouseRegion(key: this._mouseRegionKey, onEnter: (global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)this._handleMouseEnter, onExit: (global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)this._handleMouseExit, cursor: ((FocusableActionDetector)(object)this.widget).mouseCursor, child: new Focus(focusNode: ((FocusableActionDetector)(object)this.widget).focusNode, autofocus: ((FocusableActionDetector)(object)this.widget).autofocus, descendantsAreFocusable: ((FocusableActionDetector)(object)this.widget).descendantsAreFocusable, descendantsAreTraversable: ((FocusableActionDetector)(object)this.widget).descendantsAreTraversable, canRequestFocus: this._canRequestFocus, onFocusChange: (global::System.Action<bool>)this._handleFocusChange, includeSemantics: ((FocusableActionDetector)(object)this.widget).includeFocusSemantics, child: ((FocusableActionDetector)(object)this.widget).child)));
         if (((((FocusableActionDetector)(object)this.widget).enabled && (((FocusableActionDetector)(object)this.widget).actions is not null)) && System.Linq.Enumerable.Any(((FocusableActionDetector)(object)this.widget).actions!)))
         {
-            child__54279 = DartRuntimePrimitives.ConvertValue<Widget>(new Actions(actions: ((FocusableActionDetector)(object)this.widget).actions!, child: child__54279));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Actions(actions: ((FocusableActionDetector)(object)this.widget).actions!, child: childLocal));
         }
         if (((((FocusableActionDetector)(object)this.widget).enabled && (((FocusableActionDetector)(object)this.widget).shortcuts is not null)) && System.Linq.Enumerable.Any(((FocusableActionDetector)(object)this.widget).shortcuts!)))
         {
-            child__54279 = DartRuntimePrimitives.ConvertValue<Widget>(new Shortcuts(shortcuts: ((FocusableActionDetector)(object)this.widget).shortcuts!, child: child__54279));
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Shortcuts(shortcuts: ((FocusableActionDetector)(object)this.widget).shortcuts!, child: childLocal));
         }
-        return child__54279;
+        return childLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -905,18 +905,18 @@ public class PrioritizedAction : ContextAction<PrioritizedIntents>
 
     public override bool isEnabled(PrioritizedIntents intent, BuildContext? context = null)
     {
-        FocusNode? focus__63783 = global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus;
-        if (((focus__63783 is null) || (((FocusNode)focus__63783).context is null)))
+        FocusNode? focus = global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus;
+        if (((focus is null) || (((FocusNode)focus).context is null)))
         {
             return false;
         }
-        foreach (Intent candidateIntent__63903 in ((PrioritizedIntents)intent).orderedIntents)
+        foreach (Intent candidateIntent in ((PrioritizedIntents)intent).orderedIntents)
         {
-            dynamic candidateAction__63975 = Actions.maybeFind(((FocusNode)focus__63783).context!, intent: DartRuntimePrimitives.ConvertValue<PrioritizedIntents>(candidateIntent__63903));
-            if (((candidateAction__63975 is not null) && ((bool)((dynamic)candidateAction__63975)._isEnabled(candidateIntent__63903, context))))
+            dynamic candidateAction = Actions.maybeFind(((FocusNode)focus).context!, intent: DartRuntimePrimitives.ConvertValue<PrioritizedIntents>(candidateIntent));
+            if (((candidateAction is not null) && ((bool)((dynamic)candidateAction)._isEnabled(candidateIntent, context))))
             {
-                _selectedAction = DartRuntimePrimitives.ConvertValue<Action<Intent>>(candidateAction__63975);
-                _selectedIntent = candidateIntent__63903;
+                _selectedAction = DartRuntimePrimitives.ConvertValue<Action<Intent>>(candidateAction);
+                _selectedIntent = candidateIntent;
                 return true;
             }
         }
@@ -976,8 +976,8 @@ internal class _OverridableAction__actions<T> : ContextAction<T> where T : Inten
         }
         else
         {
-            object? returnValue__69692 = this._defaultAction.invoke(intent);
-            return returnValue__69692;
+            object? returnValue = this._defaultAction.invoke(intent);
+            return returnValue;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -990,9 +990,9 @@ internal class _OverridableAction__actions<T> : ContextAction<T> where T : Inten
 
     public virtual dynamic _getOverrideAction<U>(U? intent, bool declareDependency = false) where U : Intent
     {
-        dynamic @override__65515 = (declareDependency ? Actions.maybeFind<U>(this._lookupContext, intent: intent) : Actions._maybeFindWithoutDependingOn(this._lookupContext, intent));
-        DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.Identical(@override__65515, this));
-        return @override__65515;
+        dynamic @override = (declareDependency ? Actions.maybeFind<U>(this._lookupContext, intent: intent) : Actions._maybeFindWithoutDependingOn(this._lookupContext, intent));
+        DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.Identical(@override, this));
+        return @override;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1012,7 +1012,7 @@ internal class _OverridableAction__actions<T> : ContextAction<T> where T : Inten
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         ((dynamic)overrideAction)._updateCallingAction(this._defaultAction);
-        object? returnValue__66199 = ((dynamic)overrideAction)._invoke(intent, context);
+        object? returnValue = ((dynamic)overrideAction)._invoke(intent, context);
         ((dynamic)overrideAction)._updateCallingAction(null);
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1020,15 +1020,15 @@ internal class _OverridableAction__actions<T> : ContextAction<T> where T : Inten
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return returnValue__66199;
+        return returnValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override object? invoke(T intent, BuildContext? context = null)
     {
-        dynamic overrideAction__66512 = _getOverrideAction(intent);
-        object? returnValue__66575 = ((overrideAction__66512 is null) ? _invokeDefaultAction(intent, this._currentCallingAction, context) : _invokeOverride(overrideAction__66512, intent, context));
-        return returnValue__66575;
+        dynamic overrideAction = _getOverrideAction(intent);
+        object? returnValue = ((overrideAction is null) ? _invokeDefaultAction(intent, this._currentCallingAction, context) : _invokeOverride(overrideAction, intent, context));
+        return returnValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1042,7 +1042,7 @@ internal class _OverridableAction__actions<T> : ContextAction<T> where T : Inten
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         ((dynamic)overrideAction)._updateCallingAction(this._defaultAction);
-        bool isOverrideEnabled__67072 = ((bool)((dynamic)overrideAction).isActionEnabled);
+        bool isOverrideEnabled = ((bool)((dynamic)overrideAction).isActionEnabled);
         ((dynamic)overrideAction)._updateCallingAction(null);
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1050,7 +1050,7 @@ internal class _OverridableAction__actions<T> : ContextAction<T> where T : Inten
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return isOverrideEnabled__67072;
+        return isOverrideEnabled;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1058,9 +1058,9 @@ internal class _OverridableAction__actions<T> : ContextAction<T> where T : Inten
     {
         get
         {
-            dynamic overrideAction__67378 = _getOverrideAction<T>(default, declareDependency: true);
-            bool returnValue__67464 = ((overrideAction__67378 is not null) ? _isOverrideActionEnabled(overrideAction__67378) : ((Action<T>)this._defaultAction).isActionEnabled);
-            return returnValue__67464;
+            dynamic overrideAction = _getOverrideAction<T>(default, declareDependency: true);
+            bool returnValue = ((overrideAction is not null) ? _isOverrideActionEnabled(overrideAction) : ((Action<T>)this._defaultAction).isActionEnabled);
+            return returnValue;
             return default!;
         }
     }
@@ -1073,18 +1073,18 @@ internal class _OverridableAction__actions<T> : ContextAction<T> where T : Inten
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        dynamic overrideAction__67867 = _getOverrideAction(intent);
-        DartRuntimePrimitives.Assert(() => (((bool?)((dynamic)overrideAction__67867)?._debugCanHandleIntent(intent)) ?? true));
-        ((dynamic)overrideAction__67867)?._updateCallingAction(this._defaultAction);
-        bool returnValue__68052 = ((bool)((dynamic)((((object?)overrideAction__67867 ?? (object?)this._defaultAction))))._isEnabled(intent, context));
-        ((dynamic)overrideAction__67867)?._updateCallingAction(null);
+        dynamic overrideAction = _getOverrideAction(intent);
+        DartRuntimePrimitives.Assert(() => (((bool?)((dynamic)overrideAction)?._debugCanHandleIntent(intent)) ?? true));
+        ((dynamic)overrideAction)?._updateCallingAction(this._defaultAction);
+        bool returnValue = ((bool)((dynamic)((((object?)overrideAction ?? (object?)this._defaultAction))))._isEnabled(intent, context));
+        ((dynamic)overrideAction)?._updateCallingAction(null);
         DartRuntimePrimitives.Assert(() =>
             {
                 this._debugAssertIsEnabledMutuallyRecursive = false;
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return returnValue__68052;
+        return returnValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1097,17 +1097,17 @@ internal class _OverridableAction__actions<T> : ContextAction<T> where T : Inten
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        dynamic overrideAction__68528 = _getOverrideAction(intent);
-        ((dynamic)overrideAction__68528)?._updateCallingAction(this._defaultAction);
-        bool isEnabled__68646 = ((bool)((dynamic)((((object?)overrideAction__68528 ?? (object?)this._defaultAction)))).consumesKey(intent));
-        ((dynamic)overrideAction__68528)?._updateCallingAction(null);
+        dynamic overrideAction = _getOverrideAction(intent);
+        ((dynamic)overrideAction)?._updateCallingAction(this._defaultAction);
+        bool isEnabled = ((bool)((dynamic)((((object?)overrideAction ?? (object?)this._defaultAction)))).consumesKey(intent));
+        ((dynamic)overrideAction)?._updateCallingAction(null);
         DartRuntimePrimitives.Assert(() =>
             {
                 this._debugAssertConsumeKeyMutuallyRecursive = false;
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return isEnabled__68646;
+        return isEnabled;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1145,9 +1145,9 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         DartRuntimePrimitives.Assert(() => ((bool)((dynamic)overrideAction)._debugCanHandleIntent(intent)));
-        Action<T> wrappedDefault__70883 = ((Action<T>)(object?)new _ContextActionToActionAdapter__actions<T>(invokeContext: context!, action: this._defaultAction));
-        ((dynamic)overrideAction)._updateCallingAction(wrappedDefault__70883);
-        object? returnValue__71077 = ((dynamic)overrideAction)._invoke(intent, context);
+        Action<T> wrappedDefault = ((Action<T>)(object?)new _ContextActionToActionAdapter__actions<T>(invokeContext: context!, action: this._defaultAction));
+        ((dynamic)overrideAction)._updateCallingAction(wrappedDefault);
+        object? returnValue = ((dynamic)overrideAction)._invoke(intent, context);
         ((dynamic)overrideAction)._updateCallingAction(null);
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1155,7 +1155,7 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return returnValue__71077;
+        return returnValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1167,8 +1167,8 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
         }
         else
         {
-            object? returnValue__71521 = this._defaultAction.invoke(intent, context);
-            return returnValue__71521;
+            object? returnValue = this._defaultAction.invoke(intent, context);
+            return returnValue;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1181,9 +1181,9 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
 
     public virtual dynamic _getOverrideAction<U>(U? intent, bool declareDependency = false) where U : Intent
     {
-        dynamic @override__65515 = (declareDependency ? Actions.maybeFind<U>(this._lookupContext, intent: intent) : Actions._maybeFindWithoutDependingOn(this._lookupContext, intent));
-        DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.Identical(@override__65515, this));
-        return @override__65515;
+        dynamic @override = (declareDependency ? Actions.maybeFind<U>(this._lookupContext, intent: intent) : Actions._maybeFindWithoutDependingOn(this._lookupContext, intent));
+        DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.Identical(@override, this));
+        return @override;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1195,9 +1195,9 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
 
     public override object? invoke(T intent, BuildContext? context = null)
     {
-        dynamic overrideAction__66512 = _getOverrideAction(intent);
-        object? returnValue__66575 = ((overrideAction__66512 is null) ? _invokeDefaultAction(intent, this._currentCallingAction, context) : _invokeOverride(overrideAction__66512, intent, context));
-        return returnValue__66575;
+        dynamic overrideAction = _getOverrideAction(intent);
+        object? returnValue = ((overrideAction is null) ? _invokeDefaultAction(intent, this._currentCallingAction, context) : _invokeOverride(overrideAction, intent, context));
+        return returnValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1211,7 +1211,7 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         ((dynamic)overrideAction)._updateCallingAction(this._defaultAction);
-        bool isOverrideEnabled__67072 = ((bool)((dynamic)overrideAction).isActionEnabled);
+        bool isOverrideEnabled = ((bool)((dynamic)overrideAction).isActionEnabled);
         ((dynamic)overrideAction)._updateCallingAction(null);
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1219,7 +1219,7 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return isOverrideEnabled__67072;
+        return isOverrideEnabled;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1227,9 +1227,9 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
     {
         get
         {
-            dynamic overrideAction__67378 = _getOverrideAction<T>(default, declareDependency: true);
-            bool returnValue__67464 = ((overrideAction__67378 is not null) ? _isOverrideActionEnabled(overrideAction__67378) : ((Action<T>)this._defaultAction).isActionEnabled);
-            return returnValue__67464;
+            dynamic overrideAction = _getOverrideAction<T>(default, declareDependency: true);
+            bool returnValue = ((overrideAction is not null) ? _isOverrideActionEnabled(overrideAction) : ((Action<T>)this._defaultAction).isActionEnabled);
+            return returnValue;
             return default!;
         }
     }
@@ -1242,18 +1242,18 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        dynamic overrideAction__67867 = _getOverrideAction(intent);
-        DartRuntimePrimitives.Assert(() => (((bool?)((dynamic)overrideAction__67867)?._debugCanHandleIntent(intent)) ?? true));
-        ((dynamic)overrideAction__67867)?._updateCallingAction(this._defaultAction);
-        bool returnValue__68052 = ((bool)((dynamic)((((object?)overrideAction__67867 ?? (object?)this._defaultAction))))._isEnabled(intent, context));
-        ((dynamic)overrideAction__67867)?._updateCallingAction(null);
+        dynamic overrideAction = _getOverrideAction(intent);
+        DartRuntimePrimitives.Assert(() => (((bool?)((dynamic)overrideAction)?._debugCanHandleIntent(intent)) ?? true));
+        ((dynamic)overrideAction)?._updateCallingAction(this._defaultAction);
+        bool returnValue = ((bool)((dynamic)((((object?)overrideAction ?? (object?)this._defaultAction))))._isEnabled(intent, context));
+        ((dynamic)overrideAction)?._updateCallingAction(null);
         DartRuntimePrimitives.Assert(() =>
             {
                 this._debugAssertIsEnabledMutuallyRecursive = false;
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return returnValue__68052;
+        return returnValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1266,17 +1266,17 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T> where T 
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        dynamic overrideAction__68528 = _getOverrideAction(intent);
-        ((dynamic)overrideAction__68528)?._updateCallingAction(this._defaultAction);
-        bool isEnabled__68646 = ((bool)((dynamic)((((object?)overrideAction__68528 ?? (object?)this._defaultAction)))).consumesKey(intent));
-        ((dynamic)overrideAction__68528)?._updateCallingAction(null);
+        dynamic overrideAction = _getOverrideAction(intent);
+        ((dynamic)overrideAction)?._updateCallingAction(this._defaultAction);
+        bool isEnabled = ((bool)((dynamic)((((object?)overrideAction ?? (object?)this._defaultAction)))).consumesKey(intent));
+        ((dynamic)overrideAction)?._updateCallingAction(null);
         DartRuntimePrimitives.Assert(() =>
             {
                 this._debugAssertConsumeKeyMutuallyRecursive = false;
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return isEnabled__68646;
+        return isEnabled;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

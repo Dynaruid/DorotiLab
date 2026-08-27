@@ -31,22 +31,22 @@ internal class _GridPaperPainter__grid_paper : global::Doroti.Framework.Renderin
 
     public override void paint(Canvas canvas, Size size)
     {
-        var linePaint__568 = ((Func<Paint>)(() =>
+        var linePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = this.color;
     return __cascade;
 }))();
-        double allDivisions__621 = ((this.divisions * this.subdivisions)).toDouble();
-        for (var x__688 = 0.0; (x__688 <= size.width); x__688 += (this.interval / allDivisions__621))
+        double allDivisions = ((this.divisions * this.subdivisions)).toDouble();
+        for (var x = 0.0; (x <= size.width); x += (this.interval / allDivisions))
         {
-            linePaint__568.strokeWidth = ((((x__688 % this.interval) == 0.0)) ? 1.0 : ((((x__688 % ((this.interval / this.subdivisions))) == 0.0)) ? 0.5 : 0.25));
-            canvas.drawLine(new global::Doroti.Ui.Offset(x__688, 0.0), new global::Doroti.Ui.Offset(x__688, size.height), linePaint__568);
+            linePaint.strokeWidth = ((((x % this.interval) == 0.0)) ? 1.0 : ((((x % ((this.interval / this.subdivisions))) == 0.0)) ? 0.5 : 0.25));
+            canvas.drawLine(new global::Doroti.Ui.Offset(x, 0.0), new global::Doroti.Ui.Offset(x, size.height), linePaint);
         }
-        for (var y__992 = 0.0; (y__992 <= size.height); y__992 += (this.interval / allDivisions__621))
+        for (var y = 0.0; (y <= size.height); y += (this.interval / allDivisions))
         {
-            linePaint__568.strokeWidth = ((((y__992 % this.interval) == 0.0)) ? 1.0 : ((((y__992 % ((this.interval / this.subdivisions))) == 0.0)) ? 0.5 : 0.25));
-            canvas.drawLine(new global::Doroti.Ui.Offset(0.0, y__992), new global::Doroti.Ui.Offset(size.width, y__992), linePaint__568);
+            linePaint.strokeWidth = ((((y % this.interval) == 0.0)) ? 1.0 : ((((y % ((this.interval / this.subdivisions))) == 0.0)) ? 0.5 : 0.25));
+            canvas.drawLine(new global::Doroti.Ui.Offset(0.0, y), new global::Doroti.Ui.Offset(size.width, y), linePaint);
         }
     }
 

@@ -41,9 +41,9 @@ public static partial class GradientLibrary
         {
             return colors.Last();
         }
-        long index__975 = stops.lastIndexWhere(((s) => (s <= t)));
-        DartRuntimePrimitives.Assert(() => (index__975 != -1L));
-        return Dart_uiLibrary.Color.lerp(colors[(int)(index__975)], colors[(int)((index__975 + 1L))], (((t - stops[(int)(index__975)])) / ((stops[(int)((index__975 + 1L))] - stops[(int)(index__975)]))))!;
+        long index = stops.lastIndexWhere(((s) => (s <= t)));
+        DartRuntimePrimitives.Assert(() => (index != -1L));
+        return Dart_uiLibrary.Color.lerp(colors[(int)(index)], colors[(int)((index + 1L))], (((t - stops[(int)(index)])) / ((stops[(int)((index + 1L))] - stops[(int)(index)]))))!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -56,16 +56,16 @@ public static partial class GradientLibrary
         DartRuntimePrimitives.Assert(() => (checked((long)(bColors.Count)) >= 2L));
         DartRuntimePrimitives.Assert(() => (checked((long)(aStops.Count)) == checked((long)(aColors.Count))));
         DartRuntimePrimitives.Assert(() => (checked((long)(bStops.Count)) == checked((long)(bColors.Count))));
-        var stops__1490 = ((Func<SortedSet<double>>)(() =>
+        var stops = ((Func<SortedSet<double>>)(() =>
 {
     var __cascade = new SortedSet<double>();
     __cascade.UnionWith(aStops);
     __cascade.UnionWith(bStops);
     return __cascade;
 }))();
-        List<double> interpolatedStops__1585 = stops__1490.ToList();
-        List<global::Doroti.Ui.Color> interpolatedColors__1656 = interpolatedStops__1585.map<double, Color>(((stop) => Dart_uiLibrary.Color.lerp(GradientLibrary._sample(aColors, aStops, stop), GradientLibrary._sample(bColors, bStops, stop), t)!)).ToList();
-        return new _ColorsAndStops__gradient(interpolatedColors__1656, interpolatedStops__1585);
+        List<double> interpolatedStops = stops.ToList();
+        List<global::Doroti.Ui.Color> interpolatedColors = interpolatedStops.map<double, Color>(((stop) => Dart_uiLibrary.Color.lerp(GradientLibrary._sample(aColors, aStops, stop), GradientLibrary._sample(bColors, bStops, stop), t)!)).ToList();
+        return new _ColorsAndStops__gradient(interpolatedColors, interpolatedStops);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -86,15 +86,15 @@ public class GradientRotation : GradientTransform
 
     public virtual Matrix4? transform(Rect bounds, TextDirection? textDirection = null)
     {
-        double sinRadians__3710 = global::Doroti.Runtime.Dart_mathLibrary.sin(this.radians);
-        double oneMinusCosRadians__3759 = (1L - global::Doroti.Runtime.Dart_mathLibrary.cos(this.radians));
-        global::Doroti.Ui.Offset center__3820 = bounds.center;
-        double originX__3861 = ((sinRadians__3710 * center__3820.dy) + (oneMinusCosRadians__3759 * center__3820.dx));
-        double originY__3945 = ((-sinRadians__3710 * center__3820.dx) + (oneMinusCosRadians__3759 * center__3820.dy));
+        double sinRadians = global::Doroti.Runtime.Dart_mathLibrary.sin(this.radians);
+        double oneMinusCosRadians = (1L - global::Doroti.Runtime.Dart_mathLibrary.cos(this.radians));
+        global::Doroti.Ui.Offset centerLocal = bounds.center;
+        double originX = ((sinRadians * centerLocal.dy) + (oneMinusCosRadians * centerLocal.dx));
+        double originY = ((-sinRadians * centerLocal.dx) + (oneMinusCosRadians * centerLocal.dy));
         return ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.identity();
-    __cascade.translateByDouble(originX__3861, originY__3945, 0, 1);
+    __cascade.translateByDouble(originX, originY, 0, 1);
     __cascade.rotateZ(this.radians);
     return __cascade;
 }))();
@@ -145,8 +145,8 @@ public abstract class Gradient
             return this.stops!;
         }
         DartRuntimePrimitives.Assert(() => (checked((long)(this.colors.Count)) >= 2L));
-        double separation__7310 = (1.0 / ((checked((long)(this.colors.Count)) - 1L)));
-        return new List<double>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(this.colors.Count)))), ((index) => (index * separation__7310))));
+        double separation = (1.0 / ((checked((long)(this.colors.Count)) - 1L)));
+        return new List<double>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(this.colors.Count)))), ((index) => (index * separation))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -185,18 +185,18 @@ public abstract class Gradient
         {
             return a;
         }
-        Gradient? result__12598 = default!;
+        Gradient? result = default!;
         if ((b is not null))
         {
-            result__12598 = b.lerpFrom(a, t);
+            result = b.lerpFrom(a, t);
         }
-        if (((result__12598 is null) && (a is not null)))
+        if (((result is null) && (a is not null)))
         {
-            result__12598 = a.lerpTo(b, t);
+            result = a.lerpTo(b, t);
         }
-        if ((result__12598 is not null))
+        if ((result is not null))
         {
-            return result__12598;
+            return result;
         }
         DartRuntimePrimitives.Assert(() => ((a is not null) && (b is not null)));
         return ((t < 0.5) ? a!.scale((1.0 - ((t * 2.0)))) : b!.scale((((t - 0.5)) * 2.0)));
@@ -280,8 +280,8 @@ public class LinearGradient : Gradient
         {
             return a.scale((1.0 - t));
         }
-        _ColorsAndStops__gradient interpolated__20315 = GradientLibrary._interpolateColorsAndStops(a.colors, a._impliedStops(), b.colors, b._impliedStops(), t);
-        return new LinearGradient(begin: AlignmentGeometry.lerp(((LinearGradient)a).begin, ((LinearGradient)b).begin, t)!, end: AlignmentGeometry.lerp(((LinearGradient)a).end, ((LinearGradient)b).end, t)!, colors: ((_ColorsAndStops__gradient)interpolated__20315).colors, stops: ((_ColorsAndStops__gradient)interpolated__20315).stops, tileMode: ((t < 0.5) ? ((LinearGradient)a).tileMode : ((LinearGradient)b).tileMode), transform: ((t < 0.5) ? a.transform : b.transform));
+        _ColorsAndStops__gradient interpolated = GradientLibrary._interpolateColorsAndStops(a.colors, a._impliedStops(), b.colors, b._impliedStops(), t);
+        return new LinearGradient(begin: AlignmentGeometry.lerp(((LinearGradient)a).begin, ((LinearGradient)b).begin, t)!, end: AlignmentGeometry.lerp(((LinearGradient)a).end, ((LinearGradient)b).end, t)!, colors: ((_ColorsAndStops__gradient)interpolated).colors, stops: ((_ColorsAndStops__gradient)interpolated).stops, tileMode: ((t < 0.5) ? ((LinearGradient)a).tileMode : ((LinearGradient)b).tileMode), transform: ((t < 0.5) ? a.transform : b.transform));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -303,8 +303,8 @@ public class LinearGradient : Gradient
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.begin, this.end, this.tileMode, transform, FoundationRuntimePorts.ObjectHashAll(colors), ((stops is null) ? null : FoundationRuntimePorts.ObjectHashAll(stops!)));
     public override string ToString()
     {
-        var description__21498 = new List<string> { $"begin: {this.begin}", $"end: {this.end}", $"colors: {colors}", $"tileMode: {this.tileMode}" };
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearGradient"))}({string.Join(", ", description__21498)})";
+        var description = new List<string> { $"begin: {this.begin}", $"end: {this.end}", $"colors: {colors}", $"tileMode: {this.tileMode}" };
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearGradient"))}({string.Join(", ", description)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -388,8 +388,8 @@ public class RadialGradient : Gradient
         {
             return a.scale((1.0 - t));
         }
-        _ColorsAndStops__gradient interpolated__31896 = GradientLibrary._interpolateColorsAndStops(a.colors, a._impliedStops(), b.colors, b._impliedStops(), t);
-        return new RadialGradient(center: AlignmentGeometry.lerp(((RadialGradient)a).center, ((RadialGradient)b).center, t)!, radius: Math.Max(0.0, DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((RadialGradient)a).radius, ((RadialGradient)b).radius, t))), colors: ((_ColorsAndStops__gradient)interpolated__31896).colors, stops: ((_ColorsAndStops__gradient)interpolated__31896).stops, tileMode: ((t < 0.5) ? ((RadialGradient)a).tileMode : ((RadialGradient)b).tileMode), focal: AlignmentGeometry.lerp(((RadialGradient)a).focal, ((RadialGradient)b).focal, t), focalRadius: Math.Max(0.0, DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((RadialGradient)a).focalRadius, ((RadialGradient)b).focalRadius, t))), transform: ((t < 0.5) ? a.transform : b.transform));
+        _ColorsAndStops__gradient interpolated = GradientLibrary._interpolateColorsAndStops(a.colors, a._impliedStops(), b.colors, b._impliedStops(), t);
+        return new RadialGradient(center: AlignmentGeometry.lerp(((RadialGradient)a).center, ((RadialGradient)b).center, t)!, radius: Math.Max(0.0, DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((RadialGradient)a).radius, ((RadialGradient)b).radius, t))), colors: ((_ColorsAndStops__gradient)interpolated).colors, stops: ((_ColorsAndStops__gradient)interpolated).stops, tileMode: ((t < 0.5) ? ((RadialGradient)a).tileMode : ((RadialGradient)b).tileMode), focal: AlignmentGeometry.lerp(((RadialGradient)a).focal, ((RadialGradient)b).focal, t), focalRadius: Math.Max(0.0, DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((RadialGradient)a).focalRadius, ((RadialGradient)b).focalRadius, t))), transform: ((t < 0.5) ? a.transform : b.transform));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -411,8 +411,8 @@ public class RadialGradient : Gradient
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.center, this.radius, this.tileMode, transform, FoundationRuntimePorts.ObjectHashAll(colors), ((stops is null) ? null : FoundationRuntimePorts.ObjectHashAll(stops!)), this.focal, this.focalRadius);
     public override string ToString()
     {
-        var description__33354 = new List<string> { $"center: {this.center}", $"radius: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.radius))}", $"colors: {colors}", $"tileMode: {this.tileMode}", $"focalRadius: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.focalRadius))}" };
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RadialGradient"))}({string.Join(", ", description__33354)})";
+        var description = new List<string> { $"center: {this.center}", $"radius: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.radius))}", $"colors: {colors}", $"tileMode: {this.tileMode}", $"focalRadius: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.focalRadius))}" };
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "RadialGradient"))}({string.Join(", ", description)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -495,8 +495,8 @@ public class SweepGradient : Gradient
         {
             return a.scale((1.0 - t));
         }
-        _ColorsAndStops__gradient interpolated__43011 = GradientLibrary._interpolateColorsAndStops(a.colors, a._impliedStops(), b.colors, b._impliedStops(), t);
-        return new SweepGradient(center: AlignmentGeometry.lerp(((SweepGradient)a).center, ((SweepGradient)b).center, t)!, startAngle: Math.Max(0.0, DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((SweepGradient)a).startAngle, ((SweepGradient)b).startAngle, t))), endAngle: Math.Max(0.0, DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(((SweepGradient)a).endAngle), DartRuntimePrimitives.RequireValue(((SweepGradient)b).endAngle), t))), colors: ((_ColorsAndStops__gradient)interpolated__43011).colors, stops: ((_ColorsAndStops__gradient)interpolated__43011).stops, tileMode: ((t < 0.5) ? ((SweepGradient)a).tileMode : ((SweepGradient)b).tileMode), transform: ((t < 0.5) ? a.transform : b.transform));
+        _ColorsAndStops__gradient interpolated = GradientLibrary._interpolateColorsAndStops(a.colors, a._impliedStops(), b.colors, b._impliedStops(), t);
+        return new SweepGradient(center: AlignmentGeometry.lerp(((SweepGradient)a).center, ((SweepGradient)b).center, t)!, startAngle: Math.Max(0.0, DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(((SweepGradient)a).startAngle, ((SweepGradient)b).startAngle, t))), endAngle: Math.Max(0.0, DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(((SweepGradient)a).endAngle), DartRuntimePrimitives.RequireValue(((SweepGradient)b).endAngle), t))), colors: ((_ColorsAndStops__gradient)interpolated).colors, stops: ((_ColorsAndStops__gradient)interpolated).stops, tileMode: ((t < 0.5) ? ((SweepGradient)a).tileMode : ((SweepGradient)b).tileMode), transform: ((t < 0.5) ? a.transform : b.transform));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -518,8 +518,8 @@ public class SweepGradient : Gradient
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.center, this.startAngle, DartRuntimePrimitives.RequireValue(this.endAngle), this.tileMode, transform, FoundationRuntimePorts.ObjectHashAll(colors), ((stops is null) ? null : FoundationRuntimePorts.ObjectHashAll(stops!)));
     public override string ToString()
     {
-        var description__44372 = new List<string> { $"center: {this.center}", $"startAngle: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.startAngle))}", $"endAngle: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(DartRuntimePrimitives.RequireValue(this.endAngle)))}", $"colors: {colors}", $"tileMode: {this.tileMode}" };
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SweepGradient"))}({string.Join(", ", description__44372)})";
+        var description = new List<string> { $"center: {this.center}", $"startAngle: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(this.startAngle))}", $"endAngle: {(global::Doroti.Framework.Foundation.DebugLibrary.debugFormatDouble(DartRuntimePrimitives.RequireValue(this.endAngle)))}", $"colors: {colors}", $"tileMode: {this.tileMode}" };
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SweepGradient"))}({string.Join(", ", description)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

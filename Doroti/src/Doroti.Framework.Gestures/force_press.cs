@@ -102,13 +102,13 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
         DartRuntimePrimitives.Assert(() => (!object.Equals(this._state, _ForceState__force_press.ready)));
         if (((@event is PointerMoveEvent) || (@event is PointerDownEvent)))
         {
-            double pressure__10237 = this.interpolation(((PointerEvent)@event).pressureMin, ((PointerEvent)@event).pressureMax, ((PointerEvent)@event).pressure);
-            DartRuntimePrimitives.Assert(() => ((((pressure__10237 >= 0.0) && (pressure__10237 <= 1.0))) || double.IsNaN(pressure__10237)));
+            double pressureLocal = this.interpolation(((PointerEvent)@event).pressureMin, ((PointerEvent)@event).pressureMax, ((PointerEvent)@event).pressure);
+            DartRuntimePrimitives.Assert(() => ((((pressureLocal >= 0.0) && (pressureLocal <= 1.0))) || double.IsNaN(pressureLocal)));
             _lastPosition = OffsetPair.CreateFromEventPosition(@event);
-            _lastPressure = pressure__10237;
+            _lastPressure = pressureLocal;
             if ((object.Equals(this._state, _ForceState__force_press.possible)))
             {
-                if ((pressure__10237 > this.startPressure))
+                if ((pressureLocal > this.startPressure))
                 {
                     _state = _ForceState__force_press.started;
                     resolve(GestureDisposition.accepted);
@@ -121,27 +121,27 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
                     }
                 }
             }
-            if (((pressure__10237 > this.startPressure) && (object.Equals(this._state, _ForceState__force_press.accepted))))
+            if (((pressureLocal > this.startPressure) && (object.Equals(this._state, _ForceState__force_press.accepted))))
             {
                 _state = _ForceState__force_press.started;
                 if ((this.onStart is not null))
                 {
-                    invokeCallback<object?>("onStart", () => { ((Action)((() => this.onStart!(new ForcePressDetails(pressure: pressure__10237, globalPosition: ((OffsetPair)this._lastPosition).global, localPosition: ((OffsetPair)this._lastPosition).local)))))(); return null; });
+                    invokeCallback<object?>("onStart", () => { ((Action)((() => this.onStart!(new ForcePressDetails(pressure: pressureLocal, globalPosition: ((OffsetPair)this._lastPosition).global, localPosition: ((OffsetPair)this._lastPosition).local)))))(); return null; });
                 }
             }
-            if ((((this.onPeak is not null) && (pressure__10237 > this.peakPressure)) && ((object.Equals(this._state, _ForceState__force_press.started)))))
+            if ((((this.onPeak is not null) && (pressureLocal > this.peakPressure)) && ((object.Equals(this._state, _ForceState__force_press.started)))))
             {
                 _state = _ForceState__force_press.peaked;
                 if ((this.onPeak is not null))
                 {
-                    invokeCallback<object?>("onPeak", () => { ((Action)((() => this.onPeak!(new ForcePressDetails(pressure: pressure__10237, globalPosition: ((PointerEvent)@event).position, localPosition: ((PointerEvent)@event).localPosition)))))(); return null; });
+                    invokeCallback<object?>("onPeak", () => { ((Action)((() => this.onPeak!(new ForcePressDetails(pressure: pressureLocal, globalPosition: ((PointerEvent)@event).position, localPosition: ((PointerEvent)@event).localPosition)))))(); return null; });
                 }
             }
-            if ((((this.onUpdate is not null) && !double.IsNaN(pressure__10237)) && (((object.Equals(this._state, _ForceState__force_press.started)) || (object.Equals(this._state, _ForceState__force_press.peaked))))))
+            if ((((this.onUpdate is not null) && !double.IsNaN(pressureLocal)) && (((object.Equals(this._state, _ForceState__force_press.started)) || (object.Equals(this._state, _ForceState__force_press.peaked))))))
             {
                 if ((this.onUpdate is not null))
                 {
-                    invokeCallback<object?>("onUpdate", () => { ((Action)((() => this.onUpdate!(new ForcePressDetails(pressure: pressure__10237, globalPosition: ((PointerEvent)@event).position, localPosition: ((PointerEvent)@event).localPosition)))))(); return null; });
+                    invokeCallback<object?>("onUpdate", () => { ((Action)((() => this.onUpdate!(new ForcePressDetails(pressure: pressureLocal, globalPosition: ((PointerEvent)@event).position, localPosition: ((PointerEvent)@event).localPosition)))))(); return null; });
                 }
             }
         }
@@ -162,13 +162,13 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
 
     public override void didStopTrackingLastPointer(long pointer)
     {
-        bool wasAccepted__13187 = ((object.Equals(this._state, _ForceState__force_press.started)) || (object.Equals(this._state, _ForceState__force_press.peaked)));
+        bool wasAccepted = ((object.Equals(this._state, _ForceState__force_press.started)) || (object.Equals(this._state, _ForceState__force_press.peaked)));
         if ((object.Equals(this._state, _ForceState__force_press.possible)))
         {
             resolve(GestureDisposition.rejected);
             return;
         }
-        if ((wasAccepted__13187 && (this.onEnd is not null)))
+        if ((wasAccepted && (this.onEnd is not null)))
         {
             if ((this.onEnd is not null))
             {
@@ -187,12 +187,12 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
     internal static double _inverseLerp(double min, double max, double t)
     {
         DartRuntimePrimitives.Assert(() => (min <= max));
-        double value__13990 = (((t - min)) / ((max - min)));
-        if (!double.IsNaN(value__13990))
+        double value = (((t - min)) / ((max - min)));
+        if (!double.IsNaN(value))
         {
-            value__13990 = Dart_uiLibrary.clampDouble(value__13990, 0.0, 1.0);
+            value = Dart_uiLibrary.clampDouble(value, 0.0, 1.0);
         }
-        return value__13990;
+        return value;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

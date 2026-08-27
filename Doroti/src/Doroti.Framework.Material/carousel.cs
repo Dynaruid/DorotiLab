@@ -217,12 +217,12 @@ internal class _CarouselViewState__carousel : global::Doroti.Framework.Widgets.S
         {
             return;
         }
-        global::Doroti.Framework.Widgets.ScrollPosition position__22338 = this._controller.position;
-        long currentLeadingIndex__22385 = (((_CarouselPosition__carousel?)(object?)position__22338)!).leadingItem;
-        if ((currentLeadingIndex__22385 != this._lastReportedLeadingItem))
+        global::Doroti.Framework.Widgets.ScrollPosition positionLocal = this._controller.position;
+        long currentLeadingIndex = (((_CarouselPosition__carousel?)(object?)positionLocal)!).leadingItem;
+        if ((currentLeadingIndex != this._lastReportedLeadingItem))
         {
-            _lastReportedLeadingItem = currentLeadingIndex__22385;
-            ((CarouselView)this.widget).onIndexChanged!(currentLeadingIndex__22385);
+            _lastReportedLeadingItem = currentLeadingIndex;
+            ((CarouselView)this.widget).onIndexChanged!(currentLeadingIndex);
         }
     }
 
@@ -230,9 +230,9 @@ internal class _CarouselViewState__carousel : global::Doroti.Framework.Widgets.S
     {
         if ((((CarouselView)this.widget).flexWeights is not null))
         {
-            long maxWeight__23108 = ((CarouselView)this.widget).flexWeights!.max();
-            long firstMaxWeightIndex__23161 = ((long)((dynamic)((CarouselView)this.widget).flexWeights!).IndexOf(maxWeight__23108));
-            return Math.Max((((CarouselController)this._controller).initialItem - firstMaxWeightIndex__23161), 0L);
+            long maxWeight = ((CarouselView)this.widget).flexWeights!.max();
+            long firstMaxWeightIndex = ((long)((dynamic)((CarouselView)this.widget).flexWeights!).IndexOf(maxWeight));
+            return Math.Max((((CarouselController)this._controller).initialItem - firstMaxWeightIndex), 0L);
         }
         return ((CarouselController)this._controller).initialItem;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -244,88 +244,88 @@ internal class _CarouselViewState__carousel : global::Doroti.Framework.Widgets.S
         {
             index = (index % checked((long)(((CarouselView)this.widget).children.Count)));
         }
-        CarouselViewThemeData carouselTheme__23601 = CarouselViewTheme.of(this.context);
-        ColorScheme colorScheme__23670 = ColorScheme.of(this.context);
-        global::Doroti.Framework.Painting.EdgeInsets effectivePadding__23730 = ((((CarouselView)this.widget).padding ?? carouselTheme__23601.padding) ?? global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0));
-        global::Doroti.Ui.Color effectiveBackgroundColor__23843 = ((global::Doroti.Ui.Color)(object?)((((CarouselView)this.widget).backgroundColor ?? carouselTheme__23601.backgroundColor) ?? colorScheme__23670.surface));
-        double effectiveElevation__23975 = ((((CarouselView)this.widget).elevation ?? carouselTheme__23601.elevation) ?? 0.0);
-        global::Doroti.Framework.Painting.ShapeBorder effectiveShape__24070 = ((((CarouselView)this.widget).shape ?? carouselTheme__23601.shape) ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(28.0))));
-        global::Doroti.Ui.Clip effectiveItemClipBehavior__24250 = ((((CarouselView)this.widget).itemClipBehavior ?? carouselTheme__23601.itemClipBehavior) ?? Clip.antiAlias);
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> effectiveOverlayColor__24401 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)(((((CarouselView)this.widget).overlayColor ?? carouselTheme__23601.overlayColor) ?? (global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, CarouselView>)((states) =>
+        CarouselViewThemeData carouselTheme = CarouselViewTheme.of(this.context);
+        ColorScheme colorScheme = ColorScheme.of(this.context);
+        global::Doroti.Framework.Painting.EdgeInsets effectivePadding = ((((CarouselView)this.widget).padding ?? carouselTheme.padding) ?? global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0));
+        global::Doroti.Ui.Color effectiveBackgroundColor = ((global::Doroti.Ui.Color)(object?)((((CarouselView)this.widget).backgroundColor ?? carouselTheme.backgroundColor) ?? colorScheme.surface));
+        double effectiveElevation = ((((CarouselView)this.widget).elevation ?? carouselTheme.elevation) ?? 0.0);
+        global::Doroti.Framework.Painting.ShapeBorder effectiveShape = ((((CarouselView)this.widget).shape ?? carouselTheme.shape) ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(28.0))));
+        global::Doroti.Ui.Clip effectiveItemClipBehavior = ((((CarouselView)this.widget).itemClipBehavior ?? carouselTheme.itemClipBehavior) ?? Clip.antiAlias);
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> effectiveOverlayColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)(((((CarouselView)this.widget).overlayColor ?? carouselTheme.overlayColor) ?? (global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, CarouselView>)((states) =>
         {
             if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
             {
-                return ((CarouselView)(object?)colorScheme__23670.onSurface.withOpacity(0.1));
+                return ((CarouselView)(object?)colorScheme.onSurface.withOpacity(0.1));
             }
             if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
             {
-                return ((CarouselView)(object?)colorScheme__23670.onSurface.withOpacity(0.08));
+                return ((CarouselView)(object?)colorScheme.onSurface.withOpacity(0.08));
             }
             if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
             {
-                return ((CarouselView)(object?)colorScheme__23670.onSurface.withOpacity(0.1));
+                return ((CarouselView)(object?)colorScheme.onSurface.withOpacity(0.1));
             }
             return null;
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))))));
-        global::Doroti.Framework.Widgets.Widget contents__24985 = ((CarouselView)this.widget).children[(int)(index)];
+        global::Doroti.Framework.Widgets.Widget contents = ((CarouselView)this.widget).children[(int)(index)];
         if (((CarouselView)this.widget).enableSplash)
         {
-            contents__24985 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Stack(fit: global::Doroti.Framework.Rendering.StackFit.expand, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(contents__24985), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Material(color: Colors.transparent, child: new InkWell(onTap: (() => { ((CarouselView)this.widget).onTap?.Invoke(index); }), overlayColor: effectiveOverlayColor__24401))) }));
+            contents = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Stack(fit: global::Doroti.Framework.Rendering.StackFit.expand, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(contents), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Material(color: Colors.transparent, child: new InkWell(onTap: (() => { ((CarouselView)this.widget).onTap?.Invoke(index); }), overlayColor: effectiveOverlayColor))) }));
         }
         else
         {
             if ((((CarouselView)this.widget).onTap is not null))
             {
-                contents__24985 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.GestureDetector(onTap: ((global::System.Action)(() => { ((CarouselView)this.widget).onTap!(index); })), child: contents__24985));
+                contents = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.GestureDetector(onTap: ((global::System.Action)(() => { ((CarouselView)this.widget).onTap!(index); })), child: contents));
             }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: effectivePadding__23730, child: new Material(clipBehavior: effectiveItemClipBehavior__24250, color: effectiveBackgroundColor__23843, elevation: effectiveElevation__23975, shape: effectiveShape__24070, child: contents__24985)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: effectivePadding, child: new Material(clipBehavior: effectiveItemClipBehavior, color: effectiveBackgroundColor, elevation: effectiveElevation, shape: effectiveShape, child: contents)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildSliverCarousel(ThemeData theme)
     {
-        long? childCount__25959 = (((CarouselView)this.widget).infinite ? null : ((((CarouselView)this.widget).itemBuilder is not null) ? ((CarouselView)this.widget).itemCount : checked((long)(((CarouselView)this.widget).children.Count))));
-        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?> effectiveBuilder__26135 = default!;
+        long? childCountLocal = (((CarouselView)this.widget).infinite ? null : ((((CarouselView)this.widget).itemBuilder is not null) ? ((CarouselView)this.widget).itemCount : checked((long)(((CarouselView)this.widget).children.Count))));
+        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?> effectiveBuilder = default!;
         if ((((CarouselView)this.widget).itemBuilder is not null))
         {
             if (((((CarouselView)this.widget).infinite && (((CarouselView)this.widget).itemCount is not null)) && (DartRuntimePrimitives.RequireValue(((CarouselView)this.widget).itemCount) > 0L)))
             {
-                long itemCount__26291 = DartRuntimePrimitives.RequireValue(((CarouselView)this.widget).itemCount);
-                effectiveBuilder__26135 = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)((context, index) =>
+                long itemCountLocal = DartRuntimePrimitives.RequireValue(((CarouselView)this.widget).itemCount);
+                effectiveBuilder = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)((context, index) =>
                 {
-                    return ((CarouselView)this.widget).itemBuilder!(context, (index % itemCount__26291));
+                    return ((CarouselView)this.widget).itemBuilder!(context, (index % itemCountLocal));
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
             }
             else
             {
-                effectiveBuilder__26135 = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)((CarouselView)this.widget).itemBuilder!;
+                effectiveBuilder = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)((CarouselView)this.widget).itemBuilder!;
             }
         }
         else
         {
-            effectiveBuilder__26135 = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)((context, index) => _buildCarouselItem(index));
+            effectiveBuilder = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)((context, index) => _buildCarouselItem(index));
         }
         if ((this._itemExtent is not null))
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _SliverFixedExtentCarousel__carousel(itemExtent: DartRuntimePrimitives.RequireValue(this._itemExtent), minExtent: ((CarouselView)this.widget).shrinkExtent, infinite: ((CarouselView)this.widget).infinite, @delegate: new global::Doroti.Framework.Widgets.SliverChildBuilderDelegate((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)effectiveBuilder__26135, childCount: childCount__25959)));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _SliverFixedExtentCarousel__carousel(itemExtent: DartRuntimePrimitives.RequireValue(this._itemExtent), minExtent: ((CarouselView)this.widget).shrinkExtent, infinite: ((CarouselView)this.widget).infinite, @delegate: new global::Doroti.Framework.Widgets.SliverChildBuilderDelegate((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)effectiveBuilder, childCount: childCountLocal)));
         }
         DartRuntimePrimitives.Assert(() => ((this._flexWeights is not null) && this._flexWeights!.All(((weight) => (weight > 0L)))), () => (object?)"flexWeights is null or it contains non-positive integers");
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _SliverWeightedCarousel__carousel(consumeMaxWeight: this._consumeMaxWeight, shrinkExtent: ((CarouselView)this.widget).shrinkExtent, weights: this._flexWeights!, infinite: ((CarouselView)this.widget).infinite, @delegate: new global::Doroti.Framework.Widgets.SliverChildBuilderDelegate((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)effectiveBuilder__26135, childCount: childCount__25959)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _SliverWeightedCarousel__carousel(consumeMaxWeight: this._consumeMaxWeight, shrinkExtent: ((CarouselView)this.widget).shrinkExtent, weights: this._flexWeights!, infinite: ((CarouselView)this.widget).infinite, @delegate: new global::Doroti.Framework.Widgets.SliverChildBuilderDelegate((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, long, global::Doroti.Framework.Widgets.Widget?>)effectiveBuilder, childCount: childCountLocal)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ThemeData theme__27443 = Theme.of(context);
-        global::Doroti.Framework.Widgets.ScrollPhysics physics__27494 = (((CarouselView)this.widget).itemSnapping ? new CarouselScrollPhysics() : ScrollConfiguration.of(context).getScrollPhysics(context));
+        ThemeData theme = Theme.of(context);
+        global::Doroti.Framework.Widgets.ScrollPhysics physicsLocal = (((CarouselView)this.widget).itemSnapping ? new CarouselScrollPhysics() : ScrollConfiguration.of(context).getScrollPhysics(context));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
         {
-            double mainAxisExtent__27749 = (((CarouselView)this.widget).scrollDirection switch { global::Doroti.Framework.Painting.Axis.horizontal => ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth, global::Doroti.Framework.Painting.Axis.vertical => ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            _itemExtent = ((((CarouselView)this.widget).itemExtent is null) ? null : Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(((CarouselView)this.widget).itemExtent), 0, mainAxisExtent__27749));
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomScrollView(scrollDirection: ((CarouselView)this.widget).scrollDirection, reverse: ((CarouselView)this.widget).reverse, controller: this._controller, physics: physics__27494, clipBehavior: Clip.antiAlias, scrollCacheExtent: global::Doroti.Framework.Rendering.ScrollCacheExtent.CreateViewport(0.0), slivers: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildSliverCarousel(theme__27443)) }));
+            double mainAxisExtent = (((CarouselView)this.widget).scrollDirection switch { global::Doroti.Framework.Painting.Axis.horizontal => ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth, global::Doroti.Framework.Painting.Axis.vertical => ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            _itemExtent = ((((CarouselView)this.widget).itemExtent is null) ? null : Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(((CarouselView)this.widget).itemExtent), 0, mainAxisExtent));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomScrollView(scrollDirection: ((CarouselView)this.widget).scrollDirection, reverse: ((CarouselView)this.widget).reverse, controller: this._controller, physics: physicsLocal, clipBehavior: Clip.antiAlias, scrollCacheExtent: global::Doroti.Framework.Rendering.ScrollCacheExtent.CreateViewport(0.0), slivers: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildSliverCarousel(theme)) }));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -348,8 +348,8 @@ internal class _SliverFixedExtentCarousel__carousel : global::Doroti.Framework.W
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var element__29647 = ((global::Doroti.Framework.Widgets.SliverMultiBoxAdaptorElement?)(object?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSliverFixedExtentCarousel__carousel(childManager: element__29647, minExtent: this.minExtent, maxExtent: this.itemExtent, infinite: this.infinite));
+        var element = ((global::Doroti.Framework.Widgets.SliverMultiBoxAdaptorElement?)(object?)context)!;
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSliverFixedExtentCarousel__carousel(childManager: element, minExtent: this.minExtent, maxExtent: this.itemExtent, infinite: this.infinite));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -424,19 +424,19 @@ public class _RenderSliverFixedExtentCarousel__carousel : global::Doroti.Framewo
         {
             return this.maxExtent;
         }
-        long firstVisibleIndex__31222 = ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.maxExtent)).floor();
-        long offscreenItems__31377 = ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.maxExtent)).floor();
-        double offscreenExtent__31720 = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset - (offscreenItems__31377 * this.maxExtent));
-        double effectiveMinExtent__32045 = Math.Max((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent % this.maxExtent), this.minExtent);
-        if ((index == firstVisibleIndex__31222))
+        long firstVisibleIndex = ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.maxExtent)).floor();
+        long offscreenItems = ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.maxExtent)).floor();
+        double offscreenExtent = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset - (offscreenItems * this.maxExtent));
+        double effectiveMinExtent = Math.Max((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent % this.maxExtent), this.minExtent);
+        if ((index == firstVisibleIndex))
         {
-            double effectiveExtent__32331 = (this.maxExtent - offscreenExtent__31720);
-            return Math.Max(effectiveExtent__32331, effectiveMinExtent__32045);
+            double effectiveExtent = (this.maxExtent - offscreenExtent);
+            return Math.Max(effectiveExtent, effectiveMinExtent);
         }
-        double scrollOffsetForLastIndex__32462 = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset + ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent);
-        if ((index == getMaxChildIndexForScrollOffset(scrollOffsetForLastIndex__32462, this.maxExtent)))
+        double scrollOffsetForLastIndex = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset + ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent);
+        if ((index == getMaxChildIndexForScrollOffset(scrollOffsetForLastIndex, this.maxExtent)))
         {
-            return Dart_uiLibrary.clampDouble((scrollOffsetForLastIndex__32462 - (this.maxExtent * index)), effectiveMinExtent__32045, this.maxExtent);
+            return Dart_uiLibrary.clampDouble((scrollOffsetForLastIndex - (this.maxExtent * index)), effectiveMinExtent, this.maxExtent);
         }
         return this.maxExtent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -448,14 +448,14 @@ public class _RenderSliverFixedExtentCarousel__carousel : global::Doroti.Framewo
         {
             return this.maxExtent;
         }
-        long firstVisibleIndex__33199 = ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.maxExtent)).floor();
-        double effectiveMinExtent__33522 = Math.Max((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent % this.maxExtent), this.minExtent);
-        if ((index == firstVisibleIndex__33199))
+        long firstVisibleIndex = ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.maxExtent)).floor();
+        double effectiveMinExtent = Math.Max((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent % this.maxExtent), this.minExtent);
+        if ((index == firstVisibleIndex))
         {
-            double firstVisibleItemExtent__33686 = _buildItemExtent(index, this.layoutDimensions);
-            if ((firstVisibleItemExtent__33686 <= effectiveMinExtent__33522))
+            double firstVisibleItemExtent = _buildItemExtent(index, this.layoutDimensions);
+            if ((firstVisibleItemExtent <= effectiveMinExtent))
             {
-                return (((this.maxExtent * index) - effectiveMinExtent__33522) + this.maxExtent);
+                return (((this.maxExtent * index) - effectiveMinExtent) + this.maxExtent);
             }
             return ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset;
         }
@@ -469,8 +469,8 @@ public class _RenderSliverFixedExtentCarousel__carousel : global::Doroti.Framewo
         {
             return 0L;
         }
-        long firstVisibleIndex__34539 = ((scrollOffset / this.maxExtent)).floor();
-        return Math.Max(firstVisibleIndex__34539, 0L);
+        long firstVisibleIndex = ((scrollOffset / this.maxExtent)).floor();
+        return Math.Max(firstVisibleIndex, 0L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -478,13 +478,13 @@ public class _RenderSliverFixedExtentCarousel__carousel : global::Doroti.Framewo
     {
         if ((this.maxExtent > 0.0))
         {
-            double actual__35031 = ((scrollOffset / this.maxExtent) - 1L);
-            long round__35086 = actual__35031.round();
-            if (((((actual__35031 * this.maxExtent) - (round__35086 * this.maxExtent))).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+            double actual = ((scrollOffset / this.maxExtent) - 1L);
+            long roundLocal = actual.round();
+            if (((((actual * this.maxExtent) - (roundLocal * this.maxExtent))).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
             {
-                return Math.Max(0L, round__35086);
+                return Math.Max(0L, roundLocal);
             }
-            return Math.Max(0L, actual__35031.ceil());
+            return Math.Max(0L, actual.ceil());
         }
         return 0L;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -511,8 +511,8 @@ internal class _SliverWeightedCarousel__carousel : global::Doroti.Framework.Widg
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var element__37363 = ((global::Doroti.Framework.Widgets.SliverMultiBoxAdaptorElement?)(object?)context)!;
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSliverWeightedCarousel__carousel(childManager: element__37363, consumeMaxWeight: this.consumeMaxWeight, shrinkExtent: this.shrinkExtent, weights: this.weights, infinite: this.infinite));
+        var element = ((global::Doroti.Framework.Widgets.SliverMultiBoxAdaptorElement?)(object?)context)!;
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderSliverWeightedCarousel__carousel(childManager: element, consumeMaxWeight: this.consumeMaxWeight, shrinkExtent: this.shrinkExtent, weights: this.weights, infinite: this.infinite));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -609,42 +609,42 @@ public class _RenderSliverWeightedCarousel__carousel : global::Doroti.Framework.
         {
             return 0;
         }
-        double extent__39795 = default!;
+        double extent = default!;
         if ((index == this._firstVisibleItemIndex))
         {
-            extent__39795 = Math.Max(this._distanceToLeadingEdge, this.effectiveShrinkExtent);
+            extent = Math.Max(this._distanceToLeadingEdge, this.effectiveShrinkExtent);
         }
         else
         {
             if (((index > this._firstVisibleItemIndex) && (((index - this._firstVisibleItemIndex) + 1L) <= checked((long)(this.weights.Count)))))
             {
                 DartRuntimePrimitives.Assert(() => ((index - this._firstVisibleItemIndex) < checked((long)(this.weights.Count))));
-                long currIndexOnWeightList__40456 = (index - this._firstVisibleItemIndex);
-                long currWeight__40528 = this.weights[(int)(currIndexOnWeightList__40456)];
-                extent__39795 = (this.extentUnit * currWeight__40528);
-                double progress__40650 = (this._firstVisibleItemOffscreenExtent / this.firstChildExtent);
-                long prevWeight__40731 = this.weights[(int)((currIndexOnWeightList__40456 - 1L))];
-                double finalIncrease__40799 = (((prevWeight__40731 - currWeight__40528)) / this.weights.max());
-                extent__39795 = (extent__39795 + ((finalIncrease__40799 * progress__40650) * this.maxChildExtent));
+                long currIndexOnWeightList = (index - this._firstVisibleItemIndex);
+                long currWeight = this.weights[(int)(currIndexOnWeightList)];
+                extent = (this.extentUnit * currWeight);
+                double progress = (this._firstVisibleItemOffscreenExtent / this.firstChildExtent);
+                long prevWeight = this.weights[(int)((currIndexOnWeightList - 1L))];
+                double finalIncrease = (((prevWeight - currWeight)) / this.weights.max());
+                extent = (extent + ((finalIncrease * progress) * this.maxChildExtent));
             }
             else
             {
                 if (((index > this._firstVisibleItemIndex) && (((index - this._firstVisibleItemIndex) + 1L) > checked((long)(this.weights.Count)))))
                 {
-                    double visibleItemsTotalExtent__41402 = this._distanceToLeadingEdge;
-                    for (long i__41467 = (this._firstVisibleItemIndex + 1L); (i__41467 < index); i__41467++)
+                    double visibleItemsTotalExtent = this._distanceToLeadingEdge;
+                    for (long i = (this._firstVisibleItemIndex + 1L); (i < index); i++)
                     {
-                        visibleItemsTotalExtent__41402 += _buildItemExtent(i__41467, currentLayoutDimensions);
+                        visibleItemsTotalExtent += _buildItemExtent(i, currentLayoutDimensions);
                     }
-                    extent__39795 = Math.Max((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent - visibleItemsTotalExtent__41402), this.effectiveShrinkExtent);
+                    extent = Math.Max((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).remainingPaintExtent - visibleItemsTotalExtent), this.effectiveShrinkExtent);
                 }
                 else
                 {
-                    extent__39795 = Math.Max(this.minChildExtent, this.effectiveShrinkExtent);
+                    extent = Math.Max(this.minChildExtent, this.effectiveShrinkExtent);
                 }
             }
         }
-        return extent__39795;
+        return extent;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -661,27 +661,27 @@ public class _RenderSliverWeightedCarousel__carousel : global::Doroti.Framework.
             {
                 return 0L;
             }
-            var smallerWeightCount__43049 = 0L;
-            foreach (long weight__43092 in this.weights)
+            var smallerWeightCount = 0L;
+            foreach (long weight in this.weights)
             {
-                if ((weight__43092 == this.weights.max()))
+                if ((weight == this.weights.max()))
                 {
                     break;
                 }
-                smallerWeightCount__43049 += 1L;
+                smallerWeightCount += 1L;
             }
-            long index__43216 = default!;
-            double actual__43241 = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.firstChildExtent);
-            long round__43309 = ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.firstChildExtent)).round();
-            if ((((actual__43241 - round__43309)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+            long index = default!;
+            double actual = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.firstChildExtent);
+            long roundLocal = ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.firstChildExtent)).round();
+            if ((((actual - roundLocal)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
             {
-                index__43216 = round__43309;
+                index = roundLocal;
             }
             else
             {
-                index__43216 = actual__43241.floor();
+                index = actual.floor();
             }
-            return (this.consumeMaxWeight ? (index__43216 - smallerWeightCount__43049) : index__43216);
+            return (this.consumeMaxWeight ? (index - smallerWeightCount) : index);
             return default!;
         }
     }
@@ -693,18 +693,18 @@ public class _RenderSliverWeightedCarousel__carousel : global::Doroti.Framework.
             {
                 return 0;
             }
-            long index__44030 = default!;
-            double actual__44054 = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.firstChildExtent);
-            long round__44122 = ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.firstChildExtent)).round();
-            if ((((actual__44054 - round__44122)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+            long index = default!;
+            double actual = (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.firstChildExtent);
+            long roundLocal = ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset / this.firstChildExtent)).round();
+            if ((((actual - roundLocal)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
             {
-                index__44030 = round__44122;
+                index = roundLocal;
             }
             else
             {
-                index__44030 = actual__44054.floor();
+                index = actual.floor();
             }
-            return (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset - (index__44030 * this.firstChildExtent));
+            return (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset - (index * this.firstChildExtent));
             return default!;
         }
     }
@@ -719,12 +719,12 @@ public class _RenderSliverWeightedCarousel__carousel : global::Doroti.Framework.
             }
             return ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset;
         }
-        double visibleItemsTotalExtent__45372 = this._distanceToLeadingEdge;
-        for (long i__45435 = (this._firstVisibleItemIndex + 1L); (i__45435 < index); i__45435++)
+        double visibleItemsTotalExtent = this._distanceToLeadingEdge;
+        for (long i = (this._firstVisibleItemIndex + 1L); (i < index); i++)
         {
-            visibleItemsTotalExtent__45372 += _buildItemExtent(i__45435, this.layoutDimensions);
+            visibleItemsTotalExtent += _buildItemExtent(i, this.layoutDimensions);
         }
-        return (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset + visibleItemsTotalExtent__45372);
+        return (((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).scrollOffset + visibleItemsTotalExtent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -736,38 +736,38 @@ public class _RenderSliverWeightedCarousel__carousel : global::Doroti.Framework.
 
     public override long getMaxChildIndexForScrollOffset(double scrollOffset, double itemExtent)
     {
-        long? childCount__46235 = ((global::Doroti.Framework.Rendering.RenderSliverBoxChildManager)this.childManager).estimatedChildCount;
-        if ((this.infinite && (childCount__46235 is null)))
+        long? childCount = ((global::Doroti.Framework.Rendering.RenderSliverBoxChildManager)this.childManager).estimatedChildCount;
+        if ((this.infinite && (childCount is null)))
         {
-            double visibleItemsTotalExtent__46414 = this._distanceToLeadingEdge;
-            long index__46474 = (this._firstVisibleItemIndex + 1L);
-            double safeMinExtent__46701 = Math.Max(this.minChildExtent, 1.0);
-            long estimatedUpperBound__46764 = (this._firstVisibleItemIndex + ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).viewportMainAxisExtent / safeMinExtent__46701)).ceil());
-            while (((visibleItemsTotalExtent__46414 < ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).viewportMainAxisExtent) && (index__46474 < estimatedUpperBound__46764)))
+            double visibleItemsTotalExtent = this._distanceToLeadingEdge;
+            long index = (this._firstVisibleItemIndex + 1L);
+            double safeMinExtent = Math.Max(this.minChildExtent, 1.0);
+            long estimatedUpperBound = (this._firstVisibleItemIndex + ((((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).viewportMainAxisExtent / safeMinExtent)).ceil());
+            while (((visibleItemsTotalExtent < ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).viewportMainAxisExtent) && (index < estimatedUpperBound)))
             {
-                visibleItemsTotalExtent__46414 += _buildItemExtent(index__46474, this.layoutDimensions);
-                if ((visibleItemsTotalExtent__46414 >= ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).viewportMainAxisExtent))
+                visibleItemsTotalExtent += _buildItemExtent(index, this.layoutDimensions);
+                if ((visibleItemsTotalExtent >= ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).viewportMainAxisExtent))
                 {
-                    return index__46474;
+                    return index;
                 }
-                index__46474++;
+                index++;
             }
-            return index__46474;
+            return index;
         }
-        if ((childCount__46235 is not null))
+        if ((childCount is not null))
         {
-            long childCount__46235__value47249 = DartRuntimePrimitives.RequireValue(childCount__46235);
-            double visibleItemsTotalExtent__47284 = this._distanceToLeadingEdge;
-            for (long i__47349 = (this._firstVisibleItemIndex + 1L); (i__47349 < DartRuntimePrimitives.RequireValue(childCount__46235__value47249)); i__47349++)
+            long childCount__46235__value47249 = DartRuntimePrimitives.RequireValue(childCount);
+            double visibleItemsTotalExtentLocal = this._distanceToLeadingEdge;
+            for (long i = (this._firstVisibleItemIndex + 1L); (i < DartRuntimePrimitives.RequireValue(childCount__46235__value47249)); i++)
             {
-                visibleItemsTotalExtent__47284 += _buildItemExtent(i__47349, this.layoutDimensions);
-                if ((visibleItemsTotalExtent__47284 >= ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).viewportMainAxisExtent))
+                visibleItemsTotalExtentLocal += _buildItemExtent(i, this.layoutDimensions);
+                if ((visibleItemsTotalExtentLocal >= ((global::Doroti.Framework.Rendering.SliverConstraints)this.constraints).viewportMainAxisExtent))
                 {
-                    return i__47349;
+                    return i;
                 }
             }
         }
-        return (childCount__46235 ?? 0L);
+        return (childCount ?? 0L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -783,8 +783,8 @@ public class _RenderSliverWeightedCarousel__carousel : global::Doroti.Framework.
 
     internal virtual global::Doroti.Framework.Rendering.BoxConstraints _getChildConstraints(long index)
     {
-        double extent__48086 = DartRuntimePrimitives.RequireValue(this.itemExtentBuilder!(index, this.layoutDimensions));
-        return ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)this.constraints.asBoxConstraints(minExtent: extent__48086, maxExtent: extent__48086));
+        double extent = DartRuntimePrimitives.RequireValue(this.itemExtentBuilder!(index, this.layoutDimensions));
+        return ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)this.constraints.asBoxConstraints(minExtent: extent, maxExtent: extent));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -792,22 +792,22 @@ public class _RenderSliverWeightedCarousel__carousel : global::Doroti.Framework.
     {
         DartRuntimePrimitives.Assert(() => ((((this.itemExtent is not null) && (this.itemExtentBuilder is null))) || (((this.itemExtent is null) && (this.itemExtentBuilder is not null)))));
         DartRuntimePrimitives.Assert(() => ((this.itemExtentBuilder is not null) || ((double.IsFinite(DartRuntimePrimitives.RequireValue(this.itemExtent)) && (DartRuntimePrimitives.RequireValue(this.itemExtent) >= 0L)))));
-        global::Doroti.Framework.Rendering.SliverConstraints constraints__48887 = this.constraints;
+        global::Doroti.Framework.Rendering.SliverConstraints constraintsLocal = this.constraints;
         this.childManager.didStartLayout();
         this.childManager.setDidUnderflow(false);
-        double scrollOffset__49013 = (((global::Doroti.Framework.Rendering.SliverConstraints)constraints__48887).scrollOffset + ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__48887).cacheOrigin);
-        DartRuntimePrimitives.Assert(() => (scrollOffset__49013 >= 0.0));
-        double remainingExtent__49130 = ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__48887).remainingCacheExtent;
-        DartRuntimePrimitives.Assert(() => (remainingExtent__49130 >= 0.0));
-        double targetEndScrollOffset__49235 = (scrollOffset__49013 + remainingExtent__49130);
-        double deprecatedExtraItemExtent__49364 = -1;
-        long firstIndex__49411 = getMinChildIndexForScrollOffset(scrollOffset__49013, deprecatedExtraItemExtent__49364);
-        long? targetLastIndex__49513 = (double.IsFinite(targetEndScrollOffset__49235) ? getMaxChildIndexForScrollOffset(targetEndScrollOffset__49235, deprecatedExtraItemExtent__49364) : null);
+        double scrollOffsetLocal = (((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).scrollOffset + ((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).cacheOrigin);
+        DartRuntimePrimitives.Assert(() => (scrollOffsetLocal >= 0.0));
+        double remainingExtent = ((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).remainingCacheExtent;
+        DartRuntimePrimitives.Assert(() => (remainingExtent >= 0.0));
+        double targetEndScrollOffset = (scrollOffsetLocal + remainingExtent);
+        double deprecatedExtraItemExtent = -1;
+        long firstIndexLocal = getMinChildIndexForScrollOffset(scrollOffsetLocal, deprecatedExtraItemExtent);
+        long? targetLastIndex = (double.IsFinite(targetEndScrollOffset) ? getMaxChildIndexForScrollOffset(targetEndScrollOffset, deprecatedExtraItemExtent) : null);
         if ((this.firstChild is not null))
         {
-            long leadingGarbage__49717 = calculateLeadingGarbage(firstIndex: firstIndex__49411);
-            long trailingGarbage__49799 = ((targetLastIndex__49513 is not null) ? calculateTrailingGarbage(lastIndex: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(targetLastIndex__49513))) : 0L);
-            collectGarbage(leadingGarbage__49717, trailingGarbage__49799);
+            long leadingGarbage = calculateLeadingGarbage(firstIndex: firstIndexLocal);
+            long trailingGarbage = ((targetLastIndex is not null) ? calculateTrailingGarbage(lastIndex: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(targetLastIndex))) : 0L);
+            collectGarbage(leadingGarbage, trailingGarbage);
         }
         else
         {
@@ -815,101 +815,101 @@ public class _RenderSliverWeightedCarousel__carousel : global::Doroti.Framework.
         }
         if ((this.firstChild is null))
         {
-            double layoutOffset__50073 = indexToLayoutOffset(deprecatedExtraItemExtent__49364, firstIndex__49411);
-            if (!addInitialChild(index: firstIndex__49411, layoutOffset: layoutOffset__50073))
+            double layoutOffsetLocal = indexToLayoutOffset(deprecatedExtraItemExtent, firstIndexLocal);
+            if (!addInitialChild(index: firstIndexLocal, layoutOffset: layoutOffsetLocal))
             {
-                double max__50331 = default!;
-                if ((firstIndex__49411 <= 0L))
+                double maxLocal = default!;
+                if ((firstIndexLocal <= 0L))
                 {
-                    max__50331 = 0.0;
+                    maxLocal = 0.0;
                 }
                 else
                 {
-                    max__50331 = computeMaxScrollOffset(constraints__48887, deprecatedExtraItemExtent__49364);
+                    maxLocal = computeMaxScrollOffset(constraintsLocal, deprecatedExtraItemExtent);
                 }
-                geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollExtent: max__50331, maxPaintExtent: max__50331);
+                geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollExtent: maxLocal, maxPaintExtent: maxLocal);
                 this.childManager.didFinishLayout();
                 return;
             }
         }
-        global::Doroti.Framework.Rendering.RenderBox? trailingChildWithLayout__50656 = default!;
-        for (long index__50695 = (indexOf(this.firstChild!) - 1L); (index__50695 >= firstIndex__49411); --index__50695)
+        global::Doroti.Framework.Rendering.RenderBox? trailingChildWithLayout = default!;
+        for (long indexLocal = (indexOf(this.firstChild!) - 1L); (indexLocal >= firstIndexLocal); --indexLocal)
         {
-            global::Doroti.Framework.Rendering.RenderBox? child__50784 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)insertAndLayoutLeadingChild(_getChildConstraints(index__50695)));
-            if ((child__50784 is null))
+            global::Doroti.Framework.Rendering.RenderBox? child = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)insertAndLayoutLeadingChild(_getChildConstraints(indexLocal)));
+            if ((child is null))
             {
-                geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollOffsetCorrection: indexToLayoutOffset(deprecatedExtraItemExtent__49364, index__50695));
+                geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollOffsetCorrection: indexToLayoutOffset(deprecatedExtraItemExtent, indexLocal));
                 return;
             }
-            var childParentData__51255 = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)child__50784.parentData!)!;
-            childParentData__51255.layoutOffset = indexToLayoutOffset(deprecatedExtraItemExtent__49364, index__50695);
-            DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData)childParentData__51255).index == index__50695));
-            trailingChildWithLayout__50656 ??= child__50784;
+            var childParentData = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)child.parentData!)!;
+            childParentData.layoutOffset = indexToLayoutOffset(deprecatedExtraItemExtent, indexLocal);
+            DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData)childParentData).index == indexLocal));
+            trailingChildWithLayout ??= child;
         }
-        if ((trailingChildWithLayout__50656 is null))
+        if ((trailingChildWithLayout is null))
         {
             this.firstChild!.layout(_getChildConstraints(indexOf(this.firstChild!)));
-            var childParentData__51638 = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)this.firstChild!.parentData!)!;
-            childParentData__51638.layoutOffset = indexToLayoutOffset(deprecatedExtraItemExtent__49364, firstIndex__49411);
-            trailingChildWithLayout__50656 = this.firstChild;
+            var childParentDataLocal = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)this.firstChild!.parentData!)!;
+            childParentDataLocal.layoutOffset = indexToLayoutOffset(deprecatedExtraItemExtent, firstIndexLocal);
+            trailingChildWithLayout = this.firstChild;
         }
-        double extraLayoutOffset__51937 = 0;
+        double extraLayoutOffset = 0;
         if (this.consumeMaxWeight)
         {
-            for (long i__52003 = (checked((long)(this.weights.Count)) - 1L); (i__52003 >= 0L); i__52003--)
+            for (long i = (checked((long)(this.weights.Count)) - 1L); (i >= 0L); i--)
             {
-                if ((this.weights[(int)(i__52003)] == this.weights.max()))
+                if ((this.weights[(int)(i)] == this.weights.max()))
                 {
                     break;
                 }
-                extraLayoutOffset__51937 += (this.weights[(int)(i__52003)] * this.extentUnit);
+                extraLayoutOffset += (this.weights[(int)(i)] * this.extentUnit);
             }
         }
-        double estimatedMaxScrollOffset__52190 = double.PositiveInfinity;
-        for (long index__52312 = (indexOf(trailingChildWithLayout__50656!) + 1L); ((targetLastIndex__49513 is null) || (index__52312 <= DartRuntimePrimitives.RequireValue(targetLastIndex__49513))); ++index__52312)
+        double estimatedMaxScrollOffset = double.PositiveInfinity;
+        for (long indexAlternate = (indexOf(trailingChildWithLayout!) + 1L); ((targetLastIndex is null) || (indexAlternate <= DartRuntimePrimitives.RequireValue(targetLastIndex))); ++indexAlternate)
         {
-            global::Doroti.Framework.Rendering.RenderBox? child__52457 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childAfter(trailingChildWithLayout__50656!));
-            if (((child__52457 is null) || (indexOf(child__52457) != index__52312)))
+            global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childAfter(trailingChildWithLayout!));
+            if (((childLocal is null) || (indexOf(childLocal) != indexAlternate)))
             {
-                child__52457 = insertAndLayoutChild(_getChildConstraints(index__52312), after: trailingChildWithLayout__50656);
-                if ((child__52457 is null))
+                childLocal = insertAndLayoutChild(_getChildConstraints(indexAlternate), after: trailingChildWithLayout);
+                if ((childLocal is null))
                 {
-                    estimatedMaxScrollOffset__52190 = (indexToLayoutOffset(deprecatedExtraItemExtent__49364, index__52312) + extraLayoutOffset__51937);
+                    estimatedMaxScrollOffset = (indexToLayoutOffset(deprecatedExtraItemExtent, indexAlternate) + extraLayoutOffset);
                     break;
                 }
             }
             else
             {
-                child__52457.layout(_getChildConstraints(index__52312));
+                childLocal.layout(_getChildConstraints(indexAlternate));
             }
-            trailingChildWithLayout__50656 = child__52457;
-            var childParentData__53005 = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)child__52457.parentData!)!;
-            DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData)childParentData__53005).index == index__52312));
-            childParentData__53005.layoutOffset = indexToLayoutOffset(deprecatedExtraItemExtent__49364, DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData)childParentData__53005).index));
+            trailingChildWithLayout = childLocal;
+            var childParentDataAlternate = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)childLocal.parentData!)!;
+            DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData)childParentDataAlternate).index == indexAlternate));
+            childParentDataAlternate.layoutOffset = indexToLayoutOffset(deprecatedExtraItemExtent, DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData)childParentDataAlternate).index));
         }
-        long lastIndex__53278 = indexOf(this.lastChild!);
-        double leadingScrollOffset__53328 = indexToLayoutOffset(deprecatedExtraItemExtent__49364, firstIndex__49411);
-        double trailingScrollOffset__53421 = default!;
-        if ((!this.infinite && ((lastIndex__53278 + 1L) == ((global::Doroti.Framework.Rendering.RenderSliverBoxChildManager)this.childManager).childCount)))
+        long lastIndexLocal = indexOf(this.lastChild!);
+        double leadingScrollOffsetLocal = indexToLayoutOffset(deprecatedExtraItemExtent, firstIndexLocal);
+        double trailingScrollOffsetLocal = default!;
+        if ((!this.infinite && ((lastIndexLocal + 1L) == ((global::Doroti.Framework.Rendering.RenderSliverBoxChildManager)this.childManager).childCount)))
         {
-            trailingScrollOffset__53421 = indexToLayoutOffset(deprecatedExtraItemExtent__49364, lastIndex__53278);
-            trailingScrollOffset__53421 += Math.Max((this.weights.Last() * this.extentUnit), _buildItemExtent(lastIndex__53278, this.layoutDimensions));
-            trailingScrollOffset__53421 += extraLayoutOffset__51937;
+            trailingScrollOffsetLocal = indexToLayoutOffset(deprecatedExtraItemExtent, lastIndexLocal);
+            trailingScrollOffsetLocal += Math.Max((this.weights.Last() * this.extentUnit), _buildItemExtent(lastIndexLocal, this.layoutDimensions));
+            trailingScrollOffsetLocal += extraLayoutOffset;
         }
         else
         {
-            trailingScrollOffset__53421 = indexToLayoutOffset(deprecatedExtraItemExtent__49364, (lastIndex__53278 + 1L));
+            trailingScrollOffsetLocal = indexToLayoutOffset(deprecatedExtraItemExtent, (lastIndexLocal + 1L));
         }
         DartRuntimePrimitives.Assert(() => debugAssertChildListIsNonEmptyAndContiguous());
-        DartRuntimePrimitives.Assert(() => (indexOf(this.firstChild!) == firstIndex__49411));
-        DartRuntimePrimitives.Assert(() => ((targetLastIndex__49513 is null) || (lastIndex__53278 <= DartRuntimePrimitives.RequireValue(targetLastIndex__49513))));
-        estimatedMaxScrollOffset__52190 = Math.Min(estimatedMaxScrollOffset__52190, estimateMaxScrollOffset(constraints__48887, firstIndex: firstIndex__49411, lastIndex: lastIndex__53278, leadingScrollOffset: leadingScrollOffset__53328, trailingScrollOffset: trailingScrollOffset__53421));
-        double paintExtent__54398 = calculatePaintOffset(constraints__48887, from: (this.consumeMaxWeight ? 0 : leadingScrollOffset__53328), to: trailingScrollOffset__53421);
-        double cacheExtent__54566 = calculateCacheOffset(constraints__48887, from: (this.consumeMaxWeight ? 0 : leadingScrollOffset__53328), to: trailingScrollOffset__53421);
-        double targetEndScrollOffsetForPaint__54734 = (((global::Doroti.Framework.Rendering.SliverConstraints)constraints__48887).scrollOffset + ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__48887).remainingPaintExtent);
-        long? targetLastIndexForPaint__54850 = (double.IsFinite(targetEndScrollOffsetForPaint__54734) ? getMaxChildIndexForScrollOffset(targetEndScrollOffsetForPaint__54734, deprecatedExtraItemExtent__49364) : null);
-        geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollExtent: estimatedMaxScrollOffset__52190, paintExtent: paintExtent__54398, cacheExtent: cacheExtent__54566, maxPaintExtent: estimatedMaxScrollOffset__52190, hasVisualOverflow: ((((targetLastIndexForPaint__54850 is not null) && (lastIndex__53278 >= DartRuntimePrimitives.RequireValue(targetLastIndexForPaint__54850)))) || (((global::Doroti.Framework.Rendering.SliverConstraints)constraints__48887).scrollOffset > 0.0)));
-        if ((estimatedMaxScrollOffset__52190 == trailingScrollOffset__53421))
+        DartRuntimePrimitives.Assert(() => (indexOf(this.firstChild!) == firstIndexLocal));
+        DartRuntimePrimitives.Assert(() => ((targetLastIndex is null) || (lastIndexLocal <= DartRuntimePrimitives.RequireValue(targetLastIndex))));
+        estimatedMaxScrollOffset = Math.Min(estimatedMaxScrollOffset, estimateMaxScrollOffset(constraintsLocal, firstIndex: firstIndexLocal, lastIndex: lastIndexLocal, leadingScrollOffset: leadingScrollOffsetLocal, trailingScrollOffset: trailingScrollOffsetLocal));
+        double paintExtentLocal = calculatePaintOffset(constraintsLocal, from: (this.consumeMaxWeight ? 0 : leadingScrollOffsetLocal), to: trailingScrollOffsetLocal);
+        double cacheExtentLocal = calculateCacheOffset(constraintsLocal, from: (this.consumeMaxWeight ? 0 : leadingScrollOffsetLocal), to: trailingScrollOffsetLocal);
+        double targetEndScrollOffsetForPaint = (((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).scrollOffset + ((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).remainingPaintExtent);
+        long? targetLastIndexForPaint = (double.IsFinite(targetEndScrollOffsetForPaint) ? getMaxChildIndexForScrollOffset(targetEndScrollOffsetForPaint, deprecatedExtraItemExtent) : null);
+        geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollExtent: estimatedMaxScrollOffset, paintExtent: paintExtentLocal, cacheExtent: cacheExtentLocal, maxPaintExtent: estimatedMaxScrollOffset, hasVisualOverflow: ((((targetLastIndexForPaint is not null) && (lastIndexLocal >= DartRuntimePrimitives.RequireValue(targetLastIndexForPaint)))) || (((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).scrollOffset > 0.0)));
+        if ((estimatedMaxScrollOffset == trailingScrollOffsetLocal))
         {
             this.childManager.setDidUnderflow(true);
         }
@@ -934,56 +934,56 @@ public class CarouselScrollPhysics : global::Doroti.Framework.Widgets.ScrollPhys
 
     internal virtual double _getTargetPixels(_CarouselPosition__carousel position, global::Doroti.Framework.Physics.Tolerance tolerance, double velocity)
     {
-        double fraction__56695 = default!;
+        double fraction = default!;
         if ((((_CarouselPosition__carousel)position).itemExtent is not null))
         {
-            fraction__56695 = (DartRuntimePrimitives.RequireValue(((_CarouselPosition__carousel)position).itemExtent) / position.viewportDimension);
+            fraction = (DartRuntimePrimitives.RequireValue(((_CarouselPosition__carousel)position).itemExtent) / position.viewportDimension);
         }
         else
         {
             DartRuntimePrimitives.Assert(() => (((_CarouselPosition__carousel)position).flexWeights is not null));
-            fraction__56695 = (((_CarouselPosition__carousel)position).flexWeights!.First() / ((_CarouselPosition__carousel)position).flexWeights!.sum());
+            fraction = (((_CarouselPosition__carousel)position).flexWeights!.First() / ((_CarouselPosition__carousel)position).flexWeights!.sum());
         }
-        double itemWidth__56968 = (position.viewportDimension * fraction__56695);
-        double actual__57037 = (Math.Max(0.0, position.pixels) / itemWidth__56968);
-        double round__57107 = actual__57037.roundToDouble();
-        double item__57150 = default!;
-        if ((((actual__57037 - round__57107)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+        double itemWidth = (position.viewportDimension * fraction);
+        double actual = (Math.Max(0.0, position.pixels) / itemWidth);
+        double round = actual.roundToDouble();
+        double item = default!;
+        if ((((actual - round)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
         {
-            item__57150 = round__57107;
+            item = round;
         }
         else
         {
-            item__57150 = actual__57037;
+            item = actual;
         }
         if ((velocity < -((global::Doroti.Framework.Physics.Tolerance)tolerance).velocity))
         {
-            item__57150 -= 0.5;
+            item -= 0.5;
         }
         else
         {
             if ((velocity > ((global::Doroti.Framework.Physics.Tolerance)tolerance).velocity))
             {
-                item__57150 += 0.5;
+                item += 0.5;
             }
         }
-        return (item__57150.roundToDouble() * itemWidth__56968);
+        return (item.roundToDouble() * itemWidth);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Physics.Simulation? createBallisticSimulation(global::Doroti.Framework.Widgets.ScrollMetrics position, double velocity)
     {
         DartRuntimePrimitives.Assert(() => (position is _CarouselPosition__carousel), () => (object?)"CarouselScrollPhysics can only be used with Scrollables that uses " + "the CarouselController");
-        var metrics__57729 = ((_CarouselPosition__carousel?)(object?)position)!;
-        if (((((velocity <= 0.0) && (metrics__57729.pixels <= metrics__57729.minScrollExtent))) || (((velocity >= 0.0) && (metrics__57729.pixels >= metrics__57729.maxScrollExtent)))))
+        var metrics = ((_CarouselPosition__carousel?)(object?)position)!;
+        if (((((velocity <= 0.0) && (metrics.pixels <= metrics.minScrollExtent))) || (((velocity >= 0.0) && (metrics.pixels >= metrics.maxScrollExtent)))))
         {
-            return ((global::Doroti.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics__57729, velocity));
+            return ((global::Doroti.Framework.Physics.Simulation?)(object?)base.createBallisticSimulation(metrics, velocity));
         }
-        global::Doroti.Framework.Physics.Tolerance tolerance__58010 = ((global::Doroti.Framework.Physics.Tolerance)(object?)toleranceFor(metrics__57729));
-        double target__58062 = _getTargetPixels(metrics__57729, tolerance__58010, velocity);
-        if ((target__58062 != metrics__57729.pixels))
+        global::Doroti.Framework.Physics.Tolerance toleranceLocal = ((global::Doroti.Framework.Physics.Tolerance)(object?)toleranceFor(metrics));
+        double target = _getTargetPixels(metrics, toleranceLocal, velocity);
+        if ((target != metrics.pixels))
         {
-            return ((global::Doroti.Framework.Physics.Simulation?)(object?)new global::Doroti.Framework.Physics.ScrollSpringSimulation(this.spring, metrics__57729.pixels, target__58062, velocity, tolerance: tolerance__58010));
+            return ((global::Doroti.Framework.Physics.Simulation?)(object?)new global::Doroti.Framework.Physics.ScrollSpringSimulation(this.spring, metrics.pixels, target, velocity, tolerance: toleranceLocal));
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1074,9 +1074,9 @@ internal class _CarouselPosition__carousel : global::Doroti.Framework.Widgets.Sc
             }
             if ((this.hasPixels && (this.flexWeights is not null)))
             {
-                double leadingItem__61950 = updateLeadingItem(this.flexWeights, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(__value)));
-                double newPixel__62022 = getPixelsFromItem(leadingItem__61950, this.flexWeights, this.itemExtent);
-                forcePixels(newPixel__62022);
+                double leadingItem = updateLeadingItem(this.flexWeights, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(__value)));
+                double newPixel = getPixelsFromItem(leadingItem, this.flexWeights, this.itemExtent);
+                forcePixels(newPixel);
             }
             _consumeMaxWeight = DartRuntimePrimitives.RequireValue(__value);
         }
@@ -1093,9 +1093,9 @@ internal class _CarouselPosition__carousel : global::Doroti.Framework.Widgets.Sc
             }
             if (((this.hasPixels && (this._itemExtent is not null)) && (this.viewportDimension != 0.0)))
             {
-                double leadingItem__62414 = getItemFromPixels(DartRuntimePrimitives.RequireValue(this.pixels), DartRuntimePrimitives.RequireValue(this.viewportDimension));
-                double newPixel__62493 = getPixelsFromItem(leadingItem__62414, this.flexWeights, __value);
-                forcePixels(newPixel__62493);
+                double leadingItem = getItemFromPixels(DartRuntimePrimitives.RequireValue(this.pixels), DartRuntimePrimitives.RequireValue(this.viewportDimension));
+                double newPixel = getPixelsFromItem(leadingItem, this.flexWeights, __value);
+                forcePixels(newPixel);
             }
             _itemExtent = __value;
         }
@@ -1110,12 +1110,12 @@ internal class _CarouselPosition__carousel : global::Doroti.Framework.Widgets.Sc
             {
                 return;
             }
-            List<long>? oldWeights__62817 = this._flexWeights.ToList();
-            if ((this.hasPixels && (oldWeights__62817 is not null)))
+            List<long>? oldWeights = this._flexWeights.ToList();
+            if ((this.hasPixels && (oldWeights is not null)))
             {
-                double leadingItem__62906 = updateLeadingItem(__value, DartRuntimePrimitives.RequireValue(this.consumeMaxWeight));
-                double newPixel__62983 = getPixelsFromItem(leadingItem__62906, __value, this.itemExtent);
-                forcePixels(newPixel__62983);
+                double leadingItem = updateLeadingItem(__value, DartRuntimePrimitives.RequireValue(this.consumeMaxWeight));
+                double newPixel = getPixelsFromItem(leadingItem, __value, this.itemExtent);
+                forcePixels(newPixel);
             }
             _flexWeights = __value;
         }
@@ -1124,27 +1124,27 @@ internal class _CarouselPosition__carousel : global::Doroti.Framework.Widgets.Sc
     {
         get
         {
-            long leadingItem__63423 = getItemFromPixels(DartRuntimePrimitives.RequireValue(this.pixels), DartRuntimePrimitives.RequireValue(this.viewportDimension)).toInt();
+            long leadingItem = getItemFromPixels(DartRuntimePrimitives.RequireValue(this.pixels), DartRuntimePrimitives.RequireValue(this.viewportDimension)).toInt();
             if ((this.consumeMaxWeight && (this.flexWeights is not null)))
             {
-                leadingItem__63423 = Math.Max((leadingItem__63423 - ((long)((dynamic)this.flexWeights!).IndexOf(this.flexWeights!.max()))), 0L);
+                leadingItem = Math.Max((leadingItem - ((long)((dynamic)this.flexWeights!).IndexOf(this.flexWeights!.max()))), 0L);
             }
             if (((this.infinite && (this.itemCount is not null)) && (DartRuntimePrimitives.RequireValue(this.itemCount) > 0L)))
             {
                 long itemCount__value64303 = DartRuntimePrimitives.RequireValue(itemCount);
-                leadingItem__63423 = (leadingItem__63423 % DartRuntimePrimitives.RequireValue(this.itemCount));
+                leadingItem = (leadingItem % DartRuntimePrimitives.RequireValue(this.itemCount));
             }
-            return leadingItem__63423;
+            return leadingItem;
             return default!;
         }
     }
     public virtual double updateLeadingItem(List<long>? newFlexWeights, bool newConsumeMaxWeight)
     {
-        double maxItem__64522 = default!;
+        double maxItem = default!;
         if ((this.hasPixels && (this.flexWeights is not null)))
         {
-            double leadingItem__64594 = getItemFromPixels(DartRuntimePrimitives.RequireValue(this.pixels), DartRuntimePrimitives.RequireValue(this.viewportDimension));
-            maxItem__64522 = (this.consumeMaxWeight ? leadingItem__64594 : (leadingItem__64594 + ((long)((dynamic)this.flexWeights!).IndexOf(this.flexWeights!.max()))));
+            double leadingItem = getItemFromPixels(DartRuntimePrimitives.RequireValue(this.pixels), DartRuntimePrimitives.RequireValue(this.viewportDimension));
+            maxItem = (this.consumeMaxWeight ? leadingItem : (leadingItem + ((long)((dynamic)this.flexWeights!).IndexOf(this.flexWeights!.max()))));
         }
         else
         {
@@ -1152,52 +1152,52 @@ internal class _CarouselPosition__carousel : global::Doroti.Framework.Widgets.Sc
             {
                 return this._itemToShowOnStartup;
             }
-            maxItem__64522 = this._itemToShowOnStartup;
+            maxItem = this._itemToShowOnStartup;
         }
         if (((newFlexWeights is not null) && !newConsumeMaxWeight))
         {
-            var smallerWeights__64981 = 0L;
-            foreach (long weight__65022 in newFlexWeights)
+            var smallerWeights = 0L;
+            foreach (long weight in newFlexWeights)
             {
-                if ((weight__65022 == newFlexWeights.max()))
+                if ((weight == newFlexWeights.max()))
                 {
                     break;
                 }
-                smallerWeights__64981 += 1L;
+                smallerWeights += 1L;
             }
-            return (maxItem__64522 - smallerWeights__64981);
+            return (maxItem - smallerWeights);
         }
-        return maxItem__64522;
+        return maxItem;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual double getItemFromPixels(double pixels, double viewportDimension)
     {
         DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(viewportDimension) > 0.0));
-        double fraction__65346 = default!;
+        double fraction = default!;
         if ((this.itemExtent is not null))
         {
             double itemExtent__value65364 = DartRuntimePrimitives.RequireValue(itemExtent);
-            fraction__65346 = (DartRuntimePrimitives.RequireValue(this.itemExtent) / DartRuntimePrimitives.RequireValue(viewportDimension));
+            fraction = (DartRuntimePrimitives.RequireValue(this.itemExtent) / DartRuntimePrimitives.RequireValue(viewportDimension));
         }
         else
         {
             DartRuntimePrimitives.Assert(() => (this.flexWeights is not null));
-            fraction__65346 = (this.flexWeights!.First() / this.flexWeights!.sum());
+            fraction = (this.flexWeights!.First() / this.flexWeights!.sum());
         }
-        double actual__65624 = (Math.Max(0.0, DartRuntimePrimitives.RequireValue(pixels)) / ((DartRuntimePrimitives.RequireValue(viewportDimension) * fraction__65346)));
-        double round__65706 = actual__65624.roundToDouble();
-        if ((((actual__65624 - round__65706)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+        double actual = (Math.Max(0.0, DartRuntimePrimitives.RequireValue(pixels)) / ((DartRuntimePrimitives.RequireValue(viewportDimension) * fraction)));
+        double round = actual.roundToDouble();
+        if ((((actual - round)).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
         {
-            return round__65706;
+            return round;
         }
-        return actual__65624;
+        return actual;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual double getPixelsFromItem(double item, List<long>? flexWeights, double? itemExtent)
     {
-        double fraction__65945 = default!;
+        double fraction = default!;
         if ((this.viewportDimension == 0.0))
         {
             return 0.0;
@@ -1205,50 +1205,50 @@ internal class _CarouselPosition__carousel : global::Doroti.Framework.Widgets.Sc
         if ((itemExtent is not null))
         {
             double itemExtent__value66023 = DartRuntimePrimitives.RequireValue(itemExtent);
-            fraction__65945 = (DartRuntimePrimitives.RequireValue(itemExtent__value66023) / this.viewportDimension);
+            fraction = (DartRuntimePrimitives.RequireValue(itemExtent__value66023) / this.viewportDimension);
         }
         else
         {
             DartRuntimePrimitives.Assert(() => (flexWeights is not null));
-            fraction__65945 = (flexWeights!.First() / flexWeights.sum());
+            fraction = (flexWeights!.First() / flexWeights.sum());
         }
-        return ((item * this.viewportDimension) * fraction__65945);
+        return ((item * this.viewportDimension) * fraction);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override bool applyViewportDimension(double viewportDimension)
     {
-        double? oldViewportDimensions__66405 = (this.hasViewportDimension ? this.viewportDimension : null);
-        if ((DartRuntimePrimitives.RequireValue(viewportDimension) == oldViewportDimensions__66405))
+        double? oldViewportDimensions = (this.hasViewportDimension ? this.viewportDimension : null);
+        if ((DartRuntimePrimitives.RequireValue(viewportDimension) == oldViewportDimensions))
         {
             return true;
         }
-        bool result__66577 = base.applyViewportDimension(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(viewportDimension)));
-        double? oldPixels__66653 = (this.hasPixels ? this.pixels : null);
-        double item__66703 = default!;
-        if ((oldPixels__66653 is null))
+        bool result = base.applyViewportDimension(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(viewportDimension)));
+        double? oldPixels = (this.hasPixels ? this.pixels : null);
+        double item = default!;
+        if ((oldPixels is null))
         {
-            item__66703 = updateLeadingItem(this.flexWeights, DartRuntimePrimitives.RequireValue(this.consumeMaxWeight));
+            item = updateLeadingItem(this.flexWeights, DartRuntimePrimitives.RequireValue(this.consumeMaxWeight));
         }
         else
         {
-            if ((oldViewportDimensions__66405 == 0.0))
+            if ((oldViewportDimensions == 0.0))
             {
-                item__66703 = DartRuntimePrimitives.RequireValue(this._cachedItem);
+                item = DartRuntimePrimitives.RequireValue(this._cachedItem);
             }
             else
             {
-                item__66703 = getItemFromPixels(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(oldPixels__66653)), (oldViewportDimensions__66405 ?? DartRuntimePrimitives.RequireValue(viewportDimension)));
+                item = getItemFromPixels(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(oldPixels)), (oldViewportDimensions ?? DartRuntimePrimitives.RequireValue(viewportDimension)));
             }
         }
-        double newPixels__67080 = getPixelsFromItem(item__66703, this.flexWeights, this.itemExtent);
-        _cachedItem = (((DartRuntimePrimitives.RequireValue(viewportDimension) == 0.0)) ? item__66703 : null);
-        if ((newPixels__67080 != oldPixels__66653))
+        double newPixels = getPixelsFromItem(item, this.flexWeights, this.itemExtent);
+        _cachedItem = (((DartRuntimePrimitives.RequireValue(viewportDimension) == 0.0)) ? item : null);
+        if ((newPixels != oldPixels))
         {
-            correctPixels(newPixels__67080);
+            correctPixels(newPixels);
             return false;
         }
-        return result__66577;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1269,24 +1269,24 @@ internal class _CarouselPosition__carousel : global::Doroti.Framework.Widgets.Sc
         {
             return 0.0;
         }
-        double fraction__67960 = default!;
+        double fraction = default!;
         if ((this.itemExtent is not null))
         {
             double itemExtent__value67978 = DartRuntimePrimitives.RequireValue(itemExtent);
-            fraction__67960 = (DartRuntimePrimitives.RequireValue(this.itemExtent) / this.viewportDimension);
+            fraction = (DartRuntimePrimitives.RequireValue(this.itemExtent) / this.viewportDimension);
         }
         else
         {
             if ((this.flexWeights is not null))
             {
-                fraction__67960 = (this.flexWeights!.First() / this.flexWeights!.sum());
+                fraction = (this.flexWeights!.First() / this.flexWeights!.sum());
             }
             else
             {
                 return 0.0;
             }
         }
-        return ((DartRuntimePrimitives.RequireValue(this.itemCount) * this.viewportDimension) * fraction__67960);
+        return ((DartRuntimePrimitives.RequireValue(this.itemCount) * this.viewportDimension) * fraction);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1294,11 +1294,11 @@ internal class _CarouselPosition__carousel : global::Doroti.Framework.Widgets.Sc
     {
         if ((this.infinite && this.hasPixels))
         {
-            double cycleLength__68540 = _getCycleLengthInPixels();
-            if (((cycleLength__68540 > 0L) && (this.pixels < cycleLength__68540)))
+            double cycleLength = _getCycleLengthInPixels();
+            if (((cycleLength > 0L) && (this.pixels < cycleLength)))
             {
-                long cyclesToAdd__68819 = ((((cycleLength__68540 - this.pixels)) / cycleLength__68540)).ceil();
-                correctPixels((this.pixels + (cyclesToAdd__68819 * cycleLength__68540)));
+                long cyclesToAdd = ((((cycleLength - this.pixels)) / cycleLength)).ceil();
+                correctPixels((this.pixels + (cyclesToAdd * cycleLength)));
                 return false;
             }
         }
@@ -1353,70 +1353,70 @@ public class CarouselController : global::Doroti.Framework.Widgets.ScrollControl
         {
             return;
         }
-        bool hasFlexWeights__72618 = ((this._carouselState!._flexWeights is { } __items72635 ? System.Linq.Enumerable.Any(__items72635) : (bool?)null) ?? false);
+        bool hasFlexWeights = ((this._carouselState!._flexWeights is { } __items72635 ? System.Linq.Enumerable.Any(__items72635) : (bool?)null) ?? false);
         if ((this._carouselState!.widget.itemBuilder is not null))
         {
-            long? itemCount__72757 = this._carouselState!.widget.itemCount;
-            index = ((itemCount__72757 is not null) ? index.clamp(0L, (DartRuntimePrimitives.RequireValue(itemCount__72757) - 1L)) : 0L);
+            long? itemCountLocal = this._carouselState!.widget.itemCount;
+            index = ((itemCountLocal is not null) ? index.clamp(0L, (DartRuntimePrimitives.RequireValue(itemCountLocal) - 1L)) : 0L);
         }
         else
         {
             index = index.clamp(0L, (checked((long)(this._carouselState!.widget.children.Count)) - 1L));
         }
-        await global::Doroti.Runtime.DartAsyncRuntime.wait<object?>(((Func<List<Future>>)(() => { var __collection72994 = new List<Future>(); foreach (var position__73045 in this.positions.cast<_CarouselPosition__carousel>()) { __collection72994.Add(position__73045.animateTo(_getTargetOffset(position__73045, index, hasFlexWeights__72618), duration: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(duration)), curve: curve)); } return __collection72994; }))());
+        await global::Doroti.Runtime.DartAsyncRuntime.wait<object?>(((Func<List<Future>>)(() => { var __collection72994 = new List<Future>(); foreach (var position in this.positions.cast<_CarouselPosition__carousel>()) { __collection72994.Add(position.animateTo(_getTargetOffset(position, index, hasFlexWeights), duration: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(duration)), curve: curve)); } return __collection72994; }))());
     }
 
     internal virtual double _getTargetOffset(_CarouselPosition__carousel position, long index, bool hasFlexWeights)
     {
         if (!hasFlexWeights)
         {
-            double targetInFirstCycle__73395 = (index * DartRuntimePrimitives.RequireValue(this._carouselState!._itemExtent));
+            double targetInFirstCycle = (index * DartRuntimePrimitives.RequireValue(this._carouselState!._itemExtent));
             if (!this._carouselState!.widget.infinite)
             {
-                return targetInFirstCycle__73395;
+                return targetInFirstCycle;
             }
-            return _adjustForInfiniteCycle(position, targetInFirstCycle__73395);
+            return _adjustForInfiniteCycle(position, targetInFirstCycle);
         }
-        _CarouselViewState__carousel carouselState__73647 = this._carouselState!;
-        List<long> weights__73700 = ((_CarouselViewState__carousel)carouselState__73647)._flexWeights!.ToList();
-        long totalWeight__73753 = weights__73700.reduce(((a, b) => (a + b)));
-        double dimension__73825 = position.viewportDimension;
-        long maxWeightIndex__73880 = ((long)((dynamic)weights__73700).IndexOf(weights__73700.max()));
-        long leadingIndex__73935 = (((_CarouselViewState__carousel)carouselState__73647)._consumeMaxWeight ? index : (index - maxWeightIndex__73880));
-        if ((carouselState__73647.widget.itemBuilder is not null))
+        _CarouselViewState__carousel carouselState = this._carouselState!;
+        List<long> weights = ((_CarouselViewState__carousel)carouselState)._flexWeights!.ToList();
+        long totalWeight = weights.reduce(((a, b) => (a + b)));
+        double dimension = position.viewportDimension;
+        long maxWeightIndex = ((long)((dynamic)weights).IndexOf(weights.max()));
+        long leadingIndex = (((_CarouselViewState__carousel)carouselState)._consumeMaxWeight ? index : (index - maxWeightIndex));
+        if ((carouselState.widget.itemBuilder is not null))
         {
-            long? itemCount__74085 = carouselState__73647.widget.itemCount;
-            leadingIndex__73935 = ((itemCount__74085 is not null) ? leadingIndex__73935.clamp(0L, (DartRuntimePrimitives.RequireValue(itemCount__74085) - 1L)) : 0L);
+            long? itemCountLocal = carouselState.widget.itemCount;
+            leadingIndex = ((itemCountLocal is not null) ? leadingIndex.clamp(0L, (DartRuntimePrimitives.RequireValue(itemCountLocal) - 1L)) : 0L);
         }
         else
         {
-            long itemCount__74241 = checked((long)(carouselState__73647.widget.children.Count));
-            leadingIndex__73935 = leadingIndex__73935.clamp(0L, (itemCount__74241 - 1L));
+            long itemCountAlternate = checked((long)(carouselState.widget.children.Count));
+            leadingIndex = leadingIndex.clamp(0L, (itemCountAlternate - 1L));
         }
-        double targetInFirstCycle__74374 = ((dimension__73825 * ((weights__73700.First() / totalWeight__73753))) * leadingIndex__73935);
-        if (!carouselState__73647.widget.infinite)
+        double targetInFirstCycleLocal = ((dimension * ((weights.First() / totalWeight))) * leadingIndex);
+        if (!carouselState.widget.infinite)
         {
-            return targetInFirstCycle__74374;
+            return targetInFirstCycleLocal;
         }
-        return _adjustForInfiniteCycle(position, targetInFirstCycle__74374);
+        return _adjustForInfiniteCycle(position, targetInFirstCycleLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _adjustForInfiniteCycle(_CarouselPosition__carousel position, double targetInFirstCycle)
     {
-        double cycleLength__75054 = position._getCycleLengthInPixels();
-        if ((cycleLength__75054 <= 0L))
+        double cycleLength = position._getCycleLengthInPixels();
+        if ((cycleLength <= 0L))
         {
             return targetInFirstCycle;
         }
-        double currentPixels__75188 = position.pixels;
-        double currentCycleStart__75295 = (((currentPixels__75188 / cycleLength__75054)).floorToDouble() * cycleLength__75054);
-        double sameCycleTarget__75460 = (currentCycleStart__75295 + targetInFirstCycle);
-        if ((sameCycleTarget__75460 >= currentPixels__75188))
+        double currentPixels = position.pixels;
+        double currentCycleStart = (((currentPixels / cycleLength)).floorToDouble() * cycleLength);
+        double sameCycleTarget = (currentCycleStart + targetInFirstCycle);
+        if ((sameCycleTarget >= currentPixels))
         {
-            return sameCycleTarget__75460;
+            return sameCycleTarget;
         }
-        return (sameCycleTarget__75460 + cycleLength__75054);
+        return (sameCycleTarget + cycleLength);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1444,12 +1444,12 @@ public class CarouselController : global::Doroti.Framework.Widgets.ScrollControl
     public override void attach(global::Doroti.Framework.Widgets.ScrollPosition position)
     {
         base.attach(position);
-        var carouselPosition__76641 = ((_CarouselPosition__carousel?)(object?)position)!;
-        carouselPosition__76641.flexWeights = this._carouselState!._flexWeights;
-        carouselPosition__76641.itemExtent = this._carouselState!._itemExtent;
-        carouselPosition__76641.consumeMaxWeight = this._carouselState!._consumeMaxWeight;
-        carouselPosition__76641.infinite = this._carouselState!.widget.infinite;
-        carouselPosition__76641.itemCount = _getItemCount();
+        var carouselPosition = ((_CarouselPosition__carousel?)(object?)position)!;
+        carouselPosition.flexWeights = this._carouselState!._flexWeights;
+        carouselPosition.itemExtent = this._carouselState!._itemExtent;
+        carouselPosition.consumeMaxWeight = this._carouselState!._consumeMaxWeight;
+        carouselPosition.infinite = this._carouselState!.widget.infinite;
+        carouselPosition.itemCount = _getItemCount();
     }
 
 }

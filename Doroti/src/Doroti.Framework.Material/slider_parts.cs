@@ -57,66 +57,66 @@ public class RectangularSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
         {
             return;
         }
-        var activeTrackColorTween__12885 = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledActiveTrackColor, end: sliderTheme.activeTrackColor);
-        var inactiveTrackColorTween__13030 = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledInactiveTrackColor, end: sliderTheme.inactiveTrackColor);
-        var activePaint__13181 = ((Func<Paint>)(() =>
+        var activeTrackColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledActiveTrackColor, end: sliderTheme.activeTrackColor);
+        var inactiveTrackColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledInactiveTrackColor, end: sliderTheme.inactiveTrackColor);
+        var activePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = activeTrackColorTween__12885.evaluate(enableAnimation)!;
+    __cascade.color = activeTrackColorTween.evaluate(enableAnimation)!;
     return __cascade;
 }))();
-        var inactivePaint__13272 = ((Func<Paint>)(() =>
+        var inactivePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = inactiveTrackColorTween__13030.evaluate(enableAnimation)!;
+    __cascade.color = inactiveTrackColorTween.evaluate(enableAnimation)!;
     return __cascade;
 }))();
-        var (leftTrackPaint__13374, rightTrackPaint__13396) = (textDirection switch { TextDirection.ltr => (((Paint, Paint))((activePaint__13181, inactivePaint__13272))), TextDirection.rtl => (((Paint, Paint))((inactivePaint__13272, activePaint__13181))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Ui.Rect trackRect__13577 = ((global::Doroti.Ui.Rect)(object?)getPreferredRect(parentBox: parentBox, offset: offset, sliderTheme: sliderTheme, isEnabled: isEnabled, isDiscrete: isDiscrete));
-        var leftTrackSegment__13765 = global::Doroti.Ui.Rect.fromLTRB(trackRect__13577.left, trackRect__13577.top, thumbCenter.dx, trackRect__13577.bottom);
-        if (!leftTrackSegment__13765.isEmpty)
+        var (leftTrackPaint, rightTrackPaint) = (textDirection switch { TextDirection.ltr => (((Paint, Paint))((activePaint, inactivePaint))), TextDirection.rtl => (((Paint, Paint))((inactivePaint, activePaint))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Ui.Rect trackRect = ((global::Doroti.Ui.Rect)(object?)getPreferredRect(parentBox: parentBox, offset: offset, sliderTheme: sliderTheme, isEnabled: isEnabled, isDiscrete: isDiscrete));
+        var leftTrackSegment = global::Doroti.Ui.Rect.fromLTRB(trackRect.left, trackRect.top, thumbCenter.dx, trackRect.bottom);
+        if (!leftTrackSegment.isEmpty)
         {
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(leftTrackSegment__13765, leftTrackPaint__13374);
+            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(leftTrackSegment, leftTrackPaint);
         }
-        var rightTrackSegment__14013 = global::Doroti.Ui.Rect.fromLTRB(thumbCenter.dx, trackRect__13577.top, trackRect__13577.right, trackRect__13577.bottom);
-        if (!rightTrackSegment__14013.isEmpty)
+        var rightTrackSegment = global::Doroti.Ui.Rect.fromLTRB(thumbCenter.dx, trackRect.top, trackRect.right, trackRect.bottom);
+        if (!rightTrackSegment.isEmpty)
         {
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(rightTrackSegment__14013, rightTrackPaint__13396);
+            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(rightTrackSegment, rightTrackPaint);
         }
-        bool showSecondaryTrack__14272 = ((secondaryOffset is not null) && (textDirection switch { TextDirection.rtl => (DartRuntimePrimitives.RequireValue(secondaryOffset).dx < thumbCenter.dx), TextDirection.ltr => (DartRuntimePrimitives.RequireValue(secondaryOffset).dx > thumbCenter.dx), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        if (showSecondaryTrack__14272)
+        bool showSecondaryTrack = ((secondaryOffset is not null) && (textDirection switch { TextDirection.rtl => (DartRuntimePrimitives.RequireValue(secondaryOffset).dx < thumbCenter.dx), TextDirection.ltr => (DartRuntimePrimitives.RequireValue(secondaryOffset).dx > thumbCenter.dx), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        if (showSecondaryTrack)
         {
-            var secondaryTrackColorTween__14551 = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledSecondaryActiveTrackColor, end: sliderTheme.secondaryActiveTrackColor);
-            var secondaryTrackPaint__14725 = ((Func<Paint>)(() =>
+            var secondaryTrackColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledSecondaryActiveTrackColor, end: sliderTheme.secondaryActiveTrackColor);
+            var secondaryTrackPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = secondaryTrackColorTween__14551.evaluate(enableAnimation)!;
+    __cascade.color = secondaryTrackColorTween.evaluate(enableAnimation)!;
     return __cascade;
 }))();
-            global::Doroti.Ui.Rect secondaryTrackSegment__14843 = ((global::Doroti.Ui.Rect)(object?)(textDirection switch { TextDirection.rtl => global::Doroti.Ui.Rect.fromLTRB(DartRuntimePrimitives.RequireValue(secondaryOffset).dx, trackRect__13577.top, thumbCenter.dx, trackRect__13577.bottom), TextDirection.ltr => global::Doroti.Ui.Rect.fromLTRB(thumbCenter.dx, trackRect__13577.top, DartRuntimePrimitives.RequireValue(secondaryOffset).dx, trackRect__13577.bottom), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-            if (!secondaryTrackSegment__14843.isEmpty)
+            global::Doroti.Ui.Rect secondaryTrackSegment = ((global::Doroti.Ui.Rect)(object?)(textDirection switch { TextDirection.rtl => global::Doroti.Ui.Rect.fromLTRB(DartRuntimePrimitives.RequireValue(secondaryOffset).dx, trackRect.top, thumbCenter.dx, trackRect.bottom), TextDirection.ltr => global::Doroti.Ui.Rect.fromLTRB(thumbCenter.dx, trackRect.top, DartRuntimePrimitives.RequireValue(secondaryOffset).dx, trackRect.bottom), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+            if (!secondaryTrackSegment.isEmpty)
             {
-                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(secondaryTrackSegment__14843, secondaryTrackPaint__14725);
+                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(secondaryTrackSegment, secondaryTrackPaint);
             }
         }
     }
 
     public override Rect getPreferredRect(global::Doroti.Framework.Rendering.RenderBox parentBox, Offset offset = default, SliderThemeData sliderTheme = default!, bool isEnabled = false, bool isDiscrete = false)
     {
-        double thumbWidth__8890 = sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width;
-        double overlayWidth__8991 = sliderTheme.overlayShape!.getPreferredSize(isEnabled, isDiscrete).width;
-        double trackHeight__9108 = DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight);
-        DartRuntimePrimitives.Assert(() => (overlayWidth__8991 >= 0L));
-        DartRuntimePrimitives.Assert(() => (trackHeight__9108 >= 0L));
+        double thumbWidth = sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width;
+        double overlayWidth = sliderTheme.overlayShape!.getPreferredSize(isEnabled, isDiscrete).width;
+        double trackHeightLocal = DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight);
+        DartRuntimePrimitives.Assert(() => (overlayWidth >= 0L));
+        DartRuntimePrimitives.Assert(() => (trackHeightLocal >= 0L));
         if (((object.Equals(sliderTheme.activeTrackColor, Colors.transparent)) && (object.Equals(sliderTheme.inactiveTrackColor, Colors.transparent))))
         {
-            trackHeight__9108 = 0;
+            trackHeightLocal = 0;
         }
-        double trackLeft__9504 = (offset.dx + (((sliderTheme.padding is null) ? Math.Max((overlayWidth__8991 / 2L), (thumbWidth__8890 / 2L)) : 0L)));
-        double trackTop__9633 = (offset.dy + (((((global::Doroti.Framework.Rendering.RenderBox)parentBox).size.height - trackHeight__9108)) / 2L));
-        double trackRight__9716 = ((trackLeft__9504 + ((global::Doroti.Framework.Rendering.RenderBox)parentBox).size.width) - (((sliderTheme.padding is null) ? Math.Max(thumbWidth__8890, overlayWidth__8991) : 0L)));
-        double trackBottom__9877 = (trackTop__9633 + trackHeight__9108);
-        return global::Doroti.Ui.Rect.fromLTRB(Math.Min(trackLeft__9504, trackRight__9716), trackTop__9633, Math.Max(trackLeft__9504, trackRight__9716), trackBottom__9877);
+        double trackLeft = (offset.dx + (((sliderTheme.padding is null) ? Math.Max((overlayWidth / 2L), (thumbWidth / 2L)) : 0L)));
+        double trackTop = (offset.dy + (((((global::Doroti.Framework.Rendering.RenderBox)parentBox).size.height - trackHeightLocal)) / 2L));
+        double trackRight = ((trackLeft + ((global::Doroti.Framework.Rendering.RenderBox)parentBox).size.width) - (((sliderTheme.padding is null) ? Math.Max(thumbWidth, overlayWidth) : 0L)));
+        double trackBottom = (trackTop + trackHeightLocal);
+        return global::Doroti.Ui.Rect.fromLTRB(Math.Min(trackLeft, trackRight), trackTop, Math.Max(trackLeft, trackRight), trackBottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -142,53 +142,53 @@ public class RoundedRectSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
         {
             return;
         }
-        var activeTrackColorTween__18030 = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledActiveTrackColor, end: sliderTheme.activeTrackColor);
-        var inactiveTrackColorTween__18175 = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledInactiveTrackColor, end: sliderTheme.inactiveTrackColor);
-        var activePaint__18326 = ((Func<Paint>)(() =>
+        var activeTrackColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledActiveTrackColor, end: sliderTheme.activeTrackColor);
+        var inactiveTrackColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledInactiveTrackColor, end: sliderTheme.inactiveTrackColor);
+        var activePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = activeTrackColorTween__18030.evaluate(enableAnimation)!;
+    __cascade.color = activeTrackColorTween.evaluate(enableAnimation)!;
     return __cascade;
 }))();
-        var inactivePaint__18417 = ((Func<Paint>)(() =>
+        var inactivePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = inactiveTrackColorTween__18175.evaluate(enableAnimation)!;
+    __cascade.color = inactiveTrackColorTween.evaluate(enableAnimation)!;
     return __cascade;
 }))();
-        var (leftTrackPaint__18519, rightTrackPaint__18541) = (textDirection switch { TextDirection.ltr => (((Paint, Paint))((activePaint__18326, inactivePaint__18417))), TextDirection.rtl => (((Paint, Paint))((inactivePaint__18417, activePaint__18326))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Ui.Rect trackRect__18722 = ((global::Doroti.Ui.Rect)(object?)getPreferredRect(parentBox: parentBox, offset: offset, sliderTheme: sliderTheme, isEnabled: isEnabled, isDiscrete: isDiscrete));
-        var trackRadius__18909 = global::Doroti.Ui.Radius.circular((trackRect__18722.height / 2L));
-        var activeTrackRadius__18972 = global::Doroti.Ui.Radius.circular((((trackRect__18722.height + additionalActiveTrackHeight)) / 2L));
-        var isLTR__19073 = (object.Equals(textDirection, TextDirection.ltr));
-        var isRTL__19127 = (object.Equals(textDirection, TextDirection.rtl));
-        bool drawInactiveTrack__19187 = (__thumbCenter.dx < ((trackRect__18722.right - ((DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L)))));
-        if (drawInactiveTrack__19187)
+        var (leftTrackPaint, rightTrackPaint) = (textDirection switch { TextDirection.ltr => (((Paint, Paint))((activePaint, inactivePaint))), TextDirection.rtl => (((Paint, Paint))((inactivePaint, activePaint))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Ui.Rect trackRect = ((global::Doroti.Ui.Rect)(object?)getPreferredRect(parentBox: parentBox, offset: offset, sliderTheme: sliderTheme, isEnabled: isEnabled, isDiscrete: isDiscrete));
+        var trackRadius = global::Doroti.Ui.Radius.circular((trackRect.height / 2L));
+        var activeTrackRadius = global::Doroti.Ui.Radius.circular((((trackRect.height + additionalActiveTrackHeight)) / 2L));
+        var isLTR = (object.Equals(textDirection, TextDirection.ltr));
+        var isRTL = (object.Equals(textDirection, TextDirection.rtl));
+        bool drawInactiveTrack = (__thumbCenter.dx < ((trackRect.right - ((DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L)))));
+        if (drawInactiveTrack)
         {
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(global::Doroti.Ui.RRect.fromLTRBR((__thumbCenter.dx - ((DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L))), (isRTL__19127 ? (trackRect__18722.top - ((additionalActiveTrackHeight / 2L))) : trackRect__18722.top), trackRect__18722.right, (isRTL__19127 ? (trackRect__18722.bottom + ((additionalActiveTrackHeight / 2L))) : trackRect__18722.bottom), (isLTR__19073 ? trackRadius__18909 : activeTrackRadius__18972)), rightTrackPaint__18541);
+            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(global::Doroti.Ui.RRect.fromLTRBR((__thumbCenter.dx - ((DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L))), (isRTL ? (trackRect.top - ((additionalActiveTrackHeight / 2L))) : trackRect.top), trackRect.right, (isRTL ? (trackRect.bottom + ((additionalActiveTrackHeight / 2L))) : trackRect.bottom), (isLTR ? trackRadius : activeTrackRadius)), rightTrackPaint);
         }
-        bool drawActiveTrack__19791 = (__thumbCenter.dx > ((trackRect__18722.left + ((DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L)))));
-        if (drawActiveTrack__19791)
+        bool drawActiveTrack = (__thumbCenter.dx > ((trackRect.left + ((DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L)))));
+        if (drawActiveTrack)
         {
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(global::Doroti.Ui.RRect.fromLTRBR(trackRect__18722.left, (isLTR__19073 ? (trackRect__18722.top - ((additionalActiveTrackHeight / 2L))) : trackRect__18722.top), (__thumbCenter.dx + ((DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L))), (isLTR__19073 ? (trackRect__18722.bottom + ((additionalActiveTrackHeight / 2L))) : trackRect__18722.bottom), (isLTR__19073 ? activeTrackRadius__18972 : trackRadius__18909)), leftTrackPaint__18519);
+            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(global::Doroti.Ui.RRect.fromLTRBR(trackRect.left, (isLTR ? (trackRect.top - ((additionalActiveTrackHeight / 2L))) : trackRect.top), (__thumbCenter.dx + ((DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L))), (isLTR ? (trackRect.bottom + ((additionalActiveTrackHeight / 2L))) : trackRect.bottom), (isLTR ? activeTrackRadius : trackRadius)), leftTrackPaint);
         }
-        bool showSecondaryTrack__20379 = (((secondaryOffset is not null)) && ((isLTR__19073 ? ((DartRuntimePrimitives.RequireValue(secondaryOffset).dx > __thumbCenter.dx)) : ((DartRuntimePrimitives.RequireValue(secondaryOffset).dx < __thumbCenter.dx)))));
-        if (showSecondaryTrack__20379)
+        bool showSecondaryTrack = (((secondaryOffset is not null)) && ((isLTR ? ((DartRuntimePrimitives.RequireValue(secondaryOffset).dx > __thumbCenter.dx)) : ((DartRuntimePrimitives.RequireValue(secondaryOffset).dx < __thumbCenter.dx)))));
+        if (showSecondaryTrack)
         {
-            var secondaryTrackColorTween__20577 = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledSecondaryActiveTrackColor, end: sliderTheme.secondaryActiveTrackColor);
-            var secondaryTrackPaint__20751 = ((Func<Paint>)(() =>
+            var secondaryTrackColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledSecondaryActiveTrackColor, end: sliderTheme.secondaryActiveTrackColor);
+            var secondaryTrackPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = secondaryTrackColorTween__20577.evaluate(enableAnimation)!;
+    __cascade.color = secondaryTrackColorTween.evaluate(enableAnimation)!;
     return __cascade;
 }))();
-            if (isLTR__19073)
+            if (isLTR)
             {
-                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(global::Doroti.Ui.RRect.fromLTRBAndCorners(__thumbCenter.dx, trackRect__18722.top, DartRuntimePrimitives.RequireValue(secondaryOffset).dx, trackRect__18722.bottom, topRight: trackRadius__18909, bottomRight: trackRadius__18909), secondaryTrackPaint__20751);
+                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(global::Doroti.Ui.RRect.fromLTRBAndCorners(__thumbCenter.dx, trackRect.top, DartRuntimePrimitives.RequireValue(secondaryOffset).dx, trackRect.bottom, topRight: trackRadius, bottomRight: trackRadius), secondaryTrackPaint);
             }
             else
             {
-                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(global::Doroti.Ui.RRect.fromLTRBAndCorners(DartRuntimePrimitives.RequireValue(secondaryOffset).dx, trackRect__18722.top, __thumbCenter.dx, trackRect__18722.bottom, topLeft: trackRadius__18909, bottomLeft: trackRadius__18909), secondaryTrackPaint__20751);
+                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(global::Doroti.Ui.RRect.fromLTRBAndCorners(DartRuntimePrimitives.RequireValue(secondaryOffset).dx, trackRect.top, __thumbCenter.dx, trackRect.bottom, topLeft: trackRadius, bottomLeft: trackRadius), secondaryTrackPaint);
             }
         }
     }
@@ -196,20 +196,20 @@ public class RoundedRectSliderTrackShape : SliderTrackShape, BaseSliderTrackShap
     public override bool isRounded => true;
     public override Rect getPreferredRect(global::Doroti.Framework.Rendering.RenderBox parentBox, Offset offset = default, SliderThemeData sliderTheme = default!, bool isEnabled = false, bool isDiscrete = false)
     {
-        double thumbWidth__8890 = sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width;
-        double overlayWidth__8991 = sliderTheme.overlayShape!.getPreferredSize(isEnabled, isDiscrete).width;
-        double trackHeight__9108 = DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight);
-        DartRuntimePrimitives.Assert(() => (overlayWidth__8991 >= 0L));
-        DartRuntimePrimitives.Assert(() => (trackHeight__9108 >= 0L));
+        double thumbWidth = sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width;
+        double overlayWidth = sliderTheme.overlayShape!.getPreferredSize(isEnabled, isDiscrete).width;
+        double trackHeightLocal = DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight);
+        DartRuntimePrimitives.Assert(() => (overlayWidth >= 0L));
+        DartRuntimePrimitives.Assert(() => (trackHeightLocal >= 0L));
         if (((object.Equals(sliderTheme.activeTrackColor, Colors.transparent)) && (object.Equals(sliderTheme.inactiveTrackColor, Colors.transparent))))
         {
-            trackHeight__9108 = 0;
+            trackHeightLocal = 0;
         }
-        double trackLeft__9504 = (offset.dx + (((sliderTheme.padding is null) ? Math.Max((overlayWidth__8991 / 2L), (thumbWidth__8890 / 2L)) : 0L)));
-        double trackTop__9633 = (offset.dy + (((((global::Doroti.Framework.Rendering.RenderBox)parentBox).size.height - trackHeight__9108)) / 2L));
-        double trackRight__9716 = ((trackLeft__9504 + ((global::Doroti.Framework.Rendering.RenderBox)parentBox).size.width) - (((sliderTheme.padding is null) ? Math.Max(thumbWidth__8890, overlayWidth__8991) : 0L)));
-        double trackBottom__9877 = (trackTop__9633 + trackHeight__9108);
-        return global::Doroti.Ui.Rect.fromLTRB(Math.Min(trackLeft__9504, trackRight__9716), trackTop__9633, Math.Max(trackLeft__9504, trackRight__9716), trackBottom__9877);
+        double trackLeft = (offset.dx + (((sliderTheme.padding is null) ? Math.Max((overlayWidth / 2L), (thumbWidth / 2L)) : 0L)));
+        double trackTop = (offset.dy + (((((global::Doroti.Framework.Rendering.RenderBox)parentBox).size.height - trackHeightLocal)) / 2L));
+        double trackRight = ((trackLeft + ((global::Doroti.Framework.Rendering.RenderBox)parentBox).size.width) - (((sliderTheme.padding is null) ? Math.Max(thumbWidth, overlayWidth) : 0L)));
+        double trackBottom = (trackTop + trackHeightLocal);
+        return global::Doroti.Ui.Rect.fromLTRB(Math.Min(trackLeft, trackRight), trackTop, Math.Max(trackLeft, trackRight), trackBottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -237,18 +237,18 @@ public class RoundSliderTickMarkShape : SliderTickMarkShape
         DartRuntimePrimitives.Assert(() => (sliderTheme.disabledInactiveTickMarkColor is not null));
         DartRuntimePrimitives.Assert(() => (sliderTheme.activeTickMarkColor is not null));
         DartRuntimePrimitives.Assert(() => (sliderTheme.inactiveTickMarkColor is not null));
-        double xOffset__23981 = (center.dx - thumbCenter.dx);
-        var (begin__24037, end__24051) = (textDirection switch { TextDirection.ltr when ((xOffset__23981 > 0L)) => (((Color?, Color?))((sliderTheme.disabledInactiveTickMarkColor, sliderTheme.inactiveTickMarkColor))), TextDirection.rtl when ((xOffset__23981 < 0L)) => (((Color?, Color?))((sliderTheme.disabledInactiveTickMarkColor, sliderTheme.inactiveTickMarkColor))), TextDirection.ltr => (((Color?, Color?))((sliderTheme.disabledActiveTickMarkColor, sliderTheme.activeTickMarkColor))), TextDirection.rtl => (((Color?, Color?))((sliderTheme.disabledActiveTickMarkColor, sliderTheme.activeTickMarkColor))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        var paint__24547 = ((Func<Paint>)(() =>
+        double xOffset = (center.dx - thumbCenter.dx);
+        var (beginLocal, endLocal) = (textDirection switch { TextDirection.ltr when ((xOffset > 0L)) => (((Color?, Color?))((sliderTheme.disabledInactiveTickMarkColor, sliderTheme.inactiveTickMarkColor))), TextDirection.rtl when ((xOffset < 0L)) => (((Color?, Color?))((sliderTheme.disabledInactiveTickMarkColor, sliderTheme.inactiveTickMarkColor))), TextDirection.ltr => (((Color?, Color?))((sliderTheme.disabledActiveTickMarkColor, sliderTheme.activeTickMarkColor))), TextDirection.rtl => (((Color?, Color?))((sliderTheme.disabledActiveTickMarkColor, sliderTheme.activeTickMarkColor))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = new global::Doroti.Framework.Animation.ColorTween(begin: begin__24037, end: end__24051).evaluate(enableAnimation)!;
+    __cascade.color = new global::Doroti.Framework.Animation.ColorTween(begin: beginLocal, end: endLocal).evaluate(enableAnimation)!;
     return __cascade;
 }))();
-        double tickMarkRadius__24731 = (getPreferredSize(isEnabled: isEnabled, sliderTheme: sliderTheme).width / 2L);
-        if ((DartRuntimePrimitives.RequireValue(tickMarkRadius__24731) > 0L))
+        double tickMarkRadius = (getPreferredSize(isEnabled: isEnabled, sliderTheme: sliderTheme).width / 2L);
+        if ((DartRuntimePrimitives.RequireValue(tickMarkRadius) > 0L))
         {
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawCircle(center, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(tickMarkRadius__24731)), paint__24547);
+            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawCircle(center, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(tickMarkRadius)), paintLocal);
         }
     }
 
@@ -296,37 +296,37 @@ public class RoundSliderThumbShape : SliderComponentShape
     {
         DartRuntimePrimitives.Assert(() => (sliderTheme.disabledThumbColor is not null));
         DartRuntimePrimitives.Assert(() => (sliderTheme.thumbColor is not null));
-        global::Doroti.Ui.Canvas canvas__28420 = ((global::Doroti.Ui.Canvas)(object?)((global::Doroti.Framework.Rendering.PaintingContext)context).canvas);
-        var radiusTween__28455 = new global::Doroti.Framework.Animation.Tween<double>(begin: this._disabledThumbRadius, end: this.enabledThumbRadius);
-        var colorTween__28548 = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledThumbColor, end: sliderTheme.thumbColor);
-        global::Doroti.Ui.Color color__28677 = ((global::Doroti.Ui.Color)(object?)colorTween__28548.evaluate(enableAnimation)!);
-        double radius__28741 = radiusTween__28455.evaluate(enableAnimation);
-        var elevationTween__28800 = new global::Doroti.Framework.Animation.Tween<double>(begin: this.elevation, end: this.pressedElevation);
-        double evaluatedElevation__28891 = elevationTween__28800.evaluate(activationAnimation);
-        var path__28968 = ((Func<Path>)(() =>
+        global::Doroti.Ui.Canvas canvasLocal = ((global::Doroti.Ui.Canvas)(object?)((global::Doroti.Framework.Rendering.PaintingContext)context).canvas);
+        var radiusTween = new global::Doroti.Framework.Animation.Tween<double>(begin: this._disabledThumbRadius, end: this.enabledThumbRadius);
+        var colorTween = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledThumbColor, end: sliderTheme.thumbColor);
+        global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)(object?)colorTween.evaluate(enableAnimation)!);
+        double radius = radiusTween.evaluate(enableAnimation);
+        var elevationTween = new global::Doroti.Framework.Animation.Tween<double>(begin: this.elevation, end: this.pressedElevation);
+        double evaluatedElevation = elevationTween.evaluate(activationAnimation);
+        var path = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addArc(global::Doroti.Ui.Rect.fromCenter(center: center, width: (2L * radius__28741), height: (2L * radius__28741)), 0, (Dart_mathLibrary.pi * 2L));
+    __cascade.addArc(global::Doroti.Ui.Rect.fromCenter(center: center, width: (2L * radius), height: (2L * radius)), 0, (Dart_mathLibrary.pi * 2L));
     return __cascade;
 }))();
-        var paintShadows__29128 = true;
+        var paintShadows = true;
         DartRuntimePrimitives.Assert(() =>
             {
                 if (global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows)
                 {
-                    Slider_partsLibrary._debugDrawShadow(canvas__28420, path__28968, evaluatedElevation__28891);
-                    paintShadows__29128 = false;
+                    Slider_partsLibrary._debugDrawShadow(canvasLocal, path, evaluatedElevation);
+                    paintShadows = false;
                 }
                 return true;
             });
-        if (paintShadows__29128)
+        if (paintShadows)
         {
-            canvas__28420.drawShadow(path__28968, Colors.black, evaluatedElevation__28891, true);
+            canvasLocal.drawShadow(path, Colors.black, evaluatedElevation, true);
         }
-        canvas__28420.drawCircle(center, radius__28741, ((Func<Paint>)(() =>
+        canvasLocal.drawCircle(center, radius, ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = color__28677;
+    __cascade.color = colorLocal;
     return __cascade;
 }))());
     }
@@ -351,9 +351,9 @@ public class DropSliderValueIndicatorShape : SliderComponentShape
 
     public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter labelPainter, global::Doroti.Framework.Rendering.RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
     {
-        global::Doroti.Ui.Canvas canvas__30881 = ((global::Doroti.Ui.Canvas)(object?)((global::Doroti.Framework.Rendering.PaintingContext)context).canvas);
-        double scale__30923 = ((global::Doroti.Framework.Animation.Animation<double>)activationAnimation).value;
-        _pathPainter.paint(parentBox: parentBox, canvas: canvas__30881, center: center, scale: scale__30923, labelPainter: labelPainter, textScaleFactor: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)), sizeWithOverflow: sizeWithOverflow, backgroundPaintColor: sliderTheme.valueIndicatorColor!, strokePaintColor: sliderTheme.valueIndicatorStrokeColor);
+        global::Doroti.Ui.Canvas canvasLocal = ((global::Doroti.Ui.Canvas)(object?)((global::Doroti.Framework.Rendering.PaintingContext)context).canvas);
+        double scaleLocal = ((global::Doroti.Framework.Animation.Animation<double>)activationAnimation).value;
+        _pathPainter.paint(parentBox: parentBox, canvas: canvasLocal, center: center, scale: scaleLocal, labelPainter: labelPainter, textScaleFactor: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)), sizeWithOverflow: sizeWithOverflow, backgroundPaintColor: sliderTheme.valueIndicatorColor!, strokePaintColor: sliderTheme.valueIndicatorStrokeColor);
     }
 
 }
@@ -376,32 +376,32 @@ internal class _DropSliderValueIndicatorPathPainter__slider_parts
 
     public virtual global::Doroti.Ui.Size getPreferredSize(global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor)
     {
-        double width__31944 = (Math.Max(_minLabelWidth, ((global::Doroti.Framework.Painting.TextPainter)labelPainter).width) + ((_labelPadding * 2L) * textScaleFactor));
-        return new global::Doroti.Ui.Size(width__31944, (_preferredHeight * textScaleFactor));
+        double widthLocal = (Math.Max(_minLabelWidth, ((global::Doroti.Framework.Painting.TextPainter)labelPainter).width) + ((_labelPadding * 2L) * textScaleFactor));
+        return new global::Doroti.Ui.Size(widthLocal, (_preferredHeight * textScaleFactor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual double getHorizontalShift(global::Doroti.Framework.Rendering.RenderBox parentBox, Offset center, global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor, Size sizeWithOverflow, double scale)
     {
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
-        var edgePadding__32397 = 8.0;
-        double rectangleWidth__32433 = _upperRectangleWidth(labelPainter, scale);
-        global::Doroti.Ui.Offset globalCenter__32670 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)parentBox).localToGlobal(center)));
-        double overflowLeft__33038 = Math.Max(0, (((rectangleWidth__32433 / 2L) - globalCenter__32670.dx) + edgePadding__32397));
-        double overflowRight__33135 = Math.Max(0, ((rectangleWidth__32433 / 2L) - (((sizeWithOverflow.width - globalCenter__32670.dx) - edgePadding__32397))));
-        if ((rectangleWidth__32433 < sizeWithOverflow.width))
+        var edgePadding = 8.0;
+        double rectangleWidth = _upperRectangleWidth(labelPainter, scale);
+        global::Doroti.Ui.Offset globalCenter = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)parentBox).localToGlobal(center)));
+        double overflowLeft = Math.Max(0, (((rectangleWidth / 2L) - globalCenter.dx) + edgePadding));
+        double overflowRight = Math.Max(0, ((rectangleWidth / 2L) - (((sizeWithOverflow.width - globalCenter.dx) - edgePadding))));
+        if ((rectangleWidth < sizeWithOverflow.width))
         {
-            return (overflowLeft__33038 - overflowRight__33135);
+            return (overflowLeft - overflowRight);
         }
         else
         {
-            if (((overflowLeft__33038 - overflowRight__33135) > 0L))
+            if (((overflowLeft - overflowRight) > 0L))
             {
-                return (overflowLeft__33038 - ((edgePadding__32397 * textScaleFactor)));
+                return (overflowLeft - ((edgePadding * textScaleFactor)));
             }
             else
             {
-                return (-overflowRight__33135 + ((edgePadding__32397 * textScaleFactor)));
+                return (-overflowRight + ((edgePadding * textScaleFactor)));
             }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -409,15 +409,15 @@ internal class _DropSliderValueIndicatorPathPainter__slider_parts
 
     internal virtual double _upperRectangleWidth(global::Doroti.Framework.Painting.TextPainter labelPainter, double scale)
     {
-        double unscaledWidth__33645 = (Math.Max(_minLabelWidth, ((global::Doroti.Framework.Painting.TextPainter)labelPainter).width) + _labelPadding);
-        return (unscaledWidth__33645 * scale);
+        double unscaledWidth = (Math.Max(_minLabelWidth, ((global::Doroti.Framework.Painting.TextPainter)labelPainter).width) + _labelPadding);
+        return (unscaledWidth * scale);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Painting.BorderRadius _adjustBorderRadius(Rect rect)
     {
-        var rectness__33820 = 0.0;
-        return BorderRadius.lerp(global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(_upperRectRadius)), global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((rect.shortestSide / 2.0))), (1.0 - rectness__33820))!;
+        var rectness = 0.0;
+        return BorderRadius.lerp(global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(_upperRectRadius)), global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((rect.shortestSide / 2.0))), (1.0 - rectness))!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -428,10 +428,10 @@ internal class _DropSliderValueIndicatorPathPainter__slider_parts
             return;
         }
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
-        double rectangleWidth__34544 = _upperRectangleWidth(labelPainter, scale);
-        double horizontalShift__34621 = getHorizontalShift(parentBox: parentBox, center: center, labelPainter: labelPainter, textScaleFactor: textScaleFactor, sizeWithOverflow: sizeWithOverflow, scale: scale);
-        var upperRect__34862 = global::Doroti.Ui.Rect.fromLTWH(((-rectangleWidth__34544 / 2L) + horizontalShift__34621), (-_rectYOffset - _minRectHeight), rectangleWidth__34544, _minRectHeight);
-        var fillPaint__35034 = ((Func<Paint>)(() =>
+        double rectangleWidth = _upperRectangleWidth(labelPainter, scale);
+        double horizontalShift = getHorizontalShift(parentBox: parentBox, center: center, labelPainter: labelPainter, textScaleFactor: textScaleFactor, sizeWithOverflow: sizeWithOverflow, scale: scale);
+        var upperRect = global::Doroti.Ui.Rect.fromLTWH(((-rectangleWidth / 2L) + horizontalShift), (-_rectYOffset - _minRectHeight), rectangleWidth, _minRectHeight);
+        var fillPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = backgroundPaintColor;
@@ -440,9 +440,9 @@ internal class _DropSliderValueIndicatorPathPainter__slider_parts
         canvas.save();
         canvas.translate(center.dx, (center.dy - _bottomTipYOffset));
         canvas.scale(scale, scale);
-        global::Doroti.Framework.Painting.BorderRadius adjustedBorderRadius__35225 = ((global::Doroti.Framework.Painting.BorderRadius)(object?)_adjustBorderRadius(upperRect__34862));
-        global::Doroti.Ui.RRect borderRect__35296 = ((global::Doroti.Ui.RRect)(object?)adjustedBorderRadius__35225.resolve(((global::Doroti.Framework.Painting.TextPainter)labelPainter).textDirection).toRRect(upperRect__34862));
-        var trianglePath__35414 = ((Func<Path>)(() =>
+        global::Doroti.Framework.Painting.BorderRadius adjustedBorderRadius = ((global::Doroti.Framework.Painting.BorderRadius)(object?)_adjustBorderRadius(upperRect));
+        global::Doroti.Ui.RRect borderRect = ((global::Doroti.Ui.RRect)(object?)adjustedBorderRadius.resolve(((global::Doroti.Framework.Painting.TextPainter)labelPainter).textDirection).toRRect(upperRect));
+        var trianglePath = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
     __cascade.lineTo(-_triangleHeight, -_triangleHeight);
@@ -450,10 +450,10 @@ internal class _DropSliderValueIndicatorPathPainter__slider_parts
     __cascade.close();
     return __cascade;
 }))();
-        trianglePath__35414.addRRect(borderRect__35296);
+        trianglePath.addRRect(borderRect);
         if ((strokePaintColor is not null))
         {
-            var strokePaint__35642 = ((Func<Paint>)(() =>
+            var strokePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = strokePaintColor;
@@ -461,15 +461,15 @@ internal class _DropSliderValueIndicatorPathPainter__slider_parts
     __cascade.style = PaintingStyle.stroke;
     return __cascade;
 }))();
-            canvas.drawPath(trianglePath__35414, strokePaint__35642);
+            canvas.drawPath(trianglePath, strokePaint);
         }
-        canvas.drawPath(trianglePath__35414, fillPaint__35034);
-        double bottomTipToUpperRectTranslateY__35950 = ((-_preferredHalfHeight / 2L) - upperRect__34862.height);
-        canvas.translate(0, bottomTipToUpperRectTranslateY__35950);
-        var boxCenter__36096 = new global::Doroti.Ui.Offset(horizontalShift__34621, (upperRect__34862.height / 1.75));
-        var halfLabelPainterOffset__36168 = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Painting.TextPainter)labelPainter).width / 2L), (((global::Doroti.Framework.Painting.TextPainter)labelPainter).height / 2L));
-        global::Doroti.Ui.Offset labelOffset__36267 = ((global::Doroti.Ui.Offset)(object?)(boxCenter__36096 - halfLabelPainterOffset__36168));
-        labelPainter.paint(canvas, labelOffset__36267);
+        canvas.drawPath(trianglePath, fillPaint);
+        double bottomTipToUpperRectTranslateY = ((-_preferredHalfHeight / 2L) - upperRect.height);
+        canvas.translate(0, bottomTipToUpperRectTranslateY);
+        var boxCenter = new global::Doroti.Ui.Offset(horizontalShift, (upperRect.height / 1.75));
+        var halfLabelPainterOffset = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Painting.TextPainter)labelPainter).width / 2L), (((global::Doroti.Framework.Painting.TextPainter)labelPainter).height / 2L));
+        global::Doroti.Ui.Offset labelOffset = ((global::Doroti.Ui.Offset)(object?)(boxCenter - halfLabelPainterOffset));
+        labelPainter.paint(canvas, labelOffset);
         canvas.restore();
     }
 
@@ -494,15 +494,15 @@ public class HandleThumbShape : SliderComponentShape
         DartRuntimePrimitives.Assert(() => (sliderTheme.disabledThumbColor is not null));
         DartRuntimePrimitives.Assert(() => (sliderTheme.thumbColor is not null));
         DartRuntimePrimitives.Assert(() => (sliderTheme.thumbSize is not null));
-        var colorTween__38055 = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledThumbColor, end: sliderTheme.thumbColor);
-        global::Doroti.Ui.Color color__38183 = ((global::Doroti.Ui.Color)(object?)colorTween__38055.evaluate(enableAnimation)!);
-        global::Doroti.Ui.Canvas canvas__38248 = ((global::Doroti.Ui.Canvas)(object?)((global::Doroti.Framework.Rendering.PaintingContext)context).canvas);
-        global::Doroti.Ui.Size thumbSize__38288 = ((global::Doroti.Ui.Size)(object?)DartRuntimePrimitives.RequireValue(sliderTheme.thumbSize!.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())));
-        var rrect__38414 = global::Doroti.Ui.RRect.fromRectAndRadius(global::Doroti.Ui.Rect.fromCenter(center: center, width: thumbSize__38288.width, height: thumbSize__38288.height), global::Doroti.Ui.Radius.circular((thumbSize__38288.shortestSide / 2L)));
-        canvas__38248.drawRRect(rrect__38414, ((Func<Paint>)(() =>
+        var colorTween = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledThumbColor, end: sliderTheme.thumbColor);
+        global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)(object?)colorTween.evaluate(enableAnimation)!);
+        global::Doroti.Ui.Canvas canvasLocal = ((global::Doroti.Ui.Canvas)(object?)((global::Doroti.Framework.Rendering.PaintingContext)context).canvas);
+        global::Doroti.Ui.Size thumbSizeLocal = ((global::Doroti.Ui.Size)(object?)DartRuntimePrimitives.RequireValue(sliderTheme.thumbSize!.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())));
+        var rrect = global::Doroti.Ui.RRect.fromRectAndRadius(global::Doroti.Ui.Rect.fromCenter(center: center, width: thumbSizeLocal.width, height: thumbSizeLocal.height), global::Doroti.Ui.Radius.circular((thumbSizeLocal.shortestSide / 2L)));
+        canvasLocal.drawRRect(rrect, ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = color__38183;
+    __cascade.color = colorLocal;
     return __cascade;
 }))());
     }
@@ -530,110 +530,110 @@ public class GappedSliderTrackShape : SliderTrackShape, BaseSliderTrackShape
         {
             return;
         }
-        var activeTrackColorTween__41193 = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledActiveTrackColor, end: sliderTheme.activeTrackColor);
-        var inactiveTrackColorTween__41338 = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledInactiveTrackColor, end: sliderTheme.inactiveTrackColor);
-        var activePaint__41489 = ((Func<Paint>)(() =>
+        var activeTrackColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledActiveTrackColor, end: sliderTheme.activeTrackColor);
+        var inactiveTrackColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledInactiveTrackColor, end: sliderTheme.inactiveTrackColor);
+        var activePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = activeTrackColorTween__41193.evaluate(enableAnimation)!;
+    __cascade.color = activeTrackColorTween.evaluate(enableAnimation)!;
     return __cascade;
 }))();
-        var inactivePaint__41580 = ((Func<Paint>)(() =>
+        var inactivePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = inactiveTrackColorTween__41338.evaluate(enableAnimation)!;
+    __cascade.color = inactiveTrackColorTween.evaluate(enableAnimation)!;
     return __cascade;
 }))();
-        global::Doroti.Ui.Paint leftTrackPaint__41681 = default!;
-        global::Doroti.Ui.Paint rightTrackPaint__41713 = default!;
+        global::Doroti.Ui.Paint leftTrackPaint = default!;
+        global::Doroti.Ui.Paint rightTrackPaint = default!;
         switch (textDirection)
         {
             case TextDirection.ltr:
                 {
-                    leftTrackPaint__41681 = activePaint__41489;
-                    rightTrackPaint__41713 = inactivePaint__41580;
+                    leftTrackPaint = activePaint;
+                    rightTrackPaint = inactivePaint;
                     break;
                 }
             case TextDirection.rtl:
                 {
-                    leftTrackPaint__41681 = inactivePaint__41580;
-                    rightTrackPaint__41713 = activePaint__41489;
+                    leftTrackPaint = inactivePaint;
+                    rightTrackPaint = activePaint;
                     break;
                 }
         }
-        double trackGap__42052 = DartRuntimePrimitives.RequireValue(sliderTheme.trackGap);
-        global::Doroti.Ui.Rect trackRect__42102 = ((global::Doroti.Ui.Rect)(object?)getPreferredRect(parentBox: parentBox, offset: offset, sliderTheme: sliderTheme, isEnabled: isEnabled, isDiscrete: isDiscrete));
-        var trackCornerRadius__42290 = global::Doroti.Ui.Radius.circular((trackRect__42102.shortestSide / 2L));
-        var trackInsideCornerRadius__42365 = global::Doroti.Ui.Radius.circular(2.0);
-        var trackRRect__42424 = global::Doroti.Ui.RRect.fromRectAndCorners(trackRect__42102, topLeft: trackCornerRadius__42290, bottomLeft: trackCornerRadius__42290, topRight: trackCornerRadius__42290, bottomRight: trackCornerRadius__42290);
-        var leftRRect__42642 = global::Doroti.Ui.RRect.fromLTRBAndCorners(trackRect__42102.left, trackRect__42102.top, Math.Max(trackRect__42102.left, (__thumbCenter.dx - trackGap__42052)), trackRect__42102.bottom, topLeft: trackCornerRadius__42290, bottomLeft: trackCornerRadius__42290, topRight: trackInsideCornerRadius__42365, bottomRight: trackInsideCornerRadius__42365);
-        var rightRRect__42980 = global::Doroti.Ui.RRect.fromLTRBAndCorners((__thumbCenter.dx + trackGap__42052), trackRect__42102.top, trackRect__42102.right, trackRect__42102.bottom, topRight: trackCornerRadius__42290, bottomRight: trackCornerRadius__42290, topLeft: trackInsideCornerRadius__42365, bottomLeft: trackInsideCornerRadius__42365);
+        double trackGapLocal = DartRuntimePrimitives.RequireValue(sliderTheme.trackGap);
+        global::Doroti.Ui.Rect trackRect = ((global::Doroti.Ui.Rect)(object?)getPreferredRect(parentBox: parentBox, offset: offset, sliderTheme: sliderTheme, isEnabled: isEnabled, isDiscrete: isDiscrete));
+        var trackCornerRadius = global::Doroti.Ui.Radius.circular((trackRect.shortestSide / 2L));
+        var trackInsideCornerRadius = global::Doroti.Ui.Radius.circular(2.0);
+        var trackRRect = global::Doroti.Ui.RRect.fromRectAndCorners(trackRect, topLeft: trackCornerRadius, bottomLeft: trackCornerRadius, topRight: trackCornerRadius, bottomRight: trackCornerRadius);
+        var leftRRect = global::Doroti.Ui.RRect.fromLTRBAndCorners(trackRect.left, trackRect.top, Math.Max(trackRect.left, (__thumbCenter.dx - trackGapLocal)), trackRect.bottom, topLeft: trackCornerRadius, bottomLeft: trackCornerRadius, topRight: trackInsideCornerRadius, bottomRight: trackInsideCornerRadius);
+        var rightRRect = global::Doroti.Ui.RRect.fromLTRBAndCorners((__thumbCenter.dx + trackGapLocal), trackRect.top, trackRect.right, trackRect.bottom, topRight: trackCornerRadius, bottomRight: trackCornerRadius, topLeft: trackInsideCornerRadius, bottomLeft: trackInsideCornerRadius);
         DartRuntimePrimitives.Ignore(((Func<Canvas>)(() =>
 {
     var __cascade = ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas;
     __cascade.save();
-    __cascade.clipRRect(trackRRect__42424);
+    __cascade.clipRRect(trackRRect);
     return __cascade;
 }))());
-        bool drawLeftTrack__43364 = (__thumbCenter.dx > ((leftRRect__42642.left + ((DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L)))));
-        bool drawRightTrack__43463 = (__thumbCenter.dx < ((rightRRect__42980.right - ((DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L)))));
-        if (drawLeftTrack__43364)
+        bool drawLeftTrack = (__thumbCenter.dx > ((leftRRect.left + ((DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L)))));
+        bool drawRightTrack = (__thumbCenter.dx < ((rightRRect.right - ((DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L)))));
+        if (drawLeftTrack)
         {
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(leftRRect__42642, leftTrackPaint__41681);
+            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(leftRRect, leftTrackPaint);
         }
-        if (drawRightTrack__43463)
+        if (drawRightTrack)
         {
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(rightRRect__42980, rightTrackPaint__41713);
+            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(rightRRect, rightTrackPaint);
         }
-        var isLTR__43752 = (object.Equals(textDirection, TextDirection.ltr));
-        bool showSecondaryTrack__43811 = (((secondaryOffset is not null)) && (((object)isLTR__43752) switch { true => (DartRuntimePrimitives.RequireValue(secondaryOffset).dx > (__thumbCenter.dx + trackGap__42052)), false => (DartRuntimePrimitives.RequireValue(secondaryOffset).dx < (__thumbCenter.dx - trackGap__42052)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        if (showSecondaryTrack__43811)
+        var isLTR = (object.Equals(textDirection, TextDirection.ltr));
+        bool showSecondaryTrack = (((secondaryOffset is not null)) && (((object)isLTR) switch { true => (DartRuntimePrimitives.RequireValue(secondaryOffset).dx > (__thumbCenter.dx + trackGapLocal)), false => (DartRuntimePrimitives.RequireValue(secondaryOffset).dx < (__thumbCenter.dx - trackGapLocal)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        if (showSecondaryTrack)
         {
-            var secondaryTrackColorTween__44081 = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledSecondaryActiveTrackColor, end: sliderTheme.secondaryActiveTrackColor);
-            var secondaryTrackPaint__44255 = ((Func<Paint>)(() =>
+            var secondaryTrackColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: sliderTheme.disabledSecondaryActiveTrackColor, end: sliderTheme.secondaryActiveTrackColor);
+            var secondaryTrackPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = secondaryTrackColorTween__44081.evaluate(enableAnimation)!;
+    __cascade.color = secondaryTrackColorTween.evaluate(enableAnimation)!;
     return __cascade;
 }))();
-            if (isLTR__43752)
+            if (isLTR)
             {
-                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(global::Doroti.Ui.RRect.fromLTRBAndCorners((__thumbCenter.dx + trackGap__42052), trackRect__42102.top, DartRuntimePrimitives.RequireValue(secondaryOffset).dx, trackRect__42102.bottom, topLeft: trackInsideCornerRadius__42365, bottomLeft: trackInsideCornerRadius__42365, topRight: trackCornerRadius__42290, bottomRight: trackCornerRadius__42290), secondaryTrackPaint__44255);
+                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(global::Doroti.Ui.RRect.fromLTRBAndCorners((__thumbCenter.dx + trackGapLocal), trackRect.top, DartRuntimePrimitives.RequireValue(secondaryOffset).dx, trackRect.bottom, topLeft: trackInsideCornerRadius, bottomLeft: trackInsideCornerRadius, topRight: trackCornerRadius, bottomRight: trackCornerRadius), secondaryTrackPaint);
             }
             else
             {
-                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(global::Doroti.Ui.RRect.fromLTRBAndCorners((DartRuntimePrimitives.RequireValue(secondaryOffset).dx - trackGap__42052), trackRect__42102.top, __thumbCenter.dx, trackRect__42102.bottom, topLeft: trackInsideCornerRadius__42365, bottomLeft: trackInsideCornerRadius__42365, topRight: trackCornerRadius__42290, bottomRight: trackCornerRadius__42290), secondaryTrackPaint__44255);
+                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRRect(global::Doroti.Ui.RRect.fromLTRBAndCorners((DartRuntimePrimitives.RequireValue(secondaryOffset).dx - trackGapLocal), trackRect.top, __thumbCenter.dx, trackRect.bottom, topLeft: trackInsideCornerRadius, bottomLeft: trackInsideCornerRadius, topRight: trackCornerRadius, bottomRight: trackCornerRadius), secondaryTrackPaint);
             }
         }
         ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.restore();
-        var stopIndicatorRadius__45311 = 2.0;
-        double stopIndicatorTrailingSpace__45355 = (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L);
-        var stopIndicatorOffset__45424 = new global::Doroti.Ui.Offset((((object.Equals(textDirection, TextDirection.ltr))) ? (trackRect__42102.centerRight.dx - stopIndicatorTrailingSpace__45355) : (trackRect__42102.centerLeft.dx + stopIndicatorTrailingSpace__45355)), ((Offset)((dynamic)trackRect__42102).center).dy);
-        bool showStopIndicator__45679 = (((object.Equals(textDirection, TextDirection.ltr))) ? (__thumbCenter.dx < stopIndicatorOffset__45424.dx) : (__thumbCenter.dx > stopIndicatorOffset__45424.dx));
-        if ((showStopIndicator__45679 && !isDiscrete))
+        var stopIndicatorRadius = 2.0;
+        double stopIndicatorTrailingSpace = (DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight) / 2L);
+        var stopIndicatorOffset = new global::Doroti.Ui.Offset((((object.Equals(textDirection, TextDirection.ltr))) ? (trackRect.centerRight.dx - stopIndicatorTrailingSpace) : (trackRect.centerLeft.dx + stopIndicatorTrailingSpace)), ((Offset)((dynamic)trackRect).center).dy);
+        bool showStopIndicator = (((object.Equals(textDirection, TextDirection.ltr))) ? (__thumbCenter.dx < stopIndicatorOffset.dx) : (__thumbCenter.dx > stopIndicatorOffset.dx));
+        if ((showStopIndicator && !isDiscrete))
         {
-            var stopIndicatorRect__45893 = global::Doroti.Ui.Rect.fromCircle(center: stopIndicatorOffset__45424, radius: stopIndicatorRadius__45311);
-            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawCircle(((Offset)((dynamic)stopIndicatorRect__45893).center), stopIndicatorRadius__45311, activePaint__41489);
+            var stopIndicatorRect = global::Doroti.Ui.Rect.fromCircle(center: stopIndicatorOffset, radius: stopIndicatorRadius);
+            ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawCircle(((Offset)((dynamic)stopIndicatorRect).center), stopIndicatorRadius, activePaint);
         }
     }
 
     public override bool isRounded => true;
     public override Rect getPreferredRect(global::Doroti.Framework.Rendering.RenderBox parentBox, Offset offset = default, SliderThemeData sliderTheme = default!, bool isEnabled = false, bool isDiscrete = false)
     {
-        double thumbWidth__8890 = sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width;
-        double overlayWidth__8991 = sliderTheme.overlayShape!.getPreferredSize(isEnabled, isDiscrete).width;
-        double trackHeight__9108 = DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight);
-        DartRuntimePrimitives.Assert(() => (overlayWidth__8991 >= 0L));
-        DartRuntimePrimitives.Assert(() => (trackHeight__9108 >= 0L));
+        double thumbWidth = sliderTheme.thumbShape!.getPreferredSize(isEnabled, isDiscrete).width;
+        double overlayWidth = sliderTheme.overlayShape!.getPreferredSize(isEnabled, isDiscrete).width;
+        double trackHeightLocal = DartRuntimePrimitives.RequireValue(sliderTheme.trackHeight);
+        DartRuntimePrimitives.Assert(() => (overlayWidth >= 0L));
+        DartRuntimePrimitives.Assert(() => (trackHeightLocal >= 0L));
         if (((object.Equals(sliderTheme.activeTrackColor, Colors.transparent)) && (object.Equals(sliderTheme.inactiveTrackColor, Colors.transparent))))
         {
-            trackHeight__9108 = 0;
+            trackHeightLocal = 0;
         }
-        double trackLeft__9504 = (offset.dx + (((sliderTheme.padding is null) ? Math.Max((overlayWidth__8991 / 2L), (thumbWidth__8890 / 2L)) : 0L)));
-        double trackTop__9633 = (offset.dy + (((((global::Doroti.Framework.Rendering.RenderBox)parentBox).size.height - trackHeight__9108)) / 2L));
-        double trackRight__9716 = ((trackLeft__9504 + ((global::Doroti.Framework.Rendering.RenderBox)parentBox).size.width) - (((sliderTheme.padding is null) ? Math.Max(thumbWidth__8890, overlayWidth__8991) : 0L)));
-        double trackBottom__9877 = (trackTop__9633 + trackHeight__9108);
-        return global::Doroti.Ui.Rect.fromLTRB(Math.Min(trackLeft__9504, trackRight__9716), trackTop__9633, Math.Max(trackLeft__9504, trackRight__9716), trackBottom__9877);
+        double trackLeft = (offset.dx + (((sliderTheme.padding is null) ? Math.Max((overlayWidth / 2L), (thumbWidth / 2L)) : 0L)));
+        double trackTop = (offset.dy + (((((global::Doroti.Framework.Rendering.RenderBox)parentBox).size.height - trackHeightLocal)) / 2L));
+        double trackRight = ((trackLeft + ((global::Doroti.Framework.Rendering.RenderBox)parentBox).size.width) - (((sliderTheme.padding is null) ? Math.Max(thumbWidth, overlayWidth) : 0L)));
+        double trackBottom = (trackTop + trackHeightLocal);
+        return global::Doroti.Ui.Rect.fromLTRB(Math.Min(trackLeft, trackRight), trackTop, Math.Max(trackLeft, trackRight), trackBottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -657,9 +657,9 @@ public class RoundedRectSliderValueIndicatorShape : SliderComponentShape
 
     public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete, global::Doroti.Framework.Painting.TextPainter labelPainter, global::Doroti.Framework.Rendering.RenderBox parentBox, SliderThemeData sliderTheme, TextDirection textDirection, double value, double textScaleFactor, Size sizeWithOverflow)
     {
-        global::Doroti.Ui.Canvas canvas__48454 = ((global::Doroti.Ui.Canvas)(object?)((global::Doroti.Framework.Rendering.PaintingContext)context).canvas);
-        double scale__48496 = ((global::Doroti.Framework.Animation.Animation<double>)activationAnimation).value;
-        _pathPainter.paint(parentBox: parentBox, canvas: canvas__48454, center: center, scale: scale__48496, labelPainter: labelPainter, textScaleFactor: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)), sizeWithOverflow: sizeWithOverflow, backgroundPaintColor: sliderTheme.valueIndicatorColor!, strokePaintColor: sliderTheme.valueIndicatorStrokeColor);
+        global::Doroti.Ui.Canvas canvasLocal = ((global::Doroti.Ui.Canvas)(object?)((global::Doroti.Framework.Rendering.PaintingContext)context).canvas);
+        double scaleLocal = ((global::Doroti.Framework.Animation.Animation<double>)activationAnimation).value;
+        _pathPainter.paint(parentBox: parentBox, canvas: canvasLocal, center: center, scale: scaleLocal, labelPainter: labelPainter, textScaleFactor: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textScaleFactor)), sizeWithOverflow: sizeWithOverflow, backgroundPaintColor: sliderTheme.valueIndicatorColor!, strokePaintColor: sliderTheme.valueIndicatorStrokeColor);
     }
 
 }
@@ -679,32 +679,32 @@ internal class _RoundedRectSliderValueIndicatorPathPainter__slider_parts
 
     public virtual global::Doroti.Ui.Size getPreferredSize(global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor)
     {
-        double width__49398 = (Math.Max(_minLabelWidth, ((global::Doroti.Framework.Painting.TextPainter)labelPainter).width) + (((_labelPadding * 2L)) * textScaleFactor));
-        return new global::Doroti.Ui.Size(width__49398, (_preferredHeight * textScaleFactor));
+        double widthLocal = (Math.Max(_minLabelWidth, ((global::Doroti.Framework.Painting.TextPainter)labelPainter).width) + (((_labelPadding * 2L)) * textScaleFactor));
+        return new global::Doroti.Ui.Size(widthLocal, (_preferredHeight * textScaleFactor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual double getHorizontalShift(global::Doroti.Framework.Rendering.RenderBox parentBox, Offset center, global::Doroti.Framework.Painting.TextPainter labelPainter, double textScaleFactor, Size sizeWithOverflow, double scale)
     {
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
-        var edgePadding__49853 = 8.0;
-        double rectangleWidth__49889 = _upperRectangleWidth(labelPainter, scale);
-        global::Doroti.Ui.Offset globalCenter__50126 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)parentBox).localToGlobal(center)));
-        double overflowLeft__50494 = Math.Max(0, (((rectangleWidth__49889 / 2L) - globalCenter__50126.dx) + edgePadding__49853));
-        double overflowRight__50591 = Math.Max(0, ((rectangleWidth__49889 / 2L) - (((sizeWithOverflow.width - globalCenter__50126.dx) - edgePadding__49853))));
-        if ((rectangleWidth__49889 < sizeWithOverflow.width))
+        var edgePadding = 8.0;
+        double rectangleWidth = _upperRectangleWidth(labelPainter, scale);
+        global::Doroti.Ui.Offset globalCenter = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)parentBox).localToGlobal(center)));
+        double overflowLeft = Math.Max(0, (((rectangleWidth / 2L) - globalCenter.dx) + edgePadding));
+        double overflowRight = Math.Max(0, ((rectangleWidth / 2L) - (((sizeWithOverflow.width - globalCenter.dx) - edgePadding))));
+        if ((rectangleWidth < sizeWithOverflow.width))
         {
-            return (overflowLeft__50494 - overflowRight__50591);
+            return (overflowLeft - overflowRight);
         }
         else
         {
-            if (((overflowLeft__50494 - overflowRight__50591) > 0L))
+            if (((overflowLeft - overflowRight) > 0L))
             {
-                return (overflowLeft__50494 - ((edgePadding__49853 * textScaleFactor)));
+                return (overflowLeft - ((edgePadding * textScaleFactor)));
             }
             else
             {
-                return (-overflowRight__50591 + ((edgePadding__49853 * textScaleFactor)));
+                return (-overflowRight + ((edgePadding * textScaleFactor)));
             }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -712,8 +712,8 @@ internal class _RoundedRectSliderValueIndicatorPathPainter__slider_parts
 
     internal virtual double _upperRectangleWidth(global::Doroti.Framework.Painting.TextPainter labelPainter, double scale)
     {
-        double unscaledWidth__51101 = (Math.Max(_minLabelWidth, ((global::Doroti.Framework.Painting.TextPainter)labelPainter).width) + ((_labelPadding * 2L)));
-        return (unscaledWidth__51101 * scale);
+        double unscaledWidth = (Math.Max(_minLabelWidth, ((global::Doroti.Framework.Painting.TextPainter)labelPainter).width) + ((_labelPadding * 2L)));
+        return (unscaledWidth * scale);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -724,10 +724,10 @@ internal class _RoundedRectSliderValueIndicatorPathPainter__slider_parts
             return;
         }
         DartRuntimePrimitives.Assert(() => !sizeWithOverflow.isEmpty);
-        double rectangleWidth__51737 = _upperRectangleWidth(labelPainter, scale);
-        double horizontalShift__51814 = getHorizontalShift(parentBox: parentBox, center: center, labelPainter: labelPainter, textScaleFactor: textScaleFactor, sizeWithOverflow: sizeWithOverflow, scale: scale);
-        var upperRect__52056 = global::Doroti.Ui.Rect.fromLTWH(((-rectangleWidth__51737 / 2L) + horizontalShift__51814), (-_rectYOffset - _preferredHeight), rectangleWidth__51737, _preferredHeight);
-        var fillPaint__52232 = ((Func<Paint>)(() =>
+        double rectangleWidth = _upperRectangleWidth(labelPainter, scale);
+        double horizontalShift = getHorizontalShift(parentBox: parentBox, center: center, labelPainter: labelPainter, textScaleFactor: textScaleFactor, sizeWithOverflow: sizeWithOverflow, scale: scale);
+        var upperRect = global::Doroti.Ui.Rect.fromLTWH(((-rectangleWidth / 2L) + horizontalShift), (-_rectYOffset - _preferredHeight), rectangleWidth, _preferredHeight);
+        var fillPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = backgroundPaintColor;
@@ -736,10 +736,10 @@ internal class _RoundedRectSliderValueIndicatorPathPainter__slider_parts
         canvas.save();
         canvas.translate(center.dx, (center.dy - _bottomTipYOffset));
         canvas.scale(scale, scale);
-        var rrect__52518 = global::Doroti.Ui.RRect.fromRectAndRadius(upperRect__52056, global::Doroti.Ui.Radius.circular((upperRect__52056.height / 2L)));
+        var rrect = global::Doroti.Ui.RRect.fromRectAndRadius(upperRect, global::Doroti.Ui.Radius.circular((upperRect.height / 2L)));
         if ((strokePaintColor is not null))
         {
-            var strokePaint__52649 = ((Func<Paint>)(() =>
+            var strokePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = strokePaintColor;
@@ -747,15 +747,15 @@ internal class _RoundedRectSliderValueIndicatorPathPainter__slider_parts
     __cascade.style = PaintingStyle.stroke;
     return __cascade;
 }))();
-            canvas.drawRRect(rrect__52518, strokePaint__52649);
+            canvas.drawRRect(rrect, strokePaint);
         }
-        canvas.drawRRect(rrect__52518, fillPaint__52232);
-        double bottomTipToUpperRectTranslateY__52945 = ((-_preferredHalfHeight / 2L) - upperRect__52056.height);
-        canvas.translate(0, bottomTipToUpperRectTranslateY__52945);
-        var boxCenter__53091 = new global::Doroti.Ui.Offset(horizontalShift__51814, (upperRect__52056.height / 2.3));
-        var halfLabelPainterOffset__53162 = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Painting.TextPainter)labelPainter).width / 2L), (((global::Doroti.Framework.Painting.TextPainter)labelPainter).height / 2L));
-        global::Doroti.Ui.Offset labelOffset__53261 = ((global::Doroti.Ui.Offset)(object?)(boxCenter__53091 - halfLabelPainterOffset__53162));
-        labelPainter.paint(canvas, labelOffset__53261);
+        canvas.drawRRect(rrect, fillPaint);
+        double bottomTipToUpperRectTranslateY = ((-_preferredHalfHeight / 2L) - upperRect.height);
+        canvas.translate(0, bottomTipToUpperRectTranslateY);
+        var boxCenter = new global::Doroti.Ui.Offset(horizontalShift, (upperRect.height / 2.3));
+        var halfLabelPainterOffset = new global::Doroti.Ui.Offset((((global::Doroti.Framework.Painting.TextPainter)labelPainter).width / 2L), (((global::Doroti.Framework.Painting.TextPainter)labelPainter).height / 2L));
+        global::Doroti.Ui.Offset labelOffset = ((global::Doroti.Ui.Offset)(object?)(boxCenter - halfLabelPainterOffset));
+        labelPainter.paint(canvas, labelOffset);
         canvas.restore();
     }
 

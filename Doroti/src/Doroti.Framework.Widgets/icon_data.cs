@@ -58,12 +58,12 @@ public class IconDataProperty : global::Doroti.Framework.Foundation.DiagnosticsP
 
     public virtual DartMap<string, object> toJsonMap(global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate @delegate)
     {
-        DartMap<string, object?> json__4260 = ((DartMap<string, object?>)(object?)base.toJsonMap(@delegate));
+        DartMap<string, object?> json = ((DartMap<string, object?>)(object?)base.toJsonMap(@delegate));
         if ((this.value is not null))
         {
-            json__4260["valueProperties"] = new DartMap<string, object> { ["codePoint"] = this.value!.codePoint };
+            json["valueProperties"] = new DartMap<string, object> { ["codePoint"] = this.value!.codePoint };
         }
-        return json__4260;
+        return json;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

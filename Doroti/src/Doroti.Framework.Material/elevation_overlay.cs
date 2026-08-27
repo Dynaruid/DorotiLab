@@ -32,28 +32,28 @@ public abstract class ElevationOverlay
         {
             return Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)(0L)].opacity;
         }
-        var index__2180 = 0L;
-        while ((elevation >= Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)(index__2180)].elevation))
+        var index = 0L;
+        while ((elevation >= Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)(index)].elevation))
         {
-            if (((elevation == Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)(index__2180)].elevation) || ((index__2180 + 1L) == checked((long)(Elevation_overlayLibrary._surfaceTintElevationOpacities.Count)))))
+            if (((elevation == Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)(index)].elevation) || ((index + 1L) == checked((long)(Elevation_overlayLibrary._surfaceTintElevationOpacities.Count)))))
             {
-                return Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)(index__2180)].opacity;
+                return Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)(index)].opacity;
             }
-            index__2180 += 1L;
+            index += 1L;
         }
-        _ElevationOpacity__elevation_overlay lower__2659 = Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)((index__2180 - 1L))];
-        _ElevationOpacity__elevation_overlay upper__2738 = Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)(index__2180)];
-        double t__2802 = (((elevation - ((_ElevationOpacity__elevation_overlay)lower__2659).elevation)) / ((((_ElevationOpacity__elevation_overlay)upper__2738).elevation - ((_ElevationOpacity__elevation_overlay)lower__2659).elevation)));
-        return (((_ElevationOpacity__elevation_overlay)lower__2659).opacity + (t__2802 * ((((_ElevationOpacity__elevation_overlay)upper__2738).opacity - ((_ElevationOpacity__elevation_overlay)lower__2659).opacity))));
+        _ElevationOpacity__elevation_overlay lower = Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)((index - 1L))];
+        _ElevationOpacity__elevation_overlay upper = Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)(index)];
+        double t = (((elevation - ((_ElevationOpacity__elevation_overlay)lower).elevation)) / ((((_ElevationOpacity__elevation_overlay)upper).elevation - ((_ElevationOpacity__elevation_overlay)lower).elevation)));
+        return (((_ElevationOpacity__elevation_overlay)lower).opacity + (t * ((((_ElevationOpacity__elevation_overlay)upper).opacity - ((_ElevationOpacity__elevation_overlay)lower).opacity))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Color applyOverlay(global::Doroti.Framework.Widgets.BuildContext context, Color color, double elevation)
     {
-        ThemeData theme__4629 = Theme.of(context);
-        if (((((elevation > 0.0) && theme__4629.applyElevationOverlayColor) && (object.Equals(theme__4629.brightness, Brightness.dark))) && (object.Equals(color.withOpacity(1.0), theme__4629.colorScheme.surface.withOpacity(1.0)))))
+        ThemeData theme = Theme.of(context);
+        if (((((elevation > 0.0) && theme.applyElevationOverlayColor) && (object.Equals(theme.brightness, Brightness.dark))) && (object.Equals(color.withOpacity(1.0), theme.colorScheme.surface.withOpacity(1.0)))))
         {
-            return ((global::Doroti.Ui.Color)(object?)ElevationOverlay.colorWithOverlay(color, theme__4629.colorScheme.onSurface, elevation));
+            return ((global::Doroti.Ui.Color)(object?)ElevationOverlay.colorWithOverlay(color, theme.colorScheme.onSurface, elevation));
         }
         return ((global::Doroti.Ui.Color)(object?)color);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -61,8 +61,8 @@ public abstract class ElevationOverlay
 
     public static global::Doroti.Ui.Color overlayColor(global::Doroti.Framework.Widgets.BuildContext context, double elevation)
     {
-        ThemeData theme__5534 = Theme.of(context);
-        return ((global::Doroti.Ui.Color)(object?)ElevationOverlay._overlayColor(theme__5534.colorScheme.onSurface, elevation));
+        ThemeData theme = Theme.of(context);
+        return ((global::Doroti.Ui.Color)(object?)ElevationOverlay._overlayColor(theme.colorScheme.onSurface, elevation));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -74,8 +74,8 @@ public abstract class ElevationOverlay
 
     internal static global::Doroti.Ui.Color _overlayColor(Color color, double elevation)
     {
-        double opacity__6672 = ((((4.5 * global::Doroti.Runtime.Dart_mathLibrary.log((elevation + 1L))) + 2L)) / 100.0);
-        return ((global::Doroti.Ui.Color)(object?)color.withOpacity(opacity__6672));
+        double opacity = ((((4.5 * global::Doroti.Runtime.Dart_mathLibrary.log((elevation + 1L))) + 2L)) / 100.0);
+        return ((global::Doroti.Ui.Color)(object?)color.withOpacity(opacity));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

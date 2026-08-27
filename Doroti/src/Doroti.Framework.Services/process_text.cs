@@ -67,12 +67,12 @@ public class DefaultProcessTextService : ProcessTextService
         DartMap<object?, object?> rawResults = default!;
         try
         {
-            var result__3951 = DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)await _processTextChannel.invokeMethod<object>("ProcessText.queryTextActions"));
-            if ((result__3951 is null))
+            var result = DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)await _processTextChannel.invokeMethod<object>("ProcessText.queryTextActions"));
+            if ((result is null))
             {
                 return new List<ProcessTextAction>();
             }
-            rawResults = result__3951;
+            rawResults = result;
         }
         catch (Exception e)
         {

@@ -73,10 +73,10 @@ public class CupertinoDesktopTextSelectionToolbar : global::Doroti.Framework.Wid
 
     internal static List<double> _matrixWithSaturation(double saturation)
     {
-        double r__2743 = (0.213 * ((1L - saturation)));
-        double g__2790 = (0.715 * ((1L - saturation)));
-        double b__2837 = (0.072 * ((1L - saturation)));
-        return new List<double> { (r__2743 + saturation), g__2790, b__2837, 0, 0, r__2743, (g__2790 + saturation), b__2837, 0, 0, r__2743, g__2790, (b__2837 + saturation), 0, 0, 0, 0, 0, 1, 0 };
+        double r = (0.213 * ((1L - saturation)));
+        double g = (0.715 * ((1L - saturation)));
+        double b = (0.072 * ((1L - saturation)));
+        return new List<double> { (r + saturation), g, b, 0, 0, r, (g + saturation), b, 0, 0, r, g, (b + saturation), 0, 0, 0, 0, 0, 1, 0 };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -89,9 +89,9 @@ public class CupertinoDesktopTextSelectionToolbar : global::Doroti.Framework.Wid
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        double paddingAbove__4682 = (MediaQuery.paddingOf(context).top + Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding);
-        var localAdjustment__4767 = new global::Doroti.Ui.Offset(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove__4682);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: new global::Doroti.Framework.Painting.EdgeInsets(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove__4682, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding), child: new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new global::Doroti.Framework.Widgets.DesktopTextSelectionToolbarLayoutDelegate(anchor: (this.anchor - localAdjustment__4767)), child: CupertinoDesktopTextSelectionToolbar._defaultToolbarBuilder(context, new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: this.children)))));
+        double paddingAbove = (MediaQuery.paddingOf(context).top + Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding);
+        var localAdjustment = new global::Doroti.Ui.Offset(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove);
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: new global::Doroti.Framework.Painting.EdgeInsets(Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, paddingAbove, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding, Desktop_text_selection_toolbarLibrary._kToolbarScreenPadding), child: new global::Doroti.Framework.Widgets.CustomSingleChildLayout(@delegate: new global::Doroti.Framework.Widgets.DesktopTextSelectionToolbarLayoutDelegate(anchor: (this.anchor - localAdjustment)), child: CupertinoDesktopTextSelectionToolbar._defaultToolbarBuilder(context, new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: this.children)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

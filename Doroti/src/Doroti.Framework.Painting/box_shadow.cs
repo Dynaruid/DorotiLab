@@ -27,7 +27,7 @@ public class BoxShadow : Shadow
 
     public virtual global::Doroti.Ui.Paint toPaint()
     {
-        var result__2443 = ((Func<Paint>)(() =>
+        var result = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = color;
@@ -38,11 +38,11 @@ public class BoxShadow : Shadow
             {
                 if (global::Doroti.Framework.Painting.DebugLibrary.debugDisableShadows)
                 {
-                    result__2443.maskFilter = null;
+                    result.maskFilter = null;
                 }
                 return true;
             });
-        return result__2443;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -84,7 +84,7 @@ public class BoxShadow : Shadow
         }
         a ??= new List<BoxShadow>();
         b ??= new List<BoxShadow>();
-        long commonLength__4776 = Math.Min(checked((long)(a.Count)), checked((long)(b.Count)));
+        long commonLength = Math.Min(checked((long)(a.Count)), checked((long)(b.Count)));
         return new List<BoxShadow>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

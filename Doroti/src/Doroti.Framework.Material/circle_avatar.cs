@@ -74,25 +74,25 @@ public class CircleAvatar : global::Doroti.Framework.Widgets.StatelessWidget
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        ThemeData theme__7412 = Theme.of(context);
-        global::Doroti.Ui.Color? effectiveForegroundColor__7456 = ((global::Doroti.Ui.Color?)(object?)(this.foregroundColor ?? ((theme__7412.useMaterial3 ? theme__7412.colorScheme.onPrimaryContainer : null))));
-        global::Doroti.Framework.Painting.TextStyle effectiveTextStyle__7598 = (theme__7412.useMaterial3 ? theme__7412.textTheme.titleMedium! : theme__7412.primaryTextTheme.titleMedium!);
-        global::Doroti.Framework.Painting.TextStyle textStyle__7738 = ((global::Doroti.Framework.Painting.TextStyle)(object?)effectiveTextStyle__7598.copyWith(color: effectiveForegroundColor__7456));
-        global::Doroti.Ui.Color? effectiveBackgroundColor__7823 = ((global::Doroti.Ui.Color?)(object?)(this.backgroundColor ?? ((theme__7412.useMaterial3 ? theme__7412.colorScheme.primaryContainer : null))));
-        if ((effectiveBackgroundColor__7823 is null))
+        ThemeData theme = Theme.of(context);
+        global::Doroti.Ui.Color? effectiveForegroundColor = ((global::Doroti.Ui.Color?)(object?)(this.foregroundColor ?? ((theme.useMaterial3 ? theme.colorScheme.onPrimaryContainer : null))));
+        global::Doroti.Framework.Painting.TextStyle effectiveTextStyle = (theme.useMaterial3 ? theme.textTheme.titleMedium! : theme.primaryTextTheme.titleMedium!);
+        global::Doroti.Framework.Painting.TextStyle textStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)effectiveTextStyle.copyWith(color: effectiveForegroundColor));
+        global::Doroti.Ui.Color? effectiveBackgroundColor = ((global::Doroti.Ui.Color?)(object?)(this.backgroundColor ?? ((theme.useMaterial3 ? theme.colorScheme.primaryContainer : null))));
+        if ((effectiveBackgroundColor is null))
         {
-            effectiveBackgroundColor__7823 = (ThemeData.estimateBrightnessForColor(((global::Doroti.Framework.Painting.TextStyle)textStyle__7738).color!) switch { Brightness.dark => theme__7412.primaryColorLight, Brightness.light => theme__7412.primaryColorDark, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            effectiveBackgroundColor = (ThemeData.estimateBrightnessForColor(((global::Doroti.Framework.Painting.TextStyle)textStyle).color!) switch { Brightness.dark => theme.primaryColorLight, Brightness.light => theme.primaryColorDark, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
         else
         {
-            if ((effectiveForegroundColor__7456 is null))
+            if ((effectiveForegroundColor is null))
             {
-                textStyle__7738 = (ThemeData.estimateBrightnessForColor(this.backgroundColor!) switch { Brightness.dark => textStyle__7738.copyWith(color: theme__7412.primaryColorLight), Brightness.light => textStyle__7738.copyWith(color: theme__7412.primaryColorDark), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                textStyle = (ThemeData.estimateBrightnessForColor(this.backgroundColor!) switch { Brightness.dark => textStyle.copyWith(color: theme.primaryColorLight), Brightness.light => textStyle.copyWith(color: theme.primaryColorDark), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             }
         }
-        double minDiameter__8524 = this._minDiameter;
-        double maxDiameter__8569 = this._maxDiameter;
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedContainer(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: minDiameter__8524, minWidth: minDiameter__8524, maxWidth: maxDiameter__8569, maxHeight: maxDiameter__8569), duration: ConstantsLibrary.kThemeChangeDuration, decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: effectiveBackgroundColor__7823, image: ((this.backgroundImage is not null) ? new global::Doroti.Framework.Painting.DecorationImage(image: this.backgroundImage!, onError: (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)this.onBackgroundImageError, fit: global::Doroti.Framework.Painting.BoxFit.cover) : null), shape: global::Doroti.Framework.Painting.BoxShape.circle), foregroundDecoration: ((this.foregroundImage is not null) ? new global::Doroti.Framework.Painting.BoxDecoration(image: new global::Doroti.Framework.Painting.DecorationImage(image: this.foregroundImage!, onError: (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)this.onForegroundImageError, fit: global::Doroti.Framework.Painting.BoxFit.cover), shape: global::Doroti.Framework.Painting.BoxShape.circle) : null), child: ((this.child is null) ? null : new global::Doroti.Framework.Widgets.Center(child: MediaQuery.withNoTextScaling(child: new global::Doroti.Framework.Widgets.IconTheme(data: theme__7412.iconTheme.copyWith(color: ((global::Doroti.Framework.Painting.TextStyle)textStyle__7738).color), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle__7738, child: this.child!)))))));
+        double minDiameter = this._minDiameter;
+        double maxDiameter = this._maxDiameter;
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedContainer(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: minDiameter, minWidth: minDiameter, maxWidth: maxDiameter, maxHeight: maxDiameter), duration: ConstantsLibrary.kThemeChangeDuration, decoration: new global::Doroti.Framework.Painting.BoxDecoration(color: effectiveBackgroundColor, image: ((this.backgroundImage is not null) ? new global::Doroti.Framework.Painting.DecorationImage(image: this.backgroundImage!, onError: (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)this.onBackgroundImageError, fit: global::Doroti.Framework.Painting.BoxFit.cover) : null), shape: global::Doroti.Framework.Painting.BoxShape.circle), foregroundDecoration: ((this.foregroundImage is not null) ? new global::Doroti.Framework.Painting.BoxDecoration(image: new global::Doroti.Framework.Painting.DecorationImage(image: this.foregroundImage!, onError: (global::System.Action<object, global::System.Diagnostics.StackTrace?>?)this.onForegroundImageError, fit: global::Doroti.Framework.Painting.BoxFit.cover), shape: global::Doroti.Framework.Painting.BoxShape.circle) : null), child: ((this.child is null) ? null : new global::Doroti.Framework.Widgets.Center(child: MediaQuery.withNoTextScaling(child: new global::Doroti.Framework.Widgets.IconTheme(data: theme.iconTheme.copyWith(color: ((global::Doroti.Framework.Painting.TextStyle)textStyle).color), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle, child: this.child!)))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

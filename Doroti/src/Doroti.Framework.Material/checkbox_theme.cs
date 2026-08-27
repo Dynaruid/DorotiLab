@@ -107,13 +107,13 @@ public class CheckboxThemeData : global::Doroti.Framework.Foundation.Diagnostica
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -136,8 +136,8 @@ public class CheckboxTheme : global::Doroti.Framework.Widgets.InheritedWidget
 
     public static CheckboxThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        CheckboxTheme? checkboxTheme__9288 = ((CheckboxTheme?)(object?)context.dependOnInheritedWidgetOfExactType<CheckboxTheme>());
-        return (checkboxTheme__9288?.data ?? Theme.of(context).checkboxTheme);
+        CheckboxTheme? checkboxThemeLocal = ((CheckboxTheme?)(object?)context.dependOnInheritedWidgetOfExactType<CheckboxTheme>());
+        return (checkboxThemeLocal?.data ?? Theme.of(context).checkboxTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

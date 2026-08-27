@@ -125,7 +125,7 @@ public static partial class DebugLibrary
 {
     internal static void _debugDrawDoubleRect(Canvas canvas, Rect outerRect, Rect innerRect, Color color)
     {
-        var path__11639 = ((Func<Path>)(() =>
+        var path = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
     __cascade.fillType = PathFillType.evenOdd;
@@ -133,13 +133,13 @@ public static partial class DebugLibrary
     __cascade.addRect(innerRect);
     return __cascade;
 }))();
-        var paint__11750 = ((Func<Paint>)(() =>
+        var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = color;
     return __cascade;
 }))();
-        canvas.drawPath(path__11639, paint__11750);
+        canvas.drawPath(path, paint);
     }
 }
 
@@ -157,13 +157,13 @@ public static partial class DebugLibrary
                 }
                 else
                 {
-                    var paint__12801 = ((Func<Paint>)(() =>
+                    var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = new global::Doroti.Ui.Color(2425393296L);
     return __cascade;
 }))();
-                    canvas.drawRect(outerRect, paint__12801);
+                    canvas.drawRect(outerRect, paint);
                 }
                 return true;
             });

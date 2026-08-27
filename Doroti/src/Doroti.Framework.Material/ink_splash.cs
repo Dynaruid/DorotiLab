@@ -58,8 +58,8 @@ public static partial class Ink_splashLibrary
     {
         if (containedInkWell)
         {
-            global::Doroti.Ui.Size size__1215 = ((global::Doroti.Ui.Size)(object?)((rectCallback is not null) ? rectCallback().size : ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).size));
-            return Ink_splashLibrary._getSplashRadiusForPositionInSize(size__1215, position);
+            global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)((rectCallback is not null) ? rectCallback().size : ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).size));
+            return Ink_splashLibrary._getSplashRadiusForPositionInSize(sizeLocal, position);
         }
         return Material.defaultSplashRadius;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -70,11 +70,11 @@ public static partial class Ink_splashLibrary
 {
     internal static double _getSplashRadiusForPositionInSize(Size bounds, Offset position)
     {
-        double d1__1482 = ((position - bounds.topLeft(Offset.zero))).distance;
-        double d2__1553 = ((position - bounds.topRight(Offset.zero))).distance;
-        double d3__1625 = ((position - bounds.bottomLeft(Offset.zero))).distance;
-        double d4__1699 = ((position - bounds.bottomRight(Offset.zero))).distance;
-        return Math.Max(Math.Max(d1__1482, d2__1553), Math.Max(d3__1625, d4__1699)).ceilToDouble();
+        double d1 = ((position - bounds.topLeft(Offset.zero))).distance;
+        double d2 = ((position - bounds.topRight(Offset.zero))).distance;
+        double d3 = ((position - bounds.bottomLeft(Offset.zero))).distance;
+        double d4 = ((position - bounds.bottomRight(Offset.zero))).distance;
+        return Math.Max(Math.Max(d1, d2), Math.Max(d3, d4)).ceilToDouble();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -136,11 +136,11 @@ public class InkSplash : InteractiveInkFeature
 
     public override void confirm()
     {
-        long duration__6493 = ((this._targetRadius / Ink_splashLibrary._kSplashConfirmedVelocity)).floor();
+        long durationLocal = ((this._targetRadius / Ink_splashLibrary._kSplashConfirmedVelocity)).floor();
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = this._radiusController;
-    __cascade.duration = Duration.Create(milliseconds: duration__6493);
+    __cascade.duration = Duration.Create(milliseconds: durationLocal);
     __cascade.forward();
     return __cascade;
 }))());
@@ -170,18 +170,18 @@ public class InkSplash : InteractiveInkFeature
 
     public override void paintFeature(Canvas canvas, Matrix4 transform)
     {
-        var paint__7103 = ((Func<Paint>)(() =>
+        var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = this.color.withAlpha(((global::Doroti.Framework.Animation.Animation<long>)this._alpha).value);
     return __cascade;
 }))();
-        global::Doroti.Ui.Offset? center__7171 = ((global::Doroti.Ui.Offset?)(object?)this._position);
+        global::Doroti.Ui.Offset? centerLocal = ((global::Doroti.Ui.Offset?)(object?)this._position);
         if (this._repositionToReferenceBox)
         {
-            center__7171 = Dart_uiLibrary.Offset.lerp(center__7171, ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.center(Offset.zero), ((global::Doroti.Framework.Animation.AnimationController)this._radiusController).value);
+            centerLocal = Dart_uiLibrary.Offset.lerp(centerLocal, ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size.center(Offset.zero), ((global::Doroti.Framework.Animation.AnimationController)this._radiusController).value);
         }
-        paintInkCircle(canvas: canvas, transform: transform, paint: paint__7103, center: DartRuntimePrimitives.RequireValue(center__7171), textDirection: this._textDirection, radius: ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value, customBorder: this.customBorder, borderRadius: this._borderRadius, clipCallback: (global::System.Func<Rect>?)this._clipCallback);
+        paintInkCircle(canvas: canvas, transform: transform, paint: paintLocal, center: DartRuntimePrimitives.RequireValue(centerLocal), textDirection: this._textDirection, radius: ((global::Doroti.Framework.Animation.Animation<double>)this._radius).value, customBorder: this.customBorder, borderRadius: this._borderRadius, clipCallback: (global::System.Func<Rect>?)this._clipCallback);
     }
 
 }

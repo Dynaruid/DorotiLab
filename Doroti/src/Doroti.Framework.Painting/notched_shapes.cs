@@ -39,31 +39,31 @@ public class CircularNotchedRectangle : NotchedShape
     return __cascade;
 }))();
         }
-        double r__2546 = (DartRuntimePrimitives.RequireValue(guest).width / 2.0);
-        var notchRadius__2579 = global::Doroti.Ui.Radius.circular(r__2546);
-        var invertMultiplier__2739 = (this.inverted ? -1.0 : 1.0);
-        var s1__3279 = 15.0;
-        var s2__3300 = 1.0;
-        double a__3328 = (-r__2546 - s2__3300);
-        double b__3358 = (((this.inverted ? host.bottom : host.top)) - DartRuntimePrimitives.RequireValue(guest).center.dy);
-        double n2__3435 = global::Doroti.Runtime.Dart_mathLibrary.sqrt(((((b__3358 * b__3358) * r__2546) * r__2546) * ((((a__3328 * a__3328) + (b__3358 * b__3358)) - (r__2546 * r__2546)))));
-        double p2xA__3509 = ((((((a__3328 * r__2546) * r__2546)) - n2__3435)) / (((a__3328 * a__3328) + (b__3358 * b__3358))));
-        double p2xB__3571 = ((((((a__3328 * r__2546) * r__2546)) + n2__3435)) / (((a__3328 * a__3328) + (b__3358 * b__3358))));
-        double p2yA__3633 = (global::Doroti.Runtime.Dart_mathLibrary.sqrt(((r__2546 * r__2546) - (p2xA__3509 * p2xA__3509))) * invertMultiplier__2739);
-        double p2yB__3708 = (global::Doroti.Runtime.Dart_mathLibrary.sqrt(((r__2546 * r__2546) - (p2xB__3571 * p2xB__3571))) * invertMultiplier__2739);
-        var p__3777 = new List<global::Doroti.Ui.Offset>(System.Linq.Enumerable.Repeat<global::Doroti.Ui.Offset>(Offset.zero, checked((int)6L)));
-        p__3777[(int)(0L)] = new global::Doroti.Ui.Offset((a__3328 - s1__3279), b__3358);
-        p__3777[(int)(1L)] = new global::Doroti.Ui.Offset(a__3328, b__3358);
-        var cmp__3944 = ((b__3358 < 0L) ? -1.0 : 1.0);
-        p__3777[(int)(2L)] = (((cmp__3944 * p2yA__3633) > (cmp__3944 * p2yB__3708)) ? new global::Doroti.Ui.Offset(p2xA__3509, p2yA__3633) : new global::Doroti.Ui.Offset(p2xB__3571, p2yB__3708));
-        p__3777[(int)(3L)] = new global::Doroti.Ui.Offset((-1.0 * p__3777[(int)(2L)].dx), p__3777[(int)(2L)].dy);
-        p__3777[(int)(4L)] = new global::Doroti.Ui.Offset((-1.0 * p__3777[(int)(1L)].dx), p__3777[(int)(1L)].dy);
-        p__3777[(int)(5L)] = new global::Doroti.Ui.Offset((-1.0 * p__3777[(int)(0L)].dx), p__3777[(int)(0L)].dy);
-        for (var i__4380 = 0L; (i__4380 < checked((long)(p__3777.Count))); i__4380 += 1L)
+        double r = (DartRuntimePrimitives.RequireValue(guest).width / 2.0);
+        var notchRadius = global::Doroti.Ui.Radius.circular(r);
+        var invertMultiplier = (this.inverted ? -1.0 : 1.0);
+        var s1 = 15.0;
+        var s2 = 1.0;
+        double a = (-r - s2);
+        double b = (((this.inverted ? host.bottom : host.top)) - DartRuntimePrimitives.RequireValue(guest).center.dy);
+        double n2 = global::Doroti.Runtime.Dart_mathLibrary.sqrt(((((b * b) * r) * r) * ((((a * a) + (b * b)) - (r * r)))));
+        double p2xA = ((((((a * r) * r)) - n2)) / (((a * a) + (b * b))));
+        double p2xB = ((((((a * r) * r)) + n2)) / (((a * a) + (b * b))));
+        double p2yA = (global::Doroti.Runtime.Dart_mathLibrary.sqrt(((r * r) - (p2xA * p2xA))) * invertMultiplier);
+        double p2yB = (global::Doroti.Runtime.Dart_mathLibrary.sqrt(((r * r) - (p2xB * p2xB))) * invertMultiplier);
+        var p = new List<global::Doroti.Ui.Offset>(System.Linq.Enumerable.Repeat<global::Doroti.Ui.Offset>(Offset.zero, checked((int)6L)));
+        p[(int)(0L)] = new global::Doroti.Ui.Offset((a - s1), b);
+        p[(int)(1L)] = new global::Doroti.Ui.Offset(a, b);
+        var cmp = ((b < 0L) ? -1.0 : 1.0);
+        p[(int)(2L)] = (((cmp * p2yA) > (cmp * p2yB)) ? new global::Doroti.Ui.Offset(p2xA, p2yA) : new global::Doroti.Ui.Offset(p2xB, p2yB));
+        p[(int)(3L)] = new global::Doroti.Ui.Offset((-1.0 * p[(int)(2L)].dx), p[(int)(2L)].dy);
+        p[(int)(4L)] = new global::Doroti.Ui.Offset((-1.0 * p[(int)(1L)].dx), p[(int)(1L)].dy);
+        p[(int)(5L)] = new global::Doroti.Ui.Offset((-1.0 * p[(int)(0L)].dx), p[(int)(0L)].dy);
+        for (var i = 0L; (i < checked((long)(p.Count))); i += 1L)
         {
-            p__3777[(int)(i__4380)] += DartRuntimePrimitives.RequireValue(guest).center;
+            p[(int)(i)] += DartRuntimePrimitives.RequireValue(guest).center;
         }
-        var path__4516 = ((Func<Path>)(() =>
+        var path = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
     __cascade.moveTo(host.left, host.top);
@@ -73,11 +73,11 @@ public class CircularNotchedRectangle : NotchedShape
         {
             ((Func<Path>)(() =>
 {
-    var __cascade = path__4516;
-    __cascade.lineTo(p__3777[(int)(0L)].dx, p__3777[(int)(0L)].dy);
-    __cascade.quadraticBezierTo(p__3777[(int)(1L)].dx, p__3777[(int)(1L)].dy, p__3777[(int)(2L)].dx, p__3777[(int)(2L)].dy);
-    __cascade.arcToPoint(p__3777[(int)(3L)], radius: notchRadius__2579, clockwise: false);
-    __cascade.quadraticBezierTo(p__3777[(int)(4L)].dx, p__3777[(int)(4L)].dy, p__3777[(int)(5L)].dx, p__3777[(int)(5L)].dy);
+    var __cascade = path;
+    __cascade.lineTo(p[(int)(0L)].dx, p[(int)(0L)].dy);
+    __cascade.quadraticBezierTo(p[(int)(1L)].dx, p[(int)(1L)].dy, p[(int)(2L)].dx, p[(int)(2L)].dy);
+    __cascade.arcToPoint(p[(int)(3L)], radius: notchRadius, clockwise: false);
+    __cascade.quadraticBezierTo(p[(int)(4L)].dx, p[(int)(4L)].dy, p[(int)(5L)].dx, p[(int)(5L)].dy);
     __cascade.lineTo(host.right, host.top);
     __cascade.lineTo(host.right, host.bottom);
     __cascade.lineTo(host.left, host.bottom);
@@ -88,20 +88,20 @@ public class CircularNotchedRectangle : NotchedShape
         {
             ((Func<Path>)(() =>
 {
-    var __cascade = path__4516;
+    var __cascade = path;
     __cascade.lineTo(host.right, host.top);
     __cascade.lineTo(host.right, host.bottom);
-    __cascade.lineTo(p__3777[(int)(5L)].dx, p__3777[(int)(5L)].dy);
-    __cascade.quadraticBezierTo(p__3777[(int)(4L)].dx, p__3777[(int)(4L)].dy, p__3777[(int)(3L)].dx, p__3777[(int)(3L)].dy);
-    __cascade.arcToPoint(p__3777[(int)(2L)], radius: notchRadius__2579, clockwise: false);
-    __cascade.quadraticBezierTo(p__3777[(int)(1L)].dx, p__3777[(int)(1L)].dy, p__3777[(int)(0L)].dx, p__3777[(int)(0L)].dy);
+    __cascade.lineTo(p[(int)(5L)].dx, p[(int)(5L)].dy);
+    __cascade.quadraticBezierTo(p[(int)(4L)].dx, p[(int)(4L)].dy, p[(int)(3L)].dx, p[(int)(3L)].dy);
+    __cascade.arcToPoint(p[(int)(2L)], radius: notchRadius, clockwise: false);
+    __cascade.quadraticBezierTo(p[(int)(1L)].dx, p[(int)(1L)].dy, p[(int)(0L)].dx, p[(int)(0L)].dy);
     __cascade.lineTo(host.left, host.bottom);
     return __cascade;
 }))();
         }
         return ((Func<Path>)(() =>
 {
-    var __cascade = path__4516;
+    var __cascade = path;
     __cascade.close();
     return __cascade;
 }))();
@@ -123,14 +123,14 @@ public class AutomaticNotchedShape : NotchedShape
 
     public virtual Path getOuterPath(Rect host, Rect? guest)
     {
-        global::Doroti.Ui.Path hostPath__6594 = this.host.getOuterPath(host);
+        global::Doroti.Ui.Path hostPath = this.host.getOuterPath(host);
         if (((this.guest is not null) && (guest is not null)))
         {
             Rect guestRect__value6659 = DartRuntimePrimitives.RequireValue(guest);
-            global::Doroti.Ui.Path guestPath__6697 = this.guest!.getOuterPath(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(guestRect__value6659)));
-            return Dart_uiLibrary.Path.combine(PathOperation.difference, hostPath__6594, guestPath__6697);
+            global::Doroti.Ui.Path guestPath = this.guest!.getOuterPath(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(guestRect__value6659)));
+            return Dart_uiLibrary.Path.combine(PathOperation.difference, hostPath, guestPath);
         }
-        return hostPath__6594;
+        return hostPath;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

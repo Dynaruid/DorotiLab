@@ -103,13 +103,13 @@ public class ExpansionTileThemeData : global::Doroti.Framework.Foundation.Diagno
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -132,8 +132,8 @@ public class ExpansionTileTheme : global::Doroti.Framework.Widgets.InheritedThem
 
     public static ExpansionTileThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ExpansionTileTheme? inheritedTheme__10178 = ((ExpansionTileTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ExpansionTileTheme>());
-        return (inheritedTheme__10178?.data ?? Theme.of(context).expansionTileTheme);
+        ExpansionTileTheme? inheritedTheme = ((ExpansionTileTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ExpansionTileTheme>());
+        return (inheritedTheme?.data ?? Theme.of(context).expansionTileTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

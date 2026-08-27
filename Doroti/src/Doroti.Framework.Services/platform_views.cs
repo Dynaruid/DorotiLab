@@ -56,10 +56,10 @@ public class PlatformViewsService
         {
             case var __case2931 when object.Equals(__case2931, "viewFocused"):
                 {
-                    var id__2960 = ((long)call.arguments);
-                    if (_focusCallbacks.ContainsKey(id__2960))
+                    var id = ((long)call.arguments);
+                    if (_focusCallbacks.ContainsKey(id))
                     {
-                        _focusCallbacks.GetValueOrDefault(id__2960)!();
+                        _focusCallbacks.GetValueOrDefault(id)!();
                     }
                     break;
                 }
@@ -121,8 +121,8 @@ public class PlatformViewsService
         var args = new DartMap<string, object> { ["id"] = id, ["viewType"] = viewType, ["gestureBlockingPolicy"] = gestureBlockingPolicyValue };
         if ((creationParams is not null))
         {
-            ByteData paramsByteData__11083 = creationParamsCodec!.encodeMessage(creationParams)!;
-            args["params"] = new Uint8List(paramsByteData__11083.buffer, 0L, paramsByteData__11083.lengthInBytes);
+            ByteData paramsByteData = creationParamsCodec!.encodeMessage(creationParams)!;
+            args["params"] = new Uint8List(paramsByteData.buffer, 0L, paramsByteData.lengthInBytes);
         }
         await SystemChannels.platform_views.invokeMethod<object?>("create", args);
         if ((onFocus is not null))
@@ -139,8 +139,8 @@ public class PlatformViewsService
         var args = new DartMap<string, object> { ["id"] = id, ["viewType"] = viewType };
         if ((creationParams is not null))
         {
-            ByteData paramsByteData__12780 = creationParamsCodec!.encodeMessage(creationParams)!;
-            args["params"] = new Uint8List(paramsByteData__12780.buffer, 0L, paramsByteData__12780.lengthInBytes);
+            ByteData paramsByteData = creationParamsCodec!.encodeMessage(creationParams)!;
+            args["params"] = new Uint8List(paramsByteData.buffer, 0L, paramsByteData.lengthInBytes);
         }
         await SystemChannels.platform_views.invokeMethod<object?>("create", args);
         if ((onFocus is not null))
@@ -348,8 +348,8 @@ internal class _AndroidMotionEventConverter
         }
         if ((platformDataFlag == kPointerDataFlagMultiple))
         {
-            long originalPointerCount__26526 = (@event.platformData >> (int)(kPointerDataMultiplePointerCountShift));
-            if ((pointerIdx != (originalPointerCount__26526 - 1L)))
+            long originalPointerCount = (@event.platformData >> (int)(kPointerDataMultiplePointerCountShift));
+            if ((pointerIdx != (originalPointerCount - 1L)))
             {
                 return null;
             }
@@ -809,8 +809,8 @@ internal interface _AndroidViewControllerInternals
         var args = new DartMap<string, object> { ["id"] = viewId, ["viewType"] = viewType, ["direction"] = AndroidViewController._getAndroidDirection(layoutDirection), ["width"] = size?.width, ["height"] = size?.height, ["left"] = position?.dx, ["top"] = position?.dy };
         if ((creationParams is not null))
         {
-            ByteData paramsByteData__51813 = creationParams.codec.encodeMessage(creationParams.data)!;
-            args["params"] = new Uint8List(paramsByteData__51813.buffer, 0L, paramsByteData__51813.lengthInBytes);
+            ByteData paramsByteData = creationParams.codec.encodeMessage(creationParams.data)!;
+            args["params"] = new Uint8List(paramsByteData.buffer, 0L, paramsByteData.lengthInBytes);
         }
         if (useNewController)
         {

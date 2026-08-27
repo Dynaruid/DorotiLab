@@ -239,9 +239,9 @@ internal class _CupertinoButtonState__button : global::Doroti.Framework.Widgets.
             _buttonHeldDown = false;
             _animate();
         }
-        var renderObject__13095 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        global::Doroti.Ui.Offset localPosition__13169 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)renderObject__13095).globalToLocal(((global::Doroti.Framework.Gestures.TapUpDetails)@event).globalPosition))));
-        if (((global::Doroti.Framework.Rendering.RenderBox)renderObject__13095).paintBounds.inflate(CupertinoButton.tapMoveSlop()).contains(localPosition__13169))
+        var renderObject = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
+        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)renderObject).globalToLocal(((global::Doroti.Framework.Gestures.TapUpDetails)@event).globalPosition))));
+        if (((global::Doroti.Framework.Rendering.RenderBox)renderObject).paintBounds.inflate(CupertinoButton.tapMoveSlop()).contains(localPosition))
         {
             _handleTap();
         }
@@ -262,12 +262,12 @@ internal class _CupertinoButtonState__button : global::Doroti.Framework.Widgets.
 
     internal virtual void _handleTapMove(global::Doroti.Framework.Gestures.TapMoveDetails @event)
     {
-        var renderObject__13592 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
-        global::Doroti.Ui.Offset localPosition__13666 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)renderObject__13592).globalToLocal(((global::Doroti.Framework.Gestures.TapMoveDetails)@event).globalPosition))));
-        bool buttonShouldHeldDown__13747 = DartRuntimePrimitives.ConvertValue<bool>(((global::Doroti.Framework.Rendering.RenderBox)renderObject__13592).paintBounds.inflate(CupertinoButton.tapMoveSlop()).contains(localPosition__13666));
-        if ((this._tapInProgress && (buttonShouldHeldDown__13747 != this._buttonHeldDown)))
+        var renderObject = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.context.findRenderObject()!)!;
+        global::Doroti.Ui.Offset localPosition = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Offset>(((Offset)((dynamic)renderObject).globalToLocal(((global::Doroti.Framework.Gestures.TapMoveDetails)@event).globalPosition))));
+        bool buttonShouldHeldDown = DartRuntimePrimitives.ConvertValue<bool>(((global::Doroti.Framework.Rendering.RenderBox)renderObject).paintBounds.inflate(CupertinoButton.tapMoveSlop()).contains(localPosition));
+        if ((this._tapInProgress && (buttonShouldHeldDown != this._buttonHeldDown)))
         {
-            _buttonHeldDown = buttonShouldHeldDown__13747;
+            _buttonHeldDown = buttonShouldHeldDown;
             _animate();
         }
     }
@@ -287,11 +287,11 @@ internal class _CupertinoButtonState__button : global::Doroti.Framework.Widgets.
         {
             return;
         }
-        bool wasHeldDown__14307 = this._buttonHeldDown;
-        global::Doroti.Framework.Scheduler.TickerFuture ticker__14361 = (this._buttonHeldDown ? this._animationController.animateTo(1.0, duration: kFadeOutDuration, curve: global::Doroti.Framework.Animation.Curves.easeInOutCubicEmphasized) : this._animationController.animateTo(0.0, duration: kFadeInDuration, curve: global::Doroti.Framework.Animation.Curves.easeOutCubic));
-        DartRuntimePrimitives.Ignore(ticker__14361.then(((global::System.Func<object?, object>)((value) =>
+        bool wasHeldDown = this._buttonHeldDown;
+        global::Doroti.Framework.Scheduler.TickerFuture ticker = (this._buttonHeldDown ? this._animationController.animateTo(1.0, duration: kFadeOutDuration, curve: global::Doroti.Framework.Animation.Curves.easeInOutCubicEmphasized) : this._animationController.animateTo(0.0, duration: kFadeInDuration, curve: global::Doroti.Framework.Animation.Curves.easeOutCubic));
+        DartRuntimePrimitives.Ignore(ticker.then(((global::System.Func<object?, object>)((value) =>
         {
-            if ((this.mounted && (wasHeldDown__14307 != this._buttonHeldDown)))
+            if ((this.mounted && (wasHeldDown != this._buttonHeldDown)))
             {
                 _animate();
             }
@@ -309,30 +309,30 @@ internal class _CupertinoButtonState__button : global::Doroti.Framework.Widgets.
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        bool enabled__15170 = ((CupertinoButton)this.widget).enabled;
-        global::Doroti.Ui.Size? minimumSize__15212 = ((global::Doroti.Ui.Size?)(object?)((((CupertinoButton)this.widget).minimumSize is null) ? ((((CupertinoButton)this.widget).minSize is null) ? null : new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(((CupertinoButton)this.widget).minSize), DartRuntimePrimitives.RequireValue(((CupertinoButton)this.widget).minSize))) : DartRuntimePrimitives.RequireValue(((CupertinoButton)this.widget).minimumSize)));
-        CupertinoThemeData themeData__15422 = CupertinoTheme.of(context);
-        global::Doroti.Ui.Color primaryColor__15478 = ((global::Doroti.Ui.Color)(object?)themeData__15422.primaryColor);
-        global::Doroti.Ui.Color? backgroundColor__15534 = ((global::Doroti.Ui.Color?)(object?)(((((CupertinoButton)this.widget).color is null) ? ((!object.Equals(((CupertinoButton)this.widget)._style, _CupertinoButtonStyle__button.plain)) ? primaryColor__15478 : null) : CupertinoDynamicColor.maybeResolve(((CupertinoButton)this.widget).color, context)))?.withOpacity(((object.Equals(((CupertinoButton)this.widget)._style, _CupertinoButtonStyle__button.tinted)) ? ((object.Equals(CupertinoTheme.brightnessOf(context), Brightness.light)) ? ConstantsLibrary.kCupertinoButtonTintedOpacityLight : ConstantsLibrary.kCupertinoButtonTintedOpacityDark) : (((CupertinoButton)this.widget).color?.opacity ?? 1.0))));
-        global::Doroti.Ui.Color effectiveForegroundColor__16154 = ((global::Doroti.Ui.Color)(object?)(((CupertinoButton)this.widget).foregroundColor ?? ((((CupertinoButton)this.widget)._style, enabled__15170) switch { (_CupertinoButtonStyle__button.filled, _) => themeData__15422.primaryContrastingColor, (_, true) => primaryColor__15478, (_, false) => CupertinoDynamicColor.resolve(CupertinoColors.tertiaryLabel, context) })));
-        global::Doroti.Ui.Color effectiveFocusOutlineColor__16501 = ((global::Doroti.Ui.Color)(object?)((((CupertinoButton)this.widget).focusColor ?? (Color)global::Doroti.Framework.Painting.HSLColor.CreateFromColor(((backgroundColor__15534 ?? CupertinoColors.activeBlue)).withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)).withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness).withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation).toColor())));
-        global::Doroti.Framework.Painting.TextStyle textStyle__16902 = ((global::Doroti.Framework.Painting.TextStyle)(object?)(((object.Equals(((CupertinoButton)this.widget).sizeStyle, CupertinoButtonSize.small)) ? themeData__15422.textTheme.actionSmallTextStyle : themeData__15422.textTheme.actionTextStyle)).copyWith(color: effectiveForegroundColor__16154));
-        global::Doroti.Framework.Widgets.IconThemeData iconTheme__17163 = ((global::Doroti.Framework.Widgets.IconThemeData)(object?)IconTheme.of(context).copyWith(color: effectiveForegroundColor__16154, size: ((((global::Doroti.Framework.Painting.TextStyle)textStyle__16902).fontSize is not null) ? (DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.TextStyle)textStyle__16902).fontSize) * 1.2) : ConstantsLibrary.kCupertinoButtonDefaultIconSize)));
-        global::Doroti.Framework.Gestures.DeviceGestureSettings? gestureSettings__17409 = ((global::Doroti.Framework.Gestures.DeviceGestureSettings?)(object?)MediaQuery.maybeGestureSettingsOf(context));
-        var states__17482 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection17491 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!enabled__15170) { __collection17491.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } if (this._tapInProgress) { __collection17491.Add(global::Doroti.Framework.Widgets.WidgetState.pressed); } if (this.isFocused) { __collection17491.Add(global::Doroti.Framework.Widgets.WidgetState.focused); } return __collection17491; }))();
-        global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor__17666 = ((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((CupertinoButton)this.widget).mouseCursor, states__17482) ?? (global::Doroti.Framework.Services.MouseCursor)_defaultCursor.resolve(states__17482)));
-        var shapeDecoration__17823 = new global::Doroti.Framework.Painting.ShapeDecoration(shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(side: ((enabled__15170 && this.isFocused) ? new global::Doroti.Framework.Painting.BorderSide(color: effectiveFocusOutlineColor__16501, width: 3.5, strokeAlign: global::Doroti.Framework.Painting.BorderSide.strokeAlignOutside) : global::Doroti.Framework.Painting.BorderSide.none), borderRadius: (((CupertinoButton)this.widget).borderRadius ?? ConstantsLibrary.kCupertinoButtonSizeBorderRadius.GetValueOrDefault(((CupertinoButton)this.widget).sizeStyle))), color: (((backgroundColor__15534 is not null) && !enabled__15170) ? CupertinoDynamicColor.resolve(((CupertinoButton)this.widget).disabledColor, context) : backgroundColor__15534));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MouseRegion(cursor: effectiveMouseCursor__17666, child: new global::Doroti.Framework.Widgets.FocusableActionDetector(actions: this._actionMap, focusNode: ((CupertinoButton)this.widget).focusNode, autofocus: ((CupertinoButton)this.widget).autofocus, onFocusChange: (global::System.Action<bool>?)((CupertinoButton)this.widget).onFocusChange, onShowFocusHighlight: (global::System.Action<bool>)this._onShowFocusHighlight, enabled: enabled__15170, child: new global::Doroti.Framework.Widgets.RawGestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, gestures: new DartMap<Type, dynamic>
+        bool enabledLocal = ((CupertinoButton)this.widget).enabled;
+        global::Doroti.Ui.Size? minimumSizeLocal = ((global::Doroti.Ui.Size?)(object?)((((CupertinoButton)this.widget).minimumSize is null) ? ((((CupertinoButton)this.widget).minSize is null) ? null : new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(((CupertinoButton)this.widget).minSize), DartRuntimePrimitives.RequireValue(((CupertinoButton)this.widget).minSize))) : DartRuntimePrimitives.RequireValue(((CupertinoButton)this.widget).minimumSize)));
+        CupertinoThemeData themeData = CupertinoTheme.of(context);
+        global::Doroti.Ui.Color primaryColorLocal = ((global::Doroti.Ui.Color)(object?)themeData.primaryColor);
+        global::Doroti.Ui.Color? backgroundColor = ((global::Doroti.Ui.Color?)(object?)(((((CupertinoButton)this.widget).color is null) ? ((!object.Equals(((CupertinoButton)this.widget)._style, _CupertinoButtonStyle__button.plain)) ? primaryColorLocal : null) : CupertinoDynamicColor.maybeResolve(((CupertinoButton)this.widget).color, context)))?.withOpacity(((object.Equals(((CupertinoButton)this.widget)._style, _CupertinoButtonStyle__button.tinted)) ? ((object.Equals(CupertinoTheme.brightnessOf(context), Brightness.light)) ? ConstantsLibrary.kCupertinoButtonTintedOpacityLight : ConstantsLibrary.kCupertinoButtonTintedOpacityDark) : (((CupertinoButton)this.widget).color?.opacity ?? 1.0))));
+        global::Doroti.Ui.Color effectiveForegroundColor = ((global::Doroti.Ui.Color)(object?)(((CupertinoButton)this.widget).foregroundColor ?? ((((CupertinoButton)this.widget)._style, enabledLocal) switch { (_CupertinoButtonStyle__button.filled, _) => themeData.primaryContrastingColor, (_, true) => primaryColorLocal, (_, false) => CupertinoDynamicColor.resolve(CupertinoColors.tertiaryLabel, context) })));
+        global::Doroti.Ui.Color effectiveFocusOutlineColor = ((global::Doroti.Ui.Color)(object?)((((CupertinoButton)this.widget).focusColor ?? (Color)global::Doroti.Framework.Painting.HSLColor.CreateFromColor(((backgroundColor ?? CupertinoColors.activeBlue)).withOpacity(ConstantsLibrary.kCupertinoFocusColorOpacity)).withLightness(ConstantsLibrary.kCupertinoFocusColorBrightness).withSaturation(ConstantsLibrary.kCupertinoFocusColorSaturation).toColor())));
+        global::Doroti.Framework.Painting.TextStyle textStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)(((object.Equals(((CupertinoButton)this.widget).sizeStyle, CupertinoButtonSize.small)) ? themeData.textTheme.actionSmallTextStyle : themeData.textTheme.actionTextStyle)).copyWith(color: effectiveForegroundColor));
+        global::Doroti.Framework.Widgets.IconThemeData iconTheme = ((global::Doroti.Framework.Widgets.IconThemeData)(object?)IconTheme.of(context).copyWith(color: effectiveForegroundColor, size: ((((global::Doroti.Framework.Painting.TextStyle)textStyle).fontSize is not null) ? (DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.TextStyle)textStyle).fontSize) * 1.2) : ConstantsLibrary.kCupertinoButtonDefaultIconSize)));
+        global::Doroti.Framework.Gestures.DeviceGestureSettings? gestureSettingsLocal = ((global::Doroti.Framework.Gestures.DeviceGestureSettings?)(object?)MediaQuery.maybeGestureSettingsOf(context));
+        var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection17491 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!enabledLocal) { __collection17491.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } if (this._tapInProgress) { __collection17491.Add(global::Doroti.Framework.Widgets.WidgetState.pressed); } if (this.isFocused) { __collection17491.Add(global::Doroti.Framework.Widgets.WidgetState.focused); } return __collection17491; }))();
+        global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = ((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((CupertinoButton)this.widget).mouseCursor, states) ?? (global::Doroti.Framework.Services.MouseCursor)_defaultCursor.resolve(states)));
+        var shapeDecoration = new global::Doroti.Framework.Painting.ShapeDecoration(shape: new global::Doroti.Framework.Painting.RoundedSuperellipseBorder(side: ((enabledLocal && this.isFocused) ? new global::Doroti.Framework.Painting.BorderSide(color: effectiveFocusOutlineColor, width: 3.5, strokeAlign: global::Doroti.Framework.Painting.BorderSide.strokeAlignOutside) : global::Doroti.Framework.Painting.BorderSide.none), borderRadius: (((CupertinoButton)this.widget).borderRadius ?? ConstantsLibrary.kCupertinoButtonSizeBorderRadius.GetValueOrDefault(((CupertinoButton)this.widget).sizeStyle))), color: (((backgroundColor is not null) && !enabledLocal) ? CupertinoDynamicColor.resolve(((CupertinoButton)this.widget).disabledColor, context) : backgroundColor));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MouseRegion(cursor: effectiveMouseCursor, child: new global::Doroti.Framework.Widgets.FocusableActionDetector(actions: this._actionMap, focusNode: ((CupertinoButton)this.widget).focusNode, autofocus: ((CupertinoButton)this.widget).autofocus, onFocusChange: (global::System.Action<bool>?)((CupertinoButton)this.widget).onFocusChange, onShowFocusHighlight: (global::System.Action<bool>)this._onShowFocusHighlight, enabled: enabledLocal, child: new global::Doroti.Framework.Widgets.RawGestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, gestures: new DartMap<Type, dynamic>
         {
             [typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)] = new global::Doroti.Framework.Widgets.GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapGestureRecognizer(postAcceptSlopTolerance: null))), ((global::System.Action<global::Doroti.Framework.Gestures.TapGestureRecognizer>)((instance) =>
             {
-                instance.onTapDown = (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(enabled__15170 ? this._handleTapDown : null));
-                instance.onTapUp = (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)(enabled__15170 ? this._handleTapUp : null));
-                instance.onTapCancel = (global::System.Action)((global::System.Action)(enabled__15170 ? this._handleTapCancel : null));
-                instance.onTapMove = (global::System.Action<global::Doroti.Framework.Gestures.TapMoveDetails>)((global::System.Action<global::Doroti.Framework.Gestures.TapMoveDetails>)(enabled__15170 ? this._handleTapMove : null));
-                instance.gestureSettings = gestureSettings__17409;
+                instance.onTapDown = (global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(enabledLocal ? this._handleTapDown : null));
+                instance.onTapUp = (global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)((global::System.Action<global::Doroti.Framework.Gestures.TapUpDetails>)(enabledLocal ? this._handleTapUp : null));
+                instance.onTapCancel = (global::System.Action)((global::System.Action)(enabledLocal ? this._handleTapCancel : null));
+                instance.onTapMove = (global::System.Action<global::Doroti.Framework.Gestures.TapMoveDetails>)((global::System.Action<global::Doroti.Framework.Gestures.TapMoveDetails>)(enabledLocal ? this._handleTapMove : null));
+                instance.gestureSettings = gestureSettingsLocal;
             })))
-        }, child: new global::Doroti.Framework.Widgets.Semantics(button: true, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: ((minimumSize__15212?.width ?? DartCollectionRuntime.NullableMapValue<double>(ConstantsLibrary.kCupertinoButtonMinSize, ((CupertinoButton)this.widget).sizeStyle)) ?? ConstantsLibrary.kMinInteractiveDimensionCupertino), minHeight: ((minimumSize__15212?.height ?? DartCollectionRuntime.NullableMapValue<double>(ConstantsLibrary.kCupertinoButtonMinSize, ((CupertinoButton)this.widget).sizeStyle)) ?? ConstantsLibrary.kMinInteractiveDimensionCupertino)), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._opacityAnimation, child: new global::Doroti.Framework.Widgets.DecoratedBox(decoration: shapeDecoration__17823, child: new global::Doroti.Framework.Widgets.Padding(padding: (((CupertinoButton)this.widget).padding ?? ConstantsLibrary.kCupertinoButtonPadding.GetValueOrDefault(((CupertinoButton)this.widget).sizeStyle)!), child: new global::Doroti.Framework.Widgets.Align(alignment: ((CupertinoButton)this.widget).alignment, widthFactor: 1.0, heightFactor: 1.0, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle__16902, child: new global::Doroti.Framework.Widgets.IconTheme(data: iconTheme__17163, child: ((CupertinoButton)this.widget).child))))))))))));
+        }, child: new global::Doroti.Framework.Widgets.Semantics(button: true, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: ((minimumSizeLocal?.width ?? DartCollectionRuntime.NullableMapValue<double>(ConstantsLibrary.kCupertinoButtonMinSize, ((CupertinoButton)this.widget).sizeStyle)) ?? ConstantsLibrary.kMinInteractiveDimensionCupertino), minHeight: ((minimumSizeLocal?.height ?? DartCollectionRuntime.NullableMapValue<double>(ConstantsLibrary.kCupertinoButtonMinSize, ((CupertinoButton)this.widget).sizeStyle)) ?? ConstantsLibrary.kMinInteractiveDimensionCupertino)), child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._opacityAnimation, child: new global::Doroti.Framework.Widgets.DecoratedBox(decoration: shapeDecoration, child: new global::Doroti.Framework.Widgets.Padding(padding: (((CupertinoButton)this.widget).padding ?? ConstantsLibrary.kCupertinoButtonPadding.GetValueOrDefault(((CupertinoButton)this.widget).sizeStyle)!), child: new global::Doroti.Framework.Widgets.Align(alignment: ((CupertinoButton)this.widget).alignment, widthFactor: 1.0, heightFactor: 1.0, child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle, child: new global::Doroti.Framework.Widgets.IconTheme(data: iconTheme, child: ((CupertinoButton)this.widget).child))))))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -362,31 +362,31 @@ internal class _CupertinoButtonState__button : global::Doroti.Framework.Widgets.
 
     public virtual void _updateTicker()
     {
-        TickerModeData values__15157 = this._tickerModeNotifier!.value;
+        TickerModeData values = this._tickerModeNotifier!.value;
         if ((this._ticker is not null))
         {
-            this._ticker!.muted = !((TickerModeData)values__15157).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values__15157).forceFrames;
+            this._ticker!.muted = !((TickerModeData)values).enabled;
+            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier__15400.addListener(() => this._updateTicker());
-        this._tickerModeNotifier = newNotifier__15400;
+        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }

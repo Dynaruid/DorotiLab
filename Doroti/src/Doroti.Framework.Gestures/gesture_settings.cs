@@ -25,8 +25,8 @@ public class DeviceGestureSettings
 
     public static DeviceGestureSettings CreateFromView(DorotiView view)
     {
-        double? physicalTouchSlop__936 = view.gestureSettings.physicalTouchSlop;
-        return new DeviceGestureSettings(touchSlop: ((physicalTouchSlop__936 is null) ? null : (DartRuntimePrimitives.RequireValue(physicalTouchSlop__936) / view.devicePixelRatio)));
+        double? physicalTouchSlopLocal = view.gestureSettings.physicalTouchSlop;
+        return new DeviceGestureSettings(touchSlop: ((physicalTouchSlopLocal is null) ? null : (DartRuntimePrimitives.RequireValue(physicalTouchSlopLocal) / view.devicePixelRatio)));
     }
 
     public virtual double? panSlop => ((this.touchSlop is not null) ? ((DartRuntimePrimitives.RequireValue(this.touchSlop) * 2L)) : null);

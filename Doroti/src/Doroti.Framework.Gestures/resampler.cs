@@ -47,39 +47,39 @@ public class PointerEventResampler
 
     internal virtual global::Doroti.Ui.Offset _positionAt(Duration sampleTime)
     {
-        double x__4072 = (this._next?.position.dx ?? 0.0);
-        double y__4114 = (this._next?.position.dy ?? 0.0);
-        Duration nextTimeStamp__4165 = (this._next?.timeStamp ?? Duration.zero);
-        Duration lastTimeStamp__4235 = (this._last?.timeStamp ?? Duration.zero);
-        if (((nextTimeStamp__4165 > sampleTime) && (nextTimeStamp__4165 > lastTimeStamp__4235)))
+        double x = (this._next?.position.dx ?? 0.0);
+        double y = (this._next?.position.dy ?? 0.0);
+        Duration nextTimeStamp = (this._next?.timeStamp ?? Duration.zero);
+        Duration lastTimeStamp = (this._last?.timeStamp ?? Duration.zero);
+        if (((nextTimeStamp > sampleTime) && (nextTimeStamp > lastTimeStamp)))
         {
-            double interval__4436 = ((nextTimeStamp__4165 - lastTimeStamp__4235)).inMicroseconds.toDouble();
-            double scalar__4525 = (((sampleTime - lastTimeStamp__4235)).inMicroseconds.toDouble() / interval__4436);
-            double lastX__4620 = (this._last?.position.dx ?? 0.0);
-            double lastY__4674 = (this._last?.position.dy ?? 0.0);
-            x__4072 = (lastX__4620 + (((x__4072 - lastX__4620)) * scalar__4525));
-            y__4114 = (lastY__4674 + (((y__4114 - lastY__4674)) * scalar__4525));
+            double interval = ((nextTimeStamp - lastTimeStamp)).inMicroseconds.toDouble();
+            double scalar = (((sampleTime - lastTimeStamp)).inMicroseconds.toDouble() / interval);
+            double lastX = (this._last?.position.dx ?? 0.0);
+            double lastY = (this._last?.position.dy ?? 0.0);
+            x = (lastX + (((x - lastX)) * scalar));
+            y = (lastY + (((y - lastY)) * scalar));
         }
-        return new global::Doroti.Ui.Offset(x__4072, y__4114);
+        return new global::Doroti.Ui.Offset(x, y);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _processPointerEvents(Duration sampleTime)
     {
-        IEnumerator<PointerEvent> it__4911 = this._queuedEvents.GetEnumerator();
-        while (it__4911.MoveNext())
+        IEnumerator<PointerEvent> it = this._queuedEvents.GetEnumerator();
+        while (it.MoveNext())
         {
-            PointerEvent @event__4993 = it__4911.Current;
-            if (((((PointerEvent)@event__4993).timeStamp <= sampleTime) || (this._last is null)))
+            PointerEvent @event = it.Current;
+            if (((((PointerEvent)@event).timeStamp <= sampleTime) || (this._last is null)))
             {
-                _last = @event__4993;
-                _next = @event__4993;
+                _last = @event;
+                _next = @event;
                 continue;
             }
-            Duration nextTimeStamp__5420 = (this._next?.timeStamp ?? Duration.zero);
-            if ((nextTimeStamp__5420 < sampleTime))
+            Duration nextTimeStamp = (this._next?.timeStamp ?? Duration.zero);
+            if ((nextTimeStamp < sampleTime))
             {
-                _next = @event__4993;
+                _next = @event;
                 break;
             }
         }
@@ -87,23 +87,23 @@ public class PointerEventResampler
 
     internal virtual void _dequeueAndSampleNonHoverOrMovePointerEventsUntil(Duration sampleTime, Duration nextSampleTime, Action<PointerEvent> callback)
     {
-        var endTime__5728 = sampleTime;
-        IEnumerator<PointerEvent> it__5832 = this._queuedEvents.GetEnumerator();
-        while (it__5832.MoveNext())
+        var endTime = sampleTime;
+        IEnumerator<PointerEvent> it = this._queuedEvents.GetEnumerator();
+        while (it.MoveNext())
         {
-            PointerEvent @event__5914 = it__5832.Current;
-            if ((((PointerEvent)@event__5914).timeStamp > sampleTime))
+            PointerEvent @event = it.Current;
+            if ((((PointerEvent)@event).timeStamp > sampleTime))
             {
-                if ((((PointerEvent)@event__5914).timeStamp >= nextSampleTime))
+                if ((((PointerEvent)@event).timeStamp >= nextSampleTime))
                 {
                     break;
                 }
-                if (((@event__5914 is PointerUpEvent) || (@event__5914 is PointerRemovedEvent)))
+                if (((@event is PointerUpEvent) || (@event is PointerRemovedEvent)))
                 {
-                    endTime__5728 = ((PointerEvent)@event__5914).timeStamp;
+                    endTime = ((PointerEvent)@event).timeStamp;
                     continue;
                 }
-                if (((@event__5914 is not PointerMoveEvent) && (@event__5914 is not PointerHoverEvent)))
+                if (((@event is not PointerMoveEvent) && (@event is not PointerHoverEvent)))
                 {
                     break;
                 }
@@ -111,34 +111,34 @@ public class PointerEventResampler
         }
         while ((this._queuedEvents.Count != 0))
         {
-            PointerEvent @event__6750 = this._queuedEvents.Peek();
-            if ((((PointerEvent)@event__6750).timeStamp > endTime__5728))
+            PointerEvent eventLocal = this._queuedEvents.Peek();
+            if ((((PointerEvent)eventLocal).timeStamp > endTime))
             {
                 break;
             }
-            bool wasTracked__6924 = this._isTracked;
-            bool wasDown__6966 = this._isDown;
-            long hadButtons__7001 = this._hasButtons;
-            _isTracked = (@event__6750 is not PointerRemovedEvent);
-            _isDown = ((PointerEvent)@event__6750).down;
-            _hasButtons = ((PointerEvent)@event__6750).buttons;
-            global::Doroti.Ui.Offset position__7227 = _positionAt(sampleTime);
-            if ((this._isTracked && !wasTracked__6924))
+            bool wasTracked = this._isTracked;
+            bool wasDown = this._isDown;
+            long hadButtons = this._hasButtons;
+            _isTracked = (eventLocal is not PointerRemovedEvent);
+            _isDown = ((PointerEvent)eventLocal).down;
+            _hasButtons = ((PointerEvent)eventLocal).buttons;
+            global::Doroti.Ui.Offset positionLocal = _positionAt(sampleTime);
+            if ((this._isTracked && !wasTracked))
             {
-                _position = position__7227;
+                _position = positionLocal;
             }
-            long pointerIdentifier__7466 = ((PointerEvent)@event__6750).pointer;
-            DartRuntimePrimitives.Assert(() => (!wasDown__6966 || (this._pointerIdentifier == pointerIdentifier__7466)));
-            _pointerIdentifier = pointerIdentifier__7466;
-            if (((@event__6750 is not PointerMoveEvent) && (@event__6750 is not PointerHoverEvent)))
+            long pointerIdentifier = ((PointerEvent)eventLocal).pointer;
+            DartRuntimePrimitives.Assert(() => (!wasDown || (this._pointerIdentifier == pointerIdentifier)));
+            _pointerIdentifier = pointerIdentifier;
+            if (((eventLocal is not PointerMoveEvent) && (eventLocal is not PointerHoverEvent)))
             {
-                if ((!object.Equals(position__7227, this._position)))
+                if ((!object.Equals(positionLocal, this._position)))
                 {
-                    global::Doroti.Ui.Offset delta__8267 = (position__7227 - this._position);
-                    callback(_toMoveOrHoverEvent(@event__6750, position__7227, delta__8267, this._pointerIdentifier, sampleTime, wasDown__6966, hadButtons__7001));
-                    _position = position__7227;
+                    global::Doroti.Ui.Offset deltaLocal = (positionLocal - this._position);
+                    callback(_toMoveOrHoverEvent(eventLocal, positionLocal, deltaLocal, this._pointerIdentifier, sampleTime, wasDown, hadButtons));
+                    _position = positionLocal;
                 }
-                callback(@event__6750.copyWith(position: position__7227, delta: Offset.zero, pointer: pointerIdentifier__7466, timeStamp: sampleTime));
+                callback(eventLocal.copyWith(position: positionLocal, delta: Offset.zero, pointer: pointerIdentifier, timeStamp: sampleTime));
             }
             this._queuedEvents.Dequeue();
         }
@@ -146,13 +146,13 @@ public class PointerEventResampler
 
     internal virtual void _samplePointerPosition(Duration sampleTime, Action<PointerEvent> callback)
     {
-        global::Doroti.Ui.Offset position__8990 = _positionAt(sampleTime);
-        PointerEvent? next__9112 = this._next;
-        if (((!object.Equals(position__8990, this._position)) && (next__9112 is not null)))
+        global::Doroti.Ui.Offset position = _positionAt(sampleTime);
+        PointerEvent? next = this._next;
+        if (((!object.Equals(position, this._position)) && (next is not null)))
         {
-            global::Doroti.Ui.Offset delta__9194 = (position__8990 - this._position);
-            callback(_toMoveOrHoverEvent(next__9112, position__8990, delta__9194, this._pointerIdentifier, sampleTime, this._isDown, this._hasButtons));
-            _position = position__8990;
+            global::Doroti.Ui.Offset delta = (position - this._position);
+            callback(_toMoveOrHoverEvent(next, position, delta, this._pointerIdentifier, sampleTime, this._isDown, this._hasButtons));
+            _position = position;
         }
     }
 

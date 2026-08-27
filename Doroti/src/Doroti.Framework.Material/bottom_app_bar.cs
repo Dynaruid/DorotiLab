@@ -58,22 +58,22 @@ internal class _BottomAppBarState__bottom_app_bar : global::Doroti.Framework.Wid
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ThemeData theme__6766 = Theme.of(context);
-        bool isMaterial3__6808 = theme__6766.useMaterial3;
-        BottomAppBarThemeData babTheme__6874 = BottomAppBarTheme.of(context);
-        BottomAppBarThemeData defaults__6948 = (isMaterial3__6808 ? new _BottomAppBarDefaultsM3__bottom_app_bar(context) : new _BottomAppBarDefaultsM2__bottom_app_bar(context));
-        bool hasFab__7074 = Scaffold.of(context).hasFloatingActionButton;
-        global::Doroti.Framework.Painting.NotchedShape? notchedShape__7153 = ((((BottomAppBar)this.widget).shape ?? babTheme__6874.shape) ?? defaults__6948.shape);
-        global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.Path> clipper__7248 = ((global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.Path>)(object?)(((notchedShape__7153 is not null) && hasFab__7074) ? new _BottomAppBarClipper__bottom_app_bar(geometry: this.geometryListenable, shape: notchedShape__7153, materialKey: this.materialKey, notchMargin: ((BottomAppBar)this.widget).notchMargin) : new global::Doroti.Framework.Rendering.ShapeBorderClipper(shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder())));
-        double elevation__7577 = ((((BottomAppBar)this.widget).elevation ?? babTheme__6874.elevation) ?? DartRuntimePrimitives.RequireValue(defaults__6948.elevation));
-        double? height__7670 = ((((BottomAppBar)this.widget).height ?? babTheme__6874.height) ?? defaults__6948.height);
-        global::Doroti.Ui.Color color__7748 = ((global::Doroti.Ui.Color)(object?)((((BottomAppBar)this.widget).color ?? babTheme__6874.color) ?? defaults__6948.color!));
-        global::Doroti.Ui.Color surfaceTintColor__7823 = ((global::Doroti.Ui.Color)(object?)((((BottomAppBar)this.widget).surfaceTintColor ?? babTheme__6874.surfaceTintColor) ?? defaults__6948.surfaceTintColor!));
-        global::Doroti.Ui.Color effectiveColor__7950 = ((global::Doroti.Ui.Color)(object?)(isMaterial3__6808 ? ElevationOverlay.applySurfaceTint(color__7748, surfaceTintColor__7823, elevation__7577) : ElevationOverlay.applyOverlay(context, color__7748, elevation__7577)));
-        global::Doroti.Ui.Color shadowColor__8143 = ((global::Doroti.Ui.Color)(object?)((((BottomAppBar)this.widget).shadowColor ?? babTheme__6874.shadowColor) ?? defaults__6948.shadowColor!));
-        global::Doroti.Framework.Widgets.Widget child__8244 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: height__7670, child: new global::Doroti.Framework.Widgets.Padding(padding: ((((BottomAppBar)this.widget).padding ?? babTheme__6874.padding) ?? ((isMaterial3__6808 ? global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 12.0, horizontal: 16.0) : global::Doroti.Framework.Painting.EdgeInsets.zero))), child: ((BottomAppBar)this.widget).child)));
-        var material__8581 = new Material(key: this.materialKey, type: MaterialType.transparency, child: new global::Doroti.Framework.Widgets.SafeArea(child: child__8244));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.PhysicalShape(clipper: clipper__7248, elevation: elevation__7577, shadowColor: shadowColor__8143, color: effectiveColor__7950, clipBehavior: ((BottomAppBar)this.widget).clipBehavior, child: material__8581));
+        ThemeData theme = Theme.of(context);
+        bool isMaterial3 = theme.useMaterial3;
+        BottomAppBarThemeData babTheme = BottomAppBarTheme.of(context);
+        BottomAppBarThemeData defaults = (isMaterial3 ? new _BottomAppBarDefaultsM3__bottom_app_bar(context) : new _BottomAppBarDefaultsM2__bottom_app_bar(context));
+        bool hasFab = Scaffold.of(context).hasFloatingActionButton;
+        global::Doroti.Framework.Painting.NotchedShape? notchedShape = ((((BottomAppBar)this.widget).shape ?? babTheme.shape) ?? defaults.shape);
+        global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.Path> clipperLocal = ((global::Doroti.Framework.Rendering.CustomClipper<global::Doroti.Ui.Path>)(object?)(((notchedShape is not null) && hasFab) ? new _BottomAppBarClipper__bottom_app_bar(geometry: this.geometryListenable, shape: notchedShape, materialKey: this.materialKey, notchMargin: ((BottomAppBar)this.widget).notchMargin) : new global::Doroti.Framework.Rendering.ShapeBorderClipper(shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder())));
+        double elevationLocal = ((((BottomAppBar)this.widget).elevation ?? babTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation));
+        double? heightLocal = ((((BottomAppBar)this.widget).height ?? babTheme.height) ?? defaults.height);
+        global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)(object?)((((BottomAppBar)this.widget).color ?? babTheme.color) ?? defaults.color!));
+        global::Doroti.Ui.Color surfaceTintColorLocal = ((global::Doroti.Ui.Color)(object?)((((BottomAppBar)this.widget).surfaceTintColor ?? babTheme.surfaceTintColor) ?? defaults.surfaceTintColor!));
+        global::Doroti.Ui.Color effectiveColor = ((global::Doroti.Ui.Color)(object?)(isMaterial3 ? ElevationOverlay.applySurfaceTint(colorLocal, surfaceTintColorLocal, elevationLocal) : ElevationOverlay.applyOverlay(context, colorLocal, elevationLocal)));
+        global::Doroti.Ui.Color shadowColorLocal = ((global::Doroti.Ui.Color)(object?)((((BottomAppBar)this.widget).shadowColor ?? babTheme.shadowColor) ?? defaults.shadowColor!));
+        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: heightLocal, child: new global::Doroti.Framework.Widgets.Padding(padding: ((((BottomAppBar)this.widget).padding ?? babTheme.padding) ?? ((isMaterial3 ? global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 12.0, horizontal: 16.0) : global::Doroti.Framework.Painting.EdgeInsets.zero))), child: ((BottomAppBar)this.widget).child)));
+        var material = new Material(key: this.materialKey, type: MaterialType.transparency, child: new global::Doroti.Framework.Widgets.SafeArea(child: childLocal));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.PhysicalShape(clipper: clipperLocal, elevation: elevationLocal, shadowColor: shadowColorLocal, color: effectiveColor, clipBehavior: ((BottomAppBar)this.widget).clipBehavior, child: material));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -98,21 +98,21 @@ internal class _BottomAppBarClipper__bottom_app_bar : global::Doroti.Framework.R
     {
         get
         {
-            double? bottomNavigationBarTop__9605 = ((global::Doroti.Framework.Foundation.ValueListenable<ScaffoldGeometry>)this.geometry).value.bottomNavigationBarTop;
-            if ((bottomNavigationBarTop__9605 is not null))
+            double? bottomNavigationBarTopLocal = ((global::Doroti.Framework.Foundation.ValueListenable<ScaffoldGeometry>)this.geometry).value.bottomNavigationBarTop;
+            if ((bottomNavigationBarTopLocal is not null))
             {
-                double bottomNavigationBarTop__9605__value9677 = DartRuntimePrimitives.RequireValue(bottomNavigationBarTop__9605);
+                double bottomNavigationBarTop__9605__value9677 = DartRuntimePrimitives.RequireValue(bottomNavigationBarTopLocal);
                 return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(bottomNavigationBarTop__9605__value9677));
             }
-            var box__9764 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.materialKey).currentContext?.findRenderObject())!;
-            return ((Offset)((dynamic)box__9764)?.localToGlobal(Offset.zero)).dy;
+            var box = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.materialKey).currentContext?.findRenderObject())!;
+            return ((Offset)((dynamic)box)?.localToGlobal(Offset.zero)).dy;
             return default!;
         }
     }
     public override Path getClip(Size size)
     {
-        global::Doroti.Ui.Rect? button__10145 = ((global::Doroti.Ui.Rect?)(object?)((global::Doroti.Framework.Foundation.ValueListenable<ScaffoldGeometry>)this.geometry).value.floatingActionButtonArea?.translate(0.0, (this.bottomNavigationBarTop * -1.0)));
-        return ((Path)(object?)this.shape.getOuterPath((Offset.zero & size), button__10145?.inflate(this.notchMargin)));
+        global::Doroti.Ui.Rect? button = ((global::Doroti.Ui.Rect?)(object?)((global::Doroti.Framework.Foundation.ValueListenable<ScaffoldGeometry>)this.geometry).value.floatingActionButtonArea?.translate(0.0, (this.bottomNavigationBarTop * -1.0)));
+        return ((Path)(object?)this.shape.getOuterPath((Offset.zero & size), button?.inflate(this.notchMargin)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

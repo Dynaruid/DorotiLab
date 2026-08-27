@@ -136,8 +136,8 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
     public virtual bool isInteractive => ((RawRadio<T>)(object)this.widget).enabled;
     public override Widget build(BuildContext context)
     {
-        bool? accessibilitySelected__6412 = default!;
-        string? semanticsHint__6447 = default!;
+        bool? accessibilitySelected = default!;
+        string? semanticsHint = default!;
         switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
             case global::Doroti.Framework.Foundation.TargetPlatform.android:
@@ -145,23 +145,23 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
             case global::Doroti.Framework.Foundation.TargetPlatform.linux:
             case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                 {
-                    accessibilitySelected__6412 = null;
-                    semanticsHint__6447 = null;
+                    accessibilitySelected = null;
+                    semanticsHint = null;
                     break;
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
             case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                 {
-                    accessibilitySelected__6412 = this.value;
+                    accessibilitySelected = this.value;
                     if (!((this.value ?? false)))
                     {
-                        WidgetsLocalizations localizations__7088 = ((WidgetsLocalizations)(object?)WidgetsLocalizations.of(context));
-                        semanticsHint__6447 = ((WidgetsLocalizations)localizations__7088).radioButtonUnselectedLabel;
+                        WidgetsLocalizations localizations = ((WidgetsLocalizations)(object?)WidgetsLocalizations.of(context));
+                        semanticsHint = ((WidgetsLocalizations)localizations).radioButtonUnselectedLabel;
                     }
                     break;
                 }
         }
-        return ((Widget)(object?)new Semantics(inMutuallyExclusiveGroup: true, @checked: this.value, selected: accessibilitySelected__6412, hint: semanticsHint__6447, child: buildToggleableWithChild(focusNode: this.focusNode, autofocus: ((RawRadio<T>)(object)this.widget).autofocus, mouseCursor: ((RawRadio<T>)(object)this.widget).mouseCursor, child: this.widget.builder(context, this))));
+        return ((Widget)(object?)new Semantics(inMutuallyExclusiveGroup: true, @checked: this.value, selected: accessibilitySelected, hint: semanticsHint, child: buildToggleableWithChild(focusNode: this.focusNode, autofocus: ((RawRadio<T>)(object)this.widget).autofocus, mouseCursor: ((RawRadio<T>)(object)this.widget).mouseCursor, child: this.widget.builder(context, this))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -173,16 +173,16 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
         }
         DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values__17506 = this._tickerModeNotifier!.value;
-        var result__17553 = ((Func<_WidgetTicker__ticker_provider>)(() =>
+        TickerModeData values = this._tickerModeNotifier!.value;
+        var result = ((Func<_WidgetTicker__ticker_provider>)(() =>
 {
     var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values__17506).enabled;
-    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    __cascade.muted = !((TickerModeData)values).enabled;
+    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result__17553);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
+        this._tickers!.Add(result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -204,26 +204,26 @@ public class _RawRadioState__raw_radio<T> : State<RawRadio<T>>, TickerProviderSt
     {
         if ((this._tickers is not null))
         {
-            TickerModeData values__18318 = this._tickerModeNotifier!.value;
-            bool muted__18372 = !((TickerModeData)values__18318).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
+            TickerModeData values = this._tickerModeNotifier!.value;
+            bool mutedLocal = !((TickerModeData)values).enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
             {
-                ticker__18421.muted = muted__18372;
-                ticker__18421.forceFrames = ((TickerModeData)values__18318).forceFrames;
+                ticker.muted = mutedLocal;
+                ticker.forceFrames = ((TickerModeData)values).forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__18621, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
-        this._tickerModeNotifier = newNotifier__18621;
+        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)

@@ -324,14 +324,14 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
 
     public override void handleTapDown(PointerDownEvent down)
     {
-        var details__27457 = new TapDownDetails(globalPosition: down.position, localPosition: down.localPosition, kind: getKindForPointer(down.pointer));
+        var details = new TapDownDetails(globalPosition: down.position, localPosition: down.localPosition, kind: getKindForPointer(down.pointer));
         switch (down.buttons)
         {
             case var __constant27652 when object.Equals(__constant27652, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
                 {
                     if ((this.onTapDown is not null))
                     {
-                        invokeCallback<object?>("onTapDown", () => { ((Action)((() => this.onTapDown!(details__27457))))(); return null; });
+                        invokeCallback<object?>("onTapDown", () => { ((Action)((() => this.onTapDown!(details))))(); return null; });
                     }
                     break;
                 }
@@ -339,7 +339,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                 {
                     if ((this.onSecondaryTapDown is not null))
                     {
-                        invokeCallback<object?>("onSecondaryTapDown", () => { ((Action)((() => this.onSecondaryTapDown!(details__27457))))(); return null; });
+                        invokeCallback<object?>("onSecondaryTapDown", () => { ((Action)((() => this.onSecondaryTapDown!(details))))(); return null; });
                     }
                     break;
                 }
@@ -347,7 +347,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                 {
                     if ((this.onTertiaryTapDown is not null))
                     {
-                        invokeCallback<object?>("onTertiaryTapDown", () => { ((Action)((() => this.onTertiaryTapDown!(details__27457))))(); return null; });
+                        invokeCallback<object?>("onTertiaryTapDown", () => { ((Action)((() => this.onTertiaryTapDown!(details))))(); return null; });
                     }
                     break;
                 }
@@ -358,14 +358,14 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
 
     public override void handleTapUp(PointerDownEvent down, PointerUpEvent up)
     {
-        var details__28265 = new TapUpDetails(kind: up.kind, globalPosition: up.position, localPosition: up.localPosition);
+        var details = new TapUpDetails(kind: up.kind, globalPosition: up.position, localPosition: up.localPosition);
         switch (down.buttons)
         {
             case var __constant28430 when object.Equals(__constant28430, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
                 {
                     if ((this.onTapUp is not null))
                     {
-                        invokeCallback<object?>("onTapUp", () => { ((Action)((() => this.onTapUp!(details__28265))))(); return null; });
+                        invokeCallback<object?>("onTapUp", () => { ((Action)((() => this.onTapUp!(details))))(); return null; });
                     }
                     if ((this.onTap is not null))
                     {
@@ -377,7 +377,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                 {
                     if ((this.onSecondaryTapUp is not null))
                     {
-                        invokeCallback<object?>("onSecondaryTapUp", () => { ((Action)((() => this.onSecondaryTapUp!(details__28265))))(); return null; });
+                        invokeCallback<object?>("onSecondaryTapUp", () => { ((Action)((() => this.onSecondaryTapUp!(details))))(); return null; });
                     }
                     if ((this.onSecondaryTap is not null))
                     {
@@ -389,7 +389,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                 {
                     if ((this.onTertiaryTapUp is not null))
                     {
-                        invokeCallback<object?>("onTertiaryTapUp", () => { ((Action)((() => this.onTertiaryTapUp!(details__28265))))(); return null; });
+                        invokeCallback<object?>("onTertiaryTapUp", () => { ((Action)((() => this.onTertiaryTapUp!(details))))(); return null; });
                     }
                     break;
                 }
@@ -402,21 +402,21 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
     {
         if (((this.onTapMove is not null) && (move.buttons == global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton)))
         {
-            var details__29275 = new TapMoveDetails(globalPosition: move.position, localPosition: move.localPosition, kind: getKindForPointer(move.pointer), delta: move.delta);
-            invokeCallback<object?>("onTapMove", () => { ((Action)((() => this.onTapMove!(details__29275))))(); return null; });
+            var details = new TapMoveDetails(globalPosition: move.position, localPosition: move.localPosition, kind: getKindForPointer(move.pointer), delta: move.delta);
+            invokeCallback<object?>("onTapMove", () => { ((Action)((() => this.onTapMove!(details))))(); return null; });
         }
     }
 
     public override void handleTapCancel(PointerDownEvent down, PointerCancelEvent? cancel = null, string reason = default!)
     {
-        var note__29708 = ((reason == "") ? reason : $"{reason} ");
+        var note = ((reason == "") ? reason : $"{reason} ");
         switch (down.buttons)
         {
             case var __constant29790 when object.Equals(__constant29790, global::Doroti.Framework.Gestures.EventsLibrary.kPrimaryButton):
                 {
                     if ((this.onTapCancel is not null))
                     {
-                        invokeCallback<object?>($"{note__29708}onTapCancel", () => { ((Action)(this.onTapCancel!))(); return null; });
+                        invokeCallback<object?>($"{note}onTapCancel", () => { ((Action)(this.onTapCancel!))(); return null; });
                     }
                     break;
                 }
@@ -424,7 +424,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                 {
                     if ((this.onSecondaryTapCancel is not null))
                     {
-                        invokeCallback<object?>($"{note__29708}onSecondaryTapCancel", () => { ((Action)(this.onSecondaryTapCancel!))(); return null; });
+                        invokeCallback<object?>($"{note}onSecondaryTapCancel", () => { ((Action)(this.onSecondaryTapCancel!))(); return null; });
                     }
                     break;
                 }
@@ -432,7 +432,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
                 {
                     if ((this.onTertiaryTapCancel is not null))
                     {
-                        invokeCallback<object?>($"{note__29708}onTertiaryTapCancel", () => { ((Action)(this.onTertiaryTapCancel!))(); return null; });
+                        invokeCallback<object?>($"{note}onTertiaryTapCancel", () => { ((Action)(this.onTertiaryTapCancel!))(); return null; });
                     }
                     break;
                 }

@@ -50,7 +50,7 @@ public class Ink : global::Doroti.Framework.Widgets.StatefulWidget
     {
         get
         {
-            return ((this.padding, this.decoration?.padding) switch { (null, null) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.zero), (null, global::Doroti.Framework.Painting.EdgeInsetsGeometry padding__9101) => padding__9101, (global::Doroti.Framework.Painting.EdgeInsetsGeometry padding__9154, null) => padding__9154, _ => this.padding!.add(this.decoration!.padding) });
+            return ((this.padding, this.decoration?.padding) switch { (null, null) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.zero), (null, global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal) => paddingLocal, (global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingAlternate, null) => paddingAlternate, _ => this.padding!.add(this.decoration!.padding) });
             return default!;
         }
     }
@@ -100,12 +100,12 @@ internal class _InkState__ink_decoration : global::Doroti.Framework.Widgets.Stat
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        global::Doroti.Framework.Widgets.Widget result__10780 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(key: this._boxKey, padding: ((Ink)this.widget)._paddingIncludingDecoration, child: new global::Doroti.Framework.Widgets.Builder(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)this._build)));
+        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(key: this._boxKey, padding: ((Ink)this.widget)._paddingIncludingDecoration, child: new global::Doroti.Framework.Widgets.Builder(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)this._build)));
         if (((((Ink)this.widget).width is not null) || (((Ink)this.widget).height is not null)))
         {
-            result__10780 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: ((Ink)this.widget).width, height: ((Ink)this.widget).height, child: result__10780));
+            result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: ((Ink)this.widget).width, height: ((Ink)this.widget).height, child: result));
         }
-        return result__10780;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -187,18 +187,18 @@ public class InkDecoration : InkFeature
         {
             return;
         }
-        global::Doroti.Ui.Offset? originOffset__13767 = ((global::Doroti.Ui.Offset?)(object?)MatrixUtils.getAsTranslation(transform));
-        global::Doroti.Framework.Painting.ImageConfiguration sizedConfiguration__13852 = ((global::Doroti.Framework.Painting.ImageConfiguration)(object?)this.configuration.copyWith(size: ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size));
-        if ((originOffset__13767 is null))
+        global::Doroti.Ui.Offset? originOffset = ((global::Doroti.Ui.Offset?)(object?)MatrixUtils.getAsTranslation(transform));
+        global::Doroti.Framework.Painting.ImageConfiguration sizedConfiguration = ((global::Doroti.Framework.Painting.ImageConfiguration)(object?)this.configuration.copyWith(size: ((global::Doroti.Framework.Rendering.RenderBox)this.referenceBox).size));
+        if ((originOffset is null))
         {
             canvas.save();
             canvas.transform(transform.storage);
-            this._painter!.paint(canvas, Offset.zero, sizedConfiguration__13852);
+            this._painter!.paint(canvas, Offset.zero, sizedConfiguration);
             canvas.restore();
         }
         else
         {
-            this._painter!.paint(canvas, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(originOffset__13767)), sizedConfiguration__13852);
+            this._painter!.paint(canvas, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(originOffset)), sizedConfiguration);
         }
     }
 

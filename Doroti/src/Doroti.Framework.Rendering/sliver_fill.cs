@@ -62,21 +62,21 @@ public class RenderSliverFillViewport : RenderSliverFixedExtentBoxAdaptor
             base.visitChildrenForSemantics((Action<RenderObject>)visitor);
             return;
         }
-        double visibleStart__2877 = ((SliverConstraints)constraints).scrollOffset;
-        double visibleEnd__2935 = (visibleStart__2877 + ((SliverConstraints)constraints).viewportMainAxisExtent);
-        RenderBox? child__3015 = firstChild;
-        while ((child__3015 is not null))
+        double visibleStart = ((SliverConstraints)constraints).scrollOffset;
+        double visibleEnd = (visibleStart + ((SliverConstraints)constraints).viewportMainAxisExtent);
+        RenderBox? child = firstChild;
+        while ((child is not null))
         {
-            double childStart__3082 = DartRuntimePrimitives.RequireValue((((SliverMultiBoxAdaptorParentData?)(object?)child__3015.parentData!)!).layoutOffset);
-            if ((childStart__3082 >= visibleEnd__2935))
+            double childStart = DartRuntimePrimitives.RequireValue((((SliverMultiBoxAdaptorParentData?)(object?)child.parentData!)!).layoutOffset);
+            if ((childStart >= visibleEnd))
             {
                 break;
             }
-            if (((childStart__3082 + this.itemExtent) > visibleStart__2877))
+            if (((childStart + this.itemExtent) > visibleStart))
             {
-                visitor(child__3015);
+                visitor(child);
             }
-            child__3015 = childAfter(child__3015);
+            child = childAfter(child);
         }
     }
 
@@ -90,25 +90,25 @@ public class RenderSliverFillRemainingWithScrollable : RenderSliverSingleBoxAdap
 
     public override void performLayout()
     {
-        SliverConstraints constraints__4718 = this.constraints;
-        double extent__4767 = (((SliverConstraints)constraints__4718).remainingPaintExtent - Math.Min(((SliverConstraints)constraints__4718).overlap, 0.0));
-        double cacheExtent__4865 = calculateCacheOffset(constraints__4718, from: 0.0, to: ((SliverConstraints)constraints__4718).viewportMainAxisExtent);
+        SliverConstraints constraintsLocal = this.constraints;
+        double extent = (((SliverConstraints)constraintsLocal).remainingPaintExtent - Math.Min(((SliverConstraints)constraintsLocal).overlap, 0.0));
+        double cacheExtentLocal = calculateCacheOffset(constraintsLocal, from: 0.0, to: ((SliverConstraints)constraintsLocal).viewportMainAxisExtent);
         if ((child is not null))
         {
-            var maxExtent__5025 = extent__4767;
-            if (((extent__4767 == 0L) && (cacheExtent__4865 > 0L)))
+            var maxExtentLocal = extent;
+            if (((extent == 0L) && (cacheExtentLocal > 0L)))
             {
-                maxExtent__5025 = cacheExtent__4865;
+                maxExtentLocal = cacheExtentLocal;
             }
-            child!.layout(constraints__4718.asBoxConstraints(minExtent: extent__4767, maxExtent: maxExtent__5025));
+            child!.layout(constraintsLocal.asBoxConstraints(minExtent: extent, maxExtent: maxExtentLocal));
         }
-        double paintedChildSize__5439 = calculatePaintOffset(constraints__4718, from: 0.0, to: extent__4767);
-        DartRuntimePrimitives.Assert(() => double.IsFinite(paintedChildSize__5439));
-        DartRuntimePrimitives.Assert(() => (paintedChildSize__5439 >= 0.0));
-        geometry = new SliverGeometry(scrollExtent: ((SliverConstraints)constraints__4718).viewportMainAxisExtent, paintExtent: paintedChildSize__5439, maxPaintExtent: paintedChildSize__5439, hasVisualOverflow: ((extent__4767 > ((SliverConstraints)constraints__4718).remainingPaintExtent) || (((SliverConstraints)constraints__4718).scrollOffset > 0.0)), cacheExtent: cacheExtent__4865);
+        double paintedChildSize = calculatePaintOffset(constraintsLocal, from: 0.0, to: extent);
+        DartRuntimePrimitives.Assert(() => double.IsFinite(paintedChildSize));
+        DartRuntimePrimitives.Assert(() => (paintedChildSize >= 0.0));
+        geometry = new SliverGeometry(scrollExtent: ((SliverConstraints)constraintsLocal).viewportMainAxisExtent, paintExtent: paintedChildSize, maxPaintExtent: paintedChildSize, hasVisualOverflow: ((extent > ((SliverConstraints)constraintsLocal).remainingPaintExtent) || (((SliverConstraints)constraintsLocal).scrollOffset > 0.0)), cacheExtent: cacheExtentLocal);
         if ((child is not null))
         {
-            setChildParentData(child!, constraints__4718, geometry!);
+            setChildParentData(child!, constraintsLocal, geometry!);
         }
     }
 
@@ -122,23 +122,23 @@ public class RenderSliverFillRemaining : RenderSliverSingleBoxAdapter
 
     public override void performLayout()
     {
-        SliverConstraints constraints__7271 = this.constraints;
-        double extent__7444 = (((SliverConstraints)constraints__7271).viewportMainAxisExtent - ((SliverConstraints)constraints__7271).precedingScrollExtent);
+        SliverConstraints constraintsLocal = this.constraints;
+        double extent = (((SliverConstraints)constraintsLocal).viewportMainAxisExtent - ((SliverConstraints)constraintsLocal).precedingScrollExtent);
         if ((child is not null))
         {
-            double childExtent__7570 = (((SliverConstraints)constraints__7271).axis switch { global::Doroti.Framework.Painting.Axis.horizontal => child!.getMaxIntrinsicWidth(((SliverConstraints)constraints__7271).crossAxisExtent), global::Doroti.Framework.Painting.Axis.vertical => child!.getMaxIntrinsicHeight(((SliverConstraints)constraints__7271).crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            extent__7444 = Math.Max(extent__7444, childExtent__7570);
-            child!.layout(constraints__7271.asBoxConstraints(minExtent: extent__7444, maxExtent: extent__7444));
+            double childExtent = (((SliverConstraints)constraintsLocal).axis switch { global::Doroti.Framework.Painting.Axis.horizontal => child!.getMaxIntrinsicWidth(((SliverConstraints)constraintsLocal).crossAxisExtent), global::Doroti.Framework.Painting.Axis.vertical => child!.getMaxIntrinsicHeight(((SliverConstraints)constraintsLocal).crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            extent = Math.Max(extent, childExtent);
+            child!.layout(constraintsLocal.asBoxConstraints(minExtent: extent, maxExtent: extent));
         }
-        DartRuntimePrimitives.Assert(() => double.IsFinite(extent__7444));
-        double paintedChildSize__8436 = calculatePaintOffset(constraints__7271, from: 0.0, to: extent__7444);
-        DartRuntimePrimitives.Assert(() => double.IsFinite(paintedChildSize__8436));
-        DartRuntimePrimitives.Assert(() => (paintedChildSize__8436 >= 0.0));
-        double cacheExtent__8607 = calculateCacheOffset(constraints__7271, from: 0.0, to: extent__7444);
-        geometry = new SliverGeometry(scrollExtent: extent__7444, paintExtent: paintedChildSize__8436, maxPaintExtent: paintedChildSize__8436, hasVisualOverflow: ((extent__7444 > ((SliverConstraints)constraints__7271).remainingPaintExtent) || (((SliverConstraints)constraints__7271).scrollOffset > 0.0)), cacheExtent: cacheExtent__8607);
+        DartRuntimePrimitives.Assert(() => double.IsFinite(extent));
+        double paintedChildSize = calculatePaintOffset(constraintsLocal, from: 0.0, to: extent);
+        DartRuntimePrimitives.Assert(() => double.IsFinite(paintedChildSize));
+        DartRuntimePrimitives.Assert(() => (paintedChildSize >= 0.0));
+        double cacheExtentLocal = calculateCacheOffset(constraintsLocal, from: 0.0, to: extent);
+        geometry = new SliverGeometry(scrollExtent: extent, paintExtent: paintedChildSize, maxPaintExtent: paintedChildSize, hasVisualOverflow: ((extent > ((SliverConstraints)constraintsLocal).remainingPaintExtent) || (((SliverConstraints)constraintsLocal).scrollOffset > 0.0)), cacheExtent: cacheExtentLocal);
         if ((child is not null))
         {
-            setChildParentData(child!, constraints__7271, geometry!);
+            setChildParentData(child!, constraintsLocal, geometry!);
         }
     }
 
@@ -152,25 +152,25 @@ public class RenderSliverFillRemainingAndOverscroll : RenderSliverSingleBoxAdapt
 
     public override void performLayout()
     {
-        SliverConstraints constraints__10416 = this.constraints;
-        double extent__10589 = (((SliverConstraints)constraints__10416).viewportMainAxisExtent - ((SliverConstraints)constraints__10416).precedingScrollExtent);
-        double maxExtent__10832 = (((SliverConstraints)constraints__10416).remainingPaintExtent - Math.Min(((SliverConstraints)constraints__10416).overlap, 0.0));
+        SliverConstraints constraintsLocal = this.constraints;
+        double extent = (((SliverConstraints)constraintsLocal).viewportMainAxisExtent - ((SliverConstraints)constraintsLocal).precedingScrollExtent);
+        double maxExtentLocal = (((SliverConstraints)constraintsLocal).remainingPaintExtent - Math.Min(((SliverConstraints)constraintsLocal).overlap, 0.0));
         if ((child is not null))
         {
-            double childExtent__10960 = (((SliverConstraints)constraints__10416).axis switch { global::Doroti.Framework.Painting.Axis.horizontal => child!.getMaxIntrinsicWidth(((SliverConstraints)constraints__10416).crossAxisExtent), global::Doroti.Framework.Painting.Axis.vertical => child!.getMaxIntrinsicHeight(((SliverConstraints)constraints__10416).crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            extent__10589 = Math.Max(extent__10589, childExtent__10960);
-            maxExtent__10832 = Math.Max(extent__10589, maxExtent__10832);
-            child!.layout(constraints__10416.asBoxConstraints(minExtent: extent__10589, maxExtent: maxExtent__10832));
+            double childExtent = (((SliverConstraints)constraintsLocal).axis switch { global::Doroti.Framework.Painting.Axis.horizontal => child!.getMaxIntrinsicWidth(((SliverConstraints)constraintsLocal).crossAxisExtent), global::Doroti.Framework.Painting.Axis.vertical => child!.getMaxIntrinsicHeight(((SliverConstraints)constraintsLocal).crossAxisExtent), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            extent = Math.Max(extent, childExtent);
+            maxExtentLocal = Math.Max(extent, maxExtentLocal);
+            child!.layout(constraintsLocal.asBoxConstraints(minExtent: extent, maxExtent: maxExtentLocal));
         }
-        DartRuntimePrimitives.Assert(() => double.IsFinite(extent__10589));
-        double paintedChildSize__12069 = calculatePaintOffset(constraints__10416, from: 0.0, to: extent__10589);
-        DartRuntimePrimitives.Assert(() => double.IsFinite(paintedChildSize__12069));
-        DartRuntimePrimitives.Assert(() => (paintedChildSize__12069 >= 0.0));
-        double cacheExtent__12240 = calculateCacheOffset(constraints__10416, from: 0.0, to: extent__10589);
-        geometry = new SliverGeometry(scrollExtent: extent__10589, paintExtent: Math.Min(maxExtent__10832, ((SliverConstraints)constraints__10416).remainingPaintExtent), maxPaintExtent: maxExtent__10832, hasVisualOverflow: ((extent__10589 > ((SliverConstraints)constraints__10416).remainingPaintExtent) || (((SliverConstraints)constraints__10416).scrollOffset > 0.0)), cacheExtent: cacheExtent__12240);
+        DartRuntimePrimitives.Assert(() => double.IsFinite(extent));
+        double paintedChildSize = calculatePaintOffset(constraintsLocal, from: 0.0, to: extent);
+        DartRuntimePrimitives.Assert(() => double.IsFinite(paintedChildSize));
+        DartRuntimePrimitives.Assert(() => (paintedChildSize >= 0.0));
+        double cacheExtentLocal = calculateCacheOffset(constraintsLocal, from: 0.0, to: extent);
+        geometry = new SliverGeometry(scrollExtent: extent, paintExtent: Math.Min(maxExtentLocal, ((SliverConstraints)constraintsLocal).remainingPaintExtent), maxPaintExtent: maxExtentLocal, hasVisualOverflow: ((extent > ((SliverConstraints)constraintsLocal).remainingPaintExtent) || (((SliverConstraints)constraintsLocal).scrollOffset > 0.0)), cacheExtent: cacheExtentLocal);
         if ((child is not null))
         {
-            setChildParentData(child!, constraints__10416, geometry!);
+            setChildParentData(child!, constraintsLocal, geometry!);
         }
     }
 

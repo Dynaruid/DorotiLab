@@ -29,34 +29,34 @@ public class TickerMode : StatefulWidget
 
     public static bool of(BuildContext context)
     {
-        _EffectiveTickerMode__ticker_provider? widget__2739 = ((_EffectiveTickerMode__ticker_provider?)(object?)context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
-        return (widget__2739?.enabled ?? true);
+        _EffectiveTickerMode__ticker_provider? widget = ((_EffectiveTickerMode__ticker_provider?)(object?)context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
+        return (widget?.enabled ?? true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Framework.Foundation.ValueListenable<bool> getNotifier(BuildContext context)
     {
-        _EffectiveTickerMode__ticker_provider? widget__4995 = ((_EffectiveTickerMode__ticker_provider?)(object?)context.getInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
-        return DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.ValueListenable<bool>>((object?)widget__4995?.notifier ?? (object?)new _ConstantValueListenable__ticker_provider<bool>(true));
+        _EffectiveTickerMode__ticker_provider? widget = ((_EffectiveTickerMode__ticker_provider?)(object?)context.getInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
+        return DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.ValueListenable<bool>>((object?)widget?.notifier ?? (object?)new _ConstantValueListenable__ticker_provider<bool>(true));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static TickerModeData valuesOf(BuildContext context)
     {
-        _EffectiveTickerMode__ticker_provider? widget__5812 = ((_EffectiveTickerMode__ticker_provider?)(object?)context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
-        return (widget__5812?.values ?? TickerModeData.fallback);
+        _EffectiveTickerMode__ticker_provider? widget = ((_EffectiveTickerMode__ticker_provider?)(object?)context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
+        return (widget?.values ?? TickerModeData.fallback);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> getValuesNotifier(BuildContext context)
     {
-        var fallback__7914 = new _ConstantTickerModeDataListenable__ticker_provider(TickerModeData.fallback);
+        var fallbackLocal = new _ConstantTickerModeDataListenable__ticker_provider(TickerModeData.fallback);
         if (!((BuildContext)context).mounted)
         {
-            return ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)fallback__7914);
+            return ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)fallbackLocal);
         }
-        _EffectiveTickerMode__ticker_provider? widget__8322 = ((_EffectiveTickerMode__ticker_provider?)(object?)context.getInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
-        return DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>>((object?)widget__8322?.valuesNotifier ?? (object?)fallback__7914);
+        _EffectiveTickerMode__ticker_provider? widget = ((_EffectiveTickerMode__ticker_provider?)(object?)context.getInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
+        return DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>>((object?)widget?.valuesNotifier ?? (object?)fallbackLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -64,10 +64,10 @@ public class TickerMode : StatefulWidget
     {
         return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
         {
-            _EffectiveTickerMode__ticker_provider? parent__8863 = ((_EffectiveTickerMode__ticker_provider?)(object?)context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
-            bool parentEnabled__8972 = (parent__8863?.enabled ?? TickerModeData.fallback.enabled);
-            bool parentForce__9059 = (parent__8863?.forceFrames ?? TickerModeData.fallback.forceFrames);
-            return ((Widget)(object?)new TickerMode(key: key, enabled: (enabled ?? parentEnabled__8972), forceFrames: (forceFrames ?? parentForce__9059), child: child));
+            _EffectiveTickerMode__ticker_provider? parent = ((_EffectiveTickerMode__ticker_provider?)(object?)context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
+            bool parentEnabled = (parent?.enabled ?? TickerModeData.fallback.enabled);
+            bool parentForce = (parent?.forceFrames ?? TickerModeData.fallback.forceFrames);
+            return ((Widget)(object?)new TickerMode(key: key, enabled: (enabled ?? parentEnabled), forceFrames: (forceFrames ?? parentForce), child: child));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -86,9 +86,9 @@ internal class _TickerModeState__ticker_provider : State<TickerMode>
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        _EffectiveTickerMode__ticker_provider? parent__9918 = ((_EffectiveTickerMode__ticker_provider?)(object?)this.context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
-        _ancestorTickerMode = (parent__9918?.enabled ?? TickerModeData.fallback.enabled);
-        _ancestorForceFrames = (parent__9918?.forceFrames ?? TickerModeData.fallback.forceFrames);
+        _EffectiveTickerMode__ticker_provider? parent = ((_EffectiveTickerMode__ticker_provider?)(object?)this.context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>());
+        _ancestorTickerMode = (parent?.enabled ?? TickerModeData.fallback.enabled);
+        _ancestorForceFrames = (parent?.forceFrames ?? TickerModeData.fallback.forceFrames);
         _updateEffectiveMode();
     }
 
@@ -107,10 +107,10 @@ internal class _TickerModeState__ticker_provider : State<TickerMode>
 
     internal virtual void _updateEffectiveMode()
     {
-        bool enabled__10498 = (this._ancestorTickerMode && ((TickerMode)(object)this.widget).enabled);
-        bool force__10562 = (this._ancestorForceFrames || ((TickerMode)(object)this.widget).forceFrames);
-        this._effectiveMode.value = enabled__10498;
-        this._effectiveValues.value = new TickerModeData(enabled: enabled__10498, forceFrames: force__10562);
+        bool enabledLocal = (this._ancestorTickerMode && ((TickerMode)(object)this.widget).enabled);
+        bool force = (this._ancestorForceFrames || ((TickerMode)(object)this.widget).forceFrames);
+        this._effectiveMode.value = enabledLocal;
+        this._effectiveValues.value = new TickerModeData(enabled: enabledLocal, forceFrames: force);
     }
 
     public override Widget build(BuildContext context)

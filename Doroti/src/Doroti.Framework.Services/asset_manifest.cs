@@ -62,8 +62,8 @@ internal class _AssetManifestBin : AssetManifest
     {
         if (!_typeCastedData.ContainsKey(key))
         {
-            object? variantData__4334 = _data.GetValueOrDefault(key);
-            if ((variantData__4334 is null))
+            object? variantData = _data.GetValueOrDefault(key);
+            if ((variantData is null))
             {
                 return null;
             }

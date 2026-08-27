@@ -123,14 +123,14 @@ public class _AccountDetailsState__user_accounts_drawer_header : global::Doroti.
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        ThemeData theme__3760 = Theme.of(context);
-        MaterialLocalizations localizations__3819 = MaterialLocalizations.of(context);
-        global::Doroti.Framework.Widgets.Widget accountDetails__3882 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomMultiChildLayout(@delegate: new _AccountDetailsLayout__user_accounts_drawer_header(textDirection: Directionality.of(context)), children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection4021 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((((_AccountDetails__user_accounts_drawer_header)this.widget).accountName is not null)) { __collection4021.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.LayoutId(id: _AccountDetailsLayout__user_accounts_drawer_header.accountName, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 2.0), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: theme__3760.primaryTextTheme.bodyLarge!, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, child: ((_AccountDetails__user_accounts_drawer_header)this.widget).accountName!))))); } if ((((_AccountDetails__user_accounts_drawer_header)this.widget).accountEmail is not null)) { __collection4021.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.LayoutId(id: _AccountDetailsLayout__user_accounts_drawer_header.accountEmail, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 2.0), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: theme__3760.primaryTextTheme.bodyMedium!, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, child: ((_AccountDetails__user_accounts_drawer_header)this.widget).accountEmail!))))); } if ((((_AccountDetails__user_accounts_drawer_header)this.widget).onTap is not null)) { __collection4021.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.LayoutId(id: _AccountDetailsLayout__user_accounts_drawer_header.dropdownIcon, child: new global::Doroti.Framework.Widgets.Semantics(container: true, button: true, onTap: () => ((_AccountDetails__user_accounts_drawer_header)this.widget).onTap(), child: global::Doroti.Framework.Widgets.SizedBox.CreateSquare(dimension: User_accounts_drawer_headerLibrary._kAccountDetailsHeight, child: new global::Doroti.Framework.Widgets.Center(child: global::Doroti.Framework.Widgets.Transform.CreateRotate(angle: (((global::Doroti.Framework.Animation.CurvedAnimation)this._animation).value * Dart_mathLibrary.pi), child: new global::Doroti.Framework.Widgets.Icon(Icons.arrow_drop_down, color: ((_AccountDetails__user_accounts_drawer_header)this.widget).arrowColor, semanticLabel: (((_AccountDetails__user_accounts_drawer_header)this.widget).isOpen ? localizations__3819.hideAccountsLabel : localizations__3819.showAccountsLabel))))))))); } return __collection4021; }))()));
+        ThemeData theme = Theme.of(context);
+        MaterialLocalizations localizations = MaterialLocalizations.of(context);
+        global::Doroti.Framework.Widgets.Widget accountDetails = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomMultiChildLayout(@delegate: new _AccountDetailsLayout__user_accounts_drawer_header(textDirection: Directionality.of(context)), children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection4021 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((((_AccountDetails__user_accounts_drawer_header)this.widget).accountName is not null)) { __collection4021.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.LayoutId(id: _AccountDetailsLayout__user_accounts_drawer_header.accountName, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 2.0), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: theme.primaryTextTheme.bodyLarge!, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, child: ((_AccountDetails__user_accounts_drawer_header)this.widget).accountName!))))); } if ((((_AccountDetails__user_accounts_drawer_header)this.widget).accountEmail is not null)) { __collection4021.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.LayoutId(id: _AccountDetailsLayout__user_accounts_drawer_header.accountEmail, child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 2.0), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: theme.primaryTextTheme.bodyMedium!, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, child: ((_AccountDetails__user_accounts_drawer_header)this.widget).accountEmail!))))); } if ((((_AccountDetails__user_accounts_drawer_header)this.widget).onTap is not null)) { __collection4021.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.LayoutId(id: _AccountDetailsLayout__user_accounts_drawer_header.dropdownIcon, child: new global::Doroti.Framework.Widgets.Semantics(container: true, button: true, onTap: () => ((_AccountDetails__user_accounts_drawer_header)this.widget).onTap(), child: global::Doroti.Framework.Widgets.SizedBox.CreateSquare(dimension: User_accounts_drawer_headerLibrary._kAccountDetailsHeight, child: new global::Doroti.Framework.Widgets.Center(child: global::Doroti.Framework.Widgets.Transform.CreateRotate(angle: (((global::Doroti.Framework.Animation.CurvedAnimation)this._animation).value * Dart_mathLibrary.pi), child: new global::Doroti.Framework.Widgets.Icon(Icons.arrow_drop_down, color: ((_AccountDetails__user_accounts_drawer_header)this.widget).arrowColor, semanticLabel: (((_AccountDetails__user_accounts_drawer_header)this.widget).isOpen ? localizations.hideAccountsLabel : localizations.showAccountsLabel))))))))); } return __collection4021; }))()));
         if ((((_AccountDetails__user_accounts_drawer_header)this.widget).onTap is not null))
         {
-            accountDetails__3882 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkWell(onTap: ((_AccountDetails__user_accounts_drawer_header)this.widget).onTap, excludeFromSemantics: true, child: accountDetails__3882));
+            accountDetails = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkWell(onTap: ((_AccountDetails__user_accounts_drawer_header)this.widget).onTap, excludeFromSemantics: true, child: accountDetails));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: User_accounts_drawer_headerLibrary._kAccountDetailsHeight, child: accountDetails__3882));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: User_accounts_drawer_headerLibrary._kAccountDetailsHeight, child: accountDetails));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -160,31 +160,31 @@ public class _AccountDetailsState__user_accounts_drawer_header : global::Doroti.
 
     public virtual void _updateTicker()
     {
-        TickerModeData values__15157 = this._tickerModeNotifier!.value;
+        TickerModeData values = this._tickerModeNotifier!.value;
         if ((this._ticker is not null))
         {
-            this._ticker!.muted = !((TickerModeData)values__15157).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values__15157).forceFrames;
+            this._ticker!.muted = !((TickerModeData)values).enabled;
+            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier__15400.addListener(() => this._updateTicker());
-        this._tickerModeNotifier = newNotifier__15400;
+        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -208,24 +208,24 @@ internal class _AccountDetailsLayout__user_accounts_drawer_header : global::Doro
 
     public override void performLayout(Size size)
     {
-        global::Doroti.Ui.Size? iconSize__6462 = default!;
+        global::Doroti.Ui.Size? iconSize = default!;
         if (hasChild(dropdownIcon))
         {
-            iconSize__6462 = layoutChild(dropdownIcon, global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(size));
-            positionChild(dropdownIcon, _offsetForIcon(size, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(iconSize__6462))));
+            iconSize = layoutChild(dropdownIcon, global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(size));
+            positionChild(dropdownIcon, _offsetForIcon(size, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(iconSize))));
         }
-        string? bottomLine__6746 = (hasChild(accountEmail) ? accountEmail : ((hasChild(accountName) ? accountName : null)));
-        if ((bottomLine__6746 is not null))
+        string? bottomLine = (hasChild(accountEmail) ? accountEmail : ((hasChild(accountName) ? accountName : null)));
+        if ((bottomLine is not null))
         {
-            var constraintSize__6904 = ((iconSize__6462 is null) ? size : new global::Doroti.Ui.Size((size.width - DartRuntimePrimitives.RequireValue(iconSize__6462).width), size.height));
-            iconSize__6462 ??= new global::Doroti.Ui.Size(User_accounts_drawer_headerLibrary._kAccountDetailsHeight, User_accounts_drawer_headerLibrary._kAccountDetailsHeight);
-            global::Doroti.Ui.Size bottomLineSize__7176 = ((global::Doroti.Ui.Size)(object?)layoutChild(bottomLine__6746, global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(constraintSize__6904)));
-            global::Doroti.Ui.Offset bottomLineOffset__7275 = ((global::Doroti.Ui.Offset)(object?)_offsetForBottomLine(size, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(iconSize__6462)), bottomLineSize__7176));
-            positionChild(bottomLine__6746, bottomLineOffset__7275);
-            if (((bottomLine__6746 == accountEmail) && hasChild(accountName)))
+            var constraintSize = ((iconSize is null) ? size : new global::Doroti.Ui.Size((size.width - DartRuntimePrimitives.RequireValue(iconSize).width), size.height));
+            iconSize ??= new global::Doroti.Ui.Size(User_accounts_drawer_headerLibrary._kAccountDetailsHeight, User_accounts_drawer_headerLibrary._kAccountDetailsHeight);
+            global::Doroti.Ui.Size bottomLineSize = ((global::Doroti.Ui.Size)(object?)layoutChild(bottomLine, global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(constraintSize)));
+            global::Doroti.Ui.Offset bottomLineOffset = ((global::Doroti.Ui.Offset)(object?)_offsetForBottomLine(size, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(iconSize)), bottomLineSize));
+            positionChild(bottomLine, bottomLineOffset);
+            if (((bottomLine == accountEmail) && hasChild(accountName)))
             {
-                global::Doroti.Ui.Size nameSize__7532 = ((global::Doroti.Ui.Size)(object?)layoutChild(accountName, global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(constraintSize__6904)));
-                positionChild(accountName, _offsetForName(size, nameSize__7532, bottomLineOffset__7275));
+                global::Doroti.Ui.Size nameSize = ((global::Doroti.Ui.Size)(object?)layoutChild(accountName, global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(constraintSize)));
+                positionChild(accountName, _offsetForName(size, nameSize, bottomLineOffset));
             }
         }
     }
@@ -239,15 +239,15 @@ internal class _AccountDetailsLayout__user_accounts_drawer_header : global::Doro
 
     internal virtual global::Doroti.Ui.Offset _offsetForBottomLine(Size size, Size iconSize, Size bottomLineSize)
     {
-        double y__8156 = ((size.height - (0.5 * iconSize.height)) - (0.5 * bottomLineSize.height));
-        return (this.textDirection switch { TextDirection.ltr => new global::Doroti.Ui.Offset(0.0, y__8156), TextDirection.rtl => new global::Doroti.Ui.Offset((size.width - bottomLineSize.width), y__8156), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        double y = ((size.height - (0.5 * iconSize.height)) - (0.5 * bottomLineSize.height));
+        return (this.textDirection switch { TextDirection.ltr => new global::Doroti.Ui.Offset(0.0, y), TextDirection.rtl => new global::Doroti.Ui.Offset((size.width - bottomLineSize.width), y), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Offset _offsetForName(Size size, Size nameSize, Offset bottomLineOffset)
     {
-        double y__8485 = (bottomLineOffset.dy - nameSize.height);
-        return (this.textDirection switch { TextDirection.ltr => new global::Doroti.Ui.Offset(0.0, y__8485), TextDirection.rtl => new global::Doroti.Ui.Offset((size.width - nameSize.width), y__8485), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        double y = (bottomLineOffset.dy - nameSize.height);
+        return (this.textDirection switch { TextDirection.ltr => new global::Doroti.Ui.Offset(0.0, y), TextDirection.rtl => new global::Doroti.Ui.Offset((size.width - nameSize.width), y), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

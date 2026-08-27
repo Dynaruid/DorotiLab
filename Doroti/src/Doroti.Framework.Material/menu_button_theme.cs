@@ -57,13 +57,13 @@ public class MenuButtonThemeData : global::Doroti.Framework.Foundation.Diagnosti
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -86,8 +86,8 @@ public class MenuButtonTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static MenuButtonThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        MenuButtonTheme? buttonTheme__4801 = ((MenuButtonTheme?)(object?)context.dependOnInheritedWidgetOfExactType<MenuButtonTheme>());
-        return (buttonTheme__4801?.data ?? Theme.of(context).menuButtonTheme);
+        MenuButtonTheme? buttonTheme = ((MenuButtonTheme?)(object?)context.dependOnInheritedWidgetOfExactType<MenuButtonTheme>());
+        return (buttonTheme?.data ?? Theme.of(context).menuButtonTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -89,12 +89,12 @@ public class SlideTransition : AnimatedWidget
     public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset> position => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>>(((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Offset>?)(object?)this.listenable)!);
     public override Widget build(BuildContext context)
     {
-        global::Doroti.Ui.Offset offset__9531 = ((global::Doroti.Ui.Offset)(object?)((global::Doroti.Framework.Animation.Animation<Offset>)this.position).value);
+        global::Doroti.Ui.Offset offset = ((global::Doroti.Ui.Offset)(object?)((global::Doroti.Framework.Animation.Animation<Offset>)this.position).value);
         if ((object.Equals(this.textDirection, TextDirection.rtl)))
         {
-            offset__9531 = new global::Doroti.Ui.Offset(-offset__9531.dx, offset__9531.dy);
+            offset = new global::Doroti.Ui.Offset(-offset.dx, offset.dy);
         }
-        return ((Widget)(object?)new FractionalTranslation(translation: offset__9531, transformHitTests: this.transformHitTests, child: this.child));
+        return ((Widget)(object?)new FractionalTranslation(translation: offset, transformHitTests: this.transformHitTests, child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -292,8 +292,8 @@ public class RelativePositionedTransition : AnimatedWidget
     public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Rect?> rect => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Rect?>>(((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Rect?>?)(object?)this.listenable)!);
     public override Widget build(BuildContext context)
     {
-        var offsets__34419 = global::Doroti.Framework.Rendering.RelativeRect.CreateFromSize((((global::Doroti.Framework.Animation.Animation<Rect?>)this.rect).value ?? Rect.zero), this.size);
-        return ((Widget)(object?)new Positioned(top: ((global::Doroti.Framework.Rendering.RelativeRect)offsets__34419).top, right: ((global::Doroti.Framework.Rendering.RelativeRect)offsets__34419).right, bottom: ((global::Doroti.Framework.Rendering.RelativeRect)offsets__34419).bottom, left: ((global::Doroti.Framework.Rendering.RelativeRect)offsets__34419).left, child: this.child));
+        var offsets = global::Doroti.Framework.Rendering.RelativeRect.CreateFromSize((((global::Doroti.Framework.Animation.Animation<Rect?>)this.rect).value ?? Rect.zero), this.size);
+        return ((Widget)(object?)new Positioned(top: ((global::Doroti.Framework.Rendering.RelativeRect)offsets).top, right: ((global::Doroti.Framework.Rendering.RelativeRect)offsets).right, bottom: ((global::Doroti.Framework.Rendering.RelativeRect)offsets).bottom, left: ((global::Doroti.Framework.Rendering.RelativeRect)offsets).left, child: this.child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

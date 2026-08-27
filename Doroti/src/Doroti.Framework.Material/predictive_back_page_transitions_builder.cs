@@ -143,8 +143,8 @@ internal class _PredictiveBackGestureDetectorState__predictive_back_page_transit
     public virtual bool handleStartBackGesture(global::Doroti.Framework.Services.PredictiveBackEvent backEvent)
     {
         phase = _PredictiveBackPhase__predictive_back_page_transitions_builder.start;
-        bool gestureInProgress__9997 = (!((global::Doroti.Framework.Services.PredictiveBackEvent)backEvent).isButtonEvent && this._isEnabled);
-        if (!gestureInProgress__9997)
+        bool gestureInProgress = (!((global::Doroti.Framework.Services.PredictiveBackEvent)backEvent).isButtonEvent && this._isEnabled);
+        if (!gestureInProgress)
         {
             return false;
         }
@@ -189,8 +189,8 @@ internal class _PredictiveBackGestureDetectorState__predictive_back_page_transit
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _PredictiveBackPhase__predictive_back_page_transitions_builder effectivePhase__11210 = (((bool)((dynamic)((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).popGestureInProgress) ? this.phase : _PredictiveBackPhase__predictive_back_page_transitions_builder.idle);
-        return this.widget.builder(context, effectivePhase__11210, this.startBackEvent, this.currentBackEvent);
+        _PredictiveBackPhase__predictive_back_page_transitions_builder effectivePhase = (((bool)((dynamic)((_PredictiveBackGestureDetector__predictive_back_page_transitions_builder)this.widget).route).popGestureInProgress) ? this.phase : _PredictiveBackPhase__predictive_back_page_transitions_builder.idle);
+        return this.widget.builder(context, effectivePhase, this.startBackEvent, this.currentBackEvent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -246,12 +246,12 @@ internal class _PredictiveBackSharedElementPageTransitionState__predictive_back_
 
     internal virtual double _getYShiftPosition(double screenHeight)
     {
-        double startTouchY__15631 = (((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).startBackEvent?.touchOffset?.dy ?? 0);
-        double currentTouchY__15707 = (((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).currentBackEvent?.touchOffset?.dy ?? 0);
-        double yShiftMax__15788 = (((screenHeight / _kDivisionFactor)) - _kMargin);
-        double rawYShift__15864 = (currentTouchY__15707 - startTouchY__15631);
-        double easedYShift__15922 = ((global::Doroti.Framework.Animation.Curves.easeOut.transform(Dart_uiLibrary.clampDouble((rawYShift__15864.abs() / screenHeight), 0.0, 1.0)) * Math.Sign(rawYShift__15864)) * yShiftMax__15788);
-        return Dart_uiLibrary.clampDouble(easedYShift__15922, -yShiftMax__15788, yShiftMax__15788);
+        double startTouchY = (((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).startBackEvent?.touchOffset?.dy ?? 0);
+        double currentTouchY = (((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).currentBackEvent?.touchOffset?.dy ?? 0);
+        double yShiftMax = (((screenHeight / _kDivisionFactor)) - _kMargin);
+        double rawYShift = (currentTouchY - startTouchY);
+        double easedYShift = ((global::Doroti.Framework.Animation.Curves.easeOut.transform(Dart_uiLibrary.clampDouble((rawYShift.abs() / screenHeight), 0.0, 1.0)) * Math.Sign(rawYShift)) * yShiftMax);
+        return Dart_uiLibrary.clampDouble(easedYShift, -yShiftMax, yShiftMax);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -260,8 +260,8 @@ internal class _PredictiveBackSharedElementPageTransitionState__predictive_back_
         this._animation.parent = (((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).phase switch { _PredictiveBackPhase__predictive_back_page_transitions_builder.commit => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(this._curvedAnimationReversed), _ => ((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).animation });
         this._bounceAnimation.parent = (((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).phase switch { _PredictiveBackPhase__predictive_back_page_transitions_builder.commit => new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: this._lastBounceAnimationValue).animate(this._curvedAnimation!), _ => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(new global::Doroti.Framework.Animation.ReverseAnimation(((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).animation)) });
         this._commitAnimation.parent = (((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).phase switch { _PredictiveBackPhase__predictive_back_page_transitions_builder.commit => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(this._animation), _ => global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysDismissedAnimation });
-        double xShift__16820 = (((screenSize.width / _kDivisionFactor)) - _kMargin);
-        _positionAnimation = this._animation.drive((((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).phase switch { _PredictiveBackPhase__predictive_back_page_transitions_builder.commit => new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: this._lastDrag, end: new global::Doroti.Ui.Offset((screenSize.height * _kYPositionFactor), 0.0)), _ => new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: (((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).currentBackEvent?.swipeEdge switch { global::Doroti.Framework.Services.SwipeEdge.left => new global::Doroti.Ui.Offset(xShift__16820, _getYShiftPosition(screenSize.height)), global::Doroti.Framework.Services.SwipeEdge.right => new global::Doroti.Ui.Offset(-xShift__16820, _getYShiftPosition(screenSize.height)), null => new global::Doroti.Ui.Offset(xShift__16820, _getYShiftPosition(screenSize.height)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }), end: Offset.zero) }));
+        double xShift = (((screenSize.width / _kDivisionFactor)) - _kMargin);
+        _positionAnimation = this._animation.drive((((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).phase switch { _PredictiveBackPhase__predictive_back_page_transitions_builder.commit => new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: this._lastDrag, end: new global::Doroti.Ui.Offset((screenSize.height * _kYPositionFactor), 0.0)), _ => new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: (((_PredictiveBackSharedElementPageTransition__predictive_back_page_transitions_builder)this.widget).currentBackEvent?.swipeEdge switch { global::Doroti.Framework.Services.SwipeEdge.left => new global::Doroti.Ui.Offset(xShift, _getYShiftPosition(screenSize.height)), global::Doroti.Framework.Services.SwipeEdge.right => new global::Doroti.Ui.Offset(-xShift, _getYShiftPosition(screenSize.height)), null => new global::Doroti.Ui.Offset(xShift, _getYShiftPosition(screenSize.height)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }), end: Offset.zero) }));
     }
 
     internal virtual void _updateCurvedAnimations()
@@ -351,31 +351,31 @@ internal class _PredictiveBackSharedElementPageTransitionState__predictive_back_
 
     public virtual void _updateTicker()
     {
-        TickerModeData values__15157 = this._tickerModeNotifier!.value;
+        TickerModeData values = this._tickerModeNotifier!.value;
         if ((this._ticker is not null))
         {
-            this._ticker!.muted = !((TickerModeData)values__15157).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values__15157).forceFrames;
+            this._ticker!.muted = !((TickerModeData)values).enabled;
+            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier__15400.addListener(() => this._updateTicker());
-        this._tickerModeNotifier = newNotifier__15400;
+        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -425,17 +425,17 @@ internal class _PredictiveBackFullscreenPageTransitionState__predictive_back_pag
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        double screenWidth__23637 = MediaQuery.widthOf(this.context);
-        double xShift__23697 = (((screenWidth__23637 / _kScreenWidthDivisionFactor)) - _kXShiftAdjustment);
-        _primaryPositionTween = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animatable<Offset>>(new global::Doroti.Framework.Animation.TweenSequence<global::Doroti.Ui.Offset>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Offset>> { new global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Offset>(tween: new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: Offset.zero, end: Offset.zero), weight: _kWeightPreCommit), new global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Offset>(tween: new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: new global::Doroti.Ui.Offset(xShift__23697, 0.0), end: Offset.zero), weight: _kWeightPostCommit) }.Cast<global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Offset>>().ToList()));
+        double screenWidth = MediaQuery.widthOf(this.context);
+        double xShift = (((screenWidth / _kScreenWidthDivisionFactor)) - _kXShiftAdjustment);
+        _primaryPositionTween = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animatable<Offset>>(new global::Doroti.Framework.Animation.TweenSequence<global::Doroti.Ui.Offset>(new List<global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Offset>> { new global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Offset>(tween: new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: Offset.zero, end: Offset.zero), weight: _kWeightPreCommit), new global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Offset>(tween: new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: new global::Doroti.Ui.Offset(xShift, 0.0), end: Offset.zero), weight: _kWeightPostCommit) }.Cast<global::Doroti.Framework.Animation.TweenSequenceItem<global::Doroti.Ui.Offset>>().ToList()));
         _secondaryCurrentPositionTween = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animatable<Offset>>(new global::Doroti.Framework.Animation.ConstantTween<global::Doroti.Ui.Offset>(Offset.zero));
-        _secondaryPositionTween = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animatable<Offset>>(new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: new global::Doroti.Ui.Offset(xShift__23697, 0.0), end: Offset.zero));
+        _secondaryPositionTween = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animatable<Offset>>(new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: new global::Doroti.Ui.Offset(xShift, 0.0), end: Offset.zero));
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _secondaryAnimatedBuilder(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget? child)
     {
-        bool isCurrent__24417 = this.widget.getIsCurrent();
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.Transform.CreateTranslate(offset: (isCurrent__24417 ? this._secondaryCurrentPositionTween.evaluate(((_PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder)this.widget).secondaryAnimation) : this._secondaryPositionTween.evaluate(((_PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder)this.widget).secondaryAnimation)), child: global::Doroti.Framework.Widgets.Transform.CreateScale(scale: (isCurrent__24417 ? this._secondaryScaleTweenCurrent.evaluate(((_PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder)this.widget).secondaryAnimation) : this._secondaryTweenScale.evaluate(((_PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder)this.widget).secondaryAnimation)), child: new global::Doroti.Framework.Widgets.Opacity(opacity: (isCurrent__24417 ? this._secondaryOpacityTweenCurrent.evaluate(((_PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder)this.widget).secondaryAnimation) : this._secondaryOpacityTween.evaluate(((_PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder)this.widget).secondaryAnimation)), child: child))));
+        bool isCurrent = this.widget.getIsCurrent();
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.Transform.CreateTranslate(offset: (isCurrent ? this._secondaryCurrentPositionTween.evaluate(((_PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder)this.widget).secondaryAnimation) : this._secondaryPositionTween.evaluate(((_PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder)this.widget).secondaryAnimation)), child: global::Doroti.Framework.Widgets.Transform.CreateScale(scale: (isCurrent ? this._secondaryScaleTweenCurrent.evaluate(((_PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder)this.widget).secondaryAnimation) : this._secondaryTweenScale.evaluate(((_PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder)this.widget).secondaryAnimation)), child: new global::Doroti.Framework.Widgets.Opacity(opacity: (isCurrent ? this._secondaryOpacityTweenCurrent.evaluate(((_PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder)this.widget).secondaryAnimation) : this._secondaryOpacityTween.evaluate(((_PredictiveBackFullscreenPageTransition__predictive_back_page_transitions_builder)this.widget).secondaryAnimation)), child: child))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

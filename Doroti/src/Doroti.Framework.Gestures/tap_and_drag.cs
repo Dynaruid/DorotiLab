@@ -19,8 +19,8 @@ public static partial class Tap_and_dragLibrary
     internal static double _getGlobalDistance(PointerEvent @event, OffsetPair? originPosition)
     {
         DartRuntimePrimitives.Assert(() => (originPosition is not null));
-        global::Doroti.Ui.Offset offset__699 = (((PointerEvent)@event).position - originPosition!.global);
-        return offset__699.distance;
+        global::Doroti.Ui.Offset offset = (((PointerEvent)@event).position - originPosition!.global);
+        return offset.distance;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -468,9 +468,9 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
         if ((@event is PointerMoveEvent))
         {
             PointerMoveEvent @event__as22088 = (PointerMoveEvent)@event;
-            double computedSlop__22136 = global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(((PointerMoveEvent)@event__as22088).kind, gestureSettings);
-            bool isSlopPastTolerance__22213 = (Tap_and_dragLibrary._getGlobalDistance(((PointerMoveEvent)@event__as22088), this._originPosition) > computedSlop__22136);
-            if (isSlopPastTolerance__22213)
+            double computedSlop = global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(((PointerMoveEvent)@event__as22088).kind, gestureSettings);
+            bool isSlopPastTolerance = (Tap_and_dragLibrary._getGlobalDistance(((PointerMoveEvent)@event__as22088), this._originPosition) > computedSlop);
+            if (isSlopPastTolerance)
             {
                 _consecutiveTapTimerStop();
                 _previousButtons = null;
@@ -501,8 +501,8 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
         if ((@event is PointerMoveEvent))
         {
             PointerMoveEvent @event__as43046 = (PointerMoveEvent)@event;
-            double computedSlop__44158 = global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(((PointerMoveEvent)@event__as43046).kind, gestureSettings);
-            _pastSlopTolerance = (this._pastSlopTolerance || (Tap_and_dragLibrary._getGlobalDistance(((PointerMoveEvent)@event__as43046), this._initialPosition) > computedSlop__44158));
+            double computedSlopLocal = global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(((PointerMoveEvent)@event__as43046).kind, gestureSettings);
+            _pastSlopTolerance = (this._pastSlopTolerance || (Tap_and_dragLibrary._getGlobalDistance(((PointerMoveEvent)@event__as43046), this._initialPosition) > computedSlopLocal));
             if ((object.Equals(this._dragState, _DragState__tap_and_drag.accepted)))
             {
                 _currentPosition = OffsetPair.CreateFromEventPosition(((PointerMoveEvent)@event__as43046));
@@ -588,24 +588,24 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
             _currentPosition = this._initialPosition;
         }
         _checkDragStart(@event);
-        global::Doroti.Ui.Offset localDelta__46354 = ((PointerEvent)@event).localDelta;
-        if ((!object.Equals(localDelta__46354, Offset.zero)))
+        global::Doroti.Ui.Offset localDeltaLocal = ((PointerEvent)@event).localDelta;
+        if ((!object.Equals(localDeltaLocal, Offset.zero)))
         {
             _currentPosition = OffsetPair.CreateFromEventPosition(@event);
-            global::Doroti.Ui.Offset correctedLocalPosition__46503 = (((OffsetPair)this._initialPosition).local + localDelta__46354);
-            Matrix4? localToGlobalTransform__46586 = ((((PointerEvent)@event).transform is null) ? null : Matrix4.tryInvert(((PointerEvent)@event).transform!));
-            global::Doroti.Ui.Offset globalUpdateDelta__46720 = PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform__46586, untransformedDelta: localDelta__46354, untransformedEndPosition: correctedLocalPosition__46503);
-            var updateDelta__46943 = new OffsetPair(local: localDelta__46354, global: globalUpdateDelta__46720);
-            _checkDragUpdate(@event, corrected: (this._initialPosition.op_Add(updateDelta__46943)));
+            global::Doroti.Ui.Offset correctedLocalPosition = (((OffsetPair)this._initialPosition).local + localDeltaLocal);
+            Matrix4? localToGlobalTransform = ((((PointerEvent)@event).transform is null) ? null : Matrix4.tryInvert(((PointerEvent)@event).transform!));
+            global::Doroti.Ui.Offset globalUpdateDelta = PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: localDeltaLocal, untransformedEndPosition: correctedLocalPosition);
+            var updateDelta = new OffsetPair(local: localDeltaLocal, global: globalUpdateDelta);
+            _checkDragUpdate(@event, corrected: (this._initialPosition.op_Add(updateDelta)));
         }
     }
 
     internal virtual void _checkDrag(PointerMoveEvent @event)
     {
-        Matrix4? localToGlobalTransform__47207 = ((@event.transform is null) ? null : Matrix4.tryInvert(@event.transform!));
-        global::Doroti.Ui.Offset movedLocally__47335 = _getDeltaForDetails(@event.localDelta);
-        _globalDistanceMoved += (PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform__47207, untransformedDelta: movedLocally__47335, untransformedEndPosition: @event.localPosition).distance * Math.Sign(((_getPrimaryValueFromOffset(movedLocally__47335) ?? 1))));
-        _globalDistanceMovedAllAxes += (PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform__47207, untransformedDelta: @event.localDelta, untransformedEndPosition: @event.localPosition).distance * Math.Sign(1L));
+        Matrix4? localToGlobalTransform = ((@event.transform is null) ? null : Matrix4.tryInvert(@event.transform!));
+        global::Doroti.Ui.Offset movedLocally = _getDeltaForDetails(@event.localDelta);
+        _globalDistanceMoved += (PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: movedLocally, untransformedEndPosition: @event.localPosition).distance * Math.Sign(((_getPrimaryValueFromOffset(movedLocally) ?? 1))));
+        _globalDistanceMovedAllAxes += (PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: @event.localDelta, untransformedEndPosition: @event.localPosition).distance * Math.Sign(1L));
         if ((_hasSufficientGlobalDistanceToAccept(@event.kind) || ((this._wonArenaForPrimaryPointer && (this._globalDistanceMovedAllAxes.abs() > global::Doroti.Framework.Gestures.EventsLibrary.computePanSlop(@event.kind, gestureSettings))))))
         {
             _start = @event;
@@ -626,10 +626,10 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
         {
             return;
         }
-        var details__48479 = new TapDragDownDetails(globalPosition: @event.position, localPosition: @event.localPosition, kind: getKindForPointer(@event.pointer), consecutiveTapCount: consecutiveTapCount);
+        var details = new TapDragDownDetails(globalPosition: @event.position, localPosition: @event.localPosition, kind: getKindForPointer(@event.pointer), consecutiveTapCount: consecutiveTapCount);
         if ((this.onTapDown is not null))
         {
-            invokeCallback<object?>("onTapDown", () => { ((Action)((() => this.onTapDown!(details__48479))))(); return null; });
+            invokeCallback<object?>("onTapDown", () => { ((Action)((() => this.onTapDown!(details))))(); return null; });
         }
         _sentTapDown = true;
     }
@@ -640,10 +640,10 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
         {
             return;
         }
-        var upDetails__48932 = new TapDragUpDetails(kind: @event.kind, globalPosition: @event.position, localPosition: @event.localPosition, consecutiveTapCount: consecutiveTapCount);
+        var upDetails = new TapDragUpDetails(kind: @event.kind, globalPosition: @event.position, localPosition: @event.localPosition, consecutiveTapCount: consecutiveTapCount);
         if ((this.onTapUp is not null))
         {
-            invokeCallback<object?>("onTapUp", () => { ((Action)((() => this.onTapUp!(upDetails__48932))))(); return null; });
+            invokeCallback<object?>("onTapUp", () => { ((Action)((() => this.onTapUp!(upDetails))))(); return null; });
         }
         _resetTaps();
         if (!this._acceptedActivePointers.Remove(@event.pointer))
@@ -656,44 +656,44 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
     {
         if ((this.onDragStart is not null))
         {
-            var details__49457 = new TapDragStartDetails(sourceTimeStamp: ((PointerEvent)@event).timeStamp, globalPosition: ((OffsetPair)this._initialPosition).global, localPosition: ((OffsetPair)this._initialPosition).local, kind: getKindForPointer(((PointerEvent)@event).pointer), consecutiveTapCount: consecutiveTapCount);
-            invokeCallback<object?>("onDragStart", () => { ((Action)((() => this.onDragStart!(details__49457))))(); return null; });
+            var details = new TapDragStartDetails(sourceTimeStamp: ((PointerEvent)@event).timeStamp, globalPosition: ((OffsetPair)this._initialPosition).global, localPosition: ((OffsetPair)this._initialPosition).local, kind: getKindForPointer(((PointerEvent)@event).pointer), consecutiveTapCount: consecutiveTapCount);
+            invokeCallback<object?>("onDragStart", () => { ((Action)((() => this.onDragStart!(details))))(); return null; });
         }
         _start = null;
     }
 
     internal virtual void _checkDragUpdate(PointerEvent @event, OffsetPair? corrected = null)
     {
-        global::Doroti.Ui.Offset globalPosition__49925 = (corrected?.global ?? ((PointerEvent)@event).position);
-        global::Doroti.Ui.Offset localPosition__49996 = (corrected?.local ?? ((PointerEvent)@event).localPosition);
-        var details__50064 = new TapDragUpdateDetails(sourceTimeStamp: ((PointerEvent)@event).timeStamp, delta: ((PointerEvent)@event).localDelta, globalPosition: globalPosition__49925, kind: getKindForPointer(((PointerEvent)@event).pointer), localPosition: localPosition__49996, offsetFromOrigin: (globalPosition__49925 - ((OffsetPair)this._initialPosition).global), localOffsetFromOrigin: (localPosition__49996 - ((OffsetPair)this._initialPosition).local), consecutiveTapCount: consecutiveTapCount);
+        global::Doroti.Ui.Offset globalPositionLocal = (corrected?.global ?? ((PointerEvent)@event).position);
+        global::Doroti.Ui.Offset localPositionLocal = (corrected?.local ?? ((PointerEvent)@event).localPosition);
+        var details = new TapDragUpdateDetails(sourceTimeStamp: ((PointerEvent)@event).timeStamp, delta: ((PointerEvent)@event).localDelta, globalPosition: globalPositionLocal, kind: getKindForPointer(((PointerEvent)@event).pointer), localPosition: localPositionLocal, offsetFromOrigin: (globalPositionLocal - ((OffsetPair)this._initialPosition).global), localOffsetFromOrigin: (localPositionLocal - ((OffsetPair)this._initialPosition).local), consecutiveTapCount: consecutiveTapCount);
         if ((this.dragUpdateThrottleFrequency is not null))
         {
-            _lastDragUpdateDetails = details__50064;
+            _lastDragUpdateDetails = details;
             _dragUpdateThrottleTimer ??= new Timer(DartRuntimePrimitives.RequireValue(this.dragUpdateThrottleFrequency), this._handleDragUpdateThrottled);
         }
         else
         {
             if ((this.onDragUpdate is not null))
             {
-                invokeCallback<object?>("onDragUpdate", () => { ((Action)((() => this.onDragUpdate!(details__50064))))(); return null; });
+                invokeCallback<object?>("onDragUpdate", () => { ((Action)((() => this.onDragUpdate!(details))))(); return null; });
             }
         }
     }
 
     internal virtual void _checkDragEnd()
     {
-        global::Doroti.Ui.Offset globalPosition__50912 = ((OffsetPair)this._currentPosition).global;
-        global::Doroti.Ui.Offset localPosition__50971 = ((OffsetPair)this._currentPosition).local;
+        global::Doroti.Ui.Offset globalPositionLocal = ((OffsetPair)this._currentPosition).global;
+        global::Doroti.Ui.Offset localPositionLocal = ((OffsetPair)this._currentPosition).local;
         if ((this._dragUpdateThrottleTimer is not null))
         {
             this._dragUpdateThrottleTimer!.cancel();
             _handleDragUpdateThrottled();
         }
-        var endDetails__51254 = new TapDragEndDetails(globalPosition: globalPosition__50912, localPosition: localPosition__50971, primaryVelocity: 0.0, consecutiveTapCount: consecutiveTapCount);
+        var endDetails = new TapDragEndDetails(globalPosition: globalPositionLocal, localPosition: localPositionLocal, primaryVelocity: 0.0, consecutiveTapCount: consecutiveTapCount);
         if ((this.onDragEnd is not null))
         {
-            invokeCallback<object?>("onDragEnd", () => { ((Action)((() => this.onDragEnd!(endDetails__51254))))(); return null; });
+            invokeCallback<object?>("onDragEnd", () => { ((Action)((() => this.onDragEnd!(endDetails))))(); return null; });
         }
         _resetTaps();
         _resetDragUpdateThrottle();
@@ -801,8 +801,8 @@ public abstract class BaseTapAndDragGestureRecognizer : OneSequenceGestureRecogn
         {
             return false;
         }
-        global::Doroti.Ui.Offset difference__23425 = (secondTapOffset - DartRuntimePrimitives.RequireValue(this._lastTapOffset));
-        return (difference__23425.distance <= global::Doroti.Framework.Gestures.ConstantsLibrary.kDoubleTapSlop);
+        global::Doroti.Ui.Offset difference = (secondTapOffset - DartRuntimePrimitives.RequireValue(this._lastTapOffset));
+        return (difference.distance <= global::Doroti.Framework.Gestures.ConstantsLibrary.kDoubleTapSlop);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

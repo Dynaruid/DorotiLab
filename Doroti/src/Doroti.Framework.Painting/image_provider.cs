@@ -58,65 +58,65 @@ public class ImageConfiguration
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.bundle, this.devicePixelRatio, this.locale, this.size, this.platform);
     public override string ToString()
     {
-        var result__4099 = new StringBuffer();
-        result__4099.write("ImageConfiguration(");
-        var hasArguments__4173 = false;
+        var result = new StringBuffer();
+        result.write("ImageConfiguration(");
+        var hasArguments = false;
         if ((this.bundle is not null))
         {
-            result__4099.write($"bundle: {this.bundle}");
-            hasArguments__4173 = true;
+            result.write($"bundle: {this.bundle}");
+            hasArguments = true;
         }
         if ((this.devicePixelRatio is not null))
         {
             double devicePixelRatio__value4301 = DartRuntimePrimitives.RequireValue(devicePixelRatio);
-            if (hasArguments__4173)
+            if (hasArguments)
             {
-                result__4099.write(", ");
+                result.write(", ");
             }
-            result__4099.write($"devicePixelRatio: {DartRuntimePrimitives.RequireValue(this.devicePixelRatio).toStringAsFixed(1L)}");
-            hasArguments__4173 = true;
+            result.write($"devicePixelRatio: {DartRuntimePrimitives.RequireValue(this.devicePixelRatio).toStringAsFixed(1L)}");
+            hasArguments = true;
         }
         if ((this.locale is not null))
         {
             Locale locale__value4513 = DartRuntimePrimitives.RequireValue(locale);
-            if (hasArguments__4173)
+            if (hasArguments)
             {
-                result__4099.write(", ");
+                result.write(", ");
             }
-            result__4099.write($"locale: {this.locale}");
-            hasArguments__4173 = true;
+            result.write($"locale: {this.locale}");
+            hasArguments = true;
         }
         if ((this.textDirection is not null))
         {
             TextDirection textDirection__value4673 = DartRuntimePrimitives.RequireValue(textDirection);
-            if (hasArguments__4173)
+            if (hasArguments)
             {
-                result__4099.write(", ");
+                result.write(", ");
             }
-            result__4099.write($"textDirection: {this.textDirection}");
-            hasArguments__4173 = true;
+            result.write($"textDirection: {this.textDirection}");
+            hasArguments = true;
         }
         if ((this.size is not null))
         {
             Size size__value4854 = DartRuntimePrimitives.RequireValue(size);
-            if (hasArguments__4173)
+            if (hasArguments)
             {
-                result__4099.write(", ");
+                result.write(", ");
             }
-            result__4099.write($"size: {this.size}");
-            hasArguments__4173 = true;
+            result.write($"size: {this.size}");
+            hasArguments = true;
         }
         if ((this.platform is not null))
         {
-            if (hasArguments__4173)
+            if (hasArguments)
             {
-                result__4099.write(", ");
+                result.write(", ");
             }
-            result__4099.write($"platform: {this.platform!.ToString()}");
-            hasArguments__4173 = true;
+            result.write($"platform: {this.platform!.ToString()}");
+            hasArguments = true;
         }
-        result__4099.write(")");
-        return result__4099.ToString();
+        result.write(")");
+        return result.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -136,26 +136,26 @@ public abstract class ImageProvider<T>
 
     public virtual ImageStream resolve(ImageConfiguration configuration)
     {
-        ImageStream stream__13537 = createStream(configuration);
+        ImageStream stream = createStream(configuration);
         _createErrorHandlerAndKey(configuration, ((Action<T, Action<object, global::System.Diagnostics.StackTrace?>>)((key, errorHandler) =>
         {
-            resolveStreamForKey(configuration, stream__13537, key, (Action<object, global::System.Diagnostics.StackTrace?>)errorHandler);
+            resolveStreamForKey(configuration, stream, key, (Action<object, global::System.Diagnostics.StackTrace?>)errorHandler);
         })), ((Func<T?, object, global::System.Diagnostics.StackTrace?, Future>)(async (key, exception, stack) =>
         {
             await Task.Yield();
-            InformationCollector? collector__14061 = default!;
+            InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector__14061 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<ImageConfiguration>("Image configuration", configuration), new DiagnosticsProperty<T>("Image key", key, defaultValue: null) });
+                    collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<ImageConfiguration>("Image configuration", configuration), new DiagnosticsProperty<T>("Image key", key, defaultValue: null) });
                     return true;
                 });
-            if ((((ImageStream)stream__13537).completer is null))
+            if ((((ImageStream)stream).completer is null))
             {
-                stream__13537.setCompleter(new _ErrorImageCompleter__image_provider());
+                stream.setCompleter(new _ErrorImageCompleter__image_provider());
             }
-            ((ImageStream)stream__13537).completer!.reportError(exception: exception, stack: stack, context: new ErrorDescription("while resolving an image"), silent: true, informationCollector: (InformationCollector?)collector__14061);
+            ((ImageStream)stream).completer!.reportError(exception: exception, stack: stack, context: new ErrorDescription("while resolving an image"), silent: true, informationCollector: (InformationCollector?)collector);
         })));
-        return stream__13537;
+        return stream;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -167,10 +167,10 @@ public abstract class ImageProvider<T>
 
     public virtual Future<ImageCacheStatus?> obtainCacheStatus(ImageConfiguration configuration, Action<object, global::System.Diagnostics.StackTrace?>? handleError = null)
     {
-        var completer__15820 = new Completer<ImageCacheStatus?>();
+        var completer = new Completer<ImageCacheStatus?>();
         _createErrorHandlerAndKey(configuration, ((Action<T, Action<object, global::System.Diagnostics.StackTrace?>>)((key, innerHandleError) =>
         {
-            completer__15820.complete(PaintingBinding.instance.imageCache.statusForKey(key));
+            completer.complete(PaintingBinding.instance.imageCache.statusForKey(key));
         })), ((Func<T?, object, global::System.Diagnostics.StackTrace?, Future>)(async (key, exception, stack) =>
         {
             if ((handleError is not null))
@@ -179,58 +179,58 @@ public abstract class ImageProvider<T>
             }
             else
             {
-                InformationCollector? collector__16246 = default!;
+                InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector__16246 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<ImageConfiguration>("Image configuration", configuration), new DiagnosticsProperty<T>("Image key", key, defaultValue: null) });
+                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<ImageConfiguration>("Image configuration", configuration), new DiagnosticsProperty<T>("Image key", key, defaultValue: null) });
                         return true;
                     });
-                FlutterError.reportError(new FlutterErrorDetails(context: new ErrorDescription("while checking the cache location of an image"), informationCollector: collector__16246, exception: exception, stack: stack));
-                completer__15820.complete();
+                FlutterError.reportError(new FlutterErrorDetails(context: new ErrorDescription("while checking the cache location of an image"), informationCollector: collector, exception: exception, stack: stack));
+                completer.complete();
             }
         })));
-        return completer__15820.future;
+        return completer.future;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _createErrorHandlerAndKey(ImageConfiguration configuration, Action<T, Action<object, global::System.Diagnostics.StackTrace?>> successCallback, Func<T?, object, global::System.Diagnostics.StackTrace?, Future> errorCallback)
     {
-        T? obtainedKey__17377 = default!;
-        var didError__17398 = false;
+        T? obtainedKey = default!;
+        var didError = false;
         async Future handleError(object exception, global::System.Diagnostics.StackTrace? stack)
         {
-            if (didError__17398)
+            if (didError)
             {
                 return;
             }
-            if (!didError__17398)
+            if (!didError)
             {
-                didError__17398 = true;
-                await errorCallback(obtainedKey__17377, exception, stack);
+                didError = true;
+                await errorCallback(obtainedKey, exception, stack);
             }
         }
-        Future<T> key__17895 = default!;
+        Future<T> keyLocal = default!;
         try
         {
-            _ = key__17895 = obtainKey(configuration);
+            _ = keyLocal = obtainKey(configuration);
         }
-        catch (Exception error__17961)
+        catch (Exception error)
         {
-            var stackTrace__17968 = new System.Diagnostics.StackTrace();
-            _ = handleError(error__17961, stackTrace__17968);
+            var stackTrace = new System.Diagnostics.StackTrace();
+            _ = handleError(error, stackTrace);
             return;
         }
-        _ = key__17895.then((Action<T>)((key) =>
+        _ = keyLocal.then((Action<T>)((key) =>
         {
-            obtainedKey__17377 = key;
+            obtainedKey = key;
             try
             {
                 successCallback(key, (__exception, __stack) => { _ = handleError(__exception, __stack); });
             }
-            catch (Exception error__18189)
+            catch (Exception errorLocal)
             {
-                var stackTrace__18196 = new System.Diagnostics.StackTrace();
-                _ = handleError(error__18189, stackTrace__18196);
+                var stackTraceLocal = new System.Diagnostics.StackTrace();
+                _ = handleError(errorLocal, stackTraceLocal);
             }
         })).catchError(handleError);
     }
@@ -239,17 +239,17 @@ public abstract class ImageProvider<T>
     {
         if ((((ImageStream)stream).completer is not null))
         {
-            ImageStreamCompleter? completer__19713 = PaintingBinding.instance.imageCache.putIfAbsent(key, ((Func<ImageStreamCompleter>)(() => ((ImageStream)stream).completer!)), onError: (Action<object, global::System.Diagnostics.StackTrace?>)handleError);
-            DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(completer__19713, ((ImageStream)stream).completer));
+            ImageStreamCompleter? completerLocal = PaintingBinding.instance.imageCache.putIfAbsent(key, ((Func<ImageStreamCompleter>)(() => ((ImageStream)stream).completer!)), onError: (Action<object, global::System.Diagnostics.StackTrace?>)handleError);
+            DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(completerLocal, ((ImageStream)stream).completer));
             return;
         }
-        ImageStreamCompleter? completer__19965 = PaintingBinding.instance.imageCache.putIfAbsent(key, ((Func<ImageStreamCompleter>)(() =>
+        ImageStreamCompleter? completerAlternate = PaintingBinding.instance.imageCache.putIfAbsent(key, ((Func<ImageStreamCompleter>)(() =>
         {
-            ImageStreamCompleter result__20077 = loadImage(key, (Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>>)PaintingBinding.instance.instantiateImageCodecWithSize);
-            if ((result__20077 is _AbstractImageStreamCompleter__image_provider))
+            ImageStreamCompleter result = loadImage(key, (Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>>)PaintingBinding.instance.instantiateImageCodecWithSize);
+            if ((result is _AbstractImageStreamCompleter__image_provider))
             {
-                _AbstractImageStreamCompleter__image_provider result__20077__as20577 = (_AbstractImageStreamCompleter__image_provider)result__20077;
-                result__20077 = loadBuffer(
+                _AbstractImageStreamCompleter__image_provider result__20077__as20577 = (_AbstractImageStreamCompleter__image_provider)result;
+                result = loadBuffer(
                     key,
                     (Func<ImmutableBuffer, bool, long?, long?, Future<Codec>>)
                         ((__buffer, __allowUpscaling, __cacheHeight, __cacheWidth) =>
@@ -259,20 +259,20 @@ public abstract class ImageProvider<T>
                                 __cacheHeight,
                                 __allowUpscaling)));
             }
-            return result__20077;
+            return result;
             return default;
         })), onError: (Action<object, global::System.Diagnostics.StackTrace?>)handleError);
-        if ((completer__19965 is not null))
+        if ((completerAlternate is not null))
         {
-            stream.setCompleter(completer__19965);
+            stream.setCompleter(completerAlternate);
         }
     }
 
     public async virtual Future<bool> evict(ImageCache? cache = null, ImageConfiguration configuration = default!)
     {
         cache ??= global::Doroti.Framework.Painting.BindingLibrary.imageCache;
-        T key__22301 = await obtainKey(configuration);
-        return cache.evict(key__22301);
+        T key = await obtainKey(configuration);
+        return cache.evict(key);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -351,41 +351,41 @@ public abstract class AssetBundleImageProvider : ImageProvider<AssetBundleImageK
 
     public override ImageStreamCompleter loadImage(AssetBundleImageKey key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode)
     {
-        InformationCollector? collector__26836 = default!;
+        InformationCollector? collector = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                collector__26836 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<AssetBundleImageKey>("Image key", key) });
+                collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<AssetBundleImageKey>("Image key", key) });
                 return true;
             });
-        return new MultiFrameImageStreamCompleter(codec: _loadAsync(key, decode: (ImmutableBuffer __buffer) => decode(__buffer, null)), scale: ((AssetBundleImageKey)key).scale, debugLabel: ((AssetBundleImageKey)key).name, informationCollector: collector__26836);
+        return new MultiFrameImageStreamCompleter(codec: _loadAsync(key, decode: (ImmutableBuffer __buffer) => decode(__buffer, null)), scale: ((AssetBundleImageKey)key).scale, debugLabel: ((AssetBundleImageKey)key).name, informationCollector: collector);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override ImageStreamCompleter loadBuffer(AssetBundleImageKey key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode)
     {
-        InformationCollector? collector__27491 = default!;
+        InformationCollector? collector = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                collector__27491 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<AssetBundleImageKey>("Image key", key) });
+                collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<AssetBundleImageKey>("Image key", key) });
                 return true;
             });
-        return new MultiFrameImageStreamCompleter(codec: _loadAsync(key, decode: (ImmutableBuffer __buffer) => decode(__buffer, false, null, null)), scale: ((AssetBundleImageKey)key).scale, debugLabel: ((AssetBundleImageKey)key).name, informationCollector: collector__27491);
+        return new MultiFrameImageStreamCompleter(codec: _loadAsync(key, decode: (ImmutableBuffer __buffer) => decode(__buffer, false, null, null)), scale: ((AssetBundleImageKey)key).scale, debugLabel: ((AssetBundleImageKey)key).name, informationCollector: collector);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal async virtual Future<global::Doroti.Ui.Codec> _loadAsync(AssetBundleImageKey key, Func<ImmutableBuffer, Future<Codec>> decode)
     {
-        global::Doroti.Ui.ImmutableBuffer buffer__28251 = default!;
+        global::Doroti.Ui.ImmutableBuffer buffer = default!;
         try
         {
-            buffer__28251 = await ((AssetBundleImageKey)key).bundle.loadBuffer(((AssetBundleImageKey)key).name);
+            buffer = await ((AssetBundleImageKey)key).bundle.loadBuffer(((AssetBundleImageKey)key).name);
         }
         catch (FlutterError)
         {
             PaintingBinding.instance.imageCache.evict(key);
             throw;
         }
-        return await decode(buffer__28251);
+        return await decode(buffer);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -464,13 +464,13 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
             return decode(buffer, this.allowUpscaling, this.height, this.width);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        ImageStreamCompleter completer__42681 = this.imageProvider.loadBuffer(((ResizeImageKey)key)._providerCacheKey, ((Func<ImmutableBuffer, bool, long?, long?, Future<Codec>>)((__buffer, __allowUpscaling, __cacheWidth, __cacheHeight) => decodeResize(__buffer, __cacheWidth, __cacheHeight, __allowUpscaling))));
+        ImageStreamCompleter completer = this.imageProvider.loadBuffer(((ResizeImageKey)key)._providerCacheKey, ((Func<ImmutableBuffer, bool, long?, long?, Future<Codec>>)((__buffer, __allowUpscaling, __cacheWidth, __cacheHeight) => decodeResize(__buffer, __cacheWidth, __cacheHeight, __allowUpscaling))));
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
-            completer__42681.debugLabel = $"{((ImageStreamCompleter)completer__42681).debugLabel} - Resized({((ResizeImageKey)key)._width}×{((ResizeImageKey)key)._height})";
+            completer.debugLabel = $"{((ImageStreamCompleter)completer).debugLabel} - Resized({((ResizeImageKey)key)._width}×{((ResizeImageKey)key)._height})";
         }
-        _configureErrorListener(completer__42681, key);
-        return completer__42681;
+        _configureErrorListener(completer, key);
+        return completer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -485,78 +485,78 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                 {
                     case ResizeImagePolicy.exact:
                         {
-                            long? targetWidth__43553 = this.width;
-                            long? targetHeight__43593 = this.height;
+                            long? targetWidth = this.width;
+                            long? targetHeight = this.height;
                             if (!this.allowUpscaling)
                             {
-                                if (((targetWidth__43553 is not null) && (DartRuntimePrimitives.RequireValue(targetWidth__43553) > intrinsicWidth)))
+                                if (((targetWidth is not null) && (DartRuntimePrimitives.RequireValue(targetWidth) > intrinsicWidth)))
                                 {
-                                    long targetWidth__43553__value43674 = DartRuntimePrimitives.RequireValue(targetWidth__43553);
-                                    targetWidth__43553 = intrinsicWidth;
+                                    long targetWidth__43553__value43674 = DartRuntimePrimitives.RequireValue(targetWidth);
+                                    targetWidth = intrinsicWidth;
                                 }
-                                if (((targetHeight__43593 is not null) && (DartRuntimePrimitives.RequireValue(targetHeight__43593) > intrinsicHeight)))
+                                if (((targetHeight is not null) && (DartRuntimePrimitives.RequireValue(targetHeight) > intrinsicHeight)))
                                 {
-                                    long targetHeight__43593__value43815 = DartRuntimePrimitives.RequireValue(targetHeight__43593);
-                                    targetHeight__43593 = intrinsicHeight;
+                                    long targetHeight__43593__value43815 = DartRuntimePrimitives.RequireValue(targetHeight);
+                                    targetHeight = intrinsicHeight;
                                 }
                             }
-                            return new global::Doroti.Ui.TargetImageSize(width: targetWidth__43553, height: targetHeight__43593);
+                            return new global::Doroti.Ui.TargetImageSize(width: targetWidth, height: targetHeight);
                         }
                     case ResizeImagePolicy.fit:
                         {
-                            double aspectRatio__44108 = (intrinsicWidth / intrinsicHeight);
-                            long maxWidth__44180 = (this.width ?? intrinsicWidth);
-                            long maxHeight__44240 = (this.height ?? intrinsicHeight);
-                            var targetWidth__44297 = intrinsicWidth;
-                            var targetHeight__44345 = intrinsicHeight;
-                            if ((targetWidth__44297 > maxWidth__44180))
+                            double aspectRatio = (intrinsicWidth / intrinsicHeight);
+                            long maxWidth = (this.width ?? intrinsicWidth);
+                            long maxHeight = (this.height ?? intrinsicHeight);
+                            var targetWidthLocal = intrinsicWidth;
+                            var targetHeightLocal = intrinsicHeight;
+                            if ((targetWidthLocal > maxWidth))
                             {
-                                targetWidth__44297 = maxWidth__44180;
-                                targetHeight__44345 = (checked((long)(targetWidth__44297 / aspectRatio__44108)));
+                                targetWidthLocal = maxWidth;
+                                targetHeightLocal = (checked((long)(targetWidthLocal / aspectRatio)));
                             }
-                            if ((targetHeight__44345 > maxHeight__44240))
+                            if ((targetHeightLocal > maxHeight))
                             {
-                                targetHeight__44345 = maxHeight__44240;
-                                targetWidth__44297 = ((targetHeight__44345 * aspectRatio__44108)).floor();
+                                targetHeightLocal = maxHeight;
+                                targetWidthLocal = ((targetHeightLocal * aspectRatio)).floor();
                             }
                             if (this.allowUpscaling)
                             {
                                 if ((this.width is null))
                                 {
                                     DartRuntimePrimitives.Assert(() => (this.height is not null));
-                                    targetHeight__44345 = DartRuntimePrimitives.RequireValue(this.height);
-                                    targetWidth__44297 = ((targetHeight__44345 * aspectRatio__44108)).floor();
+                                    targetHeightLocal = DartRuntimePrimitives.RequireValue(this.height);
+                                    targetWidthLocal = ((targetHeightLocal * aspectRatio)).floor();
                                 }
                                 else
                                 {
                                     if ((this.height is null))
                                     {
-                                        targetWidth__44297 = DartRuntimePrimitives.RequireValue(this.width);
-                                        targetHeight__44345 = (checked((long)(targetWidth__44297 / aspectRatio__44108)));
+                                        targetWidthLocal = DartRuntimePrimitives.RequireValue(this.width);
+                                        targetHeightLocal = (checked((long)(targetWidthLocal / aspectRatio)));
                                     }
                                     else
                                     {
-                                        long derivedMaxWidth__45137 = ((maxHeight__44240 * aspectRatio__44108)).floor();
-                                        long derivedMaxHeight__45218 = (checked((long)(maxWidth__44180 / aspectRatio__44108)));
-                                        targetWidth__44297 = Math.Min(maxWidth__44180, derivedMaxWidth__45137);
-                                        targetHeight__44345 = Math.Min(maxHeight__44240, derivedMaxHeight__45218);
+                                        long derivedMaxWidth = ((maxHeight * aspectRatio)).floor();
+                                        long derivedMaxHeight = (checked((long)(maxWidth / aspectRatio)));
+                                        targetWidthLocal = Math.Min(maxWidth, derivedMaxWidth);
+                                        targetHeightLocal = Math.Min(maxHeight, derivedMaxHeight);
                                     }
                                 }
                             }
-                            return new global::Doroti.Ui.TargetImageSize(width: targetWidth__44297, height: targetHeight__44345);
+                            return new global::Doroti.Ui.TargetImageSize(width: targetWidthLocal, height: targetHeightLocal);
                         }
                 }
                 return default;
             }));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        ImageStreamCompleter completer__45591 = this.imageProvider.loadImage(((ResizeImageKey)key)._providerCacheKey, (Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>>)decodeResize);
+        ImageStreamCompleter completer = this.imageProvider.loadImage(((ResizeImageKey)key)._providerCacheKey, (Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>>)decodeResize);
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
-            completer__45591.debugLabel = $"{((ImageStreamCompleter)completer__45591).debugLabel} - Resized({((ResizeImageKey)key)._width}×{((ResizeImageKey)key)._height})";
+            completer.debugLabel = $"{((ImageStreamCompleter)completer).debugLabel} - Resized({((ResizeImageKey)key)._width}×{((ResizeImageKey)key)._height})";
         }
-        _configureErrorListener(completer__45591, key);
-        return completer__45591;
+        _configureErrorListener(completer, key);
+        return completer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -573,25 +573,25 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
 
     public override Future<ResizeImageKey> obtainKey(ImageConfiguration configuration)
     {
-        Completer<ResizeImageKey>? completer__46571 = default!;
-        SynchronousFuture<ResizeImageKey>? result__46780 = default!;
+        Completer<ResizeImageKey>? completer = default!;
+        SynchronousFuture<ResizeImageKey>? result = default!;
         _ = this.imageProvider.obtainKey(configuration).then((Action<object>)((key) =>
         {
-            if ((completer__46571 is null))
+            if ((completer is null))
             {
-                result__46780 = new SynchronousFuture<ResizeImageKey>(new ResizeImageKey(key, this.policy, this.width, this.height, this.allowUpscaling));
+                result = new SynchronousFuture<ResizeImageKey>(new ResizeImageKey(key, this.policy, this.width, this.height, this.allowUpscaling));
             }
             else
             {
-                completer__46571.complete(new ResizeImageKey(key, this.policy, this.width, this.height, this.allowUpscaling));
+                completer.complete(new ResizeImageKey(key, this.policy, this.width, this.height, this.allowUpscaling));
             }
         }));
-        if ((result__46780 is not null))
+        if ((result is not null))
         {
-            return result__46780!;
+            return result!;
         }
-        completer__46571 = new Completer<ResizeImageKey>();
-        return completer__46571.future;
+        completer = new Completer<ResizeImageKey>();
+        return completer.future;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -665,8 +665,8 @@ public class FileImage : ImageProvider<FileImage>
     internal async virtual Future<global::Doroti.Ui.Codec> _loadAsync(FileImage key, Func<ImmutableBuffer, Future<Codec>> decode)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(key, this)));
-        long lengthInBytes__53776 = await this.file.length();
-        if ((lengthInBytes__53776 == 0L))
+        long lengthInBytes = await this.file.length();
+        if ((lengthInBytes == 0L))
         {
             PaintingBinding.instance.imageCache.evict(key);
             throw new InvalidOperationException($"{this.file} is empty and cannot be loaded as an image.");

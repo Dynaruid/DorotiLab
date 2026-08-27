@@ -69,11 +69,11 @@ internal class _PopScopeState__pop_scope<T> : State<PopScope<T>>
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        dynamic nextRoute__7173 = ModalRoute<object>.of<object>(this.context);
-        if ((!object.Equals(nextRoute__7173, this._route)))
+        dynamic nextRoute = ModalRoute<object>.of<object>(this.context);
+        if ((!object.Equals(nextRoute, this._route)))
         {
             ((dynamic)this._route)?.unregisterPopEntry(this);
-            _route = nextRoute__7173;
+            _route = nextRoute;
             ((dynamic)this._route)?.registerPopEntry(this);
         }
     }

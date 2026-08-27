@@ -107,9 +107,9 @@ public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElement
     {
         if ((this._newWidget is not null))
         {
-            Widget newWidget__4575 = this._newWidget!;
+            Widget newWidget = this._newWidget!;
             _newWidget = null;
-            update(((RenderObjectToWidgetAdapter<T>?)(object?)newWidget__4575)!);
+            update(((RenderObjectToWidgetAdapter<T>?)(object?)newWidget)!);
         }
         base.performRebuild();
         DartRuntimePrimitives.Assert(() => (this._newWidget is null));
@@ -121,13 +121,13 @@ public class RenderObjectToWidgetElement<T> : RenderTreeRootElement, RootElement
         {
             _child = updateChild(this._child, ((Widget?)((dynamic)(((RenderObjectToWidgetAdapter<T>?)(object?)this.widget)!)).child), _rootChildSlot);
         }
-        catch (Exception exception__4978)
+        catch (Exception exceptionLocal)
         {
-            var stack__4989 = new System.Diagnostics.StackTrace();
-            var details__5010 = new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__4978, stack: stack__4989, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("attaching to the render tree"));
-            FlutterError.reportError(details__5010);
-            Widget error__5265 = ErrorWidget.builder(details__5010);
-            _child = updateChild(((Element)(object)null), error__5265, _rootChildSlot);
+            var stackLocal = new System.Diagnostics.StackTrace();
+            var details = new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("attaching to the render tree"));
+            FlutterError.reportError(details);
+            Widget error = ErrorWidget.builder(details);
+            _child = updateChild(((Element)(object)null), error, _rootChildSlot);
         }
     }
 

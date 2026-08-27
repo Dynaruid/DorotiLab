@@ -37,24 +37,24 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
         }
         else
         {
-            var offset__3233 = 0.0;
-            double? itemExtent__3261 = default!;
-            for (var i__3288 = 0L; (i__3288 < index); i__3288++)
+            var offset = 0.0;
+            double? itemExtentLocal = default!;
+            for (var i = 0L; (i < index); i++)
             {
-                long? childCount__3332 = ((RenderSliverBoxChildManager)childManager).estimatedChildCount;
-                if (((childCount__3332 is not null) && (i__3288 > (DartRuntimePrimitives.RequireValue(childCount__3332) - 1L))))
+                long? childCount = ((RenderSliverBoxChildManager)childManager).estimatedChildCount;
+                if (((childCount is not null) && (i > (DartRuntimePrimitives.RequireValue(childCount) - 1L))))
                 {
-                    long childCount__3332__value3391 = DartRuntimePrimitives.RequireValue(childCount__3332);
+                    long childCount__3332__value3391 = DartRuntimePrimitives.RequireValue(childCount);
                     break;
                 }
-                itemExtent__3261 = this.itemExtentBuilder!(i__3288, this.layoutDimensions);
-                if ((itemExtent__3261 is null))
+                itemExtentLocal = this.itemExtentBuilder!(i, this.layoutDimensions);
+                if ((itemExtentLocal is null))
                 {
                     break;
                 }
-                offset__3233 += DartRuntimePrimitives.RequireValue(itemExtent__3261);
+                offset += DartRuntimePrimitives.RequireValue(itemExtentLocal);
             }
-            return offset__3233;
+            return offset;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -66,13 +66,13 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
             itemExtent = DartRuntimePrimitives.RequireValue(this.itemExtent);
             if ((itemExtent > 0.0))
             {
-                double actual__4446 = (scrollOffset / itemExtent);
-                long round__4500 = actual__4446.round();
-                if (((((actual__4446 * itemExtent) - (round__4500 * itemExtent))).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+                double actual = (scrollOffset / itemExtent);
+                long roundLocal = actual.round();
+                if (((((actual * itemExtent) - (roundLocal * itemExtent))).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
                 {
-                    return round__4500;
+                    return roundLocal;
                 }
-                return actual__4446.floor();
+                return actual.floor();
             }
             return 0L;
         }
@@ -90,13 +90,13 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
             itemExtent = DartRuntimePrimitives.RequireValue(this.itemExtent);
             if ((itemExtent > 0.0))
             {
-                double actual__5596 = ((scrollOffset / itemExtent) - 1L);
-                long round__5654 = actual__5596.round();
-                if (((((actual__5596 * itemExtent) - (round__5654 * itemExtent))).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
+                double actual = ((scrollOffset / itemExtent) - 1L);
+                long roundLocal = actual.round();
+                if (((((actual * itemExtent) - (roundLocal * itemExtent))).abs() < global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))
                 {
-                    return Math.Max(0L, round__5654);
+                    return Math.Max(0L, roundLocal);
                 }
-                return Math.Max(0L, actual__5596.ceil());
+                return Math.Max(0L, actual.ceil());
             }
             return 0L;
         }
@@ -122,18 +122,18 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
         }
         else
         {
-            var offset__8319 = 0.0;
-            double? itemExtent__8347 = default!;
-            for (var i__8374 = 0L; (i__8374 < ((RenderSliverBoxChildManager)childManager).childCount); i__8374++)
+            var offset = 0.0;
+            double? itemExtentLocal = default!;
+            for (var i = 0L; (i < ((RenderSliverBoxChildManager)childManager).childCount); i++)
             {
-                itemExtent__8347 = this.itemExtentBuilder!(i__8374, this.layoutDimensions);
-                if ((itemExtent__8347 is null))
+                itemExtentLocal = this.itemExtentBuilder!(i, this.layoutDimensions);
+                if ((itemExtentLocal is null))
                 {
                     break;
                 }
-                offset__8319 += DartRuntimePrimitives.RequireValue(itemExtent__8347);
+                offset += DartRuntimePrimitives.RequireValue(itemExtentLocal);
             }
-            return offset__8319;
+            return offset;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -144,41 +144,41 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
         {
             return 0L;
         }
-        var position__8758 = 0.0;
-        var index__8782 = 0L;
-        double? itemExtent__8805 = default!;
-        while ((position__8758 < scrollOffset))
+        var position = 0.0;
+        var index = 0L;
+        double? itemExtent = default!;
+        while ((position < scrollOffset))
         {
-            long? childCount__8872 = ((RenderSliverBoxChildManager)childManager).estimatedChildCount;
-            if (((childCount__8872 is not null) && (index__8782 > (DartRuntimePrimitives.RequireValue(childCount__8872) - 1L))))
+            long? childCount = ((RenderSliverBoxChildManager)childManager).estimatedChildCount;
+            if (((childCount is not null) && (index > (DartRuntimePrimitives.RequireValue(childCount) - 1L))))
             {
-                long childCount__8872__value8929 = DartRuntimePrimitives.RequireValue(childCount__8872);
+                long childCount__8872__value8929 = DartRuntimePrimitives.RequireValue(childCount);
                 break;
             }
-            itemExtent__8805 = callback(index__8782, this.layoutDimensions);
-            if ((itemExtent__8805 is null))
+            itemExtent = callback(index, this.layoutDimensions);
+            if ((itemExtent is null))
             {
                 break;
             }
-            position__8758 += DartRuntimePrimitives.RequireValue(itemExtent__8805);
-            ++index__8782;
+            position += DartRuntimePrimitives.RequireValue(itemExtent);
+            ++index;
         }
-        return (index__8782 - 1L);
+        return (index - 1L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual BoxConstraints _getChildConstraints(long index)
     {
-        double extent__9249 = default!;
+        double extent = default!;
         if ((this.itemExtentBuilder is null))
         {
-            extent__9249 = DartRuntimePrimitives.RequireValue(this.itemExtent);
+            extent = DartRuntimePrimitives.RequireValue(this.itemExtent);
         }
         else
         {
-            extent__9249 = DartRuntimePrimitives.RequireValue(this.itemExtentBuilder!(index, this.layoutDimensions));
+            extent = DartRuntimePrimitives.RequireValue(this.itemExtentBuilder!(index, this.layoutDimensions));
         }
-        return constraints.asBoxConstraints(minExtent: extent__9249, maxExtent: extent__9249);
+        return constraints.asBoxConstraints(minExtent: extent, maxExtent: extent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -207,13 +207,13 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
             {
                 if (((this.itemExtentBuilder is null) && double.IsFinite(geometry!.scrollExtent)))
                 {
-                    double itemExtent__10500 = DartRuntimePrimitives.RequireValue(this.itemExtent);
-                    double scrollExtent__10552 = geometry!.scrollExtent;
-                    double count__10612 = (scrollExtent__10552 / itemExtent__10500);
-                    double diff__10668 = ((count__10612.roundToDouble() - count__10612)).abs();
-                    if ((((diff__10668 * itemExtent__10500) > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) && (diff__10668 > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)))
+                    double itemExtentLocal = DartRuntimePrimitives.RequireValue(this.itemExtent);
+                    double scrollExtentLocal = geometry!.scrollExtent;
+                    double count = (scrollExtentLocal / itemExtentLocal);
+                    double diff = ((count.roundToDouble() - count)).abs();
+                    if ((((diff * itemExtentLocal) > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) && (diff > global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)))
                     {
-                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("RenderSliverFixedExtentBoxAdaptor.computeMaxScrollOffset() returned a value that is not an even multiple of its itemExtent."), new ErrorDescription($"The itemExtent__10500 was {itemExtent__10500}, but the scrollExtent was {scrollExtent__10552}."), new ErrorDescription($"The difference was {diff__10668}, which is greater than precisionErrorTolerance ({(global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)})."), describeForError("The render object in question was") });
+                        throw new FlutterError(new List<DiagnosticsNode> { new ErrorSummary("RenderSliverFixedExtentBoxAdaptor.computeMaxScrollOffset() returned a value that is not an even multiple of its itemExtent."), new ErrorDescription($"The itemExtent__10500 was {itemExtentLocal}, but the scrollExtent was {scrollExtentLocal}."), new ErrorDescription($"The difference was {diff}, which is greater than precisionErrorTolerance ({(global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)})."), describeForError("The render object in question was") });
                     }
                 }
                 return true;
@@ -224,23 +224,23 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
     {
         DartRuntimePrimitives.Assert(() => ((((this.itemExtent is not null) && (this.itemExtentBuilder is null))) || (((this.itemExtent is null) && (this.itemExtentBuilder is not null)))));
         DartRuntimePrimitives.Assert(() => ((this.itemExtentBuilder is not null) || ((double.IsFinite(DartRuntimePrimitives.RequireValue(this.itemExtent)) && (DartRuntimePrimitives.RequireValue(this.itemExtent) >= 0L)))));
-        SliverConstraints constraints__11766 = this.constraints;
+        SliverConstraints constraintsLocal = this.constraints;
         childManager.didStartLayout();
         childManager.setDidUnderflow(false);
-        double scrollOffset__11892 = (((SliverConstraints)constraints__11766).scrollOffset + ((SliverConstraints)constraints__11766).cacheOrigin);
-        DartRuntimePrimitives.Assert(() => (scrollOffset__11892 >= 0.0));
-        double remainingExtent__12009 = ((SliverConstraints)constraints__11766).remainingCacheExtent;
-        DartRuntimePrimitives.Assert(() => (remainingExtent__12009 >= 0.0));
-        double targetEndScrollOffset__12114 = (scrollOffset__11892 + remainingExtent__12009);
-        _currentLayoutDimensions = new SliverLayoutDimensions(scrollOffset: ((SliverConstraints)constraints__11766).scrollOffset, precedingScrollExtent: ((SliverConstraints)constraints__11766).precedingScrollExtent, viewportMainAxisExtent: ((SliverConstraints)constraints__11766).viewportMainAxisExtent, crossAxisExtent: ((SliverConstraints)constraints__11766).crossAxisExtent);
-        double deprecatedExtraItemExtent__12534 = -1;
-        long firstIndex__12581 = getMinChildIndexForScrollOffset(scrollOffset__11892, deprecatedExtraItemExtent__12534);
-        long? targetLastIndex__12683 = (double.IsFinite(targetEndScrollOffset__12114) ? getMaxChildIndexForScrollOffset(targetEndScrollOffset__12114, deprecatedExtraItemExtent__12534) : null);
+        double scrollOffsetLocal = (((SliverConstraints)constraintsLocal).scrollOffset + ((SliverConstraints)constraintsLocal).cacheOrigin);
+        DartRuntimePrimitives.Assert(() => (scrollOffsetLocal >= 0.0));
+        double remainingExtent = ((SliverConstraints)constraintsLocal).remainingCacheExtent;
+        DartRuntimePrimitives.Assert(() => (remainingExtent >= 0.0));
+        double targetEndScrollOffset = (scrollOffsetLocal + remainingExtent);
+        _currentLayoutDimensions = new SliverLayoutDimensions(scrollOffset: ((SliverConstraints)constraintsLocal).scrollOffset, precedingScrollExtent: ((SliverConstraints)constraintsLocal).precedingScrollExtent, viewportMainAxisExtent: ((SliverConstraints)constraintsLocal).viewportMainAxisExtent, crossAxisExtent: ((SliverConstraints)constraintsLocal).crossAxisExtent);
+        double deprecatedExtraItemExtent = -1;
+        long firstIndexLocal = getMinChildIndexForScrollOffset(scrollOffsetLocal, deprecatedExtraItemExtent);
+        long? targetLastIndex = (double.IsFinite(targetEndScrollOffset) ? getMaxChildIndexForScrollOffset(targetEndScrollOffset, deprecatedExtraItemExtent) : null);
         if ((firstChild is not null))
         {
-            long leadingGarbage__12887 = calculateLeadingGarbage(firstIndex: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndex__12581)));
-            long trailingGarbage__12969 = ((targetLastIndex__12683 is not null) ? calculateTrailingGarbage(lastIndex: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(targetLastIndex__12683))) : 0L);
-            collectGarbage(leadingGarbage__12887, trailingGarbage__12969);
+            long leadingGarbage = calculateLeadingGarbage(firstIndex: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndexLocal)));
+            long trailingGarbage = ((targetLastIndex is not null) ? calculateTrailingGarbage(lastIndex: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(targetLastIndex))) : 0L);
+            collectGarbage(leadingGarbage, trailingGarbage);
         }
         else
         {
@@ -248,80 +248,80 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
         }
         if ((firstChild is null))
         {
-            double layoutOffset__13243 = indexToLayoutOffset(deprecatedExtraItemExtent__12534, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndex__12581)));
-            if (!addInitialChild(index: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndex__12581)), layoutOffset: layoutOffset__13243))
+            double layoutOffsetLocal = indexToLayoutOffset(deprecatedExtraItemExtent, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndexLocal)));
+            if (!addInitialChild(index: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndexLocal)), layoutOffset: layoutOffsetLocal))
             {
-                double max__13501 = default!;
-                if ((firstIndex__12581 <= 0L))
+                double max = default!;
+                if ((firstIndexLocal <= 0L))
                 {
-                    max__13501 = 0.0;
+                    max = 0.0;
                 }
                 else
                 {
-                    max__13501 = computeMaxScrollOffset(constraints__11766, deprecatedExtraItemExtent__12534);
+                    max = computeMaxScrollOffset(constraintsLocal, deprecatedExtraItemExtent);
                 }
-                geometry = new SliverGeometry(scrollExtent: max__13501, maxPaintExtent: max__13501);
+                geometry = new SliverGeometry(scrollExtent: max, maxPaintExtent: max);
                 childManager.didFinishLayout();
                 return;
             }
         }
-        RenderBox? trailingChildWithLayout__13826 = default!;
-        for (long index__13865 = (indexOf(firstChild!) - 1L); (index__13865 >= DartRuntimePrimitives.RequireValue(firstIndex__12581)); --index__13865)
+        RenderBox? trailingChildWithLayout = default!;
+        for (long indexLocal = (indexOf(firstChild!) - 1L); (indexLocal >= DartRuntimePrimitives.RequireValue(firstIndexLocal)); --indexLocal)
         {
-            RenderBox? child__13954 = insertAndLayoutLeadingChild(_getChildConstraints(index__13865));
-            if ((child__13954 is null))
+            RenderBox? child = insertAndLayoutLeadingChild(_getChildConstraints(indexLocal));
+            if ((child is null))
             {
-                geometry = new SliverGeometry(scrollOffsetCorrection: indexToLayoutOffset(deprecatedExtraItemExtent__12534, index__13865));
+                geometry = new SliverGeometry(scrollOffsetCorrection: indexToLayoutOffset(deprecatedExtraItemExtent, indexLocal));
                 return;
             }
-            var childParentData__14425 = ((SliverMultiBoxAdaptorParentData?)(object?)child__13954.parentData!)!;
-            childParentData__14425.layoutOffset = indexToLayoutOffset(deprecatedExtraItemExtent__12534, index__13865);
-            DartRuntimePrimitives.Assert(() => (((SliverMultiBoxAdaptorParentData)childParentData__14425).index == index__13865));
-            trailingChildWithLayout__13826 ??= child__13954;
+            var childParentData = ((SliverMultiBoxAdaptorParentData?)(object?)child.parentData!)!;
+            childParentData.layoutOffset = indexToLayoutOffset(deprecatedExtraItemExtent, indexLocal);
+            DartRuntimePrimitives.Assert(() => (((SliverMultiBoxAdaptorParentData)childParentData).index == indexLocal));
+            trailingChildWithLayout ??= child;
         }
-        if ((trailingChildWithLayout__13826 is null))
+        if ((trailingChildWithLayout is null))
         {
             firstChild!.layout(_getChildConstraints(indexOf(firstChild!)));
-            var childParentData__14808 = ((SliverMultiBoxAdaptorParentData?)(object?)firstChild!.parentData!)!;
-            childParentData__14808.layoutOffset = indexToLayoutOffset(deprecatedExtraItemExtent__12534, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndex__12581)));
-            trailingChildWithLayout__13826 = firstChild;
+            var childParentDataLocal = ((SliverMultiBoxAdaptorParentData?)(object?)firstChild!.parentData!)!;
+            childParentDataLocal.layoutOffset = indexToLayoutOffset(deprecatedExtraItemExtent, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndexLocal)));
+            trailingChildWithLayout = firstChild;
         }
-        double estimatedMaxScrollOffset__15045 = double.PositiveInfinity;
-        for (long index__15109 = (indexOf(trailingChildWithLayout__13826!) + 1L); ((targetLastIndex__12683 is null) || (index__15109 <= DartRuntimePrimitives.RequireValue(targetLastIndex__12683))); ++index__15109)
+        double estimatedMaxScrollOffset = double.PositiveInfinity;
+        for (long indexAlternate = (indexOf(trailingChildWithLayout!) + 1L); ((targetLastIndex is null) || (indexAlternate <= DartRuntimePrimitives.RequireValue(targetLastIndex))); ++indexAlternate)
         {
-            RenderBox? child__15254 = childAfter(trailingChildWithLayout__13826!);
-            if (((child__15254 is null) || (indexOf(child__15254) != index__15109)))
+            RenderBox? childLocal = childAfter(trailingChildWithLayout!);
+            if (((childLocal is null) || (indexOf(childLocal) != indexAlternate)))
             {
-                child__15254 = insertAndLayoutChild(_getChildConstraints(index__15109), after: trailingChildWithLayout__13826);
-                if ((child__15254 is null))
+                childLocal = insertAndLayoutChild(_getChildConstraints(indexAlternate), after: trailingChildWithLayout);
+                if ((childLocal is null))
                 {
-                    estimatedMaxScrollOffset__15045 = indexToLayoutOffset(deprecatedExtraItemExtent__12534, index__15109);
+                    estimatedMaxScrollOffset = indexToLayoutOffset(deprecatedExtraItemExtent, indexAlternate);
                     break;
                 }
             }
             else
             {
-                child__15254.layout(_getChildConstraints(index__15109));
+                childLocal.layout(_getChildConstraints(indexAlternate));
             }
-            trailingChildWithLayout__13826 = child__15254;
-            var childParentData__15768 = ((SliverMultiBoxAdaptorParentData?)(object?)child__15254.parentData!)!;
-            DartRuntimePrimitives.Assert(() => (((SliverMultiBoxAdaptorParentData)childParentData__15768).index == index__15109));
-            childParentData__15768.layoutOffset = indexToLayoutOffset(deprecatedExtraItemExtent__12534, DartRuntimePrimitives.RequireValue(((SliverMultiBoxAdaptorParentData)childParentData__15768).index));
+            trailingChildWithLayout = childLocal;
+            var childParentDataAlternate = ((SliverMultiBoxAdaptorParentData?)(object?)childLocal.parentData!)!;
+            DartRuntimePrimitives.Assert(() => (((SliverMultiBoxAdaptorParentData)childParentDataAlternate).index == indexAlternate));
+            childParentDataAlternate.layoutOffset = indexToLayoutOffset(deprecatedExtraItemExtent, DartRuntimePrimitives.RequireValue(((SliverMultiBoxAdaptorParentData)childParentDataAlternate).index));
         }
-        long lastIndex__16041 = indexOf(lastChild!);
-        double leadingScrollOffset__16091 = indexToLayoutOffset(deprecatedExtraItemExtent__12534, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndex__12581)));
-        double trailingScrollOffset__16190 = indexToLayoutOffset(deprecatedExtraItemExtent__12534, (DartRuntimePrimitives.RequireValue(lastIndex__16041) + 1L));
-        DartRuntimePrimitives.Assert(() => ((DartRuntimePrimitives.RequireValue(firstIndex__12581) == 0L) || ((DartRuntimePrimitives.RequireValue(childScrollOffset(firstChild!)) - scrollOffset__11892) <= global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)));
+        long lastIndexLocal = indexOf(lastChild!);
+        double leadingScrollOffsetLocal = indexToLayoutOffset(deprecatedExtraItemExtent, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(firstIndexLocal)));
+        double trailingScrollOffsetLocal = indexToLayoutOffset(deprecatedExtraItemExtent, (DartRuntimePrimitives.RequireValue(lastIndexLocal) + 1L));
+        DartRuntimePrimitives.Assert(() => ((DartRuntimePrimitives.RequireValue(firstIndexLocal) == 0L) || ((DartRuntimePrimitives.RequireValue(childScrollOffset(firstChild!)) - scrollOffsetLocal) <= global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance)));
         DartRuntimePrimitives.Assert(() => debugAssertChildListIsNonEmptyAndContiguous());
-        DartRuntimePrimitives.Assert(() => (indexOf(firstChild!) == DartRuntimePrimitives.RequireValue(firstIndex__12581)));
-        DartRuntimePrimitives.Assert(() => ((targetLastIndex__12683 is null) || (lastIndex__16041 <= DartRuntimePrimitives.RequireValue(targetLastIndex__12683))));
-        estimatedMaxScrollOffset__15045 = Math.Min(estimatedMaxScrollOffset__15045, estimateMaxScrollOffset(constraints__11766, firstIndex: DartRuntimePrimitives.RequireValue(firstIndex__12581), lastIndex: DartRuntimePrimitives.RequireValue(lastIndex__16041), leadingScrollOffset: DartRuntimePrimitives.RequireValue(leadingScrollOffset__16091), trailingScrollOffset: DartRuntimePrimitives.RequireValue(trailingScrollOffset__16190)));
-        double paintExtent__16915 = calculatePaintOffset(constraints__11766, from: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(leadingScrollOffset__16091)), to: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(trailingScrollOffset__16190)));
-        double cacheExtent__17060 = calculateCacheOffset(constraints__11766, from: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(leadingScrollOffset__16091)), to: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(trailingScrollOffset__16190)));
-        double targetEndScrollOffsetForPaint__17205 = (((SliverConstraints)constraints__11766).scrollOffset + ((SliverConstraints)constraints__11766).remainingPaintExtent);
-        long? targetLastIndexForPaint__17321 = (double.IsFinite(targetEndScrollOffsetForPaint__17205) ? getMaxChildIndexForScrollOffset(targetEndScrollOffsetForPaint__17205, deprecatedExtraItemExtent__12534) : null);
-        geometry = new SliverGeometry(scrollExtent: estimatedMaxScrollOffset__15045, paintExtent: paintExtent__16915, cacheExtent: cacheExtent__17060, maxPaintExtent: estimatedMaxScrollOffset__15045, hasVisualOverflow: ((((targetLastIndexForPaint__17321 is not null) && (lastIndex__16041 >= DartRuntimePrimitives.RequireValue(targetLastIndexForPaint__17321)))) || (((SliverConstraints)constraints__11766).scrollOffset > 0.0)));
-        if ((estimatedMaxScrollOffset__15045 == DartRuntimePrimitives.RequireValue(trailingScrollOffset__16190)))
+        DartRuntimePrimitives.Assert(() => (indexOf(firstChild!) == DartRuntimePrimitives.RequireValue(firstIndexLocal)));
+        DartRuntimePrimitives.Assert(() => ((targetLastIndex is null) || (lastIndexLocal <= DartRuntimePrimitives.RequireValue(targetLastIndex))));
+        estimatedMaxScrollOffset = Math.Min(estimatedMaxScrollOffset, estimateMaxScrollOffset(constraintsLocal, firstIndex: DartRuntimePrimitives.RequireValue(firstIndexLocal), lastIndex: DartRuntimePrimitives.RequireValue(lastIndexLocal), leadingScrollOffset: DartRuntimePrimitives.RequireValue(leadingScrollOffsetLocal), trailingScrollOffset: DartRuntimePrimitives.RequireValue(trailingScrollOffsetLocal)));
+        double paintExtentLocal = calculatePaintOffset(constraintsLocal, from: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(leadingScrollOffsetLocal)), to: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(trailingScrollOffsetLocal)));
+        double cacheExtentLocal = calculateCacheOffset(constraintsLocal, from: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(leadingScrollOffsetLocal)), to: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(trailingScrollOffsetLocal)));
+        double targetEndScrollOffsetForPaint = (((SliverConstraints)constraintsLocal).scrollOffset + ((SliverConstraints)constraintsLocal).remainingPaintExtent);
+        long? targetLastIndexForPaint = (double.IsFinite(targetEndScrollOffsetForPaint) ? getMaxChildIndexForScrollOffset(targetEndScrollOffsetForPaint, deprecatedExtraItemExtent) : null);
+        geometry = new SliverGeometry(scrollExtent: estimatedMaxScrollOffset, paintExtent: paintExtentLocal, cacheExtent: cacheExtentLocal, maxPaintExtent: estimatedMaxScrollOffset, hasVisualOverflow: ((((targetLastIndexForPaint is not null) && (lastIndexLocal >= DartRuntimePrimitives.RequireValue(targetLastIndexForPaint)))) || (((SliverConstraints)constraintsLocal).scrollOffset > 0.0)));
+        if ((estimatedMaxScrollOffset == DartRuntimePrimitives.RequireValue(trailingScrollOffsetLocal)))
         {
             childManager.setDidUnderflow(true);
         }

@@ -65,12 +65,12 @@ public class SliverPersistentHeader : StatelessWidget
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliverPersistentHeaderDelegate>("delegate", this.@delegate));
-        var flags__7302 = new List<string>();
-        if (!System.Linq.Enumerable.Any(flags__7302))
+        var flags = new List<string>();
+        if (!System.Linq.Enumerable.Any(flags))
         {
-            flags__7302.Add("normal");
+            flags.Add("normal");
         }
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("mode", flags__7302.Cast<string>()));
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<string>("mode", flags.Cast<string>()));
     }
 
 }
@@ -123,15 +123,15 @@ internal class _FloatingHeaderState__sliver_persistent_header : State<_FloatingH
     internal virtual void _isScrollingListener()
     {
         DartRuntimePrimitives.Assert(() => (this._position is not null));
-        global::Doroti.Framework.Rendering.RenderSliverFloatingPersistentHeader? header__9078 = ((global::Doroti.Framework.Rendering.RenderSliverFloatingPersistentHeader?)(object?)_headerRenderer());
+        global::Doroti.Framework.Rendering.RenderSliverFloatingPersistentHeader? header = ((global::Doroti.Framework.Rendering.RenderSliverFloatingPersistentHeader?)(object?)_headerRenderer());
         if (this._position!.isScrollingNotifier.value)
         {
-            header__9078?.updateScrollStartDirection(this._position!.userScrollDirection);
-            header__9078?.maybeStopSnapAnimation(this._position!.userScrollDirection);
+            header?.updateScrollStartDirection(this._position!.userScrollDirection);
+            header?.maybeStopSnapAnimation(this._position!.userScrollDirection);
         }
         else
         {
-            header__9078?.maybeStartSnapAnimation(this._position!.userScrollDirection);
+            header?.maybeStartSnapAnimation(this._position!.userScrollDirection);
         }
     }
 
@@ -164,15 +164,15 @@ public class _SliverPersistentHeaderElement__sliver_persistent_header : RenderOb
     public override void update(Widget newWidget)
     {
         var __newWidget = (_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)(object)newWidget;
-        var oldWidget__10291 = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)(object?)this.widget)!;
+        var oldWidget = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)(object?)this.widget)!;
         base.update(__newWidget);
-        SliverPersistentHeaderDelegate newDelegate__10426 = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)__newWidget).@delegate;
-        SliverPersistentHeaderDelegate oldDelegate__10501 = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)oldWidget__10291).@delegate;
-        if (((!object.Equals(newDelegate__10426, oldDelegate__10501)) && (((!object.Equals(DartRuntimePrimitives.RuntimeType(newDelegate__10426), DartRuntimePrimitives.RuntimeType(oldDelegate__10501))) || newDelegate__10426.shouldRebuild(oldDelegate__10501)))))
+        SliverPersistentHeaderDelegate newDelegate = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)__newWidget).@delegate;
+        SliverPersistentHeaderDelegate oldDelegate = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)oldWidget).@delegate;
+        if (((!object.Equals(newDelegate, oldDelegate)) && (((!object.Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRebuild(oldDelegate)))))
         {
-            _RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header renderObject__10748 = DartRuntimePrimitives.ConvertValue<_RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header>(this.renderObject);
-            _updateChild(newDelegate__10426, ((double)((dynamic)renderObject__10748).lastShrinkOffset), ((bool)((dynamic)renderObject__10748).lastOverlapsContent));
-            ((dynamic)renderObject__10748).triggerRebuild();
+            _RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header renderObjectLocal = DartRuntimePrimitives.ConvertValue<_RenderSliverPersistentHeaderForWidgetsMixin__sliver_persistent_header>(this.renderObject);
+            _updateChild(newDelegate, ((double)((dynamic)renderObjectLocal).lastShrinkOffset), ((bool)((dynamic)renderObjectLocal).lastOverlapsContent));
+            ((dynamic)renderObjectLocal).triggerRebuild();
         }
     }
 
@@ -184,16 +184,16 @@ public class _SliverPersistentHeaderElement__sliver_persistent_header : RenderOb
 
     internal virtual void _updateChild(SliverPersistentHeaderDelegate @delegate, double shrinkOffset, bool overlapsContent)
     {
-        Widget newWidget__11193 = ((Widget)(object?)@delegate.build(this, shrinkOffset, overlapsContent));
-        child = updateChild(this.child, (this.floating ? new _FloatingHeader__sliver_persistent_header(child: newWidget__11193) : newWidget__11193), null);
+        Widget newWidget = ((Widget)(object?)@delegate.build(this, shrinkOffset, overlapsContent));
+        child = updateChild(this.child, (this.floating ? new _FloatingHeader__sliver_persistent_header(child: newWidget) : newWidget), null);
     }
 
     internal virtual void _build(double shrinkOffset, bool overlapsContent)
     {
         this.owner!.buildScope(this, ((global::System.Action)(() =>
         {
-            var sliverPersistentHeaderRenderObjectWidget__11463 = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)(object?)this.widget)!;
-            _updateChild(((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)sliverPersistentHeaderRenderObjectWidget__11463).@delegate, shrinkOffset, overlapsContent);
+            var sliverPersistentHeaderRenderObjectWidget = ((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header?)(object?)this.widget)!;
+            _updateChild(((_SliverPersistentHeaderRenderObjectWidget__sliver_persistent_header)sliverPersistentHeaderRenderObjectWidget).@delegate, shrinkOffset, overlapsContent);
         })));
     }
 

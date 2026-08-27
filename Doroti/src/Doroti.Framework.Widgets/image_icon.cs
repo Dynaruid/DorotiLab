@@ -34,20 +34,20 @@ public class ImageIcon : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        IconThemeData iconTheme__3079 = ((IconThemeData)(object?)IconTheme.of(context));
-        double? iconSize__3132 = (this.size ?? ((IconThemeData)iconTheme__3079).size);
+        IconThemeData iconTheme = ((IconThemeData)(object?)IconTheme.of(context));
+        double? iconSize = (this.size ?? ((IconThemeData)iconTheme).size);
         if ((this.image is null))
         {
-            return ((Widget)(object?)new Semantics(label: this.semanticLabel, child: new SizedBox(width: iconSize__3132, height: iconSize__3132)));
+            return ((Widget)(object?)new Semantics(label: this.semanticLabel, child: new SizedBox(width: iconSize, height: iconSize)));
         }
-        double? iconOpacity__3341 = ((IconThemeData)iconTheme__3079).opacity;
-        global::Doroti.Ui.Color iconColor__3384 = ((global::Doroti.Ui.Color)(object?)(this.color ?? ((IconThemeData)iconTheme__3079).color!));
-        if (((iconOpacity__3341 is not null) && (DartRuntimePrimitives.RequireValue(iconOpacity__3341) != 1.0)))
+        double? iconOpacity = ((IconThemeData)iconTheme).opacity;
+        global::Doroti.Ui.Color iconColor = ((global::Doroti.Ui.Color)(object?)(this.color ?? ((IconThemeData)iconTheme).color!));
+        if (((iconOpacity is not null) && (DartRuntimePrimitives.RequireValue(iconOpacity) != 1.0)))
         {
-            double iconOpacity__3341__value3432 = DartRuntimePrimitives.RequireValue(iconOpacity__3341);
-            iconColor__3384 = iconColor__3384.withOpacity((iconColor__3384.opacity * DartRuntimePrimitives.RequireValue(iconOpacity__3341__value3432)));
+            double iconOpacity__3341__value3432 = DartRuntimePrimitives.RequireValue(iconOpacity);
+            iconColor = iconColor.withOpacity((iconColor.opacity * DartRuntimePrimitives.RequireValue(iconOpacity__3341__value3432)));
         }
-        return ((Widget)(object?)new Semantics(label: this.semanticLabel, child: new Image(image: this.image!, width: iconSize__3132, height: iconSize__3132, color: (this.useOriginalColors ? null : iconColor__3384), fit: global::Doroti.Framework.Painting.BoxFit.scaleDown, excludeFromSemantics: true)));
+        return ((Widget)(object?)new Semantics(label: this.semanticLabel, child: new Image(image: this.image!, width: iconSize, height: iconSize, color: (this.useOriginalColors ? null : iconColor), fit: global::Doroti.Framework.Painting.BoxFit.scaleDown, excludeFromSemantics: true)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

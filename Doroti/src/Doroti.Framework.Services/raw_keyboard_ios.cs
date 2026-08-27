@@ -70,14 +70,14 @@ public class RawKeyEventDataIos : RawKeyEventData
             if ((((keyLabel.Length != 0) && !LogicalKeyboardKey.isControlCharacter(keyLabel)) && !_isUnprintableKey(keyLabel)))
             {
                 DartRuntimePrimitives.Assert(() => (charactersIgnoringModifiers.Length <= 2L));
-                long codeUnit__4419 = charactersIgnoringModifiers.codeUnitAt(0L);
+                long codeUnit = charactersIgnoringModifiers.codeUnitAt(0L);
                 if ((charactersIgnoringModifiers.Length == 2L))
                 {
-                    long secondCode__4544 = charactersIgnoringModifiers.codeUnitAt(1L);
-                    codeUnit__4419 = (((codeUnit__4419 << (int)(16L))) | secondCode__4544);
+                    long secondCode = charactersIgnoringModifiers.codeUnitAt(1L);
+                    codeUnit = (((codeUnit << (int)(16L))) | secondCode);
                 }
-                long keyId__4675 = (LogicalKeyboardKey.unicodePlane | ((codeUnit__4419 & LogicalKeyboardKey.valueMask)));
-                return (LogicalKeyboardKey.findKeyByKeyId(keyId__4675) ?? new LogicalKeyboardKey(keyId__4675));
+                long keyId = (LogicalKeyboardKey.unicodePlane | ((codeUnit & LogicalKeyboardKey.valueMask)));
+                return (LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId));
             }
             return new LogicalKeyboardKey((keyCode | LogicalKeyboardKey.iosPlane));
         }

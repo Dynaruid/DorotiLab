@@ -40,21 +40,21 @@ public class SpringDescription
     {
         Duration __duration = duration ?? Duration.Create(milliseconds: 500);
         DartRuntimePrimitives.Assert(() => (__duration.inMilliseconds > 0L));
-        double durationInSeconds__2760 = (__duration.inMilliseconds / Duration.millisecondsPerSecond);
-        var mass__2848 = 1.0;
-        double stiffness__2877 = (((((4L * Dart_mathLibrary.pi) * Dart_mathLibrary.pi) * mass__2848)) / global::Doroti.Runtime.Dart_mathLibrary.pow(durationInSeconds__2760, 2L));
-        double dampingRatio__2971 = ((bounce > 0L) ? ((1.0 - bounce)) : ((1L / ((bounce + 1L)))));
-        double damping__3053 = ((dampingRatio__2971 * 2.0) * global::Doroti.Runtime.Dart_mathLibrary.sqrt((mass__2848 * stiffness__2877)));
-        return new SpringDescription(mass: mass__2848, stiffness: stiffness__2877, damping: damping__3053);
+        double durationInSeconds = (__duration.inMilliseconds / Duration.millisecondsPerSecond);
+        var massLocal = 1.0;
+        double stiffnessLocal = (((((4L * Dart_mathLibrary.pi) * Dart_mathLibrary.pi) * massLocal)) / global::Doroti.Runtime.Dart_mathLibrary.pow(durationInSeconds, 2L));
+        double dampingRatio = ((bounce > 0L) ? ((1.0 - bounce)) : ((1L / ((bounce + 1L)))));
+        double dampingLocal = ((dampingRatio * 2.0) * global::Doroti.Runtime.Dart_mathLibrary.sqrt((massLocal * stiffnessLocal)));
+        return new SpringDescription(mass: massLocal, stiffness: stiffnessLocal, damping: dampingLocal);
     }
 
     public virtual Duration duration
     {
         get
         {
-            double durationInSeconds__5454 = global::Doroti.Runtime.Dart_mathLibrary.sqrt((((((4L * Dart_mathLibrary.pi) * Dart_mathLibrary.pi) * this.mass)) / this.stiffness));
-            long milliseconds__5543 = ((durationInSeconds__5454 * Duration.millisecondsPerSecond)).round();
-            return Duration.Create(milliseconds: milliseconds__5543);
+            double durationInSeconds = global::Doroti.Runtime.Dart_mathLibrary.sqrt((((((4L * Dart_mathLibrary.pi) * Dart_mathLibrary.pi) * this.mass)) / this.stiffness));
+            long millisecondsLocal = ((durationInSeconds * Duration.millisecondsPerSecond)).round();
+            return Duration.Create(milliseconds: millisecondsLocal);
             return default!;
         }
     }
@@ -62,8 +62,8 @@ public class SpringDescription
     {
         get
         {
-            double dampingRatio__6296 = (this.damping / ((2.0 * global::Doroti.Runtime.Dart_mathLibrary.sqrt((this.mass * this.stiffness)))));
-            return ((dampingRatio__6296 < 1.0) ? ((1.0 - dampingRatio__6296)) : ((((1L / dampingRatio__6296)) - 1L)));
+            double dampingRatio = (this.damping / ((2.0 * global::Doroti.Runtime.Dart_mathLibrary.sqrt((this.mass * this.stiffness)))));
+            return ((dampingRatio < 1.0) ? ((1.0 - dampingRatio)) : ((((1L / dampingRatio)) - 1L)));
             return default!;
         }
     }
@@ -155,10 +155,10 @@ internal class _CriticalSolution__spring_simulation : _SpringSolution__spring_si
 
     internal static _CriticalSolution__spring_simulation Create(SpringDescription spring, double distance, double velocity)
     {
-        double r__11282 = (-((SpringDescription)spring).damping / ((2.0 * ((SpringDescription)spring).mass)));
-        var c1__11335 = distance;
-        double c2__11367 = (velocity - ((r__11282 * distance)));
-        return new _CriticalSolution__spring_simulation(r__11282, c1__11335, c2__11367);
+        double r = (-((SpringDescription)spring).damping / ((2.0 * ((SpringDescription)spring).mass)));
+        var c1 = distance;
+        double c2 = (velocity - ((r * distance)));
+        return new _CriticalSolution__spring_simulation(r, c1, c2);
     }
 
     internal _CriticalSolution__spring_simulation(double r, double c1, double c2)
@@ -176,8 +176,8 @@ internal class _CriticalSolution__spring_simulation : _SpringSolution__spring_si
 
     public virtual double dx(double time)
     {
-        var power__11729 = ((double)global::Doroti.Runtime.Dart_mathLibrary.pow(global::Doroti.Runtime.Dart_mathLibrary.e, (this._r * time)));
-        return (((this._r * ((this._c1 + (this._c2 * time)))) * power__11729) + (this._c2 * power__11729));
+        var power = ((double)global::Doroti.Runtime.Dart_mathLibrary.pow(global::Doroti.Runtime.Dart_mathLibrary.e, (this._r * time)));
+        return (((this._r * ((this._c1 + (this._c2 * time)))) * power) + (this._c2 * power));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -193,12 +193,12 @@ internal class _OverdampedSolution__spring_simulation : _SpringSolution__spring_
 
     internal static _OverdampedSolution__spring_simulation Create(SpringDescription spring, double distance, double velocity)
     {
-        double cmk__12072 = ((((SpringDescription)spring).damping * ((SpringDescription)spring).damping) - ((4L * ((SpringDescription)spring).mass) * ((SpringDescription)spring).stiffness));
-        double r1__12165 = (((-((SpringDescription)spring).damping - global::Doroti.Runtime.Dart_mathLibrary.sqrt(cmk__12072))) / ((2.0 * ((SpringDescription)spring).mass)));
-        double r2__12245 = (((-((SpringDescription)spring).damping + global::Doroti.Runtime.Dart_mathLibrary.sqrt(cmk__12072))) / ((2.0 * ((SpringDescription)spring).mass)));
-        double c2__12325 = (((velocity - (r1__12165 * distance))) / ((r2__12245 - r1__12165)));
-        double c1__12387 = (distance - c2__12325);
-        return new _OverdampedSolution__spring_simulation(r1__12165, r2__12245, c1__12387, c2__12325);
+        double cmk = ((((SpringDescription)spring).damping * ((SpringDescription)spring).damping) - ((4L * ((SpringDescription)spring).mass) * ((SpringDescription)spring).stiffness));
+        double r1 = (((-((SpringDescription)spring).damping - global::Doroti.Runtime.Dart_mathLibrary.sqrt(cmk))) / ((2.0 * ((SpringDescription)spring).mass)));
+        double r2 = (((-((SpringDescription)spring).damping + global::Doroti.Runtime.Dart_mathLibrary.sqrt(cmk))) / ((2.0 * ((SpringDescription)spring).mass)));
+        double c2 = (((velocity - (r1 * distance))) / ((r2 - r1)));
+        double c1 = (distance - c2);
+        return new _OverdampedSolution__spring_simulation(r1, r2, c1, c2);
     }
 
     internal _OverdampedSolution__spring_simulation(double r1, double r2, double c1, double c2)
@@ -233,11 +233,11 @@ internal class _UnderdampedSolution__spring_simulation : _SpringSolution__spring
 
     internal static _UnderdampedSolution__spring_simulation Create(SpringDescription spring, double distance, double velocity)
     {
-        double w__13141 = (global::Doroti.Runtime.Dart_mathLibrary.sqrt((((4.0 * ((SpringDescription)spring).mass) * ((SpringDescription)spring).stiffness) - (((SpringDescription)spring).damping * ((SpringDescription)spring).damping))) / ((2.0 * ((SpringDescription)spring).mass)));
-        double r__13283 = -(((((SpringDescription)spring).damping / 2.0) / ((SpringDescription)spring).mass));
-        var c1__13336 = distance;
-        double c2__13368 = (((velocity - (r__13283 * distance))) / w__13141);
-        return new _UnderdampedSolution__spring_simulation(w__13141, r__13283, c1__13336, c2__13368);
+        double w = (global::Doroti.Runtime.Dart_mathLibrary.sqrt((((4.0 * ((SpringDescription)spring).mass) * ((SpringDescription)spring).stiffness) - (((SpringDescription)spring).damping * ((SpringDescription)spring).damping))) / ((2.0 * ((SpringDescription)spring).mass)));
+        double r = -(((((SpringDescription)spring).damping / 2.0) / ((SpringDescription)spring).mass));
+        var c1 = distance;
+        double c2 = (((velocity - (r * distance))) / w);
+        return new _UnderdampedSolution__spring_simulation(w, r, c1, c2);
     }
 
     internal _UnderdampedSolution__spring_simulation(double w, double r, double c1, double c2)
@@ -256,10 +256,10 @@ internal class _UnderdampedSolution__spring_simulation : _SpringSolution__spring
 
     public virtual double dx(double time)
     {
-        var power__13844 = ((double)global::Doroti.Runtime.Dart_mathLibrary.pow(global::Doroti.Runtime.Dart_mathLibrary.e, (this._r * time)));
-        double cosine__13908 = global::Doroti.Runtime.Dart_mathLibrary.cos((this._w * time));
-        double sine__13955 = global::Doroti.Runtime.Dart_mathLibrary.sin((this._w * time));
-        return ((power__13844 * ((((this._c2 * this._w) * cosine__13908) - ((this._c1 * this._w) * sine__13955)))) + ((this._r * power__13844) * (((this._c2 * sine__13955) + (this._c1 * cosine__13908)))));
+        var power = ((double)global::Doroti.Runtime.Dart_mathLibrary.pow(global::Doroti.Runtime.Dart_mathLibrary.e, (this._r * time)));
+        double cosine = global::Doroti.Runtime.Dart_mathLibrary.cos((this._w * time));
+        double sine = global::Doroti.Runtime.Dart_mathLibrary.sin((this._w * time));
+        return ((power * ((((this._c2 * this._w) * cosine) - ((this._c1 * this._w) * sine)))) + ((this._r * power) * (((this._c2 * sine) + (this._c1 * cosine)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

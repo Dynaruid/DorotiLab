@@ -78,8 +78,8 @@ public static partial class AboutLibrary
 {
     public static void showLicensePage(global::Doroti.Framework.Widgets.BuildContext context, string? applicationName = null, string? applicationVersion = null, global::Doroti.Framework.Widgets.Widget? applicationIcon = null, string? applicationLegalese = null, bool useRootNavigator = false)
     {
-        global::Doroti.Framework.Widgets.CapturedThemes themes__10239 = ((global::Doroti.Framework.Widgets.CapturedThemes)(object?)InheritedTheme.capture(from: context, to: Navigator.of(context, rootNavigator: useRootNavigator).context));
-        DartRuntimePrimitives.Ignore(Navigator.of(context, rootNavigator: useRootNavigator).push(new MaterialPageRoute<object?>(builder: ((context) => themes__10239.wrap(new LicensePage(applicationName: applicationName, applicationVersion: applicationVersion, applicationIcon: applicationIcon, applicationLegalese: applicationLegalese))))));
+        global::Doroti.Framework.Widgets.CapturedThemes themes = ((global::Doroti.Framework.Widgets.CapturedThemes)(object?)InheritedTheme.capture(from: context, to: Navigator.of(context, rootNavigator: useRootNavigator).context));
+        DartRuntimePrimitives.Ignore(Navigator.of(context, rootNavigator: useRootNavigator).push(new MaterialPageRoute<object?>(builder: ((context) => themes.wrap(new LicensePage(applicationName: applicationName, applicationVersion: applicationVersion, applicationIcon: applicationIcon, applicationLegalese: applicationLegalese))))));
     }
 }
 
@@ -111,14 +111,14 @@ public class AboutDialog : global::Doroti.Framework.Widgets.StatelessWidget
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        string name__14261 = (this.applicationName ?? AboutLibrary._defaultApplicationName(context));
-        string version__14338 = (this.applicationVersion ?? AboutLibrary._defaultApplicationVersion(context));
-        global::Doroti.Framework.Widgets.Widget? icon__14425 = (this.applicationIcon ?? AboutLibrary._defaultApplicationIcon(context));
-        ThemeData themeData__14505 = Theme.of(context);
-        MaterialLocalizations localizations__14568 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new AlertDialog(content: new global::Doroti.Framework.Widgets.ListBody(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection14686 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection14686.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection14791 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((icon__14425 is not null)) { __collection14791.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.IconTheme(data: themeData__14505.iconTheme, child: icon__14425))); } __collection14791.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 24.0), child: new global::Doroti.Framework.Widgets.ListBody(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(name__14261, style: themeData__14505.textTheme.headlineSmall)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(version__14338, style: themeData__14505.textTheme.bodyMedium)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: AboutLibrary._textVerticalSeparation)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text((this.applicationLegalese ?? ""), style: themeData__14505.textTheme.bodySmall)) }))))); return __collection14791; }))()))); var __collectionSpread15522 = this.children; if (__collectionSpread15522 is not null) { __collection14686.AddRange(__collectionSpread15522); } return __collection14686; }))()), actions: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(child: new global::Doroti.Framework.Widgets.Text((themeData__14505.useMaterial3 ? ((MaterialLocalizations)localizations__14568).viewLicensesButtonLabel : ((MaterialLocalizations)localizations__14568).viewLicensesButtonLabel.toUpperCase())), onPressed: (() => {
+        string name = (this.applicationName ?? AboutLibrary._defaultApplicationName(context));
+        string version = (this.applicationVersion ?? AboutLibrary._defaultApplicationVersion(context));
+        global::Doroti.Framework.Widgets.Widget? icon = (this.applicationIcon ?? AboutLibrary._defaultApplicationIcon(context));
+        ThemeData themeData = Theme.of(context);
+        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new AlertDialog(content: new global::Doroti.Framework.Widgets.ListBody(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection14686 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection14686.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection14791 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((icon is not null)) { __collection14791.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.IconTheme(data: themeData.iconTheme, child: icon))); } __collection14791.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 24.0), child: new global::Doroti.Framework.Widgets.ListBody(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(name, style: themeData.textTheme.headlineSmall)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(version, style: themeData.textTheme.bodyMedium)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: AboutLibrary._textVerticalSeparation)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text((this.applicationLegalese ?? ""), style: themeData.textTheme.bodySmall)) }))))); return __collection14791; }))()))); var __collectionSpread15522 = this.children; if (__collectionSpread15522 is not null) { __collection14686.AddRange(__collectionSpread15522); } return __collection14686; }))()), actions: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(child: new global::Doroti.Framework.Widgets.Text((themeData.useMaterial3 ? ((MaterialLocalizations)localizations).viewLicensesButtonLabel : ((MaterialLocalizations)localizations).viewLicensesButtonLabel.toUpperCase())), onPressed: (() => {
 AboutLibrary.showLicensePage(context: context, applicationName: this.applicationName, applicationVersion: this.applicationVersion, applicationIcon: this.applicationIcon, applicationLegalese: this.applicationLegalese);
-}))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(child: new global::Doroti.Framework.Widgets.Text((themeData__14505.useMaterial3 ? ((MaterialLocalizations)localizations__14568).closeButtonLabel : ((MaterialLocalizations)localizations__14568).closeButtonLabel.toUpperCase())), onPressed: (() => {
+}))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(child: new global::Doroti.Framework.Widgets.Text((themeData.useMaterial3 ? ((MaterialLocalizations)localizations).closeButtonLabel : ((MaterialLocalizations)localizations).closeButtonLabel.toUpperCase())), onPressed: (() => {
 Navigator.pop<object>(context);
 }))) }, scrollable: true));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -134,16 +134,16 @@ internal class _AdaptiveAboutDialog__about : AboutDialog
 
     internal virtual List<global::Doroti.Framework.Widgets.Widget>? _actions(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ThemeData themeData__16774 = Theme.of(context);
-        MaterialLocalizations localizations__16837 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
-        switch (themeData__16774.platform)
+        ThemeData themeData = Theme.of(context);
+        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        switch (themeData.platform)
         {
             case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
             case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                 {
-                    return new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new CupertinoDialogAction(child: new global::Doroti.Framework.Widgets.Text((themeData__16774.useMaterial3 ? ((MaterialLocalizations)localizations__16837).viewLicensesButtonLabel : ((MaterialLocalizations)localizations__16837).viewLicensesButtonLabel.toUpperCase())), onPressed: (() => {
+                    return new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new CupertinoDialogAction(child: new global::Doroti.Framework.Widgets.Text((themeData.useMaterial3 ? ((MaterialLocalizations)localizations).viewLicensesButtonLabel : ((MaterialLocalizations)localizations).viewLicensesButtonLabel.toUpperCase())), onPressed: (() => {
 AboutLibrary.showLicensePage(context: context, applicationName: this.applicationName, applicationVersion: this.applicationVersion, applicationIcon: this.applicationIcon, applicationLegalese: this.applicationLegalese);
-}))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new CupertinoDialogAction(child: new global::Doroti.Framework.Widgets.Text((themeData__16774.useMaterial3 ? ((MaterialLocalizations)localizations__16837).closeButtonLabel : ((MaterialLocalizations)localizations__16837).closeButtonLabel.toUpperCase())), onPressed: (() => {
+}))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new CupertinoDialogAction(child: new global::Doroti.Framework.Widgets.Text((themeData.useMaterial3 ? ((MaterialLocalizations)localizations).closeButtonLabel : ((MaterialLocalizations)localizations).closeButtonLabel.toUpperCase())), onPressed: (() => {
 Navigator.pop<object>(context);
 }))) };
                 }
@@ -152,9 +152,9 @@ Navigator.pop<object>(context);
             case global::Doroti.Framework.Foundation.TargetPlatform.linux:
             case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                 {
-                    return new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(child: new global::Doroti.Framework.Widgets.Text((themeData__16774.useMaterial3 ? ((MaterialLocalizations)localizations__16837).viewLicensesButtonLabel : ((MaterialLocalizations)localizations__16837).viewLicensesButtonLabel.toUpperCase())), onPressed: (() => {
+                    return new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(child: new global::Doroti.Framework.Widgets.Text((themeData.useMaterial3 ? ((MaterialLocalizations)localizations).viewLicensesButtonLabel : ((MaterialLocalizations)localizations).viewLicensesButtonLabel.toUpperCase())), onPressed: (() => {
 AboutLibrary.showLicensePage(context: context, applicationName: this.applicationName, applicationVersion: this.applicationVersion, applicationIcon: this.applicationIcon, applicationLegalese: this.applicationLegalese);
-}))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(child: new global::Doroti.Framework.Widgets.Text((themeData__16774.useMaterial3 ? ((MaterialLocalizations)localizations__16837).closeButtonLabel : ((MaterialLocalizations)localizations__16837).closeButtonLabel.toUpperCase())), onPressed: (() => {
+}))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new TextButton(child: new global::Doroti.Framework.Widgets.Text((themeData.useMaterial3 ? ((MaterialLocalizations)localizations).closeButtonLabel : ((MaterialLocalizations)localizations).closeButtonLabel.toUpperCase())), onPressed: (() => {
 Navigator.pop<object>(context);
 }))) };
                 }
@@ -167,12 +167,12 @@ Navigator.pop<object>(context);
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         base.build(context);
-        string name__19109 = (this.applicationName ?? AboutLibrary._defaultApplicationName(context));
-        string version__19186 = (this.applicationVersion ?? AboutLibrary._defaultApplicationVersion(context));
-        global::Doroti.Framework.Widgets.Widget? icon__19273 = (this.applicationIcon ?? AboutLibrary._defaultApplicationIcon(context));
-        ThemeData themeData__19353 = Theme.of(context);
-        List<global::Doroti.Framework.Widgets.Widget>? actions__19408 = ((List<global::Doroti.Framework.Widgets.Widget>?)(object?)_actions(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)AlertDialog.CreateAdaptive(content: new global::Doroti.Framework.Widgets.ListBody(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection19514 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection19514.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection19619 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((icon__19273 is not null)) { __collection19619.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.IconTheme(data: themeData__19353.iconTheme, child: icon__19273))); } __collection19619.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 24.0), child: new global::Doroti.Framework.Widgets.ListBody(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(name__19109, style: themeData__19353.textTheme.headlineSmall)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(version__19186, style: themeData__19353.textTheme.bodyMedium)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: AboutLibrary._textVerticalSeparation)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text((this.applicationLegalese ?? ""), style: themeData__19353.textTheme.bodySmall)) }))))); return __collection19619; }))()))); var __collectionSpread20350 = this.children; if (__collectionSpread20350 is not null) { __collection19514.AddRange(__collectionSpread20350); } return __collection19514; }))()), actions: actions__19408, scrollable: true));
+        string name = (this.applicationName ?? AboutLibrary._defaultApplicationName(context));
+        string version = (this.applicationVersion ?? AboutLibrary._defaultApplicationVersion(context));
+        global::Doroti.Framework.Widgets.Widget? icon = (this.applicationIcon ?? AboutLibrary._defaultApplicationIcon(context));
+        ThemeData themeData = Theme.of(context);
+        List<global::Doroti.Framework.Widgets.Widget>? actionsLocal = ((List<global::Doroti.Framework.Widgets.Widget>?)(object?)_actions(context));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)AlertDialog.CreateAdaptive(content: new global::Doroti.Framework.Widgets.ListBody(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection19514 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection19514.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection19619 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((icon is not null)) { __collection19619.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.IconTheme(data: themeData.iconTheme, child: icon))); } __collection19619.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 24.0), child: new global::Doroti.Framework.Widgets.ListBody(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(name, style: themeData.textTheme.headlineSmall)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(version, style: themeData.textTheme.bodyMedium)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(height: AboutLibrary._textVerticalSeparation)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text((this.applicationLegalese ?? ""), style: themeData.textTheme.bodySmall)) }))))); return __collection19619; }))()))); var __collectionSpread20350 = this.children; if (__collectionSpread20350 is not null) { __collection19514.AddRange(__collectionSpread20350); } return __collection19514; }))()), actions: actionsLocal, scrollable: true));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -215,15 +215,15 @@ internal class _LicensePageState__about : global::Doroti.Framework.Widgets.State
     internal virtual global::Doroti.Framework.Widgets.Widget _packageLicensePage(global::Doroti.Framework.Widgets.BuildContext __unused0, object? args, global::Doroti.Framework.Widgets.ScrollController? scrollController)
     {
         DartRuntimePrimitives.Assert(() => (args is _DetailArguments__about));
-        var detailArguments__23043 = ((_DetailArguments__about?)(object?)args!)!;
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PackageLicensePage__about(packageName: ((_DetailArguments__about)detailArguments__23043).packageName, licenseEntries: ((_DetailArguments__about)detailArguments__23043).licenseEntries, scrollController: scrollController));
+        var detailArguments = ((_DetailArguments__about?)(object?)args!)!;
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PackageLicensePage__about(packageName: ((_DetailArguments__about)detailArguments).packageName, licenseEntries: ((_DetailArguments__about)detailArguments).licenseEntries, scrollController: scrollController));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _packagesView(global::Doroti.Framework.Widgets.BuildContext __unused0, bool isLateral)
     {
-        global::Doroti.Framework.Widgets.Widget about__23350 = ((global::Doroti.Framework.Widgets.Widget)(object?)new _AboutProgram__about(name: (((LicensePage)this.widget).applicationName ?? AboutLibrary._defaultApplicationName(this.context)), icon: (((LicensePage)this.widget).applicationIcon ?? AboutLibrary._defaultApplicationIcon(this.context)), version: (((LicensePage)this.widget).applicationVersion ?? AboutLibrary._defaultApplicationVersion(this.context)), legalese: ((LicensePage)this.widget).applicationLegalese));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PackagesView__about(about: about__23350, isLateral: isLateral, selectedId: this.selectedId));
+        global::Doroti.Framework.Widgets.Widget aboutLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new _AboutProgram__about(name: (((LicensePage)this.widget).applicationName ?? AboutLibrary._defaultApplicationName(this.context)), icon: (((LicensePage)this.widget).applicationIcon ?? AboutLibrary._defaultApplicationIcon(this.context)), version: (((LicensePage)this.widget).applicationVersion ?? AboutLibrary._defaultApplicationVersion(this.context)), legalese: ((LicensePage)this.widget).applicationLegalese));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PackagesView__about(about: aboutLocal, isLateral: isLateral, selectedId: this.selectedId));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -320,28 +320,28 @@ internal class _PackagesViewState__about : global::Doroti.Framework.Widgets.Stat
         {
             return;
         }
-        string packageName__28371 = ((_LicenseData__about)data).packages[(int)((((_PackagesView__about)this.widget).selectedId.value ?? 0L))];
-        List<long> bindings__28450 = ((_LicenseData__about)data).packageLicenseBindings.GetValueOrDefault(packageName__28371)!.ToList();
-        _MasterDetailFlow__about.of(context).setInitialDetailPage(new _DetailArguments__about(packageName__28371, bindings__28450.map<long, global::Doroti.Framework.Foundation.LicenseEntry>(((i) => ((_LicenseData__about)data).licenses[(int)(i)])).ToList()));
+        string packageName = ((_LicenseData__about)data).packages[(int)((((_PackagesView__about)this.widget).selectedId.value ?? 0L))];
+        List<long> bindings = ((_LicenseData__about)data).packageLicenseBindings.GetValueOrDefault(packageName)!.ToList();
+        _MasterDetailFlow__about.of(context).setInitialDetailPage(new _DetailArguments__about(packageName, bindings.map<long, global::Doroti.Framework.Foundation.LicenseEntry>(((i) => ((_LicenseData__about)data).licenses[(int)(i)])).ToList()));
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _packagesList(global::Doroti.Framework.Widgets.BuildContext context, long? selectedId, _LicenseData__about data, bool drawSelection)
     {
-        global::Doroti.Framework.Painting.EdgeInsets safeAreaPadding__28846 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
-        var padding__28905 = global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding__28846).left, right: ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding__28846).right, bottom: ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding__28846).bottom);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.ListView.CreateBuilder(padding: padding__28905, itemCount: (checked((long)(((_LicenseData__about)data).packages.Count)) + 1L), itemBuilder: ((context, index) =>
+        global::Doroti.Framework.Painting.EdgeInsets safeAreaPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
+        var paddingLocal = global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding).left, right: ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding).right, bottom: ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding).bottom);
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.ListView.CreateBuilder(padding: paddingLocal, itemCount: (checked((long)(((_LicenseData__about)data).packages.Count)) + 1L), itemBuilder: ((context, index) =>
         {
             if ((index == 0L))
             {
                 return ((_PackagesView__about)this.widget).about;
             }
-            long packageIndex__29283 = (index - 1L);
-            string packageName__29330 = ((_LicenseData__about)data).packages[(int)(packageIndex__29283)];
-            List<long> bindings__29397 = ((_LicenseData__about)data).packageLicenseBindings.GetValueOrDefault(packageName__29330)!.ToList();
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PackageListTile__about(packageName: packageName__29330, index: packageIndex__29283, isSelected: (drawSelection && (packageIndex__29283 == ((selectedId ?? 0L)))), numberLicenses: checked((long)(bindings__29397.Count)), onTap: ((global::System.Action)(() =>
+            long packageIndex = (index - 1L);
+            string packageNameLocal = ((_LicenseData__about)data).packages[(int)(packageIndex)];
+            List<long> bindings = ((_LicenseData__about)data).packageLicenseBindings.GetValueOrDefault(packageNameLocal)!.ToList();
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _PackageListTile__about(packageName: packageNameLocal, index: packageIndex, isSelected: (drawSelection && (packageIndex == ((selectedId ?? 0L)))), numberLicenses: checked((long)(bindings.Count)), onTap: ((global::System.Action)(() =>
             {
-                ((_PackagesView__about)this.widget).selectedId.value = packageIndex__29283;
-                _MasterDetailFlow__about.of(context).openDetailPage(new _DetailArguments__about(packageName__29330, bindings__29397.map<long, global::Doroti.Framework.Foundation.LicenseEntry>(((i) => ((_LicenseData__about)data).licenses[(int)(i)])).ToList()));
+                ((_PackagesView__about)this.widget).selectedId.value = packageIndex;
+                _MasterDetailFlow__about.of(context).openDetailPage(new _DetailArguments__about(packageNameLocal, bindings.map<long, global::Doroti.Framework.Foundation.LicenseEntry>(((i) => ((_LicenseData__about)data).licenses[(int)(i)])).ToList()));
             }))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
@@ -384,10 +384,10 @@ public class _LicenseData__about
 
     public virtual void addLicense(global::Doroti.Framework.Foundation.LicenseEntry entry)
     {
-        foreach (string package__31476 in ((global::Doroti.Framework.Foundation.LicenseEntry)entry).packages)
+        foreach (string package in ((global::Doroti.Framework.Foundation.LicenseEntry)entry).packages)
         {
-            _addPackage(package__31476);
-            this.packageLicenseBindings.GetValueOrDefault(package__31476)!.Add(checked((long)(this.licenses.Count)));
+            _addPackage(package);
+            this.packageLicenseBindings.GetValueOrDefault(package)!.Add(checked((long)(this.licenses.Count)));
         }
         this.licenses.Add(entry);
     }
@@ -476,17 +476,17 @@ internal class _PackageLicensePageState__about : global::Doroti.Framework.Widget
 
     internal async virtual Future _initLicenses()
     {
-        var debugFlowId__34170 = -1L;
+        var debugFlowId = -1L;
         DartRuntimePrimitives.Assert(() =>
             {
-                global::Doroti.Runtime.Flow flow__34221 = global::Doroti.Runtime.Flow.begin();
+                global::Doroti.Runtime.Flow flowLocal = global::Doroti.Runtime.Flow.begin();
                 Timeline.timeSync("_initLicenses()", (() =>
                 {
-                }), flow: flow__34221);
-                debugFlowId__34170 = flow__34221.id;
+                }), flow: flowLocal);
+                debugFlowId = flowLocal.id;
                 return true;
             });
-        foreach (global::Doroti.Framework.Foundation.LicenseEntry license__34391 in ((_PackageLicensePage__about)this.widget).licenseEntries)
+        foreach (global::Doroti.Framework.Foundation.LicenseEntry license in ((_PackageLicensePage__about)this.widget).licenseEntries)
         {
             if (!this.mounted)
             {
@@ -496,10 +496,10 @@ internal class _PackageLicensePageState__about : global::Doroti.Framework.Widget
                 {
                     Timeline.timeSync("_initLicenses()", (() =>
                     {
-                    }), flow: global::Doroti.Runtime.Flow.step(debugFlowId__34170));
+                    }), flow: global::Doroti.Runtime.Flow.step(debugFlowId));
                     return true;
                 });
-            List<global::Doroti.Framework.Foundation.LicenseParagraph> paragraphs__34642 = (await global::Doroti.Framework.Scheduler.SchedulerBinding.instance.scheduleTask<List<global::Doroti.Framework.Foundation.LicenseParagraph>>((global::System.Func<object>)(() => ((global::Doroti.Framework.Foundation.LicenseEntry)license__34391).paragraphs.toList()), global::Doroti.Framework.Scheduler.Priority.animation, debugLabel: "License")).ToList();
+            List<global::Doroti.Framework.Foundation.LicenseParagraph> paragraphsLocal = (await global::Doroti.Framework.Scheduler.SchedulerBinding.instance.scheduleTask<List<global::Doroti.Framework.Foundation.LicenseParagraph>>((global::System.Func<object>)(() => ((global::Doroti.Framework.Foundation.LicenseEntry)license).paragraphs.toList()), global::Doroti.Framework.Scheduler.Priority.animation, debugLabel: "License")).ToList();
             if (!this.mounted)
             {
                 return;
@@ -507,16 +507,16 @@ internal class _PackageLicensePageState__about : global::Doroti.Framework.Widget
             setState(((global::System.Action)(() =>
             {
                 this._licenses.Add(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(18.0), child: new Divider()));
-                foreach (var paragraph__35027 in paragraphs__34642)
+                foreach (var paragraph in paragraphsLocal)
                 {
-                    if ((((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).indent == global::Doroti.Framework.Foundation.LicenseParagraph.centeredIndent))
+                    if ((((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph).indent == global::Doroti.Framework.Foundation.LicenseParagraph.centeredIndent))
                     {
-                        this._licenses.Add(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: 16.0), child: new global::Doroti.Framework.Widgets.Text(((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).text, style: new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.bold), textAlign: global::Doroti.Ui.TextAlign.center)));
+                        this._licenses.Add(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: 16.0), child: new global::Doroti.Framework.Widgets.Text(((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph).text, style: new global::Doroti.Framework.Painting.TextStyle(fontWeight: FontWeight.bold), textAlign: global::Doroti.Ui.TextAlign.center)));
                     }
                     else
                     {
-                        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).indent >= 0L));
-                        this._licenses.Add(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(top: 8.0, start: (16.0 * ((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).indent)), child: new global::Doroti.Framework.Widgets.Text(((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph__35027).text)));
+                        DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph).indent >= 0L));
+                        this._licenses.Add(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(top: 8.0, start: (16.0 * ((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph).indent)), child: new global::Doroti.Framework.Widgets.Text(((global::Doroti.Framework.Foundation.LicenseParagraph)paragraph).text)));
                     }
                 }
             })));
@@ -529,7 +529,7 @@ internal class _PackageLicensePageState__about : global::Doroti.Framework.Widget
             {
                 Timeline.timeSync("Build scheduled", (() =>
                 {
-                }), flow: global::Doroti.Runtime.Flow.end(debugFlowId__34170));
+                }), flow: global::Doroti.Runtime.Flow.end(debugFlowId));
                 return true;
             });
     }
@@ -537,27 +537,27 @@ internal class _PackageLicensePageState__about : global::Doroti.Framework.Widget
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        MaterialLocalizations localizations__36104 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
-        ThemeData theme__36175 = Theme.of(context);
-        string title__36219 = ((_PackageLicensePage__about)this.widget).packageName;
-        string subtitle__36264 = ((string)(object?)localizations__36104.licensesPackageDetailText(checked((long)(((_PackageLicensePage__about)this.widget).licenseEntries.Count))));
-        double pad__36363 = AboutLibrary._getGutterSize(context);
-        global::Doroti.Framework.Painting.EdgeInsets safeAreaPadding__36415 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
-        var padding__36474 = global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: (pad__36363 + ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding__36415).left), right: (pad__36363 + ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding__36415).right), bottom: (pad__36363 + ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding__36415).bottom));
-        var listWidgets__36644 = ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection36658 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection36658.AddRange(this._licenses); if (!this._loaded) { __collection36658.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 24.0), child: new global::Doroti.Framework.Widgets.Center(child: new CircularProgressIndicator())))); } return __collection36658; }))();
-        global::Doroti.Framework.Widgets.Widget page__36885 = default!;
+        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        ThemeData themeLocal = Theme.of(context);
+        string titleLocal = ((_PackageLicensePage__about)this.widget).packageName;
+        string subtitleLocal = ((string)(object?)localizations.licensesPackageDetailText(checked((long)(((_PackageLicensePage__about)this.widget).licenseEntries.Count))));
+        double pad = AboutLibrary._getGutterSize(context);
+        global::Doroti.Framework.Painting.EdgeInsets safeAreaPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
+        var paddingLocal = global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: (pad + ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding).left), right: (pad + ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding).right), bottom: (pad + ((global::Doroti.Framework.Painting.EdgeInsets)safeAreaPadding).bottom));
+        var listWidgets = ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection36658 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection36658.AddRange(this._licenses); if (!this._loaded) { __collection36658.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 24.0), child: new global::Doroti.Framework.Widgets.Center(child: new CircularProgressIndicator())))); } return __collection36658; }))();
+        global::Doroti.Framework.Widgets.Widget page = default!;
         if ((((_PackageLicensePage__about)this.widget).scrollController is null))
         {
-            page__36885 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Scaffold(appBar: new AppBar(title: new _PackageLicensePageTitle__about(title: title__36219, subtitle: subtitle__36264, theme: (theme__36175.useMaterial3 ? theme__36175.textTheme : theme__36175.primaryTextTheme), titleTextStyle: theme__36175.appBarTheme.titleTextStyle, foregroundColor: theme__36175.appBarTheme.foregroundColor)), body: new global::Doroti.Framework.Widgets.Center(child: new Material(color: theme__36175.cardColor, elevation: 4.0, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: 600.0), child: global::Doroti.Framework.Widgets.Localizations.CreateOverride(locale: new global::Doroti.Ui.Locale("en", "US"), context: context, child: new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), child: new Scrollbar(child: new global::Doroti.Framework.Widgets.ListView(primary: true, padding: padding__36474, children: listWidgets__36644)))))))));
+            page = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Scaffold(appBar: new AppBar(title: new _PackageLicensePageTitle__about(title: titleLocal, subtitle: subtitleLocal, theme: (themeLocal.useMaterial3 ? themeLocal.textTheme : themeLocal.primaryTextTheme), titleTextStyle: themeLocal.appBarTheme.titleTextStyle, foregroundColor: themeLocal.appBarTheme.foregroundColor)), body: new global::Doroti.Framework.Widgets.Center(child: new Material(color: themeLocal.cardColor, elevation: 4.0, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: 600.0), child: global::Doroti.Framework.Widgets.Localizations.CreateOverride(locale: new global::Doroti.Ui.Locale("en", "US"), context: context, child: new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false), child: new Scrollbar(child: new global::Doroti.Framework.Widgets.ListView(primary: true, padding: paddingLocal, children: listWidgets)))))))));
         }
         else
         {
-            page__36885 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.CustomScrollView(controller: ((_PackageLicensePage__about)this.widget).scrollController, slivers: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new SliverAppBar(automaticallyImplyLeading: false, pinned: true, backgroundColor: theme__36175.cardColor, title: new _PackageLicensePageTitle__about(title: title__36219, subtitle: subtitle__36264, theme: theme__36175.textTheme, titleTextStyle: theme__36175.textTheme.titleLarge))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SliverPadding(padding: padding__36474, sliver: global::Doroti.Framework.Widgets.SliverList.CreateBuilder(itemCount: checked((long)(listWidgets__36644.Count)), itemBuilder: ((context, index) => {
-return global::Doroti.Framework.Widgets.Localizations.CreateOverride(locale: new global::Doroti.Ui.Locale("en", "US"), context: context, child: listWidgets__36644[(int)(index)]);
+            page = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.CustomScrollView(controller: ((_PackageLicensePage__about)this.widget).scrollController, slivers: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new SliverAppBar(automaticallyImplyLeading: false, pinned: true, backgroundColor: themeLocal.cardColor, title: new _PackageLicensePageTitle__about(title: titleLocal, subtitle: subtitleLocal, theme: themeLocal.textTheme, titleTextStyle: themeLocal.textTheme.titleLarge))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SliverPadding(padding: paddingLocal, sliver: global::Doroti.Framework.Widgets.SliverList.CreateBuilder(itemCount: checked((long)(listWidgets.Count)), itemBuilder: ((context, index) => {
+return global::Doroti.Framework.Widgets.Localizations.CreateOverride(locale: new global::Doroti.Ui.Locale("en", "US"), context: context, child: listWidgets[(int)(index)]);
 throw new InvalidOperationException("Dart closure completed without a value.");
 })))) }));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DefaultTextStyle(style: theme__36175.textTheme.bodySmall!, child: page__36885));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DefaultTextStyle(style: themeLocal.textTheme.bodySmall!, child: page));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -582,8 +582,8 @@ internal class _PackageLicensePageTitle__about : global::Doroti.Framework.Widget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Painting.TextStyle? effectiveTitleTextStyle__39562 = (this.titleTextStyle ?? this.theme.titleLarge);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(this.title, style: effectiveTitleTextStyle__39562?.copyWith(color: this.foregroundColor))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(this.subtitle, style: this.theme.titleSmall?.copyWith(color: this.foregroundColor))) }));
+        global::Doroti.Framework.Painting.TextStyle? effectiveTitleTextStyle = (this.titleTextStyle ?? this.theme.titleLarge);
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.start, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(this.title, style: effectiveTitleTextStyle?.copyWith(color: this.foregroundColor))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Text(this.subtitle, style: this.theme.titleSmall?.copyWith(color: this.foregroundColor))) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -593,8 +593,8 @@ public static partial class AboutLibrary
 {
     internal static string _defaultApplicationName(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Title? ancestorTitle__40462 = ((global::Doroti.Framework.Widgets.Title?)(object?)context.findAncestorWidgetOfExactType<global::Doroti.Framework.Widgets.Title>());
-        return (ancestorTitle__40462?.title ?? Platform.resolvedExecutable.split(Platform.pathSeparator).Last());
+        global::Doroti.Framework.Widgets.Title? ancestorTitle = ((global::Doroti.Framework.Widgets.Title?)(object?)context.findAncestorWidgetOfExactType<global::Doroti.Framework.Widgets.Title>());
+        return (ancestorTitle?.title ?? Platform.resolvedExecutable.split(Platform.pathSeparator).Last());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -689,17 +689,17 @@ internal class _MasterDetailFlow__about : global::Doroti.Framework.Widgets.State
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MasterDetailFlowState__about());
     public static _MasterDetailFlowProxy__about of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _PageOpener__about? pageOpener__44520 = ((_PageOpener__about?)(object?)context.findAncestorStateOfType<_MasterDetailScaffoldState__about>());
-        pageOpener__44520 ??= context.findAncestorStateOfType<_MasterDetailFlowState__about>();
+        _PageOpener__about? pageOpener = ((_PageOpener__about?)(object?)context.findAncestorStateOfType<_MasterDetailScaffoldState__about>());
+        pageOpener ??= context.findAncestorStateOfType<_MasterDetailFlowState__about>();
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((pageOpener__44520 is null))
+                if ((pageOpener is null))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Master Detail operation requested with a context that does not include a Master Detail " + "Flow.\nThe context used to open a detail page from the Master Detail Flow must be " + "that of a widget that is a descendant of a Master Detail Flow widget."));
                 }
                 return true;
             });
-        return new _MasterDetailFlowProxy__about(pageOpener__44520!);
+        return new _MasterDetailFlowProxy__about(pageOpener!);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -763,8 +763,8 @@ internal class _MasterDetailFlowState__about : global::Doroti.Framework.Widgets.
     {
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
         {
-            double availableWidth__47062 = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth;
-            if ((availableWidth__47062 >= AboutLibrary._materialWideDisplayThreshold))
+            double availableWidth = ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth;
+            if ((availableWidth >= AboutLibrary._materialWideDisplayThreshold))
             {
                 return ((global::Doroti.Framework.Widgets.Widget)(object?)_lateralUI(context));
             }
@@ -777,13 +777,13 @@ internal class _MasterDetailFlowState__about : global::Doroti.Framework.Widgets.
     internal virtual global::Doroti.Framework.Widgets.Widget _nestedUI(global::Doroti.Framework.Widgets.BuildContext context)
     {
         _builtLayout = _LayoutMode__about.nested;
-        MaterialPageRoute<object?> masterPageRoute__47384 = ((MaterialPageRoute<object?>)(object?)_masterPageRoute(context));
+        MaterialPageRoute<object?> masterPageRoute = ((MaterialPageRoute<object?>)(object?)_masterPageRoute(context));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NavigatorPopHandler<object>(onPop: ((global::System.Action)(() =>
         {
             DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>)this._navigatorKey).currentState!.maybePop<object>());
         })), child: new global::Doroti.Framework.Widgets.Navigator(key: this._navigatorKey, initialRoute: "initial", onGenerateInitialRoutes: ((global::System.Func<global::Doroti.Framework.Widgets.NavigatorState, string, List<dynamic>>)((navigator, initialRoute) =>
         {
-            return ((List<object>)(object?)(this.focus switch { _Focus__about.master => new List<global::Doroti.Framework.Widgets.Route<object?>> { masterPageRoute__47384 }, _Focus__about.detail => new List<global::Doroti.Framework.Widgets.Route<object?>> { masterPageRoute__47384, _detailPageRoute(this._cachedDetailArguments) }, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+            return ((List<object>)(object?)(this.focus switch { _Focus__about.master => new List<global::Doroti.Framework.Widgets.Route<object?>> { masterPageRoute }, _Focus__about.detail => new List<global::Doroti.Framework.Widgets.Route<object?>> { masterPageRoute, _detailPageRoute(this._cachedDetailArguments) }, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), onGenerateRoute: ((global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>?)((settings) =>
         {
@@ -792,7 +792,7 @@ internal class _MasterDetailFlowState__about : global::Doroti.Framework.Widgets.
                 case var __constant48074 when (object.Equals(__constant48074, AboutLibrary._navMaster)):
                     {
                         focus = _Focus__about.master;
-                        return masterPageRoute__47384;
+                        return masterPageRoute;
                     }
                 case var __constant48231 when (object.Equals(__constant48231, AboutLibrary._navDetail)):
                     {
@@ -977,9 +977,9 @@ internal class _DetailView__about : global::Doroti.Framework.Widgets.StatelessWi
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)global::Doroti.Framework.Widgets.SizedBox.CreateShrink());
         }
-        double screenHeight__56694 = MediaQuery.heightOf(context);
-        double minHeight__56756 = (((screenHeight__56694 - ConstantsLibrary.kToolbarHeight)) / screenHeight__56694);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DraggableScrollableSheet(initialChildSize: minHeight__56756, minChildSize: minHeight__56756, expand: false, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.ScrollController, global::Doroti.Framework.Widgets.Widget>)((context, controller) =>
+        double screenHeight = MediaQuery.heightOf(context);
+        double minHeight = (((screenHeight - ConstantsLibrary.kToolbarHeight)) / screenHeight);
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DraggableScrollableSheet(initialChildSize: minHeight, minChildSize: minHeight, expand: false, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.ScrollController, global::Doroti.Framework.Widgets.Widget>)((context, controller) =>
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MouseRegion(child: new Card(color: Theme.of(context).cardColor, elevation: AboutLibrary._kCardElevation, clipBehavior: Clip.antiAlias, margin: new global::Doroti.Framework.Painting.EdgeInsets(AboutLibrary._kCardElevation, 0.0, AboutLibrary._kCardElevation, 0.0), shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateVertical(top: global::Doroti.Ui.Radius.circular(3.0))), child: this._builder(context, this._arguments, controller))));
             throw new InvalidOperationException("Dart closure completed without a value.");

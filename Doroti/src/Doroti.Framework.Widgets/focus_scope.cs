@@ -68,10 +68,10 @@ public class Focus : StatefulWidget
     public virtual string? debugLabel => DartRuntimePrimitives.ConvertValue<string>((this._debugLabel ?? this.focusNode?.debugLabel));
     public static FocusNode of(BuildContext context, bool scopeOk = false, bool createDependency = true)
     {
-        FocusNode? node__17435 = ((FocusNode?)(object?)Focus.maybeOf(context, scopeOk: scopeOk, createDependency: createDependency));
+        FocusNode? node = ((FocusNode?)(object?)Focus.maybeOf(context, scopeOk: scopeOk, createDependency: createDependency));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((node__17435 is null))
+                if ((node is null))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Focus.of() was called with a context that does not contain a Focus widget.\n" + "No Focus widget ancestor could be found starting from the context that was passed to " + "Focus.of(). This can happen because you are using a widget that looks for a Focus " + "ancestor, and do not have a Focus widget descendant in the nearest FocusScope.\n" + "The context used was:\n" + $"  {context}"));
                 }
@@ -80,22 +80,22 @@ public class Focus : StatefulWidget
             });
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((!scopeOk && (node__17435 is FocusScopeNode)))
+                if ((!scopeOk && (node is FocusScopeNode)))
                 {
-                    FocusScopeNode node__17435__as18136 = (FocusScopeNode)node__17435;
+                    FocusScopeNode node__17435__as18136 = (FocusScopeNode)node;
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Focus.of() was called with a context that does not contain a Focus between the given " + "context and the nearest FocusScope widget.\n" + "No Focus ancestor could be found starting from the context that was passed to " + "Focus.of() to the point where it found the nearest FocusScope widget. This can happen " + "because you are using a widget that looks for a Focus ancestor, and do not have a " + "Focus widget ancestor in the current FocusScope.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return node__17435!;
+        return node!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static FocusNode? maybeOf(BuildContext context, bool scopeOk = false, bool createDependency = true)
     {
-        _FocusInheritedScope__focus_scope? scope__19715 = (createDependency ? context.dependOnInheritedWidgetOfExactType<_FocusInheritedScope__focus_scope>() : context.getInheritedWidgetOfExactType<_FocusInheritedScope__focus_scope>());
-        return (scope__19715?.notifier switch { null => DartRuntimePrimitives.ConvertValue<FocusNode>(null), FocusScopeNode __object19955 when (!scopeOk) => DartRuntimePrimitives.ConvertValue<FocusNode>(null), FocusNode node__20017 => node__20017 });
+        _FocusInheritedScope__focus_scope? scope = (createDependency ? context.dependOnInheritedWidgetOfExactType<_FocusInheritedScope__focus_scope>() : context.getInheritedWidgetOfExactType<_FocusInheritedScope__focus_scope>());
+        return (scope?.notifier switch { null => DartRuntimePrimitives.ConvertValue<FocusNode>(null), FocusScopeNode __object19955 when (!scopeOk) => DartRuntimePrimitives.ConvertValue<FocusNode>(null), FocusNode node => node });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -251,37 +251,37 @@ internal class _FocusState__focus_scope : State<Focus>
 
     internal virtual void _handleFocusChanged()
     {
-        bool hasPrimaryFocus__27109 = ((FocusNode)this.focusNode).hasPrimaryFocus;
-        bool canRequestFocus__27169 = ((FocusNode)this.focusNode).canRequestFocus;
-        bool descendantsAreFocusable__27229 = ((FocusNode)this.focusNode).descendantsAreFocusable;
-        bool descendantsAreTraversable__27305 = ((FocusNode)this.focusNode).descendantsAreTraversable;
+        bool hasPrimaryFocusLocal = ((FocusNode)this.focusNode).hasPrimaryFocus;
+        bool canRequestFocusLocal = ((FocusNode)this.focusNode).canRequestFocus;
+        bool descendantsAreFocusableLocal = ((FocusNode)this.focusNode).descendantsAreFocusable;
+        bool descendantsAreTraversableLocal = ((FocusNode)this.focusNode).descendantsAreTraversable;
         ((Focus)this.widget).onFocusChange?.Invoke(((FocusNode)this.focusNode).hasFocus);
-        if ((this._hadPrimaryFocus != hasPrimaryFocus__27109))
+        if ((this._hadPrimaryFocus != hasPrimaryFocusLocal))
         {
             setState(((global::System.Action)(() =>
             {
-                _hadPrimaryFocus = hasPrimaryFocus__27109;
+                _hadPrimaryFocus = hasPrimaryFocusLocal;
             })));
         }
-        if ((this._couldRequestFocus != canRequestFocus__27169))
+        if ((this._couldRequestFocus != canRequestFocusLocal))
         {
             setState(((global::System.Action)(() =>
             {
-                _couldRequestFocus = canRequestFocus__27169;
+                _couldRequestFocus = canRequestFocusLocal;
             })));
         }
-        if ((this._descendantsWereFocusable != descendantsAreFocusable__27229))
+        if ((this._descendantsWereFocusable != descendantsAreFocusableLocal))
         {
             setState(((global::System.Action)(() =>
             {
-                _descendantsWereFocusable = descendantsAreFocusable__27229;
+                _descendantsWereFocusable = descendantsAreFocusableLocal;
             })));
         }
-        if ((this._descendantsWereTraversable != descendantsAreTraversable__27305))
+        if ((this._descendantsWereTraversable != descendantsAreTraversableLocal))
         {
             setState(((global::System.Action)(() =>
             {
-                _descendantsWereTraversable = descendantsAreTraversable__27305;
+                _descendantsWereTraversable = descendantsAreTraversableLocal;
             })));
         }
     }
@@ -289,10 +289,10 @@ internal class _FocusState__focus_scope : State<Focus>
     public override Widget build(BuildContext context)
     {
         this._focusAttachment!.reparent(parent: ((Focus)this.widget).parentNode);
-        Widget child__28232 = ((Focus)this.widget).child;
+        Widget childLocal = ((Focus)this.widget).child;
         if (((Focus)this.widget).includeSemantics)
         {
-            child__28232 = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(
+            childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(
                 onFocus: Focus.CreateSemanticsFocusAction(
                     global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform,
                     this._couldRequestFocus,
@@ -305,12 +305,12 @@ internal class _FocusState__focus_scope : State<Focus>
             {
                 if (global::Doroti.Framework.Widgets.DebugLibrary.debugPaintFocusBoxes)
                 {
-                    child__28232 = DartRuntimePrimitives.ConvertValue<Widget>(new _DebugFocusBorder__focus_scope(node: this.focusNode, child: child__28232));
+                    childLocal = DartRuntimePrimitives.ConvertValue<Widget>(new _DebugFocusBorder__focus_scope(node: this.focusNode, child: childLocal));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((Widget)(object?)new _FocusInheritedScope__focus_scope(node: this.focusNode, child: child__28232));
+        return ((Widget)(object?)new _FocusInheritedScope__focus_scope(node: this.focusNode, child: childLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -361,12 +361,12 @@ internal class _FocusScopeState__focus_scope : _FocusState__focus_scope
     public override Widget build(BuildContext context)
     {
         this._focusAttachment!.reparent(parent: this.widget.parentNode);
-        Widget result__35353 = ((Widget)(object?)new _FocusInheritedScope__focus_scope(node: this.focusNode, child: ((Widget)((dynamic)this.widget).child)));
+        Widget result = ((Widget)(object?)new _FocusInheritedScope__focus_scope(node: this.focusNode, child: ((Widget)((dynamic)this.widget).child)));
         if (this.widget.includeSemantics)
         {
-            result__35353 = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(explicitChildNodes: true, child: result__35353));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new Semantics(explicitChildNodes: true, child: result));
         }
-        return result__35353;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

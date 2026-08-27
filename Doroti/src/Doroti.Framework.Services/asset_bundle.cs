@@ -214,8 +214,8 @@ public class PlatformAssetBundle : CachingAssetBundle
     {
         if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
         {
-            ByteData bytes__14289 = await load(key);
-            return await Dart_uiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(bytes__14289));
+            ByteData bytes = await load(key);
+            return await Dart_uiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(bytes));
         }
         var debugUsePlatformChannel = false;
         DartRuntimePrimitives.Assert(() =>
@@ -228,8 +228,8 @@ public class PlatformAssetBundle : CachingAssetBundle
             });
         if (debugUsePlatformChannel)
         {
-            ByteData bytes__14986 = await load(key);
-            return await Dart_uiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(bytes__14986));
+            ByteData bytesLocal = await load(key);
+            return await Dart_uiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(bytesLocal));
         }
         try
         {

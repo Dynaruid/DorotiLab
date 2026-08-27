@@ -18,18 +18,18 @@ public static partial class Image_decoderLibrary
 {
     public static async Future<Image> decodeImageFromList(Uint8List bytes)
     {
-        global::Doroti.Ui.ImmutableBuffer buffer__961 = await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes);
-        global::Doroti.Ui.Codec codec__1034 = await PaintingBinding.instance.instantiateImageCodecWithSize(buffer__961);
-        global::Doroti.Ui.FrameInfo frameInfo__1133 = default!;
+        global::Doroti.Ui.ImmutableBuffer buffer = await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes);
+        global::Doroti.Ui.Codec codec = await PaintingBinding.instance.instantiateImageCodecWithSize(buffer);
+        global::Doroti.Ui.FrameInfo frameInfo = default!;
         try
         {
-            frameInfo__1133 = await codec__1034.getNextFrame();
+            frameInfo = await codec.getNextFrame();
         }
         finally
         {
-            codec__1034.dispose();
+            codec.dispose();
         }
-        return frameInfo__1133.image;
+        return frameInfo.image;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

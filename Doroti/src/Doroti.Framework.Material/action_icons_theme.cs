@@ -47,8 +47,8 @@ public class ActionIconThemeData : global::Doroti.Framework.Foundation.Diagnosti
 
     public override int GetHashCode()
     {
-        var values__3331 = new List<object?> { this.backButtonIconBuilder, this.closeButtonIconBuilder, this.drawerButtonIconBuilder, this.endDrawerButtonIconBuilder };
-        return FoundationRuntimePorts.ObjectHashAll(values__3331);
+        var values = new List<object?> { this.backButtonIconBuilder, this.closeButtonIconBuilder, this.drawerButtonIconBuilder, this.endDrawerButtonIconBuilder };
+        return FoundationRuntimePorts.ObjectHashAll(values);
         return default!;
     }
     public override bool Equals(object? other)
@@ -77,13 +77,13 @@ public class ActionIconThemeData : global::Doroti.Framework.Foundation.Diagnosti
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -106,8 +106,8 @@ public class ActionIconTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static ActionIconThemeData? of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ActionIconTheme? actionIconTheme__6164 = ((ActionIconTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ActionIconTheme>());
-        return (actionIconTheme__6164?.data ?? Theme.of(context).actionIconTheme);
+        ActionIconTheme? actionIconThemeLocal = ((ActionIconTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ActionIconTheme>());
+        return (actionIconThemeLocal?.data ?? Theme.of(context).actionIconTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

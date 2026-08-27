@@ -73,13 +73,13 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
     {
         get
         {
-            Duration? lastPendingEventTimestamp__13296 = default!;
+            Duration? lastPendingEventTimestamp = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    lastPendingEventTimestamp__13296 = this._lastPendingEventTimestamp;
+                    lastPendingEventTimestamp = this._lastPendingEventTimestamp;
                     return true;
                 });
-            return lastPendingEventTimestamp__13296;
+            return lastPendingEventTimestamp;
             return default!;
         }
     }
@@ -162,22 +162,22 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual bool _shouldTrackMoveEvent(long pointer)
     {
-        bool result__18317 = default!;
+        bool result = default!;
         switch (this.multitouchDragStrategy)
         {
             case MultitouchDragStrategy.sumAllPointers:
             case MultitouchDragStrategy.averageBoundaryPointers:
                 {
-                    result__18317 = true;
+                    result = true;
                     break;
                 }
             case MultitouchDragStrategy.latestPointer:
                 {
-                    result__18317 = ((this._activePointer is null) || (pointer == this._activePointer));
+                    result = ((this._activePointer is null) || (pointer == this._activePointer));
                     break;
                 }
         }
-        return result__18317;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -196,8 +196,8 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         }
         if (this._moveDeltaBeforeFrame.ContainsKey(pointer))
         {
-            global::Doroti.Ui.Offset offset__19155 = DartRuntimePrimitives.RequireValue(this._moveDeltaBeforeFrame.GetValueOrDefault(pointer));
-            this._moveDeltaBeforeFrame[pointer] = (offset__19155 + localDelta);
+            global::Doroti.Ui.Offset offset = DartRuntimePrimitives.RequireValue(this._moveDeltaBeforeFrame.GetValueOrDefault(pointer));
+            this._moveDeltaBeforeFrame[pointer] = (offset + localDelta);
         }
         else
         {
@@ -207,35 +207,35 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual double _getSumDelta(long pointer, bool positive, _DragDirection__monodrag axis)
     {
-        var sum__19459 = 0.0;
+        var sum = 0.0;
         if (!this._moveDeltaBeforeFrame.ContainsKey(pointer))
         {
-            return sum__19459;
+            return sum;
         }
-        global::Doroti.Ui.Offset offset__19568 = DartRuntimePrimitives.RequireValue(this._moveDeltaBeforeFrame.GetValueOrDefault(pointer));
+        global::Doroti.Ui.Offset offset = DartRuntimePrimitives.RequireValue(this._moveDeltaBeforeFrame.GetValueOrDefault(pointer));
         if (positive)
         {
             if ((object.Equals(axis, _DragDirection__monodrag.vertical)))
             {
-                sum__19459 = Math.Max(offset__19568.dy, 0.0);
+                sum = Math.Max(offset.dy, 0.0);
             }
             else
             {
-                sum__19459 = Math.Max(offset__19568.dx, 0.0);
+                sum = Math.Max(offset.dx, 0.0);
             }
         }
         else
         {
             if ((object.Equals(axis, _DragDirection__monodrag.vertical)))
             {
-                sum__19459 = Math.Min(offset__19568.dy, 0.0);
+                sum = Math.Min(offset.dy, 0.0);
             }
             else
             {
-                sum__19459 = Math.Min(offset__19568.dx, 0.0);
+                sum = Math.Min(offset.dx, 0.0);
             }
         }
-        return sum__19459;
+        return sum;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -245,39 +245,39 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         {
             return null;
         }
-        long? ret__20111 = default!;
-        double? max__20128 = default!;
-        double sum__20144 = default!;
-        foreach (long pointer__20168 in this._moveDeltaBeforeFrame.Keys)
+        long? ret = default!;
+        double? max = default!;
+        double sum = default!;
+        foreach (long pointerLocal in this._moveDeltaBeforeFrame.Keys)
         {
-            sum__20144 = _getSumDelta(pointer: pointer__20168, positive: positive, axis: axis);
-            if ((ret__20111 is null))
+            sum = _getSumDelta(pointer: pointerLocal, positive: positive, axis: axis);
+            if ((ret is null))
             {
-                ret__20111 = pointer__20168;
-                max__20128 = sum__20144;
+                ret = pointerLocal;
+                max = sum;
             }
             else
             {
                 if (positive)
                 {
-                    if ((sum__20144 > DartRuntimePrimitives.RequireValue(max__20128)))
+                    if ((sum > DartRuntimePrimitives.RequireValue(max)))
                     {
-                        ret__20111 = pointer__20168;
-                        max__20128 = sum__20144;
+                        ret = pointerLocal;
+                        max = sum;
                     }
                 }
                 else
                 {
-                    if ((sum__20144 < DartRuntimePrimitives.RequireValue(max__20128)))
+                    if ((sum < DartRuntimePrimitives.RequireValue(max)))
                     {
-                        ret__20111 = pointer__20168;
-                        max__20128 = sum__20144;
+                        ret = pointerLocal;
+                        max = sum;
                     }
                 }
             }
         }
-        DartRuntimePrimitives.Assert(() => (ret__20111 is not null));
-        return ret__20111;
+        DartRuntimePrimitives.Assert(() => (ret is not null));
+        return ret;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -293,68 +293,68 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
             }
             return localDelta;
         }
-        Duration currentSystemFrameTimeStamp__21031 = SchedulerBinding.instance.currentSystemFrameTimeStamp;
-        if ((!object.Equals(this._frameTimeStamp, currentSystemFrameTimeStamp__21031)))
+        Duration currentSystemFrameTimeStampLocal = SchedulerBinding.instance.currentSystemFrameTimeStamp;
+        if ((!object.Equals(this._frameTimeStamp, currentSystemFrameTimeStampLocal)))
         {
             this._moveDeltaBeforeFrame.Clear();
             _lastUpdatedDeltaForPan = Offset.zero;
-            _frameTimeStamp = currentSystemFrameTimeStamp__21031;
+            _frameTimeStamp = currentSystemFrameTimeStampLocal;
         }
         DartRuntimePrimitives.Assert(() => (object.Equals(this._frameTimeStamp, SchedulerBinding.instance.currentSystemFrameTimeStamp)));
-        _DragDirection__monodrag? axis__21437 = _getPrimaryDragAxis();
-        if ((((!object.Equals(this._state, _DragState__monodrag.accepted)) || (object.Equals(localDelta, Offset.zero))) || (((checked((long)(this._moveDeltaBeforeFrame.Count)) == 0) && (axis__21437 is not null)))))
+        _DragDirection__monodrag? axisLocal = _getPrimaryDragAxis();
+        if ((((!object.Equals(this._state, _DragState__monodrag.accepted)) || (object.Equals(localDelta, Offset.zero))) || (((checked((long)(this._moveDeltaBeforeFrame.Count)) == 0) && (axisLocal is not null)))))
         {
             return localDelta;
         }
-        double dx__21654 = default!;
-        double dy__21658 = default!;
-        if ((object.Equals(axis__21437, _DragDirection__monodrag.horizontal)))
+        double dxLocal = default!;
+        double dyLocal = default!;
+        if ((object.Equals(axisLocal, _DragDirection__monodrag.horizontal)))
         {
-            dx__21654 = _resolveDelta(pointer: pointer, axis: _DragDirection__monodrag.horizontal, localDelta: localDelta);
-            DartRuntimePrimitives.Assert(() => (dx__21654.abs() <= localDelta.dx.abs()));
-            dy__21658 = 0.0;
+            dxLocal = _resolveDelta(pointer: pointer, axis: _DragDirection__monodrag.horizontal, localDelta: localDelta);
+            DartRuntimePrimitives.Assert(() => (dxLocal.abs() <= localDelta.dx.abs()));
+            dyLocal = 0.0;
         }
         else
         {
-            if ((object.Equals(axis__21437, _DragDirection__monodrag.vertical)))
+            if ((object.Equals(axisLocal, _DragDirection__monodrag.vertical)))
             {
-                dx__21654 = 0.0;
-                dy__21658 = _resolveDelta(pointer: pointer, axis: _DragDirection__monodrag.vertical, localDelta: localDelta);
-                DartRuntimePrimitives.Assert(() => (dy__21658.abs() <= localDelta.dy.abs()));
+                dxLocal = 0.0;
+                dyLocal = _resolveDelta(pointer: pointer, axis: _DragDirection__monodrag.vertical, localDelta: localDelta);
+                DartRuntimePrimitives.Assert(() => (dyLocal.abs() <= localDelta.dy.abs()));
             }
             else
             {
-                double averageX__22115 = _resolveDeltaForPanGesture(axis: _DragDirection__monodrag.horizontal, localDelta: localDelta);
-                double averageY__22255 = _resolveDeltaForPanGesture(axis: _DragDirection__monodrag.vertical, localDelta: localDelta);
-                global::Doroti.Ui.Offset updatedDelta__22393 = (new global::Doroti.Ui.Offset(averageX__22115, averageY__22255) - this._lastUpdatedDeltaForPan);
-                _lastUpdatedDeltaForPan = new global::Doroti.Ui.Offset(averageX__22115, averageY__22255);
-                dx__21654 = updatedDelta__22393.dx;
-                dy__21658 = updatedDelta__22393.dy;
+                double averageX = _resolveDeltaForPanGesture(axis: _DragDirection__monodrag.horizontal, localDelta: localDelta);
+                double averageY = _resolveDeltaForPanGesture(axis: _DragDirection__monodrag.vertical, localDelta: localDelta);
+                global::Doroti.Ui.Offset updatedDelta = (new global::Doroti.Ui.Offset(averageX, averageY) - this._lastUpdatedDeltaForPan);
+                _lastUpdatedDeltaForPan = new global::Doroti.Ui.Offset(averageX, averageY);
+                dxLocal = updatedDelta.dx;
+                dyLocal = updatedDelta.dy;
             }
         }
-        return new global::Doroti.Ui.Offset(dx__21654, dy__21658);
+        return new global::Doroti.Ui.Offset(dxLocal, dyLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _resolveDelta(long pointer, _DragDirection__monodrag axis, Offset localDelta)
     {
-        bool positive__22756 = ((object.Equals(axis, _DragDirection__monodrag.horizontal)) ? (localDelta.dx > 0L) : (localDelta.dy > 0L));
-        double delta__22859 = ((object.Equals(axis, _DragDirection__monodrag.horizontal)) ? localDelta.dx : localDelta.dy);
-        long? maxSumDeltaPointer__22949 = _getMaxSumDeltaPointer(positive: positive__22756, axis: axis);
-        DartRuntimePrimitives.Assert(() => (maxSumDeltaPointer__22949 is not null));
-        if ((maxSumDeltaPointer__22949 == pointer))
+        bool positiveLocal = ((object.Equals(axis, _DragDirection__monodrag.horizontal)) ? (localDelta.dx > 0L) : (localDelta.dy > 0L));
+        double delta = ((object.Equals(axis, _DragDirection__monodrag.horizontal)) ? localDelta.dx : localDelta.dy);
+        long? maxSumDeltaPointer = _getMaxSumDeltaPointer(positive: positiveLocal, axis: axis);
+        DartRuntimePrimitives.Assert(() => (maxSumDeltaPointer is not null));
+        if ((maxSumDeltaPointer == pointer))
         {
-            return delta__22859;
+            return delta;
         }
         else
         {
-            double maxSumDelta__23160 = _getSumDelta(pointer: DartRuntimePrimitives.RequireValue(maxSumDeltaPointer__22949), positive: positive__22756, axis: axis);
-            double curPointerSumDelta__23302 = _getSumDelta(pointer: pointer, positive: positive__22756, axis: axis);
-            if (positive__22756)
+            double maxSumDelta = _getSumDelta(pointer: DartRuntimePrimitives.RequireValue(maxSumDeltaPointer), positive: positiveLocal, axis: axis);
+            double curPointerSumDelta = _getSumDelta(pointer: pointer, positive: positiveLocal, axis: axis);
+            if (positiveLocal)
             {
-                if (((curPointerSumDelta__23302 + delta__22859) > maxSumDelta__23160))
+                if (((curPointerSumDelta + delta) > maxSumDelta))
                 {
-                    return ((curPointerSumDelta__23302 + delta__22859) - maxSumDelta__23160);
+                    return ((curPointerSumDelta + delta) - maxSumDelta);
                 }
                 else
                 {
@@ -363,9 +363,9 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
             }
             else
             {
-                if (((curPointerSumDelta__23302 + delta__22859) < maxSumDelta__23160))
+                if (((curPointerSumDelta + delta) < maxSumDelta))
                 {
-                    return ((curPointerSumDelta__23302 + delta__22859) - maxSumDelta__23160);
+                    return ((curPointerSumDelta + delta) - maxSumDelta);
                 }
                 else
                 {
@@ -378,22 +378,22 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
 
     internal virtual double _resolveDeltaForPanGesture(_DragDirection__monodrag axis, Offset localDelta)
     {
-        double delta__23919 = ((object.Equals(axis, _DragDirection__monodrag.horizontal)) ? localDelta.dx : localDelta.dy);
-        long pointerCount__24008 = checked((long)(this._acceptedActivePointers.Count));
-        DartRuntimePrimitives.Assert(() => (pointerCount__24008 >= 1L));
-        var sum__24095 = delta__23919;
-        foreach (global::Doroti.Ui.Offset offset__24130 in this._moveDeltaBeforeFrame.Values)
+        double delta = ((object.Equals(axis, _DragDirection__monodrag.horizontal)) ? localDelta.dx : localDelta.dy);
+        long pointerCount = checked((long)(this._acceptedActivePointers.Count));
+        DartRuntimePrimitives.Assert(() => (pointerCount >= 1L));
+        var sum = delta;
+        foreach (global::Doroti.Ui.Offset offset in this._moveDeltaBeforeFrame.Values)
         {
             if ((object.Equals(axis, _DragDirection__monodrag.horizontal)))
             {
-                sum__24095 += offset__24130.dx;
+                sum += offset.dx;
             }
             else
             {
-                sum__24095 += offset__24130.dy;
+                sum += offset.dy;
             }
         }
-        return (sum__24095 / pointerCount__24008);
+        return (sum / pointerCount);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -402,8 +402,8 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         DartRuntimePrimitives.Assert(() => (!object.Equals(this._state, _DragState__monodrag.ready)));
         if ((!((PointerEvent)@event).synthesized && (((((@event is PointerDownEvent) || (@event is PointerMoveEvent)) || (@event is PointerPanZoomStartEvent)) || (@event is PointerPanZoomUpdateEvent)))))
         {
-            global::Doroti.Ui.Offset position__24657 = (@event switch { PointerPanZoomStartEvent __object24693 => Offset.zero, PointerPanZoomUpdateEvent __object24744 => ((PointerPanZoomUpdateEvent)((PointerPanZoomUpdateEvent)__object24744)).pan, _ => ((PointerEvent)@event).localPosition });
-            this._velocityTrackers.GetValueOrDefault(((PointerEvent)@event).pointer)!.addPosition(((PointerEvent)@event).timeStamp, position__24657);
+            global::Doroti.Ui.Offset positionLocal = (@event switch { PointerPanZoomStartEvent __object24693 => Offset.zero, PointerPanZoomUpdateEvent __object24744 => ((PointerPanZoomUpdateEvent)((PointerPanZoomUpdateEvent)__object24744)).pan, _ => ((PointerEvent)@event).localPosition });
+            this._velocityTrackers.GetValueOrDefault(((PointerEvent)@event).pointer)!.addPosition(((PointerEvent)@event).timeStamp, positionLocal);
         }
         if (((@event is PointerMoveEvent) && (((PointerMoveEvent)@event).buttons != this._initialButtons)))
         {
@@ -413,22 +413,22 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         }
         if (((((@event is PointerMoveEvent) || (@event is PointerPanZoomUpdateEvent))) && _shouldTrackMoveEvent(((PointerEvent)@event).pointer)))
         {
-            global::Doroti.Ui.Offset delta__25189 = (((@event is PointerMoveEvent)) ? ((PointerMoveEvent)@event).delta : (((PointerPanZoomUpdateEvent?)(object?)(((PointerPanZoomUpdateEvent?)(object?)@event)!))!).panDelta);
-            global::Doroti.Ui.Offset localDelta__25327 = (((@event is PointerMoveEvent)) ? ((PointerMoveEvent)@event).localDelta : (((PointerPanZoomUpdateEvent?)(object?)(((PointerPanZoomUpdateEvent?)(object?)@event)!))!).localPanDelta);
-            global::Doroti.Ui.Offset position__25480 = (((@event is PointerMoveEvent)) ? ((PointerMoveEvent)@event).position : ((((PointerEvent)@event).position + (((PointerPanZoomUpdateEvent?)(object?)(((PointerPanZoomUpdateEvent?)(object?)@event)!))!).pan)));
-            global::Doroti.Ui.Offset localPosition__25638 = (((@event is PointerMoveEvent)) ? ((PointerMoveEvent)@event).localPosition : ((((PointerEvent)@event).localPosition + (((PointerPanZoomUpdateEvent?)(object?)(((PointerPanZoomUpdateEvent?)(object?)@event)!))!).localPan)));
-            _lastPosition = new OffsetPair(local: DartRuntimePrimitives.RequireValue(localPosition__25638), global: position__25480);
-            global::Doroti.Ui.Offset resolvedDelta__25890 = _resolveLocalDeltaForMultitouch(((PointerEvent)@event).pointer, localDelta__25327);
+            global::Doroti.Ui.Offset deltaLocal = (((@event is PointerMoveEvent)) ? ((PointerMoveEvent)@event).delta : (((PointerPanZoomUpdateEvent?)(object?)(((PointerPanZoomUpdateEvent?)(object?)@event)!))!).panDelta);
+            global::Doroti.Ui.Offset localDeltaLocal = (((@event is PointerMoveEvent)) ? ((PointerMoveEvent)@event).localDelta : (((PointerPanZoomUpdateEvent?)(object?)(((PointerPanZoomUpdateEvent?)(object?)@event)!))!).localPanDelta);
+            global::Doroti.Ui.Offset positionAlternate = (((@event is PointerMoveEvent)) ? ((PointerMoveEvent)@event).position : ((((PointerEvent)@event).position + (((PointerPanZoomUpdateEvent?)(object?)(((PointerPanZoomUpdateEvent?)(object?)@event)!))!).pan)));
+            global::Doroti.Ui.Offset localPositionLocal = (((@event is PointerMoveEvent)) ? ((PointerMoveEvent)@event).localPosition : ((((PointerEvent)@event).localPosition + (((PointerPanZoomUpdateEvent?)(object?)(((PointerPanZoomUpdateEvent?)(object?)@event)!))!).localPan)));
+            _lastPosition = new OffsetPair(local: DartRuntimePrimitives.RequireValue(localPositionLocal), global: positionAlternate);
+            global::Doroti.Ui.Offset resolvedDelta = _resolveLocalDeltaForMultitouch(((PointerEvent)@event).pointer, localDeltaLocal);
             switch (this._state)
             {
                 case _DragState__monodrag.ready or _DragState__monodrag.possible:
                     {
-                        _pendingDragOffset = _pendingDragOffset.op_Add(new OffsetPair(local: localDelta__25327, global: delta__25189));
+                        _pendingDragOffset = _pendingDragOffset.op_Add(new OffsetPair(local: localDeltaLocal, global: deltaLocal));
                         _lastPendingEventTimestamp = ((PointerEvent)@event).timeStamp;
                         _lastTransform = ((PointerEvent)@event).transform;
-                        global::Doroti.Ui.Offset movedLocally__26245 = _getDeltaForDetails(localDelta__25327);
-                        Matrix4? localToGlobalTransform__26318 = ((((PointerEvent)@event).transform is null) ? null : Matrix4.tryInvert(((PointerEvent)@event).transform!));
-                        _globalDistanceMoved += (PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform__26318, untransformedDelta: movedLocally__26245, untransformedEndPosition: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(localPosition__25638))).distance * Math.Sign(((_getPrimaryValueFromOffset(movedLocally__26245) ?? 1))));
+                        global::Doroti.Ui.Offset movedLocally = _getDeltaForDetails(localDeltaLocal);
+                        Matrix4? localToGlobalTransform = ((((PointerEvent)@event).transform is null) ? null : Matrix4.tryInvert(((PointerEvent)@event).transform!));
+                        _globalDistanceMoved += (PointerEvent.transformDeltaViaPositions(transform: localToGlobalTransform, untransformedDelta: movedLocally, untransformedEndPosition: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(localPositionLocal))).distance * Math.Sign(((_getPrimaryValueFromOffset(movedLocally) ?? 1))));
                         if (hasSufficientGlobalDistanceToAccept(((PointerEvent)@event).kind, gestureSettings?.touchSlop))
                         {
                             _hasDragThresholdBeenMet = true;
@@ -445,11 +445,11 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
                     }
                 case _DragState__monodrag.accepted:
                     {
-                        _checkUpdate(sourceTimeStamp: ((PointerEvent)@event).timeStamp, delta: _getDeltaForDetails(resolvedDelta__25890), primaryDelta: _getPrimaryValueFromOffset(resolvedDelta__25890), globalPosition: position__25480, localPosition: DartRuntimePrimitives.RequireValue(localPosition__25638), pointer: ((PointerEvent)@event).pointer);
+                        _checkUpdate(sourceTimeStamp: ((PointerEvent)@event).timeStamp, delta: _getDeltaForDetails(resolvedDelta), primaryDelta: _getPrimaryValueFromOffset(resolvedDelta), globalPosition: positionAlternate, localPosition: DartRuntimePrimitives.RequireValue(localPositionLocal), pointer: ((PointerEvent)@event).pointer);
                         break;
                     }
             }
-            _recordMoveDeltaForMultitouch(((PointerEvent)@event).pointer, localDelta__25327);
+            _recordMoveDeltaForMultitouch(((PointerEvent)@event).pointer, localDeltaLocal);
         }
         if (@event is PointerUpEvent or PointerCancelEvent or PointerPanZoomEndEvent)
         {
@@ -518,8 +518,8 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
     {
         if ((this.onDown is not null))
         {
-            var details__29640 = new DragDownDetails(globalPosition: ((OffsetPair)this._initialPosition).global, localPosition: ((OffsetPair)this._initialPosition).local);
-            invokeCallback<object?>("onDown", () => { ((Action)((() => this.onDown!(details__29640))))(); return null; });
+            var details = new DragDownDetails(globalPosition: ((OffsetPair)this._initialPosition).global, localPosition: ((OffsetPair)this._initialPosition).local);
+            invokeCallback<object?>("onDown", () => { ((Action)((() => this.onDown!(details))))(); return null; });
         }
     }
 
@@ -530,36 +530,36 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
             return;
         }
         _state = _DragState__monodrag.accepted;
-        OffsetPair delta__29994 = this._pendingDragOffset;
-        Duration? timestamp__30042 = this._lastPendingEventTimestamp;
-        Matrix4? transform__30101 = this._lastTransform;
-        global::Doroti.Ui.Offset localUpdateDelta__30146 = default!;
+        OffsetPair deltaLocal = this._pendingDragOffset;
+        Duration? timestamp = this._lastPendingEventTimestamp;
+        Matrix4? transformLocal = this._lastTransform;
+        global::Doroti.Ui.Offset localUpdateDelta = default!;
         switch (this.dragStartBehavior)
         {
             case DragStartBehavior.start:
                 {
-                    _initialPosition = (this._initialPosition.op_Add(delta__29994));
-                    localUpdateDelta__30146 = Offset.zero;
+                    _initialPosition = (this._initialPosition.op_Add(deltaLocal));
+                    localUpdateDelta = Offset.zero;
                     break;
                 }
             case DragStartBehavior.down:
                 {
-                    localUpdateDelta__30146 = _getDeltaForDetails(((OffsetPair)delta__29994).local);
+                    localUpdateDelta = _getDeltaForDetails(((OffsetPair)deltaLocal).local);
                     break;
                 }
         }
         _pendingDragOffset = OffsetPair.zero;
         _lastPendingEventTimestamp = null;
         _lastTransform = null;
-        _checkStart(timestamp__30042, pointer);
-        if (((!object.Equals(localUpdateDelta__30146, Offset.zero)) && (this.onUpdate is not null)))
+        _checkStart(timestamp, pointer);
+        if (((!object.Equals(localUpdateDelta, Offset.zero)) && (this.onUpdate is not null)))
         {
-            Matrix4? localToGlobal__30657 = ((transform__30101 is not null) ? Matrix4.tryInvert(transform__30101) : null);
-            global::Doroti.Ui.Offset correctedLocalPosition__30749 = (((OffsetPair)this._initialPosition).local + localUpdateDelta__30146);
-            global::Doroti.Ui.Offset globalUpdateDelta__30836 = PointerEvent.transformDeltaViaPositions(untransformedEndPosition: correctedLocalPosition__30749, untransformedDelta: localUpdateDelta__30146, transform: localToGlobal__30657);
-            var updateDelta__31056 = new OffsetPair(local: localUpdateDelta__30146, global: globalUpdateDelta__30836);
-            OffsetPair correctedPosition__31157 = (this._initialPosition.op_Add(updateDelta__31056));
-            _checkUpdate(sourceTimeStamp: timestamp__30042, delta: localUpdateDelta__30146, primaryDelta: _getPrimaryValueFromOffset(localUpdateDelta__30146), globalPosition: ((OffsetPair)correctedPosition__31157).global, localPosition: ((OffsetPair)correctedPosition__31157).local, pointer: pointer);
+            Matrix4? localToGlobal = ((transformLocal is not null) ? Matrix4.tryInvert(transformLocal) : null);
+            global::Doroti.Ui.Offset correctedLocalPosition = (((OffsetPair)this._initialPosition).local + localUpdateDelta);
+            global::Doroti.Ui.Offset globalUpdateDelta = PointerEvent.transformDeltaViaPositions(untransformedEndPosition: correctedLocalPosition, untransformedDelta: localUpdateDelta, transform: localToGlobal);
+            var updateDelta = new OffsetPair(local: localUpdateDelta, global: globalUpdateDelta);
+            OffsetPair correctedPosition = (this._initialPosition.op_Add(updateDelta));
+            _checkUpdate(sourceTimeStamp: timestamp, delta: localUpdateDelta, primaryDelta: _getPrimaryValueFromOffset(localUpdateDelta), globalPosition: ((OffsetPair)correctedPosition).global, localPosition: ((OffsetPair)correctedPosition).local, pointer: pointer);
         }
         resolve(GestureDisposition.accepted);
     }
@@ -568,8 +568,8 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
     {
         if ((this.onStart is not null))
         {
-            var details__31929 = new DragStartDetails(sourceTimeStamp: timestamp, globalPosition: ((OffsetPair)this._initialPosition).global, localPosition: ((OffsetPair)this._initialPosition).local, kind: getKindForPointer(pointer));
-            invokeCallback<object?>("onStart", () => { ((Action)((() => this.onStart!(details__31929))))(); return null; });
+            var details = new DragStartDetails(sourceTimeStamp: timestamp, globalPosition: ((OffsetPair)this._initialPosition).global, localPosition: ((OffsetPair)this._initialPosition).local, kind: getKindForPointer(pointer));
+            invokeCallback<object?>("onStart", () => { ((Action)((() => this.onStart!(details))))(); return null; });
         }
     }
 
@@ -577,8 +577,8 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
     {
         if ((this.onUpdate is not null))
         {
-            var details__32457 = new DragUpdateDetails(sourceTimeStamp: sourceTimeStamp, delta: delta, primaryDelta: primaryDelta, globalPosition: globalPosition, localPosition: localPosition, kind: getKindForPointer(pointer));
-            invokeCallback<object?>("onUpdate", () => { ((Action)((() => this.onUpdate!(details__32457))))(); return null; });
+            var details = new DragUpdateDetails(sourceTimeStamp: sourceTimeStamp, delta: delta, primaryDelta: primaryDelta, globalPosition: globalPosition, localPosition: localPosition, kind: getKindForPointer(pointer));
+            invokeCallback<object?>("onUpdate", () => { ((Action)((() => this.onUpdate!(details))))(); return null; });
         }
     }
 
@@ -588,21 +588,21 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         {
             return;
         }
-        VelocityTracker tracker__32896 = this._velocityTrackers.GetValueOrDefault(pointer)!;
-        VelocityEstimate? estimate__32963 = tracker__32896.getVelocityEstimate();
-        DragEndDetails? details__33026 = default!;
-        Func<string> debugReport__33063 = default!;
-        if ((estimate__32963 is null))
+        VelocityTracker tracker = this._velocityTrackers.GetValueOrDefault(pointer)!;
+        VelocityEstimate? estimate = tracker.getVelocityEstimate();
+        DragEndDetails? details = default!;
+        Func<string> debugReport = default!;
+        if ((estimate is null))
         {
-            debugReport__33063 = (() => "Could not estimate velocity.");
+            debugReport = (() => "Could not estimate velocity.");
         }
         else
         {
-            details__33026 = considerFling(estimate__32963, ((VelocityTracker)tracker__32896).kind);
-            debugReport__33063 = (((details__33026 is not null)) ? (() => $"{estimate__32963}; fling at {details__33026!.velocity}.") : (() => $"{estimate__32963}; judged to not be a fling."));
+            details = considerFling(estimate, ((VelocityTracker)tracker).kind);
+            debugReport = (((details is not null)) ? (() => $"{estimate}; fling at {details!.velocity}.") : (() => $"{estimate}; judged to not be a fling."));
         }
-        details__33026 ??= new DragEndDetails(primaryVelocity: 0.0, globalPosition: ((OffsetPair)this._lastPosition).global, localPosition: ((OffsetPair)this._lastPosition).local);
-        invokeCallback<object?>("onEnd", () => { ((Action)((() => this.onEnd!(details__33026!))))(); return null; }, debugReport__33063);
+        details ??= new DragEndDetails(primaryVelocity: 0.0, globalPosition: ((OffsetPair)this._lastPosition).global, localPosition: ((OffsetPair)this._lastPosition).local);
+        invokeCallback<object?>("onEnd", () => { ((Action)((() => this.onEnd!(details!))))(); return null; }, debugReport);
     }
 
     internal virtual void _checkCancel()
@@ -635,9 +635,9 @@ public class VerticalDragGestureRecognizer : DragGestureRecognizer
 
     public override bool isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind)
     {
-        double minVelocity__34838 = (minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
-        double minDistance__34908 = (minFlingDistance ?? global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
-        return ((((VelocityEstimate)estimate).pixelsPerSecond.dy.abs() > minVelocity__34838) && (((VelocityEstimate)estimate).offset.dy.abs() > minDistance__34908));
+        double minVelocity = (minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
+        double minDistance = (minFlingDistance ?? global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
+        return ((((VelocityEstimate)estimate).pixelsPerSecond.dy.abs() > minVelocity) && (((VelocityEstimate)estimate).offset.dy.abs() > minDistance));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -647,9 +647,9 @@ public class VerticalDragGestureRecognizer : DragGestureRecognizer
         {
             return null;
         }
-        double maxVelocity__35278 = (maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity);
-        double dy__35348 = Dart_uiLibrary.clampDouble(((VelocityEstimate)estimate).pixelsPerSecond.dy, -maxVelocity__35278, maxVelocity__35278);
-        return new DragEndDetails(velocity: new Velocity(pixelsPerSecond: new global::Doroti.Ui.Offset(0, dy__35348)), primaryVelocity: dy__35348, globalPosition: ((OffsetPair)lastPosition).global, localPosition: ((OffsetPair)lastPosition).local);
+        double maxVelocity = (maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity);
+        double dyLocal = Dart_uiLibrary.clampDouble(((VelocityEstimate)estimate).pixelsPerSecond.dy, -maxVelocity, maxVelocity);
+        return new DragEndDetails(velocity: new Velocity(pixelsPerSecond: new global::Doroti.Ui.Offset(0, dyLocal)), primaryVelocity: dyLocal, globalPosition: ((OffsetPair)lastPosition).global, localPosition: ((OffsetPair)lastPosition).local);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -673,9 +673,9 @@ public class HorizontalDragGestureRecognizer : DragGestureRecognizer
 
     public override bool isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind)
     {
-        double minVelocity__36945 = (minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
-        double minDistance__37015 = (minFlingDistance ?? global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
-        return ((((VelocityEstimate)estimate).pixelsPerSecond.dx.abs() > minVelocity__36945) && (((VelocityEstimate)estimate).offset.dx.abs() > minDistance__37015));
+        double minVelocity = (minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
+        double minDistance = (minFlingDistance ?? global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
+        return ((((VelocityEstimate)estimate).pixelsPerSecond.dx.abs() > minVelocity) && (((VelocityEstimate)estimate).offset.dx.abs() > minDistance));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -685,9 +685,9 @@ public class HorizontalDragGestureRecognizer : DragGestureRecognizer
         {
             return null;
         }
-        double maxVelocity__37385 = (maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity);
-        double dx__37455 = Dart_uiLibrary.clampDouble(((VelocityEstimate)estimate).pixelsPerSecond.dx, -maxVelocity__37385, maxVelocity__37385);
-        return new DragEndDetails(velocity: new Velocity(pixelsPerSecond: new global::Doroti.Ui.Offset(dx__37455, 0)), primaryVelocity: dx__37455, globalPosition: ((OffsetPair)_lastPosition).global, localPosition: ((OffsetPair)_lastPosition).local);
+        double maxVelocity = (maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity);
+        double dxLocal = Dart_uiLibrary.clampDouble(((VelocityEstimate)estimate).pixelsPerSecond.dx, -maxVelocity, maxVelocity);
+        return new DragEndDetails(velocity: new Velocity(pixelsPerSecond: new global::Doroti.Ui.Offset(dxLocal, 0)), primaryVelocity: dxLocal, globalPosition: ((OffsetPair)_lastPosition).global, localPosition: ((OffsetPair)_lastPosition).local);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -711,9 +711,9 @@ public class PanGestureRecognizer : DragGestureRecognizer
 
     public override bool isFlingGesture(VelocityEstimate estimate, PointerDeviceKind kind)
     {
-        double minVelocity__38983 = (minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
-        double minDistance__39053 = (minFlingDistance ?? global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
-        return ((((VelocityEstimate)estimate).pixelsPerSecond.distanceSquared > (minVelocity__38983 * minVelocity__38983)) && (((VelocityEstimate)estimate).offset.distanceSquared > (minDistance__39053 * minDistance__39053)));
+        double minVelocity = (minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity);
+        double minDistance = (minFlingDistance ?? global::Doroti.Framework.Gestures.EventsLibrary.computeHitSlop(kind, gestureSettings));
+        return ((((VelocityEstimate)estimate).pixelsPerSecond.distanceSquared > (minVelocity * minVelocity)) && (((VelocityEstimate)estimate).offset.distanceSquared > (minDistance * minDistance)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -723,8 +723,8 @@ public class PanGestureRecognizer : DragGestureRecognizer
         {
             return null;
         }
-        Velocity velocity__39467 = new Velocity(pixelsPerSecond: ((VelocityEstimate)estimate).pixelsPerSecond).clampMagnitude((minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity), (maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity));
-        return new DragEndDetails(velocity: velocity__39467, globalPosition: ((OffsetPair)lastPosition).global, localPosition: ((OffsetPair)lastPosition).local);
+        Velocity velocityLocal = new Velocity(pixelsPerSecond: ((VelocityEstimate)estimate).pixelsPerSecond).clampMagnitude((minFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMinFlingVelocity), (maxFlingVelocity ?? global::Doroti.Framework.Gestures.ConstantsLibrary.kMaxFlingVelocity));
+        return new DragEndDetails(velocity: velocityLocal, globalPosition: ((OffsetPair)lastPosition).global, localPosition: ((OffsetPair)lastPosition).local);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -80,17 +80,17 @@ public class NavigationBar : global::Doroti.Framework.Widgets.StatelessWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        NavigationBarThemeData defaults__11273 = Navigation_barLibrary._defaultsFor(context);
-        NavigationBarThemeData navigationBarTheme__11341 = NavigationBarTheme.of(context);
-        double effectiveHeight__11411 = ((this.height ?? navigationBarTheme__11341.height) ?? DartRuntimePrimitives.RequireValue(defaults__11273.height));
-        NavigationDestinationLabelBehavior effectiveLabelBehavior__11531 = ((this.labelBehavior ?? navigationBarTheme__11341.labelBehavior) ?? DartRuntimePrimitives.RequireValue(defaults__11273.labelBehavior));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(color: ((this.backgroundColor ?? navigationBarTheme__11341.backgroundColor) ?? defaults__11273.backgroundColor!), elevation: ((this.elevation ?? navigationBarTheme__11341.elevation) ?? DartRuntimePrimitives.RequireValue(defaults__11273.elevation)), shadowColor: ((this.shadowColor ?? navigationBarTheme__11341.shadowColor) ?? defaults__11273.shadowColor), surfaceTintColor: ((this.surfaceTintColor ?? navigationBarTheme__11341.surfaceTintColor) ?? defaults__11273.surfaceTintColor), child: new global::Doroti.Framework.Widgets.SafeArea(maintainBottomViewPadding: this.maintainBottomViewPadding, child: new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.tabBar, explicitChildNodes: true, container: true, child: new global::Doroti.Framework.Widgets.SizedBox(height: effectiveHeight__11411, child: new global::Doroti.Framework.Widgets.Row(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
+        NavigationBarThemeData defaults = Navigation_barLibrary._defaultsFor(context);
+        NavigationBarThemeData navigationBarTheme = NavigationBarTheme.of(context);
+        double effectiveHeight = ((this.height ?? navigationBarTheme.height) ?? DartRuntimePrimitives.RequireValue(defaults.height));
+        NavigationDestinationLabelBehavior effectiveLabelBehavior = ((this.labelBehavior ?? navigationBarTheme.labelBehavior) ?? DartRuntimePrimitives.RequireValue(defaults.labelBehavior));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(color: ((this.backgroundColor ?? navigationBarTheme.backgroundColor) ?? defaults.backgroundColor!), elevation: ((this.elevation ?? navigationBarTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation)), shadowColor: ((this.shadowColor ?? navigationBarTheme.shadowColor) ?? defaults.shadowColor), surfaceTintColor: ((this.surfaceTintColor ?? navigationBarTheme.surfaceTintColor) ?? defaults.surfaceTintColor), child: new global::Doroti.Framework.Widgets.SafeArea(maintainBottomViewPadding: this.maintainBottomViewPadding, child: new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.tabBar, explicitChildNodes: true, container: true, child: new global::Doroti.Framework.Widgets.SizedBox(height: effectiveHeight, child: new global::Doroti.Framework.Widgets.Row(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
         {
-            var __collection12378 = new List<global::Doroti.Framework.Widgets.Widget>(); for (long i__12413 = 0L; (i__12413 < checked((long)(this.destinations.Count))); i__12413++)
+            var __collection12378 = new List<global::Doroti.Framework.Widgets.Widget>(); for (long i = 0L; (i < checked((long)(this.destinations.Count))); i++)
             {
-                var destinationIndex__g65 = i__12413; __collection12378.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.MergeSemantics(child: new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.tab, selected: (destinationIndex__g65 == this.selectedIndex), child: new _SelectableAnimatedBuilder__navigation_bar(duration: (this.animationDuration ?? Duration.Create(milliseconds: 500L)), isSelected: (destinationIndex__g65 == this.selectedIndex), builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)((context, animation) =>
+                var destinationIndex__g65 = i; __collection12378.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.MergeSemantics(child: new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.tab, selected: (destinationIndex__g65 == this.selectedIndex), child: new _SelectableAnimatedBuilder__navigation_bar(duration: (this.animationDuration ?? Duration.Create(milliseconds: 500L)), isSelected: (destinationIndex__g65 == this.selectedIndex), builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)((context, animation) =>
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new _NavigationDestinationInfo__navigation_bar(index: destinationIndex__g65, selectedIndex: this.selectedIndex, totalNumberOfDestinations: checked((long)(this.destinations.Count)), selectedAnimation: animation, labelBehavior: effectiveLabelBehavior__11531, indicatorColor: this.indicatorColor, indicatorShape: this.indicatorShape, overlayColor: this.overlayColor, onTap: _handleTap(destinationIndex__g65), labelTextStyle: this.labelTextStyle, labelPadding: this.labelPadding, child: this.destinations[(int)(destinationIndex__g65)]));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new _NavigationDestinationInfo__navigation_bar(index: destinationIndex__g65, selectedIndex: this.selectedIndex, totalNumberOfDestinations: checked((long)(this.destinations.Count)), selectedAnimation: animation, labelBehavior: effectiveLabelBehavior, indicatorColor: this.indicatorColor, indicatorShape: this.indicatorShape, overlayColor: this.overlayColor, onTap: _handleTap(destinationIndex__g65), labelTextStyle: this.labelTextStyle, labelPadding: this.labelPadding, child: this.destinations[(int)(destinationIndex__g65)]));
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 }))))))));
             }
@@ -127,33 +127,33 @@ public class NavigationDestination : global::Doroti.Framework.Widgets.StatelessW
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _NavigationDestinationInfo__navigation_bar info__17198 = ((_NavigationDestinationInfo__navigation_bar)(object?)_NavigationDestinationInfo__navigation_bar.of(context));
-        var selectedState__17255 = new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.selected };
-        var unselectedState__17318 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>();
-        var disabledState__17363 = new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.disabled };
-        NavigationBarThemeData navigationBarTheme__17450 = NavigationBarTheme.of(context);
-        NavigationBarThemeData defaults__17536 = Navigation_barLibrary._defaultsFor(context);
-        global::Doroti.Framework.Animation.Animation<double> animation__17598 = ((_NavigationDestinationInfo__navigation_bar)info__17198).selectedAnimation;
+        _NavigationDestinationInfo__navigation_bar info = ((_NavigationDestinationInfo__navigation_bar)(object?)_NavigationDestinationInfo__navigation_bar.of(context));
+        var selectedState = new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.selected };
+        var unselectedState = new HashSet<global::Doroti.Framework.Widgets.WidgetState>();
+        var disabledState = new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.disabled };
+        NavigationBarThemeData navigationBarTheme = NavigationBarTheme.of(context);
+        NavigationBarThemeData defaults = Navigation_barLibrary._defaultsFor(context);
+        global::Doroti.Framework.Animation.Animation<double> animationLocal = ((_NavigationDestinationInfo__navigation_bar)info).selectedAnimation;
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new _NavigationDestinationBuilder__navigation_bar(label: this.label, tooltip: this.tooltip, enabled: this.enabled, buildIcon: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
         {
-            global::Doroti.Framework.Widgets.IconThemeData selectedIconTheme__17815 = (navigationBarTheme__17450.iconTheme?.resolve(selectedState__17255) ?? defaults__17536.iconTheme!.resolve(selectedState__17255)!);
-            global::Doroti.Framework.Widgets.IconThemeData unselectedIconTheme__17988 = (navigationBarTheme__17450.iconTheme?.resolve(unselectedState__17318) ?? defaults__17536.iconTheme!.resolve(unselectedState__17318)!);
-            global::Doroti.Framework.Widgets.IconThemeData disabledIconTheme__18167 = (navigationBarTheme__17450.iconTheme?.resolve(disabledState__17363) ?? defaults__17536.iconTheme!.resolve(disabledState__17363)!);
-            global::Doroti.Framework.Widgets.Widget selectedIconWidget__18334 = ((global::Doroti.Framework.Widgets.Widget)(object?)IconTheme.merge(data: (this.enabled ? selectedIconTheme__17815 : disabledIconTheme__18167), child: (this.selectedIcon ?? this.icon)));
-            global::Doroti.Framework.Widgets.Widget unselectedIconWidget__18508 = ((global::Doroti.Framework.Widgets.Widget)(object?)IconTheme.merge(data: (this.enabled ? unselectedIconTheme__17988 : disabledIconTheme__18167), child: this.icon));
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(alignment: global::Doroti.Framework.Painting.Alignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new NavigationIndicator(animation: animation__17598, color: ((((_NavigationDestinationInfo__navigation_bar)info__17198).indicatorColor ?? navigationBarTheme__17450.indicatorColor) ?? defaults__17536.indicatorColor!), shape: ((((_NavigationDestinationInfo__navigation_bar)info__17198).indicatorShape ?? navigationBarTheme__17450.indicatorShape) ?? defaults__17536.indicatorShape!))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _StatusTransitionWidgetBuilder__navigation_bar(animation: animation__17598, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
-return (((global::Doroti.Framework.Animation.Animation<double>)animation__17598).isForwardOrCompleted ? selectedIconWidget__18334 : unselectedIconWidget__18508);
+            global::Doroti.Framework.Widgets.IconThemeData selectedIconTheme = (navigationBarTheme.iconTheme?.resolve(selectedState) ?? defaults.iconTheme!.resolve(selectedState)!);
+            global::Doroti.Framework.Widgets.IconThemeData unselectedIconTheme = (navigationBarTheme.iconTheme?.resolve(unselectedState) ?? defaults.iconTheme!.resolve(unselectedState)!);
+            global::Doroti.Framework.Widgets.IconThemeData disabledIconTheme = (navigationBarTheme.iconTheme?.resolve(disabledState) ?? defaults.iconTheme!.resolve(disabledState)!);
+            global::Doroti.Framework.Widgets.Widget selectedIconWidget = ((global::Doroti.Framework.Widgets.Widget)(object?)IconTheme.merge(data: (this.enabled ? selectedIconTheme : disabledIconTheme), child: (this.selectedIcon ?? this.icon)));
+            global::Doroti.Framework.Widgets.Widget unselectedIconWidget = ((global::Doroti.Framework.Widgets.Widget)(object?)IconTheme.merge(data: (this.enabled ? unselectedIconTheme : disabledIconTheme), child: this.icon));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(alignment: global::Doroti.Framework.Painting.Alignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new NavigationIndicator(animation: animationLocal, color: ((((_NavigationDestinationInfo__navigation_bar)info).indicatorColor ?? navigationBarTheme.indicatorColor) ?? defaults.indicatorColor!), shape: ((((_NavigationDestinationInfo__navigation_bar)info).indicatorShape ?? navigationBarTheme.indicatorShape) ?? defaults.indicatorShape!))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _StatusTransitionWidgetBuilder__navigation_bar(animation: animationLocal, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) => {
+return (((global::Doroti.Framework.Animation.Animation<double>)animationLocal).isForwardOrCompleted ? selectedIconWidget : unselectedIconWidget);
 throw new InvalidOperationException("Dart closure completed without a value.");
 })))) }));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), buildLabel: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
         {
-            global::Doroti.Framework.Painting.TextStyle? effectiveSelectedLabelTextStyle__19522 = ((((((_NavigationDestinationInfo__navigation_bar)info__17198).labelTextStyle?.resolve(selectedState__17255) ?? (global::Doroti.Framework.Painting.TextStyle)navigationBarTheme__17450.labelTextStyle?.resolve(selectedState__17255))) ?? (global::Doroti.Framework.Painting.TextStyle)defaults__17536.labelTextStyle!.resolve(selectedState__17255)));
-            global::Doroti.Framework.Painting.TextStyle? effectiveUnselectedLabelTextStyle__19774 = ((((((_NavigationDestinationInfo__navigation_bar)info__17198).labelTextStyle?.resolve(unselectedState__17318) ?? (global::Doroti.Framework.Painting.TextStyle)navigationBarTheme__17450.labelTextStyle?.resolve(unselectedState__17318))) ?? (global::Doroti.Framework.Painting.TextStyle)defaults__17536.labelTextStyle!.resolve(unselectedState__17318)));
-            global::Doroti.Framework.Painting.TextStyle? effectiveDisabledLabelTextStyle__20034 = ((((((_NavigationDestinationInfo__navigation_bar)info__17198).labelTextStyle?.resolve(disabledState__17363) ?? (global::Doroti.Framework.Painting.TextStyle)navigationBarTheme__17450.labelTextStyle?.resolve(disabledState__17363))) ?? (global::Doroti.Framework.Painting.TextStyle)defaults__17536.labelTextStyle!.resolve(disabledState__17363)));
-            global::Doroti.Framework.Painting.EdgeInsetsGeometry labelPadding__20294 = ((((_NavigationDestinationInfo__navigation_bar)info__17198).labelPadding ?? navigationBarTheme__17450.labelPadding) ?? defaults__17536.labelPadding!);
-            var textStyle__20416 = (this.enabled ? (((global::Doroti.Framework.Animation.Animation<double>)animation__17598).isForwardOrCompleted ? effectiveSelectedLabelTextStyle__19522 : effectiveUnselectedLabelTextStyle__19774) : effectiveDisabledLabelTextStyle__20034);
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: labelPadding__20294, child: MediaQuery.withClampedTextScaling(maxScaleFactor: Navigation_barLibrary._kMaxLabelTextScaleFactor, child: new global::Doroti.Framework.Widgets.Text(this.label, style: textStyle__20416))));
+            global::Doroti.Framework.Painting.TextStyle? effectiveSelectedLabelTextStyle = ((((((_NavigationDestinationInfo__navigation_bar)info).labelTextStyle?.resolve(selectedState) ?? (global::Doroti.Framework.Painting.TextStyle)navigationBarTheme.labelTextStyle?.resolve(selectedState))) ?? (global::Doroti.Framework.Painting.TextStyle)defaults.labelTextStyle!.resolve(selectedState)));
+            global::Doroti.Framework.Painting.TextStyle? effectiveUnselectedLabelTextStyle = ((((((_NavigationDestinationInfo__navigation_bar)info).labelTextStyle?.resolve(unselectedState) ?? (global::Doroti.Framework.Painting.TextStyle)navigationBarTheme.labelTextStyle?.resolve(unselectedState))) ?? (global::Doroti.Framework.Painting.TextStyle)defaults.labelTextStyle!.resolve(unselectedState)));
+            global::Doroti.Framework.Painting.TextStyle? effectiveDisabledLabelTextStyle = ((((((_NavigationDestinationInfo__navigation_bar)info).labelTextStyle?.resolve(disabledState) ?? (global::Doroti.Framework.Painting.TextStyle)navigationBarTheme.labelTextStyle?.resolve(disabledState))) ?? (global::Doroti.Framework.Painting.TextStyle)defaults.labelTextStyle!.resolve(disabledState)));
+            global::Doroti.Framework.Painting.EdgeInsetsGeometry labelPaddingLocal = ((((_NavigationDestinationInfo__navigation_bar)info).labelPadding ?? navigationBarTheme.labelPadding) ?? defaults.labelPadding!);
+            var textStyle = (this.enabled ? (((global::Doroti.Framework.Animation.Animation<double>)animationLocal).isForwardOrCompleted ? effectiveSelectedLabelTextStyle : effectiveUnselectedLabelTextStyle) : effectiveDisabledLabelTextStyle);
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: labelPaddingLocal, child: MediaQuery.withClampedTextScaling(maxScaleFactor: Navigation_barLibrary._kMaxLabelTextScaleFactor, child: new global::Doroti.Framework.Widgets.Text(this.label, style: textStyle))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -187,10 +187,10 @@ internal class _NavigationDestinationBuilderState__navigation_bar : global::Doro
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _NavigationDestinationInfo__navigation_bar info__24094 = ((_NavigationDestinationInfo__navigation_bar)(object?)_NavigationDestinationInfo__navigation_bar.of(context));
-        NavigationBarThemeData navigationBarTheme__24174 = NavigationBarTheme.of(context);
-        NavigationBarThemeData defaults__24260 = Navigation_barLibrary._defaultsFor(context);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _NavigationBarDestinationSemantics__navigation_bar(enabled: ((_NavigationDestinationBuilder__navigation_bar)this.widget).enabled, child: new _NavigationBarDestinationTooltip__navigation_bar(message: (((_NavigationDestinationBuilder__navigation_bar)this.widget).tooltip ?? ((_NavigationDestinationBuilder__navigation_bar)this.widget).label), child: new _IndicatorInkWell__navigation_bar(iconKey: this.iconKey, labelBehavior: ((_NavigationDestinationInfo__navigation_bar)info__24094).labelBehavior, customBorder: ((((_NavigationDestinationInfo__navigation_bar)info__24094).indicatorShape ?? navigationBarTheme__24174.indicatorShape) ?? defaults__24260.indicatorShape), overlayColor: (((_NavigationDestinationInfo__navigation_bar)info__24094).overlayColor ?? navigationBarTheme__24174.overlayColor), onTap: ((global::System.Action)(((_NavigationDestinationBuilder__navigation_bar)this.widget).enabled ? ((_NavigationDestinationInfo__navigation_bar)info__24094).onTap : null)), child: new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new _NavigationBarDestinationLayout__navigation_bar(icon: this.widget.buildIcon(context), iconKey: this.iconKey, label: this.widget.buildLabel(context)))) })))));
+        _NavigationDestinationInfo__navigation_bar info = ((_NavigationDestinationInfo__navigation_bar)(object?)_NavigationDestinationInfo__navigation_bar.of(context));
+        NavigationBarThemeData navigationBarTheme = NavigationBarTheme.of(context);
+        NavigationBarThemeData defaults = Navigation_barLibrary._defaultsFor(context);
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _NavigationBarDestinationSemantics__navigation_bar(enabled: ((_NavigationDestinationBuilder__navigation_bar)this.widget).enabled, child: new _NavigationBarDestinationTooltip__navigation_bar(message: (((_NavigationDestinationBuilder__navigation_bar)this.widget).tooltip ?? ((_NavigationDestinationBuilder__navigation_bar)this.widget).label), child: new _IndicatorInkWell__navigation_bar(iconKey: this.iconKey, labelBehavior: ((_NavigationDestinationInfo__navigation_bar)info).labelBehavior, customBorder: ((((_NavigationDestinationInfo__navigation_bar)info).indicatorShape ?? navigationBarTheme.indicatorShape) ?? defaults.indicatorShape), overlayColor: (((_NavigationDestinationInfo__navigation_bar)info).overlayColor ?? navigationBarTheme.overlayColor), onTap: ((global::System.Action)(((_NavigationDestinationBuilder__navigation_bar)this.widget).enabled ? ((_NavigationDestinationInfo__navigation_bar)info).onTap : null)), child: new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: new _NavigationBarDestinationLayout__navigation_bar(icon: this.widget.buildIcon(context), iconKey: this.iconKey, label: this.widget.buildLabel(context)))) })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -211,9 +211,9 @@ internal class _IndicatorInkWell__navigation_bar : InkResponse
     {
         return ((RectCallback?)(object?)(() =>
         {
-            var iconBox__25677 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.iconKey).currentContext!.findRenderObject()!)!;
-            global::Doroti.Ui.Rect iconRect__25762 = ((global::Doroti.Ui.Rect)(object?)(((Offset)((dynamic)iconBox__25677).localToGlobal(Offset.zero)) & ((global::Doroti.Framework.Rendering.RenderBox)iconBox__25677).size));
-            return (((Offset)((dynamic)referenceBox).globalToLocal(iconRect__25762.topLeft)) & ((global::Doroti.Framework.Rendering.RenderBox)iconBox__25677).size);
+            var iconBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.iconKey).currentContext!.findRenderObject()!)!;
+            global::Doroti.Ui.Rect iconRect = ((global::Doroti.Ui.Rect)(object?)(((Offset)((dynamic)iconBox).localToGlobal(Offset.zero)) & ((global::Doroti.Framework.Rendering.RenderBox)iconBox).size));
+            return (((Offset)((dynamic)referenceBox).globalToLocal(iconRect.topLeft)) & ((global::Doroti.Framework.Rendering.RenderBox)iconBox).size);
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -252,9 +252,9 @@ internal class _NavigationDestinationInfo__navigation_bar : global::Doroti.Frame
 
     public static _NavigationDestinationInfo__navigation_bar of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _NavigationDestinationInfo__navigation_bar? result__29831 = ((_NavigationDestinationInfo__navigation_bar?)(object?)context.dependOnInheritedWidgetOfExactType<_NavigationDestinationInfo__navigation_bar>());
-        DartRuntimePrimitives.Assert(() => (result__29831 is not null), () => (object?)"Navigation destinations need a _NavigationDestinationInfo parent, " + "which is usually provided by NavigationBar.");
-        return result__29831!;
+        _NavigationDestinationInfo__navigation_bar? result = ((_NavigationDestinationInfo__navigation_bar?)(object?)context.dependOnInheritedWidgetOfExactType<_NavigationDestinationInfo__navigation_bar>());
+        DartRuntimePrimitives.Assert(() => (result is not null), () => (object?)"Navigation destinations need a _NavigationDestinationInfo parent, " + "which is usually provided by NavigationBar.");
+        return result!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -293,8 +293,8 @@ public class NavigationIndicator : global::Doroti.Framework.Widgets.StatelessWid
     {
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this.animation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
         {
-            double scale__32638 = (((global::Doroti.Framework.Animation.Animation<double>)this.animation).isDismissed ? 0.0 : new global::Doroti.Framework.Animation.Tween<double>(begin: 0.4, end: 1.0).transform(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.easeInOutCubicEmphasized).transform(((global::Doroti.Framework.Animation.Animation<double>)this.animation).value)));
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Transform(alignment: global::Doroti.Framework.Painting.Alignment.center, transform: Matrix4.diagonal3Values(scale__32638, 1.0, 1.0), child: child));
+            double scale = (((global::Doroti.Framework.Animation.Animation<double>)this.animation).isDismissed ? 0.0 : new global::Doroti.Framework.Animation.Tween<double>(begin: 0.4, end: 1.0).transform(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.easeInOutCubicEmphasized).transform(((global::Doroti.Framework.Animation.Animation<double>)this.animation).value)));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Transform(alignment: global::Doroti.Framework.Painting.Alignment.center, transform: Matrix4.diagonal3Values(scale, 1.0, 1.0), child: child));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), child: new _StatusTransitionWidgetBuilder__navigation_bar(animation: this.animation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
         {
@@ -346,8 +346,8 @@ internal class _DestinationLayoutAnimationBuilder__navigation_bar : global::Doro
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        _NavigationDestinationInfo__navigation_bar info__37105 = ((_NavigationDestinationInfo__navigation_bar)(object?)_NavigationDestinationInfo__navigation_bar.of(context));
-        switch (((_NavigationDestinationInfo__navigation_bar)info__37105).labelBehavior)
+        _NavigationDestinationInfo__navigation_bar info = ((_NavigationDestinationInfo__navigation_bar)(object?)_NavigationDestinationInfo__navigation_bar.of(context));
+        switch (((_NavigationDestinationInfo__navigation_bar)info).labelBehavior)
         {
             case NavigationDestinationLabelBehavior.alwaysShow:
                 {
@@ -359,7 +359,7 @@ internal class _DestinationLayoutAnimationBuilder__navigation_bar : global::Doro
                 }
             case NavigationDestinationLabelBehavior.onlyShowSelected:
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new _CurvedAnimationBuilder__navigation_bar(animation: ((_NavigationDestinationInfo__navigation_bar)info__37105).selectedAnimation, curve: global::Doroti.Framework.Animation.Curves.easeInOutCubicEmphasized, reverseCurve: global::Doroti.Framework.Animation.Curves.easeInOutCubicEmphasized.flipped, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)this.builder));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new _CurvedAnimationBuilder__navigation_bar(animation: ((_NavigationDestinationInfo__navigation_bar)info).selectedAnimation, curve: global::Doroti.Framework.Animation.Curves.easeInOutCubicEmphasized, reverseCurve: global::Doroti.Framework.Animation.Curves.easeInOutCubicEmphasized.flipped, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Animation.Animation<double>, global::Doroti.Framework.Widgets.Widget>)this.builder));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -382,13 +382,13 @@ internal class _NavigationBarDestinationSemantics__navigation_bar : global::Doro
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        MaterialLocalizations localizations__38548 = MaterialLocalizations.of(context);
-        _NavigationDestinationInfo__navigation_bar destinationInfo__38636 = ((_NavigationDestinationInfo__navigation_bar)(object?)_NavigationDestinationInfo__navigation_bar.of(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _StatusTransitionWidgetBuilder__navigation_bar(animation: ((_NavigationDestinationInfo__navigation_bar)destinationInfo__38636).selectedAnimation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        MaterialLocalizations localizations = MaterialLocalizations.of(context);
+        _NavigationDestinationInfo__navigation_bar destinationInfo = ((_NavigationDestinationInfo__navigation_bar)(object?)_NavigationDestinationInfo__navigation_bar.of(context));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new _StatusTransitionWidgetBuilder__navigation_bar(animation: ((_NavigationDestinationInfo__navigation_bar)destinationInfo).selectedAnimation, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(enabled: this.enabled, button: true, child: child));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), child: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? this.child : new global::Doroti.Framework.Widgets.Stack(alignment: global::Doroti.Framework.Painting.Alignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(this.child), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(label: localizations__38548.tabLabel(tabIndex: (((_NavigationDestinationInfo__navigation_bar)destinationInfo__38636).index + 1L), tabCount: ((_NavigationDestinationInfo__navigation_bar)destinationInfo__38636).totalNumberOfDestinations))) }))));
+        })), child: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? this.child : new global::Doroti.Framework.Widgets.Stack(alignment: global::Doroti.Framework.Painting.Alignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(this.child), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(label: localizations.tabLabel(tabIndex: (((_NavigationDestinationInfo__navigation_bar)destinationInfo).index + 1L), tabCount: ((_NavigationDestinationInfo__navigation_bar)destinationInfo).totalNumberOfDestinations))) }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -436,12 +436,12 @@ internal class _NavigationDestinationLayoutDelegate__navigation_bar : global::Do
             return (size.height / 2L);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        global::Doroti.Ui.Size iconSize__41794 = ((global::Doroti.Ui.Size)(object?)layoutChild(iconId, global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(size)));
-        global::Doroti.Ui.Size labelSize__41869 = ((global::Doroti.Ui.Size)(object?)layoutChild(labelId, global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(size)));
-        double yPositionOffset__41949 = new global::Doroti.Framework.Animation.Tween<double>(begin: halfHeight(iconSize__41794), end: (halfHeight(iconSize__41794) + halfHeight(labelSize__41869))).transform(((global::Doroti.Framework.Animation.Animation<double>)this.animation).value);
-        double iconYPosition__42252 = (halfHeight(size) - yPositionOffset__41949);
-        positionChild(iconId, new global::Doroti.Ui.Offset((halfWidth(size) - halfWidth(iconSize__41794)), iconYPosition__42252));
-        positionChild(labelId, new global::Doroti.Ui.Offset((halfWidth(size) - halfWidth(labelSize__41869)), (iconYPosition__42252 + iconSize__41794.height)));
+        global::Doroti.Ui.Size iconSize = ((global::Doroti.Ui.Size)(object?)layoutChild(iconId, global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(size)));
+        global::Doroti.Ui.Size labelSize = ((global::Doroti.Ui.Size)(object?)layoutChild(labelId, global::Doroti.Framework.Rendering.BoxConstraints.CreateLoose(size)));
+        double yPositionOffset = new global::Doroti.Framework.Animation.Tween<double>(begin: halfHeight(iconSize), end: (halfHeight(iconSize) + halfHeight(labelSize))).transform(((global::Doroti.Framework.Animation.Animation<double>)this.animation).value);
+        double iconYPosition = (halfHeight(size) - yPositionOffset);
+        positionChild(iconId, new global::Doroti.Ui.Offset((halfWidth(size) - halfWidth(iconSize)), iconYPosition));
+        positionChild(labelId, new global::Doroti.Ui.Offset((halfWidth(size) - halfWidth(labelSize)), (iconYPosition + iconSize.height)));
     }
 
     public override bool shouldRelayout(global::Doroti.Framework.Rendering.MultiChildLayoutDelegate oldDelegate)
@@ -568,31 +568,31 @@ public class _SelectableAnimatedBuilderState__navigation_bar : global::Doroti.Fr
 
     public virtual void _updateTicker()
     {
-        TickerModeData values__15157 = this._tickerModeNotifier!.value;
+        TickerModeData values = this._tickerModeNotifier!.value;
         if ((this._ticker is not null))
         {
-            this._ticker!.muted = !((TickerModeData)values__15157).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values__15157).forceFrames;
+            this._ticker!.muted = !((TickerModeData)values).enabled;
+            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier__15400.addListener(() => this._updateTicker());
-        this._tickerModeNotifier = newNotifier__15400;
+        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }
@@ -670,9 +670,9 @@ internal class _CurvedAnimationBuilderState__navigation_bar : global::Doroti.Fra
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var shouldUseForwardCurve__50481 = (!object.Equals(((this._preservedDirection ?? this._animationDirection)), global::Doroti.Framework.Animation.AnimationStatus.reverse));
-        global::Doroti.Framework.Animation.Animation<double> curvedAnimation__50615 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.CurveTween(curve: (shouldUseForwardCurve__50481 ? ((_CurvedAnimationBuilder__navigation_bar)this.widget).curve : ((_CurvedAnimationBuilder__navigation_bar)this.widget).reverseCurve)).animate(((_CurvedAnimationBuilder__navigation_bar)this.widget).animation));
-        return this.widget.builder(context, curvedAnimation__50615);
+        var shouldUseForwardCurve = (!object.Equals(((this._preservedDirection ?? this._animationDirection)), global::Doroti.Framework.Animation.AnimationStatus.reverse));
+        global::Doroti.Framework.Animation.Animation<double> curvedAnimation = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.CurveTween(curve: (shouldUseForwardCurve ? ((_CurvedAnimationBuilder__navigation_bar)this.widget).curve : ((_CurvedAnimationBuilder__navigation_bar)this.widget).reverseCurve)).animate(((_CurvedAnimationBuilder__navigation_bar)this.widget).animation));
+        return this.widget.builder(context, curvedAnimation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -772,8 +772,8 @@ internal class _NavigationBarDefaultsM3__navigation_bar : NavigationBarThemeData
         {
             return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>?)(object?)WidgetStateProperty.resolveWith((states) =>
             {
-                global::Doroti.Framework.Painting.TextStyle style__54010 = this._textTheme.labelMedium!;
-                return (style__54010.apply(color: (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) ? this._colors.onSurfaceVariant.withOpacity(0.38) : (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? this._colors.onSurface : this._colors.onSurfaceVariant))));
+                global::Doroti.Framework.Painting.TextStyle style = this._textTheme.labelMedium!;
+                return (style.apply(color: (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) ? this._colors.onSurfaceVariant.withOpacity(0.38) : (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? this._colors.onSurface : this._colors.onSurfaceVariant))));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
             return default!;

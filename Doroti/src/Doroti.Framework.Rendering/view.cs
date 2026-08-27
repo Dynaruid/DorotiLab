@@ -31,9 +31,9 @@ public class ViewConfiguration
 
     public static ViewConfiguration CreateFromView(DorotiView view)
     {
-        var physicalConstraints__1465 = BoxConstraints.CreateFromViewConstraints(view.physicalConstraints);
-        double devicePixelRatio__1566 = view.devicePixelRatio;
-        return new ViewConfiguration(physicalConstraints: physicalConstraints__1465, logicalConstraints: (physicalConstraints__1465.op_Divide(devicePixelRatio__1566)), devicePixelRatio: devicePixelRatio__1566);
+        var physicalConstraintsLocal = BoxConstraints.CreateFromViewConstraints(view.physicalConstraints);
+        double devicePixelRatioLocal = view.devicePixelRatio;
+        return new ViewConfiguration(physicalConstraints: physicalConstraintsLocal, logicalConstraints: (physicalConstraintsLocal.op_Divide(devicePixelRatioLocal)), devicePixelRatio: devicePixelRatioLocal);
     }
 
     public virtual Matrix4 toMatrix()
@@ -99,13 +99,13 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             {
                 return;
             }
-            ViewConfiguration? oldConfiguration__7200 = this._configuration;
+            ViewConfiguration? oldConfiguration = this._configuration;
             _configuration = __value;
             if ((this._rootTransform is null))
             {
                 return;
             }
-            if (((oldConfiguration__7200 is null) || this.configuration.shouldUpdateMatrix(oldConfiguration__7200)))
+            if (((oldConfiguration is null) || this.configuration.shouldUpdateMatrix(oldConfiguration)))
             {
                 replaceRootLayer(_updateMatricesAndCreateNewRootLayer());
             }
@@ -141,10 +141,10 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
     {
         DartRuntimePrimitives.Assert(() => this.hasConfiguration);
         _rootTransform = this.configuration.toMatrix();
-        var rootLayer__11030 = new TransformLayer(transform: this._rootTransform);
-        rootLayer__11030.attach(this);
+        var rootLayer = new TransformLayer(transform: this._rootTransform);
+        rootLayer.attach(this);
         DartRuntimePrimitives.Assert(() => (this._rootTransform is not null));
-        return rootLayer__11030;
+        return rootLayer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -161,9 +161,9 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
     public override void performLayout()
     {
         DartRuntimePrimitives.Assert(() => (this._rootTransform is not null));
-        bool sizedByChild__11541 = !((BoxConstraints)this.constraints).isTight;
-        child?.layout(this.constraints, parentUsesSize: sizedByChild__11541);
-        _size = ((sizedByChild__11541 && (child is not null)) ? child!.size : ((BoxConstraints)this.constraints).smallest);
+        bool sizedByChild = !((BoxConstraints)this.constraints).isTight;
+        child?.layout(this.constraints, parentUsesSize: sizedByChild);
+        _size = ((sizedByChild && (child is not null)) ? child!.size : ((BoxConstraints)this.constraints).smallest);
         DartRuntimePrimitives.Assert(() => this.size.isFinite);
         DartRuntimePrimitives.Assert(() => this.constraints.isSatisfiedBy(this.size));
     }
@@ -185,12 +185,12 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                List<Action<PaintingContext, Offset, RenderView>> localCallbacks__12785 = _debugPaintCallbacks.ToList();
-                foreach (var paintCallback__12850 in localCallbacks__12785)
+                List<Action<PaintingContext, Offset, RenderView>> localCallbacks = _debugPaintCallbacks.ToList();
+                foreach (var paintCallback in localCallbacks)
                 {
-                    if (_debugPaintCallbacks.Contains(paintCallback__12850))
+                    if (_debugPaintCallbacks.Contains(paintCallback))
                     {
-                        paintCallback__12850(context, offset, this);
+                        paintCallback(context, offset, this);
                     }
                 }
                 return true;
@@ -216,15 +216,15 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             DartRuntimePrimitives.Assert(() => this.hasConfiguration);
             DartRuntimePrimitives.Assert(() => (this._rootTransform is not null));
             DartRuntimePrimitives.Assert(() => (layer is not null));
-            global::Doroti.Ui.SceneBuilder builder__14028 = RendererBinding.instance.createSceneBuilder();
-            global::Doroti.Ui.Scene scene__14106 = layer!.buildScene(builder__14028);
+            global::Doroti.Ui.SceneBuilder builder = RendererBinding.instance.createSceneBuilder();
+            global::Doroti.Ui.Scene scene = layer!.buildScene(builder);
             if (this.automaticSystemUiAdjustment)
             {
                 _updateSystemChrome();
             }
             DartRuntimePrimitives.Assert(() => ((ViewConfiguration)this.configuration).logicalConstraints.isSatisfiedBy(this.size));
-            this._view.render(scene__14106, size: this.configuration.toPhysicalSize(this.size));
-            scene__14106.dispose();
+            this._view.render(scene, size: this.configuration.toPhysicalSize(this.size));
+            scene.dispose();
             DartRuntimePrimitives.Assert(() =>
                 {
                     if ((global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintRainbowEnabled || global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintTextRainbowEnabled))
@@ -250,16 +250,16 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
 
     internal virtual void _updateSystemChrome()
     {
-        global::Doroti.Ui.Rect bounds__16131 = this.paintBounds;
-        var top__16195 = new global::Doroti.Ui.Offset(bounds__16131.center.dx, (this._view.padding.top / 2.0));
-        var bottom__16482 = new global::Doroti.Ui.Offset(bounds__16131.center.dx, ((bounds__16131.bottom - 1.0) - (this._view.padding.bottom / 2.0)));
-        SystemUiOverlayStyle? upperOverlayStyle__17026 = layer!.find<SystemUiOverlayStyle>(top__16195);
-        SystemUiOverlayStyle? lowerOverlayStyle__17174 = default!;
+        global::Doroti.Ui.Rect bounds = this.paintBounds;
+        var topLocal = new global::Doroti.Ui.Offset(bounds.center.dx, (this._view.padding.top / 2.0));
+        var bottomLocal = new global::Doroti.Ui.Offset(bounds.center.dx, ((bounds.bottom - 1.0) - (this._view.padding.bottom / 2.0)));
+        SystemUiOverlayStyle? upperOverlayStyle = layer!.find<SystemUiOverlayStyle>(topLocal);
+        SystemUiOverlayStyle? lowerOverlayStyle = default!;
         switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
             case var __constant17241 when object.Equals(__constant17241, TargetPlatform.android):
                 {
-                    lowerOverlayStyle__17174 = layer!.find<SystemUiOverlayStyle>(bottom__16482);
+                    lowerOverlayStyle = layer!.find<SystemUiOverlayStyle>(bottomLocal);
                     break;
                 }
             case var __constant17347 when object.Equals(__constant17347, TargetPlatform.fuchsia):
@@ -271,20 +271,20 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
                     break;
                 }
         }
-        if (((upperOverlayStyle__17026 is null) && (lowerOverlayStyle__17174 is null)))
+        if (((upperOverlayStyle is null) && (lowerOverlayStyle is null)))
         {
             return;
         }
-        if (((upperOverlayStyle__17026 is not null) && (lowerOverlayStyle__17174 is not null)))
+        if (((upperOverlayStyle is not null) && (lowerOverlayStyle is not null)))
         {
-            var overlayStyle__18175 = new SystemUiOverlayStyle(statusBarBrightness: upperOverlayStyle__17026.statusBarBrightness, statusBarIconBrightness: upperOverlayStyle__17026.statusBarIconBrightness, statusBarColor: upperOverlayStyle__17026.statusBarColor, systemStatusBarContrastEnforced: upperOverlayStyle__17026.systemStatusBarContrastEnforced, systemNavigationBarColor: lowerOverlayStyle__17174.systemNavigationBarColor, systemNavigationBarDividerColor: lowerOverlayStyle__17174.systemNavigationBarDividerColor, systemNavigationBarIconBrightness: lowerOverlayStyle__17174.systemNavigationBarIconBrightness, systemNavigationBarContrastEnforced: lowerOverlayStyle__17174.systemNavigationBarContrastEnforced);
-            SystemChrome.setSystemUIOverlayStyle(overlayStyle__18175);
+            var overlayStyle = new SystemUiOverlayStyle(statusBarBrightness: upperOverlayStyle.statusBarBrightness, statusBarIconBrightness: upperOverlayStyle.statusBarIconBrightness, statusBarColor: upperOverlayStyle.statusBarColor, systemStatusBarContrastEnforced: upperOverlayStyle.systemStatusBarContrastEnforced, systemNavigationBarColor: lowerOverlayStyle.systemNavigationBarColor, systemNavigationBarDividerColor: lowerOverlayStyle.systemNavigationBarDividerColor, systemNavigationBarIconBrightness: lowerOverlayStyle.systemNavigationBarIconBrightness, systemNavigationBarContrastEnforced: lowerOverlayStyle.systemNavigationBarContrastEnforced);
+            SystemChrome.setSystemUIOverlayStyle(overlayStyle);
             return;
         }
-        var isAndroid__19296 = (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, TargetPlatform.android));
-        SystemUiOverlayStyle definedOverlayStyle__19388 = ((upperOverlayStyle__17026 ?? lowerOverlayStyle__17174))!;
-        var overlayStyle__19463 = new SystemUiOverlayStyle(statusBarBrightness: definedOverlayStyle__19388.statusBarBrightness, statusBarIconBrightness: definedOverlayStyle__19388.statusBarIconBrightness, statusBarColor: definedOverlayStyle__19388.statusBarColor, systemStatusBarContrastEnforced: definedOverlayStyle__19388.systemStatusBarContrastEnforced, systemNavigationBarColor: (isAndroid__19296 ? definedOverlayStyle__19388.systemNavigationBarColor : null), systemNavigationBarDividerColor: (isAndroid__19296 ? definedOverlayStyle__19388.systemNavigationBarDividerColor : null), systemNavigationBarIconBrightness: (isAndroid__19296 ? definedOverlayStyle__19388.systemNavigationBarIconBrightness : null), systemNavigationBarContrastEnforced: (isAndroid__19296 ? definedOverlayStyle__19388.systemNavigationBarContrastEnforced : null));
-        SystemChrome.setSystemUIOverlayStyle(overlayStyle__19463);
+        var isAndroid = (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, TargetPlatform.android));
+        SystemUiOverlayStyle definedOverlayStyle = ((upperOverlayStyle ?? lowerOverlayStyle))!;
+        var overlayStyleLocal = new SystemUiOverlayStyle(statusBarBrightness: definedOverlayStyle.statusBarBrightness, statusBarIconBrightness: definedOverlayStyle.statusBarIconBrightness, statusBarColor: definedOverlayStyle.statusBarColor, systemStatusBarContrastEnforced: definedOverlayStyle.systemStatusBarContrastEnforced, systemNavigationBarColor: (isAndroid ? definedOverlayStyle.systemNavigationBarColor : null), systemNavigationBarDividerColor: (isAndroid ? definedOverlayStyle.systemNavigationBarDividerColor : null), systemNavigationBarIconBrightness: (isAndroid ? definedOverlayStyle.systemNavigationBarIconBrightness : null), systemNavigationBarContrastEnforced: (isAndroid ? definedOverlayStyle.systemNavigationBarContrastEnforced : null));
+        SystemChrome.setSystemUIOverlayStyle(overlayStyleLocal);
     }
 
     public override Rect paintBounds => (Offset.zero & ((this.size * ((ViewConfiguration)this.configuration).devicePixelRatio)));

@@ -69,10 +69,10 @@ public interface RenderInlineChildrenContainerDefaults
     public void setupParentData(RenderObject child);
     public static global::Doroti.Framework.Painting.PlaceholderDimensions _layoutChild(RenderBox child, BoxConstraints childConstraints, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getBaseline)
     {
-        var parentData__5133 = ((TextParentData?)(object?)child.parentData!)!;
-        global::Doroti.Framework.Painting.PlaceholderSpan? span__5210 = ((TextParentData)parentData__5133).span;
-        DartRuntimePrimitives.Assert(() => (span__5210 is not null));
-        return ((span__5210 is null) ? global::Doroti.Framework.Painting.PlaceholderDimensions.empty : new global::Doroti.Framework.Painting.PlaceholderDimensions(size: layoutChild(child, childConstraints), alignment: ((global::Doroti.Framework.Painting.PlaceholderSpan)span__5210).alignment, baseline: ((global::Doroti.Framework.Painting.PlaceholderSpan)span__5210).baseline, baselineOffset: (((global::Doroti.Framework.Painting.PlaceholderSpan)span__5210).alignment switch { Dart_uiLibrary.PlaceholderAlignment.aboveBaseline or Dart_uiLibrary.PlaceholderAlignment.belowBaseline or Dart_uiLibrary.PlaceholderAlignment.bottom or Dart_uiLibrary.PlaceholderAlignment.middle => null, Dart_uiLibrary.PlaceholderAlignment.top => null, Dart_uiLibrary.PlaceholderAlignment.baseline => getBaseline(child, childConstraints, DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.PlaceholderSpan)span__5210).baseline)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
+        var parentDataLocal = ((TextParentData?)(object?)child.parentData!)!;
+        global::Doroti.Framework.Painting.PlaceholderSpan? spanLocal = ((TextParentData)parentDataLocal).span;
+        DartRuntimePrimitives.Assert(() => (spanLocal is not null));
+        return ((spanLocal is null) ? global::Doroti.Framework.Painting.PlaceholderDimensions.empty : new global::Doroti.Framework.Painting.PlaceholderDimensions(size: layoutChild(child, childConstraints), alignment: ((global::Doroti.Framework.Painting.PlaceholderSpan)spanLocal).alignment, baseline: ((global::Doroti.Framework.Painting.PlaceholderSpan)spanLocal).baseline, baselineOffset: (((global::Doroti.Framework.Painting.PlaceholderSpan)spanLocal).alignment switch { Dart_uiLibrary.PlaceholderAlignment.aboveBaseline or Dart_uiLibrary.PlaceholderAlignment.belowBaseline or Dart_uiLibrary.PlaceholderAlignment.bottom or Dart_uiLibrary.PlaceholderAlignment.middle => null, Dart_uiLibrary.PlaceholderAlignment.top => null, Dart_uiLibrary.PlaceholderAlignment.baseline => getBaseline(child, childConstraints, DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.PlaceholderSpan)spanLocal).baseline)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
     }
     public List<global::Doroti.Framework.Painting.PlaceholderDimensions> layoutInlineChildren(double maxWidth, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline);
     public void positionInlineChildren(List<TextBox> boxes);
@@ -200,15 +200,15 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             {
                 return new List<TextSelection>();
             }
-            var results__16334 = new List<TextSelection>();
-            foreach (_SelectableFragment__paragraph fragment__16398 in this._lastSelectableFragments!)
+            var results = new List<TextSelection>();
+            foreach (_SelectableFragment__paragraph fragment in this._lastSelectableFragments!)
             {
-                if (((((_SelectableFragment__paragraph)fragment__16398)._textSelectionStart is not null) && (((_SelectableFragment__paragraph)fragment__16398)._textSelectionEnd is not null)))
+                if (((((_SelectableFragment__paragraph)fragment)._textSelectionStart is not null) && (((_SelectableFragment__paragraph)fragment)._textSelectionEnd is not null)))
                 {
-                    results__16334.Add(new TextSelection(baseOffset: ((_SelectableFragment__paragraph)fragment__16398)._textSelectionStart!.offset, extentOffset: ((_SelectableFragment__paragraph)fragment__16398)._textSelectionEnd!.offset));
+                    results.Add(new TextSelection(baseOffset: ((_SelectableFragment__paragraph)fragment)._textSelectionStart!.offset, extentOffset: ((_SelectableFragment__paragraph)fragment)._textSelectionEnd!.offset));
                 }
             }
-            return results__16334;
+            return results;
             return default!;
         }
     }
@@ -253,24 +253,24 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     internal virtual List<_SelectableFragment__paragraph> _getSelectableFragments()
     {
-        string plainText__18000 = this.text.toPlainText(includeSemanticsLabels: false);
-        var result__18071 = new List<_SelectableFragment__paragraph>();
-        var start__18113 = 0L;
-        while ((start__18113 < plainText__18000.Length))
+        string plainText = this.text.toPlainText(includeSemanticsLabels: false);
+        var result = new List<_SelectableFragment__paragraph>();
+        var startLocal = 0L;
+        while ((startLocal < plainText.Length))
         {
-            long end__18173 = plainText__18000.IndexOf(_placeholderCharacter, checked((int)(start__18113)));
-            if ((start__18113 != end__18173))
+            long endLocal = plainText.IndexOf(_placeholderCharacter, checked((int)(startLocal)));
+            if ((startLocal != endLocal))
             {
-                if ((end__18173 == -1L))
+                if ((endLocal == -1L))
                 {
-                    end__18173 = plainText__18000.Length;
+                    endLocal = plainText.Length;
                 }
-                result__18071.Add(new _SelectableFragment__paragraph(paragraph: this, range: new global::Doroti.Ui.TextRange(start: start__18113, end: end__18173), fullText: plainText__18000));
-                start__18113 = end__18173;
+                result.Add(new _SelectableFragment__paragraph(paragraph: this, range: new global::Doroti.Ui.TextRange(start: startLocal, end: endLocal), fullText: plainText));
+                startLocal = endLocal;
             }
-            start__18113 += 1L;
+            startLocal += 1L;
         }
-        return result__18071;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -290,9 +290,9 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         {
             return;
         }
-        foreach (_SelectableFragment__paragraph fragment__19152 in this._lastSelectableFragments!)
+        foreach (_SelectableFragment__paragraph fragment in this._lastSelectableFragments!)
         {
-            fragment__19152.dispose();
+            fragment.dispose();
         }
         _lastSelectableFragments = null;
     }
@@ -512,11 +512,11 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public override double computeMinIntrinsicWidth(double height)
     {
-        List<global::Doroti.Framework.Painting.PlaceholderDimensions> placeholderDimensions__26445 = layoutInlineChildren(double.PositiveInfinity, ((Func<RenderBox, BoxConstraints, Size>)((child, constraints) => new global::Doroti.Ui.Size(child.getMinIntrinsicWidth(double.PositiveInfinity), 0.0))), (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline);
+        List<global::Doroti.Framework.Painting.PlaceholderDimensions> placeholderDimensions = layoutInlineChildren(double.PositiveInfinity, ((Func<RenderBox, BoxConstraints, Size>)((child, constraints) => new global::Doroti.Ui.Size(child.getMinIntrinsicWidth(double.PositiveInfinity), 0.0))), (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline);
         return (((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
-    __cascade.setPlaceholderDimensions(placeholderDimensions__26445);
+    __cascade.setPlaceholderDimensions(placeholderDimensions);
     __cascade.layout();
     return __cascade;
 }))()).minIntrinsicWidth;
@@ -525,11 +525,11 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        List<global::Doroti.Framework.Painting.PlaceholderDimensions> placeholderDimensions__26926 = layoutInlineChildren(double.PositiveInfinity, ((Func<RenderBox, BoxConstraints, Size>)((child, constraints) => new global::Doroti.Ui.Size(child.getMaxIntrinsicWidth(double.PositiveInfinity), 0.0))), (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline);
+        List<global::Doroti.Framework.Painting.PlaceholderDimensions> placeholderDimensions = layoutInlineChildren(double.PositiveInfinity, ((Func<RenderBox, BoxConstraints, Size>)((child, constraints) => new global::Doroti.Ui.Size(child.getMaxIntrinsicWidth(double.PositiveInfinity), 0.0))), (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline);
         return (((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
-    __cascade.setPlaceholderDimensions(placeholderDimensions__26926);
+    __cascade.setPlaceholderDimensions(placeholderDimensions);
     __cascade.layout();
     return __cascade;
 }))()).maxIntrinsicWidth;
@@ -564,13 +564,13 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     public override bool hitTestSelf(Offset position) => true;
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
-        global::Doroti.Ui.GlyphInfo? glyph__28489 = this._textPainter.getClosestGlyphForOffset(position);
-        global::Doroti.Framework.Painting.InlineSpan? spanHit__28914 = (((glyph__28489 is not null) && glyph__28489.graphemeClusterLayoutBounds.contains(position)) ? ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text!.getSpanForPosition(new global::Doroti.Ui.TextPosition(offset: glyph__28489.graphemeClusterCodeUnitRange.start)) : null);
-        switch (spanHit__28914)
+        global::Doroti.Ui.GlyphInfo? glyph = this._textPainter.getClosestGlyphForOffset(position);
+        global::Doroti.Framework.Painting.InlineSpan? spanHit = (((glyph is not null) && glyph.graphemeClusterLayoutBounds.contains(position)) ? ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text!.getSpanForPosition(new global::Doroti.Ui.TextPosition(offset: glyph.graphemeClusterCodeUnitRange.start)) : null);
+        switch (spanHit)
         {
-            case HitTestTarget span__29209:
+            case HitTestTarget span:
                 {
-                    result.add(new HitTestEntry<HitTestTarget>(span__29209));
+                    result.add(new HitTestEntry<HitTestTarget>(span));
                     return true;
                 }
             default:
@@ -607,14 +607,14 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
-        global::Doroti.Ui.Size size__30627 = (((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
+        global::Doroti.Ui.Size sizeLocal = (((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = this._textIntrinsics;
     __cascade.setPlaceholderDimensions(layoutInlineChildren(((BoxConstraints)constraints).maxWidth, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.dryLayoutChild, (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getDryBaseline));
     __cascade.layout(minWidth: ((BoxConstraints)constraints).minWidth, maxWidth: _adjustMaxWidth(((BoxConstraints)constraints).maxWidth));
     return __cascade;
 }))()).size;
-        return constraints.constrain(size__30627);
+        return constraints.constrain(sizeLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -644,16 +644,16 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     public override void performLayout()
     {
         this._lastSelectableFragments?.forEach(((element) => element.didChangeParagraphLayout()));
-        BoxConstraints constraints__32594 = this.constraints;
-        _placeholderDimensions = layoutInlineChildren(((BoxConstraints)constraints__32594).maxWidth, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.layoutChild, (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getBaseline);
-        _layoutTextWithConstraints(constraints__32594);
+        BoxConstraints constraintsLocal = this.constraints;
+        _placeholderDimensions = layoutInlineChildren(((BoxConstraints)constraintsLocal).maxWidth, (Func<RenderBox, BoxConstraints, Size>)ChildLayoutHelper.layoutChild, (Func<RenderBox, BoxConstraints, TextBaseline, double?>)ChildLayoutHelper.getBaseline);
+        _layoutTextWithConstraints(constraintsLocal);
         positionInlineChildren(((global::Doroti.Framework.Painting.TextPainter)this._textPainter).inlinePlaceholderBoxes!);
-        global::Doroti.Ui.Size textSize__32913 = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).size;
-        size = constraints__32594.constrain(textSize__32913);
-        bool didOverflowHeight__33003 = ((size.height < textSize__32913.height) || ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).didExceedMaxLines);
-        bool didOverflowWidth__33103 = (size.width < textSize__32913.width);
-        bool hasVisualOverflow__33547 = (didOverflowWidth__33103 || didOverflowHeight__33003);
-        if (hasVisualOverflow__33547)
+        global::Doroti.Ui.Size textSize = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).size;
+        size = constraintsLocal.constrain(textSize);
+        bool didOverflowHeight = ((size.height < textSize.height) || ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).didExceedMaxLines);
+        bool didOverflowWidth = (size.width < textSize.width);
+        bool hasVisualOverflow = (didOverflowWidth || didOverflowHeight);
+        if (hasVisualOverflow)
         {
             switch (this._overflow)
             {
@@ -673,24 +673,24 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 case global::Doroti.Framework.Painting.TextOverflow.fade:
                     {
                         _needsClipping = true;
-                        var fadeSizePainter__33981 = ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
+                        var fadeSizePainter = ((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Painting.TextPainter(text: new global::Doroti.Framework.Painting.TextSpan(style: ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).text!.style, text: "…"), textDirection: this.textDirection, textScaler: this.textScaler, locale: this.locale);
     __cascade.layout();
     return __cascade;
 }))();
-                        if (didOverflowWidth__33103)
+                        if (didOverflowWidth)
                         {
-                            var (fadeStart__34278, fadeEnd__34296) = (this.textDirection switch { TextDirection.rtl => (((double, double))((((global::Doroti.Framework.Painting.TextPainter)fadeSizePainter__33981).width, 0.0))), TextDirection.ltr => (((double, double))(((size.width - ((global::Doroti.Framework.Painting.TextPainter)fadeSizePainter__33981).width), size.width))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-                            _overflowShader = global::Doroti.Ui.Gradient.linear(new global::Doroti.Ui.Offset(fadeStart__34278, 0.0), new global::Doroti.Ui.Offset(fadeEnd__34296, 0.0), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(16777215L) });
+                            var (fadeStart, fadeEnd) = (this.textDirection switch { TextDirection.rtl => (((double, double))((((global::Doroti.Framework.Painting.TextPainter)fadeSizePainter).width, 0.0))), TextDirection.ltr => (((double, double))(((size.width - ((global::Doroti.Framework.Painting.TextPainter)fadeSizePainter).width), size.width))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                            _overflowShader = global::Doroti.Ui.Gradient.linear(new global::Doroti.Ui.Offset(fadeStart, 0.0), new global::Doroti.Ui.Offset(fadeEnd, 0.0), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(16777215L) });
                         }
                         else
                         {
-                            double fadeEnd__34753 = size.height;
-                            double fadeStart__34801 = (fadeEnd__34753 - (((global::Doroti.Framework.Painting.TextPainter)fadeSizePainter__33981).height / 2.0));
-                            _overflowShader = global::Doroti.Ui.Gradient.linear(new global::Doroti.Ui.Offset(0.0, fadeStart__34801), new global::Doroti.Ui.Offset(0.0, fadeEnd__34753), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(16777215L) });
+                            double fadeEndLocal = size.height;
+                            double fadeStartLocal = (fadeEndLocal - (((global::Doroti.Framework.Painting.TextPainter)fadeSizePainter).height / 2.0));
+                            _overflowShader = global::Doroti.Ui.Gradient.linear(new global::Doroti.Ui.Offset(0.0, fadeStartLocal), new global::Doroti.Ui.Offset(0.0, fadeEndLocal), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(4294967295L), new global::Doroti.Ui.Color(16777215L) });
                         }
-                        fadeSizePainter__33981.dispose();
+                        fadeSizePainter.dispose();
                         break;
                     }
             }
@@ -715,13 +715,13 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             {
                 if (global::Doroti.Framework.Rendering.DebugLibrary.debugRepaintTextRainbowEnabled)
                 {
-                    var paint__35729 = ((Func<Paint>)(() =>
+                    var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = global::Doroti.Framework.Rendering.DebugLibrary.debugCurrentRepaintColor.toColor();
     return __cascade;
 }))();
-                    ((PaintingContext)context).canvas.drawRect((offset & size), paint__35729);
+                    ((PaintingContext)context).canvas.drawRect((offset & size), paintLocal);
                 }
                 return true;
             });
@@ -732,9 +732,9 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 ((PaintingContext)context).canvas.save();
                 ((PaintingContext)context).canvas.clipRect((offset & size));
             }
-            foreach (_SelectableFragment__paragraph fragment__36079 in this._lastSelectableFragments!)
+            foreach (_SelectableFragment__paragraph fragment in this._lastSelectableFragments!)
             {
-                fragment__36079.paintSelection(context, offset);
+                fragment.paintSelection(context, offset);
             }
             if (this._needsClipping)
             {
@@ -743,16 +743,16 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         }
         if (this._needsClipping)
         {
-            global::Doroti.Ui.Rect bounds__36298 = (offset & size);
+            global::Doroti.Ui.Rect bounds = (offset & size);
             if ((this._overflowShader is not null))
             {
-                ((PaintingContext)context).canvas.saveLayer(bounds__36298, new global::Doroti.Ui.Paint());
+                ((PaintingContext)context).canvas.saveLayer(bounds, new global::Doroti.Ui.Paint());
             }
             else
             {
                 ((PaintingContext)context).canvas.save();
             }
-            ((PaintingContext)context).canvas.clipRect(bounds__36298);
+            ((PaintingContext)context).canvas.clipRect(bounds);
         }
         DartRuntimePrimitives.Assert(() =>
             {
@@ -766,22 +766,22 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             if ((this._overflowShader is not null))
             {
                 ((PaintingContext)context).canvas.translate(offset.dx, offset.dy);
-                var paint__36994 = ((Func<Paint>)(() =>
+                var paintAlternate = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.blendMode = BlendMode.modulate;
     __cascade.shader = this._overflowShader;
     return __cascade;
 }))();
-                ((PaintingContext)context).canvas.drawRect((Offset.zero & size), paint__36994);
+                ((PaintingContext)context).canvas.drawRect((Offset.zero & size), paintAlternate);
             }
             ((PaintingContext)context).canvas.restore();
         }
         if ((this._lastSelectableFragments is not null))
         {
-            foreach (_SelectableFragment__paragraph fragment__37279 in this._lastSelectableFragments!)
+            foreach (_SelectableFragment__paragraph fragmentLocal in this._lastSelectableFragments!)
             {
-                fragment__37279.paintHandles(context, offset);
+                fragmentLocal.paintHandles(context, offset);
             }
         }
     }
@@ -829,25 +829,25 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     internal virtual global::Doroti.Ui.TextRange _getLineAtOffset(TextPosition position) => this._textPainter.getLineBoundary(position);
     internal virtual global::Doroti.Ui.TextPosition _getTextPositionAbove(TextPosition position)
     {
-        double preferredLineHeight__40319 = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
-        double verticalOffset__40392 = (-0.5 * preferredLineHeight__40319);
-        return _getTextPositionVertical(position, verticalOffset__40392);
+        double preferredLineHeightLocal = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
+        double verticalOffset = (-0.5 * preferredLineHeightLocal);
+        return _getTextPositionVertical(position, verticalOffset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.TextPosition _getTextPositionBelow(TextPosition position)
     {
-        double preferredLineHeight__40658 = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
-        double verticalOffset__40731 = (1.5 * preferredLineHeight__40658);
-        return _getTextPositionVertical(position, verticalOffset__40731);
+        double preferredLineHeightLocal = ((global::Doroti.Framework.Painting.TextPainter)this._textPainter).preferredLineHeight;
+        double verticalOffset = (1.5 * preferredLineHeightLocal);
+        return _getTextPositionVertical(position, verticalOffset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.TextPosition _getTextPositionVertical(TextPosition position, double verticalOffset)
     {
-        global::Doroti.Ui.Offset caretOffset__40948 = this._textPainter.getOffsetForCaret(position, Rect.zero);
-        global::Doroti.Ui.Offset caretOffsetTranslated__41032 = caretOffset__40948.translate(0.0, verticalOffset);
-        return this._textPainter.getPositionForOffset(caretOffsetTranslated__41032);
+        global::Doroti.Ui.Offset caretOffset = this._textPainter.getOffsetForCaret(position, Rect.zero);
+        global::Doroti.Ui.Offset caretOffsetTranslated = caretOffset.translate(0.0, verticalOffset);
+        return this._textPainter.getPositionForOffset(caretOffsetTranslated);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -873,25 +873,25 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     {
         base.describeSemanticsConfiguration(config);
         _semanticsInfo = this.text.getSemanticsInformation();
-        var needsAssembleSemanticsNode__42289 = false;
-        var needsChildConfigurationsDelegate__42333 = false;
-        foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info__42421 in this._semanticsInfo!)
+        var needsAssembleSemanticsNode = false;
+        var needsChildConfigurationsDelegate = false;
+        foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info in this._semanticsInfo!)
         {
-            if (((((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__42421).recognizer is not null) || (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__42421).semanticsIdentifier is not null)))
+            if (((((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).recognizer is not null) || (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).semanticsIdentifier is not null)))
             {
-                needsAssembleSemanticsNode__42289 = true;
+                needsAssembleSemanticsNode = true;
                 break;
             }
-            needsChildConfigurationsDelegate__42333 = (needsChildConfigurationsDelegate__42333 || ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__42421).isPlaceholder);
+            needsChildConfigurationsDelegate = (needsChildConfigurationsDelegate || ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).isPlaceholder);
         }
-        if (needsAssembleSemanticsNode__42289)
+        if (needsAssembleSemanticsNode)
         {
             config.explicitChildNodes = true;
             config.isSemanticBoundary = true;
         }
         else
         {
-            if (needsChildConfigurationsDelegate__42333)
+            if (needsChildConfigurationsDelegate)
             {
                 config.childConfigurationsDelegate = this._childSemanticsConfigurationsDelegate;
             }
@@ -899,21 +899,21 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             {
                 if ((this._cachedAttributedLabels is null))
                 {
-                    var buffer__43014 = new StringBuffer();
-                    var offset__43051 = 0L;
-                    var attributes__43077 = new List<global::Doroti.Ui.StringAttribute>();
-                    foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info__43161 in this._semanticsInfo!)
+                    var buffer = new StringBuffer();
+                    var offset = 0L;
+                    var attributesLocal = new List<global::Doroti.Ui.StringAttribute>();
+                    foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation infoLocal in this._semanticsInfo!)
                     {
-                        string label__43211 = (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__43161).semanticsLabel ?? ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__43161).text);
-                        foreach (global::Doroti.Ui.StringAttribute infoAttribute__43290 in ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__43161).stringAttributes)
+                        string label = (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)infoLocal).semanticsLabel ?? ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)infoLocal).text);
+                        foreach (global::Doroti.Ui.StringAttribute infoAttribute in ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)infoLocal).stringAttributes)
                         {
-                            global::Doroti.Ui.TextRange originalRange__43360 = infoAttribute__43290.range;
-                            attributes__43077.Add(infoAttribute__43290.copy(range: new global::Doroti.Ui.TextRange(start: (offset__43051 + originalRange__43360.start), end: (offset__43051 + originalRange__43360.end))));
+                            global::Doroti.Ui.TextRange originalRange = infoAttribute.range;
+                            attributesLocal.Add(infoAttribute.copy(range: new global::Doroti.Ui.TextRange(start: (offset + originalRange.start), end: (offset + originalRange.end))));
                         }
-                        buffer__43014.write(label__43211);
-                        offset__43051 += label__43211.Length;
+                        buffer.write(label);
+                        offset += label.Length;
                     }
-                    _cachedAttributedLabels = new List<global::Doroti.Framework.Semantics.AttributedString> { new global::Doroti.Framework.Semantics.AttributedString(buffer__43014.ToString(), attributes: attributes__43077) };
+                    _cachedAttributedLabels = new List<global::Doroti.Framework.Semantics.AttributedString> { new global::Doroti.Framework.Semantics.AttributedString(buffer.ToString(), attributes: attributesLocal) };
                 }
                 config.attributedLabel = this._cachedAttributedLabels![(int)(0L)];
                 config.textDirection = this.textDirection;
@@ -923,44 +923,44 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     internal virtual global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResult _childSemanticsConfigurationsDelegate(List<global::Doroti.Framework.Semantics.SemanticsConfiguration> childConfigs)
     {
-        var builder__44135 = new global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResultBuilder();
-        var placeholderIndex__44198 = 0L;
-        var childConfigsIndex__44228 = 0L;
-        var attributedLabelCacheIndex__44259 = 0L;
+        var builder = new global::Doroti.Framework.Semantics.ChildSemanticsConfigurationsResultBuilder();
+        var placeholderIndex = 0L;
+        var childConfigsIndex = 0L;
+        var attributedLabelCacheIndex = 0L;
         _cachedCombinedSemanticsInfos ??= global::Doroti.Framework.Painting.Inline_spanLibrary.combineSemanticsInfo(this._semanticsInfo!);
-        foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info__44413 in this._cachedCombinedSemanticsInfos!)
+        foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info in this._cachedCombinedSemanticsInfos!)
         {
-            if (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__44413).isPlaceholder)
+            if (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).isPlaceholder)
             {
-                while (((childConfigsIndex__44228 < checked((long)(childConfigs.Count))) && _childConfigBelongsToPlaceholder(childConfigs[(int)(childConfigsIndex__44228)], placeholderIndex__44198)))
+                while (((childConfigsIndex < checked((long)(childConfigs.Count))) && _childConfigBelongsToPlaceholder(childConfigs[(int)(childConfigsIndex)], placeholderIndex)))
                 {
-                    builder__44135.markAsMergeUp(childConfigs[(int)(childConfigsIndex__44228)]);
-                    childConfigsIndex__44228 += 1L;
+                    builder.markAsMergeUp(childConfigs[(int)(childConfigsIndex)]);
+                    childConfigsIndex += 1L;
                 }
-                placeholderIndex__44198 += 1L;
+                placeholderIndex += 1L;
             }
             else
             {
-                builder__44135.markAsMergeUp(_createSemanticsConfigForTextInfo(info__44413, attributedLabelCacheIndex__44259));
-                attributedLabelCacheIndex__44259 += 1L;
+                builder.markAsMergeUp(_createSemanticsConfigForTextInfo(info, attributedLabelCacheIndex));
+                attributedLabelCacheIndex += 1L;
             }
         }
-        return builder__44135.build();
+        return builder.build();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static bool _childConfigBelongsToPlaceholder(global::Doroti.Framework.Semantics.SemanticsConfiguration childConfig, long placeholderIndex)
     {
-        IEnumerable<global::Doroti.Framework.Semantics.SemanticsTag>? tags__45584 = ((global::Doroti.Framework.Semantics.SemanticsConfiguration)childConfig).tagsForChildren;
-        if ((tags__45584 is null))
+        IEnumerable<global::Doroti.Framework.Semantics.SemanticsTag>? tags = ((global::Doroti.Framework.Semantics.SemanticsConfiguration)childConfig).tagsForChildren;
+        if ((tags is null))
         {
             return false;
         }
-        foreach (global::Doroti.Framework.Semantics.SemanticsTag tag__45698 in tags__45584)
+        foreach (global::Doroti.Framework.Semantics.SemanticsTag tag in tags)
         {
-            if ((tag__45698 is PlaceholderSpanIndexSemanticsTag))
+            if ((tag is PlaceholderSpanIndexSemanticsTag))
             {
-                PlaceholderSpanIndexSemanticsTag tag__45698__as45723 = (PlaceholderSpanIndexSemanticsTag)tag__45698;
+                PlaceholderSpanIndexSemanticsTag tag__45698__as45723 = (PlaceholderSpanIndexSemanticsTag)tag;
                 return (((PlaceholderSpanIndexSemanticsTag)((PlaceholderSpanIndexSemanticsTag)tag__45698__as45723)).index == placeholderIndex);
             }
         }
@@ -971,25 +971,25 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     internal virtual global::Doroti.Framework.Semantics.SemanticsConfiguration _createSemanticsConfigForTextInfo(global::Doroti.Framework.Painting.InlineSpanSemanticsInformation textInfo, long cacheIndex)
     {
         DartRuntimePrimitives.Assert(() => !((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)textInfo).requiresOwnNode);
-        List<global::Doroti.Framework.Semantics.AttributedString> cachedStrings__46052 = _cachedAttributedLabels ??= new List<global::Doroti.Framework.Semantics.AttributedString>();
-        DartRuntimePrimitives.Assert(() => (cacheIndex <= checked((long)(cachedStrings__46052.Count))));
-        bool hasCache__46181 = (cacheIndex < checked((long)(cachedStrings__46052.Count)));
-        global::Doroti.Framework.Semantics.AttributedString attributedLabel__46254 = default!;
-        if (hasCache__46181)
+        List<global::Doroti.Framework.Semantics.AttributedString> cachedStrings = _cachedAttributedLabels ??= new List<global::Doroti.Framework.Semantics.AttributedString>();
+        DartRuntimePrimitives.Assert(() => (cacheIndex <= checked((long)(cachedStrings.Count))));
+        bool hasCache = (cacheIndex < checked((long)(cachedStrings.Count)));
+        global::Doroti.Framework.Semantics.AttributedString attributedLabelLocal = default!;
+        if (hasCache)
         {
-            attributedLabel__46254 = cachedStrings__46052[(int)(cacheIndex)];
+            attributedLabelLocal = cachedStrings[(int)(cacheIndex)];
         }
         else
         {
-            DartRuntimePrimitives.Assert(() => (checked((long)(cachedStrings__46052.Count)) == cacheIndex));
-            attributedLabel__46254 = new global::Doroti.Framework.Semantics.AttributedString((((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)textInfo).semanticsLabel ?? ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)textInfo).text), attributes: ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)textInfo).stringAttributes);
-            cachedStrings__46052.Add(attributedLabel__46254);
+            DartRuntimePrimitives.Assert(() => (checked((long)(cachedStrings.Count)) == cacheIndex));
+            attributedLabelLocal = new global::Doroti.Framework.Semantics.AttributedString((((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)textInfo).semanticsLabel ?? ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)textInfo).text), attributes: ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)textInfo).stringAttributes);
+            cachedStrings.Add(attributedLabelLocal);
         }
         return ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
     __cascade.textDirection = this.textDirection;
-    __cascade.attributedLabel = attributedLabel__46254;
+    __cascade.attributedLabel = attributedLabelLocal;
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -998,86 +998,86 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     public override void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
     {
         DartRuntimePrimitives.Assert(() => ((this._semanticsInfo is not null) && (checked((long)(this._semanticsInfo!.Count)) != 0)));
-        var newChildren__47251 = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
-        global::Doroti.Ui.TextDirection currentDirection__47302 = this.textDirection;
-        global::Doroti.Ui.Rect currentRect__47345 = default!;
-        var ordinal__47366 = 0.0;
-        var start__47389 = 0L;
-        var placeholderIndex__47408 = 0L;
-        var childIndex__47438 = 0L;
-        RenderBox? child__47469 = firstChild;
-        var newChildCache__47499 = new DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode>();
+        var newChildren = new List<global::Doroti.Framework.Semantics.SemanticsNode>();
+        global::Doroti.Ui.TextDirection currentDirection = this.textDirection;
+        global::Doroti.Ui.Rect currentRect = default!;
+        var ordinal = 0.0;
+        var start = 0L;
+        var placeholderIndex = 0L;
+        var childIndex = 0L;
+        RenderBox? child = firstChild;
+        var newChildCache = new DartMap<Key, global::Doroti.Framework.Semantics.SemanticsNode>();
         _cachedCombinedSemanticsInfos ??= global::Doroti.Framework.Painting.Inline_spanLibrary.combineSemanticsInfo(this._semanticsInfo!);
-        foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info__47662 in this._cachedCombinedSemanticsInfos!)
+        foreach (global::Doroti.Framework.Painting.InlineSpanSemanticsInformation info in this._cachedCombinedSemanticsInfos!)
         {
-            var selection__47716 = new TextSelection(baseOffset: start__47389, extentOffset: (start__47389 + ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).text.Length));
-            start__47389 += ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).text.Length;
-            if (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).isPlaceholder)
+            var selection = new TextSelection(baseOffset: start, extentOffset: (start + ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).text.Length));
+            start += ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).text.Length;
+            if (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).isPlaceholder)
             {
-                while (((children.Count() > childIndex__47438) && children.elementAt(childIndex__47438).isTagged(new PlaceholderSpanIndexSemanticsTag(placeholderIndex__47408))))
+                while (((children.Count() > childIndex) && children.elementAt(childIndex).isTagged(new PlaceholderSpanIndexSemanticsTag(placeholderIndex))))
                 {
-                    global::Doroti.Framework.Semantics.SemanticsNode childNode__48235 = children.elementAt(childIndex__47438);
-                    var parentData__48295 = ((TextParentData?)(object?)child__47469!.parentData!)!;
-                    if ((((TextParentData)parentData__48295).offset is not null))
+                    global::Doroti.Framework.Semantics.SemanticsNode childNode = children.elementAt(childIndex);
+                    var parentDataLocal = ((TextParentData?)(object?)child!.parentData!)!;
+                    if ((((TextParentData)parentDataLocal).offset is not null))
                     {
-                        newChildren__47251.Add(childNode__48235);
+                        newChildren.Add(childNode);
                     }
-                    childIndex__47438 += 1L;
+                    childIndex += 1L;
                 }
-                child__47469 = childAfter(child__47469!);
-                placeholderIndex__47408 += 1L;
+                child = childAfter(child!);
+                placeholderIndex += 1L;
             }
             else
             {
-                var initialDirection__48651 = currentDirection__47302;
-                List<global::Doroti.Ui.TextBox> rects__48719 = getBoxesForSelection(selection__47716);
-                if ((checked((long)(rects__48719.Count)) == 0))
+                var initialDirection = currentDirection;
+                List<global::Doroti.Ui.TextBox> rects = getBoxesForSelection(selection);
+                if ((checked((long)(rects.Count)) == 0))
                 {
                     continue;
                 }
-                global::Doroti.Ui.Rect rect__48832 = rects__48719.First().toRect();
-                currentDirection__47302 = rects__48719.First().direction;
-                foreach (global::Doroti.Ui.TextBox textBox__48941 in rects__48719.skip(1L))
+                global::Doroti.Ui.Rect rectLocal = rects.First().toRect();
+                currentDirection = rects.First().direction;
+                foreach (global::Doroti.Ui.TextBox textBox in rects.skip(1L))
                 {
-                    rect__48832 = rect__48832.expandToInclude(textBox__48941.toRect());
-                    currentDirection__47302 = textBox__48941.direction;
+                    rectLocal = rectLocal.expandToInclude(textBox.toRect());
+                    currentDirection = textBox.direction;
                 }
-                rect__48832 = global::Doroti.Ui.Rect.fromLTWH(Math.Max(0.0, rect__48832.left), Math.Max(0.0, rect__48832.top), Math.Min(rect__48832.width, ((BoxConstraints)constraints).maxWidth), Math.Min(rect__48832.height, ((BoxConstraints)constraints).maxHeight));
-                currentRect__47345 = global::Doroti.Ui.Rect.fromLTRB((rect__48832.left.floorToDouble() - 4.0), (rect__48832.top.floorToDouble() - 4.0), (rect__48832.right.ceilToDouble() + 4.0), (rect__48832.bottom.ceilToDouble() + 4.0));
-                var configuration__49834 = ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
+                rectLocal = global::Doroti.Ui.Rect.fromLTWH(Math.Max(0.0, rectLocal.left), Math.Max(0.0, rectLocal.top), Math.Min(rectLocal.width, ((BoxConstraints)constraints).maxWidth), Math.Min(rectLocal.height, ((BoxConstraints)constraints).maxHeight));
+                currentRect = global::Doroti.Ui.Rect.fromLTRB((rectLocal.left.floorToDouble() - 4.0), (rectLocal.top.floorToDouble() - 4.0), (rectLocal.right.ceilToDouble() + 4.0), (rectLocal.bottom.ceilToDouble() + 4.0));
+                var configuration = ((Func<global::Doroti.Framework.Semantics.SemanticsConfiguration>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
-    __cascade.sortKey = new global::Doroti.Framework.Semantics.OrdinalSortKey(ordinal__47366++);
-    __cascade.textDirection = initialDirection__48651;
-    __cascade.identifier = (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).semanticsIdentifier ?? "");
-    __cascade.attributedLabel = new global::Doroti.Framework.Semantics.AttributedString((((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).semanticsLabel ?? ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).text), attributes: ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).stringAttributes);
+    __cascade.sortKey = new global::Doroti.Framework.Semantics.OrdinalSortKey(ordinal++);
+    __cascade.textDirection = initialDirection;
+    __cascade.identifier = (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).semanticsIdentifier ?? "");
+    __cascade.attributedLabel = new global::Doroti.Framework.Semantics.AttributedString((((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).semanticsLabel ?? ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).text), attributes: ((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).stringAttributes);
     return __cascade;
 }))();
-                switch (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info__47662).recognizer)
+                switch (((global::Doroti.Framework.Painting.InlineSpanSemanticsInformation)info).recognizer)
                 {
-                    case TapGestureRecognizer { onTap: Action handler__50276 } __object50228:
+                    case TapGestureRecognizer { onTap: Action handler } __object50228:
                         {
-                            if ((handler__50276 is not null))
+                            if ((handler is not null))
                             {
-                                configuration__49834.onTap = handler__50276;
-                                configuration__49834.isLink = true;
+                                configuration.onTap = handler;
+                                configuration.isLink = true;
                             }
                             break;
                         }
-                    case DoubleTapGestureRecognizer { onDoubleTap: Action handler__50361 } __object50301:
+                    case DoubleTapGestureRecognizer { onDoubleTap: Action handlerLocal } __object50301:
                         {
-                            if ((handler__50361 is not null))
+                            if ((handlerLocal is not null))
                             {
-                                configuration__49834.onTap = handler__50361;
-                                configuration__49834.isLink = true;
+                                configuration.onTap = handlerLocal;
+                                configuration.isLink = true;
                             }
                             break;
                         }
-                    case LongPressGestureRecognizer { onLongPress: Action onLongPress__50595 } __object50523:
+                    case LongPressGestureRecognizer { onLongPress: Action onLongPressLocal } __object50523:
                         {
-                            if ((onLongPress__50595 is not null))
+                            if ((onLongPressLocal is not null))
                             {
-                                configuration__49834.onLongPress = onLongPress__50595;
+                                configuration.onLongPress = onLongPressLocal;
                             }
                             break;
                         }
@@ -1093,42 +1093,42 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                 }
                 if ((((global::Doroti.Framework.Semantics.SemanticsNode)node).parentPaintClipRect is not null))
                 {
-                    global::Doroti.Ui.Rect paintRect__50934 = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsNode)node).parentPaintClipRect).intersect(currentRect__47345);
-                    configuration__49834.isHidden = (paintRect__50934.isEmpty && !currentRect__47345.isEmpty);
+                    global::Doroti.Ui.Rect paintRect = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Semantics.SemanticsNode)node).parentPaintClipRect).intersect(currentRect);
+                    configuration.isHidden = (paintRect.isEmpty && !currentRect.isEmpty);
                 }
-                global::Doroti.Framework.Semantics.SemanticsNode newChild__51112 = default!;
+                global::Doroti.Framework.Semantics.SemanticsNode newChild = default!;
                 if (((((long?)(this._cachedChildNodes?.Count)) is { } __count51134 ? __count51134 != 0 : (bool?)null) ?? false))
                 {
-                    newChild__51112 = this._cachedChildNodes!.remove(this._cachedChildNodes!.Keys.First())!;
+                    newChild = this._cachedChildNodes!.remove(this._cachedChildNodes!.Keys.First())!;
                 }
                 else
                 {
-                    var key__51289 = new UniqueKey();
-                    newChild__51112 = new global::Doroti.Framework.Semantics.SemanticsNode(key: key__51289, showOnScreen: _createShowOnScreenFor(key__51289));
+                    var keyLocal = new UniqueKey();
+                    newChild = new global::Doroti.Framework.Semantics.SemanticsNode(key: keyLocal, showOnScreen: _createShowOnScreenFor(keyLocal));
                 }
                 ((Func<global::Doroti.Framework.Semantics.SemanticsNode>)(() =>
 {
-    var __cascade = newChild__51112;
-    __cascade.updateWith(config: configuration__49834);
-    __cascade.rect = currentRect__47345;
+    var __cascade = newChild;
+    __cascade.updateWith(config: configuration);
+    __cascade.rect = currentRect;
     return __cascade;
 }))();
-                newChildCache__47499[((global::Doroti.Framework.Semantics.SemanticsNode)newChild__51112).key!] = newChild__51112;
-                newChildren__47251.Add(newChild__51112);
+                newChildCache[((global::Doroti.Framework.Semantics.SemanticsNode)newChild).key!] = newChild;
+                newChildren.Add(newChild);
             }
         }
-        DartRuntimePrimitives.Assert(() => (childIndex__47438 == children.Count()));
-        DartRuntimePrimitives.Assert(() => (child__47469 is null));
-        _cachedChildNodes = newChildCache__47499.cast<Key, global::Doroti.Framework.Semantics.SemanticsNode>();
-        node.updateWith(config: config, childrenInInversePaintOrder: newChildren__47251);
+        DartRuntimePrimitives.Assert(() => (childIndex == children.Count()));
+        DartRuntimePrimitives.Assert(() => (child is null));
+        _cachedChildNodes = newChildCache.cast<Key, global::Doroti.Framework.Semantics.SemanticsNode>();
+        node.updateWith(config: config, childrenInInversePaintOrder: newChildren);
     }
 
     internal virtual Action? _createShowOnScreenFor(Key key)
     {
         return (() =>
         {
-            global::Doroti.Framework.Semantics.SemanticsNode node__51948 = this._cachedChildNodes!.GetValueOrDefault(key)!;
-            showOnScreen(descendant: this, rect: ((global::Doroti.Framework.Semantics.SemanticsNode)node__51948).rect);
+            global::Doroti.Framework.Semantics.SemanticsNode node = this._cachedChildNodes!.GetValueOrDefault(key)!;
+            showOnScreen(descendant: this, rect: ((global::Doroti.Framework.Semantics.SemanticsNode)node).rect);
         });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -1160,12 +1160,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData__173585 = ((TextParentData?)(object?)child.parentData!)!;
-        while ((childParentData__173585.previousSibling is not null))
+        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        while ((childParentData.previousSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData__173585.previousSibling, child)));
-            child = childParentData__173585.previousSibling!;
-            childParentData__173585 = ((TextParentData?)(object?)child.parentData!)!;
+            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.previousSibling, child)));
+            child = childParentData.previousSibling!;
+            childParentData = ((TextParentData?)(object?)child.parentData!)!;
         }
         return (object.Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1173,12 +1173,12 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
     {
-        var childParentData__173981 = ((TextParentData?)(object?)child.parentData!)!;
-        while ((childParentData__173981.nextSibling is not null))
+        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        while ((childParentData.nextSibling is not null))
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData__173981.nextSibling, child)));
-            child = childParentData__173981.nextSibling!;
-            childParentData__173981 = ((TextParentData?)(object?)child.parentData!)!;
+            DartRuntimePrimitives.Assert(() => (!object.Equals(childParentData.nextSibling, child)));
+            child = childParentData.nextSibling!;
+            childParentData = ((TextParentData?)(object?)child.parentData!)!;
         }
         return (object.Equals(child, equals));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1201,18 +1201,18 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
     {
-        var childParentData__175971 = ((TextParentData?)(object?)child.parentData!)!;
-        DartRuntimePrimitives.Assert(() => (childParentData__175971.nextSibling is null));
-        DartRuntimePrimitives.Assert(() => (childParentData__175971.previousSibling is null));
+        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        DartRuntimePrimitives.Assert(() => (childParentData.nextSibling is null));
+        DartRuntimePrimitives.Assert(() => (childParentData.previousSibling is null));
         this._childCount += 1L;
         DartRuntimePrimitives.Assert(() => (this._childCount > 0L));
         if ((after is null))
         {
-            childParentData__175971.nextSibling = this._firstChild;
+            childParentData.nextSibling = this._firstChild;
             if ((this._firstChild is not null))
             {
-                var firstChildParentData__176343 = ((TextParentData?)(object?)this._firstChild!.parentData!)!;
-                firstChildParentData__176343.previousSibling = child;
+                var firstChildParentData = ((TextParentData?)(object?)this._firstChild!.parentData!)!;
+                firstChildParentData.previousSibling = child;
             }
             this._firstChild = child;
             this._lastChild ??= child;
@@ -1223,23 +1223,23 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
             DartRuntimePrimitives.Assert(() => (this._lastChild is not null));
             DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(after, equals: this._firstChild));
             DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(after, equals: this._lastChild));
-            var afterParentData__176766 = ((TextParentData?)(object?)after.parentData!)!;
-            if ((afterParentData__176766.nextSibling is null))
+            var afterParentData = ((TextParentData?)(object?)after.parentData!)!;
+            if ((afterParentData.nextSibling is null))
             {
                 DartRuntimePrimitives.Assert(() => (object.Equals(after, this._lastChild)));
-                childParentData__175971.previousSibling = after;
-                afterParentData__176766.nextSibling = child;
+                childParentData.previousSibling = after;
+                afterParentData.nextSibling = child;
                 this._lastChild = child;
             }
             else
             {
-                childParentData__175971.nextSibling = afterParentData__176766.nextSibling;
-                childParentData__175971.previousSibling = after;
-                var childPreviousSiblingParentData__177424 = ((TextParentData?)(object?)childParentData__175971.previousSibling!.parentData!)!;
-                var childNextSiblingParentData__177547 = ((TextParentData?)(object?)childParentData__175971.nextSibling!.parentData!)!;
-                childPreviousSiblingParentData__177424.nextSibling = child;
-                childNextSiblingParentData__177547.previousSibling = child;
-                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData__176766.nextSibling, child)));
+                childParentData.nextSibling = afterParentData.nextSibling;
+                childParentData.previousSibling = after;
+                var childPreviousSiblingParentData = ((TextParentData?)(object?)childParentData.previousSibling!.parentData!)!;
+                var childNextSiblingParentData = ((TextParentData?)(object?)childParentData.nextSibling!.parentData!)!;
+                childPreviousSiblingParentData.nextSibling = child;
+                childNextSiblingParentData.previousSibling = child;
+                DartRuntimePrimitives.Assert(() => (object.Equals(afterParentData.nextSibling, child)));
             }
         }
     }
@@ -1268,32 +1268,32 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual void _removeFromChildList(RenderBox child)
     {
-        var childParentData__179226 = ((TextParentData?)(object?)child.parentData!)!;
+        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
         DartRuntimePrimitives.Assert(() => _debugUltimatePreviousSiblingOf(child, equals: this._firstChild));
         DartRuntimePrimitives.Assert(() => _debugUltimateNextSiblingOf(child, equals: this._lastChild));
         DartRuntimePrimitives.Assert(() => (this._childCount >= 0L));
-        if ((childParentData__179226.previousSibling is null))
+        if ((childParentData.previousSibling is null))
         {
             DartRuntimePrimitives.Assert(() => (object.Equals(this._firstChild, child)));
-            this._firstChild = childParentData__179226.nextSibling;
+            this._firstChild = childParentData.nextSibling;
         }
         else
         {
-            var childPreviousSiblingParentData__179613 = ((TextParentData?)(object?)childParentData__179226.previousSibling!.parentData!)!;
-            childPreviousSiblingParentData__179613.nextSibling = childParentData__179226.nextSibling;
+            var childPreviousSiblingParentData = ((TextParentData?)(object?)childParentData.previousSibling!.parentData!)!;
+            childPreviousSiblingParentData.nextSibling = childParentData.nextSibling;
         }
-        if ((childParentData__179226.nextSibling is null))
+        if ((childParentData.nextSibling is null))
         {
             DartRuntimePrimitives.Assert(() => (object.Equals(this._lastChild, child)));
-            this._lastChild = childParentData__179226.previousSibling;
+            this._lastChild = childParentData.previousSibling;
         }
         else
         {
-            var childNextSiblingParentData__179965 = ((TextParentData?)(object?)childParentData__179226.nextSibling!.parentData!)!;
-            childNextSiblingParentData__179965.previousSibling = childParentData__179226.previousSibling;
+            var childNextSiblingParentData = ((TextParentData?)(object?)childParentData.nextSibling!.parentData!)!;
+            childNextSiblingParentData.previousSibling = childParentData.previousSibling;
         }
-        childParentData__179226.previousSibling = null;
-        childParentData__179226.nextSibling = null;
+        childParentData.previousSibling = null;
+        childParentData.nextSibling = null;
         this._childCount -= 1L;
     }
 
@@ -1305,15 +1305,15 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual void removeAll()
     {
-        RenderBox? child__180623 = this._firstChild;
-        while ((child__180623 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            var childParentData__180684 = ((TextParentData?)(object?)child__180623.parentData!)!;
-            RenderBox? next__180762 = childParentData__180684.nextSibling;
-            childParentData__180684.previousSibling = null;
-            childParentData__180684.nextSibling = null;
-            dropChild(child__180623);
-            child__180623 = next__180762;
+            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            RenderBox? next = childParentData.nextSibling;
+            childParentData.previousSibling = null;
+            childParentData.nextSibling = null;
+            dropChild(child);
+            child = next;
         }
         this._firstChild = null;
         this._lastChild = null;
@@ -1326,8 +1326,8 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
         DartRuntimePrimitives.Assert(() => (!object.Equals(after, this)));
         DartRuntimePrimitives.Assert(() => (!object.Equals(child, after)));
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__181479 = ((TextParentData?)(object?)child.parentData!)!;
-        if ((object.Equals(childParentData__181479.previousSibling, after)))
+        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        if ((object.Equals(childParentData.previousSibling, after)))
         {
             return;
         }
@@ -1339,46 +1339,46 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     public override void attach(PipelineOwner owner)
     {
         base.attach(owner);
-        RenderBox? child__181803 = this._firstChild;
-        while ((child__181803 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            child__181803.attach(owner);
-            var childParentData__181891 = ((TextParentData?)(object?)child__181803.parentData!)!;
-            child__181803 = childParentData__181891.nextSibling;
+            child.attach(owner);
+            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
     public override void detach()
     {
         base.detach();
-        RenderBox? child__182065 = this._firstChild;
-        while ((child__182065 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            child__182065.detach();
-            var childParentData__182148 = ((TextParentData?)(object?)child__182065.parentData!)!;
-            child__182065 = childParentData__182148.nextSibling;
+            child.detach();
+            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
     public override void redepthChildren()
     {
-        RenderBox? child__182311 = this._firstChild;
-        while ((child__182311 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            redepthChild(child__182311);
-            var childParentData__182399 = ((TextParentData?)(object?)child__182311.parentData!)!;
-            child__182311 = childParentData__182399.nextSibling;
+            redepthChild(child);
+            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
     public override void visitChildren(Action<RenderObject> visitor)
     {
-        RenderBox? child__182587 = this._firstChild;
-        while ((child__182587 is not null))
+        RenderBox? child = this._firstChild;
+        while ((child is not null))
         {
-            visitor(child__182587);
-            var childParentData__182670 = ((TextParentData?)(object?)child__182587.parentData!)!;
-            child__182587 = childParentData__182670.nextSibling;
+            visitor(child);
+            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            child = childParentData.nextSibling;
         }
     }
 
@@ -1387,16 +1387,16 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
     public virtual RenderBox? childBefore(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__183103 = ((TextParentData?)(object?)child.parentData!)!;
-        return childParentData__183103.previousSibling;
+        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        return childParentData.previousSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
-        var childParentData__183356 = ((TextParentData?)(object?)child.parentData!)!;
-        return childParentData__183356.nextSibling;
+        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        return childParentData.nextSibling;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1411,17 +1411,17 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
 
     public virtual List<global::Doroti.Framework.Painting.PlaceholderDimensions> layoutInlineChildren(double maxWidth, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getChildBaseline)
     {
-        var constraints__7015 = new BoxConstraints(maxWidth: maxWidth);
+        var constraints = new BoxConstraints(maxWidth: maxWidth);
         return new List<global::Doroti.Framework.Painting.PlaceholderDimensions>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void positionInlineChildren(List<TextBox> boxes)
     {
-        RenderBox? child__7901 = firstChild;
-        foreach (var box__7936 in boxes)
+        RenderBox? child = firstChild;
+        foreach (var box in boxes)
         {
-            if ((child__7901 is null))
+            if ((child is null))
             {
                 DartRuntimePrimitives.Assert(() =>
                     {
@@ -1429,65 +1429,65 @@ public class RenderParagraph : RenderBox, ContainerRenderObjectMixin<RenderBox, 
                     });
                 return;
             }
-            var textParentData__9027 = ((TextParentData?)(object?)child__7901.parentData!)!;
-            textParentData__9027._offset = new global::Doroti.Ui.Offset(box__7936.left, box__7936.top);
-            child__7901 = childAfter(child__7901);
+            var textParentData = ((TextParentData?)(object?)child.parentData!)!;
+            textParentData._offset = new global::Doroti.Ui.Offset(box.left, box.top);
+            child = childAfter(child);
         }
-        while ((child__7901 is not null))
+        while ((child is not null))
         {
-            var textParentData__9218 = ((TextParentData?)(object?)child__7901.parentData!)!;
-            textParentData__9218._offset = null;
-            child__7901 = childAfter(child__7901);
+            var textParentDataLocal = ((TextParentData?)(object?)child.parentData!)!;
+            textParentDataLocal._offset = null;
+            child = childAfter(child);
         }
     }
 
     public virtual void defaultApplyPaintTransform(RenderBox child, Matrix4 transform)
     {
-        var childParentData__9711 = ((TextParentData?)(object?)child.parentData!)!;
-        global::Doroti.Ui.Offset? offset__9784 = ((TextParentData)childParentData__9711).offset;
-        if ((offset__9784 is null))
+        var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+        global::Doroti.Ui.Offset? offsetLocal = ((TextParentData)childParentData).offset;
+        if ((offsetLocal is null))
         {
             transform.setZero();
         }
         else
         {
-            transform.translateByDouble(DartRuntimePrimitives.RequireValue(offset__9784).dx, DartRuntimePrimitives.RequireValue(offset__9784).dy, 0, 1);
+            transform.translateByDouble(DartRuntimePrimitives.RequireValue(offsetLocal).dx, DartRuntimePrimitives.RequireValue(offsetLocal).dy, 0, 1);
         }
     }
 
     public virtual void paintInlineChildren(PaintingContext context, Offset offset)
     {
-        RenderBox? child__10190 = firstChild;
-        while ((child__10190 is not null))
+        RenderBox? child = firstChild;
+        while ((child is not null))
         {
-            var childParentData__10250 = ((TextParentData?)(object?)child__10190.parentData!)!;
-            global::Doroti.Ui.Offset? childOffset__10325 = ((TextParentData)childParentData__10250).offset;
-            if ((childOffset__10325 is null))
+            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            global::Doroti.Ui.Offset? childOffset = ((TextParentData)childParentData).offset;
+            if ((childOffset is null))
             {
                 return;
             }
-            context.paintChild(child__10190, (DartRuntimePrimitives.RequireValue(childOffset__10325) + offset));
-            child__10190 = childAfter(child__10190);
+            context.paintChild(child, (DartRuntimePrimitives.RequireValue(childOffset) + offset));
+            child = childAfter(child);
         }
     }
 
     public virtual bool hitTestInlineChildren(BoxHitTestResult result, Offset position)
     {
-        RenderBox? child__10772 = firstChild;
-        while ((child__10772 is not null))
+        RenderBox? child = firstChild;
+        while ((child is not null))
         {
-            var childParentData__10832 = ((TextParentData?)(object?)child__10772.parentData!)!;
-            global::Doroti.Ui.Offset? childOffset__10907 = ((TextParentData)childParentData__10832).offset;
-            if ((childOffset__10907 is null))
+            var childParentData = ((TextParentData?)(object?)child.parentData!)!;
+            global::Doroti.Ui.Offset? childOffset = ((TextParentData)childParentData).offset;
+            if ((childOffset is null))
             {
                 return false;
             }
-            bool isHit__11025 = result.addWithPaintOffset(offset: DartRuntimePrimitives.RequireValue(childOffset__10907), position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) => child__10772!.hitTest(result, position: transformed))));
-            if (isHit__11025)
+            bool isHit = result.addWithPaintOffset(offset: DartRuntimePrimitives.RequireValue(childOffset), position: position, hitTest: ((Func<BoxHitTestResult, Offset, bool>)((result, transformed) => child!.hitTest(result, position: transformed))));
+            if (isHit)
             {
                 return true;
             }
-            child__10772 = childAfter(child__10772);
+            child = childAfter(child);
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1541,12 +1541,12 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     public virtual SelectionGeometry value => this._selectionGeometry;
     internal virtual void _updateSelectionGeometry()
     {
-        SelectionGeometry newValue__54577 = _getSelectionGeometry();
-        if ((object.Equals(this._selectionGeometry, newValue__54577)))
+        SelectionGeometry newValue = _getSelectionGeometry();
+        if ((object.Equals(this._selectionGeometry, newValue)))
         {
             return;
         }
-        _selectionGeometry = newValue__54577;
+        _selectionGeometry = newValue;
         notifyListeners();
     }
 
@@ -1556,51 +1556,51 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             return new SelectionGeometry(status: SelectionStatus.none, hasContent: true);
         }
-        long selectionStart__54960 = this._textSelectionStart!.offset;
-        long selectionEnd__55020 = this._textSelectionEnd!.offset;
-        bool isReversed__55077 = (selectionStart__54960 > selectionEnd__55020);
-        global::Doroti.Ui.Offset startOffsetInParagraphCoordinates__55138 = this.paragraph._getOffsetForPosition(this._textSelectionStart!);
-        global::Doroti.Ui.Offset endOffsetInParagraphCoordinates__55259 = ((selectionStart__54960 == selectionEnd__55020) ? startOffsetInParagraphCoordinates__55138 : this.paragraph._getOffsetForPosition(this._textSelectionEnd!));
-        var flipHandles__55441 = (isReversed__55077 != ((object.Equals(TextDirection.rtl, ((RenderParagraph)this.paragraph).textDirection))));
-        var selection__55527 = new TextSelection(baseOffset: selectionStart__54960, extentOffset: selectionEnd__55020);
-        var selectionRects__55620 = new List<global::Doroti.Ui.Rect>();
-        foreach (global::Doroti.Ui.TextBox textBox__55670 in this.paragraph.getBoxesForSelection(selection__55527))
+        long selectionStart = this._textSelectionStart!.offset;
+        long selectionEnd = this._textSelectionEnd!.offset;
+        bool isReversed = (selectionStart > selectionEnd);
+        global::Doroti.Ui.Offset startOffsetInParagraphCoordinates = this.paragraph._getOffsetForPosition(this._textSelectionStart!);
+        global::Doroti.Ui.Offset endOffsetInParagraphCoordinates = ((selectionStart == selectionEnd) ? startOffsetInParagraphCoordinates : this.paragraph._getOffsetForPosition(this._textSelectionEnd!));
+        var flipHandles = (isReversed != ((object.Equals(TextDirection.rtl, ((RenderParagraph)this.paragraph).textDirection))));
+        var selection = new TextSelection(baseOffset: selectionStart, extentOffset: selectionEnd);
+        var selectionRectsLocal = new List<global::Doroti.Ui.Rect>();
+        foreach (global::Doroti.Ui.TextBox textBox in this.paragraph.getBoxesForSelection(selection))
         {
-            selectionRects__55620.Add(textBox__55670.toRect());
+            selectionRectsLocal.Add(textBox.toRect());
         }
-        var selectionCollapsed__55786 = (selectionStart__54960 == selectionEnd__55020);
-        var (startSelectionHandleType__55881, endSelectionHandleType__55937) = ((selectionCollapsed__55786, flipHandles__55441) switch { (true, _) => (((TextSelectionHandleType, TextSelectionHandleType))((TextSelectionHandleType.collapsed, TextSelectionHandleType.collapsed))), (false, true) => (((TextSelectionHandleType, TextSelectionHandleType))((TextSelectionHandleType.right, TextSelectionHandleType.left))), (false, false) => (((TextSelectionHandleType, TextSelectionHandleType))((TextSelectionHandleType.left, TextSelectionHandleType.right))) });
-        return new SelectionGeometry(startSelectionPoint: new SelectionPoint(localPosition: startOffsetInParagraphCoordinates__55138, lineHeight: ((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight, handleType: startSelectionHandleType__55881), endSelectionPoint: new SelectionPoint(localPosition: endOffsetInParagraphCoordinates__55259, lineHeight: ((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight, handleType: endSelectionHandleType__55937), selectionRects: selectionRects__55620, status: (selectionCollapsed__55786 ? SelectionStatus.collapsed : SelectionStatus.uncollapsed), hasContent: true);
+        var selectionCollapsed = (selectionStart == selectionEnd);
+        var (startSelectionHandleType, endSelectionHandleType) = ((selectionCollapsed, flipHandles) switch { (true, _) => (((TextSelectionHandleType, TextSelectionHandleType))((TextSelectionHandleType.collapsed, TextSelectionHandleType.collapsed))), (false, true) => (((TextSelectionHandleType, TextSelectionHandleType))((TextSelectionHandleType.right, TextSelectionHandleType.left))), (false, false) => (((TextSelectionHandleType, TextSelectionHandleType))((TextSelectionHandleType.left, TextSelectionHandleType.right))) });
+        return new SelectionGeometry(startSelectionPoint: new SelectionPoint(localPosition: startOffsetInParagraphCoordinates, lineHeight: ((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight, handleType: startSelectionHandleType), endSelectionPoint: new SelectionPoint(localPosition: endOffsetInParagraphCoordinates, lineHeight: ((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight, handleType: endSelectionHandleType), selectionRects: selectionRectsLocal, status: (selectionCollapsed ? SelectionStatus.collapsed : SelectionStatus.uncollapsed), hasContent: true);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual SelectionResult dispatchSelectionEvent(SelectionEvent @event)
     {
-        SelectionResult result__57092 = default!;
-        global::Doroti.Ui.TextPosition? existingSelectionStart__57124 = this._textSelectionStart;
-        global::Doroti.Ui.TextPosition? existingSelectionEnd__57194 = this._textSelectionEnd;
+        SelectionResult result = default!;
+        global::Doroti.Ui.TextPosition? existingSelectionStart = this._textSelectionStart;
+        global::Doroti.Ui.TextPosition? existingSelectionEnd = this._textSelectionEnd;
         switch (((SelectionEvent)@event).type)
         {
             case SelectionEventType.startEdgeUpdate:
             case SelectionEventType.endEdgeUpdate:
                 {
-                    var edgeUpdate__57368 = ((SelectionEdgeUpdateEvent?)(object?)@event)!;
-                    TextGranularity granularity__57446 = ((SelectionEdgeUpdateEvent)((SelectionEdgeUpdateEvent)@event)).granularity;
-                    switch (granularity__57446)
+                    var edgeUpdate = ((SelectionEdgeUpdateEvent?)(object?)@event)!;
+                    TextGranularity granularityLocal = ((SelectionEdgeUpdateEvent)((SelectionEdgeUpdateEvent)@event)).granularity;
+                    switch (granularityLocal)
                     {
                         case TextGranularity.character:
                             {
-                                result__57092 = _updateSelectionEdge(((SelectionEdgeUpdateEvent)edgeUpdate__57368).globalPosition, isEnd: (object.Equals(edgeUpdate__57368.type, SelectionEventType.endEdgeUpdate)));
+                                result = _updateSelectionEdge(((SelectionEdgeUpdateEvent)edgeUpdate).globalPosition, isEnd: (object.Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate)));
                                 break;
                             }
                         case TextGranularity.word:
                             {
-                                result__57092 = _updateSelectionEdgeByTextBoundary(((SelectionEdgeUpdateEvent)edgeUpdate__57368).globalPosition, isEnd: (object.Equals(edgeUpdate__57368.type, SelectionEventType.endEdgeUpdate)), getTextBoundary: (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)this._getWordBoundaryAtPosition);
+                                result = _updateSelectionEdgeByTextBoundary(((SelectionEdgeUpdateEvent)edgeUpdate).globalPosition, isEnd: (object.Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate)), getTextBoundary: (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)this._getWordBoundaryAtPosition);
                                 break;
                             }
                         case TextGranularity.paragraph:
                             {
-                                result__57092 = _updateSelectionEdgeByMultiSelectableTextBoundary(((SelectionEdgeUpdateEvent)edgeUpdate__57368).globalPosition, isEnd: (object.Equals(edgeUpdate__57368.type, SelectionEventType.endEdgeUpdate)), getTextBoundary: (Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)this._getParagraphBoundaryAtPosition, getClampedTextBoundary: (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)this._getClampedParagraphBoundaryAtPosition);
+                                result = _updateSelectionEdgeByMultiSelectableTextBoundary(((SelectionEdgeUpdateEvent)edgeUpdate).globalPosition, isEnd: (object.Equals(edgeUpdate.type, SelectionEventType.endEdgeUpdate)), getTextBoundary: (Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)this._getParagraphBoundaryAtPosition, getClampedTextBoundary: (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)this._getClampedParagraphBoundaryAtPosition);
                                 break;
                             }
                         case TextGranularity.document:
@@ -1614,53 +1614,53 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 }
             case SelectionEventType.clear:
                 {
-                    result__57092 = _handleClearSelection();
+                    result = _handleClearSelection();
                     break;
                 }
             case SelectionEventType.selectAll:
                 {
-                    result__57092 = _handleSelectAll();
+                    result = _handleSelectAll();
                     break;
                 }
             case SelectionEventType.selectWord:
                 {
-                    var selectWord__58790 = ((SelectWordSelectionEvent?)(object?)@event)!;
-                    result__57092 = _handleSelectWord(((SelectWordSelectionEvent)selectWord__58790).globalPosition);
+                    var selectWordLocal = ((SelectWordSelectionEvent?)(object?)@event)!;
+                    result = _handleSelectWord(((SelectWordSelectionEvent)selectWordLocal).globalPosition);
                     break;
                 }
             case SelectionEventType.selectParagraph:
                 {
-                    var selectParagraph__58962 = ((SelectParagraphSelectionEvent?)(object?)@event)!;
-                    if (((SelectParagraphSelectionEvent)selectParagraph__58962).absorb)
+                    var selectParagraphLocal = ((SelectParagraphSelectionEvent?)(object?)@event)!;
+                    if (((SelectParagraphSelectionEvent)selectParagraphLocal).absorb)
                     {
                         _handleSelectAll();
-                        result__57092 = SelectionResult.next;
+                        result = SelectionResult.next;
                         _selectableContainsOriginTextBoundary = true;
                     }
                     else
                     {
-                        result__57092 = _handleSelectParagraph(((SelectParagraphSelectionEvent)selectParagraph__58962).globalPosition);
+                        result = _handleSelectParagraph(((SelectParagraphSelectionEvent)selectParagraphLocal).globalPosition);
                     }
                     break;
                 }
             case SelectionEventType.granularlyExtendSelection:
                 {
-                    var granularlyExtendSelection__59358 = ((GranularlyExtendSelectionEvent?)(object?)@event)!;
-                    result__57092 = _handleGranularlyExtendSelection(((GranularlyExtendSelectionEvent)granularlyExtendSelection__59358).forward, ((GranularlyExtendSelectionEvent)granularlyExtendSelection__59358).isEnd, ((GranularlyExtendSelectionEvent)granularlyExtendSelection__59358).granularity);
+                    var granularlyExtendSelectionLocal = ((GranularlyExtendSelectionEvent?)(object?)@event)!;
+                    result = _handleGranularlyExtendSelection(((GranularlyExtendSelectionEvent)granularlyExtendSelectionLocal).forward, ((GranularlyExtendSelectionEvent)granularlyExtendSelectionLocal).isEnd, ((GranularlyExtendSelectionEvent)granularlyExtendSelectionLocal).granularity);
                     break;
                 }
             case SelectionEventType.directionallyExtendSelection:
                 {
-                    var directionallyExtendSelection__59700 = ((DirectionallyExtendSelectionEvent?)(object?)@event)!;
-                    result__57092 = _handleDirectionallyExtendSelection(((DirectionallyExtendSelectionEvent)directionallyExtendSelection__59700).dx, ((DirectionallyExtendSelectionEvent)directionallyExtendSelection__59700).isEnd, ((DirectionallyExtendSelectionEvent)directionallyExtendSelection__59700).direction);
+                    var directionallyExtendSelectionLocal = ((DirectionallyExtendSelectionEvent?)(object?)@event)!;
+                    result = _handleDirectionallyExtendSelection(((DirectionallyExtendSelectionEvent)directionallyExtendSelectionLocal).dx, ((DirectionallyExtendSelectionEvent)directionallyExtendSelectionLocal).isEnd, ((DirectionallyExtendSelectionEvent)directionallyExtendSelectionLocal).direction);
                     break;
                 }
         }
-        if (((!object.Equals(existingSelectionStart__57124, this._textSelectionStart)) || (!object.Equals(existingSelectionEnd__57194, this._textSelectionEnd))))
+        if (((!object.Equals(existingSelectionStart, this._textSelectionStart)) || (!object.Equals(existingSelectionEnd, this._textSelectionEnd))))
         {
             _didChangeSelection();
         }
-        return result__57092;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1670,9 +1670,9 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             return null;
         }
-        long start__60316 = Math.Min(this._textSelectionStart!.offset, this._textSelectionEnd!.offset);
-        long end__60404 = Math.Max(this._textSelectionStart!.offset, this._textSelectionEnd!.offset);
-        return new SelectedContent(plainText: this.fullText.substring(start__60316, end__60404));
+        long start = Math.Min(this._textSelectionStart!.offset, this._textSelectionEnd!.offset);
+        long end = Math.Max(this._textSelectionStart!.offset, this._textSelectionEnd!.offset);
+        return new SelectedContent(plainText: this.fullText.substring(start, end));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1694,45 +1694,45 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
 
     internal virtual global::Doroti.Ui.TextPosition _updateSelectionStartEdgeByTextBoundary((TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary, Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, TextPosition position, TextPosition? existingSelectionStart, TextPosition? existingSelectionEnd)
     {
-        global::Doroti.Ui.TextPosition? targetPosition__61208 = default!;
+        global::Doroti.Ui.TextPosition? targetPosition = default!;
         if ((textBoundary is not null))
         {
             (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__value61232 = DartRuntimePrimitives.RequireValue(textBoundary);
             DartRuntimePrimitives.Assert(() => ((DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryStart.offset >= this.range.start) && (DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd.offset <= this.range.end)));
             if (((this._selectableContainsOriginTextBoundary && (existingSelectionStart is not null)) && (existingSelectionEnd is not null)))
             {
-                var isSamePosition__61548 = (position.offset == existingSelectionEnd.offset);
-                bool isSelectionInverted__61632 = (existingSelectionStart.offset > existingSelectionEnd.offset);
-                bool shouldSwapEdges__61746 = (!isSamePosition__61548 && ((isSelectionInverted__61632 != ((position.offset > existingSelectionEnd.offset)))));
-                if (shouldSwapEdges__61746)
+                var isSamePosition = (position.offset == existingSelectionEnd.offset);
+                bool isSelectionInverted = (existingSelectionStart.offset > existingSelectionEnd.offset);
+                bool shouldSwapEdges = (!isSamePosition && ((isSelectionInverted != ((position.offset > existingSelectionEnd.offset)))));
+                if (shouldSwapEdges)
                 {
                     if ((position.offset < existingSelectionEnd.offset))
                     {
-                        targetPosition__61208 = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryStart;
+                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryStart;
                     }
                     else
                     {
-                        targetPosition__61208 = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd;
+                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd;
                     }
-                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundary__62388 = getTextBoundary(existingSelectionEnd);
-                    DartRuntimePrimitives.Assert(() => ((localTextBoundary__62388.boundaryStart.offset >= this.range.start) && (localTextBoundary__62388.boundaryEnd.offset <= this.range.end)));
-                    _setSelectionPosition(((existingSelectionEnd.offset == localTextBoundary__62388.boundaryStart.offset) ? localTextBoundary__62388.boundaryEnd : localTextBoundary__62388.boundaryStart), isEnd: true);
+                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundary = getTextBoundary(existingSelectionEnd);
+                    DartRuntimePrimitives.Assert(() => ((localTextBoundary.boundaryStart.offset >= this.range.start) && (localTextBoundary.boundaryEnd.offset <= this.range.end)));
+                    _setSelectionPosition(((existingSelectionEnd.offset == localTextBoundary.boundaryStart.offset) ? localTextBoundary.boundaryEnd : localTextBoundary.boundaryStart), isEnd: true);
                 }
                 else
                 {
                     if ((position.offset < existingSelectionEnd.offset))
                     {
-                        targetPosition__61208 = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryStart;
+                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryStart;
                     }
                     else
                     {
                         if ((position.offset > existingSelectionEnd.offset))
                         {
-                            targetPosition__61208 = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd;
+                            targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd;
                         }
                         else
                         {
-                            targetPosition__61208 = existingSelectionStart;
+                            targetPosition = existingSelectionStart;
                         }
                     }
                 }
@@ -1743,16 +1743,16 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 {
                     if ((position.offset < existingSelectionEnd.offset))
                     {
-                        targetPosition__61208 = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryStart;
+                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryStart;
                     }
                     else
                     {
-                        targetPosition__61208 = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd;
+                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value61232).boundaryEnd;
                     }
                 }
                 else
                 {
-                    targetPosition__61208 = _closestTextBoundary(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textBoundary__value61232)), position);
+                    targetPosition = _closestTextBoundary(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textBoundary__value61232)), position);
                 }
             }
         }
@@ -1760,62 +1760,62 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             if (((this._selectableContainsOriginTextBoundary && (existingSelectionStart is not null)) && (existingSelectionEnd is not null)))
             {
-                var isSamePosition__64565 = (position.offset == existingSelectionEnd.offset);
-                bool isSelectionInverted__64649 = (existingSelectionStart.offset > existingSelectionEnd.offset);
-                bool shouldSwapEdges__64763 = (!isSamePosition__64565 && ((isSelectionInverted__64649 != ((position.offset > existingSelectionEnd.offset)))));
-                if (shouldSwapEdges__64763)
+                var isSamePositionLocal = (position.offset == existingSelectionEnd.offset);
+                bool isSelectionInvertedLocal = (existingSelectionStart.offset > existingSelectionEnd.offset);
+                bool shouldSwapEdgesLocal = (!isSamePositionLocal && ((isSelectionInvertedLocal != ((position.offset > existingSelectionEnd.offset)))));
+                if (shouldSwapEdgesLocal)
                 {
-                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundary__64966 = getTextBoundary(existingSelectionEnd);
-                    DartRuntimePrimitives.Assert(() => ((localTextBoundary__64966.boundaryStart.offset >= this.range.start) && (localTextBoundary__64966.boundaryEnd.offset <= this.range.end)));
-                    _setSelectionPosition((isSelectionInverted__64649 ? localTextBoundary__64966.boundaryEnd : localTextBoundary__64966.boundaryStart), isEnd: true);
+                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundaryLocal = getTextBoundary(existingSelectionEnd);
+                    DartRuntimePrimitives.Assert(() => ((localTextBoundaryLocal.boundaryStart.offset >= this.range.start) && (localTextBoundaryLocal.boundaryEnd.offset <= this.range.end)));
+                    _setSelectionPosition((isSelectionInvertedLocal ? localTextBoundaryLocal.boundaryEnd : localTextBoundaryLocal.boundaryStart), isEnd: true);
                 }
             }
         }
-        return (targetPosition__61208 ?? position);
+        return (targetPosition ?? position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.TextPosition _updateSelectionEndEdgeByTextBoundary((TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary, Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, TextPosition position, TextPosition? existingSelectionStart, TextPosition? existingSelectionEnd)
     {
-        global::Doroti.Ui.TextPosition? targetPosition__65701 = default!;
+        global::Doroti.Ui.TextPosition? targetPosition = default!;
         if ((textBoundary is not null))
         {
             (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__value65725 = DartRuntimePrimitives.RequireValue(textBoundary);
             DartRuntimePrimitives.Assert(() => ((DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryStart.offset >= this.range.start) && (DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd.offset <= this.range.end)));
             if (((this._selectableContainsOriginTextBoundary && (existingSelectionStart is not null)) && (existingSelectionEnd is not null)))
             {
-                var isSamePosition__66041 = (position.offset == existingSelectionStart.offset);
-                bool isSelectionInverted__66127 = (existingSelectionStart.offset > existingSelectionEnd.offset);
-                bool shouldSwapEdges__66241 = (!isSamePosition__66041 && ((isSelectionInverted__66127 != ((position.offset < existingSelectionStart.offset)))));
-                if (shouldSwapEdges__66241)
+                var isSamePosition = (position.offset == existingSelectionStart.offset);
+                bool isSelectionInverted = (existingSelectionStart.offset > existingSelectionEnd.offset);
+                bool shouldSwapEdges = (!isSamePosition && ((isSelectionInverted != ((position.offset < existingSelectionStart.offset)))));
+                if (shouldSwapEdges)
                 {
                     if ((position.offset < existingSelectionStart.offset))
                     {
-                        targetPosition__65701 = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryStart;
+                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryStart;
                     }
                     else
                     {
-                        targetPosition__65701 = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd;
+                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd;
                     }
-                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundary__66887 = getTextBoundary(existingSelectionStart);
-                    DartRuntimePrimitives.Assert(() => ((localTextBoundary__66887.boundaryStart.offset >= this.range.start) && (localTextBoundary__66887.boundaryEnd.offset <= this.range.end)));
-                    _setSelectionPosition(((existingSelectionStart.offset == localTextBoundary__66887.boundaryStart.offset) ? localTextBoundary__66887.boundaryEnd : localTextBoundary__66887.boundaryStart), isEnd: false);
+                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundary = getTextBoundary(existingSelectionStart);
+                    DartRuntimePrimitives.Assert(() => ((localTextBoundary.boundaryStart.offset >= this.range.start) && (localTextBoundary.boundaryEnd.offset <= this.range.end)));
+                    _setSelectionPosition(((existingSelectionStart.offset == localTextBoundary.boundaryStart.offset) ? localTextBoundary.boundaryEnd : localTextBoundary.boundaryStart), isEnd: false);
                 }
                 else
                 {
                     if ((position.offset < existingSelectionStart.offset))
                     {
-                        targetPosition__65701 = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryStart;
+                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryStart;
                     }
                     else
                     {
                         if ((position.offset > existingSelectionStart.offset))
                         {
-                            targetPosition__65701 = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd;
+                            targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd;
                         }
                         else
                         {
-                            targetPosition__65701 = existingSelectionEnd;
+                            targetPosition = existingSelectionEnd;
                         }
                     }
                 }
@@ -1826,16 +1826,16 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 {
                     if ((position.offset < existingSelectionStart.offset))
                     {
-                        targetPosition__65701 = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryStart;
+                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryStart;
                     }
                     else
                     {
-                        targetPosition__65701 = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd;
+                        targetPosition = DartRuntimePrimitives.RequireValue(textBoundary__value65725).boundaryEnd;
                     }
                 }
                 else
                 {
-                    targetPosition__65701 = _closestTextBoundary(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textBoundary__value65725)), position);
+                    targetPosition = _closestTextBoundary(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textBoundary__value65725)), position);
                 }
             }
         }
@@ -1843,144 +1843,144 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             if (((this._selectableContainsOriginTextBoundary && (existingSelectionStart is not null)) && (existingSelectionEnd is not null)))
             {
-                var isSamePosition__69071 = (position.offset == existingSelectionStart.offset);
-                bool isSelectionInverted__69157 = (existingSelectionStart.offset > existingSelectionEnd.offset);
-                bool shouldSwapEdges__69271 = ((isSelectionInverted__69157 != ((position.offset < existingSelectionStart.offset))) || isSamePosition__69071);
-                if (shouldSwapEdges__69271)
+                var isSamePositionLocal = (position.offset == existingSelectionStart.offset);
+                bool isSelectionInvertedLocal = (existingSelectionStart.offset > existingSelectionEnd.offset);
+                bool shouldSwapEdgesLocal = ((isSelectionInvertedLocal != ((position.offset < existingSelectionStart.offset))) || isSamePositionLocal);
+                if (shouldSwapEdgesLocal)
                 {
-                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundary__69472 = getTextBoundary(existingSelectionStart);
-                    DartRuntimePrimitives.Assert(() => ((localTextBoundary__69472.boundaryStart.offset >= this.range.start) && (localTextBoundary__69472.boundaryEnd.offset <= this.range.end)));
-                    _setSelectionPosition((isSelectionInverted__69157 ? localTextBoundary__69472.boundaryStart : localTextBoundary__69472.boundaryEnd), isEnd: false);
+                    (TextPosition boundaryEnd, TextPosition boundaryStart) localTextBoundaryLocal = getTextBoundary(existingSelectionStart);
+                    DartRuntimePrimitives.Assert(() => ((localTextBoundaryLocal.boundaryStart.offset >= this.range.start) && (localTextBoundaryLocal.boundaryEnd.offset <= this.range.end)));
+                    _setSelectionPosition((isSelectionInvertedLocal ? localTextBoundaryLocal.boundaryStart : localTextBoundaryLocal.boundaryEnd), isEnd: false);
                 }
             }
         }
-        return (targetPosition__65701 ?? position);
+        return (targetPosition ?? position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual SelectionResult _updateSelectionEdgeByTextBoundary(Offset globalPosition, bool isEnd, Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary)
     {
-        global::Doroti.Ui.TextPosition? existingSelectionStart__70398 = this._textSelectionStart;
-        global::Doroti.Ui.TextPosition? existingSelectionEnd__70468 = this._textSelectionEnd;
+        global::Doroti.Ui.TextPosition? existingSelectionStart = this._textSelectionStart;
+        global::Doroti.Ui.TextPosition? existingSelectionEnd = this._textSelectionEnd;
         _setSelectionPosition(null, isEnd: isEnd);
-        Matrix4 transform__70576 = this.paragraph.getTransformTo(null);
-        transform__70576.invert();
-        global::Doroti.Ui.Offset localPosition__70661 = MatrixUtils.transformPoint(transform__70576, globalPosition);
+        Matrix4 transform = this.paragraph.getTransformTo(null);
+        transform.invert();
+        global::Doroti.Ui.Offset localPosition = MatrixUtils.transformPoint(transform, globalPosition);
         if (this._rect.isEmpty)
         {
-            SelectionResult result__70785 = SelectionUtils.getResultBasedOnRect(this._rect, localPosition__70661);
-            _setSelectionPosition(((object.Equals(result__70785, SelectionResult.next)) ? new global::Doroti.Ui.TextPosition(offset: this.range.end) : new global::Doroti.Ui.TextPosition(offset: this.range.start, affinity: TextAffinity.upstream)), isEnd: isEnd);
-            return result__70785;
+            SelectionResult result = SelectionUtils.getResultBasedOnRect(this._rect, localPosition);
+            _setSelectionPosition(((object.Equals(result, SelectionResult.next)) ? new global::Doroti.Ui.TextPosition(offset: this.range.end) : new global::Doroti.Ui.TextPosition(offset: this.range.start, affinity: TextAffinity.upstream)), isEnd: isEnd);
+            return result;
         }
-        global::Doroti.Ui.Offset adjustedOffset__71124 = SelectionUtils.adjustDragOffset(this._rect, localPosition__70661, direction: ((RenderParagraph)this.paragraph).textDirection);
-        global::Doroti.Ui.TextPosition position__71281 = this.paragraph.getPositionForOffset(adjustedOffset__71124);
-        (TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary__71646 = (this._rect.contains(localPosition__70661) ? getTextBoundary(position__71281) : null);
-        if (((textBoundary__71646 is not null) && ((((DartRuntimePrimitives.RequireValue(textBoundary__71646).boundaryStart.offset < this.range.start) && (DartRuntimePrimitives.RequireValue(textBoundary__71646).boundaryEnd.offset <= this.range.start)) || ((DartRuntimePrimitives.RequireValue(textBoundary__71646).boundaryStart.offset >= this.range.end) && (DartRuntimePrimitives.RequireValue(textBoundary__71646).boundaryEnd.offset > this.range.end))))))
+        global::Doroti.Ui.Offset adjustedOffset = SelectionUtils.adjustDragOffset(this._rect, localPosition, direction: ((RenderParagraph)this.paragraph).textDirection);
+        global::Doroti.Ui.TextPosition position = this.paragraph.getPositionForOffset(adjustedOffset);
+        (TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary = (this._rect.contains(localPosition) ? getTextBoundary(position) : null);
+        if (((textBoundary is not null) && ((((DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset < this.range.start) && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset <= this.range.start)) || ((DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset >= this.range.end) && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset > this.range.end))))))
         {
-            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__71646__value71751 = DartRuntimePrimitives.RequireValue(textBoundary__71646);
-            textBoundary__71646 = null;
+            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__71646__value71751 = DartRuntimePrimitives.RequireValue(textBoundary);
+            textBoundary = null;
         }
-        global::Doroti.Ui.TextPosition targetPosition__72403 = _clampTextPosition((isEnd ? _updateSelectionEndEdgeByTextBoundary(textBoundary__71646, (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, position__71281, existingSelectionStart__70398, existingSelectionEnd__70468) : _updateSelectionStartEdgeByTextBoundary(textBoundary__71646, (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, position__71281, existingSelectionStart__70398, existingSelectionEnd__70468)));
-        _setSelectionPosition(targetPosition__72403, isEnd: isEnd);
-        if ((targetPosition__72403.offset == this.range.end))
+        global::Doroti.Ui.TextPosition targetPosition = _clampTextPosition((isEnd ? _updateSelectionEndEdgeByTextBoundary(textBoundary, (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, position, existingSelectionStart, existingSelectionEnd) : _updateSelectionStartEdgeByTextBoundary(textBoundary, (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, position, existingSelectionStart, existingSelectionEnd)));
+        _setSelectionPosition(targetPosition, isEnd: isEnd);
+        if ((targetPosition.offset == this.range.end))
         {
             return SelectionResult.next;
         }
-        if ((targetPosition__72403.offset == this.range.start))
+        if ((targetPosition.offset == this.range.start))
         {
             return SelectionResult.previous;
         }
-        return SelectionUtils.getResultBasedOnRect(this._rect, localPosition__70661);
+        return SelectionUtils.getResultBasedOnRect(this._rect, localPosition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual SelectionResult _updateSelectionEdge(Offset globalPosition, bool isEnd)
     {
         _setSelectionPosition(null, isEnd: isEnd);
-        Matrix4 transform__73640 = this.paragraph.getTransformTo(null);
-        transform__73640.invert();
-        global::Doroti.Ui.Offset localPosition__73725 = MatrixUtils.transformPoint(transform__73640, globalPosition);
+        Matrix4 transform = this.paragraph.getTransformTo(null);
+        transform.invert();
+        global::Doroti.Ui.Offset localPosition = MatrixUtils.transformPoint(transform, globalPosition);
         if (this._rect.isEmpty)
         {
-            SelectionResult result__73849 = SelectionUtils.getResultBasedOnRect(this._rect, localPosition__73725);
-            _setSelectionPosition(((object.Equals(result__73849, SelectionResult.next)) ? new global::Doroti.Ui.TextPosition(offset: this.range.end) : new global::Doroti.Ui.TextPosition(offset: this.range.start, affinity: TextAffinity.upstream)), isEnd: isEnd);
-            return result__73849;
+            SelectionResult result = SelectionUtils.getResultBasedOnRect(this._rect, localPosition);
+            _setSelectionPosition(((object.Equals(result, SelectionResult.next)) ? new global::Doroti.Ui.TextPosition(offset: this.range.end) : new global::Doroti.Ui.TextPosition(offset: this.range.start, affinity: TextAffinity.upstream)), isEnd: isEnd);
+            return result;
         }
-        global::Doroti.Ui.Offset adjustedOffset__74188 = SelectionUtils.adjustDragOffset(this._rect, localPosition__73725, direction: ((RenderParagraph)this.paragraph).textDirection);
-        global::Doroti.Ui.TextPosition position__74345 = _clampTextPosition(this.paragraph.getPositionForOffset(adjustedOffset__74188));
-        _setSelectionPosition(position__74345, isEnd: isEnd);
-        if ((position__74345.offset == this.range.end))
+        global::Doroti.Ui.Offset adjustedOffset = SelectionUtils.adjustDragOffset(this._rect, localPosition, direction: ((RenderParagraph)this.paragraph).textDirection);
+        global::Doroti.Ui.TextPosition position = _clampTextPosition(this.paragraph.getPositionForOffset(adjustedOffset));
+        _setSelectionPosition(position, isEnd: isEnd);
+        if ((position.offset == this.range.end))
         {
             return SelectionResult.next;
         }
-        if ((position__74345.offset == this.range.start))
+        if ((position.offset == this.range.start))
         {
             return SelectionResult.previous;
         }
-        return SelectionUtils.getResultBasedOnRect(this._rect, localPosition__73725);
+        return SelectionUtils.getResultBasedOnRect(this._rect, localPosition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual SelectionResult? _updateSelectionStartEdgeByMultiSelectableTextBoundary(Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, bool paragraphContainsPosition, TextPosition position, TextPosition? existingSelectionStart, TextPosition? existingSelectionEnd)
     {
-        var isEnd__75897 = false;
+        var isEndLocal = false;
         if (((this._selectableContainsOriginTextBoundary && (existingSelectionStart is not null)) && (existingSelectionEnd is not null)))
         {
-            bool forwardSelection__76160 = (existingSelectionEnd.offset >= existingSelectionStart.offset);
+            bool forwardSelection = (existingSelectionEnd.offset >= existingSelectionStart.offset);
             if (paragraphContainsPosition)
             {
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition__76445 = getTextBoundary(position, this.fullText);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary__76901 = getTextBoundary((forwardSelection__76160 ? new global::Doroti.Ui.TextPosition(offset: (existingSelectionEnd.offset - 1L), affinity: existingSelectionEnd.affinity) : existingSelectionEnd), this.fullText);
-                global::Doroti.Ui.TextPosition targetPosition__77228 = default!;
-                long pivotOffset__77262 = (forwardSelection__76160 ? originTextBoundary__76901.boundaryEnd.offset : originTextBoundary__76901.boundaryStart.offset);
-                var shouldSwapEdges__77414 = (!forwardSelection__76160 != ((position.offset > pivotOffset__77262)));
-                if ((position.offset < pivotOffset__77262))
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition = getTextBoundary(position, this.fullText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary = getTextBoundary((forwardSelection ? new global::Doroti.Ui.TextPosition(offset: (existingSelectionEnd.offset - 1L), affinity: existingSelectionEnd.affinity) : existingSelectionEnd), this.fullText);
+                global::Doroti.Ui.TextPosition targetPosition = default!;
+                long pivotOffset = (forwardSelection ? originTextBoundary.boundaryEnd.offset : originTextBoundary.boundaryStart.offset);
+                var shouldSwapEdges = (!forwardSelection != ((position.offset > pivotOffset)));
+                if ((position.offset < pivotOffset))
                 {
-                    targetPosition__77228 = boundaryAtPosition__76445.boundaryStart;
+                    targetPosition = boundaryAtPosition.boundaryStart;
                 }
                 else
                 {
-                    if ((position.offset > pivotOffset__77262))
+                    if ((position.offset > pivotOffset))
                     {
-                        targetPosition__77228 = boundaryAtPosition__76445.boundaryEnd;
+                        targetPosition = boundaryAtPosition.boundaryEnd;
                     }
                     else
                     {
-                        targetPosition__77228 = (forwardSelection__76160 ? existingSelectionStart : existingSelectionEnd);
+                        targetPosition = (forwardSelection ? existingSelectionStart : existingSelectionEnd);
                     }
                 }
-                if (shouldSwapEdges__77414)
+                if (shouldSwapEdges)
                 {
-                    _setSelectionPosition(_clampTextPosition((forwardSelection__76160 ? originTextBoundary__76901.boundaryStart : originTextBoundary__76901.boundaryEnd)), isEnd: true);
+                    _setSelectionPosition(_clampTextPosition((forwardSelection ? originTextBoundary.boundaryStart : originTextBoundary.boundaryEnd)), isEnd: true);
                 }
-                _setSelectionPosition(_clampTextPosition(targetPosition__77228), isEnd: isEnd__75897);
-                bool finalSelectionIsForward__78272 = (this._textSelectionEnd!.offset >= this._textSelectionStart!.offset);
-                if (((boundaryAtPosition__76445.boundaryStart.offset > this.range.end) && (boundaryAtPosition__76445.boundaryEnd.offset > this.range.end)))
+                _setSelectionPosition(_clampTextPosition(targetPosition), isEnd: isEndLocal);
+                bool finalSelectionIsForward = (this._textSelectionEnd!.offset >= this._textSelectionStart!.offset);
+                if (((boundaryAtPosition.boundaryStart.offset > this.range.end) && (boundaryAtPosition.boundaryEnd.offset > this.range.end)))
                 {
                     return SelectionResult.next;
                 }
-                if (((boundaryAtPosition__76445.boundaryStart.offset < this.range.start) && (boundaryAtPosition__76445.boundaryEnd.offset < this.range.start)))
+                if (((boundaryAtPosition.boundaryStart.offset < this.range.start) && (boundaryAtPosition.boundaryEnd.offset < this.range.start)))
                 {
                     return SelectionResult.previous;
                 }
-                if (finalSelectionIsForward__78272)
+                if (finalSelectionIsForward)
                 {
-                    if ((boundaryAtPosition__76445.boundaryStart.offset >= originTextBoundary__76901.boundaryStart.offset))
+                    if ((boundaryAtPosition.boundaryStart.offset >= originTextBoundary.boundaryStart.offset))
                     {
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPosition__76445.boundaryStart.offset < originTextBoundary__76901.boundaryStart.offset))
+                    if ((boundaryAtPosition.boundaryStart.offset < originTextBoundary.boundaryStart.offset))
                     {
                         return SelectionResult.previous;
                     }
                 }
                 else
                 {
-                    if ((boundaryAtPosition__76445.boundaryEnd.offset <= originTextBoundary__76901.boundaryEnd.offset))
+                    if ((boundaryAtPosition.boundaryEnd.offset <= originTextBoundary.boundaryEnd.offset))
                     {
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPosition__76445.boundaryEnd.offset > originTextBoundary__76901.boundaryEnd.offset))
+                    if ((boundaryAtPosition.boundaryEnd.offset > originTextBoundary.boundaryEnd.offset))
                     {
                         return SelectionResult.next;
                     }
@@ -1988,74 +1988,74 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             }
             else
             {
-                global::Doroti.Ui.TextPosition clampedPosition__79592 = _clampTextPosition(position);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary__80038 = getTextBoundary((forwardSelection__76160 ? new global::Doroti.Ui.TextPosition(offset: (existingSelectionEnd.offset - 1L), affinity: existingSelectionEnd.affinity) : existingSelectionEnd), this.fullText);
-                if ((forwardSelection__76160 && (clampedPosition__79592.offset == this.range.start)))
+                global::Doroti.Ui.TextPosition clampedPosition = _clampTextPosition(position);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundaryLocal = getTextBoundary((forwardSelection ? new global::Doroti.Ui.TextPosition(offset: (existingSelectionEnd.offset - 1L), affinity: existingSelectionEnd.affinity) : existingSelectionEnd), this.fullText);
+                if ((forwardSelection && (clampedPosition.offset == this.range.start)))
                 {
-                    _setSelectionPosition(clampedPosition__79592, isEnd: isEnd__75897);
+                    _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if ((!forwardSelection__76160 && (clampedPosition__79592.offset == this.range.end)))
+                if ((!forwardSelection && (clampedPosition.offset == this.range.end)))
                 {
-                    _setSelectionPosition(clampedPosition__79592, isEnd: isEnd__75897);
+                    _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if ((forwardSelection__76160 && (clampedPosition__79592.offset == this.range.end)))
+                if ((forwardSelection && (clampedPosition.offset == this.range.end)))
                 {
-                    _setSelectionPosition(_clampTextPosition(originTextBoundary__80038.boundaryStart), isEnd: true);
-                    _setSelectionPosition(clampedPosition__79592, isEnd: isEnd__75897);
+                    _setSelectionPosition(_clampTextPosition(originTextBoundaryLocal.boundaryStart), isEnd: true);
+                    _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if ((!forwardSelection__76160 && (clampedPosition__79592.offset == this.range.start)))
+                if ((!forwardSelection && (clampedPosition.offset == this.range.start)))
                 {
-                    _setSelectionPosition(_clampTextPosition(originTextBoundary__80038.boundaryEnd), isEnd: true);
-                    _setSelectionPosition(clampedPosition__79592, isEnd: isEnd__75897);
+                    _setSelectionPosition(_clampTextPosition(originTextBoundaryLocal.boundaryEnd), isEnd: true);
+                    _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
             }
         }
         else
         {
-            var positionOnPlaceholder__81611 = (this.paragraph.getWordBoundary(position).textInside(this.fullText) == _placeholderCharacter);
-            if ((!paragraphContainsPosition || positionOnPlaceholder__81611))
+            var positionOnPlaceholder = (this.paragraph.getWordBoundary(position).textInside(this.fullText) == _placeholderCharacter);
+            if ((!paragraphContainsPosition || positionOnPlaceholder))
             {
                 return null;
             }
             if ((existingSelectionEnd is not null))
             {
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition__81898 = getTextBoundary(position, this.fullText);
-                bool backwardSelection__81975 = ((((existingSelectionStart is null) && (existingSelectionEnd.offset == this.range.start)) || ((object.Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionEnd.offset == this.range.start))) || ((existingSelectionStart is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
-                if (((boundaryAtPosition__81898.boundaryStart.offset < this.range.start) && (boundaryAtPosition__81898.boundaryEnd.offset < this.range.start)))
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionLocal = getTextBoundary(position, this.fullText);
+                bool backwardSelection = ((((existingSelectionStart is null) && (existingSelectionEnd.offset == this.range.start)) || ((object.Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionEnd.offset == this.range.start))) || ((existingSelectionStart is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
+                if (((boundaryAtPositionLocal.boundaryStart.offset < this.range.start) && (boundaryAtPositionLocal.boundaryEnd.offset < this.range.start)))
                 {
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEnd__75897);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if (((boundaryAtPosition__81898.boundaryStart.offset > this.range.end) && (boundaryAtPosition__81898.boundaryEnd.offset > this.range.end)))
+                if (((boundaryAtPositionLocal.boundaryStart.offset > this.range.end) && (boundaryAtPositionLocal.boundaryEnd.offset > this.range.end)))
                 {
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__75897);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if (backwardSelection__81975)
+                if (backwardSelection)
                 {
-                    if ((boundaryAtPosition__81898.boundaryEnd.offset <= this.range.end))
+                    if ((boundaryAtPositionLocal.boundaryEnd.offset <= this.range.end))
                     {
-                        _setSelectionPosition(_clampTextPosition(boundaryAtPosition__81898.boundaryEnd), isEnd: isEnd__75897);
+                        _setSelectionPosition(_clampTextPosition(boundaryAtPositionLocal.boundaryEnd), isEnd: isEndLocal);
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPosition__81898.boundaryEnd.offset > this.range.end))
+                    if ((boundaryAtPositionLocal.boundaryEnd.offset > this.range.end))
                     {
-                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__75897);
+                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                         return SelectionResult.next;
                     }
                 }
                 else
                 {
-                    _setSelectionPosition(_clampTextPosition(boundaryAtPosition__81898.boundaryStart), isEnd: isEnd__75897);
-                    if ((boundaryAtPosition__81898.boundaryStart.offset < this.range.start))
+                    _setSelectionPosition(_clampTextPosition(boundaryAtPositionLocal.boundaryStart), isEnd: isEndLocal);
+                    if ((boundaryAtPositionLocal.boundaryStart.offset < this.range.start))
                     {
                         return SelectionResult.previous;
                     }
-                    if ((boundaryAtPosition__81898.boundaryStart.offset >= this.range.start))
+                    if ((boundaryAtPositionLocal.boundaryStart.offset >= this.range.start))
                     {
                         return SelectionResult.end;
                     }
@@ -2068,64 +2068,64 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
 
     internal virtual SelectionResult? _updateSelectionEndEdgeByMultiSelectableTextBoundary(Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, bool paragraphContainsPosition, TextPosition position, TextPosition? existingSelectionStart, TextPosition? existingSelectionEnd)
     {
-        var isEnd__84632 = true;
+        var isEndLocal = true;
         if (((this._selectableContainsOriginTextBoundary && (existingSelectionStart is not null)) && (existingSelectionEnd is not null)))
         {
-            bool forwardSelection__84894 = (existingSelectionEnd.offset >= existingSelectionStart.offset);
+            bool forwardSelection = (existingSelectionEnd.offset >= existingSelectionStart.offset);
             if (paragraphContainsPosition)
             {
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition__85179 = getTextBoundary(position, this.fullText);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary__85642 = getTextBoundary((forwardSelection__84894 ? existingSelectionStart : new global::Doroti.Ui.TextPosition(offset: (existingSelectionStart.offset - 1L), affinity: existingSelectionStart.affinity)), this.fullText);
-                global::Doroti.Ui.TextPosition targetPosition__85975 = default!;
-                long pivotOffset__86009 = (forwardSelection__84894 ? originTextBoundary__85642.boundaryStart.offset : originTextBoundary__85642.boundaryEnd.offset);
-                var shouldSwapEdges__86161 = (!forwardSelection__84894 != ((position.offset < pivotOffset__86009)));
-                if ((position.offset < pivotOffset__86009))
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition = getTextBoundary(position, this.fullText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary = getTextBoundary((forwardSelection ? existingSelectionStart : new global::Doroti.Ui.TextPosition(offset: (existingSelectionStart.offset - 1L), affinity: existingSelectionStart.affinity)), this.fullText);
+                global::Doroti.Ui.TextPosition targetPosition = default!;
+                long pivotOffset = (forwardSelection ? originTextBoundary.boundaryStart.offset : originTextBoundary.boundaryEnd.offset);
+                var shouldSwapEdges = (!forwardSelection != ((position.offset < pivotOffset)));
+                if ((position.offset < pivotOffset))
                 {
-                    targetPosition__85975 = boundaryAtPosition__85179.boundaryStart;
+                    targetPosition = boundaryAtPosition.boundaryStart;
                 }
                 else
                 {
-                    if ((position.offset > pivotOffset__86009))
+                    if ((position.offset > pivotOffset))
                     {
-                        targetPosition__85975 = boundaryAtPosition__85179.boundaryEnd;
+                        targetPosition = boundaryAtPosition.boundaryEnd;
                     }
                     else
                     {
-                        targetPosition__85975 = (forwardSelection__84894 ? existingSelectionEnd : existingSelectionStart);
+                        targetPosition = (forwardSelection ? existingSelectionEnd : existingSelectionStart);
                     }
                 }
-                if (shouldSwapEdges__86161)
+                if (shouldSwapEdges)
                 {
-                    _setSelectionPosition(_clampTextPosition((forwardSelection__84894 ? originTextBoundary__85642.boundaryEnd : originTextBoundary__85642.boundaryStart)), isEnd: false);
+                    _setSelectionPosition(_clampTextPosition((forwardSelection ? originTextBoundary.boundaryEnd : originTextBoundary.boundaryStart)), isEnd: false);
                 }
-                _setSelectionPosition(_clampTextPosition(targetPosition__85975), isEnd: isEnd__84632);
-                bool finalSelectionIsForward__87020 = (this._textSelectionEnd!.offset >= this._textSelectionStart!.offset);
-                if (((boundaryAtPosition__85179.boundaryStart.offset > this.range.end) && (boundaryAtPosition__85179.boundaryEnd.offset > this.range.end)))
+                _setSelectionPosition(_clampTextPosition(targetPosition), isEnd: isEndLocal);
+                bool finalSelectionIsForward = (this._textSelectionEnd!.offset >= this._textSelectionStart!.offset);
+                if (((boundaryAtPosition.boundaryStart.offset > this.range.end) && (boundaryAtPosition.boundaryEnd.offset > this.range.end)))
                 {
                     return SelectionResult.next;
                 }
-                if (((boundaryAtPosition__85179.boundaryStart.offset < this.range.start) && (boundaryAtPosition__85179.boundaryEnd.offset < this.range.start)))
+                if (((boundaryAtPosition.boundaryStart.offset < this.range.start) && (boundaryAtPosition.boundaryEnd.offset < this.range.start)))
                 {
                     return SelectionResult.previous;
                 }
-                if (finalSelectionIsForward__87020)
+                if (finalSelectionIsForward)
                 {
-                    if ((boundaryAtPosition__85179.boundaryEnd.offset <= originTextBoundary__85642.boundaryEnd.offset))
+                    if ((boundaryAtPosition.boundaryEnd.offset <= originTextBoundary.boundaryEnd.offset))
                     {
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPosition__85179.boundaryEnd.offset > originTextBoundary__85642.boundaryEnd.offset))
+                    if ((boundaryAtPosition.boundaryEnd.offset > originTextBoundary.boundaryEnd.offset))
                     {
                         return SelectionResult.next;
                     }
                 }
                 else
                 {
-                    if ((boundaryAtPosition__85179.boundaryStart.offset >= originTextBoundary__85642.boundaryStart.offset))
+                    if ((boundaryAtPosition.boundaryStart.offset >= originTextBoundary.boundaryStart.offset))
                     {
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPosition__85179.boundaryStart.offset < originTextBoundary__85642.boundaryStart.offset))
+                    if ((boundaryAtPosition.boundaryStart.offset < originTextBoundary.boundaryStart.offset))
                     {
                         return SelectionResult.previous;
                     }
@@ -2133,75 +2133,75 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             }
             else
             {
-                global::Doroti.Ui.TextPosition clampedPosition__88340 = _clampTextPosition(position);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary__88793 = getTextBoundary((forwardSelection__84894 ? existingSelectionStart : new global::Doroti.Ui.TextPosition(offset: (existingSelectionStart.offset - 1L), affinity: existingSelectionStart.affinity)), this.fullText);
-                if ((forwardSelection__84894 && (clampedPosition__88340.offset == this.range.start)))
+                global::Doroti.Ui.TextPosition clampedPosition = _clampTextPosition(position);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundaryLocal = getTextBoundary((forwardSelection ? existingSelectionStart : new global::Doroti.Ui.TextPosition(offset: (existingSelectionStart.offset - 1L), affinity: existingSelectionStart.affinity)), this.fullText);
+                if ((forwardSelection && (clampedPosition.offset == this.range.start)))
                 {
-                    _setSelectionPosition(_clampTextPosition(originTextBoundary__88793.boundaryEnd), isEnd: false);
-                    _setSelectionPosition(clampedPosition__88340, isEnd: isEnd__84632);
+                    _setSelectionPosition(_clampTextPosition(originTextBoundaryLocal.boundaryEnd), isEnd: false);
+                    _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if ((!forwardSelection__84894 && (clampedPosition__88340.offset == this.range.end)))
+                if ((!forwardSelection && (clampedPosition.offset == this.range.end)))
                 {
-                    _setSelectionPosition(_clampTextPosition(originTextBoundary__88793.boundaryStart), isEnd: false);
-                    _setSelectionPosition(clampedPosition__88340, isEnd: isEnd__84632);
+                    _setSelectionPosition(_clampTextPosition(originTextBoundaryLocal.boundaryStart), isEnd: false);
+                    _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if ((forwardSelection__84894 && (clampedPosition__88340.offset == this.range.end)))
+                if ((forwardSelection && (clampedPosition.offset == this.range.end)))
                 {
-                    _setSelectionPosition(clampedPosition__88340, isEnd: isEnd__84632);
+                    _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if ((!forwardSelection__84894 && (clampedPosition__88340.offset == this.range.start)))
+                if ((!forwardSelection && (clampedPosition.offset == this.range.start)))
                 {
-                    _setSelectionPosition(clampedPosition__88340, isEnd: isEnd__84632);
+                    _setSelectionPosition(clampedPosition, isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
             }
         }
         else
         {
-            var positionOnPlaceholder__90374 = (this.paragraph.getWordBoundary(position).textInside(this.fullText) == _placeholderCharacter);
-            if ((!paragraphContainsPosition || positionOnPlaceholder__90374))
+            var positionOnPlaceholder = (this.paragraph.getWordBoundary(position).textInside(this.fullText) == _placeholderCharacter);
+            if ((!paragraphContainsPosition || positionOnPlaceholder))
             {
                 return null;
             }
             if ((existingSelectionStart is not null))
             {
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition__90663 = getTextBoundary(position, this.fullText);
-                bool backwardSelection__90740 = ((((existingSelectionEnd is null) && (existingSelectionStart.offset == this.range.end)) || ((object.Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionStart.offset == this.range.end))) || ((existingSelectionEnd is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
-                if (((boundaryAtPosition__90663.boundaryStart.offset < this.range.start) && (boundaryAtPosition__90663.boundaryEnd.offset < this.range.start)))
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionLocal = getTextBoundary(position, this.fullText);
+                bool backwardSelection = ((((existingSelectionEnd is null) && (existingSelectionStart.offset == this.range.end)) || ((object.Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionStart.offset == this.range.end))) || ((existingSelectionEnd is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
+                if (((boundaryAtPositionLocal.boundaryStart.offset < this.range.start) && (boundaryAtPositionLocal.boundaryEnd.offset < this.range.start)))
                 {
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEnd__84632);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if (((boundaryAtPosition__90663.boundaryStart.offset > this.range.end) && (boundaryAtPosition__90663.boundaryEnd.offset > this.range.end)))
+                if (((boundaryAtPositionLocal.boundaryStart.offset > this.range.end) && (boundaryAtPositionLocal.boundaryEnd.offset > this.range.end)))
                 {
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__84632);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if (backwardSelection__90740)
+                if (backwardSelection)
                 {
-                    _setSelectionPosition(_clampTextPosition(boundaryAtPosition__90663.boundaryStart), isEnd: isEnd__84632);
-                    if ((boundaryAtPosition__90663.boundaryStart.offset < this.range.start))
+                    _setSelectionPosition(_clampTextPosition(boundaryAtPositionLocal.boundaryStart), isEnd: isEndLocal);
+                    if ((boundaryAtPositionLocal.boundaryStart.offset < this.range.start))
                     {
                         return SelectionResult.previous;
                     }
-                    if ((boundaryAtPosition__90663.boundaryStart.offset >= this.range.start))
+                    if ((boundaryAtPositionLocal.boundaryStart.offset >= this.range.start))
                     {
                         return SelectionResult.end;
                     }
                 }
                 else
                 {
-                    if ((boundaryAtPosition__90663.boundaryEnd.offset <= this.range.end))
+                    if ((boundaryAtPositionLocal.boundaryEnd.offset <= this.range.end))
                     {
-                        _setSelectionPosition(_clampTextPosition(boundaryAtPosition__90663.boundaryEnd), isEnd: isEnd__84632);
+                        _setSelectionPosition(_clampTextPosition(boundaryAtPositionLocal.boundaryEnd), isEnd: isEndLocal);
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPosition__90663.boundaryEnd.offset > this.range.end))
+                    if ((boundaryAtPositionLocal.boundaryEnd.offset > this.range.end))
                     {
-                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__84632);
+                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                         return SelectionResult.next;
                     }
                 }
@@ -2213,78 +2213,78 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
 
     internal virtual SelectionResult? _updateSelectionStartEdgeAtPlaceholderByMultiSelectableTextBoundary(Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, Offset globalPosition, bool paragraphContainsPosition, TextPosition position, TextPosition? existingSelectionStart, TextPosition? existingSelectionEnd)
     {
-        var isEnd__93752 = false;
+        var isEndLocal = false;
         if (((this._selectableContainsOriginTextBoundary && (existingSelectionStart is not null)) && (existingSelectionEnd is not null)))
         {
-            bool forwardSelection__94015 = (existingSelectionEnd.offset >= existingSelectionStart.offset);
-            RenderParagraph originParagraph__94124 = _getOriginParagraph();
-            var fragmentBelongsToOriginParagraph__94177 = (object.Equals(originParagraph__94124, this.paragraph));
-            if (fragmentBelongsToOriginParagraph__94177)
+            bool forwardSelection = (existingSelectionEnd.offset >= existingSelectionStart.offset);
+            RenderParagraph originParagraph = _getOriginParagraph();
+            var fragmentBelongsToOriginParagraph = (object.Equals(originParagraph, this.paragraph));
+            if (fragmentBelongsToOriginParagraph)
             {
                 return _updateSelectionStartEdgeByMultiSelectableTextBoundary((Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, paragraphContainsPosition, position, existingSelectionStart, existingSelectionEnd);
             }
-            Matrix4 originTransform__94548 = originParagraph__94124.getTransformTo(null);
-            originTransform__94548.invert();
-            global::Doroti.Ui.Offset originParagraphLocalPosition__94655 = MatrixUtils.transformPoint(originTransform__94548, globalPosition);
-            bool positionWithinOriginParagraph__94789 = originParagraph__94124.paintBounds.contains(originParagraphLocalPosition__94655);
-            global::Doroti.Ui.TextPosition positionRelativeToOriginParagraph__94931 = originParagraph__94124.getPositionForOffset(originParagraphLocalPosition__94655);
-            if (positionWithinOriginParagraph__94789)
+            Matrix4 originTransform = originParagraph.getTransformTo(null);
+            originTransform.invert();
+            global::Doroti.Ui.Offset originParagraphLocalPosition = MatrixUtils.transformPoint(originTransform, globalPosition);
+            bool positionWithinOriginParagraph = originParagraph.paintBounds.contains(originParagraphLocalPosition);
+            global::Doroti.Ui.TextPosition positionRelativeToOriginParagraph = originParagraph.getPositionForOffset(originParagraphLocalPosition);
+            if (positionWithinOriginParagraph)
             {
-                string originText__95344 = ((RenderParagraph)originParagraph__94124).text.toPlainText(includeSemanticsLabels: false);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition__95456 = getTextBoundary(positionRelativeToOriginParagraph__94931, originText__95344);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary__95606 = getTextBoundary(_getPositionInParagraph(originParagraph__94124), originText__95344);
-                global::Doroti.Ui.TextPosition targetPosition__95756 = default!;
-                long pivotOffset__95790 = (forwardSelection__94015 ? originTextBoundary__95606.boundaryEnd.offset : originTextBoundary__95606.boundaryStart.offset);
-                var shouldSwapEdges__95942 = (!forwardSelection__94015 != ((positionRelativeToOriginParagraph__94931.offset > pivotOffset__95790)));
-                if ((positionRelativeToOriginParagraph__94931.offset < pivotOffset__95790))
+                string originText = ((RenderParagraph)originParagraph).text.toPlainText(includeSemanticsLabels: false);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition = getTextBoundary(positionRelativeToOriginParagraph, originText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary = getTextBoundary(_getPositionInParagraph(originParagraph), originText);
+                global::Doroti.Ui.TextPosition targetPosition = default!;
+                long pivotOffset = (forwardSelection ? originTextBoundary.boundaryEnd.offset : originTextBoundary.boundaryStart.offset);
+                var shouldSwapEdges = (!forwardSelection != ((positionRelativeToOriginParagraph.offset > pivotOffset)));
+                if ((positionRelativeToOriginParagraph.offset < pivotOffset))
                 {
-                    targetPosition__95756 = boundaryAtPosition__95456.boundaryStart;
+                    targetPosition = boundaryAtPosition.boundaryStart;
                 }
                 else
                 {
-                    if ((positionRelativeToOriginParagraph__94931.offset > pivotOffset__95790))
+                    if ((positionRelativeToOriginParagraph.offset > pivotOffset))
                     {
-                        targetPosition__95756 = boundaryAtPosition__95456.boundaryEnd;
+                        targetPosition = boundaryAtPosition.boundaryEnd;
                     }
                     else
                     {
-                        targetPosition__95756 = existingSelectionStart;
+                        targetPosition = existingSelectionStart;
                     }
                 }
-                if (shouldSwapEdges__95942)
+                if (shouldSwapEdges)
                 {
                     _setSelectionPosition(existingSelectionStart, isEnd: true);
                 }
-                _setSelectionPosition(_clampTextPosition(targetPosition__95756), isEnd: isEnd__93752);
-                bool finalSelectionIsForward__96697 = (this._textSelectionEnd!.offset >= this._textSelectionStart!.offset);
-                global::Doroti.Ui.TextPosition originParagraphPlaceholderTextPosition__96820 = _getPositionInParagraph(originParagraph__94124);
-                var originParagraphPlaceholderRange__96938 = new global::Doroti.Ui.TextRange(start: originParagraphPlaceholderTextPosition__96820.offset, end: (originParagraphPlaceholderTextPosition__96820.offset + _placeholderLength));
-                if (((boundaryAtPosition__95456.boundaryStart.offset > originParagraphPlaceholderRange__96938.end) && (boundaryAtPosition__95456.boundaryEnd.offset > originParagraphPlaceholderRange__96938.end)))
+                _setSelectionPosition(_clampTextPosition(targetPosition), isEnd: isEndLocal);
+                bool finalSelectionIsForward = (this._textSelectionEnd!.offset >= this._textSelectionStart!.offset);
+                global::Doroti.Ui.TextPosition originParagraphPlaceholderTextPosition = _getPositionInParagraph(originParagraph);
+                var originParagraphPlaceholderRange = new global::Doroti.Ui.TextRange(start: originParagraphPlaceholderTextPosition.offset, end: (originParagraphPlaceholderTextPosition.offset + _placeholderLength));
+                if (((boundaryAtPosition.boundaryStart.offset > originParagraphPlaceholderRange.end) && (boundaryAtPosition.boundaryEnd.offset > originParagraphPlaceholderRange.end)))
                 {
                     return SelectionResult.next;
                 }
-                if (((boundaryAtPosition__95456.boundaryStart.offset < originParagraphPlaceholderRange__96938.start) && (boundaryAtPosition__95456.boundaryEnd.offset < originParagraphPlaceholderRange__96938.start)))
+                if (((boundaryAtPosition.boundaryStart.offset < originParagraphPlaceholderRange.start) && (boundaryAtPosition.boundaryEnd.offset < originParagraphPlaceholderRange.start)))
                 {
                     return SelectionResult.previous;
                 }
-                if (finalSelectionIsForward__96697)
+                if (finalSelectionIsForward)
                 {
-                    if ((boundaryAtPosition__95456.boundaryEnd.offset <= originTextBoundary__95606.boundaryEnd.offset))
+                    if ((boundaryAtPosition.boundaryEnd.offset <= originTextBoundary.boundaryEnd.offset))
                     {
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPosition__95456.boundaryEnd.offset > originTextBoundary__95606.boundaryEnd.offset))
+                    if ((boundaryAtPosition.boundaryEnd.offset > originTextBoundary.boundaryEnd.offset))
                     {
                         return SelectionResult.next;
                     }
                 }
                 else
                 {
-                    if ((boundaryAtPosition__95456.boundaryStart.offset >= originTextBoundary__95606.boundaryStart.offset))
+                    if ((boundaryAtPosition.boundaryStart.offset >= originTextBoundary.boundaryStart.offset))
                     {
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPosition__95456.boundaryStart.offset < originTextBoundary__95606.boundaryStart.offset))
+                    if ((boundaryAtPosition.boundaryStart.offset < originTextBoundary.boundaryStart.offset))
                     {
                         return SelectionResult.previous;
                     }
@@ -2292,30 +2292,30 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             }
             else
             {
-                global::Doroti.Ui.Offset adjustedOffset__98687 = SelectionUtils.adjustDragOffset(originParagraph__94124.paintBounds, originParagraphLocalPosition__94655, direction: ((RenderParagraph)this.paragraph).textDirection);
-                global::Doroti.Ui.TextPosition adjustedPositionRelativeToOriginParagraph__98900 = originParagraph__94124.getPositionForOffset(adjustedOffset__98687);
-                global::Doroti.Ui.TextPosition originParagraphPlaceholderTextPosition__99038 = _getPositionInParagraph(originParagraph__94124);
-                var originParagraphPlaceholderRange__99156 = new global::Doroti.Ui.TextRange(start: originParagraphPlaceholderTextPosition__99038.offset, end: (originParagraphPlaceholderTextPosition__99038.offset + _placeholderLength));
-                if ((forwardSelection__94015 && (adjustedPositionRelativeToOriginParagraph__98900.offset <= originParagraphPlaceholderRange__99156.start)))
+                global::Doroti.Ui.Offset adjustedOffset = SelectionUtils.adjustDragOffset(originParagraph.paintBounds, originParagraphLocalPosition, direction: ((RenderParagraph)this.paragraph).textDirection);
+                global::Doroti.Ui.TextPosition adjustedPositionRelativeToOriginParagraph = originParagraph.getPositionForOffset(adjustedOffset);
+                global::Doroti.Ui.TextPosition originParagraphPlaceholderTextPositionLocal = _getPositionInParagraph(originParagraph);
+                var originParagraphPlaceholderRangeLocal = new global::Doroti.Ui.TextRange(start: originParagraphPlaceholderTextPositionLocal.offset, end: (originParagraphPlaceholderTextPositionLocal.offset + _placeholderLength));
+                if ((forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset <= originParagraphPlaceholderRangeLocal.start)))
                 {
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEnd__93752);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if ((!forwardSelection__94015 && (adjustedPositionRelativeToOriginParagraph__98900.offset >= originParagraphPlaceholderRange__99156.end)))
+                if ((!forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset >= originParagraphPlaceholderRangeLocal.end)))
                 {
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__93752);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if ((forwardSelection__94015 && (adjustedPositionRelativeToOriginParagraph__98900.offset >= originParagraphPlaceholderRange__99156.end)))
+                if ((forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset >= originParagraphPlaceholderRangeLocal.end)))
                 {
                     _setSelectionPosition(existingSelectionStart, isEnd: true);
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__93752);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if ((!forwardSelection__94015 && (adjustedPositionRelativeToOriginParagraph__98900.offset <= originParagraphPlaceholderRange__99156.start)))
+                if ((!forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset <= originParagraphPlaceholderRangeLocal.start)))
                 {
                     _setSelectionPosition(existingSelectionStart, isEnd: true);
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEnd__93752);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
             }
@@ -2328,56 +2328,56 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             }
             if ((existingSelectionEnd is not null))
             {
-                (RenderParagraph paragraph, global::Doroti.Ui.Offset localPosition)? targetDetails__101250 = _getParagraphContainingPosition(globalPosition);
-                if ((targetDetails__101250 is null))
+                (RenderParagraph paragraph, global::Doroti.Ui.Offset localPosition)? targetDetails = _getParagraphContainingPosition(globalPosition);
+                if ((targetDetails is null))
                 {
                     return null;
                 }
-                RenderParagraph targetParagraph__101427 = DartRuntimePrimitives.RequireValue(targetDetails__101250).paragraph;
-                global::Doroti.Ui.TextPosition positionRelativeToTargetParagraph__101497 = targetParagraph__101427.getPositionForOffset(DartRuntimePrimitives.RequireValue(targetDetails__101250).localPosition);
-                string targetText__101642 = ((RenderParagraph)targetParagraph__101427).text.toPlainText(includeSemanticsLabels: false);
-                var positionOnPlaceholder__101734 = (targetParagraph__101427.getWordBoundary(positionRelativeToTargetParagraph__101497).textInside(targetText__101642) == _placeholderCharacter);
-                if (positionOnPlaceholder__101734)
+                RenderParagraph targetParagraph = DartRuntimePrimitives.RequireValue(targetDetails).paragraph;
+                global::Doroti.Ui.TextPosition positionRelativeToTargetParagraph = targetParagraph.getPositionForOffset(DartRuntimePrimitives.RequireValue(targetDetails).localPosition);
+                string targetText = ((RenderParagraph)targetParagraph).text.toPlainText(includeSemanticsLabels: false);
+                var positionOnPlaceholder = (targetParagraph.getWordBoundary(positionRelativeToTargetParagraph).textInside(targetText) == _placeholderCharacter);
+                if (positionOnPlaceholder)
                 {
                     return null;
                 }
-                bool backwardSelection__102021 = ((((existingSelectionStart is null) && (existingSelectionEnd.offset == this.range.start)) || ((object.Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionEnd.offset == this.range.start))) || ((existingSelectionStart is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionRelativeToTargetParagraph__102414 = getTextBoundary(positionRelativeToTargetParagraph__101497, targetText__101642);
-                global::Doroti.Ui.TextPosition targetParagraphPlaceholderTextPosition__102582 = _getPositionInParagraph(targetParagraph__101427);
-                var targetParagraphPlaceholderRange__102700 = new global::Doroti.Ui.TextRange(start: targetParagraphPlaceholderTextPosition__102582.offset, end: (targetParagraphPlaceholderTextPosition__102582.offset + _placeholderLength));
-                if (((boundaryAtPositionRelativeToTargetParagraph__102414.boundaryStart.offset < targetParagraphPlaceholderRange__102700.start) && (boundaryAtPositionRelativeToTargetParagraph__102414.boundaryEnd.offset < targetParagraphPlaceholderRange__102700.start)))
+                bool backwardSelection = ((((existingSelectionStart is null) && (existingSelectionEnd.offset == this.range.start)) || ((object.Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionEnd.offset == this.range.start))) || ((existingSelectionStart is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionRelativeToTargetParagraph = getTextBoundary(positionRelativeToTargetParagraph, targetText);
+                global::Doroti.Ui.TextPosition targetParagraphPlaceholderTextPosition = _getPositionInParagraph(targetParagraph);
+                var targetParagraphPlaceholderRange = new global::Doroti.Ui.TextRange(start: targetParagraphPlaceholderTextPosition.offset, end: (targetParagraphPlaceholderTextPosition.offset + _placeholderLength));
+                if (((boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset < targetParagraphPlaceholderRange.start) && (boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset < targetParagraphPlaceholderRange.start)))
                 {
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEnd__93752);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if (((boundaryAtPositionRelativeToTargetParagraph__102414.boundaryStart.offset > targetParagraphPlaceholderRange__102700.end) && (boundaryAtPositionRelativeToTargetParagraph__102414.boundaryEnd.offset > targetParagraphPlaceholderRange__102700.end)))
+                if (((boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset > targetParagraphPlaceholderRange.end) && (boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset > targetParagraphPlaceholderRange.end)))
                 {
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__93752);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if (backwardSelection__102021)
+                if (backwardSelection)
                 {
-                    if ((boundaryAtPositionRelativeToTargetParagraph__102414.boundaryEnd.offset <= targetParagraphPlaceholderRange__102700.end))
+                    if ((boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset <= targetParagraphPlaceholderRange.end))
                     {
-                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__93752);
+                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPositionRelativeToTargetParagraph__102414.boundaryEnd.offset > targetParagraphPlaceholderRange__102700.end))
+                    if ((boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset > targetParagraphPlaceholderRange.end))
                     {
-                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__93752);
+                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                         return SelectionResult.next;
                     }
                 }
                 else
                 {
-                    if ((boundaryAtPositionRelativeToTargetParagraph__102414.boundaryStart.offset >= targetParagraphPlaceholderRange__102700.start))
+                    if ((boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset >= targetParagraphPlaceholderRange.start))
                     {
-                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEnd__93752);
+                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPositionRelativeToTargetParagraph__102414.boundaryStart.offset < targetParagraphPlaceholderRange__102700.start))
+                    if ((boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset < targetParagraphPlaceholderRange.start))
                     {
-                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEnd__93752);
+                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
                         return SelectionResult.previous;
                     }
                 }
@@ -2389,78 +2389,78 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
 
     internal virtual SelectionResult? _updateSelectionEndEdgeAtPlaceholderByMultiSelectableTextBoundary(Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, Offset globalPosition, bool paragraphContainsPosition, TextPosition position, TextPosition? existingSelectionStart, TextPosition? existingSelectionEnd)
     {
-        var isEnd__105892 = true;
+        var isEndLocal = true;
         if (((this._selectableContainsOriginTextBoundary && (existingSelectionStart is not null)) && (existingSelectionEnd is not null)))
         {
-            bool forwardSelection__106154 = (existingSelectionEnd.offset >= existingSelectionStart.offset);
-            RenderParagraph originParagraph__106263 = _getOriginParagraph();
-            var fragmentBelongsToOriginParagraph__106316 = (object.Equals(originParagraph__106263, this.paragraph));
-            if (fragmentBelongsToOriginParagraph__106316)
+            bool forwardSelection = (existingSelectionEnd.offset >= existingSelectionStart.offset);
+            RenderParagraph originParagraph = _getOriginParagraph();
+            var fragmentBelongsToOriginParagraph = (object.Equals(originParagraph, this.paragraph));
+            if (fragmentBelongsToOriginParagraph)
             {
                 return _updateSelectionEndEdgeByMultiSelectableTextBoundary((Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, paragraphContainsPosition, position, existingSelectionStart, existingSelectionEnd);
             }
-            Matrix4 originTransform__106685 = originParagraph__106263.getTransformTo(null);
-            originTransform__106685.invert();
-            global::Doroti.Ui.Offset originParagraphLocalPosition__106792 = MatrixUtils.transformPoint(originTransform__106685, globalPosition);
-            bool positionWithinOriginParagraph__106926 = originParagraph__106263.paintBounds.contains(originParagraphLocalPosition__106792);
-            global::Doroti.Ui.TextPosition positionRelativeToOriginParagraph__107068 = originParagraph__106263.getPositionForOffset(originParagraphLocalPosition__106792);
-            if (positionWithinOriginParagraph__106926)
+            Matrix4 originTransform = originParagraph.getTransformTo(null);
+            originTransform.invert();
+            global::Doroti.Ui.Offset originParagraphLocalPosition = MatrixUtils.transformPoint(originTransform, globalPosition);
+            bool positionWithinOriginParagraph = originParagraph.paintBounds.contains(originParagraphLocalPosition);
+            global::Doroti.Ui.TextPosition positionRelativeToOriginParagraph = originParagraph.getPositionForOffset(originParagraphLocalPosition);
+            if (positionWithinOriginParagraph)
             {
-                string originText__107481 = ((RenderParagraph)originParagraph__106263).text.toPlainText(includeSemanticsLabels: false);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition__107593 = getTextBoundary(positionRelativeToOriginParagraph__107068, originText__107481);
-                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary__107743 = getTextBoundary(_getPositionInParagraph(originParagraph__106263), originText__107481);
-                global::Doroti.Ui.TextPosition targetPosition__107893 = default!;
-                long pivotOffset__107927 = (forwardSelection__106154 ? originTextBoundary__107743.boundaryStart.offset : originTextBoundary__107743.boundaryEnd.offset);
-                var shouldSwapEdges__108079 = (!forwardSelection__106154 != ((positionRelativeToOriginParagraph__107068.offset < pivotOffset__107927)));
-                if ((positionRelativeToOriginParagraph__107068.offset < pivotOffset__107927))
+                string originText = ((RenderParagraph)originParagraph).text.toPlainText(includeSemanticsLabels: false);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPosition = getTextBoundary(positionRelativeToOriginParagraph, originText);
+                (TextPosition boundaryEnd, TextPosition boundaryStart) originTextBoundary = getTextBoundary(_getPositionInParagraph(originParagraph), originText);
+                global::Doroti.Ui.TextPosition targetPosition = default!;
+                long pivotOffset = (forwardSelection ? originTextBoundary.boundaryStart.offset : originTextBoundary.boundaryEnd.offset);
+                var shouldSwapEdges = (!forwardSelection != ((positionRelativeToOriginParagraph.offset < pivotOffset)));
+                if ((positionRelativeToOriginParagraph.offset < pivotOffset))
                 {
-                    targetPosition__107893 = boundaryAtPosition__107593.boundaryStart;
+                    targetPosition = boundaryAtPosition.boundaryStart;
                 }
                 else
                 {
-                    if ((positionRelativeToOriginParagraph__107068.offset > pivotOffset__107927))
+                    if ((positionRelativeToOriginParagraph.offset > pivotOffset))
                     {
-                        targetPosition__107893 = boundaryAtPosition__107593.boundaryEnd;
+                        targetPosition = boundaryAtPosition.boundaryEnd;
                     }
                     else
                     {
-                        targetPosition__107893 = existingSelectionEnd;
+                        targetPosition = existingSelectionEnd;
                     }
                 }
-                if (shouldSwapEdges__108079)
+                if (shouldSwapEdges)
                 {
                     _setSelectionPosition(existingSelectionEnd, isEnd: false);
                 }
-                _setSelectionPosition(_clampTextPosition(targetPosition__107893), isEnd: isEnd__105892);
-                bool finalSelectionIsForward__108831 = (this._textSelectionEnd!.offset >= this._textSelectionStart!.offset);
-                global::Doroti.Ui.TextPosition originParagraphPlaceholderTextPosition__108954 = _getPositionInParagraph(originParagraph__106263);
-                var originParagraphPlaceholderRange__109072 = new global::Doroti.Ui.TextRange(start: originParagraphPlaceholderTextPosition__108954.offset, end: (originParagraphPlaceholderTextPosition__108954.offset + _placeholderLength));
-                if (((boundaryAtPosition__107593.boundaryStart.offset > originParagraphPlaceholderRange__109072.end) && (boundaryAtPosition__107593.boundaryEnd.offset > originParagraphPlaceholderRange__109072.end)))
+                _setSelectionPosition(_clampTextPosition(targetPosition), isEnd: isEndLocal);
+                bool finalSelectionIsForward = (this._textSelectionEnd!.offset >= this._textSelectionStart!.offset);
+                global::Doroti.Ui.TextPosition originParagraphPlaceholderTextPosition = _getPositionInParagraph(originParagraph);
+                var originParagraphPlaceholderRange = new global::Doroti.Ui.TextRange(start: originParagraphPlaceholderTextPosition.offset, end: (originParagraphPlaceholderTextPosition.offset + _placeholderLength));
+                if (((boundaryAtPosition.boundaryStart.offset > originParagraphPlaceholderRange.end) && (boundaryAtPosition.boundaryEnd.offset > originParagraphPlaceholderRange.end)))
                 {
                     return SelectionResult.next;
                 }
-                if (((boundaryAtPosition__107593.boundaryStart.offset < originParagraphPlaceholderRange__109072.start) && (boundaryAtPosition__107593.boundaryEnd.offset < originParagraphPlaceholderRange__109072.start)))
+                if (((boundaryAtPosition.boundaryStart.offset < originParagraphPlaceholderRange.start) && (boundaryAtPosition.boundaryEnd.offset < originParagraphPlaceholderRange.start)))
                 {
                     return SelectionResult.previous;
                 }
-                if (finalSelectionIsForward__108831)
+                if (finalSelectionIsForward)
                 {
-                    if ((boundaryAtPosition__107593.boundaryEnd.offset <= originTextBoundary__107743.boundaryEnd.offset))
+                    if ((boundaryAtPosition.boundaryEnd.offset <= originTextBoundary.boundaryEnd.offset))
                     {
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPosition__107593.boundaryEnd.offset > originTextBoundary__107743.boundaryEnd.offset))
+                    if ((boundaryAtPosition.boundaryEnd.offset > originTextBoundary.boundaryEnd.offset))
                     {
                         return SelectionResult.next;
                     }
                 }
                 else
                 {
-                    if ((boundaryAtPosition__107593.boundaryStart.offset >= originTextBoundary__107743.boundaryStart.offset))
+                    if ((boundaryAtPosition.boundaryStart.offset >= originTextBoundary.boundaryStart.offset))
                     {
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPosition__107593.boundaryStart.offset < originTextBoundary__107743.boundaryStart.offset))
+                    if ((boundaryAtPosition.boundaryStart.offset < originTextBoundary.boundaryStart.offset))
                     {
                         return SelectionResult.previous;
                     }
@@ -2468,30 +2468,30 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             }
             else
             {
-                global::Doroti.Ui.Offset adjustedOffset__110821 = SelectionUtils.adjustDragOffset(originParagraph__106263.paintBounds, originParagraphLocalPosition__106792, direction: ((RenderParagraph)this.paragraph).textDirection);
-                global::Doroti.Ui.TextPosition adjustedPositionRelativeToOriginParagraph__111034 = originParagraph__106263.getPositionForOffset(adjustedOffset__110821);
-                global::Doroti.Ui.TextPosition originParagraphPlaceholderTextPosition__111172 = _getPositionInParagraph(originParagraph__106263);
-                var originParagraphPlaceholderRange__111290 = new global::Doroti.Ui.TextRange(start: originParagraphPlaceholderTextPosition__111172.offset, end: (originParagraphPlaceholderTextPosition__111172.offset + _placeholderLength));
-                if ((forwardSelection__106154 && (adjustedPositionRelativeToOriginParagraph__111034.offset <= originParagraphPlaceholderRange__111290.start)))
+                global::Doroti.Ui.Offset adjustedOffset = SelectionUtils.adjustDragOffset(originParagraph.paintBounds, originParagraphLocalPosition, direction: ((RenderParagraph)this.paragraph).textDirection);
+                global::Doroti.Ui.TextPosition adjustedPositionRelativeToOriginParagraph = originParagraph.getPositionForOffset(adjustedOffset);
+                global::Doroti.Ui.TextPosition originParagraphPlaceholderTextPositionLocal = _getPositionInParagraph(originParagraph);
+                var originParagraphPlaceholderRangeLocal = new global::Doroti.Ui.TextRange(start: originParagraphPlaceholderTextPositionLocal.offset, end: (originParagraphPlaceholderTextPositionLocal.offset + _placeholderLength));
+                if ((forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset <= originParagraphPlaceholderRangeLocal.start)))
                 {
                     _setSelectionPosition(existingSelectionEnd, isEnd: false);
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEnd__105892);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if ((!forwardSelection__106154 && (adjustedPositionRelativeToOriginParagraph__111034.offset >= originParagraphPlaceholderRange__111290.end)))
+                if ((!forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset >= originParagraphPlaceholderRangeLocal.end)))
                 {
                     _setSelectionPosition(existingSelectionEnd, isEnd: false);
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__105892);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if ((forwardSelection__106154 && (adjustedPositionRelativeToOriginParagraph__111034.offset >= originParagraphPlaceholderRange__111290.end)))
+                if ((forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset >= originParagraphPlaceholderRangeLocal.end)))
                 {
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__105892);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if ((!forwardSelection__106154 && (adjustedPositionRelativeToOriginParagraph__111034.offset <= originParagraphPlaceholderRange__111290.start)))
+                if ((!forwardSelection && (adjustedPositionRelativeToOriginParagraph.offset <= originParagraphPlaceholderRangeLocal.start)))
                 {
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEnd__105892);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
             }
@@ -2504,56 +2504,56 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
             }
             if ((existingSelectionStart is not null))
             {
-                (RenderParagraph paragraph, global::Doroti.Ui.Offset localPosition)? targetDetails__113382 = _getParagraphContainingPosition(globalPosition);
-                if ((targetDetails__113382 is null))
+                (RenderParagraph paragraph, global::Doroti.Ui.Offset localPosition)? targetDetails = _getParagraphContainingPosition(globalPosition);
+                if ((targetDetails is null))
                 {
                     return null;
                 }
-                RenderParagraph targetParagraph__113559 = DartRuntimePrimitives.RequireValue(targetDetails__113382).paragraph;
-                global::Doroti.Ui.TextPosition positionRelativeToTargetParagraph__113629 = targetParagraph__113559.getPositionForOffset(DartRuntimePrimitives.RequireValue(targetDetails__113382).localPosition);
-                string targetText__113774 = ((RenderParagraph)targetParagraph__113559).text.toPlainText(includeSemanticsLabels: false);
-                var positionOnPlaceholder__113866 = (targetParagraph__113559.getWordBoundary(positionRelativeToTargetParagraph__113629).textInside(targetText__113774) == _placeholderCharacter);
-                if (positionOnPlaceholder__113866)
+                RenderParagraph targetParagraph = DartRuntimePrimitives.RequireValue(targetDetails).paragraph;
+                global::Doroti.Ui.TextPosition positionRelativeToTargetParagraph = targetParagraph.getPositionForOffset(DartRuntimePrimitives.RequireValue(targetDetails).localPosition);
+                string targetText = ((RenderParagraph)targetParagraph).text.toPlainText(includeSemanticsLabels: false);
+                var positionOnPlaceholder = (targetParagraph.getWordBoundary(positionRelativeToTargetParagraph).textInside(targetText) == _placeholderCharacter);
+                if (positionOnPlaceholder)
                 {
                     return null;
                 }
-                bool backwardSelection__114153 = ((((existingSelectionEnd is null) && (existingSelectionStart.offset == this.range.end)) || ((object.Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionStart.offset == this.range.end))) || ((existingSelectionEnd is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
-                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionRelativeToTargetParagraph__114542 = getTextBoundary(positionRelativeToTargetParagraph__113629, targetText__113774);
-                global::Doroti.Ui.TextPosition targetParagraphPlaceholderTextPosition__114710 = _getPositionInParagraph(targetParagraph__113559);
-                var targetParagraphPlaceholderRange__114828 = new global::Doroti.Ui.TextRange(start: targetParagraphPlaceholderTextPosition__114710.offset, end: (targetParagraphPlaceholderTextPosition__114710.offset + _placeholderLength));
-                if (((boundaryAtPositionRelativeToTargetParagraph__114542.boundaryStart.offset < targetParagraphPlaceholderRange__114828.start) && (boundaryAtPositionRelativeToTargetParagraph__114542.boundaryEnd.offset < targetParagraphPlaceholderRange__114828.start)))
+                bool backwardSelection = ((((existingSelectionEnd is null) && (existingSelectionStart.offset == this.range.end)) || ((object.Equals(existingSelectionStart, existingSelectionEnd)) && (existingSelectionStart.offset == this.range.end))) || ((existingSelectionEnd is not null) && (existingSelectionStart.offset > existingSelectionEnd.offset)));
+                (TextPosition boundaryEnd, TextPosition boundaryStart) boundaryAtPositionRelativeToTargetParagraph = getTextBoundary(positionRelativeToTargetParagraph, targetText);
+                global::Doroti.Ui.TextPosition targetParagraphPlaceholderTextPosition = _getPositionInParagraph(targetParagraph);
+                var targetParagraphPlaceholderRange = new global::Doroti.Ui.TextRange(start: targetParagraphPlaceholderTextPosition.offset, end: (targetParagraphPlaceholderTextPosition.offset + _placeholderLength));
+                if (((boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset < targetParagraphPlaceholderRange.start) && (boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset < targetParagraphPlaceholderRange.start)))
                 {
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEnd__105892);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
                     return SelectionResult.previous;
                 }
-                if (((boundaryAtPositionRelativeToTargetParagraph__114542.boundaryStart.offset > targetParagraphPlaceholderRange__114828.end) && (boundaryAtPositionRelativeToTargetParagraph__114542.boundaryEnd.offset > targetParagraphPlaceholderRange__114828.end)))
+                if (((boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset > targetParagraphPlaceholderRange.end) && (boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset > targetParagraphPlaceholderRange.end)))
                 {
-                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__105892);
+                    _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                     return SelectionResult.next;
                 }
-                if (backwardSelection__114153)
+                if (backwardSelection)
                 {
-                    if ((boundaryAtPositionRelativeToTargetParagraph__114542.boundaryStart.offset >= targetParagraphPlaceholderRange__114828.start))
+                    if ((boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset >= targetParagraphPlaceholderRange.start))
                     {
-                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEnd__105892);
+                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPositionRelativeToTargetParagraph__114542.boundaryStart.offset < targetParagraphPlaceholderRange__114828.start))
+                    if ((boundaryAtPositionRelativeToTargetParagraph.boundaryStart.offset < targetParagraphPlaceholderRange.start))
                     {
-                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEnd__105892);
+                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start), isEnd: isEndLocal);
                         return SelectionResult.previous;
                     }
                 }
                 else
                 {
-                    if ((boundaryAtPositionRelativeToTargetParagraph__114542.boundaryEnd.offset <= targetParagraphPlaceholderRange__114828.end))
+                    if ((boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset <= targetParagraphPlaceholderRange.end))
                     {
-                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__105892);
+                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                         return SelectionResult.end;
                     }
-                    if ((boundaryAtPositionRelativeToTargetParagraph__114542.boundaryEnd.offset > targetParagraphPlaceholderRange__114828.end))
+                    if ((boundaryAtPositionRelativeToTargetParagraph.boundaryEnd.offset > targetParagraphPlaceholderRange.end))
                     {
-                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEnd__105892);
+                        _setSelectionPosition(new global::Doroti.Ui.TextPosition(offset: this.range.end), isEnd: isEndLocal);
                         return SelectionResult.next;
                     }
                 }
@@ -2565,75 +2565,75 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
 
     internal virtual SelectionResult _updateSelectionEdgeByMultiSelectableTextBoundary(Offset globalPosition, bool isEnd, Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)> getTextBoundary, Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)> getClampedTextBoundary)
     {
-        global::Doroti.Ui.TextPosition? existingSelectionStart__117552 = this._textSelectionStart;
-        global::Doroti.Ui.TextPosition? existingSelectionEnd__117622 = this._textSelectionEnd;
+        global::Doroti.Ui.TextPosition? existingSelectionStart = this._textSelectionStart;
+        global::Doroti.Ui.TextPosition? existingSelectionEnd = this._textSelectionEnd;
         _setSelectionPosition(null, isEnd: isEnd);
-        Matrix4 transform__117730 = this.paragraph.getTransformTo(null);
-        transform__117730.invert();
-        global::Doroti.Ui.Offset localPosition__117815 = MatrixUtils.transformPoint(transform__117730, globalPosition);
+        Matrix4 transform = this.paragraph.getTransformTo(null);
+        transform.invert();
+        global::Doroti.Ui.Offset localPosition = MatrixUtils.transformPoint(transform, globalPosition);
         if (this._rect.isEmpty)
         {
-            SelectionResult result__117939 = SelectionUtils.getResultBasedOnRect(this._rect, localPosition__117815);
-            _setSelectionPosition(((object.Equals(result__117939, SelectionResult.next)) ? new global::Doroti.Ui.TextPosition(offset: this.range.end) : new global::Doroti.Ui.TextPosition(offset: this.range.start, affinity: TextAffinity.upstream)), isEnd: isEnd);
-            return result__117939;
+            SelectionResult result = SelectionUtils.getResultBasedOnRect(this._rect, localPosition);
+            _setSelectionPosition(((object.Equals(result, SelectionResult.next)) ? new global::Doroti.Ui.TextPosition(offset: this.range.end) : new global::Doroti.Ui.TextPosition(offset: this.range.start, affinity: TextAffinity.upstream)), isEnd: isEnd);
+            return result;
         }
-        global::Doroti.Ui.Offset adjustedOffset__118278 = SelectionUtils.adjustDragOffset(this._rect, localPosition__117815, direction: ((RenderParagraph)this.paragraph).textDirection);
-        global::Doroti.Ui.Offset adjustedOffsetRelativeToParagraph__118428 = SelectionUtils.adjustDragOffset(this.paragraph.paintBounds, localPosition__117815, direction: ((RenderParagraph)this.paragraph).textDirection);
-        global::Doroti.Ui.TextPosition position__118620 = this.paragraph.getPositionForOffset(adjustedOffset__118278);
-        global::Doroti.Ui.TextPosition positionInFullText__118702 = this.paragraph.getPositionForOffset(adjustedOffsetRelativeToParagraph__118428);
-        SelectionResult? result__118831 = default!;
+        global::Doroti.Ui.Offset adjustedOffset = SelectionUtils.adjustDragOffset(this._rect, localPosition, direction: ((RenderParagraph)this.paragraph).textDirection);
+        global::Doroti.Ui.Offset adjustedOffsetRelativeToParagraph = SelectionUtils.adjustDragOffset(this.paragraph.paintBounds, localPosition, direction: ((RenderParagraph)this.paragraph).textDirection);
+        global::Doroti.Ui.TextPosition position = this.paragraph.getPositionForOffset(adjustedOffset);
+        global::Doroti.Ui.TextPosition positionInFullText = this.paragraph.getPositionForOffset(adjustedOffsetRelativeToParagraph);
+        SelectionResult? resultLocal = default!;
         if (_isPlaceholder())
         {
-            result__118831 = (isEnd ? _updateSelectionEndEdgeAtPlaceholderByMultiSelectableTextBoundary((Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, globalPosition, this.paragraph.paintBounds.contains(localPosition__117815), positionInFullText__118702, existingSelectionStart__117552, existingSelectionEnd__117622) : _updateSelectionStartEdgeAtPlaceholderByMultiSelectableTextBoundary((Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, globalPosition, this.paragraph.paintBounds.contains(localPosition__117815), positionInFullText__118702, existingSelectionStart__117552, existingSelectionEnd__117622));
+            resultLocal = (isEnd ? _updateSelectionEndEdgeAtPlaceholderByMultiSelectableTextBoundary((Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, globalPosition, this.paragraph.paintBounds.contains(localPosition), positionInFullText, existingSelectionStart, existingSelectionEnd) : _updateSelectionStartEdgeAtPlaceholderByMultiSelectableTextBoundary((Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, globalPosition, this.paragraph.paintBounds.contains(localPosition), positionInFullText, existingSelectionStart, existingSelectionEnd));
         }
         else
         {
-            result__118831 = (isEnd ? _updateSelectionEndEdgeByMultiSelectableTextBoundary((Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, this.paragraph.paintBounds.contains(localPosition__117815), positionInFullText__118702, existingSelectionStart__117552, existingSelectionEnd__117622) : _updateSelectionStartEdgeByMultiSelectableTextBoundary((Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, this.paragraph.paintBounds.contains(localPosition__117815), positionInFullText__118702, existingSelectionStart__117552, existingSelectionEnd__117622));
+            resultLocal = (isEnd ? _updateSelectionEndEdgeByMultiSelectableTextBoundary((Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, this.paragraph.paintBounds.contains(localPosition), positionInFullText, existingSelectionStart, existingSelectionEnd) : _updateSelectionStartEdgeByMultiSelectableTextBoundary((Func<TextPosition, string, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getTextBoundary, this.paragraph.paintBounds.contains(localPosition), positionInFullText, existingSelectionStart, existingSelectionEnd));
         }
-        if ((result__118831 is not null))
+        if ((resultLocal is not null))
         {
-            SelectionResult result__118831__value120148 = DartRuntimePrimitives.RequireValue(result__118831);
+            SelectionResult result__118831__value120148 = DartRuntimePrimitives.RequireValue(resultLocal);
             return DartRuntimePrimitives.RequireValue(result__118831__value120148);
         }
-        (TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary__120500 = (_boundingBoxesContains(localPosition__117815) ? getClampedTextBoundary(position__118620) : null);
-        if (((textBoundary__120500 is not null) && ((((DartRuntimePrimitives.RequireValue(textBoundary__120500).boundaryStart.offset < this.range.start) && (DartRuntimePrimitives.RequireValue(textBoundary__120500).boundaryEnd.offset <= this.range.start)) || ((DartRuntimePrimitives.RequireValue(textBoundary__120500).boundaryStart.offset >= this.range.end) && (DartRuntimePrimitives.RequireValue(textBoundary__120500).boundaryEnd.offset > this.range.end))))))
+        (TextPosition boundaryEnd, TextPosition boundaryStart)? textBoundary = (_boundingBoxesContains(localPosition) ? getClampedTextBoundary(position) : null);
+        if (((textBoundary is not null) && ((((DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset < this.range.start) && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset <= this.range.start)) || ((DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset >= this.range.end) && (DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset > this.range.end))))))
         {
-            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__120500__value120620 = DartRuntimePrimitives.RequireValue(textBoundary__120500);
-            textBoundary__120500 = null;
+            (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__120500__value120620 = DartRuntimePrimitives.RequireValue(textBoundary);
+            textBoundary = null;
         }
-        global::Doroti.Ui.TextPosition targetPosition__121272 = _clampTextPosition((isEnd ? _updateSelectionEndEdgeByTextBoundary(textBoundary__120500, (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getClampedTextBoundary, position__118620, existingSelectionStart__117552, existingSelectionEnd__117622) : _updateSelectionStartEdgeByTextBoundary(textBoundary__120500, (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getClampedTextBoundary, position__118620, existingSelectionStart__117552, existingSelectionEnd__117622)));
-        _setSelectionPosition(targetPosition__121272, isEnd: isEnd);
-        if ((targetPosition__121272.offset == this.range.end))
+        global::Doroti.Ui.TextPosition targetPosition = _clampTextPosition((isEnd ? _updateSelectionEndEdgeByTextBoundary(textBoundary, (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getClampedTextBoundary, position, existingSelectionStart, existingSelectionEnd) : _updateSelectionStartEdgeByTextBoundary(textBoundary, (Func<TextPosition, (TextPosition boundaryEnd, TextPosition boundaryStart)>)getClampedTextBoundary, position, existingSelectionStart, existingSelectionEnd)));
+        _setSelectionPosition(targetPosition, isEnd: isEnd);
+        if ((targetPosition.offset == this.range.end))
         {
             return SelectionResult.next;
         }
-        if ((targetPosition__121272.offset == this.range.start))
+        if ((targetPosition.offset == this.range.start))
         {
             return SelectionResult.previous;
         }
-        return SelectionUtils.getResultBasedOnRect(this._rect, localPosition__117815);
+        return SelectionUtils.getResultBasedOnRect(this._rect, localPosition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.TextPosition _closestTextBoundary((TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary, TextPosition position)
     {
-        long differenceA__122480 = ((position.offset - DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset)).abs();
-        long differenceB__122569 = ((position.offset - DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset)).abs();
-        return ((differenceA__122480 < differenceB__122569) ? DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart : DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd);
+        long differenceA = ((position.offset - DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset)).abs();
+        long differenceB = ((position.offset - DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset)).abs();
+        return ((differenceA < differenceB) ? DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart : DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _isPlaceholder()
     {
-        RenderObject? current__122853 = this.paragraph.parent;
-        while ((current__122853 is not null))
+        RenderObject? current = this.paragraph.parent;
+        while ((current is not null))
         {
-            if ((current__122853 is RenderParagraph))
+            if ((current is RenderParagraph))
             {
-                RenderParagraph current__122853__as122921 = (RenderParagraph)current__122853;
+                RenderParagraph current__122853__as122921 = (RenderParagraph)current;
                 return true;
             }
-            current__122853 = ((RenderObject)current__122853).parent;
+            current = ((RenderObject)current).parent;
         }
         return false;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2642,55 +2642,55 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     internal virtual RenderParagraph _getOriginParagraph()
     {
         DartRuntimePrimitives.Assert(() => this._selectableContainsOriginTextBoundary);
-        RenderObject? current__123508 = this.paragraph.parent;
-        RenderParagraph? originParagraph__123557 = default!;
-        while ((current__123508 is not null))
+        RenderObject? current = this.paragraph.parent;
+        RenderParagraph? originParagraph = default!;
+        while ((current is not null))
         {
-            if ((current__123508 is RenderParagraph))
+            if ((current is RenderParagraph))
             {
-                RenderParagraph current__123508__as123614 = (RenderParagraph)current__123508;
+                RenderParagraph current__123508__as123614 = (RenderParagraph)current;
                 if ((((RenderParagraph)((RenderParagraph)current__123508__as123614))._lastSelectableFragments is not null))
                 {
-                    var paragraphContainsOriginTextBoundary__123714 = false;
-                    foreach (_SelectableFragment__paragraph fragment__123800 in ((RenderParagraph)((RenderParagraph)current__123508__as123614))._lastSelectableFragments!)
+                    var paragraphContainsOriginTextBoundary = false;
+                    foreach (_SelectableFragment__paragraph fragment in ((RenderParagraph)((RenderParagraph)current__123508__as123614))._lastSelectableFragments!)
                     {
-                        if (((_SelectableFragment__paragraph)fragment__123800)._selectableContainsOriginTextBoundary)
+                        if (((_SelectableFragment__paragraph)fragment)._selectableContainsOriginTextBoundary)
                         {
-                            paragraphContainsOriginTextBoundary__123714 = true;
-                            originParagraph__123557 = ((RenderParagraph)current__123508__as123614);
+                            paragraphContainsOriginTextBoundary = true;
+                            originParagraph = ((RenderParagraph)current__123508__as123614);
                             break;
                         }
                     }
-                    if (!paragraphContainsOriginTextBoundary__123714)
+                    if (!paragraphContainsOriginTextBoundary)
                     {
-                        return (originParagraph__123557 ?? this.paragraph);
+                        return (originParagraph ?? this.paragraph);
                     }
                 }
             }
-            current__123508 = ((RenderObject)current__123508).parent;
+            current = ((RenderObject)current).parent;
         }
-        return (originParagraph__123557 ?? this.paragraph);
+        return (originParagraph ?? this.paragraph);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual (RenderParagraph paragraph, global::Doroti.Ui.Offset localPosition)? _getParagraphContainingPosition(Offset globalPosition)
     {
-        RenderObject? current__124717 = this.paragraph;
-        while ((current__124717 is not null))
+        RenderObject? current = this.paragraph;
+        while ((current is not null))
         {
-            if ((current__124717 is RenderParagraph))
+            if ((current is RenderParagraph))
             {
-                RenderParagraph current__124717__as124778 = (RenderParagraph)current__124717;
-                Matrix4 currentTransform__124830 = ((RenderParagraph)current__124717__as124778).getTransformTo(null);
-                currentTransform__124830.invert();
-                global::Doroti.Ui.Offset currentParagraphLocalPosition__124935 = MatrixUtils.transformPoint(currentTransform__124830, globalPosition);
-                bool positionWithinCurrentParagraph__125079 = ((RenderParagraph)current__124717__as124778).paintBounds.contains(currentParagraphLocalPosition__124935);
-                if (positionWithinCurrentParagraph__125079)
+                RenderParagraph current__124717__as124778 = (RenderParagraph)current;
+                Matrix4 currentTransform = ((RenderParagraph)current__124717__as124778).getTransformTo(null);
+                currentTransform.invert();
+                global::Doroti.Ui.Offset currentParagraphLocalPosition = MatrixUtils.transformPoint(currentTransform, globalPosition);
+                bool positionWithinCurrentParagraph = ((RenderParagraph)current__124717__as124778).paintBounds.contains(currentParagraphLocalPosition);
+                if (positionWithinCurrentParagraph)
                 {
-                    return (paragraph: ((RenderParagraph)current__124717__as124778), localPosition: currentParagraphLocalPosition__124935);
+                    return (paragraph: ((RenderParagraph)current__124717__as124778), localPosition: currentParagraphLocalPosition);
                 }
             }
-            current__124717 = ((RenderObject)current__124717).parent;
+            current = ((RenderObject)current).parent;
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2698,9 +2698,9 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
 
     internal virtual bool _boundingBoxesContains(Offset position)
     {
-        foreach (global::Doroti.Ui.Rect rect__125472 in this.boundingBoxes)
+        foreach (global::Doroti.Ui.Rect rect in this.boundingBoxes)
         {
-            if (rect__125472.contains(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))))
+            if (rect.contains(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(position))))
             {
                 return true;
             }
@@ -2777,11 +2777,11 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     {
         DartRuntimePrimitives.Assert(() => a.isNormalized);
         DartRuntimePrimitives.Assert(() => b.isNormalized);
-        long startMax__127878 = Math.Max(a.start, b.start);
-        long endMin__127931 = Math.Min(a.end, b.end);
-        if ((startMax__127878 <= endMin__127931))
+        long startMax = Math.Max(a.start, b.start);
+        long endMin = Math.Min(a.end, b.end);
+        if ((startMax <= endMin))
         {
-            return new global::Doroti.Ui.TextRange(start: startMax__127878, end: endMin__127931);
+            return new global::Doroti.Ui.TextRange(start: startMax, end: endMin);
         }
         return null;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2800,12 +2800,12 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 return SelectionResult.next;
             }
         }
-        var boundaryAsRange__128798 = new global::Doroti.Ui.TextRange(start: DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset, end: DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset);
-        global::Doroti.Ui.TextRange? intersectRange__128947 = _intersect(this.range, boundaryAsRange__128798);
-        if ((intersectRange__128947 is not null))
+        var boundaryAsRange = new global::Doroti.Ui.TextRange(start: DartRuntimePrimitives.RequireValue(textBoundary).boundaryStart.offset, end: DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset);
+        global::Doroti.Ui.TextRange? intersectRange = _intersect(this.range, boundaryAsRange);
+        if ((intersectRange is not null))
         {
-            _textSelectionStart = new global::Doroti.Ui.TextPosition(offset: intersectRange__128947.start);
-            _textSelectionEnd = new global::Doroti.Ui.TextPosition(offset: intersectRange__128947.end);
+            _textSelectionStart = new global::Doroti.Ui.TextPosition(offset: intersectRange.start);
+            _textSelectionEnd = new global::Doroti.Ui.TextPosition(offset: intersectRange.end);
             _selectableContainsOriginTextBoundary = true;
             if ((this.range.end < DartRuntimePrimitives.RequireValue(textBoundary).boundaryEnd.offset))
             {
@@ -2819,88 +2819,88 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
 
     internal virtual (TextPosition boundaryEnd, TextPosition boundaryStart) _adjustTextBoundaryAtPosition(TextRange textBoundary, TextPosition position)
     {
-        global::Doroti.Ui.TextPosition start__129535 = default!;
-        global::Doroti.Ui.TextPosition end__129570 = default!;
+        global::Doroti.Ui.TextPosition startLocal = default!;
+        global::Doroti.Ui.TextPosition endLocal = default!;
         if ((position.offset > textBoundary.end))
         {
-            start__129535 = end__129570 = new global::Doroti.Ui.TextPosition(offset: position.offset);
+            startLocal = endLocal = new global::Doroti.Ui.TextPosition(offset: position.offset);
         }
         else
         {
-            start__129535 = new global::Doroti.Ui.TextPosition(offset: textBoundary.start);
-            end__129570 = new global::Doroti.Ui.TextPosition(offset: textBoundary.end, affinity: TextAffinity.upstream);
+            startLocal = new global::Doroti.Ui.TextPosition(offset: textBoundary.start);
+            endLocal = new global::Doroti.Ui.TextPosition(offset: textBoundary.end, affinity: TextAffinity.upstream);
         }
-        return (boundaryEnd: end__129570, boundaryStart: start__129535);
+        return (boundaryEnd: endLocal, boundaryStart: startLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual SelectionResult _handleSelectWord(Offset globalPosition)
     {
-        global::Doroti.Ui.TextPosition position__129982 = this.paragraph.getPositionForOffset(this.paragraph.globalToLocal(globalPosition));
-        if ((_positionIsWithinCurrentSelection(position__129982) && (!object.Equals(this._textSelectionStart, this._textSelectionEnd))))
+        global::Doroti.Ui.TextPosition position = this.paragraph.getPositionForOffset(this.paragraph.globalToLocal(globalPosition));
+        if ((_positionIsWithinCurrentSelection(position) && (!object.Equals(this._textSelectionStart, this._textSelectionEnd))))
         {
             return SelectionResult.end;
         }
-        (TextPosition boundaryEnd, TextPosition boundaryStart) wordBoundary__130248 = _getWordBoundaryAtPosition(position__129982);
-        return _handleSelectTextBoundary(wordBoundary__130248);
+        (TextPosition boundaryEnd, TextPosition boundaryStart) wordBoundary = _getWordBoundaryAtPosition(position);
+        return _handleSelectTextBoundary(wordBoundary);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual (TextPosition boundaryEnd, TextPosition boundaryStart) _getWordBoundaryAtPosition(TextPosition position)
     {
-        global::Doroti.Ui.TextRange word__130452 = this.paragraph.getWordBoundary(position);
-        DartRuntimePrimitives.Assert(() => word__130452.isNormalized);
-        return _adjustTextBoundaryAtPosition(word__130452, position);
+        global::Doroti.Ui.TextRange word = this.paragraph.getWordBoundary(position);
+        DartRuntimePrimitives.Assert(() => word.isNormalized);
+        return _adjustTextBoundaryAtPosition(word, position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual SelectionResult _handleSelectParagraph(Offset globalPosition)
     {
-        global::Doroti.Ui.Offset localPosition__130673 = this.paragraph.globalToLocal(globalPosition);
-        global::Doroti.Ui.TextPosition position__130753 = this.paragraph.getPositionForOffset(localPosition__130673);
-        (TextPosition boundaryEnd, TextPosition boundaryStart) paragraphBoundary__130841 = _getParagraphBoundaryAtPosition(position__130753, this.fullText);
-        return _handleSelectMultiFragmentTextBoundary(paragraphBoundary__130841);
+        global::Doroti.Ui.Offset localPosition = this.paragraph.globalToLocal(globalPosition);
+        global::Doroti.Ui.TextPosition position = this.paragraph.getPositionForOffset(localPosition);
+        (TextPosition boundaryEnd, TextPosition boundaryStart) paragraphBoundary = _getParagraphBoundaryAtPosition(position, this.fullText);
+        return _handleSelectMultiFragmentTextBoundary(paragraphBoundary);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.TextPosition _getPositionInParagraph(RenderParagraph targetParagraph)
     {
-        Matrix4 transform__131100 = this.paragraph.getTransformTo(targetParagraph);
-        global::Doroti.Ui.Offset localCenter__131172 = this.paragraph.paintBounds.centerLeft;
-        global::Doroti.Ui.Offset localPos__131237 = MatrixUtils.transformPoint(transform__131100, localCenter__131172);
-        global::Doroti.Ui.TextPosition position__131323 = targetParagraph.getPositionForOffset(localPos__131237);
-        return position__131323;
+        Matrix4 transform = this.paragraph.getTransformTo(targetParagraph);
+        global::Doroti.Ui.Offset localCenter = this.paragraph.paintBounds.centerLeft;
+        global::Doroti.Ui.Offset localPos = MatrixUtils.transformPoint(transform, localCenter);
+        global::Doroti.Ui.TextPosition position = targetParagraph.getPositionForOffset(localPos);
+        return position;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual (TextPosition boundaryEnd, TextPosition boundaryStart) _getParagraphBoundaryAtPosition(TextPosition position, string text)
     {
-        var paragraphBoundary__131510 = new ParagraphBoundary(text);
-        long paragraphStart__131706 = (paragraphBoundary__131510.getLeadingTextBoundaryAt((((position.offset == text.Length) || (object.Equals(position.affinity, TextAffinity.upstream))) ? (position.offset - 1L) : position.offset)) ?? 0L);
-        long paragraphEnd__131969 = (paragraphBoundary__131510.getTrailingTextBoundaryAt(position.offset) ?? text.Length);
-        var paragraphRange__132079 = new global::Doroti.Ui.TextRange(start: paragraphStart__131706, end: paragraphEnd__131969);
-        DartRuntimePrimitives.Assert(() => paragraphRange__132079.isNormalized);
-        return _adjustTextBoundaryAtPosition(paragraphRange__132079, position);
+        var paragraphBoundary = new ParagraphBoundary(text);
+        long paragraphStart = (paragraphBoundary.getLeadingTextBoundaryAt((((position.offset == text.Length) || (object.Equals(position.affinity, TextAffinity.upstream))) ? (position.offset - 1L) : position.offset)) ?? 0L);
+        long paragraphEnd = (paragraphBoundary.getTrailingTextBoundaryAt(position.offset) ?? text.Length);
+        var paragraphRange = new global::Doroti.Ui.TextRange(start: paragraphStart, end: paragraphEnd);
+        DartRuntimePrimitives.Assert(() => paragraphRange.isNormalized);
+        return _adjustTextBoundaryAtPosition(paragraphRange, position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual (TextPosition boundaryEnd, TextPosition boundaryStart) _getClampedParagraphBoundaryAtPosition(TextPosition position)
     {
-        var paragraphBoundary__132359 = new ParagraphBoundary(this.fullText);
-        long paragraphStart__132553 = (paragraphBoundary__132359.getLeadingTextBoundaryAt((((position.offset == this.fullText.Length) || (object.Equals(position.affinity, TextAffinity.upstream))) ? (position.offset - 1L) : position.offset)) ?? 0L);
-        long paragraphEnd__132814 = (paragraphBoundary__132359.getTrailingTextBoundaryAt(position.offset) ?? this.fullText.Length);
-        paragraphStart__132553 = ((paragraphStart__132553 < this.range.start) ? this.range.start : ((paragraphStart__132553 > this.range.end) ? this.range.end : paragraphStart__132553));
-        paragraphEnd__132814 = ((paragraphEnd__132814 > this.range.end) ? this.range.end : ((paragraphEnd__132814 < this.range.start) ? this.range.start : paragraphEnd__132814));
-        var paragraphRange__133230 = new global::Doroti.Ui.TextRange(start: paragraphStart__132553, end: paragraphEnd__132814);
-        DartRuntimePrimitives.Assert(() => paragraphRange__133230.isNormalized);
-        return _adjustTextBoundaryAtPosition(paragraphRange__133230, position);
+        var paragraphBoundary = new ParagraphBoundary(this.fullText);
+        long paragraphStart = (paragraphBoundary.getLeadingTextBoundaryAt((((position.offset == this.fullText.Length) || (object.Equals(position.affinity, TextAffinity.upstream))) ? (position.offset - 1L) : position.offset)) ?? 0L);
+        long paragraphEnd = (paragraphBoundary.getTrailingTextBoundaryAt(position.offset) ?? this.fullText.Length);
+        paragraphStart = ((paragraphStart < this.range.start) ? this.range.start : ((paragraphStart > this.range.end) ? this.range.end : paragraphStart));
+        paragraphEnd = ((paragraphEnd > this.range.end) ? this.range.end : ((paragraphEnd < this.range.start) ? this.range.start : paragraphEnd));
+        var paragraphRange = new global::Doroti.Ui.TextRange(start: paragraphStart, end: paragraphEnd);
+        DartRuntimePrimitives.Assert(() => paragraphRange.isNormalized);
+        return _adjustTextBoundaryAtPosition(paragraphRange, position);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual SelectionResult _handleDirectionallyExtendSelection(double horizontalBaseline, bool isExtent, SelectionExtendDirection movement)
     {
-        Matrix4 transform__133582 = this.paragraph.getTransformTo(null);
-        if ((transform__133582.invert() == 0.0))
+        Matrix4 transform = this.paragraph.getTransformTo(null);
+        if ((transform.invert() == 0.0))
         {
             switch (movement)
             {
@@ -2916,20 +2916,20 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                     }
             }
         }
-        double baselineInParagraphCoordinates__133997 = MatrixUtils.transformPoint(transform__133582, new global::Doroti.Ui.Offset(horizontalBaseline, 0)).dx;
-        DartRuntimePrimitives.Assert(() => !double.IsNaN(baselineInParagraphCoordinates__133997));
-        global::Doroti.Ui.TextPosition newPosition__134196 = default!;
-        SelectionResult result__134235 = default!;
+        double baselineInParagraphCoordinates = MatrixUtils.transformPoint(transform, new global::Doroti.Ui.Offset(horizontalBaseline, 0)).dx;
+        DartRuntimePrimitives.Assert(() => !double.IsNaN(baselineInParagraphCoordinates));
+        global::Doroti.Ui.TextPosition newPosition = default!;
+        SelectionResult result = default!;
         switch (movement)
         {
             case SelectionExtendDirection.previousLine:
             case SelectionExtendDirection.nextLine:
                 {
                     DartRuntimePrimitives.Assert(() => ((this._textSelectionEnd is not null) && (this._textSelectionStart is not null)));
-                    global::Doroti.Ui.TextPosition targetedEdge__134464 = (isExtent ? this._textSelectionEnd! : this._textSelectionStart!);
-                    MapEntry<global::Doroti.Ui.TextPosition, SelectionResult> moveResult__134587 = _handleVerticalMovement(targetedEdge__134464, horizontalBaselineInParagraphCoordinates: baselineInParagraphCoordinates__133997, below: (object.Equals(movement, SelectionExtendDirection.nextLine)));
-                    newPosition__134196 = moveResult__134587.key;
-                    result__134235 = moveResult__134587.value;
+                    global::Doroti.Ui.TextPosition targetedEdge = (isExtent ? this._textSelectionEnd! : this._textSelectionStart!);
+                    MapEntry<global::Doroti.Ui.TextPosition, SelectionResult> moveResult = _handleVerticalMovement(targetedEdge, horizontalBaselineInParagraphCoordinates: baselineInParagraphCoordinates, below: (object.Equals(movement, SelectionExtendDirection.nextLine)));
+                    newPosition = moveResult.key;
+                    result = moveResult.value;
                     break;
                 }
             case SelectionExtendDirection.forward:
@@ -2937,23 +2937,23 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                 {
                     _textSelectionEnd ??= ((object.Equals(movement, SelectionExtendDirection.forward)) ? new global::Doroti.Ui.TextPosition(offset: this.range.start) : new global::Doroti.Ui.TextPosition(offset: this.range.end, affinity: TextAffinity.upstream));
                     _textSelectionStart ??= this._textSelectionEnd;
-                    global::Doroti.Ui.TextPosition targetedEdge__135253 = (isExtent ? this._textSelectionEnd! : this._textSelectionStart!);
-                    global::Doroti.Ui.Offset edgeOffsetInParagraphCoordinates__135343 = this.paragraph._getOffsetForPosition(targetedEdge__135253);
-                    var baselineOffsetInParagraphCoordinates__135460 = new global::Doroti.Ui.Offset(baselineInParagraphCoordinates__133997, (edgeOffsetInParagraphCoordinates__135343.dy - (((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight / 2L)));
-                    newPosition__134196 = this.paragraph.getPositionForOffset(baselineOffsetInParagraphCoordinates__135460);
-                    result__134235 = SelectionResult.end;
+                    global::Doroti.Ui.TextPosition targetedEdgeLocal = (isExtent ? this._textSelectionEnd! : this._textSelectionStart!);
+                    global::Doroti.Ui.Offset edgeOffsetInParagraphCoordinates = this.paragraph._getOffsetForPosition(targetedEdgeLocal);
+                    var baselineOffsetInParagraphCoordinates = new global::Doroti.Ui.Offset(baselineInParagraphCoordinates, (edgeOffsetInParagraphCoordinates.dy - (((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight / 2L)));
+                    newPosition = this.paragraph.getPositionForOffset(baselineOffsetInParagraphCoordinates);
+                    result = SelectionResult.end;
                     break;
                 }
         }
         if (isExtent)
         {
-            _textSelectionEnd = newPosition__134196;
+            _textSelectionEnd = newPosition;
         }
         else
         {
-            _textSelectionStart = newPosition__134196;
+            _textSelectionStart = newPosition;
         }
-        return result__134235;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -2961,63 +2961,63 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
     {
         _textSelectionEnd ??= (forward ? new global::Doroti.Ui.TextPosition(offset: this.range.start) : new global::Doroti.Ui.TextPosition(offset: this.range.end, affinity: TextAffinity.upstream));
         _textSelectionStart ??= this._textSelectionEnd;
-        global::Doroti.Ui.TextPosition targetedEdge__136360 = (isExtent ? this._textSelectionEnd! : this._textSelectionStart!);
-        if ((forward && ((targetedEdge__136360.offset == this.range.end))))
+        global::Doroti.Ui.TextPosition targetedEdge = (isExtent ? this._textSelectionEnd! : this._textSelectionStart!);
+        if ((forward && ((targetedEdge.offset == this.range.end))))
         {
             return SelectionResult.next;
         }
-        if ((!forward && ((targetedEdge__136360.offset == this.range.start))))
+        if ((!forward && ((targetedEdge.offset == this.range.start))))
         {
             return SelectionResult.previous;
         }
-        SelectionResult result__136658 = default!;
-        global::Doroti.Ui.TextPosition newPosition__136689 = default!;
+        SelectionResult result = default!;
+        global::Doroti.Ui.TextPosition newPosition = default!;
         switch (granularity)
         {
             case TextGranularity.character:
                 {
-                    string text__136788 = this.range.textInside(this.fullText);
-                    newPosition__136689 = _moveBeyondTextBoundaryAtDirection(targetedEdge__136360, forward, new CharacterBoundary(text__136788));
-                    result__136658 = SelectionResult.end;
+                    string text = this.range.textInside(this.fullText);
+                    newPosition = _moveBeyondTextBoundaryAtDirection(targetedEdge, forward, new CharacterBoundary(text));
+                    result = SelectionResult.end;
                     break;
                 }
             case TextGranularity.word:
                 {
-                    TextBoundary textBoundary__137068 = ((RenderParagraph)this.paragraph)._textPainter.wordBoundaries.moveByWordBoundary;
-                    newPosition__136689 = _moveBeyondTextBoundaryAtDirection(targetedEdge__136360, forward, textBoundary__137068);
-                    result__136658 = SelectionResult.end;
+                    TextBoundary textBoundary = ((RenderParagraph)this.paragraph)._textPainter.wordBoundaries.moveByWordBoundary;
+                    newPosition = _moveBeyondTextBoundaryAtDirection(targetedEdge, forward, textBoundary);
+                    result = SelectionResult.end;
                     break;
                 }
             case TextGranularity.paragraph:
                 {
-                    string text__137333 = this.range.textInside(this.fullText);
-                    newPosition__136689 = _moveBeyondTextBoundaryAtDirection(targetedEdge__136360, forward, new ParagraphBoundary(text__137333));
-                    result__136658 = SelectionResult.end;
+                    string textLocal = this.range.textInside(this.fullText);
+                    newPosition = _moveBeyondTextBoundaryAtDirection(targetedEdge, forward, new ParagraphBoundary(textLocal));
+                    result = SelectionResult.end;
                     break;
                 }
             case TextGranularity.line:
                 {
-                    newPosition__136689 = _moveToTextBoundaryAtDirection(targetedEdge__136360, forward, new LineBoundary(this));
-                    result__136658 = SelectionResult.end;
+                    newPosition = _moveToTextBoundaryAtDirection(targetedEdge, forward, new LineBoundary(this));
+                    result = SelectionResult.end;
                     break;
                 }
             case TextGranularity.document:
                 {
-                    string text__137779 = this.range.textInside(this.fullText);
-                    newPosition__136689 = _moveBeyondTextBoundaryAtDirection(targetedEdge__136360, forward, new DocumentBoundary(text__137779));
-                    if ((forward && (newPosition__136689.offset == this.range.end)))
+                    string textAlternate = this.range.textInside(this.fullText);
+                    newPosition = _moveBeyondTextBoundaryAtDirection(targetedEdge, forward, new DocumentBoundary(textAlternate));
+                    if ((forward && (newPosition.offset == this.range.end)))
                     {
-                        result__136658 = SelectionResult.next;
+                        result = SelectionResult.next;
                     }
                     else
                     {
-                        if ((!forward && (newPosition__136689.offset == this.range.start)))
+                        if ((!forward && (newPosition.offset == this.range.start)))
                         {
-                            result__136658 = SelectionResult.previous;
+                            result = SelectionResult.previous;
                         }
                         else
                         {
-                            result__136658 = SelectionResult.end;
+                            result = SelectionResult.end;
                         }
                     }
                     break;
@@ -3025,27 +3025,27 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         }
         if (isExtent)
         {
-            _textSelectionEnd = newPosition__136689;
+            _textSelectionEnd = newPosition;
         }
         else
         {
-            _textSelectionStart = newPosition__136689;
+            _textSelectionStart = newPosition;
         }
-        return result__136658;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.TextPosition _moveBeyondTextBoundaryAtDirection(TextPosition end, bool forward, TextBoundary textBoundary)
     {
-        long newOffset__138794 = (forward ? (textBoundary.getTrailingTextBoundaryAt(end.offset) ?? this.range.end) : (textBoundary.getLeadingTextBoundaryAt((end.offset - 1L)) ?? this.range.start));
-        return new global::Doroti.Ui.TextPosition(offset: newOffset__138794);
+        long newOffset = (forward ? (textBoundary.getTrailingTextBoundaryAt(end.offset) ?? this.range.end) : (textBoundary.getLeadingTextBoundaryAt((end.offset - 1L)) ?? this.range.start));
+        return new global::Doroti.Ui.TextPosition(offset: newOffset);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.TextPosition _moveToTextBoundaryAtDirection(TextPosition end, bool forward, TextBoundary textBoundary)
     {
         DartRuntimePrimitives.Assert(() => (end.offset >= 0L));
-        long caretOffset__139390 = default!;
+        long caretOffset = default!;
         switch (end.affinity)
         {
             case TextAffinity.upstream:
@@ -3055,70 +3055,70 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
                         DartRuntimePrimitives.Assert(() => (end.offset == 0L));
                         return new global::Doroti.Ui.TextPosition(offset: 0L);
                     }
-                    var characterBoundary__139614 = new CharacterBoundary(this.fullText);
-                    caretOffset__139390 = (Math.Max(0L, (characterBoundary__139614.getLeadingTextBoundaryAt((this.range.start + end.offset)) ?? this.range.start)) - 1L);
+                    var characterBoundary = new CharacterBoundary(this.fullText);
+                    caretOffset = (Math.Max(0L, (characterBoundary.getLeadingTextBoundaryAt((this.range.start + end.offset)) ?? this.range.start)) - 1L);
                     break;
                 }
             case TextAffinity.downstream:
                 {
-                    caretOffset__139390 = end.offset;
+                    caretOffset = end.offset;
                     break;
                 }
         }
-        long offset__139944 = (forward ? (textBoundary.getTrailingTextBoundaryAt(caretOffset__139390) ?? this.range.end) : (textBoundary.getLeadingTextBoundaryAt(caretOffset__139390) ?? this.range.start));
-        return new global::Doroti.Ui.TextPosition(offset: offset__139944);
+        long offsetLocal = (forward ? (textBoundary.getTrailingTextBoundaryAt(caretOffset) ?? this.range.end) : (textBoundary.getLeadingTextBoundaryAt(caretOffset) ?? this.range.start));
+        return new global::Doroti.Ui.TextPosition(offset: offsetLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual MapEntry<global::Doroti.Ui.TextPosition, SelectionResult> _handleVerticalMovement(TextPosition position, double horizontalBaselineInParagraphCoordinates, bool below)
     {
-        List<global::Doroti.Ui.LineMetrics> lines__140380 = ((RenderParagraph)this.paragraph)._textPainter.computeLineMetrics();
-        global::Doroti.Ui.Offset offset__140450 = this.paragraph.getOffsetForCaret(position, Rect.zero);
-        long currentLine__140517 = (checked((long)(lines__140380.Count)) - 1L);
-        foreach (var lineMetrics__140564 in lines__140380)
+        List<global::Doroti.Ui.LineMetrics> lines = ((RenderParagraph)this.paragraph)._textPainter.computeLineMetrics();
+        global::Doroti.Ui.Offset offsetLocal = this.paragraph.getOffsetForCaret(position, Rect.zero);
+        long currentLine = (checked((long)(lines.Count)) - 1L);
+        foreach (var lineMetrics in lines)
         {
-            if ((lineMetrics__140564.baseline > offset__140450.dy))
+            if ((lineMetrics.baseline > offsetLocal.dy))
             {
-                currentLine__140517 = lineMetrics__140564.lineNumber;
+                currentLine = lineMetrics.lineNumber;
                 break;
             }
         }
-        global::Doroti.Ui.TextPosition newPosition__140732 = default!;
-        if ((below && (currentLine__140517 == (checked((long)(lines__140380.Count)) - 1L))))
+        global::Doroti.Ui.TextPosition newPosition = default!;
+        if ((below && (currentLine == (checked((long)(lines.Count)) - 1L))))
         {
-            newPosition__140732 = new global::Doroti.Ui.TextPosition(offset: this.range.end, affinity: TextAffinity.upstream);
+            newPosition = new global::Doroti.Ui.TextPosition(offset: this.range.end, affinity: TextAffinity.upstream);
         }
         else
         {
-            if ((!below && (currentLine__140517 == 0L)))
+            if ((!below && (currentLine == 0L)))
             {
-                newPosition__140732 = new global::Doroti.Ui.TextPosition(offset: this.range.start);
+                newPosition = new global::Doroti.Ui.TextPosition(offset: this.range.start);
             }
             else
             {
-                long newLine__141012 = (below ? (currentLine__140517 + 1L) : (currentLine__140517 - 1L));
-                newPosition__140732 = _clampTextPosition(this.paragraph.getPositionForOffset(new global::Doroti.Ui.Offset(horizontalBaselineInParagraphCoordinates, lines__140380[(int)(newLine__141012)].baseline)));
+                long newLine = (below ? (currentLine + 1L) : (currentLine - 1L));
+                newPosition = _clampTextPosition(this.paragraph.getPositionForOffset(new global::Doroti.Ui.Offset(horizontalBaselineInParagraphCoordinates, lines[(int)(newLine)].baseline)));
             }
         }
-        SelectionResult result__141282 = default!;
-        if ((newPosition__140732.offset == this.range.start))
+        SelectionResult result = default!;
+        if ((newPosition.offset == this.range.start))
         {
-            result__141282 = SelectionResult.previous;
+            result = SelectionResult.previous;
         }
         else
         {
-            if ((newPosition__140732.offset == this.range.end))
+            if ((newPosition.offset == this.range.end))
             {
-                result__141282 = SelectionResult.next;
+                result = SelectionResult.next;
             }
             else
             {
-                result__141282 = SelectionResult.end;
+                result = SelectionResult.end;
             }
         }
-        DartRuntimePrimitives.Assert(() => ((!object.Equals(result__141282, SelectionResult.next)) || below));
-        DartRuntimePrimitives.Assert(() => ((!object.Equals(result__141282, SelectionResult.previous)) || !below));
-        return new MapEntry<global::Doroti.Ui.TextPosition, SelectionResult>(newPosition__140732, result__141282);
+        DartRuntimePrimitives.Assert(() => ((!object.Equals(result, SelectionResult.next)) || below));
+        DartRuntimePrimitives.Assert(() => ((!object.Equals(result, SelectionResult.previous)) || !below));
+        return new MapEntry<global::Doroti.Ui.TextPosition, SelectionResult>(newPosition, result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3128,19 +3128,19 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             return false;
         }
-        global::Doroti.Ui.TextPosition currentStart__142072 = default!;
-        global::Doroti.Ui.TextPosition currentEnd__142108 = default!;
+        global::Doroti.Ui.TextPosition currentStart = default!;
+        global::Doroti.Ui.TextPosition currentEnd = default!;
         if ((_compareTextPositions(this._textSelectionStart!, this._textSelectionEnd!) > 0L))
         {
-            currentStart__142072 = this._textSelectionStart!;
-            currentEnd__142108 = this._textSelectionEnd!;
+            currentStart = this._textSelectionStart!;
+            currentEnd = this._textSelectionEnd!;
         }
         else
         {
-            currentStart__142072 = this._textSelectionEnd!;
-            currentEnd__142108 = this._textSelectionStart!;
+            currentStart = this._textSelectionEnd!;
+            currentEnd = this._textSelectionStart!;
         }
-        return ((_compareTextPositions(currentStart__142072, position) >= 0L) && (_compareTextPositions(currentEnd__142108, position) <= 0L));
+        return ((_compareTextPositions(currentStart, position) >= 0L) && (_compareTextPositions(currentEnd, position) <= 0L));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -3202,20 +3202,20 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             if ((this._cachedBoundingBoxes is null))
             {
-                List<global::Doroti.Ui.TextBox> boxes__143807 = this.paragraph.getBoxesForSelection(new TextSelection(baseOffset: this.range.start, extentOffset: this.range.end), boxHeightStyle: BoxHeightStyle.max);
-                if ((checked((long)(boxes__143807.Count)) != 0))
+                List<global::Doroti.Ui.TextBox> boxes = this.paragraph.getBoxesForSelection(new TextSelection(baseOffset: this.range.start, extentOffset: this.range.end), boxHeightStyle: BoxHeightStyle.max);
+                if ((checked((long)(boxes.Count)) != 0))
                 {
                     _cachedBoundingBoxes = new List<global::Doroti.Ui.Rect>();
-                    foreach (var textBox__144049 in boxes__143807)
+                    foreach (var textBox in boxes)
                     {
-                        this._cachedBoundingBoxes!.Add(textBox__144049.toRect());
+                        this._cachedBoundingBoxes!.Add(textBox.toRect());
                     }
                 }
                 else
                 {
-                    global::Doroti.Ui.Offset offset__144170 = this.paragraph._getOffsetForPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start));
-                    var rect__144261 = global::Doroti.Ui.Rect.fromPoints(offset__144170, offset__144170.translate(0, -((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight));
-                    _cachedBoundingBoxes = new List<global::Doroti.Ui.Rect> { rect__144261 };
+                    global::Doroti.Ui.Offset offsetLocal = this.paragraph._getOffsetForPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start));
+                    var rect = global::Doroti.Ui.Rect.fromPoints(offsetLocal, offsetLocal.translate(0, -((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight));
+                    _cachedBoundingBoxes = new List<global::Doroti.Ui.Rect> { rect };
                 }
             }
             return this._cachedBoundingBoxes!;
@@ -3228,20 +3228,20 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         {
             if ((this._cachedRect is null))
             {
-                List<global::Doroti.Ui.TextBox> boxes__144586 = this.paragraph.getBoxesForSelection(new TextSelection(baseOffset: this.range.start, extentOffset: this.range.end), boxHeightStyle: BoxHeightStyle.max);
-                if ((checked((long)(boxes__144586.Count)) != 0))
+                List<global::Doroti.Ui.TextBox> boxes = this.paragraph.getBoxesForSelection(new TextSelection(baseOffset: this.range.start, extentOffset: this.range.end), boxHeightStyle: BoxHeightStyle.max);
+                if ((checked((long)(boxes.Count)) != 0))
                 {
-                    global::Doroti.Ui.Rect result__144781 = boxes__144586.First().toRect();
-                    for (var index__144829 = 1L; (index__144829 < checked((long)(boxes__144586.Count))); index__144829 += 1L)
+                    global::Doroti.Ui.Rect result = boxes.First().toRect();
+                    for (var index = 1L; (index < checked((long)(boxes.Count))); index += 1L)
                     {
-                        result__144781 = result__144781.expandToInclude(boxes__144586[(int)(index__144829)].toRect());
+                        result = result.expandToInclude(boxes[(int)(index)].toRect());
                     }
-                    _cachedRect = result__144781;
+                    _cachedRect = result;
                 }
                 else
                 {
-                    global::Doroti.Ui.Offset offset__145018 = this.paragraph._getOffsetForPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start));
-                    _cachedRect = global::Doroti.Ui.Rect.fromPoints(offset__145018, offset__145018.translate(0, -((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight));
+                    global::Doroti.Ui.Offset offsetLocal = this.paragraph._getOffsetForPosition(new global::Doroti.Ui.TextPosition(offset: this.range.start));
+                    _cachedRect = global::Doroti.Ui.Rect.fromPoints(offsetLocal, offsetLocal.translate(0, -((RenderParagraph)this.paragraph)._textPainter.preferredLineHeight));
                 }
             }
             return DartRuntimePrimitives.RequireValue(this._cachedRect);
@@ -3271,17 +3271,17 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
         }
         if ((((RenderParagraph)this.paragraph).selectionColor is not null))
         {
-            var selection__145712 = new TextSelection(baseOffset: this._textSelectionStart!.offset, extentOffset: this._textSelectionEnd!.offset);
-            var selectionPaint__145858 = ((Func<Paint>)(() =>
+            var selection = new TextSelection(baseOffset: this._textSelectionStart!.offset, extentOffset: this._textSelectionEnd!.offset);
+            var selectionPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.style = PaintingStyle.fill;
     __cascade.color = ((RenderParagraph)this.paragraph).selectionColor!;
     return __cascade;
 }))();
-            foreach (global::Doroti.Ui.TextBox textBox__145990 in this.paragraph.getBoxesForSelection(selection__145712))
+            foreach (global::Doroti.Ui.TextBox textBox in this.paragraph.getBoxesForSelection(selection))
             {
-                ((PaintingContext)context).canvas.drawRect(textBox__145990.toRect().shift(offset), selectionPaint__145858);
+                ((PaintingContext)context).canvas.drawRect(textBox.toRect().shift(offset), selectionPaint);
             }
         }
     }
@@ -3308,10 +3308,10 @@ internal class _SelectableFragment__paragraph : ChangeNotifier, Selectable, Diag
 
     public virtual TextSelection getLineAtOffset(TextPosition position)
     {
-        global::Doroti.Ui.TextRange line__147048 = this.paragraph._getLineAtOffset(position);
-        long start__147107 = line__147048.start.clamp(this.range.start, this.range.end);
-        long end__147171 = line__147048.end.clamp(this.range.start, this.range.end);
-        return new TextSelection(baseOffset: start__147107, extentOffset: end__147171);
+        global::Doroti.Ui.TextRange line = this.paragraph._getLineAtOffset(position);
+        long startLocal = line.start.clamp(this.range.start, this.range.end);
+        long endLocal = line.end.clamp(this.range.start, this.range.end);
+        return new TextSelection(baseOffset: startLocal, extentOffset: endLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

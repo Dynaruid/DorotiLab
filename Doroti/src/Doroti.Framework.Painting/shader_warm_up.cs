@@ -24,15 +24,15 @@ public abstract class ShaderWarmUp
     public abstract Future warmUpOnCanvas(Canvas canvas);
     public async virtual Future execute()
     {
-        var recorder__4062 = new global::Doroti.Ui.PictureRecorder();
-        var canvas__4105 = new global::Doroti.Ui.Canvas(recorder__4062);
-        await warmUpOnCanvas(canvas__4105);
-        global::Doroti.Ui.Picture picture__4190 = recorder__4062.endRecording();
-        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCaptureShaderWarmUpPicture(picture__4190));
-        TimelineTask? debugShaderWarmUpTask__4297 = default!;
+        var recorder = new global::Doroti.Ui.PictureRecorder();
+        var canvas = new global::Doroti.Ui.Canvas(recorder);
+        await warmUpOnCanvas(canvas);
+        global::Doroti.Ui.Picture picture = recorder.endRecording();
+        DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCaptureShaderWarmUpPicture(picture));
+        TimelineTask? debugShaderWarmUpTask = default!;
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
-            debugShaderWarmUpTask__4297 = ((Func<TimelineTask>)(() =>
+            debugShaderWarmUpTask = ((Func<TimelineTask>)(() =>
 {
     var __cascade = new TimelineTask();
     __cascade.start("Warm-up shader");
@@ -41,18 +41,18 @@ public abstract class ShaderWarmUp
         }
         try
         {
-            global::Doroti.Ui.Image image__4453 = await picture__4190.toImage(this.size.width.ceil(), this.size.height.ceil());
-            DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCaptureShaderWarmUpImage(image__4453));
-            image__4453.dispose();
+            global::Doroti.Ui.Image image = await picture.toImage(this.size.width.ceil(), this.size.height.ceil());
+            DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Painting.DebugLibrary.debugCaptureShaderWarmUpImage(image));
+            image.dispose();
         }
         finally
         {
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
-                debugShaderWarmUpTask__4297!.finish();
+                debugShaderWarmUpTask!.finish();
             }
         }
-        picture__4190.dispose();
+        picture.dispose();
     }
 
 }

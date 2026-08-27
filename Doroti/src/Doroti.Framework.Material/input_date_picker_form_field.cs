@@ -104,15 +104,15 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : gl
     {
         if ((this._selectedDate is not null))
         {
-            MaterialLocalizations localizations__6930 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(this.context));
-            _inputText = ((InputDatePickerFormField)this.widget).calendarDelegate.formatCompactDate(DartRuntimePrimitives.RequireValue(this._selectedDate), localizations__6930);
-            var textEditingValue__7084 = new global::Doroti.Framework.Services.TextEditingValue(text: this._inputText!);
+            MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(this.context));
+            _inputText = ((InputDatePickerFormField)this.widget).calendarDelegate.formatCompactDate(DartRuntimePrimitives.RequireValue(this._selectedDate), localizations);
+            var textEditingValue = new global::Doroti.Framework.Services.TextEditingValue(text: this._inputText!);
             if ((((InputDatePickerFormField)this.widget).autofocus && !this._autoSelected))
             {
-                textEditingValue__7084 = textEditingValue__7084.copyWith(selection: new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: this._inputText!.Length));
+                textEditingValue = textEditingValue.copyWith(selection: new global::Doroti.Framework.Services.TextSelection(baseOffset: 0L, extentOffset: this._inputText!.Length));
                 _autoSelected = true;
             }
-            this._controller.value = textEditingValue__7084;
+            this._controller.value = textEditingValue;
         }
         else
         {
@@ -123,8 +123,8 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : gl
 
     internal virtual DateTime? _parseDate(string? text)
     {
-        MaterialLocalizations localizations__7691 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(this.context));
-        return ((InputDatePickerFormField)this.widget).calendarDelegate.parseCompactDate(text, localizations__7691);
+        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(this.context));
+        return ((InputDatePickerFormField)this.widget).calendarDelegate.parseCompactDate(text, localizations);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -140,14 +140,14 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : gl
         {
             return null;
         }
-        DateTime? date__8229 = _parseDate(text);
-        if ((date__8229 is null))
+        DateTime? date = _parseDate(text);
+        if ((date is null))
         {
             return (((InputDatePickerFormField)this.widget).errorFormatText ?? MaterialLocalizations.of(this.context).invalidDateFormatLabel);
         }
         else
         {
-            if (!_isValidAcceptableDate(DartRuntimePrimitives.RequireValue(date__8229)))
+            if (!_isValidAcceptableDate(DartRuntimePrimitives.RequireValue(date)))
             {
                 return (((InputDatePickerFormField)this.widget).errorInvalidText ?? MaterialLocalizations.of(this.context).dateOutOfRangeLabel);
             }
@@ -158,10 +158,10 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : gl
 
     internal virtual void _updateDate(string? text, global::System.Action<DateTime>? callback)
     {
-        DateTime? date__8635 = _parseDate(text);
-        if (_isValidAcceptableDate(date__8635))
+        DateTime? date = _parseDate(text);
+        if (_isValidAcceptableDate(date))
         {
-            _selectedDate = date__8635;
+            _selectedDate = date;
             _inputText = text;
             callback?.Invoke(DartRuntimePrimitives.RequireValue(this._selectedDate));
         }
@@ -179,13 +179,13 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : gl
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ThemeData theme__9048 = Theme.of(context);
-        bool useMaterial3__9090 = theme__9048.useMaterial3;
-        MaterialLocalizations localizations__9157 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
-        DatePickerThemeData datePickerTheme__9238 = theme__9048.datePickerTheme;
-        InputDecorationThemeData inputTheme__9314 = ((InputDecorationThemeData)(object?)InputDecorationTheme.of(context));
-        InputBorder effectiveInputBorder__9383 = ((datePickerTheme__9238.inputDecorationTheme?.border ?? ((InputDecorationThemeData)inputTheme__9314).border) ?? ((useMaterial3__9090 ? new OutlineInputBorder() : new UnderlineInputBorder())));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new TextFormField(decoration: new InputDecoration(hintText: ((((InputDatePickerFormField)this.widget).fieldHintText ?? (string)((InputDatePickerFormField)this.widget).calendarDelegate.dateHelpText(localizations__9157))), labelText: ((((InputDatePickerFormField)this.widget).fieldLabelText ?? (string)((MaterialLocalizations)localizations__9157).dateInputLabel))).applyDefaults(inputTheme__9314.merge(datePickerTheme__9238.inputDecorationTheme).copyWith(border: effectiveInputBorder__9383)), validator: this._validateDate, keyboardType: (((InputDatePickerFormField)this.widget).keyboardType ?? global::Doroti.Framework.Services.TextInputType.datetime), onSaved: this._handleSaved, onFieldSubmitted: this._handleSubmitted, autofocus: ((InputDatePickerFormField)this.widget).autofocus, controller: this._controller, focusNode: ((InputDatePickerFormField)this.widget).focusNode)));
+        ThemeData theme = Theme.of(context);
+        bool useMaterial3Local = theme.useMaterial3;
+        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        DatePickerThemeData datePickerThemeLocal = theme.datePickerTheme;
+        InputDecorationThemeData inputTheme = ((InputDecorationThemeData)(object?)InputDecorationTheme.of(context));
+        InputBorder effectiveInputBorder = ((datePickerThemeLocal.inputDecorationTheme?.border ?? ((InputDecorationThemeData)inputTheme).border) ?? ((useMaterial3Local ? new OutlineInputBorder() : new UnderlineInputBorder())));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new TextFormField(decoration: new InputDecoration(hintText: ((((InputDatePickerFormField)this.widget).fieldHintText ?? (string)((InputDatePickerFormField)this.widget).calendarDelegate.dateHelpText(localizations))), labelText: ((((InputDatePickerFormField)this.widget).fieldLabelText ?? (string)((MaterialLocalizations)localizations).dateInputLabel))).applyDefaults(inputTheme.merge(datePickerThemeLocal.inputDecorationTheme).copyWith(border: effectiveInputBorder)), validator: this._validateDate, keyboardType: (((InputDatePickerFormField)this.widget).keyboardType ?? global::Doroti.Framework.Services.TextInputType.datetime), onSaved: this._handleSaved, onFieldSubmitted: this._handleSubmitted, autofocus: ((InputDatePickerFormField)this.widget).autofocus, controller: this._controller, focusNode: ((InputDatePickerFormField)this.widget).focusNode)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

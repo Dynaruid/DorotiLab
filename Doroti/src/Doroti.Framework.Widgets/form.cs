@@ -44,24 +44,24 @@ public class Form : StatefulWidget
 
     public static FormState? maybeOf(BuildContext context)
     {
-        _FormScope__form? scope__3743 = ((_FormScope__form?)(object?)context.dependOnInheritedWidgetOfExactType<_FormScope__form>());
-        return scope__3743?._formState;
+        _FormScope__form? scope = ((_FormScope__form?)(object?)context.dependOnInheritedWidgetOfExactType<_FormScope__form>());
+        return scope?._formState;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static FormState of(BuildContext context)
     {
-        FormState? formState__4508 = ((FormState?)(object?)Form.maybeOf(context));
+        FormState? formState = ((FormState?)(object?)Form.maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((formState__4508 is null))
+                if ((formState is null))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Form.of() was called with a context that does not contain a Form widget.\n" + "No Form widget ancestor could be found starting from the context that " + "was passed to Form.of(). This can happen because you are using a widget " + "that looks for a Form ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return formState__4508!;
+        return formState!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -112,7 +112,7 @@ public class FormState : State<Form>
 
     public override Widget build(BuildContext context)
     {
-        bool hasError__9097 = this._fields.any(((field) => ((bool)((dynamic)field).hasError)));
+        bool hasErrorLocal = this._fields.any(((field) => ((bool)((dynamic)field).hasError)));
         switch (((Form)(object)this.widget).autovalidateMode)
         {
             case AutovalidateMode.always:
@@ -130,7 +130,7 @@ public class FormState : State<Form>
                 }
             case AutovalidateMode.onUserInteractionIfError:
                 {
-                    if ((this._hasInteractedByUser && hasError__9097))
+                    if ((this._hasInteractedByUser && hasErrorLocal))
                     {
                         _validate(View.of(context));
                     }
@@ -142,32 +142,32 @@ public class FormState : State<Form>
                     break;
                 }
         }
-        Widget form__9684 = default!;
+        Widget formLocal = default!;
         if (((((Form)(object)this.widget).canPop is not null) || ((((((Form)(object)this.widget).onPopInvokedWithResult ?? (object?)((Form)(object)this.widget).onPopInvoked))) is not null)))
         {
-            form__9684 = DartRuntimePrimitives.ConvertValue<Widget>(new PopScope<object?>(canPop: (((Form)(object)this.widget).canPop ?? true), onPopInvokedWithResult: (global::System.Action<bool, object?>)((Form)(object)this.widget)._callPopInvoked, child: new _FormScope__form(formState: this, generation: this._generation, child: ((Form)(object)this.widget).child)));
+            formLocal = DartRuntimePrimitives.ConvertValue<Widget>(new PopScope<object?>(canPop: (((Form)(object)this.widget).canPop ?? true), onPopInvokedWithResult: (global::System.Action<bool, object?>)((Form)(object)this.widget)._callPopInvoked, child: new _FormScope__form(formState: this, generation: this._generation, child: ((Form)(object)this.widget).child)));
         }
         else
         {
-            form__9684 = DartRuntimePrimitives.ConvertValue<Widget>(new WillPopScope(onWillPop: (global::System.Func<Future<bool>>?)((Form)(object)this.widget).onWillPop, child: new _FormScope__form(formState: this, generation: this._generation, child: ((Form)(object)this.widget).child)));
+            formLocal = DartRuntimePrimitives.ConvertValue<Widget>(new WillPopScope(onWillPop: (global::System.Func<Future<bool>>?)((Form)(object)this.widget).onWillPop, child: new _FormScope__form(formState: this, generation: this._generation, child: ((Form)(object)this.widget).child)));
         }
-        return ((Widget)(object?)new Semantics(container: true, explicitChildNodes: true, role: SemanticsRole.form, child: form__9684));
+        return ((Widget)(object?)new Semantics(container: true, explicitChildNodes: true, role: SemanticsRole.form, child: formLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void save()
     {
-        foreach (dynamic field__10459 in this._fields)
+        foreach (dynamic @field in this._fields)
         {
-            ((dynamic)field__10459).save();
+            ((dynamic)@field).save();
         }
     }
 
     public virtual void reset()
     {
-        foreach (dynamic field__10884 in this._fields)
+        foreach (dynamic @field in this._fields)
         {
-            ((dynamic)field__10884).reset();
+            ((dynamic)@field).reset();
         }
         _hasInteractedByUser = false;
         _fieldDidChange();
@@ -175,9 +175,9 @@ public class FormState : State<Form>
 
     public virtual void clearError()
     {
-        foreach (dynamic field__11277 in this._fields)
+        foreach (dynamic @field in this._fields)
         {
-            ((dynamic)field__11277)._clearErrorInternal();
+            ((dynamic)@field)._clearErrorInternal();
         }
         _fieldDidChange();
     }
@@ -192,39 +192,39 @@ public class FormState : State<Form>
 
     public virtual HashSet<object> validateGranularly()
     {
-        var invalidFields__12300 = new HashSet<dynamic>();
+        var invalidFields = new HashSet<dynamic>();
         _hasInteractedByUser = true;
         _forceRebuild();
-        _validate(View.of(this.context), invalidFields__12300);
-        return ((HashSet<object>)(object?)invalidFields__12300);
+        _validate(View.of(this.context), invalidFields);
+        return ((HashSet<object>)(object?)invalidFields);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _validate(DorotiView view, HashSet<dynamic>? invalidFields = null)
     {
-        var hasError__12570 = false;
-        var errorMessage__12596 = "";
-        var validateOnFocusChange__12625 = (object.Equals(((Form)(object)this.widget).autovalidateMode, AutovalidateMode.onUnfocus));
-        foreach (dynamic field__12744 in this._fields)
+        var hasError = false;
+        var errorMessage = "";
+        var validateOnFocusChange = (object.Equals(((Form)(object)this.widget).autovalidateMode, AutovalidateMode.onUnfocus));
+        foreach (dynamic @field in this._fields)
         {
-            bool hasFocus__12781 = ((FocusNode)((dynamic)field__12744)._focusNode).hasFocus;
-            if (((!validateOnFocusChange__12625 || !hasFocus__12781) || ((validateOnFocusChange__12625 && hasFocus__12781))))
+            bool hasFocusLocal = ((FocusNode)((dynamic)@field)._focusNode).hasFocus;
+            if (((!validateOnFocusChange || !hasFocusLocal) || ((validateOnFocusChange && hasFocusLocal))))
             {
-                bool isFieldValid__12927 = ((bool)((dynamic)field__12744).validate());
-                hasError__12570 |= !isFieldValid__12927;
-                if ((errorMessage__12596.Length == 0))
+                bool isFieldValid = ((bool)((dynamic)@field).validate());
+                hasError |= !isFieldValid;
+                if ((errorMessage.Length == 0))
                 {
-                    errorMessage__12596 = (((string?)((dynamic)field__12744).errorText) ?? "");
+                    errorMessage = (((string?)((dynamic)@field).errorText) ?? "");
                 }
-                if (((invalidFields is not null) && !isFieldValid__12927))
+                if (((invalidFields is not null) && !isFieldValid))
                 {
-                    invalidFields.Add(field__12744);
+                    invalidFields.Add(@field);
                 }
             }
         }
-        if (((errorMessage__12596.Length != 0) && MediaQuery.supportsAnnounceOf(this.context)))
+        if (((errorMessage.Length != 0) && MediaQuery.supportsAnnounceOf(this.context)))
         {
-            global::Doroti.Ui.TextDirection directionality__13387 = Directionality.of(this.context);
+            global::Doroti.Ui.TextDirection directionality = Directionality.of(this.context);
             if ((object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.iOS)))
             {
                 global::Doroti.Runtime.DartAsyncRuntime.unawaited(new Future((async () =>
@@ -232,25 +232,25 @@ public class FormState : State<Form>
                     await new Future(FormLibrary._kIOSAnnouncementDelayDuration);
                     try
                     {
-                        await SemanticsService.sendAnnouncement(view, errorMessage__12596, directionality__13387, assertiveness: global::Doroti.Framework.Semantics.Assertiveness.assertive);
+                        await SemanticsService.sendAnnouncement(view, errorMessage, directionality, assertiveness: global::Doroti.Framework.Semantics.Assertiveness.assertive);
                     }
-                    catch (Exception exception__13865)
+                    catch (Exception exceptionLocal)
                     {
-                        var stack__13876 = new System.Diagnostics.StackTrace();
-                        FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception__13865, stack: stack__13876, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
+                        var stackLocal = new System.Diagnostics.StackTrace();
+                        FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
                     }
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 })));
             }
             else
             {
-                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(view, errorMessage__12596, directionality__13387, assertiveness: global::Doroti.Framework.Semantics.Assertiveness.assertive).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) =>
+                DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(view, errorMessage, directionality, assertiveness: global::Doroti.Framework.Semantics.Assertiveness.assertive).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) =>
                 {
                     FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
                 }))));
             }
         }
-        return !hasError__12570;
+        return !hasError;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -445,18 +445,18 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__41020 = this._bucket;
-        bool needsRestore__41056 = this.restorePending;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
+        bool needsRestore = this.restorePending;
         _currentParent = RestorationScope.maybeOf(this.context);
-        bool didReplaceBucket__41159 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore__41056);
-        if (needsRestore__41056)
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: needsRestore);
+        if (needsRestore)
         {
-            _doRestore(oldBucket__41020);
+            _doRestore(oldBucket);
         }
-        if (didReplaceBucket__41159)
+        if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket__41020, this._bucket)));
-            oldBucket__41020?.dispose();
+            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            oldBucket?.dispose();
         }
         switch (Form.maybeOf(this.context)?.widget.autovalidateMode)
         {
@@ -534,7 +534,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
             }
         }
         Form.maybeOf(context)?._register(this);
-        Widget child__28942 = ((Widget)(object?)new Semantics(validationResult: (this.hasError ? SemanticsValidationResult.invalid : SemanticsValidationResult.valid), child: this.widget.builder(this)));
+        Widget childLocal = ((Widget)(object?)new Semantics(validationResult: (this.hasError ? SemanticsValidationResult.invalid : SemanticsValidationResult.valid), child: this.widget.builder(this)));
         if ((((object.Equals(Form.maybeOf(context)?.widget.autovalidateMode, AutovalidateMode.onUnfocus)) && (!object.Equals(((FormField<T>)(object)this.widget).autovalidateMode, AutovalidateMode.always))) || (object.Equals(((FormField<T>)(object)this.widget).autovalidateMode, AutovalidateMode.onUnfocus))))
         {
             return ((Widget)(object?)new Focus(canRequestFocus: false, skipTraversal: true, onFocusChange: ((global::System.Action<bool>)((value) =>
@@ -546,9 +546,9 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
                         _validate();
                     })));
                 }
-            })), focusNode: this._focusNode, child: child__28942));
+            })), focusNode: this._focusNode, child: childLocal));
         }
-        return child__28942;
+        return childLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -562,8 +562,8 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
     {
         DartRuntimePrimitives.Assert(() => ((((dynamic)property)._restorationId is null) || ((this._debugDoingRestore && (((dynamic)property)._restorationId == restorationId)))), () => (object?)$"Property is already registered under {((dynamic)property)._restorationId}.");
         DartRuntimePrimitives.Assert(() => (this._debugDoingRestore || !this._properties.Keys.map<dynamic, string?>(((r) => ((dynamic)r)._restorationId)).contains(restorationId)), () => (object?)$"\"{restorationId}\" is already registered to another property.");
-        bool hasSerializedValue__36723 = (this.bucket?.contains(restorationId) ?? false);
-        object? initialValue__36804 = (hasSerializedValue__36723 ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
+        bool hasSerializedValue = (this.bucket?.contains(restorationId) ?? false);
+        object? initialValue = (hasSerializedValue ? property.fromPrimitives(this.bucket!.read<object>(restorationId)) : property.createDefaultValue());
         if (!((dynamic)property).isRegistered)
         {
             property._register(restorationId, this);
@@ -579,8 +579,8 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
-        property.initWithValue((dynamic)initialValue__36804);
-        if (((!hasSerializedValue__36723 && ((dynamic)property).enabled) && (this.bucket is not null)))
+        property.initWithValue((dynamic)initialValue);
+        if (((!hasSerializedValue && ((dynamic)property).enabled) && (this.bucket is not null)))
         {
             _updateProperty(property);
         }
@@ -605,14 +605,14 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         {
             return;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__39230 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
         DartRuntimePrimitives.Assert(() => !this.restorePending);
-        bool didReplaceBucket__39295 = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
-        if (didReplaceBucket__39295)
+        bool didReplaceBucket = _updateBucketIfNecessary(parent: this._currentParent, restorePending: false);
+        if (didReplaceBucket)
         {
-            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket__39230, this._bucket)));
-            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket__39230 is null)));
-            oldBucket__39230?.dispose();
+            DartRuntimePrimitives.Assert(() => (!object.Equals(oldBucket, this._bucket)));
+            DartRuntimePrimitives.Assert(() => ((this._bucket is null) || (oldBucket is null)));
+            oldBucket?.dispose();
         }
     }
 
@@ -628,8 +628,8 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
             {
                 return false;
             }
-            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent__40517 = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
-            return ((!object.Equals(potentialNewParent__40517, this._currentParent)) && ((potentialNewParent__40517?.isReplacing ?? false)));
+            global::Doroti.Framework.Services.RestorationBucket? potentialNewParent = ((global::Doroti.Framework.Services.RestorationBucket?)(object?)RestorationScope.maybeOf(this.context));
+            return ((!object.Equals(potentialNewParent, this._currentParent)) && ((potentialNewParent?.isReplacing ?? false)));
             return default!;
         }
     }
@@ -660,17 +660,17 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
     {
         if (((this.restorationId is null) || (parent is null)))
         {
-            bool didReplace__42801 = _setNewBucketIfNecessary(newBucket: ((global::Doroti.Framework.Services.RestorationBucket)(object)null), restorePending: restorePending);
+            bool didReplace = _setNewBucketIfNecessary(newBucket: ((global::Doroti.Framework.Services.RestorationBucket)(object)null), restorePending: restorePending);
             DartRuntimePrimitives.Assert(() => (this._bucket is null));
-            return didReplace__42801;
+            return didReplace;
         }
         DartRuntimePrimitives.Assert(() => (this.restorationId is not null));
         if ((restorePending || (this._bucket is null)))
         {
-            global::Doroti.Framework.Services.RestorationBucket newBucket__43086 = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
-            bool didReplace__43168 = _setNewBucketIfNecessary(newBucket: newBucket__43086, restorePending: restorePending);
-            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucket__43086)));
-            return didReplace__43168;
+            global::Doroti.Framework.Services.RestorationBucket newBucketLocal = ((global::Doroti.Framework.Services.RestorationBucket)(object?)parent.claimChild(this.restorationId!, debugOwner: this));
+            bool didReplaceLocal = _setNewBucketIfNecessary(newBucket: newBucketLocal, restorePending: restorePending);
+            DartRuntimePrimitives.Assert(() => (object.Equals(this._bucket, newBucketLocal)));
+            return didReplaceLocal;
         }
         DartRuntimePrimitives.Assert(() => (this._bucket is not null));
         DartRuntimePrimitives.Assert(() => !restorePending);
@@ -686,7 +686,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         {
             return false;
         }
-        global::Doroti.Framework.Services.RestorationBucket? oldBucket__43946 = this._bucket;
+        global::Doroti.Framework.Services.RestorationBucket? oldBucket = this._bucket;
         this._bucket = newBucket;
         if (!restorePending)
         {
@@ -694,7 +694,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
             {
                 this._properties.Keys.forEach((__arg0) => ((global::System.Action<dynamic>)this._updateProperty)(__arg0));
             }
-            didToggleBucket(oldBucket__43946);
+            didToggleBucket(oldBucket);
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -714,14 +714,14 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
 
     public virtual void _unregister(dynamic property)
     {
-        global::System.Action listener__44576 = this._properties.remove(property)!;
+        global::System.Action listener = this._properties.remove(property)!;
         DartRuntimePrimitives.Assert(() =>
             {
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        property.removeListener((global::System.Action)(() => listener__44576()));
+        property.removeListener((global::System.Action)(() => listener()));
         property._unregister();
     }
 

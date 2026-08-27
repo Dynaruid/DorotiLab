@@ -70,8 +70,8 @@ public class RawKeyEventDataMacOs : RawKeyEventData
         {
             if (specifiedLogicalKey is long specifiedLogicalKey__value3625)
             {
-                long key__3672 = DartRuntimePrimitives.RequireValue(specifiedLogicalKey__value3625);
-                return (LogicalKeyboardKey.findKeyByKeyId(key__3672) ?? new LogicalKeyboardKey(key__3672));
+                long key = DartRuntimePrimitives.RequireValue(specifiedLogicalKey__value3625);
+                return (LogicalKeyboardKey.findKeyByKeyId(key) ?? new LogicalKeyboardKey(key));
             }
             LogicalKeyboardKey? numPadKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kMacOsNumPadMap.GetValueOrDefault(keyCode);
             if ((numPadKey is not null))
@@ -86,16 +86,16 @@ public class RawKeyEventDataMacOs : RawKeyEventData
             long? character = default!;
             if ((keyLabel.Length != 0))
             {
-                List<long> codePoints__4817 = keyLabel.runes().ToList();
-                if ((((codePoints__4817.Count == 1L) && !LogicalKeyboardKey.isControlCharacter(keyLabel)) && !_isUnprintableKey(keyLabel)))
+                List<long> codePoints = keyLabel.runes().ToList();
+                if ((((codePoints.Count == 1L) && !LogicalKeyboardKey.isControlCharacter(keyLabel)) && !_isUnprintableKey(keyLabel)))
                 {
-                    character = Raw_keyboard_macosLibrary.runeToLowerCase(codePoints__4817[(int)(0L)]);
+                    character = Raw_keyboard_macosLibrary.runeToLowerCase(codePoints[(int)(0L)]);
                 }
             }
             if (character is long character__value5291)
             {
-                long keyId__5328 = (LogicalKeyboardKey.unicodePlane | ((DartRuntimePrimitives.RequireValue(character__value5291) & LogicalKeyboardKey.valueMask)));
-                return (LogicalKeyboardKey.findKeyByKeyId(keyId__5328) ?? new LogicalKeyboardKey(keyId__5328));
+                long keyId = (LogicalKeyboardKey.unicodePlane | ((DartRuntimePrimitives.RequireValue(character__value5291) & LogicalKeyboardKey.valueMask)));
+                return (LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId));
             }
             return new LogicalKeyboardKey((keyCode | LogicalKeyboardKey.macosPlane));
         }

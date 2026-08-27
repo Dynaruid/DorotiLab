@@ -367,12 +367,12 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
         avatarDrawerController = new global::Doroti.Framework.Animation.AnimationController(duration: (((RawChip)this.widget).chipAnimationStyle?.avatarDrawerAnimation?.duration ?? ChipLibrary._kDrawerDuration), reverseDuration: ((RawChip)this.widget).chipAnimationStyle?.avatarDrawerAnimation?.reverseDuration, value: ((this.hasAvatar || ((RawChip)this.widget).selected) ? 1.0 : 0.0), vsync: this);
         deleteDrawerController = new global::Doroti.Framework.Animation.AnimationController(duration: (((RawChip)this.widget).chipAnimationStyle?.deleteDrawerAnimation?.duration ?? ChipLibrary._kDrawerDuration), reverseDuration: ((RawChip)this.widget).chipAnimationStyle?.deleteDrawerAnimation?.reverseDuration, value: (this.hasDeleteButton ? 1.0 : 0.0), vsync: this);
         enableController = new global::Doroti.Framework.Animation.AnimationController(duration: (((RawChip)this.widget).chipAnimationStyle?.enableAnimation?.duration ?? ChipLibrary._kDisableDuration), reverseDuration: ((RawChip)this.widget).chipAnimationStyle?.enableAnimation?.reverseDuration, value: (((RawChip)this.widget).isEnabled ? 1.0 : 0.0), vsync: this);
-        double checkmarkPercentage__37259 = (ChipLibrary._kCheckmarkDuration.inMilliseconds / ChipLibrary._kSelectDuration.inMilliseconds);
-        double checkmarkReversePercentage__37376 = (ChipLibrary._kCheckmarkReverseDuration.inMilliseconds / ChipLibrary._kSelectDuration.inMilliseconds);
-        double avatarDrawerReversePercentage__37507 = (ChipLibrary._kReverseDrawerDuration.inMilliseconds / ChipLibrary._kSelectDuration.inMilliseconds);
-        checkmarkAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this.selectController, curve: new global::Doroti.Framework.Animation.Interval((1.0 - checkmarkPercentage__37259), 1.0, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn), reverseCurve: new global::Doroti.Framework.Animation.Interval((1.0 - checkmarkReversePercentage__37376), 1.0, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn));
+        double checkmarkPercentage = (ChipLibrary._kCheckmarkDuration.inMilliseconds / ChipLibrary._kSelectDuration.inMilliseconds);
+        double checkmarkReversePercentage = (ChipLibrary._kCheckmarkReverseDuration.inMilliseconds / ChipLibrary._kSelectDuration.inMilliseconds);
+        double avatarDrawerReversePercentage = (ChipLibrary._kReverseDrawerDuration.inMilliseconds / ChipLibrary._kSelectDuration.inMilliseconds);
+        checkmarkAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this.selectController, curve: new global::Doroti.Framework.Animation.Interval((1.0 - checkmarkPercentage), 1.0, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn), reverseCurve: new global::Doroti.Framework.Animation.Interval((1.0 - checkmarkReversePercentage), 1.0, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn));
         deleteDrawerAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this.deleteDrawerController, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
-        avatarDrawerAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this.avatarDrawerController, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, reverseCurve: new global::Doroti.Framework.Animation.Interval((1.0 - avatarDrawerReversePercentage__37507), 1.0, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn));
+        avatarDrawerAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this.avatarDrawerController, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, reverseCurve: new global::Doroti.Framework.Animation.Interval((1.0 - avatarDrawerReversePercentage), 1.0, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn));
         enableAnimation = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this.enableController, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
     }
 
@@ -392,11 +392,11 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
             {
                 if ((this._tickers is not null))
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18989 in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
                     {
-                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker__18989).isActive)
+                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker).isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker__18989.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -450,13 +450,13 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
 
     internal virtual global::Doroti.Framework.Painting.OutlinedBorder _getShape(ThemeData theme, ChipThemeData chipTheme, ChipThemeData chipDefaults)
     {
-        global::Doroti.Framework.Painting.BorderSide? resolvedSide__39549 = ((WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.BorderSide?>(((RawChip)this.widget).side, this.statesController.value) ?? (global::Doroti.Framework.Painting.BorderSide)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.BorderSide?>(chipTheme.side, this.statesController.value)));
-        global::Doroti.Framework.Painting.OutlinedBorder resolvedShape__39772 = (((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.OutlinedBorder?>(((RawChip)this.widget).shape, this.statesController.value) ?? (global::Doroti.Framework.Painting.OutlinedBorder)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.OutlinedBorder?>(chipTheme.shape, this.statesController.value))) ?? (global::Doroti.Framework.Painting.OutlinedBorder)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.OutlinedBorder?>(chipDefaults.shape, this.statesController.value))) ?? new global::Doroti.Framework.Painting.StadiumBorder());
-        if ((resolvedSide__39549 is not null))
+        global::Doroti.Framework.Painting.BorderSide? resolvedSide = ((WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.BorderSide?>(((RawChip)this.widget).side, this.statesController.value) ?? (global::Doroti.Framework.Painting.BorderSide)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.BorderSide?>(chipTheme.side, this.statesController.value)));
+        global::Doroti.Framework.Painting.OutlinedBorder resolvedShape = (((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.OutlinedBorder?>(((RawChip)this.widget).shape, this.statesController.value) ?? (global::Doroti.Framework.Painting.OutlinedBorder)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.OutlinedBorder?>(chipTheme.shape, this.statesController.value))) ?? (global::Doroti.Framework.Painting.OutlinedBorder)WidgetStateProperty.resolveAs<global::Doroti.Framework.Painting.OutlinedBorder?>(chipDefaults.shape, this.statesController.value))) ?? new global::Doroti.Framework.Painting.StadiumBorder());
+        if ((resolvedSide is not null))
         {
-            return ((global::Doroti.Framework.Painting.OutlinedBorder)(object?)resolvedShape__39772.copyWith(side: resolvedSide__39549));
+            return ((global::Doroti.Framework.Painting.OutlinedBorder)(object?)resolvedShape.copyWith(side: resolvedSide));
         }
-        return ((!object.Equals(((global::Doroti.Framework.Painting.OutlinedBorder)resolvedShape__39772).side, global::Doroti.Framework.Painting.BorderSide.none)) ? resolvedShape__39772 : resolvedShape__39772.copyWith(side: chipDefaults.side));
+        return ((!object.Equals(((global::Doroti.Framework.Painting.OutlinedBorder)resolvedShape).side, global::Doroti.Framework.Painting.BorderSide.none)) ? resolvedShape : resolvedShape.copyWith(side: chipDefaults.side));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -470,18 +470,18 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
     {
         if (theme.useMaterial3)
         {
-            global::Doroti.Ui.Color? disabledColor__41394 = ((global::Doroti.Ui.Color?)(object?)resolveColor(color: (((RawChip)this.widget).color ?? chipTheme.color), disabledColor: (((RawChip)this.widget).disabledColor ?? chipTheme.disabledColor), defaultColor: chipDefaults.color));
-            global::Doroti.Ui.Color? backgroundColor__41614 = ((global::Doroti.Ui.Color?)(object?)resolveColor(color: (((RawChip)this.widget).color ?? chipTheme.color), backgroundColor: (((RawChip)this.widget).backgroundColor ?? chipTheme.backgroundColor), defaultColor: chipDefaults.color));
-            global::Doroti.Ui.Color? selectedColor__41842 = ((global::Doroti.Ui.Color?)(object?)resolveColor(color: (((RawChip)this.widget).color ?? chipTheme.color), selectedColor: (((RawChip)this.widget).selectedColor ?? chipTheme.selectedColor), defaultColor: chipDefaults.color));
-            var backgroundTween__42055 = new global::Doroti.Framework.Animation.ColorTween(begin: disabledColor__41394, end: backgroundColor__41614);
-            var selectTween__42141 = new global::Doroti.Framework.Animation.ColorTween(begin: backgroundTween__42055.evaluate(this.enableController), end: selectedColor__41842);
-            return ((global::Doroti.Ui.Color?)(object?)selectTween__42141.evaluate(this.selectionFade));
+            global::Doroti.Ui.Color? disabledColorLocal = ((global::Doroti.Ui.Color?)(object?)resolveColor(color: (((RawChip)this.widget).color ?? chipTheme.color), disabledColor: (((RawChip)this.widget).disabledColor ?? chipTheme.disabledColor), defaultColor: chipDefaults.color));
+            global::Doroti.Ui.Color? backgroundColorLocal = ((global::Doroti.Ui.Color?)(object?)resolveColor(color: (((RawChip)this.widget).color ?? chipTheme.color), backgroundColor: (((RawChip)this.widget).backgroundColor ?? chipTheme.backgroundColor), defaultColor: chipDefaults.color));
+            global::Doroti.Ui.Color? selectedColorLocal = ((global::Doroti.Ui.Color?)(object?)resolveColor(color: (((RawChip)this.widget).color ?? chipTheme.color), selectedColor: (((RawChip)this.widget).selectedColor ?? chipTheme.selectedColor), defaultColor: chipDefaults.color));
+            var backgroundTween = new global::Doroti.Framework.Animation.ColorTween(begin: disabledColorLocal, end: backgroundColorLocal);
+            var selectTween = new global::Doroti.Framework.Animation.ColorTween(begin: backgroundTween.evaluate(this.enableController), end: selectedColorLocal);
+            return ((global::Doroti.Ui.Color?)(object?)selectTween.evaluate(this.selectionFade));
         }
         else
         {
-            var backgroundTween__42338 = new global::Doroti.Framework.Animation.ColorTween(begin: ((((RawChip)this.widget).disabledColor ?? chipTheme.disabledColor) ?? theme.disabledColor), end: (((((RawChip)this.widget).backgroundColor ?? chipTheme.backgroundColor) ?? theme.chipTheme.backgroundColor) ?? chipDefaults.backgroundColor));
-            var selectTween__42657 = new global::Doroti.Framework.Animation.ColorTween(begin: backgroundTween__42338.evaluate(this.enableController), end: (((((RawChip)this.widget).selectedColor ?? chipTheme.selectedColor) ?? theme.chipTheme.selectedColor) ?? chipDefaults.selectedColor));
-            return ((global::Doroti.Ui.Color?)(object?)selectTween__42657.evaluate(this.selectionFade));
+            var backgroundTweenLocal = new global::Doroti.Framework.Animation.ColorTween(begin: ((((RawChip)this.widget).disabledColor ?? chipTheme.disabledColor) ?? theme.disabledColor), end: (((((RawChip)this.widget).backgroundColor ?? chipTheme.backgroundColor) ?? theme.chipTheme.backgroundColor) ?? chipDefaults.backgroundColor));
+            var selectTweenLocal = new global::Doroti.Framework.Animation.ColorTween(begin: backgroundTweenLocal.evaluate(this.enableController), end: (((((RawChip)this.widget).selectedColor ?? chipTheme.selectedColor) ?? theme.chipTheme.selectedColor) ?? chipDefaults.selectedColor));
+            return ((global::Doroti.Ui.Color?)(object?)selectTweenLocal.evaluate(this.selectionFade));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -565,13 +565,13 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
         {
             return null;
         }
-        global::Doroti.Framework.Widgets.IconThemeData iconTheme__44627 = (((((RawChip)this.widget).iconTheme ?? chipTheme.iconTheme) ?? theme.chipTheme.iconTheme) ?? new _ChipDefaultsM3__chip(context, ((RawChip)this.widget).isEnabled).iconTheme!);
-        global::Doroti.Ui.Color? effectiveDeleteIconColor__44815 = ((global::Doroti.Ui.Color?)(object?)WidgetStateProperty.resolveAs((((((((RawChip)this.widget).deleteIconColor ?? chipTheme.deleteIconColor) ?? theme.chipTheme.deleteIconColor) ?? ((RawChip)this.widget).iconTheme?.color) ?? chipTheme.iconTheme?.color) ?? chipDefaults.deleteIconColor), this.statesController.value));
-        double effectiveIconSize__45160 = (((((RawChip)this.widget).iconTheme?.size ?? chipTheme.iconTheme?.size) ?? theme.chipTheme.iconTheme?.size) ?? DartRuntimePrimitives.RequireValue(new _ChipDefaultsM3__chip(context, ((RawChip)this.widget).isEnabled).iconTheme!.size));
-        MaterialTapTargetSize effectiveMaterialTapTargetSize__45396 = (((RawChip)this.widget).materialTapTargetSize ?? theme.materialTapTargetSize);
-        global::Doroti.Ui.Size semanticSize__45513 = ((global::Doroti.Ui.Size)(object?)(effectiveMaterialTapTargetSize__45396 switch { var __constant45576 when (object.Equals(__constant45576, MaterialTapTargetSize.padded)) => new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension), var __constant45659 when (object.Equals(__constant45659, MaterialTapTargetSize.shrinkWrap)) => new global::Doroti.Ui.Size((ConstantsLibrary.kMinInteractiveDimension - 8.0)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        VisualDensity effectiveVisualDensity__45777 = (((RawChip)this.widget).visualDensity ?? theme.visualDensity);
-        return ((global::Doroti.Framework.Widgets.Widget?)(object?)new _EnsureMinSemanticsSize__chip(semanticSize: (semanticSize__45513 + effectiveVisualDensity__45777.baseSizeAdjustment), child: _wrapWithTooltip(tooltip: (((RawChip)this.widget).deleteButtonTooltipMessage ?? MaterialLocalizations.of(context).deleteButtonTooltip), enabled: (((RawChip)this.widget).isEnabled && (((RawChip)this.widget).onDeleted is not null)), child: new InkWell(radius: (((ChipLibrary._kChipHeight + ((((RawChip)this.widget).padding?.vertical ?? 0.0)))) * 0.45), splashFactory: new _UnconstrainedInkSplashFactory__chip(Theme.of(context).splashFactory), customBorder: new global::Doroti.Framework.Painting.CircleBorder(), onTap: ((global::System.Action)(((RawChip)this.widget).isEnabled ? ((RawChip)this.widget).onDeleted : null)), child: new global::Doroti.Framework.Widgets.IconTheme(data: iconTheme__44627.copyWith(color: effectiveDeleteIconColor__44815, size: effectiveIconSize__45160), child: ((RawChip)this.widget).deleteIcon)))));
+        global::Doroti.Framework.Widgets.IconThemeData iconThemeLocal = (((((RawChip)this.widget).iconTheme ?? chipTheme.iconTheme) ?? theme.chipTheme.iconTheme) ?? new _ChipDefaultsM3__chip(context, ((RawChip)this.widget).isEnabled).iconTheme!);
+        global::Doroti.Ui.Color? effectiveDeleteIconColor = ((global::Doroti.Ui.Color?)(object?)WidgetStateProperty.resolveAs((((((((RawChip)this.widget).deleteIconColor ?? chipTheme.deleteIconColor) ?? theme.chipTheme.deleteIconColor) ?? ((RawChip)this.widget).iconTheme?.color) ?? chipTheme.iconTheme?.color) ?? chipDefaults.deleteIconColor), this.statesController.value));
+        double effectiveIconSize = (((((RawChip)this.widget).iconTheme?.size ?? chipTheme.iconTheme?.size) ?? theme.chipTheme.iconTheme?.size) ?? DartRuntimePrimitives.RequireValue(new _ChipDefaultsM3__chip(context, ((RawChip)this.widget).isEnabled).iconTheme!.size));
+        MaterialTapTargetSize effectiveMaterialTapTargetSize = (((RawChip)this.widget).materialTapTargetSize ?? theme.materialTapTargetSize);
+        global::Doroti.Ui.Size semanticSizeLocal = ((global::Doroti.Ui.Size)(object?)(effectiveMaterialTapTargetSize switch { var __constant45576 when (object.Equals(__constant45576, MaterialTapTargetSize.padded)) => new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension), var __constant45659 when (object.Equals(__constant45659, MaterialTapTargetSize.shrinkWrap)) => new global::Doroti.Ui.Size((ConstantsLibrary.kMinInteractiveDimension - 8.0)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        VisualDensity effectiveVisualDensity = (((RawChip)this.widget).visualDensity ?? theme.visualDensity);
+        return ((global::Doroti.Framework.Widgets.Widget?)(object?)new _EnsureMinSemanticsSize__chip(semanticSize: (semanticSizeLocal + effectiveVisualDensity.baseSizeAdjustment), child: _wrapWithTooltip(tooltip: (((RawChip)this.widget).deleteButtonTooltipMessage ?? MaterialLocalizations.of(context).deleteButtonTooltip), enabled: (((RawChip)this.widget).isEnabled && (((RawChip)this.widget).onDeleted is not null)), child: new InkWell(radius: (((ChipLibrary._kChipHeight + ((((RawChip)this.widget).padding?.vertical ?? 0.0)))) * 0.45), splashFactory: new _UnconstrainedInkSplashFactory__chip(Theme.of(context).splashFactory), customBorder: new global::Doroti.Framework.Painting.CircleBorder(), onTap: ((global::System.Action)(((RawChip)this.widget).isEnabled ? ((RawChip)this.widget).onDeleted : null)), child: new global::Doroti.Framework.Widgets.IconTheme(data: iconThemeLocal.copyWith(color: effectiveDeleteIconColor, size: effectiveIconSize), child: ((RawChip)this.widget).deleteIcon)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -581,60 +581,60 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        ThemeData theme__47110 = Theme.of(context);
-        ChipThemeData chipTheme__47161 = ChipTheme.of(context);
-        global::Doroti.Ui.Brightness brightness__47217 = (chipTheme__47161.brightness ?? theme__47110.brightness);
-        ChipThemeData chipDefaults__47296 = (((RawChip)this.widget).defaultProperties ?? ((theme__47110.useMaterial3 ? new _ChipDefaultsM3__chip(context, ((RawChip)this.widget).isEnabled) : new ChipThemeData(brightness: brightness__47217, secondarySelectedColor: ((object.Equals(brightness__47217, Brightness.dark)) ? Colors.tealAccent[200L]! : theme__47110.primaryColor), labelStyle: theme__47110.textTheme.bodyLarge!))));
-        global::Doroti.Ui.TextDirection? textDirection__47763 = Directionality.maybeOf(context);
-        global::Doroti.Framework.Painting.OutlinedBorder resolvedShape__47837 = ((global::Doroti.Framework.Painting.OutlinedBorder)(object?)_getShape(theme__47110, chipTheme__47161, chipDefaults__47296));
-        double elevation__47914 = (((((RawChip)this.widget).elevation ?? chipTheme__47161.elevation) ?? chipDefaults__47296.elevation) ?? 0);
-        double pressElevation__48015 = (((((RawChip)this.widget).pressElevation ?? chipTheme__47161.pressElevation) ?? chipDefaults__47296.pressElevation) ?? 0);
-        global::Doroti.Ui.Color? shadowColor__48144 = ((global::Doroti.Ui.Color?)(object?)((((RawChip)this.widget).shadowColor ?? chipTheme__47161.shadowColor) ?? chipDefaults__47296.shadowColor));
-        global::Doroti.Ui.Color? surfaceTintColor__48256 = ((global::Doroti.Ui.Color?)(object?)((((RawChip)this.widget).surfaceTintColor ?? chipTheme__47161.surfaceTintColor) ?? chipDefaults__47296.surfaceTintColor));
-        global::Doroti.Ui.Color? selectedShadowColor__48388 = ((global::Doroti.Ui.Color?)(object?)((((RawChip)this.widget).selectedShadowColor ?? chipTheme__47161.selectedShadowColor) ?? chipDefaults__47296.selectedShadowColor));
-        global::Doroti.Ui.Color? checkmarkColor__48548 = ((global::Doroti.Ui.Color?)(object?)((((RawChip)this.widget).checkmarkColor ?? chipTheme__47161.checkmarkColor) ?? chipDefaults__47296.checkmarkColor));
-        bool showCheckmark__48670 = ((((RawChip)this.widget).showCheckmark ?? chipTheme__47161.showCheckmark) ?? DartRuntimePrimitives.RequireValue(chipDefaults__47296.showCheckmark));
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry padding__48803 = ((((RawChip)this.widget).padding ?? chipTheme__47161.padding) ?? chipDefaults__47296.padding!);
-        global::Doroti.Framework.Painting.TextStyle labelStyle__48950 = (chipTheme__47161.labelStyle ?? chipDefaults__47296.labelStyle!);
-        global::Doroti.Framework.Widgets.IconThemeData? iconTheme__49038 = ((((RawChip)this.widget).iconTheme ?? chipTheme__47161.iconTheme) ?? chipDefaults__47296.iconTheme);
-        global::Doroti.Framework.Rendering.BoxConstraints? avatarBoxConstraints__49151 = (((RawChip)this.widget).avatarBoxConstraints ?? chipTheme__47161.avatarBoxConstraints);
-        global::Doroti.Framework.Rendering.BoxConstraints? deleteIconBoxConstraints__49271 = (((RawChip)this.widget).deleteIconBoxConstraints ?? chipTheme__47161.deleteIconBoxConstraints);
-        global::Doroti.Framework.Painting.TextStyle effectiveLabelStyle__49398 = ((global::Doroti.Framework.Painting.TextStyle)(object?)labelStyle__48950.merge(((RawChip)this.widget).labelStyle));
-        global::Doroti.Ui.Color? resolvedLabelColor__49474 = ((global::Doroti.Ui.Color?)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(((global::Doroti.Framework.Painting.TextStyle)effectiveLabelStyle__49398).color, this.statesController.value));
-        global::Doroti.Framework.Painting.TextStyle resolvedLabelStyle__49624 = ((global::Doroti.Framework.Painting.TextStyle)(object?)effectiveLabelStyle__49398.copyWith(color: resolvedLabelColor__49474));
-        global::Doroti.Framework.Widgets.Widget? avatar__49720 = (((iconTheme__49038 is not null) && this.hasAvatar) ? IconTheme.merge(data: chipDefaults__47296.iconTheme!.merge(iconTheme__49038), child: ((RawChip)this.widget).avatar!) : ((RawChip)this.widget).avatar);
-        double defaultFontSize__50169 = (((global::Doroti.Framework.Painting.TextStyle)effectiveLabelStyle__49398).fontSize ?? 14.0);
-        double effectiveTextScale__50242 = (MediaQuery.textScalerOf(context).scale(defaultFontSize__50169) / 14.0);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry defaultLabelPadding__50364 = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)EdgeInsets.lerp(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((effectiveTextScale__50242 - 1.0), 0.0, 1.0))!);
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry labelPadding__50598 = (((((RawChip)this.widget).labelPadding ?? chipTheme__47161.labelPadding) ?? chipDefaults__47296.labelPadding) ?? defaultLabelPadding__50364);
-        global::Doroti.Framework.Widgets.Widget result__50756 = ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(elevation: (this.isTapping ? pressElevation__48015 : elevation__47914), shadowColor: (((RawChip)this.widget).selected ? selectedShadowColor__48388 : shadowColor__48144), surfaceTintColor: surfaceTintColor__48256, animationDuration: pressedAnimationDuration, shape: resolvedShape__47837, clipBehavior: ((RawChip)this.widget).clipBehavior, child: new InkWell(onFocusChange: ((value) =>
+        ThemeData themeLocal = Theme.of(context);
+        ChipThemeData chipTheme = ChipTheme.of(context);
+        global::Doroti.Ui.Brightness brightnessLocal = (chipTheme.brightness ?? themeLocal.brightness);
+        ChipThemeData chipDefaults = (((RawChip)this.widget).defaultProperties ?? ((themeLocal.useMaterial3 ? new _ChipDefaultsM3__chip(context, ((RawChip)this.widget).isEnabled) : new ChipThemeData(brightness: brightnessLocal, secondarySelectedColor: ((object.Equals(brightnessLocal, Brightness.dark)) ? Colors.tealAccent[200L]! : themeLocal.primaryColor), labelStyle: themeLocal.textTheme.bodyLarge!))));
+        global::Doroti.Ui.TextDirection? textDirection = Directionality.maybeOf(context);
+        global::Doroti.Framework.Painting.OutlinedBorder resolvedShape = ((global::Doroti.Framework.Painting.OutlinedBorder)(object?)_getShape(themeLocal, chipTheme, chipDefaults));
+        double elevationLocal = (((((RawChip)this.widget).elevation ?? chipTheme.elevation) ?? chipDefaults.elevation) ?? 0);
+        double pressElevationLocal = (((((RawChip)this.widget).pressElevation ?? chipTheme.pressElevation) ?? chipDefaults.pressElevation) ?? 0);
+        global::Doroti.Ui.Color? shadowColorLocal = ((global::Doroti.Ui.Color?)(object?)((((RawChip)this.widget).shadowColor ?? chipTheme.shadowColor) ?? chipDefaults.shadowColor));
+        global::Doroti.Ui.Color? surfaceTintColorLocal = ((global::Doroti.Ui.Color?)(object?)((((RawChip)this.widget).surfaceTintColor ?? chipTheme.surfaceTintColor) ?? chipDefaults.surfaceTintColor));
+        global::Doroti.Ui.Color? selectedShadowColorLocal = ((global::Doroti.Ui.Color?)(object?)((((RawChip)this.widget).selectedShadowColor ?? chipTheme.selectedShadowColor) ?? chipDefaults.selectedShadowColor));
+        global::Doroti.Ui.Color? checkmarkColorLocal = ((global::Doroti.Ui.Color?)(object?)((((RawChip)this.widget).checkmarkColor ?? chipTheme.checkmarkColor) ?? chipDefaults.checkmarkColor));
+        bool showCheckmarkLocal = ((((RawChip)this.widget).showCheckmark ?? chipTheme.showCheckmark) ?? DartRuntimePrimitives.RequireValue(chipDefaults.showCheckmark));
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = ((((RawChip)this.widget).padding ?? chipTheme.padding) ?? chipDefaults.padding!);
+        global::Doroti.Framework.Painting.TextStyle labelStyleLocal = (chipTheme.labelStyle ?? chipDefaults.labelStyle!);
+        global::Doroti.Framework.Widgets.IconThemeData? iconThemeLocal = ((((RawChip)this.widget).iconTheme ?? chipTheme.iconTheme) ?? chipDefaults.iconTheme);
+        global::Doroti.Framework.Rendering.BoxConstraints? avatarBoxConstraintsLocal = (((RawChip)this.widget).avatarBoxConstraints ?? chipTheme.avatarBoxConstraints);
+        global::Doroti.Framework.Rendering.BoxConstraints? deleteIconBoxConstraintsLocal = (((RawChip)this.widget).deleteIconBoxConstraints ?? chipTheme.deleteIconBoxConstraints);
+        global::Doroti.Framework.Painting.TextStyle effectiveLabelStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)labelStyleLocal.merge(((RawChip)this.widget).labelStyle));
+        global::Doroti.Ui.Color? resolvedLabelColor = ((global::Doroti.Ui.Color?)(object?)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(((global::Doroti.Framework.Painting.TextStyle)effectiveLabelStyle).color, this.statesController.value));
+        global::Doroti.Framework.Painting.TextStyle resolvedLabelStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)effectiveLabelStyle.copyWith(color: resolvedLabelColor));
+        global::Doroti.Framework.Widgets.Widget? avatarLocal = (((iconThemeLocal is not null) && this.hasAvatar) ? IconTheme.merge(data: chipDefaults.iconTheme!.merge(iconThemeLocal), child: ((RawChip)this.widget).avatar!) : ((RawChip)this.widget).avatar);
+        double defaultFontSize = (((global::Doroti.Framework.Painting.TextStyle)effectiveLabelStyle).fontSize ?? 14.0);
+        double effectiveTextScale = (MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0);
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry defaultLabelPadding = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)EdgeInsets.lerp(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((effectiveTextScale - 1.0), 0.0, 1.0))!);
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry labelPaddingLocal = (((((RawChip)this.widget).labelPadding ?? chipTheme.labelPadding) ?? chipDefaults.labelPadding) ?? defaultLabelPadding);
+        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(elevation: (this.isTapping ? pressElevationLocal : elevationLocal), shadowColor: (((RawChip)this.widget).selected ? selectedShadowColorLocal : shadowColorLocal), surfaceTintColor: surfaceTintColorLocal, animationDuration: pressedAnimationDuration, shape: resolvedShape, clipBehavior: ((RawChip)this.widget).clipBehavior, child: new InkWell(onFocusChange: ((value) =>
         {
             this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.focused, value);
         }), focusNode: ((RawChip)this.widget).focusNode, autofocus: ((RawChip)this.widget).autofocus, canRequestFocus: ((RawChip)this.widget).isEnabled, onTap: ((global::System.Action)(this.canTap ? this._handleTap : null)), onTapDown: ((global::System.Action<global::Doroti.Framework.Gestures.TapDownDetails>)(this.canTap ? this._handleTapDown : null)), onTapCancel: ((global::System.Action)(this.canTap ? this._handleTapCancel : null)), onHover: ((global::System.Action<bool>)(this.canTap ? ((value) =>
         {
             this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.hovered, value);
-        }) : null)), mouseCursor: ((RawChip)this.widget).mouseCursor, hoverColor: ((((((RawChip)this.widget).color ?? chipTheme__47161.color)) is null) ? null : Colors.transparent), customBorder: resolvedShape__47837, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: global::Doroti.Framework.Foundation.Listenable.CreateMerge(new List<global::Doroti.Framework.Foundation.Listenable> { this.selectController, this.enableController }.Cast<global::Doroti.Framework.Foundation.Listenable?>()), builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
+        }) : null)), mouseCursor: ((RawChip)this.widget).mouseCursor, hoverColor: ((((((RawChip)this.widget).color ?? chipTheme.color)) is null) ? null : Colors.transparent), customBorder: resolvedShape, child: new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: global::Doroti.Framework.Foundation.Listenable.CreateMerge(new List<global::Doroti.Framework.Foundation.Listenable> { this.selectController, this.enableController }.Cast<global::Doroti.Framework.Foundation.Listenable?>()), builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new Ink(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: resolvedShape__47837, color: _getBackgroundColor(theme__47110, chipTheme__47161, chipDefaults__47296)), child: child));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new Ink(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: resolvedShape, color: _getBackgroundColor(themeLocal, chipTheme, chipDefaults)), child: child));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        })), child: _wrapWithTooltip(tooltip: ((RawChip)this.widget).tooltip, enabled: ((((RawChip)this.widget).onPressed is not null) || (((RawChip)this.widget).onSelected is not null)), child: new _ChipRenderWidget__chip(theme: new _ChipRenderTheme__chip(label: new global::Doroti.Framework.Widgets.DefaultTextStyle(overflow: global::Doroti.Framework.Painting.TextOverflow.fade, textAlign: global::Doroti.Ui.TextAlign.start, maxLines: 1L, softWrap: false, style: resolvedLabelStyle__49624, child: ((RawChip)this.widget).label), avatar: new global::Doroti.Framework.Widgets.AnimatedSwitcher(duration: ChipLibrary._kDrawerDuration, switchInCurve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, child: avatar__49720), deleteIcon: new global::Doroti.Framework.Widgets.AnimatedSwitcher(duration: ChipLibrary._kDrawerDuration, switchInCurve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, child: _buildDeleteIcon(context, theme__47110, chipTheme__47161, chipDefaults__47296)), brightness: brightness__47217, padding: padding__48803.resolve(textDirection__47763), visualDensity: (((RawChip)this.widget).visualDensity ?? theme__47110.visualDensity), labelPadding: labelPadding__50598.resolve(textDirection__47763), showAvatar: this.hasAvatar, showCheckmark: showCheckmark__48670, checkmarkColor: checkmarkColor__48548, canTapBody: this.canTap), value: ((RawChip)this.widget).selected, checkmarkAnimation: this.checkmarkAnimation, enableAnimation: this.enableAnimation, avatarDrawerAnimation: this.avatarDrawerAnimation, deleteDrawerAnimation: this.deleteDrawerAnimation, isEnabled: ((RawChip)this.widget).isEnabled, avatarBorder: ((RawChip)this.widget).avatarBorder, avatarBoxConstraints: avatarBoxConstraints__49151, deleteIconBoxConstraints: deleteIconBoxConstraints__49271))))));
-        global::Doroti.Framework.Rendering.BoxConstraints constraints__54183 = default!;
-        global::Doroti.Ui.Offset densityAdjustment__54213 = ((global::Doroti.Ui.Offset)(object?)((((RawChip)this.widget).visualDensity ?? theme__47110.visualDensity)).baseSizeAdjustment);
-        switch ((((RawChip)this.widget).materialTapTargetSize ?? theme__47110.materialTapTargetSize))
+        })), child: _wrapWithTooltip(tooltip: ((RawChip)this.widget).tooltip, enabled: ((((RawChip)this.widget).onPressed is not null) || (((RawChip)this.widget).onSelected is not null)), child: new _ChipRenderWidget__chip(theme: new _ChipRenderTheme__chip(label: new global::Doroti.Framework.Widgets.DefaultTextStyle(overflow: global::Doroti.Framework.Painting.TextOverflow.fade, textAlign: global::Doroti.Ui.TextAlign.start, maxLines: 1L, softWrap: false, style: resolvedLabelStyle, child: ((RawChip)this.widget).label), avatar: new global::Doroti.Framework.Widgets.AnimatedSwitcher(duration: ChipLibrary._kDrawerDuration, switchInCurve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, child: avatarLocal), deleteIcon: new global::Doroti.Framework.Widgets.AnimatedSwitcher(duration: ChipLibrary._kDrawerDuration, switchInCurve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, child: _buildDeleteIcon(context, themeLocal, chipTheme, chipDefaults)), brightness: brightnessLocal, padding: paddingLocal.resolve(textDirection), visualDensity: (((RawChip)this.widget).visualDensity ?? themeLocal.visualDensity), labelPadding: labelPaddingLocal.resolve(textDirection), showAvatar: this.hasAvatar, showCheckmark: showCheckmarkLocal, checkmarkColor: checkmarkColorLocal, canTapBody: this.canTap), value: ((RawChip)this.widget).selected, checkmarkAnimation: this.checkmarkAnimation, enableAnimation: this.enableAnimation, avatarDrawerAnimation: this.avatarDrawerAnimation, deleteDrawerAnimation: this.deleteDrawerAnimation, isEnabled: ((RawChip)this.widget).isEnabled, avatarBorder: ((RawChip)this.widget).avatarBorder, avatarBoxConstraints: avatarBoxConstraintsLocal, deleteIconBoxConstraints: deleteIconBoxConstraintsLocal))))));
+        global::Doroti.Framework.Rendering.BoxConstraints constraintsLocal = default!;
+        global::Doroti.Ui.Offset densityAdjustment = ((global::Doroti.Ui.Offset)(object?)((((RawChip)this.widget).visualDensity ?? themeLocal.visualDensity)).baseSizeAdjustment);
+        switch ((((RawChip)this.widget).materialTapTargetSize ?? themeLocal.materialTapTargetSize))
         {
             case var __constant54393 when (object.Equals(__constant54393, MaterialTapTargetSize.padded)):
                 {
-                    constraints__54183 = new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: (ConstantsLibrary.kMinInteractiveDimension + densityAdjustment__54213.dx), minHeight: (ConstantsLibrary.kMinInteractiveDimension + densityAdjustment__54213.dy));
+                    constraintsLocal = new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: (ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dx), minHeight: (ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dy));
                     break;
                 }
             case var __constant54622 when (object.Equals(__constant54622, MaterialTapTargetSize.shrinkWrap)):
                 {
-                    constraints__54183 = new global::Doroti.Framework.Rendering.BoxConstraints();
+                    constraintsLocal = new global::Doroti.Framework.Rendering.BoxConstraints();
                     break;
                 }
         }
-        result__50756 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _ChipRedirectingHitDetectionWidget__chip(constraints: constraints__54183, child: new global::Doroti.Framework.Widgets.Center(widthFactor: 1.0, heightFactor: 1.0, child: result__50756)));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(button: ((RawChip)this.widget).tapEnabled, container: true, selected: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? null : ((RawChip)this.widget).selected), @checked: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? ((RawChip)this.widget).selected : null), enabled: (((RawChip)this.widget).tapEnabled ? this.canTap : null), child: result__50756));
+        result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _ChipRedirectingHitDetectionWidget__chip(constraints: constraintsLocal, child: new global::Doroti.Framework.Widgets.Center(widthFactor: 1.0, heightFactor: 1.0, child: result)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(button: ((RawChip)this.widget).tapEnabled, container: true, selected: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? null : ((RawChip)this.widget).selected), @checked: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? ((RawChip)this.widget).selected : null), enabled: (((RawChip)this.widget).tapEnabled ? this.canTap : null), child: result));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -646,16 +646,16 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
         }
         DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values__17506 = this._tickerModeNotifier!.value;
-        var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
+        TickerModeData values = this._tickerModeNotifier!.value;
+        var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
     var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values__17506).enabled;
-    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    __cascade.muted = !((TickerModeData)values).enabled;
+    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result__17553);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
+        this._tickers!.Add(result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -677,26 +677,26 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
     {
         if ((this._tickers is not null))
         {
-            TickerModeData values__18318 = this._tickerModeNotifier!.value;
-            bool muted__18372 = !((TickerModeData)values__18318).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
+            TickerModeData values = this._tickerModeNotifier!.value;
+            bool mutedLocal = !((TickerModeData)values).enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
             {
-                ticker__18421.muted = muted__18372;
-                ticker__18421.forceFrames = ((TickerModeData)values__18318).forceFrames;
+                ticker.muted = mutedLocal;
+                ticker.forceFrames = ((TickerModeData)values).forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__18621, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
-        this._tickerModeNotifier = newNotifier__18621;
+        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -781,11 +781,11 @@ public class _RenderChipRedirectingHitDetection__chip : global::Doroti.Framework
         {
             return false;
         }
-        var offset__57727 = new global::Doroti.Ui.Offset(position.dx, (this.size.height / 2L));
-        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(offset__57727), position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
+        var offset = new global::Doroti.Ui.Offset(position.dx, (this.size.height / 2L));
+        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(offset), position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(position, offset__57727)));
-            return this.child!.hitTest(result, position: offset__57727);
+            DartRuntimePrimitives.Assert(() => (object.Equals(position, offset)));
+            return this.child!.hitTest(result, position: offset);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1010,10 +1010,10 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
     {
         get
         {
-            global::Doroti.Framework.Rendering.RenderBox? avatar__64260 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childForSlot(_ChipSlot__chip.avatar));
-            global::Doroti.Framework.Rendering.RenderBox? label__64322 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childForSlot(_ChipSlot__chip.label));
-            global::Doroti.Framework.Rendering.RenderBox? deleteIcon__64382 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childForSlot(_ChipSlot__chip.deleteIcon));
-            return ((IEnumerable<global::Doroti.Framework.Rendering.RenderBox>)(object?)((Func<List<global::Doroti.Framework.Rendering.RenderBox>>)(() => { var __collection64442 = new List<global::Doroti.Framework.Rendering.RenderBox>(); var __collectionElement64454 = avatar__64260; if (__collectionElement64454 is { } __nonNullCollectionElement64454) { __collection64442.Add(__nonNullCollectionElement64454); } var __collectionElement64463 = label__64322; if (__collectionElement64463 is { } __nonNullCollectionElement64463) { __collection64442.Add(__nonNullCollectionElement64463); } var __collectionElement64471 = deleteIcon__64382; if (__collectionElement64471 is { } __nonNullCollectionElement64471) { __collection64442.Add(__nonNullCollectionElement64471); } return __collection64442; }))());
+            global::Doroti.Framework.Rendering.RenderBox? avatarLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childForSlot(_ChipSlot__chip.avatar));
+            global::Doroti.Framework.Rendering.RenderBox? labelLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childForSlot(_ChipSlot__chip.label));
+            global::Doroti.Framework.Rendering.RenderBox? deleteIconLocal = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)childForSlot(_ChipSlot__chip.deleteIcon));
+            return ((IEnumerable<global::Doroti.Framework.Rendering.RenderBox>)(object?)((Func<List<global::Doroti.Framework.Rendering.RenderBox>>)(() => { var __collection64442 = new List<global::Doroti.Framework.Rendering.RenderBox>(); var __collectionElement64454 = avatarLocal; if (__collectionElement64454 is { } __nonNullCollectionElement64454) { __collection64442.Add(__nonNullCollectionElement64454); } var __collectionElement64463 = labelLocal; if (__collectionElement64463 is { } __nonNullCollectionElement64463) { __collection64442.Add(__nonNullCollectionElement64463); } var __collectionElement64471 = deleteIconLocal; if (__collectionElement64471 is { } __nonNullCollectionElement64471) { __collection64442.Add(__nonNullCollectionElement64471); } return __collection64442; }))());
             return default!;
         }
     }
@@ -1023,15 +1023,15 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
     internal static global::Doroti.Framework.Rendering.BoxParentData _boxParentData(global::Doroti.Framework.Rendering.RenderBox box) => ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)box.parentData!)!;
     public override double computeMinIntrinsicWidth(double height)
     {
-        double overallPadding__65085 = (((_ChipRenderTheme__chip)this.theme).padding.horizontal + ((_ChipRenderTheme__chip)this.theme).labelPadding.horizontal);
-        return (((overallPadding__65085 + this.avatar.getMinIntrinsicWidth(height)) + this.label.getMinIntrinsicWidth(height)) + this.deleteIcon.getMinIntrinsicWidth(height));
+        double overallPadding = (((_ChipRenderTheme__chip)this.theme).padding.horizontal + ((_ChipRenderTheme__chip)this.theme).labelPadding.horizontal);
+        return (((overallPadding + this.avatar.getMinIntrinsicWidth(height)) + this.label.getMinIntrinsicWidth(height)) + this.deleteIcon.getMinIntrinsicWidth(height));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
-        double overallPadding__65413 = (((_ChipRenderTheme__chip)this.theme).padding.horizontal + ((_ChipRenderTheme__chip)this.theme).labelPadding.horizontal);
-        return (((overallPadding__65413 + this.avatar.getMaxIntrinsicWidth(height)) + this.label.getMaxIntrinsicWidth(height)) + this.deleteIcon.getMaxIntrinsicWidth(height));
+        double overallPadding = (((_ChipRenderTheme__chip)this.theme).padding.horizontal + ((_ChipRenderTheme__chip)this.theme).labelPadding.horizontal);
+        return (((overallPadding + this.avatar.getMaxIntrinsicWidth(height)) + this.label.getMaxIntrinsicWidth(height)) + this.deleteIcon.getMaxIntrinsicWidth(height));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1050,34 +1050,34 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
 
     internal virtual global::Doroti.Framework.Rendering.BoxConstraints _labelConstraintsFrom(global::Doroti.Framework.Rendering.BoxConstraints contentConstraints, double iconWidth, double contentSize, Size rawLabelSize)
     {
-        double freeSpace__66582 = (((((global::Doroti.Framework.Rendering.BoxConstraints)contentConstraints).maxWidth - iconWidth) - ((_ChipRenderTheme__chip)this.theme).labelPadding.horizontal) - ((_ChipRenderTheme__chip)this.theme).padding.horizontal);
-        double maxLabelWidth__66743 = Math.Max(0.0, freeSpace__66582);
-        return new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: rawLabelSize.height, maxHeight: contentSize, maxWidth: (double.IsFinite(maxLabelWidth__66743) ? maxLabelWidth__66743 : rawLabelSize.width));
+        double freeSpace = (((((global::Doroti.Framework.Rendering.BoxConstraints)contentConstraints).maxWidth - iconWidth) - ((_ChipRenderTheme__chip)this.theme).labelPadding.horizontal) - ((_ChipRenderTheme__chip)this.theme).padding.horizontal);
+        double maxLabelWidth = Math.Max(0.0, freeSpace);
+        return new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: rawLabelSize.height, maxHeight: contentSize, maxWidth: (double.IsFinite(maxLabelWidth) ? maxLabelWidth : rawLabelSize.width));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Size _layoutAvatar(double contentSize, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size> layoutChild = default!)
     {
-        global::Doroti.Framework.Rendering.BoxConstraints avatarConstraints__67112 = (this.avatarBoxConstraints ?? global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: contentSize, height: contentSize));
-        global::Doroti.Ui.Size avatarBoxSize__67245 = ((global::Doroti.Ui.Size)(object?)layoutChild(this.avatar, avatarConstraints__67112));
+        global::Doroti.Framework.Rendering.BoxConstraints avatarConstraints = (this.avatarBoxConstraints ?? global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: contentSize, height: contentSize));
+        global::Doroti.Ui.Size avatarBoxSize = ((global::Doroti.Ui.Size)(object?)layoutChild(this.avatar, avatarConstraints));
         if ((!((_ChipRenderTheme__chip)this.theme).showCheckmark && !((_ChipRenderTheme__chip)this.theme).showAvatar))
         {
             return new global::Doroti.Ui.Size(0.0, contentSize);
         }
-        double avatarFullWidth__67414 = (((_ChipRenderTheme__chip)this.theme).showAvatar ? avatarBoxSize__67245.width : contentSize);
-        return new global::Doroti.Ui.Size((avatarFullWidth__67414 * ((global::Doroti.Framework.Animation.Animation<double>)this.avatarDrawerAnimation).value), avatarBoxSize__67245.height);
+        double avatarFullWidth = (((_ChipRenderTheme__chip)this.theme).showAvatar ? avatarBoxSize.width : contentSize);
+        return new global::Doroti.Ui.Size((avatarFullWidth * ((global::Doroti.Framework.Animation.Animation<double>)this.avatarDrawerAnimation).value), avatarBoxSize.height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Size _layoutDeleteIcon(double contentSize, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size> layoutChild = default!)
     {
-        global::Doroti.Framework.Rendering.BoxConstraints deleteIconConstraints__67724 = (this.deleteIconBoxConstraints ?? global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: contentSize, height: contentSize));
-        global::Doroti.Ui.Size boxSize__67873 = ((global::Doroti.Ui.Size)(object?)layoutChild(this.deleteIcon, deleteIconConstraints__67724));
+        global::Doroti.Framework.Rendering.BoxConstraints deleteIconConstraints = (this.deleteIconBoxConstraints ?? global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: contentSize, height: contentSize));
+        global::Doroti.Ui.Size boxSize = ((global::Doroti.Ui.Size)(object?)layoutChild(this.deleteIcon, deleteIconConstraints));
         if (!this.deleteIconShowing)
         {
             return new global::Doroti.Ui.Size(0.0, contentSize);
         }
-        return new global::Doroti.Ui.Size((((global::Doroti.Framework.Animation.Animation<double>)this.deleteDrawerAnimation).value * boxSize__67873.width), boxSize__67873.height);
+        return new global::Doroti.Ui.Size((((global::Doroti.Framework.Animation.Animation<double>)this.deleteDrawerAnimation).value * boxSize.width), boxSize.height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1087,13 +1087,13 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
         {
             return false;
         }
-        bool hitIsOnDeleteIcon__68246 = ChipLibrary._hitIsOnDeleteIcon(padding: ((_ChipRenderTheme__chip)this.theme).padding, labelPadding: ((_ChipRenderTheme__chip)this.theme).labelPadding, tapPosition: position, chipSize: this.size, deleteButtonSize: ((global::Doroti.Framework.Rendering.RenderBox)this.deleteIcon).size, textDirection: this.textDirection);
-        global::Doroti.Framework.Rendering.RenderBox hitTestChild__68511 = (hitIsOnDeleteIcon__68246 ? this.deleteIcon : this.label);
-        global::Doroti.Ui.Offset center__68584 = ((global::Doroti.Ui.Offset)(object?)((global::Doroti.Framework.Rendering.RenderBox)hitTestChild__68511).size.center(Offset.zero));
-        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(center__68584), position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
+        bool hitIsOnDeleteIcon = ChipLibrary._hitIsOnDeleteIcon(padding: ((_ChipRenderTheme__chip)this.theme).padding, labelPadding: ((_ChipRenderTheme__chip)this.theme).labelPadding, tapPosition: position, chipSize: this.size, deleteButtonSize: ((global::Doroti.Framework.Rendering.RenderBox)this.deleteIcon).size, textDirection: this.textDirection);
+        global::Doroti.Framework.Rendering.RenderBox hitTestChild = (hitIsOnDeleteIcon ? this.deleteIcon : this.label);
+        global::Doroti.Ui.Offset centerLocal = ((global::Doroti.Ui.Offset)(object?)((global::Doroti.Framework.Rendering.RenderBox)hitTestChild).size.center(Offset.zero));
+        return result.addWithRawTransform(transform: MatrixUtils.forceToPoint(centerLocal), position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, position) =>
         {
-            DartRuntimePrimitives.Assert(() => (object.Equals(position, center__68584)));
-            return hitTestChild__68511.hitTest(result, position: center__68584);
+            DartRuntimePrimitives.Assert(() => (object.Equals(position, centerLocal)));
+            return hitTestChild.hitTest(result, position: centerLocal);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1107,37 +1107,37 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
 
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        _ChipSizes__chip sizes__69192 = ((_ChipSizes__chip)(object?)_computeSizes(constraints, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.dryLayoutChild));
-        global::Doroti.Framework.Rendering.BaselineOffset labelBaseline__69287 = (((new global::Doroti.Framework.Rendering.BaselineOffset(this.label.getDryBaseline(((_ChipSizes__chip)sizes__69192).labelConstraints, baseline)).op_Add(((((((_ChipSizes__chip)sizes__69192).content - ((_ChipSizes__chip)sizes__69192).label.height) + ((_ChipSizes__chip)sizes__69192).densityAdjustment.dy)) / 2L))).op_Add(((_ChipRenderTheme__chip)this.theme).padding.top)).op_Add(((_ChipRenderTheme__chip)this.theme).labelPadding.top));
-        return labelBaseline__69287.offset;
+        _ChipSizes__chip sizes = ((_ChipSizes__chip)(object?)_computeSizes(constraints, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.dryLayoutChild));
+        global::Doroti.Framework.Rendering.BaselineOffset labelBaseline = (((new global::Doroti.Framework.Rendering.BaselineOffset(this.label.getDryBaseline(((_ChipSizes__chip)sizes).labelConstraints, baseline)).op_Add(((((((_ChipSizes__chip)sizes).content - ((_ChipSizes__chip)sizes).label.height) + ((_ChipSizes__chip)sizes).densityAdjustment.dy)) / 2L))).op_Add(((_ChipRenderTheme__chip)this.theme).padding.top)).op_Add(((_ChipRenderTheme__chip)this.theme).labelPadding.top));
+        return labelBaseline.offset;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual _ChipSizes__chip _computeSizes(global::Doroti.Framework.Rendering.BoxConstraints constraints, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size> layoutChild)
     {
-        global::Doroti.Framework.Rendering.BoxConstraints contentConstraints__69671 = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.loosen());
-        global::Doroti.Ui.Size rawLabelSize__69793 = ((global::Doroti.Ui.Size)(object?)this.label.getDryLayout(contentConstraints__69671));
-        double contentSize__69865 = Math.Max(((ChipLibrary._kChipHeight - ((_ChipRenderTheme__chip)this.theme).padding.vertical) + ((_ChipRenderTheme__chip)this.theme).labelPadding.vertical), (rawLabelSize__69793.height + ((_ChipRenderTheme__chip)this.theme).labelPadding.vertical));
-        DartRuntimePrimitives.Assert(() => (contentSize__69865 >= rawLabelSize__69793.height));
-        global::Doroti.Ui.Size avatarSize__70091 = ((global::Doroti.Ui.Size)(object?)_layoutAvatar(contentSize__69865, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)layoutChild));
-        global::Doroti.Ui.Size deleteIconSize__70160 = ((global::Doroti.Ui.Size)(object?)_layoutDeleteIcon(contentSize__69865, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)layoutChild));
-        global::Doroti.Framework.Rendering.BoxConstraints labelConstraints__70248 = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)_labelConstraintsFrom(contentConstraints__69671, (avatarSize__70091.width + deleteIconSize__70160.width), contentSize__69865, rawLabelSize__69793));
-        global::Doroti.Ui.Size labelSize__70425 = ((global::Doroti.Ui.Size)(object?)((_ChipRenderTheme__chip)this.theme).labelPadding.inflateSize(layoutChild(this.label, labelConstraints__70248)));
-        var densityAdjustment__70517 = new global::Doroti.Ui.Offset(0.0, (((_ChipRenderTheme__chip)this.theme).visualDensity.baseSizeAdjustment.dy / 2.0));
-        global::Doroti.Ui.Size overallSize__70732 = ((global::Doroti.Ui.Size)(object?)(new global::Doroti.Ui.Size(((avatarSize__70091.width + labelSize__70425.width) + deleteIconSize__70160.width), contentSize__69865) + densityAdjustment__70517));
-        var paddedSize__70870 = new global::Doroti.Ui.Size((overallSize__70732.width + ((_ChipRenderTheme__chip)this.theme).padding.horizontal), (overallSize__70732.height + ((_ChipRenderTheme__chip)this.theme).padding.vertical));
-        return new _ChipSizes__chip(size: constraints.constrain(paddedSize__70870), overall: overallSize__70732, content: contentSize__69865, densityAdjustment: densityAdjustment__70517, avatar: avatarSize__70091, labelConstraints: labelConstraints__70248, label: labelSize__70425, deleteIcon: deleteIconSize__70160);
+        global::Doroti.Framework.Rendering.BoxConstraints contentConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.loosen());
+        global::Doroti.Ui.Size rawLabelSize = ((global::Doroti.Ui.Size)(object?)this.label.getDryLayout(contentConstraints));
+        double contentSize = Math.Max(((ChipLibrary._kChipHeight - ((_ChipRenderTheme__chip)this.theme).padding.vertical) + ((_ChipRenderTheme__chip)this.theme).labelPadding.vertical), (rawLabelSize.height + ((_ChipRenderTheme__chip)this.theme).labelPadding.vertical));
+        DartRuntimePrimitives.Assert(() => (contentSize >= rawLabelSize.height));
+        global::Doroti.Ui.Size avatarSize = ((global::Doroti.Ui.Size)(object?)_layoutAvatar(contentSize, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)layoutChild));
+        global::Doroti.Ui.Size deleteIconSize = ((global::Doroti.Ui.Size)(object?)_layoutDeleteIcon(contentSize, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)layoutChild));
+        global::Doroti.Framework.Rendering.BoxConstraints labelConstraintsLocal = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)_labelConstraintsFrom(contentConstraints, (avatarSize.width + deleteIconSize.width), contentSize, rawLabelSize));
+        global::Doroti.Ui.Size labelSize = ((global::Doroti.Ui.Size)(object?)((_ChipRenderTheme__chip)this.theme).labelPadding.inflateSize(layoutChild(this.label, labelConstraintsLocal)));
+        var densityAdjustmentLocal = new global::Doroti.Ui.Offset(0.0, (((_ChipRenderTheme__chip)this.theme).visualDensity.baseSizeAdjustment.dy / 2.0));
+        global::Doroti.Ui.Size overallSize = ((global::Doroti.Ui.Size)(object?)(new global::Doroti.Ui.Size(((avatarSize.width + labelSize.width) + deleteIconSize.width), contentSize) + densityAdjustmentLocal));
+        var paddedSize = new global::Doroti.Ui.Size((overallSize.width + ((_ChipRenderTheme__chip)this.theme).padding.horizontal), (overallSize.height + ((_ChipRenderTheme__chip)this.theme).padding.vertical));
+        return new _ChipSizes__chip(size: constraints.constrain(paddedSize), overall: overallSize, content: contentSize, densityAdjustment: densityAdjustmentLocal, avatar: avatarSize, labelConstraints: labelConstraintsLocal, label: labelSize, deleteIcon: deleteIconSize);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void performLayout()
     {
-        _ChipSizes__chip sizes__71366 = ((_ChipSizes__chip)(object?)_computeSizes(this.constraints, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.layoutChild));
-        var left__71525 = 0.0;
-        double right__71554 = ((_ChipSizes__chip)sizes__71366).overall.width;
+        _ChipSizes__chip sizes = ((_ChipSizes__chip)(object?)_computeSizes(this.constraints, (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.layoutChild));
+        var leftLocal = 0.0;
+        double rightLocal = ((_ChipSizes__chip)sizes).overall.width;
         Offset centerLayout(Size boxSize, double x)
         {
-            DartRuntimePrimitives.Assert(() => (((_ChipSizes__chip)sizes__71366).content >= boxSize.height));
+            DartRuntimePrimitives.Assert(() => (((_ChipSizes__chip)sizes).content >= boxSize.height));
             switch (this.textDirection)
             {
                 case TextDirection.rtl:
@@ -1150,37 +1150,37 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
                         break;
                     }
             }
-            return new global::Doroti.Ui.Offset(x, ((((((_ChipSizes__chip)sizes__71366).content - boxSize.height) + ((_ChipSizes__chip)sizes__71366).densityAdjustment.dy)) / 2.0));
+            return new global::Doroti.Ui.Offset(x, ((((((_ChipSizes__chip)sizes).content - boxSize.height) + ((_ChipSizes__chip)sizes).densityAdjustment.dy)) / 2.0));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        global::Doroti.Ui.Offset avatarOffset__72136 = ((global::Doroti.Ui.Offset)(object?)Offset.zero);
-        global::Doroti.Ui.Offset labelOffset__72175 = ((global::Doroti.Ui.Offset)(object?)Offset.zero);
-        global::Doroti.Ui.Offset deleteIconOffset__72213 = ((global::Doroti.Ui.Offset)(object?)Offset.zero);
+        global::Doroti.Ui.Offset avatarOffset = ((global::Doroti.Ui.Offset)(object?)Offset.zero);
+        global::Doroti.Ui.Offset labelOffset = ((global::Doroti.Ui.Offset)(object?)Offset.zero);
+        global::Doroti.Ui.Offset deleteIconOffset = ((global::Doroti.Ui.Offset)(object?)Offset.zero);
         switch (this.textDirection)
         {
             case TextDirection.rtl:
                 {
-                    var start__72316 = right__71554;
+                    var start = rightLocal;
                     if ((((_ChipRenderTheme__chip)this.theme).showCheckmark || ((_ChipRenderTheme__chip)this.theme).showAvatar))
                     {
-                        avatarOffset__72136 = centerLayout(((_ChipSizes__chip)sizes__71366).avatar, start__72316);
-                        start__72316 -= ((_ChipSizes__chip)sizes__71366).avatar.width;
+                        avatarOffset = centerLayout(((_ChipSizes__chip)sizes).avatar, start);
+                        start -= ((_ChipSizes__chip)sizes).avatar.width;
                     }
-                    labelOffset__72175 = centerLayout(((_ChipSizes__chip)sizes__71366).label, start__72316);
-                    start__72316 -= ((_ChipSizes__chip)sizes__71366).label.width;
+                    labelOffset = centerLayout(((_ChipSizes__chip)sizes).label, start);
+                    start -= ((_ChipSizes__chip)sizes).label.width;
                     if (this.deleteIconShowing)
                     {
-                        _deleteButtonRect = global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, (((_ChipSizes__chip)sizes__71366).deleteIcon.width + ((_ChipRenderTheme__chip)this.theme).padding.right), (((_ChipSizes__chip)sizes__71366).overall.height + ((_ChipRenderTheme__chip)this.theme).padding.vertical));
-                        deleteIconOffset__72213 = centerLayout(((_ChipSizes__chip)sizes__71366).deleteIcon, start__72316);
+                        _deleteButtonRect = global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, (((_ChipSizes__chip)sizes).deleteIcon.width + ((_ChipRenderTheme__chip)this.theme).padding.right), (((_ChipSizes__chip)sizes).overall.height + ((_ChipRenderTheme__chip)this.theme).padding.vertical));
+                        deleteIconOffset = centerLayout(((_ChipSizes__chip)sizes).deleteIcon, start);
                     }
                     else
                     {
                         _deleteButtonRect = Rect.zero;
                     }
-                    start__72316 -= ((_ChipSizes__chip)sizes__71366).deleteIcon.width;
+                    start -= ((_ChipSizes__chip)sizes).deleteIcon.width;
                     if (((_ChipRenderTheme__chip)this.theme).canTapBody)
                     {
-                        _pressRect = global::Doroti.Ui.Rect.fromLTWH(this._deleteButtonRect.width, 0.0, ((((_ChipSizes__chip)sizes__71366).overall.width - this._deleteButtonRect.width) + ((_ChipRenderTheme__chip)this.theme).padding.horizontal), (((_ChipSizes__chip)sizes__71366).overall.height + ((_ChipRenderTheme__chip)this.theme).padding.vertical));
+                        _pressRect = global::Doroti.Ui.Rect.fromLTWH(this._deleteButtonRect.width, 0.0, ((((_ChipSizes__chip)sizes).overall.width - this._deleteButtonRect.width) + ((_ChipRenderTheme__chip)this.theme).padding.horizontal), (((_ChipSizes__chip)sizes).overall.height + ((_ChipRenderTheme__chip)this.theme).padding.vertical));
                     }
                     else
                     {
@@ -1190,27 +1190,27 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
                 }
             case TextDirection.ltr:
                 {
-                    var start__73391 = left__71525;
+                    var startLocal = leftLocal;
                     if ((((_ChipRenderTheme__chip)this.theme).showCheckmark || ((_ChipRenderTheme__chip)this.theme).showAvatar))
                     {
-                        avatarOffset__72136 = centerLayout(((_ChipSizes__chip)sizes__71366).avatar, ((start__73391 - ((global::Doroti.Framework.Rendering.RenderBox)this.avatar).size.width) + ((_ChipSizes__chip)sizes__71366).avatar.width));
-                        start__73391 += ((_ChipSizes__chip)sizes__71366).avatar.width;
+                        avatarOffset = centerLayout(((_ChipSizes__chip)sizes).avatar, ((startLocal - ((global::Doroti.Framework.Rendering.RenderBox)this.avatar).size.width) + ((_ChipSizes__chip)sizes).avatar.width));
+                        startLocal += ((_ChipSizes__chip)sizes).avatar.width;
                     }
-                    labelOffset__72175 = centerLayout(((_ChipSizes__chip)sizes__71366).label, start__73391);
-                    start__73391 += ((_ChipSizes__chip)sizes__71366).label.width;
+                    labelOffset = centerLayout(((_ChipSizes__chip)sizes).label, startLocal);
+                    startLocal += ((_ChipSizes__chip)sizes).label.width;
                     if (((_ChipRenderTheme__chip)this.theme).canTapBody)
                     {
-                        _pressRect = global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, (this.deleteIconShowing ? (start__73391 + ((_ChipRenderTheme__chip)this.theme).padding.left) : (((_ChipSizes__chip)sizes__71366).overall.width + ((_ChipRenderTheme__chip)this.theme).padding.horizontal)), (((_ChipSizes__chip)sizes__71366).overall.height + ((_ChipRenderTheme__chip)this.theme).padding.vertical));
+                        _pressRect = global::Doroti.Ui.Rect.fromLTWH(0.0, 0.0, (this.deleteIconShowing ? (startLocal + ((_ChipRenderTheme__chip)this.theme).padding.left) : (((_ChipSizes__chip)sizes).overall.width + ((_ChipRenderTheme__chip)this.theme).padding.horizontal)), (((_ChipSizes__chip)sizes).overall.height + ((_ChipRenderTheme__chip)this.theme).padding.vertical));
                     }
                     else
                     {
                         _pressRect = Rect.zero;
                     }
-                    start__73391 -= (((global::Doroti.Framework.Rendering.RenderBox)this.deleteIcon).size.width - ((_ChipSizes__chip)sizes__71366).deleteIcon.width);
+                    startLocal -= (((global::Doroti.Framework.Rendering.RenderBox)this.deleteIcon).size.width - ((_ChipSizes__chip)sizes).deleteIcon.width);
                     if (this.deleteIconShowing)
                     {
-                        deleteIconOffset__72213 = centerLayout(((_ChipSizes__chip)sizes__71366).deleteIcon, start__73391);
-                        _deleteButtonRect = global::Doroti.Ui.Rect.fromLTWH((start__73391 + ((_ChipRenderTheme__chip)this.theme).padding.left), 0.0, (((_ChipSizes__chip)sizes__71366).deleteIcon.width + ((_ChipRenderTheme__chip)this.theme).padding.right), (((_ChipSizes__chip)sizes__71366).overall.height + ((_ChipRenderTheme__chip)this.theme).padding.vertical));
+                        deleteIconOffset = centerLayout(((_ChipSizes__chip)sizes).deleteIcon, startLocal);
+                        _deleteButtonRect = global::Doroti.Ui.Rect.fromLTWH((startLocal + ((_ChipRenderTheme__chip)this.theme).padding.left), 0.0, (((_ChipSizes__chip)sizes).deleteIcon.width + ((_ChipRenderTheme__chip)this.theme).padding.right), (((_ChipSizes__chip)sizes).overall.height + ((_ChipRenderTheme__chip)this.theme).padding.vertical));
                     }
                     else
                     {
@@ -1219,14 +1219,14 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
                     break;
                 }
         }
-        labelOffset__72175 = (labelOffset__72175 + new global::Doroti.Ui.Offset(0.0, (((((((_ChipSizes__chip)sizes__71366).label.height - ((_ChipRenderTheme__chip)this.theme).labelPadding.vertical)) - ((global::Doroti.Framework.Rendering.RenderBox)this.label).size.height)) / 2.0)));
-        _RenderChip__chip._boxParentData(this.avatar).offset = (((_ChipRenderTheme__chip)this.theme).padding.topLeft + avatarOffset__72136);
-        _RenderChip__chip._boxParentData(this.label).offset = ((((_ChipRenderTheme__chip)this.theme).padding.topLeft + labelOffset__72175) + ((_ChipRenderTheme__chip)this.theme).labelPadding.topLeft);
-        _RenderChip__chip._boxParentData(this.deleteIcon).offset = (((_ChipRenderTheme__chip)this.theme).padding.topLeft + deleteIconOffset__72213);
-        var paddedSize__74996 = new global::Doroti.Ui.Size((((_ChipSizes__chip)sizes__71366).overall.width + ((_ChipRenderTheme__chip)this.theme).padding.horizontal), (((_ChipSizes__chip)sizes__71366).overall.height + ((_ChipRenderTheme__chip)this.theme).padding.vertical));
-        size = this.constraints.constrain(paddedSize__74996);
-        DartRuntimePrimitives.Assert(() => (this.size.height == this.constraints.constrainHeight(paddedSize__74996.height)), () => (object?)$"Constrained height {this.size.height} doesn't match expected height " + $"{this.constraints.constrainWidth(paddedSize__74996.height)}");
-        DartRuntimePrimitives.Assert(() => (this.size.width == this.constraints.constrainWidth(paddedSize__74996.width)), () => (object?)$"Constrained width {this.size.width} doesn't match expected width " + $"{this.constraints.constrainWidth(paddedSize__74996.width)}");
+        labelOffset = (labelOffset + new global::Doroti.Ui.Offset(0.0, (((((((_ChipSizes__chip)sizes).label.height - ((_ChipRenderTheme__chip)this.theme).labelPadding.vertical)) - ((global::Doroti.Framework.Rendering.RenderBox)this.label).size.height)) / 2.0)));
+        _RenderChip__chip._boxParentData(this.avatar).offset = (((_ChipRenderTheme__chip)this.theme).padding.topLeft + avatarOffset);
+        _RenderChip__chip._boxParentData(this.label).offset = ((((_ChipRenderTheme__chip)this.theme).padding.topLeft + labelOffset) + ((_ChipRenderTheme__chip)this.theme).labelPadding.topLeft);
+        _RenderChip__chip._boxParentData(this.deleteIcon).offset = (((_ChipRenderTheme__chip)this.theme).padding.topLeft + deleteIconOffset);
+        var paddedSize = new global::Doroti.Ui.Size((((_ChipSizes__chip)sizes).overall.width + ((_ChipRenderTheme__chip)this.theme).padding.horizontal), (((_ChipSizes__chip)sizes).overall.height + ((_ChipRenderTheme__chip)this.theme).padding.vertical));
+        size = this.constraints.constrain(paddedSize);
+        DartRuntimePrimitives.Assert(() => (this.size.height == this.constraints.constrainHeight(paddedSize.height)), () => (object?)$"Constrained height {this.size.height} doesn't match expected height " + $"{this.constraints.constrainWidth(paddedSize.height)}");
+        DartRuntimePrimitives.Assert(() => (this.size.width == this.constraints.constrainWidth(paddedSize.width)), () => (object?)$"Constrained width {this.size.width} doesn't match expected width " + $"{this.constraints.constrainWidth(paddedSize.width)}");
     }
 
     internal virtual global::Doroti.Ui.Color _disabledColor
@@ -1237,50 +1237,50 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
             {
                 return Colors.white;
             }
-            global::Doroti.Ui.Color color__75854 = ((global::Doroti.Ui.Color)(object?)(((_ChipRenderTheme__chip)this.theme).brightness switch { Brightness.light => Colors.white, Brightness.dark => Colors.black, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-            return new global::Doroti.Framework.Animation.ColorTween(begin: color__75854.withAlpha(ChipLibrary._kDisabledAlpha), end: color__75854).evaluate(this.enableAnimation)!;
+            global::Doroti.Ui.Color color = ((global::Doroti.Ui.Color)(object?)(((_ChipRenderTheme__chip)this.theme).brightness switch { Brightness.light => Colors.white, Brightness.dark => Colors.black, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+            return new global::Doroti.Framework.Animation.ColorTween(begin: color.withAlpha(ChipLibrary._kDisabledAlpha), end: color).evaluate(this.enableAnimation)!;
             return default!;
         }
     }
     internal virtual void _paintCheck(Canvas canvas, Offset origin, double size)
     {
-        global::Doroti.Ui.Color? paintColor__76178 = ((global::Doroti.Ui.Color?)(object?)(((_ChipRenderTheme__chip)this.theme).checkmarkColor ?? ((((_ChipRenderTheme__chip)this.theme).brightness, ((_ChipRenderTheme__chip)this.theme).showAvatar) switch { (Brightness.light, true) => Colors.white, (Brightness.light, false) => Colors.black.withAlpha(ChipLibrary._kCheckmarkAlpha), (Brightness.dark, true) => Colors.black, (Brightness.dark, false) => Colors.white.withAlpha(ChipLibrary._kCheckmarkAlpha) })));
-        var fadeTween__76565 = new global::Doroti.Framework.Animation.ColorTween(begin: Colors.transparent, end: paintColor__76178);
-        paintColor__76178 = ((object.Equals(((global::Doroti.Framework.Animation.Animation<double>)this.checkmarkAnimation).status, global::Doroti.Framework.Animation.AnimationStatus.reverse)) ? fadeTween__76565.evaluate(this.checkmarkAnimation) : paintColor__76178);
-        var paint__76786 = ((Func<Paint>)(() =>
+        global::Doroti.Ui.Color? paintColor = ((global::Doroti.Ui.Color?)(object?)(((_ChipRenderTheme__chip)this.theme).checkmarkColor ?? ((((_ChipRenderTheme__chip)this.theme).brightness, ((_ChipRenderTheme__chip)this.theme).showAvatar) switch { (Brightness.light, true) => Colors.white, (Brightness.light, false) => Colors.black.withAlpha(ChipLibrary._kCheckmarkAlpha), (Brightness.dark, true) => Colors.black, (Brightness.dark, false) => Colors.white.withAlpha(ChipLibrary._kCheckmarkAlpha) })));
+        var fadeTween = new global::Doroti.Framework.Animation.ColorTween(begin: Colors.transparent, end: paintColor);
+        paintColor = ((object.Equals(((global::Doroti.Framework.Animation.Animation<double>)this.checkmarkAnimation).status, global::Doroti.Framework.Animation.AnimationStatus.reverse)) ? fadeTween.evaluate(this.checkmarkAnimation) : paintColor);
+        var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = paintColor__76178!;
+    __cascade.color = paintColor!;
     __cascade.style = PaintingStyle.stroke;
     __cascade.strokeWidth = ((ChipLibrary._kCheckmarkStrokeWidth * ((global::Doroti.Framework.Rendering.RenderBox)this.avatar).size.height) / 24.0);
     return __cascade;
 }))();
-        double t__76958 = ((object.Equals(((global::Doroti.Framework.Animation.Animation<double>)this.checkmarkAnimation).status, global::Doroti.Framework.Animation.AnimationStatus.reverse)) ? 1.0 : ((global::Doroti.Framework.Animation.Animation<double>)this.checkmarkAnimation).value);
-        if ((t__76958 == 0.0))
+        double t = ((object.Equals(((global::Doroti.Framework.Animation.Animation<double>)this.checkmarkAnimation).status, global::Doroti.Framework.Animation.AnimationStatus.reverse)) ? 1.0 : ((global::Doroti.Framework.Animation.Animation<double>)this.checkmarkAnimation).value);
+        if ((t == 0.0))
         {
             return;
         }
-        DartRuntimePrimitives.Assert(() => ((t__76958 > 0.0) && (t__76958 <= 1.0)));
-        var path__77288 = new global::Doroti.Ui.Path();
-        var start__77313 = new global::Doroti.Ui.Offset((size * 0.15), (size * 0.45));
-        var mid__77365 = new global::Doroti.Ui.Offset((size * 0.4), (size * 0.7));
-        var end__77413 = new global::Doroti.Ui.Offset((size * 0.85), (size * 0.25));
-        if ((t__76958 < 0.5))
+        DartRuntimePrimitives.Assert(() => ((t > 0.0) && (t <= 1.0)));
+        var path = new global::Doroti.Ui.Path();
+        var start = new global::Doroti.Ui.Offset((size * 0.15), (size * 0.45));
+        var mid = new global::Doroti.Ui.Offset((size * 0.4), (size * 0.7));
+        var endLocal = new global::Doroti.Ui.Offset((size * 0.85), (size * 0.25));
+        if ((t < 0.5))
         {
-            double strokeT__77491 = (t__76958 * 2.0);
-            global::Doroti.Ui.Offset drawMid__77529 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(start__77313, mid__77365, strokeT__77491)));
-            path__77288.moveTo((origin.dx + start__77313.dx), (origin.dy + start__77313.dy));
-            path__77288.lineTo((origin.dx + drawMid__77529.dx), (origin.dy + drawMid__77529.dy));
+            double strokeT = (t * 2.0);
+            global::Doroti.Ui.Offset drawMid = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(start, mid, strokeT)));
+            path.moveTo((origin.dx + start.dx), (origin.dy + start.dy));
+            path.lineTo((origin.dx + drawMid.dx), (origin.dy + drawMid.dy));
         }
         else
         {
-            double strokeT__77736 = (((t__76958 - 0.5)) * 2.0);
-            global::Doroti.Ui.Offset drawEnd__77782 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(mid__77365, end__77413, strokeT__77736)));
-            path__77288.moveTo((origin.dx + start__77313.dx), (origin.dy + start__77313.dy));
-            path__77288.lineTo((origin.dx + mid__77365.dx), (origin.dy + mid__77365.dy));
-            path__77288.lineTo((origin.dx + drawEnd__77782.dx), (origin.dy + drawEnd__77782.dy));
+            double strokeTLocal = (((t - 0.5)) * 2.0);
+            global::Doroti.Ui.Offset drawEnd = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(mid, endLocal, strokeTLocal)));
+            path.moveTo((origin.dx + start.dx), (origin.dy + start.dy));
+            path.lineTo((origin.dx + mid.dx), (origin.dy + mid.dy));
+            path.lineTo((origin.dx + drawEnd.dx), (origin.dy + drawEnd.dy));
         }
-        canvas.drawPath(path__77288, paint__76786);
+        canvas.drawPath(path, paint);
     }
 
     internal virtual void _paintSelectionOverlay(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
@@ -1289,8 +1289,8 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
         {
             if (((_ChipRenderTheme__chip)this.theme).showAvatar)
             {
-                global::Doroti.Ui.Rect avatarRect__78210 = ((global::Doroti.Ui.Rect)(object?)_RenderChip__chip._boxRect(this.avatar).shift(offset));
-                var darkenPaint__78269 = ((Func<Paint>)(() =>
+                global::Doroti.Ui.Rect avatarRect = ((global::Doroti.Ui.Rect)(object?)_RenderChip__chip._boxRect(this.avatar).shift(offset));
+                var darkenPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = selectionScrimTween.evaluate(this.checkmarkAnimation)!;
@@ -1299,17 +1299,17 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
 }))();
                 if (this.avatarBorder!.preferPaintInterior)
                 {
-                    this.avatarBorder!.paintInterior(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, avatarRect__78210, darkenPaint__78269);
+                    this.avatarBorder!.paintInterior(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, avatarRect, darkenPaint);
                 }
                 else
                 {
-                    global::Doroti.Ui.Path path__78571 = ((global::Doroti.Ui.Path)(object?)this.avatarBorder!.getOuterPath(avatarRect__78210));
-                    ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(path__78571, darkenPaint__78269);
+                    global::Doroti.Ui.Path path = ((global::Doroti.Ui.Path)(object?)this.avatarBorder!.getOuterPath(avatarRect));
+                    ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawPath(path, darkenPaint);
                 }
             }
-            double checkSize__78783 = (((global::Doroti.Framework.Rendering.RenderBox)this.avatar).size.height * 0.75);
-            global::Doroti.Ui.Offset checkOffset__78841 = ((global::Doroti.Ui.Offset)(object?)(_RenderChip__chip._boxParentData(this.avatar).offset + new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.RenderBox)this.avatar).size.height * 0.125), (((global::Doroti.Framework.Rendering.RenderBox)this.avatar).size.height * 0.125))));
-            _paintCheck(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, (offset + checkOffset__78841), checkSize__78783);
+            double checkSize = (((global::Doroti.Framework.Rendering.RenderBox)this.avatar).size.height * 0.75);
+            global::Doroti.Ui.Offset checkOffset = ((global::Doroti.Ui.Offset)(object?)(_RenderChip__chip._boxParentData(this.avatar).offset + new global::Doroti.Ui.Offset((((global::Doroti.Framework.Rendering.RenderBox)this.avatar).size.height * 0.125), (((global::Doroti.Framework.Rendering.RenderBox)this.avatar).size.height * 0.125))));
+            _paintCheck(((global::Doroti.Framework.Rendering.PaintingContext)context).canvas, (offset + checkOffset), checkSize);
         }
     }
 
@@ -1325,26 +1325,26 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
             this._avatarOpacityLayerHandler.layer = null;
             return;
         }
-        global::Doroti.Ui.Color disabledColor__79550 = ((global::Doroti.Ui.Color)(object?)this._disabledColor);
-        long disabledColorAlpha__79596 = disabledColor__79550.alpha;
+        global::Doroti.Ui.Color disabledColor = ((global::Doroti.Ui.Color)(object?)this._disabledColor);
+        long disabledColorAlpha = disabledColor.alpha;
         if (this.needsCompositing)
         {
-            this._avatarOpacityLayerHandler.layer = context.pushOpacity(offset, disabledColorAlpha__79596, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)paintWithOverlay, oldLayer: ((global::Doroti.Framework.Rendering.LayerHandle<global::Doroti.Framework.Rendering.OpacityLayer>)this._avatarOpacityLayerHandler).layer);
+            this._avatarOpacityLayerHandler.layer = context.pushOpacity(offset, disabledColorAlpha, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)paintWithOverlay, oldLayer: ((global::Doroti.Framework.Rendering.LayerHandle<global::Doroti.Framework.Rendering.OpacityLayer>)this._avatarOpacityLayerHandler).layer);
         }
         else
         {
             this._avatarOpacityLayerHandler.layer = null;
-            if ((disabledColorAlpha__79596 != 255L))
+            if ((disabledColorAlpha != 255L))
             {
                 ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.saveLayer(_RenderChip__chip._boxRect(this.avatar).shift(offset).inflate(20.0), ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = disabledColor__79550;
+    __cascade.color = disabledColor;
     return __cascade;
 }))());
             }
             paintWithOverlay(context, offset);
-            if ((disabledColorAlpha__79596 != 255L))
+            if ((disabledColorAlpha != 255L))
             {
                 ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.restore();
             }
@@ -1359,18 +1359,18 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
             this._deleteIconOpacityLayerHandler.layer = null;
             return;
         }
-        long disabledColorAlpha__80719 = this._disabledColor.alpha;
+        long disabledColorAlpha = this._disabledColor.alpha;
         if (!((global::Doroti.Framework.Animation.Animation<double>)this.enableAnimation).isCompleted)
         {
             if (this.needsCompositing)
             {
-                this._labelOpacityLayerHandler.layer = context.pushOpacity(offset, disabledColorAlpha__80719, ((global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)((context, offset) =>
+                this._labelOpacityLayerHandler.layer = context.pushOpacity(offset, disabledColorAlpha, ((global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)((context, offset) =>
                 {
                     context.paintChild(child, (_RenderChip__chip._boxParentData(child).offset + offset));
                 })), oldLayer: ((global::Doroti.Framework.Rendering.LayerHandle<global::Doroti.Framework.Rendering.OpacityLayer>)this._labelOpacityLayerHandler).layer);
                 if (isDeleteIcon)
                 {
-                    this._deleteIconOpacityLayerHandler.layer = context.pushOpacity(offset, disabledColorAlpha__80719, ((global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)((context, offset) =>
+                    this._deleteIconOpacityLayerHandler.layer = context.pushOpacity(offset, disabledColorAlpha, ((global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)((context, offset) =>
                     {
                         context.paintChild(child, (_RenderChip__chip._boxParentData(child).offset + offset));
                     })), oldLayer: ((global::Doroti.Framework.Rendering.LayerHandle<global::Doroti.Framework.Rendering.OpacityLayer>)this._deleteIconOpacityLayerHandler).layer);
@@ -1380,8 +1380,8 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
             {
                 this._labelOpacityLayerHandler.layer = null;
                 this._deleteIconOpacityLayerHandler.layer = null;
-                global::Doroti.Ui.Rect childRect__81617 = ((global::Doroti.Ui.Rect)(object?)_RenderChip__chip._boxRect(child).shift(offset));
-                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.saveLayer(childRect__81617.inflate(20.0), ((Func<Paint>)(() =>
+                global::Doroti.Ui.Rect childRect = ((global::Doroti.Ui.Rect)(object?)_RenderChip__chip._boxRect(child).shift(offset));
+                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.saveLayer(childRect.inflate(20.0), ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = this._disabledColor;
@@ -1400,9 +1400,9 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
     public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
     {
         base.attach(owner);
-        foreach (global::Doroti.Framework.Rendering.RenderBox child__6961 in this.children)
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {
-            child__6961.attach(owner);
+            child.attach(owner);
         }
         this.checkmarkAnimation.addListener(() => this.markNeedsPaint());
         this.avatarDrawerAnimation.addListener(() => this.markNeedsLayout());
@@ -1417,9 +1417,9 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
         this.deleteDrawerAnimation.removeListener(() => this.markNeedsLayout());
         this.enableAnimation.removeListener(() => this.markNeedsPaint());
         base.detach();
-        foreach (global::Doroti.Framework.Rendering.RenderBox child__7095 in this.children)
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {
-            child__7095.detach();
+            child.detach();
         }
     }
 
@@ -1445,7 +1445,7 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
     {
         DartRuntimePrimitives.Assert(() => (!_debugShowTapTargetOutlines || ((global::System.Func<bool>)(() =>
         {
-            var outlinePaint__83467 = ((Func<Paint>)(() =>
+            var outlinePaint = ((Func<Paint>)(() =>
             {
                 var __cascade = new global::Doroti.Ui.Paint();
                 __cascade.color = new global::Doroti.Ui.Color(4286578688L);
@@ -1455,11 +1455,11 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
             }))();
             if (this.deleteIconShowing)
             {
-                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(this._deleteButtonRect.shift(offset), outlinePaint__83467);
+                ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(this._deleteButtonRect.shift(offset), outlinePaint);
             }
             ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawRect(this._pressRect.shift(offset), ((Func<Paint>)(() =>
             {
-                var __cascade = outlinePaint__83467;
+                var __cascade = outlinePaint;
                 __cascade.color = new global::Doroti.Ui.Color(4278222848L);
                 return __cascade;
             }))());
@@ -1492,13 +1492,13 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
 
     public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
-        var value__7401 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
-        var childToSlot__7440 = new DartMap<global::Doroti.Framework.Rendering.RenderBox, _ChipSlot__chip>(this._slotToChild.Values, this._slotToChild.Keys);
-        foreach (global::Doroti.Framework.Rendering.RenderBox child__7578 in this.children)
+        var value = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>();
+        var childToSlot = new DartMap<global::Doroti.Framework.Rendering.RenderBox, _ChipSlot__chip>(this._slotToChild.Values, this._slotToChild.Keys);
+        foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {
-            _addDiagnostics(child__7578, value__7401, debugNameForSlot(((_ChipSlot__chip)DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<_ChipSlot__chip>(childToSlot__7440, child__7578)))));
+            _addDiagnostics(child, value, debugNameForSlot(((_ChipSlot__chip)DartRuntimePrimitives.RequireValue(DartCollectionRuntime.NullableMapValue<_ChipSlot__chip>(childToSlot, child)))));
         }
-        return value__7401;
+        return value;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1509,10 +1509,10 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
 
     public virtual void _setChild(global::Doroti.Framework.Rendering.RenderBox? child, _ChipSlot__chip slot)
     {
-        global::Doroti.Framework.Rendering.RenderBox? oldChild__8003 = this._slotToChild.GetValueOrDefault(slot);
-        if ((oldChild__8003 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? oldChild = this._slotToChild.GetValueOrDefault(slot);
+        if ((oldChild is not null))
         {
-            dropChild(oldChild__8003);
+            dropChild(oldChild);
             this._slotToChild.remove(slot);
         }
         if ((child is not null))
@@ -1525,8 +1525,8 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
     public virtual void _moveChild(global::Doroti.Framework.Rendering.RenderBox child, _ChipSlot__chip slot, _ChipSlot__chip oldSlot)
     {
         DartRuntimePrimitives.Assert(() => (!object.Equals(slot, oldSlot)));
-        global::Doroti.Framework.Rendering.RenderBox? oldChild__8343 = this._slotToChild.GetValueOrDefault(oldSlot);
-        if ((object.Equals(oldChild__8343, child)))
+        global::Doroti.Framework.Rendering.RenderBox? oldChild = this._slotToChild.GetValueOrDefault(oldSlot);
+        if ((object.Equals(oldChild, child)))
         {
             _setChild(null, oldSlot);
         }
@@ -1581,11 +1581,11 @@ public static partial class ChipLibrary
 {
     internal static bool _hitIsOnDeleteIcon(global::Doroti.Framework.Painting.EdgeInsetsGeometry padding, global::Doroti.Framework.Painting.EdgeInsetsGeometry labelPadding, Offset tapPosition, Size chipSize, Size deleteButtonSize, TextDirection textDirection)
     {
-        global::Doroti.Framework.Painting.EdgeInsets resolvedPadding__85916 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)padding.resolve(textDirection));
-        global::Doroti.Ui.Size deflatedSize__85979 = ((global::Doroti.Ui.Size)(object?)resolvedPadding__85916.deflateSize(chipSize));
-        global::Doroti.Ui.Offset adjustedPosition__86048 = ((global::Doroti.Ui.Offset)(object?)(tapPosition - new global::Doroti.Ui.Offset(((global::Doroti.Framework.Painting.EdgeInsets)resolvedPadding__85916).left, ((global::Doroti.Framework.Painting.EdgeInsets)resolvedPadding__85916).top)));
-        double accessibleDeleteButtonWidth__86962 = Math.Min((deflatedSize__85979.width * 0.499), Math.Min((labelPadding.resolve(textDirection).right + deleteButtonSize.width), (24.0 + (deleteButtonSize.width / 2.0))));
-        return (textDirection switch { TextDirection.ltr => (adjustedPosition__86048.dx >= (deflatedSize__85979.width - accessibleDeleteButtonWidth__86962)), TextDirection.rtl => (adjustedPosition__86048.dx <= accessibleDeleteButtonWidth__86962), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Framework.Painting.EdgeInsets resolvedPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)padding.resolve(textDirection));
+        global::Doroti.Ui.Size deflatedSize = ((global::Doroti.Ui.Size)(object?)resolvedPadding.deflateSize(chipSize));
+        global::Doroti.Ui.Offset adjustedPosition = ((global::Doroti.Ui.Offset)(object?)(tapPosition - new global::Doroti.Ui.Offset(((global::Doroti.Framework.Painting.EdgeInsets)resolvedPadding).left, ((global::Doroti.Framework.Painting.EdgeInsets)resolvedPadding).top)));
+        double accessibleDeleteButtonWidth = Math.Min((deflatedSize.width * 0.499), Math.Min((labelPadding.resolve(textDirection).right + deleteButtonSize.width), (24.0 + (deleteButtonSize.width / 2.0))));
+        return (textDirection switch { TextDirection.ltr => (adjustedPosition.dx >= (deflatedSize.width - accessibleDeleteButtonWidth)), TextDirection.rtl => (adjustedPosition.dx <= accessibleDeleteButtonWidth), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -1705,9 +1705,9 @@ internal class _ChipDefaultsM3__chip : ChipThemeData
     {
         get
         {
-            double fontSize__90888 = (this.labelStyle?.fontSize ?? 14.0);
-            double fontSizeRatio__90946 = (MediaQuery.textScalerOf(this.context).scale(fontSize__90888) / 14.0);
-            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)EdgeInsets.lerp(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((fontSizeRatio__90946 - 1.0), 0.0, 1.0))!);
+            double fontSizeLocal = (this.labelStyle?.fontSize ?? 14.0);
+            double fontSizeRatio = (MediaQuery.textScalerOf(this.context).scale(fontSizeLocal) / 14.0);
+            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)EdgeInsets.lerp(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((fontSizeRatio - 1.0), 0.0, 1.0))!);
             return default!;
         }
     }

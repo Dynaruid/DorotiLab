@@ -172,76 +172,76 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         visualDensity ??= VisualDensity.defaultDensityForPlatform(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(platform)));
         useMaterial3 ??= true;
         useSystemColors ??= false;
-        bool useInkSparkle__16389 = ((object.Equals(DartRuntimePrimitives.RequireValue(platform), global::Doroti.Framework.Foundation.TargetPlatform.android)) && !global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb);
-        splashFactory ??= (DartRuntimePrimitives.RequireValue(useMaterial3) ? (useInkSparkle__16389 ? InkSparkle.splashFactory : InkRipple.splashFactory) : InkSplash.splashFactory);
+        bool useInkSparkle = ((object.Equals(DartRuntimePrimitives.RequireValue(platform), global::Doroti.Framework.Foundation.TargetPlatform.android)) && !global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb);
+        splashFactory ??= (DartRuntimePrimitives.RequireValue(useMaterial3) ? (useInkSparkle ? InkSparkle.splashFactory : InkRipple.splashFactory) : InkSplash.splashFactory);
         DartRuntimePrimitives.Assert(() => (((colorScheme?.brightness is null) || (brightness is null)) || (object.Equals(colorScheme!.brightness, DartRuntimePrimitives.RequireValue(brightness)))), () => (object?)"ThemeData.brightness does not match ColorScheme.brightness. " + "Either override ColorScheme.brightness or ThemeData.brightness to " + "match the other.");
         DartRuntimePrimitives.Assert(() => ((colorSchemeSeed is null) || (colorScheme is null)));
         DartRuntimePrimitives.Assert(() => ((colorSchemeSeed is null) || (primarySwatch is null)));
         DartRuntimePrimitives.Assert(() => ((colorSchemeSeed is null) || (primaryColor is null)));
-        global::Doroti.Ui.Brightness effectiveBrightness__17156 = ((brightness ?? colorScheme?.brightness) ?? Brightness.light);
-        var isDark__17255 = (object.Equals(effectiveBrightness__17156, Brightness.dark));
+        global::Doroti.Ui.Brightness effectiveBrightness = ((brightness ?? colorScheme?.brightness) ?? Brightness.light);
+        var isDark = (object.Equals(effectiveBrightness, Brightness.dark));
         if (((colorSchemeSeed is not null) || DartRuntimePrimitives.RequireValue(useMaterial3)))
         {
             if ((colorSchemeSeed is not null))
             {
-                colorScheme = ColorScheme.CreateFromSeed(seedColor: colorSchemeSeed, brightness: effectiveBrightness__17156);
+                colorScheme = ColorScheme.CreateFromSeed(seedColor: colorSchemeSeed, brightness: effectiveBrightness);
             }
-            colorScheme ??= (isDark__17255 ? Theme_dataLibrary._colorSchemeDarkM3 : Theme_dataLibrary._colorSchemeLightM3);
-            global::Doroti.Ui.Color primarySurfaceColor__17715 = ((global::Doroti.Ui.Color)(object?)(isDark__17255 ? ((ColorScheme)colorScheme).surface : ((ColorScheme)colorScheme).primary));
-            global::Doroti.Ui.Color onPrimarySurfaceColor__17807 = ((global::Doroti.Ui.Color)(object?)(isDark__17255 ? ((ColorScheme)colorScheme).onSurface : ((ColorScheme)colorScheme).onPrimary));
-            primaryColor ??= primarySurfaceColor__17715;
+            colorScheme ??= (isDark ? Theme_dataLibrary._colorSchemeDarkM3 : Theme_dataLibrary._colorSchemeLightM3);
+            global::Doroti.Ui.Color primarySurfaceColor = ((global::Doroti.Ui.Color)(object?)(isDark ? ((ColorScheme)colorScheme).surface : ((ColorScheme)colorScheme).primary));
+            global::Doroti.Ui.Color onPrimarySurfaceColor = ((global::Doroti.Ui.Color)(object?)(isDark ? ((ColorScheme)colorScheme).onSurface : ((ColorScheme)colorScheme).onPrimary));
+            primaryColor ??= primarySurfaceColor;
             canvasColor ??= ((ColorScheme)colorScheme).surface;
             scaffoldBackgroundColor ??= ((ColorScheme)colorScheme).surface;
             cardColor ??= ((ColorScheme)colorScheme).surface;
             dividerColor ??= ((ColorScheme)colorScheme).outline;
             dialogBackgroundColor ??= ((ColorScheme)colorScheme).surface;
-            indicatorColor ??= onPrimarySurfaceColor__17807;
+            indicatorColor ??= onPrimarySurfaceColor;
             applyElevationOverlayColor ??= (object.Equals(brightness, Brightness.dark));
         }
         applyElevationOverlayColor ??= false;
         primarySwatch ??= Colors.blue;
-        primaryColor ??= (isDark__17255 ? Colors.grey[900L]! : primarySwatch);
-        global::Doroti.Ui.Brightness estimatedPrimaryColorBrightness__18529 = ThemeData.estimateBrightnessForColor(primaryColor);
-        primaryColorLight ??= (isDark__17255 ? Colors.grey[500L]! : primarySwatch[100L]!);
-        primaryColorDark ??= (isDark__17255 ? Colors.black : primarySwatch[700L]!);
-        var primaryIsDark__18761 = (object.Equals(estimatedPrimaryColorBrightness__18529, Brightness.dark));
-        focusColor ??= (isDark__17255 ? Colors.white.withOpacity(0.12) : Colors.black.withOpacity(0.12));
-        hoverColor ??= (isDark__17255 ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.04));
+        primaryColor ??= (isDark ? Colors.grey[900L]! : primarySwatch);
+        global::Doroti.Ui.Brightness estimatedPrimaryColorBrightness = ThemeData.estimateBrightnessForColor(primaryColor);
+        primaryColorLight ??= (isDark ? Colors.grey[500L]! : primarySwatch[100L]!);
+        primaryColorDark ??= (isDark ? Colors.black : primarySwatch[700L]!);
+        var primaryIsDark = (object.Equals(estimatedPrimaryColorBrightness, Brightness.dark));
+        focusColor ??= (isDark ? Colors.white.withOpacity(0.12) : Colors.black.withOpacity(0.12));
+        hoverColor ??= (isDark ? Colors.white.withOpacity(0.04) : Colors.black.withOpacity(0.04));
         shadowColor ??= Colors.black;
-        canvasColor ??= (isDark__17255 ? Colors.grey[850L]! : Colors.grey[50L]!);
+        canvasColor ??= (isDark ? Colors.grey[850L]! : Colors.grey[50L]!);
         scaffoldBackgroundColor ??= canvasColor;
-        cardColor ??= (isDark__17255 ? Colors.grey[800L]! : Colors.white);
-        dividerColor ??= (isDark__17255 ? new global::Doroti.Ui.Color(536870911L) : new global::Doroti.Ui.Color(520093696L));
-        colorScheme ??= ColorScheme.CreateFromSwatch(primarySwatch: primarySwatch, accentColor: (isDark__17255 ? Colors.tealAccent[200L]! : primarySwatch[500L]!), cardColor: cardColor, backgroundColor: (isDark__17255 ? Colors.grey[700L]! : primarySwatch[200L]!), errorColor: Colors.red[700L], brightness: effectiveBrightness__17156);
-        unselectedWidgetColor ??= (isDark__17255 ? Colors.white70 : Colors.black54);
-        secondaryHeaderColor ??= (isDark__17255 ? Colors.grey[700L]! : primarySwatch[50L]!);
-        hintColor ??= (isDark__17255 ? Colors.white60 : Colors.black.withOpacity(0.6));
-        buttonTheme ??= new ButtonThemeData(colorScheme: colorScheme, buttonColor: (isDark__17255 ? primarySwatch[600L]! : Colors.grey[300L]!), disabledColor: disabledColor, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, materialTapTargetSize: DartRuntimePrimitives.RequireValue(materialTapTargetSize));
-        disabledColor ??= (isDark__17255 ? Colors.white38 : Colors.black38);
-        highlightColor ??= (isDark__17255 ? new global::Doroti.Ui.Color(1087163596L) : new global::Doroti.Ui.Color(1723645116L));
-        splashColor ??= (isDark__17255 ? new global::Doroti.Ui.Color(1087163596L) : new global::Doroti.Ui.Color(1724434632L));
+        cardColor ??= (isDark ? Colors.grey[800L]! : Colors.white);
+        dividerColor ??= (isDark ? new global::Doroti.Ui.Color(536870911L) : new global::Doroti.Ui.Color(520093696L));
+        colorScheme ??= ColorScheme.CreateFromSwatch(primarySwatch: primarySwatch, accentColor: (isDark ? Colors.tealAccent[200L]! : primarySwatch[500L]!), cardColor: cardColor, backgroundColor: (isDark ? Colors.grey[700L]! : primarySwatch[200L]!), errorColor: Colors.red[700L], brightness: effectiveBrightness);
+        unselectedWidgetColor ??= (isDark ? Colors.white70 : Colors.black54);
+        secondaryHeaderColor ??= (isDark ? Colors.grey[700L]! : primarySwatch[50L]!);
+        hintColor ??= (isDark ? Colors.white60 : Colors.black.withOpacity(0.6));
+        buttonTheme ??= new ButtonThemeData(colorScheme: colorScheme, buttonColor: (isDark ? primarySwatch[600L]! : Colors.grey[300L]!), disabledColor: disabledColor, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, materialTapTargetSize: DartRuntimePrimitives.RequireValue(materialTapTargetSize));
+        disabledColor ??= (isDark ? Colors.white38 : Colors.black38);
+        highlightColor ??= (isDark ? new global::Doroti.Ui.Color(1087163596L) : new global::Doroti.Ui.Color(1723645116L));
+        splashColor ??= (isDark ? new global::Doroti.Ui.Color(1087163596L) : new global::Doroti.Ui.Color(1724434632L));
         typography ??= (DartRuntimePrimitives.RequireValue(useMaterial3) ? Typography.CreateMaterial2021(platform: DartRuntimePrimitives.RequireValue(platform), colorScheme: colorScheme) : Typography.CreateMaterial2014(platform: DartRuntimePrimitives.RequireValue(platform)));
-        TextTheme defaultTextTheme__21017 = (isDark__17255 ? ((Typography)typography).white : ((Typography)typography).black);
-        TextTheme defaultPrimaryTextTheme__21096 = (primaryIsDark__18761 ? ((Typography)typography).white : ((Typography)typography).black);
+        TextTheme defaultTextTheme = (isDark ? ((Typography)typography).white : ((Typography)typography).black);
+        TextTheme defaultPrimaryTextTheme = (primaryIsDark ? ((Typography)typography).white : ((Typography)typography).black);
         if ((fontFamily is not null))
         {
-            defaultTextTheme__21017 = defaultTextTheme__21017.apply(fontFamily: fontFamily);
-            defaultPrimaryTextTheme__21096 = defaultPrimaryTextTheme__21096.apply(fontFamily: fontFamily);
+            defaultTextTheme = defaultTextTheme.apply(fontFamily: fontFamily);
+            defaultPrimaryTextTheme = defaultPrimaryTextTheme.apply(fontFamily: fontFamily);
         }
         if ((fontFamilyFallback is not null))
         {
-            defaultTextTheme__21017 = defaultTextTheme__21017.apply(fontFamilyFallback: fontFamilyFallback);
-            defaultPrimaryTextTheme__21096 = defaultPrimaryTextTheme__21096.apply(fontFamilyFallback: fontFamilyFallback);
+            defaultTextTheme = defaultTextTheme.apply(fontFamilyFallback: fontFamilyFallback);
+            defaultPrimaryTextTheme = defaultPrimaryTextTheme.apply(fontFamilyFallback: fontFamilyFallback);
         }
         if ((package is not null))
         {
-            defaultTextTheme__21017 = defaultTextTheme__21017.apply(package: package);
-            defaultPrimaryTextTheme__21096 = defaultPrimaryTextTheme__21096.apply(package: package);
+            defaultTextTheme = defaultTextTheme.apply(package: package);
+            defaultPrimaryTextTheme = defaultPrimaryTextTheme.apply(package: package);
         }
-        textTheme = defaultTextTheme__21017.merge(textTheme);
-        primaryTextTheme = defaultPrimaryTextTheme__21096.merge(primaryTextTheme);
-        iconTheme ??= (isDark__17255 ? new global::Doroti.Framework.Widgets.IconThemeData(color: ConstantsLibrary.kDefaultIconLightColor) : new global::Doroti.Framework.Widgets.IconThemeData(color: ConstantsLibrary.kDefaultIconDarkColor));
-        primaryIconTheme ??= (primaryIsDark__18761 ? new global::Doroti.Framework.Widgets.IconThemeData(color: Colors.white) : new global::Doroti.Framework.Widgets.IconThemeData(color: Colors.black));
+        textTheme = defaultTextTheme.merge(textTheme);
+        primaryTextTheme = defaultPrimaryTextTheme.merge(primaryTextTheme);
+        iconTheme ??= (isDark ? new global::Doroti.Framework.Widgets.IconThemeData(color: ConstantsLibrary.kDefaultIconLightColor) : new global::Doroti.Framework.Widgets.IconThemeData(color: ConstantsLibrary.kDefaultIconDarkColor));
+        primaryIconTheme ??= (primaryIsDark ? new global::Doroti.Framework.Widgets.IconThemeData(color: Colors.white) : new global::Doroti.Framework.Widgets.IconThemeData(color: Colors.black));
         if ((appBarTheme is not null))
         {
             if ((appBarTheme is AppBarTheme))
@@ -300,14 +300,14 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         toggleButtonsTheme ??= new ToggleButtonsThemeData();
         tooltipTheme ??= new TooltipThemeData();
         buttonBarTheme ??= new ButtonBarThemeData();
-        dialogBackgroundColor ??= (isDark__17255 ? Colors.grey[800L]! : Colors.white);
+        dialogBackgroundColor ??= (isDark ? Colors.grey[800L]! : Colors.white);
         indicatorColor ??= ((object.Equals(((ColorScheme)colorScheme).secondary, primaryColor)) ? Colors.white : ((ColorScheme)colorScheme).secondary);
-        var theme__25175 = new ThemeData(adaptationMap: ThemeData._createAdaptationMap(adaptations.Cast<Adaptation<object>>()), applyElevationOverlayColor: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(applyElevationOverlayColor)), cupertinoOverrideTheme: cupertinoOverrideTheme, extensions: ThemeData._themeExtensionIterableToMap(extensions), inputDecorationTheme: ((InputDecorationThemeData?)(object?)inputDecorationTheme)!, materialTapTargetSize: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(materialTapTargetSize)), pageTransitionsTheme: pageTransitionsTheme, platform: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(platform)), scrollbarTheme: scrollbarTheme, splashFactory: splashFactory, useMaterial3: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(useMaterial3)), visualDensity: visualDensity, canvasColor: canvasColor, cardColor: cardColor, colorScheme: colorScheme, disabledColor: disabledColor, dividerColor: dividerColor, focusColor: focusColor, highlightColor: highlightColor, hintColor: hintColor, hoverColor: hoverColor, primaryColor: primaryColor, primaryColorDark: primaryColorDark, primaryColorLight: primaryColorLight, scaffoldBackgroundColor: scaffoldBackgroundColor, secondaryHeaderColor: secondaryHeaderColor, shadowColor: shadowColor, splashColor: splashColor, unselectedWidgetColor: unselectedWidgetColor, iconTheme: iconTheme, primaryTextTheme: primaryTextTheme, textTheme: textTheme, typography: typography, primaryIconTheme: primaryIconTheme, actionIconTheme: actionIconTheme, appBarTheme: ((((AppBarThemeData?)(object?)appBarTheme)!) ?? new AppBarThemeData()), badgeTheme: badgeTheme, bannerTheme: bannerTheme, bottomAppBarTheme: bottomAppBarTheme, bottomNavigationBarTheme: bottomNavigationBarTheme, bottomSheetTheme: bottomSheetTheme, buttonTheme: buttonTheme, cardTheme: cardTheme, carouselViewTheme: carouselViewTheme, checkboxTheme: checkboxTheme, chipTheme: chipTheme, dataTableTheme: dataTableTheme, datePickerTheme: datePickerTheme, dialogTheme: dialogTheme, dividerTheme: dividerTheme, drawerTheme: drawerTheme, dropdownMenuTheme: dropdownMenuTheme, elevatedButtonTheme: elevatedButtonTheme, expansionTileTheme: expansionTileTheme, filledButtonTheme: filledButtonTheme, floatingActionButtonTheme: floatingActionButtonTheme, iconButtonTheme: iconButtonTheme, listTileTheme: listTileTheme, menuBarTheme: menuBarTheme, menuButtonTheme: menuButtonTheme, menuTheme: menuTheme, navigationBarTheme: navigationBarTheme, navigationDrawerTheme: navigationDrawerTheme, navigationRailTheme: navigationRailTheme, outlinedButtonTheme: outlinedButtonTheme, popupMenuTheme: popupMenuTheme, progressIndicatorTheme: progressIndicatorTheme, radioTheme: radioTheme, searchBarTheme: searchBarTheme, searchViewTheme: searchViewTheme, segmentedButtonTheme: segmentedButtonTheme, sliderTheme: sliderTheme, snackBarTheme: snackBarTheme, switchTheme: switchTheme, tabBarTheme: tabBarTheme, textButtonTheme: textButtonTheme, textSelectionTheme: textSelectionTheme, timePickerTheme: timePickerTheme, toggleButtonsTheme: toggleButtonsTheme, tooltipTheme: tooltipTheme, buttonBarTheme: buttonBarTheme, dialogBackgroundColor: dialogBackgroundColor, indicatorColor: indicatorColor);
+        var theme = new ThemeData(adaptationMap: ThemeData._createAdaptationMap(adaptations.Cast<Adaptation<object>>()), applyElevationOverlayColor: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(applyElevationOverlayColor)), cupertinoOverrideTheme: cupertinoOverrideTheme, extensions: ThemeData._themeExtensionIterableToMap(extensions), inputDecorationTheme: ((InputDecorationThemeData?)(object?)inputDecorationTheme)!, materialTapTargetSize: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(materialTapTargetSize)), pageTransitionsTheme: pageTransitionsTheme, platform: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(platform)), scrollbarTheme: scrollbarTheme, splashFactory: splashFactory, useMaterial3: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(useMaterial3)), visualDensity: visualDensity, canvasColor: canvasColor, cardColor: cardColor, colorScheme: colorScheme, disabledColor: disabledColor, dividerColor: dividerColor, focusColor: focusColor, highlightColor: highlightColor, hintColor: hintColor, hoverColor: hoverColor, primaryColor: primaryColor, primaryColorDark: primaryColorDark, primaryColorLight: primaryColorLight, scaffoldBackgroundColor: scaffoldBackgroundColor, secondaryHeaderColor: secondaryHeaderColor, shadowColor: shadowColor, splashColor: splashColor, unselectedWidgetColor: unselectedWidgetColor, iconTheme: iconTheme, primaryTextTheme: primaryTextTheme, textTheme: textTheme, typography: typography, primaryIconTheme: primaryIconTheme, actionIconTheme: actionIconTheme, appBarTheme: ((((AppBarThemeData?)(object?)appBarTheme)!) ?? new AppBarThemeData()), badgeTheme: badgeTheme, bannerTheme: bannerTheme, bottomAppBarTheme: bottomAppBarTheme, bottomNavigationBarTheme: bottomNavigationBarTheme, bottomSheetTheme: bottomSheetTheme, buttonTheme: buttonTheme, cardTheme: cardTheme, carouselViewTheme: carouselViewTheme, checkboxTheme: checkboxTheme, chipTheme: chipTheme, dataTableTheme: dataTableTheme, datePickerTheme: datePickerTheme, dialogTheme: dialogTheme, dividerTheme: dividerTheme, drawerTheme: drawerTheme, dropdownMenuTheme: dropdownMenuTheme, elevatedButtonTheme: elevatedButtonTheme, expansionTileTheme: expansionTileTheme, filledButtonTheme: filledButtonTheme, floatingActionButtonTheme: floatingActionButtonTheme, iconButtonTheme: iconButtonTheme, listTileTheme: listTileTheme, menuBarTheme: menuBarTheme, menuButtonTheme: menuButtonTheme, menuTheme: menuTheme, navigationBarTheme: navigationBarTheme, navigationDrawerTheme: navigationDrawerTheme, navigationRailTheme: navigationRailTheme, outlinedButtonTheme: outlinedButtonTheme, popupMenuTheme: popupMenuTheme, progressIndicatorTheme: progressIndicatorTheme, radioTheme: radioTheme, searchBarTheme: searchBarTheme, searchViewTheme: searchViewTheme, segmentedButtonTheme: segmentedButtonTheme, sliderTheme: sliderTheme, snackBarTheme: snackBarTheme, switchTheme: switchTheme, tabBarTheme: tabBarTheme, textButtonTheme: textButtonTheme, textSelectionTheme: textSelectionTheme, timePickerTheme: timePickerTheme, toggleButtonsTheme: toggleButtonsTheme, tooltipTheme: tooltipTheme, buttonBarTheme: buttonBarTheme, dialogBackgroundColor: dialogBackgroundColor, indicatorColor: indicatorColor);
         if (DartRuntimePrimitives.RequireValue(useSystemColors))
         {
-            theme__25175 = theme__25175._overrideWithSystemColors();
+            theme = theme._overrideWithSystemColors();
         }
-        return theme__25175;
+        return theme;
     }
 
     public ThemeData(DartMap<Type, Adaptation<object>> adaptationMap, bool applyElevationOverlayColor, NoDefaultCupertinoThemeData? cupertinoOverrideTheme, DartMap<object, ThemeExtension<object>> extensions, InputDecorationThemeData inputDecorationTheme, MaterialTapTargetSize materialTapTargetSize, PageTransitionsTheme pageTransitionsTheme, global::Doroti.Framework.Foundation.TargetPlatform platform, ScrollbarThemeData scrollbarTheme, InteractiveInkFeatureFactory splashFactory, bool useMaterial3, VisualDensity visualDensity, ColorScheme colorScheme, Color canvasColor, Color cardColor, Color disabledColor, Color dividerColor, Color focusColor, Color highlightColor, Color hintColor, Color hoverColor, Color primaryColor, Color primaryColorDark, Color primaryColorLight, Color scaffoldBackgroundColor, Color secondaryHeaderColor, Color shadowColor, Color splashColor, Color unselectedWidgetColor, global::Doroti.Framework.Widgets.IconThemeData iconTheme, global::Doroti.Framework.Widgets.IconThemeData primaryIconTheme, TextTheme primaryTextTheme, TextTheme textTheme, Typography typography, ActionIconThemeData? actionIconTheme, AppBarThemeData appBarTheme, BadgeThemeData badgeTheme, MaterialBannerThemeData bannerTheme, BottomAppBarThemeData bottomAppBarTheme, BottomNavigationBarThemeData bottomNavigationBarTheme, BottomSheetThemeData bottomSheetTheme, ButtonThemeData buttonTheme, CardThemeData cardTheme, CarouselViewThemeData carouselViewTheme, CheckboxThemeData checkboxTheme, ChipThemeData chipTheme, DataTableThemeData dataTableTheme, DatePickerThemeData datePickerTheme, DialogThemeData dialogTheme, DividerThemeData dividerTheme, DrawerThemeData drawerTheme, DropdownMenuThemeData dropdownMenuTheme, ElevatedButtonThemeData elevatedButtonTheme, ExpansionTileThemeData expansionTileTheme, FilledButtonThemeData filledButtonTheme, FloatingActionButtonThemeData floatingActionButtonTheme, IconButtonThemeData iconButtonTheme, ListTileThemeData listTileTheme, MenuBarThemeData menuBarTheme, MenuButtonThemeData menuButtonTheme, MenuThemeData menuTheme, NavigationBarThemeData navigationBarTheme, NavigationDrawerThemeData navigationDrawerTheme, NavigationRailThemeData navigationRailTheme, OutlinedButtonThemeData outlinedButtonTheme, PopupMenuThemeData popupMenuTheme, ProgressIndicatorThemeData progressIndicatorTheme, RadioThemeData radioTheme, SearchBarThemeData searchBarTheme, SearchViewThemeData searchViewTheme, SegmentedButtonThemeData segmentedButtonTheme, SliderThemeData sliderTheme, SnackBarThemeData snackBarTheme, SwitchThemeData switchTheme, TabBarThemeData tabBarTheme, TextButtonThemeData textButtonTheme, TextSelectionThemeData textSelectionTheme, TimePickerThemeData timePickerTheme, ToggleButtonsThemeData toggleButtonsTheme, TooltipThemeData tooltipTheme, ButtonBarThemeData? buttonBarTheme = null, Color dialogBackgroundColor = default!, Color indicatorColor = default!)
@@ -400,10 +400,10 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 
     public static ThemeData CreateFrom(ColorScheme colorScheme, TextTheme? textTheme = null, bool? useMaterial3 = null)
     {
-        var isDark__34988 = (object.Equals(((ColorScheme)colorScheme).brightness, Brightness.dark));
-        global::Doroti.Ui.Color primarySurfaceColor__35142 = ((global::Doroti.Ui.Color)(object?)(isDark__34988 ? ((ColorScheme)colorScheme).surface : ((ColorScheme)colorScheme).primary));
-        global::Doroti.Ui.Color onPrimarySurfaceColor__35232 = ((global::Doroti.Ui.Color)(object?)(isDark__34988 ? ((ColorScheme)colorScheme).onSurface : ((ColorScheme)colorScheme).onPrimary));
-        return ThemeData.Create(colorScheme: colorScheme, brightness: ((ColorScheme)colorScheme).brightness, primaryColor: primarySurfaceColor__35142, canvasColor: ((ColorScheme)colorScheme).surface, scaffoldBackgroundColor: ((ColorScheme)colorScheme).surface, cardColor: ((ColorScheme)colorScheme).surface, dividerColor: ((ColorScheme)colorScheme).onSurface.withOpacity(0.12), dialogBackgroundColor: ((ColorScheme)colorScheme).surface, indicatorColor: onPrimarySurfaceColor__35232, textTheme: textTheme, applyElevationOverlayColor: isDark__34988, useMaterial3: useMaterial3);
+        var isDark = (object.Equals(((ColorScheme)colorScheme).brightness, Brightness.dark));
+        global::Doroti.Ui.Color primarySurfaceColor = ((global::Doroti.Ui.Color)(object?)(isDark ? ((ColorScheme)colorScheme).surface : ((ColorScheme)colorScheme).primary));
+        global::Doroti.Ui.Color onPrimarySurfaceColor = ((global::Doroti.Ui.Color)(object?)(isDark ? ((ColorScheme)colorScheme).onSurface : ((ColorScheme)colorScheme).onPrimary));
+        return ThemeData.Create(colorScheme: colorScheme, brightness: ((ColorScheme)colorScheme).brightness, primaryColor: primarySurfaceColor, canvasColor: ((ColorScheme)colorScheme).surface, scaffoldBackgroundColor: ((ColorScheme)colorScheme).surface, cardColor: ((ColorScheme)colorScheme).surface, dividerColor: ((ColorScheme)colorScheme).onSurface.withOpacity(0.12), dialogBackgroundColor: ((ColorScheme)colorScheme).surface, indicatorColor: onPrimarySurfaceColor, textTheme: textTheme, applyElevationOverlayColor: isDark, useMaterial3: useMaterial3);
     }
 
     public static ThemeData CreateLight(bool? useMaterial3 = null) => ThemeData.Create(brightness: Brightness.light, useMaterial3: useMaterial3);
@@ -415,8 +415,8 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
     public virtual Adaptation<T>? getAdaptation<T>() => ((Adaptation<T>?)(object?)this.adaptationMap.GetValueOrDefault(typeof(T)))!;
     internal static DartMap<Type, Adaptation<object>> _createAdaptationMap(IEnumerable<Adaptation<object>> adaptations)
     {
-        var adaptationMap__37341 = new DartMap<Type, Adaptation<object>>();
-        return adaptationMap__37341;
+        var adaptationMap = new DartMap<Type, Adaptation<object>>();
+        return adaptationMap;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -475,9 +475,9 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 
     public static global::Doroti.Ui.Brightness estimateBrightnessForColor(Color color)
     {
-        double relativeLuminance__76407 = color.computeLuminance();
-        var kThreshold__76889 = 0.15;
-        if (((((relativeLuminance__76407 + 0.05)) * ((relativeLuminance__76407 + 0.05))) > kThreshold__76889))
+        double relativeLuminance = color.computeLuminance();
+        var kThreshold = 0.15;
+        if (((((relativeLuminance + 0.05)) * ((relativeLuminance + 0.05))) > kThreshold))
         {
             return Brightness.light;
         }
@@ -487,14 +487,14 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 
     internal static DartMap<object, ThemeExtension<object>> _lerpThemeExtensions(ThemeData a, ThemeData b, double t)
     {
-        DartMap<object, ThemeExtension<object>> newExtensions__77396 = ((ThemeData)a).extensions.map<object, ThemeExtension<object>, object, ThemeExtension<object>>(((id, extensionA) =>
+        DartMap<object, ThemeExtension<object>> newExtensions = ((ThemeData)a).extensions.map<object, ThemeExtension<object>, object, ThemeExtension<object>>(((id, extensionA) =>
         {
-            ThemeExtension<object>? extensionB__77535 = ((ThemeData)b).extensions.GetValueOrDefault(id);
-            return new MapEntry<object, ThemeExtension<object>>(id, extensionA.lerp(extensionB__77535, t));
+            ThemeExtension<object>? extensionB = ((ThemeData)b).extensions.GetValueOrDefault(id);
+            return new MapEntry<object, ThemeExtension<object>>(id, extensionA.lerp(extensionB, t));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
-        newExtensions__77396.addEntries(((ThemeData)b).extensions.entries.where(((entry) => !((ThemeData)a).extensions.ContainsKey(entry.key))).Cast<MapEntry<object, ThemeExtension<object>>>());
-        return newExtensions__77396;
+        newExtensions.addEntries(((ThemeData)b).extensions.entries.where(((entry) => !((ThemeData)a).extensions.ContainsKey(entry.key))).Cast<MapEntry<object, ThemeExtension<object>>>());
+        return newExtensions;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -510,20 +510,20 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         {
             return this;
         }
-        global::Doroti.Ui.SystemColorPalette systemColors__78694 = ((global::Doroti.Ui.SystemColorPalette)(object?)((object.Equals(this.brightness, Brightness.dark)) ? SystemColor.dark : SystemColor.light));
-        var theme__78804 = this;
-        theme__78804 = theme__78804.copyWith(colorScheme: this.colorScheme.copyWith(secondary: systemColors__78694.accentColor.value, onSecondary: systemColors__78694.accentColorText.value, surface: systemColors__78694.canvas.value, onSurface: systemColors__78694.canvasText.value), textTheme: this.textTheme.apply(displayColor: systemColors__78694.canvasText.value, bodyColor: systemColors__78694.canvasText.value));
-        bool overrideButtons__79268 = (((systemColors__78694.buttonFace.value is not null) || (systemColors__78694.buttonBorder.value is not null)) || (systemColors__78694.buttonText.value is not null));
-        if (overrideButtons__79268)
+        global::Doroti.Ui.SystemColorPalette systemColors = ((global::Doroti.Ui.SystemColorPalette)(object?)((object.Equals(this.brightness, Brightness.dark)) ? SystemColor.dark : SystemColor.light));
+        var theme = this;
+        theme = theme.copyWith(colorScheme: this.colorScheme.copyWith(secondary: systemColors.accentColor.value, onSecondary: systemColors.accentColorText.value, surface: systemColors.canvas.value, onSurface: systemColors.canvasText.value), textTheme: this.textTheme.apply(displayColor: systemColors.canvasText.value, bodyColor: systemColors.canvasText.value));
+        bool overrideButtons = (((systemColors.buttonFace.value is not null) || (systemColors.buttonBorder.value is not null)) || (systemColors.buttonText.value is not null));
+        if (overrideButtons)
         {
-            theme__78804 = theme__78804.copyWith(elevatedButtonTheme: new ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: systemColors__78694.buttonText.value, backgroundColor: systemColors__78694.buttonFace.value, side: ((systemColors__78694.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors__78694.buttonBorder.value!)))), textButtonTheme: new TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: systemColors__78694.buttonText.value, backgroundColor: systemColors__78694.buttonFace.value, side: ((systemColors__78694.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors__78694.buttonBorder.value!)))), outlinedButtonTheme: new OutlinedButtonThemeData(style: OutlinedButton.styleFrom(foregroundColor: systemColors__78694.buttonText.value, backgroundColor: systemColors__78694.buttonFace.value, side: ((systemColors__78694.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors__78694.buttonBorder.value!)))), filledButtonTheme: new FilledButtonThemeData(style: FilledButton.styleFrom(foregroundColor: systemColors__78694.buttonText.value, backgroundColor: systemColors__78694.buttonFace.value, side: ((systemColors__78694.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors__78694.buttonBorder.value!)))), floatingActionButtonTheme: new FloatingActionButtonThemeData(backgroundColor: systemColors__78694.buttonFace.value, foregroundColor: systemColors__78694.buttonText.value));
+            theme = theme.copyWith(elevatedButtonTheme: new ElevatedButtonThemeData(style: ElevatedButton.styleFrom(foregroundColor: systemColors.buttonText.value, backgroundColor: systemColors.buttonFace.value, side: ((systemColors.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors.buttonBorder.value!)))), textButtonTheme: new TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: systemColors.buttonText.value, backgroundColor: systemColors.buttonFace.value, side: ((systemColors.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors.buttonBorder.value!)))), outlinedButtonTheme: new OutlinedButtonThemeData(style: OutlinedButton.styleFrom(foregroundColor: systemColors.buttonText.value, backgroundColor: systemColors.buttonFace.value, side: ((systemColors.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors.buttonBorder.value!)))), filledButtonTheme: new FilledButtonThemeData(style: FilledButton.styleFrom(foregroundColor: systemColors.buttonText.value, backgroundColor: systemColors.buttonFace.value, side: ((systemColors.buttonBorder.value is null) ? null : new global::Doroti.Framework.Painting.BorderSide(color: systemColors.buttonBorder.value!)))), floatingActionButtonTheme: new FloatingActionButtonThemeData(backgroundColor: systemColors.buttonFace.value, foregroundColor: systemColors.buttonText.value));
         }
-        bool overrideInputDecoration__81269 = ((systemColors__78694.field.value is not null) || (systemColors__78694.fieldText.value is not null));
-        if (overrideInputDecoration__81269)
+        bool overrideInputDecoration = ((systemColors.field.value is not null) || (systemColors.fieldText.value is not null));
+        if (overrideInputDecoration)
         {
-            theme__78804 = theme__78804.copyWith(inputDecorationTheme: this.inputDecorationTheme.copyWith(fillColor: systemColors__78694.field.value, labelStyle: (this.inputDecorationTheme.labelStyle?.copyWith(color: systemColors__78694.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors__78694.fieldText.value)), hintStyle: (this.inputDecorationTheme.hintStyle?.copyWith(color: systemColors__78694.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors__78694.fieldText.value)), helperStyle: (this.inputDecorationTheme.helperStyle?.copyWith(color: systemColors__78694.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors__78694.fieldText.value)), prefixStyle: (this.inputDecorationTheme.prefixStyle?.copyWith(color: systemColors__78694.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors__78694.fieldText.value)), suffixStyle: (this.inputDecorationTheme.suffixStyle?.copyWith(color: systemColors__78694.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors__78694.fieldText.value)), counterStyle: (this.inputDecorationTheme.counterStyle?.copyWith(color: systemColors__78694.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors__78694.fieldText.value))));
+            theme = theme.copyWith(inputDecorationTheme: this.inputDecorationTheme.copyWith(fillColor: systemColors.field.value, labelStyle: (this.inputDecorationTheme.labelStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value)), hintStyle: (this.inputDecorationTheme.hintStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value)), helperStyle: (this.inputDecorationTheme.helperStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value)), prefixStyle: (this.inputDecorationTheme.prefixStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value)), suffixStyle: (this.inputDecorationTheme.suffixStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value)), counterStyle: (this.inputDecorationTheme.counterStyle?.copyWith(color: systemColors.fieldText.value) ?? new global::Doroti.Framework.Painting.TextStyle(color: systemColors.fieldText.value))));
         }
-        return theme__78804;
+        return theme;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -550,108 +550,108 @@ public class ThemeData : global::Doroti.Framework.Foundation.Diagnosticable
 
     public override int GetHashCode()
     {
-        var values__95583 = ((Func<List<object?>>)(() => { var __collection95592 = new List<object?>(); __collection95592.AddRange(this.adaptationMap.Keys); __collection95592.AddRange(this.adaptationMap.Values); __collection95592.Add(this.applyElevationOverlayColor); __collection95592.Add(this.cupertinoOverrideTheme); __collection95592.AddRange(this.extensions.Keys); __collection95592.AddRange(this.extensions.Values); __collection95592.Add(this.inputDecorationTheme); __collection95592.Add(this.materialTapTargetSize); __collection95592.Add(this.pageTransitionsTheme); __collection95592.Add(this.platform); __collection95592.Add(this.scrollbarTheme); __collection95592.Add(this.splashFactory); __collection95592.Add(this.useMaterial3); __collection95592.Add(this.visualDensity); __collection95592.Add(this.canvasColor); __collection95592.Add(this.cardColor); __collection95592.Add(this.colorScheme); __collection95592.Add(this.disabledColor); __collection95592.Add(this.dividerColor); __collection95592.Add(this.focusColor); __collection95592.Add(this.highlightColor); __collection95592.Add(this.hintColor); __collection95592.Add(this.hoverColor); __collection95592.Add(this.primaryColor); __collection95592.Add(this.primaryColorDark); __collection95592.Add(this.primaryColorLight); __collection95592.Add(this.scaffoldBackgroundColor); __collection95592.Add(this.secondaryHeaderColor); __collection95592.Add(this.shadowColor); __collection95592.Add(this.splashColor); __collection95592.Add(this.unselectedWidgetColor); __collection95592.Add(this.iconTheme); __collection95592.Add(this.primaryIconTheme); __collection95592.Add(this.primaryTextTheme); __collection95592.Add(this.textTheme); __collection95592.Add(this.typography); __collection95592.Add(this.actionIconTheme); __collection95592.Add(this.appBarTheme); __collection95592.Add(this.badgeTheme); __collection95592.Add(this.bannerTheme); __collection95592.Add(this.bottomAppBarTheme); __collection95592.Add(this.bottomNavigationBarTheme); __collection95592.Add(this.bottomSheetTheme); __collection95592.Add(this.buttonTheme); __collection95592.Add(this.cardTheme); __collection95592.Add(this.carouselViewTheme); __collection95592.Add(this.checkboxTheme); __collection95592.Add(this.chipTheme); __collection95592.Add(this.dataTableTheme); __collection95592.Add(this.datePickerTheme); __collection95592.Add(this.dialogTheme); __collection95592.Add(this.dividerTheme); __collection95592.Add(this.drawerTheme); __collection95592.Add(this.dropdownMenuTheme); __collection95592.Add(this.elevatedButtonTheme); __collection95592.Add(this.expansionTileTheme); __collection95592.Add(this.filledButtonTheme); __collection95592.Add(this.floatingActionButtonTheme); __collection95592.Add(this.iconButtonTheme); __collection95592.Add(this.listTileTheme); __collection95592.Add(this.menuBarTheme); __collection95592.Add(this.menuButtonTheme); __collection95592.Add(this.menuTheme); __collection95592.Add(this.navigationBarTheme); __collection95592.Add(this.navigationDrawerTheme); __collection95592.Add(this.navigationRailTheme); __collection95592.Add(this.outlinedButtonTheme); __collection95592.Add(this.popupMenuTheme); __collection95592.Add(this.progressIndicatorTheme); __collection95592.Add(this.radioTheme); __collection95592.Add(this.searchBarTheme); __collection95592.Add(this.searchViewTheme); __collection95592.Add(this.segmentedButtonTheme); __collection95592.Add(this.sliderTheme); __collection95592.Add(this.snackBarTheme); __collection95592.Add(this.switchTheme); __collection95592.Add(this.tabBarTheme); __collection95592.Add(this.textButtonTheme); __collection95592.Add(this.textSelectionTheme); __collection95592.Add(this.timePickerTheme); __collection95592.Add(this.toggleButtonsTheme); __collection95592.Add(this.tooltipTheme); __collection95592.Add(this.buttonBarTheme); __collection95592.Add(this.dialogBackgroundColor); __collection95592.Add(this.indicatorColor); return __collection95592; }))();
-        return FoundationRuntimePorts.ObjectHashAll(values__95583);
+        var values = ((Func<List<object?>>)(() => { var __collection95592 = new List<object?>(); __collection95592.AddRange(this.adaptationMap.Keys); __collection95592.AddRange(this.adaptationMap.Values); __collection95592.Add(this.applyElevationOverlayColor); __collection95592.Add(this.cupertinoOverrideTheme); __collection95592.AddRange(this.extensions.Keys); __collection95592.AddRange(this.extensions.Values); __collection95592.Add(this.inputDecorationTheme); __collection95592.Add(this.materialTapTargetSize); __collection95592.Add(this.pageTransitionsTheme); __collection95592.Add(this.platform); __collection95592.Add(this.scrollbarTheme); __collection95592.Add(this.splashFactory); __collection95592.Add(this.useMaterial3); __collection95592.Add(this.visualDensity); __collection95592.Add(this.canvasColor); __collection95592.Add(this.cardColor); __collection95592.Add(this.colorScheme); __collection95592.Add(this.disabledColor); __collection95592.Add(this.dividerColor); __collection95592.Add(this.focusColor); __collection95592.Add(this.highlightColor); __collection95592.Add(this.hintColor); __collection95592.Add(this.hoverColor); __collection95592.Add(this.primaryColor); __collection95592.Add(this.primaryColorDark); __collection95592.Add(this.primaryColorLight); __collection95592.Add(this.scaffoldBackgroundColor); __collection95592.Add(this.secondaryHeaderColor); __collection95592.Add(this.shadowColor); __collection95592.Add(this.splashColor); __collection95592.Add(this.unselectedWidgetColor); __collection95592.Add(this.iconTheme); __collection95592.Add(this.primaryIconTheme); __collection95592.Add(this.primaryTextTheme); __collection95592.Add(this.textTheme); __collection95592.Add(this.typography); __collection95592.Add(this.actionIconTheme); __collection95592.Add(this.appBarTheme); __collection95592.Add(this.badgeTheme); __collection95592.Add(this.bannerTheme); __collection95592.Add(this.bottomAppBarTheme); __collection95592.Add(this.bottomNavigationBarTheme); __collection95592.Add(this.bottomSheetTheme); __collection95592.Add(this.buttonTheme); __collection95592.Add(this.cardTheme); __collection95592.Add(this.carouselViewTheme); __collection95592.Add(this.checkboxTheme); __collection95592.Add(this.chipTheme); __collection95592.Add(this.dataTableTheme); __collection95592.Add(this.datePickerTheme); __collection95592.Add(this.dialogTheme); __collection95592.Add(this.dividerTheme); __collection95592.Add(this.drawerTheme); __collection95592.Add(this.dropdownMenuTheme); __collection95592.Add(this.elevatedButtonTheme); __collection95592.Add(this.expansionTileTheme); __collection95592.Add(this.filledButtonTheme); __collection95592.Add(this.floatingActionButtonTheme); __collection95592.Add(this.iconButtonTheme); __collection95592.Add(this.listTileTheme); __collection95592.Add(this.menuBarTheme); __collection95592.Add(this.menuButtonTheme); __collection95592.Add(this.menuTheme); __collection95592.Add(this.navigationBarTheme); __collection95592.Add(this.navigationDrawerTheme); __collection95592.Add(this.navigationRailTheme); __collection95592.Add(this.outlinedButtonTheme); __collection95592.Add(this.popupMenuTheme); __collection95592.Add(this.progressIndicatorTheme); __collection95592.Add(this.radioTheme); __collection95592.Add(this.searchBarTheme); __collection95592.Add(this.searchViewTheme); __collection95592.Add(this.segmentedButtonTheme); __collection95592.Add(this.sliderTheme); __collection95592.Add(this.snackBarTheme); __collection95592.Add(this.switchTheme); __collection95592.Add(this.tabBarTheme); __collection95592.Add(this.textButtonTheme); __collection95592.Add(this.textSelectionTheme); __collection95592.Add(this.timePickerTheme); __collection95592.Add(this.toggleButtonsTheme); __collection95592.Add(this.tooltipTheme); __collection95592.Add(this.buttonBarTheme); __collection95592.Add(this.dialogBackgroundColor); __collection95592.Add(this.indicatorColor); return __collection95592; }))();
+        return FoundationRuntimePorts.ObjectHashAll(values);
         return default!;
     }
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        var defaultData__98179 = ThemeData.CreateFallback();
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<Adaptation<object>>("adaptations", this.adaptationMap.Values.Cast<Adaptation<object>>(), defaultValue: ((ThemeData)defaultData__98179).adaptationMap.Values, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        var defaultData = ThemeData.CreateFallback();
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<Adaptation<object>>("adaptations", this.adaptationMap.Values.Cast<Adaptation<object>>(), defaultValue: ((ThemeData)defaultData).adaptationMap.Values, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("applyElevationOverlayColor", this.applyElevationOverlayColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NoDefaultCupertinoThemeData>("cupertinoOverrideTheme", this.cupertinoOverrideTheme, defaultValue: ((ThemeData)defaultData__98179).cupertinoOverrideTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<ThemeExtension<object>>("extensions", this.extensions.Values.Cast<ThemeExtension<object>>(), defaultValue: ((ThemeData)defaultData__98179).extensions.Values, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NoDefaultCupertinoThemeData>("cupertinoOverrideTheme", this.cupertinoOverrideTheme, defaultValue: ((ThemeData)defaultData).cupertinoOverrideTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.IterableProperty<ThemeExtension<object>>("extensions", this.extensions.Values.Cast<ThemeExtension<object>>(), defaultValue: ((ThemeData)defaultData).extensions.Values, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<InputDecorationThemeData>("inputDecorationTheme", this.inputDecorationTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialTapTargetSize>("materialTapTargetSize", this.materialTapTargetSize, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<PageTransitionsTheme>("pageTransitionsTheme", this.pageTransitionsTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<global::Doroti.Framework.Foundation.TargetPlatform>("platform", this.platform, defaultValue: global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollbarThemeData>("scrollbarTheme", this.scrollbarTheme, defaultValue: ((ThemeData)defaultData__98179).scrollbarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<InteractiveInkFeatureFactory>("splashFactory", this.splashFactory, defaultValue: ((ThemeData)defaultData__98179).splashFactory, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("useMaterial3", this.useMaterial3, defaultValue: ((ThemeData)defaultData__98179).useMaterial3, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<VisualDensity>("visualDensity", this.visualDensity, defaultValue: ((ThemeData)defaultData__98179).visualDensity, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("canvasColor", this.canvasColor, defaultValue: ((ThemeData)defaultData__98179).canvasColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("cardColor", this.cardColor, defaultValue: ((ThemeData)defaultData__98179).cardColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ColorScheme>("colorScheme", this.colorScheme, defaultValue: ((ThemeData)defaultData__98179).colorScheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledColor", this.disabledColor, defaultValue: ((ThemeData)defaultData__98179).disabledColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("dividerColor", this.dividerColor, defaultValue: ((ThemeData)defaultData__98179).dividerColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("focusColor", this.focusColor, defaultValue: ((ThemeData)defaultData__98179).focusColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("highlightColor", this.highlightColor, defaultValue: ((ThemeData)defaultData__98179).highlightColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("hintColor", this.hintColor, defaultValue: ((ThemeData)defaultData__98179).hintColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("hoverColor", this.hoverColor, defaultValue: ((ThemeData)defaultData__98179).hoverColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryColorDark", this.primaryColorDark, defaultValue: ((ThemeData)defaultData__98179).primaryColorDark, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryColorLight", this.primaryColorLight, defaultValue: ((ThemeData)defaultData__98179).primaryColorLight, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryColor", this.primaryColor, defaultValue: ((ThemeData)defaultData__98179).primaryColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("scaffoldBackgroundColor", this.scaffoldBackgroundColor, defaultValue: ((ThemeData)defaultData__98179).scaffoldBackgroundColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("secondaryHeaderColor", this.secondaryHeaderColor, defaultValue: ((ThemeData)defaultData__98179).secondaryHeaderColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: ((ThemeData)defaultData__98179).shadowColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("splashColor", this.splashColor, defaultValue: ((ThemeData)defaultData__98179).splashColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("unselectedWidgetColor", this.unselectedWidgetColor, defaultValue: ((ThemeData)defaultData__98179).unselectedWidgetColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ScrollbarThemeData>("scrollbarTheme", this.scrollbarTheme, defaultValue: ((ThemeData)defaultData).scrollbarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<InteractiveInkFeatureFactory>("splashFactory", this.splashFactory, defaultValue: ((ThemeData)defaultData).splashFactory, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("useMaterial3", this.useMaterial3, defaultValue: ((ThemeData)defaultData).useMaterial3, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<VisualDensity>("visualDensity", this.visualDensity, defaultValue: ((ThemeData)defaultData).visualDensity, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("canvasColor", this.canvasColor, defaultValue: ((ThemeData)defaultData).canvasColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("cardColor", this.cardColor, defaultValue: ((ThemeData)defaultData).cardColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ColorScheme>("colorScheme", this.colorScheme, defaultValue: ((ThemeData)defaultData).colorScheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledColor", this.disabledColor, defaultValue: ((ThemeData)defaultData).disabledColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("dividerColor", this.dividerColor, defaultValue: ((ThemeData)defaultData).dividerColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("focusColor", this.focusColor, defaultValue: ((ThemeData)defaultData).focusColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("highlightColor", this.highlightColor, defaultValue: ((ThemeData)defaultData).highlightColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("hintColor", this.hintColor, defaultValue: ((ThemeData)defaultData).hintColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("hoverColor", this.hoverColor, defaultValue: ((ThemeData)defaultData).hoverColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryColorDark", this.primaryColorDark, defaultValue: ((ThemeData)defaultData).primaryColorDark, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryColorLight", this.primaryColorLight, defaultValue: ((ThemeData)defaultData).primaryColorLight, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("primaryColor", this.primaryColor, defaultValue: ((ThemeData)defaultData).primaryColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("scaffoldBackgroundColor", this.scaffoldBackgroundColor, defaultValue: ((ThemeData)defaultData).scaffoldBackgroundColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("secondaryHeaderColor", this.secondaryHeaderColor, defaultValue: ((ThemeData)defaultData).secondaryHeaderColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("shadowColor", this.shadowColor, defaultValue: ((ThemeData)defaultData).shadowColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("splashColor", this.splashColor, defaultValue: ((ThemeData)defaultData).splashColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("unselectedWidgetColor", this.unselectedWidgetColor, defaultValue: ((ThemeData)defaultData).unselectedWidgetColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.IconThemeData>("iconTheme", this.iconTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.IconThemeData>("primaryIconTheme", this.primaryIconTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("primaryTextTheme", this.primaryTextTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextTheme>("textTheme", this.textTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Typography>("typography", this.typography, defaultValue: ((ThemeData)defaultData__98179).typography, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<Typography>("typography", this.typography, defaultValue: ((ThemeData)defaultData).typography, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ActionIconThemeData>("actionIconTheme", this.actionIconTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<AppBarThemeData>("appBarTheme", this.appBarTheme, defaultValue: ((ThemeData)defaultData__98179).appBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BadgeThemeData>("badgeTheme", this.badgeTheme, defaultValue: ((ThemeData)defaultData__98179).badgeTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialBannerThemeData>("bannerTheme", this.bannerTheme, defaultValue: ((ThemeData)defaultData__98179).bannerTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomAppBarThemeData>("bottomAppBarTheme", this.bottomAppBarTheme, defaultValue: ((ThemeData)defaultData__98179).bottomAppBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomNavigationBarThemeData>("bottomNavigationBarTheme", this.bottomNavigationBarTheme, defaultValue: ((ThemeData)defaultData__98179).bottomNavigationBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomSheetThemeData>("bottomSheetTheme", this.bottomSheetTheme, defaultValue: ((ThemeData)defaultData__98179).bottomSheetTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<AppBarThemeData>("appBarTheme", this.appBarTheme, defaultValue: ((ThemeData)defaultData).appBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BadgeThemeData>("badgeTheme", this.badgeTheme, defaultValue: ((ThemeData)defaultData).badgeTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MaterialBannerThemeData>("bannerTheme", this.bannerTheme, defaultValue: ((ThemeData)defaultData).bannerTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomAppBarThemeData>("bottomAppBarTheme", this.bottomAppBarTheme, defaultValue: ((ThemeData)defaultData).bottomAppBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomNavigationBarThemeData>("bottomNavigationBarTheme", this.bottomNavigationBarTheme, defaultValue: ((ThemeData)defaultData).bottomNavigationBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<BottomSheetThemeData>("bottomSheetTheme", this.bottomSheetTheme, defaultValue: ((ThemeData)defaultData).bottomSheetTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonThemeData>("buttonTheme", this.buttonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<CardThemeData>("cardTheme", this.cardTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<CarouselViewThemeData>("carouselViewTheme", this.carouselViewTheme, defaultValue: ((ThemeData)defaultData__98179).carouselViewTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<CheckboxThemeData>("checkboxTheme", this.checkboxTheme, defaultValue: ((ThemeData)defaultData__98179).checkboxTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<CarouselViewThemeData>("carouselViewTheme", this.carouselViewTheme, defaultValue: ((ThemeData)defaultData).carouselViewTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<CheckboxThemeData>("checkboxTheme", this.checkboxTheme, defaultValue: ((ThemeData)defaultData).checkboxTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ChipThemeData>("chipTheme", this.chipTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DataTableThemeData>("dataTableTheme", this.dataTableTheme, defaultValue: ((ThemeData)defaultData__98179).dataTableTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DatePickerThemeData>("datePickerTheme", this.datePickerTheme, defaultValue: ((ThemeData)defaultData__98179).datePickerTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DialogThemeData>("dialogTheme", this.dialogTheme, defaultValue: ((ThemeData)defaultData__98179).dialogTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DividerThemeData>("dividerTheme", this.dividerTheme, defaultValue: ((ThemeData)defaultData__98179).dividerTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DrawerThemeData>("drawerTheme", this.drawerTheme, defaultValue: ((ThemeData)defaultData__98179).drawerTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DropdownMenuThemeData>("dropdownMenuTheme", this.dropdownMenuTheme, defaultValue: ((ThemeData)defaultData__98179).dropdownMenuTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ElevatedButtonThemeData>("elevatedButtonTheme", this.elevatedButtonTheme, defaultValue: ((ThemeData)defaultData__98179).elevatedButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DataTableThemeData>("dataTableTheme", this.dataTableTheme, defaultValue: ((ThemeData)defaultData).dataTableTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DatePickerThemeData>("datePickerTheme", this.datePickerTheme, defaultValue: ((ThemeData)defaultData).datePickerTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DialogThemeData>("dialogTheme", this.dialogTheme, defaultValue: ((ThemeData)defaultData).dialogTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DividerThemeData>("dividerTheme", this.dividerTheme, defaultValue: ((ThemeData)defaultData).dividerTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DrawerThemeData>("drawerTheme", this.drawerTheme, defaultValue: ((ThemeData)defaultData).drawerTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<DropdownMenuThemeData>("dropdownMenuTheme", this.dropdownMenuTheme, defaultValue: ((ThemeData)defaultData).dropdownMenuTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ElevatedButtonThemeData>("elevatedButtonTheme", this.elevatedButtonTheme, defaultValue: ((ThemeData)defaultData).elevatedButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ExpansionTileThemeData>("expansionTileTheme", this.expansionTileTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FilledButtonThemeData>("filledButtonTheme", this.filledButtonTheme, defaultValue: ((ThemeData)defaultData__98179).filledButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FloatingActionButtonThemeData>("floatingActionButtonTheme", this.floatingActionButtonTheme, defaultValue: ((ThemeData)defaultData__98179).floatingActionButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<IconButtonThemeData>("iconButtonTheme", this.iconButtonTheme, defaultValue: ((ThemeData)defaultData__98179).iconButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ListTileThemeData>("listTileTheme", this.listTileTheme, defaultValue: ((ThemeData)defaultData__98179).listTileTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuBarThemeData>("menuBarTheme", this.menuBarTheme, defaultValue: ((ThemeData)defaultData__98179).menuBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuButtonThemeData>("menuButtonTheme", this.menuButtonTheme, defaultValue: ((ThemeData)defaultData__98179).menuButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuThemeData>("menuTheme", this.menuTheme, defaultValue: ((ThemeData)defaultData__98179).menuTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationBarThemeData>("navigationBarTheme", this.navigationBarTheme, defaultValue: ((ThemeData)defaultData__98179).navigationBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationDrawerThemeData>("navigationDrawerTheme", this.navigationDrawerTheme, defaultValue: ((ThemeData)defaultData__98179).navigationDrawerTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationRailThemeData>("navigationRailTheme", this.navigationRailTheme, defaultValue: ((ThemeData)defaultData__98179).navigationRailTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<OutlinedButtonThemeData>("outlinedButtonTheme", this.outlinedButtonTheme, defaultValue: ((ThemeData)defaultData__98179).outlinedButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<PopupMenuThemeData>("popupMenuTheme", this.popupMenuTheme, defaultValue: ((ThemeData)defaultData__98179).popupMenuTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ProgressIndicatorThemeData>("progressIndicatorTheme", this.progressIndicatorTheme, defaultValue: ((ThemeData)defaultData__98179).progressIndicatorTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RadioThemeData>("radioTheme", this.radioTheme, defaultValue: ((ThemeData)defaultData__98179).radioTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SearchBarThemeData>("searchBarTheme", this.searchBarTheme, defaultValue: ((ThemeData)defaultData__98179).searchBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SearchViewThemeData>("searchViewTheme", this.searchViewTheme, defaultValue: ((ThemeData)defaultData__98179).searchViewTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SegmentedButtonThemeData>("segmentedButtonTheme", this.segmentedButtonTheme, defaultValue: ((ThemeData)defaultData__98179).segmentedButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FilledButtonThemeData>("filledButtonTheme", this.filledButtonTheme, defaultValue: ((ThemeData)defaultData).filledButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<FloatingActionButtonThemeData>("floatingActionButtonTheme", this.floatingActionButtonTheme, defaultValue: ((ThemeData)defaultData).floatingActionButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<IconButtonThemeData>("iconButtonTheme", this.iconButtonTheme, defaultValue: ((ThemeData)defaultData).iconButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ListTileThemeData>("listTileTheme", this.listTileTheme, defaultValue: ((ThemeData)defaultData).listTileTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuBarThemeData>("menuBarTheme", this.menuBarTheme, defaultValue: ((ThemeData)defaultData).menuBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuButtonThemeData>("menuButtonTheme", this.menuButtonTheme, defaultValue: ((ThemeData)defaultData).menuButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuThemeData>("menuTheme", this.menuTheme, defaultValue: ((ThemeData)defaultData).menuTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationBarThemeData>("navigationBarTheme", this.navigationBarTheme, defaultValue: ((ThemeData)defaultData).navigationBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationDrawerThemeData>("navigationDrawerTheme", this.navigationDrawerTheme, defaultValue: ((ThemeData)defaultData).navigationDrawerTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<NavigationRailThemeData>("navigationRailTheme", this.navigationRailTheme, defaultValue: ((ThemeData)defaultData).navigationRailTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<OutlinedButtonThemeData>("outlinedButtonTheme", this.outlinedButtonTheme, defaultValue: ((ThemeData)defaultData).outlinedButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<PopupMenuThemeData>("popupMenuTheme", this.popupMenuTheme, defaultValue: ((ThemeData)defaultData).popupMenuTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ProgressIndicatorThemeData>("progressIndicatorTheme", this.progressIndicatorTheme, defaultValue: ((ThemeData)defaultData).progressIndicatorTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RadioThemeData>("radioTheme", this.radioTheme, defaultValue: ((ThemeData)defaultData).radioTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SearchBarThemeData>("searchBarTheme", this.searchBarTheme, defaultValue: ((ThemeData)defaultData).searchBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SearchViewThemeData>("searchViewTheme", this.searchViewTheme, defaultValue: ((ThemeData)defaultData).searchViewTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SegmentedButtonThemeData>("segmentedButtonTheme", this.segmentedButtonTheme, defaultValue: ((ThemeData)defaultData).segmentedButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderThemeData>("sliderTheme", this.sliderTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SnackBarThemeData>("snackBarTheme", this.snackBarTheme, defaultValue: ((ThemeData)defaultData__98179).snackBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SwitchThemeData>("switchTheme", this.switchTheme, defaultValue: ((ThemeData)defaultData__98179).switchTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SnackBarThemeData>("snackBarTheme", this.snackBarTheme, defaultValue: ((ThemeData)defaultData).snackBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SwitchThemeData>("switchTheme", this.switchTheme, defaultValue: ((ThemeData)defaultData).switchTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TabBarThemeData>("tabBarTheme", this.tabBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextButtonThemeData>("textButtonTheme", this.textButtonTheme, defaultValue: ((ThemeData)defaultData__98179).textButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextSelectionThemeData>("textSelectionTheme", this.textSelectionTheme, defaultValue: ((ThemeData)defaultData__98179).textSelectionTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TimePickerThemeData>("timePickerTheme", this.timePickerTheme, defaultValue: ((ThemeData)defaultData__98179).timePickerTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextButtonThemeData>("textButtonTheme", this.textButtonTheme, defaultValue: ((ThemeData)defaultData).textButtonTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TextSelectionThemeData>("textSelectionTheme", this.textSelectionTheme, defaultValue: ((ThemeData)defaultData).textSelectionTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TimePickerThemeData>("timePickerTheme", this.timePickerTheme, defaultValue: ((ThemeData)defaultData).timePickerTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ToggleButtonsThemeData>("toggleButtonsTheme", this.toggleButtonsTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<TooltipThemeData>("tooltipTheme", this.tooltipTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonBarThemeData>("buttonBarTheme", this.buttonBarTheme, defaultValue: ((ThemeData)defaultData__98179).buttonBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("dialogBackgroundColor", this.dialogBackgroundColor, defaultValue: ((ThemeData)defaultData__98179).dialogBackgroundColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("indicatorColor", this.indicatorColor, defaultValue: ((ThemeData)defaultData__98179).indicatorColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ButtonBarThemeData>("buttonBarTheme", this.buttonBarTheme, defaultValue: ((ThemeData)defaultData).buttonBarTheme, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("dialogBackgroundColor", this.dialogBackgroundColor, defaultValue: ((ThemeData)defaultData).dialogBackgroundColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("indicatorColor", this.indicatorColor, defaultValue: ((ThemeData)defaultData).indicatorColor, level: global::Doroti.Framework.Foundation.DiagnosticLevel.debug));
     }
 
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -690,8 +690,8 @@ public class MaterialBasedCupertinoThemeData : CupertinoThemeData
 
     public virtual CupertinoThemeData resolveFrom(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        NoDefaultCupertinoThemeData cupertinoOverrideThemeWithTextTheme__120566 = ((NoDefaultCupertinoThemeData)(object?)this._cupertinoOverrideTheme.copyWith(textTheme: textTheme));
-        return ((CupertinoThemeData)(object?)new MaterialBasedCupertinoThemeData(this._materialTheme, cupertinoOverrideThemeWithTextTheme__120566.resolveFrom(context)));
+        NoDefaultCupertinoThemeData cupertinoOverrideThemeWithTextTheme = ((NoDefaultCupertinoThemeData)(object?)this._cupertinoOverrideTheme.copyWith(textTheme: textTheme));
+        return ((CupertinoThemeData)(object?)new MaterialBasedCupertinoThemeData(this._materialTheme, cupertinoOverrideThemeWithTextTheme.resolveFrom(context)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -743,10 +743,10 @@ internal class _FifoCache__theme_data<K, V> where K : notnull
     public virtual V putIfAbsent(K key, global::System.Func<V> loader)
     {
         DartRuntimePrimitives.Assert(() => (key is not null));
-        V? result__123741 = this._cache.GetValueOrDefault(key);
-        if ((result__123741 is not null))
+        V? result = this._cache.GetValueOrDefault(key);
+        if ((result is not null))
         {
-            return ((V)(object?)result__123741);
+            return ((V)(object?)result);
         }
         if ((checked((long)(this._cache.Count)) == this._maximumSize))
         {
@@ -795,8 +795,8 @@ public class VisualDensity : global::Doroti.Framework.Foundation.Diagnosticable
     {
         get
         {
-            var interval__131460 = 4.0;
-            return (new global::Doroti.Ui.Offset(this.horizontal, this.vertical) * interval__131460);
+            var interval = 4.0;
+            return (new global::Doroti.Ui.Offset(this.horizontal, this.vertical) * interval);
             return default!;
         }
     }
@@ -843,13 +843,13 @@ public class VisualDensity : global::Doroti.Framework.Foundation.Diagnosticable
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

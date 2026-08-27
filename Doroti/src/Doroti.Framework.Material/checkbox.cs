@@ -218,8 +218,8 @@ internal class _CheckboxState__checkbox : global::Doroti.Framework.Widgets.State
                 }
             case _CheckboxType__checkbox.adaptive:
                 {
-                    ThemeData theme__16840 = Theme.of(context);
-                    switch (theme__16840.platform)
+                    ThemeData theme = Theme.of(context);
+                    switch (theme.platform)
                     {
                         case global::Doroti.Framework.Foundation.TargetPlatform.android:
                         case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
@@ -240,24 +240,24 @@ internal class _CheckboxState__checkbox : global::Doroti.Framework.Widgets.State
                 }
         }
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        CheckboxThemeData checkboxTheme__17775 = CheckboxTheme.of(context);
-        dynamic defaults__17846 = (Theme.of(context).useMaterial3 ? new _CheckboxDefaultsM3__checkbox(context) : new _CheckboxDefaultsM2__checkbox(context));
-        MaterialTapTargetSize effectiveMaterialTapTargetSize__17999 = DartRuntimePrimitives.RequireValue(((Checkbox)this.widget).materialTapTargetSize ?? checkboxTheme__17775.materialTapTargetSize ?? defaults__17846.materialTapTargetSize);
-        VisualDensity effectiveVisualDensity__18184 = ((((Checkbox)this.widget).visualDensity ?? checkboxTheme__17775.visualDensity) ?? defaults__17846.visualDensity!);
-        global::Doroti.Ui.Size size__18306 = ((global::Doroti.Ui.Size)(object?)(effectiveMaterialTapTargetSize__17999 switch { var __constant18361 when (object.Equals(__constant18361, MaterialTapTargetSize.padded)) => new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension, ConstantsLibrary.kMinInteractiveDimension), var __constant18488 when (object.Equals(__constant18488, MaterialTapTargetSize.shrinkWrap)) => new global::Doroti.Ui.Size((ConstantsLibrary.kMinInteractiveDimension - 8.0), (ConstantsLibrary.kMinInteractiveDimension - 8.0)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        size__18306 += effectiveVisualDensity__18184.baseSizeAdjustment;
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor__18731 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((states) =>
+        CheckboxThemeData checkboxTheme = CheckboxTheme.of(context);
+        dynamic defaults = (Theme.of(context).useMaterial3 ? new _CheckboxDefaultsM3__checkbox(context) : new _CheckboxDefaultsM2__checkbox(context));
+        MaterialTapTargetSize effectiveMaterialTapTargetSize = DartRuntimePrimitives.RequireValue(((Checkbox)this.widget).materialTapTargetSize ?? checkboxTheme.materialTapTargetSize ?? defaults.materialTapTargetSize);
+        VisualDensity effectiveVisualDensity = ((((Checkbox)this.widget).visualDensity ?? checkboxTheme.visualDensity) ?? defaults.visualDensity!);
+        global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)(effectiveMaterialTapTargetSize switch { var __constant18361 when (object.Equals(__constant18361, MaterialTapTargetSize.padded)) => new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension, ConstantsLibrary.kMinInteractiveDimension), var __constant18488 when (object.Equals(__constant18488, MaterialTapTargetSize.shrinkWrap)) => new global::Doroti.Ui.Size((ConstantsLibrary.kMinInteractiveDimension - 8.0), (ConstantsLibrary.kMinInteractiveDimension - 8.0)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        sizeLocal += effectiveVisualDensity.baseSizeAdjustment;
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((states) =>
         {
-            return (((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((Checkbox)this.widget).mouseCursor, states) ?? (global::Doroti.Framework.Services.MouseCursor)checkboxTheme__17775.mouseCursor?.resolve(states))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable.resolve(states))));
+            return (((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((Checkbox)this.widget).mouseCursor, states) ?? (global::Doroti.Framework.Services.MouseCursor)checkboxTheme.mouseCursor?.resolve(states))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable.resolve(states))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> activeStates__19180 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> activeStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = this.states;
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.selected);
     return __cascade;
 }))();
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> inactiveStates__19257 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> inactiveStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = this.states;
     __cascade.Remove(global::Doroti.Framework.Widgets.WidgetState.selected);
@@ -265,16 +265,16 @@ internal class _CheckboxState__checkbox : global::Doroti.Framework.Widgets.State
 }))();
         if (((Checkbox)this.widget).isError)
         {
-            activeStates__19180.Add(global::Doroti.Framework.Widgets.WidgetState.error);
-            inactiveStates__19257.Add(global::Doroti.Framework.Widgets.WidgetState.error);
+            activeStates.Add(global::Doroti.Framework.Widgets.WidgetState.error);
+            inactiveStates.Add(global::Doroti.Framework.Widgets.WidgetState.error);
         }
-        global::Doroti.Ui.Color? activeColor__19449 = ((global::Doroti.Ui.Color?)(object?)((((((Checkbox)this.widget).fillColor?.resolve(activeStates__19180) ?? (Color)this._widgetFillColor.resolve(activeStates__19180))) ?? (Color)checkboxTheme__17775.fillColor?.resolve(activeStates__19180))));
-        global::Doroti.Ui.Color effectiveActiveColor__19636 = ((global::Doroti.Ui.Color)(object?)(activeColor__19449 ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__17846.fillColor).resolve(activeStates__19180)!));
-        global::Doroti.Ui.Color? inactiveColor__19735 = ((global::Doroti.Ui.Color?)(object?)((((((Checkbox)this.widget).fillColor?.resolve(inactiveStates__19257) ?? (Color)this._widgetFillColor.resolve(inactiveStates__19257))) ?? (Color)checkboxTheme__17775.fillColor?.resolve(inactiveStates__19257))));
-        global::Doroti.Ui.Color effectiveInactiveColor__19930 = ((global::Doroti.Ui.Color)(object?)(inactiveColor__19735 ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__17846.fillColor).resolve(inactiveStates__19257)!));
-        global::Doroti.Framework.Painting.BorderSide activeSide__20048 = (((_resolveSide(((Checkbox)this.widget).side, activeStates__19180) ?? (global::Doroti.Framework.Painting.BorderSide)_resolveSide(checkboxTheme__17775.side, activeStates__19180))) ?? _resolveSide(defaults__17846.side, activeStates__19180)!);
-        global::Doroti.Framework.Painting.BorderSide inactiveSide__20243 = (((_resolveSide(((Checkbox)this.widget).side, inactiveStates__19257) ?? (global::Doroti.Framework.Painting.BorderSide)_resolveSide(checkboxTheme__17775.side, inactiveStates__19257))) ?? _resolveSide(defaults__17846.side, inactiveStates__19257)!);
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> focusedStates__20453 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        global::Doroti.Ui.Color? activeColorLocal = ((global::Doroti.Ui.Color?)(object?)((((((Checkbox)this.widget).fillColor?.resolve(activeStates) ?? (Color)this._widgetFillColor.resolve(activeStates))) ?? (Color)checkboxTheme.fillColor?.resolve(activeStates))));
+        global::Doroti.Ui.Color effectiveActiveColor = ((global::Doroti.Ui.Color)(object?)(activeColorLocal ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.fillColor).resolve(activeStates)!));
+        global::Doroti.Ui.Color? inactiveColorLocal = ((global::Doroti.Ui.Color?)(object?)((((((Checkbox)this.widget).fillColor?.resolve(inactiveStates) ?? (Color)this._widgetFillColor.resolve(inactiveStates))) ?? (Color)checkboxTheme.fillColor?.resolve(inactiveStates))));
+        global::Doroti.Ui.Color effectiveInactiveColor = ((global::Doroti.Ui.Color)(object?)(inactiveColorLocal ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.fillColor).resolve(inactiveStates)!));
+        global::Doroti.Framework.Painting.BorderSide activeSideLocal = (((_resolveSide(((Checkbox)this.widget).side, activeStates) ?? (global::Doroti.Framework.Painting.BorderSide)_resolveSide(checkboxTheme.side, activeStates))) ?? _resolveSide(defaults.side, activeStates)!);
+        global::Doroti.Framework.Painting.BorderSide inactiveSideLocal = (((_resolveSide(((Checkbox)this.widget).side, inactiveStates) ?? (global::Doroti.Framework.Painting.BorderSide)_resolveSide(checkboxTheme.side, inactiveStates))) ?? _resolveSide(defaults.side, inactiveStates)!);
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> focusedStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = this.states;
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.focused);
@@ -282,10 +282,10 @@ internal class _CheckboxState__checkbox : global::Doroti.Framework.Widgets.State
 }))();
         if (((Checkbox)this.widget).isError)
         {
-            focusedStates__20453.Add(global::Doroti.Framework.Widgets.WidgetState.error);
+            focusedStates.Add(global::Doroti.Framework.Widgets.WidgetState.error);
         }
-        global::Doroti.Ui.Color effectiveFocusOverlayColor__20589 = ((global::Doroti.Ui.Color)(object?)((((((Checkbox)this.widget).overlayColor?.resolve(focusedStates__20453) ?? ((Checkbox)this.widget).focusColor) ?? (Color)checkboxTheme__17775.overlayColor?.resolve(focusedStates__20453))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__17846.overlayColor).resolve(focusedStates__20453)!));
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> hoveredStates__20848 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        global::Doroti.Ui.Color effectiveFocusOverlayColor = ((global::Doroti.Ui.Color)(object?)((((((Checkbox)this.widget).overlayColor?.resolve(focusedStates) ?? ((Checkbox)this.widget).focusColor) ?? (Color)checkboxTheme.overlayColor?.resolve(focusedStates))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.overlayColor).resolve(focusedStates)!));
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> hoveredStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = this.states;
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.hovered);
@@ -293,59 +293,59 @@ internal class _CheckboxState__checkbox : global::Doroti.Framework.Widgets.State
 }))();
         if (((Checkbox)this.widget).isError)
         {
-            hoveredStates__20848.Add(global::Doroti.Framework.Widgets.WidgetState.error);
+            hoveredStates.Add(global::Doroti.Framework.Widgets.WidgetState.error);
         }
-        global::Doroti.Ui.Color effectiveHoverOverlayColor__20984 = ((global::Doroti.Ui.Color)(object?)((((((Checkbox)this.widget).overlayColor?.resolve(hoveredStates__20848) ?? ((Checkbox)this.widget).hoverColor) ?? (Color)checkboxTheme__17775.overlayColor?.resolve(hoveredStates__20848))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__17846.overlayColor).resolve(hoveredStates__20848)!));
-        var activePressedStates__21226 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        global::Doroti.Ui.Color effectiveHoverOverlayColor = ((global::Doroti.Ui.Color)(object?)((((((Checkbox)this.widget).overlayColor?.resolve(hoveredStates) ?? ((Checkbox)this.widget).hoverColor) ?? (Color)checkboxTheme.overlayColor?.resolve(hoveredStates))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.overlayColor).resolve(hoveredStates)!));
+        var activePressedStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
-    var __cascade = activeStates__19180;
+    var __cascade = activeStates;
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.pressed);
     return __cascade;
 }))();
-        global::Doroti.Ui.Color effectiveActivePressedOverlayColor__21304 = ((global::Doroti.Ui.Color)(object?)((((((Checkbox)this.widget).overlayColor?.resolve(activePressedStates__21226) ?? (Color)checkboxTheme__17775.overlayColor?.resolve(activePressedStates__21226))) ?? activeColor__19449?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__17846.overlayColor).resolve(activePressedStates__21226)!));
-        var inactivePressedStates__21599 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        global::Doroti.Ui.Color effectiveActivePressedOverlayColor = ((global::Doroti.Ui.Color)(object?)((((((Checkbox)this.widget).overlayColor?.resolve(activePressedStates) ?? (Color)checkboxTheme.overlayColor?.resolve(activePressedStates))) ?? activeColorLocal?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.overlayColor).resolve(activePressedStates)!));
+        var inactivePressedStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
-    var __cascade = inactiveStates__19257;
+    var __cascade = inactiveStates;
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.pressed);
     return __cascade;
 }))();
-        global::Doroti.Ui.Color effectiveInactivePressedOverlayColor__21681 = ((global::Doroti.Ui.Color)(object?)((((((Checkbox)this.widget).overlayColor?.resolve(inactivePressedStates__21599) ?? (Color)checkboxTheme__17775.overlayColor?.resolve(inactivePressedStates__21599))) ?? inactiveColor__19735?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__17846.overlayColor).resolve(inactivePressedStates__21599)!));
+        global::Doroti.Ui.Color effectiveInactivePressedOverlayColor = ((global::Doroti.Ui.Color)(object?)((((((Checkbox)this.widget).overlayColor?.resolve(inactivePressedStates) ?? (Color)checkboxTheme.overlayColor?.resolve(inactivePressedStates))) ?? inactiveColorLocal?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.overlayColor).resolve(inactivePressedStates)!));
         if ((this.downPosition is not null))
         {
-            effectiveHoverOverlayColor__20984 = (this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor__21304 : effectiveInactivePressedOverlayColor__21681);
-            effectiveFocusOverlayColor__20589 = (this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor__21304 : effectiveInactivePressedOverlayColor__21681);
+            effectiveHoverOverlayColor = (this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor : effectiveInactivePressedOverlayColor);
+            effectiveFocusOverlayColor = (this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor : effectiveInactivePressedOverlayColor);
         }
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> checkStates__22382 = (((Checkbox)this.widget).isError ? (((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> checkStates = (((Checkbox)this.widget).isError ? (((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = this.states;
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.error);
     return __cascade;
 }))()) : this.states);
-        global::Doroti.Ui.Color effectiveCheckColor__22472 = ((global::Doroti.Ui.Color)(object?)(((((Checkbox)this.widget).checkColor ?? (Color)checkboxTheme__17775.checkColor?.resolve(checkStates__22382))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__17846.checkColor).resolve(checkStates__22382)!));
-        double effectiveSplashRadius__22651 = ((((Checkbox)this.widget).splashRadius ?? checkboxTheme__17775.splashRadius) ?? DartRuntimePrimitives.RequireValue(defaults__17846.splashRadius));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(label: ((Checkbox)this.widget).semanticLabel, @checked: (((Checkbox)this.widget).value ?? false), mixed: (((Checkbox)this.widget).tristate ? (((Checkbox)this.widget).value is null) : null), child: buildToggleable(mouseCursor: effectiveMouseCursor__18731, focusNode: ((Checkbox)this.widget).focusNode, autofocus: ((Checkbox)this.widget).autofocus, size: size__18306, painter: ((Func<_CheckboxPainter__checkbox>)(() =>
+        global::Doroti.Ui.Color effectiveCheckColor = ((global::Doroti.Ui.Color)(object?)(((((Checkbox)this.widget).checkColor ?? (Color)checkboxTheme.checkColor?.resolve(checkStates))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.checkColor).resolve(checkStates)!));
+        double effectiveSplashRadius = ((((Checkbox)this.widget).splashRadius ?? checkboxTheme.splashRadius) ?? DartRuntimePrimitives.RequireValue(defaults.splashRadius));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(label: ((Checkbox)this.widget).semanticLabel, @checked: (((Checkbox)this.widget).value ?? false), mixed: (((Checkbox)this.widget).tristate ? (((Checkbox)this.widget).value is null) : null), child: buildToggleable(mouseCursor: effectiveMouseCursor, focusNode: ((Checkbox)this.widget).focusNode, autofocus: ((Checkbox)this.widget).autofocus, size: sizeLocal, painter: ((Func<_CheckboxPainter__checkbox>)(() =>
 {
     var __cascade = this._painter;
     __cascade.position = this.position;
     __cascade.reaction = this.reaction;
     __cascade.reactionFocusFade = this.reactionFocusFade;
     __cascade.reactionHoverFade = this.reactionHoverFade;
-    __cascade.inactiveReactionColor = effectiveInactivePressedOverlayColor__21681;
-    __cascade.reactionColor = effectiveActivePressedOverlayColor__21304;
-    __cascade.hoverColor = effectiveHoverOverlayColor__20984;
-    __cascade.focusColor = effectiveFocusOverlayColor__20589;
-    __cascade.splashRadius = effectiveSplashRadius__22651;
+    __cascade.inactiveReactionColor = effectiveInactivePressedOverlayColor;
+    __cascade.reactionColor = effectiveActivePressedOverlayColor;
+    __cascade.hoverColor = effectiveHoverOverlayColor;
+    __cascade.focusColor = effectiveFocusOverlayColor;
+    __cascade.splashRadius = effectiveSplashRadius;
     __cascade.downPosition = this.downPosition;
     __cascade.isFocused = this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused);
     __cascade.isHovered = this.states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered);
-    __cascade.activeColor = effectiveActiveColor__19636;
-    __cascade.inactiveColor = effectiveInactiveColor__19930;
-    __cascade.checkColor = effectiveCheckColor__22472;
+    __cascade.activeColor = effectiveActiveColor;
+    __cascade.inactiveColor = effectiveInactiveColor;
+    __cascade.checkColor = effectiveCheckColor;
     __cascade.value = this.value;
     __cascade.previousValue = this._previousValue;
-    __cascade.shape = ((((Checkbox)this.widget).shape ?? checkboxTheme__17775.shape) ?? defaults__17846.shape!);
-    __cascade.activeSide = activeSide__20048;
-    __cascade.inactiveSide = inactiveSide__20243;
+    __cascade.shape = ((((Checkbox)this.widget).shape ?? checkboxTheme.shape) ?? defaults.shape!);
+    __cascade.activeSide = activeSideLocal;
+    __cascade.inactiveSide = inactiveSideLocal;
     return __cascade;
 }))())));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -359,16 +359,16 @@ internal class _CheckboxState__checkbox : global::Doroti.Framework.Widgets.State
         }
         DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values__17506 = this._tickerModeNotifier!.value;
-        var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
+        TickerModeData values = this._tickerModeNotifier!.value;
+        var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
     var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values__17506).enabled;
-    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    __cascade.muted = !((TickerModeData)values).enabled;
+    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result__17553);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
+        this._tickers!.Add(result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -390,26 +390,26 @@ internal class _CheckboxState__checkbox : global::Doroti.Framework.Widgets.State
     {
         if ((this._tickers is not null))
         {
-            TickerModeData values__18318 = this._tickerModeNotifier!.value;
-            bool muted__18372 = !((TickerModeData)values__18318).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
+            TickerModeData values = this._tickerModeNotifier!.value;
+            bool mutedLocal = !((TickerModeData)values).enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
             {
-                ticker__18421.muted = muted__18372;
-                ticker__18421.forceFrames = ((TickerModeData)values__18318).forceFrames;
+                ticker.muted = mutedLocal;
+                ticker.forceFrames = ((TickerModeData)values).forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__18621, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
-        this._tickerModeNotifier = newNotifier__18621;
+        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -665,10 +665,10 @@ internal class _CheckboxPainter__checkbox : global::Doroti.Framework.Widgets.Tog
     }
     internal virtual global::Doroti.Ui.Rect _outerRectAt(Offset origin, double t)
     {
-        double inset__25755 = (1.0 - (((t - 0.5)).abs() * 2.0));
-        double size__25809 = (CheckboxLibrary._kEdgeSize - (inset__25755 * CheckboxLibrary._kStrokeWidth));
-        var rect__25862 = global::Doroti.Ui.Rect.fromLTWH((origin.dx + inset__25755), (origin.dy + inset__25755), size__25809, size__25809);
-        return rect__25862;
+        double inset = (1.0 - (((t - 0.5)).abs() * 2.0));
+        double size = (CheckboxLibrary._kEdgeSize - (inset * CheckboxLibrary._kStrokeWidth));
+        var rect = global::Doroti.Ui.Rect.fromLTWH((origin.dx + inset), (origin.dy + inset), size, size);
+        return rect;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -710,106 +710,106 @@ internal class _CheckboxPainter__checkbox : global::Doroti.Framework.Widgets.Tog
     internal virtual void _drawCheck(Canvas canvas, Offset origin, double t, Paint paint)
     {
         DartRuntimePrimitives.Assert(() => ((t >= 0.0) && (t <= 1.0)));
-        var path__26957 = new global::Doroti.Ui.Path();
-        var start__26982 = new global::Doroti.Ui.Offset((CheckboxLibrary._kEdgeSize * 0.15), (CheckboxLibrary._kEdgeSize * 0.45));
-        var mid__27046 = new global::Doroti.Ui.Offset((CheckboxLibrary._kEdgeSize * 0.4), (CheckboxLibrary._kEdgeSize * 0.7));
-        var end__27106 = new global::Doroti.Ui.Offset((CheckboxLibrary._kEdgeSize * 0.85), (CheckboxLibrary._kEdgeSize * 0.25));
+        var path = new global::Doroti.Ui.Path();
+        var start = new global::Doroti.Ui.Offset((CheckboxLibrary._kEdgeSize * 0.15), (CheckboxLibrary._kEdgeSize * 0.45));
+        var mid = new global::Doroti.Ui.Offset((CheckboxLibrary._kEdgeSize * 0.4), (CheckboxLibrary._kEdgeSize * 0.7));
+        var end = new global::Doroti.Ui.Offset((CheckboxLibrary._kEdgeSize * 0.85), (CheckboxLibrary._kEdgeSize * 0.25));
         if ((t < 0.5))
         {
-            double strokeT__27196 = (t * 2.0);
-            global::Doroti.Ui.Offset drawMid__27234 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(start__26982, mid__27046, strokeT__27196)));
-            path__26957.moveTo((origin.dx + start__26982.dx), (origin.dy + start__26982.dy));
-            path__26957.lineTo((origin.dx + drawMid__27234.dx), (origin.dy + drawMid__27234.dy));
+            double strokeT = (t * 2.0);
+            global::Doroti.Ui.Offset drawMid = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(start, mid, strokeT)));
+            path.moveTo((origin.dx + start.dx), (origin.dy + start.dy));
+            path.lineTo((origin.dx + drawMid.dx), (origin.dy + drawMid.dy));
         }
         else
         {
-            double strokeT__27441 = (((t - 0.5)) * 2.0);
-            global::Doroti.Ui.Offset drawEnd__27487 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(mid__27046, end__27106, strokeT__27441)));
-            path__26957.moveTo((origin.dx + start__26982.dx), (origin.dy + start__26982.dy));
-            path__26957.lineTo((origin.dx + mid__27046.dx), (origin.dy + mid__27046.dy));
-            path__26957.lineTo((origin.dx + drawEnd__27487.dx), (origin.dy + drawEnd__27487.dy));
+            double strokeTLocal = (((t - 0.5)) * 2.0);
+            global::Doroti.Ui.Offset drawEnd = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(mid, end, strokeTLocal)));
+            path.moveTo((origin.dx + start.dx), (origin.dy + start.dy));
+            path.lineTo((origin.dx + mid.dx), (origin.dy + mid.dy));
+            path.lineTo((origin.dx + drawEnd.dx), (origin.dy + drawEnd.dy));
         }
-        canvas.drawPath(path__26957, paint);
+        canvas.drawPath(path, paint);
     }
 
     internal virtual void _drawDash(Canvas canvas, Offset origin, double t, Paint paint)
     {
         DartRuntimePrimitives.Assert(() => ((t >= 0.0) && (t <= 1.0)));
-        var start__27978 = new global::Doroti.Ui.Offset((CheckboxLibrary._kEdgeSize * 0.2), (CheckboxLibrary._kEdgeSize * 0.5));
-        var mid__28040 = new global::Doroti.Ui.Offset((CheckboxLibrary._kEdgeSize * 0.5), (CheckboxLibrary._kEdgeSize * 0.5));
-        var end__28100 = new global::Doroti.Ui.Offset((CheckboxLibrary._kEdgeSize * 0.8), (CheckboxLibrary._kEdgeSize * 0.5));
-        global::Doroti.Ui.Offset drawStart__28167 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(start__27978, mid__28040, (1.0 - t))));
-        global::Doroti.Ui.Offset drawEnd__28231 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(mid__28040, end__28100, t)));
-        canvas.drawLine((origin + drawStart__28167), (origin + drawEnd__28231), paint);
+        var start = new global::Doroti.Ui.Offset((CheckboxLibrary._kEdgeSize * 0.2), (CheckboxLibrary._kEdgeSize * 0.5));
+        var mid = new global::Doroti.Ui.Offset((CheckboxLibrary._kEdgeSize * 0.5), (CheckboxLibrary._kEdgeSize * 0.5));
+        var end = new global::Doroti.Ui.Offset((CheckboxLibrary._kEdgeSize * 0.8), (CheckboxLibrary._kEdgeSize * 0.5));
+        global::Doroti.Ui.Offset drawStart = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(start, mid, (1.0 - t))));
+        global::Doroti.Ui.Offset drawEnd = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(mid, end, t)));
+        canvas.drawLine((origin + drawStart), (origin + drawEnd), paint);
     }
 
     public override void paint(Canvas canvas, Size size)
     {
         paintRadialReaction(canvas: canvas, origin: size.center(Offset.zero));
-        global::Doroti.Ui.Paint strokePaint__28484 = ((global::Doroti.Ui.Paint)(object?)_createStrokePaint());
-        var origin__28530 = ((size / 2.0) - (new global::Doroti.Ui.Size(CheckboxLibrary._kEdgeSize) / 2.0));
-        double tNormalized__28616 = (((global::Doroti.Framework.Animation.Animation<double>)this.position).status switch { global::Doroti.Framework.Animation.AnimationStatus.forward => ((global::Doroti.Framework.Animation.Animation<double>)this.position).value, global::Doroti.Framework.Animation.AnimationStatus.completed => ((global::Doroti.Framework.Animation.Animation<double>)this.position).value, global::Doroti.Framework.Animation.AnimationStatus.reverse => (1.0 - ((global::Doroti.Framework.Animation.Animation<double>)this.position).value), global::Doroti.Framework.Animation.AnimationStatus.dismissed => (1.0 - ((global::Doroti.Framework.Animation.Animation<double>)this.position).value), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Ui.Paint strokePaint = ((global::Doroti.Ui.Paint)(object?)_createStrokePaint());
+        var originLocal = ((size / 2.0) - (new global::Doroti.Ui.Size(CheckboxLibrary._kEdgeSize) / 2.0));
+        double tNormalized = (((global::Doroti.Framework.Animation.Animation<double>)this.position).status switch { global::Doroti.Framework.Animation.AnimationStatus.forward => ((global::Doroti.Framework.Animation.Animation<double>)this.position).value, global::Doroti.Framework.Animation.AnimationStatus.completed => ((global::Doroti.Framework.Animation.Animation<double>)this.position).value, global::Doroti.Framework.Animation.AnimationStatus.reverse => (1.0 - ((global::Doroti.Framework.Animation.Animation<double>)this.position).value), global::Doroti.Framework.Animation.AnimationStatus.dismissed => (1.0 - ((global::Doroti.Framework.Animation.Animation<double>)this.position).value), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         if (((this.previousValue == false) || (this.value == false)))
         {
-            double t__28976 = ((this.value == false) ? (1.0 - tNormalized__28616) : tNormalized__28616);
-            global::Doroti.Ui.Rect outer__29047 = ((global::Doroti.Ui.Rect)(object?)_outerRectAt(origin__28530, t__28976));
-            var paint__29092 = ((Func<Paint>)(() =>
+            double t = ((this.value == false) ? (1.0 - tNormalized) : tNormalized);
+            global::Doroti.Ui.Rect outer = ((global::Doroti.Ui.Rect)(object?)_outerRectAt(originLocal, t));
+            var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.color = _colorAt(t__28976);
+    __cascade.color = _colorAt(t);
     return __cascade;
 }))();
-            if ((t__28976 <= 0.5))
+            if ((t <= 0.5))
             {
-                global::Doroti.Framework.Painting.BorderSide border__29178 = ((global::Doroti.Framework.Painting.BorderSide)(object?)BorderSide.lerp(this.inactiveSide, this.activeSide, t__28976));
-                _drawBox(canvas, outer__29047, paint__29092, border__29178);
+                global::Doroti.Framework.Painting.BorderSide border = ((global::Doroti.Framework.Painting.BorderSide)(object?)BorderSide.lerp(this.inactiveSide, this.activeSide, t));
+                _drawBox(canvas, outer, paintLocal, border);
             }
             else
             {
-                _drawBox(canvas, outer__29047, paint__29092, this.activeSide);
-                double tShrink__29369 = (((t__28976 - 0.5)) * 2.0);
+                _drawBox(canvas, outer, paintLocal, this.activeSide);
+                double tShrink = (((t - 0.5)) * 2.0);
                 if (((this.previousValue is null) || (this.value is null)))
                 {
-                    _drawDash(canvas, origin__28530, tShrink__29369, strokePaint__28484);
+                    _drawDash(canvas, originLocal, tShrink, strokePaint);
                 }
                 else
                 {
-                    _drawCheck(canvas, origin__28530, tShrink__29369, strokePaint__28484);
+                    _drawCheck(canvas, originLocal, tShrink, strokePaint);
                 }
             }
         }
         else
         {
-            global::Doroti.Ui.Rect outer__29681 = ((global::Doroti.Ui.Rect)(object?)_outerRectAt(origin__28530, 1.0));
-            var paint__29728 = ((Func<Paint>)(() =>
+            global::Doroti.Ui.Rect outerLocal = ((global::Doroti.Ui.Rect)(object?)_outerRectAt(originLocal, 1.0));
+            var paintAlternate = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = _colorAt(1.0);
     return __cascade;
 }))();
-            _drawBox(canvas, outer__29681, paint__29728, this.activeSide);
-            if ((tNormalized__28616 <= 0.5))
+            _drawBox(canvas, outerLocal, paintAlternate, this.activeSide);
+            if ((tNormalized <= 0.5))
             {
-                double tShrink__29872 = (1.0 - (tNormalized__28616 * 2.0));
+                double tShrinkLocal = (1.0 - (tNormalized * 2.0));
                 if ((this.previousValue ?? false))
                 {
-                    _drawCheck(canvas, origin__28530, tShrink__29872, strokePaint__28484);
+                    _drawCheck(canvas, originLocal, tShrinkLocal, strokePaint);
                 }
                 else
                 {
-                    _drawDash(canvas, origin__28530, tShrink__29872, strokePaint__28484);
+                    _drawDash(canvas, originLocal, tShrinkLocal, strokePaint);
                 }
             }
             else
             {
-                double tExpand__30127 = (((tNormalized__28616 - 0.5)) * 2.0);
+                double tExpand = (((tNormalized - 0.5)) * 2.0);
                 if ((this.value ?? false))
                 {
-                    _drawCheck(canvas, origin__28530, tExpand__30127, strokePaint__28484);
+                    _drawCheck(canvas, originLocal, tExpand, strokePaint);
                 }
                 else
                 {
-                    _drawDash(canvas, origin__28530, tExpand__30127, strokePaint__28484);
+                    _drawDash(canvas, originLocal, tExpand, strokePaint);
                 }
             }
         }

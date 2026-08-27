@@ -49,12 +49,12 @@ internal class _NavigatorPopHandlerState__navigator_pop_handler<T> : State<Navig
             ((NavigatorPopHandler<T>)(object)this.widget).onPopWithResult?.Invoke(result);
         })), child: new NotificationListener<NavigationNotification>(onNotification: ((global::System.Func<NavigationNotification, bool>?)((notification) =>
         {
-            bool nextCanPop__4598 = !((NavigationNotification)notification).canHandlePop;
-            if ((nextCanPop__4598 != this._canPop))
+            bool nextCanPop = !((NavigationNotification)notification).canHandlePop;
+            if ((nextCanPop != this._canPop))
             {
                 setState(((global::System.Action)(() =>
                 {
-                    _canPop = nextCanPop__4598;
+                    _canPop = nextCanPop;
                 })));
             }
             return false;

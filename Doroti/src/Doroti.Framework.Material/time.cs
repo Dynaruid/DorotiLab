@@ -62,8 +62,8 @@ public class TimeOfDay : IComparable<TimeOfDay>
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        MaterialLocalizations localizations__3846 = MaterialLocalizations.of(context);
-        return localizations__3846.formatTimeOfDay(this, alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context));
+        MaterialLocalizations localizations = MaterialLocalizations.of(context);
+        return localizations.formatTimeOfDay(this, alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -72,8 +72,8 @@ public class TimeOfDay : IComparable<TimeOfDay>
     public virtual bool isAtSameTimeAs(TimeOfDay other) => DartRuntimePrimitives.ConvertValue<bool>((compareTo(other) == 0L));
     public virtual long compareTo(TimeOfDay other)
     {
-        long hourComparison__5370 = this.hour.CompareTo(DartRuntimePrimitives.RequireValue(((TimeOfDay)other).hour));
-        return ((hourComparison__5370 == 0L) ? this.minute.CompareTo(DartRuntimePrimitives.RequireValue(((TimeOfDay)other).minute)) : hourComparison__5370);
+        long hourComparison = this.hour.CompareTo(DartRuntimePrimitives.RequireValue(((TimeOfDay)other).hour));
+        return ((hourComparison == 0L) ? this.minute.CompareTo(DartRuntimePrimitives.RequireValue(((TimeOfDay)other).minute)) : hourComparison);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -96,9 +96,9 @@ public class TimeOfDay : IComparable<TimeOfDay>
             return ((string)(object?)value.ToString());
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        string hourLabel__5889 = addLeadingZeroIfNeeded(DartRuntimePrimitives.RequireValue(this.hour));
-        string minuteLabel__5948 = addLeadingZeroIfNeeded(DartRuntimePrimitives.RequireValue(this.minute));
-        return $"{typeof(TimeOfDay)}({hourLabel__5889}:{minuteLabel__5948})";
+        string hourLabel = addLeadingZeroIfNeeded(DartRuntimePrimitives.RequireValue(this.hour));
+        string minuteLabel = addLeadingZeroIfNeeded(DartRuntimePrimitives.RequireValue(this.minute));
+        return $"{typeof(TimeOfDay)}({hourLabel}:{minuteLabel})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -124,8 +124,8 @@ public class RestorableTimeOfDay : global::Doroti.Framework.Widgets.RestorableVa
 
     public override TimeOfDay fromPrimitives(object? data)
     {
-        var timeData__6784 = ((List<object?>?)(object?)data!)!;
-        return new TimeOfDay(minute: ((long)timeData__6784[(int)(0L)]!), hour: ((long)timeData__6784[(int)(1L)]!));
+        var timeData = ((List<object?>?)(object?)data!)!;
+        return new TimeOfDay(minute: ((long)timeData[(int)(0L)]!), hour: ((long)timeData[(int)(1L)]!));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -97,108 +97,108 @@ public class WindowPositionerIo
 
     public virtual global::Doroti.Ui.Rect placeWindow(Size childSize, Rect anchorRect, Rect parentRect, Rect displayRect)
     {
-        global::Doroti.Ui.Rect defaultResult__16268 = default!;
-        global::Doroti.Ui.Offset result__16308 = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
-        defaultResult__16268 = (result__16308 & childSize);
-        if (_window_positionerLibrary._rectContains(displayRect, defaultResult__16268))
+        global::Doroti.Ui.Rect defaultResult = default!;
+        global::Doroti.Ui.Offset result = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
+        defaultResult = (result & childSize);
+        if (_window_positionerLibrary._rectContains(displayRect, defaultResult))
         {
-            return defaultResult__16268;
+            return defaultResult;
         }
         if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).flipX)
         {
-            global::Doroti.Ui.Offset result__16652 = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipX()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipX(DartRuntimePrimitives.RequireValue(this.offset)))) + this.childAnchor._flipX()._offsetFor(childSize)));
-            if (_window_positionerLibrary._rectContains(displayRect, (result__16652 & childSize)))
+            global::Doroti.Ui.Offset resultLocal = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipX()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipX(DartRuntimePrimitives.RequireValue(this.offset)))) + this.childAnchor._flipX()._offsetFor(childSize)));
+            if (_window_positionerLibrary._rectContains(displayRect, (resultLocal & childSize)))
             {
-                return (result__16652 & childSize);
+                return (resultLocal & childSize);
             }
         }
         if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).flipY)
         {
-            global::Doroti.Ui.Offset result__17027 = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipY()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipY(DartRuntimePrimitives.RequireValue(this.offset)))) + this.childAnchor._flipY()._offsetFor(childSize)));
-            if (_window_positionerLibrary._rectContains(displayRect, (result__17027 & childSize)))
+            global::Doroti.Ui.Offset resultAlternate = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipY()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipY(DartRuntimePrimitives.RequireValue(this.offset)))) + this.childAnchor._flipY()._offsetFor(childSize)));
+            if (_window_positionerLibrary._rectContains(displayRect, (resultAlternate & childSize)))
             {
-                return (result__17027 & childSize);
+                return (resultAlternate & childSize);
             }
         }
         if ((((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).flipX && ((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).flipY))
         {
-            global::Doroti.Ui.Offset result__17432 = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipY()._flipX()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipX(_window_positionerLibrary._flipY(DartRuntimePrimitives.RequireValue(this.offset))))) + this.childAnchor._flipY()._flipX()._offsetFor(childSize)));
-            if (_window_positionerLibrary._rectContains(displayRect, (result__17432 & childSize)))
+            global::Doroti.Ui.Offset resultNested = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._flipY()._flipX()._anchorPositionFor(anchorRect) + _window_positionerLibrary._flipX(_window_positionerLibrary._flipY(DartRuntimePrimitives.RequireValue(this.offset))))) + this.childAnchor._flipY()._flipX()._offsetFor(childSize)));
+            if (_window_positionerLibrary._rectContains(displayRect, (resultNested & childSize)))
             {
-                return (result__17432 & childSize);
+                return (resultNested & childSize);
             }
         }
-        global::Doroti.Ui.Offset result__17795 = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
+        global::Doroti.Ui.Offset resultCurrent = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
         if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).slideX)
         {
-            double leftOverhang__18003 = (result__17795.dx - displayRect.left);
-            double rightOverhang__18069 = ((result__17795.dx + childSize.width) - displayRect.right);
-            if ((leftOverhang__18003 < 0.0))
+            double leftOverhang = (resultCurrent.dx - displayRect.left);
+            double rightOverhang = ((resultCurrent.dx + childSize.width) - displayRect.right);
+            if ((leftOverhang < 0.0))
             {
-                result__17795 = result__17795.translate(-leftOverhang__18003, 0.0);
+                resultCurrent = resultCurrent.translate(-leftOverhang, 0.0);
             }
             else
             {
-                if ((rightOverhang__18069 > 0.0))
+                if ((rightOverhang > 0.0))
                 {
-                    result__17795 = result__17795.translate(-rightOverhang__18069, 0.0);
+                    resultCurrent = resultCurrent.translate(-rightOverhang, 0.0);
                 }
             }
         }
         if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).slideY)
         {
-            double topOverhang__18406 = (result__17795.dy - displayRect.top);
-            double bottomOverhang__18470 = ((result__17795.dy + childSize.height) - displayRect.bottom);
-            if ((topOverhang__18406 < 0.0))
+            double topOverhang = (resultCurrent.dy - displayRect.top);
+            double bottomOverhang = ((resultCurrent.dy + childSize.height) - displayRect.bottom);
+            if ((topOverhang < 0.0))
             {
-                result__17795 = result__17795.translate(0.0, -topOverhang__18406);
+                resultCurrent = resultCurrent.translate(0.0, -topOverhang);
             }
             else
             {
-                if ((bottomOverhang__18470 > 0.0))
+                if ((bottomOverhang > 0.0))
                 {
-                    result__17795 = result__17795.translate(0.0, -bottomOverhang__18470);
+                    resultCurrent = resultCurrent.translate(0.0, -bottomOverhang);
                 }
             }
         }
-        if (_window_positionerLibrary._rectContains(displayRect, (result__17795 & childSize)))
+        if (_window_positionerLibrary._rectContains(displayRect, (resultCurrent & childSize)))
         {
-            return (result__17795 & childSize);
+            return (resultCurrent & childSize);
         }
-        global::Doroti.Ui.Offset result__18877 = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
+        global::Doroti.Ui.Offset resultNext = ((global::Doroti.Ui.Offset)(object?)(_window_positionerLibrary._constrainTo(parentRect, (this.parentAnchor._anchorPositionFor(anchorRect) + this.offset)) + this.childAnchor._offsetFor(childSize)));
         if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).resizeX)
         {
-            double leftOverhang__19086 = (result__18877.dx - displayRect.left);
-            double rightOverhang__19152 = ((result__18877.dx + childSize.width) - displayRect.right);
-            if ((leftOverhang__19086 < 0.0))
+            double leftOverhangLocal = (resultNext.dx - displayRect.left);
+            double rightOverhangLocal = ((resultNext.dx + childSize.width) - displayRect.right);
+            if ((leftOverhangLocal < 0.0))
             {
-                result__18877 = result__18877.translate(-leftOverhang__19086, 0.0);
-                childSize = new global::Doroti.Ui.Size((childSize.width + leftOverhang__19086), childSize.height);
+                resultNext = resultNext.translate(-leftOverhangLocal, 0.0);
+                childSize = new global::Doroti.Ui.Size((childSize.width + leftOverhangLocal), childSize.height);
             }
-            if ((rightOverhang__19152 > 0.0))
+            if ((rightOverhangLocal > 0.0))
             {
-                childSize = new global::Doroti.Ui.Size((childSize.width - rightOverhang__19152), childSize.height);
+                childSize = new global::Doroti.Ui.Size((childSize.width - rightOverhangLocal), childSize.height);
             }
         }
         if (((WindowPositionerConstraintAdjustmentIo)this.constraintAdjustment).resizeY)
         {
-            double topOverhang__19592 = (result__18877.dy - displayRect.top);
-            double bottomOverhang__19656 = ((result__18877.dy + childSize.height) - displayRect.bottom);
-            if ((topOverhang__19592 < 0.0))
+            double topOverhangLocal = (resultNext.dy - displayRect.top);
+            double bottomOverhangLocal = ((resultNext.dy + childSize.height) - displayRect.bottom);
+            if ((topOverhangLocal < 0.0))
             {
-                result__18877 = result__18877.translate(0.0, -topOverhang__19592);
-                childSize = new global::Doroti.Ui.Size(childSize.width, (childSize.height + topOverhang__19592));
+                resultNext = resultNext.translate(0.0, -topOverhangLocal);
+                childSize = new global::Doroti.Ui.Size(childSize.width, (childSize.height + topOverhangLocal));
             }
-            if ((bottomOverhang__19656 > 0.0))
+            if ((bottomOverhangLocal > 0.0))
             {
-                childSize = new global::Doroti.Ui.Size(childSize.width, (childSize.height - bottomOverhang__19656));
+                childSize = new global::Doroti.Ui.Size(childSize.width, (childSize.height - bottomOverhangLocal));
             }
         }
-        if (_window_positionerLibrary._rectContains(displayRect, (result__18877 & childSize)))
+        if (_window_positionerLibrary._rectContains(displayRect, (resultNext & childSize)))
         {
-            return (result__18877 & childSize);
+            return (resultNext & childSize);
         }
-        return defaultResult__16268;
+        return defaultResult;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

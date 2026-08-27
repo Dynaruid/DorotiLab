@@ -31,53 +31,53 @@ public static partial class LocalizationsLibrary
 {
     internal static Future<DartMap<Type, object>> _loadAll(Locale locale, IEnumerable<dynamic> allDelegates)
     {
-        var output__1893 = new DartMap<Type, object>();
-        List<_Pending__localizations>? pendingList__1939 = default!;
-        var types__2058 = new HashSet<Type>();
-        var delegates__2084 = new List<object>();
-        foreach (var @delegate__2145 in allDelegates)
+        var output = new DartMap<Type, object>();
+        List<_Pending__localizations>? pendingList = default!;
+        var types = new HashSet<Type>();
+        var delegates = new List<object>();
+        foreach (var delegateLocal in allDelegates)
         {
-            if ((!types__2058.Contains(((Type)((dynamic)@delegate__2145).type)) && ((bool)((dynamic)@delegate__2145).isSupported(locale))))
+            if ((!types.Contains(((Type)((dynamic)delegateLocal).type)) && ((bool)((dynamic)delegateLocal).isSupported(locale))))
             {
-                types__2058.Add(((Type)((dynamic)@delegate__2145).type));
-                delegates__2084.Add(@delegate__2145);
+                types.Add(((Type)((dynamic)delegateLocal).type));
+                delegates.Add(delegateLocal);
             }
         }
-        foreach (var @delegate__2334 in delegates__2084)
+        foreach (var delegateAlternate in delegates)
         {
-            Future inputValue__2385 = (Future)((dynamic)@delegate__2334).load(locale);
-            dynamic completedValue__2433 = default!;
-            Future<object> futureValue__2475 = inputValue__2385.then<object>((object? value) =>
+            Future inputValue = (Future)((dynamic)delegateAlternate).load(locale);
+            dynamic completedValue = default!;
+            Future<object> futureValueLocal = inputValue.then<object>((object? value) =>
             {
-                return completedValue__2433 = value;
+                return completedValue = value;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-            if ((completedValue__2433 is not null))
+            if ((completedValue is not null))
             {
-                Type type__2672 = ((Type)((dynamic)@delegate__2334).type);
-                DartRuntimePrimitives.Assert(() => !output__1893.ContainsKey(type__2672));
-                output__1893[type__2672] = completedValue__2433;
+                Type typeLocal = ((Type)((dynamic)delegateAlternate).type);
+                DartRuntimePrimitives.Assert(() => !output.ContainsKey(typeLocal));
+                output[typeLocal] = completedValue;
             }
             else
             {
-                pendingList__1939 ??= new List<_Pending__localizations>();
-                pendingList__1939.Add(new _Pending__localizations(@delegate__2334, futureValue__2475));
+                pendingList ??= new List<_Pending__localizations>();
+                pendingList.Add(new _Pending__localizations(delegateAlternate, futureValueLocal));
             }
         }
-        if ((pendingList__1939 is null))
+        if ((pendingList is null))
         {
-            return ((Future<DartMap<Type, object>>)(object?)new global::Doroti.Framework.Foundation.SynchronousFuture<DartMap<Type, object>>(output__1893));
+            return ((Future<DartMap<Type, object>>)(object?)new global::Doroti.Framework.Foundation.SynchronousFuture<DartMap<Type, object>>(output));
         }
-        return global::Doroti.Runtime.DartAsyncRuntime.wait<object>(pendingList__1939.map<_Pending__localizations, Future>(((p) => ((_Pending__localizations)p).futureValue))).then((global::System.Func<List<object>, DartMap<Type, object>>)((values) =>
+        return global::Doroti.Runtime.DartAsyncRuntime.wait<object>(pendingList.map<_Pending__localizations, Future>(((p) => ((_Pending__localizations)p).futureValue))).then((global::System.Func<List<object>, DartMap<Type, object>>)((values) =>
         {
-            DartRuntimePrimitives.Assert(() => (checked((long)(values.Count)) == checked((long)(pendingList__1939!.Count))));
-            for (var i__3352 = 0L; (i__3352 < checked((long)(values.Count))); i__3352 += 1L)
+            DartRuntimePrimitives.Assert(() => (checked((long)(values.Count)) == checked((long)(pendingList!.Count))));
+            for (var i = 0L; (i < checked((long)(values.Count))); i += 1L)
             {
-                Type type__3405 = ((Type)((dynamic)pendingList__1939![(int)(i__3352)].@delegate).type);
-                DartRuntimePrimitives.Assert(() => !output__1893.ContainsKey(type__3405));
-                output__1893[type__3405] = values[(int)(i__3352)];
+                Type typeAlternate = ((Type)((dynamic)pendingList![(int)(i)].@delegate).type);
+                DartRuntimePrimitives.Assert(() => !output.ContainsKey(typeAlternate));
+                output[typeAlternate] = values[(int)(i)];
             }
-            return output__1893;
+            return output;
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -212,53 +212,53 @@ public class Localizations : StatefulWidget
 
     public static Localizations CreateOverride(global::Doroti.Framework.Foundation.Key? key = null, BuildContext context = default!, Locale? locale = null, List<dynamic>? delegates = null, Widget? child = null)
     {
-        List<object> mergedDelegates__18886 = ((List<object>)(object?)Localizations._delegatesOf(context));
+        List<object> mergedDelegates = ((List<object>)(object?)Localizations._delegatesOf(context));
         if ((delegates is not null))
         {
-            mergedDelegates__18886.InsertRange(checked((int)0L), delegates.Cast<dynamic>());
+            mergedDelegates.InsertRange(checked((int)0L), delegates.Cast<dynamic>());
         }
-        return new Localizations(key: key, locale: ((locale ?? (Locale)Localizations.localeOf(context))), delegates: mergedDelegates__18886, child: child);
+        return new Localizations(key: key, locale: ((locale ?? (Locale)Localizations.localeOf(context))), delegates: mergedDelegates, child: child);
     }
 
     public static global::Doroti.Ui.Locale localeOf(BuildContext context)
     {
-        _LocalizationsScope__localizations? scope__20063 = ((_LocalizationsScope__localizations?)(object?)context.dependOnInheritedWidgetOfExactType<_LocalizationsScope__localizations>());
+        _LocalizationsScope__localizations? scope = ((_LocalizationsScope__localizations?)(object?)context.dependOnInheritedWidgetOfExactType<_LocalizationsScope__localizations>());
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((scope__20063 is null))
+                if ((scope is null))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Requested the Locale of a context that does not include a Localizations ancestor.\n" + "To request the Locale, the context used to retrieve the Localizations widget must " + "be that of a widget that is a descendant of a Localizations widget."));
                 }
-                if ((((_LocalizationsScope__localizations)scope__20063).localizationsState.locale is null))
+                if ((((_LocalizationsScope__localizations)scope).localizationsState.locale is null))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("Localizations.localeOf found a Localizations widget that had a unexpected null locale.\n"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return DartRuntimePrimitives.RequireValue(scope__20063!.localizationsState.locale);
+        return DartRuntimePrimitives.RequireValue(scope!.localizationsState.locale);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static global::Doroti.Ui.Locale? maybeLocaleOf(BuildContext context)
     {
-        _LocalizationsScope__localizations? scope__21090 = ((_LocalizationsScope__localizations?)(object?)context.dependOnInheritedWidgetOfExactType<_LocalizationsScope__localizations>());
-        return scope__21090?.localizationsState.locale;
+        _LocalizationsScope__localizations? scope = ((_LocalizationsScope__localizations?)(object?)context.dependOnInheritedWidgetOfExactType<_LocalizationsScope__localizations>());
+        return scope?.localizationsState.locale;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static List<object> _delegatesOf(BuildContext context)
     {
-        _LocalizationsScope__localizations? scope__21455 = ((_LocalizationsScope__localizations?)(object?)context.dependOnInheritedWidgetOfExactType<_LocalizationsScope__localizations>());
-        DartRuntimePrimitives.Assert(() => (scope__21455 is not null), () => (object?)"a Localizations ancestor was not found");
-        return ((List<object>)(object?)new List<object>(DartRuntimePrimitives.ConvertEnumerable<object>(scope__21455!.localizationsState.widget.delegates)));
+        _LocalizationsScope__localizations? scope = ((_LocalizationsScope__localizations?)(object?)context.dependOnInheritedWidgetOfExactType<_LocalizationsScope__localizations>());
+        DartRuntimePrimitives.Assert(() => (scope is not null), () => (object?)"a Localizations ancestor was not found");
+        return ((List<object>)(object?)new List<object>(DartRuntimePrimitives.ConvertEnumerable<object>(scope!.localizationsState.widget.delegates)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static T? of<T>(BuildContext context, Type type)
     {
-        _LocalizationsScope__localizations? scope__22436 = ((_LocalizationsScope__localizations?)(object?)context.dependOnInheritedWidgetOfExactType<_LocalizationsScope__localizations>());
-        return scope__22436 is null ? default : scope__22436.localizationsState.resourcesFor<T>(type);
+        _LocalizationsScope__localizations? scope = ((_LocalizationsScope__localizations?)(object?)context.dependOnInheritedWidgetOfExactType<_LocalizationsScope__localizations>());
+        return scope is null ? default : scope.localizationsState.resourcesFor<T>(type);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -305,13 +305,13 @@ internal class _LocalizationsState__localizations : State<Localizations>
         {
             return true;
         }
-        List<object> delegates__23668 = ((Localizations)(object)this.widget).delegates.ToList().Cast<object>().ToList();
-        List<object> oldDelegates__23754 = ((Localizations)old).delegates.ToList().Cast<object>().ToList();
-        for (var i__23806 = 0L; (i__23806 < checked((long)(delegates__23668.Count))); i__23806 += 1L)
+        List<object> delegatesLocal = ((Localizations)(object)this.widget).delegates.ToList().Cast<object>().ToList();
+        List<object> oldDelegates = ((Localizations)old).delegates.ToList().Cast<object>().ToList();
+        for (var i = 0L; (i < checked((long)(delegatesLocal.Count))); i += 1L)
         {
-            dynamic @delegate__23888 = delegates__23668[(int)(i__23806)];
-            dynamic oldDelegate__23956 = oldDelegates__23754[(int)(i__23806)];
-            if (((!object.Equals(DartRuntimePrimitives.RuntimeType(@delegate__23888), DartRuntimePrimitives.RuntimeType(oldDelegate__23956))) || ((bool)((dynamic)@delegate__23888).shouldReload(oldDelegate__23956))))
+            dynamic @delegate = delegatesLocal[(int)(i)];
+            dynamic oldDelegate = oldDelegates[(int)(i)];
+            if (((!object.Equals(DartRuntimePrimitives.RuntimeType(@delegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || ((bool)((dynamic)@delegate).shouldReload(oldDelegate))))
             {
                 return true;
             }
@@ -331,27 +331,27 @@ internal class _LocalizationsState__localizations : State<Localizations>
 
     public virtual void load(Locale locale)
     {
-        IEnumerable<object> delegates__24425 = ((IEnumerable<object>)(object?)((Localizations)(object)this.widget).delegates);
-        if (!System.Linq.Enumerable.Any(delegates__24425))
+        IEnumerable<object> delegatesLocal = ((IEnumerable<object>)(object?)((Localizations)(object)this.widget).delegates);
+        if (!System.Linq.Enumerable.Any(delegatesLocal))
         {
             this.locale = DartRuntimePrimitives.RequireValue(locale);
             return;
         }
-        DartMap<Type, object>? typeToResources__24557 = default!;
-        Future<DartMap<Type, object>> typeToResourcesFuture__24611 = LocalizationsLibrary._loadAll(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(locale)), delegates__24425.Cast<dynamic>()).then((global::System.Func<DartMap<Type, object>, DartMap<Type, object>>)((value) =>
+        DartMap<Type, object>? typeToResources = default!;
+        Future<DartMap<Type, object>> typeToResourcesFuture = LocalizationsLibrary._loadAll(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(locale)), delegatesLocal.Cast<dynamic>()).then((global::System.Func<DartMap<Type, object>, DartMap<Type, object>>)((value) =>
         {
-            return typeToResources__24557 = value.cast<Type, object>();
+            return typeToResources = value.cast<Type, object>();
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
-        if ((typeToResources__24557 is not null))
+        if ((typeToResources is not null))
         {
-            _typeToResources = typeToResources__24557!;
+            _typeToResources = typeToResources!;
             this.locale = DartRuntimePrimitives.RequireValue(locale);
         }
         else
         {
             global::Doroti.Framework.Rendering.RendererBinding.instance.deferFirstFrame();
-            DartRuntimePrimitives.Ignore(typeToResourcesFuture__24611.then((global::System.Action<DartMap<Type, object>>)((value) =>
+            DartRuntimePrimitives.Ignore(typeToResourcesFuture.then((global::System.Action<DartMap<Type, object>>)((value) =>
             {
                 if (this.mounted)
                 {
@@ -368,8 +368,8 @@ internal class _LocalizationsState__localizations : State<Localizations>
 
     public virtual T resourcesFor<T>(Type type)
     {
-        var resources__25655 = ((T?)(object?)this._typeToResources.GetValueOrDefault(type))!;
-        return resources__25655;
+        var resources = ((T?)(object?)this._typeToResources.GetValueOrDefault(type))!;
+        return resources;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -377,8 +377,8 @@ internal class _LocalizationsState__localizations : State<Localizations>
     {
         get
         {
-            var resources__25770 = ((WidgetsLocalizations?)(object?)this._typeToResources.GetValueOrDefault(typeof(WidgetsLocalizations)))!;
-            return ((WidgetsLocalizations)resources__25770).textDirection;
+            var resources = ((WidgetsLocalizations?)(object?)this._typeToResources.GetValueOrDefault(typeof(WidgetsLocalizations)))!;
+            return ((WidgetsLocalizations)resources).textDirection;
             return default!;
         }
     }
@@ -435,9 +435,9 @@ public class LocalizationsResolver : global::Doroti.Framework.Foundation.ChangeN
     {
         get
         {
-            global::Doroti.Ui.Locale appLocale__29604 = ((this._locale is not null) ? _resolveLocales(new List<global::Doroti.Ui.Locale> { DartRuntimePrimitives.RequireValue(this._locale) }, this.supportedLocales.Cast<Locale>()) : DartRuntimePrimitives.RequireValue(this._resolvedLocale));
-            DartRuntimePrimitives.Assert(() => _debugCheckLocalizations(appLocale__29604));
-            return appLocale__29604;
+            global::Doroti.Ui.Locale appLocale = ((this._locale is not null) ? _resolveLocales(new List<global::Doroti.Ui.Locale> { DartRuntimePrimitives.RequireValue(this._locale) }, this.supportedLocales.Cast<Locale>()) : DartRuntimePrimitives.RequireValue(this._resolvedLocale));
+            DartRuntimePrimitives.Assert(() => _debugCheckLocalizations(appLocale));
+            return appLocale;
             return default!;
         }
     }
@@ -465,10 +465,10 @@ public class LocalizationsResolver : global::Doroti.Framework.Foundation.ChangeN
 
     internal virtual void _updateResolvedLocale(List<Locale>? preferredLocales)
     {
-        global::Doroti.Ui.Locale newLocale__32157 = _resolveLocales(preferredLocales, this.supportedLocales.Cast<Locale>());
-        if ((!object.Equals(newLocale__32157, this._resolvedLocale)))
+        global::Doroti.Ui.Locale newLocale = _resolveLocales(preferredLocales, this.supportedLocales.Cast<Locale>());
+        if ((!object.Equals(newLocale, this._resolvedLocale)))
         {
-            _resolvedLocale = newLocale__32157;
+            _resolvedLocale = newLocale;
             notifyListeners();
         }
     }
@@ -477,19 +477,19 @@ public class LocalizationsResolver : global::Doroti.Framework.Foundation.ChangeN
     {
         if ((this.localeListResolutionCallback is not null))
         {
-            global::Doroti.Ui.Locale? locale__32547 = this.localeListResolutionCallback!(preferredLocales, supportedLocales);
-            if ((locale__32547 is not null))
+            global::Doroti.Ui.Locale? locale = this.localeListResolutionCallback!(preferredLocales, supportedLocales);
+            if ((locale is not null))
             {
-                Locale locale__32547__value32633 = DartRuntimePrimitives.RequireValue(locale__32547);
+                Locale locale__32547__value32633 = DartRuntimePrimitives.RequireValue(locale);
                 return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(locale__32547__value32633));
             }
         }
         if ((this.localeResolutionCallback is not null))
         {
-            global::Doroti.Ui.Locale? locale__32838 = this.localeResolutionCallback!((((preferredLocales is not null) && System.Linq.Enumerable.Any(preferredLocales)) ? preferredLocales.First() : null), supportedLocales);
-            if ((locale__32838 is not null))
+            global::Doroti.Ui.Locale? localeLocal = this.localeResolutionCallback!((((preferredLocales is not null) && System.Linq.Enumerable.Any(preferredLocales)) ? preferredLocales.First() : null), supportedLocales);
+            if ((localeLocal is not null))
             {
-                Locale locale__32838__value33016 = DartRuntimePrimitives.RequireValue(locale__32838);
+                Locale locale__32838__value33016 = DartRuntimePrimitives.RequireValue(localeLocal);
                 return DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(locale__32838__value33016));
             }
         }
@@ -502,19 +502,19 @@ public class LocalizationsResolver : global::Doroti.Framework.Foundation.ChangeN
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                HashSet<Type> unsupportedTypes__33364 = this.localizationsDelegates.map<dynamic, Type>(((@delegate) => ((Type)((dynamic)@delegate).type))).toSet();
-                foreach (dynamic @delegate__33555 in this.localizationsDelegates)
+                HashSet<Type> unsupportedTypes = this.localizationsDelegates.map<dynamic, Type>(((@delegate) => ((Type)((dynamic)@delegate).type))).toSet();
+                foreach (dynamic delegateLocal in this.localizationsDelegates)
                 {
-                    if (!unsupportedTypes__33364.Contains(((Type)((dynamic)@delegate__33555).type)))
+                    if (!unsupportedTypes.Contains(((Type)((dynamic)delegateLocal).type)))
                     {
                         continue;
                     }
-                    if (((bool)((dynamic)@delegate__33555).isSupported(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(locale)))))
+                    if (((bool)((dynamic)delegateLocal).isSupported(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(locale)))))
                     {
-                        unsupportedTypes__33364.Remove(((Type)((dynamic)@delegate__33555).type));
+                        unsupportedTypes.Remove(((Type)((dynamic)delegateLocal).type));
                     }
                 }
-                if (!System.Linq.Enumerable.Any(unsupportedTypes__33364))
+                if (!System.Linq.Enumerable.Any(unsupportedTypes))
                 {
                     return true;
                 }

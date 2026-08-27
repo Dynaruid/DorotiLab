@@ -104,8 +104,8 @@ internal class _BottomSheetState__bottom_sheet : global::Doroti.Framework.Widget
     {
         get
         {
-            var renderBox__10006 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._childKey).currentContext!.findRenderObject()!)!;
-            return ((global::Doroti.Framework.Rendering.RenderBox)renderBox__10006).size.height;
+            var renderBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._childKey).currentContext!.findRenderObject()!)!;
+            return ((global::Doroti.Framework.Rendering.RenderBox)renderBox).size.height;
             return default!;
         }
     }
@@ -140,17 +140,17 @@ internal class _BottomSheetState__bottom_sheet : global::Doroti.Framework.Widget
         {
             this.dragHandleStates.Remove(global::Doroti.Framework.Widgets.WidgetState.dragged);
         })));
-        var isClosing__11521 = false;
+        var isClosing = false;
         if ((((global::Doroti.Framework.Gestures.DragEndDetails)details).velocity.pixelsPerSecond.dy > Bottom_sheetLibrary._kMinFlingVelocity))
         {
-            double flingVelocity__11627 = (-((global::Doroti.Framework.Gestures.DragEndDetails)details).velocity.pixelsPerSecond.dy / this._childHeight);
+            double flingVelocity = (-((global::Doroti.Framework.Gestures.DragEndDetails)details).velocity.pixelsPerSecond.dy / this._childHeight);
             if ((((BottomSheet)(object)this.widget).animationController!.value > 0.0))
             {
-                ((BottomSheet)(object)this.widget).animationController!.fling(velocity: flingVelocity__11627);
+                ((BottomSheet)(object)this.widget).animationController!.fling(velocity: flingVelocity);
             }
-            if ((flingVelocity__11627 < 0.0))
+            if ((flingVelocity < 0.0))
             {
-                isClosing__11521 = true;
+                isClosing = true;
             }
         }
         else
@@ -161,15 +161,15 @@ internal class _BottomSheetState__bottom_sheet : global::Doroti.Framework.Widget
                 {
                     ((BottomSheet)(object)this.widget).animationController!.fling(velocity: -1.0);
                 }
-                isClosing__11521 = true;
+                isClosing = true;
             }
             else
             {
                 ((BottomSheet)(object)this.widget).animationController!.forward();
             }
         }
-        ((BottomSheet)(object)this.widget).onDragEnd?.Invoke(details, isClosing__11521);
-        if (isClosing__11521)
+        ((BottomSheet)(object)this.widget).onDragEnd?.Invoke(details, isClosing);
+        if (isClosing)
         {
             this.widget.onClosing();
         }
@@ -205,32 +205,32 @@ internal class _BottomSheetState__bottom_sheet : global::Doroti.Framework.Widget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        BottomSheetThemeData bottomSheetTheme__12918 = Theme.of(context).bottomSheetTheme;
-        bool useMaterial3__12988 = Theme.of(context).useMaterial3;
-        BottomSheetThemeData defaults__13066 = (useMaterial3__12988 ? new _BottomSheetDefaultsM3__bottom_sheet(context) : new BottomSheetThemeData());
-        global::Doroti.Framework.Rendering.BoxConstraints? constraints__13198 = ((((BottomSheet)(object)this.widget).constraints ?? bottomSheetTheme__12918.constraints) ?? defaults__13066.constraints);
-        global::Doroti.Ui.Color? color__13313 = ((global::Doroti.Ui.Color?)(object?)((((BottomSheet)(object)this.widget).backgroundColor ?? bottomSheetTheme__12918.backgroundColor) ?? defaults__13066.backgroundColor));
-        global::Doroti.Ui.Color? surfaceTintColor__13434 = ((global::Doroti.Ui.Color?)(object?)(bottomSheetTheme__12918.surfaceTintColor ?? defaults__13066.surfaceTintColor));
-        global::Doroti.Ui.Color? shadowColor__13534 = ((global::Doroti.Ui.Color?)(object?)((((BottomSheet)(object)this.widget).shadowColor ?? bottomSheetTheme__12918.shadowColor) ?? defaults__13066.shadowColor));
-        double elevation__13649 = (((((BottomSheet)(object)this.widget).elevation ?? bottomSheetTheme__12918.elevation) ?? defaults__13066.elevation) ?? 0);
-        global::Doroti.Framework.Painting.ShapeBorder? shape__13767 = ((((BottomSheet)(object)this.widget).shape ?? bottomSheetTheme__12918.shape) ?? defaults__13066.shape);
-        global::Doroti.Ui.Clip clipBehavior__13848 = ((((BottomSheet)(object)this.widget).clipBehavior ?? bottomSheetTheme__12918.clipBehavior) ?? Clip.none);
-        bool showDragHandle__13945 = (((BottomSheet)(object)this.widget).showDragHandle ?? ((((BottomSheet)(object)this.widget).enableDrag && ((bottomSheetTheme__12918.showDragHandle ?? false)))));
-        global::Doroti.Framework.Widgets.Widget? dragHandle__14075 = default!;
-        if (showDragHandle__13945)
+        BottomSheetThemeData bottomSheetThemeLocal = Theme.of(context).bottomSheetTheme;
+        bool useMaterial3Local = Theme.of(context).useMaterial3;
+        BottomSheetThemeData defaults = (useMaterial3Local ? new _BottomSheetDefaultsM3__bottom_sheet(context) : new BottomSheetThemeData());
+        global::Doroti.Framework.Rendering.BoxConstraints? constraintsLocal = ((((BottomSheet)(object)this.widget).constraints ?? bottomSheetThemeLocal.constraints) ?? defaults.constraints);
+        global::Doroti.Ui.Color? colorLocal = ((global::Doroti.Ui.Color?)(object?)((((BottomSheet)(object)this.widget).backgroundColor ?? bottomSheetThemeLocal.backgroundColor) ?? defaults.backgroundColor));
+        global::Doroti.Ui.Color? surfaceTintColorLocal = ((global::Doroti.Ui.Color?)(object?)(bottomSheetThemeLocal.surfaceTintColor ?? defaults.surfaceTintColor));
+        global::Doroti.Ui.Color? shadowColorLocal = ((global::Doroti.Ui.Color?)(object?)((((BottomSheet)(object)this.widget).shadowColor ?? bottomSheetThemeLocal.shadowColor) ?? defaults.shadowColor));
+        double elevationLocal = (((((BottomSheet)(object)this.widget).elevation ?? bottomSheetThemeLocal.elevation) ?? defaults.elevation) ?? 0);
+        global::Doroti.Framework.Painting.ShapeBorder? shapeLocal = ((((BottomSheet)(object)this.widget).shape ?? bottomSheetThemeLocal.shape) ?? defaults.shape);
+        global::Doroti.Ui.Clip clipBehaviorLocal = ((((BottomSheet)(object)this.widget).clipBehavior ?? bottomSheetThemeLocal.clipBehavior) ?? Clip.none);
+        bool showDragHandleLocal = (((BottomSheet)(object)this.widget).showDragHandle ?? ((((BottomSheet)(object)this.widget).enableDrag && ((bottomSheetThemeLocal.showDragHandle ?? false)))));
+        global::Doroti.Framework.Widgets.Widget? dragHandle = default!;
+        if (showDragHandleLocal)
         {
-            dragHandle__14075 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _DragHandle__bottom_sheet(onSemanticsTap: () => ((BottomSheet)(object)this.widget).onClosing(), handleHover: (global::System.Action<bool>)this._handleDragHandleHover, states: this.dragHandleStates, dragHandleColor: ((BottomSheet)(object)this.widget).dragHandleColor, dragHandleSize: ((BottomSheet)(object)this.widget).dragHandleSize));
+            dragHandle = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _DragHandle__bottom_sheet(onSemanticsTap: () => ((BottomSheet)(object)this.widget).onClosing(), handleHover: (global::System.Action<bool>)this._handleDragHandleHover, states: this.dragHandleStates, dragHandleColor: ((BottomSheet)(object)this.widget).dragHandleColor, dragHandleSize: ((BottomSheet)(object)this.widget).dragHandleSize));
             if (!((BottomSheet)(object)this.widget).enableDrag)
             {
-                dragHandle__14075 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _BottomSheetGestureDetector__bottom_sheet(onVerticalDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleDragStart, onVerticalDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleDragUpdate, onVerticalDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handleDragEnd, child: dragHandle__14075));
+                dragHandle = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _BottomSheetGestureDetector__bottom_sheet(onVerticalDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleDragStart, onVerticalDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleDragUpdate, onVerticalDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handleDragEnd, child: dragHandle));
             }
         }
-        global::Doroti.Framework.Widgets.Widget bottomSheet__14860 = ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(key: this._childKey, color: color__13313, elevation: elevation__13649, surfaceTintColor: surfaceTintColor__13434, shadowColor: shadowColor__13534, shape: shape__13767, clipBehavior: clipBehavior__13848, child: new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.DraggableScrollableNotification>(onNotification: (global::System.Func<global::Doroti.Framework.Widgets.DraggableScrollableNotification, bool>)this.extentChanged, child: (!showDragHandle__13945 ? this.widget.builder(context) : new global::Doroti.Framework.Widgets.Stack(alignment: global::Doroti.Framework.Painting.Alignment.topCenter, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(dragHandle__14075!), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: ConstantsLibrary.kMinInteractiveDimension), child: this.widget.builder(context))) })))));
-        if ((constraints__13198 is not null))
+        global::Doroti.Framework.Widgets.Widget bottomSheet = ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(key: this._childKey, color: colorLocal, elevation: elevationLocal, surfaceTintColor: surfaceTintColorLocal, shadowColor: shadowColorLocal, shape: shapeLocal, clipBehavior: clipBehaviorLocal, child: new global::Doroti.Framework.Widgets.NotificationListener<global::Doroti.Framework.Widgets.DraggableScrollableNotification>(onNotification: (global::System.Func<global::Doroti.Framework.Widgets.DraggableScrollableNotification, bool>)this.extentChanged, child: (!showDragHandleLocal ? this.widget.builder(context) : new global::Doroti.Framework.Widgets.Stack(alignment: global::Doroti.Framework.Painting.Alignment.topCenter, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(dragHandle!), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: ConstantsLibrary.kMinInteractiveDimension), child: this.widget.builder(context))) })))));
+        if ((constraintsLocal is not null))
         {
-            bottomSheet__14860 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.Alignment.bottomCenter, heightFactor: 1.0, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: constraints__13198, child: bottomSheet__14860)));
+            bottomSheet = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.Alignment.bottomCenter, heightFactor: 1.0, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: constraintsLocal, child: bottomSheet)));
         }
-        return (!((BottomSheet)(object)this.widget).enableDrag ? bottomSheet__14860 : new _BottomSheetGestureDetector__bottom_sheet(onVerticalDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleDragStart, onVerticalDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleDragUpdate, onVerticalDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handleDragEnd, child: bottomSheet__14860));
+        return (!((BottomSheet)(object)this.widget).enableDrag ? bottomSheet : new _BottomSheetGestureDetector__bottom_sheet(onVerticalDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleDragStart, onVerticalDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleDragUpdate, onVerticalDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handleDragEnd, child: bottomSheet));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -255,10 +255,10 @@ internal class _DragHandle__bottom_sheet : global::Doroti.Framework.Widgets.Stat
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        BottomSheetThemeData bottomSheetTheme__16667 = Theme.of(context).bottomSheetTheme;
-        BottomSheetThemeData m3Defaults__16753 = ((BottomSheetThemeData)(object?)new _BottomSheetDefaultsM3__bottom_sheet(context));
-        global::Doroti.Ui.Size handleSize__16814 = ((global::Doroti.Ui.Size)(object?)((this.dragHandleSize ?? bottomSheetTheme__16667.dragHandleSize) ?? DartRuntimePrimitives.RequireValue(m3Defaults__16753.dragHandleSize)));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MouseRegion(onEnter: ((global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)((@event) => { this.handleHover(true); })), onExit: ((global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)((@event) => { this.handleHover(false); })), child: new global::Doroti.Framework.Widgets.Semantics(label: MaterialLocalizations.of(context).modalBarrierDismissLabel, container: true, button: true, onTap: () => this.onSemanticsTap(), child: new global::Doroti.Framework.Widgets.SizedBox(width: Math.Max(handleSize__16814.width, ConstantsLibrary.kMinInteractiveDimension), height: Math.Max(handleSize__16814.height, ConstantsLibrary.kMinInteractiveDimension), child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Container(height: handleSize__16814.height, width: handleSize__16814.width, decoration: new global::Doroti.Framework.Painting.BoxDecoration(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateCircular((handleSize__16814.height / 2L)), color: (((WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(this.dragHandleColor, this.states) ?? (Color)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(bottomSheetTheme__16667.dragHandleColor, this.states))) ?? m3Defaults__16753.dragHandleColor))))))));
+        BottomSheetThemeData bottomSheetThemeLocal = Theme.of(context).bottomSheetTheme;
+        BottomSheetThemeData m3Defaults = ((BottomSheetThemeData)(object?)new _BottomSheetDefaultsM3__bottom_sheet(context));
+        global::Doroti.Ui.Size handleSize = ((global::Doroti.Ui.Size)(object?)((this.dragHandleSize ?? bottomSheetThemeLocal.dragHandleSize) ?? DartRuntimePrimitives.RequireValue(m3Defaults.dragHandleSize)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MouseRegion(onEnter: ((global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)((@event) => { this.handleHover(true); })), onExit: ((global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)((@event) => { this.handleHover(false); })), child: new global::Doroti.Framework.Widgets.Semantics(label: MaterialLocalizations.of(context).modalBarrierDismissLabel, container: true, button: true, onTap: () => this.onSemanticsTap(), child: new global::Doroti.Framework.Widgets.SizedBox(width: Math.Max(handleSize.width, ConstantsLibrary.kMinInteractiveDimension), height: Math.Max(handleSize.height, ConstantsLibrary.kMinInteractiveDimension), child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Container(height: handleSize.height, width: handleSize.width, decoration: new global::Doroti.Framework.Painting.BoxDecoration(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateCircular((handleSize.height / 2L)), color: (((WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(this.dragHandleColor, this.states) ?? (Color)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(bottomSheetThemeLocal.dragHandleColor, this.states))) ?? m3Defaults.dragHandleColor))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -375,19 +375,19 @@ public class _RenderBottomSheetLayoutWithSizeListener__bottom_sheet : global::Do
     public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints) => ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest;
     public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
-        global::Doroti.Framework.Rendering.RenderBox? child__21559 = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
-        if ((child__21559 is null))
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        if ((childLocal is null))
         {
             return null;
         }
-        global::Doroti.Framework.Rendering.BoxConstraints childConstraints__21654 = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)_getConstraintsForChild(constraints));
-        double? result__21729 = child__21559.getDryBaseline(childConstraints__21654, baseline);
-        if ((result__21729 is null))
+        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)_getConstraintsForChild(constraints));
+        double? result = childLocal.getDryBaseline(childConstraints, baseline);
+        if ((result is null))
         {
             return null;
         }
-        global::Doroti.Ui.Size childSize__21854 = ((global::Doroti.Ui.Size)(object?)(((global::Doroti.Framework.Rendering.BoxConstraints)childConstraints__21654).isTight ? ((global::Doroti.Framework.Rendering.BoxConstraints)childConstraints__21654).smallest : child__21559.getDryLayout(childConstraints__21654)));
-        return (DartRuntimePrimitives.RequireValue(result__21729) + _getPositionForChild(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest, childSize__21854).dy);
+        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)(((global::Doroti.Framework.Rendering.BoxConstraints)childConstraints).isTight ? ((global::Doroti.Framework.Rendering.BoxConstraints)childConstraints).smallest : childLocal.getDryLayout(childConstraints)));
+        return (DartRuntimePrimitives.RequireValue(result) + _getPositionForChild(((global::Doroti.Framework.Rendering.BoxConstraints)constraints).biggest, childSize).dy);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -406,20 +406,20 @@ public class _RenderBottomSheetLayoutWithSizeListener__bottom_sheet : global::Do
     public override void performLayout()
     {
         size = ((global::Doroti.Framework.Rendering.BoxConstraints)this.constraints).biggest;
-        global::Doroti.Framework.Rendering.RenderBox? child__22613 = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
-        if ((child__22613 is null))
+        global::Doroti.Framework.Rendering.RenderBox? childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child);
+        if ((childLocal is null))
         {
             return;
         }
-        global::Doroti.Framework.Rendering.BoxConstraints childConstraints__22704 = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)_getConstraintsForChild(this.constraints));
-        DartRuntimePrimitives.Assert(() => childConstraints__22704.debugAssertIsValid(isAppliedConstraint: true));
-        child__22613.layout(childConstraints__22704, parentUsesSize: !((global::Doroti.Framework.Rendering.BoxConstraints)childConstraints__22704).isTight);
-        var childParentData__22926 = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)child__22613.parentData!)!;
-        global::Doroti.Ui.Size childSize__22995 = ((global::Doroti.Ui.Size)(object?)(((global::Doroti.Framework.Rendering.BoxConstraints)childConstraints__22704).isTight ? ((global::Doroti.Framework.Rendering.BoxConstraints)childConstraints__22704).smallest : ((global::Doroti.Framework.Rendering.RenderBox)child__22613).size));
-        childParentData__22926.offset = _getPositionForChild(this.size, childSize__22995);
-        if ((!object.Equals(this._lastSize, childSize__22995)))
+        global::Doroti.Framework.Rendering.BoxConstraints childConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)_getConstraintsForChild(this.constraints));
+        DartRuntimePrimitives.Assert(() => childConstraints.debugAssertIsValid(isAppliedConstraint: true));
+        childLocal.layout(childConstraints, parentUsesSize: !((global::Doroti.Framework.Rendering.BoxConstraints)childConstraints).isTight);
+        var childParentData = ((global::Doroti.Framework.Rendering.BoxParentData?)(object?)childLocal.parentData!)!;
+        global::Doroti.Ui.Size childSize = ((global::Doroti.Ui.Size)(object?)(((global::Doroti.Framework.Rendering.BoxConstraints)childConstraints).isTight ? ((global::Doroti.Framework.Rendering.BoxConstraints)childConstraints).smallest : ((global::Doroti.Framework.Rendering.RenderBox)childLocal).size));
+        childParentData.offset = _getPositionForChild(this.size, childSize);
+        if ((!object.Equals(this._lastSize, childSize)))
         {
-            _lastSize = childSize__22995;
+            _lastSize = childSize;
             this._onChildSizeChanged?.Invoke(this._lastSize);
         }
     }
@@ -500,16 +500,16 @@ public class _ModalBottomSheetState__bottom_sheet<T> : global::Doroti.Framework.
 
     public virtual void handleDragEnd(global::Doroti.Framework.Gestures.DragEndDetails details, bool? isClosing = null)
     {
-        double currentProgress__26018 = ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).route.animation!.value;
-        this._sheetAnimation.parent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).route.animation!, curve: new global::Doroti.Framework.Animation.Split(currentProgress__26018, endCurve: (((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).animationStyle?.curve ?? Bottom_sheetLibrary._kModalBottomSheetCurve)), reverseCurve: new global::Doroti.Framework.Animation.Split(currentProgress__26018, endCurve: (((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).animationStyle?.reverseCurve ?? Bottom_sheetLibrary._kModalBottomSheetCurve))));
+        double currentProgress = ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).route.animation!.value;
+        this._sheetAnimation.parent = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(new global::Doroti.Framework.Animation.CurvedAnimation(parent: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).route.animation!, curve: new global::Doroti.Framework.Animation.Split(currentProgress, endCurve: (((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).animationStyle?.curve ?? Bottom_sheetLibrary._kModalBottomSheetCurve)), reverseCurve: new global::Doroti.Framework.Animation.Split(currentProgress, endCurve: (((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).animationStyle?.reverseCurve ?? Bottom_sheetLibrary._kModalBottomSheetCurve))));
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        MaterialLocalizations localizations__26795 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
-        string routeLabel__26863 = ((string)(object?)_getRouteLabel(localizations__26795));
+        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        string routeLabel = ((string)(object?)_getRouteLabel(localizations));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._sheetAnimation, child: new BottomSheet(animationController: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).route._animationController, onClosing: ((global::System.Action)(() =>
         {
             if (((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).route.isCurrent)
@@ -518,11 +518,11 @@ public class _ModalBottomSheetState__bottom_sheet<T> : global::Doroti.Framework.
             }
         })), builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).route.builder, backgroundColor: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).backgroundColor, elevation: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).elevation, shape: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).shape, clipBehavior: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).clipBehavior, constraints: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).constraints, enableDrag: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).enableDrag, showDragHandle: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).showDragHandle, onDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this.handleDragStart, onDragEnd: (BottomSheetDragEndHandler)((details, isClosing) => this.handleDragEnd(details, isClosing))), builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
         {
-            double animationValue__27664 = ((global::Doroti.Framework.Animation.ProxyAnimation)this._sheetAnimation).value;
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, namesRoute: true, label: routeLabel__26863, explicitChildNodes: true, child: new global::Doroti.Framework.Widgets.ClipRect(child: new _BottomSheetLayoutWithSizeListener__bottom_sheet(onChildSizeChanged: ((global::System.Action<Size>)((size) =>
+            double animationValueLocal = ((global::Doroti.Framework.Animation.ProxyAnimation)this._sheetAnimation).value;
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, namesRoute: true, label: routeLabel, explicitChildNodes: true, child: new global::Doroti.Framework.Widgets.ClipRect(child: new _BottomSheetLayoutWithSizeListener__bottom_sheet(onChildSizeChanged: ((global::System.Action<Size>)((size) =>
             {
                 ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).route._didChangeBarrierSemanticsClip(_getNewClipDetails(size));
-            })), animationValue: animationValue__27664, isScrollControlled: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).isScrollControlled, scrollControlDisabledMaxHeightRatio: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).scrollControlDisabledMaxHeightRatio, child: child))));
+            })), animationValue: animationValueLocal, isScrollControlled: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).isScrollControlled, scrollControlDisabledMaxHeightRatio: ((_ModalBottomSheet__bottom_sheet<T>)(object)this.widget).scrollControlDisabledMaxHeightRatio, child: child))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -618,16 +618,16 @@ public class ModalBottomSheetRoute<T> : global::Doroti.Framework.Widgets.PopupRo
 
     public override global::Doroti.Framework.Widgets.Widget buildPage(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation, global::Doroti.Framework.Animation.Animation<double> secondaryAnimation)
     {
-        global::Doroti.Framework.Widgets.Widget content__41145 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DisplayFeatureSubScreen(anchorPoint: this.anchorPoint, child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
+        global::Doroti.Framework.Widgets.Widget content = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DisplayFeatureSubScreen(anchorPoint: this.anchorPoint, child: new global::Doroti.Framework.Widgets.Builder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((context) =>
         {
-            BottomSheetThemeData sheetTheme__41313 = Theme.of(context).bottomSheetTheme;
-            BottomSheetThemeData defaults__41399 = (Theme.of(context).useMaterial3 ? new _BottomSheetDefaultsM3__bottom_sheet(context) : new BottomSheetThemeData());
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ModalBottomSheet__bottom_sheet<T>(route: this, animationStyle: this.sheetAnimationStyle, backgroundColor: (((this.backgroundColor ?? sheetTheme__41313.modalBackgroundColor) ?? sheetTheme__41313.backgroundColor) ?? defaults__41399.backgroundColor), elevation: (((this.elevation ?? sheetTheme__41313.modalElevation) ?? sheetTheme__41313.elevation) ?? defaults__41399.modalElevation), shape: this.shape, clipBehavior: this.clipBehavior, constraints: this.constraints, isScrollControlled: this.isScrollControlled, scrollControlDisabledMaxHeightRatio: DartRuntimePrimitives.RequireValue(this.scrollControlDisabledMaxHeightRatio), enableDrag: this.enableDrag, showDragHandle: (this.showDragHandle ?? ((this.enableDrag && ((sheetTheme__41313.showDragHandle ?? false)))))));
+            BottomSheetThemeData sheetTheme = Theme.of(context).bottomSheetTheme;
+            BottomSheetThemeData defaults = (Theme.of(context).useMaterial3 ? new _BottomSheetDefaultsM3__bottom_sheet(context) : new BottomSheetThemeData());
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _ModalBottomSheet__bottom_sheet<T>(route: this, animationStyle: this.sheetAnimationStyle, backgroundColor: (((this.backgroundColor ?? sheetTheme.modalBackgroundColor) ?? sheetTheme.backgroundColor) ?? defaults.backgroundColor), elevation: (((this.elevation ?? sheetTheme.modalElevation) ?? sheetTheme.elevation) ?? defaults.modalElevation), shape: this.shape, clipBehavior: this.clipBehavior, constraints: this.constraints, isScrollControlled: this.isScrollControlled, scrollControlDisabledMaxHeightRatio: DartRuntimePrimitives.RequireValue(this.scrollControlDisabledMaxHeightRatio), enableDrag: this.enableDrag, showDragHandle: (this.showDragHandle ?? ((this.enableDrag && ((sheetTheme.showDragHandle ?? false)))))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })))));
-        global::Doroti.Framework.Widgets.Widget bottomSheet__42459 = (this.useSafeArea ? new global::Doroti.Framework.Widgets.SafeArea(bottom: false, child: content__41145) : global::Doroti.Framework.Widgets.MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: content__41145));
-        bottomSheet__42459 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(hitTestBehavior: SemanticsHitTestBehavior.opaque, child: bottomSheet__42459));
-        return (this.capturedThemes?.wrap(bottomSheet__42459) ?? bottomSheet__42459);
+        global::Doroti.Framework.Widgets.Widget bottomSheet = (this.useSafeArea ? new global::Doroti.Framework.Widgets.SafeArea(bottom: false, child: content) : global::Doroti.Framework.Widgets.MediaQuery.CreateRemovePadding(context: context, removeTop: true, child: content));
+        bottomSheet = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(hitTestBehavior: SemanticsHitTestBehavior.opaque, child: bottomSheet));
+        return (this.capturedThemes?.wrap(bottomSheet) ?? bottomSheet);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -636,8 +636,8 @@ public class ModalBottomSheetRoute<T> : global::Doroti.Framework.Widgets.PopupRo
         if (((this.barrierColor.a != 0L) && !this.offstage))
         {
             DartRuntimePrimitives.Assert(() => (!object.Equals(this.barrierColor, this.barrierColor.withValues(alpha: 0.0))));
-            global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?> color__43131 = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?>)(object?)this.animation!.drive(new global::Doroti.Framework.Animation.ColorTween(begin: this.barrierColor.withValues(alpha: 0.0), end: this.barrierColor).chain(new global::Doroti.Framework.Animation.CurveTween(curve: this.barrierCurve))));
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedModalBarrier(color: color__43131, dismissible: this.barrierDismissible, semanticsLabel: this.barrierLabel, barrierSemanticsDismissible: this.semanticsDismissible, clipDetailsNotifier: this._clipDetailsNotifier, semanticsOnTapHint: this.barrierOnTapHint));
+            global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?> colorLocal = ((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?>)(object?)this.animation!.drive(new global::Doroti.Framework.Animation.ColorTween(begin: this.barrierColor.withValues(alpha: 0.0), end: this.barrierColor).chain(new global::Doroti.Framework.Animation.CurveTween(curve: this.barrierCurve))));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedModalBarrier(color: colorLocal, dismissible: this.barrierDismissible, semanticsLabel: this.barrierLabel, barrierSemanticsDismissible: this.semanticsDismissible, clipDetailsNotifier: this._clipDetailsNotifier, semanticsOnTapHint: this.barrierOnTapHint));
         }
         else
         {
@@ -655,9 +655,9 @@ public static partial class Bottom_sheetLibrary
         double __scrollControlDisabledMaxHeightRatio = scrollControlDisabledMaxHeightRatio ?? Bottom_sheetLibrary._kDefaultScrollControlDisabledMaxHeightRatio;
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        global::Doroti.Framework.Widgets.NavigatorState navigator__48802 = ((global::Doroti.Framework.Widgets.NavigatorState)(object?)Navigator.of(context, rootNavigator: useRootNavigator));
-        MaterialLocalizations localizations__48900 = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
-        return ((Future<T?>)(object?)navigator__48802.push(new ModalBottomSheetRoute<T>(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)builder, capturedThemes: InheritedTheme.capture(from: context, to: navigator__48802.context), isScrollControlled: isScrollControlled, scrollControlDisabledMaxHeightRatio: __scrollControlDisabledMaxHeightRatio, barrierLabel: ((barrierLabel ?? (string)((MaterialLocalizations)localizations__48900).scrimLabel)), barrierOnTapHint: localizations__48900.scrimOnTapHint(((MaterialLocalizations)localizations__48900).bottomSheetLabel), backgroundColor: backgroundColor, elevation: elevation, shape: shape, clipBehavior: clipBehavior, constraints: constraints, isDismissible: isDismissible, modalBarrierColor: (barrierColor ?? Theme.of(context).bottomSheetTheme.modalBarrierColor), enableDrag: enableDrag, showDragHandle: showDragHandle, settings: routeSettings, transitionAnimationController: transitionAnimationController, anchorPoint: anchorPoint, useSafeArea: useSafeArea, sheetAnimationStyle: sheetAnimationStyle, requestFocus: requestFocus)));
+        global::Doroti.Framework.Widgets.NavigatorState navigator = ((global::Doroti.Framework.Widgets.NavigatorState)(object?)Navigator.of(context, rootNavigator: useRootNavigator));
+        MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
+        return ((Future<T?>)(object?)navigator.push(new ModalBottomSheetRoute<T>(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)builder, capturedThemes: InheritedTheme.capture(from: context, to: navigator.context), isScrollControlled: isScrollControlled, scrollControlDisabledMaxHeightRatio: __scrollControlDisabledMaxHeightRatio, barrierLabel: ((barrierLabel ?? (string)((MaterialLocalizations)localizations).scrimLabel)), barrierOnTapHint: localizations.scrimOnTapHint(((MaterialLocalizations)localizations).bottomSheetLabel), backgroundColor: backgroundColor, elevation: elevation, shape: shape, clipBehavior: clipBehavior, constraints: constraints, isDismissible: isDismissible, modalBarrierColor: (barrierColor ?? Theme.of(context).bottomSheetTheme.modalBarrierColor), enableDrag: enableDrag, showDragHandle: showDragHandle, settings: routeSettings, transitionAnimationController: transitionAnimationController, anchorPoint: anchorPoint, useSafeArea: useSafeArea, sheetAnimationStyle: sheetAnimationStyle, requestFocus: requestFocus)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

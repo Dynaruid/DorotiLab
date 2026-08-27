@@ -50,9 +50,9 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
 
     internal virtual void _animationListener(global::Doroti.Framework.Animation.AnimationStatus animationStatus)
     {
-        global::Doroti.Framework.Animation.AnimationStatus oldEffective__4606 = this._effectiveAnimationStatus;
+        global::Doroti.Framework.Animation.AnimationStatus oldEffective = this._effectiveAnimationStatus;
         _effectiveAnimationStatus = _calculateEffectiveAnimationStatus(lastEffective: this._effectiveAnimationStatus, current: animationStatus);
-        if ((!object.Equals(oldEffective__4606, this._effectiveAnimationStatus)))
+        if ((!object.Equals(oldEffective, this._effectiveAnimationStatus)))
         {
             _updateAnimations();
         }

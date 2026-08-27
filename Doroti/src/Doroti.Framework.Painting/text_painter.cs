@@ -100,19 +100,19 @@ public class WordBoundary : TextBoundary
     {
         DartRuntimePrimitives.Assert(() => TextPainter.isHighSurrogate(highSurrogate));
         DartRuntimePrimitives.Assert(() => TextPainter.isLowSurrogate(lowSurrogate));
-        long @base__6815 = ((65536L - ((55296L << (int)(10L)))) - 56320L);
-        return ((((highSurrogate << (int)(10L))) + lowSurrogate) + @base__6815);
+        long @base = ((65536L - ((55296L << (int)(10L)))) - 56320L);
+        return ((((highSurrogate << (int)(10L))) + lowSurrogate) + @base);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual long? _codePointAt(long index)
     {
-        long? codeUnitAtIndex__7044 = this._text.codeUnitAt(index);
-        if ((codeUnitAtIndex__7044 is null))
+        long? codeUnitAtIndex = this._text.codeUnitAt(index);
+        if ((codeUnitAtIndex is null))
         {
             return null;
         }
-        return ((DartRuntimePrimitives.RequireValue(codeUnitAtIndex__7044) & 64512L) switch { 55296L => _codePointFromSurrogates(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(codeUnitAtIndex__7044)), DartRuntimePrimitives.RequireValue(this._text.codeUnitAt((index + 1L)))), 56320L => _codePointFromSurrogates(DartRuntimePrimitives.RequireValue(this._text.codeUnitAt((index - 1L))), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(codeUnitAtIndex__7044))), _ => DartRuntimePrimitives.RequireValue(codeUnitAtIndex__7044) });
+        return ((DartRuntimePrimitives.RequireValue(codeUnitAtIndex) & 64512L) switch { 55296L => _codePointFromSurrogates(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(codeUnitAtIndex)), DartRuntimePrimitives.RequireValue(this._text.codeUnitAt((index + 1L)))), 56320L => _codePointFromSurrogates(DartRuntimePrimitives.RequireValue(this._text.codeUnitAt((index - 1L))), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(codeUnitAtIndex))), _ => DartRuntimePrimitives.RequireValue(codeUnitAtIndex) });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -124,10 +124,10 @@ public class WordBoundary : TextBoundary
 
     internal virtual bool _skipSpacesAndPunctuations(long offset, bool forward)
     {
-        long? innerCodePoint__8175 = _codePointAt((forward ? (offset - 1L) : offset));
-        long? outerCodeUnit__8252 = this._text.codeUnitAt((forward ? offset : (offset - 1L)));
-        bool hardBreakRulesApply__8741 = ((((innerCodePoint__8175 is null) || (outerCodeUnit__8252 is null)) || _isNewline(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(innerCodePoint__8175)))) || _isNewline(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(outerCodeUnit__8252))));
-        return (hardBreakRulesApply__8741 || !_regExpSpaceSeparatorOrPunctuation.hasMatch(char.ConvertFromUtf32(checked((int)DartRuntimePrimitives.RequireValue(innerCodePoint__8175)))));
+        long? innerCodePoint = _codePointAt((forward ? (offset - 1L) : offset));
+        long? outerCodeUnit = this._text.codeUnitAt((forward ? offset : (offset - 1L)));
+        bool hardBreakRulesApply = ((((innerCodePoint is null) || (outerCodeUnit is null)) || _isNewline(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(innerCodePoint)))) || _isNewline(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(outerCodeUnit))));
+        return (hardBreakRulesApply || !_regExpSpaceSeparatorOrPunctuation.hasMatch(char.ConvertFromUtf32(checked((int)DartRuntimePrimitives.RequireValue(innerCodePoint)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -150,15 +150,15 @@ internal class _UntilTextBoundary__text_painter : TextBoundary
         {
             return null;
         }
-        long? offset__10158 = this._textBoundary.getLeadingTextBoundaryAt(position);
-        return (((offset__10158 is null) || this._predicate(DartRuntimePrimitives.RequireValue(offset__10158), false)) ? offset__10158 : getLeadingTextBoundaryAt((DartRuntimePrimitives.RequireValue(offset__10158) - 1L)));
+        long? offset = this._textBoundary.getLeadingTextBoundaryAt(position);
+        return (((offset is null) || this._predicate(DartRuntimePrimitives.RequireValue(offset), false)) ? offset : getLeadingTextBoundaryAt((DartRuntimePrimitives.RequireValue(offset) - 1L)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual long? getTrailingTextBoundaryAt(long position)
     {
-        long? offset__10418 = this._textBoundary.getTrailingTextBoundaryAt(Math.Max(position, 0L));
-        return (((offset__10418 is null) || this._predicate(DartRuntimePrimitives.RequireValue(offset__10418), true)) ? offset__10418 : getTrailingTextBoundaryAt(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(offset__10418))));
+        long? offset = this._textBoundary.getTrailingTextBoundaryAt(Math.Max(position, 0L));
+        return (((offset is null) || this._predicate(DartRuntimePrimitives.RequireValue(offset), true)) ? offset : getTrailingTextBoundaryAt(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(offset))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -206,29 +206,29 @@ internal class _TextLayout__text_painter
 
     internal virtual _LineCaretMetrics__text_painter _computeEndOfTextCaretAnchorOffset()
     {
-        string rawString__13685 = ((TextPainter)this._painter).plainText;
-        long lastLineIndex__13731 = (this._paragraph.numberOfLines - 1L);
-        DartRuntimePrimitives.Assert(() => (lastLineIndex__13731 >= 0L));
-        global::Doroti.Ui.LineMetrics lineMetrics__13834 = this._paragraph.getLineMetricsAt(lastLineIndex__13731)!;
-        string lastCodeUnit__14441 = rawString__13685[(int)((rawString__13685.Length - 1L))].ToString();
-        bool hasTrailingSpaces__14504 = (lastCodeUnit__14441.codeUnitAt(0L) switch { 9L => true, 160L or 8199L => false, 8239L => false, _ => _regExpSpaceSeparators.hasMatch(lastCodeUnit__14441) });
-        double baseline__14799 = lineMetrics__13834.baseline;
-        double dx__14849 = default!;
-        double height__14870 = default!;
-        global::Doroti.Ui.GlyphInfo? lastGlyph__14907 = this._paragraph.getGlyphInfoAt((rawString__13685.Length - 1L));
-        if ((hasTrailingSpaces__14504 && (lastGlyph__14907 is not null)))
+        string rawString = ((TextPainter)this._painter).plainText;
+        long lastLineIndex = (this._paragraph.numberOfLines - 1L);
+        DartRuntimePrimitives.Assert(() => (lastLineIndex >= 0L));
+        global::Doroti.Ui.LineMetrics lineMetrics = this._paragraph.getLineMetricsAt(lastLineIndex)!;
+        string lastCodeUnit = rawString[(int)((rawString.Length - 1L))].ToString();
+        bool hasTrailingSpaces = (lastCodeUnit.codeUnitAt(0L) switch { 9L => true, 160L or 8199L => false, 8239L => false, _ => _regExpSpaceSeparators.hasMatch(lastCodeUnit) });
+        double baselineLocal = lineMetrics.baseline;
+        double dx = default!;
+        double heightLocal = default!;
+        global::Doroti.Ui.GlyphInfo? lastGlyph = this._paragraph.getGlyphInfoAt((rawString.Length - 1L));
+        if ((hasTrailingSpaces && (lastGlyph is not null)))
         {
-            global::Doroti.Ui.Rect glyphBounds__15171 = lastGlyph__14907.graphemeClusterLayoutBounds;
-            DartRuntimePrimitives.Assert(() => !glyphBounds__15171.isEmpty);
-            dx__14849 = (this.writingDirection switch { TextDirection.ltr => glyphBounds__15171.right, TextDirection.rtl => glyphBounds__15171.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            height__14870 = glyphBounds__15171.height;
+            global::Doroti.Ui.Rect glyphBounds = lastGlyph.graphemeClusterLayoutBounds;
+            DartRuntimePrimitives.Assert(() => !glyphBounds.isEmpty);
+            dx = (this.writingDirection switch { TextDirection.ltr => glyphBounds.right, TextDirection.rtl => glyphBounds.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            heightLocal = glyphBounds.height;
         }
         else
         {
-            dx__14849 = (this.writingDirection switch { TextDirection.ltr => (lineMetrics__13834.left + lineMetrics__13834.width), TextDirection.rtl => lineMetrics__13834.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            height__14870 = lineMetrics__13834.height;
+            dx = (this.writingDirection switch { TextDirection.ltr => (lineMetrics.left + lineMetrics.width), TextDirection.rtl => lineMetrics.left, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            heightLocal = lineMetrics.height;
         }
-        return new _LineCaretMetrics__text_painter(offset: new global::Doroti.Ui.Offset(dx__14849, baseline__14799), writingDirection: this.writingDirection, height: height__14870);
+        return new _LineCaretMetrics__text_painter(offset: new global::Doroti.Ui.Offset(dx, baselineLocal), writingDirection: this.writingDirection, height: heightLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -273,9 +273,9 @@ internal class _TextPainterLayoutCacheWithOffset__text_painter
             {
                 return new global::Doroti.Ui.Offset(double.PositiveInfinity, 0.0);
             }
-            double dx__17434 = (this.textAlignment * ((this.contentWidth - this.paragraph.width)));
-            DartRuntimePrimitives.Assert(() => !double.IsNaN(dx__17434));
-            return new global::Doroti.Ui.Offset(dx__17434, 0);
+            double dx = (this.textAlignment * ((this.contentWidth - this.paragraph.width)));
+            DartRuntimePrimitives.Assert(() => !double.IsNaN(dx));
+            return new global::Doroti.Ui.Offset(dx, 0);
             return default!;
         }
     }
@@ -295,9 +295,9 @@ internal class _TextPainterLayoutCacheWithOffset__text_painter
             DartRuntimePrimitives.Assert(() => (this.paragraph.width == double.PositiveInfinity));
             return false;
         }
-        double maxIntrinsicWidth__19391 = this.paragraph.maxIntrinsicWidth;
-        bool skipLineBreaking__19558 = ((maxWidth == this.layoutMaxWidth) || (((((this.paragraph.width - maxIntrinsicWidth__19391)) > -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) && (((maxWidth - maxIntrinsicWidth__19391)) > -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))));
-        if (skipLineBreaking__19558)
+        double maxIntrinsicWidthLocal = this.paragraph.maxIntrinsicWidth;
+        bool skipLineBreaking = ((maxWidth == this.layoutMaxWidth) || (((((this.paragraph.width - maxIntrinsicWidthLocal)) > -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance) && (((maxWidth - maxIntrinsicWidthLocal)) > -global::Doroti.Framework.Foundation.ConstantsLibrary.precisionErrorTolerance))));
+        if (skipLineBreaking)
         {
             contentWidth = this.layout._contentWidthFor(minWidth, maxWidth, widthBasis);
             return true;
@@ -375,7 +375,7 @@ public class TextPainter
     public static double computeWidth(InlineSpan text, TextDirection textDirection, TextAlign textAlign = TextAlign.start, double textScaleFactor = 1.0, TextScaler textScaler = default!, long? maxLines = null, string? ellipsis = null, Locale? locale = null, StrutStyle? strutStyle = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, double minWidth = 0.0, double maxWidth = double.PositiveInfinity)
     {
         DartRuntimePrimitives.Assert(() => ((textScaleFactor == 1.0) || DartRuntimePrimitives.Identical(textScaler, TextScaler.noScaling)));
-        var painter__25686 = ((Func<TextPainter>)(() =>
+        var painter = ((Func<TextPainter>)(() =>
 {
     var __cascade = new TextPainter(text: text, textAlign: textAlign, textDirection: DartRuntimePrimitives.RequireValue(textDirection), textScaler: ((object.Equals(textScaler, TextScaler.noScaling)) ? TextScaler.CreateLinear(textScaleFactor) : textScaler), maxLines: maxLines, ellipsis: ellipsis, locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
     __cascade.layout(minWidth: minWidth, maxWidth: maxWidth);
@@ -383,11 +383,11 @@ public class TextPainter
 }))();
         try
         {
-            return ((TextPainter)painter__25686).width;
+            return ((TextPainter)painter).width;
         }
         finally
         {
-            painter__25686.dispose();
+            painter.dispose();
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -395,7 +395,7 @@ public class TextPainter
     public static double computeMaxIntrinsicWidth(InlineSpan text, TextDirection textDirection, TextAlign textAlign = TextAlign.start, double textScaleFactor = 1.0, TextScaler textScaler = default!, long? maxLines = null, string? ellipsis = null, Locale? locale = null, StrutStyle? strutStyle = null, TextWidthBasis textWidthBasis = TextWidthBasis.parent, TextHeightBehavior? textHeightBehavior = null, double minWidth = 0.0, double maxWidth = double.PositiveInfinity)
     {
         DartRuntimePrimitives.Assert(() => ((textScaleFactor == 1.0) || DartRuntimePrimitives.Identical(textScaler, TextScaler.noScaling)));
-        var painter__27638 = ((Func<TextPainter>)(() =>
+        var painter = ((Func<TextPainter>)(() =>
 {
     var __cascade = new TextPainter(text: text, textAlign: textAlign, textDirection: DartRuntimePrimitives.RequireValue(textDirection), textScaler: ((object.Equals(textScaler, TextScaler.noScaling)) ? TextScaler.CreateLinear(textScaleFactor) : textScaler), maxLines: maxLines, ellipsis: ellipsis, locale: locale, strutStyle: strutStyle, textWidthBasis: textWidthBasis, textHeightBehavior: textHeightBehavior);
     __cascade.layout(minWidth: minWidth, maxWidth: maxWidth);
@@ -403,11 +403,11 @@ public class TextPainter
 }))();
         try
         {
-            return ((TextPainter)painter__27638).maxIntrinsicWidth;
+            return ((TextPainter)painter).maxIntrinsicWidth;
         }
         finally
         {
-            painter__27638.dispose();
+            painter.dispose();
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -455,16 +455,16 @@ public class TextPainter
                 this._layoutTemplate?.dispose();
                 _layoutTemplate = null;
             }
-            RenderComparison comparison__30807 = ((__value is null) ? RenderComparison.layout : (this._text?.compareTo(__value) ?? RenderComparison.layout));
+            RenderComparison comparison = ((__value is null) ? RenderComparison.layout : (this._text?.compareTo(__value) ?? RenderComparison.layout));
             _text = __value;
             _cachedPlainText = null;
-            if ((FoundationRuntimePorts.EnumIndex(comparison__30807) >= FoundationRuntimePorts.EnumIndex(RenderComparison.layout)))
+            if ((FoundationRuntimePorts.EnumIndex(comparison) >= FoundationRuntimePorts.EnumIndex(RenderComparison.layout)))
             {
                 markNeedsLayout();
             }
             else
             {
-                if ((FoundationRuntimePorts.EnumIndex(comparison__30807) >= FoundationRuntimePorts.EnumIndex(RenderComparison.paint)))
+                if ((FoundationRuntimePorts.EnumIndex(comparison) >= FoundationRuntimePorts.EnumIndex(RenderComparison.paint)))
                 {
                     _rebuildParagraphForPaint = true;
                 }
@@ -628,22 +628,22 @@ public class TextPainter
     {
         get
         {
-            _TextPainterLayoutCacheWithOffset__text_painter? layout__38748 = this._layoutCache;
-            if ((layout__38748 is null))
+            _TextPainterLayoutCacheWithOffset__text_painter? layout = this._layoutCache;
+            if ((layout is null))
             {
                 return null;
             }
-            global::Doroti.Ui.Offset offset__38839 = ((_TextPainterLayoutCacheWithOffset__text_painter)layout__38748).paintOffset;
-            if ((!double.IsFinite(offset__38839.dx) || !double.IsFinite(offset__38839.dy)))
+            global::Doroti.Ui.Offset offset = ((_TextPainterLayoutCacheWithOffset__text_painter)layout).paintOffset;
+            if ((!double.IsFinite(offset.dx) || !double.IsFinite(offset.dy)))
             {
                 return new List<global::Doroti.Ui.TextBox>();
             }
-            List<global::Doroti.Ui.TextBox> rawBoxes__38978 = ((_TextPainterLayoutCacheWithOffset__text_painter)layout__38748).inlinePlaceholderBoxes;
-            if ((object.Equals(offset__38839, Offset.zero)))
+            List<global::Doroti.Ui.TextBox> rawBoxes = ((_TextPainterLayoutCacheWithOffset__text_painter)layout).inlinePlaceholderBoxes;
+            if ((object.Equals(offset, Offset.zero)))
             {
-                return rawBoxes__38978;
+                return rawBoxes;
             }
-            return rawBoxes__38978.map<TextBox, TextBox>(((box) => _shiftTextBox(box, offset__38839))).ToList();
+            return rawBoxes.map<TextBox, TextBox>(((box) => _shiftTextBox(box, offset))).ToList();
             return default!;
         }
     }
@@ -655,17 +655,17 @@ public class TextPainter
         }
         DartRuntimePrimitives.Assert(() =>
             {
-                var placeholderCount__39830 = 0L;
+                var placeholderCount = 0L;
                 this.text!.visitChildren(((Func<InlineSpan, bool>)((span) =>
                 {
                     if ((span is PlaceholderSpan))
                     {
-                        placeholderCount__39830 += 1L;
+                        placeholderCount += 1L;
                     }
-                    return (checked((long)(value.Count)) >= placeholderCount__39830);
+                    return (checked((long)(value.Count)) >= placeholderCount);
                     return default;
                 })));
-                return (placeholderCount__39830 == checked((long)(value.Count)));
+                return (placeholderCount == checked((long)(value.Count)));
             });
         _placeholderDimensions = value;
         markNeedsLayout();
@@ -674,23 +674,23 @@ public class TextPainter
     internal virtual global::Doroti.Ui.ParagraphStyle _createParagraphStyle(TextAlign? textAlignOverride = null)
     {
         DartRuntimePrimitives.Assert(() => (this.textDirection is not null));
-        TextStyle baseStyle__40457 = (this._text?.style ?? new TextStyle());
-        return baseStyle__40457.getParagraphStyle(textAlign: (textAlignOverride ?? this.textAlign), textDirection: this.textDirection, textScaler: this.textScaler, maxLines: this._maxLines, textHeightBehavior: this._textHeightBehavior, ellipsis: this._ellipsis, locale: this._locale, strutStyle: this._strutStyle);
+        TextStyle baseStyle = (this._text?.style ?? new TextStyle());
+        return baseStyle.getParagraphStyle(textAlign: (textAlignOverride ?? this.textAlign), textDirection: this.textDirection, textScaler: this.textScaler, maxLines: this._maxLines, textHeightBehavior: this._textHeightBehavior, ellipsis: this._ellipsis, locale: this._locale, strutStyle: this._strutStyle);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Ui.Paragraph _createLayoutTemplate()
     {
-        var builder__40910 = new global::Doroti.Ui.ParagraphBuilder(_createParagraphStyle(TextAlign.left));
-        global::Doroti.Ui.TextStyle? textStyle__41067 = this.text?.style?.getTextStyle(textScaler: this.textScaler);
-        if ((textStyle__41067 is not null))
+        var builder = new global::Doroti.Ui.ParagraphBuilder(_createParagraphStyle(TextAlign.left));
+        global::Doroti.Ui.TextStyle? textStyle = this.text?.style?.getTextStyle(textScaler: this.textScaler);
+        if ((textStyle is not null))
         {
-            builder__40910.pushStyle(textStyle__41067);
+            builder.pushStyle(textStyle);
         }
-        builder__40910.addText(" ");
+        builder.addText(" ");
         return ((Func<Paragraph>)(() =>
 {
-    var __cascade = builder__40910.build();
+    var __cascade = builder.build();
     __cascade.layout(new global::Doroti.Ui.ParagraphConstraints(width: double.PositiveInfinity));
     return __cascade;
 }))();
@@ -764,15 +764,15 @@ public class TextPainter
     }
     internal virtual global::Doroti.Ui.Paragraph _createParagraph(InlineSpan text)
     {
-        var builder__44548 = new global::Doroti.Ui.ParagraphBuilder(_createParagraphStyle());
-        text.build(builder__44548, textScaler: this.textScaler, dimensions: this._placeholderDimensions);
+        var builder = new global::Doroti.Ui.ParagraphBuilder(_createParagraphStyle());
+        text.build(builder, textScaler: this.textScaler, dimensions: this._placeholderDimensions);
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugMarkNeedsLayoutCallStack = null;
                 return true;
             });
         _rebuildParagraphForPaint = false;
-        return builder__44548.build();
+        return builder.build();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -785,87 +785,87 @@ public class TextPainter
                 _debugNeedsRelayout = false;
                 return true;
             });
-        _TextPainterLayoutCacheWithOffset__text_painter? cachedLayout__45571 = this._layoutCache;
-        if (((cachedLayout__45571 is not null) && cachedLayout__45571._resizeToFit(minWidth, maxWidth, this.textWidthBasis)))
+        _TextPainterLayoutCacheWithOffset__text_painter? cachedLayout = this._layoutCache;
+        if (((cachedLayout is not null) && cachedLayout._resizeToFit(minWidth, maxWidth, this.textWidthBasis)))
         {
             return;
         }
-        InlineSpan? text__45740 = this.text;
-        if ((text__45740 is null))
+        InlineSpan? textLocal = this.text;
+        if ((textLocal is null))
         {
             throw new InvalidOperationException("TextPainter.text must be set to a non-null value before using the TextPainter.");
         }
-        global::Doroti.Ui.TextDirection? textDirection__45936 = this.textDirection;
-        if ((textDirection__45936 is null))
+        global::Doroti.Ui.TextDirection? textDirectionLocal = this.textDirection;
+        if ((textDirectionLocal is null))
         {
             throw new InvalidOperationException("TextPainter.textDirection must be set to a non-null value before using the TextPainter.");
         }
-        double paintOffsetAlignment__46161 = _computePaintOffsetFraction(this.textAlign, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textDirection__45936)));
-        bool adjustMaxWidth__46434 = (!double.IsFinite(maxWidth) && (paintOffsetAlignment__46161 != 0L));
-        double? adjustedMaxWidth__46518 = (!adjustMaxWidth__46434 ? maxWidth : cachedLayout__45571?.layout.maxIntrinsicLineExtent);
-        double layoutMaxWidth__46644 = (adjustedMaxWidth__46518 ?? maxWidth);
-        global::Doroti.Ui.Paragraph paragraph__47147 = ((Func<Paragraph>)(() =>
+        double paintOffsetAlignment = _computePaintOffsetFraction(this.textAlign, DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(textDirectionLocal)));
+        bool adjustMaxWidth = (!double.IsFinite(maxWidth) && (paintOffsetAlignment != 0L));
+        double? adjustedMaxWidth = (!adjustMaxWidth ? maxWidth : cachedLayout?.layout.maxIntrinsicLineExtent);
+        double layoutMaxWidth = (adjustedMaxWidth ?? maxWidth);
+        global::Doroti.Ui.Paragraph paragraphLocal = ((Func<Paragraph>)(() =>
 {
-    var __cascade = ((cachedLayout__45571?.paragraph ?? _createParagraph(text__45740)));
-    __cascade.layout(new global::Doroti.Ui.ParagraphConstraints(width: layoutMaxWidth__46644));
+    var __cascade = ((cachedLayout?.paragraph ?? _createParagraph(textLocal)));
+    __cascade.layout(new global::Doroti.Ui.ParagraphConstraints(width: layoutMaxWidth));
     return __cascade;
 }))();
-        var layout__47285 = new _TextLayout__text_painter(paragraph__47147, DartRuntimePrimitives.RequireValue(textDirection__45936), this);
-        double contentWidth__47358 = layout__47285._contentWidthFor(minWidth, maxWidth, this.textWidthBasis);
-        _TextPainterLayoutCacheWithOffset__text_painter newLayoutCache__47479 = default!;
-        if (((adjustedMaxWidth__46518 is null) && double.IsFinite(minWidth)))
+        var layoutLocal = new _TextLayout__text_painter(paragraphLocal, DartRuntimePrimitives.RequireValue(textDirectionLocal), this);
+        double contentWidth = layoutLocal._contentWidthFor(minWidth, maxWidth, this.textWidthBasis);
+        _TextPainterLayoutCacheWithOffset__text_painter newLayoutCache = default!;
+        if (((adjustedMaxWidth is null) && double.IsFinite(minWidth)))
         {
             DartRuntimePrimitives.Assert(() => double.IsInfinity(maxWidth));
-            double newInputWidth__47789 = ((_TextLayout__text_painter)layout__47285).maxIntrinsicLineExtent;
-            paragraph__47147.layout(new global::Doroti.Ui.ParagraphConstraints(width: newInputWidth__47789));
-            newLayoutCache__47479 = new _TextPainterLayoutCacheWithOffset__text_painter(layout__47285, paintOffsetAlignment__46161, newInputWidth__47789, contentWidth__47358);
+            double newInputWidth = ((_TextLayout__text_painter)layoutLocal).maxIntrinsicLineExtent;
+            paragraphLocal.layout(new global::Doroti.Ui.ParagraphConstraints(width: newInputWidth));
+            newLayoutCache = new _TextPainterLayoutCacheWithOffset__text_painter(layoutLocal, paintOffsetAlignment, newInputWidth, contentWidth);
         }
         else
         {
-            newLayoutCache__47479 = new _TextPainterLayoutCacheWithOffset__text_painter(layout__47285, paintOffsetAlignment__46161, layoutMaxWidth__46644, contentWidth__47358);
+            newLayoutCache = new _TextPainterLayoutCacheWithOffset__text_painter(layoutLocal, paintOffsetAlignment, layoutMaxWidth, contentWidth);
         }
-        _layoutCache = newLayoutCache__47479;
+        _layoutCache = newLayoutCache;
     }
 
     public virtual void paint(Canvas canvas, Offset offset)
     {
-        _TextPainterLayoutCacheWithOffset__text_painter? layoutCache__49757 = this._layoutCache;
-        if ((layoutCache__49757 is null))
+        _TextPainterLayoutCacheWithOffset__text_painter? layoutCache = this._layoutCache;
+        if ((layoutCache is null))
         {
             throw new InvalidOperationException("TextPainter.paint called when text geometry was not yet calculated.\n" + "Please call layout() before paint() to position the text before painting it.");
         }
-        if ((!double.IsFinite(((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__49757).paintOffset.dx) || !double.IsFinite(((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__49757).paintOffset.dy)))
+        if ((!double.IsFinite(((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).paintOffset.dx) || !double.IsFinite(((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).paintOffset.dy)))
         {
             return;
         }
         if (this._rebuildParagraphForPaint)
         {
-            global::Doroti.Ui.Size? debugSize__50182 = default!;
+            global::Doroti.Ui.Size? debugSize = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    debugSize__50182 = this.size;
+                    debugSize = this.size;
                     return true;
                 });
-            global::Doroti.Ui.Paragraph paragraph__50296 = ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__49757).paragraph;
-            DartRuntimePrimitives.Assert(() => !double.IsNaN(((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__49757).layoutMaxWidth));
-            ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__49757).layout._paragraph = ((Func<Paragraph>)(() =>
+            global::Doroti.Ui.Paragraph paragraphLocal = ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).paragraph;
+            DartRuntimePrimitives.Assert(() => !double.IsNaN(((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).layoutMaxWidth));
+            ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).layout._paragraph = ((Func<Paragraph>)(() =>
 {
     var __cascade = _createParagraph(this.text!);
-    __cascade.layout(new global::Doroti.Ui.ParagraphConstraints(width: ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__49757).layoutMaxWidth));
+    __cascade.layout(new global::Doroti.Ui.ParagraphConstraints(width: ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).layoutMaxWidth));
     return __cascade;
 }))();
-            DartRuntimePrimitives.Assert(() => (paragraph__50296.width == ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__49757).layout._paragraph.width));
-            paragraph__50296.dispose();
-            DartRuntimePrimitives.Assert(() => (object.Equals(debugSize__50182, this.size)));
+            DartRuntimePrimitives.Assert(() => (paragraphLocal.width == ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).layout._paragraph.width));
+            paragraphLocal.dispose();
+            DartRuntimePrimitives.Assert(() => (object.Equals(debugSize, this.size)));
         }
         DartRuntimePrimitives.Assert(() => !this._rebuildParagraphForPaint);
-        DartRuntimePrimitives.Assert(() => (!this.debugPaintTextLayoutBoxes || _debugPaintCharacterLayoutBoxes(canvas, layoutCache__49757, offset)));
-        canvas.drawParagraph(((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__49757).paragraph, (offset + ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__49757).paintOffset));
+        DartRuntimePrimitives.Assert(() => (!this.debugPaintTextLayoutBoxes || _debugPaintCharacterLayoutBoxes(canvas, layoutCache, offset)));
+        canvas.drawParagraph(((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).paragraph, (offset + ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).paintOffset));
     }
 
     internal virtual bool _debugPaintCharacterLayoutBoxes(Canvas canvas, _TextPainterLayoutCacheWithOffset__text_painter layout, Offset offset)
     {
-        var paint__51229 = ((Func<Paint>)(() =>
+        var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.style = PaintingStyle.stroke;
@@ -873,10 +873,10 @@ public class TextPainter
     __cascade.color = new global::Doroti.Ui.Color(4278255615L);
     return __cascade;
 }))();
-        List<global::Doroti.Ui.TextBox> textBoxes__51373 = getBoxesForSelection(new TextSelection(baseOffset: 0L, extentOffset: this.plainText.Length));
-        foreach (var textBox__51497 in textBoxes__51373)
+        List<global::Doroti.Ui.TextBox> textBoxes = getBoxesForSelection(new TextSelection(baseOffset: 0L, extentOffset: this.plainText.Length));
+        foreach (var textBox in textBoxes)
         {
-            canvas.drawRect(textBox__51497.toRect().shift(offset), paint__51229);
+            canvas.drawRect(textBox.toRect().shift(offset), paint);
         }
         return true;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -904,23 +904,23 @@ public class TextPainter
 
     public virtual long? getOffsetAfter(long offset)
     {
-        long? nextCodeUnit__52902 = this._text!.codeUnitAt(offset);
-        if ((nextCodeUnit__52902 is null))
+        long? nextCodeUnit = this._text!.codeUnitAt(offset);
+        if ((nextCodeUnit is null))
         {
             return null;
         }
-        return (isHighSurrogate(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(nextCodeUnit__52902))) ? (offset + 2L) : (offset + 1L));
+        return (isHighSurrogate(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(nextCodeUnit))) ? (offset + 2L) : (offset + 1L));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual long? getOffsetBefore(long offset)
     {
-        long? prevCodeUnit__53384 = this._text!.codeUnitAt((offset - 1L));
-        if ((prevCodeUnit__53384 is null))
+        long? prevCodeUnit = this._text!.codeUnitAt((offset - 1L));
+        if ((prevCodeUnit is null))
         {
             return null;
         }
-        return (isLowSurrogate(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(prevCodeUnit__53384))) ? (offset - 2L) : (offset - 1L));
+        return (isLowSurrogate(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(prevCodeUnit))) ? (offset - 2L) : (offset - 1L));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -932,38 +932,38 @@ public class TextPainter
 
     public virtual global::Doroti.Ui.Offset getOffsetForCaret(TextPosition position, Rect caretPrototype)
     {
-        _TextPainterLayoutCacheWithOffset__text_painter layoutCache__54447 = this._layoutCache!;
-        _LineCaretMetrics__text_painter? caretMetrics__54505 = _computeCaretMetrics(position);
-        if ((caretMetrics__54505 is null))
+        _TextPainterLayoutCacheWithOffset__text_painter layoutCache = this._layoutCache!;
+        _LineCaretMetrics__text_painter? caretMetrics = _computeCaretMetrics(position);
+        if ((caretMetrics is null))
         {
-            double paintOffsetAlignment__54604 = _computePaintOffsetFraction(this.textAlign, DartRuntimePrimitives.RequireValue(this.textDirection));
-            double dx__54900 = ((paintOffsetAlignment__54604 == 0L) ? 0 : (paintOffsetAlignment__54604 * ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__54447).contentWidth));
-            return new global::Doroti.Ui.Offset(dx__54900, 0.0);
+            double paintOffsetAlignment = _computePaintOffsetFraction(this.textAlign, DartRuntimePrimitives.RequireValue(this.textDirection));
+            double dxLocal = ((paintOffsetAlignment == 0L) ? 0 : (paintOffsetAlignment * ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).contentWidth));
+            return new global::Doroti.Ui.Offset(dxLocal, 0.0);
         }
-        global::Doroti.Ui.Offset rawOffset__55060 = (caretMetrics__54505 switch { _LineCaretMetrics__text_painter { writingDirection: TextDirection.ltr, offset: global::Doroti.Ui.Offset offset__55171 } __object55102 => offset__55171, _LineCaretMetrics__text_painter { writingDirection: TextDirection.rtl, offset: global::Doroti.Ui.Offset offset__55265 } __object55196 => new global::Doroti.Ui.Offset((offset__55265.dx - caretPrototype.width), offset__55265.dy), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        double adjustedDx__55719 = Dart_uiLibrary.clampDouble((rawOffset__55060.dx + ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__54447).paintOffset.dx), 0, ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__54447).contentWidth);
-        return new global::Doroti.Ui.Offset(adjustedDx__55719, (rawOffset__55060.dy + ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache__54447).paintOffset.dy));
+        global::Doroti.Ui.Offset rawOffset = (caretMetrics switch { _LineCaretMetrics__text_painter { writingDirection: TextDirection.ltr, offset: global::Doroti.Ui.Offset offsetLocal } __object55102 => offsetLocal, _LineCaretMetrics__text_painter { writingDirection: TextDirection.rtl, offset: global::Doroti.Ui.Offset offsetAlternate } __object55196 => new global::Doroti.Ui.Offset((offsetAlternate.dx - caretPrototype.width), offsetAlternate.dy), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        double adjustedDx = Dart_uiLibrary.clampDouble((rawOffset.dx + ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).paintOffset.dx), 0, ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).contentWidth);
+        return new global::Doroti.Ui.Offset(adjustedDx, (rawOffset.dy + ((_TextPainterLayoutCacheWithOffset__text_painter)layoutCache).paintOffset.dy));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual bool _strutDisabled => (this.strutStyle switch { null => true, var __constant56323 when object.Equals(__constant56323, StrutStyle.disabled) => true, StrutStyle { fontSize: double fontSize__56382 } __object56356 => (fontSize__56382 == 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    internal virtual bool _strutDisabled => (this.strutStyle switch { null => true, var __constant56323 when object.Equals(__constant56323, StrutStyle.disabled) => true, StrutStyle { fontSize: double fontSizeLocal } __object56356 => (fontSizeLocal == 0.0), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     public virtual double getFullHeightForCaret(TextPosition position, Rect caretPrototype)
     {
         if (this._strutDisabled)
         {
-            double? heightFromCaretMetrics__56763 = _computeCaretMetrics(position)?.height;
-            if ((heightFromCaretMetrics__56763 is not null))
+            double? heightFromCaretMetrics = _computeCaretMetrics(position)?.height;
+            if ((heightFromCaretMetrics is not null))
             {
-                double heightFromCaretMetrics__56763__value56838 = DartRuntimePrimitives.RequireValue(heightFromCaretMetrics__56763);
+                double heightFromCaretMetrics__56763__value56838 = DartRuntimePrimitives.RequireValue(heightFromCaretMetrics);
                 return DartRuntimePrimitives.RequireValue(heightFromCaretMetrics__56763__value56838);
             }
         }
-        List<global::Doroti.Ui.TextBox> boxes__56949 = _getOrCreateLayoutTemplate().getBoxesForRange(0L, 1L, boxHeightStyle: BoxHeightStyle.strut);
-        if ((checked((long)(boxes__56949.Count)) == 0))
+        List<global::Doroti.Ui.TextBox> boxes = _getOrCreateLayoutTemplate().getBoxesForRange(0L, 1L, boxHeightStyle: BoxHeightStyle.strut);
+        if ((checked((long)(boxes.Count)) == 0))
         {
             return this.preferredLineHeight;
         }
-        return boxes__56949.Single().toRect().height;
+        return boxes.Single().toRect().height;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -972,43 +972,43 @@ public class TextPainter
     {
         DartRuntimePrimitives.Assert(() => this._debugAssertTextLayoutIsValid);
         DartRuntimePrimitives.Assert(() => !this._debugNeedsRelayout);
-        _TextPainterLayoutCacheWithOffset__text_painter cachedLayout__60322 = this._layoutCache!;
-        if ((((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__60322).paragraph.numberOfLines < 1L))
+        _TextPainterLayoutCacheWithOffset__text_painter cachedLayout = this._layoutCache!;
+        if ((((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paragraph.numberOfLines < 1L))
         {
             return null;
         }
-        var (offset__60617, anchorToLeadingEdge__60630) = (position switch { global::Doroti.Ui.TextPosition { offset: 0L } __object60679 => (((long, bool))((0L, true))), global::Doroti.Ui.TextPosition { offset: long offset__60878, affinity: TextAffinity.downstream } __object60854 => (((long, bool))((offset__60878, true))), global::Doroti.Ui.TextPosition { offset: long offset__60970, affinity: TextAffinity.upstream } __object60946 when _isNewlineAtOffset((offset__60970 - 1L)) => (((long, bool))((offset__60970, true))), global::Doroti.Ui.TextPosition { offset: long offset__61114, affinity: TextAffinity.upstream } __object61090 => (((long, bool))(((offset__61114 - 1L), false))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        long caretPositionCacheKey__61201 = (anchorToLeadingEdge__60630 ? offset__60617 : (-offset__60617 - 1L));
-        if ((caretPositionCacheKey__61201 == ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__60322)._previousCaretPositionKey))
+        var (offsetLocal, anchorToLeadingEdge) = (position switch { global::Doroti.Ui.TextPosition { offset: 0L } __object60679 => (((long, bool))((0L, true))), global::Doroti.Ui.TextPosition { offset: long offsetAlternate, affinity: TextAffinity.downstream } __object60854 => (((long, bool))((offsetAlternate, true))), global::Doroti.Ui.TextPosition { offset: long offsetNested, affinity: TextAffinity.upstream } __object60946 when _isNewlineAtOffset((offsetNested - 1L)) => (((long, bool))((offsetNested, true))), global::Doroti.Ui.TextPosition { offset: long offsetCurrent, affinity: TextAffinity.upstream } __object61090 => (((long, bool))(((offsetCurrent - 1L), false))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        long caretPositionCacheKey = (anchorToLeadingEdge ? offsetLocal : (-offsetLocal - 1L));
+        if ((caretPositionCacheKey == ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout)._previousCaretPositionKey))
         {
             return this._caretMetrics;
         }
-        global::Doroti.Ui.GlyphInfo? glyphInfo__61403 = ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__60322).paragraph.getGlyphInfoAt(offset__60617);
-        if ((glyphInfo__61403 is null))
+        global::Doroti.Ui.GlyphInfo? glyphInfo = ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paragraph.getGlyphInfoAt(offsetLocal);
+        if ((glyphInfo is null))
         {
-            global::Doroti.Ui.Paragraph template__61807 = _getOrCreateLayoutTemplate();
-            DartRuntimePrimitives.Assert(() => (template__61807.numberOfLines == 1L));
-            double baselineOffset__61910 = template__61807.getLineMetricsAt(0L)!.baseline;
-            return ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__60322).layout._endOfTextCaretMetrics.shift(new global::Doroti.Ui.Offset(0.0, -baselineOffset__61910));
+            global::Doroti.Ui.Paragraph template = _getOrCreateLayoutTemplate();
+            DartRuntimePrimitives.Assert(() => (template.numberOfLines == 1L));
+            double baselineOffset = template.getLineMetricsAt(0L)!.baseline;
+            return ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).layout._endOfTextCaretMetrics.shift(new global::Doroti.Ui.Offset(0.0, -baselineOffset));
         }
-        global::Doroti.Ui.TextRange graphemeRange__62087 = glyphInfo__61403.graphemeClusterCodeUnitRange;
-        if (graphemeRange__62087.isCollapsed)
+        global::Doroti.Ui.TextRange graphemeRange = glyphInfo.graphemeClusterCodeUnitRange;
+        if (graphemeRange.isCollapsed)
         {
-            DartRuntimePrimitives.Assert(() => (graphemeRange__62087.start == 0L));
-            return _computeCaretMetrics(new global::Doroti.Ui.TextPosition(offset: (offset__60617 + 1L)));
+            DartRuntimePrimitives.Assert(() => (graphemeRange.start == 0L));
+            return _computeCaretMetrics(new global::Doroti.Ui.TextPosition(offset: (offsetLocal + 1L)));
         }
-        if ((anchorToLeadingEdge__60630 && (graphemeRange__62087.start != offset__60617)))
+        if ((anchorToLeadingEdge && (graphemeRange.start != offsetLocal)))
         {
-            DartRuntimePrimitives.Assert(() => (graphemeRange__62087.end > (graphemeRange__62087.start + 1L)));
-            return _computeCaretMetrics(new global::Doroti.Ui.TextPosition(offset: graphemeRange__62087.end));
+            DartRuntimePrimitives.Assert(() => (graphemeRange.end > (graphemeRange.start + 1L)));
+            return _computeCaretMetrics(new global::Doroti.Ui.TextPosition(offset: graphemeRange.end));
         }
-        _LineCaretMetrics__text_painter metrics__62869 = default!;
-        List<global::Doroti.Ui.TextBox> boxes__62902 = ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__60322).paragraph.getBoxesForRange(graphemeRange__62087.start, graphemeRange__62087.end, boxHeightStyle: Dart_uiLibrary.BoxHeightStyle.strut);
-        bool anchorToLeft__63073 = (glyphInfo__61403.writingDirection switch { TextDirection.ltr => anchorToLeadingEdge__60630, TextDirection.rtl => !anchorToLeadingEdge__60630, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Ui.TextBox box__63248 = (anchorToLeft__63073 ? boxes__62902.First() : boxes__62902.Last());
-        metrics__62869 = new _LineCaretMetrics__text_painter(offset: new global::Doroti.Ui.Offset((anchorToLeft__63073 ? box__63248.left : box__63248.right), box__63248.top), writingDirection: box__63248.direction, height: (box__63248.bottom - box__63248.top));
-        cachedLayout__60322._previousCaretPositionKey = caretPositionCacheKey__61201;
-        return _caretMetrics = metrics__62869;
+        _LineCaretMetrics__text_painter metrics = default!;
+        List<global::Doroti.Ui.TextBox> boxes = ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paragraph.getBoxesForRange(graphemeRange.start, graphemeRange.end, boxHeightStyle: Dart_uiLibrary.BoxHeightStyle.strut);
+        bool anchorToLeft = (glyphInfo.writingDirection switch { TextDirection.ltr => anchorToLeadingEdge, TextDirection.rtl => !anchorToLeadingEdge, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Ui.TextBox box = (anchorToLeft ? boxes.First() : boxes.Last());
+        metrics = new _LineCaretMetrics__text_painter(offset: new global::Doroti.Ui.Offset((anchorToLeft ? box.left : box.right), box.top), writingDirection: box.direction, height: (box.bottom - box.top));
+        cachedLayout._previousCaretPositionKey = caretPositionCacheKey;
+        return _caretMetrics = metrics;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1017,14 +1017,14 @@ public class TextPainter
         DartRuntimePrimitives.Assert(() => this._debugAssertTextLayoutIsValid);
         DartRuntimePrimitives.Assert(() => selection.isValid);
         DartRuntimePrimitives.Assert(() => !this._debugNeedsRelayout);
-        _TextPainterLayoutCacheWithOffset__text_painter cachedLayout__64821 = this._layoutCache!;
-        global::Doroti.Ui.Offset offset__64868 = ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__64821).paintOffset;
-        if ((!double.IsFinite(offset__64868.dx) || !double.IsFinite(offset__64868.dy)))
+        _TextPainterLayoutCacheWithOffset__text_painter cachedLayout = this._layoutCache!;
+        global::Doroti.Ui.Offset offset = ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paintOffset;
+        if ((!double.IsFinite(offset.dx) || !double.IsFinite(offset.dy)))
         {
             return new List<global::Doroti.Ui.TextBox>();
         }
-        List<global::Doroti.Ui.TextBox> boxes__65013 = ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__64821).paragraph.getBoxesForRange(selection.start, selection.end, boxHeightStyle: boxHeightStyle, boxWidthStyle: boxWidthStyle);
-        return ((object.Equals(offset__64868, Offset.zero)) ? boxes__65013 : boxes__65013.map<TextBox, TextBox>(((box) => _shiftTextBox(box, offset__64868))).ToList());
+        List<global::Doroti.Ui.TextBox> boxes = ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paragraph.getBoxesForRange(selection.start, selection.end, boxHeightStyle: boxHeightStyle, boxWidthStyle: boxWidthStyle);
+        return ((object.Equals(offset, Offset.zero)) ? boxes : boxes.map<TextBox, TextBox>(((box) => _shiftTextBox(box, offset))).ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1032,13 +1032,13 @@ public class TextPainter
     {
         DartRuntimePrimitives.Assert(() => this._debugAssertTextLayoutIsValid);
         DartRuntimePrimitives.Assert(() => !this._debugNeedsRelayout);
-        _TextPainterLayoutCacheWithOffset__text_painter cachedLayout__65854 = this._layoutCache!;
-        global::Doroti.Ui.GlyphInfo? rawGlyphInfo__65908 = ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__65854).paragraph.getClosestGlyphInfoForOffset((offset - ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__65854).paintOffset));
-        if (((rawGlyphInfo__65908 is null) || (object.Equals(((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__65854).paintOffset, Offset.zero))))
+        _TextPainterLayoutCacheWithOffset__text_painter cachedLayout = this._layoutCache!;
+        global::Doroti.Ui.GlyphInfo? rawGlyphInfo = ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paragraph.getClosestGlyphInfoForOffset((offset - ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paintOffset));
+        if (((rawGlyphInfo is null) || (object.Equals(((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paintOffset, Offset.zero))))
         {
-            return rawGlyphInfo__65908;
+            return rawGlyphInfo;
         }
-        return new global::Doroti.Ui.GlyphInfo(rawGlyphInfo__65908.graphemeClusterLayoutBounds.shift(((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__65854).paintOffset), rawGlyphInfo__65908.graphemeClusterCodeUnitRange, rawGlyphInfo__65908.writingDirection);
+        return new global::Doroti.Ui.GlyphInfo(rawGlyphInfo.graphemeClusterLayoutBounds.shift(((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paintOffset), rawGlyphInfo.graphemeClusterCodeUnitRange, rawGlyphInfo.writingDirection);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1046,8 +1046,8 @@ public class TextPainter
     {
         DartRuntimePrimitives.Assert(() => this._debugAssertTextLayoutIsValid);
         DartRuntimePrimitives.Assert(() => !this._debugNeedsRelayout);
-        _TextPainterLayoutCacheWithOffset__text_painter cachedLayout__66588 = this._layoutCache!;
-        return ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__66588).paragraph.getPositionForOffset((offset - ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout__66588).paintOffset));
+        _TextPainterLayoutCacheWithOffset__text_painter cachedLayout = this._layoutCache!;
+        return ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paragraph.getPositionForOffset((offset - ((_TextPainterLayoutCacheWithOffset__text_painter)cachedLayout).paintOffset));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1086,14 +1086,14 @@ public class TextPainter
     {
         DartRuntimePrimitives.Assert(() => this._debugAssertTextLayoutIsValid);
         DartRuntimePrimitives.Assert(() => !this._debugNeedsRelayout);
-        _TextPainterLayoutCacheWithOffset__text_painter layout__69725 = this._layoutCache!;
-        global::Doroti.Ui.Offset offset__69766 = ((_TextPainterLayoutCacheWithOffset__text_painter)layout__69725).paintOffset;
-        if ((!double.IsFinite(offset__69766.dx) || !double.IsFinite(offset__69766.dy)))
+        _TextPainterLayoutCacheWithOffset__text_painter layout = this._layoutCache!;
+        global::Doroti.Ui.Offset offset = ((_TextPainterLayoutCacheWithOffset__text_painter)layout).paintOffset;
+        if ((!double.IsFinite(offset.dx) || !double.IsFinite(offset.dy)))
         {
             return new List<global::Doroti.Ui.LineMetrics>();
         }
-        List<global::Doroti.Ui.LineMetrics> rawMetrics__69925 = ((_TextPainterLayoutCacheWithOffset__text_painter)layout__69725).lineMetrics;
-        return ((object.Equals(offset__69766, Offset.zero)) ? rawMetrics__69925 : rawMetrics__69925.map<LineMetrics, LineMetrics>(((metrics) => _shiftLineMetrics(metrics, offset__69766))).ToList());
+        List<global::Doroti.Ui.LineMetrics> rawMetrics = ((_TextPainterLayoutCacheWithOffset__text_painter)layout).lineMetrics;
+        return ((object.Equals(offset, Offset.zero)) ? rawMetrics : rawMetrics.map<LineMetrics, LineMetrics>(((metrics) => _shiftLineMetrics(metrics, offset))).ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1101,13 +1101,13 @@ public class TextPainter
     {
         get
         {
-            bool? disposed__70328 = default!;
+            bool? disposed = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    disposed__70328 = this._disposed;
+                    disposed = this._disposed;
                     return true;
                 });
-            return (disposed__70328 ?? throw new InvalidOperationException("debugDisposed only available when asserts are on."));
+            return (disposed ?? throw new InvalidOperationException("debugDisposed only available when asserts are on."));
             return default!;
         }
     }

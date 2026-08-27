@@ -108,9 +108,9 @@ public abstract class ServicesBinding : SchedulerBinding
             }
             else
             {
-                ByteData licenseBytes__8056 = await global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle.load("NOTICES.Z");
-                List<long> unzippedBytes__8133 = await global::Doroti.Framework.Foundation.IsolatesLibrary.compute<List<long>, List<long>>(Dart_ioLibrary.gzip.decode, licenseBytes__8056.buffer.asUint8List(), debugLabel: "decompressLicenses");
-                rawLicenses = await global::Doroti.Framework.Foundation.IsolatesLibrary.compute<List<long>, string>(global::Doroti.Runtime.Dart_convertLibrary.utf8.decode, unzippedBytes__8133, debugLabel: "utf8DecodeLicenses");
+                ByteData licenseBytes = await global::Doroti.Framework.Services.Asset_bundleLibrary.rootBundle.load("NOTICES.Z");
+                List<long> unzippedBytes = await global::Doroti.Framework.Foundation.IsolatesLibrary.compute<List<long>, List<long>>(Dart_ioLibrary.gzip.decode, licenseBytes.buffer.asUint8List(), debugLabel: "decompressLicenses");
+                rawLicenses = await global::Doroti.Framework.Foundation.IsolatesLibrary.compute<List<long>, string>(global::Doroti.Runtime.Dart_convertLibrary.utf8.decode, unzippedBytes, debugLabel: "utf8DecodeLicenses");
             }
             List<LicenseEntry> licenses = await global::Doroti.Framework.Foundation.IsolatesLibrary.compute<string, List<LicenseEntry>>(_parseLicenses, rawLicenses, debugLabel: "parseLicenses");
             licenses.forEach(controller.add);
@@ -187,13 +187,13 @@ public abstract class ServicesBinding : SchedulerBinding
         }
         else
         {
-            long previousStateIndex__12032 = System.Enum.GetValues<AppLifecycleState>().ToList().IndexOf(DartRuntimePrimitives.RequireValue(previousState));
-            long stateIndex__12118 = System.Enum.GetValues<AppLifecycleState>().ToList().IndexOf(state);
-            DartRuntimePrimitives.Assert(() => (previousStateIndex__12032 != -1L));
-            DartRuntimePrimitives.Assert(() => (stateIndex__12118 != -1L));
+            long previousStateIndex = System.Enum.GetValues<AppLifecycleState>().ToList().IndexOf(DartRuntimePrimitives.RequireValue(previousState));
+            long stateIndex = System.Enum.GetValues<AppLifecycleState>().ToList().IndexOf(state);
+            DartRuntimePrimitives.Assert(() => (previousStateIndex != -1L));
+            DartRuntimePrimitives.Assert(() => (stateIndex != -1L));
             if ((object.Equals(state, AppLifecycleState.detached)))
             {
-                for (long i = (previousStateIndex__12032 + 1L); (i < System.Enum.GetValues<AppLifecycleState>().ToList().Count); ++i)
+                for (long i = (previousStateIndex + 1L); (i < System.Enum.GetValues<AppLifecycleState>().ToList().Count); ++i)
                 {
                     stateChanges.Add(System.Enum.GetValues<AppLifecycleState>().ToList()[(int)(i)]);
                 }
@@ -201,16 +201,16 @@ public abstract class ServicesBinding : SchedulerBinding
             }
             else
             {
-                if ((previousStateIndex__12032 > stateIndex__12118))
+                if ((previousStateIndex > stateIndex))
                 {
-                    for (var i = stateIndex__12118; (i < previousStateIndex__12032); ++i)
+                    for (var i = stateIndex; (i < previousStateIndex); ++i)
                     {
                         stateChanges.Insert(checked((int)0L), System.Enum.GetValues<AppLifecycleState>().ToList()[(int)(i)]);
                     }
                 }
                 else
                 {
-                    for (long i = (previousStateIndex__12032 + 1L); (i <= stateIndex__12118); ++i)
+                    for (long i = (previousStateIndex + 1L); (i <= stateIndex); ++i)
                     {
                         stateChanges.Add(System.Enum.GetValues<AppLifecycleState>().ToList()[(int)(i)]);
                     }
@@ -290,15 +290,15 @@ public abstract class ServicesBinding : SchedulerBinding
                         DartRuntimePrimitives.Assert(() => false);
                         return default!;
                     }
-                    var args__16462 = ((List<object>?)methodCall.arguments)!;
-                    var callbackId__16522 = ((string?)args__16462[(int)(1L)])!;
-                    _systemContextMenuClient!.handleCustomContextMenuAction(callbackId__16522);
+                    var args = ((List<object>?)methodCall.arguments)!;
+                    var callbackId = ((string?)args[(int)(1L)])!;
+                    _systemContextMenuClient!.handleCustomContextMenuAction(callbackId);
                     break;
                 }
             case var __case16642 when object.Equals(__case16642, "SystemChrome.systemUIChange"):
                 {
-                    var args__16687 = ((List<object>?)methodCall.arguments)!;
-                    await _systemUiChangeCallback?.Invoke(((bool)args__16687[(int)(0L)]));
+                    var argsLocal = ((List<object>?)methodCall.arguments)!;
+                    await _systemUiChangeCallback?.Invoke(((bool)argsLocal[(int)(0L)]));
                     break;
                 }
             case var __case16806 when object.Equals(__case16806, "System.requestAppExit"):

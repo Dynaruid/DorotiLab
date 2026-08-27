@@ -45,10 +45,10 @@ public class DesktopTextSelectionToolbarButton : global::Doroti.Framework.Widget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ThemeData theme__1776 = Theme.of(context);
-        var isDark__1813 = (object.Equals(theme__1776.colorScheme.brightness, Brightness.dark));
-        global::Doroti.Ui.Color foregroundColor__1887 = ((global::Doroti.Ui.Color)(object?)(isDark__1813 ? Colors.white : Colors.black87));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, child: new TextButton(style: TextButton.styleFrom(alignment: global::Doroti.Framework.Painting.Alignment.centerLeft, enabledMouseCursor: global::Doroti.Framework.Services.SystemMouseCursors.basic, disabledMouseCursor: global::Doroti.Framework.Services.SystemMouseCursors.basic, foregroundColor: foregroundColor__1887, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(), minimumSize: new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension, 36.0), padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding), onPressed: this.onPressed, child: this.child)));
+        ThemeData theme = Theme.of(context);
+        var isDark = (object.Equals(theme.colorScheme.brightness, Brightness.dark));
+        global::Doroti.Ui.Color foregroundColorLocal = ((global::Doroti.Ui.Color)(object?)(isDark ? Colors.white : Colors.black87));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, child: new TextButton(style: TextButton.styleFrom(alignment: global::Doroti.Framework.Painting.Alignment.centerLeft, enabledMouseCursor: global::Doroti.Framework.Services.SystemMouseCursors.basic, disabledMouseCursor: global::Doroti.Framework.Services.SystemMouseCursors.basic, foregroundColor: foregroundColorLocal, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(), minimumSize: new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension, 36.0), padding: Desktop_text_selection_toolbar_buttonLibrary._kToolbarButtonPadding), onPressed: this.onPressed, child: this.child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

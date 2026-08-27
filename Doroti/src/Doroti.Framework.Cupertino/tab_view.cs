@@ -95,7 +95,7 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
     internal virtual bool _isActive => TickerMode.of(this.context);
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget child__6797 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Navigator(key: this._navigatorKey, onGenerateRoute: (global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>)this._onGenerateRoute, onUnknownRoute: (global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>)this._onUnknownRoute, observers: this._navigatorObservers, restorationScopeId: ((CupertinoTabView)this.widget).restorationScopeId));
+        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Navigator(key: this._navigatorKey, onGenerateRoute: (global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>)this._onGenerateRoute, onUnknownRoute: (global::System.Func<global::Doroti.Framework.Widgets.RouteSettings, dynamic>)this._onUnknownRoute, observers: this._navigatorObservers, restorationScopeId: ((CupertinoTabView)this.widget).restorationScopeId));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.NavigatorPopHandler<object>(enabled: this._isActive, onPop: ((global::System.Action)(() =>
         {
             if (!this._isActive)
@@ -103,27 +103,27 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
                 return;
             }
             DartRuntimePrimitives.Ignore(((global::Doroti.Framework.Widgets.GlobalKey<global::Doroti.Framework.Widgets.NavigatorState>)this._navigatorKey).currentState!.maybePop<object>());
-        })), child: child__6797));
+        })), child: childLocal));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual dynamic _onGenerateRoute(global::Doroti.Framework.Widgets.RouteSettings settings)
     {
-        string? name__7391 = ((global::Doroti.Framework.Widgets.RouteSettings)settings).name;
-        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? routeBuilder__7438 = default!;
-        string? title__7464 = default!;
-        if (((name__7391 == global::Doroti.Framework.Widgets.Navigator.defaultRouteName) && (((CupertinoTabView)this.widget).builder is not null)))
+        string? nameLocal = ((global::Doroti.Framework.Widgets.RouteSettings)settings).name;
+        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? routeBuilder = default!;
+        string? titleLocal = default!;
+        if (((nameLocal == global::Doroti.Framework.Widgets.Navigator.defaultRouteName) && (((CupertinoTabView)this.widget).builder is not null)))
         {
-            routeBuilder__7438 = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((CupertinoTabView)this.widget).builder;
-            title__7464 = ((CupertinoTabView)this.widget).defaultTitle;
+            routeBuilder = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((CupertinoTabView)this.widget).builder;
+            titleLocal = ((CupertinoTabView)this.widget).defaultTitle;
         }
         else
         {
-            routeBuilder__7438 = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((CupertinoTabView)this.widget).routes.GetValueOrDefault(name__7391);
+            routeBuilder = (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)((CupertinoTabView)this.widget).routes.GetValueOrDefault(nameLocal);
         }
-        if ((routeBuilder__7438 is not null))
+        if ((routeBuilder is not null))
         {
-            return new CupertinoPageRoute<object>(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)routeBuilder__7438, title: title__7464, settings: settings);
+            return new CupertinoPageRoute<object>(builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>)routeBuilder, title: titleLocal, settings: settings);
         }
         return ((CupertinoTabView)this.widget).onGenerateRoute?.Invoke(settings);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -139,16 +139,16 @@ internal class _CupertinoTabViewState__tab_view : global::Doroti.Framework.Widge
                 }
                 return true;
             });
-        dynamic result__8725 = ((CupertinoTabView)this.widget).onUnknownRoute!(settings);
+        dynamic result = ((CupertinoTabView)this.widget).onUnknownRoute!(settings);
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((result__8725 is null))
+                if ((result is null))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("The onUnknownRoute callback returned null.\n" + $"When the {this.GetType()} requested the route {settings} from its " + "onUnknownRoute callback, the callback returned null. Such callbacks " + "must never return null."));
                 }
                 return true;
             });
-        return result__8725;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

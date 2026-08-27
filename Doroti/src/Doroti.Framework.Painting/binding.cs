@@ -42,9 +42,9 @@ public class _SystemFontsNotifier__binding : Listenable
 
     public virtual void notifyListeners()
     {
-        foreach (Action callback__7695 in this._systemFontsCallbacks)
+        foreach (Action callback in this._systemFontsCallbacks)
         {
-            callback__7695();
+            callback();
         }
     }
 

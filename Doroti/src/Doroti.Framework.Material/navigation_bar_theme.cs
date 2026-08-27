@@ -96,13 +96,13 @@ public class NavigationBarThemeData : global::Doroti.Framework.Foundation.Diagno
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -125,8 +125,8 @@ public class NavigationBarTheme : global::Doroti.Framework.Widgets.InheritedThem
 
     public static NavigationBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        NavigationBarTheme? navigationBarTheme__10042 = ((NavigationBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<NavigationBarTheme>());
-        return (navigationBarTheme__10042?.data ?? Theme.of(context).navigationBarTheme);
+        NavigationBarTheme? navigationBarThemeLocal = ((NavigationBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<NavigationBarTheme>());
+        return (navigationBarThemeLocal?.data ?? Theme.of(context).navigationBarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -184,11 +184,11 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
 
     internal virtual void _prepareText()
     {
-        var kLabel__6912 = "Flutter";
-        _textPainter = new TextPainter(text: new TextSpan(text: kLabel__6912, style: new TextStyle(color: ((FlutterLogoDecoration)this._config).textColor, fontFamily: "Roboto", fontSize: ((100.0 * 350.0) / 247.0), fontWeight: FontWeight.w300, textBaseline: TextBaseline.alphabetic)), textDirection: TextDirection.ltr);
+        var kLabel = "Flutter";
+        _textPainter = new TextPainter(text: new TextSpan(text: kLabel, style: new TextStyle(color: ((FlutterLogoDecoration)this._config).textColor, fontFamily: "Roboto", fontSize: ((100.0 * 350.0) / 247.0), fontWeight: FontWeight.w300, textBaseline: TextBaseline.alphabetic)), textDirection: TextDirection.ltr);
         this._textPainter.layout();
-        global::Doroti.Ui.TextBox textSize__7478 = this._textPainter.getBoxesForSelection(new TextSelection(baseOffset: 0L, extentOffset: kLabel__6912.Length)).Single();
-        _textBoundingRect = global::Doroti.Ui.Rect.fromLTRB(textSize__7478.left, textSize__7478.top, textSize__7478.right, textSize__7478.bottom);
+        global::Doroti.Ui.TextBox textSize = this._textPainter.getBoxesForSelection(new TextSelection(baseOffset: 0L, extentOffset: kLabel.Length)).Single();
+        _textBoundingRect = global::Doroti.Ui.Rect.fromLTRB(textSize.left, textSize.top, textSize.right, textSize.bottom);
     }
 
     internal virtual void _paintLogo(Canvas canvas, Rect rect)
@@ -197,32 +197,32 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
         canvas.translate(rect.left, rect.top);
         canvas.scale((rect.width / 202.0), (rect.height / 202.0));
         canvas.translate((((202.0 - 166.0)) / 2.0), 0.0);
-        var lightPaint__8627 = ((Func<Paint>)(() =>
+        var lightPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = new global::Doroti.Ui.Color(4283745784L);
     return __cascade;
 }))();
-        var mediumPaint__8692 = ((Func<Paint>)(() =>
+        var mediumPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = new global::Doroti.Ui.Color(4280923894L);
     return __cascade;
 }))();
-        var darkPaint__8758 = ((Func<Paint>)(() =>
+        var darkPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = new global::Doroti.Ui.Color(4278278043L);
     return __cascade;
 }))();
-        var triangleGradient__8823 = global::Doroti.Ui.Gradient.linear(new global::Doroti.Ui.Offset((87.2623 + 37.9092), (28.8384 + 123.4389)), new global::Doroti.Ui.Offset((42.9205 + 37.9092), (35.0952 + 123.4389)), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(1713022L), new global::Doroti.Ui.Color(1712989054L) });
-        var trianglePaint__9062 = ((Func<Paint>)(() =>
+        var triangleGradient = global::Doroti.Ui.Gradient.linear(new global::Doroti.Ui.Offset((87.2623 + 37.9092), (28.8384 + 123.4389)), new global::Doroti.Ui.Offset((42.9205 + 37.9092), (35.0952 + 123.4389)), new List<global::Doroti.Ui.Color> { new global::Doroti.Ui.Color(1713022L), new global::Doroti.Ui.Color(1712989054L) });
+        var trianglePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
-    __cascade.shader = triangleGradient__8823;
+    __cascade.shader = triangleGradient;
     return __cascade;
 }))();
-        var topBeam__9154 = ((Func<Path>)(() =>
+        var topBeam = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
     __cascade.moveTo(37.7, 128.9);
@@ -231,8 +231,8 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
     __cascade.lineTo(156.2, 10.4);
     return __cascade;
 }))();
-        canvas.drawPath(topBeam__9154, lightPaint__8627);
-        var middleBeam__9336 = ((Func<Path>)(() =>
+        canvas.drawPath(topBeam, lightPaint);
+        var middleBeam = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
     __cascade.moveTo(156.2, 94.0);
@@ -241,8 +241,8 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
     __cascade.lineTo(106.4, 143.8);
     return __cascade;
 }))();
-        canvas.drawPath(middleBeam__9336, lightPaint__8627);
-        var bottomBeam__9526 = ((Func<Path>)(() =>
+        canvas.drawPath(middleBeam, lightPaint);
+        var bottomBeam = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
     __cascade.moveTo(79.5, 170.7);
@@ -251,12 +251,12 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
     __cascade.lineTo(107.4, 142.8);
     return __cascade;
 }))();
-        canvas.drawPath(bottomBeam__9526, darkPaint__8758);
+        canvas.drawPath(bottomBeam, darkPaint);
         canvas.save();
         canvas.transform(new Float64List(new List<double> { 0.7071, -0.7071, 0.0, 0.0, 0.7071, 0.7071, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -77.697, 98.057, 0.0, 1.0 }));
-        canvas.drawRect(global::Doroti.Ui.Rect.fromLTWH(59.8, 123.1, 39.4, 39.4), mediumPaint__8692);
+        canvas.drawRect(global::Doroti.Ui.Rect.fromLTWH(59.8, 123.1, 39.4, 39.4), mediumPaint);
         canvas.restore();
-        var triangle__10226 = ((Func<Path>)(() =>
+        var triangle = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
     __cascade.moveTo(79.5, 170.7);
@@ -264,45 +264,45 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
     __cascade.lineTo(107.4, 142.8);
     return __cascade;
 }))();
-        canvas.drawPath(triangle__10226, trianglePaint__9062);
+        canvas.drawPath(triangle, trianglePaint);
         canvas.restore();
     }
 
     public override void paint(Canvas canvas, Offset offset, ImageConfiguration configuration)
     {
         offset += ((FlutterLogoDecoration)this._config).margin.topLeft;
-        global::Doroti.Ui.Size canvasSize__10549 = ((FlutterLogoDecoration)this._config).margin.deflateSize(DartRuntimePrimitives.RequireValue(((ImageConfiguration)configuration).size));
-        if (canvasSize__10549.isEmpty)
+        global::Doroti.Ui.Size canvasSize = ((FlutterLogoDecoration)this._config).margin.deflateSize(DartRuntimePrimitives.RequireValue(((ImageConfiguration)configuration).size));
+        if (canvasSize.isEmpty)
         {
             return;
         }
-        global::Doroti.Ui.Size logoSize__10676 = (((FlutterLogoDecoration)this._config)._position switch { > 0.0 => new global::Doroti.Ui.Size(820.0, 232.0), < 0.0 => new global::Doroti.Ui.Size(252.0, 306.0), _ => new global::Doroti.Ui.Size(202.0, 202.0) });
-        FittedSizes fittedSize__10918 = global::Doroti.Framework.Painting.Box_fitLibrary.applyBoxFit(BoxFit.contain, logoSize__10676, canvasSize__10549);
-        DartRuntimePrimitives.Assert(() => (object.Equals(((FittedSizes)fittedSize__10918).source, logoSize__10676)));
-        global::Doroti.Ui.Rect rect__11040 = Alignment.center.inscribe(((FittedSizes)fittedSize__10918).destination, (offset & canvasSize__10549));
-        double centerSquareHeight__11136 = canvasSize__10549.shortestSide;
-        var centerSquare__11192 = global::Doroti.Ui.Rect.fromLTWH((offset.dx + (((canvasSize__10549.width - centerSquareHeight__11136)) / 2.0)), (offset.dy + (((canvasSize__10549.height - centerSquareHeight__11136)) / 2.0)), centerSquareHeight__11136, centerSquareHeight__11136);
-        global::Doroti.Ui.Rect logoTargetSquare__11428 = default!;
+        global::Doroti.Ui.Size logoSize = (((FlutterLogoDecoration)this._config)._position switch { > 0.0 => new global::Doroti.Ui.Size(820.0, 232.0), < 0.0 => new global::Doroti.Ui.Size(252.0, 306.0), _ => new global::Doroti.Ui.Size(202.0, 202.0) });
+        FittedSizes fittedSize = global::Doroti.Framework.Painting.Box_fitLibrary.applyBoxFit(BoxFit.contain, logoSize, canvasSize);
+        DartRuntimePrimitives.Assert(() => (object.Equals(((FittedSizes)fittedSize).source, logoSize)));
+        global::Doroti.Ui.Rect rect = Alignment.center.inscribe(((FittedSizes)fittedSize).destination, (offset & canvasSize));
+        double centerSquareHeight = canvasSize.shortestSide;
+        var centerSquare = global::Doroti.Ui.Rect.fromLTWH((offset.dx + (((canvasSize.width - centerSquareHeight)) / 2.0)), (offset.dy + (((canvasSize.height - centerSquareHeight)) / 2.0)), centerSquareHeight, centerSquareHeight);
+        global::Doroti.Ui.Rect logoTargetSquare = default!;
         if ((((FlutterLogoDecoration)this._config)._position > 0.0))
         {
-            logoTargetSquare__11428 = global::Doroti.Ui.Rect.fromLTWH(rect__11040.left, rect__11040.top, rect__11040.height, rect__11040.height);
+            logoTargetSquare = global::Doroti.Ui.Rect.fromLTWH(rect.left, rect.top, rect.height, rect.height);
         }
         else
         {
             if ((((FlutterLogoDecoration)this._config)._position < 0.0))
             {
-                double logoHeight__11678 = ((rect__11040.height * 191.0) / 306.0);
-                logoTargetSquare__11428 = global::Doroti.Ui.Rect.fromLTWH((rect__11040.left + (((rect__11040.width - logoHeight__11678)) / 2.0)), rect__11040.top, logoHeight__11678, logoHeight__11678);
+                double logoHeight = ((rect.height * 191.0) / 306.0);
+                logoTargetSquare = global::Doroti.Ui.Rect.fromLTWH((rect.left + (((rect.width - logoHeight)) / 2.0)), rect.top, logoHeight, logoHeight);
             }
             else
             {
-                logoTargetSquare__11428 = centerSquare__11192;
+                logoTargetSquare = centerSquare;
             }
         }
-        global::Doroti.Ui.Rect logoSquare__11976 = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Rect.lerp(centerSquare__11192, logoTargetSquare__11428, ((FlutterLogoDecoration)this._config)._position.abs()));
+        global::Doroti.Ui.Rect logoSquare = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Rect.lerp(centerSquare, logoTargetSquare, ((FlutterLogoDecoration)this._config)._position.abs()));
         if ((((FlutterLogoDecoration)this._config)._opacity < 1.0))
         {
-            canvas.saveLayer((offset & canvasSize__10549), ((Func<Paint>)(() =>
+            canvas.saveLayer((offset & canvasSize), ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.colorFilter = global::Doroti.Ui.ColorFilter.mode(new global::Doroti.Ui.Color(4294967295L).withOpacity(((FlutterLogoDecoration)this._config)._opacity), BlendMode.modulate);
@@ -313,28 +313,28 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
         {
             if ((((FlutterLogoDecoration)this._config)._position > 0.0))
             {
-                double fontSize__12455 = (((2.0 / 3.0) * logoSquare__11976.height) * ((1L - (((10.4 * 2.0)) / 202.0))));
-                double scale__12547 = (fontSize__12455 / 100.0);
-                double finalLeftTextPosition__12594 = ((((256.4 / 820.0)) * rect__11040.width) - (((32.0 / 350.0)) * fontSize__12455));
-                double initialLeftTextPosition__12995 = ((rect__11040.width / 2.0) - (this._textBoundingRect.width * scale__12547));
-                var textOffset__13152 = new global::Doroti.Ui.Offset((rect__11040.left + DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(initialLeftTextPosition__12995, finalLeftTextPosition__12594, ((FlutterLogoDecoration)this._config)._position))), (rect__11040.top + (((rect__11040.height - (this._textBoundingRect.height * scale__12547))) / 2.0)));
+                double fontSize = (((2.0 / 3.0) * logoSquare.height) * ((1L - (((10.4 * 2.0)) / 202.0))));
+                double scaleLocal = (fontSize / 100.0);
+                double finalLeftTextPosition = ((((256.4 / 820.0)) * rect.width) - (((32.0 / 350.0)) * fontSize));
+                double initialLeftTextPosition = ((rect.width / 2.0) - (this._textBoundingRect.width * scaleLocal));
+                var textOffset = new global::Doroti.Ui.Offset((rect.left + DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(initialLeftTextPosition, finalLeftTextPosition, ((FlutterLogoDecoration)this._config)._position))), (rect.top + (((rect.height - (this._textBoundingRect.height * scaleLocal))) / 2.0)));
                 canvas.save();
                 if ((((FlutterLogoDecoration)this._config)._position < 1.0))
                 {
-                    global::Doroti.Ui.Offset center__13465 = logoSquare__11976.center;
-                    var path__13509 = ((Func<Path>)(() =>
+                    global::Doroti.Ui.Offset centerLocal = logoSquare.center;
+                    var path = ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.moveTo(center__13465.dx, center__13465.dy);
-    __cascade.lineTo((center__13465.dx + rect__11040.width), (center__13465.dy - rect__11040.width));
-    __cascade.lineTo((center__13465.dx + rect__11040.width), (center__13465.dy + rect__11040.width));
+    __cascade.moveTo(centerLocal.dx, centerLocal.dy);
+    __cascade.lineTo((centerLocal.dx + rect.width), (centerLocal.dy - rect.width));
+    __cascade.lineTo((centerLocal.dx + rect.width), (centerLocal.dy + rect.width));
     __cascade.close();
     return __cascade;
 }))();
-                    canvas.clipPath(path__13509);
+                    canvas.clipPath(path);
                 }
-                canvas.translate(textOffset__13152.dx, textOffset__13152.dy);
-                canvas.scale(scale__12547, scale__12547);
+                canvas.translate(textOffset.dx, textOffset.dy);
+                canvas.scale(scaleLocal, scaleLocal);
                 this._textPainter.paint(canvas, Offset.zero);
                 canvas.restore();
             }
@@ -342,8 +342,8 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
             {
                 if ((((FlutterLogoDecoration)this._config)._position < 0.0))
                 {
-                    double fontSize__14027 = ((0.35 * logoTargetSquare__11428.height) * ((1L - (((10.4 * 2.0)) / 202.0))));
-                    double scale__14120 = (fontSize__14027 / 100.0);
+                    double fontSizeLocal = ((0.35 * logoTargetSquare.height) * ((1L - (((10.4 * 2.0)) / 202.0))));
+                    double scaleAlternate = (fontSizeLocal / 100.0);
                     if ((((FlutterLogoDecoration)this._config)._position > -1.0))
                     {
                         canvas.saveLayer(this._textBoundingRect, new global::Doroti.Ui.Paint());
@@ -352,8 +352,8 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
                     {
                         canvas.save();
                     }
-                    canvas.translate((logoTargetSquare__11428.center.dx - (((this._textBoundingRect.width * scale__14120) / 2.0))), logoTargetSquare__11428.bottom);
-                    canvas.scale(scale__14120, scale__14120);
+                    canvas.translate((logoTargetSquare.center.dx - (((this._textBoundingRect.width * scaleAlternate) / 2.0))), logoTargetSquare.bottom);
+                    canvas.scale(scaleAlternate, scaleAlternate);
                     this._textPainter.paint(canvas, Offset.zero);
                     if ((((FlutterLogoDecoration)this._config)._position > -1.0))
                     {
@@ -369,7 +369,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
                 }
             }
         }
-        _paintLogo(canvas, logoSquare__11976);
+        _paintLogo(canvas, logoSquare);
         if ((((FlutterLogoDecoration)this._config)._opacity < 1.0))
         {
             canvas.restore();

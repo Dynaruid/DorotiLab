@@ -88,8 +88,8 @@ public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Frame
     public virtual void didChangeAppLifecycleState(AppLifecycleState state)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
-        global::Doroti.Ui.AppLifecycleState? previousState__7834 = ((global::Doroti.Ui.AppLifecycleState?)(object?)this._lifecycleState);
-        if ((object.Equals(state, previousState__7834)))
+        global::Doroti.Ui.AppLifecycleState? previousState = ((global::Doroti.Ui.AppLifecycleState?)(object?)this._lifecycleState);
+        if ((object.Equals(state, previousState)))
         {
             return;
         }
@@ -98,20 +98,20 @@ public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Frame
         {
             case var __constant8105 when (object.Equals(__constant8105, AppLifecycleState.resumed)):
                 {
-                    DartRuntimePrimitives.Assert(() => (((previousState__7834 is null) || (object.Equals(previousState__7834, AppLifecycleState.inactive))) || (object.Equals(previousState__7834, AppLifecycleState.detached))), () => (object?)$"Invalid state transition from {previousState__7834} to {state}");
+                    DartRuntimePrimitives.Assert(() => (((previousState is null) || (object.Equals(previousState, AppLifecycleState.inactive))) || (object.Equals(previousState, AppLifecycleState.detached))), () => (object?)$"Invalid state transition from {previousState} to {state}");
                     this.onResume?.Invoke();
                     break;
                 }
             case var __constant8419 when (object.Equals(__constant8419, AppLifecycleState.inactive)):
                 {
-                    DartRuntimePrimitives.Assert(() => (((previousState__7834 is null) || (object.Equals(previousState__7834, AppLifecycleState.hidden))) || (object.Equals(previousState__7834, AppLifecycleState.resumed))), () => (object?)$"Invalid state transition from {previousState__7834} to {state}");
-                    if ((object.Equals(previousState__7834, AppLifecycleState.hidden)))
+                    DartRuntimePrimitives.Assert(() => (((previousState is null) || (object.Equals(previousState, AppLifecycleState.hidden))) || (object.Equals(previousState, AppLifecycleState.resumed))), () => (object?)$"Invalid state transition from {previousState} to {state}");
+                    if ((object.Equals(previousState, AppLifecycleState.hidden)))
                     {
                         this.onShow?.Invoke();
                     }
                     else
                     {
-                        if (((previousState__7834 is null) || (object.Equals(previousState__7834, AppLifecycleState.resumed))))
+                        if (((previousState is null) || (object.Equals(previousState, AppLifecycleState.resumed))))
                         {
                             this.onInactive?.Invoke();
                         }
@@ -120,14 +120,14 @@ public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Frame
                 }
             case var __constant8918 when (object.Equals(__constant8918, AppLifecycleState.hidden)):
                 {
-                    DartRuntimePrimitives.Assert(() => (((previousState__7834 is null) || (object.Equals(previousState__7834, AppLifecycleState.paused))) || (object.Equals(previousState__7834, AppLifecycleState.inactive))), () => (object?)$"Invalid state transition from {previousState__7834} to {state}");
-                    if ((object.Equals(previousState__7834, AppLifecycleState.paused)))
+                    DartRuntimePrimitives.Assert(() => (((previousState is null) || (object.Equals(previousState, AppLifecycleState.paused))) || (object.Equals(previousState, AppLifecycleState.inactive))), () => (object?)$"Invalid state transition from {previousState} to {state}");
+                    if ((object.Equals(previousState, AppLifecycleState.paused)))
                     {
                         this.onRestart?.Invoke();
                     }
                     else
                     {
-                        if (((previousState__7834 is null) || (object.Equals(previousState__7834, AppLifecycleState.inactive))))
+                        if (((previousState is null) || (object.Equals(previousState, AppLifecycleState.inactive))))
                         {
                             this.onHide?.Invoke();
                         }
@@ -136,8 +136,8 @@ public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Frame
                 }
             case var __constant9416 when (object.Equals(__constant9416, AppLifecycleState.paused)):
                 {
-                    DartRuntimePrimitives.Assert(() => ((previousState__7834 is null) || (object.Equals(previousState__7834, AppLifecycleState.hidden))), () => (object?)$"Invalid state transition from {previousState__7834} to {state}");
-                    if (((previousState__7834 is null) || (object.Equals(previousState__7834, AppLifecycleState.hidden))))
+                    DartRuntimePrimitives.Assert(() => ((previousState is null) || (object.Equals(previousState, AppLifecycleState.hidden))), () => (object?)$"Invalid state transition from {previousState} to {state}");
+                    if (((previousState is null) || (object.Equals(previousState, AppLifecycleState.hidden))))
                     {
                         this.onPause?.Invoke();
                     }
@@ -145,7 +145,7 @@ public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Frame
                 }
             case var __constant9745 when (object.Equals(__constant9745, AppLifecycleState.detached)):
                 {
-                    DartRuntimePrimitives.Assert(() => ((previousState__7834 is null) || (object.Equals(previousState__7834, AppLifecycleState.paused))), () => (object?)$"Invalid state transition from {previousState__7834} to {state}");
+                    DartRuntimePrimitives.Assert(() => ((previousState is null) || (object.Equals(previousState, AppLifecycleState.paused))), () => (object?)$"Invalid state transition from {previousState} to {state}");
                     this.onDetach?.Invoke();
                     break;
                 }
@@ -170,14 +170,14 @@ public class AppLifecycleListener : WidgetsBindingObserver, global::Doroti.Frame
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

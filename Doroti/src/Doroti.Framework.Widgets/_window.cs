@@ -70,8 +70,8 @@ public abstract class WindowControllerIo : BaseWindowControllerIo
         {
             DartRuntimePrimitives.Assert(() => constraints.isSatisfiedBy(size));
         }
-        WindowingOwnerIo owner__8133 = WidgetsBinding.instance.windowingOwner;
-        return ((WindowControllerIo)(object?)owner__8133.createWindowController(@delegate: (@delegate ?? new WindowControllerDelegateIo()), size: size, constraints: constraints, title: title, resizable: true));
+        WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
+        return ((WindowControllerIo)(object?)owner.createWindowController(@delegate: (@delegate ?? new WindowControllerDelegateIo()), size: size, constraints: constraints, title: title, resizable: true));
     }
 
     public static WindowControllerIo CreateShrinkWrap(bool resizable = false, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, WindowControllerDelegateIo? @delegate = null)
@@ -81,8 +81,8 @@ public abstract class WindowControllerIo : BaseWindowControllerIo
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
         WidgetsFlutterBinding.ensureInitialized();
-        WindowingOwnerIo owner__10233 = WidgetsBinding.instance.windowingOwner;
-        return ((WindowControllerIo)(object?)owner__10233.createWindowController(@delegate: (@delegate ?? new WindowControllerDelegateIo()), constraints: constraints, resizable: resizable, title: title));
+        WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
+        return ((WindowControllerIo)(object?)owner.createWindowController(@delegate: (@delegate ?? new WindowControllerDelegateIo()), constraints: constraints, resizable: resizable, title: title));
     }
 
     protected WindowControllerIo()
@@ -137,8 +137,8 @@ public abstract class DialogWindowControllerIo : BaseWindowControllerIo
         {
             DartRuntimePrimitives.Assert(() => constraints.isSatisfiedBy(size));
         }
-        WindowingOwnerIo owner__20060 = WidgetsBinding.instance.windowingOwner;
-        return ((DialogWindowControllerIo)(object?)owner__20060.createDialogWindowController(@delegate: (@delegate ?? new DialogWindowControllerDelegateIo()), size: size, constraints: constraints, title: title, parent: parent, resizable: true));
+        WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
+        return ((DialogWindowControllerIo)(object?)owner.createDialogWindowController(@delegate: (@delegate ?? new DialogWindowControllerDelegateIo()), size: size, constraints: constraints, title: title, parent: parent, resizable: true));
     }
 
     public static DialogWindowControllerIo CreateShrinkWrap(bool resizable = false, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, BaseWindowControllerIo? parent = null, string? title = null, DialogWindowControllerDelegateIo? @delegate = null)
@@ -148,8 +148,8 @@ public abstract class DialogWindowControllerIo : BaseWindowControllerIo
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
         WidgetsFlutterBinding.ensureInitialized();
-        WindowingOwnerIo owner__21173 = WidgetsBinding.instance.windowingOwner;
-        return ((DialogWindowControllerIo)(object?)owner__21173.createDialogWindowController(@delegate: (@delegate ?? new DialogWindowControllerDelegateIo()), constraints: constraints, resizable: resizable, title: title, parent: parent));
+        WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
+        return ((DialogWindowControllerIo)(object?)owner.createDialogWindowController(@delegate: (@delegate ?? new DialogWindowControllerDelegateIo()), constraints: constraints, resizable: resizable, title: title, parent: parent));
     }
 
     protected DialogWindowControllerIo()
@@ -189,9 +189,9 @@ public abstract class TooltipWindowControllerIo : BaseWindowControllerIo
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
         WidgetsFlutterBinding.ensureInitialized();
-        WindowingOwnerIo owner__27992 = WidgetsBinding.instance.windowingOwner;
-        TooltipWindowControllerIo controller__28074 = ((TooltipWindowControllerIo)(object?)owner__27992.createTooltipWindowController(parent: parent, constraints: __constraints, @delegate: (@delegate ?? new TooltipWindowControllerDelegateIo()), anchorRect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorRect)), positioner: positioner));
-        return controller__28074;
+        WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
+        TooltipWindowControllerIo controller = ((TooltipWindowControllerIo)(object?)owner.createTooltipWindowController(parent: parent, constraints: __constraints, @delegate: (@delegate ?? new TooltipWindowControllerDelegateIo()), anchorRect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorRect)), positioner: positioner));
+        return controller;
     }
 
     protected TooltipWindowControllerIo()
@@ -224,8 +224,8 @@ public abstract class PopupWindowControllerIo : BaseWindowControllerIo
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
         WidgetsFlutterBinding.ensureInitialized();
-        WindowingOwnerIo owner__33068 = WidgetsBinding.instance.windowingOwner;
-        return ((PopupWindowControllerIo)(object?)owner__33068.createPopupWindowController(parent: parent, constraints: (constraints ?? new global::Doroti.Framework.Rendering.BoxConstraints()), @delegate: (@delegate ?? new PopupWindowControllerDelegateIo()), anchorRect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorRect)), positioner: positioner));
+        WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
+        return ((PopupWindowControllerIo)(object?)owner.createPopupWindowController(parent: parent, constraints: (constraints ?? new global::Doroti.Framework.Rendering.BoxConstraints()), @delegate: (@delegate ?? new PopupWindowControllerDelegateIo()), anchorRect: DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(anchorRect)), positioner: positioner));
     }
 
     protected PopupWindowControllerIo()
@@ -238,33 +238,33 @@ public abstract class PopupWindowControllerIo : BaseWindowControllerIo
     public abstract global::Doroti.Ui.Offset offsetFromParent { get; }
     public virtual void activate()
     {
-        BaseWindowControllerIo parent__35385 = this.parent;
+        BaseWindowControllerIo parentLocal = this.parent;
         while (true)
         {
-            if ((parent__35385 is WindowControllerIo))
+            if ((parentLocal is WindowControllerIo))
             {
-                WindowControllerIo parent__35385__as35436 = (WindowControllerIo)parent__35385;
+                WindowControllerIo parent__35385__as35436 = (WindowControllerIo)parentLocal;
                 ((WindowControllerIo)parent__35385__as35436).activate();
                 break;
             }
             else
             {
-                if ((parent__35385 is DialogWindowControllerIo))
+                if ((parentLocal is DialogWindowControllerIo))
                 {
-                    DialogWindowControllerIo parent__35385__as35525 = (DialogWindowControllerIo)parent__35385;
+                    DialogWindowControllerIo parent__35385__as35525 = (DialogWindowControllerIo)parentLocal;
                     ((DialogWindowControllerIo)parent__35385__as35525).activate();
                     break;
                 }
                 else
                 {
-                    if ((parent__35385 is PopupWindowControllerIo))
+                    if ((parentLocal is PopupWindowControllerIo))
                     {
-                        PopupWindowControllerIo parent__35385__as35620 = (PopupWindowControllerIo)parent__35385;
-                        parent__35385 = ((PopupWindowControllerIo)((PopupWindowControllerIo)parent__35385__as35620)).parent;
+                        PopupWindowControllerIo parent__35385__as35620 = (PopupWindowControllerIo)parentLocal;
+                        parentLocal = ((PopupWindowControllerIo)((PopupWindowControllerIo)parent__35385__as35620)).parent;
                     }
                     else
                     {
-                        throw new InvalidOperationException($"Unexpected controller in hierarchy {parent__35385}");
+                        throw new InvalidOperationException($"Unexpected controller in hierarchy {parentLocal}");
                     }
                 }
             }
@@ -275,31 +275,31 @@ public abstract class PopupWindowControllerIo : BaseWindowControllerIo
     {
         get
         {
-            BaseWindowControllerIo parent__35986 = this.parent;
+            BaseWindowControllerIo parentLocal = this.parent;
             while (true)
             {
-                if ((parent__35986 is WindowControllerIo))
+                if ((parentLocal is WindowControllerIo))
                 {
-                    WindowControllerIo parent__35986__as36037 = (WindowControllerIo)parent__35986;
+                    WindowControllerIo parent__35986__as36037 = (WindowControllerIo)parentLocal;
                     return ((WindowControllerIo)((WindowControllerIo)parent__35986__as36037)).isActivated;
                 }
                 else
                 {
-                    if ((parent__35986 is DialogWindowControllerIo))
+                    if ((parentLocal is DialogWindowControllerIo))
                     {
-                        DialogWindowControllerIo parent__35986__as36119 = (DialogWindowControllerIo)parent__35986;
+                        DialogWindowControllerIo parent__35986__as36119 = (DialogWindowControllerIo)parentLocal;
                         return ((DialogWindowControllerIo)((DialogWindowControllerIo)parent__35986__as36119)).isActivated;
                     }
                     else
                     {
-                        if ((parent__35986 is PopupWindowControllerIo))
+                        if ((parentLocal is PopupWindowControllerIo))
                         {
-                            PopupWindowControllerIo parent__35986__as36207 = (PopupWindowControllerIo)parent__35986;
-                            parent__35986 = ((PopupWindowControllerIo)((PopupWindowControllerIo)parent__35986__as36207)).parent;
+                            PopupWindowControllerIo parent__35986__as36207 = (PopupWindowControllerIo)parentLocal;
+                            parentLocal = ((PopupWindowControllerIo)((PopupWindowControllerIo)parent__35986__as36207)).parent;
                         }
                         else
                         {
-                            throw new InvalidOperationException($"Unexpected controller in hierarchy {parent__35986}");
+                            throw new InvalidOperationException($"Unexpected controller in hierarchy {parentLocal}");
                         }
                     }
                 }
@@ -343,8 +343,8 @@ public abstract class SatelliteWindowControllerIo : BaseWindowControllerIo
             Size size__value41904 = DartRuntimePrimitives.RequireValue(size);
             DartRuntimePrimitives.Assert(() => constraints.isSatisfiedBy(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(size__value41904))));
         }
-        WindowingOwnerIo owner__42022 = WidgetsBinding.instance.windowingOwner;
-        return ((SatelliteWindowControllerIo)(object?)owner__42022.createSatelliteWindowController(@delegate: (@delegate ?? new SatelliteWindowControllerDelegateIo()), parent: parent, initialAnchorRect: initialAnchorRect, initialPositioner: initialPositioner, size: size, constraints: constraints, title: title, resizable: true));
+        WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
+        return ((SatelliteWindowControllerIo)(object?)owner.createSatelliteWindowController(@delegate: (@delegate ?? new SatelliteWindowControllerDelegateIo()), parent: parent, initialAnchorRect: initialAnchorRect, initialPositioner: initialPositioner, size: size, constraints: constraints, title: title, resizable: true));
     }
 
     public static SatelliteWindowControllerIo CreateShrinkWrap(BaseWindowControllerIo parent, WindowPositionerIo initialPositioner, Rect? initialAnchorRect = null, bool resizable = false, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, string? title = null, SatelliteWindowControllerDelegateIo? @delegate = null)
@@ -354,8 +354,8 @@ public abstract class SatelliteWindowControllerIo : BaseWindowControllerIo
             throw new NotSupportedException(_windowLibrary._kWindowingDisabledErrorMessage);
         }
         WidgetsFlutterBinding.ensureInitialized();
-        WindowingOwnerIo owner__43351 = WidgetsBinding.instance.windowingOwner;
-        return ((SatelliteWindowControllerIo)(object?)owner__43351.createSatelliteWindowController(@delegate: (@delegate ?? new SatelliteWindowControllerDelegateIo()), parent: parent, initialAnchorRect: initialAnchorRect, initialPositioner: initialPositioner, constraints: constraints, resizable: resizable, title: title));
+        WindowingOwnerIo owner = WidgetsBinding.instance.windowingOwner;
+        return ((SatelliteWindowControllerIo)(object?)owner.createSatelliteWindowController(@delegate: (@delegate ?? new SatelliteWindowControllerDelegateIo()), parent: parent, initialAnchorRect: initialAnchorRect, initialPositioner: initialPositioner, constraints: constraints, resizable: resizable, title: title));
     }
 
     protected SatelliteWindowControllerIo()
@@ -389,10 +389,10 @@ public static partial class _windowLibrary
         {
             return ((WindowingOwnerIo)(object?)new _WindowingOwnerUnsupported___window(errorMessage: _windowLibrary._kWindowingDisabledErrorMessage));
         }
-        WindowingOwnerIo? owner__50301 = _window_ioLibrary.createDefaultOwner();
-        if ((owner__50301 is not null))
+        WindowingOwnerIo? owner = _window_ioLibrary.createDefaultOwner();
+        if ((owner is not null))
         {
-            return owner__50301;
+            return owner;
         }
         return ((WindowingOwnerIo)(object?)new _WindowingOwnerUnsupported___window(errorMessage: "Windowing is unsupported on this platform."));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -591,12 +591,12 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
 
     public static string? maybeTitleOf(BuildContext context)
     {
-        BaseWindowControllerIo? controller__70382 = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.title));
-        if ((controller__70382 is null))
+        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.title));
+        if ((controller is null))
         {
             return ((string)(object)null);
         }
-        return ((string?)(object?)WindowScopeIo._titleValue(controller__70382));
+        return ((string?)(object?)WindowScopeIo._titleValue(controller));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -608,12 +608,12 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
 
     public static bool? maybeIsActivatedOf(BuildContext context)
     {
-        BaseWindowControllerIo? controller__71719 = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.activated));
-        if ((controller__71719 is null))
+        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.activated));
+        if ((controller is null))
         {
             return null;
         }
-        return WindowScopeIo._isActivatedValue(controller__71719);
+        return WindowScopeIo._isActivatedValue(controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -625,12 +625,12 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
 
     public static bool? maybeIsMinimizedOf(BuildContext context)
     {
-        BaseWindowControllerIo? controller__73070 = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.minimized));
-        if ((controller__73070 is null))
+        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.minimized));
+        if ((controller is null))
         {
             return null;
         }
-        return WindowScopeIo._isMinimizedValue(controller__73070);
+        return WindowScopeIo._isMinimizedValue(controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -642,12 +642,12 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
 
     public static bool? maybeIsMaximizedOf(BuildContext context)
     {
-        BaseWindowControllerIo? controller__74421 = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.maximized));
-        if ((controller__74421 is null))
+        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.maximized));
+        if ((controller is null))
         {
             return null;
         }
-        return WindowScopeIo._isMaximizedValue(controller__74421);
+        return WindowScopeIo._isMaximizedValue(controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -659,12 +659,12 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
 
     public static bool? maybeIsFullscreenOf(BuildContext context)
     {
-        BaseWindowControllerIo? controller__75774 = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.fullscreen));
-        if ((controller__75774 is null))
+        BaseWindowControllerIo? controller = ((BaseWindowControllerIo?)(object?)WindowScopeIo._maybeOf(context, _WindowControllerAspect___window.fullscreen));
+        if ((controller is null))
         {
             return null;
         }
-        return WindowScopeIo._isFullscreenValue(controller__75774);
+        return WindowScopeIo._isFullscreenValue(controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -775,17 +775,17 @@ public class WindowRegistryIo : global::Doroti.Framework.Foundation.ChangeNotifi
 
     public static WindowRegistryIo of(BuildContext context)
     {
-        WindowRegistryIo? registry__85861 = ((WindowRegistryIo?)(object?)WindowRegistryIo.maybeOf(context));
+        WindowRegistryIo? registry = ((WindowRegistryIo?)(object?)WindowRegistryIo.maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((registry__85861 is null))
+                if ((registry is null))
                 {
                     throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("No WindowRegistry found in context."), new global::Doroti.Framework.Foundation.ErrorDescription($"{DartRuntimePrimitives.RuntimeType(((BuildContext)context).widget)} widgets require a WindowRegistry widget ancestor."), context.describeWidget("The specific widget that could not find a WindowRegistry ancestor was"), context.describeOwnershipChain("The ownership chain for the affected widget is"), new global::Doroti.Framework.Foundation.ErrorHint("No WindowRegistry ancestor could be found starting from the context " + "that was passed to WindowRegistry.of(). This can happen because the " + "context used is not a descendant of a WindowManager widget, which introduces " + "a WindowRegistry.") }));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return registry__85861!;
+        return registry!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -848,12 +848,12 @@ internal class _WindowManagerState___window : State<WindowManagerIo>
     {
         return ((Widget)(object?)new _WindowRegistryScope___window(registry: this._registry, child: new ListenableBuilder(listenable: this._registry, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
         {
-            List<Widget> subViews__90295 = ((WindowRegistryIo)this._registry).windows.map<WindowEntryIo, StatelessWidget>(((entry) =>
+            List<Widget> subViews = ((WindowRegistryIo)this._registry).windows.map<WindowEntryIo, StatelessWidget>(((entry) =>
             {
-                return (((WindowEntryIo)entry).controller switch { DialogWindowControllerIo dialog__90440 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new DialogWindowIo(controller: dialog__90440, child: entry.builder(context))), WindowControllerIo regular__90601 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new WindowIo(controller: regular__90601, child: entry.builder(context))), TooltipWindowControllerIo tooltip__90765 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new TooltipWindowIo(controller: tooltip__90765, child: entry.builder(context))), PopupWindowControllerIo popup__90934 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new PopupWindowIo(controller: popup__90934, child: entry.builder(context))), SatelliteWindowControllerIo satellite__91101 => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new SatelliteWindowIo(controller: satellite__91101, child: entry.builder(context))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                return (((WindowEntryIo)entry).controller switch { DialogWindowControllerIo dialog => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new DialogWindowIo(controller: dialog, child: entry.builder(context))), WindowControllerIo regular => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new WindowIo(controller: regular, child: entry.builder(context))), TooltipWindowControllerIo tooltip => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new TooltipWindowIo(controller: tooltip, child: entry.builder(context))), PopupWindowControllerIo popup => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new PopupWindowIo(controller: popup, child: entry.builder(context))), SatelliteWindowControllerIo satellite => DartRuntimePrimitives.ConvertValue<StatelessWidget>(new SatelliteWindowIo(controller: satellite, child: entry.builder(context))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })).ToList().Cast<Widget>().ToList();
-            return ((Widget)(object?)new ViewCollection(views: subViews__90295));
+            return ((Widget)(object?)new ViewCollection(views: subViews));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })))));
         throw new InvalidOperationException("Dart control flow completed without a value.");

@@ -32,10 +32,10 @@ public class CupertinoUserInterfaceLevel : global::Doroti.Framework.Widgets.Inhe
     public override bool updateShouldNotify(global::Doroti.Framework.Widgets.InheritedWidget oldWidget) => DartRuntimePrimitives.ConvertValue<bool>((!object.Equals(((CupertinoUserInterfaceLevel)oldWidget)._data, this._data)));
     public static CupertinoUserInterfaceLevelData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        CupertinoUserInterfaceLevel? query__2634 = ((CupertinoUserInterfaceLevel?)(object?)context.dependOnInheritedWidgetOfExactType<CupertinoUserInterfaceLevel>());
-        if ((query__2634 is not null))
+        CupertinoUserInterfaceLevel? query = ((CupertinoUserInterfaceLevel?)(object?)context.dependOnInheritedWidgetOfExactType<CupertinoUserInterfaceLevel>());
+        if ((query is not null))
         {
-            return ((CupertinoUserInterfaceLevel)query__2634)._data;
+            return ((CupertinoUserInterfaceLevel)query)._data;
         }
         throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("CupertinoUserInterfaceLevel.of() called with a context that does not contain a CupertinoUserInterfaceLevel.\n" + "No CupertinoUserInterfaceLevel ancestor could be found starting from the context that was passed " + "to CupertinoUserInterfaceLevel.of(). This can happen because you do not have a WidgetsApp or " + "MaterialApp widget (those widgets introduce a CupertinoUserInterfaceLevel), or it can happen " + "if the context you use comes from a widget above those widgets.\n" + "The context used was:\n" + $"  {context}"));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -43,8 +43,8 @@ public class CupertinoUserInterfaceLevel : global::Doroti.Framework.Widgets.Inhe
 
     public static CupertinoUserInterfaceLevelData? maybeOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        CupertinoUserInterfaceLevel? query__4083 = ((CupertinoUserInterfaceLevel?)(object?)context.dependOnInheritedWidgetOfExactType<CupertinoUserInterfaceLevel>());
-        return query__4083?._data;
+        CupertinoUserInterfaceLevel? query = ((CupertinoUserInterfaceLevel?)(object?)context.dependOnInheritedWidgetOfExactType<CupertinoUserInterfaceLevel>());
+        return query?._data;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

@@ -56,18 +56,18 @@ public class LinearBorderEdge
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(this.size, this.alignment);
     public override string ToString()
     {
-        var s__3252 = new StringBuffer($"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorderEdge"))}(");
+        var s = new StringBuffer($"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorderEdge"))}(");
         if ((this.size != 1.0))
         {
-            s__3252.write($"size: {this.size}");
+            s.write($"size: {this.size}");
         }
         if ((this.alignment != 0L))
         {
-            var comma__3418 = ((this.size != 1.0) ? ", " : "");
-            s__3252.write($"{comma__3418}alignment: {this.alignment}");
+            var comma = ((this.size != 1.0) ? ", " : "");
+            s.write($"{comma}alignment: {this.alignment}");
         }
-        s__3252.write(")");
-        return s__3252.ToString();
+        s.write(")");
+        return s.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -139,8 +139,8 @@ public class LinearBorder : OutlinedBorder
     {
         get
         {
-            double width__7190 = ((BorderSide)side).width;
-            return new EdgeInsetsDirectional(((this.start is null) ? 0.0 : width__7190), ((this.top is null) ? 0.0 : width__7190), ((this.end is null) ? 0.0 : width__7190), ((this.bottom is null) ? 0.0 : width__7190));
+            double widthLocal = ((BorderSide)side).width;
+            return new EdgeInsetsDirectional(((this.start is null) ? 0.0 : widthLocal), ((this.top is null) ? 0.0 : widthLocal), ((this.end is null) ? 0.0 : widthLocal), ((this.bottom is null) ? 0.0 : widthLocal));
             return default!;
         }
     }
@@ -174,11 +174,11 @@ public class LinearBorder : OutlinedBorder
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
-        global::Doroti.Ui.Rect adjustedRect__8845 = this.dimensions.resolve(textDirection).deflateRect(rect);
+        global::Doroti.Ui.Rect adjustedRect = this.dimensions.resolve(textDirection).deflateRect(rect);
         return ((Func<Path>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Path();
-    __cascade.addRect(adjustedRect__8845);
+    __cascade.addRect(adjustedRect);
     return __cascade;
 }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -197,10 +197,10 @@ public class LinearBorder : OutlinedBorder
 
     public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, BoxShape shape = BoxShape.rectangle, BorderRadius? borderRadius = null)
     {
-        EdgeInsets insets__9182 = this.dimensions.resolve(textDirection);
-        var rtl__9236 = (object.Equals(textDirection, TextDirection.rtl));
-        var path__9289 = new global::Doroti.Ui.Path();
-        var paint__9314 = ((Func<Paint>)(() =>
+        EdgeInsets insets = this.dimensions.resolve(textDirection);
+        var rtlLocal = (object.Equals(textDirection, TextDirection.rtl));
+        var path = new global::Doroti.Ui.Path();
+        var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.strokeWidth = 0.0;
@@ -208,66 +208,66 @@ public class LinearBorder : OutlinedBorder
 }))();
         void drawEdge(Rect rect, Color color)
         {
-            paint__9314.color = color;
-            path__9289.reset();
-            path__9289.moveTo(rect.left, DartRuntimePrimitives.RequireValue(rect.top));
+            paintLocal.color = color;
+            path.reset();
+            path.moveTo(rect.left, DartRuntimePrimitives.RequireValue(rect.top));
             if ((rect.width == 0.0))
             {
-                paint__9314.style = PaintingStyle.stroke;
-                path__9289.lineTo(rect.left, DartRuntimePrimitives.RequireValue(rect.bottom));
+                paintLocal.style = PaintingStyle.stroke;
+                path.lineTo(rect.left, DartRuntimePrimitives.RequireValue(rect.bottom));
             }
             else
             {
                 if ((rect.height == 0.0))
                 {
-                    paint__9314.style = PaintingStyle.stroke;
-                    path__9289.lineTo(rect.right, DartRuntimePrimitives.RequireValue(rect.top));
+                    paintLocal.style = PaintingStyle.stroke;
+                    path.lineTo(rect.right, DartRuntimePrimitives.RequireValue(rect.top));
                 }
                 else
                 {
-                    paint__9314.style = PaintingStyle.fill;
-                    path__9289.lineTo(rect.right, DartRuntimePrimitives.RequireValue(rect.top));
-                    path__9289.lineTo(rect.right, DartRuntimePrimitives.RequireValue(rect.bottom));
-                    path__9289.lineTo(rect.left, DartRuntimePrimitives.RequireValue(rect.bottom));
+                    paintLocal.style = PaintingStyle.fill;
+                    path.lineTo(rect.right, DartRuntimePrimitives.RequireValue(rect.top));
+                    path.lineTo(rect.right, DartRuntimePrimitives.RequireValue(rect.bottom));
+                    path.lineTo(rect.left, DartRuntimePrimitives.RequireValue(rect.bottom));
                 }
             }
-            canvas.drawPath(path__9289, paint__9314);
+            canvas.drawPath(path, paintLocal);
         }
         if ((((this.start is not null) && (this.start!.size != 0.0)) && (!object.Equals(((BorderSide)side).style, BorderStyle.none))))
         {
-            var insetRect__10063 = global::Doroti.Ui.Rect.fromLTWH(rect.left, (rect.top + ((EdgeInsets)insets__9182).top), rect.width, (rect.height - insets__9182.vertical));
-            double x__10227 = (rtl__9236 ? (rect.right - ((EdgeInsets)insets__9182).right) : rect.left);
-            double width__10295 = (rtl__9236 ? ((EdgeInsets)insets__9182).right : ((EdgeInsets)insets__9182).left);
-            double height__10356 = (insetRect__10063.height * this.start!.size);
-            double y__10416 = (((insetRect__10063.height - height__10356)) * ((((this.start!.alignment + 1.0)) / 2.0)));
-            var r__10496 = global::Doroti.Ui.Rect.fromLTWH(x__10227, y__10416, width__10295, height__10356);
-            drawEdge(r__10496, ((BorderSide)side).color);
+            var insetRect = global::Doroti.Ui.Rect.fromLTWH(rect.left, (rect.top + ((EdgeInsets)insets).top), rect.width, (rect.height - insets.vertical));
+            double x = (rtlLocal ? (rect.right - ((EdgeInsets)insets).right) : rect.left);
+            double widthLocal = (rtlLocal ? ((EdgeInsets)insets).right : ((EdgeInsets)insets).left);
+            double heightLocal = (insetRect.height * this.start!.size);
+            double y = (((insetRect.height - heightLocal)) * ((((this.start!.alignment + 1.0)) / 2.0)));
+            var r = global::Doroti.Ui.Rect.fromLTWH(x, y, widthLocal, heightLocal);
+            drawEdge(r, ((BorderSide)side).color);
         }
         if ((((this.end is not null) && (this.end!.size != 0.0)) && (!object.Equals(((BorderSide)side).style, BorderStyle.none))))
         {
-            var insetRect__10663 = global::Doroti.Ui.Rect.fromLTWH(rect.left, (rect.top + ((EdgeInsets)insets__9182).top), rect.width, (rect.height - insets__9182.vertical));
-            double x__10827 = (rtl__9236 ? rect.left : (rect.right - ((EdgeInsets)insets__9182).right));
-            double width__10895 = (rtl__9236 ? ((EdgeInsets)insets__9182).left : ((EdgeInsets)insets__9182).right);
-            double height__10956 = (insetRect__10663.height * this.end!.size);
-            double y__11014 = (((insetRect__10663.height - height__10956)) * ((((this.end!.alignment + 1.0)) / 2.0)));
-            var r__11092 = global::Doroti.Ui.Rect.fromLTWH(x__10827, y__11014, width__10895, height__10956);
-            drawEdge(r__11092, ((BorderSide)side).color);
+            var insetRectLocal = global::Doroti.Ui.Rect.fromLTWH(rect.left, (rect.top + ((EdgeInsets)insets).top), rect.width, (rect.height - insets.vertical));
+            double xLocal = (rtlLocal ? rect.left : (rect.right - ((EdgeInsets)insets).right));
+            double widthAlternate = (rtlLocal ? ((EdgeInsets)insets).left : ((EdgeInsets)insets).right);
+            double heightAlternate = (insetRectLocal.height * this.end!.size);
+            double yLocal = (((insetRectLocal.height - heightAlternate)) * ((((this.end!.alignment + 1.0)) / 2.0)));
+            var rLocal = global::Doroti.Ui.Rect.fromLTWH(xLocal, yLocal, widthAlternate, heightAlternate);
+            drawEdge(rLocal, ((BorderSide)side).color);
         }
         if ((((this.top is not null) && (this.top!.size != 0.0)) && (!object.Equals(((BorderSide)side).style, BorderStyle.none))))
         {
-            double width__11266 = (rect.width * this.top!.size);
-            double startX__11317 = (((rect.width - width__11266)) * ((((this.top!.alignment + 1.0)) / 2.0)));
-            double x__11400 = (rtl__9236 ? ((rect.width - startX__11317) - width__11266) : startX__11317);
-            var r__11460 = global::Doroti.Ui.Rect.fromLTWH(x__11400, rect.top, width__11266, ((EdgeInsets)insets__9182).top);
-            drawEdge(r__11460, ((BorderSide)side).color);
+            double widthNested = (rect.width * this.top!.size);
+            double startX = (((rect.width - widthNested)) * ((((this.top!.alignment + 1.0)) / 2.0)));
+            double xAlternate = (rtlLocal ? ((rect.width - startX) - widthNested) : startX);
+            var rAlternate = global::Doroti.Ui.Rect.fromLTWH(xAlternate, rect.top, widthNested, ((EdgeInsets)insets).top);
+            drawEdge(rAlternate, ((BorderSide)side).color);
         }
         if ((((this.bottom is not null) && (this.bottom!.size != 0.0)) && (!object.Equals(((BorderSide)side).style, BorderStyle.none))))
         {
-            double width__11651 = (rect.width * this.bottom!.size);
-            double startX__11705 = (((rect.width - width__11651)) * ((((this.bottom!.alignment + 1.0)) / 2.0)));
-            double x__11791 = (rtl__9236 ? ((rect.width - startX__11705) - width__11651) : startX__11705);
-            var r__11851 = global::Doroti.Ui.Rect.fromLTWH(x__11791, (rect.bottom - ((EdgeInsets)insets__9182).bottom), width__11651, ((BorderSide)side).width);
-            drawEdge(r__11851, ((BorderSide)side).color);
+            double widthCurrent = (rect.width * this.bottom!.size);
+            double startXLocal = (((rect.width - widthCurrent)) * ((((this.bottom!.alignment + 1.0)) / 2.0)));
+            double xNested = (rtlLocal ? ((rect.width - startXLocal) - widthCurrent) : startXLocal);
+            var rNested = global::Doroti.Ui.Rect.fromLTWH(xNested, (rect.bottom - ((EdgeInsets)insets).bottom), widthCurrent, ((BorderSide)side).width);
+            drawEdge(rNested, ((BorderSide)side).color);
         }
     }
 
@@ -293,25 +293,25 @@ public class LinearBorder : OutlinedBorder
         {
             return "LinearBorder.none";
         }
-        var s__12531 = new StringBuffer($"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorder"))}(side: {side}");
+        var s = new StringBuffer($"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearBorder"))}(side: {side}");
         if ((this.start is not null))
         {
-            s__12531.write($", start: {this.start}");
+            s.write($", start: {this.start}");
         }
         if ((this.end is not null))
         {
-            s__12531.write($", end: {this.end}");
+            s.write($", end: {this.end}");
         }
         if ((this.top is not null))
         {
-            s__12531.write($", top: {this.top}");
+            s.write($", top: {this.top}");
         }
         if ((this.bottom is not null))
         {
-            s__12531.write($", bottom: {this.bottom}");
+            s.write($", bottom: {this.bottom}");
         }
-        s__12531.write(")");
-        return s__12531.ToString();
+        s.write(")");
+        return s.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

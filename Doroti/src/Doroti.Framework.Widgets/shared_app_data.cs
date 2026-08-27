@@ -28,17 +28,17 @@ public class SharedAppData : StatefulWidget
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _SharedAppDataState__shared_app_data());
     public static V getValue<K, V>(BuildContext context, K key, global::System.Func<V> init)
     {
-        _SharedAppModel__shared_app_data? model__4680 = ((_SharedAppModel__shared_app_data?)(object?)InheritedModel<object>.inheritFrom<_SharedAppModel__shared_app_data>(context, aspect: key));
-        DartRuntimePrimitives.Assert(() => SharedAppData._debugHasSharedAppData(model__4680, context, "getValue"));
-        return ((V)(object?)model__4680!.sharedAppDataState.getValue<K, V>(key, (global::System.Func<V>)init));
+        _SharedAppModel__shared_app_data? model = ((_SharedAppModel__shared_app_data?)(object?)InheritedModel<object>.inheritFrom<_SharedAppModel__shared_app_data>(context, aspect: key));
+        DartRuntimePrimitives.Assert(() => SharedAppData._debugHasSharedAppData(model, context, "getValue"));
+        return ((V)(object?)model!.sharedAppDataState.getValue<K, V>(key, (global::System.Func<V>)init));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static void setValue<K, V>(BuildContext context, K key, V value)
     {
-        _SharedAppModel__shared_app_data? model__5644 = ((_SharedAppModel__shared_app_data?)(object?)context.getInheritedWidgetOfExactType<_SharedAppModel__shared_app_data>());
-        DartRuntimePrimitives.Assert(() => SharedAppData._debugHasSharedAppData(model__5644, context, "setValue"));
-        model__5644!.sharedAppDataState.setValue<K, V>(key, value);
+        _SharedAppModel__shared_app_data? model = ((_SharedAppModel__shared_app_data?)(object?)context.getInheritedWidgetOfExactType<_SharedAppModel__shared_app_data>());
+        DartRuntimePrimitives.Assert(() => SharedAppData._debugHasSharedAppData(model, context, "setValue"));
+        model!.sharedAppDataState.setValue<K, V>(key, value);
     }
 
     internal static bool _debugHasSharedAppData(_SharedAppModel__shared_app_data? model, BuildContext context, string methodName)
@@ -124,9 +124,9 @@ internal class _SharedAppModel__shared_app_data : InheritedModel<object>
     public override bool updateShouldNotifyDependent(InheritedModel<object> old, HashSet<object> keys)
     {
         var __old = (_SharedAppModel__shared_app_data)(object)old;
-        foreach (var key__7881 in keys)
+        foreach (var key in keys)
         {
-            if ((!object.Equals(this.data.GetValueOrDefault(key__7881), ((_SharedAppModel__shared_app_data)__old).data.GetValueOrDefault(key__7881))))
+            if ((!object.Equals(this.data.GetValueOrDefault(key), ((_SharedAppModel__shared_app_data)__old).data.GetValueOrDefault(key))))
             {
                 return true;
             }

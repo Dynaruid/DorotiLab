@@ -61,8 +61,8 @@ public class RawKeyEventDataWindows : RawKeyEventData
             }
             if (((keyLabel.Length != 0) && !LogicalKeyboardKey.isControlCharacter(keyLabel)))
             {
-                long keyId__3527 = (LogicalKeyboardKey.unicodePlane | ((characterCodePoint & LogicalKeyboardKey.valueMask)));
-                return (LogicalKeyboardKey.findKeyByKeyId(keyId__3527) ?? new LogicalKeyboardKey(keyId__3527));
+                long keyId = (LogicalKeyboardKey.unicodePlane | ((characterCodePoint & LogicalKeyboardKey.valueMask)));
+                return (LogicalKeyboardKey.findKeyByKeyId(keyId) ?? new LogicalKeyboardKey(keyId));
             }
             LogicalKeyboardKey? newKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kWindowsToLogicalKey.GetValueOrDefault(keyCode);
             if ((newKey is not null))

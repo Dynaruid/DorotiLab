@@ -36,9 +36,9 @@ public class TweenSequence<T> : Animatable<T>
 
     internal virtual T _evaluateAt(double t, long index)
     {
-        TweenSequenceItem<T> element__2527 = this._items[(int)(index)];
-        double tInterval__2569 = this._intervals[(int)(index)].value(t);
-        return ((TweenSequenceItem<T>)element__2527).tween.transform(tInterval__2569);
+        TweenSequenceItem<T> element = this._items[(int)(index)];
+        double tInterval = this._intervals[(int)(index)].value(t);
+        return ((TweenSequenceItem<T>)element).tween.transform(tInterval);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -49,11 +49,11 @@ public class TweenSequence<T> : Animatable<T>
         {
             return _evaluateAt(t, (checked((long)(this._items.Count)) - 1L));
         }
-        for (var index__2820 = 0L; (index__2820 < checked((long)(this._items.Count))); index__2820++)
+        for (var index = 0L; (index < checked((long)(this._items.Count))); index++)
         {
-            if (this._intervals[(int)(index__2820)].contains(t))
+            if (this._intervals[(int)(index)].contains(t))
             {
-                return _evaluateAt(t, index__2820);
+                return _evaluateAt(t, index);
             }
         }
         throw new InvalidOperationException($"TweenSequence.evaluate() could not find an interval for {t}");

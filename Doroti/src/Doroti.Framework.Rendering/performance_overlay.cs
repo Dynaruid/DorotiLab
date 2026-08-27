@@ -65,17 +65,17 @@ public class RenderPerformanceOverlay : RenderBox
     {
         get
         {
-            var kDefaultGraphHeight__4012 = 80.0;
-            var result__4048 = 0.0;
+            var kDefaultGraphHeight = 80.0;
+            var result = 0.0;
             if ((((this.optionsMask & _rasterizerMask)) != 0L))
             {
-                result__4048 += kDefaultGraphHeight__4012;
+                result += kDefaultGraphHeight;
             }
             if ((((this.optionsMask & _engineMask)) != 0L))
             {
-                result__4048 += kDefaultGraphHeight__4012;
+                result += kDefaultGraphHeight;
             }
-            return result__4048;
+            return result;
             return default!;
         }
     }

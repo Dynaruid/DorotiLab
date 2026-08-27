@@ -80,13 +80,13 @@ public class MaterialBannerThemeData : global::Doroti.Framework.Foundation.Diagn
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -109,8 +109,8 @@ public class MaterialBannerTheme : global::Doroti.Framework.Widgets.InheritedThe
 
     public static MaterialBannerThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        MaterialBannerTheme? bannerTheme__6819 = ((MaterialBannerTheme?)(object?)context.dependOnInheritedWidgetOfExactType<MaterialBannerTheme>());
-        return (bannerTheme__6819?.data ?? Theme.of(context).bannerTheme);
+        MaterialBannerTheme? bannerThemeLocal = ((MaterialBannerTheme?)(object?)context.dependOnInheritedWidgetOfExactType<MaterialBannerTheme>());
+        return (bannerThemeLocal?.data ?? Theme.of(context).bannerTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

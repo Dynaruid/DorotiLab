@@ -79,22 +79,22 @@ public class PlatformSelectableRegionContextMenuIo : StatelessWidget
     {
         DartRuntimePrimitives.Assert(() => (_registeredViewType is null));
         _registeredViewType = PlatformSelectableRegionContextMenuIo._registerWebSelectionCallback(((global::System.Action<HTMLElement, MouseEvent>)((element, @event) => {
-SelectionContainerDelegate? client__3377 = _activeClient;
-if ((client__3377 is not null))
+SelectionContainerDelegate? client = _activeClient;
+if ((client is not null))
 {
-    var localOffset__3513 = new global::Doroti.Ui.Offset(@event.offsetX.toDouble(), @event.offsetY.toDouble());
-    Matrix4 transform__3609 = ((Matrix4)(object?)client__3377.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
-    global::Doroti.Ui.Offset globalOffset__3671 = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(transform__3609, localOffset__3513));
-    client__3377.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectWordSelectionEvent(globalPosition: globalOffset__3671));
-    element.innerText = (client__3377.getSelectedContent()?.plainText ?? "");
-    Range range__4093 = ((Func<Range>)(() =>
+    var localOffset = new global::Doroti.Ui.Offset(@event.offsetX.toDouble(), @event.offsetY.toDouble());
+    Matrix4 transform = ((Matrix4)(object?)client.getTransformTo(((global::Doroti.Framework.Rendering.RenderObject)(object)null)));
+    global::Doroti.Ui.Offset globalOffset = ((global::Doroti.Ui.Offset)(object?)MatrixUtils.transformPoint(transform, localOffset));
+    client.dispatchSelectionEvent(new global::Doroti.Framework.Rendering.SelectWordSelectionEvent(globalPosition: globalOffset));
+    element.innerText = (client.getSelectedContent()?.plainText ?? "");
+    Range range = ((Func<Range>)(() =>
 {            var __cascade = WebLibrary.document.createRange();
             __cascade.selectNode(element);
             return __cascade;        }))();
     DartRuntimePrimitives.Ignore(((Func<Selection?>)(() =>
 {            var __cascade = WebLibrary.window.getSelection();
             __cascade.removeAllRanges();
-            __cascade.addRange(range__4093);
+            __cascade.addRange(range);
             return __cascade;        }))());
 }
 })));
@@ -102,29 +102,29 @@ if ((client__3377 is not null))
 
     internal static string _registerWebSelectionCallback(global::System.Action<HTMLElement, MouseEvent> callback)
     {
-        var styleElement__4397 = ((HTMLStyleElement?)(object?)WebLibrary.document.createElement("style"))!;
-        WebLibrary.document.head!.append(((JSAny?)(object?)styleElement__4397)!);
-        CSSStyleSheet sheet__4555 = styleElement__4397.sheet!;
-        sheet__4555.insertRule(_platform_selectable_region_context_menu_webLibrary._kClassRule, 0L);
-        sheet__4555.insertRule(_platform_selectable_region_context_menu_webLibrary._kClassSelectionRule, 1L);
+        var styleElement = ((HTMLStyleElement?)(object?)WebLibrary.document.createElement("style"))!;
+        WebLibrary.document.head!.append(((JSAny?)(object?)styleElement)!);
+        CSSStyleSheet sheetLocal = styleElement.sheet!;
+        sheetLocal.insertRule(_platform_selectable_region_context_menu_webLibrary._kClassRule, 0L);
+        sheetLocal.insertRule(_platform_selectable_region_context_menu_webLibrary._kClassSelectionRule, 1L);
         _registerViewFactory(_platform_selectable_region_context_menu_webLibrary._viewType, ((viewId, arg1) => {
-var htmlElement__4751 = ((HTMLElement?)(object?)WebLibrary.document.createElement("div"))!;
+var htmlElement = ((HTMLElement?)(object?)WebLibrary.document.createElement("div"))!;
 DartRuntimePrimitives.Ignore(((Func<HTMLElement>)(() =>
-{            var __cascade = htmlElement__4751;
+{            var __cascade = htmlElement;
             __cascade.style.width = "100%";
             __cascade.style.height = "100%";
             __cascade.classList.add(_platform_selectable_region_context_menu_webLibrary._kClassName);
             return __cascade;        }))());
-htmlElement__4751.addEventListener("mousedown", ((@event) => {
-var mouseEvent__5040 = ((MouseEvent?)(object?)@event)!;
-mouseEvent__5040.preventDefault();
-if ((mouseEvent__5040.button != _platform_selectable_region_context_menu_webLibrary._kRightClickButton))
+htmlElement.addEventListener("mousedown", ((@event) => {
+var mouseEvent = ((MouseEvent?)(object?)@event)!;
+mouseEvent.preventDefault();
+if ((mouseEvent.button != _platform_selectable_region_context_menu_webLibrary._kRightClickButton))
 {
     return;
 }
-callback(htmlElement__4751, mouseEvent__5040);
+callback(htmlElement, mouseEvent);
 }).toJS);
-return htmlElement__4751;
+return htmlElement;
 throw new InvalidOperationException("Dart closure completed without a value.");
 }), isVisible: false);
         return _platform_selectable_region_context_menu_webLibrary._viewType;

@@ -300,9 +300,9 @@ public class RestorationBucket
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
         if ((_claimedChildren.ContainsKey(restorationId) || !_rawChildren.ContainsKey(restorationId)))
         {
-            var child__33838 = new RestorationBucket(debugOwner: debugOwner, restorationId: restorationId);
-            adoptChild(child__33838);
-            return child__33838;
+            var childLocal = new RestorationBucket(debugOwner: debugOwner, restorationId: restorationId);
+            adoptChild(childLocal);
+            return childLocal;
         }
         DartRuntimePrimitives.Assert(() => (_rawChildren.GetValueOrDefault(restorationId) is not null));
         var child = RestorationBucket.CreateChild(restorationId: restorationId, parent: this, debugOwner: debugOwner);
@@ -392,11 +392,11 @@ public class RestorationBucket
                 var error = new List<DiagnosticsNode> { new ErrorSummary("Multiple owners claimed child RestorationBuckets with the same IDs."), new ErrorDescription($"The following IDs were claimed multiple times from the parent {this}:") };
                 foreach (MapEntry<string, List<RestorationBucket>> child in _childrenToAdd.entries)
                 {
-                    string id__37151 = child.key;
-                    List<RestorationBucket> buckets__37205 = child.value;
-                    DartRuntimePrimitives.Assert(() => (buckets__37205.Count != 0));
-                    DartRuntimePrimitives.Assert(() => _claimedChildren.ContainsKey(id__37151));
-                    error.AddRange(new List<DiagnosticsNode> { new ErrorDescription($" * \"{id__37151}\" was claimed by:"), new ErrorDescription($"   * {_claimedChildren.GetValueOrDefault(id__37151)!.debugOwner} (current owner)") });
+                    string id = child.key;
+                    List<RestorationBucket> buckets = child.value;
+                    DartRuntimePrimitives.Assert(() => (buckets.Count != 0));
+                    DartRuntimePrimitives.Assert(() => _claimedChildren.ContainsKey(id));
+                    error.AddRange(new List<DiagnosticsNode> { new ErrorDescription($" * \"{id}\" was claimed by:"), new ErrorDescription($"   * {_claimedChildren.GetValueOrDefault(id)!.debugOwner} (current owner)") });
                 }
                 throw new FlutterError(error);
             });
@@ -410,12 +410,12 @@ public class RestorationBucket
         if ((object.Equals(_claimedChildren.remove(child.restorationId), child)))
         {
             _rawChildren.remove(child.restorationId);
-            List<RestorationBucket>? pendingChildren__37957 = _childrenToAdd.GetValueOrDefault(child.restorationId);
-            if ((pendingChildren__37957 is not null))
+            List<RestorationBucket>? pendingChildren = _childrenToAdd.GetValueOrDefault(child.restorationId);
+            if ((pendingChildren is not null))
             {
-                RestorationBucket toAdd__38081 = pendingChildren__37957.removeLast();
-                _finalizeAddChildData(toAdd__38081);
-                if ((pendingChildren__37957.Count == 0))
+                RestorationBucket toAdd = pendingChildren.removeLast();
+                _finalizeAddChildData(toAdd);
+                if ((pendingChildren.Count == 0))
                 {
                     _childrenToAdd.remove(child.restorationId);
                 }

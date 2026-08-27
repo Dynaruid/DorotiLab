@@ -87,8 +87,8 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T> :
             }
             return;
         }
-        bool shouldRestart__5657 = (((((RepeatingAnimationBuilder<T>)oldWidget).paused || (!object.Equals(((RepeatingAnimationBuilder<T>)(object)this.widget).repeatMode, ((RepeatingAnimationBuilder<T>)oldWidget).repeatMode))) || (!object.Equals(((RepeatingAnimationBuilder<T>)(object)this.widget).duration, ((RepeatingAnimationBuilder<T>)oldWidget).duration))) || !((global::Doroti.Framework.Animation.AnimationController)this._controller).isAnimating);
-        if (shouldRestart__5657)
+        bool shouldRestart = (((((RepeatingAnimationBuilder<T>)oldWidget).paused || (!object.Equals(((RepeatingAnimationBuilder<T>)(object)this.widget).repeatMode, ((RepeatingAnimationBuilder<T>)oldWidget).repeatMode))) || (!object.Equals(((RepeatingAnimationBuilder<T>)(object)this.widget).duration, ((RepeatingAnimationBuilder<T>)oldWidget).duration))) || !((global::Doroti.Framework.Animation.AnimationController)this._controller).isAnimating);
+        if (shouldRestart)
         {
             this._controller.repeat(reverse: (object.Equals(((RepeatingAnimationBuilder<T>)(object)this.widget).repeatMode, RepeatMode.reverse)));
         }
@@ -116,8 +116,8 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T> :
     {
         return ((Widget)(object?)new AnimatedBuilder(animation: this._curvedAnimation, builder: ((global::System.Func<BuildContext, Widget?, Widget>)((context, child) =>
         {
-            T value__6251 = ((T)(object?)((RepeatingAnimationBuilder<T>)(object)this.widget).animatable.transform(((global::Doroti.Framework.Animation.CurvedAnimation)this._curvedAnimation).value));
-            return this.widget.builder(context, value__6251, child);
+            T valueLocal = ((T)(object?)((RepeatingAnimationBuilder<T>)(object)this.widget).animatable.transform(((global::Doroti.Framework.Animation.CurvedAnimation)this._curvedAnimation).value));
+            return this.widget.builder(context, valueLocal, child);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), child: ((RepeatingAnimationBuilder<T>)(object)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -150,31 +150,31 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T> :
 
     public virtual void _updateTicker()
     {
-        TickerModeData values__15157 = this._tickerModeNotifier!.value;
+        TickerModeData values = this._tickerModeNotifier!.value;
         if ((this._ticker is not null))
         {
-            this._ticker!.muted = !((TickerModeData)values__15157).enabled;
-            this._ticker!.forceFrames = ((TickerModeData)values__15157).forceFrames;
+            this._ticker!.muted = !((TickerModeData)values).enabled;
+            this._ticker!.forceFrames = ((TickerModeData)values).forceFrames;
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__15400 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__15400, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier__15400.addListener(() => this._updateTicker());
-        this._tickerModeNotifier = newNotifier__15400;
+        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription__15805 = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription__15805, showSeparator: false, defaultValue: default));
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
 }

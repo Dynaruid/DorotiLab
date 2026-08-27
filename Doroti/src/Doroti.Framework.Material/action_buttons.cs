@@ -65,19 +65,19 @@ internal class _ActionIcon__action_buttons : global::Doroti.Framework.Widgets.St
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ActionIconThemeData? actionIconTheme__2407 = ActionIconTheme.of(context);
-        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? iconBuilder__2479 = this.iconBuilderCallback(actionIconTheme__2407);
-        if ((iconBuilder__2479 is not null))
+        ActionIconThemeData? actionIconTheme = ActionIconTheme.of(context);
+        global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget>? iconBuilder = this.iconBuilderCallback(actionIconTheme);
+        if ((iconBuilder is not null))
         {
-            return iconBuilder__2479(context);
+            return iconBuilder(context);
         }
-        global::Doroti.Framework.Widgets.IconData data__2623 = this.getIcon(context);
-        string? semanticsLabel__2666 = default!;
+        global::Doroti.Framework.Widgets.IconData data = this.getIcon(context);
+        string? semanticsLabel = default!;
         switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
             case global::Doroti.Framework.Foundation.TargetPlatform.android:
                 {
-                    semanticsLabel__2666 = this.getAndroidSemanticsLabel(MaterialLocalizations.of(context));
+                    semanticsLabel = this.getAndroidSemanticsLabel(MaterialLocalizations.of(context));
                     break;
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
@@ -86,11 +86,11 @@ internal class _ActionIcon__action_buttons : global::Doroti.Framework.Widgets.St
             case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
             case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                 {
-                    semanticsLabel__2666 = null;
+                    semanticsLabel = null;
                     break;
                 }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Icon(data__2623, semanticLabel: semanticsLabel__2666));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Icon(data, semanticLabel: semanticsLabel));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

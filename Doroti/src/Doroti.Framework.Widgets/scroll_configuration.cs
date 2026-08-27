@@ -275,8 +275,8 @@ public class ScrollConfiguration : InheritedWidget
 
     public static ScrollBehavior of(BuildContext context)
     {
-        ScrollConfiguration? configuration__15968 = ((ScrollConfiguration?)(object?)context.dependOnInheritedWidgetOfExactType<ScrollConfiguration>());
-        return (configuration__15968?.behavior ?? new ScrollBehavior());
+        ScrollConfiguration? configuration = ((ScrollConfiguration?)(object?)context.dependOnInheritedWidgetOfExactType<ScrollConfiguration>());
+        return (configuration?.behavior ?? new ScrollBehavior());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

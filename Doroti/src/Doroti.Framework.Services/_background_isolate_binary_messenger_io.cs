@@ -41,17 +41,17 @@ internal class BackgroundIsolateBinaryMessenger : BinaryMessenger
         if ((_instance is null))
         {
             Dart_uiLibrary.PlatformDispatcher.instance.registerBackgroundIsolate(token);
-            var portBinaryMessenger__1643 = new BackgroundIsolateBinaryMessenger();
-            _instance = portBinaryMessenger__1643;
-            portBinaryMessenger__1643._receivePort.listen(((message) =>
+            var portBinaryMessenger = new BackgroundIsolateBinaryMessenger();
+            _instance = portBinaryMessenger;
+            portBinaryMessenger._receivePort.listen(((message) =>
             {
                 try
                 {
-                    var args__1838 = ((List<object>?)message)!;
-                    var identifier__1887 = ((long)args__1838[(int)(0L)]);
-                    var bytes__1932 = ((Uint8List?)args__1838[(int)(1L)])!;
-                    var byteData__1978 = new ByteData(bytes__1932);
-                    portBinaryMessenger__1643._completers.remove(identifier__1887)!.complete(byteData__1978);
+                    var args = ((List<object>?)message)!;
+                    var identifier = ((long)args[(int)(0L)]);
+                    var bytes = ((Uint8List?)args[(int)(1L)])!;
+                    var byteData = new ByteData(bytes);
+                    portBinaryMessenger._completers.remove(identifier)!.complete(byteData);
                 }
                 catch (Exception exception)
                 {

@@ -137,9 +137,9 @@ public class ChoiceChip : global::Doroti.Framework.Widgets.StatelessWidget, Chip
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        ChipThemeData chipTheme__6510 = ChipTheme.of(context);
-        ChipThemeData? defaults__6570 = ((ChipThemeData?)(object?)(Theme.of(context).useMaterial3 ? new _ChoiceChipDefaultsM3__choice_chip(context, this.isEnabled, this.selected, this._chipVariant) : null));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new RawChip(defaultProperties: defaults__6570, avatar: this.avatar, label: this.label, labelStyle: (this.labelStyle ?? ((this.selected ? chipTheme__6510.secondaryLabelStyle : null))), labelPadding: this.labelPadding, onSelected: (global::System.Action<bool>?)this.onSelected, pressElevation: this.pressElevation, selected: this.selected, showCheckmark: ((this.showCheckmark ?? chipTheme__6510.showCheckmark) ?? Theme.of(context).useMaterial3), checkmarkColor: this.checkmarkColor, tooltip: this.tooltip, side: this.side, shape: this.shape, clipBehavior: this.clipBehavior, focusNode: this.focusNode, autofocus: this.autofocus, disabledColor: this.disabledColor, selectedColor: (this.selectedColor ?? chipTheme__6510.secondarySelectedColor), color: this.color, backgroundColor: this.backgroundColor, padding: this.padding, visualDensity: this.visualDensity, isEnabled: this.isEnabled, materialTapTargetSize: this.materialTapTargetSize, elevation: this.elevation, shadowColor: this.shadowColor, surfaceTintColor: this.surfaceTintColor, selectedShadowColor: this.selectedShadowColor, avatarBorder: this.avatarBorder, iconTheme: this.iconTheme, avatarBoxConstraints: this.avatarBoxConstraints, chipAnimationStyle: this.chipAnimationStyle, mouseCursor: this.mouseCursor));
+        ChipThemeData chipTheme = ChipTheme.of(context);
+        ChipThemeData? defaults = ((ChipThemeData?)(object?)(Theme.of(context).useMaterial3 ? new _ChoiceChipDefaultsM3__choice_chip(context, this.isEnabled, this.selected, this._chipVariant) : null));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new RawChip(defaultProperties: defaults, avatar: this.avatar, label: this.label, labelStyle: (this.labelStyle ?? ((this.selected ? chipTheme.secondaryLabelStyle : null))), labelPadding: this.labelPadding, onSelected: (global::System.Action<bool>?)this.onSelected, pressElevation: this.pressElevation, selected: this.selected, showCheckmark: ((this.showCheckmark ?? chipTheme.showCheckmark) ?? Theme.of(context).useMaterial3), checkmarkColor: this.checkmarkColor, tooltip: this.tooltip, side: this.side, shape: this.shape, clipBehavior: this.clipBehavior, focusNode: this.focusNode, autofocus: this.autofocus, disabledColor: this.disabledColor, selectedColor: (this.selectedColor ?? chipTheme.secondarySelectedColor), color: this.color, backgroundColor: this.backgroundColor, padding: this.padding, visualDensity: this.visualDensity, isEnabled: this.isEnabled, materialTapTargetSize: this.materialTapTargetSize, elevation: this.elevation, shadowColor: this.shadowColor, surfaceTintColor: this.surfaceTintColor, selectedShadowColor: this.selectedShadowColor, avatarBorder: this.avatarBorder, iconTheme: this.iconTheme, avatarBoxConstraints: this.avatarBoxConstraints, chipAnimationStyle: this.chipAnimationStyle, mouseCursor: this.mouseCursor));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -219,9 +219,9 @@ internal class _ChoiceChipDefaultsM3__choice_chip : ChipThemeData
     {
         get
         {
-            double fontSize__11629 = (this.labelStyle?.fontSize ?? 14.0);
-            double fontSizeRatio__11687 = (MediaQuery.textScalerOf(this.context).scale(fontSize__11629) / 14.0);
-            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)EdgeInsets.lerp(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((fontSizeRatio__11687 - 1.0), 0.0, 1.0))!);
+            double fontSizeLocal = (this.labelStyle?.fontSize ?? 14.0);
+            double fontSizeRatio = (MediaQuery.textScalerOf(this.context).scale(fontSizeLocal) / 14.0);
+            return ((global::Doroti.Framework.Painting.EdgeInsetsGeometry?)(object?)EdgeInsets.lerp(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8.0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4.0), Dart_uiLibrary.clampDouble((fontSizeRatio - 1.0), 0.0, 1.0))!);
             return default!;
         }
     }

@@ -130,11 +130,11 @@ public class HitTestResult
         {
             return;
         }
-        Matrix4 last__5881 = this._transforms.Last();
-        foreach (_TransformPart__hit_test part__5936 in this._localTransforms)
+        Matrix4 last = this._transforms.Last();
+        foreach (_TransformPart__hit_test part in this._localTransforms)
         {
-            last__5881 = part__5936.multiply(last__5881);
-            this._transforms.Add(last__5881);
+            last = part.multiply(last);
+            this._transforms.Add(last);
         }
         this._localTransforms.Clear();
     }
@@ -182,14 +182,14 @@ public class HitTestResult
 
     internal virtual bool _debugVectorMoreOrLessEquals(global::System.Numerics.Vector4 a, global::System.Numerics.Vector4 b, double epsilon = 1e-10)
     {
-        var result__11222 = true;
+        var result = true;
         DartRuntimePrimitives.Assert(() =>
             {
-                global::System.Numerics.Vector4 difference__11273 = (a - b);
-                result__11222 = new double[] { difference__11273.X, difference__11273.Y, difference__11273.Z, difference__11273.W }.All(((component) => (component.abs() < epsilon)));
+                global::System.Numerics.Vector4 difference = (a - b);
+                result = new double[] { difference.X, difference.Y, difference.Z, difference.W }.All(((component) => (component.abs() < epsilon)));
                 return true;
             });
-        return result__11222;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

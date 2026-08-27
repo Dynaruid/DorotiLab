@@ -25,8 +25,8 @@ public class ChipTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static ChipThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ChipTheme? inheritedTheme__3187 = ((ChipTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ChipTheme>());
-        return (inheritedTheme__3187?.data ?? Theme.of(context).chipTheme);
+        ChipTheme? inheritedTheme = ((ChipTheme?)(object?)context.dependOnInheritedWidgetOfExactType<ChipTheme>());
+        return (inheritedTheme?.data ?? Theme.of(context).chipTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -100,21 +100,21 @@ public class ChipThemeData : global::Doroti.Framework.Foundation.Diagnosticable
         {
             brightness = ThemeData.estimateBrightnessForColor(primaryColor);
         }
-        var backgroundAlpha__8667 = 31L;
-        var deleteIconAlpha__8708 = 222L;
-        var disabledAlpha__8749 = 12L;
-        var selectAlpha__8799 = 61L;
-        var textLabelAlpha__8848 = 222L;
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry padding__8907 = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0));
+        var backgroundAlpha = 31L;
+        var deleteIconAlpha = 222L;
+        var disabledAlpha = 12L;
+        var selectAlpha = 61L;
+        var textLabelAlpha = 222L;
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0));
         primaryColor = (primaryColor ?? (((object.Equals(brightness, Brightness.light)) ? Colors.black : Colors.white)));
-        global::Doroti.Ui.Color backgroundColor__9054 = ((global::Doroti.Ui.Color)(object?)primaryColor.withAlpha(backgroundAlpha__8667));
-        global::Doroti.Ui.Color deleteIconColor__9129 = ((global::Doroti.Ui.Color)(object?)primaryColor.withAlpha(deleteIconAlpha__8708));
-        global::Doroti.Ui.Color disabledColor__9204 = ((global::Doroti.Ui.Color)(object?)primaryColor.withAlpha(disabledAlpha__8749));
-        global::Doroti.Ui.Color selectedColor__9275 = ((global::Doroti.Ui.Color)(object?)primaryColor.withAlpha(selectAlpha__8799));
-        global::Doroti.Ui.Color secondarySelectedColor__9344 = ((global::Doroti.Ui.Color)(object?)secondaryColor.withAlpha(selectAlpha__8799));
-        global::Doroti.Framework.Painting.TextStyle secondaryLabelStyle__9428 = ((global::Doroti.Framework.Painting.TextStyle)(object?)labelStyle.copyWith(color: secondaryColor.withAlpha(textLabelAlpha__8848)));
-        labelStyle = labelStyle.copyWith(color: primaryColor.withAlpha(textLabelAlpha__8848));
-        return new ChipThemeData(backgroundColor: backgroundColor__9054, deleteIconColor: deleteIconColor__9129, disabledColor: disabledColor__9204, selectedColor: selectedColor__9275, secondarySelectedColor: secondarySelectedColor__9344, shadowColor: Colors.black, selectedShadowColor: Colors.black, showCheckmark: true, padding: padding__8907, labelStyle: labelStyle, secondaryLabelStyle: secondaryLabelStyle__9428, brightness: brightness, elevation: 0.0, pressElevation: 8.0, iconTheme: new global::Doroti.Framework.Widgets.IconThemeData(size: 18.0));
+        global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(object?)primaryColor.withAlpha(backgroundAlpha));
+        global::Doroti.Ui.Color deleteIconColorLocal = ((global::Doroti.Ui.Color)(object?)primaryColor.withAlpha(deleteIconAlpha));
+        global::Doroti.Ui.Color disabledColorLocal = ((global::Doroti.Ui.Color)(object?)primaryColor.withAlpha(disabledAlpha));
+        global::Doroti.Ui.Color selectedColorLocal = ((global::Doroti.Ui.Color)(object?)primaryColor.withAlpha(selectAlpha));
+        global::Doroti.Ui.Color secondarySelectedColorLocal = ((global::Doroti.Ui.Color)(object?)secondaryColor.withAlpha(selectAlpha));
+        global::Doroti.Framework.Painting.TextStyle secondaryLabelStyleLocal = ((global::Doroti.Framework.Painting.TextStyle)(object?)labelStyle.copyWith(color: secondaryColor.withAlpha(textLabelAlpha)));
+        labelStyle = labelStyle.copyWith(color: primaryColor.withAlpha(textLabelAlpha));
+        return new ChipThemeData(backgroundColor: backgroundColorLocal, deleteIconColor: deleteIconColorLocal, disabledColor: disabledColorLocal, selectedColor: selectedColorLocal, secondarySelectedColor: secondarySelectedColorLocal, shadowColor: Colors.black, selectedShadowColor: Colors.black, showCheckmark: true, padding: paddingLocal, labelStyle: labelStyle, secondaryLabelStyle: secondaryLabelStyleLocal, brightness: brightness, elevation: 0.0, pressElevation: 8.0, iconTheme: new global::Doroti.Framework.Widgets.IconThemeData(size: 18.0));
     }
 
     public virtual ChipThemeData copyWith(global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>? color = null, Color? backgroundColor = null, Color? deleteIconColor = null, Color? disabledColor = null, Color? selectedColor = null, Color? secondarySelectedColor = null, Color? shadowColor = null, Color? surfaceTintColor = null, Color? selectedShadowColor = null, bool? showCheckmark = null, Color? checkmarkColor = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Painting.BorderSide? side = null, global::Doroti.Framework.Painting.OutlinedBorder? shape = null, global::Doroti.Framework.Painting.TextStyle? labelStyle = null, global::Doroti.Framework.Painting.TextStyle? secondaryLabelStyle = null, Brightness? brightness = null, double? elevation = null, double? pressElevation = null, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null, global::Doroti.Framework.Rendering.BoxConstraints? avatarBoxConstraints = null, global::Doroti.Framework.Rendering.BoxConstraints? deleteIconBoxConstraints = null)
@@ -199,13 +199,13 @@ public class ChipThemeData : global::Doroti.Framework.Foundation.Diagnosticable
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

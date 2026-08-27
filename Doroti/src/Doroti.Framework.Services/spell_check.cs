@@ -142,9 +142,9 @@ public class DefaultSpellCheckService : SpellCheckService
         var suggestionSpans = new List<SuggestionSpan>();
         if ((lastSavedResults is not null))
         {
-            var textHasNotChanged__7033 = (lastSavedResults!.spellCheckedText == text);
-            bool spansHaveChanged__7114 = global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(lastSavedResults!.suggestionSpans, suggestionSpans);
-            if ((textHasNotChanged__7033 && spansHaveChanged__7114))
+            var textHasNotChanged = (lastSavedResults!.spellCheckedText == text);
+            bool spansHaveChanged = global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(lastSavedResults!.suggestionSpans, suggestionSpans);
+            if ((textHasNotChanged && spansHaveChanged))
             {
                 suggestionSpans = mergeResults(lastSavedResults!.suggestionSpans, suggestionSpans);
             }

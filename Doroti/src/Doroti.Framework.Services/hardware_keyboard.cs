@@ -217,9 +217,9 @@ public class HardwareKeyboard
         {
             foreach (long key in keyboardState.Keys)
             {
-                var physicalKey__25590 = new PhysicalKeyboardKey(key);
-                var logicalKey__25644 = new LogicalKeyboardKey(DartRuntimePrimitives.RequireValue(keyboardState.GetValueOrDefault(key)));
-                _pressedKeys[physicalKey__25590] = logicalKey__25644;
+                var physicalKey = new PhysicalKeyboardKey(key);
+                var logicalKey = new LogicalKeyboardKey(DartRuntimePrimitives.RequireValue(keyboardState.GetValueOrDefault(key)));
+                _pressedKeys[physicalKey] = logicalKey;
             }
         }
     }
@@ -233,8 +233,8 @@ public class HardwareKeyboard
         {
             try
             {
-                bool thisResult__26313 = handler(@event);
-                handled = (handled || thisResult__26313);
+                bool thisResult = handler(@event);
+                handled = (handled || thisResult);
             }
             catch (Exception exception)
             {
@@ -274,16 +274,16 @@ public class HardwareKeyboard
         if (@event is KeyDownEvent @event__as27907)
         {
             _pressedKeys[physicalKey] = logicalKey;
-            KeyboardLockMode? lockMode__28008 = (@event__as27907.logicalKey.keyId switch { var id when id == LogicalKeyboardKey.numLock.keyId => KeyboardLockMode.numLock, var id when id == LogicalKeyboardKey.scrollLock.keyId => KeyboardLockMode.scrollLock, var id when id == LogicalKeyboardKey.capsLock.keyId => KeyboardLockMode.capsLock, _ => (KeyboardLockMode?)null });
-            if ((lockMode__28008 is not null))
+            KeyboardLockMode? lockMode = (@event__as27907.logicalKey.keyId switch { var id when id == LogicalKeyboardKey.numLock.keyId => KeyboardLockMode.numLock, var id when id == LogicalKeyboardKey.scrollLock.keyId => KeyboardLockMode.scrollLock, var id when id == LogicalKeyboardKey.capsLock.keyId => KeyboardLockMode.capsLock, _ => (KeyboardLockMode?)null });
+            if ((lockMode is not null))
             {
-                if (_lockModes.Contains(DartRuntimePrimitives.RequireValue(lockMode__28008)))
+                if (_lockModes.Contains(DartRuntimePrimitives.RequireValue(lockMode)))
                 {
-                    _lockModes.Remove(DartRuntimePrimitives.RequireValue(lockMode__28008));
+                    _lockModes.Remove(DartRuntimePrimitives.RequireValue(lockMode));
                 }
                 else
                 {
-                    _lockModes.Add(DartRuntimePrimitives.RequireValue(lockMode__28008));
+                    _lockModes.Add(DartRuntimePrimitives.RequireValue(lockMode));
                 }
             }
         }
@@ -375,15 +375,15 @@ public class KeyEventManager
                         return false;
                     }
                     DartRuntimePrimitives.Assert(() => ((data.physical != 0L) && (data.logical != 0L)));
-                    KeyEvent @event__47220 = _eventFromData(data);
+                    KeyEvent @event = _eventFromData(data);
                     if ((data.synthesized && (_keyEventsSinceLastMessage.Count == 0)))
                     {
-                        _hardwareKeyboard.handleKeyEvent(@event__47220);
-                        _dispatchKeyMessage(new List<KeyEvent> { @event__47220 }, null);
+                        _hardwareKeyboard.handleKeyEvent(@event);
+                        _dispatchKeyMessage(new List<KeyEvent> { @event }, null);
                     }
                     else
                     {
-                        _keyEventsSinceLastMessage.Add(@event__47220);
+                        _keyEventsSinceLastMessage.Add(@event);
                     }
                     return false;
                 }
@@ -395,10 +395,10 @@ public class KeyEventManager
     {
         if ((keyMessageHandler is not null))
         {
-            var message__48244 = new KeyMessage(keyEvents, rawEvent);
+            var message = new KeyMessage(keyEvents, rawEvent);
             try
             {
-                return keyMessageHandler!(message__48244);
+                return keyMessageHandler!(message);
             }
             catch (Exception exception)
             {
@@ -406,7 +406,7 @@ public class KeyEventManager
                 InformationCollector? collector = default!;
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<KeyMessage>("KeyMessage", message__48244) });
+                        collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<KeyMessage>("KeyMessage", message) });
                         return true;
                     });
                 FlutterError.reportError(new FlutterErrorDetails(exception: exception, stack: stack, library: "services library", context: new ErrorDescription("while processing the key message__48244 handler"), informationCollector: collector));

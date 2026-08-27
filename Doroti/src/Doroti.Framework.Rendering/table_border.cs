@@ -46,8 +46,8 @@ public class TableBorder
     {
         Color __color = color ?? new Color(0xFF000000);
         global::Doroti.Framework.Painting.BorderRadius __borderRadius = borderRadius ?? global::Doroti.Framework.Painting.BorderRadius.zero;
-        var side__1359 = new global::Doroti.Framework.Painting.BorderSide(color: __color, width: width, style: style);
-        return new TableBorder(top: side__1359, right: side__1359, bottom: side__1359, left: side__1359, horizontalInside: side__1359, verticalInside: side__1359, borderRadius: __borderRadius);
+        var side = new global::Doroti.Framework.Painting.BorderSide(color: __color, width: width, style: style);
+        return new TableBorder(top: side, right: side, bottom: side, left: side, horizontalInside: side, verticalInside: side, borderRadius: __borderRadius);
     }
 
     public static TableBorder CreateSymmetric(global::Doroti.Framework.Painting.BorderSide inside = default!, global::Doroti.Framework.Painting.BorderSide outside = default!, global::Doroti.Framework.Painting.BorderRadius borderRadius = default!)
@@ -89,15 +89,15 @@ public class TableBorder
     }
     internal virtual bool _allSidesMatch<T>(Func<global::Doroti.Framework.Painting.BorderSide, T> selector)
     {
-        T topValue__3762 = selector(this.top);
-        return (((((object.Equals(selector(this.right), topValue__3762)) && (object.Equals(selector(this.bottom), topValue__3762))) && (object.Equals(selector(this.left), topValue__3762))) && (object.Equals(selector(this.horizontalInside), topValue__3762))) && (object.Equals(selector(this.verticalInside), topValue__3762)));
+        T topValue = selector(this.top);
+        return (((((object.Equals(selector(this.right), topValue)) && (object.Equals(selector(this.bottom), topValue))) && (object.Equals(selector(this.left), topValue))) && (object.Equals(selector(this.horizontalInside), topValue))) && (object.Equals(selector(this.verticalInside), topValue)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _outerSidesMatch<T>(Func<global::Doroti.Framework.Painting.BorderSide, T> selector)
     {
-        T topValue__4095 = selector(this.top);
-        return (((object.Equals(selector(this.right), topValue__4095)) && (object.Equals(selector(this.bottom), topValue__4095))) && (object.Equals(selector(this.left), topValue__4095)));
+        T topValue = selector(this.top);
+        return (((object.Equals(selector(this.right), topValue)) && (object.Equals(selector(this.bottom), topValue))) && (object.Equals(selector(this.left), topValue)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -111,21 +111,21 @@ public class TableBorder
     {
         if ((this._outerBorderIsUniform && (!object.Equals(this.borderRadius, global::Doroti.Framework.Painting.BorderRadius.zero))))
         {
-            global::Doroti.Ui.RRect outer__4845 = this.borderRadius.toRRect(rect);
-            global::Doroti.Ui.RRect inner__4899 = outer__4845.deflate(((global::Doroti.Framework.Painting.BorderSide)this.top).width);
-            var paint__4945 = ((Func<Paint>)(() =>
+            global::Doroti.Ui.RRect outer = this.borderRadius.toRRect(rect);
+            global::Doroti.Ui.RRect inner = outer.deflate(((global::Doroti.Framework.Painting.BorderSide)this.top).width);
+            var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = ((global::Doroti.Framework.Painting.BorderSide)this.top).color;
     return __cascade;
 }))();
-            canvas.drawDRRect(outer__4845, inner__4899, paint__4945);
+            canvas.drawDRRect(outer, inner, paint);
             return;
         }
-        HashSet<global::Doroti.Ui.Color> visibleColors__5069 = _distinctVisibleOuterColors();
-        if (((checked((long)(visibleColors__5069.Count)) == 1L) && (!object.Equals(this.borderRadius, global::Doroti.Framework.Painting.BorderRadius.zero))))
+        HashSet<global::Doroti.Ui.Color> visibleColors = _distinctVisibleOuterColors();
+        if (((checked((long)(visibleColors.Count)) == 1L) && (!object.Equals(this.borderRadius, global::Doroti.Framework.Painting.BorderRadius.zero))))
         {
-            _paintNonUniformBorderWithRadius(canvas, rect, borderRadius: this.borderRadius, top: ((object.Equals(((global::Doroti.Framework.Painting.BorderSide)this.top).style, global::Doroti.Framework.Painting.BorderStyle.none)) ? global::Doroti.Framework.Painting.BorderSide.none : this.top), right: ((object.Equals(((global::Doroti.Framework.Painting.BorderSide)this.right).style, global::Doroti.Framework.Painting.BorderStyle.none)) ? global::Doroti.Framework.Painting.BorderSide.none : this.right), bottom: ((object.Equals(((global::Doroti.Framework.Painting.BorderSide)this.bottom).style, global::Doroti.Framework.Painting.BorderStyle.none)) ? global::Doroti.Framework.Painting.BorderSide.none : this.bottom), left: ((object.Equals(((global::Doroti.Framework.Painting.BorderSide)this.left).style, global::Doroti.Framework.Painting.BorderStyle.none)) ? global::Doroti.Framework.Painting.BorderSide.none : this.left), color: visibleColors__5069.First());
+            _paintNonUniformBorderWithRadius(canvas, rect, borderRadius: this.borderRadius, top: ((object.Equals(((global::Doroti.Framework.Painting.BorderSide)this.top).style, global::Doroti.Framework.Painting.BorderStyle.none)) ? global::Doroti.Framework.Painting.BorderSide.none : this.top), right: ((object.Equals(((global::Doroti.Framework.Painting.BorderSide)this.right).style, global::Doroti.Framework.Painting.BorderStyle.none)) ? global::Doroti.Framework.Painting.BorderSide.none : this.right), bottom: ((object.Equals(((global::Doroti.Framework.Painting.BorderSide)this.bottom).style, global::Doroti.Framework.Painting.BorderStyle.none)) ? global::Doroti.Framework.Painting.BorderSide.none : this.bottom), left: ((object.Equals(((global::Doroti.Framework.Painting.BorderSide)this.left).style, global::Doroti.Framework.Painting.BorderStyle.none)) ? global::Doroti.Framework.Painting.BorderSide.none : this.left), color: visibleColors.First());
             return;
         }
         global::Doroti.Framework.Painting.BordersLibrary.paintBorder(canvas, rect, top: this.top, right: this.right, bottom: this.bottom, left: this.left);
@@ -133,16 +133,16 @@ public class TableBorder
 
     internal static void _paintNonUniformBorderWithRadius(Canvas canvas, Rect rect, global::Doroti.Framework.Painting.BorderRadius borderRadius, Color color, global::Doroti.Framework.Painting.BorderSide top, global::Doroti.Framework.Painting.BorderSide right, global::Doroti.Framework.Painting.BorderSide bottom, global::Doroti.Framework.Painting.BorderSide left)
     {
-        global::Doroti.Ui.RRect borderRect__6193 = borderRadius.toRRect(rect);
-        var paint__6244 = ((Func<Paint>)(() =>
+        global::Doroti.Ui.RRect borderRect = borderRadius.toRRect(rect);
+        var paint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = color;
     return __cascade;
 }))();
-        global::Doroti.Ui.RRect inner__6293 = new global::Doroti.Framework.Painting.EdgeInsets(((global::Doroti.Framework.Painting.BorderSide)left).strokeInset, ((global::Doroti.Framework.Painting.BorderSide)top).strokeInset, ((global::Doroti.Framework.Painting.BorderSide)right).strokeInset, ((global::Doroti.Framework.Painting.BorderSide)bottom).strokeInset).deflateRRect(borderRect__6193);
-        global::Doroti.Ui.RRect outer__6469 = new global::Doroti.Framework.Painting.EdgeInsets(((global::Doroti.Framework.Painting.BorderSide)left).strokeOutset, ((global::Doroti.Framework.Painting.BorderSide)top).strokeOutset, ((global::Doroti.Framework.Painting.BorderSide)right).strokeOutset, ((global::Doroti.Framework.Painting.BorderSide)bottom).strokeOutset).inflateRRect(borderRect__6193);
-        canvas.drawDRRect(outer__6469, inner__6293, paint__6244);
+        global::Doroti.Ui.RRect inner = new global::Doroti.Framework.Painting.EdgeInsets(((global::Doroti.Framework.Painting.BorderSide)left).strokeInset, ((global::Doroti.Framework.Painting.BorderSide)top).strokeInset, ((global::Doroti.Framework.Painting.BorderSide)right).strokeInset, ((global::Doroti.Framework.Painting.BorderSide)bottom).strokeInset).deflateRRect(borderRect);
+        global::Doroti.Ui.RRect outer = new global::Doroti.Framework.Painting.EdgeInsets(((global::Doroti.Framework.Painting.BorderSide)left).strokeOutset, ((global::Doroti.Framework.Painting.BorderSide)top).strokeOutset, ((global::Doroti.Framework.Painting.BorderSide)right).strokeOutset, ((global::Doroti.Framework.Painting.BorderSide)bottom).strokeOutset).inflateRRect(borderRect);
+        canvas.drawDRRect(outer, inner, paint);
     }
 
     public virtual TableBorder scale(double t)
@@ -175,8 +175,8 @@ public class TableBorder
         DartRuntimePrimitives.Assert(() => ((columns.Count() == 0) || (((columns.First() >= 0.0) && (columns.Last() <= rect.width)))));
         if (((columns.Count() != 0) || (rows.Count() != 0)))
         {
-            var paint__10347 = new global::Doroti.Ui.Paint();
-            var path__10376 = new global::Doroti.Ui.Path();
+            var paintLocal = new global::Doroti.Ui.Paint();
+            var path = new global::Doroti.Ui.Path();
             if ((columns.Count() != 0))
             {
                 switch (((global::Doroti.Framework.Painting.BorderSide)this.verticalInside).style)
@@ -185,19 +185,19 @@ public class TableBorder
                         {
                             ((Func<Paint>)(() =>
 {
-    var __cascade = paint__10347;
+    var __cascade = paintLocal;
     __cascade.color = ((global::Doroti.Framework.Painting.BorderSide)this.verticalInside).color;
     __cascade.strokeWidth = ((global::Doroti.Framework.Painting.BorderSide)this.verticalInside).width;
     __cascade.style = PaintingStyle.stroke;
     return __cascade;
 }))();
-                            path__10376.reset();
-                            foreach (var x__10707 in columns)
+                            path.reset();
+                            foreach (var x in columns)
                             {
-                                path__10376.moveTo((rect.left + x__10707), rect.top);
-                                path__10376.lineTo((rect.left + x__10707), rect.bottom);
+                                path.moveTo((rect.left + x), rect.top);
+                                path.lineTo((rect.left + x), rect.bottom);
                             }
-                            canvas.drawPath(path__10376, paint__10347);
+                            canvas.drawPath(path, paintLocal);
                             break;
                         }
                     case global::Doroti.Framework.Painting.BorderStyle.none:
@@ -214,19 +214,19 @@ public class TableBorder
                         {
                             ((Func<Paint>)(() =>
 {
-    var __cascade = paint__10347;
+    var __cascade = paintLocal;
     __cascade.color = ((global::Doroti.Framework.Painting.BorderSide)this.horizontalInside).color;
     __cascade.strokeWidth = ((global::Doroti.Framework.Painting.BorderSide)this.horizontalInside).width;
     __cascade.style = PaintingStyle.stroke;
     return __cascade;
 }))();
-                            path__10376.reset();
-                            foreach (var y__11275 in rows)
+                            path.reset();
+                            foreach (var y in rows)
                             {
-                                path__10376.moveTo(rect.left, (rect.top + y__11275));
-                                path__10376.lineTo(rect.right, (rect.top + y__11275));
+                                path.moveTo(rect.left, (rect.top + y));
+                                path.lineTo(rect.right, (rect.top + y));
                             }
-                            canvas.drawPath(path__10376, paint__10347);
+                            canvas.drawPath(path, paintLocal);
                             break;
                         }
                     case global::Doroti.Framework.Painting.BorderStyle.none:

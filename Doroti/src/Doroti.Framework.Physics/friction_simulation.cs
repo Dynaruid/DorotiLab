@@ -18,12 +18,12 @@ public static partial class Friction_simulationLibrary
 {
     internal static double _newtonsMethod(double initialGuess, double target, Func<double, double> f, Func<double, double> df, long iterations)
     {
-        var guess__638 = initialGuess;
-        for (var i__671 = 0L; (i__671 < iterations); i__671++)
+        var guess = initialGuess;
+        for (var i = 0L; (i < iterations); i++)
         {
-            guess__638 = (guess__638 - (((f(guess__638) - target)) / df(guess__638)));
+            guess = (guess - (((f(guess) - target)) / df(guess)));
         }
-        return guess__638;
+        return guess;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

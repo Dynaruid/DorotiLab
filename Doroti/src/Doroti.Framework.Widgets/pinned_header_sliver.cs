@@ -62,11 +62,11 @@ internal class _RenderPinnedHeaderSliver__pinned_header_sliver : global::Doroti.
     public override double childMainAxisPosition(global::Doroti.Framework.Rendering.RenderObject child) => 0;
     public override void performLayout()
     {
-        global::Doroti.Framework.Rendering.SliverConstraints constraints__3834 = this.constraints;
-        this.child?.layout(constraints__3834.asBoxConstraints(), parentUsesSize: true);
-        double layoutExtent__3957 = Dart_uiLibrary.clampDouble((this.childExtent - ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3834).scrollOffset), 0, ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3834).remainingPaintExtent);
-        double paintExtent__4104 = Math.Min(this.childExtent, (((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3834).remainingPaintExtent - ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3834).overlap));
-        geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollExtent: this.childExtent, paintOrigin: ((global::Doroti.Framework.Rendering.SliverConstraints)constraints__3834).overlap, paintExtent: paintExtent__4104, layoutExtent: layoutExtent__3957, maxPaintExtent: this.childExtent, maxScrollObstructionExtent: this.childExtent, cacheExtent: calculateCacheOffset(constraints__3834, from: 0.0, to: this.childExtent), hasVisualOverflow: true);
+        global::Doroti.Framework.Rendering.SliverConstraints constraintsLocal = this.constraints;
+        this.child?.layout(constraintsLocal.asBoxConstraints(), parentUsesSize: true);
+        double layoutExtentLocal = Dart_uiLibrary.clampDouble((this.childExtent - ((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).scrollOffset), 0, ((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).remainingPaintExtent);
+        double paintExtentLocal = Math.Min(this.childExtent, (((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).remainingPaintExtent - ((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).overlap));
+        geometry = new global::Doroti.Framework.Rendering.SliverGeometry(scrollExtent: this.childExtent, paintOrigin: ((global::Doroti.Framework.Rendering.SliverConstraints)constraintsLocal).overlap, paintExtent: paintExtentLocal, layoutExtent: layoutExtentLocal, maxPaintExtent: this.childExtent, maxScrollObstructionExtent: this.childExtent, cacheExtent: calculateCacheOffset(constraintsLocal, from: 0.0, to: this.childExtent), hasVisualOverflow: true);
     }
 
     public override void describeSemanticsConfiguration(global::Doroti.Framework.Semantics.SemanticsConfiguration config)

@@ -95,34 +95,34 @@ public abstract class ScrollView : StatelessWidget
                 }
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        global::Doroti.Framework.Rendering.ScrollCacheExtent? effectiveScrollCacheExtent__20063 = (this.scrollCacheExtent ?? (((this.cacheExtent is not null) ? global::Doroti.Framework.Rendering.ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(this.cacheExtent)) : null)));
+        global::Doroti.Framework.Rendering.ScrollCacheExtent? effectiveScrollCacheExtent = (this.scrollCacheExtent ?? (((this.cacheExtent is not null) ? global::Doroti.Framework.Rendering.ScrollCacheExtent.CreatePixels(DartRuntimePrimitives.RequireValue(this.cacheExtent)) : null)));
         if (this.shrinkWrap)
         {
-            return ((Widget)(object?)new ShrinkWrappingViewport(axisDirection: axisDirection, offset: offset, slivers: slivers, paintOrder: this.paintOrder, clipBehavior: this.clipBehavior, scrollCacheExtent: effectiveScrollCacheExtent__20063));
+            return ((Widget)(object?)new ShrinkWrappingViewport(axisDirection: axisDirection, offset: offset, slivers: slivers, paintOrder: this.paintOrder, clipBehavior: this.clipBehavior, scrollCacheExtent: effectiveScrollCacheExtent));
         }
-        return ((Widget)(object?)new Viewport(axisDirection: axisDirection, offset: offset, slivers: slivers, scrollCacheExtent: effectiveScrollCacheExtent__20063, center: this.center, anchor: this.anchor, paintOrder: this.paintOrder, clipBehavior: this.clipBehavior));
+        return ((Widget)(object?)new Viewport(axisDirection: axisDirection, offset: offset, slivers: slivers, scrollCacheExtent: effectiveScrollCacheExtent, center: this.center, anchor: this.anchor, paintOrder: this.paintOrder, clipBehavior: this.clipBehavior));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        List<Widget> slivers__20827 = ((List<Widget>)(object?)buildSlivers(context));
-        global::Doroti.Framework.Painting.AxisDirection axisDirection__20884 = getDirection(context);
-        bool effectivePrimary__20939 = (this.primary ?? ((this.controller is null) && PrimaryScrollController.shouldInherit(context, this.scrollDirection)));
-        ScrollController? scrollController__21101 = (effectivePrimary__20939 ? PrimaryScrollController.maybeOf(context) : this.controller);
-        var scrollable__21221 = new Scrollable(dragStartBehavior: this.dragStartBehavior, axisDirection: axisDirection__20884, controller: scrollController__21101, physics: this.physics, scrollBehavior: this.scrollBehavior, semanticChildCount: this.semanticChildCount, restorationId: this.restorationId, hitTestBehavior: this.hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) =>
+        List<Widget> slivers = ((List<Widget>)(object?)buildSlivers(context));
+        global::Doroti.Framework.Painting.AxisDirection axisDirectionLocal = getDirection(context);
+        bool effectivePrimary = (this.primary ?? ((this.controller is null) && PrimaryScrollController.shouldInherit(context, this.scrollDirection)));
+        ScrollController? scrollController = (effectivePrimary ? PrimaryScrollController.maybeOf(context) : this.controller);
+        var scrollable = new Scrollable(dragStartBehavior: this.dragStartBehavior, axisDirection: axisDirectionLocal, controller: scrollController, physics: this.physics, scrollBehavior: this.scrollBehavior, semanticChildCount: this.semanticChildCount, restorationId: this.restorationId, hitTestBehavior: this.hitTestBehavior, viewportBuilder: ((global::System.Func<BuildContext, global::Doroti.Framework.Rendering.ViewportOffset, Widget>)((context, offset) =>
         {
-            return ((Widget)(object?)buildViewport(context, offset, axisDirection__20884, slivers__20827));
+            return ((Widget)(object?)buildViewport(context, offset, axisDirectionLocal, slivers));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), clipBehavior: this.clipBehavior);
-        Widget scrollableResult__21756 = ((effectivePrimary__20939 && (scrollController__21101 is not null)) ? PrimaryScrollController.CreateNone(child: scrollable__21221) : scrollable__21221);
-        ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior__22037 = this.keyboardDismissBehavior ?? ScrollViewKeyboardDismissBehavior.manual;
-        if ((object.Equals(effectiveKeyboardDismissBehavior__22037, ScrollViewKeyboardDismissBehavior.onDrag)))
+        Widget scrollableResult = ((effectivePrimary && (scrollController is not null)) ? PrimaryScrollController.CreateNone(child: scrollable) : scrollable);
+        ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior = this.keyboardDismissBehavior ?? ScrollViewKeyboardDismissBehavior.manual;
+        if ((object.Equals(effectiveKeyboardDismissBehavior, ScrollViewKeyboardDismissBehavior.onDrag)))
         {
-            return ((Widget)(object?)new NotificationListener<ScrollUpdateNotification>(child: scrollableResult__21756, onNotification: ((global::System.Func<ScrollUpdateNotification, bool>?)((notification) =>
+            return ((Widget)(object?)new NotificationListener<ScrollUpdateNotification>(child: scrollableResult, onNotification: ((global::System.Func<ScrollUpdateNotification, bool>?)((notification) =>
             {
-                FocusScopeNode currentScope__22527 = ((FocusScopeNode)(object?)FocusScope.of(context));
-                if ((((((ScrollUpdateNotification)notification).dragDetails is not null) && !currentScope__22527.hasPrimaryFocus) && currentScope__22527.hasFocus))
+                FocusScopeNode currentScope = ((FocusScopeNode)(object?)FocusScope.of(context));
+                if ((((((ScrollUpdateNotification)notification).dragDetails is not null) && !currentScope.hasPrimaryFocus) && currentScope.hasFocus))
                 {
                     FocusManager.instance.primaryFocus?.unfocus();
                 }
@@ -132,7 +132,7 @@ public abstract class ScrollView : StatelessWidget
         }
         else
         {
-            return scrollableResult__21756;
+            return scrollableResult;
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -175,24 +175,24 @@ public abstract class BoxScrollView : ScrollView
 
     public override List<Widget> buildSlivers(BuildContext context)
     {
-        Widget sliver__37242 = ((Widget)(object?)buildChildLayout(context));
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding__37302 = this.padding;
+        Widget sliverLocal = ((Widget)(object?)buildChildLayout(context));
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = this.padding;
         if ((this.padding is null))
         {
-            MediaQueryData? mediaQuery__37385 = ((MediaQueryData?)(object?)MediaQuery.maybeOf(context));
-            if ((mediaQuery__37385 is not null))
+            MediaQueryData? mediaQuery = ((MediaQueryData?)(object?)MediaQuery.maybeOf(context));
+            if ((mediaQuery is not null))
             {
-                global::Doroti.Framework.Painting.EdgeInsets mediaQueryHorizontalPadding__37550 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)((MediaQueryData)mediaQuery__37385).padding.copyWith(top: 0.0, bottom: 0.0));
-                global::Doroti.Framework.Painting.EdgeInsets mediaQueryVerticalPadding__37688 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)((MediaQueryData)mediaQuery__37385).padding.copyWith(left: 0.0, right: 0.0));
-                effectivePadding__37302 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(((object.Equals(this.scrollDirection, global::Doroti.Framework.Painting.Axis.vertical)) ? mediaQueryVerticalPadding__37688 : mediaQueryHorizontalPadding__37550));
-                sliver__37242 = DartRuntimePrimitives.ConvertValue<Widget>(new MediaQuery(data: mediaQuery__37385.copyWith(padding: ((object.Equals(this.scrollDirection, global::Doroti.Framework.Painting.Axis.vertical)) ? mediaQueryHorizontalPadding__37550 : mediaQueryVerticalPadding__37688)), child: sliver__37242));
+                global::Doroti.Framework.Painting.EdgeInsets mediaQueryHorizontalPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)((MediaQueryData)mediaQuery).padding.copyWith(top: 0.0, bottom: 0.0));
+                global::Doroti.Framework.Painting.EdgeInsets mediaQueryVerticalPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)((MediaQueryData)mediaQuery).padding.copyWith(left: 0.0, right: 0.0));
+                effectivePadding = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(((object.Equals(this.scrollDirection, global::Doroti.Framework.Painting.Axis.vertical)) ? mediaQueryVerticalPadding : mediaQueryHorizontalPadding));
+                sliverLocal = DartRuntimePrimitives.ConvertValue<Widget>(new MediaQuery(data: mediaQuery.copyWith(padding: ((object.Equals(this.scrollDirection, global::Doroti.Framework.Painting.Axis.vertical)) ? mediaQueryHorizontalPadding : mediaQueryVerticalPadding)), child: sliverLocal));
             }
         }
-        if ((effectivePadding__37302 is not null))
+        if ((effectivePadding is not null))
         {
-            sliver__37242 = DartRuntimePrimitives.ConvertValue<Widget>(new SliverPadding(padding: effectivePadding__37302, sliver: sliver__37242));
+            sliverLocal = DartRuntimePrimitives.ConvertValue<Widget>(new SliverPadding(padding: effectivePadding, sliver: sliverLocal));
         }
-        return new List<Widget> { sliver__37242 };
+        return new List<Widget> { sliverLocal };
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -240,17 +240,17 @@ public class ListView : BoxScrollView
         __instance.prototypeItem = null;
         __instance.childrenDelegate = new SliverChildBuilderDelegate(((global::System.Func<BuildContext, long, Widget?>)((context, index) =>
         {
-            long itemIndex__64623 = (checked((long)(index / 2L)));
+            long itemIndex = (checked((long)(index / 2L)));
             if (((checked((long)(index)) & 1L) == 0L))
             {
-                return itemBuilder(context, itemIndex__64623);
+                return itemBuilder(context, itemIndex);
             }
-            return separatorBuilder(context, itemIndex__64623);
+            return separatorBuilder(context, itemIndex);
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), findChildIndexCallback: ((global::System.Func<global::Doroti.Framework.Foundation.Key, long?>)((findItemIndexCallback is not null) ? ((key) =>
         {
-            long? itemIndex__64930 = findItemIndexCallback(key);
-            return ((itemIndex__64930 is null) ? null : (DartRuntimePrimitives.RequireValue(itemIndex__64930) * 2L));
+            long? itemIndexLocal = findItemIndexCallback(key);
+            return ((itemIndexLocal is null) ? null : (DartRuntimePrimitives.RequireValue(itemIndexLocal) * 2L));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }) : findChildIndexCallback)), childCount: ListView._computeActualChildCount(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(itemCount))), addAutomaticKeepAlives: addAutomaticKeepAlives, addRepaintBoundaries: addRepaintBoundaries, addSemanticIndexes: addSemanticIndexes, semanticIndexCallback: ((global::System.Func<Widget, long, long?>)((widget, index) =>
         {

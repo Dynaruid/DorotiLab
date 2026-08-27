@@ -33,24 +33,24 @@ public class AutofillGroup : StatefulWidget
 
     public static AutofillGroupState? maybeOf(BuildContext context)
     {
-        _AutofillScope__autofill? scope__3693 = ((_AutofillScope__autofill?)(object?)context.dependOnInheritedWidgetOfExactType<_AutofillScope__autofill>());
-        return scope__3693?._scope;
+        _AutofillScope__autofill? scope = ((_AutofillScope__autofill?)(object?)context.dependOnInheritedWidgetOfExactType<_AutofillScope__autofill>());
+        return scope?._scope;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static AutofillGroupState of(BuildContext context)
     {
-        AutofillGroupState? groupState__4552 = ((AutofillGroupState?)(object?)AutofillGroup.maybeOf(context));
+        AutofillGroupState? groupState = ((AutofillGroupState?)(object?)AutofillGroup.maybeOf(context));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((groupState__4552 is null))
+                if ((groupState is null))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("AutofillGroup.of() was called with a context that does not contain an " + "AutofillGroup widget.\n" + "No AutofillGroup widget ancestor could be found starting from the " + "context that was passed to AutofillGroup.of(). This can happen " + "because you are using a widget that looks for an AutofillGroup " + "ancestor, but no such ancestor exists.\n" + "The context used was:\n" + $"  {context}"));
                 }
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return groupState__4552!;
+        return groupState!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -119,8 +119,8 @@ public class AutofillGroupState : State<AutofillGroup>, global::Doroti.Framework
     public virtual TextInputConnection attach(TextInputClient trigger, TextInputConfiguration configuration)
     {
         DartRuntimePrimitives.Assert(() => !this.autofillClients.any(((client) => !((AutofillClient)client).textInputConfiguration.autofillConfiguration.enabled)), () => (object?)"Every client in AutofillScope.autofillClients must enable autofill");
-        TextInputConfiguration inputConfiguration__46968 = ((TextInputConfiguration)(object?)new _AutofillScopeTextInputConfiguration__autofill(allConfigurations: this.autofillClients.map<AutofillClient, TextInputConfiguration>(((client) => ((AutofillClient)client).textInputConfiguration)).Cast<TextInputConfiguration>(), currentClientConfiguration: configuration));
-        return ((TextInputConnection)(object?)TextInput.attach(trigger, inputConfiguration__46968));
+        TextInputConfiguration inputConfiguration = ((TextInputConfiguration)(object?)new _AutofillScopeTextInputConfiguration__autofill(allConfigurations: this.autofillClients.map<AutofillClient, TextInputConfiguration>(((client) => ((AutofillClient)client).textInputConfiguration)).Cast<TextInputConfiguration>(), currentClientConfiguration: configuration));
+        return ((TextInputConnection)(object?)TextInput.attach(trigger, inputConfiguration));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

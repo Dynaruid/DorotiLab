@@ -213,22 +213,22 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     {
         if ((month == 2L))
         {
-            bool isLeapYear__29255 = (((((year % 4L) == 0L)) && (((year % 100L) != 0L))) || (((year % 400L) == 0L)));
-            if (isLeapYear__29255)
+            bool isLeapYear = (((((year % 4L) == 0L)) && (((year % 100L) != 0L))) || (((year % 400L) == 0L)));
+            if (isLeapYear)
             {
                 return 29L;
             }
             return 28L;
         }
-        var daysInMonth__29411 = new List<long> { 31L, -1L, 31L, 30L, 31L, 30L, 31L, 31L, 30L, 31L, 30L, 31L };
-        return daysInMonth__29411[(int)((month - 1L))];
+        var daysInMonth = new List<long> { 31L, -1L, 31L, 30L, 31L, 30L, 31L, 31L, 30L, 31L, 30L, 31L };
+        return daysInMonth[(int)((month - 1L))];
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatHour(TimeOfDay timeOfDay, bool alwaysUse24HourFormat = false)
     {
-        TimeOfDayFormat format__29639 = ((TimeOfDayFormat)(object?)timeOfDayFormat(alwaysUse24HourFormat: alwaysUse24HourFormat));
-        switch (format__29639)
+        TimeOfDayFormat format = ((TimeOfDayFormat)(object?)timeOfDayFormat(alwaysUse24HourFormat: alwaysUse24HourFormat));
+        switch (format)
         {
             case var __constant29744 when (object.Equals(__constant29744, TimeOfDayFormat.h_colon_mm_space_a)):
                 {
@@ -243,7 +243,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             case var __constant30065 when (object.Equals(__constant30065, TimeOfDayFormat.H_colon_mm)):
             case var __constant30104 when (object.Equals(__constant30104, TimeOfDayFormat.HH_dot_mm)):
                 {
-                    throw DartRuntimePrimitives.AsException(new AssertionError($"{this.GetType()} does not support {format__29639}."));
+                    throw DartRuntimePrimitives.AsException(new AssertionError($"{this.GetType()} does not support {format}."));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -264,55 +264,55 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
 
     public override string formatMinute(TimeOfDay timeOfDay)
     {
-        long minute__30595 = timeOfDay.minute;
-        return ((minute__30595 < 10L) ? $"0{minute__30595}" : minute__30595.ToString());
+        long minuteLocal = timeOfDay.minute;
+        return ((minuteLocal < 10L) ? $"0{minuteLocal}" : minuteLocal.ToString());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatYear(DateTime date) => date.Year.ToString();
     public override string formatCompactDate(DateTime date)
     {
-        string month__30866 = ((string)(object?)_formatTwoDigitZeroPad(date.Month));
-        string day__30927 = ((string)(object?)_formatTwoDigitZeroPad(date.Day));
-        string year__30984 = date.Year.ToString().padLeft(4L, "0");
-        return $"{month__30866}/{day__30927}/{year__30984}";
+        string month = ((string)(object?)_formatTwoDigitZeroPad(date.Month));
+        string day = ((string)(object?)_formatTwoDigitZeroPad(date.Day));
+        string year = date.Year.ToString().padLeft(4L, "0");
+        return $"{month}/{day}/{year}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatShortDate(DateTime date)
     {
-        string month__31137 = _shortMonths[(int)((date.Month - 1L))];
-        return $"{month__31137} {date.Day}, {date.Year}";
+        string month = _shortMonths[(int)((date.Month - 1L))];
+        return $"{month} {date.Day}, {date.Year}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatMediumDate(DateTime date)
     {
-        string day__31314 = _shortWeekdays[(int)((date.DayOfWeek.ToDartWeekday() - 1L))];
-        string month__31385 = _shortMonths[(int)((date.Month - 1L))];
-        return $"{day__31314}, {month__31385} {date.Day}";
+        string day = _shortWeekdays[(int)((date.DayOfWeek.ToDartWeekday() - 1L))];
+        string month = _shortMonths[(int)((date.Month - 1L))];
+        return $"{day}, {month} {date.Day}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatFullDate(DateTime date)
     {
-        string month__31552 = _months[(int)((date.Month - 1L))];
-        return $"{_weekdays[(int)((date.DayOfWeek.ToDartWeekday() - 1L))]}, {month__31552} {date.Day}, {date.Year}";
+        string month = _months[(int)((date.Month - 1L))];
+        return $"{_weekdays[(int)((date.DayOfWeek.ToDartWeekday() - 1L))]}, {month} {date.Day}, {date.Year}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatMonthYear(DateTime date)
     {
-        string year__31769 = ((string)(object?)formatYear(date));
-        string month__31811 = _months[(int)((date.Month - 1L))];
-        return $"{month__31811} {year__31769}";
+        string year = ((string)(object?)formatYear(date));
+        string month = _months[(int)((date.Month - 1L))];
+        return $"{month} {year}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatShortMonthDay(DateTime date)
     {
-        string month__31966 = _shortMonths[(int)((date.Month - 1L))];
-        return $"{month__31966} {date.Day}";
+        string month = _shortMonths[(int)((date.Month - 1L))];
+        return $"{month} {date.Day}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -322,29 +322,29 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         {
             return null;
         }
-        List<string> inputParts__32237 = inputString.split("/").ToList();
-        if ((checked((long)(inputParts__32237.Count)) != 3L))
+        List<string> inputParts = inputString.split("/").ToList();
+        if ((checked((long)(inputParts.Count)) != 3L))
         {
             return null;
         }
-        long? year__32349 = Dart_coreLibrary.tryParse(inputParts__32237[(int)(2L)], radix: 10L);
-        if (((year__32349 is null) || (DartRuntimePrimitives.RequireValue(year__32349) < 1L)))
+        long? year = Dart_coreLibrary.tryParse(inputParts[(int)(2L)], radix: 10L);
+        if (((year is null) || (DartRuntimePrimitives.RequireValue(year) < 1L)))
         {
             return null;
         }
-        long? month__32473 = Dart_coreLibrary.tryParse(inputParts__32237[(int)(0L)], radix: 10L);
-        if ((((month__32473 is null) || (DartRuntimePrimitives.RequireValue(month__32473) < 1L)) || (DartRuntimePrimitives.RequireValue(month__32473) > 12L)))
+        long? month = Dart_coreLibrary.tryParse(inputParts[(int)(0L)], radix: 10L);
+        if ((((month is null) || (DartRuntimePrimitives.RequireValue(month) < 1L)) || (DartRuntimePrimitives.RequireValue(month) > 12L)))
         {
             return null;
         }
-        long? day__32614 = Dart_coreLibrary.tryParse(inputParts__32237[(int)(1L)], radix: 10L);
-        if ((((day__32614 is null) || (DartRuntimePrimitives.RequireValue(day__32614) < 1L)) || (DartRuntimePrimitives.RequireValue(day__32614) > _getDaysInMonth(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(year__32349)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(month__32473))))))
+        long? day = Dart_coreLibrary.tryParse(inputParts[(int)(1L)], radix: 10L);
+        if ((((day is null) || (DartRuntimePrimitives.RequireValue(day) < 1L)) || (DartRuntimePrimitives.RequireValue(day) > _getDaysInMonth(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(year)), DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(month))))))
         {
             return null;
         }
         try
         {
-            return DartRuntimePrimitives.CreateDateTime(DartRuntimePrimitives.RequireValue(year__32349), DartRuntimePrimitives.RequireValue(month__32473), DartRuntimePrimitives.RequireValue(day__32614));
+            return DartRuntimePrimitives.CreateDateTime(DartRuntimePrimitives.RequireValue(year), DartRuntimePrimitives.RequireValue(month), DartRuntimePrimitives.RequireValue(day));
         }
         catch (DartArgumentError)
         {
@@ -392,27 +392,27 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         {
             return number.ToString();
         }
-        var digits__35059 = number.abs().ToString();
-        var result__35103 = new StringBuffer(((number < 0L) ? "-" : ""));
-        long maxDigitIndex__35163 = (digits__35059.Length - 1L);
-        for (var i__35211 = 0L; (i__35211 <= maxDigitIndex__35163); i__35211 += 1L)
+        var digits = number.abs().ToString();
+        var result = new StringBuffer(((number < 0L) ? "-" : ""));
+        long maxDigitIndex = (digits.Length - 1L);
+        for (var i = 0L; (i <= maxDigitIndex); i += 1L)
         {
-            result__35103.write(digits__35059[(int)(i__35211)].ToString());
-            if (((i__35211 < maxDigitIndex__35163) && ((((maxDigitIndex__35163 - i__35211)) % 3L) == 0L)))
+            result.write(digits[(int)(i)].ToString());
+            if (((i < maxDigitIndex) && ((((maxDigitIndex - i)) % 3L) == 0L)))
             {
-                result__35103.write(",");
+                result.write(",");
             }
         }
-        return result__35103.ToString();
+        return result.ToString();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override string formatTimeOfDay(TimeOfDay timeOfDay, bool alwaysUse24HourFormat = false)
     {
-        var buffer__35986 = new StringBuffer();
+        var buffer = new StringBuffer();
         DartRuntimePrimitives.Ignore(((Func<StringBuffer>)(() =>
 {
-    var __cascade = buffer__35986;
+    var __cascade = buffer;
     __cascade.write(formatHour(timeOfDay, alwaysUse24HourFormat: alwaysUse24HourFormat));
     __cascade.write(":");
     __cascade.write(formatMinute(timeOfDay));
@@ -420,16 +420,16 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
 }))());
         if (alwaysUse24HourFormat)
         {
-            return $"{buffer__35986}";
+            return $"{buffer}";
         }
         DartRuntimePrimitives.Ignore(((Func<StringBuffer>)(() =>
 {
-    var __cascade = buffer__35986;
+    var __cascade = buffer;
     __cascade.write(" ");
     __cascade.write(_formatDayPeriod(timeOfDay));
     return __cascade;
 }))());
-        return $"{buffer__35986}";
+        return $"{buffer}";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

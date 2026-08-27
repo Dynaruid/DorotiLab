@@ -372,8 +372,8 @@ public abstract class SchedulerBinding : BindingBase
             {
                 if ((transientCallbackCount > 0L))
                 {
-                    long count__24307 = transientCallbackCount;
-                    var callbacks__24353 = new DartMap<long, _FrameCallbackEntry>(_transientCallbacks);
+                    long count = transientCallbackCount;
+                    var callbacks = new DartMap<long, _FrameCallbackEntry>(_transientCallbacks);
                     FlutterError.reportError(new FlutterErrorDetails(exception: reason, library: "scheduler library", informationCollector: (() => new List<DiagnosticsNode>())));
                 }
                 return true;
@@ -438,13 +438,13 @@ public abstract class SchedulerBinding : BindingBase
             {
                 if (global::Doroti.Framework.Scheduler.DebugLibrary.debugTracePostFrameCallbacks)
                 {
-                    var originalCallback__30444 = callback;
+                    var originalCallback = callback;
                     callback = ((timeStamp) =>
                     {
                         Timeline.startSync(debugLabel);
                         try
                         {
-                            originalCallback__30444(timeStamp);
+                            originalCallback(timeStamp);
                         }
                         finally
                         {
@@ -679,16 +679,16 @@ public abstract class SchedulerBinding : BindingBase
                 _debugFrameNumber += 1L;
                 if ((global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintBeginFrameBanner || global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintEndFrameBanner))
                 {
-                    var frameTimeStampDescription__47549 = new StringBuffer();
+                    var frameTimeStampDescription = new StringBuffer();
                     if (rawTimeStamp is Duration rawTimeStamp__value47605)
                     {
-                        _debugDescribeTimeStamp(DartRuntimePrimitives.RequireValue(_currentFrameTimeStamp), frameTimeStampDescription__47549);
+                        _debugDescribeTimeStamp(DartRuntimePrimitives.RequireValue(_currentFrameTimeStamp), frameTimeStampDescription);
                     }
                     else
                     {
-                        frameTimeStampDescription__47549.write("(warm-up frame)");
+                        frameTimeStampDescription.write("(warm-up frame)");
                     }
-                    _debugBanner = $"▄▄▄▄▄▄▄▄ Frame {_debugFrameNumber.ToString().padRight(7L)}   {frameTimeStampDescription__47549.ToString().padLeft(18L)} ▄▄▄▄▄▄▄▄";
+                    _debugBanner = $"▄▄▄▄▄▄▄▄ Frame {_debugFrameNumber.ToString().padRight(7L)}   {frameTimeStampDescription.ToString().padLeft(18L)} ▄▄▄▄▄▄▄▄";
                     if (global::Doroti.Framework.Scheduler.DebugLibrary.debugPrintBeginFrameBanner)
                     {
                         global::Doroti.Framework.Foundation.PrintLibrary.debugPrint(_debugBanner);
@@ -704,9 +704,9 @@ public abstract class SchedulerBinding : BindingBase
             _schedulerPhase = SchedulerPhase.transientCallbacks;
             _frameTrace.Record(DorotiFramePhase.beginFrame, 0, ToTimeSpan(_currentFrameTimeStamp));
             _frameTrace.Record(DorotiFramePhase.transientCallbacks, 0, ToTimeSpan(_currentFrameTimeStamp));
-            DartMap<long, _FrameCallbackEntry> callbacks__48364 = _transientCallbacks;
+            DartMap<long, _FrameCallbackEntry> callbacks = _transientCallbacks;
             _transientCallbacks = new DartMap<long, _FrameCallbackEntry>();
-            callbacks__48364.forEach(((id, callbackEntry) =>
+            callbacks.forEach(((id, callbackEntry) =>
             {
                 if (!_removedIds.Contains(id))
                 {
@@ -783,7 +783,7 @@ public abstract class SchedulerBinding : BindingBase
             }
             _schedulerPhase = SchedulerPhase.postFrameCallbacks;
             _frameTrace.Record(DorotiFramePhase.postFrameCallbacks, 0, ToTimeSpan(_currentFrameTimeStamp));
-            var localPostFrameCallbacks__51803 = new List<Action<Duration>>(_postFrameCallbacks);
+            var localPostFrameCallbacks = new List<Action<Duration>>(_postFrameCallbacks);
             _postFrameCallbacks.Clear();
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
             {
@@ -791,7 +791,7 @@ public abstract class SchedulerBinding : BindingBase
             }
             try
             {
-                foreach (var callback in localPostFrameCallbacks__51803)
+                foreach (var callback in localPostFrameCallbacks)
                 {
                     _invokeFrameCallback(callback, DartRuntimePrimitives.RequireValue(_currentFrameTimeStamp));
                 }

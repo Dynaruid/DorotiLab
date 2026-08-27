@@ -39,33 +39,33 @@ public class WindowingOwnerLinuxIo : WindowingOwnerIo
         var __constraints = size is null ? null : (global::Doroti.Framework.Rendering.BoxConstraints)(object)size;
         var __title = resizable is null ? null : (string)(object)resizable;
         var __delegate = (WindowControllerDelegateIo)(object)title;
-        var controller__3396 = new WindowControllerLinuxIo(owner: this, @delegate: __delegate, size: title, constraints: __constraints, title: __title);
-        this._registrar.register(viewId: checked((long)controller__3396.rootView.viewId), windowHandle: ((WindowControllerLinuxIo)controller__3396)._window.instance.cast<Void>(), viewHandle: ((WindowControllerLinuxIo)controller__3396)._view.instance.cast<Void>());
-        return ((WindowControllerIo)(object?)controller__3396);
+        var controller = new WindowControllerLinuxIo(owner: this, @delegate: __delegate, size: title, constraints: __constraints, title: __title);
+        this._registrar.register(viewId: checked((long)controller.rootView.viewId), windowHandle: ((WindowControllerLinuxIo)controller)._window.instance.cast<Void>(), viewHandle: ((WindowControllerLinuxIo)controller)._view.instance.cast<Void>());
+        return ((WindowControllerIo)(object?)controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual DialogWindowControllerIo createDialogWindowController(DialogWindowControllerDelegateIo @delegate, Size? size = null, global::Doroti.Framework.Rendering.BoxConstraints? constraints = null, bool resizable = default!, BaseWindowControllerIo? parent = null, string? title = null)
     {
-        var controller__4046 = new DialogWindowControllerLinuxIo(owner: this, @delegate: @delegate, size: size, constraints: constraints, parent: parent, title: title);
-        this._registrar.register(viewId: checked((long)controller__4046.rootView.viewId), windowHandle: ((DialogWindowControllerLinuxIo)controller__4046)._window.instance.cast<Void>(), viewHandle: ((DialogWindowControllerLinuxIo)controller__4046)._view.instance.cast<Void>());
-        return ((DialogWindowControllerIo)(object?)controller__4046);
+        var controller = new DialogWindowControllerLinuxIo(owner: this, @delegate: @delegate, size: size, constraints: constraints, parent: parent, title: title);
+        this._registrar.register(viewId: checked((long)controller.rootView.viewId), windowHandle: ((DialogWindowControllerLinuxIo)controller)._window.instance.cast<Void>(), viewHandle: ((DialogWindowControllerLinuxIo)controller)._view.instance.cast<Void>());
+        return ((DialogWindowControllerIo)(object?)controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual TooltipWindowControllerIo createTooltipWindowController(TooltipWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
     {
-        var controller__4751 = new TooltipWindowControllerLinuxIo(owner: this, @delegate: @delegate, constraints: constraints, anchorRect: anchorRect, positioner: positioner, parent: parent);
-        this._registrar.register(viewId: checked((long)controller__4751.rootView.viewId), windowHandle: ((TooltipWindowControllerLinuxIo)controller__4751)._window.instance.cast<Void>(), viewHandle: ((TooltipWindowControllerLinuxIo)controller__4751)._view.instance.cast<Void>());
-        return ((TooltipWindowControllerIo)(object?)controller__4751);
+        var controller = new TooltipWindowControllerLinuxIo(owner: this, @delegate: @delegate, constraints: constraints, anchorRect: anchorRect, positioner: positioner, parent: parent);
+        this._registrar.register(viewId: checked((long)controller.rootView.viewId), windowHandle: ((TooltipWindowControllerLinuxIo)controller)._window.instance.cast<Void>(), viewHandle: ((TooltipWindowControllerLinuxIo)controller)._view.instance.cast<Void>());
+        return ((TooltipWindowControllerIo)(object?)controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual PopupWindowControllerIo createPopupWindowController(PopupWindowControllerDelegateIo @delegate, global::Doroti.Framework.Rendering.BoxConstraints constraints, Rect anchorRect, WindowPositionerIo positioner, BaseWindowControllerIo parent)
     {
-        var controller__5473 = new PopupWindowControllerLinuxIo(owner: this, @delegate: @delegate, constraints: constraints, anchorRect: anchorRect, positioner: positioner, parent: parent);
-        this._registrar.register(viewId: checked((long)controller__5473.rootView.viewId), windowHandle: ((PopupWindowControllerLinuxIo)controller__5473)._window.instance.cast<Void>(), viewHandle: ((PopupWindowControllerLinuxIo)controller__5473)._view.instance.cast<Void>());
-        return ((PopupWindowControllerIo)(object?)controller__5473);
+        var controller = new PopupWindowControllerLinuxIo(owner: this, @delegate: @delegate, constraints: constraints, anchorRect: anchorRect, positioner: positioner, parent: parent);
+        this._registrar.register(viewId: checked((long)controller.rootView.viewId), windowHandle: ((PopupWindowControllerLinuxIo)controller)._window.instance.cast<Void>(), viewHandle: ((PopupWindowControllerLinuxIo)controller)._view.instance.cast<Void>());
+        return ((PopupWindowControllerIo)(object?)controller);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -375,14 +375,14 @@ public class TooltipWindowControllerLinuxIo : TooltipWindowControllerIo, BaseWin
         {
             _positioner = positioner;
         }
-        _GtkWindow___window_linux? parentWindow__23185 = ((_GtkWindow___window_linux?)(object?)((WindowingOwnerLinuxIo)this._owner).registrar._windowForViewId(checked((long)((BaseWindowControllerIo)this._parent).rootView.viewId)));
-        _FlView___window_linux? view__23279 = ((_FlView___window_linux?)(object?)((WindowingOwnerLinuxIo)this._owner).registrar._viewForViewId(checked((long)((BaseWindowControllerIo)this._parent).rootView.viewId)));
-        var offset__23352 = (0L, 0L);
-        if (((parentWindow__23185 is not null) && (view__23279 is not null)))
+        _GtkWindow___window_linux? parentWindow = ((_GtkWindow___window_linux?)(object?)((WindowingOwnerLinuxIo)this._owner).registrar._windowForViewId(checked((long)((BaseWindowControllerIo)this._parent).rootView.viewId)));
+        _FlView___window_linux? view = ((_FlView___window_linux?)(object?)((WindowingOwnerLinuxIo)this._owner).registrar._viewForViewId(checked((long)((BaseWindowControllerIo)this._parent).rootView.viewId)));
+        var offsetLocal = (0L, 0L);
+        if (((parentWindow is not null) && (view is not null)))
         {
-            offset__23352 = (view__23279.translateCoordinates(parentWindow__23185, (0L, 0L)) ?? (0L, 0L));
+            offsetLocal = (view.translateCoordinates(parentWindow, (0L, 0L)) ?? (0L, 0L));
         }
-        this._window.getWindow().moveToRect(x: (this._anchorRect.left.toInt() + offset__23352.Item1), y: (this._anchorRect.top.toInt() + offset__23352.Item2), width: ((this._anchorRect.right - this._anchorRect.left)).toInt(), height: ((this._anchorRect.bottom - this._anchorRect.top)).toInt(), rectAnchor: _anchorToGravity(((WindowPositionerIo)this._positioner).parentAnchor), windowAnchor: _anchorToGravity(((WindowPositionerIo)this._positioner).childAnchor), anchorHints: _constraintAdjustmentToHints(((WindowPositionerIo)this._positioner).constraintAdjustment), rectAnchorDx: ((WindowPositionerIo)this._positioner).offset.dx.toInt(), rectAnchorDy: ((WindowPositionerIo)this._positioner).offset.dy.toInt());
+        this._window.getWindow().moveToRect(x: (this._anchorRect.left.toInt() + offsetLocal.Item1), y: (this._anchorRect.top.toInt() + offsetLocal.Item2), width: ((this._anchorRect.right - this._anchorRect.left)).toInt(), height: ((this._anchorRect.bottom - this._anchorRect.top)).toInt(), rectAnchor: _anchorToGravity(((WindowPositionerIo)this._positioner).parentAnchor), windowAnchor: _anchorToGravity(((WindowPositionerIo)this._positioner).childAnchor), anchorHints: _constraintAdjustmentToHints(((WindowPositionerIo)this._positioner).constraintAdjustment), rectAnchorDx: ((WindowPositionerIo)this._positioner).offset.dx.toInt(), rectAnchorDy: ((WindowPositionerIo)this._positioner).offset.dy.toInt());
     }
 
     internal virtual _GdkGravity___window_linux _anchorToGravity(WindowPositionerAnchorIo anchor)
@@ -480,14 +480,14 @@ public class PopupWindowControllerLinuxIo : PopupWindowControllerIo, BaseWindowC
         {
             _positioner = positioner;
         }
-        _GtkWindow___window_linux? parentWindow__29842 = ((_GtkWindow___window_linux?)(object?)((WindowingOwnerLinuxIo)this._owner).registrar._windowForViewId(checked((long)((BaseWindowControllerIo)this._parent).rootView.viewId)));
-        _FlView___window_linux? view__29936 = ((_FlView___window_linux?)(object?)((WindowingOwnerLinuxIo)this._owner).registrar._viewForViewId(checked((long)((BaseWindowControllerIo)this._parent).rootView.viewId)));
-        var offset__30009 = (0L, 0L);
-        if (((parentWindow__29842 is not null) && (view__29936 is not null)))
+        _GtkWindow___window_linux? parentWindow = ((_GtkWindow___window_linux?)(object?)((WindowingOwnerLinuxIo)this._owner).registrar._windowForViewId(checked((long)((BaseWindowControllerIo)this._parent).rootView.viewId)));
+        _FlView___window_linux? view = ((_FlView___window_linux?)(object?)((WindowingOwnerLinuxIo)this._owner).registrar._viewForViewId(checked((long)((BaseWindowControllerIo)this._parent).rootView.viewId)));
+        var offsetLocal = (0L, 0L);
+        if (((parentWindow is not null) && (view is not null)))
         {
-            offset__30009 = (view__29936.translateCoordinates(parentWindow__29842, (0L, 0L)) ?? (0L, 0L));
+            offsetLocal = (view.translateCoordinates(parentWindow, (0L, 0L)) ?? (0L, 0L));
         }
-        this._window.getWindow().moveToRect(x: (this._anchorRect.left.toInt() + offset__30009.Item1), y: (this._anchorRect.top.toInt() + offset__30009.Item2), width: ((this._anchorRect.right - this._anchorRect.left)).toInt(), height: ((this._anchorRect.bottom - this._anchorRect.top)).toInt(), rectAnchor: _anchorToGravity(((WindowPositionerIo)this._positioner).parentAnchor), windowAnchor: _anchorToGravity(((WindowPositionerIo)this._positioner).childAnchor), anchorHints: _constraintAdjustmentToHints(((WindowPositionerIo)this._positioner).constraintAdjustment), rectAnchorDx: ((WindowPositionerIo)this._positioner).offset.dx.toInt(), rectAnchorDy: ((WindowPositionerIo)this._positioner).offset.dy.toInt());
+        this._window.getWindow().moveToRect(x: (this._anchorRect.left.toInt() + offsetLocal.Item1), y: (this._anchorRect.top.toInt() + offsetLocal.Item2), width: ((this._anchorRect.right - this._anchorRect.left)).toInt(), height: ((this._anchorRect.bottom - this._anchorRect.top)).toInt(), rectAnchor: _anchorToGravity(((WindowPositionerIo)this._positioner).parentAnchor), windowAnchor: _anchorToGravity(((WindowPositionerIo)this._positioner).childAnchor), anchorHints: _constraintAdjustmentToHints(((WindowPositionerIo)this._positioner).constraintAdjustment), rectAnchorDx: ((WindowPositionerIo)this._positioner).offset.dx.toInt(), rectAnchorDy: ((WindowPositionerIo)this._positioner).offset.dy.toInt());
     }
 
     public override Offset offsetFromParent
@@ -616,12 +616,12 @@ public static partial class _window_linuxLibrary
 {
     internal static Pointer<Uint8> _stringToNative(string value)
     {
-        Uint8List units__35618 = global::Doroti.Runtime.Dart_convertLibrary.utf8.encode(value);
-        Pointer<Uint8> buffer__35677 = _gMalloc0((units__35618.Count + 1L)).cast<Uint8>();
-        Uint8List nativeString__35751 = buffer__35677.asTypedList((units__35618.Count + 1L));
-        nativeString__35751.setAll(0L, units__35618);
-        nativeString__35751[units__35618.Count] = 0L;
-        return buffer__35677;
+        Uint8List units = global::Doroti.Runtime.Dart_convertLibrary.utf8.encode(value);
+        Pointer<Uint8> buffer = _gMalloc0((units.Count + 1L)).cast<Uint8>();
+        Uint8List nativeString = buffer.asTypedList((units.Count + 1L));
+        nativeString.setAll(0L, units);
+        nativeString[units.Count] = 0L;
+        return buffer;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -630,12 +630,12 @@ public static partial class _window_linuxLibrary
 {
     internal static string _nativeToString(Pointer<Uint8> value)
     {
-        var length__35952 = 0L;
-        while ((value[length__35952] != 0L))
+        var length = 0L;
+        while ((value[length] != 0L))
         {
-            length__35952++;
+            length++;
         }
-        return global::Doroti.Runtime.Dart_convertLibrary.utf8.decode(value.asTypedList(length__35952));
+        return global::Doroti.Runtime.Dart_convertLibrary.utf8.decode(value.asTypedList(length));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -701,11 +701,11 @@ public class _GtkWidget___window_linux : _GObject___window_linux
 
     public virtual (long, long)? translateCoordinates(_GtkWidget___window_linux destWidget, (long, long) src)
     {
-        Pointer<Int> dest__37987 = _gMalloc0((Dart_ffiLibrary.sizeOf<Int>() * 2L)).cast<Int>();
-        bool translated__38063 = _GtkWidget___window_linux._gtkWidgetTranslateCoordinates(this.instance, destWidget.instance, src.Item1, src.Item2, dest__37987.elementAt(0L), dest__37987.elementAt(1L));
-        (long, long)? result__38258 = (translated__38063 ? (dest__37987[0L], dest__37987[1L]) : null);
-        _gFree(dest__37987);
-        return result__38258;
+        Pointer<Int> dest = _gMalloc0((Dart_ffiLibrary.sizeOf<Int>() * 2L)).cast<Int>();
+        bool translated = _GtkWidget___window_linux._gtkWidgetTranslateCoordinates(this.instance, destWidget.instance, src.Item1, src.Item2, dest.elementAt(0L), dest.elementAt(1L));
+        (long, long)? result = (translated ? (dest[0L], dest[1L]) : null);
+        _gFree(dest);
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -730,34 +730,34 @@ public class _GdkWindow___window_linux : _GObject___window_linux
 
     public virtual HashSet<_GdkWindowState___window_linux> getState()
     {
-        long stateBits__40086 = _GdkWindow___window_linux._gdkWindowGetState(this.instance);
-        var states__40138 = new HashSet<_GdkWindowState___window_linux>();
-        foreach (_GdkWindowState___window_linux state__40199 in System.Enum.GetValues<_GdkWindowState___window_linux>().ToList())
+        long stateBits = _GdkWindow___window_linux._gdkWindowGetState(this.instance);
+        var states = new HashSet<_GdkWindowState___window_linux>();
+        foreach (_GdkWindowState___window_linux state in System.Enum.GetValues<_GdkWindowState___window_linux>().ToList())
         {
-            if ((((stateBits__40086 & ((1L << (int)(FoundationRuntimePorts.EnumIndex(state__40199)))))) != 0L))
+            if ((((stateBits & ((1L << (int)(FoundationRuntimePorts.EnumIndex(state)))))) != 0L))
             {
-                states__40138.Add(state__40199);
+                states.Add(state);
             }
         }
-        return states__40138;
+        return states;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void moveToRect(long x, long y, long width, long height, _GdkGravity___window_linux rectAnchor, _GdkGravity___window_linux windowAnchor, HashSet<_GdkAnchorHint___window_linux> anchorHints, long rectAnchorDx = 0, long rectAnchorDy = 0)
     {
-        Pointer<_GdkRectangle___window_linux> rect__40780 = _gMalloc0(Dart_ffiLibrary.sizeOf<_GdkRectangle___window_linux>()).cast<_GdkRectangle___window_linux>();
-        _GdkRectangle___window_linux r__40886 = rect__40780.@ref;
-        r__40886.x = x;
-        r__40886.y = y;
-        r__40886.width = width;
-        r__40886.height = height;
-        var anchorHintsBits__40978 = 0L;
-        foreach (var anchor__41014 in anchorHints)
+        Pointer<_GdkRectangle___window_linux> rect = _gMalloc0(Dart_ffiLibrary.sizeOf<_GdkRectangle___window_linux>()).cast<_GdkRectangle___window_linux>();
+        _GdkRectangle___window_linux r = rect.@ref;
+        r.x = x;
+        r.y = y;
+        r.width = width;
+        r.height = height;
+        var anchorHintsBits = 0L;
+        foreach (var anchor in anchorHints)
         {
-            anchorHintsBits__40978 |= (1L << (int)(FoundationRuntimePorts.EnumIndex(anchor__41014)));
+            anchorHintsBits |= (1L << (int)(FoundationRuntimePorts.EnumIndex(anchor)));
         }
-        _GdkWindow___window_linux._gdkWindowMoveToRect(this.instance, rect__40780, FoundationRuntimePorts.EnumIndex(rectAnchor), FoundationRuntimePorts.EnumIndex(windowAnchor), anchorHintsBits__40978, rectAnchorDx, rectAnchorDy);
-        _gFree(rect__40780);
+        _GdkWindow___window_linux._gdkWindowMoveToRect(this.instance, rect, FoundationRuntimePorts.EnumIndex(rectAnchor), FoundationRuntimePorts.EnumIndex(windowAnchor), anchorHintsBits, rectAnchorDx, rectAnchorDy);
+        _gFree(rect);
     }
 
     internal abstract static long _gdkWindowGetState(Pointer<NativeType> window);
@@ -833,9 +833,9 @@ public class _GtkWindow___window_linux : _GtkContainer___window_linux
 
     public virtual void setTitle(string title)
     {
-        Pointer<Uint8> titleBuffer__43779 = _window_linuxLibrary._stringToNative(title);
-        _GtkWindow___window_linux._gtkWindowSetTitle(this.instance, titleBuffer__43779);
-        _gFree(titleBuffer__43779);
+        Pointer<Uint8> titleBuffer = _window_linuxLibrary._stringToNative(title);
+        _GtkWindow___window_linux._gtkWindowSetTitle(this.instance, titleBuffer);
+        _gFree(titleBuffer);
     }
 
     public virtual string getTitle()
@@ -851,23 +851,23 @@ public class _GtkWindow___window_linux : _GtkContainer___window_linux
 
     public virtual void setGeometryHints(long? minWidth = null, long? minHeight = null, long? maxWidth = null, long? maxHeight = null)
     {
-        Pointer<_GdkGeometry___window_linux> geometry__44348 = _gMalloc0(Dart_ffiLibrary.sizeOf<_GdkGeometry___window_linux>()).cast<_GdkGeometry___window_linux>();
-        _GdkGeometry___window_linux g__44455 = geometry__44348.@ref;
-        var geometryMask__44481 = 0L;
+        Pointer<_GdkGeometry___window_linux> geometry = _gMalloc0(Dart_ffiLibrary.sizeOf<_GdkGeometry___window_linux>()).cast<_GdkGeometry___window_linux>();
+        _GdkGeometry___window_linux g = geometry.@ref;
+        var geometryMask = 0L;
         if (((minWidth is not null) || (minHeight is not null)))
         {
-            g__44455.minWidth = (minWidth ?? 0L);
-            g__44455.minHeight = (minHeight ?? 0L);
-            geometryMask__44481 |= 2L;
+            g.minWidth = (minWidth ?? 0L);
+            g.minHeight = (minHeight ?? 0L);
+            geometryMask |= 2L;
         }
         if (((maxWidth is not null) || (maxHeight is not null)))
         {
-            g__44455.maxWidth = (maxWidth ?? _window_linuxLibrary._kMaxWindowDimensions);
-            g__44455.maxHeight = (maxHeight ?? _window_linuxLibrary._kMaxWindowDimensions);
-            geometryMask__44481 |= 4L;
+            g.maxWidth = (maxWidth ?? _window_linuxLibrary._kMaxWindowDimensions);
+            g.maxHeight = (maxHeight ?? _window_linuxLibrary._kMaxWindowDimensions);
+            geometryMask |= 4L;
         }
-        _GtkWindow___window_linux._gtkWindowSetGeometryHints(this.instance, Dart_ffiLibrary.nullptr, geometry__44348, geometryMask__44481);
-        _gFree(geometry__44348);
+        _GtkWindow___window_linux._gtkWindowSetGeometryHints(this.instance, Dart_ffiLibrary.nullptr, geometry, geometryMask);
+        _gFree(geometry);
     }
 
     public virtual void resize(long width, long height)
@@ -907,11 +907,11 @@ public class _GtkWindow___window_linux : _GtkContainer___window_linux
 
     public virtual global::Doroti.Ui.Size getSize()
     {
-        Pointer<Int> size__45744 = _gMalloc0((Dart_ffiLibrary.sizeOf<Int>() * 2L)).cast<Int>();
-        _GtkWindow___window_linux._gtkWindowGetSize(this.instance, size__45744.elementAt(0L), size__45744.elementAt(1L));
-        var result__45886 = new global::Doroti.Ui.Size(size__45744[0L].toDouble(), size__45744[1L].toDouble());
-        _gFree(size__45744);
-        return result__45886;
+        Pointer<Int> size = _gMalloc0((Dart_ffiLibrary.sizeOf<Int>() * 2L)).cast<Int>();
+        _GtkWindow___window_linux._gtkWindowGetSize(this.instance, size.elementAt(0L), size.elementAt(1L));
+        var result = new global::Doroti.Ui.Size(size[0L].toDouble(), size[1L].toDouble());
+        _gFree(size);
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

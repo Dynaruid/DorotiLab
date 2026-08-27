@@ -43,8 +43,8 @@ public class MenuBarTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static MenuBarThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        MenuBarTheme? menuBarTheme__3582 = ((MenuBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<MenuBarTheme>());
-        return (menuBarTheme__3582?.data ?? Theme.of(context).menuBarTheme);
+        MenuBarTheme? menuBarThemeLocal = ((MenuBarTheme?)(object?)context.dependOnInheritedWidgetOfExactType<MenuBarTheme>());
+        return (menuBarThemeLocal?.data ?? Theme.of(context).menuBarTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

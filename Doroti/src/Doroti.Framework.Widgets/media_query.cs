@@ -167,13 +167,13 @@ public class MediaQueryData
 
     internal static global::Doroti.Framework.Painting.BorderRadius? _displayCornerRadiiFromView(DorotiView view)
     {
-        global::Doroti.Ui.DisplayCornerRadii? displayCornerRadii__15687 = ((global::Doroti.Ui.DisplayCornerRadii?)(object?)view.displayCornerRadii);
-        if ((displayCornerRadii__15687 is null))
+        global::Doroti.Ui.DisplayCornerRadii? displayCornerRadiiLocal = ((global::Doroti.Ui.DisplayCornerRadii?)(object?)view.displayCornerRadii);
+        if ((displayCornerRadiiLocal is null))
         {
             return ((global::Doroti.Framework.Painting.BorderRadius)(object)null);
         }
-        double devicePixelRatio__15813 = view.devicePixelRatio;
-        return new global::Doroti.Framework.Painting.BorderRadius(topLeft: global::Doroti.Ui.Radius.circular((displayCornerRadii__15687.topLeft / DartRuntimePrimitives.RequireValue(devicePixelRatio__15813))), topRight: global::Doroti.Ui.Radius.circular((displayCornerRadii__15687.topRight / DartRuntimePrimitives.RequireValue(devicePixelRatio__15813))), bottomRight: global::Doroti.Ui.Radius.circular((displayCornerRadii__15687.bottomRight / DartRuntimePrimitives.RequireValue(devicePixelRatio__15813))), bottomLeft: global::Doroti.Ui.Radius.circular((displayCornerRadii__15687.bottomLeft / DartRuntimePrimitives.RequireValue(devicePixelRatio__15813))));
+        double devicePixelRatioLocal = view.devicePixelRatio;
+        return new global::Doroti.Framework.Painting.BorderRadius(topLeft: global::Doroti.Ui.Radius.circular((displayCornerRadiiLocal.topLeft / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal))), topRight: global::Doroti.Ui.Radius.circular((displayCornerRadiiLocal.topRight / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal))), bottomRight: global::Doroti.Ui.Radius.circular((displayCornerRadiiLocal.bottomRight / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal))), bottomLeft: global::Doroti.Ui.Radius.circular((displayCornerRadiiLocal.bottomLeft / DartRuntimePrimitives.RequireValue(devicePixelRatioLocal))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -259,9 +259,9 @@ public class MediaQueryData
         {
             return this;
         }
-        double rightInset__49607 = (this.size.width - subScreen.right);
-        double bottomInset__49667 = (this.size.height - subScreen.bottom);
-        return ((MediaQueryData)(object?)copyWith(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.padding).left - subScreen.left)), top: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.padding).top - subScreen.top)), right: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.padding).right - rightInset__49607)), bottom: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.padding).bottom - bottomInset__49667))), viewPadding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewPadding).left - subScreen.left)), top: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewPadding).top - subScreen.top)), right: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewPadding).right - rightInset__49607)), bottom: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewPadding).bottom - bottomInset__49667))), viewInsets: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewInsets).left - subScreen.left)), top: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewInsets).top - subScreen.top)), right: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewInsets).right - rightInset__49607)), bottom: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewInsets).bottom - bottomInset__49667))), displayFeatures: this.displayFeatures.where(((displayFeature) => subScreen.overlaps(displayFeature.bounds))).ToList()));
+        double rightInset = (this.size.width - subScreen.right);
+        double bottomInset = (this.size.height - subScreen.bottom);
+        return ((MediaQueryData)(object?)copyWith(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.padding).left - subScreen.left)), top: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.padding).top - subScreen.top)), right: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.padding).right - rightInset)), bottom: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.padding).bottom - bottomInset))), viewPadding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewPadding).left - subScreen.left)), top: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewPadding).top - subScreen.top)), right: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewPadding).right - rightInset)), bottom: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewPadding).bottom - bottomInset))), viewInsets: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewInsets).left - subScreen.left)), top: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewInsets).top - subScreen.top)), right: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewInsets).right - rightInset)), bottom: Math.Max(0.0, (((global::Doroti.Framework.Painting.EdgeInsets)this.viewInsets).bottom - bottomInset))), displayFeatures: this.displayFeatures.where(((displayFeature) => subScreen.overlaps(displayFeature.bounds))).ToList()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -279,8 +279,8 @@ public class MediaQueryData
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.size, this.devicePixelRatio, this.textScaleFactor, this.platformBrightness, this.padding, this.viewPadding, this.viewInsets, this.alwaysUse24HourFormat, this.highContrast, this.onOffSwitchLabels, this.disableAnimations, this.reduceMotion, this.invertColors, this.accessibleNavigation, this.boldText, this.navigationMode, this.gestureSettings, FoundationRuntimePorts.ObjectHashAll(this.displayFeatures), this.supportsShowingSystemContextMenu, FoundationRuntimePorts.ObjectHash(this.lineHeightScaleFactorOverride, this.letterSpacingOverride, this.wordSpacingOverride, this.paragraphSpacingOverride, this.displayCornerRadii)));
     public override string ToString()
     {
-        var properties__53032 = new List<string> { $"size: {this.size}", $"devicePixelRatio: {this.devicePixelRatio.toStringAsFixed(1L)}", $"textScaler: {this.textScaler}", $"platformBrightness: {this.platformBrightness}", $"padding: {this.padding}", $"viewPadding: {this.viewPadding}", $"viewInsets: {this.viewInsets}", $"systemGestureInsets: {this.systemGestureInsets}", $"alwaysUse24HourFormat: {this.alwaysUse24HourFormat}", $"accessibleNavigation: {this.accessibleNavigation}", $"highContrast: {this.highContrast}", $"onOffSwitchLabels: {this.onOffSwitchLabels}", $"disableAnimations: {this.disableAnimations}", $"reduceMotion: {this.reduceMotion}", $"invertColors: {this.invertColors}", $"boldText: {this.boldText}", $"navigationMode: {this.navigationMode.ToString()}", $"gestureSettings: {this.gestureSettings}", $"displayFeatures: {this.displayFeatures}", $"supportsShowingSystemContextMenu: {this.supportsShowingSystemContextMenu}", $"lineHeightScaleFactorOverride: {this.lineHeightScaleFactorOverride}", $"letterSpacingOverride: {this.letterSpacingOverride}", $"wordSpacingOverride: {this.wordSpacingOverride}", $"paragraphSpacingOverride: {this.paragraphSpacingOverride}", $"displayCornerRadii: {this.displayCornerRadii}" };
-        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MediaQueryData"))}({string.Join(", ", properties__53032)})";
+        var properties = new List<string> { $"size: {this.size}", $"devicePixelRatio: {this.devicePixelRatio.toStringAsFixed(1L)}", $"textScaler: {this.textScaler}", $"platformBrightness: {this.platformBrightness}", $"padding: {this.padding}", $"viewPadding: {this.viewPadding}", $"viewInsets: {this.viewInsets}", $"systemGestureInsets: {this.systemGestureInsets}", $"alwaysUse24HourFormat: {this.alwaysUse24HourFormat}", $"accessibleNavigation: {this.accessibleNavigation}", $"highContrast: {this.highContrast}", $"onOffSwitchLabels: {this.onOffSwitchLabels}", $"disableAnimations: {this.disableAnimations}", $"reduceMotion: {this.reduceMotion}", $"invertColors: {this.invertColors}", $"boldText: {this.boldText}", $"navigationMode: {this.navigationMode.ToString()}", $"gestureSettings: {this.gestureSettings}", $"displayFeatures: {this.displayFeatures}", $"supportsShowingSystemContextMenu: {this.supportsShowingSystemContextMenu}", $"lineHeightScaleFactorOverride: {this.lineHeightScaleFactorOverride}", $"letterSpacingOverride: {this.letterSpacingOverride}", $"wordSpacingOverride: {this.wordSpacingOverride}", $"paragraphSpacingOverride: {this.paragraphSpacingOverride}", $"displayCornerRadii: {this.displayCornerRadii}" };
+        return $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "MediaQueryData"))}({string.Join(", ", properties)})";
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -359,8 +359,8 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
         return ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
         {
             DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-            MediaQueryData data__65806 = ((MediaQueryData)(object?)MediaQuery.of(context));
-            return ((Widget)(object?)new MediaQuery(data: data__65806.copyWith(textScaler: ((MediaQueryData)data__65806).textScaler.clamp(minScaleFactor: minScaleFactor, maxScaleFactor: maxScaleFactor)), child: child));
+            MediaQueryData dataLocal = ((MediaQueryData)(object?)MediaQuery.of(context));
+            return ((Widget)(object?)new MediaQuery(data: dataLocal.copyWith(textScaler: ((MediaQueryData)dataLocal).textScaler.clamp(minScaleFactor: minScaleFactor, maxScaleFactor: maxScaleFactor)), child: child));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -527,12 +527,12 @@ internal class _MediaQueryFromViewState__media_query : State<_MediaQueryFromView
 
     internal virtual void _updateData()
     {
-        var newData__107642 = MediaQueryData.CreateFromView(((_MediaQueryFromView__media_query)this.widget).view, platformData: this._parentData);
-        if ((!object.Equals(newData__107642, this._data)))
+        var newData = MediaQueryData.CreateFromView(((_MediaQueryFromView__media_query)this.widget).view, platformData: this._parentData);
+        if ((!object.Equals(newData, this._data)))
         {
             setState(((global::System.Action)(() =>
             {
-                _data = newData__107642;
+                _data = newData;
             })));
         }
     }
@@ -574,12 +574,12 @@ internal class _MediaQueryFromViewState__media_query : State<_MediaQueryFromView
 
     public override Widget build(BuildContext context)
     {
-        MediaQueryData effectiveData__109246 = this._data!;
-        if (((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && (this._parentData is null)) && (!object.Equals(((MediaQueryData)effectiveData__109246).platformBrightness, global::Doroti.Framework.Foundation.DebugLibrary.debugBrightnessOverride))))
+        MediaQueryData effectiveData = this._data!;
+        if (((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && (this._parentData is null)) && (!object.Equals(((MediaQueryData)effectiveData).platformBrightness, global::Doroti.Framework.Foundation.DebugLibrary.debugBrightnessOverride))))
         {
-            effectiveData__109246 = effectiveData__109246.copyWith(platformBrightness: global::Doroti.Framework.Foundation.DebugLibrary.debugBrightnessOverride);
+            effectiveData = effectiveData.copyWith(platformBrightness: global::Doroti.Framework.Foundation.DebugLibrary.debugBrightnessOverride);
         }
-        return ((Widget)(object?)new MediaQuery(data: effectiveData__109246, child: ((_MediaQueryFromView__media_query)this.widget).child));
+        return ((Widget)(object?)new MediaQuery(data: effectiveData, child: ((_MediaQueryFromView__media_query)this.widget).child));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -622,7 +622,7 @@ public class SystemTextScaler : global::Doroti.Framework.Painting.TextScaler
         {
             return true;
         }
-        return (__other switch { SystemTextScaler { textScaleFactor: double textScaleFactor__111756 } __object111725 => (this.textScaleFactor == textScaleFactor__111756), var __constant111920 when (object.Equals(__constant111920, global::Doroti.Framework.Painting.TextScaler.noScaling)) => (this.textScaleFactor == 1.0), _ => false });
+        return (__other switch { SystemTextScaler { textScaleFactor: double textScaleFactorLocal } __object111725 => (this.textScaleFactor == textScaleFactorLocal), var __constant111920 when (object.Equals(__constant111920, global::Doroti.Framework.Painting.TextScaler.noScaling)) => (this.textScaleFactor == 1.0), _ => false });
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(this.textScaleFactor.GetHashCode());

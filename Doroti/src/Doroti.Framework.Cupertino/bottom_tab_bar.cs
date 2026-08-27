@@ -63,45 +63,45 @@ public class CupertinoTabBar : global::Doroti.Framework.Widgets.StatelessWidget,
     public virtual Size preferredSize => new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(this.height));
     public virtual bool opaque(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color backgroundColor__5150 = ((global::Doroti.Ui.Color)(object?)(this.backgroundColor ?? CupertinoTheme.of(context).barBackgroundColor));
-        return (CupertinoDynamicColor.resolve(backgroundColor__5150, context).alpha == 255L);
+        global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(object?)(this.backgroundColor ?? CupertinoTheme.of(context).barBackgroundColor));
+        return (CupertinoDynamicColor.resolve(backgroundColorLocal, context).alpha == 255L);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        double bottomPadding__5448 = MediaQuery.viewPaddingOf(context).bottom;
-        global::Doroti.Ui.Color backgroundColor__5523 = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve((this.backgroundColor ?? CupertinoTheme.of(context).barBackgroundColor), context));
+        double bottomPadding = MediaQuery.viewPaddingOf(context).bottom;
+        global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve((this.backgroundColor ?? CupertinoTheme.of(context).barBackgroundColor), context));
         global::Doroti.Framework.Painting.BorderSide resolveBorderSide(global::Doroti.Framework.Painting.BorderSide side)
         {
             return ((object.Equals(side, global::Doroti.Framework.Painting.BorderSide.none)) ? side : side.copyWith(color: CupertinoDynamicColor.resolve(((global::Doroti.Framework.Painting.BorderSide)side).color, context)));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        global::Doroti.Framework.Painting.Border? resolvedBorder__5942 = (((this.border is null) || (!object.Equals(DartRuntimePrimitives.RuntimeType(this.border), typeof(global::Doroti.Framework.Painting.Border)))) ? this.border : new global::Doroti.Framework.Painting.Border(top: resolveBorderSide(this.border!.top), left: resolveBorderSide(this.border!.left), bottom: resolveBorderSide(this.border!.bottom), right: resolveBorderSide(this.border!.right)));
-        global::Doroti.Ui.Color inactive__6279 = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(this.inactiveColor, context));
-        global::Doroti.Framework.Widgets.Widget result__6356 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: resolvedBorder__5942, color: backgroundColor__5523), child: new global::Doroti.Framework.Widgets.SizedBox(height: (this.height + bottomPadding__5448), child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(color: inactive__6279, size: this.iconSize), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: CupertinoTheme.of(context).textTheme.tabLabelTextStyle.copyWith(color: inactive__6279), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: bottomPadding__5448), child: new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: true, child: new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.end, children: _buildTabItems(context)))))))));
+        global::Doroti.Framework.Painting.Border? resolvedBorder = (((this.border is null) || (!object.Equals(DartRuntimePrimitives.RuntimeType(this.border), typeof(global::Doroti.Framework.Painting.Border)))) ? this.border : new global::Doroti.Framework.Painting.Border(top: resolveBorderSide(this.border!.top), left: resolveBorderSide(this.border!.left), bottom: resolveBorderSide(this.border!.bottom), right: resolveBorderSide(this.border!.right)));
+        global::Doroti.Ui.Color inactive = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve(this.inactiveColor, context));
+        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DecoratedBox(decoration: new global::Doroti.Framework.Painting.BoxDecoration(border: resolvedBorder, color: backgroundColorLocal), child: new global::Doroti.Framework.Widgets.SizedBox(height: (this.height + bottomPadding), child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(color: inactive, size: this.iconSize), child: new global::Doroti.Framework.Widgets.DefaultTextStyle(style: CupertinoTheme.of(context).textTheme.tabLabelTextStyle.copyWith(color: inactive), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: bottomPadding), child: new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: true, child: new global::Doroti.Framework.Widgets.Row(crossAxisAlignment: global::Doroti.Framework.Rendering.CrossAxisAlignment.end, children: _buildTabItems(context)))))))));
         if (!opaque(context))
         {
-            result__6356 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ClipRect(child: new global::Doroti.Framework.Widgets.BackdropFilter(filter: new global::Doroti.Ui.ImageFilter(sigmaX: 10.0, sigmaY: 10.0), child: result__6356)));
+            result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ClipRect(child: new global::Doroti.Framework.Widgets.BackdropFilter(filter: new global::Doroti.Ui.ImageFilter(sigmaX: 10.0, sigmaY: 10.0), child: result)));
         }
-        return result__6356;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual List<global::Doroti.Framework.Widgets.Widget> _buildTabItems(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var result__7638 = new List<global::Doroti.Framework.Widgets.Widget>();
-        CupertinoLocalizations localizations__7692 = CupertinoLocalizations.of(context);
-        for (var index__7758 = 0L; (index__7758 < checked((long)(this.items.Count))); index__7758 += 1L)
+        var result = new List<global::Doroti.Framework.Widgets.Widget>();
+        CupertinoLocalizations localizations = CupertinoLocalizations.of(context);
+        for (var index = 0L; (index < checked((long)(this.items.Count))); index += 1L)
         {
-            var active__7817 = (index__7758 == this.currentIndex);
-            result__7638.Add(_wrapActiveItem(context, new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.TextFieldTapRegion(child: new global::Doroti.Framework.Widgets.Semantics(selected: active__7817, hint: localizations__7692.tabSemanticsLabel(tabIndex: (index__7758 + 1L), tabCount: checked((long)(this.items.Count))), child: new global::Doroti.Framework.Widgets.MouseRegion(cursor: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.MouseCursor.defer), child: new global::Doroti.Framework.Widgets.GestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, onTap: ((global::System.Action)((this.onTap is null) ? null : (() =>
+            var activeLocal = (index == this.currentIndex);
+            result.Add(_wrapActiveItem(context, new global::Doroti.Framework.Widgets.Expanded(child: new global::Doroti.Framework.Widgets.TextFieldTapRegion(child: new global::Doroti.Framework.Widgets.Semantics(selected: activeLocal, hint: localizations.tabSemanticsLabel(tabIndex: (index + 1L), tabCount: checked((long)(this.items.Count))), child: new global::Doroti.Framework.Widgets.MouseRegion(cursor: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.MouseCursor.defer), child: new global::Doroti.Framework.Widgets.GestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.opaque, onTap: ((global::System.Action)((this.onTap is null) ? null : (() =>
             {
-                this.onTap!(index__7758);
-            }))), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: 4.0), child: new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.end, children: _buildSingleTabItem(this.items[(int)(index__7758)], active__7817)))))))), active: active__7817));
+                this.onTap!(index);
+            }))), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: 4.0), child: new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.end, children: _buildSingleTabItem(this.items[(int)(index)], activeLocal)))))))), active: activeLocal));
         }
-        return result__7638;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -117,8 +117,8 @@ public class CupertinoTabBar : global::Doroti.Framework.Widgets.StatelessWidget,
         {
             return item;
         }
-        global::Doroti.Ui.Color activeColor__9640 = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve((this.activeColor ?? CupertinoTheme.of(context).primaryColor), context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(color: activeColor__9640), child: DefaultTextStyle.merge(style: new global::Doroti.Framework.Painting.TextStyle(color: activeColor__9640), child: item)));
+        global::Doroti.Ui.Color activeColorLocal = ((global::Doroti.Ui.Color)(object?)CupertinoDynamicColor.resolve((this.activeColor ?? CupertinoTheme.of(context).primaryColor), context));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(color: activeColorLocal), child: DefaultTextStyle.merge(style: new global::Doroti.Framework.Painting.TextStyle(color: activeColorLocal), child: item)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

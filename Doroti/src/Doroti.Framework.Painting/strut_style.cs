@@ -84,8 +84,8 @@ public class StrutStyle : Diagnosticable
         {
             return this;
         }
-        double? effectiveHeight__22213 = (this.height ?? ((TextStyle)other).height);
-        return new StrutStyle(fontFamily: (this.fontFamily ?? ((TextStyle)other).fontFamily), fontFamilyFallback: (this.fontFamilyFallback ?? ((TextStyle)other).fontFamilyFallback), fontSize: (this.fontSize ?? ((TextStyle)other).fontSize), height: effectiveHeight__22213, leading: this.leading, fontWeight: (this.fontWeight ?? ((TextStyle)other).fontWeight), fontStyle: (this.fontStyle ?? ((TextStyle)other).fontStyle), forceStrutHeight: this.forceStrutHeight, debugLabel: (this.debugLabel ?? ((TextStyle)other).debugLabel), leadingDistribution: ((effectiveHeight__22213 is not null) ? ((this.leadingDistribution ?? ((TextStyle)other).leadingDistribution)) : null));
+        double? effectiveHeight = (this.height ?? ((TextStyle)other).height);
+        return new StrutStyle(fontFamily: (this.fontFamily ?? ((TextStyle)other).fontFamily), fontFamilyFallback: (this.fontFamilyFallback ?? ((TextStyle)other).fontFamilyFallback), fontSize: (this.fontSize ?? ((TextStyle)other).fontSize), height: effectiveHeight, leading: this.leading, fontWeight: (this.fontWeight ?? ((TextStyle)other).fontWeight), fontStyle: (this.fontStyle ?? ((TextStyle)other).fontStyle), forceStrutHeight: this.forceStrutHeight, debugLabel: (this.debugLabel ?? ((TextStyle)other).debugLabel), leadingDistribution: ((effectiveHeight is not null) ? ((this.leadingDistribution ?? ((TextStyle)other).leadingDistribution)) : null));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -123,24 +123,24 @@ public class StrutStyle : Diagnosticable
         {
             properties.add(new MessageProperty($"{prefix}debugLabel", this.debugLabel!));
         }
-        var styles__25171 = new List<DiagnosticsNode> { new StringProperty($"{prefix}family", this.fontFamily, defaultValue: null, quoted: false), new IterableProperty<string>($"{prefix}familyFallback", this.fontFamilyFallback, defaultValue: null), new DoubleProperty($"{prefix}size", this.fontSize, defaultValue: null) };
-        string? weightDescription__25474 = default!;
+        var styles = new List<DiagnosticsNode> { new StringProperty($"{prefix}family", this.fontFamily, defaultValue: null, quoted: false), new IterableProperty<string>($"{prefix}familyFallback", this.fontFamilyFallback, defaultValue: null), new DoubleProperty($"{prefix}size", this.fontSize, defaultValue: null) };
+        string? weightDescription = default!;
         if ((this.fontWeight is not null))
         {
-            weightDescription__25474 = $"w{(FoundationRuntimePorts.EnumIndex(this.fontWeight!) + 1L)}00";
+            weightDescription = $"w{(FoundationRuntimePorts.EnumIndex(this.fontWeight!) + 1L)}00";
         }
-        styles__25171.Add(new DiagnosticsProperty<global::Doroti.Ui.FontWeight>($"{prefix}weight", this.fontWeight, description: weightDescription__25474, defaultValue: null));
-        styles__25171.Add(new EnumProperty<global::Doroti.Ui.FontStyle>($"{prefix}style", this.fontStyle, defaultValue: null));
-        styles__25171.Add(new DoubleProperty($"{prefix}height", this.height, unit: "x", defaultValue: null));
-        styles__25171.Add(new FlagProperty($"{prefix}forceStrutHeight", value: this.forceStrutHeight, ifTrue: $"{prefix}<strut height forced>", ifFalse: $"{prefix}<strut height normal>"));
+        styles.Add(new DiagnosticsProperty<global::Doroti.Ui.FontWeight>($"{prefix}weight", this.fontWeight, description: weightDescription, defaultValue: null));
+        styles.Add(new EnumProperty<global::Doroti.Ui.FontStyle>($"{prefix}style", this.fontStyle, defaultValue: null));
+        styles.Add(new DoubleProperty($"{prefix}height", this.height, unit: "x", defaultValue: null));
+        styles.Add(new FlagProperty($"{prefix}forceStrutHeight", value: this.forceStrutHeight, ifTrue: $"{prefix}<strut height forced>", ifFalse: $"{prefix}<strut height normal>"));
         if ((this.height is not null))
         {
             double height__value26382 = DartRuntimePrimitives.RequireValue(height);
-            styles__25171.Add(new EnumProperty<global::Doroti.Ui.TextLeadingDistribution>($"{prefix}leadingDistribution", this.leadingDistribution, defaultValue: null));
+            styles.Add(new EnumProperty<global::Doroti.Ui.TextLeadingDistribution>($"{prefix}leadingDistribution", this.leadingDistribution, defaultValue: null));
         }
-        bool styleSpecified__26610 = styles__25171.any(((n) => !n.isFiltered(DiagnosticLevel.info)));
-        styles__25171.forEach(properties.add);
-        if (!styleSpecified__26610)
+        bool styleSpecified = styles.any(((n) => !n.isFiltered(DiagnosticLevel.info)));
+        styles.forEach(properties.add);
+        if (!styleSpecified)
         {
             properties.add(new FlagProperty("forceStrutHeight", value: this.forceStrutHeight, ifTrue: $"{prefix}<strut height forced>", ifFalse: $"{prefix}<strut height normal>"));
         }

@@ -77,42 +77,42 @@ public static partial class Spell_checkLibrary
 {
     internal static List<global::Doroti.Framework.Services.SuggestionSpan> _correctSpellCheckResults(string newText, string resultsText, List<global::Doroti.Framework.Services.SuggestionSpan> results)
     {
-        var correctedSpellCheckResults__4821 = new List<global::Doroti.Framework.Services.SuggestionSpan>();
-        var spanPointer__4876 = 0L;
-        var offset__4899 = 0L;
-        var searchStart__5062 = 0L;
-        while ((spanPointer__4876 < checked((long)(results.Count))))
+        var correctedSpellCheckResults = new List<global::Doroti.Framework.Services.SuggestionSpan>();
+        var spanPointer = 0L;
+        var offset = 0L;
+        var searchStart = 0L;
+        while ((spanPointer < checked((long)(results.Count))))
         {
-            global::Doroti.Framework.Services.SuggestionSpan currentSpan__5146 = results[(int)(spanPointer__4876)];
-            string currentSpanText__5199 = resultsText.substring(((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__5146).range.start, ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__5146).range.end);
-            long spanLength__5321 = (((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__5146).range.end - ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__5146).range.start);
-            string escapedText__5465 = Dart_coreLibrary.escape(currentSpanText__5199);
-            var currentSpanTextRegexp__5521 = new RegExp($"\\b{escapedText__5465}\\b");
-            long foundIndex__5589 = ((long)((dynamic)newText.substring(searchStart__5062)).IndexOf(currentSpanTextRegexp__5521));
-            var currentSpanFoundExactly__5764 = (((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__5146).range.start == (foundIndex__5589 + searchStart__5062));
-            var currentSpanFoundExactlyWithOffset__5853 = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__5146).range.start + offset__4899) == (foundIndex__5589 + searchStart__5062));
-            bool currentSpanFoundElsewhere__5974 = (foundIndex__5589 >= 0L);
-            if ((currentSpanFoundExactly__5764 || currentSpanFoundExactlyWithOffset__5853))
+            global::Doroti.Framework.Services.SuggestionSpan currentSpan = results[(int)(spanPointer)];
+            string currentSpanText = resultsText.substring(((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start, ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.end);
+            long spanLength = (((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.end - ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start);
+            string escapedText = Dart_coreLibrary.escape(currentSpanText);
+            var currentSpanTextRegexp = new RegExp($"\\b{escapedText}\\b");
+            long foundIndex = ((long)((dynamic)newText.substring(searchStart)).IndexOf(currentSpanTextRegexp));
+            var currentSpanFoundExactly = (((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start == (foundIndex + searchStart));
+            var currentSpanFoundExactlyWithOffset = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start + offset) == (foundIndex + searchStart));
+            bool currentSpanFoundElsewhere = (foundIndex >= 0L);
+            if ((currentSpanFoundExactly || currentSpanFoundExactlyWithOffset))
             {
-                var adjustedSpan__6362 = new global::Doroti.Framework.Services.SuggestionSpan(new global::Doroti.Ui.TextRange(start: (((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__5146).range.start + offset__4899), end: (((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__5146).range.end + offset__4899)), ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__5146).suggestions);
-                searchStart__5062 = Math.Min(((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__5146).range.end + 1L) + offset__4899), newText.Length);
-                correctedSpellCheckResults__4821.Add(adjustedSpan__6362);
+                var adjustedSpan = new global::Doroti.Framework.Services.SuggestionSpan(new global::Doroti.Ui.TextRange(start: (((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start + offset), end: (((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.end + offset)), ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).suggestions);
+                searchStart = Math.Min(((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.end + 1L) + offset), newText.Length);
+                correctedSpellCheckResults.Add(adjustedSpan);
             }
             else
             {
-                if (currentSpanFoundElsewhere__5974)
+                if (currentSpanFoundElsewhere)
                 {
-                    long adjustedSpanStart__6856 = (searchStart__5062 + foundIndex__5589);
-                    long adjustedSpanEnd__6918 = (adjustedSpanStart__6856 + spanLength__5321);
-                    var adjustedSpan__6980 = new global::Doroti.Framework.Services.SuggestionSpan(new global::Doroti.Ui.TextRange(start: adjustedSpanStart__6856, end: adjustedSpanEnd__6918), ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__5146).suggestions);
-                    searchStart__5062 = Math.Min((adjustedSpanEnd__6918 + 1L), newText.Length);
-                    offset__4899 = (adjustedSpanStart__6856 - ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__5146).range.start);
-                    correctedSpellCheckResults__4821.Add(adjustedSpan__6980);
+                    long adjustedSpanStart = (searchStart + foundIndex);
+                    long adjustedSpanEnd = (adjustedSpanStart + spanLength);
+                    var adjustedSpanLocal = new global::Doroti.Framework.Services.SuggestionSpan(new global::Doroti.Ui.TextRange(start: adjustedSpanStart, end: adjustedSpanEnd), ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).suggestions);
+                    searchStart = Math.Min((adjustedSpanEnd + 1L), newText.Length);
+                    offset = (adjustedSpanStart - ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start);
+                    correctedSpellCheckResults.Add(adjustedSpanLocal);
                 }
             }
-            spanPointer__4876++;
+            spanPointer++;
         }
-        return correctedSpellCheckResults__4821;
+        return correctedSpellCheckResults;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -121,18 +121,18 @@ public static partial class Spell_checkLibrary
 {
     public static global::Doroti.Framework.Painting.TextSpan buildTextSpanWithSpellCheckSuggestions(global::Doroti.Framework.Services.TextEditingValue value, bool composingWithinCurrentTextRange, global::Doroti.Framework.Painting.TextStyle? style, global::Doroti.Framework.Painting.TextStyle misspelledTextStyle, global::Doroti.Framework.Services.SpellCheckResults spellCheckResults)
     {
-        List<global::Doroti.Framework.Services.SuggestionSpan> spellCheckResultsSpans__8437 = ((global::Doroti.Framework.Services.SpellCheckResults)spellCheckResults).suggestionSpans.ToList();
-        string spellCheckResultsText__8512 = ((global::Doroti.Framework.Services.SpellCheckResults)spellCheckResults).spellCheckedText;
-        if ((spellCheckResultsText__8512 != ((global::Doroti.Framework.Services.TextEditingValue)value).text))
+        List<global::Doroti.Framework.Services.SuggestionSpan> spellCheckResultsSpans = ((global::Doroti.Framework.Services.SpellCheckResults)spellCheckResults).suggestionSpans.ToList();
+        string spellCheckResultsText = ((global::Doroti.Framework.Services.SpellCheckResults)spellCheckResults).spellCheckedText;
+        if ((spellCheckResultsText != ((global::Doroti.Framework.Services.TextEditingValue)value).text))
         {
-            spellCheckResultsSpans__8437 = Spell_checkLibrary._correctSpellCheckResults(((global::Doroti.Framework.Services.TextEditingValue)value).text, spellCheckResultsText__8512, spellCheckResultsSpans__8437);
+            spellCheckResultsSpans = Spell_checkLibrary._correctSpellCheckResults(((global::Doroti.Framework.Services.TextEditingValue)value).text, spellCheckResultsText, spellCheckResultsSpans);
         }
-        var shouldConsiderComposingRegion__9066 = (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.android));
-        if (shouldConsiderComposingRegion__9066)
+        var shouldConsiderComposingRegion = (object.Equals(global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform, global::Doroti.Framework.Foundation.TargetPlatform.android));
+        if (shouldConsiderComposingRegion)
         {
-            return new global::Doroti.Framework.Painting.TextSpan(style: style, children: Spell_checkLibrary._buildSubtreesWithComposingRegion(spellCheckResultsSpans__8437, value, style, misspelledTextStyle, composingWithinCurrentTextRange).Cast<global::Doroti.Framework.Painting.InlineSpan>().ToList());
+            return new global::Doroti.Framework.Painting.TextSpan(style: style, children: Spell_checkLibrary._buildSubtreesWithComposingRegion(spellCheckResultsSpans, value, style, misspelledTextStyle, composingWithinCurrentTextRange).Cast<global::Doroti.Framework.Painting.InlineSpan>().ToList());
         }
-        return new global::Doroti.Framework.Painting.TextSpan(style: style, children: Spell_checkLibrary._buildSubtreesWithoutComposingRegion(spellCheckResultsSpans__8437, value, style, misspelledTextStyle, ((global::Doroti.Framework.Services.TextEditingValue)value).selection.baseOffset).Cast<global::Doroti.Framework.Painting.InlineSpan>().ToList());
+        return new global::Doroti.Framework.Painting.TextSpan(style: style, children: Spell_checkLibrary._buildSubtreesWithoutComposingRegion(spellCheckResultsSpans, value, style, misspelledTextStyle, ((global::Doroti.Framework.Services.TextEditingValue)value).selection.baseOffset).Cast<global::Doroti.Framework.Painting.InlineSpan>().ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -141,39 +141,39 @@ public static partial class Spell_checkLibrary
 {
     internal static List<global::Doroti.Framework.Painting.TextSpan> _buildSubtreesWithoutComposingRegion(List<global::Doroti.Framework.Services.SuggestionSpan>? spellCheckSuggestions, global::Doroti.Framework.Services.TextEditingValue value, global::Doroti.Framework.Painting.TextStyle? style, global::Doroti.Framework.Painting.TextStyle misspelledStyle, long cursorIndex)
     {
-        var textSpanTreeChildren__10161 = new List<global::Doroti.Framework.Painting.TextSpan>();
-        var textPointer__10205 = 0L;
-        var currentSpanPointer__10228 = 0L;
-        long endIndex__10258 = default!;
-        string text__10283 = ((global::Doroti.Framework.Services.TextEditingValue)value).text;
-        global::Doroti.Framework.Painting.TextStyle misspelledJointStyle__10320 = (style?.merge(misspelledStyle) ?? misspelledStyle);
-        var cursorInCurrentSpan__10399 = false;
+        var textSpanTreeChildren = new List<global::Doroti.Framework.Painting.TextSpan>();
+        var textPointer = 0L;
+        var currentSpanPointer = 0L;
+        long endIndex = default!;
+        string textLocal = ((global::Doroti.Framework.Services.TextEditingValue)value).text;
+        global::Doroti.Framework.Painting.TextStyle misspelledJointStyle = (style?.merge(misspelledStyle) ?? misspelledStyle);
+        var cursorInCurrentSpan = false;
         if ((spellCheckSuggestions is not null))
         {
-            while (((textPointer__10205 < text__10283.Length) && (currentSpanPointer__10228 < checked((long)(spellCheckSuggestions.Count)))))
+            while (((textPointer < textLocal.Length) && (currentSpanPointer < checked((long)(spellCheckSuggestions.Count)))))
             {
-                global::Doroti.Framework.Services.SuggestionSpan currentSpan__10652 = spellCheckSuggestions[(int)(currentSpanPointer__10228)];
-                if ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__10652).range.start > textPointer__10205))
+                global::Doroti.Framework.Services.SuggestionSpan currentSpan = spellCheckSuggestions[(int)(currentSpanPointer)];
+                if ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start > textPointer))
                 {
-                    endIndex__10258 = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__10652).range.start < text__10283.Length) ? ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__10652).range.start : text__10283.Length);
-                    textSpanTreeChildren__10161.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: text__10283.substring(textPointer__10205, endIndex__10258)));
-                    textPointer__10205 = endIndex__10258;
+                    endIndex = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start < textLocal.Length) ? ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start : textLocal.Length);
+                    textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(textPointer, endIndex)));
+                    textPointer = endIndex;
                 }
                 else
                 {
-                    endIndex__10258 = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__10652).range.end < text__10283.Length) ? ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__10652).range.end : text__10283.Length);
-                    cursorInCurrentSpan__10399 = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__10652).range.start <= cursorIndex) && (((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__10652).range.end >= cursorIndex));
-                    textSpanTreeChildren__10161.Add(new global::Doroti.Framework.Painting.TextSpan(style: (cursorInCurrentSpan__10399 ? style : misspelledJointStyle__10320), text: text__10283.substring(((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__10652).range.start, endIndex__10258)));
-                    textPointer__10205 = endIndex__10258;
-                    currentSpanPointer__10228++;
+                    endIndex = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.end < textLocal.Length) ? ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.end : textLocal.Length);
+                    cursorInCurrentSpan = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start <= cursorIndex) && (((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.end >= cursorIndex));
+                    textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: (cursorInCurrentSpan ? style : misspelledJointStyle), text: textLocal.substring(((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start, endIndex)));
+                    textPointer = endIndex;
+                    currentSpanPointer++;
                 }
             }
         }
-        if ((textPointer__10205 < text__10283.Length))
+        if ((textPointer < textLocal.Length))
         {
-            textSpanTreeChildren__10161.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: text__10283.substring(textPointer__10205, text__10283.Length)));
+            textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(textPointer, textLocal.Length)));
         }
-        return textSpanTreeChildren__10161;
+        return textSpanTreeChildren;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -182,63 +182,63 @@ public static partial class Spell_checkLibrary
 {
     internal static List<global::Doroti.Framework.Painting.TextSpan> _buildSubtreesWithComposingRegion(List<global::Doroti.Framework.Services.SuggestionSpan>? spellCheckSuggestions, global::Doroti.Framework.Services.TextEditingValue value, global::Doroti.Framework.Painting.TextStyle? style, global::Doroti.Framework.Painting.TextStyle misspelledStyle, bool composingWithinCurrentTextRange)
     {
-        var textSpanTreeChildren__12125 = new List<global::Doroti.Framework.Painting.TextSpan>();
-        var textPointer__12169 = 0L;
-        var currentSpanPointer__12192 = 0L;
-        long endIndex__12222 = default!;
-        global::Doroti.Framework.Services.SuggestionSpan currentSpan__12249 = default!;
-        string text__12277 = ((global::Doroti.Framework.Services.TextEditingValue)value).text;
-        global::Doroti.Ui.TextRange composingRegion__12314 = ((global::Doroti.Ui.TextRange)(object?)((global::Doroti.Framework.Services.TextEditingValue)value).composing);
-        global::Doroti.Framework.Painting.TextStyle composingTextStyle__12367 = (style?.merge(new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline)) ?? new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline));
-        global::Doroti.Framework.Painting.TextStyle misspelledJointStyle__12544 = (style?.merge(misspelledStyle) ?? misspelledStyle);
-        var textPointerWithinComposingRegion__12623 = false;
-        var currentSpanIsComposingRegion__12671 = false;
+        var textSpanTreeChildren = new List<global::Doroti.Framework.Painting.TextSpan>();
+        var textPointer = 0L;
+        var currentSpanPointer = 0L;
+        long endIndex = default!;
+        global::Doroti.Framework.Services.SuggestionSpan currentSpan = default!;
+        string textLocal = ((global::Doroti.Framework.Services.TextEditingValue)value).text;
+        global::Doroti.Ui.TextRange composingRegion = ((global::Doroti.Ui.TextRange)(object?)((global::Doroti.Framework.Services.TextEditingValue)value).composing);
+        global::Doroti.Framework.Painting.TextStyle composingTextStyle = (style?.merge(new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline)) ?? new global::Doroti.Framework.Painting.TextStyle(decoration: TextDecoration.underline));
+        global::Doroti.Framework.Painting.TextStyle misspelledJointStyle = (style?.merge(misspelledStyle) ?? misspelledStyle);
+        var textPointerWithinComposingRegion = false;
+        var currentSpanIsComposingRegion = false;
         if ((spellCheckSuggestions is not null))
         {
-            while (((textPointer__12169 < text__12277.Length) && (currentSpanPointer__12192 < checked((long)(spellCheckSuggestions.Count)))))
+            while (((textPointer < textLocal.Length) && (currentSpanPointer < checked((long)(spellCheckSuggestions.Count)))))
             {
-                currentSpan__12249 = spellCheckSuggestions[(int)(currentSpanPointer__12192)];
-                if ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__12249).range.start > textPointer__12169))
+                currentSpan = spellCheckSuggestions[(int)(currentSpanPointer)];
+                if ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start > textPointer))
                 {
-                    endIndex__12222 = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__12249).range.start < text__12277.Length) ? ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__12249).range.start : text__12277.Length);
-                    textPointerWithinComposingRegion__12623 = (((composingRegion__12314.start >= textPointer__12169) && (composingRegion__12314.end <= endIndex__12222)) && !composingWithinCurrentTextRange);
-                    if (textPointerWithinComposingRegion__12623)
+                    endIndex = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start < textLocal.Length) ? ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start : textLocal.Length);
+                    textPointerWithinComposingRegion = (((composingRegion.start >= textPointer) && (composingRegion.end <= endIndex)) && !composingWithinCurrentTextRange);
+                    if (textPointerWithinComposingRegion)
                     {
-                        Spell_checkLibrary._addComposingRegionTextSpans(textSpanTreeChildren__12125, text__12277, textPointer__12169, composingRegion__12314, style, composingTextStyle__12367);
-                        textSpanTreeChildren__12125.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: text__12277.substring(composingRegion__12314.end, endIndex__12222)));
+                        Spell_checkLibrary._addComposingRegionTextSpans(textSpanTreeChildren, textLocal, textPointer, composingRegion, style, composingTextStyle);
+                        textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(composingRegion.end, endIndex)));
                     }
                     else
                     {
-                        textSpanTreeChildren__12125.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: text__12277.substring(textPointer__12169, endIndex__12222)));
+                        textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(textPointer, endIndex)));
                     }
-                    textPointer__12169 = endIndex__12222;
+                    textPointer = endIndex;
                 }
                 else
                 {
-                    endIndex__12222 = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__12249).range.end < text__12277.Length) ? ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__12249).range.end : text__12277.Length);
-                    currentSpanIsComposingRegion__12671 = (((textPointer__12169 >= composingRegion__12314.start) && (endIndex__12222 <= composingRegion__12314.end)) && !composingWithinCurrentTextRange);
-                    textSpanTreeChildren__12125.Add(new global::Doroti.Framework.Painting.TextSpan(style: (currentSpanIsComposingRegion__12671 ? composingTextStyle__12367 : misspelledJointStyle__12544), text: text__12277.substring(((global::Doroti.Framework.Services.SuggestionSpan)currentSpan__12249).range.start, endIndex__12222)));
-                    textPointer__12169 = endIndex__12222;
-                    currentSpanPointer__12192++;
+                    endIndex = ((((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.end < textLocal.Length) ? ((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.end : textLocal.Length);
+                    currentSpanIsComposingRegion = (((textPointer >= composingRegion.start) && (endIndex <= composingRegion.end)) && !composingWithinCurrentTextRange);
+                    textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: (currentSpanIsComposingRegion ? composingTextStyle : misspelledJointStyle), text: textLocal.substring(((global::Doroti.Framework.Services.SuggestionSpan)currentSpan).range.start, endIndex)));
+                    textPointer = endIndex;
+                    currentSpanPointer++;
                 }
             }
         }
-        if ((textPointer__12169 < text__12277.Length))
+        if ((textPointer < textLocal.Length))
         {
-            if (((textPointer__12169 < composingRegion__12314.start) && !composingWithinCurrentTextRange))
+            if (((textPointer < composingRegion.start) && !composingWithinCurrentTextRange))
             {
-                Spell_checkLibrary._addComposingRegionTextSpans(textSpanTreeChildren__12125, text__12277, textPointer__12169, composingRegion__12314, style, composingTextStyle__12367);
-                if ((composingRegion__12314.end != text__12277.Length))
+                Spell_checkLibrary._addComposingRegionTextSpans(textSpanTreeChildren, textLocal, textPointer, composingRegion, style, composingTextStyle);
+                if ((composingRegion.end != textLocal.Length))
                 {
-                    textSpanTreeChildren__12125.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: text__12277.substring(composingRegion__12314.end, text__12277.Length)));
+                    textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(composingRegion.end, textLocal.Length)));
                 }
             }
             else
             {
-                textSpanTreeChildren__12125.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: text__12277.substring(textPointer__12169, text__12277.Length)));
+                textSpanTreeChildren.Add(new global::Doroti.Framework.Painting.TextSpan(style: style, text: textLocal.substring(textPointer, textLocal.Length)));
             }
         }
-        return textSpanTreeChildren__12125;
+        return textSpanTreeChildren;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

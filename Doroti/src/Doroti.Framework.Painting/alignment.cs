@@ -189,33 +189,33 @@ public class Alignment : AlignmentGeometry
 
     public virtual global::Doroti.Ui.Offset alongOffset(Offset other)
     {
-        double centerX__14331 = (other.dx / 2.0);
-        double centerY__14374 = (other.dy / 2.0);
-        return new global::Doroti.Ui.Offset((centerX__14331 + (this.x * centerX__14331)), (centerY__14374 + (this.y * centerY__14374)));
+        double centerX = (other.dx / 2.0);
+        double centerY = (other.dy / 2.0);
+        return new global::Doroti.Ui.Offset((centerX + (this.x * centerX)), (centerY + (this.y * centerY)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Offset alongSize(Size other)
     {
-        double centerX__14590 = (other.width / 2.0);
-        double centerY__14636 = (other.height / 2.0);
-        return new global::Doroti.Ui.Offset((centerX__14590 + (this.x * centerX__14590)), (centerY__14636 + (this.y * centerY__14636)));
+        double centerX = (other.width / 2.0);
+        double centerY = (other.height / 2.0);
+        return new global::Doroti.Ui.Offset((centerX + (this.x * centerX)), (centerY + (this.y * centerY)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Offset withinRect(Rect rect)
     {
-        double halfWidth__14855 = (rect.width / 2.0);
-        double halfHeight__14902 = (rect.height / 2.0);
-        return new global::Doroti.Ui.Offset(((rect.left + halfWidth__14855) + (this.x * halfWidth__14855)), ((rect.top + halfHeight__14902) + (this.y * halfHeight__14902)));
+        double halfWidth = (rect.width / 2.0);
+        double halfHeight = (rect.height / 2.0);
+        return new global::Doroti.Ui.Offset(((rect.left + halfWidth) + (this.x * halfWidth)), ((rect.top + halfHeight) + (this.y * halfHeight)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Ui.Rect inscribe(Size size, Rect rect)
     {
-        double halfWidthDelta__15367 = (((rect.width - size.width)) / 2.0);
-        double halfHeightDelta__15434 = (((rect.height - size.height)) / 2.0);
-        return global::Doroti.Ui.Rect.fromLTWH(((rect.left + halfWidthDelta__15367) + (this.x * halfWidthDelta__15367)), ((rect.top + halfHeightDelta__15434) + (this.y * halfHeightDelta__15434)), size.width, size.height);
+        double halfWidthDelta = (((rect.width - size.width)) / 2.0);
+        double halfHeightDelta = (((rect.height - size.height)) / 2.0);
+        return global::Doroti.Ui.Rect.fromLTWH(((rect.left + halfWidthDelta) + (this.x * halfWidthDelta)), ((rect.top + halfHeightDelta) + (this.y * halfHeightDelta)), size.width, size.height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

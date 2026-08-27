@@ -48,8 +48,8 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
         {
             if ((codePoint != 0L))
             {
-                long flutterId__2960 = (LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask));
-                return (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault(flutterId__2960) ?? new LogicalKeyboardKey((LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask))));
+                long flutterId = (LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask));
+                return (global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault(flutterId) ?? new LogicalKeyboardKey((LogicalKeyboardKey.unicodePlane | (codePoint & LogicalKeyboardKey.valueMask))));
             }
             LogicalKeyboardKey? newKey = global::Doroti.Framework.Services.Keyboard_maps_gLibrary.kFuchsiaToLogicalKey.GetValueOrDefault((hidUsage | LogicalKeyboardKey.fuchsiaPlane));
             if ((newKey is not null))

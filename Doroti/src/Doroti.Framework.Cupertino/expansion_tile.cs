@@ -116,15 +116,15 @@ internal class _CupertinoExpansionTileState__expansion_tile : global::Doroti.Fra
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildHeader(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Animation.Animation<double> animation)
     {
-        CupertinoLocalizations localizations__5790 = ((CupertinoLocalizations)(object?)CupertinoLocalizations.of(context));
-        string onTapHint__5859 = (((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded ? ((CupertinoLocalizations)localizations__5790).expansionTileExpandedTapHint : ((CupertinoLocalizations)localizations__5790).expansionTileCollapsedTapHint);
-        string? semanticsHint__6018 = default!;
+        CupertinoLocalizations localizations = ((CupertinoLocalizations)(object?)CupertinoLocalizations.of(context));
+        string onTapHintLocal = (((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded ? ((CupertinoLocalizations)localizations).expansionTileExpandedTapHint : ((CupertinoLocalizations)localizations).expansionTileCollapsedTapHint);
+        string? semanticsHint = default!;
         switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
         {
             case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
             case global::Doroti.Framework.Foundation.TargetPlatform.macOS:
                 {
-                    semanticsHint__6018 = (((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded ? $"{((CupertinoLocalizations)localizations__5790).collapsedHint}\n {((CupertinoLocalizations)localizations__5790).expansionTileExpandedHint}" : $"{((CupertinoLocalizations)localizations__5790).expandedHint}\n {((CupertinoLocalizations)localizations__5790).expansionTileCollapsedHint}");
+                    semanticsHint = (((global::Doroti.Framework.Widgets.ExpansibleController)this._tileController).isExpanded ? $"{((CupertinoLocalizations)localizations).collapsedHint}\n {((CupertinoLocalizations)localizations).expansionTileExpandedHint}" : $"{((CupertinoLocalizations)localizations).expandedHint}\n {((CupertinoLocalizations)localizations).expansionTileCollapsedHint}");
                     break;
                 }
             case global::Doroti.Framework.Foundation.TargetPlatform.android:
@@ -135,29 +135,29 @@ internal class _CupertinoExpansionTileState__expansion_tile : global::Doroti.Fra
                     break;
                 }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(hint: semanticsHint__6018, onTapHint: onTapHint__5859, child: new CupertinoListTile(key: this._headerKey, onTap: () => { this._onHeaderTap(); return null!; }, title: ((CupertinoExpansionTile)this.widget).title, trailing: _buildIcon(context, animation), backgroundColorActivated: CupertinoColors.transparent)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(hint: semanticsHint, onTapHint: onTapHintLocal, child: new CupertinoListTile(key: this._headerKey, onTap: () => { this._onHeaderTap(); return null!; }, title: ((CupertinoExpansionTile)this.widget).title, trailing: _buildIcon(context, animation), backgroundColorActivated: CupertinoColors.transparent)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildExpansible(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget header, global::Doroti.Framework.Widgets.Widget body, global::Doroti.Framework.Animation.Animation<double> animation)
     {
-        global::Doroti.Framework.Widgets.Widget child__7000 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection7070 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection7070.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header)); if ((((global::Doroti.Framework.Animation.Animation<double>)animation).isAnimating && (object.Equals(((CupertinoExpansionTile)this.widget).transitionMode, ExpansionTileTransitionMode.fade)))) { __collection7070.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Opacity(opacity: 0.0, child: body))); } else { __collection7070.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(body)); } return __collection7070; }))()));
+        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection7070 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection7070.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(header)); if ((((global::Doroti.Framework.Animation.Animation<double>)animation).isAnimating && (object.Equals(((CupertinoExpansionTile)this.widget).transitionMode, ExpansionTileTransitionMode.fade)))) { __collection7070.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Opacity(opacity: 0.0, child: body))); } else { __collection7070.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(body)); } return __collection7070; }))()));
         if ((object.Equals(((CupertinoExpansionTile)this.widget).transitionMode, ExpansionTileTransitionMode.scroll)))
         {
-            return child__7000;
+            return childLocal;
         }
         DartRuntimePrimitives.Assert(() => (object.Equals(((CupertinoExpansionTile)this.widget).transitionMode, ExpansionTileTransitionMode.fade)));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LayoutBuilder(builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Rendering.BoxConstraints, global::Doroti.Framework.Widgets.Widget>)((context, constraints) =>
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.OverlayPortal(controller: this._fadeController, overlayChildBuilder: ((context) =>
             {
-                global::Doroti.Framework.Widgets.BuildContext headerContext__7700 = ((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._headerKey).currentContext!;
-                var overlay__7762 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)Overlay.of(headerContext__7700).context.findRenderObject()!)!;
-                var headerBox__7858 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)headerContext__7700.findRenderObject()!)!;
-                global::Doroti.Ui.Offset headerOffset__7943 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)headerBox__7858).localToGlobal(Offset.zero, ancestor: overlay__7762)));
-                return new global::Doroti.Framework.Widgets.Positioned(top: (headerOffset__7943.dy + Expansion_tileLibrary._kHeaderHeight), left: headerOffset__7943.dx, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: constraints, child: new global::Doroti.Framework.Widgets.Visibility(visible: ((global::Doroti.Framework.Animation.Animation<double>)animation).isAnimating, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: animation, child: ((CupertinoExpansionTile)this.widget).child))));
+                global::Doroti.Framework.Widgets.BuildContext headerContext = ((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._headerKey).currentContext!;
+                var overlay = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)Overlay.of(headerContext).context.findRenderObject()!)!;
+                var headerBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)headerContext.findRenderObject()!)!;
+                global::Doroti.Ui.Offset headerOffset = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)headerBox).localToGlobal(Offset.zero, ancestor: overlay)));
+                return new global::Doroti.Framework.Widgets.Positioned(top: (headerOffset.dy + Expansion_tileLibrary._kHeaderHeight), left: headerOffset.dx, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: constraints, child: new global::Doroti.Framework.Widgets.Visibility(visible: ((global::Doroti.Framework.Animation.Animation<double>)animation).isAnimating, child: new global::Doroti.Framework.Widgets.FadeTransition(opacity: animation, child: ((CupertinoExpansionTile)this.widget).child))));
                 throw new InvalidOperationException("Dart closure completed without a value.");
-            }), child: child__7000));
+            }), child: childLocal));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
         throw new InvalidOperationException("Dart control flow completed without a value.");

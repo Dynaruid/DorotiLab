@@ -48,15 +48,15 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
 
     public override ImageStreamCompleter loadBuffer(NetworkImageIo key, Func<ImmutableBuffer, bool, long?, long?, Future<Codec>> decode)
     {
-        var chunkEvents__1719 = new StreamController<ImageChunkEvent>();
-        return new MultiFrameImageStreamCompleter(codec: _loadAsync(((NetworkImageIo?)(object?)key)!, chunkEvents__1719, decode: (ImmutableBuffer __buffer) => decode(__buffer, false, null, null)), chunkEvents: chunkEvents__1719.stream, scale: ((NetworkImageIo)key).scale, debugLabel: ((NetworkImageIo)key).url, informationCollector: (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<NetworkImageIo>("Image key", key) }));
+        var chunkEventsLocal = new StreamController<ImageChunkEvent>();
+        return new MultiFrameImageStreamCompleter(codec: _loadAsync(((NetworkImageIo?)(object?)key)!, chunkEventsLocal, decode: (ImmutableBuffer __buffer) => decode(__buffer, false, null, null)), chunkEvents: chunkEventsLocal.stream, scale: ((NetworkImageIo)key).scale, debugLabel: ((NetworkImageIo)key).url, informationCollector: (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<NetworkImageIo>("Image key", key) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override ImageStreamCompleter loadImage(NetworkImageIo key, Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>> decode)
     {
-        var chunkEvents__2562 = new StreamController<ImageChunkEvent>();
-        return new MultiFrameImageStreamCompleter(codec: _loadAsync(((NetworkImageIo?)(object?)key)!, chunkEvents__2562, decode: (ImmutableBuffer __buffer) => decode(__buffer, null)), chunkEvents: chunkEvents__2562.stream, scale: ((NetworkImageIo)key).scale, debugLabel: ((NetworkImageIo)key).url, informationCollector: (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<NetworkImageIo>("Image key", key) }));
+        var chunkEventsLocal = new StreamController<ImageChunkEvent>();
+        return new MultiFrameImageStreamCompleter(codec: _loadAsync(((NetworkImageIo?)(object?)key)!, chunkEventsLocal, decode: (ImmutableBuffer __buffer) => decode(__buffer, null)), chunkEvents: chunkEventsLocal.stream, scale: ((NetworkImageIo)key).scale, debugLabel: ((NetworkImageIo)key).url, informationCollector: (() => new List<DiagnosticsNode> { new DiagnosticsProperty<dynamic>("Image provider", this), new DiagnosticsProperty<NetworkImageIo>("Image key", key) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -64,16 +64,16 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
     {
         get
         {
-            global::Doroti.Runtime.HttpClient? client__3477 = default!;
+            global::Doroti.Runtime.HttpClient? client = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
                     if ((global::Doroti.Framework.Painting.DebugLibrary.debugNetworkImageHttpClientProvider is not null))
                     {
-                        client__3477 = global::Doroti.Framework.Painting.DebugLibrary.debugNetworkImageHttpClientProvider!();
+                        client = global::Doroti.Framework.Painting.DebugLibrary.debugNetworkImageHttpClientProvider!();
                     }
                     return true;
                 });
-            return (client__3477 ?? _sharedHttpClient);
+            return (client ?? _sharedHttpClient);
             return default!;
         }
     }
@@ -82,29 +82,29 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
         try
         {
             DartRuntimePrimitives.Assert(() => (object.Equals(key, this)));
-            DartUri resolved__3914 = DartUri.@base.resolve(((NetworkImageIo)key).url);
-            global::Doroti.Runtime.HttpClientRequest request__3983 = await _httpClient.getUrl(resolved__3914);
+            DartUri resolved = DartUri.@base.resolve(((NetworkImageIo)key).url);
+            global::Doroti.Runtime.HttpClientRequest request = await _httpClient.getUrl(resolved);
             this.headers?.forEach(((name, value) =>
             {
-                request__3983.headers.add(name, value);
+                request.headers.add(name, value);
             }));
-            global::Doroti.Runtime.HttpClientResponse response__4166 = await request__3983.close();
-            if ((response__4166.statusCode != HttpStatus.ok))
+            global::Doroti.Runtime.HttpClientResponse response = await request.close();
+            if ((response.statusCode != HttpStatus.ok))
             {
-                await response__4166.drain<List<long>>(new List<long>());
-                throw new NetworkImageLoadException(statusCode: response__4166.statusCode, uri: resolved__3914);
+                await response.drain<List<long>>(new List<long>());
+                throw new NetworkImageLoadException(statusCode: response.statusCode, uri: resolved);
             }
-            Uint8List bytes__4665 = await global::Doroti.Framework.Foundation.Consolidate_responseLibrary.consolidateHttpClientResponseBytes(response__4166, onBytesReceived: ((cumulative, total) =>
+            Uint8List bytes = await global::Doroti.Framework.Foundation.Consolidate_responseLibrary.consolidateHttpClientResponseBytes(response, onBytesReceived: ((cumulative, total) =>
             {
                 chunkEvents.add(new ImageChunkEvent(cumulativeBytesLoaded: cumulative, expectedTotalBytes: total));
             }));
-            if ((bytes__4665.lengthInBytes == 0L))
+            if ((bytes.lengthInBytes == 0L))
             {
-                throw new Exception($"NetworkImage is an empty file: {resolved__3914}");
+                throw new Exception($"NetworkImage is an empty file: {resolved}");
             }
-            return await decode(await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes__4665));
+            return await decode(await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes));
         }
-        catch (Exception e__5143)
+        catch (Exception e)
         {
             DartAsyncRuntime.scheduleMicrotask((() =>
             {

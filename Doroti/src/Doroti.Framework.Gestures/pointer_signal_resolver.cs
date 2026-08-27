@@ -54,16 +54,16 @@ public class PointerSignalResolver
         {
             this._firstRegisteredCallback!(this._currentEvent!);
         }
-        catch (Exception exception__4614)
+        catch (Exception exceptionLocal)
         {
-            var stack__4625 = new System.Diagnostics.StackTrace();
-            InformationCollector? collector__4662 = default!;
+            var stackLocal = new System.Diagnostics.StackTrace();
+            InformationCollector? collector = default!;
             DartRuntimePrimitives.Assert(() =>
                 {
-                    collector__4662 = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerSignalEvent>("Event", @event, style: DiagnosticsTreeStyle.errorProperty) });
+                    collector = (() => new List<DiagnosticsNode> { new DiagnosticsProperty<PointerSignalEvent>("Event", @event, style: DiagnosticsTreeStyle.errorProperty) });
                     return true;
                 });
-            FlutterError.reportError(new FlutterErrorDetails(exception: exception__4614, stack: stack__4625, library: "gesture library", context: new ErrorDescription("while resolving a PointerSignalEvent"), informationCollector: collector__4662));
+            FlutterError.reportError(new FlutterErrorDetails(exception: exceptionLocal, stack: stackLocal, library: "gesture library", context: new ErrorDescription("while resolving a PointerSignalEvent"), informationCollector: collector));
         }
         _firstRegisteredCallback = null;
         _currentEvent = null;

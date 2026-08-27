@@ -63,17 +63,17 @@ public class CupertinoFormSection : global::Doroti.Framework.Widgets.StatelessWi
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget? headerWidget__8813 = ((global::Doroti.Framework.Widgets.Widget?)(object?)((this.header is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)), child: this.header!)));
-        global::Doroti.Framework.Widgets.Widget? footerWidget__9095 = ((global::Doroti.Framework.Widgets.Widget?)(object?)((this.footer is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)), child: this.footer!)));
+        global::Doroti.Framework.Widgets.Widget? headerWidget = ((global::Doroti.Framework.Widgets.Widget?)(object?)((this.header is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)), child: this.header!)));
+        global::Doroti.Framework.Widgets.Widget? footerWidget = ((global::Doroti.Framework.Widgets.Widget?)(object?)((this.footer is null) ? null : new global::Doroti.Framework.Widgets.DefaultTextStyle(style: new global::Doroti.Framework.Painting.TextStyle(fontSize: 13.0, color: CupertinoColors.secondaryLabel.resolveFrom(context)), child: this.footer!)));
         switch (this._type)
         {
             case var __constant9391 when (object.Equals(__constant9391, CupertinoListSectionType.@base)):
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoListSection(header: headerWidget__8813, footer: footerWidget__9095, margin: this.margin, backgroundColor: this.backgroundColor, decoration: this.decoration, clipBehavior: this.clipBehavior, hasLeading: false, children: this.children));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoListSection(header: headerWidget, footer: footerWidget, margin: this.margin, backgroundColor: this.backgroundColor, decoration: this.decoration, clipBehavior: this.clipBehavior, hasLeading: false, children: this.children));
                 }
             case var __constant9746 when (object.Equals(__constant9746, CupertinoListSectionType.insetGrouped)):
                 {
-                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoListSection(header: headerWidget__8813, footer: footerWidget__9095, margin: this.margin, backgroundColor: this.backgroundColor, decoration: this.decoration, clipBehavior: this.clipBehavior, hasLeading: false, children: this.children));
+                    return ((global::Doroti.Framework.Widgets.Widget)(object?)new CupertinoListSection(header: headerWidget, footer: footerWidget, margin: this.margin, backgroundColor: this.backgroundColor, decoration: this.decoration, clipBehavior: this.clipBehavior, hasLeading: false, children: this.children));
                 }
             default:
                 throw new InvalidOperationException("Non-exhaustive Dart switch value.");

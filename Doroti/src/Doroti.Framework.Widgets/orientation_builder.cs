@@ -27,8 +27,8 @@ public class OrientationBuilder : StatelessWidget
 
     internal virtual Widget _buildWithConstraints(BuildContext context, global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
-        Orientation orientation__1887 = ((((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth > ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight) ? Orientation.landscape : Orientation.portrait);
-        return this.builder(context, orientation__1887);
+        Orientation orientation = ((((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxWidth > ((global::Doroti.Framework.Rendering.BoxConstraints)constraints).maxHeight) ? Orientation.landscape : Orientation.portrait);
+        return this.builder(context, orientation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -51,8 +51,8 @@ public class DeviceOrientationBuilder : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        Orientation orientation__4208 = MediaQuery.orientationOf(context);
-        return this.builder(context, orientation__4208);
+        Orientation orientation = MediaQuery.orientationOf(context);
+        return this.builder(context, orientation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

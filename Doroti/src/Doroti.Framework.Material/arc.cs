@@ -35,48 +35,48 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
     {
 
 
-        global::Doroti.Ui.Offset begin__1824 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(this.begin));
-        global::Doroti.Ui.Offset end__1862 = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(this.end));
-        global::Doroti.Ui.Offset delta__2031 = ((global::Doroti.Ui.Offset)(object?)(DartRuntimePrimitives.RequireValue(end__1862) - DartRuntimePrimitives.RequireValue(begin__1824)));
-        double deltaX__2069 = delta__2031.dx.abs();
-        double deltaY__2111 = delta__2031.dy.abs();
-        double distanceFromAtoB__2153 = delta__2031.distance;
-        var c__2198 = new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(end__1862).dx, DartRuntimePrimitives.RequireValue(begin__1824).dy);
+        global::Doroti.Ui.Offset beginLocal = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(this.begin));
+        global::Doroti.Ui.Offset endLocal = ((global::Doroti.Ui.Offset)(object?)DartRuntimePrimitives.RequireValue(this.end));
+        global::Doroti.Ui.Offset delta = ((global::Doroti.Ui.Offset)(object?)(DartRuntimePrimitives.RequireValue(endLocal) - DartRuntimePrimitives.RequireValue(beginLocal)));
+        double deltaX = delta.dx.abs();
+        double deltaY = delta.dy.abs();
+        double distanceFromAtoB = delta.distance;
+        var c = new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(endLocal).dx, DartRuntimePrimitives.RequireValue(beginLocal).dy);
         double sweepAngle()
         {
-            return (2.0 * global::Doroti.Runtime.Dart_mathLibrary.asin((distanceFromAtoB__2153 / ((2.0 * DartRuntimePrimitives.RequireValue(this._radius))))));
+            return (2.0 * global::Doroti.Runtime.Dart_mathLibrary.asin((distanceFromAtoB / ((2.0 * DartRuntimePrimitives.RequireValue(this._radius))))));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        if (((deltaX__2069 > ArcLibrary._kOnAxisDelta) && (deltaY__2111 > ArcLibrary._kOnAxisDelta)))
+        if (((deltaX > ArcLibrary._kOnAxisDelta) && (deltaY > ArcLibrary._kOnAxisDelta)))
         {
-            if ((deltaX__2069 < deltaY__2111))
+            if ((deltaX < deltaY))
             {
-                _radius = (((distanceFromAtoB__2153 * distanceFromAtoB__2153) / ((c__2198 - DartRuntimePrimitives.RequireValue(begin__1824))).distance) / 2.0);
-                _center = new global::Doroti.Ui.Offset((DartRuntimePrimitives.RequireValue(end__1862).dx + (DartRuntimePrimitives.RequireValue(this._radius) * Math.Sign(((DartRuntimePrimitives.RequireValue(begin__1824).dx - DartRuntimePrimitives.RequireValue(end__1862).dx))))), DartRuntimePrimitives.RequireValue(end__1862).dy);
-                if ((DartRuntimePrimitives.RequireValue(begin__1824).dx < DartRuntimePrimitives.RequireValue(end__1862).dx))
+                _radius = (((distanceFromAtoB * distanceFromAtoB) / ((c - DartRuntimePrimitives.RequireValue(beginLocal))).distance) / 2.0);
+                _center = new global::Doroti.Ui.Offset((DartRuntimePrimitives.RequireValue(endLocal).dx + (DartRuntimePrimitives.RequireValue(this._radius) * Math.Sign(((DartRuntimePrimitives.RequireValue(beginLocal).dx - DartRuntimePrimitives.RequireValue(endLocal).dx))))), DartRuntimePrimitives.RequireValue(endLocal).dy);
+                if ((DartRuntimePrimitives.RequireValue(beginLocal).dx < DartRuntimePrimitives.RequireValue(endLocal).dx))
                 {
-                    _beginAngle = (sweepAngle() * Math.Sign(((DartRuntimePrimitives.RequireValue(begin__1824).dy - DartRuntimePrimitives.RequireValue(end__1862).dy))));
+                    _beginAngle = (sweepAngle() * Math.Sign(((DartRuntimePrimitives.RequireValue(beginLocal).dy - DartRuntimePrimitives.RequireValue(endLocal).dy))));
                     _endAngle = 0.0;
                 }
                 else
                 {
-                    _beginAngle = (Dart_mathLibrary.pi + (sweepAngle() * Math.Sign(((DartRuntimePrimitives.RequireValue(end__1862).dy - DartRuntimePrimitives.RequireValue(begin__1824).dy)))));
+                    _beginAngle = (Dart_mathLibrary.pi + (sweepAngle() * Math.Sign(((DartRuntimePrimitives.RequireValue(endLocal).dy - DartRuntimePrimitives.RequireValue(beginLocal).dy)))));
                     _endAngle = Dart_mathLibrary.pi;
                 }
             }
             else
             {
-                _radius = (((distanceFromAtoB__2153 * distanceFromAtoB__2153) / ((c__2198 - DartRuntimePrimitives.RequireValue(end__1862))).distance) / 2.0);
-                _center = new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(begin__1824).dx, (DartRuntimePrimitives.RequireValue(begin__1824).dy + (Math.Sign(((DartRuntimePrimitives.RequireValue(end__1862).dy - DartRuntimePrimitives.RequireValue(begin__1824).dy))) * DartRuntimePrimitives.RequireValue(this._radius))));
-                if ((DartRuntimePrimitives.RequireValue(begin__1824).dy < DartRuntimePrimitives.RequireValue(end__1862).dy))
+                _radius = (((distanceFromAtoB * distanceFromAtoB) / ((c - DartRuntimePrimitives.RequireValue(endLocal))).distance) / 2.0);
+                _center = new global::Doroti.Ui.Offset(DartRuntimePrimitives.RequireValue(beginLocal).dx, (DartRuntimePrimitives.RequireValue(beginLocal).dy + (Math.Sign(((DartRuntimePrimitives.RequireValue(endLocal).dy - DartRuntimePrimitives.RequireValue(beginLocal).dy))) * DartRuntimePrimitives.RequireValue(this._radius))));
+                if ((DartRuntimePrimitives.RequireValue(beginLocal).dy < DartRuntimePrimitives.RequireValue(endLocal).dy))
                 {
                     _beginAngle = (-Dart_mathLibrary.pi / 2.0);
-                    _endAngle = (DartRuntimePrimitives.RequireValue(this._beginAngle) + (sweepAngle() * Math.Sign(((DartRuntimePrimitives.RequireValue(end__1862).dx - DartRuntimePrimitives.RequireValue(begin__1824).dx)))));
+                    _endAngle = (DartRuntimePrimitives.RequireValue(this._beginAngle) + (sweepAngle() * Math.Sign(((DartRuntimePrimitives.RequireValue(endLocal).dx - DartRuntimePrimitives.RequireValue(beginLocal).dx)))));
                 }
                 else
                 {
                     _beginAngle = (Dart_mathLibrary.pi / 2.0);
-                    _endAngle = (DartRuntimePrimitives.RequireValue(this._beginAngle) + (sweepAngle() * Math.Sign(((DartRuntimePrimitives.RequireValue(begin__1824).dx - DartRuntimePrimitives.RequireValue(end__1862).dx)))));
+                    _endAngle = (DartRuntimePrimitives.RequireValue(this._beginAngle) + (sweepAngle() * Math.Sign(((DartRuntimePrimitives.RequireValue(beginLocal).dx - DartRuntimePrimitives.RequireValue(endLocal).dx)))));
                 }
             }
             DartRuntimePrimitives.Assert(() => (this._beginAngle is not null));
@@ -196,10 +196,10 @@ public class MaterialPointArcTween : global::Doroti.Framework.Animation.Tween<Of
         {
             return DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Offset.lerp(this.begin, this.end, t));
         }
-        double angle__5482 = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this._beginAngle, this._endAngle, t));
-        double x__5547 = (global::Doroti.Runtime.Dart_mathLibrary.cos(angle__5482) * DartRuntimePrimitives.RequireValue(this._radius));
-        double y__5596 = (global::Doroti.Runtime.Dart_mathLibrary.sin(angle__5482) * DartRuntimePrimitives.RequireValue(this._radius));
-        return (DartRuntimePrimitives.RequireValue(this._center) + new global::Doroti.Ui.Offset(x__5547, y__5596));
+        double angle = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(this._beginAngle, this._endAngle, t));
+        double x = (global::Doroti.Runtime.Dart_mathLibrary.cos(angle) * DartRuntimePrimitives.RequireValue(this._radius));
+        double y = (global::Doroti.Runtime.Dart_mathLibrary.sin(angle) * DartRuntimePrimitives.RequireValue(this._radius));
+        return (DartRuntimePrimitives.RequireValue(this._center) + new global::Doroti.Ui.Offset(x, y));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -243,18 +243,18 @@ public static partial class ArcLibrary
 {
     internal static T _maxBy<T>(IEnumerable<T> input, global::System.Func<T, double> keyFunc)
     {
-        T maxValue__6516 = default!;
-        double? maxKey__6536 = default!;
-        foreach (var value__6557 in input)
+        T maxValue = default!;
+        double? maxKey = default!;
+        foreach (var value in input)
         {
-            double key__6592 = keyFunc(value__6557);
-            if (((maxKey__6536 is null) || (key__6592 > DartRuntimePrimitives.RequireValue(maxKey__6536))))
+            double key = keyFunc(value);
+            if (((maxKey is null) || (key > DartRuntimePrimitives.RequireValue(maxKey))))
             {
-                maxValue__6516 = value__6557;
-                maxKey__6536 = key__6592;
+                maxValue = value;
+                maxKey = key;
             }
         }
-        return maxValue__6516;
+        return maxValue;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -273,18 +273,18 @@ public class MaterialRectArcTween : global::Doroti.Framework.Animation.RectTween
     {
 
 
-        global::Doroti.Ui.Offset centersVector__8156 = ((global::Doroti.Ui.Offset)(object?)(((Offset)((dynamic)DartRuntimePrimitives.RequireValue(this.end)).center) - ((Offset)((dynamic)DartRuntimePrimitives.RequireValue(this.begin)).center)));
-        _Diagonal__arc diagonal__8221 = ArcLibrary._maxBy<_Diagonal__arc>(ArcLibrary._allDiagonals.Cast<_Diagonal__arc>(), ((d) => _diagonalSupport(centersVector__8156, d)));
-        _beginArc = new MaterialPointArcTween(begin: _cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal__8221).beginId), end: _cornerFor(DartRuntimePrimitives.RequireValue(this.end), ((_Diagonal__arc)diagonal__8221).beginId));
-        _endArc = new MaterialPointArcTween(begin: _cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal__8221).endId), end: _cornerFor(DartRuntimePrimitives.RequireValue(this.end), ((_Diagonal__arc)diagonal__8221).endId));
+        global::Doroti.Ui.Offset centersVector = ((global::Doroti.Ui.Offset)(object?)(((Offset)((dynamic)DartRuntimePrimitives.RequireValue(this.end)).center) - ((Offset)((dynamic)DartRuntimePrimitives.RequireValue(this.begin)).center)));
+        _Diagonal__arc diagonal = ArcLibrary._maxBy<_Diagonal__arc>(ArcLibrary._allDiagonals.Cast<_Diagonal__arc>(), ((d) => _diagonalSupport(centersVector, d)));
+        _beginArc = new MaterialPointArcTween(begin: _cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal).beginId), end: _cornerFor(DartRuntimePrimitives.RequireValue(this.end), ((_Diagonal__arc)diagonal).beginId));
+        _endArc = new MaterialPointArcTween(begin: _cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal).endId), end: _cornerFor(DartRuntimePrimitives.RequireValue(this.end), ((_Diagonal__arc)diagonal).endId));
         _dirty = false;
     }
 
     internal virtual double _diagonalSupport(Offset centersVector, _Diagonal__arc diagonal)
     {
-        global::Doroti.Ui.Offset delta__8732 = ((global::Doroti.Ui.Offset)(object?)(_cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal).endId) - _cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal).beginId)));
-        double length__8832 = delta__8732.distance;
-        return (((centersVector.dx * delta__8732.dx) / length__8832) + ((centersVector.dy * delta__8732.dy) / length__8832));
+        global::Doroti.Ui.Offset delta = ((global::Doroti.Ui.Offset)(object?)(_cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal).endId) - _cornerFor(DartRuntimePrimitives.RequireValue(this.begin), ((_Diagonal__arc)diagonal).beginId)));
+        double length = delta.distance;
+        return (((centersVector.dx * delta.dx) / length) + ((centersVector.dy * delta.dy) / length));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -447,10 +447,10 @@ public class MaterialRectCenterArcTween : global::Doroti.Framework.Animation.Rec
         {
             return DartRuntimePrimitives.RequireValue(this.end);
         }
-        global::Doroti.Ui.Offset center__12629 = ((global::Doroti.Ui.Offset)(object?)this._centerArc.lerp(t));
-        double width__12675 = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(this.begin).width, DartRuntimePrimitives.RequireValue(this.end).width, t));
-        double height__12742 = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(this.begin).height, DartRuntimePrimitives.RequireValue(this.end).height, t));
-        return global::Doroti.Ui.Rect.fromLTWH((center__12629.dx - (width__12675 / 2.0)), (center__12629.dy - (height__12742 / 2.0)), width__12675, height__12742);
+        global::Doroti.Ui.Offset center = ((global::Doroti.Ui.Offset)(object?)this._centerArc.lerp(t));
+        double widthLocal = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(this.begin).width, DartRuntimePrimitives.RequireValue(this.end).width, t));
+        double heightLocal = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(DartRuntimePrimitives.RequireValue(this.begin).height, DartRuntimePrimitives.RequireValue(this.end).height, t));
+        return global::Doroti.Ui.Rect.fromLTWH((center.dx - (widthLocal / 2.0)), (center.dy - (heightLocal / 2.0)), widthLocal, heightLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

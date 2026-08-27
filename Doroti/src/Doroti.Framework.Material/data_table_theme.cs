@@ -111,13 +111,13 @@ public class DataTableThemeData : global::Doroti.Framework.Foundation.Diagnostic
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -140,8 +140,8 @@ public class DataTableTheme : global::Doroti.Framework.Widgets.InheritedWidget
 
     public static DataTableThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        DataTableTheme? dataTableTheme__13030 = ((DataTableTheme?)(object?)context.dependOnInheritedWidgetOfExactType<DataTableTheme>());
-        return (dataTableTheme__13030?.data ?? Theme.of(context).dataTableTheme);
+        DataTableTheme? dataTableThemeLocal = ((DataTableTheme?)(object?)context.dependOnInheritedWidgetOfExactType<DataTableTheme>());
+        return (dataTableThemeLocal?.data ?? Theme.of(context).dataTableTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

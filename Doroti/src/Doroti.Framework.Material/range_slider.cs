@@ -137,11 +137,11 @@ public class _RangeSliderState__range_slider : global::Doroti.Framework.Widgets.
         {
             return;
         }
-        var wasEnabled__20623 = (((RangeSlider)oldWidget).onChanged is not null);
-        bool isEnabled__20680 = this._enabled;
-        if ((wasEnabled__20623 != isEnabled__20680))
+        var wasEnabled = (((RangeSlider)oldWidget).onChanged is not null);
+        bool isEnabled = this._enabled;
+        if ((wasEnabled != isEnabled))
         {
-            if (isEnabled__20680)
+            if (isEnabled)
             {
                 this.enableController.forward();
             }
@@ -149,7 +149,7 @@ public class _RangeSliderState__range_slider : global::Doroti.Framework.Widgets.
             {
                 this.enableController.reverse();
             }
-            _showHoverHighlight = (this._hovering && isEnabled__20680);
+            _showHoverHighlight = (this._hovering && isEnabled);
         }
     }
 
@@ -167,11 +167,11 @@ public class _RangeSliderState__range_slider : global::Doroti.Framework.Widgets.
             {
                 if ((this._tickers is not null))
                 {
-                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18989 in this._tickers!)
+                    foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
                     {
-                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker__18989).isActive)
+                        if (((global::Doroti.Framework.Scheduler.Ticker)ticker).isActive)
                         {
-                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker__18989.describeForError("The offending ticker was") }));
+                            throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its TickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. All Tickers must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), ticker.describeForError("The offending ticker was") }));
                         }
                     }
                 }
@@ -185,10 +185,10 @@ public class _RangeSliderState__range_slider : global::Doroti.Framework.Widgets.
     internal virtual void _handleChanged(RangeValues values)
     {
         DartRuntimePrimitives.Assert(() => this._enabled);
-        RangeValues lerpValues__21334 = ((RangeValues)(object?)_lerpRangeValues(values));
-        if ((!object.Equals(lerpValues__21334, ((RangeSlider)this.widget).values)))
+        RangeValues lerpValues = ((RangeValues)(object?)_lerpRangeValues(values));
+        if ((!object.Equals(lerpValues, ((RangeSlider)this.widget).values)))
         {
-            ((RangeSlider)this.widget).onChanged!(lerpValues__21334);
+            ((RangeSlider)this.widget).onChanged!(lerpValues);
         }
     }
 
@@ -233,17 +233,17 @@ public class _RangeSliderState__range_slider : global::Doroti.Framework.Widgets.
 
     internal virtual Thumb? _defaultRangeThumbSelector(TextDirection textDirection, RangeValues values, double tapValue, Size thumbSize, Size trackSize, double dx)
     {
-        double touchRadius__23303 = (Math.Max(thumbSize.width, RangeSlider._minTouchTargetWidth) / 2L);
-        bool inStartTouchTarget__23397 = ((((tapValue - ((RangeValues)values).start)).abs() * trackSize.width) < touchRadius__23303);
-        bool inEndTouchTarget__23498 = ((((tapValue - ((RangeValues)values).end)).abs() * trackSize.width) < touchRadius__23303);
-        if ((inStartTouchTarget__23397 && inEndTouchTarget__23498))
+        double touchRadius = (Math.Max(thumbSize.width, RangeSlider._minTouchTargetWidth) / 2L);
+        bool inStartTouchTarget = ((((tapValue - ((RangeValues)values).start)).abs() * trackSize.width) < touchRadius);
+        bool inEndTouchTarget = ((((tapValue - ((RangeValues)values).end)).abs() * trackSize.width) < touchRadius);
+        if ((inStartTouchTarget && inEndTouchTarget))
         {
-            var (towardsStart__24040, towardsEnd__24059) = (textDirection switch { TextDirection.ltr => (((bool, bool))(((dx < 0L), (dx > 0L)))), TextDirection.rtl => (((bool, bool))(((dx > 0L), (dx < 0L)))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            if (towardsStart__24040)
+            var (towardsStart, towardsEnd) = (textDirection switch { TextDirection.ltr => (((bool, bool))(((dx < 0L), (dx > 0L)))), TextDirection.rtl => (((bool, bool))(((dx > 0L), (dx < 0L)))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            if (towardsStart)
             {
                 return Thumb.start;
             }
-            if (towardsEnd__24059)
+            if (towardsEnd)
             {
                 return Thumb.end;
             }
@@ -267,55 +267,55 @@ public class _RangeSliderState__range_slider : global::Doroti.Framework.Widgets.
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasMediaQuery(context));
-        ThemeData theme__24708 = Theme.of(context);
-        SliderThemeData sliderTheme__24755 = SliderTheme.of(context);
-        bool year2023__24809 = ((((RangeSlider)this.widget).year2023 ?? sliderTheme__24755.year2023) ?? true);
-        SliderThemeData defaults__24895 = ((theme__24708.useMaterial3 && !year2023__24809) ? new _RangeSliderDefaultsM3__range_slider(context) : new _RangeSliderDefaultsM2__range_slider(context));
-        var states__25429 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection25438 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!this._enabled) { __collection25438.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } if (this._hovering) { __collection25438.Add(global::Doroti.Framework.Widgets.WidgetState.hovered); } if (this._dragging) { __collection25438.Add(global::Doroti.Framework.Widgets.WidgetState.dragged); } return __collection25438; }))();
-        RangeSliderValueIndicatorShape valueIndicatorShape__25909 = (sliderTheme__24755.rangeValueIndicatorShape ?? defaults__24895.rangeValueIndicatorShape!);
-        global::Doroti.Ui.Color valueIndicatorColor__26031 = default!;
-        if ((valueIndicatorShape__25909 is RectangularRangeSliderValueIndicatorShape))
+        ThemeData theme = Theme.of(context);
+        SliderThemeData sliderThemeLocal = SliderTheme.of(context);
+        bool year2023Local = ((((RangeSlider)this.widget).year2023 ?? sliderThemeLocal.year2023) ?? true);
+        SliderThemeData defaults = ((theme.useMaterial3 && !year2023Local) ? new _RangeSliderDefaultsM3__range_slider(context) : new _RangeSliderDefaultsM2__range_slider(context));
+        var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection25438 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!this._enabled) { __collection25438.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } if (this._hovering) { __collection25438.Add(global::Doroti.Framework.Widgets.WidgetState.hovered); } if (this._dragging) { __collection25438.Add(global::Doroti.Framework.Widgets.WidgetState.dragged); } return __collection25438; }))();
+        RangeSliderValueIndicatorShape valueIndicatorShape = (sliderThemeLocal.rangeValueIndicatorShape ?? defaults.rangeValueIndicatorShape!);
+        global::Doroti.Ui.Color valueIndicatorColorLocal = default!;
+        if ((valueIndicatorShape is RectangularRangeSliderValueIndicatorShape))
         {
-            RectangularRangeSliderValueIndicatorShape valueIndicatorShape__25909__as26060 = (RectangularRangeSliderValueIndicatorShape)valueIndicatorShape__25909;
-            valueIndicatorColor__26031 = (sliderTheme__24755.valueIndicatorColor ?? Dart_uiLibrary.Color.alphaBlend(theme__24708.colorScheme.onSurface.withOpacity(0.6), theme__24708.colorScheme.surface.withOpacity(0.9)));
+            RectangularRangeSliderValueIndicatorShape valueIndicatorShape__25909__as26060 = (RectangularRangeSliderValueIndicatorShape)valueIndicatorShape;
+            valueIndicatorColorLocal = (sliderThemeLocal.valueIndicatorColor ?? Dart_uiLibrary.Color.alphaBlend(theme.colorScheme.onSurface.withOpacity(0.6), theme.colorScheme.surface.withOpacity(0.9)));
         }
         else
         {
-            valueIndicatorColor__26031 = ((((RangeSlider)this.widget).activeColor ?? sliderTheme__24755.valueIndicatorColor) ?? defaults__24895.valueIndicatorColor!);
+            valueIndicatorColorLocal = ((((RangeSlider)this.widget).activeColor ?? sliderThemeLocal.valueIndicatorColor) ?? defaults.valueIndicatorColor!);
         }
         Color? effectiveOverlayColor()
         {
-            return ((((((RangeSlider)this.widget).overlayColor?.resolve(states__25429) ?? ((RangeSlider)this.widget).activeColor?.withOpacity(0.12)) ?? (Color)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(sliderTheme__24755.overlayColor, states__25429))) ?? defaults__24895.overlayColor);
+            return ((((((RangeSlider)this.widget).overlayColor?.resolve(states) ?? ((RangeSlider)this.widget).activeColor?.withOpacity(0.12)) ?? (Color)WidgetStateProperty.resolveAs<global::Doroti.Ui.Color?>(sliderThemeLocal.overlayColor, states))) ?? defaults.overlayColor);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        sliderTheme__24755 = sliderTheme__24755.copyWith(trackHeight: (sliderTheme__24755.trackHeight ?? defaults__24895.trackHeight), activeTrackColor: ((((RangeSlider)this.widget).activeColor ?? sliderTheme__24755.activeTrackColor) ?? defaults__24895.activeTrackColor), inactiveTrackColor: ((((RangeSlider)this.widget).inactiveColor ?? sliderTheme__24755.inactiveTrackColor) ?? defaults__24895.inactiveTrackColor), disabledActiveTrackColor: (sliderTheme__24755.disabledActiveTrackColor ?? defaults__24895.disabledActiveTrackColor), disabledInactiveTrackColor: (sliderTheme__24755.disabledInactiveTrackColor ?? defaults__24895.disabledInactiveTrackColor), activeTickMarkColor: ((((RangeSlider)this.widget).inactiveColor ?? sliderTheme__24755.activeTickMarkColor) ?? defaults__24895.activeTickMarkColor), inactiveTickMarkColor: ((((RangeSlider)this.widget).activeColor ?? sliderTheme__24755.inactiveTickMarkColor) ?? defaults__24895.inactiveTickMarkColor), disabledActiveTickMarkColor: (sliderTheme__24755.disabledActiveTickMarkColor ?? defaults__24895.disabledActiveTickMarkColor), disabledInactiveTickMarkColor: (sliderTheme__24755.disabledInactiveTickMarkColor ?? defaults__24895.disabledInactiveTickMarkColor), thumbColor: ((((RangeSlider)this.widget).activeColor ?? sliderTheme__24755.thumbColor) ?? defaults__24895.thumbColor), overlappingShapeStrokeColor: (sliderTheme__24755.overlappingShapeStrokeColor ?? defaults__24895.overlappingShapeStrokeColor), disabledThumbColor: (sliderTheme__24755.disabledThumbColor ?? defaults__24895.disabledThumbColor), overlayColor: effectiveOverlayColor(), valueIndicatorColor: valueIndicatorColor__26031, rangeTrackShape: (sliderTheme__24755.rangeTrackShape ?? defaults__24895.rangeTrackShape), rangeTickMarkShape: (sliderTheme__24755.rangeTickMarkShape ?? defaults__24895.rangeTickMarkShape), rangeThumbShape: (sliderTheme__24755.rangeThumbShape ?? defaults__24895.rangeThumbShape), overlayShape: (sliderTheme__24755.overlayShape ?? defaults__24895.overlayShape), rangeValueIndicatorShape: valueIndicatorShape__25909, showValueIndicator: (sliderTheme__24755.showValueIndicator ?? defaults__24895.showValueIndicator), valueIndicatorTextStyle: (sliderTheme__24755.valueIndicatorTextStyle ?? defaults__24895.valueIndicatorTextStyle), minThumbSeparation: (sliderTheme__24755.minThumbSeparation ?? defaults__24895.minThumbSeparation), thumbSelector: ((sliderTheme__24755.thumbSelector ?? (global::System.Func<TextDirection, RangeValues, double, Size, Size, double, Thumb?>)this._defaultRangeThumbSelector)), padding: (((RangeSlider)this.widget).padding ?? sliderTheme__24755.padding), thumbSize: (sliderTheme__24755.thumbSize ?? defaults__24895.thumbSize), trackGap: (sliderTheme__24755.trackGap ?? defaults__24895.trackGap));
-        global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor__29212 = ((((((RangeSlider)this.widget).mouseCursor?.resolve(states__25429) ?? (global::Doroti.Framework.Services.MouseCursor)sliderTheme__24755.mouseCursor?.resolve(states__25429))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(states__25429)));
+        sliderThemeLocal = sliderThemeLocal.copyWith(trackHeight: (sliderThemeLocal.trackHeight ?? defaults.trackHeight), activeTrackColor: ((((RangeSlider)this.widget).activeColor ?? sliderThemeLocal.activeTrackColor) ?? defaults.activeTrackColor), inactiveTrackColor: ((((RangeSlider)this.widget).inactiveColor ?? sliderThemeLocal.inactiveTrackColor) ?? defaults.inactiveTrackColor), disabledActiveTrackColor: (sliderThemeLocal.disabledActiveTrackColor ?? defaults.disabledActiveTrackColor), disabledInactiveTrackColor: (sliderThemeLocal.disabledInactiveTrackColor ?? defaults.disabledInactiveTrackColor), activeTickMarkColor: ((((RangeSlider)this.widget).inactiveColor ?? sliderThemeLocal.activeTickMarkColor) ?? defaults.activeTickMarkColor), inactiveTickMarkColor: ((((RangeSlider)this.widget).activeColor ?? sliderThemeLocal.inactiveTickMarkColor) ?? defaults.inactiveTickMarkColor), disabledActiveTickMarkColor: (sliderThemeLocal.disabledActiveTickMarkColor ?? defaults.disabledActiveTickMarkColor), disabledInactiveTickMarkColor: (sliderThemeLocal.disabledInactiveTickMarkColor ?? defaults.disabledInactiveTickMarkColor), thumbColor: ((((RangeSlider)this.widget).activeColor ?? sliderThemeLocal.thumbColor) ?? defaults.thumbColor), overlappingShapeStrokeColor: (sliderThemeLocal.overlappingShapeStrokeColor ?? defaults.overlappingShapeStrokeColor), disabledThumbColor: (sliderThemeLocal.disabledThumbColor ?? defaults.disabledThumbColor), overlayColor: effectiveOverlayColor(), valueIndicatorColor: valueIndicatorColorLocal, rangeTrackShape: (sliderThemeLocal.rangeTrackShape ?? defaults.rangeTrackShape), rangeTickMarkShape: (sliderThemeLocal.rangeTickMarkShape ?? defaults.rangeTickMarkShape), rangeThumbShape: (sliderThemeLocal.rangeThumbShape ?? defaults.rangeThumbShape), overlayShape: (sliderThemeLocal.overlayShape ?? defaults.overlayShape), rangeValueIndicatorShape: valueIndicatorShape, showValueIndicator: (sliderThemeLocal.showValueIndicator ?? defaults.showValueIndicator), valueIndicatorTextStyle: (sliderThemeLocal.valueIndicatorTextStyle ?? defaults.valueIndicatorTextStyle), minThumbSeparation: (sliderThemeLocal.minThumbSeparation ?? defaults.minThumbSeparation), thumbSelector: ((sliderThemeLocal.thumbSelector ?? (global::System.Func<TextDirection, RangeValues, double, Size, Size, double, Thumb?>)this._defaultRangeThumbSelector)), padding: (((RangeSlider)this.widget).padding ?? sliderThemeLocal.padding), thumbSize: (sliderThemeLocal.thumbSize ?? defaults.thumbSize), trackGap: (sliderThemeLocal.trackGap ?? defaults.trackGap));
+        global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = ((((((RangeSlider)this.widget).mouseCursor?.resolve(states) ?? (global::Doroti.Framework.Services.MouseCursor)sliderThemeLocal.mouseCursor?.resolve(states))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(states)));
         Size screenSize()
         {
             return MediaQuery.sizeOf(context);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        double fontSize__29640 = (sliderTheme__24755.valueIndicatorTextStyle?.fontSize ?? global::Doroti.Framework.Painting.Text_painterLibrary.kDefaultFontSize);
-        double fontSizeToScale__29735 = ((fontSize__29640 == 0.0) ? global::Doroti.Framework.Painting.Text_painterLibrary.kDefaultFontSize : fontSize__29640);
-        double effectiveTextScale__29817 = (MediaQuery.textScalerOf(context).scale(fontSizeToScale__29735) / fontSizeToScale__29735);
-        global::Doroti.Framework.Widgets.Widget result__29933 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CompositedTransformTarget(link: this._layerLink, child: new global::Doroti.Framework.Widgets.OverlayPortal(controller: this._valueIndicatorOverlayPortalController, overlayChildBuilder: ((context) =>
+        double fontSizeLocal = (sliderThemeLocal.valueIndicatorTextStyle?.fontSize ?? global::Doroti.Framework.Painting.Text_painterLibrary.kDefaultFontSize);
+        double fontSizeToScale = ((fontSizeLocal == 0.0) ? global::Doroti.Framework.Painting.Text_painterLibrary.kDefaultFontSize : fontSizeLocal);
+        double effectiveTextScale = (MediaQuery.textScalerOf(context).scale(fontSizeToScale) / fontSizeToScale);
+        global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CompositedTransformTarget(link: this._layerLink, child: new global::Doroti.Framework.Widgets.OverlayPortal(controller: this._valueIndicatorOverlayPortalController, overlayChildBuilder: ((context) =>
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildValueIndicator(DartRuntimePrimitives.RequireValue(sliderTheme__24755.showValueIndicator)));
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildValueIndicator(DartRuntimePrimitives.RequireValue(sliderThemeLocal.showValueIndicator)));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }), child: new _RangeSliderRenderObjectWidget__range_slider(values: _unlerpRangeValues(((RangeSlider)this.widget).values), divisions: ((RangeSlider)this.widget).divisions, labels: ((RangeSlider)this.widget).labels, sliderTheme: sliderTheme__24755, textScaleFactor: effectiveTextScale__29817, screenSize: screenSize(), onChanged: ((global::System.Action<RangeValues>)((this._enabled && ((((RangeSlider)this.widget).max > ((RangeSlider)this.widget).min))) ? this._handleChanged : null)), onChangeStart: (global::System.Action<RangeValues>)this._handleDragStart, onChangeEnd: (global::System.Action<RangeValues>)this._handleDragEnd, state: this, semanticFormatterCallback: (SemanticFormatterCallback?)((RangeSlider)this.widget).semanticFormatterCallback, hovering: this._showHoverHighlight))));
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding__30868 = (((RangeSlider)this.widget).padding ?? sliderTheme__24755.padding);
-        if ((padding__30868 is not null))
+        }), child: new _RangeSliderRenderObjectWidget__range_slider(values: _unlerpRangeValues(((RangeSlider)this.widget).values), divisions: ((RangeSlider)this.widget).divisions, labels: ((RangeSlider)this.widget).labels, sliderTheme: sliderThemeLocal, textScaleFactor: effectiveTextScale, screenSize: screenSize(), onChanged: ((global::System.Action<RangeValues>)((this._enabled && ((((RangeSlider)this.widget).max > ((RangeSlider)this.widget).min))) ? this._handleChanged : null)), onChangeStart: (global::System.Action<RangeValues>)this._handleDragStart, onChangeEnd: (global::System.Action<RangeValues>)this._handleDragEnd, state: this, semanticFormatterCallback: (SemanticFormatterCallback?)((RangeSlider)this.widget).semanticFormatterCallback, hovering: this._showHoverHighlight))));
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry? paddingLocal = (((RangeSlider)this.widget).padding ?? sliderThemeLocal.padding);
+        if ((paddingLocal is not null))
         {
-            result__29933 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: padding__30868, child: result__29933));
+            result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: paddingLocal, child: result));
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Focus(focusNode: this.startFocusNode, includeSemantics: false, child: global::Doroti.Framework.Widgets.SizedBox.CreateShrink())), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Focus(focusNode: this.endFocusNode, includeSemantics: false, child: global::Doroti.Framework.Widgets.SizedBox.CreateShrink())) })), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MouseRegion(onEnter: ((global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)((_) => { _handleHoverChanged(true); })), onExit: ((global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)((_) => { _handleHoverChanged(false); })), cursor: effectiveMouseCursor__29212, child: result__29933)) }));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Row(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Focus(focusNode: this.startFocusNode, includeSemantics: false, child: global::Doroti.Framework.Widgets.SizedBox.CreateShrink())), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Focus(focusNode: this.endFocusNode, includeSemantics: false, child: global::Doroti.Framework.Widgets.SizedBox.CreateShrink())) })), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MouseRegion(onEnter: ((global::System.Action<global::Doroti.Framework.Gestures.PointerEnterEvent>)((_) => { _handleHoverChanged(true); })), onExit: ((global::System.Action<global::Doroti.Framework.Gestures.PointerExitEvent>)((_) => { _handleHoverChanged(false); })), cursor: effectiveMouseCursor, child: result)) }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildValueIndicator(ShowValueIndicator showValueIndicator)
     {
-        global::Doroti.Framework.Widgets.Widget valueIndicator__31818 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CompositedTransformFollower(link: this._layerLink, child: new _ValueIndicatorRenderObjectWidget__range_slider(state: this)));
-        return (showValueIndicator switch { var __constant32003 when (object.Equals(__constant32003, ShowValueIndicator.never)) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.SizedBox.CreateShrink()), var __constant32062 when (object.Equals(__constant32062, ShowValueIndicator.onlyForDiscrete)) => ((((RangeSlider)this.widget).divisions is not null) ? valueIndicator__31818 : global::Doroti.Framework.Widgets.SizedBox.CreateShrink()), var __constant32183 when (object.Equals(__constant32183, ShowValueIndicator.onlyForContinuous)) => ((((RangeSlider)this.widget).divisions is null) ? valueIndicator__31818 : global::Doroti.Framework.Widgets.SizedBox.CreateShrink()), var __logical32306 when ((object.Equals(__logical32306, ShowValueIndicator.alwaysVisible) || object.Equals(__logical32306, ShowValueIndicator.always))) => valueIndicator__31818, var __constant32383 when (object.Equals(__constant32383, ShowValueIndicator.onDrag)) => valueIndicator__31818, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Framework.Widgets.Widget valueIndicator = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CompositedTransformFollower(link: this._layerLink, child: new _ValueIndicatorRenderObjectWidget__range_slider(state: this)));
+        return (showValueIndicator switch { var __constant32003 when (object.Equals(__constant32003, ShowValueIndicator.never)) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.SizedBox.CreateShrink()), var __constant32062 when (object.Equals(__constant32062, ShowValueIndicator.onlyForDiscrete)) => ((((RangeSlider)this.widget).divisions is not null) ? valueIndicator : global::Doroti.Framework.Widgets.SizedBox.CreateShrink()), var __constant32183 when (object.Equals(__constant32183, ShowValueIndicator.onlyForContinuous)) => ((((RangeSlider)this.widget).divisions is null) ? valueIndicator : global::Doroti.Framework.Widgets.SizedBox.CreateShrink()), var __logical32306 when ((object.Equals(__logical32306, ShowValueIndicator.alwaysVisible) || object.Equals(__logical32306, ShowValueIndicator.always))) => valueIndicator, var __constant32383 when (object.Equals(__constant32383, ShowValueIndicator.onDrag)) => valueIndicator, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -327,16 +327,16 @@ public class _RangeSliderState__range_slider : global::Doroti.Framework.Widgets.
         }
         DartRuntimePrimitives.Assert(() => (this._tickerModeNotifier is not null));
         this._tickers ??= new HashSet<global::Doroti.Framework.Scheduler.Ticker>();
-        TickerModeData values__17506 = this._tickerModeNotifier!.value;
-        var result__17553 = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
+        TickerModeData values = this._tickerModeNotifier!.value;
+        var result = ((Func<global::Doroti.Framework.Widgets._WidgetTicker__ticker_provider>)(() =>
 {
     var __cascade = new _WidgetTicker__ticker_provider((global::System.Action<Duration>)onTick, this, debugLabel: (global::Doroti.Framework.Foundation.ConstantsLibrary.kDebugMode ? $"created by {(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}" : null));
-    __cascade.muted = !((TickerModeData)values__17506).enabled;
-    __cascade.forceFrames = ((TickerModeData)values__17506).forceFrames;
+    __cascade.muted = !((TickerModeData)values).enabled;
+    __cascade.forceFrames = ((TickerModeData)values).forceFrames;
     return __cascade;
 }))();
-        this._tickers!.Add(result__17553);
-        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result__17553);
+        this._tickers!.Add(result);
+        return ((global::Doroti.Framework.Scheduler.Ticker)(object?)result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -358,26 +358,26 @@ public class _RangeSliderState__range_slider : global::Doroti.Framework.Widgets.
     {
         if ((this._tickers is not null))
         {
-            TickerModeData values__18318 = this._tickerModeNotifier!.value;
-            bool muted__18372 = !((TickerModeData)values__18318).enabled;
-            foreach (global::Doroti.Framework.Scheduler.Ticker ticker__18421 in this._tickers!)
+            TickerModeData values = this._tickerModeNotifier!.value;
+            bool mutedLocal = !((TickerModeData)values).enabled;
+            foreach (global::Doroti.Framework.Scheduler.Ticker ticker in this._tickers!)
             {
-                ticker__18421.muted = muted__18372;
-                ticker__18421.forceFrames = ((TickerModeData)values__18318).forceFrames;
+                ticker.muted = mutedLocal;
+                ticker.forceFrames = ((TickerModeData)values).forceFrames;
             }
         }
     }
 
     public virtual void _updateTickerModeNotifier()
     {
-        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier__18621 = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
-        if ((object.Equals(newNotifier__18621, this._tickerModeNotifier)))
+        global::Doroti.Framework.Foundation.ValueListenable<TickerModeData> newNotifier = ((global::Doroti.Framework.Foundation.ValueListenable<TickerModeData>)(object?)TickerMode.getValuesNotifier(this.context));
+        if ((object.Equals(newNotifier, this._tickerModeNotifier)))
         {
             return;
         }
         this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier__18621.addListener(() => this._updateTickers());
-        this._tickerModeNotifier = newNotifier__18621;
+        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier = newNotifier;
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -512,11 +512,11 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
         System.Diagnostics.Debug.Assert(((((RangeValues)values).start >= 0.0) && (((RangeValues)values).start <= 1.0)));
         System.Diagnostics.Debug.Assert(((((RangeValues)values).end >= 0.0) && (((RangeValues)values).end <= 1.0)));
         _updateLabelPainters();
-        var team__36175 = new global::Doroti.Framework.Gestures.GestureArenaTeam();
+        var teamLocal = new global::Doroti.Framework.Gestures.GestureArenaTeam();
         _drag = ((Func<global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Gestures.HorizontalDragGestureRecognizer();
-    __cascade.team = team__36175;
+    __cascade.team = teamLocal;
     __cascade.onStart = this._handleDragStart;
     __cascade.onUpdate = this._handleDragUpdate;
     __cascade.onEnd = this._handleDragEnd;
@@ -527,7 +527,7 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
         _tap = ((Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Gestures.TapGestureRecognizer();
-    __cascade.team = team__36175;
+    __cascade.team = teamLocal;
     __cascade.onTapDown = this._handleTapDown;
     __cascade.onTapUp = this._handleTapUp;
     __cascade.gestureSettings = gestureSettings;
@@ -557,25 +557,25 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
             DartRuntimePrimitives.Assert(() => ((((RangeValues)newValues).start >= 0.0) && (((RangeValues)newValues).start <= 1.0)));
             DartRuntimePrimitives.Assert(() => ((((RangeValues)newValues).end >= 0.0) && (((RangeValues)newValues).end <= 1.0)));
             DartRuntimePrimitives.Assert(() => (((RangeValues)newValues).start <= ((RangeValues)newValues).end));
-            RangeValues convertedValues__39864 = (this.isDiscrete ? _discretizeRangeValues(newValues) : newValues);
-            if ((object.Equals(convertedValues__39864, this._values)))
+            RangeValues convertedValues = (this.isDiscrete ? _discretizeRangeValues(newValues) : newValues);
+            if ((object.Equals(convertedValues, this._values)))
             {
                 return;
             }
-            _values = convertedValues__39864;
+            _values = convertedValues;
             if (this.isDiscrete)
             {
-                double startDistance__40342 = ((((RangeValues)this._values).start - ((_RangeSliderState__range_slider)this._state).startPositionController.value)).abs();
-                ((_RangeSliderState__range_slider)this._state).startPositionController.duration = ((startDistance__40342 != 0.0) ? (_positionAnimationDuration * ((1.0 / startDistance__40342))) : Duration.zero);
+                double startDistance = ((((RangeValues)this._values).start - ((_RangeSliderState__range_slider)this._state).startPositionController.value)).abs();
+                ((_RangeSliderState__range_slider)this._state).startPositionController.duration = ((startDistance != 0.0) ? (_positionAnimationDuration * ((1.0 / startDistance))) : Duration.zero);
                 ((_RangeSliderState__range_slider)this._state).startPositionController.animateTo(((RangeValues)this._values).start, curve: global::Doroti.Framework.Animation.Curves.easeInOut);
-                double endDistance__40686 = ((((RangeValues)this._values).end - ((_RangeSliderState__range_slider)this._state).endPositionController.value)).abs();
-                ((_RangeSliderState__range_slider)this._state).endPositionController.duration = ((endDistance__40686 != 0.0) ? (_positionAnimationDuration * ((1.0 / endDistance__40686))) : Duration.zero);
+                double endDistance = ((((RangeValues)this._values).end - ((_RangeSliderState__range_slider)this._state).endPositionController.value)).abs();
+                ((_RangeSliderState__range_slider)this._state).endPositionController.duration = ((endDistance != 0.0) ? (_positionAnimationDuration * ((1.0 / endDistance))) : Duration.zero);
                 ((_RangeSliderState__range_slider)this._state).endPositionController.animateTo(((RangeValues)this._values).end, curve: global::Doroti.Framework.Animation.Curves.easeInOut);
             }
             else
             {
-                ((_RangeSliderState__range_slider)this._state).startPositionController.value = ((RangeValues)convertedValues__39864).start;
-                ((_RangeSliderState__range_slider)this._state).endPositionController.value = ((RangeValues)convertedValues__39864).end;
+                ((_RangeSliderState__range_slider)this._state).startPositionController.value = ((RangeValues)convertedValues).start;
+                ((_RangeSliderState__range_slider)this._state).endPositionController.value = ((RangeValues)convertedValues).end;
             }
             markNeedsSemanticsUpdate();
         }
@@ -712,9 +712,9 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
             {
                 return;
             }
-            bool wasEnabled__43438 = this.isEnabled;
+            bool wasEnabled = this.isEnabled;
             _onChanged = (global::System.Action<RangeValues>)__value;
-            if ((wasEnabled__43438 != this.isEnabled))
+            if ((wasEnabled != this.isEnabled))
             {
                 markNeedsPaint();
                 markNeedsSemanticsUpdate();
@@ -824,16 +824,16 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
 
     internal virtual void _updateLabelPainter(Thumb thumb)
     {
-        RangeLabels? labels__46338 = this.labels;
-        if ((labels__46338 is null))
+        RangeLabels? labelsLocal = this.labels;
+        if ((labelsLocal is null))
         {
             return;
         }
-        var (text__46425, labelPainter__46443) = (thumb switch { var __constant46482 when (object.Equals(__constant46482, Thumb.start)) => (((string, global::Doroti.Framework.Painting.TextPainter))((((RangeLabels)labels__46338).start, this._startLabelPainter))), var __constant46539 when (object.Equals(__constant46539, Thumb.end)) => (((string, global::Doroti.Framework.Painting.TextPainter))((((RangeLabels)labels__46338).end, this._endLabelPainter))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var (textLocal, labelPainter) = (thumb switch { var __constant46482 when (object.Equals(__constant46482, Thumb.start)) => (((string, global::Doroti.Framework.Painting.TextPainter))((((RangeLabels)labelsLocal).start, this._startLabelPainter))), var __constant46539 when (object.Equals(__constant46539, Thumb.end)) => (((string, global::Doroti.Framework.Painting.TextPainter))((((RangeLabels)labelsLocal).end, this._endLabelPainter))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Painting.TextPainter>)(() =>
 {
-    var __cascade = labelPainter__46443;
-    __cascade.text = new global::Doroti.Framework.Painting.TextSpan(style: this._sliderTheme.valueIndicatorTextStyle, text: text__46425);
+    var __cascade = labelPainter;
+    __cascade.text = new global::Doroti.Framework.Painting.TextSpan(style: this._sliderTheme.valueIndicatorTextStyle, text: textLocal);
     __cascade.textDirection = this.textDirection;
     __cascade.textScaleFactor = this.textScaleFactor;
     __cascade.layout();
@@ -902,19 +902,19 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
 
     internal virtual double _getValueFromGlobalPosition(Offset globalPosition)
     {
-        double visualPosition__49003 = (((globalToLocal(globalPosition).dx - this._trackRect.left)) / this._trackRect.width);
-        return _getValueFromVisualPosition(visualPosition__49003);
+        double visualPosition = (((globalToLocal(globalPosition).dx - this._trackRect.left)) / this._trackRect.width);
+        return _getValueFromVisualPosition(visualPosition);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _discretize(double value)
     {
-        double result__49210 = Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(value), 0.0, 1.0);
+        double result = Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(value), 0.0, 1.0);
         if (this.isDiscrete)
         {
-            result__49210 = (((result__49210 * DartRuntimePrimitives.RequireValue(this.divisions))).round() / DartRuntimePrimitives.RequireValue(this.divisions));
+            result = (((result * DartRuntimePrimitives.RequireValue(this.divisions))).round() / DartRuntimePrimitives.RequireValue(this.divisions));
         }
-        return result__49210;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -930,8 +930,8 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
         {
             return;
         }
-        double tapValue__49607 = Dart_uiLibrary.clampDouble(_getValueFromGlobalPosition(globalPosition), 0.0, 1.0);
-        _lastThumbSelection = this.sliderTheme.thumbSelector!(this.textDirection, this.values, tapValue__49607, this._thumbSize, this.size, 0);
+        double tapValue = Dart_uiLibrary.clampDouble(_getValueFromGlobalPosition(globalPosition), 0.0, 1.0);
+        _lastThumbSelection = this.sliderTheme.thumbSelector!(this.textDirection, this.values, tapValue, this._thumbSize, this.size, 0);
         if ((this._lastThumbSelection is not null))
         {
             switch (this._lastThumbSelection!)
@@ -948,10 +948,10 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
                     }
             }
             _active = true;
-            RangeValues currentValues__50331 = ((RangeValues)(object?)_discretizeRangeValues(this.values));
-            _newValues = (this._lastThumbSelection! switch { var __constant50438 when (object.Equals(__constant50438, Thumb.start)) => new RangeValues(tapValue__49607, ((RangeValues)currentValues__50331).end), var __constant50503 when (object.Equals(__constant50503, Thumb.end)) => new RangeValues(((RangeValues)currentValues__50331).start, tapValue__49607), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            RangeValues currentValues = ((RangeValues)(object?)_discretizeRangeValues(this.values));
+            _newValues = (this._lastThumbSelection! switch { var __constant50438 when (object.Equals(__constant50438, Thumb.start)) => new RangeValues(tapValue, ((RangeValues)currentValues).end), var __constant50503 when (object.Equals(__constant50503, Thumb.end)) => new RangeValues(((RangeValues)currentValues).start, tapValue), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             _updateLabelPainter(DartRuntimePrimitives.RequireValue(this._lastThumbSelection));
-            this.onChangeStart?.Invoke(currentValues__50331);
+            this.onChangeStart?.Invoke(currentValues);
             this.onChanged!(_discretizeRangeValues(this._newValues));
             ((_RangeSliderState__range_slider)this._state).overlayController.forward();
             if (this.shouldShowValueIndicatorWhenDragged)
@@ -976,14 +976,14 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
         {
             return;
         }
-        double dragValue__51319 = _getValueFromGlobalPosition(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition);
-        var shouldCallOnChangeStart__51608 = false;
+        double dragValue = _getValueFromGlobalPosition(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).globalPosition);
+        var shouldCallOnChangeStart = false;
         if ((this._lastThumbSelection is null))
         {
-            _lastThumbSelection = this.sliderTheme.thumbSelector!(this.textDirection, this.values, dragValue__51319, this._thumbSize, this.size, ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta.dx);
+            _lastThumbSelection = this.sliderTheme.thumbSelector!(this.textDirection, this.values, dragValue, this._thumbSize, this.size, ((global::Doroti.Framework.Gestures.DragUpdateDetails)details).delta.dx);
             if ((this._lastThumbSelection is not null))
             {
-                shouldCallOnChangeStart__51608 = true;
+                shouldCallOnChangeStart = true;
                 _active = true;
                 ((_RangeSliderState__range_slider)this._state).overlayController.forward();
                 if (this.shouldShowValueIndicatorWhenDragged)
@@ -994,13 +994,13 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
         }
         if ((this.isEnabled && (this._lastThumbSelection is not null)))
         {
-            RangeValues currentValues__52217 = ((RangeValues)(object?)_discretizeRangeValues(this.values));
-            if (((this.onChangeStart is not null) && shouldCallOnChangeStart__51608))
+            RangeValues currentValues = ((RangeValues)(object?)_discretizeRangeValues(this.values));
+            if (((this.onChangeStart is not null) && shouldCallOnChangeStart))
             {
-                this.onChangeStart!(currentValues__52217);
+                this.onChangeStart!(currentValues);
             }
-            double currentDragValue__52393 = _discretize(dragValue__51319);
-            _newValues = (this._lastThumbSelection! switch { var __constant52496 when (object.Equals(__constant52496, Thumb.start)) => new RangeValues(Math.Min(currentDragValue__52393, (((RangeValues)currentValues__52217).end - this._minThumbSeparationValue)), ((RangeValues)currentValues__52217).end), var __constant52656 when (object.Equals(__constant52656, Thumb.end)) => new RangeValues(((RangeValues)currentValues__52217).start, Math.Max(currentDragValue__52393, (((RangeValues)currentValues__52217).start + this._minThumbSeparationValue))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            double currentDragValue = _discretize(dragValue);
+            _newValues = (this._lastThumbSelection! switch { var __constant52496 when (object.Equals(__constant52496, Thumb.start)) => new RangeValues(Math.Min(currentDragValue, (((RangeValues)currentValues).end - this._minThumbSeparationValue)), ((RangeValues)currentValues).end), var __constant52656 when (object.Equals(__constant52656, Thumb.end)) => new RangeValues(((RangeValues)currentValues).start, Math.Max(currentDragValue, (((RangeValues)currentValues).start + this._minThumbSeparationValue))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             this.onChanged!(_discretizeRangeValues(this._newValues));
         }
     }
@@ -1017,8 +1017,8 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
         }
         if (((this._active && this._state.mounted) && (this._lastThumbSelection is not null)))
         {
-            RangeValues discreteValues__53189 = ((RangeValues)(object?)_discretizeRangeValues(this._newValues));
-            this.onChangeEnd?.Invoke(discreteValues__53189);
+            RangeValues discreteValues = ((RangeValues)(object?)_discretizeRangeValues(this._newValues));
+            this.onChangeEnd?.Invoke(discreteValues);
             _active = false;
         }
         ((_RangeSliderState__range_slider)this._state).overlayController.reverse();
@@ -1085,178 +1085,178 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
 
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        double startValue__55372 = ((_RangeSliderState__range_slider)this._state).startPositionController.value;
-        double endValue__55440 = ((_RangeSliderState__range_slider)this._state).endPositionController.value;
-        var (startVisualPosition__55700, endVisualPosition__55728) = (this.textDirection switch { TextDirection.rtl => (((double, double))(((1.0 - startValue__55372), (1.0 - endValue__55440)))), TextDirection.ltr => (((double, double))((startValue__55372, endValue__55440))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Ui.Rect trackRect__55911 = ((global::Doroti.Ui.Rect)(object?)this._sliderTheme.rangeTrackShape!.getPreferredRect(parentBox: this, offset: offset, sliderTheme: this._sliderTheme, isDiscrete: this.isDiscrete));
-        double padding__56103 = (this._sliderTheme.rangeTrackShape!.isRounded ? trackRect__55911.height : 0.0);
-        double thumbYOffset__56196 = ((Offset)((dynamic)trackRect__55911).center).dy;
-        double startThumbPosition__56249 = (this.isDiscrete ? ((trackRect__55911.left + (startVisualPosition__55700 * ((trackRect__55911.width - padding__56103)))) + (padding__56103 / 2L)) : (trackRect__55911.left + (startVisualPosition__55700 * trackRect__55911.width)));
-        double endThumbPosition__56455 = (this.isDiscrete ? ((trackRect__55911.left + (endVisualPosition__55728 * ((trackRect__55911.width - padding__56103)))) + (padding__56103 / 2L)) : (trackRect__55911.left + (endVisualPosition__55728 * trackRect__55911.width)));
-        global::Doroti.Ui.Size thumbPreferredSize__56653 = ((global::Doroti.Ui.Size)(object?)this._sliderTheme.rangeThumbShape!.getPreferredSize(this.isEnabled, this.isDiscrete));
-        double thumbPadding__56781 = (((padding__56103 > (thumbPreferredSize__56653.width / 2L)) ? (padding__56103 / 2L) : 0));
-        _startThumbCenter = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(startThumbPosition__56249, (trackRect__55911.left + thumbPadding__56781), (trackRect__55911.right - thumbPadding__56781)), thumbYOffset__56196);
-        _endThumbCenter = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(endThumbPosition__56455, (trackRect__55911.left + thumbPadding__56781), (trackRect__55911.right - thumbPadding__56781)), thumbYOffset__56196);
+        double startValue = ((_RangeSliderState__range_slider)this._state).startPositionController.value;
+        double endValue = ((_RangeSliderState__range_slider)this._state).endPositionController.value;
+        var (startVisualPosition, endVisualPosition) = (this.textDirection switch { TextDirection.rtl => (((double, double))(((1.0 - startValue), (1.0 - endValue)))), TextDirection.ltr => (((double, double))((startValue, endValue))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Ui.Rect trackRect = ((global::Doroti.Ui.Rect)(object?)this._sliderTheme.rangeTrackShape!.getPreferredRect(parentBox: this, offset: offset, sliderTheme: this._sliderTheme, isDiscrete: this.isDiscrete));
+        double padding = (this._sliderTheme.rangeTrackShape!.isRounded ? trackRect.height : 0.0);
+        double thumbYOffset = ((Offset)((dynamic)trackRect).center).dy;
+        double startThumbPosition = (this.isDiscrete ? ((trackRect.left + (startVisualPosition * ((trackRect.width - padding)))) + (padding / 2L)) : (trackRect.left + (startVisualPosition * trackRect.width)));
+        double endThumbPosition = (this.isDiscrete ? ((trackRect.left + (endVisualPosition * ((trackRect.width - padding)))) + (padding / 2L)) : (trackRect.left + (endVisualPosition * trackRect.width)));
+        global::Doroti.Ui.Size thumbPreferredSize = ((global::Doroti.Ui.Size)(object?)this._sliderTheme.rangeThumbShape!.getPreferredSize(this.isEnabled, this.isDiscrete));
+        double thumbPadding = (((padding > (thumbPreferredSize.width / 2L)) ? (padding / 2L) : 0));
+        _startThumbCenter = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(startThumbPosition, (trackRect.left + thumbPadding), (trackRect.right - thumbPadding)), thumbYOffset);
+        _endThumbCenter = new global::Doroti.Ui.Offset(Dart_uiLibrary.clampDouble(endThumbPosition, (trackRect.left + thumbPadding), (trackRect.right - thumbPadding)), thumbYOffset);
         if (this.isEnabled)
         {
-            global::Doroti.Ui.Size overlaySize__57245 = ((global::Doroti.Ui.Size)(object?)this.sliderTheme.overlayShape!.getPreferredSize(this.isEnabled, false));
-            overlayStartRect = global::Doroti.Ui.Rect.fromCircle(center: this._startThumbCenter, radius: (overlaySize__57245.width / 2.0));
-            overlayEndRect = global::Doroti.Ui.Rect.fromCircle(center: this._endThumbCenter, radius: (overlaySize__57245.width / 2.0));
+            global::Doroti.Ui.Size overlaySize = ((global::Doroti.Ui.Size)(object?)this.sliderTheme.overlayShape!.getPreferredSize(this.isEnabled, false));
+            overlayStartRect = global::Doroti.Ui.Rect.fromCircle(center: this._startThumbCenter, radius: (overlaySize.width / 2.0));
+            overlayEndRect = global::Doroti.Ui.Rect.fromCircle(center: this._endThumbCenter, radius: (overlaySize.width / 2.0));
         }
-        double? thumbWidth__57746 = this._sliderTheme.thumbSize?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.width;
-        double? thumbHeight__57834 = this._sliderTheme.thumbSize?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.height;
-        double? trackGap__57918 = this._sliderTheme.trackGap;
-        double? pressedThumbWidth__57970 = this._sliderTheme.thumbSize?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.pressed })?.width;
-        double delta__58096 = default!;
-        if ((((this._active && (thumbWidth__57746 is not null)) && (pressedThumbWidth__57970 is not null)) && (trackGap__57918 is not null)))
+        double? thumbWidth = this._sliderTheme.thumbSize?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.width;
+        double? thumbHeight = this._sliderTheme.thumbSize?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.height;
+        double? trackGapLocal = this._sliderTheme.trackGap;
+        double? pressedThumbWidth = this._sliderTheme.thumbSize?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.pressed })?.width;
+        double delta = default!;
+        if ((((this._active && (thumbWidth is not null)) && (pressedThumbWidth is not null)) && (trackGapLocal is not null)))
         {
-            double thumbWidth__57746__value58122 = DartRuntimePrimitives.RequireValue(thumbWidth__57746);
-            double pressedThumbWidth__57970__value58144 = DartRuntimePrimitives.RequireValue(pressedThumbWidth__57970);
-            double trackGap__57918__value58173 = DartRuntimePrimitives.RequireValue(trackGap__57918);
-            delta__58096 = (DartRuntimePrimitives.RequireValue(thumbWidth__57746__value58122) - DartRuntimePrimitives.RequireValue(pressedThumbWidth__57970__value58144));
-            thumbWidth__57746 = DartRuntimePrimitives.RequireValue(pressedThumbWidth__57970__value58144);
+            double thumbWidth__57746__value58122 = DartRuntimePrimitives.RequireValue(thumbWidth);
+            double pressedThumbWidth__57970__value58144 = DartRuntimePrimitives.RequireValue(pressedThumbWidth);
+            double trackGap__57918__value58173 = DartRuntimePrimitives.RequireValue(trackGapLocal);
+            delta = (DartRuntimePrimitives.RequireValue(thumbWidth__57746__value58122) - DartRuntimePrimitives.RequireValue(pressedThumbWidth__57970__value58144));
+            thumbWidth = DartRuntimePrimitives.RequireValue(pressedThumbWidth__57970__value58144);
             if ((DartRuntimePrimitives.RequireValue(trackGap__57918__value58173) > 0.0))
             {
-                trackGap__57918 = (DartRuntimePrimitives.RequireValue(trackGap__57918__value58173) - (delta__58096 / 2L));
+                trackGapLocal = (DartRuntimePrimitives.RequireValue(trackGap__57918__value58173) - (delta / 2L));
             }
         }
-        this._sliderTheme.rangeTrackShape!.paint(context, offset, parentBox: this, sliderTheme: this._sliderTheme.copyWith(trackGap: trackGap__57918), enableAnimation: this._enableAnimation, textDirection: this._textDirection, startThumbCenter: this._startThumbCenter, endThumbCenter: this._endThumbCenter, isDiscrete: this.isDiscrete, isEnabled: this.isEnabled);
-        bool startThumbSelected__58757 = ((object.Equals(this._lastThumbSelection, Thumb.start)) && !this.hoveringEndThumb);
-        bool endThumbSelected__58850 = ((object.Equals(this._lastThumbSelection, Thumb.end)) && !this.hoveringStartThumb);
-        global::Doroti.Ui.Size resolvedscreenSize__58941 = ((global::Doroti.Ui.Size)(object?)(this.screenSize.isEmpty ? this.size : this.screenSize));
+        this._sliderTheme.rangeTrackShape!.paint(context, offset, parentBox: this, sliderTheme: this._sliderTheme.copyWith(trackGap: trackGapLocal), enableAnimation: this._enableAnimation, textDirection: this._textDirection, startThumbCenter: this._startThumbCenter, endThumbCenter: this._endThumbCenter, isDiscrete: this.isDiscrete, isEnabled: this.isEnabled);
+        bool startThumbSelected = ((object.Equals(this._lastThumbSelection, Thumb.start)) && !this.hoveringEndThumb);
+        bool endThumbSelected = ((object.Equals(this._lastThumbSelection, Thumb.end)) && !this.hoveringStartThumb);
+        global::Doroti.Ui.Size resolvedscreenSize = ((global::Doroti.Ui.Size)(object?)(this.screenSize.isEmpty ? this.size : this.screenSize));
         if (((_RangeSliderState__range_slider)this._state).startFocusNode.hasFocus)
         {
-            this._sliderTheme.overlayShape!.paint(context, this._startThumbCenter, activationAnimation: new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1.0), enableAnimation: this._enableAnimation, isDiscrete: this.isDiscrete, labelPainter: this._startLabelPainter, parentBox: this, sliderTheme: this._sliderTheme, textDirection: this._textDirection, value: startValue__55372, textScaleFactor: this._textScaleFactor, sizeWithOverflow: resolvedscreenSize__58941);
+            this._sliderTheme.overlayShape!.paint(context, this._startThumbCenter, activationAnimation: new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1.0), enableAnimation: this._enableAnimation, isDiscrete: this.isDiscrete, labelPainter: this._startLabelPainter, parentBox: this, sliderTheme: this._sliderTheme, textDirection: this._textDirection, value: startValue, textScaleFactor: this._textScaleFactor, sizeWithOverflow: resolvedscreenSize);
         }
         if (((_RangeSliderState__range_slider)this._state).endFocusNode.hasFocus)
         {
-            this._sliderTheme.overlayShape!.paint(context, this._endThumbCenter, activationAnimation: new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1.0), enableAnimation: this._enableAnimation, isDiscrete: this.isDiscrete, labelPainter: this._endLabelPainter, parentBox: this, sliderTheme: this._sliderTheme, textDirection: this._textDirection, value: endValue__55440, textScaleFactor: this._textScaleFactor, sizeWithOverflow: resolvedscreenSize__58941);
+            this._sliderTheme.overlayShape!.paint(context, this._endThumbCenter, activationAnimation: new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1.0), enableAnimation: this._enableAnimation, isDiscrete: this.isDiscrete, labelPainter: this._endLabelPainter, parentBox: this, sliderTheme: this._sliderTheme, textDirection: this._textDirection, value: endValue, textScaleFactor: this._textScaleFactor, sizeWithOverflow: resolvedscreenSize);
         }
         if (!this._overlayAnimation.isDismissed)
         {
-            if ((startThumbSelected__58757 || this.hoveringStartThumb))
+            if ((startThumbSelected || this.hoveringStartThumb))
             {
-                this._sliderTheme.overlayShape!.paint(context, this._startThumbCenter, activationAnimation: this._overlayAnimation, enableAnimation: this._enableAnimation, isDiscrete: this.isDiscrete, labelPainter: this._startLabelPainter, parentBox: this, sliderTheme: this._sliderTheme, textDirection: this._textDirection, value: startValue__55372, textScaleFactor: this._textScaleFactor, sizeWithOverflow: resolvedscreenSize__58941);
+                this._sliderTheme.overlayShape!.paint(context, this._startThumbCenter, activationAnimation: this._overlayAnimation, enableAnimation: this._enableAnimation, isDiscrete: this.isDiscrete, labelPainter: this._startLabelPainter, parentBox: this, sliderTheme: this._sliderTheme, textDirection: this._textDirection, value: startValue, textScaleFactor: this._textScaleFactor, sizeWithOverflow: resolvedscreenSize);
             }
-            if ((endThumbSelected__58850 || this.hoveringEndThumb))
+            if ((endThumbSelected || this.hoveringEndThumb))
             {
-                this._sliderTheme.overlayShape!.paint(context, this._endThumbCenter, activationAnimation: this._overlayAnimation, enableAnimation: this._enableAnimation, isDiscrete: this.isDiscrete, labelPainter: this._endLabelPainter, parentBox: this, sliderTheme: this._sliderTheme, textDirection: this._textDirection, value: endValue__55440, textScaleFactor: this._textScaleFactor, sizeWithOverflow: resolvedscreenSize__58941);
+                this._sliderTheme.overlayShape!.paint(context, this._endThumbCenter, activationAnimation: this._overlayAnimation, enableAnimation: this._enableAnimation, isDiscrete: this.isDiscrete, labelPainter: this._endLabelPainter, parentBox: this, sliderTheme: this._sliderTheme, textDirection: this._textDirection, value: endValue, textScaleFactor: this._textScaleFactor, sizeWithOverflow: resolvedscreenSize);
             }
         }
         if (this.isDiscrete)
         {
-            double tickMarkWidth__61293 = this._sliderTheme.rangeTickMarkShape!.getPreferredSize(isEnabled: this.isEnabled, sliderTheme: this._sliderTheme).width;
-            double discreteTrackPadding__61456 = trackRect__55911.height;
-            double adjustedTrackWidth__61516 = (trackRect__55911.width - discreteTrackPadding__61456);
-            if (((adjustedTrackWidth__61516 / DartRuntimePrimitives.RequireValue(this.divisions)) >= (3.0 * tickMarkWidth__61293)))
+            double tickMarkWidth = this._sliderTheme.rangeTickMarkShape!.getPreferredSize(isEnabled: this.isEnabled, sliderTheme: this._sliderTheme).width;
+            double discreteTrackPadding = trackRect.height;
+            double adjustedTrackWidth = (trackRect.width - discreteTrackPadding);
+            if (((adjustedTrackWidth / DartRuntimePrimitives.RequireValue(this.divisions)) >= (3.0 * tickMarkWidth)))
             {
-                double dy__61741 = ((Offset)((dynamic)trackRect__55911).center).dy;
-                for (var i__61784 = 0L; (i__61784 <= DartRuntimePrimitives.RequireValue(this.divisions)); i__61784++)
+                double dyLocal = ((Offset)((dynamic)trackRect).center).dy;
+                for (var i = 0L; (i <= DartRuntimePrimitives.RequireValue(this.divisions)); i++)
                 {
-                    double value__61838 = (i__61784 / DartRuntimePrimitives.RequireValue(this.divisions));
-                    double dx__62020 = ((trackRect__55911.left + (DartRuntimePrimitives.RequireValue(value__61838) * adjustedTrackWidth__61516)) + (discreteTrackPadding__61456 / 2L));
-                    var tickMarkOffset__62113 = new global::Doroti.Ui.Offset(dx__62020, dy__61741);
-                    this._sliderTheme.rangeTickMarkShape!.paint(context, tickMarkOffset__62113, parentBox: this, sliderTheme: this._sliderTheme, enableAnimation: this._enableAnimation, textDirection: this._textDirection, startThumbCenter: this._startThumbCenter, endThumbCenter: this._endThumbCenter, isEnabled: this.isEnabled);
+                    double valueLocal = (i / DartRuntimePrimitives.RequireValue(this.divisions));
+                    double dxLocal = ((trackRect.left + (DartRuntimePrimitives.RequireValue(valueLocal) * adjustedTrackWidth)) + (discreteTrackPadding / 2L));
+                    var tickMarkOffset = new global::Doroti.Ui.Offset(dxLocal, dyLocal);
+                    this._sliderTheme.rangeTickMarkShape!.paint(context, tickMarkOffset, parentBox: this, sliderTheme: this._sliderTheme, enableAnimation: this._enableAnimation, textDirection: this._textDirection, startThumbCenter: this._startThumbCenter, endThumbCenter: this._endThumbCenter, isEnabled: this.isEnabled);
                 }
             }
         }
-        double thumbDelta__62586 = ((this._endThumbCenter.dx - this._startThumbCenter.dx)).abs();
-        var isLastThumbStart__62661 = (object.Equals(this._lastThumbSelection, Thumb.start));
-        Thumb bottomThumb__62732 = (isLastThumbStart__62661 ? Thumb.end : Thumb.start);
-        Thumb topThumb__62806 = (isLastThumbStart__62661 ? Thumb.start : Thumb.end);
-        global::Doroti.Ui.Offset bottomThumbCenter__62878 = ((global::Doroti.Ui.Offset)(object?)(isLastThumbStart__62661 ? this._endThumbCenter : this._startThumbCenter));
-        global::Doroti.Ui.Offset topThumbCenter__62971 = ((global::Doroti.Ui.Offset)(object?)(isLastThumbStart__62661 ? this._startThumbCenter : this._endThumbCenter));
-        global::Doroti.Framework.Painting.TextPainter bottomLabelPainter__63066 = (isLastThumbStart__62661 ? this._endLabelPainter : this._startLabelPainter);
-        global::Doroti.Framework.Painting.TextPainter topLabelPainter__63167 = (isLastThumbStart__62661 ? this._startLabelPainter : this._endLabelPainter);
-        var bottomValue__63253 = (isLastThumbStart__62661 ? endValue__55440 : startValue__55372);
-        var topValue__63319 = (isLastThumbStart__62661 ? startValue__55372 : endValue__55440);
-        bool shouldPaintValueIndicators__63387 = ((this.isEnabled && (this.labels is not null)) && ((((this.shouldShowValueIndicatorWhenDragged && !this._valueIndicatorAnimation.isDismissed)) || this.shouldAlwaysShowValueIndicator)));
-        if (shouldPaintValueIndicators__63387)
+        double thumbDelta = ((this._endThumbCenter.dx - this._startThumbCenter.dx)).abs();
+        var isLastThumbStart = (object.Equals(this._lastThumbSelection, Thumb.start));
+        Thumb bottomThumb = (isLastThumbStart ? Thumb.end : Thumb.start);
+        Thumb topThumb = (isLastThumbStart ? Thumb.start : Thumb.end);
+        global::Doroti.Ui.Offset bottomThumbCenter = ((global::Doroti.Ui.Offset)(object?)(isLastThumbStart ? this._endThumbCenter : this._startThumbCenter));
+        global::Doroti.Ui.Offset topThumbCenter = ((global::Doroti.Ui.Offset)(object?)(isLastThumbStart ? this._startThumbCenter : this._endThumbCenter));
+        global::Doroti.Framework.Painting.TextPainter bottomLabelPainter = (isLastThumbStart ? this._endLabelPainter : this._startLabelPainter);
+        global::Doroti.Framework.Painting.TextPainter topLabelPainter = (isLastThumbStart ? this._startLabelPainter : this._endLabelPainter);
+        var bottomValue = (isLastThumbStart ? endValue : startValue);
+        var topValue = (isLastThumbStart ? startValue : endValue);
+        bool shouldPaintValueIndicators = ((this.isEnabled && (this.labels is not null)) && ((((this.shouldShowValueIndicatorWhenDragged && !this._valueIndicatorAnimation.isDismissed)) || this.shouldAlwaysShowValueIndicator)));
+        if (shouldPaintValueIndicators)
         {
             this._state.paintBottomValueIndicator = (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)((context, offset) =>
             {
                 if (this.attached)
                 {
-                    this._sliderTheme.rangeValueIndicatorShape!.paint(context, bottomThumbCenter__62878, activationAnimation: (this.shouldAlwaysShowValueIndicator ? new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1) : this._valueIndicatorAnimation), enableAnimation: (this.shouldAlwaysShowValueIndicator ? new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1) : this._enableAnimation), isDiscrete: this.isDiscrete, isOnTop: false, labelPainter: bottomLabelPainter__63066, parentBox: this, sliderTheme: this._sliderTheme, textDirection: this._textDirection, thumb: bottomThumb__62732, value: bottomValue__63253, textScaleFactor: this.textScaleFactor, sizeWithOverflow: resolvedscreenSize__58941);
+                    this._sliderTheme.rangeValueIndicatorShape!.paint(context, bottomThumbCenter, activationAnimation: (this.shouldAlwaysShowValueIndicator ? new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1) : this._valueIndicatorAnimation), enableAnimation: (this.shouldAlwaysShowValueIndicator ? new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1) : this._enableAnimation), isDiscrete: this.isDiscrete, isOnTop: false, labelPainter: bottomLabelPainter, parentBox: this, sliderTheme: this._sliderTheme, textDirection: this._textDirection, thumb: bottomThumb, value: bottomValue, textScaleFactor: this.textScaleFactor, sizeWithOverflow: resolvedscreenSize);
                 }
             });
         }
-        this._sliderTheme.rangeThumbShape!.paint(context, bottomThumbCenter__62878, activationAnimation: this._valueIndicatorAnimation, enableAnimation: this._enableAnimation, isDiscrete: this.isDiscrete, isOnTop: false, textDirection: this.textDirection, sliderTheme: (((thumbWidth__57746 is not null) && (thumbHeight__57834 is not null)) ? this._sliderTheme.copyWith(thumbSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Size?>(new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(thumbWidth__57746), DartRuntimePrimitives.RequireValue(thumbHeight__57834)))) : this._sliderTheme), thumb: bottomThumb__62732, isPressed: ((object.Equals(bottomThumb__62732, Thumb.start)) ? startThumbSelected__58757 : endThumbSelected__58850));
-        if (shouldPaintValueIndicators__63387)
+        this._sliderTheme.rangeThumbShape!.paint(context, bottomThumbCenter, activationAnimation: this._valueIndicatorAnimation, enableAnimation: this._enableAnimation, isDiscrete: this.isDiscrete, isOnTop: false, textDirection: this.textDirection, sliderTheme: (((thumbWidth is not null) && (thumbHeight is not null)) ? this._sliderTheme.copyWith(thumbSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Size?>(new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(thumbWidth), DartRuntimePrimitives.RequireValue(thumbHeight)))) : this._sliderTheme), thumb: bottomThumb, isPressed: ((object.Equals(bottomThumb, Thumb.start)) ? startThumbSelected : endThumbSelected));
+        if (shouldPaintValueIndicators)
         {
-            double startOffset__65256 = this.sliderTheme.rangeValueIndicatorShape!.getHorizontalShift(parentBox: this, center: this._startThumbCenter, labelPainter: this._startLabelPainter, activationAnimation: this._valueIndicatorAnimation, textScaleFactor: this.textScaleFactor, sizeWithOverflow: resolvedscreenSize__58941);
-            double endOffset__65601 = this.sliderTheme.rangeValueIndicatorShape!.getHorizontalShift(parentBox: this, center: this._endThumbCenter, labelPainter: this._endLabelPainter, activationAnimation: this._valueIndicatorAnimation, textScaleFactor: this.textScaleFactor, sizeWithOverflow: resolvedscreenSize__58941);
-            double startHalfWidth__65940 = (this.sliderTheme.rangeValueIndicatorShape!.getPreferredSize(this.isEnabled, this.isDiscrete, labelPainter: this._startLabelPainter, textScaleFactor: this.textScaleFactor).width / 2L);
-            double endHalfWidth__66264 = (this.sliderTheme.rangeValueIndicatorShape!.getPreferredSize(this.isEnabled, this.isDiscrete, labelPainter: this._endLabelPainter, textScaleFactor: this.textScaleFactor).width / 2L);
-            double innerOverflow__66584 = ((startHalfWidth__65940 + endHalfWidth__66264) + (this.textDirection switch { TextDirection.ltr => (startOffset__65256 - endOffset__65601), TextDirection.rtl => (endOffset__65601 - startOffset__65256), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+            double startOffset = this.sliderTheme.rangeValueIndicatorShape!.getHorizontalShift(parentBox: this, center: this._startThumbCenter, labelPainter: this._startLabelPainter, activationAnimation: this._valueIndicatorAnimation, textScaleFactor: this.textScaleFactor, sizeWithOverflow: resolvedscreenSize);
+            double endOffset = this.sliderTheme.rangeValueIndicatorShape!.getHorizontalShift(parentBox: this, center: this._endThumbCenter, labelPainter: this._endLabelPainter, activationAnimation: this._valueIndicatorAnimation, textScaleFactor: this.textScaleFactor, sizeWithOverflow: resolvedscreenSize);
+            double startHalfWidth = (this.sliderTheme.rangeValueIndicatorShape!.getPreferredSize(this.isEnabled, this.isDiscrete, labelPainter: this._startLabelPainter, textScaleFactor: this.textScaleFactor).width / 2L);
+            double endHalfWidth = (this.sliderTheme.rangeValueIndicatorShape!.getPreferredSize(this.isEnabled, this.isDiscrete, labelPainter: this._endLabelPainter, textScaleFactor: this.textScaleFactor).width / 2L);
+            double innerOverflow = ((startHalfWidth + endHalfWidth) + (this.textDirection switch { TextDirection.ltr => (startOffset - endOffset), TextDirection.rtl => (endOffset - startOffset), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
             this._state.paintTopValueIndicator = (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)((context, offset) =>
             {
                 if (this.attached)
                 {
-                    this._sliderTheme.rangeValueIndicatorShape!.paint(context, topThumbCenter__62971, activationAnimation: (this.shouldAlwaysShowValueIndicator ? new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1) : this._valueIndicatorAnimation), enableAnimation: (this.shouldAlwaysShowValueIndicator ? new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1) : this._enableAnimation), isDiscrete: this.isDiscrete, isOnTop: (thumbDelta__62586 < innerOverflow__66584), labelPainter: topLabelPainter__63167, parentBox: this, sliderTheme: this._sliderTheme, textDirection: this._textDirection, thumb: topThumb__62806, value: topValue__63319, textScaleFactor: this.textScaleFactor, sizeWithOverflow: resolvedscreenSize__58941);
+                    this._sliderTheme.rangeValueIndicatorShape!.paint(context, topThumbCenter, activationAnimation: (this.shouldAlwaysShowValueIndicator ? new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1) : this._valueIndicatorAnimation), enableAnimation: (this.shouldAlwaysShowValueIndicator ? new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>(1) : this._enableAnimation), isDiscrete: this.isDiscrete, isOnTop: (thumbDelta < innerOverflow), labelPainter: topLabelPainter, parentBox: this, sliderTheme: this._sliderTheme, textDirection: this._textDirection, thumb: topThumb, value: topValue, textScaleFactor: this.textScaleFactor, sizeWithOverflow: resolvedscreenSize);
                 }
             });
         }
-        this._sliderTheme.rangeThumbShape!.paint(context, topThumbCenter__62971, activationAnimation: this._overlayAnimation, enableAnimation: this._enableAnimation, isDiscrete: this.isDiscrete, isOnTop: (thumbDelta__62586 < this.sliderTheme.rangeThumbShape!.getPreferredSize(this.isEnabled, this.isDiscrete).width), textDirection: this.textDirection, sliderTheme: (((thumbWidth__57746 is not null) && (thumbHeight__57834 is not null)) ? this._sliderTheme.copyWith(thumbSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Size?>(new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(thumbWidth__57746), DartRuntimePrimitives.RequireValue(thumbHeight__57834)))) : this._sliderTheme), thumb: topThumb__62806, isPressed: ((object.Equals(topThumb__62806, Thumb.start)) ? startThumbSelected__58757 : endThumbSelected__58850));
+        this._sliderTheme.rangeThumbShape!.paint(context, topThumbCenter, activationAnimation: this._overlayAnimation, enableAnimation: this._enableAnimation, isDiscrete: this.isDiscrete, isOnTop: (thumbDelta < this.sliderTheme.rangeThumbShape!.getPreferredSize(this.isEnabled, this.isDiscrete).width), textDirection: this.textDirection, sliderTheme: (((thumbWidth is not null) && (thumbHeight is not null)) ? this._sliderTheme.copyWith(thumbSize: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Size?>(new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(thumbWidth), DartRuntimePrimitives.RequireValue(thumbHeight)))) : this._sliderTheme), thumb: topThumb, isPressed: ((object.Equals(topThumb, Thumb.start)) ? startThumbSelected : endThumbSelected));
     }
 
     internal virtual global::Doroti.Framework.Semantics.SemanticsConfiguration _createSemanticsConfiguration(double value, double increasedValue, double decreasedValue, global::System.Action increaseAction, global::System.Action decreaseAction, bool focused)
     {
-        var config__68936 = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
-        config__68936.isEnabled = this.isEnabled;
-        ((dynamic)config__68936).textDirection = this.textDirection;
-        config__68936.isSlider = true;
-        config__68936.isFocusable = true;
-        config__68936.isFocused = focused;
+        var config = new global::Doroti.Framework.Semantics.SemanticsConfiguration();
+        config.isEnabled = this.isEnabled;
+        ((dynamic)config).textDirection = this.textDirection;
+        config.isSlider = true;
+        config.isFocusable = true;
+        config.isFocused = focused;
         if (this.isEnabled)
         {
-            config__68936.onIncrease = (global::System.Action)increaseAction;
-            config__68936.onDecrease = (global::System.Action)decreaseAction;
+            config.onIncrease = (global::System.Action)increaseAction;
+            config.onDecrease = (global::System.Action)decreaseAction;
         }
         if ((this.semanticFormatterCallback is not null))
         {
-            config__68936.value = this.semanticFormatterCallback!(this._state._lerp(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value))));
-            config__68936.increasedValue = this.semanticFormatterCallback!(this._state._lerp(increasedValue));
-            config__68936.decreasedValue = this.semanticFormatterCallback!(this._state._lerp(decreasedValue));
+            config.value = this.semanticFormatterCallback!(this._state._lerp(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(value))));
+            config.increasedValue = this.semanticFormatterCallback!(this._state._lerp(increasedValue));
+            config.decreasedValue = this.semanticFormatterCallback!(this._state._lerp(decreasedValue));
         }
         else
         {
-            config__68936.value = $"{((DartRuntimePrimitives.RequireValue(value) * 100L)).round()}%";
-            config__68936.increasedValue = $"{((increasedValue * 100L)).round()}%";
-            config__68936.decreasedValue = $"{((decreasedValue * 100L)).round()}%";
+            config.value = $"{((DartRuntimePrimitives.RequireValue(value) * 100L)).round()}%";
+            config.increasedValue = $"{((increasedValue * 100L)).round()}%";
+            config.decreasedValue = $"{((decreasedValue * 100L)).round()}%";
         }
-        return config__68936;
+        return config;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
     {
         DartRuntimePrimitives.Assert(() => !System.Linq.Enumerable.Any(children));
-        global::Doroti.Framework.Semantics.SemanticsConfiguration startSemanticsConfiguration__69980 = ((global::Doroti.Framework.Semantics.SemanticsConfiguration)(object?)_createSemanticsConfiguration(((RangeValues)this.values).start, this._increasedStartValue, this._decreasedStartValue, () => this._increaseStartAction(), () => this._decreaseStartAction(), focused: ((_RangeSliderState__range_slider)this._state).startFocusNode.hasFocus));
-        global::Doroti.Framework.Semantics.SemanticsConfiguration endSemanticsConfiguration__70260 = ((global::Doroti.Framework.Semantics.SemanticsConfiguration)(object?)_createSemanticsConfiguration(((RangeValues)this.values).end, this._increasedEndValue, this._decreasedEndValue, () => this._increaseEndAction(), () => this._decreaseEndAction(), focused: ((_RangeSliderState__range_slider)this._state).endFocusNode.hasFocus));
-        var leftRect__70574 = global::Doroti.Ui.Rect.fromCenter(center: this._startThumbCenter, width: global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension, height: global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension);
-        var rightRect__70731 = global::Doroti.Ui.Rect.fromCenter(center: this._endThumbCenter, width: global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension, height: global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension);
+        global::Doroti.Framework.Semantics.SemanticsConfiguration startSemanticsConfiguration = ((global::Doroti.Framework.Semantics.SemanticsConfiguration)(object?)_createSemanticsConfiguration(((RangeValues)this.values).start, this._increasedStartValue, this._decreasedStartValue, () => this._increaseStartAction(), () => this._decreaseStartAction(), focused: ((_RangeSliderState__range_slider)this._state).startFocusNode.hasFocus));
+        global::Doroti.Framework.Semantics.SemanticsConfiguration endSemanticsConfiguration = ((global::Doroti.Framework.Semantics.SemanticsConfiguration)(object?)_createSemanticsConfiguration(((RangeValues)this.values).end, this._increasedEndValue, this._decreasedEndValue, () => this._increaseEndAction(), () => this._decreaseEndAction(), focused: ((_RangeSliderState__range_slider)this._state).endFocusNode.hasFocus));
+        var leftRect = global::Doroti.Ui.Rect.fromCenter(center: this._startThumbCenter, width: global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension, height: global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension);
+        var rightRect = global::Doroti.Ui.Rect.fromCenter(center: this._endThumbCenter, width: global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension, height: global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension);
         _startSemanticsNode ??= new global::Doroti.Framework.Semantics.SemanticsNode();
         _endSemanticsNode ??= new global::Doroti.Framework.Semantics.SemanticsNode();
         switch (this.textDirection)
         {
             case TextDirection.ltr:
                 {
-                    this._startSemanticsNode!.rect = leftRect__70574;
-                    this._endSemanticsNode!.rect = rightRect__70731;
+                    this._startSemanticsNode!.rect = leftRect;
+                    this._endSemanticsNode!.rect = rightRect;
                     break;
                 }
             case TextDirection.rtl:
                 {
-                    this._startSemanticsNode!.rect = rightRect__70731;
-                    this._endSemanticsNode!.rect = leftRect__70574;
+                    this._startSemanticsNode!.rect = rightRect;
+                    this._endSemanticsNode!.rect = leftRect;
                     break;
                 }
         }
-        this._startSemanticsNode!.updateWith(config: startSemanticsConfiguration__69980);
-        this._endSemanticsNode!.updateWith(config: endSemanticsConfiguration__70260);
-        var finalChildren__71400 = new List<global::Doroti.Framework.Semantics.SemanticsNode> { this._startSemanticsNode!, this._endSemanticsNode! };
-        node.updateWith(config: config, childrenInInversePaintOrder: finalChildren__71400);
+        this._startSemanticsNode!.updateWith(config: startSemanticsConfiguration);
+        this._endSemanticsNode!.updateWith(config: endSemanticsConfiguration);
+        var finalChildren = new List<global::Doroti.Framework.Semantics.SemanticsNode> { this._startSemanticsNode!, this._endSemanticsNode! };
+        node.updateWith(config: config, childrenInInversePaintOrder: finalChildren);
     }
 
     public override void clearSemantics()
@@ -1309,8 +1309,8 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
     {
         get
         {
-            double increasedStartValue__72694 = Dart_coreLibrary.parse(((((RangeValues)this.values).start + this._semanticActionUnit)).toStringAsFixed(2L));
-            return ((increasedStartValue__72694 <= (((RangeValues)this.values).end - this._minThumbSeparationValue)) ? increasedStartValue__72694 : ((RangeValues)this.values).start);
+            double increasedStartValue = Dart_coreLibrary.parse(((((RangeValues)this.values).start + this._semanticActionUnit)).toStringAsFixed(2L));
+            return ((increasedStartValue <= (((RangeValues)this.values).end - this._minThumbSeparationValue)) ? increasedStartValue : ((RangeValues)this.values).start);
             return default!;
         }
     }
@@ -1334,8 +1334,8 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
     {
         get
         {
-            double decreasedEndValue__73200 = (((RangeValues)this.values).end - this._semanticActionUnit);
-            return ((decreasedEndValue__73200 >= (((RangeValues)this.values).start + this._minThumbSeparationValue)) ? decreasedEndValue__73200 : ((RangeValues)this.values).end);
+            double decreasedEndValue = (((RangeValues)this.values).end - this._semanticActionUnit);
+            return ((decreasedEndValue >= (((RangeValues)this.values).start + this._minThumbSeparationValue)) ? decreasedEndValue : ((RangeValues)this.values).end);
             return default!;
         }
     }

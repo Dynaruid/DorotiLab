@@ -106,13 +106,13 @@ public class TooltipThemeData : global::Doroti.Framework.Foundation.Diagnosticab
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -135,8 +135,8 @@ public class TooltipTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static TooltipThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        TooltipTheme? tooltipTheme__12186 = ((TooltipTheme?)(object?)context.dependOnInheritedWidgetOfExactType<TooltipTheme>());
-        return (tooltipTheme__12186?.data ?? Theme.of(context).tooltipTheme);
+        TooltipTheme? tooltipThemeLocal = ((TooltipTheme?)(object?)context.dependOnInheritedWidgetOfExactType<TooltipTheme>());
+        return (tooltipThemeLocal?.data ?? Theme.of(context).tooltipTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

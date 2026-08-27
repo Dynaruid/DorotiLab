@@ -33,12 +33,12 @@ public abstract class InheritedTheme : InheritedWidget
         {
             return new CapturedThemes(new List<InheritedTheme>());
         }
-        var themes__4057 = new List<InheritedTheme>();
-        var themeTypes__4096 = new HashSet<Type>();
-        bool debugDidFindAncestor__4133 = default!;
+        var themes = new List<InheritedTheme>();
+        var themeTypes = new HashSet<Type>();
+        bool debugDidFindAncestor = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                debugDidFindAncestor__4133 = (to is null);
+                debugDidFindAncestor = (to is null);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
@@ -48,26 +48,26 @@ public abstract class InheritedTheme : InheritedWidget
             {
                 DartRuntimePrimitives.Assert(() =>
                     {
-                        debugDidFindAncestor__4133 = true;
+                        debugDidFindAncestor = true;
                         return true;
                         throw new InvalidOperationException("Dart closure completed without a value.");
                     });
                 return false;
             }
-            if (ancestor is InheritedElement { widget: InheritedTheme theme__4517 } __object4471)
+            if (ancestor is InheritedElement { widget: InheritedTheme theme } __object4471)
             {
-                Type themeType__4546 = DartRuntimePrimitives.RuntimeType(theme__4517);
-                if (!themeTypes__4096.Contains(themeType__4546))
+                Type themeType = DartRuntimePrimitives.RuntimeType(theme);
+                if (!themeTypes.Contains(themeType))
                 {
-                    themeTypes__4096.Add(themeType__4546);
-                    themes__4057.Add(theme__4517);
+                    themeTypes.Add(themeType);
+                    themes.Add(theme);
                 }
             }
             return true;
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        DartRuntimePrimitives.Assert(() => debugDidFindAncestor__4133, () => (object?)"The provided `to` context must be an ancestor of the `from` context.");
-        return new CapturedThemes(themes__4057);
+        DartRuntimePrimitives.Assert(() => debugDidFindAncestor, () => (object?)"The provided `to` context must be an ancestor of the `from` context.");
+        return new CapturedThemes(themes);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -103,12 +103,12 @@ internal class _CaptureAll__inherited_theme : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        Widget wrappedChild__5719 = this.child;
-        foreach (InheritedTheme theme__5771 in this.themes)
+        Widget wrappedChild = this.child;
+        foreach (InheritedTheme theme in this.themes)
         {
-            wrappedChild__5719 = theme__5771.wrap(context, wrappedChild__5719);
+            wrappedChild = theme.wrap(context, wrappedChild);
         }
-        return wrappedChild__5719;
+        return wrappedChild;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

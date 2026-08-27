@@ -127,10 +127,10 @@ internal class _RadioState__radio<T> : global::Doroti.Framework.Widgets.State<Ra
             {
                 return ((Radio<T>)(object)this.widget).groupRegistry!;
             }
-            global::Doroti.Framework.Widgets.RadioGroupRegistry<T>? inheritedRegistry__17639 = ((global::Doroti.Framework.Widgets.RadioGroupRegistry<T>?)(object?)RadioGroup.maybeOf<T>(this.context));
-            if ((inheritedRegistry__17639 is not null))
+            global::Doroti.Framework.Widgets.RadioGroupRegistry<T>? inheritedRegistry = ((global::Doroti.Framework.Widgets.RadioGroupRegistry<T>?)(object?)RadioGroup.maybeOf<T>(this.context));
+            if ((inheritedRegistry is not null))
             {
-                return inheritedRegistry__17639;
+                return inheritedRegistry;
             }
             return _internalRadioRegistry ??= new _RadioRegistry__radio<T>(this);
             return default!;
@@ -154,8 +154,8 @@ internal class _RadioState__radio<T> : global::Doroti.Framework.Widgets.State<Ra
                 }
             case _RadioType__radio.adaptive:
                 {
-                    ThemeData theme__18445 = Theme.of(context);
-                    switch (theme__18445.platform)
+                    ThemeData theme = Theme.of(context);
+                    switch (theme.platform)
                     {
                         case global::Doroti.Framework.Foundation.TargetPlatform.android:
                         case global::Doroti.Framework.Foundation.TargetPlatform.fuchsia:
@@ -175,13 +175,13 @@ internal class _RadioState__radio<T> : global::Doroti.Framework.Widgets.State<Ra
                     break;
                 }
         }
-        RadioThemeData radioTheme__19383 = RadioTheme.of(context);
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor__19463 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((states) =>
+        RadioThemeData radioTheme = RadioTheme.of(context);
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> effectiveMouseCursor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Framework.Services.MouseCursor>((states) =>
         {
-            return (((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((Radio<T>)(object)this.widget).mouseCursor, states) ?? (global::Doroti.Framework.Services.MouseCursor)radioTheme__19383.mouseCursor?.resolve(states))) ?? (global::Doroti.Framework.Services.MouseCursor)WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor>(global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable, states))));
+            return (((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((Radio<T>)(object)this.widget).mouseCursor, states) ?? (global::Doroti.Framework.Services.MouseCursor)radioTheme.mouseCursor?.resolve(states))) ?? (global::Doroti.Framework.Services.MouseCursor)WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor>(global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable, states))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RawRadio<T>(value: ((Radio<T>)(object)this.widget).value, mouseCursor: effectiveMouseCursor__19463, toggleable: ((Radio<T>)(object)this.widget).toggleable, focusNode: this._focusNode, autofocus: ((Radio<T>)(object)this.widget).autofocus, groupRegistry: this._effectiveRegistry, enabled: this._enabled, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, dynamic, global::Doroti.Framework.Widgets.Widget>)((context, state) =>
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.RawRadio<T>(value: ((Radio<T>)(object)this.widget).value, mouseCursor: effectiveMouseCursor, toggleable: ((Radio<T>)(object)this.widget).toggleable, focusNode: this._focusNode, autofocus: ((Radio<T>)(object)this.widget).autofocus, groupRegistry: this._effectiveRegistry, enabled: this._enabled, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, dynamic, global::Doroti.Framework.Widgets.Widget>)((context, state) =>
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new _RadioPaint__radio(toggleableState: state, activeColor: ((Radio<T>)(object)this.widget).activeColor, fillColor: ((Radio<T>)(object)this.widget).fillColor, hoverColor: ((Radio<T>)(object)this.widget).hoverColor, focusColor: ((Radio<T>)(object)this.widget).focusColor, overlayColor: ((Radio<T>)(object)this.widget).overlayColor, splashRadius: ((Radio<T>)(object)this.widget).splashRadius, visualDensity: ((Radio<T>)(object)this.widget).visualDensity, materialTapTargetSize: ((Radio<T>)(object)this.widget).materialTapTargetSize, backgroundColor: ((Radio<T>)(object)this.widget).backgroundColor, side: ((Radio<T>)(object)this.widget).side, innerRadius: ((Radio<T>)(object)this.widget).innerRadius));
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -293,88 +293,88 @@ internal class _RadioPaintState__radio : global::Doroti.Framework.Widgets.State<
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        RadioThemeData radioTheme__23155 = RadioTheme.of(context);
-        dynamic defaults__23217 = (Theme.of(context).useMaterial3 ? new _RadioDefaultsM3__radio(context) : new _RadioDefaultsM2__radio(context));
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> activeStates__23484 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        RadioThemeData radioTheme = RadioTheme.of(context);
+        dynamic defaults = (Theme.of(context).useMaterial3 ? new _RadioDefaultsM3__radio(context) : new _RadioDefaultsM2__radio(context));
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> activeStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.selected);
     return __cascade;
 }))();
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> inactiveStates__23584 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> inactiveStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
     __cascade.Remove(global::Doroti.Framework.Widgets.WidgetState.selected);
     return __cascade;
 }))();
-        global::Doroti.Ui.Color? activeColor__23686 = ((global::Doroti.Ui.Color?)(object?)((((((_RadioPaint__radio)(object)this.widget).fillColor?.resolve(activeStates__23484) ?? (Color)this._widgetFillColor.resolve(activeStates__23484))) ?? (Color)radioTheme__23155.fillColor?.resolve(activeStates__23484))));
-        global::Doroti.Ui.Color effectiveActiveColor__23870 = ((global::Doroti.Ui.Color)(object?)(activeColor__23686 ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__23217.fillColor).resolve(activeStates__23484)!));
-        global::Doroti.Ui.Color? inactiveColor__23969 = ((global::Doroti.Ui.Color?)(object?)((((((_RadioPaint__radio)(object)this.widget).fillColor?.resolve(inactiveStates__23584) ?? (Color)this._widgetFillColor.resolve(inactiveStates__23584))) ?? (Color)radioTheme__23155.fillColor?.resolve(inactiveStates__23584))));
-        global::Doroti.Ui.Color effectiveInactiveColor__24161 = ((global::Doroti.Ui.Color)(object?)(inactiveColor__23969 ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__23217.fillColor).resolve(inactiveStates__23584)!));
-        global::Doroti.Ui.Color activeBackgroundColor__24273 = ((global::Doroti.Ui.Color)(object?)(((((_RadioPaint__radio)(object)this.widget).backgroundColor?.resolve(activeStates__23484) ?? (Color)radioTheme__23155.backgroundColor?.resolve(activeStates__23484))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__23217.backgroundColor).resolve(activeStates__23484)!));
-        global::Doroti.Ui.Color inactiveBackgroundColor__24489 = ((global::Doroti.Ui.Color)(object?)(((((_RadioPaint__radio)(object)this.widget).backgroundColor?.resolve(inactiveStates__23584) ?? (Color)radioTheme__23155.backgroundColor?.resolve(inactiveStates__23584))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__23217.backgroundColor).resolve(inactiveStates__23584)!));
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> focusedStates__24725 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        global::Doroti.Ui.Color? activeColorLocal = ((global::Doroti.Ui.Color?)(object?)((((((_RadioPaint__radio)(object)this.widget).fillColor?.resolve(activeStates) ?? (Color)this._widgetFillColor.resolve(activeStates))) ?? (Color)radioTheme.fillColor?.resolve(activeStates))));
+        global::Doroti.Ui.Color effectiveActiveColor = ((global::Doroti.Ui.Color)(object?)(activeColorLocal ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.fillColor).resolve(activeStates)!));
+        global::Doroti.Ui.Color? inactiveColorLocal = ((global::Doroti.Ui.Color?)(object?)((((((_RadioPaint__radio)(object)this.widget).fillColor?.resolve(inactiveStates) ?? (Color)this._widgetFillColor.resolve(inactiveStates))) ?? (Color)radioTheme.fillColor?.resolve(inactiveStates))));
+        global::Doroti.Ui.Color effectiveInactiveColor = ((global::Doroti.Ui.Color)(object?)(inactiveColorLocal ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.fillColor).resolve(inactiveStates)!));
+        global::Doroti.Ui.Color activeBackgroundColorLocal = ((global::Doroti.Ui.Color)(object?)(((((_RadioPaint__radio)(object)this.widget).backgroundColor?.resolve(activeStates) ?? (Color)radioTheme.backgroundColor?.resolve(activeStates))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.backgroundColor).resolve(activeStates)!));
+        global::Doroti.Ui.Color inactiveBackgroundColorLocal = ((global::Doroti.Ui.Color)(object?)(((((_RadioPaint__radio)(object)this.widget).backgroundColor?.resolve(inactiveStates) ?? (Color)radioTheme.backgroundColor?.resolve(inactiveStates))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.backgroundColor).resolve(inactiveStates)!));
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> focusedStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.focused);
     return __cascade;
 }))();
-        global::Doroti.Ui.Color effectiveFocusOverlayColor__24808 = ((global::Doroti.Ui.Color)(object?)((((((_RadioPaint__radio)(object)this.widget).overlayColor?.resolve(focusedStates__24725) ?? ((_RadioPaint__radio)(object)this.widget).focusColor) ?? (Color)radioTheme__23155.overlayColor?.resolve(focusedStates__24725))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__23217.overlayColor).resolve(focusedStates__24725)!));
-        HashSet<global::Doroti.Framework.Widgets.WidgetState> hoveredStates__25064 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        global::Doroti.Ui.Color effectiveFocusOverlayColor = ((global::Doroti.Ui.Color)(object?)((((((_RadioPaint__radio)(object)this.widget).overlayColor?.resolve(focusedStates) ?? ((_RadioPaint__radio)(object)this.widget).focusColor) ?? (Color)radioTheme.overlayColor?.resolve(focusedStates))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.overlayColor).resolve(focusedStates)!));
+        HashSet<global::Doroti.Framework.Widgets.WidgetState> hoveredStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.hovered);
     return __cascade;
 }))();
-        global::Doroti.Ui.Color effectiveHoverOverlayColor__25147 = ((global::Doroti.Ui.Color)(object?)((((((_RadioPaint__radio)(object)this.widget).overlayColor?.resolve(hoveredStates__25064) ?? ((_RadioPaint__radio)(object)this.widget).hoverColor) ?? (Color)radioTheme__23155.overlayColor?.resolve(hoveredStates__25064))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__23217.overlayColor).resolve(hoveredStates__25064)!));
-        var activePressedStates__25386 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        global::Doroti.Ui.Color effectiveHoverOverlayColor = ((global::Doroti.Ui.Color)(object?)((((((_RadioPaint__radio)(object)this.widget).overlayColor?.resolve(hoveredStates) ?? ((_RadioPaint__radio)(object)this.widget).hoverColor) ?? (Color)radioTheme.overlayColor?.resolve(hoveredStates))) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.overlayColor).resolve(hoveredStates)!));
+        var activePressedStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
-    var __cascade = activeStates__23484;
+    var __cascade = activeStates;
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.pressed);
     return __cascade;
 }))();
-        global::Doroti.Ui.Color effectiveActivePressedOverlayColor__25464 = ((global::Doroti.Ui.Color)(object?)((((((_RadioPaint__radio)(object)this.widget).overlayColor?.resolve(activePressedStates__25386) ?? (Color)radioTheme__23155.overlayColor?.resolve(activePressedStates__25386))) ?? activeColor__23686?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__23217.overlayColor).resolve(activePressedStates__25386)!));
-        var inactivePressedStates__25756 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+        global::Doroti.Ui.Color effectiveActivePressedOverlayColor = ((global::Doroti.Ui.Color)(object?)((((((_RadioPaint__radio)(object)this.widget).overlayColor?.resolve(activePressedStates) ?? (Color)radioTheme.overlayColor?.resolve(activePressedStates))) ?? activeColorLocal?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.overlayColor).resolve(activePressedStates)!));
+        var inactivePressedStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
-    var __cascade = inactiveStates__23584;
+    var __cascade = inactiveStates;
     __cascade.Add(global::Doroti.Framework.Widgets.WidgetState.pressed);
     return __cascade;
 }))();
-        global::Doroti.Ui.Color effectiveInactivePressedOverlayColor__25838 = ((global::Doroti.Ui.Color)(object?)((((((_RadioPaint__radio)(object)this.widget).overlayColor?.resolve(inactivePressedStates__25756) ?? (Color)radioTheme__23155.overlayColor?.resolve(inactivePressedStates__25756))) ?? inactiveColor__23969?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults__23217.overlayColor).resolve(inactivePressedStates__25756)!));
+        global::Doroti.Ui.Color effectiveInactivePressedOverlayColor = ((global::Doroti.Ui.Color)(object?)((((((_RadioPaint__radio)(object)this.widget).overlayColor?.resolve(inactivePressedStates) ?? (Color)radioTheme.overlayColor?.resolve(inactivePressedStates))) ?? inactiveColorLocal?.withAlpha(ConstantsLibrary.kRadialReactionAlpha)) ?? ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)defaults.overlayColor).resolve(inactivePressedStates)!));
         if ((((Offset?)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).downPosition) is not null))
         {
-            effectiveHoverOverlayColor__25147 = (((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor__25464 : effectiveInactivePressedOverlayColor__25838);
-            effectiveFocusOverlayColor__24808 = (((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor__25464 : effectiveInactivePressedOverlayColor__25838);
+            effectiveHoverOverlayColor = (((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor : effectiveInactivePressedOverlayColor);
+            effectiveFocusOverlayColor = (((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.selected) ? effectiveActivePressedOverlayColor : effectiveInactivePressedOverlayColor);
         }
-        MaterialTapTargetSize effectiveMaterialTapTargetSize__26610 = DartRuntimePrimitives.RequireValue(((_RadioPaint__radio)(object)this.widget).materialTapTargetSize ?? radioTheme__23155.materialTapTargetSize ?? defaults__23217.materialTapTargetSize);
-        VisualDensity effectiveVisualDensity__26792 = ((((_RadioPaint__radio)(object)this.widget).visualDensity ?? radioTheme__23155.visualDensity) ?? defaults__23217.visualDensity!);
-        global::Doroti.Ui.Size size__26911 = ((global::Doroti.Ui.Size)(object?)(effectiveMaterialTapTargetSize__26610 switch { var __constant26966 when (object.Equals(__constant26966, MaterialTapTargetSize.padded)) => new global::Doroti.Ui.Size(global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension, global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension), var __constant27093 when (object.Equals(__constant27093, MaterialTapTargetSize.shrinkWrap)) => new global::Doroti.Ui.Size((global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0), (global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        size__26911 += effectiveVisualDensity__26792.baseSizeAdjustment;
-        global::Doroti.Framework.Painting.BorderSide activeSide__27313 = (((_resolveSide(((_RadioPaint__radio)(object)this.widget).side, activeStates__23484) ?? (global::Doroti.Framework.Painting.BorderSide)_resolveSide(radioTheme__23155.side, activeStates__23484))) ?? new global::Doroti.Framework.Painting.BorderSide(color: effectiveActiveColor__23870, width: 2.0, strokeAlign: global::Doroti.Framework.Painting.BorderSide.strokeAlignCenter));
-        global::Doroti.Framework.Painting.BorderSide inactiveSide__27598 = (((_resolveSide(((_RadioPaint__radio)(object)this.widget).side, inactiveStates__23584) ?? (global::Doroti.Framework.Painting.BorderSide)_resolveSide(radioTheme__23155.side, inactiveStates__23584))) ?? new global::Doroti.Framework.Painting.BorderSide(color: effectiveInactiveColor__24161, width: 2.0, strokeAlign: global::Doroti.Framework.Painting.BorderSide.strokeAlignCenter));
-        double innerRadius__27888 = (((((_RadioPaint__radio)(object)this.widget).innerRadius?.resolve(activeStates__23484) ?? radioTheme__23155.innerRadius?.resolve(activeStates__23484))) ?? RadioLibrary._kInnerRadius);
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomPaint(size: size__26911, painter: ((Func<_RadioPainter__radio>)(() =>
+        MaterialTapTargetSize effectiveMaterialTapTargetSize = DartRuntimePrimitives.RequireValue(((_RadioPaint__radio)(object)this.widget).materialTapTargetSize ?? radioTheme.materialTapTargetSize ?? defaults.materialTapTargetSize);
+        VisualDensity effectiveVisualDensity = ((((_RadioPaint__radio)(object)this.widget).visualDensity ?? radioTheme.visualDensity) ?? defaults.visualDensity!);
+        global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)(effectiveMaterialTapTargetSize switch { var __constant26966 when (object.Equals(__constant26966, MaterialTapTargetSize.padded)) => new global::Doroti.Ui.Size(global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension, global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension), var __constant27093 when (object.Equals(__constant27093, MaterialTapTargetSize.shrinkWrap)) => new global::Doroti.Ui.Size((global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0), (global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        sizeLocal += effectiveVisualDensity.baseSizeAdjustment;
+        global::Doroti.Framework.Painting.BorderSide activeSideLocal = (((_resolveSide(((_RadioPaint__radio)(object)this.widget).side, activeStates) ?? (global::Doroti.Framework.Painting.BorderSide)_resolveSide(radioTheme.side, activeStates))) ?? new global::Doroti.Framework.Painting.BorderSide(color: effectiveActiveColor, width: 2.0, strokeAlign: global::Doroti.Framework.Painting.BorderSide.strokeAlignCenter));
+        global::Doroti.Framework.Painting.BorderSide inactiveSideLocal = (((_resolveSide(((_RadioPaint__radio)(object)this.widget).side, inactiveStates) ?? (global::Doroti.Framework.Painting.BorderSide)_resolveSide(radioTheme.side, inactiveStates))) ?? new global::Doroti.Framework.Painting.BorderSide(color: effectiveInactiveColor, width: 2.0, strokeAlign: global::Doroti.Framework.Painting.BorderSide.strokeAlignCenter));
+        double innerRadiusLocal = (((((_RadioPaint__radio)(object)this.widget).innerRadius?.resolve(activeStates) ?? radioTheme.innerRadius?.resolve(activeStates))) ?? RadioLibrary._kInnerRadius);
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CustomPaint(size: sizeLocal, painter: ((Func<_RadioPainter__radio>)(() =>
 {
     var __cascade = this._painter;
     __cascade.position = ((global::Doroti.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).position);
     __cascade.reaction = ((global::Doroti.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).reaction);
     __cascade.reactionFocusFade = ((global::Doroti.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).reactionFocusFade);
     __cascade.reactionHoverFade = ((global::Doroti.Framework.Animation.CurvedAnimation)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).reactionHoverFade);
-    __cascade.inactiveReactionColor = effectiveInactivePressedOverlayColor__25838;
-    __cascade.reactionColor = effectiveActivePressedOverlayColor__25464;
-    __cascade.hoverColor = effectiveHoverOverlayColor__25147;
-    __cascade.focusColor = effectiveFocusOverlayColor__24808;
-    __cascade.splashRadius = ((((_RadioPaint__radio)(object)this.widget).splashRadius ?? radioTheme__23155.splashRadius) ?? ConstantsLibrary.kRadialReactionRadius);
+    __cascade.inactiveReactionColor = effectiveInactivePressedOverlayColor;
+    __cascade.reactionColor = effectiveActivePressedOverlayColor;
+    __cascade.hoverColor = effectiveHoverOverlayColor;
+    __cascade.focusColor = effectiveFocusOverlayColor;
+    __cascade.splashRadius = ((((_RadioPaint__radio)(object)this.widget).splashRadius ?? radioTheme.splashRadius) ?? ConstantsLibrary.kRadialReactionRadius);
     __cascade.downPosition = ((Offset?)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).downPosition);
     __cascade.isFocused = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.focused);
     __cascade.isHovered = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states).Contains(global::Doroti.Framework.Widgets.WidgetState.hovered);
-    __cascade.activeColor = effectiveActiveColor__23870;
-    __cascade.inactiveColor = effectiveInactiveColor__24161;
-    __cascade.activeBackgroundColor = activeBackgroundColor__24273;
-    __cascade.inactiveBackgroundColor = inactiveBackgroundColor__24489;
-    __cascade.activeSide = activeSide__27313;
-    __cascade.inactiveSide = inactiveSide__27598;
-    __cascade.innerRadius = innerRadius__27888;
+    __cascade.activeColor = effectiveActiveColor;
+    __cascade.inactiveColor = effectiveInactiveColor;
+    __cascade.activeBackgroundColor = activeBackgroundColorLocal;
+    __cascade.inactiveBackgroundColor = inactiveBackgroundColorLocal;
+    __cascade.activeSide = activeSideLocal;
+    __cascade.inactiveSide = inactiveSideLocal;
+    __cascade.innerRadius = innerRadiusLocal;
     return __cascade;
 }))()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -463,29 +463,29 @@ internal class _RadioPainter__radio : global::Doroti.Framework.Widgets.Toggleabl
     public override void paint(Canvas canvas, Size size)
     {
         paintRadialReaction(canvas: canvas, origin: size.center(Offset.zero));
-        global::Doroti.Ui.Rect rect__30624 = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & size));
-        global::Doroti.Ui.Offset center__30668 = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)rect__30624).center));
-        global::Doroti.Ui.Rect effectiveRect__30705 = ((global::Doroti.Ui.Rect)(object?)((center__30668 & new global::Doroti.Ui.Size((RadioLibrary._kOuterRadius * 2L)))).translate(-RadioLibrary._kOuterRadius, -RadioLibrary._kOuterRadius));
-        var backgroundPaint__30860 = ((Func<Paint>)(() =>
+        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)(Offset.zero & size));
+        global::Doroti.Ui.Offset centerLocal = ((global::Doroti.Ui.Offset)(object?)((Offset)((dynamic)rect).center));
+        global::Doroti.Ui.Rect effectiveRect = ((global::Doroti.Ui.Rect)(object?)((centerLocal & new global::Doroti.Ui.Size((RadioLibrary._kOuterRadius * 2L)))).translate(-RadioLibrary._kOuterRadius, -RadioLibrary._kOuterRadius));
+        var backgroundPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = Dart_uiLibrary.Color.lerp(this.inactiveBackgroundColor, this.activeBackgroundColor, ((global::Doroti.Framework.Animation.Animation<double>)this.position).value)!;
     __cascade.style = PaintingStyle.fill;
     return __cascade;
 }))();
-        canvas.drawCircle(center__30668, RadioLibrary._kOuterRadius, backgroundPaint__30860);
-        global::Doroti.Framework.Painting.BorderSide side__31119 = ((global::Doroti.Framework.Painting.BorderSide)(object?)BorderSide.lerp(this.inactiveSide, this.activeSide, DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Animation.Animation<double>)this.position).value)));
-        new global::Doroti.Framework.Painting.CircleBorder(side: side__31119).paint(canvas, effectiveRect__30705);
+        canvas.drawCircle(centerLocal, RadioLibrary._kOuterRadius, backgroundPaint);
+        global::Doroti.Framework.Painting.BorderSide sideLocal = ((global::Doroti.Framework.Painting.BorderSide)(object?)BorderSide.lerp(this.inactiveSide, this.activeSide, DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Animation.Animation<double>)this.position).value)));
+        new global::Doroti.Framework.Painting.CircleBorder(side: sideLocal).paint(canvas, effectiveRect);
         if (!((global::Doroti.Framework.Animation.Animation<double>)this.position).isDismissed)
         {
-            var innerCirclePaint__31310 = ((Func<Paint>)(() =>
+            var innerCirclePaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.style = PaintingStyle.fill;
     __cascade.color = Dart_uiLibrary.Color.lerp(this.inactiveColor, this.activeColor, ((global::Doroti.Framework.Animation.Animation<double>)this.position).value)!;
     return __cascade;
 }))();
-            canvas.drawCircle(center__30668, (this.innerRadius * ((global::Doroti.Framework.Animation.Animation<double>)this.position).value), innerCirclePaint__31310);
+            canvas.drawCircle(centerLocal, (this.innerRadius * ((global::Doroti.Framework.Animation.Animation<double>)this.position).value), innerCirclePaint);
         }
     }
 

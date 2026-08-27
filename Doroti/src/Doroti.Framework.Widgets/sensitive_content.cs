@@ -153,10 +153,10 @@ public class SensitiveContentHost
         {
             _contentSensitivityIsSupported ??= await this._sensitiveContentService.isSupported();
         }
-        catch (global::Doroti.Framework.Services.PlatformException e__6181)
+        catch (global::Doroti.Framework.Services.PlatformException e)
         {
             _contentSensitivityIsSupported = false;
-            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create($"Call to check if setting content sensitivity is supported on the current platform failed unexpectedly, so it is assumed to be unsupported: {e__6181}}}"), library: "widget library", stack: ((((global::Doroti.Framework.Services.PlatformException)e__6181).stacktrace is null) ? new global::System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(((global::Doroti.Framework.Services.PlatformException)e__6181).stacktrace!))));
+            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create($"Call to check if setting content sensitivity is supported on the current platform failed unexpectedly, so it is assumed to be unsupported: {e}}}"), library: "widget library", stack: ((((global::Doroti.Framework.Services.PlatformException)e).stacktrace is null) ? new global::System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(((global::Doroti.Framework.Services.PlatformException)e).stacktrace!))));
         }
         if (!DartRuntimePrimitives.RequireValue(this._contentSensitivityIsSupported))
         {
@@ -168,15 +168,15 @@ public class SensitiveContentHost
             {
                 _fallbackContentSensitivitySetting = await this._sensitiveContentService.getContentSensitivity();
             }
-            catch (NotSupportedException e__7279)
+            catch (NotSupportedException eLocal)
             {
                 _fallbackContentSensitivitySetting = global::Doroti.Framework.Services.ContentSensitivity.notSensitive;
-                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create($"Unknown content sensitivity set in the Android embedding or by default: {e__7279}}}"), library: "widget library", stack: DartRuntimePrimitives.StackTraceFrom(e__7279)));
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create($"Unknown content sensitivity set in the Android embedding or by default: {eLocal}}}"), library: "widget library", stack: DartRuntimePrimitives.StackTraceFrom(eLocal)));
             }
         }
-        global::Doroti.Framework.Services.ContentSensitivity? contentSensitivityBasedOnWidgetCountsBeforeRegister__8160 = (((_ContentSensitivitySetting__sensitive_content)this._contentSensitivitySetting).contentSensitivityBasedOnWidgetCounts ?? this._fallbackContentSensitivitySetting);
+        global::Doroti.Framework.Services.ContentSensitivity? contentSensitivityBasedOnWidgetCountsBeforeRegister = (((_ContentSensitivitySetting__sensitive_content)this._contentSensitivitySetting).contentSensitivityBasedOnWidgetCounts ?? this._fallbackContentSensitivitySetting);
         this._contentSensitivitySetting.addWidgetWithContentSensitivity(desiredSensitivity);
-        if ((object.Equals(contentSensitivityBasedOnWidgetCountsBeforeRegister__8160, ((_ContentSensitivitySetting__sensitive_content)this._contentSensitivitySetting).contentSensitivityBasedOnWidgetCounts)))
+        if ((object.Equals(contentSensitivityBasedOnWidgetCountsBeforeRegister, ((_ContentSensitivitySetting__sensitive_content)this._contentSensitivitySetting).contentSensitivityBasedOnWidgetCounts)))
         {
             return;
         }
@@ -184,9 +184,9 @@ public class SensitiveContentHost
         {
             await this._sensitiveContentService.setContentSensitivity(DartRuntimePrimitives.RequireValue(((_ContentSensitivitySetting__sensitive_content)this._contentSensitivitySetting).contentSensitivityBasedOnWidgetCounts));
         }
-        catch (global::Doroti.Framework.Services.PlatformException e__9063)
+        catch (global::Doroti.Framework.Services.PlatformException eAlternate)
         {
-            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create($"Attempt to set {desiredSensitivity} sensitivity failed: {e__9063}}}"), library: "widget library", stack: ((((global::Doroti.Framework.Services.PlatformException)e__9063).stacktrace is null) ? new global::System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(((global::Doroti.Framework.Services.PlatformException)e__9063).stacktrace!))));
+            FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create($"Attempt to set {desiredSensitivity} sensitivity failed: {eAlternate}}}"), library: "widget library", stack: ((((global::Doroti.Framework.Services.PlatformException)eAlternate).stacktrace is null) ? new global::System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(((global::Doroti.Framework.Services.PlatformException)eAlternate).stacktrace!))));
         }
     }
 
@@ -202,11 +202,11 @@ public class SensitiveContentHost
         {
             return;
         }
-        global::Doroti.Framework.Services.ContentSensitivity contentSensitivityBasedOnWidgetCountsBeforeUnregister__10227 = DartRuntimePrimitives.RequireValue(((_ContentSensitivitySetting__sensitive_content)this._contentSensitivitySetting).contentSensitivityBasedOnWidgetCounts);
+        global::Doroti.Framework.Services.ContentSensitivity contentSensitivityBasedOnWidgetCountsBeforeUnregister = DartRuntimePrimitives.RequireValue(((_ContentSensitivitySetting__sensitive_content)this._contentSensitivitySetting).contentSensitivityBasedOnWidgetCounts);
         this._contentSensitivitySetting.removeWidgetWithContentSensitivity(widgetSensitivity);
         if (!((_ContentSensitivitySetting__sensitive_content)this._contentSensitivitySetting).hasWidgets)
         {
-            if ((object.Equals(contentSensitivityBasedOnWidgetCountsBeforeUnregister__10227, this._fallbackContentSensitivitySetting)))
+            if ((object.Equals(contentSensitivityBasedOnWidgetCountsBeforeUnregister, this._fallbackContentSensitivitySetting)))
             {
                 return;
             }
@@ -214,22 +214,22 @@ public class SensitiveContentHost
             {
                 await this._sensitiveContentService.setContentSensitivity(DartRuntimePrimitives.RequireValue(this._fallbackContentSensitivitySetting));
             }
-            catch (global::Doroti.Framework.Services.PlatformException e__11058)
+            catch (global::Doroti.Framework.Services.PlatformException e)
             {
-                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create($"Attempted to set {this._fallbackContentSensitivitySetting} sensitivity failed: {e__11058}}}"), library: "widget library", stack: ((((global::Doroti.Framework.Services.PlatformException)e__11058).stacktrace is null) ? new global::System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(((global::Doroti.Framework.Services.PlatformException)e__11058).stacktrace!))));
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create($"Attempted to set {this._fallbackContentSensitivitySetting} sensitivity failed: {e}}}"), library: "widget library", stack: ((((global::Doroti.Framework.Services.PlatformException)e).stacktrace is null) ? new global::System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(((global::Doroti.Framework.Services.PlatformException)e).stacktrace!))));
             }
             return;
         }
-        global::Doroti.Framework.Services.ContentSensitivity contentSensitivityToRestore__11739 = DartRuntimePrimitives.RequireValue(((_ContentSensitivitySetting__sensitive_content)this._contentSensitivitySetting).contentSensitivityBasedOnWidgetCounts);
-        if ((!object.Equals(contentSensitivityToRestore__11739, contentSensitivityBasedOnWidgetCountsBeforeUnregister__10227)))
+        global::Doroti.Framework.Services.ContentSensitivity contentSensitivityToRestore = DartRuntimePrimitives.RequireValue(((_ContentSensitivitySetting__sensitive_content)this._contentSensitivitySetting).contentSensitivityBasedOnWidgetCounts);
+        if ((!object.Equals(contentSensitivityToRestore, contentSensitivityBasedOnWidgetCountsBeforeUnregister)))
         {
             try
             {
-                await this._sensitiveContentService.setContentSensitivity(contentSensitivityToRestore__11739);
+                await this._sensitiveContentService.setContentSensitivity(contentSensitivityToRestore);
             }
-            catch (global::Doroti.Framework.Services.PlatformException e__12144)
+            catch (global::Doroti.Framework.Services.PlatformException eLocal)
             {
-                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create($"Attempted to set {this._fallbackContentSensitivitySetting} sensitivity failed: {e__12144}}}"), library: "widget library", stack: ((((global::Doroti.Framework.Services.PlatformException)e__12144).stacktrace is null) ? new global::System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(((global::Doroti.Framework.Services.PlatformException)e__12144).stacktrace!))));
+                FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: global::Doroti.Framework.Foundation.FlutterError.Create($"Attempted to set {this._fallbackContentSensitivitySetting} sensitivity failed: {eLocal}}}"), library: "widget library", stack: ((((global::Doroti.Framework.Services.PlatformException)eLocal).stacktrace is null) ? new global::System.Diagnostics.StackTrace(true) : DartRuntimePrimitives.StackTraceFrom(((global::Doroti.Framework.Services.PlatformException)eLocal).stacktrace!))));
             }
         }
     }

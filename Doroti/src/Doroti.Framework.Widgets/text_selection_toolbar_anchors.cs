@@ -27,13 +27,13 @@ public class TextSelectionToolbarAnchors
 
     public static TextSelectionToolbarAnchors CreateFromSelection(global::Doroti.Framework.Rendering.RenderBox renderBox, double startGlyphHeight, double endGlyphHeight, List<global::Doroti.Framework.Rendering.TextSelectionPoint> selectionEndpoints)
     {
-        global::Doroti.Ui.Rect selectionRect__1187 = ((global::Doroti.Ui.Rect)(object?)TextSelectionToolbarAnchors.getSelectionRect(renderBox, startGlyphHeight, endGlyphHeight, selectionEndpoints));
-        if ((object.Equals(selectionRect__1187, Rect.zero)))
+        global::Doroti.Ui.Rect selectionRect = ((global::Doroti.Ui.Rect)(object?)TextSelectionToolbarAnchors.getSelectionRect(renderBox, startGlyphHeight, endGlyphHeight, selectionEndpoints));
+        if ((object.Equals(selectionRect, Rect.zero)))
         {
             return new TextSelectionToolbarAnchors(primaryAnchor: Offset.zero);
         }
-        global::Doroti.Ui.Rect editingRegion__1453 = ((global::Doroti.Ui.Rect)(object?)TextSelectionToolbarAnchors._getEditingRegion(renderBox));
-        return new TextSelectionToolbarAnchors(primaryAnchor: new global::Doroti.Ui.Offset((selectionRect__1187.left + (selectionRect__1187.width / 2L)), Dart_uiLibrary.clampDouble(selectionRect__1187.top, editingRegion__1453.top, editingRegion__1453.bottom)), secondaryAnchor: new global::Doroti.Ui.Offset((selectionRect__1187.left + (selectionRect__1187.width / 2L)), Dart_uiLibrary.clampDouble(selectionRect__1187.bottom, editingRegion__1453.top, editingRegion__1453.bottom)));
+        global::Doroti.Ui.Rect editingRegion = ((global::Doroti.Ui.Rect)(object?)TextSelectionToolbarAnchors._getEditingRegion(renderBox));
+        return new TextSelectionToolbarAnchors(primaryAnchor: new global::Doroti.Ui.Offset((selectionRect.left + (selectionRect.width / 2L)), Dart_uiLibrary.clampDouble(selectionRect.top, editingRegion.top, editingRegion.bottom)), secondaryAnchor: new global::Doroti.Ui.Offset((selectionRect.left + (selectionRect.width / 2L)), Dart_uiLibrary.clampDouble(selectionRect.bottom, editingRegion.top, editingRegion.bottom)));
     }
 
     internal static global::Doroti.Ui.Rect _getEditingRegion(global::Doroti.Framework.Rendering.RenderBox renderBox)
@@ -44,13 +44,13 @@ public class TextSelectionToolbarAnchors
 
     public static global::Doroti.Ui.Rect getSelectionRect(global::Doroti.Framework.Rendering.RenderBox renderBox, double startGlyphHeight, double endGlyphHeight, List<global::Doroti.Framework.Rendering.TextSelectionPoint> selectionEndpoints)
     {
-        global::Doroti.Ui.Rect editingRegion__2471 = ((global::Doroti.Ui.Rect)(object?)TextSelectionToolbarAnchors._getEditingRegion(renderBox));
-        if ((((double.IsNaN(editingRegion__2471.left) || double.IsNaN(editingRegion__2471.top)) || double.IsNaN(editingRegion__2471.right)) || double.IsNaN(editingRegion__2471.bottom)))
+        global::Doroti.Ui.Rect editingRegion = ((global::Doroti.Ui.Rect)(object?)TextSelectionToolbarAnchors._getEditingRegion(renderBox));
+        if ((((double.IsNaN(editingRegion.left) || double.IsNaN(editingRegion.top)) || double.IsNaN(editingRegion.right)) || double.IsNaN(editingRegion.bottom)))
         {
             return Rect.zero;
         }
-        bool isMultiline__2710 = ((selectionEndpoints.Last().point.dy - selectionEndpoints.First().point.dy) > (endGlyphHeight / 2L));
-        return global::Doroti.Ui.Rect.fromLTRB((isMultiline__2710 ? editingRegion__2471.left : (editingRegion__2471.left + selectionEndpoints.First().point.dx)), ((editingRegion__2471.top + selectionEndpoints.First().point.dy) - startGlyphHeight), (isMultiline__2710 ? editingRegion__2471.right : (editingRegion__2471.left + selectionEndpoints.Last().point.dx)), (editingRegion__2471.top + selectionEndpoints.Last().point.dy));
+        bool isMultiline = ((selectionEndpoints.Last().point.dy - selectionEndpoints.First().point.dy) > (endGlyphHeight / 2L));
+        return global::Doroti.Ui.Rect.fromLTRB((isMultiline ? editingRegion.left : (editingRegion.left + selectionEndpoints.First().point.dx)), ((editingRegion.top + selectionEndpoints.First().point.dy) - startGlyphHeight), (isMultiline ? editingRegion.right : (editingRegion.left + selectionEndpoints.Last().point.dx)), (editingRegion.top + selectionEndpoints.Last().point.dy));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

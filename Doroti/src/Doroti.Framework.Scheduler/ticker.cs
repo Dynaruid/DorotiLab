@@ -205,12 +205,12 @@ public class Ticker
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         if ((_future is not null))
         {
-            TickerFuture localFuture__13113 = _future!;
+            TickerFuture localFuture = _future!;
             RecordAnimationPhase(DorotiFramePhase.animationEnd);
             _future = null;
             DartRuntimePrimitives.Assert(() => !isActive);
             unscheduleTick();
-            localFuture__13113._cancel(this);
+            localFuture._cancel(this);
         }
         DartRuntimePrimitives.Assert(() =>
             {

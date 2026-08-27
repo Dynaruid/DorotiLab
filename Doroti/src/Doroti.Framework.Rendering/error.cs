@@ -61,25 +61,25 @@ public class RenderErrorBox : RenderBox
 
     internal static global::Doroti.Ui.Color _initBackgroundColor()
     {
-        var result__4211 = new global::Doroti.Ui.Color(4039164096L);
+        var result = new global::Doroti.Ui.Color(4039164096L);
         DartRuntimePrimitives.Assert(() =>
             {
-                result__4211 = new global::Doroti.Ui.Color(4035969024L);
+                result = new global::Doroti.Ui.Color(4035969024L);
                 return true;
             });
-        return result__4211;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal static global::Doroti.Ui.TextStyle _initTextStyle()
     {
-        var result__4636 = new global::Doroti.Ui.TextStyle(color: new global::Doroti.Ui.Color(4281348144L), fontFamily: "sans-serif", fontSize: 18.0);
+        var result = new global::Doroti.Ui.TextStyle(color: new global::Doroti.Ui.Color(4281348144L), fontFamily: "sans-serif", fontSize: 18.0);
         DartRuntimePrimitives.Assert(() =>
             {
-                result__4636 = new global::Doroti.Ui.TextStyle(color: new global::Doroti.Ui.Color(4294967142L), fontFamily: "monospace", fontSize: 14.0, fontWeight: FontWeight.bold);
+                result = new global::Doroti.Ui.TextStyle(color: new global::Doroti.Ui.Color(4294967142L), fontFamily: "monospace", fontSize: 14.0, fontWeight: FontWeight.bold);
                 return true;
             });
-        return result__4636;
+        return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -95,23 +95,23 @@ public class RenderErrorBox : RenderBox
 }))());
             if ((this._paragraph is not null))
             {
-                double width__5414 = size.width;
-                var left__5446 = 0.0;
-                var top__5470 = 0.0;
-                if ((width__5414 > ((((global::Doroti.Framework.Painting.EdgeInsets)padding).left + minimumWidth) + ((global::Doroti.Framework.Painting.EdgeInsets)padding).right)))
+                double widthLocal = size.width;
+                var leftLocal = 0.0;
+                var topLocal = 0.0;
+                if ((widthLocal > ((((global::Doroti.Framework.Painting.EdgeInsets)padding).left + minimumWidth) + ((global::Doroti.Framework.Painting.EdgeInsets)padding).right)))
                 {
-                    width__5414 -= (((global::Doroti.Framework.Painting.EdgeInsets)padding).left + ((global::Doroti.Framework.Painting.EdgeInsets)padding).right);
-                    left__5446 += ((global::Doroti.Framework.Painting.EdgeInsets)padding).left;
+                    widthLocal -= (((global::Doroti.Framework.Painting.EdgeInsets)padding).left + ((global::Doroti.Framework.Painting.EdgeInsets)padding).right);
+                    leftLocal += ((global::Doroti.Framework.Painting.EdgeInsets)padding).left;
                 }
-                this._paragraph.layout(new global::Doroti.Ui.ParagraphConstraints(width: width__5414));
+                this._paragraph.layout(new global::Doroti.Ui.ParagraphConstraints(width: widthLocal));
                 if ((size.height > ((((global::Doroti.Framework.Painting.EdgeInsets)padding).top + this._paragraph.height) + ((global::Doroti.Framework.Painting.EdgeInsets)padding).bottom)))
                 {
-                    top__5470 += ((global::Doroti.Framework.Painting.EdgeInsets)padding).top;
+                    topLocal += ((global::Doroti.Framework.Painting.EdgeInsets)padding).top;
                 }
-                ((PaintingContext)context).canvas.drawParagraph(this._paragraph, (offset + new global::Doroti.Ui.Offset(left__5446, top__5470)));
+                ((PaintingContext)context).canvas.drawParagraph(this._paragraph, (offset + new global::Doroti.Ui.Offset(leftLocal, topLocal)));
             }
         }
-        catch (Exception error__5922)
+        catch (Exception error)
         {
         }
     }

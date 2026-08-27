@@ -83,20 +83,20 @@ public class BouncingScrollSimulation : global::Doroti.Framework.Physics.Simulat
 
     internal virtual global::Doroti.Framework.Physics.Simulation _simulation(double time)
     {
-        global::Doroti.Framework.Physics.Simulation simulation__4144 = default!;
+        global::Doroti.Framework.Physics.Simulation simulation = default!;
         if ((time > this._springTime))
         {
             _timeOffset = (double.IsFinite(this._springTime) ? this._springTime : 0.0);
-            simulation__4144 = this._springSimulation;
+            simulation = this._springSimulation;
         }
         else
         {
             _timeOffset = 0.0;
-            simulation__4144 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Physics.Simulation>(this._frictionSimulation);
+            simulation = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Physics.Simulation>(this._frictionSimulation);
         }
         return ((Func<global::Doroti.Framework.Physics.Simulation>)(() =>
 {
-    var __cascade = simulation__4144;
+    var __cascade = simulation;
     __cascade.tolerance = this.tolerance;
     return __cascade;
 }))();
@@ -136,38 +136,38 @@ public class ClampingScrollSimulation : global::Doroti.Framework.Physics.Simulat
 
     internal virtual double _flingDuration()
     {
-        double referenceVelocity__8333 = ((this.friction * _physicalCoeff) / _kInflexion);
-        var androidDuration__8485 = ((double)global::Doroti.Runtime.Dart_mathLibrary.pow((this.velocity.abs() / referenceVelocity__8333), (1L / ((_kDecelerationRate - 1.0)))));
-        return ((_kDecelerationRate * _kInflexion) * androidDuration__8485);
+        double referenceVelocity = ((this.friction * _physicalCoeff) / _kInflexion);
+        var androidDuration = ((double)global::Doroti.Runtime.Dart_mathLibrary.pow((this.velocity.abs() / referenceVelocity), (1L / ((_kDecelerationRate - 1.0)))));
+        return ((_kDecelerationRate * _kInflexion) * androidDuration);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _flingDistance()
     {
-        double distance__8933 = ((this.velocity * this._duration) / _kDecelerationRate);
+        double distanceLocal = ((this.velocity * this._duration) / _kDecelerationRate);
         DartRuntimePrimitives.Assert(() =>
             {
-                double referenceVelocity__9182 = ((this.friction * _physicalCoeff) / _kInflexion);
-                double logVelocity__9262 = global::Doroti.Runtime.Dart_mathLibrary.log((this.velocity.abs() / referenceVelocity__9182));
-                double distanceAgain__9341 = ((this.friction * _physicalCoeff) * global::Doroti.Runtime.Dart_mathLibrary.exp(((logVelocity__9262 * _kDecelerationRate) / ((_kDecelerationRate - 1.0)))));
-                return (((distance__8933.abs() - distanceAgain__9341)).abs() < ((global::Doroti.Framework.Physics.Tolerance)this.tolerance).distance);
+                double referenceVelocity = ((this.friction * _physicalCoeff) / _kInflexion);
+                double logVelocity = global::Doroti.Runtime.Dart_mathLibrary.log((this.velocity.abs() / referenceVelocity));
+                double distanceAgain = ((this.friction * _physicalCoeff) * global::Doroti.Runtime.Dart_mathLibrary.exp(((logVelocity * _kDecelerationRate) / ((_kDecelerationRate - 1.0)))));
+                return (((distanceLocal.abs() - distanceAgain)).abs() < ((global::Doroti.Framework.Physics.Tolerance)this.tolerance).distance);
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        return distance__8933;
+        return distanceLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double x(double time)
     {
-        double t__9653 = Dart_uiLibrary.clampDouble((time / this._duration), 0.0, 1.0);
-        return (this.position + (this._distance * ((1.0 - global::Doroti.Runtime.Dart_mathLibrary.pow((1.0 - t__9653), _kDecelerationRate)))));
+        double t = Dart_uiLibrary.clampDouble((time / this._duration), 0.0, 1.0);
+        return (this.position + (this._distance * ((1.0 - global::Doroti.Runtime.Dart_mathLibrary.pow((1.0 - t), _kDecelerationRate)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override double dx(double time)
     {
-        double t__9840 = Dart_uiLibrary.clampDouble((time / this._duration), 0.0, 1.0);
-        return (this.velocity * global::Doroti.Runtime.Dart_mathLibrary.pow((1.0 - t__9840), (_kDecelerationRate - 1.0)));
+        double t = Dart_uiLibrary.clampDouble((time / this._duration), 0.0, 1.0);
+        return (this.velocity * global::Doroti.Runtime.Dart_mathLibrary.pow((1.0 - t), (_kDecelerationRate - 1.0)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

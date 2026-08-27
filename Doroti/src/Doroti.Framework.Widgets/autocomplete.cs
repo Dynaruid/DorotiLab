@@ -62,8 +62,8 @@ public class RawAutocomplete<T> : StatefulWidget
 
     public static void onFieldSubmitted<T>(GlobalKey<IState> key)
     {
-        var rawAutocomplete__12484 = ((_RawAutocompleteState__autocomplete<T>?)(object?)((GlobalKey<IState>)key).currentState!)!;
-        rawAutocomplete__12484._onFieldSubmitted();
+        var rawAutocomplete = ((_RawAutocompleteState__autocomplete<T>?)(object?)((GlobalKey<IState>)key).currentState!)!;
+        rawAutocomplete._onFieldSubmitted();
     }
 
     public static string defaultStringForOption(object? option)
@@ -165,9 +165,9 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         {
             return;
         }
-        WidgetsLocalizations localizations__18078 = ((WidgetsLocalizations)(object?)WidgetsLocalizations.of(this.context));
-        string optionsHint__18145 = (resultsAvailable ? ((WidgetsLocalizations)localizations__18078).searchResultsFound : ((WidgetsLocalizations)localizations__18078).noResultsFound);
-        DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), optionsHint__18145, ((WidgetsLocalizations)localizations__18078).textDirection).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) =>
+        WidgetsLocalizations localizations = ((WidgetsLocalizations)(object?)WidgetsLocalizations.of(this.context));
+        string optionsHint = (resultsAvailable ? ((WidgetsLocalizations)localizations).searchResultsFound : ((WidgetsLocalizations)localizations).noResultsFound);
+        DartRuntimePrimitives.Ignore(SemanticsService.sendAnnouncement(View.of(this.context), optionsHint, ((WidgetsLocalizations)localizations).textDirection).catchError(((global::System.Action<object, global::System.Diagnostics.StackTrace>)((exception, stack) =>
         {
             FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
         }))));
@@ -179,32 +179,32 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         {
             return;
         }
-        global::Doroti.Framework.Services.TextEditingValue value__19184 = ((global::Doroti.Framework.Services.TextEditingValue)(object?)this._textEditingController.value);
-        var shouldUpdateOptions__19309 = false;
-        if ((((global::Doroti.Framework.Services.TextEditingValue)value__19184).text != this._lastFieldText))
+        global::Doroti.Framework.Services.TextEditingValue valueLocal = ((global::Doroti.Framework.Services.TextEditingValue)(object?)this._textEditingController.value);
+        var shouldUpdateOptions = false;
+        if ((((global::Doroti.Framework.Services.TextEditingValue)valueLocal).text != this._lastFieldText))
         {
-            shouldUpdateOptions__19309 = true;
+            shouldUpdateOptions = true;
             _onChangedCallId += 1L;
         }
-        _lastFieldText = ((global::Doroti.Framework.Services.TextEditingValue)value__19184).text;
-        long callId__19494 = this._onChangedCallId;
-        IEnumerable<T> options__19543 = await DartAsyncRuntime.AwaitFutureOrValue<IEnumerable<T>>(this.widget.optionsBuilder(value__19184));
+        _lastFieldText = ((global::Doroti.Framework.Services.TextEditingValue)valueLocal).text;
+        long callId = this._onChangedCallId;
+        IEnumerable<T> options = await DartAsyncRuntime.AwaitFutureOrValue<IEnumerable<T>>(this.widget.optionsBuilder(valueLocal));
         if (!this.mounted)
         {
             return;
         }
-        if (((callId__19494 != this._onChangedCallId) || !shouldUpdateOptions__19309))
+        if (((callId != this._onChangedCallId) || !shouldUpdateOptions))
         {
             return;
         }
-        if ((!System.Linq.Enumerable.Any(this._options) != !System.Linq.Enumerable.Any(options__19543)))
+        if ((!System.Linq.Enumerable.Any(this._options) != !System.Linq.Enumerable.Any(options)))
         {
-            _announceSemantics(System.Linq.Enumerable.Any(options__19543));
+            _announceSemantics(System.Linq.Enumerable.Any(options));
         }
-        _options = options__19543;
+        _options = options;
         _updateHighlight(((global::Doroti.Framework.Foundation.ValueNotifier<long>)this._highlightedOptionIndex).value);
-        T? selection__19972 = this._selection;
-        if (((selection__19972 is not null) && (((global::Doroti.Framework.Services.TextEditingValue)value__19184).text != this.widget.displayStringForOption(selection__19972))))
+        T? selection = this._selection;
+        if (((selection is not null) && (((global::Doroti.Framework.Services.TextEditingValue)valueLocal).text != this.widget.displayStringForOption(selection))))
         {
             _selection = default(T);
         }
@@ -227,9 +227,9 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         }
         _selecting = true;
         _selection = nextSelection;
-        string selectionString__20590 = this.widget.displayStringForOption(nextSelection);
-        this._textEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: selectionString__20590.Length), text: selectionString__20590);
-        _lastFieldText = selectionString__20590;
+        string selectionString = this.widget.displayStringForOption(nextSelection);
+        this._textEditingController.value = new global::Doroti.Framework.Services.TextEditingValue(selection: global::Doroti.Framework.Services.TextSelection.CreateCollapsed(offset: selectionString.Length), text: selectionString);
+        _lastFieldText = selectionString;
         ((RawAutocomplete<T>)(object)this.widget).onSelected?.Invoke(nextSelection);
         if (((OverlayPortalController)this._optionsViewController).isShowing)
         {
@@ -301,39 +301,39 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         {
             return ((Widget)(object?)SizedBox.CreateShrink());
         }
-        global::Doroti.Ui.Size fieldSize__23175 = ((global::Doroti.Ui.Size)(object?)((OverlayChildLayoutInfo)layoutInfo).childSize);
-        Matrix4 invertTransform__23227 = ((Func<Matrix4>)(() =>
+        global::Doroti.Ui.Size fieldSize = ((global::Doroti.Ui.Size)(object?)((OverlayChildLayoutInfo)layoutInfo).childSize);
+        Matrix4 invertTransform = ((Func<Matrix4>)(() =>
 {
     var __cascade = ((OverlayChildLayoutInfo)layoutInfo).childPaintTransform.clone();
     __cascade.invert();
     return __cascade;
 }))();
-        global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding__23317 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
-        global::Doroti.Framework.Painting.EdgeInsets viewInsets__23389 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.viewInsetsOf(context));
-        global::Doroti.Ui.Rect overlayRect__23452 = ((global::Doroti.Ui.Rect)(object?)mediaQueryPadding__23317.deflateRect(viewInsets__23389.deflateRect((Offset.zero & ((OverlayChildLayoutInfo)layoutInfo).overlaySize))));
-        global::Doroti.Ui.Rect overlayRectInField__23756 = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(invertTransform__23227, overlayRect__23452));
-        double spaceAbove__23852 = -overlayRectInField__23756.top;
-        double spaceBelow__23907 = (overlayRectInField__23756.bottom - fieldSize__23175.height);
-        bool opensUp__23981 = (((RawAutocomplete<T>)(object)this.widget).optionsViewOpenDirection switch { OptionsViewOpenDirection.up => true, OptionsViewOpenDirection.down => false, OptionsViewOpenDirection.mostSpace => (spaceAbove__23852 > spaceBelow__23907), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        double optionsViewMaxHeight__24217 = (opensUp__23981 ? -overlayRectInField__23756.top : (overlayRectInField__23756.bottom - fieldSize__23175.height));
-        var optionsViewBoundingBox__24349 = new global::Doroti.Ui.Size(fieldSize__23175.width, Math.Max(optionsViewMaxHeight__24217, _kMinUsableHeight));
-        double originY__24485 = (opensUp__23981 ? overlayRectInField__23756.top : (overlayRectInField__23756.bottom - optionsViewBoundingBox__24349.height));
-        Matrix4 transform__24624 = ((Func<Matrix4>)(() =>
+        global::Doroti.Framework.Painting.EdgeInsets mediaQueryPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.paddingOf(context));
+        global::Doroti.Framework.Painting.EdgeInsets viewInsets = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)MediaQuery.viewInsetsOf(context));
+        global::Doroti.Ui.Rect overlayRect = ((global::Doroti.Ui.Rect)(object?)mediaQueryPadding.deflateRect(viewInsets.deflateRect((Offset.zero & ((OverlayChildLayoutInfo)layoutInfo).overlaySize))));
+        global::Doroti.Ui.Rect overlayRectInField = ((global::Doroti.Ui.Rect)(object?)MatrixUtils.transformRect(invertTransform, overlayRect));
+        double spaceAbove = -overlayRectInField.top;
+        double spaceBelow = (overlayRectInField.bottom - fieldSize.height);
+        bool opensUp = (((RawAutocomplete<T>)(object)this.widget).optionsViewOpenDirection switch { OptionsViewOpenDirection.up => true, OptionsViewOpenDirection.down => false, OptionsViewOpenDirection.mostSpace => (spaceAbove > spaceBelow), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        double optionsViewMaxHeight = (opensUp ? -overlayRectInField.top : (overlayRectInField.bottom - fieldSize.height));
+        var optionsViewBoundingBox = new global::Doroti.Ui.Size(fieldSize.width, Math.Max(optionsViewMaxHeight, _kMinUsableHeight));
+        double originY = (opensUp ? overlayRectInField.top : (overlayRectInField.bottom - optionsViewBoundingBox.height));
+        Matrix4 transformLocal = ((Func<Matrix4>)(() =>
 {
     var __cascade = ((OverlayChildLayoutInfo)layoutInfo).childPaintTransform.clone();
-    __cascade.translateByDouble(0.0, originY__24485, 0, 1);
+    __cascade.translateByDouble(0.0, originY, 0, 1);
     return __cascade;
 }))();
-        Widget child__24739 = ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => this.widget.optionsViewBuilder(context, this._select, this._options)))));
-        return ((Widget)(object?)new Transform(transform: transform__24624, child: new Align(alignment: global::Doroti.Framework.Painting.Alignment.topLeft, child: new ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(optionsViewBoundingBox__24349), child: new Align(alignment: (opensUp__23981 ? global::Doroti.Framework.Painting.AlignmentDirectional.bottomStart : global::Doroti.Framework.Painting.AlignmentDirectional.topStart), child: new TextFieldTapRegion(child: new AutocompleteHighlightedOption(highlightIndexNotifier: this._highlightedOptionIndex, child: new ExcludeFocus(child: child__24739))))))));
+        Widget childLocal = ((Widget)(object?)new Builder(builder: ((global::System.Func<BuildContext, Widget>)((context) => this.widget.optionsViewBuilder(context, this._select, this._options)))));
+        return ((Widget)(object?)new Transform(transform: transformLocal, child: new Align(alignment: global::Doroti.Framework.Painting.Alignment.topLeft, child: new ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTight(optionsViewBoundingBox), child: new Align(alignment: (opensUp ? global::Doroti.Framework.Painting.AlignmentDirectional.bottomStart : global::Doroti.Framework.Painting.AlignmentDirectional.topStart), child: new TextFieldTapRegion(child: new AutocompleteHighlightedOption(highlightIndexNotifier: this._highlightedOptionIndex, child: new ExcludeFocus(child: childLocal))))))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void initState()
     {
         base.initState();
-        TextEditingController initialController__26054 = (((RawAutocomplete<T>)(object)this.widget).textEditingController ?? (_internalTextEditingController = TextEditingController.CreateFromValue(((RawAutocomplete<T>)(object)this.widget).initialValue)));
-        initialController__26054.addListener(() => this._onChangedField());
+        TextEditingController initialController = (((RawAutocomplete<T>)(object)this.widget).textEditingController ?? (_internalTextEditingController = TextEditingController.CreateFromValue(((RawAutocomplete<T>)(object)this.widget).initialValue)));
+        initialController.addListener(() => this._onChangedField());
         _hasFocus = ((FocusNode)this._focusNode).hasFocus;
         ((RawAutocomplete<T>)(object)this.widget).focusNode?.addListener(() => this._onFocusChange());
     }
@@ -375,8 +375,8 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
 
     public override Widget build(BuildContext context)
     {
-        Widget fieldView__27565 = ((((RawAutocomplete<T>)(object)this.widget).fieldViewBuilder is null ? new SizedBox(width: double.PositiveInfinity, height: 0.0) : ((RawAutocomplete<T>)(object)this.widget).fieldViewBuilder.Invoke(context, this._textEditingController, this._focusNode, this._onFieldSubmitted)));
-        return ((Widget)(object?)OverlayPortal.CreateOverlayChildLayoutBuilder(controller: this._optionsViewController, overlayChildBuilder: this._buildOptionsView, child: new TextFieldTapRegion(child: new Shortcuts(shortcuts: _shortcuts, child: new Actions(actions: this._actionMap.cast<Type, dynamic>(), child: fieldView__27565)))));
+        Widget fieldView = ((((RawAutocomplete<T>)(object)this.widget).fieldViewBuilder is null ? new SizedBox(width: double.PositiveInfinity, height: 0.0) : ((RawAutocomplete<T>)(object)this.widget).fieldViewBuilder.Invoke(context, this._textEditingController, this._focusNode, this._onFieldSubmitted)));
+        return ((Widget)(object?)OverlayPortal.CreateOverlayChildLayoutBuilder(controller: this._optionsViewController, overlayChildBuilder: this._buildOptionsView, child: new TextFieldTapRegion(child: new Shortcuts(shortcuts: _shortcuts, child: new Actions(actions: this._actionMap.cast<Type, dynamic>(), child: fieldView)))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

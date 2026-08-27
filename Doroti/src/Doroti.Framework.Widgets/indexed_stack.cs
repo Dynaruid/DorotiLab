@@ -37,13 +37,13 @@ public class IndexedStack : StatelessWidget
 
     public override Widget build(BuildContext context)
     {
-        var wrappedChildren__3375 = new List<Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(this.children.Count)))), ((i) =>
+        var wrappedChildren = new List<Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(this.children.Count)))), ((i) =>
         {
-            var isSelected__3454 = (i == this.index);
-            return new _VisibilityScope__indexed_stack(isVisible: isSelected__3454, child: new ExcludeFocus(excluding: !isSelected__3454, child: this.children[(int)(i)]));
+            var isSelected = (i == this.index);
+            return new _VisibilityScope__indexed_stack(isVisible: isSelected, child: new ExcludeFocus(excluding: !isSelected, child: this.children[(int)(i)]));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
-        return ((Widget)(object?)new _RawIndexedStack__indexed_stack(alignment: this.alignment, textDirection: this.textDirection, clipBehavior: this.clipBehavior, sizing: this.sizing, index: this.index, children: wrappedChildren__3375));
+        return ((Widget)(object?)new _RawIndexedStack__indexed_stack(alignment: this.alignment, textDirection: this.textDirection, clipBehavior: this.clipBehavior, sizing: this.sizing, index: this.index, children: wrappedChildren));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -110,10 +110,10 @@ internal class _IndexedStackElement__indexed_stack : MultiChildRenderObjectEleme
     public override _RawIndexedStack__indexed_stack widget => ((_RawIndexedStack__indexed_stack?)(object?)base.widget)!;
     public override void debugVisitOnstageChildren(global::System.Action<Element> visitor)
     {
-        long? index__6279 = ((_RawIndexedStack__indexed_stack)this.widget).index;
-        if (((index__6279 is not null) && System.Linq.Enumerable.Any(this.children)))
+        long? indexLocal = ((_RawIndexedStack__indexed_stack)this.widget).index;
+        if (((indexLocal is not null) && System.Linq.Enumerable.Any(this.children)))
         {
-            long index__6279__value6418 = DartRuntimePrimitives.RequireValue(index__6279);
+            long index__6279__value6418 = DartRuntimePrimitives.RequireValue(indexLocal);
             visitor(this.children.elementAt(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(index__6279__value6418))));
         }
     }
@@ -168,31 +168,31 @@ public class Visibility : StatelessWidget
 
     public static bool of(BuildContext context)
     {
-        var isVisible__16785 = true;
-        var ancestorContext__16811 = context;
-        InheritedElement? ancestor__16860 = ((InheritedElement?)(object?)ancestorContext__16811.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>());
-        while ((isVisible__16785 && (ancestor__16860 is not null)))
+        var isVisibleLocal = true;
+        var ancestorContext = context;
+        InheritedElement? ancestor = ((InheritedElement?)(object?)ancestorContext.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>());
+        while ((isVisibleLocal && (ancestor is not null)))
         {
-            var scope__17013 = ((_VisibilityScope__indexed_stack?)(object?)context.dependOnInheritedElement(ancestor__16860))!;
-            isVisible__16785 = ((_VisibilityScope__indexed_stack)scope__17013).isVisible;
-            ancestor__16860.visitAncestorElements(((global::System.Func<Element, bool>)((parent) =>
+            var scope = ((_VisibilityScope__indexed_stack?)(object?)context.dependOnInheritedElement(ancestor))!;
+            isVisibleLocal = ((_VisibilityScope__indexed_stack)scope).isVisible;
+            ancestor.visitAncestorElements(((global::System.Func<Element, bool>)((parent) =>
             {
-                ancestorContext__16811 = DartRuntimePrimitives.ConvertValue<BuildContext>(parent);
+                ancestorContext = DartRuntimePrimitives.ConvertValue<BuildContext>(parent);
                 return false;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
-            ancestor__16860 = ancestorContext__16811.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>();
+            ancestor = ancestorContext.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>();
         }
-        return isVisible__16785;
+        return isVisibleLocal;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override Widget build(BuildContext context)
     {
-        Widget result__17431 = ((Widget)(object?)new ExcludeFocus(excluding: (!this.visible && !this.maintainFocusability), child: this.child));
+        Widget result = ((Widget)(object?)new ExcludeFocus(excluding: (!this.visible && !this.maintainFocusability), child: this.child));
         if (this.maintainSize)
         {
-            result__17431 = DartRuntimePrimitives.ConvertValue<Widget>(new _Visibility__indexed_stack(visible: this.visible, maintainSemantics: this.maintainSemantics, child: new IgnorePointer(ignoring: (!this.visible && !this.maintainInteractivity), child: result__17431)));
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new _Visibility__indexed_stack(visible: this.visible, maintainSemantics: this.maintainSemantics, child: new IgnorePointer(ignoring: (!this.visible && !this.maintainInteractivity), child: result)));
         }
         else
         {
@@ -203,18 +203,18 @@ public class Visibility : StatelessWidget
             {
                 if (!this.maintainAnimation)
                 {
-                    result__17431 = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(enabled: this.visible, child: result__17431));
+                    result = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(enabled: this.visible, child: result));
                 }
-                result__17431 = DartRuntimePrimitives.ConvertValue<Widget>(new Offstage(offstage: !this.visible, child: result__17431));
+                result = DartRuntimePrimitives.ConvertValue<Widget>(new Offstage(offstage: !this.visible, child: result));
             }
             else
             {
                 DartRuntimePrimitives.Assert(() => !this.maintainAnimation);
                 DartRuntimePrimitives.Assert(() => !this.maintainState);
-                result__17431 = (this.visible ? this.child : this.replacement);
+                result = (this.visible ? this.child : this.replacement);
             }
         }
-        return ((Widget)(object?)new _VisibilityScope__indexed_stack(isVisible: this.visible, child: result__17431));
+        return ((Widget)(object?)new _VisibilityScope__indexed_stack(isVisible: this.visible, child: result));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -296,21 +296,21 @@ public class SliverVisibility : StatelessWidget
     {
         if (this.maintainSize)
         {
-            Widget result__28108 = this.sliver;
-            result__28108 = DartRuntimePrimitives.ConvertValue<Widget>(new SliverIgnorePointer(ignoring: (!this.visible && !this.maintainInteractivity), sliver: result__28108));
-            return ((Widget)(object?)new _SliverVisibility__indexed_stack(visible: this.visible, maintainSemantics: this.maintainSemantics, sliver: result__28108));
+            Widget result = this.sliver;
+            result = DartRuntimePrimitives.ConvertValue<Widget>(new SliverIgnorePointer(ignoring: (!this.visible && !this.maintainInteractivity), sliver: result));
+            return ((Widget)(object?)new _SliverVisibility__indexed_stack(visible: this.visible, maintainSemantics: this.maintainSemantics, sliver: result));
         }
         DartRuntimePrimitives.Assert(() => !this.maintainInteractivity);
         DartRuntimePrimitives.Assert(() => !this.maintainSemantics);
         DartRuntimePrimitives.Assert(() => !this.maintainSize);
         if (this.maintainState)
         {
-            Widget result__28499 = this.sliver;
+            Widget resultLocal = this.sliver;
             if (!this.maintainAnimation)
             {
-                result__28499 = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(enabled: this.visible, child: this.sliver));
+                resultLocal = DartRuntimePrimitives.ConvertValue<Widget>(new TickerMode(enabled: this.visible, child: this.sliver));
             }
-            return ((Widget)(object?)new SliverOffstage(sliver: result__28499, offstage: !this.visible));
+            return ((Widget)(object?)new SliverOffstage(sliver: resultLocal, offstage: !this.visible));
         }
         DartRuntimePrimitives.Assert(() => !this.maintainAnimation);
         DartRuntimePrimitives.Assert(() => !this.maintainState);

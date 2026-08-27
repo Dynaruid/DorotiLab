@@ -84,10 +84,10 @@ public class MagnifierController
     {
         this._overlayEntry?.remove();
         this._overlayEntry?.dispose();
-        OverlayState overlayState__9315 = ((OverlayState)(object?)Overlay.of(context, rootOverlay: true, debugRequiredFor: debugRequiredFor));
-        CapturedThemes capturedThemes__9457 = ((CapturedThemes)(object?)InheritedTheme.capture(from: context, to: Navigator.maybeOf(context)?.context));
-        _overlayEntry = new OverlayEntry(builder: ((global::System.Func<BuildContext, Widget>)((context) => capturedThemes__9457.wrap(builder(context)))));
-        overlayState__9315.insert(this.overlayEntry!, below: below);
+        OverlayState overlayState = ((OverlayState)(object?)Overlay.of(context, rootOverlay: true, debugRequiredFor: debugRequiredFor));
+        CapturedThemes capturedThemes = ((CapturedThemes)(object?)InheritedTheme.capture(from: context, to: Navigator.maybeOf(context)?.context));
+        _overlayEntry = new OverlayEntry(builder: ((global::System.Func<BuildContext, Widget>)((context) => capturedThemes.wrap(builder(context)))));
+        overlayState.insert(this.overlayEntry!, below: below);
         if ((this.animationController is not null))
         {
             this.animationController?.forward();
@@ -121,30 +121,30 @@ public class MagnifierController
     {
         DartRuntimePrimitives.Assert(() => (rect.width <= bounds.width), () => (object?)$"attempted to shift {rect} within {bounds}, but the rect has a greater width.");
         DartRuntimePrimitives.Assert(() => (rect.height <= bounds.height), () => (object?)$"attempted to shift {rect} within {bounds}, but the rect has a greater height.");
-        global::Doroti.Ui.Offset rectShift__12514 = ((global::Doroti.Ui.Offset)(object?)Offset.zero);
+        global::Doroti.Ui.Offset rectShift = ((global::Doroti.Ui.Offset)(object?)Offset.zero);
         if ((rect.left < bounds.left))
         {
-            rectShift__12514 += new global::Doroti.Ui.Offset((bounds.left - rect.left), 0);
+            rectShift += new global::Doroti.Ui.Offset((bounds.left - rect.left), 0);
         }
         else
         {
             if ((rect.right > bounds.right))
             {
-                rectShift__12514 += new global::Doroti.Ui.Offset((bounds.right - rect.right), 0);
+                rectShift += new global::Doroti.Ui.Offset((bounds.right - rect.right), 0);
             }
         }
         if ((rect.top < bounds.top))
         {
-            rectShift__12514 += new global::Doroti.Ui.Offset(0, (bounds.top - rect.top));
+            rectShift += new global::Doroti.Ui.Offset(0, (bounds.top - rect.top));
         }
         else
         {
             if ((rect.bottom > bounds.bottom))
             {
-                rectShift__12514 += new global::Doroti.Ui.Offset(0, (bounds.bottom - rect.bottom));
+                rectShift += new global::Doroti.Ui.Offset(0, (bounds.bottom - rect.bottom));
             }
         }
-        return rect.shift(rectShift__12514);
+        return rect.shift(rectShift);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -306,22 +306,22 @@ public class _RenderMagnification__magnifier : global::Doroti.Framework.Renderin
     public override global::Doroti.Framework.Rendering.BackdropFilterLayer? layer => ((global::Doroti.Framework.Rendering.BackdropFilterLayer?)(object?)base.layer)!;
     public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
-        global::Doroti.Ui.Offset thisCenter__22916 = ((global::Doroti.Ui.Offset)(object?)(global::Doroti.Framework.Painting.Alignment.center.alongSize(this.size) + offset));
-        var matrix__22982 = ((Func<Matrix4>)(() =>
+        global::Doroti.Ui.Offset thisCenter = ((global::Doroti.Ui.Offset)(object?)(global::Doroti.Framework.Painting.Alignment.center.alongSize(this.size) + offset));
+        var matrix = ((Func<Matrix4>)(() =>
 {
     var __cascade = Matrix4.identity();
-    __cascade.translateByDouble(((this.magnificationScale * ((((this.focalPointOffset.dx * -1L)) - thisCenter__22916.dx))) + thisCenter__22916.dx), ((this.magnificationScale * ((((this.focalPointOffset.dy * -1L)) - thisCenter__22916.dy))) + thisCenter__22916.dy), 0, 1);
+    __cascade.translateByDouble(((this.magnificationScale * ((((this.focalPointOffset.dx * -1L)) - thisCenter.dx))) + thisCenter.dx), ((this.magnificationScale * ((((this.focalPointOffset.dy * -1L)) - thisCenter.dy))) + thisCenter.dy), 0, 1);
     __cascade.scaleByDouble(this.magnificationScale, this.magnificationScale, this.magnificationScale, 1);
     return __cascade;
 }))();
-        var filter__23345 = new global::Doroti.Ui.ImageFilter(matrix__22982.storage, filterQuality: FilterQuality.high);
+        var filterLocal = new global::Doroti.Ui.ImageFilter(matrix.storage, filterQuality: FilterQuality.high);
         if ((this.layer is null))
         {
-            layer = new global::Doroti.Framework.Rendering.BackdropFilterLayer(filter: filter__23345);
+            layer = new global::Doroti.Framework.Rendering.BackdropFilterLayer(filter: filterLocal);
         }
         else
         {
-            this.layer!.filter = filter__23345;
+            this.layer!.filter = filterLocal;
         }
         context.pushLayer(this.layer!, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint, offset);
     }

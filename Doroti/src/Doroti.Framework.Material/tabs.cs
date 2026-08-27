@@ -77,28 +77,28 @@ public class Tab : global::Doroti.Framework.Widgets.StatelessWidget, global::Dor
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        double calculatedHeight__6389 = default!;
-        global::Doroti.Framework.Widgets.Widget label__6424 = default!;
+        double calculatedHeight = default!;
+        global::Doroti.Framework.Widgets.Widget label = default!;
         if ((this.icon is null))
         {
-            calculatedHeight__6389 = TabsLibrary._kTabHeight;
-            label__6424 = _buildLabelText();
+            calculatedHeight = TabsLibrary._kTabHeight;
+            label = _buildLabelText();
         }
         else
         {
             if (((this.text is null) && (this.child is null)))
             {
-                calculatedHeight__6389 = TabsLibrary._kTabHeight;
-                label__6424 = this.icon!;
+                calculatedHeight = TabsLibrary._kTabHeight;
+                label = this.icon!;
             }
             else
             {
-                calculatedHeight__6389 = TabsLibrary._kTextAndIconTabHeight;
-                global::Doroti.Framework.Painting.EdgeInsetsGeometry effectiveIconMargin__6726 = (this.iconMargin ?? ((Theme.of(context).useMaterial3 ? _TabsPrimaryDefaultsM3__tabs.iconMargin : _TabsDefaultsM2__tabs.iconMargin)));
-                label__6424 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: effectiveIconMargin__6726, child: this.icon)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildLabelText()) }));
+                calculatedHeight = TabsLibrary._kTextAndIconTabHeight;
+                global::Doroti.Framework.Painting.EdgeInsetsGeometry effectiveIconMargin = (this.iconMargin ?? ((Theme.of(context).useMaterial3 ? _TabsPrimaryDefaultsM3__tabs.iconMargin : _TabsDefaultsM2__tabs.iconMargin)));
+                label = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Column(mainAxisAlignment: global::Doroti.Framework.Rendering.MainAxisAlignment.center, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: effectiveIconMargin, child: this.icon)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(_buildLabelText()) }));
             }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: (this.height ?? calculatedHeight__6389), child: new global::Doroti.Framework.Widgets.Center(widthFactor: 1.0, child: label__6424)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: (this.height ?? calculatedHeight), child: new global::Doroti.Framework.Widgets.Center(widthFactor: 1.0, child: label)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -158,28 +158,28 @@ internal class _TabStyle__tabs : global::Doroti.Framework.Widgets.AnimatedWidget
 
     internal virtual global::Doroti.Framework.Widgets.WidgetStateColor _resolveWithLabelColor(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.IconThemeData? iconTheme = null)
     {
-        ThemeData themeData__8511 = Theme.of(context);
-        TabBarThemeData tabBarTheme__8568 = TabBarTheme.of(context);
-        var animation__8617 = ((global::Doroti.Framework.Animation.Animation<double>?)(object?)this.listenable)!;
-        global::Doroti.Ui.Color selectedColor__8913 = ((global::Doroti.Ui.Color)(object?)((((this.labelColor ?? tabBarTheme__8568.labelColor) ?? this.labelStyle?.color) ?? tabBarTheme__8568.labelStyle?.color) ?? this.defaults.labelColor!));
-        global::Doroti.Ui.Color unselectedColor__9102 = default!;
-        if ((selectedColor__8913 is global::Doroti.Framework.Widgets.WidgetStateColor))
+        ThemeData themeData = Theme.of(context);
+        TabBarThemeData tabBarTheme = TabBarTheme.of(context);
+        var animation = ((global::Doroti.Framework.Animation.Animation<double>?)(object?)this.listenable)!;
+        global::Doroti.Ui.Color selectedColor = ((global::Doroti.Ui.Color)(object?)((((this.labelColor ?? tabBarTheme.labelColor) ?? this.labelStyle?.color) ?? tabBarTheme.labelStyle?.color) ?? this.defaults.labelColor!));
+        global::Doroti.Ui.Color unselectedColor = default!;
+        if ((selectedColor is global::Doroti.Framework.Widgets.WidgetStateColor))
         {
-            global::Doroti.Framework.Widgets.WidgetStateColor selectedColor__8913__as9128 = (global::Doroti.Framework.Widgets.WidgetStateColor)selectedColor__8913;
-            unselectedColor__9102 = ((global::Doroti.Framework.Widgets.WidgetStateColor)selectedColor__8913__as9128).resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>());
-            selectedColor__8913 = ((global::Doroti.Framework.Widgets.WidgetStateColor)selectedColor__8913__as9128).resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.selected });
+            global::Doroti.Framework.Widgets.WidgetStateColor selectedColor__8913__as9128 = (global::Doroti.Framework.Widgets.WidgetStateColor)selectedColor;
+            unselectedColor = ((global::Doroti.Framework.Widgets.WidgetStateColor)selectedColor__8913__as9128).resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>());
+            selectedColor = ((global::Doroti.Framework.Widgets.WidgetStateColor)selectedColor__8913__as9128).resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.selected });
         }
         else
         {
-            unselectedColor__9102 = (((((this.unselectedLabelColor ?? tabBarTheme__8568.unselectedLabelColor) ?? this.unselectedLabelStyle?.color) ?? tabBarTheme__8568.unselectedLabelStyle?.color) ?? iconTheme?.color) ?? ((themeData__8511.useMaterial3 ? this.defaults.unselectedLabelColor! : selectedColor__8913.withAlpha(178L))));
+            unselectedColor = (((((this.unselectedLabelColor ?? tabBarTheme.unselectedLabelColor) ?? this.unselectedLabelStyle?.color) ?? tabBarTheme.unselectedLabelStyle?.color) ?? iconTheme?.color) ?? ((themeData.useMaterial3 ? this.defaults.unselectedLabelColor! : selectedColor.withAlpha(178L))));
         }
         return global::Doroti.Framework.Widgets.WidgetStateColor.CreateResolveWith(((states) =>
         {
             if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
             {
-                return Dart_uiLibrary.Color.lerp(selectedColor__8913, unselectedColor__9102, ((global::Doroti.Framework.Animation.Animation<double>)animation__8617).value)!;
+                return Dart_uiLibrary.Color.lerp(selectedColor, unselectedColor, ((global::Doroti.Framework.Animation.Animation<double>)animation).value)!;
             }
-            return Dart_uiLibrary.Color.lerp(unselectedColor__9102, selectedColor__8913, ((global::Doroti.Framework.Animation.Animation<double>)animation__8617).value)!;
+            return Dart_uiLibrary.Color.lerp(unselectedColor, selectedColor, ((global::Doroti.Framework.Animation.Animation<double>)animation).value)!;
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -187,18 +187,18 @@ internal class _TabStyle__tabs : global::Doroti.Framework.Widgets.AnimatedWidget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        ThemeData theme__10203 = Theme.of(context);
-        TabBarThemeData tabBarTheme__10256 = TabBarTheme.of(context);
-        var animation__10305 = ((global::Doroti.Framework.Animation.Animation<double>?)(object?)this.listenable)!;
-        var states__10361 = (this.isSelected ? new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.selected } : new HashSet<global::Doroti.Framework.Widgets.WidgetState>());
-        global::Doroti.Framework.Painting.TextStyle selectedStyle__10619 = ((global::Doroti.Framework.Painting.TextStyle)(object?)this.defaults.labelStyle!.merge((this.labelStyle ?? tabBarTheme__10256.labelStyle)).copyWith(inherit: true));
-        global::Doroti.Framework.Painting.TextStyle unselectedStyle__10763 = ((global::Doroti.Framework.Painting.TextStyle)(object?)this.defaults.unselectedLabelStyle!.merge(((this.unselectedLabelStyle ?? tabBarTheme__10256.unselectedLabelStyle) ?? this.labelStyle)).copyWith(inherit: true));
-        global::Doroti.Framework.Painting.TextStyle textStyle__10953 = (this.isSelected ? TextStyle.lerp(selectedStyle__10619, unselectedStyle__10763, ((global::Doroti.Framework.Animation.Animation<double>)animation__10305).value)! : TextStyle.lerp(unselectedStyle__10763, selectedStyle__10619, ((global::Doroti.Framework.Animation.Animation<double>)animation__10305).value)!);
-        global::Doroti.Ui.Color defaultIconColor__11143 = ((global::Doroti.Ui.Color)(object?)(theme__10203.colorScheme.brightness switch { Brightness.light => ConstantsLibrary.kDefaultIconDarkColor, Brightness.dark => ConstantsLibrary.kDefaultIconLightColor, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        global::Doroti.Framework.Widgets.IconThemeData? customIconTheme__11332 = (IconTheme.of(context) switch { global::Doroti.Framework.Widgets.IconThemeData iconTheme__11409 when ((!object.Equals(((global::Doroti.Framework.Widgets.IconThemeData)iconTheme__11409).color, defaultIconColor__11143))) => iconTheme__11409, _ => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.IconThemeData>(null) });
-        global::Doroti.Ui.Color iconColor__11514 = ((global::Doroti.Ui.Color)(object?)_resolveWithLabelColor(context, iconTheme: customIconTheme__11332).resolve(states__10361));
-        global::Doroti.Ui.Color labelColor__11638 = ((global::Doroti.Ui.Color)(object?)_resolveWithLabelColor(context).resolve(states__10361));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle__10953.copyWith(color: labelColor__11638), child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(size: (customIconTheme__11332?.size ?? 24.0), color: iconColor__11514), child: this.child)));
+        ThemeData theme = Theme.of(context);
+        TabBarThemeData tabBarTheme = TabBarTheme.of(context);
+        var animation = ((global::Doroti.Framework.Animation.Animation<double>?)(object?)this.listenable)!;
+        var states = (this.isSelected ? new HashSet<global::Doroti.Framework.Widgets.WidgetState> { global::Doroti.Framework.Widgets.WidgetState.selected } : new HashSet<global::Doroti.Framework.Widgets.WidgetState>());
+        global::Doroti.Framework.Painting.TextStyle selectedStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)this.defaults.labelStyle!.merge((this.labelStyle ?? tabBarTheme.labelStyle)).copyWith(inherit: true));
+        global::Doroti.Framework.Painting.TextStyle unselectedStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)this.defaults.unselectedLabelStyle!.merge(((this.unselectedLabelStyle ?? tabBarTheme.unselectedLabelStyle) ?? this.labelStyle)).copyWith(inherit: true));
+        global::Doroti.Framework.Painting.TextStyle textStyle = (this.isSelected ? TextStyle.lerp(selectedStyle, unselectedStyle, ((global::Doroti.Framework.Animation.Animation<double>)animation).value)! : TextStyle.lerp(unselectedStyle, selectedStyle, ((global::Doroti.Framework.Animation.Animation<double>)animation).value)!);
+        global::Doroti.Ui.Color defaultIconColor = ((global::Doroti.Ui.Color)(object?)(theme.colorScheme.brightness switch { Brightness.light => ConstantsLibrary.kDefaultIconDarkColor, Brightness.dark => ConstantsLibrary.kDefaultIconLightColor, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        global::Doroti.Framework.Widgets.IconThemeData? customIconTheme = (IconTheme.of(context) switch { global::Doroti.Framework.Widgets.IconThemeData iconThemeLocal when ((!object.Equals(((global::Doroti.Framework.Widgets.IconThemeData)iconThemeLocal).color, defaultIconColor))) => iconThemeLocal, _ => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.IconThemeData>(null) });
+        global::Doroti.Ui.Color iconColor = ((global::Doroti.Ui.Color)(object?)_resolveWithLabelColor(context, iconTheme: customIconTheme).resolve(states));
+        global::Doroti.Ui.Color labelColor = ((global::Doroti.Ui.Color)(object?)_resolveWithLabelColor(context).resolve(states));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.DefaultTextStyle(style: textStyle.copyWith(color: labelColor), child: IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(size: (customIconTheme?.size ?? 24.0), color: iconColor), child: this.child)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -218,30 +218,30 @@ public class _TabLabelBarRenderer__tabs : global::Doroti.Framework.Rendering.Ren
     public override void performLayout()
     {
         base.performLayout();
-        global::Doroti.Framework.Rendering.RenderBox? child__12789 = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.firstChild);
-        var xOffsets__12819 = new List<double>();
-        while ((child__12789 is not null))
+        global::Doroti.Framework.Rendering.RenderBox? child = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)this.firstChild);
+        var xOffsets = new List<double>();
+        while ((child is not null))
         {
-            var childParentData__12882 = ((global::Doroti.Framework.Rendering.FlexParentData?)(object?)child__12789.parentData!)!;
-            xOffsets__12819.Add(childParentData__12882.offset.dx);
-            DartRuntimePrimitives.Assert(() => (object.Equals(child__12789.parentData, childParentData__12882)));
-            child__12789 = childParentData__12882.nextSibling;
+            var childParentData = ((global::Doroti.Framework.Rendering.FlexParentData?)(object?)child.parentData!)!;
+            xOffsets.Add(childParentData.offset.dx);
+            DartRuntimePrimitives.Assert(() => (object.Equals(child.parentData, childParentData)));
+            child = childParentData.nextSibling;
         }
         DartRuntimePrimitives.Assert(() => (this.textDirection is not null));
         switch (DartRuntimePrimitives.RequireValue(this.textDirection))
         {
             case TextDirection.rtl:
                 {
-                    xOffsets__12819.Insert(checked((int)0L), this.size.width);
+                    xOffsets.Insert(checked((int)0L), this.size.width);
                     break;
                 }
             case TextDirection.ltr:
                 {
-                    xOffsets__12819.Add(this.size.width);
+                    xOffsets.Add(this.size.width);
                     break;
                 }
         }
-        this.onPerformLayout(xOffsets__12819, DartRuntimePrimitives.RequireValue(this.textDirection), this.size.width);
+        this.onPerformLayout(xOffsets, DartRuntimePrimitives.RequireValue(this.textDirection), this.size.width);
     }
 
 }
@@ -274,14 +274,14 @@ public static partial class TabsLibrary
 {
     internal static double _indexChangeProgress(TabController controller)
     {
-        double controllerValue__14626 = ((TabController)controller).animation!.value;
-        double previousIndex__14688 = ((TabController)controller).previousIndex.toDouble();
-        double currentIndex__14756 = ((TabController)controller).index.toDouble();
+        double controllerValue = ((TabController)controller).animation!.value;
+        double previousIndexLocal = ((TabController)controller).previousIndex.toDouble();
+        double currentIndex = ((TabController)controller).index.toDouble();
         if (!((TabController)controller).indexIsChanging)
         {
-            return Dart_uiLibrary.clampDouble(((currentIndex__14756 - controllerValue__14626)).abs(), 0.0, 1.0);
+            return Dart_uiLibrary.clampDouble(((currentIndex - controllerValue)).abs(), 0.0, 1.0);
         }
-        return (((controllerValue__14626 - currentIndex__14756)).abs() / ((currentIndex__14756 - previousIndex__14688)).abs());
+        return (((controllerValue - currentIndex)).abs() / ((currentIndex - previousIndexLocal)).abs());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
@@ -303,14 +303,14 @@ internal class _DividerPainter__tabs : global::Doroti.Framework.Rendering.Custom
         {
             return;
         }
-        var paint__15520 = ((Func<Paint>)(() =>
+        var paintLocal = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = this.dividerColor;
     __cascade.strokeWidth = this.dividerHeight;
     return __cascade;
 }))();
-        canvas.drawLine(new global::Doroti.Ui.Offset(0, (size.height - ((paint__15520.strokeWidth / 2L)))), new global::Doroti.Ui.Offset(size.width, (size.height - ((paint__15520.strokeWidth / 2L)))), paint__15520);
+        canvas.drawLine(new global::Doroti.Ui.Offset(0, (size.height - ((paintLocal.strokeWidth / 2L)))), new global::Doroti.Ui.Offset(size.width, (size.height - ((paintLocal.strokeWidth / 2L)))), paintLocal);
     }
 
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate)
@@ -417,25 +417,25 @@ internal class _IndicatorPainter__tabs : global::Doroti.Framework.Rendering.Cust
         DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._currentTabOffsets!));
         DartRuntimePrimitives.Assert(() => (tabIndex >= 0L));
         DartRuntimePrimitives.Assert(() => (tabIndex <= this.maxTabIndex));
-        double tabLeft__20395 = default!;
-        double tabRight__20404 = default!;
-        DartRuntimePrimitives.Ignore((tabLeft__20395, tabRight__20404) = (DartRuntimePrimitives.RequireValue(this._currentTextDirection) switch { TextDirection.rtl => (((double, double))((this._currentTabOffsets![(int)((tabIndex + 1L))], this._currentTabOffsets![(int)(tabIndex)]))), TextDirection.ltr => (((double, double))((this._currentTabOffsets![(int)(tabIndex)], this._currentTabOffsets![(int)((tabIndex + 1L))]))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+        double tabLeft = default!;
+        double tabRight = default!;
+        DartRuntimePrimitives.Ignore((tabLeft, tabRight) = (DartRuntimePrimitives.RequireValue(this._currentTextDirection) switch { TextDirection.rtl => (((double, double))((this._currentTabOffsets![(int)((tabIndex + 1L))], this._currentTabOffsets![(int)(tabIndex)]))), TextDirection.ltr => (((double, double))((this._currentTabOffsets![(int)(tabIndex)], this._currentTabOffsets![(int)((tabIndex + 1L))]))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
         if ((object.Equals(this.indicatorSize, TabBarIndicatorSize.label)))
         {
-            double tabWidth__20745 = DartRuntimePrimitives.RequireValue(this.tabKeys[(int)(tabIndex)].currentContext!.size).width;
-            global::Doroti.Framework.Painting.EdgeInsetsGeometry labelPadding__20834 = this.labelPaddings[(int)(tabIndex)];
-            global::Doroti.Framework.Painting.EdgeInsets insets__20897 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)labelPadding__20834.resolve(this._currentTextDirection));
-            double delta__20970 = (((((tabRight__20404 - tabLeft__20395)) - ((tabWidth__20745 + insets__20897.horizontal)))) / 2.0);
-            tabLeft__20395 += (delta__20970 + ((global::Doroti.Framework.Painting.EdgeInsets)insets__20897).left);
-            tabRight__20404 = (tabLeft__20395 + tabWidth__20745);
+            double tabWidth = DartRuntimePrimitives.RequireValue(this.tabKeys[(int)(tabIndex)].currentContext!.size).width;
+            global::Doroti.Framework.Painting.EdgeInsetsGeometry labelPadding = this.labelPaddings[(int)(tabIndex)];
+            global::Doroti.Framework.Painting.EdgeInsets insets = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)labelPadding.resolve(this._currentTextDirection));
+            double delta = (((((tabRight - tabLeft)) - ((tabWidth + insets.horizontal)))) / 2.0);
+            tabLeft += (delta + ((global::Doroti.Framework.Painting.EdgeInsets)insets).left);
+            tabRight = (tabLeft + tabWidth);
         }
-        global::Doroti.Framework.Painting.EdgeInsets insets__21144 = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)this.indicatorPadding.resolve(this._currentTextDirection));
-        var rect__21212 = global::Doroti.Ui.Rect.fromLTWH(tabLeft__20395, 0.0, (tabRight__20404 - tabLeft__20395), tabBarSize.height);
-        if (!((rect__21212.size >= insets__21144.collapsedSize)))
+        global::Doroti.Framework.Painting.EdgeInsets insetsLocal = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)this.indicatorPadding.resolve(this._currentTextDirection));
+        var rect = global::Doroti.Ui.Rect.fromLTWH(tabLeft, 0.0, (tabRight - tabLeft), tabBarSize.height);
+        if (!((rect.size >= insetsLocal.collapsedSize)))
         {
-            throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("indicatorPadding insets should be less than Tab Size\n" + $"Rect Size : {rect__21212.size}, Insets: {insets__21144}"));
+            throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create("indicatorPadding insets should be less than Tab Size\n" + $"Rect Size : {rect.size}, Insets: {insetsLocal}"));
         }
-        return ((global::Doroti.Ui.Rect)(object?)insets__21144.deflateRect(rect__21212));
+        return ((global::Doroti.Ui.Rect)(object?)insetsLocal.deflateRect(rect));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -443,35 +443,35 @@ internal class _IndicatorPainter__tabs : global::Doroti.Framework.Rendering.Cust
     {
         _needsPaint = false;
         _painter ??= this.indicator.createBoxPainter(() => this.markNeedsPaint());
-        double value__21694 = ((TabController)this.controller).animation!.value;
-        _currentRect = (this.indicatorAnimation switch { TabIndicatorAnimation.linear => _applyLinearEffect(size: size, value: value__21694), TabIndicatorAnimation.elastic => _applyElasticEffect(size: size, value: value__21694), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        double valueLocal = ((TabController)this.controller).animation!.value;
+        _currentRect = (this.indicatorAnimation switch { TabIndicatorAnimation.linear => _applyLinearEffect(size: size, value: valueLocal), TabIndicatorAnimation.elastic => _applyElasticEffect(size: size, value: valueLocal), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         DartRuntimePrimitives.Assert(() => (this._currentRect is not null));
-        var configuration__22004 = new global::Doroti.Framework.Painting.ImageConfiguration(size: DartRuntimePrimitives.RequireValue(this._currentRect).size, textDirection: this._currentTextDirection, devicePixelRatio: this.devicePixelRatio);
+        var configuration = new global::Doroti.Framework.Painting.ImageConfiguration(size: DartRuntimePrimitives.RequireValue(this._currentRect).size, textDirection: this._currentTextDirection, devicePixelRatio: this.devicePixelRatio);
         if ((this.showDivider && (DartRuntimePrimitives.RequireValue(this.dividerHeight) > 0L)))
         {
-            var dividerPaint__22222 = ((Func<Paint>)(() =>
+            var dividerPaint = ((Func<Paint>)(() =>
 {
     var __cascade = new global::Doroti.Ui.Paint();
     __cascade.color = this.dividerColor!;
     __cascade.strokeWidth = DartRuntimePrimitives.RequireValue(this.dividerHeight);
     return __cascade;
 }))();
-            var dividerP1__22329 = new global::Doroti.Ui.Offset(0, (size.height - ((dividerPaint__22222.strokeWidth / 2L))));
-            var dividerP2__22410 = new global::Doroti.Ui.Offset(size.width, (size.height - ((dividerPaint__22222.strokeWidth / 2L))));
-            canvas.drawLine(dividerP1__22329, dividerP2__22410, dividerPaint__22222);
+            var dividerP1 = new global::Doroti.Ui.Offset(0, (size.height - ((dividerPaint.strokeWidth / 2L))));
+            var dividerP2 = new global::Doroti.Ui.Offset(size.width, (size.height - ((dividerPaint.strokeWidth / 2L))));
+            canvas.drawLine(dividerP1, dividerP2, dividerPaint);
         }
-        this._painter!.paint(canvas, DartRuntimePrimitives.RequireValue(this._currentRect).topLeft, configuration__22004);
+        this._painter!.paint(canvas, DartRuntimePrimitives.RequireValue(this._currentRect).topLeft, configuration);
     }
 
     internal virtual global::Doroti.Ui.Rect? _applyLinearEffect(Size size, double value)
     {
-        double index__22766 = ((TabController)this.controller).index.toDouble();
-        bool ltr__22818 = (index__22766 > value);
-        long from__22853 = ((ltr__22818 ? value.floor() : value.ceil())).clamp(0L, this.maxTabIndex);
-        long to__22934 = ((ltr__22818 ? (from__22853 + 1L) : (from__22853 - 1L))).clamp(0L, this.maxTabIndex);
-        global::Doroti.Ui.Rect fromRect__23005 = ((global::Doroti.Ui.Rect)(object?)indicatorRect(size, from__22853));
-        global::Doroti.Ui.Rect toRect__23058 = ((global::Doroti.Ui.Rect)(object?)indicatorRect(size, to__22934));
-        return Dart_uiLibrary.Rect.lerp(fromRect__23005, toRect__23058, ((value - from__22853)).abs());
+        double indexLocal = ((TabController)this.controller).index.toDouble();
+        bool ltr = (indexLocal > value);
+        long @from = ((ltr ? value.floor() : value.ceil())).clamp(0L, this.maxTabIndex);
+        long to = ((ltr ? (@from + 1L) : (@from - 1L))).clamp(0L, this.maxTabIndex);
+        global::Doroti.Ui.Rect fromRect = ((global::Doroti.Ui.Rect)(object?)indicatorRect(size, @from));
+        global::Doroti.Ui.Rect toRect = ((global::Doroti.Ui.Rect)(object?)indicatorRect(size, to));
+        return Dart_uiLibrary.Rect.lerp(fromRect, toRect, ((value - @from)).abs());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -489,61 +489,61 @@ internal class _IndicatorPainter__tabs : global::Doroti.Framework.Rendering.Cust
 
     internal virtual global::Doroti.Ui.Rect? _applyElasticEffect(Size size, double value)
     {
-        double index__23589 = ((TabController)this.controller).index.toDouble();
-        double progressLeft__23637 = ((index__23589 - value)).abs();
-        long to__23690 = (((progressLeft__23637 == 0.0) || !((TabController)this.controller).indexIsChanging) ? (this.textDirection switch { TextDirection.ltr => value.ceil(), TextDirection.rtl => value.floor(), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).clamp(0L, this.maxTabIndex) : ((TabController)this.controller).index);
-        long from__23952 = (((progressLeft__23637 == 0.0) || !((TabController)this.controller).indexIsChanging) ? (this.textDirection switch { TextDirection.ltr => ((to__23690 - 1L)), TextDirection.rtl => ((to__23690 + 1L)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).clamp(0L, this.maxTabIndex) : ((TabController)this.controller).previousIndex);
-        global::Doroti.Ui.Rect toRect__24216 = ((global::Doroti.Ui.Rect)(object?)indicatorRect(size, to__23690));
-        global::Doroti.Ui.Rect fromRect__24265 = ((global::Doroti.Ui.Rect)(object?)indicatorRect(size, from__23952));
-        global::Doroti.Ui.Rect rect__24318 = ((global::Doroti.Ui.Rect)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Rect.lerp(fromRect__24265, toRect__24216, ((value - from__23952)).abs())));
+        double indexLocal = ((TabController)this.controller).index.toDouble();
+        double progressLeft = ((indexLocal - value)).abs();
+        long to = (((progressLeft == 0.0) || !((TabController)this.controller).indexIsChanging) ? (this.textDirection switch { TextDirection.ltr => value.ceil(), TextDirection.rtl => value.floor(), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).clamp(0L, this.maxTabIndex) : ((TabController)this.controller).index);
+        long @from = (((progressLeft == 0.0) || !((TabController)this.controller).indexIsChanging) ? (this.textDirection switch { TextDirection.ltr => ((to - 1L)), TextDirection.rtl => ((to + 1L)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }).clamp(0L, this.maxTabIndex) : ((TabController)this.controller).previousIndex);
+        global::Doroti.Ui.Rect toRect = ((global::Doroti.Ui.Rect)(object?)indicatorRect(size, to));
+        global::Doroti.Ui.Rect fromRect = ((global::Doroti.Ui.Rect)(object?)indicatorRect(size, @from));
+        global::Doroti.Ui.Rect rect = ((global::Doroti.Ui.Rect)(object?)DartRuntimePrimitives.RequireValue(Dart_uiLibrary.Rect.lerp(fromRect, toRect, ((value - @from)).abs())));
         if (((TabController)this.controller).animation!.isCompleted)
         {
-            return rect__24318;
+            return rect;
         }
-        double tabChangeProgress__24712 = default!;
+        double tabChangeProgress = default!;
         if (((TabController)this.controller).indexIsChanging)
         {
-            long tabsDelta__24786 = ((((TabController)this.controller).index - ((TabController)this.controller).previousIndex)).abs();
-            if ((tabsDelta__24786 != 0L))
+            long tabsDelta = ((((TabController)this.controller).index - ((TabController)this.controller).previousIndex)).abs();
+            if ((tabsDelta != 0L))
             {
-                progressLeft__23637 /= tabsDelta__24786;
+                progressLeft /= tabsDelta;
             }
-            tabChangeProgress__24712 = (1L - Dart_uiLibrary.clampDouble(progressLeft__23637, 0.0, 1.0));
+            tabChangeProgress = (1L - Dart_uiLibrary.clampDouble(progressLeft, 0.0, 1.0));
         }
         else
         {
-            tabChangeProgress__24712 = ((index__23589 - value)).abs();
+            tabChangeProgress = ((indexLocal - value)).abs();
         }
-        if ((tabChangeProgress__24712 == 1.0))
+        if ((tabChangeProgress == 1.0))
         {
-            return rect__24318;
+            return rect;
         }
-        double leftFraction__25221 = default!;
-        double rightFraction__25252 = default!;
-        bool isMovingRight__25282 = (this.textDirection switch { TextDirection.ltr => (((TabController)this.controller).indexIsChanging ? (index__23589 > value) : (value > index__23589)), TextDirection.rtl => (((TabController)this.controller).indexIsChanging ? (value > index__23589) : (index__23589 > value)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        if (isMovingRight__25282)
+        double leftFraction = default!;
+        double rightFraction = default!;
+        bool isMovingRight = (this.textDirection switch { TextDirection.ltr => (((TabController)this.controller).indexIsChanging ? (indexLocal > value) : (value > indexLocal)), TextDirection.rtl => (((TabController)this.controller).indexIsChanging ? (value > indexLocal) : (indexLocal > value)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        if (isMovingRight)
         {
-            leftFraction__25221 = accelerateInterpolation(tabChangeProgress__24712);
-            rightFraction__25252 = decelerateInterpolation(tabChangeProgress__24712);
+            leftFraction = accelerateInterpolation(tabChangeProgress);
+            rightFraction = decelerateInterpolation(tabChangeProgress);
         }
         else
         {
-            leftFraction__25221 = decelerateInterpolation(tabChangeProgress__24712);
-            rightFraction__25252 = accelerateInterpolation(tabChangeProgress__24712);
+            leftFraction = decelerateInterpolation(tabChangeProgress);
+            rightFraction = accelerateInterpolation(tabChangeProgress);
         }
-        double lerpRectLeft__25828 = default!;
-        double lerpRectRight__25859 = default!;
+        double lerpRectLeft = default!;
+        double lerpRectRight = default!;
         if (((TabController)this.controller).indexIsChanging)
         {
-            lerpRectLeft__25828 = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(fromRect__24265.left, toRect__24216.left, leftFraction__25221));
-            lerpRectRight__25859 = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(fromRect__24265.right, toRect__24216.right, rightFraction__25252));
+            lerpRectLeft = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction));
+            lerpRectRight = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction));
         }
         else
         {
-            lerpRectLeft__25828 = (((object)isMovingRight__25282) switch { true => DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(fromRect__24265.left, toRect__24216.left, leftFraction__25221)), false => DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(toRect__24216.left, fromRect__24265.left, leftFraction__25221)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-            lerpRectRight__25859 = (((object)isMovingRight__25282) switch { true => DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(fromRect__24265.right, toRect__24216.right, rightFraction__25252)), false => DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(toRect__24216.right, fromRect__24265.right, rightFraction__25252)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            lerpRectLeft = (((object)isMovingRight) switch { true => DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction)), false => DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(toRect.left, fromRect.left, leftFraction)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            lerpRectRight = (((object)isMovingRight) switch { true => DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction)), false => DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(toRect.right, fromRect.right, rightFraction)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
-        return global::Doroti.Ui.Rect.fromLTRB(lerpRectLeft__25828, rect__24318.top, lerpRectRight__25859, rect__24318.bottom);
+        return global::Doroti.Ui.Rect.fromLTRB(lerpRectLeft, rect.top, lerpRectRight, rect.bottom);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -621,9 +621,9 @@ internal class _DragAnimation__tabs : global::Doroti.Framework.Animation.Animati
         get
         {
             DartRuntimePrimitives.Assert(() => !((TabController)this.controller).indexIsChanging);
-            double controllerMaxValue__28466 = ((((TabController)this.controller).length - 1L)).toDouble();
-            double controllerValue__28540 = Dart_uiLibrary.clampDouble(((TabController)this.controller).animation!.value, 0.0, controllerMaxValue__28466);
-            return Dart_uiLibrary.clampDouble(((controllerValue__28540 - this.index.toDouble())).abs(), 0.0, 1.0);
+            double controllerMaxValue = ((((TabController)this.controller).length - 1L)).toDouble();
+            double controllerValue = Dart_uiLibrary.clampDouble(((TabController)this.controller).animation!.value, 0.0, controllerMaxValue);
+            return Dart_uiLibrary.clampDouble(((controllerValue - this.index.toDouble())).abs(), 0.0, 1.0);
             return default!;
         }
     }
@@ -645,7 +645,7 @@ internal class _TabBarScrollPosition__tabs : global::Doroti.Framework.Widgets.Sc
 
     public override bool applyContentDimensions(double minScrollExtent, double maxScrollExtent)
     {
-        var result__29559 = true;
+        var result = true;
         if (!this._viewportDimensionWasNonZero)
         {
             _viewportDimensionWasNonZero = (this.viewportDimension != 0.0);
@@ -654,9 +654,9 @@ internal class _TabBarScrollPosition__tabs : global::Doroti.Framework.Widgets.Sc
         {
             _needsPixelsCorrection = false;
             correctPixels(this.tabBar._initialScrollOffset(this.viewportDimension, minScrollExtent, maxScrollExtent));
-            result__29559 = false;
+            result = false;
         }
-        return (base.applyContentDimensions(minScrollExtent, maxScrollExtent) && result__29559);
+        return (base.applyContentDimensions(minScrollExtent, maxScrollExtent) && result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -811,17 +811,17 @@ public class TabBar : global::Doroti.Framework.Widgets.StatefulWidget, global::D
     {
         get
         {
-            double maxHeight__55406 = TabsLibrary._kTabHeight;
-            foreach (global::Doroti.Framework.Widgets.Widget item__55453 in this.tabs)
+            double maxHeight = TabsLibrary._kTabHeight;
+            foreach (global::Doroti.Framework.Widgets.Widget item in this.tabs)
             {
-                if ((item__55453 is global::Doroti.Framework.Widgets.PreferredSizeWidget))
+                if ((item is global::Doroti.Framework.Widgets.PreferredSizeWidget))
                 {
-                    global::Doroti.Framework.Widgets.PreferredSizeWidget item__55453__as55479 = (global::Doroti.Framework.Widgets.PreferredSizeWidget)item__55453;
-                    double itemHeight__55531 = ((global::Doroti.Framework.Widgets.PreferredSizeWidget)((global::Doroti.Framework.Widgets.PreferredSizeWidget)item__55453__as55479)).preferredSize.height;
-                    maxHeight__55406 = Math.Max(itemHeight__55531, maxHeight__55406);
+                    global::Doroti.Framework.Widgets.PreferredSizeWidget item__55453__as55479 = (global::Doroti.Framework.Widgets.PreferredSizeWidget)item;
+                    double itemHeight = ((global::Doroti.Framework.Widgets.PreferredSizeWidget)((global::Doroti.Framework.Widgets.PreferredSizeWidget)item__55453__as55479)).preferredSize.height;
+                    maxHeight = Math.Max(itemHeight, maxHeight);
                 }
             }
-            return new global::Doroti.Ui.Size((maxHeight__55406 + this.indicatorWeight));
+            return new global::Doroti.Ui.Size((maxHeight + this.indicatorWeight));
             return default!;
         }
     }
@@ -829,11 +829,11 @@ public class TabBar : global::Doroti.Framework.Widgets.StatefulWidget, global::D
     {
         get
         {
-            foreach (global::Doroti.Framework.Widgets.Widget item__56008 in this.tabs)
+            foreach (global::Doroti.Framework.Widgets.Widget item in this.tabs)
             {
-                if ((item__56008 is global::Doroti.Framework.Widgets.PreferredSizeWidget))
+                if ((item is global::Doroti.Framework.Widgets.PreferredSizeWidget))
                 {
-                    global::Doroti.Framework.Widgets.PreferredSizeWidget item__56008__as56034 = (global::Doroti.Framework.Widgets.PreferredSizeWidget)item__56008;
+                    global::Doroti.Framework.Widgets.PreferredSizeWidget item__56008__as56034 = (global::Doroti.Framework.Widgets.PreferredSizeWidget)item;
                     if ((((global::Doroti.Framework.Widgets.PreferredSizeWidget)((global::Doroti.Framework.Widgets.PreferredSizeWidget)item__56008__as56034)).preferredSize.height == TabsLibrary._kTextAndIconTabHeight))
                     {
                         return true;
@@ -896,41 +896,41 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
     }
     internal virtual global::Doroti.Framework.Painting.Decoration _getIndicator(TabBarIndicatorSize indicatorSize)
     {
-        ThemeData theme__57872 = Theme.of(this.context);
-        TabBarThemeData tabBarTheme__57925 = TabBarTheme.of(this.context);
+        ThemeData theme = Theme.of(this.context);
+        TabBarThemeData tabBarTheme = TabBarTheme.of(this.context);
         if ((((TabBar)(object)this.widget).indicator is not null))
         {
             return ((TabBar)(object)this.widget).indicator!;
         }
-        if ((tabBarTheme__57925.indicator is not null))
+        if ((tabBarTheme.indicator is not null))
         {
-            return tabBarTheme__57925.indicator!;
+            return tabBarTheme.indicator!;
         }
-        global::Doroti.Ui.Color color__58134 = ((global::Doroti.Ui.Color)(object?)((((TabBar)(object)this.widget).indicatorColor ?? tabBarTheme__57925.indicatorColor) ?? this._defaults.indicatorColor!));
-        if ((((TabBar)(object)this.widget).automaticIndicatorColorAdjustment && (color__58134.value == Material.maybeOf(this.context)?.color?.value)))
+        global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)(object?)((((TabBar)(object)this.widget).indicatorColor ?? tabBarTheme.indicatorColor) ?? this._defaults.indicatorColor!));
+        if ((((TabBar)(object)this.widget).automaticIndicatorColorAdjustment && (colorLocal.value == Material.maybeOf(this.context)?.color?.value)))
         {
-            color__58134 = Colors.white;
+            colorLocal = Colors.white;
         }
-        double effectiveIndicatorWeight__59270 = (theme__57872.useMaterial3 ? Math.Max(((TabBar)(object)this.widget).indicatorWeight, (((object)((TabBar)(object)this.widget)._isPrimary) switch { true => _TabsPrimaryDefaultsM3__tabs.indicatorWeight(indicatorSize), false => _TabsSecondaryDefaultsM3__tabs.indicatorWeight, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })) : ((TabBar)(object)this.widget).indicatorWeight);
-        bool primaryWithLabelIndicator__59670 = (indicatorSize switch { TabBarIndicatorSize.label => ((TabBar)(object)this.widget)._isPrimary, TabBarIndicatorSize.tab => false, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        global::Doroti.Framework.Painting.BorderRadius? effectiveBorderRadius__59848 = ((theme__57872.useMaterial3 && primaryWithLabelIndicator__59670) ? new global::Doroti.Framework.Painting.BorderRadius(topLeft: global::Doroti.Ui.Radius.circular(effectiveIndicatorWeight__59270), topRight: global::Doroti.Ui.Radius.circular(effectiveIndicatorWeight__59270)) : null);
-        return ((global::Doroti.Framework.Painting.Decoration)(object?)new UnderlineTabIndicator(borderRadius: effectiveBorderRadius__59848, borderSide: new global::Doroti.Framework.Painting.BorderSide(width: effectiveIndicatorWeight__59270, color: color__58134)));
+        double effectiveIndicatorWeight = (theme.useMaterial3 ? Math.Max(((TabBar)(object)this.widget).indicatorWeight, (((object)((TabBar)(object)this.widget)._isPrimary) switch { true => _TabsPrimaryDefaultsM3__tabs.indicatorWeight(indicatorSize), false => _TabsSecondaryDefaultsM3__tabs.indicatorWeight, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })) : ((TabBar)(object)this.widget).indicatorWeight);
+        bool primaryWithLabelIndicator = (indicatorSize switch { TabBarIndicatorSize.label => ((TabBar)(object)this.widget)._isPrimary, TabBarIndicatorSize.tab => false, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        global::Doroti.Framework.Painting.BorderRadius? effectiveBorderRadius = ((theme.useMaterial3 && primaryWithLabelIndicator) ? new global::Doroti.Framework.Painting.BorderRadius(topLeft: global::Doroti.Ui.Radius.circular(effectiveIndicatorWeight), topRight: global::Doroti.Ui.Radius.circular(effectiveIndicatorWeight)) : null);
+        return ((global::Doroti.Framework.Painting.Decoration)(object?)new UnderlineTabIndicator(borderRadius: effectiveBorderRadius, borderSide: new global::Doroti.Framework.Painting.BorderSide(width: effectiveIndicatorWeight, color: colorLocal)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual bool _controllerIsValid => DartRuntimePrimitives.ConvertValue<bool>((this._controller?.animation is not null));
     internal virtual void _updateTabController()
     {
-        TabController? newController__60931 = ((((TabBar)(object)this.widget).controller ?? (TabController)DefaultTabController.maybeOf(this.context)));
+        TabController? newController = ((((TabBar)(object)this.widget).controller ?? (TabController)DefaultTabController.maybeOf(this.context)));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((newController__60931 is null))
+                if ((newController is null))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"No TabController for {DartRuntimePrimitives.RuntimeType(this.widget)}.\n" + $"When creating a {DartRuntimePrimitives.RuntimeType(this.widget)}, you must either provide an explicit " + "TabController using the \"controller\" property, or you must ensure that there " + $"is a DefaultTabController above the {DartRuntimePrimitives.RuntimeType(this.widget)}.\n" + "In this case, there was neither an explicit controller nor a default controller."));
                 }
                 return true;
             });
-        if ((object.Equals(newController__60931, this._controller)))
+        if ((object.Equals(newController, this._controller)))
         {
             return;
         }
@@ -939,7 +939,7 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
             this._controller!.animation!.removeListener(() => this._handleTabControllerAnimationTick());
             this._controller!.removeListener(() => this._handleTabControllerTick());
         }
-        _controller = newController__60931;
+        _controller = newController;
         if ((this._controller is not null))
         {
             this._controller!.animation!.addListener(() => this._handleTabControllerAnimationTick());
@@ -968,13 +968,13 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
 
     internal virtual void _initIndicatorPainter()
     {
-        ThemeData theme__62564 = Theme.of(this.context);
-        TabBarThemeData tabBarTheme__62617 = TabBarTheme.of(this.context);
-        TabBarIndicatorSize indicatorSize__62686 = ((((TabBar)(object)this.widget).indicatorSize ?? tabBarTheme__62617.indicatorSize) ?? DartRuntimePrimitives.RequireValue(this._defaults.indicatorSize));
-        _IndicatorPainter__tabs? oldPainter__62819 = this._indicatorPainter;
-        TabIndicatorAnimation defaultTabIndicatorAnimation__62884 = (indicatorSize__62686 switch { TabBarIndicatorSize.label => TabIndicatorAnimation.elastic, TabBarIndicatorSize.tab => TabIndicatorAnimation.linear, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        _indicatorPainter = (!this._controllerIsValid ? null : _IndicatorPainter__tabs.Create(controller: this._controller!, indicator: _getIndicator(indicatorSize__62686), indicatorSize: indicatorSize__62686, indicatorPadding: ((TabBar)(object)this.widget).indicatorPadding, tabKeys: this._tabKeys, old: oldPainter__62819, labelPaddings: this._labelPaddings, dividerColor: ((((TabBar)(object)this.widget).dividerColor ?? tabBarTheme__62617.dividerColor) ?? this._defaults.dividerColor), dividerHeight: ((((TabBar)(object)this.widget).dividerHeight ?? tabBarTheme__62617.dividerHeight) ?? this._defaults.dividerHeight), showDivider: (theme__62564.useMaterial3 && !((TabBar)(object)this.widget).isScrollable), devicePixelRatio: MediaQuery.devicePixelRatioOf(this.context), indicatorAnimation: ((((TabBar)(object)this.widget).indicatorAnimation ?? tabBarTheme__62617.indicatorAnimation) ?? defaultTabIndicatorAnimation__62884), textDirection: Directionality.of(this.context)));
-        oldPainter__62819?.dispose();
+        ThemeData theme = Theme.of(this.context);
+        TabBarThemeData tabBarTheme = TabBarTheme.of(this.context);
+        TabBarIndicatorSize indicatorSizeLocal = ((((TabBar)(object)this.widget).indicatorSize ?? tabBarTheme.indicatorSize) ?? DartRuntimePrimitives.RequireValue(this._defaults.indicatorSize));
+        _IndicatorPainter__tabs? oldPainter = this._indicatorPainter;
+        TabIndicatorAnimation defaultTabIndicatorAnimation = (indicatorSizeLocal switch { TabBarIndicatorSize.label => TabIndicatorAnimation.elastic, TabBarIndicatorSize.tab => TabIndicatorAnimation.linear, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        _indicatorPainter = (!this._controllerIsValid ? null : _IndicatorPainter__tabs.Create(controller: this._controller!, indicator: _getIndicator(indicatorSizeLocal), indicatorSize: indicatorSizeLocal, indicatorPadding: ((TabBar)(object)this.widget).indicatorPadding, tabKeys: this._tabKeys, old: oldPainter, labelPaddings: this._labelPaddings, dividerColor: ((((TabBar)(object)this.widget).dividerColor ?? tabBarTheme.dividerColor) ?? this._defaults.dividerColor), dividerHeight: ((((TabBar)(object)this.widget).dividerHeight ?? tabBarTheme.dividerHeight) ?? this._defaults.dividerHeight), showDivider: (theme.useMaterial3 && !((TabBar)(object)this.widget).isScrollable), devicePixelRatio: MediaQuery.devicePixelRatioOf(this.context), indicatorAnimation: ((((TabBar)(object)this.widget).indicatorAnimation ?? tabBarTheme.indicatorAnimation) ?? defaultTabIndicatorAnimation), textDirection: Directionality.of(this.context)));
+        oldPainter?.dispose();
     }
 
     public override void didChangeDependencies()
@@ -995,10 +995,10 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
             _initIndicatorPainter();
             if (this._effectiveScrollController.hasClients)
             {
-                global::Doroti.Framework.Widgets.ScrollPosition position__64819 = this._effectiveScrollController.position;
-                if ((position__64819 is _TabBarScrollPosition__tabs))
+                global::Doroti.Framework.Widgets.ScrollPosition positionLocal = this._effectiveScrollController.position;
+                if ((positionLocal is _TabBarScrollPosition__tabs))
                 {
-                    _TabBarScrollPosition__tabs position__64819__as64879 = (_TabBarScrollPosition__tabs)position__64819;
+                    _TabBarScrollPosition__tabs position__64819__as64879 = (_TabBarScrollPosition__tabs)positionLocal;
                     ((_TabBarScrollPosition__tabs)position__64819__as64879).markNeedsPixelsCorrection();
                 }
             }
@@ -1012,9 +1012,9 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         }
         if ((checked((long)(((TabBar)(object)this.widget).tabs.Count)) > checked((long)(this._tabKeys.Count))))
         {
-            long delta__65575 = (checked((long)(((TabBar)(object)this.widget).tabs.Count)) - checked((long)(this._tabKeys.Count)));
-            this._tabKeys.AddRange(DartRuntimePrimitives.CreateList<global::Doroti.Framework.Widgets.GlobalKey<IState>>(delta__65575, ((n) => global::Doroti.Framework.Widgets.GlobalKey<IState>.Create())).Cast<global::Doroti.Framework.Widgets.GlobalKey<IState>>());
-            this._labelPaddings.AddRange(new List<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(System.Linq.Enumerable.Repeat<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.zero, checked((int)delta__65575))).Cast<global::Doroti.Framework.Painting.EdgeInsetsGeometry>());
+            long delta = (checked((long)(((TabBar)(object)this.widget).tabs.Count)) - checked((long)(this._tabKeys.Count)));
+            this._tabKeys.AddRange(DartRuntimePrimitives.CreateList<global::Doroti.Framework.Widgets.GlobalKey<IState>>(delta, ((n) => global::Doroti.Framework.Widgets.GlobalKey<IState>.Create())).Cast<global::Doroti.Framework.Widgets.GlobalKey<IState>>());
+            this._labelPaddings.AddRange(new List<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(System.Linq.Enumerable.Repeat<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.zero, checked((int)delta))).Cast<global::Doroti.Framework.Painting.EdgeInsetsGeometry>());
         }
         else
         {
@@ -1047,30 +1047,30 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         {
             return 0.0;
         }
-        double tabCenter__66670 = this._indicatorPainter!.centerOf(index);
-        double paddingStart__66729 = default!;
+        double tabCenter = this._indicatorPainter!.centerOf(index);
+        double paddingStart = default!;
         switch (Directionality.of(this.context))
         {
             case TextDirection.rtl:
                 {
-                    paddingStart__66729 = (((TabBar)(object)this.widget).padding?.resolve(TextDirection.rtl).right ?? 0);
-                    tabCenter__66670 = (this._tabStripWidth - tabCenter__66670);
+                    paddingStart = (((TabBar)(object)this.widget).padding?.resolve(TextDirection.rtl).right ?? 0);
+                    tabCenter = (this._tabStripWidth - tabCenter);
                     break;
                 }
             case TextDirection.ltr:
                 {
-                    paddingStart__66729 = (((TabBar)(object)this.widget).padding?.resolve(TextDirection.ltr).left ?? 0);
+                    paddingStart = (((TabBar)(object)this.widget).padding?.resolve(TextDirection.ltr).left ?? 0);
                     break;
                 }
         }
-        return Dart_uiLibrary.clampDouble(((tabCenter__66670 + paddingStart__66729) - (viewportWidth / 2.0)), minExtent, maxExtent);
+        return Dart_uiLibrary.clampDouble(((tabCenter + paddingStart) - (viewportWidth / 2.0)), minExtent, maxExtent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual double _tabCenteredScrollOffset(long index)
     {
-        global::Doroti.Framework.Widgets.ScrollPosition position__67226 = this._effectiveScrollController.position;
-        return _tabScrollOffset(index, ((global::Doroti.Framework.Widgets.ScrollPosition)position__67226).viewportDimension, ((global::Doroti.Framework.Widgets.ScrollPosition)position__67226).minScrollExtent, ((global::Doroti.Framework.Widgets.ScrollPosition)position__67226).maxScrollExtent);
+        global::Doroti.Framework.Widgets.ScrollPosition positionLocal = this._effectiveScrollController.position;
+        return _tabScrollOffset(index, ((global::Doroti.Framework.Widgets.ScrollPosition)positionLocal).viewportDimension, ((global::Doroti.Framework.Widgets.ScrollPosition)positionLocal).minScrollExtent, ((global::Doroti.Framework.Widgets.ScrollPosition)positionLocal).maxScrollExtent);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1082,19 +1082,19 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
 
     internal virtual void _scrollToCurrentIndex()
     {
-        double offset__67654 = _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(this._currentIndex));
-        DartRuntimePrimitives.Ignore(this._effectiveScrollController.animateTo(offset__67654, duration: ConstantsLibrary.kTabScrollDuration, curve: global::Doroti.Framework.Animation.Curves.ease));
+        double offset = _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(this._currentIndex));
+        DartRuntimePrimitives.Ignore(this._effectiveScrollController.animateTo(offset, duration: ConstantsLibrary.kTabScrollDuration, curve: global::Doroti.Framework.Animation.Curves.ease));
     }
 
     internal virtual void _scrollToControllerValue()
     {
-        double? leadingPosition__67865 = ((DartRuntimePrimitives.RequireValue(this._currentIndex) > 0L) ? _tabCenteredScrollOffset((DartRuntimePrimitives.RequireValue(this._currentIndex) - 1L)) : null);
-        double middlePosition__67990 = _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(this._currentIndex));
-        double? trailingPosition__68067 = ((DartRuntimePrimitives.RequireValue(this._currentIndex) < this.maxTabIndex) ? _tabCenteredScrollOffset((DartRuntimePrimitives.RequireValue(this._currentIndex) + 1L)) : null);
-        double index__68204 = this._controller!.index.toDouble();
-        double value__68260 = this._controller!.animation!.value;
-        double offset__68316 = ((value__68260 - index__68204) switch { -1.0 => (leadingPosition__67865 ?? middlePosition__67990), 1.0 => (trailingPosition__68067 ?? middlePosition__67990), 0 => middlePosition__67990, < 0L => ((leadingPosition__67865 is null) ? middlePosition__67990 : DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(middlePosition__67990, DartRuntimePrimitives.RequireValue(leadingPosition__67865), (index__68204 - value__68260)))), _ => ((trailingPosition__68067 is null) ? middlePosition__67990 : DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(middlePosition__67990, DartRuntimePrimitives.RequireValue(trailingPosition__68067), (value__68260 - index__68204)))) });
-        this._effectiveScrollController.jumpTo(offset__68316);
+        double? leadingPosition = ((DartRuntimePrimitives.RequireValue(this._currentIndex) > 0L) ? _tabCenteredScrollOffset((DartRuntimePrimitives.RequireValue(this._currentIndex) - 1L)) : null);
+        double middlePosition = _tabCenteredScrollOffset(DartRuntimePrimitives.RequireValue(this._currentIndex));
+        double? trailingPosition = ((DartRuntimePrimitives.RequireValue(this._currentIndex) < this.maxTabIndex) ? _tabCenteredScrollOffset((DartRuntimePrimitives.RequireValue(this._currentIndex) + 1L)) : null);
+        double indexLocal = this._controller!.index.toDouble();
+        double valueLocal = this._controller!.animation!.value;
+        double offset = ((valueLocal - indexLocal) switch { -1.0 => (leadingPosition ?? middlePosition), 1.0 => (trailingPosition ?? middlePosition), 0 => middlePosition, < 0L => ((leadingPosition is null) ? middlePosition : DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(middlePosition, DartRuntimePrimitives.RequireValue(leadingPosition), (indexLocal - valueLocal)))), _ => ((trailingPosition is null) ? middlePosition : DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(middlePosition, DartRuntimePrimitives.RequireValue(trailingPosition), (valueLocal - indexLocal)))) });
+        this._effectiveScrollController.jumpTo(offset);
     }
 
     internal virtual void _handleTabControllerAnimationTick()
@@ -1190,104 +1190,104 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         DartRuntimePrimitives.Assert(() => _debugScheduleCheckHasValidTabsCount());
-        ThemeData theme__71781 = Theme.of(context);
-        TabBarThemeData tabBarTheme__71834 = TabBarTheme.of(context);
-        TabAlignment effectiveTabAlignment__71896 = ((((TabBar)(object)this.widget).tabAlignment ?? tabBarTheme__71834.tabAlignment) ?? DartRuntimePrimitives.RequireValue(this._defaults.tabAlignment));
-        DartRuntimePrimitives.Assert(() => _debugTabAlignmentIsValid(effectiveTabAlignment__71896));
-        MaterialLocalizations localizations__72099 = MaterialLocalizations.of(context);
+        ThemeData theme = Theme.of(context);
+        TabBarThemeData tabBarTheme = TabBarTheme.of(context);
+        TabAlignment effectiveTabAlignment = ((((TabBar)(object)this.widget).tabAlignment ?? tabBarTheme.tabAlignment) ?? DartRuntimePrimitives.RequireValue(this._defaults.tabAlignment));
+        DartRuntimePrimitives.Assert(() => _debugTabAlignmentIsValid(effectiveTabAlignment));
+        MaterialLocalizations localizations = MaterialLocalizations.of(context);
         if ((this._controller!.length == 0L))
         {
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.LimitedBox(maxWidth: 0.0, child: new global::Doroti.Framework.Widgets.SizedBox(width: double.PositiveInfinity, height: (TabsLibrary._kTabHeight + ((TabBar)(object)this.widget).indicatorWeight))));
         }
-        var wrappedTabs__72355 = new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(((TabBar)(object)this.widget).tabs.Count)))), ((index) =>
+        var wrappedTabs = new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)checked((long)(((TabBar)(object)this.widget).tabs.Count)))), ((index) =>
         {
-            global::Doroti.Framework.Painting.EdgeInsetsGeometry padding__72450 = ((((TabBar)(object)this.widget).labelPadding ?? tabBarTheme__71834.labelPadding) ?? ConstantsLibrary.kTabLabelPadding);
-            double verticalAdjustment__72558 = (((TabsLibrary._kTextAndIconTabHeight - TabsLibrary._kTabHeight)) / 2.0);
-            global::Doroti.Framework.Widgets.Widget tab__72645 = ((TabBar)(object)this.widget).tabs[(int)(index)];
-            if ((((tab__72645 is global::Doroti.Framework.Widgets.PreferredSizeWidget) && (((global::Doroti.Framework.Widgets.PreferredSizeWidget)((global::Doroti.Framework.Widgets.PreferredSizeWidget)tab__72645)).preferredSize.height == TabsLibrary._kTabHeight)) && ((TabBar)(object)this.widget).tabHasTextAndIcon))
+            global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = ((((TabBar)(object)this.widget).labelPadding ?? tabBarTheme.labelPadding) ?? ConstantsLibrary.kTabLabelPadding);
+            double verticalAdjustment = (((TabsLibrary._kTextAndIconTabHeight - TabsLibrary._kTabHeight)) / 2.0);
+            global::Doroti.Framework.Widgets.Widget tabLocal = ((TabBar)(object)this.widget).tabs[(int)(index)];
+            if ((((tabLocal is global::Doroti.Framework.Widgets.PreferredSizeWidget) && (((global::Doroti.Framework.Widgets.PreferredSizeWidget)((global::Doroti.Framework.Widgets.PreferredSizeWidget)tabLocal)).preferredSize.height == TabsLibrary._kTabHeight)) && ((TabBar)(object)this.widget).tabHasTextAndIcon))
             {
-                global::Doroti.Framework.Widgets.PreferredSizeWidget tab__72645__as72681 = (global::Doroti.Framework.Widgets.PreferredSizeWidget)tab__72645;
-                padding__72450 = padding__72450.add(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: verticalAdjustment__72558));
+                global::Doroti.Framework.Widgets.PreferredSizeWidget tab__72645__as72681 = (global::Doroti.Framework.Widgets.PreferredSizeWidget)tabLocal;
+                paddingLocal = paddingLocal.add(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: verticalAdjustment));
             }
-            this._labelPaddings[(int)(index)] = padding__72450;
+            this._labelPaddings[(int)(index)] = paddingLocal;
             return new global::Doroti.Framework.Widgets.Center(heightFactor: 1.0, child: new global::Doroti.Framework.Widgets.Padding(padding: this._labelPaddings[(int)(index)], child: new global::Doroti.Framework.Widgets.KeyedSubtree(key: this._tabKeys[(int)(index)], child: ((TabBar)(object)this.widget).tabs[(int)(index)])));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })));
         if ((this._controller is not null))
         {
-            long previousIndex__73459 = this._controller!.previousIndex;
+            long previousIndexLocal = this._controller!.previousIndex;
             if (this._controller!.indexIsChanging)
             {
-                DartRuntimePrimitives.Assert(() => (this._currentIndex != previousIndex__73459));
-                global::Doroti.Framework.Animation.Animation<double> animation__73706 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new _ChangeAnimation__tabs(this._controller!));
-                wrappedTabs__72355[(int)(DartRuntimePrimitives.RequireValue(this._currentIndex))] = _buildStyledTab(wrappedTabs__72355[(int)(DartRuntimePrimitives.RequireValue(this._currentIndex))], true, animation__73706, this._defaults);
-                wrappedTabs__72355[(int)(previousIndex__73459)] = _buildStyledTab(wrappedTabs__72355[(int)(previousIndex__73459)], false, animation__73706, this._defaults);
+                DartRuntimePrimitives.Assert(() => (this._currentIndex != previousIndexLocal));
+                global::Doroti.Framework.Animation.Animation<double> animationLocal = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new _ChangeAnimation__tabs(this._controller!));
+                wrappedTabs[(int)(DartRuntimePrimitives.RequireValue(this._currentIndex))] = _buildStyledTab(wrappedTabs[(int)(DartRuntimePrimitives.RequireValue(this._currentIndex))], true, animationLocal, this._defaults);
+                wrappedTabs[(int)(previousIndexLocal)] = _buildStyledTab(wrappedTabs[(int)(previousIndexLocal)], false, animationLocal, this._defaults);
             }
             else
             {
-                long tabIndex__74181 = DartRuntimePrimitives.RequireValue(this._currentIndex);
-                global::Doroti.Framework.Animation.Animation<double> centerAnimation__74240 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new _DragAnimation__tabs(this._controller!, tabIndex__74181));
-                wrappedTabs__72355[(int)(tabIndex__74181)] = _buildStyledTab(wrappedTabs__72355[(int)(tabIndex__74181)], true, centerAnimation__74240, this._defaults);
+                long tabIndexLocal = DartRuntimePrimitives.RequireValue(this._currentIndex);
+                global::Doroti.Framework.Animation.Animation<double> centerAnimation = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new _DragAnimation__tabs(this._controller!, tabIndexLocal));
+                wrappedTabs[(int)(tabIndexLocal)] = _buildStyledTab(wrappedTabs[(int)(tabIndexLocal)], true, centerAnimation, this._defaults);
                 if ((DartRuntimePrimitives.RequireValue(this._currentIndex) > 0L))
                 {
-                    long tabIndex__74509 = (DartRuntimePrimitives.RequireValue(this._currentIndex) - 1L);
-                    global::Doroti.Framework.Animation.Animation<double> previousAnimation__74574 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.ReverseAnimation(new _DragAnimation__tabs(this._controller!, tabIndex__74509)));
-                    wrappedTabs__72355[(int)(tabIndex__74509)] = _buildStyledTab(wrappedTabs__72355[(int)(tabIndex__74509)], false, previousAnimation__74574, this._defaults);
+                    long tabIndexAlternate = (DartRuntimePrimitives.RequireValue(this._currentIndex) - 1L);
+                    global::Doroti.Framework.Animation.Animation<double> previousAnimation = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.ReverseAnimation(new _DragAnimation__tabs(this._controller!, tabIndexAlternate)));
+                    wrappedTabs[(int)(tabIndexAlternate)] = _buildStyledTab(wrappedTabs[(int)(tabIndexAlternate)], false, previousAnimation, this._defaults);
                 }
                 if ((DartRuntimePrimitives.RequireValue(this._currentIndex) < (checked((long)(((TabBar)(object)this.widget).tabs.Count)) - 1L)))
                 {
-                    long tabIndex__74934 = (DartRuntimePrimitives.RequireValue(this._currentIndex) + 1L);
-                    global::Doroti.Framework.Animation.Animation<double> nextAnimation__74999 = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.ReverseAnimation(new _DragAnimation__tabs(this._controller!, tabIndex__74934)));
-                    wrappedTabs__72355[(int)(tabIndex__74934)] = _buildStyledTab(wrappedTabs__72355[(int)(tabIndex__74934)], false, nextAnimation__74999, this._defaults);
+                    long tabIndexNested = (DartRuntimePrimitives.RequireValue(this._currentIndex) + 1L);
+                    global::Doroti.Framework.Animation.Animation<double> nextAnimation = ((global::Doroti.Framework.Animation.Animation<double>)(object?)new global::Doroti.Framework.Animation.ReverseAnimation(new _DragAnimation__tabs(this._controller!, tabIndexNested)));
+                    wrappedTabs[(int)(tabIndexNested)] = _buildStyledTab(wrappedTabs[(int)(tabIndexNested)], false, nextAnimation, this._defaults);
                 }
             }
         }
-        long tabCount__75509 = checked((long)(((TabBar)(object)this.widget).tabs.Count));
-        for (var index__75553 = 0L; (index__75553 < tabCount__75509); index__75553 += 1L)
+        long tabCountLocal = checked((long)(((TabBar)(object)this.widget).tabs.Count));
+        for (var indexLocal = 0L; (indexLocal < tabCountLocal); indexLocal += 1L)
         {
-            var selectedState__75608 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection75624 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((index__75553 == this._currentIndex)) { __collection75624.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection75624; }))();
-            global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor__75714 = ((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((TabBar)(object)this.widget).mouseCursor, selectedState__75608) ?? (global::Doroti.Framework.Services.MouseCursor)tabBarTheme__71834.mouseCursor?.resolve(selectedState__75608))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(selectedState__75608)));
-            global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> defaultOverlay__75998 = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Ui.Color?>((states) =>
+            var selectedState = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection75624 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((indexLocal == this._currentIndex)) { __collection75624.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection75624; }))();
+            global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = ((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((TabBar)(object)this.widget).mouseCursor, selectedState) ?? (global::Doroti.Framework.Services.MouseCursor)tabBarTheme.mouseCursor?.resolve(selectedState))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(selectedState)));
+            global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> defaultOverlay = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Ui.Color?>((states) =>
             {
-                HashSet<global::Doroti.Framework.Widgets.WidgetState> effectiveStates__76131 = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
+                HashSet<global::Doroti.Framework.Widgets.WidgetState> effectiveStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
                 {
-                    var __cascade = selectedState__75608.toSet();
+                    var __cascade = selectedState.toSet();
                     __cascade.UnionWith(states);
                     return __cascade;
                 }))();
-                return (this._defaults.overlayColor?.resolve(effectiveStates__76131));
+                return (this._defaults.overlayColor?.resolve(effectiveStates));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
-            wrappedTabs__72355[(int)(index__75553)] = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkWell(mouseCursor: effectiveMouseCursor__75714, onTap: (() =>
+            wrappedTabs[(int)(indexLocal)] = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkWell(mouseCursor: effectiveMouseCursor, onTap: (() =>
             {
-                _handleTap(index__75553);
+                _handleTap(indexLocal);
             }), onHover: ((value) =>
             {
-                ((TabBar)(object)this.widget).onHover?.Invoke(value, index__75553);
+                ((TabBar)(object)this.widget).onHover?.Invoke(value, indexLocal);
             }), onFocusChange: ((value) =>
             {
-                ((TabBar)(object)this.widget).onFocusChange?.Invoke(value, index__75553);
-            }), enableFeedback: (((TabBar)(object)this.widget).enableFeedback ?? true), overlayColor: ((((TabBar)(object)this.widget).overlayColor ?? tabBarTheme__71834.overlayColor) ?? defaultOverlay__75998), splashFactory: ((((TabBar)(object)this.widget).splashFactory ?? tabBarTheme__71834.splashFactory) ?? this._defaults.splashFactory), borderRadius: ((((TabBar)(object)this.widget).splashBorderRadius ?? tabBarTheme__71834.splashBorderRadius) ?? this._defaults.splashBorderRadius), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: ((TabBar)(object)this.widget).indicatorWeight), child: new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.tab, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(wrappedTabs__72355[(int)(index__75553)]), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(selected: (index__75553 == this._currentIndex), label: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? null : localizations__72099.tabLabel(tabIndex: (index__75553 + 1L), tabCount: tabCount__75509)))) })))));
-            wrappedTabs__72355[(int)(index__75553)] = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MergeSemantics(child: wrappedTabs__72355[(int)(index__75553)]));
-            if ((!((TabBar)(object)this.widget).isScrollable && (object.Equals(effectiveTabAlignment__71896, TabAlignment.fill))))
+                ((TabBar)(object)this.widget).onFocusChange?.Invoke(value, indexLocal);
+            }), enableFeedback: (((TabBar)(object)this.widget).enableFeedback ?? true), overlayColor: ((((TabBar)(object)this.widget).overlayColor ?? tabBarTheme.overlayColor) ?? defaultOverlay), splashFactory: ((((TabBar)(object)this.widget).splashFactory ?? tabBarTheme.splashFactory) ?? this._defaults.splashFactory), borderRadius: ((((TabBar)(object)this.widget).splashBorderRadius ?? tabBarTheme.splashBorderRadius) ?? this._defaults.splashBorderRadius), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: ((TabBar)(object)this.widget).indicatorWeight), child: new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.tab, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(wrappedTabs[(int)(indexLocal)]), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(selected: (indexLocal == this._currentIndex), label: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? null : localizations.tabLabel(tabIndex: (indexLocal + 1L), tabCount: tabCountLocal)))) })))));
+            wrappedTabs[(int)(indexLocal)] = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MergeSemantics(child: wrappedTabs[(int)(indexLocal)]));
+            if ((!((TabBar)(object)this.widget).isScrollable && (object.Equals(effectiveTabAlignment, TabAlignment.fill))))
             {
-                wrappedTabs__72355[(int)(index__75553)] = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: wrappedTabs__72355[(int)(index__75553)]));
+                wrappedTabs[(int)(indexLocal)] = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Expanded(child: wrappedTabs[(int)(indexLocal)]));
             }
         }
-        global::Doroti.Framework.Widgets.Widget tabBar__77889 = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.tabBar, container: true, explicitChildNodes: true, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: this._indicatorPainter, child: new _TabStyle__tabs(animation: global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysDismissedAnimation, isSelected: false, isPrimary: ((TabBar)(object)this.widget)._isPrimary, labelColor: ((TabBar)(object)this.widget).labelColor, unselectedLabelColor: ((TabBar)(object)this.widget).unselectedLabelColor, labelStyle: ((TabBar)(object)this.widget).labelStyle, unselectedLabelStyle: ((TabBar)(object)this.widget).unselectedLabelStyle, defaults: this._defaults, child: new _TabLabelBar__tabs(onPerformLayout: (global::System.Action<List<double>, TextDirection, double>)this._saveTabOffsets, mainAxisSize: ((object.Equals(effectiveTabAlignment__71896, TabAlignment.fill)) ? global::Doroti.Framework.Rendering.MainAxisSize.max : global::Doroti.Framework.Rendering.MainAxisSize.min), children: wrappedTabs__72355)))));
+        global::Doroti.Framework.Widgets.Widget tabBarLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.tabBar, container: true, explicitChildNodes: true, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: this._indicatorPainter, child: new _TabStyle__tabs(animation: global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysDismissedAnimation, isSelected: false, isPrimary: ((TabBar)(object)this.widget)._isPrimary, labelColor: ((TabBar)(object)this.widget).labelColor, unselectedLabelColor: ((TabBar)(object)this.widget).unselectedLabelColor, labelStyle: ((TabBar)(object)this.widget).labelStyle, unselectedLabelStyle: ((TabBar)(object)this.widget).unselectedLabelStyle, defaults: this._defaults, child: new _TabLabelBar__tabs(onPerformLayout: (global::System.Action<List<double>, TextDirection, double>)this._saveTabOffsets, mainAxisSize: ((object.Equals(effectiveTabAlignment, TabAlignment.fill)) ? global::Doroti.Framework.Rendering.MainAxisSize.max : global::Doroti.Framework.Rendering.MainAxisSize.min), children: wrappedTabs)))));
         if (((TabBar)(object)this.widget).isScrollable)
         {
-            global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding__78794 = ((object.Equals(effectiveTabAlignment__71896, TabAlignment.startOffset)) ? global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: TabsLibrary._kStartOffset).add((((TabBar)(object)this.widget).padding ?? global::Doroti.Framework.Painting.EdgeInsets.zero)) : ((TabBar)(object)this.widget).padding);
-            tabBar__77889 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(overscroll: false), child: new global::Doroti.Framework.Widgets.SingleChildScrollView(dragStartBehavior: ((TabBar)(object)this.widget).dragStartBehavior, scrollDirection: global::Doroti.Framework.Painting.Axis.horizontal, controller: this._effectiveScrollController, padding: effectivePadding__78794, physics: ((TabBar)(object)this.widget).physics, child: tabBar__77889)));
-            if (theme__71781.useMaterial3)
+            global::Doroti.Framework.Painting.EdgeInsetsGeometry? effectivePadding = ((object.Equals(effectiveTabAlignment, TabAlignment.startOffset)) ? global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: TabsLibrary._kStartOffset).add((((TabBar)(object)this.widget).padding ?? global::Doroti.Framework.Painting.EdgeInsets.zero)) : ((TabBar)(object)this.widget).padding);
+            tabBarLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ScrollConfiguration(behavior: ScrollConfiguration.of(context).copyWith(overscroll: false), child: new global::Doroti.Framework.Widgets.SingleChildScrollView(dragStartBehavior: ((TabBar)(object)this.widget).dragStartBehavior, scrollDirection: global::Doroti.Framework.Painting.Axis.horizontal, controller: this._effectiveScrollController, padding: effectivePadding, physics: ((TabBar)(object)this.widget).physics, child: tabBarLocal)));
+            if (theme.useMaterial3)
             {
-                global::Doroti.Framework.Painting.AlignmentGeometry effectiveAlignment__79581 = (effectiveTabAlignment__71896 switch { TabAlignment.center => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.AlignmentGeometry>(global::Doroti.Framework.Painting.Alignment.center), TabAlignment.start or TabAlignment.startOffset => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.AlignmentGeometry>(global::Doroti.Framework.Painting.AlignmentDirectional.centerStart), TabAlignment.fill => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.AlignmentGeometry>(global::Doroti.Framework.Painting.AlignmentDirectional.centerStart), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-                global::Doroti.Ui.Color dividerColor__79853 = ((global::Doroti.Ui.Color)(object?)((((TabBar)(object)this.widget).dividerColor ?? tabBarTheme__71834.dividerColor) ?? this._defaults.dividerColor!));
-                double dividerHeight__79977 = ((((TabBar)(object)this.widget).dividerHeight ?? tabBarTheme__71834.dividerHeight) ?? DartRuntimePrimitives.RequireValue(this._defaults.dividerHeight));
-                tabBar__77889 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(heightFactor: 1.0, widthFactor: ((dividerHeight__79977 > 0L) ? null : 1.0), alignment: effectiveAlignment__79581, child: tabBar__77889));
-                if (((!object.Equals(dividerColor__79853, Colors.transparent)) && (dividerHeight__79977 > 0L)))
+                global::Doroti.Framework.Painting.AlignmentGeometry effectiveAlignment = (effectiveTabAlignment switch { TabAlignment.center => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.AlignmentGeometry>(global::Doroti.Framework.Painting.Alignment.center), TabAlignment.start or TabAlignment.startOffset => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.AlignmentGeometry>(global::Doroti.Framework.Painting.AlignmentDirectional.centerStart), TabAlignment.fill => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.AlignmentGeometry>(global::Doroti.Framework.Painting.AlignmentDirectional.centerStart), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                global::Doroti.Ui.Color dividerColorLocal = ((global::Doroti.Ui.Color)(object?)((((TabBar)(object)this.widget).dividerColor ?? tabBarTheme.dividerColor) ?? this._defaults.dividerColor!));
+                double dividerHeightLocal = ((((TabBar)(object)this.widget).dividerHeight ?? tabBarTheme.dividerHeight) ?? DartRuntimePrimitives.RequireValue(this._defaults.dividerHeight));
+                tabBarLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(heightFactor: 1.0, widthFactor: ((dividerHeightLocal > 0L) ? null : 1.0), alignment: effectiveAlignment, child: tabBarLocal));
+                if (((!object.Equals(dividerColorLocal, Colors.transparent)) && (dividerHeightLocal > 0L)))
                 {
-                    tabBar__77889 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.CustomPaint(painter: new _DividerPainter__tabs(dividerColor: dividerColor__79853, dividerHeight: dividerHeight__79977), child: tabBar__77889));
+                    tabBarLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.CustomPaint(painter: new _DividerPainter__tabs(dividerColor: dividerColorLocal, dividerHeight: dividerHeightLocal), child: tabBarLocal));
                 }
             }
         }
@@ -1295,10 +1295,10 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         {
             if ((((TabBar)(object)this.widget).padding is not null))
             {
-                tabBar__77889 = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: ((TabBar)(object)this.widget).padding!, child: tabBar__77889));
+                tabBarLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: ((TabBar)(object)this.widget).padding!, child: tabBarLocal));
             }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(type: MaterialType.transparency, child: new global::Doroti.Framework.Widgets.MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: (((TabBar)(object)this.widget).textScaler ?? tabBarTheme__71834.textScaler)), child: tabBar__77889)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(type: MaterialType.transparency, child: new global::Doroti.Framework.Widgets.MediaQuery(data: MediaQuery.of(context).copyWith(textScaler: (((TabBar)(object)this.widget).textScaler ?? tabBarTheme.textScaler)), child: tabBarLocal)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1339,16 +1339,16 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
     internal virtual bool _controllerIsValid => DartRuntimePrimitives.ConvertValue<bool>((this._controller?.animation is not null));
     internal virtual void _updateTabController()
     {
-        TabController? newController__83653 = ((((TabBarView)(object)this.widget).controller ?? (TabController)DefaultTabController.maybeOf(this.context)));
+        TabController? newController = ((((TabBarView)(object)this.widget).controller ?? (TabController)DefaultTabController.maybeOf(this.context)));
         DartRuntimePrimitives.Assert(() =>
             {
-                if ((newController__83653 is null))
+                if ((newController is null))
                 {
                     throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"No TabController for {DartRuntimePrimitives.RuntimeType(this.widget)}.\n" + $"When creating a {DartRuntimePrimitives.RuntimeType(this.widget)}, you must either provide an explicit " + "TabController using the \"controller\" property, or you must ensure that there " + $"is a DefaultTabController above the {DartRuntimePrimitives.RuntimeType(this.widget)}.\n" + "In this case, there was neither an explicit controller nor a default controller."));
                 }
                 return true;
             });
-        if ((object.Equals(newController__83653, this._controller)))
+        if ((object.Equals(newController, this._controller)))
         {
             return;
         }
@@ -1356,7 +1356,7 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
         {
             this._controller!.animation!.removeListener(() => this._handleTabControllerAnimationTick());
         }
-        _controller = newController__83653;
+        _controller = newController;
         if ((this._controller is not null))
         {
             this._controller!.animation!.addListener(() => this._handleTabControllerAnimationTick());
@@ -1457,8 +1457,8 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
         {
             return;
         }
-        var adjacentDestination__87212 = (((DartRuntimePrimitives.RequireValue(this._currentIndex) - this._controller!.previousIndex)).abs() == 1L);
-        if (adjacentDestination__87212)
+        var adjacentDestination = (((DartRuntimePrimitives.RequireValue(this._currentIndex) - this._controller!.previousIndex)).abs() == 1L);
+        if (adjacentDestination)
         {
             DartRuntimePrimitives.Ignore(_warpToAdjacentTab(this._controller!.animationDuration));
         }
@@ -1491,17 +1491,17 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
 
     internal async virtual Future _warpToNonAdjacentTab(Duration duration)
     {
-        long previousIndex__87900 = this._controller!.previousIndex;
-        DartRuntimePrimitives.Assert(() => (((DartRuntimePrimitives.RequireValue(this._currentIndex) - previousIndex__87900)).abs() > 1L));
-        long initialPage__88145 = ((DartRuntimePrimitives.RequireValue(this._currentIndex) > previousIndex__87900) ? (DartRuntimePrimitives.RequireValue(this._currentIndex) - 1L) : (DartRuntimePrimitives.RequireValue(this._currentIndex) + 1L));
+        long previousIndexLocal = this._controller!.previousIndex;
+        DartRuntimePrimitives.Assert(() => (((DartRuntimePrimitives.RequireValue(this._currentIndex) - previousIndexLocal)).abs() > 1L));
+        long initialPage = ((DartRuntimePrimitives.RequireValue(this._currentIndex) > previousIndexLocal) ? (DartRuntimePrimitives.RequireValue(this._currentIndex) - 1L) : (DartRuntimePrimitives.RequireValue(this._currentIndex) + 1L));
         setState(((global::System.Action)(() =>
         {
             _childrenWithKey = new List<global::Doroti.Framework.Widgets.Widget>(this._childrenWithKey);
-            global::Doroti.Framework.Widgets.Widget temp__88604 = this._childrenWithKey[(int)(initialPage__88145)];
-            this._childrenWithKey[(int)(initialPage__88145)] = this._childrenWithKey[(int)(previousIndex__87900)];
-            this._childrenWithKey[(int)(previousIndex__87900)] = temp__88604;
+            global::Doroti.Framework.Widgets.Widget temp = this._childrenWithKey[(int)(initialPage)];
+            this._childrenWithKey[(int)(initialPage)] = this._childrenWithKey[(int)(previousIndexLocal)];
+            this._childrenWithKey[(int)(previousIndexLocal)] = temp;
         })));
-        _jumpToPage(initialPage__88145);
+        _jumpToPage(initialPage);
         if ((object.Equals(duration, Duration.zero)))
         {
             _jumpToPage(DartRuntimePrimitives.RequireValue(this._currentIndex));
@@ -1539,14 +1539,14 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
             return false;
         }
         _scrollUnderwayCount += 1L;
-        double page__89653 = DartRuntimePrimitives.RequireValue(this._pageController!.page);
+        double pageLocal = DartRuntimePrimitives.RequireValue(this._pageController!.page);
         if (((notification is global::Doroti.Framework.Widgets.ScrollUpdateNotification) && !this._controller!.indexIsChanging))
         {
             global::Doroti.Framework.Widgets.ScrollUpdateNotification notification__as89692 = (global::Doroti.Framework.Widgets.ScrollUpdateNotification)notification;
-            bool pageChanged__89786 = (((page__89653 - this._controller!.index)).abs() > 1.0);
-            if (pageChanged__89786)
+            bool pageChanged = (((pageLocal - this._controller!.index)).abs() > 1.0);
+            if (pageChanged)
             {
-                this._controller!.index = page__89653.round();
+                this._controller!.index = pageLocal.round();
                 _currentIndex = this._controller!.index;
             }
             _syncControllerOffset();
@@ -1556,7 +1556,7 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
             if ((notification is global::Doroti.Framework.Widgets.ScrollEndNotification))
             {
                 global::Doroti.Framework.Widgets.ScrollEndNotification notification__as90007 = (global::Doroti.Framework.Widgets.ScrollEndNotification)notification;
-                this._controller!.index = page__89653.round();
+                this._controller!.index = pageLocal.round();
                 _currentIndex = this._controller!.index;
                 if (!this._controller!.indexIsChanging)
                 {
@@ -1658,16 +1658,16 @@ internal class _TabPageSelectorState__tabs : global::Doroti.Framework.Widgets.St
     {
         get
         {
-            TabController? tabController__94675 = ((((TabPageSelector)(object)this.widget).controller ?? (TabController)DefaultTabController.maybeOf(this.context)));
+            TabController? tabController = ((((TabPageSelector)(object)this.widget).controller ?? (TabController)DefaultTabController.maybeOf(this.context)));
             DartRuntimePrimitives.Assert(() =>
                 {
-                    if ((tabController__94675 is null))
+                    if ((tabController is null))
                     {
                         throw DartRuntimePrimitives.AsException(global::Doroti.Framework.Foundation.FlutterError.Create($"No TabController for {this.GetType()}.\n" + $"When creating a {this.GetType()}, you must either provide an explicit TabController " + "using the \"controller\" property, or you must ensure that there is a " + $"DefaultTabController above the {this.GetType()}.\n" + "In this case, there was neither an explicit controller nor a default controller."));
                     }
                     return true;
                 });
-            return tabController__94675!;
+            return tabController!;
             return default!;
         }
     }
@@ -1711,68 +1711,68 @@ internal class _TabPageSelectorState__tabs : global::Doroti.Framework.Widgets.St
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildTabIndicator(long tabIndex, TabController tabController, global::Doroti.Framework.Animation.ColorTween selectedColorTween, global::Doroti.Framework.Animation.ColorTween previousColorTween)
     {
-        global::Doroti.Ui.Color background__96357 = default!;
+        global::Doroti.Ui.Color background = default!;
         if (((TabController)tabController).indexIsChanging)
         {
-            double t__96506 = (1.0 - TabsLibrary._indexChangeProgress(tabController));
+            double t = (1.0 - TabsLibrary._indexChangeProgress(tabController));
             if ((((TabController)tabController).index == tabIndex))
             {
-                background__96357 = selectedColorTween.lerp(t__96506)!;
+                background = selectedColorTween.lerp(t)!;
             }
             else
             {
                 if ((((TabController)tabController).previousIndex == tabIndex))
                 {
-                    background__96357 = previousColorTween.lerp(t__96506)!;
+                    background = previousColorTween.lerp(t)!;
                 }
                 else
                 {
-                    background__96357 = selectedColorTween.begin!;
+                    background = selectedColorTween.begin!;
                 }
             }
         }
         else
         {
-            double offset__97019 = ((TabController)tabController).offset;
+            double offsetLocal = ((TabController)tabController).offset;
             if ((((TabController)tabController).index == tabIndex))
             {
-                background__96357 = selectedColorTween.lerp((1.0 - offset__97019.abs()))!;
+                background = selectedColorTween.lerp((1.0 - offsetLocal.abs()))!;
             }
             else
             {
-                if (((((TabController)tabController).index == (tabIndex - 1L)) && (offset__97019 > 0.0)))
+                if (((((TabController)tabController).index == (tabIndex - 1L)) && (offsetLocal > 0.0)))
                 {
-                    background__96357 = selectedColorTween.lerp(offset__97019)!;
+                    background = selectedColorTween.lerp(offsetLocal)!;
                 }
                 else
                 {
-                    if (((((TabController)tabController).index == (tabIndex + 1L)) && (offset__97019 < 0.0)))
+                    if (((((TabController)tabController).index == (tabIndex + 1L)) && (offsetLocal < 0.0)))
                     {
-                        background__96357 = selectedColorTween.lerp(-offset__97019)!;
+                        background = selectedColorTween.lerp(-offsetLocal)!;
                     }
                     else
                     {
-                        background__96357 = selectedColorTween.begin!;
+                        background = selectedColorTween.begin!;
                     }
                 }
             }
         }
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TabPageSelectorIndicator(backgroundColor: background__96357, borderColor: selectedColorTween.end!, size: ((TabPageSelector)(object)this.widget).indicatorSize, borderStyle: (((TabPageSelector)(object)this.widget).borderStyle ?? global::Doroti.Framework.Painting.BorderStyle.solid)));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new TabPageSelectorIndicator(backgroundColor: background, borderColor: selectedColorTween.end!, size: ((TabPageSelector)(object)this.widget).indicatorSize, borderStyle: (((TabPageSelector)(object)this.widget).borderStyle ?? global::Doroti.Framework.Painting.BorderStyle.solid)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Ui.Color fixColor__97783 = ((global::Doroti.Ui.Color)(object?)(((TabPageSelector)(object)this.widget).color ?? Colors.transparent));
-        global::Doroti.Ui.Color fixSelectedColor__97846 = ((global::Doroti.Ui.Color)(object?)(((TabPageSelector)(object)this.widget).selectedColor ?? Theme.of(context).colorScheme.secondary));
-        var selectedColorTween__97940 = new global::Doroti.Framework.Animation.ColorTween(begin: fixColor__97783, end: fixSelectedColor__97846);
-        var previousColorTween__98023 = new global::Doroti.Framework.Animation.ColorTween(begin: fixSelectedColor__97846, end: fixColor__97783);
-        MaterialLocalizations localizations__98128 = MaterialLocalizations.of(context);
+        global::Doroti.Ui.Color fixColor = ((global::Doroti.Ui.Color)(object?)(((TabPageSelector)(object)this.widget).color ?? Colors.transparent));
+        global::Doroti.Ui.Color fixSelectedColor = ((global::Doroti.Ui.Color)(object?)(((TabPageSelector)(object)this.widget).selectedColor ?? Theme.of(context).colorScheme.secondary));
+        var selectedColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: fixColor, end: fixSelectedColor);
+        var previousColorTween = new global::Doroti.Framework.Animation.ColorTween(begin: fixSelectedColor, end: fixColor);
+        MaterialLocalizations localizations = MaterialLocalizations.of(context);
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedBuilder(animation: this._animation!, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, child) =>
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(label: localizations__98128.tabLabel(tabIndex: (((TabController)this._tabController).index + 1L), tabCount: ((TabController)this._tabController).length), child: new global::Doroti.Framework.Widgets.Row(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)((TabController)this._tabController).length)), ((tabIndex) =>
+            return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(label: localizations.tabLabel(tabIndex: (((TabController)this._tabController).index + 1L), tabCount: ((TabController)this._tabController).length), child: new global::Doroti.Framework.Widgets.Row(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, children: new List<global::Doroti.Framework.Widgets.Widget>(System.Linq.Enumerable.Select(System.Linq.Enumerable.Range(0, checked((int)((TabController)this._tabController).length)), ((tabIndex) =>
             {
-                return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildTabIndicator(tabIndex, this._tabController, selectedColorTween__97940, previousColorTween__98023));
+                return ((global::Doroti.Framework.Widgets.Widget)(object?)_buildTabIndicator(tabIndex, this._tabController, selectedColorTween, previousColorTween));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }))).ToList())));
             throw new InvalidOperationException("Dart closure completed without a value.");

@@ -25,8 +25,8 @@ public class SliderTheme : global::Doroti.Framework.Widgets.InheritedTheme
 
     public static SliderThemeData of(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        SliderTheme? inheritedTheme__3612 = ((SliderTheme?)(object?)context.dependOnInheritedWidgetOfExactType<SliderTheme>());
-        return ((inheritedTheme__3612 is not null) ? ((SliderTheme)inheritedTheme__3612).data : Theme.of(context).sliderTheme);
+        SliderTheme? inheritedTheme = ((SliderTheme?)(object?)context.dependOnInheritedWidgetOfExactType<SliderTheme>());
+        return ((inheritedTheme is not null) ? ((SliderTheme)inheritedTheme).data : Theme.of(context).sliderTheme);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -136,21 +136,21 @@ public class SliderThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
 
     public static SliderThemeData CreateFromPrimaryColors(Color primaryColor, Color primaryColorDark, Color primaryColorLight, global::Doroti.Framework.Painting.TextStyle valueIndicatorTextStyle)
     {
-        var activeTrackAlpha__12859 = 255L;
-        var inactiveTrackAlpha__12894 = 61L;
-        var secondaryActiveTrackAlpha__12946 = 138L;
-        var disabledActiveTrackAlpha__13005 = 82L;
-        var disabledInactiveTrackAlpha__13063 = 31L;
-        var disabledSecondaryActiveTrackAlpha__13123 = 31L;
-        var activeTickMarkAlpha__13190 = 138L;
-        var inactiveTickMarkAlpha__13243 = 138L;
-        var disabledActiveTickMarkAlpha__13298 = 31L;
-        var disabledInactiveTickMarkAlpha__13359 = 31L;
-        var thumbAlpha__13422 = 255L;
-        var disabledThumbAlpha__13451 = 82L;
-        var overlayAlpha__13503 = 31L;
-        var valueIndicatorAlpha__13549 = 255L;
-        return new SliderThemeData(trackHeight: 2.0, activeTrackColor: primaryColor.withAlpha(activeTrackAlpha__12859), inactiveTrackColor: primaryColor.withAlpha(inactiveTrackAlpha__12894), secondaryActiveTrackColor: primaryColor.withAlpha(secondaryActiveTrackAlpha__12946), disabledActiveTrackColor: primaryColorDark.withAlpha(disabledActiveTrackAlpha__13005), disabledInactiveTrackColor: primaryColorDark.withAlpha(disabledInactiveTrackAlpha__13063), disabledSecondaryActiveTrackColor: primaryColorDark.withAlpha(disabledSecondaryActiveTrackAlpha__13123), activeTickMarkColor: primaryColorLight.withAlpha(activeTickMarkAlpha__13190), inactiveTickMarkColor: primaryColor.withAlpha(inactiveTickMarkAlpha__13243), disabledActiveTickMarkColor: primaryColorLight.withAlpha(disabledActiveTickMarkAlpha__13298), disabledInactiveTickMarkColor: primaryColorDark.withAlpha(disabledInactiveTickMarkAlpha__13359), thumbColor: primaryColor.withAlpha(thumbAlpha__13422), overlappingShapeStrokeColor: Colors.white, disabledThumbColor: primaryColorDark.withAlpha(disabledThumbAlpha__13451), overlayColor: primaryColor.withAlpha(overlayAlpha__13503), valueIndicatorColor: primaryColor.withAlpha(valueIndicatorAlpha__13549), valueIndicatorStrokeColor: primaryColor.withAlpha(valueIndicatorAlpha__13549), overlayShape: new RoundSliderOverlayShape(), tickMarkShape: new RoundSliderTickMarkShape(), thumbShape: new RoundSliderThumbShape(), trackShape: new RoundedRectSliderTrackShape(), valueIndicatorShape: new PaddleSliderValueIndicatorShape(), rangeTickMarkShape: new RoundRangeSliderTickMarkShape(), rangeThumbShape: new RoundRangeSliderThumbShape(), rangeTrackShape: new RoundedRectRangeSliderTrackShape(), rangeValueIndicatorShape: new PaddleRangeSliderValueIndicatorShape(), valueIndicatorTextStyle: valueIndicatorTextStyle, showValueIndicator: ShowValueIndicator.onlyForDiscrete);
+        var activeTrackAlpha = 255L;
+        var inactiveTrackAlpha = 61L;
+        var secondaryActiveTrackAlpha = 138L;
+        var disabledActiveTrackAlpha = 82L;
+        var disabledInactiveTrackAlpha = 31L;
+        var disabledSecondaryActiveTrackAlpha = 31L;
+        var activeTickMarkAlpha = 138L;
+        var inactiveTickMarkAlpha = 138L;
+        var disabledActiveTickMarkAlpha = 31L;
+        var disabledInactiveTickMarkAlpha = 31L;
+        var thumbAlpha = 255L;
+        var disabledThumbAlpha = 82L;
+        var overlayAlpha = 31L;
+        var valueIndicatorAlpha = 255L;
+        return new SliderThemeData(trackHeight: 2.0, activeTrackColor: primaryColor.withAlpha(activeTrackAlpha), inactiveTrackColor: primaryColor.withAlpha(inactiveTrackAlpha), secondaryActiveTrackColor: primaryColor.withAlpha(secondaryActiveTrackAlpha), disabledActiveTrackColor: primaryColorDark.withAlpha(disabledActiveTrackAlpha), disabledInactiveTrackColor: primaryColorDark.withAlpha(disabledInactiveTrackAlpha), disabledSecondaryActiveTrackColor: primaryColorDark.withAlpha(disabledSecondaryActiveTrackAlpha), activeTickMarkColor: primaryColorLight.withAlpha(activeTickMarkAlpha), inactiveTickMarkColor: primaryColor.withAlpha(inactiveTickMarkAlpha), disabledActiveTickMarkColor: primaryColorLight.withAlpha(disabledActiveTickMarkAlpha), disabledInactiveTickMarkColor: primaryColorDark.withAlpha(disabledInactiveTickMarkAlpha), thumbColor: primaryColor.withAlpha(thumbAlpha), overlappingShapeStrokeColor: Colors.white, disabledThumbColor: primaryColorDark.withAlpha(disabledThumbAlpha), overlayColor: primaryColor.withAlpha(overlayAlpha), valueIndicatorColor: primaryColor.withAlpha(valueIndicatorAlpha), valueIndicatorStrokeColor: primaryColor.withAlpha(valueIndicatorAlpha), overlayShape: new RoundSliderOverlayShape(), tickMarkShape: new RoundSliderTickMarkShape(), thumbShape: new RoundSliderThumbShape(), trackShape: new RoundedRectSliderTrackShape(), valueIndicatorShape: new PaddleSliderValueIndicatorShape(), rangeTickMarkShape: new RoundRangeSliderTickMarkShape(), rangeThumbShape: new RoundRangeSliderThumbShape(), rangeTrackShape: new RoundedRectRangeSliderTrackShape(), rangeValueIndicatorShape: new PaddleRangeSliderValueIndicatorShape(), valueIndicatorTextStyle: valueIndicatorTextStyle, showValueIndicator: ShowValueIndicator.onlyForDiscrete);
     }
 
     public virtual SliderThemeData copyWith(double? trackHeight = null, Color? activeTrackColor = null, Color? inactiveTrackColor = null, Color? secondaryActiveTrackColor = null, Color? disabledActiveTrackColor = null, Color? disabledInactiveTrackColor = null, Color? disabledSecondaryActiveTrackColor = null, Color? activeTickMarkColor = null, Color? inactiveTickMarkColor = null, Color? disabledActiveTickMarkColor = null, Color? disabledInactiveTickMarkColor = null, Color? thumbColor = null, Color? overlappingShapeStrokeColor = null, Color? disabledThumbColor = null, Color? overlayColor = null, Color? valueIndicatorColor = null, Color? valueIndicatorStrokeColor = null, SliderComponentShape? overlayShape = null, SliderTickMarkShape? tickMarkShape = null, SliderComponentShape? thumbShape = null, SliderTrackShape? trackShape = null, SliderComponentShape? valueIndicatorShape = null, RangeSliderTickMarkShape? rangeTickMarkShape = null, RangeSliderThumbShape? rangeThumbShape = null, RangeSliderTrackShape? rangeTrackShape = null, RangeSliderValueIndicatorShape? rangeValueIndicatorShape = null, ShowValueIndicator? showValueIndicator = null, global::Doroti.Framework.Painting.TextStyle? valueIndicatorTextStyle = null, double? minThumbSeparation = null, global::System.Func<TextDirection, RangeValues, double, Size, Size, double, Thumb?>? thumbSelector = null, global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor = null, SliderInteraction? allowedInteraction = null, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, global::Doroti.Framework.Widgets.WidgetStateProperty<Size?>? thumbSize = null, double? trackGap = null, bool? year2023 = null)
@@ -187,55 +187,55 @@ public class SliderThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
 
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        var defaultData__37487 = new SliderThemeData();
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("trackHeight", this.trackHeight, defaultValue: ((SliderThemeData)defaultData__37487).trackHeight));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("activeTrackColor", this.activeTrackColor, defaultValue: ((SliderThemeData)defaultData__37487).activeTrackColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("inactiveTrackColor", this.inactiveTrackColor, defaultValue: ((SliderThemeData)defaultData__37487).inactiveTrackColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("secondaryActiveTrackColor", this.secondaryActiveTrackColor, defaultValue: ((SliderThemeData)defaultData__37487).secondaryActiveTrackColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledActiveTrackColor", this.disabledActiveTrackColor, defaultValue: ((SliderThemeData)defaultData__37487).disabledActiveTrackColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledInactiveTrackColor", this.disabledInactiveTrackColor, defaultValue: ((SliderThemeData)defaultData__37487).disabledInactiveTrackColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledSecondaryActiveTrackColor", this.disabledSecondaryActiveTrackColor, defaultValue: ((SliderThemeData)defaultData__37487).disabledSecondaryActiveTrackColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("activeTickMarkColor", this.activeTickMarkColor, defaultValue: ((SliderThemeData)defaultData__37487).activeTickMarkColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("inactiveTickMarkColor", this.inactiveTickMarkColor, defaultValue: ((SliderThemeData)defaultData__37487).inactiveTickMarkColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledActiveTickMarkColor", this.disabledActiveTickMarkColor, defaultValue: ((SliderThemeData)defaultData__37487).disabledActiveTickMarkColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledInactiveTickMarkColor", this.disabledInactiveTickMarkColor, defaultValue: ((SliderThemeData)defaultData__37487).disabledInactiveTickMarkColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("thumbColor", this.thumbColor, defaultValue: ((SliderThemeData)defaultData__37487).thumbColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("overlappingShapeStrokeColor", this.overlappingShapeStrokeColor, defaultValue: ((SliderThemeData)defaultData__37487).overlappingShapeStrokeColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledThumbColor", this.disabledThumbColor, defaultValue: ((SliderThemeData)defaultData__37487).disabledThumbColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("overlayColor", this.overlayColor, defaultValue: ((SliderThemeData)defaultData__37487).overlayColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("valueIndicatorColor", this.valueIndicatorColor, defaultValue: ((SliderThemeData)defaultData__37487).valueIndicatorColor));
-        properties.add(new global::Doroti.Framework.Painting.ColorProperty("valueIndicatorStrokeColor", this.valueIndicatorStrokeColor, defaultValue: ((SliderThemeData)defaultData__37487).valueIndicatorStrokeColor));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderComponentShape>("overlayShape", this.overlayShape, defaultValue: ((SliderThemeData)defaultData__37487).overlayShape));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderTickMarkShape>("tickMarkShape", this.tickMarkShape, defaultValue: ((SliderThemeData)defaultData__37487).tickMarkShape));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderComponentShape>("thumbShape", this.thumbShape, defaultValue: ((SliderThemeData)defaultData__37487).thumbShape));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderTrackShape>("trackShape", this.trackShape, defaultValue: ((SliderThemeData)defaultData__37487).trackShape));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderComponentShape>("valueIndicatorShape", this.valueIndicatorShape, defaultValue: ((SliderThemeData)defaultData__37487).valueIndicatorShape));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RangeSliderTickMarkShape>("rangeTickMarkShape", this.rangeTickMarkShape, defaultValue: ((SliderThemeData)defaultData__37487).rangeTickMarkShape));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RangeSliderThumbShape>("rangeThumbShape", this.rangeThumbShape, defaultValue: ((SliderThemeData)defaultData__37487).rangeThumbShape));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RangeSliderTrackShape>("rangeTrackShape", this.rangeTrackShape, defaultValue: ((SliderThemeData)defaultData__37487).rangeTrackShape));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RangeSliderValueIndicatorShape>("rangeValueIndicatorShape", this.rangeValueIndicatorShape, defaultValue: ((SliderThemeData)defaultData__37487).rangeValueIndicatorShape));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<ShowValueIndicator>("showValueIndicator", this.showValueIndicator, defaultValue: ((SliderThemeData)defaultData__37487).showValueIndicator));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("valueIndicatorTextStyle", this.valueIndicatorTextStyle, defaultValue: ((SliderThemeData)defaultData__37487).valueIndicatorTextStyle));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minThumbSeparation", this.minThumbSeparation, defaultValue: ((SliderThemeData)defaultData__37487).minThumbSeparation));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RangeThumbSelector>("thumbSelector", this.thumbSelector, defaultValue: ((SliderThemeData)defaultData__37487).thumbSelector));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>("mouseCursor", this.mouseCursor, defaultValue: ((SliderThemeData)defaultData__37487).mouseCursor));
-        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<SliderInteraction>("allowedInteraction", this.allowedInteraction, defaultValue: ((SliderThemeData)defaultData__37487).allowedInteraction));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: ((SliderThemeData)defaultData__37487).padding));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size?>>("thumbSize", this.thumbSize, defaultValue: ((SliderThemeData)defaultData__37487).thumbSize));
-        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("trackGap", this.trackGap, defaultValue: ((SliderThemeData)defaultData__37487).trackGap));
-        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("year2023", this.year2023, defaultValue: ((SliderThemeData)defaultData__37487).year2023));
+        var defaultData = new SliderThemeData();
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("trackHeight", this.trackHeight, defaultValue: ((SliderThemeData)defaultData).trackHeight));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("activeTrackColor", this.activeTrackColor, defaultValue: ((SliderThemeData)defaultData).activeTrackColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("inactiveTrackColor", this.inactiveTrackColor, defaultValue: ((SliderThemeData)defaultData).inactiveTrackColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("secondaryActiveTrackColor", this.secondaryActiveTrackColor, defaultValue: ((SliderThemeData)defaultData).secondaryActiveTrackColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledActiveTrackColor", this.disabledActiveTrackColor, defaultValue: ((SliderThemeData)defaultData).disabledActiveTrackColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledInactiveTrackColor", this.disabledInactiveTrackColor, defaultValue: ((SliderThemeData)defaultData).disabledInactiveTrackColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledSecondaryActiveTrackColor", this.disabledSecondaryActiveTrackColor, defaultValue: ((SliderThemeData)defaultData).disabledSecondaryActiveTrackColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("activeTickMarkColor", this.activeTickMarkColor, defaultValue: ((SliderThemeData)defaultData).activeTickMarkColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("inactiveTickMarkColor", this.inactiveTickMarkColor, defaultValue: ((SliderThemeData)defaultData).inactiveTickMarkColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledActiveTickMarkColor", this.disabledActiveTickMarkColor, defaultValue: ((SliderThemeData)defaultData).disabledActiveTickMarkColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledInactiveTickMarkColor", this.disabledInactiveTickMarkColor, defaultValue: ((SliderThemeData)defaultData).disabledInactiveTickMarkColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("thumbColor", this.thumbColor, defaultValue: ((SliderThemeData)defaultData).thumbColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("overlappingShapeStrokeColor", this.overlappingShapeStrokeColor, defaultValue: ((SliderThemeData)defaultData).overlappingShapeStrokeColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("disabledThumbColor", this.disabledThumbColor, defaultValue: ((SliderThemeData)defaultData).disabledThumbColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("overlayColor", this.overlayColor, defaultValue: ((SliderThemeData)defaultData).overlayColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("valueIndicatorColor", this.valueIndicatorColor, defaultValue: ((SliderThemeData)defaultData).valueIndicatorColor));
+        properties.add(new global::Doroti.Framework.Painting.ColorProperty("valueIndicatorStrokeColor", this.valueIndicatorStrokeColor, defaultValue: ((SliderThemeData)defaultData).valueIndicatorStrokeColor));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderComponentShape>("overlayShape", this.overlayShape, defaultValue: ((SliderThemeData)defaultData).overlayShape));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderTickMarkShape>("tickMarkShape", this.tickMarkShape, defaultValue: ((SliderThemeData)defaultData).tickMarkShape));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderComponentShape>("thumbShape", this.thumbShape, defaultValue: ((SliderThemeData)defaultData).thumbShape));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderTrackShape>("trackShape", this.trackShape, defaultValue: ((SliderThemeData)defaultData).trackShape));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<SliderComponentShape>("valueIndicatorShape", this.valueIndicatorShape, defaultValue: ((SliderThemeData)defaultData).valueIndicatorShape));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RangeSliderTickMarkShape>("rangeTickMarkShape", this.rangeTickMarkShape, defaultValue: ((SliderThemeData)defaultData).rangeTickMarkShape));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RangeSliderThumbShape>("rangeThumbShape", this.rangeThumbShape, defaultValue: ((SliderThemeData)defaultData).rangeThumbShape));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RangeSliderTrackShape>("rangeTrackShape", this.rangeTrackShape, defaultValue: ((SliderThemeData)defaultData).rangeTrackShape));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RangeSliderValueIndicatorShape>("rangeValueIndicatorShape", this.rangeValueIndicatorShape, defaultValue: ((SliderThemeData)defaultData).rangeValueIndicatorShape));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<ShowValueIndicator>("showValueIndicator", this.showValueIndicator, defaultValue: ((SliderThemeData)defaultData).showValueIndicator));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("valueIndicatorTextStyle", this.valueIndicatorTextStyle, defaultValue: ((SliderThemeData)defaultData).valueIndicatorTextStyle));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("minThumbSeparation", this.minThumbSeparation, defaultValue: ((SliderThemeData)defaultData).minThumbSeparation));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<RangeThumbSelector>("thumbSelector", this.thumbSelector, defaultValue: ((SliderThemeData)defaultData).thumbSelector));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>("mouseCursor", this.mouseCursor, defaultValue: ((SliderThemeData)defaultData).mouseCursor));
+        properties.add(new global::Doroti.Framework.Foundation.EnumProperty<SliderInteraction>("allowedInteraction", this.allowedInteraction, defaultValue: ((SliderThemeData)defaultData).allowedInteraction));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>("padding", this.padding, defaultValue: ((SliderThemeData)defaultData).padding));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size?>>("thumbSize", this.thumbSize, defaultValue: ((SliderThemeData)defaultData).thumbSize));
+        properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("trackGap", this.trackGap, defaultValue: ((SliderThemeData)defaultData).trackGap));
+        properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<bool>("year2023", this.year2023, defaultValue: ((SliderThemeData)defaultData).year2023));
     }
 
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
-        string? fullString__105654 = default!;
+        string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
             {
-                fullString__105654 = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
+                fullString = toDiagnosticsNode(style: DiagnosticsTreeStyle.singleLine).toDiagnosticsNode().toStringDeep(minLevel: minLevel);
                 return true;
             });
-        return ((fullString__105654 ?? (string)toStringShort()));
+        return ((fullString ?? (string)toStringShort()));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
