@@ -806,7 +806,14 @@ public interface IParagraphHostCapability
     Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation);
 }
 
-public sealed record ParagraphRequest(string Text, double Width, string? FontFamily, double FontSize);
+public sealed record ParagraphRequest(
+    string Text,
+    double Width,
+    string? FontFamily,
+    double FontSize,
+    long? MaxLines = null,
+    Color? Color = null,
+    double? Height = null);
 
 public sealed class Paragraph : IDisposable
 {
@@ -814,6 +821,8 @@ public sealed class Paragraph : IDisposable
     private readonly double _naturalWidth;
     private readonly double _lineHeight;
     private readonly long? _maxLines;
+    private readonly double[] _codeUnitAdvances;
+    private List<ParagraphLine> _lines = [];
     public Paragraph(
         string text,
         double width,
@@ -821,14 +830,18 @@ public sealed class Paragraph : IDisposable
         double fontSize = 14,
         long? maxLines = null,
         string? fontFamily = null,
-        Color? color = null)
+        Color? color = null,
+        IReadOnlyList<double>? codeUnitAdvances = null)
     {
         this.text = text;
         this.fontSize = Math.Max(1, fontSize);
         this.fontFamily = fontFamily;
         this.color = color ?? new Color(0xFF000000);
         _lineHeight = height > 0 ? height : this.fontSize * 1.2;
-        _naturalWidth = width > 0 ? width : text.Length * this.fontSize * 0.55;
+        _codeUnitAdvances = codeUnitAdvances is { Count: var count } && count == text.Length
+            ? codeUnitAdvances.Select(value => Math.Max(0, value)).ToArray()
+            : CreateFallbackAdvances(text, this.fontSize);
+        _naturalWidth = ComputeNaturalWidth(text, _codeUnitAdvances);
         _maxLines = maxLines;
         this.width = width;
         this.height = height;
@@ -839,7 +852,7 @@ public sealed class Paragraph : IDisposable
     public Color color { get; }
     public double width { get; private set; }
     public double height { get; private set; }
-    public double minIntrinsicWidth => text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Select(value => value.Length * fontSize * 0.55).DefaultIfEmpty(0).Max();
+    public double minIntrinsicWidth => ComputeMinIntrinsicWidth();
     public double maxIntrinsicWidth => _naturalWidth;
     public double longestLine => Math.Min(_naturalWidth, width);
     public double alphabeticBaseline => _lineHeight * 0.8;
@@ -847,15 +860,17 @@ public sealed class Paragraph : IDisposable
     public bool didExceedMaxLines { get; private set; }
     public int numberOfLines { get; private set; }
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
-    private double CharacterWidth => fontSize * 0.55;
-    private int CharactersPerLine => Math.Max(1, (int)Math.Floor(Math.Max(1, width) / CharacterWidth));
     public void layout(ParagraphConstraints constraints)
     {
         var availableWidth = constraints.width;
         width = double.IsFinite(availableWidth) ? Math.Max(0, availableWidth) : _naturalWidth;
-        var lines = text.Length == 0 ? 0 : Math.Max(1, (int)Math.Ceiling(_naturalWidth / Math.Max(1, width)));
-        didExceedMaxLines = _maxLines.HasValue && lines > _maxLines.Value;
-        numberOfLines = _maxLines.HasValue ? Math.Min(lines, checked((int)_maxLines.Value)) : lines;
+        _lines = BuildLines(width);
+        didExceedMaxLines = _maxLines.HasValue && _lines.Count > _maxLines.Value;
+        if (_maxLines.HasValue && _lines.Count > _maxLines.Value)
+        {
+            _lines.RemoveRange(checked((int)_maxLines.Value), _lines.Count - checked((int)_maxLines.Value));
+        }
+        numberOfLines = _lines.Count;
         height = numberOfLines * _lineHeight;
     }
     public List<TextBox> getBoxesForRange(long start, long end, BoxHeightStyle boxHeightStyle = BoxHeightStyle.tight, BoxWidthStyle boxWidthStyle = BoxWidthStyle.tight)
@@ -868,18 +883,16 @@ public sealed class Paragraph : IDisposable
         }
 
         var boxes = new List<TextBox>();
-        var charactersPerLine = CharactersPerLine;
-        var firstLine = clampedStart / charactersPerLine;
-        var lastLine = (clampedEnd - 1) / charactersPerLine;
-        for (var line = firstLine; line <= lastLine; line++)
+        for (var line = 0; line < _lines.Count; line++)
         {
-            var lineStart = line * charactersPerLine;
-            var boxStart = Math.Max(clampedStart, lineStart);
-            var boxEnd = Math.Min(clampedEnd, lineStart + charactersPerLine);
+            var paragraphLine = _lines[line];
+            var boxStart = Math.Max(clampedStart, paragraphLine.Start);
+            var boxEnd = Math.Min(clampedEnd, paragraphLine.End);
+            if (boxStart >= boxEnd) continue;
             boxes.Add(new TextBox(
-                (boxStart - lineStart) * CharacterWidth,
+                AdvanceBetween(paragraphLine.Start, boxStart),
                 line * _lineHeight,
-                (boxEnd - lineStart) * CharacterWidth,
+                AdvanceBetween(paragraphLine.Start, boxEnd),
                 (line + 1) * _lineHeight,
                 TextDirection.ltr));
         }
@@ -889,9 +902,19 @@ public sealed class Paragraph : IDisposable
     public List<TextBox> getBoxesForPlaceholders() => [];
     public TextPosition getPositionForOffset(Offset offset)
     {
-        var line = Math.Clamp((int)Math.Floor(offset.dy / _lineHeight), 0, Math.Max(0, numberOfLines - 1));
-        var column = Math.Max(0, (int)Math.Round(offset.dx / CharacterWidth));
-        return new TextPosition(Math.Clamp((line * CharactersPerLine) + column, 0, text.Length));
+        if (_lines.Count == 0) return new TextPosition(0);
+        var lineIndex = Math.Clamp((int)Math.Floor(offset.dy / _lineHeight), 0, _lines.Count - 1);
+        var line = _lines[lineIndex];
+        var x = Math.Max(0, offset.dx);
+        var currentX = 0.0;
+        for (var index = line.Start; index < line.End; index = NextClusterEnd(index))
+        {
+            var clusterEnd = NextClusterEnd(index);
+            var advance = AdvanceBetween(index, clusterEnd);
+            if (x < currentX + advance / 2) return new TextPosition(index);
+            currentX += advance;
+        }
+        return new TextPosition(line.End);
     }
     public TextRange getWordBoundary(TextPosition position)
     {
@@ -905,23 +928,22 @@ public sealed class Paragraph : IDisposable
     public TextRange getLineBoundary(TextPosition position)
     {
         var offset = Math.Clamp(checked((int)position.offset), 0, text.Length);
-        var line = offset / CharactersPerLine;
-        return new TextRange(line * CharactersPerLine, Math.Min(text.Length, (line + 1) * CharactersPerLine));
+        var line = FindLine(offset);
+        return line is null ? TextRange.empty : new TextRange(line.Value.Start, line.Value.End);
     }
     public List<LineMetrics> computeLineMetrics()
     {
         var metrics = new List<LineMetrics>(numberOfLines);
         for (var line = 0; line < numberOfLines; line++)
         {
-            var lineStart = line * CharactersPerLine;
-            var lineLength = Math.Clamp(text.Length - lineStart, 0, CharactersPerLine);
+            var paragraphLine = _lines[line];
             metrics.Add(new LineMetrics(
-                hardBreak: lineStart + lineLength < text.Length && text[lineStart + lineLength] == '\n',
+                hardBreak: paragraphLine.HardBreak,
                 ascent: alphabeticBaseline,
                 descent: _lineHeight - alphabeticBaseline,
                 unscaledAscent: alphabeticBaseline,
                 height: _lineHeight,
-                width: lineLength * CharacterWidth,
+                width: paragraphLine.Width,
                 left: 0,
                 baseline: (line * _lineHeight) + alphabeticBaseline,
                 lineNumber: line));
@@ -937,11 +959,15 @@ public sealed class Paragraph : IDisposable
             return null;
         }
         var offset = checked((int)codeUnitOffset);
-        var line = offset / CharactersPerLine;
-        var column = offset % CharactersPerLine;
+        var clusterStart = ClusterStart(offset);
+        var clusterEnd = NextClusterEnd(clusterStart);
+        var lineIndex = FindLineIndex(clusterStart);
+        if (lineIndex < 0) return null;
+        var line = _lines[lineIndex];
+        var left = AdvanceBetween(line.Start, clusterStart);
         return new GlyphInfo(
-            Rect.fromLTWH(column * CharacterWidth, line * _lineHeight, CharacterWidth, _lineHeight),
-            new TextRange(offset, offset + 1),
+            Rect.fromLTWH(left, lineIndex * _lineHeight, AdvanceBetween(clusterStart, clusterEnd), _lineHeight),
+            new TextRange(clusterStart, clusterEnd),
             TextDirection.ltr);
     }
     public GlyphInfo? getClosestGlyphInfoForOffset(Offset offset)
@@ -955,6 +981,118 @@ public sealed class Paragraph : IDisposable
     }
     public void Dispose() => Interlocked.Exchange(ref _disposed, 1);
     public void dispose() => Dispose();
+
+    private static double[] CreateFallbackAdvances(string text, double fontSize)
+    {
+        var advances = new double[text.Length];
+        for (var index = 0; index < text.Length; index++)
+        {
+            if (char.IsLowSurrogate(text[index])) continue;
+            var isWide = text[index] >= 0x2E80 || char.IsHighSurrogate(text[index]);
+            advances[index] = fontSize * (isWide ? 1.0 : 0.55);
+        }
+        return advances;
+    }
+
+    private static double ComputeNaturalWidth(string text, IReadOnlyList<double> advances)
+    {
+        var longest = 0.0;
+        var current = 0.0;
+        for (var index = 0; index < text.Length; index++)
+        {
+            if (text[index] == '\n')
+            {
+                longest = Math.Max(longest, current);
+                current = 0;
+            }
+            else current += advances[index];
+        }
+        return Math.Max(longest, current);
+    }
+
+    private double ComputeMinIntrinsicWidth()
+    {
+        var longest = 0.0;
+        var current = 0.0;
+        for (var index = 0; index < text.Length; index++)
+        {
+            if (char.IsWhiteSpace(text[index]))
+            {
+                longest = Math.Max(longest, current);
+                current = 0;
+            }
+            else current += _codeUnitAdvances[index];
+        }
+        return Math.Max(longest, current);
+    }
+
+    private List<ParagraphLine> BuildLines(double availableWidth)
+    {
+        if (text.Length == 0) return [];
+        var lines = new List<ParagraphLine>();
+        var lineStart = 0;
+        var lineWidth = 0.0;
+        var finiteWidth = double.IsFinite(availableWidth);
+        for (var index = 0; index < text.Length; index++)
+        {
+            if (text[index] == '\n')
+            {
+                lines.Add(new ParagraphLine(lineStart, index, lineWidth, true));
+                lineStart = index + 1;
+                lineWidth = 0;
+                continue;
+            }
+
+            var advance = _codeUnitAdvances[index];
+            if (finiteWidth && index > lineStart && lineWidth + advance > availableWidth)
+            {
+                lines.Add(new ParagraphLine(lineStart, index, lineWidth, false));
+                lineStart = index;
+                lineWidth = 0;
+            }
+            lineWidth += advance;
+        }
+        lines.Add(new ParagraphLine(lineStart, text.Length, lineWidth, false));
+        return lines;
+    }
+
+    private double AdvanceBetween(int start, int end)
+    {
+        var result = 0.0;
+        for (var index = start; index < end; index++) result += _codeUnitAdvances[index];
+        return result;
+    }
+
+    private int ClusterStart(int offset) =>
+        offset > 0 && char.IsLowSurrogate(text[offset]) && char.IsHighSurrogate(text[offset - 1])
+            ? offset - 1
+            : offset;
+
+    private int NextClusterEnd(int start) =>
+        start + 1 < text.Length && char.IsHighSurrogate(text[start]) && char.IsLowSurrogate(text[start + 1])
+            ? start + 2
+            : start + 1;
+
+    private int FindLineIndex(int offset)
+    {
+        for (var index = 0; index < _lines.Count; index++)
+        {
+            var line = _lines[index];
+            if (offset >= line.Start && offset < line.End) return index;
+        }
+        return -1;
+    }
+
+    private ParagraphLine? FindLine(int offset)
+    {
+        foreach (var line in _lines)
+        {
+            if (offset >= line.Start && offset <= line.End) return line;
+        }
+        return _lines.Count == 0 ? null : _lines[^1];
+    }
+
+    private readonly record struct ParagraphLine(int Start, int End, double Width, bool HardBreak);
 }
 
 public interface IImageHostCapability

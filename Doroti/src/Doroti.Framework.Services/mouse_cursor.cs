@@ -162,7 +162,24 @@ internal class _SystemMouseCursorSession : MouseCursorSession
     public override MouseCursor cursor => ((SystemMouseCursor?)base.cursor)!;
     public override Future activate()
     {
-        return SystemChannels.mouseCursor.invokeMethod<object?>("activateSystemCursor", new DartMap<object, object> { ["device"] = device, ["kind"] = ((SystemMouseCursor)cursor).kind });
+        const string elementId = "package:flutter/services.dart#MouseCursor.activateSystemCursor";
+        var dispatcher = global::Doroti.Ui.PlatformDispatcher.instance;
+        var view = dispatcher.implicitView ?? dispatcher.views.FirstOrDefault()
+            ?? throw new DorotiCapabilityException(
+                DorotiCapabilityIds.PlatformServices,
+                null,
+                DartUiInvocation.Managed(elementId),
+                "mouse cursor activation requires an attached DorotiView");
+        var cursorName = ((SystemMouseCursor)cursor).kind;
+        if (!Enum.TryParse<DorotiMouseCursorKind>(cursorName, ignoreCase: false, out var cursorKind) ||
+            !Enum.IsDefined(cursorKind))
+        {
+            throw new ArgumentOutOfRangeException(nameof(cursor), cursorName, "Unknown system mouse cursor kind.");
+        }
+        view.RequireCapability<IPlatformServicesHostCapability>(
+            DorotiCapabilityIds.PlatformServices,
+            DartUiInvocation.Managed(elementId)).SetCursor(cursorKind);
+        return Future.value();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

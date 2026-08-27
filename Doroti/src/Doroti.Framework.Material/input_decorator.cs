@@ -1654,7 +1654,7 @@ internal class _Decorator__input_decorator : global::Doroti.Framework.Widgets.Sl
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.SlottedContainerRenderObjectMixin<_DecorationSlot__input_decorator, global::Doroti.Framework.Rendering.RenderBox> renderObject)
+    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderDecoration__input_decorator)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderDecoration__input_decorator>)(() =>

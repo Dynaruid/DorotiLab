@@ -462,10 +462,25 @@ public sealed class SkiaSceneRenderer :
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        using var typeface = SKTypeface.FromFamilyName(request.FontFamily);
-        using var font = new SKFont(typeface, (float)request.FontSize);
-        var width = Math.Min(request.Width, font.MeasureText(request.Text));
-        return new Paragraph(request.Text, width, request.FontSize * 1.2, request.FontSize, fontFamily: request.FontFamily);
+        lock (_paintGate)
+        {
+            var resources = GetTextRenderResources(
+                request.FontFamily,
+                (float)request.FontSize,
+                ToColor(request.Color ?? new UiColor(0xFF000000)));
+            var advances = resources.MeasureCodeUnitAdvances(request.Text);
+            var naturalWidth = advances.Sum();
+            var width = double.IsFinite(request.Width) ? Math.Min(request.Width, naturalWidth) : naturalWidth;
+            return new Paragraph(
+                request.Text,
+                width,
+                request.Height ?? request.FontSize * 1.2,
+                request.FontSize,
+                request.MaxLines,
+                request.FontFamily,
+                request.Color,
+                advances);
+        }
     }
 
     public ValueTask<UiImage> DecodeAsync(
@@ -874,9 +889,11 @@ public sealed class SkiaSceneRenderer :
                         draw.Paragraph.fontFamily,
                         (float)draw.Paragraph.fontSize,
                         ToColor(draw.Paragraph.color));
-                    canvas.DrawText(draw.Paragraph.text, (float)draw.Offset.dx,
-                        (float)(draw.Offset.dy + draw.Paragraph.alphabeticBaseline),
-                        SKTextAlign.Left, textResources.Font, textResources.Paint);
+                    textResources.DrawText(
+                        canvas,
+                        draw.Paragraph.text,
+                        (float)draw.Offset.dx,
+                        (float)(draw.Offset.dy + draw.Paragraph.alphabeticBaseline));
                     break;
                 case "drawImageRect" or "drawImage" when command.HostPayload is CanvasImagePayload draw && draw.Image.HostHandle is SkiaImageHandle handle:
                     using (var paint = ToPaint(draw.Paint))
@@ -1051,23 +1068,137 @@ public sealed class SkiaSceneRenderer :
 
     private sealed class TextRenderResources : IDisposable
     {
-        private readonly SKTypeface _typeface;
+        private readonly TextFontResource _primary;
+        private readonly Dictionary<int, TextFontResource> _fallbackByCodePoint = [];
+        private readonly Dictionary<string, TextFontResource> _fallbackByFamily =
+            new(StringComparer.OrdinalIgnoreCase);
 
         internal TextRenderResources(string? fontFamily, float fontSize, SKColor color)
         {
-            _typeface = SKTypeface.FromFamilyName(fontFamily);
-            Font = new SKFont(_typeface, fontSize);
+            _primary = new TextFontResource(SKTypeface.FromFamilyName(fontFamily), fontSize);
             Paint = new SKPaint { Color = color, IsAntialias = true };
         }
 
-        internal SKFont Font { get; }
         internal SKPaint Paint { get; }
+
+        internal void DrawText(SKCanvas canvas, string text, float x, float baseline)
+        {
+            if (text.Length == 0) return;
+
+            var runStart = 0;
+            var runFont = ResolveFont(CodePointAt(text, 0, out var firstLength));
+            for (var index = firstLength; index < text.Length;)
+            {
+                var codePoint = CodePointAt(text, index, out var codePointLength);
+                var font = ResolveFont(codePoint);
+                if (!ReferenceEquals(font, runFont))
+                {
+                    var run = text[runStart..index];
+                    canvas.DrawText(run, x, baseline, SKTextAlign.Left, runFont.Font, Paint);
+                    x += runFont.Font.MeasureText(run, Paint);
+                    runStart = index;
+                    runFont = font;
+                }
+                index += codePointLength;
+            }
+
+            canvas.DrawText(text[runStart..], x, baseline, SKTextAlign.Left, runFont.Font, Paint);
+        }
+
+        internal double[] MeasureCodeUnitAdvances(string text)
+        {
+            var advances = new double[text.Length];
+            if (text.Length == 0) return advances;
+
+            var runStart = 0;
+            var runFont = ResolveFont(CodePointAt(text, 0, out var firstLength));
+            for (var index = firstLength; index <= text.Length;)
+            {
+                TextFontResource? nextFont = null;
+                var nextLength = 0;
+                if (index < text.Length)
+                {
+                    nextFont = ResolveFont(CodePointAt(text, index, out nextLength));
+                }
+
+                if (index == text.Length || !ReferenceEquals(nextFont, runFont))
+                {
+                    var run = text.AsSpan(runStart, index - runStart);
+                    var widths = runFont.Font.GetGlyphWidths(run, Paint);
+                    var glyphIndex = 0;
+                    for (var cursor = runStart; cursor < index;)
+                    {
+                        CodePointAt(text, cursor, out var codePointLength);
+                        advances[cursor] = glyphIndex < widths.Length
+                            ? Math.Max(0, widths[glyphIndex++])
+                            : Math.Max(0, runFont.Font.MeasureText(text.AsSpan(cursor, codePointLength), Paint));
+                        cursor += codePointLength;
+                    }
+                    runStart = index;
+                    if (nextFont is not null) runFont = nextFont;
+                }
+
+                if (index == text.Length) break;
+                index += nextLength;
+            }
+            return advances;
+        }
+
+        private static int CodePointAt(string text, int index, out int length)
+        {
+            var first = text[index];
+            if (char.IsHighSurrogate(first) && index + 1 < text.Length && char.IsLowSurrogate(text[index + 1]))
+            {
+                length = 2;
+                return char.ConvertToUtf32(first, text[index + 1]);
+            }
+            length = 1;
+            return first;
+        }
+
+        private TextFontResource ResolveFont(int codePoint)
+        {
+            if (_primary.Font.ContainsGlyph(codePoint)) return _primary;
+            if (_fallbackByCodePoint.TryGetValue(codePoint, out var cached)) return cached;
+
+            var matchedTypeface = SKFontManager.Default.MatchCharacter(_primary.FamilyName, codePoint);
+            if (matchedTypeface is null)
+            {
+                _fallbackByCodePoint.Add(codePoint, _primary);
+                return _primary;
+            }
+
+            if (!_fallbackByFamily.TryGetValue(matchedTypeface.FamilyName, out var fallback))
+            {
+                fallback = new TextFontResource(matchedTypeface, _primary.Font.Size);
+                _fallbackByFamily.Add(fallback.FamilyName, fallback);
+            }
+            else
+            {
+                matchedTypeface.Dispose();
+            }
+            _fallbackByCodePoint.Add(codePoint, fallback);
+            return fallback;
+        }
 
         public void Dispose()
         {
             Paint.Dispose();
-            Font.Dispose();
-            _typeface.Dispose();
+            foreach (var fallback in _fallbackByFamily.Values) fallback.Dispose();
+            _primary.Dispose();
+        }
+
+        private sealed class TextFontResource(SKTypeface typeface, float fontSize) : IDisposable
+        {
+            internal SKTypeface Typeface { get; } = typeface;
+            internal SKFont Font { get; } = new(typeface, fontSize);
+            internal string FamilyName => Typeface.FamilyName;
+
+            public void Dispose()
+            {
+                Font.Dispose();
+                Typeface.Dispose();
+            }
         }
     }
 
@@ -1258,6 +1389,10 @@ public sealed class SkiaSceneRenderer :
                 case "cubicTo": builder.CubicTo((float)a[0], (float)a[1], (float)a[2], (float)a[3], (float)a[4], (float)a[5]); break;
                 case "addRect": builder.AddRect(new((float)a[0], (float)a[1], (float)a[2], (float)a[3]), SKPathDirection.Clockwise); break;
                 case "addOval": builder.AddOval(new((float)a[0], (float)a[1], (float)a[2], (float)a[3]), SKPathDirection.Clockwise); break;
+                case "addArc": builder.AddArc(
+                    new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
+                    (float)(a[4] * 180 / Math.PI),
+                    (float)(a[5] * 180 / Math.PI)); break;
                 case "addRRect": builder.AddRoundRect(new((float)a[0], (float)a[1], (float)a[2], (float)a[3]), (float)a[4], (float)a[5], SKPathDirection.Clockwise); break;
                 case "close": builder.Close(); break;
             }

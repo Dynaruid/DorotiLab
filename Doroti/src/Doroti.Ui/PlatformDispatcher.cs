@@ -37,6 +37,8 @@ public sealed class PlatformDispatcher : IDisposable
             DartUiInvocation.Managed("dart:ui#PlatformDispatcher.instance"),
             "no dispatcher is active in the current execution context");
 
+    internal static PlatformDispatcher? current => ActiveDispatcher.Value;
+
     public DorotiFrameTrace frameTrace => _frameTrace;
 
     public IDisposable EnterScope()

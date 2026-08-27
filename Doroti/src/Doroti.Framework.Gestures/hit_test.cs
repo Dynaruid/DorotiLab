@@ -37,10 +37,12 @@ public class HitTestEntry<T> where T : HitTestTarget
 {
     public virtual T target { get; private set; } = default!;
     internal virtual Matrix4? _transform { get; set; } = default;
+    internal object identity { get; set; } = default!;
 
     public HitTestEntry(T target)
     {
         this.target = target;
+        this.identity = this;
     }
 
     public override string ToString() => $"{(global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this))}({this.target})";
@@ -198,6 +200,7 @@ public class HitTestResult
         var compatibleEntry = new HitTestEntry<HitTestTarget>(entry.target)
         {
             _transform = _lastTransform,
+            identity = entry.identity,
         };
         entry._transform = compatibleEntry._transform;
         _path.Add(compatibleEntry);

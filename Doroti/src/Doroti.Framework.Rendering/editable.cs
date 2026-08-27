@@ -318,6 +318,20 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         System.Diagnostics.Debug.Assert((obscuringCharacter.characters().Count == 1L));
         System.Diagnostics.Debug.Assert((cursorWidth >= 0.0));
         System.Diagnostics.Debug.Assert(((cursorHeight is null) || (cursorHeight >= 0.0)));
+        System.Diagnostics.Debug.Assert((!this._showCursor.value || (cursorColor is not null)));
+        this._selectionPainter.highlightColor = selectionColor;
+        this._selectionPainter.highlightedRange = selection;
+        this._selectionPainter.selectionHeightStyle = selectionHeightStyle;
+        this._selectionPainter.selectionWidthStyle = selectionWidthStyle;
+        this._autocorrectHighlightPainter.highlightColor = promptRectColor;
+        this._autocorrectHighlightPainter.highlightedRange = promptRectRange;
+        this._caretPainter.caretColor = cursorColor;
+        this._caretPainter.cursorRadius = cursorRadius;
+        this._caretPainter.cursorOffset = cursorOffset;
+        this._caretPainter.backgroundCursorColor = backgroundCursorColor;
+        _updateForegroundPainter(foregroundPainter);
+        _updatePainter(painter);
+        addAll(children);
     }
 
     public override void dispose()
@@ -406,14 +420,24 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
     internal virtual _CompositeRenderEditablePainter__editable _builtInForegroundPainters => _cachedBuiltInForegroundPainters ??= _createBuiltInForegroundPainters();
     internal virtual _CompositeRenderEditablePainter__editable _createBuiltInForegroundPainters()
     {
-        return new _CompositeRenderEditablePainter__editable(painters: new List<RenderEditablePainter>());
+        var painters = new List<RenderEditablePainter>();
+        if (this.paintCursorAboveText)
+        {
+            painters.Add(this._caretPainter);
+        }
+        return new _CompositeRenderEditablePainter__editable(painters: painters);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual _CompositeRenderEditablePainter__editable _builtInPainters => _cachedBuiltInPainters ??= _createBuiltInPainters();
     internal virtual _CompositeRenderEditablePainter__editable _createBuiltInPainters()
     {
-        return new _CompositeRenderEditablePainter__editable(painters: new List<RenderEditablePainter> { this._autocorrectHighlightPainter, this._selectionPainter });
+        var painters = new List<RenderEditablePainter> { this._autocorrectHighlightPainter, this._selectionPainter };
+        if (!this.paintCursorAboveText)
+        {
+            painters.Add(this._caretPainter);
+        }
+        return new _CompositeRenderEditablePainter__editable(painters: painters);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

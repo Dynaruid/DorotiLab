@@ -45,6 +45,9 @@ Require(ReferenceEquals(systemThemeApp.darkTheme, darkTheme), "MaterialApp retai
 Require(systemThemeApp.themeMode == Doroti.Framework.Material.ThemeMode.system, "MaterialApp follows platform brightness in system mode");
 VerifyScrollbarAlphaContract();
 VerifyRadiusSizedMaterialShapes();
+VerifyTypedActionDispatch();
+VerifyTapRegionHitIdentity();
+VerifyVariableGlyphCaretMetrics();
 
 var widgetsBinding = (Doroti.Framework.Widgets.WidgetsFlutterBinding)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(
     typeof(Doroti.Framework.Widgets.WidgetsFlutterBinding));
@@ -145,6 +148,61 @@ static void VerifyRadiusSizedMaterialShapes()
         "slider and range-slider tick marks report their full radius-derived diameter");
 }
 
+static void VerifyTypedActionDispatch()
+{
+    var action = new ProbeAction();
+    var context = new StatelessElement(new ProbeWidget());
+    var result = new ActionDispatcher().invokeAction(action, new ProbeIntent(), context);
+    Require(action.InvokeCount == 1 && Equals(result, "invoked"),
+        "ActionDispatcher invokes a generic action without dynamic binder loss");
+}
+
+static void VerifyTapRegionHitIdentity()
+{
+    var insideCount = 0;
+    var surface = new RenderTapRegionSurface();
+    var region = new RenderTapRegion(
+        registry: surface,
+        behavior: Doroti.Framework.Rendering.HitTestBehavior.opaque,
+        onTapInside: _ => insideCount++);
+    surface.child = region;
+    surface.layout(Doroti.Framework.Rendering.BoxConstraints.CreateTight(new Size(100, 100)));
+
+    var result = new Doroti.Framework.Rendering.BoxHitTestResult();
+    Require(surface.hitTest(result, new Offset(20, 20)), "tap-region surface is hit inside its child");
+    var surfaceEntry = result.path.Single(entry => ReferenceEquals(entry.target, surface));
+    surface.handleEvent(
+        new Doroti.Framework.Gestures.PointerDownEvent(position: new Offset(20, 20)),
+        surfaceEntry);
+    Require(insideCount == 1,
+        "TapRegion recovers the cached hit result after generic hit-test entry adaptation");
+    surface.dispose();
+}
+
+static void VerifyVariableGlyphCaretMetrics()
+{
+    var paragraph = new Paragraph(
+        "A한B",
+        width: 0,
+        height: 20,
+        fontSize: 16,
+        codeUnitAdvances: [7, 18, 9]);
+    paragraph.layout(new ParagraphConstraints(double.PositiveInfinity));
+
+    var boxes = paragraph.getBoxesForRange(0, 3);
+    Require(boxes.Count == 1 && Math.Abs(boxes[0].right - 34) < 0.001,
+        "paragraph selection boxes use measured per-glyph advances");
+    var koreanGlyph = paragraph.getGlyphInfoAt(1);
+    Require(koreanGlyph is not null &&
+            Math.Abs(koreanGlyph.graphemeClusterLayoutBounds.left - 7) < 0.001 &&
+            Math.Abs(koreanGlyph.graphemeClusterLayoutBounds.right - 25) < 0.001,
+        "caret geometry follows the measured fallback-font glyph bounds");
+    Require(paragraph.getPositionForOffset(new Offset(10, 5)).offset == 1 &&
+            paragraph.getPositionForOffset(new Offset(20, 5)).offset == 2,
+        "pointer hit testing uses the same glyph advances as caret geometry");
+    paragraph.dispose();
+}
+
 static ScrollbarAlphaFrame CaptureScrollbarFrame(Color thumbColor, double fadeValue, int timestampMilliseconds)
 {
     var animation = new MutableAnimation(fadeValue);
@@ -212,4 +270,24 @@ sealed class EnvironmentObserverProbe : Doroti.Framework.Widgets.WidgetsBindingO
 
     public void didChangeTextScaleFactor() => TextScaleChanges++;
     public void didChangePlatformBrightness() => BrightnessChanges++;
+}
+
+sealed class ProbeIntent : Intent
+{
+}
+
+sealed class ProbeAction : Doroti.Framework.Widgets.Action<ProbeIntent>
+{
+    public int InvokeCount { get; private set; }
+
+    public override object? invoke(ProbeIntent intent, BuildContext? context = null)
+    {
+        InvokeCount++;
+        return "invoked";
+    }
+}
+
+sealed class ProbeWidget : StatelessWidget
+{
+    public override Widget build(BuildContext context) => throw new NotSupportedException();
 }

@@ -72,7 +72,13 @@ public interface IActionListenerSource
     void removeActionListener(global::System.Action<dynamic> listener);
 }
 
-public abstract class Action<T> : global::Doroti.Framework.Foundation.Diagnosticable, IActionListenerSource where T : Intent
+internal interface IIntentAction
+{
+    bool IsEnabledForIntent(Intent intent, BuildContext? context);
+    object? InvokeIntent(Intent intent, BuildContext? context);
+}
+
+public abstract class Action<T> : global::Doroti.Framework.Foundation.Diagnosticable, IActionListenerSource, IIntentAction where T : Intent
 {
     internal virtual global::Doroti.Framework.Foundation.ObserverList<global::System.Action<dynamic>> _listeners { get; private set; } = new global::Doroti.Framework.Foundation.ObserverList<global::System.Action<dynamic>>();
     internal virtual dynamic _currentCallingAction { get; set; } = default!;
@@ -113,6 +119,8 @@ public abstract class Action<T> : global::Doroti.Framework.Foundation.Diagnostic
 
     public abstract object? invoke(T intent, BuildContext? context = null);
     internal virtual object? _invoke(T intent, BuildContext? context) => (this switch { ContextAction<T> action__15245 => (object?)action__15245.invoke(intent, context), _ => (object?)invoke(intent) });
+    bool IIntentAction.IsEnabledForIntent(Intent intent, BuildContext? context) => _isEnabled((T)intent, context);
+    object? IIntentAction.InvokeIntent(Intent intent, BuildContext? context) => _invoke((T)intent, context);
     public virtual void addActionListener(global::System.Action<dynamic> listener) => this._listeners.add((global::System.Action<dynamic>)listener);
     public virtual void removeActionListener(global::System.Action<dynamic> listener) => this._listeners.remove((global::System.Action<dynamic>)listener);
     public virtual void notifyActionListeners()
@@ -268,17 +276,19 @@ public class ActionDispatcher : global::Doroti.Framework.Foundation.Diagnosticab
     public virtual object? invokeAction(dynamic action, Intent intent, BuildContext? context = null)
     {
         BuildContext? target__26983 = (context ?? global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus?.context);
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)action)._isEnabled(intent, target__26983)), () => (object?)"Action must be enabled when calling invokeAction");
-        return ((dynamic)action)._invoke(intent, target__26983);
+        var intentAction = (IIntentAction)action;
+        DartRuntimePrimitives.Assert(() => intentAction.IsEnabledForIntent(intent, target__26983), () => (object?)"Action must be enabled when calling invokeAction");
+        return intentAction.InvokeIntent(intent, target__26983);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual (bool, object?) invokeActionIfEnabled(dynamic action, Intent intent, BuildContext? context = null)
     {
         BuildContext? target__28148 = (context ?? global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus?.context);
-        if (((bool)((dynamic)action)._isEnabled(intent, target__28148)))
+        var intentAction = (IIntentAction)action;
+        if (intentAction.IsEnabledForIntent(intent, target__28148))
         {
-            return (true, ((dynamic)action)._invoke(intent, target__28148));
+            return (true, intentAction.InvokeIntent(intent, target__28148));
         }
         return (false, null);
         throw new InvalidOperationException("Dart control flow completed without a value.");

@@ -420,8 +420,21 @@ public sealed class ParagraphBuilder
     public Paragraph build()
     {
         var fontSize = _fontSize > 0 ? _fontSize : _style.fontSize ?? 14;
-        return new(string.Concat(_text), 0, 0, fontSize, _style.maxLines,
-            _fontFamily ?? _style.fontFamily, _color ?? new Color(0xFF000000));
+        var text = string.Concat(_text);
+        var fontFamily = _fontFamily ?? _style.fontFamily;
+        var color = _color ?? new Color(0xFF000000);
+        var lineHeight = fontSize * (_style.height ?? 1.2);
+        var view = PlatformDispatcher.current?.implicitView;
+        if (view is not null)
+        {
+            return view.LayoutParagraph(
+                new ParagraphRequest(text, double.PositiveInfinity, fontFamily, fontSize,
+                    _style.maxLines, color, lineHeight),
+                DartUiInvocation.Managed("dart:ui#ParagraphBuilder.build"));
+        }
+
+        // Unit-level dart:ui use can intentionally run without a host view.
+        return new(text, 0, lineHeight, fontSize, _style.maxLines, fontFamily, color);
     }
 }
 

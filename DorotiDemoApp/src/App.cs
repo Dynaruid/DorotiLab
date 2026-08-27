@@ -219,7 +219,9 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
     private bool _switched;
     private double _slider = 0.2;
     private int _fabCount;
+    private string _textValue = string.Empty;
     private bool _blurEnabled = true;
+    private readonly TextEditingController _textController = new();
     private readonly ScrollController _outerScrollController = new();
     private readonly ScrollController _innerScrollController = new();
     private readonly FragmentShader _galleryShader =
@@ -247,6 +249,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
 
     public override void dispose()
     {
+        _textController.dispose();
         _innerScrollController.dispose();
         _outerScrollController.dispose();
         base.dispose();
@@ -373,6 +376,14 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
             overlayColor: new WidgetStatePropertyAll<UiColor?>(interactionOverlay),
             showValueIndicator: Material.ShowValueIndicator.never,
             onChanged: value => Mutate(() => _slider = value)), () => _slider = _slider < 0.7 ? 0.8 : 0.2, $"{_slider:F1}");
+        var textField = new Material.TextField(
+            controller: _textController,
+            decoration: new Material.InputDecoration(
+                labelText: "Text field",
+                hintText: "Type in English or 한국어",
+                helperText: _textValue.Length == 0 ? "Enter text to test keyboard and IME input" : $"Entered: {_textValue}",
+                border: new Material.OutlineInputBorder()),
+            onChanged: value => setState(() => _textValue = value));
 
         var lazyList = ListView.CreateBuilder(
             controller: _innerScrollController,
@@ -488,6 +499,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                                 child: new Material.ListTile(
                                     title: new Text("Material components"),
                                     subtitle: new Text("Card + ListTile + local state"))),
+                            textField,
                             new Row(spacing: 12, children: [button, new Text($"Pressed {_buttonCount}")]),
                             new Row(spacing: 12, children: [checkbox, new Text("Checkbox"), radio, new Text("Radio")]),
                             new Row(spacing: 12, children: [toggle, new Text("Switch")]),

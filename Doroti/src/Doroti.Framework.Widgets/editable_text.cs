@@ -4318,7 +4318,7 @@ internal class _EditableTextTapOutsideAction__editable_text : ContextAction<Edit
                     break;
                 }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return null;
     }
 
 }
@@ -4331,7 +4331,7 @@ internal class _EditableTextTapUpOutsideAction__editable_text : ContextAction<Ed
 
     public override object? invoke(EditableTextTapUpOutsideIntent intent, BuildContext? context = null)
     {
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return null;
     }
 
 }

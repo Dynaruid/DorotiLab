@@ -180,7 +180,7 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
         if (hitTarget__12705)
         {
             var entry__12821 = new global::Doroti.Framework.Rendering.BoxHitTestEntry(this, position);
-            this._cachedResults[entry__12821] = result;
+            this._cachedResults[entry__12821.identity] = result;
             result.add(entry__12821);
         }
         return hitTarget__12705;
@@ -192,6 +192,19 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
         IEnumerable<RenderTapRegion> hitRegions__13310 = ((IEnumerable<RenderTapRegion>)(object?)_getRegionsHit(this._registeredRegions, result.path.Cast<global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget>>()).cast<RenderTapRegion>());
         DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug($"Tap event hit {hitRegions__13310.Count()} descendants."));
         var insideRegions__13506 = new HashSet<RenderTapRegion>();
+        foreach (RenderTapRegion region__13507 in hitRegions__13310)
+        {
+            if (region__13507.groupId is null)
+            {
+                insideRegions__13506.Add(region__13507);
+                continue;
+            }
+            HashSet<RenderTapRegion>? groupedRegions__13508 = this._groupIdToRegions.GetValueOrDefault(region__13507.groupId);
+            if (groupedRegions__13508 is not null)
+            {
+                insideRegions__13506.UnionWith(groupedRegions__13508);
+            }
+        }
         return (inside: insideRegions__13506, outside: this._registeredRegions.where(((r) => !insideRegions__13506.Contains(r))).ToList());
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -220,7 +233,7 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
             DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug("Ignored tap event because no regions are registered."));
             return;
         }
-        global::Doroti.Framework.Rendering.BoxHitTestResult? result__14611 = this._cachedResults[entry];
+        global::Doroti.Framework.Rendering.BoxHitTestResult? result__14611 = this._cachedResults[entry.identity];
         if ((result__14611 is null))
         {
             DartRuntimePrimitives.Assert(() => Tap_regionLibrary._tapRegionDebug("Ignored tap event because no surface descendants were hit."));
@@ -278,7 +291,15 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
 
     internal virtual HashSet<global::Doroti.Framework.Gestures.HitTestTarget> _getRegionsHit(HashSet<RenderTapRegion> detectors, IEnumerable<global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget>> hitTestPath)
     {
-        return new HashSet<global::Doroti.Framework.Gestures.HitTestTarget>();
+        var regions = new HashSet<global::Doroti.Framework.Gestures.HitTestTarget>();
+        foreach (global::Doroti.Framework.Gestures.HitTestEntry<global::Doroti.Framework.Gestures.HitTestTarget> entry in hitTestPath)
+        {
+            if (entry.target is RenderTapRegion region && detectors.Contains(region))
+            {
+                regions.Add(region);
+            }
+        }
+        return regions;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -496,4 +517,3 @@ public class TextFieldTapRegion : TapRegion
     }
 
 }
-
