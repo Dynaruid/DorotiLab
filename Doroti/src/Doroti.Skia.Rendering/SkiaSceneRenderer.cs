@@ -29,6 +29,7 @@ public sealed class SkiaSceneRenderer :
     private readonly string _targetIdentity;
     private readonly string _runtimeEffectBackend;
     private readonly string _diagnosticsBackend;
+    private readonly bool _enablePictureRasterCache;
     private SKColor _backgroundColor;
     private readonly object _gate = new();
     private readonly object _paintGate = new();
@@ -73,7 +74,8 @@ public sealed class SkiaSceneRenderer :
         UiColor? darkBackgroundColor,
         string targetIdentity,
         string runtimeEffectBackend,
-        string diagnosticsBackend)
+        string diagnosticsBackend,
+        bool enablePictureRasterCache = true)
     {
         _viewId = viewId;
         _host = host;
@@ -82,6 +84,7 @@ public sealed class SkiaSceneRenderer :
         _targetIdentity = targetIdentity;
         _runtimeEffectBackend = runtimeEffectBackend;
         _diagnosticsBackend = diagnosticsBackend;
+        _enablePictureRasterCache = enablePictureRasterCache;
         _backgroundColor = ResolveBackgroundColor(_host.Configuration.platformBrightness);
         _host.SemanticsAction += HandleSemanticsAction;
         _host.InputReceived += HandleInput;
@@ -911,6 +914,12 @@ public sealed class SkiaSceneRenderer :
     private void DrawPictureLayer(SKCanvas canvas, ScenePicturePayload payload)
     {
         var commands = payload.Commands;
+        if (!_enablePictureRasterCache)
+        {
+            DrawPicture(canvas, commands);
+            return;
+        }
+
         var cacheKey = (object)commands;
         if (payload.WillChangeHint || payload.CanvasBounds is not { } canvasBounds ||
             !canvasBounds.IsFinite || canvasBounds.isEmpty ||

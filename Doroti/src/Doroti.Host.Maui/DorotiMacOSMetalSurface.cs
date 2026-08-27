@@ -8,6 +8,7 @@ namespace Doroti.Host.Maui;
 public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
 {
     private readonly ulong _viewId;
+    private readonly DorotiResizeTargetCoordinator _targets = new();
     private DorotiMacOSMetalView? _nativeView;
     private bool _disposed;
 
@@ -15,6 +16,7 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
 
     View IMauiSkiaSurface.Element => this;
     IDispatcher IMauiSkiaSurface.Dispatcher => Dispatcher;
+    DorotiResizeEpoch? IMauiSkiaSurface.ResizeTarget => _targets.Latest;
     event Action<MauiSkiaPaintContext>? IMauiSkiaSurface.Paint
     {
         add => Paint += value;
@@ -107,9 +109,24 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
         if (!_disposed) FocusChanged?.Invoke(focused);
     }
 
-    internal void RaiseSizeChanged()
+    internal void RaiseSizeChanged(
+        double logicalWidth,
+        double logicalHeight,
+        int pixelWidth,
+        int pixelHeight,
+        double density)
     {
-        if (!_disposed) SurfaceSizeChanged?.Invoke(null);
+        if (_disposed || logicalWidth <= 0 || logicalHeight <= 0 ||
+            pixelWidth <= 0 || pixelHeight <= 0) return;
+        density = Math.Max(1, density);
+        if (checked((int)Math.Round(logicalWidth * density)) != pixelWidth)
+            logicalWidth = pixelWidth / density;
+        if (checked((int)Math.Round(logicalHeight * density)) != pixelHeight)
+            logicalHeight = pixelHeight / density;
+        var previousGeneration = _targets.Latest?.Generation;
+        var target = _targets.Publish(logicalWidth, logicalHeight, density);
+        if (target.Generation != previousGeneration)
+            SurfaceSizeChanged?.Invoke(target);
     }
 
     void IMauiSkiaSurface.InvalidateSurface() => _nativeView?.RequestFrame();

@@ -125,11 +125,12 @@ public sealed class MauiFrameworkHost : IDisposable
         ulong viewId,
         SkiaSharp.SKSurface surface,
         int pixelWidth,
-        int pixelHeight)
+        int pixelHeight,
+        out bool shouldPresent)
     {
         if (!_views.TryGetValue(viewId, out var value))
             throw new KeyNotFoundException($"MAUI Doroti view {viewId} is not registered.");
-        return value.Graphics.Paint(surface, pixelWidth, pixelHeight);
+        return value.Graphics.Paint(surface, pixelWidth, pixelHeight, out shouldPresent);
     }
 
     internal void CompletePaint(ulong viewId, MauiPaintCompletion completion)

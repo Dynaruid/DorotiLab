@@ -573,5 +573,6 @@ internal static class App
         new("Doroti Material Demo", new Size(720, 640),
             new UiColor(0xccfffbfeL), new UiColor(0xcc141218L),
             new WindowBackdropOptions(WindowBackdropMode.acrylic,
-                WindowBackdropFallback.transparent));
+                WindowBackdropFallback.transparent),
+            terminateAfterLastWindowClosed: true);
 }

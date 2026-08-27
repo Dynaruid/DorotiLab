@@ -605,7 +605,8 @@ public sealed record DorotiViewConfiguration(
     Size logicalSize,
     Color? backgroundColor = null,
     Color? darkBackgroundColor = null,
-    WindowBackdropOptions? backdrop = null);
+    WindowBackdropOptions? backdrop = null,
+    bool terminateAfterLastWindowClosed = false);
 
 /// <summary>Legacy window facade bound to one explicit view rather than a process-global current window.</summary>
 public sealed class SingletonDorotiWindow(DorotiView view)

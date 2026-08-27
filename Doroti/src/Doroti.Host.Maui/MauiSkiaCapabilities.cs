@@ -13,6 +13,7 @@ internal sealed class MauiSkiaCapabilities :
     ISemanticsHostCapability,
     IDisposable
 {
+    private readonly MauiHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
 
     internal MauiSkiaCapabilities(
@@ -21,6 +22,7 @@ internal sealed class MauiSkiaCapabilities :
         Doroti.Ui.Color? backgroundColor,
         Doroti.Ui.Color? darkBackgroundColor)
     {
+        _host = host;
         _renderer = new(
             viewId,
             new HostBridge(host),
@@ -29,7 +31,10 @@ internal sealed class MauiSkiaCapabilities :
 #if MACOS
             "macos/mtkview",
             DorotiSkiaRuntimeEffects.AppKitMetalBackend,
-            "AppKit/MTKView/Metal-Skia");
+            "AppKit/MTKView/Metal-Skia",
+            // AppKit Ganesh offscreen snapshots can expose a transparent
+            // picture before its raster work is visible to the main surface.
+            enablePictureRasterCache: false);
 #else
             "maui/skglview",
             DorotiSkiaRuntimeEffects.MauiGpuBackend,
@@ -69,10 +74,15 @@ internal sealed class MauiSkiaCapabilities :
     public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation) =>
         _renderer.Submit(viewId, submission, invocation);
 
-    internal MauiPaintCompletion? Paint(SKSurface surface, int pixelWidth, int pixelHeight)
+    internal MauiPaintCompletion? Paint(
+        SKSurface surface,
+        int pixelWidth,
+        int pixelHeight,
+        out bool shouldPresent)
     {
-        var value = _renderer.Paint(surface, pixelWidth, pixelHeight);
-        return value is { } completion
+        var result = _renderer.Paint(surface, pixelWidth, pixelHeight, _host.ResizeTarget);
+        shouldPresent = result.Disposition != SkiaPaintDisposition.superseded;
+        return result.Completion is { } completion
             ? new(completion.InputSequence, completion.SceneSequence,
                 completion.SurfaceGeneration, completion.IsNewFrame, completion.Descriptor)
             : null;

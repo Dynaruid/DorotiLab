@@ -238,14 +238,14 @@ internal sealed class MauiHostAdapter :
         else if (pixelSizeChanged)
             _surfaceGeneration++;
         var density = Math.Max(1, paint.Density);
-        var expectedWidth = Math.Max(0, checked((int)Math.Round(_logicalSize.width * _density)));
-        var expectedHeight = Math.Max(0, checked((int)Math.Round(_logicalSize.height * _density)));
-        _snapshot = new(paint.PixelWidth, paint.PixelHeight, _density,
+        _density = density;
+        var expectedWidth = Math.Max(0, checked((int)Math.Round(_logicalSize.width * density)));
+        var expectedHeight = Math.Max(0, checked((int)Math.Round(_logicalSize.height * density)));
+        _snapshot = new(paint.PixelWidth, paint.PixelHeight, density,
             _metricsGeneration, _contextGeneration, _surfaceGeneration,
             paint.NativeViewType, paint.GraphicsBackend,
             LogicalWidth: _logicalSize.width,
             LogicalHeight: _logicalSize.height);
-        _ = density;
         _ = expectedWidth == paint.PixelWidth && expectedHeight == paint.PixelHeight;
 #if !WINDOWS
         TimeSpan? nativeVsyncTimestamp = null;

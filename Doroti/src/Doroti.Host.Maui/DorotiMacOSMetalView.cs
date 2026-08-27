@@ -25,6 +25,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private NSObject? _windowBecameKeyObserver;
     private NSObject? _windowResignedKeyObserver;
     private CGSize _lastDrawableSize;
+    private CGSize _lastLogicalSize;
+    private double _lastBackingScale;
     private long _surfaceGeneration = 1;
     private long _contextGeneration = 1;
     private long _commandBuffersCommitted;
@@ -40,6 +42,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private bool _releaseRequested;
     private bool _resourcesReleased;
     private bool _cursorHidden;
+    private int _frameRequestPending;
 
     public DorotiMacOSMetalView() : base(CGRect.Empty, RequireMetalDevice())
     {
@@ -64,6 +67,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _owner = owner ?? throw new ArgumentNullException(nameof(owner));
         _releaseRequested = false;
         AttachWindowObservers();
+        PublishDrawableMetrics(DrawableSize, force: true);
         RequestFrame();
     }
 
@@ -91,8 +95,10 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     internal void RequestFrame()
     {
         if (_releaseRequested) return;
+        if (Interlocked.Exchange(ref _frameRequestPending, 1) != 0) return;
         BeginInvokeOnMainThread(() =>
         {
+            Interlocked.Exchange(ref _frameRequestPending, 0);
             if (!_releaseRequested) NeedsDisplay = true;
         });
     }
@@ -135,6 +141,14 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         base.ViewDidMoveToWindow();
         AttachWindowObservers();
         _owner?.RaiseFocus(Window?.IsKeyWindow == true && ReferenceEquals(Window.FirstResponder, this));
+        PublishDrawableMetrics(DrawableSize, force: true);
+        RequestFrame();
+    }
+
+    public override void Layout()
+    {
+        base.Layout();
+        PublishDrawableMetrics(DrawableSize);
         RequestFrame();
     }
 
@@ -158,10 +172,8 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     void IMTKViewDelegate.DrawableSizeWillChange(MTKView view, CGSize size)
     {
         _ = view;
-        if (size.Equals(_lastDrawableSize)) return;
-        _lastDrawableSize = size;
-        Interlocked.Increment(ref _surfaceGeneration);
-        _owner?.RaiseSizeChanged();
+        PublishDrawableMetrics(size);
+        RequestFrame();
     }
 
     void IMTKViewDelegate.Draw(MTKView view)
@@ -173,7 +185,10 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         if (owner is null || size.Width <= 0 || size.Height <= 0) return;
         if (drawable?.Texture is null)
         {
-            owner.RaiseFailure(new InvalidOperationException("The AppKit MTKView has no current drawable."));
+            // The first AppKit invalidation can arrive before CAMetalLayer has
+            // made a drawable available. Keep the request alive for the next
+            // main-run-loop turn instead of consuming the framework wake.
+            RequestFrame();
             return;
         }
 
@@ -200,13 +215,19 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             _pixelWidth = size.Width;
             _pixelHeight = size.Height;
             _density = (double)scale;
+            PublishDrawableMetrics(size);
             var paint = new MauiSkiaPaintContext(surface, _grContext,
                 checked((int)size.Width), checked((int)size.Height), (double)scale, generation,
                 GetType().FullName ?? nameof(DorotiMacOSMetalView), "AppKit/MTKView/Metal-Skia");
             completion = owner.RaisePaint(paint);
+            if (paint.SkipPresent) return;
             surface.Canvas.Flush();
             surface.Flush();
-            _grContext.Flush();
+            // Ganesh flush records work for the Metal backend, while submit
+            // commits that work to the shared queue. The presentation command
+            // buffer must be enqueued after the raster command buffers or an
+            // old/unfinished drawable can become visible for one refresh.
+            _grContext.Flush(submit: true, synchronous: false);
 
             using var commandBuffer = _commandQueue.CommandBuffer() ??
                 throw new InvalidOperationException("Metal command buffer creation failed.");
@@ -284,8 +305,16 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     public override void ScrollWheel(NSEvent theEvent)
     {
         var scale = BackingScale();
+        // AppKit reports precise trackpad deltas in points, but a discrete
+        // mouse wheel reports lines. Match Flutter's macOS normalization so a
+        // wheel notch is not reduced to an effectively invisible one pixel.
+        var pixelsPerLine = theEvent.HasPreciseScrollingDeltas ? 1d : 40d;
+        var deltaX = -theEvent.ScrollingDeltaX * pixelsPerLine * scale;
+        var deltaY = -theEvent.ScrollingDeltaY * pixelsPerLine * scale;
+        if ((theEvent.ModifierFlags & NSEventModifierMask.ShiftKeyMask) != 0)
+            (deltaX, deltaY) = (deltaY, deltaX);
         DispatchPointer(theEvent, PointerChange.hover, Buttons(),
-            -theEvent.ScrollingDeltaX * scale, -theEvent.ScrollingDeltaY * scale, PointerSignalKind.scroll);
+            deltaX, deltaY, PointerSignalKind.scroll);
     }
 
     public override void KeyDown(NSEvent theEvent) => DispatchKey(theEvent,
@@ -297,9 +326,12 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     {
         var point = ConvertPointFromView(native.LocationInWindow, null!);
         var scale = BackingScale();
+        // NSEvent.Pressure is not valid for scroll-wheel events. Accessing it
+        // aborts delivery before the PointerScrollEvent reaches the framework.
+        var pressure = signal == PointerSignalKind.none ? native.Pressure : 0;
         _owner?.RaisePointer(new(TimeSpan.FromSeconds(native.Timestamp), change, PointerDeviceKind.mouse, 1,
             point.X * scale, (Bounds.Height - point.Y) * scale, buttons,
-            scrollX, scrollY, signal, native.Pressure));
+            scrollX, scrollY, signal, pressure));
     }
 
     private void DispatchKey(NSEvent native, KeyEventType type)
@@ -369,6 +401,28 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         if (!_cursorHidden) return;
         NSCursor.Unhide();
         _cursorHidden = false;
+    }
+
+    private void PublishDrawableMetrics(CGSize drawableSize, bool force = false)
+    {
+        var owner = _owner;
+        if (owner is null || drawableSize.Width <= 0 || drawableSize.Height <= 0) return;
+        var scale = BackingScale();
+        var logicalSize = Bounds.Size;
+        if (logicalSize.Width <= 0 || logicalSize.Height <= 0)
+            logicalSize = new CGSize(drawableSize.Width / scale, drawableSize.Height / scale);
+        if (!force && drawableSize.Equals(_lastDrawableSize) &&
+            logicalSize.Equals(_lastLogicalSize) && scale.Equals(_lastBackingScale)) return;
+        _lastDrawableSize = drawableSize;
+        _lastLogicalSize = logicalSize;
+        _lastBackingScale = scale;
+        Interlocked.Increment(ref _surfaceGeneration);
+        owner.RaiseSizeChanged(
+            logicalSize.Width,
+            logicalSize.Height,
+            checked((int)drawableSize.Width),
+            checked((int)drawableSize.Height),
+            scale);
     }
 
     internal MauiSurfaceSnapshot CaptureSnapshot(MauiSurfaceSnapshot current) => current with

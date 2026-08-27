@@ -131,7 +131,9 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
                 if (!paint.SkipRaster)
                 {
                     paint.Completion = _host.PaintSkiaSurface(
-                        _viewId, paint.Surface, paint.PixelWidth, paint.PixelHeight);
+                        _viewId, paint.Surface, paint.PixelWidth, paint.PixelHeight,
+                        out var shouldPresent);
+                    paint.SkipPresent = !shouldPresent;
                 }
             }
             finally

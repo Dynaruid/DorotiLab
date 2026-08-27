@@ -3,6 +3,7 @@ using Doroti.Hosting;
 using Microsoft.Maui.LifecycleEvents;
 #endif
 #if MACOS
+using AppKit;
 using Microsoft.Maui.Platforms.MacOS.Platform;
 #endif
 
@@ -89,6 +90,8 @@ public abstract class DorotiMauiAndroidApplication(IntPtr handle, Android.Runtim
 #elif MACOS
 public abstract class DorotiMacOSMauiApplication : MacOSMauiApplication
 {
+    private bool _terminateAfterLastWindowClosed;
+
     protected DorotiMacOSMauiApplication()
     {
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>
@@ -99,8 +102,17 @@ public abstract class DorotiMacOSMauiApplication : MacOSMauiApplication
     protected sealed override MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+        var descriptor = CreateApplicationDescriptor();
+        _terminateAfterLastWindowClosed = descriptor.ViewConfiguration.terminateAfterLastWindowClosed;
         ConfigurePlatform(builder);
-        return builder.UseDorotiApplication(CreateApplicationDescriptor()).Build();
+        return builder.UseDorotiApplication(descriptor).Build();
+    }
+
+    public sealed override bool ApplicationShouldTerminateAfterLastWindowClosed(
+        NSApplication sender)
+    {
+        _ = sender;
+        return _terminateAfterLastWindowClosed;
     }
 
     protected abstract DorotiApplicationDescriptor CreateApplicationDescriptor();
