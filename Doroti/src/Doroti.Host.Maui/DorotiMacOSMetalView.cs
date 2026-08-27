@@ -1,5 +1,6 @@
 #if MACOS
 using AppKit;
+using CoreAnimation;
 using CoreGraphics;
 using Doroti.Ui;
 using Foundation;
@@ -26,7 +27,9 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private NSObject? _windowResignedKeyObserver;
     private CGSize _lastDrawableSize;
     private CGSize _lastLogicalSize;
+    private CGSize _lastLayoutSize;
     private double _lastBackingScale;
+    private double _lastLayoutScale;
     private long _surfaceGeneration = 1;
     private long _contextGeneration = 1;
     private long _commandBuffersCommitted;
@@ -42,6 +45,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private bool _releaseRequested;
     private bool _resourcesReleased;
     private bool _cursorHidden;
+    private bool _drawingLayout;
     private int _frameRequestPending;
 
     public DorotiMacOSMetalView() : base(CGRect.Empty, RequireMetalDevice())
@@ -54,7 +58,16 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         DepthStencilPixelFormat = MTLPixelFormat.Depth32Float_Stencil8;
         SampleCount = 1;
         FramebufferOnly = false;
-        AutoResizeDrawable = true;
+        // MTKView's automatic resize lets AppKit scale the previous drawable
+        // to the new bounds until the next Metal presentation. Own the backing
+        // size in Layout so live resize never exposes a stretched frame.
+        AutoResizeDrawable = false;
+        LayerContentsPlacement = NSViewLayerContentsPlacement.TopLeft;
+        if (Layer is { } layer)
+        {
+            layer.ContentsGravity = CALayer.GravityTopLeft;
+            layer.MasksToBounds = true;
+        }
         Paused = true;
         EnableSetNeedsDisplay = true;
         Delegate = this;
@@ -145,11 +158,65 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         RequestFrame();
     }
 
+    public override void DidChangeBackingProperties()
+    {
+        base.DidChangeBackingProperties();
+        // AutoResizeDrawable is intentionally disabled, so a Retina scale
+        // transition must explicitly run the same exact-backing layout path.
+        _lastLayoutScale = 0;
+        NeedsLayout = true;
+        RequestFrame();
+    }
+
     public override void Layout()
     {
         base.Layout();
-        PublishDrawableMetrics(DrawableSize);
-        RequestFrame();
+        var logicalSize = Bounds.Size;
+        var scale = BackingScale();
+        if (_drawingLayout || logicalSize.Width <= 0 || logicalSize.Height <= 0) return;
+        if (logicalSize.Equals(_lastLayoutSize) && scale.Equals(_lastLayoutScale)) return;
+
+        _lastLayoutSize = logicalSize;
+        _lastLayoutScale = scale;
+        var drawableSize = new CGSize(
+            Math.Max(1, Math.Round(logicalSize.Width * scale)),
+            Math.Max(1, Math.Round(logicalSize.Height * scale)));
+        try
+        {
+            _drawingLayout = true;
+            CATransaction.Begin();
+            try
+            {
+                CATransaction.DisableActions = true;
+                // Synchronize only the live-layout presentation. Keeping this
+                // enabled after Layout prevents ordinary input-driven frames
+                // from being displayed by this custom command-buffer owner.
+                PresentsWithTransaction = true;
+                if (Layer is { } layer)
+                {
+                    layer.ContentsGravity = CALayer.GravityTopLeft;
+                    layer.ContentsScale = (System.Runtime.InteropServices.NFloat)scale;
+                }
+                DrawableSize = drawableSize;
+                PublishDrawableMetrics(drawableSize);
+                Draw();
+            }
+            finally
+            {
+                try
+                {
+                    CATransaction.Commit();
+                }
+                finally
+                {
+                    PresentsWithTransaction = false;
+                }
+            }
+        }
+        finally
+        {
+            _drawingLayout = false;
+        }
     }
 
     public override void UpdateTrackingAreas()
@@ -173,7 +240,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     {
         _ = view;
         PublishDrawableMetrics(size);
-        RequestFrame();
+        if (!_drawingLayout) RequestFrame();
     }
 
     void IMTKViewDelegate.Draw(MTKView view)
@@ -231,12 +298,23 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
 
             using var commandBuffer = _commandQueue.CommandBuffer() ??
                 throw new InvalidOperationException("Metal command buffer creation failed.");
-            commandBuffer.PresentDrawable(drawable);
+            var transactionPresentation = _drawingLayout;
+            if (!transactionPresentation) commandBuffer.PresentDrawable(drawable);
             TrackCommandBuffer(commandBuffer, owner, completion, generation);
             commandBufferTracked = true;
             commandBuffer.Commit();
             Interlocked.Increment(ref _commandBuffersCommitted);
             commandBufferTracked = false;
+            if (transactionPresentation)
+            {
+                // CAMetalLayer requires drawable.Present() for transaction
+                // presentation. PresentDrawable() on the command buffer does
+                // not join the current Core Animation transaction. Waiting
+                // only until scheduled preserves queue ordering without a
+                // synchronous GPU-completion stall on the AppKit UI thread.
+                commandBuffer.WaitUntilScheduled();
+                drawable.Present();
+            }
         }
         catch (Exception exception)
         {
