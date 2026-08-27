@@ -108,7 +108,9 @@ public sealed class HeapPriorityQueue<T> : PriorityQueue<T>
 
 public sealed class DartRandom(long seed)
 {
-    private readonly Random _random = new(checked((int)seed));
+    // Preserve entropy from both halves of Dart's 64-bit seed without throwing
+    // when the value is outside System.Random's signed 32-bit seed range.
+    private readonly Random _random = new(unchecked((int)(seed ^ (seed >> 32))));
 
     public DartRandom() : this(Random.Shared.NextInt64()) { }
 

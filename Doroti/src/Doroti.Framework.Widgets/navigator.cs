@@ -95,7 +95,7 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
         {
             this.navigator!.focusNode.enclosingScope?.requestFocus();
         }
-        throw new InvalidOperationException("Dart closure completed without a value.");
+        return default!;
     })));
     return __cascade;
 }))();
@@ -109,7 +109,7 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
             DartRuntimePrimitives.Ignore(global::Doroti.Framework.Scheduler.TickerFuture.CreateComplete().then(((global::System.Func<object?, object>)((_) =>
             {
                 this.navigator?.focusNode.enclosingScope?.requestFocus();
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                return default!;
             }))));
         }
     }

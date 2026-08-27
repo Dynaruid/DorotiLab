@@ -2118,7 +2118,14 @@ internal sealed partial class FrameworkCSharpLowerer
                 TryGetGenericTypeArguments(mappedFunctionType.TrimEnd('?'), out var functionArguments) &&
                 functionArguments.Length > 0 &&
                 functionArguments[^1].StartsWith("Future<", StringComparison.Ordinal);
-            if (normalizedFunctionType.StartsWith("Func<", StringComparison.Ordinal) ||
+            var requiresClrValue = normalizedFunctionType.StartsWith("Func<", StringComparison.Ordinal);
+            if (requiresClrValue && !returnsValue && !asyncReturnsValue)
+            {
+                // Dart dynamic/Null callbacks may fall through and complete with
+                // null. Their CLR Func representation still requires a return.
+                builder.AppendLine("return default!;");
+            }
+            else if (requiresClrValue ||
                 dartReturnType != "void" && ((!isAsync && (returnsValue || hasValueReturn)) || asyncReturnsValue))
             {
                 // C# requires a value on the conservatively-unproven path. This

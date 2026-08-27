@@ -182,19 +182,31 @@ function Invoke-WorkspaceDotNet {
     $arguments = if ($Verb -ceq 'run') { @('run', '--project', $runner) } else { @($Verb, $runner) }
     $arguments += @('--configuration', $Configuration)
     if (-not [string]::IsNullOrWhiteSpace($Rid)) { $arguments += "-p:RuntimeIdentifier=$Rid" }
-    if (-not [string]::IsNullOrWhiteSpace($Device)) { $arguments += "-p:DorotiDevice=$Device" }
-    $arguments += '--nologo'
+    if (-not [string]::IsNullOrWhiteSpace($Device)) {
+        if ($Verb -cne 'run' -or $Platform -cne 'android') {
+            throw '-Device is currently supported only by the Android run command.'
+        }
+        $arguments += @('--device', $Device)
+    }
+    if ($Verb -cne 'run') { $arguments += '--nologo' }
     $hadAdapter = Test-Path Env:DOROTI_WINDOWS_ADAPTER
     $previousAdapter = $env:DOROTI_WINDOWS_ADAPTER
+    $hadDotnetHostPath = Test-Path Env:DOTNET_HOST_PATH
+    $previousDotnetHostPath = $env:DOTNET_HOST_PATH
     try {
         if ($Platform -ceq 'windows' -and $WindowsBackend -ceq 'WindowsAppSdk') {
             $env:DOROTI_WINDOWS_ADAPTER = 'HwndExactCpp'
+        }
+        if ($Platform -ceq 'android' -and -not $hadDotnetHostPath) {
+            $env:DOTNET_HOST_PATH = (Get-Command dotnet -ErrorAction Stop).Source
         }
         Invoke-Checked 'dotnet' $arguments $workspace.Root
     }
     finally {
         if ($hadAdapter) { $env:DOROTI_WINDOWS_ADAPTER = $previousAdapter }
         else { Remove-Item Env:DOROTI_WINDOWS_ADAPTER -ErrorAction SilentlyContinue }
+        if ($hadDotnetHostPath) { $env:DOTNET_HOST_PATH = $previousDotnetHostPath }
+        else { Remove-Item Env:DOTNET_HOST_PATH -ErrorAction SilentlyContinue }
     }
 }
 

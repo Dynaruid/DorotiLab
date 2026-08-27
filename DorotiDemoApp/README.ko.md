@@ -60,6 +60,80 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform linux -Rid linux-x64
 ```
 
+### Android 실기기와 에뮬레이터 연결
+
+Android SDK Platform Tools의 `adb`가 필요합니다. Android Studio를 설치했다면 일반적으로 `%LOCALAPPDATA%\Android\Sdk\platform-tools`에 있습니다. `adb`가 `PATH`에 없으면 아래처럼 경로를 지정할 수 있습니다.
+
+```powershell
+$adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+& $adb version
+& $adb devices -l
+```
+
+목록의 두 번째 열이 `device`이면 실행할 준비가 된 상태입니다. 여러 기기나 에뮬레이터가 연결되어 있으면 첫 번째 열의 serial을 `-Device`에 전달합니다. 연결 대상이 하나뿐이면 `-Device`를 생략해도 됩니다.
+
+#### USB 실기기
+
+1. Android 설정에서 **휴대전화 정보 > 소프트웨어 정보 > 빌드 번호**를 여러 번 눌러 개발자 옵션을 활성화합니다.
+2. **개발자 옵션 > USB 디버깅**을 켜고 PC에 USB로 연결합니다.
+3. 기기에 표시되는 RSA 디버깅 허용 창을 승인한 뒤 `adb devices -l`로 serial을 확인합니다.
+4. 일반적인 arm64 기기는 `android-arm64` RID로 실행합니다.
+
+```powershell
+# ABI 확인
+& $adb -s <device-serial> shell getprop ro.product.cpu.abi
+
+# Release + arm64 AOT 빌드, 설치, 실행
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
+  -App ./DorotiDemoApp `
+  -Platform android `
+  -Rid android-arm64 `
+  -Configuration Release `
+  -Device <device-serial>
+
+# 빠른 개발용 Debug 실행
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
+  -App ./DorotiDemoApp `
+  -Platform android `
+  -Rid android-arm64 `
+  -Configuration Debug `
+  -Device <device-serial>
+```
+
+`<device-serial>`은 꺾쇠까지 포함한 문자열이 아니라 `adb devices -l`에 나온 값으로 바꿉니다. 예를 들어 serial이 `R3CY30KZA4B`이면 `-Device R3CY30KZA4B`로 지정합니다.
+
+Android 11 이상에서는 같은 네트워크에서 무선 디버깅도 사용할 수 있습니다. 기기의 **개발자 옵션 > 무선 디버깅 > 페어링 코드로 기기 페어링** 화면에 나온 주소와 포트를 사용합니다. 페어링 포트와 연결 포트는 서로 다를 수 있습니다.
+
+```powershell
+& $adb pair <device-ip>:<pairing-port>
+& $adb connect <device-ip>:<debug-port>
+& $adb devices -l
+```
+
+#### Android 에뮬레이터
+
+Android Studio의 **Device Manager**에서 x86_64 시스템 이미지로 가상 기기를 만들고 먼저 시작합니다. 부팅이 끝나면 보통 `emulator-5554`와 같은 serial로 표시됩니다.
+
+```powershell
+& $adb devices -l
+
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
+  -App ./DorotiDemoApp `
+  -Platform android `
+  -Rid android-x64 `
+  -Device emulator-5554
+```
+
+현재 `android-x64` 에뮬레이터 Release는 Mono AOT 시작 문제를 피하기 위해 JIT/인터프리터 호환 경로를 사용합니다. 실제 arm64 Release AOT 동작은 `android-arm64` 실기기에서 확인합니다.
+
+#### 연결 문제 해결
+
+- `unauthorized`: 기기 잠금을 해제하고 RSA 허용 창을 승인한 뒤 USB를 다시 연결합니다.
+- `offline`: `& $adb kill-server`와 `& $adb start-server`를 실행하고 기기 또는 에뮬레이터를 다시 연결합니다.
+- 목록에 없음: USB 연결 모드, USB 디버깅, 케이블의 데이터 지원 여부와 Windows 제조사 USB 드라이버를 확인합니다.
+- 대상이 둘 이상이라는 오류: `adb devices -l`의 정확한 serial을 `-Device`에 지정합니다.
+- 기존 설치와 서명이 충돌함: 필요한 앱 데이터가 없는지 확인한 다음 `& $adb -s <device-serial> uninstall dev.doroti.demo`로 기존 앱을 제거하고 다시 실행합니다.
+
 Web runner가 시작되면 브라우저에서 `http://127.0.0.1:5088`을 엽니다. Android와 iOS는 각각 실행 중인 에뮬레이터 또는 시뮬레이터가 필요합니다. Android arm64 기기와 iOS arm64 기기에서 실행하려면 각각 `-Rid android-arm64`, `-Rid ios-arm64`로 바꾸며, iOS 실제 기기는 별도의 코드 서명 설정이 필요합니다.
 
 Linux에는 .NET SDK와 PowerShell 7 외에 Qt 6.5 이상 Core/Gui/Widgets/OpenGL, CMake, C++ compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`, `wayland` 또는 `xcb` QPA plugin이 필요합니다.

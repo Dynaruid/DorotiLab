@@ -59,6 +59,80 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform linux -Rid linux-x64
 ```
 
+### Connect an Android device or emulator
+
+Android SDK Platform Tools and `adb` are required. Android Studio normally installs them under `%LOCALAPPDATA%\Android\Sdk\platform-tools`. If `adb` is not on `PATH`, set its path explicitly:
+
+```powershell
+$adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+& $adb version
+& $adb devices -l
+```
+
+A target is ready when the second column of the device list is `device`. When multiple devices or emulators are connected, pass the serial from the first column to `-Device`. You can omit `-Device` when exactly one target is connected.
+
+#### Physical device over USB
+
+1. On the Android device, open **About phone > Software information** and tap **Build number** repeatedly to enable Developer options.
+2. Enable **Developer options > USB debugging**, then connect the device to the computer with USB.
+3. Accept the RSA debugging prompt on the unlocked device and use `adb devices -l` to find its serial.
+4. Use the `android-arm64` RID for a typical arm64 device.
+
+```powershell
+# Check the device ABI
+& $adb -s <device-serial> shell getprop ro.product.cpu.abi
+
+# Build, install, and run with Release + arm64 AOT
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
+  -App ./DorotiDemoApp `
+  -Platform android `
+  -Rid android-arm64 `
+  -Configuration Release `
+  -Device <device-serial>
+
+# Faster development run with Debug
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
+  -App ./DorotiDemoApp `
+  -Platform android `
+  -Rid android-arm64 `
+  -Configuration Debug `
+  -Device <device-serial>
+```
+
+Replace `<device-serial>` with the value printed by `adb devices -l`, without the angle brackets. For example, if the serial is `R3CY30KZA4B`, pass `-Device R3CY30KZA4B`.
+
+Android 11 and newer also support wireless debugging on the same network. Open **Developer options > Wireless debugging > Pair device with pairing code**, then use the displayed addresses and ports. The pairing port and connection port can be different.
+
+```powershell
+& $adb pair <device-ip>:<pairing-port>
+& $adb connect <device-ip>:<debug-port>
+& $adb devices -l
+```
+
+#### Android emulator
+
+Create a virtual device with an x86_64 system image in Android Studio's **Device Manager**, then start it before running DorotiDemoApp. A booted emulator normally appears with a serial such as `emulator-5554`.
+
+```powershell
+& $adb devices -l
+
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
+  -App ./DorotiDemoApp `
+  -Platform android `
+  -Rid android-x64 `
+  -Device emulator-5554
+```
+
+The current `android-x64` emulator Release uses the JIT/interpreter compatibility path to avoid a Mono AOT startup issue. Validate arm64 Release AOT behavior on a physical device with `android-arm64`.
+
+#### Connection troubleshooting
+
+- `unauthorized`: unlock the device, accept the RSA prompt, and reconnect USB.
+- `offline`: run `& $adb kill-server` followed by `& $adb start-server`, then reconnect the device or emulator.
+- Device not listed: check the USB mode, USB debugging, whether the cable supports data, and the manufacturer's Windows USB driver.
+- More than one target: pass the exact serial from `adb devices -l` to `-Device`.
+- Existing installation has a signing conflict: after confirming that its app data is not needed, run `& $adb -s <device-serial> uninstall dev.doroti.demo`, then run the app again.
+
 After starting the Web runner, open `http://127.0.0.1:5088` in a browser. Android and iOS require a running emulator or simulator, respectively. To run on an Android arm64 device or an iOS arm64 device, change the RID to `-Rid android-arm64` or `-Rid ios-arm64`; a physical iOS device also requires code-signing configuration.
 
 In addition to the .NET SDK and PowerShell 7, Linux requires Qt 6.5 or newer Core/Gui/Widgets/OpenGL, CMake, a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, and the `wayland` or `xcb` QPA plugin.

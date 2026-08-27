@@ -77,7 +77,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
 {
     private readonly SKGLView _view;
     private readonly IDisposable _nativeInput;
-#if MACCATALYST || IOS
+#if MACCATALYST || IOS || ANDROID
     private readonly DorotiResizeTargetCoordinator _resizeTargets = new();
 #endif
 #if MACCATALYST
@@ -111,7 +111,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
     public IDispatcher Dispatcher => _view.Dispatcher;
     public double Width => _view.Width;
     public double Height => _view.Height;
-#if MACCATALYST || IOS
+#if MACCATALYST || IOS || ANDROID
     public DorotiResizeEpoch? ResizeTarget => _resizeTargets.Latest;
 #endif
     public event Action<MauiSkiaPaintContext>? Paint;
@@ -154,8 +154,8 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
         {
             var nativeType = _view.Handler?.PlatformView?.GetType().FullName ?? "unknown";
             var density = Math.Max(1, Microsoft.Maui.Devices.DeviceDisplay.Current.MainDisplayInfo.Density);
-#if MACCATALYST || IOS
-            PublishAppleDrawableMetrics(
+#if MACCATALYST || IOS || ANDROID
+            PublishDrawableMetrics(
                 args.BackendRenderTarget.Width, args.BackendRenderTarget.Height, density);
 #endif
 #if WINDOWS
@@ -242,9 +242,9 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
         // Do not publish an estimated physical size from the layout callback:
         // the next Metal paint publishes the exact drawable dimensions first.
         ScheduleMacCatalystResizeCompletion();
-#elif IOS
-        // The Metal drawable is the physical-size authority. Layout only
-        // requests a paint; that paint publishes the exact drawable metrics.
+#elif IOS || ANDROID
+        // The GPU drawable is the physical-size authority. Layout only requests
+        // a paint; that paint publishes exact pixels and density as one epoch.
         _view.InvalidateSurface();
 #else
         SizeChanged?.Invoke(null);
@@ -270,8 +270,8 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
 
 #endif
 
-#if MACCATALYST || IOS
-    private void PublishAppleDrawableMetrics(int pixelWidth, int pixelHeight, double density)
+#if MACCATALYST || IOS || ANDROID
+    private void PublishDrawableMetrics(int pixelWidth, int pixelHeight, double density)
     {
         if (pixelWidth <= 0 || pixelHeight <= 0) return;
         var logicalWidth = pixelWidth / density;

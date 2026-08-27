@@ -7,6 +7,15 @@
          semantics. Keep managed assemblies AOT-compiled, but retain the Mono
          interpreter for runtime-generated DLR methods. -->
     <MtouchInterpreter Condition="'$(MtouchInterpreter)' == '' and ('$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst')">-all</MtouchInterpreter>
+    <!-- Android x64 is an emulator-only target. Mono full AOT currently faults
+         during startup there, so keep the emulator on the interpreter/JIT path;
+         physical android-arm64 Release runners retain their normal AOT default. -->
+    <RunAOTCompilation Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64'">false</RunAOTCompilation>
+    <PublishTrimmed Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64'">false</PublishTrimmed>
+    <!-- .NET 10 marshal methods can fault inside Mono before managed startup on
+         Android devices. Disable that JNI startup optimization for Android;
+         arm64 Release still uses full Mono AOT and trimming. -->
+    <AndroidEnableMarshalMethods Condition="'$(DorotiTarget)' == 'Android'">false</AndroidEnableMarshalMethods>
     <StartupObject Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' or '$(DorotiNativeEntryKind)' == 'UIKit-Main' or '$(DorotiNativeEntryKind)' == 'AppKit-Main' or '$(DorotiNativeEntryKind)' == 'Qt-Main' or '$(DorotiNativeEntryKind)' == 'Win32-WinMain'">Doroti.Generated.DorotiBootstrap</StartupObject>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'Android'">net10.0-android</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'iOS'">net10.0-ios</_DorotiExpectedNativeBindingTfm>

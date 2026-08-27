@@ -15,6 +15,12 @@ public sealed class MauiTextInputBridge : IDisposable
     private bool _suspended;
     private bool _updating;
     private bool _disposed;
+    private readonly object _caretGate = new();
+    private Doroti.Ui.Rect _pendingCaretRect;
+    private bool _caretDispatchPending;
+    private InputView? _lastCaretInput;
+    private Doroti.Ui.Rect _lastCaretRect;
+    private bool _hasLastCaretRect;
 
     internal MauiTextInputBridge(
         Entry entry,
@@ -82,10 +88,53 @@ public sealed class MauiTextInputBridge : IDisposable
 
     internal void SetCaretRect(Doroti.Ui.Rect rect)
     {
-        _active.TranslationX = Math.Max(0, rect.left);
-        _active.TranslationY = Math.Max(0, rect.top);
-        _active.WidthRequest = Math.Max(1, rect.width);
-        _active.HeightRequest = Math.Max(1, rect.height);
+        lock (_caretGate)
+        {
+            _pendingCaretRect = rect;
+            if (_caretDispatchPending) return;
+            _caretDispatchPending = true;
+        }
+
+        // The caret rectangle is published while Doroti is painting, which can
+        // run on the GPU/render thread. MAUI visual properties must only mutate
+        // the native view hierarchy from the platform UI thread. Coalesce paint
+        // updates so scrolling cannot queue an unbounded number of UI mutations.
+        var dispatcher = _active.Dispatcher;
+        if (dispatcher.IsDispatchRequired)
+        {
+            if (!dispatcher.Dispatch(ApplyPendingCaretRect))
+            {
+                lock (_caretGate) _caretDispatchPending = false;
+            }
+        }
+        else ApplyPendingCaretRect();
+    }
+
+    private void ApplyPendingCaretRect()
+    {
+        Doroti.Ui.Rect rect;
+        lock (_caretGate)
+        {
+            rect = _pendingCaretRect;
+            _caretDispatchPending = false;
+        }
+
+        if (_disposed) return;
+        var active = _active;
+        if (_hasLastCaretRect && ReferenceEquals(_lastCaretInput, active) && _lastCaretRect == rect) return;
+
+        var x = Math.Max(0, rect.left);
+        var y = Math.Max(0, rect.top);
+        var width = Math.Max(1, rect.width);
+        var height = Math.Max(1, rect.height);
+        if (active.TranslationX != x) active.TranslationX = x;
+        if (active.TranslationY != y) active.TranslationY = y;
+        if (active.WidthRequest != width) active.WidthRequest = width;
+        if (active.HeightRequest != height) active.HeightRequest = height;
+
+        _lastCaretInput = active;
+        _lastCaretRect = rect;
+        _hasLastCaretRect = true;
     }
 
     internal void ClearClient()

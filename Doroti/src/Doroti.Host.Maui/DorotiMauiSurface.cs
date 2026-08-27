@@ -139,6 +139,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
             finally
             {
                 _host.EndPaint(_viewId);
+                ScheduleEvidenceWrite();
             }
         }
         catch (Exception exception)
