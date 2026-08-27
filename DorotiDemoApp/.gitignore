@@ -31,3 +31,4 @@ web/wwwroot/_framework/
 # MSBuild / IDE user state
 *.user
 *.suo
+**/local.properties
