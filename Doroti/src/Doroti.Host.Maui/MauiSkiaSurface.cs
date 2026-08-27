@@ -77,6 +77,12 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
 {
     private readonly SKGLView _view;
     private readonly IDisposable _nativeInput;
+#if MACCATALYST
+    private static readonly TimeSpan MacCatalystResizeQuiescence = TimeSpan.FromMilliseconds(150);
+    private readonly DorotiResizeTargetCoordinator _resizeTargets = new();
+    private readonly MacCatalystNativeSubscription _macCatalystNative;
+    private long _macCatalystResizePulse;
+#endif
 #if WINDOWS
     private readonly WindowsResizeContinuityGuard _resizeContinuity;
 #endif
@@ -86,6 +92,9 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
     {
         _view = new SKGLView { HasRenderLoop = false, EnableTouchEvents = true };
         _nativeInput = MauiNativeInput.Attach(_view, textInput, viewId, data => Key?.Invoke(data));
+#if MACCATALYST
+        _macCatalystNative = new(_view, data => Pointer?.Invoke(data));
+#endif
 #if WINDOWS
         _resizeContinuity = new(_view, PrepareSynchronousResize, CompleteSynchronousPresent);
 #endif
@@ -100,6 +109,9 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
     public IDispatcher Dispatcher => _view.Dispatcher;
     public double Width => _view.Width;
     public double Height => _view.Height;
+#if MACCATALYST
+    public DorotiResizeEpoch? ResizeTarget => _resizeTargets.Latest;
+#endif
     public event Action<MauiSkiaPaintContext>? Paint;
     public event Action<MauiPaintCompletion, bool>? PresentCompleted;
     public event Action<MauiPaintCompletion?, Exception>? PaintFailed;
@@ -140,6 +152,10 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
         {
             var nativeType = _view.Handler?.PlatformView?.GetType().FullName ?? "unknown";
             var density = Math.Max(1, Microsoft.Maui.Devices.DeviceDisplay.Current.MainDisplayInfo.Density);
+#if MACCATALYST
+            PublishMacCatalystDrawableMetrics(
+                args.BackendRenderTarget.Width, args.BackendRenderTarget.Height, density);
+#endif
 #if WINDOWS
             _resizeContinuity.ObserveCurrentEgl(
                 args.BackendRenderTarget.Width, args.BackendRenderTarget.Height);
@@ -215,7 +231,44 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
         args.Handled = true;
     }
 
-    private void HandleSizeChanged(object? sender, EventArgs args) => SizeChanged?.Invoke(null);
+    private void HandleSizeChanged(object? sender, EventArgs args)
+    {
+        _ = sender;
+        _ = args;
+#if MACCATALYST
+        // UIKit layout and MTKView's drawable resize are separate callbacks.
+        // Do not publish an estimated physical size from the layout callback:
+        // the next Metal paint publishes the exact drawable dimensions first.
+        BeginMacCatalystResizeLoop();
+#else
+        SizeChanged?.Invoke(null);
+#endif
+    }
+
+#if MACCATALYST
+    private void BeginMacCatalystResizeLoop()
+    {
+        var pulse = checked(++_macCatalystResizePulse);
+        if (!_view.HasRenderLoop) _view.HasRenderLoop = true;
+        Dispatcher.DispatchDelayed(MacCatalystResizeQuiescence, () =>
+        {
+            if (_disposed || pulse != _macCatalystResizePulse) return;
+            _view.HasRenderLoop = false;
+            _view.InvalidateSurface();
+        });
+    }
+
+    private void PublishMacCatalystDrawableMetrics(int pixelWidth, int pixelHeight, double density)
+    {
+        if (pixelWidth <= 0 || pixelHeight <= 0) return;
+        var logicalWidth = pixelWidth / density;
+        var logicalHeight = pixelHeight / density;
+        var previousGeneration = _resizeTargets.Latest?.Generation;
+        var target = _resizeTargets.Publish(logicalWidth, logicalHeight, density);
+        if (target.Generation != previousGeneration) SizeChanged?.Invoke(target);
+    }
+#endif
+
     private void HandleFocused(object? sender, FocusEventArgs args) => FocusChanged?.Invoke(true);
     private void HandleUnfocused(object? sender, FocusEventArgs args) => FocusChanged?.Invoke(false);
 
@@ -244,7 +297,128 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
 #if WINDOWS
         _resizeContinuity.Dispose();
 #endif
+#if MACCATALYST
+        _macCatalystNative.Dispose();
+#endif
         _nativeInput.Dispose();
     }
+
+#if MACCATALYST
+    /// <summary>
+    /// SKTouchHandler on UIKit forwards direct touches only. Mac Catalyst wheel
+    /// and trackpad scrolling arrive through a pan recognizer whose allowed
+    /// scroll types explicitly include indirect continuous and discrete input.
+    /// </summary>
+    private sealed class MacCatalystNativeSubscription : IDisposable
+    {
+        private readonly SKGLView _view;
+        private readonly Action<MauiSurfacePointerData> _dispatch;
+        private UIKit.UIView? _nativeView;
+        private UIKit.UIPanGestureRecognizer? _recognizer;
+        private MacCatalystGestureDelegate? _gestureDelegate;
+
+        internal MacCatalystNativeSubscription(
+            SKGLView view,
+            Action<MauiSurfacePointerData> dispatch)
+        {
+            _view = view;
+            _dispatch = dispatch;
+            _view.HandlerChanged += HandleHandlerChanged;
+            AttachCurrent();
+        }
+
+        private void HandleHandlerChanged(object? sender, EventArgs args)
+        {
+            _ = sender;
+            _ = args;
+            AttachCurrent();
+        }
+
+        private void AttachCurrent()
+        {
+            DetachCurrent();
+            if (_view.Handler?.PlatformView is not UIKit.UIView nativeView) return;
+
+            _nativeView = nativeView;
+            // UIKit's default scale-to-fill behavior stretches the last Metal
+            // drawable between live-resize callbacks. Redraw keeps MTKView in
+            // charge of producing content for each new bounds value.
+            nativeView.ContentMode = UIKit.UIViewContentMode.Redraw;
+            if (nativeView is MetalKit.MTKView metalView)
+            {
+                metalView.AutoResizeDrawable = true;
+                metalView.PreferredFramesPerSecond = Math.Max(
+                    60, UIKit.UIScreen.MainScreen.MaximumFramesPerSecond);
+            }
+            _recognizer = new UIKit.UIPanGestureRecognizer(HandleScroll)
+            {
+                AllowedScrollTypesMask = UIKit.UIScrollTypeMask.All,
+                AllowedTouchTypes = [],
+                CancelsTouchesInView = false,
+                DelaysTouchesBegan = false,
+                DelaysTouchesEnded = false,
+            };
+            _gestureDelegate = new MacCatalystGestureDelegate();
+            _recognizer.Delegate = _gestureDelegate;
+            nativeView.AddGestureRecognizer(_recognizer);
+        }
+
+        private void HandleScroll(UIKit.UIPanGestureRecognizer recognizer)
+        {
+            if (_nativeView is not { } nativeView) return;
+            if (recognizer.State is not UIKit.UIGestureRecognizerState.Began and
+                not UIKit.UIGestureRecognizerState.Changed and
+                not UIKit.UIGestureRecognizerState.Ended) return;
+
+            var translation = recognizer.TranslationInView(nativeView);
+            recognizer.SetTranslation(CoreGraphics.CGPoint.Empty, nativeView);
+            if (translation.X == 0 && translation.Y == 0) return;
+
+            var location = recognizer.LocationInView(nativeView);
+            var scale = Math.Max(1, (double)nativeView.ContentScaleFactor);
+            _dispatch(new(
+                DorotiFrameClock.Now,
+                PointerChange.hover,
+                PointerDeviceKind.mouse,
+                1,
+                location.X * scale,
+                location.Y * scale,
+                0,
+                -translation.X * scale,
+                -translation.Y * scale,
+                PointerSignalKind.scroll,
+                0));
+        }
+
+        private void DetachCurrent()
+        {
+            if (_nativeView is not null && _recognizer is not null)
+                _nativeView.RemoveGestureRecognizer(_recognizer);
+            _recognizer?.Dispose();
+            _recognizer = null;
+            _gestureDelegate?.Dispose();
+            _gestureDelegate = null;
+            _nativeView = null;
+        }
+
+        public void Dispose()
+        {
+            _view.HandlerChanged -= HandleHandlerChanged;
+            DetachCurrent();
+        }
+
+        private sealed class MacCatalystGestureDelegate : UIKit.UIGestureRecognizerDelegate
+        {
+            public override bool ShouldRecognizeSimultaneously(
+                UIKit.UIGestureRecognizer gestureRecognizer,
+                UIKit.UIGestureRecognizer otherGestureRecognizer)
+            {
+                _ = gestureRecognizer;
+                _ = otherGestureRecognizer;
+                return true;
+            }
+        }
+    }
+#endif
 }
 #endif

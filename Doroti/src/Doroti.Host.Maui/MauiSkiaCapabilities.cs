@@ -35,6 +35,14 @@ internal sealed class MauiSkiaCapabilities :
             // AppKit Ganesh offscreen snapshots can expose a transparent
             // picture before its raster work is visible to the main surface.
             enablePictureRasterCache: false);
+#elif MACCATALYST
+            "maui/skglview",
+            DorotiSkiaRuntimeEffects.MauiGpuBackend,
+            "skiasharp-maui-skglview-gpu",
+            // Catalyst uses the same Ganesh/Metal offscreen path. During a
+            // live resize, cached component pictures can become visible before
+            // their replacement raster belongs to the new drawable epoch.
+            enablePictureRasterCache: false);
 #else
             "maui/skglview",
             DorotiSkiaRuntimeEffects.MauiGpuBackend,

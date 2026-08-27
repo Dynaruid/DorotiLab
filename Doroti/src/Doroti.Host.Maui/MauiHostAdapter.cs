@@ -15,6 +15,7 @@ namespace Doroti.Host.Maui;
 internal sealed class MauiHostAdapter :
     IViewHostCapability,
     IFrameHostCapability,
+    ILatestMetricsFrameHostCapability,
     IPlatformEnvironmentHostCapability,
     IInputHostCapability,
     IViewFocusRequestCapability,
@@ -214,6 +215,34 @@ internal sealed class MauiHostAdapter :
 #else
         RequestInvalidate();
 #endif
+    }
+
+    public void ScheduleFrame(
+        DorotiViewEpoch expectedEpoch,
+        Action<TimeSpan, DorotiViewEpoch> callback)
+    {
+        ArgumentNullException.ThrowIfNull(expectedEpoch);
+        ArgumentNullException.ThrowIfNull(callback);
+        if (expectedEpoch.ViewId != _viewId)
+            throw new InvalidOperationException(
+                $"View epoch {expectedEpoch.ViewId} cannot schedule a frame for view {_viewId}.");
+
+        // MAUI layout can advance more than once before the paused native
+        // surface consumes its single invalidation. Admit the latest immutable
+        // epoch at callback dispatch instead of building the already-stale
+        // epoch captured by the first coalesced request.
+        ScheduleFrame(timestamp => callback(timestamp, ViewEpoch));
+    }
+
+    void IExactFrameHostCapability.ScheduleFrame(
+        DorotiViewEpoch expectedEpoch,
+        Action<TimeSpan> callback)
+    {
+        ArgumentNullException.ThrowIfNull(callback);
+        ScheduleFrame(expectedEpoch, (timestamp, admittedEpoch) =>
+        {
+            if (admittedEpoch == expectedEpoch) callback(timestamp);
+        });
     }
 
     internal void BeginPaint(MauiSkiaPaintContext paint)
