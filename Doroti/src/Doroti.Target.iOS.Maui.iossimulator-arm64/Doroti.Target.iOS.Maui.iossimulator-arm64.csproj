@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-ios</TargetFramework>
+    <RuntimeIdentifier>iossimulator-arm64</RuntimeIdentifier>
+    <AssemblyName>Doroti.Target.iOS.Maui</AssemblyName>
+    <RootNamespace>Doroti.Target.iOS.Maui</RootNamespace>
+    <PackageId>Doroti.Target.iOS.Maui.iossimulator-arm64</PackageId>
+    <Description>Doroti UIKit SKMetalView MAUI composition root for the arm64 iOS simulator.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Doroti.Host.Maui\Doroti.Host.Maui.csproj" AdditionalProperties="RuntimeIdentifier=iossimulator-arm64" />
+    <EmbeddedResource Include="doroti-target-manifest.json" LogicalName="Doroti.Target.Manifest" />
+    <None Include="doroti-target-manifest.json" Pack="true" PackagePath="doroti\" />
+    <None Include="buildTransitive\Doroti.Target.iOS.Maui.iossimulator-arm64.targets" Pack="true" PackagePath="buildTransitive\Doroti.Target.iOS.Maui.iossimulator-arm64.targets" />
+  </ItemGroup>
+</Project>

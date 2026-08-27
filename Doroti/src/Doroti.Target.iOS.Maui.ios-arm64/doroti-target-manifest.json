@@ -3,7 +3,7 @@
   "packageId": "Doroti.Target.iOS.Maui.ios-arm64",
   "targetFramework": "net10.0-ios",
   "rid": "ios-arm64",
-  "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKMetalView",
+  "nativeViewType": "Doroti.Host.Maui.DorotiIosMetalViewHandler+DorotiIosMetalView",
   "graphicsBackend": "UIKit-iOS/SKMetalView/Metal-Skia",
   "softwareFallback": false
 }

@@ -8,6 +8,8 @@ using Microsoft.Maui.Platforms.MacOS.Hosting;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 #if MACCATALYST
 using SkiaSharp.Views.Maui.Controls;
+#elif IOS
+using SkiaSharp.Views.Maui.Controls;
 #endif
 #endif
 
@@ -49,6 +51,9 @@ public static class DorotiMauiApplicationBuilderExtensions
 #elif MACCATALYST
             .ConfigureMauiHandlers(handlers =>
                 handlers.AddHandler<SKGLView, DorotiMacCatalystSkglViewHandler>());
+#elif IOS
+            .ConfigureMauiHandlers(handlers =>
+                handlers.AddHandler<SKGLView, DorotiIosMetalViewHandler>());
 #else
             ;
 #endif

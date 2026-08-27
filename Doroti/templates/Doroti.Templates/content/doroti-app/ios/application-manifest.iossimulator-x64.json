@@ -1,7 +1,7 @@
 {
   "schemaVersion": "doroti.application-capabilities/v1",
   "applicationId": "__DOROTI_APPLICATION_ID__",
-  "targetRid": "iossimulator-arm64",
+  "targetRid": "iossimulator-x64",
   "resources": [
     { "key": "shaders/aurora.sksl", "kind": "shader", "fontFamily": null, "locale": null, "embeddedResourceName": "Doroti.Shaders.aurora.sksl", "sha256": "658695aca71aa8cdc9e776e037ea404c29c5759a481d9955c9f21e4a1e664e41", "length": 210 }
   ],
@@ -11,7 +11,7 @@
       "channel": "doroti/native-platform",
       "codec": "json",
       "capabilityId": "platform-messaging",
-      "nativePackage": { "rid": "iossimulator-arm64", "packageId": "DorotiTemplateApp.iOS.Native", "version": "1.0.0", "abiVersion": "doroti.native-platform-bridge/v1", "handlerType": "DorotiTemplateApp.iOS.DorotiNativePlatformBridge" }
+      "nativePackage": { "rid": "iossimulator-x64", "packageId": "DorotiTemplateApp.iOS.Native", "version": "1.0.0", "abiVersion": "doroti.native-platform-bridge/v1", "handlerType": "DorotiTemplateApp.iOS.DorotiNativePlatformBridge" }
     }
   ]
 }

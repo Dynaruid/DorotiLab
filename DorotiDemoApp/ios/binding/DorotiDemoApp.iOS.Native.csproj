@@ -16,7 +16,7 @@
     <ObjcBindingApiDefinition Include="ApiDefinition.cs" />
     <ObjcBindingCoreSource Include="StructsAndEnums.cs" />
     <XcodeProject Include="..\native\DorotiDemoAppNative.xcodeproj"
-                  SchemeName="DorotiDemoAppNative-iOS"
+                  SchemeName="DorotiDemoAppNative"
                   Configuration="$(Configuration)"
                   Kind="Framework"
                   SmartLink="true"

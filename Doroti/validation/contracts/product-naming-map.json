@@ -12,6 +12,7 @@
     "Doroti.Target.Android.Maui.android-arm64",
     "Doroti.Target.Android.Maui.android-x64",
     "Doroti.Target.iOS.Maui.ios-arm64",
+    "Doroti.Target.iOS.Maui.iossimulator-arm64",
     "Doroti.Target.iOS.Maui.iossimulator-x64",
     "Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64",
     "Doroti.Target.MacOS.Maui.osx-arm64",

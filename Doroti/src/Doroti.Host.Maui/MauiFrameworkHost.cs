@@ -181,7 +181,7 @@ public sealed class MauiFrameworkHost : IDisposable
 #elif MACCATALYST
             "maccatalyst-arm64",
 #elif IOS
-            RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? "ios-arm64" : "iossimulator-x64",
+            RuntimeInformation.RuntimeIdentifier,
 #elif ANDROID
             AndroidRuntimeIdentifier,
 #elif MACOS

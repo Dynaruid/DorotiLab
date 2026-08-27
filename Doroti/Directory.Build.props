@@ -46,6 +46,10 @@
     <BaseIntermediateOutputPath>obj\$(RuntimeIdentifier)\</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and ('$(RuntimeIdentifier)' == 'ios-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-x64')">
+    <BaseIntermediateOutputPath>obj\$(RuntimeIdentifier)\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Doroti.Host.Maui' and '$(RuntimeIdentifier)' == '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
     <BaseIntermediateOutputPath>obj\android\</BaseIntermediateOutputPath>
     <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>

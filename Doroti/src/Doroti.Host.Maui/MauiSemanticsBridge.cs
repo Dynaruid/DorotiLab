@@ -301,9 +301,9 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
     {
         View element = kind switch
         {
-            NativeElementKind.TextField => new Entry { Opacity = 0.01 },
-            NativeElementKind.Button => new Button { Opacity = 0.01 },
-            _ => new Label { Opacity = 0.01 },
+            NativeElementKind.TextField => new Entry { Opacity = 0 },
+            NativeElementKind.Button => new Button { Opacity = 0 },
+            _ => new Label { Opacity = 0 },
         };
         var state = new NativeElementState(kind, element);
         if (element is Entry entry)

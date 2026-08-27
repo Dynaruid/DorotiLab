@@ -43,6 +43,14 @@ internal sealed class MauiSkiaCapabilities :
             // live resize, cached component pictures can become visible before
             // their replacement raster belongs to the new drawable epoch.
             enablePictureRasterCache: false);
+#elif IOS
+            "maui/skglview",
+            DorotiSkiaRuntimeEffects.MauiGpuBackend,
+            "skiasharp-maui-skglview-gpu",
+            // iOS uses the same Ganesh/Metal offscreen path as Catalyst.
+            // Cached component pictures can otherwise expose a transparent
+            // snapshot before their raster work is visible to the drawable.
+            enablePictureRasterCache: false);
 #else
             "maui/skglview",
             DorotiSkiaRuntimeEffects.MauiGpuBackend,

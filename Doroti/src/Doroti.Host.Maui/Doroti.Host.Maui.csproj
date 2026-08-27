@@ -7,7 +7,7 @@
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'win-x64'">net10.0-windows10.0.19041.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'maccatalyst-arm64'">net10.0-maccatalyst</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">net10.0-macos</TargetFrameworks>
-    <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'ios-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-x64'">net10.0-ios</TargetFrameworks>
+    <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'ios-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-arm64' or '$(RuntimeIdentifier)' == 'iossimulator-x64'">net10.0-ios</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'android-arm64'">net10.0-android</TargetFrameworks>
     <TargetFrameworks Condition="'$(RuntimeIdentifier)' == 'android-x64'">net10.0-android</TargetFrameworks>
     <AssemblyName>Doroti.Host.Maui</AssemblyName>
