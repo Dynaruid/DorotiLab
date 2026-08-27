@@ -346,7 +346,10 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
             nativeView.ContentMode = UIKit.UIViewContentMode.Redraw;
             if (nativeView is MetalKit.MTKView metalView)
             {
-                metalView.AutoResizeDrawable = true;
+                // DorotiMacCatalystMetalView updates DrawableSize atomically
+                // with LayoutSubviews. Letting MTKView also resize it later
+                // reintroduces a one-frame stretched raster.
+                metalView.AutoResizeDrawable = false;
                 metalView.PreferredFramesPerSecond = Math.Max(
                     60, UIKit.UIScreen.MainScreen.MaximumFramesPerSecond);
             }
