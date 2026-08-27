@@ -57,7 +57,7 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
 
     public virtual bool requestFocus => DartRuntimePrimitives.ConvertValue<bool>(((this._requestFocus ?? this.navigator?.widget.requestFocus) ?? false));
     public virtual NavigatorState? navigator => this._navigator;
-    internal virtual bool _installed => DartRuntimePrimitives.ConvertValue<bool>((this._navigator is not null));
+    internal virtual bool _installed => this._navigator is not null;
     internal virtual bool _isInstalledIn(NavigatorState state) => DartRuntimePrimitives.ConvertValue<bool>((object.Equals(this._navigator, state)));
     public virtual RouteSettings settings => this._settings;
     internal virtual bool _isPageBased => (this.settings is Page<object?>);

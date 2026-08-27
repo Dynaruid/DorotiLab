@@ -14,6 +14,30 @@ using Match = Doroti.Runtime.DartMatch;
 
 namespace Doroti.Framework.Material;
 
+internal static class MaterialPageTransitionResolver
+{
+    internal static global::Doroti.Framework.Widgets.PageTransitionsBuilder Resolve(
+        global::Doroti.Framework.Widgets.BuildContext context)
+    {
+        var theme = Theme.of(context);
+        var platform = theme.platform;
+        if (theme.pageTransitionsTheme.builders.TryGetValue(platform, out var builder))
+        {
+            return builder;
+        }
+        return platform switch
+        {
+            global::Doroti.Framework.Foundation.TargetPlatform.iOS or
+            global::Doroti.Framework.Foundation.TargetPlatform.macOS => new CupertinoPageTransitionsBuilder(),
+            global::Doroti.Framework.Foundation.TargetPlatform.android or
+            global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or
+            global::Doroti.Framework.Foundation.TargetPlatform.windows or
+            global::Doroti.Framework.Foundation.TargetPlatform.linux => new ZoomPageTransitionsBuilder(),
+            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+        };
+    }
+}
+
 public class MaterialPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<T>, MaterialRouteTransitionMixin<T>
 {
     public virtual global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget> builder { get; private set; } = default!;
@@ -29,15 +53,10 @@ public class MaterialPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<T
 
     public virtual global::Doroti.Framework.Widgets.Widget buildContent(global::Doroti.Framework.Widgets.BuildContext context) => this.builder(context);
     public override string debugLabel => $"{base.debugLabel}({(((global::Doroti.Framework.Widgets.RouteSettings)this.settings).name)})";
-    public override Duration transitionDuration => DartRuntimePrimitives.ConvertValue<Duration>((_getPageTransitionBuilder(this.navigator!.context)?.transitionDuration ?? Duration.Create(microseconds: 300L)));
-    public override Duration reverseTransitionDuration => DartRuntimePrimitives.ConvertValue<Duration>((_getPageTransitionBuilder(this.navigator!.context)?.reverseTransitionDuration ?? Duration.Create(microseconds: 300L)));
+    public override Duration transitionDuration => MaterialPageTransitionResolver.Resolve(this.navigator!.context).transitionDuration;
+    public override Duration reverseTransitionDuration => MaterialPageTransitionResolver.Resolve(this.navigator!.context).reverseTransitionDuration;
     public virtual global::Doroti.Framework.Widgets.PageTransitionsBuilder? _getPageTransitionBuilder(global::Doroti.Framework.Widgets.BuildContext context)
-    {
-        global::Doroti.Framework.Foundation.TargetPlatform platform__3711 = Theme.of(context).platform;
-        PageTransitionsTheme pageTransitionsTheme__3781 = Theme.of(context).pageTransitionsTheme;
-        return (pageTransitionsTheme__3781.builders.GetValueOrDefault(platform__3711) ?? (platform__3711 switch { global::Doroti.Framework.Foundation.TargetPlatform.iOS => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new CupertinoPageTransitionsBuilder()), global::Doroti.Framework.Foundation.TargetPlatform.macOS => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new CupertinoPageTransitionsBuilder()), global::Doroti.Framework.Foundation.TargetPlatform.android or global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or global::Doroti.Framework.Foundation.TargetPlatform.windows => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new ZoomPageTransitionsBuilder()), global::Doroti.Framework.Foundation.TargetPlatform.linux => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new ZoomPageTransitionsBuilder()), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
-    }
+        => MaterialPageTransitionResolver.Resolve(context);
 
     public override global::Doroti.Framework.Scheduler.TickerFuture didPush()
     {
@@ -151,15 +170,10 @@ internal class _PageBasedMaterialPageRoute__page<T> : global::Doroti.Framework.W
     public override bool maintainState => ((MaterialPage<T>)this._page).maintainState;
     public override bool fullscreenDialog => ((MaterialPage<T>)this._page).fullscreenDialog;
     public override string debugLabel => $"{base.debugLabel}({this._page.name})";
-    public override Duration transitionDuration => DartRuntimePrimitives.ConvertValue<Duration>((_getPageTransitionBuilder(this.navigator!.context)?.transitionDuration ?? Duration.Create(microseconds: 300L)));
-    public override Duration reverseTransitionDuration => DartRuntimePrimitives.ConvertValue<Duration>((_getPageTransitionBuilder(this.navigator!.context)?.reverseTransitionDuration ?? Duration.Create(microseconds: 300L)));
+    public override Duration transitionDuration => MaterialPageTransitionResolver.Resolve(this.navigator!.context).transitionDuration;
+    public override Duration reverseTransitionDuration => MaterialPageTransitionResolver.Resolve(this.navigator!.context).reverseTransitionDuration;
     public virtual global::Doroti.Framework.Widgets.PageTransitionsBuilder? _getPageTransitionBuilder(global::Doroti.Framework.Widgets.BuildContext context)
-    {
-        global::Doroti.Framework.Foundation.TargetPlatform platform__3711 = Theme.of(context).platform;
-        PageTransitionsTheme pageTransitionsTheme__3781 = Theme.of(context).pageTransitionsTheme;
-        return (pageTransitionsTheme__3781.builders.GetValueOrDefault(platform__3711) ?? (platform__3711 switch { global::Doroti.Framework.Foundation.TargetPlatform.iOS => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new CupertinoPageTransitionsBuilder()), global::Doroti.Framework.Foundation.TargetPlatform.macOS => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new CupertinoPageTransitionsBuilder()), global::Doroti.Framework.Foundation.TargetPlatform.android or global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or global::Doroti.Framework.Foundation.TargetPlatform.windows => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new ZoomPageTransitionsBuilder()), global::Doroti.Framework.Foundation.TargetPlatform.linux => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.PageTransitionsBuilder>(new ZoomPageTransitionsBuilder()), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
-    }
+        => MaterialPageTransitionResolver.Resolve(context);
 
     public override global::Doroti.Framework.Scheduler.TickerFuture didPush()
     {

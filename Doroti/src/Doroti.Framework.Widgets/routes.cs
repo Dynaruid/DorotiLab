@@ -83,7 +83,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute
     public override bool finishedWhenPopped => DartRuntimePrimitives.ConvertValue<bool>((this._controller!.isDismissed && !this._popFinalized));
     public virtual global::Doroti.Framework.Animation.Animation<double>? animation => this._animation;
     public virtual global::Doroti.Framework.Animation.AnimationController? controller => this._controller;
-    public virtual global::Doroti.Framework.Animation.Animation<double>? secondaryAnimation => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<double>>(this._secondaryAnimation);
+    public virtual global::Doroti.Framework.Animation.Animation<double>? secondaryAnimation => this._secondaryAnimation;
     public virtual bool debugTransitionCompleted()
     {
         var disposed__7941 = false;

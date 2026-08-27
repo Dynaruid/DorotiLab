@@ -658,6 +658,15 @@ public static partial class Text_inputLibrary
 public class TextInput
 {
     internal static TextInput _instance = new TextInput();
+
+    // Keep the singleton initialization tied to the first explicit TextInput
+    // access. Without an explicit type initializer the CLR marks this type as
+    // beforefieldinit, so AOT runtimes may construct TextInput before
+    // ServicesBinding.initInstances has installed its binary messenger.
+    static TextInput()
+    {
+    }
+
     internal virtual TextInputControl? _currentControl { get; set; } = _HostTextInputControl.instance;
     internal virtual HashSet<TextInputControl> _inputControls { get; private set; } = new HashSet<TextInputControl> { _HostTextInputControl.instance };
     internal static List<TextInputAction> _androidSupportedInputActions = new List<TextInputAction> { TextInputAction.none, TextInputAction.unspecified, TextInputAction.done, TextInputAction.send, TextInputAction.go, TextInputAction.search, TextInputAction.next, TextInputAction.previous, TextInputAction.newline };

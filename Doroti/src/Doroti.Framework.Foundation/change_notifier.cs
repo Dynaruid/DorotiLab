@@ -30,6 +30,13 @@ public class ChangeNotifier : Listenable, IDisposable
 {
     private int _count = 0;
     private static readonly List<Action?> _emptyListeners = new List<Action?>(System.Linq.Enumerable.Repeat<Action?>(null, 0));
+
+    // Ensure _emptyListeners exists before any instance field initializer reads
+    // it on eager AOT runtimes. An explicit initializer prevents beforefieldinit.
+    static ChangeNotifier()
+    {
+    }
+
     private List<Action?> _listeners = _emptyListeners;
     private int _notificationCallStackDepth = 0;
     private int _reentrantlyRemovedListeners = 0;
