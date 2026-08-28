@@ -3,6 +3,7 @@
 
 #include <windows.h>
 #include <windowsx.h>
+#include <dwmapi.h>
 #include <imm.h>
 
 #include <MddBootstrap.h>
@@ -75,6 +76,19 @@ bool EnvironmentOne(const wchar_t* name) noexcept {
          value[0] == L'1';
 }
 
+uint32_t ResolvePlatformBrightness() noexcept {
+  DWORD apps_use_light_theme = 1;
+  DWORD byte_length = sizeof(apps_use_light_theme);
+  const auto status = RegGetValueW(
+      HKEY_CURRENT_USER,
+      L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+      L"AppsUseLightTheme", RRF_RT_REG_DWORD, nullptr, &apps_use_light_theme,
+      &byte_length);
+  return status == ERROR_SUCCESS && apps_use_light_theme == 0
+             ? DOROTI_WINDOWS_PLATFORM_BRIGHTNESS_DARK_V1
+             : DOROTI_WINDOWS_PLATFORM_BRIGHTNESS_LIGHT_V1;
+}
+
 std::wstring Decode(const doroti_windows_utf8_v1& value) {
   if (value.data == nullptr || value.byte_length == 0) return {};
   if (value.byte_length > static_cast<uint64_t>(std::numeric_limits<int>::max()))
@@ -143,7 +157,8 @@ class ProductHost final {
   ProductHost(const doroti_windows_configuration_v1& configuration,
               const doroti_windows_callbacks_v1& callbacks)
       : configuration_(configuration), callbacks_(callbacks),
-        platform_thread_id_(GetCurrentThreadId()) {}
+        platform_thread_id_(GetCurrentThreadId()),
+        platform_brightness_(ResolvePlatformBrightness()) {}
 
   ~ProductHost() { Destroy(); }
 
@@ -171,6 +186,7 @@ class ProductHost final {
         &ClearTextClient,
         &UpdateSemantics,
         &ClearSemantics,
+        platform_brightness_,
     };
     callbacks_.host_ready(callbacks_.callback_context, &host);
     StartRenderWorker();
@@ -264,6 +280,10 @@ class ProductHost final {
       case WM_DISPLAYCHANGE:
         if (PublishMetrics()) QueueRender();
         return 0;
+      case WM_SETTINGCHANGE:
+      case WM_THEMECHANGED:
+        RefreshPlatformBrightness();
+        break;
       case WM_CLOSE:
         StopRenderWorker();
         DestroyWindow(top_);
@@ -752,6 +772,7 @@ class ProductHost final {
                            CW_USEDEFAULT, CW_USEDEFAULT, bounds.right - bounds.left,
                            bounds.bottom - bounds.top, nullptr, nullptr, instance, this);
     if (top_ == nullptr) throw std::bad_alloc();
+    ApplyTopLevelTheme();
     stable_monitor_ = MonitorFromWindow(top_, MONITOR_DEFAULTTONEAREST);
     child_ = CreateWindowExW(0, kChildClass, L"", WS_CHILD | WS_VISIBLE,
                              0, 0, 1, 1, top_, nullptr, instance, this);
@@ -1334,6 +1355,22 @@ class ProductHost final {
     return command == 0 ? SW_SHOWNORMAL : command;
   }
 
+  void RefreshPlatformBrightness() {
+    const auto brightness = ResolvePlatformBrightness();
+    if (brightness == platform_brightness_) return;
+    platform_brightness_ = brightness;
+    ApplyTopLevelTheme();
+    callbacks_.platform_brightness(callbacks_.callback_context, 1, brightness);
+  }
+
+  void ApplyTopLevelTheme() const noexcept {
+    if (top_ == nullptr) return;
+    const BOOL use_dark_mode =
+        platform_brightness_ == DOROTI_WINDOWS_PLATFORM_BRIGHTNESS_DARK_V1;
+    DwmSetWindowAttribute(top_, DWMWA_USE_IMMERSIVE_DARK_MODE, &use_dark_mode,
+                          sizeof(use_dark_mode));
+  }
+
   void ConfigureSmokeTimer() {
     wchar_t value[32]{};
     const auto length = GetEnvironmentVariableW(
@@ -1501,6 +1538,7 @@ class ProductHost final {
   bool interactive_move_dirty_{};
   uint32_t lifecycle_state_{std::numeric_limits<uint32_t>::max()};
   uint32_t lifecycle_smoke_phase_{};
+  uint32_t platform_brightness_{};
   doroti::windows::AccessibilityBridge accessibility_;
   std::mutex render_mutex_;
   std::condition_variable render_condition_;
@@ -1593,6 +1631,8 @@ doroti_windows_get_abi_layout_v1(doroti_windows_abi_layout_v1* layout) {
       offsetof(doroti_windows_host_v1, set_text_client),
       offsetof(doroti_windows_callbacks_v1, text_editing),
       offsetof(doroti_windows_callbacks_v1, lifecycle),
+      offsetof(doroti_windows_host_v1, initial_platform_brightness),
+      offsetof(doroti_windows_callbacks_v1, platform_brightness),
   };
   return DOROTI_WINDOWS_STATUS_OK_V1;
 }
@@ -1607,6 +1647,7 @@ doroti_windows_status_v1 DOROTI_WINDOWS_CALL doroti_windows_run_v1(
       callbacks->text_editing == nullptr || callbacks->text_action == nullptr ||
       callbacks->semantics_action == nullptr ||
       callbacks->lifecycle == nullptr ||
+      callbacks->platform_brightness == nullptr ||
       configuration->initial_width_px == 0 ||
       configuration->initial_height_px == 0)
     return DOROTI_WINDOWS_STATUS_INVALID_ARGUMENT_V1;

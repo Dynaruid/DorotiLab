@@ -61,6 +61,40 @@ try
     configuration.StructSize--;
     if (WindowsNativeV1.Run(in configuration, in callbacks) != WindowsNativeV1.Status.AbiMismatch)
         throw new InvalidOperationException("The native ABI accepted a truncated managed configuration.");
+    var hostTable = new WindowsNativeV1.Host
+    {
+        AbiVersion = WindowsNativeV1.AbiVersion,
+        StructSize = checked((uint)Marshal.SizeOf<WindowsNativeV1.Host>()),
+        HostContext = 1,
+        TopLevelHwnd = 1,
+        ChildHwnd = 1,
+        TaskHwnd = 1,
+        RequestFrame = 1,
+        RequestResize = 1,
+        RequestClose = 1,
+        RequestShow = 1,
+        SetCursor = 1,
+        SetClipboard = 1,
+        RequestClipboard = 1,
+        SetTextClient = 1,
+        UpdateTextState = 1,
+        SetCaretRect = 1,
+        ClearTextClient = 1,
+        UpdateSemantics = 1,
+        ClearSemantics = 1,
+        InitialPlatformBrightness = (uint)Doroti.Ui.Brightness.dark,
+    };
+    using (var managedHost = new WindowsManagedProductHost(in hostTable, 640, 480))
+    {
+        if (managedHost.Configuration.platformBrightness != Doroti.Ui.Brightness.dark)
+            throw new InvalidOperationException("The managed host discarded native initial brightness.");
+        var brightnessChanges = 0;
+        managedHost.ConfigurationChanged += _ => brightnessChanges++;
+        managedHost.ApplyPlatformBrightness((uint)Doroti.Ui.Brightness.light);
+        managedHost.ApplyPlatformBrightness((uint)Doroti.Ui.Brightness.light);
+        if (managedHost.Configuration.platformBrightness != Doroti.Ui.Brightness.light || brightnessChanges != 1)
+            throw new InvalidOperationException("The managed host did not publish one platform-brightness change.");
+    }
 
     Console.WriteLine(JsonSerializer.Serialize(new
     {
@@ -72,6 +106,7 @@ try
         modulePath = actualPath,
         pathWasEmpty = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PATH")),
         managedToNativeValidation = "PASS",
+        platformBrightnessContract = "PASS",
         exports,
         sizes = new
         {

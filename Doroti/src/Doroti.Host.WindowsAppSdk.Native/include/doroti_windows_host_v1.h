@@ -157,6 +157,11 @@ typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_update_semantics_v1)(
 typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_clear_semantics_v1)(
     void* host_context);
 
+typedef enum doroti_windows_platform_brightness_v1 {
+  DOROTI_WINDOWS_PLATFORM_BRIGHTNESS_DARK_V1 = 0,
+  DOROTI_WINDOWS_PLATFORM_BRIGHTNESS_LIGHT_V1 = 1,
+} doroti_windows_platform_brightness_v1;
+
 typedef struct doroti_windows_host_v1 {
   uint32_t abi_version;
   uint32_t struct_size;
@@ -177,6 +182,7 @@ typedef struct doroti_windows_host_v1 {
   doroti_windows_clear_text_client_v1 clear_text_client;
   doroti_windows_update_semantics_v1 update_semantics;
   doroti_windows_clear_semantics_v1 clear_semantics;
+  uint32_t initial_platform_brightness;
 } doroti_windows_host_v1;
 
 typedef void(DOROTI_WINDOWS_CALL* doroti_windows_host_ready_callback_v1)(
@@ -208,6 +214,8 @@ typedef void(DOROTI_WINDOWS_CALL* doroti_windows_semantics_action_callback_v1)(
 typedef void(DOROTI_WINDOWS_CALL* doroti_windows_lifecycle_callback_v1)(
     void* callback_context, uint64_t view_id, uint32_t state,
     int64_t timestamp_qpc);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_platform_brightness_callback_v1)(
+    void* callback_context, uint64_t view_id, uint32_t brightness);
 
 typedef struct doroti_windows_configuration_v1 {
   uint32_t abi_version;
@@ -238,6 +246,7 @@ typedef struct doroti_windows_callbacks_v1 {
   doroti_windows_text_action_callback_v1 text_action;
   doroti_windows_semantics_action_callback_v1 semantics_action;
   doroti_windows_lifecycle_callback_v1 lifecycle;
+  doroti_windows_platform_brightness_callback_v1 platform_brightness;
 } doroti_windows_callbacks_v1;
 
 typedef struct doroti_windows_abi_layout_v1 {
@@ -266,6 +275,8 @@ typedef struct doroti_windows_abi_layout_v1 {
   uint32_t host_set_text_client_offset;
   uint32_t callbacks_text_editing_offset;
   uint32_t callbacks_lifecycle_offset;
+  uint32_t host_initial_platform_brightness_offset;
+  uint32_t callbacks_platform_brightness_offset;
 } doroti_windows_abi_layout_v1;
 
 #pragma pack(pop)

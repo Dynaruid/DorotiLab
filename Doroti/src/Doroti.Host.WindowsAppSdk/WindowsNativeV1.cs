@@ -169,6 +169,7 @@ internal static partial class WindowsNativeV1
         internal nint ClearTextClient;
         internal nint UpdateSemantics;
         internal nint ClearSemantics;
+        internal uint InitialPlatformBrightness;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -204,6 +205,7 @@ internal static partial class WindowsNativeV1
         internal nint TextAction;
         internal nint SemanticsAction;
         internal nint Lifecycle;
+        internal nint PlatformBrightness;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -234,6 +236,8 @@ internal static partial class WindowsNativeV1
         internal uint HostSetTextClientOffset;
         internal uint CallbacksTextEditingOffset;
         internal uint CallbacksLifecycleOffset;
+        internal uint HostInitialPlatformBrightnessOffset;
+        internal uint CallbacksPlatformBrightnessOffset;
     }
 
     [LibraryImport(LibraryName, EntryPoint = "doroti_windows_get_abi_version_v1")]
@@ -361,6 +365,8 @@ internal static partial class WindowsNativeV1
         AssertEqual("host set-text-client offset", OffsetOf<Host>(nameof(Host.SetTextClient)), layout.HostSetTextClientOffset);
         AssertEqual("callbacks text-editing offset", OffsetOf<Callbacks>(nameof(Callbacks.TextEditing)), layout.CallbacksTextEditingOffset);
         AssertEqual("callbacks lifecycle offset", OffsetOf<Callbacks>(nameof(Callbacks.Lifecycle)), layout.CallbacksLifecycleOffset);
+        AssertEqual("host initial-platform-brightness offset", OffsetOf<Host>(nameof(Host.InitialPlatformBrightness)), layout.HostInitialPlatformBrightnessOffset);
+        AssertEqual("callbacks platform-brightness offset", OffsetOf<Callbacks>(nameof(Callbacks.PlatformBrightness)), layout.CallbacksPlatformBrightnessOffset);
         return layout;
     }
 

@@ -41,7 +41,7 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(FoundationLib);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Microsoft.WindowsAppRuntime.Bootstrap.lib;windowsapp.lib;runtimeobject.lib;ole32.lib;oleaut32.lib;uiautomationcore.lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Microsoft.WindowsAppRuntime.Bootstrap.lib;windowsapp.lib;runtimeobject.lib;ole32.lib;oleaut32.lib;uiautomationcore.lib;imm32.lib;advapi32.lib;dwmapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/Brepro %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>

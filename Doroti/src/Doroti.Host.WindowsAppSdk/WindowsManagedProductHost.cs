@@ -41,12 +41,14 @@ internal sealed unsafe class WindowsManagedProductHost :
             native.RequestFrame == 0 || native.RequestResize == 0 || native.RequestClose == 0 || native.RequestShow == 0 ||
             native.SetCursor == 0 || native.SetClipboard == 0 || native.RequestClipboard == 0 ||
             native.SetTextClient == 0 || native.UpdateTextState == 0 || native.SetCaretRect == 0 ||
-            native.ClearTextClient == 0 || native.UpdateSemantics == 0 || native.ClearSemantics == 0)
+            native.ClearTextClient == 0 || native.UpdateSemantics == 0 || native.ClearSemantics == 0 ||
+            !Enum.IsDefined((Brightness)native.InitialPlatformBrightness))
             throw new InvalidDataException("The native product host table is invalid.");
         _native = native;
         Metrics = new(new Size(logicalWidth, logicalHeight), 1, ViewPadding.zero,
             ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed, 0, 0);
-        Configuration = new(ResolveLocales(), Brightness.light, false, false, HostOperatingSystem.windows);
+        Configuration = new(ResolveLocales(), (Brightness)native.InitialPlatformBrightness,
+            false, false, HostOperatingSystem.windows);
     }
 
     internal nint ChildHwnd => _native.ChildHwnd;
@@ -231,6 +233,16 @@ internal sealed unsafe class WindowsManagedProductHost :
         if (Metrics.lifecycleState == lifecycle) return;
         Metrics = Metrics with { lifecycleState = lifecycle };
         LifecycleChanged?.Invoke(lifecycle);
+    }
+
+    internal void ApplyPlatformBrightness(uint value)
+    {
+        if (!Enum.IsDefined((Brightness)value))
+            throw new InvalidDataException($"Native platform brightness {value} is invalid.");
+        var brightness = (Brightness)value;
+        if (Configuration.platformBrightness == brightness) return;
+        Configuration = Configuration with { platformBrightness = brightness };
+        ConfigurationChanged?.Invoke(Configuration);
     }
 
     internal void CompleteClipboard(ulong requestId, string text)

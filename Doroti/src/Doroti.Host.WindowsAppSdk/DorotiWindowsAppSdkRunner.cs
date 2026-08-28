@@ -87,6 +87,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     TextAction = (nint)(delegate* unmanaged[Cdecl]<nint, uint, void>)&OnTextAction,
                     SemanticsAction = (nint)(delegate* unmanaged[Cdecl]<nint, long, long, WindowsNativeV1.Utf8, void>)&OnSemanticsAction,
                     Lifecycle = (nint)(delegate* unmanaged[Cdecl]<nint, ulong, uint, long, void>)&OnLifecycle,
+                    PlatformBrightness = (nint)(delegate* unmanaged[Cdecl]<nint, ulong, uint, void>)&OnPlatformBrightness,
                 };
                 var status = WindowsNativeV1.Run(in configuration, in callbacks);
                 state.MarkNativeStopped();
@@ -560,6 +561,15 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             if (viewId != 1) throw new InvalidDataException("Native lifecycle view id differs.");
             (managed.Host ?? throw new InvalidOperationException("Lifecycle arrived before host-ready."))
                 .ApplyLifecycle(state);
+        });
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static void OnPlatformBrightness(nint context, ulong viewId, uint brightness) =>
+        GuardVoid(context, managed =>
+        {
+            if (viewId != 1) throw new InvalidDataException("Native platform-brightness view id differs.");
+            (managed.Host ?? throw new InvalidOperationException("Platform brightness arrived before host-ready."))
+                .ApplyPlatformBrightness(brightness);
         });
 
     private static void GuardVoid(nint context, Action<WindowsManagedState> callback)
