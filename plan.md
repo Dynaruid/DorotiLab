@@ -1,15 +1,15 @@
 # Doroti cross-platform 최초 부트 개선 작업 계획
 
 - 작성일: 2026-08-28
-- 상태: **계획 수립 완료, 구현·실기 측정은 모두 `notStarted`/`notVerified`**
+- 상태: **계획 수립 완료, 구현·실기 검증은 모두 `notStarted`/`notVerified`**. 구조 개선은 새 계측을 기다리지 않고 진행한다.
 - 목표: 설치된 Release 앱의 process cold start에서 첫 유효 Doroti content가 실제 compositor에 표시되고 입력 가능한 시점까지의 시간을 줄인다.
-- 부목표: `doroti.ps1 run`의 restore/build/native build/AOT/deploy 시간도 계측하고 재사용 경로를 제공하되, 앱 runtime 부트 성능과 별도 지표로 유지한다.
+- 부목표: `doroti.ps1 run`의 불필요한 restore/build/native build/AOT/deploy를 줄이고 안전한 재사용 경로를 제공하되, 앱 runtime 부트 개선과 별도 작업으로 유지한다.
 
 ## 1. 판정 범위
 
 이 계획에서 “최초 부트”는 다음 네 구간을 섞지 않는다.
 
-| 구간 | 정의 | 주 지표 |
+| 구간 | 정의 | 정량 보고 시 지표 |
 | --- | --- | --- |
 | first-install | 새 설치 또는 앱 데이터 초기화 뒤 첫 실행 | TTID, TTFD, package/runtime 준비 시간 |
 | process cold | 설치된 Release 앱이 실행 중이지 않은 상태에서 새 process 시작 | TTID p50/p95 |
@@ -21,11 +21,13 @@
 다음 원칙을 유지한다.
 
 - Debug, build 성공, splash 표시, process 생존은 Release TTID/TTFD의 PASS가 아니다.
-- profiler가 켜진 trace는 원인 분석용이다. 최종 숫자는 profiler-free Release 반복 실행에서 얻는다.
+- profiler가 켜진 trace는 원인 분석용이다. 정량 성능을 실제로 보고하는 경우에만 profiler-free Release 반복 실행에서 최종 숫자를 얻는다.
 - first-install, process cold, warm, emulator/simulator, VM, 물리 기기 결과는 서로 대신하지 않는다.
-- accessibility를 끄거나 빈 화면을 먼저 present해서 숫자만 줄이지 않는다. 첫 content와 semantics-ready를 별도 marker로 기록한다.
+- accessibility를 끄거나 빈 화면을 먼저 present해서 숫자만 줄이지 않는다. 정량 추적을 할 때는 첫 content와 semantics-ready를 구분한다.
 - 기존 `presented`/`replayed`/`superseded`/`failed` terminal, 정확한 surface size, hardware GPU와 fail-closed 계약은 유지한다.
 - 공용 원인은 가장 낮은 `Framework`/`Hosting`/renderer 소유층에서 고치고 DemoApp만 우회하지 않는다.
+- source와 실행 구조상 동기 작업·할당·DLR/reflection·중복 초기화를 제거하면 분명히 일이 줄어드는 변경은 새 profiler/baseline 없이 구현한다.
+- 계측은 설계 선택이 애매하거나 회귀가 의심되거나 정량 성능 수치를 보고해야 할 때만 사용한다. 계측 미수행은 구조 개선의 착수 조건이나 자동 rollback 사유가 아니다.
 
 ## 2. 현재 source·artifact 분석
 
@@ -52,11 +54,11 @@ native/process entry
 
 - `DorotiApplicationBoundary.Load`가 매 launch에서 embedded manifest를 `System.Text.Json`으로 역직렬화한다. manifest가 작아 우선 원인으로 단정할 수는 없지만 모든 플랫폼의 첫-frame closure에 들어간다.
 - Demo의 `RootApp` 첫 접근은 light/dark `ThemeData`를 모두 만든다. `ThemeData.Create`는 typography와 다수 component theme default를 구성한다.
-- `Doroti.Framework.Material`은 현재 약 4.29 MiB assembly/9.33 MiB source이고 정적 객체 초기화 후보가 매우 많다. animated icon과 typography 같은 대형 정적 object graph는 실제 first-frame type-initializer trace로 사용 여부를 가려야 한다.
+- `Doroti.Framework.Material`은 현재 약 4.29 MiB assembly/9.33 MiB source이고 정적 객체 초기화 후보가 매우 많다. 기본 root가 직접 참조하지 않는 animated icon과 catalog 같은 대형 정적 object graph는 source reachability와 초기화 구조를 기준으로 first-frame 밖으로 옮긴다.
 - Framework에는 `dynamic`/DLR 관련 call site가 175개 파일, 1,747개 검색 일치로 남아 있다. first-frame closure에 들어온 call site는 Windows/Linux JIT, Android x64 JIT/interpreter, Apple AOT+interpreter, Web download/trimming에 동시에 영향을 줄 수 있다.
 - MAUI surface는 첫 frame 전에 hidden `Entry`, `Editor`, semantics layer와 render surface를 만든다. Windows만 text proxy의 native attach를 지연하며 Android/iOS/Mac Catalyst/AppKit은 두 input view를 visual tree에 즉시 추가한다.
-- MAUI와 Web은 view attach 직후 semantics tree를 활성화한다. 실제 accessibility 사용 중에는 이 동작을 보존해야 하지만, 비활성 상태에서도 first present와 같은 critical path에서 full semantics build/apply가 실행되는지는 측정이 필요하다.
-- end-to-end process-entry→first-present startup trace는 없다. 기존 frame/resize/scroll trace는 framework가 시작된 뒤의 세부 증거라 runtime loader, host bootstrap, GPU context와 root/type 초기화를 하나의 시간축으로 비교할 수 없다.
+- MAUI와 Web은 view attach 직후 semantics tree를 활성화한다. 실제 accessibility 사용 중에는 이 동작을 보존하고, 비활성 상태의 full semantics build/apply는 first present 뒤로 안전하게 지연할 수 있는지 lifecycle과 기능 검증으로 판단한다.
+- end-to-end process-entry→first-present startup trace는 없다. 따라서 이 계획은 trace 구축을 기다리지 않고 source에서 확인되는 동기 hashing, parsing, DLR, 미사용 초기화와 package graph부터 직접 줄인다.
 
 ### 2.2 Windows
 
@@ -66,29 +68,29 @@ native/process entry
 
 - managed entry에서 native host, Windows App Runtime bootstrap, ANGLE DLL의 존재·PE를 검사한 뒤 세 파일의 SHA-256을 매 launch마다 전체 파일 read로 계산한다. 이 provenance hash는 diagnostics가 꺼져 있어도 실행된다.
 - 이어서 ABI layout 검사, `RoInitialize`, `MddBootstrapInitialize2`, 세 HWND 생성, `AppWindow::GetFromWindowId`, render worker 시작이 순차 실행된다.
-- 현재 native C++에서 `AppWindow`는 연결·보관·해제 외의 제품 동작에 사용되지 않는다. Windows App SDK identity를 유지할지 raw Win32 host로 재분류할지는 성능 A/B 뒤 ADR이 필요한 별도 architecture 결정이다.
-- 첫 render callback에서 ANGLE D3D11 display/context, fixed EGL surface, Skia `GRContext`, window/backing surface가 생성되고 첫 swap 뒤 `DwmFlush`한다. 이 ordering은 first-frame 가시성 계약이므로 제거 대상이 아니라 구간별 측정 대상이다.
-- 기존 Release app directory는 397개 파일/약 337.5 MiB였고 PDB와 현재 기본값이 아닌 D3D12 diagnostic dependency도 포함한다. directory 크기 자체가 startup 원인이라는 뜻은 아니지만 cold file scan, 배포와 loader working set을 분리해서 측정해야 한다.
+- 현재 native C++에서 `AppWindow`는 연결·보관·해제 외의 제품 동작에 사용되지 않는다. Windows App SDK identity를 유지할지 raw Win32 host로 재분류할지는 필요한 제품 기능과 배포 계약을 기준으로 ADR에서 결정한다.
+- 첫 render callback에서 ANGLE D3D11 display/context, fixed EGL surface, Skia `GRContext`, window/backing surface가 생성되고 첫 swap 뒤 `DwmFlush`한다. 이 ordering은 first-frame 가시성 계약이므로 제거 대상이 아니다.
+- 기존 Release app directory는 397개 파일/약 337.5 MiB였고 PDB와 현재 기본값이 아닌 D3D12 diagnostic dependency도 포함한다. 배포에 필요하지 않은 symbol과 diagnostic dependency는 loader 기여도 측정을 기다리지 않고 제품 artifact에서 분리한다.
 - default ANGLE host assembly가 diagnostic D3D12 presenter와 Vortice/D3D12 package를 함께 참조한다. 기본 제품에서 진단 backend를 별도 assembly/package로 분리할 여지가 있다.
 
-명시적 Windows MAUI 경로는 WinUI/MAUI/CommunityToolkit.Markup/SkiaSharp와 공용 hidden text/semantics 초기화 비용을 가진다. 기본 backend의 결과로 대체하지 않고 별도 baseline만 유지한다.
+명시적 Windows MAUI 경로는 WinUI/MAUI/CommunityToolkit.Markup/SkiaSharp와 공용 hidden text/semantics 초기화 비용을 가진다. 기본 backend와 섞지 않고 독립 제품 경로로 검증한다.
 
 ### 2.3 Android
 
 - `android-arm64` Release는 full Mono AOT/trimming 경로다. 현재 APK는 약 25.85 MiB이고 assembly/AOT/native library 유사 entry가 131개다.
 - `android-x64` Release는 알려진 Mono AOT startup fault를 피하려고 AOT와 trimming을 모두 끈다. 현재 APK는 약 42.13 MiB이며 raw `libassembly-store.so`가 약 35.71 MiB다.
 - Android marshal methods도 startup fault 이력 때문에 전 RID에서 꺼져 있다. 근거 없이 다시 켜지 않고 현재 .NET 10 runtime에서 crash reproduction과 device matrix를 먼저 닫아야 한다.
-- 현재 Release APK에는 app-owned Baseline Profile entry가 없다. Java/AndroidX startup profile과 managed AOT profile은 서로 다른 최적화이므로 각각 효과를 측정해야 한다.
+- 현재 Release APK에는 app-owned Baseline Profile entry가 없다. Java/AndroidX startup profile과 managed AOT profile은 서로 다른 최적화이므로 별도 계약으로 추가·검증한다.
 - `MainApplication`에서 MAUI builder와 descriptor를 만들고, 첫 Activity view 생성 때 hidden `Entry`/`Editor`, semantics, `SKGLTextureView`/OpenGL ES 경로를 붙인다.
 - x64 emulator는 arm64 physical 결과를 대신하지 않는다. 대표 성능 판정은 arm64 물리 기기에서 한다.
 
 ### 2.4 iOS, Mac Catalyst, native AppKit macOS
 
-- iOS와 Mac Catalyst는 UIKit/MAUI, native AppKit은 `NSApplication` + experimental MAUI AppKit host를 사용한다. 세 제품을 별도 측정한다.
+- iOS와 Mac Catalyst는 UIKit/MAUI, native AppKit은 `NSApplication` + experimental MAUI AppKit host를 사용한다. 세 제품을 별도 검증한다.
 - Apple target은 managed assembly AOT와 DLR용 interpreter 제약을 함께 가진다. first-frame `dynamic` call site를 줄이지 않은 채 AOT/linker flag만 바꾸면 기능 회귀 또는 효과 없는 binary 증가가 될 수 있다.
 - iOS/Mac Catalyst도 공용 hidden text input 두 개와 semantics layer를 첫 view에 즉시 만든다.
 - iOS/Mac Catalyst GPU context는 첫 native drawable/paint에서 생성한다. AppKit은 `MTLDevice`, command queue, `MTKView`를 먼저 준비하고 첫 drawable에서 Skia Metal `GRContext`/surface를 만든다.
-- 현재 Apple output directory는 각 target 약 130 MiB 수준이지만 최종 signed bundle/install footprint와 cold-launch mapped bytes는 별도 측정해야 한다.
+- 현재 Apple output directory는 각 target 약 130 MiB 수준이다. signed bundle에 불필요한 symbol/resource를 제외하고, 실제 install footprint는 실행 환경이 있을 때 별도 기록한다.
 - simulator, Mac Catalyst, AppKit 결과를 iPhone/iPad physical launch나 서로 다른 macOS backend의 결과로 바꾸지 않는다.
 
 ### 2.5 Web
@@ -104,66 +106,40 @@ native/process entry
 - Linux runner는 framework-dependent `net10.0`, managed-owned process + Qt C ABI v2이며 ReadyToRun/trimming startup 설정이 없다.
 - managed descriptor/session을 만든 뒤 `QApplication`, `QOpenGLWindow`, accessibility factory를 만들고 framework view를 attach한 다음 window를 show한다.
 - first paint에서 Qt current FBO를 Skia가 감싸고 `frameSwapped`이 유일한 presented terminal이다.
-- Wayland acrylic registry 처리는 show 뒤 timer/event queue로 진행되므로 현재 source상 동기 roundtrip은 없지만, first present/TTFD와 겹치는지는 trace로 확인한다.
+- Wayland acrylic registry 처리는 show 뒤 timer/event queue로 진행되므로 현재 source상 동기 roundtrip이 아니며 우선 최적화 대상에서 제외한다. 실제 회귀가 의심될 때만 trace로 확인한다.
 - `dotnet run`이 수행하는 CMake native build는 developer launch 시간이며 게시된 executable의 runtime TTID와 분리한다.
 
 ### 2.7 CLI/developer launch
 
 `doroti.ps1 run`은 현재 항상 `dotnet run --project ... --configuration Release`를 호출한다. 따라서 첫 invocation에는 restore, C#/TypeScript/native build, Android/Apple AOT, deploy가 앱 launch 앞에 붙을 수 있다. 사용자가 체감한 “부트”가 이 전체 구간이라면 runtime 최적화만으로 해결되지 않는다.
 
-## 3. 공통 측정 계약
+## 3. 공통 작업 및 최소 검증 계약
 
-### S0. startup event schema 추가
-
-상태: `notStarted`
-
-`Doroti.Ui` 또는 `Doroti.Hosting`에 allocation이 제한된 `DorotiStartupTrace`를 두고 다음 marker를 monotonic clock 하나로 기록한다.
-
-| ID | marker | 의미 |
-| --- | --- | --- |
-| B00 | launchRequested | harness가 process/browser/activity launch를 요청 |
-| B01 | nativeEntry | OS/native entrypoint 진입 |
-| B02 | managedEntry | generated `DorotiBootstrap.Main` 또는 application delegate 진입 |
-| B03 | descriptorReady | application descriptor/plugin registration 완료 |
-| B04 | boundaryReady | manifest/resource/plugin boundary 준비 완료 |
-| B05 | nativeViewReady | window/activity/view와 최소 host API 준비 |
-| B06 | gpuContextReady | 실제 제품 GPU context 생성 완료 |
-| B07 | frameworkReady | `WidgetsFlutterBinding` bootstrap 완료 |
-| B08 | rootAttached | root element attach 완료 |
-| B09 | firstSceneSubmitted | 첫 유효 scene이 renderer에 제출됨 |
-| B10 | firstRasterSubmitted | GPU raster/submit 완료 |
-| B11 | firstPresented | compositor 기반 첫 유효 content terminal |
-| B12 | semanticsReady | 초기 접근성 tree 적용 완료 |
-| B13 | fullyDrawn | 기본 입력/텍스트/semantics와 startup 후속 작업 완료 |
-
-구현 조건:
-
-- process/view/target/RID/configuration/artifact hash와 marker thread ID를 기록한다.
-- Windows QPC, Android monotonic/Choreographer, Apple monotonic/signpost, browser `performance.now`, Linux monotonic clock을 managed 기준과 한 번만 상관시킨다.
-- 기본 Release에서는 작은 in-memory ring만 유지하고 JSON 직렬화·파일 쓰기는 first present 이후 또는 종료 시 opt-in으로 수행한다.
-- trace 자체의 on/off A/B에서 TTID p50 차이가 2% 또는 1 ms 중 큰 값 이하인지 검증한다.
-- first content가 없는 background/splash/clear는 `firstPresented`로 기록하지 않는다.
-
-### S1. baseline harness와 기준 동결
+### S0. 구조적 개선 판단
 
 상태: `notStarted`
 
-- 같은 commit의 고정 Release publish artifact를 사용한다. 각 반복에서 rebuild하지 않는다.
-- first-install 5회, process cold 10회, warm/resume 20회를 기본 sample로 한다. variance가 크면 30회까지 늘리고 p50/p95/max를 남긴다.
-- profiler-on 3회는 원인 분석용, profiler-free 반복은 acceptance용으로 분리한다.
-- TTID=`B00→B11`, Doroti managed boot=`B02→B09`, GPU init=`B05→B06`, TTFD=`B00→B13`으로 고정한다.
-- marker 사이 CPU time, wall time, allocation, JIT/type initializer, file I/O, loaded module/assembly, download bytes를 함께 수집한다.
-- 결과는 `.doroti/evidence/startup/<commit>/<platform>/`에 raw JSON/trace로 저장하고, active `work.md`에는 요약과 PASS/FAIL/`notVerified`만 갱신한다.
+다음 중 하나가 source, project graph 또는 runtime 계약에서 확인되면 별도 profiler/baseline 없이 구현한다.
 
-초기 개선 목표는 플랫폼별 baseline 확정 뒤 다음 상대 gate로 고정한다.
+- first-frame closure에서 매 실행 반복되는 JSON parsing, hashing, reflection, DLR binding 또는 불필요한 allocation을 제거한다.
+- 첫 화면이 사용하지 않는 theme/catalog/resource/service를 lazy화하거나 별도 package로 옮긴다.
+- 이미 build/publish에서 알 수 있는 manifest, hash, generated metadata를 runtime에 다시 계산하지 않는다.
+- 동일한 의미를 더 적은 assembly/file/module load와 더 짧은 synchronous chain으로 제공한다.
+- developer launch에서 input fingerprint가 같은 build/deploy 단계를 안전하게 재사용한다.
 
-- process-cold TTID p50 30% 이상 단축
-- process-cold TTID p95 20% 이상 단축
-- TTFD와 warm/resume p95가 5% 넘게 악화되지 않음
-- crash/ANR/hang/blank first frame 0, terminal exactly-once 위반 0
-- first-present 직후 입력 처리와 accessibility-active semantics가 누락되지 않음
+구조 개선은 public 의미, fail-closed 검증, 첫 유효 content, input/IME/accessibility, terminal exactly-once를 보존해야 한다. 복잡한 cache나 adapter를 추가해 비용을 다른 곳으로 옮기는 변경은 채택하지 않는다.
 
-reference device가 정해지기 전에는 임의의 절대 500 ms/1 s 기준으로 PASS를 선언하지 않는다.
+### S1. 최소 validation과 선택적 진단
+
+상태: `notStarted`
+
+- 각 변경은 owning build/test와 관련 FCR validation을 먼저 통과한다.
+- 가능한 대표 target에서 Release launch 1회 이상의 first content, crash/hang/blank, input, resize/scroll, text와 accessibility smoke를 확인한다.
+- 실행하지 못한 physical target과 정량 TTID/TTFD는 `notVerified`로 남기되 다른 target의 구조 개선을 막지 않는다.
+- exact CPU/allocation/TTID 수치가 필요하거나 회귀가 의심될 때만 기존 `B00`~`B13` marker, EventPipe/Perfetto/signpost/browser performance marker 또는 짧은 profiler-free A/B를 사용한다.
+- 반복 sample 수, p50/p95와 confidence interval은 정량 benchmark를 실제로 수행하는 경우에만 정한다. 모든 patch의 기본 gate로 요구하지 않는다.
+
+결과는 기능 `PASS`/`FAIL`, 실행하지 않은 항목 `notVerified`, 구조상 예상되는 성능 개선 `expectedImprovement`로 구분한다. `expectedImprovement`는 정량 성능 PASS를 뜻하지 않는다.
 
 ## 4. 실행 순서
 
@@ -171,40 +147,40 @@ reference device가 정해지기 전에는 임의의 절대 500 ms/1 s 기준으
 
 상태: `notStarted`
 
-S0/S1에서 각 변경의 marker 기여도를 확인하며 다음 순서로 진행한다.
+S0의 구조 판단과 S1의 최소 validation을 적용해 다음 순서로 진행한다.
 
 1. **Typed manifest/bootstrap**
    - Runner SDK가 manifest의 resource/plugin descriptor를 generated C# 배열 또는 source-generated JSON context로 만든다.
    - 매 launch reflection 기반 JSON metadata 초기화를 제거하되 resource hash, RID, plugin ABI fail-closed 검증은 유지한다.
-   - manifest가 작아 개선이 측정 오차 이하이면 구조 복잡도를 늘리지 않고 `noBenefit`으로 종료한다.
+   - generated 경로가 단순하고 fail-closed 계약을 유지할 수 있으면 manifest 크기와 무관하게 매 launch 역직렬화를 제거한다. 더 복잡한 runtime cache가 필요하면 범위에서 제외한다.
 
 2. **Theme와 대형 type initializer**
-   - EventPipe/loader trace로 `B07→B09`에 실제 실행된 type initializer와 allocation 상위를 뽑는다.
+   - RootApp과 first screen이 직접 구성하는 theme/type initializer를 source에서 추적한다. 필요하면 EventPipe/loader trace는 확인용으로만 사용한다.
    - Demo가 active/inactive light/dark `ThemeData`를 모두 동기 생성하지 않도록 호환 API의 lazy factory를 설계한다.
-   - `ThemeData.Create`의 immutable default typography/component theme는 안전한 shared template/copy-on-write 후보로 측정한다.
+   - `ThemeData.Create`의 immutable default typography/component theme는 안전한 shared template/copy-on-write 여부를 참조 의미와 mutation test로 판단한다.
    - first frame에서 사용하지 않은 animated icon/path table과 Cupertino catalog는 type-local `Lazy<T>` 또는 별도 lazy-load assembly/resource로 이동한다.
-   - 전체 9천여 정적 후보를 기계적으로 바꾸지 않고 trace에 들어온 type과 Web payload 기여가 큰 data만 수정한다.
+   - 전체 9천여 정적 후보를 기계적으로 바꾸지 않고 기본 root에서 도달하거나 Web initial payload 기여가 큰 data만 수정한다.
 
 3. **First-frame `dynamic` 제거**
-   - `B07→B11`에 실제 bind된 DLR call site 목록과 JIT/AOT fallback 시간을 수집한다.
-   - layout/build/paint/semantics의 first-frame closure부터 typed generic/interface 호출로 바꾼다.
+   - layout/build/paint/semantics와 initial route의 source reachability 및 반복성을 기준으로 DLR call site를 고른다.
+   - binder 제거가 분명한 공용 경로부터 typed generic/interface/direct 호출로 바꾼다.
    - public 의미와 Flutter reference 동작을 유지하며, 전체 Framework의 일괄 변환은 별도 follow-up으로 둔다.
    - Web trim/AOT warning과 Apple interpreter 필요 범위가 줄었는지 target별로 검증한다.
 
 4. **Lazy platform service**
    - hidden `Entry`/`Editor` native handler는 첫 text client activation 때 만든다. text field가 initial screen에 있으면 TTFD 전에 생성하고 caret/IME를 잃지 않는다.
-   - accessibility가 OS에서 활성인 경우 초기 semantics를 지연하지 않는다. 비활성인 경우 first content present 다음 idle/frame으로 옮기는 A/B만 허용한다.
+   - accessibility가 OS에서 활성인 경우 초기 semantics를 지연하지 않는다. 비활성인 경우 lifecycle상 안전하면 first content present 다음 idle/frame으로 옮기고 기능 회귀를 검증한다.
    - clipboard/plugin/native bridge, shader warm-up과 image cache는 first screen이 요구하는 최소 항목만 동기 준비한다.
 
 5. **불필요한 MAUI registration 제거**
-   - 제품 source가 직접 쓰지 않는 `CommunityToolkit.Maui.Markup` registration/package를 제거하는 graph A/B를 수행한다.
-   - Skia handler나 platform lifecycle에 transitive side effect가 있으면 유지하고 결과를 `noBenefit`으로 기록한다.
+   - 제품 source와 generated registration graph가 쓰지 않는 `CommunityToolkit.Maui.Markup` registration/package를 제거한다.
+   - Skia handler나 platform lifecycle에 transitive side effect가 있으면 유지하고 이유를 기록한다.
 
 S2 공용 gate:
 
 - FCR-0/FCR-3/FCR-4/FCR-6/FCR-7 Release validation PASS
 - light/dark first frame, system theme live switch, initial text field/IME, accessibility-active launch 회귀 0
-- 모든 platform source/build gate PASS, 실제 실행하지 못한 target은 `notVerified`
+- 수정이 영향을 준 owning project와 가능한 platform source/build PASS, 실행 환경이 없는 target은 `notVerified`
 
 ### S3. Windows 기본/MAUI 분리 최적화
 
@@ -213,15 +189,15 @@ S2 공용 gate:
 #### W1. 기본 HwndExactCpp 빠른 경로
 
 1. native DLL SHA-256을 build/publish manifest에 기록하고 일반 launch에서는 file metadata + PE header + ABI/version만 fail-fast 검증한다. 전체 hash 재계산은 diagnostics/audit 명령에서만 수행한다.
-2. `B02→B11`을 `RoInitialize`, Windows App Runtime bootstrap, HWND, `AppWindow`, render worker, ANGLE display/context, Skia context/surface, first scene, swap, `DwmFlush`로 세분한다.
+2. `RoInitialize`, Windows App Runtime bootstrap, HWND, `AppWindow`, render worker, ANGLE/Skia context와 first present의 기존 순서를 보존한다. 병목이 남을 때만 `B02→B11` 세부 marker를 추가한다.
 3. 기본 ANGLE assembly/package에서 D3D12 diagnostic presenter와 Vortice/D3D12 dependency를 분리한다. `DOROTI_WINDOWS_PRESENTER=D3D12`는 별도 진단 artifact가 있을 때만 명시적으로 허용하고 silent fallback은 두지 않는다.
 4. clean publish에서 PDB, diagnostic symbols, 사용하지 않는 optional runtime asset을 배포 파일에서 제외한다. Windows App SDK가 지원하는 self-contained file set만 사용하고 임의 DLL 삭제는 금지한다.
-5. 일반 ReadyToRun on/off를 같은 self-contained artifact 조건에서 A/B한다. JIT 감소가 file I/O/working-set 증가보다 클 때만 채택한다.
+5. ReadyToRun on/off는 구조상 우열이 분명하지 않은 tuning이므로 MVP를 막지 않는 선택적 후속으로 둔다. 수행할 때만 짧은 동일-artifact A/B로 결정한다.
 6. first exact present 전 show 금지와 첫 swap 후 `DwmFlush`는 유지한다. 이를 제거한 숫자는 acceptance에 사용하지 않는다.
 
 #### W2. Windows App SDK identity 후속 결정
 
-`MddBootstrapInitialize2`/`AppWindow`가 dominant이고 `AppWindow` 기능이 실제로 불필요하다는 A/B 증거가 있을 때만 다음 둘 중 하나를 operator decision/ADR로 선택한다.
+`AppWindow`가 현재 연결·보관·해제 외의 제품 동작에 쓰이지 않는다는 source 사실과 deployment 요구를 기준으로 다음 둘 중 하나를 operator decision/ADR로 선택한다. 성능 A/B는 필수 선행 조건이 아니다.
 
 - Windows App SDK backend identity를 유지하고 해당 비용을 수용한다.
 - raw Win32 + ANGLE host를 새 backend/target package로 분리하고 기존 Windows App SDK 계약과 migration을 문서화한다.
@@ -231,13 +207,13 @@ S2 공용 gate:
 #### W3. 명시적 Windows MAUI
 
 - S2 lazy text/semantics/package 정리를 적용한다.
-- WinUI bootstrap, MAUI DI/build, DXGI/Skia context와 first present를 별도 marker로 측정한다.
+- WinUI bootstrap, MAUI DI/build, DXGI/Skia context와 first present는 독립 경로로 유지한다. 추가 marker는 원인 분리가 필요할 때만 넣는다.
 - 기본 HwndExactCpp보다 느리다는 이유로 제거하거나 자동 fallback하지 않는다.
 
 Windows acceptance:
 
 - target-scoped Release publish, empty `PATH` launch와 native provenance audit PASS
-- process-cold/warm 각 반복에서 first exact content visible, failed terminal 0
+- 가능한 process-cold와 warm launch smoke에서 first exact content visible, failed terminal 0
 - resize/mixed-DPI/input 기존 gate 유지
 - 실제 한글 IME/Narrator는 수행 전까지 `notVerified`
 
@@ -245,18 +221,18 @@ Windows acceptance:
 
 상태: `notStarted`
 
-1. 고정 serial의 arm64 물리 기기에서 `am start -W`, Perfetto, managed startup trace를 연결하고 TTID/TTFD를 수집한다. x64 emulator는 개발 편의 baseline만 둔다.
-2. arm64 full AOT, default/profiled AOT, Doroti first-screen custom AOT profile을 같은 Release APK에서 A/B한다. AOT library preload/lazy-load, mapped bytes와 first-frame JIT fallback을 함께 본다.
-3. app startup Critical User Journey로 Android Baseline Profile과 Startup Profile을 생성·패키징하고 `baseline.prof`, dex layout, device compilation state를 검증한다. ART profile 개선과 managed Mono AOT 개선을 별도 수치로 기록한다.
-4. x64는 AOT off를 유지한 채 trimming만 다시 켤 수 있는지 분리 실험한다. 현재 35.71 MiB assembly store와 startup JIT/type load가 실제로 줄고 emulator startup fault가 재발하지 않을 때만 채택한다.
+1. 고정 serial의 arm64 물리 기기에서 Release 설치·실행, screenshot, Activity/PID, crash/ANR, input smoke를 먼저 닫는다. `am start -W`, Perfetto와 managed trace는 정량 보고나 회귀 분석이 필요할 때만 사용한다.
+2. app startup Critical User Journey로 Android Baseline Profile과 Startup Profile을 생성·패키징하고 `baseline.prof`, dex layout, device compilation state를 검증한다.
+3. arm64 full AOT/default/profiled AOT의 우열은 구조상 확정할 수 없으므로 MVP 구조 개선과 분리한 선택적 tuning으로 둔다. 실제로 선택할 때만 같은 Release APK 조건의 짧은 A/B를 수행한다.
+4. x64는 AOT off를 유지한 채 trimming을 다시 켜서 assembly store를 줄이되, Release build와 emulator launch에서 기존 startup fault가 재발하면 즉시 기존 설정으로 복귀하고 `FAIL`을 기록한다.
 5. `AndroidEnableMarshalMethods`는 기존 startup fault의 최소 재현, fixed runtime 확인과 arm64/x64 matrix가 먼저다. 재활성화 후보가 실패하면 계속 off로 두고 `FAIL` 근거를 남긴다.
 6. hidden text handler, semantics, inactive theme를 lazy화하고 첫 화면에 TextField가 있는 별도 cold-start case로 TTFD/IME를 검증한다.
 7. splash 종료 시점과 Doroti first content를 같은 color라서 오인하지 않도록 screenshot/pixel + `B11`을 함께 사용한다.
 
 Android acceptance:
 
-- fixed physical arm64 Release first-install/cold/warm 반복 gate PASS
-- APK 설치, foreground Activity/PID, screenshot, crash/ANR, `gfxinfo`/Perfetto 확인
+- fixed physical arm64 Release first-install/cold/warm 각 가능한 smoke PASS
+- APK 설치, foreground Activity/PID, screenshot, crash/ANR 확인. `gfxinfo`/Perfetto는 선택적 진단
 - first input, text selection/overlay, TalkBack-active launch와 scroll cadence 회귀 확인
 - emulator x64 PASS는 physical arm64 PASS를 대신하지 않음
 
@@ -264,12 +240,12 @@ Android acceptance:
 
 상태: `notStarted`
 
-1. generated entry, UIApplication/NSApplication, MAUI builder, native view, Metal context, root/type init, first command-buffer completion에 signpost/startup marker를 연결한다.
-2. iOS physical, iOS simulator, Mac Catalyst, native AppKit을 별도 artifact와 결과표로 측정한다.
+1. generated entry, UIApplication/NSApplication, MAUI builder, native view, Metal context, root/type init과 first-command-buffer ordering을 source에서 정리한다. signpost/startup marker는 원인 분리가 필요할 때만 연결한다.
+2. iOS physical, iOS simulator, Mac Catalyst, native AppKit을 별도 artifact와 기능 결과표로 기록한다.
 3. S2의 first-frame `dynamic` 제거 뒤 AOT/interpreter 범위를 재평가한다. linker/AOT/registrar 설정은 size, launch, native bridge와 reflection 회귀를 같이 통과할 때만 변경한다.
 4. hidden `Entry`/`Editor` handler와 inactive theme를 lazy화한다. 첫 화면 TextField/VoiceOver-active case는 TTFD 전에 준비한다.
-5. Metal device/queue/context를 더 일찍 prewarm하는 실험은 main-thread blocking이 줄고 TTID가 실제 개선될 때만 채택한다. drawable 준비 전 불필요한 GPU 생성은 금지한다.
-6. signed install, dyld/managed assembly mapping, AOT fallback, first drawable 대기를 Instruments/xctrace로 분해한다.
+5. Metal device/queue/context 조기 prewarm은 비용 이동 여부가 불명확하므로 기본 범위에서 제외한다. 이후 실제 대기가 의심될 때만 별도 실험한다.
+6. signed install, dyld/managed assembly mapping, AOT fallback 또는 first drawable 대기가 문제로 남을 때만 Instruments/xctrace로 분해한다.
 
 Apple acceptance:
 
@@ -281,19 +257,19 @@ Apple acceptance:
 
 상태: `notStarted`
 
-1. navigation, loader, boot resource download, `Blazor.start`, managed main, JS module import, WebGL context, framework attach, first WebGL commit에 `performance.mark/measure`와 `DorotiStartupTrace`를 연결한다.
+1. navigation, loader, boot resource graph, `Blazor.start`, managed main, JS module import, WebGL context, framework attach와 first WebGL commit의 synchronous chain을 source에서 정리한다. `performance.mark/measure`는 병목 분리가 필요할 때만 연결한다.
 2. generated Framework graph가 trim-safe해지도록 first screen에 필요한 reflection/dynamic root를 명시하고 product Release의 `PublishTrimmed=true` 금지 gate를 단계적으로 제거한다.
 3. trim warning 0만으로 PASS하지 않고 Material gallery, plugin, image/font/shader, semantics, resize, text input browser live gate를 통과한다.
 4. initial route에서 필요 없는 Cupertino, animated icon/catalog, diagnostics와 optional BCL assembly를 assembly lazy loading 또는 package 분할로 뒤로 보낸다. root Material/Skia/runtime assembly는 억지 lazy-load하지 않는다.
 5. Release publish에서 PDB/source map을 symbol artifact로 분리하고 실제 HTTP Brotli/gzip, immutable fingerprint cache header를 검증한다.
 6. 지원 locale을 operator가 확정한 뒤 필요한 ICU shard만 initial load하거나 추가 culture data를 lazy-load한다. 한국어 text/IME/locale fallback이 깨지면 full ICU를 유지한다.
 7. service worker/repeat cache는 warm navigation만 개선한 것으로 기록하고 fresh-profile cold TTID를 대체하지 않는다.
-8. initial compressed payload 50% 감소를 1차 목표로 두되, WebGL/Skia compile과 first scene이 dominant라면 payload 숫자만으로 완료하지 않는다.
+8. initial compressed payload는 사용하지 않는 assembly/symbol/ICU/resource를 제거한 만큼 줄인다. 임의의 50% 수치를 구현 gate로 두지 않고 first scene 기능을 완료 기준으로 삼는다.
 
 Web acceptance:
 
-- clean Release publish + 실제 HTTP compression과 fresh browser profile 10회
-- desktop Chrome와 한 개 mid-tier mobile browser/device의 cold/repeat 결과
+- clean Release publish + 실제 HTTP compression과 fresh browser profile launch smoke
+- 가능한 desktop Chrome와 한 개 mid-tier mobile browser/device의 cold/repeat 기능 결과
 - first canvas pixel, pointer/key/IME/clipboard/ARIA/resize live PASS
 - loader `started`만으로 first-present PASS 선언 금지
 
@@ -301,15 +277,15 @@ Web acceptance:
 
 상태: `notStarted`
 
-1. published executable 기준으로 hostfxr/CoreCLR, managed main, `dlopen` Qt/Skia/native shim, `QApplication`, QPA plugin, `QOpenGLWindow`, GL/Skia context, first `frameSwapped`을 marker로 나눈다.
-2. `perf`, `strace` file-open summary, `LD_DEBUG=statistics`, EventPipe JIT/type initializer를 원인 분석용으로 수집한다.
-3. framework-dependent IL, ReadyToRun, self-contained ReadyToRun을 같은 machine/session에서 A/B한다. startup 이득, output size, RSS와 steady-state frame time을 모두 비교한다.
+1. published executable 기준으로 hostfxr/CoreCLR, managed main, `dlopen` Qt/Skia/native shim, `QApplication`, QPA plugin, `QOpenGLWindow`, GL/Skia context와 first `frameSwapped`의 source ordering을 유지한다.
+2. `perf`, `strace`, `LD_DEBUG=statistics`, EventPipe는 실제 Linux startup 문제가 남을 때만 원인 분석용으로 수집한다.
+3. framework-dependent IL/ReadyToRun/self-contained ReadyToRun 비교는 구조상 우열이 불명확한 선택적 tuning으로 두고 MVP를 막지 않는다.
 4. S2 lazy text/semantics/theme를 적용하고 QAccessible factory/backdrop event가 TTFD에 미치는 영향을 확인한다.
 5. native shim은 published artifact에서 재빌드하지 않는다. CMake incremental 개선은 developer launch 항목에서 별도로 처리한다.
 
 Linux acceptance:
 
-- 실제 Wayland와 실제 X11 session을 독립 측정하고 VM/WSLg는 보조 결과로만 유지
+- 실제 Wayland와 실제 X11 session을 독립 검증하고 VM/WSLg는 보조 결과로만 유지
 - first `frameSwapped`, screenshot, input/IME/accessibility와 terminal invariant 확인
 - 물리 Linux/한글 IME/Orca를 실행하지 않으면 `notVerified`
 
@@ -317,11 +293,11 @@ Linux acceptance:
 
 상태: `notStarted`
 
-1. `doroti.ps1 run`에 workspace resolve, restore, managed compile, TypeScript/native build, AOT/link, deploy, process launch, B11 대기 구간 timer를 추가한다.
-2. `-NoBuild`/`-NoRestore` 또는 명시적 fast-run option을 설계한다. runner/configuration/RID/artifact fingerprint가 맞지 않으면 stale binary를 실행하지 않고 재build 필요를 명확히 실패시킨다.
+1. `-NoBuild`/`-NoRestore` 또는 명시적 fast-run option을 먼저 설계한다. runner/configuration/RID/artifact fingerprint가 맞지 않으면 stale binary를 실행하지 않고 재build 필요를 명확히 실패시킨다.
+2. workspace resolve, restore, managed compile, TypeScript/native build, AOT/link, deploy, process launch timer는 재사용 실패 원인을 구분해야 할 때만 추가한다.
 3. Release 기본값은 acceptance 재현성을 위해 유지한다. 일상 개발에는 명시적 Debug fast path와 “마지막 성공 artifact 재실행” 명령을 문서화한다.
-4. Android Gradle AAR, Apple Xcode binding, Linux CMake와 Web TypeScript output은 input hash가 같을 때 재사용되는지 MSBuild binlog로 확인한다.
-5. CLI 개선 결과는 `command→process start`와 `process start→B11`을 반드시 따로 출력한다.
+4. Android Gradle AAR, Apple Xcode binding, Linux CMake와 Web TypeScript output은 input hash가 같으면 재사용하도록 dependency/fingerprint 계약을 고친다. 필요하면 MSBuild binlog로 원인을 확인한다.
+5. CLI는 실행한 artifact의 configuration/RID/fingerprint와 생략·재실행한 단계를 명확히 출력한다. 상세 시간은 선택적이다.
 
 CLI acceptance:
 
@@ -334,13 +310,13 @@ CLI acceptance:
 
 ### MVP
 
-1. S0 startup trace와 S1 baseline harness
-2. 실제 trace 상위 공용 병목: inactive theme/type initializer, first-frame DLR, hidden text/semantics
+1. S0 구조 판단과 S1 최소 validation 계약 적용
+2. inactive theme/type initializer, first-frame DLR, hidden text/semantics의 명백한 공용 비용 제거
 3. Windows production hash 제거와 D3D12 diagnostic 분리
-4. Android arm64 physical AOT/profile 비교와 x64 trimming 분리
+4. Android Baseline/Startup Profile 패키징, arm64 physical smoke와 x64 trimming 복구
 5. Web trimming 해제에 필요한 최소 graph 정리, production symbol/ICU/payload 축소
-6. Apple/Linux marker와 각 platform baseline, 효과가 확인된 S2 공용 변경 적용
-7. CLI phase timer와 안전한 no-build 재실행
+6. Apple/Linux에 S2 공용 구조 개선 적용과 가능한 기능 검증
+7. 안전한 no-build/no-restore 재실행과 artifact fingerprint 검증
 
 ### 후속
 
@@ -354,11 +330,11 @@ CLI acceptance:
 
 | Gate | 필수 결과 | 현재 상태 |
 | --- | --- | --- |
-| G0 source/schema | startup marker ordering, trace overhead, no pre-present file I/O | `notStarted` |
+| G0 source/architecture | first-frame reachability, generated metadata, no avoidable pre-present parsing/hash/file I/O | `notStarted` |
 | G1 common runtime | FCR-0/3/4/6/7, theme/text/semantics first-frame 회귀 없음 | `notStarted` |
 | G2 Windows default | HwndExactCpp Release cold/warm, exact visible present, input/resize 유지 | `notVerified` |
-| G3 Windows MAUI | 독립 Release cold/warm baseline과 common regression | `notVerified` |
-| G4 Android arm64 | physical first-install/cold/warm, ANR/crash/screenshot/TTID/TTFD | `notVerified` |
+| G3 Windows MAUI | 독립 Release cold/warm 기능 smoke와 common regression | `notVerified` |
+| G4 Android arm64 | physical first-install/cold/warm smoke, ANR/crash/screenshot/input | `notVerified` |
 | G5 Android x64 | emulator dev path, AOT-off + trim 후보와 startup fault | `notVerified` |
 | G6 iOS physical | signed Release cold/warm, Metal present, IME/VoiceOver | `notVerified` |
 | G7 Mac Catalyst | 독립 Release cold/warm, Metal present | `notVerified` |
@@ -374,20 +350,21 @@ CLI acceptance:
 
 구현 우선순위는 다음과 같다.
 
-1. 계측·baseline 없이는 최적화에 착수하지 않는다.
-2. 여러 플랫폼에 동시에 나타난 `B07→B09` Framework 병목을 가장 먼저 고친다.
-3. 현재 정적 증거가 큰 Web initial payload, Windows launch-time hashing/diagnostic graph, Android x64 untrimmed store를 플랫폼 우선 후보로 둔다.
-4. 각 변경은 한 번에 한 변수만 A/B하고 p50/p95, TTFD, size/RSS, correctness를 함께 비교한다.
-5. 개선이 측정 오차 이하이거나 다른 gate를 5% 넘게 악화시키면 제거하고 `noBenefit`/`FAIL` 근거를 남긴다.
+1. source와 runtime 계약상 불필요한 동기 작업을 확실히 제거할 수 있으면 계측·baseline 없이 바로 구현한다.
+2. 여러 플랫폼이 공유하는 Framework/Hosting의 theme/type initializer, first-frame DLR, hidden text/semantics를 먼저 고친다.
+3. 정적 증거가 큰 Web initial payload, Windows launch-time hashing/diagnostic graph, Android x64 untrimmed store를 플랫폼 우선 작업으로 둔다.
+4. 각 변경은 좁은 patch로 구현하고 owning test/FCR/Release smoke에서 correctness를 확인한다.
+5. 기능 계약을 깨거나 비용을 reflection/cache/adapter로 옮기는 변경은 되돌리고 `FAIL`을 남긴다. 정량 계측이 없거나 개선폭이 작다는 이유만으로 구조적으로 타당한 변경을 제거하지 않는다.
 
-## 8. 구현 전에 확정할 operator 결정
+## 8. 구현과 병행할 operator 결정
+
+아래 결정은 해당 항목의 제품 범위를 바꿀 때만 필요하며, 앞선 공용 구조 개선의 착수 조건이 아니다.
 
 - 기준 장치/OS: Android physical serial과 refresh rate, iPhone/iPad, macOS 기기, Windows CPU/GPU, Linux Wayland/X11, Web mobile device/network profile
-- 제품 절대 목표: 상대 30%/20% gate 뒤 허용할 플랫폼별 TTID/TTFD 상한
 - Web locale 범위: 한국어/영어 고정인지 임의 locale의 offline 전환까지 필요한지
 - Windows deployment: self-contained Windows App SDK identity를 반드시 유지할지 raw Win32 + ANGLE 신규 target을 허용할지
 - public API: `MaterialApp`/`ThemeData` lazy factory를 additive API로 노출할지 내부 shared-default 최적화만 허용할지
-- 사용자가 말한 “처음 부트”의 주 증상이 developer first run인지 설치된 앱의 cold TTID인지. 둘 다 측정하되 실제 우선순위는 baseline에서 확정한다.
+- 사용자가 말한 “처음 부트”에서 developer first run과 설치된 앱의 cold start 중 어느 체감을 제품 우선순위로 둘지
 
 ## 9. 구현 참고 자료
 
@@ -397,4 +374,4 @@ CLI acceptance:
 - [Blazor WebAssembly lazy-loaded assemblies](https://learn.microsoft.com/aspnet/core/blazor/webassembly-lazy-load-assemblies)
 - [Blazor WebAssembly host/deploy and Release trimming](https://learn.microsoft.com/aspnet/core/blazor/host-and-deploy/webassembly/)
 
-> 현재 결론: source와 기존 artifact만으로 Web payload, Windows production hashing/diagnostic dependency, Android x64 untrimmed store, 공용 ThemeData/type initializer/DLR/hidden platform view를 강한 후보로 좁혔다. 어느 후보도 live startup trace 전에는 확정 원인이나 완료로 판정하지 않는다.
+> 현재 결론: source와 기존 artifact만으로 Web payload, Windows production hashing/diagnostic dependency, Android x64 untrimmed store, 공용 ThemeData/type initializer/DLR/hidden platform view는 런타임 작업을 분명히 줄일 수 있는 구현 대상으로 확정한다. live startup trace는 이 작업들의 선행 조건이 아니며, 정량 수치나 남은 병목을 설명해야 할 때만 사용한다.

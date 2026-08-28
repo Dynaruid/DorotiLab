@@ -1,27 +1,29 @@
-# First-frame `dynamic` hot path 정적화 작업 계획
+# First-frame `dynamic` 공용 경로 정적화 작업 계획
 
 - 작성일: 2026-08-28
 - 기준 commit: `be1a63e9`
-- 상위 계획: `plan.md` 188행의 **First-frame `dynamic` 제거**
+- 상위 계획: `plan.md` S2의 **First-frame `dynamic` 제거**
 - 참고 자료: `idea.md`는 후보와 타입 설계 아이디어로만 사용한다. 그 문서의 전수 제거 순서나 결론은 실행 지시가 아니다.
-- 현재 상태: **계획 완료**. 구현, 새 계측, A/B 측정, 실기 검증은 모두 `notStarted` 또는 `notVerified`다.
-- 목표: `B07 frameworkReady -> B11 firstPresented`에서 실제 실행되는 DLR 바인딩과 반복 동적 호출 중 성능 기여가 큰 2~3개 공통 구간만 정적 계약으로 바꾼다.
+- 현재 상태: **계획 완료**. 구현과 기능·실기 검증은 `notStarted` 또는 `notVerified`다. 새 계측과 반복 A/B는 선행 작업이 아니라 필요할 때만 수행하는 보조 작업이다.
+- 목표: 기본 first-frame 경로와 Framework 공용 반복 경로에서 구조상 불필요한 DLR 바인딩·동적 호출이 분명한 2~3개 구간을 정적 계약으로 바꾼다.
 
 ## 1. 검토 결론
 
 `idea.md`의 핵심 방향인 “행동은 interface/generic으로, 임의 데이터는 `object?`와 명시적 변환으로 표현한다”는 현재 코드와 맞는다. 특히 `actions.cs`에는 이미 `IIntentAction`과 `IActionListenerSource`가 있고, `Doroti.Runtime`은 `object?` + pattern matching/conversion helper를 사용한다.
 
-다만 성능 작업의 우선순위로 그대로 사용하기 전에 다음 세 가지를 구분해야 한다.
+성능 작업의 우선순위에는 다음 세 가지를 적용한다.
 
 1. **`dynamic` 키워드 수와 DLR call site 수는 다르다.**
    - `List<dynamic>`, `DartMap<Type, dynamic>`, `DiagnosticsProperty<dynamic>`는 CLR metadata에서 사실상 `object` 계열이며, 선언 자체만으로 매 호출 DLR dispatch를 만들지는 않는다.
    - `((dynamic)value).Member`, dynamic invoke/index/convert 같은 연산은 compiler-generated `CallSite<T>`와 runtime binder를 만든다.
-2. **정적 call site 존재와 first-frame 실행도 다르다.**
-   - dialog, picker, inspector, Cupertino, platform view용 call site가 assembly에 있어도 기본 Demo 첫 화면에서 bind되지 않으면 이번 성능 범위가 아니다.
-3. **쉬운 치환과 큰 성능 효과도 다르다.**
-   - `PageStorage`나 `creationParams`의 `object?` 치환은 타입 정리로는 유효하지만, first-frame DLR CPU가 확인되지 않으면 이번 작업에서 하지 않는다.
+2. **source reachability와 호출 반복성으로 우선순위를 판단한다.**
+   - 기본 Demo와 Framework lifecycle에서 직접 도달하고 element/render node/route/control 수만큼 반복되는 동적 호출은 별도 profiler 증명 없이 구현 대상으로 채택할 수 있다.
+   - dialog, picker, inspector, Cupertino처럼 기본 경로 밖의 call site는 이번 범위에서 제외한다.
+3. **구조상 확실한 비용 제거와 정량 성능 주장을 구분한다.**
+   - 반복 경로의 DLR binder를 direct/interface/generic 호출로 바꾸면서 reflection, adapter allocation, boxing을 추가하지 않는 변경은 실행 작업과 할당을 줄이는 것이 명백하므로 먼저 구현한다.
+   - 정확한 CPU 비율이나 TTID 개선폭을 주장해야 할 때만 profiler나 반복 A/B를 추가한다. 계측 미수행은 구조적으로 타당한 수정의 착수·유지 실패 사유가 아니다.
 
-따라서 완료 기준은 `dynamic` 검색 일치 0개가 아니라, **측정된 first-frame DLR hot cluster 제거와 profiler-free Release A/B 개선**이다.
+따라서 완료 기준은 `dynamic` 검색 일치 0개나 통계적 성능 입증이 아니라, **선택한 공용 반복 경로의 동적 dispatch 제거와 기능·계약 회귀 없음**이다.
 
 ## 2. 현재 정적 snapshot
 
@@ -34,7 +36,7 @@
 | `Doroti.Framework.Widgets` | 1,386 | 가장 큰 후보지만 미실행 기능 포함 |
 | `Doroti.Framework.Material` | 743 | 기본 Demo가 일부 control을 사용하지만 picker/dialog 등도 포함 |
 | `Doroti.Framework.Cupertino` | 281 | 기본 Demo first frame에서는 우선 제외 |
-| `Doroti.Framework.Painting` | 55 | trace에 잡힌 항목만 후보 |
+| `Doroti.Framework.Painting` | 55 | 기본 root의 source 경로에서 직접 도달하는 항목만 후보 |
 | `Doroti.Framework.Rendering` | 2 | 수는 작아도 render-tree 반복 호출 여부를 별도 확인 |
 | `Doroti.Runtime` | 0 | runtime의 `dynamic` 반환/문구가 DLR member dispatch를 만들지 않는 현재 방향을 유지 |
 
@@ -54,7 +56,7 @@ WidgetsFlutterBinding
   -> build / render-object child attach / layout / paint / semantics
 ```
 
-따라서 Navigator/Route와 render-tree core는 우선 계측 후보가 맞다. Actions와 Material control은 기본 화면에 있다는 이유만으로 채택하지 않고 실제 bind/CPU/allocation 결과로 순서를 정한다.
+따라서 render-tree core와 Navigator/Route는 별도 계측 없이도 우선 구현 대상으로 삼는다. Actions는 이미 있는 정적 계약을 완성하는 방향이라 세 번째 후보로 우선 검토하고, Material control은 여러 control이 공유하는 좁은 계약이 확인될 때만 범위에 넣는다.
 
 ## 3. 범위 원칙
 
@@ -65,65 +67,62 @@ WidgetsFlutterBinding
 - DLR을 reflection, `MethodInfo.Invoke`, 문자열 member lookup으로 바꾸지 않는다.
 - public 의미, Flutter reference 동작, route result generic, action intent type, listener exactly-once, render child ordering을 유지한다.
 - public `dynamic` signature가 DLR 비용을 만들지 않으면 호환성 때문에 MVP에 남길 수 있다. 내부 진입 시 한 번 검증하여 typed view로 정규화한다.
-- 각 cluster는 독립 patch와 A/B evidence를 가진다. 효과가 noise 이하이면 `noBenefit`으로 되돌리고 다음 후보로 넘어간다.
-- 최대 3개 cluster만 구현한다. 관측된 first-frame DLR CPU의 80%를 덮었거나 다음 후보가 선택 기준 미만이면 멈춘다.
+- 각 cluster는 독립 patch로 구현하고 정적 dispatch 제거와 focused behavior validation으로 유지 여부를 판단한다.
+- 최대 3개 cluster만 구현한다. 다음 후보가 기본 first-frame/공용 반복 경로가 아니거나 좁고 안전한 정적 계약을 만들 수 없으면 멈춘다.
 
 ### 3.2 성능 후보 cluster
 
-| 후보 | 주요 파일/owner | 정적화 방향 | MVP 채택 조건 |
+| 후보 | 주요 파일/owner | 정적화 방향 | MVP 판단 근거 |
 | --- | --- | --- | --- |
-| C1 render-tree core | `Widgets/framework.cs`, `Widgets/binding.cs`, 필요한 `Rendering` owner | `RenderObject` direct call, single/multi-child type-erased contract, typed widget child access | first frame에서 bind되고 element/render-node 반복 비용이 측정됨 |
-| C2 initial Navigator/Route | `Widgets/navigator.cs`, `routes.cs`, `overlay.cs`, `app.cs` | non-generic route/transition base + `Route<T>` typed result, typed route entry/observer flow | initial home route push/transition이 DLR CPU 상위에 있음 |
-| C3 Actions shell | `Widgets/actions.cs`, `app.cs`, `Material/app.cs` | 기존 `IIntentAction`/listener 계약을 완성하고 public compatibility map을 내부 typed map으로 정규화 | default Actions build 또는 first input-ready까지의 binder 비용이 상위에 있음 |
-| C4 initial Material common contract | `Material/text_field.cs`, `scaffold.cs`, `radio.cs`, `switch.cs`, `checkbox.cs`, `slider.cs` | `IRestorableProperty`, toggleable/default-style 등 여러 control이 공유하는 좁은 typed contract | 개별 control 치환이 아니라 하나의 공통 계약이 상위 비용 여러 개를 동시에 제거함 |
+| C1 render-tree core | `Widgets/framework.cs`, `Widgets/binding.cs`, 필요한 `Rendering` owner | `RenderObject` direct call, single/multi-child type-erased contract, typed widget child access | 모든 app의 build/layout 경로에서 node 수만큼 반복되며 direct call로 대체 가능 |
+| C2 initial Navigator/Route | `Widgets/navigator.cs`, `routes.cs`, `overlay.cs`, `app.cs` | non-generic route/transition base + `Route<T>` typed result, typed route entry/observer flow | 기본 initial route가 항상 사용되고 현재 wildcard 표현의 타입 의미도 바로잡음 |
+| C3 Actions shell | `Widgets/actions.cs`, `app.cs`, `Material/app.cs` | 기존 `IIntentAction`/listener 계약을 완성하고 public compatibility map을 내부 typed map으로 정규화 | 기본 app shell에 포함되고 기존 interface를 확장하는 좁은 변경으로 반복 binder를 제거 가능 |
+| C4 initial Material common contract | `Material/text_field.cs`, `scaffold.cs`, `radio.cs`, `switch.cs`, `checkbox.cs`, `slider.cs` | `IRestorableProperty`, toggleable/default-style 등 여러 control이 공유하는 좁은 typed contract | 여러 initial control이 같은 계약을 공유하는 경우에만 C3 대체 후보로 채택 |
 
-C1~C4를 전부 한다는 뜻이 아니다. W0 측정에서 순위를 확정한 뒤 상위 2개를 먼저 수행하고, 세 번째는 누적 효과와 잔여 DLR 비용을 보고 결정한다.
+C1과 C2를 먼저 수행하고, 세 번째는 source 검토에서 가장 좁고 공용성이 높은 C3 또는 C4 한 묶음만 선택한다.
 
-## 4. W0 - 실제 DLR hot path 계측과 범위 동결
+## 4. W0 - 정적 경로 검토와 범위 동결
 
 상태: `notStarted`
 
-### 4.1 정적 inventory
+### 4.1 source와 정적 inventory
 
-diagnostic validation에 Roslyn/IL 기반 inventory를 추가한다.
+- `dynamic` declaration과 실제 dynamic member invoke/get/set/index/convert를 분리한다.
+- C1~C4의 호출자와 default Demo/Framework lifecycle 도달 경로를 source에서 확인한다.
+- 기존 Release assembly의 `CallSite` holder (`<>o__*`, `<>p__*`) inventory는 변경 전후 정적 차이를 확인하는 데 재사용한다. 이를 위한 새 runtime trace 도구는 만들지 않는다.
+- element/render node/route/action/control 수에 비례해 반복되는 호출과 direct/base/interface 호출로 안전하게 바꿀 수 있는 호출을 우선 표시한다.
+- 전체 키워드 수와 전체 `CallSite` field 수는 참고 지표일 뿐 작업 gate로 사용하지 않는다.
 
-- `dynamic` declaration, dynamic member invoke/get/set/index/convert를 분리한다.
-- Release assembly의 `CallSite` holder (`<>o__*`, `<>p__*`)를 assembly, owner type, method, source sequence point로 매핑한다.
-- 전체 키워드 수와 전체 `CallSite` field 수는 참고 지표로만 남긴다.
-- C1~C4 owner별 baseline field 목록을 `.doroti/evidence/startup/<commit>/<platform>/dynamic-static.json`에 저장한다.
-- inventory 도구는 product assembly를 수정하거나 IL rewrite하지 않는다.
+### 4.2 cluster 선택 기준
 
-### 4.2 runtime inventory
+다음 조건을 source와 API 계약으로 판단하여 구현한다.
 
-`plan.md`의 B07/B09/B11 marker와 같은 monotonic time 축을 사용한다.
+- 기본 first scene 또는 모든 app의 공용 lifecycle에서 직접 도달한다.
+- DLR lookup/convert/invoke를 direct, virtual, interface 또는 generic 호출로 바꾸면 런타임 작업이 확실히 줄어든다.
+- 새 reflection, 문자열 lookup, adapter/delegate allocation, boxing을 만들지 않는다.
+- public 의미와 Flutter reference 동작을 보존하는 좁은 계약으로 닫을 수 있다.
 
-- profiler-on Release 3회에서 `Microsoft.CSharp.RuntimeBinder`, `System.Dynamic`, `CallSite<T>` 생성/초기화, 관련 JIT method, allocation, sampled stack을 수집한다.
-- diagnostic run에서는 B07 직후, B09, B11 이후에 초기화된 call site 차이를 기록한다. reflection/stack 수집은 first present 이후 flush하며 acceptance 숫자에는 사용하지 않는다.
-- closed generic holder처럼 reflection snapshot만으로 누락될 수 있는 항목은 EventPipe/ETW method/JIT stack과 static IL inventory를 합쳐 판정한다.
-- profiler-free process-cold 10회와 warm/resume 20회에서 `B07->B11`, TTID, TTFD, managed allocation, first interaction frame p95를 기록한다.
-- Windows 기본 `WindowsAppSdk/HwndExactCpp`를 1차 원인 분석 target으로 사용하고, 같은 source의 Android arm64/Web 결과를 별도 target evidence로 유지한다.
+C1 render-tree core와 C2 Navigator/Route는 위 조건을 이미 만족하는 우선 범위로 고정한다. W0에서는 구체 call site와 영향 받는 contract test만 확정한다. 세 번째 묶음은 C3 Actions를 우선하며, 실제 source 구조상 좁은 계약을 만들 수 없을 때 C4의 공통 계약 하나로 대체한다.
 
-### 4.3 cluster 선택 gate
+### 4.3 선택적 계측
 
-다음 중 하나를 만족하고 실제 first-frame stack에 나타난 cluster만 구현한다.
+다음 경우에만 `B07/B09/B11`, EventPipe/ETW 또는 짧은 A/B를 사용한다.
 
-- `B07->B11` managed sampled CPU의 5% 이상을 차지한다.
-- first-bound DLR CPU 또는 allocation의 10% 이상을 차지한다.
-- element/render node 수에 비례해 반복되며, first frame 또는 첫 interaction frame p95에서 측정 noise를 넘는 비용이 재현된다.
+- 두 설계안의 비용·복잡도 판단이 엇갈린다.
+- 수정 뒤 체감 또는 frame/startup 회귀가 의심된다.
+- 정확한 CPU/allocation/TTID 개선 수치를 외부에 보고해야 한다.
 
-동률이면 Demo 전용 control보다 모든 app에 공통인 낮은 owner (`Framework.Widgets`/`Rendering`)를 먼저 선택한다. Route의 generic 의미 오류처럼 correctness 가치가 있더라도 성능 gate를 통과하지 못하면 별도 follow-up으로 이동한다.
+계측 환경이 없거나 결과가 불안정하면 정량 성능은 `notVerified`로 기록하되, 구현 순서를 멈추거나 구조적으로 타당한 patch를 자동으로 되돌리지 않는다.
 
 W0 산출물:
 
-- 전체 정적 inventory
-- B07/B09/B11에서 새로 bind된 call site 목록
-- owner별 CPU/allocation/JIT 표
-- 선택된 최대 3개 cluster와 제외 사유
-- baseline raw evidence와 `notVerified` target 목록
+- 선택 owner의 source call-site 목록과 호출 경로
+- C1/C2 및 세 번째 후보의 정적 계약 초안
+- focused behavior test 목록과 제외 범위
 
 ## 5. W1 - C1 render-tree core 정적화
 
-상태: `notStarted`, W0 선택 시에만 실행
+상태: `notStarted`, W0 source 검토 후 실행
 
 ### 5.1 대상
 
@@ -147,12 +146,12 @@ W0 산출물:
 
 - single child mount/update/unmount와 multi child insert/move/remove ordering test PASS
 - parent data, layout, paint, semantics tree 결과 동일
-- C1 owner의 Release `CallSite` field와 B07~B11 first-bound call site 0
-- C1 단독 A/B가 noise 이하이면 patch는 유지하지 않고 `noBenefit`
+- 선택한 C1 dynamic member operation이 source와 Release `CallSite` 정적 audit에서 제거됨
+- reflection/adapter allocation 없이 direct/interface 호출로 닫힘
 
 ## 6. W2 - C2 initial Navigator/Route 정적화
 
-상태: `notStarted`, W0 선택 시에만 실행
+상태: `notStarted`, W1 다음에 실행
 
 ### 6.1 핵심 문제
 
@@ -166,21 +165,21 @@ C#의 `TransitionRoute<dynamic>`은 Dart의 “어떤 result type의 TransitionR
 - `_RouteEntry__navigator.route`, `RouteTransitionRecord.route`, history/observer/overlay의 내부 흐름을 non-generic route type으로 바꾼다.
 - `Navigator` public generic push/pop/result API는 유지한다. public compatibility overload가 필요하면 경계에서 한 번 type check 후 typed core로 들어간다.
 - `Route<dynamic>`/`TransitionRoute<dynamic>`을 wildcard처럼 사용하는 type test를 모두 제거한다.
-- first route push, didAdd/didChangeNext/didChangePrevious, overlay install, initial transition에 필요한 범위만 바꾼다. restoration/declarative pages 전체 재설계는 trace에 없으면 건드리지 않는다.
+- first route push, didAdd/didChangeNext/didChangePrevious, overlay install, initial transition에 필요한 범위만 바꾼다. restoration/declarative pages 전체 재설계는 이번 정적 계약에 필요하지 않으면 건드리지 않는다.
 
 ### 6.3 gate
 
 - `Route<int>`, `Route<string>`, `Route<object?>`가 동일 Navigator history에서 push/transition/pop result를 보존
 - initial `home` route와 named initial route의 ordering 및 observer callback exactly-once PASS
 - overlay entry install/remove, back/pop, predictive-back 기본 계약 회귀 0
-- C2 선택 owner의 Release `CallSite`와 first-bound DLR 제거
+- 선택한 C2 owner의 dynamic route dispatch와 Release `CallSite` 정적 audit 제거
 - Demo first scene/first present와 FCR-3/4/6/7 회귀 0
 
-## 7. W3 - 잔여 상위 1개 cluster만 정적화
+## 7. W3 - 정적 근거가 충분한 잔여 1개 cluster만 정적화
 
-상태: `notStarted`, W1/W2 재측정 후 결정
+상태: `notStarted`, W1/W2 source 검토와 구현 결과를 바탕으로 결정
 
-W1/W2 이후 profiler를 다시 수집하고 다음 중 **한 묶음만** 선택한다.
+W1/W2 이후 중복된 contract 형태와 변경 위험을 검토하여 다음 중 **한 묶음만** 선택한다. 기본 선택은 기존 interface를 활용할 수 있는 Actions다.
 
 ### 선택지 A: Actions
 
@@ -192,38 +191,31 @@ W1/W2 이후 profiler를 다시 수집하고 다음 중 **한 묶음만** 선택
 
 ### 선택지 B: restoration 공통 계약
 
-- `text_field.cs`, `scaffold.cs`, `form.cs`, `restoration.cs`에 복제된 dynamic property access가 실제 상위라면 `IRestorableProperty`와 공통 coordinator를 만든다.
+- `text_field.cs`, `scaffold.cs`, `form.cs`, `restoration.cs`의 기본 화면 경로에 복제된 dynamic property access가 하나의 공통 계약으로 닫히면 `IRestorableProperty`와 공통 coordinator를 만든다.
 - restoration id/owner/registered/enabled/disposed, primitive read/write, listener attach를 typed member로 고정한다.
 - 초기 TextField controller, bucket restore, unregister/dispose, duplicate-id failure를 검증한다.
 - 단순 중복 제거를 이유로 first-frame에 없던 restoration consumer까지 일괄 변환하지 않는다.
 
 ### 선택지 C: Material toggleable/control 공통 계약
 
-- Radio/Switch/Checkbox/Slider에 반복되는 toggleable state/default-style member access 중 runtime 상위만 좁은 interface/base로 올린다.
+- Radio/Switch/Checkbox/Slider에 반복되는 toggleable state/default-style member access 중 여러 control이 공유하는 부분만 좁은 interface/base로 올린다.
 - 개별 control의 `dynamic defaults`를 각각 수동 치환하지 않고, 여러 control이 공유하며 call site를 함께 제거하는 계약일 때만 채택한다.
 - selected/focused/hovered/pressed state, painter animation, semantics tap, theme M2/M3 결과를 검증한다.
 
-선택한 묶음이 단독 A/B에서 noise를 넘지 못하면 `noBenefit`으로 되돌리고 W3 없이 종료한다. 네 번째 후보로 범위를 늘리지 않는다.
+좁은 정적 계약을 만들 수 없거나 새 adapter/reflection/boxing이 필요하면 W3 없이 종료한다. 계측 결과가 없다는 이유만으로 완료된 구조 개선을 되돌리지 않으며, 네 번째 후보로 범위를 늘리지 않는다.
 
-## 8. 성능 판정
+## 8. 채택 및 검증 판정
 
-각 cluster 전후를 같은 machine/device, 같은 power/thermal 조건, 같은 Release publish option으로 비교한다.
+각 cluster는 다음 조건을 만족하면 유지한다.
 
-채택 조건:
+- 선택한 공용 반복 경로에서 dynamic member invoke/get/set/index/convert가 제거되거나 명시된 public compatibility boundary에만 남는다.
+- DLR을 direct, virtual, interface 또는 generic 호출로 바꾸며 reflection, 문자열 lookup, adapter allocation, boxing을 새로 만들지 않는다.
+- focused contract test와 관련 FCR validation이 PASS한다.
+- 가능한 target의 Release live smoke에서 first frame, input, route, scroll, semantics에 명백한 회귀가 없다.
 
-- 해당 cluster의 B07~B11 first-bound call site가 0이거나, 명시된 compatibility boundary 외에는 0
-- 해당 cluster의 DLR sampled CPU/allocation 90% 이상 감소
-- `B07->B11`과 process-cold TTID p50 개선의 95% confidence interval이 0을 넘고, 개선폭이 baseline noise band보다 큼
-- TTID p95, TTFD p95, warm/resume p95, first interaction frame p95 중 어느 것도 5% 초과 악화하지 않음
-- first frame blank/crash/hang/terminal exactly-once 위반 0
+위 조건을 만족하면 결과를 `expectedImprovement`로 기록할 수 있다. 이는 제거된 런타임 작업에 근거한 공학적 판단이며, 정확한 TTID/CPU/allocation 개선폭을 측정했다는 뜻은 아니다.
 
-전체 `dynamic` 작업의 성공 목표는 선택된 cluster 누적 기준으로 다음과 같다.
-
-- 관측된 B07~B11 DLR CPU 80% 이상 제거, 또는 잔여 각 cluster가 선택 gate 미만
-- process-cold TTID/TTFD 개선은 실제 수치로 보고하되 임의의 절대 ms 목표로 PASS를 만들지 않음
-- Web payload/AOT warning 변화는 별도 수치로 기록하며, 일부 call site 제거만으로 `Microsoft.CSharp`/interpreter dependency 전체 제거를 주장하지 않음
-
-reference device가 정해지기 전에는 최종 cross-platform 성능 PASS를 선언하지 않는다. 고정된 개발 machine의 A/B는 `localEvidence`, 물리 Android/iOS는 각각 별도 evidence다.
+반복 A/B와 profiler는 설계 선택이 애매하거나 회귀가 의심되거나 정량 보고가 필요할 때만 추가한다. 수행하지 않은 정량 성능과 실행하지 못한 physical target은 `notVerified`로 남긴다. 일부 call site 제거만으로 `Microsoft.CSharp`/interpreter dependency 전체 제거를 주장하지 않는다.
 
 ## 9. 기능 및 target validation
 
@@ -245,7 +237,7 @@ reference device가 정해지기 전에는 최종 cross-platform 성능 PASS를 
 - Windows default Release build: `pwsh -NoProfile -File Doroti/eng/doroti.ps1 build -App DorotiDemoApp -Platform windows`
 - Windows live: light/dark initial frame, initial TextField, pointer/key/action, scroll, route/back, semantics-active 경로
 - Web Release build/publish: trim/AOT warning, `_framework` compressed/uncompressed payload, first canvas present
-- Android arm64 Release physical: process-cold 10회, first frame screenshot, PID/focus, crash/ANR, input/scroll/IME
+- Android arm64 Release physical: 가능한 경우 한 번 이상의 first frame screenshot, PID/focus, crash/ANR, input/scroll/IME smoke. 반복 성능 측정은 선택 사항
 - Apple/Linux target은 실제 실행 환경이 없으면 build 결과와 physical/runtime 결과를 분리하고 후자는 `notVerified`
 - `git diff --check`와 selected owner `CallSite` inventory diff PASS
 
@@ -255,11 +247,11 @@ reference device가 정해지기 전에는 최종 cross-platform 성능 PASS를 
 
 ### MVP
 
-- W0 static/runtime inventory와 baseline
-- 측정 상위 최대 3개 cluster의 typed contract 구현
-- 각 cluster 독립 A/B와 `keep`/`noBenefit` 결정
+- W0 source/static inventory와 구현 범위 동결
+- 구조적 근거가 분명한 최대 3개 cluster의 typed contract 구현
+- 각 cluster의 정적 dispatch 제거와 behavior validation으로 `keep` 결정
 - focused validation, Windows default live, Web build/payload, Android arm64 build 및 가능한 physical evidence
-- 결과를 PASS/FAIL/`notVerified`/`noBenefit`으로 분리 기록
+- 결과를 PASS/FAIL/`notVerified`/`expectedImprovement`로 분리 기록
 
 ### 이번 작업에서 제외
 
@@ -269,26 +261,26 @@ reference device가 정해지기 전에는 최종 cross-platform 성능 PASS를 
 - public API 전체의 breaking typed migration
 - Dart-to-C# compiler lowering 변경이나 framework regeneration
 - 남은 call site가 있는 상태에서 `Microsoft.CSharp` assembly/interpreter 제거
-- first-frame trace에 없는 Web lazy assembly 분할이나 플랫폼 host 최적화
+- 이번 source 경로와 무관한 Web lazy assembly 분할이나 플랫폼 host 최적화
 
-후속 작업은 correctness/API cleanup 또는 compiler import 품질 작업으로 별도 계획한다. 이번 performance evidence를 전수 정리의 정당화로 사용하지 않는다.
+후속 작업은 correctness/API cleanup 또는 compiler import 품질 작업으로 별도 계획한다. 이번 구조 개선을 전체 Framework 전수 정리나 정량 성능 수치의 근거로 확대 해석하지 않는다.
 
 ## 11. 실행 순서와 상태
 
 | 순서 | 작업 | 시작 조건 | 종료 조건 | 상태 |
 | --- | --- | --- | --- | --- |
-| W0 | static/runtime DLR inventory와 baseline | B07/B09/B11 marker 사용 가능 | 최대 3개 cluster와 제외 사유 동결 | `notStarted` |
-| W1 | 1순위 cluster 구현/A/B | W0 선택 | behavior PASS + 성능 `keep` 또는 `noBenefit` | `notStarted` |
-| W2 | 2순위 cluster 구현/A/B | W1 재측정 | behavior PASS + 성능 `keep` 또는 `noBenefit` | `notStarted` |
-| W3 | 잔여 1개 cluster 결정/구현 | 잔여가 gate 이상 | 누적 80% 제거 또는 다음 후보 gate 미만 | `notStarted` |
-| W4 | common/target validation과 evidence 정리 | 최종 kept patch 확정 | PASS/FAIL/`notVerified` 분리 완료 | `notStarted` |
+| W0 | source/static DLR inventory와 계약 검토 | 없음 | C1/C2와 세 번째 후보, 제외 사유 동결 | `notStarted` |
+| W1 | C1 render-tree core 구현 | W0 검토 | behavior PASS + 선택 dispatch 정적 제거 | `notStarted` |
+| W2 | C2 Navigator/Route 구현 | W1 contract 안정화 | behavior PASS + 선택 dispatch 정적 제거 | `notStarted` |
+| W3 | Actions 우선 잔여 1개 cluster 구현 | 좁은 공용 계약 확인 | behavior PASS + 선택 dispatch 정적 제거 | `notStarted` |
+| W4 | common/target validation과 결과 정리 | 최종 patch 확정 | PASS/FAIL/`notVerified`/`expectedImprovement` 분리 완료 | `notStarted` |
 
-## 12. 구현 전 operator 결정
+## 12. 구현과 병행할 operator 결정
 
-최종 cross-platform 성능 PASS 전에 다음만 확정한다.
+다음 결정은 구현 착수 조건이 아니다. 정량 cross-platform 성능 보고나 해당 target 실기 검증을 할 때만 확정한다.
 
 1. 대표 Windows machine과 Android arm64 physical device
 2. Web 판정 browser/CPU/network profile
 3. iOS/macOS/Linux physical/runtime gate를 이번 rollout에서 수행할 수 있는지 여부
 
-결정 전에도 W0와 local A/B는 진행할 수 있지만, 해당 target의 최종 상태는 `notVerified`로 유지한다.
+결정 전에도 W0~W4 구현과 가능한 local validation을 진행한다. 실행하지 않은 target과 정량 성능은 `notVerified`로 유지한다.
