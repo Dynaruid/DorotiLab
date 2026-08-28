@@ -16,10 +16,7 @@ internal static class DemoTheme
 {
     private static readonly UiColor Seed = new(0xff6750a4L);
 
-    internal static Material.ThemeData Light { get; } = Create(Brightness.light);
-    internal static Material.ThemeData Dark { get; } = Create(Brightness.dark);
-
-    private static Material.ThemeData Create(Brightness brightness)
+    internal static Material.ThemeData Create(Brightness brightness)
     {
         var isDark = brightness == Brightness.dark;
         var palette = Material.ColorScheme.CreateFromSeed(
@@ -153,8 +150,8 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
             ? new Material.MaterialApp(
                 title: "Doroti Material Demo",
                 color: new UiColor(0xff6750a4L),
-                theme: DemoTheme.Light,
-                darkTheme: DemoTheme.Dark,
+                themeFactory: () => DemoTheme.Create(Brightness.light),
+                darkThemeFactory: () => DemoTheme.Create(Brightness.dark),
                 themeMode: Material.ThemeMode.system,
                 locale: new Locale("en", "US"),
                 debugShowCheckedModeBanner: false,
@@ -165,8 +162,8 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
             : new Material.MaterialApp(
                 title: "Doroti Material Demo",
                 color: new UiColor(0xff6750a4L),
-                theme: DemoTheme.Light,
-                darkTheme: DemoTheme.Dark,
+                themeFactory: () => DemoTheme.Create(Brightness.light),
+                darkThemeFactory: () => DemoTheme.Create(Brightness.dark),
                 themeMode: Material.ThemeMode.system,
                 locale: new Locale("en", "US"),
                 debugShowCheckedModeBanner: false,

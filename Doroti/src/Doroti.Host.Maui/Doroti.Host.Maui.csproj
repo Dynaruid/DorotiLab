@@ -28,7 +28,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
-    <PackageReference Include="CommunityToolkit.Maui.Markup" />
     <PackageReference Include="Microsoft.Maui.Controls" />
     <PackageReference Include="SkiaSharp.Views.Maui.Controls" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'macos'" />
     <PackageReference Include="Microsoft.Maui.Platforms.MacOS" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'" />

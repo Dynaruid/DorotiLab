@@ -1,4 +1,3 @@
-using CommunityToolkit.Maui.Markup;
 using Doroti.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 #if MACOS
@@ -38,12 +37,10 @@ public static class DorotiMauiApplicationBuilderExtensions
 #if MACOS
             .UseMauiAppMacOS<DorotiMauiApplication>()
             .AddMacOSEssentials()
-            .UseMauiCommunityToolkitMarkup()
             .ConfigureMauiHandlers(handlers =>
                 handlers.AddHandler<DorotiMacOSMetalSurface, DorotiMacOSMetalSurfaceHandler>());
 #else
             .UseMauiApp<DorotiMauiApplication>()
-            .UseMauiCommunityToolkitMarkup()
             .UseSkiaSharp()
 #if WINDOWS
             .ConfigureMauiHandlers(handlers =>

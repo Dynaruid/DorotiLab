@@ -43,6 +43,31 @@ var systemThemeApp = new Doroti.Framework.Material.MaterialApp(
 Require(ReferenceEquals(systemThemeApp.theme, lightTheme), "MaterialApp retains the light palette");
 Require(ReferenceEquals(systemThemeApp.darkTheme, darkTheme), "MaterialApp retains the dark palette");
 Require(systemThemeApp.themeMode == Doroti.Framework.Material.ThemeMode.system, "MaterialApp follows platform brightness in system mode");
+var lightFactoryCalls = 0;
+var darkFactoryCalls = 0;
+var lazyThemeApp = new Doroti.Framework.Material.MaterialApp(
+    themeFactory: () => { lightFactoryCalls++; return lightTheme; },
+    darkThemeFactory: () => { darkFactoryCalls++; return darkTheme; },
+    themeMode: Doroti.Framework.Material.ThemeMode.system);
+Require(lightFactoryCalls == 0 && darkFactoryCalls == 0, "MaterialApp does not create inactive lazy themes during construction");
+Require(ReferenceEquals(lazyThemeApp.resolveDarkTheme(), darkTheme), "MaterialApp resolves the requested lazy dark theme");
+Require(darkFactoryCalls == 1 && lightFactoryCalls == 0, "resolving dark theme leaves the inactive light factory untouched");
+Require(ReferenceEquals(lazyThemeApp.resolveDarkTheme(), darkTheme) && darkFactoryCalls == 1,
+    "MaterialApp memoizes a lazy theme factory exactly once");
+var routerFactoryCalls = 0;
+var lazyRouterApp = Doroti.Framework.Material.MaterialApp.CreateRouter(
+    themeFactory: () => { routerFactoryCalls++; return lightTheme; });
+Require(routerFactoryCalls == 0 && ReferenceEquals(lazyRouterApp.resolveTheme(), lightTheme) && routerFactoryCalls == 1,
+    "MaterialApp.router preserves lazy theme construction and memoization");
+try
+{
+    _ = new Doroti.Framework.Material.MaterialApp(theme: lightTheme, themeFactory: () => lightTheme);
+    throw new InvalidOperationException("MaterialApp accepted both eager and lazy light themes.");
+}
+catch (ArgumentException)
+{
+    // Additive lazy APIs fail closed instead of silently changing eager-theme precedence.
+}
 VerifyScrollbarAlphaContract();
 VerifyRadiusSizedMaterialShapes();
 VerifyTypedActionDispatch();

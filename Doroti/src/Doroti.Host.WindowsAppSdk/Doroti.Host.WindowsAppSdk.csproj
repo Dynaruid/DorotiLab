@@ -5,7 +5,7 @@
     <AssemblyName>Doroti.Host.WindowsAppSdk</AssemblyName>
     <RootNamespace>Doroti.Host.WindowsAppSdk</RootNamespace>
     <PackageId>Doroti.Host.WindowsAppSdk</PackageId>
-    <Description>Doroti Windows App SDK host with a native HWND/task pump and managed-owned ANGLE/EGL-D3D11 or diagnostic D3D12 Skia presentation.</Description>
+    <Description>Doroti Windows App SDK product host with a native HWND/task pump and managed-owned ANGLE/EGL-D3D11 presentation.</Description>
     <IsDorotiProduct>true</IsDorotiProduct>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
@@ -15,12 +15,12 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" VersionOverride="2.4.0" />
     <PackageReference Include="Avalonia.Angle.Windows.Natives" />
     <PackageReference Include="SkiaSharp" />
-    <PackageReference Include="SkiaSharp.Direct3D.Vortice" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
-    <PackageReference Include="Vortice.Direct3D12" />
-    <PackageReference Include="Vortice.DXGI" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="WindowsManagedHwndPresenter.cs" />
   </ItemGroup>
 </Project>

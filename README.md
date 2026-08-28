@@ -55,9 +55,11 @@ Requires .NET SDK 10.0.400, matching 10.0.11 runtimes/workloads, and PowerShell 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -LastSuccessful
 ```
 
 The Windows command selects Windows App SDK/`HwndExactCpp` by default. Use `-WindowsBackend Maui` only when the independent Windows MAUI runner is intended.
+`-LastSuccessful` (or `-NoBuild`) reuses only a prior successful artifact whose runner, configuration, RID, and source/native-input fingerprint still match; stale or missing state fails closed. `-NoRestore` skips restore without skipping the build.
 
 ## Repository layout
 

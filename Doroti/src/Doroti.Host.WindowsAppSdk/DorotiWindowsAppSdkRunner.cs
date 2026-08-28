@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using Doroti.Hosting;
@@ -447,10 +448,33 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 var value when value.Equals("AngleD3D11", StringComparison.OrdinalIgnoreCase) =>
                     new WindowsManagedAngleEglPresenter(diagnosticsEnabled),
                 var value when value.Equals("D3D12", StringComparison.OrdinalIgnoreCase) =>
-                    new WindowsManagedHwndPresenter(diagnosticsEnabled),
+                    CreateDiagnosticPresenter(diagnosticsEnabled),
                 var value => throw new InvalidOperationException(
                     $"Unsupported managed Windows presenter '{value}'. Expected AngleD3D11 or D3D12."),
             };
+
+        private static WindowsManagedHwndPresenterBase CreateDiagnosticPresenter(bool diagnosticsEnabled)
+        {
+            const string assemblyName = "Doroti.Host.WindowsAppSdk.Diagnostics";
+            const string typeName = "Doroti.Host.WindowsAppSdk.WindowsManagedHwndPresenter";
+            try
+            {
+                var assembly = Assembly.Load(assemblyName);
+                var type = assembly.GetType(typeName, throwOnError: true)!;
+                return (WindowsManagedHwndPresenterBase)(Activator.CreateInstance(
+                    type,
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                    binder: null,
+                    args: [diagnosticsEnabled],
+                    culture: null) ?? throw new InvalidOperationException($"{typeName} did not produce an instance."));
+            }
+            catch (Exception exception) when (exception is FileNotFoundException or FileLoadException or TypeLoadException)
+            {
+                throw new InvalidOperationException(
+                    "D3D12 is a separate diagnostic artifact. Deploy Doroti.Host.WindowsAppSdk.Diagnostics explicitly before selecting DOROTI_WINDOWS_PRESENTER=D3D12.",
+                    exception);
+            }
+        }
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]

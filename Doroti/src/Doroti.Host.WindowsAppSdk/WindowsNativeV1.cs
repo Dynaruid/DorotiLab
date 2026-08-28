@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Text.Json;
 
 namespace Doroti.Host.WindowsAppSdk;
 
@@ -282,9 +283,22 @@ internal static partial class WindowsNativeV1
             _nativeHostPath = hostPath;
             NativeLibrary.SetDllImportResolver(typeof(WindowsNativeV1).Assembly, ResolveNativeLibrary);
         }
-        return new(baseDirectory, hostPath, Sha256(hostPath),
-            bootstrapPath, Sha256(bootstrapPath),
-            angleRuntimePath, Sha256(angleRuntimePath),
+        var auditHashes = string.Equals(
+            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_NATIVE_AUDIT"),
+            "1",
+            StringComparison.Ordinal);
+        var host = new FileInfo(hostPath);
+        var bootstrap = new FileInfo(bootstrapPath);
+        var angleRuntime = new FileInfo(angleRuntimePath);
+        var hostHash = auditHashes ? Sha256(hostPath) : null;
+        var bootstrapHash = auditHashes ? Sha256(bootstrapPath) : null;
+        var angleRuntimeHash = auditHashes ? Sha256(angleRuntimePath) : null;
+        if (auditHashes)
+            ValidateBuildProvenance(baseDirectory, hostHash!, bootstrapHash!, angleRuntimeHash!);
+        return new(baseDirectory, hostPath, host.Length, host.LastWriteTimeUtc.Ticks, hostHash,
+            bootstrapPath, bootstrap.Length, bootstrap.LastWriteTimeUtc.Ticks, bootstrapHash,
+            angleRuntimePath, angleRuntime.Length, angleRuntime.LastWriteTimeUtc.Ticks, angleRuntimeHash,
+            auditHashes,
             "app-directory + DLL-load-directory + System32 + registered user directories; PATH/current-directory excluded");
     }
 
@@ -328,6 +342,25 @@ internal static partial class WindowsNativeV1
 
     private static string Sha256(string path) =>
         Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))).ToLowerInvariant();
+
+    private static void ValidateBuildProvenance(
+        string baseDirectory,
+        string hostHash,
+        string bootstrapHash,
+        string angleRuntimeHash)
+    {
+        var path = Path.Combine(baseDirectory, "doroti-native-provenance.json");
+        if (!File.Exists(path))
+            throw new InvalidDataException($"Native provenance audit manifest is missing: {path}");
+        var manifest = JsonSerializer.Deserialize<NativeBuildProvenance>(File.ReadAllText(path),
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+            ?? throw new InvalidDataException($"Native provenance audit manifest is empty: {path}");
+        if (manifest.SchemaVersion != "doroti.windows.native-provenance/v1" ||
+            !string.Equals(manifest.NativeHostSha256, hostHash, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(manifest.BootstrapSha256, bootstrapHash, StringComparison.OrdinalIgnoreCase) ||
+            !string.Equals(manifest.AngleRuntimeSha256, angleRuntimeHash, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException("Native provenance audit hash does not match the build/publish manifest.");
+    }
 
     internal static AbiLayout ValidateLayout()
     {
@@ -381,12 +414,25 @@ internal static partial class WindowsNativeV1
     }
 }
 
+internal sealed record NativeBuildProvenance(
+    string SchemaVersion,
+    string NativeHostSha256,
+    string BootstrapSha256,
+    string AngleRuntimeSha256);
+
 internal sealed record NativeHostProvenance(
     string ApplicationDirectory,
     string NativeHostPath,
-    string NativeHostSha256,
+    long NativeHostLength,
+    long NativeHostLastWriteUtcTicks,
+    string? NativeHostSha256,
     string BootstrapPath,
-    string BootstrapSha256,
+    long BootstrapLength,
+    long BootstrapLastWriteUtcTicks,
+    string? BootstrapSha256,
     string AngleRuntimePath,
-    string AngleRuntimeSha256,
+    long AngleRuntimeLength,
+    long AngleRuntimeLastWriteUtcTicks,
+    string? AngleRuntimeSha256,
+    bool FullHashAudit,
     string SearchPolicy);

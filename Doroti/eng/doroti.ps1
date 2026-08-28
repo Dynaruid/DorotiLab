@@ -26,6 +26,12 @@ param(
     [ValidateSet('Debug', 'Release')]
     [string] $Configuration = 'Release',
 
+    [switch] $NoBuild,
+
+    [switch] $NoRestore,
+
+    [switch] $LastSuccessful,
+
     [switch] $Launch,
 
     [ValidatePattern('^[A-Za-z][A-Za-z0-9_.-]*$')]
@@ -179,8 +185,33 @@ function Invoke-WorkspaceDotNet {
         }
         $runner = [IO.Path]::GetFullPath($mauiBackend[0])
     }
+    $effectiveNoBuild = $NoBuild -or $LastSuccessful
+    $effectiveNoRestore = $NoRestore -or $effectiveNoBuild
+    if (($effectiveNoBuild -or $effectiveNoRestore -or $LastSuccessful) -and $Verb -cne 'run') {
+        throw '-NoBuild, -NoRestore, and -LastSuccessful are supported only by the run command.'
+    }
+    $launchFingerprint = Get-DorotiLaunchFingerprint $workspace $runner
+    $stateDirectory = Join-Path $workspace.Root '.doroti/launch-state'
+    $stateKey = @($Platform, $WindowsBackend, $Configuration, $(if ([string]::IsNullOrWhiteSpace($Rid)) { 'default-rid' } else { $Rid })) -join '-'
+    $stateKey = $stateKey -replace '[^A-Za-z0-9_.-]', '_'
+    $statePath = Join-Path $stateDirectory "$stateKey.json"
+    if ($effectiveNoBuild) {
+        if (-not (Test-Path -LiteralPath $statePath -PathType Leaf)) {
+            throw "No successful artifact record exists for this target. Run once without -NoBuild: $statePath"
+        }
+        $state = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
+        if ($state.schemaVersion -cne 'doroti.launch-state/v1' -or
+            $state.runner -cne $runner -or
+            $state.configuration -cne $Configuration -or
+            $state.rid -cne $(if ([string]::IsNullOrWhiteSpace($Rid)) { '' } else { $Rid }) -or
+            $state.fingerprint -cne $launchFingerprint) {
+            throw 'The last successful artifact is stale for the selected runner/configuration/RID or current source/native inputs. Run again without -NoBuild.'
+        }
+    }
     $arguments = if ($Verb -ceq 'run') { @('run', '--project', $runner) } else { @($Verb, $runner) }
     $arguments += @('--configuration', $Configuration)
+    if ($effectiveNoBuild) { $arguments += '--no-build' }
+    if ($effectiveNoRestore) { $arguments += '--no-restore' }
     if (-not [string]::IsNullOrWhiteSpace($Rid)) { $arguments += "-p:RuntimeIdentifier=$Rid" }
     if (-not [string]::IsNullOrWhiteSpace($Device)) {
         if ($Verb -cne 'run' -or $Platform -cne 'android') {
@@ -200,7 +231,22 @@ function Invoke-WorkspaceDotNet {
         if ($Platform -ceq 'android' -and -not $hadDotnetHostPath) {
             $env:DOTNET_HOST_PATH = (Get-Command dotnet -ErrorAction Stop).Source
         }
+        Write-Host "Doroti artifact: configuration=$Configuration rid=$(if ([string]::IsNullOrWhiteSpace($Rid)) { 'project-default' } else { $Rid }) fingerprint=$launchFingerprint"
+        Write-Host "Doroti steps: build=$(if ($effectiveNoBuild) { 'reused' } else { 'execute' }) restore=$(if ($effectiveNoRestore) { 'reused' } else { 'execute' }) deploy=execute launch=execute"
         Invoke-Checked 'dotnet' $arguments $workspace.Root
+        if ($Verb -ceq 'run' -and -not $effectiveNoBuild) {
+            [IO.Directory]::CreateDirectory($stateDirectory) | Out-Null
+            $state = [ordered]@{
+                schemaVersion = 'doroti.launch-state/v1'
+                runner = $runner
+                configuration = $Configuration
+                rid = $(if ([string]::IsNullOrWhiteSpace($Rid)) { '' } else { $Rid })
+                fingerprint = $launchFingerprint
+                completedUtc = [DateTime]::UtcNow.ToString('O')
+            }
+            [IO.File]::WriteAllText($statePath, (($state | ConvertTo-Json) -replace "`r`n", "`n") + "`n", [Text.UTF8Encoding]::new($false))
+            Write-Host "Doroti successful artifact record: $statePath"
+        }
     }
     finally {
         if ($hadAdapter) { $env:DOROTI_WINDOWS_ADAPTER = $previousAdapter }
@@ -208,6 +254,48 @@ function Invoke-WorkspaceDotNet {
         if ($hadDotnetHostPath) { $env:DOTNET_HOST_PATH = $previousDotnetHostPath }
         else { Remove-Item Env:DOTNET_HOST_PATH -ErrorAction SilentlyContinue }
     }
+}
+
+function Get-DorotiLaunchFingerprint {
+    param(
+        [Parameter(Mandatory)] $Workspace,
+        [Parameter(Mandatory)] [string] $Runner
+    )
+
+    $extensions = @(
+        '.cs', '.csproj', '.props', '.targets', '.json', '.xml', '.xaml', '.manifest',
+        '.ts', '.js', '.gradle', '.kts', '.cmake', '.cpp', '.cc', '.c', '.h', '.hpp',
+        '.m', '.mm', '.swift', '.plist', '.entitlements', '.lock', '.toml', '.yml', '.yaml',
+        '.ps1', '.sh', '.bat', '.cmd'
+    )
+    $roots = @($Workspace.Root, (Join-Path $dorotiRoot 'src'), (Join-Path $dorotiRoot 'eng'))
+    $files = foreach ($root in $roots) {
+        if (-not (Test-Path -LiteralPath $root -PathType Container)) { continue }
+        Get-ChildItem -LiteralPath $root -Recurse -File | Where-Object {
+            $_.FullName -notmatch '[\\/](bin|obj|\.doroti|artifacts|\.git|\.gradle|\.idea)[\\/]' -and
+            $_.Extension.ToLowerInvariant() -in $extensions
+        }
+    }
+    $files += Get-Item -LiteralPath $Workspace.Manifest, $Workspace.ApplicationProject, $Runner
+    $hash = [Security.Cryptography.IncrementalHash]::CreateHash([Security.Cryptography.HashAlgorithmName]::SHA256)
+    try {
+        foreach ($file in @($files | Sort-Object FullName -Unique)) {
+            $identity = [Text.Encoding]::UTF8.GetBytes($file.FullName.ToLowerInvariant() + "`n")
+            $hash.AppendData($identity)
+            $stream = [IO.File]::OpenRead($file.FullName)
+            try {
+                $buffer = [byte[]]::new(65536)
+                while (($read = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) {
+                    $hash.AppendData($buffer, 0, $read)
+                }
+            }
+            finally { $stream.Dispose() }
+        }
+        $selection = [Text.Encoding]::UTF8.GetBytes("$Runner|$Platform|$WindowsBackend|$Configuration|$Rid")
+        $hash.AppendData($selection)
+        return [Convert]::ToHexString($hash.GetHashAndReset()).ToLowerInvariant()
+    }
+    finally { $hash.Dispose() }
 }
 
 function Resolve-DorotiNativeWorkspace {

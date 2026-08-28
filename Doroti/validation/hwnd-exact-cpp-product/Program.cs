@@ -102,11 +102,23 @@ internal static class Program
                     .All(ProductEntrypoint.LifecycleStates.Contains),
                 "C8 minimize/restore/detach lifecycle sequence differs.");
             var provenance = diagnostics.NativeProvenance;
+            var provenanceAudit = string.Equals(
+                Environment.GetEnvironmentVariable("DOROTI_WINDOWS_NATIVE_AUDIT"),
+                "1",
+                StringComparison.Ordinal);
             Require(IoPath.GetDirectoryName(provenance.NativeHostPath) ==
                         provenance.ApplicationDirectory.TrimEnd(IoPath.DirectorySeparatorChar) &&
-                    provenance.NativeHostSha256.Length == 64 &&
-                    provenance.BootstrapSha256.Length == 64 &&
-                    provenance.AngleRuntimeSha256.Length == 64 &&
+                    provenance.NativeHostLength > 0 &&
+                    provenance.BootstrapLength > 0 &&
+                    provenance.AngleRuntimeLength > 0 &&
+                    provenance.FullHashAudit == provenanceAudit &&
+                    (provenanceAudit
+                        ? provenance.NativeHostSha256?.Length == 64 &&
+                          provenance.BootstrapSha256?.Length == 64 &&
+                          provenance.AngleRuntimeSha256?.Length == 64
+                        : provenance.NativeHostSha256 is null &&
+                          provenance.BootstrapSha256 is null &&
+                          provenance.AngleRuntimeSha256 is null) &&
                     provenance.SearchPolicy.Contains("PATH/current-directory excluded", StringComparison.Ordinal),
                 "C9 app-directory native provenance or restricted search policy differs.");
 

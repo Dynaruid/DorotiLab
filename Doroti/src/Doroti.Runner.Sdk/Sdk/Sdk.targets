@@ -8,14 +8,20 @@
          interpreter for runtime-generated DLR methods. -->
     <MtouchInterpreter Condition="'$(MtouchInterpreter)' == '' and ('$(DorotiTarget)' == 'iOS' or '$(DorotiTarget)' == 'MacCatalyst')">-all</MtouchInterpreter>
     <!-- Android x64 is an emulator-only target. Mono full AOT currently faults
-         during startup there, so keep the emulator on the interpreter/JIT path;
-         physical android-arm64 Release runners retain their normal AOT default. -->
+         during startup there, so keep the emulator on the interpreter/JIT path
+         while restoring trimming; physical android-arm64 Release runners retain
+         their normal AOT default. -->
     <RunAOTCompilation Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64'">false</RunAOTCompilation>
-    <PublishTrimmed Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64'">false</PublishTrimmed>
+    <PublishTrimmed Condition="'$(DorotiTarget)' == 'Android' and '$(RuntimeIdentifier)' == 'android-x64'">true</PublishTrimmed>
     <!-- .NET 10 marshal methods can fault inside Mono before managed startup on
          Android devices. Disable that JNI startup optimization for Android;
          arm64 Release still uses full Mono AOT and trimming. -->
     <AndroidEnableMarshalMethods Condition="'$(DorotiTarget)' == 'Android'">false</AndroidEnableMarshalMethods>
+    <DorotiAndroidBaselineProfile Condition="'$(DorotiAndroidBaselineProfile)' == ''">$(MSBuildProjectDirectory)/profiles/baseline.prof</DorotiAndroidBaselineProfile>
+    <DorotiAndroidBaselineProfileMetadata Condition="'$(DorotiAndroidBaselineProfileMetadata)' == ''">$(MSBuildProjectDirectory)/profiles/baseline.profm</DorotiAndroidBaselineProfileMetadata>
+    <DebugSymbols Condition="'$(Configuration)' == 'Release' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'Web')">false</DebugSymbols>
+    <DebugType Condition="'$(Configuration)' == 'Release' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'Web')">none</DebugType>
+    <CopyOutputSymbolsToPublishDirectory Condition="'$(Configuration)' == 'Release' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'Web')">false</CopyOutputSymbolsToPublishDirectory>
     <StartupObject Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main' or '$(DorotiNativeEntryKind)' == 'UIKit-Main' or '$(DorotiNativeEntryKind)' == 'AppKit-Main' or '$(DorotiNativeEntryKind)' == 'Qt-Main' or '$(DorotiNativeEntryKind)' == 'Win32-WinMain'">Doroti.Generated.DorotiBootstrap</StartupObject>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'Android'">net10.0-android</_DorotiExpectedNativeBindingTfm>
     <_DorotiExpectedNativeBindingTfm Condition="'$(DorotiTarget)' == 'iOS'">net10.0-ios</_DorotiExpectedNativeBindingTfm>
@@ -49,6 +55,10 @@
                       Condition="!Exists('application-manifest.$(RuntimeIdentifier).json') and Exists('application-manifest.json')" />
     <AndroidResource Include="Resources/**/*" Exclude="Resources/AppIcon/**/*;Resources/Splash/**/*"
                      Condition="'$(DorotiTarget)' == 'Android' and Exists('Resources')" />
+    <AndroidAsset Include="$(DorotiAndroidBaselineProfile)" Link="dexopt/baseline.prof"
+                  Condition="'$(DorotiTarget)' == 'Android' and Exists('$(DorotiAndroidBaselineProfile)') and Exists('$(DorotiAndroidBaselineProfileMetadata)')" />
+    <AndroidAsset Include="$(DorotiAndroidBaselineProfileMetadata)" Link="dexopt/baseline.profm"
+                  Condition="'$(DorotiTarget)' == 'Android' and Exists('$(DorotiAndroidBaselineProfile)') and Exists('$(DorotiAndroidBaselineProfileMetadata)')" />
     <MauiIcon Include="Resources/AppIcon/appicon.svg" ForegroundFile="Resources/AppIcon/appiconfg.svg" Color="#6750A4"
               Condition="'$(UseMaui)' == 'true' and Exists('Resources/AppIcon/appicon.svg')" />
     <MauiSplashScreen Include="Resources/Splash/splash.svg" Color="#FFFBFE" BaseSize="128,128"
@@ -60,7 +70,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(DorotiTarget)' == 'Web'">
     <RuntimeFrameworkVersion Condition="'$(RuntimeFrameworkVersion)' == ''">$(DorotiWebRuntimeVersion)</RuntimeFrameworkVersion>
-    <PublishTrimmed>false</PublishTrimmed>
+    <PublishTrimmed>true</PublishTrimmed>
     <DorotiWebTypeScript Condition="Exists('tsconfig.json')">true</DorotiWebTypeScript>
     <DorotiTypeScriptConfig>$(MSBuildProjectDirectory)/tsconfig.json</DorotiTypeScriptConfig>
     <DorotiTypeScriptSourceRoot>$(MSBuildProjectDirectory)/src</DorotiTypeScriptSourceRoot>
@@ -182,6 +192,9 @@
            Text="Doroti Web requires a direct Microsoft.AspNetCore.Components.WebAssembly package reference so the standard _framework/blazor.webassembly.js boot asset is registered." />
     <Error Code="DOROTIRUNNER310" Condition="'@(_DorotiManualNativeBindingReference)' != ''"
            Text="Declare a native binding only with DorotiNativeBindingProject; remove the duplicate ProjectReference: @(_DorotiManualNativeBindingReference)." />
+    <Error Code="DOROTIANDROID311"
+           Condition="'$(DorotiTarget)' == 'Android' and ((Exists('$(DorotiAndroidBaselineProfile)') and !Exists('$(DorotiAndroidBaselineProfileMetadata)')) or (!Exists('$(DorotiAndroidBaselineProfile)') and Exists('$(DorotiAndroidBaselineProfileMetadata)')))"
+           Text="Android baseline profile packaging requires both baseline.prof and baseline.profm under the runner profiles directory." />
   </Target>
 
   <Target Name="GenerateDorotiRunnerBootstrap" DependsOnTargets="ValidateDorotiRunner" BeforeTargets="PrepareForBuild;CoreCompile">
@@ -256,6 +269,64 @@
       <_DorotiGraphLine Include="generatedPluginRegistration=$(_DorotiPluginRegistrationFile)" />
     </ItemGroup>
     <WriteLinesToFile File="$(BaseIntermediateOutputPath)doroti-target-graph.txt" Overwrite="true" WriteOnlyWhenDifferent="true" Lines="@(_DorotiGraphLine)" />
+  </Target>
+
+  <Target Name="DorotiExcludeReleasePublishSymbols"
+          AfterTargets="Publish"
+          Condition="'$(Configuration)' == 'Release' and ('$(DorotiTarget)' == 'Windows' or '$(DorotiTarget)' == 'Web')">
+    <ItemGroup>
+      <_DorotiReleasePublishSymbol Include="$(PublishDir)**/*.pdb" />
+    </ItemGroup>
+    <Delete Files="@(_DorotiReleasePublishSymbol)" />
+  </Target>
+
+  <Target Name="DorotiWriteWindowsNativeBuildProvenance"
+          AfterTargets="CopyFilesToOutputDirectory"
+          Condition="'$(DorotiTarget)' == 'Windows' and '$(DorotiHostKind)' == 'WindowsAppSdk' and Exists('$(TargetDir)doroti_windows_appsdk_host_v1.dll') and Exists('$(TargetDir)Microsoft.WindowsAppRuntime.Bootstrap.dll') and Exists('$(TargetDir)av_libglesv2.dll')">
+    <GetFileHash Files="$(TargetDir)doroti_windows_appsdk_host_v1.dll" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiNativeHostHash" />
+    </GetFileHash>
+    <GetFileHash Files="$(TargetDir)Microsoft.WindowsAppRuntime.Bootstrap.dll" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiBootstrapHash" />
+    </GetFileHash>
+    <GetFileHash Files="$(TargetDir)av_libglesv2.dll" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiAngleRuntimeHash" />
+    </GetFileHash>
+    <PropertyGroup>
+      <_DorotiNativeHostHashValue>@(_DorotiNativeHostHash->'%(FileHash)')</_DorotiNativeHostHashValue>
+      <_DorotiBootstrapHashValue>@(_DorotiBootstrapHash->'%(FileHash)')</_DorotiBootstrapHashValue>
+      <_DorotiAngleRuntimeHashValue>@(_DorotiAngleRuntimeHash->'%(FileHash)')</_DorotiAngleRuntimeHashValue>
+    </PropertyGroup>
+    <ItemGroup>
+      <_DorotiNativeProvenanceLine Include="{&quot;schemaVersion&quot;:&quot;doroti.windows.native-provenance/v1&quot;,&quot;nativeHostSha256&quot;:&quot;$(_DorotiNativeHostHashValue)&quot;,&quot;bootstrapSha256&quot;:&quot;$(_DorotiBootstrapHashValue)&quot;,&quot;angleRuntimeSha256&quot;:&quot;$(_DorotiAngleRuntimeHashValue)&quot;}" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(TargetDir)doroti-native-provenance.json" Lines="@(_DorotiNativeProvenanceLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <FileWrites Include="$(TargetDir)doroti-native-provenance.json" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="DorotiWriteWindowsNativePublishProvenance"
+          AfterTargets="Publish"
+          Condition="'$(DorotiTarget)' == 'Windows' and '$(DorotiHostKind)' == 'WindowsAppSdk' and Exists('$(PublishDir)doroti_windows_appsdk_host_v1.dll') and Exists('$(PublishDir)Microsoft.WindowsAppRuntime.Bootstrap.dll') and Exists('$(PublishDir)av_libglesv2.dll')">
+    <GetFileHash Files="$(PublishDir)doroti_windows_appsdk_host_v1.dll" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiPublishNativeHostHash" />
+    </GetFileHash>
+    <GetFileHash Files="$(PublishDir)Microsoft.WindowsAppRuntime.Bootstrap.dll" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiPublishBootstrapHash" />
+    </GetFileHash>
+    <GetFileHash Files="$(PublishDir)av_libglesv2.dll" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiPublishAngleRuntimeHash" />
+    </GetFileHash>
+    <PropertyGroup>
+      <_DorotiPublishNativeHostHashValue>@(_DorotiPublishNativeHostHash->'%(FileHash)')</_DorotiPublishNativeHostHashValue>
+      <_DorotiPublishBootstrapHashValue>@(_DorotiPublishBootstrapHash->'%(FileHash)')</_DorotiPublishBootstrapHashValue>
+      <_DorotiPublishAngleRuntimeHashValue>@(_DorotiPublishAngleRuntimeHash->'%(FileHash)')</_DorotiPublishAngleRuntimeHashValue>
+    </PropertyGroup>
+    <ItemGroup>
+      <_DorotiPublishNativeProvenanceLine Include="{&quot;schemaVersion&quot;:&quot;doroti.windows.native-provenance/v1&quot;,&quot;nativeHostSha256&quot;:&quot;$(_DorotiPublishNativeHostHashValue)&quot;,&quot;bootstrapSha256&quot;:&quot;$(_DorotiPublishBootstrapHashValue)&quot;,&quot;angleRuntimeSha256&quot;:&quot;$(_DorotiPublishAngleRuntimeHashValue)&quot;}" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(PublishDir)doroti-native-provenance.json" Lines="@(_DorotiPublishNativeProvenanceLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
   </Target>
 
   <Target Name="DorotiRegisterRunnerWebWwwrootStaticAssets"

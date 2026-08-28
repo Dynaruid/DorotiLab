@@ -45,11 +45,7 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         _singleLineInput = CreateHiddenInput<Entry>();
         _multilineInput = CreateHiddenInput<Editor>();
         _semanticsLayer = new AbsoluteLayout { InputTransparent = true, CascadeInputTransparent = false };
-#if WINDOWS
         _textInput = new(_singleLineInput, _multilineInput, this, attachOnDemand: true);
-#else
-        _textInput = new(_singleLineInput, _multilineInput);
-#endif
 #if MACOS
         _renderSurface = new DorotiMacOSMetalSurface(_viewId);
 #elif WINDOWS
@@ -58,10 +54,6 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         _renderSurface = new MauiSkglSurface(_textInput, _viewId);
 #endif
         Children.Add(_renderSurface.Element);
-#if !WINDOWS
-        Children.Add(_singleLineInput);
-        Children.Add(_multilineInput);
-#endif
         Children.Add(_semanticsLayer);
         _renderSurface.Paint += PaintGpuSurface;
         _renderSurface.PresentCompleted += CompleteNativePaint;

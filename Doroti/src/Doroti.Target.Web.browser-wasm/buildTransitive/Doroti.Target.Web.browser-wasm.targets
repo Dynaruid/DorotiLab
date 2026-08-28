@@ -13,8 +13,6 @@
            Text="Doroti Web requires RuntimeIdentifier browser-wasm; found '$(DorotiBrowserContractRuntimeIdentifier)'." />
     <Error Code="DOROTIWEB003" Condition="'$(UsingMicrosoftNETSdkBlazorWebAssembly)' != 'true'"
            Text="Doroti Web host projects must use Microsoft.NET.Sdk.BlazorWebAssembly." />
-    <Error Code="DOROTIWEB004" Condition="'$(PublishTrimmed)' == 'true'"
-           Text="Doroti Web trimming is not released for the generated framework graph; set PublishTrimmed=false." />
     <Error Code="DOROTIWEB005" Condition="'@(DorotiJavaScriptPlugin)' != '' and '%(DorotiJavaScriptPlugin.Channel)' == ''"
            Text="DorotiJavaScriptPlugin '%(DorotiJavaScriptPlugin.Identity)' must declare Channel metadata." />
     <Error Code="DOROTIWEB006" Condition="'@(DorotiJavaScriptPlugin)' != '' and '%(DorotiJavaScriptPlugin.ExportName)' == ''"

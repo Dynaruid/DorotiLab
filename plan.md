@@ -1,7 +1,7 @@
 # Doroti cross-platform 최초 부트 개선 작업 계획
 
 - 작성일: 2026-08-28
-- 상태: **구현 진행 중**. S2의 `First-frame dynamic 제거`는 2026-08-28에 C1 render-tree/C2 Navigator·Route/C3 Actions 범위로 구현·검증을 완료했다. 나머지 theme/bootstrap/platform/CLI 최적화는 `notStarted` 또는 `notVerified`이며, 완료 결과와 검증 경계는 `work.md`에 기록한다.
+- 상태: **2026-08-29 MVP 구현 실행 완료**. 구조적으로 안전한 공용/Windows/Android/Web/Linux/CLI 항목은 구현했고, 장치·OS·배포 환경이 필요한 gate와 선택적 tuning/operator 결정은 `notVerified` 또는 후속으로 유지한다. 판정과 증거는 `work.md`에 기록한다.
 - 목표: 설치된 Release 앱의 process cold start에서 첫 유효 Doroti content가 실제 compositor에 표시되고 입력 가능한 시점까지의 시간을 줄인다.
 - 부목표: `doroti.ps1 run`의 불필요한 restore/build/native build/AOT/deploy를 줄이고 안전한 재사용 경로를 제공하되, 앱 runtime 부트 개선과 별도 작업으로 유지한다.
 
@@ -148,7 +148,7 @@ native/process entry
 
 ### S2. 공용 first-frame closure 축소
 
-상태: `inProgress` — 항목 3 완료, 항목 1/2/4/5 미착수
+상태: `completed` (안전한 MVP 범위) — 항목 1/2/3/4의 text handler/5 완료. OS accessibility 활성 상태를 신뢰성 있게 판별할 계약이 없어 semantics 지연은 적용하지 않았다.
 
 S0의 구조 판단과 S1의 최소 validation을 적용해 다음 순서로 진행한다.
 
@@ -189,7 +189,7 @@ S2 공용 gate:
 
 ### S3. Windows 기본/MAUI 분리 최적화
 
-상태: `notStarted`
+상태: `completed` (W1/W3), W2와 ReadyToRun A/B는 계획대로 후속
 
 #### W1. 기본 HwndExactCpp 빠른 경로
 
@@ -224,7 +224,7 @@ Windows acceptance:
 
 ### S4. Android arm64 physical 우선 최적화
 
-상태: `notStarted`
+상태: `partial` — arm64 physical/profile packaging과 x64 trimmed build 완료, x64 emulator launch 및 marshal-method 재활성화 matrix는 `notVerified`
 
 1. 고정 serial의 arm64 물리 기기에서 Release 설치·실행, screenshot, Activity/PID, crash/ANR, input smoke를 먼저 닫는다. `am start -W`, Perfetto와 managed trace는 정량 보고나 회귀 분석이 필요할 때만 사용한다.
 2. app startup Critical User Journey로 Android Baseline Profile과 Startup Profile을 생성·패키징하고 `baseline.prof`, dex layout, device compilation state를 검증한다.
@@ -243,7 +243,7 @@ Android acceptance:
 
 ### S5. Apple 세 제품 독립 최적화
 
-상태: `notStarted`
+상태: `partial` — S2 공용 변경과 Windows-hosted managed compile 적용, Apple OS의 signed runtime gate는 `notVerified`
 
 1. generated entry, UIApplication/NSApplication, MAUI builder, native view, Metal context, root/type init과 first-command-buffer ordering을 source에서 정리한다. signpost/startup marker는 원인 분리가 필요할 때만 연결한다.
 2. iOS physical, iOS simulator, Mac Catalyst, native AppKit을 별도 artifact와 기능 결과표로 기록한다.
@@ -260,7 +260,7 @@ Apple acceptance:
 
 ### S6. Web payload/compile 경로 우선 최적화
 
-상태: `notStarted`
+상태: `partial` — trimming/symbol/payload와 desktop Chrome live 완료, assembly 분할·실제 배포 HTTP header·fresh profile/mobile은 후속 또는 `notVerified`
 
 1. navigation, loader, boot resource graph, `Blazor.start`, managed main, JS module import, WebGL context, framework attach와 first WebGL commit의 synchronous chain을 source에서 정리한다. `performance.mark/measure`는 병목 분리가 필요할 때만 연결한다.
 2. generated Framework graph가 trim-safe해지도록 first screen에 필요한 reflection/dynamic root를 명시하고 product Release의 `PublishTrimmed=true` 금지 gate를 단계적으로 제거한다.
@@ -280,7 +280,7 @@ Web acceptance:
 
 ### S7. Linux/Qt startup 최적화
 
-상태: `notStarted`
+상태: `partial` — managed Release build와 Qt ABI contract 완료, 실제 Wayland/X11 runtime은 `notVerified`
 
 1. published executable 기준으로 hostfxr/CoreCLR, managed main, `dlopen` Qt/Skia/native shim, `QApplication`, QPA plugin, `QOpenGLWindow`, GL/Skia context와 first `frameSwapped`의 source ordering을 유지한다.
 2. `perf`, `strace`, `LD_DEBUG=statistics`, EventPipe는 실제 Linux startup 문제가 남을 때만 원인 분석용으로 수집한다.
@@ -296,7 +296,7 @@ Linux acceptance:
 
 ### S8. CLI/developer iteration 개선
 
-상태: `notStarted`
+상태: `completed` — fingerprint 기반 normal/last-successful Windows 실행과 missing/stale state fail-closed 계약 검증 완료
 
 1. `-NoBuild`/`-NoRestore` 또는 명시적 fast-run option을 먼저 설계한다. runner/configuration/RID/artifact fingerprint가 맞지 않으면 stale binary를 실행하지 않고 재build 필요를 명확히 실패시킨다.
 2. workspace resolve, restore, managed compile, TypeScript/native build, AOT/link, deploy, process launch timer는 재사용 실패 원인을 구분해야 할 때만 추가한다.
@@ -335,19 +335,19 @@ CLI acceptance:
 
 | Gate | 필수 결과 | 현재 상태 |
 | --- | --- | --- |
-| G0 source/architecture | first-frame reachability, generated metadata, no avoidable pre-present parsing/hash/file I/O | `partial`: 선택 DLR owner reachability/typed contract `PASS`; manifest/hash/file I/O는 `notStarted` |
-| G1 common runtime | FCR-0/3/4/6/7, theme/text/semantics first-frame 회귀 없음 | `partial`: dynamic focused와 FCR-3/4/5/6/7 `PASS`; FCR-0 및 전체 theme/physical accessibility는 `notVerified` |
-| G2 Windows default | HwndExactCpp Release cold/warm, exact visible present, input/resize 유지 | `partial`: Release build, system-light first frame, pointer/key/text/scroll `PASS`; cold/warm 정량, dark/Narrator는 `notVerified` |
-| G3 Windows MAUI | 독립 Release cold/warm 기능 smoke와 common regression | `notVerified` |
-| G4 Android arm64 | physical first-install/cold/warm smoke, ANR/crash/screenshot/input | `partial`: `R3CY30KZA4B` install/first frame/PID/focus/pointer/scroll/crash·ANR `PASS`; cold/warm 반복, 문자 commit/TalkBack은 `notVerified` |
-| G5 Android x64 | emulator dev path, AOT-off + trim 후보와 startup fault | `notVerified` |
+| G0 source/architecture | first-frame reachability, generated metadata, no avoidable pre-present parsing/hash/file I/O | `PASS`: source-generated manifest metadata, lazy active theme, launch-time Windows full hash 제거. 정량 개선폭은 `notVerified` |
+| G1 common runtime | FCR-0/3/4/6/7, theme/text/semantics first-frame 회귀 없음 | `partial`: FCR-3/4/6/7와 lazy theme/text activation `PASS`; 현재 checkout에 실행 가능한 FCR-0 aggregate가 없어 FCR-0은 `notVerified`, accessibility-active launch도 `notVerified` |
+| G2 Windows default | HwndExactCpp Release cold/warm, exact visible present, input/resize 유지 | `PASS`(자동화 범위): C5-A/C9, empty PATH, normal/audit provenance, failed terminal 0. 물리 IME/Narrator와 정량 TTID는 `notVerified` |
+| G3 Windows MAUI | 독립 Release cold/warm 기능 smoke와 common regression | `partial`: Release build `PASS`; 독립 live cold/warm는 `notVerified` |
+| G4 Android arm64 | physical first-install/cold/warm smoke, ANR/crash/screenshot/input | `PASS`(수행 범위): `R3CY30KZA4B` Release install, profile install-dm, cold/warm, PID/foreground/screenshot/ASCII IME, crash·ANR 0. 한글 commit/TalkBack은 `notVerified` |
+| G5 Android x64 | emulator dev path, AOT-off + trim 후보와 startup fault | `partial`: trimmed Release build/profile strict validation `PASS`, APK 22,990,835 bytes; x64 emulator launch는 `notVerified` |
 | G6 iOS physical | signed Release cold/warm, Metal present, IME/VoiceOver | `notVerified` |
 | G7 Mac Catalyst | 독립 Release cold/warm, Metal present | `notVerified` |
 | G8 AppKit | 독립 Release cold/warm, Metal completion present | `notVerified` |
-| G9 Web | trimmed clean publish, payload, fresh/repeat browser first commit | `partial`: 현재 untrimmed Release publish/payload와 Chrome canvas/input/action/scroll `PASS`; trimmed/fresh-profile 반복·mobile은 `notVerified` |
-| G10 Linux | actual Wayland/X11 published launch와 frameSwapped | `notVerified` |
-| G11 CLI | clean/fast developer launch phase 분리와 stale artifact 거부 | `notStarted` |
-| G12 cross-target | package/template/README와 전체 Release regression | `notStarted` |
+| G9 Web | trimmed clean publish, payload, fresh/repeat browser first commit | `partial`: trimmed publish와 desktop Chrome canvas/Korean text/action/scroll/ARIA `PASS`; fresh profile/mobile/실제 배포 compression·cache header는 `notVerified` |
+| G10 Linux | actual Wayland/X11 published launch와 frameSwapped | `partial`: managed Release build와 Qt ABI `PASS`; 실제 Wayland/X11은 `notVerified` |
+| G11 CLI | clean/fast developer launch phase 분리와 stale artifact 거부 | `PASS`: 동일 fingerprint normal/`-LastSuccessful` 실행과 missing state fail-closed 확인 |
+| G12 cross-target | package/template/README와 전체 Release regression | `FAIL`: 개별 Windows/Android/Web/Linux 및 Apple managed compile은 진행됐으나 전체 solution은 Windows에 없는 macOS `sips`에서 1 error |
 
 모든 test/build job에는 repository 지침대로 20분 timeout을 적용한다. 한 플랫폼의 PASS나 사용자의 체감 개선으로 다른 플랫폼의 자동 FAIL/`notVerified`를 PASS로 바꾸지 않는다.
 
@@ -382,6 +382,15 @@ CLI acceptance:
 > 현재 결론: source와 기존 artifact만으로 Web payload, Windows production hashing/diagnostic dependency, Android x64 untrimmed store, 공용 ThemeData/type initializer/DLR/hidden platform view는 런타임 작업을 분명히 줄일 수 있는 구현 대상으로 확정한다. live startup trace는 이 작업들의 선행 조건이 아니며, 정량 수치나 남은 병목을 설명해야 할 때만 사용한다.
 
 ## 10. 진행 이력
+
+### 2026-08-29 — 최초 부트 MVP 구현 실행
+
+- 공용 manifest source generation, active-theme lazy factory, MAUI text native handler on-demand, 미사용 CommunityToolkit Markup 제거를 적용했다.
+- Windows launch-time full hash를 audit-only로 옮기고 build/publish provenance, D3D12 diagnostics assembly 분리, Release symbol 제거를 구현했다. C5-A와 C9 normal/audit/negative probe가 PASS했다.
+- Android arm64 startup CUJ profile을 실제 장치에서 수집·패키징했고 `install-dm/speed-profile`, cold/warm와 text activation을 확인했다. x64는 AOT off+trim on build와 profile strict validation이 PASS했다.
+- Web trimming과 Release symbol 제거를 적용해 initial uncompressed 27,049,342 bytes/Brotli 7,447,738 bytes로 줄였고 desktop Chrome live를 PASS했다.
+- CLI normal/last-successful fingerprint 재사용을 구현해 동일 artifact 실행과 missing state fail-closed를 확인했다.
+- 상세 결과와 `notVerified`/후속 경계는 `work.md`와 `history/26-08-29/cross-platform-first-boot-implementation.md`에 남겼다.
 
 ### 2026-08-28 — S2 First-frame `dynamic` 제거 완료
 

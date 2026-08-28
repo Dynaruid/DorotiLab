@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Doroti.Ui;
 
 namespace Doroti.Hosting;
@@ -48,6 +49,10 @@ public sealed record DorotiEmbeddedResource(
     string Sha256,
     long Length);
 
+[JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true)]
+[JsonSerializable(typeof(DorotiApplicationManifest))]
+internal sealed partial class DorotiApplicationManifestJsonContext : JsonSerializerContext;
+
 /// <summary>Compiler-produced application resource and plugin boundary for one target RID.</summary>
 public sealed class DorotiApplicationBoundary : IDisposable
 {
@@ -83,10 +88,10 @@ public sealed class DorotiApplicationBoundary : IDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(targetRid);
         using var stream = manifestAssembly.GetManifestResourceStream("Doroti.Application.Manifest")
             ?? throw new InvalidDataException("Doroti runner assembly is missing Doroti.Application.Manifest.");
-        var manifest = JsonSerializer.Deserialize<DorotiApplicationManifest>(stream, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-        }) ?? throw new InvalidDataException("Generated application manifest is empty.");
+        var manifest = JsonSerializer.Deserialize(
+            stream,
+            DorotiApplicationManifestJsonContext.Default.DorotiApplicationManifest)
+            ?? throw new InvalidDataException("Generated application manifest is empty.");
         if (manifest.SchemaVersion != "doroti.application-capabilities/v1")
             throw new InvalidDataException($"Unsupported generated application manifest: {manifest.SchemaVersion}");
         if (manifest.TargetRid != targetRid)

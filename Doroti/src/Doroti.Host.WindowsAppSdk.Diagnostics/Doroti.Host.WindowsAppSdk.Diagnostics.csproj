@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AssemblyName>Doroti.Host.WindowsAppSdk.Diagnostics</AssemblyName>
+    <RootNamespace>Doroti.Host.WindowsAppSdk</RootNamespace>
+    <PackageId>Doroti.Host.WindowsAppSdk.Diagnostics</PackageId>
+    <Description>Explicit diagnostic D3D12 presenter for the Doroti Windows App SDK host.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Doroti.Host.WindowsAppSdk\WindowsManagedHwndPresenter.cs" Link="WindowsManagedHwndPresenter.cs" />
+    <PackageReference Include="SkiaSharp" />
+    <PackageReference Include="SkiaSharp.Direct3D.Vortice" />
+    <PackageReference Include="Vortice.Direct3D12" />
+    <PackageReference Include="Vortice.DXGI" />
+    <ProjectReference Include="..\Doroti.Host.WindowsAppSdk\Doroti.Host.WindowsAppSdk.csproj" />
+    <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />
+  </ItemGroup>
+</Project>

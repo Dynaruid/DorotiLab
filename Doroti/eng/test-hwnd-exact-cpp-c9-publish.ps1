@@ -33,7 +33,7 @@ function New-Probe([string] $Name) {
     return $directory
 }
 
-function Invoke-Probe([string] $Name, [string] $Directory) {
+function Invoke-Probe([string] $Name, [string] $Directory, [switch] $Audit) {
     Assert-WithinRunRoot $Directory
     $executable = Join-Path $Directory 'Doroti.Validation.HwndExactCppProduct.exe'
     $report = Join-Path $Directory "$Name-report.json"
@@ -45,6 +45,7 @@ function Invoke-Probe([string] $Name, [string] $Directory) {
     $start.RedirectStandardOutput = $true
     $start.RedirectStandardError = $true
     $start.Environment['PATH'] = ''
+    if ($Audit) { $start.Environment['DOROTI_WINDOWS_NATIVE_AUDIT'] = '1' }
     [void]$start.ArgumentList.Add('--report')
     [void]$start.ArgumentList.Add($report)
     $process = [Diagnostics.Process]::new()
@@ -69,8 +70,32 @@ function Invoke-Probe([string] $Name, [string] $Directory) {
 & dotnet publish $project -c Release -r win-x64 --self-contained true -o $publishDirectory
 if ($LASTEXITCODE -ne 0) { throw "C9 self-contained publish failed with exit code $LASTEXITCODE." }
 
+$nativeFiles = @(
+    'doroti_windows_appsdk_host_v1.dll',
+    'Microsoft.WindowsAppRuntime.Bootstrap.dll',
+    'av_libglesv2.dll'
+) | ForEach-Object {
+    $path = Join-Path $publishDirectory $_
+    [pscustomobject]@{
+        name = $_
+        sha256 = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
+        length = (Get-Item -LiteralPath $path).Length
+    }
+}
+$nativeByName = @{}
+$nativeFiles | ForEach-Object { $nativeByName[$_.name] = $_ }
+[ordered]@{
+    schemaVersion = 'doroti.windows.native-provenance/v1'
+    nativeHostSha256 = $nativeByName['doroti_windows_appsdk_host_v1.dll'].sha256
+    bootstrapSha256 = $nativeByName['Microsoft.WindowsAppRuntime.Bootstrap.dll'].sha256
+    angleRuntimeSha256 = $nativeByName['av_libglesv2.dll'].sha256
+} | ConvertTo-Json -Compress | Set-Content -LiteralPath (Join-Path $publishDirectory 'doroti-native-provenance.json') -Encoding utf8
+
 $successDirectory = New-Probe 'success'
 $success = Invoke-Probe 'success' $successDirectory
+
+$auditDirectory = New-Probe 'audit-success'
+$audit = Invoke-Probe 'audit-success' $auditDirectory -Audit
 
 $missingDirectory = New-Probe 'missing-native'
 $missingTarget = Join-Path $missingDirectory 'doroti_windows_appsdk_host_v1.dll'
@@ -97,6 +122,7 @@ Copy-Item -LiteralPath (Join-Path $versionDirectory 'Microsoft.WindowsAppRuntime
 $version = Invoke-Probe 'wrong-version' $versionDirectory
 
 if ($success.exitCode -ne 0) { throw 'C9 app-directory success launch failed.' }
+if ($audit.exitCode -ne 0) { throw 'C9 full-hash provenance audit launch failed.' }
 if ($missing.exitCode -eq 0 -or $missing.stderr -notmatch 'missing from the application directory') {
     throw 'C9 missing-native launch did not fail fast with the expected identity.'
 }
@@ -108,19 +134,6 @@ if ($architecture.exitCode -eq 0 -or $architecture.stderr -notmatch 'not a win-x
 }
 if ($version.exitCode -eq 0 -or $version.stderr -notmatch 'EntryPointNotFound|entry point') {
     throw 'C9 wrong-version launch did not fail fast at the ABI export boundary.'
-}
-
-$nativeFiles = @(
-    'doroti_windows_appsdk_host_v1.dll',
-    'Microsoft.WindowsAppRuntime.Bootstrap.dll',
-    'av_libglesv2.dll'
-) | ForEach-Object {
-    $path = Join-Path $publishDirectory $_
-    [pscustomobject]@{
-        name = $_
-        sha256 = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
-        length = (Get-Item -LiteralPath $path).Length
-    }
 }
 
 $unexpectedAngleFiles = @(@('libEGL.dll', 'libGLESv2.dll') |
@@ -137,11 +150,11 @@ $report = [ordered]@{
     publishDirectory = $publishDirectory
     searchPolicy = 'PATH empty in all probes; app-directory native resolver excludes PATH/current-directory'
     nativeFiles = $nativeFiles
-    probes = @($success, $missing, $missingAngle, $architecture, $version) | ForEach-Object {
+    probes = @($success, $audit, $missing, $missingAngle, $architecture, $version) | ForEach-Object {
         [ordered]@{
             name = $_.name
             exitCode = $_.exitCode
-            expected = if ($_.name -eq 'success') { 'success' } else { 'explicit fail-fast' }
+            expected = if ($_.name -in @('success', 'audit-success')) { 'success' } else { 'explicit fail-fast' }
         }
     }
     boundary = 'Clean self-contained publish and install-like app-directory launch. Signed installer/MSIX is outside this gate.'

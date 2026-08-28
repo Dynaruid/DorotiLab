@@ -55,9 +55,11 @@ Flutter source는 fidelity 작업에서 동작 reference가 필요할 때 사용
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows
 pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -LastSuccessful
 ```
 
 Windows 명령은 기본적으로 Windows App SDK/`HwndExactCpp`를 선택합니다. 독립 Windows MAUI runner가 필요할 때만 `-WindowsBackend Maui`를 명시합니다.
+`-LastSuccessful`(또는 `-NoBuild`)은 runner, configuration, RID와 source/native input fingerprint가 일치하는 이전 성공 artifact만 재사용하며, 기록이 없거나 stale이면 fail-closed합니다. `-NoRestore`는 build는 수행하고 restore만 생략합니다.
 
 ## Repository 구성
 
