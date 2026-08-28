@@ -2740,27 +2740,10 @@ public enum LiveTextInputStatus
     disabled
 }
 
-public abstract class TextSelectionHandleControls : TextSelectionControls
+// Dart models this as a member-less mixin applied after a concrete selection
+// controls superclass. A CLR interface preserves that marker relationship so
+// EditableText can select the contextMenuBuilder path without multiple
+// inheritance.
+public interface TextSelectionHandleControls
 {
-    public override Widget buildToolbar(BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints, global::Doroti.Framework.Services.TextSelectionDelegate @delegate, global::Doroti.Framework.Foundation.ValueListenable<ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
-    public virtual bool canCut(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) => false;
-    public virtual bool canCopy(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) => false;
-    public virtual bool canPaste(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) => false;
-    public virtual bool canSelectAll(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) => false;
-    public virtual void handleCut(global::Doroti.Framework.Services.TextSelectionDelegate @delegate, ClipboardStatusNotifier? clipboardStatus = null)
-    {
-    }
-
-    public virtual void handleCopy(global::Doroti.Framework.Services.TextSelectionDelegate @delegate, ClipboardStatusNotifier? clipboardStatus = null)
-    {
-    }
-
-    public async virtual Future handlePaste(global::Doroti.Framework.Services.TextSelectionDelegate @delegate)
-    {
-    }
-
-    public virtual void handleSelectAll(global::Doroti.Framework.Services.TextSelectionDelegate @delegate)
-    {
-    }
-
 }

@@ -14,7 +14,7 @@ using Match = Doroti.Runtime.DartMatch;
 
 namespace Doroti.Framework.Material;
 
-internal class _DesktopTextSelectionHandleControls__desktop_text_selection : DesktopTextSelectionControls
+internal class _DesktopTextSelectionHandleControls__desktop_text_selection : DesktopTextSelectionControls, global::Doroti.Framework.Widgets.TextSelectionHandleControls
 {
 
     public override Widget buildToolbar(BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints, global::Doroti.Framework.Services.TextSelectionDelegate @delegate, global::Doroti.Framework.Foundation.ValueListenable<ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());

@@ -304,7 +304,7 @@ public class _RenderMagnification__magnifier : global::Doroti.Framework.Renderin
     }
     public override bool alwaysNeedsCompositing => true;
     public override global::Doroti.Framework.Rendering.BackdropFilterLayer? layer => ((global::Doroti.Framework.Rendering.BackdropFilterLayer?)(object?)base.layer)!;
-    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
         global::Doroti.Ui.Offset thisCenter = ((global::Doroti.Ui.Offset)(object?)(global::Doroti.Framework.Painting.Alignment.center.alongSize(this.size) + offset));
         var matrix = ((Func<Matrix4>)(() =>
@@ -327,4 +327,3 @@ public class _RenderMagnification__magnifier : global::Doroti.Framework.Renderin
     }
 
 }
-

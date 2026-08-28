@@ -776,12 +776,10 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
 
         if (library.EndsWith("/cupertino/text_selection.dart", StringComparison.Ordinal))
         {
-            // TextSelectionHandleControls was promoted as a concrete reviewed
-            // Widgets type. Dart can still apply it after a concrete Cupertino
-            // superclass; CLR cannot inherit both classes, so retain the
-            // Cupertino implementation and inline the mixin donor members.
+            // TextSelectionHandleControls is emitted as a CLR marker interface,
+            // allowing the concrete Cupertino superclass and Dart mixin marker
+            // to coexist without multiple class inheritance.
             source = source
-                .ReplaceGeneratedLocalPattern(", global::Doroti.Framework.Widgets.TextSelectionHandleControls", string.Empty, StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public override void handleCut(", "public virtual void handleCut(", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public override void handleCopy(", "public virtual void handleCopy(", StringComparison.Ordinal);
         }
@@ -789,7 +787,6 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         if (library.EndsWith("/cupertino/desktop_text_selection.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern(", global::Doroti.Framework.Widgets.TextSelectionHandleControls", string.Empty, StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public override void handleCut(", "public virtual void handleCut(", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public override void handleCopy(", "public virtual void handleCopy(", StringComparison.Ordinal);
         }
@@ -970,7 +967,6 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         if (library.EndsWith("/material/desktop_text_selection.dart", StringComparison.Ordinal) || library.EndsWith("/material/text_selection.dart", StringComparison.Ordinal))
         {
             source = source
-                .ReplaceGeneratedLocalPattern(", global::Doroti.Framework.Widgets.TextSelectionHandleControls", string.Empty, StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public override void handleCut(", "public virtual void handleCut(", StringComparison.Ordinal)
                 .ReplaceGeneratedLocalPattern("public override void handleCopy(", "public virtual void handleCopy(", StringComparison.Ordinal);
         }
@@ -1665,6 +1661,39 @@ internal static class MaterialDynamicColors
                     "        this._value = value;\n    }\n\n    public virtual global::Doroti.Framework.Services.TextEditingValue value",
                     "        this._value = value;\n        this.renderObject.selectionStartInViewport.addListener(this._updateTextSelectionOverlayVisibilities);\n        this.renderObject.selectionEndInViewport.addListener(this._updateTextSelectionOverlayVisibilities);\n        this._updateTextSelectionOverlayVisibilities();\n        this._selectionOverlay = new SelectionOverlay(\n            magnifierConfiguration: magnifierConfiguration, context: context, debugRequiredFor: debugRequiredFor,\n            startHandleType: global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed,\n            startHandlesVisible: this._effectiveStartHandleVisibility, lineHeightAtStart: 0.0,\n            onStartHandleDragStart: this._handleSelectionStartHandleDragStart, onStartHandleDragUpdate: this._handleSelectionStartHandleDragUpdate,\n            onStartHandleDragEnd: this._handleAnyDragEnd, endHandleType: global::Doroti.Framework.Rendering.TextSelectionHandleType.collapsed,\n            endHandlesVisible: this._effectiveEndHandleVisibility, lineHeightAtEnd: 0.0,\n            onEndHandleDragStart: this._handleSelectionEndHandleDragStart, onEndHandleDragUpdate: this._handleSelectionEndHandleDragUpdate,\n            onEndHandleDragEnd: this._handleAnyDragEnd, toolbarVisible: this._effectiveToolbarVisibility,\n            selectionEndpoints: new List<global::Doroti.Framework.Rendering.TextSelectionPoint>(), selectionControls: selectionControls,\n            selectionDelegate: selectionDelegate, clipboardStatus: clipboardStatus, startHandleLayerLink: startHandleLayerLink,\n            endHandleLayerLink: endHandleLayerLink, toolbarLayerLink: toolbarLayerLink, onSelectionHandleTapped: onSelectionHandleTapped,\n            dragStartBehavior: dragStartBehavior, toolbarLocation: renderObject.lastSecondaryTapDownPosition);\n    }\n\n    public virtual global::Doroti.Framework.Services.TextEditingValue value",
                     StringComparison.Ordinal);
+        }
+
+        if (library.EndsWith("/widgets/text_selection.dart", StringComparison.Ordinal))
+        {
+            // Dart's mixin has no state or callable contract; only its runtime
+            // type identity is observed. Emit it as a CLR marker interface so
+            // Material/Cupertino controls can keep their concrete superclass.
+            source = Regex.Replace(
+                source,
+                @"public abstract class TextSelectionHandleControls : TextSelectionControls\s*\{[\s\S]*?\n\}\s*$",
+                "public interface TextSelectionHandleControls\n{\n}\n");
+        }
+
+        if (library.EndsWith("/widgets/magnifier.dart", StringComparison.Ordinal))
+        {
+            source = source.ReplaceGeneratedLocalPattern(
+                "public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)",
+                "public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)",
+                StringComparison.Ordinal);
+        }
+
+        if (library.EndsWith("/material/text_selection_toolbar.dart", StringComparison.Ordinal))
+        {
+            // These are RenderObject overrides in Flutter. If emitted as new
+            // virtual methods, the render pipeline dispatches to RenderProxyBox
+            // and the toolbar never installs/uses ToolbarItemsParentData.
+            source = source
+                .ReplaceGeneratedLocalPattern("public virtual void performLayout()", "public override void performLayout()", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)", "public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public virtual bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)", "public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public virtual void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)", "public override void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("public virtual void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)", "public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)", StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern("children.Cast<_TextSelectionToolbarOverflowable__text_selection_toolbar>().ToList()", "children", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/widgets/routes.dart", StringComparison.Ordinal))

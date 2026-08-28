@@ -48,6 +48,7 @@ VerifyRadiusSizedMaterialShapes();
 VerifyTypedActionDispatch();
 VerifyTapRegionHitIdentity();
 VerifyVariableGlyphCaretMetrics();
+VerifyAndroidSelectionOverlayContracts();
 
 var widgetsBinding = (Doroti.Framework.Widgets.WidgetsFlutterBinding)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(
     typeof(Doroti.Framework.Widgets.WidgetsFlutterBinding));
@@ -201,6 +202,33 @@ static void VerifyVariableGlyphCaretMetrics()
             paragraph.getPositionForOffset(new Offset(20, 5)).offset == 2,
         "pointer hit testing uses the same glyph advances as caret geometry");
     paragraph.dispose();
+}
+
+static void VerifyAndroidSelectionOverlayContracts()
+{
+    var controls = Doroti.Framework.Material.Text_selectionLibrary.materialTextSelectionHandleControls;
+    Require(controls is TextSelectionHandleControls,
+        "Material selection controls retain the handle-controls marker used by the context-menu path");
+
+    var paintMethod = typeof(_RenderMagnification__magnifier).GetMethod(
+        nameof(Doroti.Framework.Rendering.RenderObject.paint),
+        [typeof(Doroti.Framework.Rendering.PaintingContext), typeof(Offset)]);
+    Require(paintMethod is not null &&
+            paintMethod.GetBaseDefinition().DeclaringType == typeof(Doroti.Framework.Rendering.RenderObject) &&
+            paintMethod.DeclaringType == typeof(_RenderMagnification__magnifier),
+        "RawMagnifier overrides RenderObject.paint so its backdrop transform participates in rendering");
+
+    var toolbarRenderType = typeof(Doroti.Framework.Material._TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_toolbar);
+    Require(IsOverride(toolbarRenderType, "performLayout", Type.EmptyTypes) &&
+            IsOverride(toolbarRenderType, "paint", [typeof(Doroti.Framework.Rendering.PaintingContext), typeof(Offset)]) &&
+            IsOverride(toolbarRenderType, "setupParentData", [typeof(Doroti.Framework.Rendering.RenderObject)]),
+        "Material selection toolbar overrides RenderObject layout, paint, and parent-data dispatch");
+
+    static bool IsOverride(Type declaringType, string methodName, Type[] parameterTypes)
+    {
+        var method = declaringType.GetMethod(methodName, parameterTypes);
+        return method is not null && method.DeclaringType == declaringType && method.GetBaseDefinition() != method;
+    }
 }
 
 static ScrollbarAlphaFrame CaptureScrollbarFrame(Color thumbColor, double fadeValue, int timestampMilliseconds)

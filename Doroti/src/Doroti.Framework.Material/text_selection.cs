@@ -29,7 +29,7 @@ public static partial class Text_selectionLibrary
     internal static double _kToolbarContentDistance = 8.0;
 }
 
-public class MaterialTextSelectionHandleControls : MaterialTextSelectionControls
+public class MaterialTextSelectionHandleControls : MaterialTextSelectionControls, global::Doroti.Framework.Widgets.TextSelectionHandleControls
 {
 
     public override Widget buildToolbar(BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints, global::Doroti.Framework.Services.TextSelectionDelegate @delegate, global::Doroti.Framework.Foundation.ValueListenable<ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());

@@ -97,7 +97,7 @@ public class _TextSelectionToolbarOverflowableState__text_selection_toolbar : gl
     public override void didUpdateWidget(_TextSelectionToolbarOverflowable__text_selection_toolbar oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        if (!global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(((_TextSelectionToolbarOverflowable__text_selection_toolbar)this.widget).children.Cast<_TextSelectionToolbarOverflowable__text_selection_toolbar>().ToList(), ((_TextSelectionToolbarOverflowable__text_selection_toolbar)oldWidget).children.Cast<_TextSelectionToolbarOverflowable__text_selection_toolbar>().ToList()))
+        if (!global::Doroti.Framework.Foundation.CollectionsLibrary.listEquals(((_TextSelectionToolbarOverflowable__text_selection_toolbar)this.widget).children, ((_TextSelectionToolbarOverflowable__text_selection_toolbar)oldWidget).children))
         {
             _reset();
         }
@@ -282,7 +282,7 @@ public class _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_too
             markNeedsLayout();
         }
     }
-    public virtual void performLayout()
+    public override void performLayout()
     {
         this.child!.layout(this.constraints.loosen(), parentUsesSize: true);
         if ((!this.overflowOpen && (this._closedWidth is null)))
@@ -294,13 +294,13 @@ public class _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_too
         childParentData.offset = new global::Doroti.Ui.Offset(((object.Equals(this.textDirection, TextDirection.rtl)) ? 0.0 : (this.size.width - this.child!.size.width)), 0.0);
     }
 
-    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
         var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)(object?)this.child!.parentData!)!;
         context.paintChild(this.child!, (childParentData.offset + offset));
     }
 
-    public virtual bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
+    public override bool hitTestChildren(global::Doroti.Framework.Rendering.BoxHitTestResult result, Offset position)
     {
         var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)(object?)this.child!.parentData!)!;
         return result.addWithPaintOffset(offset: childParentData.offset, position: position, hitTest: ((global::System.Func<global::Doroti.Framework.Rendering.BoxHitTestResult, Offset, bool>)((result, transformed) =>
@@ -312,7 +312,7 @@ public class _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_too
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)
+    public override void setupParentData(global::Doroti.Framework.Rendering.RenderObject child)
     {
         var __child = (global::Doroti.Framework.Rendering.RenderBox)(object)child;
         if ((__child.parentData is not global::Doroti.Framework.Widgets.ToolbarItemsParentData))
@@ -321,7 +321,7 @@ public class _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_too
         }
     }
 
-    public virtual void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
+    public override void applyPaintTransform(global::Doroti.Framework.Rendering.RenderObject child, Matrix4 transform)
     {
         var childParentData = ((global::Doroti.Framework.Widgets.ToolbarItemsParentData?)(object?)((global::Doroti.Framework.Rendering.RenderObject)child).parentData!)!;
         transform.translateByDouble(childParentData.offset.dx, childParentData.offset.dy, 0, 1);

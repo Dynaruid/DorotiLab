@@ -62,7 +62,7 @@ internal class _CupertinoTextSelectionHandlePainter__text_selection : global::Do
     public override bool shouldRepaint(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => (!object.Equals(this.color, ((_CupertinoTextSelectionHandlePainter__text_selection)oldDelegate).color));
 }
 
-public class CupertinoTextSelectionHandleControls : CupertinoTextSelectionControls
+public class CupertinoTextSelectionHandleControls : CupertinoTextSelectionControls, global::Doroti.Framework.Widgets.TextSelectionHandleControls
 {
 
     public override Widget buildToolbar(BuildContext context, Rect globalEditableRegion, double textLineHeight, Offset selectionMidpoint, List<global::Doroti.Framework.Rendering.TextSelectionPoint> endpoints, global::Doroti.Framework.Services.TextSelectionDelegate @delegate, global::Doroti.Framework.Foundation.ValueListenable<ClipboardStatus>? clipboardStatus, Offset? lastSecondaryTapDownPosition) => DartRuntimePrimitives.ConvertValue<Widget>(SizedBox.CreateShrink());
