@@ -104,7 +104,7 @@ internal class _CupertinoTextFormFieldRowState__text_form_field_row : global::Do
         }
         else
         {
-            ((CupertinoTextFormFieldRow)this._cupertinoTextFormFieldRow).controller!.addListener(() => this._handleControllerChanged());
+            ((CupertinoTextFormFieldRow)this._cupertinoTextFormFieldRow).controller!.addListener(this._handleControllerChanged);
         }
     }
 
@@ -113,8 +113,8 @@ internal class _CupertinoTextFormFieldRowState__text_form_field_row : global::Do
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((CupertinoTextFormFieldRow)this._cupertinoTextFormFieldRow).controller, ((CupertinoTextFormFieldRow)oldWidget).controller)))
         {
-            ((CupertinoTextFormFieldRow)oldWidget).controller?.removeListener(() => this._handleControllerChanged());
-            ((CupertinoTextFormFieldRow)this._cupertinoTextFormFieldRow).controller?.addListener(() => this._handleControllerChanged());
+            ((CupertinoTextFormFieldRow)oldWidget).controller?.removeListener(this._handleControllerChanged);
+            ((CupertinoTextFormFieldRow)this._cupertinoTextFormFieldRow).controller?.addListener(this._handleControllerChanged);
             if (((((CupertinoTextFormFieldRow)oldWidget).controller is not null) && (((CupertinoTextFormFieldRow)this._cupertinoTextFormFieldRow).controller is null)))
             {
                 _createLocalController(((CupertinoTextFormFieldRow)oldWidget).controller!.value);
@@ -134,7 +134,7 @@ internal class _CupertinoTextFormFieldRowState__text_form_field_row : global::Do
 
     public override void dispose()
     {
-        ((CupertinoTextFormFieldRow)this._cupertinoTextFormFieldRow).controller?.removeListener(() => this._handleControllerChanged());
+        ((CupertinoTextFormFieldRow)this._cupertinoTextFormFieldRow).controller?.removeListener(this._handleControllerChanged);
         this._controller?.dispose();
         base.dispose();
     }

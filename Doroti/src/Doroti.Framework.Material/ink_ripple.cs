@@ -115,7 +115,7 @@ public class InkRipple : InteractiveInkFeature
         _fadeInController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_rippleLibrary._kFadeInDuration, vsync: ((MaterialInkController)controller).vsync);
-    __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
+    __cascade.addListener(((MaterialInkController)controller).markNeedsPaint);
     __cascade.forward();
     return __cascade;
 }))();
@@ -123,7 +123,7 @@ public class InkRipple : InteractiveInkFeature
         _radiusController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_rippleLibrary._kUnconfirmedRippleDuration, vsync: ((MaterialInkController)controller).vsync);
-    __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
+    __cascade.addListener(((MaterialInkController)controller).markNeedsPaint);
     __cascade.forward();
     return __cascade;
 }))();
@@ -131,7 +131,7 @@ public class InkRipple : InteractiveInkFeature
         _fadeOutController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_rippleLibrary._kFadeOutDuration, vsync: ((MaterialInkController)controller).vsync);
-    __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
+    __cascade.addListener(((MaterialInkController)controller).markNeedsPaint);
     __cascade.addStatusListener((AnimationStatusListener)this._handleAlphaStatusChanged);
     return __cascade;
 }))();

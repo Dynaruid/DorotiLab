@@ -118,7 +118,7 @@ public class InkSplash : InteractiveInkFeature
         _radiusController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_splashLibrary._kUnconfirmedSplashDuration, vsync: ((MaterialInkController)controller).vsync);
-    __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
+    __cascade.addListener(((MaterialInkController)controller).markNeedsPaint);
     __cascade.forward();
     return __cascade;
 }))();
@@ -126,7 +126,7 @@ public class InkSplash : InteractiveInkFeature
         _alphaController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: Ink_splashLibrary._kSplashFadeDuration, vsync: ((MaterialInkController)controller).vsync);
-    __cascade.addListener(() => ((MaterialInkController)controller).markNeedsPaint());
+    __cascade.addListener(((MaterialInkController)controller).markNeedsPaint);
     __cascade.addStatusListener((AnimationStatusListener)this._handleAlphaStatusChanged);
     return __cascade;
 }))();

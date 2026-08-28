@@ -73,7 +73,7 @@ internal class _MouseTrackerUpdateDetails__mouse_tracker : Diagnosticable
 
     internal static _MouseTrackerUpdateDetails__mouse_tracker CreateByPointerEvent(DartMap<IMouseTrackerAnnotation, Matrix4> lastAnnotations, DartMap<IMouseTrackerAnnotation, Matrix4> nextAnnotations, global::Doroti.Framework.Gestures.PointerEvent? previousEvent = null, global::Doroti.Framework.Gestures.PointerEvent triggeringEvent = default!)
     {
-        var __instance = new _MouseTrackerUpdateDetails__mouse_tracker(default!, default!, default!);
+        var __instance = new _MouseTrackerUpdateDetails__mouse_tracker(lastAnnotations, nextAnnotations, previousEvent);
         __instance.lastAnnotations = lastAnnotations;
         __instance.nextAnnotations = nextAnnotations;
         __instance.previousEvent = previousEvent;

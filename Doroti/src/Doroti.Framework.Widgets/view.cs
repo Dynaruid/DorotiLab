@@ -74,13 +74,13 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
     {
         base.initState();
         WidgetsBinding.instance.addObserver(this);
-        this._scopeNode.addListener(() => this._scopeFocusChangeListener());
+        this._scopeNode.addListener(this._scopeFocusChangeListener);
     }
 
     public override void dispose()
     {
         WidgetsBinding.instance.removeObserver(this);
-        this._scopeNode.removeListener(() => this._scopeFocusChangeListener());
+        this._scopeNode.removeListener(this._scopeFocusChangeListener);
         this._scopeNode.dispose();
         base.dispose();
     }

@@ -422,7 +422,7 @@ public class CatmullRomSpline : Curve2D
 
     public static CatmullRomSpline CreatePrecompute(List<Offset> controlPoints, double tension = 0.0, Offset? startHandle = null, Offset? endHandle = null)
     {
-        var __instance = new CatmullRomSpline(default!, default!, default!, default!);
+        var __instance = new CatmullRomSpline(controlPoints, tension, startHandle, endHandle);
         __instance._controlPoints = null;
         __instance._startHandle = null;
         __instance._endHandle = null;
@@ -543,7 +543,7 @@ public class CatmullRomCurve : Curve
 
     public static CatmullRomCurve CreatePrecompute(List<Offset> controlPoints, double tension = 0.0)
     {
-        var __instance = new CatmullRomCurve(default!, default!);
+        var __instance = new CatmullRomCurve(controlPoints, tension);
         __instance.controlPoints = controlPoints;
         __instance.tension = tension;
         __instance._precomputedSamples = _computeSamples(controlPoints, tension);

@@ -112,7 +112,7 @@ internal class _TextFormFieldState__text_form_field : global::Doroti.Framework.W
         }
         else
         {
-            ((TextFormField)this._textFormField).controller!.addListener(() => this._handleControllerChanged());
+            ((TextFormField)this._textFormField).controller!.addListener(this._handleControllerChanged);
         }
         _initialValue = (this._textFormField.initialValue ?? ((TextFormField)this._textFormField).controller?.text);
     }
@@ -122,8 +122,8 @@ internal class _TextFormFieldState__text_form_field : global::Doroti.Framework.W
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((TextFormField)this._textFormField).controller, ((TextFormField)oldWidget).controller)))
         {
-            ((TextFormField)oldWidget).controller?.removeListener(() => this._handleControllerChanged());
-            ((TextFormField)this._textFormField).controller?.addListener(() => this._handleControllerChanged());
+            ((TextFormField)oldWidget).controller?.removeListener(this._handleControllerChanged);
+            ((TextFormField)this._textFormField).controller?.addListener(this._handleControllerChanged);
             if (((((TextFormField)oldWidget).controller is not null) && (((TextFormField)this._textFormField).controller is null)))
             {
                 _createLocalController(((TextFormField)oldWidget).controller!.value);
@@ -143,7 +143,7 @@ internal class _TextFormFieldState__text_form_field : global::Doroti.Framework.W
 
     public override void dispose()
     {
-        ((TextFormField)this._textFormField).controller?.removeListener(() => this._handleControllerChanged());
+        ((TextFormField)this._textFormField).controller?.removeListener(this._handleControllerChanged);
         this._controller?.dispose();
         base.dispose();
     }

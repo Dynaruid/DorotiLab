@@ -318,7 +318,7 @@ public class _BottomNavigationBarState__bottom_navigation_bar : global::Doroti.F
             return ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
             {
                 var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: ThemeLibrary.kThemeAnimationDuration, vsync: this);
-                __cascade.addListener(() => this._rebuild());
+                __cascade.addListener(this._rebuild);
                 return __cascade;
             }))();
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -382,7 +382,7 @@ public class _BottomNavigationBarState__bottom_navigation_bar : global::Doroti.F
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -595,8 +595,8 @@ public class _BottomNavigationBarState__bottom_navigation_bar : global::Doroti.F
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 

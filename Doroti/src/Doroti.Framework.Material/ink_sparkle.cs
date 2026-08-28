@@ -52,7 +52,7 @@ public class InkSparkle : InteractiveInkFeature
         _animationController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: _animationDuration, vsync: ((MaterialInkController)this.controller).vsync);
-    __cascade.addListener(() => ((MaterialInkController)this.controller).markNeedsPaint());
+    __cascade.addListener(((MaterialInkController)this.controller).markNeedsPaint);
     __cascade.addStatusListener((AnimationStatusListener)this._handleStatusChanged);
     __cascade.forward();
     return __cascade;

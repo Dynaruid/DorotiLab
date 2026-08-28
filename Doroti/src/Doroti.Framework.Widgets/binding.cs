@@ -536,12 +536,12 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
     }
     public virtual void addSemanticsEnabledListener(global::System.Action listener)
     {
-        this._semanticsEnabled.addListener(() => listener());
+        this._semanticsEnabled.addListener(listener);
     }
 
     public virtual void removeSemanticsEnabledListener(global::System.Action listener)
     {
-        this._semanticsEnabled.removeListener(() => listener());
+        this._semanticsEnabled.removeListener(listener);
     }
 
     public virtual void addSemanticsActionListener(global::System.Action<SemanticsActionEvent> listener)

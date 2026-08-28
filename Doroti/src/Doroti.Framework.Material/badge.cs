@@ -333,7 +333,7 @@ public class _RenderIntrinsicHorizontalStadium__badge : global::Doroti.Framework
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
+    public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
     {
         return _computeSize(layoutChild: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.dryLayoutChild, constraints: constraints);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -346,7 +346,7 @@ public class _RenderIntrinsicHorizontalStadium__badge : global::Doroti.Framework
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void performLayout()
+    public override void performLayout()
     {
         size = _computeSize(layoutChild: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.layoutChild, constraints: this.constraints);
     }

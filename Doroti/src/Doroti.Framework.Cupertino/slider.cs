@@ -181,8 +181,8 @@ internal class _CupertinoSliderState__slider : global::Doroti.Framework.Widgets.
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -202,7 +202,7 @@ internal class _CupertinoSliderState__slider : global::Doroti.Framework.Widgets.
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         this._tickerModeNotifier = null;
         base.dispose();
     }
@@ -337,7 +337,7 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Framework.Rendering
         _position = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(value: DartRuntimePrimitives.RequireValue(value), duration: SliderLibrary._kDiscreteTransitionDuration, vsync: vsync);
-    __cascade.addListener(() => this.markNeedsPaint());
+    __cascade.addListener(this.markNeedsPaint);
     return __cascade;
 }))();
     }
@@ -538,7 +538,7 @@ public class _RenderCupertinoSlider__slider : global::Doroti.Framework.Rendering
         }
     }
 
-    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
         var (visualPosition, leftColor, rightColor) = (this.textDirection switch { TextDirection.rtl => (((double, Color, Color))(((1.0 - ((global::Doroti.Framework.Animation.AnimationController)this._position).value), this._activeColor, this.trackColor))), TextDirection.ltr => (((double, Color, Color))((((global::Doroti.Framework.Animation.AnimationController)this._position).value, this.trackColor, this._activeColor))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         double trackCenter = (offset.dy + (this.size.height / 2.0));

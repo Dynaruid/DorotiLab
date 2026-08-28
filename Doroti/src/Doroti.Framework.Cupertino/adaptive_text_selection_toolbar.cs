@@ -41,7 +41,7 @@ public class CupertinoAdaptiveTextSelectionToolbar : global::Doroti.Framework.Wi
         var __instance = new CupertinoAdaptiveTextSelectionToolbar(key: key, children: default!, anchors: anchors);
         __instance.anchors = anchors;
         __instance.children = null;
-        __instance.buttonItems = EditableText.getEditableButtonItems(clipboardStatus: clipboardStatus, onCopy: () => onCopy(), onCut: () => onCut(), onPaste: () => onPaste(), onSelectAll: () => onSelectAll(), onLookUp: () => onLookUp(), onSearchWeb: () => onSearchWeb(), onShare: () => onShare(), onLiveTextInput: () => onLiveTextInput());
+        __instance.buttonItems = EditableText.getEditableButtonItems(clipboardStatus: clipboardStatus, onCopy: onCopy, onCut: onCut, onPaste: onPaste, onSelectAll: onSelectAll, onLookUp: onLookUp, onSearchWeb: onSearchWeb, onShare: onShare, onLiveTextInput: onLiveTextInput);
         return __instance;
     }
 
@@ -59,7 +59,7 @@ public class CupertinoAdaptiveTextSelectionToolbar : global::Doroti.Framework.Wi
         var __instance = new CupertinoAdaptiveTextSelectionToolbar(key: key, children: default!, anchors: anchors);
         __instance.anchors = anchors;
         __instance.children = null;
-        __instance.buttonItems = SelectableRegion.getSelectableButtonItems(selectionGeometry: selectionGeometry, onCopy: () => onCopy(), onSelectAll: () => onSelectAll(), onShare: null);
+        __instance.buttonItems = SelectableRegion.getSelectableButtonItems(selectionGeometry: selectionGeometry, onCopy: onCopy, onSelectAll: onSelectAll, onShare: null);
         return __instance;
     }
 

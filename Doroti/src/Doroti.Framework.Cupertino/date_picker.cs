@@ -426,7 +426,7 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : global::Doroti.F
         hourController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: this.initialDateTime.Hour);
         minuteController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: (checked((long)(this.initialDateTime.Minute / ((CupertinoDatePicker)this.widget).minuteInterval))));
         dateController = new global::Doroti.Framework.Widgets.FixedExtentScrollController();
-        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(this._handleSystemFontsChange);
     }
 
     internal virtual void _handleSystemFontsChange()
@@ -443,7 +443,7 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : global::Doroti.F
         this.hourController.dispose();
         this.minuteController.dispose();
         this.meridiemController.dispose();
-        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(this._handleSystemFontsChange);
         base.dispose();
     }
 
@@ -883,7 +883,7 @@ internal class _CupertinoDatePickerDateState__date_picker : global::Doroti.Frame
         dayController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: (this.selectedDay - 1L));
         monthController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: (this.selectedMonth - 1L));
         yearController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: this.selectedYear);
-        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(this._handleSystemFontsChange);
     }
 
     internal virtual void _handleSystemFontsChange()
@@ -899,7 +899,7 @@ internal class _CupertinoDatePickerDateState__date_picker : global::Doroti.Frame
         this.dayController.dispose();
         this.monthController.dispose();
         this.yearController.dispose();
-        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(this._handleSystemFontsChange);
         base.dispose();
     }
 
@@ -1200,7 +1200,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : global::Doroti.
         selectedYear = ((CupertinoDatePicker)this.widget).initialDateTime.Year;
         monthController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: (this.selectedMonth - 1L));
         yearController = new global::Doroti.Framework.Widgets.FixedExtentScrollController(initialItem: this.selectedYear);
-        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(this._handleSystemFontsChange);
     }
 
     internal virtual void _handleSystemFontsChange()
@@ -1215,7 +1215,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : global::Doroti.
     {
         this.monthController.dispose();
         this.yearController.dispose();
-        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(this._handleSystemFontsChange);
         base.dispose();
     }
 
@@ -1513,7 +1513,7 @@ internal class _CupertinoTimerPickerState__date_picker : global::Doroti.Framewor
         {
             selectedSecond = (((CupertinoTimerPicker)this.widget).initialTimerDuration.inSeconds % 60L);
         }
-        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(this._handleSystemFontsChange);
     }
 
     internal virtual void _handleSystemFontsChange()
@@ -1527,7 +1527,7 @@ internal class _CupertinoTimerPickerState__date_picker : global::Doroti.Framewor
 
     public override void dispose()
     {
-        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._handleSystemFontsChange());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(this._handleSystemFontsChange);
         this.textPainter.dispose();
         this._hourScrollController?.dispose();
         this._minuteScrollController?.dispose();

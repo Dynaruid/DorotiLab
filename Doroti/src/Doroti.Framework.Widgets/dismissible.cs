@@ -211,7 +211,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
 {
     var __cascade = this._moveController;
     __cascade.addStatusListener((global::Doroti.Framework.Animation.AnimationStatus __status) => { _ = this._handleDismissStatusChanged(__status); });
-    __cascade.addListener(() => this._handleDismissUpdateValueChanged());
+    __cascade.addListener(this._handleDismissUpdateValueChanged);
     return __cascade;
 }))());
         _updateMoveAnimation();
@@ -237,7 +237,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -571,7 +571,7 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
             _resizeController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: ((Dismissible)this.widget).resizeDuration, vsync: this);
-    __cascade.addListener(() => this._handleResizeProgressChanged());
+    __cascade.addListener(this._handleResizeProgressChanged);
     __cascade.addStatusListener(((AnimationStatusListener)((status) => updateKeepAlive())));
     return __cascade;
 }))();
@@ -695,8 +695,8 @@ internal class _DismissibleState__dismissible : State<Dismissible>, TickerProvid
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 

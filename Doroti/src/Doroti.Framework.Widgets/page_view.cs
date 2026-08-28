@@ -444,7 +444,7 @@ public class PageView : StatefulWidget
 
     public static PageView CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = global::Doroti.Framework.Painting.Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, global::System.Action<long>? onPageChanged = null, global::System.Func<BuildContext, long, Widget?> itemBuilder = default!, global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findChildIndexCallback = null, long? itemCount = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, bool allowImplicitScrolling = false, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true)
     {
-        var __instance = new PageView(default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new PageView(key, scrollDirection, reverse, controller, physics, pageSnapping, onPageChanged, default!, dragStartBehavior, allowImplicitScrolling, scrollCacheExtent, restorationId, clipBehavior, hitTestBehavior, scrollBehavior, padEnds);
         __instance.scrollDirection = scrollDirection;
         __instance.reverse = reverse;
         __instance.controller = controller;
@@ -465,7 +465,7 @@ public class PageView : StatefulWidget
 
     public static PageView CreateCustom(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.Axis scrollDirection = global::Doroti.Framework.Painting.Axis.horizontal, bool reverse = false, PageController? controller = null, ScrollPhysics? physics = null, bool pageSnapping = true, global::System.Action<long>? onPageChanged = null, SliverChildDelegate childrenDelegate = default!, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, bool allowImplicitScrolling = false, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null, string? restorationId = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.HitTestBehavior hitTestBehavior = global::Doroti.Framework.Rendering.HitTestBehavior.opaque, ScrollBehavior? scrollBehavior = null, bool padEnds = true)
     {
-        var __instance = new PageView(default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new PageView(key, scrollDirection, reverse, controller, physics, pageSnapping, onPageChanged, default!, dragStartBehavior, allowImplicitScrolling, scrollCacheExtent, restorationId, clipBehavior, hitTestBehavior, scrollBehavior, padEnds);
         __instance.scrollDirection = scrollDirection;
         __instance.reverse = reverse;
         __instance.controller = controller;

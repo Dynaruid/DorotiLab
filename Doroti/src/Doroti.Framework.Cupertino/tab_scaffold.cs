@@ -40,7 +40,7 @@ public class CupertinoTabController : global::Doroti.Framework.Foundation.Change
             notifyListeners();
         }
     }
-    public virtual void dispose()
+    public override void dispose()
     {
         base.dispose();
         _isDisposed = true;
@@ -92,7 +92,7 @@ internal class _CupertinoTabScaffoldState__tab_scaffold : global::Doroti.Framewo
         if ((this._internalController is not null))
         {
             registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._internalController!), "controller");
-            this._internalController!.value.addListener(() => this._onCurrentIndexChange());
+            this._internalController!.value.addListener(this._onCurrentIndexChange);
         }
     }
 
@@ -122,9 +122,9 @@ internal class _CupertinoTabScaffoldState__tab_scaffold : global::Doroti.Framewo
         {
             if ((oldWidgetController?._isDisposed == false))
             {
-                oldWidgetController!.removeListener(() => this._onCurrentIndexChange());
+                oldWidgetController!.removeListener(this._onCurrentIndexChange);
             }
-            ((CupertinoTabScaffold)this.widget).controller?.addListener(() => this._onCurrentIndexChange());
+            ((CupertinoTabScaffold)this.widget).controller?.addListener(this._onCurrentIndexChange);
         }
     }
 
@@ -189,14 +189,14 @@ this._controller.index = newIndex;
     {
         if ((((CupertinoTabScaffold)this.widget).controller?._isDisposed == false))
         {
-            this._controller.removeListener(() => this._onCurrentIndexChange());
+            this._controller.removeListener(this._onCurrentIndexChange);
         }
         this._internalController?.dispose();
         this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -227,7 +227,7 @@ this._controller.index = newIndex;
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -387,7 +387,7 @@ this._controller.index = newIndex;
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 

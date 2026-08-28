@@ -108,7 +108,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     public override void initState()
     {
         base.initState();
-        this._focusNode.addListener(() => this._handleFocusChanged());
+        this._focusNode.addListener(this._handleFocusChanged);
         _initMouseGestureRecognizer();
         _initTouchGestureRecognizer();
         this._gestureRecognizers[typeof(global::Doroti.Framework.Gestures.TapGestureRecognizer)] = new GestureRecognizerFactoryWithHandlers<global::Doroti.Framework.Gestures.TapGestureRecognizer>(((global::System.Func<global::Doroti.Framework.Gestures.TapGestureRecognizer>)(() => new global::Doroti.Framework.Gestures.TapGestureRecognizer(debugOwner: this))), ((global::System.Action<global::Doroti.Framework.Gestures.TapGestureRecognizer>)((instance) =>
@@ -164,7 +164,7 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         {
             if (((((SelectableRegion)oldWidget).focusNode is null) && (((SelectableRegion)(object)this.widget).focusNode is not null)))
             {
-                this._localFocusNode?.removeListener(() => this._handleFocusChanged());
+                this._localFocusNode?.removeListener(this._handleFocusChanged);
                 this._localFocusNode?.dispose();
                 _localFocusNode = null;
             }
@@ -172,10 +172,10 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
             {
                 if (((((SelectableRegion)(object)this.widget).focusNode is null) && (((SelectableRegion)oldWidget).focusNode is not null)))
                 {
-                    ((SelectableRegion)oldWidget).focusNode!.removeListener(() => this._handleFocusChanged());
+                    ((SelectableRegion)oldWidget).focusNode!.removeListener(this._handleFocusChanged);
                 }
             }
-            this._focusNode.addListener(() => this._handleFocusChanged());
+            this._focusNode.addListener(this._handleFocusChanged);
             if ((((FocusNode)this._focusNode).hasFocus != ((SelectableRegion)oldWidget).focusNode?.hasFocus))
             {
                 _handleFocusChanged();
@@ -1363,21 +1363,21 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
     {
         DartRuntimePrimitives.Assert(() => (this._selectable is null));
         _selectable = selectable;
-        this._selectable!.addListener(() => this._updateSelectionStatus());
+        this._selectable!.addListener(this._updateSelectionStatus);
         this._selectable!.pushHandleLayers(this._startHandleLayerLink, this._endHandleLayerLink);
     }
 
     public virtual void remove(global::Doroti.Framework.Rendering.Selectable selectable)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(this._selectable, selectable)));
-        this._selectable!.removeListener(() => this._updateSelectionStatus());
+        this._selectable!.removeListener(this._updateSelectionStatus);
         this._selectable!.pushHandleLayers(((global::Doroti.Framework.Rendering.LayerLink)(object)null), ((global::Doroti.Framework.Rendering.LayerLink)(object)null));
         _selectable = null;
     }
 
     public override void dispose()
     {
-        this._selectable?.removeListener(() => this._updateSelectionStatus());
+        this._selectable?.removeListener(this._updateSelectionStatus);
         this._selectable?.pushHandleLayers(((global::Doroti.Framework.Rendering.LayerLink)(object)null), ((global::Doroti.Framework.Rendering.LayerLink)(object)null));
         if (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb)
         {
@@ -1388,8 +1388,8 @@ public class SelectableRegionState : State<SelectableRegion>, global::Doroti.Fra
         this._selectionOverlay?.hideMagnifier();
         this._selectionOverlay?.dispose();
         _selectionOverlay = null;
-        ((SelectableRegion)(object)this.widget).focusNode?.removeListener(() => this._handleFocusChanged());
-        this._localFocusNode?.removeListener(() => this._handleFocusChanged());
+        ((SelectableRegion)(object)this.widget).focusNode?.removeListener(this._handleFocusChanged);
+        this._localFocusNode?.removeListener(this._handleFocusChanged);
         this._localFocusNode?.dispose();
         base.dispose();
     }
@@ -1860,7 +1860,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             {
                 ensureChildUpdated(mergingSelectable);
             }
-            mergingSelectable.addListener(() => this._handleSelectableGeometryChange());
+            mergingSelectable.addListener(this._handleSelectableGeometryChange);
             this.selectables.Add(mergingSelectable);
             mergingIndex += 1L;
         }
@@ -1887,7 +1887,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         {
             currentSelectionStartIndex -= 1L;
         }
-        selectable.removeListener(() => this._handleSelectableGeometryChange());
+        selectable.removeListener(this._handleSelectableGeometryChange);
     }
 
     public virtual void didChangeSelectables()
@@ -2504,11 +2504,11 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         foreach (global::Doroti.Framework.Rendering.Selectable selectable in this.selectables)
         {
-            selectable.removeListener(() => this._handleSelectableGeometryChange());
+            selectable.removeListener(this._handleSelectableGeometryChange);
         }
         selectables = new List<global::Doroti.Framework.Rendering.Selectable>();
         _scheduledSelectableUpdate = false;
@@ -2877,15 +2877,15 @@ public class SelectionListenerNotifier : global::Doroti.Framework.Foundation.Cha
         _selectionDelegate = null;
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         _unregisterSelectionListenerDelegate();
         base.dispose();
     }
 
-    public virtual void addListener(global::System.Action listener)
+    public override void addListener(global::System.Action listener)
     {
-        base.addListener(() => listener());
+        base.addListener(listener);
     }
 
 }

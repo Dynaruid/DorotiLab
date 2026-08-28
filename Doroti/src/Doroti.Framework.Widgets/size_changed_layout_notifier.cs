@@ -49,7 +49,7 @@ internal class _RenderSizeChangedWithCallback__size_changed_layout_notifier : gl
         this.onLayoutChangedCallback = onLayoutChangedCallback;
     }
 
-    public virtual void performLayout()
+    public override void performLayout()
     {
         base.performLayout();
         if (((this._oldSize is not null) && (!object.Equals(this.size, this._oldSize))))

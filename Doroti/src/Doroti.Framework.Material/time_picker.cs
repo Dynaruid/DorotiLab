@@ -948,7 +948,7 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
                 }
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -1388,8 +1388,8 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
+        newNotifier.addListener(this._updateTicker);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -1463,7 +1463,7 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -1630,7 +1630,7 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -1796,7 +1796,7 @@ internal class _TimePickerInputState__time_picker : global::Doroti.Framework.Wid
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 
@@ -1966,7 +1966,7 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -2041,7 +2041,7 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -2189,7 +2189,7 @@ internal class _HourMinuteTextFieldState__time_picker : global::Doroti.Framework
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 
@@ -2305,7 +2305,7 @@ internal class _TimePickerDialogState__time_picker : global::Doroti.Framework.Wi
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -2566,7 +2566,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -2732,7 +2732,7 @@ throw new InvalidOperationException("Dart closure completed without a value.");
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 
@@ -2835,7 +2835,7 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -3056,7 +3056,7 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -3198,7 +3198,7 @@ internal class _TimePickerState__time_picker : global::Doroti.Framework.Widgets.
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 

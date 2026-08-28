@@ -237,8 +237,8 @@ internal class _SelectableTextState__selectable_text : global::Doroti.Framework.
         base.initState();
         _selectionGestureDetectorBuilder = new _SelectableTextSelectionGestureDetectorBuilder__selectable_text(state: this);
         _controller = new _TextSpanEditingController__selectable_text(textSpan: (((SelectableText)this.widget).textSpan ?? new global::Doroti.Framework.Painting.TextSpan(text: ((SelectableText)this.widget).data)));
-        this._controller.addListener(() => this._onControllerChanged());
-        this._effectiveFocusNode.addListener(() => this._handleFocusChanged());
+        this._controller.addListener(this._onControllerChanged);
+        this._effectiveFocusNode.addListener(this._handleFocusChanged);
     }
 
     public override void didUpdateWidget(SelectableText oldWidget)
@@ -246,15 +246,15 @@ internal class _SelectableTextState__selectable_text : global::Doroti.Framework.
         base.didUpdateWidget(oldWidget);
         if (((((SelectableText)this.widget).data != ((SelectableText)oldWidget).data) || (!object.Equals(((SelectableText)this.widget).textSpan, ((SelectableText)oldWidget).textSpan))))
         {
-            this._controller.removeListener(() => this._onControllerChanged());
+            this._controller.removeListener(this._onControllerChanged);
             this._controller.dispose();
             _controller = new _TextSpanEditingController__selectable_text(textSpan: (((SelectableText)this.widget).textSpan ?? new global::Doroti.Framework.Painting.TextSpan(text: ((SelectableText)this.widget).data)));
-            this._controller.addListener(() => this._onControllerChanged());
+            this._controller.addListener(this._onControllerChanged);
         }
         if ((!object.Equals(((SelectableText)this.widget).focusNode, ((SelectableText)oldWidget).focusNode)))
         {
-            ((((SelectableText)oldWidget).focusNode ?? this._focusNode))?.removeListener(() => this._handleFocusChanged());
-            ((((SelectableText)this.widget).focusNode ?? this._focusNode))?.addListener(() => this._handleFocusChanged());
+            ((((SelectableText)oldWidget).focusNode ?? this._focusNode))?.removeListener(this._handleFocusChanged);
+            ((((SelectableText)this.widget).focusNode ?? this._focusNode))?.addListener(this._handleFocusChanged);
         }
         if ((((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus && this._controller.selection.isCollapsed))
         {
@@ -268,7 +268,7 @@ internal class _SelectableTextState__selectable_text : global::Doroti.Framework.
 
     public override void dispose()
     {
-        this._effectiveFocusNode.removeListener(() => this._handleFocusChanged());
+        this._effectiveFocusNode.removeListener(this._handleFocusChanged);
         this._focusNode?.dispose();
         this._controller.dispose();
         base.dispose();

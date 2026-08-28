@@ -157,9 +157,9 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
     public override void initState()
     {
         base.initState();
-        ((Router<T>)(object)this.widget).routeInformationProvider?.addListener(() => this._handleRouteInformationProviderNotification());
+        ((Router<T>)(object)this.widget).routeInformationProvider?.addListener(this._handleRouteInformationProviderNotification);
         ((Router<T>)(object)this.widget).backButtonDispatcher?.addCallback((global::System.Func<Future<bool>>)this._handleBackButtonDispatcherNotification);
-        ((Router<T>)(object)this.widget).routerDelegate.addListener(() => this._handleRouterDelegateNotification());
+        ((Router<T>)(object)this.widget).routerDelegate.addListener(this._handleRouterDelegateNotification);
     }
 
     public virtual void restoreState(global::Doroti.Framework.Services.RestorationBucket? oldBucket, bool initialRestore)
@@ -278,8 +278,8 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         }
         if ((!object.Equals(((Router<T>)(object)this.widget).routeInformationProvider, ((Router<T>)oldWidget).routeInformationProvider)))
         {
-            ((Router<T>)oldWidget).routeInformationProvider?.removeListener(() => this._handleRouteInformationProviderNotification());
-            ((Router<T>)(object)this.widget).routeInformationProvider?.addListener(() => this._handleRouteInformationProviderNotification());
+            ((Router<T>)oldWidget).routeInformationProvider?.removeListener(this._handleRouteInformationProviderNotification);
+            ((Router<T>)(object)this.widget).routeInformationProvider?.addListener(this._handleRouteInformationProviderNotification);
             if ((!object.Equals(((Router<T>)oldWidget).routeInformationProvider?.value, ((Router<T>)(object)this.widget).routeInformationProvider?.value)))
             {
                 _handleRouteInformationProviderNotification();
@@ -292,8 +292,8 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
         }
         if ((!object.Equals(((Router<T>)(object)this.widget).routerDelegate, ((Router<T>)oldWidget).routerDelegate)))
         {
-            ((Router<T>)oldWidget).routerDelegate.removeListener(() => this._handleRouterDelegateNotification());
-            ((Router<T>)(object)this.widget).routerDelegate.addListener(() => this._handleRouterDelegateNotification());
+            ((Router<T>)oldWidget).routerDelegate.removeListener(this._handleRouterDelegateNotification);
+            ((Router<T>)(object)this.widget).routerDelegate.addListener(this._handleRouterDelegateNotification);
             _maybeNeedToReportRouteInformation();
         }
     }
@@ -301,15 +301,15 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
     public override void dispose()
     {
         this._routeInformation.dispose();
-        ((Router<T>)(object)this.widget).routeInformationProvider?.removeListener(() => this._handleRouteInformationProviderNotification());
+        ((Router<T>)(object)this.widget).routeInformationProvider?.removeListener(this._handleRouteInformationProviderNotification);
         ((Router<T>)(object)this.widget).backButtonDispatcher?.removeCallback((global::System.Func<Future<bool>>)this._handleBackButtonDispatcherNotification);
-        ((Router<T>)(object)this.widget).routerDelegate.removeListener(() => this._handleRouterDelegateNotification());
+        ((Router<T>)(object)this.widget).routerDelegate.removeListener(this._handleRouterDelegateNotification);
         _currentRouterTransaction = null;
         this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -416,7 +416,7 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -562,7 +562,7 @@ internal class _RouterState__router<T> : State<Router<T>>, RestorationMixin<Rout
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 
@@ -898,25 +898,25 @@ public class PlatformRouteInformationProvider : RouteInformationProvider, Widget
         notifyListeners();
     }
 
-    public virtual void addListener(global::System.Action listener)
+    public override void addListener(global::System.Action listener)
     {
         if (!this.hasListeners)
         {
             WidgetsBinding.instance.addObserver(this);
         }
-        base.addListener(() => listener());
+        base.addListener(listener);
     }
 
-    public virtual void removeListener(global::System.Action listener)
+    public override void removeListener(global::System.Action listener)
     {
-        base.removeListener(() => listener());
+        base.removeListener(listener);
         if (!this.hasListeners)
         {
             WidgetsBinding.instance.removeObserver(this);
         }
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         if (this.hasListeners)
         {
@@ -937,8 +937,8 @@ public class PlatformRouteInformationProvider : RouteInformationProvider, Widget
 
 public abstract class PopNavigatorRouterDelegateMixin<T> : RouterDelegate<T>
 {
-    public abstract void addListener(global::System.Action listener);
-    public abstract void removeListener(global::System.Action listener);
+    public abstract override void addListener(global::System.Action listener);
+    public abstract override void removeListener(global::System.Action listener);
     public abstract GlobalKey<NavigatorState>? navigatorKey { get; }
     public override Future<bool> popRoute()
     {

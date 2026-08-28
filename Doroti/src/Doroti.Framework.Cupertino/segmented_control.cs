@@ -317,7 +317,7 @@ public class _SegmentedControlState__segmented_control<T> : global::Doroti.Frame
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -499,8 +499,8 @@ public class _SegmentedControlState__segmented_control<T> : global::Doroti.Frame
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 

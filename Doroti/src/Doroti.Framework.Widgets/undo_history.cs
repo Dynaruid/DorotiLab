@@ -184,11 +184,11 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
             _updateState();
         })));
         _push();
-        ((UndoHistory<T>)(object)this.widget).value.addListener(() => this._push());
+        ((UndoHistory<T>)(object)this.widget).value.addListener(this._push);
         _handleFocus();
-        ((UndoHistory<T>)(object)this.widget).focusNode.addListener(() => this._handleFocus());
-        ((UndoHistoryController)this._effectiveController).onUndo.addListener(() => this.undo());
-        ((UndoHistoryController)this._effectiveController).onRedo.addListener(() => this.redo());
+        ((UndoHistory<T>)(object)this.widget).focusNode.addListener(this._handleFocus);
+        ((UndoHistoryController)this._effectiveController).onUndo.addListener(this.undo);
+        ((UndoHistoryController)this._effectiveController).onRedo.addListener(this.redo);
     }
 
     public override void didUpdateWidget(UndoHistory<T> oldWidget)
@@ -197,22 +197,22 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
         if ((!object.Equals(((UndoHistory<T>)(object)this.widget).value, ((UndoHistory<T>)oldWidget).value)))
         {
             this._stack.clear();
-            ((UndoHistory<T>)oldWidget).value.removeListener(() => this._push());
-            ((UndoHistory<T>)(object)this.widget).value.addListener(() => this._push());
+            ((UndoHistory<T>)oldWidget).value.removeListener(this._push);
+            ((UndoHistory<T>)(object)this.widget).value.addListener(this._push);
         }
         if ((!object.Equals(((UndoHistory<T>)(object)this.widget).focusNode, ((UndoHistory<T>)oldWidget).focusNode)))
         {
-            ((UndoHistory<T>)oldWidget).focusNode.removeListener(() => this._handleFocus());
-            ((UndoHistory<T>)(object)this.widget).focusNode.addListener(() => this._handleFocus());
+            ((UndoHistory<T>)oldWidget).focusNode.removeListener(this._handleFocus);
+            ((UndoHistory<T>)(object)this.widget).focusNode.addListener(this._handleFocus);
         }
         if ((!object.Equals(((UndoHistory<T>)(object)this.widget).controller, ((UndoHistory<T>)oldWidget).controller)))
         {
-            ((UndoHistoryController)this._effectiveController).onUndo.removeListener(() => this.undo());
-            ((UndoHistoryController)this._effectiveController).onRedo.removeListener(() => this.redo());
+            ((UndoHistoryController)this._effectiveController).onUndo.removeListener(this.undo);
+            ((UndoHistoryController)this._effectiveController).onRedo.removeListener(this.redo);
             this._controller?.dispose();
             _controller = null;
-            ((UndoHistoryController)this._effectiveController).onUndo.addListener(() => this.undo());
-            ((UndoHistoryController)this._effectiveController).onRedo.addListener(() => this.redo());
+            ((UndoHistoryController)this._effectiveController).onUndo.addListener(this.undo);
+            ((UndoHistoryController)this._effectiveController).onRedo.addListener(this.redo);
         }
     }
 
@@ -222,10 +222,10 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, global::Doroti.Framewo
         {
             global::Doroti.Framework.Services.UndoManager.client = null;
         }
-        ((UndoHistory<T>)(object)this.widget).value.removeListener(() => this._push());
-        ((UndoHistory<T>)(object)this.widget).focusNode.removeListener(() => this._handleFocus());
-        ((UndoHistoryController)this._effectiveController).onUndo.removeListener(() => this.undo());
-        ((UndoHistoryController)this._effectiveController).onRedo.removeListener(() => this.redo());
+        ((UndoHistory<T>)(object)this.widget).value.removeListener(this._push);
+        ((UndoHistory<T>)(object)this.widget).focusNode.removeListener(this._handleFocus);
+        ((UndoHistoryController)this._effectiveController).onUndo.removeListener(this.undo);
+        ((UndoHistoryController)this._effectiveController).onRedo.removeListener(this.redo);
         this._controller?.dispose();
         this._throttleTimer?.cancel();
         base.dispose();
@@ -293,7 +293,7 @@ public class UndoHistoryController : global::Doroti.Framework.Foundation.ValueNo
         this.onRedo.notifyListeners();
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         this.onUndo.dispose();
         this.onRedo.dispose();

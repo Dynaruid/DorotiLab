@@ -1412,6 +1412,14 @@ internal static class MaterialDynamicColors
             source,
             @"this\._overscrollNotifier\.(addListener|removeListener)\(\(\) => listener\(\)\);",
             "this._overscrollNotifier.$1(listener);");
+        source = Regex.Replace(
+            source,
+            @"\b([A-Za-z_][A-Za-z0-9_]*): \(\) => \1\(\)",
+            "$1: $1");
+        source = Regex.Replace(
+            source,
+            @"\.(addListener|removeListener)\(\(global::System\.Action\)\(\(\) => ([A-Za-z_][A-Za-z0-9_]*)\(\)\)\)",
+            ".$1((global::System.Action)$2)");
 
         if (library.EndsWith("/editable_text.dart", StringComparison.Ordinal))
         {

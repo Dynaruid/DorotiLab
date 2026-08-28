@@ -469,7 +469,7 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
         _opacityAnimation = ((Func<global::Doroti.Framework.Animation.CurvedAnimation>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.CurvedAnimation(parent: _opacityController = new global::Doroti.Framework.Animation.AnimationController(duration: ((_SortArrow__data_table)this.widget).duration, vsync: this), curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
-    __cascade.addListener(() => this._rebuild());
+    __cascade.addListener(this._rebuild);
     return __cascade;
 }))();
         this._opacityController.value = (((_SortArrow__data_table)this.widget).visible ? 1.0 : 0.0);
@@ -477,7 +477,7 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
         _orientationAnimation = ((Func<global::Doroti.Framework.Animation.Animation<double>>)(() =>
 {
     var __cascade = this._orientationController.drive(_turnTween);
-    __cascade.addListener(() => this._rebuild());
+    __cascade.addListener(this._rebuild);
     __cascade.addStatusListener((AnimationStatusListener)this._resetOrientationAnimation);
     return __cascade;
 }))();
@@ -560,7 +560,7 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -632,8 +632,8 @@ public class _SortArrowState__data_table : global::Doroti.Framework.Widgets.Stat
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 

@@ -208,7 +208,7 @@ public class _SliderState__slider : global::Doroti.Framework.Widgets.State<Slide
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -499,8 +499,8 @@ public class _SliderState__slider : global::Doroti.Framework.Widgets.State<Slide
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -1021,21 +1021,21 @@ public class _RenderSlider__slider : global::Doroti.Framework.Rendering.RenderBo
     {
         base.attach(owner);
         DartRuntimePrimitives.Assert(() => !this._hasPendingSystemFontsDidChangeCallBack);
-        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._scheduleSystemFontsUpdate());
-        this._overlayAnimation.addListener(() => this.markNeedsPaint());
-        this._valueIndicatorAnimation.addListener(() => this.markNeedsPaint());
-        this._enableAnimation.addListener(() => this.markNeedsPaint());
-        ((_SliderState__slider)this._state).positionController.addListener(() => this.markNeedsPaint());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(this._scheduleSystemFontsUpdate);
+        this._overlayAnimation.addListener(this.markNeedsPaint);
+        this._valueIndicatorAnimation.addListener(this.markNeedsPaint);
+        this._enableAnimation.addListener(this.markNeedsPaint);
+        ((_SliderState__slider)this._state).positionController.addListener(this.markNeedsPaint);
     }
 
     public override void detach()
     {
-        this._overlayAnimation.removeListener(() => this.markNeedsPaint());
-        this._valueIndicatorAnimation.removeListener(() => this.markNeedsPaint());
-        this._enableAnimation.removeListener(() => this.markNeedsPaint());
-        ((_SliderState__slider)this._state).positionController.removeListener(() => this.markNeedsPaint());
+        this._overlayAnimation.removeListener(this.markNeedsPaint);
+        this._valueIndicatorAnimation.removeListener(this.markNeedsPaint);
+        this._enableAnimation.removeListener(this.markNeedsPaint);
+        ((_SliderState__slider)this._state).positionController.removeListener(this.markNeedsPaint);
         DartRuntimePrimitives.Assert(() => !this._hasPendingSystemFontsDidChangeCallBack);
-        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._scheduleSystemFontsUpdate());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(this._scheduleSystemFontsUpdate);
         base.detach();
     }
 
@@ -1539,17 +1539,17 @@ public class _RenderValueIndicator__slider : global::Doroti.Framework.Rendering.
     {
         base.attach(owner);
         DartRuntimePrimitives.Assert(() => !this._hasPendingSystemFontsDidChangeCallBack);
-        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(() => this._scheduleSystemFontsUpdate());
-        this._valueIndicatorAnimation.addListener(() => this.markNeedsPaint());
-        ((_SliderState__slider)this._state).positionController.addListener(() => this.markNeedsPaint());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.addListener(this._scheduleSystemFontsUpdate);
+        this._valueIndicatorAnimation.addListener(this.markNeedsPaint);
+        ((_SliderState__slider)this._state).positionController.addListener(this.markNeedsPaint);
     }
 
     public override void detach()
     {
-        this._valueIndicatorAnimation.removeListener(() => this.markNeedsPaint());
-        ((_SliderState__slider)this._state).positionController.removeListener(() => this.markNeedsPaint());
+        this._valueIndicatorAnimation.removeListener(this.markNeedsPaint);
+        ((_SliderState__slider)this._state).positionController.removeListener(this.markNeedsPaint);
         DartRuntimePrimitives.Assert(() => !this._hasPendingSystemFontsDidChangeCallBack);
-        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(() => this._scheduleSystemFontsUpdate());
+        global::Doroti.Framework.Painting.PaintingBinding.instance.systemFonts.removeListener(this._scheduleSystemFontsUpdate);
         base.detach();
     }
 

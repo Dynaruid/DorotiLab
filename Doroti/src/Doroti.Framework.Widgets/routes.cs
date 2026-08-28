@@ -917,14 +917,14 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
     public virtual void registerPopEntry(dynamic popEntry)
     {
         this._popEntries.Add(popEntry);
-        ((global::Doroti.Framework.Foundation.ValueListenable<bool>)((dynamic)popEntry).canPopNotifier).addListener(() => this._maybeDispatchNavigationNotification());
+        ((global::Doroti.Framework.Foundation.ValueListenable<bool>)((dynamic)popEntry).canPopNotifier).addListener(this._maybeDispatchNavigationNotification);
         _maybeDispatchNavigationNotification();
     }
 
     public virtual void unregisterPopEntry(dynamic popEntry)
     {
         this._popEntries.Remove(popEntry);
-        ((global::Doroti.Framework.Foundation.ValueListenable<bool>)((dynamic)popEntry).canPopNotifier).removeListener(() => this._maybeDispatchNavigationNotification());
+        ((global::Doroti.Framework.Foundation.ValueListenable<bool>)((dynamic)popEntry).canPopNotifier).removeListener(this._maybeDispatchNavigationNotification);
         _maybeDispatchNavigationNotification();
     }
 

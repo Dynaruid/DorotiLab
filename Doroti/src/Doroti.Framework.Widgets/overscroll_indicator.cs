@@ -339,7 +339,7 @@ public class _GlowController__overscroll_indicator : global::Doroti.Framework.Fo
             notifyListeners();
         }
     }
-    public virtual void dispose()
+    public override void dispose()
     {
         this._glowController.dispose();
         this._decelerator.dispose();

@@ -48,8 +48,8 @@ internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedEleme
         T? newNotifier = ((InheritedNotifier<T>)__newWidget).notifier;
         if (!EqualityComparer<T>.Default.Equals(oldNotifier, newNotifier))
         {
-            oldNotifier?.removeListener(() => this._handleUpdate());
-            newNotifier?.addListener(() => this._handleUpdate());
+            oldNotifier?.removeListener(this._handleUpdate);
+            newNotifier?.addListener(this._handleUpdate);
         }
         base.update(__newWidget);
     }
@@ -79,7 +79,7 @@ internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedEleme
 
     public override void unmount()
     {
-        (((InheritedNotifier<T>?)(object?)this.widget)!).notifier?.removeListener(() => this._handleUpdate());
+        (((InheritedNotifier<T>?)(object?)this.widget)!).notifier?.removeListener(this._handleUpdate);
         base.unmount();
     }
 

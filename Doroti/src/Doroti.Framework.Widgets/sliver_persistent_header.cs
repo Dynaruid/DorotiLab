@@ -96,12 +96,12 @@ internal class _FloatingHeaderState__sliver_persistent_header : State<_FloatingH
         base.didChangeDependencies();
         if ((this._position is not null))
         {
-            this._position!.isScrollingNotifier.removeListener(() => this._isScrollingListener());
+            this._position!.isScrollingNotifier.removeListener(this._isScrollingListener);
         }
         _position = Scrollable.maybeOf(this.context)?.position;
         if ((this._position is not null))
         {
-            this._position!.isScrollingNotifier.addListener(() => this._isScrollingListener());
+            this._position!.isScrollingNotifier.addListener(this._isScrollingListener);
         }
     }
 
@@ -109,7 +109,7 @@ internal class _FloatingHeaderState__sliver_persistent_header : State<_FloatingH
     {
         if ((this._position is not null))
         {
-            this._position!.isScrollingNotifier.removeListener(() => this._isScrollingListener());
+            this._position!.isScrollingNotifier.removeListener(this._isScrollingListener);
         }
         base.dispose();
     }

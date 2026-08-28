@@ -321,12 +321,12 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
             }
             if (this.attached)
             {
-                this._horizontalOffset.removeListener(() => this.markNeedsLayout());
+                this._horizontalOffset.removeListener(this.markNeedsLayout);
             }
             _horizontalOffset = __value;
             if (this.attached)
             {
-                this._horizontalOffset.addListener(() => this.markNeedsLayout());
+                this._horizontalOffset.addListener(this.markNeedsLayout);
             }
             markNeedsLayout();
         }
@@ -357,12 +357,12 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
             }
             if (this.attached)
             {
-                this._verticalOffset.removeListener(() => this.markNeedsLayout());
+                this._verticalOffset.removeListener(this.markNeedsLayout);
             }
             _verticalOffset = __value;
             if (this.attached)
             {
-                this._verticalOffset.addListener(() => this.markNeedsLayout());
+                this._verticalOffset.addListener(this.markNeedsLayout);
             }
             markNeedsLayout();
         }
@@ -393,13 +393,13 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
             }
             if (this.attached)
             {
-                this._delegate.removeListener(() => this._handleDelegateNotification());
+                this._delegate.removeListener(this._handleDelegateNotification);
             }
             TwoDimensionalChildDelegate oldDelegate = this._delegate;
             _delegate = __value;
             if (this.attached)
             {
-                this._delegate.addListener(() => this._handleDelegateNotification());
+                this._delegate.addListener(this._handleDelegateNotification);
             }
             if (((!object.Equals(DartRuntimePrimitives.RuntimeType(this._delegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || this._delegate.shouldRebuild(oldDelegate)))
             {
@@ -543,9 +543,9 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
     {
         base.attach(owner);
-        this._horizontalOffset.addListener(() => this.markNeedsLayout());
-        this._verticalOffset.addListener(() => this.markNeedsLayout());
-        this._delegate.addListener(() => this._handleDelegateNotification());
+        this._horizontalOffset.addListener(this.markNeedsLayout);
+        this._verticalOffset.addListener(this.markNeedsLayout);
+        this._delegate.addListener(this._handleDelegateNotification);
         foreach (global::Doroti.Framework.Rendering.RenderBox child in this._children.Values)
         {
             child.attach(owner);
@@ -559,9 +559,9 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
     public override void detach()
     {
         base.detach();
-        this._horizontalOffset.removeListener(() => this.markNeedsLayout());
-        this._verticalOffset.removeListener(() => this.markNeedsLayout());
-        this._delegate.removeListener(() => this._handleDelegateNotification());
+        this._horizontalOffset.removeListener(this.markNeedsLayout);
+        this._verticalOffset.removeListener(this.markNeedsLayout);
+        this._delegate.removeListener(this._handleDelegateNotification);
         foreach (global::Doroti.Framework.Rendering.RenderBox child in this._children.Values)
         {
             child.detach();

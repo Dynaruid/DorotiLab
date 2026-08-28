@@ -354,9 +354,9 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         }
         if (this.isRoot)
         {
-            this._scrollPosition?.isScrollingNotifier.removeListener(() => this._handleScroll());
+            this._scrollPosition?.isScrollingNotifier.removeListener(this._handleScroll);
             this._scrollPosition = Scrollable.maybeOf(this.context)?.position;
-            this._scrollPosition?.isScrollingNotifier.addListener(() => this._handleScroll());
+            this._scrollPosition?.isScrollingNotifier.addListener(this._handleScroll);
             global::Doroti.Ui.Size newSize = ((global::Doroti.Ui.Size)(object?)MediaQuery.sizeOf(this.context));
             if ((((this._viewSize is not null) && (!object.Equals(newSize, this._viewSize))) && this.isOpen))
             {
@@ -375,7 +375,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         }
         if (this.isRoot)
         {
-            this._scrollPosition?.isScrollingNotifier.removeListener(() => this._handleScroll());
+            this._scrollPosition?.isScrollingNotifier.removeListener(this._handleScroll);
             this._scrollPosition = null;
         }
         ((dynamic)this._parent)?._removeChild(this);
@@ -594,9 +594,9 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         }
         if (this.isRoot)
         {
-            this._scrollPosition?.isScrollingNotifier.removeListener(() => this._handleScroll());
+            this._scrollPosition?.isScrollingNotifier.removeListener(this._handleScroll);
             this._scrollPosition = Scrollable.maybeOf(this.context)?.position;
-            this._scrollPosition?.isScrollingNotifier.addListener(() => this._handleScroll());
+            this._scrollPosition?.isScrollingNotifier.addListener(this._handleScroll);
             global::Doroti.Ui.Size newSize = ((global::Doroti.Ui.Size)(object?)MediaQuery.sizeOf(this.context));
             if ((((this._viewSize is not null) && (!object.Equals(newSize, this._viewSize))) && this.isOpen))
             {
@@ -615,7 +615,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         }
         if (this.isRoot)
         {
-            this._scrollPosition?.isScrollingNotifier.removeListener(() => this._handleScroll());
+            this._scrollPosition?.isScrollingNotifier.removeListener(this._handleScroll);
             this._scrollPosition = null;
         }
         ((dynamic)this._parent)?._removeChild(this);

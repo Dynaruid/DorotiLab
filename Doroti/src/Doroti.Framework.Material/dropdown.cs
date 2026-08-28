@@ -586,7 +586,7 @@ public class _RenderMenuItem__dropdown : global::Doroti.Framework.Rendering.Rend
         this.onLayout = onLayout;
     }
 
-    public virtual void performLayout()
+    public override void performLayout()
     {
         base.performLayout();
         this.onLayout(this.size);
@@ -793,14 +793,14 @@ internal class _DropdownButtonState__dropdown<T> : global::Doroti.Framework.Widg
             _internalNode ??= _createFocusNode();
         }
         _actionMap = new DartMap<Type, dynamic> { [typeof(global::Doroti.Framework.Widgets.ActivateIntent)] = new global::Doroti.Framework.Widgets.CallbackAction<global::Doroti.Framework.Widgets.ActivateIntent>(onInvoke: ((global::System.Action<global::Doroti.Framework.Widgets.ActivateIntent>)((intent) => { _handleTap(); }))), [typeof(global::Doroti.Framework.Widgets.ButtonActivateIntent)] = new global::Doroti.Framework.Widgets.CallbackAction<global::Doroti.Framework.Widgets.ButtonActivateIntent>(onInvoke: ((global::System.Action<global::Doroti.Framework.Widgets.ButtonActivateIntent>)((intent) => { _handleTap(); }))) };
-        this.focusNode.addListener(() => this._handleFocusChanged());
+        this.focusNode.addListener(this._handleFocusChanged);
     }
 
     public override void dispose()
     {
         global::Doroti.Framework.Widgets.WidgetsBinding.instance.removeObserver(this);
         _removeDropdownRoute();
-        this.focusNode.removeListener(() => this._handleFocusChanged());
+        this.focusNode.removeListener(this._handleFocusChanged);
         this._internalNode?.dispose();
         base.dispose();
     }
@@ -828,7 +828,7 @@ internal class _DropdownButtonState__dropdown<T> : global::Doroti.Framework.Widg
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((DropdownButton<T>)(object)this.widget).focusNode, ((DropdownButton<T>)oldWidget).focusNode)))
         {
-            ((DropdownButton<T>)oldWidget).focusNode?.removeListener(() => this._handleFocusChanged());
+            ((DropdownButton<T>)oldWidget).focusNode?.removeListener(this._handleFocusChanged);
             if (((this._internalNode is not null) && (((DropdownButton<T>)(object)this.widget).focusNode is not null)))
             {
                 this._internalNode!.dispose();
@@ -839,7 +839,7 @@ internal class _DropdownButtonState__dropdown<T> : global::Doroti.Framework.Widg
                 _internalNode ??= _createFocusNode();
             }
             _hasPrimaryFocus = ((global::Doroti.Framework.Widgets.FocusNode)this.focusNode).hasPrimaryFocus;
-            this.focusNode.addListener(() => this._handleFocusChanged());
+            this.focusNode.addListener(this._handleFocusChanged);
         }
         _updateSelectedIndex();
     }

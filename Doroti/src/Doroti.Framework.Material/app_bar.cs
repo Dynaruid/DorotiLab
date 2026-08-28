@@ -848,8 +848,8 @@ internal class _SliverAppBarState__app_bar : global::Doroti.Framework.Widgets.St
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -869,7 +869,7 @@ internal class _SliverAppBarState__app_bar : global::Doroti.Framework.Widgets.St
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         this._tickerModeNotifier = null;
         base.dispose();
     }

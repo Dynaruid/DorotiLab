@@ -41,7 +41,7 @@ public class AdaptiveTextSelectionToolbar : global::Doroti.Framework.Widgets.Sta
         var __instance = new AdaptiveTextSelectionToolbar(key: key, children: default!, anchors: anchors);
         __instance.anchors = anchors;
         __instance.children = null;
-        __instance.buttonItems = EditableText.getEditableButtonItems(clipboardStatus: clipboardStatus, onCopy: () => onCopy(), onCut: () => onCut(), onPaste: () => onPaste(), onSelectAll: () => onSelectAll(), onLookUp: () => onLookUp(), onSearchWeb: () => onSearchWeb(), onShare: () => onShare(), onLiveTextInput: () => onLiveTextInput());
+        __instance.buttonItems = EditableText.getEditableButtonItems(clipboardStatus: clipboardStatus, onCopy: onCopy, onCut: onCut, onPaste: onPaste, onSelectAll: onSelectAll, onLookUp: onLookUp, onSearchWeb: onSearchWeb, onShare: onShare, onLiveTextInput: onLiveTextInput);
         return __instance;
     }
 
@@ -59,7 +59,7 @@ public class AdaptiveTextSelectionToolbar : global::Doroti.Framework.Widgets.Sta
         var __instance = new AdaptiveTextSelectionToolbar(key: key, children: default!, anchors: anchors);
         __instance.anchors = anchors;
         __instance.children = null;
-        __instance.buttonItems = SelectableRegion.getSelectableButtonItems(selectionGeometry: selectionGeometry, onCopy: () => onCopy(), onSelectAll: () => onSelectAll(), onShare: () => onShare());
+        __instance.buttonItems = SelectableRegion.getSelectableButtonItems(selectionGeometry: selectionGeometry, onCopy: onCopy, onSelectAll: onSelectAll, onShare: onShare);
         return __instance;
     }
 

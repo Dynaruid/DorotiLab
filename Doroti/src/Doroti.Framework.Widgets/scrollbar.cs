@@ -691,7 +691,7 @@ public class ScrollbarPainter : global::Doroti.Framework.Foundation.ChangeNotifi
     public virtual bool shouldRebuildSemantics(global::Doroti.Framework.Rendering.CustomPainter oldDelegate) => false;
     public virtual global::System.Func<Size, List<global::Doroti.Framework.Rendering.CustomPainterSemantics>>? semanticsBuilder => DartRuntimePrimitives.ConvertValue<global::System.Func<Size, List<global::Doroti.Framework.Rendering.CustomPainterSemantics>>>(null);
     public override string ToString() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public virtual void dispose()
+    public override void dispose()
     {
         this.fadeoutOpacityAnimation.removeListener(this.notifyListeners);
         base.dispose();

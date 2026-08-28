@@ -112,7 +112,7 @@ public class PaginatedDataTableState : global::Doroti.Framework.Widgets.State<Pa
     {
         base.initState();
         _firstRowIndex = ((((long?)PageStorage.maybeOf(this.context)?.readState(this.context)) ?? ((PaginatedDataTable)this.widget).initialFirstRowIndex) ?? 0L);
-        ((PaginatedDataTable)this.widget).source.addListener(() => this._handleDataSourceChanged());
+        ((PaginatedDataTable)this.widget).source.addListener(this._handleDataSourceChanged);
         _handleDataSourceChanged();
     }
 
@@ -121,8 +121,8 @@ public class PaginatedDataTableState : global::Doroti.Framework.Widgets.State<Pa
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((PaginatedDataTable)oldWidget).source, ((PaginatedDataTable)this.widget).source)))
         {
-            ((PaginatedDataTable)oldWidget).source.removeListener(() => this._handleDataSourceChanged());
-            ((PaginatedDataTable)this.widget).source.addListener(() => this._handleDataSourceChanged());
+            ((PaginatedDataTable)oldWidget).source.removeListener(this._handleDataSourceChanged);
+            ((PaginatedDataTable)this.widget).source.addListener(this._handleDataSourceChanged);
             _updateCaches();
         }
     }
@@ -135,7 +135,7 @@ public class PaginatedDataTableState : global::Doroti.Framework.Widgets.State<Pa
 
     public override void dispose()
     {
-        ((PaginatedDataTable)this.widget).source.removeListener(() => this._handleDataSourceChanged());
+        ((PaginatedDataTable)this.widget).source.removeListener(this._handleDataSourceChanged);
         base.dispose();
     }
 

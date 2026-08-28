@@ -29,7 +29,7 @@ public class SpringDescription
 
     public static SpringDescription CreateWithDampingRatio(double mass, double stiffness, double ratio = 1.0)
     {
-        var __instance = new SpringDescription(default!, default!, default!);
+        var __instance = new SpringDescription(mass, stiffness, default!);
         __instance.mass = mass;
         __instance.stiffness = stiffness;
         __instance.damping = ((ratio * 2.0) * global::Doroti.Runtime.Dart_mathLibrary.sqrt((mass * stiffness)));

@@ -134,7 +134,7 @@ public class TabController : global::Doroti.Framework.Foundation.ChangeNotifier
             this._animationController!.value = (__value + this._index.toDouble());
         }
     }
-    public virtual void dispose()
+    public override void dispose()
     {
         this._animationController?.dispose();
         _animationController = null;
@@ -227,7 +227,7 @@ internal class _DefaultTabControllerState__tab_controller : global::Doroti.Frame
                 }
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -299,8 +299,8 @@ internal class _DefaultTabControllerState__tab_controller : global::Doroti.Frame
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
+        newNotifier.addListener(this._updateTicker);
         this._tickerModeNotifier = newNotifier;
     }
 

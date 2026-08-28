@@ -146,7 +146,7 @@ public class _TextSelectionControlsToolbarState__text_selection : global::Doroti
     public override void initState()
     {
         base.initState();
-        ((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.addListener(() => this._onChangedClipboardStatus());
+        ((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.addListener(this._onChangedClipboardStatus);
     }
 
     public override void didUpdateWidget(_TextSelectionControlsToolbar__text_selection oldWidget)
@@ -154,14 +154,14 @@ public class _TextSelectionControlsToolbarState__text_selection : global::Doroti
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus, ((_TextSelectionControlsToolbar__text_selection)oldWidget).clipboardStatus)))
         {
-            ((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.addListener(() => this._onChangedClipboardStatus());
-            ((_TextSelectionControlsToolbar__text_selection)oldWidget).clipboardStatus?.removeListener(() => this._onChangedClipboardStatus());
+            ((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.addListener(this._onChangedClipboardStatus);
+            ((_TextSelectionControlsToolbar__text_selection)oldWidget).clipboardStatus?.removeListener(this._onChangedClipboardStatus);
         }
     }
 
     public override void dispose()
     {
-        ((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.removeListener(() => this._onChangedClipboardStatus());
+        ((_TextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.removeListener(this._onChangedClipboardStatus);
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((this._tickers is not null))
@@ -176,7 +176,7 @@ public class _TextSelectionControlsToolbarState__text_selection : global::Doroti
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -268,8 +268,8 @@ public class _TextSelectionControlsToolbarState__text_selection : global::Doroti
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 

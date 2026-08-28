@@ -153,7 +153,7 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
                 DartRuntimePrimitives.Ignore(HapticFeedback.heavyImpact());
             }
             this._tapGestureRecognizer.resolve(global::Doroti.Framework.Gestures.GestureDisposition.accepted);
-            this._openController.removeListener(() => this._listenerCallback());
+            this._openController.removeListener(this._listenerCallback);
         }
     }
 
@@ -288,7 +288,7 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
 
     internal virtual void _onTapCompleted()
     {
-        this._openController.removeListener(() => this._listenerCallback());
+        this._openController.removeListener(this._listenerCallback);
         if ((((global::Doroti.Framework.Animation.AnimationController)this._openController).isAnimating && (((global::Doroti.Framework.Animation.AnimationController)this._openController).value < this._midpoint)))
         {
             this._openController.reverse();
@@ -312,7 +312,7 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
 
     internal virtual void _onTapDown(global::Doroti.Framework.Gestures.TapDownDetails details)
     {
-        this._openController.addListener(() => this._listenerCallback());
+        this._openController.addListener(this._listenerCallback);
         setState(((global::System.Action)(() =>
         {
             _childHidden = true;
@@ -354,7 +354,7 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -415,8 +415,8 @@ internal class _CupertinoContextMenuState__context_menu : global::Doroti.Framewo
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -497,7 +497,7 @@ internal class _DecoyChildState__context_menu : global::Doroti.Framework.Widgets
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -564,8 +564,8 @@ internal class _DecoyChildState__context_menu : global::Doroti.Framework.Widgets
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -866,7 +866,7 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
             ((_ContextMenuRouteStatic__context_menu)(object)this.widget).onDismiss!(this.context, this._lastScale, ((global::Doroti.Framework.Animation.Animation<double>)this._sheetOpacityAnimation).value);
             return;
         }
-        this._moveController.addListener(() => this._moveListener());
+        this._moveController.addListener(this._moveListener);
         this._moveController.reverse();
     }
 
@@ -874,7 +874,7 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
     {
         if ((this._lastScale > _kSheetScaleThreshold))
         {
-            this._moveController.removeListener(() => this._moveListener());
+            this._moveController.removeListener(this._moveListener);
             if (!this._sheetController.isDismissed)
             {
                 this._sheetController.reverse();
@@ -981,7 +981,7 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -1049,8 +1049,8 @@ internal class _ContextMenuRouteStaticState__context_menu : global::Doroti.Frame
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 

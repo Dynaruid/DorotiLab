@@ -47,7 +47,7 @@ internal class _RawKeyboardListenerState__raw_keyboard_listener : State<RawKeybo
     public override void initState()
     {
         base.initState();
-        ((RawKeyboardListener)this.widget).focusNode.addListener(() => this._handleFocusChanged());
+        ((RawKeyboardListener)this.widget).focusNode.addListener(this._handleFocusChanged);
     }
 
     public override void didUpdateWidget(RawKeyboardListener oldWidget)
@@ -55,14 +55,14 @@ internal class _RawKeyboardListenerState__raw_keyboard_listener : State<RawKeybo
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((RawKeyboardListener)this.widget).focusNode, ((RawKeyboardListener)oldWidget).focusNode)))
         {
-            ((RawKeyboardListener)oldWidget).focusNode.removeListener(() => this._handleFocusChanged());
-            ((RawKeyboardListener)this.widget).focusNode.addListener(() => this._handleFocusChanged());
+            ((RawKeyboardListener)oldWidget).focusNode.removeListener(this._handleFocusChanged);
+            ((RawKeyboardListener)this.widget).focusNode.addListener(this._handleFocusChanged);
         }
     }
 
     public override void dispose()
     {
-        ((RawKeyboardListener)this.widget).focusNode.removeListener(() => this._handleFocusChanged());
+        ((RawKeyboardListener)this.widget).focusNode.removeListener(this._handleFocusChanged);
         _detachKeyboardIfAttached();
         base.dispose();
     }

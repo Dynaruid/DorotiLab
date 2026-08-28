@@ -412,7 +412,7 @@ public class LocalizationsResolver : global::Doroti.Framework.Foundation.ChangeN
         this._supportedLocales = supportedLocales;
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         WidgetsBinding.instance.removeObserver(this);
         base.dispose();

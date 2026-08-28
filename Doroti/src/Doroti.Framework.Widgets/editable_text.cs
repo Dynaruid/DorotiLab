@@ -97,7 +97,7 @@ public class _RenderCompositionCallback__editable_text : global::Doroti.Framewor
             }
         }
     }
-    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
         if (this.enabled)
         {
@@ -116,7 +116,8 @@ public class TextEditingController : global::Doroti.Framework.Foundation.ValueNo
 
     public static TextEditingController CreateFromValue(global::Doroti.Framework.Services.TextEditingValue? value)
     {
-        var __instance = new TextEditingController(default!);
+        var __instance = new TextEditingController();
+        __instance.value = value ?? global::Doroti.Framework.Services.TextEditingValue.empty;
         return __instance;
     }
 
@@ -839,7 +840,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
             return _backingCursorBlinkOpacityController ??= ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this);
-    __cascade.addListener(() => this._onCursorColorTick());
+    __cascade.addListener(this._onCursorColorTick);
     return __cascade;
 }))();
             return default!;
@@ -1454,14 +1455,14 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     internal virtual void _onResume()
     {
         _justResumed = true;
-        FocusManager.instance.removeListener(() => this._resetJustResumed());
-        FocusManager.instance.addListener(() => this._resetJustResumed());
+        FocusManager.instance.removeListener(this._resetJustResumed);
+        FocusManager.instance.addListener(this._resetJustResumed);
     }
 
     internal virtual void _resetJustResumed()
     {
         _justResumed = false;
-        FocusManager.instance.removeListener(() => this._resetJustResumed());
+        FocusManager.instance.removeListener(this._resetJustResumed);
     }
 
     internal async virtual Future _initProcessTextActions()
@@ -1731,8 +1732,8 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         this.clipboardStatus.dispose();
         this._cursorVisibilityNotifier.dispose();
         this._appLifecycleListener.dispose();
-        FocusManager.instance.removeListener(() => this._unflagInternalFocus());
-        FocusManager.instance.removeListener(() => this._resetJustResumed());
+        FocusManager.instance.removeListener(this._unflagInternalFocus);
+        FocusManager.instance.removeListener(this._resetJustResumed);
         _disposeScrollNotificationObserver();
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1749,7 +1750,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
         DartRuntimePrimitives.Assert(() => (this._batchEditDepth <= 0L), () => (object?)$"unfinished batch edits: {this._batchEditDepth}");
@@ -1873,7 +1874,7 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         _floatingCursorResetController ??= ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this);
-    __cascade.addListener(() => this._onFloatingCursorResetTick());
+    __cascade.addListener(this._onFloatingCursorResetTick);
     return __cascade;
 }))();
         switch (((global::Doroti.Framework.Services.RawFloatingCursorPoint)point).state)
@@ -2219,13 +2220,13 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
     internal virtual void _flagInternalFocus()
     {
         _nextFocusChangeIsInternal = true;
-        FocusManager.instance.addListener(() => this._unflagInternalFocus());
+        FocusManager.instance.addListener(this._unflagInternalFocus);
     }
 
     internal virtual void _unflagInternalFocus()
     {
         _nextFocusChangeIsInternal = false;
-        FocusManager.instance.removeListener(() => this._unflagInternalFocus());
+        FocusManager.instance.removeListener(this._unflagInternalFocus);
     }
 
     public virtual void requestKeyboard()
@@ -3602,8 +3603,8 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 

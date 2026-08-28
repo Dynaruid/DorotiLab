@@ -608,8 +608,8 @@ DartRuntimePrimitives.Ignore(Scrollable.ensureVisible(this._keys[(int)(i)].curre
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -629,7 +629,7 @@ DartRuntimePrimitives.Ignore(Scrollable.ensureVisible(this._keys[(int)(i)].curre
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         this._tickerModeNotifier = null;
         base.dispose();
     }

@@ -489,7 +489,7 @@ public abstract class ScrollPosition : global::Doroti.Framework.Rendering.Viewpo
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         this.activity?.dispose();
         _activity = null;

@@ -23,7 +23,23 @@ public class AnimatedList : _AnimatedScrollView__animated_scroll_view
 
     public static AnimatedList CreateSeparated(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> itemBuilder = default!, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> separatorBuilder = default!, global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> removedSeparatorBuilder = default!, long initialItemCount = 0, global::Doroti.Framework.Painting.Axis scrollDirection = global::Doroti.Framework.Painting.Axis.vertical, bool reverse = false, ScrollController? controller = null, bool? primary = null, ScrollPhysics? physics = null, bool shrinkWrap = false, global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding = null, Clip clipBehavior = Clip.hardEdge, global::Doroti.Framework.Rendering.ScrollCacheExtent? scrollCacheExtent = null)
     {
-        var __instance = new AnimatedList(default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new AnimatedList(
+            key: key,
+            itemBuilder: (context, index, animation) =>
+                (index & 1L) == 0L
+                    ? itemBuilder(context, index / 2L, animation)
+                    : separatorBuilder(context, index / 2L, animation),
+            initialItemCount: _computeChildCountWithSeparators(initialItemCount),
+            scrollDirection: scrollDirection,
+            reverse: reverse,
+            controller: controller,
+            primary: primary,
+            physics: physics,
+            shrinkWrap: shrinkWrap,
+            padding: padding,
+            clipBehavior: clipBehavior,
+            scrollCacheExtent: scrollCacheExtent);
+        __instance.removedSeparatorBuilder = removedSeparatorBuilder;
         return __instance;
     }
 
@@ -120,7 +136,7 @@ public class AnimatedGridState : _AnimatedScrollViewState__animated_scroll_view<
 public abstract class _AnimatedScrollView__animated_scroll_view : StatefulWidget
 {
     public virtual global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget> itemBuilder { get; private set; } = default!;
-    public virtual global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? removedSeparatorBuilder { get; private set; }
+    public virtual global::System.Func<BuildContext, long, global::Doroti.Framework.Animation.Animation<double>, Widget>? removedSeparatorBuilder { get; protected set; }
     public virtual long initialItemCount { get; private set; } = default!;
     public virtual global::Doroti.Framework.Painting.Axis scrollDirection { get; private set; } = default!;
     public virtual bool reverse { get; private set; } = default!;
@@ -400,7 +416,7 @@ internal class _ActiveItem__animated_scroll_view : IComparable<_ActiveItem__anim
 
     internal static _ActiveItem__animated_scroll_view CreateOutgoing(global::Doroti.Framework.Animation.AnimationController? controller, long itemIndex, global::System.Func<BuildContext, global::Doroti.Framework.Animation.Animation<double>, Widget>? removedItemBuilder)
     {
-        var __instance = new _ActiveItem__animated_scroll_view(default!, default!);
+        var __instance = new _ActiveItem__animated_scroll_view(controller, itemIndex);
         __instance.controller = controller;
         __instance.itemIndex = itemIndex;
         __instance.removedItemBuilder = removedItemBuilder;
@@ -409,7 +425,7 @@ internal class _ActiveItem__animated_scroll_view : IComparable<_ActiveItem__anim
 
     internal static _ActiveItem__animated_scroll_view CreateIndex(long itemIndex)
     {
-        var __instance = new _ActiveItem__animated_scroll_view(default!, default!);
+        var __instance = new _ActiveItem__animated_scroll_view(default!, itemIndex);
         __instance.itemIndex = itemIndex;
         __instance.controller = null;
         __instance.removedItemBuilder = null;

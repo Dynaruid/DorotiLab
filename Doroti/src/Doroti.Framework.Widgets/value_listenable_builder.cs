@@ -40,7 +40,7 @@ internal class _ValueListenableBuilderState__value_listenable_builder<T> : State
     {
         base.initState();
         this.value = ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.value;
-        ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.addListener(() => this._valueChanged());
+        ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.addListener(this._valueChanged);
     }
 
     public override void didUpdateWidget(ValueListenableBuilder<T> oldWidget)
@@ -48,15 +48,15 @@ internal class _ValueListenableBuilderState__value_listenable_builder<T> : State
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((ValueListenableBuilder<T>)oldWidget).valueListenable, ((ValueListenableBuilder<T>)(object)this.widget).valueListenable)))
         {
-            ((ValueListenableBuilder<T>)oldWidget).valueListenable.removeListener(() => this._valueChanged());
+            ((ValueListenableBuilder<T>)oldWidget).valueListenable.removeListener(this._valueChanged);
             this.value = ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.value;
-            ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.addListener(() => this._valueChanged());
+            ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.addListener(this._valueChanged);
         }
     }
 
     public override void dispose()
     {
-        ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.removeListener(() => this._valueChanged());
+        ((ValueListenableBuilder<T>)(object)this.widget).valueListenable.removeListener(this._valueChanged);
         base.dispose();
     }
 

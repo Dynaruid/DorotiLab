@@ -108,7 +108,7 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
             internalStatesController = new global::Doroti.Framework.Widgets.WidgetStatesController();
         }
         this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.disabled, !((ButtonStyleButton)this.widget).enabled);
-        this.statesController.addListener(() => this.handleStatesControllerChange());
+        this.statesController.addListener(this.handleStatesControllerChange);
     }
 
     public override void initState()
@@ -122,7 +122,7 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((ButtonStyleButton)this.widget).statesController, ((ButtonStyleButton)oldWidget).statesController)))
         {
-            ((ButtonStyleButton)oldWidget).statesController?.removeListener(() => this.handleStatesControllerChange());
+            ((ButtonStyleButton)oldWidget).statesController?.removeListener(this.handleStatesControllerChange);
             if ((((ButtonStyleButton)this.widget).statesController is not null))
             {
                 this.internalStatesController?.dispose();
@@ -142,7 +142,7 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
 
     public override void dispose()
     {
-        this.statesController.removeListener(() => this.handleStatesControllerChange());
+        this.statesController.removeListener(this.handleStatesControllerChange);
         this.internalStatesController?.dispose();
         this.controller?.dispose();
         DartRuntimePrimitives.Assert(() =>
@@ -159,7 +159,7 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -351,8 +351,8 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 

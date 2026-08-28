@@ -363,7 +363,7 @@ public class HeroControllerScope : InheritedWidget
 
     public static HeroControllerScope CreateNone(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!)
     {
-        var __instance = new HeroControllerScope(default!, default!, default!);
+        var __instance = new HeroControllerScope(key, default!, child);
         __instance.controller = null;
         return __instance;
     }
@@ -1152,7 +1152,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
                 DartRuntimePrimitives.Assert(() => (mountedLocal > 0L));
                 DartRuntimePrimitives.Assert(() => !((OverlayEntry)entry).mounted);
                 mountedLocal--;
-                entry.removeListener(() => listener());
+                entry.removeListener(listener);
                 if ((mountedLocal == 0L))
                 {
                     DartRuntimePrimitives.Assert(() => ((List<OverlayEntry>)((dynamic)this.route).overlayEntries).All(((e) => !((OverlayEntry)e).mounted)));
@@ -1169,7 +1169,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
                     return;
                 }
             });
-            entry.addListener(() => listener());
+            entry.addListener(listener);
         }
     }
 
@@ -1531,8 +1531,8 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         {
             DartRuntimePrimitives.Ignore(SystemNavigator.selectSingleEntryHistory());
         }
-        global::Doroti.Framework.Services.ServicesBinding.instance.accessibilityFocus.addListener(() => this._recordLastFocus());
-        this._history.addListener(() => this._handleHistoryChanged());
+        global::Doroti.Framework.Services.ServicesBinding.instance.accessibilityFocus.addListener(this._recordLastFocus);
+        this._history.addListener(this._handleHistoryChanged);
     }
 
     internal virtual void _recordLastFocus()
@@ -1807,14 +1807,14 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         this._rawNextPagelessRestorationScopeId.dispose();
         this._serializableHistory.dispose();
         this.userGestureInProgressNotifier.dispose();
-        global::Doroti.Framework.Services.ServicesBinding.instance.accessibilityFocus.removeListener(() => this._recordLastFocus());
-        this._history.removeListener(() => this._handleHistoryChanged());
+        global::Doroti.Framework.Services.ServicesBinding.instance.accessibilityFocus.removeListener(this._recordLastFocus);
+        this._history.removeListener(this._handleHistoryChanged);
         this._history.dispose();
         this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -3087,8 +3087,8 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -3116,7 +3116,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -3262,7 +3262,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 
@@ -3644,7 +3644,7 @@ public class RestorableRouteFuture<T> : RestorableProperty<string?>
     public override void dispose()
     {
         base.dispose();
-        this._route?.restorationScopeId.removeListener(() => this.notifyListeners());
+        this._route?.restorationScopeId.removeListener(this.notifyListeners);
         _disposed = true;
     }
 
@@ -3662,14 +3662,14 @@ public class RestorableRouteFuture<T> : RestorableProperty<string?>
     {
         _route = this._navigator._getRouteById<T>(id);
         DartRuntimePrimitives.Assert(() => (this._route is not null));
-        this.route!.restorationScopeId.addListener(() => this.notifyListeners());
+        this.route!.restorationScopeId.addListener(this.notifyListeners);
         DartRuntimePrimitives.Ignore(this.route!.popped.then((global::System.Action<object>)((result) =>
         {
             if (this._disposed)
             {
                 return;
             }
-            this._route?.restorationScopeId.removeListener(() => this.notifyListeners());
+            this._route?.restorationScopeId.removeListener(this.notifyListeners);
             _route = null;
             notifyListeners();
             this.onComplete?.Invoke(((T?)(object?)result)!);

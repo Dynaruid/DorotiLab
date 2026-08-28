@@ -168,7 +168,7 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = this._controller;
-    __cascade.addListener(() => this._animationChanged());
+    __cascade.addListener(this._animationChanged);
     __cascade.addStatusListener((AnimationStatusListener)this._animationStatusChanged);
     return __cascade;
 }))());
@@ -187,7 +187,7 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
                 }
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -424,8 +424,8 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
+        newNotifier.addListener(this._updateTicker);
         this._tickerModeNotifier = newNotifier;
     }
 

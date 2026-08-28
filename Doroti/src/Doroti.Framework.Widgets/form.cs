@@ -491,7 +491,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -575,7 +575,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -721,7 +721,7 @@ public class FormFieldState<T> : State<FormField<T>>, RestorationMixin<FormField
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 

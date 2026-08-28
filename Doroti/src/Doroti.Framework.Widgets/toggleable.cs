@@ -92,8 +92,8 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
             {
                 return;
             }
-            this._position?.removeListener(() => this.notifyListeners());
-            __value.addListener(() => this.notifyListeners());
+            this._position?.removeListener(this.notifyListeners);
+            __value.addListener(this.notifyListeners);
             _position = __value;
             notifyListeners();
         }
@@ -108,8 +108,8 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
             {
                 return;
             }
-            this._reaction?.removeListener(() => this.notifyListeners());
-            __value.addListener(() => this.notifyListeners());
+            this._reaction?.removeListener(this.notifyListeners);
+            __value.addListener(this.notifyListeners);
             _reaction = __value;
             notifyListeners();
         }
@@ -124,8 +124,8 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
             {
                 return;
             }
-            this._reactionFocusFade?.removeListener(() => this.notifyListeners());
-            __value.addListener(() => this.notifyListeners());
+            this._reactionFocusFade?.removeListener(this.notifyListeners);
+            __value.addListener(this.notifyListeners);
             _reactionFocusFade = __value;
             notifyListeners();
         }
@@ -140,8 +140,8 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
             {
                 return;
             }
-            this._reactionHoverFade?.removeListener(() => this.notifyListeners());
-            __value.addListener(() => this.notifyListeners());
+            this._reactionHoverFade?.removeListener(this.notifyListeners);
+            __value.addListener(this.notifyListeners);
             _reactionHoverFade = __value;
             notifyListeners();
         }
@@ -321,12 +321,12 @@ public abstract class ToggleablePainter : global::Doroti.Framework.Foundation.Ch
 
     public abstract void paint(Canvas canvas, Size size);
 
-    public virtual void dispose()
+    public override void dispose()
     {
-        this._position?.removeListener(() => this.notifyListeners());
-        this._reaction?.removeListener(() => this.notifyListeners());
-        this._reactionFocusFade?.removeListener(() => this.notifyListeners());
-        this._reactionHoverFade?.removeListener(() => this.notifyListeners());
+        this._position?.removeListener(this.notifyListeners);
+        this._reaction?.removeListener(this.notifyListeners);
+        this._reactionFocusFade?.removeListener(this.notifyListeners);
+        this._reactionHoverFade?.removeListener(this.notifyListeners);
         base.dispose();
     }
 

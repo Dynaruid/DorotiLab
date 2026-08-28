@@ -188,7 +188,7 @@ public class SliverChildListDelegate : SliverChildDelegate
 
     public static SliverChildListDelegate CreateFixed(List<Widget> children, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, global::System.Func<Widget, long, long?> semanticIndexCallback = default!, long semanticIndexOffset = 0)
     {
-        var __instance = new SliverChildListDelegate(default!, default!, default!, default!, default!, default!);
+        var __instance = new SliverChildListDelegate(children, addAutomaticKeepAlives, addRepaintBoundaries, addSemanticIndexes, semanticIndexCallback, semanticIndexOffset);
         global::System.Func<Widget, long, long?> __semanticIndexCallback = semanticIndexCallback ?? ((widget, index) => Scroll_delegateLibrary._kDefaultSemanticIndexCallback(widget, index));
         __instance.children = children;
         __instance.addAutomaticKeepAlives = addAutomaticKeepAlives;
@@ -375,7 +375,7 @@ internal class _SelectionKeepAliveState__scroll_delegate : State<_SelectionKeepA
     public virtual void add(global::Doroti.Framework.Rendering.Selectable selectable)
     {
         global::System.Action attachment = ((global::System.Action)(object?)listensTo(selectable));
-        selectable.addListener(() => attachment());
+        selectable.addListener(attachment);
         _selectableAttachments ??= new DartMap<global::Doroti.Framework.Rendering.Selectable, global::System.Action>();
         this._selectableAttachments![selectable] = (global::System.Action)attachment;
         this._registrar!.add(selectable);
@@ -393,7 +393,7 @@ internal class _SelectionKeepAliveState__scroll_delegate : State<_SelectionKeepA
         }
         DartRuntimePrimitives.Assert(() => this._selectableAttachments!.ContainsKey(selectable));
         global::System.Action attachment = this._selectableAttachments!.remove(selectable)!;
-        selectable.removeListener(() => attachment());
+        selectable.removeListener(attachment);
         this._registrar!.remove(selectable);
         _updateSelectablesWithSelections(selectable, add: false);
     }

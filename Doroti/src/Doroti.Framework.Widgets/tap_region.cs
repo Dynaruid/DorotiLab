@@ -94,13 +94,13 @@ public class RenderTapRegionSurface : global::Doroti.Framework.Rendering.RenderP
     internal virtual HashSet<RenderTapRegion> _registeredRegions { get; private set; } = new HashSet<RenderTapRegion>();
     internal virtual DartMap<object, HashSet<RenderTapRegion>> _groupIdToRegions { get; private set; } = new DartMap<object, HashSet<RenderTapRegion>>();
 
-    public virtual void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
+    public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
     {
         base.attach(owner);
         global::Doroti.Framework.Semantics.SemanticsBinding.instance.addSemanticsActionListener((global::System.Action<SemanticsActionEvent>)this._handleSemanticsAction);
     }
 
-    public virtual void detach()
+    public override void detach()
     {
         global::Doroti.Framework.Semantics.SemanticsBinding.instance.removeSemanticsActionListener((global::System.Action<SemanticsActionEvent>)this._handleSemanticsAction);
         base.detach();

@@ -227,7 +227,7 @@ public class SelectionEdgeUpdateEvent : SelectionEvent
 
     public static SelectionEdgeUpdateEvent CreateForEnd(Offset globalPosition, TextGranularity? granularity = null)
     {
-        var __instance = new SelectionEdgeUpdateEvent(default!, default!);
+        var __instance = new SelectionEdgeUpdateEvent(globalPosition, granularity);
         __instance.globalPosition = globalPosition;
         __instance.granularity = (granularity ?? TextGranularity.character);
         return __instance;

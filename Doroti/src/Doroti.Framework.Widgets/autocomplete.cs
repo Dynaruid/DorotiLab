@@ -114,7 +114,7 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
             return (((RawAutocomplete<T>)(object)this.widget).textEditingController ?? (_internalTextEditingController ??= ((Func<TextEditingController>)(() =>
 {
     var __cascade = new TextEditingController();
-    __cascade.addListener(() => this._onChangedField());
+    __cascade.addListener(this._onChangedFieldListener);
     return __cascade;
 }))()));
             return default!;
@@ -127,7 +127,7 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
             return (((RawAutocomplete<T>)(object)this.widget).focusNode ?? (_internalFocusNode ??= ((Func<FocusNode>)(() =>
 {
     var __cascade = new FocusNode();
-    __cascade.addListener(() => this._onFocusChange());
+    __cascade.addListener(this._onFocusChange);
     return __cascade;
 }))()));
             return default!;
@@ -172,6 +172,8 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
             FlutterError.reportError(new global::Doroti.Framework.Foundation.FlutterErrorDetails(exception: exception, stack: stack, library: "widgets library", context: new global::Doroti.Framework.Foundation.ErrorDescription("while sending semantics announcement")));
         }))));
     }
+
+    private void _onChangedFieldListener() => _ = _onChangedField();
 
     internal async virtual Future _onChangedField()
     {
@@ -333,9 +335,9 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
     {
         base.initState();
         TextEditingController initialController = (((RawAutocomplete<T>)(object)this.widget).textEditingController ?? (_internalTextEditingController = TextEditingController.CreateFromValue(((RawAutocomplete<T>)(object)this.widget).initialValue)));
-        initialController.addListener(() => this._onChangedField());
+        initialController.addListener(this._onChangedFieldListener);
         _hasFocus = ((FocusNode)this._focusNode).hasFocus;
-        ((RawAutocomplete<T>)(object)this.widget).focusNode?.addListener(() => this._onFocusChange());
+        ((RawAutocomplete<T>)(object)this.widget).focusNode?.addListener(this._onFocusChange);
     }
 
     public override void didUpdateWidget(RawAutocomplete<T> oldWidget)
@@ -343,31 +345,31 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         base.didUpdateWidget(oldWidget);
         if (!DartRuntimePrimitives.Identical(((RawAutocomplete<T>)oldWidget).textEditingController, ((RawAutocomplete<T>)(object)this.widget).textEditingController))
         {
-            ((RawAutocomplete<T>)oldWidget).textEditingController?.removeListener(() => this._onChangedField());
+            ((RawAutocomplete<T>)oldWidget).textEditingController?.removeListener(this._onChangedFieldListener);
             if ((((RawAutocomplete<T>)oldWidget).textEditingController is null))
             {
                 this._internalTextEditingController?.dispose();
                 _internalTextEditingController = null;
             }
-            ((RawAutocomplete<T>)(object)this.widget).textEditingController?.addListener(() => this._onChangedField());
+            ((RawAutocomplete<T>)(object)this.widget).textEditingController?.addListener(this._onChangedFieldListener);
         }
         if (!DartRuntimePrimitives.Identical(((RawAutocomplete<T>)oldWidget).focusNode, ((RawAutocomplete<T>)(object)this.widget).focusNode))
         {
-            ((RawAutocomplete<T>)oldWidget).focusNode?.removeListener(() => this._updateOptionsViewVisibility());
+            ((RawAutocomplete<T>)oldWidget).focusNode?.removeListener(this._updateOptionsViewVisibility);
             if ((((RawAutocomplete<T>)oldWidget).focusNode is null))
             {
                 this._internalFocusNode?.dispose();
                 _internalFocusNode = null;
             }
-            ((RawAutocomplete<T>)(object)this.widget).focusNode?.addListener(() => this._updateOptionsViewVisibility());
+            ((RawAutocomplete<T>)(object)this.widget).focusNode?.addListener(this._updateOptionsViewVisibility);
         }
     }
 
     public override void dispose()
     {
-        ((RawAutocomplete<T>)(object)this.widget).textEditingController?.removeListener(() => this._onChangedField());
+        ((RawAutocomplete<T>)(object)this.widget).textEditingController?.removeListener(this._onChangedFieldListener);
         this._internalTextEditingController?.dispose();
-        ((RawAutocomplete<T>)(object)this.widget).focusNode?.removeListener(() => this._updateOptionsViewVisibility());
+        ((RawAutocomplete<T>)(object)this.widget).focusNode?.removeListener(this._updateOptionsViewVisibility);
         this._internalFocusNode?.dispose();
         this._highlightedOptionIndex.dispose();
         base.dispose();
@@ -456,4 +458,3 @@ public class AutocompleteHighlightedOption : InheritedNotifier<global::Doroti.Fr
     }
 
 }
-

@@ -2938,7 +2938,7 @@ internal class _CompositeRenderEditablePainter__editable : RenderEditablePainter
         this.painters = painters;
     }
 
-    public virtual void addListener(Action listener)
+    public override void addListener(Action listener)
     {
         foreach (RenderEditablePainter painter in this.painters)
         {
@@ -2946,7 +2946,7 @@ internal class _CompositeRenderEditablePainter__editable : RenderEditablePainter
         }
     }
 
-    public virtual void removeListener(Action listener)
+    public override void removeListener(Action listener)
     {
         foreach (RenderEditablePainter painter in this.painters)
         {

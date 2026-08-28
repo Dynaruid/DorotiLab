@@ -52,7 +52,7 @@ public class TableBorder
 
     public static TableBorder CreateSymmetric(global::Doroti.Framework.Painting.BorderSide inside = default!, global::Doroti.Framework.Painting.BorderSide outside = default!, global::Doroti.Framework.Painting.BorderRadius borderRadius = default!)
     {
-        var __instance = new TableBorder(default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new TableBorder(default!, default!, default!, default!, default!, default!, borderRadius);
         __instance.borderRadius = borderRadius;
         __instance.top = outside;
         __instance.right = outside;

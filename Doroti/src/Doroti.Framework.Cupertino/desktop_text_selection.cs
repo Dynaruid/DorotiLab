@@ -126,7 +126,7 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
     public override void initState()
     {
         base.initState();
-        ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.addListener(() => this._onChangedClipboardStatus());
+        ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.addListener(this._onChangedClipboardStatus);
     }
 
     public override void didUpdateWidget(_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection oldWidget)
@@ -134,14 +134,14 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)oldWidget).clipboardStatus, ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus)))
         {
-            ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)oldWidget).clipboardStatus?.removeListener(() => this._onChangedClipboardStatus());
-            ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.addListener(() => this._onChangedClipboardStatus());
+            ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)oldWidget).clipboardStatus?.removeListener(this._onChangedClipboardStatus);
+            ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.addListener(this._onChangedClipboardStatus);
         }
     }
 
     public override void dispose()
     {
-        ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.removeListener(() => this._onChangedClipboardStatus());
+        ((_CupertinoDesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.removeListener(this._onChangedClipboardStatus);
         base.dispose();
     }
 

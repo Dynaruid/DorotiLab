@@ -25,7 +25,7 @@ public class PerformanceOverlay : LeafRenderObjectWidget
 
     public static PerformanceOverlay CreateAllEnabled(global::Doroti.Framework.Foundation.Key? key = null)
     {
-        var __instance = new PerformanceOverlay(default!, default!);
+        var __instance = new PerformanceOverlay(key, default!);
         __instance.optionsMask = ((((1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Rendering.PerformanceOverlayOption.displayRasterizerStatistics))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Rendering.PerformanceOverlayOption.visualizeRasterizerStatistics)))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Rendering.PerformanceOverlayOption.displayEngineStatistics)))) | (1L << (int)(FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Rendering.PerformanceOverlayOption.visualizeEngineStatistics))));
         return __instance;
     }

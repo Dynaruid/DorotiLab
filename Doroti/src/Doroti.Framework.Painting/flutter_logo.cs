@@ -42,7 +42,7 @@ public class FlutterLogoDecoration : Decoration
 
     public static FlutterLogoDecoration Create_(Color textColor, FlutterLogoStyle style, EdgeInsets margin, double _position, double _opacity)
     {
-        var __instance = new FlutterLogoDecoration(default!, default!, default!);
+        var __instance = new FlutterLogoDecoration(textColor, style, margin);
         __instance.textColor = textColor;
         __instance.style = style;
         __instance.margin = margin;

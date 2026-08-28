@@ -550,7 +550,7 @@ internal class _ViewContentState__search_anchor : global::Doroti.Framework.Widge
         base.initState();
         _viewRect = ((_ViewContent__search_anchor)this.widget).viewRect;
         _controller = ((_ViewContent__search_anchor)this.widget).searchController;
-        this._controller.addListener(() => this.updateSuggestions());
+        this._controller.addListener(this._updateSuggestionsListener);
         _setupAnimations();
     }
 
@@ -601,7 +601,7 @@ internal class _ViewContentState__search_anchor : global::Doroti.Framework.Widge
 
     public override void dispose()
     {
-        this._controller.removeListener(() => this.updateSuggestions());
+        this._controller.removeListener(this._updateSuggestionsListener);
         _disposeAnimations();
         this._timer?.cancel();
         _timer = null;
@@ -621,6 +621,8 @@ internal class _ViewContentState__search_anchor : global::Doroti.Framework.Widge
         this.viewDividerFadeCurve.dispose();
         this.viewListFadeOnIntervalCurve.dispose();
     }
+
+    private void _updateSuggestionsListener() => _ = updateSuggestions();
 
     public async virtual Future updateSuggestions()
     {

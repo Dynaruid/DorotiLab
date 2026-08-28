@@ -1119,7 +1119,7 @@ internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionT
         base.initState();
         _controller = new global::Doroti.Framework.Animation.AnimationController(duration: SelectionOverlay.fadeDuration, vsync: this);
         _toolbarVisibilityChanged();
-        ((_SelectionToolbarWrapper__text_selection)this.widget).visibility?.addListener(() => this._toolbarVisibilityChanged());
+        ((_SelectionToolbarWrapper__text_selection)this.widget).visibility?.addListener(this._toolbarVisibilityChanged);
     }
 
     public override void didUpdateWidget(_SelectionToolbarWrapper__text_selection oldWidget)
@@ -1129,14 +1129,14 @@ internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionT
         {
             return;
         }
-        ((_SelectionToolbarWrapper__text_selection)oldWidget).visibility?.removeListener(() => this._toolbarVisibilityChanged());
+        ((_SelectionToolbarWrapper__text_selection)oldWidget).visibility?.removeListener(this._toolbarVisibilityChanged);
         _toolbarVisibilityChanged();
-        ((_SelectionToolbarWrapper__text_selection)this.widget).visibility?.addListener(() => this._toolbarVisibilityChanged());
+        ((_SelectionToolbarWrapper__text_selection)this.widget).visibility?.addListener(this._toolbarVisibilityChanged);
     }
 
     public override void dispose()
     {
-        ((_SelectionToolbarWrapper__text_selection)this.widget).visibility?.removeListener(() => this._toolbarVisibilityChanged());
+        ((_SelectionToolbarWrapper__text_selection)this.widget).visibility?.removeListener(this._toolbarVisibilityChanged);
         this._controller.dispose();
         DartRuntimePrimitives.Assert(() =>
             {
@@ -1147,7 +1147,7 @@ internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionT
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -1212,8 +1212,8 @@ internal class _SelectionToolbarWrapperState__text_selection : State<_SelectionT
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
+        newNotifier.addListener(this._updateTicker);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -1311,7 +1311,7 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -1384,8 +1384,8 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
+        newNotifier.addListener(this._updateTicker);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -2590,7 +2590,7 @@ public class ClipboardStatusNotifier : global::Doroti.Framework.Foundation.Value
         value = nextStatus;
     }
 
-    public virtual void addListener(global::System.Action listener)
+    public override void addListener(global::System.Action listener)
     {
         if (!this.hasListeners)
         {
@@ -2600,12 +2600,12 @@ public class ClipboardStatusNotifier : global::Doroti.Framework.Foundation.Value
         {
             DartRuntimePrimitives.Ignore(update());
         }
-        base.addListener(() => listener());
+        base.addListener(listener);
     }
 
-    public virtual void removeListener(global::System.Action listener)
+    public override void removeListener(global::System.Action listener)
     {
-        base.removeListener(() => listener());
+        base.removeListener(listener);
         if ((!this._disposed && !this.hasListeners))
         {
             WidgetsBinding.instance.removeObserver(this);
@@ -2631,7 +2631,7 @@ public class ClipboardStatusNotifier : global::Doroti.Framework.Foundation.Value
         }
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         WidgetsBinding.instance.removeObserver(this);
         _disposed = true;
@@ -2685,7 +2685,7 @@ public class LiveTextInputStatusNotifier : global::Doroti.Framework.Foundation.V
         value = nextStatus;
     }
 
-    public virtual void addListener(global::System.Action listener)
+    public override void addListener(global::System.Action listener)
     {
         if (!this.hasListeners)
         {
@@ -2695,12 +2695,12 @@ public class LiveTextInputStatusNotifier : global::Doroti.Framework.Foundation.V
         {
             DartRuntimePrimitives.Ignore(update());
         }
-        base.addListener(() => listener());
+        base.addListener(listener);
     }
 
-    public virtual void removeListener(global::System.Action listener)
+    public override void removeListener(global::System.Action listener)
     {
-        base.removeListener(() => listener());
+        base.removeListener(listener);
         if ((!this._disposed && !this.hasListeners))
         {
             WidgetsBinding.instance.removeObserver(this);
@@ -2724,7 +2724,7 @@ public class LiveTextInputStatusNotifier : global::Doroti.Framework.Foundation.V
         }
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         WidgetsBinding.instance.removeObserver(this);
         _disposed = true;

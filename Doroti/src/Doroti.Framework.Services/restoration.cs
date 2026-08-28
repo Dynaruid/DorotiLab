@@ -226,7 +226,7 @@ public class RestorationBucket
 
     public static RestorationBucket CreateChild(string restorationId, RestorationBucket parent, object? debugOwner)
     {
-        var __instance = new RestorationBucket(default!, default!);
+        var __instance = new RestorationBucket(restorationId, debugOwner);
         __instance._manager = parent._manager;
         __instance._parent = parent;
         __instance._rawData = DartRuntimePrimitives.ConvertMap<object?, object?>((System.Collections.IDictionary)parent._rawChildren.GetValueOrDefault(restorationId)!);

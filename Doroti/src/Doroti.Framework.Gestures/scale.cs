@@ -51,7 +51,7 @@ internal class _PointerPanZoomData__scale
 
     internal static _PointerPanZoomData__scale CreateFromUpdateEvent(ScaleGestureRecognizer parent, PointerPanZoomUpdateEvent @event)
     {
-        var __instance = new _PointerPanZoomData__scale(default!, default!);
+        var __instance = new _PointerPanZoomData__scale(parent, default!);
         __instance.parent = parent;
         __instance._position = @event.position;
         __instance._pan = ((PointerPanZoomUpdateEvent)@event).pan;
@@ -692,4 +692,3 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
 
     public override string debugDescription => "scale";
 }
-

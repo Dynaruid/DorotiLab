@@ -58,10 +58,10 @@ public class _RenderSemanticsClipper__modal_barrier : global::Doroti.Framework.R
             }
             if (this.attached)
             {
-                this._clipDetailsNotifier.removeListener(() => this.markNeedsSemanticsUpdate());
+                this._clipDetailsNotifier.removeListener(this.markNeedsSemanticsUpdate);
             }
             _clipDetailsNotifier = newNotifier;
-            this._clipDetailsNotifier.addListener(() => this.markNeedsSemanticsUpdate());
+            this._clipDetailsNotifier.addListener(this.markNeedsSemanticsUpdate);
             markNeedsSemanticsUpdate();
         }
     }
@@ -76,15 +76,15 @@ public class _RenderSemanticsClipper__modal_barrier : global::Doroti.Framework.R
             return default!;
         }
     }
-    public virtual void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
+    public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
     {
         base.attach(owner);
-        this.clipDetailsNotifier.addListener(() => this.markNeedsSemanticsUpdate());
+        this.clipDetailsNotifier.addListener(this.markNeedsSemanticsUpdate);
     }
 
-    public virtual void detach()
+    public override void detach()
     {
-        this.clipDetailsNotifier.removeListener(() => this.markNeedsSemanticsUpdate());
+        this.clipDetailsNotifier.removeListener(this.markNeedsSemanticsUpdate);
         base.detach();
     }
 

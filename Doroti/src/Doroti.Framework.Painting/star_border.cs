@@ -55,7 +55,7 @@ public class StarBorder : OutlinedBorder
 
     public static StarBorder CreatePolygon(BorderSide side = default!, double sides = 5, double pointRounding = 0, double rotation = 0, double squash = 0)
     {
-        var __instance = new StarBorder(default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new StarBorder(side, default!, default!, pointRounding, default!, rotation, squash);
         __instance.pointRounding = pointRounding;
         __instance.squash = squash;
         __instance.points = sides;

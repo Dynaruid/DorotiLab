@@ -91,7 +91,7 @@ public class LinearBorder : OutlinedBorder
 
     public static LinearBorder CreateStart(BorderSide side = default!, double alignment = 0.0, double size = 1.0)
     {
-        var __instance = new LinearBorder(default!, default!, default!, default!, default!);
+        var __instance = new LinearBorder(side, default!, default!, default!, default!);
         __instance.start = new LinearBorderEdge(alignment: alignment, size: size);
         __instance.end = null;
         __instance.top = null;
@@ -101,7 +101,7 @@ public class LinearBorder : OutlinedBorder
 
     public static LinearBorder CreateEnd(BorderSide side = default!, double alignment = 0.0, double size = 1.0)
     {
-        var __instance = new LinearBorder(default!, default!, default!, default!, default!);
+        var __instance = new LinearBorder(side, default!, default!, default!, default!);
         __instance.start = null;
         __instance.end = new LinearBorderEdge(alignment: alignment, size: size);
         __instance.top = null;
@@ -111,7 +111,7 @@ public class LinearBorder : OutlinedBorder
 
     public static LinearBorder CreateTop(BorderSide side = default!, double alignment = 0.0, double size = 1.0)
     {
-        var __instance = new LinearBorder(default!, default!, default!, default!, default!);
+        var __instance = new LinearBorder(side, default!, default!, default!, default!);
         __instance.start = null;
         __instance.end = null;
         __instance.top = new LinearBorderEdge(alignment: alignment, size: size);
@@ -121,7 +121,7 @@ public class LinearBorder : OutlinedBorder
 
     public static LinearBorder CreateBottom(BorderSide side = default!, double alignment = 0.0, double size = 1.0)
     {
-        var __instance = new LinearBorder(default!, default!, default!, default!, default!);
+        var __instance = new LinearBorder(side, default!, default!, default!, default!);
         __instance.start = null;
         __instance.end = null;
         __instance.top = null;

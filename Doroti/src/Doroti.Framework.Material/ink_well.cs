@@ -419,7 +419,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
             internalStatesController = new global::Doroti.Framework.Widgets.WidgetStatesController();
         }
         this.statesController.update(global::Doroti.Framework.Widgets.WidgetState.disabled, !this.enabled);
-        this.statesController.addListener(() => this.handleStatesControllerChange());
+        this.statesController.addListener(this.handleStatesControllerChange);
     }
 
     public override void initState()
@@ -438,7 +438,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((_InkResponseStateWidget__ink_well)this.widget).statesController, ((_InkResponseStateWidget__ink_well)oldWidget).statesController)))
         {
-            ((_InkResponseStateWidget__ink_well)oldWidget).statesController?.removeListener(() => this.handleStatesControllerChange());
+            ((_InkResponseStateWidget__ink_well)oldWidget).statesController?.removeListener(this.handleStatesControllerChange);
             if ((((_InkResponseStateWidget__ink_well)this.widget).statesController is not null))
             {
                 this.internalStatesController?.dispose();
@@ -481,7 +481,7 @@ public class _InkResponseState__ink_well : global::Doroti.Framework.Widgets.Stat
     public override void dispose()
     {
         global::Doroti.Framework.Widgets.FocusManager.instance.removeHighlightModeListener((global::System.Action<global::Doroti.Framework.Widgets.FocusHighlightMode>)this.handleFocusHighlightModeChange);
-        this.statesController.removeListener(() => this.handleStatesControllerChange());
+        this.statesController.removeListener(this.handleStatesControllerChange);
         this.internalStatesController?.dispose();
         this._activationTimer?.cancel();
         _activationTimer = null;

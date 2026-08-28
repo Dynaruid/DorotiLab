@@ -1282,7 +1282,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
 
     public static SemanticsNode CreateRoot(Key? key = null, Action? showOnScreen = null, SemanticsOwner owner = default!)
     {
-        var __instance = new SemanticsNode(default!, default!);
+        var __instance = new SemanticsNode(key, showOnScreen);
         __instance.key = key;
         __instance._id = 0L;
         __instance._showOnScreen = showOnScreen;

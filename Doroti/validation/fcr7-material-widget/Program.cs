@@ -49,6 +49,7 @@ VerifyTypedActionDispatch();
 VerifyTapRegionHitIdentity();
 VerifyVariableGlyphCaretMetrics();
 VerifyMobileSelectionOverlayContracts();
+VerifyFrameworkLifecycleContracts();
 
 var widgetsBinding = (Doroti.Framework.Widgets.WidgetsFlutterBinding)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(
     typeof(Doroti.Framework.Widgets.WidgetsFlutterBinding));
@@ -264,6 +265,154 @@ static void VerifyMobileSelectionOverlayContracts()
         var method = declaringType.GetMethod(methodName, parameterTypes);
         return method is not null && method.DeclaringType == declaringType && method.GetBaseDefinition() != method;
     }
+}
+
+static void VerifyFrameworkLifecycleContracts()
+{
+    var key = new Doroti.Framework.Foundation.ValueKey<string>("factory-key");
+    var child = new ProbeWidget();
+    var positioned = Positioned.CreateFromRect(
+        key: key,
+        rect: Rect.fromLTWH(1, 2, 30, 40),
+        child: child);
+    Require(ReferenceEquals(positioned.key, key) && ReferenceEquals(positioned.child, child),
+        "Positioned.fromRect preserves key and child identity");
+
+    var primaryNone = PrimaryScrollController.CreateNone(key: key, child: child);
+    Require(ReferenceEquals(primaryNone.key, key) && ReferenceEquals(primaryNone.child, child) &&
+            primaryNone.controller is null && primaryNone.automaticallyInheritForPlatforms.Count == 0,
+        "PrimaryScrollController.none preserves its subtree and disables inheritance");
+
+    var repaintBoundary = RepaintBoundary.CreateWrap(child, 7);
+    Require(ReferenceEquals(repaintBoundary.child, child) &&
+            repaintBoundary.key is Doroti.Framework.Foundation.ValueKey<object> repaintKey &&
+            Equals(repaintKey.value, 7L),
+        "RepaintBoundary.wrap preserves its child and derives the fallback key from the index");
+
+    var editingValue = new Doroti.Framework.Services.TextEditingValue(
+        text: "factory",
+        selection: new Doroti.Framework.Services.TextSelection(1, 4),
+        composing: new TextRange(0, 3));
+    var editingController = TextEditingController.CreateFromValue(editingValue);
+    Require(editingController.text == "factory" &&
+            editingController.selection.baseOffset == 1 &&
+            editingController.selection.extentOffset == 4 &&
+            editingController.value.composing.start == 0 &&
+            editingController.value.composing.end == 3,
+        $"TextEditingController.fromValue preserves text, selection, and composing state " +
+        $"(text={editingController.text}, selection={editingController.selection.baseOffset}:{editingController.selection.extentOffset}, " +
+        $"composing={editingController.value.composing.start}:{editingController.value.composing.end})");
+
+    var logicalKeys = new HashSet<Doroti.Framework.Services.LogicalKeyboardKey>
+    {
+        Doroti.Framework.Services.LogicalKeyboardKey.control,
+        Doroti.Framework.Services.LogicalKeyboardKey.shift,
+        Doroti.Framework.Services.LogicalKeyboardKey.keyA,
+        Doroti.Framework.Services.LogicalKeyboardKey.keyB,
+        Doroti.Framework.Services.LogicalKeyboardKey.keyC,
+    };
+    var logicalKeySet = LogicalKeySet.CreateFromSet(logicalKeys);
+    Require(logicalKeySet.keys.SetEquals(logicalKeys),
+        "LogicalKeySet.fromSet preserves sets larger than the positional constructor limit");
+
+    var item = new ProbeWidget();
+    var separator = new ProbeWidget();
+    var separated = SliverList.CreateSeparated(
+        itemBuilder: (_, _) => item,
+        separatorBuilder: (_, _) => separator,
+        itemCount: 2,
+        addAutomaticKeepAlives: false,
+        addRepaintBoundaries: false,
+        addSemanticIndexes: false);
+    Require(separated.@delegate is SliverChildBuilderDelegate separatedDelegate &&
+            separatedDelegate.childCount == 3 &&
+            ReferenceEquals(((KeyedSubtree)separatedDelegate.build(null!, 0)!).child, item) &&
+            ReferenceEquals(((KeyedSubtree)separatedDelegate.build(null!, 1)!).child, separator),
+        "SliverList.separated retains item/separator builders and computes the child count");
+
+    var semanticsProperties = new Doroti.Framework.Semantics.SemanticsProperties(label: "factory semantics");
+    var semantics = Semantics.CreateFromProperties(key: key, child: child, properties: semanticsProperties);
+    var sliverSemantics = SliverSemantics.CreateFromProperties(key: key, child: child, properties: semanticsProperties);
+    Require(ReferenceEquals(semantics.key, key) &&
+            ReferenceEquals(semantics.child, child) &&
+            ReferenceEquals(semantics.properties, semanticsProperties) &&
+            ReferenceEquals(sliverSemantics.key, key) &&
+            ReferenceEquals(sliverSemantics.child, child) &&
+            ReferenceEquals(sliverSemantics.properties, semanticsProperties),
+        "Semantics.fromProperties variants preserve key, child, and properties identity");
+
+    var notifier = new Doroti.Framework.Foundation.ChangeNotifier();
+    var notifications = 0;
+    Action listener = () => notifications++;
+    notifier.addListener(listener);
+    notifier.removeListener(listener);
+    notifier.notifyListeners();
+    Require(notifications == 0 && notifier.debugListenerCount == 0,
+        "ChangeNotifier removes the same delegate identity without retaining callbacks");
+
+    using var platformEnvironment = PlatformEnvironmentContext.Enter(new PlatformConfiguration(
+        locales: [],
+        platformBrightness: Brightness.light,
+        alwaysUse24HourFormat: false,
+        nativeSpellCheckServiceDefined: false,
+        operatingSystem: HostOperatingSystem.android));
+    var toolbar = Doroti.Framework.Material.AdaptiveTextSelectionToolbar.CreateEditable(
+        clipboardStatus: ClipboardStatus.notPasteable,
+        anchors: new TextSelectionToolbarAnchors(Offset.zero));
+    Require(toolbar.buttonItems is { Count: 0 },
+        "nullable adaptive-toolbar callbacks remain absent instead of creating failing actions");
+
+    var lifecycleMethodNames = new HashSet<string>(StringComparer.Ordinal)
+    {
+        "paint", "detach", "attach", "performLayout", "computeDryLayout",
+        "setupParentData", "applyPaintTransform", "hitTestChildren",
+        "dispose", "addListener", "removeListener",
+    };
+    var frameworkAssemblies = new[]
+    {
+        typeof(Doroti.Framework.Foundation.ChangeNotifier).Assembly,
+        typeof(Doroti.Framework.Rendering.RenderObject).Assembly,
+        typeof(Widget).Assembly,
+        typeof(Doroti.Framework.Cupertino.CupertinoTabController).Assembly,
+        typeof(Doroti.Framework.Material.TabController).Assembly,
+    }.Distinct();
+    var hiddenLifecycleSlots = new List<string>();
+    foreach (var type in frameworkAssemblies.SelectMany(assembly => assembly.GetTypes()))
+    {
+        foreach (var method in type.GetMethods(
+                     System.Reflection.BindingFlags.Instance |
+                     System.Reflection.BindingFlags.Public |
+                     System.Reflection.BindingFlags.NonPublic |
+                     System.Reflection.BindingFlags.DeclaredOnly))
+        {
+            if (!method.IsVirtual ||
+                !method.Attributes.HasFlag(System.Reflection.MethodAttributes.NewSlot) ||
+                !lifecycleMethodNames.Contains(method.Name))
+            {
+                continue;
+            }
+
+            var signature = method.GetParameters().Select(parameter => parameter.ParameterType).ToArray();
+            for (var baseType = type.BaseType; baseType is not null; baseType = baseType.BaseType)
+            {
+                var baseMethod = baseType.GetMethod(
+                    method.Name,
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.Public |
+                    System.Reflection.BindingFlags.NonPublic,
+                    binder: null,
+                    types: signature,
+                    modifiers: null);
+                if (baseMethod is { IsVirtual: true })
+                {
+                    hiddenLifecycleSlots.Add($"{type.FullName}.{method.Name}");
+                    break;
+                }
+            }
+        }
+    }
+    Require(hiddenLifecycleSlots.Count == 0,
+        $"framework lifecycle hooks use CLR override dispatch: {string.Join(", ", hiddenLifecycleSlots)}");
 }
 
 static ScrollbarAlphaFrame CaptureScrollbarFrame(Color thumbColor, double fadeValue, int timestampMilliseconds)

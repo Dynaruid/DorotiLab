@@ -38,7 +38,7 @@ internal class _AnimatedState__transitions : State<AnimatedWidget>
     public override void initState()
     {
         base.initState();
-        ((AnimatedWidget)this.widget).listenable.addListener(() => this._handleChange());
+        ((AnimatedWidget)this.widget).listenable.addListener(this._handleChange);
     }
 
     public override void didUpdateWidget(AnimatedWidget oldWidget)
@@ -46,14 +46,14 @@ internal class _AnimatedState__transitions : State<AnimatedWidget>
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((AnimatedWidget)this.widget).listenable, ((AnimatedWidget)oldWidget).listenable)))
         {
-            ((AnimatedWidget)oldWidget).listenable.removeListener(() => this._handleChange());
-            ((AnimatedWidget)this.widget).listenable.addListener(() => this._handleChange());
+            ((AnimatedWidget)oldWidget).listenable.removeListener(this._handleChange);
+            ((AnimatedWidget)this.widget).listenable.addListener(this._handleChange);
         }
     }
 
     public override void dispose()
     {
-        ((AnimatedWidget)this.widget).listenable.removeListener(() => this._handleChange());
+        ((AnimatedWidget)this.widget).listenable.removeListener(this._handleChange);
         base.dispose();
     }
 

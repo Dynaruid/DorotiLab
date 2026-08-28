@@ -246,7 +246,7 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -459,7 +459,7 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -625,7 +625,7 @@ internal class _DatePickerDialogState__date_picker : global::Doroti.Framework.Wi
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 
@@ -921,7 +921,7 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -1095,7 +1095,7 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -1261,7 +1261,7 @@ internal class _DateRangePickerDialogState__date_picker : global::Doroti.Framewo
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 
@@ -1412,7 +1412,7 @@ internal class _CalendarDateRangePickerState__date_picker : global::Doroti.Frame
     {
         base.initState();
         _controller = new global::Doroti.Framework.Widgets.ScrollController();
-        this._controller.addListener(() => this._scrollListener());
+        this._controller.addListener(this._scrollListener);
         _startDate = ((_CalendarDateRangePicker__date_picker)this.widget).initialStartDate;
         _endDate = ((_CalendarDateRangePicker__date_picker)this.widget).initialEndDate;
         DateTime initialDate = (((_CalendarDateRangePicker__date_picker)this.widget).initialStartDate ?? ((_CalendarDateRangePicker__date_picker)this.widget).currentDate);

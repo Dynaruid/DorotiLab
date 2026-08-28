@@ -153,7 +153,7 @@ public class Visibility : StatelessWidget
 
     public static Visibility CreateMaintain(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, bool visible = true)
     {
-        var __instance = new Visibility(default!, default!, default!, default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new Visibility(key, child, default!, visible, default!, default!, default!, default!, default!, default!);
         __instance.child = child;
         __instance.visible = visible;
         __instance.maintainState = true;
@@ -279,7 +279,7 @@ public class SliverVisibility : StatelessWidget
 
     public static SliverVisibility CreateMaintain(global::Doroti.Framework.Foundation.Key? key = null, Widget sliver = default!, Widget replacementSliver = default!, bool visible = true)
     {
-        var __instance = new SliverVisibility(default!, default!, default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new SliverVisibility(key, sliver, replacementSliver, visible, default!, default!, default!, default!, default!);
         Widget __replacementSliver = replacementSliver ?? new SliverToBoxAdapter();
         __instance.sliver = sliver;
         __instance.replacementSliver = __replacementSliver;
@@ -409,7 +409,7 @@ public class _RenderVisibility__indexed_stack : global::Doroti.Framework.Renderi
         }
     }
 
-    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
         if (!this.visible)
         {

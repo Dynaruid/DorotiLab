@@ -553,16 +553,16 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
         _updateEffectiveMiddle();
         _computeScaledHeights();
         _setupSearchableAnimation();
-        this._scrollableState?.position.isScrollingNotifier.removeListener(() => this._handleScrollChange());
+        this._scrollableState?.position.isScrollingNotifier.removeListener(this._handleScrollChange);
         _scrollableState = Scrollable.maybeOf(this.context);
-        this._scrollableState?.position.isScrollingNotifier.addListener(() => this._handleScrollChange());
+        this._scrollableState?.position.isScrollingNotifier.addListener(this._handleScrollChange);
     }
 
     public override void dispose()
     {
         if ((this._scrollableState?.position is not null))
         {
-            this._scrollableState?.position.isScrollingNotifier.removeListener(() => this._handleScrollChange());
+            this._scrollableState?.position.isScrollingNotifier.removeListener(this._handleScrollChange);
         }
         this._searchAnimation.dispose();
         this._animationController.dispose();
@@ -580,7 +580,7 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -757,8 +757,8 @@ internal class _CupertinoSliverNavigationBarState__nav_bar : global::Doroti.Fram
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 

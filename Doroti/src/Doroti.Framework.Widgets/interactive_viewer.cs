@@ -72,7 +72,7 @@ public class InteractiveViewer : StatefulWidget
 
     public static InteractiveViewer CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, Clip clipBehavior = Clip.hardEdge, PanAxis panAxis = PanAxis.free, global::Doroti.Framework.Painting.EdgeInsets boundaryMargin = default!, double maxScale = 2.5, double minScale = 0.8, double? interactionEndFrictionCoefficient = null, global::System.Action<global::Doroti.Framework.Gestures.ScaleEndDetails>? onInteractionEnd = null, global::System.Action<global::Doroti.Framework.Gestures.ScaleStartDetails>? onInteractionStart = null, global::System.Action<global::Doroti.Framework.Gestures.ScaleUpdateDetails>? onInteractionUpdate = null, bool panEnabled = true, bool scaleEnabled = true, double scaleFactor = 200.0, TransformationController? transformationController = null, global::Doroti.Framework.Painting.Alignment? alignment = null, bool trackpadScrollCausesScale = false, global::System.Func<BuildContext, global::Doroti.Ui.Quad, Widget> builder = default!)
     {
-        var __instance = new InteractiveViewer(default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new InteractiveViewer(key, clipBehavior, panAxis, boundaryMargin, default!, maxScale, minScale, interactionEndFrictionCoefficient, onInteractionEnd, onInteractionStart, onInteractionUpdate, panEnabled, scaleEnabled, scaleFactor, transformationController, alignment, trackpadScrollCausesScale, default!);
         global::Doroti.Framework.Painting.EdgeInsets __boundaryMargin = boundaryMargin ?? global::Doroti.Framework.Painting.EdgeInsets.zero;
         double __interactionEndFrictionCoefficient = interactionEndFrictionCoefficient ?? _kDrag;
         __instance.clipBehavior = clipBehavior;
@@ -354,14 +354,14 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         {
             this._controller.stop();
             this._controller.reset();
-            this._animation?.removeListener(() => this._handleInertiaAnimation());
+            this._animation?.removeListener(this._handleInertiaAnimation);
             _animation = null;
         }
         if (((global::Doroti.Framework.Animation.AnimationController)this._scaleController).isAnimating)
         {
             this._scaleController.stop();
             this._scaleController.reset();
-            this._scaleAnimation?.removeListener(() => this._handleScaleAnimation());
+            this._scaleAnimation?.removeListener(this._handleScaleAnimation);
             _scaleAnimation = null;
         }
         _gestureType = null;
@@ -442,8 +442,8 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         _scaleStart = null;
         _rotationStart = null;
         _referenceFocalPoint = null;
-        this._animation?.removeListener(() => this._handleInertiaAnimation());
-        this._scaleAnimation?.removeListener(() => this._handleScaleAnimation());
+        this._animation?.removeListener(this._handleInertiaAnimation);
+        this._scaleAnimation?.removeListener(this._handleScaleAnimation);
         this._controller.reset();
         this._scaleController.reset();
         if (!_gestureIsSupported(this._gestureType))
@@ -467,7 +467,7 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
                     double tFinal = Interactive_viewerLibrary._getFinalTime(((global::Doroti.Framework.Gestures.ScaleEndDetails)details).velocity.pixelsPerSecond.distance, ((InteractiveViewer)this.widget).interactionEndFrictionCoefficient);
                     _animation = new global::Doroti.Framework.Animation.Tween<global::Doroti.Ui.Offset>(begin: translation, end: new global::Doroti.Ui.Offset(((global::Doroti.Framework.Physics.FrictionSimulation)frictionSimulationX).finalX, ((global::Doroti.Framework.Physics.FrictionSimulation)frictionSimulationY).finalX)).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.decelerate)).animate(this._controller);
                     this._controller.duration = Duration.Create(milliseconds: ((tFinal * 1000L)).round());
-                    this._animation!.addListener(() => this._handleInertiaAnimation());
+                    this._animation!.addListener(this._handleInertiaAnimation);
                     this._controller.forward();
                     break;
                 }
@@ -483,7 +483,7 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
                     double tFinalLocal = Interactive_viewerLibrary._getFinalTime(((global::Doroti.Framework.Gestures.ScaleEndDetails)details).scaleVelocity.abs(), ((InteractiveViewer)this.widget).interactionEndFrictionCoefficient, effectivelyMotionless: 0.1);
                     _scaleAnimation = new global::Doroti.Framework.Animation.Tween<double>(begin: scaleLocal, end: frictionSimulation.x(tFinalLocal)).chain(new global::Doroti.Framework.Animation.CurveTween(curve: global::Doroti.Framework.Animation.Curves.decelerate)).animate(this._scaleController);
                     this._scaleController.duration = Duration.Create(milliseconds: ((tFinalLocal * 1000L)).round());
-                    this._scaleAnimation!.addListener(() => this._handleScaleAnimation());
+                    this._scaleAnimation!.addListener(this._handleScaleAnimation);
                     this._scaleController.forward();
                     break;
                 }
@@ -557,7 +557,7 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         if (!((global::Doroti.Framework.Animation.AnimationController)this._controller).isAnimating)
         {
             _currentAxis = null;
-            this._animation?.removeListener(() => this._handleInertiaAnimation());
+            this._animation?.removeListener(this._handleInertiaAnimation);
             _animation = null;
             this._controller.reset();
             return;
@@ -572,7 +572,7 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         if (!((global::Doroti.Framework.Animation.AnimationController)this._scaleController).isAnimating)
         {
             _currentAxis = null;
-            this._scaleAnimation?.removeListener(() => this._handleScaleAnimation());
+            this._scaleAnimation?.removeListener(this._handleScaleAnimation);
             _scaleAnimation = null;
             this._scaleController.reset();
             return;
@@ -597,7 +597,7 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         base.initState();
         _controller = new global::Doroti.Framework.Animation.AnimationController(vsync: this);
         _scaleController = new global::Doroti.Framework.Animation.AnimationController(vsync: this);
-        this._transformer.addListener(() => this._handleTransformation());
+        this._transformer.addListener(this._handleTransformation);
     }
 
     public override void didUpdateWidget(InteractiveViewer oldWidget)
@@ -608,20 +608,20 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         {
             return;
         }
-        this._transformer.removeListener(() => this._handleTransformation());
+        this._transformer.removeListener(this._handleTransformation);
         if ((((InteractiveViewer)oldWidget).transformationController is null))
         {
             this._transformer.dispose();
         }
         _transformer = (newController ?? new TransformationController());
-        this._transformer.addListener(() => this._handleTransformation());
+        this._transformer.addListener(this._handleTransformation);
     }
 
     public override void dispose()
     {
         this._controller.dispose();
         this._scaleController.dispose();
-        this._transformer.removeListener(() => this._handleTransformation());
+        this._transformer.removeListener(this._handleTransformation);
         if ((((InteractiveViewer)this.widget).transformationController is null))
         {
             this._transformer.dispose();
@@ -641,7 +641,7 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -724,8 +724,8 @@ internal class _InteractiveViewerState__interactive_viewer : State<InteractiveVi
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 

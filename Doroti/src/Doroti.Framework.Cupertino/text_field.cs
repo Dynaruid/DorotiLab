@@ -477,7 +477,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
             _createLocalController();
         }
         this._effectiveFocusNode.canRequestFocus = ((CupertinoTextField)this.widget).enabled;
-        this._effectiveFocusNode.addListener(() => this._handleFocusChanged());
+        this._effectiveFocusNode.addListener(this._handleFocusChanged);
     }
 
     public override void didUpdateWidget(CupertinoTextField oldWidget)
@@ -499,8 +499,8 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
         }
         if ((!object.Equals(((CupertinoTextField)this.widget).focusNode, ((CupertinoTextField)oldWidget).focusNode)))
         {
-            ((((CupertinoTextField)oldWidget).focusNode ?? this._focusNode))?.removeListener(() => this._handleFocusChanged());
-            ((((CupertinoTextField)this.widget).focusNode ?? this._focusNode))?.addListener(() => this._handleFocusChanged());
+            ((((CupertinoTextField)oldWidget).focusNode ?? this._focusNode))?.removeListener(this._handleFocusChanged);
+            ((((CupertinoTextField)this.widget).focusNode ?? this._focusNode))?.addListener(this._handleFocusChanged);
         }
         this._effectiveFocusNode.canRequestFocus = ((CupertinoTextField)this.widget).enabled;
     }
@@ -517,7 +517,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
     {
         DartRuntimePrimitives.Assert(() => (this._controller is not null));
         registerForRestoration(DartRuntimePrimitives.ConvertValue<dynamic>(this._controller!), "controller");
-        this._controller!.value.addListener(() => this.updateKeepAlive());
+        this._controller!.value.addListener(this.updateKeepAlive);
     }
 
     internal virtual void _createLocalController(global::Doroti.Framework.Services.TextEditingValue? value = null)
@@ -533,14 +533,14 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
     public virtual string? restorationId => ((CupertinoTextField)this.widget).restorationId;
     public override void dispose()
     {
-        this._effectiveFocusNode.removeListener(() => this._handleFocusChanged());
+        this._effectiveFocusNode.removeListener(this._handleFocusChanged);
         this._focusNode?.dispose();
         this._controller?.dispose();
         this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -826,7 +826,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -986,7 +986,7 @@ internal class _CupertinoTextFieldState__text_field : global::Doroti.Framework.W
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 

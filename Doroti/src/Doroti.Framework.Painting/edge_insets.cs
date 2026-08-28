@@ -194,7 +194,7 @@ public class EdgeInsets : EdgeInsetsGeometry
 
     public static EdgeInsets CreateOnly(double left = 0.0, double top = 0.0, double right = 0.0, double bottom = 0.0)
     {
-        var __instance = new EdgeInsets(default!, default!, default!, default!);
+        var __instance = new EdgeInsets(left, top, right, bottom);
         __instance.left = left;
         __instance.top = top;
         __instance.right = right;
@@ -375,7 +375,7 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
 
     public static EdgeInsetsDirectional CreateOnly(double start = 0.0, double top = 0.0, double end = 0.0, double bottom = 0.0)
     {
-        var __instance = new EdgeInsetsDirectional(default!, default!, default!, default!);
+        var __instance = new EdgeInsetsDirectional(start, top, end, bottom);
         __instance.start = start;
         __instance.top = top;
         __instance.end = end;

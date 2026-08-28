@@ -69,8 +69,18 @@ public class SliverList : SliverMultiBoxAdaptorWidget
 
     public static SliverList CreateSeparated(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, Widget?> itemBuilder = default!, global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findChildIndexCallback = null, global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findItemIndexCallback = null, global::System.Func<BuildContext, long, Widget?> separatorBuilder = default!, long? itemCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
     {
-        var __instance = new SliverList(default!, default!);
-        return __instance;
+        return new SliverList(key, new SliverChildBuilderDelegate(
+            (context, index) => (index & 1L) == 0L
+                ? itemBuilder(context, index / 2L)
+                : separatorBuilder(context, index / 2L),
+            findChildIndexCallback: findItemIndexCallback is null
+                ? findChildIndexCallback
+                : childKey => findItemIndexCallback(childKey) is { } itemIndex ? itemIndex * 2L : null,
+            childCount: itemCount is { } count ? Math.Max(0L, count * 2L - 1L) : null,
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes,
+            semanticIndexCallback: (_, index) => (index & 1L) == 0L ? index / 2L : null));
     }
 
     public static SliverList CreateList(global::Doroti.Framework.Foundation.Key? key = null, List<Widget> children = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
@@ -103,16 +113,23 @@ public class SliverFixedExtentList : SliverMultiBoxAdaptorWidget
 
     public static SliverFixedExtentList CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, Widget?> itemBuilder = default!, double itemExtent = default!, global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findChildIndexCallback = null, long? itemCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, long semanticIndexOffset = 0)
     {
-        var __instance = new SliverFixedExtentList(default!, default!, default!);
-        __instance.itemExtent = itemExtent;
-        return __instance;
+        return new SliverFixedExtentList(key, new SliverChildBuilderDelegate(
+            itemBuilder,
+            findChildIndexCallback,
+            itemCount,
+            addAutomaticKeepAlives,
+            addRepaintBoundaries,
+            addSemanticIndexes,
+            semanticIndexOffset: semanticIndexOffset), itemExtent);
     }
 
     public static SliverFixedExtentList CreateList(global::Doroti.Framework.Foundation.Key? key = null, List<Widget> children = default!, double itemExtent = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
     {
-        var __instance = new SliverFixedExtentList(default!, default!, default!);
-        __instance.itemExtent = itemExtent;
-        return __instance;
+        return new SliverFixedExtentList(key, new SliverChildListDelegate(
+            children ?? [],
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes), itemExtent);
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
@@ -141,16 +158,22 @@ public class SliverVariedExtentList : SliverMultiBoxAdaptorWidget
 
     public static SliverVariedExtentList CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, Widget?> itemBuilder = default!, ItemExtentBuilder itemExtentBuilder = default!, global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findChildIndexCallback = null, long? itemCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
     {
-        var __instance = new SliverVariedExtentList(default!, default!, default!);
-        __instance.itemExtentBuilder = itemExtentBuilder;
-        return __instance;
+        return new SliverVariedExtentList(key, new SliverChildBuilderDelegate(
+            itemBuilder,
+            findChildIndexCallback,
+            itemCount,
+            addAutomaticKeepAlives,
+            addRepaintBoundaries,
+            addSemanticIndexes), itemExtentBuilder);
     }
 
     public static SliverVariedExtentList CreateList(global::Doroti.Framework.Foundation.Key? key = null, List<Widget> children = default!, ItemExtentBuilder itemExtentBuilder = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
     {
-        var __instance = new SliverVariedExtentList(default!, default!, default!);
-        __instance.itemExtentBuilder = itemExtentBuilder;
-        return __instance;
+        return new SliverVariedExtentList(key, new SliverChildListDelegate(
+            children ?? [],
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes), itemExtentBuilder);
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
@@ -179,32 +202,36 @@ public class SliverGrid : SliverMultiBoxAdaptorWidget
 
     public static SliverGrid CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Rendering.SliverGridDelegate gridDelegate = default!, global::System.Func<BuildContext, long, Widget?> itemBuilder = default!, global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findChildIndexCallback = null, long? itemCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, long semanticIndexOffset = 0)
     {
-        var __instance = new SliverGrid(default!, default!, default!);
-        __instance.gridDelegate = gridDelegate;
-        return __instance;
+        return new SliverGrid(key, new SliverChildBuilderDelegate(
+            itemBuilder,
+            findChildIndexCallback,
+            itemCount,
+            addAutomaticKeepAlives,
+            addRepaintBoundaries,
+            addSemanticIndexes,
+            semanticIndexOffset: semanticIndexOffset), gridDelegate);
     }
 
     public static SliverGrid CreateCount(global::Doroti.Framework.Foundation.Key? key = null, long crossAxisCount = default!, double mainAxisSpacing = 0.0, double crossAxisSpacing = 0.0, double childAspectRatio = 1.0, List<Widget> children = default!)
     {
-        var __instance = new SliverGrid(default!, default!, default!);
-        List<Widget> __children = children ?? new List<Widget>();
-        __instance.gridDelegate = new global::Doroti.Framework.Rendering.SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: crossAxisCount, mainAxisSpacing: mainAxisSpacing, crossAxisSpacing: crossAxisSpacing, childAspectRatio: childAspectRatio);
-        return __instance;
+        return new SliverGrid(key, new SliverChildListDelegate(children ?? []),
+            new global::Doroti.Framework.Rendering.SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: crossAxisCount, mainAxisSpacing: mainAxisSpacing, crossAxisSpacing: crossAxisSpacing, childAspectRatio: childAspectRatio));
     }
 
     public static SliverGrid CreateExtent(global::Doroti.Framework.Foundation.Key? key = null, double maxCrossAxisExtent = default!, double mainAxisSpacing = 0.0, double crossAxisSpacing = 0.0, double childAspectRatio = 1.0, List<Widget> children = default!)
     {
-        var __instance = new SliverGrid(default!, default!, default!);
-        List<Widget> __children = children ?? new List<Widget>();
-        __instance.gridDelegate = new global::Doroti.Framework.Rendering.SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: maxCrossAxisExtent, mainAxisSpacing: mainAxisSpacing, crossAxisSpacing: crossAxisSpacing, childAspectRatio: childAspectRatio);
-        return __instance;
+        return new SliverGrid(key, new SliverChildListDelegate(children ?? []),
+            new global::Doroti.Framework.Rendering.SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: maxCrossAxisExtent, mainAxisSpacing: mainAxisSpacing, crossAxisSpacing: crossAxisSpacing, childAspectRatio: childAspectRatio));
     }
 
     public static SliverGrid CreateList(global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Rendering.SliverGridDelegate gridDelegate = default!, List<Widget> children = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true, long semanticIndexOffset = 0)
     {
-        var __instance = new SliverGrid(default!, default!, default!);
-        __instance.gridDelegate = gridDelegate;
-        return __instance;
+        return new SliverGrid(key, new SliverChildListDelegate(
+            children ?? [],
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes,
+            semanticIndexOffset: semanticIndexOffset), gridDelegate);
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)

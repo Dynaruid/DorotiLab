@@ -124,7 +124,7 @@ internal class _NavigationRailState__navigation_rail : global::Doroti.Framework.
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -223,7 +223,7 @@ internal class _NavigationRailState__navigation_rail : global::Doroti.Framework.
             return ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
             {
                 var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: ThemeLibrary.kThemeAnimationDuration, vsync: this);
-                __cascade.addListener(() => this._rebuild());
+                __cascade.addListener(this._rebuild);
                 return __cascade;
             }))();
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -310,8 +310,8 @@ internal class _NavigationRailState__navigation_rail : global::Doroti.Framework.
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 

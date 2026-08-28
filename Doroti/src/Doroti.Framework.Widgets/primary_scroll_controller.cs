@@ -35,7 +35,7 @@ public class PrimaryScrollController : InheritedWidget
 
     public static PrimaryScrollController CreateNone(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!)
     {
-        var __instance = new PrimaryScrollController(default!, default!, default!, default!, default!);
+        var __instance = new PrimaryScrollController(key, default!, default!, default!, child);
         __instance.automaticallyInheritForPlatforms = new HashSet<global::Doroti.Framework.Foundation.TargetPlatform>();
         __instance.scrollDirection = null;
         __instance.controller = null;

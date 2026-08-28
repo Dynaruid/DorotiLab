@@ -50,15 +50,15 @@ internal class _SemanticsDebuggerState__semantics_debugger : State<SemanticsDebu
         DartRuntimePrimitives.Assert(() => (((global::Doroti.Framework.Rendering.PipelineOwner)newOwner).semanticsOwner is not null));
         if ((!object.Equals(newOwner, this._pipelineOwner)))
         {
-            this._pipelineOwner?.semanticsOwner?.removeListener(() => this._update());
-            ((global::Doroti.Framework.Rendering.PipelineOwner)newOwner).semanticsOwner!.addListener(() => this._update());
+            this._pipelineOwner?.semanticsOwner?.removeListener(this._update);
+            ((global::Doroti.Framework.Rendering.PipelineOwner)newOwner).semanticsOwner!.addListener(this._update);
             _pipelineOwner = newOwner;
         }
     }
 
     public override void dispose()
     {
-        this._pipelineOwner?.semanticsOwner?.removeListener(() => this._update());
+        this._pipelineOwner?.semanticsOwner?.removeListener(this._update);
         this._semanticsHandle?.dispose();
         WidgetsBinding.instance.removeObserver(this);
         base.dispose();

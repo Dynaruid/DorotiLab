@@ -88,7 +88,7 @@ internal class _ZoomEnterTransitionState__page_transitions_theme : global::Dorot
     {
         fadeTransition = (((_ZoomEnterTransition__page_transitions_theme)(object)this.widget).reverse ? global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysCompleteAnimation : _fadeInTransition.animate(((_ZoomEnterTransition__page_transitions_theme)(object)this.widget).animation));
         scaleTransition = ((((_ZoomEnterTransition__page_transitions_theme)(object)this.widget).reverse ? _scaleDownTransition : _scaleUpTransition)).animate(((_ZoomEnterTransition__page_transitions_theme)(object)this.widget).animation);
-        ((_ZoomEnterTransition__page_transitions_theme)(object)this.widget).animation.addListener(() => this.onAnimationValueChange());
+        ((_ZoomEnterTransition__page_transitions_theme)(object)this.widget).animation.addListener(this.onAnimationValueChange);
         ((_ZoomEnterTransition__page_transitions_theme)(object)this.widget).animation.addStatusListener((AnimationStatusListener)this.onAnimationStatusChange);
     }
 
@@ -103,7 +103,7 @@ internal class _ZoomEnterTransitionState__page_transitions_theme : global::Dorot
     {
         if (((((_ZoomEnterTransition__page_transitions_theme)oldWidget).reverse != ((_ZoomEnterTransition__page_transitions_theme)(object)this.widget).reverse) || (!object.Equals(((_ZoomEnterTransition__page_transitions_theme)oldWidget).animation, ((_ZoomEnterTransition__page_transitions_theme)(object)this.widget).animation))))
         {
-            ((_ZoomEnterTransition__page_transitions_theme)oldWidget).animation.removeListener(() => this.onAnimationValueChange());
+            ((_ZoomEnterTransition__page_transitions_theme)oldWidget).animation.removeListener(this.onAnimationValueChange);
             ((_ZoomEnterTransition__page_transitions_theme)oldWidget).animation.removeStatusListener((AnimationStatusListener)this.onAnimationStatusChange);
             _updateAnimations();
             this.@delegate.dispose();
@@ -114,7 +114,7 @@ internal class _ZoomEnterTransitionState__page_transitions_theme : global::Dorot
 
     public override void dispose()
     {
-        ((_ZoomEnterTransition__page_transitions_theme)(object)this.widget).animation.removeListener(() => this.onAnimationValueChange());
+        ((_ZoomEnterTransition__page_transitions_theme)(object)this.widget).animation.removeListener(this.onAnimationValueChange);
         ((_ZoomEnterTransition__page_transitions_theme)(object)this.widget).animation.removeStatusListener((AnimationStatusListener)this.onAnimationStatusChange);
         this.@delegate.dispose();
         this.controller.dispose();
@@ -179,7 +179,7 @@ internal class _ZoomExitTransitionState__page_transitions_theme : global::Doroti
     {
         fadeTransition = (((_ZoomExitTransition__page_transitions_theme)(object)this.widget).reverse ? _fadeOutTransition.animate(((_ZoomExitTransition__page_transitions_theme)(object)this.widget).animation) : global::Doroti.Framework.Animation.AnimationsLibrary.kAlwaysCompleteAnimation);
         scaleTransition = ((((_ZoomExitTransition__page_transitions_theme)(object)this.widget).reverse ? _scaleDownTransition : _scaleUpTransition)).animate(((_ZoomExitTransition__page_transitions_theme)(object)this.widget).animation);
-        ((_ZoomExitTransition__page_transitions_theme)(object)this.widget).animation.addListener(() => this.onAnimationValueChange());
+        ((_ZoomExitTransition__page_transitions_theme)(object)this.widget).animation.addListener(this.onAnimationValueChange);
         ((_ZoomExitTransition__page_transitions_theme)(object)this.widget).animation.addStatusListener((AnimationStatusListener)this.onAnimationStatusChange);
     }
 
@@ -194,7 +194,7 @@ internal class _ZoomExitTransitionState__page_transitions_theme : global::Doroti
     {
         if (((((_ZoomExitTransition__page_transitions_theme)oldWidget).reverse != ((_ZoomExitTransition__page_transitions_theme)(object)this.widget).reverse) || (!object.Equals(((_ZoomExitTransition__page_transitions_theme)oldWidget).animation, ((_ZoomExitTransition__page_transitions_theme)(object)this.widget).animation))))
         {
-            ((_ZoomExitTransition__page_transitions_theme)oldWidget).animation.removeListener(() => this.onAnimationValueChange());
+            ((_ZoomExitTransition__page_transitions_theme)oldWidget).animation.removeListener(this.onAnimationValueChange);
             ((_ZoomExitTransition__page_transitions_theme)oldWidget).animation.removeStatusListener((AnimationStatusListener)this.onAnimationStatusChange);
             _updateAnimations();
             this.@delegate.dispose();
@@ -205,7 +205,7 @@ internal class _ZoomExitTransitionState__page_transitions_theme : global::Doroti
 
     public override void dispose()
     {
-        ((_ZoomExitTransition__page_transitions_theme)(object)this.widget).animation.removeListener(() => this.onAnimationValueChange());
+        ((_ZoomExitTransition__page_transitions_theme)(object)this.widget).animation.removeListener(this.onAnimationValueChange);
         ((_ZoomExitTransition__page_transitions_theme)(object)this.widget).animation.removeStatusListener((AnimationStatusListener)this.onAnimationStatusChange);
         this.@delegate.dispose();
         this.controller.dispose();
@@ -550,10 +550,10 @@ public class _ZoomEnterTransitionPainter__page_transitions_theme : global::Dorot
         this.fade = fade;
         this.animation = animation;
         this.backgroundColor = backgroundColor;
-        this.animation.addListener(() => this.notifyListeners());
+        this.animation.addListener(this.notifyListeners);
         this.animation.addStatusListener((AnimationStatusListener)this._onStatusChange);
-        this.scale.addListener(() => this.notifyListeners());
-        this.fade.addListener(() => this.notifyListeners());
+        this.scale.addListener(this.notifyListeners);
+        this.fade.addListener(this.notifyListeners);
     }
 
     internal virtual void _onStatusChange(global::Doroti.Framework.Animation.AnimationStatus __unused0)
@@ -601,12 +601,12 @@ public class _ZoomEnterTransitionPainter__page_transitions_theme : global::Dorot
         Page_transitions_themeLibrary._drawImageScaledAndCentered(context, image, ((global::Doroti.Framework.Animation.Animation<double>)this.scale).value, ((global::Doroti.Framework.Animation.Animation<double>)this.fade).value, pixelRatio);
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
-        this.animation.removeListener(() => this.notifyListeners());
+        this.animation.removeListener(this.notifyListeners);
         this.animation.removeStatusListener((AnimationStatusListener)this._onStatusChange);
-        this.scale.removeListener(() => this.notifyListeners());
-        this.fade.removeListener(() => this.notifyListeners());
+        this.scale.removeListener(this.notifyListeners);
+        this.fade.removeListener(this.notifyListeners);
         this._opacityHandle.layer = null;
         this._transformHandler.layer = null;
         base.dispose();
@@ -637,8 +637,8 @@ public class _ZoomExitTransitionPainter__page_transitions_theme : global::Doroti
         this.scale = scale;
         this.fade = fade;
         this.animation = animation;
-        this.scale.addListener(() => this.notifyListeners());
-        this.fade.addListener(() => this.notifyListeners());
+        this.scale.addListener(this.notifyListeners);
+        this.fade.addListener(this.notifyListeners);
         this.animation.addStatusListener((AnimationStatusListener)this._onStatusChange);
     }
 
@@ -673,12 +673,12 @@ public class _ZoomExitTransitionPainter__page_transitions_theme : global::Doroti
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         this._opacityHandle.layer = null;
         this._transformHandler.layer = null;
-        this.scale.removeListener(() => this.notifyListeners());
-        this.fade.removeListener(() => this.notifyListeners());
+        this.scale.removeListener(this.notifyListeners);
+        this.fade.removeListener(this.notifyListeners);
         this.animation.removeStatusListener((AnimationStatusListener)this._onStatusChange);
         base.dispose();
     }

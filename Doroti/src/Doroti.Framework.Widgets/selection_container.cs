@@ -29,7 +29,7 @@ public class SelectionContainer : StatefulWidget
 
     public static SelectionContainer CreateDisabled(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!)
     {
-        var __instance = new SelectionContainer(default!, default!, default!, default!);
+        var __instance = new SelectionContainer(key, default!, default!, child);
         __instance.child = child;
         __instance.registrar = null;
         __instance.@delegate = null;
@@ -117,13 +117,13 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
     public virtual void addListener(global::System.Action listener)
     {
         DartRuntimePrimitives.Assert(() => !((SelectionContainer)this.widget)._disabled);
-        ((SelectionContainer)this.widget).@delegate!.addListener(() => listener());
+        ((SelectionContainer)this.widget).@delegate!.addListener(listener);
         this._listeners.Add(() => listener());
     }
 
     public virtual void removeListener(global::System.Action listener)
     {
-        ((SelectionContainer)this.widget).@delegate?.removeListener(() => listener());
+        ((SelectionContainer)this.widget).@delegate?.removeListener(listener);
         this._listeners.Remove(listener);
     }
 
@@ -209,13 +209,13 @@ internal class _SelectionContainerState__selection_container : State<SelectionCo
             }
             if ((__value is null))
             {
-                removeListener(() => this._updateSelectionRegistrarSubscription());
+                removeListener(this._updateSelectionRegistrarSubscription);
             }
             else
             {
                 if ((this._registrar is null))
                 {
-                    addListener(() => this._updateSelectionRegistrarSubscription());
+                    addListener(this._updateSelectionRegistrarSubscription);
                 }
             }
             _removeSelectionRegistrarSubscription();
@@ -267,7 +267,7 @@ public class SelectionRegistrarScope : InheritedWidget
 
     public static SelectionRegistrarScope Create_disabled(Widget child)
     {
-        var __instance = new SelectionRegistrarScope(default!, default!, default!);
+        var __instance = new SelectionRegistrarScope(default!, default!, child);
         __instance.registrar = null;
         return __instance;
     }

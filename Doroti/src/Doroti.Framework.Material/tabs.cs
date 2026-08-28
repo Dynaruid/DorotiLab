@@ -583,7 +583,7 @@ internal class _ChangeAnimation__tabs : global::Doroti.Framework.Animation.Anima
     }
 
     public override double value => TabsLibrary._indexChangeProgress(this.controller);
-    public override void addListener(global::System.Action listener) => this.parent.addListener(() => listener());
+    public override void addListener(global::System.Action listener) => this.parent.addListener(listener);
     public override void addStatusListener(AnimationStatusListener listener) => this.parent.addStatusListener((AnimationStatusListener)listener);
     public override AnimationStatus status => ((Animation<double>)this.parent).status;
 }
@@ -627,7 +627,7 @@ internal class _DragAnimation__tabs : global::Doroti.Framework.Animation.Animati
             return default!;
         }
     }
-    public override void addListener(global::System.Action listener) => this.parent.addListener(() => listener());
+    public override void addListener(global::System.Action listener) => this.parent.addListener(listener);
     public override void addStatusListener(AnimationStatusListener listener) => this.parent.addStatusListener((AnimationStatusListener)listener);
     public override AnimationStatus status => ((Animation<double>)this.parent).status;
 }
@@ -936,14 +936,14 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         }
         if (this._controllerIsValid)
         {
-            this._controller!.animation!.removeListener(() => this._handleTabControllerAnimationTick());
-            this._controller!.removeListener(() => this._handleTabControllerTick());
+            this._controller!.animation!.removeListener(this._handleTabControllerAnimationTick);
+            this._controller!.removeListener(this._handleTabControllerTick);
         }
         _controller = newController;
         if ((this._controller is not null))
         {
-            this._controller!.animation!.addListener(() => this._handleTabControllerAnimationTick());
-            this._controller!.addListener(() => this._handleTabControllerTick());
+            this._controller!.animation!.addListener(this._handleTabControllerAnimationTick);
+            this._controller!.addListener(this._handleTabControllerTick);
             _currentIndex = this._controller!.index;
         }
     }
@@ -1031,8 +1031,8 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         this._indicatorPainter!.dispose();
         if (this._controllerIsValid)
         {
-            this._controller!.animation!.removeListener(() => this._handleTabControllerAnimationTick());
-            this._controller!.removeListener(() => this._handleTabControllerTick());
+            this._controller!.animation!.removeListener(this._handleTabControllerAnimationTick);
+            this._controller!.removeListener(this._handleTabControllerTick);
         }
         _controller = null;
         this._internalScrollController?.dispose();
@@ -1354,12 +1354,12 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
         }
         if (this._controllerIsValid)
         {
-            this._controller!.animation!.removeListener(() => this._handleTabControllerAnimationTick());
+            this._controller!.animation!.removeListener(this._handleTabControllerAnimationTick);
         }
         _controller = newController;
         if ((this._controller is not null))
         {
-            this._controller!.animation!.addListener(() => this._handleTabControllerAnimationTick());
+            this._controller!.animation!.addListener(this._handleTabControllerAnimationTick);
         }
     }
 
@@ -1422,7 +1422,7 @@ internal class _TabBarViewState__tabs : global::Doroti.Framework.Widgets.State<T
     {
         if (this._controllerIsValid)
         {
-            this._controller!.animation!.removeListener(() => this._handleTabControllerAnimationTick());
+            this._controller!.animation!.removeListener(this._handleTabControllerAnimationTick);
         }
         _controller = null;
         this._pageController?.dispose();

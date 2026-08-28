@@ -590,7 +590,7 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = ballisticController;
-    __cascade.addListener(() => tick());
+    __cascade.addListener(tick);
     __cascade.animateWith(simulation).whenCompleteOrCancel(((global::System.Action)(() =>
     {
         if (this._ballisticControllers.Contains(ballisticController))

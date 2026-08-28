@@ -2211,18 +2211,18 @@ internal class _WidgetInspectorState__widget_inspector : State<WidgetInspector>,
     public override void initState()
     {
         base.initState();
-        WidgetInspectorService.instance.selection.addListener(() => this._selectionInformationChanged());
-        WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier.addListener(() => this._selectionInformationChanged());
-        this._selectionOnTapEnabled.addListener(() => this._selectionInformationChanged());
+        WidgetInspectorService.instance.selection.addListener(this._selectionInformationChanged);
+        WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier.addListener(this._selectionInformationChanged);
+        this._selectionOnTapEnabled.addListener(this._selectionInformationChanged);
         selection = WidgetInspectorService.instance.selection;
         isSelectMode = WidgetsBinding.instance.debugShowWidgetInspectorOverride;
     }
 
     public override void dispose()
     {
-        WidgetInspectorService.instance.selection.removeListener(() => this._selectionInformationChanged());
-        WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier.removeListener(() => this._selectionInformationChanged());
-        this._selectionOnTapEnabled.removeListener(() => this._selectionInformationChanged());
+        WidgetInspectorService.instance.selection.removeListener(this._selectionInformationChanged);
+        WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier.removeListener(this._selectionInformationChanged);
+        this._selectionOnTapEnabled.removeListener(this._selectionInformationChanged);
         base.dispose();
     }
 

@@ -213,7 +213,7 @@ public class _CupertinoTextSelectionControlsToolbarState__text_selection : globa
     public override void initState()
     {
         base.initState();
-        ((_CupertinoTextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.addListener(() => this._onChangedClipboardStatus());
+        ((_CupertinoTextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.addListener(this._onChangedClipboardStatus);
     }
 
     public override void didUpdateWidget(_CupertinoTextSelectionControlsToolbar__text_selection oldWidget)
@@ -221,14 +221,14 @@ public class _CupertinoTextSelectionControlsToolbarState__text_selection : globa
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((_CupertinoTextSelectionControlsToolbar__text_selection)oldWidget).clipboardStatus, ((_CupertinoTextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus)))
         {
-            ((_CupertinoTextSelectionControlsToolbar__text_selection)oldWidget).clipboardStatus?.removeListener(() => this._onChangedClipboardStatus());
-            ((_CupertinoTextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.addListener(() => this._onChangedClipboardStatus());
+            ((_CupertinoTextSelectionControlsToolbar__text_selection)oldWidget).clipboardStatus?.removeListener(this._onChangedClipboardStatus);
+            ((_CupertinoTextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.addListener(this._onChangedClipboardStatus);
         }
     }
 
     public override void dispose()
     {
-        ((_CupertinoTextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.removeListener(() => this._onChangedClipboardStatus());
+        ((_CupertinoTextSelectionControlsToolbar__text_selection)this.widget).clipboardStatus?.removeListener(this._onChangedClipboardStatus);
         base.dispose();
     }
 

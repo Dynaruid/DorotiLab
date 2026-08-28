@@ -31,7 +31,7 @@ public class ScrollableDetails
 
     public static ScrollableDetails CreateVertical(bool reverse = false, ScrollController? controller = null, ScrollPhysics? physics = null, Clip? decorationClipBehavior = null)
     {
-        var __instance = new ScrollableDetails(default!, default!, default!, default!, default!);
+        var __instance = new ScrollableDetails(default!, controller, physics, default!, decorationClipBehavior);
         __instance.controller = controller;
         __instance.physics = physics;
         __instance.decorationClipBehavior = decorationClipBehavior;
@@ -41,7 +41,7 @@ public class ScrollableDetails
 
     public static ScrollableDetails CreateHorizontal(bool reverse = false, ScrollController? controller = null, ScrollPhysics? physics = null, Clip? decorationClipBehavior = null)
     {
-        var __instance = new ScrollableDetails(default!, default!, default!, default!, default!);
+        var __instance = new ScrollableDetails(default!, controller, physics, default!, decorationClipBehavior);
         __instance.controller = controller;
         __instance.physics = physics;
         __instance.decorationClipBehavior = decorationClipBehavior;

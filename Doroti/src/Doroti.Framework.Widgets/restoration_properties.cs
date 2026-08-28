@@ -232,15 +232,15 @@ public abstract class RestorableListenable<T> : RestorableProperty<T> where T : 
     }
     public override void initWithValue(T value)
     {
-        this._value?.removeListener(() => this.notifyListeners());
+        this._value?.removeListener(this.notifyListeners);
         _value = value;
-        this._value!.addListener(() => this.notifyListeners());
+        this._value!.addListener(this.notifyListeners);
     }
 
     public override void dispose()
     {
         base.dispose();
-        this._value?.removeListener(() => this.notifyListeners());
+        this._value?.removeListener(this.notifyListeners);
     }
 
 }

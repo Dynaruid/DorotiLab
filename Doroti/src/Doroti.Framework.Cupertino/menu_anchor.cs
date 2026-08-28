@@ -366,7 +366,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -507,8 +507,8 @@ internal class _CupertinoMenuAnchorState__menu_anchor : global::Doroti.Framework
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -580,7 +580,7 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
         base.initState();
         global::Doroti.Framework.Widgets.WidgetsBinding.instance.addObserver(this);
         _swipeAnimationController = global::Doroti.Framework.Animation.AnimationController.CreateUnbounded(value: 1, vsync: this);
-        ((_MenuOverlay__menu_anchor)this.widget).swipeDistanceListenable.addListener(() => this._handleSwipeDistanceChanged());
+        ((_MenuOverlay__menu_anchor)this.widget).swipeDistanceListenable.addListener(this._handleSwipeDistanceChanged);
         _resolveChildren();
     }
 
@@ -601,8 +601,8 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((_MenuOverlay__menu_anchor)oldWidget).swipeDistanceListenable, ((_MenuOverlay__menu_anchor)this.widget).swipeDistanceListenable)))
         {
-            ((_MenuOverlay__menu_anchor)oldWidget).swipeDistanceListenable.removeListener(() => this._handleSwipeDistanceChanged());
-            ((_MenuOverlay__menu_anchor)this.widget).swipeDistanceListenable.addListener(() => this._handleSwipeDistanceChanged());
+            ((_MenuOverlay__menu_anchor)oldWidget).swipeDistanceListenable.removeListener(this._handleSwipeDistanceChanged);
+            ((_MenuOverlay__menu_anchor)this.widget).swipeDistanceListenable.addListener(this._handleSwipeDistanceChanged);
         }
         if ((!object.Equals(((_MenuOverlay__menu_anchor)oldWidget).visibilityAnimation, ((_MenuOverlay__menu_anchor)this.widget).visibilityAnimation)))
         {
@@ -627,7 +627,7 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
     public override void dispose()
     {
         this._scrollController.dispose();
-        ((_MenuOverlay__menu_anchor)this.widget).swipeDistanceListenable.removeListener(() => this._handleSwipeDistanceChanged());
+        ((_MenuOverlay__menu_anchor)this.widget).swipeDistanceListenable.removeListener(this._handleSwipeDistanceChanged);
         DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Scheduler.Ticker?>)(() =>
 {
     var __cascade = this._swipeTicker;
@@ -660,7 +660,7 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -911,8 +911,8 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -2253,7 +2253,7 @@ public class _RenderSwipeSurface__menu_anchor : global::Doroti.Framework.Renderi
         }
     }
     public virtual global::Doroti.Ui.Rect computeRect() => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Rect>((localToGlobal(Offset.zero) & this.size));
-    public virtual void detach()
+    public override void detach()
     {
         this._region.detachSurface(this);
         base.detach();

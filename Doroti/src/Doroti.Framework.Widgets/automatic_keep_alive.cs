@@ -128,7 +128,7 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 });
             this._handles!.remove(handle);
-            handle.removeListener(() => callback());
+            handle.removeListener(callback);
             if (!System.Linq.Enumerable.Any(this._handles!))
             {
                 if ((FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Scheduler.SchedulerBinding.instance.schedulerPhase) < FoundationRuntimePorts.EnumIndex(global::Doroti.Framework.Scheduler.SchedulerPhase.persistentCallbacks)))
@@ -185,7 +185,7 @@ public class KeepAliveNotification : Notification
 
 public class KeepAliveHandle : global::Doroti.Framework.Foundation.ChangeNotifier
 {
-    public virtual void dispose()
+    public override void dispose()
     {
         notifyListeners();
         base.dispose();

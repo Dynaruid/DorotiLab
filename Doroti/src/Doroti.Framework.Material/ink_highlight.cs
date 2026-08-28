@@ -41,7 +41,7 @@ public class InkHighlight : InteractiveInkFeature
         _alphaController = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(duration: DartRuntimePrimitives.RequireValue(__fadeDuration), vsync: ((MaterialInkController)this.controller).vsync);
-    __cascade.addListener(() => ((MaterialInkController)this.controller).markNeedsPaint());
+    __cascade.addListener(((MaterialInkController)this.controller).markNeedsPaint);
     __cascade.addStatusListener((AnimationStatusListener)this._handleAlphaStatusChanged);
     __cascade.forward();
     return __cascade;

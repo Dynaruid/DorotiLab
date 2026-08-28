@@ -327,7 +327,7 @@ internal class _MenuAnchorState__menu_anchor : global::Doroti.Framework.Widgets.
                 }
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -542,8 +542,8 @@ internal class _MenuAnchorState__menu_anchor : global::Doroti.Framework.Widgets.
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
+        newNotifier.addListener(this._updateTicker);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -676,12 +676,12 @@ internal class _MenuItemButtonState__menu_anchor : global::Doroti.Framework.Widg
     {
         base.initState();
         _createInternalFocusNodeIfNeeded();
-        this._focusNode.addListener(() => this._handleFocusChange());
+        this._focusNode.addListener(this._handleFocusChange);
     }
 
     public override void dispose()
     {
-        this._focusNode.removeListener(() => this._handleFocusChange());
+        this._focusNode.removeListener(this._handleFocusChange);
         this._internalFocusNode?.dispose();
         _internalFocusNode = null;
         base.dispose();
@@ -691,14 +691,14 @@ internal class _MenuItemButtonState__menu_anchor : global::Doroti.Framework.Widg
     {
         if ((!object.Equals(((MenuItemButton)(object)this.widget).focusNode, ((MenuItemButton)oldWidget).focusNode)))
         {
-            ((((MenuItemButton)oldWidget).focusNode ?? this._internalFocusNode))?.removeListener(() => this._handleFocusChange());
+            ((((MenuItemButton)oldWidget).focusNode ?? this._internalFocusNode))?.removeListener(this._handleFocusChange);
             if ((((MenuItemButton)(object)this.widget).focusNode is not null))
             {
                 this._internalFocusNode?.dispose();
                 _internalFocusNode = null;
             }
             _createInternalFocusNodeIfNeeded();
-            this._focusNode.addListener(() => this._handleFocusChange());
+            this._focusNode.addListener(this._handleFocusChange);
         }
         base.didUpdateWidget(oldWidget);
     }
@@ -1036,7 +1036,7 @@ internal class _SubmenuButtonState__menu_anchor : global::Doroti.Framework.Widge
         {
             _internalMenuController = new global::Doroti.Framework.Widgets.MenuController();
         }
-        this._buttonFocusNode.addListener(() => this._handleFocusChange());
+        this._buttonFocusNode.addListener(this._handleFocusChange);
     }
 
     public override void didChangeDependencies()
@@ -1048,7 +1048,7 @@ internal class _SubmenuButtonState__menu_anchor : global::Doroti.Framework.Widge
     public override void dispose()
     {
         _clearHoverOpenTimer();
-        this._buttonFocusNode.removeListener(() => this._handleFocusChange());
+        this._buttonFocusNode.removeListener(this._handleFocusChange);
         this._internalFocusNode?.dispose();
         _internalFocusNode = null;
         base.dispose();
@@ -1062,13 +1062,13 @@ internal class _SubmenuButtonState__menu_anchor : global::Doroti.Framework.Widge
         {
             if ((((SubmenuButton)oldWidget).focusNode is null))
             {
-                this._internalFocusNode?.removeListener(() => this._handleFocusChange());
+                this._internalFocusNode?.removeListener(this._handleFocusChange);
                 this._internalFocusNode?.dispose();
                 _internalFocusNode = null;
             }
             else
             {
-                ((SubmenuButton)oldWidget).focusNode!.removeListener(() => this._handleFocusChange());
+                ((SubmenuButton)oldWidget).focusNode!.removeListener(this._handleFocusChange);
             }
             if ((((SubmenuButton)(object)this.widget).focusNode is null))
             {
@@ -1079,7 +1079,7 @@ internal class _SubmenuButtonState__menu_anchor : global::Doroti.Framework.Widge
                         return true;
                     });
             }
-            this._buttonFocusNode.addListener(() => this._handleFocusChange());
+            this._buttonFocusNode.addListener(this._handleFocusChange);
         }
         if ((!object.Equals(((SubmenuButton)(object)this.widget).controller, ((SubmenuButton)oldWidget).controller)))
         {

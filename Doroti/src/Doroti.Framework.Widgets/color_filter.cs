@@ -60,7 +60,7 @@ internal class _ColorFilterRenderObject__color_filter : global::Doroti.Framework
         }
     }
     public override bool alwaysNeedsCompositing => DartRuntimePrimitives.ConvertValue<bool>((this.child is not null));
-    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
         layer = context.pushColorFilter(offset, this.colorFilter, (global::System.Action<global::Doroti.Framework.Rendering.PaintingContext, Offset>)base.paint, oldLayer: ((global::Doroti.Framework.Rendering.ColorFilterLayer?)(object?)this.layer)!);
         DartRuntimePrimitives.Assert(() =>

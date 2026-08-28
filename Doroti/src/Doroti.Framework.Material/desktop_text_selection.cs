@@ -133,7 +133,7 @@ public class _DesktopTextSelectionControlsToolbarState__desktop_text_selection :
     public override void initState()
     {
         base.initState();
-        ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.addListener(() => this._onChangedClipboardStatus());
+        ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.addListener(this._onChangedClipboardStatus);
     }
 
     public override void didUpdateWidget(_DesktopTextSelectionControlsToolbar__desktop_text_selection oldWidget)
@@ -141,14 +141,14 @@ public class _DesktopTextSelectionControlsToolbarState__desktop_text_selection :
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((_DesktopTextSelectionControlsToolbar__desktop_text_selection)oldWidget).clipboardStatus, ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus)))
         {
-            ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)oldWidget).clipboardStatus?.removeListener(() => this._onChangedClipboardStatus());
-            ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.addListener(() => this._onChangedClipboardStatus());
+            ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)oldWidget).clipboardStatus?.removeListener(this._onChangedClipboardStatus);
+            ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.addListener(this._onChangedClipboardStatus);
         }
     }
 
     public override void dispose()
     {
-        ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.removeListener(() => this._onChangedClipboardStatus());
+        ((_DesktopTextSelectionControlsToolbar__desktop_text_selection)this.widget).clipboardStatus?.removeListener(this._onChangedClipboardStatus);
         base.dispose();
     }
 

@@ -135,7 +135,7 @@ internal class _CupertinoPickerState__picker : global::Doroti.Framework.Widgets.
         {
             _controller = new global::Doroti.Framework.Widgets.FixedExtentScrollController();
         }
-        this._effectiveController.addListener(() => this._handleScroll());
+        this._effectiveController.addListener(this._handleScroll);
     }
 
     public override void didUpdateWidget(CupertinoPicker oldWidget)
@@ -145,16 +145,16 @@ internal class _CupertinoPickerState__picker : global::Doroti.Framework.Widgets.
         {
             this._controller?.dispose();
             _controller = null;
-            ((CupertinoPicker)this.widget).scrollController!.addListener(() => this._handleScroll());
+            ((CupertinoPicker)this.widget).scrollController!.addListener(this._handleScroll);
         }
         else
         {
             if (((((CupertinoPicker)this.widget).scrollController is null) && (((CupertinoPicker)oldWidget).scrollController is not null)))
             {
                 DartRuntimePrimitives.Assert(() => (this._controller is null));
-                ((CupertinoPicker)oldWidget).scrollController!.removeListener(() => this._handleScroll());
+                ((CupertinoPicker)oldWidget).scrollController!.removeListener(this._handleScroll);
                 _controller = new global::Doroti.Framework.Widgets.FixedExtentScrollController();
-                this._controller!.addListener(() => this._handleScroll());
+                this._controller!.addListener(this._handleScroll);
             }
         }
     }
@@ -164,7 +164,7 @@ internal class _CupertinoPickerState__picker : global::Doroti.Framework.Widgets.
         this._controller?.dispose();
         if ((((CupertinoPicker)this.widget).scrollController is not null))
         {
-            ((CupertinoPicker)this.widget).scrollController!.removeListener(() => this._handleScroll());
+            ((CupertinoPicker)this.widget).scrollController!.removeListener(this._handleScroll);
         }
         base.dispose();
     }
@@ -323,13 +323,13 @@ public class _RenderCupertinoPickerSemantics__picker : global::Doroti.Framework.
         }
         if ((oldValue is not null))
         {
-            oldValue.removeListener(() => this._handleScrollUpdate());
+            oldValue.removeListener(this._handleScrollUpdate);
         }
         else
         {
             _currentIndex = ((global::Doroti.Framework.Widgets.FixedExtentScrollController)value).initialItem;
         }
-        value.addListener(() => this._handleScrollUpdate());
+        value.addListener(this._handleScrollUpdate);
         _controller = value;
     }
 
@@ -420,7 +420,7 @@ public class _RenderCupertinoPickerSemantics__picker : global::Doroti.Framework.
     public override void dispose()
     {
         base.dispose();
-        this.controller.removeListener(() => this._handleScrollUpdate());
+        this.controller.removeListener(this._handleScrollUpdate);
     }
 
 }

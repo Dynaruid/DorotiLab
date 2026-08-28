@@ -25,16 +25,22 @@ public class SliverPrototypeExtentList : SliverMultiBoxAdaptorWidget
 
     public static SliverPrototypeExtentList CreateBuilder(global::Doroti.Framework.Foundation.Key? key = null, global::System.Func<BuildContext, long, Widget?> itemBuilder = default!, Widget prototypeItem = default!, global::System.Func<global::Doroti.Framework.Foundation.Key, long?>? findChildIndexCallback = null, long? itemCount = null, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
     {
-        var __instance = new SliverPrototypeExtentList(default!, default!, default!);
-        __instance.prototypeItem = prototypeItem;
-        return __instance;
+        return new SliverPrototypeExtentList(key, new SliverChildBuilderDelegate(
+            itemBuilder,
+            findChildIndexCallback,
+            itemCount,
+            addAutomaticKeepAlives,
+            addRepaintBoundaries,
+            addSemanticIndexes), prototypeItem);
     }
 
     public static SliverPrototypeExtentList CreateList(global::Doroti.Framework.Foundation.Key? key = null, List<Widget> children = default!, Widget prototypeItem = default!, bool addAutomaticKeepAlives = true, bool addRepaintBoundaries = true, bool addSemanticIndexes = true)
     {
-        var __instance = new SliverPrototypeExtentList(default!, default!, default!);
-        __instance.prototypeItem = prototypeItem;
-        return __instance;
+        return new SliverPrototypeExtentList(key, new SliverChildListDelegate(
+            children ?? [],
+            addAutomaticKeepAlives: addAutomaticKeepAlives,
+            addRepaintBoundaries: addRepaintBoundaries,
+            addSemanticIndexes: addSemanticIndexes), prototypeItem);
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(BuildContext context)
@@ -201,4 +207,3 @@ public class _RenderSliverPrototypeExtentList__sliver_prototype_extent_list : gl
         }
     }
 }
-

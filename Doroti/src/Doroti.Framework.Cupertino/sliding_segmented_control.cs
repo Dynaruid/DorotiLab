@@ -199,7 +199,7 @@ public class _SegmentState__sliding_segmented_control<T> : global::Doroti.Framew
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -267,8 +267,8 @@ public class _SegmentState__sliding_segmented_control<T> : global::Doroti.Framew
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -331,7 +331,7 @@ public class _SegmentSeparatorState__sliding_segmented_control : global::Doroti.
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -402,8 +402,8 @@ public class _SegmentSeparatorState__sliding_segmented_control : global::Doroti.
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -645,7 +645,7 @@ public class _SegmentedControlState__sliding_segmented_control<T> : global::Doro
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -934,8 +934,8 @@ public class _SegmentedControlState__sliding_segmented_control<T> : global::Doro
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -1030,12 +1030,12 @@ public class _RenderSegmentedControl__sliding_segmented_control<T> : global::Dor
             var childParentData = ((global::Doroti.Framework.Rendering.ContainerBoxParentData<global::Doroti.Framework.Rendering.RenderBox>?)(object?)child.parentData!)!;
             child = childParentData.nextSibling;
         }
-        ((_SegmentedControlState__sliding_segmented_control<T>)this.state).thumbController.addListener(() => this.markNeedsPaint());
+        ((_SegmentedControlState__sliding_segmented_control<T>)this.state).thumbController.addListener(this.markNeedsPaint);
     }
 
     public override void detach()
     {
-        ((_SegmentedControlState__sliding_segmented_control<T>)this.state).thumbController.removeListener(() => this.markNeedsPaint());
+        ((_SegmentedControlState__sliding_segmented_control<T>)this.state).thumbController.removeListener(this.markNeedsPaint);
         base.detach();
         global::Doroti.Framework.Rendering.RenderBox? child = this._firstChild;
         while ((child is not null))

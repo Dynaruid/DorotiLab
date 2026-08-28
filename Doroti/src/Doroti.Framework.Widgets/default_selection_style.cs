@@ -30,7 +30,7 @@ public class DefaultSelectionStyle : InheritedTheme
 
     public static DefaultSelectionStyle CreateFallback(global::Doroti.Framework.Foundation.Key? key = null)
     {
-        var __instance = new DefaultSelectionStyle(default!, default!, default!, default!, default!);
+        var __instance = new DefaultSelectionStyle(key, default!, default!, default!, default!);
         __instance.cursorColor = null;
         __instance.selectionColor = null;
         __instance.mouseCursor = null;

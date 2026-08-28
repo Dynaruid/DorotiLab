@@ -227,7 +227,7 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -307,8 +307,8 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
+        newNotifier.addListener(this._updateTicker);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -326,7 +326,7 @@ public abstract class AnimatedWidgetBaseState<T> : ImplicitlyAnimatedWidgetState
     public override void initState()
     {
         base.initState();
-        this.controller.addListener(() => this._handleAnimationChanged());
+        this.controller.addListener(this._handleAnimationChanged);
     }
 
     internal virtual void _handleAnimationChanged()
@@ -562,7 +562,7 @@ public class AnimatedPositioned : ImplicitlyAnimatedWidget
 
     public static AnimatedPositioned CreateFromRect(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!, Rect rect = default!, global::Doroti.Framework.Animation.Curve curve = default!, Duration duration = default!, global::System.Action? onEnd = null)
     {
-        var __instance = new AnimatedPositioned(default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new AnimatedPositioned(key, child, default!, default!, default!, default!, default!, default!, curve, duration, onEnd);
         global::Doroti.Framework.Animation.Curve __curve = curve ?? global::Doroti.Framework.Animation.Curves.linear;
         __instance.child = child;
         __instance.left = rect.left;

@@ -155,7 +155,7 @@ internal class _ExpansibleState__expansible : State<Expansible>, SingleTickerPro
         }
         var heightFactorTween = new global::Doroti.Framework.Animation.Tween<double>(begin: 0.0, end: 1.0);
         _heightFactor = new global::Doroti.Framework.Animation.CurvedAnimation(parent: this._animationController.drive(heightFactorTween), curve: this._curve, reverseCurve: this._reverseCurve);
-        ((Expansible)this.widget).controller.addListener(() => this._toggleExpansion());
+        ((Expansible)this.widget).controller.addListener(this._toggleExpansion);
     }
 
     public override void didUpdateWidget(Expansible oldWidget)
@@ -178,8 +178,8 @@ internal class _ExpansibleState__expansible : State<Expansible>, SingleTickerPro
         }
         if ((!object.Equals(((Expansible)this.widget).controller, ((Expansible)oldWidget).controller)))
         {
-            ((Expansible)oldWidget).controller.removeListener(() => this._toggleExpansion());
-            ((Expansible)this.widget).controller.addListener(() => this._toggleExpansion());
+            ((Expansible)oldWidget).controller.removeListener(this._toggleExpansion);
+            ((Expansible)this.widget).controller.addListener(this._toggleExpansion);
             if ((((Expansible)oldWidget).controller.isExpanded != ((Expansible)this.widget).controller.isExpanded))
             {
                 _toggleExpansion();
@@ -189,7 +189,7 @@ internal class _ExpansibleState__expansible : State<Expansible>, SingleTickerPro
 
     public override void dispose()
     {
-        ((Expansible)this.widget).controller.removeListener(() => this._toggleExpansion());
+        ((Expansible)this.widget).controller.removeListener(this._toggleExpansion);
         this._animationController.dispose();
         this._heightFactor.dispose();
         DartRuntimePrimitives.Assert(() =>
@@ -201,7 +201,7 @@ internal class _ExpansibleState__expansible : State<Expansible>, SingleTickerPro
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -290,8 +290,8 @@ internal class _ExpansibleState__expansible : State<Expansible>, SingleTickerPro
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
+        newNotifier.addListener(this._updateTicker);
         this._tickerModeNotifier = newNotifier;
     }
 

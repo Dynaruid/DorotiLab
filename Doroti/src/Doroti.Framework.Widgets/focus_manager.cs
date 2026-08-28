@@ -558,7 +558,7 @@ public class FocusNode : ChangeNotifier
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         this._attachment?.detach();
         base.dispose();
@@ -831,7 +831,7 @@ public class FocusManager : ChangeNotifier
 
     internal virtual bool _respondToLifecycleChange => DartRuntimePrimitives.ConvertValue<bool>((global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb || (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform switch { global::Doroti.Framework.Foundation.TargetPlatform.android => false, global::Doroti.Framework.Foundation.TargetPlatform.iOS => false, global::Doroti.Framework.Foundation.TargetPlatform.fuchsia => true, global::Doroti.Framework.Foundation.TargetPlatform.linux => true, global::Doroti.Framework.Foundation.TargetPlatform.windows => true, global::Doroti.Framework.Foundation.TargetPlatform.macOS => true, _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
     public virtual void registerGlobalHandlers() => this._highlightManager.registerGlobalHandlers();
-    public virtual void dispose()
+    public override void dispose()
     {
         if ((this._appLifecycleListener is not null))
         {

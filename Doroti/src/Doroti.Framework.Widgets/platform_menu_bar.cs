@@ -112,7 +112,7 @@ public class ShortcutSerialization
 
     public static ShortcutSerialization CreateModifier(global::Doroti.Framework.Services.LogicalKeyboardKey trigger, bool alt = false, bool control = false, bool meta = false, bool shift = false)
     {
-        var __instance = new ShortcutSerialization(default!, default!, default!, default!);
+        var __instance = new ShortcutSerialization(default!, alt, control, meta);
         __instance._trigger = trigger;
         __instance._character = null;
         __instance._alt = alt;

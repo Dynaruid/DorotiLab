@@ -402,7 +402,7 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -694,8 +694,8 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -1404,18 +1404,18 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
         {
             child.attach(owner);
         }
-        this.checkmarkAnimation.addListener(() => this.markNeedsPaint());
-        this.avatarDrawerAnimation.addListener(() => this.markNeedsLayout());
-        this.deleteDrawerAnimation.addListener(() => this.markNeedsLayout());
-        this.enableAnimation.addListener(() => this.markNeedsPaint());
+        this.checkmarkAnimation.addListener(this.markNeedsPaint);
+        this.avatarDrawerAnimation.addListener(this.markNeedsLayout);
+        this.deleteDrawerAnimation.addListener(this.markNeedsLayout);
+        this.enableAnimation.addListener(this.markNeedsPaint);
     }
 
     public override void detach()
     {
-        this.checkmarkAnimation.removeListener(() => this.markNeedsPaint());
-        this.avatarDrawerAnimation.removeListener(() => this.markNeedsLayout());
-        this.deleteDrawerAnimation.removeListener(() => this.markNeedsLayout());
-        this.enableAnimation.removeListener(() => this.markNeedsPaint());
+        this.checkmarkAnimation.removeListener(this.markNeedsPaint);
+        this.avatarDrawerAnimation.removeListener(this.markNeedsLayout);
+        this.deleteDrawerAnimation.removeListener(this.markNeedsLayout);
+        this.enableAnimation.removeListener(this.markNeedsPaint);
         base.detach();
         foreach (global::Doroti.Framework.Rendering.RenderBox child in this.children)
         {

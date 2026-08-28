@@ -130,12 +130,12 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
         {
             this._tileController.expand();
         }
-        this._tileController.addListener(() => this._onExpansionChanged());
+        this._tileController.addListener(this._onExpansionChanged);
     }
 
     public override void dispose()
     {
-        this._tileController.removeListener(() => this._onExpansionChanged());
+        this._tileController.removeListener(this._onExpansionChanged);
         if ((((ExpansionTile)this.widget).controller is null))
         {
             this._tileController.dispose();
@@ -297,13 +297,13 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
         }
         if ((!object.Equals(((ExpansionTile)this.widget).controller, ((ExpansionTile)oldWidget).controller)))
         {
-            this._tileController.removeListener(() => this._onExpansionChanged());
+            this._tileController.removeListener(this._onExpansionChanged);
             if ((((ExpansionTile)oldWidget).controller is null))
             {
                 this._tileController.dispose();
             }
             _tileController = (((ExpansionTile)this.widget).controller ?? new global::Doroti.Framework.Widgets.ExpansibleController());
-            this._tileController.addListener(() => this._onExpansionChanged());
+            this._tileController.addListener(this._onExpansionChanged);
         }
     }
 

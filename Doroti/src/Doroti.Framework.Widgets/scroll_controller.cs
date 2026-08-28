@@ -87,7 +87,7 @@ public class ScrollController : global::Doroti.Framework.Foundation.ChangeNotifi
         this._positions.Remove(position);
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         foreach (ScrollPosition position in this._positions)
         {

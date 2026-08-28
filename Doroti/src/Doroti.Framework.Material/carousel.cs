@@ -166,7 +166,7 @@ internal class _CarouselViewState__carousel : global::Doroti.Framework.Widgets.S
         }
         _lastReportedLeadingItem = _getInitialLeadingItem();
         this._controller._attach(this);
-        this._controller.addListener(() => this._handleScroll());
+        this._controller.addListener(this._handleScroll);
     }
 
     public override void didUpdateWidget(CarouselView oldWidget)
@@ -205,7 +205,7 @@ internal class _CarouselViewState__carousel : global::Doroti.Framework.Widgets.S
 
     public override void dispose()
     {
-        this._controller.removeListener(() => this._handleScroll());
+        this._controller.removeListener(this._handleScroll);
         this._controller._detach(this);
         this._internalController?.dispose();
         base.dispose();

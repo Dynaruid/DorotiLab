@@ -77,7 +77,7 @@ internal class _SliverFloatingHeaderState__sliver_floating_header : State<Sliver
                 throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary($"{this} was disposed with an active Ticker."), new global::Doroti.Framework.Foundation.ErrorDescription($"{this.GetType()} created a Ticker via its SingleTickerProviderStateMixin, but at the time " + "dispose() was called on the mixin, that Ticker was still active. The Ticker must " + "be disposed before calling super.dispose()."), new global::Doroti.Framework.Foundation.ErrorHint("Tickers used by AnimationControllers " + "should be disposed by calling dispose() on the AnimationController itself. " + "Otherwise, the ticker will leak."), this._ticker!.describeForError("The offending ticker was") }));
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
         this._tickerModeNotifier = null;
         base.dispose();
     }
@@ -106,8 +106,8 @@ internal class _SliverFloatingHeaderState__sliver_floating_header : State<Sliver
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTicker());
-        newNotifier.addListener(() => this._updateTicker());
+        this._tickerModeNotifier?.removeListener(this._updateTicker);
+        newNotifier.addListener(this._updateTicker);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -141,12 +141,12 @@ internal class _SnapTriggerState__sliver_floating_header : State<_SnapTrigger__s
         base.didChangeDependencies();
         if ((this.position is not null))
         {
-            this.position!.isScrollingNotifier.removeListener(() => this.isScrollingListener());
+            this.position!.isScrollingNotifier.removeListener(this.isScrollingListener);
         }
         position = Scrollable.maybeOf(this.context)?.position;
         if ((this.position is not null))
         {
-            this.position!.isScrollingNotifier.addListener(() => this.isScrollingListener());
+            this.position!.isScrollingNotifier.addListener(this.isScrollingListener);
         }
     }
 
@@ -154,7 +154,7 @@ internal class _SnapTriggerState__sliver_floating_header : State<_SnapTrigger__s
     {
         if ((this.position is not null))
         {
-            this.position!.isScrollingNotifier.removeListener(() => this.isScrollingListener());
+            this.position!.isScrollingNotifier.removeListener(this.isScrollingListener);
         }
         base.dispose();
     }
@@ -287,7 +287,7 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : global::Dorot
             return default!;
         }
     }
-    public virtual void detach()
+    public override void detach()
     {
         this.snapController?.dispose();
         snapController = null;

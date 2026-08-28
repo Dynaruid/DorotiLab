@@ -71,7 +71,7 @@ public class ChangeNotifier : Listenable, IDisposable
             });
     }
 
-    public void addListener(Action listener)
+    public virtual void addListener(Action listener)
     {
         DartRuntimePrimitives.Assert(() => ChangeNotifier.debugAssertNotDisposed(this));
         if (MemoryAllocationsLibrary.kFlutterMemoryAllocationsEnabled)
@@ -125,7 +125,7 @@ public class ChangeNotifier : Listenable, IDisposable
         }
     }
 
-    public void removeListener(Action listener)
+    public virtual void removeListener(Action listener)
     {
         for (var i = 0; (i < _count); i++)
         {

@@ -2282,13 +2282,13 @@ internal class _FocusTraversalGroupState__focus_traversal : State<FocusTraversal
     public override void initState()
     {
         base.initState();
-        FocusManager.instance.addListener(() => this._handleFocusChanged());
+        FocusManager.instance.addListener(this._handleFocusChanged);
         ((FocusTraversalGroup)this.widget).onFocusNodeCreated?.Invoke(this.focusNode);
     }
 
     public override void dispose()
     {
-        FocusManager.instance.removeListener(() => this._handleFocusChanged());
+        FocusManager.instance.removeListener(this._handleFocusChanged);
         this.focusNode.dispose();
         base.dispose();
     }

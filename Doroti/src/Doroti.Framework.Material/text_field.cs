@@ -370,7 +370,7 @@ internal class _TextFieldState__text_field : global::Doroti.Framework.Widgets.St
             _createLocalController();
         }
         this._effectiveFocusNode.canRequestFocus = (((TextField)this.widget).canRequestFocus && this._isEnabled);
-        this._effectiveFocusNode.addListener(() => this._handleFocusChanged());
+        this._effectiveFocusNode.addListener(this._handleFocusChanged);
         _initStatesController();
     }
 
@@ -421,8 +421,8 @@ internal class _TextFieldState__text_field : global::Doroti.Framework.Widgets.St
         }
         if ((!object.Equals(((TextField)this.widget).focusNode, ((TextField)oldWidget).focusNode)))
         {
-            ((((TextField)oldWidget).focusNode ?? this._focusNode))?.removeListener(() => this._handleFocusChanged());
-            ((((TextField)this.widget).focusNode ?? this._focusNode))?.addListener(() => this._handleFocusChanged());
+            ((((TextField)oldWidget).focusNode ?? this._focusNode))?.removeListener(this._handleFocusChanged);
+            ((((TextField)this.widget).focusNode ?? this._focusNode))?.addListener(this._handleFocusChanged);
         }
         this._effectiveFocusNode.canRequestFocus = this._canRequestFocus;
         if (((((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus && (((TextField)this.widget).readOnly != ((TextField)oldWidget).readOnly)) && this._isEnabled))
@@ -441,7 +441,7 @@ internal class _TextFieldState__text_field : global::Doroti.Framework.Widgets.St
         }
         else
         {
-            ((TextField)oldWidget).statesController?.removeListener(() => this._handleStatesControllerChange());
+            ((TextField)oldWidget).statesController?.removeListener(this._handleStatesControllerChange);
             if ((((TextField)this.widget).statesController is not null))
             {
                 this._internalStatesController?.dispose();
@@ -478,16 +478,16 @@ internal class _TextFieldState__text_field : global::Doroti.Framework.Widgets.St
     public virtual string? restorationId => ((TextField)this.widget).restorationId;
     public override void dispose()
     {
-        this._effectiveFocusNode.removeListener(() => this._handleFocusChanged());
+        this._effectiveFocusNode.removeListener(this._handleFocusChanged);
         this._focusNode?.dispose();
         this._controller?.dispose();
-        this._statesController.removeListener(() => this._handleStatesControllerChange());
+        this._statesController.removeListener(this._handleStatesControllerChange);
         this._internalStatesController?.dispose();
         this._properties.forEach(((global::System.Action<dynamic, global::System.Action>)((property, listener) =>
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -624,7 +624,7 @@ internal class _TextFieldState__text_field : global::Doroti.Framework.Widgets.St
         this._statesController.update(global::Doroti.Framework.Widgets.WidgetState.hovered, this._isHovering);
         this._statesController.update(global::Doroti.Framework.Widgets.WidgetState.focused, ((global::Doroti.Framework.Widgets.FocusNode)this._effectiveFocusNode).hasFocus);
         this._statesController.update(global::Doroti.Framework.Widgets.WidgetState.error, this._hasError);
-        this._statesController.addListener(() => this._handleStatesControllerChange());
+        this._statesController.addListener(this._handleStatesControllerChange);
     }
 
     public virtual string autofillId => this._editableText!.autofillId;
@@ -855,7 +855,7 @@ internal class _TextFieldState__text_field : global::Doroti.Framework.Widgets.St
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -997,7 +997,7 @@ internal class _TextFieldState__text_field : global::Doroti.Framework.Widgets.St
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 

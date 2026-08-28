@@ -31,7 +31,7 @@ public class TextSelection : TextRange
 
     public static TextSelection CreateCollapsed(long offset, TextAffinity affinity = TextAffinity.downstream)
     {
-        var __instance = new TextSelection(default!, default!, default!, default!);
+        var __instance = new TextSelection(default!, default!, affinity, default!);
         __instance.baseOffset = offset;
         __instance.extentOffset = offset;
         __instance.isDirectional = false;

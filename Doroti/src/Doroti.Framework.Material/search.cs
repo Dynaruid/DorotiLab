@@ -232,19 +232,19 @@ internal class _SearchPageState__search<T> : global::Doroti.Framework.Widgets.St
     public override void initState()
     {
         base.initState();
-        ((_SearchPage__search<T>)(object)this.widget).@delegate._queryTextController.addListener(() => this._onQueryChanged());
+        ((_SearchPage__search<T>)(object)this.widget).@delegate._queryTextController.addListener(this._onQueryChanged);
         ((_SearchPage__search<T>)(object)this.widget).animation.addStatusListener((AnimationStatusListener)this._onAnimationStatusChanged);
-        ((_SearchPage__search<T>)(object)this.widget).@delegate._currentBodyNotifier.addListener(() => this._onSearchBodyChanged());
-        this.focusNode.addListener(() => this._onFocusChanged());
+        ((_SearchPage__search<T>)(object)this.widget).@delegate._currentBodyNotifier.addListener(this._onSearchBodyChanged);
+        this.focusNode.addListener(this._onFocusChanged);
         ((_SearchPage__search<T>)(object)this.widget).@delegate._focusNode = this.focusNode;
     }
 
     public override void dispose()
     {
         base.dispose();
-        ((_SearchPage__search<T>)(object)this.widget).@delegate._queryTextController.removeListener(() => this._onQueryChanged());
+        ((_SearchPage__search<T>)(object)this.widget).@delegate._queryTextController.removeListener(this._onQueryChanged);
         ((_SearchPage__search<T>)(object)this.widget).animation.removeStatusListener((AnimationStatusListener)this._onAnimationStatusChanged);
-        ((_SearchPage__search<T>)(object)this.widget).@delegate._currentBodyNotifier.removeListener(() => this._onSearchBodyChanged());
+        ((_SearchPage__search<T>)(object)this.widget).@delegate._currentBodyNotifier.removeListener(this._onSearchBodyChanged);
         ((_SearchPage__search<T>)(object)this.widget).@delegate._focusNode = null;
         this.focusNode.dispose();
     }
@@ -267,10 +267,10 @@ internal class _SearchPageState__search<T> : global::Doroti.Framework.Widgets.St
         base.didUpdateWidget(oldWidget);
         if ((!object.Equals(((_SearchPage__search<T>)(object)this.widget).@delegate, ((_SearchPage__search<T>)oldWidget).@delegate)))
         {
-            ((_SearchPage__search<T>)oldWidget).@delegate._queryTextController.removeListener(() => this._onQueryChanged());
-            ((_SearchPage__search<T>)(object)this.widget).@delegate._queryTextController.addListener(() => this._onQueryChanged());
-            ((_SearchPage__search<T>)oldWidget).@delegate._currentBodyNotifier.removeListener(() => this._onSearchBodyChanged());
-            ((_SearchPage__search<T>)(object)this.widget).@delegate._currentBodyNotifier.addListener(() => this._onSearchBodyChanged());
+            ((_SearchPage__search<T>)oldWidget).@delegate._queryTextController.removeListener(this._onQueryChanged);
+            ((_SearchPage__search<T>)(object)this.widget).@delegate._queryTextController.addListener(this._onQueryChanged);
+            ((_SearchPage__search<T>)oldWidget).@delegate._currentBodyNotifier.removeListener(this._onSearchBodyChanged);
+            ((_SearchPage__search<T>)(object)this.widget).@delegate._currentBodyNotifier.addListener(this._onSearchBodyChanged);
             ((_SearchPage__search<T>)oldWidget).@delegate._focusNode = null;
             ((_SearchPage__search<T>)(object)this.widget).@delegate._focusNode = this.focusNode;
         }

@@ -359,7 +359,7 @@ internal class _HeroFlight__heroes
             ((_HeroFlightManifest__heroes)this.manifest).fromHero.endFlight(keepPlaceholder: global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status));
             ((_HeroFlightManifest__heroes)this.manifest).toHero.endFlight(keepPlaceholder: global::Doroti.Framework.Animation.AnimationStatusMembers.isDismissed(status));
             this.onFlightEnded(this);
-            this._proxyAnimation.removeListener(() => this.onTick());
+            this._proxyAnimation.removeListener(this.onTick);
         }
     }
 
@@ -380,12 +380,12 @@ internal class _HeroFlight__heroes
             DartRuntimePrimitives.Assert(() => !((NavigatorState)navigatorLocal).userGestureInProgress);
             DartRuntimePrimitives.Assert(() => this._scheduledPerformAnimationUpdate);
             _scheduledPerformAnimationUpdate = false;
-            ((NavigatorState)navigatorLocal).userGestureInProgressNotifier.removeListener(() => delayedPerformAnimationUpdate());
+            ((NavigatorState)navigatorLocal).userGestureInProgressNotifier.removeListener(delayedPerformAnimationUpdate);
             _performAnimationUpdate(((global::Doroti.Framework.Animation.ProxyAnimation)this._proxyAnimation).status);
         }
         DartRuntimePrimitives.Assert(() => ((NavigatorState)navigatorLocal).userGestureInProgress);
         _scheduledPerformAnimationUpdate = true;
-        ((NavigatorState)navigatorLocal).userGestureInProgressNotifier.addListener(() => delayedPerformAnimationUpdate());
+        ((NavigatorState)navigatorLocal).userGestureInProgressNotifier.addListener(delayedPerformAnimationUpdate);
     }
 
     public virtual void dispose()
@@ -397,7 +397,7 @@ internal class _HeroFlight__heroes
             this.overlayEntry!.dispose();
             overlayEntry = null;
             this._proxyAnimation.parent = null;
-            this._proxyAnimation.removeListener(() => this.onTick());
+            this._proxyAnimation.removeListener(this.onTick);
             this._proxyAnimation.removeStatusListener((AnimationStatusListener)this._handleAnimationUpdate);
         }
         this._manifest?.dispose();
@@ -469,7 +469,7 @@ internal class _HeroFlight__heroes
         ((_HeroFlightManifest__heroes)this.manifest).fromHero.startFlight(shouldIncludedChildInPlaceholder: shouldIncludeChildInPlaceholder);
         ((_HeroFlightManifest__heroes)this.manifest).toHero.startFlight();
         ((_HeroFlightManifest__heroes)this.manifest).overlay.insert(overlayEntry = new OverlayEntry(builder: (global::System.Func<BuildContext, Widget>)this._buildOverlay));
-        this._proxyAnimation.addListener(() => this.onTick());
+        this._proxyAnimation.addListener(this.onTick);
     }
 
     public virtual void divert(_HeroFlightManifest__heroes newManifest)

@@ -64,6 +64,11 @@ public class KeySet<T> where T : global::Doroti.Framework.Services.KeyboardKey
 }))();
     }
 
+    protected KeySet(HashSet<T> keys)
+    {
+        this._keys = new HashSet<T>(keys);
+    }
+
     public static KeySet<T> CreateFromSet(HashSet<T> keys)
     {
         var __instance = new KeySet<T>(default!, default!, default!, default!);
@@ -165,8 +170,11 @@ public class LogicalKeySet : KeySet<global::Doroti.Framework.Services.LogicalKey
 
     public static LogicalKeySet CreateFromSet(HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> keys)
     {
-        var __instance = new LogicalKeySet(default!, default!, default!, default!);
-        return __instance;
+        return new LogicalKeySet(keys);
+    }
+
+    private LogicalKeySet(HashSet<global::Doroti.Framework.Services.LogicalKeyboardKey> keys) : base(keys)
+    {
     }
 
     public virtual IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey> triggers => DartRuntimePrimitives.ConvertValue<IEnumerable<global::Doroti.Framework.Services.LogicalKeyboardKey>>(this._triggers);
@@ -598,7 +606,7 @@ public class Shortcuts : StatefulWidget
 
     public static Shortcuts CreateManager(global::Doroti.Framework.Foundation.Key? key = null, ShortcutManager manager = default!, Widget child = default!, string? debugLabel = null, bool includeSemantics = true)
     {
-        var __instance = new Shortcuts(default!, default!, default!, default!, default!);
+        var __instance = new Shortcuts(key, default!, child, debugLabel, includeSemantics);
         __instance.manager = manager;
         __instance.child = child;
         __instance.debugLabel = debugLabel;
@@ -752,7 +760,7 @@ public class ShortcutRegistry : ChangeNotifier
     {
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         base.dispose();
         _disposed = true;
@@ -893,7 +901,7 @@ internal class _ShortcutRegistrarState__shortcuts : State<ShortcutRegistrar>
     public override void initState()
     {
         base.initState();
-        this.registry.addListener(() => this._shortcutsChanged());
+        this.registry.addListener(this._shortcutsChanged);
     }
 
     internal virtual void _shortcutsChanged()
@@ -903,7 +911,7 @@ internal class _ShortcutRegistrarState__shortcuts : State<ShortcutRegistrar>
 
     public override void dispose()
     {
-        this.registry.removeListener(() => this._shortcutsChanged());
+        this.registry.removeListener(this._shortcutsChanged);
         this.registry.dispose();
         this.manager.dispose();
         base.dispose();
@@ -934,4 +942,3 @@ internal class _ShortcutRegistrarScope__shortcuts : InheritedWidget
     }
 
 }
-

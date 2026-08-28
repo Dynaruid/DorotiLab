@@ -460,7 +460,7 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -521,8 +521,8 @@ public class ScaffoldMessengerState : global::Doroti.Framework.Widgets.State<Sca
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -1004,7 +1004,7 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -1082,8 +1082,8 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
             _currentRotationAnimation = new global::Doroti.Framework.Animation.TrainHoppingAnimation(currentEntranceRotationAnimation, moveRotationAnimation);
         }
         _extendedCurrentScaleAnimation = this._currentScaleAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(0.0, 0.1)));
-        this._currentScaleAnimation.addListener(() => this._onProgressChanged());
-        this._previousScaleAnimation.addListener(() => this._onProgressChanged());
+        this._currentScaleAnimation.addListener(this._onProgressChanged);
+        this._previousScaleAnimation.addListener(this._onProgressChanged);
     }
 
     internal virtual void _handlePreviousAnimationStatusChanged(global::Doroti.Framework.Animation.AnimationStatus status)
@@ -1176,8 +1176,8 @@ public class _FloatingActionButtonTransitionState__scaffold : global::Doroti.Fra
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -1834,7 +1834,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
         {
             if (!((dynamic)property)._disposed)
             {
-                property.removeListener((global::System.Action)(() => listener()));
+                property.removeListener(listener);
             }
         })));
         this._bucket?.dispose();
@@ -2014,8 +2014,8 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -2048,7 +2048,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
                 }
                 _updateProperty(property);
             }
-            property.addListener((global::System.Action)(() => listener()));
+            property.addListener((global::System.Action)listener);
             this._properties[property] = (global::System.Action)listener;
         }
         DartRuntimePrimitives.Assert(() => (((((dynamic)property)._restorationId == restorationId) && (object.Equals(((dynamic)property)._owner, this))) && this._properties.ContainsKey(property)));
@@ -2190,7 +2190,7 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
                 this._debugPropertiesWaitingForReregistration?.Remove(property);
                 return true;
             });
-        property.removeListener((global::System.Action)(() => listener()));
+        property.removeListener(listener);
         property._unregister();
     }
 

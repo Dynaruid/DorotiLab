@@ -38,7 +38,7 @@ public class DefaultTextStyle : InheritedTheme
 
     public static DefaultTextStyle CreateFallback(global::Doroti.Framework.Foundation.Key? key = null)
     {
-        var __instance = new DefaultTextStyle(default!, default!, default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new DefaultTextStyle(key, default!, default!, default!, default!, default!, default!, default!, default!);
         __instance.style = new global::Doroti.Framework.Painting.TextStyle();
         __instance.textAlign = null;
         __instance.softWrap = true;
@@ -203,7 +203,7 @@ public class Text : StatelessWidget
 
     public static Text CreateRich(global::Doroti.Framework.Painting.InlineSpan textSpan, global::Doroti.Framework.Foundation.Key? key = null, global::Doroti.Framework.Painting.TextStyle? style = null, global::Doroti.Framework.Painting.StrutStyle? strutStyle = null, TextAlign? textAlign = null, TextDirection? textDirection = null, Locale? locale = null, bool? softWrap = null, global::Doroti.Framework.Painting.TextOverflow? overflow = null, double? textScaleFactor = null, global::Doroti.Framework.Painting.TextScaler? textScaler = null, long? maxLines = null, string? semanticsLabel = null, string? semanticsIdentifier = null, global::Doroti.Framework.Painting.TextWidthBasis? textWidthBasis = null, TextHeightBehavior? textHeightBehavior = null, Color? selectionColor = null)
     {
-        var __instance = new Text(default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new Text(default!, key, style, strutStyle, textAlign, textDirection, locale, softWrap, overflow, textScaleFactor, textScaler, maxLines, semanticsLabel, semanticsIdentifier, textWidthBasis, textHeightBehavior, selectionColor);
         __instance.textSpan = textSpan;
         __instance.style = style;
         __instance.strutStyle = strutStyle;

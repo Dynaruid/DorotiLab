@@ -147,7 +147,7 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
         var startAnimationLocal = new global::Doroti.Framework.Animation.CurvedAnimation(parent: controllerLocal, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
         var endAnimationLocal = new global::Doroti.Framework.Animation.CurvedAnimation(parent: controllerLocal, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
         var gapAnimationLocal = new global::Doroti.Framework.Animation.CurvedAnimation(parent: controllerLocal, curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn);
-        controllerLocal.addListener(() => this._handleTick());
+        controllerLocal.addListener(this._handleTick);
         this._animationTuples[gap.key] = new _AnimationTuple__mergeable_material(controller: controllerLocal, startAnimation: startAnimationLocal, endAnimation: endAnimationLocal, gapAnimation: gapAnimationLocal);
     }
 
@@ -175,7 +175,7 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
                 }
                 return true;
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -623,8 +623,8 @@ internal class _MergeableMaterialState__mergeable_material : global::Doroti.Fram
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 

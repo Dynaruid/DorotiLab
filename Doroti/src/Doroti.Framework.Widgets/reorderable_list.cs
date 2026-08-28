@@ -268,7 +268,7 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
         _tickerModeNotifier = null;
         base.dispose();
     }
@@ -764,8 +764,8 @@ public class SliverReorderableListState : State<SliverReorderableList>, TickerPr
         {
             return;
         }
-        this._tickerModeNotifier?.removeListener(() => this._updateTickers());
-        newNotifier.addListener(() => this._updateTickers());
+        this._tickerModeNotifier?.removeListener(this._updateTickers);
+        newNotifier.addListener(this._updateTickers);
         this._tickerModeNotifier = newNotifier;
     }
 
@@ -902,7 +902,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
                     _offsetAnimation = ((Func<global::Doroti.Framework.Animation.AnimationController>)(() =>
 {
     var __cascade = new global::Doroti.Framework.Animation.AnimationController(vsync: this._listState, duration: Duration.Create(milliseconds: 250L));
-    __cascade.addListener(() => this.rebuild());
+    __cascade.addListener(this.rebuild);
     __cascade.addStatusListener(((AnimationStatusListener)((status) =>
     {
         if (global::Doroti.Framework.Animation.AnimationStatusMembers.isCompleted(status))

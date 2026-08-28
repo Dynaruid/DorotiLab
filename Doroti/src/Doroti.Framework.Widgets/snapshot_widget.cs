@@ -146,7 +146,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Framework
                 return;
             }
             SnapshotPainter oldPainter = this.painter;
-            oldPainter.removeListener(() => this.markNeedsPaint());
+            oldPainter.removeListener(this.markNeedsPaint);
             _painter = __value;
             if (((!object.Equals(DartRuntimePrimitives.RuntimeType(oldPainter), DartRuntimePrimitives.RuntimeType(this.painter))) || this.painter.shouldRepaint(oldPainter)))
             {
@@ -154,7 +154,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Framework
             }
             if (this.attached)
             {
-                this.painter.addListener(() => this.markNeedsPaint());
+                this.painter.addListener(this.markNeedsPaint);
             }
         }
     }
@@ -168,12 +168,12 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Framework
             {
                 return;
             }
-            this.controller.removeListener(() => this._onRasterValueChanged());
+            this.controller.removeListener(this._onRasterValueChanged);
             bool oldValue = ((SnapshotController)this.controller).allowSnapshotting;
             _controller = __value;
             if (this.attached)
             {
-                this.controller.addListener(() => this._onRasterValueChanged());
+                this.controller.addListener(this._onRasterValueChanged);
                 if ((oldValue != ((SnapshotController)this.controller).allowSnapshotting))
                 {
                     _onRasterValueChanged();
@@ -209,18 +209,18 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Framework
             markNeedsPaint();
         }
     }
-    public virtual void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
+    public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
     {
-        this.controller.addListener(() => this._onRasterValueChanged());
-        this.painter.addListener(() => this.markNeedsPaint());
+        this.controller.addListener(this._onRasterValueChanged);
+        this.painter.addListener(this.markNeedsPaint);
         base.attach(owner);
     }
 
-    public virtual void detach()
+    public override void detach()
     {
         _disableSnapshotAttempt = false;
-        this.controller.removeListener(() => this._onRasterValueChanged());
-        this.painter.removeListener(() => this.markNeedsPaint());
+        this.controller.removeListener(this._onRasterValueChanged);
+        this.painter.removeListener(this.markNeedsPaint);
         this._childRaster?.dispose();
         _childRaster = null;
         _childRasterSize = null;
@@ -229,8 +229,8 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Framework
 
     public override void dispose()
     {
-        this.controller.removeListener(() => this._onRasterValueChanged());
-        this.painter.removeListener(() => this.markNeedsPaint());
+        this.controller.removeListener(this._onRasterValueChanged);
+        this.painter.removeListener(this.markNeedsPaint);
         this._childRaster?.dispose();
         _childRaster = null;
         _childRasterSize = null;
@@ -269,7 +269,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : global::Doroti.Framework
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
+    public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
         if (this.size.isEmpty)
         {
@@ -325,11 +325,11 @@ internal class _DefaultSnapshotPainter__snapshot_widget : SnapshotPainter
     {
     }
 
-    public virtual void addListener(global::System.Action listener)
+    public override void addListener(global::System.Action listener)
     {
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
     }
 
@@ -356,7 +356,7 @@ internal class _DefaultSnapshotPainter__snapshot_widget : SnapshotPainter
         ((global::Doroti.Framework.Rendering.PaintingContext)context).canvas.drawImageRect(image, src, dst, paint);
     }
 
-    public virtual void removeListener(global::System.Action listener)
+    public override void removeListener(global::System.Action listener)
     {
     }
 
