@@ -38,6 +38,77 @@ Require(insertedDelta.HasTopologyChange && !insertedDelta.RequiresImmediateFlush
 var end = new SemanticsUpdate(9, geometry, SemanticsUpdateUrgency.scrollEnd);
 Require(end.urgency == SemanticsUpdateUrgency.scrollEnd, "scroll end is an explicit immediate-host signal");
 
+var metadataNode = button with { hint = "Saves the document", headingLevel = 2, identifier = "save-action" };
+var metadataDelta = SemanticsUpdateDiffer.Diff(baseline, [root, metadataNode]);
+Require(metadataDelta.RequiresImmediateFlush, "assistive metadata changes flush immediately");
+Require(metadataDelta.changedNodes.Single(delta => delta.id == 1).changedProperties.HasFlag(SemanticsNodeProperty.metadata),
+    "assistive metadata is retained as its own delta class");
+
+var localRoot = Node(20, 10, 20, 100, 100, "projection root", children: [21]);
+var localChild = Node(21, 5, 7, 40, 20, "projection child", children: [22]);
+var localGrandchild = Node(22, 2, 3, 10, 8, "projection grandchild");
+var viewCoordinates = SemanticsGeometryProjection.ToViewCoordinates([localRoot, localChild, localGrandchild]);
+Require(viewCoordinates.Single(node => node.id == 20).rect == Rect.fromLTWH(10, 20, 100, 100),
+    "root semantics bounds stay in view coordinates");
+Require(viewCoordinates.Single(node => node.id == 21).rect == Rect.fromLTWH(15, 27, 40, 20),
+    "native hosts receive parent-relative child bounds projected into view coordinates");
+Require(viewCoordinates.Single(node => node.id == 22).rect == Rect.fromLTWH(17, 30, 10, 8),
+    "nested semantics bounds accumulate every parent origin");
+
+var builder = new SemanticsUpdateBuilder();
+builder.updateNode(
+    id: 7,
+    flags: new SemanticsFlags(isFocused: Tristate.isFalse, isTextField: true, isRequired: Tristate.isTrue),
+    actions: (long)(SemanticsAction.setText | SemanticsAction.focus),
+    rect: Rect.fromLTWH(2, 3, 40, 20),
+    identifier: "email-field",
+    label: "Email",
+    labelAttributes: Array.Empty<object>(),
+    value: "person@example.com",
+    valueAttributes: Array.Empty<object>(),
+    increasedValue: "",
+    increasedValueAttributes: Array.Empty<object>(),
+    decreasedValue: "",
+    decreasedValueAttributes: Array.Empty<object>(),
+    hint: "Work address",
+    hintAttributes: Array.Empty<object>(),
+    tooltip: "Used for notifications",
+    textDirection: null,
+    textSelectionBase: 2,
+    textSelectionExtent: 4,
+    platformViewId: -1,
+    maxValueLength: 80,
+    currentValueLength: 18,
+    scrollChildren: -1,
+    scrollIndex: -1,
+    scrollPosition: double.NaN,
+    scrollExtentMax: double.NaN,
+    scrollExtentMin: double.NaN,
+    transform: new double[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },
+    traversalParent: -1,
+    hitTestTransform: Array.Empty<double>(),
+    childrenInTraversalOrder: Array.Empty<int>(),
+    childrenInHitTestOrder: Array.Empty<int>(),
+    additionalActions: Array.Empty<int>(),
+    headingLevel: 2,
+    linkUrl: "mailto:person@example.com",
+    role: SemanticsRole.form,
+    controlsNodes: ["submit-action"],
+    validationResult: SemanticsValidationResult.invalid,
+    hitTestBehavior: SemanticsHitTestBehavior.opaque,
+    inputType: SemanticsInputType.email,
+    locale: new Locale("ko", "KR"),
+    minValue: "",
+    maxValue: "");
+var projected = builder.build(12).nodes.Single();
+Require(projected.identifier == "email-field" && projected.hint == "Work address" &&
+        projected.tooltip == "Used for notifications" && projected.headingLevel == 2 &&
+        projected.linkUrl == "mailto:person@example.com" && projected.validationResult == SemanticsValidationResult.invalid &&
+        projected.hitTestBehavior == SemanticsHitTestBehavior.opaque && projected.inputType == SemanticsInputType.email &&
+        projected.maxValueLength == 80 && projected.currentValueLength == 18 &&
+        projected.controlsNodes!.SequenceEqual(["submit-action"]) && projected.locale == new Locale("ko", "KR"),
+    "the Flutter semantics builder preserves host accessibility metadata");
+
 var focusNode = new FocusNode();
 Require(Focus.CreateSemanticsFocusAction(TargetPlatform.windows, false, focusNode) is null,
     "a non-focusable semantics node does not publish a callable focus action");

@@ -324,7 +324,10 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     {
         var input = new T
         {
-            Opacity = 0.01,
+            // Keep the native IME proxy in the visual tree without allowing even a
+            // faint native pixel to leak into the Skia-owned scene. Flutter's host
+            // text input is likewise fully transparent rather than nearly transparent.
+            Opacity = 0,
             WidthRequest = 1,
             HeightRequest = 1,
             HorizontalOptions = LayoutOptions.Start,

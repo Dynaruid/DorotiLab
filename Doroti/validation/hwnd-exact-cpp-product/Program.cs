@@ -90,6 +90,12 @@ internal static class Program
             Require(ProductEntrypoint.SemanticsActions.Any(action =>
                         action.nodeId == 0 && action.action == SemanticsAction.tap),
                 "C7 UIA fragment invoke did not reach Doroti semantics dispatch.");
+            Require(ProductEntrypoint.SemanticsActions.Any(action =>
+                        action.nodeId == 1 && action.action == SemanticsAction.tap),
+                "C7 UIA Toggle pattern did not reach Doroti semantics dispatch.");
+            Require(ProductEntrypoint.SemanticsActions.Any(action =>
+                        action.nodeId == 3 && action.action == SemanticsAction.tap),
+                "C7 UIA SelectionItem pattern did not reach Doroti semantics dispatch.");
             Require(new[] { AppLifecycleState.inactive, AppLifecycleState.hidden,
                             AppLifecycleState.paused, AppLifecycleState.resumed,
                             AppLifecycleState.detached }
@@ -161,7 +167,7 @@ internal static class Program
                 {
                     root = "IRawElementProviderFragmentRoot",
                     fragment = "IRawElementProviderFragment",
-                    patterns = new[] { "Invoke", "Value" },
+                    patterns = new[] { "Invoke", "Value", "Toggle", "SelectionItem", "RangeValue" },
                     actions = ProductEntrypoint.SemanticsActions,
                     boundsAuthority = "current child HWND screen origin plus current metrics scale",
                 },
@@ -342,7 +348,21 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
         [
             new SemanticsNodeUpdate(0, Rect.fromLTWH(20, 30, 180, 48),
                 "Doroti C7 action", "ready", SemanticsAction.tap | SemanticsAction.focus,
-                [], new SemanticsFlags(isButton: true, isFocused: Tristate.isTrue)),
+                [1, 2, 3, 4], new SemanticsFlags(isButton: true, isFocused: Tristate.isTrue)),
+            new SemanticsNodeUpdate(1, Rect.fromLTWH(4, 54, 180, 40),
+                "Doroti C7 toggle", null, SemanticsAction.tap,
+                [], new SemanticsFlags(isChecked: CheckedState.isFalse, isFocused: Tristate.isFalse)),
+            new SemanticsNodeUpdate(2, Rect.fromLTWH(4, 98, 180, 40),
+                "Doroti C7 hidden", null, SemanticsAction.tap,
+                [], new SemanticsFlags(isButton: true, isHidden: true)),
+            new SemanticsNodeUpdate(3, Rect.fromLTWH(4, 142, 180, 40),
+                "Doroti C7 radio", null, SemanticsAction.tap,
+                [], new SemanticsFlags(isSelected: Tristate.isFalse,
+                    isFocused: Tristate.isFalse, isInMutuallyExclusiveGroup: true)),
+            new SemanticsNodeUpdate(4, Rect.fromLTWH(4, 186, 180, 40),
+                "Doroti C7 slider", "0.2", SemanticsAction.increase | SemanticsAction.decrease,
+                [], new SemanticsFlags(isSlider: true, isFocused: Tristate.isFalse),
+                increasedValue: "0.3", decreasedValue: "0.1", minValue: "0", maxValue: "1"),
         ], SemanticsUpdateUrgency.immediate));
         services.SetCursor(DorotiMouseCursorKind.click);
         services.SetClipboardTextAsync("Doroti C6 한글 clipboard").AsTask().GetAwaiter().GetResult();

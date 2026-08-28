@@ -517,7 +517,7 @@ public sealed class SkiaSceneRenderer :
         if (!_semanticsEnabled) return;
         foreach (var node in update.nodes) _semantics[node.id] = node;
         PruneUnreachableSemantics(_semantics);
-        var nodes = _semantics.Values
+        var nodes = SemanticsGeometryProjection.ToViewCoordinates(_semantics.Values)
             .OrderBy(node => node.indexInParent ?? int.MaxValue)
             .ThenBy(node => node.id)
             .ToArray();

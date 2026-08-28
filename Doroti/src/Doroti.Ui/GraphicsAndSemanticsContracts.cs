@@ -1462,7 +1462,25 @@ public sealed record SemanticsNodeUpdate(
     long textSelectionExtent = -1,
     double? scrollPosition = null,
     double? scrollExtentMax = null,
-    double? scrollExtentMin = null);
+    double? scrollExtentMin = null,
+    string? identifier = null,
+    string? hint = null,
+    string? tooltip = null,
+    string? increasedValue = null,
+    string? decreasedValue = null,
+    long? headingLevel = null,
+    string? linkUrl = null,
+    SemanticsValidationResult validationResult = SemanticsValidationResult.none,
+    SemanticsHitTestBehavior hitTestBehavior = SemanticsHitTestBehavior.defer,
+    SemanticsInputType inputType = SemanticsInputType.none,
+    string? minValue = null,
+    string? maxValue = null,
+    long? maxValueLength = null,
+    long? currentValueLength = null,
+    long? scrollChildCount = null,
+    long? scrollIndex = null,
+    IReadOnlyList<string>? controlsNodes = null,
+    Locale? locale = null);
 
 public enum SemanticsUpdateUrgency
 {
@@ -1478,6 +1496,51 @@ public sealed record SemanticsUpdate(
     long generation,
     IReadOnlyList<SemanticsNodeUpdate> nodes,
     SemanticsUpdateUrgency urgency = SemanticsUpdateUrgency.automatic);
+
+/// <summary>
+/// Projects the framework's parent-relative semantics rectangles into logical view
+/// coordinates. Native hosts keep a flat accessibility surface, while DOM hosts can
+/// subtract the projected parent origin when reconstructing the semantic hierarchy.
+/// </summary>
+public static class SemanticsGeometryProjection
+{
+    public static IReadOnlyList<SemanticsNodeUpdate> ToViewCoordinates(
+        IEnumerable<SemanticsNodeUpdate> source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        var input = source.ToArray();
+        var nodes = input.ToDictionary(node => node.id);
+        var childIds = nodes.Values.SelectMany(node => node.children).ToHashSet();
+        var projected = new Dictionary<int, SemanticsNodeUpdate>();
+
+        foreach (var root in nodes.Values.Where(node => !childIds.Contains(node.id)).OrderBy(node => node.id))
+            Project(root.id, 0, 0, nodes, projected, []);
+        foreach (var orphan in nodes.Values.Where(node => !projected.ContainsKey(node.id)).OrderBy(node => node.id))
+            Project(orphan.id, 0, 0, nodes, projected, []);
+
+        return input.Select(node => projected[node.id]).ToArray();
+    }
+
+    private static void Project(
+        int id,
+        double parentLeft,
+        double parentTop,
+        IReadOnlyDictionary<int, SemanticsNodeUpdate> nodes,
+        IDictionary<int, SemanticsNodeUpdate> projected,
+        HashSet<int> activePath)
+    {
+        if (projected.ContainsKey(id) || !nodes.TryGetValue(id, out var node) || !activePath.Add(id)) return;
+        var rect = new Rect(
+            node.rect.left + parentLeft,
+            node.rect.top + parentTop,
+            node.rect.right + parentLeft,
+            node.rect.bottom + parentTop);
+        projected[id] = node with { rect = rect };
+        foreach (var childId in node.children)
+            Project(childId, rect.left, rect.top, nodes, projected, activePath);
+        activePath.Remove(id);
+    }
+}
 
 [Flags]
 public enum SemanticsNodeProperty
@@ -1499,6 +1562,8 @@ public enum SemanticsNodeProperty
     /// scroll authority.
     /// </summary>
     scroll = 1 << 9,
+    /// <summary>Accessible name supplements, role metadata, ranges, and relationships.</summary>
+    metadata = 1 << 10,
 }
 
 public sealed record SemanticsNodeDelta(
@@ -1534,7 +1599,8 @@ public sealed record SemanticsUpdateDelta(
                                     SemanticsNodeProperty.actions |
                                     SemanticsNodeProperty.flags |
                                     SemanticsNodeProperty.role |
-                                    SemanticsNodeProperty.selection)) != 0);
+                                    SemanticsNodeProperty.selection |
+                                    SemanticsNodeProperty.metadata)) != 0);
 }
 
 /// <summary>
@@ -1585,6 +1651,25 @@ public static class SemanticsUpdateDiffer
         hash.Add(node.scrollPosition);
         hash.Add(node.scrollExtentMax);
         hash.Add(node.scrollExtentMin);
+        hash.Add(node.identifier, StringComparer.Ordinal);
+        hash.Add(node.hint, StringComparer.Ordinal);
+        hash.Add(node.tooltip, StringComparer.Ordinal);
+        hash.Add(node.increasedValue, StringComparer.Ordinal);
+        hash.Add(node.decreasedValue, StringComparer.Ordinal);
+        hash.Add(node.headingLevel);
+        hash.Add(node.linkUrl, StringComparer.Ordinal);
+        hash.Add(node.validationResult);
+        hash.Add(node.hitTestBehavior);
+        hash.Add(node.inputType);
+        hash.Add(node.minValue, StringComparer.Ordinal);
+        hash.Add(node.maxValue, StringComparer.Ordinal);
+        hash.Add(node.maxValueLength);
+        hash.Add(node.currentValueLength);
+        hash.Add(node.scrollChildCount);
+        hash.Add(node.scrollIndex);
+        if (node.controlsNodes is not null)
+            foreach (var controlledNode in node.controlsNodes) hash.Add(controlledNode, StringComparer.Ordinal);
+        hash.Add(node.locale);
         foreach (var child in node.children) hash.Add(child);
         return hash.ToHashCode();
     }
@@ -1599,7 +1684,8 @@ public static class SemanticsUpdateDiffer
         SemanticsNodeProperty.children |
         SemanticsNodeProperty.traversal |
         SemanticsNodeProperty.selection |
-        SemanticsNodeProperty.scroll;
+        SemanticsNodeProperty.scroll |
+        SemanticsNodeProperty.metadata;
 
     private static SemanticsNodeProperty ChangedProperties(SemanticsNodeUpdate previous, SemanticsNodeUpdate current)
     {
@@ -1621,8 +1707,33 @@ public static class SemanticsUpdateDiffer
         {
             result |= SemanticsNodeProperty.scroll;
         }
+        if (!string.Equals(previous.identifier, current.identifier, StringComparison.Ordinal) ||
+            !string.Equals(previous.hint, current.hint, StringComparison.Ordinal) ||
+            !string.Equals(previous.tooltip, current.tooltip, StringComparison.Ordinal) ||
+            !string.Equals(previous.increasedValue, current.increasedValue, StringComparison.Ordinal) ||
+            !string.Equals(previous.decreasedValue, current.decreasedValue, StringComparison.Ordinal) ||
+            previous.headingLevel != current.headingLevel ||
+            !string.Equals(previous.linkUrl, current.linkUrl, StringComparison.Ordinal) ||
+            previous.validationResult != current.validationResult ||
+            previous.hitTestBehavior != current.hitTestBehavior ||
+            previous.inputType != current.inputType ||
+            !string.Equals(previous.minValue, current.minValue, StringComparison.Ordinal) ||
+            !string.Equals(previous.maxValue, current.maxValue, StringComparison.Ordinal) ||
+            previous.maxValueLength != current.maxValueLength ||
+            previous.currentValueLength != current.currentValueLength ||
+            previous.scrollChildCount != current.scrollChildCount ||
+            previous.scrollIndex != current.scrollIndex ||
+            !SequenceEqual(previous.controlsNodes, current.controlsNodes) ||
+            previous.locale != current.locale)
+        {
+            result |= SemanticsNodeProperty.metadata;
+        }
         return result;
     }
+
+    private static bool SequenceEqual(IReadOnlyList<string>? left, IReadOnlyList<string>? right) =>
+        ReferenceEquals(left, right) ||
+        (left is not null && right is not null && left.SequenceEqual(right, StringComparer.Ordinal));
 }
 
 public sealed class SemanticsUpdateBuilder
@@ -1699,7 +1810,25 @@ public sealed class SemanticsUpdateBuilder
             textSelectionExtent,
             NormalizeOptionalDouble(scrollPosition),
             NormalizeOptionalDouble(scrollExtentMax),
-            NormalizeOptionalDouble(scrollExtentMin)));
+            NormalizeOptionalDouble(scrollExtentMin),
+            NullIfEmpty(identifier),
+            NullIfEmpty(hint),
+            NullIfEmpty(tooltip),
+            NullIfEmpty(increasedValue),
+            NullIfEmpty(decreasedValue),
+            headingLevel > 0 ? headingLevel : null,
+            NullIfEmpty(linkUrl),
+            validationResult,
+            hitTestBehavior,
+            inputType,
+            NullIfEmpty(minValue),
+            NullIfEmpty(maxValue),
+            NormalizeOptionalLong(maxValueLength),
+            NormalizeOptionalLong(currentValueLength),
+            NormalizeOptionalLong(scrollChildren),
+            NormalizeOptionalLong(scrollIndex),
+            controlsNodes?.ToArray(),
+            locale));
     }
 
     private static Rect TransformRect(Rect rect, object transform)
@@ -1727,6 +1856,10 @@ public sealed class SemanticsUpdateBuilder
     // absent axis for a usable UIA Scroll range.
     private static double? NormalizeOptionalDouble(double value) =>
         double.IsFinite(value) ? value : null;
+
+    private static long? NormalizeOptionalLong(long value) => value >= 0 ? value : null;
+
+    private static string? NullIfEmpty(string? value) => string.IsNullOrEmpty(value) ? null : value;
 
     public void updateCustomAction(long id, string? label = null, string? hint = null, long overrideId = -1)
     {

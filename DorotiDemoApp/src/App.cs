@@ -305,12 +305,27 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
         identifier: label.Replace(' ', '-').ToLowerInvariant(),
         label: label,
         value: value,
+        focusable: true,
         button: label is "G6 Material button" or "G6 Material FAB",
         @checked: label == "G6 Material checkbox" ? _checked : null,
         selected: label == "G6 Material radio" ? _radio == 1 : null,
         inMutuallyExclusiveGroup: label == "G6 Material radio" ? true : null,
         toggled: label == "G6 Material switch" ? _switched : null,
         slider: label == "G6 Material slider" ? true : null,
+        increasedValue: label == "G6 Material slider"
+            ? Math.Min(1, _slider + 0.1).ToString("F1", System.Globalization.CultureInfo.InvariantCulture)
+            : null,
+        decreasedValue: label == "G6 Material slider"
+            ? Math.Max(0, _slider - 0.1).ToString("F1", System.Globalization.CultureInfo.InvariantCulture)
+            : null,
+        minValue: label == "G6 Material slider" ? "0" : null,
+        maxValue: label == "G6 Material slider" ? "1" : null,
+        onIncrease: label == "G6 Material slider"
+            ? () => Mutate(() => _slider = Math.Min(1, _slider + 0.1))
+            : null,
+        onDecrease: label == "G6 Material slider"
+            ? () => Mutate(() => _slider = Math.Max(0, _slider - 0.1))
+            : null,
         onTap: () => Mutate(action),
         child: child);
 
@@ -377,7 +392,8 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
             thumbColor: palette.primary,
             overlayColor: new WidgetStatePropertyAll<UiColor?>(interactionOverlay),
             showValueIndicator: Material.ShowValueIndicator.never,
-            onChanged: value => Mutate(() => _slider = value)), () => _slider = _slider < 0.7 ? 0.8 : 0.2, $"{_slider:F1}");
+            onChanged: value => Mutate(() => _slider = value)), () => _slider = _slider < 0.7 ? 0.8 : 0.2,
+            _slider.ToString("F1", System.Globalization.CultureInfo.InvariantCulture));
         var textField = new Material.TextField(
             controller: _textController,
             focusNode: _textFocusNode,

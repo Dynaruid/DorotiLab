@@ -960,6 +960,40 @@ class ProductHost final {
                : fallback;
   }
 
+  static std::wstring JsonString(
+      const winrt::Windows::Data::Json::JsonObject& value,
+      const wchar_t* name) {
+    if (!value.HasKey(name)) return {};
+    const auto item = value.GetNamedValue(name);
+    return item.ValueType() == winrt::Windows::Data::Json::JsonValueType::String
+               ? std::wstring(item.GetString())
+               : std::wstring{};
+  }
+
+  static double JsonNumber(const winrt::Windows::Data::Json::JsonObject& value,
+                           const wchar_t* name, double fallback = 0) {
+    if (!value.HasKey(name)) return fallback;
+    const auto item = value.GetNamedValue(name);
+    return item.ValueType() == winrt::Windows::Data::Json::JsonValueType::Number
+               ? item.GetNumber()
+               : fallback;
+  }
+
+  static int JsonState(const winrt::Windows::Data::Json::JsonObject& value,
+                       const wchar_t* name) {
+    if (!value.HasKey(name)) return -1;
+    const auto item = value.GetNamedValue(name);
+    if (item.ValueType() == winrt::Windows::Data::Json::JsonValueType::Boolean)
+      return item.GetBoolean() ? 1 : 0;
+    if (item.ValueType() == winrt::Windows::Data::Json::JsonValueType::String) {
+      const auto state = item.GetString();
+      if (state == L"isTrue") return 1;
+      if (state == L"isFalse") return 0;
+      if (state == L"mixed") return 2;
+    }
+    return -1;
+  }
+
   void ApplySemantics(const std::wstring& json) {
     try {
       const auto root = winrt::Windows::Data::Json::JsonObject::Parse(json);
@@ -971,8 +1005,17 @@ class ProductHost final {
         const auto source = value.GetObject();
         doroti::windows::AccessibilityNode node;
         node.id = static_cast<int>(source.GetNamedNumber(L"id"));
-        node.label = source.GetNamedString(L"label", L"");
-        node.value = source.GetNamedString(L"value", L"");
+        node.label = JsonString(source, L"label");
+        node.value = JsonString(source, L"value");
+        node.identifier = JsonString(source, L"identifier");
+        node.hint = JsonString(source, L"hint");
+        node.tooltip = JsonString(source, L"tooltip");
+        node.link_url = JsonString(source, L"linkUrl");
+        node.increased_value = JsonString(source, L"increasedValue");
+        node.decreased_value = JsonString(source, L"decreasedValue");
+        node.min_value = JsonString(source, L"minValue");
+        node.max_value = JsonString(source, L"maxValue");
+        node.heading_level = static_cast<int>(JsonNumber(source, L"headingLevel"));
         node.role = source.GetNamedString(L"role", L"none");
         node.actions = static_cast<int64_t>(source.GetNamedNumber(L"actions", 0));
         const auto rect = source.GetNamedArray(L"rect");
@@ -989,12 +1032,24 @@ class ProductHost final {
                 winrt::Windows::Data::Json::JsonValueType::Object) {
           const auto flags = source.GetNamedObject(L"flags");
           node.enabled = JsonBool(flags, L"enabled", true);
+          node.focusable = JsonBool(flags, L"focusable");
           node.focused = JsonBool(flags, L"focused");
           node.hidden = JsonBool(flags, L"hidden");
           node.button = JsonBool(flags, L"button");
           node.text_field = JsonBool(flags, L"textField");
           node.read_only = JsonBool(flags, L"readOnly");
           node.slider = JsonBool(flags, L"slider");
+          node.mutually_exclusive = JsonBool(flags, L"mutuallyExclusive");
+          node.header = JsonBool(flags, L"header");
+          node.image = JsonBool(flags, L"image");
+          node.live_region = JsonBool(flags, L"liveRegion");
+          node.link = JsonBool(flags, L"link");
+          node.obscured = JsonBool(flags, L"obscured");
+          node.required = JsonBool(flags, L"required");
+          node.checked = JsonState(flags, L"checked");
+          node.selected = JsonState(flags, L"selected");
+          node.toggled = JsonState(flags, L"toggled");
+          node.expanded = JsonState(flags, L"expanded");
         }
         nodes.push_back(std::move(node));
       }

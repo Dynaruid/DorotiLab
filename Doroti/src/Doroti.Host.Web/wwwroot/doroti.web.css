@@ -45,6 +45,11 @@ body,
   position: fixed;
   inset: 0;
   pointer-events: none;
+  /* A transparent color does not hide native focus rings, editable carets, or
+     control chrome. Flutter applies a fully transparent filter to the semantics
+     root for the same reason; visibility/display cannot be used because they
+     also remove the accessibility tree. */
+  filter: opacity(0%);
   color: transparent;
   background: transparent;
 }

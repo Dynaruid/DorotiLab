@@ -163,6 +163,15 @@ internal sealed class BrowserSkiaCapabilities :
                 {
                     node.id, node.label, node.value, role = node.role.ToString(),
                     actions = (long)node.actions, children = node.children,
+                    node.identifier, node.hint, node.tooltip, node.increasedValue, node.decreasedValue,
+                    node.headingLevel, node.linkUrl,
+                    validationResult = node.validationResult.ToString(),
+                    hitTestBehavior = node.hitTestBehavior.ToString(),
+                    inputType = node.inputType.ToString(),
+                    node.minValue, node.maxValue, node.maxValueLength, node.currentValueLength,
+                    node.scrollPosition, node.scrollExtentMin, node.scrollExtentMax,
+                    node.scrollChildCount, node.scrollIndex, node.controlsNodes,
+                    locale = node.locale?.ToString(),
                     flags = node.flags is null ? null : new
                     {
                         @checked = node.flags.isChecked.ToString(),
@@ -177,6 +186,10 @@ internal sealed class BrowserSkiaCapabilities :
                         image = node.flags.isImage, liveRegion = node.flags.isLiveRegion,
                         multiline = node.flags.isMultiline, readOnly = node.flags.isReadOnly,
                         link = node.flags.isLink, slider = node.flags.isSlider,
+                        focusable = node.flags.isFocused != Tristate.none,
+                        obscured = node.flags.isObscured,
+                        mutuallyExclusive = node.flags.isInMutuallyExclusiveGroup,
+                        keyboardKey = node.flags.isKeyboardKey,
                     },
                     node.textSelectionBase, node.textSelectionExtent,
                     rect = new[] { node.rect.left, node.rect.top, node.rect.right, node.rect.bottom },
