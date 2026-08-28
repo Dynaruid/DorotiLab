@@ -83,6 +83,16 @@ var filterShader = FragmentProgram.fromSource(imageFilterSource, "runtime-image-
 var shaderFilter = new ImageFilter(filterShader, FilterQuality.none);
 if (shaderFilter.filterQuality != FilterQuality.none)
     throw new InvalidOperationException("ImageFilter.shader did not retain its input sampling quality.");
+filterShader.setFloat(0, 2);
+var revisedShaderFilter = new ImageFilter(filterShader, FilterQuality.none);
+if (object.Equals(shaderFilter, revisedShaderFilter))
+    throw new InvalidOperationException(
+        "ImageFilter.shader did not invalidate its layer after a uniform mutation.");
+var unchangedShaderFilter = new ImageFilter(filterShader, FilterQuality.none);
+filterShader.setFloat(0, 2);
+if (!object.Equals(unchangedShaderFilter, new ImageFilter(filterShader, FilterQuality.none)))
+    throw new InvalidOperationException(
+        "Assigning an unchanged shader uniform invalidated its image-filter layer.");
 using (var inputBitmap = new SKBitmap(new SKImageInfo(2, 1, SKColorType.Rgba8888, SKAlphaType.Premul)))
 {
     inputBitmap.SetPixel(0, 0, SKColors.Red);

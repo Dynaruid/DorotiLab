@@ -238,7 +238,7 @@ public sealed class SkiaSceneRenderer :
                 throw;
             }
             var incoming = new SceneFrame(
-                sceneSequence, inputSequence, timestamp, descriptor, scene.Commands.ToArray(),
+                sceneSequence, inputSequence, timestamp, descriptor, scene.Commands,
                 submission.FrameTransaction);
             if (_pendingFrame is { } pending)
             {
@@ -655,7 +655,7 @@ public sealed class SkiaSceneRenderer :
         _frameTrace.Record(phase, _viewId, DorotiFrameClock.Now,
             frame.InputSequence, frame.SceneSequence,
             surfaceGeneration ?? _host.SurfaceGeneration,
-            $"{terminal}: {reason}");
+            reason);
         return true;
     }
 

@@ -71,6 +71,7 @@ public sealed class FragmentShader(FragmentProgram program) : Shader
     private readonly object _gate = new();
     private readonly List<double> _floats = [];
     private readonly Dictionary<long, Image> _samplers = [];
+    private long _revision;
     private bool _disposed;
 
     public FragmentProgram program { get; } = program;
@@ -82,8 +83,12 @@ public sealed class FragmentShader(FragmentProgram program) : Shader
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
+            var alreadyDefined = _floats.Count > index;
             while (_floats.Count <= index) _floats.Add(0);
-            _floats[checked((int)index)] = value;
+            var targetIndex = checked((int)index);
+            if (alreadyDefined && _floats[targetIndex].Equals(value)) return;
+            _floats[targetIndex] = value;
+            _revision++;
         }
     }
 
@@ -95,7 +100,21 @@ public sealed class FragmentShader(FragmentProgram program) : Shader
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
+            if (_samplers.TryGetValue(index, out var current) && ReferenceEquals(current, image)) return;
             _samplers[index] = image;
+            _revision++;
+        }
+    }
+
+    internal long revision
+    {
+        get
+        {
+            lock (_gate)
+            {
+                ObjectDisposedException.ThrowIf(_disposed, this);
+                return _revision;
+            }
         }
     }
 

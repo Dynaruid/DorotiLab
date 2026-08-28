@@ -115,8 +115,12 @@ static void VerifyFrameTraceKeepsScrollAndAnimationTransitions()
                                      entry.TickerId == 91 && entry.TickerLabel == "scrollbar"),
         "frame trace identifies the animation owner around scroll boundaries");
 
+    var allocatedBeforeRecords = GC.GetAllocatedBytesForCurrentThread();
     for (var index = 0; index < 8300; index++)
         trace.Record(DorotiFramePhase.scheduleFrame, 7, DorotiFrameClock.Now);
+    var recordAllocations = GC.GetAllocatedBytesForCurrentThread() - allocatedBeforeRecords;
+    Require(recordAllocations < 64 * 1024,
+        $"steady frame-trace recording remains allocation-free; allocated={recordAllocations} bytes");
     var bounded = trace.Snapshot();
     Require(bounded.Count == 8192, "frame trace retains a complete high-refresh gesture in a bounded ring");
     Require(bounded.Select(entry => entry.Sequence).Distinct().Count() == bounded.Count,

@@ -567,11 +567,13 @@ public class PipelineOwner : DiagnosticableTreeMixin
     internal virtual RenderObject? _rootNode { get; set; } = default;
     internal virtual bool _shouldMergeDirtyNodes { get; set; } = false;
     internal virtual List<RenderObject> _nodesNeedingLayout { get; set; } = new List<RenderObject>();
+    private List<RenderObject> _nodesNeedingLayoutScratch = new List<RenderObject>();
     internal virtual bool _debugDoingLayout { get; set; } = false;
     internal virtual bool _debugDoingChildLayout { get; set; } = false;
     internal virtual bool _debugAllowMutationsToDirtySubtrees { get; set; } = false;
     internal virtual List<RenderObject> _nodesNeedingCompositingBitsUpdate { get; private set; } = new List<RenderObject>();
     internal virtual List<RenderObject> _nodesNeedingPaint { get; set; } = new List<RenderObject>();
+    private List<RenderObject> _nodesNeedingPaintScratch = new List<RenderObject>();
     internal virtual bool _debugDoingPaint { get; set; } = false;
     internal virtual global::Doroti.Framework.Semantics.SemanticsOwner? _semanticsOwner { get; set; } = default;
     internal virtual long _outstandingSemanticsHandles { get; set; } = 0L;
@@ -645,7 +647,9 @@ public class PipelineOwner : DiagnosticableTreeMixin
             {
                 DartRuntimePrimitives.Assert(() => !this._shouldMergeDirtyNodes);
                 List<RenderObject> dirtyNodes = this._nodesNeedingLayout;
-                _nodesNeedingLayout = new List<RenderObject>();
+                _nodesNeedingLayout = this._nodesNeedingLayoutScratch;
+                _nodesNeedingLayoutScratch = dirtyNodes;
+                this._nodesNeedingLayout.Clear();
                 dirtyNodes.sort(((a, b) => (((RenderObject)a).depth - ((RenderObject)b).depth)));
                 for (var i = 0L; (i < checked((long)(dirtyNodes.Count))); i++)
                 {
@@ -664,6 +668,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
                         node._layoutWithoutResize();
                     }
                 }
+                dirtyNodes.Clear();
                 _shouldMergeDirtyNodes = false;
             }
             DartRuntimePrimitives.Assert(() =>
@@ -769,7 +774,9 @@ public class PipelineOwner : DiagnosticableTreeMixin
                     return true;
                 });
             List<RenderObject> dirtyNodes = this._nodesNeedingPaint;
-            _nodesNeedingPaint = new List<RenderObject>();
+            _nodesNeedingPaint = this._nodesNeedingPaintScratch;
+            _nodesNeedingPaintScratch = dirtyNodes;
+            this._nodesNeedingPaint.Clear();
             foreach (var node in ((Func<List<RenderObject>>)(() =>
 {
     var __cascade = dirtyNodes;
@@ -798,6 +805,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
                     }
                 }
             }
+            dirtyNodes.Clear();
             foreach (PipelineOwner child in this._children)
             {
                 child.flushPaint();

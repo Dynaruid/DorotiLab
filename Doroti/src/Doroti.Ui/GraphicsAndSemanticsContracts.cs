@@ -299,10 +299,18 @@ public sealed class Scene : IDisposable
     private int _disposed;
 
     public Scene(ulong viewId, IReadOnlyList<SceneCommand> commands)
+        : this(viewId, commands?.ToArray() ?? throw new ArgumentNullException(nameof(commands)))
+    {
+    }
+
+    private Scene(ulong viewId, SceneCommand[] ownedCommands)
     {
         this.viewId = viewId;
-        Commands = commands ?? throw new ArgumentNullException(nameof(commands));
+        Commands = ownedCommands;
     }
+
+    internal static Scene FromOwnedCommands(ulong viewId, SceneCommand[] ownedCommands) =>
+        new(viewId, ownedCommands ?? throw new ArgumentNullException(nameof(ownedCommands)));
 
     public ulong viewId { get; }
 
@@ -619,7 +627,10 @@ public sealed class SceneBuilder
         if (_scopes.Count == 0) throw new InvalidOperationException("SceneBuilder pop is unbalanced.");
         _commands.Add(new("pop", null));
         var (layer, start) = _scopes.Pop();
-        layer.RetainedCommands = Array.AsReadOnly(_commands.Skip(start).ToArray());
+        var retainedCount = _commands.Count - start;
+        var retainedCommands = new SceneCommand[retainedCount];
+        _commands.CopyTo(start, retainedCommands, 0, retainedCount);
+        layer.RetainedCommands = retainedCommands;
         layer.Generation = Interlocked.Increment(ref _nextRetainedGeneration);
         EngineLayer.RecordSnapshot();
     }
@@ -652,7 +663,7 @@ public sealed class SceneBuilder
     public Scene build()
     {
         if (_scopes.Count != 0) throw new InvalidOperationException($"SceneBuilder has {_scopes.Count} unclosed effect scope(s).");
-        return new(_viewId, _commands.ToArray());
+        return Scene.FromOwnedCommands(_viewId, _commands.ToArray());
     }
 }
 

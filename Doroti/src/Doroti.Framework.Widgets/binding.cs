@@ -329,9 +329,8 @@ public class RootElement : Element, RootElementMixin
 
 public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBinding, global::Doroti.Framework.Painting.PaintingBinding, global::Doroti.Framework.Semantics.SemanticsBinding, global::Doroti.Framework.Rendering.RendererBinding, WidgetsBinding
 {
-    private static readonly TimeSpan MinimumActiveScrollSemanticsInterval = TimeSpan.FromMilliseconds(1000.0 / 15.0);
+    private static readonly TimeSpan ActiveScrollSemanticsPollInterval = TimeSpan.FromMilliseconds(50);
     private readonly object _semanticsFlushGate = new();
-    private TimeSpan _lastSemanticsFlushTimestamp = TimeSpan.MinValue;
     private Timer? _deferredSemanticsFlush;
 
     public WidgetsFlutterBinding(PlatformDispatcher? platformDispatcher = null) : base(platformDispatcher) { }
@@ -992,32 +991,47 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
     {
         if (!this.rootPipelineOwner.hasPendingSemanticsUpdate) return false;
 
-        var now = DorotiFrameClock.Now;
         lock (_semanticsFlushGate)
         {
-            if (!this.platformDispatcher.frameTrace.HasActiveScrollActivity ||
-                _lastSemanticsFlushTimestamp == TimeSpan.MinValue ||
-                now - _lastSemanticsFlushTimestamp >= MinimumActiveScrollSemanticsInterval)
+            if (!this.platformDispatcher.frameTrace.HasActiveScrollActivity)
             {
                 _deferredSemanticsFlush?.cancel();
                 _deferredSemanticsFlush = null;
-                _lastSemanticsFlushTimestamp = now;
                 return true;
             }
 
             if (_deferredSemanticsFlush is null)
             {
-                var delay = MinimumActiveScrollSemanticsInterval - (now - _lastSemanticsFlushTimestamp);
-                this.platformDispatcher.frameTrace.Record(DorotiFramePhase.semanticsDeferred, frameViewId, now,
-                    reason: "active scroll accessibility rate limit");
-                _deferredSemanticsFlush = new Timer((Duration)delay, () =>
-                {
-                    lock (_semanticsFlushGate) _deferredSemanticsFlush = null;
-                    if (this.rootPipelineOwner.hasPendingSemanticsUpdate) scheduleFrame();
-                });
+                this.platformDispatcher.frameTrace.Record(
+                    DorotiFramePhase.semanticsDeferred,
+                    frameViewId,
+                    DorotiFrameClock.Now,
+                    reason: "active scroll accessibility flush deferred until rest");
+                armDeferredSemanticsFlush();
             }
             return false;
         }
+    }
+
+    private void armDeferredSemanticsFlush()
+    {
+        _deferredSemanticsFlush = new Timer((Duration)ActiveScrollSemanticsPollInterval, () =>
+        {
+            var schedule = false;
+            lock (_semanticsFlushGate)
+            {
+                _deferredSemanticsFlush = null;
+                if (this.platformDispatcher.frameTrace.HasActiveScrollActivity)
+                {
+                    // Polling only observes the retained scroll state. It does not
+                    // request a visual frame or rebuild semantics while scrolling.
+                    armDeferredSemanticsFlush();
+                    return;
+                }
+                schedule = this.rootPipelineOwner.hasPendingSemanticsUpdate;
+            }
+            if (schedule) scheduleFrame();
+        });
     }
 
     protected async override Task performReassemble()

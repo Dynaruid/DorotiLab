@@ -1373,6 +1373,7 @@ public class ImageFilterLayer : OffsetLayer
     internal virtual ImageFilter? _imageFilter { get; set; } = default;
     internal virtual Rect? _bounds { get; set; } = default;
     internal virtual long _filterCacheGeneration { get; set; }
+    internal virtual bool _filterInputDirty { get; set; } = true;
 
     public ImageFilterLayer(ImageFilter? imageFilter = null, Offset offset = default) : base(offset: offset)
     {
@@ -1389,6 +1390,7 @@ public class ImageFilterLayer : OffsetLayer
             if ((!object.Equals(__value, this._imageFilter)))
             {
                 _imageFilter = __value;
+                _filterInputDirty = true;
                 markNeedsAddToScene();
             }
         }
@@ -1401,16 +1403,40 @@ public class ImageFilterLayer : OffsetLayer
             if (!object.Equals(value, this._bounds))
             {
                 _bounds = value;
+                _filterInputDirty = true;
                 markNeedsAddToScene();
             }
         }
     }
+    internal override void _adoptChild(Layer child)
+    {
+        _filterInputDirty = true;
+        base._adoptChild(child);
+    }
+    internal override void _dropChild(Layer child)
+    {
+        _filterInputDirty = true;
+        base._dropChild(child);
+    }
     public override void addToScene(SceneBuilder builder)
     {
         DartRuntimePrimitives.Assert(() => (this.imageFilter is not null));
-        if (this._needsAddToScene)
+        var childNeedsUpdate = false;
+        for (Layer? child = firstChild; child is not null; child = child.nextSibling)
+        {
+            if (child._needsAddToScene)
+            {
+                childNeedsUpdate = true;
+                break;
+            }
+        }
+        // The filtered pixels are translation-independent. Moving this repaint
+        // boundary during a scroll still rebuilds its scene scope, but it must not
+        // discard an otherwise unchanged GPU image-filter result.
+        if (_filterInputDirty || childNeedsUpdate)
         {
             _filterCacheGeneration++;
+            _filterInputDirty = false;
         }
         engineLayer = builder.pushImageFilter(this.imageFilter!, offset: offset,
             oldLayer: ((global::Doroti.Ui.ImageFilterEngineLayer?)(object?)_engineLayer)!, bounds: bounds,
@@ -1418,6 +1444,8 @@ public class ImageFilterLayer : OffsetLayer
         addChildrenToScene(builder);
         builder.pop();
     }
+
+    public virtual long debugFilterCacheGeneration => _filterCacheGeneration;
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {

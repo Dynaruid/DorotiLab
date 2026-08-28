@@ -148,8 +148,6 @@ public abstract class SchedulerBinding : BindingBase
     internal virtual TimelineTask? _frameTimelineTask { get; private set; } = (global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode ? null : new TimelineTask());
     internal virtual DartPerformanceMode? _performanceMode { get; set; } = default;
     internal virtual long _numPerformanceModeRequests { get; set; } = 0L;
-    private readonly DorotiFrameTrace _frameTrace = new();
-
     protected SchedulerBinding(PlatformDispatcher? platformDispatcher = null)
         : base(platformDispatcher)
     {
@@ -480,8 +478,8 @@ public abstract class SchedulerBinding : BindingBase
     public virtual bool hasScheduledFrame => _hasScheduledFrame;
     public virtual SchedulerPhase schedulerPhase => _schedulerPhase;
     public virtual bool framesEnabled => _framesEnabled;
-    /// <summary>Bounded scheduler-only trace used to differential-check Flutter phase ordering.</summary>
-    public DorotiFrameTrace frameTrace => _frameTrace;
+    /// <summary>Shared bounded frame trace used to differential-check Flutter phase ordering.</summary>
+    public DorotiFrameTrace frameTrace => platformDispatcher.frameTrace;
     internal virtual void _setFramesEnabledState(bool enabled)
     {
         if ((_framesEnabled == enabled))
@@ -535,8 +533,16 @@ public abstract class SchedulerBinding : BindingBase
                 return true;
             });
         ensureFrameCallbacksRegistered();
-        _frameTrace.Record(DorotiFramePhase.scheduleFrame, 0, DorotiFrameClock.Now,
-            reason: schedulerPhase.ToString());
+        frameTrace.Record(DorotiFramePhase.scheduleFrame, 0, DorotiFrameClock.Now,
+            reason: schedulerPhase switch
+            {
+                SchedulerPhase.idle => "idle",
+                SchedulerPhase.transientCallbacks => "transientCallbacks",
+                SchedulerPhase.midFrameMicrotasks => "midFrameMicrotasks",
+                SchedulerPhase.persistentCallbacks => "persistentCallbacks",
+                SchedulerPhase.postFrameCallbacks => "postFrameCallbacks",
+                _ => null,
+            });
         platformDispatcher.scheduleFrame();
         _hasScheduledFrame = true;
     }
@@ -556,7 +562,7 @@ public abstract class SchedulerBinding : BindingBase
                 return true;
             });
         ensureFrameCallbacksRegistered();
-        _frameTrace.Record(DorotiFramePhase.scheduleFrame, 0, DorotiFrameClock.Now,
+        frameTrace.Record(DorotiFramePhase.scheduleFrame, 0, DorotiFrameClock.Now,
             reason: "forced");
         platformDispatcher.scheduleFrame();
         _hasScheduledFrame = true;
@@ -702,8 +708,8 @@ public abstract class SchedulerBinding : BindingBase
         {
             _frameTimelineTask?.start("Animate");
             _schedulerPhase = SchedulerPhase.transientCallbacks;
-            _frameTrace.Record(DorotiFramePhase.beginFrame, 0, ToTimeSpan(_currentFrameTimeStamp));
-            _frameTrace.Record(DorotiFramePhase.transientCallbacks, 0, ToTimeSpan(_currentFrameTimeStamp));
+            frameTrace.Record(DorotiFramePhase.beginFrame, 0, ToTimeSpan(_currentFrameTimeStamp));
+            frameTrace.Record(DorotiFramePhase.transientCallbacks, 0, ToTimeSpan(_currentFrameTimeStamp));
             DartMap<long, _FrameCallbackEntry> callbacks = _transientCallbacks;
             _transientCallbacks = new DartMap<long, _FrameCallbackEntry>();
             callbacks.forEach(((id, callbackEntry) =>
@@ -718,7 +724,7 @@ public abstract class SchedulerBinding : BindingBase
         finally
         {
             _schedulerPhase = SchedulerPhase.midFrameMicrotasks;
-            _frameTrace.Record(DorotiFramePhase.midFrameMicrotasks, 0, ToTimeSpan(_currentFrameTimeStamp));
+            frameTrace.Record(DorotiFramePhase.midFrameMicrotasks, 0, ToTimeSpan(_currentFrameTimeStamp));
         }
     }
 
@@ -776,13 +782,13 @@ public abstract class SchedulerBinding : BindingBase
         try
         {
             _schedulerPhase = SchedulerPhase.persistentCallbacks;
-            _frameTrace.Record(DorotiFramePhase.persistentCallbacks, 0, ToTimeSpan(_currentFrameTimeStamp));
+            frameTrace.Record(DorotiFramePhase.persistentCallbacks, 0, ToTimeSpan(_currentFrameTimeStamp));
             foreach (var callback in new List<Action<Duration>>(_persistentCallbacks))
             {
                 _invokeFrameCallback(callback, DartRuntimePrimitives.RequireValue(_currentFrameTimeStamp));
             }
             _schedulerPhase = SchedulerPhase.postFrameCallbacks;
-            _frameTrace.Record(DorotiFramePhase.postFrameCallbacks, 0, ToTimeSpan(_currentFrameTimeStamp));
+            frameTrace.Record(DorotiFramePhase.postFrameCallbacks, 0, ToTimeSpan(_currentFrameTimeStamp));
             var localPostFrameCallbacks = new List<Action<Duration>>(_postFrameCallbacks);
             _postFrameCallbacks.Clear();
             if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
@@ -807,7 +813,7 @@ public abstract class SchedulerBinding : BindingBase
         finally
         {
             _schedulerPhase = SchedulerPhase.idle;
-            _frameTrace.Record(DorotiFramePhase.drawFrame, 0, ToTimeSpan(_currentFrameTimeStamp));
+            frameTrace.Record(DorotiFramePhase.drawFrame, 0, ToTimeSpan(_currentFrameTimeStamp));
             _frameTimelineTask?.finish();
             DartRuntimePrimitives.Assert(() =>
                 {

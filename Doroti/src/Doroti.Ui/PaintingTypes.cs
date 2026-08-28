@@ -221,6 +221,7 @@ public sealed record ImageFilter
     public ImageFilter(FragmentShader shader, FilterQuality filterQuality = FilterQuality.none)
     {
         this.shader = shader ?? throw new ArgumentNullException(nameof(shader));
+        shaderRevision = shader.revision;
         var source = shader.program.source;
         var firstFloatUniform = System.Text.RegularExpressions.Regex.Match(
             source,
@@ -245,6 +246,7 @@ public sealed record ImageFilter
     public ImageFilter? inner { get; }
     public ColorFilter? colorFilter { get; }
     public FragmentShader? shader { get; }
+    internal long shaderRevision { get; }
     public IReadOnlyList<double>? matrix4 { get; }
     public FilterQuality filterQuality { get; }
     public string debugShortDescription => outer is not null && inner is not null
@@ -279,8 +281,16 @@ public class Shadow(Color color, Offset offset, double blurRadius)
 public sealed class Picture : IDisposable
 {
     private int _disposed;
-    public Picture(IReadOnlyList<PathCommand>? commands = null) =>
-        Commands = Array.AsReadOnly((commands ?? []).ToArray());
+    public Picture(IReadOnlyList<PathCommand>? commands = null)
+        : this((commands ?? []).ToArray())
+    {
+    }
+
+    private Picture(PathCommand[] ownedCommands) => Commands = ownedCommands;
+
+    internal static Picture FromOwnedCommands(PathCommand[] ownedCommands) =>
+        new(ownedCommands ?? throw new ArgumentNullException(nameof(ownedCommands)));
+
     public IReadOnlyList<PathCommand> Commands { get; }
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
     public void Dispose() => Interlocked.Exchange(ref _disposed, 1);
@@ -293,7 +303,11 @@ public sealed class PictureRecorder
     private readonly List<PathCommand> _commands = [];
     public bool isRecording { get; private set; } = true;
     internal List<PathCommand> commands => _commands;
-    public Picture endRecording() { isRecording = false; return new(_commands.ToArray()); }
+    public Picture endRecording()
+    {
+        isRecording = false;
+        return Picture.FromOwnedCommands(_commands.ToArray());
+    }
 }
 
 public sealed record TargetImageSize(long? width, long? height);

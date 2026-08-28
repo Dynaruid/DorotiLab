@@ -4,6 +4,7 @@ using Doroti.Ui;
 VerifyCleanSubtreeUsesOneRetainedNode();
 VerifyDirtySubtreeRebuildsOnlyThatScope();
 VerifyEffectScopeRetainsAndReleasesItsEngineLayer();
+VerifyImageFilterCacheSurvivesOuterTranslation();
 
 Console.WriteLine($"FCR-4 retained rendering runtime contract: PASS (configuration={ConfigurationName()})");
 
@@ -76,6 +77,37 @@ static void VerifyEffectScopeRetainsAndReleasesItsEngineLayer()
     var afterRelease = EngineLayer.debugResourceDiagnostics;
     Require(afterRelease.ActiveEngineLayers == before.ActiveEngineLayers,
         "retained engine-layer counter returns to its baseline after release");
+}
+
+static void VerifyImageFilterCacheSurvivesOuterTranslation()
+{
+    var root = new ContainerLayer();
+    var effect = new ImageFilterLayer(new ImageFilter(1, 1));
+    var picture = PictureLayer();
+    effect.append(picture);
+    root.append(effect);
+
+    using var first = root.buildScene(new SceneBuilder(viewId: 12));
+    var initialGeneration = effect.debugFilterCacheGeneration;
+    Require(initialGeneration > 0, "initial image-filter input establishes a cache generation");
+
+    effect.offset = new Offset(0, 24);
+    using var translated = root.buildScene(new SceneBuilder(viewId: 12));
+    Require(effect.debugFilterCacheGeneration == initialGeneration,
+        "moving an unchanged image-filter layer preserves its cached filtered pixels");
+
+    picture.picture = new Picture([new PathCommand("drawColor", [0xff336699])]);
+    using var changedChild = root.buildScene(new SceneBuilder(viewId: 12));
+    Require(effect.debugFilterCacheGeneration == initialGeneration + 1,
+        "changing filtered child content advances the image-filter cache generation");
+
+    effect.imageFilter = new ImageFilter(2, 2);
+    using var changedFilter = root.buildScene(new SceneBuilder(viewId: 12));
+    Require(effect.debugFilterCacheGeneration == initialGeneration + 2,
+        "changing filter properties advances the image-filter cache generation");
+
+    root.removeAllChildren();
+    root.dispose();
 }
 
 static PictureLayer PictureLayer()

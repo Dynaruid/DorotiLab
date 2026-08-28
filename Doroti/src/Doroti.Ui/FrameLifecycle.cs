@@ -85,7 +85,12 @@ public sealed class DorotiFrameTrace
     // present could be inspected. Keep enough metadata for a complete gesture.
     private const int Capacity = 8192;
     private readonly object _gate = new();
-    private readonly Queue<DorotiFrameTraceEntry> _entries = new();
+    // Recording is a hot path (several entries per frame). Keep values in one
+    // fixed ring so diagnostics do not allocate a managed object for every
+    // phase. Public trace-entry objects are materialized only on Snapshot().
+    private TraceSlot[]? _entries;
+    private int _entryCount;
+    private int _nextEntryIndex;
     private long _nextSequence;
     private long _lastTimestampMicroseconds;
     private long _lastInputSequence;
@@ -123,7 +128,8 @@ public sealed class DorotiFrameTrace
             _lastTimestampMicroseconds = timestampMicroseconds;
             if (phase == DorotiFramePhase.input && inputSequence > 0)
                 _lastInputSequence = inputSequence;
-            _entries.Enqueue(new(
+            var entries = _entries ??= new TraceSlot[Capacity];
+            entries[_nextEntryIndex] = new(
                 ++_nextSequence,
                 timestampMicroseconds,
                 phase,
@@ -140,8 +146,9 @@ public sealed class DorotiFrameTrace
                 scrollMinExtent,
                 scrollMaxExtent,
                 tickerId,
-                tickerLabel));
-            while (_entries.Count > Capacity) _entries.Dequeue();
+                tickerLabel);
+            _nextEntryIndex = (_nextEntryIndex + 1) % Capacity;
+            if (_entryCount < Capacity) _entryCount++;
         }
     }
 
@@ -188,6 +195,53 @@ public sealed class DorotiFrameTrace
 
     public IReadOnlyList<DorotiFrameTraceEntry> Snapshot()
     {
-        lock (_gate) return _entries.ToArray();
+        lock (_gate)
+        {
+            if (_entries is null) return Array.Empty<DorotiFrameTraceEntry>();
+            var snapshot = new DorotiFrameTraceEntry[_entryCount];
+            var firstIndex = _entryCount == Capacity ? _nextEntryIndex : 0;
+            for (var index = 0; index < _entryCount; index++)
+                snapshot[index] = _entries[(firstIndex + index) % Capacity].ToEntry();
+            return snapshot;
+        }
+    }
+
+    private readonly record struct TraceSlot(
+        long Sequence,
+        long TimestampMicroseconds,
+        DorotiFramePhase Phase,
+        ulong ViewId,
+        long InputSequence,
+        long SceneSequence,
+        long SurfaceGeneration,
+        string? Reason,
+        long QueueLatencyMicroseconds,
+        long ScrollPositionId,
+        double? ScrollOffset,
+        double? ScrollDelta,
+        string? ScrollActivity,
+        double? ScrollMinExtent,
+        double? ScrollMaxExtent,
+        long TickerId,
+        string? TickerLabel)
+    {
+        internal DorotiFrameTraceEntry ToEntry() => new(
+            Sequence,
+            TimestampMicroseconds,
+            Phase,
+            ViewId,
+            InputSequence,
+            SceneSequence,
+            SurfaceGeneration,
+            Reason,
+            QueueLatencyMicroseconds,
+            ScrollPositionId,
+            ScrollOffset,
+            ScrollDelta,
+            ScrollActivity,
+            ScrollMinExtent,
+            ScrollMaxExtent,
+            TickerId,
+            TickerLabel);
     }
 }
