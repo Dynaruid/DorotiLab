@@ -1052,7 +1052,7 @@ public class BuildOwner
                 var keyToParent = new DartMap<GlobalKeyBase, Element>();
                 this._debugGlobalKeyReservations?.forEach(((global::System.Action<Element, DartMap<Element, GlobalKeyBase>>)((parent, childToKey) =>
                 {
-                    if (((object.Equals(((Element)parent)._lifecycleState, _ElementLifecycle__framework.defunct)) || (((bool?)((dynamic)((Element)parent).renderObject)?.attached) == false)))
+                    if (((object.Equals(((Element)parent)._lifecycleState, _ElementLifecycle__framework.defunct)) || (((Element)parent).renderObject?.attached == false)))
                     {
                         return;
                     }
@@ -2199,7 +2199,7 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
                     }
                     if ((renderObject is not global::Doroti.Framework.Rendering.RenderBox))
                     {
-                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Cannot get size from a render object that is not a RenderBox."), new global::Doroti.Framework.Foundation.ErrorHint("Instead of being a subtype of RenderBox, the render object associated " + $"with this element is a {DartRuntimePrimitives.RuntimeType(renderObject)}. If this type of " + "render object does have a size, consider calling findRenderObject " + "and extracting its size manually."), describeElement("The size getter was called for the following element"), ((global::Doroti.Framework.Foundation.DiagnosticsNode)((dynamic)renderObject).describeForError("The associated render object was")) }));
+                        throw DartRuntimePrimitives.AsException(new global::Doroti.Framework.Foundation.FlutterError(new List<global::Doroti.Framework.Foundation.DiagnosticsNode> { new global::Doroti.Framework.Foundation.ErrorSummary("Cannot get size from a render object that is not a RenderBox."), new global::Doroti.Framework.Foundation.ErrorHint("Instead of being a subtype of RenderBox, the render object associated " + $"with this element is a {DartRuntimePrimitives.RuntimeType(renderObject)}. If this type of " + "render object does have a size, consider calling findRenderObject " + "and extracting its size manually."), describeElement("The size getter was called for the following element"), renderObject.describeForError("The associated render object was") }));
                     }
                     global::Doroti.Framework.Rendering.RenderBox box = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Rendering.RenderBox>(((global::Doroti.Framework.Rendering.RenderBox)renderObject));
                     if (!((global::Doroti.Framework.Rendering.RenderBox)box).hasSize)
@@ -2931,7 +2931,7 @@ public abstract class ProxyElement : ComponentElement
     {
     }
 
-    public override Widget build() => ((Widget)((dynamic)(((ProxyWidget?)(object?)this.widget)!)).child);
+    public override Widget build() => ((ProxyWidget)this.widget).child;
     public override void update(Widget newWidget)
     {
         var __newWidget = (ProxyWidget)(object)newWidget;
@@ -3010,7 +3010,7 @@ public class ParentDataElement<T> : ProxyElement, IParentDataElement
     public virtual void applyWidgetOutOfTurn(ParentDataWidget<T> newWidget)
     {
         DartRuntimePrimitives.Assert(() => newWidget.debugCanApplyOutOfTurn());
-        DartRuntimePrimitives.Assert(() => (object.Equals(((Widget)((dynamic)newWidget).child), ((Widget)((dynamic)(((ParentDataWidget<T>?)(object?)this.widget)!)).child))));
+        DartRuntimePrimitives.Assert(() => (object.Equals(newWidget.child, ((ParentDataWidget<T>)this.widget).child)));
         _applyParentData(newWidget);
     }
 
@@ -3222,7 +3222,7 @@ public abstract class RenderObjectElement : Element
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         _renderObject = (((RenderObjectWidget?)(object?)this.widget)!).createRenderObject(this);
-        DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.RequireValue(((bool?)((dynamic)this._renderObject!).debugDisposed)));
+        DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.RequireValue(this._renderObject!.debugDisposed));
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugDoingBuild = false;
@@ -3258,7 +3258,7 @@ public abstract class RenderObjectElement : Element
     {
         DartRuntimePrimitives.Assert(() =>
             {
-                ((dynamic)this.renderObject).debugCreator = new DebugCreator(this);
+                this.renderObject.debugCreator = new DebugCreator(this);
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
@@ -3300,7 +3300,7 @@ public abstract class RenderObjectElement : Element
         base.unmount();
         DartRuntimePrimitives.Assert(() => !((global::Doroti.Framework.Rendering.RenderObject)this.renderObject).attached, () => (object?)"A RenderObject was still attached when attempting to unmount its " + $"RenderObjectElement: {this.renderObject}");
         oldWidget.didUnmountRenderObject(this.renderObject);
-        ((dynamic)this._renderObject!).dispose();
+        this._renderObject!.dispose();
         _renderObject = null;
     }
 
@@ -3472,7 +3472,7 @@ public class SingleChildRenderObjectElement : RenderObjectElement
     public override void mount(Element? parent, object? newSlot)
     {
         base.mount(parent, newSlot);
-        _child = updateChild(this._child, ((Widget?)((dynamic)(((SingleChildRenderObjectWidget?)(object?)this.widget)!)).child), null);
+        _child = updateChild(this._child, ((SingleChildRenderObjectWidget)this.widget).child, null);
     }
 
     public override void update(Widget newWidget)
@@ -3480,15 +3480,15 @@ public class SingleChildRenderObjectElement : RenderObjectElement
         var __newWidget = (SingleChildRenderObjectWidget)(object)newWidget;
         base.update(__newWidget);
         DartRuntimePrimitives.Assert(() => (object.Equals(this.widget, __newWidget)));
-        _child = updateChild(this._child, ((Widget?)((dynamic)(((SingleChildRenderObjectWidget?)(object?)this.widget)!)).child), null);
+        _child = updateChild(this._child, ((SingleChildRenderObjectWidget)this.widget).child, null);
     }
 
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
-        dynamic renderObjectLocal = this.renderObject;
+        var renderObjectLocal = (global::Doroti.Framework.Rendering.IRenderObjectWithChild)this.renderObject;
         DartRuntimePrimitives.Assert(() => (slot is null));
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)renderObjectLocal).debugValidateChild(child)));
-        ((dynamic)renderObjectLocal).child = (dynamic)child;
+        DartRuntimePrimitives.Assert(() => renderObjectLocal.debugValidateChild(child));
+        renderObjectLocal.child = child;
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObjectLocal, this.renderObject)));
     }
 
@@ -3499,10 +3499,10 @@ public class SingleChildRenderObjectElement : RenderObjectElement
 
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
-        dynamic renderObjectLocal = this.renderObject;
+        var renderObjectLocal = (global::Doroti.Framework.Rendering.IRenderObjectWithChild)this.renderObject;
         DartRuntimePrimitives.Assert(() => (slot is null));
-        DartRuntimePrimitives.Assert(() => (object.Equals(((dynamic)renderObjectLocal).child, child)));
-        ((dynamic)renderObjectLocal).child = null;
+        DartRuntimePrimitives.Assert(() => object.Equals(renderObjectLocal.child, child));
+        renderObjectLocal.child = null;
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObjectLocal, this.renderObject)));
     }
 
@@ -3530,9 +3530,9 @@ public class MultiChildRenderObjectElement : RenderObjectElement
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
         var __slot = (IndexedSlot<Element?>)(object)slot;
-        dynamic renderObjectLocal = this.renderObject;
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)renderObjectLocal).debugValidateChild(child)));
-        renderObjectLocal.insert((dynamic)child, after: (dynamic?)((IndexedSlot<Element?>)__slot).value?.renderObject);
+        var renderObjectLocal = (global::Doroti.Framework.Rendering.IContainerRenderObject)this.renderObject;
+        DartRuntimePrimitives.Assert(() => renderObjectLocal.debugValidateChild(child));
+        renderObjectLocal.insert(child, after: ((IndexedSlot<Element?>)__slot).value?.renderObject);
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObjectLocal, this.renderObject)));
     }
 
@@ -3540,17 +3540,17 @@ public class MultiChildRenderObjectElement : RenderObjectElement
     {
         var __oldSlot = (IndexedSlot<Element?>)(object)oldSlot;
         var __newSlot = (IndexedSlot<Element?>)(object)newSlot;
-        dynamic renderObjectLocal = this.renderObject;
+        var renderObjectLocal = (global::Doroti.Framework.Rendering.IContainerRenderObject)this.renderObject;
         DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.RenderObject)child).parent, renderObjectLocal)));
-        ((dynamic)renderObjectLocal).move((dynamic)child, after: (dynamic?)((IndexedSlot<Element?>)__newSlot).value?.renderObject);
+        renderObjectLocal.move(child, after: ((IndexedSlot<Element?>)__newSlot).value?.renderObject);
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObjectLocal, this.renderObject)));
     }
 
     public override void removeRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)
     {
-        dynamic renderObjectLocal = this.renderObject;
+        var renderObjectLocal = (global::Doroti.Framework.Rendering.IContainerRenderObject)this.renderObject;
         DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Rendering.RenderObject)child).parent, renderObjectLocal)));
-        ((dynamic)renderObjectLocal).remove((dynamic)child);
+        renderObjectLocal.remove(child);
         DartRuntimePrimitives.Assert(() => (object.Equals(renderObjectLocal, this.renderObject)));
     }
 

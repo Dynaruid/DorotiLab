@@ -2437,7 +2437,13 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
 
 }
 
-public interface RenderObjectWithChildMixin<ChildType> where ChildType : RenderObject
+public interface IRenderObjectWithChild
+{
+    bool debugValidateChild(RenderObject child);
+    RenderObject? child { get; set; }
+}
+
+public interface RenderObjectWithChildMixin<ChildType> : IRenderObjectWithChild where ChildType : RenderObject
 {
     ChildType? _child { get; set; }
 
@@ -2448,6 +2454,13 @@ public interface RenderObjectWithChildMixin<ChildType> where ChildType : RenderO
     public void redepthChildren();
     public void visitChildren(Action<RenderObject> visitor);
     public List<DiagnosticsNode> debugDescribeChildren();
+
+    bool IRenderObjectWithChild.debugValidateChild(RenderObject child) => debugValidateChild(child);
+    RenderObject? IRenderObjectWithChild.child
+    {
+        get => child;
+        set => child = value is null ? null : (ChildType)value;
+    }
 }
 
 public abstract class RenderObjectWithLayoutCallbackMixin : RenderObject
@@ -2484,7 +2497,15 @@ public interface ContainerParentDataMixin<ChildType> where ChildType : RenderObj
     public void detach();
 }
 
-public interface ContainerRenderObjectMixin<ChildType, ParentDataType> where ChildType : RenderObject where ParentDataType : ContainerParentDataMixin<ChildType>
+public interface IContainerRenderObject
+{
+    bool debugValidateChild(RenderObject child);
+    void insert(RenderObject child, RenderObject? after = null);
+    void move(RenderObject child, RenderObject? after = null);
+    void remove(RenderObject child);
+}
+
+public interface ContainerRenderObjectMixin<ChildType, ParentDataType> : IContainerRenderObject where ChildType : RenderObject where ParentDataType : ContainerParentDataMixin<ChildType>
 {
     long _childCount { get; set; }
     ChildType? _firstChild { get; set; }
@@ -2511,6 +2532,11 @@ public interface ContainerRenderObjectMixin<ChildType, ParentDataType> where Chi
     public ChildType? childBefore(ChildType child);
     public ChildType? childAfter(ChildType child);
     public List<DiagnosticsNode> debugDescribeChildren();
+
+    bool IContainerRenderObject.debugValidateChild(RenderObject child) => debugValidateChild(child);
+    void IContainerRenderObject.insert(RenderObject child, RenderObject? after) => insert((ChildType)child, (ChildType?)after);
+    void IContainerRenderObject.move(RenderObject child, RenderObject? after) => move((ChildType)child, (ChildType?)after);
+    void IContainerRenderObject.remove(RenderObject child) => remove((ChildType)child);
 }
 
 public interface RelayoutWhenSystemFontsChangeMixin

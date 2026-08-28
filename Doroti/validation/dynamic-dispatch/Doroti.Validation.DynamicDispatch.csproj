@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Doroti.Validation.DynamicDispatch</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Framework.Widgets\Doroti.Framework.Widgets.csproj" />
+  </ItemGroup>
+</Project>

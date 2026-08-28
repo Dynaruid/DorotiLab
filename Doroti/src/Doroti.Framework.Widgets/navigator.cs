@@ -40,10 +40,51 @@ public enum RoutePopDisposition
     bubble
 }
 
-public abstract class Route<T> : _RoutePlaceholder__navigator
+public abstract class RouteBase
+{
+    internal abstract NavigatorState? _navigator { get; set; }
+    internal abstract bool _installed { get; }
+    internal abstract bool _isInstalledIn(NavigatorState state);
+    internal abstract bool _isPageBased { get; }
+    internal abstract void _updateSettings(RouteSettings newSettings);
+    internal abstract void _updateRestorationId(string? restorationId);
+    internal abstract object? currentResultObject { get; }
+    internal abstract Future disposalCompleted { get; }
+    internal abstract bool popCompleted { get; }
+    internal abstract bool didPopObject(object? result);
+    internal abstract void didCompleteObject(object? result);
+    internal abstract void onPopInvokedWithResultObject(bool didPop, object? result);
+    internal abstract bool _debugCheckCanConsumeResult(object? result, string methodName);
+
+    public abstract bool requestFocus { get; }
+    public abstract NavigatorState? navigator { get; }
+    public abstract RouteSettings settings { get; }
+    public abstract global::Doroti.Framework.Foundation.ValueListenable<string?> restorationScopeId { get; }
+    public abstract List<OverlayEntry> overlayEntries { get; }
+    public abstract void install();
+    public abstract global::Doroti.Framework.Scheduler.TickerFuture didPush();
+    public abstract void didAdd();
+    public abstract void didReplace(dynamic oldRoute);
+    public abstract Future<RoutePopDisposition> willPop();
+    public abstract RoutePopDisposition popDisposition { get; }
+    public abstract void onPopInvoked(bool didPop);
+    public abstract bool willHandlePopInternally { get; }
+    public abstract void didPopNext(dynamic nextRoute);
+    public abstract void didChangeNext(dynamic nextRoute);
+    public abstract void didChangePrevious(dynamic previousRoute);
+    public abstract void changedInternalState();
+    public abstract void changedExternalState();
+    public abstract void dispose();
+    public abstract bool isCurrent { get; }
+    public abstract bool isFirst { get; }
+    public abstract bool hasActiveRouteBelow { get; }
+    public abstract bool isActive { get; }
+}
+
+public abstract class Route<T> : RouteBase
 {
     internal virtual bool? _requestFocus { get; private set; }
-    internal virtual NavigatorState? _navigator { get; set; } = default;
+    internal override NavigatorState? _navigator { get; set; } = default;
     internal virtual RouteSettings _settings { get; set; } = default!;
     internal virtual global::Doroti.Framework.Foundation.ValueNotifier<string?> _restorationScopeId { get; private set; } = new global::Doroti.Framework.Foundation.ValueNotifier<string?>(((string)(object)null));
     internal virtual Completer<T?> _popCompleter { get; private set; } = new Completer<T?>();
@@ -55,14 +96,14 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
         this._requestFocus = requestFocus;
     }
 
-    public virtual bool requestFocus => DartRuntimePrimitives.ConvertValue<bool>(((this._requestFocus ?? this.navigator?.widget.requestFocus) ?? false));
-    public virtual NavigatorState? navigator => this._navigator;
-    internal virtual bool _installed => this._navigator is not null;
-    internal virtual bool _isInstalledIn(NavigatorState state) => DartRuntimePrimitives.ConvertValue<bool>((object.Equals(this._navigator, state)));
-    public virtual RouteSettings settings => this._settings;
-    internal virtual bool _isPageBased => (this.settings is Page<object?>);
-    public virtual global::Doroti.Framework.Foundation.ValueListenable<string?> restorationScopeId => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.ValueListenable<string?>>(this._restorationScopeId);
-    internal virtual void _updateSettings(RouteSettings newSettings)
+    public override bool requestFocus => DartRuntimePrimitives.ConvertValue<bool>(((this._requestFocus ?? this.navigator?.widget.requestFocus) ?? false));
+    public override NavigatorState? navigator => this._navigator;
+    internal override bool _installed => this._navigator is not null;
+    internal override bool _isInstalledIn(NavigatorState state) => DartRuntimePrimitives.ConvertValue<bool>((object.Equals(this._navigator, state)));
+    public override RouteSettings settings => this._settings;
+    internal override bool _isPageBased => (this.settings is Page<object?>);
+    public override global::Doroti.Framework.Foundation.ValueListenable<string?> restorationScopeId => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.ValueListenable<string?>>(this._restorationScopeId);
+    internal override void _updateSettings(RouteSettings newSettings)
     {
         if ((!object.Equals(this._settings, newSettings)))
         {
@@ -74,17 +115,17 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
         }
     }
 
-    internal virtual void _updateRestorationId(string? restorationId)
+    internal override void _updateRestorationId(string? restorationId)
     {
         this._restorationScopeId.value = restorationId;
     }
 
-    public virtual List<OverlayEntry> overlayEntries => new List<OverlayEntry>();
-    public virtual void install()
+    public override List<OverlayEntry> overlayEntries => new List<OverlayEntry>();
+    public override void install()
     {
     }
 
-    public virtual global::Doroti.Framework.Scheduler.TickerFuture didPush()
+    public override global::Doroti.Framework.Scheduler.TickerFuture didPush()
     {
         return ((Func<global::Doroti.Framework.Scheduler.TickerFuture>)(() =>
 {
@@ -102,7 +143,7 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void didAdd()
+    public override void didAdd()
     {
         if (this.requestFocus)
         {
@@ -114,17 +155,17 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
         }
     }
 
-    public virtual void didReplace(dynamic oldRoute)
+    public override void didReplace(dynamic oldRoute)
     {
     }
 
-    public async virtual Future<RoutePopDisposition> willPop()
+    public async override Future<RoutePopDisposition> willPop()
     {
         return (this.isFirst ? RoutePopDisposition.bubble : RoutePopDisposition.pop);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual RoutePopDisposition popDisposition
+    public override RoutePopDisposition popDisposition
     {
         get
         {
@@ -140,7 +181,7 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
             return default!;
         }
     }
-    public virtual void onPopInvoked(bool didPop)
+    public override void onPopInvoked(bool didPop)
     {
     }
 
@@ -153,8 +194,11 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
         }
     }
 
-    public virtual bool willHandlePopInternally => false;
+    public override bool willHandlePopInternally => false;
     public virtual T? currentResult => DartRuntimePrimitives.ConvertValue<T>(null);
+    internal override object? currentResultObject => currentResult;
+    internal override Future disposalCompleted => this._disposeCompleter.future;
+    internal override bool popCompleted => this._popCompleter.isCompleted;
     public virtual Future<T?> popped => this._popCompleter.future;
     public virtual bool didPop(T? result)
     {
@@ -168,27 +212,45 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
         this._popCompleter.complete(((result ?? (T)this.currentResult)));
     }
 
-    public virtual void didPopNext(dynamic nextRoute)
+    internal override bool didPopObject(object? result)
+    {
+        DartRuntimePrimitives.Assert(() => _debugCheckCanConsumeResult(result, "pop"));
+        return didPop(DartRuntimePrimitives.ConvertValue<T>(result));
+    }
+
+    internal override void didCompleteObject(object? result)
+    {
+        DartRuntimePrimitives.Assert(() => _debugCheckCanConsumeResult(result, "complete"));
+        didComplete(DartRuntimePrimitives.ConvertValue<T>(result));
+    }
+
+    internal override void onPopInvokedWithResultObject(bool didPop, object? result)
+    {
+        DartRuntimePrimitives.Assert(() => _debugCheckCanConsumeResult(result, "pop"));
+        onPopInvokedWithResult(didPop, DartRuntimePrimitives.ConvertValue<T>(result));
+    }
+
+    public override void didPopNext(dynamic nextRoute)
     {
     }
 
-    public virtual void didChangeNext(dynamic nextRoute)
+    public override void didChangeNext(dynamic nextRoute)
     {
     }
 
-    public virtual void didChangePrevious(dynamic previousRoute)
+    public override void didChangePrevious(dynamic previousRoute)
     {
     }
 
-    public virtual void changedInternalState()
+    public override void changedInternalState()
     {
     }
 
-    public virtual void changedExternalState()
+    public override void changedExternalState()
     {
     }
 
-    public virtual void dispose()
+    public override void dispose()
     {
         _navigator = null;
         this._restorationScopeId.dispose();
@@ -196,7 +258,7 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
     }
 
-    public virtual bool isCurrent
+    public override bool isCurrent
     {
         get
         {
@@ -213,7 +275,7 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
             return default!;
         }
     }
-    public virtual bool isFirst
+    public override bool isFirst
     {
         get
         {
@@ -230,7 +292,7 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
             return default!;
         }
     }
-    public virtual bool hasActiveRouteBelow
+    public override bool hasActiveRouteBelow
     {
         get
         {
@@ -253,7 +315,7 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
             return default!;
         }
     }
-    public virtual bool isActive
+    public override bool isActive
     {
         get
         {
@@ -261,7 +323,7 @@ public abstract class Route<T> : _RoutePlaceholder__navigator
             return default!;
         }
     }
-    internal virtual bool _debugCheckCanConsumeResult(object? result, string methodName)
+    internal override bool _debugCheckCanConsumeResult(object? result, string methodName)
     {
         if ((result is not T))
         {
@@ -402,7 +464,7 @@ public class HeroControllerScope : InheritedWidget
 
 public abstract class RouteTransitionRecord
 {
-    public abstract dynamic route { get; }
+    public abstract RouteBase route { get; }
     public abstract bool isWaitingForEnteringDecision { get; }
     public abstract bool isWaitingForExitingDecision { get; }
     public abstract void markForPush();
@@ -483,11 +545,11 @@ public class DefaultTransitionDelegate<T> : TransitionDelegate<T>
                 bool isLastExitingPageRoute = (isLast && !locationToExitingPageRoute.ContainsKey(exitingPageRoute));
                 if ((isLastExitingPageRoute && !hasPagelessRoute))
                 {
-                    exitingPageRoute.markForPop(((dynamic)((RouteTransitionRecord)exitingPageRoute).route).currentResult);
+                    exitingPageRoute.markForPop(((RouteTransitionRecord)exitingPageRoute).route.currentResultObject);
                 }
                 else
                 {
-                    exitingPageRoute.markForComplete(((dynamic)((RouteTransitionRecord)exitingPageRoute).route).currentResult);
+                    exitingPageRoute.markForComplete(((RouteTransitionRecord)exitingPageRoute).route.currentResultObject);
                 }
                 if (hasPagelessRoute)
                 {
@@ -498,11 +560,11 @@ public class DefaultTransitionDelegate<T> : TransitionDelegate<T>
                         {
                             if ((isLastExitingPageRoute && (object.Equals(pagelessRoute, pagelessRoutes.Last()))))
                             {
-                                pagelessRoute.markForPop(((dynamic)((RouteTransitionRecord)pagelessRoute).route).currentResult);
+                                pagelessRoute.markForPop(((RouteTransitionRecord)pagelessRoute).route.currentResultObject);
                             }
                             else
                             {
-                                pagelessRoute.markForComplete(((dynamic)((RouteTransitionRecord)pagelessRoute).route).currentResult);
+                                pagelessRoute.markForComplete(((RouteTransitionRecord)pagelessRoute).route.currentResultObject);
                             }
                         }
                     }
@@ -547,6 +609,8 @@ public static partial class NavigatorLibrary
 
 public class Navigator : StatefulWidget
 {
+    internal static RouteBase _requireRoute(object? route) => route as RouteBase ?? throw new ArgumentException("Navigator route callbacks must return a Route<T> instance.", nameof(route));
+
     internal static readonly List<Page<object>> _defaultPages = new();
     public virtual List<Page<object>> pages { get; private set; } = default!;
     public virtual global::System.Func<dynamic, object, bool>? onPopPage { get; private set; }
@@ -676,25 +740,25 @@ public class Navigator : StatefulWidget
 
     public static void replace<T>(BuildContext context, dynamic oldRoute, Route<T> newRoute)
     {
-        Navigator.of(context).replace<T>(oldRoute: oldRoute, newRoute: newRoute);
+        Navigator.of(context).replace<T>(oldRoute: Navigator._requireRoute((object?)oldRoute), newRoute: newRoute);
         return;
     }
 
     public static string restorableReplace<T>(BuildContext context, dynamic oldRoute, global::System.Func<BuildContext, object, Route<T>> newRouteBuilder, object? arguments = null)
     {
-        return ((string)(object?)Navigator.of(context).restorableReplace<T>(oldRoute: oldRoute, newRouteBuilder: (global::System.Func<BuildContext, object, Route<T>>)newRouteBuilder, arguments: arguments));
+        return ((string)(object?)Navigator.of(context).restorableReplace<T>(oldRoute: Navigator._requireRoute((object?)oldRoute), newRouteBuilder: (global::System.Func<BuildContext, object, Route<T>>)newRouteBuilder, arguments: arguments));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public static void replaceRouteBelow<T>(BuildContext context, dynamic anchorRoute, Route<T> newRoute)
     {
-        Navigator.of(context).replaceRouteBelow<T>(anchorRoute: anchorRoute, newRoute: newRoute);
+        Navigator.of(context).replaceRouteBelow<T>(anchorRoute: Navigator._requireRoute((object?)anchorRoute), newRoute: newRoute);
         return;
     }
 
     public static string restorableReplaceRouteBelow<T>(BuildContext context, dynamic anchorRoute, global::System.Func<BuildContext, object, Route<T>> newRouteBuilder, object? arguments = null)
     {
-        return ((string)(object?)Navigator.of(context).restorableReplaceRouteBelow<T>(anchorRoute: anchorRoute, newRouteBuilder: (global::System.Func<BuildContext, object, Route<T>>)newRouteBuilder, arguments: arguments));
+        return ((string)(object?)Navigator.of(context).restorableReplaceRouteBelow<T>(anchorRoute: Navigator._requireRoute((object?)anchorRoute), newRouteBuilder: (global::System.Func<BuildContext, object, Route<T>>)newRouteBuilder, arguments: arguments));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -811,7 +875,10 @@ public class Navigator : StatefulWidget
                     });
                 foreach (var routeLocal in result)
                 {
-                    ((dynamic)routeLocal)?.dispose();
+                    if (routeLocal is not null)
+                    {
+                        Navigator._requireRoute(routeLocal).dispose();
+                    }
                 }
                 result.Clear();
             }
@@ -867,8 +934,8 @@ public class _RoutePlaceholder__navigator
 
 public class _RouteEntry__navigator : RouteTransitionRecord
 {
-    private dynamic __field_route = default!;
-    public override dynamic route { get => __field_route; }
+    private RouteBase __field_route = default!;
+    public override RouteBase route { get => __field_route; }
     public virtual _RestorationInformation__navigator? restorationInformation { get; private set; }
     public virtual bool pageBased { get; private set; } = default!;
     public const long kDebugPopAttemptLimit = 100L;
@@ -883,13 +950,13 @@ public class _RouteEntry__navigator : RouteTransitionRecord
     internal virtual bool _reportRemovalToObserver { get; set; } = true;
     internal virtual bool _isWaitingForExitingDecision { get; set; } = false;
 
-    internal _RouteEntry__navigator(dynamic route, _RouteLifecycle__navigator initialState, bool pageBased, _RestorationInformation__navigator? restorationInformation = null)
+    internal _RouteEntry__navigator(RouteBase route, _RouteLifecycle__navigator initialState, bool pageBased, _RestorationInformation__navigator? restorationInformation = null)
     {
         this.__field_route = route;
         this.pageBased = pageBased;
         this.restorationInformation = restorationInformation;
         this.currentState = initialState;
-        System.Diagnostics.Debug.Assert((!pageBased || (((RouteSettings)((dynamic)route).settings) is Page<object>)));
+        System.Diagnostics.Debug.Assert((!pageBased || (route.settings is Page<object>)));
         System.Diagnostics.Debug.Assert((((((object.Equals(initialState, _RouteLifecycle__navigator.staging)) || (object.Equals(initialState, _RouteLifecycle__navigator.add))) || (object.Equals(initialState, _RouteLifecycle__navigator.push))) || (object.Equals(initialState, _RouteLifecycle__navigator.pushReplace))) || (object.Equals(initialState, _RouteLifecycle__navigator.replace))));
     }
 
@@ -899,7 +966,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         {
             if (this.pageBased)
             {
-                var page = ((Page<object?>?)(object?)((RouteSettings)((dynamic)this.route).settings))!;
+                var page = ((Page<object?>?)(object?)this.route.settings)!;
                 return ((((Page<object>)page).restorationId is not null) ? $"p+{((Page<object>)page).restorationId}" : null);
             }
             if ((this.restorationInformation is not null))
@@ -920,12 +987,12 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         {
             return false;
         }
-        var routePage = ((Page<object>?)(object?)((RouteSettings)((dynamic)this.route).settings))!;
+        var routePage = ((Page<object>?)(object?)this.route.settings)!;
         return page.canUpdate(routePage);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void handleAdd(NavigatorState navigator, dynamic previousPresent)
+    public virtual void handleAdd(NavigatorState navigator, RouteBase? previousPresent)
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(this.currentState, _RouteLifecycle__navigator.add)));
         DartRuntimePrimitives.Assert(() => ((NavigatorState)navigator)._debugLocked);
@@ -933,18 +1000,18 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         ((NavigatorState)navigator)._observedRouteAdditions.Enqueue(new _NavigatorPushObservation__navigator(this.route, previousPresent));
     }
 
-    public virtual void handlePush(NavigatorState navigator, bool isNewFirst, dynamic previous, dynamic previousPresent)
+    public virtual void handlePush(NavigatorState navigator, bool isNewFirst, RouteBase? previous, RouteBase? previousPresent)
     {
         DartRuntimePrimitives.Assert(() => (((object.Equals(this.currentState, _RouteLifecycle__navigator.push)) || (object.Equals(this.currentState, _RouteLifecycle__navigator.pushReplace))) || (object.Equals(this.currentState, _RouteLifecycle__navigator.replace))));
         DartRuntimePrimitives.Assert(() => ((NavigatorState)navigator)._debugLocked);
-        DartRuntimePrimitives.Assert(() => !((bool)((dynamic)this.route)._installed), () => (object?)"The pushed route has already been used. When pushing a route, a new " + "Route object must be provided.");
+        DartRuntimePrimitives.Assert(() => !this.route._installed, () => (object?)"The pushed route has already been used. When pushing a route, a new " + "Route object must be provided.");
         _RouteLifecycle__navigator previousState = this.currentState;
-        ((dynamic)this.route)._navigator = navigator;
-        ((dynamic)this.route).install();
-        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(((List<OverlayEntry>)((dynamic)this.route).overlayEntries)));
+        this.route._navigator = navigator;
+        this.route.install();
+        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this.route.overlayEntries));
         if (((object.Equals(this.currentState, _RouteLifecycle__navigator.push)) || (object.Equals(this.currentState, _RouteLifecycle__navigator.pushReplace))))
         {
-            global::Doroti.Framework.Scheduler.TickerFuture routeFuture = ((global::Doroti.Framework.Scheduler.TickerFuture)(object?)((global::Doroti.Framework.Scheduler.TickerFuture)((dynamic)this.route).didPush()));
+            global::Doroti.Framework.Scheduler.TickerFuture routeFuture = this.route.didPush();
             currentState = _RouteLifecycle__navigator.pushing;
             routeFuture.whenCompleteOrCancel(((global::System.Action)(() =>
             {
@@ -971,19 +1038,19 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         else
         {
             DartRuntimePrimitives.Assert(() => (object.Equals(this.currentState, _RouteLifecycle__navigator.replace)));
-            ((dynamic)this.route).didReplace(previous);
+            this.route.didReplace(previous);
             currentState = _RouteLifecycle__navigator.idle;
         }
         if (isNewFirst)
         {
-            ((dynamic)this.route).didChangeNext(null);
+            this.route.didChangeNext(null);
         }
         if (((object.Equals(previousState, _RouteLifecycle__navigator.replace)) || (object.Equals(previousState, _RouteLifecycle__navigator.pushReplace))))
         {
             ((NavigatorState)navigator)._observedRouteAdditions.Enqueue(new _NavigatorReplaceObservation__navigator(this.route, previousPresent));
-            if (((previousPresent is not null) && ((bool)((dynamic)previousPresent)._isPageBased)))
+            if (((previousPresent is not null) && previousPresent._isPageBased))
             {
-                var page = ((Page<object?>?)(object?)((RouteSettings)((dynamic)previousPresent).settings))!;
+                var page = ((Page<object?>?)(object?)previousPresent.settings)!;
                 navigator.widget.onDidRemovePage?.Invoke(page);
             }
         }
@@ -994,13 +1061,13 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         }
     }
 
-    public virtual void handleDidPopNext(dynamic poppedRoute)
+    public virtual void handleDidPopNext(RouteBase poppedRoute)
     {
-        ((dynamic)this.route).didPopNext(poppedRoute);
+        this.route.didPopNext(poppedRoute);
         lastAnnouncedPoppedNextRoute = new WeakReference<object>(poppedRoute);
         if ((this.lastFocusNode is not null))
         {
-            DartRuntimePrimitives.Ignore(((Completer<object>)((dynamic)poppedRoute)._disposeCompleter).future.then((global::System.Func<object, Future<object>>)(async (result) =>
+            DartRuntimePrimitives.Ignore(poppedRoute.disposalCompleted.then((global::System.Func<object, Future<object>>)(async (result) =>
             {
                 switch (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform)
                 {
@@ -1029,26 +1096,26 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         }
     }
 
-    public virtual bool handlePop(NavigatorState navigator, dynamic previousPresent)
+    public virtual bool handlePop(NavigatorState navigator, RouteBase? previousPresent)
     {
         DartRuntimePrimitives.Assert(() => ((NavigatorState)navigator)._debugLocked);
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)this.route)._isInstalledIn(navigator)));
+        DartRuntimePrimitives.Assert(() => this.route._isInstalledIn(navigator));
         currentState = _RouteLifecycle__navigator.popping;
-        if ((bool)((dynamic)this.route)._popCompleter.isCompleted)
+        if (this.route.popCompleted)
         {
             DartRuntimePrimitives.Assert(() => this.pageBased);
             DartRuntimePrimitives.Assert(() => (this.pendingResult is null));
             return true;
         }
-        if (!((bool)((dynamic)this.route).didPop((dynamic?)this.pendingResult)))
+        if (!this.route.didPopObject(this.pendingResult))
         {
             currentState = _RouteLifecycle__navigator.idle;
             return false;
         }
-        ((dynamic)this.route).onPopInvokedWithResult(true, (dynamic?)this.pendingResult);
+        this.route.onPopInvokedWithResultObject(true, this.pendingResult);
         if ((this.pageBased && this.imperativeRemoval))
         {
-            var page = ((Page<object?>?)(object?)((RouteSettings)((dynamic)this.route).settings))!;
+            var page = ((Page<object?>?)(object?)this.route.settings)!;
             navigator.widget.onDidRemovePage?.Invoke(page);
         }
         pendingResult = null;
@@ -1058,16 +1125,16 @@ public class _RouteEntry__navigator : RouteTransitionRecord
 
     public virtual void handleComplete()
     {
-        ((dynamic)this.route).didComplete((dynamic?)this.pendingResult);
+        this.route.didCompleteObject(this.pendingResult);
         pendingResult = null;
-        DartRuntimePrimitives.Assert(() => ((Completer<object>)((dynamic)this.route)._popCompleter).isCompleted);
+        DartRuntimePrimitives.Assert(() => this.route.popCompleted);
         currentState = _RouteLifecycle__navigator.remove;
     }
 
-    public virtual void handleRemoval(NavigatorState navigator, dynamic previousPresent)
+    public virtual void handleRemoval(NavigatorState navigator, RouteBase? previousPresent)
     {
         DartRuntimePrimitives.Assert(() => ((NavigatorState)navigator)._debugLocked);
-        if (((bool)((dynamic)this.route)._isInstalledIn(navigator)))
+        if (this.route._isInstalledIn(navigator))
         {
             currentState = _RouteLifecycle__navigator.removing;
         }
@@ -1083,15 +1150,15 @@ public class _RouteEntry__navigator : RouteTransitionRecord
 
     public virtual void didAdd(NavigatorState navigator, bool isNewFirst)
     {
-        DartRuntimePrimitives.Assert(() => !((bool)((dynamic)this.route)._installed));
-        ((dynamic)this.route)._navigator = navigator;
-        ((dynamic)this.route).install();
-        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(((List<OverlayEntry>)((dynamic)this.route).overlayEntries)));
-        ((dynamic)this.route).didAdd();
+        DartRuntimePrimitives.Assert(() => !this.route._installed);
+        this.route._navigator = navigator;
+        this.route.install();
+        DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this.route.overlayEntries));
+        this.route.didAdd();
         currentState = _RouteLifecycle__navigator.idle;
         if (isNewFirst)
         {
-            ((dynamic)this.route).didChangeNext(null);
+            this.route.didChangeNext(null);
         }
     }
 
@@ -1127,14 +1194,14 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         DartRuntimePrimitives.Assert(() => (FoundationRuntimePorts.EnumIndex(this.currentState) < FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.disposed)));
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Foundation.DebugLibrary.debugMaybeDispatchDisposed(this));
         currentState = _RouteLifecycle__navigator.disposed;
-        ((dynamic)this.route).dispose();
+        this.route.dispose();
     }
 
     public virtual void dispose()
     {
         DartRuntimePrimitives.Assert(() => (FoundationRuntimePorts.EnumIndex(this.currentState) < FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.disposing)));
         currentState = _RouteLifecycle__navigator.disposing;
-        IEnumerable<OverlayEntry> mountedEntries = ((List<OverlayEntry>)((dynamic)this.route).overlayEntries).where(((e) => ((OverlayEntry)e).mounted));
+        IEnumerable<OverlayEntry> mountedEntries = this.route.overlayEntries.where(((e) => ((OverlayEntry)e).mounted));
         if (!System.Linq.Enumerable.Any(mountedEntries))
         {
             forcedDispose();
@@ -1142,7 +1209,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         }
         long mountedLocal = mountedEntries.Count();
         DartRuntimePrimitives.Assert(() => (mountedLocal > 0L));
-        NavigatorState navigator = ((NavigatorState?)((dynamic)this.route)._navigator)!;
+        NavigatorState navigator = this.route._navigator!;
         ((NavigatorState)navigator)._entryWaitingForSubTreeDisposal.Add(this);
         foreach (var entry in mountedEntries)
         {
@@ -1155,12 +1222,12 @@ public class _RouteEntry__navigator : RouteTransitionRecord
                 entry.removeListener(listener);
                 if ((mountedLocal == 0L))
                 {
-                    DartRuntimePrimitives.Assert(() => ((List<OverlayEntry>)((dynamic)this.route).overlayEntries).All(((e) => !((OverlayEntry)e).mounted)));
+                    DartRuntimePrimitives.Assert(() => this.route.overlayEntries.All(((e) => !((OverlayEntry)e).mounted)));
                     DartAsyncRuntime.scheduleMicrotask((() =>
                     {
                         if (!((NavigatorState)navigator)._entryWaitingForSubTreeDisposal.Remove(this))
                         {
-                            DartRuntimePrimitives.Assert(() => (!((bool)((dynamic)this.route)._installed) && !navigator.mounted));
+                            DartRuntimePrimitives.Assert(() => (!this.route._installed && !navigator.mounted));
                             return;
                         }
                         DartRuntimePrimitives.Assert(() => (object.Equals(this.currentState, _RouteLifecycle__navigator.disposing)));
@@ -1216,7 +1283,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
     public static bool isPresentPredicate(_RouteEntry__navigator entry) => ((_RouteEntry__navigator)entry).isPresent;
     public static bool suitableForTransitionAnimationPredicate(_RouteEntry__navigator entry) => ((_RouteEntry__navigator)entry).suitableForTransitionAnimation;
     public static bool willBePresentPredicate(_RouteEntry__navigator entry) => ((_RouteEntry__navigator)entry).willBePresent;
-    public static global::System.Func<_RouteEntry__navigator, bool> isRoutePredicate(dynamic route)
+    public static global::System.Func<_RouteEntry__navigator, bool> isRoutePredicate(RouteBase route)
     {
         return ((global::System.Func<_RouteEntry__navigator, bool>)((entry) => (object.Equals(((_RouteEntry__navigator)entry).route, route))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1241,7 +1308,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
     {
         DartRuntimePrimitives.Assert(() => ((!this.isWaitingForEnteringDecision && this.isWaitingForExitingDecision) && this.isPresent), () => (object?)"This route cannot be marked for pop. Either a decision has already been " + "made or it does not require an explicit decision on how to transition out.");
         var attempt = 0L;
-        while (((bool)((dynamic)this.route).willHandlePopInternally))
+        while (this.route.willHandlePopInternally)
         {
             DartRuntimePrimitives.Assert(() =>
                 {
@@ -1249,38 +1316,38 @@ public class _RouteEntry__navigator : RouteTransitionRecord
                     return (attempt < kDebugPopAttemptLimit);
                     throw new InvalidOperationException("Dart closure completed without a value.");
                 }, () => (object?)$"Attempted to pop {this.route} {kDebugPopAttemptLimit} times, but still failed");
-            bool popResult = ((bool)((dynamic)this.route).didPop(result));
+            bool popResult = this.route.didPopObject((object?)result);
             DartRuntimePrimitives.Assert(() => !popResult);
         }
-        pop<object>(result, imperativeRemoval: false);
+        pop<object>((object?)result, imperativeRemoval: false);
         _isWaitingForExitingDecision = false;
     }
 
     public override void markForComplete(dynamic result = default!)
     {
         DartRuntimePrimitives.Assert(() => ((!this.isWaitingForEnteringDecision && this.isWaitingForExitingDecision) && this.isPresent), () => (object?)"This route cannot be marked for complete. Either a decision has already " + "been made or it does not require an explicit decision on how to transition " + "out.");
-        complete<object>(result, isReplaced: false, imperativeRemoval: false);
+        complete<object>((object?)result, isReplaced: false, imperativeRemoval: false);
         _isWaitingForExitingDecision = false;
     }
 
     public virtual bool restorationEnabled
     {
-        get => (((global::Doroti.Framework.Foundation.ValueListenable<string?>)((dynamic)this.route).restorationScopeId).value is not null);
+        get => this.route.restorationScopeId.value is not null;
         set
         {
             var __value = value;
             DartRuntimePrimitives.Assert(() => (!__value || (this.restorationId is not null)));
-            ((dynamic)this.route)._updateRestorationId((__value ? this.restorationId : null));
+            this.route._updateRestorationId((__value ? this.restorationId : null));
         }
     }
 }
 
 internal abstract class _NavigatorObservation__navigator
 {
-    public virtual dynamic primaryRoute { get; private set; } = default!;
-    public virtual dynamic secondaryRoute { get; private set; } = default!;
+    public virtual RouteBase primaryRoute { get; private set; } = default!;
+    public virtual RouteBase? secondaryRoute { get; private set; }
 
-    internal _NavigatorObservation__navigator(dynamic primaryRoute, dynamic secondaryRoute)
+    internal _NavigatorObservation__navigator(RouteBase primaryRoute, RouteBase? secondaryRoute)
     {
         this.primaryRoute = primaryRoute;
         this.secondaryRoute = secondaryRoute;
@@ -1291,7 +1358,7 @@ internal abstract class _NavigatorObservation__navigator
 
 internal class _NavigatorPushObservation__navigator : _NavigatorObservation__navigator
 {
-    internal _NavigatorPushObservation__navigator(dynamic primaryRoute, dynamic secondaryRoute) : base((object?)primaryRoute, (object?)secondaryRoute)
+    internal _NavigatorPushObservation__navigator(RouteBase primaryRoute, RouteBase? secondaryRoute) : base(primaryRoute, secondaryRoute)
     {
     }
 
@@ -1304,7 +1371,7 @@ internal class _NavigatorPushObservation__navigator : _NavigatorObservation__nav
 
 internal class _NavigatorPopObservation__navigator : _NavigatorObservation__navigator
 {
-    internal _NavigatorPopObservation__navigator(dynamic primaryRoute, dynamic secondaryRoute) : base((object?)primaryRoute, (object?)secondaryRoute)
+    internal _NavigatorPopObservation__navigator(RouteBase primaryRoute, RouteBase? secondaryRoute) : base(primaryRoute, secondaryRoute)
     {
     }
 
@@ -1317,7 +1384,7 @@ internal class _NavigatorPopObservation__navigator : _NavigatorObservation__navi
 
 internal class _NavigatorRemoveObservation__navigator : _NavigatorObservation__navigator
 {
-    internal _NavigatorRemoveObservation__navigator(dynamic primaryRoute, dynamic secondaryRoute) : base((object?)primaryRoute, (object?)secondaryRoute)
+    internal _NavigatorRemoveObservation__navigator(RouteBase primaryRoute, RouteBase? secondaryRoute) : base(primaryRoute, secondaryRoute)
     {
     }
 
@@ -1330,7 +1397,7 @@ internal class _NavigatorRemoveObservation__navigator : _NavigatorObservation__n
 
 internal class _NavigatorReplaceObservation__navigator : _NavigatorObservation__navigator
 {
-    internal _NavigatorReplaceObservation__navigator(dynamic primaryRoute, dynamic secondaryRoute) : base((object?)primaryRoute, (object?)secondaryRoute)
+    internal _NavigatorReplaceObservation__navigator(RouteBase primaryRoute, RouteBase? secondaryRoute) : base(primaryRoute, secondaryRoute)
     {
     }
 
@@ -1490,7 +1557,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             return true;
         }
         _RouteEntry__navigator? lastEntry = ((_RouteEntry__navigator?)(object?)_lastRouteEntryWhereOrNull((global::System.Func<_RouteEntry__navigator, bool>)_RouteEntry__navigator.isPresentPredicate));
-        return ((lastEntry is not null) && (object.Equals(((RoutePopDisposition)((dynamic)((_RouteEntry__navigator)lastEntry).route).popDisposition), RoutePopDisposition.doNotPop)));
+        return ((lastEntry is not null) && (object.Equals(((_RouteEntry__navigator)lastEntry).route.popDisposition, RoutePopDisposition.doNotPop)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1553,7 +1620,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         foreach (Page<object> page in ((Navigator)(object)this.widget).pages)
         {
             var entry = new _RouteEntry__navigator(page.createRoute(this.context), pageBased: true, initialState: _RouteLifecycle__navigator.add);
-            DartRuntimePrimitives.Assert(() => (object.Equals(((RouteSettings)((dynamic)((_RouteEntry__navigator)entry).route).settings), page)), () => (object?)"The settings getter of a page-based Route must return a Page object. " + "Please set the settings to the Page in the Page.createRoute method.");
+            DartRuntimePrimitives.Assert(() => (object.Equals(((_RouteEntry__navigator)entry).route.settings, page)), () => (object?)"The settings getter of a page-based Route must return a Page object. " + "Please set the settings to the Page in the Page.createRoute method.");
             this._history.add(entry);
             this._history.addAll(this._serializableHistory.restoreEntriesForPage(entry, this));
         }
@@ -1566,7 +1633,11 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             }
             if ((initialRouteLocal is not null))
             {
-                this._history.addAll(this.widget.onGenerateInitialRoutes(this, (((Navigator)(object)this.widget).initialRoute ?? Navigator.defaultRouteName)).map<dynamic, _RouteEntry__navigator>(((route) => new _RouteEntry__navigator(route, pageBased: false, initialState: _RouteLifecycle__navigator.add, restorationInformation: ((((RouteSettings)((dynamic)route).settings).ToString() is not null) ? _RestorationInformation__navigator.CreateNamed(name: ((RouteSettings)((dynamic)route).settings).ToString()!, arguments: null, restorationScopeId: this._nextPagelessRestorationScopeId) : null)))).Cast<_RouteEntry__navigator>());
+                this._history.addAll(this.widget.onGenerateInitialRoutes(this, (((Navigator)(object)this.widget).initialRoute ?? Navigator.defaultRouteName)).map<dynamic, _RouteEntry__navigator>(((route) =>
+                {
+                    RouteBase typedRoute = Navigator._requireRoute(route);
+                    return new _RouteEntry__navigator(typedRoute, pageBased: false, initialState: _RouteLifecycle__navigator.add, restorationInformation: ((typedRoute.settings.ToString() is not null) ? _RestorationInformation__navigator.CreateNamed(name: typedRoute.settings.ToString()!, arguments: null, restorationScopeId: this._nextPagelessRestorationScopeId) : null));
+                })).Cast<_RouteEntry__navigator>());
             }
         }
         DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._history), () => (object?)"All routes returned by onGenerateInitialRoutes are not restorable. " + "Please make sure that all routes returned by onGenerateInitialRoutes " + "have their RouteSettings defined with names that are defined in the " + "app's routes table.");
@@ -1619,9 +1690,9 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         _updateHeroController(HeroControllerScope.maybeOf(this.context));
         foreach (_RouteEntry__navigator entry in this._history)
         {
-            if ((object.Equals(((NavigatorState?)((dynamic)((_RouteEntry__navigator)entry).route).navigator), this)))
+            if ((object.Equals(((_RouteEntry__navigator)entry).route.navigator, this)))
             {
-                ((dynamic)((_RouteEntry__navigator)entry).route).changedExternalState();
+                ((_RouteEntry__navigator)entry).route.changedExternalState();
             }
         }
     }
@@ -1642,7 +1713,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
 
     internal static void _disposeRouteEntry(_RouteEntry__navigator entry, bool graceful)
     {
-        foreach (OverlayEntry overlayEntry in ((List<OverlayEntry>)((dynamic)((_RouteEntry__navigator)entry).route).overlayEntries))
+        foreach (OverlayEntry overlayEntry in ((_RouteEntry__navigator)entry).route.overlayEntries)
         {
             if (overlayEntry._overlay is not null)
             {
@@ -1742,9 +1813,9 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         }
         foreach (_RouteEntry__navigator entry in this._history)
         {
-            if ((object.Equals(((NavigatorState?)((dynamic)((_RouteEntry__navigator)entry).route).navigator), this)))
+            if ((object.Equals(((_RouteEntry__navigator)entry).route.navigator, this)))
             {
-                ((dynamic)((_RouteEntry__navigator)entry).route).changedExternalState();
+                ((_RouteEntry__navigator)entry).route.changedExternalState();
             }
         }
     }
@@ -1830,7 +1901,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         {
             return this._history
                 .where(_RouteEntry__navigator.isPresentPredicate)
-                .SelectMany(entry => ((List<OverlayEntry>)((dynamic)entry.route).overlayEntries));
+                .SelectMany(entry => entry.route.overlayEntries);
         }
     }
     internal virtual void _updatePages()
@@ -1872,7 +1943,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                 break;
             }
             previousOldPageRouteEntry = oldEntry;
-            ((dynamic)((_RouteEntry__navigator)oldEntry).route)._updateSettings(newPage);
+            ((_RouteEntry__navigator)oldEntry).route._updateSettings(newPage);
             newHistory.Add(oldEntry);
             newPagesBottom += 1L;
             oldEntriesBottom += 1L;
@@ -1914,7 +1985,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             {
                 continue;
             }
-            var page = ((Page<object>?)(object?)((RouteSettings)((dynamic)((_RouteEntry__navigator)oldEntryAlternate).route).settings))!;
+            var page = ((Page<object>?)(object?)((_RouteEntry__navigator)oldEntryAlternate).route.settings)!;
             if ((((Page<object>)page).key is null))
             {
                 continue;
@@ -1935,14 +2006,14 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             {
                 var newEntry = new _RouteEntry__navigator(nextPage.createRoute(this.context), pageBased: true, initialState: _RouteLifecycle__navigator.staging);
                 needsExplicitDecision = true;
-                DartRuntimePrimitives.Assert(() => (object.Equals(((RouteSettings)((dynamic)((_RouteEntry__navigator)newEntry).route).settings), nextPage)), () => (object?)"The settings getter of a page-based Route must return a Page object. " + "Please set the settings to the Page in the Page.createRoute method.");
+                DartRuntimePrimitives.Assert(() => (object.Equals(((_RouteEntry__navigator)newEntry).route.settings, nextPage)), () => (object?)"The settings getter of a page-based Route must return a Page object. " + "Please set the settings to the Page in the Page.createRoute method.");
                 newHistory.Add(newEntry);
             }
             else
             {
                 _RouteEntry__navigator matchingEntry = pageKeyToOldEntry.remove(((Page<object>)nextPage).key)!;
                 DartRuntimePrimitives.Assert(() => matchingEntry.canUpdateFrom(nextPage));
-                ((dynamic)((_RouteEntry__navigator)matchingEntry).route)._updateSettings(nextPage);
+                ((_RouteEntry__navigator)matchingEntry).route._updateSettings(nextPage);
                 newHistory.Add(matchingEntry);
             }
         }
@@ -1962,7 +2033,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                 }
                 continue;
             }
-            var potentialPageToRemove = ((Page<object>?)(object?)((RouteSettings)((dynamic)((_RouteEntry__navigator)potentialEntryToRemove).route).settings))!;
+            var potentialPageToRemove = ((Page<object>?)(object?)((_RouteEntry__navigator)potentialEntryToRemove).route.settings)!;
             if ((((((Page<object>)potentialPageToRemove).key is null) || pageKeyToOldEntry.ContainsKey(((Page<object>)potentialPageToRemove).key)) || phantomEntries.Contains(potentialEntryToRemove)))
             {
                 locationToExitingPageRouteLocal[DartRuntimePrimitives.RequireReference(previousOldPageRouteEntry)] = DartRuntimePrimitives.ConvertValue<RouteTransitionRecord>(potentialEntryToRemove);
@@ -2003,7 +2074,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             previousOldPageRouteEntry = oldEntryNested;
             Page<object> newPageAlternate = ((Navigator)(object)this.widget).pages[(int)(newPagesBottom)];
             DartRuntimePrimitives.Assert(() => oldEntryNested.canUpdateFrom(newPageAlternate));
-            ((dynamic)((_RouteEntry__navigator)oldEntryNested).route)._updateSettings(newPageAlternate);
+            ((_RouteEntry__navigator)oldEntryNested).route._updateSettings(newPageAlternate);
             newHistory.Add(oldEntryNested);
             oldEntriesBottom += 1L;
             newPagesBottom += 1L;
@@ -2057,7 +2128,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         _RouteEntry__navigator? entry = this._history[index];
         _RouteEntry__navigator? previousLocal = ((index > 0L) ? this._history[(index - 1L)] : null);
         var canRemoveOrAdd = false;
-        dynamic poppedRoute = default!;
+        RouteBase? poppedRoute = default;
         var seenTopActiveRoute = false;
         var toBeDisposed = new List<_RouteEntry__navigator>();
         while ((index >= 0L))
@@ -2151,7 +2222,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                     }
                 case _RouteLifecycle__navigator.remove:
                     {
-                        if ((!seenTopActiveRoute && ((bool)((dynamic)((_RouteEntry__navigator)entry).route)._installed)))
+                        if ((!seenTopActiveRoute && ((_RouteEntry__navigator)entry).route._installed))
                         {
                             if ((poppedRoute is not null))
                             {
@@ -2204,7 +2275,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         _lastTopmostRoute = lastEntry;
         if (((Navigator)(object)this.widget).reportsRouteUpdateToEngine)
         {
-            string? routeName = ((RouteSettings)((dynamic)lastEntry?.route).settings).ToString();
+            string? routeName = lastEntry?.route.settings.ToString();
             if (((routeName is not null) && (routeName != this._lastAnnouncedRouteName)))
             {
                 DartRuntimePrimitives.Ignore(SystemNavigator.routeInformationUpdated(uri: DartUri.parse(routeName)));
@@ -2262,15 +2333,15 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             {
                 if (entry.shouldAnnounceChangeToNext(next?.route))
                 {
-                    ((dynamic)((_RouteEntry__navigator)entry).route).didChangeNext(next?.route);
+                    ((_RouteEntry__navigator)entry).route.didChangeNext(next?.route);
                 }
-                entry.lastAnnouncedNextRoute = DartRuntimePrimitives.ConvertValue<_RoutePlaceholder__navigator>(next?.route);
+                entry.lastAnnouncedNextRoute = next?.route;
             }
             _RouteEntry__navigator? previous = ((_RouteEntry__navigator?)(object?)_getRouteBefore((index - 1L), (global::System.Func<_RouteEntry__navigator, bool>)_RouteEntry__navigator.suitableForTransitionAnimationPredicate));
             if ((!object.Equals(previous?.route, ((_RouteEntry__navigator)entry).lastAnnouncedPreviousRoute)))
             {
-                ((dynamic)((_RouteEntry__navigator)entry).route).didChangePrevious(previous?.route);
-                entry.lastAnnouncedPreviousRoute = DartRuntimePrimitives.ConvertValue<_RoutePlaceholder__navigator>(previous?.route);
+                ((_RouteEntry__navigator)entry).route.didChangePrevious(previous?.route);
+                entry.lastAnnouncedPreviousRoute = previous?.route;
             }
             index -= 1L;
         }
@@ -2446,7 +2517,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        DartRuntimePrimitives.Assert(() => !((bool)((dynamic)((_RouteEntry__navigator)entry).route)._installed));
+        DartRuntimePrimitives.Assert(() => !((_RouteEntry__navigator)entry).route._installed);
         DartRuntimePrimitives.Assert(() => (object.Equals(((_RouteEntry__navigator)entry).currentState, _RouteLifecycle__navigator.push)));
         this._history.add(entry);
         _flushHistoryUpdates();
@@ -2459,7 +2530,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         _afterNavigation(((_RouteEntry__navigator)entry).route);
     }
 
-    internal virtual void _afterNavigation(dynamic route)
+    internal virtual void _afterNavigation(RouteBase? route)
     {
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
@@ -2468,18 +2539,16 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             {
                 routeJsonable = new DartMap<string, object>();
                 string description = default!;
-                if ((route is TransitionRoute<dynamic>))
+                if ((route is ITransitionRoute transitionRoute))
                 {
-                    dynamic route__as197776 = (dynamic)route;
-                    dynamic transitionRoute = route__as197776;
-                    description = ((string)((dynamic)transitionRoute).debugLabel);
+                    description = transitionRoute.debugLabel;
                 }
                 else
                 {
                     description = $"{route}";
                 }
                 routeJsonable["description"] = description;
-                RouteSettings settingsLocal = ((RouteSettings)((dynamic)route).settings);
+                RouteSettings settingsLocal = route.settings;
                 var settingsJsonable = new DartMap<string, object> { ["name"] = ((RouteSettings)settingsLocal).name };
                 if ((((RouteSettings)settingsLocal).arguments is not null))
                 {
@@ -2519,7 +2588,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        DartRuntimePrimitives.Assert(() => !((bool)((dynamic)((_RouteEntry__navigator)entry).route)._installed));
+        DartRuntimePrimitives.Assert(() => !((_RouteEntry__navigator)entry).route._installed);
         DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(this._history));
         DartRuntimePrimitives.Assert(() => this._history.any(__item => _RouteEntry__navigator.isPresentPredicate(__item)), () => (object?)"Navigator has no active routes to replace.");
         DartRuntimePrimitives.Assert(() => (object.Equals(((_RouteEntry__navigator)entry).currentState, _RouteLifecycle__navigator.pushReplace)));
@@ -2563,8 +2632,8 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        DartRuntimePrimitives.Assert(() => !((bool)((dynamic)((_RouteEntry__navigator)entry).route)._installed));
-        DartRuntimePrimitives.Assert(() => !System.Linq.Enumerable.Any(((List<OverlayEntry>)((dynamic)((_RouteEntry__navigator)entry).route).overlayEntries)));
+        DartRuntimePrimitives.Assert(() => !((_RouteEntry__navigator)entry).route._installed);
+        DartRuntimePrimitives.Assert(() => !System.Linq.Enumerable.Any(((_RouteEntry__navigator)entry).route.overlayEntries));
         DartRuntimePrimitives.Assert(() => (object.Equals(((_RouteEntry__navigator)entry).currentState, _RouteLifecycle__navigator.push)));
         long index = (this._history.Count() - 1L);
         this._history.add(entry);
@@ -2588,23 +2657,25 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
 
     public virtual void replace<T>(dynamic oldRoute, Route<T> newRoute)
     {
+        RouteBase typedOldRoute = Navigator._requireRoute((object?)oldRoute);
         DartRuntimePrimitives.Assert(() => !this._debugLocked);
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)oldRoute)._isInstalledIn(this)));
-        _replaceEntry(new _RouteEntry__navigator(newRoute, pageBased: false, initialState: _RouteLifecycle__navigator.replace), oldRoute);
+        DartRuntimePrimitives.Assert(() => typedOldRoute._isInstalledIn(this));
+        _replaceEntry(new _RouteEntry__navigator(newRoute, pageBased: false, initialState: _RouteLifecycle__navigator.replace), typedOldRoute);
     }
 
     public virtual string restorableReplace<T>(dynamic oldRoute, global::System.Func<BuildContext, object, Route<T>> newRouteBuilder, object? arguments = null)
     {
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)oldRoute)._isInstalledIn(this)));
+        RouteBase typedOldRoute = Navigator._requireRoute((object?)oldRoute);
+        DartRuntimePrimitives.Assert(() => typedOldRoute._isInstalledIn(this));
         DartRuntimePrimitives.Assert(() => _debugIsStaticCallback((global::System.Func<BuildContext, object, Route<T>>)newRouteBuilder), () => (object?)"The provided routeBuilder must be a static function.");
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(arguments), () => (object?)"The arguments object must be serializable via the StandardMessageCodec.");
         _RouteEntry__navigator entry = ((_RouteEntry__navigator)(object?)_RestorationInformation__navigator.CreateAnonymous(routeBuilder: (global::System.Func<BuildContext, object, Route<T>>)newRouteBuilder, arguments: arguments, restorationScopeId: this._nextPagelessRestorationScopeId).toRouteEntry(this, initialState: _RouteLifecycle__navigator.replace));
-        _replaceEntry(entry, oldRoute);
+        _replaceEntry(entry, typedOldRoute);
         return ((_RouteEntry__navigator)entry).restorationId!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _replaceEntry(_RouteEntry__navigator entry, dynamic oldRoute)
+    internal virtual void _replaceEntry(_RouteEntry__navigator entry, RouteBase oldRoute)
     {
         DartRuntimePrimitives.Assert(() => !this._debugLocked);
         if ((object.Equals(oldRoute, ((_RouteEntry__navigator)entry).route)))
@@ -2618,11 +2689,11 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         DartRuntimePrimitives.Assert(() => (object.Equals(((_RouteEntry__navigator)entry).currentState, _RouteLifecycle__navigator.replace)));
-        DartRuntimePrimitives.Assert(() => !((bool)((dynamic)((_RouteEntry__navigator)entry).route)._installed));
+        DartRuntimePrimitives.Assert(() => !((_RouteEntry__navigator)entry).route._installed);
         long index = this._history.indexWhere(_RouteEntry__navigator.isRoutePredicate(oldRoute));
         DartRuntimePrimitives.Assert(() => (index >= 0L), () => (object?)"This Navigator does not contain the specified oldRoute.");
         DartRuntimePrimitives.Assert(() => this._history[index].isPresent, () => (object?)"The specified oldRoute has already been removed from the Navigator.");
-        bool wasCurrent = ((bool)((dynamic)oldRoute).isCurrent);
+        bool wasCurrent = oldRoute.isCurrent;
         this._history.insert((index + 1L), entry);
         this._history[index].complete(((Navigator)(object)null), isReplaced: true, imperativeRemoval: true);
         _flushHistoryUpdates();
@@ -2640,23 +2711,25 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
 
     public virtual void replaceRouteBelow<T>(dynamic anchorRoute, Route<T> newRoute)
     {
+        RouteBase typedAnchorRoute = Navigator._requireRoute((object?)anchorRoute);
         DartRuntimePrimitives.Assert(() => !((Route<T>)newRoute)._installed);
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)anchorRoute)._isInstalledIn(this)));
-        _replaceEntryBelow(new _RouteEntry__navigator(newRoute, pageBased: false, initialState: _RouteLifecycle__navigator.replace), anchorRoute);
+        DartRuntimePrimitives.Assert(() => typedAnchorRoute._isInstalledIn(this));
+        _replaceEntryBelow(new _RouteEntry__navigator(newRoute, pageBased: false, initialState: _RouteLifecycle__navigator.replace), typedAnchorRoute);
     }
 
     public virtual string restorableReplaceRouteBelow<T>(dynamic anchorRoute, global::System.Func<BuildContext, object, Route<T>> newRouteBuilder, object? arguments = null)
     {
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)anchorRoute)._isInstalledIn(this)));
+        RouteBase typedAnchorRoute = Navigator._requireRoute((object?)anchorRoute);
+        DartRuntimePrimitives.Assert(() => typedAnchorRoute._isInstalledIn(this));
         DartRuntimePrimitives.Assert(() => _debugIsStaticCallback((global::System.Func<BuildContext, object, Route<T>>)newRouteBuilder), () => (object?)"The provided routeBuilder must be a static function.");
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Services.RestorationLibrary.debugIsSerializableForRestoration(arguments), () => (object?)"The arguments object must be serializable via the StandardMessageCodec.");
         _RouteEntry__navigator entry = ((_RouteEntry__navigator)(object?)_RestorationInformation__navigator.CreateAnonymous(routeBuilder: (global::System.Func<BuildContext, object, Route<T>>)newRouteBuilder, arguments: arguments, restorationScopeId: this._nextPagelessRestorationScopeId).toRouteEntry(this, initialState: _RouteLifecycle__navigator.replace));
-        _replaceEntryBelow(entry, anchorRoute);
+        _replaceEntryBelow(entry, typedAnchorRoute);
         return ((_RouteEntry__navigator)entry).restorationId!;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _replaceEntryBelow(_RouteEntry__navigator entry, dynamic anchorRoute)
+    internal virtual void _replaceEntryBelow(_RouteEntry__navigator entry, RouteBase anchorRoute)
     {
         DartRuntimePrimitives.Assert(() => !this._debugLocked);
         DartRuntimePrimitives.Assert(() =>
@@ -2696,7 +2769,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         {
             return false;
         }
-        if (((bool)((dynamic)iterator.Current.route).willHandlePopInternally))
+        if (iterator.Current.route.willHandlePopInternally)
         {
             return true;
         }
@@ -2715,9 +2788,9 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         {
             return false;
         }
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)((_RouteEntry__navigator)lastEntry).route)._isInstalledIn(this)));
-        DartRuntimePrimitives.Assert(() => ((bool)((dynamic)((_RouteEntry__navigator)lastEntry).route)._debugCheckCanConsumeResult(result, methodName: "maybePop")));
-        if ((object.Equals(await ((Future<RoutePopDisposition>)((dynamic)((_RouteEntry__navigator)lastEntry).route).willPop()), RoutePopDisposition.doNotPop)))
+        DartRuntimePrimitives.Assert(() => ((_RouteEntry__navigator)lastEntry).route._isInstalledIn(this));
+        DartRuntimePrimitives.Assert(() => ((_RouteEntry__navigator)lastEntry).route._debugCheckCanConsumeResult(result, methodName: "maybePop"));
+        if ((object.Equals(await ((_RouteEntry__navigator)lastEntry).route.willPop(), RoutePopDisposition.doNotPop)))
         {
             return true;
         }
@@ -2730,7 +2803,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         {
             return true;
         }
-        switch (((RoutePopDisposition)((dynamic)((_RouteEntry__navigator)lastEntry).route).popDisposition))
+        switch (((_RouteEntry__navigator)lastEntry).route.popDisposition)
         {
             case RoutePopDisposition.bubble:
                 {
@@ -2743,7 +2816,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                 }
             case RoutePopDisposition.doNotPop:
                 {
-                    ((dynamic)((_RouteEntry__navigator)lastEntry).route).onPopInvokedWithResult(false, result);
+                    ((_RouteEntry__navigator)lastEntry).route.onPopInvokedWithResultObject(false, result);
                     return true;
                 }
             default:
@@ -2758,7 +2831,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         DartRuntimePrimitives.Assert(() =>
             {
                 _RouteEntry__navigator? entry = ((_RouteEntry__navigator?)(object?)_lastRouteEntryWhereOrNull((global::System.Func<_RouteEntry__navigator, bool>)_RouteEntry__navigator.isPresentPredicate));
-                return (((bool?)((dynamic)entry?.route)._debugCheckCanConsumeResult(result, methodName: "pop")) ?? true);
+                return entry?.route._debugCheckCanConsumeResult(result, methodName: "pop") ?? true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
         DartRuntimePrimitives.Assert(() =>
@@ -2774,10 +2847,10 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
             {
                 if ((FoundationRuntimePorts.EnumIndex(((_RouteEntry__navigator)entryLocal).currentState) <= FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.idle)))
                 {
-                    DartRuntimePrimitives.Assert(() => ((Completer<object>)((dynamic)((_RouteEntry__navigator)entryLocal).route)._popCompleter).isCompleted);
+                    DartRuntimePrimitives.Assert(() => ((_RouteEntry__navigator)entryLocal).route.popCompleted);
                     entryLocal.currentState = _RouteLifecycle__navigator.pop;
                 }
-                ((dynamic)((_RouteEntry__navigator)entryLocal).route).onPopInvokedWithResult(true, result);
+                ((_RouteEntry__navigator)entryLocal).route.onPopInvokedWithResultObject(true, result);
             }
         }
         else
@@ -2789,7 +2862,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         {
             _flushHistoryUpdates(rearrangeOverlay: false);
         }
-        DartRuntimePrimitives.Assert(() => ((object.Equals(((_RouteEntry__navigator)entryLocal).currentState, _RouteLifecycle__navigator.idle)) || ((Completer<object>)((dynamic)((_RouteEntry__navigator)entryLocal).route)._popCompleter).isCompleted));
+        DartRuntimePrimitives.Assert(() => ((object.Equals(((_RouteEntry__navigator)entryLocal).currentState, _RouteLifecycle__navigator.idle)) || ((_RouteEntry__navigator)entryLocal).route.popCompleted));
         DartRuntimePrimitives.Assert(() =>
             {
                 _debugLocked = false;
@@ -2823,7 +2896,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                 return;
             }
             _RouteEntry__navigator? next = ((_RouteEntry__navigator?)(object?)_lastRouteEntryWhereOrNull(((global::System.Func<_RouteEntry__navigator, bool>)((e) => (_RouteEntry__navigator.isPresentPredicate(e) && (!object.Equals(e, candidate)))))));
-            if ((((next is not null) && !((bool)((dynamic)((_RouteEntry__navigator)next).route).willHandlePopInternally)) && predicate(((_RouteEntry__navigator)next).route)))
+            if ((((next is not null) && !((_RouteEntry__navigator)next).route.willHandlePopInternally) && predicate(((_RouteEntry__navigator)next).route)))
             {
                 pop<T>(result);
             }
@@ -2896,6 +2969,7 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
 
     public virtual void finalizeRoute(dynamic route)
     {
+        RouteBase typedRoute = Navigator._requireRoute((object?)route);
         bool? wasDebugLocked = default!;
         DartRuntimePrimitives.Assert(() =>
             {
@@ -2904,12 +2978,12 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
                 return true;
                 throw new InvalidOperationException("Dart closure completed without a value.");
             });
-        DartRuntimePrimitives.Assert(() => (this._history.where((entry) => _RouteEntry__navigator.isRoutePredicate(route)(DartRuntimePrimitives.ConvertValue<_RouteEntry__navigator>(entry))).Count() == 1L));
-        long index = this._history.indexWhere(_RouteEntry__navigator.isRoutePredicate(route));
+        DartRuntimePrimitives.Assert(() => (this._history.where((entry) => _RouteEntry__navigator.isRoutePredicate(typedRoute)(DartRuntimePrimitives.ConvertValue<_RouteEntry__navigator>(entry))).Count() == 1L));
+        long index = this._history.indexWhere(_RouteEntry__navigator.isRoutePredicate(typedRoute));
         _RouteEntry__navigator entryLocal = this._history[index];
         if ((((_RouteEntry__navigator)entryLocal).pageBased && (FoundationRuntimePorts.EnumIndex(((_RouteEntry__navigator)entryLocal).currentState) < FoundationRuntimePorts.EnumIndex(_RouteLifecycle__navigator.pop))))
         {
-            this._observedRouteDeletions.Enqueue(new _NavigatorPopObservation__navigator(route, _getRouteBefore((index - 1L), (global::System.Func<_RouteEntry__navigator, bool>)_RouteEntry__navigator.willBePresentPredicate)?.route));
+            this._observedRouteDeletions.Enqueue(new _NavigatorPopObservation__navigator(typedRoute, _getRouteBefore((index - 1L), (global::System.Func<_RouteEntry__navigator, bool>)_RouteEntry__navigator.willBePresentPredicate)?.route));
         }
         else
         {
@@ -2951,9 +3025,9 @@ public class NavigatorState : State<Navigator>, TickerProviderStateMixin<Navigat
         if ((this._userGesturesInProgress == 1L))
         {
             long routeIndex = _getIndexBefore((this._history.Count() - 1L), (global::System.Func<_RouteEntry__navigator, bool>)_RouteEntry__navigator.willBePresentPredicate);
-            dynamic routeLocal = this._history[routeIndex].route;
-            dynamic previousRoute = default!;
-            if ((!((bool)((dynamic)routeLocal).willHandlePopInternally) && (routeIndex > 0L)))
+            RouteBase routeLocal = this._history[routeIndex].route;
+            RouteBase? previousRoute = default;
+            if ((!routeLocal.willHandlePopInternally && (routeIndex > 0L)))
             {
                 previousRoute = _getRouteBefore((routeIndex - 1L), (global::System.Func<_RouteEntry__navigator, bool>)_RouteEntry__navigator.willBePresentPredicate)!.route;
             }
@@ -3325,10 +3399,10 @@ public abstract class _RestorationInformation__navigator
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public abstract dynamic createRoute(NavigatorState navigator);
+    public abstract RouteBase createRoute(NavigatorState navigator);
     public virtual _RouteEntry__navigator toRouteEntry(NavigatorState navigator, _RouteLifecycle__navigator initialState = _RouteLifecycle__navigator.add)
     {
-        dynamic route = createRoute(navigator);
+        RouteBase route = createRoute(navigator);
         return new _RouteEntry__navigator(route, pageBased: false, initialState: initialState, restorationInformation: this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -3369,9 +3443,9 @@ internal class _NamedRestorationInformation__navigator : _RestorationInformation
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override dynamic createRoute(NavigatorState navigator)
+    public override RouteBase createRoute(NavigatorState navigator)
     {
-        dynamic route = navigator._routeNamed<object>(this.name, arguments: this.arguments)!;
+        RouteBase route = navigator._routeNamed<object>(this.name, arguments: this.arguments)!;
         return route;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -3416,10 +3490,10 @@ internal class _AnonymousRestorationInformation__navigator : _RestorationInforma
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override dynamic createRoute(NavigatorState navigator)
+    public override RouteBase createRoute(NavigatorState navigator)
     {
-        dynamic result = this.routeBuilder(navigator.context, this.arguments);
-        return result;
+        object? result = this.routeBuilder(navigator.context, this.arguments);
+        return Navigator._requireRoute(result);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

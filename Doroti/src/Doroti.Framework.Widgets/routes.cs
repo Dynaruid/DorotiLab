@@ -56,7 +56,17 @@ public abstract class OverlayRoute<T> : Route<T>
 
 }
 
-public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute
+public interface ITransitionRoute
+{
+    global::Doroti.Framework.Animation.Animation<double>? animation { get; }
+    global::Doroti.Framework.Animation.AnimationController? controller { get; }
+    Future completed { get; }
+    string debugLabel { get; }
+    bool canTransitionTo(RouteBase nextRoute);
+    bool canTransitionFrom(RouteBase previousRoute);
+}
+
+public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute, ITransitionRoute
 {
     internal virtual Completer<T?> _transitionCompleter { get; private set; } = new Completer<T?>();
     internal virtual global::Doroti.Framework.Scheduler.PerformanceModeRequestHandle? _performanceModeRequestHandle { get; set; } = default;
@@ -76,6 +86,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute
     public override bool isCurrent => base.isCurrent;
     public virtual bool popGestureEnabled => throw new NotSupportedException();
     public virtual Future<T?> completed => this._transitionCompleter.future;
+    Future ITransitionRoute.completed => completed;
     public abstract Duration transitionDuration { get; }
     public virtual Duration reverseTransitionDuration => this.transitionDuration;
     public abstract bool opaque { get; }
@@ -84,6 +95,8 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute
     public virtual global::Doroti.Framework.Animation.Animation<double>? animation => this._animation;
     public virtual global::Doroti.Framework.Animation.AnimationController? controller => this._controller;
     public virtual global::Doroti.Framework.Animation.Animation<double>? secondaryAnimation => this._secondaryAnimation;
+    bool ITransitionRoute.canTransitionTo(RouteBase nextRoute) => canTransitionTo(nextRoute);
+    bool ITransitionRoute.canTransitionFrom(RouteBase previousRoute) => canTransitionFrom(previousRoute);
     public virtual bool debugTransitionCompleted()
     {
         var disposed = false;
@@ -215,10 +228,9 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute
     {
         DartRuntimePrimitives.Assert(() => (this._controller is not null), () => (object?)$"{this.GetType()}.didReplace called before calling install() or after calling dispose().");
         DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {this.GetType()} after disposing it.");
-        if ((oldRoute is TransitionRoute<T>))
+        if (((object?)oldRoute is ITransitionRoute oldTransitionRoute))
         {
-            TransitionRoute<T> oldRoute__as13771 = (TransitionRoute<T>)oldRoute;
-            this._controller!.value = ((global::Doroti.Framework.Animation.AnimationController?)((dynamic)oldRoute__as13771)._controller)!.value;
+            this._controller!.value = oldTransitionRoute.controller!.value;
         }
         base.didReplace((object?)oldRoute);
     }
@@ -245,7 +257,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute
     {
         DartRuntimePrimitives.Assert(() => (this._controller is not null), () => (object?)$"{this.GetType()}.didPopNext called before calling install() or after calling dispose().");
         DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {this.GetType()} after disposing it.");
-        _updateSecondaryAnimation(nextRoute);
+        _updateSecondaryAnimation((object?)nextRoute as RouteBase);
         base.didPopNext((object?)nextRoute);
     }
 
@@ -253,25 +265,24 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute
     {
         DartRuntimePrimitives.Assert(() => (this._controller is not null), () => (object?)$"{this.GetType()}.didChangeNext called before calling install() or after calling dispose().");
         DartRuntimePrimitives.Assert(() => !debugTransitionCompleted(), () => (object?)$"Cannot reuse a {this.GetType()} after disposing it.");
-        _updateSecondaryAnimation(nextRoute);
+        _updateSecondaryAnimation((object?)nextRoute as RouteBase);
         base.didChangeNext((object?)nextRoute);
     }
 
-    internal virtual void _updateSecondaryAnimation(dynamic nextRoute)
+    internal virtual void _updateSecondaryAnimation(RouteBase? nextRoute)
     {
         global::System.Action? previousTrainHoppingListenerRemover = this._trainHoppingListenerRemover;
         _trainHoppingListenerRemover = null;
-        if ((((nextRoute is TransitionRoute<dynamic>) && canTransitionTo(nextRoute)) && ((bool)((dynamic)nextRoute).canTransitionFrom(this))))
+        if ((((nextRoute is ITransitionRoute nextTransitionRoute) && canTransitionTo(nextRoute)) && nextTransitionRoute.canTransitionFrom(this)))
         {
-            dynamic nextRoute__as15851 = (dynamic)nextRoute;
             global::Doroti.Framework.Animation.Animation<double>? current = ((global::Doroti.Framework.Animation.ProxyAnimation)this._secondaryAnimation).parent;
             if ((current is not null))
             {
                 global::Doroti.Framework.Animation.Animation<double> currentTrainLocal = (((current is global::Doroti.Framework.Animation.TrainHoppingAnimation) ? ((global::Doroti.Framework.Animation.TrainHoppingAnimation)((global::Doroti.Framework.Animation.TrainHoppingAnimation)current)).currentTrain : current))!;
-                global::Doroti.Framework.Animation.Animation<double> nextTrain = ((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)nextRoute__as15851)._animation)!;
+                global::Doroti.Framework.Animation.Animation<double> nextTrain = nextTransitionRoute.animation!;
                 if (((((global::Doroti.Framework.Animation.Animation<double>)currentTrainLocal).value == ((global::Doroti.Framework.Animation.Animation<double>)nextTrain).value) || !((global::Doroti.Framework.Animation.Animation<double>)nextTrain).isAnimating))
                 {
-                    _setSecondaryAnimation(nextTrain, ((Future<object>)((dynamic)nextRoute__as15851).completed));
+                    _setSecondaryAnimation(nextTrain, nextTransitionRoute.completed);
                 }
                 else
                 {
@@ -280,7 +291,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute
                     {
                         if (!global::Doroti.Framework.Animation.AnimationStatusMembers.isAnimating(status))
                         {
-                            _setSecondaryAnimation(nextTrain, ((Future<object>)((dynamic)nextRoute__as15851).completed));
+                            _setSecondaryAnimation(nextTrain, nextTransitionRoute.completed);
                             if ((this._trainHoppingListenerRemover is not null))
                             {
                                 this._trainHoppingListenerRemover!();
@@ -297,20 +308,20 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute
                     newAnimation = new global::Doroti.Framework.Animation.TrainHoppingAnimation(currentTrainLocal, nextTrain, onSwitchedTrain: ((global::System.Action)(() =>
                     {
                         DartRuntimePrimitives.Assert(() => (object.Equals(((global::Doroti.Framework.Animation.ProxyAnimation)this._secondaryAnimation).parent, newAnimation)));
-                        DartRuntimePrimitives.Assert(() => (object.Equals(newAnimation!.currentTrain, ((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)nextRoute__as15851)._animation))));
-                        _setSecondaryAnimation(newAnimation!.currentTrain, ((Future<object>)((dynamic)nextRoute__as15851).completed));
+                        DartRuntimePrimitives.Assert(() => (object.Equals(newAnimation!.currentTrain, nextTransitionRoute.animation)));
+                        _setSecondaryAnimation(newAnimation!.currentTrain, nextTransitionRoute.completed);
                         if ((this._trainHoppingListenerRemover is not null))
                         {
                             this._trainHoppingListenerRemover!();
                             _trainHoppingListenerRemover = null;
                         }
                     })));
-                    _setSecondaryAnimation(newAnimation, ((Future<object>)((dynamic)nextRoute__as15851).completed));
+                    _setSecondaryAnimation(newAnimation, nextTransitionRoute.completed);
                 }
             }
             else
             {
-                _setSecondaryAnimation(((global::Doroti.Framework.Animation.Animation<double>?)((dynamic)nextRoute__as15851)._animation), ((Future<object>)((dynamic)nextRoute__as15851).completed));
+                _setSecondaryAnimation(nextTransitionRoute.animation, nextTransitionRoute.completed);
             }
         }
         else
@@ -320,7 +331,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute
         previousTrainHoppingListenerRemover?.Invoke();
     }
 
-    internal virtual void _setSecondaryAnimation(global::Doroti.Framework.Animation.Animation<double>? animation, Future<object>? disposed = null)
+    internal virtual void _setSecondaryAnimation(global::Doroti.Framework.Animation.Animation<double>? animation, Future? disposed = null)
     {
         this._secondaryAnimation.parent = animation;
         if (disposed is not null)
@@ -482,8 +493,8 @@ internal class _DismissModalAction__routes : DismissAction
 
     public override bool isEnabled(DismissIntent intent, BuildContext? context = null)
     {
-        dynamic route = ModalRoute<object>.of<object>(this.context)!;
-        return ((bool)((dynamic)route).barrierDismissible);
+        ModalRoute<object> route = ModalRoute<object>.of<object>(this.context)!;
+        return route.barrierDismissible;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -512,9 +523,9 @@ internal class _ModalScopeStatus__routes : InheritedModel<_ModalRouteAspect__rou
     public virtual bool canPop { get; private set; } = default!;
     public virtual bool impliesAppBarDismissal { get; private set; } = default!;
     public virtual bool opaque { get; private set; } = default!;
-    public virtual dynamic route { get; private set; } = default!;
+    public virtual RouteBase route { get; private set; } = default!;
 
-    internal _ModalScopeStatus__routes(bool isCurrent, bool canPop, bool impliesAppBarDismissal, dynamic route, bool opaque, Widget child) : base(child: child)
+    internal _ModalScopeStatus__routes(bool isCurrent, bool canPop, bool impliesAppBarDismissal, RouteBase route, bool opaque, Widget child) : base(child: child)
     {
         this.isCurrent = isCurrent;
         this.canPop = canPop;
@@ -541,7 +552,7 @@ internal class _ModalScopeStatus__routes : InheritedModel<_ModalRouteAspect__rou
     public override bool updateShouldNotifyDependent(InheritedModel<_ModalRouteAspect__routes> oldWidget, HashSet<_ModalRouteAspect__routes> dependencies)
     {
         var __oldWidget = (_ModalScopeStatus__routes)(object)oldWidget;
-        return dependencies.any(((dependency) => (dependency switch { _ModalRouteAspect__routes.isCurrent => (this.isCurrent != ((_ModalScopeStatus__routes)__oldWidget).isCurrent), _ModalRouteAspect__routes.canPop => (this.canPop != ((_ModalScopeStatus__routes)__oldWidget).canPop), _ModalRouteAspect__routes.settings => (!object.Equals(((RouteSettings)((dynamic)this.route).settings), ((RouteSettings)((dynamic)((_ModalScopeStatus__routes)__oldWidget).route).settings))), _ModalRouteAspect__routes.isActive => (((bool)((dynamic)this.route).isActive) != ((bool)((dynamic)((_ModalScopeStatus__routes)__oldWidget).route).isActive)), _ModalRouteAspect__routes.isFirst => (((bool)((dynamic)this.route).isFirst) != ((bool)((dynamic)((_ModalScopeStatus__routes)__oldWidget).route).isFirst)), _ModalRouteAspect__routes.opaque => (this.opaque != ((_ModalScopeStatus__routes)__oldWidget).opaque), _ModalRouteAspect__routes.popDisposition => (!object.Equals(((RoutePopDisposition)((dynamic)this.route).popDisposition), ((RoutePopDisposition)((dynamic)((_ModalScopeStatus__routes)__oldWidget).route).popDisposition))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
+        return dependencies.any(((dependency) => (dependency switch { _ModalRouteAspect__routes.isCurrent => (this.isCurrent != ((_ModalScopeStatus__routes)__oldWidget).isCurrent), _ModalRouteAspect__routes.canPop => (this.canPop != ((_ModalScopeStatus__routes)__oldWidget).canPop), _ModalRouteAspect__routes.settings => (!object.Equals(this.route.settings, ((_ModalScopeStatus__routes)__oldWidget).route.settings)), _ModalRouteAspect__routes.isActive => (this.route.isActive != ((_ModalScopeStatus__routes)__oldWidget).route.isActive), _ModalRouteAspect__routes.isFirst => (this.route.isFirst != ((_ModalScopeStatus__routes)__oldWidget).route.isFirst), _ModalRouteAspect__routes.opaque => (this.opaque != ((_ModalScopeStatus__routes)__oldWidget).opaque), _ModalRouteAspect__routes.popDisposition => (!object.Equals(this.route.popDisposition, ((_ModalScopeStatus__routes)__oldWidget).route.popDisposition)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -727,13 +738,13 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static bool? isCurrentOf(BuildContext context) => ((bool?)((dynamic)ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.isCurrent))?.isCurrent);
-    public static bool? canPopOf(BuildContext context) => ((bool?)((dynamic)ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.canPop))?.canPop);
-    public static RouteSettings? settingsOf(BuildContext context) => ((RouteSettings?)((dynamic)ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.settings))?.settings);
-    public static bool? isActiveOf(BuildContext context) => ((bool?)((dynamic)ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.isActive))?.isActive);
-    public static bool? isFirstOf(BuildContext context) => ((bool?)((dynamic)ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.isFirst))?.isFirst);
-    public static bool? opaqueOf(BuildContext context) => ((bool?)((dynamic)ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.opaque))?.opaque);
-    public static RoutePopDisposition? popDispositionOf(BuildContext context) => ((RoutePopDisposition?)((dynamic)ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.popDisposition))?.popDisposition);
+    public static bool? isCurrentOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.isCurrent)?.isCurrent;
+    public static bool? canPopOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.canPop)?.canPop;
+    public static RouteSettings? settingsOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.settings)?.settings;
+    public static bool? isActiveOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.isActive)?.isActive;
+    public static bool? isFirstOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.isFirst)?.isFirst;
+    public static bool? opaqueOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.opaque)?.opaque;
+    public static RoutePopDisposition? popDispositionOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.popDisposition)?.popDisposition;
     public virtual void setState(global::System.Action fn)
     {
         if ((((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState is not null))
@@ -750,7 +761,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
     {
         return ((global::System.Func<dynamic, bool>)((route) =>
         {
-            return ((!((bool)((dynamic)route).willHandlePopInternally) && (route is ModalRoute<T>)) && (((RouteSettings)((dynamic)route).settings).ToString() == name));
+            return (((object?)route is ModalRoute<T> typedRoute) && !typedRoute.willHandlePopInternally && (typedRoute.settings.ToString() == name));
             throw new InvalidOperationException("Dart closure completed without a value.");
         }));
         throw new InvalidOperationException("Dart control flow completed without a value.");

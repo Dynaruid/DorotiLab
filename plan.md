@@ -1,7 +1,7 @@
 # Doroti cross-platform 최초 부트 개선 작업 계획
 
 - 작성일: 2026-08-28
-- 상태: **계획 수립 완료, 구현·실기 검증은 모두 `notStarted`/`notVerified`**. 구조 개선은 새 계측을 기다리지 않고 진행한다.
+- 상태: **구현 진행 중**. S2의 `First-frame dynamic 제거`는 2026-08-28에 C1 render-tree/C2 Navigator·Route/C3 Actions 범위로 구현·검증을 완료했다. 나머지 theme/bootstrap/platform/CLI 최적화는 `notStarted` 또는 `notVerified`이며, 완료 결과와 검증 경계는 `work.md`에 기록한다.
 - 목표: 설치된 Release 앱의 process cold start에서 첫 유효 Doroti content가 실제 compositor에 표시되고 입력 가능한 시점까지의 시간을 줄인다.
 - 부목표: `doroti.ps1 run`의 불필요한 restore/build/native build/AOT/deploy를 줄이고 안전한 재사용 경로를 제공하되, 앱 runtime 부트 개선과 별도 작업으로 유지한다.
 
@@ -56,6 +56,7 @@ native/process entry
 - Demo의 `RootApp` 첫 접근은 light/dark `ThemeData`를 모두 만든다. `ThemeData.Create`는 typography와 다수 component theme default를 구성한다.
 - `Doroti.Framework.Material`은 현재 약 4.29 MiB assembly/9.33 MiB source이고 정적 객체 초기화 후보가 매우 많다. 기본 root가 직접 참조하지 않는 animated icon과 catalog 같은 대형 정적 object graph는 source reachability와 초기화 구조를 기준으로 first-frame 밖으로 옮긴다.
 - Framework에는 `dynamic`/DLR 관련 call site가 175개 파일, 1,747개 검색 일치로 남아 있다. first-frame closure에 들어온 call site는 Windows/Linux JIT, Android x64 JIT/interpreter, Apple AOT+interpreter, Web download/trimming에 동시에 영향을 줄 수 있다.
+- 2026-08-28 S2 실행에서 first-frame 공용 반복 경로의 C1 render-tree, C2 Navigator/Route, C3 Actions를 direct/interface/non-generic base 계약으로 정적화했다. 선택 owner의 compiler-generated `CallSite<T>`는 0개이며 `Doroti.Framework.Widgets` 전체 field는 기준 1,386개에서 1,128개로 감소했다. 이는 구조 지표이고 정량 TTID/CPU 개선 수치는 `notVerified`다.
 - MAUI surface는 첫 frame 전에 hidden `Entry`, `Editor`, semantics layer와 render surface를 만든다. Windows만 text proxy의 native attach를 지연하며 Android/iOS/Mac Catalyst/AppKit은 두 input view를 visual tree에 즉시 추가한다.
 - MAUI와 Web은 view attach 직후 semantics tree를 활성화한다. 실제 accessibility 사용 중에는 이 동작을 보존하고, 비활성 상태의 full semantics build/apply는 first present 뒤로 안전하게 지연할 수 있는지 lifecycle과 기능 검증으로 판단한다.
 - end-to-end process-entry→first-present startup trace는 없다. 따라서 이 계획은 trace 구축을 기다리지 않고 source에서 확인되는 동기 hashing, parsing, DLR, 미사용 초기화와 package graph부터 직접 줄인다.
@@ -81,6 +82,7 @@ native/process entry
 - `android-x64` Release는 알려진 Mono AOT startup fault를 피하려고 AOT와 trimming을 모두 끈다. 현재 APK는 약 42.13 MiB이며 raw `libassembly-store.so`가 약 35.71 MiB다.
 - Android marshal methods도 startup fault 이력 때문에 전 RID에서 꺼져 있다. 근거 없이 다시 켜지 않고 현재 .NET 10 runtime에서 crash reproduction과 device matrix를 먼저 닫아야 한다.
 - 현재 Release APK에는 app-owned Baseline Profile entry가 없다. Java/AndroidX startup profile과 managed AOT profile은 서로 다른 최적화이므로 별도 계약으로 추가·검증한다.
+- 2026-08-28 S2 검증 artifact는 `android-arm64` signed APK 27,384,351 bytes였다. `R3CY30KZA4B`에 설치해 first frame, foreground PID/focus, pointer state 변경, scroll, crash/ANR 0건을 확인했지만 이는 Baseline Profile이나 cold/warm 정량 개선 결과가 아니다.
 - `MainApplication`에서 MAUI builder와 descriptor를 만들고, 첫 Activity view 생성 때 hidden `Entry`/`Editor`, semantics, `SKGLTextureView`/OpenGL ES 경로를 붙인다.
 - x64 emulator는 arm64 physical 결과를 대신하지 않는다. 대표 성능 판정은 arm64 물리 기기에서 한다.
 
@@ -100,6 +102,7 @@ native/process entry
 - 현재 Release `_framework`의 원본 initial payload는 약 47.2 MiB, gzip 파일 합계는 약 17.6 MiB다. `.wasm` 222개가 원본 약 41.0 MiB이고 PDB 21개가 약 3.0 MiB이며 전체 ICU data가 약 2.5 MiB다.
 - Material 약 4.29 MiB, Widgets 약 2.55 MiB, Cupertino 약 0.96 MiB와 여러 범용 BCL assembly가 initial graph에 들어간다. first screen에 필요 없는 assembly/type data를 trim/lazy-load하지 못하는 것이 현재 가장 강한 정적 병목 후보다.
 - `started` loader stage는 Blazor runtime 시작 완료일 뿐 Doroti canvas first commit이 아니다. download, WebAssembly compile, managed main, JS module import, WebGL context, first Doroti present를 나눠야 한다.
+- 2026-08-28 S2 검증 publish의 `wwwroot`는 714개 파일, plain 46,255,091 bytes, Brotli 12,932,420 bytes, gzip 16,976,949 bytes였다. Chrome live에서 실제 canvas first present, text input, pointer action, scroll과 console error/warning 0건을 확인했다. trimming/payload 최적화 자체는 아직 수행하지 않았다.
 
 ### 2.6 Linux/Qt
 
@@ -117,7 +120,7 @@ native/process entry
 
 ### S0. 구조적 개선 판단
 
-상태: `notStarted`
+상태: `inProgress` — first-frame DLR cluster에 적용 완료, 나머지 구조 후보는 미착수
 
 다음 중 하나가 source, project graph 또는 runtime 계약에서 확인되면 별도 profiler/baseline 없이 구현한다.
 
@@ -131,7 +134,7 @@ native/process entry
 
 ### S1. 최소 validation과 선택적 진단
 
-상태: `notStarted`
+상태: `inProgress` — first-frame DLR focused/FCR/target smoke 적용 완료, 전체 부트 gate는 미완료
 
 - 각 변경은 owning build/test와 관련 FCR validation을 먼저 통과한다.
 - 가능한 대표 target에서 Release launch 1회 이상의 first content, crash/hang/blank, input, resize/scroll, text와 accessibility smoke를 확인한다.
@@ -145,7 +148,7 @@ native/process entry
 
 ### S2. 공용 first-frame closure 축소
 
-상태: `notStarted`
+상태: `inProgress` — 항목 3 완료, 항목 1/2/4/5 미착수
 
 S0의 구조 판단과 S1의 최소 validation을 적용해 다음 순서로 진행한다.
 
@@ -161,11 +164,13 @@ S0의 구조 판단과 S1의 최소 validation을 적용해 다음 순서로 진
    - first frame에서 사용하지 않은 animated icon/path table과 Cupertino catalog는 type-local `Lazy<T>` 또는 별도 lazy-load assembly/resource로 이동한다.
    - 전체 9천여 정적 후보를 기계적으로 바꾸지 않고 기본 root에서 도달하거나 Web initial payload 기여가 큰 data만 수정한다.
 
-3. **First-frame `dynamic` 제거**
+3. **First-frame `dynamic` 제거 — `completed` (2026-08-28)**
    - layout/build/paint/semantics와 initial route의 source reachability 및 반복성을 기준으로 DLR call site를 고른다.
    - binder 제거가 분명한 공용 경로부터 typed generic/interface/direct 호출로 바꾼다.
    - public 의미와 Flutter reference 동작을 유지하며, 전체 Framework의 일괄 변환은 별도 follow-up으로 둔다.
    - Web trim/AOT warning과 Apple interpreter 필요 범위가 줄었는지 target별로 검증한다.
+   - 실행 결과: C1 render-tree core, C2 initial Navigator/Route, C3 Actions를 구현하고 신규 dynamic-dispatch focused validation과 FCR-3~7을 PASS했다. Windows/Web/Android 가능한 Release build/live smoke도 PASS했다.
+   - 경계: Web trim dependency와 Apple interpreter 범위 감소, Windows dark/Narrator, Android physical 문자 commit/TalkBack, Apple/Linux runtime, profiler-free 반복 TTID/CPU/allocation은 `notVerified`다.
 
 4. **Lazy platform service**
    - hidden `Entry`/`Editor` native handler는 첫 text client activation 때 만든다. text field가 initial screen에 있으면 TTFD 전에 생성하고 caret/IME를 잃지 않는다.
@@ -330,16 +335,16 @@ CLI acceptance:
 
 | Gate | 필수 결과 | 현재 상태 |
 | --- | --- | --- |
-| G0 source/architecture | first-frame reachability, generated metadata, no avoidable pre-present parsing/hash/file I/O | `notStarted` |
-| G1 common runtime | FCR-0/3/4/6/7, theme/text/semantics first-frame 회귀 없음 | `notStarted` |
-| G2 Windows default | HwndExactCpp Release cold/warm, exact visible present, input/resize 유지 | `notVerified` |
+| G0 source/architecture | first-frame reachability, generated metadata, no avoidable pre-present parsing/hash/file I/O | `partial`: 선택 DLR owner reachability/typed contract `PASS`; manifest/hash/file I/O는 `notStarted` |
+| G1 common runtime | FCR-0/3/4/6/7, theme/text/semantics first-frame 회귀 없음 | `partial`: dynamic focused와 FCR-3/4/5/6/7 `PASS`; FCR-0 및 전체 theme/physical accessibility는 `notVerified` |
+| G2 Windows default | HwndExactCpp Release cold/warm, exact visible present, input/resize 유지 | `partial`: Release build, system-light first frame, pointer/key/text/scroll `PASS`; cold/warm 정량, dark/Narrator는 `notVerified` |
 | G3 Windows MAUI | 독립 Release cold/warm 기능 smoke와 common regression | `notVerified` |
-| G4 Android arm64 | physical first-install/cold/warm smoke, ANR/crash/screenshot/input | `notVerified` |
+| G4 Android arm64 | physical first-install/cold/warm smoke, ANR/crash/screenshot/input | `partial`: `R3CY30KZA4B` install/first frame/PID/focus/pointer/scroll/crash·ANR `PASS`; cold/warm 반복, 문자 commit/TalkBack은 `notVerified` |
 | G5 Android x64 | emulator dev path, AOT-off + trim 후보와 startup fault | `notVerified` |
 | G6 iOS physical | signed Release cold/warm, Metal present, IME/VoiceOver | `notVerified` |
 | G7 Mac Catalyst | 독립 Release cold/warm, Metal present | `notVerified` |
 | G8 AppKit | 독립 Release cold/warm, Metal completion present | `notVerified` |
-| G9 Web | trimmed clean publish, payload, fresh/repeat browser first commit | `notVerified` |
+| G9 Web | trimmed clean publish, payload, fresh/repeat browser first commit | `partial`: 현재 untrimmed Release publish/payload와 Chrome canvas/input/action/scroll `PASS`; trimmed/fresh-profile 반복·mobile은 `notVerified` |
 | G10 Linux | actual Wayland/X11 published launch와 frameSwapped | `notVerified` |
 | G11 CLI | clean/fast developer launch phase 분리와 stale artifact 거부 | `notStarted` |
 | G12 cross-target | package/template/README와 전체 Release regression | `notStarted` |
@@ -375,3 +380,14 @@ CLI acceptance:
 - [Blazor WebAssembly host/deploy and Release trimming](https://learn.microsoft.com/aspnet/core/blazor/host-and-deploy/webassembly/)
 
 > 현재 결론: source와 기존 artifact만으로 Web payload, Windows production hashing/diagnostic dependency, Android x64 untrimmed store, 공용 ThemeData/type initializer/DLR/hidden platform view는 런타임 작업을 분명히 줄일 수 있는 구현 대상으로 확정한다. live startup trace는 이 작업들의 선행 조건이 아니며, 정량 수치나 남은 병목을 설명해야 할 때만 사용한다.
+
+## 10. 진행 이력
+
+### 2026-08-28 — S2 First-frame `dynamic` 제거 완료
+
+- `work.md`의 W0~W4를 실행해 C1 render-tree core, C2 Navigator/Route, C3 Actions를 `keep`으로 확정했다.
+- 신규 focused validation에서 render child ordering/해제, 서로 다른 `Route<T>` result, Actions intent/override/listener exactly-once와 선택 owner `CallSite<T> = 0`을 검증했다.
+- FCR-3~7, Widgets/Material, Windows default, Web publish, Android arm64 build를 PASS했다.
+- 실제 Windows는 system-light first frame, TextField, pointer action, wheel scroll을 확인했고 Web은 canvas/input/action/scroll 및 console error/warning 0건을 확인했다.
+- Android physical `R3CY30KZA4B`는 first frame, PID/focus, pointer action, scroll, crash/ANR 0건을 확인했다.
+- 구조적 판정은 `expectedImprovement`다. 반복 TTID/TTFD/CPU/allocation A/B와 실행하지 않은 physical accessibility/Apple/Linux gate는 `notVerified`로 유지한다.

@@ -306,7 +306,7 @@ public class RootElement : Element, RootElementMixin
     {
         try
         {
-            _child = updateChild(this._child, ((Widget?)((dynamic)(((RootWidget?)(object?)this.widget)!)).child), null);
+            _child = updateChild(this._child, ((RootWidget)this.widget).child, null);
         }
         catch (Exception exceptionLocal)
         {
@@ -809,7 +809,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         var forceFrame = false;
         foreach (RenderView view in this.renderViews)
         {
-            forceFrame = (forceFrame || (((RenderBox?)((dynamic)view).child) is not null));
+            forceFrame = (forceFrame || view.child is not null);
             view.configuration = createViewConfigurationFor(view);
         }
         if (forceFrame)
@@ -1071,8 +1071,8 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         global::System.Action<RenderObject> visitor = default!;
         visitor = (global::System.Action<RenderObject>)((child) =>
         {
-            ((dynamic)child).markNeedsPaint();
-            ((dynamic)child).visitChildren((global::System.Action<RenderObject>)visitor);
+            child.markNeedsPaint();
+            child.visitChildren((global::System.Action<RenderObject>)visitor);
         });
         foreach (RenderView renderView in this.renderViews)
         {
