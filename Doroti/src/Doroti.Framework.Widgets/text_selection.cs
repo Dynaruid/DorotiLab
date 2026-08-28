@@ -1036,7 +1036,7 @@ public class SelectionOverlay
         }
         else
         {
-            handle = DartRuntimePrimitives.ConvertValue<Widget>(new _SelectionHandleOverlay__text_selection(type: this._startHandleType, handleLayerLink: this.startHandleLayerLink, onSelectionHandleTapped: () => this.onSelectionHandleTapped(), onSelectionHandleDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleStartHandleDragStart, onSelectionHandleDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleStartHandleDragUpdate, onSelectionHandleDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handleStartHandleDragEnd, selectionControls: selectionControlsLocal, visibility: this.startHandlesVisible, preferredLineHeight: this._lineHeightAtStart, dragStartBehavior: this.dragStartBehavior));
+            handle = DartRuntimePrimitives.ConvertValue<Widget>(new _SelectionHandleOverlay__text_selection(type: this._startHandleType, handleLayerLink: this.startHandleLayerLink, onSelectionHandleTapped: this.onSelectionHandleTapped, onSelectionHandleDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleStartHandleDragStart, onSelectionHandleDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleStartHandleDragUpdate, onSelectionHandleDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handleStartHandleDragEnd, selectionControls: selectionControlsLocal, visibility: this.startHandlesVisible, preferredLineHeight: this._lineHeightAtStart, dragStartBehavior: this.dragStartBehavior));
         }
         return ((Widget)(object?)new TapRegion(groupId: typeof(SelectableRegion), child: new TextFieldTapRegion(child: new ExcludeSemantics(child: handle))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1052,7 +1052,7 @@ public class SelectionOverlay
         }
         else
         {
-            handle = DartRuntimePrimitives.ConvertValue<Widget>(new _SelectionHandleOverlay__text_selection(type: this._endHandleType, handleLayerLink: this.endHandleLayerLink, onSelectionHandleTapped: () => this.onSelectionHandleTapped(), onSelectionHandleDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleEndHandleDragStart, onSelectionHandleDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleEndHandleDragUpdate, onSelectionHandleDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handleEndHandleDragEnd, selectionControls: selectionControlsLocal, visibility: this.endHandlesVisible, preferredLineHeight: this._lineHeightAtEnd, dragStartBehavior: this.dragStartBehavior));
+            handle = DartRuntimePrimitives.ConvertValue<Widget>(new _SelectionHandleOverlay__text_selection(type: this._endHandleType, handleLayerLink: this.endHandleLayerLink, onSelectionHandleTapped: this.onSelectionHandleTapped, onSelectionHandleDragStart: (global::System.Action<global::Doroti.Framework.Gestures.DragStartDetails>)this._handleEndHandleDragStart, onSelectionHandleDragUpdate: (global::System.Action<global::Doroti.Framework.Gestures.DragUpdateDetails>)this._handleEndHandleDragUpdate, onSelectionHandleDragEnd: (global::System.Action<global::Doroti.Framework.Gestures.DragEndDetails>)this._handleEndHandleDragEnd, selectionControls: selectionControlsLocal, visibility: this.endHandlesVisible, preferredLineHeight: this._lineHeightAtEnd, dragStartBehavior: this.dragStartBehavior));
         }
         return ((Widget)(object?)new TapRegion(groupId: typeof(SelectableRegion), child: new TextFieldTapRegion(child: new ExcludeSemantics(child: handle))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1268,7 +1268,7 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
         base.initState();
         _controller = new global::Doroti.Framework.Animation.AnimationController(duration: SelectionOverlay.fadeDuration, vsync: this);
         _handleVisibilityChanged();
-        ((_SelectionHandleOverlay__text_selection)this.widget).visibility?.addListener(() => this._handleVisibilityChanged());
+        ((_SelectionHandleOverlay__text_selection)this.widget).visibility?.addListener(this._handleVisibilityChanged);
     }
 
     internal virtual void _handleVisibilityChanged()
@@ -1293,14 +1293,14 @@ internal class _SelectionHandleOverlayState__text_selection : State<_SelectionHa
     public override void didUpdateWidget(_SelectionHandleOverlay__text_selection oldWidget)
     {
         base.didUpdateWidget(oldWidget);
-        ((_SelectionHandleOverlay__text_selection)oldWidget).visibility?.removeListener(() => this._handleVisibilityChanged());
+        ((_SelectionHandleOverlay__text_selection)oldWidget).visibility?.removeListener(this._handleVisibilityChanged);
         _handleVisibilityChanged();
-        ((_SelectionHandleOverlay__text_selection)this.widget).visibility?.addListener(() => this._handleVisibilityChanged());
+        ((_SelectionHandleOverlay__text_selection)this.widget).visibility?.addListener(this._handleVisibilityChanged);
     }
 
     public override void dispose()
     {
-        ((_SelectionHandleOverlay__text_selection)this.widget).visibility?.removeListener(() => this._handleVisibilityChanged());
+        ((_SelectionHandleOverlay__text_selection)this.widget).visibility?.removeListener(this._handleVisibilityChanged);
         this._controller.dispose();
         DartRuntimePrimitives.Assert(() =>
             {

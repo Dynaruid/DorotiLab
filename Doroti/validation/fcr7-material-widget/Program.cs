@@ -48,7 +48,7 @@ VerifyRadiusSizedMaterialShapes();
 VerifyTypedActionDispatch();
 VerifyTapRegionHitIdentity();
 VerifyVariableGlyphCaretMetrics();
-VerifyAndroidSelectionOverlayContracts();
+VerifyMobileSelectionOverlayContracts();
 
 var widgetsBinding = (Doroti.Framework.Widgets.WidgetsFlutterBinding)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(
     typeof(Doroti.Framework.Widgets.WidgetsFlutterBinding));
@@ -204,11 +204,32 @@ static void VerifyVariableGlyphCaretMetrics()
     paragraph.dispose();
 }
 
-static void VerifyAndroidSelectionOverlayContracts()
+static void VerifyMobileSelectionOverlayContracts()
 {
     var controls = Doroti.Framework.Material.Text_selectionLibrary.materialTextSelectionHandleControls;
     Require(controls is TextSelectionHandleControls,
         "Material selection controls retain the handle-controls marker used by the context-menu path");
+    var materialHandleSize = controls.getHandleSize(24);
+    Require(materialHandleSize.width > 0 && materialHandleSize.height > 0,
+        "Material mobile selection controls expose a non-empty drag handle");
+    var materialHandleChild = new ProbeWidget();
+    var materialHandleBox = SizedBox.CreateSquare(dimension: materialHandleSize.width, child: materialHandleChild);
+    Require(ReferenceEquals(materialHandleBox.child, materialHandleChild),
+        "SizedBox.square retains the Material selection-handle painter subtree");
+    var rotatedMaterialHandle = Transform.CreateRotate(angle: Math.PI / 2.0, child: materialHandleBox);
+    Require(ReferenceEquals(rotatedMaterialHandle.child, materialHandleBox),
+        "Transform.rotate retains the left Material selection-handle subtree");
+
+    var cupertinoControls = Doroti.Framework.Cupertino.Text_selectionLibrary.cupertinoTextSelectionHandleControls;
+    Require(cupertinoControls is TextSelectionHandleControls,
+        "Cupertino mobile selection controls retain the shared handle-controls marker");
+    var cupertinoHandleSize = cupertinoControls.getHandleSize(24);
+    Require(cupertinoHandleSize.width > 0 && cupertinoHandleSize.height > 0,
+        "Cupertino mobile selection controls expose a non-empty drag handle");
+    var cupertinoHandleChild = new ProbeWidget();
+    var cupertinoHandleBox = SizedBox.CreateFromSize(size: cupertinoHandleSize, child: cupertinoHandleChild);
+    Require(ReferenceEquals(cupertinoHandleBox.child, cupertinoHandleChild),
+        "SizedBox.fromSize retains the Cupertino selection-handle painter subtree");
 
     var paintMethod = typeof(_RenderMagnification__magnifier).GetMethod(
         nameof(Doroti.Framework.Rendering.RenderObject.paint),
@@ -223,6 +244,20 @@ static void VerifyAndroidSelectionOverlayContracts()
             IsOverride(toolbarRenderType, "paint", [typeof(Doroti.Framework.Rendering.PaintingContext), typeof(Offset)]) &&
             IsOverride(toolbarRenderType, "setupParentData", [typeof(Doroti.Framework.Rendering.RenderObject)]),
         "Material selection toolbar overrides RenderObject layout, paint, and parent-data dispatch");
+
+    var materialHandlePainterType = typeof(Doroti.Framework.Material.MaterialTextSelectionControls).Assembly.GetType(
+        "Doroti.Framework.Material._TextSelectionHandlePainter__text_selection", throwOnError: true)!;
+    var cupertinoHandlePainterType = typeof(Doroti.Framework.Cupertino.CupertinoTextSelectionControls).Assembly.GetType(
+        "Doroti.Framework.Cupertino._CupertinoTextSelectionHandlePainter__text_selection", throwOnError: true)!;
+    Require(IsOverride(
+                materialHandlePainterType,
+                "paint",
+                [typeof(Canvas), typeof(Size)]) &&
+            IsOverride(
+                cupertinoHandlePainterType,
+                "paint",
+                [typeof(Canvas), typeof(Size)]),
+        "Material and Cupertino mobile handle painters override CustomPainter.paint");
 
     static bool IsOverride(Type declaringType, string methodName, Type[] parameterTypes)
     {

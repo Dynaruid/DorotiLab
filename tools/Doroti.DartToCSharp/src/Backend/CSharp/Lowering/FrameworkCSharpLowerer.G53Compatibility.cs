@@ -153,6 +153,17 @@ internal sealed partial class FrameworkCSharpLowerer
 
         if (library.EndsWith("/widgets/basic.dart", StringComparison.Ordinal))
         {
+            // Named SizedBox factories must retain their forwarded key and child.
+            // Dropping child removes selection-handle painters from both the
+            // Material square and Cupertino fromSize paths.
+            source = source.ReplaceGeneratedLocalPattern(
+                "var __instance = new SizedBox(default!, default!, default!, default!);",
+                "var __instance = new SizedBox(key: key, child: child);",
+                StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern(
+                "var __instance = new Transform(default!, default!, default!, default!, default!, default!, default!);",
+                "var __instance = new Transform(key: key, child: child);",
+                StringComparison.Ordinal);
             // The analyzer IR carries TextScaler.noScaling as a non-null Dart
             // default, while the CLR optional parameter uses default/null.
             // Normalize before the tuple-pattern switch so the exhaustive Dart
@@ -221,6 +232,18 @@ internal sealed partial class FrameworkCSharpLowerer
             source = Regex.Replace(source,
                 @"\.AddRange\(\(\(TextField\)this\.widget\)\.inputFormatters\);",
                 ".AddRange(((TextField)this.widget).inputFormatters ?? []);");
+            source = source.ReplaceGeneratedLocalPattern(
+                "onSelectionHandleTapped: () => this._handleSelectionHandleTapped()",
+                "onSelectionHandleTapped: (global::System.Action)this._handleSelectionHandleTapped",
+                StringComparison.Ordinal);
+        }
+
+        if (library.EndsWith("/material/selectable_text.dart", StringComparison.Ordinal))
+        {
+            source = source.ReplaceGeneratedLocalPattern(
+                "onSelectionHandleTapped: () => this._handleSelectionHandleTapped()",
+                "onSelectionHandleTapped: (global::System.Action)this._handleSelectionHandleTapped",
+                StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/navigation_bar.dart", StringComparison.Ordinal))
@@ -1672,6 +1695,27 @@ internal static class MaterialDynamicColors
                 source,
                 @"public abstract class TextSelectionHandleControls : TextSelectionControls\s*\{[\s\S]*?\n\}\s*$",
                 "public interface TextSelectionHandleControls\n{\n}\n");
+            source = source
+                .ReplaceGeneratedLocalPattern(
+                    "visibility?.addListener(() => this._handleVisibilityChanged())",
+                    "visibility?.addListener(this._handleVisibilityChanged)",
+                    StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern(
+                    "visibility?.removeListener(() => this._handleVisibilityChanged())",
+                    "visibility?.removeListener(this._handleVisibilityChanged)",
+                    StringComparison.Ordinal)
+                .ReplaceGeneratedLocalPattern(
+                    "onSelectionHandleTapped: () => this.onSelectionHandleTapped()",
+                    "onSelectionHandleTapped: this.onSelectionHandleTapped",
+                    StringComparison.Ordinal);
+        }
+
+        if (library.EndsWith("/widgets/editable_text.dart", StringComparison.Ordinal))
+        {
+            source = source.ReplaceGeneratedLocalPattern(
+                "onSelectionHandleTapped: () => ((EditableText)(object)this.widget).onSelectionHandleTapped()",
+                "onSelectionHandleTapped: ((EditableText)(object)this.widget).onSelectionHandleTapped",
+                StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/widgets/magnifier.dart", StringComparison.Ordinal))

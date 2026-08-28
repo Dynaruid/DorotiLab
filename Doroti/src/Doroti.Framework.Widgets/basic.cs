@@ -692,7 +692,7 @@ public class Transform : SingleChildRenderObjectWidget
 
     public static Transform CreateRotate(global::Doroti.Framework.Foundation.Key? key = null, double angle = default!, Offset? origin = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = default!, bool transformHitTests = true, FilterQuality? filterQuality = null, Widget? child = null)
     {
-        var __instance = new Transform(default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new Transform(key: key, child: child);
         global::Doroti.Framework.Painting.AlignmentGeometry? __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
         __instance.origin = origin;
         __instance.alignment = __alignment;
@@ -704,7 +704,7 @@ public class Transform : SingleChildRenderObjectWidget
 
     public static Transform CreateTranslate(global::Doroti.Framework.Foundation.Key? key = null, Offset offset = default!, bool transformHitTests = true, FilterQuality? filterQuality = null, Widget? child = null)
     {
-        var __instance = new Transform(default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new Transform(key: key, child: child);
         __instance.transformHitTests = transformHitTests;
         __instance.filterQuality = filterQuality;
         __instance.transform = Matrix4.translationValues(offset.dx, offset.dy, 0.0);
@@ -715,7 +715,7 @@ public class Transform : SingleChildRenderObjectWidget
 
     public static Transform CreateScale(global::Doroti.Framework.Foundation.Key? key = null, double? scale = null, double? scaleX = null, double? scaleY = null, Offset? origin = null, global::Doroti.Framework.Painting.AlignmentGeometry? alignment = default!, bool transformHitTests = true, FilterQuality? filterQuality = null, Widget? child = null)
     {
-        var __instance = new Transform(default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new Transform(key: key, child: child);
         global::Doroti.Framework.Painting.AlignmentGeometry? __alignment = alignment ?? global::Doroti.Framework.Painting.Alignment.center;
         __instance.origin = origin;
         __instance.alignment = __alignment;
@@ -727,7 +727,7 @@ public class Transform : SingleChildRenderObjectWidget
 
     public static Transform CreateFlip(global::Doroti.Framework.Foundation.Key? key = null, bool flipX = false, bool flipY = false, Offset? origin = null, bool transformHitTests = true, FilterQuality? filterQuality = null, Widget? child = null)
     {
-        var __instance = new Transform(default!, default!, default!, default!, default!, default!, default!);
+        var __instance = new Transform(key: key, child: child);
         __instance.origin = origin;
         __instance.transformHitTests = transformHitTests;
         __instance.filterQuality = filterQuality;
@@ -1132,7 +1132,7 @@ public class SizedBox : SingleChildRenderObjectWidget
 
     public static SizedBox CreateExpand(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null)
     {
-        var __instance = new SizedBox(default!, default!, default!, default!);
+        var __instance = new SizedBox(key: key, child: child);
         __instance.width = double.PositiveInfinity;
         __instance.height = double.PositiveInfinity;
         return __instance;
@@ -1140,7 +1140,7 @@ public class SizedBox : SingleChildRenderObjectWidget
 
     public static SizedBox CreateShrink(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null)
     {
-        var __instance = new SizedBox(default!, default!, default!, default!);
+        var __instance = new SizedBox(key: key, child: child);
         __instance.width = 0.0;
         __instance.height = 0.0;
         return __instance;
@@ -1148,7 +1148,7 @@ public class SizedBox : SingleChildRenderObjectWidget
 
     public static SizedBox CreateFromSize(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, Size? size = null)
     {
-        var __instance = new SizedBox(default!, default!, default!, default!);
+        var __instance = new SizedBox(key: key, child: child);
         __instance.width = size?.width;
         __instance.height = size?.height;
         return __instance;
@@ -1156,7 +1156,7 @@ public class SizedBox : SingleChildRenderObjectWidget
 
     public static SizedBox CreateSquare(global::Doroti.Framework.Foundation.Key? key = null, Widget? child = null, double? dimension = null)
     {
-        var __instance = new SizedBox(default!, default!, default!, default!);
+        var __instance = new SizedBox(key: key, child: child);
         __instance.width = dimension;
         __instance.height = dimension;
         return __instance;
