@@ -510,11 +510,10 @@ internal sealed unsafe class WindowsManagedProductHost :
     private static void ValidateTextState(DorotiTextEditingState state)
     {
         ArgumentNullException.ThrowIfNull(state.text);
-        ValidateRange(state.selection.baseOffset, state.text.Length, nameof(state.selection));
-        ValidateRange(state.selection.extentOffset, state.text.Length, nameof(state.selection));
+        // Flutter represents an attached controller with no current selection as (-1, -1).
+        ValidateSelection(state.selection, state.text.Length, nameof(state.selection), allowAbsent: true);
         if (state.composingRange is not { } composing) return;
-        ValidateRange(composing.baseOffset, state.text.Length, nameof(state.composingRange));
-        ValidateRange(composing.extentOffset, state.text.Length, nameof(state.composingRange));
+        ValidateSelection(composing, state.text.Length, nameof(state.composingRange), allowAbsent: false);
     }
 
     private void InvokeUtf8(nint callback, string text, string operation)
@@ -535,9 +534,15 @@ internal sealed unsafe class WindowsManagedProductHost :
         }
     }
 
-    private static void ValidateRange(int offset, int length, string name)
+    private static void ValidateSelection(
+        DorotiTextSelection selection, int length, string name, bool allowAbsent)
     {
-        if (offset < 0 || offset > length) throw new ArgumentOutOfRangeException(name);
+        if (allowAbsent && selection is { baseOffset: -1, extentOffset: -1 }) return;
+        if (selection.baseOffset < 0 || selection.baseOffset > length ||
+            selection.extentOffset < 0 || selection.extentOffset > length)
+        {
+            throw new ArgumentOutOfRangeException(name);
+        }
     }
 
     private void EnqueueInput(Action dispatch)

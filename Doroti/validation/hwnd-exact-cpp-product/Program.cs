@@ -321,9 +321,20 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
         _textInput = textInput;
         textInput.EditingStateChanged += HandleEditingState;
         textInput.ActionPerformed += HandleTextAction;
-        textInput.SetClient(new(DorotiTextInputType.text, DorotiTextInputAction.done,
-            DorotiTextCapitalization.none, false, false, true, true),
-            new("", new(0, 0), null));
+        var configuration = new DorotiTextInputConfiguration(
+            DorotiTextInputType.text, DorotiTextInputAction.done,
+            DorotiTextCapitalization.none, false, false, true, true);
+        try
+        {
+            textInput.SetClient(configuration, new("", new(-1, 0), null));
+            throw new InvalidOperationException("A half-invalid text selection crossed the managed host boundary.");
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+        }
+        var emptyState = new DorotiTextEditingState("", new(-1, -1), null);
+        textInput.SetClient(configuration, emptyState);
+        textInput.UpdateState(emptyState);
         textInput.SetCaretRect(Rect.fromLTWH(24, 36, 2, 20));
         (_dispatcher ?? throw new InvalidOperationException("C7 dispatcher is unavailable."))
             .setSemanticsTreeEnabled(true);

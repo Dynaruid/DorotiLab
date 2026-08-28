@@ -696,7 +696,11 @@ class ProductHost final {
     const auto valid_offset = [length](int32_t value) {
       return value >= 0 && value <= length;
     };
-    if (!valid_offset(state.selection_base) || !valid_offset(state.selection_extent) ||
+    // Flutter uses (-1, -1) when the controller has no current selection.
+    const auto valid_selection =
+        (state.selection_base == -1 && state.selection_extent == -1) ||
+        (valid_offset(state.selection_base) && valid_offset(state.selection_extent));
+    if (!valid_selection ||
         !((state.composing_base == -1 && state.composing_extent == -1) ||
           (valid_offset(state.composing_base) && valid_offset(state.composing_extent))))
       throw std::invalid_argument("invalid text range");
