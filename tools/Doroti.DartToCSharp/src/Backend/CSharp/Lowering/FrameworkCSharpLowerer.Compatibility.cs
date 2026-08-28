@@ -1691,8 +1691,26 @@ internal sealed partial class FrameworkCSharpLowerer
         string library,
         string inputPath,
         List<ConverterDiagnostic> diagnostics,
-        bool setCollection = false)
+        bool setCollection = false,
+        bool mapCollection = false)
     {
+        if (mapCollection && element.Kind == CoreNodeKind.MapLiteralEntry)
+        {
+            var expressions = element.Children.Where(item => item.Category == "expression").ToArray();
+            if (expressions.Length != 2)
+            {
+                AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, element,
+                    "map-entry-shape", "Resolve the key and value expressions for the Dart map literal entry.");
+                return;
+            }
+            builder.Append(listName).Append('[');
+            LowerExpression(builder, expressions[0], declaration, package, library, inputPath, diagnostics);
+            builder.Append("] = ");
+            LowerExpression(builder, expressions[1], declaration, package, library, inputPath, diagnostics);
+            builder.Append("; ");
+            return;
+        }
+
         if (element.Category == "expression")
         {
             builder.Append(listName).Append(".Add(");
@@ -1763,7 +1781,8 @@ internal sealed partial class FrameworkCSharpLowerer
                 element.Children.FirstOrDefault(item => item.Category == "expression");
             var caseClause = element.Children.FirstOrDefault(item => item.Kind == CoreNodeKind.CaseClause);
             var branches = element.Children
-                .Where(item => item.Category is "expression" or "collection-element")
+                .Where(item => item.Kind == CoreNodeKind.MapLiteralEntry ||
+                    item.Category is "expression" or "collection-element")
                 .Where(item => !ReferenceEquals(item, condition))
                 .ToArray();
             if (condition is null || branches.Length == 0)
@@ -1786,14 +1805,14 @@ internal sealed partial class FrameworkCSharpLowerer
             builder.Append(") { ");
             EmitListCollectionElement(
                 builder, listName, branches[0], elementType, declaration, package, library, inputPath, diagnostics,
-                setCollection);
+                setCollection, mapCollection);
             builder.Append("} ");
             if (branches.Length > 1)
             {
                 builder.Append("else { ");
                 EmitListCollectionElement(
                     builder, listName, branches[1], elementType, declaration, package, library, inputPath, diagnostics,
-                    setCollection);
+                    setCollection, mapCollection);
                 builder.Append("} ");
             }
             return;
@@ -1804,7 +1823,8 @@ internal sealed partial class FrameworkCSharpLowerer
             var parts = element.Children.FirstOrDefault(item =>
                 item.Kind is CoreNodeKind.ForEachPartsWithDeclaration or CoreNodeKind.ForEachPartsWithIdentifier or
                     CoreNodeKind.ForPartsWithDeclarations or CoreNodeKind.ForPartsWithExpression);
-            var body = element.Children.LastOrDefault(item => item.Category is "expression" or "collection-element");
+            var body = element.Children.LastOrDefault(item => item.Kind == CoreNodeKind.MapLiteralEntry ||
+                item.Category is "expression" or "collection-element");
             if (parts is null || body is null)
             {
                 AddUnsupportedDiagnostic(diagnostics, package, library, inputPath, declaration, element,
@@ -1866,7 +1886,7 @@ internal sealed partial class FrameworkCSharpLowerer
             }
             EmitListCollectionElement(
                 builder, listName, body, elementType, declaration, package, library, inputPath, diagnostics,
-                setCollection);
+                setCollection, mapCollection);
             builder.Append("} ");
             return;
         }
@@ -1940,6 +1960,23 @@ internal sealed partial class FrameworkCSharpLowerer
                     setCollection: true);
             }
             builder.Append("return ").Append(setName).Append("; }))()");
+            return;
+        }
+
+        if (!isSet && collectionElements.Any(item => item.Category != "expression"))
+        {
+            var mapName = $"__collection{node.Offset}";
+            builder.Append("((Func<").Append(typeName).Append(">)(() => { var ")
+                .Append(mapName).Append(" = new ").Append(typeName).Append("(); ");
+            foreach (var element in node.Children.Where(item =>
+                         item.Kind == CoreNodeKind.MapLiteralEntry ||
+                         item.Category is "expression" or "collection-element"))
+            {
+                EmitListCollectionElement(
+                    builder, mapName, element, string.Empty, declaration, package, library, inputPath, diagnostics,
+                    mapCollection: true);
+            }
+            builder.Append("return ").Append(mapName).Append("; }))()");
             return;
         }
 

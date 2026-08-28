@@ -101,11 +101,27 @@ internal static class MauiNativeInput
             }
         }
 
-        private void HandleKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs args) =>
+        private void HandleKeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs args)
+        {
+            if (NativeTextInputOwnsKey(sender, args)) return;
             Dispatch(args, args.KeyStatus.RepeatCount > 1 ? KeyEventType.repeat : KeyEventType.down, false);
+        }
 
-        private void HandleKeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs args) =>
+        private void HandleKeyUp(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs args)
+        {
+            if (NativeTextInputOwnsKey(sender, args)) return;
             Dispatch(args, KeyEventType.up, false);
+        }
+
+        private bool NativeTextInputOwnsKey(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs args)
+        {
+            // Entry and Editor are native TextBox subclasses on MAUI Windows.
+            // When one is the active text endpoint, WinUI must apply hardware
+            // edits exactly once and publish the result through TextChanged.
+            if (!_textInput.HasClient || sender is not Microsoft.UI.Xaml.Controls.TextBox) return false;
+            args.Handled = false;
+            return true;
+        }
 
         private void Dispatch(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs args, KeyEventType type, bool synthesized)
         {
@@ -409,6 +425,16 @@ internal static class MauiNativeInput
         {
             var nativeEvent = args.Event;
             if (nativeEvent is null) return;
+            // The hidden EditText is the Android InputConnection endpoint for
+            // an active framework text client. Let it apply IME and hardware
+            // edits so TextChanged can publish the resulting text, selection,
+            // and composing range. Consuming these events here prevents
+            // Samsung Keyboard's Backspace (and physical typing) outright.
+            if (_textInput.HasClient && sender is Android.Widget.EditText)
+            {
+                args.Handled = false;
+                return;
+            }
             var type = nativeEvent.Action switch
             {
                 Android.Views.KeyEventActions.Up => KeyEventType.up,

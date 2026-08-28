@@ -1118,6 +1118,12 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     const key = event as KeyboardEvent;
     if (!host.viewFocused || !belongsToHost(document.activeElement)) return;
     const nativeTextEditing = document.activeElement === input && !input.hidden;
+    // The managed KeyData callback has no synchronous handled result, so it
+    // cannot decide whether this DOM event should be prevented as Flutter's
+    // web engine does. While the native input is active, let it own text,
+    // selection, clipboard, and IME keys and report the result through input
+    // events. Tab remains a framework focus-traversal key.
+    if (nativeTextEditing && key.key !== "Tab") return;
     if (key.key === "Tab" ||
         (!nativeTextEditing && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(key.key)))
       key.preventDefault();

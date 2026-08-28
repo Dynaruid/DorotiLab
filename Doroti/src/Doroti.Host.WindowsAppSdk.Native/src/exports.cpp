@@ -480,11 +480,19 @@ class ProductHost final {
       case WM_KEYDOWN:
       case WM_SYSKEYDOWN:
       case WM_KEYUP:
-      case WM_SYSKEYUP:
-        EmitKey(message, wparam, lparam);
-        if (text_client_active_ && (message == WM_KEYDOWN || message == WM_SYSKEYDOWN))
+      case WM_SYSKEYUP: {
+        // The custom HWND has no native edit control, so it owns the editing
+        // keys below while a text client is active. Do not also route them
+        // through the framework shortcut map or one press can edit twice.
+        const auto native_editing_key = text_client_active_ &&
+            (wparam == VK_BACK || wparam == VK_DELETE || wparam == VK_LEFT ||
+             wparam == VK_RIGHT || wparam == VK_HOME || wparam == VK_END);
+        if (!native_editing_key) EmitKey(message, wparam, lparam);
+        if (native_editing_key && (message == WM_KEYDOWN || message == WM_SYSKEYDOWN) &&
+            wparam != VK_BACK)
           HandleNavigationKey(wparam);
         return 0;
+      }
       default:
         return DefWindowProcW(window, message, wparam, lparam);
     }
@@ -928,14 +936,13 @@ class ProductHost final {
       if (text_selection_base_ == text_selection_extent_ && text_selection_extent_ < length)
         ++text_selection_extent_;
       ReplaceActiveRange(L"", false);
-      EmitTextEditing();
-    } else if (key == VK_LEFT || key == VK_RIGHT) {
-      const auto offset = key == VK_LEFT ? -1 : 1;
-      const auto next = std::clamp(text_selection_extent_ + offset, 0, length);
+    } else {
+      const auto next = key == VK_HOME ? 0 : key == VK_END ? length :
+          std::clamp(text_selection_extent_ + (key == VK_LEFT ? -1 : 1), 0, length);
       text_selection_base_ = text_selection_extent_ = next;
       text_composing_base_ = text_composing_extent_ = -1;
-      EmitTextEditing();
     }
+    EmitTextEditing();
   }
 
   void EmitTextEditing() {

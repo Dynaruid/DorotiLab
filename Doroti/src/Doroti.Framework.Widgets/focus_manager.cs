@@ -1200,6 +1200,13 @@ internal class _HighlightModeManager__focus_manager
         if (System.Linq.Enumerable.Any(this._earlyKeyEventHandlers))
         {
             var results = new List<KeyEventResult>();
+            foreach (var callback in this._earlyKeyEventHandlers.ToList())
+            {
+                foreach (var @event in message.events)
+                {
+                    results.Add(callback(@event));
+                }
+            }
             KeyEventResult result = Focus_managerLibrary.combineKeyEventResults(results.Cast<KeyEventResult>());
             switch (result)
             {
@@ -1225,9 +1232,22 @@ internal class _HighlightModeManager__focus_manager
         {
             return true;
         }
-        foreach (var node in new List<FocusNode> { FocusManager.instance.primaryFocus! })
+        var focusPath = new List<FocusNode> { FocusManager.instance.primaryFocus! };
+        focusPath.AddRange(FocusManager.instance.primaryFocus!.ancestors);
+        foreach (var node in focusPath)
         {
             var resultsLocal = new List<KeyEventResult>();
+            if (node.onKeyEvent is not null)
+            {
+                foreach (var @event in message.events)
+                {
+                    resultsLocal.Add(node.onKeyEvent(node, @event));
+                }
+            }
+            if (node.onKey is not null && message.rawEvent is not null)
+            {
+                resultsLocal.Add(node.onKey(node, message.rawEvent));
+            }
             KeyEventResult resultLocal = Focus_managerLibrary.combineKeyEventResults(resultsLocal.Cast<KeyEventResult>());
             switch (resultLocal)
             {
@@ -1254,6 +1274,13 @@ internal class _HighlightModeManager__focus_manager
         if ((!handledLocal && System.Linq.Enumerable.Any(this._lateKeyEventHandlers)))
         {
             var resultsAlternate = new List<KeyEventResult>();
+            foreach (var callback in this._lateKeyEventHandlers.ToList())
+            {
+                foreach (var @event in message.events)
+                {
+                    resultsAlternate.Add(callback(@event));
+                }
+            }
             KeyEventResult resultAlternate = Focus_managerLibrary.combineKeyEventResults(resultsAlternate.Cast<KeyEventResult>());
             switch (resultAlternate)
             {

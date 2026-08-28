@@ -5,6 +5,12 @@ using Doroti.Host.WindowsAppSdk;
 
 if (!OperatingSystem.IsWindows())
     throw new PlatformNotSupportedException("The native ABI fixture is Windows-only.");
+if (WindowsKeyMap.Physical(0x1e, 'A') != 0x00070004 ||
+    WindowsKeyMap.Logical(0x1e, 'A', "A") != 'a' ||
+    WindowsKeyMap.Physical(0x14b, 0x25) != 0x00070050 ||
+    WindowsKeyMap.Logical(0x14b, 0x25, string.Empty) != 0x100000302 ||
+    WindowsKeyMap.Logical(0x153, 0x2e, string.Empty) != 0x10000007f)
+    throw new InvalidOperationException("Win32 key map is not Flutter-compatible.");
 if (args.Length != 1)
     throw new ArgumentException("Expected the app-directory native DLL path.");
 

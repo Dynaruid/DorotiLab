@@ -31,6 +31,36 @@ public class DefaultTextEditingShortcuts : StatelessWidget
     internal static DartMap<ShortcutActivator, Intent> _macDisablingTextShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.escape)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.tab)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.tab, shift: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown, shift: true, alt: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp, shift: true, alt: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft, shift: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight, shift: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft, shift: true, alt: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight, shift: true, alt: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft, shift: true, meta: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowRight, shift: true, meta: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageUp)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageDown)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.end)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.home)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageUp, shift: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.pageDown, shift: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.end, shift: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.home, shift: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.end, control: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.home, control: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()) };
     internal static DartMap<ShortcutActivator, Intent> _iOSDisablingTextShortcuts = new DartMap<ShortcutActivator, Intent> { [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.backspace)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.backspace, shift: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.delete)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.delete, shift: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.backspace, alt: true, shift: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.backspace, alt: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.delete, alt: true, shift: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()), [new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.delete, alt: true)] = ((Intent)(object?)new DoNothingAndStopPropagationTextIntent()) };
 
+    static DefaultTextEditingShortcuts()
+    {
+        // Flutter builds these entries with a collection-for spread. Keep the
+        // reviewed product source correct while the compiler lowering below
+        // ensures a future regeneration preserves the same shortcuts.
+        foreach (var pressShift in new[] { true, false })
+        {
+            _commonShortcuts[new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.backspace, shift: pressShift)] = new DeleteCharacterIntent(forward: false);
+            _commonShortcuts[new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.backspace, control: true, shift: pressShift)] = new DeleteToNextWordBoundaryIntent(forward: false);
+            _commonShortcuts[new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.backspace, alt: true, shift: pressShift)] = new DeleteToLineBreakIntent(forward: false);
+            _commonShortcuts[new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.delete, control: true, shift: pressShift)] = new DeleteToNextWordBoundaryIntent(forward: true);
+            _commonShortcuts[new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.delete, alt: true, shift: pressShift)] = new DeleteToLineBreakIntent(forward: true);
+
+            _macShortcuts[new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.backspace, shift: pressShift)] = new DeleteCharacterIntent(forward: false);
+            _macShortcuts[new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.backspace, alt: true, shift: pressShift)] = new DeleteToNextWordBoundaryIntent(forward: false);
+            _macShortcuts[new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.backspace, meta: true, shift: pressShift)] = new DeleteToLineBreakIntent(forward: false);
+            _macShortcuts[new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.delete, shift: pressShift)] = new DeleteCharacterIntent(forward: true);
+            _macShortcuts[new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.delete, alt: true, shift: pressShift)] = new DeleteToNextWordBoundaryIntent(forward: true);
+            _macShortcuts[new SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.delete, meta: true, shift: pressShift)] = new DeleteToLineBreakIntent(forward: true);
+        }
+
+        _androidShortcuts.AddRange(_commonShortcuts);
+        _androidShortcuts.AddRange(_clipboardShortcuts);
+        _linuxShortcuts.AddRange(_commonShortcuts);
+        _linuxShortcuts.AddRange(_clipboardShortcuts);
+        _linuxShortcuts.AddRange(_linuxNumpadShortcuts);
+        _windowsShortcuts.AddRange(_commonShortcuts);
+        _windowsShortcuts.AddRange(_clipboardShortcuts);
+    }
+
     public DefaultTextEditingShortcuts(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key)
     {
         this.child = child;
@@ -112,4 +142,3 @@ public static partial class Default_text_editing_shortcutsLibrary
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
-

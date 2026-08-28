@@ -24,6 +24,7 @@ internal sealed unsafe class WindowsManagedProductHost :
     private readonly HashSet<long> _resizeTerminalGenerations = [];
     private readonly Dictionary<ulong, TaskCompletionSource<string?>> _clipboardRequests = [];
     private readonly Queue<Action> _pendingInput = [];
+    private readonly Dictionary<long, long> _pressedLogicalKeys = [];
     private Action<TimeSpan, DorotiViewEpoch>? _pendingFrame;
     private bool _disposed;
     private long _inputSequence;
@@ -198,8 +199,16 @@ internal sealed unsafe class WindowsManagedProductHost :
             throw new InvalidDataException("Native key packet is invalid.");
         var sequence = Interlocked.Increment(ref _inputSequence);
         var timestamp = MapTimestamp(value.TimestampQpc);
-        var key = new KeyData(1, timestamp, (KeyEventType)value.Type,
-            value.Physical, value.Logical, false,
+        var type = (KeyEventType)value.Type;
+        var physical = WindowsKeyMap.Physical(value.Physical, value.Logical);
+        var logical = WindowsKeyMap.Logical(value.Physical, value.Logical, character);
+        if (type == KeyEventType.up)
+        {
+            if (_pressedLogicalKeys.Remove(physical, out var pressedLogical)) logical = pressedLogical;
+        }
+        else _pressedLogicalKeys[physical] = logical;
+        var key = new KeyData(1, timestamp, type,
+            physical, logical, false,
             value.Type == (uint)KeyEventType.up || string.IsNullOrEmpty(character) ? null : character);
         EnqueueInput(() =>
         {

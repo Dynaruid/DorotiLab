@@ -52,6 +52,7 @@ VerifyMobileSelectionOverlayContracts();
 VerifyFrameworkLifecycleContracts();
 VerifyButtonStyleDispatch();
 VerifyHostTextInputVisibilityContract();
+VerifyDefaultTextEditingShortcutContracts();
 
 var widgetsBinding = (Doroti.Framework.Widgets.WidgetsFlutterBinding)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(
     typeof(Doroti.Framework.Widgets.WidgetsFlutterBinding));
@@ -159,6 +160,32 @@ static void VerifyTypedActionDispatch()
     var result = new ActionDispatcher().invokeAction(action, new ProbeIntent(), context);
     Require(action.InvokeCount == 1 && Equals(result, "invoked"),
         "ActionDispatcher invokes a generic action without dynamic binder loss");
+}
+
+static void VerifyDefaultTextEditingShortcutContracts()
+{
+    var shortcutsField = typeof(DefaultTextEditingShortcuts).GetField(
+        "_androidShortcuts",
+        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+    var shortcuts = shortcutsField?.GetValue(null) as System.Collections.IDictionary;
+    Require(shortcuts is not null, "Android default text-editing shortcuts are available");
+
+    var backspace = shortcuts!.Keys.Cast<object>().OfType<SingleActivator>().SingleOrDefault(activator =>
+        ReferenceEquals(activator.trigger, Doroti.Framework.Services.LogicalKeyboardKey.backspace) &&
+        !activator.control && !activator.shift && !activator.alt && !activator.meta);
+    Require(backspace is not null, "Android Backspace has a default text-editing shortcut");
+    Require(shortcuts[backspace!] is DeleteCharacterIntent { forward: false },
+        "Android Backspace deletes the preceding character");
+
+    var arrowLeft = shortcuts.Keys.Cast<object>().OfType<SingleActivator>().Any(activator =>
+        ReferenceEquals(activator.trigger, Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft) &&
+        !activator.control && !activator.shift && !activator.alt && !activator.meta);
+    Require(arrowLeft, "Android shortcuts include the common text-selection map spread");
+
+    var selectAll = shortcuts.Keys.Cast<object>().OfType<SingleActivator>().Any(activator =>
+        ReferenceEquals(activator.trigger, Doroti.Framework.Services.LogicalKeyboardKey.keyA) &&
+        activator.control && !activator.shift && !activator.alt && !activator.meta);
+    Require(selectAll, "Android shortcuts include the clipboard map spread");
 }
 
 static void VerifyTapRegionHitIdentity()

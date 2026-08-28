@@ -376,16 +376,13 @@ public class KeyEventManager
                     }
                     DartRuntimePrimitives.Assert(() => ((data.physical != 0L) && (data.logical != 0L)));
                     KeyEvent @event = _eventFromData(data);
-                    if ((data.synthesized && (_keyEventsSinceLastMessage.Count == 0)))
-                    {
-                        _hardwareKeyboard.handleKeyEvent(@event);
-                        _dispatchKeyMessage(new List<KeyEvent> { @event }, null);
-                    }
-                    else
-                    {
-                        _keyEventsSinceLastMessage.Add(@event);
-                    }
-                    return false;
+                    // Doroti hosts expose a KeyData-only input contract; unlike
+                    // FlutterEngine they do not follow each KeyData callback
+                    // with a legacy flutter/keyevent channel message. Dispatch
+                    // immediately so hardware handlers and text shortcuts see
+                    // every native key instead of leaving it queued forever.
+                    var handled = _hardwareKeyboard.handleKeyEvent(@event);
+                    return (_dispatchKeyMessage(new List<KeyEvent> { @event }, null) || handled);
                 }
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
