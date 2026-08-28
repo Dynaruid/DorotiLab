@@ -148,6 +148,16 @@ public interface ITextInputHostCapability
 
     void SetCaretRect(Rect logicalRect);
 
+    /// <summary>Requests that the native text input UI become visible for the attached client.</summary>
+    void ShowTextInput()
+    {
+    }
+
+    /// <summary>Hides native text input UI without changing the framework focus owner.</summary>
+    void HideTextInput()
+    {
+    }
+
     void ClearClient();
 }
 

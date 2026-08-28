@@ -50,6 +50,8 @@ VerifyTapRegionHitIdentity();
 VerifyVariableGlyphCaretMetrics();
 VerifyMobileSelectionOverlayContracts();
 VerifyFrameworkLifecycleContracts();
+VerifyButtonStyleDispatch();
+VerifyHostTextInputVisibilityContract();
 
 var widgetsBinding = (Doroti.Framework.Widgets.WidgetsFlutterBinding)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(
     typeof(Doroti.Framework.Widgets.WidgetsFlutterBinding));
@@ -413,6 +415,93 @@ static void VerifyFrameworkLifecycleContracts()
     }
     Require(hiddenLifecycleSlots.Count == 0,
         $"framework lifecycle hooks use CLR override dispatch: {string.Join(", ", hiddenLifecycleSlots)}");
+}
+
+static void VerifyButtonStyleDispatch()
+{
+    var buttonStyleType = typeof(Doroti.Framework.Material.ButtonStyle);
+    var materialAssembly = buttonStyleType.Assembly;
+    var buttonWidgetType = typeof(Doroti.Framework.Material.ButtonStyleButton);
+    foreach (var type in new[]
+             {
+                 typeof(Doroti.Framework.Material.ElevatedButton),
+                 typeof(Doroti.Framework.Material.OutlinedButton),
+             })
+    {
+        foreach (var methodName in new[] { "defaultStyleOf", "themeStyleOf" })
+        {
+            var method = type.GetMethod(methodName,
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.Public |
+                System.Reflection.BindingFlags.DeclaredOnly);
+            Require(method is not null && method.GetBaseDefinition().DeclaringType == buttonWidgetType,
+                $"{type.Name}.{methodName} overrides ButtonStyleButton instead of hiding its CLR slot");
+        }
+    }
+
+    var defaultStyleTypes = new[]
+    {
+        "Doroti.Framework.Material._ElevatedButtonDefaultsM3__elevated_button",
+        "Doroti.Framework.Material._OutlinedButtonDefaultsM3__outlined_button",
+    };
+    var requiredProperties = new[]
+    {
+        "textStyle", "backgroundColor", "foregroundColor", "overlayColor",
+        "shadowColor", "surfaceTintColor", "elevation", "padding",
+        "minimumSize", "maximumSize", "iconColor", "iconSize", "shape",
+    };
+
+    foreach (var typeName in defaultStyleTypes)
+    {
+        var styleType = materialAssembly.GetType(typeName, throwOnError: true)!;
+        foreach (var propertyName in requiredProperties)
+        {
+            var getter = styleType.GetProperty(propertyName,
+                    System.Reflection.BindingFlags.Instance |
+                    System.Reflection.BindingFlags.Public |
+                    System.Reflection.BindingFlags.DeclaredOnly)
+                ?.GetMethod;
+            Require(getter is not null && getter.GetBaseDefinition().DeclaringType == buttonStyleType,
+                $"{styleType.Name}.{propertyName} overrides ButtonStyle instead of hiding its CLR slot");
+        }
+    }
+
+    var outlinedStyleType = materialAssembly.GetType(
+        "Doroti.Framework.Material._OutlinedButtonDefaultsM3__outlined_button", throwOnError: true)!;
+    var sideGetter = outlinedStyleType.GetProperty("side",
+            System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.Public |
+            System.Reflection.BindingFlags.DeclaredOnly)
+        ?.GetMethod;
+    Require(sideGetter is not null && sideGetter.GetBaseDefinition().DeclaringType == buttonStyleType,
+        "OutlinedButton side overrides ButtonStyle so its visible outline reaches the renderer");
+}
+
+static void VerifyHostTextInputVisibilityContract()
+{
+    var controlType = typeof(Doroti.Framework.Services.TextInputControl);
+    var hostControlType = controlType.Assembly.GetType(
+        "Doroti.Framework.Services._HostTextInputControl", throwOnError: true)!;
+    foreach (var methodName in new[] { "show", "hide" })
+    {
+        var method = hostControlType.GetMethod(methodName,
+            System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.Public |
+            System.Reflection.BindingFlags.DeclaredOnly);
+        Require(method is not null && method.GetBaseDefinition().DeclaringType == controlType,
+            $"host text input {methodName} overrides TextInputControl and reaches the native visibility contract");
+    }
+
+    var instance = hostControlType.GetProperty("instance",
+            System.Reflection.BindingFlags.Static |
+            System.Reflection.BindingFlags.Public)!
+        .GetValue(null);
+    hostControlType.GetMethod("hide",
+            System.Reflection.BindingFlags.Instance |
+            System.Reflection.BindingFlags.Public |
+            System.Reflection.BindingFlags.DeclaredOnly)!
+        .Invoke(instance, null);
+    Require(true, "scheduled text-input hide is safe after the final host client detaches");
 }
 
 static ScrollbarAlphaFrame CaptureScrollbarFrame(Color thumbColor, double fadeValue, int timestampMilliseconds)

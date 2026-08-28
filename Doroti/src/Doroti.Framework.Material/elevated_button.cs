@@ -43,7 +43,7 @@ public class ElevatedButton : ButtonStyleButton
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual ButtonStyle defaultStyleOf(global::Doroti.Framework.Widgets.BuildContext context)
+    public override ButtonStyle defaultStyleOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
         ColorScheme colorSchemeLocal = theme.colorScheme;
@@ -59,7 +59,7 @@ public class ElevatedButton : ButtonStyleButton
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual ButtonStyle? themeStyleOf(global::Doroti.Framework.Widgets.BuildContext context)
+    public override ButtonStyle? themeStyleOf(global::Doroti.Framework.Widgets.BuildContext context)
     {
         return ElevatedButtonTheme.of(context).style;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -130,8 +130,8 @@ internal class _ElevatedButtonDefaultsM3__elevated_button : ButtonStyle
         this.context = context;
     }
 
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?> textStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle>(Theme.of(this.context).textTheme.labelLarge));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? textStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle>(Theme.of(this.context).textTheme.labelLarge));
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
         {
@@ -140,7 +140,7 @@ internal class _ElevatedButtonDefaultsM3__elevated_button : ButtonStyle
         return (this._colors.surfaceContainerLow);
         throw new InvalidOperationException("Dart closure completed without a value.");
     }));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
         {
@@ -149,7 +149,7 @@ internal class _ElevatedButtonDefaultsM3__elevated_button : ButtonStyle
         return (this._colors.primary);
         throw new InvalidOperationException("Dart closure completed without a value.");
     }));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(WidgetStateProperty.resolveWith((states) =>
     {
         if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
         {
@@ -166,9 +166,9 @@ internal class _ElevatedButtonDefaultsM3__elevated_button : ButtonStyle
         return null;
         throw new InvalidOperationException("Dart closure completed without a value.");
     }));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(this._colors.shadow));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double>? elevation => WidgetStateProperty.resolveWith((states) =>
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(this._colors.shadow));
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Color>(Colors.transparent));
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? elevation => WidgetStateProperty.resolveWith<double?>((states) =>
     {
         if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
         {
@@ -189,14 +189,14 @@ internal class _ElevatedButtonDefaultsM3__elevated_button : ButtonStyle
         return 1.0;
         throw new InvalidOperationException("Dart closure completed without a value.");
     });
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>? padding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(Elevated_buttonLibrary._scaledPadding(this.context)));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? minimumSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(new global::Doroti.Ui.Size(64.0, 40.0)));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double>? iconSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<double>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double>(18.0));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>? iconColor
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>? padding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(Elevated_buttonLibrary._scaledPadding(this.context)));
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size?>? minimumSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(new global::Doroti.Ui.Size(64.0, 40.0)));
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? iconSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<double?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(18.0));
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? iconColor
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>?)(object?)WidgetStateProperty.resolveWith((states) =>
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>?)(object?)WidgetStateProperty.resolveWith((states) =>
             {
                 if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
                 {
@@ -220,8 +220,8 @@ internal class _ElevatedButtonDefaultsM3__elevated_button : ButtonStyle
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? maximumSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(Size.infinite));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.StadiumBorder()));
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size?>? maximumSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<Size>(Size.infinite));
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder?>? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.StadiumBorder()));
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>(global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable);
     public override VisualDensity? visualDensity => Theme.of(this.context).visualDensity;
     public override MaterialTapTargetSize? tapTargetSize => Theme.of(this.context).materialTapTargetSize;

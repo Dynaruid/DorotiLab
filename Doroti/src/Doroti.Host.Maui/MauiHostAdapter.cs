@@ -596,6 +596,8 @@ internal sealed class MauiHostAdapter :
         _textInput.SetClient(configuration, initialState);
     public void UpdateState(DorotiTextEditingState state) => _textInput.UpdateState(state);
     public void SetCaretRect(Rect logicalRect) => _textInput.SetCaretRect(logicalRect);
+    public void ShowTextInput() => _textInput.ShowTextInput();
+    public void HideTextInput() => _textInput.HideTextInput();
     public void ClearClient() => _textInput.ClearClient();
 
     public void Close()

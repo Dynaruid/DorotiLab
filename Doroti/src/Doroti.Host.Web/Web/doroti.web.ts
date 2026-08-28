@@ -1117,7 +1117,10 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   observe(document, "keydown", (event) => {
     const key = event as KeyboardEvent;
     if (!host.viewFocused || !belongsToHost(document.activeElement)) return;
-    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " ", "Tab"].includes(key.key)) key.preventDefault();
+    const nativeTextEditing = document.activeElement === input && !input.hidden;
+    if (key.key === "Tab" ||
+        (!nativeTextEditing && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(key.key)))
+      key.preventDefault();
     host.pressedKeys.set(key.code, key.key);
     requireManaged().dispatchKey(host.id, true, key.repeat, false, key.code, key.key, key.timeStamp);
   });
@@ -1140,6 +1143,9 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   observe(input, "compositionupdate", () => emitText(host));
   observe(input, "compositionend", () => { host.composing = false; host.compositionStart = -1; emitText(host); });
   observe(input, "input", () => emitText(host));
+  observe(document, "selectionchange", () => {
+    if (document.activeElement === input && !input.hidden) emitText(host);
+  });
   observe(input, "keydown", (event) => {
     const key = event as KeyboardEvent;
     if (key.key === "Enter" && !key.shiftKey && (!host.multiline || host.inputAction !== 12)) {
@@ -1252,10 +1258,25 @@ export function setTextInputState(
   host.inputAction = inputAction;
   host.multiline = multiline;
   host.input.style.setProperty("-webkit-text-security", obscureText ? "disc" : "none");
-  host.input.value = text;
+  const normalizedBase = Math.max(0, Math.min(text.length, selectionBase));
+  const normalizedExtent = Math.max(0, Math.min(text.length, selectionExtent));
+  const selectionStart = Math.min(normalizedBase, normalizedExtent);
+  const selectionEnd = Math.max(normalizedBase, normalizedExtent);
+  const selectionDirection: "forward" | "backward" =
+    normalizedBase > normalizedExtent ? "backward" : "forward";
+  const sameText = host.input.value === text;
+  const sameSelection = host.input.selectionStart === selectionStart &&
+    host.input.selectionEnd === selectionEnd &&
+    (selectionStart === selectionEnd || host.input.selectionDirection === selectionDirection);
+
+  // The managed TextField normally accepts a native edit and immediately
+  // publishes it back. Reassigning an identical value or selection here can
+  // terminate the browser's live composition, so only apply real changes.
+  if (!sameText) host.input.value = text;
   host.input.hidden = false;
-  host.input.setSelectionRange(selectionBase, selectionExtent);
-  host.input.focus({ preventScroll: true });
+  if (!sameText || !sameSelection)
+    host.input.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
+  if (document.activeElement !== host.input) host.input.focus({ preventScroll: true });
 }
 
 export function setCaretRect(hostId: number, left: number, top: number, width: number, height: number): void {
@@ -1468,9 +1489,13 @@ function modifierMask(event: MouseEvent | KeyboardEvent): number {
 function emitText(host: BrowserHost): void {
   const start = host.input.selectionStart ?? 0;
   const end = host.input.selectionEnd ?? start;
+  const selectionBackward = host.input.selectionDirection === "backward";
+  const selectionBase = selectionBackward ? end : start;
+  const selectionExtent = selectionBackward ? start : end;
   const composingBase = host.composing ? Math.max(0, host.compositionStart) : -1;
   const composingExtent = host.composing ? end : -1;
-  requireManaged().dispatchTextEditing(host.id, host.input.value, start, end, composingBase, composingExtent);
+  requireManaged().dispatchTextEditing(
+    host.id, host.input.value, selectionBase, selectionExtent, composingBase, composingExtent);
 }
 
 function setViewFocus(host: BrowserHost, focused: boolean, timestamp: number): void {

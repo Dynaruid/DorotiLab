@@ -15,6 +15,9 @@ public sealed class MauiTextInputBridge : IDisposable
     private bool _suspended;
     private bool _updating;
     private bool _disposed;
+    private bool _editingStateDispatchPending;
+    private string? _pendingNativeText;
+    private InputView? _pendingNativeInput;
     private readonly object _caretGate = new();
     private Doroti.Ui.Rect _pendingCaretRect;
     private bool _caretDispatchPending;
@@ -37,6 +40,8 @@ public sealed class MauiTextInputBridge : IDisposable
         _active = entry;
         _entry.TextChanged += HandleTextChanged;
         _editor.TextChanged += HandleTextChanged;
+        _entry.PropertyChanged += HandleInputPropertyChanged;
+        _editor.PropertyChanged += HandleInputPropertyChanged;
         _entry.Completed += HandleCompleted;
         _editor.Completed += HandleCompleted;
         _entry.Focused += HandleFocused;
@@ -70,15 +75,31 @@ public sealed class MauiTextInputBridge : IDisposable
     internal void UpdateState(DorotiTextEditingState state)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        var length = state.text.Length;
+        var start = Math.Clamp(Math.Min(state.selection.baseOffset, state.selection.extentOffset), 0, length);
+        var end = Math.Clamp(Math.Max(state.selection.baseOffset, state.selection.extentOffset), start, length);
+
+        // Do not echo a native edit back into the same control. Reassigning an
+        // accepted text/selection can replace or end the platform IME's active
+        // composing/marked range (for example Gboard's Editable span).
+        if (string.Equals(_active.Text ?? string.Empty, state.text, StringComparison.Ordinal) &&
+            _active.CursorPosition == start &&
+            _active.SelectionLength == end - start)
+        {
+            return;
+        }
+
+        // A framework update supersedes any native TextChanged callback that
+        // was queued before the framework accepted the previous editing state.
+        _pendingNativeText = null;
+        _pendingNativeInput = null;
         _updating = true;
         try
         {
-            _active.Text = state.text;
-            var length = state.text.Length;
-            var start = Math.Clamp(Math.Min(state.selection.baseOffset, state.selection.extentOffset), 0, length);
-            var end = Math.Clamp(Math.Max(state.selection.baseOffset, state.selection.extentOffset), start, length);
-            _active.CursorPosition = start;
-            _active.SelectionLength = end - start;
+            if (!string.Equals(_active.Text ?? string.Empty, state.text, StringComparison.Ordinal))
+                _active.Text = state.text;
+            if (_active.CursorPosition != start) _active.CursorPosition = start;
+            if (_active.SelectionLength != end - start) _active.SelectionLength = end - start;
         }
         finally
         {
@@ -141,7 +162,9 @@ public sealed class MauiTextInputBridge : IDisposable
     {
         if (_disposed) return;
         _hasClient = false;
-        _active.Unfocus();
+        _pendingNativeText = null;
+        _pendingNativeInput = null;
+        DeactivateActiveInput(clearFocus: true);
         _active.Text = string.Empty;
         _active.WidthRequest = 1;
         _active.HeightRequest = 1;
@@ -152,7 +175,7 @@ public sealed class MauiTextInputBridge : IDisposable
     {
         if (_disposed || !_attachOnDemand) return;
         _suspended = true;
-        _active.Unfocus();
+        DeactivateActiveInput(clearFocus: true);
         DetachInputs();
     }
 
@@ -161,6 +184,19 @@ public sealed class MauiTextInputBridge : IDisposable
         if (_disposed || !_attachOnDemand) return;
         _suspended = false;
         if (_hasClient) AttachActiveInput(requestFocus: true);
+    }
+
+    internal void ShowTextInput()
+    {
+        if (_disposed || _suspended || !_hasClient) return;
+        AttachActiveInput(requestFocus: false);
+        DispatchActiveInputMutation(ActivateNativeTextInput);
+    }
+
+    internal void HideTextInput()
+    {
+        if (_disposed) return;
+        DeactivateActiveInput(clearFocus: false);
     }
 
     private void AttachActiveInput(bool requestFocus)
@@ -204,6 +240,59 @@ public sealed class MauiTextInputBridge : IDisposable
         else mutation();
     }
 
+    private void DispatchActiveInputMutation(Action<InputView> mutation)
+    {
+        var expected = _active;
+        void Apply()
+        {
+            if (_disposed || !ReferenceEquals(expected, _active)) return;
+            mutation(expected);
+        }
+
+        if (expected.Dispatcher.IsDispatchRequired) expected.Dispatcher.Dispatch(Apply);
+        else Apply();
+    }
+
+    private void DeactivateActiveInput(bool clearFocus)
+    {
+        DispatchActiveInputMutation(input =>
+        {
+            HideNativeTextInput(input);
+            if (clearFocus) input.Unfocus();
+        });
+    }
+
+    private static void ActivateNativeTextInput(InputView input)
+    {
+        input.Focus();
+#if ANDROID
+        if (input.Handler?.PlatformView is Android.Views.View nativeView)
+        {
+            nativeView.RequestFocus();
+            nativeView.Post(() =>
+            {
+                var inputMethodManager = nativeView.Context?.GetSystemService(
+                    Android.Content.Context.InputMethodService) as Android.Views.InputMethods.InputMethodManager;
+                inputMethodManager?.ShowSoftInput(
+                    nativeView, Android.Views.InputMethods.ShowFlags.Implicit);
+            });
+        }
+#endif
+    }
+
+    private static void HideNativeTextInput(InputView input)
+    {
+#if ANDROID
+        if (input.Handler?.PlatformView is Android.Views.View nativeView)
+        {
+            var inputMethodManager = nativeView.Context?.GetSystemService(
+                Android.Content.Context.InputMethodService) as Android.Views.InputMethods.InputMethodManager;
+            inputMethodManager?.HideSoftInputFromWindow(
+                nativeView.WindowToken, Android.Views.InputMethods.HideSoftInputFlags.None);
+        }
+#endif
+    }
+
     private static void Configure(InputView input, DorotiTextInputConfiguration configuration)
     {
         input.IsReadOnly = configuration.readOnly;
@@ -245,14 +334,89 @@ public sealed class MauiTextInputBridge : IDisposable
     private void HandleTextChanged(object? sender, TextChangedEventArgs args)
     {
         if (_updating || !ReferenceEquals(sender, _active)) return;
-        var text = args.NewTextValue ?? string.Empty;
-        // UIKit can publish TextChanged before MAUI has normalized the native
-        // selection for the new composing value. Flutter editing offsets must
-        // always stay inside the value they accompany, otherwise the selection
-        // overlay (and therefore the iOS magnifier) cannot be updated safely.
-        var start = Math.Clamp(_active.CursorPosition, 0, text.Length);
-        var end = Math.Clamp(start + Math.Max(0, _active.SelectionLength), start, text.Length);
-        EditingStateChanged?.Invoke(new(text, new(start, end), null));
+        QueueNativeEditingState(_active, args.NewTextValue ?? string.Empty);
+    }
+
+    private void HandleInputPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs args)
+    {
+        if (_updating || !ReferenceEquals(sender, _active) ||
+            args.PropertyName is not (nameof(InputView.CursorPosition) or nameof(InputView.SelectionLength))) return;
+        QueueNativeEditingState(_active, _active.Text ?? string.Empty);
+    }
+
+    private void QueueNativeEditingState(InputView input, string text)
+    {
+        _pendingNativeText = text;
+        _pendingNativeInput = input;
+        if (_editingStateDispatchPending) return;
+        _editingStateDispatchPending = true;
+
+        // MAUI raises TextChanged from the native text watcher before Android
+        // has applied the selection that accompanies a multi-character commit.
+        // Flutter's Android embedding publishes editing state after the outer
+        // batch edit, when text and selection describe the same revision. Post
+        // one turn and coalesce changes to preserve that invariant here too.
+        if (!input.Dispatcher.DispatchDelayed(TimeSpan.Zero, PublishPendingEditingState))
+        {
+            _editingStateDispatchPending = false;
+            PublishPendingEditingState();
+        }
+    }
+
+    private void PublishPendingEditingState()
+    {
+        _editingStateDispatchPending = false;
+        var input = _pendingNativeInput;
+        var text = _pendingNativeText;
+        _pendingNativeInput = null;
+        _pendingNativeText = null;
+        if (_disposed || _updating || !_hasClient || text is null ||
+            input is null || !ReferenceEquals(input, _active)) return;
+
+        // UIKit and Android can both normalize selection after their text
+        // callback. Clamp the finalized native selection to the exact value
+        // being sent so the framework never observes mismatched revisions.
+        var start = Math.Clamp(input.CursorPosition, 0, text.Length);
+        var end = Math.Clamp(start + Math.Max(0, input.SelectionLength), start, text.Length);
+        EditingStateChanged?.Invoke(new(text, new(start, end), ReadNativeComposingRange(input, text.Length)));
+    }
+
+    private static DorotiTextSelection? ReadNativeComposingRange(InputView input, int textLength)
+    {
+#if ANDROID
+        if (input.Handler?.PlatformView is Android.Widget.EditText nativeView &&
+            nativeView.EditableText is Android.Text.ISpannable editable)
+        {
+            var start = Android.Views.InputMethods.BaseInputConnection.GetComposingSpanStart(editable);
+            var end = Android.Views.InputMethods.BaseInputConnection.GetComposingSpanEnd(editable);
+            if (start >= 0 && end > start && end <= textLength) return new(start, end);
+        }
+#elif IOS || MACCATALYST
+        if (input.Handler?.PlatformView is UIKit.IUITextInput nativeInput &&
+            nativeInput.MarkedTextRange is { } markedRange)
+        {
+            var beginning = nativeInput.BeginningOfDocument;
+            var start = checked((int)nativeInput.GetOffsetFromPosition(beginning, markedRange.Start));
+            var end = checked((int)nativeInput.GetOffsetFromPosition(beginning, markedRange.End));
+            if (start >= 0 && end > start && end <= textLength) return new(start, end);
+        }
+#elif MACOS
+        AppKit.NSTextView? nativeTextView = input.Handler?.PlatformView switch
+        {
+            AppKit.NSTextView textView => textView,
+            AppKit.NSTextField textField => textField.CurrentEditor as AppKit.NSTextView,
+            AppKit.NSScrollView scrollView => scrollView.DocumentView as AppKit.NSTextView,
+            _ => null,
+        };
+        if (nativeTextView is { HasMarkedText: true })
+        {
+            var range = nativeTextView.MarkedRange;
+            var start = checked((int)range.Location);
+            var end = checked(start + (int)range.Length);
+            if (start >= 0 && end > start && end <= textLength) return new(start, end);
+        }
+#endif
+        return null;
     }
 
     private void HandleCompleted(object? sender, EventArgs args)
@@ -277,6 +441,8 @@ public sealed class MauiTextInputBridge : IDisposable
         _disposed = true;
         _entry.TextChanged -= HandleTextChanged;
         _editor.TextChanged -= HandleTextChanged;
+        _entry.PropertyChanged -= HandleInputPropertyChanged;
+        _editor.PropertyChanged -= HandleInputPropertyChanged;
         _entry.Completed -= HandleCompleted;
         _editor.Completed -= HandleCompleted;
         _entry.Focused -= HandleFocused;

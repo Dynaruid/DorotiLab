@@ -1252,6 +1252,13 @@ internal sealed class _HostTextInputControl : TextInputControl
     public override void setEditingState(TextEditingValue value) =>
         RequireCapability("TextInput.setEditingState").UpdateState(ToHost(value));
 
+    public override void show() => RequireCapability("TextInput.show").ShowTextInput();
+
+    // TextInput schedules hide after detaching the final client. Native hosts
+    // hide as part of ClearClient, so a later scheduled hide must tolerate the
+    // capability already having been released.
+    public override void hide() => _capability?.HideTextInput();
+
     public override void setCaretRect(Rect rect) =>
         RequireCapability("TextInput.setCaretRect").SetCaretRect(rect);
 
