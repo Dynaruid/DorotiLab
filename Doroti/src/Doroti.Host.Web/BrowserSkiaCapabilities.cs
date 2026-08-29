@@ -139,7 +139,6 @@ internal sealed class BrowserSkiaCapabilities :
         {
             _host = host;
             _host.SemanticsAction += HandleSemanticsAction;
-            _host.MetricsChanged += HandleMetricsChanged;
         }
 
         internal Action? Invalidate { get; set; }
@@ -211,12 +210,9 @@ internal sealed class BrowserSkiaCapabilities :
         public void Dispose()
         {
             _host.SemanticsAction -= HandleSemanticsAction;
-            _host.MetricsChanged -= HandleMetricsChanged;
             Invalidate = null;
             _semantics.Clear();
         }
-
-        private void HandleMetricsChanged(ViewMetrics _) => Invalidate?.Invoke();
 
         private void HandleSemanticsAction(long nodeId, long action, string argumentsJson)
         {

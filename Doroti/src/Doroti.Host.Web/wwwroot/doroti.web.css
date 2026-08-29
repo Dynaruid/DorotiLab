@@ -27,6 +27,8 @@ body,
 }
 
 .doroti-root > canvas {
+  position: absolute;
+  inset: 0 auto auto 0;
   display: block;
   touch-action: none;
   outline: none;

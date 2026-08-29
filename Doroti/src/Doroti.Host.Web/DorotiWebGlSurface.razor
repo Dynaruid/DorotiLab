@@ -40,19 +40,18 @@
         _self = DotNetObjectReference.Create(this);
         await _module.InvokeAsync<WebGlInfo>("initializeCanvasPresenter", CanvasId, _self);
         _ready = true;
-        if (_latestTarget is { } target) await RequestPresentAsync(target);
+        if (_latestTarget is { } target) RequestPresent(target);
     }
 
-    internal ValueTask RequestPresentAsync(DorotiResizeEpoch target)
+    internal void RequestPresent(DorotiResizeEpoch target)
     {
-        if (_disposed) return ValueTask.CompletedTask;
+        if (_disposed) return;
         _latestTarget = target;
         if (!_ready || target.PhysicalWidth <= 0 || target.PhysicalHeight <= 0)
-            return ValueTask.CompletedTask;
+            return;
         BrowserInterop.RequestPresent(CanvasId, target.Generation,
             target.LogicalWidth, target.LogicalHeight, target.PhysicalWidth,
             target.PhysicalHeight, target.DevicePixelRatio, target.TimestampMicroseconds);
-        return ValueTask.CompletedTask;
     }
 
     [JSInvokable]
@@ -102,7 +101,7 @@
     [JSInvokable]
     public void ContextRestored()
     {
-        if (_latestTarget is { } target) _ = RequestPresentAsync(target);
+        if (_latestTarget is { } target) RequestPresent(target);
     }
 
     private long _contextGeneration;

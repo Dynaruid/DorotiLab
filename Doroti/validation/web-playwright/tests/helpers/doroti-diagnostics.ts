@@ -106,6 +106,12 @@ export async function openDoroti(page: Page): Promise<DiagnosticBundle> {
   await page.goto(`/?dorotiResizeDiagnostics=1${rendererQuery}`, { waitUntil: "domcontentloaded" });
   await expect(page.locator(".doroti-root")).toBeVisible({ timeout: 120_000 });
   await expect(page.locator("#doroti-surface")).toBeVisible({ timeout: 120_000 });
+  await page.waitForFunction(() => {
+    const diagnostics = (globalThis as typeof globalThis & {
+      __dorotiResizeDiagnostics?: BrowserDiagnostics;
+    }).__dorotiResizeDiagnostics;
+    return (diagnostics?.hosts().length ?? 0) > 0;
+  }, undefined, { timeout: 120_000 });
   return captureSettledPresenter(page, 120_000);
 }
 

@@ -6,7 +6,7 @@ import {
   waitForSettledPresenter,
 } from "./helpers/doroti-diagnostics.js";
 
-test("viewport A-B-C resize commits only the final exact target", async ({ page, runtimeErrors }) => {
+test("viewport A-B-C resize converges to the final exact target with proportional previews", async ({ page, runtimeErrors }) => {
   await openDoroti(page);
   await resetDiagnostics(page);
   const sizes = [
@@ -30,6 +30,21 @@ test("viewport A-B-C resize commits only the final exact target", async ({ page,
   const finalCommit = bundle.trace.filter((entry) => entry.phase === "front-commit").at(-1);
   expect(finalCommit?.backingWidth).toBe(bundle.snapshot.resizeEpoch.physicalWidth);
   expect(finalCommit?.backingHeight).toBe(bundle.snapshot.resizeEpoch.physicalHeight);
+  const previews = bundle.trace.filter((entry) => entry.phase === "resize-preview-commit");
+  expect(previews.length).toBeGreaterThan(0);
+  for (const preview of previews) {
+    const detail = JSON.parse(preview.detail ?? "{}") as {
+      policy?: string;
+      targetLogical?: [number, number];
+      previewCss?: [number, number];
+      scaleX?: number;
+      scaleY?: number;
+    };
+    expect(detail.policy).toBe("retained-front-uniform-cover");
+    expect(detail.scaleX).toBeCloseTo(detail.scaleY ?? Number.NaN, 3);
+    expect(detail.previewCss?.[0]).toBeGreaterThanOrEqual(detail.targetLogical?.[0] ?? Number.POSITIVE_INFINITY);
+    expect(detail.previewCss?.[1]).toBeGreaterThanOrEqual(detail.targetLogical?.[1] ?? Number.POSITIVE_INFINITY);
+  }
   assertPresenterContract(bundle);
 });
 

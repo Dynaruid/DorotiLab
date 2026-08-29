@@ -11,5 +11,7 @@
           Link="fonts\NanumGothic-Regular.ttf" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\src\Doroti.Host.Web\Web\doroti.web.ts"
           Link="web\doroti.web.ts" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\src\Doroti.Host.Web\Web\doroti.raster.worker.ts"
+          Link="web\doroti.raster.worker.ts" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

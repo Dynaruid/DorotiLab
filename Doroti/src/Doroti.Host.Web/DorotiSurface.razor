@@ -44,19 +44,18 @@
             item.Id, item.Channel, item.Adapter, item.Module, item.ExportName));
         _boundary = _target.LoadApplicationBoundary(Application.ManifestAssembly, Application.ApplicationAssembly, plugins);
         _view = _target.CreateView(_session, ViewId, CanvasId, Application.ViewConfiguration, _boundary);
-        _target.AttachSkiaSurface(ViewId, () => _ = InvokeAsync(RequestPresentAsync));
+        _target.AttachSkiaSurface(ViewId, RequestPresent);
         _view.Show();
         _session.dispatcher.setSemanticsTreeEnabled(true);
         // Drain the initial observed target even when the first framework
         // scene was submitted before the owned presenter finished attaching.
-        await RequestPresentAsync();
+        RequestPresent();
     }
 
-    private Task RequestPresentAsync()
+    private void RequestPresent()
     {
         if (_target is not null && _skiaSurface is not null)
-            return _skiaSurface.RequestPresentAsync(_target.CaptureSnapshot(ViewId).ResizeEpoch).AsTask();
-        return Task.CompletedTask;
+            _skiaSurface.RequestPresent(_target.CaptureSnapshot(ViewId).ResizeEpoch);
     }
 
     private string PaintSurface(

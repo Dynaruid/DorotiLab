@@ -39,6 +39,8 @@ interface BrowserHost {
   surfaceGeneration: number;
   resizeGeneration: number;
   emittedResizeGeneration: number;
+  managedResizeInFlightGeneration: number;
+  managedResizePending: boolean;
   resizeEpoch: ResizeEpoch;
   resizeTrace: ResizeTraceEntry[];
   resizeTraceSequence: number;
@@ -617,15 +619,50 @@ function commitObservedResize(
     host, source, logicalWidth, logicalHeight, forceGeneration,
     physicalWidth, physicalHeight, ratio);
   if (changed || host.emittedResizeGeneration !== host.resizeEpoch.generation) {
-    // Flutter publishes metrics directly from ResizeObserver and lets its
-    // frame scheduler coalesce raster work. Keep the preserved old front
-    // visible until an exact staging frame is ready; resetting or blitting the
-    // WebGL default buffer here can race Doroti's asynchronous managed raster.
-    host.canvas.style.width = `${logicalWidth}px`;
-    host.canvas.style.height = `${logicalHeight}px`;
+    // ResizeObserver runs before paint. Fill the new viewport immediately with
+    // the retained exact front using one uniform scale, then let the framework
+    // scheduler coalesce the expensive layout/raster work. This changes CSS
+    // geometry only: the visible backing and WebGL state remain owned by the
+    // exact front commit, so an active managed raster cannot be invalidated.
+    applyRetainedFrontPreview(host, host.resizeEpoch, source);
     host.emittedResizeGeneration = host.resizeEpoch.generation;
-    emit(host);
+    emitResize(host);
   }
+}
+
+function applyRetainedFrontPreview(host: BrowserHost, target: ResizeEpoch, source: string): void {
+  // Canvas backing dimensions are physical pixels. Preserve the logical size
+  // of the retained front explicitly so the preview remains uniform on HiDPI
+  // displays and across DPR changes.
+  const storedLogicalWidth = Number(host.canvas.dataset.dorotiFrontLogicalWidth);
+  const storedLogicalHeight = Number(host.canvas.dataset.dorotiFrontLogicalHeight);
+  const retainedWidth = Number.isFinite(storedLogicalWidth) && storedLogicalWidth > 0
+    ? storedLogicalWidth : Math.max(1, host.canvas.width);
+  const retainedHeight = Number.isFinite(storedLogicalHeight) && storedLogicalHeight > 0
+    ? storedLogicalHeight : Math.max(1, host.canvas.height);
+  const uniformScale = Math.max(
+    target.logicalWidth / retainedWidth,
+    target.logicalHeight / retainedHeight);
+  // Round outwards so sub-pixel arithmetic can never expose a one-pixel band
+  // along the right or bottom edge during an interactive resize.
+  const previewWidth = Math.ceil(retainedWidth * uniformScale * 1000) / 1000;
+  const previewHeight = Math.ceil(retainedHeight * uniformScale * 1000) / 1000;
+  host.canvas.style.width = `${previewWidth}px`;
+  host.canvas.style.height = `${previewHeight}px`;
+  host.canvas.dataset.dorotiResizePreview = "uniform-cover";
+  recordResize(host, "resize-preview-commit", source, {
+    surfaceWidth: retainedWidth,
+    surfaceHeight: retainedHeight,
+    detail: JSON.stringify({
+      policy: "retained-front-uniform-cover",
+      targetLogical: [target.logicalWidth, target.logicalHeight],
+      previewCss: [previewWidth, previewHeight],
+      retainedLogical: [retainedWidth, retainedHeight],
+      retainedBacking: [host.canvas.width, host.canvas.height],
+      scaleX: previewWidth / retainedWidth,
+      scaleY: previewHeight / retainedHeight,
+    }),
+  });
 }
 
 function armDprWatcher(host: BrowserHost): void {
@@ -865,94 +902,6 @@ function blitRectToDefault(
   return { sourceStatus, destinationStatus, priorErrors, error };
 }
 
-function clearDefaultFramebuffer(presenter: CanvasPresenter): {
-  destinationStatus: number; priorErrors: number[]; error: number;
-} {
-  const gl = presenterGl(presenter);
-  const priorErrors: number[] = [];
-  for (let value = gl.getError(); value !== gl.NO_ERROR; value = gl.getError()) priorErrors.push(value);
-  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
-  gl.readBuffer(gl.BACK);
-  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-  gl.drawBuffers([gl.BACK]);
-  const dark = globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
-  gl.disable(gl.SCISSOR_TEST);
-  gl.colorMask(true, true, true, true);
-  gl.depthMask(true);
-  gl.stencilMask(0xff);
-  gl.viewport(0, 0, presenter.canvas.width, presenter.canvas.height);
-  gl.clearColor(...(dark ? [20 / 255, 18 / 255, 24 / 255, 1] as const : [1, 251 / 255, 254 / 255, 1] as const));
-  gl.clearDepth(1);
-  gl.clearStencil(0);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-  const destinationStatus = gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER);
-  const error = gl.getError();
-  gl.flush();
-  presenter.glStateDirty = true;
-  return { destinationStatus, priorErrors, error };
-}
-
-function applyProvisionalEpoch(host: BrowserHost, target: ResizeEpoch, source: string): boolean {
-  const presenter = canvasPresenters.get(host.canvas.id);
-  if (!presenter || presenter.contextLost) return true;
-  if (presenter.mode === "offscreen-bitmap") {
-    // The observer publishes metrics only. Keep the last committed bitmap and
-    // intrinsic display size untouched until an exact replacement is ready.
-    host.canvas.style.width = `${target.logicalWidth}px`;
-    host.canvas.style.height = `${target.logicalHeight}px`;
-    recordResize(host, "provisional-size-deferred", source, {
-      detail: "offscreen bitmap presenter retains the last exact display commit",
-    });
-    return true;
-  }
-  const gl = presenterGl(presenter);
-  const started = performance.now();
-  if (!presenter.front) {
-    if (!commitCanvasEpoch(host, presenter, target, source)) return false;
-    const status = clearDefaultFramebuffer(presenter);
-    recordResize(host, "startup-background-commit",
-      "doroti-presenter", {
-        durationMicroseconds: Math.round((performance.now() - started) * 1000),
-        detail: JSON.stringify({ trigger: source, noRetainedFront: true, ...status }),
-      });
-    return status.destinationStatus === gl.FRAMEBUFFER_COMPLETE &&
-      status.priorErrors.length === 0 && status.error === gl.NO_ERROR;
-  }
-
-  const front = presenter.front;
-  // ResizeObserver runs before browser paint. Commit the target-sized canvas
-  // backing store in this callback, clear it, and copy only the overlap from
-  // the retained exact FBO at 1:1. The browser therefore never receives an old
-  // intrinsic canvas bitmap paired with a new CSS display rectangle to scale.
-  if (!commitCanvasEpoch(host, presenter, target, source)) return false;
-  const copyWidth = Math.min(front.width, target.physicalWidth);
-  const copyHeight = Math.min(front.height, target.physicalHeight);
-  const status = blitRectToDefault(
-    presenter, front,
-    0, 0, copyWidth, copyHeight,
-    0, 0, copyWidth, copyHeight,
-    target.physicalWidth, target.physicalHeight,
-    gl.NEAREST, true);
-  recordResize(host, "stable-front-refresh", "doroti-presenter", {
-      durationMicroseconds: Math.round((performance.now() - started) * 1000),
-      surfaceWidth: target.physicalWidth, surfaceHeight: target.physicalHeight,
-      detail: JSON.stringify({
-        trigger: source,
-        policy: "target-sized-default-top-left-crop",
-        target: [target.physicalWidth, target.physicalHeight],
-        committed: [front.width, front.height],
-        sourceRect: [0, 0, copyWidth, copyHeight],
-        destinationRect: [0, 0, copyWidth, copyHeight],
-        scaleX: 1,
-        scaleY: 1,
-        ...status,
-      }),
-    });
-  return status.sourceStatus === gl.FRAMEBUFFER_COMPLETE &&
-    status.destinationStatus === gl.FRAMEBUFFER_COMPLETE &&
-    status.priorErrors.length === 0 && status.error === gl.NO_ERROR;
-}
-
 function commitCanvasEpoch(
   host: BrowserHost,
   presenter: CanvasPresenter,
@@ -973,6 +922,9 @@ function commitCanvasEpoch(
   }
   host.canvas.style.width = `${target.logicalWidth}px`;
   host.canvas.style.height = `${target.logicalHeight}px`;
+  host.canvas.dataset.dorotiFrontLogicalWidth = String(target.logicalWidth);
+  host.canvas.dataset.dorotiFrontLogicalHeight = String(target.logicalHeight);
+  delete host.canvas.dataset.dorotiResizePreview;
   const gl = presenterGl(presenter);
   const supported = gl.drawingBufferWidth === target.physicalWidth &&
     gl.drawingBufferHeight === target.physicalHeight;
@@ -1175,7 +1127,8 @@ async function runOffscreenPresenter(
   presenter: CanvasPresenter,
   descriptor: PresentDescriptor): Promise<void> {
   const host = hostForCanvas(presenter.canvas);
-  if (!host || host.resizeEpoch.generation !== descriptor.generation) {
+  if (!host || (host.resizeEpoch.generation !== descriptor.generation &&
+      host.managedResizeInFlightGeneration !== descriptor.generation)) {
     recordPresenterTerminal(presenter, descriptor, "superseded", "target changed before offscreen raster");
     return;
   }
@@ -1225,7 +1178,13 @@ async function runOffscreenPresenter(
       latestHost.resizeEpoch.generation === descriptor.generation &&
       presenter.contextGeneration > 0 &&
       bitmap.width === descriptor.physicalWidth && bitmap.height === descriptor.physicalHeight;
-    if (!exact) {
+    const preview = latestHost && !presenter.contextLost &&
+      presenter.current?.requestId === descriptor.requestId &&
+      latestHost.managedResizeInFlightGeneration === descriptor.generation &&
+      descriptor.generation < latestHost.resizeEpoch.generation &&
+      presenter.contextGeneration > 0 &&
+      bitmap.width === descriptor.physicalWidth && bitmap.height === descriptor.physicalHeight;
+    if (!exact && !preview) {
       bitmap.close();
       bitmap = null;
       presenter.bitmapClosed++;
@@ -1241,16 +1200,24 @@ async function runOffscreenPresenter(
     presenter.canvas.height = descriptor.physicalHeight;
     presenter.canvas.style.width = `${descriptor.logicalWidth}px`;
     presenter.canvas.style.height = `${descriptor.logicalHeight}px`;
+    presenter.canvas.dataset.dorotiFrontLogicalWidth = String(descriptor.logicalWidth);
+    presenter.canvas.dataset.dorotiFrontLogicalHeight = String(descriptor.logicalHeight);
     presenter.display!.transferFromImageBitmap(bitmap);
     bitmap = null;
     presenter.bitmapConsumed++;
     presenter.activeBitmaps--;
     presenter.displayWidth = descriptor.physicalWidth;
     presenter.displayHeight = descriptor.physicalHeight;
-    presenter.frontGeneration = descriptor.generation;
+    if (exact) {
+      presenter.frontGeneration = descriptor.generation;
+      delete presenter.canvas.dataset.dorotiResizePreview;
+    } else {
+      applyRetainedFrontPreview(latestHost, latestHost.resizeEpoch, "offscreen-stale-front");
+    }
     presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
-      descriptor.generation, true, "exact ImageBitmap display commit");
-    recordResize(latestHost, "front-commit", "doroti-presenter", {
+      descriptor.generation, exact, exact ? "exact ImageBitmap display commit" :
+        "stale ImageBitmap consumed as proportional retained-front preview");
+    recordResize(latestHost, exact ? "front-commit" : "preview-front-refresh", "doroti-presenter", {
       rafId: descriptor.requestId, requestId: descriptor.requestId,
       backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
       surfaceWidth: presenter.rasterWidth, surfaceHeight: presenter.rasterHeight,
@@ -1260,9 +1227,11 @@ async function runOffscreenPresenter(
       rafId: descriptor.requestId, requestId: descriptor.requestId,
       detail: "ImageBitmap ownership transfer is not a display scan-out acknowledgement",
     });
-    recordPresenterTerminal(presenter, descriptor, "submitted",
-      "exact offscreen ImageBitmap transferred to bitmaprenderer",
+    recordPresenterTerminal(presenter, descriptor, exact ? "submitted" : "superseded",
+      exact ? "exact offscreen ImageBitmap transferred to bitmaprenderer" :
+        "stale offscreen ImageBitmap displayed as proportional retained-front preview",
       Math.round((performance.now() - started) * 1000));
+    releaseManagedResize(latestHost, descriptor.generation);
   } catch (error) {
     if (bitmap) {
       bitmap.close();
@@ -1283,7 +1252,8 @@ function runPresenter(presenter: CanvasPresenter): void {
   if (!descriptor || presenter.contextLost) return;
   presenter.current = descriptor;
   const host = hostForCanvas(presenter.canvas);
-  if (host && host.resizeEpoch.generation !== descriptor.generation) {
+  if (host && host.resizeEpoch.generation !== descriptor.generation &&
+      host.managedResizeInFlightGeneration !== descriptor.generation) {
     recordPresenterTerminal(presenter, descriptor, "superseded", "target changed before presenter drain");
     presenter.current = null;
     schedulePresenter(presenter);
@@ -1309,7 +1279,10 @@ function runPresenter(presenter: CanvasPresenter): void {
     presenter.glStateDirty = false;
     const latestHost = hostForCanvas(presenter.canvas);
     const exactRendered = renderResult === "exact-rendered" || renderResult === "replay-rendered";
-    if (!latestHost || latestHost.resizeEpoch.generation !== descriptor.generation) {
+    const exact = latestHost?.resizeEpoch.generation === descriptor.generation;
+    const preview = latestHost?.managedResizeInFlightGeneration === descriptor.generation &&
+      descriptor.generation < latestHost.resizeEpoch.generation;
+    if (!latestHost || (!exact && !preview)) {
       presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, false,
         "target changed during staging raster");
       recordPresenterTerminal(presenter, descriptor, "superseded", "target changed during raster");
@@ -1318,7 +1291,8 @@ function runPresenter(presenter: CanvasPresenter): void {
         `managed raster result=${renderResult}`);
       recordPresenterTerminal(presenter, descriptor, "superseded", `managed raster result=${renderResult}`);
     } else {
-      if (!commitCanvasEpoch(latestHost, presenter, descriptor, "exact-front-commit"))
+      if (!commitCanvasEpoch(latestHost, presenter, descriptor,
+          exact ? "exact-front-commit" : "preview-front-refresh"))
         throw new Error(`Doroti canvas rejected exact size ${descriptor.physicalWidth}x${descriptor.physicalHeight}.`);
       const commitStatus = blitExactToDefault(
         presenter, staging, descriptor.physicalWidth, descriptor.physicalHeight);
@@ -1333,14 +1307,16 @@ function runPresenter(presenter: CanvasPresenter): void {
       staging.devicePixelRatio = descriptor.devicePixelRatio;
       staging.generation = descriptor.generation;
       presenter.front = staging;
-      presenter.frontGeneration = descriptor.generation;
+      if (exact) presenter.frontGeneration = descriptor.generation;
       presenter.staging = previousFront;
       presenter.rasterWidth = descriptor.physicalWidth;
       presenter.rasterHeight = descriptor.physicalHeight;
       presenter.displayWidth = descriptor.physicalWidth;
       presenter.displayHeight = descriptor.physicalHeight;
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, true, "front commit");
-      recordResize(latestHost, "front-commit", "doroti-presenter", {
+      if (!exact) applyRetainedFrontPreview(latestHost, latestHost.resizeEpoch, "document-stale-front");
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, exact,
+        exact ? "front commit" : "stale GPU front consumed as proportional retained-front preview");
+      recordResize(latestHost, exact ? "front-commit" : "preview-front-refresh", "doroti-presenter", {
         rafId: descriptor.requestId,
         requestId: descriptor.requestId,
         backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
@@ -1352,9 +1328,11 @@ function runPresenter(presenter: CanvasPresenter): void {
         requestId: descriptor.requestId,
         detail: "GPU blit and rAF completion are not a display scan-out acknowledgement",
       });
-      recordPresenterTerminal(presenter, descriptor, "submitted",
-        "exact staging GPU surface committed to the default framebuffer",
+      recordPresenterTerminal(presenter, descriptor, exact ? "submitted" : "superseded",
+        exact ? "exact staging GPU surface committed to the default framebuffer" :
+          "stale staging GPU surface displayed as proportional retained-front preview",
         Math.round((performance.now() - started) * 1000));
+      releaseManagedResize(latestHost, descriptor.generation);
     }
   } catch (error) {
     try {
@@ -1416,7 +1394,35 @@ function browserOperatingSystem(): string {
 }
 
 function emit(host: BrowserHost): void {
+  // Lifecycle/focus/configuration changes must not wait behind a resize frame
+  // (a hidden view may not produce one). Advance the managed mailbox to the
+  // current target; any older raster will then fail admission and the current
+  // snapshot can drive the resume frame.
+  if (host.managedResizeInFlightGeneration !== 0 &&
+      host.managedResizeInFlightGeneration !== host.resizeEpoch.generation) {
+    host.managedResizeInFlightGeneration = host.resizeEpoch.generation;
+    host.managedResizePending = false;
+  }
   managed?.dispatchSnapshot(host.id, snapshot(host));
+}
+
+function emitResize(host: BrowserHost): void {
+  if (host.managedResizeInFlightGeneration !== 0) {
+    host.managedResizePending = true;
+    return;
+  }
+  host.managedResizeInFlightGeneration = host.resizeEpoch.generation;
+  host.managedResizePending = false;
+  managed?.dispatchSnapshot(host.id, snapshot(host));
+}
+
+function releaseManagedResize(host: BrowserHost, generation: number): void {
+  if (host.managedResizeInFlightGeneration !== generation) return;
+  host.managedResizeInFlightGeneration = 0;
+  if (host.managedResizePending || host.resizeEpoch.generation !== generation) {
+    host.managedResizePending = false;
+    emitResize(host);
+  }
 }
 
 function gpuIdentity(canvas: HTMLCanvasElement): GpuIdentity {
@@ -1527,6 +1533,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     logicalWidth, logicalHeight,
     generation: 1, surfaceGeneration: 0, resizeGeneration: 1,
     emittedResizeGeneration: 1, resizeEpoch: initialEpoch,
+    managedResizeInFlightGeneration: 0, managedResizePending: false,
     resizeTrace: [], resizeTraceSequence: 0, inputSequence: 0,
     diagnosticsPublishTimer: 0, dprQuery: null,
     frameRaf: 0, latestFrameCallback: 0,
@@ -1542,10 +1549,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   hosts.set(hostId, host);
   root.dataset.dorotiHostId = String(hostId);
   recordResize(host, "target-observed", "host-initial");
-  if (!applyProvisionalEpoch(host, initialEpoch, "host-initial")) {
-    hosts.delete(hostId);
-    throw new Error("Doroti browser drawing buffer does not support the initial viewport size.");
-  }
+  applyRetainedFrontPreview(host, initialEpoch, "host-initial");
   const observe = (target: EventTarget, name: string, handler: EventListener): void => {
     target.addEventListener(name, handler);
     host.listeners.push({ target, name, handler });
@@ -2146,12 +2150,35 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
     restartCount: 0, pendingRequestIds: new Set(),
   };
   workerDisplayPresenters.set(canvas.id, display);
+  let snapshotInFlight = false;
+  let latestWorkerSnapshot: { hostId: number; value: Record<string, unknown> } | null = null;
+  const sendLatestWorkerSnapshot = (): void => {
+    if (snapshotInFlight || !latestWorkerSnapshot) return;
+    const next = latestWorkerSnapshot;
+    latestWorkerSnapshot = null;
+    snapshotInFlight = true;
+    const targetHost = hosts.get(next.hostId);
+    if (targetHost) recordResize(targetHost, "worker-snapshot-sent", "worker-mailbox", {
+      detail: JSON.stringify({ generation: (next.value.resizeEpoch as Record<string, unknown>)?.generation }),
+    });
+    activeWorker.postMessage({
+      protocolVersion: 1, kind: "snapshot", hostId: next.hostId, snapshot: next.value,
+    });
+  };
+  const queueWorkerSnapshot = (hostId: number, snapshotJson: string): void => {
+    latestWorkerSnapshot = {
+      hostId,
+      value: JSON.parse(snapshotJson) as Record<string, unknown>,
+    };
+    const targetHost = hosts.get(hostId);
+    if (targetHost) recordResize(targetHost, "worker-snapshot-queued", "worker-mailbox");
+    sendLatestWorkerSnapshot();
+  };
   const postInput = (inputKind: string, hostId: number, payload: Record<string, unknown>): void =>
     activeWorker.postMessage({ protocolVersion: 1, kind: "input", inputKind, hostId, payload });
   configureManagedCallbacks({
     dispatchAnimationFrame: () => { throw new Error("main worker host cannot receive managed frame callbacks"); },
-    dispatchSnapshot: (hostId, snapshotJson) =>
-      activeWorker.postMessage({ protocolVersion: 1, kind: "snapshot", hostId, snapshot: JSON.parse(snapshotJson) }),
+    dispatchSnapshot: queueWorkerSnapshot,
     dispatchPointerBatch: (hostId, phase, kind, pointerId, buttons, modifiers, samples) =>
       postInput("pointer", hostId, { phase, kind, pointerId, buttons, modifiers, samples }),
     dispatchWheel: (hostId, x, y, deltaX, deltaY, timestamp, kind) =>
@@ -2226,10 +2253,32 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
           display.contextGeneration = Number(message.contextGeneration);
           emit(host);
           break;
-        case "frame-request":
-          requestAnimationFrame((timestamp) => worker.postMessage({
-            protocolVersion: 1, kind: "frame", callbackId: Number(message.callbackId), timestamp,
-          }));
+        case "snapshot-applied":
+          snapshotInFlight = false;
+          releaseManagedResize(host, Number(message.generation));
+          recordResize(host, "worker-snapshot-applied", "worker-mailbox", {
+            detail: JSON.stringify({ generation: Number(message.generation) }),
+          });
+          sendLatestWorkerSnapshot();
+          break;
+        case "frame-request": {
+          const callbackId = Number(message.callbackId);
+          recordResize(host, "framework-frame-requested", "worker-scheduler", {
+            rafId: callbackId,
+          });
+          requestAnimationFrame((timestamp) => {
+            recordResize(host, "framework-frame-dispatched", "worker-raf", {
+              rafId: callbackId,
+            });
+            worker.postMessage({ protocolVersion: 1, kind: "frame", callbackId, timestamp });
+          });
+          break;
+        }
+        case "managed-raster":
+          recordResize(host, String(message.phase), "worker-managed-skia", {
+            durationMicroseconds: Number(message.durationMicroseconds),
+            surfaceWidth: Number(message.width), surfaceHeight: Number(message.height),
+          });
           break;
         case "present-requested": {
           const requestId = Number(message.requestId);
@@ -2253,13 +2302,16 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
           if (display.latestRequestId === requestId) display.latestRequestId = null;
           const exact = host.resizeEpoch.generation === Number(message.generation) &&
             bitmap.width === Number(message.physicalWidth) && bitmap.height === Number(message.physicalHeight);
+          const bitmapWidth = bitmap.width;
+          const bitmapHeight = bitmap.height;
           if (exact) {
-            const bitmapWidth = bitmap.width;
-            const bitmapHeight = bitmap.height;
             canvas.width = bitmapWidth;
             canvas.height = bitmapHeight;
             canvas.style.width = `${Number(message.logicalWidth)}px`;
             canvas.style.height = `${Number(message.logicalHeight)}px`;
+            canvas.dataset.dorotiFrontLogicalWidth = String(Number(message.logicalWidth));
+            canvas.dataset.dorotiFrontLogicalHeight = String(Number(message.logicalHeight));
+            delete canvas.dataset.dorotiResizePreview;
             display.display.transferFromImageBitmap(bitmap);
             display.bitmapConsumed++;
             display.activeBitmaps--;
@@ -2272,6 +2324,29 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
               requestId, rafId: requestId, backingWidth: canvas.width, backingHeight: canvas.height,
               surfaceWidth: bitmapWidth, surfaceHeight: bitmapHeight,
             });
+          } else if (Number(message.generation) < host.resizeEpoch.generation) {
+            // A worker frame can become stale while its ImageBitmap crosses to
+            // the main thread. It is still newer than the currently displayed
+            // front. Consume it as a proportional retained-front preview and
+            // keep its terminal result superseded; a later exact frame remains
+            // the only frame allowed to clear resize-preview state.
+            canvas.width = bitmapWidth;
+            canvas.height = bitmapHeight;
+            canvas.dataset.dorotiFrontLogicalWidth = String(Number(message.logicalWidth));
+            canvas.dataset.dorotiFrontLogicalHeight = String(Number(message.logicalHeight));
+            display.display.transferFromImageBitmap(bitmap);
+            display.bitmapConsumed++;
+            display.activeBitmaps--;
+            display.rasterWidth = bitmapWidth;
+            display.rasterHeight = bitmapHeight;
+            display.displayWidth = bitmapWidth;
+            display.displayHeight = bitmapHeight;
+            applyRetainedFrontPreview(host, host.resizeEpoch, "worker-stale-front");
+            recordResize(host, "preview-front-refresh", "worker-display", {
+              requestId, rafId: requestId, backingWidth: canvas.width, backingHeight: canvas.height,
+              surfaceWidth: bitmapWidth, surfaceHeight: bitmapHeight,
+              detail: JSON.stringify({ frameGeneration: Number(message.generation), targetGeneration: host.resizeEpoch.generation }),
+            });
           } else {
             bitmap.close();
             display.bitmapClosed++;
@@ -2279,7 +2354,11 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
           }
           worker.postMessage({
             protocolVersion: 1, kind: "receipt", requestId, committed: exact,
-            reason: exact ? "exact ImageBitmap consumed by main bitmaprenderer" : "main display rejected stale bitmap",
+            consumed: exact || Number(message.generation) < host.resizeEpoch.generation,
+            reason: exact ? "exact ImageBitmap consumed by main bitmaprenderer" :
+              Number(message.generation) < host.resizeEpoch.generation
+                ? "stale ImageBitmap consumed as proportional retained-front preview"
+                : "main display rejected non-current bitmap",
           });
           break;
         }
@@ -2336,6 +2415,8 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
             display.currentRequestId = null;
             display.latestRequestId = null;
             display.contextLost = false;
+            snapshotInFlight = false;
+            latestWorkerSnapshot = null;
             for (const requestId of display.pendingRequestIds) {
               recordResize(host, "ack", "worker-supervisor", {
                 requestId, rafId: requestId, terminal: "superseded",

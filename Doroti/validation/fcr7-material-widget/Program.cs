@@ -158,9 +158,24 @@ static void VerifyBrowserInputAndFrontBufferContract()
     Require(source.Contains("lastWheelWasTrackpad", StringComparison.Ordinal) &&
             source.Contains("const kind = isTrackpadWheel(host, wheel) ? 3 : 0;", StringComparison.Ordinal),
         "the browser endpoint classifies continuous wheel samples before managed dispatch");
-    Require(source.Contains("host.emittedResizeGeneration = host.resizeEpoch.generation;\n    emit(host);", StringComparison.Ordinal) &&
-            !source.Contains("applyProvisionalEpoch(host, host.resizeEpoch, source)", StringComparison.Ordinal),
-        "ResizeObserver publishes latest metrics immediately without mutating WebGL during an active raster");
+    Require(source.Contains("applyRetainedFrontPreview(host, host.resizeEpoch, source);", StringComparison.Ordinal) &&
+            source.Contains("policy: \"retained-front-uniform-cover\"", StringComparison.Ordinal) &&
+            !source.Contains("commitCanvasEpoch(host, presenter, target, source)", StringComparison.Ordinal),
+        "ResizeObserver publishes latest metrics with a uniform retained-front CSS preview without mutating WebGL");
+    Require(source.Contains("managedResizeInFlightGeneration", StringComparison.Ordinal) &&
+            source.Contains("function emitResize(host: BrowserHost)", StringComparison.Ordinal) &&
+            source.Contains("function releaseManagedResize(host: BrowserHost, generation: number)", StringComparison.Ordinal) &&
+            source.Contains("\"preview-front-refresh\"", StringComparison.Ordinal),
+        "interactive resize uses a display-completed current-plus-latest mailbox and proportional intermediate fronts");
+
+    var workerPath = System.IO.Path.Combine(AppContext.BaseDirectory, "web", "doroti.raster.worker.ts");
+    Require(File.Exists(workerPath), "the persistent raster worker source is packaged with the validation fixture");
+    var workerSource = File.ReadAllText(workerPath);
+    Require(workerSource.Contains("snapshotAwaitingDisplayGeneration", StringComparison.Ordinal) &&
+            workerSource.Contains("resultReceipt.consumed &&", StringComparison.Ordinal) &&
+            workerSource.Contains("post(\"snapshot-applied\"", StringComparison.Ordinal) &&
+            !workerSource.Contains("import(\"./doroti.web.js\")", StringComparison.Ordinal),
+        "the persistent worker releases its snapshot mailbox only after display consumption without dynamic callback imports");
 }
 
 static void VerifyScrollbarAlphaContract()

@@ -1,5 +1,8 @@
 import {
   configureWorkerBridge,
+  dispatchWorkerAnimationFrame,
+  dispatchWorkerInput,
+  dispatchWorkerSnapshot,
   initializeManagedCallbacks,
 } from "./doroti.web.js";
 
@@ -83,14 +86,33 @@ let presenter: WorkerPresenter | null = null;
 let stopManagedRuntime: (() => void) | null = null;
 let managedRuntime: DotnetRuntime | null = null;
 let dotnetModuleUrl: string | null = null;
+let managedHostReady = false;
+let pendingManagedSnapshot: { hostId: number; value: HostSnapshot } | null = null;
+let snapshotAwaitingDisplayGeneration: number | null = null;
 let requestSequence = 0;
 let controlSequence = 0;
 const pendingControls = new Map<number, { resolve(value: string): void; reject(reason: unknown): void }>();
-const pendingReceipts = new Map<number, { resolve(value: { committed: boolean; reason: string }): void }>();
+const pendingReceipts = new Map<number, {
+  resolve(value: { committed: boolean; consumed: boolean; reason: string }): void;
+}>();
 
 function post(kind: string, payload: Record<string, unknown> = {}, transfer: Transferable[] = []): void {
   (globalThis as unknown as { postMessage(message: unknown, transfer: Transferable[]): void })
     .postMessage({ protocolVersion, hostId, kind, ...payload }, transfer);
+}
+
+function applyManagedSnapshot(messageHostId: number, value: HostSnapshot): void {
+  snapshot = value;
+  if (!managedHostReady) {
+    pendingManagedSnapshot = { hostId: messageHostId, value };
+    return;
+  }
+  dispatchWorkerSnapshot(messageHostId, JSON.stringify(value));
+  // Do not release the main-thread current+latest mailbox merely because .NET
+  // accepted the metrics. The framework scene scheduled by this snapshot must
+  // first cross the bitmap display boundary, otherwise the next snapshot makes
+  // that scene stale before it can ever be shown during a live resize.
+  snapshotAwaitingDisplayGeneration = value.resizeEpoch.generation;
 }
 
 function glRuntime(): EmscriptenGlRuntime {
@@ -150,7 +172,7 @@ function ensurePresenter(): WorkerPresenter {
       const receipt = pendingReceipts.get(interrupted.requestId);
       if (receipt) {
         pendingReceipts.delete(interrupted.requestId);
-        receipt.resolve({ committed: false, reason: "worker WebGL context lost" });
+        receipt.resolve({ committed: false, consumed: false, reason: "worker WebGL context lost" });
       }
     }
     presenter.current = null;
@@ -250,7 +272,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       terminal(request, "superseded", "worker bitmap became stale");
       return;
     }
-    const receipt = new Promise<{ committed: boolean; reason: string }>((resolve) => {
+    const receipt = new Promise<{ committed: boolean; consumed: boolean; reason: string }>((resolve) => {
       pendingReceipts.set(request.requestId, { resolve });
     });
     post("bitmap", {
@@ -263,11 +285,15 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     bitmap = null;
     const resultReceipt = await receipt;
     value.activeBitmaps--;
-    if (resultReceipt.committed) value.bitmapConsumed++;
+    if (resultReceipt.consumed) value.bitmapConsumed++;
     else value.bitmapClosed++;
     surface!.CompleteFrame(request.requestId, request.generation,
       resultReceipt.committed, resultReceipt.reason);
     terminal(request, resultReceipt.committed ? "submitted" : "superseded", resultReceipt.reason);
+    if (resultReceipt.consumed && snapshotAwaitingDisplayGeneration === request.generation) {
+      snapshotAwaitingDisplayGeneration = null;
+      post("snapshot-applied", { generation: request.generation });
+    }
     post("resource", {
       bitmapCreated: value.bitmapCreated, bitmapConsumed: value.bitmapConsumed,
       bitmapClosed: value.bitmapClosed, activeBitmaps: value.activeBitmaps,
@@ -331,29 +357,27 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       void startManagedRuntime();
       break;
     case "snapshot":
-      snapshot = message.snapshot as HostSnapshot;
-      if (hostId) (globalThis as typeof globalThis & { __dispatchSnapshot?: never }).__dispatchSnapshot;
-      // BrowserHostAdapter owns validation and framework invalidation.
-      void initializeManagedCallbacks().then(() => {
-        const callbacks = (globalThis as typeof globalThis & { getDotnetRuntime?: (index: number) => DotnetRuntime })
-          .getDotnetRuntime;
-        void callbacks;
-        // The imported Doroti module retains the managed callback table.
-        import("./doroti.web.js").then((module) => module.dispatchWorkerSnapshot(hostId, JSON.stringify(snapshot)));
-      });
+      applyManagedSnapshot(Number(message.hostId), message.snapshot as HostSnapshot);
       break;
     case "frame":
-      void import("./doroti.web.js").then((module) =>
-        module.dispatchWorkerAnimationFrame(hostId, Number(message.callbackId), Number(message.timestamp)));
+      // BrowserInterop is installed before StartWorker creates the host. Its
+      // first framework frame is part of host startup, so waiting for
+      // StartWorker to return here drops the only callback and deadlocks the
+      // initial GPU/presenter handshake.
+      dispatchWorkerAnimationFrame(hostId, Number(message.callbackId), Number(message.timestamp));
       break;
     case "input":
-      void import("./doroti.web.js").then((module) => module.dispatchWorkerInput(message));
+      dispatchWorkerInput(message);
       break;
     case "receipt": {
       const pending = pendingReceipts.get(Number(message.requestId));
       if (pending) {
         pendingReceipts.delete(Number(message.requestId));
-        pending.resolve({ committed: Boolean(message.committed), reason: String(message.reason ?? "display receipt") });
+        pending.resolve({
+          committed: Boolean(message.committed),
+          consumed: Boolean(message.consumed),
+          reason: String(message.reason ?? "display receipt"),
+        });
       }
       break;
     }
@@ -401,6 +425,12 @@ async function startManagedRuntime(): Promise<void> {
     };
     stopManagedRuntime = appExports.Doroti.Generated.DorotiBootstrap.StopWorker;
     const result = await appExports.Doroti.Generated.DorotiBootstrap.StartWorker();
+    managedHostReady = true;
+    if (pendingManagedSnapshot) {
+      const pending = pendingManagedSnapshot;
+      pendingManagedSnapshot = null;
+      applyManagedSnapshot(pending.hostId, pending.value);
+    }
     post("runtime-ready", { result, mainManagedRuntimeCount: 0, workerManagedRuntimeCount: 1 });
   } catch (error) {
     post("fatal", { error: String(error instanceof Error ? error.stack ?? error.message : error) });
