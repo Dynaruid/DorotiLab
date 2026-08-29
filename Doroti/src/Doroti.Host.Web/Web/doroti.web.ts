@@ -39,8 +39,6 @@ interface BrowserHost {
   surfaceGeneration: number;
   resizeGeneration: number;
   emittedResizeGeneration: number;
-  managedResizeInFlightGeneration: number;
-  managedResizePending: boolean;
   resizeEpoch: ResizeEpoch;
   resizeTrace: ResizeTraceEntry[];
   resizeTraceSequence: number;
@@ -619,57 +617,9 @@ function commitObservedResize(
     host, source, logicalWidth, logicalHeight, forceGeneration,
     physicalWidth, physicalHeight, ratio);
   if (changed || host.emittedResizeGeneration !== host.resizeEpoch.generation) {
-    // ResizeObserver runs before paint. Fill the new viewport immediately with
-    // the retained exact front using one uniform scale, then let the framework
-    // scheduler coalesce the expensive layout/raster work. This changes CSS
-    // geometry only: the visible backing and WebGL state remain owned by the
-    // exact front commit, so an active managed raster cannot be invalidated.
-    applyRetainedFrontPreview(host, host.resizeEpoch, source);
     host.emittedResizeGeneration = host.resizeEpoch.generation;
     emitResize(host);
   }
-}
-
-function applyRetainedFrontPreview(host: BrowserHost, target: ResizeEpoch, source: string): void {
-  // Canvas backing dimensions are physical pixels. Preserve the logical size
-  // of the retained front explicitly so the preview remains uniform on HiDPI
-  // displays and across DPR changes.
-  const storedLogicalWidth = Number(host.canvas.dataset.dorotiFrontLogicalWidth);
-  const storedLogicalHeight = Number(host.canvas.dataset.dorotiFrontLogicalHeight);
-  const retainedWidth = Number.isFinite(storedLogicalWidth) && storedLogicalWidth > 0
-    ? storedLogicalWidth : Math.max(1, host.canvas.width);
-  const retainedHeight = Number.isFinite(storedLogicalHeight) && storedLogicalHeight > 0
-    ? storedLogicalHeight : Math.max(1, host.canvas.height);
-  const uniformScale = Math.max(
-    target.logicalWidth / retainedWidth,
-    target.logicalHeight / retainedHeight);
-  // Round outwards so sub-pixel arithmetic can never expose a one-pixel band
-  // along the right or bottom edge during an interactive resize.
-  const previewWidth = Math.ceil(retainedWidth * uniformScale * 1000) / 1000;
-  const previewHeight = Math.ceil(retainedHeight * uniformScale * 1000) / 1000;
-  // Keep the canvas' CSS box paired with the retained front and apply one
-  // compositor transform. Changing width and height independently asks the
-  // browser to resample the canvas into a new rectangle and can expose a
-  // transient non-uniform stretch while the native window is being dragged.
-  host.canvas.style.width = `${retainedWidth}px`;
-  host.canvas.style.height = `${retainedHeight}px`;
-  host.canvas.style.transformOrigin = "0 0";
-  host.canvas.style.transform = `scale(${uniformScale})`;
-  host.canvas.dataset.dorotiResizePreview = "uniform-cover";
-  recordResize(host, "resize-preview-commit", source, {
-    surfaceWidth: retainedWidth,
-    surfaceHeight: retainedHeight,
-    detail: JSON.stringify({
-      policy: "retained-front-uniform-cover",
-      targetLogical: [target.logicalWidth, target.logicalHeight],
-      previewCss: [previewWidth, previewHeight],
-      retainedLogical: [retainedWidth, retainedHeight],
-      retainedBacking: [host.canvas.width, host.canvas.height],
-      scaleX: previewWidth / retainedWidth,
-      scaleY: previewHeight / retainedHeight,
-      compositorScale: uniformScale,
-    }),
-  });
 }
 
 function armDprWatcher(host: BrowserHost): void {
@@ -1136,8 +1086,7 @@ async function runOffscreenPresenter(
   presenter: CanvasPresenter,
   descriptor: PresentDescriptor): Promise<void> {
   const host = hostForCanvas(presenter.canvas);
-  if (!host || (host.resizeEpoch.generation !== descriptor.generation &&
-      host.managedResizeInFlightGeneration !== descriptor.generation)) {
+  if (!host || host.resizeEpoch.generation !== descriptor.generation) {
     recordPresenterTerminal(presenter, descriptor, "superseded", "target changed before offscreen raster");
     return;
   }
@@ -1187,13 +1136,7 @@ async function runOffscreenPresenter(
       latestHost.resizeEpoch.generation === descriptor.generation &&
       presenter.contextGeneration > 0 &&
       bitmap.width === descriptor.physicalWidth && bitmap.height === descriptor.physicalHeight;
-    const preview = latestHost && !presenter.contextLost &&
-      presenter.current?.requestId === descriptor.requestId &&
-      latestHost.managedResizeInFlightGeneration === descriptor.generation &&
-      descriptor.generation < latestHost.resizeEpoch.generation &&
-      presenter.contextGeneration > 0 &&
-      bitmap.width === descriptor.physicalWidth && bitmap.height === descriptor.physicalHeight;
-    if (!exact && !preview) {
+    if (!exact) {
       bitmap.close();
       bitmap = null;
       presenter.bitmapClosed++;
@@ -1217,18 +1160,10 @@ async function runOffscreenPresenter(
     presenter.activeBitmaps--;
     presenter.displayWidth = descriptor.physicalWidth;
     presenter.displayHeight = descriptor.physicalHeight;
-    if (exact) {
-      presenter.frontGeneration = descriptor.generation;
-      presenter.canvas.style.removeProperty("transform");
-      presenter.canvas.style.removeProperty("transform-origin");
-      delete presenter.canvas.dataset.dorotiResizePreview;
-    } else {
-      applyRetainedFrontPreview(latestHost, latestHost.resizeEpoch, "offscreen-stale-front");
-    }
+    presenter.frontGeneration = descriptor.generation;
     presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
-      descriptor.generation, exact, exact ? "exact ImageBitmap display commit" :
-        "stale ImageBitmap consumed as uniform compositor preview");
-    recordResize(latestHost, exact ? "front-commit" : "preview-front-refresh", "doroti-presenter", {
+      descriptor.generation, true, "exact ImageBitmap display commit");
+    recordResize(latestHost, "front-commit", "doroti-presenter", {
       rafId: descriptor.requestId, requestId: descriptor.requestId,
       backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
       surfaceWidth: presenter.rasterWidth, surfaceHeight: presenter.rasterHeight,
@@ -1238,11 +1173,9 @@ async function runOffscreenPresenter(
       rafId: descriptor.requestId, requestId: descriptor.requestId,
       detail: "ImageBitmap ownership transfer is not a display scan-out acknowledgement",
     });
-    recordPresenterTerminal(presenter, descriptor, exact ? "submitted" : "superseded",
-      exact ? "exact offscreen ImageBitmap transferred to bitmaprenderer" :
-        "stale offscreen ImageBitmap displayed as uniform compositor preview",
+    recordPresenterTerminal(presenter, descriptor, "submitted",
+      "exact offscreen ImageBitmap transferred to bitmaprenderer",
       Math.round((performance.now() - started) * 1000));
-    releaseManagedResize(latestHost, descriptor.generation);
   } catch (error) {
     if (bitmap) {
       bitmap.close();
@@ -1263,8 +1196,7 @@ function runPresenter(presenter: CanvasPresenter): void {
   if (!descriptor || presenter.contextLost) return;
   presenter.current = descriptor;
   const host = hostForCanvas(presenter.canvas);
-  if (host && host.resizeEpoch.generation !== descriptor.generation &&
-      host.managedResizeInFlightGeneration !== descriptor.generation) {
+  if (host && host.resizeEpoch.generation !== descriptor.generation) {
     recordPresenterTerminal(presenter, descriptor, "superseded", "target changed before presenter drain");
     presenter.current = null;
     schedulePresenter(presenter);
@@ -1291,9 +1223,7 @@ function runPresenter(presenter: CanvasPresenter): void {
     const latestHost = hostForCanvas(presenter.canvas);
     const exactRendered = renderResult === "exact-rendered" || renderResult === "replay-rendered";
     const exact = latestHost?.resizeEpoch.generation === descriptor.generation;
-    const preview = latestHost?.managedResizeInFlightGeneration === descriptor.generation &&
-      descriptor.generation < latestHost.resizeEpoch.generation;
-    if (!latestHost || (!exact && !preview)) {
+    if (!latestHost || !exact) {
       presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, false,
         "target changed during staging raster");
       recordPresenterTerminal(presenter, descriptor, "superseded", "target changed during raster");
@@ -1302,8 +1232,7 @@ function runPresenter(presenter: CanvasPresenter): void {
         `managed raster result=${renderResult}`);
       recordPresenterTerminal(presenter, descriptor, "superseded", `managed raster result=${renderResult}`);
     } else {
-      if (!commitCanvasEpoch(latestHost, presenter, descriptor,
-          exact ? "exact-front-commit" : "preview-front-refresh"))
+      if (!commitCanvasEpoch(latestHost, presenter, descriptor, "exact-front-commit"))
         throw new Error(`Doroti canvas rejected exact size ${descriptor.physicalWidth}x${descriptor.physicalHeight}.`);
       const commitStatus = blitExactToDefault(
         presenter, staging, descriptor.physicalWidth, descriptor.physicalHeight);
@@ -1318,16 +1247,15 @@ function runPresenter(presenter: CanvasPresenter): void {
       staging.devicePixelRatio = descriptor.devicePixelRatio;
       staging.generation = descriptor.generation;
       presenter.front = staging;
-      if (exact) presenter.frontGeneration = descriptor.generation;
+      presenter.frontGeneration = descriptor.generation;
       presenter.staging = previousFront;
       presenter.rasterWidth = descriptor.physicalWidth;
       presenter.rasterHeight = descriptor.physicalHeight;
       presenter.displayWidth = descriptor.physicalWidth;
       presenter.displayHeight = descriptor.physicalHeight;
-      if (!exact) applyRetainedFrontPreview(latestHost, latestHost.resizeEpoch, "document-stale-front");
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, exact,
-        exact ? "front commit" : "stale GPU front consumed as uniform compositor preview");
-      recordResize(latestHost, exact ? "front-commit" : "preview-front-refresh", "doroti-presenter", {
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, true,
+        "front commit");
+      recordResize(latestHost, "front-commit", "doroti-presenter", {
         rafId: descriptor.requestId,
         requestId: descriptor.requestId,
         backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
@@ -1339,11 +1267,9 @@ function runPresenter(presenter: CanvasPresenter): void {
         requestId: descriptor.requestId,
         detail: "GPU blit and rAF completion are not a display scan-out acknowledgement",
       });
-      recordPresenterTerminal(presenter, descriptor, exact ? "submitted" : "superseded",
-        exact ? "exact staging GPU surface committed to the default framebuffer" :
-          "stale staging GPU surface displayed as uniform compositor preview",
+      recordPresenterTerminal(presenter, descriptor, "submitted",
+        "exact staging GPU surface committed to the default framebuffer",
         Math.round((performance.now() - started) * 1000));
-      releaseManagedResize(latestHost, descriptor.generation);
     }
   } catch (error) {
     try {
@@ -1405,15 +1331,9 @@ function browserOperatingSystem(): string {
 }
 
 function emit(host: BrowserHost): void {
-  // Lifecycle/focus/configuration changes must not wait behind a resize frame
-  // (a hidden view may not produce one). Advance the managed mailbox to the
-  // current target; any older raster will then fail admission and the current
-  // snapshot can drive the resume frame.
-  if (host.managedResizeInFlightGeneration !== 0 &&
-      host.managedResizeInFlightGeneration !== host.resizeEpoch.generation) {
-    host.managedResizeInFlightGeneration = host.resizeEpoch.generation;
-    host.managedResizePending = false;
-  }
+  // Lifecycle/focus/configuration snapshots carry the current immutable resize
+  // epoch, so an older notification can never roll metrics back.
+  recordResize(host, "managed-snapshot-dispatched", "browser-state");
   managed?.dispatchSnapshot(host.id, snapshot(host));
 }
 
@@ -1422,15 +1342,8 @@ function emitResize(host: BrowserHost): void {
   // every observer generation immediately and let the framework's rAF/latest
   // frame mailboxes coalesce raster work. Waiting for an old frame to display
   // makes interactive resize advance at raster/bitmap-transfer cadence.
-  host.managedResizeInFlightGeneration = host.resizeEpoch.generation;
-  host.managedResizePending = false;
+  recordResize(host, "managed-snapshot-dispatched", "resize-metrics");
   managed?.dispatchSnapshot(host.id, snapshot(host));
-}
-
-function releaseManagedResize(host: BrowserHost, generation: number): void {
-  if (host.managedResizeInFlightGeneration !== generation) return;
-  host.managedResizeInFlightGeneration = 0;
-  host.managedResizePending = false;
 }
 
 function gpuIdentity(canvas: HTMLCanvasElement): GpuIdentity {
@@ -1541,7 +1454,6 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     logicalWidth, logicalHeight,
     generation: 1, surfaceGeneration: 0, resizeGeneration: 1,
     emittedResizeGeneration: 1, resizeEpoch: initialEpoch,
-    managedResizeInFlightGeneration: 0, managedResizePending: false,
     resizeTrace: [], resizeTraceSequence: 0, inputSequence: 0,
     diagnosticsPublishTimer: 0, dprQuery: null,
     frameRaf: 0, latestFrameCallback: 0,
@@ -1557,7 +1469,6 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   hosts.set(hostId, host);
   root.dataset.dorotiHostId = String(hostId);
   recordResize(host, "target-observed", "host-initial");
-  applyRetainedFrontPreview(host, initialEpoch, "host-initial");
   const observe = (target: EventTarget, name: string, handler: EventListener): void => {
     target.addEventListener(name, handler);
     host.listeners.push({ target, name, handler });
@@ -2263,7 +2174,6 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
           break;
         case "snapshot-applied":
           snapshotInFlight = false;
-          releaseManagedResize(host, Number(message.generation));
           recordResize(host, "worker-snapshot-applied", "worker-mailbox", {
             detail: JSON.stringify({ generation: Number(message.generation) }),
           });

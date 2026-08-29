@@ -66,6 +66,9 @@ export default defineConfig({
         channel: "chrome",
         headless: false,
         viewport: null,
+        trace: "on",
+        video: "on",
+        screenshot: "on",
         launchOptions: {
           args: ["--enable-gpu-rasterization", "--ignore-gpu-blocklist"],
         },

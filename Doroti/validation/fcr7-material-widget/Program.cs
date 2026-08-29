@@ -158,24 +158,30 @@ static void VerifyBrowserInputAndFrontBufferContract()
     Require(source.Contains("lastWheelWasTrackpad", StringComparison.Ordinal) &&
             source.Contains("const kind = isTrackpadWheel(host, wheel) ? 3 : 0;", StringComparison.Ordinal),
         "the browser endpoint classifies continuous wheel samples before managed dispatch");
-    Require(source.Contains("applyRetainedFrontPreview(host, host.resizeEpoch, source);", StringComparison.Ordinal) &&
-            source.Contains("policy: \"retained-front-uniform-cover\"", StringComparison.Ordinal) &&
-            !source.Contains("commitCanvasEpoch(host, presenter, target, source)", StringComparison.Ordinal),
-        "ResizeObserver publishes latest metrics with a uniform retained-front CSS preview without mutating WebGL");
-    Require(source.Contains("managedResizeInFlightGeneration", StringComparison.Ordinal) &&
+    Require(!source.Contains("applyRetainedFrontPreview", StringComparison.Ordinal) &&
+            !source.Contains("resize-preview-commit", StringComparison.Ordinal) &&
+            source.Contains("recordResize(host, \"managed-snapshot-dispatched\", \"resize-metrics\");", StringComparison.Ordinal) &&
+            source.Contains("commitCanvasEpoch(latestHost, presenter, descriptor, \"exact-front-commit\")", StringComparison.Ordinal),
+        "ResizeObserver publishes immutable metrics without mutating or scaling the retained visible front");
+    Require(!source.Contains("managedResizeInFlightGeneration", StringComparison.Ordinal) &&
+            !source.Contains("managedResizePending", StringComparison.Ordinal) &&
+            !source.Contains("preview-front-refresh", StringComparison.Ordinal) &&
             source.Contains("function emitResize(host: BrowserHost)", StringComparison.Ordinal) &&
-            source.Contains("function releaseManagedResize(host: BrowserHost, generation: number)", StringComparison.Ordinal) &&
-            source.Contains("\"preview-front-refresh\"", StringComparison.Ordinal),
-        "interactive resize uses a display-completed current-plus-latest mailbox and proportional intermediate fronts");
+            source.Contains("if (!host || host.resizeEpoch.generation !== descriptor.generation)", StringComparison.Ordinal) &&
+            source.Contains("if (!exact)", StringComparison.Ordinal),
+        "interactive resize metrics are independent from presentation and stale surfaces cannot become visible fronts");
 
     var workerPath = System.IO.Path.Combine(AppContext.BaseDirectory, "web", "doroti.raster.worker.ts");
     Require(File.Exists(workerPath), "the persistent raster worker source is packaged with the validation fixture");
     var workerSource = File.ReadAllText(workerPath);
-    Require(workerSource.Contains("snapshotAwaitingDisplayGeneration", StringComparison.Ordinal) &&
-            workerSource.Contains("resultReceipt.consumed &&", StringComparison.Ordinal) &&
+    var workerSnapshotDispatch = workerSource.IndexOf("dispatchWorkerSnapshot(messageHostId, JSON.stringify(value));", StringComparison.Ordinal);
+    var workerMetricsReceipt = workerSource.IndexOf("post(\"snapshot-applied\", { generation: value.resizeEpoch.generation });", StringComparison.Ordinal);
+    Require(workerSnapshotDispatch >= 0 && workerMetricsReceipt > workerSnapshotDispatch &&
+            !workerSource.Contains("snapshotAwaitingDisplayGeneration", StringComparison.Ordinal) &&
+            !workerSource.Contains("resultReceipt.consumed &&", StringComparison.Ordinal) &&
             workerSource.Contains("post(\"snapshot-applied\"", StringComparison.Ordinal) &&
             !workerSource.Contains("import(\"./doroti.web.js\")", StringComparison.Ordinal),
-        "the persistent worker releases its snapshot mailbox only after display consumption without dynamic callback imports");
+        "the persistent worker admits metrics before display completion without dynamic callback imports");
 }
 
 static void VerifyScrollbarAlphaContract()

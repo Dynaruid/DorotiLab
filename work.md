@@ -1,7 +1,7 @@
 # Web 실시간 창 resize를 Flutter식 exact-surface 경로로 전환하는 작업 계획
 
 - 작성일: 2026-08-30
-- 상태: `planned`
+- 상태: `partial` — 제품 구조 변경과 자동 계약/회귀는 PASS, 실제 마우스 drag는 `notVerified`, 연속 Win32 resize 중 `offscreen-worker` exact-front 추격은 미달
 - 대상: `document-webgl`, `offscreen-bitmap`, `offscreen-worker` 세 Web renderer
 - 목표: 창 테두리를 드래그하는 동안 이전 frame을 새 종횡비로 늘려 보이는 preview를 제거하고, 최신 viewport metrics를 presentation 완료와 독립적으로 전달해 exact-size frame이 브라우저 resize를 실시간으로 따라가게 한다.
 - 최종 판정: 자동화는 구조·계약·중간-frame 결함을 검사한다. 실제 마우스/트랙패드 창 resize에서 검은 영역, 비균일 stretch, 버벅이는 추격이 사라졌는지는 headed Chrome 실사용 관찰을 최종 gate로 둔다.
@@ -238,3 +238,68 @@ renderer `auto` 선택은 이 수정과 분리한다. 세 경로 correctness와 
 ## 7. 현재 working tree 경계
 
 계획 작성 전에 원인 가설을 확인하기 위한 uncommitted draft가 Web TypeScript와 Playwright resize test에 존재한다. 이 draft의 uniform compositor preview는 stretch 완화 실험이며, 위 계획의 최종 목표인 preview 제거와 동일하지 않다. 계획 실행 시 HEAD baseline과 draft를 먼저 분리 검토하고, S0 evidence 없이 draft 결과를 완료로 승격하지 않는다.
+
+## 8. 실행 결과 (2026-08-30)
+
+### 8.1 구현
+
+- `applyRetainedFrontPreview`, `resize-preview-commit`, `preview-front-refresh` 제품 경로를 제거했다.
+- `managedResizeInFlightGeneration`/`managedResizePending` presentation lock을 제거하고 각 observer epoch를 `managed-snapshot-dispatched`로 즉시 전달한다.
+- `document-webgl`과 `offscreen-bitmap`은 raster 전과 commit 직전에 현재 epoch가 정확히 일치할 때만 visible front를 교체한다.
+- `offscreen-worker` main display는 현재 browser epoch와 정확히 일치하는 `ImageBitmap`만 소비하고 stale bitmap은 close한다.
+- worker는 `dispatchWorkerSnapshot` 직후 metrics-admission receipt를 보내며 bitmap display terminal과 snapshot mailbox를 분리한다.
+- headed project는 screenshot/video/trace를 항상 남긴다. 42 bounds × 변경 직후/다음 2 rAF = renderer당 126개 화면 sample에서 transform, grid/marker 비율, black/root band, terminal/resource 통계를 기록한다.
+- Windows 보조 gate `Doroti/eng/resize-window-native.ps1`를 추가했다. 고유 Chrome HWND를 찾아 Win32 `SetWindowPos`로 좌/우/상/하/모서리를 12ms 간격, 180 step 연속 조절한다.
+
+### 8.2 baseline
+
+강화한 exact-only oracle을 기존 uniform-cover draft에 실행했을 때 세 renderer 모두 FAIL했다.
+
+- `document-webgl`: 42개 resize epoch 모두 `resize-preview-commit` 발생
+- `offscreen-bitmap`: 중간 sample에서 canvas cover/transform 계약 실패
+- `offscreen-worker`: 중간 sample에서 canvas transform/preview 계약 실패
+
+baseline screenshot/video/trace는 `Doroti/validation/web-playwright/artifacts/resize-exact/baseline-v1/<renderer>`에 남겼다.
+
+### 8.3 126-sample headed Chrome 결과
+
+| renderer | 결과 | metrics 전달 p95 | 첫 exact front p95 | preview | black band | scale/grid delta | queue | terminal/resource |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `document-webgl` | PASS | 0.1ms | 77.9ms | 0 | 0px | 0 / 0 | max 1 | 68/68, failed 0 |
+| `offscreen-bitmap` | PASS | 0.1ms | 106.5ms | 0 | 0px | 0 / 0 | max 1 | 68/68, bitmap 70=70+0, active 0 |
+| `offscreen-worker` | PASS | 0.1ms | 114.6ms | 0 | 0px | 0 / 0 | max 2 | 68/68, bitmap 71=71+0, active 0 |
+
+worker는 pure-black band와 scale 결함은 0이지만 exact frame 전 surface background가 오른쪽 최대 88px, 아래 최대 40px, 126 sample 중 26 paint에서 관측됐다. 이 값은 검정 clear가 아니라 `--doroti-surface-background`이며 최종 수동 체감 gate를 대체하지 않는다.
+
+artifact는 `Doroti/validation/web-playwright/artifacts/resize-exact/final-live/<renderer>`에 renderer별 screenshot/video/trace/`live-resize-report.json`/diagnostics로 남겼다. compositor scan-out은 계속 `browser-present-unverified`다.
+
+### 8.4 180-step Win32 연속 resize 결과
+
+180회 `SetWindowPos` 요청을 성공 횟수로 사용하지 않고 실제 `target-observed`와 exact commit을 판정했다.
+
+| renderer | 실제 browser epoch | active 구간 exact commit 세대 | preview | failed/unpaired | 판정 |
+|---|---:|---:|---:|---:|---|
+| `document-webgl` | 60 | 59 | 0 | 0/0 | PASS |
+| `offscreen-bitmap` | 60 | 59 | 0 | 0/0 | PASS |
+| `offscreen-worker` | 180 | 0 | 0 | 0/0 | **partial** — metrics는 계속 전진하지만 active resize 중 exact display는 종료 후까지 superseded |
+
+worker trace는 다음 snapshot이 이전 present terminal보다 먼저 전달될 수 있음을 직접 확인했고, 최종 resource는 `created 7 = consumed 4 + closed 3`, active 0으로 수렴했다. 다만 “60개 이상의 입력/epoch”는 “60fps exact presentation”과 같지 않다. 특히 worker의 active 구간 exact commit 0은 실제 창 drag에서 content가 추격하지 못할 가능성이므로 완료로 판정하지 않는다.
+
+### 8.5 자동 계약·회귀
+
+- Release Web build: PASS, warning 0/error 0
+- TypeScript/Playwright type check: PASS
+- resize-contract v4: PASS, generated/terminal 22/22, max depth 2, stale present 0
+- FCR-7 Material/widget: PASS. validator를 preview 필수 계약에서 exact-only/metrics-admission 계약으로 갱신했다.
+- renderer Playwright headless:
+  - `document-webgl`: 8 PASS, worker 전용 1 SKIP
+  - `offscreen-bitmap`: 8 PASS, worker 전용 1 SKIP
+  - `offscreen-worker`: 9 PASS, crash/restart 포함
+- wheel 기록: document p95 27.1ms, bitmap 48.7ms, worker 47.0ms. 이 수정만으로 `auto` 선택을 바꾸지 않아 `auto=document-webgl`을 유지한다.
+
+### 8.6 남은 완료 gate
+
+- 실제 Chrome 마우스 창 테두리 drag: `notVerified`
+- 실제 drag에서 worker의 종료 전 exact-front 추격: 현재 자동 evidence상 미달
+- Firefox/Edge/Safari, 60/120/144/165Hz, DPR/monitor 전환: `notVerified`
+- 따라서 5장의 전체 완료 조건은 아직 충족하지 않았으며 상태를 `partial`로 유지한다.
