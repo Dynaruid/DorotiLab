@@ -65,6 +65,11 @@ internal static partial class BrowserInterop
     internal static partial void RecordManagedRaster(
         int hostId, string phase, int surfaceWidth, int surfaceHeight, double durationMicroseconds);
 
+    [JSImport("requestPresent", Module)]
+    internal static partial void RequestPresent(
+        string canvasId, long generation, double logicalWidth, double logicalHeight,
+        int physicalWidth, int physicalHeight, double devicePixelRatio, long timestampMicroseconds);
+
     [JSImport("captureResizeTrace", Module)]
     internal static partial string CaptureResizeTrace(int hostId);
 
@@ -84,7 +89,7 @@ internal static partial class BrowserInterop
     internal static partial void SetTextInputState(
         int hostId, string text, int selectionBase, int selectionExtent,
         string inputMode, string enterKeyHint, bool readOnly, bool obscureText,
-        string autocapitalize, bool autocorrect, int inputAction, bool multiline);
+        string autocapitalize, bool autocorrect, int inputAction, bool multiline, bool attach);
 
     [JSImport("setCaretRect", Module)]
     internal static partial void SetCaretRect(int hostId, double left, double top, double width, double height);
@@ -128,8 +133,8 @@ internal static partial class BrowserInterop
 
     [JSExport]
     internal static void DispatchWheel(
-        int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds) =>
-        BrowserHostAdapter.DispatchWheel(hostId, x, y, deltaX, deltaY, timestampMilliseconds);
+        int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds, int kind) =>
+        BrowserHostAdapter.DispatchWheel(hostId, x, y, deltaX, deltaY, timestampMilliseconds, kind);
 
     [JSExport]
     internal static void DispatchKey(
@@ -148,6 +153,10 @@ internal static partial class BrowserInterop
     [JSExport]
     internal static void DispatchTextAction(int hostId, int action) =>
         BrowserHostAdapter.DispatchTextAction(hostId, action);
+
+    [JSExport]
+    internal static void DispatchTextConnectionClosed(int hostId) =>
+        BrowserHostAdapter.DispatchTextConnectionClosed(hostId);
 
     [JSExport]
     internal static void DispatchSemanticsAction(
@@ -284,6 +293,7 @@ public sealed class BrowserHostAdapter :
     public event Action<RawFocusData>? FocusData;
     public event Action<DorotiTextEditingState>? EditingStateChanged;
     public event Action<DorotiTextInputAction>? ActionPerformed;
+    public event Action? ConnectionClosed;
 
     public string ResolveResourceUrl(string relativeUrl)
     {
@@ -332,17 +342,21 @@ public sealed class BrowserHostAdapter :
     public void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState)
     {
         _textInputConfiguration = configuration;
-        UpdateState(initialState);
+        SetTextInputState(initialState, attach: true);
     }
 
-    public void UpdateState(DorotiTextEditingState state) => BrowserInterop.SetTextInputState(
-        HostId, state.text, state.selection.baseOffset, state.selection.extentOffset,
-        InputMode(_textInputConfiguration.inputType), EnterKeyHint(_textInputConfiguration.inputAction),
-        _textInputConfiguration.readOnly, _textInputConfiguration.obscureText,
-        AutoCapitalize(_textInputConfiguration.textCapitalization),
-        _textInputConfiguration.autocorrect && _textInputConfiguration.enableSuggestions,
-        (int)_textInputConfiguration.inputAction,
-        _textInputConfiguration.inputType == DorotiTextInputType.multiline);
+    public void UpdateState(DorotiTextEditingState state) => SetTextInputState(state, attach: false);
+
+    private void SetTextInputState(DorotiTextEditingState state, bool attach) =>
+        BrowserInterop.SetTextInputState(
+            HostId, state.text, state.selection.baseOffset, state.selection.extentOffset,
+            InputMode(_textInputConfiguration.inputType), EnterKeyHint(_textInputConfiguration.inputAction),
+            _textInputConfiguration.readOnly, _textInputConfiguration.obscureText,
+            AutoCapitalize(_textInputConfiguration.textCapitalization),
+            _textInputConfiguration.autocorrect && _textInputConfiguration.enableSuggestions,
+            (int)_textInputConfiguration.inputAction,
+            _textInputConfiguration.inputType == DorotiTextInputType.multiline,
+            attach);
 
     public void SetCaretRect(Rect logicalRect) => BrowserInterop.SetCaretRect(
         HostId, logicalRect.left, logicalRect.top, logicalRect.width, logicalRect.height);
@@ -465,13 +479,14 @@ public sealed class BrowserHostAdapter :
     }
 
     internal static void DispatchWheel(
-        int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds)
+        int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds, int kind)
     {
         if (!TryGet(hostId, out var host)) return;
         var ratio = host._snapshot.DevicePixelRatio;
         host.PointerData?.Invoke(new([
             new(host._viewId, TimeSpan.FromMilliseconds(timestampMilliseconds), PointerChange.hover,
-                PointerDeviceKind.mouse, 0, x * ratio, y * ratio, 0, 0, 0,
+                kind == 3 ? PointerDeviceKind.trackpad : PointerDeviceKind.mouse,
+                0, x * ratio, y * ratio, 0, 0, 0,
                 deltaX * ratio, deltaY * ratio, PointerSignalKind.scroll),
         ]));
     }
@@ -515,6 +530,11 @@ public sealed class BrowserHostAdapter :
     {
         if (TryGet(hostId, out var host) && Enum.IsDefined(typeof(DorotiTextInputAction), action))
             host.ActionPerformed?.Invoke((DorotiTextInputAction)action);
+    }
+
+    internal static void DispatchTextConnectionClosed(int hostId)
+    {
+        if (TryGet(hostId, out var host)) host.ConnectionClosed?.Invoke();
     }
 
     private static bool TryGet(int hostId, out BrowserHostAdapter host)

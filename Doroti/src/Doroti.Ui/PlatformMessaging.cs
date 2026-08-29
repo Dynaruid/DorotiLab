@@ -142,6 +142,17 @@ public interface ITextInputHostCapability
 
     event Action<DorotiTextInputAction>? ActionPerformed;
 
+    /// <summary>
+    /// Raised when the native endpoint closes an attached text connection
+    /// without a framework clear request (for example, a Web view losing
+    /// focus to another application).
+    /// </summary>
+    event Action? ConnectionClosed
+    {
+        add { }
+        remove { }
+    }
+
     void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState);
 
     void UpdateState(DorotiTextEditingState state);

@@ -1238,6 +1238,7 @@ internal sealed class _HostTextInputControl : TextInputControl
             DartUiInvocation.Managed("package:flutter/services.dart#TextInput.attach"));
         _capability.EditingStateChanged += OnEditingStateChanged;
         _capability.ActionPerformed += OnActionPerformed;
+        _capability.ConnectionClosed += OnConnectionClosed;
         _capability.SetClient(ToHost(configuration), ToHost(client.currentTextEditingValue ?? TextEditingValue.empty));
     }
 
@@ -1312,12 +1313,30 @@ internal sealed class _HostTextInputControl : TextInputControl
         });
     }
 
+    private void OnConnectionClosed()
+    {
+        if (_client is null || _view is null)
+        {
+            return;
+        }
+
+        var client = _client;
+        var view = _view;
+        // Match Flutter's TextInputClient.onConnectionClosed contract: the
+        // native endpoint is already gone, so detach the host bridge before
+        // EditableText clears its connection and unfocuses its FocusNode.
+        DetachCurrent(clearHost: false);
+        using var environmentScope = view.EnterPlatformEnvironmentScope();
+        client.connectionClosed();
+    }
+
     private void DetachCurrent(bool clearHost)
     {
         if (_capability is not null)
         {
             _capability.EditingStateChanged -= OnEditingStateChanged;
             _capability.ActionPerformed -= OnActionPerformed;
+            _capability.ConnectionClosed -= OnConnectionClosed;
             if (clearHost)
             {
                 _capability.ClearClient();

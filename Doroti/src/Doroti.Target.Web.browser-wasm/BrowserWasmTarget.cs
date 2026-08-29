@@ -53,6 +53,12 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
     public string Rid => Identity.Rid;
     public string GraphicsBackend => Identity.GraphicsBackend;
 
+    public string RegisterFont(ReadOnlyMemory<byte> bytes)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return _host.RegisterFont(bytes);
+    }
+
     public DorotiView CreateView(
         DorotiHostSession session,
         ulong viewId,

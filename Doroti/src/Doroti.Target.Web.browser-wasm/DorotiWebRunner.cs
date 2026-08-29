@@ -22,6 +22,10 @@ public static class DorotiWebRunner
             manifestAssembly);
         builder.RootComponents.Add<DorotiRoot>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
+        builder.Services.AddScoped(_ => new HttpClient
+        {
+            BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
+        });
         builder.Services.AddSingleton<IDorotiBrowserTarget, BrowserWasmTarget>();
         builder.Services.AddSingleton(descriptor);
         await builder.Build().RunAsync();

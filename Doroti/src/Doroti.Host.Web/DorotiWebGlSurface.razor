@@ -43,19 +43,20 @@
         if (_latestTarget is { } target) await RequestPresentAsync(target);
     }
 
-    internal async ValueTask RequestPresentAsync(DorotiResizeEpoch target)
+    internal ValueTask RequestPresentAsync(DorotiResizeEpoch target)
     {
-        if (_disposed) return;
+        if (_disposed) return ValueTask.CompletedTask;
         _latestTarget = target;
-        var module = _module;
-        if (!_ready || module is null || target.PhysicalWidth <= 0 || target.PhysicalHeight <= 0) return;
-        await module.InvokeVoidAsync("requestPresent", CanvasId, target.Generation,
+        if (!_ready || target.PhysicalWidth <= 0 || target.PhysicalHeight <= 0)
+            return ValueTask.CompletedTask;
+        BrowserInterop.RequestPresent(CanvasId, target.Generation,
             target.LogicalWidth, target.LogicalHeight, target.PhysicalWidth,
             target.PhysicalHeight, target.DevicePixelRatio, target.TimestampMicroseconds);
+        return ValueTask.CompletedTask;
     }
 
     [JSInvokable]
-    public async Task<string> RenderFrame(
+    public string RenderFrame(
         long generation,
         double logicalWidth,
         double logicalHeight,
@@ -65,14 +66,13 @@
         long timestampMicroseconds,
         int framebuffer,
         int stencilBits,
-        int sampleCount)
+        int sampleCount,
+        bool glStateDirty)
     {
         if (_disposed) return "superseded";
         var target = new DorotiResizeEpoch(generation, logicalWidth, logicalHeight,
             physicalWidth, physicalHeight, devicePixelRatio, timestampMicroseconds);
         if (_latestTarget?.Generation != generation) return "superseded";
-        var glStateDirty = _module is not null &&
-            await _module.InvokeAsync<bool>("consumePresenterGlStateDirty", CanvasId);
         EnsureSurface(physicalWidth, physicalHeight, framebuffer, stencilBits, sampleCount);
         if (glStateDirty) _context!.ResetContext(GRGlBackendState.All);
         string result;
@@ -84,25 +84,23 @@
     }
 
     [JSInvokable]
-    public Task CompleteFrame(long generation, bool committed, string reason)
+    public void CompleteFrame(long generation, bool committed, string reason)
     {
         if (!_disposed) CompletePaint?.Invoke(generation, committed, reason);
-        return Task.CompletedTask;
     }
 
     [JSInvokable]
-    public Task ContextLost(long interruptedGeneration)
+    public void ContextLost(long interruptedGeneration)
     {
         if (interruptedGeneration > 0)
             CompletePaint?.Invoke(interruptedGeneration, false, "WebGL context lost");
         ReleaseGpu();
-        return Task.CompletedTask;
     }
 
     [JSInvokable]
-    public async Task ContextRestored()
+    public void ContextRestored()
     {
-        if (_latestTarget is { } target) await RequestPresentAsync(target);
+        if (_latestTarget is { } target) _ = RequestPresentAsync(target);
     }
 
     private void EnsureSurface(int width, int height, int framebuffer, int stencilBits, int sampleCount)

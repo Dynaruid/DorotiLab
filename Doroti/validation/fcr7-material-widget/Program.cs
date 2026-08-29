@@ -73,6 +73,8 @@ VerifyRadiusSizedMaterialShapes();
 VerifyTypedActionDispatch();
 VerifyTapRegionHitIdentity();
 VerifyVariableGlyphCaretMetrics();
+VerifyBrowserFallbackFontContract();
+VerifyBrowserInputAndFrontBufferContract();
 VerifyMobileSelectionOverlayContracts();
 VerifyFrameworkLifecycleContracts();
 VerifyButtonStyleDispatch();
@@ -117,6 +119,45 @@ Console.WriteLine($"FCR-7 material/widget runtime contract: PASS (configuration=
 
 static Scenario Scenario(string id, string component, IReadOnlyList<string> states, IReadOnlyList<string> actions) => new(id, component, states, actions);
 static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+
+static void VerifyBrowserFallbackFontContract()
+{
+    var path = System.IO.Path.Combine(AppContext.BaseDirectory, "fonts", "NanumGothic-Regular.ttf");
+    Require(File.Exists(path), "the browser fallback font is packaged with the validation fixture");
+    using var fonts = new Doroti.Skia.Rendering.SkiaFallbackFontCollection();
+    var family = fonts.Register(File.ReadAllBytes(path));
+    Require(!string.IsNullOrWhiteSpace(family), "Skia decodes the browser fallback font family");
+    Require(fonts.ContainsCharacter('한') && fonts.ContainsCharacter('글'),
+        "the browser fallback font contains Korean glyphs used by text measurement and raster");
+}
+
+static void VerifyBrowserInputAndFrontBufferContract()
+{
+    var path = System.IO.Path.Combine(AppContext.BaseDirectory, "web", "doroti.web.ts");
+    Require(File.Exists(path), "the browser host source is packaged with the validation fixture");
+    var source = File.ReadAllText(path);
+    Require(source.Contains("preserveDrawingBuffer: 1", StringComparison.Ordinal),
+        "the visible WebGL default buffer preserves the last exact front between browser paints");
+    Require(!source.Contains("applyProvisionalEpoch(host, host.resizeEpoch, \"host-frame\")", StringComparison.Ordinal),
+        "input rAF does not re-blit an older full-screen front before every managed raster");
+    Require(source.Contains("if (host.composing) return;", StringComparison.Ordinal),
+        "managed text acknowledgements cannot overwrite a browser-owned IME composition");
+    Require(source.Contains("focusActiveEndpoint(host);", StringComparison.Ordinal),
+        "window activation and pointer focus preserve an attached native text endpoint");
+    Require(source.Contains("dispatchTextConnectionClosed(host.id)", StringComparison.Ordinal) &&
+            source.Contains("}, 100);", StringComparison.Ordinal) &&
+            source.Contains("document.visibilityState === \"hidden\"", StringComparison.Ordinal),
+        "window blur closes the text connection after Flutter's grace period while hidden tabs retain it");
+    Require(source.Contains("requireManaged().dispatchWheel(", StringComparison.Ordinal) &&
+            !source.Contains("wheelDeltaY +=", StringComparison.Ordinal),
+        "wheel samples reach the framework immediately instead of losing trackpad cadence through accumulation");
+    Require(source.Contains("lastWheelWasTrackpad", StringComparison.Ordinal) &&
+            source.Contains("const kind = isTrackpadWheel(host, wheel) ? 3 : 0;", StringComparison.Ordinal),
+        "the browser endpoint classifies continuous wheel samples before managed dispatch");
+    Require(source.Contains("host.emittedResizeGeneration = host.resizeEpoch.generation;\n    emit(host);", StringComparison.Ordinal) &&
+            !source.Contains("applyProvisionalEpoch(host, host.resizeEpoch, source)", StringComparison.Ordinal),
+        "ResizeObserver publishes latest metrics immediately without mutating WebGL during an active raster");
+}
 
 static void VerifyScrollbarAlphaContract()
 {

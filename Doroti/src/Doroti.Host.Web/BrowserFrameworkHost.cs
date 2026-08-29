@@ -7,12 +7,19 @@ namespace Doroti.Host.Web;
 public sealed class BrowserFrameworkHost : IDisposable
 {
     private readonly string _targetIdentity;
+    private readonly Doroti.Skia.Rendering.SkiaFallbackFontCollection _fallbackFonts = new();
     private readonly Dictionary<ulong, (DorotiView View, BrowserHostAdapter Host, BrowserSkiaCapabilities Graphics)> _views = [];
     private readonly Dictionary<ulong, DorotiHostSession> _sessions = [];
     private bool _disposed;
 
     public BrowserFrameworkHost(string targetIdentity = "browser-wasm/document-canvas-webgl2") =>
         _targetIdentity = targetIdentity;
+
+    public string RegisterFont(ReadOnlyMemory<byte> bytes)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        return _fallbackFonts.Register(bytes);
+    }
 
     public DorotiView CreateView(
         DorotiHostSession session,
@@ -29,7 +36,7 @@ public sealed class BrowserFrameworkHost : IDisposable
 
         var host = new BrowserHostAdapter(viewId, canvasId, configuration.logicalSize);
         var graphics = new BrowserSkiaCapabilities(viewId, host,
-            configuration.backgroundColor, configuration.darkBackgroundColor);
+            configuration.backgroundColor, configuration.darkBackgroundColor, _fallbackFonts);
         var messages = new BrowserPlatformMessageCapability();
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
@@ -120,6 +127,8 @@ public sealed class BrowserFrameworkHost : IDisposable
             value.View.Dispose();
         }
         _views.Clear();
+        _sessions.Clear();
+        _fallbackFonts.Dispose();
     }
 
     private sealed class BrowserPlatformMessageCapability : IPlatformMessageHostCapability

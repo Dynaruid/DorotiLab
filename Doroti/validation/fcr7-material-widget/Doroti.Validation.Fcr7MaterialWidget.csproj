@@ -5,6 +5,11 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Doroti.Framework.Material\Doroti.Framework.Material.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Ui\Doroti.Ui.csproj" />
+    <None Include="..\..\src\Doroti.Host.Web\wwwroot\fonts\NanumGothic-Regular.ttf"
+          Link="fonts\NanumGothic-Regular.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\src\Doroti.Host.Web\Web\doroti.web.ts"
+          Link="web\doroti.web.ts" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

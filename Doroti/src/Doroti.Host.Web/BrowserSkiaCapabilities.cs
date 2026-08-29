@@ -19,13 +19,14 @@ internal sealed class BrowserSkiaCapabilities :
     private readonly Dictionary<long, SkiaPaintCompletion> _pendingPaints = [];
 
     internal BrowserSkiaCapabilities(ulong viewId, BrowserHostAdapter host,
-        Color? backgroundColor, Color? darkBackgroundColor)
+        Color? backgroundColor, Color? darkBackgroundColor,
+        SkiaFallbackFontCollection? fallbackFonts = null)
     {
         _host = host;
         _bridge = new(host);
         _renderer = new(viewId, _bridge, backgroundColor, darkBackgroundColor,
             "browser-wasm/document-canvas-webgl2", DorotiSkiaRuntimeEffects.WebGpuBackend,
-            "doroti-owned-canvas-webgl2-skia-gpu");
+            "doroti-owned-canvas-webgl2-skia-gpu", fallbackFonts: fallbackFonts);
     }
 
     public event Action<SemanticsActionEvent>? Action

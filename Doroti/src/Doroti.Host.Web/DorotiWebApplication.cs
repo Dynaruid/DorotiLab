@@ -18,6 +18,8 @@ public sealed record BrowserFrameDiagnostics(
 /// <summary>Composition-root boundary implemented by Doroti.Target.Web.browser-wasm.</summary>
 public interface IDorotiBrowserTarget : IDisposable
 {
+    string RegisterFont(ReadOnlyMemory<byte> bytes);
+
     DorotiApplicationBoundary LoadApplicationBoundary(
         Assembly manifestAssembly,
         Assembly applicationAssembly,

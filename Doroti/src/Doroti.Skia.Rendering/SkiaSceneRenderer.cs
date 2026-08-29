@@ -30,6 +30,7 @@ public sealed class SkiaSceneRenderer :
     private readonly string _runtimeEffectBackend;
     private readonly string _diagnosticsBackend;
     private readonly bool _enablePictureRasterCache;
+    private readonly SkiaFallbackFontCollection? _fallbackFonts;
     private SKColor _backgroundColor;
     private readonly object _gate = new();
     private readonly object _paintGate = new();
@@ -75,7 +76,8 @@ public sealed class SkiaSceneRenderer :
         string targetIdentity,
         string runtimeEffectBackend,
         string diagnosticsBackend,
-        bool enablePictureRasterCache = true)
+        bool enablePictureRasterCache = true,
+        SkiaFallbackFontCollection? fallbackFonts = null)
     {
         _viewId = viewId;
         _host = host;
@@ -85,6 +87,7 @@ public sealed class SkiaSceneRenderer :
         _runtimeEffectBackend = runtimeEffectBackend;
         _diagnosticsBackend = diagnosticsBackend;
         _enablePictureRasterCache = enablePictureRasterCache;
+        _fallbackFonts = fallbackFonts;
         _backgroundColor = ResolveBackgroundColor(_host.Configuration.platformBrightness);
         _host.SemanticsAction += HandleSemanticsAction;
         _host.InputReceived += HandleInput;
@@ -1068,7 +1071,7 @@ public sealed class SkiaSceneRenderer :
     {
         var key = new TextRenderKey(fontFamily ?? string.Empty, fontSize, color);
         if (_textRenderResources.TryGetValue(key, out var resources)) return resources;
-        resources = new TextRenderResources(fontFamily, fontSize, color);
+        resources = new TextRenderResources(fontFamily, fontSize, color, _fallbackFonts);
         _textRenderResources.Add(key, resources);
         return resources;
     }
@@ -1078,12 +1081,18 @@ public sealed class SkiaSceneRenderer :
     private sealed class TextRenderResources : IDisposable
     {
         private readonly TextFontResource _primary;
+        private readonly SkiaFallbackFontCollection? _registeredFallbacks;
         private readonly Dictionary<int, TextFontResource> _fallbackByCodePoint = [];
         private readonly Dictionary<string, TextFontResource> _fallbackByFamily =
             new(StringComparer.OrdinalIgnoreCase);
 
-        internal TextRenderResources(string? fontFamily, float fontSize, SKColor color)
+        internal TextRenderResources(
+            string? fontFamily,
+            float fontSize,
+            SKColor color,
+            SkiaFallbackFontCollection? registeredFallbacks)
         {
+            _registeredFallbacks = registeredFallbacks;
             _primary = new TextFontResource(SKTypeface.FromFamilyName(fontFamily), fontSize);
             Paint = new SKPaint { Color = color, IsAntialias = true };
         }
@@ -1170,6 +1179,19 @@ public sealed class SkiaSceneRenderer :
             if (_primary.Font.ContainsGlyph(codePoint)) return _primary;
             if (_fallbackByCodePoint.TryGetValue(codePoint, out var cached)) return cached;
 
+            var registeredTypeface = _registeredFallbacks?.MatchCharacter(codePoint);
+            if (registeredTypeface is not null)
+            {
+                if (!_fallbackByFamily.TryGetValue(registeredTypeface.FamilyName, out var registered))
+                {
+                    registered = new TextFontResource(
+                        registeredTypeface, _primary.Font.Size, ownsTypeface: false);
+                    _fallbackByFamily.Add(registered.FamilyName, registered);
+                }
+                _fallbackByCodePoint.Add(codePoint, registered);
+                return registered;
+            }
+
             var matchedTypeface = SKFontManager.Default.MatchCharacter(_primary.FamilyName, codePoint);
             if (matchedTypeface is null)
             {
@@ -1197,7 +1219,10 @@ public sealed class SkiaSceneRenderer :
             _primary.Dispose();
         }
 
-        private sealed class TextFontResource(SKTypeface typeface, float fontSize) : IDisposable
+        private sealed class TextFontResource(
+            SKTypeface typeface,
+            float fontSize,
+            bool ownsTypeface = true) : IDisposable
         {
             internal SKTypeface Typeface { get; } = typeface;
             internal SKFont Font { get; } = new(typeface, fontSize);
@@ -1206,7 +1231,7 @@ public sealed class SkiaSceneRenderer :
             public void Dispose()
             {
                 Font.Dispose();
-                Typeface.Dispose();
+                if (ownsTypeface) Typeface.Dispose();
             }
         }
     }

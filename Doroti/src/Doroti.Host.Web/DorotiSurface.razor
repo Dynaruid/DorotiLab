@@ -2,6 +2,7 @@
 @using Doroti.Ui
 @implements IAsyncDisposable
 @inject IDorotiBrowserTarget BrowserTarget
+@inject HttpClient Http
 
 <main class="doroti-root" data-doroti-host="canvas-only">
     <DorotiWebGlSurface @ref="_skiaSurface" CanvasId="@CanvasId" Paint="PaintSurface"
@@ -12,6 +13,8 @@
 
 @code {
     private const ulong ViewId = 7301;
+    private const string DefaultFallbackFontUrl =
+        "_content/Doroti.Host.Web/fonts/NanumGothic-Regular.ttf";
     private DorotiWebGlSurface? _skiaSurface;
     private IDorotiBrowserTarget? _target;
     private DorotiApplicationBoundary? _boundary;
@@ -32,6 +35,8 @@
         _started = true;
         await BrowserHostRuntime.EnsureInitializedAsync();
         _target = BrowserTarget;
+        var fallbackFont = await Http.GetByteArrayAsync(DefaultFallbackFontUrl);
+        _target.RegisterFont(fallbackFont);
         _session = new DorotiHostSession(Application.EntrypointFactory());
         using var dispatcherScope = _session.dispatcher.EnterScope();
         _session.Start(deferFrameworkBootstrap: true);

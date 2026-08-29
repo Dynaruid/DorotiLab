@@ -2,11 +2,12 @@ interface ManagedCallbacks {
   dispatchAnimationFrame(hostId: number, callbackId: number, timestamp: number): void;
   dispatchSnapshot(hostId: number, snapshotJson: string): void;
   dispatchPointerBatch(hostId: number, phase: number, kind: number, pointerId: number, buttons: number, modifiers: number, samples: number[]): void;
-  dispatchWheel(hostId: number, x: number, y: number, deltaX: number, deltaY: number, timestamp: number): void;
+  dispatchWheel(hostId: number, x: number, y: number, deltaX: number, deltaY: number, timestamp: number, kind: number): void;
   dispatchKey(hostId: number, pressed: boolean, repeat: boolean, synthesized: boolean, code: string, key: string, timestamp: number): void;
   dispatchFocus(hostId: number, focused: boolean, timestamp: number): void;
   dispatchTextEditing(hostId: number, text: string, selectionBase: number, selectionExtent: number, composingBase: number, composingExtent: number): void;
   dispatchTextAction(hostId: number, action: number): void;
+  dispatchTextConnectionClosed(hostId: number): void;
   dispatchSemanticsAction(hostId: number, nodeId: number, action: number, argumentsJson: string): void;
 }
 
@@ -44,15 +45,25 @@ interface BrowserHost {
   dprQuery: MediaQueryList | null;
   frameRaf: number;
   latestFrameCallback: number;
+  lastWheelDeltaX: number;
+  lastWheelDeltaY: number;
+  lastWheelTimestamp: number;
+  lastWheelWasTrackpad: boolean;
   gpu: GpuIdentity;
   observers: ResizeObserver[];
   listeners: ListenerRegistration[];
   composing: boolean;
   compositionStart: number;
+  lastTextValue: string;
+  lastSelectionBase: number;
+  lastSelectionExtent: number;
+  lastComposingBase: number;
+  lastComposingExtent: number;
   viewFocused: boolean;
   pressedKeys: Map<string, string>;
   inputAction: number;
   multiline: boolean;
+  pendingBlurConnectionCloseTimer: number;
 }
 
 interface ResizeEpoch {
@@ -89,6 +100,7 @@ interface PresentDescriptor extends ResizeEpoch {
 }
 
 interface ManagedCanvasPresenter {
+  invokeMethod<T>(name: string, ...args: unknown[]): T;
   invokeMethodAsync(name: string, ...args: unknown[]): Promise<unknown>;
 }
 
@@ -210,6 +222,7 @@ interface DorotiAssemblyExports {
           DispatchFocus: ManagedCallbacks["dispatchFocus"];
           DispatchTextEditing: ManagedCallbacks["dispatchTextEditing"];
           DispatchTextAction: ManagedCallbacks["dispatchTextAction"];
+          DispatchTextConnectionClosed: ManagedCallbacks["dispatchTextConnectionClosed"];
           DispatchSemanticsAction: ManagedCallbacks["dispatchSemanticsAction"];
         };
       };
@@ -355,8 +368,13 @@ function commitObservedResize(
   const changed = updateResizeEpoch(
     host, source, logicalWidth, logicalHeight, forceGeneration,
     physicalWidth, physicalHeight, ratio);
-  if (!applyProvisionalEpoch(host, host.resizeEpoch, source)) return;
   if (changed || host.emittedResizeGeneration !== host.resizeEpoch.generation) {
+    // Flutter publishes metrics directly from ResizeObserver and lets its
+    // frame scheduler coalesce raster work. Keep the preserved old front
+    // visible until an exact staging frame is ready; resetting or blitting the
+    // WebGL default buffer here can race Doroti's asynchronous managed raster.
+    host.canvas.style.width = `${logicalWidth}px`;
+    host.canvas.style.height = `${logicalHeight}px`;
     host.emittedResizeGeneration = host.resizeEpoch.generation;
     emit(host);
   }
@@ -740,7 +758,12 @@ export function initializeCanvasPresenter(
   const runtime = emscriptenGl();
   const context = runtime.createContext(canvas, {
     alpha: 1, depth: 1, stencil: 8, antialias: 0, premultipliedAlpha: 1,
-    preserveDrawingBuffer: 0, preferLowPowerToHighPerformance: 0,
+    // The visible canvas is composited independently of Doroti's retained
+    // front/staging FBOs. Preserve the last exact default-buffer commit so a
+    // browser repaint never samples a discarded buffer between managed
+    // rasters. This also avoids a full-screen old-front blit on every input
+    // rAF, which caused visible key flicker and wheel/resize latency.
+    preserveDrawingBuffer: 1, preferLowPowerToHighPerformance: 0,
     failIfMajorPerformanceCaveat: 1, majorVersion: 2, minorVersion: 0,
     enableExtensionsByDefault: 1, explicitSwapControl: 0, renderViaOffscreenBackBuffer: 0,
   });
@@ -775,7 +798,7 @@ export function initializeCanvasPresenter(
       });
       emit(host);
     }
-    void callback.invokeMethodAsync("ContextLost", interruptedGeneration);
+    callback.invokeMethod<void>("ContextLost", interruptedGeneration);
   });
   listen("webglcontextrestored", () => {
     presenter.contextLost = false;
@@ -795,7 +818,8 @@ export function initializeCanvasPresenter(
         backingWidth: canvas.width, backingHeight: canvas.height,
       });
     }
-    void callback.invokeMethodAsync("ContextRestored").finally(() => schedulePresenter(presenter));
+    callback.invokeMethod<void>("ContextRestored");
+    schedulePresenter(presenter);
   });
   canvasPresenters.set(canvasId, presenter);
   return presenterGlInfo(presenter);
@@ -827,11 +851,11 @@ function schedulePresenter(presenter: CanvasPresenter): void {
   presenter.drainScheduled = true;
   queueMicrotask(() => {
     presenter.drainScheduled = false;
-    void runPresenter(presenter);
+    runPresenter(presenter);
   });
 }
 
-async function runPresenter(presenter: CanvasPresenter): Promise<void> {
+function runPresenter(presenter: CanvasPresenter): void {
   const descriptor = presenter.latest;
   presenter.latest = null;
   if (!descriptor || presenter.contextLost) return;
@@ -855,18 +879,19 @@ async function runPresenter(presenter: CanvasPresenter): Promise<void> {
   gl.viewport(0, 0, staging.width, staging.height);
   presenter.glStateDirty = true;
   try {
-    const renderResult = String(await presenter.callback.invokeMethodAsync("RenderFrame",
+    const renderResult = String(presenter.callback.invokeMethod<string>("RenderFrame",
       descriptor.generation, descriptor.logicalWidth, descriptor.logicalHeight,
       descriptor.physicalWidth, descriptor.physicalHeight, descriptor.devicePixelRatio,
-      descriptor.timestampMicroseconds, staging.framebufferId, 8, 0));
+      descriptor.timestampMicroseconds, staging.framebufferId, 8, 0, presenter.glStateDirty));
+    presenter.glStateDirty = false;
     const latestHost = hostForCanvas(presenter.canvas);
     const exactRendered = renderResult === "exact-rendered" || renderResult === "replay-rendered";
     if (!latestHost || latestHost.resizeEpoch.generation !== descriptor.generation) {
-      await presenter.callback.invokeMethodAsync("CompleteFrame", descriptor.generation, false,
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.generation, false,
         "target changed during staging raster");
       recordPresenterTerminal(presenter, descriptor, "superseded", "target changed during raster");
     } else if (!exactRendered) {
-      await presenter.callback.invokeMethodAsync("CompleteFrame", descriptor.generation, false,
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.generation, false,
         `managed raster result=${renderResult}`);
       recordPresenterTerminal(presenter, descriptor, "superseded", `managed raster result=${renderResult}`);
     } else {
@@ -887,7 +912,7 @@ async function runPresenter(presenter: CanvasPresenter): Promise<void> {
       presenter.front = staging;
       presenter.frontGeneration = descriptor.generation;
       presenter.staging = previousFront;
-      await presenter.callback.invokeMethodAsync("CompleteFrame", descriptor.generation, true, "front commit");
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.generation, true, "front commit");
       recordResize(latestHost, "front-commit", "doroti-presenter", {
         rafId: descriptor.requestId,
         backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
@@ -904,7 +929,7 @@ async function runPresenter(presenter: CanvasPresenter): Promise<void> {
     }
   } catch (error) {
     try {
-      await presenter.callback.invokeMethodAsync("CompleteFrame", descriptor.generation, false, String(error));
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.generation, false, String(error));
     } catch { }
     recordPresenterTerminal(presenter, descriptor, "failed", String(error));
   } finally {
@@ -992,7 +1017,8 @@ function gpuIdentity(canvas: HTMLCanvasElement): GpuIdentity {
 export function configureManagedCallbacks(callbacks: ManagedCallbacks): void {
   const required: (keyof ManagedCallbacks)[] = [
     "dispatchAnimationFrame", "dispatchSnapshot", "dispatchPointerBatch", "dispatchWheel",
-    "dispatchKey", "dispatchFocus", "dispatchTextEditing", "dispatchTextAction", "dispatchSemanticsAction",
+    "dispatchKey", "dispatchFocus", "dispatchTextEditing", "dispatchTextAction",
+    "dispatchTextConnectionClosed", "dispatchSemanticsAction",
   ];
   if (!callbacks || required.some((name) => typeof callbacks[name] !== "function")) {
     throw new Error("Doroti browser managed callback ABI v1 is incomplete.");
@@ -1016,6 +1042,7 @@ export async function initializeManagedCallbacks(): Promise<"ready"> {
     dispatchFocus: interop.DispatchFocus,
     dispatchTextEditing: interop.DispatchTextEditing,
     dispatchTextAction: interop.DispatchTextAction,
+    dispatchTextConnectionClosed: interop.DispatchTextConnectionClosed,
     dispatchSemanticsAction: interop.DispatchSemanticsAction,
   });
   return "ready";
@@ -1051,9 +1078,14 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     emittedResizeGeneration: 1, resizeEpoch: initialEpoch,
     resizeTrace: [], resizeTraceSequence: 0, dprQuery: null,
     frameRaf: 0, latestFrameCallback: 0,
+    lastWheelDeltaX: 0, lastWheelDeltaY: 0, lastWheelTimestamp: 0,
+    lastWheelWasTrackpad: false,
     gpu: gpuIdentity(canvas), observers: [], listeners: [],
-    composing: false, compositionStart: -1, viewFocused: false, pressedKeys: new Map(),
-    inputAction: 2, multiline: false,
+    composing: false, compositionStart: -1,
+    lastTextValue: "", lastSelectionBase: 0, lastSelectionExtent: 0,
+    lastComposingBase: -1, lastComposingExtent: -1,
+    viewFocused: false, pressedKeys: new Map(),
+    inputAction: 2, multiline: false, pendingBlurConnectionCloseTimer: 0,
   };
   hosts.set(hostId, host);
   recordResize(host, "target-observed", "host-initial");
@@ -1065,8 +1097,14 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     target.addEventListener(name, handler);
     host.listeners.push({ target, name, handler });
   };
+  const belongsToHost = (target: EventTarget | null): boolean =>
+    target === root || target === canvas || target === input ||
+    (target instanceof Node && (root.contains(target) || semantics.contains(target)));
   observe(document, "visibilitychange", () => emit(host));
-  observe(globalThis, "focus", () => emit(host));
+  observe(globalThis, "focus", (event) => {
+    if (belongsToHost(document.activeElement)) setViewFocus(host, true, event.timeStamp);
+    emit(host);
+  });
   observe(globalThis, "blur", () => { releasePressedKeys(host); setViewFocus(host, false, performance.now()); emit(host); });
   observe(globalThis, "languagechange", () => emit(host));
   const colorScheme = globalThis.matchMedia?.("(prefers-color-scheme: dark)");
@@ -1089,7 +1127,11 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     event.preventDefault();
     if (phase === 1) {
       root.setPointerCapture(event.pointerId);
-      canvas.focus({ preventScroll: true });
+      // A quick window activation or hidden-tab return retains Flutter's text
+      // connection, so do not steal DOM focus from its native endpoint. A
+      // longer external-window blur closes the connection after the grace
+      // period and hides the input, making this select the canvas instead.
+      focusActiveEndpoint(host);
     }
     requireManaged().dispatchPointerBatch(host.id, phase, pointerKind(event.pointerType), event.pointerId,
       event.buttons, modifierMask(event), pointerSamples(event));
@@ -1106,14 +1148,22 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   observe(root, "pointerleave", (event) => pointer(6)(event as PointerEvent));
   observe(root, "wheel", (event) => {
     const wheel = event as WheelEvent;
-    wheel.preventDefault();
     const rect = root.getBoundingClientRect();
-    requireManaged().dispatchWheel(host.id, wheel.clientX - rect.left, wheel.clientY - rect.top,
-      wheel.deltaX, wheel.deltaY, wheel.timeStamp);
+    const deltaScale = wheel.deltaMode === WheelEvent.DOM_DELTA_LINE
+      ? defaultScrollLineHeight()
+      : wheel.deltaMode === WheelEvent.DOM_DELTA_PAGE
+        ? Math.max(1, root.clientHeight)
+        : 1;
+    const kind = isTrackpadWheel(host, wheel) ? 3 : 0;
+    // Flutter forwards every wheel sample immediately and coalesces only the
+    // resulting frame request. Accumulating deltas here destroys trackpad
+    // cadence and delays the scroll-position update until rAF.
+    requireManaged().dispatchWheel(
+      host.id, wheel.clientX - rect.left, wheel.clientY - rect.top,
+      wheel.deltaX * deltaScale, wheel.deltaY * deltaScale,
+      wheel.timeStamp, kind);
+    wheel.preventDefault();
   });
-  const belongsToHost = (target: EventTarget | null): boolean =>
-    target === root || target === canvas || target === input ||
-    (target instanceof Node && (root.contains(target) || semantics.contains(target)));
   observe(document, "keydown", (event) => {
     const key = event as KeyboardEvent;
     if (!host.viewFocused || !belongsToHost(document.activeElement)) return;
@@ -1138,6 +1188,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   });
   observe(canvas, "focus", (event) => setViewFocus(host, true, event.timeStamp));
   observe(input, "focus", (event) => setViewFocus(host, true, event.timeStamp));
+  observe(input, "blur", (event) => handleTextInputBlur(host, event as FocusEvent, belongsToHost));
   observe(semantics, "focusin", (event) => setViewFocus(host, true, event.timeStamp));
   observe(document, "focusout", (event) => queueMicrotask(() => {
     if (!belongsToHost(document.activeElement)) {
@@ -1179,13 +1230,15 @@ export function showHost(hostId: number): string {
   const host = requireHost(hostId);
   host.canvas.hidden = false;
   host.canvas.tabIndex = host.canvas.tabIndex < 0 ? 0 : host.canvas.tabIndex;
-  host.canvas.focus({ preventScroll: true });
+  focusActiveEndpoint(host);
   return snapshot(host);
 }
 
 export function requestFocus(hostId: number, focused: boolean): string {
   const host = requireHost(hostId);
-  if (focused) host.canvas.focus({ preventScroll: true }); else host.canvas.blur();
+  if (focused) focusActiveEndpoint(host);
+  else if (document.activeElement === host.input) host.input.blur();
+  else host.canvas.blur();
   return snapshot(host);
 }
 
@@ -1199,12 +1252,28 @@ export function resizeHost(hostId: number, logicalWidth: number, logicalHeight: 
 export function requestFrame(hostId: number, callbackId: number): void {
   const host = requireHost(hostId);
   host.latestFrameCallback = callbackId;
+  scheduleHostFrame(host);
+}
+
+function scheduleHostFrame(host: BrowserHost): void {
   if (host.frameRaf !== 0) return;
   host.frameRaf = requestAnimationFrame((timestamp) => {
-    host.frameRaf = 0;
-    const latest = host.latestFrameCallback;
-    host.latestFrameCallback = 0;
-    if (hosts.has(hostId) && latest !== 0) managed?.dispatchAnimationFrame(hostId, latest, timestamp);
+    // -1 means that callbacks scheduled synchronously while sampling input or
+    // metrics belong to this browser frame. They must not create a redundant
+    // rAF and then wait an extra refresh before the framework sees them.
+    host.frameRaf = -1;
+    try {
+      if (!hosts.has(host.id)) return;
+
+      const latest = host.latestFrameCallback;
+      host.latestFrameCallback = 0;
+      if (latest !== 0) managed?.dispatchAnimationFrame(host.id, latest, timestamp);
+    } finally {
+      host.frameRaf = 0;
+      if (hosts.has(host.id) && host.latestFrameCallback !== 0) {
+        scheduleHostFrame(host);
+      }
+    }
   });
 }
 
@@ -1232,7 +1301,9 @@ export function closeHost(hostId: number): void {
   const host = hosts.get(hostId);
   if (!host) return;
   releasePressedKeys(host);
-  if (host.frameRaf !== 0) cancelAnimationFrame(host.frameRaf);
+  if (host.pendingBlurConnectionCloseTimer !== 0)
+    clearTimeout(host.pendingBlurConnectionCloseTimer);
+  if (host.frameRaf > 0) cancelAnimationFrame(host.frameRaf);
   for (const observer of host.observers) observer.disconnect();
   for (const listener of host.listeners) listener.target.removeEventListener(listener.name, listener.handler);
   for (const controller of host.semanticsListeners.values()) controller.abort();
@@ -1253,8 +1324,13 @@ export function setCursor(hostId: number, cursor: string): void {
 export function setTextInputState(
   hostId: number, text: string, selectionBase: number, selectionExtent: number,
   inputMode: string, enterKeyHint: string, readOnly: boolean, obscureText: boolean,
-  autocapitalize: string, autocorrect: boolean, inputAction: number, multiline: boolean): void {
+  autocapitalize: string, autocorrect: boolean, inputAction: number, multiline: boolean,
+  attach: boolean): void {
   const host = requireHost(hostId);
+  if (attach && host.pendingBlurConnectionCloseTimer !== 0) {
+    clearTimeout(host.pendingBlurConnectionCloseTimer);
+    host.pendingBlurConnectionCloseTimer = 0;
+  }
   host.input.inputMode = inputMode as typeof host.input.inputMode;
   host.input.enterKeyHint = enterKeyHint;
   host.input.readOnly = readOnly;
@@ -1275,14 +1351,21 @@ export function setTextInputState(
     host.input.selectionEnd === selectionEnd &&
     (selectionStart === selectionEnd || host.input.selectionDirection === selectionDirection);
 
-  // The managed TextField normally accepts a native edit and immediately
-  // publishes it back. Reassigning an identical value or selection here can
-  // terminate the browser's live composition, so only apply real changes.
-  if (!sameText) host.input.value = text;
   host.input.hidden = false;
+  if (document.activeElement !== host.input) host.input.focus({ preventScroll: true });
+
+  // While an IME composition owns the textarea, managed state is an
+  // acknowledgement of an earlier native edit and may already be stale. Any
+  // value or selection write here can cancel the browser composition and leave
+  // the field apparently focused but unable to accept more text. The native
+  // endpoint remains authoritative until compositionend publishes the final
+  // state back to managed code.
+  if (host.composing) return;
+
+  if (!sameText) host.input.value = text;
   if (!sameText || !sameSelection)
     host.input.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
-  if (document.activeElement !== host.input) host.input.focus({ preventScroll: true });
+  rememberTextState(host, text, normalizedBase, normalizedExtent, -1, -1);
 }
 
 export function setCaretRect(hostId: number, left: number, top: number, width: number, height: number): void {
@@ -1296,8 +1379,15 @@ export function setCaretRect(hostId: number, left: number, top: number, width: n
 
 export function clearTextInput(hostId: number): void {
   const host = requireHost(hostId);
+  if (host.pendingBlurConnectionCloseTimer !== 0) {
+    clearTimeout(host.pendingBlurConnectionCloseTimer);
+    host.pendingBlurConnectionCloseTimer = 0;
+  }
+  host.composing = false;
+  host.compositionStart = -1;
   host.input.value = "";
   host.input.hidden = true;
+  rememberTextState(host, "", 0, 0, -1, -1);
   host.canvas.focus({ preventScroll: true });
 }
 
@@ -1492,6 +1582,86 @@ function modifierMask(event: MouseEvent | KeyboardEvent): number {
     (event.altKey ? 4 : 0) | (event.metaKey ? 8 : 0);
 }
 
+let cachedDefaultScrollLineHeight: number | null = null;
+
+function defaultScrollLineHeight(): number {
+  if (cachedDefaultScrollLineHeight !== null) return cachedDefaultScrollLineHeight;
+  const probe = document.createElement("div");
+  probe.style.fontSize = "initial";
+  probe.style.display = "none";
+  document.body.appendChild(probe);
+  const parsed = Number.parseFloat(globalThis.getComputedStyle(probe).fontSize);
+  probe.remove();
+  // Match Flutter Web: Firefox line deltas use one quarter of the browser's
+  // default font height, falling back to 4 logical pixels.
+  cachedDefaultScrollLineHeight = Number.isFinite(parsed) ? parsed / 4 : 4;
+  return cachedDefaultScrollLineHeight;
+}
+
+function isTrackpadWheel(host: BrowserHost, event: WheelEvent): boolean {
+  const legacy = event as WheelEvent & { wheelDeltaX?: number; wheelDeltaY?: number };
+  const accelerated = (delta: number, wheelDelta: number | undefined): boolean =>
+    wheelDelta !== undefined && Math.abs(wheelDelta - (-3 * delta)) > 1;
+  let trackpad = true;
+  if (accelerated(event.deltaX, legacy.wheelDeltaX) ||
+      accelerated(event.deltaY, legacy.wheelDeltaY)) {
+    trackpad = false;
+  } else if ((event.deltaX % 120 === 0 && event.deltaY % 120 === 0) ||
+      (((legacy.wheelDeltaX ?? 1) % 120 === 0) && ((legacy.wheelDeltaY ?? 1) % 120 === 0))) {
+    const deltaXChange = Math.abs(event.deltaX - host.lastWheelDeltaX);
+    const deltaYChange = Math.abs(event.deltaY - host.lastWheelDeltaY);
+    const first = host.lastWheelTimestamp === 0;
+    const looksUnlikePreviousTrackpadSample = first ||
+      (deltaXChange === 0 && deltaYChange === 0) ||
+      !(deltaXChange < 20 && deltaYChange < 20);
+    if (looksUnlikePreviousTrackpadSample) {
+      const continuedTrackpadGesture = !first &&
+        event.timeStamp - host.lastWheelTimestamp < 50 && host.lastWheelWasTrackpad;
+      trackpad = continuedTrackpadGesture;
+    }
+  }
+  host.lastWheelDeltaX = event.deltaX;
+  host.lastWheelDeltaY = event.deltaY;
+  host.lastWheelTimestamp = event.timeStamp;
+  host.lastWheelWasTrackpad = trackpad;
+  return trackpad;
+}
+
+function closeTextConnectionAfterBlur(host: BrowserHost): void {
+  if (host.input.hidden) return;
+  host.composing = false;
+  host.compositionStart = -1;
+  host.input.value = "";
+  host.input.hidden = true;
+  rememberTextState(host, "", 0, 0, -1, -1);
+  requireManaged().dispatchTextConnectionClosed(host.id);
+}
+
+function handleTextInputBlur(
+  host: BrowserHost,
+  event: FocusEvent,
+  belongsToHost: (target: EventTarget | null) => boolean): void {
+  const willGainFocus = event.relatedTarget;
+  if (willGainFocus === null) {
+    if (!document.hasFocus()) {
+      if (host.pendingBlurConnectionCloseTimer !== 0)
+        clearTimeout(host.pendingBlurConnectionCloseTimer);
+      // A tab switch reports input blur before visibilitychange. Flutter waits
+      // briefly so hidden tabs keep their text connection, while an ordinary
+      // window/iframe blur closes it and unfocuses EditableText.
+      host.pendingBlurConnectionCloseTimer = globalThis.setTimeout(() => {
+        host.pendingBlurConnectionCloseTimer = 0;
+        if (document.visibilityState === "hidden" || document.hasFocus()) return;
+        closeTextConnectionAfterBlur(host);
+      }, 100);
+      return;
+    }
+    closeTextConnectionAfterBlur(host);
+  } else if (belongsToHost(willGainFocus) && !host.input.hidden) {
+    host.input.focus({ preventScroll: true });
+  }
+}
+
 function emitText(host: BrowserHost): void {
   const start = host.input.selectionStart ?? 0;
   const end = host.input.selectionEnd ?? start;
@@ -1500,8 +1670,35 @@ function emitText(host: BrowserHost): void {
   const selectionExtent = selectionBackward ? start : end;
   const composingBase = host.composing ? Math.max(0, host.compositionStart) : -1;
   const composingExtent = host.composing ? end : -1;
+  if (host.lastTextValue === host.input.value &&
+      host.lastSelectionBase === selectionBase &&
+      host.lastSelectionExtent === selectionExtent &&
+      host.lastComposingBase === composingBase &&
+      host.lastComposingExtent === composingExtent) return;
+  rememberTextState(
+    host, host.input.value, selectionBase, selectionExtent, composingBase, composingExtent);
+  recordResize(host, "text-editing-dispatched", "browser-text-input", {
+    detail: JSON.stringify({
+      textLength: host.input.value.length,
+      selectionBase, selectionExtent, composingBase, composingExtent,
+    }),
+  });
   requireManaged().dispatchTextEditing(
     host.id, host.input.value, selectionBase, selectionExtent, composingBase, composingExtent);
+}
+
+function rememberTextState(
+  host: BrowserHost,
+  text: string,
+  selectionBase: number,
+  selectionExtent: number,
+  composingBase: number,
+  composingExtent: number): void {
+  host.lastTextValue = text;
+  host.lastSelectionBase = selectionBase;
+  host.lastSelectionExtent = selectionExtent;
+  host.lastComposingBase = composingBase;
+  host.lastComposingExtent = composingExtent;
 }
 
 function setViewFocus(host: BrowserHost, focused: boolean, timestamp: number): void {
@@ -1509,6 +1706,11 @@ function setViewFocus(host: BrowserHost, focused: boolean, timestamp: number): v
   host.viewFocused = focused;
   requireManaged().dispatchFocus(host.id, focused, timestamp);
   emit(host);
+}
+
+function focusActiveEndpoint(host: BrowserHost): void {
+  const endpoint = host.input.hidden ? host.canvas : host.input;
+  if (document.activeElement !== endpoint) endpoint.focus({ preventScroll: true });
 }
 
 function releasePressedKeys(host: BrowserHost): void {
