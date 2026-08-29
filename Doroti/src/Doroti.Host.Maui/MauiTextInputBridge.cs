@@ -14,6 +14,7 @@ public sealed class MauiTextInputBridge : IDisposable
     private bool _hasClient;
     private bool _suspended;
     private bool _updating;
+    private bool _publishingNativeTextChange;
     private bool _disposed;
     private bool _editingStateDispatchPending;
     private string? _pendingNativeText;
@@ -83,8 +84,8 @@ public sealed class MauiTextInputBridge : IDisposable
         // accepted text/selection can replace or end the platform IME's active
         // composing/marked range (for example Gboard's Editable span).
         if (string.Equals(_active.Text ?? string.Empty, state.text, StringComparison.Ordinal) &&
-            _active.CursorPosition == start &&
-            _active.SelectionLength == end - start)
+            (_publishingNativeTextChange ||
+             (_active.CursorPosition == start && _active.SelectionLength == end - start)))
         {
             return;
         }
@@ -334,7 +335,24 @@ public sealed class MauiTextInputBridge : IDisposable
     private void HandleTextChanged(object? sender, TextChangedEventArgs args)
     {
         if (_updating || !ReferenceEquals(sender, _active)) return;
-        QueueNativeEditingState(_active, args.NewTextValue ?? string.Empty);
+        var text = args.NewTextValue ?? string.Empty;
+        var selection = ResolveSelectionAfterTextChange(args.OldTextValue ?? string.Empty, text);
+        _publishingNativeTextChange = true;
+        try
+        {
+            // Native key-repeat can keep the platform input callback busy long
+            // enough to starve every queued UI callback (Android Gboard does
+            // this for a long-pressed Backspace). Text edits collapse selection
+            // at the end of their changed range, which can be derived before
+            // MAUI publishes its later CursorPosition notification. Publish the
+            // complete state from this callback so every repeated edit reaches
+            // the framework without waiting for another UI turn.
+            PublishNativeEditingState(_active, text, selection, selection);
+        }
+        finally
+        {
+            _publishingNativeTextChange = false;
+        }
     }
 
     private void HandleInputPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs args)
@@ -351,11 +369,10 @@ public sealed class MauiTextInputBridge : IDisposable
         if (_editingStateDispatchPending) return;
         _editingStateDispatchPending = true;
 
-        // MAUI raises TextChanged from the native text watcher before Android
-        // has applied the selection that accompanies a multi-character commit.
-        // Flutter's Android embedding publishes editing state after the outer
-        // batch edit, when text and selection describe the same revision. Post
-        // one turn and coalesce changes to preserve that invariant here too.
+        // Selection-only notifications can arrive before the platform has
+        // finished normalizing both ends. Coalesce those notifications by one
+        // UI turn; text mutations take the synchronous path above and cannot be
+        // starved by continuous native key repeat.
         if (!input.Dispatcher.DispatchDelayed(TimeSpan.Zero, PublishPendingEditingState))
         {
             _editingStateDispatchPending = false;
@@ -378,7 +395,39 @@ public sealed class MauiTextInputBridge : IDisposable
         // being sent so the framework never observes mismatched revisions.
         var start = Math.Clamp(input.CursorPosition, 0, text.Length);
         var end = Math.Clamp(start + Math.Max(0, input.SelectionLength), start, text.Length);
-        EditingStateChanged?.Invoke(new(text, new(start, end), ReadNativeComposingRange(input, text.Length)));
+        PublishNativeEditingState(input, text, start, end);
+    }
+
+    private void PublishNativeEditingState(InputView input, string text, int start, int end)
+    {
+        // A synchronous text change supersedes any older queued snapshot. The
+        // already-posted callback is intentionally left registered; it will
+        // observe these nulls and become a harmless no-op.
+        _pendingNativeInput = null;
+        _pendingNativeText = null;
+        if (_disposed || _updating || !_hasClient || !ReferenceEquals(input, _active)) return;
+        EditingStateChanged?.Invoke(new DorotiTextEditingState(
+            text,
+            new(start, end),
+            ReadNativeComposingRange(input, text.Length)));
+    }
+
+    internal static int ResolveSelectionAfterTextChange(string oldText, string newText)
+    {
+        var prefixLength = 0;
+        var sharedLength = Math.Min(oldText.Length, newText.Length);
+        while (prefixLength < sharedLength && oldText[prefixLength] == newText[prefixLength])
+            prefixLength++;
+
+        var suffixLength = 0;
+        while (suffixLength < oldText.Length - prefixLength &&
+               suffixLength < newText.Length - prefixLength &&
+               oldText[oldText.Length - 1 - suffixLength] == newText[newText.Length - 1 - suffixLength])
+        {
+            suffixLength++;
+        }
+
+        return newText.Length - suffixLength;
     }
 
     private static DorotiTextSelection? ReadNativeComposingRange(InputView input, int textLength)

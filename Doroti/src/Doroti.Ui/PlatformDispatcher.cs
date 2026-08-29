@@ -442,7 +442,7 @@ public sealed class PlatformDispatcher : IDisposable
     internal long NextFrameTransactionId() =>
         Interlocked.Increment(ref _frameTransactionNumber);
 
-    private void DispatchWithEnvironment(DorotiView view, Action callback)
+    internal void DispatchWithEnvironment(DorotiView view, Action callback)
     {
         // A Flutter isolate has one event loop. Android delivers TextureView
         // paints on its GL thread while touch, semantics, and lifecycle events
@@ -630,6 +630,17 @@ public sealed class DorotiView : IDisposable
                 targetIdentity);
         }
         return PlatformEnvironmentContext.Enter(_environmentHost.Configuration);
+    }
+
+    /// <summary>
+    /// Runs a native host callback as one isolate event, including environment
+    /// setup, cross-thread serialization, and the trailing Dart microtask drain.
+    /// </summary>
+    public void DispatchPlatformEvent(Action callback)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ArgumentNullException.ThrowIfNull(callback);
+        _dispatcher.DispatchWithEnvironment(this, callback);
     }
 
     internal void requestFocusChange(ViewFocusState state, ViewFocusDirection direction)

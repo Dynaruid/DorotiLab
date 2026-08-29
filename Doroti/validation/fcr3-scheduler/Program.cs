@@ -5,6 +5,7 @@ using Doroti.Ui;
 VerifyFlutterSchedulerOrdering();
 VerifyMonotonicTimestampFence();
 VerifyBoundedTraceCausality();
+VerifyPlatformEventDrainsMicrotasks();
 
 Console.WriteLine($"FCR-3 scheduler runtime contract: PASS (configuration={ConfigurationName()})");
 
@@ -65,6 +66,24 @@ static void VerifyBoundedTraceCausality()
         "present can be attributed to input and scene sequence");
 }
 
+static void VerifyPlatformEventDrainsMicrotasks()
+{
+    using var dispatcher = new PlatformDispatcher();
+    var capabilities = new DorotiViewCapabilities("validation")
+        .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, new FixtureViewHost());
+    using var view = dispatcher.RegisterView(1, capabilities);
+    var order = new List<string>();
+
+    view.DispatchPlatformEvent(() =>
+    {
+        order.Add("event");
+        DartAsyncRuntime.scheduleMicrotask(() => order.Add("microtask"));
+    });
+
+    Require(order.SequenceEqual(["event", "microtask"]),
+        "native platform events drain Dart microtasks before returning to the host");
+}
+
 static bool InOrder(IReadOnlyList<DorotiFramePhase> values, params DorotiFramePhase[] expected)
 {
     var position = 0;
@@ -90,4 +109,27 @@ static void Require(bool condition, string message)
 sealed class FixtureSchedulerBinding : SchedulerBinding
 {
     public FixtureSchedulerBinding(PlatformDispatcher dispatcher) : base(dispatcher) { }
+}
+
+sealed class FixtureViewHost : IViewHostCapability
+{
+    public ViewMetrics Metrics { get; } = new(
+        Size.zero, 1, default, default, default, AppLifecycleState.resumed, 1, 1);
+
+    public DorotiViewEpoch ViewEpoch { get; } = new(1, 1, 1, 0, 0, 0, 0, 1, 1, 0);
+
+    public event Action<ViewMetrics>? MetricsChanged;
+    public event Action<AppLifecycleState>? LifecycleChanged;
+    public event Action? CloseRequested;
+    public event Action? Closed;
+
+    public void Show() { }
+    public void Resize(Size logicalSize) => _ = logicalSize;
+    public void Close() => Closed?.Invoke();
+    public void Dispose()
+    {
+        GC.KeepAlive(MetricsChanged);
+        GC.KeepAlive(LifecycleChanged);
+        GC.KeepAlive(CloseRequested);
+    }
 }

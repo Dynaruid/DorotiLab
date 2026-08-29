@@ -1272,44 +1272,54 @@ internal sealed class _HostTextInputControl : TextInputControl
 
     private void OnEditingStateChanged(DorotiTextEditingState state)
     {
-        if (_client is null || _view is null)
+        var client = _client;
+        var view = _view;
+        if (client is null || view is null)
         {
             return;
         }
-        using var environmentScope = _view.EnterPlatformEnvironmentScope();
-        var composing = state.composingRange is { } range
-            ? new TextRange(range.baseOffset, range.extentOffset)
-            : TextRange.empty;
-        _client.updateEditingValue(new TextEditingValue(
-            state.text,
-            new TextSelection(
-                baseOffset: state.selection.baseOffset,
-                extentOffset: state.selection.extentOffset),
-            composing));
+        view.DispatchPlatformEvent(() =>
+        {
+            if (!ReferenceEquals(client, _client) || !ReferenceEquals(view, _view)) return;
+            var composing = state.composingRange is { } range
+                ? new TextRange(range.baseOffset, range.extentOffset)
+                : TextRange.empty;
+            client.updateEditingValue(new TextEditingValue(
+                state.text,
+                new TextSelection(
+                    baseOffset: state.selection.baseOffset,
+                    extentOffset: state.selection.extentOffset),
+                composing));
+        });
     }
 
     private void OnActionPerformed(DorotiTextInputAction action)
     {
-        if (_client is null || _view is null)
+        var client = _client;
+        var view = _view;
+        if (client is null || view is null)
         {
             return;
         }
-        using var environmentScope = _view.EnterPlatformEnvironmentScope();
-        _client?.performAction(action switch
+        view.DispatchPlatformEvent(() =>
         {
-            DorotiTextInputAction.done => TextInputAction.done,
-            DorotiTextInputAction.go => TextInputAction.go,
-            DorotiTextInputAction.search => TextInputAction.search,
-            DorotiTextInputAction.send => TextInputAction.send,
-            DorotiTextInputAction.next => TextInputAction.next,
-            DorotiTextInputAction.previous => TextInputAction.previous,
-            DorotiTextInputAction.continueAction => TextInputAction.continueAction,
-            DorotiTextInputAction.join => TextInputAction.join,
-            DorotiTextInputAction.route => TextInputAction.route,
-            DorotiTextInputAction.emergencyCall => TextInputAction.emergencyCall,
-            DorotiTextInputAction.newline => TextInputAction.newline,
-            DorotiTextInputAction.unspecified => TextInputAction.unspecified,
-            _ => TextInputAction.none,
+            if (!ReferenceEquals(client, _client) || !ReferenceEquals(view, _view)) return;
+            client.performAction(action switch
+            {
+                DorotiTextInputAction.done => TextInputAction.done,
+                DorotiTextInputAction.go => TextInputAction.go,
+                DorotiTextInputAction.search => TextInputAction.search,
+                DorotiTextInputAction.send => TextInputAction.send,
+                DorotiTextInputAction.next => TextInputAction.next,
+                DorotiTextInputAction.previous => TextInputAction.previous,
+                DorotiTextInputAction.continueAction => TextInputAction.continueAction,
+                DorotiTextInputAction.join => TextInputAction.join,
+                DorotiTextInputAction.route => TextInputAction.route,
+                DorotiTextInputAction.emergencyCall => TextInputAction.emergencyCall,
+                DorotiTextInputAction.newline => TextInputAction.newline,
+                DorotiTextInputAction.unspecified => TextInputAction.unspecified,
+                _ => TextInputAction.none,
+            });
         });
     }
 
@@ -1326,8 +1336,7 @@ internal sealed class _HostTextInputControl : TextInputControl
         // native endpoint is already gone, so detach the host bridge before
         // EditableText clears its connection and unfocuses its FocusNode.
         DetachCurrent(clearHost: false);
-        using var environmentScope = view.EnterPlatformEnvironmentScope();
-        client.connectionClosed();
+        view.DispatchPlatformEvent(client.connectionClosed);
     }
 
     private void DetachCurrent(bool clearHost)
