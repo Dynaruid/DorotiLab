@@ -1,0 +1,240 @@
+# Web 실시간 창 resize를 Flutter식 exact-surface 경로로 전환하는 작업 계획
+
+- 작성일: 2026-08-30
+- 상태: `planned`
+- 대상: `document-webgl`, `offscreen-bitmap`, `offscreen-worker` 세 Web renderer
+- 목표: 창 테두리를 드래그하는 동안 이전 frame을 새 종횡비로 늘려 보이는 preview를 제거하고, 최신 viewport metrics를 presentation 완료와 독립적으로 전달해 exact-size frame이 브라우저 resize를 실시간으로 따라가게 한다.
+- 최종 판정: 자동화는 구조·계약·중간-frame 결함을 검사한다. 실제 마우스/트랙패드 창 resize에서 검은 영역, 비균일 stretch, 버벅이는 추격이 사라졌는지는 headed Chrome 실사용 관찰을 최종 gate로 둔다.
+
+## 1. 문제 정의와 현재 HEAD 기준 원인
+
+현재 문제는 단순히 WebGL backing 크기를 늦게 바꾸는 한 지점의 문제가 아니다. browser metrics, framework layout/raster, visible front의 세 timeline이 presentation ACK를 경계로 직렬화되어 생긴다.
+
+1. `ResizeObserver`/DPR watcher가 새 target epoch를 관측한다.
+2. exact frame이 아직 없으므로 `applyRetainedFrontPreview`가 이전 exact front의 CSS 크기를 새 viewport에 맞춘다.
+3. target의 가로·세로 비율이 이전 front와 다르면 이전 content가 확대/축소되거나 crop되는 임시 화면이 보인다. 이 preview가 오래 남으면 사용자는 stretch 또는 zoom/crop으로 인지한다.
+4. `emitResize`는 `managedResizeInFlightGeneration`이 끝날 때까지 다음 metrics 전달을 보류한다.
+5. `offscreen-worker`는 main→worker snapshot mailbox까지 bitmap display 완료 뒤에야 해제한다. 따라서 metrics 전달이 layout/raster, `createImageBitmap`, thread transfer, `bitmaprenderer` commit의 전체 지연에 묶인다.
+6. resize 중 만들어진 stale GPU front/ImageBitmap도 newer target의 preview로 소비된다. 이 동작은 화면이 최신 창 크기보다 한두 세대 뒤로 점프하는 현상을 만든다.
+
+결과적으로 세 경로 모두 latest target을 즉시 받지 못하고, 특히 persistent worker는 두 개의 직렬화 경계 때문에 이전 frame preview 체류 시간이 가장 길어진다. 최종 exact-size 수렴과 queue depth/terminal 정상만으로는 이 결함을 검출할 수 없다.
+
+## 2. Flutter 최신 Web 엔진에서 가져올 계약
+
+Flutter Web의 full-page dimensions provider는 `visualViewport` 또는 window의 `resize`를 metrics 변경 source로 사용하고, 새 physical size를 DPR과 함께 계산한다. CanvasKit surface의 `setSize`는 canvas provider의 backing size를 갱신한 뒤 같은 physical size의 SkSurface를 다시 만든다.
+
+- metrics 변경은 이전 frame의 presentation 완료를 기다리는 ACK가 아니다.
+- canvas backing size와 SkSurface size는 하나의 physical-size 계약으로 갱신한다.
+- retained frame을 새 target의 서로 다른 X/Y 비율로 재해석하는 정책을 framework resize 경로로 사용하지 않는다.
+- 렌더링 비용은 scheduler가 coalesce하되, viewport state 자체를 오래된 presentation 뒤에 가두지 않는다.
+
+참조 source:
+
+- [Flutter full-page dimensions provider](https://github.com/flutter/flutter/blob/master/engine/src/flutter/lib/web_ui/lib/src/engine/view_embedder/dimensions_provider/full_page_dimensions_provider.dart)
+- [Flutter CanvasKit surface size update](https://github.com/flutter/flutter/blob/master/engine/src/flutter/lib/web_ui/lib/src/engine/canvaskit/surface.dart)
+
+Doroti는 Flutter 코드를 그대로 복제하지 않고 아래 기존 계약을 함께 보존한다.
+
+- immutable resize epoch와 exact-size admission
+- current + latest, 최대 depth 2 mailbox
+- submitted/superseded/failed의 exactly-once terminal
+- hardware WebGL2 fail-closed
+- staging surface와 visible front의 소유권 분리
+- worker 한 개가 소유하는 단일 .NET runtime
+- `ImageBitmap.close()`/ownership terminal의 누락 0
+
+## 3. 목표 아키텍처
+
+```text
+ResizeObserver + DPR watcher
+  -> immutable latest ResizeEpoch를 즉시 publish
+  -> managed metrics/layout scheduler는 latest-only로 coalesce
+  -> renderer는 latest epoch와 정확히 일치하는 surface에 raster
+  -> visible owner는 exact-size 결과만 commit
+  -> raster 중 더 새 epoch가 오면 이전 결과는 Superseded
+```
+
+resize 관측 callback은 canvas backing/WebGL state/bitmaprenderer를 직접 reset하지 않는다. visible surface 변경은 renderer의 exact commit 지점 한 곳에서만 수행한다.
+
+이 계획의 최종 상태에는 retained-front resize preview가 없다. 이전 front를 CSS width/height 또는 transform으로 새 target에 확대하는 방식은 임시 완화책일 뿐 완료 조건이 아니다. exact frame 전의 root 노출 영역은 현재 light/dark surface background로 채우고, exact frame cadence를 한 paint interval 수준으로 줄여 노출 자체를 보이지 않게 한다.
+
+## 4. 실행 순서
+
+### S0. baseline과 중간-frame oracle 고정
+
+구현 전에 HEAD baseline을 세 renderer에서 같은 조건으로 기록한다.
+
+- Chrome headed, 실제 top-level window, `viewport: null`
+- 작은 창→큰 창→가로형→세로형→복원 순서로 40개 이상의 window bounds 변경
+- 각 bounds 변경 직후와 다음 2개 animation frame에서 screenshot, DOM geometry, resize trace 채집
+- renderer별로 아래 값을 기록한다.
+  - target-observed→managed snapshot 전달 지연 p50/p95/max
+  - target-observed→첫 exact front commit 지연 p50/p95/max
+  - preview 체류 시간 p95/max와 preview frame 수
+  - resize 중 exact front commit cadence
+  - scaleX/scaleY 차이의 최대값
+  - 오른쪽/아래 black 또는 root-background band의 최대 폭과 연속 paint 수
+  - present request/terminal 일대일, failed 수, max queue depth
+  - worker snapshot queued/sent/applied과 bitmap created/consumed/closed/active
+
+자동 `Browser.setWindowBounds`는 repeatable oracle이며 실제 손으로 창 테두리를 끄는 acceptance를 대신하지 않는다.
+
+### S1. metrics를 presentation ACK에서 분리
+
+대상: `Doroti/src/Doroti.Host.Web/Web/doroti.web.ts`
+
+1. `ResizeObserver`와 DPR watcher를 유일한 viewport authority로 유지한다.
+2. 새 epoch가 관측되면 browser host snapshot을 즉시 managed 쪽으로 전달한다.
+3. `managedResizeInFlightGeneration`을 “다음 metrics를 막는 lock”으로 사용하지 않는다.
+4. 같은 browser frame의 중복 observer signal은 identical epoch로 제거하고, 서로 다른 epoch는 framework가 모두 볼 수 있게 한다.
+5. layout/raster 요청 수는 기존 framework rAF owner와 latest callback이 coalesce한다. metrics 자체를 drop해서 raster 부하를 줄이지 않는다.
+6. lifecycle/focus/configuration snapshot과 resize snapshot의 ordering을 보존하고, 오래된 snapshot이 최신 resize epoch를 되돌리지 못하게 한다.
+
+Gate:
+
+- 빠른 A→B→C resize에서 managed snapshot이 C 이전 frame의 present terminal을 기다리지 않는다.
+- framework callback queue와 renderer mailbox depth는 각각 bounded 상태를 유지한다.
+- 각 built scene의 epoch label은 생성 뒤 바뀌지 않는다.
+
+### S2. retained-front resize preview 제거
+
+공통 정책:
+
+1. `applyRetainedFrontPreview`와 `resize-preview-commit` 제품 경로를 제거한다.
+2. observer callback에서는 이전 front의 CSS width/height/transform을 target size에 맞춰 변경하지 않는다.
+3. root는 `--doroti-surface-background`로 viewport 전체를 항상 덮어 브라우저 기본 검정 clear가 노출되지 않게 한다.
+4. exact front commit에서만 canvas logical CSS size, physical backing size, front logical metadata를 한 JS turn 안에서 함께 갱신한다.
+5. resize 중 생성된 stale surface/bitmap은 visible front를 교체하지 않고 `superseded` terminal로 닫는다.
+
+`document-webgl`:
+
+- 새 epoch 크기의 staging FBO에서 raster한다.
+- staging이 exact인지 final admission에서 다시 검사한다.
+- exact일 때만 canvas backing을 target physical size로 바꾸고 staging을 default framebuffer에 1:1 blit한다.
+- backing reset과 exact blit 사이에는 `await`, managed callback, 별도 rAF를 두지 않는다.
+- 이전 front/staging FBO의 GPU resource lifecycle과 context-loss replay를 유지한다.
+
+`offscreen-bitmap`:
+
+- detached OffscreenCanvas를 target physical size로 raster한다.
+- `createImageBitmap` 뒤 target epoch를 다시 검사한다.
+- exact bitmap만 visible canvas의 intrinsic/CSS size와 같은 commit block에서 `transferFromImageBitmap`한다.
+- stale bitmap은 표시하지 않고 즉시 close하며 terminal accounting을 끝낸다.
+
+`offscreen-worker`:
+
+- main-thread visible canvas에는 exact bitmap만 transfer한다.
+- main thread에서 더 새 epoch가 관측된 뒤 도착한 bitmap은 stale preview로 소비하지 않는다.
+- stale bitmap의 close owner와 worker receipt를 하나로 고정해 created = consumed + closed, active = 0을 유지한다.
+
+Gate:
+
+- 세 renderer 모두 resize trace의 `resize-preview-commit` 수가 0이다.
+- canvas computed style에 resize용 비균일 scale 또는 임시 uniform scale이 없다.
+- exact commit 외의 코드가 visible canvas backing/CSS geometry를 바꾸지 않는다.
+
+### S3. persistent worker mailbox를 metrics-admission 기준으로 변경
+
+대상:
+
+- `Doroti/src/Doroti.Host.Web/Web/doroti.web.ts`
+- `Doroti/src/Doroti.Host.Web/Web/doroti.raster.worker.ts`
+
+1. main→worker snapshot mailbox의 ACK 의미를 “bitmap이 화면에 표시됨”에서 “worker .NET host가 metrics를 수신함”으로 바꾼다.
+2. worker는 `dispatchWorkerSnapshot` 직후 해당 generation의 metrics-admitted receipt를 보낸다.
+3. main은 receipt 뒤 대기 중인 latest snapshot을 즉시 보낸다. current + latest 외의 snapshot backlog는 만들지 않는다.
+4. .NET scheduler callback, worker raster request, ImageBitmap receipt는 독립 terminal chain으로 유지한다.
+5. raster 또는 bitmap 생성 중 최신 snapshot이 바뀌면 이전 request를 exact display로 승격하지 않는다.
+6. worker crash/restart 때 snapshot mailbox, present request, bitmap resource의 미완 terminal을 모두 한 번만 닫고 최신 epoch를 replay한다.
+
+Gate:
+
+- worker-snapshot-sent N+1은 frame N의 bitmap display terminal 이전에 발생할 수 있다.
+- 빠른 resize에서 snapshot delivery cadence가 bitmap transfer cadence에 제한되지 않는다.
+- worker runtime count 1, restart count 계약, queue depth 2 이하, unpaired request 0을 유지한다.
+
+### S4. Playwright headed 프로젝트를 live-resize gate로 확장
+
+대상:
+
+- `Doroti/validation/web-playwright/playwright.config.ts`
+- `Doroti/validation/web-playwright/tests/resize-continuity.spec.ts`
+- 필요한 경우 `tests/helpers/doroti-diagnostics.ts`
+
+프로젝트 구성 변경은 허용된 범위로 보고 다음을 적용한다.
+
+1. `desktop-chrome-headed`를 세 renderer에 대해 명시적으로 실행할 수 있게 artifact label과 renderer matrix를 정리한다.
+2. final settled front만 검사하던 headed test를 1~2초 연속 bounds 변경 test로 확장한다.
+3. bounds 변경 사이를 8~16 ms로 두고 각 중간 sample에서 다음을 검사한다.
+   - canvas/root가 연결되어 있고 화면이 blank가 아님
+   - exact commit 외 임시 CSS transform 없음
+   - right/bottom edge의 pure-black band 없음
+   - 이전 frame의 known grid/corner가 비균일하게 늘어나지 않음
+   - runtime error/console error 없음
+4. renderer별 screenshot/video/resize trace/diagnostics JSON을 항상 artifact로 남긴다.
+5. 기존 final exact front, DPR 2, context loss, worker crash, input/semantics test도 함께 실행한다.
+
+시각 oracle은 단순 색상 수보다 강하게 만든다. Demo grid와 네 모서리 marker를 이용해 수평/수직 cell 크기 비율을 비교하고, black/root-background strip의 폭과 연속 sample 수를 측정한다.
+
+### S5. 계약·회귀 검증과 renderer 정책 판단
+
+모든 test 명령 timeout은 20분으로 유지한다.
+
+필수 자동 gate:
+
+1. `dotnet build DorotiDemoApp/web/DorotiDemoApp.Web.csproj -c Release`
+2. TypeScript/Playwright type check
+3. resize contract validation: epoch immutability, exact admission, depth 2, exactly-once terminal
+4. FCR-7 Material/widget validation
+5. renderer별 Playwright:
+   - startup
+   - resize continuity/headed live bounds
+   - flicker/nonblank
+   - DPR 2
+   - context loss/restore
+   - offscreen capability
+   - worker protocol/crash recovery
+   - wheel/input/semantics regression
+
+headed/manual gate:
+
+- document-webgl, offscreen-bitmap, offscreen-worker를 각각 실제 Chrome 창으로 띄운다.
+- 좌/우/상/하/모서리 drag, 빠른 왕복, 큰 폭 확대/축소, maximize/restore를 수행한다.
+- 검은 영역 0, X/Y stretch 0, resize 종료 뒤 뒤늦게 단계적으로 맞춰지는 현상 0을 사용자 관찰로 확인한다.
+- 자동화가 모두 PASS해도 실제 drag가 실패하면 결과는 `FAIL`이다.
+
+성능 기록:
+
+- exact-front latency/cadence를 baseline과 동일한 장비·Chrome에서 비교한다.
+- 평균만 쓰지 않고 p50/p95/max와 sample 수를 기록한다.
+- compositor scan-out ACK는 Web API로 직접 증명할 수 없으므로 `browser-present-unverified` 경계를 유지한다.
+
+renderer `auto` 선택은 이 수정과 분리한다. 세 경로 correctness와 visible gate가 통과한 뒤에도 worker/bitmap이 document 대비 p95를 실제로 개선하지 못하면 `auto=document-webgl`을 유지한다.
+
+## 5. 완료 조건
+
+다음을 모두 만족할 때만 완료로 판정한다.
+
+- 세 renderer에서 retained resize preview 제품 코드 제거
+- resize metrics 전달이 present/bitmap ACK에 의해 직렬화되지 않음
+- exact-size surface만 visible commit
+- stale front/bitmap display 0, failed terminal 0, unpaired terminal 0
+- queue depth 2 이하, worker active bitmap 0으로 수렴
+- Release build, resize contract, FCR-7, 관련 Playwright 전체 PASS
+- headed intermediate-frame oracle에서 black band와 비균일 scale 0
+- 실제 Chrome 창 테두리 drag 사용자 확인 PASS
+
+실행하지 못한 실제 drag, Firefox/Edge/Safari, 60/120/144/165 Hz, DPR/monitor 전환은 `notVerified`로 남기며 다른 자동 결과로 대체하지 않는다.
+
+## 6. 범위 제외
+
+- trackpad wheel cadence 자체의 추가 최적화
+- Web renderer `auto` 기본값 변경
+- software/CPU renderer fallback 추가
+- browser compositor scan-out ACK를 추정값으로 승격
+- Firefox/Edge/Safari 전 브라우저 최적화
+- Web 이외 Windows/MAUI/Android/Apple/Linux resize 경로 변경
+
+## 7. 현재 working tree 경계
+
+계획 작성 전에 원인 가설을 확인하기 위한 uncommitted draft가 Web TypeScript와 Playwright resize test에 존재한다. 이 draft의 uniform compositor preview는 stretch 완화 실험이며, 위 계획의 최종 목표인 preview 제거와 동일하지 않다. 계획 실행 시 HEAD baseline과 draft를 먼저 분리 검토하고, S0 evidence 없이 draft 결과를 완료로 승격하지 않는다.

@@ -1,3 +1,4 @@
+import { PNG } from "pngjs";
 import { test, expect } from "./helpers/fixtures.js";
 import {
   assertPresenterContract,
@@ -6,7 +7,27 @@ import {
   waitForSettledPresenter,
 } from "./helpers/doroti-diagnostics.js";
 
-test("viewport A-B-C resize converges to the final exact target with proportional previews", async ({ page, runtimeErrors }) => {
+function blackEdgeFraction(buffer: Buffer): number {
+  const image = PNG.sync.read(buffer);
+  const strip = Math.max(2, Math.min(8, Math.floor(Math.min(image.width, image.height) / 40)));
+  let black = 0;
+  let sampled = 0;
+  const sample = (x: number, y: number): void => {
+    const offset = (y * image.width + x) * 4;
+    sampled++;
+    if (image.data[offset + 3] === 255 && image.data[offset] <= 2 &&
+        image.data[offset + 1] <= 2 && image.data[offset + 2] <= 2) black++;
+  };
+  for (let y = 0; y < image.height; y += 2) {
+    for (let x = image.width - strip; x < image.width; x++) sample(x, y);
+  }
+  for (let y = image.height - strip; y < image.height; y++) {
+    for (let x = 0; x < image.width - strip; x += 2) sample(x, y);
+  }
+  return sampled === 0 ? 0 : black / sampled;
+}
+
+test("viewport A-B-C resize converges to the final exact target with uniform compositor previews", async ({ page, runtimeErrors }) => {
   await openDoroti(page);
   await resetDiagnostics(page);
   const sizes = [
@@ -39,9 +60,11 @@ test("viewport A-B-C resize converges to the final exact target with proportiona
       previewCss?: [number, number];
       scaleX?: number;
       scaleY?: number;
+      compositorScale?: number;
     };
     expect(detail.policy).toBe("retained-front-uniform-cover");
     expect(detail.scaleX).toBeCloseTo(detail.scaleY ?? Number.NaN, 3);
+    expect(detail.compositorScale).toBeCloseTo(detail.scaleX ?? Number.NaN, 3);
     expect(detail.previewCss?.[0]).toBeGreaterThanOrEqual(detail.targetLogical?.[0] ?? Number.POSITIVE_INFINITY);
     expect(detail.previewCss?.[1]).toBeGreaterThanOrEqual(detail.targetLogical?.[1] ?? Number.POSITIVE_INFINITY);
   }
@@ -76,7 +99,7 @@ test("@dpr DPR 2 keeps logical, physical, and front generations coherent", async
   assertPresenterContract(bundle);
 });
 
-test("@headed Desktop Chrome window bounds preserve the final exact front", async ({ page, context, runtimeErrors }) => {
+test("@headed Desktop Chrome live bounds keep a covered, uniformly scaled front", async ({ page, context, runtimeErrors }, testInfo) => {
   await openDoroti(page);
   await resetDiagnostics(page);
   const session = await context.newCDPSession(page);
@@ -87,9 +110,34 @@ test("@headed Desktop Chrome window bounds preserve the final exact front", asyn
     { width: 980, height: 720 },
     { width: 1280, height: 840 },
   ];
-  for (const size of bounds) {
+  for (const [index, size] of bounds.entries()) {
     await session.send("Browser.setWindowBounds", { windowId, bounds: size });
     await page.waitForTimeout(16);
+    const geometry = await page.evaluate(() => {
+      const root = document.querySelector<HTMLElement>(".doroti-root")!;
+      const canvas = document.querySelector<HTMLCanvasElement>("#doroti-surface")!;
+      const rootRect = root.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      const transform = getComputedStyle(canvas).transform;
+      const matrix = transform === "none" ? null : new DOMMatrixReadOnly(transform);
+      return {
+        preview: canvas.dataset.dorotiResizePreview ?? null,
+        coversWidth: canvasRect.right >= rootRect.right - 1,
+        coversHeight: canvasRect.bottom >= rootRect.bottom - 1,
+        scaleX: matrix?.a ?? 1,
+        scaleY: matrix?.d ?? 1,
+        skewX: matrix?.b ?? 0,
+        skewY: matrix?.c ?? 0,
+      };
+    });
+    expect(geometry.coversWidth).toBe(true);
+    expect(geometry.coversHeight).toBe(true);
+    expect(geometry.scaleX).toBeCloseTo(geometry.scaleY, 4);
+    expect(geometry.skewX).toBeCloseTo(0, 6);
+    expect(geometry.skewY).toBeCloseTo(0, 6);
+    const screenshot = await page.screenshot();
+    expect(blackEdgeFraction(screenshot), `black right/bottom edge at resize sample ${index}`).toBeLessThan(0.5);
+    await testInfo.attach(`live-resize-${index}`, { body: screenshot, contentType: "image/png" });
   }
   const bundle = await waitForSettledPresenter(page);
   expect(runtimeErrors).toEqual([]);

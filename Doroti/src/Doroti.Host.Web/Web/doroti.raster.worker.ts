@@ -88,7 +88,6 @@ let managedRuntime: DotnetRuntime | null = null;
 let dotnetModuleUrl: string | null = null;
 let managedHostReady = false;
 let pendingManagedSnapshot: { hostId: number; value: HostSnapshot } | null = null;
-let snapshotAwaitingDisplayGeneration: number | null = null;
 let requestSequence = 0;
 let controlSequence = 0;
 const pendingControls = new Map<number, { resolve(value: string): void; reject(reason: unknown): void }>();
@@ -108,11 +107,10 @@ function applyManagedSnapshot(messageHostId: number, value: HostSnapshot): void 
     return;
   }
   dispatchWorkerSnapshot(messageHostId, JSON.stringify(value));
-  // Do not release the main-thread current+latest mailbox merely because .NET
-  // accepted the metrics. The framework scene scheduled by this snapshot must
-  // first cross the bitmap display boundary, otherwise the next snapshot makes
-  // that scene stale before it can ever be shown during a live resize.
-  snapshotAwaitingDisplayGeneration = value.resizeEpoch.generation;
+  // Metrics admission is independent from presentation. Acknowledge it now so
+  // the main thread can forward the latest ResizeObserver generation while the
+  // framework/raster mailboxes coalesce older work.
+  post("snapshot-applied", { generation: value.resizeEpoch.generation });
 }
 
 function glRuntime(): EmscriptenGlRuntime {
@@ -290,10 +288,6 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     surface!.CompleteFrame(request.requestId, request.generation,
       resultReceipt.committed, resultReceipt.reason);
     terminal(request, resultReceipt.committed ? "submitted" : "superseded", resultReceipt.reason);
-    if (resultReceipt.consumed && snapshotAwaitingDisplayGeneration === request.generation) {
-      snapshotAwaitingDisplayGeneration = null;
-      post("snapshot-applied", { generation: request.generation });
-    }
     post("resource", {
       bitmapCreated: value.bitmapCreated, bitmapConsumed: value.bitmapConsumed,
       bitmapClosed: value.bitmapClosed, activeBitmaps: value.activeBitmaps,

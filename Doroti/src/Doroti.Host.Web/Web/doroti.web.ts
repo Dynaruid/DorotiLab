@@ -647,8 +647,14 @@ function applyRetainedFrontPreview(host: BrowserHost, target: ResizeEpoch, sourc
   // along the right or bottom edge during an interactive resize.
   const previewWidth = Math.ceil(retainedWidth * uniformScale * 1000) / 1000;
   const previewHeight = Math.ceil(retainedHeight * uniformScale * 1000) / 1000;
-  host.canvas.style.width = `${previewWidth}px`;
-  host.canvas.style.height = `${previewHeight}px`;
+  // Keep the canvas' CSS box paired with the retained front and apply one
+  // compositor transform. Changing width and height independently asks the
+  // browser to resample the canvas into a new rectangle and can expose a
+  // transient non-uniform stretch while the native window is being dragged.
+  host.canvas.style.width = `${retainedWidth}px`;
+  host.canvas.style.height = `${retainedHeight}px`;
+  host.canvas.style.transformOrigin = "0 0";
+  host.canvas.style.transform = `scale(${uniformScale})`;
   host.canvas.dataset.dorotiResizePreview = "uniform-cover";
   recordResize(host, "resize-preview-commit", source, {
     surfaceWidth: retainedWidth,
@@ -661,6 +667,7 @@ function applyRetainedFrontPreview(host: BrowserHost, target: ResizeEpoch, sourc
       retainedBacking: [host.canvas.width, host.canvas.height],
       scaleX: previewWidth / retainedWidth,
       scaleY: previewHeight / retainedHeight,
+      compositorScale: uniformScale,
     }),
   });
 }
@@ -922,6 +929,8 @@ function commitCanvasEpoch(
   }
   host.canvas.style.width = `${target.logicalWidth}px`;
   host.canvas.style.height = `${target.logicalHeight}px`;
+  host.canvas.style.removeProperty("transform");
+  host.canvas.style.removeProperty("transform-origin");
   host.canvas.dataset.dorotiFrontLogicalWidth = String(target.logicalWidth);
   host.canvas.dataset.dorotiFrontLogicalHeight = String(target.logicalHeight);
   delete host.canvas.dataset.dorotiResizePreview;
@@ -1210,13 +1219,15 @@ async function runOffscreenPresenter(
     presenter.displayHeight = descriptor.physicalHeight;
     if (exact) {
       presenter.frontGeneration = descriptor.generation;
+      presenter.canvas.style.removeProperty("transform");
+      presenter.canvas.style.removeProperty("transform-origin");
       delete presenter.canvas.dataset.dorotiResizePreview;
     } else {
       applyRetainedFrontPreview(latestHost, latestHost.resizeEpoch, "offscreen-stale-front");
     }
     presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
       descriptor.generation, exact, exact ? "exact ImageBitmap display commit" :
-        "stale ImageBitmap consumed as proportional retained-front preview");
+        "stale ImageBitmap consumed as uniform compositor preview");
     recordResize(latestHost, exact ? "front-commit" : "preview-front-refresh", "doroti-presenter", {
       rafId: descriptor.requestId, requestId: descriptor.requestId,
       backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
@@ -1229,7 +1240,7 @@ async function runOffscreenPresenter(
     });
     recordPresenterTerminal(presenter, descriptor, exact ? "submitted" : "superseded",
       exact ? "exact offscreen ImageBitmap transferred to bitmaprenderer" :
-        "stale offscreen ImageBitmap displayed as proportional retained-front preview",
+        "stale offscreen ImageBitmap displayed as uniform compositor preview",
       Math.round((performance.now() - started) * 1000));
     releaseManagedResize(latestHost, descriptor.generation);
   } catch (error) {
@@ -1315,7 +1326,7 @@ function runPresenter(presenter: CanvasPresenter): void {
       presenter.displayHeight = descriptor.physicalHeight;
       if (!exact) applyRetainedFrontPreview(latestHost, latestHost.resizeEpoch, "document-stale-front");
       presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, exact,
-        exact ? "front commit" : "stale GPU front consumed as proportional retained-front preview");
+        exact ? "front commit" : "stale GPU front consumed as uniform compositor preview");
       recordResize(latestHost, exact ? "front-commit" : "preview-front-refresh", "doroti-presenter", {
         rafId: descriptor.requestId,
         requestId: descriptor.requestId,
@@ -1330,7 +1341,7 @@ function runPresenter(presenter: CanvasPresenter): void {
       });
       recordPresenterTerminal(presenter, descriptor, exact ? "submitted" : "superseded",
         exact ? "exact staging GPU surface committed to the default framebuffer" :
-          "stale staging GPU surface displayed as proportional retained-front preview",
+          "stale staging GPU surface displayed as uniform compositor preview",
         Math.round((performance.now() - started) * 1000));
       releaseManagedResize(latestHost, descriptor.generation);
     }
@@ -1407,10 +1418,10 @@ function emit(host: BrowserHost): void {
 }
 
 function emitResize(host: BrowserHost): void {
-  if (host.managedResizeInFlightGeneration !== 0) {
-    host.managedResizePending = true;
-    return;
-  }
+  // Metrics are browser state, not a presentation acknowledgement. Deliver
+  // every observer generation immediately and let the framework's rAF/latest
+  // frame mailboxes coalesce raster work. Waiting for an old frame to display
+  // makes interactive resize advance at raster/bitmap-transfer cadence.
   host.managedResizeInFlightGeneration = host.resizeEpoch.generation;
   host.managedResizePending = false;
   managed?.dispatchSnapshot(host.id, snapshot(host));
@@ -1419,10 +1430,7 @@ function emitResize(host: BrowserHost): void {
 function releaseManagedResize(host: BrowserHost, generation: number): void {
   if (host.managedResizeInFlightGeneration !== generation) return;
   host.managedResizeInFlightGeneration = 0;
-  if (host.managedResizePending || host.resizeEpoch.generation !== generation) {
-    host.managedResizePending = false;
-    emitResize(host);
-  }
+  host.managedResizePending = false;
 }
 
 function gpuIdentity(canvas: HTMLCanvasElement): GpuIdentity {
@@ -2309,6 +2317,8 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
             canvas.height = bitmapHeight;
             canvas.style.width = `${Number(message.logicalWidth)}px`;
             canvas.style.height = `${Number(message.logicalHeight)}px`;
+            canvas.style.removeProperty("transform");
+            canvas.style.removeProperty("transform-origin");
             canvas.dataset.dorotiFrontLogicalWidth = String(Number(message.logicalWidth));
             canvas.dataset.dorotiFrontLogicalHeight = String(Number(message.logicalHeight));
             delete canvas.dataset.dorotiResizePreview;
@@ -2327,26 +2337,13 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
           } else if (Number(message.generation) < host.resizeEpoch.generation) {
             // A worker frame can become stale while its ImageBitmap crosses to
             // the main thread. It is still newer than the currently displayed
-            // front. Consume it as a proportional retained-front preview and
-            // keep its terminal result superseded; a later exact frame remains
-            // the only frame allowed to clear resize-preview state.
-            canvas.width = bitmapWidth;
-            canvas.height = bitmapHeight;
-            canvas.dataset.dorotiFrontLogicalWidth = String(Number(message.logicalWidth));
-            canvas.dataset.dorotiFrontLogicalHeight = String(Number(message.logicalHeight));
-            display.display.transferFromImageBitmap(bitmap);
-            display.bitmapConsumed++;
+            // Never replace the retained front with a frame that is already
+            // behind the browser's current metrics. The compositor preview is
+            // updated synchronously by ResizeObserver; displaying this bitmap
+            // would make the content jump backwards during a live drag.
+            bitmap.close();
+            display.bitmapClosed++;
             display.activeBitmaps--;
-            display.rasterWidth = bitmapWidth;
-            display.rasterHeight = bitmapHeight;
-            display.displayWidth = bitmapWidth;
-            display.displayHeight = bitmapHeight;
-            applyRetainedFrontPreview(host, host.resizeEpoch, "worker-stale-front");
-            recordResize(host, "preview-front-refresh", "worker-display", {
-              requestId, rafId: requestId, backingWidth: canvas.width, backingHeight: canvas.height,
-              surfaceWidth: bitmapWidth, surfaceHeight: bitmapHeight,
-              detail: JSON.stringify({ frameGeneration: Number(message.generation), targetGeneration: host.resizeEpoch.generation }),
-            });
           } else {
             bitmap.close();
             display.bitmapClosed++;
@@ -2354,10 +2351,10 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
           }
           worker.postMessage({
             protocolVersion: 1, kind: "receipt", requestId, committed: exact,
-            consumed: exact || Number(message.generation) < host.resizeEpoch.generation,
+            consumed: exact,
             reason: exact ? "exact ImageBitmap consumed by main bitmaprenderer" :
               Number(message.generation) < host.resizeEpoch.generation
-                ? "stale ImageBitmap consumed as proportional retained-front preview"
+                ? "stale ImageBitmap rejected behind current browser metrics"
                 : "main display rejected non-current bitmap",
           });
           break;
