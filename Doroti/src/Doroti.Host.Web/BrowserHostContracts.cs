@@ -67,8 +67,10 @@ internal static partial class BrowserInterop
 
     [JSImport("requestPresent", Module)]
     internal static partial void RequestPresent(
-        string canvasId, long generation, double logicalWidth, double logicalHeight,
-        int physicalWidth, int physicalHeight, double devicePixelRatio, long timestampMicroseconds);
+        string canvasId, [JSMarshalAs<JSType.Number>] long generation,
+        double logicalWidth, double logicalHeight,
+        int physicalWidth, int physicalHeight, double devicePixelRatio,
+        [JSMarshalAs<JSType.Number>] long timestampMicroseconds);
 
     [JSImport("captureResizeTrace", Module)]
     internal static partial string CaptureResizeTrace(int hostId);

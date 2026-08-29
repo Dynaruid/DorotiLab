@@ -1,16 +1,23 @@
 {
   "name": "web-playwright",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Doroti browser-wasm continuity validation",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "check": "tsc --noEmit",
+    "test": "playwright test",
+    "test:headed": "playwright test --project=desktop-chrome-headed",
+    "show-report": "playwright show-report artifacts/report"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "devDependencies": {
-    "@playwright/test": "^1.62.1"
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.4.0",
+    "@types/pngjs": "^6.0.5",
+    "pngjs": "^7.0.0",
+    "typescript": "^7.0.2"
   }
 }

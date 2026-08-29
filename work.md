@@ -4,13 +4,35 @@
 - 앱 실행: `pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web -Configuration Release`
 - 자동화 대상: Playwright Chromium / Desktop Chrome / WebGL2 / browser-wasm
 - 기준 URL: `http://127.0.0.1:5088/?dorotiResizeDiagnostics=1`
-- 현재 저장소 상태: Playwright 패키지와 테스트 구성은 아직 없으므로 S0에서 전용 validation project를 추가한다.
+- 현재 저장소 상태: Playwright validation project, Chromium/DPR2/Desktop Chrome projects, 진단 helper, 20분 제한 wrapper 구현 완료.
 - 현재 판정:
   - 한글 font fallback: 사용자 확인 `PASS`
   - 외부 창 이동 시 TextField focus 해제, 복귀 후 재입력: 사용자 확인 `PASS`
-  - 실제 trackpad 연속 스크롤: `FAIL`, 미해결
-  - 브라우저 창 연속 resize: `FAIL`, 미해결
-  - 간헐적 raster 깜빡임: `FAIL`, 재현 빈도가 낮아 원인 확정 전
+  - Playwright synthetic wheel/resize/flicker: `PASS`
+  - 실제 trackpad 연속 스크롤: 수정 전 사용자 `FAIL`, 수정 후 재확인 `notVerified`
+  - 실제 브라우저 창 border drag: 수정 전 사용자 `FAIL`, 수정 후 재확인 `notVerified`
+  - 실제 화면 raster 깜빡임: 자동 blank 표본 0, 물리적 scan-out 재확인 `notVerified`
+
+## 2026-08-29 실행 결과
+
+| 게이트 | 결과 | 증거 |
+| --- | --- | --- |
+| Release browser-wasm build | `PASS` | 경고 0, 오류 0 |
+| Playwright TypeScript | `PASS` | `npm run check` |
+| Playwright 전체 suite | `PASS` | hardware Chromium, DPR 2 Chromium, headed Desktop Chrome; 8 tests |
+| wheel immediate dispatch | `PASS` | 1,200 sample ingress/dispatch 1:1, 같은 task의 동기 managed 반환, queue depth 최대 2 |
+| wheel → exact front latency | `PASS` | 최종 60 sample p95 21.1 ms, max 29.6 ms; 33.4/100 ms gate 이내 |
+| viewport/window resize | `PASS` | A→B→C final exact front, headed `Browser.setWindowBounds`, stale/failed terminal 0 |
+| DPR | `PASS` | DPR 2에서 1080×720 logical → 2160×1440 physical/front generation 일치 |
+| flicker automation | `PASS` | idle 60초, synthetic wheel 30초, viewport resize 30초에서 blank/clear-only 후보 0 |
+| context restore | `PASS` | `WEBGL_lose_context` loss/restore 후 context generation 증가와 latest exact front 복구 |
+| input/semantics smoke | `PASS` | invisible semantics DOM activation, canvas pointer, keyboard/native text endpoint, 한국어 문자열 입력 |
+| FCR-7 Material/widget | `PASS` | Release runtime contract |
+| resize contract v4 | `PASS` | 22/22 terminal, max queue depth 2, stale present 0 |
+| 실제 trackpad/물리적 border drag/scan-out | `notVerified` | Playwright synthetic 입력·screenshot으로 대체하지 않음 |
+| 실제 한글 IME 조합/스크린리더/browser zoom | `notVerified` | 자동 문자열 입력·DPR project와 실제 OS 입력/도구를 분리 |
+
+핵심 수정은 `schedulePresenter`의 microtask 대기 제거다. 기존 경로는 exact scene이 준비된 뒤에도 managed frame callback의 나머지가 반환될 때까지 raster 시작을 약 한 refresh 늦췄고, 같은 Playwright 표본에서 wheel→front p95가 61.9 ms였다. current+latest/terminal 계약을 유지한 동기 drain으로 전환한 뒤 최종 60 sample p95 21.1 ms, max 29.6 ms로 통과했다.
 
 ## 검증 원칙
 
@@ -89,7 +111,7 @@ Doroti/eng/run-web-playwright.ps1
 
 ## 실행 순서
 
-### S0. Playwright harness와 baseline 고정
+### S0. Playwright harness와 baseline 고정 — `PASS`
 
 - `git status --short`, `git diff --check`, 영역별 diff를 확인해 기존 사용자 변경을 보호한다.
 - 전용 validation package, config, PowerShell wrapper, artifact ignore 규칙을 추가한다.
@@ -97,7 +119,7 @@ Doroti/eng/run-web-playwright.ps1
 - 현재 worktree 기준으로 startup, 10초 idle animation, 10초 synthetic wheel, viewport resize sequence를 실행하고 trace JSON을 baseline artifact로 저장한다.
 - baseline은 현재 `FAIL` 재현 자료이며 성공 기준으로 승격하지 않는다.
 
-### S1. 안정적인 Playwright oracle 추가
+### S1. 안정적인 Playwright oracle 추가 — `PASS`
 
 - `pageerror`, `console.error`, request failure, WebGL context loss를 공통 fixture에서 즉시 수집한다.
 - 진단 API가 준비될 때까지 DOM timeout만 기다리지 말고 snapshot의 front generation과 exact commit을 readiness 조건으로 사용한다.
@@ -105,14 +127,14 @@ Doroti/eng/run-web-playwright.ps1
 - screenshot은 전체 페이지보다 canvas bounding box를 대상으로 하고, 연속 표본 간 완전 blank/단색 clear-only 후보를 검출한다.
 - 색상 변화가 정상 animation인 장면에서 pixel hash 동일 여부를 성공 조건으로 사용하지 않는다. blank 후보만 자동 실패시키고 나머지는 artifact로 남긴다.
 
-### S2. presenter 왕복과 frame cadence 수정
+### S2. presenter 왕복과 frame cadence 수정 — `PASS`
 
 - `DorotiWebGlSurface.RenderFrame` 안의 nested async JS interop를 제거하고 browser-wasm에서 한 번의 frame-boundary 호출로 `RenderFrame → exact blit → CompleteFrame`을 직렬화한다.
 - 여러 invalidate는 latest pending scene 하나로 합치되 이미 raster를 시작한 frame은 terminal을 정확히 하나 기록한다.
 - `wheel-continuity.spec.ts`의 동일 seed/delta sequence 전후 trace를 비교해 submitted cadence, queue depth, p95 latency, terminal 누락을 판정한다.
 - 개선이 없으면 synchronous interop 가설을 기각하고 해당 변경만 되돌린 뒤 managed paint/Skia flush 비용을 별도 profile한다.
 
-### S3. Flutter 방식 wheel 처리와 Playwright 검증
+### S3. Flutter 방식 wheel 처리와 Playwright 검증 — `PASS`
 
 - DOM wheel sample을 rAF 누적 없이 즉시 managed `PointerDataPacket`으로 전달한다.
 - `DOM_DELTA_PIXEL/LINE/PAGE`를 Flutter Web 기준의 pixel delta로 변환한다.
@@ -121,7 +143,7 @@ Doroti/eng/run-web-playwright.ps1
 - 테스트 C: 10초 동안 60/120 Hz에 가까운 burst sequence를 보내 event 수, 순서, delta 합계, dispatch 지연, frame coalescing을 trace로 확인한다.
 - synthetic event로 `isTrusted`나 실제 trackpad kind를 위조하지 않는다. 실제 장치 kind 판정은 사용자 게이트로 남긴다.
 
-### S4. Flutter 방식 resize 처리와 Playwright 검증
+### S4. Flutter 방식 resize 처리와 Playwright 검증 — `PASS`
 
 - root `ResizeObserver`와 DPR watcher는 최신 metrics publish만 담당하고 observer callback에서 canvas backing reset, framebuffer bind, clear, blit을 수행하지 않는다.
 - 이전 preserved front는 새 exact staging frame이 끝날 때까지 유지한다.
@@ -130,14 +152,14 @@ Doroti/eng/run-web-playwright.ps1
 - 테스트 C: device scale factor project와 browser zoom 표본을 분리해 logical/physical/DPR 조합이 섞이지 않는지 확인한다.
 - A/B intermediate generation은 `superseded`, C final generation은 `submitted`여야 하며 final canvas backing size가 C physical target과 일치해야 한다.
 
-### S5. flicker와 context restore 자동 회귀
+### S5. flicker와 context restore 자동 회귀 — `PASS`
 
 - idle animation 60초, synthetic wheel 30초, automated window resize 30초 동안 diagnostic terminal과 canvas screenshot/pixel probe를 수집한다.
 - `__dorotiResizeDiagnostics.loseContext/restoreContext`를 사용한 별도 test에서 context generation 증가, resource 재생성, first restored exact commit을 검증한다.
 - 정상 continuous rendering 중 blank/clear-only candidate, `failed`, unpaired terminal, stale size commit이 하나라도 있으면 Playwright test를 실패시킨다.
 - 실패 시 해당 시점 전후 trace JSON, screenshot, video, Playwright trace를 같은 test artifact 묶음으로 남긴다.
 
-### S6. 회귀·실기기 검증과 문서화
+### S6. 회귀·실기기 검증과 문서화 — 자동 `PASS`, 물리적 게이트 `notVerified`
 
 - focused managed validation과 Playwright 전체 suite를 모두 실행한다.
 - Playwright 통과 후 Desktop Chrome에서 실제 trackpad scroll, 실제 window border drag, maximize/restore, zoom/DPR, 한글 IME를 확인한다.

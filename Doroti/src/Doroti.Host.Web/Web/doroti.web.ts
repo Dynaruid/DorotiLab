@@ -42,6 +42,8 @@ interface BrowserHost {
   resizeEpoch: ResizeEpoch;
   resizeTrace: ResizeTraceEntry[];
   resizeTraceSequence: number;
+  inputSequence: number;
+  diagnosticsPublishTimer: number;
   dprQuery: MediaQueryList | null;
   frameRaf: number;
   latestFrameCallback: number;
@@ -92,6 +94,8 @@ interface ResizeTraceEntry {
   terminal: string | null;
   detail: string | null;
   queueDepth: number;
+  inputSequence: number;
+  requestId: number;
 }
 
 interface PresentDescriptor extends ResizeEpoch {
@@ -145,7 +149,10 @@ interface CanvasPresenter {
 }
 
 interface ResizeDiagnostics {
+  hosts(): number[];
   capture(hostId: number): string;
+  trace(hostId: number): string;
+  reset(hostId: number): void;
   snapshot(hostId: number): string;
   presenter(canvasId: string): string;
   loseContext(canvasId: string): boolean;
@@ -235,7 +242,10 @@ const canvasPresenters = new Map<string, CanvasPresenter>();
 let managed: ManagedCallbacks | null = null;
 
 const resizeDiagnostics: ResizeDiagnostics = {
+  hosts: () => [...hosts.keys()],
   capture: (hostId) => captureResizeTrace(hostId),
+  trace: (hostId) => captureResizeTrace(hostId),
+  reset: (hostId) => resetDiagnostics(hostId),
   snapshot: (hostId) => snapshot(requireHost(hostId)),
   presenter: (canvasId) => {
     const presenter = canvasPresenters.get(canvasId);
@@ -283,7 +293,9 @@ function recordResize(
   source: string,
   options: Partial<Pick<ResizeTraceEntry,
     "durationMicroseconds" | "rafId" | "backingWidth" | "backingHeight" |
-    "surfaceWidth" | "surfaceHeight" | "terminal" | "detail">> = {}): void {
+    "surfaceWidth" | "surfaceHeight" | "terminal" | "detail" |
+    "inputSequence" | "requestId">> = {}): void {
+  if (!diagnosticsEnabled()) return;
   host.resizeTrace.push({
     sequence: ++host.resizeTraceSequence,
     timestampMicroseconds: Math.round(performance.now() * 1000),
@@ -303,13 +315,27 @@ function recordResize(
       const presenter = canvasPresenters.get(host.canvas.id);
       return presenter ? Number(presenter.current !== null) + Number(presenter.latest !== null) : 0;
     })(),
+    inputSequence: options.inputSequence ?? 0,
+    requestId: options.requestId ?? 0,
   });
   if (host.resizeTrace.length > 16384) host.resizeTrace.splice(0, host.resizeTrace.length - 16384);
-  publishResizeDiagnostics(host);
+  scheduleResizeDiagnosticsPublish(host);
+}
+
+function diagnosticsEnabled(): boolean {
+  return new URLSearchParams(globalThis.location.search).get("dorotiResizeDiagnostics") === "1";
+}
+
+function scheduleResizeDiagnosticsPublish(host: BrowserHost): void {
+  if (host.diagnosticsPublishTimer !== 0) return;
+  host.diagnosticsPublishTimer = globalThis.setTimeout(() => {
+    host.diagnosticsPublishTimer = 0;
+    if (hosts.has(host.id)) publishResizeDiagnostics(host);
+  }, 100);
 }
 
 function publishResizeDiagnostics(host: BrowserHost): void {
-  if (new URLSearchParams(globalThis.location.search).get("dorotiResizeDiagnostics") !== "1") return;
+  if (!diagnosticsEnabled()) return;
   const json = JSON.stringify({ snapshot: JSON.parse(snapshot(host)), trace: host.resizeTrace });
   host.root.setAttribute("data-doroti-resize-diagnostics", json);
   let output = document.getElementById("doroti-resize-diagnostics");
@@ -320,6 +346,14 @@ function publishResizeDiagnostics(host: BrowserHost): void {
     document.body.appendChild(output);
   }
   output.textContent = json;
+}
+
+function resetDiagnostics(hostId: number): void {
+  const host = requireHost(hostId);
+  host.resizeTrace = [];
+  host.resizeTraceSequence = 0;
+  host.inputSequence = 0;
+  publishResizeDiagnostics(host);
 }
 
 function updateResizeEpoch(
@@ -839,6 +873,7 @@ export function requestPresent(
   const host = hostForCanvas(presenter.canvas);
   if (host) recordResize(host, "present-requested", "doroti-presenter", {
     rafId: descriptor.requestId,
+    requestId: descriptor.requestId,
     surfaceWidth: descriptor.physicalWidth, surfaceHeight: descriptor.physicalHeight,
   });
   if (presenter.latest) recordPresenterTerminal(presenter, presenter.latest, "superseded", "latest replaced");
@@ -849,10 +884,18 @@ export function requestPresent(
 function schedulePresenter(presenter: CanvasPresenter): void {
   if (presenter.drainScheduled || presenter.current || presenter.contextLost || !presenter.latest) return;
   presenter.drainScheduled = true;
-  queueMicrotask(() => {
+  try {
+    // requestPresent is called from the browser-WASM frame callback after the
+    // framework has produced an exact scene. Deferring the managed raster to a
+    // microtask also waits for the remainder of that managed callback, which
+    // can consume another refresh interval. Drain current + latest
+    // synchronously while preserving one in-flight descriptor and exactly-once
+    // terminal accounting.
+    while (!presenter.current && !presenter.contextLost && presenter.latest)
+      runPresenter(presenter);
+  } finally {
     presenter.drainScheduled = false;
-    runPresenter(presenter);
-  });
+  }
 }
 
 function runPresenter(presenter: CanvasPresenter): void {
@@ -915,12 +958,14 @@ function runPresenter(presenter: CanvasPresenter): void {
       presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.generation, true, "front commit");
       recordResize(latestHost, "front-commit", "doroti-presenter", {
         rafId: descriptor.requestId,
+        requestId: descriptor.requestId,
         backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
         surfaceWidth: descriptor.physicalWidth, surfaceHeight: descriptor.physicalHeight,
         detail: JSON.stringify(commitStatus),
       });
       recordResize(latestHost, "browser-present-unverified", "browser-compositor", {
         rafId: descriptor.requestId,
+        requestId: descriptor.requestId,
         detail: "GPU blit and rAF completion are not a display scan-out acknowledgement",
       });
       recordPresenterTerminal(presenter, descriptor, "submitted",
@@ -950,6 +995,7 @@ function recordPresenterTerminal(
   if (!host) return;
   recordResize(host, terminal === "submitted" ? "submitted" : "ack", "doroti-presenter", {
     durationMicroseconds, rafId: descriptor.requestId,
+    requestId: descriptor.requestId,
     backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
     surfaceWidth: descriptor.physicalWidth, surfaceHeight: descriptor.physicalHeight,
     terminal, detail,
@@ -1076,7 +1122,8 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     logicalWidth, logicalHeight,
     generation: 1, surfaceGeneration: 0, resizeGeneration: 1,
     emittedResizeGeneration: 1, resizeEpoch: initialEpoch,
-    resizeTrace: [], resizeTraceSequence: 0, dprQuery: null,
+    resizeTrace: [], resizeTraceSequence: 0, inputSequence: 0,
+    diagnosticsPublishTimer: 0, dprQuery: null,
     frameRaf: 0, latestFrameCallback: 0,
     lastWheelDeltaX: 0, lastWheelDeltaY: 0, lastWheelTimestamp: 0,
     lastWheelWasTrackpad: false,
@@ -1088,6 +1135,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     inputAction: 2, multiline: false, pendingBlurConnectionCloseTimer: 0,
   };
   hosts.set(hostId, host);
+  root.dataset.dorotiHostId = String(hostId);
   recordResize(host, "target-observed", "host-initial");
   if (!applyProvisionalEpoch(host, initialEpoch, "host-initial")) {
     hosts.delete(hostId);
@@ -1155,6 +1203,18 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
         ? Math.max(1, root.clientHeight)
         : 1;
     const kind = isTrackpadWheel(host, wheel) ? 3 : 0;
+    const inputSequence = ++host.inputSequence;
+    const detail = JSON.stringify({
+      deltaMode: wheel.deltaMode,
+      rawDeltaX: wheel.deltaX,
+      rawDeltaY: wheel.deltaY,
+      normalizedDeltaX: wheel.deltaX * deltaScale,
+      normalizedDeltaY: wheel.deltaY * deltaScale,
+      eventTimestampMilliseconds: wheel.timeStamp,
+      kind,
+      trusted: wheel.isTrusted,
+    });
+    recordResize(host, "wheel-ingress", "browser-wheel", { inputSequence, detail });
     // Flutter forwards every wheel sample immediately and coalesces only the
     // resulting frame request. Accumulating deltas here destroys trackpad
     // cadence and delays the scroll-position update until rAF.
@@ -1162,6 +1222,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
       host.id, wheel.clientX - rect.left, wheel.clientY - rect.top,
       wheel.deltaX * deltaScale, wheel.deltaY * deltaScale,
       wheel.timeStamp, kind);
+    recordResize(host, "wheel-framework-dispatch", "managed-callback", { inputSequence, detail });
     wheel.preventDefault();
   });
   observe(document, "keydown", (event) => {
@@ -1252,6 +1313,10 @@ export function resizeHost(hostId: number, logicalWidth: number, logicalHeight: 
 export function requestFrame(hostId: number, callbackId: number): void {
   const host = requireHost(hostId);
   host.latestFrameCallback = callbackId;
+  recordResize(host, "framework-frame-requested", "managed-scheduler", {
+    rafId: callbackId,
+    detail: JSON.stringify({ callbackId }),
+  });
   scheduleHostFrame(host);
 }
 
@@ -1267,7 +1332,13 @@ function scheduleHostFrame(host: BrowserHost): void {
 
       const latest = host.latestFrameCallback;
       host.latestFrameCallback = 0;
-      if (latest !== 0) managed?.dispatchAnimationFrame(host.id, latest, timestamp);
+      if (latest !== 0) {
+        recordResize(host, "framework-frame-dispatched", "browser-raf", {
+          rafId: latest,
+          detail: JSON.stringify({ callbackId: latest, timestampMilliseconds: timestamp }),
+        });
+        managed?.dispatchAnimationFrame(host.id, latest, timestamp);
+      }
     } finally {
       host.frameRaf = 0;
       if (hosts.has(host.id) && host.latestFrameCallback !== 0) {
@@ -1275,6 +1346,7 @@ function scheduleHostFrame(host: BrowserHost): void {
       }
     }
   });
+  recordResize(host, "browser-raf-scheduled", "browser-raf", { rafId: host.frameRaf });
 }
 
 export function recordManagedRaster(
@@ -1303,6 +1375,8 @@ export function closeHost(hostId: number): void {
   releasePressedKeys(host);
   if (host.pendingBlurConnectionCloseTimer !== 0)
     clearTimeout(host.pendingBlurConnectionCloseTimer);
+  if (host.diagnosticsPublishTimer !== 0)
+    clearTimeout(host.diagnosticsPublishTimer);
   if (host.frameRaf > 0) cancelAnimationFrame(host.frameRaf);
   for (const observer of host.observers) observer.disconnect();
   for (const listener of host.listeners) listener.target.removeEventListener(listener.name, listener.handler);
@@ -1310,6 +1384,7 @@ export function closeHost(hostId: number): void {
   host.semanticsListeners.clear();
   host.semanticsElements.clear();
   host.semantics.replaceChildren();
+  delete host.root.dataset.dorotiHostId;
   hosts.delete(hostId);
 }
 
