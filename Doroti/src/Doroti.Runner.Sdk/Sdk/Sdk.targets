@@ -214,7 +214,7 @@
       <_DorotiPluginLines Include="}" />
       <_DorotiBootstrapLines Include="// &lt;auto-generated /&gt;" />
       <_DorotiBootstrapLines Include="namespace Doroti.Generated%3B" />
-      <_DorotiBootstrapLines Include="internal static class DorotiBootstrap" />
+      <_DorotiBootstrapLines Include="internal static partial class DorotiBootstrap" />
       <_DorotiBootstrapLines Include="{" />
       <_DorotiBootstrapLines Include="    internal static global::Doroti.Hosting.DorotiApplicationDescriptor Create(string[] args) =&gt;" />
       <_DorotiBootstrapLines Include="        global::Doroti.Hosting.DorotiApplicationFactory.Create&lt;global::$(DorotiApplicationType)&gt;(" />
@@ -222,6 +222,12 @@
       <_DorotiBootstrapLines Include="    [global::System.Runtime.Versioning.SupportedOSPlatform(&quot;browser&quot;)]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
       <_DorotiBootstrapLines Include="    public static global::System.Threading.Tasks.Task Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
       <_DorotiBootstrapLines Include="        global::Doroti.Target.Web.DorotiWebRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(typeof(DorotiBootstrap).Assembly, args, DorotiPluginRegistration.Items)%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+      <_DorotiBootstrapLines Include="    [global::System.Runtime.InteropServices.JavaScript.JSExport]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+      <_DorotiBootstrapLines Include="    public static global::System.Threading.Tasks.Task&lt;string&gt; StartWorker() =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+      <_DorotiBootstrapLines Include="        global::Doroti.Target.Web.DorotiWebWorkerRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(typeof(DorotiBootstrap).Assembly, DorotiPluginRegistration.Items)%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+      <_DorotiBootstrapLines Include="    [global::System.Runtime.InteropServices.JavaScript.JSExport]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+      <_DorotiBootstrapLines Include="    public static void StopWorker() =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+      <_DorotiBootstrapLines Include="        global::Doroti.Target.Web.DorotiWebWorkerRunner.Dispose()%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
       <_DorotiBootstrapLines Include="    public static void Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'UIKit-Main'" />
       <_DorotiBootstrapLines Include="        global::UIKit.UIApplication.Main(args, null, typeof(global::$(RootNamespace).AppDelegate))%3B" Condition="'$(DorotiNativeEntryKind)' == 'UIKit-Main'" />
       <_DorotiBootstrapLines Include="    public static void Main(string[] args)" Condition="'$(DorotiNativeEntryKind)' == 'AppKit-Main'" />

@@ -4,6 +4,27 @@
 
 DorotiDemoApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱입니다. 루트 project는 플랫폼 중립이며, `macos`와 `maccatalyst`를 별도 정식 제품으로 둔 7개 runner alias가 있습니다.
 
+## 빠르게 실행하기
+
+.NET 10 SDK와 PowerShell 7을 설치한 뒤 저장소 루트에서 다음 명령을 실행합니다. 첫 실행은 필요한 package를 복원하고 runner를 빌드하므로 시간이 걸릴 수 있습니다.
+
+```powershell
+# Windows 기본 backend로 실행
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
+
+# Web으로 실행
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web
+```
+
+Web runner가 시작되면 브라우저에서 `http://127.0.0.1:5088`을 엽니다. renderer backend를 직접 비교하려면 다음 주소를 사용할 수 있습니다.
+
+- 기본 자동 선택: `http://127.0.0.1:5088`
+- document WebGL2: `http://127.0.0.1:5088/?dorotiRenderer=document-webgl`
+- 같은 thread OffscreenCanvas: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-bitmap`
+- persistent .NET Worker: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-worker`
+
+실행을 종료하려면 명령을 실행한 terminal에서 `Ctrl+C`를 누릅니다. Android, iOS, macOS, Linux와 Windows MAUI 실행 명령은 아래의 [플랫폼별 실행](#플랫폼별-실행)을 참고하세요.
+
 ## 구조
 
 - `Program.cs`, `src/`, `assets/`: 공용 startup, widget tree, 앱 asset

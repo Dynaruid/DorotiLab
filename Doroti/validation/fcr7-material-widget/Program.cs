@@ -136,8 +136,12 @@ static void VerifyBrowserInputAndFrontBufferContract()
     var path = System.IO.Path.Combine(AppContext.BaseDirectory, "web", "doroti.web.ts");
     Require(File.Exists(path), "the browser host source is packaged with the validation fixture");
     var source = File.ReadAllText(path);
-    Require(source.Contains("preserveDrawingBuffer: 1", StringComparison.Ordinal),
-        "the visible WebGL default buffer preserves the last exact front between browser paints");
+    Require(source.Contains("policy.selected === \"document-webgl\" ? 1 : 0", StringComparison.Ordinal),
+        "the direct fallback preserves its visible exact front while offscreen modes avoid retained default buffers");
+    Require(source.Contains("new OffscreenCanvas(1, 1)", StringComparison.Ordinal) &&
+            source.Contains("canvas.getContext(\"bitmaprenderer\")", StringComparison.Ordinal) &&
+            source.Contains("createImageBitmap(presenter.rasterCanvas)", StringComparison.Ordinal),
+        "the same-thread offscreen backend uses a detached raster surface and exact ImageBitmap display commits");
     Require(!source.Contains("applyProvisionalEpoch(host, host.resizeEpoch, \"host-frame\")", StringComparison.Ordinal),
         "input rAF does not re-blit an older full-screen front before every managed raster");
     Require(source.Contains("if (host.composing) return;", StringComparison.Ordinal),

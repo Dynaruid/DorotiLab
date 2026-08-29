@@ -52,6 +52,9 @@ internal static partial class BrowserInterop
     [return: JSMarshalAs<JSType.Promise<JSType.String>>]
     internal static partial Task<string> InitializeManagedCallbacksAsync();
 
+    [JSImport("getRendererIdentity", Module)]
+    internal static partial string GetRendererIdentity();
+
     [System.Runtime.InteropServices.JavaScript.JSImport("showHost", Module)]
     internal static partial string ShowHost(int hostId);
 
@@ -109,6 +112,9 @@ internal static partial class BrowserInterop
 
     [JSImport("updateSemantics", Module)]
     internal static partial void UpdateSemantics(int hostId, string json);
+
+    [JSImport("setApplicationTitle", Module)]
+    internal static partial void SetApplicationTitle(int hostId, string title);
 
     [System.Runtime.InteropServices.JavaScript.JSImport("invokePlugin", Module)]
     [return: System.Runtime.InteropServices.JavaScript.JSMarshalAs<System.Runtime.InteropServices.JavaScript.JSType.Promise<System.Runtime.InteropServices.JavaScript.JSType.String>>]
@@ -203,6 +209,14 @@ public static class BrowserHostRuntime
             InitializationGate.Release();
         }
     }
+
+    public static string ResolveResourceUrl(string relativeUrl) =>
+        BrowserInterop.ResolveResourceUrl(relativeUrl);
+
+    public static void SetApplicationTitle(int hostId, string title) =>
+        BrowserInterop.SetApplicationTitle(hostId, title);
+
+    public static string RendererIdentity => BrowserInterop.GetRendererIdentity();
 }
 
 [SupportedOSPlatform("browser")]

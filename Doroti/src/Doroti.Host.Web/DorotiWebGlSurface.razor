@@ -26,10 +26,10 @@
     public required string CanvasId { get; set; }
 
     [Parameter]
-    public Func<SKSurface, int, int, DorotiResizeEpoch, string>? Paint { get; set; }
+    public Func<SKSurface, int, int, DorotiResizeEpoch, long, string>? Paint { get; set; }
 
     [Parameter]
-    public Action<long, bool, string>? CompletePaint { get; set; }
+    public Action<long, long, bool, string>? CompletePaint { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -57,6 +57,7 @@
 
     [JSInvokable]
     public string RenderFrame(
+        long requestId,
         long generation,
         double logicalWidth,
         double logicalHeight,
@@ -67,33 +68,34 @@
         int framebuffer,
         int stencilBits,
         int sampleCount,
+        long contextGeneration,
         bool glStateDirty)
     {
         if (_disposed) return "superseded";
         var target = new DorotiResizeEpoch(generation, logicalWidth, logicalHeight,
             physicalWidth, physicalHeight, devicePixelRatio, timestampMicroseconds);
         if (_latestTarget?.Generation != generation) return "superseded";
-        EnsureSurface(physicalWidth, physicalHeight, framebuffer, stencilBits, sampleCount);
+        EnsureSurface(physicalWidth, physicalHeight, framebuffer, stencilBits, sampleCount, contextGeneration);
         if (glStateDirty) _context!.ResetContext(GRGlBackendState.All);
         string result;
         using (new SKAutoCanvasRestore(_surface!.Canvas, true))
-            result = Paint?.Invoke(_surface, physicalWidth, physicalHeight, target) ?? "empty";
+            result = Paint?.Invoke(_surface, physicalWidth, physicalHeight, target, requestId) ?? "empty";
         _surface.Canvas.Flush();
         _context!.Flush();
         return result;
     }
 
     [JSInvokable]
-    public void CompleteFrame(long generation, bool committed, string reason)
+    public void CompleteFrame(long requestId, long generation, bool committed, string reason)
     {
-        if (!_disposed) CompletePaint?.Invoke(generation, committed, reason);
+        if (!_disposed) CompletePaint?.Invoke(requestId, generation, committed, reason);
     }
 
     [JSInvokable]
-    public void ContextLost(long interruptedGeneration)
+    public void ContextLost(long interruptedRequestId, long interruptedGeneration)
     {
-        if (interruptedGeneration > 0)
-            CompletePaint?.Invoke(interruptedGeneration, false, "WebGL context lost");
+        if (interruptedRequestId > 0)
+            CompletePaint?.Invoke(interruptedRequestId, interruptedGeneration, false, "WebGL context lost");
         ReleaseGpu();
     }
 
@@ -103,14 +105,20 @@
         if (_latestTarget is { } target) _ = RequestPresentAsync(target);
     }
 
-    private void EnsureSurface(int width, int height, int framebuffer, int stencilBits, int sampleCount)
+    private long _contextGeneration;
+
+    private void EnsureSurface(
+        int width, int height, int framebuffer, int stencilBits, int sampleCount, long contextGeneration)
     {
+        if (_context is not null && _contextGeneration != contextGeneration)
+            ReleaseGpu();
         if (_context is null)
         {
             _glInterface = GRGlInterface.Create();
             _context = GRContext.CreateGl(_glInterface)
                 ?? throw new InvalidOperationException("Doroti could not create the browser WebGL Skia context.");
             _context.SetResourceCacheLimit(ResourceCacheBytes);
+            _contextGeneration = contextGeneration;
         }
         var size = new SKSizeI(width, height);
         if (_renderTarget is null || _surfaceSize != size || _framebuffer != framebuffer || !_renderTarget.IsValid)
@@ -142,6 +150,7 @@
         _glInterface = null;
         _surfaceSize = SKSizeI.Empty;
         _framebuffer = 0;
+        _contextGeneration = 0;
     }
 
     public async ValueTask DisposeAsync()

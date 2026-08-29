@@ -109,7 +109,7 @@ interface ManagedCanvasPresenter {
 }
 
 interface EmscriptenGlRuntime {
-  createContext(canvas: HTMLCanvasElement, attributes: Record<string, number>): number;
+  createContext(canvas: HTMLCanvasElement | OffscreenCanvas, attributes: Record<string, number>): number;
   makeContextCurrent(context: number): void;
   deleteContext?(context: number): void;
   getNewId<T>(table: Array<T | null>): number;
@@ -132,6 +132,9 @@ interface GpuSurface {
 
 interface CanvasPresenter {
   canvas: HTMLCanvasElement;
+  mode: "document-webgl" | "offscreen-bitmap";
+  rasterCanvas: HTMLCanvasElement | OffscreenCanvas;
+  display: ImageBitmapRenderingContext | null;
   callback: ManagedCanvasPresenter;
   context: number;
   contextGeneration: number;
@@ -145,7 +148,57 @@ interface CanvasPresenter {
   frontGeneration: number;
   staging: GpuSurface | null;
   glStateDirty: boolean;
+  bitmapCreated: number;
+  bitmapConsumed: number;
+  bitmapClosed: number;
+  activeBitmaps: number;
+  rasterWidth: number;
+  rasterHeight: number;
+  displayWidth: number;
+  displayHeight: number;
   listeners: ListenerRegistration[];
+}
+
+type RequestedPresenterMode = "auto" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
+
+interface PresenterPolicy {
+  requested: RequestedPresenterMode;
+  selected: "document-webgl" | "offscreen-bitmap";
+  fallbackReason: string | null;
+}
+
+interface WorkerBridge {
+  createHost(hostId: number, canvasId: string, logicalWidth: number, logicalHeight: number): string;
+  showHost(hostId: number): string;
+  resizeHost(hostId: number, logicalWidth: number, logicalHeight: number): string;
+  requestFrame(hostId: number, callbackId: number): void;
+  recordManagedRaster(hostId: number, phase: string, width: number, height: number, duration: number): void;
+  requestPresent(canvasId: string, descriptor: Omit<PresentDescriptor, "requestId" | "terminalRecorded">): void;
+  captureResizeTrace(hostId: number): string;
+  closeHost(hostId: number): void;
+  resolveResourceUrl(relativeUrl: string): string;
+  postControl(kind: string, payload: Record<string, unknown>): void;
+  requestControl(kind: string, payload: Record<string, unknown>): Promise<string>;
+}
+
+interface WorkerDisplayPresenter {
+  worker: Worker;
+  display: ImageBitmapRenderingContext;
+  currentRequestId: number | null;
+  latestRequestId: number | null;
+  contextGeneration: number;
+  contextLost: boolean;
+  frontGeneration: number;
+  rasterWidth: number;
+  rasterHeight: number;
+  displayWidth: number;
+  displayHeight: number;
+  bitmapCreated: number;
+  bitmapConsumed: number;
+  bitmapClosed: number;
+  activeBitmaps: number;
+  restartCount: number;
+  pendingRequestIds: Set<number>;
 }
 
 interface ResizeDiagnostics {
@@ -155,8 +208,10 @@ interface ResizeDiagnostics {
   reset(hostId: number): void;
   snapshot(hostId: number): string;
   presenter(canvasId: string): string;
+  capability(canvasId: string): string;
   loseContext(canvasId: string): boolean;
   restoreContext(canvasId: string): boolean;
+  crashWorker(canvasId: string): boolean;
 }
 
 interface SemanticsFlags {
@@ -239,7 +294,91 @@ interface DorotiAssemblyExports {
 
 const hosts = new Map<number, BrowserHost>();
 const canvasPresenters = new Map<string, CanvasPresenter>();
+const workerDisplayPresenters = new Map<string, WorkerDisplayPresenter>();
 let managed: ManagedCallbacks | null = null;
+let activeWorkerBridge: WorkerBridge | null = null;
+
+export function configureWorkerBridge(bridge: WorkerBridge): void {
+  if (typeof document !== "undefined")
+    throw new Error("Doroti worker bridge can only be installed in a Web Worker.");
+  activeWorkerBridge = bridge;
+}
+
+export function dispatchWorkerSnapshot(hostId: number, json: string): void {
+  requireManaged().dispatchSnapshot(hostId, json);
+}
+
+export function dispatchWorkerAnimationFrame(
+  hostId: number, callbackId: number, timestamp: number): void {
+  requireManaged().dispatchAnimationFrame(hostId, callbackId, timestamp);
+}
+
+export function dispatchWorkerInput(message: Record<string, unknown>): void {
+  const callbacks = requireManaged();
+  const id = Number(message.hostId);
+  const payload = (message.payload ?? {}) as Record<string, unknown>;
+  switch (message.inputKind) {
+    case "pointer":
+      callbacks.dispatchPointerBatch(
+        id, Number(payload.phase), Number(payload.kind), Number(payload.pointerId),
+        Number(payload.buttons), Number(payload.modifiers), payload.samples as number[]);
+      break;
+    case "wheel":
+      callbacks.dispatchWheel(
+        id, Number(payload.x), Number(payload.y), Number(payload.deltaX), Number(payload.deltaY),
+        Number(payload.timestamp), Number(payload.kind));
+      break;
+    case "key":
+      callbacks.dispatchKey(
+        id, Boolean(payload.pressed), Boolean(payload.repeat), Boolean(payload.synthesized),
+        String(payload.code), String(payload.key), Number(payload.timestamp));
+      break;
+    case "focus":
+      callbacks.dispatchFocus(id, Boolean(payload.focused), Number(payload.timestamp));
+      break;
+    case "text":
+      callbacks.dispatchTextEditing(
+        id, String(payload.text), Number(payload.selectionBase), Number(payload.selectionExtent),
+        Number(payload.composingBase), Number(payload.composingExtent));
+      break;
+    case "text-action":
+      callbacks.dispatchTextAction(id, Number(payload.action));
+      break;
+    case "text-closed":
+      callbacks.dispatchTextConnectionClosed(id);
+      break;
+    case "semantics-action":
+      callbacks.dispatchSemanticsAction(
+        id, Number(payload.nodeId), Number(payload.action), String(payload.argumentsJson ?? "null"));
+      break;
+    default:
+      throw new Error(`Unknown Doroti worker input kind '${String(message.inputKind)}'.`);
+  }
+}
+
+function presenterPolicy(): PresenterPolicy {
+  const scope = globalThis as typeof globalThis & {
+    __dorotiRendererPolicy?: PresenterPolicy;
+  };
+  if (scope.__dorotiRendererPolicy) return scope.__dorotiRendererPolicy;
+  const requestedValue = new URLSearchParams(globalThis.location.search).get("dorotiRenderer");
+  const requested: RequestedPresenterMode =
+    requestedValue === "document-webgl" || requestedValue === "offscreen-bitmap" ||
+    requestedValue === "offscreen-worker" ? requestedValue : "auto";
+  const offscreenAvailable = typeof OffscreenCanvas !== "undefined" &&
+    typeof globalThis.createImageBitmap === "function" &&
+    typeof HTMLCanvasElement !== "undefined" &&
+    typeof HTMLCanvasElement.prototype.getContext === "function";
+  const selected = requested === "document-webgl" || !offscreenAvailable
+    ? "document-webgl" : "offscreen-bitmap";
+  const fallbackReason = requested === "offscreen-worker"
+    ? "worker runtime is selected by the bootstrap before the main managed runtime starts"
+    : !offscreenAvailable && requested !== "document-webgl"
+      ? "OffscreenCanvas/ImageBitmap/bitmaprenderer capability is unavailable"
+      : null;
+  scope.__dorotiRendererPolicy = { requested, selected, fallbackReason };
+  return scope.__dorotiRendererPolicy;
+}
 
 const resizeDiagnostics: ResizeDiagnostics = {
   hosts: () => [...hosts.keys()],
@@ -249,9 +388,43 @@ const resizeDiagnostics: ResizeDiagnostics = {
   snapshot: (hostId) => snapshot(requireHost(hostId)),
   presenter: (canvasId) => {
     const presenter = canvasPresenters.get(canvasId);
+    const workerPresenter = workerDisplayPresenters.get(canvasId);
+    if (!presenter && !workerPresenter)
+      throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
+    if (workerPresenter) return JSON.stringify({
+      context: 0,
+      requestedMode: "offscreen-worker",
+      mode: "offscreen-worker",
+      fallbackReason: null,
+      contextGeneration: workerPresenter.contextGeneration,
+      currentRequestId: workerPresenter.currentRequestId,
+      latestRequestId: workerPresenter.latestRequestId,
+      queueDepth: Number(workerPresenter.currentRequestId !== null) + Number(workerPresenter.latestRequestId !== null),
+      contextLost: workerPresenter.contextLost,
+      frontGeneration: workerPresenter.frontGeneration || null,
+      frontFramebufferId: null,
+      stagingFramebufferId: null,
+      rasterCanvasAttached: false,
+      visibleContext: "bitmaprenderer",
+      rasterWidth: workerPresenter.rasterWidth,
+      rasterHeight: workerPresenter.rasterHeight,
+      displayWidth: workerPresenter.displayWidth,
+      displayHeight: workerPresenter.displayHeight,
+      bitmapCreated: workerPresenter.bitmapCreated,
+      bitmapConsumed: workerPresenter.bitmapConsumed,
+      bitmapClosed: workerPresenter.bitmapClosed,
+      activeBitmaps: workerPresenter.activeBitmaps,
+      mainManagedRuntimeCount: 0,
+      workerManagedRuntimeCount: 1,
+      workerRestartCount: workerPresenter.restartCount,
+      unpairedRequestCount: workerPresenter.pendingRequestIds.size,
+    });
     if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
     return JSON.stringify({
       context: presenter.context,
+      requestedMode: presenterPolicy().requested,
+      mode: presenter.mode,
+      fallbackReason: presenterPolicy().fallbackReason,
       contextGeneration: presenter.contextGeneration,
       currentRequestId: presenter.current?.requestId ?? null,
       latestRequestId: presenter.latest?.requestId ?? null,
@@ -260,10 +433,47 @@ const resizeDiagnostics: ResizeDiagnostics = {
       frontGeneration: presenter.frontGeneration || null,
       frontFramebufferId: presenter.front?.framebufferId ?? null,
       stagingFramebufferId: presenter.staging?.framebufferId ?? null,
+      rasterCanvasAttached: presenter.rasterCanvas instanceof HTMLCanvasElement && presenter.rasterCanvas.isConnected,
+      visibleContext: presenter.display ? "bitmaprenderer" : "webgl2",
+      rasterWidth: presenter.rasterWidth,
+      rasterHeight: presenter.rasterHeight,
+      displayWidth: presenter.displayWidth,
+      displayHeight: presenter.displayHeight,
+      bitmapCreated: presenter.bitmapCreated,
+      bitmapConsumed: presenter.bitmapConsumed,
+      bitmapClosed: presenter.bitmapClosed,
+      activeBitmaps: presenter.activeBitmaps,
+    });
+  },
+  capability: (canvasId) => {
+    const host = [...hosts.values()].find((candidate) => candidate.canvas.id === canvasId);
+    if (!host) throw new Error(`Canvas host '${canvasId}' is not initialized.`);
+    const json = JSON.parse(resizeDiagnostics.presenter(canvasId)) as Record<string, unknown>;
+    return JSON.stringify({
+      offscreenCanvas: typeof OffscreenCanvas !== "undefined",
+      createImageBitmap: typeof globalThis.createImageBitmap === "function",
+      bitmaprenderer: typeof HTMLCanvasElement !== "undefined" &&
+        typeof HTMLCanvasElement.prototype.getContext === "function",
+      mode: json.mode,
+      actualManagedSkiaRaster: Number(json.frontGeneration ?? 0) > 0,
+      rasterCanvasAttached: json.rasterCanvasAttached,
+      hardwareWebGl2: host.gpu.hardware && !host.gpu.softwareFallbackUsed && host.gpu.api === "webgl2",
+      gpu: host.gpu,
+      exactBitmapCommit: Number(json.frontGeneration ?? 0) === host.resizeEpoch.generation,
+      bitmapCreated: json.bitmapCreated,
+      bitmapConsumed: json.bitmapConsumed,
+      bitmapClosed: json.bitmapClosed,
+      activeBitmaps: json.activeBitmaps,
     });
   },
   loseContext: (canvasId) => changeDiagnosticContextState(canvasId, true),
   restoreContext: (canvasId) => changeDiagnosticContextState(canvasId, false),
+  crashWorker: (canvasId) => {
+    const presenter = workerDisplayPresenters.get(canvasId);
+    if (!presenter) return false;
+    presenter.worker.postMessage({ protocolVersion: 1, kind: "crash" });
+    return true;
+  },
 };
 (globalThis as typeof globalThis & { __dorotiResizeDiagnostics?: ResizeDiagnostics })
   .__dorotiResizeDiagnostics = resizeDiagnostics;
@@ -313,7 +523,11 @@ function recordResize(
     detail: options.detail ?? null,
     queueDepth: (() => {
       const presenter = canvasPresenters.get(host.canvas.id);
-      return presenter ? Number(presenter.current !== null) + Number(presenter.latest !== null) : 0;
+      if (presenter) return Number(presenter.current !== null) + Number(presenter.latest !== null);
+      const workerPresenter = workerDisplayPresenters.get(host.canvas.id);
+      return workerPresenter
+        ? Number(workerPresenter.currentRequestId !== null) + Number(workerPresenter.latestRequestId !== null)
+        : 0;
     })(),
     inputSequence: options.inputSequence ?? 0,
     requestId: options.requestId ?? 0,
@@ -477,6 +691,11 @@ function hostForCanvas(canvas: HTMLCanvasElement): BrowserHost | undefined {
 
 function changeDiagnosticContextState(canvasId: string, lose: boolean): boolean {
   const presenter = canvasPresenters.get(canvasId);
+  const workerPresenter = workerDisplayPresenters.get(canvasId);
+  if (workerPresenter) {
+    workerPresenter.worker.postMessage({ protocolVersion: 1, kind: "context", action: lose ? "lose" : "restore" });
+    return true;
+  }
   if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
   const extension = presenter.contextLossExtension;
   if (!extension) return false;
@@ -676,6 +895,16 @@ function clearDefaultFramebuffer(presenter: CanvasPresenter): {
 function applyProvisionalEpoch(host: BrowserHost, target: ResizeEpoch, source: string): boolean {
   const presenter = canvasPresenters.get(host.canvas.id);
   if (!presenter || presenter.contextLost) return true;
+  if (presenter.mode === "offscreen-bitmap") {
+    // The observer publishes metrics only. Keep the last committed bitmap and
+    // intrinsic display size untouched until an exact replacement is ready.
+    host.canvas.style.width = `${target.logicalWidth}px`;
+    host.canvas.style.height = `${target.logicalHeight}px`;
+    recordResize(host, "provisional-size-deferred", source, {
+      detail: "offscreen bitmap presenter retains the last exact display commit",
+    });
+    return true;
+  }
   const gl = presenterGl(presenter);
   const started = performance.now();
   if (!presenter.front) {
@@ -789,29 +1018,44 @@ export function initializeCanvasPresenter(
   if (canvasPresenters.has(canvasId)) throw new Error(`Canvas presenter '${canvasId}' already exists.`);
   const canvas = document.getElementById(canvasId);
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error(`Canvas '#${canvasId}' was not found.`);
+  const policy = presenterPolicy();
+  const rasterCanvas: HTMLCanvasElement | OffscreenCanvas = policy.selected === "offscreen-bitmap"
+    ? new OffscreenCanvas(1, 1)
+    : canvas;
+  const display = policy.selected === "offscreen-bitmap"
+    ? canvas.getContext("bitmaprenderer")
+    : null;
+  if (policy.selected === "offscreen-bitmap" && !display)
+    throw new Error("Doroti offscreen mode requires a visible bitmaprenderer context.");
   const runtime = emscriptenGl();
-  const context = runtime.createContext(canvas, {
+  const context = runtime.createContext(rasterCanvas, {
     alpha: 1, depth: 1, stencil: 8, antialias: 0, premultipliedAlpha: 1,
     // The visible canvas is composited independently of Doroti's retained
     // front/staging FBOs. Preserve the last exact default-buffer commit so a
     // browser repaint never samples a discarded buffer between managed
     // rasters. This also avoids a full-screen old-front blit on every input
     // rAF, which caused visible key flicker and wheel/resize latency.
-    preserveDrawingBuffer: 1, preferLowPowerToHighPerformance: 0,
+    preserveDrawingBuffer: policy.selected === "document-webgl" ? 1 : 0,
+    preferLowPowerToHighPerformance: 0,
     failIfMajorPerformanceCaveat: 1, majorVersion: 2, minorVersion: 0,
     enableExtensionsByDefault: 1, explicitSwapControl: 0, renderViaOffscreenBackBuffer: 0,
   });
   if (!context) throw new Error("Doroti requires a hardware WebGL2 context; creation failed.");
   const presenter: CanvasPresenter = {
-    canvas, callback, context, contextGeneration: 1, contextLossExtension: null,
+    canvas, mode: policy.selected, rasterCanvas, display, callback,
+    context, contextGeneration: 1, contextLossExtension: null,
     current: null, latest: null, drainScheduled: false,
     nextRequestId: 0, contextLost: false, front: null, frontGeneration: 0,
-    staging: null, glStateDirty: true, listeners: [],
+    staging: null, glStateDirty: true,
+    bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
+    rasterWidth: rasterCanvas.width, rasterHeight: rasterCanvas.height,
+    displayWidth: canvas.width, displayHeight: canvas.height,
+    listeners: [],
   };
   presenter.contextLossExtension = presenterGl(presenter).getExtension("WEBGL_lose_context");
   const listen = (name: string, handler: EventListener): void => {
-    canvas.addEventListener(name, handler);
-    presenter.listeners.push({ target: canvas, name, handler });
+    rasterCanvas.addEventListener(name, handler);
+    presenter.listeners.push({ target: rasterCanvas, name, handler });
   };
   listen("webglcontextlost", (event) => {
     event.preventDefault();
@@ -821,6 +1065,7 @@ export function initializeCanvasPresenter(
     presenter.front = null;
     presenter.staging = null;
     presenter.frontGeneration = 0;
+    const interruptedRequestId = presenter.current?.requestId ?? 0;
     const interruptedGeneration = presenter.current?.generation ?? 0;
     if (presenter.current) recordPresenterTerminal(presenter, presenter.current, "superseded", "context lost");
     presenter.current = null;
@@ -832,7 +1077,7 @@ export function initializeCanvasPresenter(
       });
       emit(host);
     }
-    callback.invokeMethod<void>("ContextLost", interruptedGeneration);
+    callback.invokeMethod<void>("ContextLost", interruptedRequestId, interruptedGeneration);
   });
   listen("webglcontextrestored", () => {
     presenter.contextLost = false;
@@ -863,6 +1108,13 @@ export function requestPresent(
   canvasId: string, generation: number, logicalWidth: number, logicalHeight: number,
   physicalWidth: number, physicalHeight: number, devicePixelRatio: number,
   timestampMicroseconds: number): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.requestPresent(canvasId, {
+      generation, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
+      devicePixelRatio, timestampMicroseconds,
+    });
+    return;
+  }
   const presenter = canvasPresenters.get(canvasId);
   if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
   const descriptor: PresentDescriptor = {
@@ -883,6 +1135,11 @@ export function requestPresent(
 
 function schedulePresenter(presenter: CanvasPresenter): void {
   if (presenter.drainScheduled || presenter.current || presenter.contextLost || !presenter.latest) return;
+  if (presenter.mode === "offscreen-bitmap") {
+    presenter.drainScheduled = true;
+    void drainOffscreenPresenter(presenter);
+    return;
+  }
   presenter.drainScheduled = true;
   try {
     // requestPresent is called from the browser-WASM frame callback after the
@@ -895,6 +1152,128 @@ function schedulePresenter(presenter: CanvasPresenter): void {
       runPresenter(presenter);
   } finally {
     presenter.drainScheduled = false;
+  }
+}
+
+async function drainOffscreenPresenter(presenter: CanvasPresenter): Promise<void> {
+  try {
+    while (!presenter.current && !presenter.contextLost && presenter.latest) {
+      const descriptor = presenter.latest;
+      presenter.latest = null;
+      presenter.current = descriptor;
+      await runOffscreenPresenter(presenter, descriptor);
+      presenter.current = null;
+    }
+  } finally {
+    presenter.drainScheduled = false;
+    if (!presenter.current && !presenter.contextLost && presenter.latest)
+      schedulePresenter(presenter);
+  }
+}
+
+async function runOffscreenPresenter(
+  presenter: CanvasPresenter,
+  descriptor: PresentDescriptor): Promise<void> {
+  const host = hostForCanvas(presenter.canvas);
+  if (!host || host.resizeEpoch.generation !== descriptor.generation) {
+    recordPresenterTerminal(presenter, descriptor, "superseded", "target changed before offscreen raster");
+    return;
+  }
+  const started = performance.now();
+  let bitmap: ImageBitmap | null = null;
+  try {
+    if (!(presenter.rasterCanvas instanceof OffscreenCanvas))
+      throw new Error("Doroti offscreen presenter lost its detached raster canvas.");
+    if (presenter.rasterCanvas.width !== descriptor.physicalWidth ||
+        presenter.rasterCanvas.height !== descriptor.physicalHeight) {
+      presenter.rasterCanvas.width = descriptor.physicalWidth;
+      presenter.rasterCanvas.height = descriptor.physicalHeight;
+      presenter.rasterWidth = descriptor.physicalWidth;
+      presenter.rasterHeight = descriptor.physicalHeight;
+      presenter.glStateDirty = true;
+      host.surfaceGeneration++;
+    }
+    const gl = presenterGl(presenter);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.drawBuffers([gl.BACK]);
+    gl.disable(gl.SCISSOR_TEST);
+    gl.colorMask(true, true, true, true);
+    gl.depthMask(true);
+    gl.stencilMask(0xff);
+    gl.viewport(0, 0, descriptor.physicalWidth, descriptor.physicalHeight);
+    presenter.glStateDirty = true;
+    const renderResult = String(presenter.callback.invokeMethod<string>("RenderFrame",
+      descriptor.requestId, descriptor.generation, descriptor.logicalWidth, descriptor.logicalHeight,
+      descriptor.physicalWidth, descriptor.physicalHeight, descriptor.devicePixelRatio,
+      descriptor.timestampMicroseconds, 0, 8, 0, presenter.contextGeneration,
+      presenter.glStateDirty));
+    presenter.glStateDirty = false;
+    const exactRendered = renderResult === "exact-rendered" || renderResult === "replay-rendered";
+    if (!exactRendered) {
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
+        descriptor.generation, false, `managed raster result=${renderResult}`);
+      recordPresenterTerminal(presenter, descriptor, "superseded", `managed raster result=${renderResult}`);
+      return;
+    }
+    gl.flush();
+    bitmap = await createImageBitmap(presenter.rasterCanvas);
+    presenter.bitmapCreated++;
+    presenter.activeBitmaps++;
+    const latestHost = hostForCanvas(presenter.canvas);
+    const exact = latestHost && !presenter.contextLost &&
+      presenter.current?.requestId === descriptor.requestId &&
+      latestHost.resizeEpoch.generation === descriptor.generation &&
+      presenter.contextGeneration > 0 &&
+      bitmap.width === descriptor.physicalWidth && bitmap.height === descriptor.physicalHeight;
+    if (!exact) {
+      bitmap.close();
+      bitmap = null;
+      presenter.bitmapClosed++;
+      presenter.activeBitmaps--;
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
+        descriptor.generation, false, "target changed during ImageBitmap capture");
+      recordPresenterTerminal(presenter, descriptor, "superseded", "target changed during ImageBitmap capture");
+      return;
+    }
+    // Intrinsic/CSS size and bitmap ownership transfer form one uninterrupted
+    // display commit. No await or managed callback is permitted in this block.
+    presenter.canvas.width = descriptor.physicalWidth;
+    presenter.canvas.height = descriptor.physicalHeight;
+    presenter.canvas.style.width = `${descriptor.logicalWidth}px`;
+    presenter.canvas.style.height = `${descriptor.logicalHeight}px`;
+    presenter.display!.transferFromImageBitmap(bitmap);
+    bitmap = null;
+    presenter.bitmapConsumed++;
+    presenter.activeBitmaps--;
+    presenter.displayWidth = descriptor.physicalWidth;
+    presenter.displayHeight = descriptor.physicalHeight;
+    presenter.frontGeneration = descriptor.generation;
+    presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
+      descriptor.generation, true, "exact ImageBitmap display commit");
+    recordResize(latestHost, "front-commit", "doroti-presenter", {
+      rafId: descriptor.requestId, requestId: descriptor.requestId,
+      backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
+      surfaceWidth: presenter.rasterWidth, surfaceHeight: presenter.rasterHeight,
+      detail: JSON.stringify({ mode: presenter.mode, contextGeneration: presenter.contextGeneration }),
+    });
+    recordResize(latestHost, "browser-present-unverified", "browser-compositor", {
+      rafId: descriptor.requestId, requestId: descriptor.requestId,
+      detail: "ImageBitmap ownership transfer is not a display scan-out acknowledgement",
+    });
+    recordPresenterTerminal(presenter, descriptor, "submitted",
+      "exact offscreen ImageBitmap transferred to bitmaprenderer",
+      Math.round((performance.now() - started) * 1000));
+  } catch (error) {
+    if (bitmap) {
+      bitmap.close();
+      presenter.bitmapClosed++;
+      presenter.activeBitmaps--;
+    }
+    try {
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
+        descriptor.generation, false, String(error));
+    } catch { }
+    recordPresenterTerminal(presenter, descriptor, "failed", String(error));
   }
 }
 
@@ -923,18 +1302,19 @@ function runPresenter(presenter: CanvasPresenter): void {
   presenter.glStateDirty = true;
   try {
     const renderResult = String(presenter.callback.invokeMethod<string>("RenderFrame",
-      descriptor.generation, descriptor.logicalWidth, descriptor.logicalHeight,
+      descriptor.requestId, descriptor.generation, descriptor.logicalWidth, descriptor.logicalHeight,
       descriptor.physicalWidth, descriptor.physicalHeight, descriptor.devicePixelRatio,
-      descriptor.timestampMicroseconds, staging.framebufferId, 8, 0, presenter.glStateDirty));
+      descriptor.timestampMicroseconds, staging.framebufferId, 8, 0, presenter.contextGeneration,
+      presenter.glStateDirty));
     presenter.glStateDirty = false;
     const latestHost = hostForCanvas(presenter.canvas);
     const exactRendered = renderResult === "exact-rendered" || renderResult === "replay-rendered";
     if (!latestHost || latestHost.resizeEpoch.generation !== descriptor.generation) {
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.generation, false,
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, false,
         "target changed during staging raster");
       recordPresenterTerminal(presenter, descriptor, "superseded", "target changed during raster");
     } else if (!exactRendered) {
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.generation, false,
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, false,
         `managed raster result=${renderResult}`);
       recordPresenterTerminal(presenter, descriptor, "superseded", `managed raster result=${renderResult}`);
     } else {
@@ -955,7 +1335,11 @@ function runPresenter(presenter: CanvasPresenter): void {
       presenter.front = staging;
       presenter.frontGeneration = descriptor.generation;
       presenter.staging = previousFront;
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.generation, true, "front commit");
+      presenter.rasterWidth = descriptor.physicalWidth;
+      presenter.rasterHeight = descriptor.physicalHeight;
+      presenter.displayWidth = descriptor.physicalWidth;
+      presenter.displayHeight = descriptor.physicalHeight;
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, true, "front commit");
       recordResize(latestHost, "front-commit", "doroti-presenter", {
         rafId: descriptor.requestId,
         requestId: descriptor.requestId,
@@ -974,7 +1358,7 @@ function runPresenter(presenter: CanvasPresenter): void {
     }
   } catch (error) {
     try {
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.generation, false, String(error));
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, false, String(error));
     } catch { }
     recordPresenterTerminal(presenter, descriptor, "failed", String(error));
   } finally {
@@ -1037,6 +1421,14 @@ function emit(host: BrowserHost): void {
 
 function gpuIdentity(canvas: HTMLCanvasElement): GpuIdentity {
   const presenter = canvasPresenters.get(canvas.id);
+  const workerPresenter = workerDisplayPresenters.get(canvas.id);
+  if (workerPresenter) {
+    const host = hostForCanvas(canvas);
+    return host?.gpu ?? {
+      api: "webgl2", vendor: "worker-probe-pending", renderer: "worker-probe-pending",
+      hardware: true, softwareFallbackUsed: false,
+    };
+  }
   let gl: WebGL2RenderingContext | null = null;
   if (presenter) {
     const runtime = emscriptenGl();
@@ -1066,10 +1458,21 @@ export function configureManagedCallbacks(callbacks: ManagedCallbacks): void {
     "dispatchKey", "dispatchFocus", "dispatchTextEditing", "dispatchTextAction",
     "dispatchTextConnectionClosed", "dispatchSemanticsAction",
   ];
-  if (!callbacks || required.some((name) => typeof callbacks[name] !== "function")) {
-    throw new Error("Doroti browser managed callback ABI v1 is incomplete.");
+  const missing = callbacks
+    ? required.filter((name) => typeof callbacks[name] !== "function")
+    : required;
+  if (missing.length > 0) {
+    throw new Error(`Doroti browser managed callback ABI v1 is incomplete: ${missing.join(", ")}.`);
   }
   managed = callbacks;
+}
+
+export function getRendererIdentity(): string {
+  if (activeWorkerBridge) return "worker-offscreen-canvas-webgl2-imagebitmap";
+  const mode = presenterPolicy().selected;
+  return mode === "offscreen-bitmap"
+    ? "offscreen-canvas-webgl2-imagebitmap"
+    : "document-canvas-webgl2";
 }
 
 export async function initializeManagedCallbacks(): Promise<"ready"> {
@@ -1095,6 +1498,8 @@ export async function initializeManagedCallbacks(): Promise<"ready"> {
 }
 
 export function createHost(hostId: number, canvasId: string, logicalWidth: number, logicalHeight: number): string {
+  if (activeWorkerBridge)
+    return activeWorkerBridge.createHost(hostId, canvasId, logicalWidth, logicalHeight);
   if (!managed) throw new Error("Doroti browser managed callbacks must be configured before host creation.");
   if (hosts.has(hostId)) throw new Error(`Doroti browser host ${hostId} already exists.`);
   const canvas = document.getElementById(canvasId);
@@ -1288,6 +1693,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
 }
 
 export function showHost(hostId: number): string {
+  if (activeWorkerBridge) return activeWorkerBridge.showHost(hostId);
   const host = requireHost(hostId);
   host.canvas.hidden = false;
   host.canvas.tabIndex = host.canvas.tabIndex < 0 ? 0 : host.canvas.tabIndex;
@@ -1296,6 +1702,10 @@ export function showHost(hostId: number): string {
 }
 
 export function requestFocus(hostId: number, focused: boolean): string {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.postControl("focus-request", { hostId, focused });
+    return activeWorkerBridge.showHost(hostId);
+  }
   const host = requireHost(hostId);
   if (focused) focusActiveEndpoint(host);
   else if (document.activeElement === host.input) host.input.blur();
@@ -1304,6 +1714,7 @@ export function requestFocus(hostId: number, focused: boolean): string {
 }
 
 export function resizeHost(hostId: number, logicalWidth: number, logicalHeight: number): string {
+  if (activeWorkerBridge) return activeWorkerBridge.resizeHost(hostId, logicalWidth, logicalHeight);
   const host = requireHost(hostId);
   host.root.style.width = `${logicalWidth}px`;
   host.root.style.height = `${logicalHeight}px`;
@@ -1311,6 +1722,10 @@ export function resizeHost(hostId: number, logicalWidth: number, logicalHeight: 
 }
 
 export function requestFrame(hostId: number, callbackId: number): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.requestFrame(hostId, callbackId);
+    return;
+  }
   const host = requireHost(hostId);
   host.latestFrameCallback = callbackId;
   recordResize(host, "framework-frame-requested", "managed-scheduler", {
@@ -1355,6 +1770,11 @@ export function recordManagedRaster(
   surfaceWidth: number,
   surfaceHeight: number,
   durationMicroseconds: number): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.recordManagedRaster(
+      hostId, phase, surfaceWidth, surfaceHeight, durationMicroseconds);
+    return;
+  }
   const host = requireHost(hostId);
   recordResize(host, phase, "managed-skia", {
     durationMicroseconds,
@@ -1366,10 +1786,15 @@ export function recordManagedRaster(
 }
 
 export function captureResizeTrace(hostId: number): string {
+  if (activeWorkerBridge) return activeWorkerBridge.captureResizeTrace(hostId);
   return JSON.stringify(requireHost(hostId).resizeTrace);
 }
 
 export function closeHost(hostId: number): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.closeHost(hostId);
+    return;
+  }
   const host = hosts.get(hostId);
   if (!host) return;
   releasePressedKeys(host);
@@ -1389,10 +1814,15 @@ export function closeHost(hostId: number): void {
 }
 
 export function resolveResourceUrl(relativeUrl: string): string {
+  if (activeWorkerBridge) return activeWorkerBridge.resolveResourceUrl(relativeUrl);
   return new URL(relativeUrl, document.baseURI).href;
 }
 
 export function setCursor(hostId: number, cursor: string): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.postControl("cursor", { hostId, cursor });
+    return;
+  }
   requireHost(hostId).canvas.style.cursor = cursor;
 }
 
@@ -1401,6 +1831,13 @@ export function setTextInputState(
   inputMode: string, enterKeyHint: string, readOnly: boolean, obscureText: boolean,
   autocapitalize: string, autocorrect: boolean, inputAction: number, multiline: boolean,
   attach: boolean): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.postControl("text-state", {
+      hostId, text, selectionBase, selectionExtent, inputMode, enterKeyHint,
+      readOnly, obscureText, autocapitalize, autocorrect, inputAction, multiline, attach,
+    });
+    return;
+  }
   const host = requireHost(hostId);
   if (attach && host.pendingBlurConnectionCloseTimer !== 0) {
     clearTimeout(host.pendingBlurConnectionCloseTimer);
@@ -1444,6 +1881,10 @@ export function setTextInputState(
 }
 
 export function setCaretRect(hostId: number, left: number, top: number, width: number, height: number): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.postControl("caret", { hostId, left, top, width, height });
+    return;
+  }
   const input = requireHost(hostId).input;
   input.style.left = `${left}px`;
   input.style.top = `${top}px`;
@@ -1453,6 +1894,10 @@ export function setCaretRect(hostId: number, left: number, top: number, width: n
 }
 
 export function clearTextInput(hostId: number): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.postControl("text-clear", { hostId });
+    return;
+  }
   const host = requireHost(hostId);
   if (host.pendingBlurConnectionCloseTimer !== 0) {
     clearTimeout(host.pendingBlurConnectionCloseTimer);
@@ -1467,17 +1912,26 @@ export function clearTextInput(hostId: number): void {
 }
 
 export async function readClipboardText(): Promise<string> {
+  if (activeWorkerBridge) return activeWorkerBridge.requestControl("clipboard-read", {});
   if (!navigator.clipboard?.readText) throw new Error("Doroti clipboard read capability is unavailable.");
   return navigator.clipboard.readText();
 }
 
 export async function writeClipboardText(text: string): Promise<"written"> {
+  if (activeWorkerBridge) {
+    await activeWorkerBridge.requestControl("clipboard-write", { text });
+    return "written";
+  }
   if (!navigator.clipboard?.writeText) throw new Error("Doroti clipboard write capability is unavailable.");
   await navigator.clipboard.writeText(text);
   return "written";
 }
 
 export function updateSemantics(hostId: number, json: string): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.postControl("semantics", { hostId, json });
+    return;
+  }
   const host = requireHost(hostId);
   const update = JSON.parse(json) as SemanticsUpdate;
   host.semantics.dataset.generation = String(update.generation);
@@ -1624,7 +2078,17 @@ export function updateSemantics(hostId: number, json: string): void {
   for (const [parent, desired] of desiredByParent) removeUnexpectedSemanticsChildren(parent, desired);
 }
 
+export function setApplicationTitle(hostId: number, title: string): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.postControl("application-title", { hostId, title });
+    return;
+  }
+  requireHost(hostId).semantics.setAttribute("aria-label", title);
+}
+
 export async function invokePlugin(moduleUrl: string, exportName: string, channel: string, codec: string, payloadBase64: string): Promise<string> {
+  if (activeWorkerBridge)
+    return activeWorkerBridge.requestControl("plugin", { moduleUrl, exportName, channel, codec, payloadBase64 });
   const resolved = new URL(moduleUrl, document.baseURI).href;
   const pluginModule = await import(resolved) as Record<string, unknown>;
   const handler = pluginModule[exportName];
@@ -1639,6 +2103,293 @@ export async function invokePlugin(moduleUrl: string, exportName: string, channe
     return JSON.stringify({ hasValue: true, base64: btoa(binary) });
   }
   throw new Error(`Doroti JavaScript plugin '${exportName}' returned an unsupported response type.`);
+}
+
+export async function startDorotiWorkerHost(): Promise<"started"> {
+  if (typeof Worker === "undefined" || typeof OffscreenCanvas === "undefined" ||
+      typeof createImageBitmap !== "function")
+    throw new Error("Doroti offscreen-worker requires Worker, OffscreenCanvas, and ImageBitmap.");
+  const app = document.getElementById("app");
+  if (!app) throw new Error("Doroti worker bootstrap could not find '#app'.");
+  const root = document.createElement("main");
+  root.className = "doroti-root";
+  root.dataset.dorotiHost = "worker-offscreen-canvas";
+  const canvas = document.createElement("canvas");
+  canvas.id = "doroti-surface";
+  canvas.tabIndex = 0;
+  canvas.setAttribute("aria-label", "Doroti GPU surface");
+  const input = document.createElement("textarea");
+  input.id = "doroti-ime";
+  input.className = "doroti-ime";
+  input.setAttribute("aria-hidden", "true");
+  input.tabIndex = -1;
+  const semantics = document.createElement("div");
+  semantics.id = "doroti-semantics";
+  semantics.className = "doroti-semantics";
+  semantics.setAttribute("role", "application");
+  semantics.setAttribute("aria-label", "Doroti application");
+  root.append(canvas, input, semantics);
+  app.replaceChildren(root);
+  const displayContext = canvas.getContext("bitmaprenderer");
+  if (!displayContext) throw new Error("Doroti worker display requires bitmaprenderer.");
+  const dotnetModuleUrl = resolveCurrentDotnetModuleUrl();
+
+  let activeWorker: Worker;
+  const placeholder = new Worker(new URL("./doroti.raster.worker.js", import.meta.url), { type: "module" });
+  activeWorker = placeholder;
+  const display: WorkerDisplayPresenter = {
+    worker: activeWorker, display: displayContext,
+    currentRequestId: null, latestRequestId: null,
+    contextGeneration: 0, contextLost: false, frontGeneration: 0,
+    rasterWidth: 0, rasterHeight: 0, displayWidth: 0, displayHeight: 0,
+    bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
+    restartCount: 0, pendingRequestIds: new Set(),
+  };
+  workerDisplayPresenters.set(canvas.id, display);
+  const postInput = (inputKind: string, hostId: number, payload: Record<string, unknown>): void =>
+    activeWorker.postMessage({ protocolVersion: 1, kind: "input", inputKind, hostId, payload });
+  configureManagedCallbacks({
+    dispatchAnimationFrame: () => { throw new Error("main worker host cannot receive managed frame callbacks"); },
+    dispatchSnapshot: (hostId, snapshotJson) =>
+      activeWorker.postMessage({ protocolVersion: 1, kind: "snapshot", hostId, snapshot: JSON.parse(snapshotJson) }),
+    dispatchPointerBatch: (hostId, phase, kind, pointerId, buttons, modifiers, samples) =>
+      postInput("pointer", hostId, { phase, kind, pointerId, buttons, modifiers, samples }),
+    dispatchWheel: (hostId, x, y, deltaX, deltaY, timestamp, kind) =>
+      postInput("wheel", hostId, { x, y, deltaX, deltaY, timestamp, kind }),
+    dispatchKey: (hostId, pressed, repeat, synthesized, code, key, timestamp) =>
+      postInput("key", hostId, { pressed, repeat, synthesized, code, key, timestamp }),
+    dispatchFocus: (hostId, focused, timestamp) =>
+      postInput("focus", hostId, { focused, timestamp }),
+    dispatchTextEditing: (hostId, text, selectionBase, selectionExtent, composingBase, composingExtent) =>
+      postInput("text", hostId, { text, selectionBase, selectionExtent, composingBase, composingExtent }),
+    dispatchTextAction: (hostId, action) => postInput("text-action", hostId, { action }),
+    dispatchTextConnectionClosed: (hostId) => postInput("text-closed", hostId, {}),
+    dispatchSemanticsAction: (hostId, nodeId, action, argumentsJson) =>
+      postInput("semantics-action", hostId, { nodeId, action, argumentsJson }),
+  });
+  const initialRect = root.getBoundingClientRect();
+  createHost(1, canvas.id, Math.max(1, initialRect.width), Math.max(1, initialRect.height));
+  const host = requireHost(1);
+  document.documentElement.dataset.dorotiRenderer = "offscreen-worker";
+
+  let ready = false;
+  let resolveReady!: (value: "started") => void;
+  let rejectReady!: (reason: unknown) => void;
+  const readyPromise = new Promise<"started">((resolve, reject) => {
+    resolveReady = resolve;
+    rejectReady = reject;
+  });
+
+  const sendControlResponse = (correlationId: number, result: string, error?: unknown): void =>
+    activeWorker.postMessage({
+      protocolVersion: 1, kind: "control-response", correlationId, result,
+      error: error ? String(error) : undefined,
+    });
+
+  const handleControl = async (message: Record<string, unknown>): Promise<void> => {
+    const kind = String(message.controlKind);
+    const payload = (message.payload ?? {}) as Record<string, unknown>;
+    switch (kind) {
+      case "cursor": setCursor(Number(payload.hostId), String(payload.cursor)); break;
+      case "focus-request": requestFocus(Number(payload.hostId), Boolean(payload.focused)); break;
+      case "text-state":
+        setTextInputState(
+          Number(payload.hostId), String(payload.text), Number(payload.selectionBase), Number(payload.selectionExtent),
+          String(payload.inputMode), String(payload.enterKeyHint), Boolean(payload.readOnly), Boolean(payload.obscureText),
+          String(payload.autocapitalize), Boolean(payload.autocorrect), Number(payload.inputAction),
+          Boolean(payload.multiline), Boolean(payload.attach));
+        break;
+      case "caret":
+        setCaretRect(Number(payload.hostId), Number(payload.left), Number(payload.top), Number(payload.width), Number(payload.height));
+        break;
+      case "text-clear": clearTextInput(Number(payload.hostId)); break;
+      case "semantics": updateSemantics(Number(payload.hostId), String(payload.json)); break;
+      case "application-title":
+        setApplicationTitle(Number(payload.hostId), String(payload.title));
+        break;
+      default: throw new Error(`Unknown Doroti worker control '${kind}'.`);
+    }
+  };
+
+  const attachWorker = (worker: Worker): void => {
+    worker.addEventListener("message", (event) => {
+      const message = event.data as Record<string, unknown>;
+      if (Number(message.protocolVersion) !== 1) return;
+      switch (message.kind) {
+        case "runtime-ready":
+          ready = true;
+          root.dataset.dorotiWorkerRuntime = "ready";
+          resolveReady("started");
+          break;
+        case "gpu-ready":
+          host.gpu = message.gpu as GpuIdentity;
+          display.contextGeneration = Number(message.contextGeneration);
+          emit(host);
+          break;
+        case "frame-request":
+          requestAnimationFrame((timestamp) => worker.postMessage({
+            protocolVersion: 1, kind: "frame", callbackId: Number(message.callbackId), timestamp,
+          }));
+          break;
+        case "present-requested": {
+          const requestId = Number(message.requestId);
+          display.pendingRequestIds.add(requestId);
+          if (display.latestRequestId !== null) display.latestRequestId = requestId;
+          else if (display.currentRequestId === null) display.currentRequestId = requestId;
+          else display.latestRequestId = requestId;
+          recordResize(host, "present-requested", "worker-presenter", {
+            requestId, rafId: requestId,
+            surfaceWidth: (message.epoch as ResizeEpoch).physicalWidth,
+            surfaceHeight: (message.epoch as ResizeEpoch).physicalHeight,
+          });
+          break;
+        }
+        case "bitmap": {
+          const bitmap = message.bitmap as ImageBitmap;
+          const requestId = Number(message.requestId);
+          display.bitmapCreated++;
+          display.activeBitmaps++;
+          display.currentRequestId = requestId;
+          if (display.latestRequestId === requestId) display.latestRequestId = null;
+          const exact = host.resizeEpoch.generation === Number(message.generation) &&
+            bitmap.width === Number(message.physicalWidth) && bitmap.height === Number(message.physicalHeight);
+          if (exact) {
+            const bitmapWidth = bitmap.width;
+            const bitmapHeight = bitmap.height;
+            canvas.width = bitmapWidth;
+            canvas.height = bitmapHeight;
+            canvas.style.width = `${Number(message.logicalWidth)}px`;
+            canvas.style.height = `${Number(message.logicalHeight)}px`;
+            display.display.transferFromImageBitmap(bitmap);
+            display.bitmapConsumed++;
+            display.activeBitmaps--;
+            display.frontGeneration = Number(message.generation);
+            display.rasterWidth = bitmapWidth;
+            display.rasterHeight = bitmapHeight;
+            display.displayWidth = bitmapWidth;
+            display.displayHeight = bitmapHeight;
+            recordResize(host, "front-commit", "worker-display", {
+              requestId, rafId: requestId, backingWidth: canvas.width, backingHeight: canvas.height,
+              surfaceWidth: bitmapWidth, surfaceHeight: bitmapHeight,
+            });
+          } else {
+            bitmap.close();
+            display.bitmapClosed++;
+            display.activeBitmaps--;
+          }
+          worker.postMessage({
+            protocolVersion: 1, kind: "receipt", requestId, committed: exact,
+            reason: exact ? "exact ImageBitmap consumed by main bitmaprenderer" : "main display rejected stale bitmap",
+          });
+          break;
+        }
+        case "terminal": {
+          const requestId = Number(message.requestId);
+          const terminal = String(message.terminal);
+          display.pendingRequestIds.delete(requestId);
+          if (display.currentRequestId === requestId) display.currentRequestId = null;
+          if (display.latestRequestId === requestId) display.latestRequestId = null;
+          recordResize(host, terminal === "submitted" ? "submitted" : "ack", "worker-presenter", {
+            requestId, rafId: requestId, terminal, detail: String(message.detail),
+            backingWidth: canvas.width, backingHeight: canvas.height,
+            surfaceWidth: display.rasterWidth, surfaceHeight: display.rasterHeight,
+          });
+          break;
+        }
+        case "resource":
+          display.bitmapCreated = Number(message.bitmapCreated);
+          display.bitmapConsumed = Number(message.bitmapConsumed);
+          display.bitmapClosed = Number(message.bitmapClosed);
+          display.activeBitmaps = Number(message.activeBitmaps);
+          display.contextGeneration = Number(message.contextGeneration);
+          display.rasterWidth = Number(message.rasterWidth);
+          display.rasterHeight = Number(message.rasterHeight);
+          break;
+        case "context-lost": display.contextLost = true; break;
+        case "context-restored":
+          display.contextLost = false;
+          display.contextGeneration = Number(message.contextGeneration);
+          break;
+        case "control":
+          void handleControl(message).catch((error) => console.error("Doroti worker control failed.", error));
+          break;
+        case "control-request": {
+          const correlationId = Number(message.correlationId);
+          const kind = String(message.controlKind);
+          const payload = (message.payload ?? {}) as Record<string, unknown>;
+          void (async () => {
+            if (kind === "clipboard-read") return readClipboardText();
+            if (kind === "clipboard-write") return writeClipboardText(String(payload.text));
+            if (kind === "plugin") return invokePlugin(
+              String(payload.moduleUrl), String(payload.exportName), String(payload.channel),
+              String(payload.codec), String(payload.payloadBase64));
+            throw new Error(`Unknown Doroti worker request '${kind}'.`);
+          })().then((result) => sendControlResponse(correlationId, result),
+            (error) => sendControlResponse(correlationId, "", error));
+          break;
+        }
+        case "fatal": {
+          const error = new Error(`Doroti worker runtime failed: ${String(message.error)}`);
+          if (display.restartCount < 1) {
+            display.restartCount++;
+            worker.terminate();
+            display.currentRequestId = null;
+            display.latestRequestId = null;
+            display.contextLost = false;
+            for (const requestId of display.pendingRequestIds) {
+              recordResize(host, "ack", "worker-supervisor", {
+                requestId, rafId: requestId, terminal: "superseded",
+                detail: "worker restart closed the in-flight request",
+              });
+            }
+            display.pendingRequestIds.clear();
+            const replacement = new Worker(new URL("./doroti.raster.worker.js", import.meta.url), { type: "module" });
+            activeWorker = replacement;
+            display.worker = replacement;
+            attachWorker(replacement);
+            replacement.postMessage({
+              protocolVersion: 1, kind: "init", snapshot: JSON.parse(snapshot(host)), dotnetModuleUrl,
+            });
+          } else if (!ready) rejectReady(error);
+          else root.dataset.dorotiWorkerRuntime = "failed";
+          break;
+        }
+      }
+      publishResizeDiagnostics(host);
+    });
+    worker.addEventListener("error", (event) => {
+      if (!ready && display.restartCount >= 1) rejectReady(event.error ?? new Error(event.message));
+    });
+  };
+  attachWorker(activeWorker);
+  activeWorker.postMessage({
+    protocolVersion: 1, kind: "init", snapshot: JSON.parse(snapshot(host)), dotnetModuleUrl,
+  });
+  globalThis.addEventListener("pagehide", () => {
+    activeWorker.postMessage({ protocolVersion: 1, kind: "dispose" });
+    closeHost(host.id);
+    workerDisplayPresenters.delete(canvas.id);
+  }, { once: true });
+  return readyPromise;
+}
+
+function resolveCurrentDotnetModuleUrl(): string {
+  const stableUrl = new URL("./_framework/dotnet.js", document.baseURI).href;
+  // The development static-web-assets loader fingerprints this module and
+  // pairs the stable dotnet alias with the current native Skia relink. The
+  // published module is served under its stable name and must receive the
+  // document import map's fingerprinted standalone runtime URL instead.
+  if (!new URL(import.meta.url).pathname.endsWith("/doroti.web.js")) return stableUrl;
+  for (const script of document.querySelectorAll<HTMLScriptElement>('script[type="importmap"]')) {
+    try {
+      const imports = (JSON.parse(script.textContent ?? "{}") as { imports?: Record<string, string> }).imports;
+      const mapped = imports?.["./_framework/dotnet.js"] ?? imports?.["/_framework/dotnet.js"];
+      if (mapped) return new URL(mapped, document.baseURI).href;
+    } catch {
+      // Ignore unrelated or malformed maps and use the stable development alias.
+    }
+  }
+  return stableUrl;
 }
 
 function requireHost(hostId: number): BrowserHost {

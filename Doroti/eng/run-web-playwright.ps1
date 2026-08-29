@@ -7,7 +7,14 @@ param(
 
     [switch] $HeadlessOnly,
 
-    [string] $TestFile
+    [string] $TestFile,
+
+    [ValidateSet('auto', 'document-webgl', 'offscreen-bitmap', 'offscreen-worker')]
+    [string] $RendererMode = 'auto',
+
+    [switch] $RequireLatencyGate,
+
+    [string] $ArtifactLabel = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -16,7 +23,11 @@ $dorotiRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $repositoryRoot = [IO.Path]::GetFullPath((Join-Path $dorotiRoot '..'))
 $project = Join-Path $repositoryRoot 'DorotiDemoApp/web/DorotiDemoApp.Web.csproj'
 $playwrightRoot = Join-Path $dorotiRoot 'validation/web-playwright'
-$artifactRoot = Join-Path $playwrightRoot 'artifacts/wrapper'
+$resolvedArtifactLabel = if ([string]::IsNullOrWhiteSpace($ArtifactLabel)) { $RendererMode } else { $ArtifactLabel }
+if ($resolvedArtifactLabel -match '\.\.' -or $resolvedArtifactLabel -notmatch '^[a-zA-Z0-9._/-]+$') {
+    throw "Invalid artifact label '$resolvedArtifactLabel'."
+}
+$artifactRoot = Join-Path $playwrightRoot "artifacts/wrapper/$resolvedArtifactLabel"
 $baseUrl = 'http://127.0.0.1:5088'
 
 if (-not (Test-Path -LiteralPath $project -PathType Leaf)) {
@@ -101,8 +112,14 @@ try {
     }
 
     $previousBaseUrl = $env:DOROTI_WEB_BASE_URL
+    $previousRendererMode = $env:DOROTI_WEB_RENDERER_MODE
+    $previousRequireLatency = $env:DOROTI_WEB_REQUIRE_LATENCY
+    $previousArtifactLabel = $env:DOROTI_WEB_ARTIFACT_LABEL
     try {
         $env:DOROTI_WEB_BASE_URL = $baseUrl
+        $env:DOROTI_WEB_RENDERER_MODE = $RendererMode
+        $env:DOROTI_WEB_REQUIRE_LATENCY = if ($RequireLatencyGate) { '1' } else { '0' }
+        $env:DOROTI_WEB_ARTIFACT_LABEL = $resolvedArtifactLabel
         $arguments = @('playwright', 'test')
         if (-not [string]::IsNullOrWhiteSpace($TestFile)) { $arguments += $TestFile }
         if ($HeadlessOnly) {
@@ -115,6 +132,12 @@ try {
     finally {
         if ($null -eq $previousBaseUrl) { Remove-Item Env:DOROTI_WEB_BASE_URL -ErrorAction SilentlyContinue }
         else { $env:DOROTI_WEB_BASE_URL = $previousBaseUrl }
+        if ($null -eq $previousRendererMode) { Remove-Item Env:DOROTI_WEB_RENDERER_MODE -ErrorAction SilentlyContinue }
+        else { $env:DOROTI_WEB_RENDERER_MODE = $previousRendererMode }
+        if ($null -eq $previousRequireLatency) { Remove-Item Env:DOROTI_WEB_REQUIRE_LATENCY -ErrorAction SilentlyContinue }
+        else { $env:DOROTI_WEB_REQUIRE_LATENCY = $previousRequireLatency }
+        if ($null -eq $previousArtifactLabel) { Remove-Item Env:DOROTI_WEB_ARTIFACT_LABEL -ErrorAction SilentlyContinue }
+        else { $env:DOROTI_WEB_ARTIFACT_LABEL = $previousArtifactLabel }
     }
 }
 finally {

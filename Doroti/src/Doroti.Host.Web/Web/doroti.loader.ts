@@ -16,6 +16,7 @@ export interface DorotiBlazorStartOptions {
 export interface DorotiBootstrapContext {
   readonly blazorOptions: DorotiBlazorStartOptions;
   stage: DorotiBootstrapStage;
+  rendererMode?: "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
 }
 
 export interface DorotiBootstrapOptions {
@@ -49,10 +50,26 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
     options.configure?.(context);
     notifyStage("before-start", context, options);
 
-    const blazor = await ensureBlazorWebAssembly();
-
     notifyStage("starting", context, options);
-    await blazor.start(context.blazorOptions);
+    context.rendererMode = selectRendererMode();
+    document.documentElement.dataset.dorotiRenderer = context.rendererMode;
+    if (context.rendererMode === "offscreen-worker") {
+      const module = await import("./doroti.web.js");
+      await module.startDorotiWorkerHost();
+    } else {
+      const scope = globalThis as typeof globalThis & {
+        __dorotiRendererPolicy?: {
+          requested: string; selected: string; fallbackReason: string | null;
+        };
+      };
+      scope.__dorotiRendererPolicy = {
+        requested: context.rendererMode,
+        selected: context.rendererMode,
+        fallbackReason: null,
+      };
+      const blazor = await ensureBlazorWebAssembly();
+      await blazor.start(context.blazorOptions);
+    }
     notifyStage("started", context, options);
     return context;
   } catch (error: unknown) {
@@ -70,6 +87,15 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
     console.error("Doroti Web bootstrap failed.", error);
     throw error;
   }
+}
+
+function selectRendererMode(): "offscreen-worker" | "offscreen-bitmap" | "document-webgl" {
+  const value = new URLSearchParams(globalThis.location.search).get("dorotiRenderer");
+  if (value === "document-webgl" || value === "offscreen-bitmap" || value === "offscreen-worker")
+    return value;
+  // Both ImageBitmap backends remain first-class opt-in paths until their A/B
+  // latency gate passes on the current browser/machine.
+  return "document-webgl";
 }
 
 async function ensureBlazorWebAssembly(): Promise<BlazorGlobal> {

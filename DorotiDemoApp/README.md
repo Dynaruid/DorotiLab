@@ -4,6 +4,27 @@
 
 DorotiDemoApp dogfoods the platform-workspace contract. The root project is target-neutral. Seven runner aliases are available; `macos` and `maccatalyst` are separate permanent products.
 
+## Quick start
+
+Install the .NET 10 SDK and PowerShell 7, then run one of the following commands from the repository root. The first run can take a while because it restores packages and builds the selected runner.
+
+```powershell
+# Run the default Windows backend
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
+
+# Run the Web app
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web
+```
+
+After the Web runner starts, open `http://127.0.0.1:5088` in a browser. To compare renderer backends explicitly, use these addresses:
+
+- Automatic selection: `http://127.0.0.1:5088`
+- Document WebGL2: `http://127.0.0.1:5088/?dorotiRenderer=document-webgl`
+- Same-thread OffscreenCanvas: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-bitmap`
+- Persistent .NET Worker: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-worker`
+
+Press `Ctrl+C` in the terminal that launched the app to stop it. See [Run by platform](#run-by-platform) below for Android, iOS, macOS, Linux, and Windows MAUI commands.
+
 ## Layout
 
 - `Program.cs`, `src/`, `assets/`: shared startup, widget tree, and application assets

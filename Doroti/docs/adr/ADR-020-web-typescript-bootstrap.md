@@ -13,9 +13,11 @@ Doroti Web application policy, the Doroti loader, browser interop, and JavaScrip
 - `Microsoft.TypeScript.MSBuild` 7.0.0 is restored only by a Web runner with `web/tsconfig.json`.
 - The compiler writes under target/configuration-specific `obj`; Release publish excludes maps, TypeScript source, config, and compiler/tool assets.
 - Node, npm, Bun, and bundlers are not required.
-- `doroti.loader.ts` is the only owner of loading `_framework/blazor.webassembly.js` and calling `Blazor.start()`. Repeated `startDoroti()` calls share one script-loading promise and one startup promise.
+- `doroti.loader.ts` selects `document-webgl`, `offscreen-bitmap`, or `offscreen-worker` before any managed runtime starts. Repeated `startDoroti()` calls share one startup promise.
+- Same-thread modes load `_framework/blazor.webassembly.js` and call `Blazor.start()` exactly once.
+- Worker mode does not call `Blazor.start()` on main. Main TypeScript owns DOM input, IME, semantics, browser rAF, plugins, clipboard, and the visible `bitmaprenderer`; one persistent module Worker starts the .NET runtime from `_framework/dotnet.js` and exclusively owns the Doroti app/framework, Skia, and an actual detached `OffscreenCanvas` WebGL2 context.
 
-The Flutter Web initialization model is an API/UX reference only. Application HTML executes only the compiled `doroti_bootstrap.js` module. The Web runner enables .NET 10 HTML asset placeholder replacement, and application HTML declares the framework preload, fingerprinted Blazor loader preload, and import-map placeholders in `head`. The shared Doroti loader reads the generated loader URL, injects it with `autostart="false"`, waits for the script to load, and then calls `Blazor.start()` exactly once.
+The Flutter Web initialization model is an API/UX reference only. Application HTML executes only the compiled `doroti_bootstrap.js` module. The Web runner enables .NET 10 HTML asset placeholder replacement, and application HTML declares the framework preload, fingerprinted Blazor loader preload, and import-map placeholders in `head`. In same-thread modes the shared Doroti loader reads the generated loader URL, injects it with `autostart="false"`, waits for the script to load, and then calls `Blazor.start()` exactly once. In worker mode the loader creates the DOM host directly and starts `doroti.raster.worker.js`; main and worker managed runtimes are never started together.
 
 ```html
 <link rel="preload" id="webassembly" />
@@ -57,6 +59,14 @@ await startDoroti({
 ```
 
 When a custom `loadBootResource` performs `fetch`, it must pass the received integrity value, for example `fetch(defaultUri, { integrity, cache: "no-cache" })`. Service-worker registration can be added later in the same TypeScript bootstrap; this ADR does not add PWA behavior.
+
+## Renderer policy and ownership
+
+- `document-webgl` preserves the retained front/staging fallback on the visible WebGL2 canvas.
+- `offscreen-bitmap` runs the managed runtime on main but rasters to a detached `OffscreenCanvas`, awaits `createImageBitmap`, and commits an exact bitmap to the visible `bitmaprenderer`.
+- `offscreen-worker` uses the same exact bitmap contract across a versioned main/worker protocol. Input samples and immutable resize epochs cross to the worker; completed `ImageBitmap` objects cross back as transferables. Per-frame scene JSON, CPU readback, Blob/PNG encoding, and a second main managed runtime are forbidden.
+- All async presenters keep one started `current` and one replaceable `latest` request. Request id, resize generation, context generation, terminal, and bitmap ownership remain paired. A main display receipt is named `submitted`, not scan-out/presented.
+- `auto` remains `document-webgl` until the repository's three-run A/B gate passes. Correct worker implementation is retained as an explicit mode when latency or memory promotion gates fail.
 
 ## Failure and evidence boundary
 

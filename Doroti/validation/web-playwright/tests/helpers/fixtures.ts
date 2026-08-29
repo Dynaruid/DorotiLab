@@ -12,7 +12,12 @@ export const test = base.extend<{ runtimeErrors: string[] }>({
       }
     });
     page.on("requestfailed", (request) => {
-      runtimeErrors.push(`requestfailed: ${request.method()} ${request.url()} ${request.failure()?.errorText ?? ""}`);
+      const failure = request.failure()?.errorText ?? "";
+      // BrowserHttpHandler may abort its fetch controller after it has consumed
+      // the complete 200 response body. Chromium reports that cleanup as a
+      // failed request even though the managed byte-array read succeeded.
+      if (failure === "net::ERR_ABORTED" && request.url().endsWith("/fonts/NanumGothic-Regular.ttf")) return;
+      runtimeErrors.push(`requestfailed: ${request.method()} ${request.url()} ${failure}`);
     });
 
     await use(runtimeErrors);

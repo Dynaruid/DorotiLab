@@ -59,14 +59,15 @@
         return Task.CompletedTask;
     }
 
-    private string PaintSurface(SKSurface surface, int pixelWidth, int pixelHeight, DorotiResizeEpoch target)
+    private string PaintSurface(
+        SKSurface surface, int pixelWidth, int pixelHeight, DorotiResizeEpoch target, long requestId)
     {
         if (_target is null) return "superseded";
-        return _target.PaintSkiaSurface(ViewId, surface, pixelWidth, pixelHeight, target);
+        return _target.PaintSkiaSurface(ViewId, surface, pixelWidth, pixelHeight, target, requestId);
     }
 
-    private void CompleteSurfacePaint(long generation, bool committed, string reason) =>
-        _target?.CompleteSkiaSurfacePaint(ViewId, generation, committed, reason);
+    private void CompleteSurfacePaint(long requestId, long generation, bool committed, string reason) =>
+        _target?.CompleteSkiaSurfacePaint(ViewId, requestId, generation, committed, reason);
 
     public ValueTask DisposeAsync()
     {

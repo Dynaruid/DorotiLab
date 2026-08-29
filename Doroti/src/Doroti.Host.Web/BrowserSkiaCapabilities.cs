@@ -20,12 +20,13 @@ internal sealed class BrowserSkiaCapabilities :
 
     internal BrowserSkiaCapabilities(ulong viewId, BrowserHostAdapter host,
         Color? backgroundColor, Color? darkBackgroundColor,
+        string backendIdentity,
         SkiaFallbackFontCollection? fallbackFonts = null)
     {
         _host = host;
         _bridge = new(host);
         _renderer = new(viewId, _bridge, backgroundColor, darkBackgroundColor,
-            "browser-wasm/document-canvas-webgl2", DorotiSkiaRuntimeEffects.WebGpuBackend,
+            backendIdentity, DorotiSkiaRuntimeEffects.WebGpuBackend,
             "doroti-owned-canvas-webgl2-skia-gpu", fallbackFonts: fallbackFonts);
     }
 
@@ -58,7 +59,8 @@ internal sealed class BrowserSkiaCapabilities :
         SKSurface surface,
         int pixelWidth,
         int pixelHeight,
-        DorotiResizeEpoch target)
+        DorotiResizeEpoch target,
+        long requestId)
     {
         var started = DorotiFrameClock.Now;
         _host.RecordRaster("managed-raster-start", pixelWidth, pixelHeight);
@@ -72,7 +74,7 @@ internal sealed class BrowserSkiaCapabilities :
                     foreach (var stale in _pendingPaints.Values)
                         _renderer.SupersedePaint(stale, "new browser staging raster replaced pending completion");
                     _pendingPaints.Clear();
-                    _pendingPaints[target.Generation] = completion;
+                    _pendingPaints[requestId] = completion;
                 }
             }
             return result.Disposition switch
@@ -90,12 +92,12 @@ internal sealed class BrowserSkiaCapabilities :
         }
     }
 
-    internal void CompletePaint(long generation, bool committed, string reason)
+    internal void CompletePaint(long requestId, bool committed, string reason)
     {
         SkiaPaintCompletion completion;
         lock (_paintGate)
         {
-            if (!_pendingPaints.Remove(generation, out completion)) return;
+            if (!_pendingPaints.Remove(requestId, out completion)) return;
         }
         if (committed)
             _renderer.CompletePaint(completion, DorotiFrameTerminal.submitted);

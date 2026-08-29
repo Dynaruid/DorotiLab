@@ -58,6 +58,23 @@ export interface PresenterSnapshot {
   frontGeneration: number | null;
   frontFramebufferId: number | null;
   stagingFramebufferId: number | null;
+  requestedMode: string;
+  mode: string;
+  fallbackReason: string | null;
+  rasterCanvasAttached: boolean;
+  visibleContext: string;
+  rasterWidth: number;
+  rasterHeight: number;
+  displayWidth: number;
+  displayHeight: number;
+  bitmapCreated: number;
+  bitmapConsumed: number;
+  bitmapClosed: number;
+  activeBitmaps: number;
+  mainManagedRuntimeCount?: number;
+  workerManagedRuntimeCount?: number;
+  workerRestartCount?: number;
+  unpairedRequestCount?: number;
 }
 
 export interface DiagnosticBundle {
@@ -73,6 +90,7 @@ type BrowserDiagnostics = {
   reset(hostId: number): void;
   snapshot(hostId: number): string;
   presenter(canvasId: string): string;
+  capability(canvasId: string): string;
   loseContext(canvasId: string): boolean;
   restoreContext(canvasId: string): boolean;
 };
@@ -82,21 +100,13 @@ function readJson<T>(value: string): T {
 }
 
 export async function openDoroti(page: Page): Promise<DiagnosticBundle> {
-  await page.goto("/?dorotiResizeDiagnostics=1", { waitUntil: "domcontentloaded" });
+  const rendererMode = process.env.DOROTI_WEB_RENDERER_MODE;
+  const rendererQuery = rendererMode && rendererMode !== "auto"
+    ? `&dorotiRenderer=${encodeURIComponent(rendererMode)}` : "";
+  await page.goto(`/?dorotiResizeDiagnostics=1${rendererQuery}`, { waitUntil: "domcontentloaded" });
   await expect(page.locator(".doroti-root")).toBeVisible({ timeout: 120_000 });
   await expect(page.locator("#doroti-surface")).toBeVisible({ timeout: 120_000 });
-  await page.waitForFunction(() => {
-    const diagnostics = (globalThis as typeof globalThis & {
-      __dorotiResizeDiagnostics?: BrowserDiagnostics;
-    }).__dorotiResizeDiagnostics;
-    if (!diagnostics) return false;
-    const hostId = diagnostics.hosts()[0];
-    if (!hostId) return false;
-    const snapshot = JSON.parse(diagnostics.snapshot(hostId)) as HostSnapshot;
-    const presenter = JSON.parse(diagnostics.presenter(snapshot.canvasId)) as PresenterSnapshot;
-    return presenter.frontGeneration === snapshot.resizeEpoch.generation && presenter.queueDepth === 0;
-  }, undefined, { timeout: 120_000 });
-  return captureDiagnostics(page);
+  return captureSettledPresenter(page, 120_000);
 }
 
 export async function captureDiagnostics(page: Page): Promise<DiagnosticBundle> {
@@ -130,19 +140,21 @@ export async function resetDiagnostics(page: Page): Promise<void> {
 }
 
 export async function waitForSettledPresenter(page: Page): Promise<DiagnosticBundle> {
-  await page.waitForFunction(() => {
-    const diagnostics = (globalThis as typeof globalThis & {
-      __dorotiResizeDiagnostics?: BrowserDiagnostics;
-    }).__dorotiResizeDiagnostics;
-    if (!diagnostics) return false;
-    const hostId = diagnostics.hosts()[0];
-    if (!hostId) return false;
-    const snapshot = JSON.parse(diagnostics.snapshot(hostId)) as HostSnapshot;
-    const presenter = JSON.parse(diagnostics.presenter(snapshot.canvasId)) as PresenterSnapshot;
-    return presenter.queueDepth === 0 &&
-      presenter.frontGeneration === snapshot.resizeEpoch.generation;
-  }, undefined, { timeout: 60_000 });
-  return captureDiagnostics(page);
+  return captureSettledPresenter(page, 60_000);
+}
+
+async function captureSettledPresenter(page: Page, timeout: number): Promise<DiagnosticBundle> {
+  let settled: DiagnosticBundle | null = null;
+  await expect.poll(async () => {
+    const candidate = await captureDiagnostics(page);
+    const isSettled = candidate.presenter.queueDepth === 0 &&
+      (candidate.presenter.unpairedRequestCount ?? 0) === 0 &&
+      candidate.presenter.frontGeneration === candidate.snapshot.resizeEpoch.generation;
+    if (isSettled) settled = candidate;
+    return isSettled;
+  }, { timeout }).toBe(true);
+  if (!settled) throw new Error("Doroti presenter did not produce a settled diagnostic snapshot.");
+  return settled;
 }
 
 export async function attachDiagnostics(
@@ -168,6 +180,7 @@ export function assertPresenterContract(bundle: DiagnosticBundle): void {
   expect(bundle.snapshot.gpu.softwareFallbackUsed).toBe(false);
   expect(bundle.presenter.contextLost).toBe(false);
   expect(bundle.presenter.queueDepth).toBeLessThanOrEqual(2);
+  expect(bundle.presenter.unpairedRequestCount ?? 0).toBe(0);
   expect(bundle.trace.filter((entry) => entry.terminal === "failed")).toEqual([]);
 
   const requested = new Set(bundle.trace
@@ -180,7 +193,9 @@ export function assertPresenterContract(bundle: DiagnosticBundle): void {
     terminals.set(entry.requestId, values);
   }
   for (const requestId of requested) {
-    expect(terminals.get(requestId)?.length, `request ${requestId} terminal count`).toBe(1);
+    const evidence = bundle.trace.filter((entry) => entry.requestId === requestId);
+    expect(terminals.get(requestId)?.length,
+      `request ${requestId} terminal count; evidence=${JSON.stringify(evidence)}`).toBe(1);
   }
 }
 

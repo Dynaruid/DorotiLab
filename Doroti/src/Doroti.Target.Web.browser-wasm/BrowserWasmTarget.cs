@@ -38,14 +38,14 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
     private readonly BrowserFrameworkHost _host;
     private bool _disposed;
 
-    public BrowserWasmTarget()
+    public BrowserWasmTarget(string? backendIdentity = null)
     {
         if (!OperatingSystem.IsBrowser())
             throw new PlatformNotSupportedException("Doroti.Target.Web.browser-wasm requires a browser-wasm process.");
         Manifest = LoadManifest();
         Identity = new("doroti.target-identity/v1", Manifest.Rid, Manifest.Host,
             Manifest.GraphicsBackend, Manifest.PackageId, Manifest.PackageVersion, Manifest.FlutterRevision);
-        _host = new($"{Identity.Rid}/document-canvas-webgl2");
+        _host = new(backendIdentity ?? $"{Identity.Rid}/auto");
     }
 
     public BrowserTargetPackageManifest Manifest { get; }
@@ -93,16 +93,18 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
         SkiaSharp.SKSurface surface,
         int pixelWidth,
         int pixelHeight,
-        DorotiResizeEpoch target)
+        DorotiResizeEpoch target,
+        long requestId)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        return _host.PaintSkiaSurface(viewId, surface, pixelWidth, pixelHeight, target);
+        return _host.PaintSkiaSurface(viewId, surface, pixelWidth, pixelHeight, target, requestId);
     }
 
-    public void CompleteSkiaSurfacePaint(ulong viewId, long generation, bool committed, string reason)
+    public void CompleteSkiaSurfacePaint(
+        ulong viewId, long requestId, long generation, bool committed, string reason)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        _host.CompleteSkiaSurfacePaint(viewId, generation, committed, reason);
+        _host.CompleteSkiaSurfacePaint(viewId, requestId, generation, committed, reason);
     }
 
     public string ResolveResourceUrl(ulong viewId, string relativeUrl)

@@ -3,8 +3,8 @@
   "packageId": "Doroti.Target.Web.browser-wasm",
   "packageVersion": "0.2.0-beta",
   "rid": "browser-wasm",
-  "host": "document-canvas",
-  "graphicsBackend": "webgl2-browser-gpu-required",
+  "host": "document-or-worker-canvas",
+  "graphicsBackend": "document-webgl2-or-offscreen-webgl2-imagebitmap",
   "blazorWebAssemblyVersion": "10.0.11",
   "skiaSharpVersion": "4.151.1",
   "skiaSharpManagedPackage": "SkiaSharp",
@@ -15,8 +15,15 @@
   "hostComponents": [
     "Doroti.Host.Web.DorotiRoot",
     "Doroti.Host.Web.DorotiSurface",
-    "Doroti.Host.Web.DorotiWebGlSurface"
+    "Doroti.Host.Web.DorotiWebGlSurface",
+    "Doroti.Host.Web.DorotiWebWorkerSurface"
   ],
+  "rendererModes": [
+    "document-webgl",
+    "offscreen-bitmap",
+    "offscreen-worker"
+  ],
+  "workerRuntimeOwnership": "main-managed-runtime-zero-worker-managed-runtime-one",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",
   "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
@@ -28,7 +35,8 @@
   ],
   "supportedPublishModes": [
     "interpreter",
-    "aot-build-probe"
+    "aot-build-probe",
+    "persistent-dotnet-web-worker"
   ],
   "requiredCapabilities": [
     "window.lifecycle",

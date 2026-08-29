@@ -41,5 +41,7 @@
            Text="Doroti Web publish is missing the Doroti bootstrap loader module." />
     <Error Code="DOROTIWEB019" Condition="!Exists('$(_DorotiPublishRoot)\doroti_bootstrap.js')"
            Text="Doroti Web publish is missing the compiled application bootstrap module." />
+    <Error Code="DOROTIWEB026" Condition="!Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.raster.worker.js')"
+           Text="Doroti Web publish is missing the persistent offscreen worker runtime module." />
   </Target>
 </Project>

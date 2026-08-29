@@ -1,7 +1,7 @@
 # Doroti cross-platform 최초 부트 개선 작업 계획
 
 - 작성일: 2026-08-28
-- 상태: **2026-08-29 MVP 구현 실행 완료**. 구조적으로 안전한 공용/Windows/Android/Web/Linux/CLI 항목은 구현했고, 장치·OS·배포 환경이 필요한 gate와 선택적 tuning/operator 결정은 `notVerified` 또는 후속으로 유지한다. 판정과 증거는 `work.md`에 기록한다.
+- 상태: **2026-08-29 MVP 구현 실행 완료**. 구조적으로 안전한 공용/Windows/Android/Web/Linux/CLI 항목은 구현했고, 장치·OS·배포 환경이 필요한 gate와 선택적 tuning/operator 결정은 `notVerified` 또는 후속으로 유지한다. 판정과 증거는 `history/26-08-29/cross-platform-first-boot-implementation.md`에 기록했다.
 - 목표: 설치된 Release 앱의 process cold start에서 첫 유효 Doroti content가 실제 compositor에 표시되고 입력 가능한 시점까지의 시간을 줄인다.
 - 부목표: `doroti.ps1 run`의 불필요한 restore/build/native build/AOT/deploy를 줄이고 안전한 재사용 경로를 제공하되, 앱 runtime 부트 개선과 별도 작업으로 유지한다.
 
@@ -390,11 +390,11 @@ CLI acceptance:
 - Android arm64 startup CUJ profile을 실제 장치에서 수집·패키징했고 `install-dm/speed-profile`, cold/warm와 text activation을 확인했다. x64는 AOT off+trim on build와 profile strict validation이 PASS했다.
 - Web trimming과 Release symbol 제거를 적용해 initial uncompressed 27,049,342 bytes/Brotli 7,447,738 bytes로 줄였고 desktop Chrome live를 PASS했다.
 - CLI normal/last-successful fingerprint 재사용을 구현해 동일 artifact 실행과 missing state fail-closed를 확인했다.
-- 상세 결과와 `notVerified`/후속 경계는 `work.md`와 `history/26-08-29/cross-platform-first-boot-implementation.md`에 남겼다.
+- 상세 결과와 `notVerified`/후속 경계는 `history/26-08-29/cross-platform-first-boot-implementation.md`에 남겼다.
 
 ### 2026-08-28 — S2 First-frame `dynamic` 제거 완료
 
-- `work.md`의 W0~W4를 실행해 C1 render-tree core, C2 Navigator/Route, C3 Actions를 `keep`으로 확정했다.
+- 당시 작업 계획의 W0~W4를 실행해 C1 render-tree core, C2 Navigator/Route, C3 Actions를 `keep`으로 확정했다. 결과는 `history/26-08-29/cross-platform-first-boot-implementation.md`에 보존했다.
 - 신규 focused validation에서 render child ordering/해제, 서로 다른 `Route<T>` result, Actions intent/override/listener exactly-once와 선택 owner `CallSite<T> = 0`을 검증했다.
 - FCR-3~7, Widgets/Material, Windows default, Web publish, Android arm64 build를 PASS했다.
 - 실제 Windows는 system-light first frame, TextField, pointer action, wheel scroll을 확인했고 Web은 canvas/input/action/scroll 및 console error/warning 0건을 확인했다.

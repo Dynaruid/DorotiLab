@@ -35,8 +35,12 @@ public sealed class BrowserFrameworkHost : IDisposable
             throw new InvalidOperationException("The Doroti host session must be running before a browser view is created.");
 
         var host = new BrowserHostAdapter(viewId, canvasId, configuration.logicalSize);
+        var backendIdentity = _targetIdentity == "browser-wasm/auto"
+            ? $"browser-wasm/{BrowserHostRuntime.RendererIdentity}"
+            : _targetIdentity;
         var graphics = new BrowserSkiaCapabilities(viewId, host,
-            configuration.backgroundColor, configuration.darkBackgroundColor, _fallbackFonts);
+            configuration.backgroundColor, configuration.darkBackgroundColor,
+            backendIdentity, _fallbackFonts);
         var messages = new BrowserPlatformMessageCapability();
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
@@ -99,17 +103,19 @@ public sealed class BrowserFrameworkHost : IDisposable
         SkiaSharp.SKSurface surface,
         int pixelWidth,
         int pixelHeight,
-        DorotiResizeEpoch target)
+        DorotiResizeEpoch target,
+        long requestId)
     {
         if (!_views.TryGetValue(viewId, out var value))
             throw new KeyNotFoundException($"Browser Doroti view {viewId} is not registered.");
-        return value.Graphics.Paint(surface, pixelWidth, pixelHeight, target);
+        return value.Graphics.Paint(surface, pixelWidth, pixelHeight, target, requestId);
     }
 
-    public void CompleteSkiaSurfacePaint(ulong viewId, long generation, bool committed, string reason)
+    public void CompleteSkiaSurfacePaint(
+        ulong viewId, long requestId, long generation, bool committed, string reason)
     {
         if (!_views.TryGetValue(viewId, out var value)) return;
-        value.Graphics.CompletePaint(generation, committed, reason);
+        value.Graphics.CompletePaint(requestId, committed, reason);
     }
 
     public string ResolveResourceUrl(ulong viewId, string relativeUrl) =>
