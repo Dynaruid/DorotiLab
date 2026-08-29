@@ -28,7 +28,11 @@ interface BlazorGlobal {
   start(options?: DorotiBlazorStartOptions): Promise<void>;
 }
 
+const blazorWebAssemblyScriptPath = "_framework/blazor.webassembly.js";
+const blazorWebAssemblyPreloadId = "doroti-blazor-loader";
+
 let startPromise: Promise<DorotiBootstrapContext> | undefined;
+let blazorLoaderPromise: Promise<void> | undefined;
 
 export function startDoroti(options: DorotiBootstrapOptions = {}): Promise<DorotiBootstrapContext> {
   startPromise ??= runStart(options);
@@ -45,10 +49,7 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
     options.configure?.(context);
     notifyStage("before-start", context, options);
 
-    const blazor = (globalThis as typeof globalThis & { Blazor?: BlazorGlobal }).Blazor;
-    if (!blazor || typeof blazor.start !== "function") {
-      throw new Error("DOROTIWEB020: Blazor.start is unavailable; load blazor.webassembly.js with autostart=false before doroti_bootstrap.js.");
-    }
+    const blazor = await ensureBlazorWebAssembly();
 
     notifyStage("starting", context, options);
     await blazor.start(context.blazorOptions);
@@ -69,6 +70,50 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
     console.error("Doroti Web bootstrap failed.", error);
     throw error;
   }
+}
+
+async function ensureBlazorWebAssembly(): Promise<BlazorGlobal> {
+  const existing = getBlazorGlobal();
+  if (existing) return existing;
+
+  blazorLoaderPromise ??= loadBlazorWebAssemblyScript();
+  await blazorLoaderPromise;
+
+  const loaded = getBlazorGlobal();
+  if (!loaded) {
+    throw new Error(
+      `DOROTIWEB020: Blazor.start is unavailable after loading '${blazorWebAssemblyScriptPath}'.`,
+    );
+  }
+  return loaded;
+}
+
+function getBlazorGlobal(): BlazorGlobal | undefined {
+  const blazor = (globalThis as typeof globalThis & { Blazor?: BlazorGlobal }).Blazor;
+  return blazor && typeof blazor.start === "function" ? blazor : undefined;
+}
+
+function loadBlazorWebAssemblyScript(): Promise<void> {
+  const preload = document.getElementById(blazorWebAssemblyPreloadId) as HTMLLinkElement | null;
+  const scriptUrl = preload?.href || new URL(blazorWebAssemblyScriptPath, document.baseURI).href;
+
+  return new Promise<void>((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = scriptUrl;
+    script.async = true;
+    if (preload?.crossOrigin) script.crossOrigin = preload.crossOrigin;
+    if (preload?.integrity) script.integrity = preload.integrity;
+    if (preload?.referrerPolicy) script.referrerPolicy = preload.referrerPolicy;
+    script.setAttribute("autostart", "false");
+    script.dataset.dorotiBlazorLoader = "true";
+    script.addEventListener("load", () => resolve(), { once: true });
+    script.addEventListener(
+      "error",
+      () => reject(new Error(`DOROTIWEB024: Failed to load Blazor WebAssembly bootstrap from '${scriptUrl}'.`)),
+      { once: true },
+    );
+    document.head.append(script);
+  });
 }
 
 function notifyStage(

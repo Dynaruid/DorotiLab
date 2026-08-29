@@ -5,14 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <base href="/" />
   <title>Doroti Material Demo</title>
+  <link rel="preload" id="webassembly" />
+  <link rel="preload" id="doroti-blazor-loader"
+        href="_framework/blazor.webassembly#[.{fingerprint}].js"
+        as="script" fetchpriority="high" />
   <link rel="stylesheet" href="_content/Doroti.Host.Web/doroti.web.css" />
+  <script type="importmap"></script>
 </head>
 <body>
   <div id="app">Loading Doroti…</div>
-  <script src="_framework/blazor.webassembly.js" autostart="false"></script>
   <script type="module" src="doroti_bootstrap.js"></script>
 </body>
 </html>
-
-
 

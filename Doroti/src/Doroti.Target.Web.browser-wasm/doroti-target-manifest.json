@@ -10,6 +10,8 @@
   "skiaSharpManagedPackage": "SkiaSharp",
   "skiaSharpNativePackage": "SkiaSharp.NativeAssets.WebAssembly",
   "bootLoader": "_framework/blazor.webassembly.js",
+  "bootLoaderPreloadId": "doroti-blazor-loader",
+  "frameworkPreloadPlaceholderId": "webassembly",
   "hostComponents": [
     "Doroti.Host.Web.DorotiRoot",
     "Doroti.Host.Web.DorotiSurface",

@@ -13,9 +13,20 @@ Doroti Web application policy, the Doroti loader, browser interop, and JavaScrip
 - `Microsoft.TypeScript.MSBuild` 7.0.0 is restored only by a Web runner with `web/tsconfig.json`.
 - The compiler writes under target/configuration-specific `obj`; Release publish excludes maps, TypeScript source, config, and compiler/tool assets.
 - Node, npm, Bun, and bundlers are not required.
-- `doroti.loader.ts` is the only owner of `Blazor.start()`. Repeated `startDoroti()` calls share one promise.
+- `doroti.loader.ts` is the only owner of loading `_framework/blazor.webassembly.js` and calling `Blazor.start()`. Repeated `startDoroti()` calls share one script-loading promise and one startup promise.
 
-The Flutter Web initialization model is an API/UX reference only. Doroti uses the official standalone Blazor WebAssembly contract: load `_framework/blazor.webassembly.js` with `autostart="false"`, then load the compiled application module without `async`.
+The Flutter Web initialization model is an API/UX reference only. Application HTML executes only the compiled `doroti_bootstrap.js` module. The Web runner enables .NET 10 HTML asset placeholder replacement, and application HTML declares the framework preload, fingerprinted Blazor loader preload, and import-map placeholders in `head`. The shared Doroti loader reads the generated loader URL, injects it with `autostart="false"`, waits for the script to load, and then calls `Blazor.start()` exactly once.
+
+```html
+<link rel="preload" id="webassembly" />
+<link rel="preload" id="doroti-blazor-loader"
+      href="_framework/blazor.webassembly#[.{fingerprint}].js"
+      as="script" fetchpriority="high" />
+<script type="importmap"></script>
+<script type="module" src="doroti_bootstrap.js"></script>
+```
+
+`OverrideHtmlAssetPlaceholders` is required for Web runners. Build and publish replace these placeholders with high-priority framework preload links, import-map content, and the fingerprinted Blazor loader URL. The loader uses the `doroti-blazor-loader` link URL and falls back to resolving the stable loader path against `document.baseURI`; it copies preload integrity, cross-origin, and referrer-policy metadata to the injected script so the browser can reuse the preloaded response. It reports `DOROTIWEB024` when the script cannot be loaded and `DOROTIWEB020` when the loaded script does not expose `Blazor.start()`.
 
 ## Application bootstrap
 

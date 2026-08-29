@@ -190,6 +190,9 @@
     <Error Code="DOROTIWEB023"
            Condition="'$(DorotiTarget)' == 'Web' and !Exists('$(BlazorWebAssemblyJSPath)')"
            Text="Doroti Web requires a direct Microsoft.AspNetCore.Components.WebAssembly package reference so the standard _framework/blazor.webassembly.js boot asset is registered." />
+    <Error Code="DOROTIWEB025"
+           Condition="'$(DorotiTarget)' == 'Web' and '$(OverrideHtmlAssetPlaceholders)' != 'true'"
+           Text="Doroti Web requires OverrideHtmlAssetPlaceholders=true so the .NET SDK can generate framework preload and fingerprint metadata." />
     <Error Code="DOROTIRUNNER310" Condition="'@(_DorotiManualNativeBindingReference)' != ''"
            Text="Declare a native binding only with DorotiNativeBindingProject; remove the duplicate ProjectReference: @(_DorotiManualNativeBindingReference)." />
     <Error Code="DOROTIANDROID311"
