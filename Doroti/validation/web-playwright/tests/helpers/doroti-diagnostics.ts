@@ -56,6 +56,7 @@ export interface PresenterSnapshot {
   queueDepth: number;
   contextLost: boolean;
   frontGeneration: number | null;
+  frontRequestId: number | null;
   frontFramebufferId: number | null;
   stagingFramebufferId: number | null;
   requestedMode: string;

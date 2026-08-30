@@ -147,6 +147,7 @@ interface CanvasPresenter {
   contextLost: boolean;
   front: GpuSurface | null;
   frontGeneration: number;
+  frontRequestId: number;
   staging: GpuSurface | null;
   glStateDirty: boolean;
   bitmapCreated: number;
@@ -190,6 +191,7 @@ interface WorkerDisplayPresenter {
   contextGeneration: number;
   contextLost: boolean;
   frontGeneration: number;
+  frontRequestId: number;
   rasterWidth: number;
   rasterHeight: number;
   displayWidth: number;
@@ -404,6 +406,7 @@ const resizeDiagnostics: ResizeDiagnostics = {
       queueDepth: Number(workerPresenter.currentRequestId !== null) + Number(workerPresenter.latestRequestId !== null),
       contextLost: workerPresenter.contextLost,
       frontGeneration: workerPresenter.frontGeneration || null,
+      frontRequestId: workerPresenter.frontRequestId || null,
       frontFramebufferId: null,
       stagingFramebufferId: null,
       rasterCanvasAttached: false,
@@ -433,6 +436,7 @@ const resizeDiagnostics: ResizeDiagnostics = {
       queueDepth: Number(presenter.current !== null) + Number(presenter.latest !== null),
       contextLost: presenter.contextLost,
       frontGeneration: presenter.frontGeneration || null,
+      frontRequestId: presenter.frontRequestId || null,
       frontFramebufferId: presenter.front?.framebufferId ?? null,
       stagingFramebufferId: presenter.staging?.framebufferId ?? null,
       rasterCanvasAttached: presenter.rasterCanvas instanceof HTMLCanvasElement && presenter.rasterCanvas.isConnected,
@@ -969,7 +973,7 @@ export function initializeCanvasPresenter(
     canvas, mode: policy.selected, rasterCanvas, display, callback,
     context, contextGeneration: 1, contextLossExtension: null,
     current: null, latest: null, drainScheduled: false,
-    nextRequestId: 0, contextLost: false, front: null, frontGeneration: 0,
+    nextRequestId: 0, contextLost: false, front: null, frontGeneration: 0, frontRequestId: 0,
     staging: null, glStateDirty: true,
     bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
     rasterWidth: rasterCanvas.width, rasterHeight: rasterCanvas.height,
@@ -989,6 +993,7 @@ export function initializeCanvasPresenter(
     presenter.front = null;
     presenter.staging = null;
     presenter.frontGeneration = 0;
+    presenter.frontRequestId = 0;
     const interruptedRequestId = presenter.current?.requestId ?? 0;
     const interruptedGeneration = presenter.current?.generation ?? 0;
     if (presenter.current) recordPresenterTerminal(presenter, presenter.current, "superseded", "context lost");
@@ -1146,7 +1151,8 @@ async function runOffscreenPresenter(
     const latestHost = hostForCanvas(presenter.canvas);
     const epochExact = latestHost && !presenter.contextLost &&
       presenter.current?.requestId === descriptor.requestId &&
-      descriptor.generation > presenter.frontGeneration &&
+      descriptor.requestId > presenter.frontRequestId &&
+      descriptor.generation >= presenter.frontGeneration &&
       descriptor.generation <= latestHost.resizeEpoch.generation &&
       presenter.contextGeneration > 0 &&
       bitmap.width === descriptor.physicalWidth && bitmap.height === descriptor.physicalHeight;
@@ -1156,9 +1162,9 @@ async function runOffscreenPresenter(
       presenter.bitmapClosed++;
       presenter.activeBitmaps--;
       presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
-        descriptor.generation, false, "completed ImageBitmap was not a monotonic epoch-exact front");
+        descriptor.generation, false, "completed ImageBitmap was not a monotonic frame/epoch-exact front");
       recordPresenterTerminal(presenter, descriptor, "superseded",
-        "completed ImageBitmap was not a monotonic epoch-exact front");
+        "completed ImageBitmap was not a monotonic frame/epoch-exact front");
       return;
     }
     // Intrinsic/CSS size and bitmap ownership transfer form one uninterrupted
@@ -1176,6 +1182,7 @@ async function runOffscreenPresenter(
     presenter.displayWidth = descriptor.physicalWidth;
     presenter.displayHeight = descriptor.physicalHeight;
     presenter.frontGeneration = descriptor.generation;
+    presenter.frontRequestId = descriptor.requestId;
     presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
       descriptor.generation, true, "exact ImageBitmap display commit");
     recordResize(latestHost, "front-commit", "doroti-presenter", {
@@ -1269,6 +1276,7 @@ function runPresenter(presenter: CanvasPresenter): void {
       staging.generation = descriptor.generation;
       presenter.front = staging;
       presenter.frontGeneration = descriptor.generation;
+      presenter.frontRequestId = descriptor.requestId;
       presenter.staging = previousFront;
       presenter.rasterWidth = descriptor.physicalWidth;
       presenter.rasterHeight = descriptor.physicalHeight;
@@ -2155,7 +2163,7 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
   const display: WorkerDisplayPresenter = {
     worker: activeWorker, display: displayContext,
     currentRequestId: null, latestRequestId: null,
-    contextGeneration: 0, contextLost: false, frontGeneration: 0,
+    contextGeneration: 0, contextLost: false, frontGeneration: 0, frontRequestId: 0,
     rasterWidth: 0, rasterHeight: 0, displayWidth: 0, displayHeight: 0,
     bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
     restartCount: 0, pendingRequestIds: new Set(),
@@ -2311,7 +2319,8 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
           display.currentRequestId = requestId;
           if (display.latestRequestId === requestId) display.latestRequestId = null;
           const frameGeneration = Number(message.generation);
-          const epochExact = frameGeneration > display.frontGeneration &&
+          const epochExact = requestId > display.frontRequestId &&
+            frameGeneration >= display.frontGeneration &&
             frameGeneration <= host.resizeEpoch.generation &&
             bitmap.width === Number(message.physicalWidth) && bitmap.height === Number(message.physicalHeight);
           const bitmapWidth = bitmap.width;
@@ -2330,6 +2339,7 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
             display.bitmapConsumed++;
             display.activeBitmaps--;
             display.frontGeneration = frameGeneration;
+            display.frontRequestId = requestId;
             display.rasterWidth = bitmapWidth;
             display.rasterHeight = bitmapHeight;
             display.displayWidth = bitmapWidth;
@@ -2411,6 +2421,7 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
             worker.terminate();
             display.currentRequestId = null;
             display.latestRequestId = null;
+            display.frontRequestId = 0;
             display.contextLost = false;
             snapshotInFlight = false;
             latestWorkerSnapshot = null;

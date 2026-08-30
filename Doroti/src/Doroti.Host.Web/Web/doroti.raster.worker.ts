@@ -95,6 +95,7 @@ const pendingControls = new Map<number, { resolve(value: string): void; reject(r
 const pendingReceipts = new Map<number, {
   resolve(value: { committed: boolean; consumed: boolean; reason: string }): void;
 }>();
+const pendingReceiptWork = new Set<Promise<void>>();
 
 function post(kind: string, payload: Record<string, unknown> = {}, transfer: Transferable[] = []): void {
   (globalThis as unknown as { postMessage(message: unknown, transfer: Transferable[]): void })
@@ -167,12 +168,9 @@ function ensurePresenter(): WorkerPresenter {
     presenter.contextLost = true;
     const interrupted = presenter.current;
     if (interrupted) terminal(interrupted, "superseded", "worker WebGL context lost");
-    if (interrupted) {
-      const receipt = pendingReceipts.get(interrupted.requestId);
-      if (receipt) {
-        pendingReceipts.delete(interrupted.requestId);
-        receipt.resolve({ committed: false, consumed: false, reason: "worker WebGL context lost" });
-      }
+    for (const [requestId, receipt] of pendingReceipts) {
+      pendingReceipts.delete(requestId);
+      receipt.resolve({ committed: false, consumed: false, reason: "worker WebGL context lost" });
     }
     presenter.current = null;
     surface?.ContextLost(interrupted?.requestId ?? 0, interrupted?.generation ?? 0);
@@ -220,6 +218,15 @@ function scheduleDrain(): void {
 async function drain(value: WorkerPresenter): Promise<void> {
   try {
     while (!value.current && !value.contextLost && value.latest) {
+      // ImageBitmap has snapshot semantics, so raster can safely continue
+      // before the preceding bitmaprenderer receipt returns. Bound that
+      // overlap to two display receipts; this removes a cross-thread ACK from
+      // every resize frame's critical path without creating an unbounded
+      // transferable/resource queue.
+      if (pendingReceiptWork.size >= 2) {
+        await Promise.race(pendingReceiptWork);
+        continue;
+      }
       const request = value.latest;
       value.latest = null;
       value.current = request;
@@ -287,18 +294,29 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       devicePixelRatio: request.devicePixelRatio, bitmap,
     }, [bitmap]);
     bitmap = null;
-    const resultReceipt = await receipt;
-    value.activeBitmaps--;
-    if (resultReceipt.consumed) value.bitmapConsumed++;
-    else value.bitmapClosed++;
-    surface!.CompleteFrame(request.requestId, request.generation,
-      resultReceipt.committed, resultReceipt.reason);
-    terminal(request, resultReceipt.committed ? "submitted" : "superseded", resultReceipt.reason);
-    post("resource", {
-      bitmapCreated: value.bitmapCreated, bitmapConsumed: value.bitmapConsumed,
-      bitmapClosed: value.bitmapClosed, activeBitmaps: value.activeBitmaps,
-      contextGeneration: value.contextGeneration,
-      rasterWidth: value.canvas.width, rasterHeight: value.canvas.height,
+    const receiptWork = receipt.then((resultReceipt) => {
+      try {
+        value.activeBitmaps--;
+        if (resultReceipt.consumed) value.bitmapConsumed++;
+        else value.bitmapClosed++;
+        surface!.CompleteFrame(request.requestId, request.generation,
+          resultReceipt.committed, resultReceipt.reason);
+        terminal(request, resultReceipt.committed ? "submitted" : "superseded", resultReceipt.reason);
+      } catch (error) {
+        terminal(request, "failed", String(error));
+      } finally {
+        post("resource", {
+          bitmapCreated: value.bitmapCreated, bitmapConsumed: value.bitmapConsumed,
+          bitmapClosed: value.bitmapClosed, activeBitmaps: value.activeBitmaps,
+          contextGeneration: value.contextGeneration,
+          rasterWidth: value.canvas.width, rasterHeight: value.canvas.height,
+        });
+      }
+    });
+    pendingReceiptWork.add(receiptWork);
+    void receiptWork.finally(() => {
+      pendingReceiptWork.delete(receiptWork);
+      scheduleDrain();
     });
   } catch (error) {
     if (bitmap) {

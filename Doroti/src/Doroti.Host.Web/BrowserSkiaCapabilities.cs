@@ -73,12 +73,7 @@ internal sealed class BrowserSkiaCapabilities :
             if (result.ShouldPresent && result.Completion is { } completion)
             {
                 lock (_paintGate)
-                {
-                    foreach (var stale in _pendingPaints.Values)
-                        _renderer.SupersedePaint(stale, "new browser staging raster replaced pending completion");
-                    _pendingPaints.Clear();
                     _pendingPaints[requestId] = completion;
-                }
             }
             return result.Disposition switch
             {

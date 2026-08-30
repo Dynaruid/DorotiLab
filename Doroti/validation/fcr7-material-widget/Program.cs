@@ -207,8 +207,19 @@ static void VerifyBrowserInputAndFrontBufferContract()
             source.Contains(
                 "progressive epoch-exact ImageBitmap consumed during live resize",
                 StringComparison.Ordinal) &&
-            source.Contains("frameGeneration > display.frontGeneration", StringComparison.Ordinal),
-        "completed worker frames remain epoch-exact and advance monotonically during continuous resize instead of starving until the final target");
+            source.Contains("requestId > display.frontRequestId", StringComparison.Ordinal) &&
+            source.Contains("frameGeneration >= display.frontGeneration", StringComparison.Ordinal) &&
+            source.Contains("descriptor.requestId > presenter.frontRequestId", StringComparison.Ordinal),
+        "completed worker frames remain epoch-exact and admit same-size interaction frames monotonically without starving live resize");
+    Require(workerSource.Contains("pendingReceiptWork.size >= 2", StringComparison.Ordinal) &&
+            workerSource.Contains("await Promise.race(pendingReceiptWork);", StringComparison.Ordinal),
+        "persistent worker display receipts are bounded to two and do not serialize the next raster behind a main-thread ACK");
+    var managedGraphicsPath = System.IO.Path.Combine(AppContext.BaseDirectory, "web", "BrowserSkiaCapabilities.cs");
+    Require(File.Exists(managedGraphicsPath), "the managed browser graphics source is packaged with the validation fixture");
+    var managedGraphicsSource = File.ReadAllText(managedGraphicsPath);
+    Require(managedGraphicsSource.Contains("_pendingPaints[requestId] = completion;", StringComparison.Ordinal) &&
+            !managedGraphicsSource.Contains("new browser staging raster replaced pending completion", StringComparison.Ordinal),
+        "managed browser frame completions retain both bounded worker receipt slots until their exact terminal arrives");
 }
 
 static void VerifyScrollbarAlphaContract()
