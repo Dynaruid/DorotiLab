@@ -1,7 +1,7 @@
 # Web 실시간 창 resize를 Flutter식 exact-surface 경로로 전환하는 작업 계획
 
 - 작성일: 2026-08-30
-- 상태: `partial` — 제품 구조 변경과 자동 계약/회귀는 PASS, 실제 마우스 drag는 `notVerified`, 연속 Win32 resize 중 `offscreen-worker` exact-front 추격은 미달
+- 상태: `partial` — 2026-08-30 사용자 재확인 뒤 latest-metrics/progressive-exact 추격을 추가해 세 경로 Win32 active commit은 PASS. 최종 코드의 전체 renderer 회귀와 수정 후 실제 마우스 drag는 `notVerified`
 - 대상: `document-webgl`, `offscreen-bitmap`, `offscreen-worker` 세 Web renderer
 - 목표: 창 테두리를 드래그하는 동안 이전 frame을 새 종횡비로 늘려 보이는 preview를 제거하고, 최신 viewport metrics를 presentation 완료와 독립적으로 전달해 exact-size frame이 브라우저 resize를 실시간으로 따라가게 한다.
 - 최종 판정: 자동화는 구조·계약·중간-frame 결함을 검사한다. 실제 마우스/트랙패드 창 resize에서 검은 영역, 비균일 stretch, 버벅이는 추격이 사라졌는지는 headed Chrome 실사용 관찰을 최종 gate로 둔다.
@@ -303,3 +303,53 @@ worker trace는 다음 snapshot이 이전 present terminal보다 먼저 전달�
 - 실제 drag에서 worker의 종료 전 exact-front 추격: 현재 자동 evidence상 미달
 - Firefox/Edge/Safari, 60/120/144/165Hz, DPR/monitor 전환: `notVerified`
 - 따라서 5장의 전체 완료 조건은 아직 충족하지 않았으며 상태를 `partial`로 유지한다.
+
+## 9. 사용자 재확인 뒤 후속 수정 (2026-08-30)
+
+### 9.1 재현과 원인 보정
+
+사용자가 세 renderer를 직접 확인한 결과 모두 창 크기를 늦게 따라오는 것으로 보였고, 8장의 exact-only 결과를 완료로 볼 수 없었다. 후속 trace에서 공통 원인과 worker 고유 원인을 분리했다.
+
+- `BrowserHostAdapter`가 Web에서 `ILatestMetricsFrameHostCapability`를 구현하지 않아, 여러 metrics가 한 rAF에 coalesce되어도 framework build는 첫 signal에서 캡처한 오래된 epoch로 시작했다.
+- Flutter Web full-page 경로는 `visualViewport.resize`, 구형 fallback은 `window.resize`를 사용한다. Doroti는 root `ResizeObserver`만 사용하고 있어 full-page source도 Flutter와 맞추지 못했다.
+- worker는 managed raster가 끝난 뒤 `createImageBitmap` 중 새 metrics가 하나만 도착해도 해당 bitmap을 폐기했다. 180-step baseline에서 이 조건 때문에 active resize exact commit이 0이었다.
+- exact-only를 “현재 browser target과 generation까지 같아야 함”으로 해석하면 비동기 pipeline 시간이 resize event 간격보다 긴 동안 영구 starvation이 발생한다. 후속 계약은 frame 자체의 immutable epoch/size에는 exact하고 visible front generation은 단조 증가해야 하며, 더 최신 metrics는 다음 bounded frame으로 추격하도록 보정했다. 비균일/균일 stretch preview는 다시 도입하지 않았다.
+
+### 9.2 구현
+
+- `BrowserHostAdapter`가 `ILatestMetricsFrameHostCapability`를 구현한다. rAF callback 직전에 `host.ViewEpoch`를 읽어 아직 시작하지 않은 framework work를 최신 immutable metrics로 admission한다.
+- full-page metrics source에 Flutter와 같은 `visualViewport.resize`/`window.resize`를 추가했다. `ResizeObserver`는 owned root와 embedded-host 검증용으로 유지하며 동일 size signal은 기존 epoch dedupe가 제거한다.
+- `offscreen-bitmap`과 `offscreen-worker`는 bitmap이 자기 descriptor 크기에 정확하고 현재 visible front보다 새 generation이면 진행 중 resize에서 progressive epoch-exact front로 commit한다. 최신 target과 같지 않다는 이유만으로 완성 bitmap을 버리지 않으며 최종 front는 최신 target으로 수렴한다.
+- worker startup 중 focus/pointer input이 managed callback ABI 설치 전에 도착하는 race를 bounded startup mailbox로 닫았다.
+- Win32 headed gate는 active resize 시간 안에 backing/surface가 같은 frame을 검사하고, 서로 다른 committed generation이 10개 미만이면 실패한다. 따라서 종료 뒤 한 번만 맞는 구현은 PASS할 수 없다.
+- metrics callback 비용을 `managed-snapshot-completed`로 별도 기록해 browser observation, JS→managed 처리, framework/raster, visible commit을 분리했다.
+
+### 9.3 최종 Win32 180-step 자동 결과
+
+`SetWindowPos` 180회는 실제 browser epoch 수와 같지 않으므로 둘을 분리했다. 세 renderer 모두 active 구간에서 10개 이상 서로 다른 epoch-exact front를 commit했고 최종 `front == target`, failed 0, resource active 0으로 수렴했다.
+
+| renderer | browser epoch | active committed generation | active commit p50/p95 | JS→managed snapshot p50/p95 | submitted/superseded/failed | queue/resource | 판정 |
+|---|---:|---:|---:|---:|---:|---:|---|
+| `document-webgl` | 64 | 64 | 45.0/84.7ms | 1.5/11.7ms | 104/0/0 | max 1 | PASS |
+| `offscreen-bitmap` | 66 | 66 | 70.0/88.0ms | 1.3/10.9ms | 66/42/0 | max 1, bitmap 110=67+43, active 0 | PASS |
+| `offscreen-worker` | 180 | 74 | 62.7/82.8ms | main enqueue 0.1/0.2ms | 74/1/0 | max 2, bitmap 78=75+3, active 0 | PASS |
+
+artifact:
+
+- `Doroti/validation/web-playwright/artifacts/final-instrumented/document-webgl`
+- `Doroti/validation/web-playwright/artifacts/final-instrumented/offscreen-bitmap`
+- `Doroti/validation/web-playwright/artifacts/final-instrumented-v2/offscreen-worker`
+
+이 수치는 TS→managed 전달만이 주 병목이 아님을 보여 준다. document/bitmap의 snapshot callback은 보통 1~2ms이고 p95 약 11ms이며 managed Skia raster p50은 약 7ms였다. 남은 45~70ms p50 visible cadence에는 framework layout/build, rAF 대기, worker 왕복, ImageBitmap capture/transfer가 포함된다. TS에서 SkiaSharp backing size만 직접 바꾸면 framework layout이 이전 metrics에 남아 crop/빈 영역/후행 재레이아웃을 만들므로 적용하지 않았다.
+
+### 9.4 후속 검증 경계
+
+- Release Web build: PASS, warning 0/error 0
+- TypeScript check: PASS
+- FCR-7 source/runtime contract: PASS. latest-metrics admission, Flutter viewport source, progressive epoch-exact worker 계약을 재발 방지 항목에 추가했다.
+- resize-contract v4: PASS, 22/22 terminal, max depth 2, stale present 0
+- final `document-webgl` headless: 8 PASS, worker-only 1 SKIP
+- final `offscreen-bitmap` 전체 headless: 사용자의 종료 요청으로 실행 중 중단, `notVerified`
+- final `offscreen-worker` 전체 headless/context-loss/crash 회귀: 미실행, `notVerified`; Win32 active resize와 resource terminal은 PASS
+- 수정 뒤 실제 마우스 창 테두리 drag 사용자 재확인: `notVerified`. 사용자가 “여전히 좀 느리게 맞춰진다”고 본 시점은 progressive-exact와 Flutter viewport source를 모두 넣기 전 중간 구현이었다.
+- 따라서 자동 active-follow starvation은 수정했지만 60fps 성능이나 사용자 체감 완료를 주장하지 않는다. 현재 측정 p50 45~70ms는 추가 framework/build pipeline 최적화 여지가 있음을 명시한다.

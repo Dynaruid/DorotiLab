@@ -88,6 +88,7 @@ let managedRuntime: DotnetRuntime | null = null;
 let dotnetModuleUrl: string | null = null;
 let managedHostReady = false;
 let pendingManagedSnapshot: { hostId: number; value: HostSnapshot } | null = null;
+const pendingManagedInputs: Record<string, unknown>[] = [];
 let requestSequence = 0;
 let controlSequence = 0;
 const pendingControls = new Map<number, { resolve(value: string): void; reject(reason: unknown): void }>();
@@ -260,14 +261,19 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
     bitmap = await createImageBitmap(value.canvas);
     value.bitmapCreated++;
     value.activeBitmaps++;
-    if (!snapshot || snapshot.resizeEpoch.generation !== request.generation || value.contextLost ||
+    // The bitmap remains exact for the immutable request epoch even if newer
+    // metrics arrive while createImageBitmap is in flight. Let the main-thread
+    // visible owner admit it monotonically, then continue with the queued latest
+    // target. Rejecting every completed bitmap here starves live resize whenever
+    // metrics arrive faster than the worker bitmap pipeline.
+    if (value.contextLost ||
         bitmap.width !== request.physicalWidth || bitmap.height !== request.physicalHeight) {
       bitmap.close();
       bitmap = null;
       value.bitmapClosed++;
       value.activeBitmaps--;
-      surface!.CompleteFrame(request.requestId, request.generation, false, "worker bitmap became stale");
-      terminal(request, "superseded", "worker bitmap became stale");
+      surface!.CompleteFrame(request.requestId, request.generation, false, "worker bitmap became invalid");
+      terminal(request, "superseded", "worker bitmap became invalid");
       return;
     }
     const receipt = new Promise<{ committed: boolean; consumed: boolean; reason: string }>((resolve) => {
@@ -361,7 +367,15 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       dispatchWorkerAnimationFrame(hostId, Number(message.callbackId), Number(message.timestamp));
       break;
     case "input":
-      dispatchWorkerInput(message);
+      if (!managedHostReady) {
+        // Window activation can deliver focus/pointer state while the worker
+        // runtime is still bootstrapping. Keep a bounded startup mailbox rather
+        // than calling the not-yet-installed managed callback ABI.
+        if (pendingManagedInputs.length >= 256) pendingManagedInputs.shift();
+        pendingManagedInputs.push(message);
+      } else {
+        dispatchWorkerInput(message);
+      }
       break;
     case "receipt": {
       const pending = pendingReceipts.get(Number(message.requestId));
@@ -425,6 +439,7 @@ async function startManagedRuntime(): Promise<void> {
       pendingManagedSnapshot = null;
       applyManagedSnapshot(pending.hostId, pending.value);
     }
+    for (const input of pendingManagedInputs.splice(0)) dispatchWorkerInput(input);
     post("runtime-ready", { result, mainManagedRuntimeCount: 0, workerManagedRuntimeCount: 1 });
   } catch (error) {
     post("fatal", { error: String(error instanceof Error ? error.stack ?? error.message : error) });

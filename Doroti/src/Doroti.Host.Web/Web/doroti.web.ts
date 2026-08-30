@@ -678,6 +678,17 @@ function observeResizeEntry(host: BrowserHost, entry: ResizeObserverEntry): void
     physicalWidth, physicalHeight, ratio);
 }
 
+function observeFullPageViewport(host: BrowserHost, source: string): void {
+  const viewport = globalThis.visualViewport;
+  const logicalWidth = viewport?.width ?? globalThis.innerWidth;
+  const logicalHeight = viewport?.height ?? globalThis.innerHeight;
+  const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
+  commitObservedResize(
+    host, source, logicalWidth, logicalHeight,
+    Math.max(1, Math.round(logicalWidth * ratio)),
+    Math.max(1, Math.round(logicalHeight * ratio)), ratio);
+}
+
 function hostForCanvas(canvas: HTMLCanvasElement): BrowserHost | undefined {
   for (const host of hosts.values()) if (host.canvas === canvas) return host;
   return undefined;
@@ -1131,19 +1142,21 @@ async function runOffscreenPresenter(
     presenter.bitmapCreated++;
     presenter.activeBitmaps++;
     const latestHost = hostForCanvas(presenter.canvas);
-    const exact = latestHost && !presenter.contextLost &&
+    const epochExact = latestHost && !presenter.contextLost &&
       presenter.current?.requestId === descriptor.requestId &&
-      latestHost.resizeEpoch.generation === descriptor.generation &&
+      descriptor.generation > presenter.frontGeneration &&
+      descriptor.generation <= latestHost.resizeEpoch.generation &&
       presenter.contextGeneration > 0 &&
       bitmap.width === descriptor.physicalWidth && bitmap.height === descriptor.physicalHeight;
-    if (!exact) {
+    if (!epochExact) {
       bitmap.close();
       bitmap = null;
       presenter.bitmapClosed++;
       presenter.activeBitmaps--;
       presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
-        descriptor.generation, false, "target changed during ImageBitmap capture");
-      recordPresenterTerminal(presenter, descriptor, "superseded", "target changed during ImageBitmap capture");
+        descriptor.generation, false, "completed ImageBitmap was not a monotonic epoch-exact front");
+      recordPresenterTerminal(presenter, descriptor, "superseded",
+        "completed ImageBitmap was not a monotonic epoch-exact front");
       return;
     }
     // Intrinsic/CSS size and bitmap ownership transfer form one uninterrupted
@@ -1167,7 +1180,13 @@ async function runOffscreenPresenter(
       rafId: descriptor.requestId, requestId: descriptor.requestId,
       backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
       surfaceWidth: presenter.rasterWidth, surfaceHeight: presenter.rasterHeight,
-      detail: JSON.stringify({ mode: presenter.mode, contextGeneration: presenter.contextGeneration }),
+      detail: JSON.stringify({
+        mode: presenter.mode,
+        generation: descriptor.generation,
+        targetGeneration: latestHost.resizeEpoch.generation,
+        progressive: descriptor.generation < latestHost.resizeEpoch.generation,
+        contextGeneration: presenter.contextGeneration,
+      }),
     });
     recordResize(latestHost, "browser-present-unverified", "browser-compositor", {
       rafId: descriptor.requestId, requestId: descriptor.requestId,
@@ -1260,7 +1279,12 @@ function runPresenter(presenter: CanvasPresenter): void {
         requestId: descriptor.requestId,
         backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
         surfaceWidth: descriptor.physicalWidth, surfaceHeight: descriptor.physicalHeight,
-        detail: JSON.stringify(commitStatus),
+        detail: JSON.stringify({
+          ...commitStatus,
+          generation: descriptor.generation,
+          targetGeneration: latestHost.resizeEpoch.generation,
+          progressive: descriptor.generation < latestHost.resizeEpoch.generation,
+        }),
       });
       recordResize(latestHost, "browser-present-unverified", "browser-compositor", {
         rafId: descriptor.requestId,
@@ -1343,7 +1367,11 @@ function emitResize(host: BrowserHost): void {
   // frame mailboxes coalesce raster work. Waiting for an old frame to display
   // makes interactive resize advance at raster/bitmap-transfer cadence.
   recordResize(host, "managed-snapshot-dispatched", "resize-metrics");
+  const started = performance.now();
   managed?.dispatchSnapshot(host.id, snapshot(host));
+  recordResize(host, "managed-snapshot-completed", "resize-metrics", {
+    durationMicroseconds: Math.round((performance.now() - started) * 1000),
+  });
 }
 
 function gpuIdentity(canvas: HTMLCanvasElement): GpuIdentity {
@@ -1611,6 +1639,13 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     }
     host.observers.push(observer);
   }
+  // Flutter's full-page dimensions provider listens to visualViewport.resize
+  // (or window.resize on older browsers). Keep ResizeObserver for the owned
+  // root and embedded-host correctness, but do not wait for its post-layout
+  // delivery before publishing top-level browser-window metrics.
+  const viewportResizeTarget: EventTarget = globalThis.visualViewport ?? globalThis;
+  observe(viewportResizeTarget, "resize", () => observeFullPageViewport(
+    host, globalThis.visualViewport ? "visual-viewport" : "window-resize"));
   armDprWatcher(host);
   return snapshot(host);
 }
@@ -2218,11 +2253,13 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
           display.activeBitmaps++;
           display.currentRequestId = requestId;
           if (display.latestRequestId === requestId) display.latestRequestId = null;
-          const exact = host.resizeEpoch.generation === Number(message.generation) &&
+          const frameGeneration = Number(message.generation);
+          const epochExact = frameGeneration > display.frontGeneration &&
+            frameGeneration <= host.resizeEpoch.generation &&
             bitmap.width === Number(message.physicalWidth) && bitmap.height === Number(message.physicalHeight);
           const bitmapWidth = bitmap.width;
           const bitmapHeight = bitmap.height;
-          if (exact) {
+          if (epochExact) {
             canvas.width = bitmapWidth;
             canvas.height = bitmapHeight;
             canvas.style.width = `${Number(message.logicalWidth)}px`;
@@ -2235,7 +2272,7 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
             display.display.transferFromImageBitmap(bitmap);
             display.bitmapConsumed++;
             display.activeBitmaps--;
-            display.frontGeneration = Number(message.generation);
+            display.frontGeneration = frameGeneration;
             display.rasterWidth = bitmapWidth;
             display.rasterHeight = bitmapHeight;
             display.displayWidth = bitmapWidth;
@@ -2243,29 +2280,25 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
             recordResize(host, "front-commit", "worker-display", {
               requestId, rafId: requestId, backingWidth: canvas.width, backingHeight: canvas.height,
               surfaceWidth: bitmapWidth, surfaceHeight: bitmapHeight,
+              detail: JSON.stringify({
+                generation: frameGeneration,
+                targetGeneration: host.resizeEpoch.generation,
+                progressive: frameGeneration < host.resizeEpoch.generation,
+              }),
             });
-          } else if (Number(message.generation) < host.resizeEpoch.generation) {
-            // A worker frame can become stale while its ImageBitmap crosses to
-            // the main thread. It is still newer than the currently displayed
-            // Never replace the retained front with a frame that is already
-            // behind the browser's current metrics. The compositor preview is
-            // updated synchronously by ResizeObserver; displaying this bitmap
-            // would make the content jump backwards during a live drag.
-            bitmap.close();
-            display.bitmapClosed++;
-            display.activeBitmaps--;
           } else {
             bitmap.close();
             display.bitmapClosed++;
             display.activeBitmaps--;
           }
           worker.postMessage({
-            protocolVersion: 1, kind: "receipt", requestId, committed: exact,
-            consumed: exact,
-            reason: exact ? "exact ImageBitmap consumed by main bitmaprenderer" :
-              Number(message.generation) < host.resizeEpoch.generation
-                ? "stale ImageBitmap rejected behind current browser metrics"
-                : "main display rejected non-current bitmap",
+            protocolVersion: 1, kind: "receipt", requestId, committed: epochExact,
+            consumed: epochExact,
+            reason: epochExact
+              ? frameGeneration === host.resizeEpoch.generation
+                ? "current epoch-exact ImageBitmap consumed by main bitmaprenderer"
+                : "progressive epoch-exact ImageBitmap consumed during live resize"
+              : "main display rejected non-monotonic or size-mismatched bitmap",
           });
           break;
         }

@@ -168,8 +168,24 @@ static void VerifyBrowserInputAndFrontBufferContract()
             !source.Contains("preview-front-refresh", StringComparison.Ordinal) &&
             source.Contains("function emitResize(host: BrowserHost)", StringComparison.Ordinal) &&
             source.Contains("if (!host || host.resizeEpoch.generation !== descriptor.generation)", StringComparison.Ordinal) &&
-            source.Contains("if (!exact)", StringComparison.Ordinal),
-        "interactive resize metrics are independent from presentation and stale surfaces cannot become visible fronts");
+            source.Contains("if (!epochExact)", StringComparison.Ordinal),
+        "interactive resize metrics are independent from presentation and visible surfaces remain exact for an immutable epoch");
+    Require(source.Contains("globalThis.visualViewport ?? globalThis", StringComparison.Ordinal) &&
+            source.Contains("observeFullPageViewport", StringComparison.Ordinal) &&
+            source.Contains("visual-viewport", StringComparison.Ordinal),
+        "the full-page Web host follows Flutter's visualViewport/window resize source while retaining ResizeObserver for the owned root");
+
+    var managedHostPath = System.IO.Path.Combine(AppContext.BaseDirectory, "web", "BrowserHostContracts.cs");
+    Require(File.Exists(managedHostPath), "the managed browser host source is packaged with the validation fixture");
+    var managedHostSource = File.ReadAllText(managedHostPath);
+    Require(managedHostSource.Contains("ILatestMetricsFrameHostCapability", StringComparison.Ordinal) &&
+            managedHostSource.Contains(
+                "callback?.Invoke(TimeSpan.FromMilliseconds(timestampMilliseconds), host.ViewEpoch);",
+                StringComparison.Ordinal) &&
+            managedHostSource.Contains(
+                "if (expectedEpoch.ViewId != _viewId)",
+                StringComparison.Ordinal),
+        "the Web frame host admits the latest immutable metrics at rAF dispatch instead of building a coalesced stale epoch");
 
     var workerPath = System.IO.Path.Combine(AppContext.BaseDirectory, "web", "doroti.raster.worker.ts");
     Require(File.Exists(workerPath), "the persistent raster worker source is packaged with the validation fixture");
@@ -182,6 +198,14 @@ static void VerifyBrowserInputAndFrontBufferContract()
             workerSource.Contains("post(\"snapshot-applied\"", StringComparison.Ordinal) &&
             !workerSource.Contains("import(\"./doroti.web.js\")", StringComparison.Ordinal),
         "the persistent worker admits metrics before display completion without dynamic callback imports");
+    Require(!workerSource.Contains(
+                "snapshot.resizeEpoch.generation !== request.generation || value.contextLost",
+                StringComparison.Ordinal) &&
+            source.Contains(
+                "progressive epoch-exact ImageBitmap consumed during live resize",
+                StringComparison.Ordinal) &&
+            source.Contains("frameGeneration > display.frontGeneration", StringComparison.Ordinal),
+        "completed worker frames remain epoch-exact and advance monotonically during continuous resize instead of starving until the final target");
 }
 
 static void VerifyScrollbarAlphaContract()

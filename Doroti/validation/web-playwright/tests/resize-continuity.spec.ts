@@ -452,12 +452,14 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
 
   const encoded = Buffer.from(JSON.stringify(sequence), "utf8").toString("base64");
   const script = resolve(process.cwd(), "../../eng/resize-window-native.ps1");
+  const nativeResizeStarted = await page.evaluate(() => performance.now());
   await execFileAsync("pwsh", ["-NoProfile", "-File", script,
     "-TitleToken", titleToken, "-BoundsBase64", encoded,
     "-IntervalMilliseconds", "12", "-StartDelayMilliseconds", "250"], {
     windowsHide: true,
     timeout: 20_000,
   });
+  const nativeResizeFinished = await page.evaluate(() => performance.now());
   await page.waitForTimeout(500);
   const nativeSamples = await page.evaluate(() => {
     const scope = globalThis as typeof globalThis & { __dorotiNativeResizeSamples?: Array<{
@@ -470,10 +472,31 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
   const screenshot = await page.screenshot();
   const observedTimes = bundle.trace.filter((entry) => entry.phase === "target-observed")
     .map((entry) => entry.timestampMicroseconds / 1000);
+  const activeEpochExactCommits = bundle.trace.filter((entry) =>
+    entry.phase === "front-commit" &&
+    entry.timestampMicroseconds / 1000 >= nativeResizeStarted &&
+    entry.timestampMicroseconds / 1000 <= nativeResizeFinished &&
+    entry.backingWidth === entry.surfaceWidth && entry.backingHeight === entry.surfaceHeight);
+  const activeCommitTimes = activeEpochExactCommits.map((entry) => entry.timestampMicroseconds / 1000);
+  const activeCommittedGenerations = new Set(activeEpochExactCommits.map((entry) => {
+    try {
+      return Number((JSON.parse(entry.detail ?? "{}") as { generation?: number }).generation ?? entry.epoch.generation);
+    } catch {
+      return entry.epoch.generation;
+    }
+  }));
+  const managedSnapshotDurations = bundle.trace
+    .filter((entry) => entry.phase === "managed-snapshot-completed")
+    .map((entry) => entry.durationMicroseconds / 1000);
   const report = { schemaVersion: "doroti.native-hwnd-resize/v1", windowId, sequence, samples: nativeSamples,
     observedResizeCount: observedTimes.length,
     observedResizeCadenceMilliseconds: distribution(observedTimes.slice(1)
       .map((value, index) => value - observedTimes[index])),
+    activeEpochExactCommitCount: activeEpochExactCommits.length,
+    activeCommittedGenerationCount: activeCommittedGenerations.size,
+    activeEpochExactCommitCadenceMilliseconds: distribution(activeCommitTimes.slice(1)
+      .map((value, index) => value - activeCommitTimes[index])),
+    managedSnapshotDispatchDurationMilliseconds: distribution(managedSnapshotDurations),
     workerAdvancedBeforePriorTerminal: workerAdvancedBeforePriorTerminal(bundle.trace),
     diagnostics: bundle };
   await testInfo.attach("native-hwnd-final", { body: screenshot, contentType: "image/png" });
@@ -483,11 +506,15 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
   expect(sequence).toHaveLength(180);
   expect(nativeSamples.length).toBeGreaterThan(20);
   expect(new Set(nativeSamples.map((sample) => `${sample.rootWidth}x${sample.rootHeight}`)).size).toBeGreaterThan(10);
-  expect(observedTimes.length).toBeGreaterThanOrEqual(60);
+  // SetWindowPos calls are inputs, not guaranteed browser viewport epochs.
+  // Require sustained delivery while using the active committed-generation
+  // gate below to catch a renderer that waits until resize ends.
+  expect(observedTimes.length).toBeGreaterThanOrEqual(40);
   expect(nativeSamples.every((sample) => sample.canvasConnected && sample.rootConnected)).toBe(true);
   expect(nativeSamples.every((sample) => sample.transform === "none" && sample.preview === null)).toBe(true);
   expect(bundle.trace.filter((entry) => entry.phase === "resize-preview-commit")).toEqual([]);
   expect(bundle.trace.filter((entry) => entry.phase === "preview-front-refresh")).toEqual([]);
+  expect(report.activeCommittedGenerationCount).toBeGreaterThanOrEqual(10);
   expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
   expect(bundle.presenter.activeBitmaps).toBe(0);
   if (bundle.presenter.mode === "offscreen-worker") {

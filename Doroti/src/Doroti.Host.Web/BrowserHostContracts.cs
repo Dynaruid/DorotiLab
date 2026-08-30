@@ -223,6 +223,7 @@ public static class BrowserHostRuntime
 public sealed class BrowserHostAdapter :
     IViewHostCapability,
     IFrameHostCapability,
+    ILatestMetricsFrameHostCapability,
     IPlatformEnvironmentHostCapability,
     IInputHostCapability,
     IViewFocusRequestCapability,
@@ -234,7 +235,7 @@ public sealed class BrowserHostAdapter :
     private static int _nextHostId;
 
     private readonly object _gate = new();
-    private Action<TimeSpan>? _pendingFrame;
+    private Action<TimeSpan, DorotiViewEpoch>? _pendingFrame;
     private int _pendingFrameId;
     private readonly Dictionary<ulong, (double X, double Y)> _pointerPositions = [];
     private readonly ulong _viewId;
@@ -397,8 +398,30 @@ public sealed class BrowserHostAdapter :
 
     public void ScheduleFrame(Action<TimeSpan> callback)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(callback);
+        ScheduleFrame(ViewEpoch, (timestamp, _) => callback(timestamp));
+    }
+
+    public void ScheduleFrame(DorotiViewEpoch expectedEpoch, Action<TimeSpan> callback)
+    {
+        ArgumentNullException.ThrowIfNull(callback);
+        ScheduleFrame(expectedEpoch, (timestamp, admittedEpoch) =>
+        {
+            if (admittedEpoch == expectedEpoch) callback(timestamp);
+        });
+    }
+
+    public void ScheduleFrame(
+        DorotiViewEpoch expectedEpoch,
+        Action<TimeSpan, DorotiViewEpoch> callback)
+    {
+        ArgumentNullException.ThrowIfNull(expectedEpoch);
+        ArgumentNullException.ThrowIfNull(callback);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (expectedEpoch.ViewId != _viewId)
+            throw new InvalidOperationException(
+                $"View epoch {expectedEpoch.ViewId} cannot schedule a frame for view {_viewId}.");
+
         int callbackId;
         lock (_gate)
         {
@@ -433,7 +456,7 @@ public sealed class BrowserHostAdapter :
     internal static void DispatchAnimationFrame(int hostId, int callbackId, double timestampMilliseconds)
     {
         if (!TryGet(hostId, out var host)) return;
-        Action<TimeSpan>? callback;
+        Action<TimeSpan, DorotiViewEpoch>? callback;
         lock (host._gate)
         {
             if (host._pendingFrameId != callbackId) return;
@@ -441,7 +464,11 @@ public sealed class BrowserHostAdapter :
             host._pendingFrame = null;
             host._pendingFrameId = 0;
         }
-        callback?.Invoke(TimeSpan.FromMilliseconds(timestampMilliseconds));
+        // Browser resize signals can advance several times while one rAF is
+        // pending. Admit the newest immutable viewport epoch immediately before
+        // framework work starts, matching Flutter Web's single-rAF/latest-metrics
+        // scheduling instead of building the epoch captured by the first signal.
+        callback?.Invoke(TimeSpan.FromMilliseconds(timestampMilliseconds), host.ViewEpoch);
     }
 
     internal static void DispatchSnapshot(int hostId, string json)
