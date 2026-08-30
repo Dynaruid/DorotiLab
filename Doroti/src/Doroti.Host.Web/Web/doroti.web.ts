@@ -1,14 +1,20 @@
+import { decodeDorotiMessage, dorotiProtocolVersion } from "./doroti.web.protocol.js";
+import { createDorotiDomEndpoints, createReplacementCanvas } from "./doroti.web.dom.js";
+import { pushBounded } from "./doroti.web.diagnostics.js";
+import { createWorkerVisibleSurface } from "./doroti.web.surface.js";
+import { closeExternalLeases, createDorotiWorker } from "./doroti.web.worker-host.js";
+
 interface ManagedCallbacks {
   dispatchAnimationFrame(hostId: number, callbackId: number, timestamp: number): void;
   dispatchSnapshot(hostId: number, snapshotJson: string): void;
-  dispatchPointerBatch(hostId: number, phase: number, kind: number, pointerId: number, buttons: number, modifiers: number, samples: number[]): void;
-  dispatchWheel(hostId: number, x: number, y: number, deltaX: number, deltaY: number, timestamp: number, kind: number): void;
-  dispatchKey(hostId: number, pressed: boolean, repeat: boolean, synthesized: boolean, code: string, key: string, timestamp: number): void;
-  dispatchFocus(hostId: number, focused: boolean, timestamp: number): void;
-  dispatchTextEditing(hostId: number, text: string, selectionBase: number, selectionExtent: number, composingBase: number, composingExtent: number): void;
-  dispatchTextAction(hostId: number, action: number): void;
-  dispatchTextConnectionClosed(hostId: number): void;
-  dispatchSemanticsAction(hostId: number, nodeId: number, action: number, argumentsJson: string): void;
+  dispatchPointerBatch(hostId: number, phase: number, kind: number, pointerId: number, buttons: number, modifiers: number, inputSequence: number, samples: number[]): void;
+  dispatchWheel(hostId: number, x: number, y: number, deltaX: number, deltaY: number, timestamp: number, kind: number, inputSequence: number): void;
+  dispatchKey(hostId: number, pressed: boolean, repeat: boolean, synthesized: boolean, code: string, key: string, timestamp: number, inputSequence: number): void;
+  dispatchFocus(hostId: number, focused: boolean, timestamp: number, inputSequence: number): void;
+  dispatchTextEditing(hostId: number, text: string, selectionBase: number, selectionExtent: number, composingBase: number, composingExtent: number, inputSequence: number): void;
+  dispatchTextAction(hostId: number, action: number, inputSequence: number): void;
+  dispatchTextConnectionClosed(hostId: number, inputSequence: number): void;
+  dispatchSemanticsAction(hostId: number, nodeId: number, action: number, inputSequence: number, argumentsJson: string): void;
 }
 
 interface GpuIdentity {
@@ -161,7 +167,7 @@ interface CanvasPresenter {
   listeners: ListenerRegistration[];
 }
 
-type RequestedPresenterMode = "auto" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
+type RequestedPresenterMode = "auto" | "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
 
 interface PresenterPolicy {
   requested: RequestedPresenterMode;
@@ -170,6 +176,7 @@ interface PresenterPolicy {
 }
 
 interface WorkerBridge {
+  rendererIdentity(): string;
   createHost(hostId: number, canvasId: string, logicalWidth: number, logicalHeight: number): string;
   showHost(hostId: number): string;
   resizeHost(hostId: number, logicalWidth: number, logicalHeight: number): string;
@@ -185,7 +192,8 @@ interface WorkerBridge {
 
 interface WorkerDisplayPresenter {
   worker: Worker;
-  display: ImageBitmapRenderingContext;
+  mode: "worker-direct-webgl" | "offscreen-worker";
+  display: ImageBitmapRenderingContext | null;
   currentRequestId: number | null;
   latestRequestId: number | null;
   contextGeneration: number;
@@ -201,7 +209,8 @@ interface WorkerDisplayPresenter {
   bitmapClosed: number;
   activeBitmaps: number;
   restartCount: number;
-  pendingRequestIds: Set<number>;
+  runtimeSessionId: number;
+  pendingLeases: Map<number, { runtimeSessionId: number; causalFrameId: number }>;
 }
 
 interface ResizeDiagnostics {
@@ -215,6 +224,7 @@ interface ResizeDiagnostics {
   loseContext(canvasId: string): boolean;
   restoreContext(canvasId: string): boolean;
   crashWorker(canvasId: string): boolean;
+  violateWorkerProtocol(canvasId: string): boolean;
 }
 
 interface SemanticsFlags {
@@ -301,6 +311,7 @@ const canvasPresenters = new Map<string, CanvasPresenter>();
 const workerDisplayPresenters = new Map<string, WorkerDisplayPresenter>();
 let managed: ManagedCallbacks | null = null;
 let activeWorkerBridge: WorkerBridge | null = null;
+let directWorkerBootstrap = false;
 
 export function configureWorkerBridge(bridge: WorkerBridge): void {
   if (typeof document !== "undefined")
@@ -325,35 +336,36 @@ export function dispatchWorkerInput(message: Record<string, unknown>): void {
     case "pointer":
       callbacks.dispatchPointerBatch(
         id, Number(payload.phase), Number(payload.kind), Number(payload.pointerId),
-        Number(payload.buttons), Number(payload.modifiers), payload.samples as number[]);
+        Number(payload.buttons), Number(payload.modifiers), Number(message.inputSequence), payload.samples as number[]);
       break;
     case "wheel":
       callbacks.dispatchWheel(
         id, Number(payload.x), Number(payload.y), Number(payload.deltaX), Number(payload.deltaY),
-        Number(payload.timestamp), Number(payload.kind));
+        Number(payload.timestamp), Number(payload.kind), Number(message.inputSequence));
       break;
     case "key":
       callbacks.dispatchKey(
         id, Boolean(payload.pressed), Boolean(payload.repeat), Boolean(payload.synthesized),
-        String(payload.code), String(payload.key), Number(payload.timestamp));
+        String(payload.code), String(payload.key), Number(payload.timestamp), Number(message.inputSequence));
       break;
     case "focus":
-      callbacks.dispatchFocus(id, Boolean(payload.focused), Number(payload.timestamp));
+      callbacks.dispatchFocus(id, Boolean(payload.focused), Number(payload.timestamp), Number(message.inputSequence));
       break;
     case "text":
       callbacks.dispatchTextEditing(
         id, String(payload.text), Number(payload.selectionBase), Number(payload.selectionExtent),
-        Number(payload.composingBase), Number(payload.composingExtent));
+        Number(payload.composingBase), Number(payload.composingExtent), Number(message.inputSequence));
       break;
     case "text-action":
-      callbacks.dispatchTextAction(id, Number(payload.action));
+      callbacks.dispatchTextAction(id, Number(payload.action), Number(message.inputSequence));
       break;
     case "text-closed":
-      callbacks.dispatchTextConnectionClosed(id);
+      callbacks.dispatchTextConnectionClosed(id, Number(message.inputSequence));
       break;
     case "semantics-action":
       callbacks.dispatchSemanticsAction(
-        id, Number(payload.nodeId), Number(payload.action), String(payload.argumentsJson ?? "null"));
+        id, Number(payload.nodeId), Number(payload.action), Number(message.inputSequence),
+        String(payload.argumentsJson ?? "null"));
       break;
     default:
       throw new Error(`Unknown Doroti worker input kind '${String(message.inputKind)}'.`);
@@ -368,7 +380,7 @@ function presenterPolicy(): PresenterPolicy {
   const requestedValue = new URLSearchParams(globalThis.location.search).get("dorotiRenderer");
   const requested: RequestedPresenterMode =
     requestedValue === "document-webgl" || requestedValue === "offscreen-bitmap" ||
-    requestedValue === "offscreen-worker" ? requestedValue : "auto";
+    requestedValue === "offscreen-worker" || requestedValue === "worker-direct-webgl" ? requestedValue : "auto";
   const offscreenAvailable = typeof OffscreenCanvas !== "undefined" &&
     typeof globalThis.createImageBitmap === "function" &&
     typeof HTMLCanvasElement !== "undefined" &&
@@ -398,7 +410,7 @@ const resizeDiagnostics: ResizeDiagnostics = {
     if (workerPresenter) return JSON.stringify({
       context: 0,
       requestedMode: "offscreen-worker",
-      mode: "offscreen-worker",
+      mode: workerPresenter.mode,
       fallbackReason: null,
       contextGeneration: workerPresenter.contextGeneration,
       currentRequestId: workerPresenter.currentRequestId,
@@ -410,7 +422,8 @@ const resizeDiagnostics: ResizeDiagnostics = {
       frontFramebufferId: null,
       stagingFramebufferId: null,
       rasterCanvasAttached: false,
-      visibleContext: "bitmaprenderer",
+      visibleContext: workerPresenter.mode === "worker-direct-webgl"
+        ? "transferred-offscreen-webgl2" : "bitmaprenderer",
       rasterWidth: workerPresenter.rasterWidth,
       rasterHeight: workerPresenter.rasterHeight,
       displayWidth: workerPresenter.displayWidth,
@@ -422,7 +435,8 @@ const resizeDiagnostics: ResizeDiagnostics = {
       mainManagedRuntimeCount: 0,
       workerManagedRuntimeCount: 1,
       workerRestartCount: workerPresenter.restartCount,
-      unpairedRequestCount: workerPresenter.pendingRequestIds.size,
+      runtimeSessionId: workerPresenter.runtimeSessionId,
+      unpairedRequestCount: workerPresenter.pendingLeases.size,
     });
     if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
     return JSON.stringify({
@@ -454,6 +468,7 @@ const resizeDiagnostics: ResizeDiagnostics = {
   capability: (canvasId) => {
     const host = [...hosts.values()].find((candidate) => candidate.canvas.id === canvasId);
     if (!host) throw new Error(`Canvas host '${canvasId}' is not initialized.`);
+    const workerPresenter = workerDisplayPresenters.get(canvasId);
     const json = JSON.parse(resizeDiagnostics.presenter(canvasId)) as Record<string, unknown>;
     return JSON.stringify({
       offscreenCanvas: typeof OffscreenCanvas !== "undefined",
@@ -465,7 +480,8 @@ const resizeDiagnostics: ResizeDiagnostics = {
       rasterCanvasAttached: json.rasterCanvasAttached,
       hardwareWebGl2: host.gpu.hardware && !host.gpu.softwareFallbackUsed && host.gpu.api === "webgl2",
       gpu: host.gpu,
-      exactBitmapCommit: Number(json.frontGeneration ?? 0) === host.resizeEpoch.generation,
+      exactBitmapCommit: json.mode === "worker-direct-webgl"
+        ? false : Number(json.frontGeneration ?? 0) === host.resizeEpoch.generation,
       bitmapCreated: json.bitmapCreated,
       bitmapConsumed: json.bitmapConsumed,
       bitmapClosed: json.bitmapClosed,
@@ -477,7 +493,13 @@ const resizeDiagnostics: ResizeDiagnostics = {
   crashWorker: (canvasId) => {
     const presenter = workerDisplayPresenters.get(canvasId);
     if (!presenter) return false;
-    presenter.worker.postMessage({ protocolVersion: 1, kind: "crash" });
+    presenter.worker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "crash" });
+    return true;
+  },
+  violateWorkerProtocol: (canvasId) => {
+    const presenter = workerDisplayPresenters.get(canvasId);
+    if (!presenter) return false;
+    presenter.worker.postMessage({ protocolVersion: 999, kind: "input" });
     return true;
   },
 };
@@ -498,6 +520,7 @@ function snapshot(host: BrowserHost): string {
     operatingSystem: browserOperatingSystem(),
     generation: host.generation,
     surfaceGeneration: host.surfaceGeneration,
+    inputSequence: host.inputSequence,
     gpu: host.gpu,
     resizeEpoch: host.resizeEpoch,
   });
@@ -512,7 +535,7 @@ function recordResize(
     "surfaceWidth" | "surfaceHeight" | "terminal" | "detail" |
     "inputSequence" | "requestId">> = {}): void {
   if (!diagnosticsEnabled()) return;
-  host.resizeTrace.push({
+  const entry: ResizeTraceEntry = {
     sequence: ++host.resizeTraceSequence,
     timestampMicroseconds: Math.round(performance.now() * 1000),
     phase,
@@ -537,8 +560,8 @@ function recordResize(
     })(),
     inputSequence: options.inputSequence ?? 0,
     requestId: options.requestId ?? 0,
-  });
-  if (host.resizeTrace.length > 16384) host.resizeTrace.splice(0, host.resizeTrace.length - 16384);
+  };
+  pushBounded(host.resizeTrace, entry, 16384);
   scheduleResizeDiagnosticsPublish(host);
 }
 
@@ -572,7 +595,6 @@ function resetDiagnostics(hostId: number): void {
   const host = requireHost(hostId);
   host.resizeTrace = [];
   host.resizeTraceSequence = 0;
-  host.inputSequence = 0;
   publishResizeDiagnostics(host);
 }
 
@@ -609,6 +631,22 @@ function updateResizeEpoch(
   return true;
 }
 
+function commitDirectCanvasLogicalSize(
+  host: BrowserHost,
+  logicalWidth: number,
+  logicalHeight: number): void {
+  const workerPresenter = workerDisplayPresenters.get(host.canvas.id);
+  if (!directWorkerBootstrap && workerPresenter?.mode !== "worker-direct-webgl") return;
+  // Flutter keeps the DOM display canvas in logical CSS pixels while its
+  // raster surface uses physical pixels. A transferred canvas still exposes
+  // its Worker-mutated width/height attributes to layout, so main must pin the
+  // element's CSS box or DPR > 1 enlarges it by the device scale factor.
+  host.canvas.style.width = `${logicalWidth}px`;
+  host.canvas.style.height = `${logicalHeight}px`;
+  host.canvas.style.removeProperty("transform");
+  host.canvas.style.removeProperty("transform-origin");
+}
+
 function commitObservedResize(
   host: BrowserHost,
   source: string,
@@ -619,6 +657,7 @@ function commitObservedResize(
   ratio: number,
   forceGeneration = false): void {
   if (logicalWidth <= 0 || logicalHeight <= 0 || physicalWidth <= 0 || physicalHeight <= 0) return;
+  commitDirectCanvasLogicalSize(host, logicalWidth, logicalHeight);
   const changed = updateResizeEpoch(
     host, source, logicalWidth, logicalHeight, forceGeneration,
     physicalWidth, physicalHeight, ratio);
@@ -704,7 +743,7 @@ function changeDiagnosticContextState(canvasId: string, lose: boolean): boolean 
   const presenter = canvasPresenters.get(canvasId);
   const workerPresenter = workerDisplayPresenters.get(canvasId);
   if (workerPresenter) {
-    workerPresenter.worker.postMessage({ protocolVersion: 1, kind: "context", action: lose ? "lose" : "restore" });
+    workerPresenter.worker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "context", action: lose ? "lose" : "restore" });
     return true;
   }
   if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
@@ -1140,7 +1179,7 @@ async function runOffscreenPresenter(
     const exactRendered = renderResult === "exact-rendered" || renderResult === "replay-rendered";
     if (!exactRendered) {
       presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
-        descriptor.generation, false, `managed raster result=${renderResult}`);
+        descriptor.generation, "superseded", `managed raster result=${renderResult}`);
       recordPresenterTerminal(presenter, descriptor, "superseded", `managed raster result=${renderResult}`);
       return;
     }
@@ -1162,7 +1201,7 @@ async function runOffscreenPresenter(
       presenter.bitmapClosed++;
       presenter.activeBitmaps--;
       presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
-        descriptor.generation, false, "completed ImageBitmap was not a monotonic frame/epoch-exact front");
+        descriptor.generation, "superseded", "completed ImageBitmap was not a monotonic frame/epoch-exact front");
       recordPresenterTerminal(presenter, descriptor, "superseded",
         "completed ImageBitmap was not a monotonic frame/epoch-exact front");
       return;
@@ -1184,7 +1223,7 @@ async function runOffscreenPresenter(
     presenter.frontGeneration = descriptor.generation;
     presenter.frontRequestId = descriptor.requestId;
     presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
-      descriptor.generation, true, "exact ImageBitmap display commit");
+      descriptor.generation, "submitted", "exact ImageBitmap display commit");
     recordResize(latestHost, "front-commit", "doroti-presenter", {
       rafId: descriptor.requestId, requestId: descriptor.requestId,
       backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
@@ -1212,7 +1251,7 @@ async function runOffscreenPresenter(
     }
     try {
       presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
-        descriptor.generation, false, String(error));
+        descriptor.generation, "failed", String(error));
     } catch { }
     recordPresenterTerminal(presenter, descriptor, "failed", String(error));
   }
@@ -1252,11 +1291,11 @@ function runPresenter(presenter: CanvasPresenter): void {
     const exactRendered = renderResult === "exact-rendered" || renderResult === "replay-rendered";
     const exact = latestHost?.resizeEpoch.generation === descriptor.generation;
     if (!latestHost || !exact) {
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, false,
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, "superseded",
         "target changed during staging raster");
       recordPresenterTerminal(presenter, descriptor, "superseded", "target changed during raster");
     } else if (!exactRendered) {
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, false,
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, "superseded",
         `managed raster result=${renderResult}`);
       recordPresenterTerminal(presenter, descriptor, "superseded", `managed raster result=${renderResult}`);
     } else {
@@ -1282,7 +1321,7 @@ function runPresenter(presenter: CanvasPresenter): void {
       presenter.rasterHeight = descriptor.physicalHeight;
       presenter.displayWidth = descriptor.physicalWidth;
       presenter.displayHeight = descriptor.physicalHeight;
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, true,
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, "submitted",
         "front commit");
       recordResize(latestHost, "front-commit", "doroti-presenter", {
         rafId: descriptor.requestId,
@@ -1307,7 +1346,7 @@ function runPresenter(presenter: CanvasPresenter): void {
     }
   } catch (error) {
     try {
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, false, String(error));
+      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, "failed", String(error));
     } catch { }
     recordPresenterTerminal(presenter, descriptor, "failed", String(error));
   } finally {
@@ -1385,6 +1424,8 @@ function emitResize(host: BrowserHost): void {
 }
 
 function gpuIdentity(canvas: HTMLCanvasElement): GpuIdentity {
+  if (directWorkerBootstrap)
+    return { api: "webgl2", vendor: "worker-pending", renderer: "worker-pending", hardware: true, softwareFallbackUsed: false };
   const presenter = canvasPresenters.get(canvas.id);
   const workerPresenter = workerDisplayPresenters.get(canvas.id);
   if (workerPresenter) {
@@ -1433,7 +1474,7 @@ export function configureManagedCallbacks(callbacks: ManagedCallbacks): void {
 }
 
 export function getRendererIdentity(): string {
-  if (activeWorkerBridge) return "worker-offscreen-canvas-webgl2-imagebitmap";
+  if (activeWorkerBridge) return activeWorkerBridge.rendererIdentity();
   const mode = presenterPolicy().selected;
   return mode === "offscreen-bitmap"
     ? "offscreen-canvas-webgl2-imagebitmap"
@@ -1505,6 +1546,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     viewFocused: false, pressedKeys: new Map(),
     inputAction: 2, multiline: false, pendingBlurConnectionCloseTimer: 0,
   };
+  commitDirectCanvasLogicalSize(host, logicalWidth, logicalHeight);
   hosts.set(hostId, host);
   root.dataset.dorotiHostId = String(hostId);
   recordResize(host, "target-observed", "host-initial");
@@ -1548,8 +1590,9 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
       // period and hides the input, making this select the canvas instead.
       focusActiveEndpoint(host);
     }
+    const inputSequence = ++host.inputSequence;
     requireManaged().dispatchPointerBatch(host.id, phase, pointerKind(event.pointerType), event.pointerId,
-      event.buttons, modifierMask(event), pointerSamples(event));
+      event.buttons, modifierMask(event), inputSequence, pointerSamples(event));
     if ((phase === 2 || phase === 3) && root.hasPointerCapture(event.pointerId)) root.releasePointerCapture(event.pointerId);
   };
   observe(root, "pointerenter", (event) => pointer(5)(event as PointerEvent));
@@ -1588,7 +1631,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     requireManaged().dispatchWheel(
       host.id, wheel.clientX - rect.left, wheel.clientY - rect.top,
       wheel.deltaX * deltaScale, wheel.deltaY * deltaScale,
-      wheel.timeStamp, kind);
+      wheel.timeStamp, kind, inputSequence);
     recordResize(host, "wheel-framework-dispatch", "managed-callback", { inputSequence, detail });
     wheel.preventDefault();
   });
@@ -1606,13 +1649,15 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
         (!nativeTextEditing && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(key.key)))
       key.preventDefault();
     host.pressedKeys.set(key.code, key.key);
-    requireManaged().dispatchKey(host.id, true, key.repeat, false, key.code, key.key, key.timeStamp);
+    requireManaged().dispatchKey(host.id, true, key.repeat, false, key.code, key.key, key.timeStamp,
+      ++host.inputSequence);
   });
   observe(document, "keyup", (event) => {
     const key = event as KeyboardEvent;
     if (!host.pressedKeys.has(key.code)) return;
     host.pressedKeys.delete(key.code);
-    requireManaged().dispatchKey(host.id, false, false, false, key.code, key.key, key.timeStamp);
+    requireManaged().dispatchKey(host.id, false, false, false, key.code, key.key, key.timeStamp,
+      ++host.inputSequence);
   });
   observe(canvas, "focus", (event) => setViewFocus(host, true, event.timeStamp));
   observe(input, "focus", (event) => setViewFocus(host, true, event.timeStamp));
@@ -1635,7 +1680,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     const key = event as KeyboardEvent;
     if (key.key === "Enter" && !key.shiftKey && (!host.multiline || host.inputAction !== 12)) {
       key.preventDefault();
-      requireManaged().dispatchTextAction(host.id, host.inputAction);
+      requireManaged().dispatchTextAction(host.id, host.inputAction, ++host.inputSequence);
     }
   });
   if (globalThis.ResizeObserver) {
@@ -2128,45 +2173,33 @@ export async function invokePlugin(moduleUrl: string, exportName: string, channe
   throw new Error(`Doroti JavaScript plugin '${exportName}' returned an unsupported response type.`);
 }
 
-export async function startDorotiWorkerHost(): Promise<"started"> {
+export async function startDorotiWorkerHost(
+  mode: "worker-direct-webgl" | "offscreen-worker" = "offscreen-worker",
+): Promise<"started"> {
+  const direct = mode === "worker-direct-webgl";
   if (typeof Worker === "undefined" || typeof OffscreenCanvas === "undefined" ||
-      typeof createImageBitmap !== "function")
-    throw new Error("Doroti offscreen-worker requires Worker, OffscreenCanvas, and ImageBitmap.");
+      (!direct && typeof createImageBitmap !== "function") ||
+      (direct && typeof HTMLCanvasElement.prototype.transferControlToOffscreen !== "function"))
+    throw new Error(`Doroti ${mode} required browser capabilities are unavailable.`);
   const app = document.getElementById("app");
   if (!app) throw new Error("Doroti worker bootstrap could not find '#app'.");
-  const root = document.createElement("main");
-  root.className = "doroti-root";
-  root.dataset.dorotiHost = "worker-offscreen-canvas";
-  const canvas = document.createElement("canvas");
-  canvas.id = "doroti-surface";
-  canvas.tabIndex = 0;
-  canvas.setAttribute("aria-label", "Doroti GPU surface");
-  const input = document.createElement("textarea");
-  input.id = "doroti-ime";
-  input.className = "doroti-ime";
-  input.setAttribute("aria-hidden", "true");
-  input.tabIndex = -1;
-  const semantics = document.createElement("div");
-  semantics.id = "doroti-semantics";
-  semantics.className = "doroti-semantics";
-  semantics.setAttribute("role", "application");
-  semantics.setAttribute("aria-label", "Doroti application");
-  root.append(canvas, input, semantics);
-  app.replaceChildren(root);
-  const displayContext = canvas.getContext("bitmaprenderer");
-  if (!displayContext) throw new Error("Doroti worker display requires bitmaprenderer.");
+  const endpoints = createDorotiDomEndpoints(app);
+  const root = endpoints.root;
+  let canvas = endpoints.canvas;
+  const visibleSurface = direct ? null : createWorkerVisibleSurface(canvas, false);
+  const displayContext = visibleSurface?.display ?? null;
   const dotnetModuleUrl = resolveCurrentDotnetModuleUrl();
 
   let activeWorker: Worker;
-  const placeholder = new Worker(new URL("./doroti.raster.worker.js", import.meta.url), { type: "module" });
+  const placeholder = createDorotiWorker(new URL("./doroti.raster.worker.js", import.meta.url));
   activeWorker = placeholder;
   const display: WorkerDisplayPresenter = {
-    worker: activeWorker, display: displayContext,
+    worker: activeWorker, mode, display: displayContext,
     currentRequestId: null, latestRequestId: null,
     contextGeneration: 0, contextLost: false, frontGeneration: 0, frontRequestId: 0,
     rasterWidth: 0, rasterHeight: 0, displayWidth: 0, displayHeight: 0,
     bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
-    restartCount: 0, pendingRequestIds: new Set(),
+    restartCount: 0, runtimeSessionId: 1, pendingLeases: new Map(),
   };
   workerDisplayPresenters.set(canvas.id, display);
   let snapshotInFlight = false;
@@ -2181,7 +2214,7 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
       detail: JSON.stringify({ generation: (next.value.resizeEpoch as Record<string, unknown>)?.generation }),
     });
     activeWorker.postMessage({
-      protocolVersion: 1, kind: "snapshot", hostId: next.hostId, snapshot: next.value,
+      protocolVersion: dorotiProtocolVersion, kind: "snapshot", hostId: next.hostId, snapshot: next.value,
     });
   };
   const queueWorkerSnapshot = (hostId: number, snapshotJson: string): void => {
@@ -2193,30 +2226,33 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
     if (targetHost) recordResize(targetHost, "worker-snapshot-queued", "worker-mailbox");
     sendLatestWorkerSnapshot();
   };
-  const postInput = (inputKind: string, hostId: number, payload: Record<string, unknown>): void =>
-    activeWorker.postMessage({ protocolVersion: 1, kind: "input", inputKind, hostId, payload });
+  const postInput = (
+    inputKind: string, hostId: number, inputSequence: number, payload: Record<string, unknown>): void =>
+    activeWorker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "input", inputKind, hostId, inputSequence, payload });
   configureManagedCallbacks({
     dispatchAnimationFrame: () => { throw new Error("main worker host cannot receive managed frame callbacks"); },
     dispatchSnapshot: queueWorkerSnapshot,
-    dispatchPointerBatch: (hostId, phase, kind, pointerId, buttons, modifiers, samples) =>
-      postInput("pointer", hostId, { phase, kind, pointerId, buttons, modifiers, samples }),
-    dispatchWheel: (hostId, x, y, deltaX, deltaY, timestamp, kind) =>
-      postInput("wheel", hostId, { x, y, deltaX, deltaY, timestamp, kind }),
-    dispatchKey: (hostId, pressed, repeat, synthesized, code, key, timestamp) =>
-      postInput("key", hostId, { pressed, repeat, synthesized, code, key, timestamp }),
-    dispatchFocus: (hostId, focused, timestamp) =>
-      postInput("focus", hostId, { focused, timestamp }),
-    dispatchTextEditing: (hostId, text, selectionBase, selectionExtent, composingBase, composingExtent) =>
-      postInput("text", hostId, { text, selectionBase, selectionExtent, composingBase, composingExtent }),
-    dispatchTextAction: (hostId, action) => postInput("text-action", hostId, { action }),
-    dispatchTextConnectionClosed: (hostId) => postInput("text-closed", hostId, {}),
-    dispatchSemanticsAction: (hostId, nodeId, action, argumentsJson) =>
-      postInput("semantics-action", hostId, { nodeId, action, argumentsJson }),
+    dispatchPointerBatch: (hostId, phase, kind, pointerId, buttons, modifiers, inputSequence, samples) =>
+      postInput("pointer", hostId, inputSequence, { phase, kind, pointerId, buttons, modifiers, samples }),
+    dispatchWheel: (hostId, x, y, deltaX, deltaY, timestamp, kind, inputSequence) =>
+      postInput("wheel", hostId, inputSequence, { x, y, deltaX, deltaY, timestamp, kind }),
+    dispatchKey: (hostId, pressed, repeat, synthesized, code, key, timestamp, inputSequence) =>
+      postInput("key", hostId, inputSequence, { pressed, repeat, synthesized, code, key, timestamp }),
+    dispatchFocus: (hostId, focused, timestamp, inputSequence) =>
+      postInput("focus", hostId, inputSequence, { focused, timestamp }),
+    dispatchTextEditing: (hostId, text, selectionBase, selectionExtent, composingBase, composingExtent, inputSequence) =>
+      postInput("text", hostId, inputSequence, { text, selectionBase, selectionExtent, composingBase, composingExtent }),
+    dispatchTextAction: (hostId, action, inputSequence) => postInput("text-action", hostId, inputSequence, { action }),
+    dispatchTextConnectionClosed: (hostId, inputSequence) => postInput("text-closed", hostId, inputSequence, {}),
+    dispatchSemanticsAction: (hostId, nodeId, action, inputSequence, argumentsJson) =>
+      postInput("semantics-action", hostId, inputSequence, { nodeId, action, argumentsJson }),
   });
   const initialRect = root.getBoundingClientRect();
+  directWorkerBootstrap = direct;
   createHost(1, canvas.id, Math.max(1, initialRect.width), Math.max(1, initialRect.height));
-  const host = requireHost(1);
-  document.documentElement.dataset.dorotiRenderer = "offscreen-worker";
+  directWorkerBootstrap = false;
+  let host = requireHost(1);
+  document.documentElement.dataset.dorotiRenderer = mode;
 
   let ready = false;
   let resolveReady!: (value: "started") => void;
@@ -2228,7 +2264,7 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
 
   const sendControlResponse = (correlationId: number, result: string, error?: unknown): void =>
     activeWorker.postMessage({
-      protocolVersion: 1, kind: "control-response", correlationId, result,
+      protocolVersion: dorotiProtocolVersion, kind: "control-response", correlationId, result,
       error: error ? String(error) : undefined,
     });
 
@@ -2259,8 +2295,16 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
 
   const attachWorker = (worker: Worker): void => {
     worker.addEventListener("message", (event) => {
-      const message = event.data as Record<string, unknown>;
-      if (Number(message.protocolVersion) !== 1) return;
+      let message: Record<string, unknown>;
+      try {
+        message = decodeDorotiMessage(event.data, new Set([
+          "runtime-ready", "gpu-ready", "snapshot-applied", "frame-request", "managed-raster",
+          "present-requested", "bitmap", "direct-commit", "terminal", "resource", "context-lost",
+        "context-restored", "control", "control-request", "disposed", "fatal",
+        ]));
+      } catch (error) {
+        message = { kind: "fatal", error: `protocol violation: ${String(error)}` };
+      }
       switch (message.kind) {
         case "runtime-ready":
           ready = true;
@@ -2288,7 +2332,7 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
             recordResize(host, "framework-frame-dispatched", "worker-raf", {
               rafId: callbackId,
             });
-            worker.postMessage({ protocolVersion: 1, kind: "frame", callbackId, timestamp });
+            worker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "frame", callbackId, timestamp });
           });
           break;
         }
@@ -2300,7 +2344,10 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
           break;
         case "present-requested": {
           const requestId = Number(message.requestId);
-          display.pendingRequestIds.add(requestId);
+          display.pendingLeases.set(requestId, {
+            runtimeSessionId: display.runtimeSessionId,
+            causalFrameId: requestId,
+          });
           if (display.latestRequestId !== null) display.latestRequestId = requestId;
           else if (display.currentRequestId === null) display.currentRequestId = requestId;
           else display.latestRequestId = requestId;
@@ -2335,7 +2382,7 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
             canvas.dataset.dorotiFrontLogicalWidth = String(Number(message.logicalWidth));
             canvas.dataset.dorotiFrontLogicalHeight = String(Number(message.logicalHeight));
             delete canvas.dataset.dorotiResizePreview;
-            display.display.transferFromImageBitmap(bitmap);
+            display.display!.transferFromImageBitmap(bitmap);
             display.bitmapConsumed++;
             display.activeBitmaps--;
             display.frontGeneration = frameGeneration;
@@ -2359,7 +2406,7 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
             display.activeBitmaps--;
           }
           worker.postMessage({
-            protocolVersion: 1, kind: "receipt", requestId, committed: epochExact,
+            protocolVersion: dorotiProtocolVersion, kind: "receipt", requestId, committed: epochExact,
             consumed: epochExact,
             reason: epochExact
               ? frameGeneration === host.resizeEpoch.generation
@@ -2369,10 +2416,36 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
           });
           break;
         }
+        case "direct-commit": {
+          const requestId = Number(message.requestId);
+          const frameGeneration = Number(message.generation);
+          display.frontGeneration = frameGeneration;
+          display.frontRequestId = requestId;
+          display.rasterWidth = Number(message.physicalWidth);
+          display.rasterHeight = Number(message.physicalHeight);
+          display.displayWidth = display.rasterWidth;
+          display.displayHeight = display.rasterHeight;
+          commitDirectCanvasLogicalSize(
+            host, host.resizeEpoch.logicalWidth, host.resizeEpoch.logicalHeight);
+          canvas.dataset.dorotiFrontLogicalWidth = String(Number(message.logicalWidth));
+          canvas.dataset.dorotiFrontLogicalHeight = String(Number(message.logicalHeight));
+          recordResize(host, "front-commit", "worker-direct-surface", {
+            requestId, rafId: requestId,
+            backingWidth: display.rasterWidth, backingHeight: display.rasterHeight,
+            surfaceWidth: display.rasterWidth, surfaceHeight: display.rasterHeight,
+            detail: JSON.stringify({
+              generation: frameGeneration,
+              targetGeneration: host.resizeEpoch.generation,
+              contextGeneration: Number(message.contextGeneration),
+              direct: true,
+            }),
+          });
+          break;
+        }
         case "terminal": {
           const requestId = Number(message.requestId);
           const terminal = String(message.terminal);
-          display.pendingRequestIds.delete(requestId);
+          display.pendingLeases.delete(requestId);
           if (display.currentRequestId === requestId) display.currentRequestId = null;
           if (display.latestRequestId === requestId) display.latestRequestId = null;
           recordResize(host, terminal === "submitted" ? "submitted" : "ack", "worker-presenter", {
@@ -2382,6 +2455,13 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
           });
           break;
         }
+        case "disposed":
+          if (display.pendingLeases.size !== 0)
+            throw new Error(`Doroti worker disposed with ${display.pendingLeases.size} external leases.`);
+          recordResize(host, "disposed", "worker-supervisor", {
+            detail: JSON.stringify({ runtimeSessionId: display.runtimeSessionId }),
+          });
+          break;
         case "resource":
           display.bitmapCreated = Number(message.bitmapCreated);
           display.bitmapConsumed = Number(message.bitmapConsumed);
@@ -2418,6 +2498,7 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
           const error = new Error(`Doroti worker runtime failed: ${String(message.error)}`);
           if (display.restartCount < 1) {
             display.restartCount++;
+            display.runtimeSessionId++;
             worker.terminate();
             display.currentRequestId = null;
             display.latestRequestId = null;
@@ -2425,20 +2506,35 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
             display.contextLost = false;
             snapshotInFlight = false;
             latestWorkerSnapshot = null;
-            for (const requestId of display.pendingRequestIds) {
+            closeExternalLeases(display.pendingLeases, (requestId, lease) => {
               recordResize(host, "ack", "worker-supervisor", {
-                requestId, rafId: requestId, terminal: "superseded",
-                detail: "worker restart closed the in-flight request",
+                requestId, rafId: requestId, terminal: "failed",
+                detail: `runtime-lost: session ${lease.runtimeSessionId} causal frame ${lease.causalFrameId}`,
               });
+            });
+            let replacementOffscreen: OffscreenCanvas | null = null;
+            if (direct) {
+              const lifetimeInputSequence = host.inputSequence;
+              const previousCanvas = canvas;
+              closeHost(host.id);
+              canvas = createReplacementCanvas(previousCanvas);
+              directWorkerBootstrap = true;
+              const rect = root.getBoundingClientRect();
+              createHost(1, canvas.id, Math.max(1, rect.width), Math.max(1, rect.height));
+              directWorkerBootstrap = false;
+              host = requireHost(1);
+              host.inputSequence = lifetimeInputSequence;
+              replacementOffscreen = createWorkerVisibleSurface(canvas, true).offscreen;
+              workerDisplayPresenters.set(canvas.id, display);
             }
-            display.pendingRequestIds.clear();
-            const replacement = new Worker(new URL("./doroti.raster.worker.js", import.meta.url), { type: "module" });
+            const replacement = createDorotiWorker(new URL("./doroti.raster.worker.js", import.meta.url));
             activeWorker = replacement;
             display.worker = replacement;
             attachWorker(replacement);
             replacement.postMessage({
-              protocolVersion: 1, kind: "init", snapshot: JSON.parse(snapshot(host)), dotnetModuleUrl,
-            });
+              protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
+              dotnetModuleUrl, mode, canvas: replacementOffscreen,
+            }, replacementOffscreen ? [replacementOffscreen] : []);
           } else if (!ready) rejectReady(error);
           else root.dataset.dorotiWorkerRuntime = "failed";
           break;
@@ -2451,11 +2547,14 @@ export async function startDorotiWorkerHost(): Promise<"started"> {
     });
   };
   attachWorker(activeWorker);
-  activeWorker.postMessage({
-    protocolVersion: 1, kind: "init", snapshot: JSON.parse(snapshot(host)), dotnetModuleUrl,
-  });
+  const initialOffscreen = direct ? createWorkerVisibleSurface(canvas, true).offscreen : null;
+  const initialMessage = {
+    protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
+    dotnetModuleUrl, mode, canvas: initialOffscreen,
+  };
+  activeWorker.postMessage(initialMessage, initialOffscreen ? [initialOffscreen] : []);
   globalThis.addEventListener("pagehide", () => {
-    activeWorker.postMessage({ protocolVersion: 1, kind: "dispose" });
+    activeWorker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "dispose" });
     closeHost(host.id);
     workerDisplayPresenters.delete(canvas.id);
   }, { once: true });
@@ -2549,7 +2648,7 @@ function closeTextConnectionAfterBlur(host: BrowserHost): void {
   host.input.value = "";
   host.input.hidden = true;
   rememberTextState(host, "", 0, 0, -1, -1);
-  requireManaged().dispatchTextConnectionClosed(host.id);
+  requireManaged().dispatchTextConnectionClosed(host.id, ++host.inputSequence);
 }
 
 function handleTextInputBlur(
@@ -2592,14 +2691,17 @@ function emitText(host: BrowserHost): void {
       host.lastComposingExtent === composingExtent) return;
   rememberTextState(
     host, host.input.value, selectionBase, selectionExtent, composingBase, composingExtent);
+  const inputSequence = ++host.inputSequence;
   recordResize(host, "text-editing-dispatched", "browser-text-input", {
+    inputSequence,
     detail: JSON.stringify({
       textLength: host.input.value.length,
       selectionBase, selectionExtent, composingBase, composingExtent,
     }),
   });
   requireManaged().dispatchTextEditing(
-    host.id, host.input.value, selectionBase, selectionExtent, composingBase, composingExtent);
+    host.id, host.input.value, selectionBase, selectionExtent, composingBase, composingExtent,
+    inputSequence);
 }
 
 function rememberTextState(
@@ -2619,7 +2721,7 @@ function rememberTextState(
 function setViewFocus(host: BrowserHost, focused: boolean, timestamp: number): void {
   if (host.viewFocused === focused) return;
   host.viewFocused = focused;
-  requireManaged().dispatchFocus(host.id, focused, timestamp);
+  requireManaged().dispatchFocus(host.id, focused, timestamp, ++host.inputSequence);
   emit(host);
 }
 
@@ -2631,13 +2733,15 @@ function focusActiveEndpoint(host: BrowserHost): void {
 function releasePressedKeys(host: BrowserHost): void {
   const timestamp = performance.now();
   for (const [code, key] of host.pressedKeys) {
-    requireManaged().dispatchKey(host.id, false, false, true, code, key, timestamp);
+    requireManaged().dispatchKey(host.id, false, false, true, code, key, timestamp,
+      ++host.inputSequence);
   }
   host.pressedKeys.clear();
 }
 
 function dispatchSemantics(host: BrowserHost, nodeId: number | string, action: number, args: unknown = null): void {
-  requireManaged().dispatchSemanticsAction(host.id, Number(nodeId), action, JSON.stringify(args));
+  requireManaged().dispatchSemanticsAction(
+    host.id, Number(nodeId), action, ++host.inputSequence, JSON.stringify(args));
 }
 
 function textSelectionOffsets(element: HTMLElement): { base: number; extent: number } | null {

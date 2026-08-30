@@ -101,10 +101,22 @@ public sealed class BrowserWasmTarget : IDorotiBrowserTarget
     }
 
     public void CompleteSkiaSurfacePaint(
-        ulong viewId, long requestId, long generation, bool committed, string reason)
+        ulong viewId, long requestId, long generation, string terminal, string reason)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        _host.CompleteSkiaSurfacePaint(viewId, requestId, generation, committed, reason);
+        _host.CompleteSkiaSurfacePaint(viewId, requestId, generation, terminal, reason);
+    }
+
+    public void InvalidateSkiaGpuContext(ulong viewId, long requestId, string reason)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _host.InvalidateSkiaGpuContext(viewId, requestId, reason);
+    }
+
+    public void InvalidateSkiaWindowSurface(ulong viewId)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _host.InvalidateSkiaWindowSurface(viewId);
     }
 
     public string ResolveResourceUrl(ulong viewId, string relativeUrl)

@@ -12,6 +12,7 @@ public sealed record BrowserFrameDiagnostics(
     long Failed,
     long ContextGeneration,
     long SurfaceGeneration,
+    long InputSequence,
     bool InvalidatePending,
     string BackendIdentity);
 
@@ -39,7 +40,11 @@ public interface IDorotiBrowserTarget : IDisposable
         DorotiResizeEpoch target, long requestId);
 
     void CompleteSkiaSurfacePaint(
-        ulong viewId, long requestId, long generation, bool committed, string reason);
+        ulong viewId, long requestId, long generation, string terminal, string reason);
+
+    void InvalidateSkiaGpuContext(ulong viewId, long requestId, string reason);
+
+    void InvalidateSkiaWindowSurface(ulong viewId);
 
     BrowserHostSnapshot CaptureSnapshot(ulong viewId);
 

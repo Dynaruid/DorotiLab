@@ -25,6 +25,7 @@ public sealed record BrowserHostSnapshot(
     string OperatingSystem,
     long Generation,
     long SurfaceGeneration,
+    long InputSequence,
     BrowserGpuIdentity Gpu,
     DorotiResizeEpoch ResizeEpoch);
 
@@ -136,43 +137,51 @@ internal static partial class BrowserInterop
     [JSExport]
     internal static void DispatchPointerBatch(
         int hostId, int phase, int kind, int pointerId, int buttons, int modifiers,
+        [JSMarshalAs<JSType.Number>] long inputSequence,
         [JSMarshalAs<JSType.Array<JSType.Number>>] double[] samples) =>
-        BrowserHostAdapter.DispatchPointerBatch(hostId, phase, kind, pointerId, buttons, modifiers, samples);
+        BrowserHostAdapter.DispatchPointerBatch(hostId, phase, kind, pointerId, buttons, modifiers, inputSequence, samples);
 
     [JSExport]
     internal static void DispatchWheel(
-        int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds, int kind) =>
-        BrowserHostAdapter.DispatchWheel(hostId, x, y, deltaX, deltaY, timestampMilliseconds, kind);
+        int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds, int kind,
+        [JSMarshalAs<JSType.Number>] long inputSequence) =>
+        BrowserHostAdapter.DispatchWheel(hostId, x, y, deltaX, deltaY, timestampMilliseconds, kind, inputSequence);
 
     [JSExport]
     internal static void DispatchKey(
-        int hostId, bool down, bool repeat, bool synthesized, string code, string key, double timestampMilliseconds) =>
-        BrowserHostAdapter.DispatchKey(hostId, down, repeat, synthesized, code, key, timestampMilliseconds);
+        int hostId, bool down, bool repeat, bool synthesized, string code, string key, double timestampMilliseconds,
+        [JSMarshalAs<JSType.Number>] long inputSequence) =>
+        BrowserHostAdapter.DispatchKey(hostId, down, repeat, synthesized, code, key, timestampMilliseconds, inputSequence);
 
     [JSExport]
-    internal static void DispatchFocus(int hostId, bool focused, double timestampMilliseconds) =>
-        BrowserHostAdapter.DispatchFocus(hostId, focused, timestampMilliseconds);
+    internal static void DispatchFocus(int hostId, bool focused, double timestampMilliseconds,
+        [JSMarshalAs<JSType.Number>] long inputSequence) =>
+        BrowserHostAdapter.DispatchFocus(hostId, focused, timestampMilliseconds, inputSequence);
 
     [JSExport]
     internal static void DispatchTextEditing(
-        int hostId, string text, int selectionBase, int selectionExtent, int composingBase, int composingExtent) =>
-        BrowserHostAdapter.DispatchTextEditing(hostId, text, selectionBase, selectionExtent, composingBase, composingExtent);
+        int hostId, string text, int selectionBase, int selectionExtent, int composingBase, int composingExtent,
+        [JSMarshalAs<JSType.Number>] long inputSequence) =>
+        BrowserHostAdapter.DispatchTextEditing(hostId, text, selectionBase, selectionExtent, composingBase, composingExtent, inputSequence);
 
     [JSExport]
-    internal static void DispatchTextAction(int hostId, int action) =>
-        BrowserHostAdapter.DispatchTextAction(hostId, action);
+    internal static void DispatchTextAction(int hostId, int action,
+        [JSMarshalAs<JSType.Number>] long inputSequence) =>
+        BrowserHostAdapter.DispatchTextAction(hostId, action, inputSequence);
 
     [JSExport]
-    internal static void DispatchTextConnectionClosed(int hostId) =>
-        BrowserHostAdapter.DispatchTextConnectionClosed(hostId);
+    internal static void DispatchTextConnectionClosed(int hostId,
+        [JSMarshalAs<JSType.Number>] long inputSequence) =>
+        BrowserHostAdapter.DispatchTextConnectionClosed(hostId, inputSequence);
 
     [JSExport]
     internal static void DispatchSemanticsAction(
         int hostId,
         [JSMarshalAs<JSType.Number>] long nodeId,
         [JSMarshalAs<JSType.Number>] long action,
+        [JSMarshalAs<JSType.Number>] long inputSequence,
         string argumentsJson) =>
-        BrowserHostAdapter.DispatchSemanticsAction(hostId, nodeId, action, argumentsJson);
+        BrowserHostAdapter.DispatchSemanticsAction(hostId, nodeId, action, inputSequence, argumentsJson);
 
     internal static BrowserHostSnapshot ParseSnapshot(string json) =>
         JsonSerializer.Deserialize<BrowserHostSnapshot>(json, new JsonSerializerOptions
@@ -242,6 +251,7 @@ public sealed class BrowserHostAdapter :
     private int _nextCallbackId;
     private BrowserHostSnapshot _snapshot;
     private PlatformConfiguration _configuration;
+    private long _inputSequence;
     private DorotiTextInputConfiguration _textInputConfiguration;
     private bool _disposed;
 
@@ -262,6 +272,7 @@ public sealed class BrowserHostAdapter :
             _snapshot = Validate(BrowserInterop.ParseSnapshot(
                 BrowserInterop.CreateHost(HostId, canvasId, logicalSize.width, logicalSize.height)));
             _configuration = ToConfiguration(_snapshot);
+            _inputSequence = _snapshot.InputSequence;
         }
         catch
         {
@@ -299,6 +310,8 @@ public sealed class BrowserHostAdapter :
         }
     }
     public PlatformConfiguration Configuration => _configuration;
+    internal long InputSequence => Interlocked.Read(ref _inputSequence);
+    internal event Action<long, TimeSpan>? InputReceived;
 
     public event Action<ViewMetrics>? MetricsChanged;
     public event Action<AppLifecycleState>? LifecycleChanged;
@@ -477,9 +490,11 @@ public sealed class BrowserHostAdapter :
     }
 
     internal static void DispatchPointerBatch(
-        int hostId, int phase, int kind, int pointerId, int buttons, int modifiers, double[] samples)
+        int hostId, int phase, int kind, int pointerId, int buttons, int modifiers,
+        long inputSequence, double[] samples)
     {
         if (!TryGet(hostId, out var host) || samples.Length == 0 || samples.Length % 7 != 0) return;
+        host.AcceptInputSequence(inputSequence, TimeSpan.FromMilliseconds(samples[^1]));
         var ratio = host._snapshot.DevicePixelRatio;
         var pointer = checked((ulong)Math.Max(0, pointerId));
         var data = new List<PointerData>(samples.Length / 7);
@@ -522,9 +537,11 @@ public sealed class BrowserHostAdapter :
     }
 
     internal static void DispatchWheel(
-        int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds, int kind)
+        int hostId, double x, double y, double deltaX, double deltaY, double timestampMilliseconds, int kind,
+        long inputSequence)
     {
         if (!TryGet(hostId, out var host)) return;
+        host.AcceptInputSequence(inputSequence, TimeSpan.FromMilliseconds(timestampMilliseconds));
         var ratio = host._snapshot.DevicePixelRatio;
         host.PointerData?.Invoke(new([
             new(host._viewId, TimeSpan.FromMilliseconds(timestampMilliseconds), PointerChange.hover,
@@ -535,9 +552,11 @@ public sealed class BrowserHostAdapter :
     }
 
     internal static void DispatchKey(
-        int hostId, bool down, bool repeat, bool synthesized, string code, string key, double timestampMilliseconds)
+        int hostId, bool down, bool repeat, bool synthesized, string code, string key, double timestampMilliseconds,
+        long inputSequence)
     {
         if (!TryGet(hostId, out var host)) return;
+        host.AcceptInputSequence(inputSequence, TimeSpan.FromMilliseconds(timestampMilliseconds));
         host.KeyData?.Invoke(new(
             host._viewId,
             TimeSpan.FromMilliseconds(timestampMilliseconds),
@@ -548,36 +567,60 @@ public sealed class BrowserHostAdapter :
             BrowserKeyMap.Character(key)));
     }
 
-    internal static void DispatchSemanticsAction(int hostId, long nodeId, long action, string argumentsJson)
+    internal static void DispatchSemanticsAction(
+        int hostId, long nodeId, long action, long inputSequence, string argumentsJson)
     {
-        if (TryGet(hostId, out var host)) host.SemanticsAction?.Invoke(nodeId, action, argumentsJson);
+        if (!TryGet(hostId, out var host)) return;
+        host.AcceptInputSequence(inputSequence, DorotiFrameClock.Now);
+        host.SemanticsAction?.Invoke(nodeId, action, argumentsJson);
     }
 
-    internal static void DispatchFocus(int hostId, bool focused, double timestampMilliseconds)
+    internal static void DispatchFocus(int hostId, bool focused, double timestampMilliseconds, long inputSequence)
     {
         if (TryGet(hostId, out var host))
+        {
+            host.AcceptInputSequence(inputSequence, TimeSpan.FromMilliseconds(timestampMilliseconds));
             host.FocusData?.Invoke(new(host._viewId, focused, TimeSpan.FromMilliseconds(timestampMilliseconds)));
+        }
     }
 
     internal static void DispatchTextEditing(
-        int hostId, string text, int selectionBase, int selectionExtent, int composingBase, int composingExtent)
+        int hostId, string text, int selectionBase, int selectionExtent, int composingBase, int composingExtent,
+        long inputSequence)
     {
         if (!TryGet(hostId, out var host)) return;
+        host.AcceptInputSequence(inputSequence, DorotiFrameClock.Now);
         DorotiTextSelection? composing = composingBase >= 0 && composingExtent >= composingBase
             ? new DorotiTextSelection(composingBase, composingExtent)
             : null;
         host.EditingStateChanged?.Invoke(new(text, new(selectionBase, selectionExtent), composing));
     }
 
-    internal static void DispatchTextAction(int hostId, int action)
+    internal static void DispatchTextAction(int hostId, int action, long inputSequence)
     {
         if (TryGet(hostId, out var host) && Enum.IsDefined(typeof(DorotiTextInputAction), action))
+        {
+            host.AcceptInputSequence(inputSequence, DorotiFrameClock.Now);
             host.ActionPerformed?.Invoke((DorotiTextInputAction)action);
+        }
     }
 
-    internal static void DispatchTextConnectionClosed(int hostId)
+    internal static void DispatchTextConnectionClosed(int hostId, long inputSequence)
     {
-        if (TryGet(hostId, out var host)) host.ConnectionClosed?.Invoke();
+        if (!TryGet(hostId, out var host)) return;
+        host.AcceptInputSequence(inputSequence, DorotiFrameClock.Now);
+        host.ConnectionClosed?.Invoke();
+    }
+
+    private void AcceptInputSequence(long sequence, TimeSpan timestamp)
+    {
+        if (sequence <= 0) throw new InvalidDataException("Browser input sequence must be positive.");
+        var previous = Interlocked.Read(ref _inputSequence);
+        if (sequence != previous + 1)
+            throw new InvalidDataException(
+                $"Browser input sequence is not contiguous: previous={previous}, received={sequence}.");
+        Interlocked.Exchange(ref _inputSequence, sequence);
+        InputReceived?.Invoke(sequence, timestamp);
     }
 
     private static bool TryGet(int hostId, out BrowserHostAdapter host)

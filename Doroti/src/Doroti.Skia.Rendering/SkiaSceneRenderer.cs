@@ -48,6 +48,8 @@ public sealed class SkiaSceneRenderer :
     private Action? _invalidate;
     private long _submitted;
     private long _presented;
+    private long _sceneAccepted;
+    private long _causalPaintAttempts;
     private long _replayed;
     private long _failed;
     private long _superseded;
@@ -120,7 +122,8 @@ public sealed class SkiaSceneRenderer :
                     Volatile.Read(ref _pictureRasterCacheHits),
                     Volatile.Read(ref _pictureRasterCacheMisses),
                     Volatile.Read(ref _pictureRasterCacheEntries),
-                    _frameTrace.Snapshot());
+                    _frameTrace.Snapshot(), _sceneAccepted, _causalPaintAttempts,
+                    _terminalLedger.Diagnostics);
         }
     }
 
@@ -211,8 +214,7 @@ public sealed class SkiaSceneRenderer :
             var sceneSequence = ++_nextSceneSequence;
             _terminalLedger.Register(sceneSequence);
             var inputSequence = _host.InputSequence;
-            _submitted++;
-            _lastSubmittedInputSequence = inputSequence;
+            _sceneAccepted++;
             if (submission.BuildToken is not { } buildToken)
             {
                 _terminalLedger.TryComplete(sceneSequence, DorotiFrameTerminal.dropped);
@@ -222,7 +224,10 @@ public sealed class SkiaSceneRenderer :
                 _dropped++;
                 _frameTrace.Record(DorotiFramePhase.dropped, _viewId, timestamp,
                     inputSequence, sceneSequence, _host.SurfaceGeneration,
-                    $"{DorotiFrameMismatch.missingBuildToken}: scene submitted outside a framework frame");
+                    $"{DorotiFrameMismatch.missingBuildToken}: scene submitted outside a framework frame",
+                    resizeTargetGeneration: _host.ViewEpoch.ResizeTargetGeneration,
+                    metricsGeneration: _host.ViewEpoch.MetricsGeneration,
+                    contextGeneration: _contextGeneration);
                 return;
             }
             // The producer hands raster an immutable command array. It never
@@ -257,7 +262,11 @@ public sealed class SkiaSceneRenderer :
             _pendingFrame = incoming;
             invalidate = _invalidate;
             _frameTrace.Record(DorotiFramePhase.sceneSubmitted, _viewId, timestamp,
-                inputSequence, sceneSequence, _host.SurfaceGeneration, invocation.ElementId);
+                inputSequence, sceneSequence, _host.SurfaceGeneration, invocation.ElementId,
+                resizeTargetGeneration: descriptor.ResizeTargetGeneration,
+                metricsGeneration: descriptor.MetricsGeneration,
+                frameworkFrameNumber: descriptor.FrameworkFrameNumber,
+                contextGeneration: _contextGeneration);
         }
         invalidate?.Invoke();
     }
@@ -350,12 +359,22 @@ public sealed class SkiaSceneRenderer :
             _pictureRasterFrame++;
             _frameTrace.Record(DorotiFramePhase.raster, _viewId, rasterStart,
                 frame.InputSequence, frame.SceneSequence, _host.SurfaceGeneration,
-                isNewFrame ? null : "retained scene replay", rasterStart - frame.SubmittedAt);
+                isNewFrame ? null : "retained scene replay", rasterStart - frame.SubmittedAt,
+                resizeTargetGeneration: frame.Descriptor.ResizeTargetGeneration,
+                metricsGeneration: frame.Descriptor.MetricsGeneration,
+                frameworkFrameNumber: frame.Descriptor.FrameworkFrameNumber,
+                causalFrameId: causalFrameId,
+                contextGeneration: _contextGeneration);
             DrawScene(canvas, frame.Commands, pixelWidth, pixelHeight);
             var rasterEnd = DorotiFrameClock.Now;
             _frameTrace.Record(DorotiFramePhase.rasterEnd, _viewId, rasterEnd,
                 frame.InputSequence, frame.SceneSequence, _host.SurfaceGeneration,
-                "Doroti draw complete", rasterEnd - rasterStart);
+                "Doroti draw complete", rasterEnd - rasterStart,
+                resizeTargetGeneration: frame.Descriptor.ResizeTargetGeneration,
+                metricsGeneration: frame.Descriptor.MetricsGeneration,
+                frameworkFrameNumber: frame.Descriptor.FrameworkFrameNumber,
+                causalFrameId: causalFrameId,
+                contextGeneration: _contextGeneration);
 #if !WINDOWS
             canvas.Flush();
 #endif
@@ -423,15 +442,22 @@ public sealed class SkiaSceneRenderer :
                 if (!MarkTerminal(frame, terminal, "native frame submitted",
                     completion.SurfaceGeneration)) return;
                 _presentedFrame = frame;
-                receipt = CreateFrameReceipt(completion, terminal);
+                receipt = CreateFrameReceipt(completion, terminal,
+                    SkiaPaintDisposition.exact, "new scene crossed the host submission boundary");
             }
             else
             {
                 _replayed++;
                 _frameTrace.Record(DorotiFramePhase.replay, _viewId, DorotiFrameClock.Now,
                     completion.InputSequence, completion.SceneSequence, completion.SurfaceGeneration,
-                    "fresh native back buffer submitted");
-                receipt = CreateFrameReceipt(completion, terminal);
+                    "fresh native back buffer submitted",
+                    resizeTargetGeneration: completion.Descriptor.ResizeTargetGeneration,
+                    metricsGeneration: completion.Descriptor.MetricsGeneration,
+                    frameworkFrameNumber: completion.Descriptor.FrameworkFrameNumber,
+                    causalFrameId: completion.CausalFrameId,
+                    contextGeneration: _contextGeneration);
+                receipt = CreateFrameReceipt(completion, terminal,
+                    SkiaPaintDisposition.replay, "retained scene replay crossed the host submission boundary");
             }
         }
         PublishFrameReceipt(receipt);
@@ -443,10 +469,13 @@ public sealed class SkiaSceneRenderer :
         SkiaFrameReceipt? receipt = null;
         lock (_gate)
         {
-            if (!completion.IsNewFrame ||
-                !_rasterizedFrames.Remove(completion.SceneSequence, out var frame)) return;
-            if (MarkTerminal(frame, DorotiFrameTerminal.failed, reason, completion.SurfaceGeneration))
-                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.failed);
+            if (!completion.IsNewFrame)
+                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.failed,
+                    SkiaPaintDisposition.replay, reason);
+            else if (_rasterizedFrames.Remove(completion.SceneSequence, out var frame) &&
+                MarkTerminal(frame, DorotiFrameTerminal.failed, reason, completion.SurfaceGeneration))
+                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.failed,
+                    SkiaPaintDisposition.exact, reason);
         }
         PublishFrameReceipt(receipt);
     }
@@ -457,10 +486,30 @@ public sealed class SkiaSceneRenderer :
         SkiaFrameReceipt? receipt = null;
         lock (_gate)
         {
-            if (!completion.IsNewFrame ||
-                !_rasterizedFrames.Remove(completion.SceneSequence, out var frame)) return;
-            if (MarkTerminal(frame, DorotiFrameTerminal.superseded, reason, completion.SurfaceGeneration))
-                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.superseded);
+            if (!completion.IsNewFrame)
+                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.superseded,
+                    SkiaPaintDisposition.replay, reason);
+            else if (_rasterizedFrames.Remove(completion.SceneSequence, out var frame) &&
+                MarkTerminal(frame, DorotiFrameTerminal.superseded, reason, completion.SurfaceGeneration))
+                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.superseded,
+                    SkiaPaintDisposition.superseded, reason);
+        }
+        PublishFrameReceipt(receipt);
+    }
+
+    public void DropPaint(SkiaPaintCompletion completion, string reason)
+    {
+        if (_disposed) return;
+        SkiaFrameReceipt? receipt = null;
+        lock (_gate)
+        {
+            if (!completion.IsNewFrame)
+                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.dropped,
+                    SkiaPaintDisposition.replay, reason);
+            else if (_rasterizedFrames.Remove(completion.SceneSequence, out var frame) &&
+                MarkTerminal(frame, DorotiFrameTerminal.dropped, reason, completion.SurfaceGeneration))
+                receipt = CreateFrameReceipt(completion, DorotiFrameTerminal.dropped,
+                    SkiaPaintDisposition.exact, reason);
         }
         PublishFrameReceipt(receipt);
     }
@@ -608,18 +657,24 @@ public sealed class SkiaSceneRenderer :
 
     private static SkiaFrameReceipt CreateFrameReceipt(
         SkiaPaintCompletion completion,
-        DorotiFrameTerminal terminal) => new(
+        DorotiFrameTerminal terminal,
+        SkiaPaintDisposition disposition,
+        string reason) => new(
         completion.CausalFrameId,
         completion.InputSequence,
         completion.SceneSequence,
         completion.SurfaceGeneration,
         completion.Descriptor,
         terminal,
-        DorotiFrameClock.Now);
+        DorotiFrameClock.Now,
+        completion.IsNewFrame,
+        disposition,
+        reason);
 
     private void PublishFrameReceipt(SkiaFrameReceipt? receipt)
     {
         if (receipt is not { } value) return;
+        Interlocked.Increment(ref _causalPaintAttempts);
         FrameReceipt?.Invoke(value);
     }
 
@@ -641,9 +696,12 @@ public sealed class SkiaSceneRenderer :
         switch (terminal)
         {
             case DorotiFrameTerminal.presented:
-            case DorotiFrameTerminal.submitted:
                 _presented++;
                 _lastPresentedInputSequence = frame.InputSequence;
+                break;
+            case DorotiFrameTerminal.submitted:
+                _submitted++;
+                _lastSubmittedInputSequence = frame.InputSequence;
                 break;
             case DorotiFrameTerminal.superseded:
                 _superseded++;
@@ -658,7 +716,11 @@ public sealed class SkiaSceneRenderer :
         _frameTrace.Record(phase, _viewId, DorotiFrameClock.Now,
             frame.InputSequence, frame.SceneSequence,
             surfaceGeneration ?? _host.SurfaceGeneration,
-            reason);
+            reason,
+            resizeTargetGeneration: frame.Descriptor.ResizeTargetGeneration,
+            metricsGeneration: frame.Descriptor.MetricsGeneration,
+            frameworkFrameNumber: frame.Descriptor.FrameworkFrameNumber,
+            contextGeneration: _contextGeneration);
         return true;
     }
 

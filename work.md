@@ -1,7 +1,7 @@
 # Doroti Web renderer 구조 개편 작업 계획
 
 - 작성일: 2026-08-30
-- 상태: `candidate-architecture-ready-for-qualification` — 후보 구조와 gate는 작성됨; W0 baseline, D0 Doroti 공용 lifecycle 보강, W1 surface transaction, W8 compatibility 결정은 아직 열려 있고 제품 코드 구현·검증은 시작하지 않음
+- 상태: `implemented-qualification-failed` — W0, D0, W1~W6 구현과 자동 검증은 완료; W7 current/direct A/B에서 1회 max latency gate가 실패했고 물리 acceptance는 `notVerified`이므로 계획의 중단 조건에 따라 W8 cutover/legacy 삭제는 수행하지 않음
 - 현재 제품 기본값: `document-webgl`
 - 우선 후보: `worker-direct-webgl`
 - 첫 qualification 범위: Playwright bundled Chromium, hardware WebGL2, full-page single view
@@ -29,7 +29,7 @@ Doroti 공용 계층도 그대로 둘 수 있는 것은 아니다. scheduler, vi
 
 ## 2. 현재 증거와 판정 경계
 
-이 계획을 작성하면서 build, browser suite, 물리 입력 또는 시각 검증을 다시 실행하지 않았다. 아래 수치는 기존 저장소 기록을 요약한 것이며 구현 시작 시 baseline을 재수집해야 한다.
+아래 표는 구현 전 판정 경계를 기록한 baseline이다. 이번 실행에서 얻은 최종 결과와 gate 판정은 [10. 2026-08-30 실행 결과](#10-2026-08-30-실행-결과)가 갱신한다.
 
 | 항목 | 현재 판정 | 근거와 한계 |
 |---|---|---|
@@ -38,7 +38,7 @@ Doroti 공용 계층도 그대로 둘 수 있는 것은 아니다. scheduler, vi
 | 기존 `document-webgl` A/B | 기록상 `PASS` | wheel median p95 26.2 ms |
 | 기존 `offscreen-bitmap` A/B | 기록상 `FAIL` | wheel median p95 49.1 ms |
 | 기존 `offscreen-worker` A/B | 기록상 `FAIL` | wheel median p95 44.1 ms |
-| 새 `worker-direct-webgl` | `notVerified` | 아직 구현되지 않음 |
+| 새 `worker-direct-webgl` | 구현 전 `notVerified` | 이번 실행에서 opt-in으로 구현했으며 최종 automated qualification은 section 10의 `partial/FAIL` |
 | 실제 window border drag/trackpad/120 Hz 이상/scan-out | `notVerified` | browser 내부 commit이나 screenshot으로 대체하지 않음 |
 | 실제 한글 IME/길게 누른 Backspace/screen reader | `notVerified` | 자동 DOM·semantics 검사와 별도 gate |
 
@@ -620,3 +620,27 @@ Worker-only가 되어도 Blazor WebAssembly SDK/publish pipeline이 Worker의 `_
 - direct mode가 current default 대비 correctness 또는 승인되지 않은 latency regression을 만듦
 
 이 조건에서는 `auto`를 바꾸거나 legacy를 삭제하지 않는다. 기능 자동화가 통과해도 물리 resize/input/scan-out acceptance 전에는 “Flutter처럼 부드러운 Web renderer 완료”라고 판정하지 않는다.
+
+## 10. 2026-08-30 실행 결과
+
+### 구현 판정
+
+| Workstream | 판정 | 결과 |
+|---|---|---|
+| W0 | `PASS` | 현재 세 renderer Release baseline을 재수집하고 Flutter `3.48.0-0.3.pre`, framework/engine `56b8e1a851a594b1a154f8ea93270807dab22b9a`, Dart `3.14.0-81.0.dev`로 matching fixture와 differential harness를 고정했다. |
+| D0 | `PASS` | terminal ledger를 active + cumulative counter + bounded recent history로 바꾸고 100,000-frame out-of-order/duplicate contract를 통과했다. scene admission/terminal/causal receipt와 bounded frame-trace correlation을 분리했다. |
+| W1 | `PASS` | transferred visible canvas, Worker WebGL2/framebuffer 0, Worker rAF 60+600 cadence, context recovery와 fatal 후 canvas/host replacement를 실제 browser에서 증명했다. |
+| W2 | `PASS` | protocol v2 runtime decoder/state machine, DOM/surface/worker-host/diagnostics module, 1회 supervisor restart와 malformed envelope fail-closed 검증을 추가했다. |
+| W3~W6 | `PASS` | `worker-direct-webgl` opt-in backend, ordered lifetime input sequence, typed terminal, Worker-owned surface/context generation, exact resize, DOM/IME/semantics 재바인딩을 구현했다. `auto`는 그대로 `document-webgl`이다. |
+| W7 automated | `partial/FAIL` | direct 전체 suite와 Flutter differential은 통과했지만 current/direct 3회 A/B 중 direct run 2의 max 176.5 ms가 `<100 ms` gate를 실패했다. |
+| W7 physical | `notVerified` | 실제 60 Hz/120 Hz 이상 display, 손으로 수행한 border drag, precision trackpad, 한글 IME 후보창/긴 Backspace, screen reader와 물리 scan-out은 이번 자동 실행으로 판정하지 않았다. |
+| W8 | `notStarted-by-gate` | W7 전체 PASS가 아니므로 default cutover, burn-in, compatibility 축소와 legacy 삭제를 시작하지 않았다. |
+
+### 재현 가능한 evidence
+
+- `run-web-direct-validation.ps1 -Configuration Release`: Skia/Web/Qt/WindowsAppSdk/MAUI/Demo Release build, TypeScript, FCR-3/4/5/6/7, resize contract 모두 `PASS`.
+- 최종 tree direct headless 전체: 11 `PASS`, Flutter 조건부 1 `SKIP`; 2분 continuous flicker/resize, context loss, DPR2, input, capability, startup, protocol/crash recovery 포함. wheel p95 31.8 ms, max 62.4 ms.
+- direct headed 자동 resize: Desktop Chrome bounds와 Windows native edge resize 2 `PASS`. 실제 사람 입력 acceptance의 대체 증거는 아니다.
+- 기존 renderer 회귀: document 8 `PASS`/4 해당없음 `SKIP`, offscreen-bitmap 8 `PASS`/4 `SKIP`, 최종 tree offscreen-worker 10 `PASS`/2 `SKIP`.
+- current/direct A/B 3회: document p95 26.6/26.3/26.9 ms, median 26.6 ms; direct p95 29.0/28.1/25.7 ms, median 28.1 ms. direct max 47.2/176.5/49.6 ms로 absolute max gate `FAIL`.
+- Flutter differential 3회, warm sample 각 117개: Doroti direct p50 22.8 ms/p95 53.0 ms, Flutter p50 34.9 ms/p95 42.5 ms. `Flutter p95 + 20 ms` proxy gate는 `PASS`; compositor scan-out ACK는 측정하지 않는다.

@@ -4,7 +4,7 @@
   "packageVersion": "0.2.0-beta",
   "rid": "browser-wasm",
   "host": "document-or-worker-canvas",
-  "graphicsBackend": "document-webgl2-or-offscreen-webgl2-imagebitmap",
+  "graphicsBackend": "document-webgl2-or-worker-direct-webgl2-or-offscreen-webgl2-imagebitmap",
   "blazorWebAssemblyVersion": "10.0.11",
   "skiaSharpVersion": "4.151.1",
   "skiaSharpManagedPackage": "SkiaSharp",
@@ -20,6 +20,7 @@
   ],
   "rendererModes": [
     "document-webgl",
+    "worker-direct-webgl",
     "offscreen-bitmap",
     "offscreen-worker"
   ],

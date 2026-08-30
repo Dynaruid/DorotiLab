@@ -601,20 +601,62 @@ public sealed class DorotiLatestFrameMailbox<T> where T : class
     }
 }
 
-/// <summary>Tracks the exactly-once terminal contract for generated frames.</summary>
+public sealed record DorotiFrameTerminalLedgerSnapshot(
+    long Registered,
+    long Completed,
+    int Active,
+    long Presented,
+    long Submitted,
+    long Superseded,
+    long Dropped,
+    long Failed,
+    long DuplicateTerminalAttempts,
+    int RecentCount,
+    int RecentCapacity,
+    int RecentHighWater);
+
+/// <summary>
+/// Tracks the exactly-once terminal contract for generated frames without
+/// retaining every completed scene identity for the lifetime of the process.
+/// Registration is strictly monotonic, so the high-water mark rejects an
+/// evicted identity while only active scenes and a bounded diagnostic tail are
+/// stored.
+/// </summary>
 public sealed class DorotiFrameTerminalLedger
 {
+    public const int DefaultRecentCapacity = 256;
     private readonly object _gate = new();
-    private readonly HashSet<long> _registered = [];
-    private readonly Dictionary<long, DorotiFrameTerminal> _terminals = [];
+    private readonly HashSet<long> _active = [];
+    private readonly Queue<KeyValuePair<long, DorotiFrameTerminal>> _recent = [];
+    private readonly int _recentCapacity;
+    private long _lastRegistered;
+    private long _registered;
+    private long _completed;
+    private long _presented;
+    private long _submitted;
+    private long _superseded;
+    private long _dropped;
+    private long _failed;
+    private long _duplicateTerminalAttempts;
+    private int _recentHighWater;
+
+    public DorotiFrameTerminalLedger(int recentCapacity = DefaultRecentCapacity)
+    {
+        if (recentCapacity <= 0) throw new ArgumentOutOfRangeException(nameof(recentCapacity));
+        _recentCapacity = recentCapacity;
+    }
 
     public void Register(long sceneSequence)
     {
         if (sceneSequence <= 0) throw new ArgumentOutOfRangeException(nameof(sceneSequence));
         lock (_gate)
         {
-            if (!_registered.Add(sceneSequence))
-                throw new InvalidOperationException($"Scene {sceneSequence} was registered more than once.");
+            if (sceneSequence <= _lastRegistered)
+                throw new InvalidOperationException(
+                    $"Scene {sceneSequence} is not newer than registered high-water {_lastRegistered}.");
+            _lastRegistered = sceneSequence;
+            _registered++;
+            _active.Add(sceneSequence);
         }
     }
 
@@ -622,22 +664,52 @@ public sealed class DorotiFrameTerminalLedger
     {
         lock (_gate)
         {
-            if (!_registered.Contains(sceneSequence))
+            if (!_active.Remove(sceneSequence))
+            {
+                if (sceneSequence <= _lastRegistered)
+                {
+                    _duplicateTerminalAttempts++;
+                    return false;
+                }
                 throw new InvalidOperationException($"Scene {sceneSequence} was not registered.");
-            if (_terminals.ContainsKey(sceneSequence)) return false;
-            _terminals.Add(sceneSequence, terminal);
+            }
+            _completed++;
+            switch (terminal)
+            {
+                case DorotiFrameTerminal.presented: _presented++; break;
+                case DorotiFrameTerminal.submitted: _submitted++; break;
+                case DorotiFrameTerminal.superseded: _superseded++; break;
+                case DorotiFrameTerminal.dropped: _dropped++; break;
+                case DorotiFrameTerminal.failed: _failed++; break;
+                default: throw new ArgumentOutOfRangeException(nameof(terminal));
+            }
+            _recent.Enqueue(new(sceneSequence, terminal));
+            while (_recent.Count > _recentCapacity) _recent.Dequeue();
+            _recentHighWater = Math.Max(_recentHighWater, _recent.Count);
             return true;
         }
     }
 
     public IReadOnlyDictionary<long, DorotiFrameTerminal> Snapshot()
     {
-        lock (_gate) return new Dictionary<long, DorotiFrameTerminal>(_terminals);
+        lock (_gate) return _recent.ToDictionary(entry => entry.Key, entry => entry.Value);
     }
 
     public IReadOnlyList<long> Unterminated()
     {
-        lock (_gate) return _registered.Where(sequence => !_terminals.ContainsKey(sequence)).ToArray();
+        lock (_gate) return _active.Order().ToArray();
+    }
+
+    public DorotiFrameTerminalLedgerSnapshot Diagnostics
+    {
+        get
+        {
+            lock (_gate)
+                return new(
+                    _registered, _completed, _active.Count,
+                    _presented, _submitted, _superseded, _dropped, _failed,
+                    _duplicateTerminalAttempts, _recent.Count, _recentCapacity, _recentHighWater);
+        }
     }
 }
 

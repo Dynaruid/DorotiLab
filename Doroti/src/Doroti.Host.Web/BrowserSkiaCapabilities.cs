@@ -45,7 +45,8 @@ internal sealed class BrowserSkiaCapabilities :
         {
             var value = _renderer.Diagnostics;
             return new(value.Submitted, value.Presented, value.Replayed, value.Failed,
-                value.ContextGeneration, value.SurfaceGeneration, value.PendingScene, value.Backend);
+                value.ContextGeneration, value.SurfaceGeneration, value.LastInputSequence,
+                value.PendingScene, value.Backend);
         }
     }
 
@@ -54,6 +55,9 @@ internal sealed class BrowserSkiaCapabilities :
         _bridge.Invalidate = invalidate;
         _renderer.AttachSurface(invalidate);
     }
+
+    internal void AttachFrameworkTrace(DorotiFrameTrace trace) =>
+        _renderer.AttachFrameworkTrace(trace);
 
     public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation)
         => _renderer.Submit(viewId, submission, invocation);
@@ -69,7 +73,7 @@ internal sealed class BrowserSkiaCapabilities :
         _host.RecordRaster("managed-raster-start", pixelWidth, pixelHeight);
         try
         {
-            var result = _renderer.Paint(surface, pixelWidth, pixelHeight, target);
+            var result = _renderer.Paint(surface, pixelWidth, pixelHeight, target, requestId);
             if (result.ShouldPresent && result.Completion is { } completion)
             {
                 lock (_paintGate)
@@ -90,18 +94,37 @@ internal sealed class BrowserSkiaCapabilities :
         }
     }
 
-    internal void CompletePaint(long requestId, bool committed, string reason)
+    internal void CompletePaint(long requestId, string terminal, string reason)
     {
         SkiaPaintCompletion completion;
         lock (_paintGate)
         {
             if (!_pendingPaints.Remove(requestId, out completion)) return;
         }
-        if (committed)
-            _renderer.CompletePaint(completion, DorotiFrameTerminal.submitted);
-        else
-            _renderer.SupersedePaint(completion, reason);
+        switch (terminal)
+        {
+            case "submitted": _renderer.CompletePaint(completion, DorotiFrameTerminal.submitted); break;
+            case "presented": _renderer.CompletePaint(completion, DorotiFrameTerminal.presented); break;
+            case "superseded": _renderer.SupersedePaint(completion, reason); break;
+            case "dropped": _renderer.DropPaint(completion, reason); break;
+            case "failed": _renderer.FailPaint(completion, reason); break;
+            default: throw new InvalidDataException($"Unknown browser frame terminal '{terminal}'.");
+        }
     }
+
+    internal void InvalidateGpuContext(long requestId, string reason)
+    {
+        SkiaPaintCompletion completion;
+        lock (_paintGate)
+        {
+            if (_pendingPaints.Remove(requestId, out completion))
+                _renderer.FailPaint(completion, reason);
+        }
+        _renderer.InvalidateGpuContextResources();
+    }
+
+    internal void InvalidateWindowSurfaceResources() =>
+        _renderer.InvalidateWindowSurfaceResources();
 
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation) =>
         _renderer.Layout(request, invocation);
@@ -157,13 +180,17 @@ internal sealed class BrowserSkiaCapabilities :
         }
 
         internal Action? Invalidate { get; set; }
-        public long InputSequence => 0;
+        public long InputSequence => _host.InputSequence;
         public long SurfaceGeneration => _host.Snapshot.SurfaceGeneration;
         public DorotiViewEpoch ViewEpoch => _host.ViewEpoch;
         public DorotiResizeEpoch ResizeTarget => _host.Snapshot.ResizeEpoch;
         public PlatformConfiguration Configuration => _host.Configuration;
         public event Action<int, SemanticsAction, object?>? SemanticsAction;
-        public event Action<long, TimeSpan>? InputReceived { add { } remove { } }
+        public event Action<long, TimeSpan>? InputReceived
+        {
+            add => _host.InputReceived += value;
+            remove => _host.InputReceived -= value;
+        }
         public event Action<PlatformConfiguration>? ConfigurationChanged
         {
             add => _host.ConfigurationChanged += value;

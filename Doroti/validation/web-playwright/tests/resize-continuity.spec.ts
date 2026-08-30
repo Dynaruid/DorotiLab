@@ -305,6 +305,22 @@ test("@dpr DPR 2 keeps logical, physical, and front generations coherent", async
   expect(bundle.snapshot.resizeEpoch.physicalWidth).toBe(2160);
   expect(bundle.snapshot.resizeEpoch.physicalHeight).toBe(1440);
   expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
+  const canvasGeometry = await page.locator("#doroti-surface").evaluate((canvas) => {
+    const element = canvas as HTMLCanvasElement;
+    const rect = element.getBoundingClientRect();
+    return {
+      logicalWidth: rect.width,
+      logicalHeight: rect.height,
+      backingWidth: element.width,
+      backingHeight: element.height,
+      transform: getComputedStyle(element).transform,
+    };
+  });
+  expect(canvasGeometry.logicalWidth).toBe(1080);
+  expect(canvasGeometry.logicalHeight).toBe(720);
+  expect(canvasGeometry.backingWidth).toBe(2160);
+  expect(canvasGeometry.backingHeight).toBe(1440);
+  expect(canvasGeometry.transform).toBe("none");
   assertPresenterContract(bundle);
 });
 

@@ -63,6 +63,7 @@ public sealed class BrowserFrameworkHost : IDisposable
         try
         {
             view = session.dispatcher.RegisterView(viewId, capabilities);
+            graphics.AttachFrameworkTrace(session.dispatcher.frameTrace);
             session.AttachView(view);
             _views.Add(viewId, (view, host, graphics));
             _sessions.Add(viewId, session);
@@ -112,10 +113,22 @@ public sealed class BrowserFrameworkHost : IDisposable
     }
 
     public void CompleteSkiaSurfacePaint(
-        ulong viewId, long requestId, long generation, bool committed, string reason)
+        ulong viewId, long requestId, long generation, string terminal, string reason)
     {
         if (!_views.TryGetValue(viewId, out var value)) return;
-        value.Graphics.CompletePaint(requestId, committed, reason);
+        value.Graphics.CompletePaint(requestId, terminal, reason);
+    }
+
+    public void InvalidateSkiaGpuContext(ulong viewId, long requestId, string reason)
+    {
+        if (_views.TryGetValue(viewId, out var value))
+            value.Graphics.InvalidateGpuContext(requestId, reason);
+    }
+
+    public void InvalidateSkiaWindowSurface(ulong viewId)
+    {
+        if (_views.TryGetValue(viewId, out var value))
+            value.Graphics.InvalidateWindowSurfaceResources();
     }
 
     public string ResolveResourceUrl(ulong viewId, string relativeUrl) =>

@@ -26,7 +26,7 @@ public static class DorotiWebWorkerRunner
         var descriptor = DorotiApplicationFactory.Create<TStartup>(
             DorotiLaunchContext.Create("Web", "browser-wasm", [], baseAddress),
             plugins, manifestAssembly);
-        _target = new BrowserWasmTarget("browser-wasm/worker-offscreen-canvas-webgl2-imagebitmap");
+        _target = new BrowserWasmTarget();
         _http = new HttpClient();
         var fontUrl = BrowserHostRuntime.ResolveResourceUrl(FallbackFontUrl);
         _target.RegisterFont(await _http.GetByteArrayAsync(fontUrl));

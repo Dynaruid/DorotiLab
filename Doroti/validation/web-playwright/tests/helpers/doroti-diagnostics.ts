@@ -155,6 +155,7 @@ async function captureSettledPresenter(page: Page, timeout: number): Promise<Dia
   await expect.poll(async () => {
     const candidate = await captureDiagnostics(page);
     const isSettled = candidate.presenter.queueDepth === 0 &&
+      !candidate.presenter.contextLost &&
       (candidate.presenter.unpairedRequestCount ?? 0) === 0 &&
       candidate.presenter.frontGeneration === candidate.snapshot.resizeEpoch.generation;
     if (isSettled) settled = candidate;

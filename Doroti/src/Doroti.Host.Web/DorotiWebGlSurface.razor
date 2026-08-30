@@ -29,7 +29,7 @@
     public Func<SKSurface, int, int, DorotiResizeEpoch, long, string>? Paint { get; set; }
 
     [Parameter]
-    public Action<long, long, bool, string>? CompletePaint { get; set; }
+    public Action<long, long, string, string>? CompletePaint { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -85,16 +85,16 @@
     }
 
     [JSInvokable]
-    public void CompleteFrame(long requestId, long generation, bool committed, string reason)
+    public void CompleteFrame(long requestId, long generation, string terminal, string reason)
     {
-        if (!_disposed) CompletePaint?.Invoke(requestId, generation, committed, reason);
+        if (!_disposed) CompletePaint?.Invoke(requestId, generation, terminal, reason);
     }
 
     [JSInvokable]
     public void ContextLost(long interruptedRequestId, long interruptedGeneration)
     {
         if (interruptedRequestId > 0)
-            CompletePaint?.Invoke(interruptedRequestId, interruptedGeneration, false, "WebGL context lost");
+            CompletePaint?.Invoke(interruptedRequestId, interruptedGeneration, "failed", "WebGL context lost");
         ReleaseGpu();
     }
 

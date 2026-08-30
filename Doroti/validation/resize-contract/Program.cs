@@ -26,8 +26,9 @@ internal sealed class ResizeContractValidation
         status = "PASS",
         permutations = _permutations,
         generatedFrames = _nextScene,
-        terminalFrames = _terminals.Snapshot().Count,
+        terminalFrames = _terminals.Diagnostics.Completed,
         unterminatedFrames = _terminals.Unterminated().Count,
+        terminalLedger = _terminals.Diagnostics,
         maxQueueDepth = _maxQueueDepth,
         stalePresents = _stalePresents,
         surfaceGeneration = _surfaceGeneration,
@@ -77,12 +78,43 @@ internal sealed class ResizeContractValidation
         FrameTransactionRejectsIllegalOrderAndMismatch();
         WindowsBackpressureTransactionFixture();
         WebSingleRafTransactionFixture();
+        VerifyBoundedTerminalLedger();
 
         Assert(_terminals.Unterminated().Count == 0, "every generated frame has one terminal");
         Assert(_maxQueueDepth <= 2, "queue depth never exceeds current plus latest");
         Assert(_stalePresents == 0, "stale generation presents remain zero");
         Assert(_preventedNewerTargetAtUiCommit == 1,
             "UI-thread final target gate closes the dispatcher-to-present race");
+    }
+
+    private static void VerifyBoundedTerminalLedger()
+    {
+        const int sceneCount = 100_000;
+        var ledger = new DorotiFrameTerminalLedger(recentCapacity: 64);
+        for (var sequence = 1; sequence <= sceneCount; sequence++) ledger.Register(sequence);
+        for (var sequence = sceneCount; sequence >= 1; sequence--)
+        {
+            var terminal = (sequence % 5) switch
+            {
+                0 => DorotiFrameTerminal.presented,
+                1 => DorotiFrameTerminal.submitted,
+                2 => DorotiFrameTerminal.superseded,
+                3 => DorotiFrameTerminal.dropped,
+                _ => DorotiFrameTerminal.failed,
+            };
+            Assert(ledger.TryComplete(sequence, terminal), "out-of-order terminal is accepted once");
+        }
+        Assert(!ledger.TryComplete(1, DorotiFrameTerminal.failed),
+            "a terminal remains duplicate after its recent-history identity is evicted");
+        ExpectInvalidOperation(() => ledger.Register(sceneCount),
+            "registration identity must remain monotonic after history eviction");
+        var snapshot = ledger.Diagnostics;
+        Assert(snapshot.Registered == sceneCount && snapshot.Completed == sceneCount && snapshot.Active == 0,
+            "registered equals completed plus active after 100,000 scenes");
+        Assert(snapshot.RecentCount == 64 && snapshot.RecentHighWater == 64,
+            "terminal diagnostic history remains bounded");
+        Assert(snapshot.Presented + snapshot.Submitted + snapshot.Superseded + snapshot.Dropped + snapshot.Failed == sceneCount,
+            "per-terminal counters cover every generated scene exactly once");
     }
 
     private void FrameTransactionStateMachine()

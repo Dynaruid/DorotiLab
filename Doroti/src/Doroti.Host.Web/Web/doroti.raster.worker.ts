@@ -5,8 +5,18 @@ import {
   dispatchWorkerSnapshot,
   initializeManagedCallbacks,
 } from "./doroti.web.js";
+import {
+  decodeDorotiMessage,
+  dorotiProtocolVersion,
+  DorotiRuntimeStateMachine,
+} from "./doroti.web.protocol.js";
 
-const protocolVersion = 1;
+const protocolVersion = dorotiProtocolVersion;
+const inboundKinds = new Set([
+  "init", "snapshot", "frame", "input", "receipt", "control-response",
+  "context", "dispose", "crash",
+]);
+const runtimeState = new DorotiRuntimeStateMachine();
 
 interface ResizeEpoch {
   generation: number;
@@ -30,6 +40,7 @@ interface HostSnapshot {
   operatingSystem: string;
   generation: number;
   surfaceGeneration: number;
+  inputSequence: number;
   gpu: { api: string; vendor: string; renderer: string; hardware: boolean; softwareFallbackUsed: boolean };
   resizeEpoch: ResizeEpoch;
 }
@@ -40,7 +51,7 @@ interface SurfaceExports {
     physicalWidth: number, physicalHeight: number, devicePixelRatio: number,
     timestampMicroseconds: number, framebuffer: number, stencilBits: number,
     sampleCount: number, contextGeneration: number, glStateDirty: boolean): string;
-  CompleteFrame(requestId: number, generation: number, committed: boolean, reason: string): void;
+  CompleteFrame(requestId: number, generation: number, terminal: string, reason: string): void;
   ContextLost(requestId: number, generation: number): void;
   ContextRestored(): void;
 }
@@ -66,6 +77,8 @@ interface WorkerPresenter {
   activeBitmaps: number;
 }
 
+type WorkerMode = "worker-direct-webgl" | "offscreen-worker";
+
 interface EmscriptenGlRuntime {
   createContext(canvas: OffscreenCanvas, attributes: Record<string, number>): number;
   makeContextCurrent(context: number): void;
@@ -87,6 +100,8 @@ let stopManagedRuntime: (() => void) | null = null;
 let managedRuntime: DotnetRuntime | null = null;
 let dotnetModuleUrl: string | null = null;
 let managedHostReady = false;
+let workerMode: WorkerMode = "offscreen-worker";
+let transferredCanvas: OffscreenCanvas | null = null;
 let pendingManagedSnapshot: { hostId: number; value: HostSnapshot } | null = null;
 const pendingManagedInputs: Record<string, unknown>[] = [];
 let requestSequence = 0;
@@ -146,7 +161,7 @@ function gpuIdentity(gl: WebGL2RenderingContext) {
 function ensurePresenter(): WorkerPresenter {
   if (presenter) return presenter;
   if (!surface) throw new Error("Doroti worker managed surface exports are unavailable.");
-  const canvas = new OffscreenCanvas(1, 1);
+  const canvas = transferredCanvas ?? new OffscreenCanvas(1, 1);
   const runtime = glRuntime();
   const context = runtime.createContext(canvas, {
     alpha: 1, depth: 1, stencil: 8, antialias: 0, premultipliedAlpha: 1,
@@ -167,7 +182,7 @@ function ensurePresenter(): WorkerPresenter {
     if (!presenter) return;
     presenter.contextLost = true;
     const interrupted = presenter.current;
-    if (interrupted) terminal(interrupted, "superseded", "worker WebGL context lost");
+    if (interrupted) terminal(interrupted, "failed", "worker WebGL context lost");
     for (const [requestId, receipt] of pendingReceipts) {
       pendingReceipts.delete(requestId);
       receipt.resolve({ committed: false, consumed: false, reason: "worker WebGL context lost" });
@@ -190,7 +205,7 @@ function ensurePresenter(): WorkerPresenter {
   return presenter;
 }
 
-function terminal(request: PresentRequest, value: "submitted" | "superseded" | "failed", detail: string): void {
+function terminal(request: PresentRequest, value: "submitted" | "superseded" | "dropped" | "failed", detail: string): void {
   if (request.terminal) return;
   request.terminal = true;
   post("terminal", {
@@ -250,6 +265,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       value.canvas.width = request.physicalWidth;
       value.canvas.height = request.physicalHeight;
       snapshot = { ...snapshot, surfaceGeneration: snapshot.surfaceGeneration + 1 };
+      dispatchWorkerSnapshot(hostId, JSON.stringify(snapshot));
     }
     const gl = currentGl(value);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -260,11 +276,28 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       request.physicalWidth, request.physicalHeight, request.devicePixelRatio,
       request.timestampMicroseconds, 0, 8, 0, value.contextGeneration, true));
     if (result !== "exact-rendered" && result !== "replay-rendered") {
-      surface!.CompleteFrame(request.requestId, request.generation, false, `managed raster result=${result}`);
+      surface!.CompleteFrame(request.requestId, request.generation, "superseded", `managed raster result=${result}`);
       terminal(request, "superseded", `managed raster result=${result}`);
       return;
     }
     gl.flush();
+    if (workerMode === "worker-direct-webgl") {
+      surface!.CompleteFrame(request.requestId, request.generation, "submitted",
+        "exact direct framebuffer submitted in the worker");
+      terminal(request, "submitted", "exact direct framebuffer submitted in the worker");
+      post("direct-commit", {
+        requestId: request.requestId, generation: request.generation,
+        contextGeneration: value.contextGeneration,
+        physicalWidth: request.physicalWidth, physicalHeight: request.physicalHeight,
+        logicalWidth: request.logicalWidth, logicalHeight: request.logicalHeight,
+      });
+      post("resource", {
+        bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
+        contextGeneration: value.contextGeneration,
+        rasterWidth: value.canvas.width, rasterHeight: value.canvas.height,
+      });
+      return;
+    }
     bitmap = await createImageBitmap(value.canvas);
     value.bitmapCreated++;
     value.activeBitmaps++;
@@ -279,7 +312,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       bitmap = null;
       value.bitmapClosed++;
       value.activeBitmaps--;
-      surface!.CompleteFrame(request.requestId, request.generation, false, "worker bitmap became invalid");
+      surface!.CompleteFrame(request.requestId, request.generation, "superseded", "worker bitmap became invalid");
       terminal(request, "superseded", "worker bitmap became invalid");
       return;
     }
@@ -300,7 +333,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
         if (resultReceipt.consumed) value.bitmapConsumed++;
         else value.bitmapClosed++;
         surface!.CompleteFrame(request.requestId, request.generation,
-          resultReceipt.committed, resultReceipt.reason);
+          resultReceipt.committed ? "submitted" : "superseded", resultReceipt.reason);
         terminal(request, resultReceipt.committed ? "submitted" : "superseded", resultReceipt.reason);
       } catch (error) {
         terminal(request, "failed", String(error));
@@ -324,12 +357,17 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       value.bitmapClosed++;
       value.activeBitmaps--;
     }
-    try { surface?.CompleteFrame(request.requestId, request.generation, false, String(error)); } catch { }
+    try { surface?.CompleteFrame(request.requestId, request.generation, "failed", String(error)); } catch { }
     terminal(request, "failed", String(error));
   }
 }
 
 configureWorkerBridge({
+  rendererIdentity() {
+    return workerMode === "worker-direct-webgl"
+      ? "worker-transferred-visible-canvas-webgl2-direct"
+      : "worker-offscreen-canvas-webgl2-imagebitmap";
+  },
   createHost(id, canvasId, logicalWidth, logicalHeight) {
     if (!snapshot) throw new Error("Doroti worker initial snapshot is unavailable.");
     hostId = id;
@@ -345,7 +383,15 @@ configureWorkerBridge({
     snapshot = { ...snapshot, logicalWidth, logicalHeight };
     return JSON.stringify(snapshot);
   },
-  requestFrame(id, callbackId) { post("frame-request", { hostId: id, callbackId }); },
+  requestFrame(id, callbackId) {
+    if (workerMode === "worker-direct-webgl") {
+      if (typeof globalThis.requestAnimationFrame !== "function")
+        throw new Error("Doroti direct worker requires Worker requestAnimationFrame.");
+      globalThis.requestAnimationFrame((timestamp) => dispatchWorkerAnimationFrame(id, callbackId, timestamp));
+      return;
+    }
+    post("frame-request", { hostId: id, callbackId });
+  },
   recordManagedRaster(id, phase, width, height, duration) {
     post("managed-raster", { hostId: id, phase, width, height, durationMicroseconds: duration });
   },
@@ -366,11 +412,23 @@ configureWorkerBridge({
 });
 
 globalThis.addEventListener("message", (event: MessageEvent) => {
-  const message = event.data as Record<string, unknown>;
-  if (Number(message.protocolVersion) !== protocolVersion) return;
+  let message: Record<string, unknown>;
+  try {
+    message = decodeDorotiMessage(event.data, inboundKinds);
+  } catch (error) {
+    post("fatal", { error: String(error) });
+    return;
+  }
   switch (message.kind) {
     case "init":
+      runtimeState.transition("booting");
       snapshot = message.snapshot as HostSnapshot;
+      workerMode = String(message.mode ?? "offscreen-worker") as WorkerMode;
+      if (workerMode !== "offscreen-worker" && workerMode !== "worker-direct-webgl")
+        throw new Error(`Unknown Doroti worker mode '${workerMode}'.`);
+      transferredCanvas = message.canvas instanceof OffscreenCanvas ? message.canvas : null;
+      if (workerMode === "worker-direct-webgl" && !transferredCanvas)
+        throw new Error("Doroti direct worker init requires a transferred visible OffscreenCanvas.");
       dotnetModuleUrl = String(message.dotnetModuleUrl ?? "");
       void startManagedRuntime();
       break;
@@ -421,14 +479,36 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       else ensurePresenter().extension?.restoreContext();
       break;
     case "dispose":
+      runtimeState.transition("disposing");
+      if (presenter?.current) {
+        surface?.CompleteFrame(presenter.current.requestId, presenter.current.generation,
+          "dropped", "worker runtime disposing");
+        terminal(presenter.current, "dropped", "worker runtime disposing");
+      }
+      if (presenter?.latest) {
+        surface?.CompleteFrame(presenter.latest.requestId, presenter.latest.generation,
+          "dropped", "worker runtime disposing");
+        terminal(presenter.latest, "dropped", "worker runtime disposing");
+      }
+      if (presenter) {
+        presenter.current = null;
+        presenter.latest = null;
+      }
+      for (const [requestId, receipt] of pendingReceipts) {
+        pendingReceipts.delete(requestId);
+        receipt.resolve({ committed: false, consumed: false, reason: "worker runtime disposing" });
+      }
       stopManagedRuntime?.();
       stopManagedRuntime = null;
       glRuntime().deleteContext?.(presenter?.context ?? 0);
       managedRuntime?.exit(0);
       managedRuntime = null;
+      runtimeState.transition("disposed");
+      post("disposed", { activeRequests: 0, activeReceipts: pendingReceipts.size });
       close();
       break;
     case "crash":
+      runtimeState.transition("fatal");
       post("fatal", { error: "diagnostic worker crash" });
       break;
   }
@@ -452,6 +532,7 @@ async function startManagedRuntime(): Promise<void> {
     stopManagedRuntime = appExports.Doroti.Generated.DorotiBootstrap.StopWorker;
     const result = await appExports.Doroti.Generated.DorotiBootstrap.StartWorker();
     managedHostReady = true;
+    runtimeState.transition("ready");
     if (pendingManagedSnapshot) {
       const pending = pendingManagedSnapshot;
       pendingManagedSnapshot = null;

@@ -38,7 +38,10 @@ public readonly record struct SkiaFrameReceipt(
     long SurfaceGeneration,
     DorotiFrameDescriptor Descriptor,
     DorotiFrameTerminal Terminal,
-    TimeSpan Timestamp)
+    TimeSpan Timestamp,
+    bool IsNewFrame,
+    SkiaPaintDisposition Disposition,
+    string Reason)
 {
     public bool HasCausalFrameId => CausalFrameId > 0;
 }
@@ -83,4 +86,7 @@ public sealed record SkiaFrameDiagnostics(
     long PictureRasterCacheHits,
     long PictureRasterCacheMisses,
     long PictureRasterCacheEntries,
-    IReadOnlyList<DorotiFrameTraceEntry> Trace);
+    IReadOnlyList<DorotiFrameTraceEntry> Trace,
+    long SceneAccepted,
+    long CausalPaintAttempts,
+    DorotiFrameTerminalLedgerSnapshot TerminalLedger);

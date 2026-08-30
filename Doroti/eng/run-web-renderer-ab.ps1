@@ -10,19 +10,49 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+$timeout = [TimeSpan]::FromMinutes(20)
 $root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $wrapper = Join-Path $PSScriptRoot 'run-web-playwright.ps1'
 $wrapperArtifacts = Join-Path $root 'Doroti/validation/web-playwright/artifacts/wrapper'
 $artifact = Join-Path $root 'Doroti/validation/web-playwright/artifacts/renderer-ab.json'
 $project = Join-Path $root 'DorotiDemoApp/web/DorotiDemoApp.Web.csproj'
+$processArtifacts = Join-Path $root 'Doroti/validation/web-playwright/artifacts/wrapper/renderer-ab'
+[IO.Directory]::CreateDirectory($processArtifacts) | Out-Null
+
+function Invoke-AbProcess {
+    param(
+        [Parameter(Mandatory)] [string] $FilePath,
+        [Parameter(Mandatory)] [string[]] $ArgumentList,
+        [Parameter(Mandatory)] [string] $WorkingDirectory,
+        [Parameter(Mandatory)] [string] $Name
+    )
+    $stdout = Join-Path $processArtifacts "$Name.stdout.log"
+    $stderr = Join-Path $processArtifacts "$Name.stderr.log"
+    $process = Start-Process -FilePath $FilePath -ArgumentList $ArgumentList `
+        -WorkingDirectory $WorkingDirectory -WindowStyle Hidden -PassThru `
+        -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+    try {
+        if (-not $process.WaitForExit([int]$timeout.TotalMilliseconds)) {
+            try { $process.Kill($true) } catch { }
+            throw "$Name exceeded the repository 20-minute timeout."
+        }
+        if ($process.ExitCode -ne 0) {
+            $output = if (Test-Path -LiteralPath $stdout) { Get-Content -LiteralPath $stdout -Raw } else { '' }
+            $errors = if (Test-Path -LiteralPath $stderr) { Get-Content -LiteralPath $stderr -Raw } else { '' }
+            throw "$Name failed with exit code $($process.ExitCode).`n$output`n$errors"
+        }
+    }
+    finally { $process.Dispose() }
+}
 
 if (-not $SkipBuild) {
-    & dotnet build $project --configuration $Configuration --nologo
-    if ($LASTEXITCODE -ne 0) { throw 'Doroti renderer A/B build failed.' }
+    Invoke-AbProcess -FilePath (Get-Command dotnet -ErrorAction Stop).Source `
+        -ArgumentList @('build', $project, '--configuration', $Configuration, '--nologo') `
+        -WorkingDirectory $root -Name 'build'
 }
 
 $results = [ordered]@{}
-foreach ($mode in @('document-webgl', 'offscreen-bitmap', 'offscreen-worker')) {
+foreach ($mode in @('document-webgl', 'worker-direct-webgl')) {
     $samples = @()
     for ($run = 1; $run -le $Runs; $run++) {
         $label = "ab/$mode/run-$run"
@@ -49,29 +79,27 @@ foreach ($mode in @('document-webgl', 'offscreen-bitmap', 'offscreen-worker')) {
     }
 }
 
-$direct = [double]$results['document-webgl'].medianP95Milliseconds
-foreach ($mode in @('offscreen-bitmap', 'offscreen-worker')) {
-    $median = [double]$results[$mode].medianP95Milliseconds
-    $results[$mode].comparisonGatePassed =
-        $results[$mode].absoluteGatePassed -and
-        $median -le ($direct * 1.2) -and
-        $median -le ($direct + 5)
-}
-$selected = if ($results['offscreen-worker'].comparisonGatePassed) {
-    'offscreen-worker'
-} elseif ($results['offscreen-bitmap'].comparisonGatePassed) {
-    'offscreen-bitmap'
+$current = [double]$results['document-webgl'].medianP95Milliseconds
+$candidate = [double]$results['worker-direct-webgl'].medianP95Milliseconds
+$results['worker-direct-webgl'].comparisonGatePassed =
+    $results['worker-direct-webgl'].absoluteGatePassed -and
+    $candidate -le ($current * 1.2) -and
+    $candidate -le ($current + 5)
+$automatedCandidate = if ($results['worker-direct-webgl'].comparisonGatePassed) {
+    'worker-direct-webgl'
 } else {
     'document-webgl'
 }
 $report = [ordered]@{
-    schemaVersion = 'doroti.web-renderer-ab/v1'
+    schemaVersion = 'doroti.web-renderer-ab/v2'
     configuration = $Configuration
     runsPerMode = $Runs
     absoluteGate = [ordered]@{ p95Milliseconds = 33.4; maxMillisecondsExclusive = 100 }
     comparisonGate = [ordered]@{ maximumRegressionPercent = 20; maximumRegressionMilliseconds = 5 }
     results = $results
-    selectedAutoMode = $selected
+    automatedQualificationCandidate = $automatedCandidate
+    selectedAutoMode = 'document-webgl'
+    autoModeDecision = 'unchanged until physical W7 acceptance and W8 burn-in pass'
 }
 [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($artifact)) | Out-Null
 $report | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $artifact -Encoding utf8

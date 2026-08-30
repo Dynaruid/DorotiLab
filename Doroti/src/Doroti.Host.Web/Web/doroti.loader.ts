@@ -16,7 +16,7 @@ export interface DorotiBlazorStartOptions {
 export interface DorotiBootstrapContext {
   readonly blazorOptions: DorotiBlazorStartOptions;
   stage: DorotiBootstrapStage;
-  rendererMode?: "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
+  rendererMode?: "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
 }
 
 export interface DorotiBootstrapOptions {
@@ -53,9 +53,9 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
     notifyStage("starting", context, options);
     context.rendererMode = selectRendererMode();
     document.documentElement.dataset.dorotiRenderer = context.rendererMode;
-    if (context.rendererMode === "offscreen-worker") {
+    if (context.rendererMode === "offscreen-worker" || context.rendererMode === "worker-direct-webgl") {
       const module = await import("./doroti.web.js");
-      await module.startDorotiWorkerHost();
+      await module.startDorotiWorkerHost(context.rendererMode);
     } else {
       const scope = globalThis as typeof globalThis & {
         __dorotiRendererPolicy?: {
@@ -89,9 +89,10 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
   }
 }
 
-function selectRendererMode(): "offscreen-worker" | "offscreen-bitmap" | "document-webgl" {
+function selectRendererMode(): "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl" {
   const value = new URLSearchParams(globalThis.location.search).get("dorotiRenderer");
-  if (value === "document-webgl" || value === "offscreen-bitmap" || value === "offscreen-worker")
+  if (value === "document-webgl" || value === "offscreen-bitmap" || value === "offscreen-worker" ||
+      value === "worker-direct-webgl")
     return value;
   // Both ImageBitmap backends remain first-class opt-in paths until their A/B
   // latency gate passes on the current browser/machine.

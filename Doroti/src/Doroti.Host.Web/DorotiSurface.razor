@@ -65,8 +65,8 @@
         return _target.PaintSkiaSurface(ViewId, surface, pixelWidth, pixelHeight, target, requestId);
     }
 
-    private void CompleteSurfacePaint(long requestId, long generation, bool committed, string reason) =>
-        _target?.CompleteSkiaSurfacePaint(ViewId, requestId, generation, committed, reason);
+    private void CompleteSurfacePaint(long requestId, long generation, string terminal, string reason) =>
+        _target?.CompleteSkiaSurfacePaint(ViewId, requestId, generation, terminal, reason);
 
     public ValueTask DisposeAsync()
     {

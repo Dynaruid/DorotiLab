@@ -26,7 +26,7 @@ Source 소유권은 [ADR-019](docs/adr/ADR-019-product-framework-source-ownershi
 - `Doroti.Host.Web`: host 소유 Blazor composition, WebGL2 canvas, input, accessibility, resource bridge
 - `Doroti.Host.Qt`: managed-owned Linux process, Qt 6 `QOpenGLWindow`, versioned C ABI v2, GPU surface, input, IME, desktop service와 accessibility adapter
 
-Web 실행 source는 TypeScript가 소유합니다. 앱은 `web/src/**/*.ts`, Doroti는 `src/Doroti.Host.Web/Web/*.ts`를 편집합니다. `Microsoft.TypeScript.MSBuild` 7.0.0이 runner-local `obj`에 JavaScript를 만들며 publish에는 그 결과만 포함됩니다. 앱 도구로 Node, npm, Bun, bundler를 요구하지 않습니다. 자세한 결정은 [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md)에 있습니다.
+Web 실행 source는 TypeScript가 소유합니다. 앱은 `web/src/**/*.ts`, Doroti는 `src/Doroti.Host.Web/Web/*.ts`를 편집합니다. `Microsoft.TypeScript.MSBuild` 7.0.0이 runner-local `obj`에 JavaScript를 만들며 publish에는 그 결과만 포함됩니다. 앱 도구로 Node, npm, Bun, bundler를 요구하지 않습니다. opt-in `worker-direct-webgl` qualification backend는 visible canvas를 한 번 이전하고 .NET, Skia, WebGL2와 Worker rAF를 persistent Worker 하나에 둡니다. 물리 acceptance 전까지 `auto`는 `document-webgl`입니다. 자세한 결정은 [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md)에 있습니다.
 
 Material 앱은 `MaterialApp(theme:, darkTheme:, themeMode: ThemeMode.system)`으로 시스템 다크 모드를 따릅니다. `ColorScheme.CreateFromSeed`에 `Brightness.light`/`Brightness.dark`와 `surface`, `primary`, `outline` 같은 role override를 전달해 두 팔레트를 구성하고, widget은 `Theme.of(context).colorScheme`에서 현재 팔레트를 읽습니다. MAUI와 Web의 시스템 변경 전달 및 전체 예시는 [DorotiDemoApp 다크 모드 문서](../DorotiDemoApp/README.ko.md#시스템-다크-모드와-색-팔레트)를 참고하세요.
 

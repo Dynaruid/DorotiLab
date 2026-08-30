@@ -74,11 +74,11 @@ public static partial class DorotiWebWorkerSurface
     public static void CompleteFrame(
         [JSMarshalAs<JSType.Number>] long requestId,
         [JSMarshalAs<JSType.Number>] long generation,
-        bool committed,
+        string terminal,
         string reason)
     {
         _ = generation;
-        _target?.CompleteSkiaSurfacePaint(_viewId, requestId, generation, committed, reason);
+        _target?.CompleteSkiaSurfacePaint(_viewId, requestId, generation, terminal, reason);
     }
 
     [JSExport]
@@ -86,9 +86,9 @@ public static partial class DorotiWebWorkerSurface
         [JSMarshalAs<JSType.Number>] long requestId,
         [JSMarshalAs<JSType.Number>] long generation)
     {
-        if (requestId > 0)
-            _target?.CompleteSkiaSurfacePaint(
-                _viewId, requestId, generation, false, "worker WebGL context lost");
+        _ = generation;
+        _target?.InvalidateSkiaGpuContext(
+            _viewId, requestId, "worker WebGL context lost");
         ReleaseGpu();
     }
 
@@ -137,6 +137,7 @@ public static partial class DorotiWebWorkerSurface
         var size = new SKSizeI(width, height);
         if (_renderTarget is null || _surfaceSize != size || _framebuffer != framebuffer || !_renderTarget.IsValid)
         {
+            if (_renderTarget is not null) _target?.InvalidateSkiaWindowSurface(_viewId);
             _surface?.Dispose();
             _surface = null;
             _renderTarget?.Dispose();

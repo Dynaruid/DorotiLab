@@ -71,7 +71,12 @@ public sealed record DorotiFrameTraceEntry(
     double? ScrollMinExtent = null,
     double? ScrollMaxExtent = null,
     long TickerId = 0,
-    string? TickerLabel = null);
+    string? TickerLabel = null,
+    long ResizeTargetGeneration = 0,
+    long MetricsGeneration = 0,
+    long FrameworkFrameNumber = 0,
+    long CausalFrameId = 0,
+    long ContextGeneration = 0);
 
 /// <summary>
 /// Small ring buffer deliberately shared by framework dispatch and host raster.
@@ -144,7 +149,12 @@ public sealed class DorotiFrameTrace
         double? scrollMinExtent = null,
         double? scrollMaxExtent = null,
         long tickerId = 0,
-        string? tickerLabel = null)
+        string? tickerLabel = null,
+        long resizeTargetGeneration = 0,
+        long metricsGeneration = 0,
+        long frameworkFrameNumber = 0,
+        long causalFrameId = 0,
+        long contextGeneration = 0)
     {
         // Activity windows must use this runtime's monotonic arrival clock.
         // Trace timestamps are clamped forward across host/browser clock
@@ -182,7 +192,12 @@ public sealed class DorotiFrameTrace
                 scrollMinExtent,
                 scrollMaxExtent,
                 tickerId,
-                tickerLabel);
+                tickerLabel,
+                resizeTargetGeneration,
+                metricsGeneration,
+                frameworkFrameNumber,
+                causalFrameId,
+                contextGeneration);
             _nextEntryIndex = (_nextEntryIndex + 1) % Capacity;
             if (_entryCount < Capacity) _entryCount++;
         }
@@ -259,7 +274,12 @@ public sealed class DorotiFrameTrace
         double? ScrollMinExtent,
         double? ScrollMaxExtent,
         long TickerId,
-        string? TickerLabel)
+        string? TickerLabel,
+        long ResizeTargetGeneration,
+        long MetricsGeneration,
+        long FrameworkFrameNumber,
+        long CausalFrameId,
+        long ContextGeneration)
     {
         internal DorotiFrameTraceEntry ToEntry() => new(
             Sequence,
@@ -278,6 +298,11 @@ public sealed class DorotiFrameTrace
             ScrollMinExtent,
             ScrollMaxExtent,
             TickerId,
-            TickerLabel);
+            TickerLabel,
+            ResizeTargetGeneration,
+            MetricsGeneration,
+            FrameworkFrameNumber,
+            CausalFrameId,
+            ContextGeneration);
     }
 }

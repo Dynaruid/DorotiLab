@@ -7,6 +7,7 @@ VerifyMonotonicTimestampFence();
 VerifyBoundedTraceCausality();
 VerifyMetricsActivityUsesArrivalClock();
 VerifyPlatformEventDrainsMicrotasks();
+VerifyLatestMetricsFrameAdmission();
 
 Console.WriteLine($"FCR-3 scheduler runtime contract: PASS (configuration={ConfigurationName()})");
 
@@ -100,6 +101,46 @@ static void VerifyPlatformEventDrainsMicrotasks()
         "native platform events drain Dart microtasks before returning to the host");
 }
 
+static void VerifyLatestMetricsFrameAdmission()
+{
+    using var dispatcher = new PlatformDispatcher();
+    var host = new FixtureLatestMetricsHost();
+    var scenes = new FixtureSceneHost();
+    var capabilities = new DorotiViewCapabilities("latest-metrics-fixture")
+        .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
+        .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
+        .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, scenes);
+    using var view = dispatcher.RegisterView(1, capabilities);
+    dispatcher.drawFrame += frameView =>
+    {
+        using var scene = new Scene(frameView.viewId, Array.Empty<SceneCommand>());
+        frameView.render(scene);
+    };
+
+    var epochA = host.ViewEpoch;
+    view.ScheduleFrame(DartUiInvocation.Managed("fcr3/latest-metrics"));
+    Require(host.PendingCallbackCount == 1, "latest-metrics host keeps one pending callback");
+    host.Publish(width: 900, height: 700);
+    var epochB = host.ViewEpoch;
+    Require(epochB.ResizeTargetGeneration > epochA.ResizeTargetGeneration,
+        "fixture advances to epoch B before the pending callback");
+    host.Fire();
+    host.Publish(width: 1000, height: 720);
+    var epochC = host.ViewEpoch;
+
+    Require(scenes.Submissions.Count == 1, "one framework frame submits one scene");
+    var token = scenes.Submissions[0].BuildToken;
+    Require(token is not null && token.ViewEpoch == epochB,
+        "pending callback admits the latest epoch B");
+    Require(token!.FrameworkFrameNumber == 1 && dispatcher.frameData.frameNumber == 1,
+        "PlatformDispatcher owns one framework frame number");
+    var descriptor = DorotiFrameDescriptor.FromBuildToken(token, sceneSequence: 1);
+    Require(descriptor.ResizeTargetGeneration == epochB.ResizeTargetGeneration &&
+            descriptor.MetricsGeneration == epochB.MetricsGeneration &&
+            descriptor.ResizeTargetGeneration != epochC.ResizeTargetGeneration,
+        "submitted scene identity is not relabelled after epoch C arrives");
+}
+
 static bool InOrder(IReadOnlyList<DorotiFramePhase> values, params DorotiFramePhase[] expected)
 {
     var position = 0;
@@ -147,5 +188,72 @@ sealed class FixtureViewHost : IViewHostCapability
         GC.KeepAlive(MetricsChanged);
         GC.KeepAlive(LifecycleChanged);
         GC.KeepAlive(CloseRequested);
+    }
+}
+
+sealed class FixtureLatestMetricsHost : IViewHostCapability, IFrameHostCapability,
+    ILatestMetricsFrameHostCapability
+{
+    private Action<TimeSpan, DorotiViewEpoch>? _callback;
+    private long _generation = 1;
+    private DorotiViewEpoch _epoch = new(1, 1, 1, 800, 600, 800, 600, 1, 1, 0);
+
+    public int PendingCallbackCount => _callback is null ? 0 : 1;
+    public ViewMetrics Metrics => new(
+        new Size(_epoch.PhysicalWidth, _epoch.PhysicalHeight), 1,
+        default, default, default, AppLifecycleState.resumed,
+        _epoch.MetricsGeneration, _epoch.ResizeTargetGeneration);
+    public DorotiViewEpoch ViewEpoch => _epoch;
+    public event Action<ViewMetrics>? MetricsChanged;
+    public event Action<AppLifecycleState>? LifecycleChanged;
+    public event Action? CloseRequested;
+    public event Action? Closed;
+
+    public void Publish(int width, int height)
+    {
+        var generation = ++_generation;
+        _epoch = new(1, generation, generation, width, height, width, height, 1, 1,
+            DorotiFrameClock.Now.Ticks / 10);
+        MetricsChanged?.Invoke(Metrics);
+    }
+
+    public void Fire()
+    {
+        var callback = _callback ?? throw new InvalidOperationException("No frame is pending.");
+        _callback = null;
+        callback(DorotiFrameClock.Now, _epoch);
+    }
+
+    public void ScheduleFrame(Action<TimeSpan> callback) =>
+        ScheduleFrame(_epoch, (timestamp, _) => callback(timestamp));
+    public void ScheduleFrame(DorotiViewEpoch expectedEpoch, Action<TimeSpan> callback) =>
+        ScheduleFrame(expectedEpoch, (timestamp, admitted) =>
+        {
+            if (admitted == expectedEpoch) callback(timestamp);
+        });
+    public void ScheduleFrame(DorotiViewEpoch expectedEpoch, Action<TimeSpan, DorotiViewEpoch> callback)
+    {
+        _ = expectedEpoch;
+        _callback = callback;
+    }
+    public void Show() { }
+    public void Resize(Size logicalSize) => _ = logicalSize;
+    public void Close() => Closed?.Invoke();
+    public void Dispose()
+    {
+        _callback = null;
+        GC.KeepAlive(LifecycleChanged);
+        GC.KeepAlive(CloseRequested);
+    }
+}
+
+sealed class FixtureSceneHost : ISceneHostCapability
+{
+    public List<DorotiSceneSubmission> Submissions { get; } = [];
+    public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation)
+    {
+        _ = viewId;
+        _ = invocation;
+        Submissions.Add(submission);
     }
 }

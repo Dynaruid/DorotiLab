@@ -7,9 +7,11 @@ param(
 
     [switch] $HeadlessOnly,
 
+    [switch] $HeadedOnly,
+
     [string] $TestFile,
 
-    [ValidateSet('auto', 'document-webgl', 'offscreen-bitmap', 'offscreen-worker')]
+    [ValidateSet('auto', 'document-webgl', 'offscreen-bitmap', 'offscreen-worker', 'worker-direct-webgl')]
     [string] $RendererMode = 'auto',
 
     [switch] $RequireLatencyGate,
@@ -29,6 +31,10 @@ if ($resolvedArtifactLabel -match '\.\.' -or $resolvedArtifactLabel -notmatch '^
 }
 $artifactRoot = Join-Path $playwrightRoot "artifacts/wrapper/$resolvedArtifactLabel"
 $baseUrl = 'http://127.0.0.1:5088'
+
+if ($HeadlessOnly -and $HeadedOnly) {
+    throw '-HeadlessOnly and -HeadedOnly are mutually exclusive.'
+}
 
 if (-not (Test-Path -LiteralPath $project -PathType Leaf)) {
     throw "Doroti web project was not found: $project"
@@ -125,6 +131,9 @@ try {
         if ($HeadlessOnly) {
             $arguments += '--project=chromium-hardware'
             $arguments += '--project=chromium-dpr2'
+        }
+        elseif ($HeadedOnly) {
+            $arguments += '--project=desktop-chrome-headed'
         }
         Invoke-OwnedProcess -FilePath $npx -ArgumentList $arguments `
             -WorkingDirectory $playwrightRoot -Name 'playwright'

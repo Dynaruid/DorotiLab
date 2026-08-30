@@ -148,7 +148,7 @@ static void VerifyBrowserInputAndFrontBufferContract()
         "managed text acknowledgements cannot overwrite a browser-owned IME composition");
     Require(source.Contains("focusActiveEndpoint(host);", StringComparison.Ordinal),
         "window activation and pointer focus preserve an attached native text endpoint");
-    Require(source.Contains("dispatchTextConnectionClosed(host.id)", StringComparison.Ordinal) &&
+    Require(source.Contains("dispatchTextConnectionClosed(host.id, ++host.inputSequence)", StringComparison.Ordinal) &&
             source.Contains("}, 100);", StringComparison.Ordinal) &&
             source.Contains("document.visibilityState === \"hidden\"", StringComparison.Ordinal),
         "window blur closes the text connection after Flutter's grace period while hidden tabs retain it");
@@ -158,6 +158,10 @@ static void VerifyBrowserInputAndFrontBufferContract()
     Require(source.Contains("lastWheelWasTrackpad", StringComparison.Ordinal) &&
             source.Contains("const kind = isTrackpadWheel(host, wheel) ? 3 : 0;", StringComparison.Ordinal),
         "the browser endpoint classifies continuous wheel samples before managed dispatch");
+    Require(source.Contains("worker-direct-webgl", StringComparison.Ordinal) &&
+            source.Contains("createWorkerVisibleSurface(canvas, true)", StringComparison.Ordinal) &&
+            source.Contains("closeExternalLeases(display.pendingRequestIds", StringComparison.Ordinal),
+        "the direct Worker backend transfers the visible canvas and closes external leases during recovery");
     Require(!source.Contains("applyRetainedFrontPreview", StringComparison.Ordinal) &&
             !source.Contains("resize-preview-commit", StringComparison.Ordinal) &&
             source.Contains("recordResize(host, \"managed-snapshot-dispatched\", \"resize-metrics\");", StringComparison.Ordinal) &&

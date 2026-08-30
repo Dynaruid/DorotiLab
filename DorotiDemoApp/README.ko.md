@@ -20,8 +20,11 @@ Web runner가 시작되면 브라우저에서 `http://127.0.0.1:5088`을 엽니�
 
 - 기본 자동 선택: `http://127.0.0.1:5088`
 - document WebGL2: `http://127.0.0.1:5088/?dorotiRenderer=document-webgl`
+- persistent .NET Worker의 direct visible canvas(qualification 후보): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
 - 같은 thread OffscreenCanvas: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-bitmap`
 - persistent .NET Worker: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-worker`
+
+물리 60/120 Hz, trackpad, 한글 IME와 screen reader gate를 통과하기 전까지 `auto`는 `document-webgl`입니다.
 
 실행을 종료하려면 명령을 실행한 terminal에서 `Ctrl+C`를 누릅니다. Android, iOS, macOS, Linux와 Windows MAUI 실행 명령은 아래의 [플랫폼별 실행](#플랫폼별-실행)을 참고하세요.
 

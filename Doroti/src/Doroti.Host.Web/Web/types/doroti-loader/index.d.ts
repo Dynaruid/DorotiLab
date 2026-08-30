@@ -17,7 +17,7 @@ declare module "*_content/Doroti.Host.Web/doroti.loader.js" {
   export interface DorotiBootstrapContext {
     readonly blazorOptions: DorotiBlazorStartOptions;
     stage: DorotiBootstrapStage;
-    rendererMode?: "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
+    rendererMode?: "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
   }
 
   export interface DorotiBootstrapOptions {

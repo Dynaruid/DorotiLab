@@ -20,8 +20,11 @@ After the Web runner starts, open `http://127.0.0.1:5088` in a browser. To compa
 
 - Automatic selection: `http://127.0.0.1:5088`
 - Document WebGL2: `http://127.0.0.1:5088/?dorotiRenderer=document-webgl`
+- Direct visible canvas in the persistent .NET Worker (qualification candidate): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
 - Same-thread OffscreenCanvas: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-bitmap`
 - Persistent .NET Worker: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-worker`
+
+`auto` remains `document-webgl` until the physical 60/120 Hz, trackpad, Korean IME, and screen-reader gates pass.
 
 Press `Ctrl+C` in the terminal that launched the app to stop it. See [Run by platform](#run-by-platform) below for Android, iOS, macOS, Linux, and Windows MAUI commands.
 

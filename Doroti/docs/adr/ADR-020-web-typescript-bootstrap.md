@@ -13,9 +13,9 @@ Doroti Web application policy, the Doroti loader, browser interop, and JavaScrip
 - `Microsoft.TypeScript.MSBuild` 7.0.0 is restored only by a Web runner with `web/tsconfig.json`.
 - The compiler writes under target/configuration-specific `obj`; Release publish excludes maps, TypeScript source, config, and compiler/tool assets.
 - Node, npm, Bun, and bundlers are not required.
-- `doroti.loader.ts` selects `document-webgl`, `offscreen-bitmap`, or `offscreen-worker` before any managed runtime starts. Repeated `startDoroti()` calls share one startup promise.
+- `doroti.loader.ts` selects `document-webgl`, `worker-direct-webgl`, `offscreen-bitmap`, or `offscreen-worker` before any managed runtime starts. Repeated `startDoroti()` calls share one startup promise.
 - Same-thread modes load `_framework/blazor.webassembly.js` and call `Blazor.start()` exactly once.
-- Worker mode does not call `Blazor.start()` on main. Main TypeScript owns DOM input, IME, semantics, browser rAF, plugins, clipboard, and the visible `bitmaprenderer`; one persistent module Worker starts the .NET runtime from `_framework/dotnet.js` and exclusively owns the Doroti app/framework, Skia, and an actual detached `OffscreenCanvas` WebGL2 context.
+- Worker modes do not call `Blazor.start()` on main. Main TypeScript owns DOM input, IME, semantics, plugins, clipboard, and runtime supervision. One persistent module Worker starts the .NET runtime from `_framework/dotnet.js` and exclusively owns the Doroti app/framework and Skia. The legacy Worker path returns `ImageBitmap` objects to main; the direct qualification path owns Worker rAF and WebGL2 on the transferred visible canvas.
 
 The Flutter Web initialization model is an API/UX reference only. Application HTML executes only the compiled `doroti_bootstrap.js` module. The Web runner enables .NET 10 HTML asset placeholder replacement, and application HTML declares the framework preload, fingerprinted Blazor loader preload, and import-map placeholders in `head`. In same-thread modes the shared Doroti loader reads the generated loader URL, injects it with `autostart="false"`, waits for the script to load, and then calls `Blazor.start()` exactly once. In worker mode the loader creates the DOM host directly and starts `doroti.raster.worker.js`; main and worker managed runtimes are never started together.
 
@@ -65,8 +65,10 @@ When a custom `loadBootResource` performs `fetch`, it must pass the received int
 - `document-webgl` preserves the retained front/staging fallback on the visible WebGL2 canvas.
 - `offscreen-bitmap` runs the managed runtime on main but rasters to a detached `OffscreenCanvas`, awaits `createImageBitmap`, and commits an exact bitmap to the visible `bitmaprenderer`.
 - `offscreen-worker` uses the same exact bitmap contract across a versioned main/worker protocol. Input samples and immutable resize epochs cross to the worker; completed `ImageBitmap` objects cross back as transferables. Per-frame scene JSON, CPU readback, Blob/PNG encoding, and a second main managed runtime are forbidden.
+- `worker-direct-webgl` transfers the visible canvas exactly once. The persistent Worker owns Emscripten WebGL2 framebuffer 0, Skia submission, surface/context generation, and Worker rAF. The direct path creates no `ImageBitmap`, has no `bitmaprenderer` display receipt, and remains explicit opt-in while qualification is incomplete.
+- Main/Worker messages use runtime-validated protocol v2 envelopes. Unknown versions, kinds, non-positive sequences, or illegal runtime transitions fail closed. A fatal direct Worker is restarted at most once; its external leases are closed as `failed(runtime-lost)`, the dead transferred canvas node is replaced, and DOM/input/IME/semantics endpoints are rebound through a new host.
 - All async presenters keep one started `current` and one replaceable `latest` request. Request id, resize generation, context generation, terminal, and bitmap ownership remain paired. A main display receipt is named `submitted`, not scan-out/presented.
-- `auto` remains `document-webgl` until the repository's three-run A/B gate passes. Correct worker implementation is retained as an explicit mode when latency or memory promotion gates fail.
+- `auto` remains `document-webgl` until the repository's automated differential gates and physical 60/120 Hz, border-drag, precision-trackpad, Korean IME, and screen-reader acceptance all pass, followed by a separate burn-in. Correct Worker implementations remain explicit modes while any promotion gate is open.
 
 ## Failure and evidence boundary
 
