@@ -332,6 +332,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
     private static readonly TimeSpan ActiveScrollSemanticsPollInterval = TimeSpan.FromMilliseconds(50);
     private readonly object _semanticsFlushGate = new();
     private Timer? _deferredSemanticsFlush;
+    private bool _metricsSemanticsFramePumpArmed;
 
     public WidgetsFlutterBinding(PlatformDispatcher? platformDispatcher = null) : base(platformDispatcher) { }
 
@@ -993,14 +994,18 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
         lock (_semanticsFlushGate)
         {
-            if (!this.platformDispatcher.frameTrace.HasActiveScrollActivity)
+            var activeScroll = this.platformDispatcher.frameTrace.HasActiveScrollActivity;
+            var activeMetrics = this.platformDispatcher.implicitView
+                ?.coalesceSemanticsGeometryDuringActiveMetrics == true &&
+                this.platformDispatcher.frameTrace.HasActiveMetricsActivity;
+            if (!activeScroll && !activeMetrics)
             {
                 _deferredSemanticsFlush?.cancel();
                 _deferredSemanticsFlush = null;
                 return true;
             }
 
-            if (_deferredSemanticsFlush is null)
+            if (activeScroll && _deferredSemanticsFlush is null)
             {
                 this.platformDispatcher.frameTrace.Record(
                     DorotiFramePhase.semanticsDeferred,
@@ -1009,8 +1014,42 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
                     reason: "active scroll accessibility flush deferred until rest");
                 armDeferredSemanticsFlush();
             }
+            if (activeMetrics)
+            {
+                this.platformDispatcher.frameTrace.Record(
+                    DorotiFramePhase.semanticsDeferred,
+                    frameViewId,
+                    DorotiFrameClock.Now,
+                    reason: "active metrics accessibility geometry flush deferred until rest");
+                armMetricsSemanticsFramePump();
+            }
             return false;
         }
+    }
+
+    private void armMetricsSemanticsFramePump()
+    {
+        if (_metricsSemanticsFramePumpArmed) return;
+        _metricsSemanticsFramePumpArmed = true;
+        addPostFrameCallback(_ =>
+        {
+            var schedule = false;
+            lock (_semanticsFlushGate)
+            {
+                _metricsSemanticsFramePumpArmed = false;
+                schedule = this.rootPipelineOwner.hasPendingSemanticsUpdate &&
+                    this.platformDispatcher.frameTrace.HasActiveMetricsActivity;
+                if (!schedule && this.rootPipelineOwner.hasPendingSemanticsUpdate &&
+                    !this.platformDispatcher.frameTrace.HasActiveScrollActivity)
+                {
+                    // One final frame crosses the quiet boundary and flushes
+                    // the retained geometry. The browser/worker rAF owner, not
+                    // a managed ThreadPool timer, drives this path.
+                    schedule = true;
+                }
+            }
+            if (schedule) scheduleFrame();
+        }, debugLabel: "RendererBinding.metricsSemanticsFramePump");
     }
 
     private void armDeferredSemanticsFlush()
@@ -1023,8 +1062,8 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
                 _deferredSemanticsFlush = null;
                 if (this.platformDispatcher.frameTrace.HasActiveScrollActivity)
                 {
-                    // Polling only observes the retained scroll state. It does not
-                    // request a visual frame or rebuild semantics while scrolling.
+                    // Polling only observes retained activity state. It does not
+                    // request a visual frame or rebuild semantics while active.
                     armDeferredSemanticsFlush();
                     return;
                 }

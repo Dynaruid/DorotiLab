@@ -376,7 +376,11 @@ public sealed class PlatformDispatcher : IDisposable
         }
     }
 
-    internal void DispatchMetrics(DorotiView view) => DispatchWithEnvironment(view, () => onMetricsChanged?.Invoke(view));
+    internal void DispatchMetrics(DorotiView view)
+    {
+        frameTrace.Record(DorotiFramePhase.metrics, view.viewId, DorotiFrameClock.Now);
+        DispatchWithEnvironment(view, () => onMetricsChanged?.Invoke(view));
+    }
 
     internal void DispatchLifecycle(DorotiView view, AppLifecycleState state) =>
         DispatchWithEnvironment(view, () =>
@@ -673,6 +677,8 @@ public sealed class DorotiView : IDisposable
     public DisplayCornerRadii? displayCornerRadii { get; set; }
 
     internal bool semanticsEnabled => _semanticsHost is not null;
+    public bool coalesceSemanticsGeometryDuringActiveMetrics =>
+        _semanticsHost?.CoalesceGeometryDuringActiveMetrics == true;
 
     public PlatformDispatcher platformDispatcher => _dispatcher;
 

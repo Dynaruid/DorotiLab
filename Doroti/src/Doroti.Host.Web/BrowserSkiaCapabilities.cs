@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Doroti.Skia.Rendering;
 using Doroti.Skia.RuntimeEffects;
 using Doroti.Ui;
@@ -36,6 +37,8 @@ internal sealed class BrowserSkiaCapabilities :
         remove => _renderer.Action -= value;
     }
 
+    public bool CoalesceGeometryDuringActiveMetrics => true;
+
     internal BrowserFrameDiagnostics Diagnostics
     {
         get
@@ -52,8 +55,8 @@ internal sealed class BrowserSkiaCapabilities :
         _renderer.AttachSurface(invalidate);
     }
 
-    public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation) =>
-        _renderer.Submit(viewId, submission, invocation);
+    public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation)
+        => _renderer.Submit(viewId, submission, invocation);
 
     internal string Paint(
         SKSurface surface,
@@ -115,8 +118,19 @@ internal sealed class BrowserSkiaCapabilities :
     public void SetEnabled(bool enabled, DartUiInvocation invocation) =>
         _renderer.SetEnabled(enabled, invocation);
 
-    public void Update(SemanticsUpdate update, DartUiInvocation invocation) =>
-        _renderer.Update(update, invocation);
+    public void Update(SemanticsUpdate update, DartUiInvocation invocation)
+    {
+        var started = DorotiFrameClock.Now;
+        _host.RecordRaster("managed-semantics-start", 0, 0);
+        try
+        {
+            _renderer.Update(update, invocation);
+        }
+        finally
+        {
+            _host.RecordRaster("managed-semantics-end", 0, 0, DorotiFrameClock.Now - started);
+        }
+    }
 
     public void Dispose()
     {
@@ -132,8 +146,14 @@ internal sealed class BrowserSkiaCapabilities :
 
     private sealed class HostBridge : ISkiaSceneRendererHost, IDisposable
     {
+        private static readonly JsonSerializerOptions SemanticsJsonOptions = new()
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        };
+
         private readonly BrowserHostAdapter _host;
         private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
+        private readonly Dictionary<int, SemanticsNodeUpdate> _lastSentSemantics = [];
 
         internal HostBridge(BrowserHostAdapter host)
         {
@@ -159,22 +179,48 @@ internal sealed class BrowserSkiaCapabilities :
         {
             foreach (var node in update.nodes) _semantics[node.id] = node;
             PruneUnreachable(_semantics);
-            var nodes = _semantics.Values
+            var orderedNodes = _semantics.Values
                 .OrderBy(node => node.indexInParent ?? int.MaxValue).ThenBy(node => node.id)
-                .Select(node => new
+                .ToArray();
+            var nodes = orderedNodes.Select(node =>
+            {
+                // Projection creates a new record for geometry changes while
+                // retaining the content objects of unchanged nodes. Ignore the
+                // projected rectangle when deciding whether the DOM needs a
+                // fresh ARIA/action payload.
+                var contentUnchanged = _lastSentSemantics.TryGetValue(node.id, out var previous) &&
+                    previous with { rect = node.rect } == node;
+                return new
                 {
-                    node.id, node.label, node.value, role = node.role.ToString(),
-                    actions = (long)node.actions, children = node.children,
-                    node.identifier, node.hint, node.tooltip, node.increasedValue, node.decreasedValue,
-                    node.headingLevel, node.linkUrl,
-                    validationResult = node.validationResult.ToString(),
-                    hitTestBehavior = node.hitTestBehavior.ToString(),
-                    inputType = node.inputType.ToString(),
-                    node.minValue, node.maxValue, node.maxValueLength, node.currentValueLength,
-                    node.scrollPosition, node.scrollExtentMin, node.scrollExtentMax,
-                    node.scrollChildCount, node.scrollIndex, node.controlsNodes,
-                    locale = node.locale?.ToString(),
-                    flags = node.flags is null ? null : new
+                    node.id,
+                    contentUnchanged,
+                    label = contentUnchanged ? null : node.label,
+                    value = contentUnchanged ? null : node.value,
+                    role = contentUnchanged ? null : node.role.ToString(),
+                    actions = contentUnchanged ? (long?)null : (long)node.actions,
+                    children = node.children,
+                    identifier = contentUnchanged ? null : node.identifier,
+                    hint = contentUnchanged ? null : node.hint,
+                    tooltip = contentUnchanged ? null : node.tooltip,
+                    increasedValue = contentUnchanged ? null : node.increasedValue,
+                    decreasedValue = contentUnchanged ? null : node.decreasedValue,
+                    headingLevel = contentUnchanged ? null : node.headingLevel,
+                    linkUrl = contentUnchanged ? null : node.linkUrl,
+                    validationResult = contentUnchanged ? null : node.validationResult.ToString(),
+                    hitTestBehavior = contentUnchanged ? null : node.hitTestBehavior.ToString(),
+                    inputType = contentUnchanged ? null : node.inputType.ToString(),
+                    minValue = contentUnchanged ? null : node.minValue,
+                    maxValue = contentUnchanged ? null : node.maxValue,
+                    maxValueLength = contentUnchanged ? null : node.maxValueLength,
+                    currentValueLength = contentUnchanged ? null : node.currentValueLength,
+                    scrollPosition = contentUnchanged ? null : node.scrollPosition,
+                    scrollExtentMin = contentUnchanged ? null : node.scrollExtentMin,
+                    scrollExtentMax = contentUnchanged ? null : node.scrollExtentMax,
+                    scrollChildCount = contentUnchanged ? null : node.scrollChildCount,
+                    scrollIndex = contentUnchanged ? null : node.scrollIndex,
+                    controlsNodes = contentUnchanged ? null : node.controlsNodes,
+                    locale = contentUnchanged ? null : node.locale?.ToString(),
+                    flags = contentUnchanged || node.flags is null ? null : new
                     {
                         @checked = node.flags.isChecked.ToString(),
                         selected = node.flags.isSelected.toBoolOrNull(),
@@ -193,15 +239,21 @@ internal sealed class BrowserSkiaCapabilities :
                         mutuallyExclusive = node.flags.isInMutuallyExclusiveGroup,
                         keyboardKey = node.flags.isKeyboardKey,
                     },
-                    node.textSelectionBase, node.textSelectionExtent,
+                    textSelectionBase = contentUnchanged ? (long?)null : node.textSelectionBase,
+                    textSelectionExtent = contentUnchanged ? (long?)null : node.textSelectionExtent,
                     rect = new[] { node.rect.left, node.rect.top, node.rect.right, node.rect.bottom },
-                });
-            _host.UpdateSemantics(JsonSerializer.Serialize(new { generation = update.generation, nodes }));
+                };
+            }).ToArray();
+            _host.UpdateSemantics(JsonSerializer.Serialize(
+                new { generation = update.generation, nodes }, SemanticsJsonOptions));
+            _lastSentSemantics.Clear();
+            foreach (var node in orderedNodes) _lastSentSemantics[node.id] = node;
         }
 
         public void ClearSemantics()
         {
             _semantics.Clear();
+            _lastSentSemantics.Clear();
             _host.UpdateSemantics("{\"generation\":0,\"nodes\":[]}");
         }
 
@@ -212,6 +264,7 @@ internal sealed class BrowserSkiaCapabilities :
             _host.SemanticsAction -= HandleSemanticsAction;
             Invalidate = null;
             _semantics.Clear();
+            _lastSentSemantics.Clear();
         }
 
         private void HandleSemanticsAction(long nodeId, long action, string argumentsJson)

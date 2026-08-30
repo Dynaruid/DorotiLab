@@ -353,3 +353,54 @@ artifact:
 - final `offscreen-worker` 전체 headless/context-loss/crash 회귀: 미실행, `notVerified`; Win32 active resize와 resource terminal은 PASS
 - 수정 뒤 실제 마우스 창 테두리 drag 사용자 재확인: `notVerified`. 사용자가 “여전히 좀 느리게 맞춰진다”고 본 시점은 progressive-exact와 Flutter viewport source를 모두 넣기 전 중간 구현이었다.
 - 따라서 자동 active-follow starvation은 수정했지만 60fps 성능이나 사용자 체감 완료를 주장하지 않는다. 현재 측정 p50 45~70ms는 추가 framework/build pipeline 최적화 여지가 있음을 명시한다.
+
+## 10. 공통 managed-frame 지연 후속 수정 (2026-08-30)
+
+### 10.1 재현과 실제 병목
+
+9장의 progressive exact-front 수정 뒤에도 세 renderer가 함께 늦게 따라오는 이유를 180-step Win32 trace에 managed frame/scene/semantics 구간을 추가해 다시 분해했다.
+
+- 수정 전 `document-webgl` 표본에서 `target-observed -> front-commit`은 p50 55.1ms, p95 112.6ms였고 managed frame은 p50 62.1ms, p95 94.9ms였다.
+- managed Skia raster 자체는 p50 8.9ms였지만, geometry-only resize마다 47개 접근성 node 전체를 C# JSON과 DOM에 다시 적용했다.
+- 브라우저 DOM 경로는 모든 ARIA attribute를 다시 쓰고 모든 action listener의 `AbortController`를 폐기/재생성했다. 이 구간만 p50 약 21ms였고 다음 resize/animation-frame callback과 경쟁했다.
+- metrics activity 판정은 진단 trace의 forward-clamped timestamp를 재사용했다. browser frame clock이 managed stopwatch보다 앞선 경우 quiet 100ms가 끝나지 않아 semantics flush가 영구 보류되고 frame pump가 계속 도는 clock-domain 결함도 확인했다.
+
+### 10.2 구현
+
+- Web semantics 전송은 직전 node content와 비교해 내용이 같으면 `id`, `children`, `rect`, `contentUnchanged`만 보낸다. JSON null field는 생략한다.
+- DOM은 content가 같은 node의 native tag, ARIA attribute, listener, semantics identifier를 보존하고 geometry style만 값이 바뀔 때 갱신한다. 축약 node의 생략된 `flags`로 text field를 `input`에서 `div`로 바꾸던 회귀도 차단했다.
+- 연속 metrics 중 geometry semantics는 coalesce하고 quiet 뒤 최종 frame에서 한 번 flush한다. isolated resize는 즉시 처리한다.
+- metrics activity의 시작/종료 판정은 host trace timestamp가 아니라 `DorotiFrameClock`의 managed 도착 시각을 사용한다. FCR-3에 미래 host timestamp가 있어도 100ms 뒤 activity가 종료되는 회귀 검사를 추가했다.
+- Win32 headed gate는 마지막 bounds를 초기값과 다르게 유지하고, 마지막 `target-observed` 뒤 `semantics-dom-applied`가 없으면 실패한다. stale 접근성 geometry나 영구 frame pump를 성공으로 볼 수 없다.
+
+### 10.3 181-step Win32 최종 결과
+
+다음 latency는 실제 browser `target-observed`와 같은 epoch의 첫 `front-commit`을 연결한 값이다. 세 renderer 모두 active 구간 10세대 이상, 최종 `front == target`, preview 0, failed/unpaired 0, final-target 뒤 semantics flush 1회 이상을 만족했다.
+
+| renderer | 실제 browser epoch | active committed generation | target -> exact front sample/p50/p95/max | final semantics | 판정 |
+|---|---:|---:|---:|---:|---|
+| `document-webgl` | 117 | 117 | 117 / 27.6 / 39.2 / 51.8ms | PASS | PASS |
+| `offscreen-bitmap` | 145 | 145 | 145 / 24.9 / 34.1 / 80.5ms | PASS | PASS |
+| `offscreen-worker` | 175 | 139 | 135 / 21.0 / 39.7 / 74.4ms | PASS | PASS |
+
+artifact:
+
+- `Doroti/validation/web-playwright/artifacts/semantics-clock-fix-document-webgl`
+- `Doroti/validation/web-playwright/artifacts/semantics-clock-fix-offscreen-bitmap`
+- `Doroti/validation/web-playwright/artifacts/semantics-clock-fix-offscreen-worker`
+
+### 10.4 자동 검증과 남은 경계
+
+- Release Web build: PASS, warning 0/error 0
+- TypeScript/Playwright type check: PASS
+- resize-contract v4: PASS, generated/terminal 22/22, max depth 2, stale present 0
+- FCR-3 scheduler: PASS. metrics activity clock-domain 회귀 포함
+- FCR-7 Material/widget: PASS
+- Win32 native resize headed: 세 renderer 각 PASS
+- semantics/pointer/keyboard/native text input: 세 renderer 각 PASS
+- 전체 headless:
+  - `document-webgl`: 7 PASS, worker-only 1 SKIP
+  - `offscreen-bitmap`: resize/flicker/context/input/startup/capability 6 PASS, wheel-continuity 1 FAIL, worker-only 1 SKIP
+  - `offscreen-worker`: resize/flicker/context/input/startup/capability/worker crash-recovery 7 PASS, wheel-continuity 1 FAIL
+- offscreen 두 모드의 wheel FAIL은 각 synthetic wheel sample 뒤 5초 안에 새 front commit을 요구하는 대기에서 재현됐다. 6장의 trackpad/wheel 추가 최적화는 범위 제외이며 resize PASS로 덮지 않는다.
+- 실제 Chrome 마우스 창 테두리 drag 체감: `notVerified`. 자동 지표는 개선됐지만 compositor scan-out, 실제 디스플레이 주사율, 사용자의 최종 체감은 자동 evidence로 대체하지 않는다.

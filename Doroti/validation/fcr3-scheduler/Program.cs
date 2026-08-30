@@ -5,6 +5,7 @@ using Doroti.Ui;
 VerifyFlutterSchedulerOrdering();
 VerifyMonotonicTimestampFence();
 VerifyBoundedTraceCausality();
+VerifyMetricsActivityUsesArrivalClock();
 VerifyPlatformEventDrainsMicrotasks();
 
 Console.WriteLine($"FCR-3 scheduler runtime contract: PASS (configuration={ConfigurationName()})");
@@ -64,6 +65,21 @@ static void VerifyBoundedTraceCausality()
         "frame trace timestamps are monotonic");
     Require(entries[^1].InputSequence == 7 && entries[^1].SceneSequence == 3,
         "present can be attributed to input and scene sequence");
+}
+
+static void VerifyMetricsActivityUsesArrivalClock()
+{
+    var trace = new DorotiFrameTrace();
+    // Simulate a host/browser timestamp that is far ahead of this runtime's
+    // stopwatch. Trace ordering may clamp to it, but live-resize activity must
+    // still expire according to managed arrival time.
+    trace.Record(DorotiFramePhase.present, 1, TimeSpan.FromDays(1));
+    trace.Record(DorotiFramePhase.metrics, 1, DorotiFrameClock.Now);
+    trace.Record(DorotiFramePhase.metrics, 1, DorotiFrameClock.Now);
+    Require(trace.HasActiveMetricsActivity, "a rapid metrics stream is classified as active resize");
+    Thread.Sleep(150);
+    Require(!trace.HasActiveMetricsActivity,
+        "metrics activity expires on the runtime arrival clock despite a future host trace timestamp");
 }
 
 static void VerifyPlatformEventDrainsMicrotasks()

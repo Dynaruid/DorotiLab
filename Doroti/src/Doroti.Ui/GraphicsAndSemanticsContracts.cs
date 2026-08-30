@@ -1895,6 +1895,13 @@ public interface ISemanticsHostCapability
 {
     event Action<SemanticsActionEvent>? Action;
 
+    /// <summary>
+    /// Whether this host benefits from coalescing geometry-only semantics work
+    /// while viewport metrics are changing continuously. Native hosts remain
+    /// immediate unless they opt in explicitly.
+    /// </summary>
+    bool CoalesceGeometryDuringActiveMetrics => false;
+
     void SetEnabled(bool enabled, DartUiInvocation invocation);
 
     void Update(SemanticsUpdate update, DartUiInvocation invocation);

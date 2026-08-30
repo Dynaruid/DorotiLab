@@ -179,9 +179,12 @@ static void VerifyBrowserInputAndFrontBufferContract()
     Require(File.Exists(managedHostPath), "the managed browser host source is packaged with the validation fixture");
     var managedHostSource = File.ReadAllText(managedHostPath);
     Require(managedHostSource.Contains("ILatestMetricsFrameHostCapability", StringComparison.Ordinal) &&
-            managedHostSource.Contains(
-                "callback?.Invoke(TimeSpan.FromMilliseconds(timestampMilliseconds), host.ViewEpoch);",
-                StringComparison.Ordinal) &&
+            (managedHostSource.Contains(
+                 "callback?.Invoke(TimeSpan.FromMilliseconds(timestampMilliseconds), host.ViewEpoch);",
+                 StringComparison.Ordinal) ||
+             managedHostSource.Contains(
+                 "callback(TimeSpan.FromMilliseconds(timestampMilliseconds), host.ViewEpoch);",
+                 StringComparison.Ordinal)) &&
             managedHostSource.Contains(
                 "if (expectedEpoch.ViewId != _viewId)",
                 StringComparison.Ordinal),

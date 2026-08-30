@@ -79,6 +79,7 @@ public sealed record DorotiFrameTraceEntry(
 /// </summary>
 public sealed class DorotiFrameTrace
 {
+    private const long ActiveMetricsWindowMicroseconds = 100_000;
     // A 256-entry trace retained less than two seconds on a high-refresh-rate
     // scroll because each frame contributes several framework/host phases. It
     // routinely evicted the input and scroll-start entries before the terminal
@@ -94,6 +95,8 @@ public sealed class DorotiFrameTrace
     private long _nextSequence;
     private long _lastTimestampMicroseconds;
     private long _lastInputSequence;
+    private long _previousMetricsTimestampMicroseconds;
+    private long _lastMetricsTimestampMicroseconds;
     private readonly HashSet<long> _activeScrollPositions = [];
 
     public bool HasActiveScrollActivity
@@ -101,6 +104,27 @@ public sealed class DorotiFrameTrace
         get
         {
             lock (_gate) return _activeScrollPositions.Count != 0;
+        }
+    }
+
+    /// <summary>
+    /// True only after two viewport metrics updates arrive within the active
+    /// window and until that stream has been quiet for the same window. An
+    /// isolated resize/DPR change therefore remains immediate, while live
+    /// browser resize can coalesce accessibility geometry like active scroll.
+    /// </summary>
+    public bool HasActiveMetricsActivity
+    {
+        get
+        {
+            var nowMicroseconds = DorotiFrameClock.Now.Ticks / 10;
+            lock (_gate)
+            {
+                return _previousMetricsTimestampMicroseconds > 0 &&
+                    _lastMetricsTimestampMicroseconds - _previousMetricsTimestampMicroseconds <=
+                        ActiveMetricsWindowMicroseconds &&
+                    nowMicroseconds - _lastMetricsTimestampMicroseconds <= ActiveMetricsWindowMicroseconds;
+            }
         }
     }
 
@@ -122,12 +146,24 @@ public sealed class DorotiFrameTrace
         long tickerId = 0,
         string? tickerLabel = null)
     {
+        // Activity windows must use this runtime's monotonic arrival clock.
+        // Trace timestamps are clamped forward across host/browser clock
+        // domains and can therefore be ahead of DorotiFrameClock.Now; using
+        // the clamped value here can make an activity appear active forever.
+        var metricsArrivalMicroseconds = phase == DorotiFramePhase.metrics
+            ? DorotiFrameClock.Now.Ticks / 10
+            : 0;
         lock (_gate)
         {
             var timestampMicroseconds = Math.Max(_lastTimestampMicroseconds, timestamp.Ticks / 10);
             _lastTimestampMicroseconds = timestampMicroseconds;
             if (phase == DorotiFramePhase.input && inputSequence > 0)
                 _lastInputSequence = inputSequence;
+            if (phase == DorotiFramePhase.metrics)
+            {
+                _previousMetricsTimestampMicroseconds = _lastMetricsTimestampMicroseconds;
+                _lastMetricsTimestampMicroseconds = metricsArrivalMicroseconds;
+            }
             var entries = _entries ??= new TraceSlot[Capacity];
             entries[_nextEntryIndex] = new(
                 ++_nextSequence,

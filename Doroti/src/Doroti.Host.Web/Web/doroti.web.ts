@@ -33,6 +33,7 @@ interface BrowserHost {
   semantics: HTMLElement;
   semanticsElements: Map<number, HTMLElement>;
   semanticsListeners: Map<number, AbortController>;
+  semanticsContentSignatures: Map<number, string>;
   logicalWidth: number;
   logicalHeight: number;
   generation: number;
@@ -224,6 +225,7 @@ interface SemanticsFlags {
 
 interface SemanticsNode {
   id: number | string;
+  contentUnchanged?: boolean;
   role?: string;
   label?: string;
   value?: string;
@@ -1479,6 +1481,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   const host: BrowserHost = {
     id: hostId, root, canvas, input, semantics,
     semanticsElements: new Map(), semanticsListeners: new Map(),
+    semanticsContentSignatures: new Map(),
     logicalWidth, logicalHeight,
     generation: 1, surfaceGeneration: 0, resizeGeneration: 1,
     emittedResizeGeneration: 1, resizeEpoch: initialEpoch,
@@ -1766,6 +1769,7 @@ export function closeHost(hostId: number): void {
   for (const controller of host.semanticsListeners.values()) controller.abort();
   host.semanticsListeners.clear();
   host.semanticsElements.clear();
+  host.semanticsContentSignatures.clear();
   host.semantics.replaceChildren();
   delete host.root.dataset.dorotiHostId;
   hosts.delete(hostId);
@@ -1891,13 +1895,15 @@ export function updateSemantics(hostId: number, json: string): void {
     return;
   }
   const host = requireHost(hostId);
+  const started = performance.now();
   const update = JSON.parse(json) as SemanticsUpdate;
   host.semantics.dataset.generation = String(update.generation);
   const nodes = update.nodes ?? [];
   const nodesById = new Map(nodes.map((node) => [Number(node.id), node]));
   const identifiersByValue = new Map(nodes
-    .filter((node) => Boolean(node.identifier))
-    .map((node) => [node.identifier!, Number(node.id)]));
+    .map((node) => [node.identifier ?? host.semanticsElements.get(Number(node.id))
+      ?.dataset.dorotiSemanticsIdentifier, Number(node.id)] as const)
+    .filter((entry): entry is readonly [string, number] => Boolean(entry[0])));
   const parentById = new Map<number, number>();
   for (const node of nodes) {
     for (const childId of node.children ?? []) {
@@ -1906,115 +1912,162 @@ export function updateSemantics(hostId: number, json: string): void {
   }
 
   const liveIds = new Set<number>();
+  let contentUpdates = 0;
+  let geometryUpdates = 0;
   for (const node of nodes) {
     const id = Number(node.id);
     liveIds.add(id);
-    const tag = semanticsElementTag(node);
     let element = host.semanticsElements.get(id);
+    // A contentUnchanged node intentionally omits flags/role/actions. Preserve
+    // the existing native element kind instead of deriving a div from absent
+    // content and replacing inputs, buttons, or links during geometry updates.
+    const tag = node.contentUnchanged === true && element
+      ? element.tagName.toLowerCase()
+      : semanticsElementTag(node);
+    let replaced = false;
     if (!element || element.tagName.toLowerCase() !== tag) {
       const replacement = document.createElement(tag);
       if (element?.parentElement) element.replaceWith(replacement);
       element = replacement;
       host.semanticsElements.set(id, element);
+      replaced = true;
     }
-    host.semanticsListeners.get(id)?.abort();
-    const listeners = new AbortController();
-    host.semanticsListeners.set(id, listeners);
-    resetSemanticsAttributes(element);
-    element.dataset.dorotiSemanticsId = String(node.id);
-    element.id = semanticsDomId(host.id, id);
-    if (node.identifier) element.dataset.dorotiSemanticsIdentifier = node.identifier;
-    const role = semanticsRole(node);
-    element.setAttribute("role", role);
-    const valueRole = role === "slider" || role === "progressbar" || role === "spinbutton";
-    const accessibleLabel = valueRole || node.flags?.textField
-      ? node.label
-      : [node.label, node.value].filter((value) => Boolean(value)).join(" ");
-    setOptionalAttribute(element, "aria-label", accessibleLabel);
-    setOptionalAttribute(element, "aria-description", [node.hint, node.tooltip].filter((value) => Boolean(value)).join(" "));
-    setOptionalAttribute(element, "aria-controls", node.controlsNodes
+    const canRetainContent = node.contentUnchanged === true && !replaced &&
+      host.semanticsContentSignatures.has(id);
+    const controlledIds = canRetainContent ? undefined : node.controlsNodes
       ?.map((identifier) => identifiersByValue.get(identifier))
       .filter((controlledId): controlledId is number => controlledId !== undefined)
-      .map((controlledId) => semanticsDomId(host.id, controlledId))
-      .join(" "));
-    setOptionalAttribute(element, "lang", node.locale);
-    if (node.validationResult === "invalid") element.setAttribute("aria-invalid", "true");
-    if (node.headingLevel && node.headingLevel > 0) element.setAttribute("aria-level", String(node.headingLevel));
-    if (valueRole) {
-      setOptionalAttribute(element, "aria-valuetext", node.value);
-      setOptionalAttribute(element, "aria-valuemin", node.minValue);
-      setOptionalAttribute(element, "aria-valuemax", node.maxValue);
-      const numericValue = Number(node.value);
-      if (Number.isFinite(numericValue)) element.setAttribute("aria-valuenow", String(numericValue));
-    }
-    applySemanticsFlags(element, node.flags, role);
-    const actions = node.actions ?? 0;
-    const enabled = node.flags?.enabled !== false;
-    if (node.flags?.focusable && !isNativeFocusableElement(element)) {
-      element.tabIndex = 0;
-    } else if (!isNativeFocusableElement(element)) {
-      element.removeAttribute("tabindex");
-    }
-    if (enabled && (actions & 1) !== 0) {
-      element.addEventListener("click", (event) => {
-        event.stopPropagation();
-        dispatchSemantics(host, node.id, 1);
+      .map((controlledId) => semanticsDomId(host.id, controlledId));
+    // Geometry, scroll extents, and child ordering can change on every layout
+    // without changing the element's ARIA contract or action closures. Keep
+    // the signature limited to values actually consumed below so interactive
+    // resize does not tear down every listener and attribute on every frame.
+    const contentSignature = JSON.stringify({
+      tag,
+      role: node.role,
+      label: node.label,
+      value: node.value,
+      actions: node.actions,
+      flags: node.flags,
+      textSelectionBase: node.textSelectionBase,
+      textSelectionExtent: node.textSelectionExtent,
+      identifier: node.identifier,
+      hint: node.hint,
+      tooltip: node.tooltip,
+      headingLevel: node.headingLevel,
+      linkUrl: node.linkUrl,
+      validationResult: node.validationResult,
+      inputType: node.inputType,
+      minValue: node.minValue,
+      maxValue: node.maxValue,
+      maxValueLength: node.maxValueLength,
+      controlledIds,
+      locale: node.locale,
+    });
+    if (!canRetainContent &&
+        (replaced || host.semanticsContentSignatures.get(id) !== contentSignature)) {
+      contentUpdates++;
+      host.semanticsListeners.get(id)?.abort();
+      const listeners = new AbortController();
+      host.semanticsListeners.set(id, listeners);
+      resetSemanticsAttributes(element);
+      element.dataset.dorotiSemanticsId = String(node.id);
+      element.id = semanticsDomId(host.id, id);
+      if (node.identifier) element.dataset.dorotiSemanticsIdentifier = node.identifier;
+      const role = semanticsRole(node);
+      element.setAttribute("role", role);
+      const valueRole = role === "slider" || role === "progressbar" || role === "spinbutton";
+      const accessibleLabel = valueRole || node.flags?.textField
+        ? node.label
+        : [node.label, node.value].filter((value) => Boolean(value)).join(" ");
+      setOptionalAttribute(element, "aria-label", accessibleLabel);
+      setOptionalAttribute(element, "aria-description", [node.hint, node.tooltip].filter((value) => Boolean(value)).join(" "));
+      setOptionalAttribute(element, "aria-controls", controlledIds?.join(" "));
+      setOptionalAttribute(element, "lang", node.locale);
+      if (node.validationResult === "invalid") element.setAttribute("aria-invalid", "true");
+      if (node.headingLevel && node.headingLevel > 0) element.setAttribute("aria-level", String(node.headingLevel));
+      if (valueRole) {
+        setOptionalAttribute(element, "aria-valuetext", node.value);
+        setOptionalAttribute(element, "aria-valuemin", node.minValue);
+        setOptionalAttribute(element, "aria-valuemax", node.maxValue);
+        const numericValue = Number(node.value);
+        if (Number.isFinite(numericValue)) element.setAttribute("aria-valuenow", String(numericValue));
+      }
+      applySemanticsFlags(element, node.flags, role);
+      const actions = node.actions ?? 0;
+      const enabled = node.flags?.enabled !== false;
+      if (node.flags?.focusable && !isNativeFocusableElement(element)) {
+        element.tabIndex = 0;
+      } else if (!isNativeFocusableElement(element)) {
+        element.removeAttribute("tabindex");
+      }
+      if (enabled && (actions & 1) !== 0) {
+        element.addEventListener("click", (event) => {
+          event.stopPropagation();
+          dispatchSemantics(host, node.id, 1);
+        }, { signal: listeners.signal });
+      }
+      element.addEventListener("keydown", (event) => {
+        const key = event as KeyboardEvent;
+        let action = 0;
+        if (enabled && (actions & 1) !== 0 && (key.key === "Enter" || key.key === " ")) action = 1;
+        else if ((actions & (1 << 6)) !== 0 && (key.key === "ArrowUp" || key.key === "ArrowRight")) action = 1 << 6;
+        else if ((actions & (1 << 7)) !== 0 && (key.key === "ArrowDown" || key.key === "ArrowLeft")) action = 1 << 7;
+        else if ((actions & (1 << 2)) !== 0 && key.key === "ArrowLeft") action = 1 << 2;
+        else if ((actions & (1 << 3)) !== 0 && key.key === "ArrowRight") action = 1 << 3;
+        else if ((actions & (1 << 4)) !== 0 && (key.key === "ArrowUp" || key.key === "PageUp")) action = 1 << 4;
+        else if ((actions & (1 << 5)) !== 0 && (key.key === "ArrowDown" || key.key === "PageDown")) action = 1 << 5;
+        else if ((actions & (1 << 18)) !== 0 && key.key === "Escape") action = 1 << 18;
+        if (action === 0) return;
+        key.preventDefault();
+        key.stopPropagation();
+        dispatchSemantics(host, node.id, action);
       }, { signal: listeners.signal });
-    }
-    element.addEventListener("keydown", (event) => {
-      const key = event as KeyboardEvent;
-      let action = 0;
-      if (enabled && (actions & 1) !== 0 && (key.key === "Enter" || key.key === " ")) action = 1;
-      else if ((actions & (1 << 6)) !== 0 && (key.key === "ArrowUp" || key.key === "ArrowRight")) action = 1 << 6;
-      else if ((actions & (1 << 7)) !== 0 && (key.key === "ArrowDown" || key.key === "ArrowLeft")) action = 1 << 7;
-      else if ((actions & (1 << 2)) !== 0 && key.key === "ArrowLeft") action = 1 << 2;
-      else if ((actions & (1 << 3)) !== 0 && key.key === "ArrowRight") action = 1 << 3;
-      else if ((actions & (1 << 4)) !== 0 && (key.key === "ArrowUp" || key.key === "PageUp")) action = 1 << 4;
-      else if ((actions & (1 << 5)) !== 0 && (key.key === "ArrowDown" || key.key === "PageDown")) action = 1 << 5;
-      else if ((actions & (1 << 18)) !== 0 && key.key === "Escape") action = 1 << 18;
-      if (action === 0) return;
-      key.preventDefault();
-      key.stopPropagation();
-      dispatchSemantics(host, node.id, action);
-    }, { signal: listeners.signal });
-    element.addEventListener("focus", () => {
-      if ((actions & (1 << 22)) !== 0) dispatchSemantics(host, node.id, 1 << 22);
-    }, { signal: listeners.signal });
+      element.addEventListener("focus", () => {
+        if ((actions & (1 << 22)) !== 0) dispatchSemantics(host, node.id, 1 << 22);
+      }, { signal: listeners.signal });
 
-    if (node.flags?.textField && (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) {
-      element.readOnly = node.flags.readOnly === true;
-      if (element instanceof HTMLInputElement) element.type = node.flags.obscured ? "password" : "text";
-      element.inputMode = semanticsInputMode(node.inputType);
-      if (node.maxValueLength !== undefined && node.maxValueLength >= 0) element.maxLength = node.maxValueLength;
-      if (element.value !== (node.value ?? "")) element.value = node.value ?? "";
-      element.addEventListener("input", () => dispatchSemantics(host, node.id, 1 << 21, element.value), { signal: listeners.signal });
-      const selection = () => {
-        if ((actions & (1 << 11)) === 0) return;
-        const offsets = textSelectionOffsets(element);
-        if (offsets) dispatchSemantics(host, node.id, 1 << 11, offsets);
-      };
-      element.addEventListener("select", selection, { signal: listeners.signal });
-      element.addEventListener("keyup", selection, { signal: listeners.signal });
-      element.addEventListener("mouseup", selection, { signal: listeners.signal });
-      if ((actions & (1 << 12)) !== 0) element.addEventListener("copy", () => dispatchSemantics(host, node.id, 1 << 12), { signal: listeners.signal });
-      if ((actions & (1 << 13)) !== 0) element.addEventListener("cut", () => dispatchSemantics(host, node.id, 1 << 13), { signal: listeners.signal });
-      if ((actions & (1 << 14)) !== 0) element.addEventListener("paste", () => dispatchSemantics(host, node.id, 1 << 14), { signal: listeners.signal });
+      if (node.flags?.textField && (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) {
+        element.readOnly = node.flags.readOnly === true;
+        if (element instanceof HTMLInputElement) element.type = node.flags.obscured ? "password" : "text";
+        element.inputMode = semanticsInputMode(node.inputType);
+        if (node.maxValueLength !== undefined && node.maxValueLength >= 0) element.maxLength = node.maxValueLength;
+        if (element.value !== (node.value ?? "")) element.value = node.value ?? "";
+        element.addEventListener("input", () => dispatchSemantics(host, node.id, 1 << 21, element.value), { signal: listeners.signal });
+        const selection = () => {
+          if ((actions & (1 << 11)) === 0) return;
+          const offsets = textSelectionOffsets(element);
+          if (offsets) dispatchSemantics(host, node.id, 1 << 11, offsets);
+        };
+        element.addEventListener("select", selection, { signal: listeners.signal });
+        element.addEventListener("keyup", selection, { signal: listeners.signal });
+        element.addEventListener("mouseup", selection, { signal: listeners.signal });
+        if ((actions & (1 << 12)) !== 0) element.addEventListener("copy", () => dispatchSemantics(host, node.id, 1 << 12), { signal: listeners.signal });
+        if ((actions & (1 << 13)) !== 0) element.addEventListener("cut", () => dispatchSemantics(host, node.id, 1 << 13), { signal: listeners.signal });
+        if ((actions & (1 << 14)) !== 0) element.addEventListener("paste", () => dispatchSemantics(host, node.id, 1 << 14), { signal: listeners.signal });
+      }
+      host.semanticsContentSignatures.set(id, contentSignature);
     }
 
     const parent = nodesById.get(parentById.get(id) ?? Number.NaN);
     const parentLeft = parent?.rect[0] ?? 0;
     const parentTop = parent?.rect[1] ?? 0;
     element.style.position = "absolute";
-    element.style.left = `${node.rect[0] - parentLeft}px`;
-    element.style.top = `${node.rect[1] - parentTop}px`;
-    element.style.width = `${Math.max(0, node.rect[2] - node.rect[0])}px`;
-    element.style.height = `${Math.max(0, node.rect[3] - node.rect[1])}px`;
+    const left = `${node.rect[0] - parentLeft}px`;
+    const top = `${node.rect[1] - parentTop}px`;
+    const width = `${Math.max(0, node.rect[2] - node.rect[0])}px`;
+    const height = `${Math.max(0, node.rect[3] - node.rect[1])}px`;
+    if (element.style.left !== left) { element.style.left = left; geometryUpdates++; }
+    if (element.style.top !== top) { element.style.top = top; geometryUpdates++; }
+    if (element.style.width !== width) { element.style.width = width; geometryUpdates++; }
+    if (element.style.height !== height) { element.style.height = height; geometryUpdates++; }
   }
 
   for (const [id, controller] of host.semanticsListeners) {
     if (liveIds.has(id)) continue;
     controller.abort();
     host.semanticsListeners.delete(id);
+    host.semanticsContentSignatures.delete(id);
     host.semanticsElements.get(id)?.remove();
     host.semanticsElements.delete(id);
   }
@@ -2034,6 +2087,10 @@ export function updateSemantics(hostId: number, json: string): void {
   desiredByParent.set(host.semantics, roots);
   for (const [parent, desired] of desiredByParent) placeSemanticsChildren(parent, desired);
   for (const [parent, desired] of desiredByParent) removeUnexpectedSemanticsChildren(parent, desired);
+  recordResize(host, "semantics-dom-applied", "browser-semantics", {
+    durationMicroseconds: Math.round((performance.now() - started) * 1000),
+    detail: JSON.stringify({ nodes: nodes.length, contentUpdates, geometryUpdates }),
+  });
 }
 
 export function setApplicationTitle(hostId: number, title: string): void {

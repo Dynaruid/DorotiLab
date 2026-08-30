@@ -426,6 +426,9 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
     const delta = step * 5;
     sequence.push({ x: left - delta, y: top - delta, width: width + delta, height: height + delta });
   }
+  // End at a size that differs from the initial bounds. This makes a stale
+  // accessibility geometry tree observable after resize quiesces.
+  sequence.push({ x: left, y: top, width: width + 64, height: height + 48 });
 
   await page.evaluate(() => {
     const scope = globalThis as typeof globalThis & { __dorotiNativeResizeSamples?: Array<Record<string, unknown>> };
@@ -472,6 +475,9 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
   const screenshot = await page.screenshot();
   const observedTimes = bundle.trace.filter((entry) => entry.phase === "target-observed")
     .map((entry) => entry.timestampMicroseconds / 1000);
+  const finalTarget = bundle.trace.filter((entry) => entry.phase === "target-observed").at(-1);
+  const semanticsAfterFinalTarget = finalTarget === undefined ? [] : bundle.trace.filter((entry) =>
+    entry.phase === "semantics-dom-applied" && entry.sequence > finalTarget.sequence);
   const activeEpochExactCommits = bundle.trace.filter((entry) =>
     entry.phase === "front-commit" &&
     entry.timestampMicroseconds / 1000 >= nativeResizeStarted &&
@@ -489,6 +495,7 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
     .filter((entry) => entry.phase === "managed-snapshot-completed")
     .map((entry) => entry.durationMicroseconds / 1000);
   const report = { schemaVersion: "doroti.native-hwnd-resize/v1", windowId, sequence, samples: nativeSamples,
+    semanticsAfterFinalTarget: semanticsAfterFinalTarget.length,
     observedResizeCount: observedTimes.length,
     observedResizeCadenceMilliseconds: distribution(observedTimes.slice(1)
       .map((value, index) => value - observedTimes[index])),
@@ -503,7 +510,7 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
   await attachJson(testInfo, "native-hwnd-resize-report", report);
 
   expect(runtimeErrors).toEqual([]);
-  expect(sequence).toHaveLength(180);
+  expect(sequence).toHaveLength(181);
   expect(nativeSamples.length).toBeGreaterThan(20);
   expect(new Set(nativeSamples.map((sample) => `${sample.rootWidth}x${sample.rootHeight}`)).size).toBeGreaterThan(10);
   // SetWindowPos calls are inputs, not guaranteed browser viewport epochs.
@@ -515,6 +522,7 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
   expect(bundle.trace.filter((entry) => entry.phase === "resize-preview-commit")).toEqual([]);
   expect(bundle.trace.filter((entry) => entry.phase === "preview-front-refresh")).toEqual([]);
   expect(report.activeCommittedGenerationCount).toBeGreaterThanOrEqual(10);
+  expect(report.semanticsAfterFinalTarget).toBeGreaterThan(0);
   expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
   expect(bundle.presenter.activeBitmaps).toBe(0);
   if (bundle.presenter.mode === "offscreen-worker") {
