@@ -1,5 +1,20 @@
+import { PNG } from "pngjs";
 import { test, expect } from "./helpers/fixtures.js";
 import { captureDiagnostics, openDoroti, waitForSettledPresenter } from "./helpers/doroti-diagnostics.js";
+
+function countPixelDifferences(first: Buffer, second: Buffer): number {
+  const left = PNG.sync.read(first);
+  const right = PNG.sync.read(second);
+  expect({ width: left.width, height: left.height }).toEqual({ width: right.width, height: right.height });
+  let differences = 0;
+  for (let offset = 0; offset < left.data.length; offset += 4) {
+    if (Math.abs(left.data[offset] - right.data[offset]) > 1 ||
+        Math.abs(left.data[offset + 1] - right.data[offset + 1]) > 1 ||
+        Math.abs(left.data[offset + 2] - right.data[offset + 2]) > 1 ||
+        Math.abs(left.data[offset + 3] - right.data[offset + 3]) > 1) differences++;
+  }
+  return differences;
+}
 
 test("semantics, pointer, keyboard, and native text endpoint remain available", async ({ page, runtimeErrors }) => {
   const initial = await openDoroti(page);
@@ -36,6 +51,69 @@ test("semantics, pointer, keyboard, and native text endpoint remain available", 
   const bundle = await waitForSettledPresenter(page);
   expect(runtimeErrors).toEqual([]);
   expect(bundle.trace.filter((entry) => entry.phase === "text-editing-dispatched").length).toBeGreaterThan(0);
+});
+
+test("native editable selection state does not paint over the Canvas TextField @headed", async ({
+  page,
+  runtimeErrors,
+}) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await openDoroti(page);
+  const textField = page.getByRole("textbox", { name: /Text field/ });
+  const fieldBounds = await textField.boundingBox();
+  if (!fieldBounds) throw new Error("Doroti TextField semantics node has no browser bounds.");
+  await page.mouse.click(fieldBounds.x + fieldBounds.width / 2, fieldBounds.y + fieldBounds.height / 2);
+
+  const input = page.locator("#doroti-ime");
+  await expect(input).toBeVisible();
+  await input.fill("1231231234");
+  const beforeSelection = await waitForSettledPresenter(page);
+  await input.evaluate((element) => {
+    const editable = element as HTMLTextAreaElement;
+    editable.focus({ preventScroll: true });
+    editable.setSelectionRange(1, 8, "forward");
+    editable.dispatchEvent(new Event("select", { bubbles: true }));
+    document.dispatchEvent(new Event("selectionchange"));
+  });
+  await expect.poll(async () => input.evaluate((element) => {
+    const editable = element as HTMLTextAreaElement;
+    return [editable.selectionStart, editable.selectionEnd];
+  })).toEqual([1, 8]);
+  await expect.poll(async () => (await captureDiagnostics(page)).presenter.frontRequestId ?? 0)
+    .toBeGreaterThan(beforeSelection.presenter.frontRequestId ?? 0);
+  await waitForSettledPresenter(page);
+
+  const inputBounds = await input.boundingBox();
+  if (!inputBounds) throw new Error("Doroti native text endpoint has no browser bounds.");
+  const clip = {
+    x: Math.floor(inputBounds.x),
+    y: Math.floor(inputBounds.y),
+    width: Math.ceil(inputBounds.width),
+    height: Math.ceil(inputBounds.height),
+  };
+  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
+  const nativeLayerAttached = await page.screenshot({ clip });
+  const nativeStyle = await input.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const selection = getComputedStyle(element, "::selection");
+    element.style.visibility = "hidden";
+    return {
+      filter: style.filter,
+      opacity: style.opacity,
+      color: style.color,
+      selectionColor: selection.color,
+      selectionBackground: selection.backgroundColor,
+    };
+  });
+  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
+  const nativeLayerHidden = await page.screenshot({ clip });
+  await input.evaluate((element) => element.style.removeProperty("visibility"));
+
+  const differingPixels = countPixelDifferences(nativeLayerAttached, nativeLayerHidden);
+  console.log("NATIVE_SELECTION_VISUAL", JSON.stringify({ differingPixels, nativeStyle }));
+  expect(nativeStyle.filter).toBe("opacity(0)");
+  expect(differingPixels).toBe(0);
+  expect(runtimeErrors).toEqual([]);
 });
 
 test("browser-native context menu targets the active editable @headed", async ({ page, runtimeErrors }) => {

@@ -45,6 +45,10 @@ body,
   overflow: hidden;
   white-space: pre-wrap;
   opacity: 1;
+  /* Keep the native editable alive for IME, selection, clipboard, and its OS
+     context menu while excluding all of its paint (including ::selection)
+     from the Canvas-owned visual layer. */
+  filter: opacity(0%);
   color: transparent;
   background: transparent;
   caret-color: transparent;
