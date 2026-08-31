@@ -12,7 +12,7 @@ Install the .NET 10 SDK and PowerShell 7, then run one of the following commands
 # Run the default Windows backend
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
-# Run the Web app
+# Run the Web app (Release configuration by default)
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web
 ```
 
@@ -45,6 +45,19 @@ Generated bootstrap and plugin registration stay below each runner's `obj/<rid>/
 ## Commands
 
 Run from the repository root. The workspace CLI resolves the runner path from `doroti-workspace.json`:
+`build`, `run`, and `publish` use the Release configuration by default. Specify `-Configuration Debug` only when a Debug build is needed.
+
+`-Configuration` accepts `Debug` or `Release` and defaults to `Release`. The selected value is forwarded directly to the Web runner as `dotnet run --configuration <value>`.
+
+```powershell
+# Run the Web app with a Release build (the default)
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web -Configuration Release
+
+# Run the Web app with a Debug build
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web -Configuration Debug
+```
+
+`ASPNETCORE_ENVIRONMENT=Development` in the Web `launchSettings.json` selects the ASP.NET Core hosting environment. It is independent of the `Debug`/`Release` build configuration that controls compilation optimizations and debug symbols. The default invocation therefore runs a **Release build in the Development hosting environment**. Check `Doroti artifact: configuration=...` in the terminal output to confirm the selected build configuration.
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 doctor -App ./DorotiDemoApp -Platform all

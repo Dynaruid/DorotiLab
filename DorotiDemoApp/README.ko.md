@@ -12,7 +12,7 @@ DorotiDemoApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱�
 # Windows 기본 backend로 실행
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
-# Web으로 실행
+# Web으로 실행(기본 Release 구성)
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web
 ```
 
@@ -46,6 +46,18 @@ Web runner가 시작되면 브라우저에서 `http://127.0.0.1:5088`을 엽니�
 
 저장소 루트에서 실행합니다. workspace CLI는 `doroti-workspace.json`에서 runner를 선택합니다.
 `build`, `run`, `publish`는 기본적으로 Release 구성을 사용하며, 디버깅이 필요할 때만 `-Configuration Debug`를 명시합니다.
+
+`-Configuration`은 `Debug` 또는 `Release`를 받으며, 생략하면 `Release`입니다. 선택한 값은 Web runner의 `dotnet run --configuration <값>`에 그대로 전달됩니다.
+
+```powershell
+# 기본값과 동일한 Release 빌드로 Web 실행
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web -Configuration Release
+
+# Debug 빌드로 Web 실행
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web -Configuration Debug
+```
+
+Web의 `launchSettings.json`에 지정된 `ASPNETCORE_ENVIRONMENT=Development`는 ASP.NET Core의 실행 환경입니다. 이는 컴파일 최적화와 디버그 심볼을 선택하는 `Debug`/`Release` 빌드 구성과 별개이므로, 기본 실행은 **Release 빌드 + Development 실행 환경**입니다. 실행 시 terminal에 출력되는 `Doroti artifact: configuration=...`에서 실제 선택된 빌드 구성을 확인할 수 있습니다.
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 doctor -App ./DorotiDemoApp -Platform all
