@@ -117,6 +117,10 @@ let workerMode: WorkerMode = "offscreen-worker";
 let transferredCanvas: OffscreenCanvas | null = null;
 let pendingManagedSnapshot: { hostId: number; value: HostSnapshot } | null = null;
 let latestAdmissionGeneration = 0;
+let latestMailboxGeneration = 0;
+let resizeDiagnosticsEnabled = false;
+let pendingWorkerFrame: { hostId: number; callbackId: number } | null = null;
+let workerFrameRaf = 0;
 const pendingManagedInputs: Record<string, unknown>[] = [];
 let requestSequence = 0;
 let controlSequence = 0;
@@ -131,18 +135,93 @@ function post(kind: string, payload: Record<string, unknown> = {}, transfer: Tra
     .postMessage({ protocolVersion, hostId, kind, ...payload }, transfer);
 }
 
+function mergeNewestResizeState(value: HostSnapshot): HostSnapshot {
+  if (workerMode !== "worker-direct-webgl" || !snapshot) return value;
+  const current = snapshot;
+  const keepCurrentResize = current.resizeEpoch.generation > value.resizeEpoch.generation;
+  return {
+    ...value,
+    ...(keepCurrentResize ? {
+      logicalWidth: current.resizeEpoch.logicalWidth,
+      logicalHeight: current.resizeEpoch.logicalHeight,
+      devicePixelRatio: current.resizeEpoch.devicePixelRatio,
+      generation: Math.max(value.generation, current.generation),
+      resizeEpoch: current.resizeEpoch,
+    } : {}),
+    surfaceGeneration: Math.max(value.surfaceGeneration, current.surfaceGeneration),
+    gpu: current.gpu.hardware && !current.gpu.softwareFallbackUsed ? current.gpu : value.gpu,
+  };
+}
+
 function applyManagedSnapshot(messageHostId: number, value: HostSnapshot): void {
-  snapshot = value;
-  latestAdmissionGeneration = Math.max(latestAdmissionGeneration, value.resizeEpoch.generation);
+  const admittedGeneration = value.resizeEpoch.generation;
+  snapshot = mergeNewestResizeState(value);
+  latestAdmissionGeneration = Math.max(latestAdmissionGeneration, admittedGeneration);
+  latestMailboxGeneration = Math.max(latestMailboxGeneration, admittedGeneration);
   if (!managedHostReady) {
     pendingManagedSnapshot = { hostId: messageHostId, value };
     return;
   }
-  dispatchWorkerSnapshot(messageHostId, JSON.stringify(value));
+  dispatchWorkerSnapshot(messageHostId, JSON.stringify(snapshot));
   // Metrics admission is independent from presentation. Acknowledge it now so
   // the main thread can forward the latest ResizeObserver generation while the
   // framework/raster mailboxes coalesce older work.
-  post("snapshot-applied", { generation: value.resizeEpoch.generation });
+  post("snapshot-applied", { generation: admittedGeneration });
+}
+
+function dispatchPendingWorkerFrame(timestamp: number): void {
+  const request = pendingWorkerFrame;
+  pendingWorkerFrame = null;
+  if (request)
+    dispatchWorkerAnimationFrame(request.hostId, request.callbackId, timestamp);
+}
+
+function schedulePendingWorkerFrame(): void {
+  if (workerFrameRaf !== 0 || !pendingWorkerFrame) return;
+  if (typeof globalThis.requestAnimationFrame !== "function")
+    throw new Error("Doroti direct worker requires Worker requestAnimationFrame.");
+  workerFrameRaf = globalThis.requestAnimationFrame((timestamp) => {
+    workerFrameRaf = 0;
+    dispatchPendingWorkerFrame(timestamp);
+  });
+}
+
+function adoptAdmissionResizeEpoch(
+  value: ResizeEpoch | null,
+  hostGeneration: number,
+  advertisedGeneration: number,
+): void {
+  if (!snapshot || !value || !Number.isSafeInteger(value.generation) || value.generation <= 0 ||
+      value.generation !== advertisedGeneration ||
+      value.generation <= snapshot.resizeEpoch.generation ||
+      !Number.isFinite(value.logicalWidth) || value.logicalWidth <= 0 ||
+      !Number.isFinite(value.logicalHeight) || value.logicalHeight <= 0 ||
+      !Number.isSafeInteger(value.physicalWidth) || value.physicalWidth <= 0 ||
+      !Number.isSafeInteger(value.physicalHeight) || value.physicalHeight <= 0 ||
+      !Number.isFinite(value.devicePixelRatio) || value.devicePixelRatio <= 0 ||
+      !Number.isFinite(value.timestampMicroseconds)) return;
+  const previousGeneration = snapshot.resizeEpoch.generation;
+  latestAdmissionGeneration = Math.max(latestAdmissionGeneration, value.generation);
+  snapshot = {
+    ...snapshot,
+    logicalWidth: value.logicalWidth,
+    logicalHeight: value.logicalHeight,
+    devicePixelRatio: value.devicePixelRatio,
+    generation: Number.isSafeInteger(hostGeneration) && hostGeneration > 0
+      ? Math.max(snapshot.generation, hostGeneration)
+      : snapshot.generation,
+    resizeEpoch: value,
+  };
+  if (managedHostReady) {
+    dispatchWorkerSnapshot(hostId, JSON.stringify(snapshot));
+    if (resizeDiagnosticsEnabled) {
+      post("admission-applied", {
+        previousGeneration,
+        generation: value.generation,
+        mailboxGeneration: latestMailboxGeneration,
+      });
+    }
+  }
 }
 
 function createWorkerGpuSurface(
@@ -583,9 +662,8 @@ configureWorkerBridge({
   },
   requestFrame(id, callbackId) {
     if (workerMode === "worker-direct-webgl") {
-      if (typeof globalThis.requestAnimationFrame !== "function")
-        throw new Error("Doroti direct worker requires Worker requestAnimationFrame.");
-      globalThis.requestAnimationFrame((timestamp) => dispatchWorkerAnimationFrame(id, callbackId, timestamp));
+      pendingWorkerFrame = { hostId: id, callbackId };
+      schedulePendingWorkerFrame();
       return;
     }
     post("frame-request", { hostId: id, callbackId });
@@ -622,6 +700,8 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       runtimeState.transition("booting");
       snapshot = message.snapshot as HostSnapshot;
       latestAdmissionGeneration = snapshot.resizeEpoch.generation;
+      latestMailboxGeneration = snapshot.resizeEpoch.generation;
+      resizeDiagnosticsEnabled = Boolean(message.resizeDiagnostics);
       workerMode = String(message.mode ?? "offscreen-worker") as WorkerMode;
       if (workerMode !== "offscreen-worker" && workerMode !== "worker-direct-webgl")
         throw new Error(`Unknown Doroti worker mode '${workerMode}'.`);
@@ -635,15 +715,18 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       applyManagedSnapshot(Number(message.hostId), message.snapshot as HostSnapshot);
       break;
     case "admission-target":
-      latestAdmissionGeneration = Math.max(
-        latestAdmissionGeneration, Number(message.generation));
+      adoptAdmissionResizeEpoch(
+        (message.resizeEpoch ?? null) as ResizeEpoch | null,
+        Number(message.hostGeneration),
+        Number(message.generation));
       break;
     case "frame":
       // BrowserInterop is installed before StartWorker creates the host. Its
       // first framework frame is part of host startup, so waiting for
       // StartWorker to return here drops the only callback and deadlocks the
       // initial GPU/presenter handshake.
-      dispatchWorkerAnimationFrame(hostId, Number(message.callbackId), Number(message.timestamp));
+      dispatchWorkerAnimationFrame(
+        hostId, Number(message.callbackId), Number(message.timestamp));
       break;
     case "input":
       if (!managedHostReady) {
@@ -683,6 +766,10 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       break;
     case "dispose":
       runtimeState.transition("disposing");
+      if (workerFrameRaf !== 0 && typeof globalThis.cancelAnimationFrame === "function")
+        globalThis.cancelAnimationFrame(workerFrameRaf);
+      workerFrameRaf = 0;
+      pendingWorkerFrame = null;
       if (presenter?.current) {
         surface?.CompleteFrame(presenter.current.requestId, presenter.current.generation,
           "dropped", "worker runtime disposing");

@@ -2246,12 +2246,15 @@ export async function startDorotiWorkerHost(
   };
   workerDisplayPresenters.set(canvas.id, display);
   let snapshotInFlight = false;
+  let snapshotInFlightGeneration = 0;
   let latestWorkerSnapshot: { hostId: number; value: Record<string, unknown> } | null = null;
   const sendLatestWorkerSnapshot = (): void => {
     if (snapshotInFlight || !latestWorkerSnapshot) return;
     const next = latestWorkerSnapshot;
     latestWorkerSnapshot = null;
     snapshotInFlight = true;
+    snapshotInFlightGeneration = Number(
+      (next.value.resizeEpoch as Record<string, unknown>)?.generation);
     const targetHost = hosts.get(next.hostId);
     if (targetHost) recordResize(targetHost, "worker-snapshot-sent", "worker-mailbox", {
       detail: JSON.stringify({ generation: (next.value.resizeEpoch as Record<string, unknown>)?.generation }),
@@ -2271,6 +2274,8 @@ export async function startDorotiWorkerHost(
         protocolVersion: dorotiProtocolVersion,
         kind: "admission-target",
         generation: Number((value.resizeEpoch as Record<string, unknown>)?.generation),
+        resizeEpoch: value.resizeEpoch,
+        hostGeneration: Number(value.generation),
       });
     }
     const targetHost = hosts.get(hostId);
@@ -2354,7 +2359,7 @@ export async function startDorotiWorkerHost(
       let message: Record<string, unknown>;
       try {
         message = decodeDorotiMessage(event.data, new Set([
-          "runtime-ready", "gpu-ready", "snapshot-applied", "frame-request", "managed-raster",
+          "runtime-ready", "gpu-ready", "snapshot-applied", "admission-applied", "frame-request", "managed-raster",
           "present-requested", "bitmap", "direct-commit", "terminal", "resource", "context-lost",
         "context-restored", "control", "control-request", "disposed", "fatal",
         ]));
@@ -2372,12 +2377,26 @@ export async function startDorotiWorkerHost(
           display.contextGeneration = Number(message.contextGeneration);
           emit(host);
           break;
-        case "snapshot-applied":
+        case "snapshot-applied": {
+          const appliedGeneration = Number(message.generation);
+          if (worker !== activeWorker || !snapshotInFlight ||
+              appliedGeneration !== snapshotInFlightGeneration) break;
           snapshotInFlight = false;
+          snapshotInFlightGeneration = 0;
           recordResize(host, "worker-snapshot-applied", "worker-mailbox", {
-            detail: JSON.stringify({ generation: Number(message.generation) }),
+            detail: JSON.stringify({ generation: appliedGeneration }),
           });
           sendLatestWorkerSnapshot();
+          break;
+        }
+        case "admission-applied":
+          recordResize(host, "worker-admission-applied", "worker-resize-fast-lane", {
+            detail: JSON.stringify({
+              previousGeneration: Number(message.previousGeneration),
+              generation: Number(message.generation),
+              mailboxGeneration: Number(message.mailboxGeneration),
+            }),
+          });
           break;
         case "frame-request": {
           const callbackId = Number(message.callbackId);
@@ -2589,6 +2608,7 @@ export async function startDorotiWorkerHost(
             display.frontRequestId = 0;
             display.contextLost = false;
             snapshotInFlight = false;
+            snapshotInFlightGeneration = 0;
             latestWorkerSnapshot = null;
             closeExternalLeases(display.pendingLeases, (requestId, lease) => {
               recordResize(host, "ack", "worker-supervisor", {
@@ -2621,6 +2641,7 @@ export async function startDorotiWorkerHost(
             replacement.postMessage({
               protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
               dotnetModuleUrl, mode, canvas: replacementOffscreen,
+              resizeDiagnostics: diagnosticsEnabled(),
             }, replacementOffscreen ? [replacementOffscreen] : []);
           } else if (!ready) rejectReady(error);
           else root.dataset.dorotiWorkerRuntime = "failed";
@@ -2638,6 +2659,7 @@ export async function startDorotiWorkerHost(
   const initialMessage = {
     protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
     dotnetModuleUrl, mode, canvas: initialOffscreen,
+    resizeDiagnostics: diagnosticsEnabled(),
   };
   activeWorker.postMessage(initialMessage, initialOffscreen ? [initialOffscreen] : []);
   globalThis.addEventListener("pagehide", () => {

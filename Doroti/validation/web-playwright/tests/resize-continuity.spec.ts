@@ -7,6 +7,7 @@ import type { TestInfo } from "@playwright/test";
 import { test, expect } from "./helpers/fixtures.js";
 import {
   assertPresenterContract,
+  frontCommitGeneration,
   openDoroti,
   percentile,
   resetDiagnostics,
@@ -191,12 +192,101 @@ function latencies(trace: TraceEntry[], fromPhase: string, toPhases: string[]): 
   return result;
 }
 
+function targetToCaughtUpFrontLatencies(
+  trace: TraceEntry[],
+  startedMilliseconds = Number.NEGATIVE_INFINITY,
+  finishedMilliseconds = Number.POSITIVE_INFINITY,
+): number[] {
+  const targets = trace.filter((entry) => entry.phase === "target-observed" &&
+    entry.timestampMicroseconds / 1000 >= startedMilliseconds &&
+    entry.timestampMicroseconds / 1000 <= finishedMilliseconds);
+  const fronts = trace.filter((entry) => entry.phase === "front-commit");
+  const result: number[] = [];
+  for (const target of targets) {
+    const caughtUp = fronts.find((entry) => entry.sequence > target.sequence &&
+      frontCommitGeneration(entry) >= target.epoch.generation);
+    if (caughtUp) result.push((caughtUp.timestampMicroseconds - target.timestampMicroseconds) / 1000);
+  }
+  return result;
+}
+
 function distribution(values: number[]): { samples: number; p50: number | null; p95: number | null; max: number | null } {
   return {
     samples: values.length,
     p50: values.length > 0 ? percentile(values, 0.5) : null,
     p95: values.length > 0 ? percentile(values, 0.95) : null,
     max: values.length > 0 ? Math.max(...values) : null,
+  };
+}
+
+function activeGenerationTimeline(
+  trace: TraceEntry[],
+  startedMilliseconds: number,
+  finishedMilliseconds: number,
+) {
+  const startedMicroseconds = startedMilliseconds * 1000;
+  const finishedMicroseconds = finishedMilliseconds * 1000;
+  const activeTargets = trace.filter((entry) => entry.phase === "target-observed" &&
+    entry.timestampMicroseconds >= startedMicroseconds &&
+    entry.timestampMicroseconds <= finishedMicroseconds);
+  const activeCommits = trace.filter((entry) => entry.phase === "front-commit" &&
+    entry.timestampMicroseconds >= startedMicroseconds &&
+    entry.timestampMicroseconds <= finishedMicroseconds);
+  const priorTarget = trace.filter((entry) => entry.phase === "target-observed" &&
+    entry.timestampMicroseconds < startedMicroseconds).at(-1);
+  const priorCommit = trace.filter((entry) => entry.phase === "front-commit" &&
+    entry.timestampMicroseconds < startedMicroseconds).at(-1);
+  const fallbackGeneration = Math.max(0, (activeTargets[0]?.epoch.generation ??
+    (activeCommits[0] ? frontCommitGeneration(activeCommits[0]) + 1 : 1)) - 1);
+  let targetGeneration = priorTarget?.epoch.generation ?? fallbackGeneration;
+  let frontGeneration = priorCommit ? frontCommitGeneration(priorCommit) : fallbackGeneration;
+  const events = [
+    ...activeTargets.map((entry) => ({ entry, kind: "target" as const })),
+    ...activeCommits.map((entry) => ({ entry, kind: "commit" as const })),
+  ].sort((left, right) => left.entry.timestampMicroseconds - right.entry.timestampMicroseconds ||
+    left.entry.sequence - right.entry.sequence);
+  const targetGenerationLags: number[] = [];
+  const commitGenerationLags: number[] = [];
+  const continuousBehindMilliseconds: number[] = [];
+  let peakGenerationLag = Math.max(0, targetGeneration - frontGeneration);
+  let behindStartedMicroseconds: number | null = peakGenerationLag > 0 ? startedMicroseconds : null;
+
+  for (const { entry, kind } of events) {
+    const wasBehind = targetGeneration > frontGeneration;
+    if (kind === "target") targetGeneration = entry.epoch.generation;
+    else frontGeneration = Math.max(frontGeneration, frontCommitGeneration(entry));
+    const generationLag = Math.max(0, targetGeneration - frontGeneration);
+    peakGenerationLag = Math.max(peakGenerationLag, generationLag);
+    if (kind === "target") targetGenerationLags.push(generationLag);
+    else commitGenerationLags.push(generationLag);
+    const isBehind = generationLag > 0;
+    if (!wasBehind && isBehind) behindStartedMicroseconds = entry.timestampMicroseconds;
+    else if (wasBehind && !isBehind && behindStartedMicroseconds !== null) {
+      continuousBehindMilliseconds.push(
+        (entry.timestampMicroseconds - behindStartedMicroseconds) / 1000);
+      behindStartedMicroseconds = null;
+    }
+  }
+  if (behindStartedMicroseconds !== null) {
+    continuousBehindMilliseconds.push(
+      (finishedMicroseconds - behindStartedMicroseconds) / 1000);
+  }
+  const behindDurationMilliseconds = continuousBehindMilliseconds
+    .reduce((sum, value) => sum + value, 0);
+  const activeDurationMilliseconds = Math.max(0, finishedMilliseconds - startedMilliseconds);
+  const exactCommitCount = commitGenerationLags.filter((value) => value === 0).length;
+  return {
+    targetCount: activeTargets.length,
+    commitCount: activeCommits.length,
+    targetGenerationLag: distribution(targetGenerationLags),
+    commitGenerationLag: distribution(commitGenerationLags),
+    peakGenerationLag,
+    exactCommitCount,
+    exactCommitRatio: activeCommits.length > 0 ? exactCommitCount / activeCommits.length : 0,
+    continuousBehindMilliseconds: distribution(continuousBehindMilliseconds),
+    behindDurationMilliseconds,
+    behindDutyRatio: activeDurationMilliseconds > 0
+      ? behindDurationMilliseconds / activeDurationMilliseconds : 0,
   };
 }
 
@@ -216,7 +306,7 @@ function liveResizeReport(bundle: DiagnosticBundle, samples: LiveResizeSample[])
   const targetToManaged = latencies(trace, "target-observed", [
     "managed-snapshot-dispatched", "worker-snapshot-sent",
   ]);
-  const targetToExact = latencies(trace, "target-observed", ["front-commit"]);
+  const targetToCaughtUpFront = targetToCaughtUpFrontLatencies(trace);
   const commitTimes = trace.filter((entry) => entry.phase === "front-commit")
     .map((entry) => entry.timestampMicroseconds / 1000);
   const commitCadence = commitTimes.slice(1).map((value, index) => value - commitTimes[index]);
@@ -227,7 +317,8 @@ function liveResizeReport(bundle: DiagnosticBundle, samples: LiveResizeSample[])
     renderer: bundle.presenter.mode,
     sampleCount: samples.length,
     targetToManagedMilliseconds: distribution(targetToManaged),
-    targetToExactFrontMilliseconds: distribution(targetToExact),
+    targetToExactFrontMilliseconds: distribution(targetToCaughtUpFront),
+    targetToCaughtUpFrontMilliseconds: distribution(targetToCaughtUpFront),
     exactFrontCadenceMilliseconds: distribution(commitCadence),
     preview: { count: previews.length },
     visual: {
@@ -289,6 +380,63 @@ test("viewport A-B-C resize commits exact fronts without retained previews", asy
   expect(finalCommit?.backingHeight ?? 0).toBeGreaterThanOrEqual(finalCommit?.surfaceHeight ?? 1);
   expect(bundle.trace.filter((entry) => entry.phase === "resize-preview-commit")).toEqual([]);
   expect(bundle.trace.filter((entry) => entry.phase === "preview-front-refresh")).toEqual([]);
+  assertPresenterContract(bundle);
+});
+
+test("direct worker admission skips stale snapshot mailbox generations", async ({ page, runtimeErrors }) => {
+  test.skip(process.env.DOROTI_WEB_RENDERER_MODE !== "worker-direct-webgl",
+    "The admission fast lane belongs to the direct Worker renderer.");
+  const initial = await openDoroti(page);
+  expect(initial.presenter.mode).toBe("worker-direct-webgl");
+  await resetDiagnostics(page);
+
+  const bursts = Array.from({ length: 3 }, (_, round) =>
+    Array.from({ length: 12 }, (_, index) => ({
+      width: 900 + ((index * 137 + round * 53) % 500),
+      height: 620 + ((index * 89 + round * 47) % 260),
+    })));
+  for (const sizes of bursts)
+    await Promise.all(sizes.map((size) => page.setViewportSize(size)));
+  const final = { width: 1160, height: 740 };
+  await page.setViewportSize(final);
+
+  const bundle = await waitForSettledPresenter(page);
+  const admissions = bundle.trace.flatMap((entry) => {
+    if (entry.phase !== "worker-admission-applied") return [];
+    try {
+      const detail = JSON.parse(entry.detail ?? "{}") as {
+        previousGeneration?: number;
+        generation?: number;
+        mailboxGeneration?: number;
+      };
+      const previousGeneration = Number(detail.previousGeneration);
+      const generation = Number(detail.generation);
+      const mailboxGeneration = Number(detail.mailboxGeneration);
+      return Number.isSafeInteger(previousGeneration) && Number.isSafeInteger(generation) &&
+        Number.isSafeInteger(mailboxGeneration)
+        ? [{ entry, previousGeneration, generation, mailboxGeneration }]
+        : [];
+    } catch {
+      return [];
+    }
+  });
+  const skipped = admissions.find((value) =>
+    value.generation > value.previousGeneration &&
+    value.generation >= value.mailboxGeneration + 2);
+  expect(skipped, `admissions=${JSON.stringify(admissions)}`).toBeDefined();
+
+  const fronts = bundle.trace.filter((entry) => entry.phase === "front-commit");
+  const caughtUp = fronts.find((entry) => entry.sequence > skipped!.entry.sequence &&
+    frontCommitGeneration(entry) >= skipped!.generation);
+  expect(caughtUp, `skipped=${JSON.stringify(skipped)} fronts=${JSON.stringify(fronts)}`).toBeDefined();
+  const frontGenerations = fronts.map(frontCommitGeneration);
+  expect(frontGenerations.every((generation, index) =>
+    index === 0 || generation >= frontGenerations[index - 1])).toBe(true);
+  expect(runtimeErrors).toEqual([]);
+  expect(bundle.snapshot.resizeEpoch.logicalWidth).toBe(final.width);
+  expect(bundle.snapshot.resizeEpoch.logicalHeight).toBe(final.height);
+  expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
+  expect(frontCommitGeneration(fronts.at(-1)!)).toBe(bundle.snapshot.resizeEpoch.generation);
   assertPresenterContract(bundle);
 });
 
@@ -380,6 +528,8 @@ test("pinch zoom keeps full-page layout metrics and direct front coherent", asyn
 });
 
 test("@headed Desktop Chrome live bounds expose only exact, unscaled fronts", async ({ page, context, runtimeErrors }, testInfo) => {
+  test.skip(process.env.DOROTI_WEB_RUN_VISIBLE_RESIZE !== "1",
+    "Visible stepped Chrome window-bounds validation is an opt-in forensic diagnostic.");
   await openDoroti(page);
   await resetDiagnostics(page);
   const session = await context.newCDPSession(page);
@@ -494,6 +644,8 @@ test("@headed Desktop Chrome live bounds expose only exact, unscaled fronts", as
 
 test("@headed Windows native edge resize keeps metrics independent from presentation", async ({ page, context, runtimeErrors }, testInfo) => {
   test.skip(process.platform !== "win32", "Native HWND resize validation is Windows-only.");
+  test.skip(process.env.DOROTI_WEB_RUN_NATIVE_HWND_RESIZE !== "1",
+    "The visible 181-step native HWND resize is an opt-in forensic diagnostic.");
   await openDoroti(page);
   await resetDiagnostics(page);
   const titleToken = `doroti-native-resize-${Date.now()}-${testInfo.workerIndex}`;
@@ -590,13 +742,7 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
     entry.surfaceWidth > 0 && entry.surfaceHeight > 0 &&
     entry.backingWidth >= entry.surfaceWidth && entry.backingHeight >= entry.surfaceHeight);
   const activeCommitTimes = activeEpochExactCommits.map((entry) => entry.timestampMicroseconds / 1000);
-  const activeCommittedGenerations = new Set(activeEpochExactCommits.map((entry) => {
-    try {
-      return Number((JSON.parse(entry.detail ?? "{}") as { generation?: number }).generation ?? entry.epoch.generation);
-    } catch {
-      return entry.epoch.generation;
-    }
-  }));
+  const activeCommittedGenerations = new Set(activeEpochExactCommits.map(frontCommitGeneration));
   const activeProgressiveCommitCount = activeEpochExactCommits.filter((entry) => {
     try {
       return Boolean((JSON.parse(entry.detail ?? "{}") as { progressive?: boolean }).progressive);
@@ -607,6 +753,10 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
   const managedSnapshotDurations = bundle.trace
     .filter((entry) => entry.phase === "managed-snapshot-completed")
     .map((entry) => entry.durationMicroseconds / 1000);
+  const activeTargetToCaughtUpFront = targetToCaughtUpFrontLatencies(
+    bundle.trace, nativeResizeStarted, nativeResizeFinished);
+  const activeGeneration = activeGenerationTimeline(
+    bundle.trace, nativeResizeStarted, nativeResizeFinished);
   const report = { schemaVersion: "doroti.native-hwnd-resize/v1", windowId, sequence, samples: nativeSamples,
     semanticsAfterFinalTarget: semanticsAfterFinalTarget.length,
     observedResizeCount: observedTimes.length,
@@ -617,6 +767,8 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
     activeProgressiveCommitCount,
     activeEpochExactCommitCadenceMilliseconds: distribution(activeCommitTimes.slice(1)
       .map((value, index) => value - activeCommitTimes[index])),
+    activeTargetToCaughtUpFrontMilliseconds: distribution(activeTargetToCaughtUpFront),
+    activeGeneration,
     managedSnapshotDispatchDurationMilliseconds: distribution(managedSnapshotDurations),
     workerAdvancedBeforePriorTerminal: workerAdvancedBeforePriorTerminal(bundle.trace),
     diagnostics: bundle };

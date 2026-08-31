@@ -85,6 +85,18 @@ export interface DiagnosticBundle {
   trace: TraceEntry[];
 }
 
+export function frontCommitGeneration(entry: TraceEntry): number {
+  if (entry.detail) {
+    try {
+      const generation = Number((JSON.parse(entry.detail) as { generation?: unknown }).generation);
+      if (Number.isSafeInteger(generation) && generation > 0) return generation;
+    } catch {
+      // Older/non-direct trace entries do not have to carry structured detail.
+    }
+  }
+  return entry.epoch.generation;
+}
+
 type BrowserDiagnostics = {
   hosts(): number[];
   trace(hostId: number): string;
@@ -217,18 +229,19 @@ export function assertPresenterContract(bundle: DiagnosticBundle): void {
         progressive?: boolean;
         admitted?: boolean;
       };
+      const generation = frontCommitGeneration(entry);
       expect(detail.admitted, `direct request ${entry.requestId} admission`).toBe(true);
-      expect(detail.generation, `direct request ${entry.requestId} target generation`)
+      expect(generation, `direct request ${entry.requestId} target generation`)
         .toBeLessThanOrEqual(detail.targetGeneration ?? 0);
-      expect(detail.generation, `direct request ${entry.requestId} main epoch`)
+      expect(generation, `direct request ${entry.requestId} main epoch`)
         .toBeLessThanOrEqual(entry.epoch.generation);
       expect(detail.progressive, `direct request ${entry.requestId} progressive marker`)
-        .toBe((detail.generation ?? 0) < (detail.targetGeneration ?? 0));
-      expect(detail.generation ?? 0, `direct request ${entry.requestId} monotonic generation`)
+        .toBe(generation < (detail.targetGeneration ?? 0));
+      expect(generation, `direct request ${entry.requestId} monotonic generation`)
         .toBeGreaterThanOrEqual(priorGeneration);
       expect(entry.requestId, `direct request ${entry.requestId} monotonic request`)
         .toBeGreaterThan(priorRequestId);
-      priorGeneration = detail.generation ?? priorGeneration;
+      priorGeneration = generation;
       priorRequestId = entry.requestId;
     }
   }
