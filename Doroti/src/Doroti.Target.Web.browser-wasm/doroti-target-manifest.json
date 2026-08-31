@@ -3,12 +3,15 @@
   "packageId": "Doroti.Target.Web.browser-wasm",
   "packageVersion": "0.2.0-beta",
   "rid": "browser-wasm",
-  "host": "document-or-worker-canvas",
-  "graphicsBackend": "document-webgl2-or-worker-direct-webgl2-or-offscreen-webgl2-imagebitmap",
+  "host": "document-or-split-ui-raster-workers",
+  "graphicsBackend": "document-webgl2-or-worker-canvaskit-webgl2-or-worker-direct-webgl2-or-offscreen-webgl2-imagebitmap",
   "blazorWebAssemblyVersion": "10.0.11",
   "skiaSharpVersion": "4.151.1",
   "skiaSharpManagedPackage": "SkiaSharp",
   "skiaSharpNativePackage": "SkiaSharp.NativeAssets.WebAssembly",
+  "canvasKitVersion": "0.42.0",
+  "canvasKitVariant": "default",
+  "canvasKitAssetBase": "_content/Doroti.Host.Web/canvaskit/0.42.0/",
   "bootLoader": "_framework/blazor.webassembly.js",
   "bootLoaderPreloadId": "doroti-blazor-loader",
   "frameworkPreloadPlaceholderId": "webassembly",
@@ -16,15 +19,18 @@
     "Doroti.Host.Web.DorotiRoot",
     "Doroti.Host.Web.DorotiSurface",
     "Doroti.Host.Web.DorotiWebGlSurface",
-    "Doroti.Host.Web.DorotiWebWorkerSurface"
+    "Doroti.Host.Web.DorotiWebWorkerSurface",
+    "Doroti.Host.Web.BrowserCanvasKitCapabilities"
   ],
   "rendererModes": [
     "document-webgl",
+    "worker-canvaskit-webgl",
     "worker-direct-webgl",
     "offscreen-bitmap",
     "offscreen-worker"
   ],
-  "workerRuntimeOwnership": "main-managed-runtime-zero-worker-managed-runtime-one",
+  "workerRuntimeOwnership": "main-managed-runtime-zero-ui-managed-runtime-one-raster-managed-runtime-zero",
+  "canvasKitRuntimeOwnership": "main-zero-ui-text-one-raster-gpu-one",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",
   "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
@@ -32,12 +38,16 @@
   "resourceKinds": [
     "asset",
     "font",
-    "localization"
+    "localization",
+    "canvaskit-font",
+    "canvaskit-image",
+    "canvaskit-runtime-effect"
   ],
   "supportedPublishModes": [
     "interpreter",
     "aot-build-probe",
-    "persistent-dotnet-web-worker"
+    "persistent-dotnet-web-worker",
+    "split-ui-canvaskit-raster-workers"
   ],
   "requiredCapabilities": [
     "window.lifecycle",

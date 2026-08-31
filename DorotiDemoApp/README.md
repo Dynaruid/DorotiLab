@@ -6,7 +6,7 @@ DorotiDemoApp dogfoods the platform-workspace contract. The root project is targ
 
 ## Quick start
 
-Install the .NET 10 SDK and PowerShell 7, then run one of the following commands from the repository root. The first run can take a while because it restores packages and builds the selected runner.
+Install the .NET 10 SDK and PowerShell 7. Building the Web host from this source tree also requires Node.js 20 or newer and npm 10 or newer so the pinned CanvasKit assets can be restored and verified. Then run one of the following commands from the repository root. The first run can take a while because it restores packages and builds the selected runner.
 
 ```powershell
 # Run the default Windows backend
@@ -20,11 +20,38 @@ After the Web runner starts, open `http://127.0.0.1:5088` in a browser. To compa
 
 - Automatic selection: `http://127.0.0.1:5088`
 - Document WebGL2: `http://127.0.0.1:5088/?dorotiRenderer=document-webgl`
+- Split .NET UI Worker + CanvasKit Raster Worker (qualification opt-in): `http://127.0.0.1:5088/?dorotiRenderer=worker-canvaskit-webgl`
 - Direct visible canvas in the persistent .NET Worker (qualification candidate): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
 - Same-thread OffscreenCanvas: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-bitmap`
 - Persistent .NET Worker: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-worker`
 
-`auto` remains `document-webgl` until the physical 60/120 Hz, trackpad, Korean IME, and screen-reader gates pass.
+`worker-canvaskit-webgl` is a forced opt-in mode. The main thread owns DOM/input/IME/semantics, logical CSS geometry, Worker supervision, restart policy, and canvas-lease replacement; the UI Worker owns the .NET runtime and a CPU text-layout CanvasKit instance; the Raster Worker owns the visible `OffscreenCanvas` and hardware-WebGL2 CanvasKit instance. If the explicitly requested mode cannot initialize its Workers, WebGL2 context, or packaged assets, it surfaces the failure instead of silently selecting an older renderer.
+
+The Web host source build acquires the exact default variant of `canvaskit-wasm@0.42.0` under lockfile integrity. At runtime it uses only the same-origin JS/WASM packaged by `Doroti.Host.Web` under `/_content/Doroti.Host.Web/canvaskit/0.42.0/`; it does not download CanvasKit from a CDN or the npm registry. `canvaskit.manifest.json` in that path records the version, variant, lockfile integrity, byte length, and SHA-256 of every allowed file. The package also carries the type declarations and upstream `LICENSE`, and consuming applications do not need Node/npm during restore, build, or publish.
+
+`auto` remains `document-webgl` until CanvasKit automatic correctness, performance, physical 60/120 Hz, trackpad, Korean IME, and screen-reader qualification all pass. A successful opt-in run does not promote the default.
+
+### CanvasKit qualification evidence (2026-08-31)
+
+The targeted hardware-WebGL2 Chromium suite passed `5/5`. Its automatic evidence covers main/UI/Raster ownership (`.NET` 0/1/0 and CanvasKit 0/1/1), exact terminal/receipt accounting, UI heartbeat and input dispatch during a 100 ms Raster stall, DPR2 CSS 1080×720 with a 2160×1440 backing and no CSS transform, three bounded Raster Worker/canvas-lease replacements with resource replay, and malformed-protocol rejection followed by bounded recovery.
+
+The full headless CanvasKit-mode run passed `16`, skipped `5` tests that target other renderer modes, and failed `0`. A separate package audit packed all seven required Doroti packages and restored, built, and published a clean package consumer with Node/npm poison shims; no Node/npm invocation occurred, and the five CanvasKit asset hashes matched from source through nupkg to publish. Missing-license and one-byte-tamper packages failed closed with `DOROTICK101` and `DOROTICK102` respectively.
+
+```powershell
+pwsh -NoProfile -File ./Doroti/eng/run-web-playwright.ps1 `
+  -Configuration Release `
+  -HeadlessOnly `
+  -RendererMode worker-canvaskit-webgl `
+  -TestFile tests/canvaskit-worker.spec.ts
+
+pwsh -NoProfile -File ./Doroti/eng/run-web-playwright.ps1 `
+  -Configuration Release `
+  -HeadlessOnly `
+  -RendererMode worker-canvaskit-webgl `
+  -TestFile tests/canvaskit-display-list.spec.ts
+```
+
+This does not prove removal of all legacy `HostPayload` or Web SkiaSharp dependencies, same-worker Skia/pixel-golden parity, composed runtime-effect filters, complete retained-output caching, comparative performance, 30-minute memory churn, compositor scan-out, physical 60/120 Hz resize, precision-trackpad behavior, Korean IME, or screen-reader acceptance. The package still contains the legacy Web Skia dependencies, so that cutover gate is `FAIL`; the other listed gates remain `PARTIAL` or `notVerified`. Firefox and Safari are not promoted to supported product paths.
 
 Press `Ctrl+C` in the terminal that launched the app to stop it. See [Run by platform](#run-by-platform) below for Android, iOS, macOS, Linux, and Windows MAUI commands.
 

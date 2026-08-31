@@ -17,11 +17,6 @@
            Text="DorotiJavaScriptPlugin '%(DorotiJavaScriptPlugin.Identity)' must declare Channel metadata." />
     <Error Code="DOROTIWEB006" Condition="'@(DorotiJavaScriptPlugin)' != '' and '%(DorotiJavaScriptPlugin.ExportName)' == ''"
            Text="DorotiJavaScriptPlugin '%(DorotiJavaScriptPlugin.Identity)' must declare ExportName metadata." />
-    <ItemGroup>
-      <_DorotiForbiddenCanvasKit Include="@(Content)" Condition="$([System.String]::Copy('%(Content.Identity)').ToLowerInvariant().Contains('canvaskit'))" />
-    </ItemGroup>
-    <Error Code="DOROTIWEB007" Condition="'@(_DorotiForbiddenCanvasKit)' != ''"
-           Text="Doroti Web uses statically linked SkiaSharp WebAssembly; CanvasKit content is forbidden: @(_DorotiForbiddenCanvasKit)." />
   </Target>
 
   <Target Name="DorotiValidatePublishedBrowserProduct" AfterTargets="Publish">
@@ -43,5 +38,11 @@
            Text="Doroti Web publish is missing the compiled application bootstrap module." />
     <Error Code="DOROTIWEB026" Condition="!Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.raster.worker.js')"
            Text="Doroti Web publish is missing the persistent offscreen worker runtime module." />
+    <Error Code="DOROTIWEB035"
+           Condition="!Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.canvaskit.bootstrap.js') or !Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.canvaskit.host.js') or !Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.ui.worker.js') or !Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\doroti.canvaskit.worker.js')"
+           Text="Doroti Web publish is missing one or more split CanvasKit Worker modules." />
+    <Error Code="DOROTIWEB036"
+           Condition="!Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\canvaskit\0.42.0\canvaskit.js') or !Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\canvaskit\0.42.0\canvaskit.wasm') or !Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\canvaskit\0.42.0\canvaskit.manifest.json') or !Exists('$(_DorotiPublishRoot)\_content\Doroti.Host.Web\canvaskit\0.42.0\LICENSE')"
+           Text="Doroti Web publish is missing the pinned CanvasKit 0.42.0 runtime, provenance, or license assets." />
   </Target>
 </Project>

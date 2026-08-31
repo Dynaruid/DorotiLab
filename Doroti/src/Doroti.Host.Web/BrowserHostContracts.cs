@@ -11,7 +11,8 @@ public sealed record BrowserGpuIdentity(
     string Vendor,
     string Renderer,
     bool Hardware,
-    bool SoftwareFallbackUsed);
+    bool SoftwareFallbackUsed,
+    long ContextGeneration = 0);
 
 public sealed record BrowserHostSnapshot(
     string CanvasId,

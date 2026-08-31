@@ -10,8 +10,7 @@ namespace Doroti.Host.Web;
 
 [System.Runtime.Versioning.SupportedOSPlatform("browser")]
 internal sealed class BrowserSkiaCapabilities :
-    ISceneHostCapability, IParagraphHostCapability, IImageHostCapability,
-    ISemanticsHostCapability, IDisposable
+    IBrowserGraphicsCapabilities
 {
     private readonly HostBridge _bridge;
     private readonly BrowserHostAdapter _host;
@@ -39,7 +38,7 @@ internal sealed class BrowserSkiaCapabilities :
 
     public bool CoalesceGeometryDuringActiveMetrics => true;
 
-    internal BrowserFrameDiagnostics Diagnostics
+    public BrowserFrameDiagnostics Diagnostics
     {
         get
         {
@@ -50,19 +49,19 @@ internal sealed class BrowserSkiaCapabilities :
         }
     }
 
-    internal void AttachSurface(Action invalidate)
+    public void AttachSurface(Action invalidate)
     {
         _bridge.Invalidate = invalidate;
         _renderer.AttachSurface(invalidate);
     }
 
-    internal void AttachFrameworkTrace(DorotiFrameTrace trace) =>
+    public void AttachFrameworkTrace(DorotiFrameTrace trace) =>
         _renderer.AttachFrameworkTrace(trace);
 
     public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation)
         => _renderer.Submit(viewId, submission, invocation);
 
-    internal string Paint(
+    public string Paint(
         SKSurface surface,
         int pixelWidth,
         int pixelHeight,
@@ -94,7 +93,7 @@ internal sealed class BrowserSkiaCapabilities :
         }
     }
 
-    internal void CompletePaint(long requestId, string terminal, string reason)
+    public void CompletePaint(long requestId, string terminal, string reason)
     {
         SkiaPaintCompletion completion;
         lock (_paintGate)
@@ -112,7 +111,7 @@ internal sealed class BrowserSkiaCapabilities :
         }
     }
 
-    internal void InvalidateGpuContext(long requestId, string reason)
+    public void InvalidateGpuContext(long requestId, string reason)
     {
         SkiaPaintCompletion completion;
         lock (_paintGate)
@@ -123,7 +122,7 @@ internal sealed class BrowserSkiaCapabilities :
         _renderer.InvalidateGpuContextResources();
     }
 
-    internal void InvalidateWindowSurfaceResources() =>
+    public void InvalidateWindowSurfaceResources() =>
         _renderer.InvalidateWindowSurfaceResources();
 
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation) =>

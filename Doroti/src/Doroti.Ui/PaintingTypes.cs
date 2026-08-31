@@ -389,16 +389,24 @@ public sealed class ParagraphStyle
         double? fontSize = null, double? height = null, FontWeight? fontWeight = null, FontStyle? fontStyle = null,
         StrutStyle? strutStyle = null, string? ellipsis = null, Locale? locale = null, TextHeightBehavior? textHeightBehavior = null)
     {
+        this.textAlign = textAlign;
+        this.textDirection = textDirection;
         this.fontFamily = fontFamily;
         this.fontSize = fontSize;
         this.height = height;
         this.maxLines = maxLines;
+        this.ellipsis = ellipsis;
+        this.locale = locale;
     }
 
+    public TextAlign? textAlign { get; }
+    public TextDirection? textDirection { get; }
     public string? fontFamily { get; }
     public double? fontSize { get; }
     public double? height { get; }
     public long? maxLines { get; }
+    public string? ellipsis { get; }
+    public Locale? locale { get; }
 }
 
 public sealed class StrutStyle
@@ -443,7 +451,8 @@ public sealed class ParagraphBuilder
         {
             return view.LayoutParagraph(
                 new ParagraphRequest(text, double.PositiveInfinity, fontFamily, fontSize,
-                    _style.maxLines, color, lineHeight),
+                    _style.maxLines, color, lineHeight, _style.textAlign,
+                    _style.textDirection, _style.locale, _style.ellipsis),
                 DartUiInvocation.Managed("dart:ui#ParagraphBuilder.build"));
         }
 

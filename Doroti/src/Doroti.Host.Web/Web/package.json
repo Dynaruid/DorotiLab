@@ -1,0 +1,12 @@
+{
+  "name": "@doroti/host-web-assets",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "devDependencies": {
+    "canvaskit-wasm": "0.42.0"
+  }
+}

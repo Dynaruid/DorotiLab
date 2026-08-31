@@ -369,6 +369,7 @@ internal sealed record CanvasClipRRectPayload(RRect RRect);
 internal sealed record CanvasClipRSuperellipsePayload(RSuperellipse RSuperellipse, bool DoAntiAlias);
 internal sealed record CanvasClipPathPayload(Path Path);
 internal sealed record CanvasImagePayload(Image Image, Rect Source, Rect Destination, PaintSnapshot Paint);
+internal sealed record CanvasImageNinePayload(Image Image, Rect Center, Rect Destination, PaintSnapshot Paint);
 internal sealed record CanvasParagraphPayload(Paragraph Paragraph, Offset Offset);
 internal sealed record CanvasShadowPayload(Path Path, Color Color, double Elevation, bool TransparentOccluder);
 internal sealed record CanvasCirclePayload(Offset Center, double Radius, PaintSnapshot Paint);
@@ -805,7 +806,15 @@ public class Canvas
     {
         HostPayload = new CanvasImagePayload(image, src, dst, PaintSnapshot.Capture(paint)),
     });
-    public void drawImageNine(Image image, Rect center, Rect dst, Paint paint) => _commands.Add(new("drawImageNine", [image.width, image.height, center.left, center.top, center.right, center.bottom, dst.left, dst.top, dst.right, dst.bottom]));
+    public void drawImageNine(Image image, Rect center, Rect dst, Paint paint) =>
+        _commands.Add(new PathCommand(
+            "drawImageNine",
+            [image.width, image.height, center.left, center.top, center.right, center.bottom,
+                dst.left, dst.top, dst.right, dst.bottom])
+        {
+            HostPayload = new CanvasImageNinePayload(
+                image, center, dst, PaintSnapshot.Capture(paint)),
+        });
     public void drawParagraph(Paragraph paragraph, Offset offset) => _commands.Add(new PathCommand("drawParagraph", [offset.dx, offset.dy, paragraph.width, paragraph.height])
     {
         HostPayload = new CanvasParagraphPayload(paragraph, offset),
@@ -824,16 +833,61 @@ public sealed record ParagraphRequest(
     double FontSize,
     long? MaxLines = null,
     Color? Color = null,
-    double? Height = null);
+    double? Height = null,
+    TextAlign? TextAlign = null,
+    TextDirection? TextDirection = null,
+    Locale? Locale = null,
+    string? Ellipsis = null);
+
+internal sealed record ParagraphHostLineSnapshot(
+    int Start,
+    int End,
+    bool HardBreak,
+    double Ascent,
+    double Descent,
+    double Height,
+    double Width,
+    double Left,
+    double Baseline);
+
+internal sealed record ParagraphHostGraphemeSnapshot(
+    int Start,
+    int End,
+    double Left,
+    double Top,
+    double Right,
+    double Bottom,
+    TextDirection Direction);
+
+internal sealed record ParagraphHostLayoutSnapshot(
+    double Width,
+    double Height,
+    double AlphabeticBaseline,
+    double IdeographicBaseline,
+    double MinIntrinsicWidth,
+    double MaxIntrinsicWidth,
+    double LongestLine,
+    bool DidExceedMaxLines,
+    ulong MetricsHash,
+    IReadOnlyList<double> CodeUnitAdvances,
+    IReadOnlyList<ParagraphHostLineSnapshot> Lines,
+    IReadOnlyList<ParagraphHostGraphemeSnapshot> Graphemes);
 
 public sealed class Paragraph : IDisposable
 {
     private int _disposed;
-    private readonly double _naturalWidth;
-    private readonly double _lineHeight;
+    private double _naturalWidth;
+    private double _lineHeight;
     private readonly long? _maxLines;
-    private readonly double[] _codeUnitAdvances;
+    private readonly int[] _graphemeStarts;
+    private double[] _codeUnitAdvances;
     private List<ParagraphLine> _lines = [];
+    private ParagraphHostGraphemeSnapshot[]? _hostGraphemes;
+    private double? _hostMinIntrinsicWidth;
+    private double? _hostMaxIntrinsicWidth;
+    private double? _hostLongestLine;
+    private double? _hostAlphabeticBaseline;
+    private double? _hostIdeographicBaseline;
     public Paragraph(
         string text,
         double width,
@@ -848,6 +902,7 @@ public sealed class Paragraph : IDisposable
         this.fontSize = Math.Max(1, fontSize);
         this.fontFamily = fontFamily;
         this.color = color ?? new Color(0xFF000000);
+        _graphemeStarts = System.Globalization.StringInfo.ParseCombiningCharacters(text);
         _lineHeight = height > 0 ? height : this.fontSize * 1.2;
         _codeUnitAdvances = codeUnitAdvances is { Count: var count } && count == text.Length
             ? codeUnitAdvances.Select(value => Math.Max(0, value)).ToArray()
@@ -856,6 +911,7 @@ public sealed class Paragraph : IDisposable
         _maxLines = maxLines;
         this.width = width;
         this.height = height;
+        CanvasKitMetricsHash = ComputeMetricsHash(text, width, height, this.fontSize, _codeUnitAdvances);
     }
     public string text { get; }
     public double fontSize { get; }
@@ -863,17 +919,42 @@ public sealed class Paragraph : IDisposable
     public Color color { get; }
     public double width { get; private set; }
     public double height { get; private set; }
-    public double minIntrinsicWidth => ComputeMinIntrinsicWidth();
-    public double maxIntrinsicWidth => _naturalWidth;
-    public double longestLine => Math.Min(_naturalWidth, width);
-    public double alphabeticBaseline => _lineHeight * 0.8;
-    public double ideographicBaseline => _lineHeight;
+    public double minIntrinsicWidth => _hostMinIntrinsicWidth ?? ComputeMinIntrinsicWidth();
+    public double maxIntrinsicWidth => _hostMaxIntrinsicWidth ?? _naturalWidth;
+    public double longestLine => _hostLongestLine ?? Math.Min(_naturalWidth, width);
+    public double alphabeticBaseline => _hostAlphabeticBaseline ?? _lineHeight * 0.8;
+    public double ideographicBaseline => _hostIdeographicBaseline ?? _lineHeight;
     public bool didExceedMaxLines { get; private set; }
     public int numberOfLines { get; private set; }
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
+    internal ulong CanvasKitMetricsHash { get; private set; }
+    internal float CanvasKitHeightMultiplier { get; init; } = 1;
+    internal string CanvasKitLocale { get; init; } = string.Empty;
+    internal TextDirection CanvasKitTextDirection { get; init; } = TextDirection.ltr;
+    internal TextAlign CanvasKitTextAlign { get; init; } = TextAlign.start;
+    internal string? CanvasKitEllipsis { get; init; }
+    internal Func<double, ParagraphHostLayoutSnapshot>? CanvasKitRelayout { get; init; }
+    internal uint CanvasKitMaxLines => _maxLines is null
+        ? 0
+        : checked((uint)Math.Clamp(_maxLines.Value, 0L, (long)uint.MaxValue));
     public void layout(ParagraphConstraints constraints)
     {
         var availableWidth = constraints.width;
+        if (double.IsNaN(availableWidth) || availableWidth < 0)
+            throw new ArgumentOutOfRangeException(nameof(constraints),
+                "Paragraph width must be nonnegative or positive infinity.");
+        if (CanvasKitRelayout is { } relayout)
+        {
+            ApplyHostLayout(relayout(availableWidth));
+            return;
+        }
+
+        _hostMinIntrinsicWidth = null;
+        _hostMaxIntrinsicWidth = null;
+        _hostLongestLine = null;
+        _hostAlphabeticBaseline = null;
+        _hostIdeographicBaseline = null;
+        _hostGraphemes = null;
         width = double.IsFinite(availableWidth) ? Math.Max(0, availableWidth) : _naturalWidth;
         _lines = BuildLines(width);
         didExceedMaxLines = _maxLines.HasValue && _lines.Count > _maxLines.Value;
@@ -893,6 +974,15 @@ public sealed class Paragraph : IDisposable
             return [];
         }
 
+        if (_hostGraphemes is { } graphemes)
+        {
+            return graphemes
+                .Where(value => value.Start < clampedEnd && value.End > clampedStart)
+                .Select(value => new TextBox(
+                    value.Left, value.Top, value.Right, value.Bottom, value.Direction))
+                .ToList();
+        }
+
         var boxes = new List<TextBox>();
         for (var line = 0; line < _lines.Count; line++)
         {
@@ -901,11 +991,11 @@ public sealed class Paragraph : IDisposable
             var boxEnd = Math.Min(clampedEnd, paragraphLine.End);
             if (boxStart >= boxEnd) continue;
             boxes.Add(new TextBox(
-                AdvanceBetween(paragraphLine.Start, boxStart),
-                line * _lineHeight,
-                AdvanceBetween(paragraphLine.Start, boxEnd),
-                (line + 1) * _lineHeight,
-                TextDirection.ltr));
+                paragraphLine.Left + AdvanceBetween(paragraphLine.Start, boxStart),
+                paragraphLine.Top,
+                paragraphLine.Left + AdvanceBetween(paragraphLine.Start, boxEnd),
+                paragraphLine.Top + paragraphLine.Height,
+                CanvasKitTextDirection));
         }
 
         return boxes;
@@ -913,10 +1003,18 @@ public sealed class Paragraph : IDisposable
     public List<TextBox> getBoxesForPlaceholders() => [];
     public TextPosition getPositionForOffset(Offset offset)
     {
+        if (_hostGraphemes is { Length: > 0 } graphemes)
+        {
+            var glyph = ClosestGrapheme(graphemes, offset);
+            var afterMidpoint = offset.dx >= (glyph.Left + glyph.Right) / 2;
+            return new TextPosition(glyph.Direction == TextDirection.rtl
+                ? afterMidpoint ? glyph.Start : glyph.End
+                : afterMidpoint ? glyph.End : glyph.Start);
+        }
         if (_lines.Count == 0) return new TextPosition(0);
-        var lineIndex = Math.Clamp((int)Math.Floor(offset.dy / _lineHeight), 0, _lines.Count - 1);
-        var line = _lines[lineIndex];
-        var x = Math.Max(0, offset.dx);
+        var lineIndex = _lines.FindIndex(value => offset.dy < value.Top + value.Height);
+        var line = _lines[lineIndex < 0 ? ^1 : lineIndex];
+        var x = Math.Max(0, offset.dx - line.Left);
         var currentX = 0.0;
         for (var index = line.Start; index < line.End; index = NextClusterEnd(index))
         {
@@ -950,13 +1048,13 @@ public sealed class Paragraph : IDisposable
             var paragraphLine = _lines[line];
             metrics.Add(new LineMetrics(
                 hardBreak: paragraphLine.HardBreak,
-                ascent: alphabeticBaseline,
-                descent: _lineHeight - alphabeticBaseline,
-                unscaledAscent: alphabeticBaseline,
-                height: _lineHeight,
+                ascent: paragraphLine.Ascent,
+                descent: paragraphLine.Descent,
+                unscaledAscent: paragraphLine.Ascent,
+                height: paragraphLine.Height,
                 width: paragraphLine.Width,
-                left: 0,
-                baseline: (line * _lineHeight) + alphabeticBaseline,
+                left: paragraphLine.Left,
+                baseline: paragraphLine.Baseline,
                 lineNumber: line));
         }
         return metrics;
@@ -970,19 +1068,29 @@ public sealed class Paragraph : IDisposable
             return null;
         }
         var offset = checked((int)codeUnitOffset);
+        if (_hostGraphemes is { } graphemes)
+        {
+            var glyph = graphemes.FirstOrDefault(value =>
+                offset >= value.Start && offset < value.End);
+            return glyph is null
+                ? null
+                : ToGlyphInfo(glyph);
+        }
         var clusterStart = ClusterStart(offset);
         var clusterEnd = NextClusterEnd(clusterStart);
         var lineIndex = FindLineIndex(clusterStart);
         if (lineIndex < 0) return null;
         var line = _lines[lineIndex];
-        var left = AdvanceBetween(line.Start, clusterStart);
+        var left = line.Left + AdvanceBetween(line.Start, clusterStart);
         return new GlyphInfo(
-            Rect.fromLTWH(left, lineIndex * _lineHeight, AdvanceBetween(clusterStart, clusterEnd), _lineHeight),
+            Rect.fromLTWH(left, line.Top, AdvanceBetween(clusterStart, clusterEnd), line.Height),
             new TextRange(clusterStart, clusterEnd),
-            TextDirection.ltr);
+            CanvasKitTextDirection);
     }
     public GlyphInfo? getClosestGlyphInfoForOffset(Offset offset)
     {
+        if (_hostGraphemes is { Length: > 0 } graphemes)
+            return ToGlyphInfo(ClosestGrapheme(graphemes, offset));
         if (text.Length == 0)
         {
             return null;
@@ -992,6 +1100,100 @@ public sealed class Paragraph : IDisposable
     }
     public void Dispose() => Interlocked.Exchange(ref _disposed, 1);
     public void dispose() => Dispose();
+
+    internal void ApplyHostLayout(ParagraphHostLayoutSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        ObjectDisposedException.ThrowIf(debugDisposed, this);
+        if (!IsNonnegativeFinite(snapshot.Width) || !IsNonnegativeFinite(snapshot.Height) ||
+            !IsNonnegativeFinite(snapshot.AlphabeticBaseline) ||
+            !IsNonnegativeFinite(snapshot.IdeographicBaseline) ||
+            !IsNonnegativeFinite(snapshot.MinIntrinsicWidth) ||
+            !IsNonnegativeFinite(snapshot.MaxIntrinsicWidth) ||
+            !IsNonnegativeFinite(snapshot.LongestLine))
+            throw new InvalidDataException("The host returned non-finite or negative paragraph geometry.");
+        if (snapshot.CodeUnitAdvances.Count != text.Length ||
+            snapshot.CodeUnitAdvances.Any(value => !IsNonnegativeFinite(value)))
+            throw new InvalidDataException("The host paragraph advance table does not match the UTF-16 text.");
+
+        var lines = new List<ParagraphLine>(snapshot.Lines.Count);
+        foreach (var line in snapshot.Lines)
+        {
+            if (line.Start < 0 || line.End < line.Start || line.End > text.Length ||
+                !IsNonnegativeFinite(line.Ascent) || !IsNonnegativeFinite(line.Descent) ||
+                !IsNonnegativeFinite(line.Height) || !IsNonnegativeFinite(line.Width) ||
+                !double.IsFinite(line.Left) || !IsNonnegativeFinite(line.Baseline))
+                throw new InvalidDataException("The host returned an invalid paragraph line snapshot.");
+            lines.Add(new(
+                line.Start, line.End, line.Width, line.HardBreak,
+                line.Ascent, line.Descent, line.Height, line.Left, line.Baseline));
+        }
+
+        var graphemes = new ParagraphHostGraphemeSnapshot[snapshot.Graphemes.Count];
+        var previousEnd = 0;
+        for (var index = 0; index < graphemes.Length; index++)
+        {
+            var grapheme = snapshot.Graphemes[index];
+            if (grapheme.Start < previousEnd || grapheme.End <= grapheme.Start ||
+                grapheme.End > text.Length || !double.IsFinite(grapheme.Left) ||
+                !double.IsFinite(grapheme.Top) || !double.IsFinite(grapheme.Right) ||
+                !double.IsFinite(grapheme.Bottom) || grapheme.Right < grapheme.Left ||
+                grapheme.Bottom < grapheme.Top)
+                throw new InvalidDataException("The host returned an invalid paragraph grapheme snapshot.");
+            graphemes[index] = grapheme;
+            previousEnd = grapheme.End;
+        }
+
+        width = snapshot.Width;
+        height = snapshot.Height;
+        _naturalWidth = snapshot.MaxIntrinsicWidth;
+        if (lines.Count != 0) _lineHeight = lines[0].Height;
+        _codeUnitAdvances = snapshot.CodeUnitAdvances.ToArray();
+        _lines = lines;
+        _hostGraphemes = graphemes;
+        _hostMinIntrinsicWidth = snapshot.MinIntrinsicWidth;
+        _hostMaxIntrinsicWidth = snapshot.MaxIntrinsicWidth;
+        _hostLongestLine = snapshot.LongestLine;
+        _hostAlphabeticBaseline = snapshot.AlphabeticBaseline;
+        _hostIdeographicBaseline = snapshot.IdeographicBaseline;
+        didExceedMaxLines = snapshot.DidExceedMaxLines;
+        numberOfLines = lines.Count;
+        CanvasKitMetricsHash = snapshot.MetricsHash;
+    }
+
+    private static bool IsNonnegativeFinite(double value) => double.IsFinite(value) && value >= 0;
+
+    private static ParagraphHostGraphemeSnapshot ClosestGrapheme(
+        IReadOnlyList<ParagraphHostGraphemeSnapshot> graphemes,
+        Offset offset)
+    {
+        var closest = graphemes[0];
+        var closestDistance = SquaredDistance(closest, offset);
+        for (var index = 1; index < graphemes.Count; index++)
+        {
+            var distance = SquaredDistance(graphemes[index], offset);
+            if (distance >= closestDistance) continue;
+            closest = graphemes[index];
+            closestDistance = distance;
+        }
+        return closest;
+    }
+
+    private static double SquaredDistance(ParagraphHostGraphemeSnapshot grapheme, Offset offset)
+    {
+        var dx = offset.dx < grapheme.Left
+            ? grapheme.Left - offset.dx
+            : offset.dx > grapheme.Right ? offset.dx - grapheme.Right : 0;
+        var dy = offset.dy < grapheme.Top
+            ? grapheme.Top - offset.dy
+            : offset.dy > grapheme.Bottom ? offset.dy - grapheme.Bottom : 0;
+        return (dx * dx) + (dy * dy);
+    }
+
+    private static GlyphInfo ToGlyphInfo(ParagraphHostGraphemeSnapshot grapheme) => new(
+        Rect.fromLTRB(grapheme.Left, grapheme.Top, grapheme.Right, grapheme.Bottom),
+        new TextRange(grapheme.Start, grapheme.End),
+        grapheme.Direction);
 
     private static double[] CreateFallbackAdvances(string text, double fontSize)
     {
@@ -1021,6 +1223,38 @@ public sealed class Paragraph : IDisposable
         return Math.Max(longest, current);
     }
 
+    private static ulong ComputeMetricsHash(
+        string text,
+        double width,
+        double height,
+        double fontSize,
+        IReadOnlyList<double> advances)
+    {
+        const ulong offset = 14695981039346656037;
+        const ulong prime = 1099511628211;
+        var result = offset;
+        static void Add(ref ulong hash, ulong value)
+        {
+            const ulong localPrime = 1099511628211;
+            for (var index = 0; index < sizeof(ulong); index++)
+            {
+                hash ^= (byte)(value >> (index * 8));
+                hash *= localPrime;
+            }
+        }
+        foreach (var character in text)
+        {
+            result ^= character;
+            result *= prime;
+        }
+        Add(ref result, unchecked((ulong)BitConverter.DoubleToInt64Bits(width)));
+        Add(ref result, unchecked((ulong)BitConverter.DoubleToInt64Bits(height)));
+        Add(ref result, unchecked((ulong)BitConverter.DoubleToInt64Bits(fontSize)));
+        foreach (var advance in advances)
+            Add(ref result, unchecked((ulong)BitConverter.DoubleToInt64Bits(advance)));
+        return result;
+    }
+
     private double ComputeMinIntrinsicWidth()
     {
         var longest = 0.0;
@@ -1048,7 +1282,7 @@ public sealed class Paragraph : IDisposable
         {
             if (text[index] == '\n')
             {
-                lines.Add(new ParagraphLine(lineStart, index, lineWidth, true));
+                lines.Add(CreateFallbackLine(lineStart, index, lineWidth, true, lines.Count));
                 lineStart = index + 1;
                 lineWidth = 0;
                 continue;
@@ -1057,14 +1291,24 @@ public sealed class Paragraph : IDisposable
             var advance = _codeUnitAdvances[index];
             if (finiteWidth && index > lineStart && lineWidth + advance > availableWidth)
             {
-                lines.Add(new ParagraphLine(lineStart, index, lineWidth, false));
+                lines.Add(CreateFallbackLine(lineStart, index, lineWidth, false, lines.Count));
                 lineStart = index;
                 lineWidth = 0;
             }
             lineWidth += advance;
         }
-        lines.Add(new ParagraphLine(lineStart, text.Length, lineWidth, false));
+        lines.Add(CreateFallbackLine(lineStart, text.Length, lineWidth, false, lines.Count));
         return lines;
+    }
+
+    private ParagraphLine CreateFallbackLine(
+        int start, int end, double lineWidth, bool hardBreak, int lineNumber)
+    {
+        var ascent = _lineHeight * 0.8;
+        return new(
+            start, end, lineWidth, hardBreak,
+            ascent, _lineHeight - ascent, _lineHeight, 0,
+            (lineNumber * _lineHeight) + ascent);
     }
 
     private double AdvanceBetween(int start, int end)
@@ -1074,15 +1318,22 @@ public sealed class Paragraph : IDisposable
         return result;
     }
 
-    private int ClusterStart(int offset) =>
-        offset > 0 && char.IsLowSurrogate(text[offset]) && char.IsHighSurrogate(text[offset - 1])
-            ? offset - 1
-            : offset;
+    private int ClusterStart(int offset)
+    {
+        if (_graphemeStarts.Length == 0) return 0;
+        var index = Array.BinarySearch(_graphemeStarts, offset);
+        if (index >= 0) return _graphemeStarts[index];
+        index = ~index;
+        return _graphemeStarts[Math.Max(0, index - 1)];
+    }
 
-    private int NextClusterEnd(int start) =>
-        start + 1 < text.Length && char.IsHighSurrogate(text[start]) && char.IsLowSurrogate(text[start + 1])
-            ? start + 2
-            : start + 1;
+    private int NextClusterEnd(int start)
+    {
+        if (_graphemeStarts.Length == 0) return text.Length;
+        var index = Array.BinarySearch(_graphemeStarts, start);
+        index = index >= 0 ? index + 1 : ~index;
+        return index < _graphemeStarts.Length ? _graphemeStarts[index] : text.Length;
+    }
 
     private int FindLineIndex(int offset)
     {
@@ -1103,7 +1354,19 @@ public sealed class Paragraph : IDisposable
         return _lines.Count == 0 ? null : _lines[^1];
     }
 
-    private readonly record struct ParagraphLine(int Start, int End, double Width, bool HardBreak);
+    private readonly record struct ParagraphLine(
+        int Start,
+        int End,
+        double Width,
+        bool HardBreak,
+        double Ascent,
+        double Descent,
+        double Height,
+        double Left,
+        double Baseline)
+    {
+        internal double Top => Baseline - Ascent;
+    }
 }
 
 public interface IImageHostCapability

@@ -6,12 +6,17 @@
     <IsDorotiProduct>true</IsDorotiProduct>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AddRazorSupportForMvc>false</AddRazorSupportForMvc>
+    <DefaultItemExcludes>$(DefaultItemExcludes);Web\node_modules\**</DefaultItemExcludes>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Remove="Web\package.json;Web\package-lock.json;build\canvaskit.pin.json" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
+    <ProjectReference Include="..\Doroti.Graphics.DisplayList\Doroti.Graphics.DisplayList.csproj" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
     <ProjectReference Include="..\Doroti.Skia.RuntimeEffects\Doroti.Skia.RuntimeEffects.csproj" />
@@ -26,9 +31,14 @@
     <DorotiTypeScriptExpectedOutput>$(DorotiTypeScriptOutputRoot)\doroti.loader.js</DorotiTypeScriptExpectedOutput>
     <DorotiTypeScriptStaticBasePath>wwwroot</DorotiTypeScriptStaticBasePath>
     <DorotiTypeScriptCopyToOutputDirectory>Never</DorotiTypeScriptCopyToOutputDirectory>
+    <!-- CanvasKit 0.42.0 references @webgpu/types 0.1.21, whose globals overlap TypeScript 7's lib.dom WebGPU declarations. -->
+    <DorotiTypeScriptAdditionalArguments>$(DorotiTypeScriptAdditionalArguments) --skipLibCheck</DorotiTypeScriptAdditionalArguments>
   </PropertyGroup>
   <ItemGroup>
     <None Include="Web\types\doroti-loader\index.d.ts" Pack="true" PackagePath="types\doroti-loader\index.d.ts" />
+    <None Include="THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="THIRD-PARTY-NOTICES.md" />
+    <None Include="buildTransitive\Doroti.Host.Web.CanvasKit.targets" Pack="true" PackagePath="buildTransitive\Doroti.Host.Web.targets" />
   </ItemGroup>
+  <Import Project="build\Doroti.CanvasKit.targets" />
   <Import Project="..\Doroti.App.Sdk\Sdk\Doroti.TypeScript.targets" />
 </Project>

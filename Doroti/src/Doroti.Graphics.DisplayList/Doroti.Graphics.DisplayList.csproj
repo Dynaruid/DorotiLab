@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Doroti.Graphics.DisplayList</AssemblyName>
+    <RootNamespace>Doroti.Graphics.DisplayList</RootNamespace>
+    <PackageId>Doroti.Graphics.DisplayList</PackageId>
+    <Description>Renderer-neutral typed DisplayList wire protocol for Doroti scenes.</Description>
+    <IsDorotiProduct>true</IsDorotiProduct>
+  </PropertyGroup>
+</Project>

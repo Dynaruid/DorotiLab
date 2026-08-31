@@ -1,12 +1,12 @@
-# Doroti Web CanvasKit Raster Worker 전환 작업 계획
+# Doroti Web CanvasKit Raster Worker 전환 계획 및 실행 결과
 
-상태: `planned / notStarted`
+상태: `partial / qualificationIncomplete`
 
 작성일: `2026-08-31`
 
 대상: `Doroti.Host.Web`의 Chromium/WebGL2 제품 경로
 
-문서 성격: 구현 전 작업 계획. 이 문서 변경만으로 build, 성능, 시각 품질이 검증된 것은 아니다.
+문서 성격: 계획과 `2026-08-31` 실행 결과를 함께 기록한다. 구현된 experimental 경로와 자동 검증 결과는 qualification 완료를 뜻하지 않는다.
 
 ## 1. 결정
 
@@ -612,3 +612,141 @@ Upstream:
 - CanvasKit WebGL implementation: <https://github.com/google/skia/blob/main/modules/canvaskit/webgl.js>
 - `OffscreenCanvas`: <https://developer.mozilla.org/docs/Web/API/OffscreenCanvas>
 - Transferable objects: <https://developer.mozilla.org/docs/Web/API/Web_Workers_API/Transferable_objects>
+
+## 14. 2026-08-31 실행 결과
+
+### 14.1 총평과 단계 진행 예외
+
+이 실행의 전체 판정은 `PARTIAL / notQualified`다. `worker-canvaskit-webgl` experimental opt-in 경로와 자동 검증 기반은 구현했지만 12.3절의 완료 정의를 만족하지 못했다. 따라서 `auto`는 계속 `document-webgl`이며 forced CanvasKit mode의 fail-closed 정책도 유지한다.
+
+8절은 앞 gate가 PASS일 때만 다음 단계로 진행하도록 계획했지만, 이번 실행에서는 CK0/CK1이 `PARTIAL`인 상태에서 topology와 package feasibility를 실제로 확인하기 위해 후속 experimental implementation까지 진행했다. 이는 계획 이탈이며 CK0/CK1을 PASS로 재분류하지 않는다. 미완료 gate와 재개 조건은 아래 표에 그대로 남긴다.
+
+### 14.2 구현된 범위
+
+- `canvaskit-wasm@0.42.0` default variant를 exact lockfile dependency로 고정하고 Host.Web source build의 allowlist, SHA-256 provenance, Static Web Asset, nupkg/buildTransitive 검증 경로를 추가했다.
+- `Doroti.Graphics.DisplayList` v1 little-endian typed schema, encoder/decoder/validator, resource/string table, deterministic golden과 browser-side bounds/opcode 검증을 추가했다.
+- main/UI/Raster를 분리하고 UI↔Raster 전용 `MessageChannel`, current+latest mailbox, transferable buffer pool, scene receipt/terminal ledger, resource journal/replay와 canvas lease lifecycle을 구현했다.
+- UI Worker에는 CPU-only CanvasKit paragraph layout/metrics hash 서비스를, Raster Worker에는 hardware WebGL2 CanvasKit renderer와 명시적 Embind object accounting을 추가했다.
+- Raster renderer는 v1 opcode를 fail-closed로 decode하고 basic geometry, paint/path/image/paragraph, layer/filter/shader와 top-level direct two-pass runtime-effect image filter를 replay한다.
+- resize는 logical CSS geometry와 physical backing을 분리하고, exact scene을 같은 GrContext의 GPU staging surface에 먼저 완성한 뒤 visible backing을 교체·복사·flush하는 commit transaction으로 바꿨다.
+- scene 단위 paragraph font collection 공유, 최대 8-slot GPU image-filter surface pool, 마지막 Raster failure reason 진단을 추가했다.
+- stale Raster session의 message/error를 무시하고, Worker replacement마다 새 visible canvas lease를 정확히 한 번 transfer/retire하며 resource journal을 replay한다.
+- CanvasKit mode 전용 topology, stall, DPR2, replacement, malformed-protocol, DisplayList와 기존 resize/input 회귀를 canonical Playwright wrapper에 연결했다.
+
+### 14.3 CK0–CK9 판정
+
+| Gate | 판정 | 확인한 범위 | 남은 조건 또는 실패 원인 |
+|---|---|---|---|
+| CK0 | `PARTIAL` | exact 0.42.0/default pin, same-origin asset, hardware Raster-only WebGL owner, 7/7 pack, clean packed consumer zero-Node/npm, 3회 replacement를 확인했다. | cold source `npm ci` 재실행, current renderer baseline/startup/heap corpus, context-loss 10회, 전체 negative input matrix가 없다. |
+| CK1 | `PARTIAL` | typed DisplayList, 6089-byte managed golden, browser 2/2 계약, malformed recovery가 PASS했다. | `SceneCommand`/`PathCommand`의 `object? HostPayload`와 mapper 변환이 남고, same-worker Skia loopback 및 old-direct pixel golden이 없다. |
+| CK2 | `PARTIAL` | UI-owned CanvasKit text service, paragraph metrics hash, logical resource registry/journal과 restart replay를 구현했다. | Latin/한글/surrogate/combining/RTL/wrap/ellipsis/hit-test의 current-Skia differential과 stale-handle fixture가 없고 pre-wire HostPayload가 image/paragraph object를 보유한다. |
+| CK3 | `PASS` | main/UI/Raster .NET `0/1/0`, UI/Raster CanvasKit `1/1`, Raster WebGL owner `1`, direct MessageChannel, 100 ms Raster stall 중 UI/input 진행, HWM `<=2`, exact terminal/receipt를 자동 검증했다. | CK3 자체 gate의 남은 자동 blocker는 없다. |
+| CK4 | `PARTIAL` | v1 opcode 선언/검증과 representative demo render, no-blank 자동 sample, top-level two-pass runtime filter가 동작한다. | current-Skia↔CanvasKit strict pixel differential/all-opcode raster corpus가 없다. composed/nested runtime-effect image-filter tag 4는 계속 `DOROTIWEB032` fail-closed이며 retained filter output의 stable identity/cache가 없다. |
+| CK5 | `FAIL` | Raster Worker 3회 replacement, resource replay, canvas lease terminal, malformed recovery와 context loss/restore 1회는 PASS했다. | `rasterRestartBudget=3`을 context recovery도 소비하므로 동일 session 10회 context loss/restore gate를 구조적으로 통과할 수 없다. shutdown zero-lease/resource 및 focus/editing state 보존도 미검증이다. |
+| CK6 | `PARTIAL` | continuous resize/wheel no-blank, viewport A-B-C, pinch zoom, startup, DPR2 logical 1080×720/physical 2160×1440/`transform:none`을 자동 검증했다. | DPR 1.25/1.5, native border/maximize/restore, fast/long resize 3회 정량 gate와 direct 대비 비교가 없다. |
+| CK7 | `FAIL` | Host-specific asset/provenance, nupkg/buildTransitive, clean consumer, tamper/missing-license negative gate는 PASS했다. | Host.Web/nuspec/publish에 `SkiaSharp`, `SkiaSharp.NativeAssets.WebAssembly`, `Doroti.Skia.Rendering`, `Doroti.Skia.RuntimeEffects`가 남는다. Web dependency 0 조건은 FAIL이다. |
+| CK8 | `PARTIAL` | transfer buffer pool, resource journal, scene-scoped font collection 공유, bounded 8-slot GPU filter-surface pool과 object counters를 구현했다. | Paint/Path/Paragraph/Image bounded cache, shader warmup/negative cache, filter `CacheKey/CacheGeneration` wire 전달, 비교 성능, 30분 memory churn이 없다. |
+| CK9 | `notVerified` | rollback mode를 유지하고 forced CanvasKit은 silent fallback하지 않는다. | CK5/CK7이 FAIL이고 전체 correctness/performance/physical acceptance가 끝나지 않아 기본값을 승격하지 않는다. |
+
+### 14.4 자동 검증 결과
+
+#### Contract, build, platform regression
+
+| 명령 또는 범위 | 결과 |
+|---|---|
+| `dotnet run --project Doroti/validation/display-list-contract/Doroti.Validation.DisplayListContract.csproj -c Release --no-launch-profile` | `PASS`, 6089 bytes, SHA-256 `A718919D8496A69DC1A95C0D960F12A16E658CADA95A78EA1051F8C9C9214773` |
+| `npm run check` in `Doroti/validation/web-playwright` | `PASS`, TypeScript error 0 |
+| Release Web wrapper build (`DorotiDemoApp.Web`와 Host/Target dependency 포함) | `PASS`, warning 0, error 0 |
+| `Doroti.Target.Web.browser-wasm` Release build | `PASS`, warning 0, error 0 |
+| Qt, MAUI, Windows host Release regression builds | `PASS`, warning 0, error 0 |
+| FCR-3/4/5/6/7와 resize-contract | `PASS` |
+| `git diff --check` | `PASS` |
+
+DisplayList browser matrix는 다음 명령에서 `2/2 PASS`했다.
+
+```powershell
+pwsh -NoProfile -File ./Doroti/eng/run-web-playwright.ps1 `
+  -Configuration Release `
+  -HeadlessOnly `
+  -RendererMode worker-canvaskit-webgl `
+  -TestFile tests/canvaskit-display-list.spec.ts
+```
+
+CanvasKit topology/lifecycle 전용 suite는 다음 명령에서 `5/5 PASS`했다.
+
+```powershell
+pwsh -NoProfile -File ./Doroti/eng/run-web-playwright.ps1 `
+  -Configuration Release `
+  -HeadlessOnly `
+  -RendererMode worker-canvaskit-webgl `
+  -TestFile tests/canvaskit-worker.spec.ts
+```
+
+동일 mode의 전체 headless suite는 `16 PASS / 다른 renderer 전용 5 SKIP / 0 FAIL`, 총 `3.8분`이었다. 이전 full run의 6개 실패였던 continuous-resize blank, context-loss 관찰, warm input latency, offscreen capability schema, resize trace backing identity, wheel final commit을 각각 runtime 또는 mode-aware contract에서 수정한 뒤 재실행한 결과다.
+
+주요 자동 수치는 다음과 같다.
+
+- hardware WebGL2: Google/AMD ANGLE Radeon 780M D3D11, software fallback `false`
+- continuous flicker: canvas sample 221개, resize 81회, target/front generation `82/82`, scene `254/254`, failed `0`, transfer buffer `257/257`, outstanding `0`
+- wheel: 60/60 commit, p95 `53.1 ms`, max `66.6 ms`
+- input-front: cold `248.4 ms`, warm `234.9 ms`
+- context restore 1회: context generation `2`, Raster session `2`, resource replay `3`, exact front 복구
+- Raster replacement 3회: restart/budget `3/3`, final session `4`, retired lease 3개 각각 terminal `1`, resource replay `9`, outstanding buffer `0`
+- DPR2: CSS `1080×720`, backing `2160×1440`, CSS transform 없음
+- steady GPU owners: `GrDirectContext live=1`, visible `Surface live=1`; bounded `ImageFilterSurfacePool live=1`
+
+이 수치는 자동 submit/DOM/screenshot/counter evidence이며 physical scan-out이나 아래 9.3 performance qualification의 3회 기준을 대신하지 않는다.
+
+#### Pack, clean consumer, provenance
+
+다음 7개 `0.2.0-beta` package를 dependency 순서로 Release pack했고 모두 exit 0이었다.
+
+- `Doroti.Graphics.DisplayList`
+- `Doroti.Runtime`
+- `Doroti.Ui`
+- `Doroti.Skia.RuntimeEffects`
+- `Doroti.Skia.Rendering`
+- `Doroti.Hosting`
+- `Doroti.Host.Web`
+
+새 `final-app`과 새 isolated NuGet cache를 사용하고 `PATH` 앞에 실패용 `node.cmd`/`npm.cmd`를 둔 뒤 다음을 실행했다.
+
+```powershell
+dotnet restore CanvasKitConsumer.csproj --configfile NuGet.Config --force --no-http-cache --nologo
+dotnet build CanvasKitConsumer.csproj -c Release --no-restore --disable-build-servers --nologo
+dotnet publish CanvasKitConsumer.csproj -c Release --no-restore --disable-build-servers --nologo `
+  -o C:/Users/parti/Labo/DorotiLab/Doroti/src/Doroti.Host.Web/obj/CanvasKitConsumer/final-app/publish
+```
+
+결과는 restore `17.0 s`, build `4.7 s`(warning/error 0), publish `19.1 s`였고 7개 Doroti dependency가 모두 `type=package`였다. poison invocation log는 생성되지 않아 consumer의 Node/npm invocation은 0이다. 처음 custom intermediate path를 app 내부에 둔 시도는 기존 generated source가 Compile glob에 포함되어 `CS0579` 8건으로 실패했지만, 이는 package/product 결함이 아닌 fixture 배치 오류였으며 새 sibling `final-app` 재실행으로 판정을 분리했다.
+
+| CanvasKit 0.42.0 default asset | Bytes | SHA-256 |
+|---|---:|---|
+| `canvaskit.js` | 120,877 | `443777592179808354031cf411d8d43cac9f6b98d1227123c5c22d401b0fbf7f` |
+| `canvaskit.wasm` | 7,317,345 | `25ebed8e60158c5854f8dc807b936daca21354f8bfb6a2231266b0a93812f301` |
+| `types/index.d.ts` | 174,139 | `a7017a8fd21f27fdd1afe8036841d7ce0979b2410954fcc6d3f80444c171a6c6` |
+| `LICENSE` | 1,635 | `d27678cba0d529e77201e2d2a053628143e986aad8f1e77f7039ad4366c8f978` |
+| `canvaskit.manifest.json` | 1,460 | `b3d6627d4a08862aacd62155f5d8c87b9e4b75ad2ad09b030e71b2230061813f` |
+
+다섯 asset과 생성된 Doroti JS 13개는 source output, `Doroti.Host.Web.0.2.0-beta.nupkg`, consumer publish에서 byte/SHA가 모두 같았다. nupkg의 CanvasKit 항목은 위 다섯 개뿐이며 `node_modules`는 0개다. Host nupkg SHA-256은 `e64e3abb844faa7825cdaafb87256cd906bf429009db848ed2ba0cdb2dc9d584`다. `buildTransitive/Doroti.Host.Web.targets`는 `<Exec>`, Node, npm 호출 없이 `DOROTICK101/102` 검사를 포함하며 SHA-256은 `9d25beefeda2eaf54404215b70b1af9d2125a326d837cac0abe029233b7bf39e`다.
+
+실제 변조 package negative gate도 실행했다.
+
+- `canvaskit.js` 1-byte 변조: restore PASS 후 build exit 1, `DOROTICK102`
+- `LICENSE` 제거: restore PASS 후 build exit 1, `DOROTICK101`
+- 두 경우 모두 Node/npm invocation 0
+
+단, 이번 source pack은 warm npm state에서 `CanvasKit npm restore is current`를 확인한 실행이다. source cold `npm ci --ignore-scripts` 재실행과 registry/network capture는 별도 미검증이다. Consumer는 clean Web SDK publish이며 trimmed browser-wasm publish는 아니다.
+
+### 14.5 명시적으로 남은 검증과 재개 조건
+
+- CK5를 재개하려면 context recovery를 fatal/crash 3회 budget과 분리하거나 same-worker GrContext/surface recovery로 바꾸고 동일 session 10회를 자동 검증해야 한다.
+- CK7을 재개하려면 CanvasKit qualification과 rollback 결정을 거친 뒤 Web graph/nuspec/publish에서 SkiaSharp/native/Doroti.Skia dependency를 제거하고 trimmed publish를 다시 검사해야 한다. 현재 publish에는 SkiaSharp 관련 artifact 8개가 남는다.
+- CK1/2/4를 재개하려면 pre-wire `HostPayload`를 제거하고 same scene bytes를 current Skia와 CanvasKit에 raster한 strict pixel/text/filter differential corpus를 추가해야 한다.
+- composed runtime-effect filter와 retained filter identity/cache를 구현하고 filter/shader/paragraph churn 뒤 bounded eviction과 baseline recovery를 검증해야 한다.
+- source cold npm acquisition, tampered lock/integrity/extra variant, CSP와 runtime asset/network negative fixture를 추가해야 한다.
+- direct 대비 startup/resize/handoff/long-task/memory를 같은 session에서 3회 비교하고 30분 churn을 실행해야 한다.
+- 실제 좌우상하/모서리 border drag, maximize/restore, monitor DPR 이동, 60/120 Hz, precision trackpad, 한글 IME/긴 Backspace, screen reader, crash 직후 focus/editing과 compositor scan-out은 모두 `notVerified`다.
+- Firefox와 Safari는 제품 지원으로 승격하지 않았다.
+
+위 조건이 끝날 때까지 12.3절 완료 정의는 `FAIL`, 전체 상태는 `PARTIAL / notQualified`, 기본값은 `auto=document-webgl`이다.

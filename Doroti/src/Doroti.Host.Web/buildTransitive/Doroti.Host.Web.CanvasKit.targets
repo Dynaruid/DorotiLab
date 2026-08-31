@@ -1,0 +1,40 @@
+<Project>
+  <PropertyGroup>
+    <_DorotiPackedCanvasKitRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)..\staticwebassets\canvaskit\0.42.0'))</_DorotiPackedCanvasKitRoot>
+  </PropertyGroup>
+
+  <Target Name="DorotiValidatePackedCanvasKitAssets"
+          BeforeTargets="PrepareForBuild"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <ItemGroup>
+      <_DorotiPackedCanvasKitAsset Include="$(_DorotiPackedCanvasKitRoot)canvaskit.js">
+        <ExpectedSha256>443777592179808354031cf411d8d43cac9f6b98d1227123c5c22d401b0fbf7f</ExpectedSha256>
+      </_DorotiPackedCanvasKitAsset>
+      <_DorotiPackedCanvasKitAsset Include="$(_DorotiPackedCanvasKitRoot)canvaskit.wasm">
+        <ExpectedSha256>25ebed8e60158c5854f8dc807b936daca21354f8bfb6a2231266b0a93812f301</ExpectedSha256>
+      </_DorotiPackedCanvasKitAsset>
+      <_DorotiPackedCanvasKitAsset Include="$(_DorotiPackedCanvasKitRoot)types\index.d.ts">
+        <ExpectedSha256>a7017a8fd21f27fdd1afe8036841d7ce0979b2410954fcc6d3f80444c171a6c6</ExpectedSha256>
+      </_DorotiPackedCanvasKitAsset>
+      <_DorotiPackedCanvasKitAsset Include="$(_DorotiPackedCanvasKitRoot)LICENSE">
+        <ExpectedSha256>d27678cba0d529e77201e2d2a053628143e986aad8f1e77f7039ad4366c8f978</ExpectedSha256>
+      </_DorotiPackedCanvasKitAsset>
+      <_DorotiPackedCanvasKitAsset Include="$(_DorotiPackedCanvasKitRoot)canvaskit.manifest.json">
+        <ExpectedSha256>b3d6627d4a08862aacd62155f5d8c87b9e4b75ad2ad09b030e71b2230061813f</ExpectedSha256>
+      </_DorotiPackedCanvasKitAsset>
+    </ItemGroup>
+
+    <Error Code="DOROTICK101"
+           Condition="'@(_DorotiPackedCanvasKitAsset->Count())' != '5' or '@(_DorotiPackedCanvasKitAsset->Exists()->Count())' != '5'"
+           Text="Doroti.Host.Web package is missing a required CanvasKit 0.42.0 default asset under '$(_DorotiPackedCanvasKitRoot)'. Restore an untampered package." />
+    <GetFileHash Files="@(_DorotiPackedCanvasKitAsset)" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiPackedCanvasKitAssetWithHash" />
+    </GetFileHash>
+    <Error Code="DOROTICK102"
+           Condition="!$([System.String]::Equals('%(_DorotiPackedCanvasKitAssetWithHash.FileHash)', '%(_DorotiPackedCanvasKitAssetWithHash.ExpectedSha256)', System.StringComparison.OrdinalIgnoreCase))"
+           Text="Doroti.Host.Web package CanvasKit asset '%(_DorotiPackedCanvasKitAssetWithHash.Identity)' failed SHA-256 validation. Expected %(_DorotiPackedCanvasKitAssetWithHash.ExpectedSha256), got %(_DorotiPackedCanvasKitAssetWithHash.FileHash)." />
+    <PropertyGroup>
+      <DorotiCanvasKitPackageAssetsValidated>true</DorotiCanvasKitPackageAssetsValidated>
+    </PropertyGroup>
+  </Target>
+</Project>

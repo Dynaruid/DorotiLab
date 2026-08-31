@@ -41,7 +41,13 @@ public static class DorotiWebWorkerRunner
         _view = _target.CreateView(
             _session, ViewId, "doroti-surface", descriptor.ViewConfiguration, _boundary);
         BrowserHostRuntime.SetApplicationTitle(1, descriptor.ViewConfiguration.title);
-        DorotiWebWorkerSurface.Initialize(_target, ViewId);
+        if (!string.Equals(
+            BrowserHostRuntime.RendererIdentity,
+            "worker-canvaskit-webgl",
+            StringComparison.Ordinal))
+        {
+            DorotiWebWorkerSurface.Initialize(_target, ViewId);
+        }
         _view.Show();
         _session.dispatcher.setSemanticsTreeEnabled(true);
         return "started";

@@ -1,0 +1,37 @@
+{
+  "schema": "doroti.canvaskit-pin/v1",
+  "packageName": "canvaskit-wasm",
+  "version": "0.42.0",
+  "variant": "default",
+  "resolved": "https://registry.npmjs.org/canvaskit-wasm/-/canvaskit-wasm-0.42.0.tgz",
+  "integrity": "sha512-N3ikotmzYwDVAcpQKDMptBT2P5pIEWS9ywdmrQA2awwaMF9cxKEFuxZZHv9ay1Em9kDjxDsPtwUzDm1uNj136g==",
+  "manifestSha256": "b3d6627d4a08862aacd62155f5d8c87b9e4b75ad2ad09b030e71b2230061813f",
+  "minimumNodeVersion": "20.0.0",
+  "minimumNpmVersion": "10.0.0",
+  "files": [
+    {
+      "source": "bin/canvaskit.js",
+      "target": "canvaskit.js",
+      "byteLength": 120877,
+      "sha256": "443777592179808354031cf411d8d43cac9f6b98d1227123c5c22d401b0fbf7f"
+    },
+    {
+      "source": "bin/canvaskit.wasm",
+      "target": "canvaskit.wasm",
+      "byteLength": 7317345,
+      "sha256": "25ebed8e60158c5854f8dc807b936daca21354f8bfb6a2231266b0a93812f301"
+    },
+    {
+      "source": "types/index.d.ts",
+      "target": "types/index.d.ts",
+      "byteLength": 174139,
+      "sha256": "a7017a8fd21f27fdd1afe8036841d7ce0979b2410954fcc6d3f80444c171a6c6"
+    },
+    {
+      "source": "LICENSE",
+      "target": "LICENSE",
+      "byteLength": 1635,
+      "sha256": "d27678cba0d529e77201e2d2a053628143e986aad8f1e77f7039ad4366c8f978"
+    }
+  ]
+}

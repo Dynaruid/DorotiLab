@@ -16,7 +16,7 @@ export interface DorotiBlazorStartOptions {
 export interface DorotiBootstrapContext {
   readonly blazorOptions: DorotiBlazorStartOptions;
   stage: DorotiBootstrapStage;
-  rendererMode?: "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
+  rendererMode?: "worker-canvaskit-webgl" | "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
 }
 
 export interface DorotiBootstrapOptions {
@@ -53,7 +53,10 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
     notifyStage("starting", context, options);
     context.rendererMode = selectRendererMode();
     document.documentElement.dataset.dorotiRenderer = context.rendererMode;
-    if (context.rendererMode === "offscreen-worker" || context.rendererMode === "worker-direct-webgl") {
+    if (context.rendererMode === "worker-canvaskit-webgl") {
+      const module = await import("./doroti.canvaskit.host.js");
+      await module.startDorotiCanvasKitWorkerHost();
+    } else if (context.rendererMode === "offscreen-worker" || context.rendererMode === "worker-direct-webgl") {
       const module = await import("./doroti.web.js");
       await module.startDorotiWorkerHost(context.rendererMode);
     } else {
@@ -89,9 +92,9 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
   }
 }
 
-function selectRendererMode(): "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl" {
+function selectRendererMode(): "worker-canvaskit-webgl" | "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl" {
   const value = new URLSearchParams(globalThis.location.search).get("dorotiRenderer");
-  if (value === "document-webgl" || value === "offscreen-bitmap" || value === "offscreen-worker" ||
+  if (value === "worker-canvaskit-webgl" || value === "document-webgl" || value === "offscreen-bitmap" || value === "offscreen-worker" ||
       value === "worker-direct-webgl")
     return value;
   // Both ImageBitmap backends remain first-class opt-in paths until their A/B

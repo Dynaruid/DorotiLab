@@ -11,7 +11,7 @@ param(
 
     [string] $TestFile,
 
-    [ValidateSet('auto', 'document-webgl', 'offscreen-bitmap', 'offscreen-worker', 'worker-direct-webgl')]
+    [ValidateSet('auto', 'document-webgl', 'offscreen-bitmap', 'offscreen-worker', 'worker-direct-webgl', 'worker-canvaskit-webgl')]
     [string] $RendererMode = 'auto',
 
     [switch] $RequireLatencyGate,

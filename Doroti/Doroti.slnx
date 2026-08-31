@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Doroti.Graphics.DisplayList/Doroti.Graphics.DisplayList.csproj" />
     <Project Path="src/Doroti.Runtime/Doroti.Runtime.csproj" />
     <Project Path="src/Doroti.Ui/Doroti.Ui.csproj" />
     <Project Path="src/Doroti.Hosting/Doroti.Hosting.csproj" />

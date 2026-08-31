@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Doroti.Validation.DisplayListContract</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Doroti.Graphics.DisplayList\Doroti.Graphics.DisplayList.csproj" />
+    <None Update="golden\display-list-v1-full.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

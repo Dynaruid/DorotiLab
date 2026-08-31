@@ -160,7 +160,7 @@ static void VerifyBrowserInputAndFrontBufferContract()
         "the browser endpoint classifies continuous wheel samples before managed dispatch");
     Require(source.Contains("worker-direct-webgl", StringComparison.Ordinal) &&
             source.Contains("createWorkerVisibleSurface(canvas, true)", StringComparison.Ordinal) &&
-            source.Contains("closeExternalLeases(display.pendingRequestIds", StringComparison.Ordinal),
+            source.Contains("closeExternalLeases(display.pendingLeases", StringComparison.Ordinal),
         "the direct Worker backend transfers the visible canvas and closes external leases during recovery");
     Require(!source.Contains("applyRetainedFrontPreview", StringComparison.Ordinal) &&
             !source.Contains("resize-preview-commit", StringComparison.Ordinal) &&
@@ -197,8 +197,8 @@ static void VerifyBrowserInputAndFrontBufferContract()
     var workerPath = System.IO.Path.Combine(AppContext.BaseDirectory, "web", "doroti.raster.worker.ts");
     Require(File.Exists(workerPath), "the persistent raster worker source is packaged with the validation fixture");
     var workerSource = File.ReadAllText(workerPath);
-    var workerSnapshotDispatch = workerSource.IndexOf("dispatchWorkerSnapshot(messageHostId, JSON.stringify(value));", StringComparison.Ordinal);
-    var workerMetricsReceipt = workerSource.IndexOf("post(\"snapshot-applied\", { generation: value.resizeEpoch.generation });", StringComparison.Ordinal);
+    var workerSnapshotDispatch = workerSource.IndexOf("dispatchWorkerSnapshot(messageHostId, JSON.stringify(snapshot));", StringComparison.Ordinal);
+    var workerMetricsReceipt = workerSource.IndexOf("post(\"snapshot-applied\", { generation: admittedGeneration });", StringComparison.Ordinal);
     Require(workerSnapshotDispatch >= 0 && workerMetricsReceipt > workerSnapshotDispatch &&
             !workerSource.Contains("snapshotAwaitingDisplayGeneration", StringComparison.Ordinal) &&
             !workerSource.Contains("resultReceipt.consumed &&", StringComparison.Ordinal) &&

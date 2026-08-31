@@ -1,0 +1,130 @@
+<Project>
+  <PropertyGroup>
+    <DorotiCanvasKitVersion>0.42.0</DorotiCanvasKitVersion>
+    <DorotiCanvasKitVariant>default</DorotiCanvasKitVariant>
+    <DorotiCanvasKitNodeExecutable Condition="'$(DorotiCanvasKitNodeExecutable)' == ''">node</DorotiCanvasKitNodeExecutable>
+    <DorotiCanvasKitNpmExecutable Condition="'$(DorotiCanvasKitNpmExecutable)' == ''">npm</DorotiCanvasKitNpmExecutable>
+    <DorotiCanvasKitWebRoot>$(MSBuildProjectDirectory)\Web</DorotiCanvasKitWebRoot>
+    <DorotiCanvasKitPinPath>$(MSBuildProjectDirectory)\build\canvaskit.pin.json</DorotiCanvasKitPinPath>
+    <DorotiCanvasKitPrepareScript>$(MSBuildProjectDirectory)\build\prepare-canvaskit-assets.mjs</DorotiCanvasKitPrepareScript>
+    <DorotiCanvasKitLogicalBasePath>_content/$(PackageId)/canvaskit/$(DorotiCanvasKitVersion)/</DorotiCanvasKitLogicalBasePath>
+  </PropertyGroup>
+
+  <Target Name="DorotiCheckCanvasKitRestore"
+          BeforeTargets="PrepareForBuild"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <DorotiCanvasKitIntermediateRoot>$(IntermediateOutputPath)Doroti.CanvasKit\</DorotiCanvasKitIntermediateRoot>
+      <DorotiCanvasKitStaticContentRoot>$(DorotiCanvasKitIntermediateRoot)wwwroot\</DorotiCanvasKitStaticContentRoot>
+      <DorotiCanvasKitAssetRoot>$(DorotiCanvasKitStaticContentRoot)canvaskit\$(DorotiCanvasKitVersion)</DorotiCanvasKitAssetRoot>
+      <DorotiCanvasKitRestoreStamp>$(DorotiCanvasKitIntermediateRoot)restore.lock.json</DorotiCanvasKitRestoreStamp>
+      <_DorotiCanvasKitIntermediateFullPath>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)'))</_DorotiCanvasKitIntermediateFullPath>
+      <_DorotiCanvasKitOutputFullPath>$([System.IO.Path]::GetFullPath('$(DorotiCanvasKitIntermediateRoot)'))</_DorotiCanvasKitOutputFullPath>
+    </PropertyGroup>
+    <Error Code="DOROTICK001"
+           Condition="'$(DorotiCanvasKitVersion)' != '0.42.0' or '$(DorotiCanvasKitVariant)' != 'default'"
+           Text="Doroti.Host.Web requires canvaskit-wasm@0.42.0 default variant; found $(DorotiCanvasKitVersion)/$(DorotiCanvasKitVariant)." />
+    <Error Code="DOROTICK002"
+           Condition="!Exists('$(DorotiCanvasKitPinPath)') or !Exists('$(DorotiCanvasKitPrepareScript)') or !Exists('$(DorotiCanvasKitWebRoot)\package.json') or !Exists('$(DorotiCanvasKitWebRoot)\package-lock.json')"
+           Text="Doroti.Host.Web CanvasKit acquisition inputs are incomplete. Expected package.json, package-lock.json, pin, and prepare script." />
+    <Error Code="DOROTICK003"
+           Condition="!$([System.String]::Copy('$(_DorotiCanvasKitOutputFullPath)').StartsWith('$(_DorotiCanvasKitIntermediateFullPath)', System.StringComparison.OrdinalIgnoreCase)) or $([System.String]::Equals('$(_DorotiCanvasKitOutputFullPath)', '$(_DorotiCanvasKitIntermediateFullPath)', System.StringComparison.OrdinalIgnoreCase))"
+           Text="CanvasKit generated assets must remain in a child of the target-specific intermediate root: $(DorotiCanvasKitIntermediateRoot)." />
+    <Exec Command="&quot;$(DorotiCanvasKitNodeExecutable)&quot; &quot;$(DorotiCanvasKitPrepareScript)&quot; check --web-root &quot;$(DorotiCanvasKitWebRoot)&quot; --pin &quot;$(DorotiCanvasKitPinPath)&quot; --stamp &quot;$(DorotiCanvasKitRestoreStamp)&quot; --npm &quot;$(DorotiCanvasKitNpmExecutable)&quot;"
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          IgnoreExitCode="true"
+          ConsoleToMSBuild="true">
+      <Output TaskParameter="ExitCode" PropertyName="_DorotiCanvasKitRestoreCheckExitCode" />
+    </Exec>
+    <Error Code="DOROTICK004"
+           Condition="'$(_DorotiCanvasKitRestoreCheckExitCode)' != '0' and '$(_DorotiCanvasKitRestoreCheckExitCode)' != '42'"
+           Text="CanvasKit toolchain, package manifest, lockfile, pin, or installed asset validation failed. See diagnostics above." />
+  </Target>
+
+  <Target Name="DorotiRestoreCanvasKit"
+          DependsOnTargets="DorotiCheckCanvasKitRestore"
+          Condition="'$(DesignTimeBuild)' != 'true' and '$(_DorotiCanvasKitRestoreCheckExitCode)' == '42'">
+    <Message Importance="high" Text="Restoring exact canvaskit-wasm@$(DorotiCanvasKitVersion) assets with npm ci --ignore-scripts." />
+    <Exec Command="&quot;$(DorotiCanvasKitNpmExecutable)&quot; ci --ignore-scripts"
+          WorkingDirectory="$(DorotiCanvasKitWebRoot)"
+          EnvironmentVariables="npm_config_audit=false;npm_config_fund=false"
+          IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="_DorotiCanvasKitNpmCiExitCode" />
+    </Exec>
+    <Error Code="DOROTICK005"
+           Condition="'$(_DorotiCanvasKitNpmCiExitCode)' != '0'"
+           Text="CanvasKit restore failed. Doroti source builds require supported Node/npm and the exact package-lock.json; command: npm ci --ignore-scripts." />
+  </Target>
+
+  <Target Name="DorotiPrepareCanvasKitAssets"
+          DependsOnTargets="DorotiCheckCanvasKitRestore;DorotiRestoreCanvasKit"
+          BeforeTargets="DorotiValidateTypeScriptToolchain;DorotiCompileTypeScript;Compile;ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <Exec Command="&quot;$(DorotiCanvasKitNodeExecutable)&quot; &quot;$(DorotiCanvasKitPrepareScript)&quot; prepare --web-root &quot;$(DorotiCanvasKitWebRoot)&quot; --pin &quot;$(DorotiCanvasKitPinPath)&quot; --stamp &quot;$(DorotiCanvasKitRestoreStamp)&quot; --npm &quot;$(DorotiCanvasKitNpmExecutable)&quot; --intermediate-root &quot;$(IntermediateOutputPath).&quot; --output-root &quot;$(DorotiCanvasKitAssetRoot)&quot; --logical-base-path &quot;$(DorotiCanvasKitLogicalBasePath)&quot;"
+          WorkingDirectory="$(MSBuildProjectDirectory)"
+          IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="_DorotiCanvasKitPrepareExitCode" />
+    </Exec>
+    <Error Code="DOROTICK006"
+           Condition="'$(_DorotiCanvasKitPrepareExitCode)' != '0'"
+           Text="CanvasKit allowlist extraction or provenance generation failed. No unverified CanvasKit asset will be registered." />
+    <ItemGroup>
+      <FileWrites Include="$(DorotiCanvasKitRestoreStamp)" />
+      <FileWrites Include="$(DorotiCanvasKitAssetRoot)\canvaskit.js" />
+      <FileWrites Include="$(DorotiCanvasKitAssetRoot)\canvaskit.wasm" />
+      <FileWrites Include="$(DorotiCanvasKitAssetRoot)\types\index.d.ts" />
+      <FileWrites Include="$(DorotiCanvasKitAssetRoot)\LICENSE" />
+      <FileWrites Include="$(DorotiCanvasKitAssetRoot)\canvaskit.manifest.json" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="DorotiRegisterCanvasKitStaticAssets"
+          DependsOnTargets="DorotiPrepareCanvasKitAssets;ResolveStaticWebAssetsConfiguration"
+          BeforeTargets="ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs"
+          Condition="'$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <_DorotiCanvasKitStaticContentRoot>$([MSBuild]::NormalizeDirectory('$(DorotiCanvasKitStaticContentRoot)'))</_DorotiCanvasKitStaticContentRoot>
+    </PropertyGroup>
+    <ItemGroup>
+      <_DorotiCanvasKitStaticAsset Include="$(DorotiCanvasKitAssetRoot)\canvaskit.js">
+        <RelativePath>canvaskit/$(DorotiCanvasKitVersion)/canvaskit.js</RelativePath>
+      </_DorotiCanvasKitStaticAsset>
+      <_DorotiCanvasKitStaticAsset Include="$(DorotiCanvasKitAssetRoot)\canvaskit.wasm">
+        <RelativePath>canvaskit/$(DorotiCanvasKitVersion)/canvaskit.wasm</RelativePath>
+      </_DorotiCanvasKitStaticAsset>
+      <_DorotiCanvasKitStaticAsset Include="$(DorotiCanvasKitAssetRoot)\types\index.d.ts">
+        <RelativePath>canvaskit/$(DorotiCanvasKitVersion)/types/index.d.ts</RelativePath>
+      </_DorotiCanvasKitStaticAsset>
+      <_DorotiCanvasKitStaticAsset Include="$(DorotiCanvasKitAssetRoot)\LICENSE">
+        <RelativePath>canvaskit/$(DorotiCanvasKitVersion)/LICENSE</RelativePath>
+      </_DorotiCanvasKitStaticAsset>
+      <_DorotiCanvasKitStaticAsset Include="$(DorotiCanvasKitAssetRoot)\canvaskit.manifest.json">
+        <RelativePath>canvaskit/$(DorotiCanvasKitVersion)/canvaskit.manifest.json</RelativePath>
+      </_DorotiCanvasKitStaticAsset>
+      <_DorotiCanvasKitStaticAsset Update="@(_DorotiCanvasKitStaticAsset)">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </_DorotiCanvasKitStaticAsset>
+      <Content Remove="@(_DorotiCanvasKitStaticAsset)" />
+    </ItemGroup>
+    <Error Code="DOROTICK007"
+           Condition="'@(_DorotiCanvasKitStaticAsset->Exists()->Count())' != '5'"
+           Text="CanvasKit Static Web Asset registration requires exactly the verified JS, WASM, type declaration, license, and provenance manifest." />
+    <DefineStaticWebAssets
+        CandidateAssets="@(_DorotiCanvasKitStaticAsset)"
+        FingerprintCandidates="$(StaticWebAssetsFingerprintContent)"
+        FingerprintPatterns="@(StaticWebAssetFingerprintPattern)"
+        SourceId="$(PackageId)"
+        SourceType="Computed"
+        ContentRoot="$(_DorotiCanvasKitStaticContentRoot)"
+        BasePath="$(StaticWebAssetBasePath)">
+      <Output TaskParameter="Assets" ItemName="StaticWebAsset" />
+      <Output TaskParameter="Assets" ItemName="_DorotiCanvasKitRegisteredStaticAsset" />
+    </DefineStaticWebAssets>
+    <DefineStaticWebAssetEndpoints
+        CandidateAssets="@(_DorotiCanvasKitRegisteredStaticAsset)"
+        ContentTypeMappings="@(StaticWebAssetContentTypeMapping)">
+      <Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
+    </DefineStaticWebAssetEndpoints>
+  </Target>
+</Project>

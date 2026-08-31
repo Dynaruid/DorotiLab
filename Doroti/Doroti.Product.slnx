@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Doroti.Graphics.DisplayList/Doroti.Graphics.DisplayList.csproj" />
     <Project Path="src/Doroti.Runtime/Doroti.Runtime.csproj" />
     <Project Path="src/Doroti.Ui/Doroti.Ui.csproj" />
     <Project Path="src/Doroti.Hosting/Doroti.Hosting.csproj" />
@@ -57,6 +58,9 @@
   </Folder>
   <Folder Name="/validation/linux-qt/">
     <Project Path="validation/linux-qt-contract/Doroti.Validation.LinuxQtContract.csproj" />
+  </Folder>
+  <Folder Name="/validation/protocol/">
+    <Project Path="validation/display-list-contract/Doroti.Validation.DisplayListContract.csproj" />
   </Folder>
   <Folder Name="/validation/windows-app-sdk/">
     <Project Path="validation/windowsappsdk-24-preflight/Doroti.Validation.WindowsAppSdk24Preflight.csproj" />

@@ -12,7 +12,27 @@ test("selected presenter proves its real WebGL2/Skia/display ownership", async (
   }, bundle.snapshot.canvasId);
   expect(runtimeErrors).toEqual([]);
   expect(capability.hardwareWebGl2).toBe(true);
-  expect(capability.actualManagedSkiaRaster).toBe(true);
+  if (bundle.presenter.mode === "worker-canvaskit-webgl") {
+    expect(capability.actualManagedSkiaRaster).toBe(false);
+    expect(capability.actualCanvasKitRaster).toBe(true);
+    expect(capability.exactDirectCommit).toBe(true);
+    expect(bundle.presenter.rasterCanvasAttached).toBe(false);
+    expect(bundle.presenter.visibleContext).toBe("transferred-offscreen-webgl2-canvaskit");
+    expect(bundle.presenter.mainManagedRuntimeCount).toBe(0);
+    expect(bundle.presenter.uiManagedRuntimeCount).toBe(1);
+    expect(bundle.presenter.rasterManagedRuntimeCount).toBe(0);
+    expect(bundle.presenter.uiCanvasKitOwnerCount).toBe(1);
+    expect(bundle.presenter.rasterCanvasKitOwnerCount).toBe(1);
+    expect(bundle.presenter.rasterWebGlOwnerCount).toBe(1);
+    expect(bundle.presenter.mainCanvasGetContextCount).toBe(0);
+    expect(bundle.presenter.uiCanvasGetContextCount).toBe(0);
+    expect(bundle.presenter.bitmapCreated).toBe(0);
+    expect(bundle.presenter.bitmapConsumed).toBe(0);
+    expect(bundle.presenter.bitmapClosed).toBe(0);
+    expect(bundle.presenter.activeBitmaps).toBe(0);
+  } else {
+    expect(capability.actualManagedSkiaRaster).toBe(true);
+  }
   if (bundle.presenter.mode === "worker-direct-webgl") {
     expect(capability.offscreenCanvas).toBe(true);
     expect(bundle.presenter.visibleContext).toBe("transferred-offscreen-webgl2");
@@ -20,10 +40,11 @@ test("selected presenter proves its real WebGL2/Skia/display ownership", async (
     expect(bundle.presenter.bitmapConsumed).toBe(0);
     expect(bundle.presenter.bitmapClosed).toBe(0);
     expect(bundle.presenter.activeBitmaps).toBe(0);
-  } else {
+  } else if (bundle.presenter.mode !== "worker-canvaskit-webgl") {
     expect(capability.exactBitmapCommit).toBe(true);
   }
-  if (bundle.presenter.mode !== "document-webgl" && bundle.presenter.mode !== "worker-direct-webgl") {
+  if (bundle.presenter.mode !== "document-webgl" && bundle.presenter.mode !== "worker-direct-webgl" &&
+      bundle.presenter.mode !== "worker-canvaskit-webgl") {
     expect(capability.offscreenCanvas).toBe(true);
     expect(capability.createImageBitmap).toBe(true);
     expect(bundle.presenter.rasterCanvasAttached).toBe(false);

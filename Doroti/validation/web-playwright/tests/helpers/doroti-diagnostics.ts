@@ -74,8 +74,114 @@ export interface PresenterSnapshot {
   activeBitmaps: number;
   mainManagedRuntimeCount?: number;
   workerManagedRuntimeCount?: number;
+  uiManagedRuntimeCount?: number;
+  rasterManagedRuntimeCount?: number;
+  uiCanvasKitOwnerCount?: number;
+  rasterCanvasKitOwnerCount?: number;
+  rasterWebGlOwnerCount?: number;
+  mainCanvasGetContextCount?: number;
+  uiCanvasGetContextCount?: number;
   workerRestartCount?: number;
+  workerRestartBudget?: number;
   unpairedRequestCount?: number;
+  runtimeSessionId?: number;
+  rasterSessionId?: number;
+  admittedSceneCount?: number;
+  sceneTerminalCount?: number;
+  rasterAttemptCount?: number;
+  rasterReceiptCount?: number;
+  resourceCount?: number;
+  resourceBytes?: number;
+  activeCanvasLeaseCount?: number;
+  exactCommit?: boolean;
+  assetVerification?: {
+    verifiedRuntimeAssetCount: number;
+    verifiedRuntimeAssetBytes: number;
+    elapsedMicroseconds: number;
+  };
+  canvasLeases?: CanvasLeaseSnapshot[];
+  uiDiagnostics?: CanvasKitUiDiagnostics;
+  rasterDiagnostics?: CanvasKitRasterDiagnostics;
+}
+
+export interface CanvasLeaseSnapshot {
+  leaseId: number;
+  canvasId: string;
+  sessionId: number;
+  state: "created" | "transferred" | "retired";
+  terminalCount: number;
+}
+
+export interface TransferBufferPoolSnapshot {
+  capacity: number;
+  pooled: number;
+  pooledBytes: number;
+  created: number;
+  borrowed: number;
+  returned: number;
+  abandoned: number;
+  discarded: number;
+  outstanding: number;
+  outstandingBytes: number;
+}
+
+export interface CanvasKitUiDiagnostics {
+  topologyVersion: number;
+  canvasKitOwnerCount: number;
+  managedRuntimeCount: number;
+  rasterSessionId: number;
+  rasterReady: boolean;
+  currentScene: number | null;
+  latestScene: number | null;
+  queueDepth: number;
+  queueHighWater: number;
+  terminalCount: number;
+  rasterReceiptCount: number;
+  resourceReceiptCount: number;
+  resourceReplayCount: number;
+  resourceJournalCount: number;
+  pendingResourceOperations: number;
+  text: { ready?: boolean; fontCount?: number; [name: string]: unknown };
+  buffers: TransferBufferPoolSnapshot;
+  heartbeatSequence: number;
+  inputDispatchCount: number;
+  lastInputSequence: number;
+}
+
+export interface CanvasKitObjectCounter {
+  created: number;
+  deleted: number;
+  live: number;
+  bytes: number;
+}
+
+export interface CanvasKitRasterDiagnostics {
+  topologyVersion: number;
+  canvasKitOwnerCount: number;
+  managedRuntimeCount: number;
+  visibleCanvasContextOwnerCount: number;
+  currentScene: number | null;
+  latestScene: number | null;
+  queueDepth: number;
+  queueHighWater: number;
+  admittedScenes: number;
+  terminalScenes: number;
+  rasterAttempts: number;
+  rasterReceipts: number;
+  submittedScenes: number;
+  supersededScenes: number;
+  failedScenes: number;
+  lastFailedSceneSequence?: number;
+  lastFailureReason?: string;
+  flushCount: number;
+  lastFrontGeneration: number;
+  resourceCount: number;
+  resourceBytes: number;
+  objects: Record<string, CanvasKitObjectCounter>;
+  physicalWidth: number;
+  physicalHeight: number;
+  diagnosticRasterStallCount: number;
+  lastDiagnosticRasterStallMilliseconds: number;
 }
 
 export interface DiagnosticBundle {
