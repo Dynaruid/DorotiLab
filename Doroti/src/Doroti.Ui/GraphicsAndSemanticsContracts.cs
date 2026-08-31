@@ -858,6 +858,8 @@ internal sealed record ParagraphHostGraphemeSnapshot(
     double Top,
     double Right,
     double Bottom,
+    double StrutTop,
+    double StrutBottom,
     TextDirection Direction);
 
 internal sealed record ParagraphHostLayoutSnapshot(
@@ -980,10 +982,15 @@ public sealed class Paragraph : IDisposable
 
         if (_hostGraphemes is { } graphemes)
         {
+            var useStrutHeight = boxHeightStyle == BoxHeightStyle.strut;
             return graphemes
                 .Where(value => value.Start < clampedEnd && value.End > clampedStart)
                 .Select(value => new TextBox(
-                    value.Left, value.Top, value.Right, value.Bottom, value.Direction))
+                    value.Left,
+                    useStrutHeight ? value.StrutTop : value.Top,
+                    value.Right,
+                    useStrutHeight ? value.StrutBottom : value.Bottom,
+                    value.Direction))
                 .ToList();
         }
 
@@ -1142,7 +1149,9 @@ public sealed class Paragraph : IDisposable
                 grapheme.End > text.Length || !double.IsFinite(grapheme.Left) ||
                 !double.IsFinite(grapheme.Top) || !double.IsFinite(grapheme.Right) ||
                 !double.IsFinite(grapheme.Bottom) || grapheme.Right < grapheme.Left ||
-                grapheme.Bottom < grapheme.Top)
+                grapheme.Bottom < grapheme.Top || !double.IsFinite(grapheme.StrutTop) ||
+                !double.IsFinite(grapheme.StrutBottom) ||
+                grapheme.StrutBottom < grapheme.StrutTop)
                 throw new InvalidDataException("The host returned an invalid paragraph grapheme snapshot.");
             graphemes[index] = grapheme;
             previousEnd = grapheme.End;

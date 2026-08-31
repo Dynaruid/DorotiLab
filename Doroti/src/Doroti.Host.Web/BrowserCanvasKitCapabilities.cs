@@ -518,6 +518,8 @@ internal sealed class BrowserCanvasKitCapabilities :
                 grapheme.Top,
                 grapheme.Right,
                 grapheme.Bottom,
+                grapheme.StrutTop,
+                grapheme.StrutBottom,
                 grapheme.Direction switch
                 {
                     "ltr" => TextDirection.ltr,
@@ -941,5 +943,7 @@ internal sealed class BrowserCanvasKitCapabilities :
         double Top,
         double Right,
         double Bottom,
+        double StrutTop,
+        double StrutBottom,
         string Direction);
 }

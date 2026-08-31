@@ -767,3 +767,20 @@ Flutter의 `TextPainter`/CanvasKit 구현처럼 먼저 unconstrained layout을 �
 - bundled Chromium headed TextField regression: `1/1 PASS`; semantics value `WW WW`, editable-line raster right edge `WW: 97`, `WW WW: 175`로 공백 뒤 단어의 실제 raster를 확인했다.
 
 이 후속 수정은 해당 TextField 결함과 text-run round trip에 대한 자동 판정만 `PASS`로 바꾼다. 14.5절의 실제 한글 IME, 물리 입력, screen reader, 전체 current-Skia differential과 제품 qualification은 계속 `notVerified` 또는 기존 판정을 유지한다.
+
+### 14.7 2026-08-31 CanvasKit TextField 캐럿 Y 좌표 후속 수정
+
+`worker-canvaskit-webgl`만 TextField 캐럿이 기준 renderer보다 약간 위에 표시되는 결함을 확인했다. 공용 `TextPainter`는 캐럿 위치 계산에 `BoxHeightStyle.strut`을 요청하지만, CanvasKit host paragraph adapter는 height style을 무시하고 항상 `getGlyphInfoAt(...).graphemeLayoutBounds`의 tight bounds를 반환했다. NanumGothic 28px fixture에서 tight bounds는 `top=-1.99, bottom=26.01`, CanvasKit `RectHeightStyle.Strut` bounds는 `top=0, bottom=28`이어서 캐럿 시작점이 약 2 logical px 위로 이동했다.
+
+UI CanvasKit text service가 grapheme별 strut top/bottom을 별도로 snapshot에 포함하고, Raster CanvasKit도 동일 값을 metrics hash에 포함해 UI/Raster paragraph identity를 계속 검증하도록 수정했다. 공용 `Paragraph.getBoxesForRange`는 `BoxHeightStyle.strut` 요청에만 strut bounds를 사용하고 ordinary tight selection/hit-test geometry는 기존 tight bounds를 유지한다.
+
+후속 검증 결과는 다음과 같다.
+
+- `npm run check`: `PASS`
+- FCR-7 material/widget runtime contract: `PASS`; tight `[-2,26]`과 strut `[0,28]` 선택을 분리 검증
+- Release `DorotiDemoApp.Web` build: `PASS`, warning/error 0
+- bundled Chromium headed TextField pixel regression: `worker-canvaskit-webgl` `1/1 PASS`, 기준 `document-webgl` `1/1 PASS`; 두 mode 모두 focused caret top이 TextField semantics bounds에서 `12 logical px`
+- CanvasKit topology/lifecycle suite: `5/5 PASS`; UI/Raster metrics hash, stall, 3회 replacement, malformed recovery, DPR2 포함
+- `git diff --check`: `PASS`
+
+이 판정은 자동 렌더/DOM/픽셀/counter 범위다. 수정 후 실제 한글 IME 입력과 사용자 시각 acceptance는 아직 `notVerified`이며, 14.5절의 전체 qualification 상태를 변경하지 않는다.

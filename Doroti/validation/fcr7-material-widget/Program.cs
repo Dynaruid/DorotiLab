@@ -389,6 +389,29 @@ static void VerifyVariableGlyphCaretMetrics()
             paragraph.getPositionForOffset(new Offset(20, 5)).offset == 2,
         "pointer hit testing uses the same glyph advances as caret geometry");
     paragraph.dispose();
+
+    var hostParagraph = new Paragraph("W", width: 20, height: 28, fontSize: 28);
+    hostParagraph.ApplyHostLayout(new ParagraphHostLayoutSnapshot(
+        Width: 20,
+        Height: 28,
+        AlphabeticBaseline: 22,
+        IdeographicBaseline: 28,
+        MinIntrinsicWidth: 20,
+        MaxIntrinsicWidth: 20,
+        LongestLine: 20,
+        DidExceedMaxLines: false,
+        MetricsHash: 1,
+        CodeUnitAdvances: [20],
+        Lines: [new ParagraphHostLineSnapshot(0, 1, true, 22, 6, 28, 20, 0, 22)],
+        Graphemes: [new ParagraphHostGraphemeSnapshot(
+            0, 1, 0, -2, 20, 26, 0, 28, TextDirection.ltr)]));
+    var tightBox = hostParagraph.getBoxesForRange(0, 1, boxHeightStyle: BoxHeightStyle.tight).Single();
+    var strutBox = hostParagraph.getBoxesForRange(0, 1, boxHeightStyle: BoxHeightStyle.strut).Single();
+    Require(Math.Abs(tightBox.top + 2) < 0.001 && Math.Abs(tightBox.bottom - 26) < 0.001,
+        "host paragraph keeps CanvasKit tight grapheme bounds for ordinary selection geometry");
+    Require(Math.Abs(strutBox.top) < 0.001 && Math.Abs(strutBox.bottom - 28) < 0.001,
+        "host paragraph uses CanvasKit strut bounds for caret geometry");
+    hostParagraph.dispose();
 }
 
 static void VerifyMobileSelectionOverlayContracts()

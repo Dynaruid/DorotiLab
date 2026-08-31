@@ -162,6 +162,8 @@ interface ParagraphGraphemeSnapshot {
   readonly top: number;
   readonly right: number;
   readonly bottom: number;
+  readonly strutTop: number;
+  readonly strutBottom: number;
   readonly direction: "ltr" | "rtl";
 }
 
@@ -2355,6 +2357,17 @@ function paragraphGraphemeSnapshots(
     const [left, top, right, bottom] = [...info.graphemeLayoutBounds].map(Number);
     if (![left, top, right, bottom].every(Number.isFinite) || right < left || bottom < top)
       throw new Error(`CanvasKit returned invalid grapheme bounds for [${start}, ${end}).`);
+    const strutRects = paragraph.getRectsForRange(
+      start, end, kit.RectHeightStyle.Strut, kit.RectWidthStyle.Tight);
+    if (strutRects.length !== 1)
+      throw new Error(
+        `CanvasKit returned ${strutRects.length} strut rectangles for grapheme [${start}, ${end}).`);
+    const [strutLeft, strutTop, strutRight, strutBottom] = [...strutRects[0].rect].map(Number);
+    if (![strutLeft, strutTop, strutRight, strutBottom].every(Number.isFinite) ||
+        strutRight < strutLeft || strutBottom < strutTop)
+      throw new Error(`CanvasKit returned invalid strut bounds for [${start}, ${end}).`);
+    if (Math.abs(strutLeft - left) > 0.001 || Math.abs(strutRight - right) > 0.001)
+      throw new Error(`CanvasKit strut bounds changed the tight width for [${start}, ${end}).`);
     const direction = info.dir === kit.TextDirection.LTR
       ? "ltr"
       : info.dir === kit.TextDirection.RTL
@@ -2362,7 +2375,7 @@ function paragraphGraphemeSnapshots(
         : null;
     if (!direction)
       throw new Error(`CanvasKit returned invalid grapheme direction for [${start}, ${end}).`);
-    result.push({ start, end, left, top, right, bottom, direction });
+    result.push({ start, end, left, top, right, bottom, strutTop, strutBottom, direction });
   }
   result.sort((left, right) => left.start - right.start || left.end - right.end);
   for (let index = 1; index < result.length; index++) {
