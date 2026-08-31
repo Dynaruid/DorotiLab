@@ -75,6 +75,7 @@ interface BrowserHost {
   semanticsElements: Map<number, HTMLElement>;
   semanticsListeners: Map<number, AbortController>;
   semanticsContentSignatures: Map<number, string>;
+  focusedTextFieldSemanticsId: number | null;
   logicalWidth: number;
   logicalHeight: number;
   generation: number;
@@ -108,6 +109,8 @@ interface BrowserHost {
   inputAction: number;
   multiline: boolean;
   pendingBlurConnectionCloseTimer: number;
+  editableGeometryApplied: boolean;
+  contextMenuEnabled: boolean;
 }
 
 interface ResizeEpoch {
@@ -1822,6 +1825,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     id: hostId, root, canvas, input, semantics,
     semanticsElements: new Map(), semanticsListeners: new Map(),
     semanticsContentSignatures: new Map(),
+    focusedTextFieldSemanticsId: null,
     logicalWidth, logicalHeight,
     generation: 1, surfaceGeneration: 0, resizeGeneration: 1,
     emittedResizeGeneration: 1, resizeEpoch: initialEpoch,
@@ -1836,6 +1840,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     lastComposingBase: -1, lastComposingExtent: -1,
     viewFocused: false, pressedKeys: new Map(),
     inputAction: 2, multiline: false, pendingBlurConnectionCloseTimer: 0,
+    editableGeometryApplied: false, contextMenuEnabled: true,
   };
   commitDirectCanvasLogicalSize(host, logicalWidth, logicalHeight);
   hosts.set(hostId, host);
@@ -1874,6 +1879,11 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   const pointer = (phase: number) => (event: PointerEvent): void => {
     event.preventDefault();
     if (phase === 1) {
+      const semanticTextField = semanticsTextFieldAtPoint(host, event.clientX, event.clientY);
+      if (semanticTextField?.dataset.dorotiSemanticsId) {
+        host.focusedTextFieldSemanticsId = Number(semanticTextField.dataset.dorotiSemanticsId);
+        placeTextInputAtSemanticsElement(host, semanticTextField);
+      }
       root.setPointerCapture(event.pointerId);
       // A quick window activation or hidden-tab return retains Flutter's text
       // connection, so do not steal DOM focus from its native endpoint. A
@@ -1895,6 +1905,9 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   observe(root, "pointerup", (event) => pointer(2)(event as PointerEvent));
   observe(root, "pointercancel", (event) => pointer(3)(event as PointerEvent));
   observe(root, "pointerleave", (event) => pointer(6)(event as PointerEvent));
+  observe(root, "contextmenu", (event) => {
+    if (!host.contextMenuEnabled) event.preventDefault();
+  });
   observe(root, "wheel", (event) => {
     const wheel = event as WheelEvent;
     const rect = root.getBoundingClientRect();
@@ -2170,6 +2183,10 @@ export function setTextInputState(
     (selectionStart === selectionEnd || host.input.selectionDirection === selectionDirection);
 
   host.input.hidden = false;
+  const focusedTextField = host.focusedTextFieldSemanticsId === null
+    ? null
+    : host.semanticsElements.get(host.focusedTextFieldSemanticsId) ?? null;
+  if (focusedTextField) placeTextInputAtSemanticsElement(host, focusedTextField);
   if (document.activeElement !== host.input) host.input.focus({ preventScroll: true });
 
   // While an IME composition owns the textarea, managed state is an
@@ -2186,17 +2203,46 @@ export function setTextInputState(
   rememberTextState(host, text, normalizedBase, normalizedExtent, -1, -1);
 }
 
+export function setEditableSizeAndTransform(
+  hostId: number, width: number, height: number, transformJson: string): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.postControl("editable-geometry", { hostId, width, height, transformJson });
+    return;
+  }
+  const host = requireHost(hostId);
+  const transform = JSON.parse(transformJson) as number[];
+  if (transform.length !== 16 || transform.some((value) => !Number.isFinite(value)))
+    throw new Error("Doroti editable transform must contain sixteen finite values.");
+
+  host.editableGeometryApplied = true;
+  host.input.style.left = "0";
+  host.input.style.top = "0";
+  host.input.style.width = `${Math.max(1, width)}px`;
+  host.input.style.height = `${Math.max(1, height)}px`;
+  host.input.style.transform = `matrix3d(${transform.join(",")})`;
+}
+
 export function setCaretRect(hostId: number, left: number, top: number, width: number, height: number): void {
   if (activeWorkerBridge) {
     activeWorkerBridge.postControl("caret", { hostId, left, top, width, height });
     return;
   }
-  const input = requireHost(hostId).input;
-  input.style.left = `${left}px`;
-  input.style.top = `${top}px`;
-  input.style.width = `${Math.max(1, width)}px`;
-  input.style.height = `${Math.max(1, height)}px`;
-  input.focus({ preventScroll: true });
+  const host = requireHost(hostId);
+  if (!host.editableGeometryApplied) {
+    host.input.style.left = `${left}px`;
+    host.input.style.top = `${top}px`;
+    host.input.style.width = `${Math.max(1, width)}px`;
+    host.input.style.height = `${Math.max(1, height)}px`;
+  }
+  host.input.focus({ preventScroll: true });
+}
+
+export function setContextMenuEnabled(hostId: number, enabled: boolean): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.postControl("context-menu", { hostId, enabled });
+    return;
+  }
+  requireHost(hostId).contextMenuEnabled = enabled;
 }
 
 export function clearTextInput(hostId: number): void {
@@ -2278,6 +2324,11 @@ export function updateSemantics(hostId: number, json: string): void {
     }
     const canRetainContent = node.contentUnchanged === true && !replaced &&
       host.semanticsContentSignatures.has(id);
+    if (!canRetainContent && node.flags?.textField) {
+      if (node.flags.focused === true) host.focusedTextFieldSemanticsId = id;
+      else if (node.flags.focused === false && host.focusedTextFieldSemanticsId === id)
+        host.focusedTextFieldSemanticsId = null;
+    }
     const controlledIds = canRetainContent ? undefined : node.controlsNodes
       ?.map((identifier) => identifiersByValue.get(identifier))
       .filter((controlledId): controlledId is number => controlledId !== undefined)
@@ -2431,6 +2482,14 @@ export function updateSemantics(hostId: number, json: string): void {
   desiredByParent.set(host.semantics, roots);
   for (const [parent, desired] of desiredByParent) placeSemanticsChildren(parent, desired);
   for (const [parent, desired] of desiredByParent) removeUnexpectedSemanticsChildren(parent, desired);
+  if (host.focusedTextFieldSemanticsId !== null &&
+      !liveIds.has(host.focusedTextFieldSemanticsId)) {
+    host.focusedTextFieldSemanticsId = null;
+  }
+  const focusedTextField = host.focusedTextFieldSemanticsId === null
+    ? null
+    : host.semanticsElements.get(host.focusedTextFieldSemanticsId) ?? null;
+  if (!host.input.hidden && focusedTextField) placeTextInputAtSemanticsElement(host, focusedTextField);
   recordResize(host, "semantics-dom-applied", "browser-semantics", {
     durationMicroseconds: Math.round((performance.now() - started) * 1000),
     detail: JSON.stringify({ nodes: nodes.length, contentUpdates, geometryUpdates }),
@@ -2627,6 +2686,11 @@ export async function startDorotiWorkerHost(
       case "caret":
         setCaretRect(Number(payload.hostId), Number(payload.left), Number(payload.top), Number(payload.width), Number(payload.height));
         break;
+      case "editable-geometry":
+        setEditableSizeAndTransform(
+          Number(payload.hostId), Number(payload.width), Number(payload.height), String(payload.transformJson));
+        break;
+      case "context-menu": setContextMenuEnabled(Number(payload.hostId), Boolean(payload.enabled)); break;
       case "text-clear": clearTextInput(Number(payload.hostId)); break;
       case "semantics": updateSemantics(Number(payload.hostId), String(payload.json)); break;
       case "application-title":
@@ -3220,6 +3284,29 @@ function removeUnexpectedSemanticsChildren(parent: HTMLElement, desired: HTMLEle
   for (const child of Array.from(parent.children)) {
     if (child instanceof HTMLElement && child.dataset.dorotiSemanticsId !== undefined && !expected.has(child)) child.remove();
   }
+}
+
+function semanticsTextFieldAtPoint(host: BrowserHost, clientX: number, clientY: number): HTMLElement | null {
+  const candidates = Array.from(host.semanticsElements.values()).reverse();
+  for (const element of candidates) {
+    if (!(element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) continue;
+    if (element.getAttribute("role") !== "textbox") continue;
+    const rect = element.getBoundingClientRect();
+    if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom)
+      return element;
+  }
+  return null;
+}
+
+function placeTextInputAtSemanticsElement(host: BrowserHost, element: HTMLElement): void {
+  const rootRect = host.root.getBoundingClientRect();
+  const fieldRect = element.getBoundingClientRect();
+  host.editableGeometryApplied = true;
+  host.input.style.left = `${fieldRect.left - rootRect.left}px`;
+  host.input.style.top = `${fieldRect.top - rootRect.top}px`;
+  host.input.style.width = `${Math.max(1, fieldRect.width)}px`;
+  host.input.style.height = `${Math.max(1, fieldRect.height)}px`;
+  host.input.style.transform = "none";
 }
 
 function applySemanticsFlags(element: HTMLElement, flags: SemanticsFlags | undefined, role: string): void {

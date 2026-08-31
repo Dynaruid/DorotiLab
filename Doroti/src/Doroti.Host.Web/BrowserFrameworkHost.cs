@@ -1,5 +1,6 @@
 using Doroti.Hosting;
 using Doroti.Ui;
+using System.Text.Json;
 
 namespace Doroti.Host.Web;
 
@@ -50,7 +51,7 @@ public sealed class BrowserFrameworkHost : IDisposable
                 viewId, host,
                 configuration.backgroundColor, configuration.darkBackgroundColor,
                 backendIdentity, _fallbackFonts);
-        var messages = new BrowserPlatformMessageCapability();
+        var messages = new BrowserPlatformMessageCapability(host);
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
             .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
@@ -170,8 +171,15 @@ public sealed class BrowserFrameworkHost : IDisposable
 
     private sealed class BrowserPlatformMessageCapability : IPlatformMessageHostCapability
     {
+        private const string ContextMenuChannel = "flutter/contextmenu";
+        private static readonly ReadOnlyMemory<byte> SuccessEnvelope =
+            JsonSerializer.SerializeToUtf8Bytes(new object?[] { true });
+
         private readonly object _gate = new();
+        private readonly BrowserHostAdapter _host;
         private readonly Dictionary<string, PlatformMessageHandler> _handlers = new(StringComparer.Ordinal);
+
+        public BrowserPlatformMessageCapability(BrowserHostAdapter host) => _host = host;
 
         public ValueTask<ReadOnlyMemory<byte>?> SendAsync(
             string channel,
@@ -179,6 +187,10 @@ public sealed class BrowserFrameworkHost : IDisposable
             CancellationToken cancellationToken = default)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(channel);
+            cancellationToken.ThrowIfCancellationRequested();
+            if (string.Equals(channel, ContextMenuChannel, StringComparison.Ordinal))
+                return HandleContextMenuMessage(data);
+
             PlatformMessageHandler? handler;
             lock (_gate)
             {
@@ -187,6 +199,26 @@ public sealed class BrowserFrameworkHost : IDisposable
             return handler is null
                 ? ValueTask.FromResult<ReadOnlyMemory<byte>?>(null)
                 : handler(data, cancellationToken);
+        }
+
+        private ValueTask<ReadOnlyMemory<byte>?> HandleContextMenuMessage(ReadOnlyMemory<byte>? data)
+        {
+            if (data is null) return ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
+
+            using var document = JsonDocument.Parse(data.Value);
+            if (!document.RootElement.TryGetProperty("method", out var methodElement))
+                return ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
+
+            var enabled = methodElement.GetString() switch
+            {
+                "enableContextMenu" => true,
+                "disableContextMenu" => false,
+                _ => (bool?)null,
+            };
+            if (enabled is null) return ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
+
+            _host.SetBrowserContextMenuEnabled(enabled.Value);
+            return ValueTask.FromResult<ReadOnlyMemory<byte>?>(SuccessEnvelope);
         }
 
         public void SetMessageHandler(string channel, PlatformMessageHandler? handler)

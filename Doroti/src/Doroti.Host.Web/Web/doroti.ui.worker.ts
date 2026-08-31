@@ -114,6 +114,7 @@ let heartbeatSequence = 0;
 let heartbeatTimer = 0;
 let inputDispatchCount = 0;
 let lastInputSequence = 0;
+let managedInputSequenceBaseline = 0;
 let managedHostReady = false;
 let managedRuntimeStarting = false;
 let uiCanvasKitReady = false;
@@ -224,6 +225,8 @@ export async function startCanvasKitRole(context: CanvasKitRoleContext): Promise
   dotnetModuleUrl = String(envelope.dotnetModuleUrl ?? "");
   snapshot = envelope.snapshot as HostSnapshot;
   if (!snapshot?.resizeEpoch) throw new Error("Doroti CanvasKit UI role requires an initial host snapshot.");
+  managedInputSequenceBaseline = nonNegativeInteger(
+    snapshot.inputSequence, "initial snapshot inputSequence");
   bindRasterPort(requireMessagePort(envelope.rasterPort), positiveInteger(envelope.rasterSessionId, "rasterSessionId"));
   snapshot = withRasterIdentity(snapshot);
   const started = performance.now();
@@ -311,6 +314,10 @@ function installMainListener(): void {
       switch (message.kind) {
         case "snapshot":
           snapshot = withRasterIdentity(message.snapshot as HostSnapshot);
+          if (!managedHostReady) snapshot = {
+            ...snapshot,
+            inputSequence: managedInputSequenceBaseline,
+          };
           if (managedHostReady) dispatchWorkerSnapshot(Number(message.hostId), JSON.stringify(snapshot));
           break;
         case "resize-epoch": {
@@ -705,6 +712,13 @@ function positiveInteger(value: unknown, name: string): number {
   const number = Number(value);
   if (!Number.isSafeInteger(number) || number <= 0)
     throw new Error(`Doroti CanvasKit '${name}' must be a positive safe integer.`);
+  return number;
+}
+
+function nonNegativeInteger(value: unknown, name: string): number {
+  const number = Number(value);
+  if (!Number.isSafeInteger(number) || number < 0)
+    throw new Error(`Doroti CanvasKit '${name}' must be a non-negative safe integer.`);
   return number;
 }
 

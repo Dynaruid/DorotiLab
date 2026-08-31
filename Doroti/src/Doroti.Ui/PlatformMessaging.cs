@@ -157,6 +157,15 @@ public interface ITextInputHostCapability
 
     void UpdateState(DorotiTextEditingState state);
 
+    /// <summary>
+    /// Places the native editing endpoint over the framework editable. Browser
+    /// hosts use this geometry so native text services, including the browser
+    /// context menu, operate on the same text and selection as EditableText.
+    /// </summary>
+    void SetEditableSizeAndTransform(Size logicalSize, Matrix4 transform)
+    {
+    }
+
     void SetCaretRect(Rect logicalRect);
 
     /// <summary>Requests that the native text input UI become visible for the attached client.</summary>

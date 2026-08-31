@@ -35,12 +35,26 @@ body,
 }
 
 .doroti-ime {
-  position: fixed;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 1px;
   height: 1px;
-  opacity: 0;
-  pointer-events: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  white-space: pre-wrap;
+  opacity: 1;
+  color: transparent;
+  background: transparent;
+  caret-color: transparent;
+  border: none;
+  outline: none;
+  text-shadow: none;
+  pointer-events: auto;
   resize: none;
+  transform-origin: 0 0 0;
+  forced-color-adjust: none;
 }
 
 .doroti-semantics {

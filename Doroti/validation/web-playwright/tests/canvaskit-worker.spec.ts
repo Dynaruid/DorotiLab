@@ -55,6 +55,56 @@ function requireCanvasKitDiagnostics(bundle: DiagnosticBundle): {
   };
 }
 
+test("CanvasKit cold-start focus snapshot does not overtake its queued input", async ({
+  page,
+  runtimeErrors,
+}) => {
+  test.skip(process.env.DOROTI_WEB_RENDERER_MODE !== canvasKitMode,
+    "CanvasKit split-Worker validation only");
+
+  let reportDotnetRequest!: () => void;
+  let releaseDotnetRequest!: () => void;
+  const dotnetRequest = new Promise<void>((resolve) => { reportDotnetRequest = resolve; });
+  const dotnetRelease = new Promise<void>((resolve) => { releaseDotnetRequest = resolve; });
+  await page.route(/\/_framework\/dotnet(?:\.[a-z0-9]+)?\.js$/, async (route) => {
+    reportDotnetRequest();
+    await dotnetRelease;
+    await route.continue();
+  });
+  await page.goto(`/?dorotiResizeDiagnostics=1&dorotiRenderer=${canvasKitMode}`, {
+    waitUntil: "domcontentloaded",
+  });
+  const surface = page.locator("#doroti-surface");
+  await expect(surface).toBeVisible({ timeout: 120_000 });
+  try {
+    await expect.poll(async () => {
+      const candidate = await captureDiagnostics(page);
+      return candidate.presenter.uiCanvasKitOwnerCount === 1 &&
+        candidate.presenter.uiManagedRuntimeCount === 0;
+    }, { timeout: 120_000 }).toBe(true);
+    await dotnetRequest;
+    const bounds = await surface.boundingBox();
+    if (!bounds) throw new Error("Doroti CanvasKit surface has no startup bounds.");
+    await page.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+  } finally {
+    releaseDotnetRequest();
+  }
+
+  await page.waitForFunction(() => {
+    const stage = document.documentElement.dataset.dorotiBootstrapStage;
+    return stage === "started" || stage === "failed";
+  }, undefined, { timeout: 120_000 });
+  expect(await page.locator("html").getAttribute("data-doroti-bootstrap-stage")).toBe("started");
+
+  const bundle = await waitForSettledPresenter(page);
+  const { ui } = requireCanvasKitDiagnostics(bundle);
+  expect(bundle.snapshot.inputSequence).toBeGreaterThan(0);
+  expect(ui.inputDispatchCount).toBeGreaterThan(0);
+  expect(ui.lastInputSequence).toBe(bundle.snapshot.inputSequence);
+  expect(runtimeErrors).toEqual([]);
+  assertPresenterContract(bundle);
+});
+
 test("CanvasKit split topology has exactly one owner per runtime and exact terminal accounting", async ({
   page,
   runtimeErrors,

@@ -14,7 +14,9 @@ import {
   restoreHostInputSequence,
   setApplicationTitle,
   setCaretRect,
+  setContextMenuEnabled,
   setCursor,
+  setEditableSizeAndTransform,
   setTextInputState,
   unregisterExternalWorkerPresenter,
   updateExternalWorkerGpu,
@@ -86,6 +88,10 @@ interface PresenterState {
   rasterDiagnostics: Readonly<Record<string, unknown>>;
 }
 
+interface PendingUiMessage {
+  readonly envelope: Readonly<Record<string, unknown>>;
+}
+
 const protocolVersion = dorotiProtocolVersion;
 const topologyVersion = dorotiCanvasKitTopologyVersion;
 const canvasKitVersion = "0.42.0";
@@ -123,6 +129,7 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
   const leaseLedger = new CanvasLeaseLedger();
   let activeInputSequence = 0;
   let currentSnapshot: HostSnapshot | null = null;
+  const pendingUiMessages: PendingUiMessage[] = [];
   let disposed = false;
   let restarting = false;
   let diagnosticContextLossPending = false;
@@ -183,7 +190,18 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
   registerExternalWorkerPresenter(canvas.id, diagnostics);
 
   const postUi = (kind: string, payload: Record<string, unknown> = {}, transfer: Transferable[] = []): void => {
-    presenter.uiWorker.postMessage({ protocolVersion, topologyVersion, kind, ...payload }, transfer);
+    const envelope = { protocolVersion, topologyVersion, kind, ...payload };
+    if (!presenter.uiReady) {
+      if (transfer.length > 0)
+        throw new Error("Doroti CanvasKit cannot queue a transferable before the UI role is ready.");
+      pendingUiMessages.push({ envelope: structuredClone(envelope) });
+      return;
+    }
+    presenter.uiWorker.postMessage(envelope, transfer);
+  };
+  const flushPendingUiMessages = (): void => {
+    for (const message of pendingUiMessages.splice(0))
+      presenter.uiWorker.postMessage(message.envelope);
   };
   const postInput = (
     inputKind: string,
@@ -262,6 +280,11 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
       case "caret":
         setCaretRect(Number(payload.hostId), Number(payload.left), Number(payload.top), Number(payload.width), Number(payload.height));
         break;
+      case "editable-geometry":
+        setEditableSizeAndTransform(
+          Number(payload.hostId), Number(payload.width), Number(payload.height), String(payload.transformJson));
+        break;
+      case "context-menu": setContextMenuEnabled(Number(payload.hostId), Boolean(payload.enabled)); break;
       case "text-clear": clearTextInput(Number(payload.hostId)); break;
       case "semantics": updateSemantics(Number(payload.hostId), String(payload.json)); break;
       case "application-title": setApplicationTitle(Number(payload.hostId), String(payload.title)); break;
@@ -284,7 +307,10 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
         return;
       }
       switch (message.kind) {
-        case "ui-canvaskit-ready": presenter.uiReady = true; break;
+        case "ui-canvaskit-ready":
+          presenter.uiReady = true;
+          flushPendingUiMessages();
+          break;
         case "runtime-ready": presenter.runtimeReady = true; settleReady(); break;
         case "ui-diagnostics": presenter.uiDiagnostics = message.diagnostics as Record<string, unknown>; break;
         case "ui-heartbeat":

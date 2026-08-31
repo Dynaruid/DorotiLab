@@ -38,6 +38,7 @@ export interface HostSnapshot {
   focused: boolean;
   generation: number;
   surfaceGeneration: number;
+  inputSequence: number;
   gpu: {
     api: string;
     vendor: string;

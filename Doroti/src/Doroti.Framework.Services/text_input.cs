@@ -1253,6 +1253,10 @@ internal sealed class _HostTextInputControl : TextInputControl
     public override void setEditingState(TextEditingValue value) =>
         RequireCapability("TextInput.setEditingState").UpdateState(ToHost(value));
 
+    public override void setEditableSizeAndTransform(Size editableBoxSize, Matrix4 transform) =>
+        RequireCapability("TextInput.setEditableSizeAndTransform")
+            .SetEditableSizeAndTransform(editableBoxSize, transform);
+
     public override void show() => RequireCapability("TextInput.show").ShowTextInput();
 
     // TextInput schedules hide after detaching the final client. Native hosts

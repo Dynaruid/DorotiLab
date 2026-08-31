@@ -98,8 +98,15 @@ internal static partial class BrowserInterop
         string inputMode, string enterKeyHint, bool readOnly, bool obscureText,
         string autocapitalize, bool autocorrect, int inputAction, bool multiline, bool attach);
 
+    [JSImport("setEditableSizeAndTransform", Module)]
+    internal static partial void SetEditableSizeAndTransform(
+        int hostId, double width, double height, string transformJson);
+
     [JSImport("setCaretRect", Module)]
     internal static partial void SetCaretRect(int hostId, double left, double top, double width, double height);
+
+    [JSImport("setContextMenuEnabled", Module)]
+    internal static partial void SetContextMenuEnabled(int hostId, bool enabled);
 
     [JSImport("clearTextInput", Module)]
     internal static partial void ClearTextInput(int hostId);
@@ -395,6 +402,15 @@ public sealed class BrowserHostAdapter :
 
     public void UpdateState(DorotiTextEditingState state) => SetTextInputState(state, attach: false);
 
+    public void SetEditableSizeAndTransform(Size logicalSize, Matrix4 transform)
+    {
+        ArgumentNullException.ThrowIfNull(logicalSize);
+        ArgumentNullException.ThrowIfNull(transform);
+        BrowserInterop.SetEditableSizeAndTransform(
+            HostId, logicalSize.width, logicalSize.height,
+            JsonSerializer.Serialize(transform.storage.ToArray()));
+    }
+
     private void SetTextInputState(DorotiTextEditingState state, bool attach) =>
         BrowserInterop.SetTextInputState(
             HostId, state.text, state.selection.baseOffset, state.selection.extentOffset,
@@ -408,6 +424,12 @@ public sealed class BrowserHostAdapter :
 
     public void SetCaretRect(Rect logicalRect) => BrowserInterop.SetCaretRect(
         HostId, logicalRect.left, logicalRect.top, logicalRect.width, logicalRect.height);
+
+    internal void SetBrowserContextMenuEnabled(bool enabled)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        BrowserInterop.SetContextMenuEnabled(HostId, enabled);
+    }
 
     public void ClearClient() => BrowserInterop.ClearTextInput(HostId);
 
