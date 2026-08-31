@@ -526,8 +526,13 @@ public sealed class ParagraphBuilder
             ? _paragraphTextStyle.fontSize ?? 14
             : _runs.Max(run => run.Style.fontSize ?? 14);
         var text = string.Concat(_text);
-        var fontFamily = _paragraphTextStyle.fontFamily;
-        var color = _paragraphTextStyle.foreground?.color ?? _paragraphTextStyle.color ?? new Color(0xFF000000);
+        var firstRunStyle = _runs.Count == 0 ? _paragraphTextStyle : _runs[0].Style;
+        var fontFamily = firstRunStyle.fontFamily ?? _paragraphTextStyle.fontFamily;
+        // Paragraph.color is the fallback used by renderers that do not need to
+        // inspect individual runs.  Keep it aligned with the effective root run
+        // instead of the paragraph-level geometry defaults, which intentionally
+        // do not carry a color.
+        var color = firstRunStyle.foreground?.color ?? firstRunStyle.color ?? new Color(0xFF000000);
         var lineHeight = fontSize * (_style.height ?? 1.2);
         var view = PlatformDispatcher.current?.implicitView;
         if (view is not null)

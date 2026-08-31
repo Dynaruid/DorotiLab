@@ -904,7 +904,7 @@ public sealed class Paragraph : IDisposable
         this.fontSize = Math.Max(1, fontSize);
         this.fontFamily = fontFamily;
         this.color = color ?? new Color(0xFF000000);
-        CanvasKitTextRuns = (textRuns ?? []).ToArray();
+        TextRuns = (textRuns ?? []).ToArray();
         _graphemeStarts = System.Globalization.StringInfo.ParseCombiningCharacters(text);
         _lineHeight = height > 0 ? height : this.fontSize * 1.2;
         _codeUnitAdvances = codeUnitAdvances is { Count: var count } && count == text.Length
@@ -936,7 +936,7 @@ public sealed class Paragraph : IDisposable
     internal TextDirection CanvasKitTextDirection { get; init; } = TextDirection.ltr;
     internal TextAlign CanvasKitTextAlign { get; init; } = TextAlign.start;
     internal string? CanvasKitEllipsis { get; init; }
-    internal IReadOnlyList<ParagraphTextRun> CanvasKitTextRuns { get; }
+    internal IReadOnlyList<ParagraphTextRun> TextRuns { get; }
     internal Func<double, ParagraphHostLayoutSnapshot>? CanvasKitRelayout { get; init; }
     internal uint CanvasKitMaxLines => _maxLines is null
         ? 0

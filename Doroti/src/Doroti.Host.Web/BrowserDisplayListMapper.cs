@@ -267,7 +267,7 @@ internal static class BrowserDisplayListMapper
                             checked((float)draw.Paragraph.height),
                             draw.Paragraph.CanvasKitMetricsHash,
                             [font],
-                            draw.Paragraph.CanvasKitTextRuns.Select(ToParagraphTextRun)),
+                            draw.Paragraph.TextRuns.Select(ToParagraphTextRun)),
                         ToPoint(draw.Offset)));
                     break;
                 case "drawImage" when command.HostPayload is CanvasImagePayload draw:

@@ -73,6 +73,7 @@ VerifyRadiusSizedMaterialShapes();
 VerifyTypedActionDispatch();
 VerifyTapRegionHitIdentity();
 VerifyVariableGlyphCaretMetrics();
+VerifyParagraphTextColorPropagation(darkTheme);
 VerifyBrowserFallbackFontContract();
 VerifyBrowserInputAndFrontBufferContract();
 VerifyMobileSelectionOverlayContracts();
@@ -119,6 +120,29 @@ Console.WriteLine($"FCR-7 material/widget runtime contract: PASS (configuration=
 
 static Scenario Scenario(string id, string component, IReadOnlyList<string> states, IReadOnlyList<string> actions) => new(id, component, states, actions);
 static void Require(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); }
+
+static void VerifyParagraphTextColorPropagation(Doroti.Framework.Material.ThemeData darkTheme)
+{
+    var rootStyle = darkTheme.textTheme.bodyMedium
+        ?? throw new InvalidOperationException("The dark Material theme has no bodyMedium text style.");
+    var expected = rootStyle.color
+        ?? throw new InvalidOperationException("The dark Material bodyMedium style has no foreground color.");
+    var builder = new Doroti.Ui.ParagraphBuilder(rootStyle.getParagraphStyle(
+        textDirection: Doroti.Ui.TextDirection.ltr));
+    builder.pushStyle(rootStyle.getTextStyle());
+    builder.addText("Dark ");
+    builder.pushStyle(new Doroti.Ui.TextStyle(fontWeight: Doroti.Ui.FontWeight.bold));
+    builder.addText("mode");
+    builder.pop();
+    builder.pop();
+
+    using var paragraph = builder.build();
+    Require(paragraph.color.value == expected.value,
+        "paragraph fallback color follows the effective dark-theme root run");
+    Require(paragraph.TextRuns.Count == 2 && paragraph.TextRuns.All(run =>
+            (run.Style.foreground?.color ?? run.Style.color)?.value == expected.value),
+        "nested paragraph runs inherit the dark-theme foreground color");
+}
 
 static void VerifyBrowserFallbackFontContract()
 {

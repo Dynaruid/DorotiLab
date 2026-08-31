@@ -519,11 +519,8 @@ public sealed class SkiaSceneRenderer :
         ObjectDisposedException.ThrowIf(_disposed, this);
         lock (_paintGate)
         {
-            var resources = GetTextRenderResources(
-                request.FontFamily,
-                (float)request.FontSize,
-                ToColor(request.Color ?? new UiColor(0xFF000000)));
-            var advances = resources.MeasureCodeUnitAdvances(request.Text);
+            var textRuns = NormalizeTextRuns(request);
+            var advances = MeasureTextRuns(request, textRuns);
             var naturalWidth = advances.Sum();
             var width = double.IsFinite(request.Width) ? Math.Min(request.Width, naturalWidth) : naturalWidth;
             return new Paragraph(
@@ -534,7 +531,8 @@ public sealed class SkiaSceneRenderer :
                 request.MaxLines,
                 request.FontFamily,
                 request.Color,
-                advances);
+                advances,
+                textRuns);
         }
     }
 
@@ -953,15 +951,7 @@ public sealed class SkiaSceneRenderer :
                 case "drawArc" when command.HostPayload is CanvasArcPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawArc(ToRect(draw.Rect), (float)(draw.StartAngle * 180 / Math.PI), (float)(draw.SweepAngle * 180 / Math.PI), draw.UseCenter, paint); break;
                 case "drawColor" when command.HostPayload is CanvasColorPayload draw: canvas.DrawColor(ToColor(draw.Color), ToBlend(draw.BlendMode)); break;
                 case "drawParagraph" when command.HostPayload is CanvasParagraphPayload draw:
-                    var textResources = GetTextRenderResources(
-                        draw.Paragraph.fontFamily,
-                        (float)draw.Paragraph.fontSize,
-                        ToColor(draw.Paragraph.color));
-                    textResources.DrawText(
-                        canvas,
-                        draw.Paragraph.text,
-                        (float)draw.Offset.dx,
-                        (float)(draw.Offset.dy + draw.Paragraph.alphabeticBaseline));
+                    DrawParagraphText(canvas, draw.Paragraph, draw.Offset);
                     break;
                 case "drawImageRect" or "drawImage" when command.HostPayload is CanvasImagePayload draw && draw.Image.HostHandle is SkiaImageHandle handle:
                     using (var paint = ToPaint(draw.Paint))
@@ -1136,6 +1126,68 @@ public sealed class SkiaSceneRenderer :
         resources = new TextRenderResources(fontFamily, fontSize, color, _fallbackFonts);
         _textRenderResources.Add(key, resources);
         return resources;
+    }
+
+    private static IReadOnlyList<ParagraphTextRun> NormalizeTextRuns(ParagraphRequest request)
+    {
+        var runs = request.TextRuns ?? [];
+        if (runs.Count != 0 &&
+            !string.Equals(string.Concat(runs.Select(run => run.Text)), request.Text, StringComparison.Ordinal))
+            throw new InvalidDataException("Paragraph text runs must concatenate to the paragraph text.");
+        return runs;
+    }
+
+    private double[] MeasureTextRuns(ParagraphRequest request, IReadOnlyList<ParagraphTextRun> runs)
+    {
+        if (runs.Count == 0)
+        {
+            return GetTextRenderResources(
+                    request.FontFamily,
+                    (float)request.FontSize,
+                    ToColor(request.Color ?? new UiColor(0xFF000000)))
+                .MeasureCodeUnitAdvances(request.Text);
+        }
+
+        var advances = new double[request.Text.Length];
+        var offset = 0;
+        foreach (var run in runs)
+        {
+            var style = run.Style;
+            var resources = GetTextRenderResources(
+                style.fontFamily ?? request.FontFamily,
+                (float)(style.fontSize ?? request.FontSize),
+                ToColor(style.foreground?.color ?? style.color ?? request.Color ?? new UiColor(0xFF000000)));
+            var runAdvances = resources.MeasureCodeUnitAdvances(run.Text);
+            Array.Copy(runAdvances, 0, advances, offset, runAdvances.Length);
+            offset += runAdvances.Length;
+        }
+        return advances;
+    }
+
+    private void DrawParagraphText(SKCanvas canvas, Paragraph paragraph, Offset offset)
+    {
+        var x = (float)offset.dx;
+        var baseline = (float)(offset.dy + paragraph.alphabeticBaseline);
+        if (paragraph.TextRuns.Count == 0)
+        {
+            GetTextRenderResources(
+                    paragraph.fontFamily,
+                    (float)paragraph.fontSize,
+                    ToColor(paragraph.color))
+                .DrawText(canvas, paragraph.text, x, baseline);
+            return;
+        }
+
+        foreach (var run in paragraph.TextRuns)
+        {
+            var style = run.Style;
+            var resources = GetTextRenderResources(
+                style.fontFamily ?? paragraph.fontFamily,
+                (float)(style.fontSize ?? paragraph.fontSize),
+                ToColor(style.foreground?.color ?? style.color ?? paragraph.color));
+            resources.DrawText(canvas, run.Text, x, baseline);
+            x += (float)resources.MeasureCodeUnitAdvances(run.Text).Sum();
+        }
     }
 
     private readonly record struct TextRenderKey(string FontFamily, float FontSize, SKColor Color);
