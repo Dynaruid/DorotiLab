@@ -643,8 +643,46 @@ function commitDirectCanvasLogicalSize(
   // element's CSS box or DPR > 1 enlarges it by the device scale factor.
   host.canvas.style.width = `${logicalWidth}px`;
   host.canvas.style.height = `${logicalHeight}px`;
+  // A transferred canvas can expose its next Worker-owned intrinsic size
+  // before the matching direct-commit message reaches main. Preserve the
+  // rendered aspect ratio during that cross-thread hand-off instead of
+  // allowing the browser's default object-fit: fill to distort the frame.
+  host.canvas.style.objectFit = "cover";
+  host.canvas.style.objectPosition = "left top";
   host.canvas.style.removeProperty("transform");
   host.canvas.style.removeProperty("transform-origin");
+}
+
+function configureDirectCanvasCapacity(
+  host: BrowserHost,
+  logicalWidth: number,
+  logicalHeight: number,
+  ratio: number,
+  physicalWidth?: number,
+  physicalHeight?: number,
+  initializeBacking = false): void {
+  const screenWidth = Number(globalThis.screen?.availWidth ?? globalThis.screen?.width ?? 0);
+  const screenHeight = Number(globalThis.screen?.availHeight ?? globalThis.screen?.height ?? 0);
+  const capacityWidth = physicalWidth ?? Math.ceil(
+    Math.max(logicalWidth * 1.5, screenWidth, logicalWidth) * ratio);
+  const capacityHeight = physicalHeight ?? Math.ceil(
+    Math.max(logicalHeight * 1.5, screenHeight, logicalHeight) * ratio);
+  // width/height cannot be assigned from main after control was transferred.
+  // Worker capacity growth is reported here only to update the matching CSS
+  // pixel ratio; initial/replacement canvases opt in before transfer.
+  if (initializeBacking) {
+    host.canvas.width = capacityWidth;
+    host.canvas.height = capacityHeight;
+  }
+  host.canvas.style.width = `${capacityWidth / ratio}px`;
+  host.canvas.style.height = `${capacityHeight / ratio}px`;
+  host.canvas.style.objectFit = "cover";
+  host.canvas.style.objectPosition = "left top";
+  host.canvas.style.removeProperty("transform");
+  host.canvas.style.removeProperty("transform-origin");
+  host.canvas.dataset.dorotiCapacityWidth = String(capacityWidth);
+  host.canvas.dataset.dorotiCapacityHeight = String(capacityHeight);
+  host.canvas.dataset.dorotiCapacityDevicePixelRatio = String(ratio);
 }
 
 function commitObservedResize(
@@ -657,7 +695,6 @@ function commitObservedResize(
   ratio: number,
   forceGeneration = false): void {
   if (logicalWidth <= 0 || logicalHeight <= 0 || physicalWidth <= 0 || physicalHeight <= 0) return;
-  commitDirectCanvasLogicalSize(host, logicalWidth, logicalHeight);
   const changed = updateResizeEpoch(
     host, source, logicalWidth, logicalHeight, forceGeneration,
     physicalWidth, physicalHeight, ratio);
@@ -724,9 +761,15 @@ function observeResizeEntry(host: BrowserHost, entry: ResizeObserverEntry): void
 }
 
 function observeFullPageViewport(host: BrowserHost, source: string): void {
-  const viewport = globalThis.visualViewport;
-  const logicalWidth = viewport?.width ?? globalThis.innerWidth;
-  const logicalHeight = viewport?.height ?? globalThis.innerHeight;
+  // visualViewport.width/height shrink during pinch zoom even though the
+  // full-page layout viewport and fixed Doroti root do not. Treat the visual
+  // viewport as a change signal only; publishing its scaled dimensions as
+  // layout metrics makes the direct canvas shrink and the browser magnify it
+  // again, producing gaps and distorted content. Page zoom and real window
+  // resize both change the root's layout box, so it remains the size authority.
+  const rect = host.root.getBoundingClientRect();
+  const logicalWidth = rect.width > 0 ? rect.width : globalThis.innerWidth;
+  const logicalHeight = rect.height > 0 ? rect.height : globalThis.innerHeight;
   const ratio = Math.max(1, globalThis.devicePixelRatio || 1);
   commitObservedResize(
     host, source, logicalWidth, logicalHeight,
@@ -2218,10 +2261,18 @@ export async function startDorotiWorkerHost(
     });
   };
   const queueWorkerSnapshot = (hostId: number, snapshotJson: string): void => {
+    const value = JSON.parse(snapshotJson) as Record<string, unknown>;
     latestWorkerSnapshot = {
       hostId,
-      value: JSON.parse(snapshotJson) as Record<string, unknown>,
+      value,
     };
+    if (direct) {
+      activeWorker.postMessage({
+        protocolVersion: dorotiProtocolVersion,
+        kind: "admission-target",
+        generation: Number((value.resizeEpoch as Record<string, unknown>)?.generation),
+      });
+    }
     const targetHost = hosts.get(hostId);
     if (targetHost) recordResize(targetHost, "worker-snapshot-queued", "worker-mailbox");
     sendLatestWorkerSnapshot();
@@ -2252,6 +2303,11 @@ export async function startDorotiWorkerHost(
   createHost(1, canvas.id, Math.max(1, initialRect.width), Math.max(1, initialRect.height));
   directWorkerBootstrap = false;
   let host = requireHost(1);
+  if (direct) {
+    configureDirectCanvasCapacity(
+      host, initialRect.width, initialRect.height, host.resizeEpoch.devicePixelRatio,
+      undefined, undefined, true);
+  }
   document.documentElement.dataset.dorotiRenderer = mode;
 
   let ready = false;
@@ -2419,25 +2475,50 @@ export async function startDorotiWorkerHost(
         case "direct-commit": {
           const requestId = Number(message.requestId);
           const frameGeneration = Number(message.generation);
-          display.frontGeneration = frameGeneration;
-          display.frontRequestId = requestId;
-          display.rasterWidth = Number(message.physicalWidth);
-          display.rasterHeight = Number(message.physicalHeight);
-          display.displayWidth = display.rasterWidth;
-          display.displayHeight = display.rasterHeight;
-          commitDirectCanvasLogicalSize(
-            host, host.resizeEpoch.logicalWidth, host.resizeEpoch.logicalHeight);
-          canvas.dataset.dorotiFrontLogicalWidth = String(Number(message.logicalWidth));
-          canvas.dataset.dorotiFrontLogicalHeight = String(Number(message.logicalHeight));
-          recordResize(host, "front-commit", "worker-direct-surface", {
+          const frameLogicalWidth = Number(message.logicalWidth);
+          const frameLogicalHeight = Number(message.logicalHeight);
+          const framePhysicalWidth = Number(message.physicalWidth);
+          const framePhysicalHeight = Number(message.physicalHeight);
+          const frameDevicePixelRatio = Number(message.devicePixelRatio);
+          const capacityWidth = Number(message.capacityWidth);
+          const capacityHeight = Number(message.capacityHeight);
+          display.rasterWidth = framePhysicalWidth;
+          display.rasterHeight = framePhysicalHeight;
+          display.displayWidth = capacityWidth;
+          display.displayHeight = capacityHeight;
+          const validDimensions = Number.isFinite(frameLogicalWidth) && frameLogicalWidth > 0 &&
+            Number.isFinite(frameLogicalHeight) && frameLogicalHeight > 0 &&
+            Number.isInteger(framePhysicalWidth) && framePhysicalWidth > 0 &&
+            Number.isInteger(framePhysicalHeight) && framePhysicalHeight > 0 &&
+            Number.isFinite(frameDevicePixelRatio) && frameDevicePixelRatio > 0 &&
+            Number.isInteger(capacityWidth) && capacityWidth >= framePhysicalWidth &&
+            Number.isInteger(capacityHeight) && capacityHeight >= framePhysicalHeight;
+          const admitted = validDimensions && requestId > display.frontRequestId &&
+            frameGeneration >= display.frontGeneration &&
+            frameGeneration <= host.resizeEpoch.generation &&
+            direct;
+          if (admitted) {
+            display.frontGeneration = frameGeneration;
+            display.frontRequestId = requestId;
+            configureDirectCanvasCapacity(
+              host, frameLogicalWidth, frameLogicalHeight, frameDevicePixelRatio,
+              capacityWidth, capacityHeight);
+            canvas.dataset.dorotiFrontLogicalWidth = String(frameLogicalWidth);
+            canvas.dataset.dorotiFrontLogicalHeight = String(frameLogicalHeight);
+          }
+          recordResize(host, admitted ? "front-commit" : "ack", "worker-direct-surface", {
             requestId, rafId: requestId,
-            backingWidth: display.rasterWidth, backingHeight: display.rasterHeight,
+            backingWidth: capacityWidth, backingHeight: capacityHeight,
             surfaceWidth: display.rasterWidth, surfaceHeight: display.rasterHeight,
             detail: JSON.stringify({
               generation: frameGeneration,
               targetGeneration: host.resizeEpoch.generation,
               contextGeneration: Number(message.contextGeneration),
               direct: true,
+              capacityWidth,
+              capacityHeight,
+              progressive: frameGeneration < host.resizeEpoch.generation,
+              admitted,
             }),
           });
           break;
@@ -2470,6 +2551,8 @@ export async function startDorotiWorkerHost(
           display.contextGeneration = Number(message.contextGeneration);
           display.rasterWidth = Number(message.rasterWidth);
           display.rasterHeight = Number(message.rasterHeight);
+          display.displayWidth = Number(message.displayWidth ?? message.rasterWidth);
+          display.displayHeight = Number(message.displayHeight ?? message.rasterHeight);
           break;
         case "context-lost": display.contextLost = true; break;
         case "context-restored":
@@ -2502,6 +2585,7 @@ export async function startDorotiWorkerHost(
             worker.terminate();
             display.currentRequestId = null;
             display.latestRequestId = null;
+            display.frontGeneration = 0;
             display.frontRequestId = 0;
             display.contextLost = false;
             snapshotInFlight = false;
@@ -2523,6 +2607,9 @@ export async function startDorotiWorkerHost(
               createHost(1, canvas.id, Math.max(1, rect.width), Math.max(1, rect.height));
               directWorkerBootstrap = false;
               host = requireHost(1);
+              configureDirectCanvasCapacity(
+                host, rect.width, rect.height, host.resizeEpoch.devicePixelRatio,
+                undefined, undefined, true);
               host.inputSequence = lifetimeInputSequence;
               replacementOffscreen = createWorkerVisibleSurface(canvas, true).offscreen;
               workerDisplayPresenters.set(canvas.id, display);

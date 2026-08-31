@@ -13,7 +13,7 @@ import {
 
 const protocolVersion = dorotiProtocolVersion;
 const inboundKinds = new Set([
-  "init", "snapshot", "frame", "input", "receipt", "control-response",
+  "init", "snapshot", "admission-target", "frame", "input", "receipt", "control-response",
   "context", "dispose", "crash",
 ]);
 const runtimeState = new DorotiRuntimeStateMachine();
@@ -61,6 +61,15 @@ interface PresentRequest extends ResizeEpoch {
   terminal: boolean;
 }
 
+interface WorkerGpuSurface {
+  framebuffer: WebGLFramebuffer & { name?: number };
+  framebufferId: number;
+  color: WebGLTexture;
+  depthStencil: WebGLRenderbuffer;
+  width: number;
+  height: number;
+}
+
 interface WorkerPresenter {
   canvas: OffscreenCanvas;
   context: number;
@@ -75,6 +84,8 @@ interface WorkerPresenter {
   bitmapConsumed: number;
   bitmapClosed: number;
   activeBitmaps: number;
+  staging: WorkerGpuSurface | null;
+  frontGeneration: number;
 }
 
 type WorkerMode = "worker-direct-webgl" | "offscreen-worker";
@@ -84,6 +95,8 @@ interface EmscriptenGlRuntime {
   makeContextCurrent(context: number): void;
   deleteContext?(context: number): void;
   currentContext?: { GLctx: WebGL2RenderingContext };
+  getNewId(table: unknown[]): number;
+  framebuffers: Array<WebGLFramebuffer | null>;
 }
 
 interface DotnetRuntime {
@@ -103,6 +116,7 @@ let managedHostReady = false;
 let workerMode: WorkerMode = "offscreen-worker";
 let transferredCanvas: OffscreenCanvas | null = null;
 let pendingManagedSnapshot: { hostId: number; value: HostSnapshot } | null = null;
+let latestAdmissionGeneration = 0;
 const pendingManagedInputs: Record<string, unknown>[] = [];
 let requestSequence = 0;
 let controlSequence = 0;
@@ -119,6 +133,7 @@ function post(kind: string, payload: Record<string, unknown> = {}, transfer: Tra
 
 function applyManagedSnapshot(messageHostId: number, value: HostSnapshot): void {
   snapshot = value;
+  latestAdmissionGeneration = Math.max(latestAdmissionGeneration, value.resizeEpoch.generation);
   if (!managedHostReady) {
     pendingManagedSnapshot = { hostId: messageHostId, value };
     return;
@@ -128,6 +143,131 @@ function applyManagedSnapshot(messageHostId: number, value: HostSnapshot): void 
   // the main thread can forward the latest ResizeObserver generation while the
   // framework/raster mailboxes coalesce older work.
   post("snapshot-applied", { generation: value.resizeEpoch.generation });
+}
+
+function createWorkerGpuSurface(
+  value: WorkerPresenter,
+  width: number,
+  height: number,
+): WorkerGpuSurface {
+  const runtime = glRuntime();
+  const gl = currentGl(value);
+  const framebuffer = gl.createFramebuffer() as (WebGLFramebuffer & { name?: number }) | null;
+  const color = gl.createTexture();
+  const depthStencil = gl.createRenderbuffer();
+  if (!framebuffer || !color || !depthStencil)
+    throw new Error("Doroti direct Worker could not allocate its staging framebuffer.");
+  const framebufferId = runtime.getNewId(runtime.framebuffers);
+  framebuffer.name = framebufferId;
+  runtime.framebuffers[framebufferId] = framebuffer;
+  try {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+    gl.bindTexture(gl.TEXTURE_2D, color);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, color, 0);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, depthStencil);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH24_STENCIL8, width, height);
+    gl.framebufferRenderbuffer(
+      gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, depthStencil);
+    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (status !== gl.FRAMEBUFFER_COMPLETE)
+      throw new Error(`Doroti direct Worker staging framebuffer is incomplete (0x${status.toString(16)}).`);
+    return { framebuffer, framebufferId, color, depthStencil, width, height };
+  } catch (error) {
+    runtime.framebuffers[framebufferId] = null;
+    framebuffer.name = 0;
+    gl.deleteFramebuffer(framebuffer);
+    gl.deleteTexture(color);
+    gl.deleteRenderbuffer(depthStencil);
+    throw error;
+  } finally {
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  }
+}
+
+function releaseWorkerGpuSurface(
+  value: WorkerPresenter,
+  surfaceValue: WorkerGpuSurface | null,
+  deleteObjects = true,
+): void {
+  if (!surfaceValue) return;
+  const runtime = glRuntime();
+  runtime.framebuffers[surfaceValue.framebufferId] = null;
+  surfaceValue.framebuffer.name = 0;
+  if (!deleteObjects || value.contextLost) return;
+  const gl = currentGl(value);
+  gl.deleteFramebuffer(surfaceValue.framebuffer);
+  gl.deleteTexture(surfaceValue.color);
+  gl.deleteRenderbuffer(surfaceValue.depthStencil);
+}
+
+function ensureDirectStaging(
+  value: WorkerPresenter,
+  width: number,
+  height: number,
+): WorkerGpuSurface {
+  if (value.staging &&
+      (value.staging.width < width || value.staging.height < height)) {
+    const prior = value.staging;
+    releaseWorkerGpuSurface(value, value.staging);
+    value.staging = null;
+    width = Math.max(width, Math.ceil(prior.width * 1.25));
+    height = Math.max(height, Math.ceil(prior.height * 1.25));
+  }
+  return value.staging ??= createWorkerGpuSurface(value, width, height);
+}
+
+function blitDirectStaging(
+  value: WorkerPresenter,
+  staging: WorkerGpuSurface,
+  width: number,
+  height: number,
+): void {
+  const gl = currentGl(value);
+  const capacityWidth = value.canvas.width;
+  const capacityHeight = value.canvas.height;
+  if (width > capacityWidth || height > capacityHeight)
+    throw new Error(
+      `Doroti direct Worker frame ${width}x${height} exceeds visible capacity ` +
+      `${capacityWidth}x${capacityHeight}.`);
+  const priorErrors: number[] = [];
+  for (let error = gl.getError(); error !== gl.NO_ERROR; error = gl.getError())
+    priorErrors.push(error);
+  gl.disable(gl.SCISSOR_TEST);
+  gl.colorMask(true, true, true, true);
+  gl.viewport(0, 0, capacityWidth, capacityHeight);
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, staging.framebuffer);
+  gl.readBuffer(gl.COLOR_ATTACHMENT0);
+  const sourceStatus = gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER);
+  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+  gl.drawBuffers([gl.BACK]);
+  const destinationStatus = gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER);
+  if (sourceStatus !== gl.FRAMEBUFFER_COMPLETE || destinationStatus !== gl.FRAMEBUFFER_COMPLETE)
+    throw new Error(
+      `Doroti direct Worker blit framebuffer is incomplete ` +
+      `(read=0x${sourceStatus.toString(16)}, draw=0x${destinationStatus.toString(16)}).`);
+  // The DOM root clips this stable-capacity surface during live resize. Clear
+  // pixels outside the exact frame so growing the root exposes its background,
+  // never stale content from a previously larger generation.
+  gl.clearColor(0, 0, 0, 0);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
+  gl.blitFramebuffer(
+    0, 0, width, height,
+    0, capacityHeight - height, width, capacityHeight,
+    gl.COLOR_BUFFER_BIT, gl.NEAREST);
+  const error = gl.getError();
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+  if (priorErrors.length > 0 || error !== gl.NO_ERROR)
+    throw new Error(
+      `Doroti direct Worker blit failed (prior=${priorErrors.join(",") || "none"}, error=0x${error.toString(16)}).`);
+  gl.flush();
 }
 
 function glRuntime(): EmscriptenGlRuntime {
@@ -174,6 +314,7 @@ function ensurePresenter(): WorkerPresenter {
     canvas, context, contextGeneration: 1, extension: null,
     current: null, latest: null, draining: false, nextRequestId: 0, contextLost: false,
     bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
+    staging: null, frontGeneration: 0,
   };
   const gl = currentGl(presenter);
   presenter.extension = gl.getExtension("WEBGL_lose_context");
@@ -181,6 +322,9 @@ function ensurePresenter(): WorkerPresenter {
     event.preventDefault();
     if (!presenter) return;
     presenter.contextLost = true;
+    releaseWorkerGpuSurface(presenter, presenter.staging, false);
+    presenter.staging = null;
+    presenter.frontGeneration = 0;
     const interrupted = presenter.current;
     if (interrupted) terminal(interrupted, "failed", "worker WebGL context lost");
     for (const [requestId, receipt] of pendingReceipts) {
@@ -193,11 +337,31 @@ function ensurePresenter(): WorkerPresenter {
   });
   canvas.addEventListener("webglcontextrestored", () => {
     if (!presenter) return;
-    presenter.contextLost = false;
+    if (workerMode === "worker-direct-webgl") {
+      // Chromium does not reliably make a restored transferred canvas's
+      // default framebuffer blit-compatible with newly-created staging FBOs.
+      // A transferred canvas cannot be rebound to another context in place,
+      // so let the main supervisor replace the DOM endpoint and Worker once.
+      post("fatal", {
+        error: "direct Worker WebGL context restore requires canvas endpoint rebind",
+      });
+      return;
+    }
     presenter.contextGeneration++;
     surface?.ContextRestored();
-    post("context-restored", { contextGeneration: presenter.contextGeneration });
-    scheduleDrain();
+    const resume = (): void => {
+      if (!presenter) return;
+      presenter.contextLost = false;
+      post("context-restored", { contextGeneration: presenter.contextGeneration });
+      scheduleDrain();
+    };
+    // Chrome can dispatch webglcontextrestored before the transferred
+    // canvas's default framebuffer reports FRAMEBUFFER_COMPLETE. Keep queued
+    // requests blocked until the next Worker presentation opportunity.
+    if (typeof globalThis.requestAnimationFrame === "function")
+      globalThis.requestAnimationFrame(resume);
+    else
+      globalThis.setTimeout(resume, 0);
   });
   const identity = gpuIdentity(gl);
   if (snapshot) snapshot = { ...snapshot, gpu: identity };
@@ -257,44 +421,78 @@ async function drain(value: WorkerPresenter): Promise<void> {
 async function render(value: WorkerPresenter, request: PresentRequest): Promise<void> {
   let bitmap: ImageBitmap | null = null;
   try {
-    if (!snapshot || snapshot.resizeEpoch.generation !== request.generation) {
+    if (!snapshot || snapshot.resizeEpoch.generation !== request.generation ||
+        latestAdmissionGeneration !== request.generation) {
       terminal(request, "superseded", "worker target changed before raster");
       return;
     }
-    if (value.canvas.width !== request.physicalWidth || value.canvas.height !== request.physicalHeight) {
+    const direct = workerMode === "worker-direct-webgl";
+    if (!direct &&
+        (value.canvas.width !== request.physicalWidth || value.canvas.height !== request.physicalHeight)) {
       value.canvas.width = request.physicalWidth;
       value.canvas.height = request.physicalHeight;
       snapshot = { ...snapshot, surfaceGeneration: snapshot.surfaceGeneration + 1 };
       dispatchWorkerSnapshot(hostId, JSON.stringify(snapshot));
     }
     const gl = currentGl(value);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.drawBuffers([gl.BACK]);
+    const staging = direct
+      ? ensureDirectStaging(value, request.physicalWidth, request.physicalHeight)
+      : null;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, staging?.framebuffer ?? null);
+    gl.drawBuffers([staging ? gl.COLOR_ATTACHMENT0 : gl.BACK]);
     gl.viewport(0, 0, request.physicalWidth, request.physicalHeight);
     const result = String(surface!.RenderFrame(
       request.requestId, request.generation, request.logicalWidth, request.logicalHeight,
       request.physicalWidth, request.physicalHeight, request.devicePixelRatio,
-      request.timestampMicroseconds, 0, 8, 0, value.contextGeneration, true));
+      request.timestampMicroseconds, staging?.framebufferId ?? 0, 8, 0,
+      value.contextGeneration, true));
     if (result !== "exact-rendered" && result !== "replay-rendered") {
       surface!.CompleteFrame(request.requestId, request.generation, "superseded", `managed raster result=${result}`);
       terminal(request, "superseded", `managed raster result=${result}`);
       return;
     }
     gl.flush();
-    if (workerMode === "worker-direct-webgl") {
+    if (direct) {
+      const monotonicGeneration = request.generation >= value.frontGeneration &&
+        request.generation <= latestAdmissionGeneration;
+      if (value.contextLost || !monotonicGeneration) {
+        surface!.CompleteFrame(request.requestId, request.generation, "superseded",
+          "direct staging raster superseded before monotonic visible blit");
+        terminal(request, "superseded",
+          "direct staging raster superseded before monotonic visible blit");
+        return;
+      }
+      const capacityChanged = value.canvas.width < request.physicalWidth ||
+        value.canvas.height < request.physicalHeight;
+      if (capacityChanged) {
+        value.canvas.width = Math.max(
+          request.physicalWidth, Math.ceil(value.canvas.width * 1.5));
+        value.canvas.height = Math.max(
+          request.physicalHeight, Math.ceil(value.canvas.height * 1.5));
+      }
+      blitDirectStaging(
+        value, staging!, request.physicalWidth, request.physicalHeight);
+      value.frontGeneration = request.generation;
+      if (capacityChanged) {
+        snapshot = { ...snapshot, surfaceGeneration: snapshot.surfaceGeneration + 1 };
+        dispatchWorkerSnapshot(hostId, JSON.stringify(snapshot));
+      }
       surface!.CompleteFrame(request.requestId, request.generation, "submitted",
-        "exact direct framebuffer submitted in the worker");
-      terminal(request, "submitted", "exact direct framebuffer submitted in the worker");
+        "exact direct staging framebuffer admitted and blitted in the worker");
+      terminal(request, "submitted", "exact direct staging framebuffer admitted and blitted in the worker");
       post("direct-commit", {
         requestId: request.requestId, generation: request.generation,
         contextGeneration: value.contextGeneration,
         physicalWidth: request.physicalWidth, physicalHeight: request.physicalHeight,
         logicalWidth: request.logicalWidth, logicalHeight: request.logicalHeight,
+        devicePixelRatio: request.devicePixelRatio,
+        capacityWidth: value.canvas.width, capacityHeight: value.canvas.height,
       });
       post("resource", {
         bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
         contextGeneration: value.contextGeneration,
-        rasterWidth: value.canvas.width, rasterHeight: value.canvas.height,
+        rasterWidth: request.physicalWidth, rasterHeight: request.physicalHeight,
+        displayWidth: value.canvas.width, displayHeight: value.canvas.height,
       });
       return;
     }
@@ -423,6 +621,7 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
     case "init":
       runtimeState.transition("booting");
       snapshot = message.snapshot as HostSnapshot;
+      latestAdmissionGeneration = snapshot.resizeEpoch.generation;
       workerMode = String(message.mode ?? "offscreen-worker") as WorkerMode;
       if (workerMode !== "offscreen-worker" && workerMode !== "worker-direct-webgl")
         throw new Error(`Unknown Doroti worker mode '${workerMode}'.`);
@@ -434,6 +633,10 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       break;
     case "snapshot":
       applyManagedSnapshot(Number(message.hostId), message.snapshot as HostSnapshot);
+      break;
+    case "admission-target":
+      latestAdmissionGeneration = Math.max(
+        latestAdmissionGeneration, Number(message.generation));
       break;
     case "frame":
       // BrowserInterop is installed before StartWorker creates the host. Its
@@ -491,6 +694,8 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
         terminal(presenter.latest, "dropped", "worker runtime disposing");
       }
       if (presenter) {
+        releaseWorkerGpuSurface(presenter, presenter.staging);
+        presenter.staging = null;
         presenter.current = null;
         presenter.latest = null;
       }

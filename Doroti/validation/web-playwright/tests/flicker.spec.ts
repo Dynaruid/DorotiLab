@@ -91,7 +91,10 @@ test("WebGL context loss restores a latest exact front", async ({ page, runtimeE
   expect(await setDiagnosticContextState(page, "restore")).toBe(true);
   const after = await waitForSettledPresenter(page);
   expect(runtimeErrors).toEqual([]);
-  expect(after.presenter.contextGeneration).toBeGreaterThan(before.presenter.contextGeneration);
+  if (before.presenter.mode === "worker-direct-webgl")
+    expect(after.presenter.workerRestartCount ?? 0).toBeGreaterThan(before.presenter.workerRestartCount ?? 0);
+  else
+    expect(after.presenter.contextGeneration).toBeGreaterThan(before.presenter.contextGeneration);
   expect(after.presenter.frontGeneration).toBe(after.snapshot.resizeEpoch.generation);
   assertPresenterContract(after);
 });

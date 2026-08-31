@@ -205,6 +205,33 @@ export function assertPresenterContract(bundle: DiagnosticBundle): void {
     expect(terminals.get(requestId)?.length,
       `request ${requestId} terminal count; evidence=${JSON.stringify(evidence)}`).toBe(1);
   }
+
+  if (bundle.presenter.mode === "worker-direct-webgl") {
+    let priorGeneration = 0;
+    let priorRequestId = 0;
+    for (const entry of bundle.trace.filter((candidate) =>
+      candidate.phase === "front-commit" && candidate.source === "worker-direct-surface")) {
+      const detail = JSON.parse(entry.detail ?? "{}") as {
+        generation?: number;
+        targetGeneration?: number;
+        progressive?: boolean;
+        admitted?: boolean;
+      };
+      expect(detail.admitted, `direct request ${entry.requestId} admission`).toBe(true);
+      expect(detail.generation, `direct request ${entry.requestId} target generation`)
+        .toBeLessThanOrEqual(detail.targetGeneration ?? 0);
+      expect(detail.generation, `direct request ${entry.requestId} main epoch`)
+        .toBeLessThanOrEqual(entry.epoch.generation);
+      expect(detail.progressive, `direct request ${entry.requestId} progressive marker`)
+        .toBe((detail.generation ?? 0) < (detail.targetGeneration ?? 0));
+      expect(detail.generation ?? 0, `direct request ${entry.requestId} monotonic generation`)
+        .toBeGreaterThanOrEqual(priorGeneration);
+      expect(entry.requestId, `direct request ${entry.requestId} monotonic request`)
+        .toBeGreaterThan(priorRequestId);
+      priorGeneration = detail.generation ?? priorGeneration;
+      priorRequestId = entry.requestId;
+    }
+  }
 }
 
 export function percentile(values: number[], fraction: number): number {

@@ -34,9 +34,19 @@ interface LiveResizeSample {
   requestedHeight: number;
   logicalWidth: number;
   logicalHeight: number;
+  canvasLogicalWidth: number;
+  canvasLogicalHeight: number;
+  canvasBackingWidth: number;
+  canvasBackingHeight: number;
+  backingScaleX: number;
+  backingScaleY: number;
+  devicePixelRatio: number;
+  frontLogicalWidth: number | null;
+  frontLogicalHeight: number | null;
   canvasConnected: boolean;
   rootConnected: boolean;
   transform: string;
+  objectFit: string;
   preview: string | null;
   scaleX: number;
   scaleY: number;
@@ -273,8 +283,10 @@ test("viewport A-B-C resize commits exact fronts without retained previews", asy
   expect(bundle.snapshot.resizeEpoch.physicalHeight).toBe(Math.round(final.height * bundle.snapshot.devicePixelRatio));
   expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
   const finalCommit = bundle.trace.filter((entry) => entry.phase === "front-commit").at(-1);
-  expect(finalCommit?.backingWidth).toBe(bundle.snapshot.resizeEpoch.physicalWidth);
-  expect(finalCommit?.backingHeight).toBe(bundle.snapshot.resizeEpoch.physicalHeight);
+  expect(finalCommit?.surfaceWidth).toBe(bundle.snapshot.resizeEpoch.physicalWidth);
+  expect(finalCommit?.surfaceHeight).toBe(bundle.snapshot.resizeEpoch.physicalHeight);
+  expect(finalCommit?.backingWidth ?? 0).toBeGreaterThanOrEqual(finalCommit?.surfaceWidth ?? 1);
+  expect(finalCommit?.backingHeight ?? 0).toBeGreaterThanOrEqual(finalCommit?.surfaceHeight ?? 1);
   expect(bundle.trace.filter((entry) => entry.phase === "resize-preview-commit")).toEqual([]);
   expect(bundle.trace.filter((entry) => entry.phase === "preview-front-refresh")).toEqual([]);
   assertPresenterContract(bundle);
@@ -314,14 +326,57 @@ test("@dpr DPR 2 keeps logical, physical, and front generations coherent", async
       backingWidth: element.width,
       backingHeight: element.height,
       transform: getComputedStyle(element).transform,
+      objectFit: getComputedStyle(element).objectFit,
     };
   });
-  expect(canvasGeometry.logicalWidth).toBe(1080);
-  expect(canvasGeometry.logicalHeight).toBe(720);
-  expect(canvasGeometry.backingWidth).toBe(2160);
-  expect(canvasGeometry.backingHeight).toBe(1440);
+  expect(canvasGeometry.logicalWidth).toBeGreaterThanOrEqual(1080);
+  expect(canvasGeometry.logicalHeight).toBeGreaterThanOrEqual(720);
+  expect(canvasGeometry.backingWidth).toBeGreaterThanOrEqual(2160);
+  expect(canvasGeometry.backingHeight).toBeGreaterThanOrEqual(1440);
+  expect(canvasGeometry.backingWidth / canvasGeometry.logicalWidth).toBeCloseTo(2, 6);
+  expect(canvasGeometry.backingHeight / canvasGeometry.logicalHeight).toBeCloseTo(2, 6);
   expect(canvasGeometry.transform).toBe("none");
+  if (bundle.presenter.mode === "worker-direct-webgl")
+    expect(canvasGeometry.objectFit).toBe("cover");
   assertPresenterContract(bundle);
+});
+
+test("pinch zoom keeps full-page layout metrics and direct front coherent", async ({ page, context, runtimeErrors }) => {
+  await openDoroti(page);
+  const session = await context.newCDPSession(page);
+  try {
+    await session.send("Emulation.setPageScaleFactor", { pageScaleFactor: 1.5 });
+    await page.waitForFunction(() => (globalThis.visualViewport?.scale ?? 1) >= 1.49);
+    const bundle = await waitForSettledPresenter(page);
+    const geometry = await page.evaluate(() => {
+      const root = document.querySelector<HTMLElement>(".doroti-root");
+      const canvas = document.querySelector<HTMLCanvasElement>("#doroti-surface");
+      if (!root || !canvas) throw new Error("Doroti zoom surface is disconnected.");
+      const rootRect = root.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      return {
+        rootWidth: rootRect.width,
+        rootHeight: rootRect.height,
+        canvasWidth: canvasRect.width,
+        canvasHeight: canvasRect.height,
+        visualWidth: globalThis.visualViewport?.width ?? globalThis.innerWidth,
+        visualHeight: globalThis.visualViewport?.height ?? globalThis.innerHeight,
+        visualScale: globalThis.visualViewport?.scale ?? 1,
+      };
+    });
+    expect(runtimeErrors).toEqual([]);
+    expect(geometry.visualScale).toBeGreaterThanOrEqual(1.49);
+    expect(geometry.visualWidth).toBeLessThan(geometry.rootWidth);
+    expect(geometry.visualHeight).toBeLessThan(geometry.rootHeight);
+    expect(bundle.snapshot.resizeEpoch.logicalWidth).toBeCloseTo(geometry.rootWidth, 3);
+    expect(bundle.snapshot.resizeEpoch.logicalHeight).toBeCloseTo(geometry.rootHeight, 3);
+    expect(geometry.canvasWidth).toBeGreaterThanOrEqual(geometry.rootWidth);
+    expect(geometry.canvasHeight).toBeGreaterThanOrEqual(geometry.rootHeight);
+    expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
+    assertPresenterContract(bundle);
+  } finally {
+    await session.send("Emulation.setPageScaleFactor", { pageScaleFactor: 1 });
+  }
 });
 
 test("@headed Desktop Chrome live bounds expose only exact, unscaled fronts", async ({ page, context, runtimeErrors }, testInfo) => {
@@ -357,13 +412,26 @@ test("@headed Desktop Chrome live bounds expose only exact, unscaled fronts", as
         const canvas = document.querySelector<HTMLCanvasElement>("#doroti-surface");
         if (!root || !canvas) throw new Error("Doroti live-resize surface is disconnected.");
         const transform = getComputedStyle(canvas).transform;
+        const canvasRect = canvas.getBoundingClientRect();
         const matrix = transform === "none" ? null : new DOMMatrixReadOnly(transform);
         return {
           logicalWidth: root.getBoundingClientRect().width,
           logicalHeight: root.getBoundingClientRect().height,
+          canvasLogicalWidth: canvasRect.width,
+          canvasLogicalHeight: canvasRect.height,
+          canvasBackingWidth: canvas.width,
+          canvasBackingHeight: canvas.height,
+          backingScaleX: canvasRect.width / canvas.width,
+          backingScaleY: canvasRect.height / canvas.height,
+          devicePixelRatio: globalThis.devicePixelRatio,
+          frontLogicalWidth: canvas.dataset.dorotiFrontLogicalWidth
+            ? Number(canvas.dataset.dorotiFrontLogicalWidth) : null,
+          frontLogicalHeight: canvas.dataset.dorotiFrontLogicalHeight
+            ? Number(canvas.dataset.dorotiFrontLogicalHeight) : null,
           canvasConnected: canvas.isConnected,
           rootConnected: root.isConnected,
           transform,
+          objectFit: getComputedStyle(canvas).objectFit,
           preview: canvas.dataset.dorotiResizePreview ?? null,
           scaleX: matrix?.a ?? 1,
           scaleY: matrix?.d ?? 1,
@@ -391,6 +459,18 @@ test("@headed Desktop Chrome live bounds expose only exact, unscaled fronts", as
   expect(samples.every((sample) => sample.canvasConnected && sample.rootConnected)).toBe(true);
   expect(samples.every((sample) => sample.pixel.distinctSampledColors >= 8)).toBe(true);
   expect(samples.every((sample) => sample.transform === "none" && sample.preview === null)).toBe(true);
+  if (bundle.presenter.mode === "worker-direct-webgl") {
+    expect(samples.every((sample) => sample.objectFit === "cover")).toBe(true);
+    expect(samples.every((sample) => sample.canvasLogicalWidth >= sample.logicalWidth &&
+      sample.canvasLogicalHeight >= sample.logicalHeight)).toBe(true);
+    expect(new Set(samples.map((sample) =>
+      `${sample.canvasBackingWidth}x${sample.canvasBackingHeight}`)).size).toBe(1);
+    expect(new Set(samples.map((sample) =>
+      `${sample.canvasLogicalWidth}x${sample.canvasLogicalHeight}`)).size).toBe(1);
+    expect(samples.every((sample) =>
+      Math.abs(sample.backingScaleX - sample.backingScaleY) <= 0.000001 &&
+      Math.abs(sample.backingScaleX - 1 / sample.devicePixelRatio) <= 0.000001)).toBe(true);
+  }
   expect(samples.every((sample) => Math.abs(sample.scaleX - sample.scaleY) <= 0.0001 &&
     Math.abs(sample.skewX) <= 0.0001 && Math.abs(sample.skewY) <= 0.0001)).toBe(true);
   expect(samples.every((sample) => sample.pixel.blackRightBand === 0 &&
@@ -458,6 +538,13 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
           timestamp: performance.now(),
           rootWidth: root.getBoundingClientRect().width,
           rootHeight: root.getBoundingClientRect().height,
+          canvasWidth: canvas.getBoundingClientRect().width,
+          canvasHeight: canvas.getBoundingClientRect().height,
+          backingWidth: canvas.width,
+          backingHeight: canvas.height,
+          backingScaleX: canvas.getBoundingClientRect().width / canvas.width,
+          backingScaleY: canvas.getBoundingClientRect().height / canvas.height,
+          devicePixelRatio: globalThis.devicePixelRatio,
           transform: getComputedStyle(canvas).transform,
           preview: canvas.dataset.dorotiResizePreview ?? null,
           canvasConnected: canvas.isConnected,
@@ -483,6 +570,8 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
   const nativeSamples = await page.evaluate(() => {
     const scope = globalThis as typeof globalThis & { __dorotiNativeResizeSamples?: Array<{
       timestamp: number; rootWidth: number; rootHeight: number; transform: string;
+      canvasWidth: number; canvasHeight: number; backingWidth: number; backingHeight: number;
+      backingScaleX: number; backingScaleY: number; devicePixelRatio: number;
       preview: string | null; canvasConnected: boolean; rootConnected: boolean;
     }> };
     return scope.__dorotiNativeResizeSamples ?? [];
@@ -498,7 +587,8 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
     entry.phase === "front-commit" &&
     entry.timestampMicroseconds / 1000 >= nativeResizeStarted &&
     entry.timestampMicroseconds / 1000 <= nativeResizeFinished &&
-    entry.backingWidth === entry.surfaceWidth && entry.backingHeight === entry.surfaceHeight);
+    entry.surfaceWidth > 0 && entry.surfaceHeight > 0 &&
+    entry.backingWidth >= entry.surfaceWidth && entry.backingHeight >= entry.surfaceHeight);
   const activeCommitTimes = activeEpochExactCommits.map((entry) => entry.timestampMicroseconds / 1000);
   const activeCommittedGenerations = new Set(activeEpochExactCommits.map((entry) => {
     try {
@@ -507,6 +597,13 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
       return entry.epoch.generation;
     }
   }));
+  const activeProgressiveCommitCount = activeEpochExactCommits.filter((entry) => {
+    try {
+      return Boolean((JSON.parse(entry.detail ?? "{}") as { progressive?: boolean }).progressive);
+    } catch {
+      return false;
+    }
+  }).length;
   const managedSnapshotDurations = bundle.trace
     .filter((entry) => entry.phase === "managed-snapshot-completed")
     .map((entry) => entry.durationMicroseconds / 1000);
@@ -517,6 +614,7 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
       .map((value, index) => value - observedTimes[index])),
     activeEpochExactCommitCount: activeEpochExactCommits.length,
     activeCommittedGenerationCount: activeCommittedGenerations.size,
+    activeProgressiveCommitCount,
     activeEpochExactCommitCadenceMilliseconds: distribution(activeCommitTimes.slice(1)
       .map((value, index) => value - activeCommitTimes[index])),
     managedSnapshotDispatchDurationMilliseconds: distribution(managedSnapshotDurations),
@@ -535,9 +633,27 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
   expect(observedTimes.length).toBeGreaterThanOrEqual(40);
   expect(nativeSamples.every((sample) => sample.canvasConnected && sample.rootConnected)).toBe(true);
   expect(nativeSamples.every((sample) => sample.transform === "none" && sample.preview === null)).toBe(true);
+  expect(nativeSamples.every((sample) =>
+    sample.canvasWidth >= sample.rootWidth && sample.canvasHeight >= sample.rootHeight)).toBe(true);
+  expect(new Set(nativeSamples.map((sample) =>
+    `${sample.backingWidth}x${sample.backingHeight}`)).size).toBe(1);
+  expect(new Set(nativeSamples.map((sample) =>
+    `${sample.canvasWidth}x${sample.canvasHeight}`)).size).toBe(1);
+  expect(nativeSamples.every((sample) =>
+    Math.abs(sample.backingScaleX - sample.backingScaleY) <= 0.000001 &&
+    Math.abs(sample.backingScaleX - 1 / sample.devicePixelRatio) <= 0.000001)).toBe(true);
   expect(bundle.trace.filter((entry) => entry.phase === "resize-preview-commit")).toEqual([]);
   expect(bundle.trace.filter((entry) => entry.phase === "preview-front-refresh")).toEqual([]);
-  expect(report.activeCommittedGenerationCount).toBeGreaterThanOrEqual(10);
+  // Continuous resize can outpace managed raster, but completed immutable
+  // generations must still advance the visible front monotonically. A strict
+  // latest-target-only gate previously committed just 12 generations here and
+  // left gaps over one second even though the final frame settled correctly.
+  expect(report.activeCommittedGenerationCount).toBeGreaterThanOrEqual(30);
+  expect(report.activeProgressiveCommitCount).toBeGreaterThan(0);
+  expect(report.activeEpochExactCommitCadenceMilliseconds.p95).not.toBeNull();
+  expect(report.activeEpochExactCommitCadenceMilliseconds.p95!).toBeLessThan(200);
+  expect(report.activeEpochExactCommitCadenceMilliseconds.max).not.toBeNull();
+  expect(report.activeEpochExactCommitCadenceMilliseconds.max!).toBeLessThan(350);
   expect(report.semanticsAfterFinalTarget).toBeGreaterThan(0);
   expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
   expect(bundle.presenter.activeBitmaps).toBe(0);
