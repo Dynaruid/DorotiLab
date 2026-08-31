@@ -1,3 +1,4 @@
+import { PNG } from "pngjs";
 import { test, expect } from "./helpers/fixtures.js";
 import {
   assertPresenterContract,
@@ -10,6 +11,36 @@ import {
 } from "./helpers/doroti-diagnostics.js";
 
 const canvasKitMode = "worker-canvaskit-webgl";
+
+function topLeftMarkerBounds(buffer: Buffer, cssWidth: number): {
+  width: number;
+  height: number;
+  screenshotScale: number;
+} | null {
+  const image = PNG.sync.read(buffer);
+  const screenshotScale = image.width / cssWidth;
+  const points: Array<[number, number]> = [];
+  const maxX = Math.min(image.width, Math.ceil(80 * screenshotScale));
+  const maxY = Math.min(image.height, Math.ceil(160 * screenshotScale));
+  for (let y = 0; y < maxY; y++) {
+    for (let x = 0; x < maxX; x++) {
+      const offset = (y * image.width + x) * 4;
+      const red = image.data[offset];
+      const green = image.data[offset + 1];
+      const blue = image.data[offset + 2];
+      const alpha = image.data[offset + 3];
+      if (alpha > 240 && red >= 220 && green <= 80 && blue <= 130) points.push([x, y]);
+    }
+  }
+  if (points.length < 8) return null;
+  const xs = points.map(([x]) => x);
+  const ys = points.map(([, y]) => y);
+  return {
+    width: Math.max(...xs) - Math.min(...xs) + 1,
+    height: Math.max(...ys) - Math.min(...ys) + 1,
+    screenshotScale,
+  };
+}
 
 function requireCanvasKitDiagnostics(bundle: DiagnosticBundle): {
   ui: CanvasKitUiDiagnostics;
@@ -83,6 +114,7 @@ test("CanvasKit split topology has exactly one owner per runtime and exact termi
   expect(raster.submittedScenes + raster.supersededScenes + raster.failedScenes)
     .toBe(raster.terminalScenes);
   expect(raster.failedScenes).toBe(0);
+  expect(raster.referenceCompatibility.appliedBlurCropBounds).toBeGreaterThan(0);
   expect(ui.rasterReceiptCount).toBe(raster.rasterReceipts);
   expect(ui.terminalCount).toBeGreaterThanOrEqual(raster.terminalScenes);
   expect(bundle.presenter.admittedSceneCount).toBe(raster.admittedScenes);
@@ -232,6 +264,13 @@ test("@dpr CanvasKit keeps CSS 1080x720 and physical backing 2160x1440 without t
   expect(bundle.presenter.rasterHeight).toBe(1440);
   expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
   expect(bundle.presenter.exactCommit).toBe(true);
+  const marker = topLeftMarkerBounds(
+    await page.locator("#doroti-surface").screenshot(), geometry.cssWidth);
+  expect(marker).not.toBeNull();
+  expect(marker!.width).toBeGreaterThanOrEqual(20 * marker!.screenshotScale);
+  expect(marker!.width).toBeLessThanOrEqual(24 * marker!.screenshotScale);
+  expect(marker!.height).toBeGreaterThanOrEqual(13 * marker!.screenshotScale);
+  expect(marker!.height).toBeLessThanOrEqual(17 * marker!.screenshotScale);
   expect(runtimeErrors).toEqual([]);
   assertPresenterContract(bundle);
 });

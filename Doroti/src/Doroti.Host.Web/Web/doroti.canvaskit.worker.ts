@@ -79,11 +79,16 @@ interface OwnedObject<T extends EmbindObject<string>> {
   readonly object: T;
 }
 
+interface OwnedImageFilter extends OwnedObject<ImageFilter> {
+  readonly cropBounds?: Float32Array | null;
+}
+
 interface ReplayStackFrame {
   readonly kind: "save" | "layer" | "shader-mask";
   readonly shader?: OwnedObject<Shader>;
   readonly maskRect?: Float32Array;
   readonly blendMode?: number;
+  readonly restoreCount?: number;
 }
 
 interface RuntimeEffectImageFilterRecipe {
@@ -193,7 +198,7 @@ let supersededScenes = 0;
 let flushCount = 0;
 let lastFrontGeneration = 0;
 let referenceCompatibilityAddSuperellipseNoOps = 0;
-let referenceCompatibilityIgnoredBlurCropBounds = 0;
+let appliedBlurCropBounds = 0;
 let diagnosticRasterStallCount = 0;
 let lastDiagnosticRasterStallMilliseconds = 0;
 const resources = new Map<string, RasterResource>();
@@ -488,7 +493,9 @@ function replaySupportedCommands(scene: RasterScene, targetSurface: Surface): vo
   };
   const rootSaveCount = targetCanvas.getSaveCount();
   targetCanvas.save();
-  targetCanvas.scale(scene.document.metadata.devicePixelRatio, scene.document.metadata.devicePixelRatio);
+  // RenderView already records its device-pixel-ratio root transform in the
+  // scene command stream. The CanvasKit surface is physical-sized, so applying
+  // the metadata DPR again here would scale every scene twice.
   try {
     replayCommandRange(scene, context, 0, scene.document.commands.length);
   } finally {
@@ -884,9 +891,18 @@ function replayCommandRange(
             reader.finish();
             paint = own("Paint", new kit.Paint());
             paint.object.setBlendMode(blendMode(kit, blend));
-            targetCanvas.saveLayer(paint.object, null, filter!.object, 0, kit.TileMode.Clamp);
+            let restoreCount = 1;
+            const cropBounds = filter!.cropBounds ?? null;
+            if (cropBounds) {
+              targetCanvas.save();
+              targetCanvas.clipRect(cropBounds, kit.ClipOp.Intersect, true);
+              restoreCount++;
+              appliedBlurCropBounds++;
+            }
+            targetCanvas.saveLayer(
+              paint.object, cropBounds, filter!.object, 0, kit.TileMode.Clamp);
             targetCanvas.translate(offset[0], offset[1]);
-            stack.push({ kind: "layer" });
+            stack.push({ kind: "layer", restoreCount });
           } finally {
             deleteOwned(paint);
             deleteOwned(filter);
@@ -1298,7 +1314,8 @@ function completeReplayFrame(context: ReplayContext, frame: ReplayStackFrame): v
       deleteOwned(frame.shader);
     }
   }
-  context.canvas.restore();
+  for (let remaining = frame.restoreCount ?? 1; remaining > 0; remaining--)
+    context.canvas.restore();
 }
 
 function readPath(reader: DisplayListCursor, context: ReplayContext): OwnedObject<Path> {
@@ -1694,7 +1711,7 @@ function readImageFilter(
   context: ReplayContext,
   depth: number,
   allowNull: boolean,
-): OwnedObject<ImageFilter> | null {
+): OwnedImageFilter | null {
   requireDepth(depth, reader);
   const tag = reader.uint8();
   switch (tag) {
@@ -1706,11 +1723,14 @@ function readImageFilter(
       const sigmaY = reader.nonnegativeFloat("blur sigma Y");
       const tile = readEnum(reader, 4, "tile mode");
       const bounds = readOptionalRect(reader);
-      // Intentional reference compatibility: SkiaSceneRenderer.CreateImageFilter currently
-      // ignores ImageFilterSnapshot.Bounds for blur filters. CanvasKit exposes no crop argument.
-      if (bounds) referenceCompatibilityIgnoredBlurCropBounds++;
-      return own("ImageFilter", context.kit.ImageFilter.MakeBlur(
-        sigmaX, sigmaY, tileMode(context.kit, tile), null));
+      return {
+        ...own("ImageFilter", context.kit.ImageFilter.MakeBlur(
+          sigmaX, sigmaY, tileMode(context.kit, tile), null)),
+        // CanvasKit has no blur crop argument. Preserve the wire crop so the
+        // backdrop SaveLayer can apply the same explicit clip/bounds as the
+        // shared Skia renderer.
+        cropBounds: bounds,
+      };
     }
     case 2: {
       const colorFilter = readColorFilter(reader, context, depth + 1, false)!;
@@ -1833,11 +1853,24 @@ function drawRuntimeEffectImageFilter(
   let paint: OwnedObject<Paint> | null = null;
   try {
     const inputCanvas = inputSurface.object.getCanvas();
+    const inputRootMatrix = inputCanvas.getTotalMatrix();
+    const identity = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+    if (inputRootMatrix.some((value, index) => Math.abs(value - identity[index]) > 0.000001))
+      throw new Error("CanvasKit pooled runtime-effect surface retained drawing state between scenes.");
     inputCanvas.clear(kit.TRANSPARENT);
-    inputCanvas.translate(-left, -top);
-    inputCanvas.concat(matrix);
-    inputCanvas.translate(offset[0], offset[1]);
-    replayCommandRange(scene, { ...context, canvas: inputCanvas }, childStart, childEnd);
+    const inputRootSaveCount = inputCanvas.getSaveCount();
+    inputCanvas.save();
+    try {
+      inputCanvas.translate(-left, -top);
+      inputCanvas.concat(matrix);
+      inputCanvas.translate(offset[0], offset[1]);
+      replayCommandRange(scene, { ...context, canvas: inputCanvas }, childStart, childEnd);
+    } finally {
+      // Pooled filter surfaces are reused by later scenes. Keep their root
+      // matrix and clip immutable instead of compounding the DPR transform on
+      // every runtime-effect pass.
+      inputCanvas.restoreToCount(inputRootSaveCount);
+    }
     inputSurface.object.flush();
     inputImage = own("ImageFilterInputImage", inputSurface.object.makeImageSnapshot());
     if (recipe.sampling === 2)
@@ -2606,7 +2639,7 @@ function diagnostics(): Readonly<Record<string, unknown>> {
     objects: Object.fromEntries(objectCounters),
     referenceCompatibility: {
       addSuperellipseNoOps: referenceCompatibilityAddSuperellipseNoOps,
-      ignoredBlurCropBounds: referenceCompatibilityIgnoredBlurCropBounds,
+      appliedBlurCropBounds,
     },
     diagnosticRasterStallCount,
     lastDiagnosticRasterStallMilliseconds,

@@ -178,6 +178,10 @@ export interface CanvasKitRasterDiagnostics {
   resourceCount: number;
   resourceBytes: number;
   objects: Record<string, CanvasKitObjectCounter>;
+  referenceCompatibility: {
+    addSuperellipseNoOps: number;
+    appliedBlurCropBounds: number;
+  };
   physicalWidth: number;
   physicalHeight: number;
   diagnosticRasterStallCount: number;
