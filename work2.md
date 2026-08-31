@@ -14,7 +14,7 @@
 
 - Browser main thread는 DOM, input, IME, semantics, canvas CSS geometry, `ResizeObserver`와 DPR 관찰만 소유한다.
 - UI Worker는 단 하나의 .NET runtime, Doroti framework/widget tree, scheduler, scene build를 소유한다.
-- Raster Worker는 .NET runtime 없이 npm `canvaskit-wasm`과 visible `OffscreenCanvas`의 hardware WebGL2 context를 소유한다.
+- Raster Worker는 .NET runtime 없이 `Doroti.Host.Web`이 npm에서 취득해 package에 포함한 CanvasKit과 visible `OffscreenCanvas`의 hardware WebGL2 context를 소유한다.
 - UI Worker와 Raster Worker는 `MessageChannel` 위의 versioned binary DisplayList와 transferable resource buffer만 교환한다.
 - `SharedArrayBuffer`, COOP/COEP, `WasmEnableThreads`, pthread를 요구하지 않는다.
 - Web renderer에서는 최종적으로 `SkiaSharp`, `SkiaSharp.NativeAssets.WebAssembly`, `Doroti.Skia.Rendering` 의존성을 제거한다. Desktop/MAUI/Qt renderer의 SkiaSharp 사용은 이 계획의 제거 대상이 아니다.
@@ -28,7 +28,7 @@
 
 1. raster stall, shader compile, image decode, GPU flush가 UI .NET event loop와 input dispatch를 막지 않게 한다.
 2. SAB가 꺼져 있어도 동작하는 명시적 ownership/transfer 구조를 만든다.
-3. CanvasKit을 npm에서 정확한 버전으로 가져와 first-party 정적 asset으로 build/publish한다.
+3. Doroti SDK source의 Web build/pack은 exact-version npm dependency로 CanvasKit을 취득하고, 배포된 `Doroti.Host.Web` package에는 실행 asset을 포함해 앱 소비자의 `dotnet restore/build/publish`에는 Node/npm을 요구하지 않는다.
 4. current Skia renderer와 동일한 scene, text, image, filter, runtime effect 결과를 CanvasKit renderer에서 재현한다.
 5. resize 동안 logical CSS geometry와 physical backing geometry를 분리하고, stale/mismatched frame을 표시하지 않는다.
 6. resource와 CanvasKit Embind object의 수명을 계측해 context loss와 Raster Worker 재시작 뒤에도 leak 없이 복구한다.
@@ -38,6 +38,7 @@
 
 - 두 .NET runtime 사이의 객체 공유 또는 runtime 내부 API를 이용한 managed heap 공유
 - SAB를 켠 브라우저만 지원하는 fast path
+- 배포된 Doroti package를 사용하는 앱의 restore/build/publish 중 Node/npm, bundler 또는 원격 CanvasKit download를 요구하는 구조
 - custom C++/Skia sidecar, 별도 native daemon, 서버 raster
 - full-frame `ImageBitmap`, `readPixels`, PNG/Blob encode를 정상 hot path로 사용하는 구조
 - CanvasKit의 Canvas2D emulation 또는 software surface로 조용히 fallback하는 구조
@@ -99,32 +100,60 @@ main은 두 Worker를 만들고 UI↔Raster 전용 `MessageChannel`의 port를 �
 
 UI text service와 Raster Worker는 같은 fingerprinted `canvaskit.wasm`, 같은 CanvasKit version, 같은 font bytes를 각각의 독립 WASM heap에 load한다. 객체를 공유하지 않으며 binary download cache 재사용만 기대한다. 이 중복 memory/startup 비용은 숨기지 않고 qualification gate에서 측정한다.
 
-## 5. CanvasKit build와 배포 계약
+## 5. CanvasKit npm 취득과 `Doroti.Host.Web` 배포 계약
 
-### 5.1 dependency pin
+### 5.1 toolchain 경계와 upstream pin
 
-- 첫 구현 pin은 `canvaskit-wasm@0.42.0`으로 고정한다.
-- `Doroti/src/Doroti.Host.Web/Web/package.json`과 `package-lock.json`을 추가하고 `npm ci`만 canonical restore로 사용한다.
-- Worker bundle 도구도 `package.json`에서 exact version으로 고정한다. global npm package나 floating `latest`에 의존하지 않는다.
-- CanvasKit license와 third-party notice를 publish artifact에 포함한다.
-- CDN, runtime npm registry fetch, unversioned public URL은 금지한다.
+- asset 전용 Razor Class Library/NuGet 프로젝트는 추가하지 않는다. CanvasKit 취득, 검증, Static Web Asset 등록과 pack은 `Doroti.Host.Web`이 소유한다.
+- 첫 upstream pin은 `canvaskit-wasm@0.42.0`으로 고정한다. `Doroti/src/Doroti.Host.Web/Web/package.json`에는 caret/tilde 없는 exact `devDependency`를 기록하고 `package-lock.json`을 commit한다.
+- Doroti SDK repository에서 `Doroti.Host.Web`을 source/project-reference로 build 또는 pack하려면 지원되는 Node와 npm이 설치되어 있어야 한다. canonical restore는 `npm ci --ignore-scripts` 하나이며 `npm install`, global package, floating `latest`와 다른 package manager는 사용하지 않는다.
+- `Doroti.Host.Web` nupkg은 필요한 CanvasKit runtime asset, type declaration, license와 provenance를 포함한다. 이 nupkg을 사용하는 외부 앱의 `dotnet restore/build/publish`는 Node/npm을 실행하거나 npm registry에 접근하지 않는다.
+- 기본 variant의 `canvaskit.js`, `canvaskit.wasm`, `types/index.d.ts`, `LICENSE`만 source allowlist로 사용한다. `full`/`profiling` variant와 npm package의 나머지 파일은 publish하지 않는다.
+- CK0에서 필수 public API가 기본 variant에 없다고 증명된 경우에만 `full` variant로 명시적으로 전환하고 size/startup/memory gate를 다시 측정한다. 두 variant를 함께 배포하지 않는다.
+- SDK source build에서 npm registry access는 exact lockfile restore에만 허용한다. browser runtime, 배포된 앱 build, CDN, unversioned public URL에서 CanvasKit을 받는 것은 금지한다.
 
-version 변경은 단순 patch update로 취급하지 않는다. DisplayList golden, text metrics, shader/filter, context recovery, publish hash gate를 다시 통과한 뒤 pin과 provenance를 함께 갱신한다.
+version 변경은 단순 patch update로 취급하지 않는다. lockfile integrity, DisplayList golden, text metrics, shader/filter, context recovery, package/publish hash gate를 다시 통과한 뒤 pin과 provenance를 함께 갱신한다.
 
-### 5.2 asset pipeline
+### 5.2 SDK source restore와 allowlist 추출
 
-현재 Host.Web은 `Microsoft.TypeScript.MSBuild`의 `tsc` emit만 사용하며 browser bare import를 bundle하지 않는다. CanvasKit 도입 시 다음의 host-specific build 단계를 추가한다.
+CanvasKit build target은 `Doroti.Host.Web`에 한정하며 다음 순서를 소유한다.
 
-1. restore 단계에서 lockfile과 일치하는 `npm ci`를 실행한다.
-2. `doroti.canvaskit.layout.ts`와 `doroti.canvaskit.worker.ts`를 browser/ES2022 ESM bundle로 만든다.
-3. npm package의 `canvaskit.wasm`을 immutable static web asset으로 등록한다.
-4. JS bundle과 WASM에 content fingerprint를 부여하고 생성 manifest에 logical name, URL, byte length, SHA-256, CanvasKit version을 기록한다.
-5. 두 Worker 모두 manifest의 같은 WASM URL을 `locateFile`에 제공한다.
-6. trimmed publish에서도 bundle, WASM, license, manifest가 누락되지 않는지 검사한다.
+1. source/project-reference build와 pack 시작 전에 Node/npm availability와 지원 version을 fail-fast로 확인한다.
+2. `package-lock.json`이 바뀌었거나 lock-hash stamp/필수 `node_modules/canvaskit-wasm` 파일이 없을 때만 `npm ci --ignore-scripts`를 실행한다. clean/cold SDK build는 npm registry access를 허용하고 incremental build는 lock-hash stamp를 재사용한다.
+3. lockfile의 `canvaskit-wasm` version과 registry SHA-512 integrity가 승인 pin과 일치하는지 검증한다.
+4. `node_modules/canvaskit-wasm`에서 allowlist 파일만 target-specific `obj` 아래로 복사한다. `node_modules`, npm cache, upstream JS/WASM을 source `wwwroot`나 nupkg에 통째로 넣지 않는다.
+5. copied file마다 byte length와 SHA-256을 계산하고 version, variant, lockfile integrity와 함께 generated provenance manifest에 기록한다.
+6. missing license/asset, version 또는 integrity mismatch, 예상 밖 variant, source tree로의 생성물 write에는 fail closed한다.
 
-generic `Doroti.TypeScript.targets`에 CanvasKit 전용 동작을 무조건 넣지 않는다. 먼저 `Doroti.Host.Web.csproj` 또는 별도 `Doroti.CanvasKit.targets`에 한정하고, 여러 package가 실제로 재사용할 때만 SDK 공통 target으로 승격한다.
+generic `Doroti.TypeScript.targets`에는 npm restore나 CanvasKit 전용 동작을 넣지 않는다. Host-specific target은 package-consumer의 build graph로 전파하지 않으며, 외부 nupkg 소비 경로가 Node/npm을 호출하면 gate 실패다.
 
-### 5.3 fail-closed GPU 생성
+### 5.3 Static Web Asset와 package layout
+
+allowlist asset은 build가 `Doroti.Host.Web`의 target-specific `obj`로 복사한 뒤 Razor SDK Static Web Asset으로 등록한다. upstream JS와 WASM은 수정하거나 rebundle하지 않는다.
+
+정상 endpoint의 logical base는 `_content/Doroti.Host.Web/canvaskit/0.42.0/`으로 고정하고 실제 URL은 Static Web Asset fingerprint manifest로 resolve한다. UI Worker와 Raster Worker는 같은 manifest에서 다음을 받는다.
+
+- `canvasKitJsUrl`
+- `canvasKitWasmUrl`
+- upstream version/variant
+- lockfile integrity와 JS/WASM byte length/SHA-256
+
+`dotnet pack Doroti.Host.Web` 결과는 정확히 한 variant의 runtime asset, type declaration, license, provenance와 consumer-side asset validation을 포함한다. source/project-reference build와 clean external nupkg-consumer build가 같은 endpoint/hash를 내야 한다. trimmed publish에는 CanvasKit JS/WASM이 정확히 한 벌만 있고 SkiaSharp native WebAssembly, `node_modules`, allowlist 밖의 npm package 파일과 CDN reference가 없어야 한다.
+
+### 5.4 bundler 없는 Worker bootstrap
+
+upstream `canvaskit.js`는 classic/UMD Emscripten script이므로 수정하거나 ESM bundle로 다시 만들지 않는다. 기존 `Microsoft.TypeScript.MSBuild`로 별도의 `doroti.canvaskit.bootstrap.ts`를 classic Worker script로 compile한다.
+
+1. main이 classic Worker를 만들고 fingerprinted CanvasKit JS/WASM URL, role별 Doroti ESM module URL, session과 transferable canvas/port lease를 단일 init envelope로 보낸다.
+2. bootstrap은 URL이 same-origin이고 build가 승인한 logical manifest endpoint인지 확인한다. 실제 byte hash는 asset build/publish gate가 검증하며 runtime에서 JS를 다시 fetch/eval하지 않는다.
+3. `importScripts(canvasKitJsUrl)`로 upstream script를 한 번 load하고 `CanvasKitInit`을 bootstrap-owned binding으로 고정한다.
+4. `const role = await import(roleModuleUrl)`로 `doroti.ui.worker.js` 또는 `doroti.canvaskit.worker.js`를 동적 load한다.
+5. bootstrap이 `role.startCanvasKitRole({ CanvasKitInit, canvasKitWasmUrl, initEnvelope })`를 정확히 한 번 호출해 보관한 transferable lease를 넘긴다.
+6. role module은 동일 `canvasKitWasmUrl`을 `locateFile`에 제공하고 CanvasKit/.NET/resource 준비가 끝난 뒤에만 `ready`를 보낸다.
+
+Blob/data URL, `eval`, `new Function`, vendor source suffix patch를 사용하지 않는다. classic bootstrap + dynamic ESM import가 target Chromium과 .NET Worker bootstrap에서 동작하는지는 CK0 hard gate로 먼저 증명한다. TypeScript typecheck에는 npm restore된 `canvaskit-wasm/types/index.d.ts`를 사용하되 runtime bare import는 만들지 않는다.
+
+### 5.5 fail-closed GPU 생성
 
 Raster Worker는 convenience API가 software canvas로 fallback하게 두지 않는다. CK0에서 아래 순서가 Worker + `OffscreenCanvas`에서 실제로 동작함을 고정한다.
 
@@ -246,7 +275,10 @@ visible OffscreenCanvas는 Raster Worker에 한 번 transfer되면 되돌릴 수
 
 - current `auto`, `document-webgl`, `offscreen-worker`, `worker-direct-webgl`의 build/startup/memory/latency/visual baseline을 같은 fixture로 저장
 - current scene command와 Skia renderer 기능 inventory 및 representative golden corpus 작성
-- exact `canvaskit-wasm@0.42.0`, bundler, lockfile, static asset manifest spike
+- exact `canvaskit-wasm@0.42.0` `package.json`/lockfile, SDK source `npm ci --ignore-scripts`, allowlist extraction과 provenance manifest spike
+- missing Node/npm, lockfile/version/integrity mismatch, missing/extra variant, source-tree write negative fixture
+- `Doroti.Host.Web` pack과 clean external nupkg-consumer의 zero-npm/zero-registry consume spike
+- classic Worker bootstrap의 `importScripts(CanvasKit) → import(Doroti ESM role)` smoke
 - Raster Worker에서 transferred visible OffscreenCanvas + explicit hardware WebGL2 + `MakeOnScreenGLSurface` + `flush()` smoke
 - UI Worker에서 DOM/WebGL 없이 CanvasKit font/paragraph layout smoke
 - 한 CanvasKit package/WASM URL을 두 Worker에서 독립 초기화하고 startup/heap 비용 측정
@@ -254,13 +286,15 @@ visible OffscreenCanvas는 Raster Worker에 한 번 transfer되면 되돌릴 수
 
 CK0 PASS 조건:
 
-- dev build와 trimmed publish 모두 fingerprinted JS/WASM을 same-origin에서 load
-- network에 CDN/npm registry request 0
+- SDK source/project-reference build의 CanvasKit 취득은 exact lockfile의 `npm ci --ignore-scripts`만 사용하고 bundler invocation 0
+- clean external nupkg-consumer의 `dotnet restore/build/publish` 중 Node/npm invocation과 CanvasKit registry/CDN request 0
+- source/project-reference build, packed nupkg consumer, trimmed publish가 모두 같은 fingerprinted JS/WASM을 same-origin에서 load
+- SDK source cold restore 외의 npm registry request 0, lockfile integrity/hash mismatch 허용 0
 - main/UI의 visible canvas `getContext` call 0, Raster owner만 WebGL2 context 1
 - software/Canvas2D fallback 0
 - UI text recipe와 Raster 재-layout의 line/metrics hash mismatch 0
 - context/restart run의 missing/duplicate canvas/resource terminal 0
-- private CanvasKit/Skia symbol patch나 generated bundle 사후 monkey patch 0
+- private CanvasKit/Skia symbol patch, vendor JS 수정, generated bundle 사후 monkey patch 0
 
 하나라도 구조적으로 불가능하면 CK1 이후 제품 refactor를 시작하지 않고 `blocked` 근거를 기록한다.
 
@@ -371,6 +405,7 @@ PASS 조건은 9.3절의 정량 gate를 따른다. ResizeObserver callback에서
 예상 작업:
 
 - `Doroti.Host.Web.csproj`에서 `SkiaSharp`, `SkiaSharp.NativeAssets.WebAssembly`, `Doroti.Skia.Rendering`, Web 전용 `Doroti.Skia.RuntimeEffects` 참조 제거
+- `Doroti.Host.Web`의 host-specific npm restore/allowlist extraction, Static Web Asset endpoint, pack/provenance gate 연결
 - Web host capability를 CanvasKit text/resource adapter와 protocol client로 교체
 - `Doroti.Target.Web.browser-wasm.targets`의 CanvasKit 금지 `DOROTIWEB007`을 제거하고 required/pinned CanvasKit asset 검증으로 대체
 - target manifest의 backend/runtime/ownership 정보를 새 topology로 갱신
@@ -379,6 +414,9 @@ PASS 조건은 9.3절의 정량 gate를 따른다. ResizeObserver callback에서
 PASS 조건:
 
 - Web restore/build/publish graph에 SkiaSharp package/native asset 0
+- SDK source Web build/pack graph의 Node/npm invocation은 exact CanvasKit restore에만 한정되고 bundler invocation 0
+- clean external nupkg-consumer restore/build/publish graph에 Node/npm/bundler invocation 0
+- project-reference와 packed nupkg consumer의 CanvasKit version/variant/JS/WASM hash/endpoint 차이 0
 - Desktop/MAUI/Qt Release build는 기존 SkiaSharp renderer를 계속 사용하고 regression 0
 - missing/tampered CanvasKit JS/WASM/license/manifest 각각이 명확한 build 또는 startup failure를 냄
 - CSP가 same-origin Worker/WASM만으로 동작하고 `unsafe-eval` 추가 요구 0
@@ -469,23 +507,26 @@ UI text CanvasKit과 Raster CanvasKit의 이중 instance 때문에 memory gate�
 
 계획된 canonical 순서:
 
-1. `npm ci` in `Doroti/src/Doroti.Host.Web/Web`
-2. CanvasKit bundle typecheck/build/hash validation
+1. `npm ci --ignore-scripts` in `Doroti/src/Doroti.Host.Web/Web`
+2. lockfile version/integrity, CanvasKit allowlist, generated provenance/per-file hash validation
 3. `dotnet build Doroti/src/Doroti.Graphics.DisplayList/Doroti.Graphics.DisplayList.csproj -c Release`
 4. `dotnet build Doroti/src/Doroti.Host.Web/Doroti.Host.Web.csproj -c Release`
-5. shared renderer와 Windows/Qt/MAUI Release build
-6. DisplayList contract/fuzz/visual differential validation
-7. `npm ci`와 `npm run check` in `Doroti/validation/web-playwright`
-8. 기존 FCR-3/4/5/6/7과 resize-contract
-9. `pwsh -NoProfile -File ./Doroti/eng/run-web-playwright.ps1 -Configuration Release -HeadlessOnly -RendererMode worker-canvaskit-webgl`
-10. CanvasKit topology/resource/context/restart 전용 headed validation
-11. trimmed publish asset/provenance/negative gate
-12. current direct vs CanvasKit split 3회와 physical acceptance 기록
+5. `dotnet pack Doroti/src/Doroti.Host.Web/Doroti.Host.Web.csproj -c Release`
+6. clean external nupkg-consumer fixture의 restore/build/publish, zero-npm과 asset endpoint/hash 검사
+7. shared renderer와 Windows/Qt/MAUI Release build
+8. DisplayList contract/fuzz/visual differential validation
+9. `npm ci`와 `npm run check` in `Doroti/validation/web-playwright`—별도 validation toolchain
+10. 기존 FCR-3/4/5/6/7과 resize-contract
+11. `pwsh -NoProfile -File ./Doroti/eng/run-web-playwright.ps1 -Configuration Release -HeadlessOnly -RendererMode worker-canvaskit-webgl`
+12. CanvasKit topology/resource/context/restart 전용 headed validation
+13. trimmed publish asset/provenance/negative gate
+14. current direct vs CanvasKit split 3회와 physical acceptance 기록
 
 보존할 artifact:
 
-- exact package/lockfile와 third-party notice
-- fingerprinted CanvasKit JS/WASM manifest와 SHA-256
+- exact `package.json`/`package-lock.json`과 registry SHA-512 integrity
+- `Doroti.Host.Web` nupkg, generated CanvasKit provenance, third-party notice와 package-content manifest
+- fingerprinted CanvasKit JS/WASM endpoint manifest와 SHA-256
 - DisplayList schema/version/golden corpus
 - browser/GPU/DPR/refresh가 포함된 raw timing sample
 - context/restart/resource terminal trace
@@ -498,12 +539,14 @@ UI text CanvasKit과 Raster CanvasKit의 이중 instance 때문에 memory gate�
 |---|---|
 | protocol | `Doroti/src/Doroti.Graphics.DisplayList/` 신규 프로젝트와 tests/validator |
 | scene recording | `Doroti/src/Doroti.Ui/`의 Canvas/SceneBuilder/Paragraph/Image host payload 제거 |
-| Web package | `Doroti/src/Doroti.Host.Web/Web/package.json`, `package-lock.json` |
-| UI Worker | `doroti.ui.worker.ts`, CanvasKit layout bridge, managed UI runner/bootstrap |
+| CanvasKit npm acquisition | `Doroti/src/Doroti.Host.Web/Web/package.json`, `package-lock.json`, exact `devDependency`, source-build lock/integrity validator |
+| CanvasKit asset pipeline | `Doroti.Host.Web` host-specific npm/allowlist/provenance/Static Web Asset targets와 package-consumer zero-npm validator |
+| Worker bootstrap | `doroti.canvaskit.bootstrap.ts`, classic bootstrap tsconfig/target, asset URL contract |
+| UI Worker | `doroti.ui.worker.ts`, CanvasKit layout bridge, managed UI runner |
 | Raster Worker | `doroti.canvaskit.worker.ts`, decoder, CanvasKit renderer, resource registry |
 | main/supervisor | `doroti.web.ts`, `doroti.web.worker-host.ts`, metrics/input/semantics/canvas lease |
 | Web managed host | `BrowserFrameworkHost.cs`, `BrowserSkiaCapabilities.cs` 대체/삭제, host contracts |
-| build/publish | `Doroti.Host.Web.csproj`, host-specific CanvasKit target, static web asset manifest |
+| build/publish | `Doroti.Host.Web.csproj`, target-specific `obj` asset copy, nupkg content와 static web asset endpoint manifest |
 | target package | `Doroti.Target.Web.browser-wasm.targets`, `doroti-target-manifest.json`, diagnostics contract |
 | validation | display-list contract, CanvasKit visual golden, Web Playwright protocol/topology/recovery/resize tests |
 | docs | Demo README의 renderer URL, support/fallback/asset provenance 설명 |
@@ -519,7 +562,7 @@ UI text CanvasKit과 Raster CanvasKit의 이중 instance 때문에 memory gate�
 - Worker `OffscreenCanvas`에서 explicit CanvasKit WebGL2 on-screen surface를 software fallback 없이 만들 수 없음
 - CPU-only CanvasKit paragraph가 UI Worker에서 DOM 없이 동작하지 않음
 - 같은 version/font/recipe인데 UI와 Raster paragraph layout이 결정적으로 일치하지 않음
-- npm bundle/WASM을 deterministic same-origin static web asset으로 publish할 수 없음
+- SDK source에서 exact lockfile의 npm asset을 deterministic하게 검증·pack할 수 없거나 packed nupkg 소비가 다시 Node/npm을 요구함
 - context loss나 Raster Worker replacement 때 canvas/resource ownership을 정확히 회수할 수 없음
 - current 필수 opcode 중 CanvasKit public API로 재현할 수 없는 기능이 있고 승인된 semantic 대체도 없음
 
@@ -536,6 +579,9 @@ UI text CanvasKit과 Raster CanvasKit의 이중 instance 때문에 memory gate�
 다음을 모두 만족해야 이 계획을 `complete`로 바꾼다.
 
 - Web 제품 graph에서 SkiaSharp/native WebAssembly dependency 0
+- SDK source/project-reference Web build와 pack은 exact lockfile의 `npm ci --ignore-scripts`만 사용하고 bundler invocation 0
+- clean external nupkg-consumer의 `dotnet restore/build/publish`에서 Node/npm/bundler invocation과 CanvasKit registry/CDN request 0
+- source/project-reference와 nupkg-consumer의 CanvasKit version/variant/hash/endpoint identity PASS
 - UI .NET Worker와 CanvasKit Raster Worker의 분리 ownership 검증 PASS
 - SAB/COOP/COEP 없이 cold start, render, resize, input, context recovery PASS
 - current required scene/text/image/filter/effect visual differential PASS
@@ -561,7 +607,8 @@ Local source of truth:
 Upstream:
 
 - CanvasKit overview: <https://docs.skia.org/docs/user/modules/canvaskit/>
-- CanvasKit npm package: <https://www.npmjs.com/package/canvaskit-wasm>
+- CanvasKit upstream package/provenance: <https://www.npmjs.com/package/canvaskit-wasm>
+- npm clean install: <https://docs.npmjs.com/cli/commands/npm-ci>
 - CanvasKit WebGL implementation: <https://github.com/google/skia/blob/main/modules/canvaskit/webgl.js>
 - `OffscreenCanvas`: <https://developer.mozilla.org/docs/Web/API/OffscreenCanvas>
 - Transferable objects: <https://developer.mozilla.org/docs/Web/API/Web_Workers_API/Transferable_objects>
