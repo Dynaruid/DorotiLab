@@ -360,11 +360,15 @@ internal sealed class BrowserCanvasKitCapabilities :
         // The flat DisplayList recipe stores f32 style values. Measure with those
         // same exact values in the UI CanvasKit instance so Raster reconstruction
         // cannot diverge merely because the public API supplied wider doubles.
+        var normalizedRuns = NormalizeTextRuns(
+            request.TextRuns, request.Text, normalizedFontFamily, normalizedFontSize,
+            heightMultiplier, locale);
         var normalizedRequest = request with
         {
             FontFamily = normalizedFontFamily,
             FontSize = normalizedFontSize,
             Height = (double)heightMultiplier * normalizedFontSize,
+            TextRuns = normalizedRuns,
         };
 
         var initial = LayoutParagraphSnapshot(normalizedRequest, locale, direction, align);
@@ -376,7 +380,8 @@ internal sealed class BrowserCanvasKitCapabilities :
             normalizedRequest.MaxLines,
             normalizedFontFamily,
             normalizedRequest.Color,
-            initial.CodeUnitAdvances)
+            initial.CodeUnitAdvances,
+            normalizedRuns)
         {
             CanvasKitHeightMultiplier = heightMultiplier,
             CanvasKitLocale = locale,
@@ -422,6 +427,52 @@ internal sealed class BrowserCanvasKitCapabilities :
                 _ => "start",
             },
             ellipsis = request.Ellipsis,
+            runs = request.TextRuns?.Select(run => new
+            {
+                text = run.Text,
+                style = new
+                {
+                    color = (run.Style.foreground?.color ?? run.Style.color ?? new Color(0xff000000L)).value,
+                    backgroundColor = run.Style.background?.color.value,
+                    decoration = run.Style.decoration?.mask ?? 0,
+                    decorationColor = run.Style.decorationColor?.value,
+                    decorationStyle = run.Style.decorationStyle?.ToString(),
+                    decorationThickness = run.Style.decorationThickness,
+                    fontWeight = run.Style.fontWeight?.value ?? 400,
+                    fontStyle = run.Style.fontStyle?.ToString() ?? "normal",
+                    textBaseline = run.Style.textBaseline?.ToString(),
+                    fontFamily = run.Style.fontFamily,
+                    fontFamilyFallback = run.Style.fontFamilyFallback,
+                    fontSize = run.Style.fontSize,
+                    letterSpacing = run.Style.letterSpacing,
+                    wordSpacing = run.Style.wordSpacing,
+                    height = run.Style.height,
+                    halfLeading = run.Style.leadingDistribution switch
+                    {
+                        TextLeadingDistribution.even => true,
+                        TextLeadingDistribution.proportional => false,
+                        _ => (bool?)null,
+                    },
+                    locale = run.Style.locale?.toLanguageTag(),
+                    shadows = run.Style.shadows?.Select(shadow => new
+                    {
+                        color = shadow.color.value,
+                        dx = shadow.offset.dx,
+                        dy = shadow.offset.dy,
+                        blurRadius = shadow.blurRadius,
+                    }).ToArray(),
+                    fontFeatures = run.Style.fontFeatures?.Select(feature => new
+                    {
+                        name = feature.feature,
+                        value = feature.value,
+                    }).ToArray(),
+                    fontVariations = run.Style.fontVariations?.Select(variation => new
+                    {
+                        axis = variation.axis,
+                        value = variation.value,
+                    }).ToArray(),
+                },
+            }).ToArray(),
         }));
         var response = JsonSerializer.Deserialize<CanvasKitParagraphLayout>(responseJson, JsonOptions)
             ?? throw new InvalidDataException("CanvasKit text layout returned an empty snapshot.");
@@ -475,6 +526,123 @@ internal sealed class BrowserCanvasKitCapabilities :
                         $"CanvasKit text layout returned direction '{grapheme.Direction}'."),
                 })).ToArray());
     }
+
+    private static IReadOnlyList<ParagraphTextRun> NormalizeTextRuns(
+        IReadOnlyList<ParagraphTextRun>? runs,
+        string text,
+        string defaultFontFamily,
+        float defaultFontSize,
+        float defaultHeightMultiplier,
+        string defaultLocale)
+    {
+        if (runs is null || runs.Count == 0)
+            return [];
+        if (!string.Equals(string.Concat(runs.Select(run => run?.Text)), text, StringComparison.Ordinal))
+            throw new ArgumentException("Paragraph text runs must concatenate to the paragraph text.", nameof(runs));
+
+        return runs.Select(run =>
+        {
+            ArgumentNullException.ThrowIfNull(run);
+            ArgumentNullException.ThrowIfNull(run.Text);
+            ArgumentNullException.ThrowIfNull(run.Style);
+            var style = run.Style;
+            var fontSize = PositiveSingle(style.fontSize ?? defaultFontSize, "run font size");
+            var height = PositiveSingle(style.height ?? defaultHeightMultiplier, "run height multiplier");
+            var letterSpacing = OptionalFiniteSingle(style.letterSpacing, "run letter spacing");
+            var wordSpacing = OptionalFiniteSingle(style.wordSpacing, "run word spacing");
+            var decorationThickness = OptionalNonnegativeSingle(
+                style.decorationThickness, "run decoration thickness");
+            var fallback = (style.fontFamilyFallback ?? [])
+                .Select(family => string.IsNullOrWhiteSpace(family)
+                    ? throw new ArgumentException("Paragraph fallback font families must be nonempty.", nameof(runs))
+                    : family.Trim())
+                .ToArray();
+            var shadows = (style.shadows ?? []).Select(shadow =>
+            {
+                ArgumentNullException.ThrowIfNull(shadow);
+                return new Shadow(
+                    shadow.color,
+                    new Offset(
+                        FiniteSingle(shadow.offset.dx, "run shadow x"),
+                        FiniteSingle(shadow.offset.dy, "run shadow y")),
+                    NonnegativeSingle(shadow.blurRadius, "run shadow blur radius"));
+            }).ToArray();
+            var features = (style.fontFeatures ?? []).Select(feature =>
+            {
+                if (string.IsNullOrWhiteSpace(feature.feature) || feature.value is < int.MinValue or > int.MaxValue)
+                    throw new ArgumentException("Paragraph font features require a name and int32 value.", nameof(runs));
+                return new FontFeature(feature.feature, feature.value);
+            }).ToArray();
+            var variations = (style.fontVariations ?? []).Select(variation =>
+            {
+                if (string.IsNullOrWhiteSpace(variation.axis))
+                    throw new ArgumentException("Paragraph font variations require an axis name.", nameof(runs));
+                return new FontVariation(variation.axis, FiniteSingle(variation.value, "run font variation"));
+            }).ToArray();
+            var weight = style.fontWeight?.value ?? 400;
+            if (weight is < 1 or > 1000)
+                throw new ArgumentOutOfRangeException(nameof(runs), "Paragraph font weight must be between 1 and 1000.");
+
+            return new ParagraphTextRun(run.Text, new TextStyle(
+                color: style.foreground is null ? style.color ?? new Color(0xff000000L) : null,
+                decoration: style.decoration,
+                decorationColor: style.decorationColor,
+                decorationStyle: style.decorationStyle,
+                decorationThickness: decorationThickness,
+                fontWeight: new FontWeight(weight),
+                fontStyle: style.fontStyle ?? FontStyle.normal,
+                textBaseline: style.textBaseline,
+                fontFamily: string.IsNullOrWhiteSpace(style.fontFamily)
+                    ? defaultFontFamily
+                    : style.fontFamily.Trim(),
+                fontFamilyFallback: fallback,
+                fontSize: fontSize,
+                letterSpacing: letterSpacing,
+                wordSpacing: wordSpacing,
+                height: height,
+                leadingDistribution: style.leadingDistribution,
+                locale: style.locale ?? new Locale(defaultLocale),
+                foreground: style.foreground is null
+                    ? null
+                    : new Paint { color = style.foreground.color },
+                background: style.background is null
+                    ? null
+                    : new Paint { color = style.background.color },
+                shadows: shadows,
+                fontFeatures: features,
+                fontVariations: variations));
+        }).ToArray();
+    }
+
+    private static float PositiveSingle(double value, string name)
+    {
+        var normalized = checked((float)value);
+        if (!float.IsFinite(normalized) || normalized <= 0)
+            throw new ArgumentOutOfRangeException(name, "Value must fit a finite positive f32.");
+        return normalized;
+    }
+
+    private static float NonnegativeSingle(double value, string name)
+    {
+        var normalized = checked((float)value);
+        if (!float.IsFinite(normalized) || normalized < 0)
+            throw new ArgumentOutOfRangeException(name, "Value must fit a finite nonnegative f32.");
+        return normalized;
+    }
+
+    private static float FiniteSingle(double value, string name)
+    {
+        var normalized = checked((float)value);
+        if (!float.IsFinite(normalized))
+            throw new ArgumentOutOfRangeException(name, "Value must fit a finite f32.");
+        return normalized;
+    }
+
+    private static double? OptionalFiniteSingle(double? value, string name) =>
+        value is null ? null : FiniteSingle(value.Value, name);
+
+    private static double? OptionalNonnegativeSingle(double? value, string name) =>
+        value is null ? null : NonnegativeSingle(value.Value, name);
 
     public ValueTask<UiImage> DecodeAsync(
         ReadOnlyMemory<byte> bytes,

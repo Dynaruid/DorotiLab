@@ -21,7 +21,7 @@ public static class DisplayListDecoder
                 throw new DisplayListFormatException(
                     DisplayListFailureCode.BufferTooShort,
                     0,
-                    $"A DisplayList v1 header requires {DisplayListFormat.HeaderSize} bytes.");
+                    $"A DisplayList v2 header requires {DisplayListFormat.HeaderSize} bytes.");
             }
 
             var magic = reader.ReadUInt32();
@@ -416,7 +416,7 @@ public static class DisplayListDecoder
                 throw reader.Error(
                     DisplayListFailureCode.UnknownOpcode,
                     envelopeOffset,
-                    $"DisplayList opcode {rawOpcode} is unknown in schema v1.");
+                    $"DisplayList opcode {rawOpcode} is unknown in schema v2.");
             }
 
             var commandFlags = reader.ReadUInt16();
@@ -425,7 +425,7 @@ public static class DisplayListDecoder
                 throw reader.Error(
                     DisplayListFailureCode.NonCanonicalEncoding,
                     envelopeOffset + 2,
-                    "DisplayList v1 command flags must be zero.");
+                    "DisplayList v2 command flags must be zero.");
             }
 
             var payloadLength = reader.ReadUInt32();
@@ -661,6 +661,104 @@ public static class DisplayListDecoder
             fallbackFonts[index] = context.ReadResource(ref reader, DisplayResourceKind.Font);
         }
 
+        var runCount = ReadCount(ref reader, "paragraph text run");
+        var textRuns = new DisplayParagraphTextRun[runCount];
+        for (var index = 0; index < runCount; index++)
+        {
+            var runText = context.ReadString(ref reader, false)!;
+            if (runText.Length == 0)
+                throw reader.Error(DisplayListFailureCode.InvalidValue, reader.AbsoluteOffset,
+                    "Paragraph text runs must be nonempty.");
+            var runFamily = context.ReadString(ref reader, false)!;
+            var runLocale = context.ReadString(ref reader, false)!;
+            var runFontSize = ReadPositiveSingle(ref reader, "run font size");
+            var runHeight = ReadPositiveSingle(ref reader, "run height multiplier");
+            var runColor = reader.ReadUInt32();
+            var runWeightOffset = reader.AbsoluteOffset;
+            var runWeight = reader.ReadInt32();
+            if (runWeight is < 1 or > 1000)
+                throw reader.Error(DisplayListFailureCode.InvalidValue, runWeightOffset,
+                    "Run font weight must be between 1 and 1000.");
+            var runSlant = ReadEnumByte<DisplayFontSlant>(ref reader, "run font slant");
+            var decorationOffset = reader.AbsoluteOffset;
+            var decoration = reader.ReadUInt32();
+            if ((decoration & ~7u) != 0)
+                throw reader.Error(DisplayListFailureCode.InvalidValue, decorationOffset,
+                    "Run decoration contains unknown bits.");
+            uint? backgroundColor = reader.ReadBoolean() ? reader.ReadUInt32() : null;
+            uint? decorationColor = reader.ReadBoolean() ? reader.ReadUInt32() : null;
+            DisplayTextDecorationStyle? decorationStyle = reader.ReadBoolean()
+                ? ReadEnumByte<DisplayTextDecorationStyle>(ref reader, "run decoration style")
+                : null;
+            float? decorationThickness = reader.ReadBoolean()
+                ? ReadNonnegativeSingle(ref reader, "run decoration thickness")
+                : null;
+            DisplayTextBaseline? textBaseline = reader.ReadBoolean()
+                ? ReadEnumByte<DisplayTextBaseline>(ref reader, "run text baseline")
+                : null;
+            float? letterSpacing = reader.ReadBoolean() ? reader.ReadSingle() : null;
+            float? wordSpacing = reader.ReadBoolean() ? reader.ReadSingle() : null;
+            bool? halfLeading = reader.ReadByte() switch
+            {
+                0 => null,
+                1 => false,
+                2 => true,
+                var value => throw reader.Error(DisplayListFailureCode.InvalidValue,
+                    reader.AbsoluteOffset - 1, $"Run half-leading state {value} is invalid."),
+            };
+            var fallbackFamilyCount = ReadCount(ref reader, "run fallback font family");
+            var fallbackFamilies = new string[fallbackFamilyCount];
+            for (var fallbackIndex = 0; fallbackIndex < fallbackFamilyCount; fallbackIndex++)
+                fallbackFamilies[fallbackIndex] = context.ReadString(ref reader, false)!;
+            var shadowCount = ReadCount(ref reader, "run shadow");
+            var shadows = new DisplayTextShadow[shadowCount];
+            for (var shadowIndex = 0; shadowIndex < shadowCount; shadowIndex++)
+            {
+                shadows[shadowIndex] = new DisplayTextShadow(
+                    reader.ReadUInt32(),
+                    reader.ReadSingle(),
+                    reader.ReadSingle(),
+                    ReadNonnegativeSingle(ref reader, "run shadow blur radius"));
+            }
+            var featureCount = ReadCount(ref reader, "run font feature");
+            var features = new DisplayFontFeature[featureCount];
+            for (var featureIndex = 0; featureIndex < featureCount; featureIndex++)
+                features[featureIndex] = new DisplayFontFeature(
+                    context.ReadString(ref reader, false)!, reader.ReadInt32());
+            var variationCount = ReadCount(ref reader, "run font variation");
+            var variations = new DisplayFontVariation[variationCount];
+            for (var variationIndex = 0; variationIndex < variationCount; variationIndex++)
+                variations[variationIndex] = new DisplayFontVariation(
+                    context.ReadString(ref reader, false)!, reader.ReadSingle());
+
+            textRuns[index] = new DisplayParagraphTextRun(
+                runText,
+                runFamily,
+                runLocale,
+                runFontSize,
+                runHeight,
+                runColor,
+                runWeight,
+                runSlant,
+                decoration,
+                backgroundColor,
+                decorationColor,
+                decorationStyle,
+                decorationThickness,
+                textBaseline,
+                letterSpacing,
+                wordSpacing,
+                halfLeading,
+                fallbackFamilies,
+                shadows,
+                features,
+                variations);
+        }
+        if (textRuns.Length != 0 &&
+            !string.Equals(string.Concat(textRuns.Select(run => run.Text)), text, StringComparison.Ordinal))
+            throw reader.Error(DisplayListFailureCode.InvalidValue, reader.AbsoluteOffset,
+                "Paragraph text runs do not concatenate to paragraph text.");
+
         return new DisplayParagraphRecipe(
             text,
             font,
@@ -679,7 +777,8 @@ public static class DisplayListDecoder
             measuredWidth,
             measuredHeight,
             metricsHash,
-            fallbackFonts);
+            fallbackFonts,
+            textRuns);
     }
 
     private static DisplayPaint? ReadOptionalPaint(

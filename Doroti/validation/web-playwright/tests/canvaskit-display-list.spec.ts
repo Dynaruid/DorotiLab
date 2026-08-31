@@ -8,13 +8,13 @@ interface DisplayListGolden {
 }
 
 const goldenPath = new URL(
-  "../../display-list-contract/golden/display-list-v1-full.json",
+  "../../display-list-contract/golden/display-list-v2-full.json",
   import.meta.url);
 
-test("CanvasKit DisplayList v1 validates the all-opcode managed golden", async ({ page }) => {
+test("CanvasKit DisplayList v2 validates the all-opcode managed golden", async ({ page }) => {
   const golden = JSON.parse(await readFile(goldenPath, "utf8")) as DisplayListGolden;
-  expect(golden.byteLength).toBe(6089);
-  expect(golden.sha256).toBe("A718919D8496A69DC1A95C0D960F12A16E658CADA95A78EA1051F8C9C9214773");
+  expect(golden.byteLength).toBe(6330);
+  expect(golden.sha256).toBe("66412CCB5E02519BBD8C11ECAB5E63CE914E2DB745F6D51110BBD03F89CCBE42");
   await page.goto("/", { waitUntil: "domcontentloaded" });
   const result = await page.evaluate(async (base64) => {
     interface CommandEnvelope { readonly opcode: number; readonly payloadOffset: number; readonly payloadLength: number }
@@ -88,7 +88,7 @@ test("CanvasKit DisplayList v1 validates the all-opcode managed golden", async (
 
   expect(result.byteLength).toBe(golden.byteLength);
   expect(result.resourceCount).toBe(5);
-  expect(result.stringCount).toBe(4);
+  expect(result.stringCount).toBe(9);
   expect(new Set(result.opcodes)).toEqual(new Set([
     1, 2, 3, 4, 5, 6, 7,
     16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,

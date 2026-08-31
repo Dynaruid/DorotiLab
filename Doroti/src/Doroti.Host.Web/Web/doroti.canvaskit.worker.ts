@@ -16,6 +16,7 @@ import type {
   Shader,
   SkPicture,
   Surface,
+  TextStyle,
   Typeface,
   TypefaceFontProvider,
 } from "canvaskit-wasm";
@@ -117,6 +118,31 @@ interface ParsedParagraph {
   readonly measuredHeight: number;
   readonly metricsHash: bigint;
   readonly fallbackFonts: readonly DisplayResourceReference[];
+  readonly textRuns: readonly ParsedParagraphTextRun[];
+}
+
+interface ParsedParagraphTextRun {
+  readonly text: string;
+  readonly fontFamily: string;
+  readonly locale: string;
+  readonly fontSize: number;
+  readonly heightMultiplier: number;
+  readonly color: number;
+  readonly fontWeight: number;
+  readonly fontSlant: number;
+  readonly decoration: number;
+  readonly backgroundColor: number | null;
+  readonly decorationColor: number | null;
+  readonly decorationStyle: number | null;
+  readonly decorationThickness: number | null;
+  readonly textBaseline: number | null;
+  readonly letterSpacing: number | null;
+  readonly wordSpacing: number | null;
+  readonly halfLeading: boolean | null;
+  readonly fontFamilyFallback: readonly string[];
+  readonly shadows: readonly { color: number; dx: number; dy: number; blurRadius: number }[];
+  readonly fontFeatures: readonly { name: string; value: number }[];
+  readonly fontVariations: readonly { axis: string; value: number }[];
 }
 
 interface ParagraphFontCollection {
@@ -1981,10 +2007,88 @@ function readParagraph(reader: DisplayListCursor, context: ReplayContext): Parse
   const fallbackFonts: DisplayResourceReference[] = [];
   for (let index = 0; index < fallbackCount; index++)
     fallbackFonts.push(readResourceReference(reader, context, 1));
+  const runCount = reader.collectionCount("paragraph text run");
+  const textRuns: ParsedParagraphTextRun[] = [];
+  for (let index = 0; index < runCount; index++) {
+    const runText = stringAt(reader, context, reader.uint32());
+    if (!runText) throw reader.error("Paragraph text runs must be nonempty.");
+    const runFontFamily = stringAt(reader, context, reader.uint32());
+    const runLocale = stringAt(reader, context, reader.uint32());
+    const runFontSize = reader.positiveFloat("run font size");
+    const runHeightMultiplier = reader.positiveFloat("run height multiplier");
+    const runColor = reader.uint32();
+    const runFontWeight = reader.int32();
+    if (runFontWeight < 1 || runFontWeight > 1000)
+      throw reader.error(`Run font weight ${runFontWeight} is outside [1,1000].`);
+    const runFontSlant = readEnum(reader, 2, "run font slant");
+    const decoration = reader.uint32();
+    if ((decoration & ~7) !== 0)
+      throw reader.error(`Run decoration ${decoration} contains unknown bits.`);
+    const backgroundColor = reader.boolean() ? reader.uint32() : null;
+    const decorationColor = reader.boolean() ? reader.uint32() : null;
+    const decorationStyle = reader.boolean() ? readEnum(reader, 5, "run decoration style") : null;
+    const decorationThickness = reader.boolean()
+      ? reader.nonnegativeFloat("run decoration thickness") : null;
+    const textBaseline = reader.boolean() ? readEnum(reader, 2, "run text baseline") : null;
+    const letterSpacing = reader.boolean() ? reader.float32() : null;
+    const wordSpacing = reader.boolean() ? reader.float32() : null;
+    const halfLeadingValue = reader.uint8();
+    const halfLeading = halfLeadingValue === 0 ? null
+      : halfLeadingValue === 1 ? false
+        : halfLeadingValue === 2 ? true
+          : (() => { throw reader.error(`Run half-leading state ${halfLeadingValue} is invalid.`); })();
+    const fallbackFamilyCount = reader.collectionCount("run fallback font family");
+    const fontFamilyFallback: string[] = [];
+    for (let fallbackIndex = 0; fallbackIndex < fallbackFamilyCount; fallbackIndex++)
+      fontFamilyFallback.push(stringAt(reader, context, reader.uint32()));
+    const shadowCount = reader.collectionCount("run shadow");
+    const shadows: { color: number; dx: number; dy: number; blurRadius: number }[] = [];
+    for (let shadowIndex = 0; shadowIndex < shadowCount; shadowIndex++) {
+      shadows.push({
+        color: reader.uint32(),
+        dx: reader.float32(),
+        dy: reader.float32(),
+        blurRadius: reader.nonnegativeFloat("run shadow blur radius"),
+      });
+    }
+    const featureCount = reader.collectionCount("run font feature");
+    const fontFeatures: { name: string; value: number }[] = [];
+    for (let featureIndex = 0; featureIndex < featureCount; featureIndex++)
+      fontFeatures.push({ name: stringAt(reader, context, reader.uint32()), value: reader.int32() });
+    const variationCount = reader.collectionCount("run font variation");
+    const fontVariations: { axis: string; value: number }[] = [];
+    for (let variationIndex = 0; variationIndex < variationCount; variationIndex++)
+      fontVariations.push({ axis: stringAt(reader, context, reader.uint32()), value: reader.float32() });
+    textRuns.push({
+      text: runText,
+      fontFamily: runFontFamily,
+      locale: runLocale,
+      fontSize: runFontSize,
+      heightMultiplier: runHeightMultiplier,
+      color: runColor,
+      fontWeight: runFontWeight,
+      fontSlant: runFontSlant,
+      decoration,
+      backgroundColor,
+      decorationColor,
+      decorationStyle,
+      decorationThickness,
+      textBaseline,
+      letterSpacing,
+      wordSpacing,
+      halfLeading,
+      fontFamilyFallback,
+      shadows,
+      fontFeatures,
+      fontVariations,
+    });
+  }
+  if (textRuns.length !== 0 && textRuns.map((run) => run.text).join("") !== text)
+    throw reader.error("Paragraph text runs do not concatenate to paragraph text.");
   return {
     text, font, fontFamily, locale, ellipsis, fontSize, heightMultiplier, color, fontWeight, fontSlant,
     direction, align, maxLines, layoutWidth, measuredWidth, measuredHeight, metricsHash,
-    fallbackFonts,
+    fallbackFonts, textRuns,
   };
 }
 
@@ -2024,7 +2128,15 @@ function drawParagraph(
     });
     builder = own("ParagraphBuilder", context.kit.ParagraphBuilder.MakeFromFontCollection(
       paragraphStyle, fonts.collection.object));
-    builder.object.addText(recipe.text);
+    if (recipe.textRuns.length === 0) {
+      builder.object.addText(recipe.text);
+    } else {
+      for (const run of recipe.textRuns) {
+        builder.object.pushStyle(paragraphRunTextStyle(context.kit, run));
+        builder.object.addText(run.text);
+        builder.object.pop();
+      }
+    }
     paragraph = own("Paragraph", builder.object.build());
     paragraph.object.layout(recipe.layoutWidth);
     const unresolved = paragraph.object.unresolvedCodepoints();
@@ -2045,6 +2157,50 @@ function drawParagraph(
     deleteOwned(paragraph);
     deleteOwned(builder);
   }
+}
+
+function paragraphRunTextStyle(kit: CanvasKit, run: ParsedParagraphTextRun) {
+  const style: TextStyle = {
+    color: argbColor(kit, run.color),
+    decoration: run.decoration,
+    fontFamilies: [run.fontFamily, ...run.fontFamilyFallback]
+      .filter((family, index, values) => family.length !== 0 && values.indexOf(family) === index),
+    fontSize: run.fontSize,
+    fontStyle: {
+      weight: fontWeight(kit, run.fontWeight),
+      width: kit.FontWidth.Normal,
+      slant: run.fontSlant === 0 ? kit.FontSlant.Upright : kit.FontSlant.Italic,
+    },
+    heightMultiplier: run.heightMultiplier,
+    locale: run.locale || undefined,
+    shadows: run.shadows.map((shadow) => ({
+      color: argbColor(kit, shadow.color),
+      offset: [shadow.dx, shadow.dy],
+      blurRadius: shadow.blurRadius,
+    })),
+    fontFeatures: [...run.fontFeatures],
+    fontVariations: run.fontVariations.some((variation) => variation.axis === "wght")
+      ? [...run.fontVariations]
+      : [...run.fontVariations, { axis: "wght", value: run.fontWeight }],
+  };
+  if (run.backgroundColor !== null) style.backgroundColor = argbColor(kit, run.backgroundColor);
+  if (run.decorationColor !== null) style.decorationColor = argbColor(kit, run.decorationColor);
+  if (run.decorationStyle !== null) {
+    style.decorationStyle = [
+      kit.DecorationStyle.Solid,
+      kit.DecorationStyle.Double,
+      kit.DecorationStyle.Dotted,
+      kit.DecorationStyle.Dashed,
+      kit.DecorationStyle.Wavy,
+    ][run.decorationStyle];
+  }
+  if (run.decorationThickness !== null) style.decorationThickness = run.decorationThickness;
+  if (run.textBaseline !== null) style.textBaseline = run.textBaseline === 0
+    ? kit.TextBaseline.Alphabetic : kit.TextBaseline.Ideographic;
+  if (run.letterSpacing !== null) style.letterSpacing = run.letterSpacing;
+  if (run.wordSpacing !== null) style.wordSpacing = run.wordSpacing;
+  if (run.halfLeading !== null) style.halfLeading = run.halfLeading;
+  return new kit.TextStyle(style);
 }
 
 function paragraphFontCollection(

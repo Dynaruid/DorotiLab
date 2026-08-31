@@ -139,6 +139,21 @@ public enum DisplayFontSlant : byte
     Italic,
 }
 
+public enum DisplayTextBaseline : byte
+{
+    Alphabetic,
+    Ideographic,
+}
+
+public enum DisplayTextDecorationStyle : byte
+{
+    Solid,
+    Double,
+    Dotted,
+    Dashed,
+    Wavy,
+}
+
 public readonly record struct DisplayPoint(float X, float Y);
 
 public readonly record struct DisplayRect(float Left, float Top, float Right, float Bottom);
@@ -437,6 +452,7 @@ public sealed record DisplayPaint(
 public sealed class DisplayParagraphRecipe
 {
     private readonly ReadOnlyCollection<DisplayResourceReference> _fallbackFonts;
+    private readonly ReadOnlyCollection<DisplayParagraphTextRun> _textRuns;
 
     public DisplayParagraphRecipe(
         string text,
@@ -456,7 +472,8 @@ public sealed class DisplayParagraphRecipe
         float measuredWidth,
         float measuredHeight,
         ulong metricsHash,
-        IEnumerable<DisplayResourceReference>? fallbackFonts = null)
+        IEnumerable<DisplayResourceReference>? fallbackFonts = null,
+        IEnumerable<DisplayParagraphTextRun>? textRuns = null)
     {
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(fontFamily);
@@ -479,6 +496,7 @@ public sealed class DisplayParagraphRecipe
         MeasuredHeight = measuredHeight;
         MetricsHash = metricsHash;
         _fallbackFonts = new ReadOnlyCollection<DisplayResourceReference>((fallbackFonts ?? []).ToArray());
+        _textRuns = new ReadOnlyCollection<DisplayParagraphTextRun>((textRuns ?? []).ToArray());
     }
 
     public string Text { get; }
@@ -516,4 +534,91 @@ public sealed class DisplayParagraphRecipe
     public ulong MetricsHash { get; }
 
     public IReadOnlyList<DisplayResourceReference> FallbackFonts => _fallbackFonts;
+
+    public IReadOnlyList<DisplayParagraphTextRun> TextRuns => _textRuns;
+}
+
+public sealed record DisplayTextShadow(uint Color, float DeltaX, float DeltaY, float BlurRadius);
+
+public sealed record DisplayFontFeature(string Name, int Value);
+
+public sealed record DisplayFontVariation(string Axis, float Value);
+
+public sealed class DisplayParagraphTextRun
+{
+    private readonly ReadOnlyCollection<string> _fontFamilyFallback;
+    private readonly ReadOnlyCollection<DisplayTextShadow> _shadows;
+    private readonly ReadOnlyCollection<DisplayFontFeature> _fontFeatures;
+    private readonly ReadOnlyCollection<DisplayFontVariation> _fontVariations;
+
+    public DisplayParagraphTextRun(
+        string text,
+        string fontFamily,
+        string locale,
+        float fontSize,
+        float heightMultiplier,
+        uint color,
+        int fontWeight,
+        DisplayFontSlant fontSlant,
+        uint decoration = 0,
+        uint? backgroundColor = null,
+        uint? decorationColor = null,
+        DisplayTextDecorationStyle? decorationStyle = null,
+        float? decorationThickness = null,
+        DisplayTextBaseline? textBaseline = null,
+        float? letterSpacing = null,
+        float? wordSpacing = null,
+        bool? halfLeading = null,
+        IEnumerable<string>? fontFamilyFallback = null,
+        IEnumerable<DisplayTextShadow>? shadows = null,
+        IEnumerable<DisplayFontFeature>? fontFeatures = null,
+        IEnumerable<DisplayFontVariation>? fontVariations = null)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        ArgumentNullException.ThrowIfNull(fontFamily);
+        ArgumentNullException.ThrowIfNull(locale);
+        Text = text;
+        FontFamily = fontFamily;
+        Locale = locale;
+        FontSize = fontSize;
+        HeightMultiplier = heightMultiplier;
+        Color = color;
+        FontWeight = fontWeight;
+        FontSlant = fontSlant;
+        Decoration = decoration;
+        BackgroundColor = backgroundColor;
+        DecorationColor = decorationColor;
+        DecorationStyle = decorationStyle;
+        DecorationThickness = decorationThickness;
+        TextBaseline = textBaseline;
+        LetterSpacing = letterSpacing;
+        WordSpacing = wordSpacing;
+        HalfLeading = halfLeading;
+        _fontFamilyFallback = new ReadOnlyCollection<string>((fontFamilyFallback ?? []).ToArray());
+        _shadows = new ReadOnlyCollection<DisplayTextShadow>((shadows ?? []).ToArray());
+        _fontFeatures = new ReadOnlyCollection<DisplayFontFeature>((fontFeatures ?? []).ToArray());
+        _fontVariations = new ReadOnlyCollection<DisplayFontVariation>((fontVariations ?? []).ToArray());
+    }
+
+    public string Text { get; }
+    public string FontFamily { get; }
+    public string Locale { get; }
+    public float FontSize { get; }
+    public float HeightMultiplier { get; }
+    public uint Color { get; }
+    public int FontWeight { get; }
+    public DisplayFontSlant FontSlant { get; }
+    public uint Decoration { get; }
+    public uint? BackgroundColor { get; }
+    public uint? DecorationColor { get; }
+    public DisplayTextDecorationStyle? DecorationStyle { get; }
+    public float? DecorationThickness { get; }
+    public DisplayTextBaseline? TextBaseline { get; }
+    public float? LetterSpacing { get; }
+    public float? WordSpacing { get; }
+    public bool? HalfLeading { get; }
+    public IReadOnlyList<string> FontFamilyFallback => _fontFamilyFallback;
+    public IReadOnlyList<DisplayTextShadow> Shadows => _shadows;
+    public IReadOnlyList<DisplayFontFeature> FontFeatures => _fontFeatures;
+    public IReadOnlyList<DisplayFontVariation> FontVariations => _fontVariations;
 }

@@ -372,16 +372,77 @@ public sealed class TextStyle
         IReadOnlyList<FontVariation>? fontVariations = null)
     {
         this.color = color;
+        this.decoration = decoration;
+        this.decorationColor = decorationColor;
+        this.decorationStyle = decorationStyle;
+        this.decorationThickness = decorationThickness;
+        this.fontWeight = fontWeight;
+        this.fontStyle = fontStyle;
+        this.textBaseline = textBaseline;
         this.foreground = foreground;
         this.fontFamily = fontFamily;
+        this.fontFamilyFallback = fontFamilyFallback is null ? null : fontFamilyFallback.ToArray();
         this.fontSize = fontSize;
+        this.letterSpacing = letterSpacing;
+        this.wordSpacing = wordSpacing;
+        this.height = height;
+        this.leadingDistribution = leadingDistribution;
+        this.locale = locale;
+        this.background = background;
+        this.shadows = shadows is null ? null : shadows.ToArray();
+        this.fontFeatures = fontFeatures is null ? null : fontFeatures.ToArray();
+        this.fontVariations = fontVariations is null ? null : fontVariations.ToArray();
     }
 
     public Color? color { get; }
+    public TextDecoration? decoration { get; }
+    public Color? decorationColor { get; }
+    public TextDecorationStyle? decorationStyle { get; }
+    public double? decorationThickness { get; }
+    public FontWeight? fontWeight { get; }
+    public FontStyle? fontStyle { get; }
+    public TextBaseline? textBaseline { get; }
     public Paint? foreground { get; }
     public string? fontFamily { get; }
+    public IReadOnlyList<string>? fontFamilyFallback { get; }
     public double? fontSize { get; }
+    public double? letterSpacing { get; }
+    public double? wordSpacing { get; }
+    public double? height { get; }
+    public TextLeadingDistribution? leadingDistribution { get; }
+    public Locale? locale { get; }
+    public Paint? background { get; }
+    public IReadOnlyList<Shadow>? shadows { get; }
+    public IReadOnlyList<FontFeature>? fontFeatures { get; }
+    public IReadOnlyList<FontVariation>? fontVariations { get; }
+
+    internal TextStyle Merge(TextStyle overlay) => new(
+        color: overlay.foreground is null
+            ? overlay.color ?? (foreground is null ? color : null)
+            : null,
+        decoration: overlay.decoration ?? decoration,
+        decorationColor: overlay.decorationColor ?? decorationColor,
+        decorationStyle: overlay.decorationStyle ?? decorationStyle,
+        decorationThickness: overlay.decorationThickness ?? decorationThickness,
+        fontWeight: overlay.fontWeight ?? fontWeight,
+        fontStyle: overlay.fontStyle ?? fontStyle,
+        textBaseline: overlay.textBaseline ?? textBaseline,
+        fontFamily: overlay.fontFamily ?? fontFamily,
+        fontFamilyFallback: overlay.fontFamilyFallback ?? fontFamilyFallback,
+        fontSize: overlay.fontSize ?? fontSize,
+        letterSpacing: overlay.letterSpacing ?? letterSpacing,
+        wordSpacing: overlay.wordSpacing ?? wordSpacing,
+        height: overlay.height ?? height,
+        leadingDistribution: overlay.leadingDistribution ?? leadingDistribution,
+        locale: overlay.locale ?? locale,
+        foreground: overlay.foreground ?? (overlay.color is null ? foreground : null),
+        background: overlay.background ?? background,
+        shadows: overlay.shadows ?? shadows,
+        fontFeatures: overlay.fontFeatures ?? fontFeatures,
+        fontVariations: overlay.fontVariations ?? fontVariations);
 }
+
+public sealed record ParagraphTextRun(string Text, TextStyle Style);
 
 public sealed class ParagraphStyle
 {
@@ -394,9 +455,12 @@ public sealed class ParagraphStyle
         this.fontFamily = fontFamily;
         this.fontSize = fontSize;
         this.height = height;
+        this.fontWeight = fontWeight;
+        this.fontStyle = fontStyle;
         this.maxLines = maxLines;
         this.ellipsis = ellipsis;
         this.locale = locale;
+        this.textHeightBehavior = textHeightBehavior;
     }
 
     public TextAlign? textAlign { get; }
@@ -404,9 +468,12 @@ public sealed class ParagraphStyle
     public string? fontFamily { get; }
     public double? fontSize { get; }
     public double? height { get; }
+    public FontWeight? fontWeight { get; }
+    public FontStyle? fontStyle { get; }
     public long? maxLines { get; }
     public string? ellipsis { get; }
     public Locale? locale { get; }
+    public TextHeightBehavior? textHeightBehavior { get; }
 }
 
 public sealed class StrutStyle
@@ -424,27 +491,43 @@ public sealed class ParagraphBuilder
     private readonly ParagraphStyle _style;
     private readonly List<string> _text = [];
     private readonly Stack<TextStyle> _styles = new();
-    private double _fontSize;
-    private string? _fontFamily;
-    private Color? _color;
-    public ParagraphBuilder(ParagraphStyle style) => _style = style;
+    private readonly List<ParagraphTextRun> _runs = [];
+    private readonly TextStyle _paragraphTextStyle;
+    public ParagraphBuilder(ParagraphStyle style)
+    {
+        _style = style ?? throw new ArgumentNullException(nameof(style));
+        _paragraphTextStyle = new TextStyle(
+            color: new Color(0xFF000000),
+            fontWeight: style.fontWeight ?? FontWeight.normal,
+            fontStyle: style.fontStyle ?? FontStyle.normal,
+            fontFamily: style.fontFamily,
+            fontSize: style.fontSize ?? 14,
+            height: style.height ?? 1.2,
+            locale: style.locale);
+    }
     public long placeholderCount => _text.LongCount(value => value == "\uFFFC");
     public void pushStyle(TextStyle style)
     {
-        _styles.Push(style);
-        _fontSize = Math.Max(_fontSize, style.fontSize ?? 0);
-        _fontFamily = style.fontFamily ?? _fontFamily;
-        _color = style.foreground?.color ?? style.color ?? _color;
+        ArgumentNullException.ThrowIfNull(style);
+        _styles.Push((_styles.Count == 0 ? _paragraphTextStyle : _styles.Peek()).Merge(style));
     }
     public void pop() { if (_styles.Count > 0) _styles.Pop(); }
-    public void addText(string text) => _text.Add(text);
-    public void addPlaceholder(double width, double height, PlaceholderAlignment alignment, double scale = 1, double? baselineOffset = null, TextBaseline? baseline = null) => _text.Add("\uFFFC");
+    public void addText(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+        _text.Add(text);
+        if (text.Length != 0)
+            _runs.Add(new ParagraphTextRun(text, _styles.Count == 0 ? _paragraphTextStyle : _styles.Peek()));
+    }
+    public void addPlaceholder(double width, double height, PlaceholderAlignment alignment, double scale = 1, double? baselineOffset = null, TextBaseline? baseline = null) => addText("\uFFFC");
     public Paragraph build()
     {
-        var fontSize = _fontSize > 0 ? _fontSize : _style.fontSize ?? 14;
+        var fontSize = _runs.Count == 0
+            ? _paragraphTextStyle.fontSize ?? 14
+            : _runs.Max(run => run.Style.fontSize ?? 14);
         var text = string.Concat(_text);
-        var fontFamily = _fontFamily ?? _style.fontFamily;
-        var color = _color ?? new Color(0xFF000000);
+        var fontFamily = _paragraphTextStyle.fontFamily;
+        var color = _paragraphTextStyle.foreground?.color ?? _paragraphTextStyle.color ?? new Color(0xFF000000);
         var lineHeight = fontSize * (_style.height ?? 1.2);
         var view = PlatformDispatcher.current?.implicitView;
         if (view is not null)
@@ -452,12 +535,13 @@ public sealed class ParagraphBuilder
             return view.LayoutParagraph(
                 new ParagraphRequest(text, double.PositiveInfinity, fontFamily, fontSize,
                     _style.maxLines, color, lineHeight, _style.textAlign,
-                    _style.textDirection, _style.locale, _style.ellipsis),
+                    _style.textDirection, _style.locale, _style.ellipsis, _runs.ToArray()),
                 DartUiInvocation.Managed("dart:ui#ParagraphBuilder.build"));
         }
 
         // Unit-level dart:ui use can intentionally run without a host view.
-        return new(text, 0, lineHeight, fontSize, _style.maxLines, fontFamily, color);
+        return new(text, 0, lineHeight, fontSize, _style.maxLines, fontFamily, color,
+            textRuns: _runs.ToArray());
     }
 }
 

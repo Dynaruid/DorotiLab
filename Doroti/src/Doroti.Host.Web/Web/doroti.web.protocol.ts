@@ -4,7 +4,7 @@ export const dorotiProtocolVersion = 2 as const;
 // former is shared by main/UI/Raster workers, while the latter is the stable
 // Doroti.Graphics.DisplayList wire contract.
 export const dorotiCanvasKitTopologyVersion = 1 as const;
-export const dorotiDisplayListSchemaVersion = 1 as const;
+export const dorotiDisplayListSchemaVersion = 2 as const;
 export const dorotiDisplayListMagic = 0x54534c44 as const;
 export const dorotiDisplayListHeaderSize = 112 as const;
 export const dorotiDisplayListResourceEntrySize = 32 as const;
@@ -923,6 +923,51 @@ function readParagraph(
   if (fallbackCount * 16 > reader.remaining)
     throw new Error(`Doroti DisplayList BoundsExceeded: fallback fonts at ${reader.offset}.`);
   for (let index = 0; index < fallbackCount; index++) context.readResource(reader, 1);
+  const runCount = reader.readCount("paragraph text run");
+  for (let index = 0; index < runCount; index++) {
+    context.readString(reader, false);
+    context.readString(reader, false);
+    context.readString(reader, false);
+    readPositiveSingle(reader, "run font size");
+    readPositiveSingle(reader, "run height multiplier");
+    reader.readUint32();
+    const runWeight = reader.readInt32();
+    if (runWeight < 1 || runWeight > 1000)
+      throw new Error(`Doroti DisplayList InvalidValue: run font weight ${runWeight}.`);
+    reader.readEnum(1, "run font slant");
+    const decoration = reader.readUint32();
+    if ((decoration & ~7) !== 0)
+      throw new Error(`Doroti DisplayList InvalidValue: run decoration ${decoration}.`);
+    if (reader.readBoolean()) reader.readUint32();
+    if (reader.readBoolean()) reader.readUint32();
+    if (reader.readBoolean()) reader.readEnum(4, "run decoration style");
+    if (reader.readBoolean()) readNonnegativeSingle(reader, "run decoration thickness");
+    if (reader.readBoolean()) reader.readEnum(1, "run text baseline");
+    if (reader.readBoolean()) reader.readSingle();
+    if (reader.readBoolean()) reader.readSingle();
+    const halfLeading = reader.readByte();
+    if (halfLeading > 2)
+      throw new Error(`Doroti DisplayList InvalidValue: run half-leading state ${halfLeading}.`);
+    const familyCount = reader.readCount("run fallback font family");
+    for (let family = 0; family < familyCount; family++) context.readString(reader, false);
+    const shadowCount = reader.readCount("run shadow");
+    for (let shadow = 0; shadow < shadowCount; shadow++) {
+      reader.readUint32();
+      reader.readSingle();
+      reader.readSingle();
+      readNonnegativeSingle(reader, "run shadow blur radius");
+    }
+    const featureCount = reader.readCount("run font feature");
+    for (let feature = 0; feature < featureCount; feature++) {
+      context.readString(reader, false);
+      reader.readInt32();
+    }
+    const variationCount = reader.readCount("run font variation");
+    for (let variation = 0; variation < variationCount; variation++) {
+      context.readString(reader, false);
+      reader.readSingle();
+    }
+  }
 }
 
 function crc32DisplayList(bytes: Uint8Array): number {

@@ -266,7 +266,8 @@ internal static class BrowserDisplayListMapper
                             checked((float)draw.Paragraph.longestLine),
                             checked((float)draw.Paragraph.height),
                             draw.Paragraph.CanvasKitMetricsHash,
-                            [font]),
+                            [font],
+                            draw.Paragraph.CanvasKitTextRuns.Select(ToParagraphTextRun)),
                         ToPoint(draw.Offset)));
                     break;
                 case "drawImage" when command.HostPayload is CanvasImagePayload draw:
@@ -555,6 +556,60 @@ internal static class BrowserDisplayListMapper
         (DisplaySamplingQuality)value;
 
     private static DisplayTileMode ToTileMode(TileMode value) => (DisplayTileMode)value;
+
+    private static DisplayParagraphTextRun ToParagraphTextRun(ParagraphTextRun run)
+    {
+        ArgumentNullException.ThrowIfNull(run);
+        ArgumentNullException.ThrowIfNull(run.Style);
+        var style = run.Style;
+        var foreground = style.foreground?.color ?? style.color ?? new Color(0xff000000L);
+        return new DisplayParagraphTextRun(
+            run.Text,
+            style.fontFamily ?? "DorotiFallback",
+            style.locale?.toLanguageTag() ?? string.Empty,
+            checked((float)(style.fontSize ?? 14)),
+            checked((float)(style.height ?? 1)),
+            foreground.value,
+            style.fontWeight?.value ?? 400,
+            style.fontStyle == FontStyle.italic ? DisplayFontSlant.Italic : DisplayFontSlant.Normal,
+            checked((uint)(style.decoration?.mask ?? 0)),
+            style.background?.color.value,
+            style.decorationColor?.value,
+            style.decorationStyle switch
+            {
+                TextDecorationStyle.solid => DisplayTextDecorationStyle.Solid,
+                TextDecorationStyle.doubleLine => DisplayTextDecorationStyle.Double,
+                TextDecorationStyle.dotted => DisplayTextDecorationStyle.Dotted,
+                TextDecorationStyle.dashed => DisplayTextDecorationStyle.Dashed,
+                TextDecorationStyle.wavy => DisplayTextDecorationStyle.Wavy,
+                _ => null,
+            },
+            style.decorationThickness is null ? null : checked((float)style.decorationThickness.Value),
+            style.textBaseline switch
+            {
+                TextBaseline.alphabetic => DisplayTextBaseline.Alphabetic,
+                TextBaseline.ideographic => DisplayTextBaseline.Ideographic,
+                _ => null,
+            },
+            style.letterSpacing is null ? null : checked((float)style.letterSpacing.Value),
+            style.wordSpacing is null ? null : checked((float)style.wordSpacing.Value),
+            style.leadingDistribution switch
+            {
+                TextLeadingDistribution.proportional => false,
+                TextLeadingDistribution.even => true,
+                _ => null,
+            },
+            style.fontFamilyFallback,
+            style.shadows?.Select(shadow => new DisplayTextShadow(
+                shadow.color.value,
+                checked((float)shadow.offset.dx),
+                checked((float)shadow.offset.dy),
+                checked((float)shadow.blurRadius))),
+            style.fontFeatures?.Select(feature => new DisplayFontFeature(
+                feature.feature, checked((int)feature.value))),
+            style.fontVariations?.Select(variation => new DisplayFontVariation(
+                variation.axis, checked((float)variation.value))));
+    }
 
     private static float Value(PathCommand command, int index)
     {

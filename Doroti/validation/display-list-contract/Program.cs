@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using Doroti.Graphics.DisplayList;
 
-const string expectedGoldenSha256 = "A718919D8496A69DC1A95C0D960F12A16E658CADA95A78EA1051F8C9C9214773";
+const string expectedGoldenSha256 = "66412CCB5E02519BBD8C11ECAB5E63CE914E2DB745F6D51110BBD03F89CCBE42";
 
 var representative = Fixtures.Representative();
 var encoded = DisplayListEncoder.Encode(representative);
@@ -23,7 +23,7 @@ if (args.Contains("--emit-golden-json", StringComparer.Ordinal))
 {
     Console.WriteLine(JsonSerializer.Serialize(new
     {
-        schema = "doroti.display-list/v1",
+        schema = "doroti.display-list/v2",
         schemaVersion = DisplayListFormat.SchemaVersion,
         byteLength = encoded.Length,
         sha256 = goldenSha256,
@@ -46,6 +46,10 @@ Require(decoded.Header.Value.ResourceCount == representative.Resources.Count,
 var decodedParagraph = decoded.Document.Commands.OfType<DisplayDrawParagraphCommand>().Single().Paragraph;
 Require(decodedParagraph.HeightMultiplier == 1.2f,
     "The decoded paragraph preserves its positive height multiplier.");
+Require(decodedParagraph.TextRuns.Count == 2 &&
+    decodedParagraph.TextRuns[0].Text == "Doroti " &&
+    decodedParagraph.TextRuns[1].FontWeight == 700,
+    "The decoded paragraph preserves normalized mixed-style text runs.");
 var reencoded = DisplayListEncoder.Encode(decoded.Document);
 Require(encoded.AsSpan().SequenceEqual(reencoded), "encode -> decode -> re-encode preserves canonical bytes.");
 var withoutChecksum = WithoutChecksum(encoded);
@@ -79,12 +83,12 @@ static void VerifySceneTerminals()
 
 static void VerifyCheckedInGolden(byte[] encoded, string sha256)
 {
-    var path = Path.Combine(AppContext.BaseDirectory, "golden", "display-list-v1-full.json");
+    var path = Path.Combine(AppContext.BaseDirectory, "golden", "display-list-v2-full.json");
     Require(File.Exists(path), "The cross-language DisplayList golden is copied to validation output.");
     using var document = JsonDocument.Parse(File.ReadAllBytes(path));
     var root = document.RootElement;
-    Require(root.GetProperty("schema").GetString() == "doroti.display-list/v1",
-        "The checked-in golden declares the v1 schema.");
+    Require(root.GetProperty("schema").GetString() == "doroti.display-list/v2",
+        "The checked-in golden declares the v2 schema.");
     Require(root.GetProperty("schemaVersion").GetUInt16() == DisplayListFormat.SchemaVersion,
         "The checked-in golden declares the current schema version.");
     Require(root.GetProperty("byteLength").GetInt32() == encoded.Length,
@@ -397,7 +401,28 @@ internal static class Fixtures
             251.25f,
             44,
             0x1234_5678_9ABC_DEF0,
-            [FallbackFont]);
+            [FallbackFont],
+            [
+                new DisplayParagraphTextRun(
+                    "Doroti ", "Doroti Sans", "ko-KR", 18, 1.2f, 0xFF112233, 600,
+                    DisplayFontSlant.Normal,
+                    fontFamilyFallback: ["Doroti Fallback"],
+                    letterSpacing: 0.25f,
+                    fontFeatures: [new DisplayFontFeature("kern", 1)]),
+                new DisplayParagraphTextRun(
+                    "한글 😀 e\u0301", "Doroti Sans", "ko-KR", 20, 1.3f, 0xFF445566, 700,
+                    DisplayFontSlant.Italic,
+                    decoration: 1,
+                    backgroundColor: 0x1100FF00,
+                    decorationColor: 0xFFFF0000,
+                    decorationStyle: DisplayTextDecorationStyle.Wavy,
+                    decorationThickness: 1.5f,
+                    textBaseline: DisplayTextBaseline.Alphabetic,
+                    wordSpacing: 0.5f,
+                    halfLeading: true,
+                    shadows: [new DisplayTextShadow(0x88000000, 1, 2, 3)],
+                    fontVariations: [new DisplayFontVariation("wght", 700)]),
+            ]);
 
         DisplayListCommand[] commands =
         [

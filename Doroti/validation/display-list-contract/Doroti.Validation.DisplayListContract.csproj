@@ -5,6 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Doroti.Graphics.DisplayList\Doroti.Graphics.DisplayList.csproj" />
-    <None Update="golden\display-list-v1-full.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="golden\display-list-v2-full.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

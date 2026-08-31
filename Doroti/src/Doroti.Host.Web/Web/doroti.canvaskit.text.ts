@@ -22,6 +22,40 @@ interface ParagraphLayoutRequest {
   readonly ellipsis?: string | null;
   readonly paragraphStyle?: ParagraphStyle;
   readonly textStyle?: TextStyle;
+  readonly runs?: readonly ParagraphTextRunRequest[] | null;
+}
+
+interface ParagraphTextRunRequest {
+  readonly text: string;
+  readonly style: ParagraphRunTextStyleRequest;
+}
+
+interface ParagraphRunTextStyleRequest {
+  readonly color?: number | readonly number[] | null;
+  readonly backgroundColor?: number | readonly number[] | null;
+  readonly decoration?: number | null;
+  readonly decorationColor?: number | readonly number[] | null;
+  readonly decorationStyle?: string | null;
+  readonly decorationThickness?: number | null;
+  readonly fontWeight?: number | null;
+  readonly fontStyle?: string | null;
+  readonly textBaseline?: string | null;
+  readonly fontFamily?: string | null;
+  readonly fontFamilyFallback?: readonly string[] | null;
+  readonly fontSize?: number | null;
+  readonly letterSpacing?: number | null;
+  readonly wordSpacing?: number | null;
+  readonly height?: number | null;
+  readonly halfLeading?: boolean | null;
+  readonly locale?: string | null;
+  readonly shadows?: readonly {
+    readonly color?: number | readonly number[] | null;
+    readonly dx?: number | null;
+    readonly dy?: number | null;
+    readonly blurRadius?: number | null;
+  }[] | null;
+  readonly fontFeatures?: readonly { readonly name?: string | null; readonly value?: number | null }[] | null;
+  readonly fontVariations?: readonly { readonly axis?: string | null; readonly value?: number | null }[] | null;
 }
 
 interface RegisteredFont {
@@ -112,18 +146,46 @@ export class CanvasKitTextLayoutService {
       new this.#canvasKit.ParagraphStyle(paragraphStyle), this.#collection);
     let paragraph;
     try {
-      builder.addText(text);
+      const runs = normalizeTextRuns(this.#canvasKit, request, text);
+      if (runs.length === 0) {
+        builder.addText(text);
+      } else {
+        for (const run of runs) {
+          builder.pushStyle(new this.#canvasKit.TextStyle(run.style));
+          builder.addText(run.text);
+          builder.pop();
+        }
+      }
       paragraph = builder.build();
-      paragraph.layout(requestedWidth);
+      paragraph.layout(request.unconstrained ? Number.POSITIVE_INFINITY : requestedWidth);
       let layoutWidth = requestedWidth;
       if (request.unconstrained) {
+        const unconstrainedSignature = paragraphLineBreakSignature(paragraph);
+        const unconstrainedExceeded = paragraph.didExceedMaxLines();
         const naturalWidth = paragraph.getMaxIntrinsicWidth();
         if (!Number.isFinite(naturalWidth) || naturalWidth < 0)
           throw new Error("Doroti CanvasKit returned an invalid intrinsic paragraph width.");
-        layoutWidth = Math.fround(naturalWidth);
+        // SkParagraph can wrap at exactly maxIntrinsicWidth because its internal
+        // advances have more precision than the public scalar. Flutter also
+        // performs an unconstrained pass before selecting a finite paint width;
+        // Doroti additionally verifies that the finite f32 recipe preserves the
+        // exact unconstrained line structure required by UI/Raster replay.
+        layoutWidth = Math.fround(Math.ceil(naturalWidth));
         if (!Number.isFinite(layoutWidth) || layoutWidth < 0)
           throw new Error("Doroti CanvasKit intrinsic paragraph width exceeds f32 range.");
-        paragraph.layout(layoutWidth);
+        let matched = false;
+        for (let attempt = 0; attempt < 8; attempt++) {
+          paragraph.layout(layoutWidth);
+          if (paragraphLineBreakSignature(paragraph) === unconstrainedSignature &&
+              paragraph.didExceedMaxLines() === unconstrainedExceeded) {
+            matched = true;
+            break;
+          }
+          layoutWidth = nextSafeParagraphWidth(layoutWidth);
+        }
+        if (!matched)
+          throw new Error(
+            "Doroti CanvasKit could not preserve unconstrained paragraph line breaks in a finite f32 recipe.");
       }
       const lines = paragraph.getLineMetrics().map((line) => ({
         start: line.startIndex,
@@ -193,6 +255,155 @@ export class CanvasKitTextLayoutService {
       throw error;
     }
   }
+}
+
+function normalizeTextRuns(
+  canvasKit: CanvasKit,
+  request: Partial<ParagraphLayoutRequest>,
+  text: string,
+): readonly { text: string; style: TextStyle }[] {
+  if (!request.runs || request.runs.length === 0) return [];
+  const runs = request.runs.map((run) => ({
+    text: String(run.text ?? ""),
+    style: normalizeRunTextStyle(canvasKit, run.style ?? {}),
+  }));
+  if (runs.map((run) => run.text).join("") !== text)
+    throw new Error("Doroti CanvasKit paragraph runs do not concatenate to paragraph text.");
+  return runs;
+}
+
+function normalizeRunTextStyle(
+  canvasKit: CanvasKit,
+  value: ParagraphRunTextStyleRequest,
+): TextStyle {
+  const style: TextStyle = {};
+  if (value.color !== undefined && value.color !== null)
+    style.color = normalizeColor(canvasKit, value.color);
+  if (value.backgroundColor !== undefined && value.backgroundColor !== null)
+    style.backgroundColor = normalizeColor(canvasKit, value.backgroundColor);
+  if (value.decoration !== undefined && value.decoration !== null) {
+    const decoration = Number(value.decoration);
+    if (!Number.isSafeInteger(decoration) || decoration < 0 || (decoration & ~7) !== 0)
+      throw new Error("Doroti CanvasKit text decoration must use known decoration bits.");
+    style.decoration = decoration;
+  }
+  if (value.decorationColor !== undefined && value.decorationColor !== null)
+    style.decorationColor = normalizeColor(canvasKit, value.decorationColor);
+  if (value.decorationStyle !== undefined && value.decorationStyle !== null) {
+    style.decorationStyle = decorationStyle(canvasKit, String(value.decorationStyle));
+  }
+  if (value.decorationThickness !== undefined && value.decorationThickness !== null)
+    style.decorationThickness = finiteNumber(value.decorationThickness, "decoration thickness", 0);
+
+  const families = [String(value.fontFamily ?? "").trim(), ...(value.fontFamilyFallback ?? [])
+    .map((family) => String(family).trim())].filter((family, index, values) =>
+      family.length !== 0 && values.indexOf(family) === index);
+  if (families.length !== 0) style.fontFamilies = families;
+  const weight = finiteNumber(value.fontWeight ?? 400, "font weight", 1);
+  if (!Number.isInteger(weight) || weight > 1000)
+    throw new Error("Doroti CanvasKit text font weight must be an integer in [1,1000].");
+  const slant = String(value.fontStyle ?? "normal").toLowerCase();
+  if (slant !== "normal" && slant !== "italic")
+    throw new Error(`Doroti CanvasKit text font style '${slant}' is unsupported.`);
+  style.fontStyle = {
+    weight: canvasKitFontWeight(canvasKit, weight),
+    width: canvasKit.FontWidth.Normal,
+    slant: slant === "italic" ? canvasKit.FontSlant.Italic : canvasKit.FontSlant.Upright,
+  };
+  if (value.textBaseline !== undefined && value.textBaseline !== null) {
+    const baseline = String(value.textBaseline).toLowerCase();
+    if (baseline !== "alphabetic" && baseline !== "ideographic")
+      throw new Error(`Doroti CanvasKit text baseline '${baseline}' is unsupported.`);
+    style.textBaseline = baseline === "ideographic"
+      ? canvasKit.TextBaseline.Ideographic
+      : canvasKit.TextBaseline.Alphabetic;
+  }
+  if (value.fontSize !== undefined && value.fontSize !== null)
+    style.fontSize = finiteNumber(value.fontSize, "font size", Number.MIN_VALUE);
+  if (value.letterSpacing !== undefined && value.letterSpacing !== null)
+    style.letterSpacing = finiteNumber(value.letterSpacing, "letter spacing");
+  if (value.wordSpacing !== undefined && value.wordSpacing !== null)
+    style.wordSpacing = finiteNumber(value.wordSpacing, "word spacing");
+  if (value.height !== undefined && value.height !== null)
+    style.heightMultiplier = finiteNumber(value.height, "height multiplier", Number.MIN_VALUE);
+  if (value.halfLeading !== undefined && value.halfLeading !== null)
+    style.halfLeading = Boolean(value.halfLeading);
+  const locale = String(value.locale ?? "").trim();
+  if (locale) style.locale = locale;
+
+  if (value.shadows) {
+    style.shadows = value.shadows.map((shadow) => ({
+      color: normalizeColor(canvasKit, shadow.color ?? 0xff000000),
+      offset: [
+        finiteNumber(shadow.dx ?? 0, "shadow x"),
+        finiteNumber(shadow.dy ?? 0, "shadow y"),
+      ],
+      blurRadius: finiteNumber(shadow.blurRadius ?? 0, "shadow blur radius", 0),
+    }));
+  }
+  if (value.fontFeatures) {
+    style.fontFeatures = value.fontFeatures.map((feature) => {
+      const name = String(feature.name ?? "").trim();
+      const featureValue = Number(feature.value ?? 1);
+      if (!name || !Number.isSafeInteger(featureValue) ||
+          featureValue < -0x8000_0000 || featureValue > 0x7fff_ffff)
+        throw new Error("Doroti CanvasKit font features require a name and int32 value.");
+      return { name, value: featureValue };
+    });
+  }
+  const variations = (value.fontVariations ?? []).map((variation) => {
+    const axis = String(variation.axis ?? "").trim();
+    if (!axis) throw new Error("Doroti CanvasKit font variations require an axis name.");
+    return { axis, value: finiteNumber(variation.value, "font variation") };
+  });
+  if (!variations.some((variation) => variation.axis === "wght"))
+    variations.push({ axis: "wght", value: weight });
+  style.fontVariations = variations;
+  return style;
+}
+
+function paragraphLineBreakSignature(paragraph: Paragraph): string {
+  return `${paragraph.didExceedMaxLines() ? 1 : 0}|` + paragraph.getLineMetrics()
+    .map((line) => `${line.startIndex}:${line.endIndex}:${line.isHardBreak ? 1 : 0}`)
+    .join("|");
+}
+
+function nextSafeParagraphWidth(value: number): number {
+  const increment = Math.max(1, Math.abs(value) * 1e-6);
+  const next = Math.fround(value + increment);
+  if (Number.isFinite(next) && next > value) return next;
+  throw new Error("Doroti CanvasKit paragraph width cannot advance within finite f32 range.");
+}
+
+function finiteNumber(value: unknown, name: string, minimum = -Number.MAX_VALUE): number {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number < minimum)
+    throw new Error(`Doroti CanvasKit text ${name} must be finite and >= ${minimum}.`);
+  return number;
+}
+
+function decorationStyle(canvasKit: CanvasKit, value: string) {
+  switch (value.toLowerCase()) {
+    case "solid": return canvasKit.DecorationStyle.Solid;
+    case "doubleline": return canvasKit.DecorationStyle.Double;
+    case "dotted": return canvasKit.DecorationStyle.Dotted;
+    case "dashed": return canvasKit.DecorationStyle.Dashed;
+    case "wavy": return canvasKit.DecorationStyle.Wavy;
+    default: throw new Error(`Doroti CanvasKit text decoration style '${value}' is unsupported.`);
+  }
+}
+
+function canvasKitFontWeight(canvasKit: CanvasKit, value: number) {
+  if (value <= 150) return canvasKit.FontWeight.Thin;
+  if (value <= 250) return canvasKit.FontWeight.ExtraLight;
+  if (value <= 350) return canvasKit.FontWeight.Light;
+  if (value <= 450) return canvasKit.FontWeight.Normal;
+  if (value <= 550) return canvasKit.FontWeight.Medium;
+  if (value <= 650) return canvasKit.FontWeight.SemiBold;
+  if (value <= 750) return canvasKit.FontWeight.Bold;
+  if (value <= 850) return canvasKit.FontWeight.ExtraBold;
+  if (value <= 950) return canvasKit.FontWeight.Black;
+  return canvasKit.FontWeight.ExtraBlack;
 }
 
 function paragraphGraphemeSnapshots(

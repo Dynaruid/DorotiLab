@@ -63,7 +63,6 @@ export default defineConfig({
       grep: /@headed/,
       use: {
         browserName: "chromium",
-        channel: "chrome",
         headless: false,
         viewport: null,
         trace: "on",

@@ -5,7 +5,7 @@ namespace Doroti.Graphics.DisplayList;
 public static class DisplayListFormat
 {
     public const uint Magic = 0x54534C44;
-    public const ushort SchemaVersion = 1;
+    public const ushort SchemaVersion = 2;
     public const ushort HeaderSize = 112;
     public const int ResourceEntrySize = 32;
     public const int CommandEnvelopeSize = 8;

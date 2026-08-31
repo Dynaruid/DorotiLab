@@ -624,10 +624,10 @@ Upstream:
 ### 14.2 구현된 범위
 
 - `canvaskit-wasm@0.42.0` default variant를 exact lockfile dependency로 고정하고 Host.Web source build의 allowlist, SHA-256 provenance, Static Web Asset, nupkg/buildTransitive 검증 경로를 추가했다.
-- `Doroti.Graphics.DisplayList` v1 little-endian typed schema, encoder/decoder/validator, resource/string table, deterministic golden과 browser-side bounds/opcode 검증을 추가했다.
+- `Doroti.Graphics.DisplayList` v2 little-endian typed schema, encoder/decoder/validator, resource/string table, deterministic golden과 browser-side bounds/opcode 검증을 추가했다. v2는 14.6절의 paragraph text-run recipe를 포함한다.
 - main/UI/Raster를 분리하고 UI↔Raster 전용 `MessageChannel`, current+latest mailbox, transferable buffer pool, scene receipt/terminal ledger, resource journal/replay와 canvas lease lifecycle을 구현했다.
 - UI Worker에는 CPU-only CanvasKit paragraph layout/metrics hash 서비스를, Raster Worker에는 hardware WebGL2 CanvasKit renderer와 명시적 Embind object accounting을 추가했다.
-- Raster renderer는 v1 opcode를 fail-closed로 decode하고 basic geometry, paint/path/image/paragraph, layer/filter/shader와 top-level direct two-pass runtime-effect image filter를 replay한다.
+- Raster renderer는 v2 opcode를 fail-closed로 decode하고 basic geometry, paint/path/image/paragraph, layer/filter/shader와 top-level direct two-pass runtime-effect image filter를 replay한다.
 - resize는 logical CSS geometry와 physical backing을 분리하고, exact scene을 같은 GrContext의 GPU staging surface에 먼저 완성한 뒤 visible backing을 교체·복사·flush하는 commit transaction으로 바꿨다.
 - scene 단위 paragraph font collection 공유, 최대 8-slot GPU image-filter surface pool, 마지막 Raster failure reason 진단을 추가했다.
 - stale Raster session의 message/error를 무시하고, Worker replacement마다 새 visible canvas lease를 정확히 한 번 transfer/retire하며 resource journal을 replay한다.
@@ -638,10 +638,10 @@ Upstream:
 | Gate | 판정 | 확인한 범위 | 남은 조건 또는 실패 원인 |
 |---|---|---|---|
 | CK0 | `PARTIAL` | exact 0.42.0/default pin, same-origin asset, hardware Raster-only WebGL owner, 7/7 pack, clean packed consumer zero-Node/npm, 3회 replacement를 확인했다. | cold source `npm ci` 재실행, current renderer baseline/startup/heap corpus, context-loss 10회, 전체 negative input matrix가 없다. |
-| CK1 | `PARTIAL` | typed DisplayList, 6089-byte managed golden, browser 2/2 계약, malformed recovery가 PASS했다. | `SceneCommand`/`PathCommand`의 `object? HostPayload`와 mapper 변환이 남고, same-worker Skia loopback 및 old-direct pixel golden이 없다. |
+| CK1 | `PARTIAL` | typed DisplayList, 6330-byte v2 managed golden, browser 2/2 계약, malformed recovery가 PASS했다. | `SceneCommand`/`PathCommand`의 `object? HostPayload`와 mapper 변환이 남고, same-worker Skia loopback 및 old-direct pixel golden이 없다. |
 | CK2 | `PARTIAL` | UI-owned CanvasKit text service, paragraph metrics hash, logical resource registry/journal과 restart replay를 구현했다. | Latin/한글/surrogate/combining/RTL/wrap/ellipsis/hit-test의 current-Skia differential과 stale-handle fixture가 없고 pre-wire HostPayload가 image/paragraph object를 보유한다. |
 | CK3 | `PASS` | main/UI/Raster .NET `0/1/0`, UI/Raster CanvasKit `1/1`, Raster WebGL owner `1`, direct MessageChannel, 100 ms Raster stall 중 UI/input 진행, HWM `<=2`, exact terminal/receipt를 자동 검증했다. | CK3 자체 gate의 남은 자동 blocker는 없다. |
-| CK4 | `PARTIAL` | v1 opcode 선언/검증과 representative demo render, no-blank 자동 sample, top-level two-pass runtime filter가 동작한다. | current-Skia↔CanvasKit strict pixel differential/all-opcode raster corpus가 없다. composed/nested runtime-effect image-filter tag 4는 계속 `DOROTIWEB032` fail-closed이며 retained filter output의 stable identity/cache가 없다. |
+| CK4 | `PARTIAL` | v2 opcode 선언/검증과 representative demo render, no-blank 자동 sample, top-level two-pass runtime filter가 동작한다. | current-Skia↔CanvasKit strict pixel differential/all-opcode raster corpus가 없다. composed/nested runtime-effect image-filter tag 4는 계속 `DOROTIWEB032` fail-closed이며 retained filter output의 stable identity/cache가 없다. |
 | CK5 | `FAIL` | Raster Worker 3회 replacement, resource replay, canvas lease terminal, malformed recovery와 context loss/restore 1회는 PASS했다. | `rasterRestartBudget=3`을 context recovery도 소비하므로 동일 session 10회 context loss/restore gate를 구조적으로 통과할 수 없다. shutdown zero-lease/resource 및 focus/editing state 보존도 미검증이다. |
 | CK6 | `PARTIAL` | continuous resize/wheel no-blank, viewport A-B-C, pinch zoom, startup, DPR2 logical 1080×720/physical 2160×1440/`transform:none`을 자동 검증했다. | DPR 1.25/1.5, native border/maximize/restore, fast/long resize 3회 정량 gate와 direct 대비 비교가 없다. |
 | CK7 | `FAIL` | Host-specific asset/provenance, nupkg/buildTransitive, clean consumer, tamper/missing-license negative gate는 PASS했다. | Host.Web/nuspec/publish에 `SkiaSharp`, `SkiaSharp.NativeAssets.WebAssembly`, `Doroti.Skia.Rendering`, `Doroti.Skia.RuntimeEffects`가 남는다. Web dependency 0 조건은 FAIL이다. |
@@ -654,7 +654,7 @@ Upstream:
 
 | 명령 또는 범위 | 결과 |
 |---|---|
-| `dotnet run --project Doroti/validation/display-list-contract/Doroti.Validation.DisplayListContract.csproj -c Release --no-launch-profile` | `PASS`, 6089 bytes, SHA-256 `A718919D8496A69DC1A95C0D960F12A16E658CADA95A78EA1051F8C9C9214773` |
+| `dotnet run --project Doroti/validation/display-list-contract/Doroti.Validation.DisplayListContract.csproj -c Release --no-launch-profile` | `PASS`, 6330 bytes, SHA-256 `66412CCB5E02519BBD8C11ECAB5E63CE914E2DB745F6D51110BBD03F89CCBE42` |
 | `npm run check` in `Doroti/validation/web-playwright` | `PASS`, TypeScript error 0 |
 | Release Web wrapper build (`DorotiDemoApp.Web`와 Host/Target dependency 포함) | `PASS`, warning 0, error 0 |
 | `Doroti.Target.Web.browser-wasm` Release build | `PASS`, warning 0, error 0 |
@@ -750,3 +750,20 @@ dotnet publish CanvasKitConsumer.csproj -c Release --no-restore --disable-build-
 - Firefox와 Safari는 제품 지원으로 승격하지 않았다.
 
 위 조건이 끝날 때까지 12.3절 완료 정의는 `FAIL`, 전체 상태는 `PARTIAL / notQualified`, 기본값은 `auto=document-webgl`이다.
+
+### 14.6 2026-08-31 TextField 공백 및 공통 text-run 후속 수정
+
+`worker-canvaskit-webgl` TextField에서 `WW WW`의 공백 뒤 단어가 보이지 않는 결함을 재현했다. editing value와 semantics에는 UTF-16 전체 `[0,5)`가 남았지만, UI CanvasKit service가 unconstrained layout의 `maxIntrinsicWidth=123.0885...`를 f32 `123.0885...` 그대로 finite relayout 폭으로 사용하면서 SkParagraph가 `[0,3)`만 첫 줄로 남기고 `maxLines=1`에 의해 뒤 단어를 잘랐다.
+
+Flutter의 `TextPainter`/CanvasKit 구현처럼 먼저 unconstrained layout을 수행하도록 바꾸고, Doroti의 UI↔Raster finite f32 recipe 제약을 위해 intrinsic width를 logical pixel 위로 올린 뒤 원래 line range/hard-break/`didExceedMaxLines`와 같음을 bounded retry로 검증한다. NanumGothic 28px fixture에서 `WW WW`는 layout width `124`, line `[0,5)`, `didExceedMaxLines=false`로 확인했다.
+
+공통 `dart:ui` text 구성도 마지막 스타일 하나로 평탄화하지 않는다. `TextStyle`의 family fallback, weight/slant, spacing/height/locale, background/decoration, shadow, font feature/variation을 보존하고, `ParagraphBuilder.pushStyle/pop/addText`가 Flutter와 같은 합성 style stack으로 immutable text run을 만든다. UI CanvasKit 측정과 Raster CanvasKit 재구성은 같은 normalized run list를 사용한다. 이 wire 변경 때문에 DisplayList schema는 v2로 올렸고 C#, main-thread TypeScript validator, Raster Worker decoder와 golden을 함께 갱신했다.
+
+후속 검증 결과는 다음과 같다.
+
+- Release `DorotiDemoApp.Web` build: `PASS`, warning/error 0
+- DisplayList v2 managed contract: `PASS`, 6330 bytes, SHA-256 `66412CCB5E02519BBD8C11ECAB5E63CE914E2DB745F6D51110BBD03F89CCBE42`
+- DisplayList v2 browser contract: `2/2 PASS`
+- bundled Chromium headed TextField regression: `1/1 PASS`; semantics value `WW WW`, editable-line raster right edge `WW: 97`, `WW WW: 175`로 공백 뒤 단어의 실제 raster를 확인했다.
+
+이 후속 수정은 해당 TextField 결함과 text-run round trip에 대한 자동 판정만 `PASS`로 바꾼다. 14.5절의 실제 한글 IME, 물리 입력, screen reader, 전체 current-Skia differential과 제품 qualification은 계속 `notVerified` 또는 기존 판정을 유지한다.

@@ -174,6 +174,15 @@ public static class DisplayListEncoder
             {
                 AddString(values, paragraph.Paragraph.Ellipsis);
             }
+            foreach (var run in paragraph.Paragraph.TextRuns)
+            {
+                AddString(values, run.Text);
+                AddString(values, run.FontFamily);
+                AddString(values, run.Locale);
+                foreach (var family in run.FontFamilyFallback) AddString(values, family);
+                foreach (var feature in run.FontFeatures) AddString(values, feature.Name);
+                foreach (var variation in run.FontVariations) AddString(values, variation.Axis);
+            }
         }
 
         var encoded = values
@@ -365,7 +374,7 @@ public static class DisplayListEncoder
                 writer.WriteByte((byte)value.CacheHint);
                 return;
             default:
-                throw new ArgumentException($"Command type {command.GetType().FullName} is not supported by DisplayList v1.", nameof(command));
+                throw new ArgumentException($"Command type {command.GetType().FullName} is not supported by DisplayList v2.", nameof(command));
         }
     }
 
@@ -403,6 +412,96 @@ public static class DisplayListEncoder
         {
             context.WriteResource(writer, fallback, DisplayResourceKind.Font);
         }
+        if (paragraph.TextRuns.Count != 0 &&
+            !string.Equals(string.Concat(paragraph.TextRuns.Select(run => run?.Text)), paragraph.Text, StringComparison.Ordinal))
+            throw new ArgumentException("Paragraph text runs must concatenate to the paragraph text.", nameof(paragraph));
+        writer.WriteUInt32(CheckedCount(paragraph.TextRuns.Count, "paragraph text run"));
+        foreach (var run in paragraph.TextRuns)
+        {
+            ArgumentNullException.ThrowIfNull(run);
+            if (run.Text.Length == 0)
+                throw new ArgumentException("Paragraph text runs must be nonempty.", nameof(paragraph));
+            writer.WriteUInt32(context.StringId(run.Text));
+            writer.WriteUInt32(context.StringId(run.FontFamily));
+            writer.WriteUInt32(context.StringId(run.Locale));
+            WritePositiveSingle(writer, run.FontSize, nameof(run.FontSize));
+            WritePositiveSingle(writer, run.HeightMultiplier, nameof(run.HeightMultiplier));
+            writer.WriteUInt32(run.Color);
+            if (run.FontWeight is < 1 or > 1000)
+                throw new ArgumentOutOfRangeException(nameof(paragraph), "Run font weight must be between 1 and 1000.");
+            writer.WriteInt32(run.FontWeight);
+            WriteEnumByte(writer, run.FontSlant, "run font slant");
+            if ((run.Decoration & ~7u) != 0)
+                throw new ArgumentOutOfRangeException(nameof(paragraph), "Run decoration contains unknown bits.");
+            writer.WriteUInt32(run.Decoration);
+            WriteOptionalUInt32(writer, run.BackgroundColor);
+            WriteOptionalUInt32(writer, run.DecorationColor);
+            WriteOptionalEnumByte(writer, run.DecorationStyle, "run decoration style");
+            WriteOptionalNonnegativeSingle(writer, run.DecorationThickness, "run decoration thickness");
+            WriteOptionalEnumByte(writer, run.TextBaseline, "run text baseline");
+            WriteOptionalFiniteSingle(writer, run.LetterSpacing, "run letter spacing");
+            WriteOptionalFiniteSingle(writer, run.WordSpacing, "run word spacing");
+            writer.WriteByte(run.HalfLeading switch { null => 0, false => 1, true => 2 });
+            writer.WriteUInt32(CheckedCount(run.FontFamilyFallback.Count, "run fallback font family"));
+            foreach (var family in run.FontFamilyFallback)
+                writer.WriteUInt32(context.StringId(family));
+            writer.WriteUInt32(CheckedCount(run.Shadows.Count, "run shadow"));
+            foreach (var shadow in run.Shadows)
+            {
+                ArgumentNullException.ThrowIfNull(shadow);
+                writer.WriteUInt32(shadow.Color);
+                WriteFiniteSingle(writer, shadow.DeltaX, "run shadow x");
+                WriteFiniteSingle(writer, shadow.DeltaY, "run shadow y");
+                WriteNonnegativeSingle(writer, shadow.BlurRadius, "run shadow blur radius");
+            }
+            writer.WriteUInt32(CheckedCount(run.FontFeatures.Count, "run font feature"));
+            foreach (var feature in run.FontFeatures)
+            {
+                ArgumentNullException.ThrowIfNull(feature);
+                writer.WriteUInt32(context.StringId(feature.Name));
+                writer.WriteInt32(feature.Value);
+            }
+            writer.WriteUInt32(CheckedCount(run.FontVariations.Count, "run font variation"));
+            foreach (var variation in run.FontVariations)
+            {
+                ArgumentNullException.ThrowIfNull(variation);
+                writer.WriteUInt32(context.StringId(variation.Axis));
+                WriteFiniteSingle(writer, variation.Value, "run font variation");
+            }
+        }
+    }
+
+    private static void WriteOptionalUInt32(DisplayListBinaryWriter writer, uint? value)
+    {
+        writer.WriteBoolean(value.HasValue);
+        if (value.HasValue) writer.WriteUInt32(value.Value);
+    }
+
+    private static void WriteOptionalEnumByte<T>(
+        DisplayListBinaryWriter writer,
+        T? value,
+        string name) where T : struct, Enum
+    {
+        writer.WriteBoolean(value.HasValue);
+        if (value.HasValue) WriteEnumByte(writer, value.Value, name);
+    }
+
+    private static void WriteOptionalFiniteSingle(
+        DisplayListBinaryWriter writer,
+        float? value,
+        string name)
+    {
+        writer.WriteBoolean(value.HasValue);
+        if (value.HasValue) WriteFiniteSingle(writer, value.Value, name);
+    }
+
+    private static void WriteOptionalNonnegativeSingle(
+        DisplayListBinaryWriter writer,
+        float? value,
+        string name)
+    {
+        writer.WriteBoolean(value.HasValue);
+        if (value.HasValue) WriteNonnegativeSingle(writer, value.Value, name);
     }
 
     private static void WriteOptionalPaint(
@@ -512,7 +611,7 @@ public static class DisplayListEncoder
 
                 return;
             default:
-                throw new ArgumentException($"Shader type {shader.GetType().FullName} is not supported by DisplayList v1.", nameof(shader));
+                throw new ArgumentException($"Shader type {shader.GetType().FullName} is not supported by DisplayList v2.", nameof(shader));
         }
     }
 
@@ -578,7 +677,7 @@ public static class DisplayListEncoder
                 writer.WriteByte(4);
                 return;
             default:
-                throw new ArgumentException($"Color-filter type {filter.GetType().FullName} is not supported by DisplayList v1.", nameof(filter));
+                throw new ArgumentException($"Color-filter type {filter.GetType().FullName} is not supported by DisplayList v2.", nameof(filter));
         }
     }
 
@@ -645,7 +744,7 @@ public static class DisplayListEncoder
                 writer.WriteBoolean(value.ShadowOnly);
                 return;
             default:
-                throw new ArgumentException($"Image-filter type {filter.GetType().FullName} is not supported by DisplayList v1.", nameof(filter));
+                throw new ArgumentException($"Image-filter type {filter.GetType().FullName} is not supported by DisplayList v2.", nameof(filter));
         }
     }
 
