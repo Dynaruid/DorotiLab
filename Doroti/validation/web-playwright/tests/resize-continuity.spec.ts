@@ -642,6 +642,135 @@ test("@headed Desktop Chrome live bounds expose only exact, unscaled fronts", as
   assertPresenterContract(bundle);
 });
 
+test("@headed worker-direct keeps a 600px native resize within the realtime front budget", async ({ page, context, runtimeErrors }, testInfo) => {
+  test.skip(process.platform !== "win32", "Native HWND resize validation is Windows-only.");
+  test.skip(process.env.DOROTI_WEB_RUN_NATIVE_HWND_RESIZE !== "1",
+    "The native 600px/500ms resize budget is an opt-in visible-browser regression.");
+  await openDoroti(page);
+  const titleToken = `doroti-native-fast-resize-${Date.now()}-${testInfo.workerIndex}`;
+  await page.evaluate((title) => { document.title = title; }, titleToken);
+  await expect(page).toHaveTitle(titleToken);
+  const session = await context.newCDPSession(page);
+  const { windowId, bounds: initial } = await session.send("Browser.getWindowForTarget");
+  const left = initial.left ?? 40;
+  const top = initial.top ?? 40;
+  const startWidth = 1520;
+  const finalWidth = 880;
+  const height = 820;
+  // SetWindowPos plus Chrome's native resize dispatch already consumes a
+  // sizeable part of each step on Windows. Use a finite 64px sampling grid and
+  // only a 1ms producer pause; the browser-observed 640px burst—not a nominal
+  // timer calculation—must still qualify inside the requested 500ms window.
+  const widthStep = 64;
+  const intervalMilliseconds = 1;
+  await session.send("Browser.setWindowBounds", { windowId, bounds: { windowState: "normal" } });
+  await session.send("Browser.setWindowBounds", {
+    windowId,
+    bounds: { left, top, width: startWidth + widthStep, height },
+  });
+  await waitForSettledPresenter(page);
+  await resetDiagnostics(page);
+
+  const sequence = Array.from(
+    { length: (startWidth - finalWidth) / widthStep + 1 },
+    (_, index) => ({ x: left, y: top, width: startWidth - index * widthStep, height }),
+  );
+  const encoded = Buffer.from(JSON.stringify(sequence), "utf8").toString("base64");
+  const script = resolve(process.cwd(), "../../eng/resize-window-native.ps1");
+  const nativeResizeStarted = await page.evaluate(() => performance.now());
+  await execFileAsync("pwsh", ["-NoProfile", "-File", script,
+    "-TitleToken", titleToken, "-BoundsBase64", encoded,
+    "-IntervalMilliseconds", String(intervalMilliseconds), "-StartDelayMilliseconds", "150"], {
+    windowsHide: true,
+    timeout: 20_000,
+  });
+  await page.waitForTimeout(250);
+  const bundle = await waitForSettledPresenter(page);
+  const screenshot = await page.screenshot();
+  const stressTargets = bundle.trace.filter((entry) => entry.phase === "target-observed" &&
+    entry.timestampMicroseconds / 1000 >= nativeResizeStarted);
+  const firstTarget = stressTargets[0];
+  const finalTarget = stressTargets.at(-1);
+  const observedDurationMilliseconds = firstTarget && finalTarget
+    ? (finalTarget.timestampMicroseconds - firstTarget.timestampMicroseconds) / 1000 : null;
+  const observedWidthDelta = firstTarget && finalTarget
+    ? firstTarget.epoch.logicalWidth - finalTarget.epoch.logicalWidth : null;
+  const observedMonotonic = stressTargets.every((entry, index) => index === 0 ||
+    entry.epoch.logicalWidth <= stressTargets[index - 1].epoch.logicalWidth);
+  const targetToFront = firstTarget && finalTarget
+    ? targetToCaughtUpFrontLatencies(bundle.trace,
+      firstTarget.timestampMicroseconds / 1000, finalTarget.timestampMicroseconds / 1000)
+    : [];
+  const finalFront = finalTarget === undefined ? undefined : bundle.trace.find((entry) =>
+    entry.sequence > finalTarget.sequence && entry.phase === "front-commit" &&
+    frontCommitGeneration(entry) >= finalTarget.epoch.generation);
+  const finalExactFrontMilliseconds = finalTarget && finalFront
+    ? (finalFront.timestampMicroseconds - finalTarget.timestampMicroseconds) / 1000 : null;
+  const activeFronts = firstTarget && finalTarget ? bundle.trace.filter((entry) =>
+    entry.phase === "front-commit" &&
+    entry.timestampMicroseconds >= firstTarget.timestampMicroseconds &&
+    entry.timestampMicroseconds <= finalTarget.timestampMicroseconds) : [];
+  const activeFrontTimes = activeFronts.map((entry) => entry.timestampMicroseconds / 1000);
+  const report = {
+    schemaVersion: "doroti.native-fast-resize/v1",
+    renderer: bundle.presenter.mode,
+    windowId,
+    stimulus: {
+      direction: "shrink-width",
+      requestedPointCount: sequence.length,
+      requestedStartWidth: sequence[0].width,
+      requestedFinalWidth: sequence.at(-1)!.width,
+      requestedWidthDelta: sequence[0].width - sequence.at(-1)!.width,
+      configuredIntervalMilliseconds: intervalMilliseconds,
+      nominalDurationMilliseconds: (sequence.length - 1) * intervalMilliseconds,
+      observedTargetCount: stressTargets.length,
+      observedStartLogicalWidth: firstTarget?.epoch.logicalWidth ?? null,
+      observedFinalLogicalWidth: finalTarget?.epoch.logicalWidth ?? null,
+      observedWidthDelta,
+      observedDurationMilliseconds,
+      observedMonotonic,
+    },
+    applicationFront: {
+      targetToCaughtUpFrontMilliseconds: distribution(targetToFront),
+      activeExactFrontCadenceMilliseconds: distribution(activeFrontTimes.slice(1)
+        .map((value, index) => value - activeFrontTimes[index])),
+      finalExactFrontMilliseconds,
+    },
+    diagnostics: bundle,
+  };
+  await testInfo.attach("native-fast-resize-final", { body: screenshot, contentType: "image/png" });
+  await attachJson(testInfo, "native-fast-resize-report", report);
+
+  expect(runtimeErrors).toEqual([]);
+  expect(bundle.presenter.mode).toBe("worker-direct-webgl");
+  expect(report.stimulus.requestedWidthDelta).toBeGreaterThanOrEqual(600);
+  expect(report.stimulus.nominalDurationMilliseconds).toBeLessThanOrEqual(500);
+  expect(report.stimulus.observedTargetCount).toBeGreaterThanOrEqual(8);
+  expect(report.stimulus.observedWidthDelta).not.toBeNull();
+  expect(report.stimulus.observedWidthDelta!).toBeGreaterThanOrEqual(600);
+  expect(report.stimulus.observedDurationMilliseconds).not.toBeNull();
+  expect(report.stimulus.observedDurationMilliseconds!).toBeLessThanOrEqual(500);
+  expect(report.stimulus.observedMonotonic).toBe(true);
+  expect(report.applicationFront.targetToCaughtUpFrontMilliseconds.samples)
+    .toBe(report.stimulus.observedTargetCount);
+  expect(report.applicationFront.targetToCaughtUpFrontMilliseconds.p95).not.toBeNull();
+  expect(report.applicationFront.targetToCaughtUpFrontMilliseconds.p95!).toBeLessThan(60);
+  expect(report.applicationFront.targetToCaughtUpFrontMilliseconds.max).not.toBeNull();
+  // With this deliberately small native sequence p95 is the slowest observed
+  // target. Keep the max assertion explicit so adding more samples cannot
+  // silently weaken the no-visible-outlier contract.
+  expect(report.applicationFront.targetToCaughtUpFrontMilliseconds.max!).toBeLessThan(60);
+  expect(report.applicationFront.activeExactFrontCadenceMilliseconds.samples).toBeGreaterThanOrEqual(4);
+  expect(report.applicationFront.activeExactFrontCadenceMilliseconds.p95).not.toBeNull();
+  expect(report.applicationFront.activeExactFrontCadenceMilliseconds.p95!).toBeLessThan(60);
+  expect(report.applicationFront.finalExactFrontMilliseconds).not.toBeNull();
+  expect(report.applicationFront.finalExactFrontMilliseconds!).toBeLessThan(60);
+  expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
+  expect(bundle.presenter.queueDepth).toBe(0);
+  expect(bundle.presenter.activeBitmaps).toBe(0);
+  assertPresenterContract(bundle);
+});
+
 test("@headed Windows native edge resize keeps metrics independent from presentation", async ({ page, context, runtimeErrors }, testInfo) => {
   test.skip(process.platform !== "win32", "Native HWND resize validation is Windows-only.");
   test.skip(process.env.DOROTI_WEB_RUN_NATIVE_HWND_RESIZE !== "1",
@@ -732,13 +861,25 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
   const screenshot = await page.screenshot();
   const observedTimes = bundle.trace.filter((entry) => entry.phase === "target-observed")
     .map((entry) => entry.timestampMicroseconds / 1000);
-  const finalTarget = bundle.trace.filter((entry) => entry.phase === "target-observed").at(-1);
+  const activeTargets = bundle.trace.filter((entry) =>
+    entry.phase === "target-observed" &&
+    entry.timestampMicroseconds / 1000 >= nativeResizeStarted &&
+    entry.timestampMicroseconds / 1000 <= nativeResizeFinished);
+  const firstTarget = activeTargets[0];
+  const finalTarget = activeTargets.at(-1);
+  // Exclude PowerShell startup and its configured pre-stimulus delay. Animated
+  // retained fronts may legitimately commit there, but their idle gap to the
+  // first SetWindowPos epoch is not active-resize cadence.
+  const activeStart = firstTarget?.timestampMicroseconds !== undefined
+    ? firstTarget.timestampMicroseconds / 1000 : nativeResizeStarted;
+  const activeEnd = finalTarget?.timestampMicroseconds !== undefined
+    ? finalTarget.timestampMicroseconds / 1000 : nativeResizeFinished;
   const semanticsAfterFinalTarget = finalTarget === undefined ? [] : bundle.trace.filter((entry) =>
     entry.phase === "semantics-dom-applied" && entry.sequence > finalTarget.sequence);
   const activeEpochExactCommits = bundle.trace.filter((entry) =>
     entry.phase === "front-commit" &&
-    entry.timestampMicroseconds / 1000 >= nativeResizeStarted &&
-    entry.timestampMicroseconds / 1000 <= nativeResizeFinished &&
+    entry.timestampMicroseconds / 1000 >= activeStart &&
+    entry.timestampMicroseconds / 1000 <= activeEnd &&
     entry.surfaceWidth > 0 && entry.surfaceHeight > 0 &&
     entry.backingWidth >= entry.surfaceWidth && entry.backingHeight >= entry.surfaceHeight);
   const activeCommitTimes = activeEpochExactCommits.map((entry) => entry.timestampMicroseconds / 1000);
@@ -754,9 +895,9 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
     .filter((entry) => entry.phase === "managed-snapshot-completed")
     .map((entry) => entry.durationMicroseconds / 1000);
   const activeTargetToCaughtUpFront = targetToCaughtUpFrontLatencies(
-    bundle.trace, nativeResizeStarted, nativeResizeFinished);
+    bundle.trace, activeStart, activeEnd);
   const activeGeneration = activeGenerationTimeline(
-    bundle.trace, nativeResizeStarted, nativeResizeFinished);
+    bundle.trace, activeStart, activeEnd);
   const report = { schemaVersion: "doroti.native-hwnd-resize/v1", windowId, sequence, samples: nativeSamples,
     semanticsAfterFinalTarget: semanticsAfterFinalTarget.length,
     observedResizeCount: observedTimes.length,

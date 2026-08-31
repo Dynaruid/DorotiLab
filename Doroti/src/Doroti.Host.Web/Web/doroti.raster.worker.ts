@@ -2,6 +2,7 @@ import {
   configureWorkerBridge,
   dispatchWorkerAnimationFrame,
   dispatchWorkerInput,
+  dispatchWorkerResizeEpoch,
   dispatchWorkerSnapshot,
   initializeManagedCallbacks,
 } from "./doroti.web.js";
@@ -48,7 +49,8 @@ interface HostSnapshot {
 interface SurfaceExports {
   RenderFrame(
     requestId: number, generation: number, logicalWidth: number, logicalHeight: number,
-    physicalWidth: number, physicalHeight: number, devicePixelRatio: number,
+    physicalWidth: number, physicalHeight: number, backingWidth: number, backingHeight: number,
+    devicePixelRatio: number,
     timestampMicroseconds: number, framebuffer: number, stencilBits: number,
     sampleCount: number, contextGeneration: number, glStateDirty: boolean): string;
   CompleteFrame(requestId: number, generation: number, terminal: string, reason: string): void;
@@ -59,15 +61,6 @@ interface SurfaceExports {
 interface PresentRequest extends ResizeEpoch {
   requestId: number;
   terminal: boolean;
-}
-
-interface WorkerGpuSurface {
-  framebuffer: WebGLFramebuffer & { name?: number };
-  framebufferId: number;
-  color: WebGLTexture;
-  depthStencil: WebGLRenderbuffer;
-  width: number;
-  height: number;
 }
 
 interface WorkerPresenter {
@@ -84,8 +77,9 @@ interface WorkerPresenter {
   bitmapConsumed: number;
   bitmapClosed: number;
   activeBitmaps: number;
-  staging: WorkerGpuSurface | null;
   frontGeneration: number;
+  frontPhysicalWidth: number;
+  frontPhysicalHeight: number;
 }
 
 type WorkerMode = "worker-direct-webgl" | "offscreen-worker";
@@ -95,8 +89,6 @@ interface EmscriptenGlRuntime {
   makeContextCurrent(context: number): void;
   deleteContext?(context: number): void;
   currentContext?: { GLctx: WebGL2RenderingContext };
-  getNewId(table: unknown[]): number;
-  framebuffers: Array<WebGLFramebuffer | null>;
 }
 
 interface DotnetRuntime {
@@ -118,9 +110,11 @@ let transferredCanvas: OffscreenCanvas | null = null;
 let pendingManagedSnapshot: { hostId: number; value: HostSnapshot } | null = null;
 let latestAdmissionGeneration = 0;
 let latestMailboxGeneration = 0;
-let resizeDiagnosticsEnabled = false;
 let pendingWorkerFrame: { hostId: number; callbackId: number } | null = null;
 let workerFrameRaf = 0;
+let workerFrameTimer = 0;
+let lastResizeAdmissionMilliseconds = Number.NEGATIVE_INFINITY;
+let resizeWakeBudget = 0;
 const pendingManagedInputs: Record<string, unknown>[] = [];
 let requestSequence = 0;
 let controlSequence = 0;
@@ -177,13 +171,43 @@ function dispatchPendingWorkerFrame(timestamp: number): void {
 }
 
 function schedulePendingWorkerFrame(): void {
-  if (workerFrameRaf !== 0 || !pendingWorkerFrame) return;
+  if (!pendingWorkerFrame) return;
   if (typeof globalThis.requestAnimationFrame !== "function")
     throw new Error("Doroti direct worker requires Worker requestAnimationFrame.");
-  workerFrameRaf = globalThis.requestAnimationFrame((timestamp) => {
-    workerFrameRaf = 0;
-    dispatchPendingWorkerFrame(timestamp);
-  });
+  if (workerFrameRaf === 0) {
+    const scheduledRaf = globalThis.requestAnimationFrame((timestamp) => {
+      // A resize wake may already have cancelled this rAF. Some browser/driver
+      // combinations can still deliver a queued callback; it must not steal a
+      // newer managed frame request.
+      if (workerFrameRaf !== scheduledRaf) return;
+      workerFrameRaf = 0;
+      if (workerFrameTimer !== 0) globalThis.clearTimeout(workerFrameTimer);
+      workerFrameTimer = 0;
+      dispatchPendingWorkerFrame(timestamp);
+    });
+    workerFrameRaf = scheduledRaf;
+  }
+  // Chromium can throttle a dedicated Worker's rAF to roughly 30 Hz while a
+  // native HWND resize loop is active. During that short interval only, race
+  // it with a task so latest metrics do not wait an extra refresh. Ordinary
+  // animation remains strictly vsync-driven after resize settles.
+  // A frame may already have been requested by animation before resize metrics
+  // arrive. Arm the race for that existing rAF too instead of inheriting its
+  // throttled deadline.
+  if (resizeWakeBudget > 0 && workerFrameTimer === 0 &&
+      performance.now() - lastResizeAdmissionMilliseconds <= 100) {
+    // Keep at most two early wakes outstanding: one can release a callback that
+    // was already queued for the prior epoch, while one follow-up can render the
+    // newly-admitted epoch. Continuous animation then returns to rAF pacing.
+    resizeWakeBudget--;
+    workerFrameTimer = globalThis.setTimeout(() => {
+      workerFrameTimer = 0;
+      if (workerFrameRaf !== 0 && typeof globalThis.cancelAnimationFrame === "function")
+        globalThis.cancelAnimationFrame(workerFrameRaf);
+      workerFrameRaf = 0;
+      dispatchPendingWorkerFrame(performance.now());
+    }, 0);
+  }
 }
 
 function adoptAdmissionResizeEpoch(
@@ -191,120 +215,58 @@ function adoptAdmissionResizeEpoch(
   hostGeneration: number,
   advertisedGeneration: number,
 ): void {
-  if (!snapshot || !value || !Number.isSafeInteger(value.generation) || value.generation <= 0 ||
-      value.generation !== advertisedGeneration ||
-      value.generation <= snapshot.resizeEpoch.generation ||
-      !Number.isFinite(value.logicalWidth) || value.logicalWidth <= 0 ||
-      !Number.isFinite(value.logicalHeight) || value.logicalHeight <= 0 ||
-      !Number.isSafeInteger(value.physicalWidth) || value.physicalWidth <= 0 ||
-      !Number.isSafeInteger(value.physicalHeight) || value.physicalHeight <= 0 ||
-      !Number.isFinite(value.devicePixelRatio) || value.devicePixelRatio <= 0 ||
-      !Number.isFinite(value.timestampMicroseconds)) return;
-  const previousGeneration = snapshot.resizeEpoch.generation;
-  latestAdmissionGeneration = Math.max(latestAdmissionGeneration, value.generation);
-  snapshot = {
-    ...snapshot,
-    logicalWidth: value.logicalWidth,
-    logicalHeight: value.logicalHeight,
-    devicePixelRatio: value.devicePixelRatio,
-    generation: Number.isSafeInteger(hostGeneration) && hostGeneration > 0
-      ? Math.max(snapshot.generation, hostGeneration)
-      : snapshot.generation,
-    resizeEpoch: value,
-  };
-  if (managedHostReady) {
-    dispatchWorkerSnapshot(hostId, JSON.stringify(snapshot));
-    if (resizeDiagnosticsEnabled) {
-      post("admission-applied", {
-        previousGeneration,
-        generation: value.generation,
-        mailboxGeneration: latestMailboxGeneration,
-      });
+  const previousGeneration = snapshot?.resizeEpoch.generation ?? 0;
+  const accepted = Boolean(
+    snapshot && value &&
+    Number.isSafeInteger(value.generation) && value.generation > 0 &&
+    value.generation === advertisedGeneration &&
+    value.generation > previousGeneration &&
+    Number.isFinite(value.logicalWidth) && value.logicalWidth > 0 &&
+    Number.isFinite(value.logicalHeight) && value.logicalHeight > 0 &&
+    Number.isSafeInteger(value.physicalWidth) && value.physicalWidth > 0 &&
+    Number.isSafeInteger(value.physicalHeight) && value.physicalHeight > 0 &&
+    Number.isFinite(value.devicePixelRatio) && value.devicePixelRatio > 0 &&
+    Number.isFinite(value.timestampMicroseconds));
+  if (accepted && snapshot && value) {
+    lastResizeAdmissionMilliseconds = performance.now();
+    resizeWakeBudget = Math.min(2, resizeWakeBudget + 1);
+    latestAdmissionGeneration = Math.max(latestAdmissionGeneration, value.generation);
+    snapshot = {
+      ...snapshot,
+      logicalWidth: value.logicalWidth,
+      logicalHeight: value.logicalHeight,
+      devicePixelRatio: value.devicePixelRatio,
+      generation: Number.isSafeInteger(hostGeneration) && hostGeneration > 0
+        ? Math.max(snapshot.generation, hostGeneration)
+        : snapshot.generation,
+      resizeEpoch: value,
+    };
+    if (managedHostReady) {
+      dispatchWorkerResizeEpoch(
+        hostId, snapshot.generation, value.generation,
+        value.logicalWidth, value.logicalHeight, value.physicalWidth, value.physicalHeight,
+        value.devicePixelRatio, value.timestampMicroseconds);
+      // The framework may already own a pending callback, in which case the
+      // metrics change correctly avoids requesting a duplicate frame. Revisit
+      // that existing callback here so active-resize fallback can race a rAF
+      // that was scheduled before the resize admission.
+      schedulePendingWorkerFrame();
+    } else {
+      pendingManagedSnapshot = { hostId, value: snapshot };
     }
   }
+  // This is also main's backpressure acknowledgement. Always send it, even
+  // when a stale/startup target is rejected or diagnostics are disabled.
+  post("admission-applied", {
+    previousGeneration,
+    generation: advertisedGeneration,
+    mailboxGeneration: latestMailboxGeneration,
+    accepted,
+  });
 }
 
-function createWorkerGpuSurface(
+function clearDirectVisibleBands(
   value: WorkerPresenter,
-  width: number,
-  height: number,
-): WorkerGpuSurface {
-  const runtime = glRuntime();
-  const gl = currentGl(value);
-  const framebuffer = gl.createFramebuffer() as (WebGLFramebuffer & { name?: number }) | null;
-  const color = gl.createTexture();
-  const depthStencil = gl.createRenderbuffer();
-  if (!framebuffer || !color || !depthStencil)
-    throw new Error("Doroti direct Worker could not allocate its staging framebuffer.");
-  const framebufferId = runtime.getNewId(runtime.framebuffers);
-  framebuffer.name = framebufferId;
-  runtime.framebuffers[framebufferId] = framebuffer;
-  try {
-    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-    gl.bindTexture(gl.TEXTURE_2D, color);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, color, 0);
-    gl.bindRenderbuffer(gl.RENDERBUFFER, depthStencil);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH24_STENCIL8, width, height);
-    gl.framebufferRenderbuffer(
-      gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, depthStencil);
-    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-    if (status !== gl.FRAMEBUFFER_COMPLETE)
-      throw new Error(`Doroti direct Worker staging framebuffer is incomplete (0x${status.toString(16)}).`);
-    return { framebuffer, framebufferId, color, depthStencil, width, height };
-  } catch (error) {
-    runtime.framebuffers[framebufferId] = null;
-    framebuffer.name = 0;
-    gl.deleteFramebuffer(framebuffer);
-    gl.deleteTexture(color);
-    gl.deleteRenderbuffer(depthStencil);
-    throw error;
-  } finally {
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-  }
-}
-
-function releaseWorkerGpuSurface(
-  value: WorkerPresenter,
-  surfaceValue: WorkerGpuSurface | null,
-  deleteObjects = true,
-): void {
-  if (!surfaceValue) return;
-  const runtime = glRuntime();
-  runtime.framebuffers[surfaceValue.framebufferId] = null;
-  surfaceValue.framebuffer.name = 0;
-  if (!deleteObjects || value.contextLost) return;
-  const gl = currentGl(value);
-  gl.deleteFramebuffer(surfaceValue.framebuffer);
-  gl.deleteTexture(surfaceValue.color);
-  gl.deleteRenderbuffer(surfaceValue.depthStencil);
-}
-
-function ensureDirectStaging(
-  value: WorkerPresenter,
-  width: number,
-  height: number,
-): WorkerGpuSurface {
-  if (value.staging &&
-      (value.staging.width < width || value.staging.height < height)) {
-    const prior = value.staging;
-    releaseWorkerGpuSurface(value, value.staging);
-    value.staging = null;
-    width = Math.max(width, Math.ceil(prior.width * 1.25));
-    height = Math.max(height, Math.ceil(prior.height * 1.25));
-  }
-  return value.staging ??= createWorkerGpuSurface(value, width, height);
-}
-
-function blitDirectStaging(
-  value: WorkerPresenter,
-  staging: WorkerGpuSurface,
   width: number,
   height: number,
 ): void {
@@ -315,38 +277,39 @@ function blitDirectStaging(
     throw new Error(
       `Doroti direct Worker frame ${width}x${height} exceeds visible capacity ` +
       `${capacityWidth}x${capacityHeight}.`);
-  const priorErrors: number[] = [];
-  for (let error = gl.getError(); error !== gl.NO_ERROR; error = gl.getError())
-    priorErrors.push(error);
-  gl.disable(gl.SCISSOR_TEST);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.drawBuffers([gl.BACK]);
   gl.colorMask(true, true, true, true);
   gl.viewport(0, 0, capacityWidth, capacityHeight);
-  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, staging.framebuffer);
-  gl.readBuffer(gl.COLOR_ATTACHMENT0);
-  const sourceStatus = gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER);
-  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-  gl.drawBuffers([gl.BACK]);
-  const destinationStatus = gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER);
-  if (sourceStatus !== gl.FRAMEBUFFER_COMPLETE || destinationStatus !== gl.FRAMEBUFFER_COMPLETE)
-    throw new Error(
-      `Doroti direct Worker blit framebuffer is incomplete ` +
-      `(read=0x${sourceStatus.toString(16)}, draw=0x${destinationStatus.toString(16)}).`);
-  // The DOM root clips this stable-capacity surface during live resize. Clear
-  // pixels outside the exact frame so growing the root exposes its background,
-  // never stale content from a previously larger generation.
-  gl.clearColor(0, 0, 0, 0);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-  gl.blitFramebuffer(
-    0, 0, width, height,
-    0, capacityHeight - height, width, capacityHeight,
-    gl.COLOR_BUFFER_BIT, gl.NEAREST);
-  const error = gl.getError();
-  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
-  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-  if (priorErrors.length > 0 || error !== gl.NO_ERROR)
-    throw new Error(
-      `Doroti direct Worker blit failed (prior=${priorErrors.join(",") || "none"}, error=0x${error.toString(16)}).`);
-  gl.flush();
+  // The DOM root clips this stable-capacity surface during live resize. Only a
+  // shrink can expose stale pixels later, and only in the bands removed from
+  // the prior exact front. Keep those bands transparent instead of clearing
+  // the entire screen-sized color/depth/stencil backing on every frame.
+  const previousWidth = Math.min(value.frontPhysicalWidth, capacityWidth);
+  const previousHeight = Math.min(value.frontPhysicalHeight, capacityHeight);
+  if (previousWidth > 0 && previousHeight > 0 &&
+      (width < previousWidth || height < previousHeight)) {
+    gl.enable(gl.SCISSOR_TEST);
+    gl.clearColor(0, 0, 0, 0);
+    if (width < previousWidth) {
+      gl.scissor(
+        width, capacityHeight - previousHeight,
+        previousWidth - width, previousHeight);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+    }
+    if (height < previousHeight) {
+      gl.scissor(
+        0, capacityHeight - previousHeight,
+        Math.min(width, previousWidth), previousHeight - height);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+    }
+    gl.disable(gl.SCISSOR_TEST);
+  }
+  // Do not call getError() in this hot path. Chromium may synchronize the GPU
+  // process to answer it, turning a tiny scissored clear into a 20-50ms stall.
+  // Context loss remains reported through webglcontextlost and frame failures.
+  value.frontPhysicalWidth = width;
+  value.frontPhysicalHeight = height;
 }
 
 function glRuntime(): EmscriptenGlRuntime {
@@ -393,7 +356,7 @@ function ensurePresenter(): WorkerPresenter {
     canvas, context, contextGeneration: 1, extension: null,
     current: null, latest: null, draining: false, nextRequestId: 0, contextLost: false,
     bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
-    staging: null, frontGeneration: 0,
+    frontGeneration: 0, frontPhysicalWidth: 0, frontPhysicalHeight: 0,
   };
   const gl = currentGl(presenter);
   presenter.extension = gl.getExtension("WEBGL_lose_context");
@@ -401,9 +364,9 @@ function ensurePresenter(): WorkerPresenter {
     event.preventDefault();
     if (!presenter) return;
     presenter.contextLost = true;
-    releaseWorkerGpuSurface(presenter, presenter.staging, false);
-    presenter.staging = null;
     presenter.frontGeneration = 0;
+    presenter.frontPhysicalWidth = 0;
+    presenter.frontPhysicalHeight = 0;
     const interrupted = presenter.current;
     if (interrupted) terminal(interrupted, "failed", "worker WebGL context lost");
     for (const [requestId, receipt] of pendingReceipts) {
@@ -417,10 +380,8 @@ function ensurePresenter(): WorkerPresenter {
   canvas.addEventListener("webglcontextrestored", () => {
     if (!presenter) return;
     if (workerMode === "worker-direct-webgl") {
-      // Chromium does not reliably make a restored transferred canvas's
-      // default framebuffer blit-compatible with newly-created staging FBOs.
-      // A transferred canvas cannot be rebound to another context in place,
-      // so let the main supervisor replace the DOM endpoint and Worker once.
+      // A transferred canvas cannot be rebound to another context in place, so
+      // let the main supervisor replace the DOM endpoint and Worker once.
       post("fatal", {
         error: "direct Worker WebGL context restore requires canvas endpoint rebind",
       });
@@ -513,54 +474,66 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       snapshot = { ...snapshot, surfaceGeneration: snapshot.surfaceGeneration + 1 };
       dispatchWorkerSnapshot(hostId, JSON.stringify(snapshot));
     }
+    const capacityChanged = direct &&
+      (value.canvas.width < request.physicalWidth || value.canvas.height < request.physicalHeight);
+    if (capacityChanged) {
+      value.canvas.width = Math.max(
+        request.physicalWidth, Math.ceil(value.canvas.width * 1.5));
+      value.canvas.height = Math.max(
+        request.physicalHeight, Math.ceil(value.canvas.height * 1.5));
+      value.frontPhysicalWidth = 0;
+      value.frontPhysicalHeight = 0;
+    }
     const gl = currentGl(value);
-    const staging = direct
-      ? ensureDirectStaging(value, request.physicalWidth, request.physicalHeight)
-      : null;
-    gl.bindFramebuffer(gl.FRAMEBUFFER, staging?.framebuffer ?? null);
-    gl.drawBuffers([staging ? gl.COLOR_ATTACHMENT0 : gl.BACK]);
-    gl.viewport(0, 0, request.physicalWidth, request.physicalHeight);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.drawBuffers([gl.BACK]);
+    gl.viewport(0, 0, direct ? value.canvas.width : request.physicalWidth,
+      direct ? value.canvas.height : request.physicalHeight);
+    const managedSurfaceStarted = performance.now();
     const result = String(surface!.RenderFrame(
       request.requestId, request.generation, request.logicalWidth, request.logicalHeight,
-      request.physicalWidth, request.physicalHeight, request.devicePixelRatio,
-      request.timestampMicroseconds, staging?.framebufferId ?? 0, 8, 0,
+      request.physicalWidth, request.physicalHeight,
+      direct ? value.canvas.width : request.physicalWidth,
+      direct ? value.canvas.height : request.physicalHeight,
+      request.devicePixelRatio,
+      request.timestampMicroseconds, 0, 8, 0,
       value.contextGeneration, true));
+    const managedSurfaceCompleted = performance.now();
     if (result !== "exact-rendered" && result !== "replay-rendered") {
       surface!.CompleteFrame(request.requestId, request.generation, "superseded", `managed raster result=${result}`);
       terminal(request, "superseded", `managed raster result=${result}`);
       return;
     }
-    gl.flush();
+    if (!direct) gl.flush();
     if (direct) {
       const monotonicGeneration = request.generation >= value.frontGeneration &&
         request.generation <= latestAdmissionGeneration;
       if (value.contextLost || !monotonicGeneration) {
         surface!.CompleteFrame(request.requestId, request.generation, "superseded",
-          "direct staging raster superseded before monotonic visible blit");
+          "direct visible raster superseded before monotonic commit");
         terminal(request, "superseded",
-          "direct staging raster superseded before monotonic visible blit");
+          "direct visible raster superseded before monotonic commit");
         return;
       }
-      const capacityChanged = value.canvas.width < request.physicalWidth ||
-        value.canvas.height < request.physicalHeight;
-      if (capacityChanged) {
-        value.canvas.width = Math.max(
-          request.physicalWidth, Math.ceil(value.canvas.width * 1.5));
-        value.canvas.height = Math.max(
-          request.physicalHeight, Math.ceil(value.canvas.height * 1.5));
-      }
-      blitDirectStaging(
-        value, staging!, request.physicalWidth, request.physicalHeight);
+      const directFinalizeStarted = performance.now();
+      clearDirectVisibleBands(
+        value, request.physicalWidth, request.physicalHeight);
+      const directFinalizeCompleted = performance.now();
       value.frontGeneration = request.generation;
       if (capacityChanged) {
         snapshot = { ...snapshot, surfaceGeneration: snapshot.surfaceGeneration + 1 };
         dispatchWorkerSnapshot(hostId, JSON.stringify(snapshot));
       }
       surface!.CompleteFrame(request.requestId, request.generation, "submitted",
-        "exact direct staging framebuffer admitted and blitted in the worker");
-      terminal(request, "submitted", "exact direct staging framebuffer admitted and blitted in the worker");
+        "exact direct visible framebuffer submitted in the worker");
+      terminal(request, "submitted", "exact direct visible framebuffer submitted in the worker");
       post("direct-commit", {
         requestId: request.requestId, generation: request.generation,
+        commitEpochMilliseconds: performance.timeOrigin + directFinalizeCompleted,
+        managedSurfaceMicroseconds: Math.round(
+          (managedSurfaceCompleted - managedSurfaceStarted) * 1000),
+        directFinalizeMicroseconds: Math.round(
+          (directFinalizeCompleted - directFinalizeStarted) * 1000),
         contextGeneration: value.contextGeneration,
         physicalWidth: request.physicalWidth, physicalHeight: request.physicalHeight,
         logicalWidth: request.logicalWidth, logicalHeight: request.logicalHeight,
@@ -701,7 +674,6 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       snapshot = message.snapshot as HostSnapshot;
       latestAdmissionGeneration = snapshot.resizeEpoch.generation;
       latestMailboxGeneration = snapshot.resizeEpoch.generation;
-      resizeDiagnosticsEnabled = Boolean(message.resizeDiagnostics);
       workerMode = String(message.mode ?? "offscreen-worker") as WorkerMode;
       if (workerMode !== "offscreen-worker" && workerMode !== "worker-direct-webgl")
         throw new Error(`Unknown Doroti worker mode '${workerMode}'.`);
@@ -768,7 +740,10 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       runtimeState.transition("disposing");
       if (workerFrameRaf !== 0 && typeof globalThis.cancelAnimationFrame === "function")
         globalThis.cancelAnimationFrame(workerFrameRaf);
+      if (workerFrameTimer !== 0) globalThis.clearTimeout(workerFrameTimer);
       workerFrameRaf = 0;
+      workerFrameTimer = 0;
+      resizeWakeBudget = 0;
       pendingWorkerFrame = null;
       if (presenter?.current) {
         surface?.CompleteFrame(presenter.current.requestId, presenter.current.generation,
@@ -781,8 +756,6 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
         terminal(presenter.latest, "dropped", "worker runtime disposing");
       }
       if (presenter) {
-        releaseWorkerGpuSurface(presenter, presenter.staging);
-        presenter.staging = null;
         presenter.current = null;
         presenter.latest = null;
       }

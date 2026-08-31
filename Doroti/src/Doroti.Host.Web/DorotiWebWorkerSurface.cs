@@ -45,6 +45,8 @@ public static partial class DorotiWebWorkerSurface
         double logicalHeight,
         int physicalWidth,
         int physicalHeight,
+        int backingWidth,
+        int backingHeight,
         double devicePixelRatio,
         [JSMarshalAs<JSType.Number>] long timestampMicroseconds,
         int framebuffer,
@@ -59,13 +61,28 @@ public static partial class DorotiWebWorkerSurface
             devicePixelRatio, timestampMicroseconds);
         if (_target.CaptureSnapshot(_viewId).ResizeEpoch.Generation != generation)
             return "superseded";
-        EnsureSurface(physicalWidth, physicalHeight, framebuffer, stencilBits, sampleCount, contextGeneration);
+        if (backingWidth < physicalWidth || backingHeight < physicalHeight)
+            throw new InvalidDataException(
+                $"Worker backing {backingWidth}x{backingHeight} is smaller than exact frame " +
+                $"{physicalWidth}x{physicalHeight}.");
+        EnsureSurface(backingWidth, backingHeight, framebuffer, stencilBits, sampleCount, contextGeneration);
         if (glStateDirty) _context!.ResetContext(GRGlBackendState.All);
         string result;
         using (new SKAutoCanvasRestore(_surface!.Canvas, true))
+        {
+            // The transferred visible framebuffer is wrapped at a stable
+            // capacity. Restrict Skia to the exact top-left viewport; the DOM
+            // root clips the unused capacity without CSS scaling.
+            _surface.Canvas.ClipRect(
+                new SKRect(0, 0, physicalWidth, physicalHeight),
+                SKClipOperation.Intersect,
+                antialias: false);
             result = _target.PaintSkiaSurface(
                 _viewId, _surface, physicalWidth, physicalHeight, target, requestId);
-        _surface.Canvas.Flush();
+        }
+        // SkiaSceneRenderer flushes the canvas at the end of browser paints.
+        // Submit that work once through the owning GPU context; JavaScript then
+        // finalizes any newly-hidden band before yielding to the browser.
         _context!.Flush();
         return result;
     }

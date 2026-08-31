@@ -644,3 +644,38 @@ Worker-only가 되어도 Blazor WebAssembly SDK/publish pipeline이 Worker의 `_
 - 기존 renderer 회귀: document 8 `PASS`/4 해당없음 `SKIP`, offscreen-bitmap 8 `PASS`/4 `SKIP`, 최종 tree offscreen-worker 10 `PASS`/2 `SKIP`.
 - current/direct A/B 3회: document p95 26.6/26.3/26.9 ms, median 26.6 ms; direct p95 29.0/28.1/25.7 ms, median 28.1 ms. direct max 47.2/176.5/49.6 ms로 absolute max gate `FAIL`.
 - Flutter differential 3회, warm sample 각 117개: Doroti direct p50 22.8 ms/p95 53.0 ms, Flutter p50 34.9 ms/p95 42.5 ms. `Flutter p95 + 20 ms` proxy gate는 `PASS`; compositor scan-out ACK는 측정하지 않는다.
+
+## 11. 2026-08-31 빠른 native resize 추가 최적화 결과
+
+### 원인과 변경 판정
+
+이번 지연은 Blazor 또는 SkiaSharp가 부과하는 고정 하한으로 판정하지 않는다. 수정 전 `worker-direct-webgl`은 빠른 resize 중 full snapshot 직렬화/전달, main→Worker admission 왕복, exact 크기마다 managed `SKSurface` 재생성, staging FBO 전체 clear/blit, hot-path GPU 상태 조회와 Worker rAF 대기가 한 Worker의 raster 임계 구간에 겹쳤다. 수정 전 headed fast-lane baseline은 target→caught-up front p50 47.8 ms/p95 99.0 ms/max 152.7 ms, target generation lag p50 2/p95 4/max 6이었다.
+
+이번 변경은 resize epoch를 숫자형 fast path로 전달하고 main→Worker admission을 bounded 4 in-flight + replaceable latest slot으로 제한한다. 최근 resize가 이미 예약된 Worker rAF 뒤에 대기하지 않도록 최대 2개의 bounded task wake를 허용해 기존 callback과 최신 epoch follow-up을 해제하고, 이후 animation은 다시 rAF pacing으로 돌아간다. transferred visible framebuffer는 grow-only capacity의 managed surface로 직접 감싸고 exact 영역만 clip하며, 축소 시 새로 숨겨지는 band만 scissor-clear한다. direct hot path의 staging FBO, framebuffer blit, 중복 flush와 동기식 `gl.getError()` 조회는 제거했다.
+
+`worker-direct-webgl`은 계속 opt-in이다. 제품 기본값 `auto=document-webgl`과 W8 cutover/legacy 정리 중단 상태는 바꾸지 않는다.
+
+### 검증 판정
+
+| 범위 | 판정 | 결과와 한계 |
+|---|---|---|
+| 640 px / 500 ms 이하 fast native resize application-front gate | `PASS` | headed Windows 자동 resize 3회 연속 통과. 세 실행 모두 실제 browser target 폭 640 px/500 ms 이하였고 target→caught-up front p95와 max가 60 ms 미만이었다. |
+| headed live visual proxy | `PASS` | 126 samples에서 scale/grid distortion과 검은 right/bottom band가 0이었다. browser screenshot/pixel proxy이며 물리 scan-out 증거는 아니다. |
+| long Windows native HWND resize 자동화 | `PASS` | 최종 combined run의 126 targets가 generation/cadence/final-exact gate를 통과했다. target→caught-up max 87.0 ms와 exact cadence max 220.3 ms가 있으므로 모든 장기 resize update가 60 ms 이내였다고 주장하지 않는다. |
+| 최종 Release headless resize regression | `PASS` | fresh Release build `direct-visible-resize-headless-final-tree`에서 4/4 `PASS`; exact A-B-C, stale snapshot-mailbox skip, pinch zoom, DPR2를 포함한다. |
+| 이번 변경 후 Flutter paired resize comparison | `notVerified` | 같은 fixture와 동일 native resize script로 Flutter resize를 다시 paired 측정하지 않았다. 따라서 Flutter와 동등 이상이라고 판정하지 않는다. |
+| 실제 border drag와 scan-out | `notVerified` | 사람 손의 좌/우/상/하/모서리 border drag, 60 Hz/120 Hz 이상 display와 compositor scan-out은 실행하지 않았다. |
+| W8 | `notStarted-by-gate` | physical acceptance와 전체 W7 gate가 닫히지 않았으므로 default cutover와 legacy 삭제를 시작하지 않는다. |
+
+### 재현 가능한 evidence
+
+| 실행 | observed targets / 폭 / 시간 | target→caught-up front p50 / p95 / max | active exact cadence p95 | final exact |
+|---|---:|---:|---:|---:|
+| `direct-visible-resize-headed-budget2-final-1` | 9 / 640 px / 182.3 ms | 35.9 / 48.5 / 48.5 ms | 50.1 ms | 32.7 ms |
+| `direct-visible-resize-headed-budget2-final-2` | 11 / 640 px / 185.8 ms | 36.5 / 47.9 / 47.9 ms | 48.8 ms | 42.6 ms |
+| `direct-visible-resize-headed-budget2-final-3` | 10 / 640 px / 191.0 ms | 29.4 / 49.9 / 49.9 ms | 49.0 ms | 45.9 ms |
+
+- `direct-visible-resize-combined-budget2-final`: 같은 headed Chrome session에서 live/fast/long 3/3 `PASS`. fast는 10 targets/640 px/174.2 ms, target→caught-up p50 29.5 ms/p95=max 59.6 ms, cadence p95 55.6 ms, final exact 28.5 ms였다. live 126 samples는 target→caught-up front p50 24.0 ms/p95 38.6 ms/max 72.8 ms, maximum scale/grid delta와 black right/bottom band 0이었다. exact front 이전 root background band proxy는 최대 right 88 px/bottom 40 px, 26 paints였다. presenter request/terminal 68/68, failed 0, max queue depth 1, bitmap 0, unpaired request 0.
+- 같은 combined run의 long native 결과: 126 targets, 221 active exact commits, 121 committed generations, 162 progressive commits. target→caught-up front p50 33.9 ms/p95 52.4 ms/max 87.0 ms; active exact cadence p50 21.1 ms/p95 35.6 ms/max 220.3 ms. target generation lag p50 2/p95 2/max 3, commit lag p50 0/p95 1/max 1, exact commit ratio 51.6%. final target/front generation 127/127, queue depth 0, final-target 이후 semantics update 1.
+- `direct-visible-resize-headless-final-tree`: fresh Release rebuild 뒤 `resize-continuity.spec.ts` headless 4/4 `PASS`. `npm run check`, `dotnet build Doroti/src/Doroti.Host.Web/Doroti.Host.Web.csproj -c Release --no-restore`, `Doroti.Validation.ResizeContract`와 `git diff --check`도 `PASS`.
+- 위 latency는 Worker가 기록한 application-side exact framebuffer submit/front-commit 기준이다. fast test의 screenshot은 settle 후 캡처하므로 같은 640 px burst 도중의 compositor/scan-out 픽셀 증거가 아니며, live pixel proxy도 그 물리 증거를 대체하지 않는다.

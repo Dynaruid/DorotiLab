@@ -7,6 +7,10 @@ import { closeExternalLeases, createDorotiWorker } from "./doroti.web.worker-hos
 interface ManagedCallbacks {
   dispatchAnimationFrame(hostId: number, callbackId: number, timestamp: number): void;
   dispatchSnapshot(hostId: number, snapshotJson: string): void;
+  dispatchResizeEpoch(
+    hostId: number, hostGeneration: number, generation: number,
+    logicalWidth: number, logicalHeight: number, physicalWidth: number, physicalHeight: number,
+    devicePixelRatio: number, timestampMicroseconds: number): void;
   dispatchPointerBatch(hostId: number, phase: number, kind: number, pointerId: number, buttons: number, modifiers: number, inputSequence: number, samples: number[]): void;
   dispatchWheel(hostId: number, x: number, y: number, deltaX: number, deltaY: number, timestamp: number, kind: number, inputSequence: number): void;
   dispatchKey(hostId: number, pressed: boolean, repeat: boolean, synthesized: boolean, code: string, key: string, timestamp: number, inputSequence: number): void;
@@ -292,6 +296,7 @@ interface DorotiAssemblyExports {
         BrowserInterop: {
           DispatchAnimationFrame: ManagedCallbacks["dispatchAnimationFrame"];
           DispatchSnapshot: ManagedCallbacks["dispatchSnapshot"];
+          DispatchResizeEpoch: ManagedCallbacks["dispatchResizeEpoch"];
           DispatchPointerBatch: ManagedCallbacks["dispatchPointerBatch"];
           DispatchWheel: ManagedCallbacks["dispatchWheel"];
           DispatchKey: ManagedCallbacks["dispatchKey"];
@@ -321,6 +326,15 @@ export function configureWorkerBridge(bridge: WorkerBridge): void {
 
 export function dispatchWorkerSnapshot(hostId: number, json: string): void {
   requireManaged().dispatchSnapshot(hostId, json);
+}
+
+export function dispatchWorkerResizeEpoch(
+  hostId: number, hostGeneration: number, generation: number,
+  logicalWidth: number, logicalHeight: number, physicalWidth: number, physicalHeight: number,
+  devicePixelRatio: number, timestampMicroseconds: number): void {
+  requireManaged().dispatchResizeEpoch(
+    hostId, hostGeneration, generation, logicalWidth, logicalHeight,
+    physicalWidth, physicalHeight, devicePixelRatio, timestampMicroseconds);
 }
 
 export function dispatchWorkerAnimationFrame(
@@ -531,13 +545,13 @@ function recordResize(
   phase: string,
   source: string,
   options: Partial<Pick<ResizeTraceEntry,
-    "durationMicroseconds" | "rafId" | "backingWidth" | "backingHeight" |
+    "timestampMicroseconds" | "durationMicroseconds" | "rafId" | "backingWidth" | "backingHeight" |
     "surfaceWidth" | "surfaceHeight" | "terminal" | "detail" |
     "inputSequence" | "requestId">> = {}): void {
   if (!diagnosticsEnabled()) return;
   const entry: ResizeTraceEntry = {
     sequence: ++host.resizeTraceSequence,
-    timestampMicroseconds: Math.round(performance.now() * 1000),
+    timestampMicroseconds: options.timestampMicroseconds ?? Math.round(performance.now() * 1000),
     phase,
     epoch: host.resizeEpoch,
     threadId: 0,
@@ -1460,7 +1474,11 @@ function emitResize(host: BrowserHost): void {
   // makes interactive resize advance at raster/bitmap-transfer cadence.
   recordResize(host, "managed-snapshot-dispatched", "resize-metrics");
   const started = performance.now();
-  managed?.dispatchSnapshot(host.id, snapshot(host));
+  const epoch = host.resizeEpoch;
+  managed?.dispatchResizeEpoch(
+    host.id, host.generation, epoch.generation,
+    epoch.logicalWidth, epoch.logicalHeight, epoch.physicalWidth, epoch.physicalHeight,
+    epoch.devicePixelRatio, epoch.timestampMicroseconds);
   recordResize(host, "managed-snapshot-completed", "resize-metrics", {
     durationMicroseconds: Math.round((performance.now() - started) * 1000),
   });
@@ -1503,7 +1521,7 @@ function gpuIdentity(canvas: HTMLCanvasElement): GpuIdentity {
 
 export function configureManagedCallbacks(callbacks: ManagedCallbacks): void {
   const required: (keyof ManagedCallbacks)[] = [
-    "dispatchAnimationFrame", "dispatchSnapshot", "dispatchPointerBatch", "dispatchWheel",
+    "dispatchAnimationFrame", "dispatchSnapshot", "dispatchResizeEpoch", "dispatchPointerBatch", "dispatchWheel",
     "dispatchKey", "dispatchFocus", "dispatchTextEditing", "dispatchTextAction",
     "dispatchTextConnectionClosed", "dispatchSemanticsAction",
   ];
@@ -1534,6 +1552,7 @@ export async function initializeManagedCallbacks(): Promise<"ready"> {
   configureManagedCallbacks({
     dispatchAnimationFrame: interop.DispatchAnimationFrame,
     dispatchSnapshot: interop.DispatchSnapshot,
+    dispatchResizeEpoch: interop.DispatchResizeEpoch,
     dispatchPointerBatch: interop.DispatchPointerBatch,
     dispatchWheel: interop.DispatchWheel,
     dispatchKey: interop.DispatchKey,
@@ -2248,6 +2267,12 @@ export async function startDorotiWorkerHost(
   let snapshotInFlight = false;
   let snapshotInFlightGeneration = 0;
   let latestWorkerSnapshot: { hostId: number; value: Record<string, unknown> } | null = null;
+  const admissionInFlightGenerations = new Set<number>();
+  let latestDirectAdmission: {
+    hostId: number;
+    hostGeneration: number;
+    epoch: ResizeEpoch;
+  } | null = null;
   const sendLatestWorkerSnapshot = (): void => {
     if (snapshotInFlight || !latestWorkerSnapshot) return;
     const next = latestWorkerSnapshot;
@@ -2269,18 +2294,45 @@ export async function startDorotiWorkerHost(
       hostId,
       value,
     };
-    if (direct) {
-      activeWorker.postMessage({
-        protocolVersion: dorotiProtocolVersion,
-        kind: "admission-target",
-        generation: Number((value.resizeEpoch as Record<string, unknown>)?.generation),
-        resizeEpoch: value.resizeEpoch,
-        hostGeneration: Number(value.generation),
-      });
-    }
     const targetHost = hosts.get(hostId);
     if (targetHost) recordResize(targetHost, "worker-snapshot-queued", "worker-mailbox");
     sendLatestWorkerSnapshot();
+  };
+  const sendLatestDirectAdmission = (): void => {
+    // The browser/Worker message queue itself is not observable. A small fixed
+    // transport window covers the 2-4 ResizeObserver generations that can
+    // arrive while one complex frame is rasterizing; everything beyond it is
+    // still replaced in the local latest slot. Managed scheduling remains
+    // latest-only, so these cheap typed metrics never force stale raster work.
+    if (!direct || admissionInFlightGenerations.size >= 4 || !latestDirectAdmission) return;
+    const next = latestDirectAdmission;
+    latestDirectAdmission = null;
+    admissionInFlightGenerations.add(next.epoch.generation);
+    activeWorker.postMessage({
+      protocolVersion: dorotiProtocolVersion,
+      kind: "admission-target",
+      generation: next.epoch.generation,
+      resizeEpoch: next.epoch,
+      hostGeneration: next.hostGeneration,
+    });
+  };
+  const queueWorkerResizeEpoch: ManagedCallbacks["dispatchResizeEpoch"] = (
+    hostId, hostGeneration, generation,
+    logicalWidth, logicalHeight, physicalWidth, physicalHeight,
+    devicePixelRatio, timestampMicroseconds): void => {
+    if (!direct) {
+      queueWorkerSnapshot(hostId, snapshot(requireHost(hostId)));
+      return;
+    }
+    latestDirectAdmission = {
+      hostId,
+      hostGeneration,
+      epoch: {
+        generation, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
+        devicePixelRatio, timestampMicroseconds,
+      },
+    };
+    sendLatestDirectAdmission();
   };
   const postInput = (
     inputKind: string, hostId: number, inputSequence: number, payload: Record<string, unknown>): void =>
@@ -2288,6 +2340,7 @@ export async function startDorotiWorkerHost(
   configureManagedCallbacks({
     dispatchAnimationFrame: () => { throw new Error("main worker host cannot receive managed frame callbacks"); },
     dispatchSnapshot: queueWorkerSnapshot,
+    dispatchResizeEpoch: queueWorkerResizeEpoch,
     dispatchPointerBatch: (hostId, phase, kind, pointerId, buttons, modifiers, inputSequence, samples) =>
       postInput("pointer", hostId, inputSequence, { phase, kind, pointerId, buttons, modifiers, samples }),
     dispatchWheel: (hostId, x, y, deltaX, deltaY, timestamp, kind, inputSequence) =>
@@ -2389,15 +2442,21 @@ export async function startDorotiWorkerHost(
           sendLatestWorkerSnapshot();
           break;
         }
-        case "admission-applied":
+        case "admission-applied": {
+          const acknowledgedGeneration = Number(message.generation);
+          if (worker === activeWorker && admissionInFlightGenerations.delete(acknowledgedGeneration)) {
+            sendLatestDirectAdmission();
+          }
           recordResize(host, "worker-admission-applied", "worker-resize-fast-lane", {
             detail: JSON.stringify({
               previousGeneration: Number(message.previousGeneration),
-              generation: Number(message.generation),
+              generation: acknowledgedGeneration,
               mailboxGeneration: Number(message.mailboxGeneration),
+              accepted: Boolean(message.accepted),
             }),
           });
           break;
+        }
         case "frame-request": {
           const callbackId = Number(message.callbackId);
           recordResize(host, "framework-frame-requested", "worker-scheduler", {
@@ -2526,6 +2585,9 @@ export async function startDorotiWorkerHost(
             canvas.dataset.dorotiFrontLogicalHeight = String(frameLogicalHeight);
           }
           recordResize(host, admitted ? "front-commit" : "ack", "worker-direct-surface", {
+            timestampMicroseconds: Number.isFinite(Number(message.commitEpochMilliseconds))
+              ? Math.round((Number(message.commitEpochMilliseconds) - performance.timeOrigin) * 1000)
+              : undefined,
             requestId, rafId: requestId,
             backingWidth: capacityWidth, backingHeight: capacityHeight,
             surfaceWidth: display.rasterWidth, surfaceHeight: display.rasterHeight,
@@ -2538,6 +2600,8 @@ export async function startDorotiWorkerHost(
               capacityHeight,
               progressive: frameGeneration < host.resizeEpoch.generation,
               admitted,
+              managedSurfaceMicroseconds: Number(message.managedSurfaceMicroseconds),
+              directFinalizeMicroseconds: Number(message.directFinalizeMicroseconds),
             }),
           });
           break;
@@ -2610,6 +2674,8 @@ export async function startDorotiWorkerHost(
             snapshotInFlight = false;
             snapshotInFlightGeneration = 0;
             latestWorkerSnapshot = null;
+            admissionInFlightGenerations.clear();
+            latestDirectAdmission = null;
             closeExternalLeases(display.pendingLeases, (requestId, lease) => {
               recordResize(host, "ack", "worker-supervisor", {
                 requestId, rafId: requestId, terminal: "failed",

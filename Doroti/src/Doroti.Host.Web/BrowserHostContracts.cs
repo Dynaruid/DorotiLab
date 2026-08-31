@@ -135,6 +135,23 @@ internal static partial class BrowserInterop
         BrowserHostAdapter.DispatchSnapshot(hostId, json);
 
     [JSExport]
+    internal static void DispatchResizeEpoch(
+        int hostId,
+        [JSMarshalAs<JSType.Number>] long hostGeneration,
+        [JSMarshalAs<JSType.Number>] long generation,
+        double logicalWidth,
+        double logicalHeight,
+        int physicalWidth,
+        int physicalHeight,
+        double devicePixelRatio,
+        [JSMarshalAs<JSType.Number>] long timestampMicroseconds) =>
+        BrowserHostAdapter.DispatchResizeEpoch(
+            hostId, hostGeneration,
+            new DorotiResizeEpoch(
+                generation, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
+                devicePixelRatio, timestampMicroseconds));
+
+    [JSExport]
     internal static void DispatchPointerBatch(
         int hostId, int phase, int kind, int pointerId, int buttons, int modifiers,
         [JSMarshalAs<JSType.Number>] long inputSequence,
@@ -489,6 +506,14 @@ public sealed class BrowserHostAdapter :
         if (TryGet(hostId, out var host)) host.ApplySnapshot(BrowserInterop.ParseSnapshot(json));
     }
 
+    internal static void DispatchResizeEpoch(
+        int hostId,
+        long hostGeneration,
+        DorotiResizeEpoch resizeEpoch)
+    {
+        if (TryGet(hostId, out var host)) host.ApplyResizeEpoch(hostGeneration, resizeEpoch);
+    }
+
     internal static void DispatchPointerBatch(
         int hostId, int phase, int kind, int pointerId, int buttons, int modifiers,
         long inputSequence, double[] samples)
@@ -649,6 +674,24 @@ public sealed class BrowserHostAdapter :
             _configuration = nextConfiguration;
             ConfigurationChanged?.Invoke(nextConfiguration);
         }
+    }
+
+    private void ApplyResizeEpoch(long hostGeneration, DorotiResizeEpoch next)
+    {
+        if (next.Generation <= _snapshot.ResizeEpoch.Generation) return;
+        if (next.LogicalWidth <= 0 || next.LogicalHeight <= 0 ||
+            !double.IsFinite(next.LogicalWidth) || !double.IsFinite(next.LogicalHeight) ||
+            next.PhysicalWidth <= 0 || next.PhysicalHeight <= 0 ||
+            next.DevicePixelRatio <= 0 || !double.IsFinite(next.DevicePixelRatio))
+            throw new InvalidDataException("The browser returned an invalid resize epoch.");
+        ApplySnapshot(_snapshot with
+        {
+            LogicalWidth = next.LogicalWidth,
+            LogicalHeight = next.LogicalHeight,
+            DevicePixelRatio = next.DevicePixelRatio,
+            Generation = Math.Max(_snapshot.Generation, hostGeneration),
+            ResizeEpoch = next,
+        });
     }
 
     private static BrowserHostSnapshot Validate(BrowserHostSnapshot snapshot)
