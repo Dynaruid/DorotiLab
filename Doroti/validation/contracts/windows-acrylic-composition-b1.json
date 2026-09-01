@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "doroti.windows-acrylic-composition-b1-contract/v1",
+  "windowsAppSdk": "2.4.0",
+  "minimumWindowsBuild": 26100,
+  "b0": {
+    "requiredStatus": "PASS",
+    "requiredBackdropTarget": true,
+    "requiredDirectImport": true,
+    "maximumCpuReadbacks": 0
+  },
+  "b1": {
+    "requiredStatus": "PASS-capability",
+    "requiredBackdropApplications": 5,
+    "maximumQueueDepth": 2,
+    "maximumSurfacePool": 3,
+    "maximumCpuReadbacks": 0,
+    "requiredDuplicateTerminals": 0,
+    "requiredMissingTerminals": 0
+  },
+  "b2": {
+    "requiredStatusUntilSafeRetirementIsProven": "FAIL",
+    "requiredP1StatusUntilSafeRetirementIsProven": "FAIL",
+    "mustRefuseUnsafeReuse": true,
+    "maximumSurfacePool": 3
+  },
+  "promotion": {
+    "proceedToProductIntegration": false,
+    "opaqueRemainsDefault": true,
+    "physicalAcceptance": "notVerified"
+  }
+}

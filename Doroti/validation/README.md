@@ -17,4 +17,20 @@ The tested physical resize and mixed-DPI monitor-boundary behavior received user
 
 Older staged F0-F7 and WinRT/ContentIsland records remain historical or independent-spike evidence. Their PASS values describe only the source fingerprint and scope that produced them; they do not override ADR-025 or establish the current product path.
 
+The 2026-09-01 Acrylic investigation is retained as independent A1 and B0/B1
+spikes under `windows-dwm-redirection-alpha-spike`,
+`windows-acrylic-content-island-capability`, and
+`windows-acrylic-composition-spike`. Run their staged validators with:
+
+```powershell
+pwsh -NoProfile -File ./Doroti/eng/validate-windows-dwm-redirection-alpha-a1.ps1
+pwsh -NoProfile -File ./Doroti/eng/validate-windows-acrylic-composition-b1.ps1
+```
+
+Validator PASS means the expected diagnostic decision was reproduced. The A1
+manifest still records P0 `FAIL` because child redirection alpha is rejected,
+and the B1 manifest records B2/P1 `FAIL` because safe bounded surface reuse was
+not proven. Neither validator promotes Acrylic into the product host. See the
+[gate result summary](../../history/26-09-01/windows-appsdk-acrylic-p0-p1-gate-results.md).
+
 Machine-local traces and generated build output belong under `.doroti/` or `artifacts/`. Older milestone summaries remain under the repository `history/` archive.

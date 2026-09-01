@@ -49,10 +49,10 @@ $centralPropsPath = Join-Path $dorotiRoot 'Directory.Packages.props'
 $hostProjectPath = Join-Path $dorotiRoot 'src\Doroti.Host.WindowsAppSdk\Doroti.Host.WindowsAppSdk.csproj'
 [xml]$centralProps = Get-Content -LiteralPath $centralPropsPath -Raw
 [xml]$hostProject = Get-Content -LiteralPath $hostProjectPath -Raw
-$centralVersion = ($centralProps.Project.ItemGroup.PackageVersion |
-    Where-Object Include -eq 'Microsoft.WindowsAppSDK').Version
-$hostVersionOverride = ($hostProject.Project.ItemGroup.PackageReference |
-    Where-Object Include -eq 'Microsoft.WindowsAppSDK').VersionOverride
+$centralVersion = $centralProps.SelectSingleNode(
+    "/Project/ItemGroup/PackageVersion[@Include='Microsoft.WindowsAppSDK']").Version
+$hostVersionOverride = $hostProject.SelectSingleNode(
+    "/Project/ItemGroup/PackageReference[@Include='Microsoft.WindowsAppSDK']").VersionOverride
 if ($centralVersion -ne $contract.packagePolicy.centralMicrosoftWindowsAppSdk) {
     throw "Central Microsoft.WindowsAppSDK drift: expected $($contract.packagePolicy.centralMicrosoftWindowsAppSdk), got $centralVersion."
 }

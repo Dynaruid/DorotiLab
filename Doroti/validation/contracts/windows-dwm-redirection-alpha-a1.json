@@ -1,0 +1,40 @@
+{
+  "schema": "doroti.windows-dwm-redirection-alpha-a1-contract/v1",
+  "minimumWindowsBuild": 26100,
+  "windowsSdk": "10.0.26100.0",
+  "windowsAppSdk": "2.4.0",
+  "dwmAttributes": {
+    "useHostBackdropBrush": 17,
+    "systemBackdropType": 38,
+    "redirectionBitmapAlpha": 39
+  },
+  "arms": {
+    "opaque": {
+      "systemBackdropTypeCalls": 0,
+      "controllerCreates": 0
+    },
+    "dwm": {
+      "systemBackdropType": 3,
+      "controllerCreates": 0
+    },
+    "controller": {
+      "systemBackdropTypeCalls": 0,
+      "controllerCreates": 1,
+      "targetCreates": 1,
+      "rootCreates": 1,
+      "setTargetCalls": 1
+    }
+  },
+  "requiredAlphaTargets": [
+    "off",
+    "top",
+    "child",
+    "both"
+  ],
+  "requiredControllerKinds": [
+    "Default",
+    "Base",
+    "Thin"
+  ],
+  "scopeBoundary": "A negative P0 capability result is valid evidence. This contract never promotes a controller path without child-alpha, capture, and physical resize PASS."
+}

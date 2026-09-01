@@ -1,17 +1,268 @@
 # Doroti WindowsAppSdk Acrylic + 실시간 exact resize 작업계획
 
 - 작성일: 2026-09-01
-- 상태: 계획 작성 완료 / 구현 notStarted / 자동 검증 notVerified / 실물 검증 notVerified
+- 상태: **후속 계획 활성 / P0.5 notRun / P1-CS notRun** (1차 P0 FAIL / P1 FAIL / 제품 통합 notRun / 실물 검증 notVerified)
 - 대상: Doroti.Host.WindowsAppSdk의 HwndExactCpp + managed ANGLE/EGL-D3D11 + SkiaSharp 경로
 - 지원 OS: Windows 11 24H2, build 26100 이상만 지원
 - 목표: 전체 client 영역의 반투명 픽셀 뒤로 configurable Windows Desktop Acrylic(Default/Base/Thin, theme별 tint)을 보이고 앱 실행 중 kind/tint를 바꾸면서도, 현재의 창 테두리 drag 실시간 추종성과 exact-frame 계약을 유지한다.
-- 현재 문서는 실행 계획만 다룬다. 이 문서를 작성하면서 제품 코드, 빌드, 자동 테스트, 실물 border-drag acceptance는 수행하지 않았다.
+- 현재 활성 범위는 바로 아래 **후속 계획**이다. 2026-09-01의 1차 실행 결과와 당시 계획은 0~9절에 보존한다. 1차 실패 후보는 독립 spike에만 남겼고 제품 Acrylic API/ABI는 추가하지 않았다.
 
-## 1. 결론과 후보 우선순위
+## 후속 계획 — P0.5 top HWND와 P1-CS Composition Swapchain
+
+### 1. 결정과 실행 순서
+
+1차 결과는 “Windows Desktop Acrylic과 ANGLE을 함께 쓸 방법이 없다”는 결론이 아니다. 확인된 실패 범위는 다음 두 조합이다.
+
+- 기존 **child HWND**에 `DWMWA_REDIRECTIONBITMAP_ALPHA`를 적용하는 P0: child가 `E_HANDLE`로 거부됐다.
+- `CompositionDrawingSurface` 3-slot을 교체하는 P1: compositor가 surface 읽기를 끝냈다는 문서화된 재사용 신호가 없었다.
+
+따라서 아직 검증하지 않은 두 후보를 아래 순서로 진행한다.
+
+| 순서 | 후보 | 핵심 가설 | 기존 실패를 피하는 지점 |
+|---|---|---|---|
+| 1 | **P0.5 — top HWND 직접 ANGLE presenter** | alpha가 허용된 top HWND가 shell, input, Acrylic target, 유일 visible content owner를 모두 맡을 수 있다. | child redirection alpha와 composition surface retirement가 모두 필요 없다. |
+| 2 | **P1-CS — Composition Swapchain presenter** | 같은 ANGLE D3D11 device의 exact texture를 Composition Swapchain으로 present하고, buffer available event로 안전하게 3-slot을 재사용할 수 있다. | `CompositionDrawingSurface.BeginDraw`의 불명확한 compositor retirement 대신 명시적 buffer availability를 사용한다. |
+
+실행 규칙:
+
+- P0.5를 먼저 독립 spike로 실행한다.
+- P0.5가 API/capability, 자동 visible capture, 또는 실물 border-drag 중 하나라도 FAIL이면 실패 원인을 보존하고 P1-CS로 이동한다.
+- P0.5가 모든 gate를 PASS하면 P1-CS는 비교 실험이 필요한 별도 결정이 없는 한 `notRun`으로 남기고 P0.5 제품 통합으로 이동한다.
+- P1-CS까지 FAIL이면 현재 opaque HwndExactCpp 경로를 유지하고 Acrylic 제품 통합을 중단한다.
+- `HRESULT == S_OK`, 한 장의 screenshot, 평균 latency, 또는 자동 capture만으로 후보를 승격하지 않는다.
+
+이 후속 계획은 아래 1차 계획의 **후보 우선순위와 6절 단계별 작업**을 대체한다. 아래 2절의 public Acrylic 옵션 계약, 5절 불변조건, 7절 검증 경계, 8절 rollback, 9절 완료 정의는 후속 후보에도 그대로 적용한다.
+
+### 2. 공통 불변조건과 금지선
+
+두 후보는 다음을 모두 지켜야 한다.
+
+- visible content owner는 정확히 하나다. hidden render resource는 허용하지만 화면에 기여하는 child HWND/별도 overlay를 추가하지 않는다.
+- ANGLE, Skia, Acrylic/compositor가 같은 hardware D3D11 adapter/device 계보를 사용한다. WARP나 다른 adapter로 조용히 fallback하지 않는다.
+- 모든 Doroti 출력은 premultiplied alpha다. 0%, 25%, 50%, 80%, 100% alpha와 완전 투명 non-empty scene을 검증한다.
+- CPU readback/upload, GDI/bitmap copy, staging texture 왕복은 0이다.
+- resize hot path의 platform/WndProc thread에서 `DwmFlush`, compositor commit completion, fence, event를 기다리지 않는다.
+- 현재 100ms exact-resize wait의 의미, stale generation 거부, accepted generation의 terminal one-to-one을 보존한다. 후보 검증 때문에 timeout을 늘리지 않는다.
+- render queue는 current 1 + latest pending 1 이하, reusable surface/buffer slot은 최대 3개다. 안전한 재사용 권한이 없을 때 네 번째 slot을 만들지 않는다.
+- visible front를 resize하거나 쓰는 동안 compositor/DWM이 읽을 가능성이 있으면 재사용하지 않는다.
+- Acrylic option update는 resize generation을 만들지 않고 controller, target, visual tree, HWND topology를 다시 만들지 않는다.
+- standard non-client frame, Snap, system menu, taskbar, pointer/keyboard/focus, 한국어 IME, UIA ownership을 보존한다.
+- spike 단계에서는 `Doroti/src`와 public API/ABI를 수정하지 않는다. 후보가 모든 승격 gate를 통과한 뒤에만 제품 통합을 시작한다.
+- 자동 검증과 capture는 physical scan-out, 사람의 border drag, IME, UIA acceptance를 대신하지 않는다. 실행하지 않은 항목은 `notVerified`로 기록한다.
+- 저장소 지침에 따라 모든 build/test 명령의 timeout은 20분이다.
+
+### 3. S0 — 기준선, capability, evidence 고정
+
+- [ ] 시작 시 `git status --short`를 기록하고 사용자 변경과 기존 nested checkout 변경을 보존한다.
+- [ ] Windows build, Windows App SDK, Windows SDK, GPU/adapter LUID, WDDM, driver, monitor refresh, DPI를 manifest에 기록한다.
+- [ ] shell에서 `DOROTI_WINDOWS_DWM_FLUSH`, `DOROTI_WINDOWS_EGL_SWAP_INTERVAL`의 원래 값을 기록하고 후보/opaque 비교 run에 같은 값을 고정한다.
+- [ ] current opaque HwndExactCpp의 build, exact generation, GPU error, WGC 기준선을 같은 machine/monitor/session에서 다시 측정한다.
+- [ ] P0.5용 top HWND의 redirection alpha가 `S_OK`인지 재확인한다.
+- [ ] 실제 ANGLE D3D11 device로 `CreatePresentationFactory`를 호출하고 `IsPresentationSupported` 및 `IsPresentationSupportedWithIndependentFlip`을 각각 기록한다. P1-CS의 필수 조건은 전자이며 independent flip은 정보성이다.
+- [ ] `DCompositionCreateSurfaceHandle` → `IPresentationManager.CreatePresentationSurface` → `ICompositorInterop.CreateCompositionSurfaceForHandle`의 runtime 연결 가능성을 독립 capability probe로 확인한다.
+- [ ] `DesktopAcrylicController.SetTarget`/ContentIsland capability는 기존 B0 결과를 참고하되 새 run의 HRESULT와 controller state를 별도로 기록한다.
+
+S0 판정:
+
+- opaque 기준선 자체가 회귀하면 후보 실험을 중단하고 기준선 문제를 먼저 분리한다.
+- top redirection alpha가 실패하면 P0.5는 `unsupported`로 종료하고 P1-CS로 이동한다.
+- `IsPresentationSupported == false`, surface handle/PresentationSurface/CompositionSurface 연결 실패, 또는 ANGLE device와 presentation factory의 adapter 불일치는 P1-CS 즉시 FAIL이다.
+
+### 4. S1 — P0.5 top HWND 직접 ANGLE presenter
+
+#### 구조
+
+독립 spike에서 하나의 app-owned top-level HWND가 아래 역할을 모두 맡는다.
+
+- 표준 overlapped shell/non-client frame과 `WM_SIZE`/`WM_DPICHANGED`
+- pointer, keyboard, focus, IME/UIA의 native message owner
+- top-level WindowId 기반 `DesktopAcrylicController.SetTarget`
+- `DWMWA_REDIRECTIONBITMAP_ALPHA` 대상
+- alpha-capable fixed-size EGL window surface와 ANGLE/Skia의 유일 visible content owner
+
+기존 child HWND를 숨겨서 남겨 두는 방식은 허용하지 않는다. spike window class에 필요한 DC ownership을 명시하고, EGL native window는 top HWND 하나만 사용한다. 제품 source를 링크해 재사용할 때도 spike 전용 adapter/host로 topology를 바꾸며 제품 구현을 먼저 수정하지 않는다.
+
+#### 구현 체크리스트
+
+- [ ] `windows-acrylic-top-hwnd-spike` 독립 validation project와 opt-in validator를 만든다.
+- [ ] top HWND의 client rect를 physical extent로 사용하고 DPI logical size와 분리한다.
+- [ ] alpha-capable EGL config를 선택하고 `EGL_FIXED_SIZE_ANGLE` surface/Skia target을 exact physical size로 생성·재생성한다.
+- [ ] resize generation publish, exact scene admission, render/submit, swap 직전 latest generation/input sequence 재검사를 top WndProc topology에 이식한다.
+- [ ] 첫 swap과 resize recreate 시의 기존 DwmFlush 정책을 opaque 기준선과 동일하게 두고 별도 wait를 추가하지 않는다.
+- [ ] top HWND에 redirection alpha를 적용하고 같은 WindowId target에 Acrylic Default/Base/Thin, light/dark custom tint, reset/final을 적용한다.
+- [ ] controller update 100/500 burst에서 current 1 + latest 1, accepted revision terminal one-to-one, duplicate/missing 0을 확인한다.
+- [ ] 500×300 비대칭 marker와 alpha stripe를 렌더링하고 WGC에서 client edge, scene generation, premultiplied alpha ROI를 decode한다.
+- [ ] top HWND 단독으로 resize cursor, hit-test, focus, pointer/keyboard 입력이 들어오는지 자동 가능한 범위에서 기록한다.
+- [ ] child HWND 생성 수, visible HWND 수, CPU copy, EGL/GLES/D3D error, wrong-size/stale swap을 counter로 강제한다.
+
+#### P0.5 hard gate
+
+다음을 모두 만족해야 PASS다.
+
+- visible render HWND = top HWND 하나, visible child render HWND = 0
+- top redirection alpha와 controller target/options 적용 성공
+- Acrylic이 Doroti의 투명/반투명 client 픽셀 뒤에서 실제 capture ROI 차이로 관찰됨
+- wrong-size/stale swap, duplicate/missing terminal, blank/black/previous-size frame = 0
+- capture marker target과 shell client extent 불일치 = 0
+- CPU copy = 0, GPU/API 오류 = 0, queue depth ≤ 2
+- opaque 기준선 대비 target→swap 및 target→visible capture p95가 +1 refresh interval 이하, max가 +2 refresh interval 이하
+- physical border drag에서 네 방향/네 모서리 slow/medium/fast expand/shrink/reverse가 opaque 기준선보다 체감상 나빠지지 않음
+- Snap/maximize/restore, monitor/DPI crossing, pointer/keyboard, 한국어 IME, UIA acceptance 완료
+
+API가 성공해도 Acrylic이 alpha 뒤에서 보이지 않거나 standard shell/input 계약이 깨지거나 실물 resize가 계단식이면 P0.5는 FAIL이다. top HWND를 borderless/custom resize window로 바꿔 통과시키지 않는다.
+
+### 5. S2 — P1-CS Composition Swapchain presenter
+
+P0.5가 FAIL일 때만 시작한다. 기존 B0의 같은-device ANGLE direct-import 결과를 재사용하되, `CompositionDrawingSurface`는 visible buffer pool로 사용하지 않는다.
+
+#### 소유권과 연결
+
+1. `DesktopAttachedSiteBridge`의 ContentIsland 하나가 Acrylic target과 content visual의 geometry owner다.
+2. ANGLE에서 얻은 hardware D3D11 device로 `IPresentationFactory`와 `IPresentationManager`를 만든다.
+3. `DCompositionCreateSurfaceHandle`로 composition surface handle을 만든다.
+4. 그 handle로 `IPresentationSurface`를 만들고, `ICompositorInterop.CreateCompositionSurfaceForHandle`로 Windows.UI.Composition surface/brush/visual에 연결한다.
+5. 최대 3개의 exact-size D3D11 texture를 `AddBufferFromResource`로 등록한다. ANGLE은 각 texture를 직접 import해 Skia scene을 그린다.
+6. `SetBuffer`, premultiplied `SetAlphaMode`, source rect/transform/tag를 설정한 뒤 `Present`한다.
+7. ContentIsland의 Acrylic과 위 content visual은 같은 target/tree에 유지한다. visual geometry commit과 PresentationManager present가 같은 scan-out transaction이라고 가정하지 않고 capture/physical gate로 정렬을 판정한다.
+
+#### 3-slot 재사용 프로토콜
+
+- 각 slot은 `free → rendering → submitted(presentId) → displayed/retiring → available → free` 상태만 가진다.
+- `IPresentationBuffer.GetAvailableEvent`가 signaled인 slot만 render/recreate/remove 대상으로 사용할 수 있다.
+- `IPresentationManager.GetPresentRetiringFence`와 present statistics는 ledger, throttling, 원인 진단에 사용한다.
+- 취소되거나 skipped된 present는 retiring fence만으로 완전하게 구분되지 않으므로, **실제 buffer 재사용 권한은 available event/`IsAvailable`을 최종 기준**으로 삼는다.
+- visible/unsignaled buffer의 D3D11 texture, EGL wrapper, Skia wrapper를 resize, destroy, unregister, overwrite하지 않는다.
+- available이 된 slot은 wrapper를 먼저 정리하고 EGL/D3D binding 해제 및 GPU handoff를 확인한 뒤 exact 최신 physical extent의 texture로 재생성하고 다시 등록할 수 있다.
+- present queue는 current 1 + latest pending 1이다. 새 resize가 오면 아직 render하지 않은 pending을 supersede하고 중간 generation을 쌓지 않는다.
+- 3개 slot이 모두 unavailable이면 WndProc을 막거나 네 번째 slot을 만들지 않는다. render 작업은 latest만 유지하고 available event callback/비차단 worker wake에서 재개한다.
+- `CancelPresentsFrom`은 명확한 state/terminal 처리가 가능할 때만 진단 A/B로 허용하며, cancel 뒤에도 available event 없이 buffer를 재사용하지 않는다.
+- 마지막 visible front를 대체할 후속 present가 없으면 그 buffer는 계속 unavailable일 수 있음을 정상 상태로 취급한다. free slot 2개로 지속 진행 가능한지 검증한다.
+
+#### 구현 체크리스트
+
+- [ ] `windows-acrylic-composition-swapchain-spike` 독립 native/managed validation project를 만든다.
+- [ ] P1-CS 전용 interop을 validation project 내부에 격리하고 `presentation.h`, `presentationtypes.h`, `dcomp.lib` 요구사항을 명시한다.
+- [ ] 실제 ANGLE D3D11 device identity와 presentation factory adapter LUID가 같은지 검증한다.
+- [ ] D3D11 texture bind/misc flags, format, color space, premultiplied alpha가 Presentation API와 ANGLE import 양쪽에서 허용되는 최소 조합을 capability matrix로 기록한다.
+- [ ] 0/25/50/80/100% alpha scene을 ANGLE direct import로 render하고 CPU readback/upload 없이 present한다.
+- [ ] exact varying-size buffer를 교대로 present해 500×300, 731×419, 419×731과 빠른 연속 resize를 검증한다.
+- [ ] present ID, target/scene/input sequence, buffer id/extent, available event 전이, retiring fence value, present status/statistics, capture QPC를 하나의 ledger에 기록한다.
+- [ ] unavailable buffer 접근, slot 4 생성, wrong-size/stale present, accepted terminal 누락을 validator가 즉시 FAIL 처리한다.
+- [ ] ContentIsland `ActualSize`, `RasterizationScale`, logical visual size와 physical buffer extent의 대응을 100/125/150/200% DPI에서 검증한다.
+- [ ] Acrylic Default/Base/Thin, theme/tint runtime update와 resize를 동시에 부하하고 controller/target/tree 재생성 0을 확인한다.
+- [ ] device loss, minimize/0-size/restore, close 중 in-flight present를 모두 terminal로 끝내고 handle/event/fence/buffer leak 0을 확인한다.
+
+#### P1-CS hard gate
+
+다음을 모두 만족해야 PASS다.
+
+- `IsPresentationSupported == true`이며 같은 ANGLE D3D11 device에서 factory/manager/buffer 등록/present가 성공
+- composition surface handle이 ContentIsland의 유일 content visual에 연결되고 Acrylic이 alpha 뒤에서 관찰됨
+- slot ≤ 3, queue depth ≤ 2, unavailable buffer reuse = 0, unbounded allocation = 0
+- available event에 근거한 reuse를 500회 이상 연속 resize/present에서 재현
+- wrong-size/stale present, blank/black/previous-size frame, duplicate/missing terminal = 0
+- CPU copy = 0, device/API 오류 및 resource leak = 0
+- opaque 기준선 대비 timing/capture/physical resize 기준이 P0.5와 동일하게 통과
+- input, 한국어 IME, UIA, DPI crossing, policy/fallback acceptance 완료
+
+API capability가 있어도 3-slot에서 latest exact frame을 지속적으로 만들 수 없거나 visual geometry와 content/backdrop boundary가 반복 분리되면 P1-CS는 FAIL이다. slot 수 증가, CPU copy, WndProc wait, fixed oversized surface/scale로 gate를 우회하지 않는다.
+
+### 6. S3 — 자동 및 실물 비교 run
+
+각 후보는 같은 session에서 `opaque → candidate → opaque` 순으로 실행해 열/driver/session drift를 확인한다.
+
+- [ ] Release win-x64 self-contained build와 empty-PATH/package-consumer launch
+- [ ] 500회 scripted resize, expand/shrink/reverse, minimize/restore, runtime Acrylic option churn
+- [ ] WGC capture의 frame/drop/capacity error, marker decode, edge phase, alpha ROI
+- [ ] target→render, target→swap/present, target→visible capture p50/p95/max
+- [ ] resize exact-wait timeout, superseded/stale/failed terminal, max queue/slot 수
+- [ ] D3D11 debug layer, EGL/GLES/Skia errors, adapter/device mismatch, CPU-copy counter
+- [ ] 자동 run 3회 연속 PASS
+- [ ] 실제 창 border 8방향과 속도/방향 전환을 각 10초 이상 확인
+- [ ] 60Hz와 가능한 120/144/165Hz, 100/125/150/200% DPI, monitor crossing
+- [ ] Snap, maximize/restore/minimize, Alt+Tab/occlusion, transparency off, battery saver, high contrast, RDP fallback
+- [ ] pointer/keyboard/clipboard, 한국어 IME 조합/후보창/caret, Narrator 또는 Accessibility Insights
+
+실물 항목은 사람이 확인하기 전까지 `notVerified`다. 자동 3회 PASS가 실물 확인을 대체하지 않는다.
+
+### 7. S4 — 승자 제품 통합
+
+P0.5 또는 P1-CS 하나가 S0~S3을 모두 통과한 뒤에만 진행한다.
+
+- [ ] 선택 topology를 새 presenter/host로 격리하고 opaque HwndExactCpp 기본 경로를 보존한다.
+- [ ] 아래 2절의 immutable Acrylic option model과 runtime update terminal 계약을 API review로 고정한다.
+- [ ] managed/native versioned ABI에 mode/options/capability/terminal/diagnostics만 추가하고 raw GPU pointer를 ABI에 노출하지 않는다.
+- [ ] `DorotiDemoApp`에 초기 Acrylic 설정과 runtime Default/Base/Thin/theme tint 변경 UI 및 requested/effective status를 추가한다.
+- [ ] acrylic을 요청하지 않은 앱에서 새 topology/controller/presentation code가 실행되지 않음을 검증한다.
+- [ ] capability/policy/device-loss 실패 시 요청한 solid/transparent fallback을 적용하고 보이는 창의 topology를 mid-session에 교체하지 않는다.
+- [ ] 제품 통합 후 후보 validator, 기존 Windows validators, package 소비자, demo를 다시 3회 실행한다.
+- [ ] 선택한 visible owner, alpha, exact generation, buffer retirement, fallback 계약을 ADR에 고정하고 README/README.ko.md/support matrix를 갱신한다.
+- [ ] 기본 renderer 승격은 이번 작업과 분리하고 Acrylic은 처음에 opt-in으로 유지한다.
+
+### 8. 계획 파일과 예상 산출물
+
+계획 이름이며 아직 존재하지 않는 파일은 구현 전 `notRun`으로 취급한다.
+
+- `Doroti/validation/windows-acrylic-top-hwnd-spike/`
+- `Doroti/eng/validate-windows-acrylic-top-hwnd-p05.ps1`
+- `Doroti/validation/contracts/windows-acrylic-top-hwnd-p05.json`
+- `Doroti/validation/windows-acrylic-composition-swapchain-spike/`
+- `Doroti/eng/validate-windows-acrylic-composition-swapchain-p1cs.ps1`
+- `Doroti/validation/contracts/windows-acrylic-composition-swapchain-p1cs.json`
+- `.doroti/evidence/acrylic-p05-<run-id>/manifest.json`
+- `.doroti/evidence/acrylic-p1cs-<run-id>/manifest.json`
+- `history/26-09-01/windows-appsdk-acrylic-p05-p1cs-gate-results.md`
+- 후보 통과 후 새 ADR, WindowsAppSdk README/README.ko.md, Demo 문서
+
+공식 근거:
+
+- [Composition swapchain programming guide](https://learn.microsoft.com/en-us/windows/win32/comp_swapchain/comp-swapchain)
+- [Composition swapchain API](https://learn.microsoft.com/en-us/windows/win32/api/_comp_swapchain/)
+- [IPresentationManager.GetPresentRetiringFence](https://learn.microsoft.com/en-us/windows/win32/api/presentation/nf-presentation-ipresentationmanager-getpresentretiringfence)
+- [ICompositorInterop.CreateCompositionSurfaceForHandle](https://learn.microsoft.com/en-us/windows/win32/api/windows.ui.composition.interop/nf-windows-ui-composition-interop-icompositorinterop-createcompositionsurfaceforhandle)
+- [DCompositionCreateSurfaceHandle](https://learn.microsoft.com/en-us/windows/win32/api/dcomp/nf-dcomp-dcompositioncreatesurfacehandle)
+
+### 9. 후속 계획 완료 정의
+
+이 후속 계획의 “조사 완료”는 P0.5와 조건부 P1-CS의 각 hard gate가 실제 evidence와 함께 PASS/FAIL/notVerified로 판정되고, 승자 또는 opaque 유지 결정이 기록된 상태다.
+
+제품 기능의 “완료”는 아래 9절의 최종 완료 정의 1~11을 모두 만족할 때뿐이다. 두 후보가 모두 FAIL이면 조사 작업은 완료될 수 있지만 Acrylic 제품 기능은 완료가 아니며, 현재 opaque 경로 유지가 최종 결과다.
+
+## 0. 2026-09-01 실행 결과
+
+계획의 hard gate 순서를 끝까지 실행했다. 최종 판정은 **P0 FAIL, P1 FAIL, 제품화 중단**이다. 이는 구현 도중 중단한 것이 아니라 A1의 즉시 실패 조건과 B2의 안전한 3-slot 재사용 실패 조건을 그대로 적용한 결과다. 현재 opaque HwndExactCpp 경로와 기본 renderer 선택은 바꾸지 않았다.
+
+- A0: Windows 11 25H2 build 26200.9168, Windows App SDK `2.4.0`, hardware D3D11 ANGLE, 200% DPI 환경을 기록했다. 비교 validator는 `DOROTI_WINDOWS_DWM_FLUSH=0`, `DOROTI_WINDOWS_EGL_SWAP_INTERVAL=1`로 고정했다. shell 환경의 두 변수는 원래 unset이었다.
+- A1/P0: validator 자체는 예상 행렬을 재현해 PASS했다. top HWND의 `DWMWA_REDIRECTIONBITMAP_ALPHA`는 `S_OK`였지만 app-owned child HWND는 `0x80070006 (E_HANDLE)`로 거부됐다. controller `SetTarget`, Default/Base/Thin/custom/reset, 605 accepted update의 terminal one-to-one, queue depth 1, GPU/exact counter는 통과했지만 필수 child alpha gate가 FAIL이므로 P0 전체는 FAIL이다.
+- A2: P0 FAIL 직후의 금지 조건에 따라 public `WindowBackdropMode.acrylic`, runtime update ABI, demo control, package/host 제품 통합은 `notRun`이다.
+- B0: `ContentIsland`가 `DesktopAcrylicController.AddSystemBackdropTarget` target으로 동작했고, `CompositionDrawingSurface.BeginDraw`의 transient D3D11 texture를 같은 ANGLE device에 직접 import해 GPU clear/unbind/`EndDraw`했다. CPU readback/upload/GDI/bitmap copy는 0이므로 capability gate는 PASS다.
+- B1: 같은 ContentIsland에 Acrylic과 하나의 content visual을 연결했다. 같은 controller/target에서 Default/Base/Thin, light/dark custom, reset/final profile 5개를 적용했다. `ClientSize`, `ActualSize`, `RasterizationScale` applied acknowledgement를 사용해 200% DPI에서도 exact physical surface와 logical visual을 맞췄다. 3개의 exact persistent surface, transient BeginDraw ownership, current+latest queue, premultiplied 0/25/50/80/100% alpha scene을 확인했다. WGC는 175 frame, capture/drop/capacity error 0, 서로 다른 alpha scene sample 5개를 기록했다. 이는 capture transport/scene 확인이지 scan-out 또는 실물 acceptance가 아니다.
+- B2/P1: visible front를 resize하지 않고 3개 slot까지 만들었지만, retired `CompositionDrawingSurface`를 다시 mutate하기 전에 compositor가 더 이상 읽지 않는다는 문서화된 acquire/retirement 신호를 증명하지 못했다. 네 번째 세대부터 unsafe reuse와 pool 증가를 거부했고 `failed-safe-retirement-unproven` terminal을 발급했다. 따라서 B2와 P1은 FAIL이다.
+- B3/C/P2: P1 FAIL에 따라 shell wait A/B, 제품 presenter/ABI/fallback 통합, P2 채택은 `notRun`이다. DwmFlush/commit wait나 CPU 우회도 추가하지 않았다.
+- 회귀: `validate-winrt-content-island-w1r.ps1` PASS, `validate-winrt-composition-w0.ps1` PASS, A1 validator PASS, B1 staged validator PASS였다. `validate-hwnd-exact-cpp-c0.ps1`은 Doroti 변경이 아니라 `reference/flutter-master`에 이미 존재하는 대량 tracked deletion 때문에 preflight에서 blocked였다.
+- 검증 경계: 자동 physical border drag, monitor/DPI crossing, 한국어 IME 후보창/caret, clipboard, Narrator/Accessibility Insights, device loss, transparency/battery/high-contrast/RDP, 3회 연속 qualification은 `notVerified`다. 최종 완료 정의 1~10은 충족되지 않았다.
+
+재현 명령:
+
+    pwsh -NoProfile -File ./Doroti/eng/validate-windows-dwm-redirection-alpha-a1.ps1
+    pwsh -NoProfile -File ./Doroti/eng/validate-windows-acrylic-composition-b1.ps1
+    pwsh -NoProfile -File ./Doroti/eng/validate-winrt-content-island-w1r.ps1
+    pwsh -NoProfile -File ./Doroti/eng/validate-winrt-composition-w0.ps1
+
+대표 machine-local evidence:
+
+- `.doroti/evidence/acrylic-a1-20260901-151919-4b3fe0a127da/manifest.json`
+- `.doroti/evidence/acrylic-b1-20260901-152243-fad375c38842/manifest.json`
+- `.doroti/evidence/w1r-20260901-151717-31099135e7d8/w1r-manifest.json`
+- `.doroti/evidence/w0-20260901-151910-f462a601bbea/w0-manifest.json`
+
+원인과 승격 중단 결정은 [조사 요약](history/26-09-01/windows-appsdk-acrylic-p0-p1-gate-results.md)에 보존한다.
+
+## 1. 1차 계획의 결론과 후보 우선순위
 
 현재 잘 동작하는 resize 경로에 별도의 Acrylic/DirectComposition surface를 단순히 겹치면 안 된다. 이전 실험에서 shell HWND geometry, ANGLE surface, 별도 composition surface가 서로 다른 시계로 움직였고, 동기 wait는 계단식 resize를, 비동기 commit은 한 세대 늦은 content/backdrop을 만들었다.
 
-이번 작업은 아래 순서로 진행한다.
+1차 작업은 아래 순서로 진행했다.
 
 1. **P0 — 기존 HWND/ANGLE content owner 보존형 Acrylic spike**
    - Windows 11 build 26100 이상에서만 가능한 DWMWA_REDIRECTIONBITMAP_ALPHA를 이용한다.
