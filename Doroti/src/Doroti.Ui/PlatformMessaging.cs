@@ -133,7 +133,23 @@ public readonly record struct DorotiTextInputConfiguration(
     bool obscureText,
     bool autocorrect,
     bool enableSuggestions,
-    string? actionLabel = null);
+    string? actionLabel = null,
+    bool enableInteractiveSelection = true);
+
+/// <summary>
+/// Host-neutral text metrics for the native editing endpoint. Visual text is
+/// still rendered by the framework, but matching DOM metrics keep browser
+/// selection, IME, and context-menu hit testing aligned with the editable.
+/// </summary>
+public readonly record struct DorotiTextInputStyle(
+    string? fontFamily,
+    double? fontSize,
+    FontWeight? fontWeight,
+    TextDirection textDirection,
+    TextAlign textAlign,
+    double? letterSpacing,
+    double? wordSpacing,
+    double? lineHeight);
 
 /// <summary>Host-backed IME transport. Editing policy remains in Flutter Services.</summary>
 public interface ITextInputHostCapability
@@ -155,7 +171,15 @@ public interface ITextInputHostCapability
 
     void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState);
 
+    void UpdateConfiguration(DorotiTextInputConfiguration configuration)
+    {
+    }
+
     void UpdateState(DorotiTextEditingState state);
+
+    void SetStyle(DorotiTextInputStyle style)
+    {
+    }
 
     /// <summary>
     /// Places the native editing endpoint over the framework editable. Browser

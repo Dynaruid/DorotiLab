@@ -17,6 +17,7 @@ export function createDorotiDomEndpoints(app: HTMLElement): DorotiDomEndpoints {
   input.id = "doroti-ime";
   input.className = "doroti-ime";
   input.setAttribute("aria-hidden", "true");
+  input.hidden = true;
   input.tabIndex = -1;
   const semantics = document.createElement("div");
   semantics.id = "doroti-semantics";

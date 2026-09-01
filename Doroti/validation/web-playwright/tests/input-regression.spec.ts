@@ -96,7 +96,10 @@ test("native editable selection state does not paint over the Canvas TextField @
   const nativeStyle = await input.evaluate((element) => {
     const style = getComputedStyle(element);
     const selection = getComputedStyle(element, "::selection");
-    element.style.visibility = "hidden";
+    // Opacity suppresses the native layer without blurring the active editor.
+    // visibility:hidden closes the browser text connection and changes the
+    // framework-owned Canvas selection, invalidating this paint comparison.
+    element.style.opacity = "0";
     return {
       filter: style.filter,
       opacity: style.opacity,
@@ -107,7 +110,7 @@ test("native editable selection state does not paint over the Canvas TextField @
   });
   await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
   const nativeLayerHidden = await page.screenshot({ clip });
-  await input.evaluate((element) => element.style.removeProperty("visibility"));
+  await input.evaluate((element) => element.style.removeProperty("opacity"));
 
   const differingPixels = countPixelDifferences(nativeLayerAttached, nativeLayerHidden);
   console.log("NATIVE_SELECTION_VISUAL", JSON.stringify({ differingPixels, nativeStyle }));
@@ -125,6 +128,28 @@ test("browser-native context menu targets the active editable @headed", async ({
   await page.mouse.click(fieldBounds.x + fieldBounds.width / 2, fieldBounds.y + fieldBounds.height / 2);
   const input = page.locator("#doroti-ime");
   await expect(input).toBeVisible();
+  const readNativeEditingContract = () => input.evaluate((element) => {
+    const editable = element as HTMLTextAreaElement;
+    return {
+      autocomplete: editable.autocomplete,
+      autocorrect: editable.getAttribute("autocorrect"),
+      fontFamily: editable.style.fontFamily,
+      fontSize: editable.style.fontSize,
+      fontWeight: editable.style.fontWeight,
+      lineHeight: editable.style.lineHeight,
+      textAlign: editable.style.textAlign,
+    };
+  });
+  await expect.poll(readNativeEditingContract).toMatchObject({
+    autocomplete: "off",
+    autocorrect: "on",
+    fontWeight: "400",
+    textAlign: "start",
+  });
+  const nativeEditingContract = await readNativeEditingContract();
+  expect(nativeEditingContract.fontFamily).not.toBe("");
+  expect(Number.parseFloat(nativeEditingContract.fontSize)).toBeGreaterThan(0);
+  expect(Number.parseFloat(nativeEditingContract.lineHeight)).toBeGreaterThan(0);
   await input.fill("Doroti browser context menu");
   await expect(input).toHaveValue("Doroti browser context menu");
   await expect.poll(async () => (await captureDiagnostics(page)).trace
@@ -139,8 +164,13 @@ test("browser-native context menu targets the active editable @headed", async ({
   const selectionStartX = inputBounds.x + Math.min(180, inputBounds.width - 12);
   const selectionEndX = inputBounds.x + Math.min(45, inputBounds.width / 4);
   await page.mouse.move(selectionStartX, textY);
+  await expect.poll(async () => input.evaluate((element) => getComputedStyle(element).cursor)).toBe("text");
   await page.mouse.down({ button: "left" });
   await page.mouse.move(selectionEndX, textY, { steps: 8 });
+  await expect.poll(async () => input.evaluate((element) => ({
+    root: getComputedStyle(element.closest(".doroti-root") as HTMLElement).cursor,
+    editable: getComputedStyle(element).cursor,
+  }))).toEqual({ root: "text", editable: "text" });
   await page.mouse.up({ button: "left" });
   await expect.poll(async () => input.evaluate((element) => {
     const editable = element as HTMLTextAreaElement;

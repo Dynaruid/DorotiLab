@@ -1253,6 +1253,9 @@ internal sealed class _HostTextInputControl : TextInputControl
     public override void setEditingState(TextEditingValue value) =>
         RequireCapability("TextInput.setEditingState").UpdateState(ToHost(value));
 
+    public override void updateConfig(TextInputConfiguration configuration) =>
+        RequireCapability("TextInput.updateConfig").UpdateConfiguration(ToHost(configuration));
+
     public override void setEditableSizeAndTransform(Size editableBoxSize, Matrix4 transform) =>
         RequireCapability("TextInput.setEditableSizeAndTransform")
             .SetEditableSizeAndTransform(editableBoxSize, transform);
@@ -1266,6 +1269,17 @@ internal sealed class _HostTextInputControl : TextInputControl
 
     public override void setCaretRect(Rect rect) =>
         RequireCapability("TextInput.setCaretRect").SetCaretRect(rect);
+
+    public override void updateStyle(TextInputStyle style) =>
+        RequireCapability("TextInput.setStyle").SetStyle(new DorotiTextInputStyle(
+            style.fontFamily,
+            style.fontSize,
+            style.fontWeight,
+            style.textDirection,
+            style.textAlign,
+            style.letterSpacing,
+            style.wordSpacing,
+            style.lineHeight));
 
     private ITextInputHostCapability RequireCapability(string elementId) =>
         _capability ?? throw new DorotiCapabilityException(
@@ -1382,7 +1396,8 @@ internal sealed class _HostTextInputControl : TextInputControl
         configuration.obscureText,
         configuration.autocorrect,
         configuration.enableSuggestions,
-        configuration.actionLabel);
+        configuration.actionLabel,
+        configuration.enableInteractiveSelection);
 }
 
 internal class _PlatformTextInputControl : TextInputControl

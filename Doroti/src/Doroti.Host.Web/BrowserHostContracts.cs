@@ -96,7 +96,17 @@ internal static partial class BrowserInterop
     internal static partial void SetTextInputState(
         int hostId, string text, int selectionBase, int selectionExtent,
         string inputMode, string enterKeyHint, bool readOnly, bool obscureText,
-        string autocapitalize, bool autocorrect, int inputAction, bool multiline, bool attach);
+        string autocapitalize, bool autocorrect, int inputAction, bool multiline, bool attach,
+        bool enableInteractiveSelection);
+
+    [JSImport("updateTextInputConfiguration", Module)]
+    internal static partial void UpdateTextInputConfiguration(
+        int hostId, string inputMode, string enterKeyHint, bool readOnly, bool obscureText,
+        string autocapitalize, bool autocorrect, int inputAction, bool multiline,
+        bool enableInteractiveSelection);
+
+    [JSImport("setTextInputStyle", Module)]
+    internal static partial void SetTextInputStyle(int hostId, string styleJson);
 
     [JSImport("setEditableSizeAndTransform", Module)]
     internal static partial void SetEditableSizeAndTransform(
@@ -400,7 +410,26 @@ public sealed class BrowserHostAdapter :
         SetTextInputState(initialState, attach: true);
     }
 
-    public void UpdateState(DorotiTextEditingState state) => SetTextInputState(state, attach: false);
+    public void UpdateConfiguration(DorotiTextInputConfiguration configuration)
+    {
+        _textInputConfiguration = configuration;
+        BrowserInterop.UpdateTextInputConfiguration(
+            HostId,
+            InputMode(configuration.inputType),
+            EnterKeyHint(configuration.inputAction),
+            configuration.readOnly,
+            configuration.obscureText,
+            AutoCapitalize(configuration.textCapitalization),
+            configuration.autocorrect && configuration.enableSuggestions,
+            (int)configuration.inputAction,
+            configuration.inputType == DorotiTextInputType.multiline,
+            configuration.enableInteractiveSelection);
+    }
+
+    public void UpdateState(DorotiTextEditingState state)
+    {
+        SetTextInputState(state, attach: false);
+    }
 
     public void SetEditableSizeAndTransform(Size logicalSize, Matrix4 transform)
     {
@@ -411,6 +440,28 @@ public sealed class BrowserHostAdapter :
             JsonSerializer.Serialize(transform.storage.ToArray()));
     }
 
+    public void SetStyle(DorotiTextInputStyle style) => BrowserInterop.SetTextInputStyle(
+        HostId,
+        JsonSerializer.Serialize(new
+        {
+            style.fontFamily,
+            style.fontSize,
+            fontWeight = style.fontWeight?.value,
+            textDirection = style.textDirection == TextDirection.rtl ? "rtl" : "ltr",
+            textAlign = style.textAlign switch
+            {
+                TextAlign.left => "left",
+                TextAlign.right => "right",
+                TextAlign.center => "center",
+                TextAlign.justify => "justify",
+                TextAlign.end => "end",
+                _ => "start",
+            },
+            style.letterSpacing,
+            style.wordSpacing,
+            style.lineHeight,
+        }));
+
     private void SetTextInputState(DorotiTextEditingState state, bool attach) =>
         BrowserInterop.SetTextInputState(
             HostId, state.text, state.selection.baseOffset, state.selection.extentOffset,
@@ -420,7 +471,8 @@ public sealed class BrowserHostAdapter :
             _textInputConfiguration.autocorrect && _textInputConfiguration.enableSuggestions,
             (int)_textInputConfiguration.inputAction,
             _textInputConfiguration.inputType == DorotiTextInputType.multiline,
-            attach);
+            attach,
+            _textInputConfiguration.enableInteractiveSelection);
 
     public void SetCaretRect(Rect logicalRect) => BrowserInterop.SetCaretRect(
         HostId, logicalRect.left, logicalRect.top, logicalRect.width, logicalRect.height);

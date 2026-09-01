@@ -108,9 +108,12 @@ interface BrowserHost {
   pressedKeys: Map<string, string>;
   inputAction: number;
   multiline: boolean;
+  interactiveSelectionEnabled: boolean;
   pendingBlurConnectionCloseTimer: number;
   editableGeometryApplied: boolean;
   contextMenuEnabled: boolean;
+  frameworkCursor: string;
+  pointerCaptureCursor: string | null;
 }
 
 interface ResizeEpoch {
@@ -1846,8 +1849,10 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     lastTextValue: "", lastSelectionBase: 0, lastSelectionExtent: 0,
     lastComposingBase: -1, lastComposingExtent: -1,
     viewFocused: false, pressedKeys: new Map(),
-    inputAction: 2, multiline: false, pendingBlurConnectionCloseTimer: 0,
+    inputAction: 2, multiline: false, interactiveSelectionEnabled: true,
+    pendingBlurConnectionCloseTimer: 0,
     editableGeometryApplied: false, contextMenuEnabled: true,
+    frameworkCursor: "default", pointerCaptureCursor: null,
   };
   commitDirectCanvasLogicalSize(host, logicalWidth, logicalHeight);
   hosts.set(hostId, host);
@@ -1891,6 +1896,13 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
         host.focusedTextFieldSemanticsId = Number(semanticTextField.dataset.dorotiSemanticsId);
         placeTextInputAtSemanticsElement(host, semanticTextField);
       }
+      const targetCursor = event.target instanceof Element
+        ? getComputedStyle(event.target).cursor
+        : host.frameworkCursor;
+      host.pointerCaptureCursor = targetCursor && targetCursor !== "auto"
+        ? targetCursor
+        : host.frameworkCursor;
+      root.style.cursor = host.pointerCaptureCursor;
       root.setPointerCapture(event.pointerId);
       // A quick window activation or hidden-tab return retains Flutter's text
       // connection, so do not steal DOM focus from its native endpoint. A
@@ -1901,7 +1913,11 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     const inputSequence = ++host.inputSequence;
     requireManaged().dispatchPointerBatch(host.id, phase, pointerKind(event.pointerType), event.pointerId,
       event.buttons, modifierMask(event), inputSequence, pointerSamples(event));
-    if ((phase === 2 || phase === 3) && root.hasPointerCapture(event.pointerId)) root.releasePointerCapture(event.pointerId);
+    if (phase === 2 || phase === 3) {
+      if (root.hasPointerCapture(event.pointerId)) root.releasePointerCapture(event.pointerId);
+      host.pointerCaptureCursor = null;
+      root.style.cursor = host.frameworkCursor;
+    }
   };
   observe(root, "pointerenter", (event) => pointer(5)(event as PointerEvent));
   observe(root, "pointermove", (event) => {
@@ -1911,6 +1927,10 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   observe(root, "pointerdown", (event) => pointer(1)(event as PointerEvent));
   observe(root, "pointerup", (event) => pointer(2)(event as PointerEvent));
   observe(root, "pointercancel", (event) => pointer(3)(event as PointerEvent));
+  observe(root, "lostpointercapture", () => {
+    host.pointerCaptureCursor = null;
+    root.style.cursor = host.frameworkCursor;
+  });
   observe(root, "pointerleave", (event) => pointer(6)(event as PointerEvent));
   observe(root, "contextmenu", (event) => {
     if (!host.contextMenuEnabled) event.preventDefault();
@@ -1984,6 +2004,11 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   observe(input, "compositionupdate", () => emitText(host));
   observe(input, "compositionend", () => { host.composing = false; host.compositionStart = -1; emitText(host); });
   observe(input, "input", () => emitText(host));
+  for (const clipboardEvent of ["copy", "cut", "paste"]) {
+    observe(input, clipboardEvent, (event) => {
+      if (!host.interactiveSelectionEnabled) event.preventDefault();
+    });
+  }
   observe(document, "selectionchange", () => {
     if (document.activeElement === input && !input.hidden) emitText(host);
   });
@@ -2149,18 +2174,85 @@ export function setCursor(hostId: number, cursor: string): void {
     activeWorkerBridge.postControl("cursor", { hostId, cursor });
     return;
   }
-  requireHost(hostId).canvas.style.cursor = cursor;
+  const host = requireHost(hostId);
+  host.frameworkCursor = cursor;
+  host.canvas.style.cursor = cursor;
+  if (host.pointerCaptureCursor === null) host.root.style.cursor = cursor;
+}
+
+function applyTextInputConfiguration(
+  host: BrowserHost, inputMode: string, enterKeyHint: string, readOnly: boolean,
+  obscureText: boolean, autocapitalize: string, autocorrect: boolean,
+  inputAction: number, multiline: boolean, enableInteractiveSelection: boolean): void {
+  host.input.inputMode = inputMode as typeof host.input.inputMode;
+  host.input.enterKeyHint = enterKeyHint;
+  host.input.readOnly = readOnly;
+  host.input.autocapitalize = autocapitalize;
+  host.input.autocomplete = "off";
+  host.input.setAttribute("autocorrect", autocorrect ? "on" : "off");
+  host.input.spellcheck = autocorrect;
+  host.inputAction = inputAction;
+  host.multiline = multiline;
+  host.interactiveSelectionEnabled = enableInteractiveSelection;
+  host.input.style.setProperty("-webkit-text-security", obscureText ? "disc" : "none");
+}
+
+export function updateTextInputConfiguration(
+  hostId: number, inputMode: string, enterKeyHint: string, readOnly: boolean,
+  obscureText: boolean, autocapitalize: string, autocorrect: boolean,
+  inputAction: number, multiline: boolean, enableInteractiveSelection: boolean): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.postControl("text-config", {
+      hostId, inputMode, enterKeyHint, readOnly, obscureText, autocapitalize,
+      autocorrect, inputAction, multiline, enableInteractiveSelection,
+    });
+    return;
+  }
+  applyTextInputConfiguration(
+    requireHost(hostId), inputMode, enterKeyHint, readOnly, obscureText,
+    autocapitalize, autocorrect, inputAction, multiline, enableInteractiveSelection);
+}
+
+interface TextInputStylePayload {
+  fontFamily?: string | null;
+  fontSize?: number | null;
+  fontWeight?: number | null;
+  textDirection: "ltr" | "rtl";
+  textAlign: "left" | "right" | "center" | "justify" | "start" | "end";
+  letterSpacing?: number | null;
+  wordSpacing?: number | null;
+  lineHeight?: number | null;
+}
+
+export function setTextInputStyle(hostId: number, styleJson: string): void {
+  if (activeWorkerBridge) {
+    activeWorkerBridge.postControl("text-style", { hostId, styleJson });
+    return;
+  }
+  const host = requireHost(hostId);
+  const style = JSON.parse(styleJson) as TextInputStylePayload;
+  const finite = (value: number | null | undefined): value is number =>
+    typeof value === "number" && Number.isFinite(value);
+  host.input.style.fontFamily = style.fontFamily ?? "";
+  host.input.style.fontSize = finite(style.fontSize) ? `${style.fontSize}px` : "";
+  host.input.style.fontWeight = finite(style.fontWeight) ? String(style.fontWeight) : "";
+  host.input.dir = style.textDirection;
+  host.input.style.textAlign = style.textAlign;
+  host.input.style.letterSpacing = finite(style.letterSpacing) ? `${style.letterSpacing}px` : "";
+  host.input.style.wordSpacing = finite(style.wordSpacing) ? `${style.wordSpacing}px` : "";
+  host.input.style.lineHeight = finite(style.lineHeight) ? `${style.lineHeight}px` : "normal";
 }
 
 export function setTextInputState(
   hostId: number, text: string, selectionBase: number, selectionExtent: number,
   inputMode: string, enterKeyHint: string, readOnly: boolean, obscureText: boolean,
   autocapitalize: string, autocorrect: boolean, inputAction: number, multiline: boolean,
-  attach: boolean): void {
+  attach: boolean, enableInteractiveSelection: boolean): void {
   if (activeWorkerBridge) {
     activeWorkerBridge.postControl("text-state", {
       hostId, text, selectionBase, selectionExtent, inputMode, enterKeyHint,
       readOnly, obscureText, autocapitalize, autocorrect, inputAction, multiline, attach,
+      enableInteractiveSelection,
     });
     return;
   }
@@ -2169,15 +2261,9 @@ export function setTextInputState(
     clearTimeout(host.pendingBlurConnectionCloseTimer);
     host.pendingBlurConnectionCloseTimer = 0;
   }
-  host.input.inputMode = inputMode as typeof host.input.inputMode;
-  host.input.enterKeyHint = enterKeyHint;
-  host.input.readOnly = readOnly;
-  host.input.autocapitalize = autocapitalize;
-  host.input.autocomplete = autocorrect ? "on" : "off";
-  host.input.spellcheck = autocorrect;
-  host.inputAction = inputAction;
-  host.multiline = multiline;
-  host.input.style.setProperty("-webkit-text-security", obscureText ? "disc" : "none");
+  applyTextInputConfiguration(
+    host, inputMode, enterKeyHint, readOnly, obscureText, autocapitalize,
+    autocorrect, inputAction, multiline, enableInteractiveSelection);
   const normalizedBase = Math.max(0, Math.min(text.length, selectionBase));
   const normalizedExtent = Math.max(0, Math.min(text.length, selectionExtent));
   const selectionStart = Math.min(normalizedBase, normalizedExtent);
@@ -2688,7 +2774,17 @@ export async function startDorotiWorkerHost(
           Number(payload.hostId), String(payload.text), Number(payload.selectionBase), Number(payload.selectionExtent),
           String(payload.inputMode), String(payload.enterKeyHint), Boolean(payload.readOnly), Boolean(payload.obscureText),
           String(payload.autocapitalize), Boolean(payload.autocorrect), Number(payload.inputAction),
-          Boolean(payload.multiline), Boolean(payload.attach));
+          Boolean(payload.multiline), Boolean(payload.attach), Boolean(payload.enableInteractiveSelection));
+        break;
+      case "text-config":
+        updateTextInputConfiguration(
+          Number(payload.hostId), String(payload.inputMode), String(payload.enterKeyHint),
+          Boolean(payload.readOnly), Boolean(payload.obscureText), String(payload.autocapitalize),
+          Boolean(payload.autocorrect), Number(payload.inputAction), Boolean(payload.multiline),
+          Boolean(payload.enableInteractiveSelection));
+        break;
+      case "text-style":
+        setTextInputStyle(Number(payload.hostId), String(payload.styleJson));
         break;
       case "caret":
         setCaretRect(Number(payload.hostId), Number(payload.left), Number(payload.top), Number(payload.width), Number(payload.height));
@@ -3152,11 +3248,17 @@ function handleTextInputBlur(
 }
 
 function emitText(host: BrowserHost): void {
-  const start = host.input.selectionStart ?? 0;
-  const end = host.input.selectionEnd ?? start;
+  let start = host.input.selectionStart ?? 0;
+  let end = host.input.selectionEnd ?? start;
   const selectionBackward = host.input.selectionDirection === "backward";
-  const selectionBase = selectionBackward ? end : start;
-  const selectionExtent = selectionBackward ? start : end;
+  let selectionBase = selectionBackward ? end : start;
+  let selectionExtent = selectionBackward ? start : end;
+  if (!host.interactiveSelectionEnabled && selectionBase !== selectionExtent) {
+    host.input.setSelectionRange(selectionExtent, selectionExtent);
+    start = selectionExtent;
+    end = selectionExtent;
+    selectionBase = selectionExtent;
+  }
   const composingBase = host.composing ? Math.max(0, host.compositionStart) : -1;
   const composingExtent = host.composing ? end : -1;
   if (host.lastTextValue === host.input.value &&

@@ -17,8 +17,10 @@ import {
   setContextMenuEnabled,
   setCursor,
   setEditableSizeAndTransform,
+  setTextInputStyle,
   setTextInputState,
   unregisterExternalWorkerPresenter,
+  updateTextInputConfiguration,
   updateExternalWorkerGpu,
   updateSemantics,
   writeClipboardText,
@@ -290,7 +292,17 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
           Number(payload.hostId), String(payload.text), Number(payload.selectionBase), Number(payload.selectionExtent),
           String(payload.inputMode), String(payload.enterKeyHint), Boolean(payload.readOnly), Boolean(payload.obscureText),
           String(payload.autocapitalize), Boolean(payload.autocorrect), Number(payload.inputAction),
-          Boolean(payload.multiline), Boolean(payload.attach));
+          Boolean(payload.multiline), Boolean(payload.attach), Boolean(payload.enableInteractiveSelection));
+        break;
+      case "text-config":
+        updateTextInputConfiguration(
+          Number(payload.hostId), String(payload.inputMode), String(payload.enterKeyHint),
+          Boolean(payload.readOnly), Boolean(payload.obscureText), String(payload.autocapitalize),
+          Boolean(payload.autocorrect), Number(payload.inputAction), Boolean(payload.multiline),
+          Boolean(payload.enableInteractiveSelection));
+        break;
+      case "text-style":
+        setTextInputStyle(Number(payload.hostId), String(payload.styleJson));
         break;
       case "caret":
         setCaretRect(Number(payload.hostId), Number(payload.left), Number(payload.top), Number(payload.width), Number(payload.height));
