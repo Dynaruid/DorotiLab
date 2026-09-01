@@ -252,6 +252,7 @@ interface WorkerDisplayPresenter {
 }
 
 export interface ExternalWorkerPresenterDiagnostics {
+  readonly commitCanvasCssWithFront?: boolean;
   snapshot(): Readonly<Record<string, unknown>>;
   command(action:
     "lose-context" | "restore-context" | "crash" | "violate-protocol" | "stall-raster-100ms"): boolean;
@@ -857,8 +858,14 @@ function commitDirectCanvasLogicalSize(
   logicalWidth: number,
   logicalHeight: number): void {
   const workerPresenter = workerDisplayPresenters.get(host.canvas.id);
+  const externalPresenter = externalWorkerPresenters.get(host.canvas.id);
   if (!directWorkerBootstrap && workerPresenter?.mode !== "worker-direct-webgl" &&
-      !externalWorkerPresenters.has(host.canvas.id)) return;
+      !externalPresenter) return;
+  // CanvasKit owns a grow-only transferred backing and maps it at a fixed DPR;
+  // the root clips that capacity to the viewport. Applying observer target
+  // dimensions here would scale the previous front while Raster is producing
+  // the matching immutable generation.
+  if (externalPresenter?.commitCanvasCssWithFront) return;
   // Flutter keeps the DOM display canvas in logical CSS pixels while its
   // raster surface uses physical pixels. A transferred canvas still exposes
   // its Worker-mutated width/height attributes to layout, so main must pin the

@@ -60,12 +60,15 @@ public static class DisplayListEncoder
         foreach (var command in document.Commands)
         {
             ArgumentNullException.ThrowIfNull(command);
-            var payloadWriter = new DisplayListBinaryWriter();
-            WriteCommandPayload(payloadWriter, command, context);
             commandWriter.WriteUInt16((ushort)command.Opcode);
             commandWriter.WriteUInt16(0);
-            commandWriter.WriteUInt32(checked((uint)payloadWriter.Length));
-            commandWriter.WriteBytes(payloadWriter.WrittenSpan);
+            var payloadLengthOffset = commandWriter.Length;
+            commandWriter.WriteUInt32(0);
+            var payloadOffset = commandWriter.Length;
+            WriteCommandPayload(commandWriter, command, context);
+            commandWriter.PatchUInt32(
+                payloadLengthOffset,
+                checked((uint)(commandWriter.Length - payloadOffset)));
         }
 
         var byteLength = checked(

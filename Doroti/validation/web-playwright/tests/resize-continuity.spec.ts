@@ -609,6 +609,18 @@ test("@headed Desktop Chrome live bounds expose only exact, unscaled fronts", as
   expect(samples.every((sample) => sample.canvasConnected && sample.rootConnected)).toBe(true);
   expect(samples.every((sample) => sample.pixel.distinctSampledColors >= 8)).toBe(true);
   expect(samples.every((sample) => sample.transform === "none" && sample.preview === null)).toBe(true);
+  if (bundle.presenter.mode === "worker-canvaskit-webgl") {
+    expect(samples.every((sample) => sample.objectFit === "cover")).toBe(true);
+    expect(samples.every((sample) => sample.canvasLogicalWidth >= sample.logicalWidth &&
+      sample.canvasLogicalHeight >= sample.logicalHeight)).toBe(true);
+    expect(new Set(samples.map((sample) =>
+      `${sample.canvasBackingWidth}x${sample.canvasBackingHeight}`)).size).toBe(1);
+    expect(new Set(samples.map((sample) =>
+      `${sample.canvasLogicalWidth}x${sample.canvasLogicalHeight}`)).size).toBe(1);
+    expect(samples.every((sample) =>
+      Math.abs(sample.backingScaleX - 1 / sample.devicePixelRatio) <= 0.000001 &&
+      Math.abs(sample.backingScaleY - 1 / sample.devicePixelRatio) <= 0.000001)).toBe(true);
+  }
   if (bundle.presenter.mode === "worker-direct-webgl") {
     expect(samples.every((sample) => sample.objectFit === "cover")).toBe(true);
     expect(samples.every((sample) => sample.canvasLogicalWidth >= sample.logicalWidth &&
@@ -646,6 +658,8 @@ test("@headed worker-direct keeps a 600px native resize within the realtime fron
   test.skip(process.platform !== "win32", "Native HWND resize validation is Windows-only.");
   test.skip(process.env.DOROTI_WEB_RUN_NATIVE_HWND_RESIZE !== "1",
     "The native 600px/500ms resize budget is an opt-in visible-browser regression.");
+  test.skip(process.env.DOROTI_WEB_RENDERER_MODE !== "worker-direct-webgl",
+    "The fixed-capacity 60ms native resize budget belongs to worker-direct-webgl.");
   await openDoroti(page);
   const titleToken = `doroti-native-fast-resize-${Date.now()}-${testInfo.workerIndex}`;
   await page.evaluate((title) => { document.title = title; }, titleToken);
@@ -826,6 +840,10 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
           backingScaleX: canvas.getBoundingClientRect().width / canvas.width,
           backingScaleY: canvas.getBoundingClientRect().height / canvas.height,
           devicePixelRatio: globalThis.devicePixelRatio,
+          frontLogicalWidth: canvas.dataset.dorotiFrontLogicalWidth
+            ? Number(canvas.dataset.dorotiFrontLogicalWidth) : null,
+          frontLogicalHeight: canvas.dataset.dorotiFrontLogicalHeight
+            ? Number(canvas.dataset.dorotiFrontLogicalHeight) : null,
           transform: getComputedStyle(canvas).transform,
           preview: canvas.dataset.dorotiResizePreview ?? null,
           canvasConnected: canvas.isConnected,
@@ -853,6 +871,7 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
       timestamp: number; rootWidth: number; rootHeight: number; transform: string;
       canvasWidth: number; canvasHeight: number; backingWidth: number; backingHeight: number;
       backingScaleX: number; backingScaleY: number; devicePixelRatio: number;
+      frontLogicalWidth: number | null; frontLogicalHeight: number | null;
       preview: string | null; canvasConnected: boolean; rootConnected: boolean;
     }> };
     return scope.__dorotiNativeResizeSamples ?? [];
@@ -926,15 +945,27 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
   expect(observedTimes.length).toBeGreaterThanOrEqual(40);
   expect(nativeSamples.every((sample) => sample.canvasConnected && sample.rootConnected)).toBe(true);
   expect(nativeSamples.every((sample) => sample.transform === "none" && sample.preview === null)).toBe(true);
-  expect(nativeSamples.every((sample) =>
-    sample.canvasWidth >= sample.rootWidth && sample.canvasHeight >= sample.rootHeight)).toBe(true);
-  expect(new Set(nativeSamples.map((sample) =>
-    `${sample.backingWidth}x${sample.backingHeight}`)).size).toBe(1);
-  expect(new Set(nativeSamples.map((sample) =>
-    `${sample.canvasWidth}x${sample.canvasHeight}`)).size).toBe(1);
-  expect(nativeSamples.every((sample) =>
-    Math.abs(sample.backingScaleX - sample.backingScaleY) <= 0.000001 &&
-    Math.abs(sample.backingScaleX - 1 / sample.devicePixelRatio) <= 0.000001)).toBe(true);
+  if (bundle.presenter.mode === "worker-direct-webgl") {
+    expect(nativeSamples.every((sample) =>
+      sample.canvasWidth >= sample.rootWidth && sample.canvasHeight >= sample.rootHeight)).toBe(true);
+    expect(new Set(nativeSamples.map((sample) =>
+      `${sample.backingWidth}x${sample.backingHeight}`)).size).toBe(1);
+    expect(new Set(nativeSamples.map((sample) =>
+      `${sample.canvasWidth}x${sample.canvasHeight}`)).size).toBe(1);
+    expect(nativeSamples.every((sample) =>
+      Math.abs(sample.backingScaleX - sample.backingScaleY) <= 0.000001 &&
+      Math.abs(sample.backingScaleX - 1 / sample.devicePixelRatio) <= 0.000001)).toBe(true);
+  } else if (bundle.presenter.mode === "worker-canvaskit-webgl") {
+    expect(nativeSamples.every((sample) =>
+      sample.canvasWidth >= sample.rootWidth && sample.canvasHeight >= sample.rootHeight)).toBe(true);
+    expect(new Set(nativeSamples.map((sample) =>
+      `${sample.backingWidth}x${sample.backingHeight}`)).size).toBe(1);
+    expect(new Set(nativeSamples.map((sample) =>
+      `${sample.canvasWidth}x${sample.canvasHeight}`)).size).toBe(1);
+    expect(nativeSamples.every((sample) =>
+      Math.abs(sample.backingWidth / sample.devicePixelRatio - sample.canvasWidth) <= 0.01 &&
+      Math.abs(sample.backingHeight / sample.devicePixelRatio - sample.canvasHeight) <= 0.01)).toBe(true);
+  }
   expect(bundle.trace.filter((entry) => entry.phase === "resize-preview-commit")).toEqual([]);
   expect(bundle.trace.filter((entry) => entry.phase === "preview-front-refresh")).toEqual([]);
   // Continuous resize can outpace managed raster, but completed immutable

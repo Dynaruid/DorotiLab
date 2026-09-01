@@ -147,6 +147,24 @@ export interface CanvasKitUiDiagnostics {
   heartbeatSequence: number;
   inputDispatchCount: number;
   lastInputSequence: number;
+  frameTimings: {
+    count: number;
+    dispatchTotalMilliseconds: number;
+    dispatchMaximumMilliseconds: number;
+    waitTotalMilliseconds: number;
+    waitMaximumMilliseconds: number;
+    coalescedRequestCount: number;
+    liveResizeThrottle: {
+      targetFramesPerSecond: number;
+      frameIntervalMilliseconds: number;
+      activityWindowMilliseconds: number;
+      deferredRafCount: number;
+      deferredTotalMilliseconds: number;
+      deferredMaximumMilliseconds: number;
+      dispatchCount: number;
+      minimumDispatchIntervalMilliseconds: number | null;
+    };
+  };
 }
 
 export interface CanvasKitObjectCounter {
@@ -176,8 +194,66 @@ export interface CanvasKitRasterDiagnostics {
   lastFailureReason?: string;
   flushCount: number;
   lastFrontGeneration: number;
+  latestTargetPriority: {
+    minimumGenerationGap: number;
+    maximumFrontAgeMilliseconds: number;
+    minimumPriorReplayMilliseconds: number;
+    skippedScenes: number;
+    forcedProgressiveScenes: number;
+    maximumSkippedGenerationGap: number;
+  };
+  resizeTargetIngress: {
+    mainFastLaneCount: number;
+    uiOrderedCount: number;
+  };
   resourceCount: number;
   resourceBytes: number;
+  paragraphCache: {
+    capacity: number;
+    size: number;
+    hits: number;
+    misses: number;
+    evictions: number;
+    invalidations: number;
+    fontCollectionCapacity: number;
+    fontCollectionSize: number;
+    fontCollectionEvictions: number;
+  };
+  paintCache: {
+    capacity: number;
+    size: number;
+    maximumWireBytes: number;
+    hits: number;
+    misses: number;
+    evictions: number;
+    invalidations: number;
+  };
+  imageFilterCache: {
+    capacity: number;
+    size: number;
+    maximumWireBytes: number;
+    hits: number;
+    misses: number;
+    evictions: number;
+    invalidations: number;
+  };
+  resizeStagingPool: {
+    allocations: number;
+    reuses: number;
+    capacityWidth: number;
+    capacityHeight: number;
+    peakPixels: number;
+  };
+  timings: {
+    replayCount: number;
+    replayTotalMilliseconds: number;
+    replayLastMilliseconds: number;
+    replayMaximumMilliseconds: number;
+    resizeStagingCount: number;
+    resizeStagingTotalMilliseconds: number;
+    resizeStagingLastMilliseconds: number;
+    resizeStagingMaximumMilliseconds: number;
+  };
   objects: Record<string, CanvasKitObjectCounter>;
   referenceCompatibility: {
     addSuperellipseNoOps: number;
@@ -185,6 +261,8 @@ export interface CanvasKitRasterDiagnostics {
   };
   physicalWidth: number;
   physicalHeight: number;
+  capacityWidth: number;
+  capacityHeight: number;
   diagnosticRasterStallCount: number;
   lastDiagnosticRasterStallMilliseconds: number;
 }

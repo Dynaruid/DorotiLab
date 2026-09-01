@@ -121,6 +121,29 @@ let uiCanvasKitReady = false;
 let managedRuntime: DotnetRuntime | null = null;
 let stopManagedRuntime: (() => void) | null = null;
 let dotnetModuleUrl = "";
+let frameDispatchCount = 0;
+let frameDispatchTotalMilliseconds = 0;
+let frameDispatchMaximumMilliseconds = 0;
+let frameWaitTotalMilliseconds = 0;
+let frameWaitMaximumMilliseconds = 0;
+const liveResizeTargetFramesPerSecond = 30;
+const liveResizeFrameIntervalMilliseconds = 1000 / liveResizeTargetFramesPerSecond;
+const liveResizeActivityWindowMilliseconds = 100;
+const liveResizeFrameIntervalToleranceMilliseconds = 0.25;
+let pendingManagedFrame: {
+  hostId: number;
+  callbackId: number;
+  requestedMilliseconds: number;
+} | null = null;
+let managedFrameRaf = 0;
+let lastManagedFrameDispatchMilliseconds = Number.NEGATIVE_INFINITY;
+let lastResizeEpochIngressMilliseconds = Number.NEGATIVE_INFINITY;
+let managedFrameRequestCoalescedCount = 0;
+let liveResizeThrottleDeferredRafCount = 0;
+let liveResizeThrottleDeferredTotalMilliseconds = 0;
+let liveResizeThrottleDeferredMaximumMilliseconds = 0;
+let liveResizeThrottleDispatchCount = 0;
+let liveResizeThrottleMinimumDispatchIntervalMilliseconds = Number.POSITIVE_INFINITY;
 const pendingInputs: Record<string, unknown>[] = [];
 
 function post(kind: string, payload: Record<string, unknown> = {}, transfer: Transferable[] = []): void {
@@ -144,6 +167,57 @@ function postRaster(kind: string, payload: Record<string, unknown> = {}, transfe
     rasterSessionId,
     ...payload,
   }, transfer);
+}
+
+function scheduleManagedFrame(): void {
+  if (pendingManagedFrame === null || managedFrameRaf !== 0) return;
+  if (typeof globalThis.requestAnimationFrame !== "function")
+    throw new Error("Doroti CanvasKit UI Worker requires requestAnimationFrame.");
+
+  const scheduledRaf = globalThis.requestAnimationFrame((timestamp) => {
+    if (managedFrameRaf !== scheduledRaf) return;
+    managedFrameRaf = 0;
+    const pending = pendingManagedFrame;
+    if (pending === null) return;
+
+    const now = performance.now();
+    const dispatchInterval = now - lastManagedFrameDispatchMilliseconds;
+    const liveResizeActive =
+      now - lastResizeEpochIngressMilliseconds <= liveResizeActivityWindowMilliseconds;
+    if (liveResizeActive && Number.isFinite(lastManagedFrameDispatchMilliseconds) &&
+        dispatchInterval + liveResizeFrameIntervalToleranceMilliseconds <
+          liveResizeFrameIntervalMilliseconds) {
+      const deferredMilliseconds = liveResizeFrameIntervalMilliseconds - dispatchInterval;
+      liveResizeThrottleDeferredRafCount++;
+      liveResizeThrottleDeferredTotalMilliseconds += deferredMilliseconds;
+      liveResizeThrottleDeferredMaximumMilliseconds = Math.max(
+        liveResizeThrottleDeferredMaximumMilliseconds, deferredMilliseconds);
+      // Stay on the Worker's animation clock. A newer managed request can
+      // replace pendingManagedFrame before the next eligible resize frame.
+      scheduleManagedFrame();
+      return;
+    }
+
+    pendingManagedFrame = null;
+    lastManagedFrameDispatchMilliseconds = now;
+    if (liveResizeActive) {
+      liveResizeThrottleDispatchCount++;
+      if (Number.isFinite(dispatchInterval)) {
+        liveResizeThrottleMinimumDispatchIntervalMilliseconds = Math.min(
+          liveResizeThrottleMinimumDispatchIntervalMilliseconds, dispatchInterval);
+      }
+    }
+    const wait = now - pending.requestedMilliseconds;
+    const started = performance.now();
+    dispatchWorkerAnimationFrame(pending.hostId, pending.callbackId, timestamp);
+    const duration = performance.now() - started;
+    frameDispatchCount++;
+    frameDispatchTotalMilliseconds += duration;
+    frameDispatchMaximumMilliseconds = Math.max(frameDispatchMaximumMilliseconds, duration);
+    frameWaitTotalMilliseconds += wait;
+    frameWaitMaximumMilliseconds = Math.max(frameWaitMaximumMilliseconds, wait);
+  });
+  managedFrameRaf = scheduledRaf;
 }
 
 const bridge: CanvasKitUiBridge = {
@@ -275,9 +349,9 @@ function configureUiWorkerBridge(): void {
       return JSON.stringify(snapshot);
     },
     requestFrame(id, callbackId) {
-      if (typeof globalThis.requestAnimationFrame !== "function")
-        throw new Error("Doroti CanvasKit UI Worker requires requestAnimationFrame.");
-      globalThis.requestAnimationFrame((timestamp) => dispatchWorkerAnimationFrame(id, callbackId, timestamp));
+      if (pendingManagedFrame !== null) managedFrameRequestCoalescedCount++;
+      pendingManagedFrame = { hostId: id, callbackId, requestedMilliseconds: performance.now() };
+      scheduleManagedFrame();
     },
     recordManagedRaster(id, phase, width, height, duration) {
       post("managed-work", { hostId: id, phase, width, height, durationMicroseconds: duration });
@@ -322,6 +396,7 @@ function installMainListener(): void {
           break;
         case "resize-epoch": {
           const epoch = message.resizeEpoch as ResizeEpoch;
+          lastResizeEpochIngressMilliseconds = performance.now();
           snapshot = {
             ...requireSnapshot(),
             logicalWidth: epoch.logicalWidth,
@@ -336,6 +411,9 @@ function installMainListener(): void {
             },
             resizeEpoch: epoch,
           };
+          // Preserve UI -> Raster ordering: the immutable target must be
+          // admitted before managed code can submit a DisplayList for it.
+          if (rasterReady) postRaster("resize-target", { resizeEpoch: epoch });
           if (managedHostReady) {
             dispatchWorkerResizeEpoch(
               Number(message.hostId), Number(message.hostGeneration), epoch.generation,
@@ -343,7 +421,6 @@ function installMainListener(): void {
               epoch.devicePixelRatio, epoch.timestampMicroseconds);
             dispatchWorkerSnapshot(Number(message.hostId), JSON.stringify(snapshot));
           }
-          if (rasterReady) postRaster("resize-target", { resizeEpoch: epoch });
           break;
         }
         case "input":
@@ -598,6 +675,10 @@ async function startManagedRuntime(): Promise<void> {
 function disposeUiRole(): void {
   if (heartbeatTimer !== 0) globalThis.clearInterval(heartbeatTimer);
   heartbeatTimer = 0;
+  if (managedFrameRaf !== 0 && typeof globalThis.cancelAnimationFrame === "function")
+    globalThis.cancelAnimationFrame(managedFrameRaf);
+  managedFrameRaf = 0;
+  pendingManagedFrame = null;
   const openScenes = [currentScene, latestScene].filter((scene): scene is QueuedScene => scene !== null);
   currentScene = null;
   latestScene = null;
@@ -650,6 +731,27 @@ function diagnostics(): Readonly<Record<string, unknown>> {
     heartbeatSequence,
     inputDispatchCount,
     lastInputSequence,
+    frameTimings: {
+      count: frameDispatchCount,
+      dispatchTotalMilliseconds: frameDispatchTotalMilliseconds,
+      dispatchMaximumMilliseconds: frameDispatchMaximumMilliseconds,
+      waitTotalMilliseconds: frameWaitTotalMilliseconds,
+      waitMaximumMilliseconds: frameWaitMaximumMilliseconds,
+      coalescedRequestCount: managedFrameRequestCoalescedCount,
+      liveResizeThrottle: {
+        targetFramesPerSecond: liveResizeTargetFramesPerSecond,
+        frameIntervalMilliseconds: liveResizeFrameIntervalMilliseconds,
+        activityWindowMilliseconds: liveResizeActivityWindowMilliseconds,
+        deferredRafCount: liveResizeThrottleDeferredRafCount,
+        deferredTotalMilliseconds: liveResizeThrottleDeferredTotalMilliseconds,
+        deferredMaximumMilliseconds: liveResizeThrottleDeferredMaximumMilliseconds,
+        dispatchCount: liveResizeThrottleDispatchCount,
+        minimumDispatchIntervalMilliseconds:
+          Number.isFinite(liveResizeThrottleMinimumDispatchIntervalMilliseconds)
+            ? liveResizeThrottleMinimumDispatchIntervalMilliseconds
+            : null,
+      },
+    },
   };
 }
 

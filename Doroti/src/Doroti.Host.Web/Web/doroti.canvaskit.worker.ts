@@ -150,6 +150,22 @@ interface ParagraphFontCollection {
   readonly collection: OwnedObject<FontCollection>;
 }
 
+interface CachedParagraph {
+  readonly paragraph: OwnedObject<Paragraph>;
+  readonly fontCollectionKey: string;
+}
+
+interface CachedImageFilter {
+  readonly filter: OwnedImageFilter;
+  readonly consumedBytes: number;
+}
+
+interface ImageFilterLease {
+  readonly object: ImageFilter;
+  readonly cropBounds?: Float32Array | null;
+  readonly transient: OwnedImageFilter | null;
+}
+
 interface ImageFilterSurfaceLease {
   readonly object: Surface;
   readonly transient: OwnedObject<Surface> | null;
@@ -173,7 +189,7 @@ interface ReplayContext {
   readonly view: DataView;
   readonly strings: readonly string[];
   readonly declaredResources: ReadonlyMap<string, string>;
-  readonly paragraphFontCollections: Map<string, ParagraphFontCollection>;
+  readonly resourceDeclarationKey: string;
 }
 
 const protocolVersion = dorotiProtocolVersion;
@@ -195,6 +211,23 @@ const radiansToDegrees = 180 / Math.PI;
 const maximumCollectionCount = 1_000_000;
 const maximumNestingDepth = 32;
 const maximumImageFilterSurfacePoolSize = 8;
+const maximumResizeTargetHistory = 64;
+const maximumParagraphCacheSize = 256;
+const maximumParagraphFontCollectionCacheSize = 16;
+const maximumPaintCacheSize = 512;
+const maximumCachedPaintWireBytes = 4096;
+const maximumImageFilterCacheSize = 128;
+const maximumCachedImageFilterWireBytes = 8192;
+const minimumResizeStagingGrowthPixels = 64;
+const maximumResizeStagingGrowthPixels = 256;
+// Prefer a newer immutable resize target when a DisplayList is materially
+// behind. One-generation-progressive scenes are usually the freshest managed
+// output available; skipping those costs another managed frame. After an
+// expensive Raster replay, older scenes may be skipped briefly, but are still
+// admitted after the age budget so continuous resize cannot starve the front.
+const latestTargetPriorityMinimumGenerationGap = 2;
+const latestTargetPriorityMaximumFrontAgeMilliseconds = 40;
+const latestTargetPriorityMinimumPriorReplayMilliseconds = 8;
 const displayResourceKinds = ["", "font", "image", "runtime-effect", "retained-scene"] as const;
 
 let canvasKit: CanvasKit | null = null;
@@ -205,9 +238,14 @@ let rasterSessionId = 0;
 let contextHandle = 0;
 let grContext: GrDirectContext | null = null;
 let surface: Surface | null = null;
+let resizeStagingSurface: Surface | null = null;
+let resizeCommitPaint: Paint | null = null;
 let contextGeneration = 1;
 let surfaceGeneration = 0;
 let resizeTarget: ResizeEpoch | null = null;
+const resizeTargets = new Map<number, ResizeEpoch>();
+let frontPhysicalWidth = 0;
+let frontPhysicalHeight = 0;
 let contextLost = false;
 let contextLossExtension: WEBGL_lose_context | null = null;
 let currentScene: RasterScene | null = null;
@@ -225,6 +263,12 @@ let submittedScenes = 0;
 let supersededScenes = 0;
 let flushCount = 0;
 let lastFrontGeneration = 0;
+let lastFrontCommitMilliseconds = 0;
+let latestTargetPrioritySkippedScenes = 0;
+let latestTargetPriorityForcedProgressiveScenes = 0;
+let latestTargetPriorityMaximumSkippedGenerationGap = 0;
+let mainFastLaneResizeTargetCount = 0;
+let uiOrderedResizeTargetCount = 0;
 let referenceCompatibilityAddSuperellipseNoOps = 0;
 let appliedBlurCropBounds = 0;
 let diagnosticRasterStallCount = 0;
@@ -232,7 +276,37 @@ let lastDiagnosticRasterStallMilliseconds = 0;
 const resources = new Map<string, RasterResource>();
 const objectCounters = new Map<string, { created: number; deleted: number; live: number; bytes: number }>();
 const imageFilterSurfacePool: Surface[] = [];
+const paragraphCache = new Map<string, CachedParagraph>();
+const paragraphFontCollectionCache = new Map<string, ParagraphFontCollection>();
+const paintCache = new Map<string, OwnedObject<Paint>>();
+const imageFilterCache = new Map<string, CachedImageFilter>();
 let nextImageFilterSurfaceSlot = 0;
+let paragraphCacheHits = 0;
+let paragraphCacheMisses = 0;
+let paragraphCacheEvictions = 0;
+let paragraphCacheInvalidations = 0;
+let paragraphFontCollectionCacheEvictions = 0;
+let paintCacheHits = 0;
+let paintCacheMisses = 0;
+let paintCacheEvictions = 0;
+let paintCacheInvalidations = 0;
+let imageFilterCacheHits = 0;
+let imageFilterCacheMisses = 0;
+let imageFilterCacheEvictions = 0;
+let imageFilterCacheInvalidations = 0;
+let replayCount = 0;
+let replayTotalMilliseconds = 0;
+let replayLastMilliseconds = 0;
+let replayMaximumMilliseconds = 0;
+let resizeStagingCount = 0;
+let resizeStagingTotalMilliseconds = 0;
+let resizeStagingLastMilliseconds = 0;
+let resizeStagingMaximumMilliseconds = 0;
+let resizeStagingSurfaceAllocations = 0;
+let resizeStagingSurfaceReuses = 0;
+let resizeStagingCapacityWidth = 0;
+let resizeStagingCapacityHeight = 0;
+let resizeStagingPeakPixels = 0;
 
 function post(kind: string, payload: Record<string, unknown> = {}): void {
   (globalThis as unknown as { postMessage(message: unknown): void }).postMessage({
@@ -257,8 +331,11 @@ export async function startCanvasKitRole(context: CanvasKitRoleContext): Promise
   port = requireMessagePort(envelope.rasterPort);
   resizeTarget = envelope.resizeEpoch as ResizeEpoch;
   validateResizeTarget(resizeTarget);
-  canvas.width = resizeTarget.physicalWidth;
-  canvas.height = resizeTarget.physicalHeight;
+  rememberResizeTarget(resizeTarget);
+  if (canvas.width < resizeTarget.physicalWidth || canvas.height < resizeTarget.physicalHeight)
+    throw new Error(
+      `Doroti CanvasKit initial visible capacity ${canvas.width}x${canvas.height} is smaller than ` +
+      `${resizeTarget.physicalWidth}x${resizeTarget.physicalHeight}.`);
   installPort();
   installGlobalListener();
 
@@ -333,7 +410,8 @@ function installPort(): void {
         case "resize-target": {
           const next = message.resizeEpoch as ResizeEpoch;
           validateResizeTarget(next);
-          if (!resizeTarget || next.generation > resizeTarget.generation) resizeTarget = next;
+          rememberResizeTarget(next);
+          uiOrderedResizeTargetCount++;
           break;
         }
         case "display-list":
@@ -365,6 +443,7 @@ function installGlobalListener(): void {
     if (!message) return;
     if (message.protocolVersion !== protocolVersion) {
       if (message.kind === "context" || message.kind === "crash" || message.kind === "dispose" ||
+          message.kind === "resize-target-fast-lane" ||
           message.kind === "stall-raster-100ms") {
         const error = `Raster global protocol violation: ${String(message.protocolVersion)}`;
         post("fatal", { error });
@@ -374,6 +453,16 @@ function installGlobalListener(): void {
     }
     try {
       switch (message.kind) {
+        case "resize-target-fast-lane": {
+          if (message.topologyVersion !== topologyVersion ||
+              Number(message.rasterSessionId) !== rasterSessionId)
+            break;
+          const next = message.resizeEpoch as ResizeEpoch;
+          validateResizeTarget(next);
+          rememberResizeTarget(next);
+          mainFastLaneResizeTargetCount++;
+          break;
+        }
         case "context":
           if (message.action === "lose") contextLossExtension?.loseContext();
           else contextLossExtension?.restoreContext();
@@ -457,8 +546,16 @@ function render(scene: RasterScene): void {
   scene.attempted = true;
   rasterAttempts++;
   try {
-    const target = requireResizeTarget();
+    const latestTarget = requireResizeTarget();
     const metadata = scene.document.metadata;
+    const sceneGeneration = exactResizeGeneration(metadata.resizeEpoch);
+    const target = resizeTargets.get(sceneGeneration);
+    if (!target || sceneGeneration > latestTarget.generation ||
+        sceneGeneration < lastFrontGeneration ||
+        (sceneGeneration === lastFrontGeneration && sceneGeneration < latestTarget.generation)) {
+      terminalScene(scene, "superseded", "DisplayList resize target is no longer presentable", true);
+      return;
+    }
     if (metadata.resizeEpoch !== BigInt(target.generation) ||
         metadata.physicalWidth !== target.physicalWidth || metadata.physicalHeight !== target.physicalHeight ||
         Math.abs(metadata.logicalWidth - target.logicalWidth) > 0.01 ||
@@ -476,16 +573,41 @@ function render(scene: RasterScene): void {
       terminalScene(scene, "failed", "DisplayList surface generation is stale", true);
       return;
     }
+    const progressive = target.generation < latestTarget.generation;
+    if (progressive && lastFrontCommitMilliseconds > 0) {
+      const generationGap = latestTarget.generation - target.generation;
+      const frontAgeMilliseconds = performance.now() - lastFrontCommitMilliseconds;
+      const rasterOverloaded = replayLastMilliseconds >= latestTargetPriorityMinimumPriorReplayMilliseconds;
+      if (generationGap >= latestTargetPriorityMinimumGenerationGap && rasterOverloaded &&
+          frontAgeMilliseconds < latestTargetPriorityMaximumFrontAgeMilliseconds) {
+        latestTargetPrioritySkippedScenes++;
+        latestTargetPriorityMaximumSkippedGenerationGap = Math.max(
+          latestTargetPriorityMaximumSkippedGenerationGap,
+          generationGap);
+        terminalScene(
+          scene,
+          "superseded",
+          "Latest-target overload policy skipped a progressive DisplayList before replay",
+          true);
+        return;
+      }
+      if (generationGap >= latestTargetPriorityMinimumGenerationGap && rasterOverloaded)
+        latestTargetPriorityForcedProgressiveScenes++;
+    }
     const visible = requireCanvas();
-    if (surface && (visible.width !== target.physicalWidth || visible.height !== target.physicalHeight))
+    if (visible.width < target.physicalWidth || visible.height < target.physicalHeight)
       renderThroughResizeStaging(scene, target);
     else {
       ensureSurface(target);
-      replaySupportedCommands(scene, requireSurface());
+      replayIntoVisibleCapacity(scene, target, requireSurface());
       requireSurface().flush();
     }
     flushCount++;
     lastFrontGeneration = target.generation;
+    lastFrontCommitMilliseconds = performance.now();
+    frontPhysicalWidth = target.physicalWidth;
+    frontPhysicalHeight = target.physicalHeight;
+    pruneResizeTargets();
     receiptScene(scene, true, "CanvasKit surface.flush submitted GPU work");
     terminalScene(scene, "submitted", "CanvasKit exact surface GPU work submitted", false);
     post("direct-commit", {
@@ -499,6 +621,10 @@ function render(scene: RasterScene): void {
       logicalWidth: target.logicalWidth,
       logicalHeight: target.logicalHeight,
       devicePixelRatio: target.devicePixelRatio,
+      capacityWidth: visible.width,
+      capacityHeight: visible.height,
+      targetGeneration: latestTarget.generation,
+      progressive,
       commitEpochMilliseconds: performance.timeOrigin + performance.now(),
     });
   } catch (error) {
@@ -508,66 +634,143 @@ function render(scene: RasterScene): void {
 }
 
 function replaySupportedCommands(scene: RasterScene, targetSurface: Surface): void {
+  const started = performance.now();
   const kit = requireCanvasKit();
   const targetCanvas = targetSurface.getCanvas();
   nextImageFilterSurfaceSlot = 0;
+  const declaredResources = readDeclaredResources(scene);
   const context: ReplayContext = {
     kit,
     canvas: targetCanvas,
     view: new DataView(scene.buffer),
     strings: readStringTable(scene),
-    declaredResources: readDeclaredResources(scene),
-    paragraphFontCollections: new Map(),
+    declaredResources,
+    resourceDeclarationKey: JSON.stringify([...declaredResources]),
   };
   const rootSaveCount = targetCanvas.getSaveCount();
   targetCanvas.save();
   // RenderView already records its device-pixel-ratio root transform in the
   // scene command stream. The CanvasKit surface is physical-sized, so applying
   // the metadata DPR again here would scale every scene twice.
+  try { replayCommandRange(scene, context, 0, scene.document.commands.length); }
+  finally {
+    targetCanvas.restoreToCount(rootSaveCount);
+    replayLastMilliseconds = performance.now() - started;
+    replayTotalMilliseconds += replayLastMilliseconds;
+    replayMaximumMilliseconds = Math.max(replayMaximumMilliseconds, replayLastMilliseconds);
+    replayCount++;
+  }
+}
+
+function replayIntoVisibleCapacity(
+  scene: RasterScene,
+  target: ResizeEpoch,
+  targetSurface: Surface,
+): void {
+  const kit = requireCanvasKit();
+  const targetCanvas = targetSurface.getCanvas();
+  // The DOM root clips this grow-only backing. Clear bands removed by a
+  // shrinking front so a later root growth can reveal only transparent pixels
+  // until its matching immutable frame is committed.
+  if (frontPhysicalWidth > target.physicalWidth) {
+    clearVisibleCapacityRect(
+      targetCanvas,
+      target.physicalWidth, 0,
+      frontPhysicalWidth, frontPhysicalHeight);
+  }
+  if (frontPhysicalHeight > target.physicalHeight) {
+    clearVisibleCapacityRect(
+      targetCanvas,
+      0, target.physicalHeight,
+      Math.min(target.physicalWidth, frontPhysicalWidth), frontPhysicalHeight);
+  }
+
+  const rootSaveCount = targetCanvas.getSaveCount();
+  targetCanvas.save();
   try {
-    replayCommandRange(scene, context, 0, scene.document.commands.length);
+    targetCanvas.clipRect(
+      kit.LTRBRect(0, 0, target.physicalWidth, target.physicalHeight),
+      kit.ClipOp.Intersect,
+      false);
+    targetCanvas.clear(kit.TRANSPARENT);
+    replaySupportedCommands(scene, targetSurface);
   } finally {
     targetCanvas.restoreToCount(rootSaveCount);
-    for (const value of context.paragraphFontCollections.values()) {
-      deleteOwned(value.collection);
-      deleteOwned(value.provider);
-    }
-    context.paragraphFontCollections.clear();
+  }
+}
+
+function clearVisibleCapacityRect(
+  targetCanvas: Canvas,
+  left: number,
+  top: number,
+  right: number,
+  bottom: number,
+): void {
+  if (right <= left || bottom <= top) return;
+  const kit = requireCanvasKit();
+  const rootSaveCount = targetCanvas.getSaveCount();
+  targetCanvas.save();
+  try {
+    targetCanvas.clipRect(kit.LTRBRect(left, top, right, bottom), kit.ClipOp.Intersect, false);
+    targetCanvas.clear(kit.TRANSPARENT);
+  } finally {
+    targetCanvas.restoreToCount(rootSaveCount);
   }
 }
 
 function renderThroughResizeStaging(scene: RasterScene, target: ResizeEpoch): void {
+  const started = performance.now();
   const kit = requireCanvasKit();
-  const createdStaging = kit.MakeRenderTarget(
-    requireGrContext(), target.physicalWidth, target.physicalHeight);
-  if (!createdStaging)
-    throw new Error("CanvasKit could not allocate an exact GPU resize staging surface.");
-  const staging = own<Surface>("ResizeStagingSurface", createdStaging);
+  const staging = acquireResizeStagingSurface(target.physicalWidth, target.physicalHeight);
   let snapshot: OwnedObject<Image> | null = null;
-  let paint: OwnedObject<Paint> | null = null;
   let nextSurface: OwnedObject<Surface> | null = null;
   let visibleReset = false;
   try {
-    if (!staging.object.reportBackendTypeIsGPU())
-      throw new Error("CanvasKit resize staging surface is not GPU backed; fallback is forbidden.");
-    replaySupportedCommands(scene, staging.object);
-    staging.object.flush();
-    snapshot = own("ResizeStagingImage", staging.object.makeImageSnapshot());
+    const stagingCanvas = staging.getCanvas();
+    const stagingRootSaveCount = stagingCanvas.getSaveCount();
+    stagingCanvas.save();
+    try {
+      // The reusable render target can be larger than this immutable resize
+      // epoch. Clear and replay only the exact target rectangle so stale pool
+      // pixels can never enter the snapshot or consume unnecessary fill work.
+      stagingCanvas.clipRect(
+        kit.LTRBRect(0, 0, target.physicalWidth, target.physicalHeight),
+        kit.ClipOp.Intersect,
+        false);
+      stagingCanvas.clear(kit.TRANSPARENT);
+      replaySupportedCommands(scene, staging);
+    } finally {
+      stagingCanvas.restoreToCount(stagingRootSaveCount);
+    }
+    // Snapshot the whole pooled texture so Skia can retain its native GPU
+    // representation. The destination copy below selects only this epoch's
+    // exact rectangle; pixels outside it are never presented.
+    snapshot = own("ResizeStagingImage", staging.makeImageSnapshot());
 
     const visible = requireCanvas();
-    if (visible.width !== target.physicalWidth) visible.width = target.physicalWidth;
-    if (visible.height !== target.physicalHeight) visible.height = target.physicalHeight;
+    const capacityWidth = resizeStagingCapacity(visible.width, target.physicalWidth);
+    const capacityHeight = resizeStagingCapacity(visible.height, target.physicalHeight);
+    if (visible.width !== capacityWidth) visible.width = capacityWidth;
+    if (visible.height !== capacityHeight) visible.height = capacityHeight;
     visibleReset = true;
     const createdVisible = kit.MakeOnScreenGLSurface(
-      requireGrContext(), target.physicalWidth, target.physicalHeight, kit.ColorSpace.SRGB);
+      requireGrContext(), capacityWidth, capacityHeight, kit.ColorSpace.SRGB);
     if (!createdVisible)
-      throw new Error("CanvasKit could not recreate the exact on-screen GPU surface after resize.");
+      throw new Error("CanvasKit could not grow the on-screen GPU surface capacity after resize.");
     nextSurface = own<Surface>("Surface", createdVisible);
-    paint = own("Paint", new kit.Paint());
-    paint.object.setBlendMode(kit.BlendMode.Src);
     const nextCanvas = nextSurface.object.getCanvas();
-    nextCanvas.clear(kit.TRANSPARENT);
-    nextCanvas.drawImage(snapshot.object, 0, 0, paint.object);
+    const exactRect = kit.LTRBRect(0, 0, target.physicalWidth, target.physicalHeight);
+    nextCanvas.drawImageRectOptions(
+      snapshot.object,
+      exactRect,
+      exactRect,
+      kit.FilterMode.Nearest,
+      kit.MipmapMode.None,
+      requireResizeCommitPaint());
+    // makeImageSnapshot preserves the same-GrDirectContext dependency graph.
+    // This single destination flush submits both staging replay and the exact
+    // on-screen copy. Subsequent frames render directly into this grow-only
+    // capacity and avoid another backing reset or copy.
     nextSurface.object.flush();
 
     const priorSurface = surface;
@@ -586,10 +789,64 @@ function renderThroughResizeStaging(scene: RasterScene, target: ResizeEpoch): vo
     throw error;
   } finally {
     deleteOwned(nextSurface);
-    deleteOwned(paint);
     deleteOwned(snapshot);
-    deleteOwned(staging);
+    resizeStagingLastMilliseconds = performance.now() - started;
+    resizeStagingTotalMilliseconds += resizeStagingLastMilliseconds;
+    resizeStagingMaximumMilliseconds = Math.max(
+      resizeStagingMaximumMilliseconds, resizeStagingLastMilliseconds);
+    resizeStagingCount++;
   }
+}
+
+function acquireResizeStagingSurface(requiredWidth: number, requiredHeight: number): Surface {
+  if (resizeStagingSurface &&
+      resizeStagingCapacityWidth >= requiredWidth &&
+      resizeStagingCapacityHeight >= requiredHeight) {
+    resizeStagingSurfaceReuses++;
+    return resizeStagingSurface;
+  }
+
+  const width = resizeStagingCapacity(resizeStagingCapacityWidth, requiredWidth);
+  const height = resizeStagingCapacity(resizeStagingCapacityHeight, requiredHeight);
+  const created = requireCanvasKit().MakeRenderTarget(requireGrContext(), width, height);
+  if (!created)
+    throw new Error(`CanvasKit could not allocate the ${width}x${height} GPU resize staging pool.`);
+  if (!created.reportBackendTypeIsGPU()) {
+    created.delete();
+    throw new Error("CanvasKit resize staging pool is not GPU backed; fallback is forbidden.");
+  }
+
+  const prior = resizeStagingSurface;
+  resizeStagingSurface = created;
+  resizeStagingCapacityWidth = width;
+  resizeStagingCapacityHeight = height;
+  resizeStagingPeakPixels = Math.max(resizeStagingPeakPixels, width * height);
+  resizeStagingSurfaceAllocations++;
+  countCreated("ResizeStagingSurface", 0);
+  if (prior) {
+    prior.delete();
+    countDeleted("ResizeStagingSurface", 0);
+  }
+  return created;
+}
+
+function resizeStagingCapacity(current: number, required: number): number {
+  if (current >= required) return current;
+  if (current === 0) return required;
+  const growth = Math.max(
+    minimumResizeStagingGrowthPixels,
+    Math.min(maximumResizeStagingGrowthPixels, Math.ceil(current / 8)));
+  return Math.max(required, current + growth);
+}
+
+function requireResizeCommitPaint(): Paint {
+  if (resizeCommitPaint) return resizeCommitPaint;
+  const kit = requireCanvasKit();
+  const created = new kit.Paint();
+  created.setBlendMode(kit.BlendMode.Src);
+  resizeCommitPaint = created;
+  countCreated("ResizeCommitPaint", 0);
+  return created;
 }
 
 function replayCommandRange(
@@ -892,7 +1149,7 @@ function replayCommandRange(
             commandIndex = matchingRestore;
             break;
           }
-          const filter = readImageFilter(reader, context, 0, false);
+          const filter = readCachedImageFilter(reader, context);
           let paint: OwnedObject<Paint> | null = null;
           try {
             const offset = readPoint(reader);
@@ -905,12 +1162,12 @@ function replayCommandRange(
             stack.push({ kind: "layer" });
           } finally {
             deleteOwned(paint);
-            deleteOwned(filter);
+            releaseImageFilterLease(filter);
           }
           break;
         }
         case 51: {
-          const filter = readImageFilter(reader, context, 0, false);
+          const filter = readCachedImageFilter(reader, context);
           let paint: OwnedObject<Paint> | null = null;
           try {
             const blend = readEnum(reader, blendModeNames.length, "blend mode");
@@ -933,7 +1190,7 @@ function replayCommandRange(
             stack.push({ kind: "layer", restoreCount });
           } finally {
             deleteOwned(paint);
-            deleteOwned(filter);
+            releaseImageFilterLease(filter);
           }
           break;
         }
@@ -1434,6 +1691,16 @@ function readPaint(
   depth: number,
 ): OwnedObject<Paint> {
   requireDepth(depth, reader);
+  const cacheKey = paintCacheKey(reader, context);
+  const cached = cacheKey === null ? undefined : paintCache.get(cacheKey);
+  if (cached) {
+    paintCacheHits++;
+    paintCache.delete(cacheKey!);
+    paintCache.set(cacheKey!, cached);
+    reader.bytes(reader.remaining);
+    return own("Paint", cached.object.copy());
+  }
+  paintCacheMisses++;
   const color = reader.uint32();
   const style = readEnum(reader, 2, "paint style");
   const cap = readEnum(reader, 3, "stroke cap");
@@ -1490,6 +1757,14 @@ function readPaint(
     if (colorFilter) paint.object.setColorFilter(colorFilter.object);
     if (maskFilter) paint.object.setMaskFilter(maskFilter.object);
     if (imageFilter) paint.object.setImageFilter(imageFilter.object);
+    if (cacheKey !== null) {
+      while (paintCache.size >= maximumPaintCacheSize) {
+        const oldestKey = paintCache.keys().next().value as string | undefined;
+        if (oldestKey === undefined) break;
+        deleteCachedPaint(oldestKey, true);
+      }
+      paintCache.set(cacheKey, own("Paint", paint.object.copy()));
+    }
     return paint;
   } catch (error) {
     deleteOwned(paint);
@@ -1500,6 +1775,30 @@ function readPaint(
     deleteOwned(colorFilter);
     deleteOwned(shader);
   }
+}
+
+function paintCacheKey(reader: DisplayListCursor, context: ReplayContext): string | null {
+  if (reader.remaining > maximumCachedPaintWireBytes) return null;
+  const bytes = new Uint8Array(
+    context.view.buffer,
+    context.view.byteOffset + reader.offset,
+    reader.remaining);
+  const characters = new Array<string>(bytes.length);
+  for (let index = 0; index < bytes.length; index++) characters[index] = String.fromCharCode(bytes[index]);
+  return `${context.resourceDeclarationKey}|${characters.join("")}`;
+}
+
+function deleteCachedPaint(key: string, eviction: boolean): void {
+  const cached = paintCache.get(key);
+  if (!cached) return;
+  paintCache.delete(key);
+  deleteOwned(cached);
+  if (eviction) paintCacheEvictions++;
+}
+
+function clearPaintCache(invalidation: boolean): void {
+  for (const key of [...paintCache.keys()]) deleteCachedPaint(key, false);
+  if (invalidation) paintCacheInvalidations++;
 }
 
 function readShader(
@@ -1811,6 +2110,60 @@ function readImageFilter(
   }
 }
 
+function readCachedImageFilter(
+  reader: DisplayListCursor,
+  context: ReplayContext,
+): ImageFilterLease {
+  const cacheKey = imageFilterCacheKey(reader, context);
+  const cached = cacheKey === null ? undefined : imageFilterCache.get(cacheKey);
+  if (cached) {
+    imageFilterCacheHits++;
+    imageFilterCache.delete(cacheKey!);
+    imageFilterCache.set(cacheKey!, cached);
+    reader.bytes(cached.consumedBytes);
+    return { object: cached.filter.object, cropBounds: cached.filter.cropBounds, transient: null };
+  }
+  imageFilterCacheMisses++;
+  const startedAt = reader.offset;
+  const filter = readImageFilter(reader, context, 0, false)!;
+  if (cacheKey === null) return { object: filter.object, cropBounds: filter.cropBounds, transient: filter };
+  while (imageFilterCache.size >= maximumImageFilterCacheSize) {
+    const oldestKey = imageFilterCache.keys().next().value as string | undefined;
+    if (oldestKey === undefined) break;
+    deleteCachedImageFilter(oldestKey, true);
+  }
+  imageFilterCache.set(cacheKey, { filter, consumedBytes: reader.offset - startedAt });
+  return { object: filter.object, cropBounds: filter.cropBounds, transient: null };
+}
+
+function imageFilterCacheKey(reader: DisplayListCursor, context: ReplayContext): string | null {
+  if (reader.remaining > maximumCachedImageFilterWireBytes) return null;
+  const bytes = new Uint8Array(
+    context.view.buffer,
+    context.view.byteOffset + reader.offset,
+    reader.remaining);
+  const characters = new Array<string>(bytes.length);
+  for (let index = 0; index < bytes.length; index++) characters[index] = String.fromCharCode(bytes[index]);
+  return `${context.resourceDeclarationKey}|${characters.join("")}`;
+}
+
+function releaseImageFilterLease(lease: ImageFilterLease): void {
+  deleteOwned(lease.transient);
+}
+
+function deleteCachedImageFilter(key: string, eviction: boolean): void {
+  const cached = imageFilterCache.get(key);
+  if (!cached) return;
+  imageFilterCache.delete(key);
+  deleteOwned(cached.filter);
+  if (eviction) imageFilterCacheEvictions++;
+}
+
+function clearImageFilterCache(invalidation: boolean): void {
+  for (const key of [...imageFilterCache.keys()]) deleteCachedImageFilter(key, false);
+  if (invalidation) imageFilterCacheInvalidations++;
+}
+
 function findMatchingRestore(
   commands: readonly { readonly opcode: number }[],
   scopeStart: number,
@@ -2106,10 +2459,21 @@ function drawParagraph(
   x: number,
   y: number,
 ): void {
+  const cacheKey = paragraphCacheKey(recipe);
+  const cached = paragraphCache.get(cacheKey);
+  if (cached) {
+    paragraphCacheHits++;
+    paragraphCache.delete(cacheKey);
+    paragraphCache.set(cacheKey, cached);
+    context.canvas.drawParagraph(cached.paragraph.object, x, y);
+    return;
+  }
+  paragraphCacheMisses++;
   let builder: OwnedObject<ReturnType<CanvasKit["ParagraphBuilder"]["MakeFromFontCollection"]>> | null = null;
   let paragraph: OwnedObject<Paragraph> | null = null;
   try {
-    const fonts = paragraphFontCollection(context, recipe);
+    const fontCollectionKey = paragraphFontCollectionKey(recipe);
+    const fonts = paragraphFontCollection(context, recipe, fontCollectionKey);
     const paragraphStyle = new context.kit.ParagraphStyle({
       ellipsis: recipe.ellipsis ?? undefined,
       maxLines: recipe.maxLines === 0 ? undefined : recipe.maxLines,
@@ -2154,11 +2518,54 @@ function drawParagraph(
       throw new Error(
         `CanvasKit paragraph geometry mismatch: UI=${recipe.measuredWidth}x${recipe.measuredHeight}, ` +
         `Raster=${actualLongestLine}x${paragraph.object.getHeight()}.`);
-    context.canvas.drawParagraph(paragraph.object, x, y);
+    while (paragraphCache.size >= maximumParagraphCacheSize) {
+      const oldestKey = paragraphCache.keys().next().value as string | undefined;
+      if (oldestKey === undefined) break;
+      deleteCachedParagraph(oldestKey, true);
+    }
+    const retained = paragraph;
+    paragraph = null;
+    paragraphCache.set(cacheKey, { paragraph: retained, fontCollectionKey });
+    context.canvas.drawParagraph(retained.object, x, y);
   } finally {
     deleteOwned(paragraph);
     deleteOwned(builder);
   }
+}
+
+function paragraphCacheKey(recipe: ParsedParagraph): string {
+  return JSON.stringify({
+    ...recipe,
+    font: paragraphResourceIdentity(recipe.font),
+    metricsHash: recipe.metricsHash.toString(16),
+    fallbackFonts: recipe.fallbackFonts.map(paragraphResourceIdentity),
+  });
+}
+
+function paragraphResourceIdentity(reference: DisplayResourceReference): readonly [number, string, number] {
+  return [reference.kind, reference.id.toString(16), reference.version];
+}
+
+function deleteCachedParagraph(key: string, eviction: boolean): void {
+  const cached = paragraphCache.get(key);
+  if (!cached) return;
+  paragraphCache.delete(key);
+  deleteOwned(cached.paragraph);
+  if (eviction) paragraphCacheEvictions++;
+}
+
+function clearParagraphCache(invalidation: boolean): void {
+  for (const key of [...paragraphCache.keys()]) deleteCachedParagraph(key, false);
+  if (invalidation) paragraphCacheInvalidations++;
+}
+
+function clearParagraphCaches(invalidation: boolean): void {
+  clearParagraphCache(invalidation);
+  for (const fonts of paragraphFontCollectionCache.values()) {
+    deleteOwned(fonts.collection);
+    deleteOwned(fonts.provider);
+  }
+  paragraphFontCollectionCache.clear();
 }
 
 function paragraphRunTextStyle(kit: CanvasKit, run: ParsedParagraphTextRun) {
@@ -2208,14 +2615,15 @@ function paragraphRunTextStyle(kit: CanvasKit, run: ParsedParagraphTextRun) {
 function paragraphFontCollection(
   context: ReplayContext,
   recipe: ParsedParagraph,
+  key: string,
 ): ParagraphFontCollection {
+  const cached = paragraphFontCollectionCache.get(key);
+  if (cached) {
+    paragraphFontCollectionCache.delete(key);
+    paragraphFontCollectionCache.set(key, cached);
+    return cached;
+  }
   const references = [recipe.font, ...recipe.fallbackFonts];
-  const key = [
-    `${recipe.font.kind}/${recipe.font.id}/${recipe.font.version}/${recipe.fontFamily}`,
-    ...recipe.fallbackFonts.map(reference => `${reference.kind}/${reference.id}/${reference.version}`),
-  ].join(";");
-  const cached = context.paragraphFontCollections.get(key);
-  if (cached) return cached;
   let provider: OwnedObject<TypefaceFontProvider> | null = null;
   let collection: OwnedObject<FontCollection> | null = null;
   try {
@@ -2227,13 +2635,35 @@ function paragraphFontCollection(
     collection = own("FontCollection", context.kit.FontCollection.Make());
     collection.object.setDefaultFontManager(provider.object);
     const created = { provider, collection };
-    context.paragraphFontCollections.set(key, created);
+    while (paragraphFontCollectionCache.size >= maximumParagraphFontCollectionCacheSize) {
+      // Paragraphs retain shaping data owned by their font collection. Drop
+      // those dependants before evicting the least-recently-used collection.
+      const oldestKey = paragraphFontCollectionCache.keys().next().value as string | undefined;
+      if (oldestKey === undefined) break;
+      for (const [paragraphKey, paragraph] of paragraphCache) {
+        if (paragraph.fontCollectionKey === oldestKey) deleteCachedParagraph(paragraphKey, false);
+      }
+      const oldest = paragraphFontCollectionCache.get(oldestKey)!;
+      paragraphFontCollectionCache.delete(oldestKey);
+      deleteOwned(oldest.collection);
+      deleteOwned(oldest.provider);
+      paragraphFontCollectionCacheEvictions++;
+    }
+    paragraphFontCollectionCache.set(key, created);
     return created;
   } catch (error) {
     deleteOwned(collection);
     deleteOwned(provider);
     throw error;
   }
+}
+
+function paragraphFontCollectionKey(recipe: ParsedParagraph): string {
+  return JSON.stringify([
+    paragraphResourceIdentity(recipe.font),
+    recipe.fontFamily,
+    recipe.fallbackFonts.map(paragraphResourceIdentity),
+  ]);
 }
 
 function registerParagraphFont(
@@ -2557,24 +2987,21 @@ function ensureSurface(target: ResizeEpoch): void {
   if (contextLost) throw new Error("Doroti CanvasKit context is lost.");
   const visible = requireCanvas();
   const expectedSurfaceGeneration = canvasKitSurfaceGeneration(rasterSessionId, target.generation);
-  if (surface && visible.width === target.physicalWidth && visible.height === target.physicalHeight) {
+  if (visible.width < target.physicalWidth || visible.height < target.physicalHeight)
+    throw new Error(
+      `CanvasKit visible capacity ${visible.width}x${visible.height} is smaller than ` +
+      `${target.physicalWidth}x${target.physicalHeight}.`);
+  if (surface) {
     surfaceGeneration = expectedSurfaceGeneration;
     return;
   }
-  if (visible.width !== target.physicalWidth) visible.width = target.physicalWidth;
-  if (visible.height !== target.physicalHeight) visible.height = target.physicalHeight;
   const nextSurface = requireCanvasKit().MakeOnScreenGLSurface(
-    requireGrContext(), target.physicalWidth, target.physicalHeight, requireCanvasKit().ColorSpace.SRGB);
+    requireGrContext(), visible.width, visible.height, requireCanvasKit().ColorSpace.SRGB);
   if (!nextSurface)
     throw new Error("Doroti CanvasKit MakeOnScreenGLSurface failed; no software/Canvas2D fallback is allowed.");
-  const priorSurface = surface;
   surface = nextSurface;
   surfaceGeneration = expectedSurfaceGeneration;
   countCreated("Surface", 0);
-  if (priorSurface) {
-    priorSurface.delete();
-    countDeleted("Surface", 0);
-  }
 }
 
 function receiptScene(scene: RasterScene, success: boolean, reason: string): void {
@@ -2657,6 +3084,11 @@ function retainResource(message: Record<string, unknown>): void {
       throw new Error(`stale resource generation ${generation}; current=${existing.generation}`);
     const ownedBytes = new Uint8Array(buffer).slice();
     const object = createResourceObject(kind, descriptorJson, ownedBytes);
+    if (existing) {
+      clearPaintCache(true);
+      clearImageFilterCache(true);
+      if (existing.kind === "font" || kind === "font") clearParagraphCaches(true);
+    }
     if (existing) deleteResource(existing);
     if (existing) resources.delete(resourceKey(resourceKindCode(existing.kind), BigInt(resourceId), existing.generation));
     const resource: RasterResource = {
@@ -2691,6 +3123,9 @@ function releaseResource(message: Record<string, unknown>): void {
     terminal = "failed";
     reason = `stale release generation ${generation}; current=${existing.generation}`;
   } else {
+    clearPaintCache(true);
+    clearImageFilterCache(true);
+    if (existing.kind === "font") clearParagraphCaches(true);
     deleteResource(existing);
     resources.delete(resourceKey(resourceKindCode(existing.kind), BigInt(resourceId), existing.generation));
   }
@@ -2744,6 +3179,9 @@ function disposeRasterRole(): void {
   if (latestScene && !latestScene.terminal) failScene(latestScene, "Raster Worker disposing", false);
   currentScene = null;
   latestScene = null;
+  clearPaintCache(false);
+  clearImageFilterCache(false);
+  clearParagraphCaches(false);
   for (const resource of resources.values()) deleteResource(resource);
   resources.clear();
   for (const pooledSurface of imageFilterSurfacePool) {
@@ -2752,11 +3190,25 @@ function disposeRasterRole(): void {
   }
   imageFilterSurfacePool.length = 0;
   nextImageFilterSurfaceSlot = 0;
+  if (resizeStagingSurface) {
+    resizeStagingSurface.delete();
+    countDeleted("ResizeStagingSurface", 0);
+    resizeStagingSurface = null;
+  }
+  resizeStagingCapacityWidth = 0;
+  resizeStagingCapacityHeight = 0;
+  if (resizeCommitPaint) {
+    resizeCommitPaint.delete();
+    countDeleted("ResizeCommitPaint", 0);
+    resizeCommitPaint = null;
+  }
   if (surface) {
     surface.delete();
     countDeleted("Surface", 0);
     surface = null;
   }
+  frontPhysicalWidth = 0;
+  frontPhysicalHeight = 0;
   if (grContext) {
     grContext.delete();
     countDeleted("GrDirectContext", 0);
@@ -2803,8 +3255,66 @@ function diagnostics(): Readonly<Record<string, unknown>> {
     lastFailureReason,
     flushCount,
     lastFrontGeneration,
+    latestTargetPriority: {
+      minimumGenerationGap: latestTargetPriorityMinimumGenerationGap,
+      maximumFrontAgeMilliseconds: latestTargetPriorityMaximumFrontAgeMilliseconds,
+      minimumPriorReplayMilliseconds: latestTargetPriorityMinimumPriorReplayMilliseconds,
+      skippedScenes: latestTargetPrioritySkippedScenes,
+      forcedProgressiveScenes: latestTargetPriorityForcedProgressiveScenes,
+      maximumSkippedGenerationGap: latestTargetPriorityMaximumSkippedGenerationGap,
+    },
+    resizeTargetIngress: {
+      mainFastLaneCount: mainFastLaneResizeTargetCount,
+      uiOrderedCount: uiOrderedResizeTargetCount,
+    },
     resourceCount: resources.size,
     resourceBytes: [...resources.values()].reduce((total, resource) => total + resource.byteLength, 0),
+    paragraphCache: {
+      capacity: maximumParagraphCacheSize,
+      size: paragraphCache.size,
+      hits: paragraphCacheHits,
+      misses: paragraphCacheMisses,
+      evictions: paragraphCacheEvictions,
+      invalidations: paragraphCacheInvalidations,
+      fontCollectionCapacity: maximumParagraphFontCollectionCacheSize,
+      fontCollectionSize: paragraphFontCollectionCache.size,
+      fontCollectionEvictions: paragraphFontCollectionCacheEvictions,
+    },
+    paintCache: {
+      capacity: maximumPaintCacheSize,
+      size: paintCache.size,
+      maximumWireBytes: maximumCachedPaintWireBytes,
+      hits: paintCacheHits,
+      misses: paintCacheMisses,
+      evictions: paintCacheEvictions,
+      invalidations: paintCacheInvalidations,
+    },
+    imageFilterCache: {
+      capacity: maximumImageFilterCacheSize,
+      size: imageFilterCache.size,
+      maximumWireBytes: maximumCachedImageFilterWireBytes,
+      hits: imageFilterCacheHits,
+      misses: imageFilterCacheMisses,
+      evictions: imageFilterCacheEvictions,
+      invalidations: imageFilterCacheInvalidations,
+    },
+    resizeStagingPool: {
+      allocations: resizeStagingSurfaceAllocations,
+      reuses: resizeStagingSurfaceReuses,
+      capacityWidth: resizeStagingCapacityWidth,
+      capacityHeight: resizeStagingCapacityHeight,
+      peakPixels: resizeStagingPeakPixels,
+    },
+    timings: {
+      replayCount,
+      replayTotalMilliseconds,
+      replayLastMilliseconds,
+      replayMaximumMilliseconds,
+      resizeStagingCount,
+      resizeStagingTotalMilliseconds,
+      resizeStagingLastMilliseconds,
+      resizeStagingMaximumMilliseconds,
+    },
     objects: Object.fromEntries(objectCounters),
     referenceCompatibility: {
       addSuperellipseNoOps: referenceCompatibilityAddSuperellipseNoOps,
@@ -2812,8 +3322,10 @@ function diagnostics(): Readonly<Record<string, unknown>> {
     },
     diagnosticRasterStallCount,
     lastDiagnosticRasterStallMilliseconds,
-    physicalWidth: canvas?.width ?? 0,
-    physicalHeight: canvas?.height ?? 0,
+    physicalWidth: frontPhysicalWidth,
+    physicalHeight: frontPhysicalHeight,
+    capacityWidth: canvas?.width ?? 0,
+    capacityHeight: canvas?.height ?? 0,
   };
 }
 
@@ -2851,6 +3363,39 @@ function validateResizeTarget(value: ResizeEpoch | null): asserts value is Resiz
       !Number.isSafeInteger(value.physicalHeight) || value.physicalHeight <= 0 ||
       !Number.isFinite(value.devicePixelRatio) || value.devicePixelRatio <= 0)
     throw new Error("Doroti CanvasKit Raster role received invalid resize metrics.");
+}
+
+function rememberResizeTarget(value: ResizeEpoch): void {
+  const current = resizeTargets.get(value.generation);
+  if (current) {
+    if (current.logicalWidth !== value.logicalWidth || current.logicalHeight !== value.logicalHeight ||
+        current.physicalWidth !== value.physicalWidth || current.physicalHeight !== value.physicalHeight ||
+        current.devicePixelRatio !== value.devicePixelRatio)
+      throw new Error(`Doroti CanvasKit resize generation ${value.generation} changed identity.`);
+    return;
+  }
+  if (resizeTarget && value.generation < resizeTarget.generation) return;
+  resizeTarget = value;
+  resizeTargets.set(value.generation, value);
+  pruneResizeTargets();
+}
+
+function pruneResizeTargets(): void {
+  for (const generation of resizeTargets.keys()) {
+    if (generation < lastFrontGeneration) resizeTargets.delete(generation);
+  }
+  while (resizeTargets.size > maximumResizeTargetHistory) {
+    const oldest = resizeTargets.keys().next().value as number | undefined;
+    if (oldest === undefined || oldest === resizeTarget?.generation) break;
+    resizeTargets.delete(oldest);
+  }
+}
+
+function exactResizeGeneration(value: bigint): number {
+  const generation = Number(value);
+  if (!Number.isSafeInteger(generation) || generation <= 0 || BigInt(generation) !== value)
+    throw new Error("Doroti CanvasKit DisplayList resize generation is not an exact positive integer.");
+  return generation;
 }
 
 function requireCanvasKit(): CanvasKit {

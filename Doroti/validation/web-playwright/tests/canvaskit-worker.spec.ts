@@ -3,7 +3,9 @@ import { test, expect } from "./helpers/fixtures.js";
 import {
   assertPresenterContract,
   captureDiagnostics,
+  frontCommitGeneration,
   openDoroti,
+  resetDiagnostics,
   waitForSettledPresenter,
   type CanvasKitRasterDiagnostics,
   type CanvasKitUiDiagnostics,
@@ -262,7 +264,7 @@ test("CanvasKit Raster diagnostic stall leaves UI heartbeat and input dispatch l
   assertPresenterContract(after);
 });
 
-test("@dpr CanvasKit keeps CSS 1080x720 and physical backing 2160x1440 without transform", async ({
+test("@dpr CanvasKit keeps an unscaled grow-only backing over the exact 1080x720 front", async ({
   page,
   runtimeErrors,
 }) => {
@@ -299,23 +301,31 @@ test("@dpr CanvasKit keeps CSS 1080x720 and physical backing 2160x1440 without t
       transform: style.transform,
       transformOrigin: style.transformOrigin,
       objectFit: style.objectFit,
+      frontLogicalWidth: Number(element.dataset.dorotiFrontLogicalWidth),
+      frontLogicalHeight: Number(element.dataset.dorotiFrontLogicalHeight),
     };
   });
 
-  expect(geometry.cssWidth).toBe(1080);
-  expect(geometry.cssHeight).toBe(720);
-  expect(geometry.backingWidth).toBe(2160);
-  expect(geometry.backingHeight).toBe(1440);
+  expect(geometry.backingWidth).toBeGreaterThanOrEqual(2160);
+  expect(geometry.backingHeight).toBeGreaterThanOrEqual(1440);
+  expect(geometry.backingWidth / geometry.cssWidth).toBeCloseTo(2, 6);
+  expect(geometry.backingHeight / geometry.cssHeight).toBeCloseTo(2, 6);
+  expect(geometry.frontLogicalWidth).toBe(1080);
+  expect(geometry.frontLogicalHeight).toBe(720);
   expect(geometry.transform).toBe("none");
   expect(geometry.objectFit).toBe("cover");
   expect(raster.physicalWidth).toBe(2160);
   expect(raster.physicalHeight).toBe(1440);
+  expect(raster.capacityWidth).toBe(geometry.backingWidth);
+  expect(raster.capacityHeight).toBe(geometry.backingHeight);
   expect(bundle.presenter.rasterWidth).toBe(2160);
   expect(bundle.presenter.rasterHeight).toBe(1440);
+  expect(bundle.presenter.displayWidth).toBe(geometry.backingWidth);
+  expect(bundle.presenter.displayHeight).toBe(geometry.backingHeight);
   expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
   expect(bundle.presenter.exactCommit).toBe(true);
   const marker = topLeftMarkerBounds(
-    await page.locator("#doroti-surface").screenshot(), geometry.cssWidth);
+    await page.locator(".doroti-root").screenshot(), 1080);
   expect(marker).not.toBeNull();
   expect(marker!.width).toBeGreaterThanOrEqual(20 * marker!.screenshotScale);
   expect(marker!.width).toBeLessThanOrEqual(24 * marker!.screenshotScale);
@@ -323,6 +333,157 @@ test("@dpr CanvasKit keeps CSS 1080x720 and physical backing 2160x1440 without t
   expect(marker!.height).toBeLessThanOrEqual(17 * marker!.screenshotScale);
   expect(runtimeErrors).toEqual([]);
   assertPresenterContract(bundle);
+});
+
+test("CanvasKit continuous resize keeps its grow-only backing unscaled while exact fronts advance", async ({
+  page,
+  runtimeErrors,
+}) => {
+  const initial = await openDoroti(page);
+  test.skip(initial.presenter.mode !== canvasKitMode, "CanvasKit split-Worker validation only");
+  const initialParagraphCache = initial.presenter.rasterDiagnostics!.paragraphCache;
+  const initialPaintCache = initial.presenter.rasterDiagnostics!.paintCache;
+  const initialImageFilterCache = initial.presenter.rasterDiagnostics!.imageFilterCache;
+  await resetDiagnostics(page);
+
+  const samples: Array<{
+    cssWidth: number; cssHeight: number; backingWidth: number; backingHeight: number;
+    devicePixelRatio: number;
+  }> = [];
+  const sizes = Array.from({ length: 36 }, (_, index) => ({
+    width: 900 + ((index * 53) % 420),
+    height: 620 + ((index * 37) % 240),
+  }));
+  for (const size of sizes) {
+    await page.setViewportSize(size);
+    samples.push(await page.locator("#doroti-surface").evaluate((canvas) => {
+      const element = canvas as HTMLCanvasElement;
+      const rect = element.getBoundingClientRect();
+      return {
+        cssWidth: rect.width,
+        cssHeight: rect.height,
+        backingWidth: element.width,
+        backingHeight: element.height,
+        devicePixelRatio: globalThis.devicePixelRatio,
+      };
+    }));
+    await page.waitForTimeout(8);
+  }
+
+  const bundle = await waitForSettledPresenter(page);
+  const { ui, raster } = requireCanvasKitDiagnostics(bundle);
+  const fronts = bundle.trace.filter((entry) => entry.phase === "front-commit");
+  const progressive = fronts.filter((entry) => {
+    const detail = JSON.parse(entry.detail ?? "{}") as { progressive?: boolean };
+    return detail.progressive === true;
+  });
+  const generations = fronts.map(frontCommitGeneration);
+
+  expect(runtimeErrors).toEqual([]);
+  expect(samples.every((sample) =>
+    Math.abs(sample.backingWidth / sample.devicePixelRatio - sample.cssWidth) <= 0.01 &&
+    Math.abs(sample.backingHeight / sample.devicePixelRatio - sample.cssHeight) <= 0.01)).toBe(true);
+  expect(new Set(samples.map((sample) => `${sample.backingWidth}x${sample.backingHeight}`)).size).toBe(1);
+  expect(generations.every((generation, index) =>
+    index === 0 || generation >= generations[index - 1])).toBe(true);
+  expect(progressive.length).toBeGreaterThan(0);
+  expect(new Set(generations).size).toBeGreaterThanOrEqual(8);
+  expect(raster.latestTargetPriority.minimumGenerationGap).toBe(2);
+  expect(raster.latestTargetPriority.maximumFrontAgeMilliseconds).toBe(40);
+  expect(raster.latestTargetPriority.minimumPriorReplayMilliseconds).toBe(8);
+  expect(raster.latestTargetPriority.maximumSkippedGenerationGap)
+    .toBeGreaterThanOrEqual(raster.latestTargetPriority.skippedScenes > 0 ? 2 : 0);
+  expect(raster.resizeTargetIngress.mainFastLaneCount).toBeGreaterThan(0);
+  expect(raster.resizeTargetIngress.uiOrderedCount).toBeGreaterThan(0);
+  expect(ui.frameTimings.liveResizeThrottle.targetFramesPerSecond).toBe(30);
+  expect(ui.frameTimings.liveResizeThrottle.frameIntervalMilliseconds).toBeCloseTo(1000 / 30, 6);
+  expect(ui.frameTimings.liveResizeThrottle.activityWindowMilliseconds).toBe(100);
+  expect(ui.frameTimings.liveResizeThrottle.dispatchCount).toBeGreaterThan(0);
+  expect(ui.frameTimings.liveResizeThrottle.minimumDispatchIntervalMilliseconds).not.toBeNull();
+  expect(ui.frameTimings.liveResizeThrottle.minimumDispatchIntervalMilliseconds!).toBeGreaterThanOrEqual(32);
+  expect(raster.paragraphCache.hits).toBeGreaterThan(initialParagraphCache.hits);
+  expect(raster.paragraphCache.size).toBeGreaterThan(0);
+  expect(raster.paragraphCache.size).toBeLessThanOrEqual(raster.paragraphCache.capacity);
+  expect(raster.paragraphCache.fontCollectionSize)
+    .toBeLessThanOrEqual(raster.paragraphCache.fontCollectionCapacity);
+  expect(raster.objects.Paragraph?.live).toBe(raster.paragraphCache.size);
+  expect(raster.objects.FontCollection?.live).toBe(raster.paragraphCache.fontCollectionSize);
+  expect(raster.objects.TypefaceFontProvider?.live).toBe(raster.paragraphCache.fontCollectionSize);
+  expect(raster.paintCache.hits).toBeGreaterThan(initialPaintCache.hits);
+  expect(raster.paintCache.size).toBeGreaterThan(0);
+  expect(raster.paintCache.size).toBeLessThanOrEqual(raster.paintCache.capacity);
+  expect(raster.objects.Paint?.live).toBe(raster.paintCache.size);
+  expect(raster.imageFilterCache.hits).toBeGreaterThan(initialImageFilterCache.hits);
+  expect(raster.imageFilterCache.size).toBeGreaterThan(0);
+  expect(raster.imageFilterCache.size).toBeLessThanOrEqual(raster.imageFilterCache.capacity);
+  expect(raster.objects.ImageFilter?.live).toBe(raster.imageFilterCache.size);
+  expect(raster.capacityWidth).toBeGreaterThanOrEqual(raster.physicalWidth);
+  expect(raster.capacityHeight).toBeGreaterThanOrEqual(raster.physicalHeight);
+  expect(raster.timings.resizeStagingCount).toBeLessThan(generations.length / 4);
+  expect(raster.resizeStagingPool.allocations).toBeLessThanOrEqual(raster.timings.resizeStagingCount);
+  expect(raster.resizeStagingPool.reuses).toBeLessThanOrEqual(raster.timings.resizeStagingCount);
+  expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
+  expect(bundle.presenter.exactCommit).toBe(true);
+  assertPresenterContract(bundle);
+});
+
+test("CanvasKit grows visible capacity through one continuity staging commit, then reuses it", async ({
+  page,
+  runtimeErrors,
+}) => {
+  const initial = await openDoroti(page);
+  test.skip(initial.presenter.mode !== canvasKitMode, "CanvasKit split-Worker validation only");
+  const initialRaster = requireCanvasKitDiagnostics(initial).raster;
+  const initialGeometry = await page.locator("#doroti-surface").evaluate((canvas) => ({
+    backingWidth: (canvas as HTMLCanvasElement).width,
+    backingHeight: (canvas as HTMLCanvasElement).height,
+    devicePixelRatio: globalThis.devicePixelRatio,
+  }));
+  const beyondCapacity = {
+    width: Math.ceil(initialGeometry.backingWidth / initialGeometry.devicePixelRatio) + 160,
+    height: Math.ceil(initialGeometry.backingHeight / initialGeometry.devicePixelRatio) + 120,
+  };
+  await page.setViewportSize(beyondCapacity);
+  const grown = await waitForSettledPresenter(page);
+  const grownRaster = requireCanvasKitDiagnostics(grown).raster;
+
+  expect(grownRaster.timings.resizeStagingCount)
+    .toBeGreaterThan(initialRaster.timings.resizeStagingCount);
+  expect(grownRaster.resizeStagingPool.allocations).toBeGreaterThan(0);
+  expect(grownRaster.capacityWidth).toBeGreaterThanOrEqual(grown.snapshot.resizeEpoch.physicalWidth);
+  expect(grownRaster.capacityHeight).toBeGreaterThanOrEqual(grown.snapshot.resizeEpoch.physicalHeight);
+  expect(grownRaster.objects.ResizeStagingSurface?.live).toBe(1);
+  expect(grownRaster.objects.ResizeCommitPaint?.live).toBe(1);
+  expect(grownRaster.objects.Surface?.live).toBe(1);
+
+  const withinCapacity = {
+    width: Math.floor(grownRaster.capacityWidth / grown.snapshot.devicePixelRatio) - 32,
+    height: Math.floor(grownRaster.capacityHeight / grown.snapshot.devicePixelRatio) - 32,
+  };
+  await page.setViewportSize(withinCapacity);
+  const reused = await waitForSettledPresenter(page);
+  const reusedRaster = requireCanvasKitDiagnostics(reused).raster;
+  const finalGeometry = await page.locator("#doroti-surface").evaluate((canvas) => {
+    const element = canvas as HTMLCanvasElement;
+    return {
+      backingWidth: element.width,
+      backingHeight: element.height,
+      frontLogicalWidth: Number(element.dataset.dorotiFrontLogicalWidth),
+      frontLogicalHeight: Number(element.dataset.dorotiFrontLogicalHeight),
+    };
+  });
+
+  expect(reusedRaster.timings.resizeStagingCount).toBe(grownRaster.timings.resizeStagingCount);
+  expect(reusedRaster.capacityWidth).toBe(grownRaster.capacityWidth);
+  expect(reusedRaster.capacityHeight).toBe(grownRaster.capacityHeight);
+  expect(finalGeometry.backingWidth).toBe(grownRaster.capacityWidth);
+  expect(finalGeometry.backingHeight).toBe(grownRaster.capacityHeight);
+  expect(finalGeometry.frontLogicalWidth).toBe(withinCapacity.width);
+  expect(finalGeometry.frontLogicalHeight).toBe(withinCapacity.height);
+  expect(reused.presenter.frontGeneration).toBe(reused.snapshot.resizeEpoch.generation);
+  expect(reused.presenter.exactCommit).toBe(true);
+  expect(runtimeErrors).toEqual([]);
+  assertPresenterContract(reused);
 });
 
 test("CanvasKit Raster survives three bounded replacements with exact leases and resource replay", async ({

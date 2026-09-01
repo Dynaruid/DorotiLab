@@ -1,4 +1,3 @@
-using System.Buffers;
 using System.Buffers.Binary;
 using System.Text;
 
@@ -6,6 +5,9 @@ namespace Doroti.Graphics.DisplayList;
 
 public static class DisplayListChecksum
 {
+    private const uint Polynomial = 0xEDB88320u;
+    private static readonly uint[][] Tables = CreateTables();
+
     public static uint Compute(ReadOnlySpan<byte> buffer)
     {
         if (buffer.Length < DisplayListFormat.HeaderSize)
@@ -14,68 +16,113 @@ public static class DisplayListChecksum
         }
 
         var crc = uint.MaxValue;
-        for (var index = 0; index < buffer.Length; index++)
-        {
-            var value = index >= DisplayListFormat.ChecksumOffset &&
-                index < DisplayListFormat.ChecksumOffset + DisplayListFormat.ChecksumSize
-                ? (byte)0
-                : buffer[index];
-            crc ^= value;
-            for (var bit = 0; bit < 8; bit++)
-            {
-                crc = (crc & 1) == 0 ? crc >> 1 : (crc >> 1) ^ 0xEDB88320u;
-            }
-        }
+        Append(ref crc, buffer[..DisplayListFormat.ChecksumOffset]);
+        for (var index = 0; index < DisplayListFormat.ChecksumSize; index++)
+            crc = Tables[0][(byte)crc] ^ (crc >> 8);
+        Append(ref crc, buffer[(DisplayListFormat.ChecksumOffset + DisplayListFormat.ChecksumSize)..]);
 
         return ~crc;
+    }
+
+    private static void Append(ref uint crc, ReadOnlySpan<byte> buffer)
+    {
+        var table0 = Tables[0];
+        while (buffer.Length >= 8)
+        {
+            crc ^= BinaryPrimitives.ReadUInt32LittleEndian(buffer);
+            crc =
+                Tables[7][(byte)crc] ^
+                Tables[6][(byte)(crc >> 8)] ^
+                Tables[5][(byte)(crc >> 16)] ^
+                Tables[4][(byte)(crc >> 24)] ^
+                Tables[3][buffer[4]] ^
+                Tables[2][buffer[5]] ^
+                Tables[1][buffer[6]] ^
+                table0[buffer[7]];
+            buffer = buffer[8..];
+        }
+        foreach (var value in buffer)
+            crc = table0[(byte)(crc ^ value)] ^ (crc >> 8);
+    }
+
+    private static uint[][] CreateTables()
+    {
+        var tables = new uint[8][];
+        tables[0] = new uint[256];
+        for (uint index = 0; index < tables[0].Length; index++)
+        {
+            var value = index;
+            for (var bit = 0; bit < 8; bit++)
+                value = (value & 1) == 0 ? value >> 1 : (value >> 1) ^ Polynomial;
+            tables[0][index] = value;
+        }
+        for (var slice = 1; slice < tables.Length; slice++)
+        {
+            tables[slice] = new uint[256];
+            for (var index = 0; index < tables[slice].Length; index++)
+            {
+                var prior = tables[slice - 1][index];
+                tables[slice][index] = (prior >> 8) ^ tables[0][(byte)prior];
+            }
+        }
+        return tables;
     }
 }
 
 internal sealed class DisplayListBinaryWriter
 {
-    private readonly ArrayBufferWriter<byte> _buffer = new();
+    private byte[] _buffer;
+    private int _length;
 
-    internal int Length => _buffer.WrittenCount;
+    internal DisplayListBinaryWriter(int initialCapacity = 256)
+    {
+        if (initialCapacity < 0) throw new ArgumentOutOfRangeException(nameof(initialCapacity));
+        _buffer = new byte[initialCapacity];
+    }
 
-    internal ReadOnlySpan<byte> WrittenSpan => _buffer.WrittenSpan;
+    internal int Length => _length;
 
-    internal byte[] ToArray() => _buffer.WrittenSpan.ToArray();
+    internal ReadOnlySpan<byte> WrittenSpan => _buffer.AsSpan(0, _length);
+
+    internal byte[] ToArray() => WrittenSpan.ToArray();
 
     internal void WriteByte(byte value)
     {
-        var destination = _buffer.GetSpan(1);
-        destination[0] = value;
-        _buffer.Advance(1);
+        EnsureCapacity(1);
+        _buffer[_length++] = value;
     }
 
     internal void WriteBoolean(bool value) => WriteByte(value ? (byte)1 : (byte)0);
 
     internal void WriteUInt16(ushort value)
     {
-        var destination = _buffer.GetSpan(sizeof(ushort));
+        var destination = GetDestination(sizeof(ushort));
         BinaryPrimitives.WriteUInt16LittleEndian(destination, value);
-        _buffer.Advance(sizeof(ushort));
     }
 
     internal void WriteUInt32(uint value)
     {
-        var destination = _buffer.GetSpan(sizeof(uint));
+        var destination = GetDestination(sizeof(uint));
         BinaryPrimitives.WriteUInt32LittleEndian(destination, value);
-        _buffer.Advance(sizeof(uint));
+    }
+
+    internal void PatchUInt32(int offset, uint value)
+    {
+        if (offset < 0 || offset > _length - sizeof(uint))
+            throw new ArgumentOutOfRangeException(nameof(offset));
+        BinaryPrimitives.WriteUInt32LittleEndian(_buffer.AsSpan(offset, sizeof(uint)), value);
     }
 
     internal void WriteInt32(int value)
     {
-        var destination = _buffer.GetSpan(sizeof(int));
+        var destination = GetDestination(sizeof(int));
         BinaryPrimitives.WriteInt32LittleEndian(destination, value);
-        _buffer.Advance(sizeof(int));
     }
 
     internal void WriteUInt64(ulong value)
     {
-        var destination = _buffer.GetSpan(sizeof(ulong));
+        var destination = GetDestination(sizeof(ulong));
         BinaryPrimitives.WriteUInt64LittleEndian(destination, value);
-        _buffer.Advance(sizeof(ulong));
     }
 
     internal void WriteSingle(float value)
@@ -86,8 +133,24 @@ internal sealed class DisplayListBinaryWriter
 
     internal void WriteBytes(ReadOnlySpan<byte> values)
     {
-        values.CopyTo(_buffer.GetSpan(values.Length));
-        _buffer.Advance(values.Length);
+        values.CopyTo(GetDestination(values.Length));
+    }
+
+    private Span<byte> GetDestination(int length)
+    {
+        EnsureCapacity(length);
+        var destination = _buffer.AsSpan(_length, length);
+        _length += length;
+        return destination;
+    }
+
+    private void EnsureCapacity(int additionalLength)
+    {
+        if (additionalLength < 0) throw new ArgumentOutOfRangeException(nameof(additionalLength));
+        var required = checked(_length + additionalLength);
+        if (required <= _buffer.Length) return;
+        var doubled = _buffer.Length == 0 ? 256 : checked(_buffer.Length * 2);
+        Array.Resize(ref _buffer, Math.Max(required, doubled));
     }
 }
 

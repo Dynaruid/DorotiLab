@@ -142,6 +142,7 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
 
   let presenter!: PresenterState;
   const diagnostics: ExternalWorkerPresenterDiagnostics = {
+    commitCanvasCssWithFront: true,
     snapshot: () => presenterSnapshot(
       presenter, leaseLedger, currentSnapshot, assetVerification),
     command(action) {
@@ -235,6 +236,20 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
         generation: Math.max(currentSnapshot.generation, hostGeneration),
         resizeEpoch,
       };
+      // The UI Worker can spend tens of milliseconds inside one managed WASM
+      // frame and cannot service its message queue during that call. Give the
+      // independent Raster Worker the browser's newest immutable target
+      // directly; the ordered UI -> Raster copy below remains the authority
+      // required before a matching DisplayList is submitted.
+      if (presenter.rasterReady && !restarting && !disposed) {
+        presenter.rasterWorker.postMessage({
+          protocolVersion,
+          topologyVersion,
+          rasterSessionId: presenter.rasterSessionId,
+          kind: "resize-target-fast-lane",
+          resizeEpoch,
+        });
+      }
       postUi("resize-epoch", { hostId, hostGeneration, resizeEpoch });
     },
     dispatchPointerBatch: (hostId, phase, kind, pointerId, buttons, modifiers, inputSequence, samples) =>
@@ -386,8 +401,34 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
           break;
         }
         case "raster-diagnostics": presenter.rasterDiagnostics = message.diagnostics as Record<string, unknown>; break;
-        case "direct-commit":
-          presenter.frontGeneration = Number(message.generation);
+        case "direct-commit": {
+          const generation = Number(message.generation);
+          const logicalWidth = Number(message.logicalWidth);
+          const logicalHeight = Number(message.logicalHeight);
+          const physicalWidth = Number(message.physicalWidth);
+          const physicalHeight = Number(message.physicalHeight);
+          const devicePixelRatio = Number(message.devicePixelRatio);
+          const capacityWidth = Number(message.capacityWidth);
+          const capacityHeight = Number(message.capacityHeight);
+          const targetGeneration = currentSnapshot?.resizeEpoch.generation ?? generation;
+          if (!Number.isSafeInteger(generation) || generation <= 0 ||
+              generation < presenter.frontGeneration || generation > targetGeneration ||
+              !Number.isFinite(logicalWidth) || logicalWidth <= 0 ||
+              !Number.isFinite(logicalHeight) || logicalHeight <= 0 ||
+              !Number.isSafeInteger(physicalWidth) || physicalWidth <= 0 ||
+              !Number.isSafeInteger(physicalHeight) || physicalHeight <= 0 ||
+              !Number.isFinite(devicePixelRatio) || devicePixelRatio <= 0 ||
+              !Number.isSafeInteger(capacityWidth) || capacityWidth < physicalWidth ||
+              !Number.isSafeInteger(capacityHeight) || capacityHeight < physicalHeight ||
+              physicalWidth !== Math.round(logicalWidth * devicePixelRatio) ||
+              physicalHeight !== Math.round(logicalHeight * devicePixelRatio)) {
+            void restartRaster("CanvasKit Raster emitted an invalid or non-monotonic direct commit");
+            break;
+          }
+          commitCanvasKitFrontGeometry(
+            canvas, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
+            capacityWidth, capacityHeight, devicePixelRatio);
+          presenter.frontGeneration = generation;
           presenter.frontRequestId = Number(message.requestId);
           presenter.contextGeneration = Number(message.contextGeneration);
           presenter.surfaceGeneration = Number(message.surfaceGeneration);
@@ -401,13 +442,16 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
           currentSnapshot = JSON.parse(captureHostSnapshot(1)) as HostSnapshot;
           recordExternalWorkerTrace(1, "front-commit", "worker-canvaskit-surface", {
             ...message,
+            targetGeneration,
+            progressive: generation < targetGeneration,
             terminal: "submitted",
-            backingWidth: message.physicalWidth,
-            backingHeight: message.physicalHeight,
+            backingWidth: capacityWidth,
+            backingHeight: capacityHeight,
             surfaceWidth: message.physicalWidth,
             surfaceHeight: message.physicalHeight,
           });
           break;
+        }
         case "context-lost": presenter.contextLost = true; break;
         case "fatal": {
           const reason = String(message.error);
@@ -595,8 +639,8 @@ function presenterSnapshot(
     visibleContext: "transferred-offscreen-webgl2-canvaskit",
     rasterWidth: Number(raster.physicalWidth ?? 0),
     rasterHeight: Number(raster.physicalHeight ?? 0),
-    displayWidth: Number(raster.physicalWidth ?? 0),
-    displayHeight: Number(raster.physicalHeight ?? 0),
+    displayWidth: Number(raster.capacityWidth ?? raster.physicalWidth ?? 0),
+    displayHeight: Number(raster.capacityHeight ?? raster.physicalHeight ?? 0),
     mainManagedRuntimeCount: 0,
     uiManagedRuntimeCount: Number(ui.managedRuntimeCount ?? 0),
     rasterManagedRuntimeCount: 0,
@@ -691,14 +735,54 @@ async function loadCanvasKitManifest(): Promise<{
 }
 
 function configureCanvasBeforeTransfer(canvas: HTMLCanvasElement, epoch: ResizeEpoch): void {
-  canvas.width = epoch.physicalWidth;
-  canvas.height = epoch.physicalHeight;
-  canvas.style.width = `${epoch.logicalWidth}px`;
-  canvas.style.height = `${epoch.logicalHeight}px`;
+  const capacity = initialCanvasKitCapacity(epoch);
+  canvas.width = capacity.width;
+  canvas.height = capacity.height;
+  commitCanvasKitFrontGeometry(
+    canvas, epoch.logicalWidth, epoch.logicalHeight,
+    epoch.physicalWidth, epoch.physicalHeight,
+    capacity.width, capacity.height, epoch.devicePixelRatio);
+}
+
+function initialCanvasKitCapacity(epoch: ResizeEpoch): { readonly width: number; readonly height: number } {
+  const screenWidth = Number(globalThis.screen?.availWidth ?? globalThis.screen?.width ?? 0);
+  const screenHeight = Number(globalThis.screen?.availHeight ?? globalThis.screen?.height ?? 0);
+  return {
+    width: Math.ceil(Math.max(epoch.logicalWidth * 1.5, screenWidth, epoch.logicalWidth) *
+      epoch.devicePixelRatio),
+    height: Math.ceil(Math.max(epoch.logicalHeight * 1.5, screenHeight, epoch.logicalHeight) *
+      epoch.devicePixelRatio),
+  };
+}
+
+function commitCanvasKitFrontGeometry(
+  canvas: HTMLCanvasElement,
+  logicalWidth: number,
+  logicalHeight: number,
+  physicalWidth: number,
+  physicalHeight: number,
+  capacityWidth: number,
+  capacityHeight: number,
+  devicePixelRatio: number,
+): void {
+  // Keep one backing pixel mapped to one device pixel while the DOM root clips
+  // this grow-only capacity to the live viewport. Raster can then present an
+  // immutable target without resizing/recreating the on-screen GL surface on
+  // every ResizeObserver generation.
+  canvas.style.width = "auto";
+  canvas.style.height = "auto";
+  canvas.style.setProperty("zoom", String(1 / devicePixelRatio));
   canvas.style.objectFit = "cover";
   canvas.style.objectPosition = "left top";
   canvas.style.removeProperty("transform");
   canvas.style.removeProperty("transform-origin");
+  canvas.dataset.dorotiFrontLogicalWidth = String(logicalWidth);
+  canvas.dataset.dorotiFrontLogicalHeight = String(logicalHeight);
+  canvas.dataset.dorotiFrontPhysicalWidth = String(physicalWidth);
+  canvas.dataset.dorotiFrontPhysicalHeight = String(physicalHeight);
+  canvas.dataset.dorotiCapacityWidth = String(capacityWidth);
+  canvas.dataset.dorotiCapacityHeight = String(capacityHeight);
+  delete canvas.dataset.dorotiResizePreview;
 }
 
 function requireCapabilities(): void {
