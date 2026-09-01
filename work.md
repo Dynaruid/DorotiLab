@@ -1,0 +1,524 @@
+# Doroti WindowsAppSdk Acrylic + 실시간 exact resize 작업계획
+
+- 작성일: 2026-09-01
+- 상태: 계획 작성 완료 / 구현 notStarted / 자동 검증 notVerified / 실물 검증 notVerified
+- 대상: Doroti.Host.WindowsAppSdk의 HwndExactCpp + managed ANGLE/EGL-D3D11 + SkiaSharp 경로
+- 지원 OS: Windows 11 24H2, build 26100 이상만 지원
+- 목표: 전체 client 영역의 반투명 픽셀 뒤로 Windows Desktop Acrylic을 보이면서도, 현재의 창 테두리 drag 실시간 추종성과 exact-frame 계약을 유지한다.
+- 현재 문서는 실행 계획만 다룬다. 이 문서를 작성하면서 제품 코드, 빌드, 자동 테스트, 실물 border-drag acceptance는 수행하지 않았다.
+
+## 1. 결론과 후보 우선순위
+
+현재 잘 동작하는 resize 경로에 별도의 Acrylic/DirectComposition surface를 단순히 겹치면 안 된다. 이전 실험에서 shell HWND geometry, ANGLE surface, 별도 composition surface가 서로 다른 시계로 움직였고, 동기 wait는 계단식 resize를, 비동기 commit은 한 세대 늦은 content/backdrop을 만들었다.
+
+이번 작업은 아래 순서로 진행한다.
+
+1. **P0 — 기존 경로 보존형 DWM alpha spike**
+   - Windows 11 build 26100 이상에서만 가능한 DWMWA_REDIRECTIONBITMAP_ALPHA를 이용한다.
+   - top-level HWND에는 DWMWA_SYSTEMBACKDROP_TYPE = DWMSBT_TRANSIENTWINDOW를 적용하고, 기존 child HWND의 redirection bitmap alpha를 DWM이 소비하게 만든다.
+   - top/child HWND topology, ANGLE/EGL surface ownership, exact-size target lifecycle, 현재 resize-generation protocol은 바꾸지 않는다. Alpha-capable EGL config와 clear/output 의미는 별도 검증 후 필요한 최소 변경만 허용한다.
+   - 새 composition tree, 새 visible content owner, CPU readback/upload, resize hot path의 추가 wait를 만들지 않는다.
+   - 이 경로가 실제 ANGLE child HWND에서도 alpha와 Acrylic을 올바르게 합성하는지는 공식 보장이 없으므로 독립 spike와 실물 검증으로 먼저 판정한다.
+
+2. **P1 — 동일 ContentIsland owner의 Acrylic composition presenter**
+   - 지원 대상인 Windows 11 24H2+에서도 P0가 실물 검증에 실패할 때만 진행한다.
+   - DesktopAttachedSiteBridge + ContentIsland 하나를 Acrylic controller의 geometry target이자 Doroti content visual의 owner로 사용한다.
+   - ANGLE/Skia에서 동일 D3D11 composition texture로 직접 그리거나, 최대 한 번의 same-GPU D3D11 copy만 허용한다.
+   - exact-size hidden surface slot을 준비한 뒤 content surface와 visual geometry를 한 commit에서 교체한다.
+
+3. **P2 — fixed outer envelope/custom resize region**
+   - P0/P1의 원인 분리용 진단 후보일 뿐 기본 제품 경로로 승격하지 않는다.
+   - 표준 shell resize, Snap, system menu, taskbar, IME, UIA 의미를 바꿀 위험 때문에 별도 제품 결정 없이는 채택하지 않는다.
+
+P0와 P1 모두 탈락하면 현재 opaque HwndExactCpp 경로를 유지한다. “Acrylic이 보이지만 resize가 나빠진 상태”를 부분 성공으로 출시하지 않는다.
+
+## 2. 범위와 전제
+
+### 포함
+
+- WindowBackdropMode.acrylic 요청을 WindowsAppSdk host까지 전달하는 versioned ABI
+- 전체 client-area Desktop Acrylic과 Doroti의 premultiplied-alpha scene 합성
+- border drag 중 geometry, framework metrics, render target, present/commit의 generation 일치
+- 활성/비활성, light/dark, transparency policy, DPI 전환, device loss, minimize/restore
+- pointer, keyboard, 한국어 IME, accessibility ownership 보존
+- opaque 기준선과 Acrylic 후보의 자동 캡처 및 실물 비교
+
+### 전제
+
+- 요청한 Acrylic은 title bar에만 적용하는 장식이 아니라 Doroti의 투명/반투명 client 픽셀 뒤로 보이는 전체 창 Desktop Acrylic로 해석한다.
+- Windows App SDK backend의 지원 하한은 Windows 11 24H2, build 26100으로 확정한다. 그 미만 Windows는 구현·fallback·acceptance 범위에서 제외한다.
+- Windows 문서상 DWMSBT_TRANSIENTWINDOW는 Windows 11에서 전체 창 Desktop Acrylic에 해당하고, build 26100부터 P0에 필요한 redirection-bitmap alpha를 사용할 수 있다.
+- 현재 ViewConfiguration은 Acrylic과 transparent fallback을 요청하지만 WindowsAppSdk runner는 backdrop 값을 native configuration으로 전달하지 않는다. 이 gap은 후보가 통과한 뒤 제품 ABI 단계에서 해결한다.
+- fallback.transparent/solid는 24H2+에서 Acrylic API 실패, transparency policy, battery saver, high contrast, RDP 같은 runtime 상태에만 적용한다. 구버전 Windows 지원 수단으로 사용하지 않는다.
+
+### 제외
+
+- in-app BackdropFilter와 OS Desktop Acrylic을 같은 기능으로 취급하는 것
+- Flutter의 제거된 transparency helper를 복원하거나 복사하는 것
+- WinUI 3 SwapChainPanel을 전체 창 Acrylic surface로 쓰는 것
+- SkiaSharp D3D12 backend를 제품 D3D11 경로에 억지로 연결하는 것
+- 효과 강도, tint, noise의 임의 재현
+- 현재 기본 renderer를 검증 전에 교체하는 것
+
+## 3. 현재 경로와 문제의 소유권
+
+### 현재 exact-resize 경로
+
+1. top-level WM_SIZE가 client rect와 정확히 같은 크기로 child HWND를 SetWindowPos한다.
+2. child WM_SIZE가 새 physical extent와 resize generation을 publish하고 render를 queue한다.
+3. child WM_SIZE가 filtered task polling으로 최대 100ms의 기존 WaitForExactResize를 수행하는 동안 framework/render 쪽은 그 generation의 metrics로 scene과 exact frame을 만든다.
+4. WindowsManagedAngleEglPresenter가 EGL_FIXED_SIZE_ANGLE surface와 GRBackendRenderTarget을 정확한 physical size로 다시 만든다.
+5. exact frame을 premultiplied backing에 paint하고 window surface로 한 번의 GPU Src blit/submit을 한다. runner는 paint 후, submit 후, eglSwapBuffers 직전에 latest resize generation과 input sequence를 검사한다.
+6. 마지막 predicate가 참일 때만 eglSwapBuffers한다. swap 뒤에는 같은 predicate를 다시 검사하지 않는다.
+7. 기본값에서는 초기 생성 및 매 재생성된 EGL surface의 첫 성공 swap 뒤 DwmFlush가 실행된다. DOROTI_WINDOWS_DWM_FLUSH=1 진단 override에서는 매 present마다 실행된다.
+
+관련 코드:
+
+- [native top/child HWND와 resize](Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/exports.cpp)
+- [ANGLE/EGL/Skia presenter](Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedAngleEglPresenter.cs)
+- [generation admission과 terminal](Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs)
+- [현재 accepted contract](Doroti/docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md)
+
+### Acrylic을 별도 owner로 붙였을 때 늦어지는 이유
+
+DirectComposition은 비동기 commit을 VBlank에 소비한다. shell HWND geometry, ANGLE swap, 별도 Desktop Acrylic/composition visual이 서로 다른 device 또는 commit 경계를 가지면 각 단계가 정상이어도 화면에는 서로 다른 generation이 함께 보일 수 있다. WndProc에서 Commit completion이나 DwmFlush를 기다리면 message pump와 border-drag cadence를 막아 계단식 추종이 생긴다.
+
+이 저장소의 이전 Acrylic 조사에서도 다음 경로는 탈락했다.
+
+- 별도 DirectComposition surface/visual을 existing child HWND 위에 추가
+- 매 resize 동기 commit wait
+- ANGLE GPU → CPU readback → D3D11 upload
+- D3D12/D3D11On12를 제품 presenter에 바로 투입
+- frozen front buffer로 ResizeBuffers를 회피
+
+근거 기록: [이전 Acrylic resize 조사](history/26-08-29/windows-appsdk-acrylic-resize-investigation.md)
+
+그보다 앞선 exact-resize 실험에서 capacity surface, provisional stretch, clip/SetSourceSize도 physical FAIL로 제외되었다. 근거 기록: [WindowsAppSdk HWND-exact 정리](history/26-08-26/windows-appsdk-hwnd-exact-summary.md)
+
+## 4. 검토한 upstream에서 가져올 계약
+
+### Flutter
+
+Flutter Windows도 top-level HWND와 WS_CHILD render HWND를 사용한다. child WM_SIZE가 physical metrics를 보내고, 최대 100ms 동안 exact-size frame을 기다리며, 크기가 틀린 frame은 present하지 않는다. fixed EGL surface를 resize 때 재생성하고 exact-size blit/swap 뒤 resize waiter를 깨운 다음 raster thread에서 DwmFlush한다.
+
+가져올 것은 다음뿐이다.
+
+- target size와 frame size의 exact equality
+- stale frame admission 거부
+- platform wait와 raster/present 완료의 분리
+- 완전 투명 output과 비정사각 크기를 포함한 회귀 테스트. 현재 Doroti의 empty disposition은 present하지 않으므로 실제 Doroti gate는 all-transparent인 exact non-empty scene으로 번역한다.
+
+그대로 복사하지 않을 것은 다음이다.
+
+- 100ms를 새로운 composition wait에 중복 적용
+- 매 WM_SIZE에서 surface/commit 완료를 강제로 기다리는 것
+- DwmFlush가 backdrop과 HWND geometry까지 atomic하게 만든다고 가정하는 것
+- EGL alpha 8bit만으로 Desktop Acrylic이 보인다고 가정하는 것
+
+Flutter는 2026년에 실제 transparency를 만들지 못하던 EnableTransparentWindowBackground와 DWMWA_SYSTEMBACKDROP_TYPE 관련 코드를 제거했다. 즉 Flutter는 exact-resize 참고 구현이지 Acrylic 완성 구현이 아니다.
+
+주요 근거:
+
+- [Flutter host WM_SIZE → child MoveWindow](https://github.com/flutter/flutter/blob/c77a5798c59f0643bc835c12d473924fd0206cc5/engine/src/flutter/shell/platform/windows/host_window.cc#L473-L483)
+- [exact target wait/admission](https://github.com/flutter/flutter/blob/c77a5798c59f0643bc835c12d473924fd0206cc5/engine/src/flutter/shell/platform/windows/flutter_windows_view.cc#L208-L259)
+- [fixed EGL surface resize](https://github.com/flutter/flutter/blob/c77a5798c59f0643bc835c12d473924fd0206cc5/engine/src/flutter/shell/platform/windows/egl/manager.cc#L297-L316)
+- [present 완료와 DwmFlush 순서](https://github.com/flutter/flutter/blob/c77a5798c59f0643bc835c12d473924fd0206cc5/engine/src/flutter/shell/platform/windows/flutter_windows_view.cc#L747-L779)
+- [투명 배경 helper 제거 PR #187848](https://github.com/flutter/flutter/pull/187848)
+- [비정사각 empty-frame resize 수정 PR #187954](https://github.com/flutter/flutter/pull/187954)
+- [fixed surface resize 비용 이슈 #79427](https://github.com/flutter/flutter/issues/79427)
+
+### Windows / Windows App SDK
+
+- DWMSBT_TRANSIENTWINDOW는 Windows 11 build 22621부터 전체 창 bounds 뒤의 Desktop Acrylic을 DWM이 그리는 계약이다.
+- DWMWA_REDIRECTIONBITMAP_ALPHA는 build 26100부터 window redirection bitmap의 premultiplied alpha를 사용하게 한다.
+- 이 alpha 속성은 child HWND를 배제하지 않지만 ANGLE child HWND 동작을 보증하는 공식 샘플도 없다. HRESULT 성공만으로 PASS 처리하지 않는다.
+- ContentIsland는 output/layout/input/accessibility surface이므로 이름만 도입해도 geometry clock이 자동 통합되는 것은 아니다.
+- ContentIsland를 쓰면 parent Acrylic이 transparent island를 통과한다고 가정하지 않는다. DesktopAcrylicController가 그 ContentIsland를 backdrop target으로 사용하고 Doroti scene도 같은 island geometry owner 아래에 둔다.
+- Desktop Acrylic은 compositor의 external content이므로 Doroti visual mutation과 같은 app compositor transaction에 묶인다고 가정하지 않는다. backdrop/content 정렬은 여전히 capture와 실물 gate로 판정한다.
+- WinUI 3 SwapChainPanel은 transparency와 Acrylic/CompositionBackdropBrush sampling을 공식적으로 지원하지 않으므로 후보에서 제외한다.
+
+주요 근거:
+
+- [DWM system backdrop 종류](https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwm_systembackdrop_type)
+- [DWMWA_REDIRECTIONBITMAP_ALPHA](https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/ne-dwmapi-dwmwindowattribute)
+- [Windows system backdrop](https://learn.microsoft.com/en-us/windows/apps/develop/ui/system-backdrops)
+- [ContentIsland](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.content.contentisland?view=windows-app-sdk-2.0)
+- [ContentIsland host/layout 계약](https://learn.microsoft.com/en-us/windows/apps/develop/composition/content-island)
+- [DirectComposition 비동기 transaction](https://learn.microsoft.com/en-us/windows/win32/directcomp/architecture-and-components)
+- [SwapChainPanel의 transparency 제한](https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.swapchainpanel?view=windows-app-sdk-2.0)
+- [visual layer의 external-content 계약](https://learn.microsoft.com/en-us/windows/apps/develop/composition/visual-layer)
+- [공식 Windows App SDK Islands sample](https://github.com/microsoft/WindowsAppSDK-Samples/tree/main/Samples/Islands/UXFrameworksOnIslands)
+
+### SkiaSharp / Skia / ANGLE
+
+- native EGL context/D3D device와 HWND present/DirectComposition commit은 host/presenter가 소유한다. presenter가 만든 GRContext와 Skia cache는 presenter가 수명 관리하지만 Flush/Submit은 GPU work 제출이지 화면 관찰 완료가 아니다.
+- GRBackendRenderTarget의 extent는 immutable 계약으로 취급한다. 실제 target 크기가 바뀌면 기존 SKSurface와 backend target을 폐기하고 exact physical size로 다시 wrap한다.
+- framework color는 straight/unpremultiplied 의미로 입력되고 Skia target/D3D/compositor 저장은 premultiplied여야 한다. 변환은 정확히 한 번만 일어나고 이후 단계는 그 값을 보존한다.
+- 이 계획은 buffer-age/damage 복원을 구현하지 않고 BeginDraw update의 초기 내용도 보존된다고 가정하지 않는다. 따라서 새 buffer/재사용 slot의 전체 픽셀을 clear/draw하고 offscreen → output 복사는 Src로 alpha까지 교체한다.
+- 저장소는 Windows App SDK 2.4.0과 SkiaSharp 4.151.1을 사용한다. 현재 SkiaSharp의 public GRD3D 타입은 D3D12용이므로 D3D11 composition texture에 직접 그리려면 ANGLE/EGL interop을 실제 packaged runtime에서 증명해야 한다.
+- EGL_ANGLE_d3d_texture_client_buffer의 EGL_D3D_TEXTURE_ANGLE token, EGL_ANGLE_surface_d3d_texture_2d_share_handle export, EGL_ANGLE_d3d_share_handle_client_buffer import는 각각 독립 capability로 검사한다. 동일 D3D11 device, format, offset, synchronization 조건을 만족할 때만 쓴다.
+
+주요 근거:
+
+- [Skia GPU canvas/context ownership](https://skia.org/docs/user/api/skcanvas_creation/)
+- [SkiaSharp GRBackendRenderTarget](https://github.com/mono/SkiaSharp-API-docs/blob/main/SkiaSharpAPI/SkiaSharp/GRBackendRenderTarget.xml)
+- [SkiaSharp WinUI size-change rewrap](https://github.com/mono/SkiaSharp/blob/279f93f4ffa7f9fe4e9c0bc298bedc3c9e439764/source/SkiaSharp.Views/SkiaSharp.Views.WinUI/SKSwapChainPanel.cs#L41-L98)
+- [Skia flush/submit 계약](https://github.com/google/skia/blob/bdd0c3a8eaba1afa7148f02bba3a07f94e682847/include/gpu/ganesh/GrDirectContext.h#L323-L495)
+- [ANGLE D3D11 texture client buffer extension](https://chromium.googlesource.com/angle/angle/+/main/extensions/EGL_ANGLE_d3d_texture_client_buffer.txt)
+- [ANGLE D3D surface share handle extension](https://chromium.googlesource.com/angle/angle/+/main/extensions/EGL_ANGLE_surface_d3d_texture_2d_share_handle.txt)
+- [ANGLE D3D share handle import extension](https://chromium.googlesource.com/angle/angle/+/main/extensions/EGL_ANGLE_d3d_share_handle_client_buffer.txt)
+- [DirectComposition BeginDraw lifetime/offset](https://learn.microsoft.com/en-us/windows/win32/api/dcomp/nf-dcomp-idcompositionsurface-begindraw)
+
+## 5. 모든 후보가 지켜야 할 불변조건
+
+1. **기본 경로 보존**
+   - 기존 opaque HwndExactCpp/ANGLE renderer를 기본값과 비교 기준으로 유지한다.
+   - Acrylic mode는 명시적 opt-in으로 시작하며, 창 생성 후 renderer/topology를 바꾸지 않는다.
+
+2. **한 app-content visible owner**
+   - P0에서는 기존 child HWND만 Doroti content를 소유한다. Acrylic은 DWM이 top-level backdrop으로 그린다.
+   - P1에서는 ContentIsland root의 Doroti visual 하나만 app content를 소유한다.
+   - 같은 scene을 HWND와 composition visual 양쪽에 동시에 보이지 않는다.
+
+3. **exact generation**
+   - 하나의 immutable packet에 resize generation, logical size, physical size, scale, scene/input sequence, target/surface slot을 묶는다.
+   - width와 height가 모두 정확히 맞지 않으면 그 결과를 visible target으로 admit하거나 swap/present/commit하지 않는다.
+   - current render 1개 + latest pending 1개만 유지한다. stale generation은 swap/commit 전에 superseded terminal로 끝낸다.
+   - debounce나 geometry throttle은 금지한다. raster work만 latest-only로 coalesce할 수 있다.
+
+4. **premultiplied alpha end-to-end**
+   - framework의 straight color 의미를 Skia target 저장에서 정확히 한 번 premultiplied로 바꾸고, Src blit → EGL/D3D texture → DWM/compositor까지 그 저장 의미를 보존한다.
+   - buffer-age/damage 복원을 쓰지 않으므로 새/재사용 surface의 모든 픽셀을 transparent 또는 해당 frame 배경색으로 덮는다.
+   - EGL_ALPHA_SIZE = 8과 HRESULT 성공은 필요조건일 뿐 시각적 PASS 근거가 아니다.
+
+5. **GPU-only**
+   - CPU ReadPixels/readback, staging texture map, bitmap/GDI upload는 0이어야 한다.
+   - P1 fallback도 최대 한 번의 same-GPU D3D11 copy까지만 허용한다.
+   - D3D11/D3D12 device 오류, cross-device implicit copy, per-frame texture allocation을 허용하지 않는다.
+
+6. **resize hot path에 새 blocking clock을 추가하지 않음**
+   - P0는 현재 child WM_SIZE의 최대 100ms WaitForExactResize와 filtered task polling을 그대로 기준선으로 보존한다.
+   - P1은 우선 WM_SIZING/WM_SIZE에서 generation을 publish한 뒤 즉시 반환하는 후보로 측정한다.
+   - 새 composition DwmFlush, WaitForCommitCompletion, EnsurePreviousCommitCompletedAsync, fence 무한대기를 WndProc/platform hot path에 넣지 않는다.
+   - Submit(true)나 CPU-blocking GPU wait는 interactive render hot path에도 넣지 않는다. GL→D3D 전달에는 비차단 fence/keyed-mutex 또는 선택한 API가 보장하는 명시적 ownership handoff를 쓴다.
+   - 현재 exact present 뒤 DwmFlush 위치는 먼저 그대로 둔다. 제거/추가는 별도 A/B이며 항상 render/present thread에서만 수행한다.
+
+7. **보이는 source를 resize하지 않음**
+   - P1에서는 현재 front surface의 ResizeBuffers/resize를 금지한다.
+   - 정확한 새 크기의 hidden/free slot을 준비·render한 뒤 surface와 geometry를 같은 commit에서 교체한다.
+   - capacity backing, clip-only, SetSourceSize, full-frame stretch로 exactness를 대체하지 않는다.
+
+8. **visible evidence 분리**
+   - swap/EndDraw/Commit 완료는 내부 단계 완료일 뿐 scan-out 관찰이 아니다.
+   - Windows Graphics Capture 또는 동등한 캡처 관찰과 실제 모니터 border drag를 별도 gate로 둔다.
+
+## 6. 단계별 작업
+
+### A0. 기준선과 제품 계약 고정
+
+- [ ] 같은 PC, 같은 monitor, 같은 DPI/refresh rate, 같은 Demo app에서 현재 opaque 경로의 10초 border-drag 기준선을 저장한다.
+- [ ] left/top/right/bottom/corner, expand/shrink/reverse, slow/medium/fast drag를 각각 기록한다.
+- [ ] native QPC ledger, frame terminal, surface recreate/swap, capture frame을 같은 run id로 묶는다.
+- [ ] DOROTI_WINDOWS_DWM_FLUSH와 DOROTI_WINDOWS_EGL_SWAP_INTERVAL의 실제 값을 기록하고 opaque/P0/P1 비교 run에서 동일하게 고정한다.
+- [ ] ViewConfiguration의 acrylic, system, solid, transparent와 fallback.transparent/solid가 Windows에서 정확히 무엇을 의미할지 표로 확정한다.
+- [x] Windows App SDK backend의 지원 floor를 Windows 11 24H2, build 26100으로 확정한다. 그 미만 OS용 P1 또는 별도 fallback renderer는 만들지 않는다.
+- [ ] Acrylic Base/Thin/tint 사용자 설정이 필요한지 확인한다. 현재 계약처럼 단순 acrylic이면 DWM transient material을 우선한다.
+- [ ] 현 default renderer, ABI layout, package self-contained 계약을 snapshot하고 negative contract로 잠근다.
+
+완료 조건:
+
+- baseline 자동 수치와 실물 판정이 함께 기록되어 있다.
+- 미실행 항목은 PASS가 아니라 notVerified로 남아 있다.
+
+### A1. P0 독립 DWM redirection-alpha spike
+
+제품 코드에 바로 넣지 말고 Doroti/validation/windows-dwm-redirection-alpha-spike 같은 독립 native/ANGLE spike를 만든다. 기존 HwndExactCpp의 top/child 구조와 fixed EGL surface 코드를 최소 단위로 재사용한다.
+
+- [ ] Windows build number, DWM composition, transparency policy, DWMWA_SYSTEMBACKDROP_TYPE 결과, DWMWA_REDIRECTIONBITMAP_ALPHA HRESULT를 구조화해 출력한다.
+- [ ] 사용한 Windows SDK/header version과 DWMWA_REDIRECTIONBITMAP_ALPHA symbol availability를 기록한다. compile-time availability를 runtime support로 간주하지 않는다.
+- [ ] top-level에 DWMSBT_TRANSIENTWINDOW를 창 생성 시 한 번 적용한다. resize 중 다시 설정하지 않는다.
+- [ ] redirection alpha를 control/off, top only, child only, top+child 네 조합으로 실행한다.
+- [ ] WS_EX_NOREDIRECTIONBITMAP은 사용하지 않는다.
+- [ ] 완전 투명, 25/50/80% alpha, 완전 불투명, 비정사각 방향표시 grid를 한 frame에 그린다.
+- [ ] child EGL surface가 실제 premultiplied RGBA를 DWM까지 전달하는지 화면과 capture로 확인한다.
+- [ ] 투명 영역 뒤의 다른 창을 움직여 Acrylic sampling이 살아 있는지 확인하고, 단순 색/가짜 blur와 구분한다.
+- [ ] 현재 exact WM_SIZE → fixed EGL recreate → swap 경로와 현재 DwmFlush 위치를 그대로 유지한다.
+- [ ] fast border drag 중 black/white band, old-size stretch, exposed raw desktop, Acrylic 한 세대 지연을 검사한다.
+- [ ] build 26100+에서 API 실패, transparency off, battery saver, high contrast, RDP의 deterministic fallback과 진단 reason을 확인한다.
+- [ ] build 26100 미만은 지원되지 않는 OS로 fail-fast하고 명확한 진단을 남긴다. 해당 OS의 Acrylic/resize 품질은 acceptance 대상으로 삼지 않는다.
+
+P0 PASS:
+
+- transparent/semitransparent/opaque 픽셀이 모두 기대대로 합성된다.
+- resize 연속성 수치와 실물 판정이 opaque 기준선보다 나빠지지 않는다.
+- 새 composition owner, CPU copy, 새 blocking wait가 없다.
+
+P0 즉시 FAIL:
+
+- DwmSetWindowAttribute 성공인데 child alpha가 무시되어 검정/불투명으로 보인다.
+- alpha를 위해 layered window, CPU copy, 별도 composition surface가 필요해진다.
+- Acrylic 또는 child redirection bitmap이 border-drag에서 후행한다.
+
+### A2. P0 제품 통합
+
+A1이 PASS일 때만 진행한다.
+
+- [ ] DorotiViewConfiguration.backdrop을 WindowsNative configuration으로 전달한다.
+- [ ] 현재 native minimum-size 검사와 managed exact-size 검사가 서로 다르므로 ABI v2를 우선한다.
+- [ ] v1 struct-size append를 선택하려면 managed exact-size 검사를 legacy minimum-size로 바꾸고 offset별 field-presence 검사, old managed ↔ new native와 new managed ↔ old native 양방향 호환 test를 먼저 추가한다.
+- [ ] native 창 생성 전에 mode/fallback을 결정하고, 창 수명 동안 topology를 바꾸지 않는다.
+- [ ] support 판정은 OS build + API HRESULT + runtime visual validation 결과를 구분해 기록한다.
+- [ ] fallback.solid는 현재 배경색으로 확정한다.
+- [ ] fallback.transparent는 지원 OS인 build 26100+의 runtime policy/API 실패 상황에서 실제 alpha contract를 충족하는지 확인한다.
+- [ ] activation/theme 변화는 backdrop policy에만 반영하며 resize generation을 만들지 않는다.
+- [ ] target/backend diagnostic slug에 Acrylic/DWM-alpha mode를 명시한다.
+- [ ] 현재 input, cursor, child focus, IME, UIA owner는 변경하지 않는다.
+
+예상 변경 지점:
+
+- Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_host_v1.h
+- Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/exports.cpp
+- Doroti/src/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs
+- Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs
+- ABI/layout/packaging validator와 WindowsAppSdk README/ADR
+
+### B0. P1 진입 전 capability hard gate
+
+P0가 FAIL해도 곧바로 제품 host를 재작성하지 않는다. 먼저 현재 Windows App SDK 2.4 projection과 packaged ANGLE binary에서 아래 capability를 독립 검증한다.
+
+- [ ] ContentIsland.CreateForSystemVisual, DesktopAttachedSiteBridge, ICompositionSupportsSystemBackdrop target의 실제 runtime 사용 가능성
+- [ ] DesktopAcrylicController.IsSupported, AddSystemBackdropTarget, non-null SystemBackdropConfiguration, activation/theme/high-contrast update와 teardown
+- [ ] 하나의 compositor/dispatcher/thread ownership
+- [ ] ANGLE D3D11 device 조회와 composition D3D11 device 동일성
+- [ ] EGL_ANGLE_d3d_texture_client_buffer, surface share-handle export, share-handle client-buffer import를 각각 query
+- [ ] BGRA/RGBA format, premultiplied alpha, bind flags, EGL_TEXTURE_OFFSET_X_ANGLE/Y_ANGLE, row/texture lifetime
+- [ ] GL render 완료, EGL unbind, keyed mutex/fence 등 D3D consumer가 읽기 전의 명시적 ownership handoff
+- [ ] device-loss와 island/bridge teardown 순서
+
+직접 import와 GPU-only copy가 모두 불가능하면 P1은 FAIL이다. CPU readback/upload로 우회하지 않는다.
+
+### B1. 동일 ContentIsland의 Acrylic + scene spike
+
+기존 [ContentIsland ownership spike](Doroti/validation/winrt-content-island-spike)와 [composition surface spike](Doroti/validation/windows-composition-surface)의 검증된 ownership/slot 아이디어만 재사용한다. 과거 D3D12 product path나 capacity-backed source는 재사용하지 않는다.
+
+목표 topology:
+
+    standard top-level HWND
+      └─ DesktopAttachedSiteBridge
+          └─ ContentIsland (DesktopAcrylicController backdrop target)
+              └─ root visual
+                  └─ Doroti content visual / one visible front surface
+
+- [ ] 현재 child WndProc가 소유하는 pointer/key/focus/IME/UIA를 top HWND 또는 Windows App SDK InputSite 중 정확히 한 owner로 이전한다. top HWND 직접 소유를 우선 후보로 측정한다.
+- [ ] Doroti의 기존 render child HWND와 Windows App SDK가 내부적으로 사용할 수 있는 platform InputSite child를 구분해 진단한다.
+- [ ] child HWND를 optional로 표현할 새 ABI/capability와 topology-neutral host contract를 설계한다.
+- [ ] WindowsManagedProductHost의 nonzero ChildHwnd 강제와 HWND 전용 presenter base를 topology-neutral하게 분리한다.
+- [ ] duplicate pointer/key/focus/IME event와 duplicate UIA provider가 0인지 검증한다.
+- [ ] 별도의 visible render child HWND는 이 mode에서 만들지 않는다.
+- [ ] top-level physical client rect와 DPI를 target/generation authority로 유지한다.
+- [ ] ContentSiteView.ClientSize와 RasterizationScale은 applied acknowledgement로 기록하고, target과 정확히 일치한 뒤에만 그 generation을 admit한다.
+- [ ] host target과 island applied size를 동기화하되 ANGLE surface가 별도 독립 resize clock을 갖지 않게 한다. SiteView를 authority로 바꾸는 대안은 native generation/FrameRequest/C ABI 교체를 포함하는 별도 설계로 취급한다.
+- [ ] DesktopAcrylicController와 Doroti content가 같은 ContentIsland geometry target을 사용하게 한다.
+- [ ] Desktop Acrylic external content와 Doroti visual이 같은 compositor transaction이라고 가정하지 않고 visible alignment를 측정한다.
+- [ ] parent HWND Acrylic이 transparent island를 통과한다고 가정하지 않는다.
+- [ ] WinUI XAML/SwapChainPanel을 중간 owner로 넣지 않는다.
+
+렌더 경로 우선순위:
+
+1. CompositionDrawingSurface.BeginDraw가 준 D3D11 update texture를 같은-device ANGLE EGL surface/FBO로 import하고 SkiaSharp가 exact target을 직접 wrap한다.
+2. 1번이 불가능할 때만 ANGLE-owned exact shared D3D11 texture에서 hidden composition surface로 한 번의 GPU copy를 허용한다.
+3. 어느 쪽도 성립하지 않으면 중단한다.
+
+BeginDraw 직접-import protocol:
+
+- [ ] persistent slot은 CompositionDrawingSurface이며 BeginDraw 반환 texture 자체를 영구 slot으로 저장하지 않는다.
+- [ ] 매 BeginDraw가 반환한 transient update object와 POINT offset을 해당 호출 범위에서만 사용한다.
+- [ ] EGL_TEXTURE_OFFSET_X_ANGLE/Y_ANGLE을 적용해 update rect가 정확한 destination pixel에 대응하게 한다.
+- [ ] 그 범위 안에서 EGL surface/FBO와 Skia wrapper를 bind/wrap하고, Skia 사용 전 GRContext.ResetContext(GRGlBackendState.All)을 실행한다.
+- [ ] render/flush/Submit(false) 뒤 명시적 GPU handoff를 걸고 EGL current/binding을 해제한다.
+- [ ] imported pbuffer/texture가 EGL의 current read/draw surface이거나 texture에 bound된 동안 D3D에서 읽지 않는다.
+- [ ] SKSurface/GRBackendRenderTarget/EGL wrapper와 update object를 정리한 뒤 EndDraw한다.
+
+### B2. exact hidden-slot + atomic commit protocol
+
+- [ ] 최대 3개 slot만 둔다: visible front, preparing/current, retiring.
+- [ ] visible front는 resize하지 않는다.
+- [ ] 새 generation의 exact physical extent로 free slot을 만들거나, safe-reuse가 별도로 증명된 retired slot만 재사용한다.
+- [ ] SKSurface와 GRBackendRenderTarget wrapper를 먼저 dispose하고 GPU handoff/compositor retirement를 확인한 뒤에만 native EGL surface/texture를 destroy/reuse한다.
+- [ ] 새 slot의 모든 픽셀을 clear/draw하고 exact scene을 render/flush/submit한 뒤 비차단 GPU handoff를 수행한다.
+- [ ] swap/EndDraw 전에 generation과 input sequence를 다시 검사한다.
+- [ ] brush.Surface, visual Size, Clip, transform을 같은 compositor commit에 넣는다.
+- [ ] commit 완료 전 old front를 파괴하거나 다시 쓰지 않는다.
+- [ ] commit 완료만으로 retiring slot을 free로 돌리지 않는다.
+- [ ] 선택한 surface API가 보장하는 acquire/release 또는 별도 GPU/compositor safe-reuse 신호를 증명한 뒤에만 retiring slot을 mutate/reuse한다.
+- [ ] 안전한 3-slot 재사용 신호를 증명하지 못하면 pool을 무제한 늘리지 않고 P1을 FAIL 처리한다.
+- [ ] commit 완료를 scan-out 완료로 기록하지 않는다. capture observation을 별도 필드로 둔다.
+- [ ] queue depth는 current 1 + latest 1, surface pool은 3 이하를 강제한다.
+
+generation ledger 최소 필드:
+
+- run id / resize generation / scene sequence / input sequence
+- WM_SIZING candidate / WM_SIZE actual / SiteView actual
+- logical size / physical size / DPI / rasterization scale
+- slot id / target extent / SKSurface extent
+- metrics publish / scene admitted / render begin-end
+- GL flush-submit / GPU sync / EndDraw or copy
+- swap or commit requested / commit completed
+- terminal reason
+- capture frame id/QPC와 test scene marker에서 decode한 content generation/target extent
+- capture 시점의 shell/client extent, SiteView applied extent, commit serial, backdrop boundary
+
+P0 DWM Acrylic 자체에는 app이 부여할 수 있는 generation이 없다. 따라서 “capture가 Acrylic generation을 관찰했다”고 기록하지 않고, machine-readable content marker와 WGC timestamp/QPC를 shell/client 및 backdrop boundary 관찰과 연계한다.
+
+### B3. shell wait 정책 A/B
+
+shell geometry와 composition scan-out은 완전히 같은 transaction이 아닐 수 있으므로 wait 값을 직감으로 정하지 않는다.
+
+- [ ] 후보 1: WM_SIZE는 즉시 반환하고 current+latest exact render/commit만 수행한다.
+- [ ] 후보 2: 후보 1에서 visible lag가 있을 때만 render thread의 bounded commit-aware gate를 실험한다.
+- [ ] platform/WndProc thread에서 commit completion, fence, DwmFlush를 기다리는 후보는 만들지 않는다.
+- [ ] wait를 넣어 평균 수치가 좋아져도 실물 drag가 계단식이면 FAIL이다.
+- [ ] DwmFlush는 exact present 뒤 render thread에서만 현재 방식과 A/B한다.
+
+P1 PASS는 content marker, shell/island extent, backdrop boundary가 함께 정렬되고 표준 shell resize가 opaque 기준선 수준인 경우뿐이다. Acrylic 자체의 가상 generation을 만들지 않는다.
+
+### C. 제품 통합과 fallback
+
+P1이 통과하면 existing presenter에 조건문을 누적하지 말고 별도 Acrylic composition host/presenter로 격리한다.
+
+- [ ] topology는 native window 생성 전에 선택한다.
+- [ ] native ABI에는 backdrop/topology 설정과 진단 상태만 둔다. managed/native GPU pointer를 ABI로 노출하지 않는다.
+- [ ] framework scene renderer와 exact frame coordinator는 공유한다.
+- [ ] HWND presenter와 composition presenter는 동일한 terminal/exactness contract를 구현한다.
+- [ ] mode 전환은 다음 창 생성부터 적용하며 한 창에서 mid-session 전환하지 않는다.
+- [ ] Acrylic 초기화/device loss/runtime policy 실패 시 새 창은 명시된 fallback으로 시작한다. 보이는 창을 다른 topology로 즉시 갈아타지 않는다.
+- [ ] opaque 기본값은 별도 승격 결정 전까지 유지한다.
+
+후보 파일:
+
+- Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedAcrylicCompositionPresenter.cs
+- Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedProductHost.cs
+- Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenterBase.cs
+- Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs
+- Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/exports.cpp
+- Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_host_v1.h
+- Doroti/src/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs
+- Doroti/validation/windows-acrylic-composition-spike/
+- Doroti/validation/contracts/의 신규 opt-in contract
+- Doroti/eng/의 신규 validator/capture runner
+
+## 7. 검증 계획
+
+저장소 지침에 따라 모든 build/test command의 timeout은 20분으로 설정한다. 자동 검증은 물리 모니터 acceptance를 대체하지 않는다.
+
+### 자동 build/contract
+
+- [ ] Release win-x64 self-contained build
+- [ ] empty PATH/package-consumer launch
+- [ ] native/managed ABI size, offset, feature-bit 일치
+- [ ] current opaque contract가 그대로 PASS
+- [ ] opt-in이 없을 때 Acrylic/ContentIsland code path가 실행되지 않음
+- [ ] latest generation admission, stale reject, terminal one-to-one
+- [ ] queue depth 2 이하, slot pool 3 이하
+- [ ] CPU readback/upload/GDI/bitmap copy 0
+- [ ] D3D/EGL/Skia device 오류와 resource leak 0
+
+기존 기준 명령:
+
+    pwsh -NoProfile -File ./Doroti/eng/validate-hwnd-exact-cpp-c0.ps1
+    pwsh -NoProfile -File ./Doroti/eng/validate-winrt-content-island-w1r.ps1
+    pwsh -NoProfile -File ./Doroti/eng/validate-winrt-composition-w0.ps1
+    pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
+
+A1/B1에는 독립 신규 validator를 만들고 동일한 20분 상한을 적용한다. 현재 저장소에 없는 과거 live-resize script 이름을 완료 명령으로 가정하지 않는다.
+
+### 자동 visible capture
+
+비대칭 grid/oracle과 Windows Graphics Capture를 이용해 각 frame의 네 모서리/edge phase를 판정한다.
+
+- [ ] 500×300 같은 비정사각, exact non-empty이면서 모든 픽셀이 transparent인 scene
+- [ ] Flutter식 empty-frame present contract를 별도로 도입할 경우에만 true empty disposition도 추가
+- [ ] 0%, 25%, 50%, 80%, 100% alpha 영역
+- [ ] fast 연속 expand/shrink/reverse
+- [ ] maximize/restore/minimize/0-size
+- [ ] left/top/right/bottom/corner drag
+- [ ] old-size stretch, 검은/흰 band, raw desktop 노출, 한 세대 늦은 Acrylic 없음
+
+캡처 기반 exactness gate:
+
+- wrong-size present/commit = 0
+- stale generation present/commit = 0
+- duplicate/unterminated frame terminal = 0
+- capture에서 asymmetric edge phase 불일치 = 0
+- marker에서 decode한 content target과 shell/client extent 불일치 = 0
+- content edge와 backdrop/window boundary 분리 = 1 physical pixel 이하이고 2개 연속 capture frame에 지속되지 않음
+- blank/solid-black/previous-size frame = 0
+
+동일 machine/monitor/run 조건의 opaque 기준선 대비 timing gate:
+
+- target → swap(P0) 또는 target → content commit(P1) p95는 기준선 + 1 refresh interval 이하
+- target → visible capture p95는 기준선 + 1 refresh interval 이하, max는 기준선 + 2 refresh interval 이하
+- 100ms exact-wait timeout 수는 기준선 이하이고 final settle generation의 timeout은 0
+- queue depth 2 이하, surface slot 3 이하
+- failed/wrong-size/stale/duplicate/missing terminal은 모두 0
+
+### 실물 acceptance
+
+아래는 사람이 실제 창 border를 잡고 모니터에서 확인해야 한다.
+
+- [ ] 네 방향과 네 모서리, slow/medium/fast, expand/shrink/reverse를 각 10초 이상
+- [ ] 가능한 60/120/144/165Hz monitor
+- [ ] 100/125/150/200% DPI와 monitor crossing
+- [ ] Snap layout, maximize, restore, minimize, Alt+Tab, occlusion
+- [ ] light/dark, 활성/비활성, transparency off, battery saver, high contrast, RDP fallback
+- [ ] pointer hit-test, resize cursor, focus, keyboard, clipboard
+- [ ] 한국어 IME 조합/후보창/caret 위치
+- [ ] Narrator 또는 Accessibility Insights로 UIA tree와 actions
+
+실물 PASS 기준:
+
+- border와 content/Acrylic 사이에 눈에 보이는 후행, 출렁임, 계단식 추종이 없다.
+- 한 프레임이라도 old-size stretch, 검은 띠, raw background band가 반복 재현되지 않는다.
+- 같은 run의 opaque 기준선보다 체감이 나빠지지 않는다.
+- 자동 run을 3회 연속 통과하고 실물 acceptance까지 끝난다.
+
+실행하지 않은 monitor/DPI/IME/accessibility 항목은 notVerified로 남긴다.
+
+## 8. 승격, 문서화, rollback
+
+### 승격 조건
+
+- P0 또는 P1 하나가 모든 exactness/GPU/visible/physical gate를 통과한다.
+- opaque fallback과 기존 package contract가 회귀하지 않는다.
+- 지원 하한 Windows 11 24H2(build 26100), fallback, theme/policy 동작이 사용자 문서에 명시된다.
+- 새로운 ADR이 visible owner, alpha path, generation/commit/retirement 계약을 고정한다.
+- 처음에는 opt-in으로 배포하고 기본값 변경은 별도 결정으로 남긴다.
+
+### 실패 시
+
+- 실패 후보를 제품 코드에 남기지 않고 독립 spike와 evidence만 보존한다.
+- current opaque HwndExactCpp path를 계속 기본으로 사용한다.
+- API HRESULT 성공, 깨끗한 GPU counter, automated capture만으로 partial implementation을 승격하지 않는다.
+- P0 실패 사유가 child redirection alpha 미지원이면 P1 capability gate로 이동한다.
+- P1의 direct import와 승인된 one-copy GPU-only 경로가 모두 실패하거나 실물 resize gate에서 실패하면 Acrylic 제품화를 중단하고 원인을 문서화한다.
+
+### 완료 문서
+
+- 새 ADR 또는 ADR-025 후속 ADR
+- WindowsAppSdk host README/README.ko.md
+- renderer/feature manifest와 validation contract
+- support matrix: Windows 11 24H2+ build, Acrylic mode, fallback, transparency policy, remote session
+- 자동 evidence와 실물 acceptance 기록
+
+## 9. 최종 완료 정의
+
+다음 조건이 모두 참일 때만 작업 완료다.
+
+1. DorotiDemoApp의 WindowBackdropMode.acrylic이 실제 Windows Desktop Acrylic을 보인다.
+2. 투명/반투명/불투명 Doroti 픽셀이 premultiplied alpha로 정확히 합성된다.
+3. border drag 중 geometry와 마지막 visible content가 exact generation으로 일치한다.
+4. 현재 opaque 경로와 비교해 실시간 resize 품질이 나빠지지 않는다.
+5. CPU readback/upload 없이 GPU-only 경로다.
+6. input, 한국어 IME, UIA, DPI, device-loss, fallback이 통과했다.
+7. 3회 연속 자동 PASS와 물리 모니터 acceptance가 모두 기록됐다.
+8. 통과하지 않은 항목이 PASS로 표현되지 않고 notVerified 또는 FAIL로 남아 있다.
