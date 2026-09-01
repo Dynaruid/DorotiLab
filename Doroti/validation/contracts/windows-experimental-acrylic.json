@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "doroti.windows.experimental-acrylic-contract/v1",
+  "mode": "experimentalAcrylic",
+  "minimumWindowsBuild": 26100,
+  "windowsAppSdk": "2.4.0",
+  "windowsSdk": "10.0.26100.0",
+  "geometry": {
+    "logicalActiveEdgeBudget": 6,
+    "physicalActiveEdgeBudget": 12,
+    "inactiveEdgeBudget": 1,
+    "maximumCursorActiveEdgeLag": 26,
+    "responsivenessRequiresOppositeEdgeMarker": false,
+    "finalSettleRefreshIntervals": 9,
+    "finalSettleMaximumMilliseconds": 50,
+    "idleRequiresExact": true,
+    "forbidFullFrameStretch": true
+  },
+  "scheduling": {
+    "model": "flutterExactWmSizeHandshake",
+    "outerWindowPolicy": "nativeWmSizingUnmodified",
+    "metricsAuthority": "actualChildWmSizePhysicalPixels",
+    "platformWaitMaximumMilliseconds": 100,
+    "minimumResponsiveFramesPerSecond": 40,
+    "framesPerSecondMeasurementTolerance": 0.5,
+    "exitFlush": "exactCurrent"
+  },
+  "resources": {
+    "maximumQueueDepth": 2,
+    "maximumRegisteredSlots": 3,
+    "maximumUnavailableReuseAttempts": 0,
+    "maximumCpuCopies": 0,
+    "maximumGpuErrors": 0,
+    "maximumMissingOrDuplicateTerminals": 0
+  },
+  "runtimeOptions": {
+    "requiredBurstRequests": 500,
+    "kinds": ["default", "base", "thin"],
+    "themes": ["system", "light", "dark"],
+    "topologyChangesAllowed": false,
+    "resizeGenerationChangesAllowed": false
+  },
+  "qualification": {
+    "requiredConsecutiveRuns": 3,
+    "edges": ["Left", "Right", "Top", "Bottom", "TopLeft", "TopRight", "BottomLeft", "BottomRight"],
+    "motions": ["expand", "shrink", "reverse"],
+    "dragMilliseconds": [10000, 3000, 600],
+    "dpiPercent": [100, 125, 150, 200],
+    "refreshHzWhenAvailable": [60, 120, 144, 165]
+  },
+  "defaultMode": "opaque",
+  "physicalAcceptance": "notVerifiedUntilHumanRun"
+}

@@ -12,6 +12,10 @@ DorotiDemoApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱�
 # Windows 기본 backend로 실행
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
+# Windows 11 24H2+ experimental Acrylic opt-in
+$env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC = '1'
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -Configuration Release
+
 # Web으로 실행(기본 Release 구성)
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web
 ```
@@ -238,6 +242,8 @@ Linux 데모는 `WindowBackdropMode.acrylic`과 `WindowBackdropFallback.transpar
 ## 지원과 evidence 상태
 
 Windows 기본 경로는 self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host입니다. Native C++은 top-level/child/task HWND와 input/lifecycle ingress를, managed code는 Doroti scene 생성과 hardware-D3D11 ANGLE/EGL/Skia raster/presentation을 소유합니다. Exact-size GPU backing을 `EGL_FIXED_SIZE_ANGLE` window surface로 blit하며 새 surface는 첫 swap 뒤 initial show 또는 resize 완료 전에 `DwmFlush`합니다. 8 ms refresh는 interactive move가 두 monitor에 걸쳐 있고 pending/in-flight render가 없을 때만 동작합니다.
+
+`DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1`은 별도 opt-in ContentIsland/Composition Swapchain 경로를 선택합니다. 이 경로는 `WM_SIZING`을 제한하지 않습니다. Actual child `WM_SIZE`는 interactive resize 중 최대 16ms만 terminal을 기다리고, 종료 시 최신 exact frame을 최대 100ms 기다립니다. Interactive frame마다 `DwmFlush`하지 않고 종료/비대화형 exact present에서만 수행합니다. ContentIsland는 이미 physical-pixel인 surface와 1:1 scale을 사용하며, top HWND와 256px overscan retained background가 빠른 좌상단 성장에서 흰색으로 지워지는 영역을 막습니다. 현재 200% DPI/165Hz TopLeft 자동 검증은 3초 43.66fps와 600ms 43.28fps로 모두 PASS했습니다. 현재 바이너리의 사람 실물 재확인과 IME/accessibility/full matrix는 `notVerified`이며 opaque가 계속 기본값입니다.
 
 확인한 Windows 실제 resize와 mixed-DPI 경계 동작은 사용자 acceptance를 받았습니다. Strict synthetic input qualification과 pixel/cadence FAIL은 acceptance로 재분류하지 않고 유지합니다. 자동 input은 PASS했고 IME/UIA 및 lifecycle/device는 automated partial 범위입니다. 실제 한글 IME 후보창/caret, Narrator/Accessibility Insights, 미실행 edge/speed/DPI/monitor 조합, device removal, installer/MSIX, 각 wait 지점 shutdown은 `notVerified`입니다. 명시적 MAUI backend는 별도 evidence 경계를 가지며 silent fallback으로 사용하지 않습니다. 마지막 Windows 전체 product solution Release 실행은 Windows target 통과 뒤 macOS project가 없는 `sips`를 호출해 실패했으므로 Windows 작업에는 위 target-scoped 명령을 사용합니다.
 

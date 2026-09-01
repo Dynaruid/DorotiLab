@@ -12,6 +12,10 @@ Install the .NET 10 SDK and PowerShell 7. Building the Web host from this source
 # Run the default Windows backend
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
+# Opt in to experimental Acrylic on Windows 11 24H2+
+$env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC = '1'
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -Configuration Release
+
 # Run the Web app (Release configuration by default)
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web
 ```
@@ -238,6 +242,8 @@ On Linux the demo requests `WindowBackdropMode.acrylic` with `WindowBackdropFall
 ## Support and evidence status
 
 The default Windows route is the self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host. Native C++ owns the top-level/child/task HWNDs and input/lifecycle ingress; managed code owns Doroti scene construction and hardware-D3D11 ANGLE/EGL/Skia raster and presentation. Each exact-size GPU backing is blitted to an `EGL_FIXED_SIZE_ANGLE` window surface, and a newly created surface is `DwmFlush`ed after its first swap before initial show or resize completion. An 8 ms refresh is active only while an interactive move straddles two monitors and no render is pending or in flight.
+
+`DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1` selects a separate opt-in ContentIsland/Composition Swapchain path without throttling `WM_SIZING`. Actual child `WM_SIZE` waits at most 16 ms for a terminal during interactive resize and up to 100 ms for the latest exact frame at exit. `DwmFlush` is skipped per interactive frame and retained for exit/non-interactive exact presents. The ContentIsland uses a 1:1 scale for the already-physical surface; a dark top-HWND fill and 256 px retained overscan prevent newly exposed pixels from being erased white during fast top-left growth. Current 200%-DPI/165-Hz TopLeft automation passes at 43.66 fps for three seconds and 43.28 fps for 600 ms. Human rechecking of this binary plus IME, accessibility, and the full matrix remain `notVerified`; opaque remains the default.
 
 The tested Windows physical resize and mixed-DPI boundary behavior received user acceptance. Strict synthetic input qualification and pixel/cadence failures remain failures rather than being reclassified by that acceptance. Automated input passed; automated IME/UIA and lifecycle/device coverage is partial. Physical Korean IME candidate/caret behavior, Narrator/Accessibility Insights, untested edge/speed/DPI/monitor combinations, device removal, installer/MSIX, and shutdown at every wait point remain `notVerified`. The explicit MAUI backend has its own evidence boundary and never serves as a silent fallback. The last full product-solution Release run on Windows failed after the Windows target passed because a macOS project invoked unavailable `sips`; use the target-scoped commands above for Windows work.
 

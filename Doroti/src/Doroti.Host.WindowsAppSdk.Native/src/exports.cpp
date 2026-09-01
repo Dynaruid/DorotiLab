@@ -56,6 +56,10 @@ constexpr UINT_PTR kSmokeTimer = 1;
 constexpr UINT_PTR kLifecycleTimer = 2;
 constexpr UINT_PTR kInteractiveMoveTimer = 3;
 constexpr UINT kInteractiveMoveIntervalMs = 8;
+constexpr int kCompositionChildOverscanPx = 256;
+constexpr auto kExactResizeWait = std::chrono::milliseconds(100);
+constexpr auto kCompositionInteractiveResizeWait =
+    std::chrono::milliseconds(16);
 
 template <typename T>
 bool ValidHeader(const T* value) noexcept {
@@ -74,6 +78,21 @@ bool EnvironmentOne(const wchar_t* name) noexcept {
   wchar_t value[2]{};
   return GetEnvironmentVariableW(name, value, static_cast<DWORD>(std::size(value))) == 1 &&
          value[0] == L'1';
+}
+
+bool HasSelfContainedWindowsAppRuntime() noexcept {
+  std::wstring executable_path(32768, L'\0');
+  const auto length = GetModuleFileNameW(
+      nullptr, executable_path.data(), static_cast<DWORD>(executable_path.size()));
+  if (length == 0 || length >= executable_path.size()) return false;
+  executable_path.resize(length);
+  const auto separator = executable_path.find_last_of(L"\\/");
+  if (separator == std::wstring::npos) return false;
+  executable_path.resize(separator + 1);
+  executable_path.append(L"Microsoft.WindowsAppRuntime.dll");
+  const auto attributes = GetFileAttributesW(executable_path.c_str());
+  return attributes != INVALID_FILE_ATTRIBUTES &&
+         (attributes & FILE_ATTRIBUTE_DIRECTORY) == 0;
 }
 
 uint32_t ResolvePlatformBrightness() noexcept {
@@ -158,6 +177,10 @@ class ProductHost final {
               const doroti_windows_callbacks_v1& callbacks)
       : configuration_(configuration), callbacks_(callbacks),
         platform_thread_id_(GetCurrentThreadId()),
+        composition_requested_(
+            (configuration.required_features &
+             DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1) != 0),
+        composition_active_(composition_requested_),
         platform_brightness_(ResolvePlatformBrightness()) {}
 
   ~ProductHost() { Destroy(); }
@@ -165,18 +188,23 @@ class ProductHost final {
   doroti_windows_status_v1 Run() {
     RegisterClasses();
     CreateWindows();
-    ConnectAppWindow();
+    // The managed experimental topology owns the AppWindow association and
+    // ContentIsland dispatcher. Holding a second native AppWindow projection
+    // before that association makes ContentIsland creation fail fast.
+    if (!composition_active_) ConnectAppWindow();
     doroti_windows_host_v1 host{
         DOROTI_WINDOWS_ABI_VERSION_V1,
         sizeof(doroti_windows_host_v1),
         this,
         top_,
+        composition_active_ ? top_ : child_,
         child_,
         task_,
         &RequestFrame,
         &RequestResize,
         &RequestClose,
         &RequestShow,
+        &RequestOpaqueFallback,
         &SetCursor,
         &SetClipboard,
         &RequestClipboard,
@@ -187,8 +215,10 @@ class ProductHost final {
         &UpdateSemantics,
         &ClearSemantics,
         platform_brightness_,
+        &SetCompositionChild,
     };
     callbacks_.host_ready(callbacks_.callback_context, &host);
+    AttachInputServices();
     StartRenderWorker();
     EmitLifecycle(1);
     PublishMetrics();
@@ -202,14 +232,25 @@ class ProductHost final {
       DispatchMessageW(&message);
     }
     StopRenderWorker();
+    ReleasePlatformResources();
     return fatal_ ? DOROTI_WINDOWS_STATUS_NATIVE_FAILURE_V1
                   : DOROTI_WINDOWS_STATUS_OK_V1;
   }
 
   LRESULT HandleTop(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
+    if (composition_active_ && IsClientInputMessage(message))
+      return HandleChild(window, message, wparam, lparam);
     switch (message) {
-      case WM_ERASEBKGND:
+      case WM_ERASEBKGND: {
+        if (composition_active_) {
+          RECT client{};
+          const auto brush = CreateSolidBrush(RGB(15, 13, 22));
+          if (brush != nullptr && GetClientRect(window, &client))
+            FillRect(reinterpret_cast<HDC>(wparam), &client, brush);
+          if (brush != nullptr) DeleteObject(brush);
+        }
         return 1;
+      }
       case WM_SIZE:
         if (wparam == SIZE_MINIMIZED) {
           minimized_ = true;
@@ -226,6 +267,21 @@ class ProductHost final {
           const auto width = static_cast<uint32_t>(LOWORD(lparam));
           const auto height = static_cast<uint32_t>(HIWORD(lparam));
           if (width > 0 && height > 0) {
+            // The WinAppSDK bridge owns a second WS_CHILD HWND. Resize that
+            // visible child before the exact-render wait below can block this
+            // platform thread; otherwise fast growth exposes the top-level
+            // background along the right and bottom edges.
+            if (composition_active_ && composition_child_ != nullptr &&
+                !SetWindowPos(composition_child_, nullptr, 0, 0,
+                              static_cast<int>(width) + kCompositionChildOverscanPx,
+                              static_cast<int>(height) + kCompositionChildOverscanPx,
+                              SWP_NOZORDER | SWP_NOACTIVATE)) {
+              fatal_ = true;
+              PostMessageW(top_, WM_CLOSE, 0, 0);
+              return 0;
+            }
+            if (composition_active_ && composition_child_ != nullptr)
+              ResizeCompositionViewport(width, height);
             // Match Flutter's host_window.cc contract: the one visible child
             // is always exactly the top-level physical client extent. The
             // child's WM_SIZE owns metrics and the bounded render transaction.
@@ -243,29 +299,38 @@ class ProductHost final {
         return 0;
       case WM_ENTERSIZEMOVE:
         interactive_move_ = true;
+        composition_interactive_.store(true, std::memory_order_relaxed);
         interactive_move_dirty_ = true;
-        SetTimer(window, kInteractiveMoveTimer, kInteractiveMoveIntervalMs,
-                 nullptr);
+        if (!composition_active_)
+          SetTimer(window, kInteractiveMoveTimer, kInteractiveMoveIntervalMs,
+                   nullptr);
         return 0;
       case WM_WINDOWPOSCHANGED:
         if (interactive_move_) interactive_move_dirty_ = true;
         // WM_DPICHANGED can arrive while the shell window still straddles two
         // monitors. Wait until the committed window rectangle is wholly on a
         // different monitor before rebuilding the fixed-size EGL surface.
-        if (interactive_move_ && EnteredDifferentMonitor() &&
+        if (!composition_active_ && interactive_move_ &&
+            EnteredDifferentMonitor() &&
             RepublishCurrentMetrics())
           QueueRender();
         break;
       case WM_EXITSIZEMOVE:
         interactive_move_ = false;
-        interactive_move_dirty_ = false;
+        composition_interactive_.store(false, std::memory_order_relaxed);
         KillTimer(window, kInteractiveMoveTimer);
         EnteredDifferentMonitor();
-        // A fixed-size ANGLE window surface can retain damaged tiles after a
-        // cross-DPI shell move even though the final client extent is
-        // unchanged. Publish a fresh generation so managed presentation can
-        // rebuild that surface once against stable HWND geometry.
-        if (RepublishCurrentMetrics()) QueueRender();
+        // Finish native sizing with one exact frame for the actual WM_SIZE
+        // metrics. Composition and opaque both retain the bounded terminal
+        // handshake; the raster worker performs DWM flush after releasing it.
+        if (composition_active_) {
+          const auto generation = current_generation_;
+          const auto causal = QueueRender();
+          WaitForExactResize(generation, causal);
+        } else if (RepublishCurrentMetrics()) {
+          QueueRender();
+        }
+        interactive_move_dirty_ = false;
         return 0;
       case WM_DPICHANGED: {
         const auto* suggested = reinterpret_cast<const RECT*>(lparam);
@@ -295,9 +360,6 @@ class ProductHost final {
         return 0;
       case WM_TIMER:
         if (wparam == kInteractiveMoveTimer) {
-          // Coalesce geometry changes while one surface frame is in flight.
-          // Each accepted tick publishes a same-size generation, which makes
-          // managed ANGLE rebuild the EGL window surface before presenting.
           if (interactive_move_ && interactive_move_dirty_) {
             if (!WindowStraddlesMonitors()) {
               interactive_move_dirty_ = false;
@@ -398,7 +460,18 @@ class ProductHost final {
         if (PublishMetrics()) {
           const auto generation = current_generation_;
           const auto causal = QueueRender();
-          WaitForExactResize(generation, causal);
+          // Flutter polls its task runner during the bounded exact-frame wait.
+          // Doroti's native loop cannot do that without dispatching unrelated
+          // re-entrant window messages, so interactive Composition yields
+          // after one 60 fps budget while the raster terminal continues.
+          // WM_EXITSIZEMOVE still performs the full 100 ms exact handshake.
+          const auto interactive_composition =
+              composition_active_ && interactive_move_;
+          WaitForExactResize(
+              generation, causal,
+              interactive_composition ? kCompositionInteractiveResizeWait
+                                      : kExactResizeWait,
+              !interactive_composition);
         }
         return 0;
       }
@@ -561,12 +634,70 @@ class ProductHost final {
     return PostMessageW(host->task_, kRequestShow, 0, 0) ? 0u : 4u;
   }
 
+  static uint32_t DOROTI_WINDOWS_CALL RequestOpaqueFallback(void* context) {
+    auto* host = static_cast<ProductHost*>(context);
+    if (host == nullptr || host->top_ == nullptr || host->child_ == nullptr)
+      return 1;
+    if (GetCurrentThreadId() != host->platform_thread_id_) return 2;
+    if (!host->composition_requested_ || !host->composition_active_) return 3;
+    if (host->first_exact_present_) return 4;
+    host->composition_active_ = false;
+    host->composition_child_ = nullptr;
+    RECT client{};
+    if (!GetClientRect(host->top_, &client) ||
+        !SetWindowPos(host->child_, nullptr, 0, 0,
+                      client.right - client.left, client.bottom - client.top,
+                      SWP_NOZORDER | SWP_NOACTIVATE | SWP_SHOWWINDOW))
+      return 5;
+    return 0;
+  }
+
+  static uint32_t DOROTI_WINDOWS_CALL SetCompositionChild(
+      void* context, void* child_hwnd) {
+    auto* host = static_cast<ProductHost*>(context);
+    if (host == nullptr || GetCurrentThreadId() != host->platform_thread_id_)
+      return 1;
+    if (child_hwnd == nullptr) {
+      host->composition_child_ = nullptr;
+      return 0;
+    }
+    const auto child = static_cast<HWND>(child_hwnd);
+    if (!host->composition_active_ || !IsWindow(child) ||
+        GetParent(child) != host->top_)
+      return 2;
+    DWORD process_id{};
+    if (GetWindowThreadProcessId(child, &process_id) != host->platform_thread_id_ ||
+        process_id != GetCurrentProcessId())
+      return 3;
+    RECT client{};
+    if (!GetClientRect(host->top_, &client) ||
+        !SetWindowPos(child, nullptr, 0, 0,
+                      client.right - client.left + kCompositionChildOverscanPx,
+                      client.bottom - client.top + kCompositionChildOverscanPx,
+                      SWP_NOZORDER | SWP_NOACTIVATE))
+      return 4;
+    host->composition_child_ = child;
+    host->ResizeCompositionViewport(
+        static_cast<uint32_t>(client.right - client.left),
+        static_cast<uint32_t>(client.bottom - client.top));
+    return 0;
+  }
+
+  void ResizeCompositionViewport(uint32_t width, uint32_t height) {
+    if (callbacks_.composition_resize == nullptr || width == 0 || height == 0)
+      return;
+    const auto scale = static_cast<double>(GetDpiForWindow(top_)) / 96.0;
+    callbacks_.composition_resize(
+        callbacks_.callback_context, width, height, scale);
+  }
+
   static uint32_t DOROTI_WINDOWS_CALL SetCursor(void* context, uint32_t cursor) {
     auto* host = static_cast<ProductHost*>(context);
     if (host == nullptr || cursor > 35) return 1;
     host->cursor_kind_.store(cursor);
-    PostMessageW(host->child_, WM_SETCURSOR,
-                 reinterpret_cast<WPARAM>(host->child_),
+    const auto target = host->InputWindow();
+    PostMessageW(target, WM_SETCURSOR,
+                 reinterpret_cast<WPARAM>(target),
                  MAKELPARAM(HTCLIENT, WM_MOUSEMOVE));
     return 0;
   }
@@ -774,7 +905,9 @@ class ProductHost final {
     if (top_ == nullptr) throw std::bad_alloc();
     ApplyTopLevelTheme();
     stable_monitor_ = MonitorFromWindow(top_, MONITOR_DEFAULTTONEAREST);
-    child_ = CreateWindowExW(0, kChildClass, L"", WS_CHILD | WS_VISIBLE,
+    const auto child_style =
+        WS_CHILD | (composition_active_ ? 0u : static_cast<uint32_t>(WS_VISIBLE));
+    child_ = CreateWindowExW(0, kChildClass, L"", child_style,
                              0, 0, 1, 1, top_, nullptr, instance, this);
     task_ = CreateWindowExW(0, kTaskClass, L"", 0, 0, 0, 0, 0, HWND_MESSAGE,
                             nullptr, instance, this);
@@ -785,8 +918,11 @@ class ProductHost final {
                       client.bottom - client.top,
                       SWP_NOZORDER | SWP_NOACTIVATE))
       throw std::bad_alloc();
-    accessibility_.Attach(child_, [this](int64_t node_id, int64_t action,
-                                         const std::wstring& arguments) {
+  }
+
+  void AttachInputServices() {
+    accessibility_.Attach(InputWindow(), [this](int64_t node_id, int64_t action,
+                                                const std::wstring& arguments) {
       if (callbacks_.semantics_action == nullptr) return;
       const auto utf8 = Encode(arguments.empty() ? L"null" : arguments);
       doroti_windows_utf8_v1 value{
@@ -806,7 +942,7 @@ class ProductHost final {
     if (set_client) {
       text_configuration_ = command.configuration;
       text_client_active_ = true;
-      ImmAssociateContextEx(child_, nullptr, IACE_DEFAULT);
+      ImmAssociateContextEx(InputWindow(), nullptr, IACE_DEFAULT);
     } else if (!text_client_active_) {
       return;
     }
@@ -846,12 +982,13 @@ class ProductHost final {
     text_.clear();
     text_selection_base_ = text_selection_extent_ = 0;
     text_composing_base_ = text_composing_extent_ = -1;
-    if (child_ != nullptr) ImmAssociateContextEx(child_, nullptr, 0);
+    if (InputWindow() != nullptr) ImmAssociateContextEx(InputWindow(), nullptr, 0);
   }
 
   void ApplyImeWindowPosition() {
-    if (!text_client_active_ || child_ == nullptr) return;
-    const auto context = ImmGetContext(child_);
+    const auto target = InputWindow();
+    if (!text_client_active_ || target == nullptr) return;
+    const auto context = ImmGetContext(target);
     if (context == nullptr) return;
     const auto scale = current_scale_ > 0 ? current_scale_ : 1.0;
     const POINT point{static_cast<LONG>(std::lround(caret_.left * scale)),
@@ -865,7 +1002,7 @@ class ProductHost final {
     candidate.dwStyle = CFS_CANDIDATEPOS;
     candidate.ptCurrentPos = point;
     ImmSetCandidateWindow(context, &candidate);
-    ImmReleaseContext(child_, context);
+    ImmReleaseContext(target, context);
   }
 
   static std::wstring ReadCompositionString(HIMC context, DWORD index) {
@@ -879,9 +1016,10 @@ class ProductHost final {
   }
 
   bool HandleImeComposition(LPARAM flags) {
-    const auto context = ImmGetContext(child_);
+    const auto target = InputWindow();
+    const auto context = ImmGetContext(target);
     if (context == nullptr) return false;
-    const auto release = [this, context] { ImmReleaseContext(child_, context); };
+    const auto release = [target, context] { ImmReleaseContext(target, context); };
     bool handled = false;
     if ((flags & GCS_RESULTSTR) != 0) {
       const auto result = ReadCompositionString(context, GCS_RESULTSTR);
@@ -1269,12 +1407,23 @@ class ProductHost final {
         last_render_terminal_kind_ = terminal;
       }
       resize_condition_.notify_all();
+      if (composition_active_ &&
+          terminal == DOROTI_WINDOWS_FRAME_PRESENTED_V1 &&
+          !composition_interactive_.load(std::memory_order_relaxed)) {
+        // The retained Composition source already covers intermediate resize
+        // bounds. Do not serialize the raster worker on every interactive
+        // DWM scan-out; the exact frame queued by WM_EXITSIZEMOVE still flushes
+        // after its terminal so the final size has an explicit scan-out point.
+        (void)DwmFlush();
+      }
       PostMessageW(task_, kRenderCompleted, 0, 0);
     }
   }
 
-  bool WaitForExactResize(uint64_t generation, uint64_t causal_frame_id) {
-    constexpr auto timeout = std::chrono::milliseconds(100);
+  bool WaitForExactResize(
+      uint64_t generation, uint64_t causal_frame_id,
+      std::chrono::milliseconds timeout = kExactResizeWait,
+      bool record_timeout = true) {
     const auto deadline = std::chrono::steady_clock::now() + timeout;
     while (causal_frame_id != 0) {
       std::unique_lock lock(render_mutex_);
@@ -1284,7 +1433,7 @@ class ProductHost final {
                    last_render_terminal_causal_frame_id_ >= causal_frame_id;
           });
       if (!completed) {
-        resize_wait_timeouts_.insert(generation);
+        if (record_timeout) resize_wait_timeouts_.insert(generation);
         return false;
       }
       if (render_stopping_) return false;
@@ -1297,8 +1446,10 @@ class ProductHost final {
       }
       lock.unlock();
       if (std::chrono::steady_clock::now() >= deadline) {
-        std::lock_guard timeout_lock(render_mutex_);
-        resize_wait_timeouts_.insert(generation);
+        if (record_timeout) {
+          std::lock_guard timeout_lock(render_mutex_);
+          resize_wait_timeouts_.insert(generation);
+        }
         return false;
       }
       causal_frame_id = QueueRender();
@@ -1336,6 +1487,12 @@ class ProductHost final {
     render_thread_.join();
     render_worker_started_ = false;
     DrainRenderCompletions();
+  }
+
+  void ReleasePlatformResources() noexcept {
+    if (platform_resources_released_) return;
+    platform_resources_released_ = true;
+    callbacks_.platform_resources_shutdown(callbacks_.callback_context);
   }
 
   void ResizeTop(uint32_t width, uint32_t height) {
@@ -1391,24 +1548,25 @@ class ProductHost final {
                                 static_cast<DWORD>(std::size(value))) == 0 ||
         value[0] != L'1')
       return;
-    SendMessageW(child_, WM_SETFOCUS, 0, 0);
-    SendMessageW(child_, WM_MOUSEMOVE, 0, MAKELPARAM(10, 20));
-    SendMessageW(child_, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(10, 20));
-    SendMessageW(child_, WM_MOUSEMOVE, MK_LBUTTON, MAKELPARAM(18, 25));
-    SendMessageW(child_, WM_LBUTTONUP, 0, MAKELPARAM(18, 25));
+    const auto target = InputWindow();
+    SendMessageW(target, WM_SETFOCUS, 0, 0);
+    SendMessageW(target, WM_MOUSEMOVE, 0, MAKELPARAM(10, 20));
+    SendMessageW(target, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(10, 20));
+    SendMessageW(target, WM_MOUSEMOVE, MK_LBUTTON, MAKELPARAM(18, 25));
+    SendMessageW(target, WM_LBUTTONUP, 0, MAKELPARAM(18, 25));
     RECT client{};
-    if (GetClientRect(child_, &client)) {
+    if (GetClientRect(target, &client)) {
       POINT wheel_point{(client.right - client.left) / 2,
                         (client.bottom - client.top) / 2};
-      if (ClientToScreen(child_, &wheel_point)) {
-        SendMessageW(child_, WM_MOUSEWHEEL,
+      if (ClientToScreen(target, &wheel_point)) {
+        SendMessageW(target, WM_MOUSEWHEEL,
                      MAKEWPARAM(0, static_cast<WORD>(-WHEEL_DELTA)),
                      MAKELPARAM(wheel_point.x, wheel_point.y));
       }
     }
-    SendMessageW(child_, WM_KEYDOWN, 'A', 1 | (0x1Eu << 16));
-    SendMessageW(child_, WM_KEYUP, 'A', 1 | (0x1Eu << 16) | (1u << 30) | (1u << 31));
-    SendMessageW(child_, WM_KILLFOCUS, 0, 0);
+    SendMessageW(target, WM_KEYDOWN, 'A', 1 | (0x1Eu << 16));
+    SendMessageW(target, WM_KEYUP, 'A', 1 | (0x1Eu << 16) | (1u << 30) | (1u << 31));
+    SendMessageW(target, WM_KILLFOCUS, 0, 0);
   }
 
   void EmitPointer(uint32_t change, WPARAM wparam, LPARAM lparam,
@@ -1490,6 +1648,42 @@ class ProductHost final {
     }
   }
 
+  HWND InputWindow() const noexcept {
+    return composition_active_ ? top_ : child_;
+  }
+
+  static bool IsClientInputMessage(UINT message) noexcept {
+    switch (message) {
+      case WM_SETCURSOR:
+      case WM_SETFOCUS:
+      case WM_KILLFOCUS:
+      case WM_GETOBJECT:
+      case WM_IME_STARTCOMPOSITION:
+      case WM_IME_COMPOSITION:
+      case WM_IME_ENDCOMPOSITION:
+      case WM_CHAR:
+      case WM_MOUSEMOVE:
+      case WM_MOUSELEAVE:
+      case WM_LBUTTONDOWN:
+      case WM_RBUTTONDOWN:
+      case WM_MBUTTONDOWN:
+      case WM_LBUTTONUP:
+      case WM_RBUTTONUP:
+      case WM_MBUTTONUP:
+      case WM_CANCELMODE:
+      case WM_CAPTURECHANGED:
+      case WM_MOUSEWHEEL:
+      case WM_MOUSEHWHEEL:
+      case WM_KEYDOWN:
+      case WM_SYSKEYDOWN:
+      case WM_KEYUP:
+      case WM_SYSKEYUP:
+        return true;
+      default:
+        return false;
+    }
+  }
+
   void Destroy() noexcept {
     StopRenderWorker();
     if (task_ != nullptr) DestroyWindow(task_);
@@ -1503,6 +1697,7 @@ class ProductHost final {
   doroti_windows_callbacks_v1 callbacks_{};
   HWND top_{};
   HWND child_{};
+  HWND composition_child_{};
   HWND task_{};
   HMONITOR stable_monitor_{};
   winrt::Microsoft::UI::Windowing::AppWindow app_window_{nullptr};
@@ -1535,7 +1730,11 @@ class ProductHost final {
   bool semantics_smoke_emitted_{};
   bool minimized_{};
   bool interactive_move_{};
+  std::atomic_bool composition_interactive_{};
   bool interactive_move_dirty_{};
+  bool composition_requested_{};
+  bool composition_active_{};
+  bool platform_resources_released_{};
   uint32_t lifecycle_state_{std::numeric_limits<uint32_t>::max()};
   uint32_t lifecycle_smoke_phase_{};
   uint32_t platform_brightness_{};
@@ -1648,21 +1847,34 @@ doroti_windows_status_v1 DOROTI_WINDOWS_CALL doroti_windows_run_v1(
       callbacks->semantics_action == nullptr ||
       callbacks->lifecycle == nullptr ||
       callbacks->platform_brightness == nullptr ||
+      callbacks->platform_resources_shutdown == nullptr ||
+      callbacks->composition_resize == nullptr ||
       configuration->initial_width_px == 0 ||
       configuration->initial_height_px == 0)
     return DOROTI_WINDOWS_STATUS_INVALID_ARGUMENT_V1;
+  if ((configuration->required_features &
+       ~static_cast<uint64_t>(DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1)) != 0)
+    return DOROTI_WINDOWS_STATUS_NOT_IMPLEMENTED_V1;
 
   bool bootstrap_initialized = false;
   try {
-    const auto bootstrap = MddBootstrapInitialize2(
-        WINDOWSAPPSDK_RELEASE_MAJORMINOR,
-        WINDOWSAPPSDK_RELEASE_VERSION_TAG_W,
-        PACKAGE_VERSION{}, MddBootstrapInitializeOptions_None);
-    if (FAILED(bootstrap)) return DOROTI_WINDOWS_STATUS_NATIVE_FAILURE_V1;
-    bootstrap_initialized = true;
-    ProductHost host(*configuration, *callbacks);
-    const auto status = host.Run();
-    MddBootstrapShutdown();
+    if (!HasSelfContainedWindowsAppRuntime()) {
+      PACKAGE_VERSION minimum_version{};
+      minimum_version.Version = WINDOWSAPPSDK_RUNTIME_VERSION_UINT64;
+      const auto result = MddBootstrapInitialize2(
+          WINDOWSAPPSDK_RELEASE_MAJORMINOR,
+          WINDOWSAPPSDK_RELEASE_VERSION_TAG_W,
+          minimum_version,
+          MddBootstrapInitializeOptions_None);
+      if (FAILED(result)) return DOROTI_WINDOWS_STATUS_NATIVE_FAILURE_V1;
+      bootstrap_initialized = true;
+    }
+    doroti_windows_status_v1 status{};
+    {
+      ProductHost host(*configuration, *callbacks);
+      status = host.Run();
+    }
+    if (bootstrap_initialized) MddBootstrapShutdown();
     return status;
   } catch (...) {
     if (bootstrap_initialized) MddBootstrapShutdown();

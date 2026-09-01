@@ -17,6 +17,11 @@ extern "C" {
 
 enum { DOROTI_WINDOWS_ABI_VERSION_V1 = 1 };
 
+typedef enum doroti_windows_required_feature_v1 {
+  DOROTI_WINDOWS_FEATURE_NONE_V1 = 0,
+  DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1 = 1ull << 0,
+} doroti_windows_required_feature_v1;
+
 typedef enum doroti_windows_status_v1 {
   DOROTI_WINDOWS_STATUS_OK_V1 = 0,
   DOROTI_WINDOWS_STATUS_INVALID_ARGUMENT_V1 = 1,
@@ -137,6 +142,8 @@ typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_request_resize_v1)(
     void* host_context, uint32_t width_px, uint32_t height_px);
 typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_request_close_v1)(void* host_context);
 typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_request_show_v1)(void* host_context);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_request_opaque_fallback_v1)(
+    void* host_context);
 typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_set_cursor_v1)(
     void* host_context, uint32_t cursor);
 typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_set_clipboard_v1)(
@@ -156,6 +163,8 @@ typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_update_semantics_v1)(
     void* host_context, doroti_windows_utf8_v1 json);
 typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_clear_semantics_v1)(
     void* host_context);
+typedef uint32_t(DOROTI_WINDOWS_CALL* doroti_windows_set_composition_child_v1)(
+    void* host_context, void* child_hwnd);
 
 typedef enum doroti_windows_platform_brightness_v1 {
   DOROTI_WINDOWS_PLATFORM_BRIGHTNESS_DARK_V1 = 0,
@@ -168,11 +177,13 @@ typedef struct doroti_windows_host_v1 {
   void* host_context;
   void* top_level_hwnd;
   void* child_hwnd;
+  void* opaque_child_hwnd;
   void* task_hwnd;
   doroti_windows_request_frame_v1 request_frame;
   doroti_windows_request_resize_v1 request_resize;
   doroti_windows_request_close_v1 request_close;
   doroti_windows_request_show_v1 request_show;
+  doroti_windows_request_opaque_fallback_v1 request_opaque_fallback;
   doroti_windows_set_cursor_v1 set_cursor;
   doroti_windows_set_clipboard_v1 set_clipboard;
   doroti_windows_request_clipboard_v1 request_clipboard;
@@ -183,6 +194,7 @@ typedef struct doroti_windows_host_v1 {
   doroti_windows_update_semantics_v1 update_semantics;
   doroti_windows_clear_semantics_v1 clear_semantics;
   uint32_t initial_platform_brightness;
+  doroti_windows_set_composition_child_v1 set_composition_child;
 } doroti_windows_host_v1;
 
 typedef void(DOROTI_WINDOWS_CALL* doroti_windows_host_ready_callback_v1)(
@@ -216,6 +228,10 @@ typedef void(DOROTI_WINDOWS_CALL* doroti_windows_lifecycle_callback_v1)(
     int64_t timestamp_qpc);
 typedef void(DOROTI_WINDOWS_CALL* doroti_windows_platform_brightness_callback_v1)(
     void* callback_context, uint64_t view_id, uint32_t brightness);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_platform_resources_shutdown_callback_v1)(
+    void* callback_context);
+typedef void(DOROTI_WINDOWS_CALL* doroti_windows_composition_resize_callback_v1)(
+    void* callback_context, uint32_t width_px, uint32_t height_px, double scale);
 
 typedef struct doroti_windows_configuration_v1 {
   uint32_t abi_version;
@@ -247,6 +263,8 @@ typedef struct doroti_windows_callbacks_v1 {
   doroti_windows_semantics_action_callback_v1 semantics_action;
   doroti_windows_lifecycle_callback_v1 lifecycle;
   doroti_windows_platform_brightness_callback_v1 platform_brightness;
+  doroti_windows_platform_resources_shutdown_callback_v1 platform_resources_shutdown;
+  doroti_windows_composition_resize_callback_v1 composition_resize;
 } doroti_windows_callbacks_v1;
 
 typedef struct doroti_windows_abi_layout_v1 {

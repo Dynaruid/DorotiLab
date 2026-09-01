@@ -7,6 +7,7 @@ using Doroti.Hosting;
 using Doroti.Skia.Rendering;
 using Doroti.Skia.RuntimeEffects;
 using Doroti.Ui;
+using SkiaSharp;
 
 namespace Doroti.Host.WindowsAppSdk;
 
@@ -28,6 +29,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
         LastNativeProvenance = WindowsNativeV1.ConfigureAppDirectoryLoading();
         WindowsNativeV1.ValidateLayout();
+        WindowsNativeV1.EnsureSelfContainedWindowsAppRuntime();
         var initializeResult = RoInitialize(0);
         if (initializeResult < 0) Marshal.ThrowExceptionForHR(initializeResult);
         try
@@ -50,6 +52,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             descriptor.NativePluginHandlers);
         using var session = new DorotiHostSession(descriptor.EntrypointFactory());
         using var state = new WindowsManagedState(session, application, descriptor.ViewConfiguration);
+        // Experimental ContentIsland activation must occur on the HWND thread
+        // during host-ready. Its process-wide DLL search restriction is
+        // applied there immediately after attach and still before first show.
+        // Opaque does not need that delayed WinRT activation.
+        if (state.NativeRequiredFeatures == 0)
+            WindowsNativeV1.RestrictProcessDllSearch();
         var handle = GCHandle.Alloc(state);
         try
         {
@@ -69,6 +77,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     InitialWidthPx = ToDimension(descriptor.ViewConfiguration.logicalSize.width * initialScale),
                     InitialHeightPx = ToDimension(descriptor.ViewConfiguration.logicalSize.height * initialScale),
                     NCmdShow = 1,
+                    RequiredFeatures = state.NativeRequiredFeatures,
                 };
                 var callbacks = new WindowsNativeV1.Callbacks
                 {
@@ -89,6 +98,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     SemanticsAction = (nint)(delegate* unmanaged[Cdecl]<nint, long, long, WindowsNativeV1.Utf8, void>)&OnSemanticsAction,
                     Lifecycle = (nint)(delegate* unmanaged[Cdecl]<nint, ulong, uint, long, void>)&OnLifecycle,
                     PlatformBrightness = (nint)(delegate* unmanaged[Cdecl]<nint, ulong, uint, void>)&OnPlatformBrightness,
+                    PlatformResourcesShutdown = (nint)(delegate* unmanaged[Cdecl]<nint, void>)&OnPlatformResourcesShutdown,
+                    CompositionResize = (nint)(delegate* unmanaged[Cdecl]<nint, uint, uint, double, void>)&OnCompositionResize,
                 };
                 var status = WindowsNativeV1.Run(in configuration, in callbacks);
                 state.MarkNativeStopped();
@@ -125,9 +136,14 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private uint _inputThreadId;
         private double _presenterScale;
         private ulong _presenterResizeGeneration;
+        private ulong _lastPresentedResizeGeneration;
         private bool _visibleAfterExactPresent;
+        private bool _readyFileWritten;
         private bool _deviceResetInjected;
         private bool _disposed;
+        private AcrylicPresenterSnapshot? _releasedAcrylicSnapshot;
+        private string? _releasedAdapterDescription;
+        private Task? _optionSmoke;
 
         internal WindowsManagedState(
             DorotiHostSession session,
@@ -137,27 +153,103 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             _session = session;
             _application = application;
             _configuration = configuration;
-            Presenter = CreatePresenter(ShouldWriteDiagnostics());
+            RequestedMode = configuration.backdrop?.mode == WindowBackdropMode.experimentalAcrylic
+                ? "experimentalAcrylic" : "opaque";
+            if (RequestedMode == "experimentalAcrylic")
+            {
+                try
+                {
+                    if (ShouldWriteDiagnostics())
+                        Console.Error.WriteLine("doroti.windows.experimental-acrylic=pre-window-probe-start");
+                    Presenter = new WindowsManagedAcrylicCompositionPresenter(
+                        ShouldWriteDiagnostics(),
+                        configuration.backdrop!,
+                        Brightness.light);
+                    EffectiveMode = "experimentalAcrylic";
+                    NativeRequiredFeatures = WindowsNativeV1.ExperimentalAcrylicFeature;
+                    if (ShouldWriteDiagnostics())
+                        Console.Error.WriteLine("doroti.windows.experimental-acrylic=pre-window-probe-pass");
+                }
+                catch (Exception exception)
+                {
+                    FallbackReason = $"pre-window:{exception.GetType().Name}:{exception.Message}";
+                    Presenter = CreatePresenter(ShouldWriteDiagnostics());
+                    EffectiveMode = "opaque";
+                }
+            }
+            else
+            {
+                Presenter = CreatePresenter(ShouldWriteDiagnostics());
+                EffectiveMode = "opaque";
+            }
         }
 
         internal WindowsManagedProductHost? Host { get; private set; }
-        internal WindowsManagedHwndPresenterBase Presenter { get; }
+        internal WindowsManagedHwndPresenterBase Presenter { get; private set; }
         internal SkiaSceneRenderer? Renderer { get; private set; }
         internal DorotiView? View { get; private set; }
+        internal string RequestedMode { get; }
+        internal string EffectiveMode { get; private set; }
+        internal string? FallbackReason { get; private set; }
+        internal ulong NativeRequiredFeatures { get; }
 
         internal void SetHost(in WindowsNativeV1.Host native)
         {
             RecordThread(ref _platformThreadId, "platform");
-            var host = new WindowsManagedProductHost(in native,
+            var effectiveNative = native;
+            if (Presenter is WindowsManagedAcrylicCompositionPresenter acrylic)
+            {
+                try
+                {
+                    if (ShouldWriteDiagnostics())
+                        Console.Error.WriteLine("doroti.windows.experimental-acrylic=content-island-attach-start");
+                    acrylic.ApplySystemBrightness((Brightness)native.InitialPlatformBrightness);
+                    var contentBridgeHwnd = acrylic.AttachWindow(native.TopLevelHwnd);
+                    var setCompositionChild =
+                        (delegate* unmanaged[Cdecl]<nint, nint, uint>)native.SetCompositionChild;
+                    var registrationStatus = setCompositionChild(
+                        native.HostContext, contentBridgeHwnd);
+                    if (registrationStatus != 0)
+                        throw new InvalidOperationException(
+                            $"The native host rejected the Acrylic content bridge HWND ({registrationStatus}).");
+                    if (string.Equals(
+                            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_OPTION_SMOKE"),
+                            "1", StringComparison.Ordinal))
+                        _optionSmoke = Task.Run(() => RunAcrylicOptionSmoke(acrylic));
+                    if (ShouldWriteDiagnostics())
+                        Console.Error.WriteLine("doroti.windows.experimental-acrylic=content-island-attach-pass");
+                }
+                catch (Exception exception)
+                {
+                    acrylic.Dispose();
+                    var fallback = (delegate* unmanaged[Cdecl]<nint, uint>)native.RequestOpaqueFallback;
+                    var fallbackStatus = fallback(native.HostContext);
+                    if (fallbackStatus != 0)
+                        throw new InvalidOperationException(
+                            $"experimentalAcrylic initialization failed and opaque fallback returned {fallbackStatus}.",
+                            exception);
+                    FallbackReason = $"pre-show:{exception.GetType().Name}:{exception.Message}";
+                    EffectiveMode = "opaque";
+                    Presenter = CreatePresenter(ShouldWriteDiagnostics());
+                    effectiveNative.ChildHwnd = native.OpaqueChildHwnd;
+                }
+            }
+            WindowsNativeV1.RestrictProcessDllSearch();
+            var host = new WindowsManagedProductHost(in effectiveNative,
                 checked((int)_configuration.logicalSize.width),
                 checked((int)_configuration.logicalSize.height));
             var presenterSlug = Presenter.BackendName.ToLowerInvariant().Replace('/', '-');
-            var target = $"win-x64/windowsappsdk-2.4/cpp-child-hwnd/managed-{presenterSlug}-skia";
+            var topology = EffectiveMode == "experimentalAcrylic" ? "content-island" : "cpp-child-hwnd";
+            var target = $"win-x64/windowsappsdk-2.4/{topology}/managed-{presenterSlug}-skia";
             var renderer = new SkiaSceneRenderer(
                 1, host, _configuration.backgroundColor, _configuration.darkBackgroundColor,
                 target, Presenter.RuntimeEffectsBackend,
                 $"windowsappsdk-2.4-hwnd-{presenterSlug}-skia-managed");
             var messages = new WindowsAppSdkPlatformMessageCapability();
+            if (Presenter is WindowsManagedAcrylicCompositionPresenter activeAcrylic)
+                messages.SetMessageHandler(
+                    WindowsManagedAcrylicCompositionPresenter.RuntimeChannel,
+                    activeAcrylic.HandleRuntimeMessageAsync);
             var capabilities = new DorotiViewCapabilities(target)
                 .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)
                 .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
@@ -201,18 +293,95 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             (Host ?? throw new InvalidOperationException("Metrics arrived before host-ready."))
                 .ApplyMetrics(in metrics);
 
+        internal void ResizeComposition(uint width, uint height, double scale)
+        {
+            if (Presenter is not WindowsManagedAcrylicCompositionPresenter acrylic)
+                throw new InvalidOperationException(
+                    "A Composition viewport resize arrived without an Acrylic presenter.");
+            acrylic.ResizeViewport(
+                checked((int)width), checked((int)height), scale);
+        }
+
+        private static void RunAcrylicOptionSmoke(WindowsManagedAcrylicCompositionPresenter acrylic)
+        {
+            const int requestCount = 500;
+            var requests = new Task<ReadOnlyMemory<byte>?>[requestCount];
+            for (var index = 0; index < requestCount; index++)
+            {
+                var kind = (index % 3) switch { 0 => "default", 1 => "base", _ => "thin" };
+                var theme = index % 2 == 0 ? "light" : "dark";
+                var payload = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
+                {
+                    kind,
+                    theme,
+                    tintColor = 0xff204060u + (uint)(index & 0x1f),
+                    tintOpacity = (index % 11) / 10d,
+                    luminosityOpacity = (index % 6) / 5d,
+                }));
+                requests[index] = acrylic.HandleRuntimeMessageAsync(payload, CancellationToken.None).AsTask();
+            }
+            Task.WaitAll(requests);
+            var terminals = requests.Select(task => task.Result)
+                .Select(result => result is { } value
+                    ? JsonDocument.Parse(value)
+                    : throw new InvalidDataException("Acrylic option smoke returned no terminal."))
+                .ToArray();
+            try
+            {
+                if (terminals.Any(terminal =>
+                        !terminal.RootElement.TryGetProperty("status", out var status) ||
+                        status.GetString() is not ("applied" or "superseded")))
+                    throw new InvalidDataException("Acrylic option smoke returned a failed or malformed terminal.");
+                if (terminals[^1].RootElement.GetProperty("status").GetString() != "applied")
+                    throw new InvalidDataException("Acrylic option smoke did not apply the last request.");
+                var snapshot = acrylic.Snapshot();
+                if (snapshot.AcceptedOptionRevisions != requestCount || snapshot.FailedOptionRevisions != 0 ||
+                    snapshot.AppliedOptionRevisions + snapshot.SupersededOptionRevisions != requestCount ||
+                    snapshot.AcrylicKind != "base" || snapshot.Theme != "Dark")
+                    throw new InvalidDataException(
+                        $"Acrylic option smoke counters or last-request-wins state differ: {snapshot}.");
+            }
+            finally
+            {
+                foreach (var terminal in terminals) terminal.Dispose();
+            }
+        }
+
         internal void MarkNativeStopped() => Host?.MarkNativeStopped();
+
+        internal void ReleasePlatformResources()
+        {
+            if (Presenter is WindowsManagedAcrylicCompositionPresenter acrylic)
+            {
+                if (_optionSmoke is { } smoke && !smoke.Wait(TimeSpan.FromSeconds(5)))
+                    throw new TimeoutException("Acrylic option smoke did not drain before platform shutdown.");
+                _releasedAcrylicSnapshot = acrylic.Snapshot();
+                _releasedAdapterDescription = acrylic.AdapterDescription;
+                acrylic.Dispose();
+            }
+        }
 
         internal uint Render(in WindowsNativeV1.FrameRequest request)
         {
             RecordThread(ref _rasterThreadId, "raster");
             var host = Host ?? throw new InvalidOperationException("Render arrived before host-ready.");
             var renderer = Renderer ?? throw new InvalidOperationException("Renderer is unavailable.");
-            host.BeginFrame(in request);
+            var dispatchedFrameworkFrame = host.BeginFrame(in request);
             var width = checked((int)request.WidthPx);
             var height = checked((int)request.HeightPx);
             var causalFrameId = checked((long)request.CausalFrameId);
             var resizeGeneration = request.Generation;
+            if (!dispatchedFrameworkFrame &&
+                _lastPresentedResizeGeneration == resizeGeneration &&
+                Presenter.Width == width && Presenter.Height == height)
+            {
+                // The exact surface for this generation is already visible
+                // and no framework callback produced newer scene work. Treat
+                // the wakeup as satisfied without replaying the retained scene
+                // through the GPU and presentation queue a second time.
+                Interlocked.Increment(ref _renderCallbacks);
+                return (uint)WindowsNativeV1.FrameTerminalKind.Presented;
+            }
             if (!_deviceResetInjected && Interlocked.Read(ref _renderCallbacks) >= 1 &&
                 Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C8_SMOKE") == "1")
             {
@@ -221,6 +390,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 _deviceResetInjected = true;
             }
             var scale = host.ResizeTarget.DeviceScaleX;
+            if (Presenter is WindowsManagedAcrylicCompositionPresenter acrylicPresenter)
+                acrylicPresenter.SetRasterizationScale(scale);
             var dpiContextChanged = _presenterScale > 0 && _presenterScale != scale;
             if (dpiContextChanged)
             {
@@ -228,7 +399,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 // GPU state together. The move-end generation below performs
                 // one final surface-only refresh after shell geometry settles.
                 renderer.InvalidateGpuContextResources();
-                Presenter.ResetDevice();
+                if (Presenter is WindowsManagedAngleEglPresenter)
+                    Presenter.ResetDevice();
             }
             var stableMoveRefresh = _presenterResizeGeneration > 0 &&
                 _presenterResizeGeneration != resizeGeneration &&
@@ -252,7 +424,15 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var presented = false;
             var staleInputPrevented = false;
             var result = Presenter.RenderAndPresent(
-                surface => renderer.Paint(surface, width, height, host.ResizeTarget, causalFrameId),
+                surface =>
+                {
+                    var paintResult = renderer.Paint(
+                        surface, width, height, host.ResizeTarget, causalFrameId);
+                    if (ShouldDrawValidationFrameMarker())
+                        DrawValidationFrameMarker(
+                            surface.Canvas, width, height, scale, checked((long)resizeGeneration));
+                    return paintResult;
+                },
                 value =>
                 {
                     if (!value.ShouldPresent || value.Completion is not { } candidate)
@@ -279,6 +459,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     $"Managed {Presenter.BackendName} presentation emitted " +
                     $"{Presenter.OperationalDebugErrorCount} operational GPU errors.");
             Interlocked.Increment(ref _renderCallbacks);
+            if (presented)
+                _lastPresentedResizeGeneration = resizeGeneration;
             if (presented && result.Completion is { } completion)
             {
                 lock (_gate) _paintCompletions.Add(request.CausalFrameId, completion);
@@ -302,6 +484,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 case WindowsNativeV1.FrameTerminalKind.Presented:
                     if (completion is { } painted) Renderer?.CompletePaint(painted);
                     _visibleAfterExactPresent |= IsWindowVisible(host.TopLevelHwnd);
+                    if (_visibleAfterExactPresent) WriteReadyFile(host.TopLevelHwnd);
                     Interlocked.Increment(ref _presented);
                     break;
                 case WindowsNativeV1.FrameTerminalKind.Superseded:
@@ -312,6 +495,40 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     break;
                 default:
                     throw new InvalidDataException($"Unknown native terminal {terminal.TerminalKind}.");
+            }
+        }
+
+        private static bool ShouldDrawValidationFrameMarker() =>
+            string.Equals(
+                Environment.GetEnvironmentVariable(
+                    "DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_FRAME_MARKER"),
+                "1", StringComparison.Ordinal);
+
+        private static void DrawValidationFrameMarker(
+            SKCanvas canvas, int width, int height, double scale, long resizeGeneration)
+        {
+            if (resizeGeneration <= 0 || width <= 0 || height <= 0) return;
+            var markerScale = Math.Max(1d, scale);
+            var bitSize = Math.Max(4, checked((int)Math.Round(7 * markerScale)));
+            var bitGap = Math.Max(1, checked((int)Math.Round(markerScale)));
+            const int generationBitCount = 12;
+            const int checksumBitCount = 8;
+            const int bitCount = generationBitCount + checksumBitCount;
+            var stripWidth = bitCount * bitSize + (bitCount - 1) * bitGap;
+            var startX = width - stripWidth - Math.Max(4, checked((int)Math.Round(4 * markerScale)));
+            var startY = Math.Max(1, checked((int)Math.Round(5 * markerScale)));
+            if (startX < 0 || startY + bitSize > height) return;
+            var binary = checked((int)(resizeGeneration & 0xFFF));
+            var gray = binary ^ (binary >> 1);
+            var checksum = ((gray * 0x9E37) ^ (gray >> 4) ^ 0xA5) & 0xFF;
+            var payload = gray | (checksum << generationBitCount);
+            using var paint = new SKPaint { IsAntialias = false };
+            for (var bit = 0; bit < bitCount; bit++)
+            {
+                paint.Color = (payload & (1 << bit)) != 0 ? SKColors.White : SKColors.Black;
+                canvas.DrawRect(
+                    startX + bit * (bitSize + bitGap), startY,
+                    bitSize, bitSize, paint);
             }
         }
 
@@ -334,6 +551,14 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             RecordThread(ref _inputThreadId, "input");
             (Host ?? throw new InvalidOperationException("Focus arrived before host-ready."))
                 .ApplyFocus(focused, timestampQpc);
+        }
+
+        internal void ApplyPlatformBrightness(uint brightness)
+        {
+            (Host ?? throw new InvalidOperationException("Platform brightness arrived before host-ready."))
+                .ApplyPlatformBrightness(brightness);
+            if (Presenter is WindowsManagedAcrylicCompositionPresenter acrylic)
+                acrylic.ApplySystemBrightness((Brightness)brightness);
         }
 
         internal void CaptureFatal(Exception exception)
@@ -373,7 +598,38 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
         internal void WriteDiagnostics()
         {
-            Console.Error.WriteLine($"doroti.windows.summary={JsonSerializer.Serialize(CreateDiagnostics())}");
+            var summary = CreateDiagnostics();
+            Console.Error.WriteLine($"doroti.windows.summary={JsonSerializer.Serialize(summary)}");
+            var reportPath = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_REPORT");
+            if (!string.IsNullOrWhiteSpace(reportPath))
+            {
+                var fullPath = System.IO.Path.GetFullPath(reportPath);
+                Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fullPath)!);
+                File.WriteAllText(fullPath, JsonSerializer.Serialize(DiagnosticDocument(), new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                }));
+            }
+        }
+
+        private void WriteReadyFile(nint topLevelHwnd)
+        {
+            if (_readyFileWritten) return;
+            var readyPath = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_READY_FILE");
+            if (string.IsNullOrWhiteSpace(readyPath)) return;
+            var fullPath = System.IO.Path.GetFullPath(readyPath);
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(fullPath)!);
+            File.WriteAllText(fullPath, JsonSerializer.Serialize(new
+            {
+                schemaVersion = "doroti.windows.experimental-acrylic-ready/v1",
+                hwnd = topLevelHwnd.ToInt64(),
+                processId = Environment.ProcessId,
+                title = _configuration.title,
+                requestedMode = RequestedMode,
+                effectiveMode = EffectiveMode,
+            }, new JsonSerializerOptions { WriteIndented = true }));
+            _readyFileWritten = true;
         }
 
         private WindowsProductRunDiagnostics CreateDiagnostics()
@@ -381,7 +637,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var resize = Host?.ResizeSnapshot ?? throw new InvalidOperationException("Product host diagnostics are unavailable.");
             var renderer = Renderer?.Diagnostics ?? throw new InvalidOperationException("Product renderer diagnostics are unavailable.");
             return new(
-                Presenter.BackendName, Presenter.DiagnosticCoverage, Presenter.AdapterDescription,
+                Presenter.BackendName, Presenter.DiagnosticCoverage,
+                _releasedAdapterDescription ?? Presenter.AdapterDescription,
+                RequestedMode, EffectiveMode, FallbackReason,
+                _releasedAcrylicSnapshot ?? (Presenter as WindowsManagedAcrylicCompositionPresenter)?.Snapshot(),
                 _platformThreadId, _rasterThreadId, _inputThreadId,
                 _renderCallbacks, _presented, _superseded, _failed,
                 _visibleAfterExactPresent,
@@ -414,8 +673,18 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var diagnostics = CreateDiagnostics();
             return new
             {
-                schemaVersion = "doroti.windows.hwnd-exact-cpp-product/v1",
-                ownership = new { cpp = "HWND/task-pump", managed = $"{Presenter.BackendName}/Skia/surface/present", abiGpuPointerCount = 0 },
+                schemaVersion = EffectiveMode == "experimentalAcrylic"
+                    ? "doroti.windows.experimental-acrylic-product/v1"
+                    : "doroti.windows.hwnd-exact-cpp-product/v1",
+                ownership = new
+                {
+                    cpp = "HWND/task-pump",
+                    managed = $"{Presenter.BackendName}/Skia/surface/present",
+                    visibleOwner = EffectiveMode == "experimentalAcrylic" ? "ContentIsland" : "child HWND",
+                    abiGpuPointerCount = 0,
+                },
+                mode = new { requested = RequestedMode, effective = EffectiveMode, fallbackReason = FallbackReason },
+                acrylic = diagnostics.Acrylic,
                 frames = diagnostics,
                 resize = Host?.ResizeSnapshot,
                 renderer = Renderer?.Diagnostics,
@@ -492,6 +761,11 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             if (metrics is null) throw new InvalidDataException("Native metrics supplied null.");
             state.ApplyMetrics(in *metrics);
         });
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static void OnCompositionResize(
+        nint context, uint width, uint height, double scale) =>
+        GuardVoid(context, state => state.ResizeComposition(width, height, scale));
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static uint OnRender(nint context, WindowsNativeV1.FrameRequest* request)
@@ -592,9 +866,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         GuardVoid(context, managed =>
         {
             if (viewId != 1) throw new InvalidDataException("Native platform-brightness view id differs.");
-            (managed.Host ?? throw new InvalidOperationException("Platform brightness arrived before host-ready."))
-                .ApplyPlatformBrightness(brightness);
+            managed.ApplyPlatformBrightness(brightness);
         });
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static void OnPlatformResourcesShutdown(nint context) =>
+        GuardVoid(context, static managed => managed.ReleasePlatformResources());
 
     private static void GuardVoid(nint context, Action<WindowsManagedState> callback)
     {
@@ -659,6 +936,10 @@ internal sealed record WindowsProductRunDiagnostics(
     string PresenterBackend,
     string PresenterDiagnosticCoverage,
     string AdapterDescription,
+    string RequestedMode,
+    string EffectiveMode,
+    string? FallbackReason,
+    AcrylicPresenterSnapshot? Acrylic,
     uint PlatformThreadId,
     uint RasterThreadId,
     uint InputThreadId,

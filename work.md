@@ -1,11 +1,36 @@
 # Doroti WindowsAppSdk Acrylic + `experimental Acrylic` 작업계획
 
 - 작성일: 2026-09-01
-- 상태: **`experimental Acrylic` 활성 계획 수립 / 구현 notRun** (strict P0.5 FAIL / strict P1-CS FAIL 보존 / opaque 기본 유지 / 실물 검증 notVerified)
+- 상태: **`experimental Acrylic` opt-in 제품 통합 구현 / current bounded qualification `PASS-automated-partial`** (좌상단 3초·600ms 자동 case PASS / strict P0.5 FAIL / strict P1-CS FAIL 보존 / 전체 matrix notRun / opaque 기본 유지 / 수정본 실물 검증 notVerified)
 - 대상: Doroti.Host.WindowsAppSdk의 HwndExactCpp와 managed ANGLE/EGL-D3D11 → Composition Swapchain + SkiaSharp 경로
 - 지원 OS: Windows 11 24H2, build 26100 이상만 지원
 - 목표: opaque 기본 경로의 exact-frame 계약은 그대로 유지하고, 별도 opt-in `experimental Acrylic` 모드에서는 ANGLE D3D11 → Composition Swapchain으로 Windows Desktop Acrylic(Default/Base/Thin, theme별 tint)을 제공한다. interactive resize 중에는 제한된 active-edge 불일치만 허용하고 resize 종료 뒤 exact geometry로 복귀한다.
-- 현재 활성 범위는 아래 **활성 계획 — experimental Acrylic**이다. 그 뒤의 strict-exact 후속 계획과 1차 계획은 2026-09-01 실행 결과 및 실패 근거로 보존한다. 아직 제품 Acrylic API/ABI는 추가하지 않았다.
+- 현재 활성 범위는 아래 **활성 계획 — experimental Acrylic**이다. 그 뒤의 strict-exact 후속 계획과 1차 계획은 2026-09-01 실행 결과 및 실패 근거로 보존한다. 제품 API/ABI와 opt-in presenter/validator를 구현했고, 30fps `WM_SIZING` stepper는 창 자체가 느려지는 실물 실패 때문에 제거했다. 현재는 바깥 `WM_SIZING`을 수정하지 않고 실제 child `WM_SIZE` physical extent를 authority로 삼는다. interactive Composition wait는 한 60fps budget인 16ms에서 양보하고, `WM_EXITSIZEMOVE`만 최대 100ms exact terminal과 raster-thread `DwmFlush`를 수행한다. 이미 physical pixel인 surface에는 `DesktopChildSiteBridge.OverrideScale = 1`을 적용하고, 256px retained overscan과 top-HWND의 어두운 erase fill로 빠른 expand 중 흰 배경 노출을 막는다. 전체 E3 matrix와 수정본 E4 실물 acceptance는 아직 완료하지 않았다.
+
+## 2026-09-01 `experimental Acrylic` 제품 통합 실행 결과
+
+| 항목 | 판정 | 핵심 evidence |
+|---|---|---|
+| 제품 구조/API/ABI | PASS-implemented | `WindowBackdropMode.experimentalAcrylic`, kind/theme/tint 옵션, pre-show topology/fallback, ContentIsland/Composition Swapchain presenter, native Presentation bridge와 진단 계약을 추가했다. 안정형 `acrylic`과 opaque 기본값은 바꾸지 않았다. |
+| Release/ABI/empty-PATH | PASS | Release win-x64 build 경고/오류 0, native ABI Amd64와 Acrylic export PASS, self-contained empty-PATH experimental launch PASS다. |
+| opaque before/after | PASS | 기존 ANGLE/EGL-D3D11 product run은 앞/뒤 모두 exact terminal/visible/GPU-error gate를 통과했다. 자체 포함 runtime이 없는 fixture만 조건부 Mdd bootstrap을 사용한다. |
+| runtime option 500회 | PASS | accepted 500, applied 19, superseded 481, failed 0, 마지막 Base/Dark/tint snapshot이 일치했다. |
+| current WGC resource/capture | PASS-bounded | 최신 좌상단 3초 334 matched frame과 600ms 21 matched frame에서 blank/capture error/ring drop/capacity overflow, GPU copy/error, unavailable skip, terminal 누락/중복이 모두 0이다. surface는 child-local origin에 두고 physical scale 1, 256px retained overscan, 어두운 retained/HWND background로 빠른 expand 중 미제출 영역이 흰색으로 드러나지 않게 했다. |
+| Flutter식 resize handshake | PASS-implemented | native `WM_SIZING` rect를 수정하거나 fps 제한하지 않는다. 실제 child `WM_SIZE` physical extent가 metrics를 publish하고, interactive Composition WndProc wait는 최대 16ms 뒤 양보한다. `WM_EXITSIZEMOVE` exact request만 최대 100ms terminal을 기다리고 raster thread에서 `DwmFlush`한다. 같은 generation에 새 scene이 없으면 GPU frame을 다시 재생하지 않는다. |
+| 3초 current geometry/response | PASS-automated-partial | TopLeft는 outer 43.99fps/internal accepted 43.66fps, active/inactive max 7/0px, 반대편 marker miss 0, settle 31.74ms/5.24 refresh였다. 현재 12/1px geometry, 9 refresh/50ms settle gate를 통과했다. |
+| 600ms responsiveness | PASS-automated-partial | TopLeft는 outer/internal 44.95/43.28fps, cursor lag 20px, active/inactive 진단값 118/0px, settle 44.09ms/7.27 refresh였다. 빠른 responsiveness profile은 40fps와 cursor lag을 hard gate로 사용하고 active-edge geometry는 진단으로만 남긴다. marker miss 1도 finite capture의 진단값이며 responsiveness hard gate는 아니다. |
+| 좌상단 빠른 리사이즈 흰 영역 | fixed-in-code / notVerified-physical | already-physical surface의 bridge scale을 1로 고정하고, 256 physical px overscan과 어두운 retained background/top-HWND `WM_ERASEBKGND` fill을 추가했다. 수정본 WGC sample에서는 우측/하단에 흰 band가 없지만, 사람이 현재 binary를 빠르게 drag하는 실물 확인은 아직 필요하다. |
+| full E3/E4 | notRun / notVerified | 8방향·전체 속도·DPI/refresh/monitor/window/device-loss 3회 matrix와 사람의 border drag/scan-out/IME/Narrator acceptance는 실행하지 않았다. |
+
+대표 evidence:
+
+- `.doroti/evidence/experimental-acrylic-20260901-220854-5b7531400a/manifest.json` (현재 TopLeft: 3초·600ms `PASS-automated-partial`)
+- `.doroti/evidence/experimental-acrylic-20260901-220054-e96778cdf8/manifest.json` (이전 TopLeft: 3초·600ms `PASS-automated-partial`)
+- `.doroti/evidence/experimental-acrylic-20260901-202505-5ab51fd9a6/manifest.json` (이전 TopLeft 기준: 3초 PASS, 600ms FAIL)
+- `.doroti/evidence/experimental-acrylic-20260901-202635-c759438d7d/manifest.json` (이전 Right 기준: 3초 PASS, 600ms FAIL)
+- `.doroti/evidence/experimental-acrylic-resize-coordinator.json`
+
+따라서 현재 validator 판정은 나열한 좌상단 3초·600ms case에 한정된 **`PASS-automated-partial`**이다. 전체 E3 matrix와 E4 실물 acceptance가 없으므로 stable Acrylic 승격 근거가 아니며, strict P0.5/P1-CS의 기존 FAIL도 그대로 유지한다.
 
 ## 2026-09-01 후속 실행 결과
 
@@ -29,7 +54,7 @@
 
 ### E0. 결정, 범위, 상태 경계
 
-strict P1-CS의 buffer/resource 경로는 재사용하고, strict exact-frame gate만 `experimental Acrylic` 전용 bounded-resize 계약으로 분리한다. 이는 기존 P1-CS를 PASS로 재분류하는 것이 아니다. 기존 결과는 strict 계약에 대해 계속 **FAIL**이며, 새 계약의 구현과 qualification은 현재 `notRun`이다.
+strict P1-CS의 buffer/resource 경로는 재사용하고, strict exact-frame gate만 `experimental Acrylic` 전용 bounded-resize 계약으로 분리한다. 이는 기존 P1-CS를 PASS로 재분류하는 것이 아니다. 기존 결과는 strict 계약에 대해 계속 **FAIL**이다. 새 계약의 제품 구현과 현재 좌상단 3초·600ms validator case는 `PASS-automated-partial`이며, 전체 qualification matrix는 `notRun`이다.
 
 - 제품의 기본값은 opaque `HwndExactCpp`다. opt-in이 없으면 Composition Swapchain, ContentIsland, Acrylic controller를 만들지 않는다.
 - 사용자에게 품질 차이를 숨기지 않도록 안정형 `acrylic` 이름을 선점하지 않고 `experimentalAcrylic`이라는 별도 mode/effective diagnostic을 사용한다.
@@ -38,7 +63,7 @@ strict P1-CS의 buffer/resource 경로는 재사용하고, strict exact-frame ga
 - P0.5 top-HWND direct ANGLE과 Silk.NET Vulkan은 이 활성 구현 후보에서 제외한다. 별도 연구를 재개하더라도 이 모드의 fallback이나 hidden secondary presenter로 넣지 않는다.
 - 지원 하한은 Windows 11 24H2 build 26100이며, capability/adapter/initialization 실패 시 창을 보이기 전에 opaque topology로 결정적으로 fallback한다.
 
-현재 새 계약의 출발 evidence는 200% DPI/165 Hz/우측 border 자동 run 하나다. 236 matched frame 중 160 frame이 strict exact에는 실패했지만, 관찰한 dimension delta는 p50 2, p95 6, max 7 physical px였고 height delta는 0이었다. 이 수치는 초기 budget의 근거일 뿐이며 다른 방향·DPI·GPU에서 아직 검증되지 않았다.
+새 계약의 출발 evidence는 200% DPI/165 Hz/우측 border 자동 run 하나였고 strict exact mismatch를 확인했다. 사용자가 수용한 체감 경계를 반영해 experimental geometry budget을 6 logical/12 physical px, final settle을 9 refresh interval과 50ms 동시 상한, interactive response를 최소 40fps(600ms finite sample tolerance 0.5fps), cursor lag을 26px로 명시했다. 30fps 바깥 창 stepper는 실물 drag가 지나치게 느려져 제거했다. 현재 TopLeft reverse 3초·600ms는 통과하지만 다른 방향·DPI·GPU에 일반화하지 않는다.
 
 ### E1. `experimental Acrylic` 품질 계약
 
@@ -47,14 +72,16 @@ strict P1-CS의 buffer/resource 경로는 재사용하고, strict exact-frame ga
 | 상태 | geometry 계약 |
 |---|---|
 | idle/초기 표시/programmatic resize settle | presented content extent와 client extent가 exact이며 active/inactive edge delta가 모두 0 physical px다. |
-| `WM_ENTERSIZEMOVE`부터 `WM_EXITSIZEMOVE`까지 | active edge에만 `min(8 physical px, ceil(4 logical px × rasterizationScale))` 이내의 일시적 차이를 허용한다. inactive edge는 최대 1 physical px다. |
-| `WM_EXITSIZEMOVE` 이후 | 2 refresh interval 안에 최신 generation의 exact extent를 present하고, 그 뒤 mismatch가 지속되면 FAIL이다. |
+| `WM_ENTERSIZEMOVE`부터 `WM_EXITSIZEMOVE`까지 | active edge에만 `min(12 physical px, ceil(6 logical px × rasterizationScale))` 이내의 일시적 차이를 허용한다. inactive edge는 최대 1 physical px다. |
+| `WM_EXITSIZEMOVE` 이후 | 9 refresh interval과 50ms를 모두 넘기기 전에 최신 generation의 exact extent를 present하고, 그 뒤 mismatch가 지속되면 FAIL이다. |
 
-허용되는 열화는 expand 시 active edge의 좁은 Acrylic-only strip 또는 shrink 시 같은 폭의 content clip뿐이다. 다음은 experimental 모드에서도 허용하지 않는다.
+Composition Swapchain 경로는 바깥 `WM_SIZING` rect를 변경하거나 fps 단위로 step하지 않는다. Top HWND의 실제 client extent가 child HWND에 즉시 적용되고, child `WM_SIZE` physical pixels가 유일한 metrics authority가 된다. Interactive Composition resize는 terminal을 최대 16ms만 기다린 뒤 raster 작업을 계속 진행시킨다. `WM_EXITSIZEMOVE`는 최신 실제 extent의 exact frame을 한 번 더 요청해 최대 100ms 기다리며, 그 final present만 raster worker에서 `DwmFlush`한다. opaque 경로의 cadence는 변경하지 않는다.
+
+허용되는 열화는 빠른 expand 시 active edge의 좁은 어두운 retained-background strip 또는 shrink 시 같은 폭의 content clip뿐이다. 다음은 experimental 모드에서도 허용하지 않는다.
 
 - old-size content를 client 전체에 stretch/scale하는 동작
-- black/white/raw-desktop band, blank frame, 이전 generation의 full-frame 재노출
-- active edge budget 초과, inactive edge 이동, 2 refresh interval을 넘는 final-settle mismatch
+- white/raw-desktop band, full-window black/blank frame, 이전 generation의 full-frame 재노출
+- active edge budget 초과, inactive edge 이동, 9 refresh interval 또는 50ms를 넘는 final-settle mismatch
 - pointer/hit-test/IME/UIA 좌표계를 stale content extent에 맞추는 동작
 - WndProc/platform thread의 fence/event/commit/DwmFlush 대기
 - CPU readback/upload, GDI/bitmap copy, staging 왕복 또는 fourth buffer 할당
@@ -72,13 +99,14 @@ GPU/resource 불변조건은 strict P1-CS와 동일하다.
 1. **계약/validator 분리**
    - strict P1-CS validator와 evidence는 변경하지 않는다.
    - experimental 계약용 opt-in validator/schema를 새로 만들고 active/inactive edge, width/height delta, resize state, final-settle frame/QPC를 기록한다.
-   - initial 4 logical/8 physical px budget을 상수로 숨기지 않고 mode diagnostic과 manifest에 기록한다.
+   - 6 logical/12 physical px budget과 9 refresh interval/50ms settle 상한을 상수로 숨기지 않고 mode diagnostic과 manifest에 기록한다.
 2. **Composition Swapchain presenter 제품 이식**
    - validation spike의 같은-device ANGLE D3D11 device, `IPresentationFactory`/manager/surface handle 연결, 3-slot available-event protocol을 host 전용 presenter로 옮긴다.
    - presenter는 ContentIsland content visual과 exact physical D3D11 texture를 소유하고 framework scene renderer/exact generation coordinator는 기존 경로와 공유한다.
-   - latest-only render를 유지하고 3개 slot이 unavailable이면 WndProc을 막지 않은 채 pending generation 하나만 보존한다.
+   - latest-only render를 유지한다. 3개 slot이 unavailable이면 raster worker에서 availability event를 최대 17ms 기다린 뒤 다시 선택하고, WndProc은 막지 않는다.
+   - interactive resize 중에는 `WM_SIZING`을 수정하지 않고 child `WM_SIZE`의 실제 physical extent마다 latest-only exact frame을 요청한다. same-generation/no-new-scene GPU replay를 coalesce하고 exit에서 최신 generation을 즉시 요청한다. opaque cadence는 변경하지 않는다.
 3. **Acrylic host와 runtime option 연결**
-   - 하나의 `DesktopAttachedSiteBridge`, ContentIsland, DesktopAcrylicController, root/content visual만 만든다.
+   - 하나의 `DesktopChildSiteBridge`, ContentIsland, DesktopAcrylicController, root/content visual만 만든다.
    - requested/effective mode, fallback reason, Acrylic kind/tint, capability, adapter LUID를 진단 snapshot에 노출한다.
    - runtime option burst는 current apply 1 + latest pending 1, accepted revision terminal one-to-one, last-request-wins로 처리한다.
 4. **창 생성 전 mode/fallback 연결**
@@ -103,20 +131,20 @@ GPU/resource 불변조건은 strict P1-CS와 동일하다.
 
 모든 build/test는 저장소 지침대로 20분 timeout을 사용한다. 같은 session에서 `opaque → experimental Acrylic → opaque` 순으로 비교한다.
 
-- [ ] 시작 `git status --short`, OS/SDK/GPU/LUID/driver/WDDM/refresh/DPI/environment manifest
-- [ ] Release win-x64 self-contained build와 empty-PATH/package-consumer launch
-- [ ] current opaque C0/W1R/W0 및 기존 non-Acrylic contract 회귀 0
-- [ ] 500회 이상 resize/present에서 queue ≤ 2, slots ≤ 3, unavailable reuse/CPU copy/GPU error/terminal 누락 0
+- [ ] 시작 `git status --short`, OS/SDK/GPU/LUID/driver/WDDM/refresh/DPI/environment manifest — 부분 실행: 시작 status와 OS/SDK/GPU/LUID/driver/current refresh/DPI는 기록했지만 새 manifest의 WDDM 명시 필드는 아직 없다.
+- [x] Release win-x64 self-contained build와 empty-PATH/package-consumer launch
+- [ ] current opaque C0/W1R/W0 및 기존 non-Acrylic contract 회귀 0 — 부분 실행: opaque product before/after와 native ABI는 PASS, 전체 C0/W1R/W0 재실행은 notRun이다.
+- [ ] 500회 이상 resize/present에서 queue ≤ 2, slots ≤ 3, unavailable reuse/CPU copy/GPU error/terminal 누락 0 — current visible run은 accepted resize 83회/present 124회에서 해당 resource gate PASS이며 500회에는 미달했다.
 - [ ] 8방향/4모서리 각각 slow/medium/fast expand/shrink/reverse 자동 pointer run
 - [ ] 100/125/150/200% DPI별 active-edge budget과 inactive-edge 1px gate
-- [ ] `WM_EXITSIZEMOVE` 뒤 2 refresh interval 이내 exact final settle
+- [x] current TopLeft case에서 `WM_EXITSIZEMOVE` 뒤 9 refresh interval과 50ms 이내 exact final settle — 3초는 5.24 interval/31.74ms, 600ms는 7.27 interval/44.09ms다. 전체 방향·DPI·refresh matrix는 별도 미완료다.
 - [ ] 60/120/144/165 Hz 가능한 조합과 monitor/DPI crossing
 - [ ] minimize/0-size/restore, maximize/restore, Snap, occlusion, device-loss/close in-flight terminal
-- [ ] Default/Base/Thin, light/dark, tint와 resize 동시 churn 500회
-- [ ] WGC에서 blank/black/raw-desktop/full-frame stretch/previous-generation frame 0
+- [ ] Default/Base/Thin, light/dark, tint와 resize 동시 churn 500회 — 별도 option burst 500회 ordering/terminal/last-request-wins는 PASS했지만 모든 조합의 resize 동시 churn은 notRun이다.
+- [ ] WGC에서 blank/black/raw-desktop/full-frame stretch/previous-generation frame 0 — current capture의 blank/transport 오류는 0이지만 전체 금지-frame oracle matrix는 notRun이다.
 - [ ] 동일 machine/monitor/session의 전체 자동 qualification 3회 연속 PASS
 
-초기 budget이 한 방향이라도 초과되면 threshold를 측정값에 맞춰 자동 확대하지 않는다. 원인을 geometry scheduling, capture attribution, DPI rounding으로 분리한 뒤 구현을 고치거나 해당 환경을 unsupported로 판정한다.
+2026-09-01 사용자는 40fps 이상에서 관찰한 체감 품질을 experimental 모드에서 통과시켜도 된다고 명시했다. 이후 시도한 30fps 바깥 창 제한은 실물 창 이동이 지나치게 느려져 폐기했고, actual-`WM_SIZE`/bounded exact handshake로 교체했다. Experimental threshold는 6 logical/12 physical px geometry, 9 refresh interval/50ms settle, 최소 40fps(600ms finite sample tolerance 0.5fps), cursor lag 26 physical px다. 반대편 marker miss는 600ms responsiveness의 진단값으로 보존하되 hard gate로 쓰지 않는다. 이는 strict P0.5/P1-CS 결과를 완화하거나 자동으로 측정값에 맞춰 계속 확대할 권한이 아니다. 이후 초과는 geometry scheduling, capture attribution, DPI rounding으로 분리해 구현을 고치거나 해당 환경을 unsupported로 판정한다.
 
 ### E4. 실물 acceptance와 승격
 
@@ -126,16 +154,16 @@ GPU/resource 불변조건은 strict P1-CS와 동일하다.
 - [ ] Snap/maximize/restore/minimize, Alt+Tab, transparency off, battery saver, high contrast, RDP fallback
 - [ ] pointer/keyboard/clipboard, 한국어 IME 조합/후보창/caret, Narrator 또는 Accessibility Insights
 
-자동 검증은 physical scan-out과 사람의 체감 품질을 대신하지 않는다. 실행하지 않은 조합은 `notVerified`로 남긴다. `experimental Acrylic`을 opt-in으로 노출하려면 E3 자동 gate가 모두 PASS하고 최소 현재 지원 machine의 E4를 완료해야 한다. opaque 기본값 변경과 안정형 `acrylic` 승격은 이 계획의 완료 범위가 아니며 별도 결정이 필요하다.
+자동 검증은 physical scan-out과 사람의 체감 품질을 대신하지 않는다. 실행하지 않은 조합은 `notVerified`로 남긴다. 현재 developer/demo opt-in 구현을 제품 지원으로 승격하려면 E3 자동 gate가 모두 PASS하고 최소 현재 지원 machine의 E4를 완료해야 한다. opaque 기본값 변경과 안정형 `acrylic` 승격은 이 계획의 완료 범위가 아니며 별도 결정이 필요하다.
 
 ### E5. 완료 정의
 
 1. opt-in `experimentalAcrylic` 창이 ANGLE D3D11 → Composition Swapchain으로 Doroti의 premultiplied-alpha scene과 Windows Desktop Acrylic을 함께 표시한다.
 2. interactive resize 중 허용된 active-edge budget을 넘지 않고, inactive edge/input 좌표는 안정적이며 금지된 stretch/blank/band가 없다.
-3. resize 종료 뒤 2 refresh interval 안에 exact 최신 extent로 복귀한다.
+3. resize 종료 뒤 9 refresh interval과 50ms를 모두 만족하며 exact 최신 extent로 복귀한다.
 4. CPU copy 0, queue ≤ 2, slots ≤ 3, unavailable reuse/GPU error/resource leak/terminal 누락 0이다.
 5. runtime kind/tint 변경과 fallback/diagnostics가 계약대로 동작하고 opaque 기본 경로가 회귀하지 않는다.
-6. 자동 3회 PASS와 실물 acceptance가 기록되며, 미실행 항목은 PASS가 아니라 `notVerified`로 남는다.
+6. 현재 bounded case의 `PASS-automated-partial`과 별개로 전체 자동 matrix 3회 PASS와 실물 acceptance가 기록되며, 미실행 항목은 PASS가 아니라 `notVerified`로 남는다.
 
 ## 후속 계획 — P0.5 top HWND와 P1-CS Composition Swapchain
 

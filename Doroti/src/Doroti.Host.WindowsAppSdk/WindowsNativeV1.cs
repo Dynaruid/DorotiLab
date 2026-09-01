@@ -9,13 +9,17 @@ namespace Doroti.Host.WindowsAppSdk;
 internal static partial class WindowsNativeV1
 {
     internal const uint AbiVersion = 1;
+    internal const ulong ExperimentalAcrylicFeature = 1UL << 0;
     internal const string LibraryName = "doroti_windows_appsdk_host_v1";
     private const uint LoadLibrarySearchDllLoadDir = 0x00000100;
     private const uint LoadLibrarySearchApplicationDir = 0x00000200;
     private const uint LoadLibrarySearchUserDirs = 0x00000400;
     private const uint LoadLibrarySearchSystem32 = 0x00000800;
     private static int _resolverConfigured;
+    private static int _searchPolicyRestricted;
     private static string? _nativeHostPath;
+    private static string? _angleRuntimePath;
+    private static string? _windowsAppRuntimePath;
 
     internal enum Status : uint
     {
@@ -156,11 +160,13 @@ internal static partial class WindowsNativeV1
         internal nint HostContext;
         internal nint TopLevelHwnd;
         internal nint ChildHwnd;
+        internal nint OpaqueChildHwnd;
         internal nint TaskHwnd;
         internal nint RequestFrame;
         internal nint RequestResize;
         internal nint RequestClose;
         internal nint RequestShow;
+        internal nint RequestOpaqueFallback;
         internal nint SetCursor;
         internal nint SetClipboard;
         internal nint RequestClipboard;
@@ -171,6 +177,7 @@ internal static partial class WindowsNativeV1
         internal nint UpdateSemantics;
         internal nint ClearSemantics;
         internal uint InitialPlatformBrightness;
+        internal nint SetCompositionChild;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -207,6 +214,8 @@ internal static partial class WindowsNativeV1
         internal nint SemanticsAction;
         internal nint Lifecycle;
         internal nint PlatformBrightness;
+        internal nint PlatformResourcesShutdown;
+        internal nint CompositionResize;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -261,12 +270,26 @@ internal static partial class WindowsNativeV1
         SetLastError = true)]
     private static partial nint LoadLibraryEx(string fileName, nint file, uint flags);
 
+    [LibraryImport("Microsoft.WindowsAppRuntime.dll", EntryPoint = "WindowsAppRuntime_EnsureIsLoaded")]
+    private static partial int EnsureWindowsAppRuntimeLoaded();
+
+    internal static void EnsureSelfContainedWindowsAppRuntime()
+    {
+        if (_windowsAppRuntimePath is null) return;
+        Environment.SetEnvironmentVariable("MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY", AppContext.BaseDirectory);
+        Environment.SetEnvironmentVariable("MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY_PID",
+            Environment.ProcessId.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        var result = EnsureWindowsAppRuntimeLoaded();
+        if (result < 0) Marshal.ThrowExceptionForHR(result);
+    }
+
     internal static NativeHostProvenance ConfigureAppDirectoryLoading()
     {
         var baseDirectory = Path.GetFullPath(AppContext.BaseDirectory);
         var hostPath = Path.Combine(baseDirectory, $"{LibraryName}.dll");
         var bootstrapPath = Path.Combine(baseDirectory, "Microsoft.WindowsAppRuntime.Bootstrap.dll");
         var angleRuntimePath = Path.Combine(baseDirectory, "av_libglesv2.dll");
+        var windowsAppRuntimePath = Path.Combine(baseDirectory, "Microsoft.WindowsAppRuntime.dll");
         RequireNativeFile(hostPath, "native HwndExactCpp host");
         RequireNativeFile(bootstrapPath, "Windows App Runtime bootstrap");
         RequireNativeFile(angleRuntimePath, "ANGLE EGL/GLES runtime");
@@ -275,12 +298,9 @@ internal static partial class WindowsNativeV1
         ValidateX64Pe(angleRuntimePath, "ANGLE EGL/GLES runtime");
         if (Interlocked.Exchange(ref _resolverConfigured, 1) == 0)
         {
-            var directories = LoadLibrarySearchApplicationDir | LoadLibrarySearchUserDirs |
-                              LoadLibrarySearchSystem32;
-            if (!SetDefaultDllDirectories(directories))
-                throw new InvalidOperationException(
-                    $"Failed to restrict native DLL search directories (Win32={Marshal.GetLastPInvokeError()}).");
             _nativeHostPath = hostPath;
+            _angleRuntimePath = angleRuntimePath;
+            _windowsAppRuntimePath = File.Exists(windowsAppRuntimePath) ? windowsAppRuntimePath : null;
             NativeLibrary.SetDllImportResolver(typeof(WindowsNativeV1).Assembly, ResolveNativeLibrary);
         }
         var auditHashes = string.Equals(
@@ -306,8 +326,15 @@ internal static partial class WindowsNativeV1
     {
         _ = assembly;
         _ = searchPath;
-        if (!libraryName.Equals(LibraryName, StringComparison.Ordinal)) return 0;
-        var path = _nativeHostPath ?? throw new DllNotFoundException("The app-directory native host path was not initialized.");
+        var path = libraryName switch
+        {
+            var value when value.Equals(LibraryName, StringComparison.Ordinal) => _nativeHostPath,
+            var value when value.Equals("av_libglesv2.dll", StringComparison.OrdinalIgnoreCase) => _angleRuntimePath,
+            var value when value.Equals("Microsoft.WindowsAppRuntime.dll", StringComparison.OrdinalIgnoreCase) =>
+                _windowsAppRuntimePath,
+            _ => null,
+        };
+        if (path is null) return 0;
         var handle = LoadLibraryEx(path, 0, LoadLibrarySearchDllLoadDir | LoadLibrarySearchSystem32);
         if (handle != 0) return handle;
         var error = Marshal.GetLastPInvokeError();
@@ -315,6 +342,16 @@ internal static partial class WindowsNativeV1
             throw new BadImageFormatException($"The native HwndExactCpp host is not a win-x64 PE image: {path}");
         throw new DllNotFoundException(
             $"The native HwndExactCpp host or one of its app-directory dependencies failed to load: {path} (Win32={error}).");
+    }
+
+    internal static void RestrictProcessDllSearch()
+    {
+        if (Interlocked.Exchange(ref _searchPolicyRestricted, 1) != 0) return;
+        var directories = LoadLibrarySearchApplicationDir | LoadLibrarySearchUserDirs |
+                          LoadLibrarySearchSystem32;
+        if (!SetDefaultDllDirectories(directories))
+            throw new InvalidOperationException(
+                $"Failed to restrict native DLL search directories (Win32={Marshal.GetLastPInvokeError()}).");
     }
 
     private static void RequireNativeFile(string path, string identity)

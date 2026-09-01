@@ -33,6 +33,11 @@ try
         "doroti_windows_get_abi_version_v1",
         "doroti_windows_get_abi_layout_v1",
         "doroti_windows_run_v1",
+        "doroti_windows_acrylic_create_v1",
+        "doroti_windows_acrylic_destroy_v1",
+        "doroti_windows_acrylic_replace_buffer_v1",
+        "doroti_windows_acrylic_is_available_v1",
+        "doroti_windows_acrylic_present_v1",
     };
     foreach (var export in exports)
     {
@@ -55,6 +60,7 @@ try
     {
         AbiVersion = WindowsNativeV1.AbiVersion,
         StructSize = checked((uint)Marshal.SizeOf<WindowsNativeV1.Callbacks>()),
+        CompositionResize = 1,
     };
     if (WindowsNativeV1.Run(in configuration, in callbacks) != WindowsNativeV1.Status.InvalidArgument)
         throw new InvalidOperationException("The native product ABI accepted missing callbacks.");
@@ -68,11 +74,13 @@ try
         HostContext = 1,
         TopLevelHwnd = 1,
         ChildHwnd = 1,
+        OpaqueChildHwnd = 1,
         TaskHwnd = 1,
         RequestFrame = 1,
         RequestResize = 1,
         RequestClose = 1,
         RequestShow = 1,
+        RequestOpaqueFallback = 1,
         SetCursor = 1,
         SetClipboard = 1,
         RequestClipboard = 1,
@@ -83,6 +91,7 @@ try
         UpdateSemantics = 1,
         ClearSemantics = 1,
         InitialPlatformBrightness = (uint)Doroti.Ui.Brightness.dark,
+        SetCompositionChild = 1,
     };
     using (var managedHost = new WindowsManagedProductHost(in hostTable, 640, 480))
     {

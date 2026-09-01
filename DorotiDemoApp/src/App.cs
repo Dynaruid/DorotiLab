@@ -611,10 +611,21 @@ internal static class App
     internal static Func<IDorotiViewEntrypoint> Definition =>
         () => new MaterialDemoEntrypoint(DemoEntryMode.Home, requireExternalUia: false);
 
+    private static bool ExperimentalAcrylicEnabled => string.Equals(
+        Environment.GetEnvironmentVariable("DOROTI_DEMO_EXPERIMENTAL_ACRYLIC"),
+        "1", StringComparison.Ordinal);
+
     internal static DorotiViewConfiguration ViewConfiguration { get; } =
         new("Doroti Material Demo", new Size(720, 640),
             new UiColor(0xccfffbfeL), new UiColor(0xcc141218L),
-            new WindowBackdropOptions(WindowBackdropMode.acrylic,
-                WindowBackdropFallback.transparent),
+            ExperimentalAcrylicEnabled
+                ? new WindowBackdropOptions(
+                    WindowBackdropMode.experimentalAcrylic,
+                    WindowBackdropFallback.transparent,
+                    WindowAcrylicKind.@default,
+                    WindowBackdropTheme.system)
+                : new WindowBackdropOptions(
+                    WindowBackdropMode.acrylic,
+                    WindowBackdropFallback.transparent),
             terminateAfterLastWindowClosed: true);
 }

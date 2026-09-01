@@ -69,6 +69,7 @@ struct Options {
     bool desktopDuplication{true};
     bool qualification{};
     bool f6r{};
+    bool decodeFrameId{};
     bool logOnly{};
     int dragPixels{600};
     int dragMilliseconds{150};
@@ -274,11 +275,18 @@ Options ParseOptions(int argc, wchar_t** argv) {
         else if (key == L"--capture-ring-size") options.captureRingSize = std::stoi(next());
         else if (key == L"--requested-logical-width") options.requestedLogicalWidth = std::stoi(next());
         else if (key == L"--requested-logical-height") options.requestedLogicalHeight = std::stoi(next());
-        else if (key == L"--capture-only") options.visualOracles = false;
+        else if (key == L"--capture-only") {
+            options.visualOracles = false;
+            // Capture-only callers consume raw frame metadata with their own
+            // contract. Do not let strict visual-oracle anomalies override the
+            // requested PNG stride and exhaust the evidence encoder queue.
+            options.anomalyPngs = false;
+        }
         else if (key == L"--no-anomaly-png") options.anomalyPngs = false;
         else if (key == L"--no-desktop-duplication") options.desktopDuplication = false;
         else if (key == L"--qualification") options.qualification = true;
         else if (key == L"--f6r") options.f6r = true;
+        else if (key == L"--decode-frame-id") options.decodeFrameId = true;
         else if (key == L"--log-only") options.logOnly = true;
         else if (key == L"--drag-pixels") options.dragPixels = std::stoi(next());
         else if (key == L"--drag-ms") options.dragMilliseconds = std::stoi(next());
@@ -579,22 +587,39 @@ std::optional<int> DecodeFrameId(
     std::vector<std::uint8_t> const& pixels, int width, int height, RECT const& client, double scale) {
     int const bitSize = std::max(4, static_cast<int>(std::lround(7 * scale)));
     int const bitGap = std::max(1, static_cast<int>(std::lround(scale)));
-    int constexpr bitCount = 12;
+    int constexpr generationBitCount = 12;
+    int constexpr checksumBitCount = 8;
+    int constexpr bitCount = generationBitCount + checksumBitCount;
     int const stripWidth = bitCount * bitSize + (bitCount - 1) * bitGap;
-    int const startX = client.right - stripWidth - std::max(4, static_cast<int>(std::lround(4 * scale)));
+    int const expectedStartX = client.right - stripWidth - std::max(4, static_cast<int>(std::lround(4 * scale)));
     int const sampleY = client.top + std::max(1, static_cast<int>(std::lround(5 * scale))) + bitSize / 2;
-    if (startX < client.left || sampleY < client.top || sampleY >= client.bottom || sampleY >= height) return std::nullopt;
-    int gray{};
-    for (int bit = 0; bit < bitCount; ++bit) {
-        int const sampleX = startX + bit * (bitSize + bitGap) + bitSize / 2;
-        if (sampleX < 0 || sampleX >= width) return std::nullopt;
-        auto const pixel = Pixel(pixels, width, sampleX, sampleY);
-        int const luminance = (static_cast<int>(pixel[0]) + pixel[1] + pixel[2]) / 3;
-        if (luminance >= 180) gray |= 1 << bit;
+    if (sampleY < client.top || sampleY >= client.bottom || sampleY >= height) return std::nullopt;
+    int const searchRadius = std::max(32, static_cast<int>(std::lround(64 * scale)));
+    int const minimumStartX = std::max(static_cast<int>(client.left), expectedStartX - searchRadius);
+    int const maximumStartX = std::min(width - stripWidth, expectedStartX + searchRadius);
+    std::optional<int> best;
+    int bestDistance = std::numeric_limits<int>::max();
+    for (int startX = minimumStartX; startX <= maximumStartX; ++startX) {
+        int payload{};
+        for (int bit = 0; bit < bitCount; ++bit) {
+            int const sampleX = startX + bit * (bitSize + bitGap) + bitSize / 2;
+            auto const pixel = Pixel(pixels, width, sampleX, sampleY);
+            int const luminance = (static_cast<int>(pixel[0]) + pixel[1] + pixel[2]) / 3;
+            if (luminance >= 180) payload |= 1 << bit;
+        }
+        int const gray = payload & ((1 << generationBitCount) - 1);
+        int const checksum = (payload >> generationBitCount) & ((1 << checksumBitCount) - 1);
+        int const expectedChecksum = ((gray * 0x9E37) ^ (gray >> 4) ^ 0xA5) & 0xFF;
+        if (checksum != expectedChecksum) continue;
+        int binary = gray;
+        for (int shifted = gray >> 1; shifted != 0; shifted >>= 1) binary ^= shifted;
+        int const distance = std::abs(startX - expectedStartX);
+        if (distance < bestDistance) {
+            best = binary;
+            bestDistance = distance;
+        }
     }
-    int binary = gray;
-    for (int shifted = gray >> 1; shifted != 0; shifted >>= 1) binary ^= shifted;
-    return binary;
+    return best;
 }
 
 RECT CaptureClientRect(HWND hwnd, RECT const& frameBounds, int width, int height) {
@@ -783,6 +808,20 @@ public:
         session_ = framePool_.CreateCaptureSession(item_);
         try { session_.IsCursorCaptureEnabled(false); } catch (...) {}
         try { session_.IsBorderRequired(false); } catch (...) {}
+        captureMinUpdateIntervalRequested100ns_ = std::max(
+            1LL, 10'000'000LL / static_cast<long long>(DisplayRefreshRate(options_.captureHwnd)));
+        try {
+            session_.MinUpdateInterval(TimeSpan{captureMinUpdateIntervalRequested100ns_});
+            captureMinUpdateIntervalApplied100ns_ = session_.MinUpdateInterval().count();
+            captureMinUpdateIntervalSupported_ = true;
+        } catch (hresult_error const& error) {
+            captureMinUpdateIntervalError_ = "0x";
+            std::ostringstream code;
+            code << std::hex << static_cast<unsigned int>(error.code().value);
+            captureMinUpdateIntervalError_ += code.str() + " " + NarrowWide(error.message().c_str());
+        } catch (std::exception const& error) {
+            captureMinUpdateIntervalError_ = error.what();
+        }
         frameToken_ = framePool_.FrameArrived({this, &CaptureRunner::OnFrame});
         analyzer_ = std::thread([this] { AnalyzeFrames(); });
     }
@@ -815,6 +854,10 @@ public:
     int CapacityExceeded() const { return capacityExceeded_.load(); }
     int RecreateCount() const { return 0; }
     SizeInt32 Capacity() const { return capacity_; }
+    bool MinUpdateIntervalSupported() const { return captureMinUpdateIntervalSupported_; }
+    long long MinUpdateIntervalRequested100ns() const { return captureMinUpdateIntervalRequested100ns_; }
+    long long MinUpdateIntervalApplied100ns() const { return captureMinUpdateIntervalApplied100ns_; }
+    std::string MinUpdateIntervalError() const { return captureMinUpdateIntervalError_; }
 
 private:
     struct ReadbackSlot {
@@ -1067,7 +1110,7 @@ private:
             record.gridRightEdgeMarkerDetected = grid.rightEdgeMarkerDetected;
             record.gridBottomEdgeMarkerDetected = grid.bottomEdgeMarkerDetected;
             record.gridParsed = grid.parsed;
-                if (!options_.f6r)
+                if (!options_.f6r || options_.decodeFrameId)
                     record.frameId = DecodeFrameId(pixels, slot.width, slot.height, client, scale);
                 record.window = slot.window;
                 record.cursor = slot.cursor;
@@ -1119,6 +1162,10 @@ private:
     event_token frameToken_{};
     SizeInt32 capacity_{};
     RECT clientInsets_{};
+    bool captureMinUpdateIntervalSupported_{};
+    long long captureMinUpdateIntervalRequested100ns_{};
+    long long captureMinUpdateIntervalApplied100ns_{};
+    std::string captureMinUpdateIntervalError_;
     std::atomic<bool> stopped_{};
     std::atomic<int> frameCount_{};
     std::atomic<int> captureErrors_{};
@@ -1320,7 +1367,7 @@ private:
                 record.titleScaleRatio = titleScaleRatio;
                 record.detectedUncoveredLeftGap = leftGap;
                 record.detectedUncoveredRightGap = rightGap;
-                if (!options_.f6r) {
+                if (!options_.f6r || options_.decodeFrameId) {
                     record.frameId = DecodeFrameId(
                         pixels, width, height, localClient,
                         std::max(1.0, GetDpiForWindow(options_.visualHwnd) / 96.0));
@@ -1959,6 +2006,7 @@ void WriteEvidence(
     output << "  \"edge\": \"" << EscapeJson(options.edge) << "\",\n";
     output << "  \"durationSeconds\": " << options.durationSeconds << ",\n";
     output << "  \"f6r\": " << (options.f6r ? "true" : "false") << ",\n";
+    output << "  \"frameIdDecoding\": " << (options.decodeFrameId ? "true" : "false") << ",\n";
     output << "  \"logOnly\": " << (options.logOnly ? "true" : "false") << ",\n";
     output << "  \"motion\": \"" << EscapeJson(options.motion) << "\",\n";
     output << "  \"dragPixels\": " << options.dragPixels << ",\n";
@@ -1997,6 +2045,13 @@ void WriteEvidence(
     output << "  \"inputSamples\": " << samples.size() << ",\n";
     output << "  \"capturedFrames\": " << frames.size() << ",\n";
     auto const captureCapacity = capture ? capture->Capacity() : SizeInt32{};
+    auto const captureMinUpdateIntervalError = capture ? capture->MinUpdateIntervalError() : std::string{};
+    output << "  \"captureMinUpdateInterval\": {\"supported\":"
+        << (capture && capture->MinUpdateIntervalSupported() ? "true" : "false")
+        << ",\"requested100ns\":" << (capture ? capture->MinUpdateIntervalRequested100ns() : 0)
+        << ",\"applied100ns\":" << (capture ? capture->MinUpdateIntervalApplied100ns() : 0)
+        << ",\"error\":" << (captureMinUpdateIntervalError.empty()
+            ? "null" : "\"" + EscapeJson(captureMinUpdateIntervalError) + "\"") << "},\n";
     output << "  \"framePoolCapacity\": {\"width\":" << captureCapacity.Width
         << ",\"height\":" << captureCapacity.Height << "},\n";
     output << "  \"framePoolRecreateCount\": " << (capture ? capture->RecreateCount() : 0) << ",\n";

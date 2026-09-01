@@ -37,8 +37,11 @@ internal sealed unsafe class WindowsManagedProductHost :
     {
         if (native.AbiVersion != WindowsNativeV1.AbiVersion ||
             native.StructSize < sizeof(WindowsNativeV1.Host) ||
-            native.HostContext == 0 || native.TopLevelHwnd == 0 || native.ChildHwnd == 0 || native.TaskHwnd == 0 ||
+            native.HostContext == 0 || native.TopLevelHwnd == 0 || native.ChildHwnd == 0 ||
+            native.OpaqueChildHwnd == 0 || native.TaskHwnd == 0 ||
             native.RequestFrame == 0 || native.RequestResize == 0 || native.RequestClose == 0 || native.RequestShow == 0 ||
+            native.RequestOpaqueFallback == 0 ||
+            native.SetCompositionChild == 0 ||
             native.SetCursor == 0 || native.SetClipboard == 0 || native.RequestClipboard == 0 ||
             native.SetTextClient == 0 || native.UpdateTextState == 0 || native.SetCaretRect == 0 ||
             native.ClearTextClient == 0 || native.UpdateSemantics == 0 || native.ClearSemantics == 0 ||
@@ -114,7 +117,7 @@ internal sealed unsafe class WindowsManagedProductHost :
         MetricsChanged?.Invoke(next);
     }
 
-    internal void BeginFrame(in WindowsNativeV1.FrameRequest request)
+    internal bool BeginFrame(in WindowsNativeV1.FrameRequest request)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (request.AbiVersion != WindowsNativeV1.AbiVersion ||
@@ -145,6 +148,7 @@ internal sealed unsafe class WindowsManagedProductHost :
             foreach (var dispatch in input) dispatch();
         }
         callback?.Invoke(DorotiFrameClock.Now, ViewEpoch);
+        return callback is not null;
     }
 
     internal void CompleteTerminal(in WindowsNativeV1.FrameTerminal terminal)

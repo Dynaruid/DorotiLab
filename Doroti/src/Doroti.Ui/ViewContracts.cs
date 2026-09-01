@@ -588,6 +588,12 @@ public enum WindowBackdropMode
     solid,
     transparent,
     acrylic,
+    /// <summary>
+    /// Opts a newly-created Windows App SDK window into the bounded-resize
+    /// ANGLE D3D11 to Composition Swapchain Acrylic path. This mode is
+    /// intentionally experimental and is never selected by <see cref="system"/>.
+    /// </summary>
+    experimentalAcrylic,
 }
 
 public enum WindowBackdropFallback
@@ -596,9 +602,28 @@ public enum WindowBackdropFallback
     solid,
 }
 
+public enum WindowAcrylicKind
+{
+    @default,
+    @base,
+    thin,
+}
+
+public enum WindowBackdropTheme
+{
+    system,
+    light,
+    dark,
+}
+
 public sealed record WindowBackdropOptions(
     WindowBackdropMode mode = WindowBackdropMode.system,
-    WindowBackdropFallback fallback = WindowBackdropFallback.transparent);
+    WindowBackdropFallback fallback = WindowBackdropFallback.transparent,
+    WindowAcrylicKind acrylicKind = WindowAcrylicKind.@default,
+    WindowBackdropTheme theme = WindowBackdropTheme.system,
+    Color? tintColor = null,
+    double? tintOpacity = null,
+    double? luminosityOpacity = null);
 
 public sealed record DorotiViewConfiguration(
     string title,
