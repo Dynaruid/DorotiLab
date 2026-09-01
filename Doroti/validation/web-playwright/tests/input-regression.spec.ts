@@ -119,6 +119,61 @@ test("native editable selection state does not paint over the Canvas TextField @
   expect(runtimeErrors).toEqual([]);
 });
 
+test("status below the TextField is not an I-beam or selection target @headed", async ({
+  page,
+  runtimeErrors,
+}) => {
+  await openDoroti(page);
+  const textField = page.getByRole("textbox", { name: /Text field/ });
+  const status = page.locator('[data-doroti-semantics-identifier="text-field-status"]');
+  await expect(status).toBeAttached();
+
+  const fieldBounds = await textField.boundingBox();
+  const initialStatusBounds = await status.boundingBox();
+  if (!fieldBounds || !initialStatusBounds) throw new Error("TextField boundary semantics are unavailable.");
+  expect(initialStatusBounds.y + initialStatusBounds.height / 2)
+    .toBeGreaterThan(fieldBounds.y + fieldBounds.height);
+
+  await page.mouse.move(fieldBounds.x + Math.min(120, fieldBounds.width / 3), fieldBounds.y + fieldBounds.height / 2);
+  await expect.poll(async () => page.locator(".doroti-root")
+    .evaluate((element) => getComputedStyle(element).cursor)).toBe("text");
+
+  await page.mouse.move(initialStatusBounds.x + initialStatusBounds.width / 2,
+    initialStatusBounds.y + initialStatusBounds.height / 2);
+  await expect.poll(async () => page.locator(".doroti-root")
+    .evaluate((element) => getComputedStyle(element).cursor)).not.toBe("text");
+
+  await page.mouse.click(fieldBounds.x + fieldBounds.width / 2, fieldBounds.y + fieldBounds.height / 2);
+  const input = page.locator("#doroti-ime");
+  await expect(input).toBeVisible();
+  await input.fill("Doroti boundary selection");
+  const textLength = await input.evaluate((element) => (element as HTMLTextAreaElement).value.length);
+  await input.evaluate((element) => {
+    const editable = element as HTMLTextAreaElement;
+    editable.setSelectionRange(editable.value.length, editable.value.length);
+  });
+
+  const statusBounds = await status.boundingBox();
+  if (!statusBounds) throw new Error("TextField status has no browser bounds.");
+  const statusY = statusBounds.y + statusBounds.height / 2;
+  await page.mouse.move(statusBounds.x + statusBounds.width - 4, statusY);
+  await page.mouse.down({ button: "left" });
+  await page.mouse.move(statusBounds.x + 4, statusY, { steps: 8 });
+  await page.mouse.up({ button: "left" });
+
+  const afterDrag = await input.evaluate((element) => {
+    const editable = element as HTMLTextAreaElement;
+    return {
+      hidden: editable.hidden,
+      selectionStart: editable.selectionStart ?? 0,
+      selectionEnd: editable.selectionEnd ?? 0,
+    };
+  });
+  expect(afterDrag.hidden ||
+    (afterDrag.selectionStart === textLength && afterDrag.selectionEnd === textLength)).toBe(true);
+  expect(runtimeErrors).toEqual([]);
+});
+
 test("browser-native context menu targets the active editable @headed", async ({ page, runtimeErrors }) => {
   await openDoroti(page);
   const textField = page.getByRole("textbox", { name: /Text field/ });

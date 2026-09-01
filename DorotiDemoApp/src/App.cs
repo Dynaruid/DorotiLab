@@ -391,15 +391,35 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
             showValueIndicator: Material.ShowValueIndicator.never,
             onChanged: value => Mutate(() => _slider = value)), () => _slider = _slider < 0.7 ? 0.8 : 0.2,
             _slider.ToString("F1", System.Globalization.CultureInfo.InvariantCulture));
+        var textFieldStatus = _textValue.Length == 0
+            ? "Enter text to test keyboard and IME input"
+            : $"Entered: {_textValue}";
         var textField = new Material.TextField(
             controller: _textController,
             focusNode: _textFocusNode,
             decoration: new Material.InputDecoration(
                 labelText: "Text field",
                 hintText: "Type in English or 한국어",
-                helperText: _textValue.Length == 0 ? "Enter text to test keyboard and IME input" : $"Entered: {_textValue}",
                 border: new Material.OutlineInputBorder()),
             onChanged: value => setState(() => _textValue = value));
+        var textFieldArea = new Column(
+            mainAxisSize: Doroti.Framework.Rendering.MainAxisSize.min,
+            crossAxisAlignment: Doroti.Framework.Rendering.CrossAxisAlignment.stretch,
+            spacing: 4,
+            children:
+            [
+                textField,
+                new Padding(
+                    padding: EdgeInsets.CreateOnly(left: 16),
+                    child: new Semantics(
+                        identifier: "text-field-status",
+                        label: textFieldStatus,
+                        child: new ExcludeSemantics(child: new Text(
+                            textFieldStatus,
+                            style: new Doroti.Framework.Painting.TextStyle(
+                                color: palette.onSurfaceVariant,
+                                fontSize: 12))))),
+            ]);
 
         var lazyList = ListView.CreateBuilder(
             controller: _innerScrollController,
@@ -517,7 +537,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
                                     subtitle: new Text("Card + ListTile + local state"))),
                             new Row(spacing: 12, children:
                             [
-                                new Expanded(child: textField),
+                                new Expanded(child: textFieldArea),
                                 new Material.OutlinedButton(
                                     onPressed: () => _textFocusNode.unfocus(),
                                     child: new Text("Clear focus")),
