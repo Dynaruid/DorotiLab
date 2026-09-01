@@ -1,11 +1,28 @@
 # Doroti WindowsAppSdk Acrylic + `experimental Acrylic` 작업계획
 
 - 작성일: 2026-09-01
-- 상태: **`experimental Acrylic` opt-in 제품 통합 구현 / current bounded qualification `PASS-automated-partial`** (좌상단 3초·600ms 자동 case PASS / strict P0.5 FAIL / strict P1-CS FAIL 보존 / 전체 matrix notRun / opaque 기본 유지 / 수정본 실물 검증 notVerified)
+- 상태: **`experimental Acrylic` resize 수리 체크포인트 / current visible qualification 미완료** (좌상단 3초 자동 case PASS, 600ms hard geometry/visual FAIL / Release·ABI·opaque·empty-PATH·option·fallback PASS / strict P0.5·P1-CS FAIL 보존 / opaque 기본 유지 / 수정본 실물 검증 notVerified)
 - 대상: Doroti.Host.WindowsAppSdk의 HwndExactCpp와 managed ANGLE/EGL-D3D11 → Composition Swapchain + SkiaSharp 경로
 - 지원 OS: Windows 11 24H2, build 26100 이상만 지원
 - 목표: opaque 기본 경로의 exact-frame 계약은 그대로 유지하고, 별도 opt-in `experimental Acrylic` 모드에서는 ANGLE D3D11 → Composition Swapchain으로 Windows Desktop Acrylic(Default/Base/Thin, theme별 tint)을 제공한다. interactive resize 중에는 제한된 active-edge 불일치만 허용하고 resize 종료 뒤 exact geometry로 복귀한다.
-- 현재 활성 범위는 아래 **활성 계획 — experimental Acrylic**이다. 그 뒤의 strict-exact 후속 계획과 1차 계획은 2026-09-01 실행 결과 및 실패 근거로 보존한다. 제품 API/ABI와 opt-in presenter/validator를 구현했고, 30fps `WM_SIZING` stepper는 창 자체가 느려지는 실물 실패 때문에 제거했다. 현재는 바깥 `WM_SIZING`을 수정하지 않고 실제 child `WM_SIZE` physical extent를 authority로 삼는다. interactive Composition wait는 한 60fps budget인 16ms에서 양보하고, `WM_EXITSIZEMOVE`만 최대 100ms exact terminal과 raster-thread `DwmFlush`를 수행한다. 이미 physical pixel인 surface에는 `DesktopChildSiteBridge.OverrideScale = 1`을 적용하고, 256px retained overscan과 top-HWND의 어두운 erase fill로 빠른 expand 중 흰 배경 노출을 막는다. 전체 E3 matrix와 수정본 E4 실물 acceptance는 아직 완료하지 않았다.
+- 현재 활성 범위는 아래 **활성 계획 — experimental Acrylic**이다. 그 뒤의 2026-09-01 결과는 당시 구현의 기록이며 아래 2026-09-02 체크포인트가 현 코드를 우선한다. 바깥 `WM_SIZING`은 수정하지 않고 top HWND의 실제 physical client extent를 authority로 사용한다. Composition `WM_SIZE`는 viewport/metrics/latest render만 발행하고 기다리지 않으며, raster worker의 최종 성공 frame에서만 one-shot `DwmFlush`한다. 이미 physical pixel인 surface는 `OverrideScale = 1`, `Stretch=None`, 1:1 crop으로 유지한다. 전체 E3 matrix와 수정본 E4 실물 acceptance는 아직 완료하지 않았다.
+
+## 2026-09-02 좌·상단 resize 수리 체크포인트
+
+사용자가 좌측·상단 drag에서 검은 영역과 내부 raster 떨림을 확인해 기존 retained overscan/stretch 경로를 교체했다.
+
+| 항목 | 판정 | 현재 결과 |
+|---|---|---|
+| raster/Composition 소유권 | implemented | `ResizeContentToParentWindow`가 bridge HWND geometry를 소유하고 native `WM_SIZE`는 top-client viewport만 발행한다. 성공 callback은 buffer+source rect+identity transform을 한 번에 present하며 CSS식/Composition scale과 256px dark overscan을 제거했다. |
+| stale frame 표시 | implemented | 12px transparent guard와 stationary-edge brush alignment로 이전 frame을 1:1 crop/clip한다. full-client stretch와 검은 erase fill을 사용하지 않는다. |
+| WndProc/fence | PASS-code | Composition `WM_SIZE`/`WM_EXITSIZEMOVE`에서 terminal/fence/event/`DwmFlush`를 기다리지 않는다. native Presentation의 초기 100ms retiring-fence wait도 제거했다. |
+| validator attribution | PASS-code | 네 모서리 12-bit frame marker와 checksum으로 visible frame을 receipt에 연결한다. 상단 shrink에서 source보다 작은 client에 생기는 정상 app-bar crop만 geometry로 식별해 visual oracle에서 제외하며, uncropped title/app-bar/gap 실패는 그대로 hard gate다. |
+| TopLeft 3초 | PASS-current-capture | `.doroti/evidence/experimental-acrylic-20260902-083717-a6463018bc`: active/inactive max 9/0px, frame-id 약 100%, settle 29.16ms. Geometry-aware 재분석에서 app-bar/title failure 0, gap max 4/8px, final 0/0px다. |
+| TopLeft 600ms | **FAIL** | 같은 evidence에서 active max 37px, matched coverage 약 74%, accepted cadence 38.17fps, uncropped app-bar 1/title 6, gap 23/13px이다. 빠른 경로의 17ms slot wait와 resize-edge anchor 추론이 후속 원인 후보이며 이번 체크포인트에서는 ABI/ContentIsland 재설계를 시작하지 않았다. |
+| Release/기본 회귀 | PASS | `.doroti/evidence/experimental-acrylic-wrapup-20260902/manifest.json`: Release 경고/오류 0, native ABI, opaque before/after, empty-PATH experimental launch, option burst 500, forced pre-show fallback PASS. Visible case는 의도적으로 notRun이다. |
+| 실물 acceptance/full matrix | notVerified/notRun | 자동 WGC는 physical scan-out이나 사용자의 수정본 drag 체감을 증명하지 않는다. 8방향, DPI/refresh/monitor, IME/UIA matrix도 미실행이다. |
+
+따라서 이번 마무리는 검은 fill/full-frame stretch의 원인을 제거한 **부분 수리 체크포인트**다. 3초 TopLeft 자동 경로는 통과하지만 600ms hard gate가 남아 있으므로 stable 승격이나 전체 `PASS-automated-partial`로 재분류하지 않는다. 다음 재개 시에는 native `WM_SIZING` edge를 managed viewport에 명시적으로 전달하고 interactive slot 획득을 nonblocking current+latest 방식으로 바꾼 뒤 600ms case부터 다시 확인한다.
 
 ## 2026-09-01 `experimental Acrylic` 제품 통합 실행 결과
 

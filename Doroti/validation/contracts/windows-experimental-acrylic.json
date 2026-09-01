@@ -24,6 +24,13 @@
     "framesPerSecondMeasurementTolerance": 0.5,
     "exitFlush": "exactCurrent"
   },
+  "visual": {
+    "minimumInteractiveFrameIdCoverage": 0.9,
+    "minimumInteractiveMatchedCoverage": 0.9,
+    "minimumTitleObservationCoverage": 0.5,
+    "maximumAppBarHeightFailures": 0,
+    "maximumTitleNonUniformScaleFailures": 0
+  },
   "resources": {
     "maximumQueueDepth": 2,
     "maximumRegisteredSlots": 3,

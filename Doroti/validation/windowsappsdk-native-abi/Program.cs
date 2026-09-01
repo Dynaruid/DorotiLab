@@ -38,6 +38,10 @@ try
         "doroti_windows_acrylic_replace_buffer_v1",
         "doroti_windows_acrylic_is_available_v1",
         "doroti_windows_acrylic_present_v1",
+        "doroti_windows_acrylic_present_positioned_v1",
+        "doroti_windows_acrylic_present_cropped_v1",
+        "doroti_windows_acrylic_crop_v1",
+        "doroti_windows_acrylic_place_v1",
     };
     foreach (var export in exports)
     {

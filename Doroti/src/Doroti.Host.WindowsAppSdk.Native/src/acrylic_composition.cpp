@@ -8,7 +8,9 @@
 #include <wrl/client.h>
 
 #include <cstdint>
+#include <cmath>
 #include <memory>
+#include <mutex>
 
 using Microsoft::WRL::ComPtr;
 
@@ -34,21 +36,18 @@ struct BufferSlot {
 };
 
 struct AcrylicContext {
+  std::mutex gate;
   ComPtr<ID3D11Device> device;
   ComPtr<IPresentationFactory> factory;
   ComPtr<IPresentationManager> manager;
   ComPtr<IPresentationSurface> surface;
   ComPtr<ID3D11Fence> retiring_fence;
-  HANDLE retiring_event{};
   HANDLE surface_handle{};
-  uint64_t last_present_id{};
-  uint32_t last_present_width{};
-  uint32_t last_present_height{};
-  uint32_t size_change_present_count{};
   BufferSlot slots[3];
+  uint32_t bound_width{};
+  uint32_t bound_height{};
 
   ~AcrylicContext() {
-    if (retiring_event != nullptr) CloseHandle(retiring_event);
     retiring_fence.Reset();
     surface.Reset();
     manager.Reset();
@@ -65,6 +64,53 @@ HRESULT IsAvailable(const BufferSlot& slot, bool& available) noexcept {
   const auto result = slot.buffer->IsAvailable(&value);
   if (SUCCEEDED(result)) available = value != 0;
   return result;
+}
+
+HRESULT PresentBufferLocked(
+    AcrylicContext& acrylic, uint32_t slot_index, uint32_t width,
+    uint32_t height, uint32_t source_x, uint32_t source_y,
+    float offset_x, float offset_y, uint64_t tag,
+    uint64_t* present_id, uint64_t* retiring_fence_value) noexcept {
+  auto& slot = acrylic.slots[slot_index];
+  if (!slot.buffer || width == 0 || height == 0 ||
+      source_x > slot.width || source_y > slot.height ||
+      width > slot.width - source_x || height > slot.height - source_y ||
+      !std::isfinite(offset_x) || !std::isfinite(offset_y))
+    return E_INVALIDARG;
+  bool available{};
+  auto result = IsAvailable(slot, available);
+  if (FAILED(result)) return result;
+  if (!available) return DXGI_ERROR_WAS_STILL_DRAWING;
+  // Per-buffer availability is the reuse authority. The retiring fence is
+  // sampled below for diagnostics only and never blocks the raster worker.
+  result = acrylic.surface->SetBuffer(slot.buffer.Get());
+  if (FAILED(result)) return result;
+  result =
+      acrylic.surface->SetColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
+  if (FAILED(result)) return result;
+  result = acrylic.surface->SetAlphaMode(DXGI_ALPHA_MODE_PREMULTIPLIED);
+  if (FAILED(result)) return result;
+  RECT source{
+      static_cast<LONG>(source_x), static_cast<LONG>(source_y),
+      static_cast<LONG>(source_x + width),
+      static_cast<LONG>(source_y + height)};
+  result = acrylic.surface->SetSourceRect(&source);
+  if (FAILED(result)) return result;
+  PresentationTransform transform{
+      1.0f, 0.0f, 0.0f, 1.0f, offset_x, offset_y};
+  result = acrylic.surface->SetTransform(&transform);
+  if (FAILED(result)) return result;
+  acrylic.surface->SetTag(static_cast<UINT_PTR>(tag));
+  const auto id = acrylic.manager->GetNextPresentId();
+  result = acrylic.manager->Present();
+  if (FAILED(result)) return result;
+  acrylic.bound_width = slot.width;
+  acrylic.bound_height = slot.height;
+  *present_id = id;
+  *retiring_fence_value = acrylic.retiring_fence
+                                ? acrylic.retiring_fence->GetCompletedValue()
+                                : 0;
+  return S_OK;
 }
 
 void QueryAdapter(ID3D11Device* device,
@@ -126,9 +172,6 @@ doroti_windows_acrylic_create_v1(
   snapshot->retiring_fence_hresult = acrylic->manager->GetPresentRetiringFence(
       IID_PPV_ARGS(&acrylic->retiring_fence));
   if (SUCCEEDED(snapshot->retiring_fence_hresult) && acrylic->retiring_fence) {
-    acrylic->retiring_event = CreateEventW(nullptr, FALSE, FALSE, nullptr);
-    if (acrylic->retiring_event == nullptr)
-      return HRESULT_FROM_WIN32(GetLastError());
     snapshot->retiring_fence_completed_value =
         acrylic->retiring_fence->GetCompletedValue();
   }
@@ -155,6 +198,7 @@ doroti_windows_acrylic_replace_buffer_v1(
     return E_INVALIDARG;
 
   auto& acrylic = *static_cast<AcrylicContext*>(context);
+  std::lock_guard lock(acrylic.gate);
   auto& slot = acrylic.slots[slot_index];
   if (!acrylic.manager || !acrylic.surface) return E_HANDLE;
   if (slot.buffer) {
@@ -189,6 +233,25 @@ doroti_windows_acrylic_replace_buffer_v1(
   snapshot->texture_hresult =
       acrylic.device->CreateTexture2D(&description, nullptr, &slot.texture);
   if (FAILED(snapshot->texture_hresult)) return snapshot->texture_hresult;
+  // Presentation can sample a narrow guard region while the framework catches
+  // up with a moving edge. Initialize that region to transparent once; ANGLE
+  // renders only into the inset 1:1 viewport and never stretches its pixels.
+  ComPtr<ID3D11RenderTargetView> clear_view;
+  auto clear_result = acrylic.device->CreateRenderTargetView(
+      slot.texture.Get(), nullptr, &clear_view);
+  if (FAILED(clear_result)) {
+    slot.Reset();
+    return clear_result;
+  }
+  ComPtr<ID3D11DeviceContext> immediate;
+  acrylic.device->GetImmediateContext(&immediate);
+  if (!immediate) {
+    slot.Reset();
+    return E_HANDLE;
+  }
+  constexpr float transparent[4]{0.0f, 0.0f, 0.0f, 0.0f};
+  immediate->ClearRenderTargetView(clear_view.Get(), transparent);
+  immediate->Flush();
   snapshot->add_buffer_hresult =
       acrylic.manager->AddBufferFromResource(slot.texture.Get(), &slot.buffer);
   if (FAILED(snapshot->add_buffer_hresult)) {
@@ -222,8 +285,9 @@ doroti_windows_acrylic_is_available_v1(
   if (context == nullptr || slot_index >= 3 || available == nullptr)
     return E_INVALIDARG;
   bool value{};
-  const auto result = IsAvailable(
-      static_cast<AcrylicContext*>(context)->slots[slot_index], value);
+  auto& acrylic = *static_cast<AcrylicContext*>(context);
+  std::lock_guard lock(acrylic.gate);
+  const auto result = IsAvailable(acrylic.slots[slot_index], value);
   *available = value ? 1u : 0u;
   return result;
 }
@@ -236,61 +300,81 @@ doroti_windows_acrylic_present_v1(
       retiring_fence_value == nullptr)
     return E_INVALIDARG;
   auto& acrylic = *static_cast<AcrylicContext*>(context);
-  auto& slot = acrylic.slots[slot_index];
-  if (!slot.buffer || width == 0 || height == 0 ||
-      width > slot.width || height > slot.height)
+  std::lock_guard lock(acrylic.gate);
+  return PresentBufferLocked(acrylic, slot_index, width, height, 0, 0,
+                             0.0f, 0.0f, tag, present_id,
+                             retiring_fence_value);
+}
+
+extern "C" int32_t DOROTI_WINDOWS_ACRYLIC_CALL
+doroti_windows_acrylic_present_positioned_v1(
+    void* context, uint32_t slot_index, uint32_t width, uint32_t height,
+    float offset_x, float offset_y, uint64_t tag, uint64_t* present_id,
+    uint64_t* retiring_fence_value) {
+  if (context == nullptr || slot_index >= 3 || present_id == nullptr ||
+      retiring_fence_value == nullptr)
     return E_INVALIDARG;
-  bool available{};
-  auto result = IsAvailable(slot, available);
+  auto& acrylic = *static_cast<AcrylicContext*>(context);
+  std::lock_guard lock(acrylic.gate);
+  return PresentBufferLocked(acrylic, slot_index, width, height, 0, 0,
+                             offset_x, offset_y, tag, present_id,
+                             retiring_fence_value);
+}
+
+extern "C" int32_t DOROTI_WINDOWS_ACRYLIC_CALL
+doroti_windows_acrylic_present_cropped_v1(
+    void* context, uint32_t slot_index, uint32_t source_x,
+    uint32_t source_y, uint32_t width, uint32_t height, uint64_t tag,
+    uint64_t* present_id, uint64_t* retiring_fence_value) {
+  if (context == nullptr || slot_index >= 3 || present_id == nullptr ||
+      retiring_fence_value == nullptr)
+    return E_INVALIDARG;
+  auto& acrylic = *static_cast<AcrylicContext*>(context);
+  std::lock_guard lock(acrylic.gate);
+  return PresentBufferLocked(acrylic, slot_index, width, height, source_x,
+                             source_y, 0.0f, 0.0f, tag, present_id,
+                             retiring_fence_value);
+}
+
+extern "C" int32_t DOROTI_WINDOWS_ACRYLIC_CALL
+doroti_windows_acrylic_crop_v1(
+    void* context, uint32_t source_x, uint32_t source_y,
+    uint32_t width, uint32_t height, uint64_t tag) {
+  if (context == nullptr || width == 0 || height == 0)
+    return E_INVALIDARG;
+  auto& acrylic = *static_cast<AcrylicContext*>(context);
+  std::lock_guard lock(acrylic.gate);
+  if (!acrylic.manager || !acrylic.surface ||
+      source_x > acrylic.bound_width || source_y > acrylic.bound_height ||
+      width > acrylic.bound_width - source_x ||
+      height > acrylic.bound_height - source_y)
+    return E_INVALIDARG;
+  RECT source{
+      static_cast<LONG>(source_x), static_cast<LONG>(source_y),
+      static_cast<LONG>(source_x + width),
+      static_cast<LONG>(source_y + height)};
+  auto result = acrylic.surface->SetSourceRect(&source);
   if (FAILED(result)) return result;
-  if (!available) return DXGI_ERROR_WAS_STILL_DRAWING;
-  // Arm the retiring fence while the three-slot size-changing pipeline warms.
-  // This wait runs on Doroti's raster worker, never the WndProc/platform
-  // thread. Once all three initial replacements have retired in order, buffer
-  // availability plus the native exact-WM_SIZE handshake keep the steady-state
-  // queue bounded without paying a retirement round trip on every frame.
-  const auto previous_present_id = acrylic.last_present_id;
-  const auto size_changed =
-      previous_present_id != 0 &&
-      (acrylic.last_present_width != width ||
-       acrylic.last_present_height != height);
-  bool wait_for_previous =
-      size_changed && acrylic.size_change_present_count < 3 &&
-      acrylic.retiring_fence &&
-      acrylic.retiring_event != nullptr &&
-      acrylic.retiring_fence->GetCompletedValue() < previous_present_id;
-  if (wait_for_previous) {
-    ResetEvent(acrylic.retiring_event);
-    result = acrylic.retiring_fence->SetEventOnCompletion(
-        previous_present_id, acrylic.retiring_event);
-    if (FAILED(result)) return result;
-  }
-  result = acrylic.surface->SetBuffer(slot.buffer.Get());
-  if (FAILED(result)) return result;
-  result =
-      acrylic.surface->SetColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
-  if (FAILED(result)) return result;
-  result = acrylic.surface->SetAlphaMode(DXGI_ALPHA_MODE_PREMULTIPLIED);
-  if (FAILED(result)) return result;
-  RECT source{0, 0, static_cast<LONG>(width), static_cast<LONG>(height)};
-  result = acrylic.surface->SetSourceRect(&source);
+  PresentationTransform identity{1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f};
+  result = acrylic.surface->SetTransform(&identity);
   if (FAILED(result)) return result;
   acrylic.surface->SetTag(static_cast<UINT_PTR>(tag));
-  const auto id = acrylic.manager->GetNextPresentId();
-  result = acrylic.manager->Present();
+  return acrylic.manager->Present();
+}
+
+extern "C" int32_t DOROTI_WINDOWS_ACRYLIC_CALL
+doroti_windows_acrylic_place_v1(
+    void* context, float offset_x, float offset_y, uint64_t tag) {
+  if (context == nullptr || !std::isfinite(offset_x) ||
+      !std::isfinite(offset_y))
+    return E_INVALIDARG;
+  auto& acrylic = *static_cast<AcrylicContext*>(context);
+  std::lock_guard lock(acrylic.gate);
+  if (!acrylic.manager || !acrylic.surface) return E_HANDLE;
+  PresentationTransform transform{
+      1.0f, 0.0f, 0.0f, 1.0f, offset_x, offset_y};
+  auto result = acrylic.surface->SetTransform(&transform);
   if (FAILED(result)) return result;
-  acrylic.last_present_id = id;
-  acrylic.last_present_width = width;
-  acrylic.last_present_height = height;
-  if (size_changed) ++acrylic.size_change_present_count;
-  if (wait_for_previous) {
-    const auto wait = WaitForSingleObject(acrylic.retiring_event, 100);
-    if (wait == WAIT_TIMEOUT) return HRESULT_FROM_WIN32(ERROR_TIMEOUT);
-    if (wait != WAIT_OBJECT_0) return HRESULT_FROM_WIN32(GetLastError());
-  }
-  *present_id = id;
-  *retiring_fence_value = acrylic.retiring_fence
-                                ? acrylic.retiring_fence->GetCompletedValue()
-                                : 0;
-  return S_OK;
+  acrylic.surface->SetTag(static_cast<UINT_PTR>(tag));
+  return acrylic.manager->Present();
 }

@@ -56,10 +56,7 @@ constexpr UINT_PTR kSmokeTimer = 1;
 constexpr UINT_PTR kLifecycleTimer = 2;
 constexpr UINT_PTR kInteractiveMoveTimer = 3;
 constexpr UINT kInteractiveMoveIntervalMs = 8;
-constexpr int kCompositionChildOverscanPx = 256;
 constexpr auto kExactResizeWait = std::chrono::milliseconds(100);
-constexpr auto kCompositionInteractiveResizeWait =
-    std::chrono::milliseconds(16);
 
 template <typename T>
 bool ValidHeader(const T* value) noexcept {
@@ -218,10 +215,23 @@ class ProductHost final {
         &SetCompositionChild,
     };
     callbacks_.host_ready(callbacks_.callback_context, &host);
+    // Host-ready attaches the ContentIsland synchronously. Publish its initial
+    // viewport after that attachment and before the first raster request.
+    if (composition_active_) {
+      RECT client{};
+      if (!GetClientRect(top_, &client)) throw std::bad_alloc();
+      const auto width =
+          static_cast<uint32_t>(std::max(0L, client.right - client.left));
+      const auto height =
+          static_cast<uint32_t>(std::max(0L, client.bottom - client.top));
+      if (width > 0 && height > 0) ResizeCompositionViewport(width, height);
+    }
     AttachInputServices();
     StartRenderWorker();
     EmitLifecycle(1);
-    PublishMetrics();
+    if (PublishMetrics() && composition_active_)
+      composition_flush_generation_.store(current_generation_,
+                                            std::memory_order_release);
     RunInputSmoke();
     QueueRender();
     ConfigureSmokeTimer();
@@ -241,16 +251,8 @@ class ProductHost final {
     if (composition_active_ && IsClientInputMessage(message))
       return HandleChild(window, message, wparam, lparam);
     switch (message) {
-      case WM_ERASEBKGND: {
-        if (composition_active_) {
-          RECT client{};
-          const auto brush = CreateSolidBrush(RGB(15, 13, 22));
-          if (brush != nullptr && GetClientRect(window, &client))
-            FillRect(reinterpret_cast<HDC>(wparam), &client, brush);
-          if (brush != nullptr) DeleteObject(brush);
-        }
+      case WM_ERASEBKGND:
         return 1;
-      }
       case WM_SIZE:
         if (wparam == SIZE_MINIMIZED) {
           minimized_ = true;
@@ -267,21 +269,22 @@ class ProductHost final {
           const auto width = static_cast<uint32_t>(LOWORD(lparam));
           const auto height = static_cast<uint32_t>(HIWORD(lparam));
           if (width > 0 && height > 0) {
-            // The WinAppSDK bridge owns a second WS_CHILD HWND. Resize that
-            // visible child before the exact-render wait below can block this
-            // platform thread; otherwise fast growth exposes the top-level
-            // background along the right and bottom edges.
-            if (composition_active_ && composition_child_ != nullptr &&
-                !SetWindowPos(composition_child_, nullptr, 0, 0,
-                              static_cast<int>(width) + kCompositionChildOverscanPx,
-                              static_cast<int>(height) + kCompositionChildOverscanPx,
-                              SWP_NOZORDER | SWP_NOACTIVATE)) {
-              fatal_ = true;
-              PostMessageW(top_, WM_CLOSE, 0, 0);
+            if (composition_active_) {
+              // DesktopChildSiteBridge owns its WS_CHILD geometry. Keep the
+              // shell lane nonblocking: publish the actual top-client extent,
+              // latest-queue raster work, and return without resizing the
+              // hidden opaque child or waiting for a terminal.
+              ResizeCompositionViewport(width, height);
+              const auto scale =
+                  static_cast<double>(GetDpiForWindow(top_)) / 96.0;
+              if (UpdateMetrics(width, height, scale)) {
+                if (!interactive_move_)
+                  composition_flush_generation_.store(
+                      current_generation_, std::memory_order_release);
+                QueueRender();
+              }
               return 0;
             }
-            if (composition_active_ && composition_child_ != nullptr)
-              ResizeCompositionViewport(width, height);
             // Match Flutter's host_window.cc contract: the one visible child
             // is always exactly the top-level physical client extent. The
             // child's WM_SIZE owns metrics and the bounded render transaction.
@@ -321,12 +324,14 @@ class ProductHost final {
         KillTimer(window, kInteractiveMoveTimer);
         EnteredDifferentMonitor();
         // Finish native sizing with one exact frame for the actual WM_SIZE
-        // metrics. Composition and opaque both retain the bounded terminal
-        // handshake; the raster worker performs DWM flush after releasing it.
+        // metrics. Composition stays asynchronous; the raster worker performs
+        // DWM flush after its successful terminal. Opaque retains its existing
+        // child-HWND exact transaction.
         if (composition_active_) {
-          const auto generation = current_generation_;
-          const auto causal = QueueRender();
-          WaitForExactResize(generation, causal);
+          RepublishCurrentMetrics();
+          composition_flush_generation_.store(current_generation_,
+                                               std::memory_order_release);
+          QueueRender();
         } else if (RepublishCurrentMetrics()) {
           QueueRender();
         }
@@ -455,23 +460,13 @@ class ProductHost final {
       case WM_ERASEBKGND:
         return 1;
       case WM_SIZE: {
+        if (composition_active_) return 0;
         if (!render_worker_started_ || wparam == SIZE_MINIMIZED)
           return 0;
         if (PublishMetrics()) {
           const auto generation = current_generation_;
           const auto causal = QueueRender();
-          // Flutter polls its task runner during the bounded exact-frame wait.
-          // Doroti's native loop cannot do that without dispatching unrelated
-          // re-entrant window messages, so interactive Composition yields
-          // after one 60 fps budget while the raster terminal continues.
-          // WM_EXITSIZEMOVE still performs the full 100 ms exact handshake.
-          const auto interactive_composition =
-              composition_active_ && interactive_move_;
-          WaitForExactResize(
-              generation, causal,
-              interactive_composition ? kCompositionInteractiveResizeWait
-                                      : kExactResizeWait,
-              !interactive_composition);
+          WaitForExactResize(generation, causal);
         }
         return 0;
       }
@@ -642,7 +637,6 @@ class ProductHost final {
     if (!host->composition_requested_ || !host->composition_active_) return 3;
     if (host->first_exact_present_) return 4;
     host->composition_active_ = false;
-    host->composition_child_ = nullptr;
     RECT client{};
     if (!GetClientRect(host->top_, &client) ||
         !SetWindowPos(host->child_, nullptr, 0, 0,
@@ -655,32 +649,13 @@ class ProductHost final {
   static uint32_t DOROTI_WINDOWS_CALL SetCompositionChild(
       void* context, void* child_hwnd) {
     auto* host = static_cast<ProductHost*>(context);
-    if (host == nullptr || GetCurrentThreadId() != host->platform_thread_id_)
-      return 1;
-    if (child_hwnd == nullptr) {
-      host->composition_child_ = nullptr;
-      return 0;
-    }
-    const auto child = static_cast<HWND>(child_hwnd);
-    if (!host->composition_active_ || !IsWindow(child) ||
-        GetParent(child) != host->top_)
-      return 2;
-    DWORD process_id{};
-    if (GetWindowThreadProcessId(child, &process_id) != host->platform_thread_id_ ||
-        process_id != GetCurrentProcessId())
-      return 3;
-    RECT client{};
-    if (!GetClientRect(host->top_, &client) ||
-        !SetWindowPos(child, nullptr, 0, 0,
-                      client.right - client.left + kCompositionChildOverscanPx,
-                      client.bottom - client.top + kCompositionChildOverscanPx,
-                      SWP_NOZORDER | SWP_NOACTIVATE))
-      return 4;
-    host->composition_child_ = child;
-    host->ResizeCompositionViewport(
-        static_cast<uint32_t>(client.right - client.left),
-        static_cast<uint32_t>(client.bottom - client.top));
-    return 0;
+    (void)child_hwnd;
+    // ABI v1 compatibility slot. DesktopChildSiteBridge.ResizePolicy now owns
+    // the bridge HWND geometry, so native registration is intentionally a
+    // no-op until a future ABI revision can remove this callback.
+    return host != nullptr && GetCurrentThreadId() == host->platform_thread_id_
+               ? 0u
+               : 1u;
   }
 
   void ResizeCompositionViewport(uint32_t width, uint32_t height) {
@@ -1239,9 +1214,10 @@ class ProductHost final {
   }
 
   bool PublishMetrics() {
-    if (child_ == nullptr || callbacks_.metrics == nullptr) return false;
+    const auto authority = composition_active_ ? top_ : child_;
+    if (authority == nullptr || callbacks_.metrics == nullptr) return false;
     RECT client{};
-    if (!GetClientRect(child_, &client)) return false;
+    if (!GetClientRect(authority, &client)) return false;
     const auto width = static_cast<uint32_t>(std::max(0L, client.right - client.left));
     const auto height = static_cast<uint32_t>(std::max(0L, client.bottom - client.top));
     if (width == 0 || height == 0) return false;
@@ -1408,13 +1384,17 @@ class ProductHost final {
       }
       resize_condition_.notify_all();
       if (composition_active_ &&
-          terminal == DOROTI_WINDOWS_FRAME_PRESENTED_V1 &&
-          !composition_interactive_.load(std::memory_order_relaxed)) {
-        // The retained Composition source already covers intermediate resize
-        // bounds. Do not serialize the raster worker on every interactive
-        // DWM scan-out; the exact frame queued by WM_EXITSIZEMOVE still flushes
-        // after its terminal so the final size has an explicit scan-out point.
-        (void)DwmFlush();
+          terminal == DOROTI_WINDOWS_FRAME_PRESENTED_V1) {
+        auto flush_generation =
+            composition_flush_generation_.load(std::memory_order_acquire);
+        if (flush_generation != 0 &&
+            work.request.generation >= flush_generation &&
+            composition_flush_generation_.compare_exchange_strong(
+                flush_generation, 0, std::memory_order_acq_rel)) {
+          // DwmFlush is a one-shot final-settle acknowledgement. Never put it
+          // in the interactive resize cadence or ordinary animation path.
+          (void)DwmFlush();
+        }
       }
       PostMessageW(task_, kRenderCompleted, 0, 0);
     }
@@ -1697,7 +1677,6 @@ class ProductHost final {
   doroti_windows_callbacks_v1 callbacks_{};
   HWND top_{};
   HWND child_{};
-  HWND composition_child_{};
   HWND task_{};
   HMONITOR stable_monitor_{};
   winrt::Microsoft::UI::Windowing::AppWindow app_window_{nullptr};
@@ -1731,6 +1710,7 @@ class ProductHost final {
   bool minimized_{};
   bool interactive_move_{};
   std::atomic_bool composition_interactive_{};
+  std::atomic<uint64_t> composition_flush_generation_{};
   bool interactive_move_dirty_{};
   bool composition_requested_{};
   bool composition_active_{};

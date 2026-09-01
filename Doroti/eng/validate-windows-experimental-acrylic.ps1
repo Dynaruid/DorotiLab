@@ -124,6 +124,16 @@ function Request-BoundedAppClose([long] $Hwnd) {
         [IntPtr]$Hwnd, 0x0010, [IntPtr]::Zero, [IntPtr]::Zero)) 'Failed to request graceful app close.'
 }
 
+function Get-OppositeFrameMarkerCorner([string] $Edge) {
+    $horizontal = if ($Edge -match 'Left') { 'Right' }
+        elseif ($Edge -match 'Right') { 'Left' }
+        else { 'Right' }
+    $vertical = if ($Edge -match 'Top') { 'Bottom' }
+        elseif ($Edge -match 'Bottom') { 'Top' }
+        else { 'Top' }
+    return "$vertical$horizontal"
+}
+
 function Invoke-DemoSmoke {
     param([string] $Name, [string] $ReportPath, [hashtable] $ExtraEnvironment = @{}, [switch] $EmptyPath)
     $environment = @{
@@ -153,6 +163,13 @@ function Get-BoundedGeometry {
     $scale = [double]$Capture.windowDpi / 96.0
     $activeBudget = [Math]::Min([int]$contract.geometry.physicalActiveEdgeBudget,
         [int][Math]::Ceiling([double]$contract.geometry.logicalActiveEdgeBudget * $scale))
+    $dragStart100ns = [double]$Capture.dragTiming.dragStartCounter * 10000000.0 / [double]$Capture.clockCalibration.qpcFrequency
+    $mouseUp100ns = [double]$Capture.dragTiming.mouseUpCounter * 10000000.0 / [double]$Capture.clockCalibration.qpcFrequency
+    $capturedInteractive = @($Capture.frames | Where-Object {
+        [long]$_.systemRelative100ns -ge $dragStart100ns -and
+        [long]$_.systemRelative100ns -le $mouseUp100ns
+    })
+    $capturedInteractiveWithFrameId = @($capturedInteractive | Where-Object { $null -ne $_.frameId })
     $matched = [Collections.Generic.List[object]]::new()
     foreach ($frame in @($Capture.frames | Where-Object { $null -ne $_.frameId })) {
         $visibleGeneration = [long]$frame.frameId
@@ -160,8 +177,10 @@ function Get-BoundedGeometry {
         $receipt = $presented[$visibleGeneration]
         $generation = [long]$receipt.target.generation
         $target = $receipt.target
-        $widthDelta = [Math]::Abs([int]$frame.client.width - [int]$target.widthPx)
-        $heightDelta = [Math]::Abs([int]$frame.client.height - [int]$target.heightPx)
+        $signedWidthDelta = [int]$frame.client.width - [int]$target.widthPx
+        $signedHeightDelta = [int]$frame.client.height - [int]$target.heightPx
+        $widthDelta = [Math]::Abs($signedWidthDelta)
+        $heightDelta = [Math]::Abs($signedHeightDelta)
         $horizontal = $Edge -in @('Left','Right','TopLeft','TopRight','BottomLeft','BottomRight')
         $vertical = $Edge -in @('Top','Bottom','TopLeft','TopRight','BottomLeft','BottomRight')
         $corner = $horizontal -and $vertical
@@ -177,21 +196,35 @@ function Get-BoundedGeometry {
         $oppositeEdgeMarkerMiss =
             ($rightMarkerRequired -and -not [bool]$frame.gridRightEdgeMarkerDetected) -or
             ($bottomMarkerRequired -and -not [bool]$frame.gridBottomEdgeMarkerDetected)
-        $dragStart100ns = [double]$Capture.dragTiming.dragStartCounter * 10000000.0 / [double]$Capture.clockCalibration.qpcFrequency
-        $mouseUp100ns = [double]$Capture.dragTiming.mouseUpCounter * 10000000.0 / [double]$Capture.clockCalibration.qpcFrequency
         $state = if ([long]$frame.systemRelative100ns -lt $dragStart100ns) { 'idle-before' }
             elseif ([long]$frame.systemRelative100ns -le $mouseUp100ns) { 'interactive' }
             else { 'settle' }
         $matched.Add([ordered]@{
             captureIndex=$frame.captureIndex; generation=$generation
             systemRelative100ns=$frame.systemRelative100ns
-            state=$state; widthDelta=$widthDelta; heightDelta=$heightDelta
+            state=$state
+            clientWidth=[int]$frame.client.width; clientHeight=[int]$frame.client.height
+            sourceWidth=[int]$target.widthPx; sourceHeight=[int]$target.heightPx
+            signedWidthDelta=$signedWidthDelta; signedHeightDelta=$signedHeightDelta
+            widthDelta=$widthDelta; heightDelta=$heightDelta
             activeEdgeDelta=$activeDelta; inactiveEdgeDelta=$inactiveDelta
             oppositeEdgeMarkerMiss=$oppositeEdgeMarkerMiss
         })
     }
     $interactive = @($matched | Where-Object state -eq 'interactive')
     $settle = @($matched | Where-Object state -eq 'settle')
+    $interactiveFrameIdCoverage = if ($capturedInteractive.Count -gt 0) {
+        [double]$capturedInteractiveWithFrameId.Count / [double]$capturedInteractive.Count
+    } else { $null }
+    $interactiveMatchedCoverage = if ($capturedInteractive.Count -gt 0) {
+        [double]$interactive.Count / [double]$capturedInteractive.Count
+    } else { $null }
+    $minimumInteractiveFrameIdCoverage = [double]$contract.visual.minimumInteractiveFrameIdCoverage
+    $minimumInteractiveMatchedCoverage = [double]$contract.visual.minimumInteractiveMatchedCoverage
+    $interactiveCoveragePass = $null -ne $interactiveFrameIdCoverage -and
+        $interactiveFrameIdCoverage -ge $minimumInteractiveFrameIdCoverage -and
+        $null -ne $interactiveMatchedCoverage -and
+        $interactiveMatchedCoverage -ge $minimumInteractiveMatchedCoverage
     $interactiveReceipts = @($presented.Values | Where-Object {
         [long]$_.target.acceptedTimestamp -ge [long]$Capture.dragTiming.dragStartCounter -and
         [long]$_.target.acceptedTimestamp -le [long]$Capture.dragTiming.mouseUpCounter
@@ -290,18 +323,24 @@ function Get-BoundedGeometry {
         $settleIntervals -le [int]$contract.geometry.finalSettleRefreshIntervals -and
         $settleMilliseconds -le [double]$contract.geometry.finalSettleMaximumMilliseconds
     $pass = $matched.Count -gt 0 -and $interactive.Count -gt 0 -and
-        $schedulingPass -and
-        ($Profile -eq 'responsiveness' -or $activeEdgePass) -and
+        $interactiveCoveragePass -and $schedulingPass -and $activeEdgePass -and
         $maximumInactive -le [int]$contract.geometry.inactiveEdgeBudget -and
         (-not $oppositeEdgeMarkerGateApplied -or $oppositeEdgeMarkerMissCount -eq 0) -and
         $settlePass
     return [ordered]@{
         status=if ($pass) { 'PASS' } else { 'FAIL' }
         profile=$Profile; edge=$Edge; scale=$scale; activeBudget=$activeBudget
-        activeEdgeGateApplied=$Profile -ne 'responsiveness'
+        activeEdgeGateApplied=$true
         activeEdgeBudgetSatisfied=$activeEdgePass
         inactiveBudget=[int]$contract.geometry.inactiveEdgeBudget
         matchedFrames=$matched.Count; interactiveFrames=$interactive.Count
+        capturedInteractiveFrames=$capturedInteractive.Count
+        capturedInteractiveFrameIdFrames=$capturedInteractiveWithFrameId.Count
+        interactiveFrameIdCoverage=$interactiveFrameIdCoverage
+        requiredInteractiveFrameIdCoverage=$minimumInteractiveFrameIdCoverage
+        interactiveMatchedCoverage=$interactiveMatchedCoverage
+        requiredInteractiveMatchedCoverage=$minimumInteractiveMatchedCoverage
+        interactiveCoverageSatisfied=$interactiveCoveragePass
         maximumActiveEdgeDelta=$maximumActive; maximumInactiveEdgeDelta=$maximumInactive
         oppositeEdgeMarkerGateApplied=$oppositeEdgeMarkerGateApplied
         oppositeEdgeMarkerMissCount=$oppositeEdgeMarkerMissCount
@@ -331,6 +370,120 @@ function Get-BoundedGeometry {
             requiredMaximumCursorActiveEdgeLag=[int]$contract.geometry.maximumCursorActiveEdgeLag
         }
         frames=$matched
+    }
+}
+
+function Get-BoundedVisual {
+    param($Capture, $Geometry)
+    $oracle = $Capture.visualOracle
+    $captureByIndex = @{}
+    foreach ($frame in @($Capture.frames | Where-Object visualAnalyzed)) {
+        $captureByIndex[[int]$frame.captureIndex] = $frame
+    }
+    $matched = [Collections.Generic.List[object]]::new()
+    $topEdge = [string]$Geometry.edge -in @('Top','TopLeft','TopRight')
+    foreach ($frame in @($Geometry.frames)) {
+        $captureIndex = [int]$frame.captureIndex
+        if (-not $captureByIndex.ContainsKey($captureIndex)) { continue }
+        $captureFrame = $captureByIndex[$captureIndex]
+        $matched.Add([ordered]@{
+            capture=$captureFrame
+            geometry=$frame
+            expectedTopCrop=$topEdge -and [int]$frame.signedHeightDelta -lt 0
+        })
+    }
+    $analyzedFrames = $matched.Count
+    $eligible = @($matched | Where-Object { -not [bool]$_.expectedTopCrop })
+    $expectedTopCropFrames = $analyzedFrames - $eligible.Count
+    $baselineAppBarHeight = [double]$oracle.appBarBaselineLogicalHeight
+    $appBarHeightFailures = @($eligible | Where-Object {
+        $null -ne $_.capture.appBarLogicalHeight -and
+        [Math]::Abs([double]$_.capture.appBarLogicalHeight - $baselineAppBarHeight) -gt 1.1
+    }).Count
+    $titleObservedFrames = @($eligible | Where-Object {
+        $null -ne $_.capture.titleScaleRatio
+    }).Count
+    $titleNonUniformScaleFailures = @($eligible | Where-Object {
+        $null -ne $_.capture.titleScaleRatio -and
+        [Math]::Abs([double]$_.capture.titleScaleRatio - 1.0) -gt 0.04
+    }).Count
+    $titleObservationCoverage = if ($analyzedFrames -gt 0) {
+        [double]$titleObservedFrames / [double]$analyzedFrames
+    } else { $null }
+    $minimumTitleObservationCoverage = [double]$contract.visual.minimumTitleObservationCoverage
+    $maximumAppBarHeightFailures = [int]$contract.visual.maximumAppBarHeightFailures
+    $maximumTitleNonUniformScaleFailures = [int]$contract.visual.maximumTitleNonUniformScaleFailures
+    $inactiveBudget = [int]$contract.geometry.inactiveEdgeBudget
+    $baselineLeftGap = [int]$oracle.baselineContentLeftGapPixels
+    $baselineRightGap = [int]$oracle.baselineContentRightGapPixels
+    $leftGaps = @($matched | ForEach-Object {
+        if ($null -ne $_.capture.detectedUncoveredLeftGap -and
+            [int]$_.capture.detectedUncoveredLeftGap -ge 0) {
+            [Math]::Max(0, [int]$_.capture.detectedUncoveredLeftGap - $baselineLeftGap)
+        }
+    })
+    $rightGaps = @($matched | ForEach-Object {
+        if ($null -ne $_.capture.detectedUncoveredRightGap -and
+            [int]$_.capture.detectedUncoveredRightGap -ge 0) {
+            [Math]::Max(0, [int]$_.capture.detectedUncoveredRightGap - $baselineRightGap)
+        }
+    })
+    $maximumLeftGap = if ($leftGaps.Count) {
+        [int](($leftGaps | Measure-Object -Maximum).Maximum)
+    } else { -1 }
+    $maximumRightGap = if ($rightGaps.Count) {
+        [int](($rightGaps | Measure-Object -Maximum).Maximum)
+    } else { -1 }
+    $final = @($matched | Where-Object {
+        $_.geometry.state -eq 'settle' -and
+        [int]$_.geometry.signedWidthDelta -eq 0 -and
+        [int]$_.geometry.signedHeightDelta -eq 0
+    } | Sort-Object { [long]$_.geometry.systemRelative100ns } | Select-Object -Last 1)
+    $finalLeftGap = if ($final.Count -eq 1 -and
+        $null -ne $final[0].capture.detectedUncoveredLeftGap -and
+        [int]$final[0].capture.detectedUncoveredLeftGap -ge 0) {
+        [Math]::Max(0, [int]$final[0].capture.detectedUncoveredLeftGap - $baselineLeftGap)
+    } else { -1 }
+    $finalRightGap = if ($final.Count -eq 1 -and
+        $null -ne $final[0].capture.detectedUncoveredRightGap -and
+        [int]$final[0].capture.detectedUncoveredRightGap -ge 0) {
+        [Math]::Max(0, [int]$final[0].capture.detectedUncoveredRightGap - $baselineRightGap)
+    } else { -1 }
+    $activeBudget = [int]$Geometry.activeBudget
+    $pass = [bool]$Capture.visualOraclesEnabled -and $analyzedFrames -gt 0 -and
+        $appBarHeightFailures -le $maximumAppBarHeightFailures -and
+        $titleNonUniformScaleFailures -le $maximumTitleNonUniformScaleFailures -and
+        $null -ne $titleObservationCoverage -and
+        $titleObservationCoverage -ge $minimumTitleObservationCoverage -and
+        $maximumLeftGap -ge 0 -and $maximumLeftGap -le $activeBudget -and
+        $maximumRightGap -ge 0 -and $maximumRightGap -le $activeBudget -and
+        $finalLeftGap -ge 0 -and $finalLeftGap -le $inactiveBudget -and
+        $finalRightGap -ge 0 -and $finalRightGap -le $inactiveBudget
+    return [ordered]@{
+        status=if ($pass) { 'PASS' } else { 'FAIL' }
+        visualOraclesEnabled=[bool]$Capture.visualOraclesEnabled
+        analyzedFrames=$analyzedFrames
+        expectedTopCropFrames=$expectedTopCropFrames
+        appBarBaselineLogicalHeight=$baselineAppBarHeight
+        appBarHeightFailures=$appBarHeightFailures
+        rawAggregateAppBarHeightFailures=[int]$oracle.appBarHeightFailures
+        requiredMaximumAppBarHeightFailures=$maximumAppBarHeightFailures
+        titleObservedFrames=$titleObservedFrames
+        titleObservationCoverage=$titleObservationCoverage
+        requiredMinimumTitleObservationCoverage=$minimumTitleObservationCoverage
+        titleNonUniformScaleFailures=$titleNonUniformScaleFailures
+        rawAggregateTitleNonUniformScaleFailures=[int]$oracle.titleNonUniformScaleFailures
+        requiredMaximumTitleNonUniformScaleFailures=$maximumTitleNonUniformScaleFailures
+        maximumDetectedUncoveredLeftGapPixels=$maximumLeftGap
+        maximumDetectedUncoveredRightGapPixels=$maximumRightGap
+        requiredMaximumUncoveredGapPixels=$activeBudget
+        finalDetectedUncoveredLeftGapPixels=$finalLeftGap
+        finalDetectedUncoveredRightGapPixels=$finalRightGap
+        requiredMaximumFinalUncoveredGapPixels=$inactiveBudget
+        rawAggregateMaximumDetectedUncoveredLeftGapPixels=[int]$oracle.maximumDetectedUncoveredLeftGapPixels
+        rawAggregateMaximumDetectedUncoveredRightGapPixels=[int]$oracle.maximumDetectedUncoveredRightGapPixels
+        rawAggregateFinalDetectedUncoveredLeftGapPixels=[int]$oracle.finalDetectedUncoveredLeftGapPixels
+        rawAggregateFinalDetectedUncoveredRightGapPixels=[int]$oracle.finalDetectedUncoveredRightGapPixels
     }
 }
 
@@ -400,6 +553,7 @@ if (-not $SkipVisibleCapture) {
             DOROTI_WINDOWS_APPSDK_REPORT=$appPath
             DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_READY_FILE=$readyPath
             DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_FRAME_MARKER='1'
+            DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_FRAME_MARKER_CORNER=(Get-OppositeFrameMarkerCorner ([string]$definition.edge))
         }
         $running = Start-BoundedApp $environment
         try {
@@ -412,7 +566,7 @@ if (-not $SkipVisibleCapture) {
             $ready = Get-Content -LiteralPath $readyPath -Raw | ConvertFrom-Json
             $captureRun = Invoke-BoundedProcess -FileName $observer -Name "bounded resize $slug" -ArgumentList @(
                 '--hwnd',[string]$ready.hwnd,'--output',$capturePath,'--run-id',"$runId-$slug",
-                '--f6r','--decode-frame-id','--capture-only','--no-desktop-duplication','--input-hz','240','--png-stride','10',
+                '--f6r','--decode-frame-id','--no-anomaly-png','--no-desktop-duplication','--input-hz','240','--png-stride','10',
                 '--edge',[string]$definition.edge,'--drag-pixels','180','--drag-ms',[string]$definition.duration,
                 '--motion',[string]$definition.motion)
             Assert-True ($captureRun.ExitCode -eq 0) "Bounded resize observer failed: $slug"
@@ -422,6 +576,7 @@ if (-not $SkipVisibleCapture) {
             $app = Get-Content -LiteralPath $appPath -Raw | ConvertFrom-Json -Depth 100
             $capture = Get-Content -LiteralPath $capturePath -Raw | ConvertFrom-Json -Depth 100
             $geometry = Get-BoundedGeometry $app $capture ([string]$definition.edge) ([string]$definition.profile)
+            $visual = Get-BoundedVisual $capture $geometry
             $resourcePass = $appExit -eq 0 -and $app.mode.effective -eq 'experimentalAcrylic' -and
                 $app.frames.gpuCopies -eq [int]$contract.resources.maximumCpuCopies -and
                 $app.frames.operationalDebugErrors -eq [int]$contract.resources.maximumGpuErrors -and
@@ -435,8 +590,9 @@ if (-not $SkipVisibleCapture) {
                 $capture.poolCapacityExceededFrames -eq 0 -and @($capture.frames | Where-Object blank).Count -eq 0
             $cases += [ordered]@{
                 name=$slug; definition=$definition
-                status=if ($resourcePass -and $transportPass -and $geometry.status -eq 'PASS') { 'PASS' } else { 'FAIL' }
-                resource=$resourcePass; captureTransport=$transportPass; geometry=$geometry
+                status=if ($resourcePass -and $transportPass -and
+                    $geometry.status -eq 'PASS' -and $visual.status -eq 'PASS') { 'PASS' } else { 'FAIL' }
+                resource=$resourcePass; captureTransport=$transportPass; geometry=$geometry; visual=$visual
                 appPath=$appPath; capturePath=$capturePath
             }
         }

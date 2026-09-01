@@ -17,6 +17,7 @@
 #include <winrt/Windows.Graphics.DirectX.Direct3D11.h>
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <cmath>
@@ -571,7 +572,11 @@ bool IsAppBarFill(std::uint8_t const* pixel) {
 
 bool IsNativeTitleBarFill(std::uint8_t const* pixel) {
     int const b = pixel[0], g = pixel[1], r = pixel[2];
-    return r > 220 && g > 232 && b > 232 && std::abs(g - b) < 18;
+    bool const light = r > 220 && g > 232 && b > 232 && std::abs(g - b) < 18;
+    bool const dark = r >= 12 && r <= 64 && g >= 12 && g <= 64 &&
+        b >= 12 && b <= 64 && std::abs(r - g) < 12 &&
+        std::abs(g - b) < 12;
+    return light || dark;
 }
 
 bool IsLavender(std::uint8_t const* pixel) {
@@ -585,41 +590,90 @@ std::uint8_t const* Pixel(std::vector<std::uint8_t> const& pixels, int width, in
 
 std::optional<int> DecodeFrameId(
     std::vector<std::uint8_t> const& pixels, int width, int height, RECT const& client, double scale) {
-    int const bitSize = std::max(4, static_cast<int>(std::lround(7 * scale)));
+    int const bitSize = std::max(4, static_cast<int>(std::lround(4 * scale)));
     int const bitGap = std::max(1, static_cast<int>(std::lround(scale)));
+    int constexpr preambleBitCount = 4;
+    int constexpr preamble = 0b1101;
     int constexpr generationBitCount = 12;
     int constexpr checksumBitCount = 8;
-    int constexpr bitCount = generationBitCount + checksumBitCount;
+    int constexpr bitCount = preambleBitCount + generationBitCount + checksumBitCount;
     int const stripWidth = bitCount * bitSize + (bitCount - 1) * bitGap;
-    int const expectedStartX = client.right - stripWidth - std::max(4, static_cast<int>(std::lround(4 * scale)));
-    int const sampleY = client.top + std::max(1, static_cast<int>(std::lround(5 * scale))) + bitSize / 2;
-    if (sampleY < client.top || sampleY >= client.bottom || sampleY >= height) return std::nullopt;
-    int const searchRadius = std::max(32, static_cast<int>(std::lround(64 * scale)));
-    int const minimumStartX = std::max(static_cast<int>(client.left), expectedStartX - searchRadius);
-    int const maximumStartX = std::min(width - stripWidth, expectedStartX + searchRadius);
+    int const horizontalMargin = std::max(4, static_cast<int>(std::lround(4 * scale)));
+    int const verticalMargin = std::max(1, static_cast<int>(std::lround(5 * scale)));
+    std::array<POINT, 4> const expectedStarts{{
+        {client.left + horizontalMargin, client.top + verticalMargin},
+        {client.right - stripWidth - horizontalMargin, client.top + verticalMargin},
+        {client.left + horizontalMargin, client.bottom - bitSize - verticalMargin},
+        {client.right - stripWidth - horizontalMargin, client.bottom - bitSize - verticalMargin},
+    }};
+    int const searchRadius = std::max(4, static_cast<int>(std::ceil(6 * scale)));
+    int const sampleOffset = std::max(1, bitSize / 3);
+    auto readSolidBit = [&](int startX, int startY, int bit) -> std::optional<int> {
+        int const centerX = startX + bit * (bitSize + bitGap) + bitSize / 2;
+        int const centerY = startY + bitSize / 2;
+        std::array<POINT, 5> const samples{{
+            {centerX, centerY},
+            {centerX - sampleOffset, centerY}, {centerX + sampleOffset, centerY},
+            {centerX, centerY - sampleOffset}, {centerX, centerY + sampleOffset},
+        }};
+        std::optional<int> value;
+        for (auto const& sample : samples) {
+            if (sample.x < client.left || sample.x >= client.right ||
+                sample.y < client.top || sample.y >= client.bottom ||
+                sample.x < 0 || sample.x >= width || sample.y < 0 || sample.y >= height)
+                return std::nullopt;
+            auto const pixel = Pixel(pixels, width, sample.x, sample.y);
+            int const luminance = (static_cast<int>(pixel[0]) + pixel[1] + pixel[2]) / 3;
+            std::optional<int> const classified = luminance <= 48
+                ? std::optional<int>{0}
+                : luminance >= 207 ? std::optional<int>{1} : std::nullopt;
+            if (!classified || (value && *value != *classified)) return std::nullopt;
+            value = classified;
+        }
+        return value;
+    };
     std::optional<int> best;
     int bestDistance = std::numeric_limits<int>::max();
-    for (int startX = minimumStartX; startX <= maximumStartX; ++startX) {
-        int payload{};
-        for (int bit = 0; bit < bitCount; ++bit) {
-            int const sampleX = startX + bit * (bitSize + bitGap) + bitSize / 2;
-            auto const pixel = Pixel(pixels, width, sampleX, sampleY);
-            int const luminance = (static_cast<int>(pixel[0]) + pixel[1] + pixel[2]) / 3;
-            if (luminance >= 180) payload |= 1 << bit;
-        }
-        int const gray = payload & ((1 << generationBitCount) - 1);
-        int const checksum = (payload >> generationBitCount) & ((1 << checksumBitCount) - 1);
-        int const expectedChecksum = ((gray * 0x9E37) ^ (gray >> 4) ^ 0xA5) & 0xFF;
-        if (checksum != expectedChecksum) continue;
-        int binary = gray;
-        for (int shifted = gray >> 1; shifted != 0; shifted >>= 1) binary ^= shifted;
-        int const distance = std::abs(startX - expectedStartX);
-        if (distance < bestDistance) {
-            best = binary;
-            bestDistance = distance;
+    bool ambiguous{};
+    for (auto const& expected : expectedStarts) {
+        for (int startY = expected.y - searchRadius; startY <= expected.y + searchRadius; ++startY) {
+            for (int startX = expected.x - searchRadius; startX <= expected.x + searchRadius; ++startX) {
+                if (startX < client.left || startY < client.top ||
+                    startX + stripWidth > client.right || startY + bitSize > client.bottom)
+                    continue;
+                int markerPreamble{};
+                bool valid = true;
+                for (int bit = 0; bit < preambleBitCount; ++bit) {
+                    auto const value = readSolidBit(startX, startY, bit);
+                    if (!value) { valid = false; break; }
+                    markerPreamble |= *value << bit;
+                }
+                if (!valid || markerPreamble != preamble) continue;
+                int payload{};
+                for (int bit = preambleBitCount; bit < bitCount; ++bit) {
+                    auto const value = readSolidBit(startX, startY, bit);
+                    if (!value) { valid = false; break; }
+                    payload |= *value << (bit - preambleBitCount);
+                }
+                if (!valid) continue;
+                int const gray = payload & ((1 << generationBitCount) - 1);
+                int const checksum = (payload >> generationBitCount) & ((1 << checksumBitCount) - 1);
+                int const expectedChecksum = ((gray * 0x9E37) ^ (gray >> 4) ^ 0xA5) & 0xFF;
+                if (checksum != expectedChecksum) continue;
+                int binary = gray;
+                for (int shifted = gray >> 1; shifted != 0; shifted >>= 1) binary ^= shifted;
+                int const distance = std::abs(startX - expected.x) + std::abs(startY - expected.y);
+                if (distance < bestDistance) {
+                    best = binary;
+                    bestDistance = distance;
+                    ambiguous = false;
+                } else if (distance == bestDistance && best && *best != binary) {
+                    ambiguous = true;
+                }
+            }
         }
     }
-    return best;
+    return ambiguous ? std::nullopt : best;
 }
 
 RECT CaptureClientRect(HWND hwnd, RECT const& frameBounds, int width, int height) {
@@ -750,7 +804,10 @@ std::optional<std::pair<int, int>> TitleBounds(
         for (int x = left; x <= right; ++x) {
             auto pixel = Pixel(pixels, width, x, y);
             int const b = pixel[0], g = pixel[1], r = pixel[2];
-            if (r > 145 && g > 135 && b > 155) {
+            // The app title is light lavender. Requiring blue-channel
+            // separation excludes the pure black/white frame-ID stripe and
+            // white uncovered pixels from the glyph bounds.
+            if (r > 145 && g > 135 && b > 155 && b - r >= 5 && b - g >= 5) {
                 minX = std::min(minX, x); maxX = std::max(maxX, x);
                 minY = std::min(minY, y); maxY = std::max(maxY, y);
             }
@@ -1051,10 +1108,12 @@ private:
                 int const appSearchRight = std::min(slot.width, static_cast<int>(client.right) + searchPadding);
                 int appLeft = -1, appRight = -1;
                 for (int x = appSearchLeft; x < appSearchRight; ++x) {
-                        if (IsAppBarFill(Pixel(pixels, slot.width, x, middle))) { appLeft = x; break; }
+                        auto const pixel = Pixel(pixels, slot.width, x, middle);
+                        if (IsPurple(pixel) || IsAppBarFill(pixel)) { appLeft = x; break; }
                 }
                 for (int x = appSearchRight - 1; x >= appSearchLeft; --x) {
-                        if (IsAppBarFill(Pixel(pixels, slot.width, x, middle))) { appRight = x; break; }
+                        auto const pixel = Pixel(pixels, slot.width, x, middle);
+                        if (IsPurple(pixel) || IsAppBarFill(pixel)) { appRight = x; break; }
                 }
                 // Callback-time HWND geometry may be newer than the WGC
                 // compositor frame. Recover the native visual extent from the
@@ -1342,10 +1401,12 @@ private:
                         localClient.top,
                         std::max(localClient.top, localClient.bottom - 1));
                         for (int x = localClient.left; x < localClient.right; ++x) {
-                            if (IsAppBarFill(Pixel(pixels, width, x, middle))) { leftGap = x - localClient.left; break; }
+                            auto const pixel = Pixel(pixels, width, x, middle);
+                            if (IsPurple(pixel) || IsAppBarFill(pixel)) { leftGap = x - localClient.left; break; }
                         }
                         for (int x = localClient.right - 1; x >= localClient.left; --x) {
-                            if (IsAppBarFill(Pixel(pixels, width, x, middle))) { rightGap = localClient.right - 1 - x; break; }
+                            auto const pixel = Pixel(pixels, width, x, middle);
+                            if (IsPurple(pixel) || IsAppBarFill(pixel)) { rightGap = localClient.right - 1 - x; break; }
                         }
                     }
                 }

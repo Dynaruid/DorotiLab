@@ -204,14 +204,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     if (ShouldWriteDiagnostics())
                         Console.Error.WriteLine("doroti.windows.experimental-acrylic=content-island-attach-start");
                     acrylic.ApplySystemBrightness((Brightness)native.InitialPlatformBrightness);
-                    var contentBridgeHwnd = acrylic.AttachWindow(native.TopLevelHwnd);
-                    var setCompositionChild =
-                        (delegate* unmanaged[Cdecl]<nint, nint, uint>)native.SetCompositionChild;
-                    var registrationStatus = setCompositionChild(
-                        native.HostContext, contentBridgeHwnd);
-                    if (registrationStatus != 0)
-                        throw new InvalidOperationException(
-                            $"The native host rejected the Acrylic content bridge HWND ({registrationStatus}).");
+                    acrylic.AttachWindow(native.TopLevelHwnd);
                     if (string.Equals(
                             Environment.GetEnvironmentVariable("DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_OPTION_SMOKE"),
                             "1", StringComparison.Ordinal))
@@ -390,8 +383,6 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 _deviceResetInjected = true;
             }
             var scale = host.ResizeTarget.DeviceScaleX;
-            if (Presenter is WindowsManagedAcrylicCompositionPresenter acrylicPresenter)
-                acrylicPresenter.SetRasterizationScale(scale);
             var dpiContextChanged = _presenterScale > 0 && _presenterScale != scale;
             if (dpiContextChanged)
             {
@@ -411,7 +402,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 movePresenter.ResetWindowSurfaceAfterInteractiveMove();
             }
             var windowSurfaceChanged = Presenter.Width != width || Presenter.Height != height;
-            if (windowSurfaceChanged && !stableMoveRefresh)
+            if (windowSurfaceChanged && !stableMoveRefresh &&
+                Presenter is not WindowsManagedAcrylicCompositionPresenter)
                 renderer.InvalidateWindowSurfaceResources();
             if (!Presenter.EnsureTarget(host.ChildHwnd, width, height))
             {
@@ -509,19 +501,33 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         {
             if (resizeGeneration <= 0 || width <= 0 || height <= 0) return;
             var markerScale = Math.Max(1d, scale);
-            var bitSize = Math.Max(4, checked((int)Math.Round(7 * markerScale)));
+            // Keep the diagnostic stripe below half of the minimum client
+            // width. The visual oracle samples the app bar by row; the old
+            // 7-DIP cells covered most of a compact window and split that
+            // otherwise continuous fill into two false segments.
+            var bitSize = Math.Max(4, checked((int)Math.Round(4 * markerScale)));
             var bitGap = Math.Max(1, checked((int)Math.Round(markerScale)));
+            const int preambleBitCount = 4;
+            const int preamble = 0b1101;
             const int generationBitCount = 12;
             const int checksumBitCount = 8;
-            const int bitCount = generationBitCount + checksumBitCount;
+            const int bitCount = preambleBitCount + generationBitCount + checksumBitCount;
             var stripWidth = bitCount * bitSize + (bitCount - 1) * bitGap;
-            var startX = width - stripWidth - Math.Max(4, checked((int)Math.Round(4 * markerScale)));
-            var startY = Math.Max(1, checked((int)Math.Round(5 * markerScale)));
+            var horizontalMargin = Math.Max(4, checked((int)Math.Round(4 * markerScale)));
+            var verticalMargin = Math.Max(1, checked((int)Math.Round(5 * markerScale)));
+            var corner = Environment.GetEnvironmentVariable(
+                "DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_FRAME_MARKER_CORNER") ?? "TopRight";
+            var left = corner.EndsWith("Left", StringComparison.OrdinalIgnoreCase);
+            var bottom = corner.StartsWith("Bottom", StringComparison.OrdinalIgnoreCase);
+            var startX = left ? horizontalMargin : width - stripWidth - horizontalMargin;
+            var startY = bottom ? height - bitSize - verticalMargin : verticalMargin;
             if (startX < 0 || startY + bitSize > height) return;
             var binary = checked((int)(resizeGeneration & 0xFFF));
             var gray = binary ^ (binary >> 1);
             var checksum = ((gray * 0x9E37) ^ (gray >> 4) ^ 0xA5) & 0xFF;
-            var payload = gray | (checksum << generationBitCount);
+            var payload = preamble |
+                (gray << preambleBitCount) |
+                (checksum << (preambleBitCount + generationBitCount));
             using var paint = new SKPaint { IsAntialias = false };
             for (var bit = 0; bit < bitCount; bit++)
             {

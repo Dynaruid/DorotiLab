@@ -68,6 +68,23 @@ DOROTI_WINDOWS_ACRYLIC_API int32_t DOROTI_WINDOWS_ACRYLIC_CALL
 doroti_windows_acrylic_present_v1(
     void* context, uint32_t slot_index, uint32_t width, uint32_t height,
     uint64_t tag, uint64_t* present_id, uint64_t* retiring_fence_value);
+DOROTI_WINDOWS_ACRYLIC_API int32_t DOROTI_WINDOWS_ACRYLIC_CALL
+doroti_windows_acrylic_present_positioned_v1(
+    void* context, uint32_t slot_index, uint32_t width, uint32_t height,
+    float offset_x, float offset_y, uint64_t tag,
+    uint64_t* present_id, uint64_t* retiring_fence_value);
+DOROTI_WINDOWS_ACRYLIC_API int32_t DOROTI_WINDOWS_ACRYLIC_CALL
+doroti_windows_acrylic_present_cropped_v1(
+    void* context, uint32_t slot_index,
+    uint32_t source_x, uint32_t source_y, uint32_t width, uint32_t height,
+    uint64_t tag, uint64_t* present_id, uint64_t* retiring_fence_value);
+DOROTI_WINDOWS_ACRYLIC_API int32_t DOROTI_WINDOWS_ACRYLIC_CALL
+doroti_windows_acrylic_crop_v1(
+    void* context, uint32_t source_x, uint32_t source_y,
+    uint32_t width, uint32_t height, uint64_t tag);
+DOROTI_WINDOWS_ACRYLIC_API int32_t DOROTI_WINDOWS_ACRYLIC_CALL
+doroti_windows_acrylic_place_v1(
+    void* context, float offset_x, float offset_y, uint64_t tag);
 
 #ifdef __cplusplus
 }

@@ -18,8 +18,9 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
     internal const string RuntimeChannel = "doroti/windows/experimental-acrylic";
     internal const int LogicalEdgeBudget = 6;
     internal const int PhysicalEdgeBudget = 12;
-    internal const int CompositionChildOverscanPhysicalPixels = 256;
+    private const int GuardBandPixels = PhysicalEdgeBudget;
     private const int BufferCapacityQuantum = 256;
+    private const int MaximumRetainedCapacityAreaRatio = 4;
     private const uint BufferAvailabilityWaitMilliseconds = 17;
     private const uint WaitObject0 = 0;
 
@@ -59,6 +60,7 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
 
     private readonly bool _diagnosticsEnabled;
     private readonly object _optionGate = new();
+    private readonly object _viewportGate = new();
     private readonly Slot[] _slots = [new(), new(), new()];
     private WindowBackdropOptions _options;
     private Brightness _systemBrightness;
@@ -82,12 +84,22 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
     private bool _resetPending;
     private bool _disposed;
     private int _selectedSlot = -1;
-    private float _selectedScale = 1;
-    private long _selectedViewportRevision;
     private long _viewportRevision;
-    private int _lastPresentedWidth;
-    private int _lastPresentedHeight;
-    private double _rasterizationScale = 1;
+    private int _viewportWidth;
+    private int _viewportHeight;
+    private int _presentedWidth;
+    private int _presentedHeight;
+    private int _presentedCapacityWidth;
+    private int _presentedCapacityHeight;
+    private float _placedOffsetX;
+    private float _placedOffsetY;
+    private int _placedWidth;
+    private int _placedHeight;
+    private nint _topLevelWindow;
+    private ClientScreenBounds _lastClientBounds;
+    private bool _hasClientBounds;
+    private bool _anchorRight;
+    private bool _anchorBottom;
     private ulong _presentTag;
     private ulong _availableReuseCount;
     private ulong _unavailableSkipCount;
@@ -127,7 +139,8 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
     internal override string RuntimeEffectsBackend => DorotiSkiaRuntimeEffects.WindowsAngleEglBackend;
     internal override string DiagnosticCoverage =>
         "experimental Acrylic, same-device ANGLE D3D11 texture import, premultiplied Composition Swapchain, " +
-        "three-slot IPresentationBuffer availability, no CPU copy, 16 ms interactive terminal wait, exit exact DwmFlush, " +
+        "three-slot IPresentationBuffer availability, no CPU copy, nonblocking interactive resize, raster-thread exact DwmFlush, " +
+        "single-owner atomic raster commits, transparent guard crop, unstretched 1:1 retained content, ResizeContentToParentWindow, " +
         "6 logical/12 physical active-edge budget";
     internal override int Width { get; set; }
     internal override int Height { get; set; }
@@ -145,7 +158,7 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
     internal override ulong OperationalDebugWarningCount { get; set; }
     internal override string AdapterDescription { get; set; } = "uninitialized";
 
-    internal nint AttachWindow(nint topLevelWindow)
+    internal void AttachWindow(nint topLevelWindow)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (topLevelWindow == 0) throw new ArgumentOutOfRangeException(nameof(topLevelWindow));
@@ -172,7 +185,10 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
             // Keep the ContentIsland coordinate space 1:1 with that target;
             // framework layout continues to use the separately published DPI.
             bridge.OverrideScale = 1;
-            bridge.ResizePolicy = ContentSizePolicy.None;
+            // Let the site bridge be the single HWND geometry owner. Combining
+            // this policy with native SetWindowPos calls creates two resize
+            // timelines and exposes the parent on top/left growth.
+            bridge.ResizePolicy = ContentSizePolicy.ResizeContentToParentWindow;
             bridge.Disable();
             bridge.Connect(_island);
             bridge.Show();
@@ -190,7 +206,7 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
         _backdropTargetAdded = _scene.BackdropTargetAdded;
         if (!_contentIslandConnected || !_backdropTargetAdded)
             throw new InvalidOperationException("The Acrylic ContentIsland/backdrop target did not connect.");
-        return Microsoft.UI.Win32Interop.GetWindowFromWindowId(_bridge.WindowId);
+        _topLevelWindow = topLevelWindow;
     }
 
     private ContainerVisual? _compositionRoot;
@@ -223,13 +239,6 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
         _composition.Invoke(() => _scene.Apply(_options, _systemBrightness));
     }
 
-    internal void SetRasterizationScale(double scale)
-    {
-        if (!double.IsFinite(scale) || scale <= 0)
-            throw new ArgumentOutOfRangeException(nameof(scale));
-        Volatile.Write(ref _rasterizationScale, scale);
-    }
-
     internal void ResizeViewport(int width, int height, double scale)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -239,11 +248,17 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
             throw new ArgumentOutOfRangeException(nameof(scale));
         if (_scene is null)
             throw new InvalidOperationException("The Acrylic scene is not attached.");
-        Interlocked.Increment(ref _viewportRevision);
-        _scene.PrepareViewport(
-            width, height,
-            Volatile.Read(ref _lastPresentedWidth),
-            Volatile.Read(ref _lastPresentedHeight));
+        lock (_viewportGate)
+        {
+            // Publish the shell extent before changing the visual tree. The
+            // raster lane may finish a frame for a slightly older extent, but
+            // it can commit that frame only within the explicit edge budget.
+            _viewportRevision++;
+            _viewportWidth = width;
+            _viewportHeight = height;
+            UpdateResizeAnchors();
+            _scene.PrepareViewport(width, height, _anchorRight, _anchorBottom);
+        }
     }
 
     internal ValueTask<ReadOnlyMemory<byte>?> HandleRuntimeMessageAsync(
@@ -329,7 +344,14 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
             _resetPending = false;
         }
 
-        var scale = (float)Math.Max(1d, Volatile.Read(ref _rasterizationScale));
+        if (!IsViewportWithinBudget(width, height))
+        {
+            // Keep the previous buffer aligned when this queued paint request
+            // has already fallen outside the bounded-stale admission window.
+            // Successful callbacks commit exactly once below.
+            PlaceRetainedSurface();
+            return false;
+        }
 
         _selectedSlot = SelectAvailableSlot();
         if (_selectedSlot < 0 && WaitForAnyAvailableSlot())
@@ -337,25 +359,29 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
         if (_selectedSlot < 0)
         {
             _unavailableSkipCount++;
+            PlaceRetainedSurface();
             return false;
         }
         var slot = _slots[_selectedSlot];
-        if (slot.Registered && slot.CapacityWidth >= width && slot.CapacityHeight >= height)
+        var capacityWidth = checked(RoundBufferCapacity(width) + GuardBandPixels * 2);
+        var capacityHeight = checked(RoundBufferCapacity(height) + GuardBandPixels * 2);
+        if (CanReuseCapacity(slot, width, height, capacityWidth, capacityHeight))
         {
             _availableReuseCount++;
         }
         else
         {
-            ReplaceSlot(
-                _selectedSlot,
-                RoundBufferCapacity(width),
-                RoundBufferCapacity(height));
+            ReplaceSlot(_selectedSlot, capacityWidth, capacityHeight);
             if (Width != 0 && (Width != width || Height != height)) ResizeBuffersCount++;
         }
         slot.Width = width;
         slot.Height = height;
-        _selectedScale = scale;
-        _selectedViewportRevision = Volatile.Read(ref _viewportRevision);
+        if (!IsViewportWithinBudget(width, height))
+        {
+            _selectedSlot = -1;
+            PlaceRetainedSurface();
+            return false;
+        }
         Width = width;
         Height = height;
         return true;
@@ -372,52 +398,71 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
         if (!slot.Registered || slot.Texture == 0)
             throw new InvalidOperationException("The admitted Acrylic slot has no texture.");
 
-        var eglSurface = CreateImportedSurface(
-            slot.Texture, slot.CapacityWidth, slot.CapacityHeight);
+        slot.ImportedSurface = slot.ImportedSurface != 0
+            ? slot.ImportedSurface
+            : CreateImportedSurface(slot.Texture, slot.CapacityWidth, slot.CapacityHeight);
         var madeCurrent = false;
         try
         {
-            if (EglMakeCurrent(_display, eglSurface, eglSurface, _eglContext) == EglFalse)
+            if (EglMakeCurrent(
+                    _display, slot.ImportedSurface, slot.ImportedSurface, _eglContext) == EglFalse)
                 ThrowEgl("eglMakeCurrent(Acrylic texture)");
             madeCurrent = true;
             EnsureSkiaContext();
-            GlGetIntegerv(GlSamples, out var samples);
-            GlGetIntegerv(GlStencilBits, out var stencilBits);
-            ThrowIfGlErrors("Acrylic default framebuffer query");
-            using var target = new GRBackendRenderTarget(
-                slot.CapacityWidth, slot.CapacityHeight,
-                Math.Max(0, samples), Math.Max(0, stencilBits),
-                new GRGlFramebufferInfo(0, GlRgba8));
-            using var surface = SKSurface.Create(
-                // The imported D3D11 texture is consumed by Composition with
-                // a top-left origin. Unlike an EGL window surface, treating
-                // this FBO as bottom-left stores the complete scene inverted.
-                _context!, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888)
-                ?? throw new InvalidOperationException("Skia could not wrap the Acrylic texture framebuffer.");
+            var context = _context!;
+            // eglMakeCurrent changes what default framebuffer 0 denotes
+            // outside Skia's state tracker. Invalidate cached GL state before
+            // using the per-slot wrapper for the newly current EGL surface.
+            context.ResetContext(GRGlBackendState.All);
+            EnsureSlotRenderTarget(slot);
+            var surface = slot.SkiaSurface!;
             var result = paint(surface);
-            if (!shouldPresent(result)) return result;
+            if (!IsViewportWithinBudget(slot.Width, slot.Height) || !shouldPresent(result))
+                return RetainAndReturn(result, ref madeCurrent);
             surface.Canvas.Flush();
-            _context!.Flush(surface);
-            _context.Submit(false);
+            context.Flush(surface);
+            context.Submit(false);
             GlFlush();
             GpuSubmitCount++;
             ThrowIfGlErrors("Acrylic Skia submit");
-            if (!shouldPresent(result)) return result;
+            if (!IsViewportWithinBudget(slot.Width, slot.Height) || !shouldPresent(result))
+                return RetainAndReturn(result, ref madeCurrent);
             UnbindImportedSurface(ref madeCurrent);
-            var presentResult = Present(
-                _presentationContext, checked((uint)_selectedSlot),
-                checked((uint)slot.Width), checked((uint)slot.Height), ++_presentTag,
-                out _, out _);
-            if (presentResult < 0) Marshal.ThrowExceptionForHR(presentResult);
-            Volatile.Write(ref _lastPresentedWidth, slot.Width);
-            Volatile.Write(ref _lastPresentedHeight, slot.Height);
-            var scale = _selectedScale;
-            var viewportRevision = _selectedViewportRevision;
-            _composition!.Post(() =>
+            var committed = false;
+            lock (_viewportGate)
             {
-                if (viewportRevision == Volatile.Read(ref _viewportRevision))
-                    _scene!.CommitExactScale();
-            });
+                // Serialize the final bounded-stale check with one atomic
+                // SetBuffer/SourceRect/transform Present. The transform pins
+                // the inactive edges while leaving at most the declared
+                // 12-physical-pixel discrepancy at the dragged edges.
+                if (IsWithinEdgeBudget(
+                        _viewportWidth, _viewportHeight, slot.Width, slot.Height) &&
+                    TryGetSourceRect(
+                        _viewportWidth, _viewportHeight,
+                        slot.Width, slot.Height,
+                        slot.CapacityWidth, slot.CapacityHeight,
+                        _anchorRight, _anchorBottom,
+                        out var sourceX, out var sourceY))
+                {
+                    var presentResult = PresentCropped(
+                        _presentationContext, checked((uint)_selectedSlot),
+                        checked((uint)sourceX), checked((uint)sourceY),
+                        checked((uint)_viewportWidth), checked((uint)_viewportHeight),
+                        ++_presentTag,
+                        out _, out _);
+                    if (presentResult < 0) Marshal.ThrowExceptionForHR(presentResult);
+                    _presentedWidth = slot.Width;
+                    _presentedHeight = slot.Height;
+                    _presentedCapacityWidth = slot.CapacityWidth;
+                    _presentedCapacityHeight = slot.CapacityHeight;
+                    _placedOffsetX = sourceX;
+                    _placedOffsetY = sourceY;
+                    _placedWidth = _viewportWidth;
+                    _placedHeight = _viewportHeight;
+                    committed = true;
+                }
+            }
+            if (!committed) return RetainAndReturn(result, ref madeCurrent);
             PresentCount++;
             LastPresentSucceeded = true;
             return result;
@@ -425,7 +470,6 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
         finally
         {
             if (madeCurrent) UnbindImportedSurface(ref madeCurrent);
-            EglDestroySurface(_display, eglSurface);
             _selectedSlot = -1;
         }
     }
@@ -568,10 +612,25 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
 
     private void ReleaseDevice()
     {
-        foreach (var slot in _slots) slot.Release();
+        foreach (var slot in _slots)
+        {
+            // Release Skia and EGL wrappers before dropping the texture COM
+            // reference and before the Presentation manager releases buffers.
+            ReleaseSlotRenderTarget(slot);
+            slot.Release();
+        }
         Trace("release-slots-pass");
         _selectedSlot = -1;
         Width = Height = 0;
+        lock (_viewportGate)
+        {
+            _presentedWidth = _presentedHeight = 0;
+            _presentedCapacityWidth = _presentedCapacityHeight = 0;
+            _placedOffsetX = _placedOffsetY = 0;
+            _placedWidth = _placedHeight = 0;
+            if (_presentationContext != 0) Destroy(_presentationContext);
+            _presentationContext = _compositionSurfaceHandle = 0;
+        }
         _context?.AbandonContext(false);
         _context?.Dispose();
         Trace("release-skia-context-pass");
@@ -583,9 +642,7 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
         Trace("release-egl-unbind-pass");
         // Presentation buffers must release while ANGLE still owns the D3D11
         // device. The validated P1-CS probe uses this same lifetime order.
-        if (_presentationContext != 0) Destroy(_presentationContext);
         Trace("release-presentation-pass");
-        _presentationContext = _compositionSurfaceHandle = 0;
         if (_eglContext != 0) EglDestroyContext(_display, _eglContext);
         Trace("release-egl-context-pass");
         if (_display != 0) EglTerminate(_display);
@@ -609,8 +666,8 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
     private bool WaitForAnyAvailableSlot()
     {
         // EnsureTarget is called by Doroti's raster worker. The platform-side
-        // WM_SIZE handshake waits on this worker, while only the worker waits
-        // directly for a compositor-owned Presentation buffer to retire.
+        // WM_SIZE path never waits; only this worker may briefly wait for a
+        // compositor-owned Presentation buffer to retire.
         nint* handles = stackalloc nint[_slots.Length];
         uint count = 0;
         foreach (var slot in _slots)
@@ -624,9 +681,110 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
         return result >= WaitObject0 && result < WaitObject0 + count;
     }
 
+    internal bool CanPresentViewport(int width, int height) =>
+        IsViewportWithinBudget(width, height);
+
+    private bool IsViewportWithinBudget(int width, int height)
+    {
+        lock (_viewportGate)
+        {
+            return _viewportRevision != 0 &&
+                IsWithinEdgeBudget(_viewportWidth, _viewportHeight, width, height);
+        }
+    }
+
+    private static bool IsWithinEdgeBudget(
+        int viewportWidth, int viewportHeight, int sourceWidth, int sourceHeight) =>
+        Math.Abs((long)viewportWidth - sourceWidth) <= PhysicalEdgeBudget &&
+        Math.Abs((long)viewportHeight - sourceHeight) <= PhysicalEdgeBudget;
+
+    private void UpdateResizeAnchors()
+    {
+        if (_topLevelWindow == 0 || !TryGetClientScreenBounds(_topLevelWindow, out var current))
+            return;
+        if (_hasClientBounds)
+        {
+            var leftTravel = Math.Abs(current.Left - _lastClientBounds.Left);
+            var rightTravel = Math.Abs(current.Right - _lastClientBounds.Right);
+            if (leftTravel > rightTravel + 1) _anchorRight = true;
+            else if (rightTravel > leftTravel + 1) _anchorRight = false;
+
+            var topTravel = Math.Abs(current.Top - _lastClientBounds.Top);
+            var bottomTravel = Math.Abs(current.Bottom - _lastClientBounds.Bottom);
+            if (topTravel > bottomTravel + 1) _anchorBottom = true;
+            else if (bottomTravel > topTravel + 1) _anchorBottom = false;
+        }
+        _lastClientBounds = current;
+        _hasClientBounds = true;
+    }
+
+    private void PlaceRetainedSurface()
+    {
+        lock (_viewportGate)
+        {
+            if (_presentationContext == 0 || _presentedWidth <= 0 || _presentedHeight <= 0)
+                return;
+            if (!TryGetSourceRect(
+                    _viewportWidth, _viewportHeight,
+                    _presentedWidth, _presentedHeight,
+                    _presentedCapacityWidth, _presentedCapacityHeight,
+                    _anchorRight, _anchorBottom,
+                    out var sourceX, out var sourceY))
+                return;
+            if (_placedOffsetX == sourceX && _placedOffsetY == sourceY &&
+                _placedWidth == _viewportWidth && _placedHeight == _viewportHeight)
+                return;
+            var result = Crop(
+                _presentationContext,
+                checked((uint)sourceX), checked((uint)sourceY),
+                checked((uint)_viewportWidth), checked((uint)_viewportHeight),
+                ++_presentTag);
+            if (result < 0) Marshal.ThrowExceptionForHR(result);
+            _placedOffsetX = sourceX;
+            _placedOffsetY = sourceY;
+            _placedWidth = _viewportWidth;
+            _placedHeight = _viewportHeight;
+        }
+    }
+
+    private T RetainAndReturn<T>(T result, ref bool madeCurrent)
+    {
+        UnbindImportedSurface(ref madeCurrent);
+        PlaceRetainedSurface();
+        return result;
+    }
+
+    private static bool TryGetSourceRect(
+        int viewportWidth, int viewportHeight,
+        int sourceWidth, int sourceHeight,
+        int capacityWidth, int capacityHeight,
+        bool anchorRight, bool anchorBottom,
+        out int sourceX, out int sourceY)
+    {
+        sourceX = checked(GuardBandPixels + (anchorRight ? sourceWidth - viewportWidth : 0));
+        sourceY = checked(GuardBandPixels + (anchorBottom ? sourceHeight - viewportHeight : 0));
+        return sourceX >= 0 && sourceY >= 0 &&
+            viewportWidth <= capacityWidth - sourceX &&
+            viewportHeight <= capacityHeight - sourceY;
+    }
+
+    private static bool TryGetClientScreenBounds(nint window, out ClientScreenBounds bounds)
+    {
+        bounds = default;
+        if (!GetClientRect(window, out var client)) return false;
+        var topLeft = new NativePoint { X = client.Left, Y = client.Top };
+        var bottomRight = new NativePoint { X = client.Right, Y = client.Bottom };
+        if (!ClientToScreen(window, ref topLeft) || !ClientToScreen(window, ref bottomRight))
+            return false;
+        bounds = new ClientScreenBounds(
+            topLeft.X, topLeft.Y, bottomRight.X, bottomRight.Y);
+        return true;
+    }
+
     private void ReplaceSlot(int index, int capacityWidth, int capacityHeight)
     {
         var slot = _slots[index];
+        ReleaseSlotRenderTarget(slot);
         slot.ReleaseTextureReference();
         var buffer = new BufferSnapshot { AbiVersion = 1, StructSize = checked((uint)sizeof(BufferSnapshot)) };
         var result = ReplaceBuffer(
@@ -648,17 +806,86 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
     private static int RoundBufferCapacity(int value) =>
         checked(((value + BufferCapacityQuantum - 1) / BufferCapacityQuantum) * BufferCapacityQuantum);
 
+    private static bool CanReuseCapacity(
+        Slot slot,
+        int width,
+        int height,
+        int requestedCapacityWidth,
+        int requestedCapacityHeight)
+    {
+        var innerWidth = slot.CapacityWidth - GuardBandPixels * 2;
+        var innerHeight = slot.CapacityHeight - GuardBandPixels * 2;
+        if (!slot.Registered || innerWidth < width || innerHeight < height)
+            return false;
+        // A large startup surface can otherwise survive a later compact
+        // window forever. Skia clears the complete backend target even though
+        // Presentation samples only the actual source rect, so bound retained
+        // over-allocation with enough hysteresis to avoid resize oscillation.
+        var retainedArea = checked((long)innerWidth * innerHeight);
+        var requestedArea = checked(
+            (long)(requestedCapacityWidth - GuardBandPixels * 2) *
+            (requestedCapacityHeight - GuardBandPixels * 2));
+        return retainedArea <= requestedArea * MaximumRetainedCapacityAreaRatio;
+    }
+
     private nint CreateImportedSurface(nint texture, int width, int height)
     {
+        var innerWidth = checked(width - GuardBandPixels * 2);
+        var innerHeight = checked(height - GuardBandPixels * 2);
         var attributes = new[]
         {
-            EglWidth, width, EglHeight, height,
-            EglTextureOffsetXAngle, 0, EglTextureOffsetYAngle, 0, EglNone,
+            EglWidth, innerWidth, EglHeight, innerHeight,
+            EglTextureOffsetXAngle, GuardBandPixels,
+            EglTextureOffsetYAngle, GuardBandPixels,
+            EglNone,
         };
         var surface = EglCreatePbufferFromClientBuffer(
             _display, EglD3DTextureAngle, texture, _config, attributes);
         if (surface == 0) ThrowEgl("eglCreatePbufferFromClientBuffer(Acrylic texture)");
         return surface;
+    }
+
+    private void EnsureSlotRenderTarget(Slot slot)
+    {
+        if (slot.SkiaSurface is not null) return;
+        if (slot.BackendTarget is not null)
+            throw new InvalidOperationException("The Acrylic slot has a target without a Skia surface.");
+        GlGetIntegerv(GlSamples, out var samples);
+        GlGetIntegerv(GlStencilBits, out var stencilBits);
+        ThrowIfGlErrors("Acrylic default framebuffer query");
+        var target = new GRBackendRenderTarget(
+            checked(slot.CapacityWidth - GuardBandPixels * 2),
+            checked(slot.CapacityHeight - GuardBandPixels * 2),
+            Math.Max(0, samples), Math.Max(0, stencilBits),
+            new GRGlFramebufferInfo(0, GlRgba8));
+        try
+        {
+            var surface = SKSurface.Create(
+                // The imported D3D11 texture is consumed by Composition with
+                // a top-left origin. Unlike an EGL window surface, treating
+                // this FBO as bottom-left stores the complete scene inverted.
+                _context!, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888)
+                ?? throw new InvalidOperationException(
+                    "Skia could not wrap the Acrylic texture framebuffer.");
+            slot.BackendTarget = target;
+            slot.SkiaSurface = surface;
+        }
+        catch
+        {
+            target.Dispose();
+            throw;
+        }
+    }
+
+    private void ReleaseSlotRenderTarget(Slot slot)
+    {
+        slot.SkiaSurface?.Dispose();
+        slot.SkiaSurface = null;
+        slot.BackendTarget?.Dispose();
+        slot.BackendTarget = null;
+        if (slot.ImportedSurface == 0) return;
+        if (_display != 0) EglDestroySurface(_display, slot.ImportedSurface);
+        slot.ImportedSurface = 0;
     }
 
     private void EnsureSkiaContext()
@@ -804,6 +1031,9 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
     {
         internal bool Registered;
         internal nint Texture;
+        internal nint ImportedSurface;
+        internal GRBackendRenderTarget? BackendTarget;
+        internal SKSurface? SkiaSurface;
         internal ulong AvailableEvent;
         internal int Width;
         internal int Height;
@@ -823,6 +1053,25 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
             AvailableEvent = 0;
             Width = Height = CapacityWidth = CapacityHeight = 0;
         }
+    }
+
+    private readonly record struct ClientScreenBounds(
+        int Left, int Top, int Right, int Bottom);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativePoint
+    {
+        internal int X;
+        internal int Y;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativeRect
+    {
+        internal int Left;
+        internal int Top;
+        internal int Right;
+        internal int Bottom;
     }
 
     private sealed record PendingOption(
@@ -923,6 +1172,35 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
     private static partial int Present(
         nint context, uint slotIndex, uint width, uint height, ulong tag,
         out ulong presentId, out ulong retiringFenceValue);
+
+    [LibraryImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_acrylic_present_positioned_v1")]
+    private static partial int PresentPositioned(
+        nint context, uint slotIndex, uint width, uint height,
+        float offsetX, float offsetY, ulong tag,
+        out ulong presentId, out ulong retiringFenceValue);
+
+    [LibraryImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_acrylic_present_cropped_v1")]
+    private static partial int PresentCropped(
+        nint context, uint slotIndex,
+        uint sourceX, uint sourceY, uint width, uint height, ulong tag,
+        out ulong presentId, out ulong retiringFenceValue);
+
+    [LibraryImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_acrylic_crop_v1")]
+    private static partial int Crop(
+        nint context, uint sourceX, uint sourceY,
+        uint width, uint height, ulong tag);
+
+    [LibraryImport(WindowsNativeV1.LibraryName, EntryPoint = "doroti_windows_acrylic_place_v1")]
+    private static partial int Place(
+        nint context, float offsetX, float offsetY, ulong tag);
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool GetClientRect(nint window, out NativeRect rect);
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool ClientToScreen(nint window, ref NativePoint point);
 
     [LibraryImport("kernel32.dll", SetLastError = true)]
     private static partial uint WaitForMultipleObjects(
@@ -1079,9 +1357,7 @@ internal sealed class AcrylicScene : IDisposable
     private readonly Compositor _compositor;
     private readonly ContentIsland _island;
     private readonly ContainerVisual _root;
-    private readonly SpriteVisual _overscan;
     private readonly SpriteVisual _content;
-    private readonly CompositionColorBrush _overscanBrush;
     private readonly DesktopAcrylicController _backdrop;
     private readonly SystemBackdropConfiguration _configuration;
     private ICompositionSurface? _surface;
@@ -1099,15 +1375,7 @@ internal sealed class AcrylicScene : IDisposable
         _compositor = compositor;
         _island = island;
         _root = root;
-        _overscan = compositor.CreateSpriteVisual();
         _content = compositor.CreateSpriteVisual();
-        // A fast top/left drag can expose the retained region for one DWM
-        // interval. Keep that region opaque and close to the scene background
-        // instead of allowing the parent HWND's white default to show through.
-        _overscanBrush = compositor.CreateColorBrush(
-            Windows.UI.Color.FromArgb(255, 15, 13, 22));
-        _overscan.Brush = _overscanBrush;
-        _root.Children.InsertAtBottom(_overscan);
         _root.Children.InsertAtTop(_content);
         _configuration = new SystemBackdropConfiguration { IsInputActive = true };
         _backdrop = new DesktopAcrylicController();
@@ -1127,6 +1395,9 @@ internal sealed class AcrylicScene : IDisposable
         _brush.Stretch = CompositionStretch.None;
         _brush.HorizontalAlignmentRatio = 0;
         _brush.VerticalAlignmentRatio = 0;
+        _brush.Offset = Vector2.Zero;
+        _brush.Scale = Vector2.One;
+        _brush.SnapToPixels = true;
         _content.Brush = _brush;
     }
 
@@ -1159,33 +1430,20 @@ internal sealed class AcrylicScene : IDisposable
     }
 
     internal void PrepareViewport(
-        float width,
-        float height,
-        int sourceWidth,
-        int sourceHeight)
+        float width, float height, bool anchorRight, bool anchorBottom)
     {
         if (_disposed) throw new ObjectDisposedException(GetType().Name);
-        var overscan =
-            WindowsManagedAcrylicCompositionPresenter.CompositionChildOverscanPhysicalPixels;
-        _root.Size = new Vector2(width + overscan, height + overscan);
-        _overscan.Size = _root.Size;
+        _root.Size = new Vector2(width, height);
         _content.Size = new Vector2(width, height);
         if (_brush is null) throw new ObjectDisposedException(GetType().Name);
         _brush.Stretch = CompositionStretch.None;
-        _brush.HorizontalAlignmentRatio = 0;
-        _brush.VerticalAlignmentRatio = 0;
+        // Stretch=None preserves native pixels. Align the retained surface to
+        // the stationary edges while the shell changes the opposite edges;
+        // any not-yet-rastered strip therefore reveals Acrylic instead of
+        // moving/scaling the previous frame or exposing an opaque HWND fill.
+        _brush.HorizontalAlignmentRatio = anchorRight ? 1 : 0;
+        _brush.VerticalAlignmentRatio = anchorBottom ? 1 : 0;
         _brush.Offset = Vector2.Zero;
-        _brush.Scale = sourceWidth > 0 && sourceHeight > 0
-            ? new Vector2(
-                width / sourceWidth,
-                height / sourceHeight)
-            : Vector2.One;
-    }
-
-    internal void CommitExactScale()
-    {
-        if (_disposed || _brush is null) return;
-        _brush.Stretch = CompositionStretch.None;
         _brush.Scale = Vector2.One;
     }
 
@@ -1196,8 +1454,6 @@ internal sealed class AcrylicScene : IDisposable
         _backdrop.RemoveSystemBackdropTarget(_island);
         _backdrop.Dispose();
         _content.Dispose();
-        _overscan.Dispose();
-        _overscanBrush.Dispose();
         _brush?.Dispose();
         if (_surface is IDisposable disposable) disposable.Dispose();
         _surface = null;
@@ -1217,4 +1473,5 @@ internal sealed class AcrylicScene : IDisposable
         try { return WinRT.MarshalInterface<ICompositionSurface>.FromAbi(result); }
         finally { Marshal.Release(result); }
     }
+
 }
