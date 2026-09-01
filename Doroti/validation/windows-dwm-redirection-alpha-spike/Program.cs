@@ -24,11 +24,17 @@ internal sealed class SpikeApplication : IDisposable
     private const uint WmDestroy = 0x0002;
     private const uint WmSize = 0x0005;
     private const uint WmActivate = 0x0006;
+    private const uint WmSetFocus = 0x0007;
     private const uint WmPaint = 0x000F;
     private const uint WmClose = 0x0010;
     private const uint WmEraseBackground = 0x0014;
     private const uint WmSettingChange = 0x001A;
     private const uint WmThemeChanged = 0x031A;
+    private const uint WmSetCursor = 0x0020;
+    private const uint WmKeyDown = 0x0100;
+    private const uint WmMouseMove = 0x0200;
+    private const uint WmLeftButtonDown = 0x0201;
+    private const uint WmNcHitTest = 0x0084;
     private const uint WmQuit = 0x0012;
     private const int DwmwaUseHostBackdropBrush = 17;
     private const int DwmwaSystemBackdropType = 38;
@@ -70,6 +76,11 @@ internal sealed class SpikeApplication : IDisposable
     private int _rootCreateCount;
     private int _setTargetCount;
     private bool _setTargetResult;
+    private int _focusMessageCount;
+    private int _pointerMessageCount;
+    private int _keyboardMessageCount;
+    private int _cursorMessageCount;
+    private int _hitTestResult;
 
     internal SpikeApplication(SpikeOptions options)
     {
@@ -78,7 +89,8 @@ internal sealed class SpikeApplication : IDisposable
         _options = options;
         if (!Native.SetProcessDpiAwarenessContext(new nint(-4)) && Marshal.GetLastWin32Error() != 5)
             throw new InvalidOperationException($"SetProcessDpiAwarenessContext failed: {Marshal.GetLastWin32Error()}.");
-        Native.RegisterWindowClass(TopClass, RootedWindowProcedure, classStyle: 0);
+        Native.RegisterWindowClass(TopClass, RootedWindowProcedure,
+            classStyle: _options.TopDirect ? CsOwnDc : 0);
         Native.RegisterWindowClass(ChildClass, RootedWindowProcedure, classStyle: CsOwnDc);
         _compositionDispatcher = new CompositionDispatcher();
         _presenter = new WindowsManagedAngleEglPresenter(enableDiagnostics: true);
@@ -95,6 +107,7 @@ internal sealed class SpikeApplication : IDisposable
         if (_options.Automated)
         {
             RunAutomatedResizeMatrix();
+            RunAutomatedInputProbe();
             if (_options.Arm == SpikeArm.Controller) RunControllerContract();
         }
 
@@ -104,6 +117,8 @@ internal sealed class SpikeApplication : IDisposable
         while (!_quit && DateTime.UtcNow < deadline)
         {
             PumpMessages();
+            if (_options.RuntimeChurn && _options.Arm == SpikeArm.Controller)
+                RunRuntimeChurnTick();
             Thread.Sleep(1);
         }
 
@@ -114,8 +129,11 @@ internal sealed class SpikeApplication : IDisposable
     private void CreateWindows()
     {
         _topWindow = Native.CreateWindow(
-            0, TopClass, $"Doroti Acrylic A1 - {_options.Arm}", WsOverlappedWindow,
+            0, TopClass,
+            $"Doroti Acrylic {(_options.TopDirect ? "P0.5" : "A1")} - {_options.Arm}",
+            WsOverlappedWindow | WsVisible,
             160, 120, 900, 620, 0);
+        if (_options.TopDirect) return;
         _childWindow = Native.CreateWindow(
             0, ChildClass, string.Empty, WsChild | WsVisible,
             0, 0, 1, 1, _topWindow);
@@ -223,17 +241,55 @@ internal sealed class SpikeApplication : IDisposable
 
     private void RunAutomatedResizeMatrix()
     {
-        var sizes = new (int Width, int Height)[]
+        var seedSizes = new (int Width, int Height)[]
         {
             (700, 500), (840, 600), (500, 300), (901, 541),
             (640, 720), (1024, 640), (777, 433), (900, 620),
         };
-        foreach (var size in sizes)
+        var resizeCount = _options.TopDirect ? _options.ResizeCount : seedSizes.Length;
+        for (var index = 0; index < resizeCount; index++)
         {
+            var seed = seedSizes[index % seedSizes.Length];
+            var phase = (index / seedSizes.Length) % 4;
+            var delta = index % 37;
+            var size = phase switch
+            {
+                0 => (Width: seed.Width + delta, Height: seed.Height + delta / 2),
+                1 => (Width: seed.Width - delta, Height: seed.Height - delta / 2),
+                2 => (Width: seed.Width + delta, Height: seed.Height - delta / 2),
+                _ => (Width: seed.Width - delta, Height: seed.Height + delta / 2),
+            };
             Native.SetWindowPos(_topWindow, 0, 0, 0, size.Width, size.Height,
                 SwpNoZOrder | SwpNoActivate);
             PumpMessages();
         }
+    }
+
+    private void RunAutomatedInputProbe()
+    {
+        Native.SendMessage(_topWindow, WmSetFocus, 0, 0);
+        Native.SendMessage(_topWindow, WmMouseMove, 0, 0);
+        Native.SendMessage(_topWindow, WmLeftButtonDown, 0, 0);
+        Native.SendMessage(_topWindow, WmKeyDown, 0x41, 0);
+        Native.SendMessage(_topWindow, WmSetCursor, (nuint)_topWindow, 1);
+        _hitTestResult = checked((int)Native.SendMessage(_topWindow, WmNcHitTest, 0, 0));
+    }
+
+    private DateTime _nextRuntimeChurn = DateTime.MinValue;
+    private int _runtimeChurnIndex;
+
+    private void RunRuntimeChurnTick()
+    {
+        if (DateTime.UtcNow < _nextRuntimeChurn || _updates is null) return;
+        var profiles = new[]
+        {
+            AcrylicSnapshot.SystemDefault,
+            AcrylicSnapshot.Base,
+            AcrylicSnapshot.Thin,
+            AcrylicSnapshot.Custom,
+        };
+        _ = _updates.Request(profiles[_runtimeChurnIndex++ % profiles.Length], "visible-churn");
+        _nextRuntimeChurn = DateTime.UtcNow.AddMilliseconds(80);
     }
 
     private void RunControllerContract()
@@ -317,8 +373,28 @@ internal sealed class SpikeApplication : IDisposable
             switch (message)
             {
                 case WmSize:
-                    if (_childWindow != 0) ResizeChildToClient();
+                    if (_options.TopDirect) RenderExact("top-wm-size");
+                    else if (_childWindow != 0) ResizeChildToClient();
                     return 0;
+                case WmPaint when _options.TopDirect:
+                    Native.ValidateRect(window, 0);
+                    RenderExact("top-wm-paint");
+                    return 0;
+                case WmEraseBackground when _options.TopDirect:
+                    return 1;
+                case WmSetFocus:
+                    _focusMessageCount++;
+                    break;
+                case WmMouseMove:
+                case WmLeftButtonDown:
+                    _pointerMessageCount++;
+                    break;
+                case WmKeyDown:
+                    _keyboardMessageCount++;
+                    break;
+                case WmSetCursor:
+                    _cursorMessageCount++;
+                    break;
                 case WmActivate:
                     _inputActive = (wParam & 0xffff) != 0;
                     if (_updates?.Requested is { } activeSnapshot)
@@ -370,7 +446,8 @@ internal sealed class SpikeApplication : IDisposable
 
     private void RenderExact(string reason)
     {
-        if (_childWindow == 0 || !Native.GetClientRect(_childWindow, out var rect)) return;
+        var renderWindow = _options.TopDirect ? _topWindow : _childWindow;
+        if (renderWindow == 0 || !Native.GetClientRect(renderWindow, out var rect)) return;
         var width = rect.Right - rect.Left;
         var height = rect.Bottom - rect.Top;
         if (width <= 0 || height <= 0) return;
@@ -378,14 +455,15 @@ internal sealed class SpikeApplication : IDisposable
         var started = Stopwatch.GetTimestamp();
         try
         {
-            _presenter.EnsureTarget(_childWindow, width, height);
+            _presenter.EnsureTarget(renderWindow, width, height);
             _presenter.RenderAndPresent(
                 surface =>
                 {
                     if (surface.Canvas.DeviceClipBounds.Width != width ||
                         surface.Canvas.DeviceClipBounds.Height != height)
                         _exactMismatchCount++;
-                    DrawAlphaGrid(surface.Canvas, width, height, generation);
+                    DrawAlphaGrid(surface.Canvas, width, height, generation,
+                        Native.GetDpiForWindow(renderWindow));
                     return true;
                 },
                 static value => value);
@@ -403,7 +481,8 @@ internal sealed class SpikeApplication : IDisposable
         }
     }
 
-    private static void DrawAlphaGrid(SKCanvas canvas, int width, int height, ulong generation)
+    private static void DrawAlphaGrid(
+        SKCanvas canvas, int width, int height, ulong generation, uint dpi)
     {
         canvas.Clear(SKColors.Transparent);
         using var paint = new SKPaint { IsAntialias = false, BlendMode = SKBlendMode.Src };
@@ -430,6 +509,21 @@ internal sealed class SpikeApplication : IDisposable
             Math.Max(12, width / 25), Math.Max(8, height / 40), paint);
         paint.Color = new SKColor((byte)generation, (byte)(generation >> 8), 0, 255);
         canvas.DrawRect(width / 2f - 8, height / 2f - 8, 16, 16, paint);
+
+        var scale = Math.Max(1f, dpi / 96f);
+        var bitSize = Math.Max(4, (int)MathF.Round(7 * scale));
+        var bitGap = Math.Max(1, (int)MathF.Round(scale));
+        const int bitCount = 12;
+        var stripWidth = bitCount * bitSize + (bitCount - 1) * bitGap;
+        var startX = width - stripWidth - Math.Max(4, (int)MathF.Round(4 * scale));
+        var startY = Math.Max(1, (int)MathF.Round(5 * scale));
+        var binary = checked((int)(generation & 0xFFF));
+        var gray = binary ^ (binary >> 1);
+        for (var bit = 0; bit < bitCount; bit++)
+        {
+            paint.Color = (gray & (1 << bit)) != 0 ? SKColors.White : SKColors.Black;
+            canvas.DrawRect(startX + bit * (bitSize + bitGap), startY, bitSize, bitSize, paint);
+        }
     }
 
     private SpikeReport CreateReport()
@@ -448,19 +542,24 @@ internal sealed class SpikeApplication : IDisposable
                    _presenter.PresentCount == _presenter.GpuCopyCount &&
                    _presenter.OperationalDebugErrorCount == 0 &&
                    _dwm.Failures.Count == 0 &&
-                   (_options.Arm != SpikeArm.Controller ||
-                    (_setTargetResult && _setTargetCount == 1 && _controllerCreateCount == 1 &&
-                     _targetCreateCount == 1 && _rootCreateCount == 1 &&
-                     updates is { DuplicateTerminalCount: 0, MissingTerminalCount: 0,
-                                  MaxPendingDepth: <= 1, InvalidRejectedCount: 7 }));
+                    (_options.Arm != SpikeArm.Controller ||
+                     (_setTargetResult && _setTargetCount == 1 && _controllerCreateCount == 1 &&
+                      _targetCreateCount == 1 && _rootCreateCount == 1 &&
+                      updates is { DuplicateTerminalCount: 0, MissingTerminalCount: 0,
+                                   MaxPendingDepth: <= 1 } &&
+                      (!_options.Automated || updates.InvalidRejectedCount == 7)));
         return new SpikeReport(
-            "doroti.windows-dwm-redirection-alpha-a1/v1",
+            _options.TopDirect
+                ? "doroti.windows-acrylic-top-hwnd-p05/v1"
+                : "doroti.windows-dwm-redirection-alpha-a1/v1",
             pass ? "PASS" : "FAIL",
             _options.Arm.ToString().ToLowerInvariant(),
             _options.Alpha.ToString().ToLowerInvariant(),
+            _options.TopDirect ? "top-hwnd-direct" : "top-child",
             Environment.OSVersion.VersionString,
             ReadRegistryString(Registry.LocalMachine,
                 @"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuildNumber"),
+            Native.GetDpiForWindow(_topWindow),
             RuntimeInformation.ProcessArchitecture.ToString(),
             compositionEnabled,
             ReadTransparencyPolicy(),
@@ -489,6 +588,16 @@ internal sealed class SpikeApplication : IDisposable
             _exactMismatchCount,
             _renderFailureCount,
             _frames.Count,
+            Native.IsWindowVisible(_topWindow) ? 1 +
+                (_childWindow != 0 && Native.IsWindowVisible(_childWindow) ? 1 : 0) : 0,
+            _childWindow != 0 && Native.IsWindowVisible(_childWindow) ? 1 : 0,
+            _childWindow == 0 ? 0 : 1,
+            1,
+            _focusMessageCount,
+            _pointerMessageCount,
+            _keyboardMessageCount,
+            _cursorMessageCount,
+            _hitTestResult,
             _controllerCreateCount,
             _targetCreateCount,
             _rootCreateCount,
@@ -502,7 +611,7 @@ internal sealed class SpikeApplication : IDisposable
             _frames,
             "notVerified",
             "notVerified",
-            "Automated API, HWND ownership, fixed-size ANGLE, DWM HRESULT, option ordering, and terminal evidence only. Acrylic pixels, Windows Graphics Capture exactness, and physical border-drag quality are separate gates.");
+            "Automated API, HWND ownership, fixed-size ANGLE, DWM HRESULT, option ordering, frame marker, input-message, and terminal evidence only. Windows Graphics Capture and physical border-drag quality are separate gates.");
     }
 
     private void WriteReadyFile()
@@ -514,7 +623,7 @@ internal sealed class SpikeApplication : IDisposable
             schema = "doroti.windows-dwm-redirection-alpha-ready/v1",
             processId = Environment.ProcessId,
             topHwnd = $"0x{_topWindow:X}",
-            childHwnd = $"0x{_childWindow:X}",
+            childHwnd = _childWindow == 0 ? null : $"0x{_childWindow:X}",
             childClass = ChildClass,
             arm = _options.Arm.ToString().ToLowerInvariant(),
             alpha = _options.Alpha.ToString().ToLowerInvariant(),
@@ -953,6 +1062,9 @@ internal sealed record SpikeOptions(
     AlphaTarget Alpha,
     RequestedTheme Theme,
     AcrylicSnapshot InitialSnapshot,
+    bool TopDirect,
+    bool RuntimeChurn,
+    int ResizeCount,
     bool Automated,
     int DurationMilliseconds,
     string ReportPath,
@@ -1004,6 +1116,11 @@ internal sealed record SpikeOptions(
             : args.Contains("--automated", StringComparer.Ordinal) ? 250 : 30_000;
         if (duration < 0 || duration > 300_000)
             throw new ArgumentOutOfRangeException("--duration-ms");
+        var resizeCount = int.TryParse(Value("--resize-count"), out var parsedResizeCount)
+            ? parsedResizeCount
+            : 500;
+        if (resizeCount < 1 || resizeCount > 10_000)
+            throw new ArgumentOutOfRangeException("--resize-count");
         var report = Path.GetFullPath(Value("--report") ?? Path.Combine(
             ".doroti", "evidence", $"acrylic-a1-{arm.ToString().ToLowerInvariant()}-{DateTime.Now:yyyyMMdd-HHmmss}.json"));
         var readyValue = Value("--ready");
@@ -1012,6 +1129,9 @@ internal sealed record SpikeOptions(
             alpha,
             theme,
             snapshot,
+            args.Contains("--top-direct", StringComparer.Ordinal),
+            args.Contains("--runtime-churn", StringComparer.Ordinal),
+            resizeCount,
             args.Contains("--automated", StringComparer.Ordinal),
             duration,
             report,
@@ -1051,8 +1171,10 @@ internal sealed record SpikeReport(
     string Status,
     string Arm,
     string Alpha,
+    string Topology,
     string OperatingSystem,
     string WindowsBuild,
+    uint Dpi,
     string ProcessArchitecture,
     bool DwmCompositionEnabled,
     string TransparencyPolicy,
@@ -1081,6 +1203,15 @@ internal sealed record SpikeReport(
     int ExactMismatchCount,
     int RenderFailureCount,
     int FrameCount,
+    int VisibleHwndCount,
+    int VisibleChildRenderHwndCount,
+    int CreatedChildRenderHwndCount,
+    int MaximumRenderQueueDepth,
+    int FocusMessageCount,
+    int PointerMessageCount,
+    int KeyboardMessageCount,
+    int CursorMessageCount,
+    int HitTestResult,
     int ControllerCreateCount,
     int TargetCreateCount,
     int RootCreateCount,
@@ -1219,6 +1350,16 @@ internal static partial class Native
 
     [LibraryImport("user32.dll", EntryPoint = "DefWindowProcW")]
     internal static partial nint DefWindowProc(nint window, uint message, nuint wParam, nint lParam);
+
+    [LibraryImport("user32.dll", EntryPoint = "SendMessageW")]
+    internal static partial nint SendMessage(nint window, uint message, nuint wParam, nint lParam);
+
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool IsWindowVisible(nint window);
+
+    [LibraryImport("user32.dll")]
+    internal static partial uint GetDpiForWindow(nint window);
 
     [LibraryImport("user32.dll")]
     internal static partial nint GetParent(nint window);

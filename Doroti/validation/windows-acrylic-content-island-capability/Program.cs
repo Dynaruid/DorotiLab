@@ -450,7 +450,8 @@ internal sealed class AngleDevice : IDisposable
         int offsetX,
         int offsetY,
         bool drawAlphaGrid = false,
-        int generation = 0)
+        int generation = 0,
+        float markerScale = 1f)
     {
         var attributes = new[]
         {
@@ -487,6 +488,21 @@ internal sealed class AngleDevice : IDisposable
                     0, 0, 0, 0);
                 var markerWidth = Math.Clamp(8 + generation % 53, 8, Math.Max(8, width / 3));
                 ClearRegion(0, 0, markerWidth, Math.Min(8, height), 1, 0, 1, 1);
+                markerScale = Math.Max(1f, markerScale);
+                var bitSize = Math.Max(4, (int)MathF.Round(7 * markerScale));
+                var bitGap = Math.Max(1, (int)MathF.Round(markerScale));
+                const int bitCount = 12;
+                var stripWidth = bitCount * bitSize + (bitCount - 1) * bitGap;
+                var startX = width - stripWidth - Math.Max(4, (int)MathF.Round(4 * markerScale));
+                var startY = Math.Max(1, (int)MathF.Round(5 * markerScale));
+                var gray = generation ^ (generation >> 1);
+                for (var bit = 0; bit < bitCount; bit++)
+                {
+                    var value = (gray & (1 << bit)) != 0 ? 1f : 0f;
+                    ClearRegion(
+                        startX + bit * (bitSize + bitGap), startY,
+                        bitSize, bitSize, value, value, value, 1);
+                }
                 GlDisable(0x0C11);
             }
             GlFlush();

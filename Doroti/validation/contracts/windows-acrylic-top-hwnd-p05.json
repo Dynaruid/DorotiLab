@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "doroti.windows-acrylic-top-hwnd-p05-contract/v1",
+  "windowsAppSdk": "2.4.0",
+  "windowsSdk": "10.0.26100.0",
+  "minimumWindowsBuild": 26100,
+  "automatedResizeCount": 500,
+  "maximumQueueDepth": 2,
+  "maximumCpuCopies": 0,
+  "requiredVisibleHwndCount": 1,
+  "requiredVisibleChildRenderHwndCount": 0,
+  "requiredBackdropUpdates": 605,
+  "maximumCaptureRingDrops": 0,
+  "maximumCaptureErrors": 0,
+  "timing": {
+    "p95RefreshIntervalsAboveOpaque": 1,
+    "maxRefreshIntervalsAboveOpaque": 2
+  },
+  "promotion": {
+    "requiresPhysicalBorderDrag": true,
+    "requiresImeAndUia": true,
+    "automatedCaptureIsNotPhysicalAcceptance": true
+  }
+}

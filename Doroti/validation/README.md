@@ -17,20 +17,29 @@ The tested physical resize and mixed-DPI monitor-boundary behavior received user
 
 Older staged F0-F7 and WinRT/ContentIsland records remain historical or independent-spike evidence. Their PASS values describe only the source fingerprint and scope that produced them; they do not override ADR-025 or establish the current product path.
 
-The 2026-09-01 Acrylic investigation is retained as independent A1 and B0/B1
-spikes under `windows-dwm-redirection-alpha-spike`,
-`windows-acrylic-content-island-capability`, and
-`windows-acrylic-composition-spike`. Run their staged validators with:
+The 2026-09-01 Acrylic investigation is retained as independent A1, B0/B1,
+P0.5, and P1-CS spikes under `windows-dwm-redirection-alpha-spike`,
+`windows-acrylic-content-island-capability`,
+`windows-acrylic-composition-spike`, `windows-acrylic-top-hwnd-spike`, and
+`windows-acrylic-composition-swapchain-spike`. Run their staged validators with:
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/validate-windows-dwm-redirection-alpha-a1.ps1
 pwsh -NoProfile -File ./Doroti/eng/validate-windows-acrylic-composition-b1.ps1
+pwsh -NoProfile -File ./Doroti/eng/validate-windows-acrylic-top-hwnd-p05.ps1
+pwsh -NoProfile -File ./Doroti/eng/validate-windows-acrylic-composition-swapchain-p1cs.ps1
 ```
 
 Validator PASS means the expected diagnostic decision was reproduced. The A1
 manifest still records P0 `FAIL` because child redirection alpha is rejected,
 and the B1 manifest records B2/P1 `FAIL` because safe bounded surface reuse was
-not proven. Neither validator promotes Acrylic into the product host. See the
-[gate result summary](../../history/26-09-01/windows-appsdk-acrylic-p0-p1-gate-results.md).
+not proven. The P0.5 manifest records `FAIL` because redirection alpha removes
+the direct ANGLE scene from WGC even though the controller backdrop remains
+visible. P1-CS proves the same-device Presentation API capability, bounded
+available-event reuse, and 500 presents, but records `FAIL` because the decoded
+presented-buffer extent repeatedly differs from the client extent in the same
+WGC frame during native pointer resize. No validator promotes Acrylic into the
+product host. See the [first gate result](../../history/26-09-01/windows-appsdk-acrylic-p0-p1-gate-results.md)
+and [follow-up result](../../history/26-09-01/windows-appsdk-acrylic-p05-p1cs-gate-results.md).
 
 Machine-local traces and generated build output belong under `.doroti/` or `artifacts/`. Older milestone summaries remain under the repository `history/` archive.

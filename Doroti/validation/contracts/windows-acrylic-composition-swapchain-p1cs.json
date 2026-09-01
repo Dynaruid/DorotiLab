@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "doroti.windows-acrylic-composition-swapchain-p1cs-contract/v1",
+  "windowsAppSdk": "2.4.0",
+  "windowsSdk": "10.0.26100.0",
+  "minimumWindowsBuild": 26100,
+  "capability": {
+    "requireAngleDeviceQuery": true,
+    "requirePresentationSupported": true,
+    "independentFlipIsInformational": true,
+    "requireManager": true,
+    "requireSurfaceHandle": true,
+    "requirePresentationSurface": true,
+    "requireCompositionSurfaceConnection": true
+  },
+  "failureRule": "Any failed capability stops P1-CS before buffer allocation and product integration.",
+  "maximumSlots": 3,
+  "maximumQueueDepth": 2,
+  "requiredBufferPresents": 500,
+  "requiredVisibleResizeGenerations": 500,
+  "minimumMatchedCaptureFrames": 10,
+  "maximumWrongSizeOrStaleCaptureFrames": 0,
+  "maximumCaptureErrors": 0,
+  "maximumCaptureRingDrops": 0,
+  "minimumAlphaSceneDistinctColors": 4,
+  "minimumTransparentRoiDistinctColors": 2,
+  "comparisonEnvironment": {
+    "dwmFlush": "0",
+    "eglSwapInterval": "1"
+  },
+  "physicalAcceptance": "notVerifiedUntilHumanRun"
+}
