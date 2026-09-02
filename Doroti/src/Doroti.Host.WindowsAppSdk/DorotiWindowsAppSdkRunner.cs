@@ -131,6 +131,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private long _superseded;
         private long _failed;
         private long _staleInputPresentPrevented;
+        private long _vulkanDeviceLossRecoveries;
+        private long _vulkanSurfaceLossRecoveries;
+        private bool _vulkanRecoveryPending;
         private uint _platformThreadId;
         private uint _rasterThreadId;
         private uint _inputThreadId;
@@ -139,7 +142,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private ulong _lastPresentedResizeGeneration;
         private bool _visibleAfterExactPresent;
         private bool _readyFileWritten;
-        private bool _deviceResetInjected;
+        private readonly int _requestedDeviceResets;
+        private int _completedDeviceResets;
         private bool _disposed;
         private AcrylicPresenterSnapshot? _releasedAcrylicSnapshot;
         private string? _releasedAdapterDescription;
@@ -153,8 +157,14 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             _session = session;
             _application = application;
             _configuration = configuration;
+            _requestedDeviceResets = ResolveRequestedDeviceResets();
+            RequestedPresenter = ResolveRequestedPresenter();
             RequestedMode = configuration.backdrop?.mode == WindowBackdropMode.experimentalAcrylic
                 ? "experimentalAcrylic" : "opaque";
+            if (RequestedMode == "experimentalAcrylic" && RequestedPresenter != "AngleD3D11")
+                throw new InvalidOperationException(
+                    $"DOROTI_WINDOWS_PRESENTER={RequestedPresenter} conflicts with experimentalAcrylic. " +
+                    "Direct Vulkan/D3D12 and the ContentIsland Acrylic path are separate presenters.");
             if (RequestedMode == "experimentalAcrylic")
             {
                 try
@@ -173,13 +183,13 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 catch (Exception exception)
                 {
                     FallbackReason = $"pre-window:{exception.GetType().Name}:{exception.Message}";
-                    Presenter = CreatePresenter(ShouldWriteDiagnostics());
+                    Presenter = CreatePresenter(ShouldWriteDiagnostics(), RequestedPresenter);
                     EffectiveMode = "opaque";
                 }
             }
             else
             {
-                Presenter = CreatePresenter(ShouldWriteDiagnostics());
+                Presenter = CreatePresenter(ShouldWriteDiagnostics(), RequestedPresenter);
                 EffectiveMode = "opaque";
             }
         }
@@ -190,6 +200,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         internal DorotiView? View { get; private set; }
         internal string RequestedMode { get; }
         internal string EffectiveMode { get; private set; }
+        internal string RequestedPresenter { get; }
         internal string? FallbackReason { get; private set; }
         internal ulong NativeRequiredFeatures { get; }
 
@@ -223,7 +234,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                             exception);
                     FallbackReason = $"pre-show:{exception.GetType().Name}:{exception.Message}";
                     EffectiveMode = "opaque";
-                    Presenter = CreatePresenter(ShouldWriteDiagnostics());
+                    Presenter = CreatePresenter(ShouldWriteDiagnostics(), RequestedPresenter);
                     effectiveNative.ChildHwnd = native.OpaqueChildHwnd;
                 }
             }
@@ -344,6 +355,11 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
 
         internal void ReleasePlatformResources()
         {
+            // Native has stopped its render worker and is about to tear down
+            // the task HWND. Close the managed posting gate before any
+            // delayed qualification or metrics callback can enqueue work to
+            // that HWND during shutdown.
+            Host?.MarkNativeStopped();
             if (Presenter is WindowsManagedAcrylicCompositionPresenter acrylic)
             {
                 if (_optionSmoke is { } smoke && !smoke.Wait(TimeSpan.FromSeconds(5)))
@@ -364,7 +380,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var height = checked((int)request.HeightPx);
             var causalFrameId = checked((long)request.CausalFrameId);
             var resizeGeneration = request.Generation;
+            var requiresPresenterQualification =
+                _completedDeviceResets < _requestedDeviceResets ||
+                _vulkanRecoveryPending ||
+                Presenter is WindowsManagedVulkanPresenter { HasPendingInjectedResult: true };
             if (!dispatchedFrameworkFrame &&
+                !requiresPresenterQualification &&
                 _lastPresentedResizeGeneration == resizeGeneration &&
                 Presenter.Width == width && Presenter.Height == height)
             {
@@ -375,12 +396,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 Interlocked.Increment(ref _renderCallbacks);
                 return (uint)WindowsNativeV1.FrameTerminalKind.Presented;
             }
-            if (!_deviceResetInjected && Interlocked.Read(ref _renderCallbacks) >= 1 &&
-                Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C8_SMOKE") == "1")
+            if (_completedDeviceResets < _requestedDeviceResets &&
+                Interlocked.Read(ref _renderCallbacks) >= 1)
             {
                 renderer.InvalidateGpuContextResources();
                 Presenter.ResetDevice();
-                _deviceResetInjected = true;
+                _completedDeviceResets++;
             }
             var scale = host.ResizeTarget.DeviceScaleX;
             var dpiContextChanged = _presenterScale > 0 && _presenterScale != scale;
@@ -410,6 +431,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 Interlocked.Increment(ref _renderCallbacks);
                 return (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
             }
+            _vulkanRecoveryPending = false;
             _presenterScale = scale;
             _presenterResizeGeneration = resizeGeneration;
             Presenter.SealInitializationDebugBaseline();
@@ -460,6 +482,38 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             return presented
                 ? (uint)WindowsNativeV1.FrameTerminalKind.Presented
                 : (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
+        }
+
+        internal uint RecoverVulkanDeviceLoss(Exception failure)
+        {
+            if (Presenter is not WindowsManagedVulkanPresenter vulkan) throw failure;
+            if (Interlocked.Increment(ref _vulkanDeviceLossRecoveries) != 1)
+                throw new InvalidOperationException(
+                    "The Vulkan device was lost again after the single allowed recovery.", failure);
+            var renderer = Renderer ?? throw new InvalidOperationException("Renderer is unavailable.", failure);
+            renderer.FailOutstandingGpuPaints(failure.Message);
+            renderer.InvalidateGpuContextResources();
+            vulkan.RecoverAfterDeviceLoss();
+            _vulkanRecoveryPending = true;
+            Host?.RequestInvalidate();
+            Interlocked.Increment(ref _renderCallbacks);
+            return (uint)WindowsNativeV1.FrameTerminalKind.Failed;
+        }
+
+        internal uint RecoverVulkanSurfaceLoss(Exception failure)
+        {
+            if (Presenter is not WindowsManagedVulkanPresenter vulkan) throw failure;
+            if (Interlocked.Increment(ref _vulkanSurfaceLossRecoveries) != 1)
+                throw new InvalidOperationException(
+                    "The Vulkan Win32 surface was lost again after the single allowed recovery.", failure);
+            var renderer = Renderer ?? throw new InvalidOperationException("Renderer is unavailable.", failure);
+            renderer.FailOutstandingGpuPaints(failure.Message);
+            renderer.InvalidateGpuContextResources();
+            vulkan.RecoverAfterSurfaceLoss();
+            _vulkanRecoveryPending = true;
+            Host?.RequestInvalidate();
+            Interlocked.Increment(ref _renderCallbacks);
+            return (uint)WindowsNativeV1.FrameTerminalKind.Failed;
         }
 
         internal void CompleteTerminal(in WindowsNativeV1.FrameTerminal terminal)
@@ -645,8 +699,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             return new(
                 Presenter.BackendName, Presenter.DiagnosticCoverage,
                 _releasedAdapterDescription ?? Presenter.AdapterDescription,
+                RequestedPresenter, Presenter.BackendName,
                 RequestedMode, EffectiveMode, FallbackReason,
                 _releasedAcrylicSnapshot ?? (Presenter as WindowsManagedAcrylicCompositionPresenter)?.Snapshot(),
+                (Presenter as WindowsManagedVulkanPresenter)?.Snapshot(),
                 _platformThreadId, _rasterThreadId, _inputThreadId,
                 _renderCallbacks, _presented, _superseded, _failed,
                 _visibleAfterExactPresent,
@@ -657,6 +713,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 Presenter.InitializationDebugErrorCount, Presenter.OperationalDebugErrorCount,
                 renderer.Submitted, renderer.Presented, renderer.Replayed,
                 _staleInputPresentPrevented,
+                _vulkanDeviceLossRecoveries, _vulkanSurfaceLossRecoveries,
+                _requestedDeviceResets, _completedDeviceResets,
                 LastNativeProvenance ?? throw new InvalidOperationException("Native provenance is unavailable."));
         }
 
@@ -690,7 +748,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     abiGpuPointerCount = 0,
                 },
                 mode = new { requested = RequestedMode, effective = EffectiveMode, fallbackReason = FallbackReason },
+                presenter = new { requested = RequestedPresenter, effective = Presenter.BackendName },
                 acrylic = diagnostics.Acrylic,
+                vulkan = diagnostics.Vulkan,
                 frames = diagnostics,
                 resize = Host?.ResizeSnapshot,
                 renderer = Renderer?.Diagnostics,
@@ -716,16 +776,42 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             _capabilities = null;
         }
 
-        private static WindowsManagedHwndPresenterBase CreatePresenter(bool diagnosticsEnabled) =>
+        private static string ResolveRequestedPresenter() =>
             Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER")?.Trim() switch
             {
-                null or "" => new WindowsManagedAngleEglPresenter(diagnosticsEnabled),
+                null or "" => "AngleD3D11",
                 var value when value.Equals("AngleD3D11", StringComparison.OrdinalIgnoreCase) =>
-                    new WindowsManagedAngleEglPresenter(diagnosticsEnabled),
+                    "AngleD3D11",
+                var value when value.Equals("Vulkan", StringComparison.OrdinalIgnoreCase) =>
+                    "Vulkan",
                 var value when value.Equals("D3D12", StringComparison.OrdinalIgnoreCase) =>
-                    CreateDiagnosticPresenter(diagnosticsEnabled),
+                    "D3D12",
                 var value => throw new InvalidOperationException(
-                    $"Unsupported managed Windows presenter '{value}'. Expected AngleD3D11 or D3D12."),
+                    $"Unsupported managed Windows presenter '{value}'. Expected AngleD3D11, Vulkan, or D3D12."),
+            };
+
+        private static int ResolveRequestedDeviceResets()
+        {
+            var value = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_DEVICE_RESET_COUNT");
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                if (!int.TryParse(value, out var count) || count is < 0 or > 100)
+                    throw new InvalidOperationException(
+                        "DOROTI_WINDOWS_APPSDK_DEVICE_RESET_COUNT must be between 0 and 100.");
+                return count;
+            }
+            return Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C8_SMOKE") == "1" ? 1 : 0;
+        }
+
+        private static WindowsManagedHwndPresenterBase CreatePresenter(
+            bool diagnosticsEnabled,
+            string requestedPresenter) => requestedPresenter switch
+            {
+                "AngleD3D11" => new WindowsManagedAngleEglPresenter(diagnosticsEnabled),
+                "Vulkan" => new WindowsManagedVulkanPresenter(diagnosticsEnabled),
+                "D3D12" => CreateDiagnosticPresenter(diagnosticsEnabled),
+                _ => throw new InvalidOperationException(
+                    $"Unsupported canonical Windows presenter '{requestedPresenter}'."),
             };
 
         private static WindowsManagedHwndPresenterBase CreateDiagnosticPresenter(bool diagnosticsEnabled)
@@ -780,6 +866,24 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         {
             if (request is null) throw new InvalidDataException("Native render supplied null.");
             return GetState(context).Render(in *request);
+        }
+        catch (WindowsManagedVulkanDeviceLostException exception)
+        {
+            try { return GetState(context).RecoverVulkanDeviceLoss(exception); }
+            catch (Exception recoveryFailure)
+            {
+                TryCaptureFatal(context, recoveryFailure);
+                return (uint)WindowsNativeV1.FrameTerminalKind.Failed;
+            }
+        }
+        catch (WindowsManagedVulkanSurfaceLostException exception)
+        {
+            try { return GetState(context).RecoverVulkanSurfaceLoss(exception); }
+            catch (Exception recoveryFailure)
+            {
+                TryCaptureFatal(context, recoveryFailure);
+                return (uint)WindowsNativeV1.FrameTerminalKind.Failed;
+            }
         }
         catch (Exception exception)
         {
@@ -942,10 +1046,13 @@ internal sealed record WindowsProductRunDiagnostics(
     string PresenterBackend,
     string PresenterDiagnosticCoverage,
     string AdapterDescription,
+    string RequestedPresenter,
+    string EffectivePresenter,
     string RequestedMode,
     string EffectiveMode,
     string? FallbackReason,
     AcrylicPresenterSnapshot? Acrylic,
+    VulkanPresenterSnapshot? Vulkan,
     uint PlatformThreadId,
     uint RasterThreadId,
     uint InputThreadId,
@@ -971,4 +1078,8 @@ internal sealed record WindowsProductRunDiagnostics(
     long RendererPresented,
     long RendererReplayed,
     long StaleInputPresentsPrevented,
+    long VulkanDeviceLossRecoveries,
+    long VulkanSurfaceLossRecoveries,
+    int RequestedDeviceResets,
+    int CompletedDeviceResets,
     NativeHostProvenance NativeProvenance);

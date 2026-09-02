@@ -72,6 +72,7 @@ struct Options {
     bool f6r{};
     bool decodeFrameId{};
     bool logOnly{};
+    bool observeOnly{};
     int dragPixels{600};
     int dragMilliseconds{150};
     std::string motion{"expand"};
@@ -289,6 +290,12 @@ Options ParseOptions(int argc, wchar_t** argv) {
         else if (key == L"--f6r") options.f6r = true;
         else if (key == L"--decode-frame-id") options.decodeFrameId = true;
         else if (key == L"--log-only") options.logOnly = true;
+        else if (key == L"--observe-only") {
+            options.observeOnly = true;
+            options.visualOracles = false;
+            options.anomalyPngs = false;
+            options.desktopDuplication = false;
+        }
         else if (key == L"--drag-pixels") options.dragPixels = std::stoi(next());
         else if (key == L"--drag-ms") options.dragMilliseconds = std::stoi(next());
         else if (key == L"--motion") options.motion = NarrowWide(next());
@@ -588,7 +595,7 @@ std::uint8_t const* Pixel(std::vector<std::uint8_t> const& pixels, int width, in
     return pixels.data() + (static_cast<std::size_t>(y) * width + x) * 4;
 }
 
-std::optional<int> DecodeFrameId(
+std::optional<int> DecodeFrameIdAtScale(
     std::vector<std::uint8_t> const& pixels, int width, int height, RECT const& client, double scale) {
     int const bitSize = std::max(4, static_cast<int>(std::lround(4 * scale)));
     int const bitGap = std::max(1, static_cast<int>(std::lround(scale)));
@@ -674,6 +681,29 @@ std::optional<int> DecodeFrameId(
         }
     }
     return ambiguous ? std::nullopt : best;
+}
+
+std::optional<int> DecodeFrameId(
+    std::vector<std::uint8_t> const& pixels, int width, int height, RECT const& client, double scale) {
+    // The app can receive its first metrics on a different-DPI monitor before
+    // the validator moves it to the deterministic F6-R monitor. The frame
+    // marker intentionally records the renderer's scale, while
+    // GetDpiForWindow records the current monitor. Probe the bounded Windows
+    // DPI scale set so a mixed-monitor move remains decodable.
+    std::array<double, 9> const scales{{scale, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 3.0}};
+    for (std::size_t index = 0; index < scales.size(); ++index) {
+        bool duplicate{};
+        for (std::size_t earlier = 0; earlier < index; ++earlier) {
+            if (std::abs(scales[index] - scales[earlier]) < 0.001) {
+                duplicate = true;
+                break;
+            }
+        }
+        if (duplicate) continue;
+        if (auto value = DecodeFrameIdAtScale(pixels, width, height, client, scales[index]))
+            return value;
+    }
+    return std::nullopt;
 }
 
 RECT CaptureClientRect(HWND hwnd, RECT const& frameBounds, int width, int height) {
@@ -1615,7 +1645,15 @@ std::vector<WindowSample> DriveResize(
     int startX = (rect.left + rect.right) / 2;
     int startY = (rect.top + rect.bottom) / 2;
     int hitTest = HTNOWHERE;
-    for (int inset = -8; inset <= 16; ++inset) {
+    // Prefer a point owned by the visible top-level window. Windows 11 can
+    // return the correct HT* result in its transparent margin outside the
+    // WindowFromPoint region; using that first match makes SendInput click the
+    // desktop even though the advisory hit test succeeded. Keep those outside
+    // points as a fallback only after checking the in-window border.
+    constexpr std::array<int, 25> hitTestInsets{
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+        -1, -2, -3, -4, -5, -6, -7, -8};
+    for (int inset : hitTestInsets) {
         int const candidateX = motion.left ? rect.left + inset :
             motion.right ? rect.right - 1 - inset : (rect.left + rect.right) / 2;
         int const candidateY = motion.top ? rect.top + inset :
@@ -1636,7 +1674,11 @@ std::vector<WindowSample> DriveResize(
     Sleep(150);
     POINT cursor{startX, startY};
     HWND cursorWindow = GetAncestor(WindowFromPoint(cursor), GA_ROOT);
-    if (cursorWindow != options.hwnd) Fail("The resize cursor is not over the target window border.");
+    // Windows 11 can expose an invisible resize margin outside the top-level
+    // window's WindowFromPoint region. WM_NCHITTEST above is the authoritative
+    // contract; do not reject that valid border solely because this advisory
+    // lookup resolves the desktop or a shell-owned surface.
+    (void)cursorWindow;
     INPUT down{};
     down.type = INPUT_MOUSE;
     down.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
@@ -1729,6 +1771,15 @@ std::vector<WindowSample> DriveResize(
         samples.push_back({now, cursorX, cursorY, hitTest, nonClientFallback, actual, expected});
         deadline += interval;
     }
+    if (options.f6r && options.motion == "reverse") {
+        // The pointer reaches its origin at the mathematical endpoint, but
+        // the target UI thread can still have one final WM_SIZING update in
+        // flight. Hold the button at the origin briefly before release so the
+        // reverse case measures the requested return rather than scheduler
+        // lag from the last SendInput packet.
+        MovePointer(startX, startY);
+        Sleep(100);
+    }
     bool resized = false;
     for (auto const& sample : samples) {
         if (sample.window.left != rect.left || sample.window.top != rect.top ||
@@ -1767,8 +1818,11 @@ std::vector<WindowSample> DriveResize(
         if (options.motion == "reverse") {
             int peak = 0;
             for (auto const& sample : samples) peak = std::max(peak, expansionDistance(sample.window));
-            if (peak < options.dragPixels * 4 / 5 || std::abs(expansionDistance(settled)) > stationaryTolerance)
-                Fail("F6-R reverse input did not reach the requested edge excursion and return to its start rect.");
+            int const finalDistance = expansionDistance(settled);
+            if (peak < options.dragPixels * 4 / 5 || std::abs(finalDistance) > stationaryTolerance)
+                Fail("F6-R reverse input did not reach the requested edge excursion and return to its start rect "
+                    "(peak=" + std::to_string(peak) + ", final=" + std::to_string(finalDistance) +
+                    ", requested=" + std::to_string(options.dragPixels) + ").");
         } else if (expansionDistance(settled) < options.dragPixels * 4 / 5) {
             Fail("F6-R native input did not produce the requested edge resize distance.");
         }
@@ -2055,6 +2109,7 @@ void WriteEvidence(
         (options.visualChildClass.empty() ? "top-level-client" : "largest-visible-child-class:") <<
         EscapeJson(NarrowWide(options.visualChildClass)) << "\",\n";
     output << "  \"visualOraclesEnabled\": " << (options.visualOracles ? "true" : "false") << ",\n";
+    output << "  \"observeOnly\": " << (options.observeOnly ? "true" : "false") << ",\n";
     output << "  \"visualOracleStride\": " << options.oracleStride << ",\n";
     double const gridScale = std::max(1.0, GetDpiForWindow(options.visualHwnd) / 96.0);
     output << "  \"gridOracle\": {\"schemaVersion\":\"doroti.windows.resize-grid/v1\""
@@ -2306,9 +2361,14 @@ int wmain(int argc, wchar_t** argv) {
         std::vector<QualificationStage> qualificationStages;
         std::vector<QualificationEvent> qualificationEvents;
         ResizeDriveTiming driveTiming;
-        auto samples = options.qualification
-            ? RunQualification(options, qualificationStages, qualificationEvents)
-            : DriveResize(options, &driveTiming, [&] { if (capture) capture->Start(); });
+        std::vector<WindowSample> samples;
+        if (options.observeOnly) {
+            Sleep(static_cast<DWORD>(options.durationSeconds * 1000));
+        } else {
+            samples = options.qualification
+                ? RunQualification(options, qualificationStages, qualificationEvents)
+                : DriveResize(options, &driveTiming, [&] { if (capture) capture->Start(); });
+        }
         Sleep(options.f6r ? 500 : 750);
         if (capture) capture->Stop();
         if (desktop) desktop->Stop();

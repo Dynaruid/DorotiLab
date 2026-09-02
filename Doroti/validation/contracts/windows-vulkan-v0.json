@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "doroti.windows.vulkan-capability-contract/v2",
+  "packageVersion": "2.23.0",
+  "minimumApiVersion": "1.1",
+  "requiredInstanceExtensions": [
+    "VK_KHR_surface",
+    "VK_KHR_win32_surface"
+  ],
+  "requiredDeviceExtensions": [
+    "VK_KHR_swapchain"
+  ],
+  "presentationCommitPolicy": "acquire-after-latest-check-unconditional-present",
+  "retirementMode": "queue-idle-on-recreate",
+  "requiredUsage": "TransferDstBit",
+  "requiredCompositeAlpha": "OpaqueBitKhr",
+  "requiredPresentMode": "PresentModeFifoKhr",
+  "approvedFormats": [
+    "B8G8R8A8Unorm",
+    "R8G8B8A8Unorm"
+  ],
+  "maximumValidationWarnings": 0,
+  "maximumValidationErrors": 0
+}

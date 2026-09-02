@@ -59,6 +59,8 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -L
 ```
 
 The Windows command selects Windows App SDK/`HwndExactCpp` by default. Use `-WindowsBackend Maui` only when the independent Windows MAUI runner is intended.
+
+The default Windows presenter remains `AngleD3D11`. Maintainers can explicitly test the experimental direct Vulkan path with `DOROTI_WINDOWS_PRESENTER=Vulkan`; set `DOROTI_WINDOWS_VULKAN_DEVICE` when multiple capable GPUs are eligible or deterministic selection is required. Vulkan requires System32 Vulkan 1.1 plus the surface, Win32-surface, and swapchain extensions; swapchain-maintenance is not required. It never falls back silently and cannot be combined with `experimentalAcrylic`. Its automated WGC qualification does not constitute physical resize or scan-out acceptance.
 `-LastSuccessful` (or `-NoBuild`) reuses only a prior successful artifact whose runner, configuration, RID, and source/native-input fingerprint still match; stale or missing state fails closed. `-NoRestore` skips restore without skipping the build.
 
 ## Repository layout

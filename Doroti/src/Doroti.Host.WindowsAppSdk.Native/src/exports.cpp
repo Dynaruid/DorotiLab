@@ -20,6 +20,7 @@
 #include <cmath>
 #include <condition_variable>
 #include <cstddef>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <deque>
@@ -233,8 +234,8 @@ class ProductHost final {
       composition_flush_generation_.store(current_generation_,
                                             std::memory_order_release);
     RunInputSmoke();
-    QueueRender();
     ConfigureSmokeTimer();
+    QueueRender();
 
     MSG message{};
     while (GetMessageW(&message, nullptr, 0, 0) > 0) {
@@ -355,6 +356,11 @@ class ProductHost final {
         RefreshPlatformBrightness();
         break;
       case WM_CLOSE:
+        // Close the managed posting gate before joining the raster worker.
+        // A final in-flight scene submit may request another frame while the
+        // worker is draining; that invalidation is obsolete once close has
+        // begun and must not race the task HWND teardown.
+        EmitLifecycle(0);
         StopRenderWorker();
         DestroyWindow(top_);
         return 0;
@@ -377,14 +383,18 @@ class ProductHost final {
         }
         if (wparam == kLifecycleTimer) {
           KillTimer(top_, kLifecycleTimer);
-          if (lifecycle_smoke_phase_ == 0) {
+          if ((lifecycle_smoke_phase_ % 2u) == 0u &&
+              lifecycle_smoke_phase_ / 2u < lifecycle_smoke_cycles_) {
             ++lifecycle_smoke_phase_;
             ShowWindow(top_, SW_MINIMIZE);
             SetTimer(top_, kLifecycleTimer, 120, nullptr);
-          } else if (lifecycle_smoke_phase_ == 1) {
+          } else if ((lifecycle_smoke_phase_ % 2u) == 1u) {
             ++lifecycle_smoke_phase_;
             ShowWindow(top_, SW_RESTORE);
-            SendMessageW(top_, WM_DISPLAYCHANGE, 32, MAKELPARAM(1920, 1080));
+            if (lifecycle_smoke_phase_ / 2u < lifecycle_smoke_cycles_)
+              SetTimer(top_, kLifecycleTimer, 120, nullptr);
+            else
+              SendMessageW(top_, WM_DISPLAYCHANGE, 32, MAKELPARAM(1920, 1080));
           }
           return 0;
         }
@@ -590,8 +600,19 @@ class ProductHost final {
  private:
   static uint32_t DOROTI_WINDOWS_CALL RequestFrame(void* context) {
     auto* host = static_cast<ProductHost*>(context);
-    return host != nullptr && PostMessageW(host->task_, kRequestFrame, 0, 0)
-               ? 0u : 4u;
+    if (host == nullptr) return 4u;
+    SetLastError(ERROR_SUCCESS);
+    if (PostMessageW(host->task_, kRequestFrame, 0, 0)) return 0u;
+    const auto error = GetLastError();
+    std::fprintf(stderr,
+                 "doroti.windows.request_frame_failure error=%lu task=%p top=%p\n",
+                 static_cast<unsigned long>(error), host->task_, host->top_);
+    std::fflush(stderr);
+    // A managed metrics/delayed-frame callback can overlap WM_DESTROY after
+    // the final native terminal was drained. Once the top-level window is
+    // gone, rejecting that obsolete invalidation would turn an orderly close
+    // into a false fatal error; disposal clears the managed pending frame.
+    return host->top_ == nullptr ? 0u : 4u;
   }
 
   static uint32_t DOROTI_WINDOWS_CALL RequestResize(
@@ -1432,6 +1453,10 @@ class ProductHost final {
         }
         return false;
       }
+      // A superseded/out-of-date frame can complete almost immediately.
+      // Back off before retrying so the bounded exact-settle loop cannot fill
+      // the task queue with thousands of render-completion messages.
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
       causal_frame_id = QueueRender();
     }
     return false;
@@ -1520,6 +1545,17 @@ class ProductHost final {
         milliseconds > 60000)
       return;
     SetTimer(top_, kSmokeTimer, static_cast<UINT>(milliseconds), nullptr);
+    wchar_t cycles_value[16]{};
+    const auto cycles_length = GetEnvironmentVariableW(
+        L"DOROTI_WINDOWS_APPSDK_LIFECYCLE_CYCLES", cycles_value,
+        static_cast<DWORD>(std::size(cycles_value)));
+    if (cycles_length != 0 && cycles_length < std::size(cycles_value)) {
+      wchar_t* cycles_end{};
+      const auto cycles = wcstoul(cycles_value, &cycles_end, 10);
+      if (cycles_end != cycles_value && *cycles_end == L'\0' &&
+          cycles >= 1 && cycles <= 100)
+        lifecycle_smoke_cycles_ = static_cast<uint32_t>(cycles);
+    }
   }
 
   void RunInputSmoke() {
@@ -1717,6 +1753,7 @@ class ProductHost final {
   bool platform_resources_released_{};
   uint32_t lifecycle_state_{std::numeric_limits<uint32_t>::max()};
   uint32_t lifecycle_smoke_phase_{};
+  uint32_t lifecycle_smoke_cycles_{1};
   uint32_t platform_brightness_{};
   doroti::windows::AccessibilityBridge accessibility_;
   std::mutex render_mutex_;

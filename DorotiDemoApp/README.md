@@ -127,6 +127,23 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform linux -Rid linux-x64
 ```
 
+### Run Windows with the optional Vulkan presenter
+
+The Windows App SDK runner can explicitly select the experimental direct Vulkan/Skia presenter. ANGLE remains the default. Start from a shell where the Acrylic opt-in is unset, then run:
+
+```powershell
+$env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
+$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # or another exact/unique device-name fragment
+Remove-Item Env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC -ErrorAction SilentlyContinue
+
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
+  -App ./DorotiDemoApp `
+  -Platform windows `
+  -Configuration Release
+```
+
+`DOROTI_WINDOWS_VULKAN_DEVICE` is optional when exactly one capable GPU is eligible; use an exact or unique device-name fragment when deterministic selection is required. Vulkan requires the System32 Vulkan 1.1 loader plus surface, Win32-surface, and swapchain support. It does not require a swapchain-maintenance extension, has no automatic ANGLE fallback, and conflicts with `DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1`. Clear `DOROTI_WINDOWS_PRESENTER` afterward to return to the default ANGLE presenter.
+
 ### Connect an Android device or emulator
 
 Android SDK Platform Tools and `adb` are required. Android Studio normally installs them under `%LOCALAPPDATA%\Android\Sdk\platform-tools`. If `adb` is not on `PATH`, set its path explicitly:
@@ -242,6 +259,8 @@ On Linux the demo requests `WindowBackdropMode.acrylic` with `WindowBackdropFall
 ## Support and evidence status
 
 The default Windows route is the self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host. Native C++ owns the top-level/child/task HWNDs and input/lifecycle ingress; managed code owns Doroti scene construction and hardware-D3D11 ANGLE/EGL/Skia raster and presentation. Each exact-size GPU backing is blitted to an `EGL_FIXED_SIZE_ANGLE` window surface, and a newly created surface is `DwmFlush`ed after its first swap before initial show or resize completion. An 8 ms refresh is active only while an interactive move straddles two monitors and no render is pending or in flight.
+
+`DOROTI_WINDOWS_PRESENTER=Vulkan` selects the separate experimental Vulkan/Skia path for this same `HwndExactCpp` runner. Stale work is rejected before image acquisition; a successful acquire commits to unconditional copy/present, so acquired-image release and swapchain-maintenance are not required. 2026-09-02 Release Demo runs selected Vulkan on both an NVIDIA GeForce RTX 4060 Laptop GPU and an AMD Radeon 780M through the System32 loader, reached visible exact presentation, and ended with zero failed terminals, operational GPU errors, device/surface loss, or outstanding acquired images. The AMD run additionally passed the maintenance-free capability/WSI contract and one automated 600 ms reverse live-resize probe. Automated WGC and terminal evidence does not substitute for physical scan-out, human resize, IME, or accessibility acceptance; Vulkan therefore remains opt-in. See [ADR-027](../Doroti/docs/adr/ADR-027-windows-optional-vulkan.md) and the [implementation checkpoint](../history/26-09-02/windows-appsdk-vulkan-implementation-checkpoint.md).
 
 `DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1` selects a separate opt-in ContentIsland/Composition Swapchain path without throttling `WM_SIZING`. Composition `WM_SIZE` never waits for a terminal, fence, buffer event, or `DwmFlush`. The ContentIsland owns child-site geometry and displays the already-physical surface with `OverrideScale=1`, `Stretch=None`, an identity transform, and a 1:1 source crop. The former 256 px dark overscan/erase-fill/stretch path was removed because it caused top/left black exposure and raster jitter. At 200% DPI/165 Hz, the current three-second TopLeft capture passes at 9/0 px active/inactive delta and settles in 29.16 ms; the 600 ms case still fails at 37 px active delta plus visual gap/title gates. Release, ABI, opaque, empty-PATH, option, and fallback regressions pass. Human rechecking of this binary plus IME, accessibility, and the full matrix remain `notVerified`; opaque remains the default.
 

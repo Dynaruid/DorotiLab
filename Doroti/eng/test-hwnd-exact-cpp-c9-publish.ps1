@@ -33,7 +33,7 @@ function New-Probe([string] $Name) {
     return $directory
 }
 
-function Invoke-Probe([string] $Name, [string] $Directory, [switch] $Audit) {
+function Invoke-Probe([string] $Name, [string] $Directory, [switch] $Audit, [string] $Presenter) {
     Assert-WithinRunRoot $Directory
     $executable = Join-Path $Directory 'Doroti.Validation.HwndExactCppProduct.exe'
     $report = Join-Path $Directory "$Name-report.json"
@@ -48,6 +48,13 @@ function Invoke-Probe([string] $Name, [string] $Directory, [switch] $Audit) {
     if ($Audit) { $start.Environment['DOROTI_WINDOWS_NATIVE_AUDIT'] = '1' }
     [void]$start.ArgumentList.Add('--report')
     [void]$start.ArgumentList.Add($report)
+    if (-not [string]::IsNullOrWhiteSpace($Presenter)) {
+        [void]$start.ArgumentList.Add('--presenter')
+        [void]$start.ArgumentList.Add($Presenter)
+        [void]$start.ArgumentList.Add('--lifecycle-cycles')
+        [void]$start.ArgumentList.Add('0')
+        [void]$start.ArgumentList.Add('--no-resize-burst')
+    }
     $process = [Diagnostics.Process]::new()
     $process.StartInfo = $start
     if (-not $process.Start()) { throw "C9 $Name probe failed to start." }
@@ -97,6 +104,9 @@ $success = Invoke-Probe 'success' $successDirectory
 $auditDirectory = New-Probe 'audit-success'
 $audit = Invoke-Probe 'audit-success' $auditDirectory -Audit
 
+$vulkanDirectory = New-Probe 'vulkan-success'
+$vulkan = Invoke-Probe -Name 'vulkan-success' -Directory $vulkanDirectory -Presenter 'Vulkan'
+
 $missingDirectory = New-Probe 'missing-native'
 $missingTarget = Join-Path $missingDirectory 'doroti_windows_appsdk_host_v1.dll'
 Assert-WithinRunRoot $missingTarget
@@ -123,6 +133,12 @@ $version = Invoke-Probe 'wrong-version' $versionDirectory
 
 if ($success.exitCode -ne 0) { throw 'C9 app-directory success launch failed.' }
 if ($audit.exitCode -ne 0) { throw 'C9 full-hash provenance audit launch failed.' }
+if ($vulkan.exitCode -ne 0) { throw 'C9 Vulkan empty-PATH launch failed.' }
+$vulkanReport = Get-Content -LiteralPath $vulkan.report -Raw | ConvertFrom-Json -Depth 100
+if ($vulkanReport.status -ne 'PASS' -or $vulkanReport.diagnostics.effectivePresenter -ne 'Vulkan' -or
+    $vulkanReport.diagnostics.vulkan.loaderPath -notmatch '\\System32\\vulkan-1\.dll$') {
+    throw 'C9 Vulkan publish did not use the System32 loader as the effective presenter.'
+}
 if ($missing.exitCode -eq 0 -or $missing.stderr -notmatch 'missing from the application directory') {
     throw 'C9 missing-native launch did not fail fast with the expected identity.'
 }
@@ -141,6 +157,17 @@ $unexpectedAngleFiles = @(@('libEGL.dll', 'libGLESv2.dll') |
 if ($unexpectedAngleFiles.Count -ne 0) {
     throw "C9 publish contains unexpected split ANGLE native files: $($unexpectedAngleFiles -join ', ')."
 }
+$requiredVulkanAssemblies = @('Silk.NET.Core.dll','Silk.NET.Vulkan.dll','Silk.NET.Vulkan.Extensions.KHR.dll')
+$missingVulkanAssemblies = @($requiredVulkanAssemblies |
+    Where-Object { -not (Test-Path (Join-Path $publishDirectory $_) -PathType Leaf) })
+if ($missingVulkanAssemblies.Count -ne 0) {
+    throw "C9 publish is missing Vulkan managed assemblies: $($missingVulkanAssemblies -join ', ')."
+}
+$unexpectedVulkanRuntime = @('vulkan-1.dll','amdvlk64.dll','nvoglv64.dll') |
+    Where-Object { Test-Path (Join-Path $publishDirectory $_) -PathType Leaf }
+if (@($unexpectedVulkanRuntime).Count -ne 0) {
+    throw "C9 publish contains an app-local Vulkan loader or ICD: $($unexpectedVulkanRuntime -join ', ')."
+}
 
 $report = [ordered]@{
     schemaVersion = 'doroti.windows.hwnd-exact-cpp-c9-publish/v1'
@@ -150,12 +177,18 @@ $report = [ordered]@{
     publishDirectory = $publishDirectory
     searchPolicy = 'PATH empty in all probes; app-directory native resolver excludes PATH/current-directory'
     nativeFiles = $nativeFiles
-    probes = @($success, $audit, $missing, $missingAngle, $architecture, $version) | ForEach-Object {
+    probes = @($success, $audit, $vulkan, $missing, $missingAngle, $architecture, $version) | ForEach-Object {
         [ordered]@{
             name = $_.name
             exitCode = $_.exitCode
-            expected = if ($_.name -in @('success', 'audit-success')) { 'success' } else { 'explicit fail-fast' }
+            expected = if ($_.name -in @('success', 'audit-success', 'vulkan-success')) { 'success' } else { 'explicit fail-fast' }
         }
+    }
+    vulkan = [ordered]@{
+        effectivePresenter=$vulkanReport.diagnostics.effectivePresenter
+        loaderPath=$vulkanReport.diagnostics.vulkan.loaderPath
+        managedAssemblies=$requiredVulkanAssemblies
+        appLocalLoaderOrIcd=$false
     }
     boundary = 'Clean self-contained publish and install-like app-directory launch. Signed installer/MSIX is outside this gate.'
 }

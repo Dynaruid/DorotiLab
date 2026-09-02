@@ -12,13 +12,31 @@ internal static class Program
     private static int Main(string[] args)
     {
         var reportPath = ResolveReportPath(args);
+        var requestedPresenter = ResolveOption(args, "--presenter") ?? "AngleD3D11";
+        var injectedResult = ResolveOption(args, "--inject-vulkan-result");
+        var resetCountText = ResolveOption(args, "--device-resets");
+        var smokeMilliseconds = ResolveOption(args, "--smoke-ms") ?? "5000";
+        var lifecycleCyclesText = ResolveOption(args, "--lifecycle-cycles") ?? "1";
+        var lifecycleCycles = int.Parse(lifecycleCyclesText);
+        var resizeCyclesText = ResolveOption(args, "--resize-cycles") ?? "0";
+        var resizeCycles = int.Parse(resizeCyclesText);
+        var externalResize = args.Contains("--external-resize", StringComparer.Ordinal);
+        var skipResizeBurst = args.Contains("--no-resize-burst", StringComparer.Ordinal);
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_ADAPTER", "HwndExactCpp");
-        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER", "AngleD3D11");
-        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_SMOKE_MS", "5000");
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER", requestedPresenter);
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_VULKAN_INJECT_RESULT", injectedResult);
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_VULKAN_INJECT_AFTER_PRESENTS",
+            injectedResult is null ? null : "1");
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_DEVICE_RESET_COUNT", resetCountText);
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_LIFECYCLE_CYCLES", lifecycleCyclesText);
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_PRODUCT_RESIZE_CYCLES", resizeCyclesText);
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_EXTERNAL_RESIZE", externalResize ? "1" : null);
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_SKIP_RESIZE_BURST", skipResizeBurst ? "1" : null);
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_SMOKE_MS", smokeMilliseconds);
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_DIAGNOSTICS", "1");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_INPUT_SMOKE", "1");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C7_SMOKE", "1");
-        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C8_SMOKE", "1");
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_C8_SMOKE", lifecycleCycles == 0 ? "0" : "1");
         try
         {
             var descriptor = DorotiApplicationFactory.Create<ProductStartup>(
@@ -31,8 +49,10 @@ internal static class Program
             Require(ProductEntrypoint.AttachCount == 1 && ProductEntrypoint.DetachCount == 1 &&
                     ProductEntrypoint.DrawCount >= 1 && ProductEntrypoint.ShutdownCount == 1,
                 "Framework session/view lifecycle did not complete exactly once.");
+            var expectedRecoveryFailure = injectedResult is "DEVICE_LOST" or "SURFACE_LOST" ? 1 : 0;
             Require(diagnostics.RenderCallbacks >= 1 && diagnostics.PresentedTerminals >= 1 &&
-                    diagnostics.FailedTerminals == 0, "Product frame terminal coverage failed.");
+                    diagnostics.FailedTerminals == expectedRecoveryFailure,
+                "Product frame terminal coverage failed.");
             Require(diagnostics.PlatformThreadId != 0 && diagnostics.RasterThreadId != 0 &&
                     diagnostics.InputThreadId == diagnostics.PlatformThreadId &&
                     diagnostics.RasterThreadId != diagnostics.PlatformThreadId,
@@ -40,27 +60,88 @@ internal static class Program
             Require(diagnostics.VisibleAfterExactPresent, "The native window was not shown after an exact frame.");
             Require(diagnostics.AcceptedResizeGenerations >= 1 && diagnostics.UnterminatedResizeGenerations == 0 &&
                     diagnostics.DuplicateResizeTerminals == 0, "Product resize generation did not drain exactly once.");
-            Require(diagnostics.AcceptedResizeGenerations >= 2 &&
-                    diagnostics.AcceptedResizeGenerations < 20 &&
-                    diagnostics.PresentedResizeGenerations >= 1 &&
-                    diagnostics.PresentedResizeGenerations + diagnostics.SupersededResizeGenerations ==
-                        diagnostics.AcceptedResizeGenerations &&
-                    diagnostics.FailedResizeGenerations == 0,
-                "The C5-A ANGLE resize burst did not coalesce to exact raster admissions.");
-            Require(diagnostics.DeviceGenerations == 2 && diagnostics.Presents >= 1 &&
-                    diagnostics.Presents == diagnostics.GpuCopies &&
+            if (resizeCycles == 0 && !externalResize && !skipResizeBurst)
+            {
+                Require(diagnostics.AcceptedResizeGenerations >= 2 &&
+                        diagnostics.AcceptedResizeGenerations < 20 &&
+                        diagnostics.PresentedResizeGenerations >= 1 &&
+                        diagnostics.PresentedResizeGenerations + diagnostics.SupersededResizeGenerations +
+                            diagnostics.FailedResizeGenerations == diagnostics.AcceptedResizeGenerations &&
+                        diagnostics.FailedResizeGenerations <= expectedRecoveryFailure,
+                    "The C5-A presenter resize burst did not coalesce to exact raster admissions.");
+            }
+            else if (resizeCycles > 0)
+            {
+                Require(ProductEntrypoint.CompletedResizeRequests == resizeCycles &&
+                        diagnostics.AcceptedResizeGenerations >= resizeCycles &&
+                        diagnostics.PresentedResizeGenerations >= 1 &&
+                        diagnostics.PresentedResizeGenerations + diagnostics.SupersededResizeGenerations +
+                            diagnostics.FailedResizeGenerations == diagnostics.AcceptedResizeGenerations &&
+                        diagnostics.ResizeBuffers >= (ulong)resizeCycles &&
+                        diagnostics.Presents >= (ulong)resizeCycles &&
+                        diagnostics.GpuCopies >= (ulong)resizeCycles &&
+                        diagnostics.FailedResizeGenerations <= expectedRecoveryFailure,
+                    "The requested exact-size resize cycles did not each reach presentation.");
+            }
+            else if (externalResize)
+            {
+                Require(diagnostics.AcceptedResizeGenerations >= 2 &&
+                        diagnostics.PresentedResizeGenerations >= 1 &&
+                        diagnostics.PresentedResizeGenerations + diagnostics.SupersededResizeGenerations +
+                            diagnostics.FailedResizeGenerations == diagnostics.AcceptedResizeGenerations &&
+                        diagnostics.FailedResizeGenerations == expectedRecoveryFailure,
+                    "External live resize generations did not drain one-to-one.");
+            }
+            else
+            {
+                Require(diagnostics.AcceptedResizeGenerations >= 1 &&
+                        diagnostics.PresentedResizeGenerations + diagnostics.SupersededResizeGenerations +
+                            diagnostics.FailedResizeGenerations == diagnostics.AcceptedResizeGenerations &&
+                        diagnostics.FailedResizeGenerations <= expectedRecoveryFailure,
+                    "No-burst qualification did not drain its resize generation one-to-one.");
+            }
+            var presentationContract = diagnostics.Vulkan is { } vulkan
+                ? vulkan.OutstandingAcquired == 0 &&
+                  vulkan.Acquired == vulkan.Presented &&
+                  vulkan.Presented == diagnostics.GpuCopies &&
+                  vulkan.SuccessfulPresents == diagnostics.Presents
+                : diagnostics.Presents == diagnostics.GpuCopies;
+            Require(diagnostics.CompletedDeviceResets == diagnostics.RequestedDeviceResets &&
+                    diagnostics.DeviceGenerations ==
+                        1UL + checked((ulong)diagnostics.CompletedDeviceResets) +
+                        checked((ulong)diagnostics.VulkanDeviceLossRecoveries) +
+                        checked((ulong)diagnostics.VulkanSurfaceLossRecoveries) &&
+                    diagnostics.Presents >= 1 &&
+                    presentationContract &&
                     diagnostics.GpuCopies <= diagnostics.GpuSubmits,
-                "Managed presenter ordering or injected ANGLE device recreation differs in the product path.");
-            Require(diagnostics.PresenterBackend == "ANGLE/EGL-D3D11",
-                "Product validation did not select the managed ANGLE/EGL-D3D11 presenter.");
-            Require(diagnostics.AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase) &&
-                    (diagnostics.AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
-                     diagnostics.AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase)) &&
+                "Managed presenter ordering or injected device recreation differs in the product path.");
+            var expectedBackend = requestedPresenter.Equals("Vulkan", StringComparison.OrdinalIgnoreCase)
+                ? "Vulkan" : "ANGLE/EGL-D3D11";
+            Require(diagnostics.PresenterBackend == expectedBackend &&
+                    diagnostics.RequestedPresenter.Equals(requestedPresenter, StringComparison.OrdinalIgnoreCase) &&
+                    diagnostics.EffectivePresenter == expectedBackend,
+                "Product validation did not select the explicitly requested presenter.");
+            Require((expectedBackend == "Vulkan" ||
+                     diagnostics.AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase) &&
+                     (diagnostics.AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
+                      diagnostics.AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase))) &&
                     !diagnostics.AdapterDescription.Contains("SwiftShader", StringComparison.OrdinalIgnoreCase) &&
                     !diagnostics.AdapterDescription.Contains("WARP", StringComparison.OrdinalIgnoreCase) &&
                     !diagnostics.AdapterDescription.Contains("llvmpipe", StringComparison.OrdinalIgnoreCase),
-                "Product validation did not bind ANGLE to a hardware D3D11 renderer.");
-            Require(diagnostics.OperationalDebugErrors == 0, "Product presentation emitted operational EGL/GLES errors.");
+                "Product validation did not bind the presenter to a hardware renderer.");
+            Require(diagnostics.OperationalDebugErrors == 0, "Product presentation emitted operational GPU errors.");
+            if (injectedResult == "DEVICE_LOST")
+                Require(diagnostics.VulkanDeviceLossRecoveries == 1 && diagnostics.Vulkan is { DeviceLostResults: 1 },
+                    "Injected Vulkan DEVICE_LOST did not take the single recovery branch.");
+            if (injectedResult == "SURFACE_LOST")
+                Require(diagnostics.VulkanSurfaceLossRecoveries == 1 && diagnostics.Vulkan is { SurfaceLostResults: 1 },
+                    "Injected Vulkan SURFACE_LOST did not take the single recovery branch.");
+            if (injectedResult == "OUT_OF_DATE")
+                Require(diagnostics.Vulkan is { OutOfDateResults: >= 1 },
+                    "Injected Vulkan OUT_OF_DATE did not take the acquire branch.");
+            if (injectedResult == "SUBOPTIMAL")
+                Require(diagnostics.Vulkan is { SuboptimalResults: >= 1 },
+                    "Injected Vulkan SUBOPTIMAL did not take the present branch.");
             var layout = WindowsNativeV1.ValidateLayout();
             Require(layout.GpuPointerCount == 0, "Product ABI exposes a GPU pointer.");
             Require(ProductEntrypoint.PointerChanges.Take(5).SequenceEqual([
@@ -96,11 +177,24 @@ internal static class Program
             Require(ProductEntrypoint.SemanticsActions.Any(action =>
                         action.nodeId == 3 && action.action == SemanticsAction.tap),
                 "C7 UIA SelectionItem pattern did not reach Doroti semantics dispatch.");
-            Require(new[] { AppLifecycleState.inactive, AppLifecycleState.hidden,
-                            AppLifecycleState.paused, AppLifecycleState.resumed,
-                            AppLifecycleState.detached }
-                    .All(ProductEntrypoint.LifecycleStates.Contains),
-                "C8 minimize/restore/detach lifecycle sequence differs.");
+            Require(ProductEntrypoint.LifecycleStates.Contains(AppLifecycleState.detached),
+                "C8 detach lifecycle event is missing.");
+            if (lifecycleCycles > 0)
+            {
+                Require(new[] { AppLifecycleState.inactive, AppLifecycleState.hidden,
+                                AppLifecycleState.paused, AppLifecycleState.resumed }
+                        .All(ProductEntrypoint.LifecycleStates.Contains),
+                    "C8 minimize/restore lifecycle sequence differs.");
+                var inactiveCount = ProductEntrypoint.LifecycleStates.Count(state => state == AppLifecycleState.inactive);
+                var hiddenCount = ProductEntrypoint.LifecycleStates.Count(state => state == AppLifecycleState.hidden);
+                var pausedCount = ProductEntrypoint.LifecycleStates.Count(state => state == AppLifecycleState.paused);
+                var resumedCount = ProductEntrypoint.LifecycleStates.Count(state => state == AppLifecycleState.resumed);
+                Require(inactiveCount >= lifecycleCycles && hiddenCount >= lifecycleCycles &&
+                        pausedCount >= lifecycleCycles && resumedCount >= lifecycleCycles,
+                    $"Requested minimize/restore lifecycle cycles did not all cross the managed boundary " +
+                    $"(inactive={inactiveCount}, hidden={hiddenCount}, paused={pausedCount}, resumed={resumedCount}, " +
+                    $"requested={lifecycleCycles}).");
+            }
             var provenance = diagnostics.NativeProvenance;
             var provenanceAudit = string.Equals(
                 Environment.GetEnvironmentVariable("DOROTI_WINDOWS_NATIVE_AUDIT"),
@@ -124,7 +218,7 @@ internal static class Program
 
             var report = new
             {
-                schemaVersion = "doroti.windows.hwnd-exact-cpp-product-validation/v1",
+                schemaVersion = "doroti.windows.hwnd-exact-cpp-product-validation/v2",
                 gate = "C5-A",
                 status = "PASS",
                 exitCode,
@@ -135,10 +229,16 @@ internal static class Program
                     ProductEntrypoint.DrawCount,
                     ProductEntrypoint.ShutdownCount,
                 },
+                lifecycleStates = ProductEntrypoint.LifecycleStates,
                 diagnostics,
-                resizeRequests = 20,
+                resizeRequests = resizeCycles == 0 ? 20 : resizeCycles,
+                completedResizeRequests = ProductEntrypoint.CompletedResizeRequests,
+                externalResize,
+                skipResizeBurst,
+                injectedVulkanResult = injectedResult,
+                lifecycleCycles,
                 abiGpuPointerCount = layout.GpuPointerCount,
-                scopeBoundary = "Automated product bootstrap, framework scene, managed ANGLE/EGL-D3D11 exact presentation, and clean close. Visible resize behavior remains notVerified.",
+                scopeBoundary = $"Automated product bootstrap, framework scene, managed {expectedBackend} exact presentation, and clean close. Physical scan-out and human resize behavior remain notVerified.",
             };
             Write(reportPath, report);
             var c6ReportPath = IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c6-input.json"));
@@ -221,7 +321,7 @@ internal static class Program
         {
             Write(reportPath, new
             {
-                schemaVersion = "doroti.windows.hwnd-exact-cpp-product-validation/v1",
+                schemaVersion = "doroti.windows.hwnd-exact-cpp-product-validation/v2",
                 gate = "C5-A",
                 status = "FAIL",
                 exception = exception.ToString(),
@@ -245,6 +345,15 @@ internal static class Program
         return IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c5-angle-product.json"));
     }
 
+    private static string? ResolveOption(string[] args, string name)
+    {
+        var index = Array.IndexOf(args, name);
+        if (index < 0) return null;
+        if (index + 1 >= args.Length || string.IsNullOrWhiteSpace(args[index + 1]))
+            throw new ArgumentException($"{name} requires a value.");
+        return args[index + 1];
+    }
+
     private static void Require(bool condition, string message)
     {
         if (!condition) throw new InvalidOperationException(message);
@@ -261,7 +370,7 @@ public sealed class ProductStartup : IDorotiApplicationStartup
 {
     public void Configure(DorotiApplicationBuilder builder) => builder
         .UseEntrypoint(() => new ProductEntrypoint())
-        .UseView(new DorotiViewConfiguration("Doroti C5-A ANGLE presenter", new Size(640, 480)));
+        .UseView(new DorotiViewConfiguration("Doroti C5-A presenter validation", new Size(640, 480)));
 }
 
 public sealed class ProductEntrypoint : IDorotiViewEntrypoint
@@ -272,6 +381,7 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
     public static int DetachCount;
     public static int DrawCount;
     public static int ShutdownCount;
+    public static int CompletedResizeRequests;
     public static List<PointerChange> PointerChanges { get; } = [];
     public static int WheelSignals;
     public static List<KeyEventType> KeyTypes { get; } = [];
@@ -285,6 +395,7 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
     public static List<AppLifecycleState> LifecycleStates { get; } = [];
     private IPlatformServicesHostCapability? _services;
     private ITextInputHostCapability? _textInput;
+    private CancellationTokenSource? _qualificationFrames;
 
     public void Bootstrap(PlatformDispatcher dispatcher)
     {
@@ -378,12 +489,61 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
         ], SemanticsUpdateUrgency.immediate));
         services.SetCursor(DorotiMouseCursorKind.click);
         services.SetClipboardTextAsync("Doroti C6 한글 clipboard").AsTask().GetAwaiter().GetResult();
-        for (var index = 0; index < 20; index++)
+        var resizeCycles = int.TryParse(
+            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_PRODUCT_RESIZE_CYCLES"),
+            out var configuredResizeCycles) ? configuredResizeCycles : 0;
+        var externalResize = string.Equals(
+            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_EXTERNAL_RESIZE"),
+            "1", StringComparison.Ordinal);
+        var skipResizeBurst = string.Equals(
+            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_SKIP_RESIZE_BURST"),
+            "1", StringComparison.Ordinal);
+        if (resizeCycles == 0 && !externalResize && !skipResizeBurst)
         {
-            var direction = index < 10 ? index : 19 - index;
-            view.Resize(new Size(640 + direction * 37, 480 + direction * 23));
+            for (var index = 0; index < 20; index++)
+            {
+                var direction = index < 10 ? index : 19 - index;
+                view.Resize(new Size(640 + direction * 37, 480 + direction * 23));
+            }
         }
         view.ScheduleFrame(DartUiInvocation.Managed("c5-product#AttachView"));
+        var resetCount = int.TryParse(
+            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_DEVICE_RESET_COUNT"),
+            out var configuredResetCount) ? configuredResetCount : 1;
+        _qualificationFrames = new CancellationTokenSource();
+        var token = _qualificationFrames.Token;
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(1000, token).ConfigureAwait(false);
+            var qualificationCycles = Math.Max(resetCount + 6, resizeCycles);
+            for (var index = 0; index < qualificationCycles && !token.IsCancellationRequested; index++)
+            {
+                var resized = false;
+                if (_view is { } current)
+                {
+                    if (index < resizeCycles)
+                    {
+                        var direction = index + 1;
+                        current.Resize(new Size(640 + direction * 31, 480 + direction * 19));
+                        Interlocked.Increment(ref CompletedResizeRequests);
+                        resized = true;
+                    }
+                    if (!resized)
+                        current.ScheduleFrame(DartUiInvocation.Managed("vulkan-product#qualification-frame"));
+                }
+                if (resized)
+                {
+                    await Task.Delay(450, token).ConfigureAwait(false);
+                    if (_view is { } settledView)
+                        settledView.ScheduleFrame(DartUiInvocation.Managed("vulkan-product#resize-settle-frame"));
+                    await Task.Delay(550, token).ConfigureAwait(false);
+                }
+                else
+                {
+                    await Task.Delay(600, token).ConfigureAwait(false);
+                }
+            }
+        }, token);
     }
 
     private void Draw()
@@ -392,7 +552,17 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
         var view = _view ?? throw new InvalidOperationException("C5 view is unavailable.");
         ClipboardRoundTrip ??= (_services ?? throw new InvalidOperationException("C6 services are unavailable."))
             .GetClipboardTextAsync().AsTask().GetAwaiter().GetResult();
-        using var scene = new Scene(view.viewId, []);
+        var recorder = new PictureRecorder();
+        var canvas = new Canvas(recorder);
+        canvas.drawColor(new Color(0xff10243a), BlendMode.src);
+        canvas.drawRect(Rect.fromLTWH(32, 32, 220, 124),
+            new Paint { color = new Color(0xff4fc3f7) });
+        canvas.drawCircle(new Offset(312, 116), 72,
+            new Paint { color = new Color(0x80ff4081) });
+        using var picture = recorder.endRecording();
+        var builder = new SceneBuilder(view.viewId);
+        builder.addPicture(Offset.zero, picture);
+        using var scene = builder.build();
         view.render(scene);
         Interlocked.Increment(ref DrawCount);
     }
@@ -408,6 +578,9 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
             _textInput = null;
         }
         _view = null;
+        _qualificationFrames?.Cancel();
+        _qualificationFrames?.Dispose();
+        _qualificationFrames = null;
         Interlocked.Increment(ref DetachCount);
     }
 

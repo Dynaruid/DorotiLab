@@ -59,6 +59,8 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -L
 ```
 
 Windows 명령은 기본적으로 Windows App SDK/`HwndExactCpp`를 선택합니다. 독립 Windows MAUI runner가 필요할 때만 `-WindowsBackend Maui`를 명시합니다.
+
+Windows presenter 기본값은 계속 `AngleD3D11`입니다. Maintainer는 `DOROTI_WINDOWS_PRESENTER=Vulkan`으로 실험적 direct Vulkan 경로를 명시적으로 시험할 수 있으며, capable GPU가 둘 이상이거나 선택을 고정할 때 `DOROTI_WINDOWS_VULKAN_DEVICE`를 지정합니다. Vulkan은 System32 Vulkan 1.1과 surface/Win32-surface/swapchain extension을 요구하지만 swapchain-maintenance는 요구하지 않습니다. 자동 fallback이 없으며 `experimentalAcrylic`과 함께 선택할 수 없습니다. 자동 WGC qualification 결과는 실제 물리 resize나 scan-out acceptance를 뜻하지 않습니다.
 `-LastSuccessful`(또는 `-NoBuild`)은 runner, configuration, RID와 source/native input fingerprint가 일치하는 이전 성공 artifact만 재사용하며, 기록이 없거나 stale이면 fail-closed합니다. `-NoRestore`는 build는 수행하고 restore만 생략합니다.
 
 ## Repository 구성

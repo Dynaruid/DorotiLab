@@ -127,6 +127,23 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform linux -Rid linux-x64
 ```
 
+### Windows optional Vulkan presenter로 실행
+
+Windows App SDK runner는 실험적 direct Vulkan/Skia presenter를 명시적으로 선택할 수 있습니다. 기본값은 계속 ANGLE입니다. Acrylic opt-in이 설정되지 않은 shell에서 다음 명령을 실행합니다.
+
+```powershell
+$env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
+$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # 또는 정확하거나 유일한 다른 device 이름 조각
+Remove-Item Env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC -ErrorAction SilentlyContinue
+
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
+  -App ./DorotiDemoApp `
+  -Platform windows `
+  -Configuration Release
+```
+
+capability를 만족하는 GPU가 정확히 하나라면 `DOROTI_WINDOWS_VULKAN_DEVICE`는 생략할 수 있습니다. 선택을 재현 가능하게 고정하려면 정확한 device name 또는 유일한 이름 조각을 지정합니다. Vulkan은 System32 Vulkan 1.1 loader와 surface/Win32-surface/swapchain 지원을 요구하지만 swapchain-maintenance extension은 요구하지 않습니다. ANGLE로 자동 fallback하지 않으며 `DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1`과 충돌합니다. 기본 ANGLE presenter로 돌아가려면 실행 후 `DOROTI_WINDOWS_PRESENTER`를 지웁니다.
+
 ### Android 실기기와 에뮬레이터 연결
 
 Android SDK Platform Tools의 `adb`가 필요합니다. Android Studio를 설치했다면 일반적으로 `%LOCALAPPDATA%\Android\Sdk\platform-tools`에 있습니다. `adb`가 `PATH`에 없으면 아래처럼 경로를 지정할 수 있습니다.
@@ -242,6 +259,8 @@ Linux 데모는 `WindowBackdropMode.acrylic`과 `WindowBackdropFallback.transpar
 ## 지원과 evidence 상태
 
 Windows 기본 경로는 self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host입니다. Native C++은 top-level/child/task HWND와 input/lifecycle ingress를, managed code는 Doroti scene 생성과 hardware-D3D11 ANGLE/EGL/Skia raster/presentation을 소유합니다. Exact-size GPU backing을 `EGL_FIXED_SIZE_ANGLE` window surface로 blit하며 새 surface는 첫 swap 뒤 initial show 또는 resize 완료 전에 `DwmFlush`합니다. 8 ms refresh는 interactive move가 두 monitor에 걸쳐 있고 pending/in-flight render가 없을 때만 동작합니다.
+
+`DOROTI_WINDOWS_PRESENTER=Vulkan`은 같은 `HwndExactCpp` runner의 별도 실험적 Vulkan/Skia 경로를 선택합니다. stale work는 image acquire 전에 버리고, acquire 성공은 unconditional copy/present commit이므로 acquired-image release와 swapchain-maintenance가 필요 없습니다. 2026-09-02 Release Demo 실행은 NVIDIA GeForce RTX 4060 Laptop GPU와 AMD Radeon 780M 모두에서 System32 loader의 Vulkan을 effective presenter로 선택하고 visible exact presentation에 도달했으며 failed terminal, operational GPU error, device/surface loss, outstanding acquired image가 모두 0이었습니다. AMD는 maintenance-free capability/WSI 계약과 600ms reverse live-resize 자동 probe 한 건도 통과했습니다. 자동 WGC와 terminal evidence는 실제 scan-out, 사람의 resize, IME 또는 accessibility acceptance를 대신하지 않으므로 Vulkan은 계속 opt-in입니다. [ADR-027](../Doroti/docs/adr/ADR-027-windows-optional-vulkan.md)과 [구현 체크포인트](../history/26-09-02/windows-appsdk-vulkan-implementation-checkpoint.md)를 참고하세요.
 
 `DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1`은 별도 opt-in ContentIsland/Composition Swapchain 경로를 선택합니다. 이 경로는 `WM_SIZING`을 제한하지 않으며 Composition `WM_SIZE`에서 terminal, fence, buffer event 또는 `DwmFlush`를 기다리지 않습니다. ContentIsland가 child-site geometry를 소유하고 이미 physical-pixel인 surface를 `OverrideScale=1`, `Stretch=None`, identity transform과 1:1 source crop으로 표시합니다. 이전 256px dark overscan/erase-fill/stretch 경로는 좌·상단 검은 영역과 raster 떨림의 원인이어서 제거했습니다. 현재 200% DPI/165Hz TopLeft 3초 자동 capture는 active/inactive 9/0px와 settle 29.16ms로 PASS하지만, 600ms case는 active 37px와 visual gap/title oracle 때문에 FAIL입니다. Release/ABI/opaque/empty-PATH/option/fallback 회귀는 PASS했습니다. 현재 바이너리의 사람 실물 재확인과 IME/accessibility/full matrix는 `notVerified`이며 opaque가 계속 기본값입니다.
 

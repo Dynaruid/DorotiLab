@@ -14,6 +14,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" VersionOverride="2.4.0" />
     <PackageReference Include="Avalonia.Angle.Windows.Natives" />
+    <PackageReference Include="Silk.NET.Vulkan" />
+    <PackageReference Include="Silk.NET.Vulkan.Extensions.KHR" />
     <PackageReference Include="SkiaSharp" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />

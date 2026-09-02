@@ -7,6 +7,7 @@
 - [ADR-024: AppKit-owned Metal surface and permanent dual macOS backend](ADR-024-appkit-metal-surface-spike.md)
 - [ADR-025: Windows App SDK HwndExactCpp and managed ANGLE presentation](ADR-025-windowsappsdk-hwndexact-angle.md)
 - [ADR-026: Opt-in Windows experimental Acrylic Composition Swapchain](ADR-026-windows-experimental-acrylic.md)
+- [ADR-027: Experimental optional Silk.NET Vulkan presenter](ADR-027-windows-optional-vulkan.md)
 
 R3–R8 accept ADR-001 through ADR-015 as the contract baseline for subsequent implementation. A later decision may supersede an ADR, but must not silently edit its ownership or lifecycle rules.
 
@@ -35,3 +36,4 @@ R3–R8 accept ADR-001 through ADR-015 as the contract baseline for subsequent i
 | [ADR-024](ADR-024-appkit-metal-surface-spike.md) | AppKit-owned MTKView, Metal completion ACK, exact preview dependency, and permanent dual macOS backend boundary |
 | [ADR-025](ADR-025-windowsappsdk-hwndexact-angle.md) | Default Windows App SDK 2.4 child-HWND host, managed ANGLE/EGL-D3D11 presentation, bounded resize, and evidence boundary |
 | [ADR-026](ADR-026-windows-experimental-acrylic.md) | Opt-in ContentIsland Acrylic, same-device three-slot Composition Swapchain, bounded active-edge resize, deterministic pre-show fallback, and evidence boundary |
+| [ADR-027](ADR-027-windows-optional-vulkan.md) | Explicit experimental Vulkan/Skia presenter, acquire-as-presentation-commit, queue-idle retirement, capability fail-fast, and no fallback |

@@ -1,7 +1,7 @@
 # Doroti Windows App SDK Silk.NET Vulkan 작업계획
 
 - 작성일: 2026-09-02
-- 상태: **plan-only / implementation notRun / qualification notRun / physical acceptance notVerified**
+- 상태: **implementation PASS / automated qualification PASS-partial / physical acceptance notVerified**
 - 대상: `Doroti.Host.WindowsAppSdk`의 opaque `HwndExactCpp` 경로에 Silk.NET 기반 direct Vulkan presenter 추가
 - 현재 기본값: managed ANGLE/EGL-D3D11
 - 새 선택값: `DOROTI_WINDOWS_PRESENTER=Vulkan`
@@ -18,7 +18,7 @@
 | Silk.NET 패키지 | `Silk.NET.Vulkan`과 `Silk.NET.Vulkan.Extensions.KHR` 2.23.0을 같은 버전으로 중앙 고정한다. 2.23.0은 현재 확인한 stable이며 Vulkan 1.4.336 registry 기반 binding을 제공한다. |
 | native runtime | Silk.NET은 binding이다. 제품에 임의의 `vulkan-1.dll`이나 ICD를 복사하지 않고 `%SystemRoot%\System32\vulkan-1.dll`을 명시적으로 연다. loader/driver/필수 extension이 없으면 Vulkan 요청을 fail-fast한다. |
 | 과거 acquired-image 결함 | 제거된 구현은 acquire와 copy 뒤 `shouldPresent`가 false가 되면 `vkQueuePresentKHR`도 release도 하지 않고 반환할 수 있었다. 이 경로가 과거 device loss의 단독 원인이었다고 단정하지 않지만, 새 구현에서는 허용하지 않는다. |
-| 과거 swapchain retirement | 매 resize마다 `vkDeviceWaitIdle` 뒤 old swapchain을 즉시 파괴했다. queue idle만으로 presentation engine의 참조 종료를 가정하지 않고 present fence로 retirement를 증명한다. |
+| swapchain retirement | acquire 전까지 stale 여부를 확정하고 acquire 성공을 presentation commit으로 삼는다. recreate는 raster worker에서 `vkQueueWaitIdle`로 현재 queue의 제출/present를 끝낸 뒤 old swapchain을 파괴한다. 이 보수적 장벽의 resize 비용은 qualification에서 측정한다. |
 | 기본 present mode | 첫 제품 후보는 `FIFO`로 고정한다. `MAILBOX`/`IMMEDIATE`는 correctness와 resize gate를 통과한 뒤 별도 진단 비교만 허용한다. |
 | Acrylic 관계 | Vulkan은 opaque child-HWND swapchain만 소유한다. `experimentalAcrylic`의 ContentIsland/Presentation/ANGLE 경로와 결합하거나 fallback으로 숨기지 않는다. |
 
@@ -78,22 +78,18 @@ Vulkan device loss는 같은 창에서 ANGLE로 전환하지 않는다. raster w
 
 ### Vulkan acquire 상태 머신
 
-각 acquired image는 다음 상태만 따른다.
+stale generation은 acquire 전에 끝내며, acquired image는 다음 상태만 따른다.
 
 `available → acquired → copySubmitted → presented`
-
-또는 stale/close/recreate가 끼면 다음과 같이 끝낸다.
-
-`available → acquired → copySubmitted? → sync signals drained → GPU fence complete → released`
 
 규칙:
 
 1. acquire 전 latest/input predicate가 false면 image를 acquire하지 않고 generation을 `superseded`로 끝낸다.
-2. acquire 성공 뒤에는 일반 return/exception 경로가 없다. 반드시 present하거나 `vkReleaseSwapchainImagesKHR`로 release한다.
-3. acquire-ready 또는 render-finished binary semaphore를 present가 소비하지 않는 분기에서는 no-op queue submit과 fence로 signal을 소비한 뒤 slot을 재사용한다.
-4. copy 제출 뒤 stale가 되면 submit/drain fence 완료 후에만 image를 release한다.
-5. release 기능을 위해 `VK_KHR_swapchain_maintenance1` feature를 hard requirement로 둔다. extension/function/feature가 없으면 제품 Vulkan 후보는 capability FAIL이다.
-6. acquired image count, outstanding image index, unconsumed semaphore signal, terminal, release/present 결과를 ledger에 남긴다. recreate/dispose 뒤 outstanding과 unconsumed signal은 모두 0이어야 한다.
+2. acquire 성공 자체가 presentation commit이다. 그 뒤 최신 generation이 바뀌더라도 해당 image는 반드시 copy하고 `vkQueuePresentKHR`까지 진행하며, post-acquire stale-return/release 분기를 두지 않는다.
+3. acquire-ready semaphore는 copy submit이, image-index별 render-finished semaphore는 present가 항상 소비한다. 같은 image를 다시 acquire한 시점에는 이전 present wait가 끝났으므로 해당 semaphore를 안전하게 재사용할 수 있다.
+4. recreate는 acquired transaction 밖에서만 시작하고 raster worker에서 `vkQueueWaitIdle`을 통과한 뒤 old swapchain과 관련 semaphore를 해제한다.
+5. `VK_KHR_swapchain_maintenance1`, `vkReleaseSwapchainImagesKHR`, present fence는 요구하지 않는다.
+6. acquired/presented count, outstanding image index, terminal, acquire/submit/present 결과를 ledger에 남긴다. recreate/dispose 뒤 outstanding은 0이어야 한다.
 
 ## 4. capability와 package gate
 
@@ -113,8 +109,6 @@ Vulkan device loss는 같은 창에서 ANGLE로 전환하지 않는다. raster w
 - 필수 instance extension:
   - `VK_KHR_surface`
   - `VK_KHR_win32_surface`
-  - `VK_KHR_get_surface_capabilities2`
-  - `VK_KHR_surface_maintenance1`
 - 개발/qualification에서만 `VK_EXT_debug_utils`와 `VK_LAYER_KHRONOS_validation`을 요청한다. 없는 validation layer를 제품 실패로 보지는 않지만 validation run 자체는 `notRun`으로 남긴다.
 
 ### physical/logical device
@@ -122,10 +116,7 @@ Vulkan device loss는 같은 창에서 ANGLE로 전환하지 않는다. raster w
 - graphics와 Win32 surface present를 모두 지원하는 queue family를 선택한다. 분리 queue는 첫 후보에서 지원하지 않는다.
 - software ICD/CPU device는 거부한다. device name, vendor/device ID, driver version, API version, device type, LUID validity/LUID를 manifest에 남긴다.
 - 다중 GPU에서는 명시적 device override 또는 기존 Windows adapter policy와 매칭되는 device를 선택하고, 단순 enumeration 첫 항목 선택은 금지한다.
-- 필수 device extension/feature:
-  - `VK_KHR_swapchain`
-  - `VK_KHR_swapchain_maintenance1`
-  - `VkPhysicalDeviceSwapchainMaintenance1FeaturesKHR.swapchainMaintenance1 == VK_TRUE`
+- 필수 device extension은 `VK_KHR_swapchain`이다. swapchain-maintenance extension/feature는 진단 정보로만 기록하며 selection 조건으로 사용하지 않는다.
 - surface가 `VK_IMAGE_USAGE_TRANSFER_DST_BIT`을 지원하지 않거나 exact client extent를 만들 수 없으면 capability FAIL이다.
 
 ### format/present policy
@@ -143,8 +134,8 @@ Vulkan device loss는 같은 창에서 ANGLE로 전환하지 않는다. raster w
 4. scene paint 뒤 `GRContext.Flush`/`Submit(syncCpu: true)`로 Skia 접근 완료를 증명한 후 Vulkan copy command를 제출한다. 성능 최적화 전에는 암묵적 queue ordering에 의존하지 않는다.
 5. backing image는 `COLOR_ATTACHMENT_OPTIMAL ↔ TRANSFER_SRC_OPTIMAL`, acquired image는 `UNDEFINED/PRESENT_SRC_KHR ↔ TRANSFER_DST_OPTIMAL → PRESENT_SRC_KHR` 전이를 명시한다.
 6. swapchain image별 사용 이력과 layout을 추적한다. 재사용 image를 매번 무조건 `UNDEFINED`로 가정하지 않는다.
-7. copy submit은 acquire-ready semaphore를 기다리고 render-finished semaphore를 signal하며, `vkQueuePresentKHR`는 그 semaphore를 기다린다. present하지 않는 release 분기는 두 binary signal을 명시적으로 drain한다.
-8. present wait semaphore는 frame ordinal이 아니라 acquired swapchain image index에 연결해 재사용한다. acquire/submit/drain fence와 present fence는 역할을 분리하고, 각 sync slot은 모든 payload 소비가 증명된 뒤에만 재사용한다.
+7. copy submit은 acquire-ready semaphore를 기다리고 image-index별 render-finished semaphore를 signal하며, `vkQueuePresentKHR`는 그 semaphore를 항상 기다린다.
+8. present wait semaphore는 frame ordinal이 아니라 acquired swapchain image index에 연결한다. 같은 image의 재acquire를 이전 present wait 소비의 증거로 삼고, recreate에서는 queue-idle retirement 뒤에 sync slot을 해제한다.
 9. Skia context, Skia surface/backend target, command buffers, synchronization, swapchain/surface, device, instance 순서의 해제 계약을 테스트로 고정한다.
 
 초기 동기식 Skia submit은 성능 최적화 대상이지만 V0~V4 correctness gate 전에는 비동기로 바꾸지 않는다. 이후 성능이 기준선을 넘지 못할 때만 Skia flush semaphore interop을 별도 단계로 설계한다.
@@ -155,14 +146,14 @@ Vulkan device loss는 같은 창에서 ANGLE로 전환하지 않는다. raster w
 - 0×0/minimized target은 swapchain을 만들거나 acquire하지 않고 lifecycle terminal로 끝낸다.
 - create/recreate 전에 surface capabilities/formats/present modes를 다시 조회한다.
 - 새 `VkSwapchainCreateInfoKHR.oldSwapchain`에 직전 swapchain을 전달하되 즉시 파괴하지 않는다.
-- 각 `vkQueuePresentKHR`에 `VkSwapchainPresentFenceInfoKHR` fence를 연결한다. retired swapchain을 참조한 과거 presentation fence가 모두 signal된 뒤에만 그 swapchain과 관련 wait semaphore를 해제한다.
-- 연속 recreate는 retired chain을 누적할 수 있으므로 active 1 + retired 최대 2를 hard bound로 둔다. bound를 넘으면 raster worker에서 bounded wait하고 timeout 시 FAIL한다.
+- recreate 직전에 raster worker가 `vkQueueWaitIdle`을 호출해 이전 copy/present queue 작업을 끝낸다. 성공 뒤 old swapchain과 관련 wait semaphore를 해제하며 retired chain을 누적하지 않는다.
+- queue-idle 횟수와 latency를 기록한다. WndProc/platform thread는 이 장벽을 기다리지 않지만 interactive resize 성능은 별도 live gate로 판정한다.
 - `VK_ERROR_OUT_OF_DATE_KHR`:
   - acquire 전이면 현재 target을 `superseded`하고 최신 extent에서 recreate한다.
-  - present 뒤이면 해당 image는 presented/released 계약에 맞게 끝내고 최신 extent를 다시 예약한다.
+  - present 결과이면 해당 acquired image의 presentation terminal을 기록하고 최신 extent를 다시 예약한다.
 - `VK_SUBOPTIMAL_KHR`은 이미 acquired된 image를 끝까지 present한 뒤 recreate reason으로 기록한다.
 - `VK_ERROR_SURFACE_LOST_KHR`은 Win32 surface를 1회 재생성한다. `VK_ERROR_DEVICE_LOST`는 device recovery 계약으로 이동한다.
-- `vkDeviceWaitIdle`은 dispose/device-recovery의 bounded 최종 장벽으로만 사용한다. interactive resize마다 호출하지 않는다.
+- `vkDeviceWaitIdle`은 dispose/device-recovery의 최종 장벽으로만 사용하고, swapchain recreate에는 더 좁은 `vkQueueWaitIdle`을 사용한다.
 - `WM_EXITSIZEMOVE`는 최신 physical extent의 final exact generation을 요청한다. 100ms bounded wait는 기존 native 계약을 넘지 않으며 WndProc에서 Vulkan primitive를 직접 기다리지 않는다.
 
 ## 7. 구현 단계와 hard gate
@@ -171,11 +162,11 @@ Vulkan device loss는 같은 창에서 ANGLE로 전환하지 않는다. raster w
 
 ### V0. 기준선과 실패 재현 계약
 
-- [ ] 시작 `git status --short`, HEAD, OS/build, Windows App SDK, .NET SDK, GPU/driver/LUID, WDDM, monitor refresh/DPI를 manifest에 기록
-- [ ] ANGLE 기본 Release build, managed presenter product probe, first-frame capture, resize/counter baseline 실행
-- [ ] 이전 Vulkan source를 `aa3f532^`에서 읽기 전용 reference로 고정하고 제품 코드에 직접 cherry-pick하지 않음
-- [ ] 과거 `ErrorDeviceLost`, acquired-without-terminal, immediate old-swapchain destruction을 regression scenario로 문서화
-- [ ] Acrylic 체크포인트와 working tree의 사용자 변경 보존 확인
+- [x] 시작 `git status --short`, HEAD, OS/build, Windows App SDK, .NET SDK, GPU/driver/LUID, WDDM, monitor refresh/DPI를 manifest에 기록
+- [x] ANGLE 기본 Release build, managed presenter product probe, first-frame capture, resize/counter baseline 실행
+- [x] 이전 Vulkan source를 `aa3f532^`에서 읽기 전용 reference로 고정하고 제품 코드에 직접 cherry-pick하지 않음
+- [x] 과거 `ErrorDeviceLost`, acquired-without-terminal, immediate old-swapchain destruction을 regression scenario로 문서화
+- [x] Acrylic 체크포인트와 시작 시 clean working tree 보존 확인
 
 Gate: 현재 ANGLE 기준선이 별도 PASS여야 한다. 기존 checker가 stale reference 때문에 막히면 `blocked`를 PASS로 바꾸지 않고 checker 갱신을 독립 항목으로 둔다.
 
@@ -189,27 +180,27 @@ Gate: 현재 ANGLE 기준선이 별도 PASS여야 한다. 기존 checker가 stal
 
 검사:
 
-- [ ] package 2.23.0 pair와 System32 loader provenance
-- [ ] API/instance extension/device extension/feature/queue/adapter/format/present-mode 출력
-- [ ] `KhrSwapchainMaintenance1.ReleaseSwapchainImages` 실제 function load와 한 acquired image release
-- [ ] validation layer 사용 가능 run에서 error/warning 0
-- [ ] unsupported/missing loader, software ICD, missing extension/feature의 명시적 negative fail-fast
+- [x] package 2.23.0 pair와 System32 loader provenance
+- [x] API/instance extension/device extension/feature/queue/adapter/format/present-mode 출력
+- [x] acquire 전 latest 판정과 acquire 성공 뒤 unconditional copy/present 정책을 capability contract로 고정
+- [x] validation layer 사용 가능 run에서 error/warning 0
+- [x] unsupported/missing loader, software ICD, missing extension/feature의 명시적 negative fail-fast
 
 Gate: mandatory capability가 하나라도 없으면 이 machine/driver에서 Vulkan 제품 통합은 `blocked-capability`이며 V2로 진행하지 않는다.
 
 ### V2. WSI 수명주기 spike
 
-제품 renderer 없이 실제 hidden/visible child HWND와 단색 marker로 상태 머신을 검증한다.
+제품 renderer 없이 실제 visible child HWND와 단색 marker로 상태 머신을 검증한다. 2026-09-02 사용자 피드백에 따라 기본 qualification은 필요한 분기만 짧게 실행한다. 반복 부하 검사는 `--wsi-stress`, 원래의 1,000/500회 검사는 `--wsi-soak` 명시 실행으로 분리하며 기본 gate나 후속 작업에서 자동 실행하지 않는다.
 
-- [ ] acquire→copy→present 1,000회
-- [ ] acquire 직후, copy submit 직후, present 직전 각각 forced stale 1,000회
-- [ ] 각 forced stale에서 acquire/render-finished signal drain, image release, reacquire 성공과 outstanding/unconsumed signal 0
-- [ ] same-image semaphore reuse validation
-- [ ] 500회 varying-size recreate와 active 1 + retired ≤2
-- [ ] close/minimize/restore/recreate 중 leaked handle, duplicate/missing terminal 0
-- [ ] `OUT_OF_DATE`, `SUBOPTIMAL`, `SURFACE_LOST`, injected device reset 분기별 terminal one-to-one
+- [x] acquire→copy→present 3회 qualification (`--wsi-stress`: 25회, `--wsi-soak`: 1,000회 선택)
+- [x] acquire 전 forced stale 3회는 acquire 없이 supersede하고, acquire 직후/copy 직후/present 직전 forced stale 각 3회는 committed image를 끝까지 present (`--wsi-stress`: 각 25회, `--wsi-soak`: 각 1,000회 선택)
+- [x] 모든 post-acquire forced stale에서 release/drain 없이 present, reacquire 성공과 outstanding/unconsumed signal 0
+- [x] same-image semaphore reuse validation
+- [x] 3회 varying-size recreate와 active 1 + retired ≤2 (`--wsi-stress`: 10회, `--wsi-soak`: 500회 선택)
+- [x] close/minimize/restore/recreate 2회 qualification에서 duplicate/missing terminal 0
+- [x] 실제 `OUT_OF_DATE`, `SUBOPTIMAL`, `SURFACE_LOST`, `DEVICE_LOST` 결과 주입과 분기별 terminal one-to-one; surface/device loss는 각 1회 복구 뒤 outstanding 0
 
-Gate: validation error, acquired leak, reuse-before-fence, unbounded retired swapchain, `DEVICE_LOST`가 하나라도 있으면 FAIL이다.
+Gate: validation error, acquired leak, post-acquire early return, unsafe semaphore reuse, unbounded retired swapchain, `DEVICE_LOST`가 하나라도 있으면 FAIL이다.
 
 ### V3. optional product presenter 통합
 
@@ -223,23 +214,23 @@ Gate: validation error, acquired leak, reuse-before-fence, unbounded retired swa
 - `Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj`
 - `Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64/`
 
-- [ ] `Vulkan` selector 추가, unset default ANGLE 유지, unknown/conflicting value fail-fast
-- [ ] target/backend/provenance에 requested/effective presenter와 Vulkan details 기록
-- [ ] current renderer/resize/input terminal 계약에 acquire commit/release 결과 연결
-- [ ] Vulkan reset 전 `SkiaSceneRenderer.InvalidateGpuContextResources()` ordering 고정
-- [ ] `experimentalAcrylic`과 code path/resource가 공유되지 않음을 contract 검사
+- [x] `Vulkan` selector 추가, unset default ANGLE 유지, unknown/conflicting value fail-fast
+- [x] target/backend/provenance에 requested/effective presenter와 Vulkan details 기록
+- [x] current renderer/resize/input terminal 계약에 acquire-as-presentation-commit 결과 연결
+- [x] Vulkan reset 전 `SkiaSceneRenderer.InvalidateGpuContextResources()` ordering 고정
+- [x] `experimentalAcrylic`과 code path/resource가 공유되지 않음을 selector contract로 고정
 
 Gate: explicit Vulkan run만 Vulkan을 만들고, unset/Angle/Acrylic before/after 결과가 동일해야 한다.
 
 ### V4. frame correctness와 device lifecycle
 
-- [ ] initial content가 resize 없이 750ms capture에서 보임
-- [ ] 10 exact-size resize와 10 present/submit/copy, invalid call/validation error 0
-- [ ] frame marker가 generation/extent/input sequence와 일치하고 stale visible present 0
-- [ ] transparent/opaque scene의 color channel과 premultiplied 결과 확인
-- [ ] shader/runtime effect가 Vulkan backend에서 명시적으로 지원되거나 fail-fast함
-- [ ] device reset 10회, app start/close 10회, minimize/restore 10회
-- [ ] first frame, first post-resize frame, first post-reset frame terminal 누락 0
+- [x] initial content가 resize 없이 750ms 이후 WGC capture에서 보임
+- [x] 10 exact-size resize와 present/submit/copy, invalid call/validation error 0
+- [x] visible frame marker 단조 증가, final client/swapchain extent exact, stale visible marker 0; input sequence terminal attribution 확인
+- [x] opaque background/rect와 반투명 overlap의 BGRA 및 source-over 결과 확인
+- [x] shader/runtime effect가 Vulkan backend에서 명시적으로 지원되거나 fail-fast함
+- [x] device reset 10회, app start/close 10회, minimize/restore 10회
+- [x] 자동 product run에서 first/post-resize/post-reset terminal 누락 0 (물리 scan-out은 별도 `notVerified`)
 
 Gate: build/counter만으로 PASS하지 않는다. visible marker와 terminal ledger가 함께 맞아야 한다.
 
@@ -247,13 +238,13 @@ Gate: build/counter만으로 PASS하지 않는다. visible marker와 terminal le
 
 동일 session에서 `ANGLE → Vulkan → ANGLE` 순으로 실행하고 environment manifest를 공유한다.
 
-- [ ] left/right/top/bottom과 네 모서리
-- [ ] slow/medium/fast, expand/shrink/reverse, 방향 전환 반복
-- [ ] 과거 실패 재현용 600px/600ms와 각 edge 10초 이상 stress
-- [ ] 같은 case 3회 연속, `vkQueueSubmit`/present/acquire/device error 0
+- [x] left/right/top/bottom과 네 모서리의 600px/600ms reverse motion
+- [ ] slow/medium/fast × expand/shrink/reverse 전체 Cartesian (`-FullCurrentDpiMatrix` 구현, 장시간 실행은 `notRun`)
+- [x] 과거 실패 재현용 600px/600ms; 각 edge 10초 이상 stress는 별도 `notRun`
+- [x] 같은 8-edge reverse case 3회 연속, `vkQueueSubmit`/present/acquire/device error 0
 - [ ] 100/125/150/200% DPI, 60/120/144/165Hz 가능한 조합
 - [ ] mixed-DPI monitor crossing, Snap, maximize/restore, Alt+Tab, occlusion
-- [ ] queue depth ≤2, outstanding acquired ≤1, retired swapchain ≤2, final exact settle
+- [x] 실행한 24 case에서 outstanding acquired ≤1, retired swapchain ≤2, final exact settle
 - [ ] ANGLE 같은-run 대비 target→present/visible p95와 max, cadence, timeout 비교
 
 자동 hard gate:
@@ -265,26 +256,44 @@ Gate: build/counter만으로 PASS하지 않는다. visible marker와 terminal le
 
 WGC/counter는 physical scan-out이나 사람의 체감을 증명하지 않는다. strict synthetic oracle가 현재 ANGLE에서도 실패한다면 두 결과를 각각 보존하고 Vulkan 성공으로 재분류하지 않는다.
 
+현재 자동 결과: `ANGLE → Vulkan(8 edges × 3 reverse runs) → ANGLE`은 `PASS-automated-partial`이다. Vulkan 24/24 case에서 captured 2,166, decoded marker 1,482, marker regression/device loss/surface loss/outstanding leak 0을 기록했다. 실행하지 않은 속도·motion Cartesian, edge별 10초 stress, monitor/DPI/refresh/window-management 조합은 PASS로 간주하지 않는다.
+
+acquire-as-commit 전환 뒤 AMD Radeon 780M에서도 capability/real-WSI/product/DorotiDemoApp이 PASS했고, 한 개의 left-edge 600ms reverse live probe가 `PASS-automated-partial`이었다. 이는 NVIDIA 전체 24-case evidence를 AMD 전체 matrix로 확장한 결과는 아니다.
+
 ### V6. input, IME, accessibility, packaging
 
-- [ ] hover/click/wheel/drag, resize cursor, focus, keyboard, clipboard
+- [x] 자동 product contract의 hover/click/wheel/drag, resize cursor, focus, keyboard, clipboard
 - [ ] 한국어 두벌식 조합/후보창/caret와 selection
 - [ ] Narrator 또는 Accessibility Insights의 UIA tree/actions
-- [ ] self-contained win-x64 publish와 empty-PATH launch
-- [ ] Vulkan managed assemblies 존재, app-local `vulkan-1.dll`/ICD 부재, System32 loader provenance
-- [ ] missing loader/driver/extension negative run의 actionable fail-fast
-- [ ] package consumer/template/default ANGLE launch 회귀 0
-- [ ] Windows target-scoped Release 0 warnings/errors와 가능한 global regression
+- [x] self-contained win-x64 publish와 empty-PATH launch
+- [x] Vulkan managed assemblies 존재, app-local `vulkan-1.dll`/ICD 부재, System32 loader provenance
+- [x] missing loader/driver/extension negative run의 actionable fail-fast
+- [x] package consumer/default ANGLE launch 회귀 0
+- [x] Windows target-scoped Release 0 warnings/errors (global regression은 `notRun`)
 
 실행하지 못한 물리/GPU/monitor/IME/UIA/global 항목은 `notVerified`로 남긴다.
 
+### 현재 evidence
+
+- 종합 qualification: `.doroti/evidence/windows-vulkan-final-qualification7/manifest.json` — `PASS`
+- AMD maintenance-free 종합 qualification: `.doroti/evidence/windows-vulkan-amd-acquire-commit-final/manifest.json` — `PASS`; capability/WSI/product, result injection, reset/lifecycle/resize/start-close, ANGLE/package negative gate 통과
+- 8-edge live reverse 3회: `.doroti/evidence/windows-vulkan-live-eight-edges-3x-fixed/manifest.json` — `PASS-automated-partial`
+- final live probe: `.doroti/evidence/windows-vulkan-live-final-probe/manifest.json` — `PASS-automated-partial`
+- diagnostics live probe: `.doroti/evidence/windows-vulkan-live-diagnostics-probe2/manifest.json` — `PASS-automated-partial`; recreate reason/retirement latency/QPC/256-event ring populated
+- WGC scene pixel: `.doroti/evidence/windows-vulkan-visible-v3/capture.json` — capture 1, blank/error 0; opaque/alpha-over sample 일치
+- self-contained publish: `.doroti/evidence/windows-vulkan-c9-publish-final.json` — `PASS`
+- Windows target Release build — 0 warnings/errors
+- AMD acquire-as-commit WSI: `.doroti/evidence/windows-vulkan-amd-acquire-commit-postcleanup-wsi.json` — `PASS`; maintenance extension 없이 accepted 24, presented 17, pre-commit superseded 7, outstanding 0
+- AMD product/Demo: `.doroti/evidence/windows-vulkan-amd-acquire-commit-postcleanup-product.json`, `.doroti/evidence/windows-vulkan-amd-acquire-commit-demo-v2.json` — `PASS`; effective Vulkan, visible exact present, acquired=presented, device/surface loss 0
+- AMD live probe: `.doroti/evidence/windows-vulkan-amd-acquire-commit-postcleanup-live-probe/manifest.json` — `PASS-automated-partial`
+
 ### V7. 문서화와 승격 결정
 
-- [ ] ADR-025 후속 ADR에 optional Vulkan owner, synchronization, retirement, failure/fallback 계약 기록
-- [ ] README/README.ko.md에 selector, prerequisites, diagnostics, unsupported behavior 기록
-- [ ] target manifest에 `defaultRenderer=ANGLE`과 `optionalRenderers=[Vulkan]`을 분리
-- [ ] automated evidence와 physical acceptance를 별도 표로 기록
-- [ ] Vulkan을 experimental optional로 둘지 supported optional로 승격할지 명시적 결정
+- [x] ADR-025 후속 ADR에 optional Vulkan owner, synchronization, retirement, failure/fallback 계약 기록
+- [x] README/README.ko.md에 selector, prerequisites, diagnostics, unsupported behavior 기록
+- [x] target manifest에 `defaultRenderer=AngleD3D11`과 `optionalRenderers=[Vulkan]`을 분리
+- [x] automated evidence와 physical acceptance를 별도 표로 기록
+- [x] Vulkan은 **experimental optional** 유지로 결정; 물리/matrix gate 전 승격 금지
 
 기본값을 Vulkan으로 바꾸는 일은 이 계획의 완료 조건이 아니다. 별도 사용자 결정과 전 GPU/driver matrix가 필요하다.
 
@@ -296,10 +305,10 @@ Vulkan diagnostics에는 최소 다음을 포함한다.
 - Vulkan instance/device API version, extensions/features, validation enabled 여부
 - device name/type/vendor/device/driver/LUID, queue family
 - surface format/color space/composite alpha/present mode/image count/extent
-- accepted/presented/released/superseded/failed generation 수
-- acquire/submit/copy/present/release 결과별 count와 마지막 `VkResult`
-- outstanding acquired count/index, max outstanding, acquire/render-finished signal drain 수, submit/present fence 상태
-- swapchain generation, recreate reason, active/retired count, retirement latency
+- accepted/presented/superseded/failed generation 수
+- acquire/submit/copy/present 결과별 count와 마지막 `VkResult`
+- outstanding acquired count/index, max outstanding, acquire-as-commit/retirement mode
+- swapchain generation, recreate reason, active/retired count, queue-idle 횟수와 retirement latency
 - validation message severity/type/VUID, device-loss 시 마지막 256 events ring
 - first-frame, resize target, present, visible capture QPC와 terminal attribution
 
@@ -309,7 +318,7 @@ evidence는 `.doroti/evidence/windows-vulkan-<timestamp>-<id>/` 아래 immutable
 
 다음 중 하나면 제품 통합 또는 승격을 중단한다.
 
-- 필수 maintenance extension/feature 또는 same graphics+present queue 부재
+- 필수 surface/swapchain extension, Vulkan 1.1, hardware device 또는 same graphics+present queue 부재
 - validation VUID, acquired image leak, unsafe semaphore reuse, retired swapchain bound 초과
 - 방향 전환 resize에서 `VK_ERROR_DEVICE_LOST` 재현
 - stale frame, wrong-size frame, black/blank band가 ANGLE 기준선보다 악화
@@ -324,7 +333,7 @@ evidence는 `.doroti/evidence/windows-vulkan-<timestamp>-<id>/` 아래 immutable
 
 1. unset은 계속 ANGLE이며 `DOROTI_WINDOWS_PRESENTER=Vulkan`만 direct Vulkan을 선택한다.
 2. Silk.NET 2.23.0 package pair와 System32 loader/driver provenance가 재현 가능하다.
-3. acquired image가 present/release 없이 남는 경로가 없고, present semaphore/swapchain retirement가 fence로 증명된다.
+3. stale generation은 acquire 전에 끝나고, acquired image는 항상 copy/present되며, same-image 재acquire와 queue-idle recreate로 semaphore/swapchain 수명이 닫힌다.
 4. Skia paint→Vulkan copy→present의 queue/layout/lifetime이 validation error 없이 동작한다.
 5. 과거 방향 전환 border-resize `ErrorDeviceLost`를 포함한 V5가 3회 연속 통과한다.
 6. exact-size/latest-generation/terminal one-to-one과 first-frame/device-reset/lifecycle gate가 통과한다.

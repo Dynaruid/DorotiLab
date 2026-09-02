@@ -19,6 +19,7 @@ internal sealed unsafe class WindowsManagedProductHost :
     ISkiaSceneRendererHost
 {
     private readonly object _gate = new();
+    private readonly object _nativeGate = new();
     private readonly WindowsNativeV1.Host _native;
     private readonly WindowsManagedResizeCoordinator _coordinator = new(TimeSpan.FromMilliseconds(100));
     private readonly HashSet<long> _resizeTerminalGenerations = [];
@@ -234,6 +235,7 @@ internal sealed unsafe class WindowsManagedProductHost :
         if (!Enum.IsDefined((AppLifecycleState)value))
             throw new InvalidDataException($"Native lifecycle state {value} is invalid.");
         var lifecycle = (AppLifecycleState)value;
+        if (lifecycle == AppLifecycleState.detached) _nativeActive = false;
         if (Metrics.lifecycleState == lifecycle) return;
         Metrics = Metrics with { lifecycleState = lifecycle };
         LifecycleChanged?.Invoke(lifecycle);
@@ -329,7 +331,13 @@ internal sealed unsafe class WindowsManagedProductHost :
 
     public void RequestInvalidate()
     {
-        if (!_disposed && _nativeActive) Invoke(_native.RequestFrame);
+        // Serialize the active check with native shutdown. A delayed frame
+        // must either post while ProductHost is alive or observe the closed
+        // gate; a plain bool check leaves a check/call destruction race.
+        lock (_nativeGate)
+        {
+            if (!_disposed && _nativeActive) Invoke(_native.RequestFrame);
+        }
     }
 
     public void RequestFocus(ViewFocusState state, ViewFocusDirection direction)
@@ -434,7 +442,10 @@ internal sealed unsafe class WindowsManagedProductHost :
         if (!_disposed && _nativeActive) Invoke(_native.ClearTextClient);
     }
 
-    internal void MarkNativeStopped() => _nativeActive = false;
+    internal void MarkNativeStopped()
+    {
+        lock (_nativeGate) _nativeActive = false;
+    }
 
     public void UpdateSemantics(SemanticsUpdate update)
     {

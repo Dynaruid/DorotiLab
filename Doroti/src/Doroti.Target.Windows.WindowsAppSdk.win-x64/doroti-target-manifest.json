@@ -5,11 +5,15 @@
   "rid": "win-x64",
   "nativeViewType": "Win32.ChildHwnd",
   "graphicsBackend": "windowsappsdk-2.4/HwndExactCpp/managed-ANGLE-EGL-D3D11-Skia",
+  "defaultRenderer": "AngleD3D11",
+  "optionalRenderers": [
+    "Vulkan"
+  ],
   "defaultAdapter": "HwndExactCpp",
   "adapterCapabilities": [
     "HwndExactCpp"
   ],
-  "cutoverDecision": "WindowsAppSdk/HwndExactCpp/ANGLE-D3D11 is the current default; prior ANGLE C10 user acceptance is retained as history and the current build remains notVerified physically",
+  "cutoverDecision": "WindowsAppSdk/HwndExactCpp/ANGLE-D3D11 remains the default; Vulkan is experimental opt-in and remains notVerified for physical resize/scan-out acceptance",
   "nativeArtifactPolicy": "app-directory/exact-version/sha256/win-x64/no-PATH-fallback",
   "softwareFallback": false
 }

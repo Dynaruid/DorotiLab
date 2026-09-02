@@ -198,6 +198,35 @@ public sealed class SkiaSceneRenderer :
         }
     }
 
+    /// <summary>
+    /// Completes rasterized scenes that cannot cross presentation because the
+    /// native GPU context was lost. This must run before context invalidation.
+    /// </summary>
+    public void FailOutstandingGpuPaints(string reason)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(reason);
+        if (_disposed) return;
+        List<SkiaFrameReceipt> receipts = [];
+        lock (_gate)
+        {
+            foreach (var pair in _rasterizedFrames.ToArray())
+            {
+                var frame = pair.Value;
+                if (MarkTerminal(frame, DorotiFrameTerminal.failed, reason, _host.SurfaceGeneration))
+                {
+                    var completion = new SkiaPaintCompletion(
+                        frame.InputSequence, frame.SceneSequence, _host.SurfaceGeneration,
+                        IsNewFrame: true, frame.Descriptor);
+                    receipts.Add(CreateFrameReceipt(
+                        completion, DorotiFrameTerminal.failed,
+                        SkiaPaintDisposition.exact, reason));
+                }
+            }
+            _rasterizedFrames.Clear();
+        }
+        foreach (var receipt in receipts) PublishFrameReceipt(receipt);
+    }
+
     public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
