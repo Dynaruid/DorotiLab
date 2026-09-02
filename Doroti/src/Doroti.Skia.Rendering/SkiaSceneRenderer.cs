@@ -369,6 +369,10 @@ public sealed class SkiaSceneRenderer :
         // Clear every fresh back buffer to the app-owned background color.
         // Its alpha is intentionally preserved: premultiplied composition
         // targets can later reveal a Windows backdrop through this scene.
+        // A retained-capacity Windows Vulkan surface can be larger than the
+        // current visible client. Clearing the full surface keeps newly
+        // revealed parent-clipped pixels on the app background instead of an
+        // undefined/black swapchain image.
         canvas.Clear(_backgroundColor);
         if (frame is null)
         {
@@ -394,7 +398,16 @@ public sealed class SkiaSceneRenderer :
                 frameworkFrameNumber: frame.Descriptor.FrameworkFrameNumber,
                 causalFrameId: causalFrameId,
                 contextGeneration: _contextGeneration);
-            DrawScene(canvas, frame.Commands, pixelWidth, pixelHeight);
+            canvas.Save();
+            canvas.ClipRect(SKRect.Create(pixelWidth, pixelHeight), SKClipOperation.Intersect, false);
+            try
+            {
+                DrawScene(canvas, frame.Commands, pixelWidth, pixelHeight);
+            }
+            finally
+            {
+                canvas.Restore();
+            }
             var rasterEnd = DorotiFrameClock.Now;
             _frameTrace.Record(DorotiFramePhase.rasterEnd, _viewId, rasterEnd,
                 frame.InputSequence, frame.SceneSequence, _host.SurfaceGeneration,

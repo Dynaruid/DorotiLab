@@ -2,9 +2,11 @@
 [CmdletBinding()]
 param(
     [string] $OutputDirectory,
+    [string] $Device = $env:DOROTI_WINDOWS_VULKAN_DEVICE,
     [switch] $SkipBuild,
     [switch] $Probe,
-    [switch] $FullCurrentDpiMatrix
+    [switch] $FullCurrentDpiMatrix,
+    [switch] $ExternalValidation
 )
 
 $ErrorActionPreference = 'Stop'
@@ -16,12 +18,64 @@ if ([string]::IsNullOrWhiteSpace($OutputDirectory)) {
     $OutputDirectory = Join-Path $repoRoot ".doroti/evidence/$runId"
 }
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
+$globalLockDirectory = Join-Path $repoRoot '.doroti/locks'
+New-Item -ItemType Directory -Path $globalLockDirectory -Force | Out-Null
+$globalLockPath = Join-Path $globalLockDirectory 'windows-vulkan-validator.lock'
+try {
+    $globalValidationLock = [IO.FileStream]::new(
+        $globalLockPath, [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite,
+        [IO.FileShare]::None, 1, [IO.FileOptions]::DeleteOnClose)
+} catch [IO.IOException] {
+    throw 'Another repository-wide Vulkan validator is already building or running shared artifacts.'
+}
+try {
 New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null
+$lockPath = Join-Path $OutputDirectory '.doroti-vulkan-validation.lock'
+try {
+    $outputDirectoryLock = [IO.FileStream]::new(
+        $lockPath, [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite,
+        [IO.FileShare]::None, 1, [IO.FileOptions]::DeleteOnClose)
+} catch [IO.IOException] {
+    throw "Another Vulkan validator already owns output directory '$OutputDirectory'."
+}
+try {
+    $existingOutput = @(Get-ChildItem -LiteralPath $OutputDirectory -Force |
+        Where-Object FullName -ne $lockPath)
+    if ($existingOutput.Count -ne 0) {
+        throw "Vulkan validation output directory must be empty: '$OutputDirectory'."
+    }
 $productProject = Join-Path $repoRoot 'Doroti/validation/hwnd-exact-cpp-product/Doroti.Validation.HwndExactCppProduct.csproj'
 $productExecutable = Join-Path $repoRoot 'Doroti/validation/hwnd-exact-cpp-product/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Validation.HwndExactCppProduct.exe'
+$productDirectory = Split-Path -Parent $productExecutable
+$productAssembly = Join-Path $productDirectory 'Doroti.Validation.HwndExactCppProduct.dll'
+$managedHostPath = Join-Path $productDirectory 'Doroti.Host.WindowsAppSdk.dll'
+$nativeHostPath = Join-Path $productDirectory 'doroti_windows_appsdk_host_v1.dll'
 $observerBuild = Join-Path $repoRoot '.doroti/build/windows-resize-capture-vulkan'
 $observer = Join-Path $observerBuild 'Release/Doroti.WindowsResizeCapture.exe'
 $deadline = [DateTime]::UtcNow.AddMinutes(20)
+$sourceFingerprintPaths = @(
+    'Doroti/eng/validate-windows-vulkan-live-resize.ps1',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenterBase.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs',
+    'Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_host_v1.h',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/exports.cpp',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/Doroti.Host.WindowsAppSdk.Native.vcxproj',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj',
+    'Doroti/validation/hwnd-exact-cpp-product/Program.cs',
+    'Doroti/validation/hwnd-exact-cpp-product/Doroti.Validation.HwndExactCppProduct.csproj',
+    'Doroti/validation/hwnd-exact-cpp-product/doroti-application-manifest.json',
+    'Doroti/validation/windows-resize-capture/CMakeLists.txt',
+    'Doroti/validation/windows-resize-capture/main.cpp',
+    'Doroti/validation/windows-resize-capture/grid_oracle.h',
+    'Doroti/validation/windows-resize-capture/grid_oracle_tests.cpp',
+    'Doroti/eng/build-hwnd-exact-cpp-native.ps1',
+    'Doroti/Directory.Build.props',
+    'Doroti/Directory.Build.targets',
+    'Doroti/Directory.Packages.props'
+)
 
 if (-not ('Doroti.VulkanLiveValidation.NativeMethods' -as [type])) {
     Add-Type -TypeDefinition @'
@@ -38,6 +92,59 @@ namespace Doroti.VulkanLiveValidation {
 
 function Assert-True([bool] $Condition, [string] $Message) {
     if (-not $Condition) { throw $Message }
+}
+
+function Get-TrackedDiffSha256 {
+    $diff = @(& git -C $repoRoot diff --binary --no-ext-diff HEAD -- @sourceFingerprintPaths)
+    Assert-True ($LASTEXITCODE -eq 0) 'Could not fingerprint the implementation working-tree diff.'
+    $bytes = [Text.Encoding]::UTF8.GetBytes(($diff -join "`n"))
+    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+}
+
+function Get-RepositoryDiffSha256 {
+    $diff = @(& git -C $repoRoot diff --binary --no-ext-diff HEAD)
+    Assert-True ($LASTEXITCODE -eq 0) 'Could not fingerprint the repository working-tree diff.'
+    $bytes = [Text.Encoding]::UTF8.GetBytes(($diff -join "`n"))
+    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+}
+
+function Get-UntrackedFileSha256 {
+    $hashes = [ordered]@{}
+    $relativePaths = @(& git -C $repoRoot ls-files --others --exclude-standard)
+    Assert-True ($LASTEXITCODE -eq 0) 'Could not enumerate untracked repository files.'
+    foreach ($relativePath in $relativePaths | Sort-Object) {
+        $absolutePath = Join-Path $repoRoot $relativePath
+        if (Test-Path -LiteralPath $absolutePath -PathType Leaf) {
+            $hashes[$relativePath] =
+                (Get-FileHash -LiteralPath $absolutePath -Algorithm SHA256).Hash.ToLowerInvariant()
+        }
+    }
+    return $hashes
+}
+
+function Get-SourceFileSha256 {
+    $hashes = [ordered]@{}
+    foreach ($relativePath in $sourceFingerprintPaths) {
+        $absolutePath = Join-Path $repoRoot $relativePath
+        $hashes[$relativePath] = (Get-FileHash -LiteralPath $absolutePath -Algorithm SHA256).Hash.ToLowerInvariant()
+    }
+    return $hashes
+}
+
+function Get-BinaryFileSha256([System.Collections.IDictionary] $Files) {
+    $hashes = [ordered]@{}
+    foreach ($entry in $Files.GetEnumerator()) {
+        Assert-True (Test-Path -LiteralPath $entry.Value -PathType Leaf) "Missing binary: $($entry.Value)"
+        $hashes[[string]$entry.Key] =
+            (Get-FileHash -LiteralPath $entry.Value -Algorithm SHA256).Hash.ToLowerInvariant()
+    }
+    return $hashes
+}
+
+function Test-Sha256MapsEqual(
+    [System.Collections.IDictionary] $Starting,
+    [System.Collections.IDictionary] $Ending) {
+    return ($Starting | ConvertTo-Json -Compress) -ceq ($Ending | ConvertTo-Json -Compress)
 }
 
 function New-StartInfo {
@@ -97,6 +204,115 @@ function Request-AppClose([long] $Hwnd) {
         [IntPtr]$Hwnd, 0x0010, [IntPtr]::Zero, [IntPtr]::Zero)
 }
 
+function Get-Percentile([object[]] $Values, [double] $Quantile) {
+    $numbers = @($Values | Where-Object { $null -ne $_ } |
+        ForEach-Object { [double]$_ } | Sort-Object)
+    if ($numbers.Count -eq 0) { return $null }
+    $index = [Math]::Min(
+        $numbers.Count - 1,
+        [Math]::Max(0, [Math]::Ceiling($Quantile * $numbers.Count) - 1))
+    return [Math]::Round($numbers[$index], 1)
+}
+
+function Get-ResizeCadence($Capture, $Details) {
+    $frequency = [double]$Capture.clockCalibration.qpcFrequency
+    $samples = @($Capture.windowSamples)
+    $changeCounters = [Collections.Generic.List[long]]::new()
+    for ($index = 1; $index -lt $samples.Count; $index++) {
+        $previous = $samples[$index - 1].window
+        $current = $samples[$index].window
+        if ([int]$previous.left -ne [int]$current.left -or
+            [int]$previous.top -ne [int]$current.top -or
+            [int]$previous.right -ne [int]$current.right -or
+            [int]$previous.bottom -ne [int]$current.bottom) {
+            $changeCounters.Add([long]$samples[$index].performanceCounter)
+        }
+    }
+
+    if ($frequency -le 0 -or $changeCounters.Count -lt 2) {
+        return [ordered]@{
+            measured=$false
+            source='resize-receipt-terminal-qpc-within-actual-window-motion'
+            qpcFrequency=[long]$frequency
+            outerRectChanges=$changeCounters.Count
+            platformWaitTimeoutCount=[int]$Details.resize.platformWaitTimeoutCount
+        }
+    }
+
+    $motionStart = $changeCounters[0]
+    $motionEnd = $changeCounters[$changeCounters.Count - 1]
+    $durationMicroseconds = ($motionEnd - $motionStart) * 1000000.0 / $frequency
+    $receipts = @($Details.resize.receipts)
+    $activeReceipts = @($receipts | Where-Object {
+        [long]$_.target.acceptedTimestamp -ge $motionStart -and
+        [long]$_.target.acceptedTimestamp -le $motionEnd
+    })
+    $presentedReceipts = @($receipts | Where-Object { [int]$_.terminal -eq 0 } |
+        Sort-Object { [long]$_.terminalTimestamp })
+    $presentedDuringMotion = @($presentedReceipts | Where-Object {
+        [long]$_.terminalTimestamp -ge $motionStart -and
+        [long]$_.terminalTimestamp -le $motionEnd
+    })
+
+    $presentationCounters = @($presentedDuringMotion |
+        ForEach-Object { [long]$_.terminalTimestamp })
+    $boundaries = @($motionStart) + $presentationCounters + @($motionEnd)
+    $gaps = [Collections.Generic.List[double]]::new()
+    for ($index = 1; $index -lt $boundaries.Count; $index++) {
+        $gaps.Add(($boundaries[$index] - $boundaries[$index - 1]) * 1000000.0 / $frequency)
+    }
+
+    $acceptedToNext = [Collections.Generic.List[double]]::new()
+    foreach ($receipt in $activeReceipts) {
+        $accepted = [long]$receipt.target.acceptedTimestamp
+        $next = @($presentedReceipts | Where-Object {
+            [long]$_.terminalTimestamp -ge $accepted -and
+            [long]$_.terminalTimestamp -le $motionEnd
+        } | Select-Object -First 1)
+        $terminal = if ($next.Count) { [long]$next[0].terminalTimestamp } else { $motionEnd }
+        $acceptedToNext.Add([Math]::Max(0, ($terminal - $accepted) * 1000000.0 / $frequency))
+    }
+
+    $presentedLatencies = @($presentedDuringMotion | ForEach-Object {
+        ([long]$_.terminalTimestamp - [long]$_.target.acceptedTimestamp) * 1000000.0 / $frequency
+    })
+    $gapMaximum = if ($gaps.Count) { ($gaps | Measure-Object -Maximum).Maximum } else { $null }
+    $nextMaximum = if ($acceptedToNext.Count) {
+        ($acceptedToNext | Measure-Object -Maximum).Maximum
+    } else { $null }
+    $latencyMaximum = if ($presentedLatencies.Count) {
+        ($presentedLatencies | Measure-Object -Maximum).Maximum
+    } else { $null }
+
+    return [ordered]@{
+        measured=$true
+        source='resize-receipt-terminal-qpc-within-actual-window-motion'
+        qpcFrequency=[long]$frequency
+        motionStartQpc=$motionStart
+        motionEndQpc=$motionEnd
+        motionDurationMicroseconds=[Math]::Round($durationMicroseconds, 1)
+        outerRectChanges=$changeCounters.Count
+        acceptedTargetsDuringMotion=$activeReceipts.Count
+        presentedTerminalsDuringMotion=$presentedDuringMotion.Count
+        supersededTargetsDuringMotion=@($activeReceipts | Where-Object { [int]$_.terminal -eq 1 }).Count
+        presentationRateHz=[Math]::Round(
+            $presentedDuringMotion.Count * 1000000.0 / $durationMicroseconds, 2)
+        presentationGapP95Microseconds=Get-Percentile $gaps 0.95
+        presentationGapMaxMicroseconds=if ($null -eq $gapMaximum) { $null } else {
+            [Math]::Round([double]$gapMaximum, 1)
+        }
+        acceptedToNextPresentationP95Microseconds=Get-Percentile $acceptedToNext 0.95
+        acceptedToNextPresentationMaxMicroseconds=if ($null -eq $nextMaximum) { $null } else {
+            [Math]::Round([double]$nextMaximum, 1)
+        }
+        presentedTargetLatencyP95Microseconds=Get-Percentile $presentedLatencies 0.95
+        presentedTargetLatencyMaxMicroseconds=if ($null -eq $latencyMaximum) { $null } else {
+            [Math]::Round([double]$latencyMaximum, 1)
+        }
+        platformWaitTimeoutCount=[int]$Details.resize.platformWaitTimeoutCount
+    }
+}
+
 function Invoke-CapturedCase {
     param(
         [string] $Presenter,
@@ -109,16 +325,30 @@ function Invoke-CapturedCase {
     Assert-True ([DateTime]::UtcNow -lt $deadline) 'The Vulkan live-resize validator exceeded 20 minutes.'
     $readyPath = Join-Path $OutputDirectory "$Slug.ready.json"
     $appPath = Join-Path $OutputDirectory "$Slug.app.json"
+    $detailsPath = Join-Path $OutputDirectory "$Slug.details.json"
     $capturePath = Join-Path $OutputDirectory "$Slug.capture.json"
     $process = [Diagnostics.Process]::new()
-    $process.StartInfo = New-StartInfo -FileName $productExecutable -ArgumentList @(
-        '--presenter',$Presenter,'--lifecycle-cycles','0','--external-resize',
-        '--smoke-ms','15000','--report',$appPath
-    ) -Environment @{
+    $validationLayerRequested = $Presenter -eq 'Vulkan' -and $ExternalValidation
+    $caseEnvironment = @{
         DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_READY_FILE=$readyPath
         DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_FRAME_MARKER='1'
         DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_FRAME_MARKER_CORNER=(Get-MarkerCorner $Edge)
-    } -Visible
+        DOROTI_WINDOWS_APPSDK_REPORT=$detailsPath
+        DOROTI_WINDOWS_DWM_FLUSH='0'
+        DOROTI_WINDOWS_VULKAN_DEVICE=$Device
+        VK_INSTANCE_LAYERS=''
+        VK_LAYER_VALIDATE_SYNC=''
+        VK_LOADER_DEBUG=''
+    }
+    if ($validationLayerRequested) {
+        $caseEnvironment.VK_INSTANCE_LAYERS = 'VK_LAYER_KHRONOS_validation'
+        $caseEnvironment.VK_LAYER_VALIDATE_SYNC = '1'
+        $caseEnvironment.VK_LOADER_DEBUG = 'layer'
+    }
+    $process.StartInfo = New-StartInfo -FileName $productExecutable -ArgumentList @(
+        '--presenter',$Presenter,'--lifecycle-cycles','0','--external-resize',
+        '--smoke-ms','15000','--report',$appPath
+    ) -Environment $caseEnvironment -Visible
     Assert-True $process.Start() "$Slug product failed to start."
     $stdoutTask = $process.StandardOutput.ReadToEndAsync()
     $stderrTask = $process.StandardError.ReadToEndAsync()
@@ -144,6 +374,7 @@ function Invoke-CapturedCase {
         $stdout = $stdoutTask.GetAwaiter().GetResult()
         $stderr = $stderrTask.GetAwaiter().GetResult()
         $app = Get-Content -LiteralPath $appPath -Raw | ConvertFrom-Json -Depth 100
+        $details = Get-Content -LiteralPath $detailsPath -Raw | ConvertFrom-Json -Depth 100
         $capture = Get-Content -LiteralPath $capturePath -Raw | ConvertFrom-Json -Depth 100
         $frames = @($capture.frames)
         $decodedIds = @($frames | Where-Object { $null -ne $_.frameId } | ForEach-Object { [long]$_.frameId })
@@ -162,7 +393,16 @@ function Invoke-CapturedCase {
             @($frames | Where-Object blank).Count -eq 0
         $markerPass = $decodedIds.Count -gt 0 -and $markerRegressions -eq 0
         $diagnostics = $app.diagnostics
+        $combinedOutput = "$stdout`n$stderr"
+        $validationMessageCount = [regex]::Matches(
+            $combinedOutput, '(?im)^\s*Validation (?:Error|Warning):').Count
+        $validationMessagesClean = $validationMessageCount -eq 0
+        $validationLayerActivationProven = $validationLayerRequested -and
+            $combinedOutput -match '(?im)Inserted (?:instance|device) layer "VK_LAYER_KHRONOS_validation"' -and
+            $combinedOutput -match '(?im)Enabled By:\s*Environment Variable VK_INSTANCE_LAYERS'
         $resourcePass = $process.ExitCode -eq 0 -and $app.status -eq 'PASS' -and
+            $validationMessagesClean -and
+            (-not $validationLayerRequested -or $validationLayerActivationProven) -and
             [int]$diagnostics.operationalDebugErrors -eq 0 -and
             [int]$diagnostics.failedTerminals -eq 0 -and
             [int]$diagnostics.unterminatedResizeGenerations -eq 0 -and
@@ -171,7 +411,12 @@ function Invoke-CapturedCase {
                 [int]$diagnostics.vulkan.deviceLostResults -eq 0 -and
                 [int]$diagnostics.vulkan.surfaceLostResults -eq 0 -and
                 [int]$diagnostics.vulkan.outstandingAcquired -eq 0 -and
+                [int]$diagnostics.vulkan.outstandingCopySubmission -le 1 -and
                 [int]$diagnostics.vulkan.maximumOutstandingAcquired -le 1 -and
+                [long]$diagnostics.vulkan.deferredCopySubmissions -eq [long]$diagnostics.gpuCopies -and
+                [int]$diagnostics.vulkan.surfaceWidth -ge [int]$diagnostics.vulkan.width -and
+                [int]$diagnostics.vulkan.surfaceHeight -ge [int]$diagnostics.vulkan.height -and
+                [long]$diagnostics.vulkan.surfaceRecreates -ge 1 -and
                 [int]$diagnostics.vulkan.activeSwapchains -le 1 -and
                 [int]$diagnostics.vulkan.retiredSwapchains -le 2))
         $status = if ($transportPass -and $markerPass -and $finalExact -and $resourcePass) { 'PASS' } else { 'FAIL' }
@@ -179,22 +424,41 @@ function Invoke-CapturedCase {
             name=$Slug; status=$status; presenter=$Presenter
             definition=[ordered]@{ edge=$Edge; motion=$Motion; dragMilliseconds=$DragMilliseconds; dragPixels=$DragPixels }
             transport=$transportPass; marker=$markerPass; finalExact=$finalExact; resource=$resourcePass
+            validationMessagesClean=$validationMessagesClean; validationMessageCount=$validationMessageCount
+            validationLayerRequested=$validationLayerRequested
+            validationLayerActivationProven=if ($validationLayerRequested) { $validationLayerActivationProven } else { $null }
             capturedFrames=[int]$capture.capturedFrames; inputSamples=[int]$capture.inputSamples
+            displayRefreshHz=[double]$capture.displayRefreshHz
             decodedFrames=$decodedIds.Count; markerRegressions=$markerRegressions
             frameIdFirst=if ($decodedIds.Count) { $decodedIds[0] } else { $null }
             frameIdLast=if ($decodedIds.Count) { $decodedIds[-1] } else { $null }
             captureIntervalP95Microseconds=$capture.captureIntervalMicroseconds.p95
+            cadence=Get-ResizeCadence $capture $details
             vulkan=if ($Presenter -eq 'Vulkan') { [ordered]@{
                 acquired=$diagnostics.vulkan.acquired; presented=$diagnostics.vulkan.presented
                 outstanding=$diagnostics.vulkan.outstandingAcquired
+                outstandingCopySubmission=$diagnostics.vulkan.outstandingCopySubmission
                 maximumOutstanding=$diagnostics.vulkan.maximumOutstandingAcquired
+                deferredCopySubmissions=$diagnostics.vulkan.deferredCopySubmissions
+                copyFenceWaits=$diagnostics.vulkan.copyFenceWaits
+                maximumCopyFenceWaitMicroseconds=$diagnostics.vulkan.maximumCopyFenceWaitMicroseconds
+                backingAllocationBytes=$diagnostics.vulkan.backingAllocationBytes
+                backingAllocations=$diagnostics.vulkan.backingAllocations
+                backingReuses=$diagnostics.vulkan.backingReuses
+                viewportWidth=$diagnostics.vulkan.width; viewportHeight=$diagnostics.vulkan.height
+                surfaceWidth=$diagnostics.vulkan.surfaceWidth; surfaceHeight=$diagnostics.vulkan.surfaceHeight
+                retainedSurfaceReuses=$diagnostics.vulkan.retainedSurfaceReuses
+                surfaceRecreates=$diagnostics.vulkan.surfaceRecreates
                 deviceLost=$diagnostics.vulkan.deviceLostResults; surfaceLost=$diagnostics.vulkan.surfaceLostResults
                 outOfDate=$diagnostics.vulkan.outOfDateResults; suboptimal=$diagnostics.vulkan.suboptimalResults
                 activeSwapchains=$diagnostics.vulkan.activeSwapchains; retiredSwapchains=$diagnostics.vulkan.retiredSwapchains
                 retirementMode=$diagnostics.vulkan.retirementMode
                 queueIdleRetirementWaits=$diagnostics.vulkan.queueIdleRetirementWaits
+                maximumRecreateLatencyMicroseconds=$diagnostics.vulkan.maximumRecreateLatencyMicroseconds
+                maximumSwapchainCreateLatencyMicroseconds=$diagnostics.vulkan.maximumSwapchainCreateLatencyMicroseconds
             } } else { $null }
             appPath=$appPath; capturePath=$capturePath
+            detailsPath=$detailsPath
             stdout=$stdout.Trim(); stderr=$stderr.Trim()
         }
     }
@@ -213,6 +477,10 @@ function Invoke-CapturedCase {
 
 $startingStatus = @(& git -C $repoRoot status --short)
 $head = (& git -C $repoRoot rev-parse HEAD).Trim()
+$startingDiffSha256 = Get-TrackedDiffSha256
+$startingSourceFileSha256 = Get-SourceFileSha256
+$startingRepositoryDiffSha256 = Get-RepositoryDiffSha256
+$startingUntrackedFileSha256 = Get-UntrackedFileSha256
 if (-not $SkipBuild) {
     $native = Invoke-BoundedProcess -FileName 'pwsh' -Name 'native Release build' -ArgumentList @(
         '-NoProfile','-File',(Join-Path $repoRoot 'Doroti/eng/build-hwnd-exact-cpp-native.ps1'))
@@ -229,6 +497,14 @@ if (-not $SkipBuild) {
 }
 Assert-True (Test-Path -LiteralPath $productExecutable -PathType Leaf) "Missing product executable: $productExecutable"
 Assert-True (Test-Path -LiteralPath $observer -PathType Leaf) "Missing WGC observer: $observer"
+$binaryFiles = [ordered]@{
+    productExecutable=$productExecutable
+    productAssembly=$productAssembly
+    managedHost=$managedHostPath
+    nativeHost=$nativeHostPath
+    resizeObserver=$observer
+}
+$startingBinarySha256 = Get-BinaryFileSha256 $binaryFiles
 
 $definitions = if ($Probe) {
     @([ordered]@{ run=1; edge='Left'; motion='reverse'; duration=600 })
@@ -270,20 +546,171 @@ foreach ($definition in $definitions) {
 $angleAfter = Invoke-CapturedCase -Presenter 'AngleD3D11' -Slug 'angle-after' `
     -Edge 'Left' -Motion 'reverse' -DragMilliseconds 600
 
+$baselineCadenceValid = $angleBefore.status -eq 'PASS' -and $angleAfter.status -eq 'PASS' -and
+    $angleBefore.cadence.measured -and $angleAfter.cadence.measured -and
+    [int]$angleBefore.cadence.outerRectChanges -ge 8 -and
+    [int]$angleAfter.cadence.outerRectChanges -ge 8 -and
+    [int]$angleBefore.cadence.presentedTerminalsDuringMotion -ge 8 -and
+    [int]$angleAfter.cadence.presentedTerminalsDuringMotion -ge 8
+$referenceRate = if ($baselineCadenceValid) {
+    [Math]::Min(
+        [double]$angleBefore.cadence.presentationRateHz,
+        [double]$angleAfter.cadence.presentationRateHz)
+} else { $null }
+$referenceGapP95 = if ($baselineCadenceValid) {
+    [Math]::Max(
+        [double]$angleBefore.cadence.presentationGapP95Microseconds,
+        [double]$angleAfter.cadence.presentationGapP95Microseconds)
+} else { $null }
+$referenceGapMax = if ($baselineCadenceValid) {
+    [Math]::Max(
+        [double]$angleBefore.cadence.presentationGapMaxMicroseconds,
+        [double]$angleAfter.cadence.presentationGapMaxMicroseconds)
+} else { $null }
+$referenceLatencyP95 = if ($baselineCadenceValid) {
+    [Math]::Max(
+        [double]$angleBefore.cadence.presentedTargetLatencyP95Microseconds,
+        [double]$angleAfter.cadence.presentedTargetLatencyP95Microseconds)
+} else { $null }
+$referenceLatencyMax = if ($baselineCadenceValid) {
+    [Math]::Max(
+        [double]$angleBefore.cadence.presentedTargetLatencyMaxMicroseconds,
+        [double]$angleAfter.cadence.presentedTargetLatencyMaxMicroseconds)
+} else { $null }
+$referenceTimeouts = if ($baselineCadenceValid) {
+    [Math]::Max(
+        [int]$angleBefore.cadence.platformWaitTimeoutCount,
+        [int]$angleAfter.cadence.platformWaitTimeoutCount)
+} else { $null }
+
+$matchedCadenceCases = 0
+foreach ($case in $cases) {
+    $matched = $case.definition.motion -eq 'reverse' -and
+        [int]$case.definition.dragMilliseconds -eq 600 -and
+        [int]$case.definition.dragPixels -eq 600
+    if (-not $matched) {
+        $case['cadenceComparison'] = [ordered]@{ status='notRun'; reason='no matched ANGLE duration/motion baseline' }
+        continue
+    }
+
+    $matchedCadenceCases++
+    $cadencePass = $baselineCadenceValid -and $case.cadence.measured -and
+        [int]$case.cadence.outerRectChanges -ge 8 -and
+        [int]$case.cadence.presentedTerminalsDuringMotion -ge 3 -and
+        [double]$case.cadence.presentationRateHz -ge (0.50 * $referenceRate) -and
+        [double]$case.cadence.presentationGapP95Microseconds -le (2.0 * $referenceGapP95) -and
+        [double]$case.cadence.presentationGapMaxMicroseconds -le (4.0 * $referenceGapMax) -and
+        [int]$case.cadence.platformWaitTimeoutCount -le $referenceTimeouts
+    $refreshIntervalMicroseconds = if ([double]$case.displayRefreshHz -gt 0) {
+        1000000.0 / [double]$case.displayRefreshHz
+    } else { [double]::PositiveInfinity }
+    $targetDeltaPass = $baselineCadenceValid -and $case.cadence.measured -and
+        [double]$case.cadence.presentedTargetLatencyP95Microseconds -le
+            ($referenceLatencyP95 + $refreshIntervalMicroseconds) -and
+        [double]$case.cadence.presentedTargetLatencyMaxMicroseconds -le
+            ($referenceLatencyMax + 2.0 * $refreshIntervalMicroseconds)
+    $comparisonPass = $cadencePass -and $targetDeltaPass
+    $case['cadenceComparison'] = [ordered]@{
+        status=if ($comparisonPass) { 'PASS' } else { 'FAIL' }
+        starvationGuard=if ($cadencePass) { 'PASS' } else { 'FAIL' }
+        targetToPresentAngleDelta=if ($targetDeltaPass) { 'PASS' } else { 'FAIL' }
+        reference=[ordered]@{
+            presentationRateHz=$referenceRate
+            presentationGapP95Microseconds=$referenceGapP95
+            presentationGapMaxMicroseconds=$referenceGapMax
+            presentedTargetLatencyP95Microseconds=$referenceLatencyP95
+            presentedTargetLatencyMaxMicroseconds=$referenceLatencyMax
+            platformWaitTimeoutCount=$referenceTimeouts
+        }
+        allowances=[ordered]@{
+            minimumPresentationRateHz=[Math]::Round(0.50 * $referenceRate, 2)
+            maximumPresentationGapP95Microseconds=[Math]::Round(2.0 * $referenceGapP95, 1)
+            maximumPresentationGapMicroseconds=[Math]::Round(4.0 * $referenceGapMax, 1)
+            refreshIntervalMicroseconds=[Math]::Round($refreshIntervalMicroseconds, 1)
+            maximumTargetLatencyP95Microseconds=[Math]::Round(
+                $referenceLatencyP95 + $refreshIntervalMicroseconds, 1)
+            maximumTargetLatencyMicroseconds=[Math]::Round(
+                $referenceLatencyMax + 2.0 * $refreshIntervalMicroseconds, 1)
+        }
+    }
+    if (-not $comparisonPass) { $case.status = 'FAIL' }
+}
+
 $videoControllers = @(Get-CimInstance Win32_VideoController |
     Select-Object Name,DriverVersion,CurrentRefreshRate,VideoModeDescription,PNPDeviceID)
 $casePass = @($cases | Where-Object status -ne 'PASS').Count -eq 0
 $anglePass = $angleBefore.status -eq 'PASS' -and $angleAfter.status -eq 'PASS'
+$cadencePass = $matchedCadenceCases -gt 0 -and
+    @($cases | Where-Object {
+        $_.cadenceComparison.status -ne 'notRun' -and $_.cadenceComparison.starvationGuard -ne 'PASS'
+    }).Count -eq 0
+$targetDeltaPass = $matchedCadenceCases -gt 0 -and
+    @($cases | Where-Object {
+        $_.cadenceComparison.status -ne 'notRun' -and $_.cadenceComparison.targetToPresentAngleDelta -ne 'PASS'
+    }).Count -eq 0
+$reverse600Cases = @($cases | Where-Object {
+    $_.definition.motion -eq 'reverse' -and
+    [int]$_.definition.dragMilliseconds -eq 600 -and
+    [int]$_.definition.dragPixels -eq 600
+})
+$expectedReverse600Cases = if ($Probe) { 1 } else { 24 }
+$reverse600Qualified = $reverse600Cases.Count -eq $expectedReverse600Cases -and
+    @($reverse600Cases | Where-Object { $_.cadenceComparison.status -ne 'PASS' }).Count -eq 0
+$endingDiffSha256 = Get-TrackedDiffSha256
+$endingHead = (& git -C $repoRoot rev-parse HEAD).Trim()
+$endingSourceFileSha256 = Get-SourceFileSha256
+$keySourceFilesStable = Test-Sha256MapsEqual $startingSourceFileSha256 $endingSourceFileSha256
+$sourceStable = $head -eq $endingHead -and
+    $startingDiffSha256 -eq $endingDiffSha256 -and $keySourceFilesStable
+$endingRepositoryDiffSha256 = Get-RepositoryDiffSha256
+$endingUntrackedFileSha256 = Get-UntrackedFileSha256
+$repositoryStable = $head -eq $endingHead -and
+    $startingRepositoryDiffSha256 -eq $endingRepositoryDiffSha256 -and
+    (Test-Sha256MapsEqual $startingUntrackedFileSha256 $endingUntrackedFileSha256)
+$endingBinarySha256 = Get-BinaryFileSha256 $binaryFiles
+$binariesStable = Test-Sha256MapsEqual $startingBinarySha256 $endingBinarySha256
+$externalValidationPass = -not $ExternalValidation -or
+    @($cases | Where-Object {
+        -not $_.validationLayerRequested -or
+        -not $_.validationLayerActivationProven -or
+        -not $_.validationMessagesClean
+    }).Count -eq 0
 $manifest = [ordered]@{
     schemaVersion='doroti.windows.vulkan-live-resize/v1'
     runId=$runId
     generatedAt=[DateTime]::UtcNow.ToString('O')
-    status=if ($casePass -and $anglePass) { 'PASS-automated-partial' } else { 'FAIL' }
-    source=[ordered]@{ revision=$head; statusAtStart=$startingStatus }
+    status=if ($casePass -and $anglePass -and $sourceStable -and $repositoryStable -and $binariesStable) { 'PASS-automated-partial' } else { 'FAIL' }
+    source=[ordered]@{
+        revision=$head
+        endingRevision=$endingHead
+        statusAtStart=$startingStatus
+        implementationDiffSha256=$startingDiffSha256
+        sourceStableDuringRun=$sourceStable
+        endingImplementationDiffSha256=$endingDiffSha256
+        endingFileSha256=$endingSourceFileSha256
+        keySourceFilesStableAtEndpoints=$keySourceFilesStable
+        repositoryDiffSha256=$startingRepositoryDiffSha256
+        endingRepositoryDiffSha256=$endingRepositoryDiffSha256
+        untrackedFileSha256=$startingUntrackedFileSha256
+        endingUntrackedFileSha256=$endingUntrackedFileSha256
+        repositoryStableDuringRun=$repositoryStable
+        fileSha256=$startingSourceFileSha256
+        buildPerformed=(-not $SkipBuild)
+        sourceToBinaryCorrespondence=if ($SkipBuild) { 'notVerified-skip-build' } else { 'PASS-built-after-source-fingerprint' }
+        binarySha256AtStart=$startingBinarySha256
+        binarySha256AtEnd=$endingBinarySha256
+        binariesStableDuringRun=$binariesStable
+        productExecutableSha256=$startingBinarySha256.productExecutable
+        productAssemblySha256=$startingBinarySha256.productAssembly
+        managedHostSha256=$startingBinarySha256.managedHost
+        nativeHostSha256=$startingBinarySha256.nativeHost
+        resizeObserverSha256=$startingBinarySha256.resizeObserver
+    }
     environment=[ordered]@{
         operatingSystem=[Environment]::OSVersion.VersionString
         windowsBuild=[Environment]::OSVersion.Version.Build
         videoControllers=$videoControllers
+        selectedVulkanDevice=$Device
         observedWindowDpi=if ($cases.Count) {
             (Get-Content -LiteralPath $cases[0].capturePath -Raw | ConvertFrom-Json).windowDpi
         } else { $null }
@@ -295,23 +722,40 @@ $manifest = [ordered]@{
     gates=[ordered]@{
         angleBeforeAfter=if ($anglePass) { 'PASS' } else { 'FAIL' }
         vulkanCurrentMonitor=if ($casePass) { 'PASS' } else { 'FAIL' }
-        eightEdgesReverse600msThreeRuns=if (-not $Probe -and -not $FullCurrentDpiMatrix -and $casePass) {
-            'PASS'
-        } elseif ($FullCurrentDpiMatrix -and $casePass) { 'PASS' } else { 'notRun' }
-        slowMediumFastExpandShrinkReverse=if ($FullCurrentDpiMatrix -and $casePass) { 'PASS' } else { 'notRun' }
+        resizePresentationCadence=if ($cadencePass) { 'PASS' } else { 'FAIL' }
+        eightEdgesReverse600msThreeRuns=if ($Probe) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
+        slowMediumFastExpandShrinkReverse=if ($FullCurrentDpiMatrix) {
+            'notVerified-no-matched-angle-cadence'
+        } else { 'notRun' }
+        slowMediumFastExpandShrinkReverseTransportResource=if ($FullCurrentDpiMatrix) {
+            if ($casePass) { 'PASS' } else { 'FAIL' }
+        } else { 'notRun' }
         edgeStress10Seconds='notRun'
         dpiMatrix100_125_150_200='notVerified'
         refreshMatrix60_120_144_165='notVerified'
         mixedDpiSnapMaximizeAltTabOcclusion='notVerified'
         physicalBorderDragAndScanout='notVerified'
-        targetToPresentAngleDelta='notVerified'
+        targetToPresentAngleDelta=if ($targetDeltaPass) { 'PASS' } else { 'FAIL' }
+        externalValidationLayer=if (-not $ExternalValidation) { 'notRun' } elseif ($externalValidationPass) { 'PASS' } else { 'FAIL' }
+        sourceStableDuringRun=if ($sourceStable) { 'PASS' } else { 'FAIL' }
+        keySourceFilesStableAtEndpoints=if ($keySourceFilesStable) { 'PASS' } else { 'FAIL' }
+        repositoryStableDuringRun=if ($repositoryStable) { 'PASS' } else { 'FAIL' }
+        binariesStableDuringRun=if ($binariesStable) { 'PASS' } else { 'FAIL' }
     }
     cases=$cases
-    evidenceBoundary='Automation proves native non-client input, WGC transport, monotonic visible generation markers, final exact geometry, terminal accounting, bounded Vulkan resources, and no Vulkan device/surface loss for the listed cases. WGC does not prove physical scan-out or human-perceived drag smoothness; unlisted monitor, DPI, refresh, window-management, and physical cases remain notVerified.'
+    evidenceBoundary='Automation proves native non-client input, WGC transport, monotonic visible generation markers, final exact geometry, terminal accounting, bounded Vulkan resources, no Vulkan device/surface loss, and receipt-to-terminal cadence/latency comparisons only for matched reverse-600 ms cases. External validation is qualified only when the loader positively reports VK_LAYER_KHRONOS_validation activation and zero validation warning/error messages. Source diff and key source files are SHA-256 fingerprinted; product executable/IL, managed/native host, and observer binaries are hashed before and after execution, while source-to-binary correspondence is PASS only when the validator performed the build. A strict cadence or target-latency miss remains FAIL. WGC does not prove physical scan-out or human-perceived drag smoothness; unmatched motion/duration, unlisted monitor, DPI, refresh, window-management, and physical cases remain notVerified.'
 }
 $manifestPath = Join-Path $OutputDirectory 'manifest.json'
 $manifest | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $manifestPath -Encoding utf8
 Write-Host "Vulkan live resize=$($manifest.status)"
 Write-Host "manifest=$manifestPath"
-if ($manifest.status -eq 'FAIL') { exit 2 }
-exit 0
+$validationExitCode = if ($manifest.status -eq 'FAIL') { 2 } else { 0 }
+}
+finally {
+    $outputDirectoryLock.Dispose()
+}
+}
+finally {
+    $globalValidationLock.Dispose()
+}
+exit $validationExitCode

@@ -72,12 +72,18 @@ internal static class Program
             }
             else if (resizeCycles > 0)
             {
+                var resizeSurfaceContract = diagnostics.Vulkan is { } resizeVulkan
+                    ? resizeVulkan.SurfaceWidth >= resizeVulkan.Width &&
+                      resizeVulkan.SurfaceHeight >= resizeVulkan.Height &&
+                      resizeVulkan.SurfaceRecreates >= 1 &&
+                      resizeVulkan.RetainedSurfaceReuses >= (ulong)Math.Max(0, resizeCycles - 1)
+                    : diagnostics.ResizeBuffers >= (ulong)resizeCycles;
                 Require(ProductEntrypoint.CompletedResizeRequests == resizeCycles &&
                         diagnostics.AcceptedResizeGenerations >= resizeCycles &&
                         diagnostics.PresentedResizeGenerations >= 1 &&
                         diagnostics.PresentedResizeGenerations + diagnostics.SupersededResizeGenerations +
                             diagnostics.FailedResizeGenerations == diagnostics.AcceptedResizeGenerations &&
-                        diagnostics.ResizeBuffers >= (ulong)resizeCycles &&
+                        resizeSurfaceContract &&
                         diagnostics.Presents >= (ulong)resizeCycles &&
                         diagnostics.GpuCopies >= (ulong)resizeCycles &&
                         diagnostics.FailedResizeGenerations <= expectedRecoveryFailure,
@@ -102,8 +108,10 @@ internal static class Program
             }
             var presentationContract = diagnostics.Vulkan is { } vulkan
                 ? vulkan.OutstandingAcquired == 0 &&
+                  vulkan.OutstandingCopySubmission <= 1 &&
                   vulkan.Acquired == vulkan.Presented &&
                   vulkan.Presented == diagnostics.GpuCopies &&
+                  vulkan.DeferredCopySubmissions == diagnostics.GpuCopies &&
                   vulkan.SuccessfulPresents == diagnostics.Presents
                 : diagnostics.Presents == diagnostics.GpuCopies;
             Require(diagnostics.CompletedDeviceResets == diagnostics.RequestedDeviceResets &&

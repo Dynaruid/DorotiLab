@@ -17,6 +17,7 @@ namespace Doroti.Host.WindowsAppSdk;
 internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsManagedHwndPresenterBase
 {
     private const ulong FenceTimeoutNanoseconds = 5_000_000_000;
+    private const ulong MaximumBackingAllocationBytes = 512UL * 1024 * 1024;
     private const uint VulkanApiVersion11 = (1u << 22) | (1u << 12);
 
     private readonly bool _diagnosticsEnabled;
@@ -37,6 +38,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     private GRContext? _context;
     private VkImage _backingImage;
     private DeviceMemory _backingMemory;
+    private ulong _backingAllocationSize;
+    private Format _backingFormat;
+    private int _backingCapacityWidth;
+    private int _backingCapacityHeight;
+    private int _surfaceWidth;
+    private int _surfaceHeight;
     private GRBackendRenderTarget? _backingTarget;
     private SKSurface? _backingSurface;
     private VkImage[] _swapchainImages = [];
@@ -48,6 +55,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     private ImageLayout[] _swapchainLayouts = [];
     private bool _acquired;
     private uint _acquiredImageIndex;
+    private bool _copySubmissionPending;
     private Format _format;
     private uint _queueFamily;
     private uint _loaderApiVersion;
@@ -55,6 +63,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     private uint _deviceVendorId;
     private uint _deviceId;
     private uint _driverVersion;
+    private uint _maximumImageDimension2D;
     private string _deviceType = "uninitialized";
     private string _deviceLuid = "";
     private string _colorSpace = "uninitialized";
@@ -65,12 +74,26 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     private ulong _presentTerminalCount;
     private ulong _maximumOutstandingAcquired;
     private ulong _queueIdleRetirementWaitCount;
+    private ulong _backingAllocationCount;
+    private ulong _backingReuseCount;
+    private ulong _retainedSurfaceReuseCount;
+    private ulong _surfaceRecreateCount;
+    private ulong _deferredCopySubmissionCount;
+    private ulong _copyFenceWaitCount;
+    private long _lastCopyFenceWaitMicroseconds;
+    private long _maximumCopyFenceWaitMicroseconds;
     private ulong _deviceLostCount;
     private ulong _surfaceLostCount;
     private ulong _outOfDateCount;
     private ulong _suboptimalCount;
     private int _maximumRetiredSwapchains;
     private long _lastRetirementLatencyMicroseconds;
+    private long _lastRecreateLatencyMicroseconds;
+    private long _maximumRecreateLatencyMicroseconds;
+    private long _lastSwapchainCreateLatencyMicroseconds;
+    private long _maximumSwapchainCreateLatencyMicroseconds;
+    private long _lastBackingWrapLatencyMicroseconds;
+    private long _maximumBackingWrapLatencyMicroseconds;
     private long _firstPresentQpc;
     private long _lastTargetQpc;
     private long _lastPresentQpc;
@@ -83,8 +106,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     private readonly object _eventGate = new();
     private readonly Queue<string> _recentEvents = [];
     private nint _window;
-    private bool _flushAfterResizePresent;
     private bool _debugBaselineSealed;
+    private bool _contextAbandoned;
+    private bool _rendererReleasePreflightReportedDeviceLoss;
     private bool _disposed;
 
     internal WindowsManagedVulkanPresenter(bool enableDiagnostics)
@@ -102,9 +126,14 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
 
     internal override string BackendName => "Vulkan";
     internal override string RuntimeEffectsBackend => DorotiSkiaRuntimeEffects.WindowsVulkanBackend;
+    internal override ulong NativeRequiredFeatures =>
+        WindowsNativeV1.PostPresentDwmFlushFeature |
+        WindowsNativeV1.RetainedOversizedChildSurfaceFeature;
+    internal override bool InvalidatesRendererSurfaceResourcesOnResize => false;
     internal override string DiagnosticCoverage =>
-        "direct Vulkan 1.1 device, Win32 FIFO surface/swapchain, acquire-as-presentation-commit, " +
-        "unconditional copy/present after acquire, queue-idle swapchain retirement, checked VkResult values, and resize DwmFlush";
+        "direct Vulkan 1.1 device, retained oversized Win32 child surface with parent-client clipping, FIFO swapchain, acquire-as-presentation-commit, " +
+        "unconditional copy/present after acquire, asynchronous Skia plus next-use copy-fence wait, practical unextended queue-idle swapchain retirement, " +
+        "bounded exact resize handshake, checked VkResult values, and final-settle DwmFlush";
     internal override int Width { get; set; }
     internal override int Height { get; set; }
     internal override ulong DeviceGeneration { get; set; }
@@ -127,9 +156,16 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         AdapterDescription, _deviceType, _deviceVendorId, _deviceId, _driverVersion,
         FormatVersion(_deviceApiVersion), _deviceLuid, _queueFamily,
         _format.ToString(), _colorSpace, _compositeAlpha, _presentMode,
-        _swapchainImages.Length, Width, Height, _swapchainGeneration,
+        _swapchainImages.Length, _surfaceWidth, _surfaceHeight,
+        _retainedSurfaceReuseCount, _surfaceRecreateCount,
+        _backingCapacityWidth, _backingCapacityHeight,
+        _backingAllocationSize, _backingAllocationCount, _backingReuseCount,
+        _deferredCopySubmissionCount, _copyFenceWaitCount,
+        _lastCopyFenceWaitMicroseconds, _maximumCopyFenceWaitMicroseconds,
+        Width, Height, _swapchainGeneration,
         _acquiredCount, _presentTerminalCount, PresentCount,
         _acquired ? 1 : 0, _acquired ? checked((int)_acquiredImageIndex) : -1,
+        _copySubmissionPending ? 1 : 0,
         _maximumOutstandingAcquired, _deviceLostCount, _surfaceLostCount,
         _outOfDateCount, _suboptimalCount,
         _lastAcquireResult.ToString(), _lastSubmitResult.ToString(),
@@ -140,6 +176,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         MaximumRetiredSwapchains: _maximumRetiredSwapchains,
         LastRecreateReason: _lastRecreateReason,
         LastRetirementLatencyMicroseconds: _lastRetirementLatencyMicroseconds,
+        LastRecreateLatencyMicroseconds: _lastRecreateLatencyMicroseconds,
+        MaximumRecreateLatencyMicroseconds: _maximumRecreateLatencyMicroseconds,
+        LastSwapchainCreateLatencyMicroseconds: _lastSwapchainCreateLatencyMicroseconds,
+        MaximumSwapchainCreateLatencyMicroseconds: _maximumSwapchainCreateLatencyMicroseconds,
+        LastBackingWrapLatencyMicroseconds: _lastBackingWrapLatencyMicroseconds,
+        MaximumBackingWrapLatencyMicroseconds: _maximumBackingWrapLatencyMicroseconds,
         FirstPresentQpc: _firstPresentQpc,
         LastTargetQpc: _lastTargetQpc,
         LastPresentQpc: _lastPresentQpc,
@@ -169,19 +211,31 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         if (_window != 0 && _window != childWindow)
             ReleaseDevice(deviceLost: false);
         EnsureDevice(childWindow);
-        if (_swapchain.Handle != 0 && Width == width && Height == height)
+        if (_swapchain.Handle != 0 && _pendingRecreateReason is null &&
+            Width == width && Height == height)
             return true;
 
-        var resized = _swapchain.Handle != 0;
+        var resized = _swapchain.Handle != 0 && (Width != width || Height != height);
+        if (_swapchain.Handle != 0 && _pendingRecreateReason is null &&
+            width <= _surfaceWidth && height <= _surfaceHeight)
+        {
+            // Native keeps the Vulkan child HWND at a retained capacity while
+            // its parent clips the visible client to this exact logical target.
+            // The backing SkSurface and WSI swapchain therefore remain stable.
+            Width = width;
+            Height = height;
+            _retainedSurfaceReuseCount++;
+            if (resized) ResizeBuffersCount++;
+            RecordEvent(
+                $"retained surface viewport={width}x{height} capacity={_surfaceWidth}x{_surfaceHeight}");
+            return true;
+        }
+
         var recreateReason = _pendingRecreateReason ??
             (resized ? "extent-change" : _swapchainGeneration == 0 ? "initial" : "device-or-surface-recovery");
         _pendingRecreateReason = null;
         if (!RecreateSwapchain(width, height, recreateReason)) return false;
-        if (resized)
-        {
-            ResizeBuffersCount++;
-            _flushAfterResizePresent = true;
-        }
+        if (resized) ResizeBuffersCount++;
         return true;
     }
 
@@ -206,18 +260,29 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
 
         LastPresentSucceeded = false;
         var result = paint(backing);
-        if (!shouldPresent(result)) return result;
+        // A retained VkImage must not carry deferred Skia work across a
+        // wrapper resize/disposal. Submit every completed paint, even when a
+        // newer generation makes its presentation obsolete.
         backing.Canvas.Flush();
         context.Flush(backing);
-        context.Submit(true);
+        // Skia and the copy command use the same Vulkan queue. The copy's
+        // image barrier provides the dependency from Skia's color writes, so
+        // submitting does not need to stall the raster CPU for GPU completion.
+        context.Submit(false);
         GpuSubmitCount++;
         if (!shouldPresent(result)) return result;
+
+        // The acquire semaphore and one-shot copy command buffer are reused
+        // one frame later. Waiting here overlaps the CPU paint/Skia submit of
+        // this frame while preserving same-queue ordering for the backing image.
+        WaitForPendingCopySubmission();
 
         // This is the presentation commit boundary. Staleness is checked up to
         // the acquire attempt; once an image is acquired, this frame always
         // completes copy -> present and no acquired-image release extension is
         // needed. Newer work remains the single latest pending frame.
-        if (!TryAcquireNextImage(() => shouldPresent(result), out var imageIndex)) return result;
+        if (!TryAcquireNextImage(() => shouldPresent(result), out var imageIndex))
+            return result;
 
         var renderFinished = _renderFinishedSemaphores[checked((int)imageIndex)];
         CopyBackingToSwapchain(_swapchainImages[checked((int)imageIndex)], imageIndex, renderFinished);
@@ -258,11 +323,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
             _pendingRecreateReason = "present-suboptimal";
             Width = Height = 0;
         }
-        if (_flushAfterResizePresent ||
-            Environment.GetEnvironmentVariable("DOROTI_WINDOWS_DWM_FLUSH") == "1")
+        if (Environment.GetEnvironmentVariable("DOROTI_WINDOWS_DWM_FLUSH") == "1")
         {
             Marshal.ThrowExceptionForHR(DwmFlush());
-            _flushAfterResizePresent = false;
         }
         return result;
     }
@@ -275,6 +338,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         var deadline = Environment.TickCount64 + 5_000;
         while (true)
         {
+            if (!shouldContinue()) return false;
             var acquire = TakeInjectedResult("OUT_OF_DATE") ? Result.ErrorOutOfDateKhr :
                 TakeInjectedResult("SURFACE_LOST") ? Result.ErrorSurfaceLostKhr :
                 TakeInjectedResult("DEVICE_LOST") ? Result.ErrorDeviceLost :
@@ -315,7 +379,6 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
             }
             if (acquire is not (Result.NotReady or Result.Timeout))
                 Check(acquire, "vkAcquireNextImageKHR");
-            if (!shouldContinue()) return false;
             if (Environment.TickCount64 >= deadline)
                 throw new TimeoutException("Vulkan acquire did not become ready within 5 seconds.");
             Thread.Yield();
@@ -345,20 +408,78 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         ReleaseDevice(deviceLost: false);
     }
 
+    internal override bool PrepareForRendererGpuResourceRelease()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_instance.Handle == 0) return false;
+        _rendererReleasePreflightReportedDeviceLoss = false;
+        try
+        {
+            WaitIdle();
+            _copySubmissionPending = false;
+            return false;
+        }
+        catch (WindowsManagedVulkanDeviceLostException)
+        {
+            _rendererReleasePreflightReportedDeviceLoss = true;
+            AbandonContextForDeviceLossCore();
+            TryRecordEvent("device-loss context abandoned before renderer invalidation");
+            TryRecordEvent("device loss observed during renderer-release preflight");
+            return true;
+        }
+        catch (InvalidOperationException)
+        {
+            // A non-device-lost failure from vkDeviceWaitIdle still means that
+            // GPU idleness was not established. Treat the backend as unsafe so
+            // Skia wrappers are abandoned before renderer cache destruction and
+            // the original failure is preserved. Because idleness was not
+            // established, callers must not destroy native child objects.
+            AbandonContextForDeviceLossCore();
+            TryRecordEvent("renderer-release preflight failed; quarantining unsafe Vulkan context");
+            throw;
+        }
+    }
+
+    internal override bool TryAbandonGpuContextAfterRendererReleasePreflightFailure()
+    {
+        AbandonContextForDeviceLossCore();
+        TryRecordEvent("renderer-release preflight threw; abandoning Vulkan context before renderer cleanup");
+        return _context is null || _contextAbandoned;
+    }
+
+    internal override void ResetDeviceAfterRendererGpuResourceRelease(bool deviceLost)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (deviceLost)
+            RecordRendererReleaseTeardown();
+        ReleaseDevice(deviceLost, waitForIdle: false);
+    }
+
     internal void RecoverAfterDeviceLoss()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        RecordEvent("device-loss recovery");
+        RecordEvent("device-loss renderer resources invalidated; starting native teardown");
         _pendingRecreateReason = "device-loss-recovery";
         ReleaseDevice(deviceLost: true);
     }
 
-    internal void RecoverAfterSurfaceLoss()
+    internal void AbandonContextForDeviceLoss()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        RecordEvent("surface-loss recovery");
-        _pendingRecreateReason = "surface-loss-recovery";
-        ReleaseDevice(deviceLost: false);
+        AbandonContextForDeviceLossCore();
+        TryRecordEvent("device-loss context abandoned before renderer invalidation");
+    }
+
+    internal void RecoverAfterSurfaceLoss(bool deviceLost)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        RecordEvent(deviceLost
+            ? "surface-loss recovery observed device loss during preflight"
+            : "surface-loss recovery");
+        if (deviceLost)
+            RecordRendererReleaseTeardown();
+        _pendingRecreateReason = deviceLost ? "device-loss-during-surface-recovery" : "surface-loss-recovery";
+        ReleaseDevice(deviceLost, waitForIdle: false);
     }
 
     private void EnsureDevice(nint childWindow)
@@ -512,6 +633,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         _deviceVendorId = selected.Properties.VendorID;
         _deviceId = selected.Properties.DeviceID;
         _driverVersion = selected.Properties.DriverVersion;
+        _maximumImageDimension2D = selected.Properties.Limits.MaxImageDimension2D;
         _deviceType = selected.Properties.DeviceType.ToString();
         _deviceLuid = selected.Luid;
         AdapterDescription = $"{selected.Name}; vendor=0x{selected.Properties.VendorID:x4}; " +
@@ -598,6 +720,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         };
         _context = GRContext.CreateVulkan(_skiaBackend)
             ?? throw new InvalidOperationException("Skia could not create the managed Vulkan context.");
+        _contextAbandoned = false;
     }
 
     private nint GetVulkanProcedureAddress(string name, nint instance, nint device)
@@ -608,6 +731,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
 
     private bool RecreateSwapchain(int width, int height, string reason)
     {
+        var recreateStarted = Stopwatch.GetTimestamp();
         if (_acquired)
             throw new InvalidOperationException(
                 "Swapchain recreation cannot begin inside an acquire-as-presentation-commit transaction.");
@@ -617,7 +741,12 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         WaitForPresentRetirement();
         _lastRetirementLatencyMicroseconds = checked((long)
             Stopwatch.GetElapsedTime(retirementStarted).TotalMicroseconds);
-        _surfaceApi!.GetPhysicalDeviceSurfaceCapabilities(_physicalDevice, _surface, out var capabilities);
+        Check(_surfaceApi!.GetPhysicalDeviceSurfaceCapabilities(
+            _physicalDevice, _surface, out var capabilities),
+            "vkGetPhysicalDeviceSurfaceCapabilitiesKHR");
+        if ((capabilities.SupportedUsageFlags & ImageUsageFlags.TransferDstBit) == 0)
+            throw new PlatformNotSupportedException(
+                "The Vulkan Win32 surface does not support transfer-destination swapchain images.");
         uint formatCount = 0;
         Check(_surfaceApi.GetPhysicalDeviceSurfaceFormats(_physicalDevice, _surface, &formatCount, null),
             "vkGetPhysicalDeviceSurfaceFormatsKHR(count)");
@@ -631,24 +760,19 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         if (selected.Format == Format.Undefined) selected = formats[0];
         if (selected.Format is not (Format.B8G8R8A8Unorm or Format.R8G8B8A8Unorm))
             throw new InvalidOperationException($"Unsupported Vulkan swapchain format: {selected.Format}.");
-        _format = selected.Format;
-        _colorSpace = selected.ColorSpace.ToString();
-
         var extent = capabilities.CurrentExtent.Width != uint.MaxValue
             ? capabilities.CurrentExtent
             : new Extent2D(
                 Math.Clamp(checked((uint)width), capabilities.MinImageExtent.Width, capabilities.MaxImageExtent.Width),
                 Math.Clamp(checked((uint)height), capabilities.MinImageExtent.Height, capabilities.MaxImageExtent.Height));
-        if (extent.Width != width || extent.Height != height)
+        if (extent.Width < width || extent.Height < height)
             return false;
-        ReleaseBacking();
-        ReleaseSwapchainSynchronization();
-        var imageCount = capabilities.MinImageCount + 1;
-        if (capabilities.MaxImageCount > 0) imageCount = Math.Min(imageCount, capabilities.MaxImageCount);
+        // The presenter owns a single acquired/copy slot. Requesting an extra
+        // FIFO image only multiplies driver allocation during every Win32
+        // extent change without enabling another frame in flight.
+        var imageCount = capabilities.MinImageCount;
         var presentMode = SelectPresentMode();
         var compositeAlpha = SelectCompositeAlpha(capabilities.SupportedCompositeAlpha);
-        _presentMode = presentMode.ToString();
-        _compositeAlpha = compositeAlpha.ToString();
         var createInfo = new SwapchainCreateInfoKHR
         {
             SType = StructureType.SwapchainCreateInfoKhr,
@@ -666,8 +790,35 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
             Clipped = true,
             OldSwapchain = oldSwapchain,
         };
-        Check(_swapchainApi!.CreateSwapchain(_device, &createInfo, null, out _swapchain), "vkCreateSwapchainKHR");
+        var createStarted = Stopwatch.GetTimestamp();
+        var createResult = _swapchainApi!.CreateSwapchain(
+            _device, &createInfo, null, out var newSwapchain);
+        _lastSwapchainCreateLatencyMicroseconds = checked((long)
+            Stopwatch.GetElapsedTime(createStarted).TotalMicroseconds);
+        _maximumSwapchainCreateLatencyMicroseconds = Math.Max(
+            _maximumSwapchainCreateLatencyMicroseconds, _lastSwapchainCreateLatencyMicroseconds);
+        if (createResult != Result.Success)
+        {
+            // oldSwapchain may be retired by a failed replacement attempt.
+            // Never retry or present it as though it were still current.
+            if (oldSwapchain.Handle != 0)
+            {
+                ReleaseSwapchainSynchronization();
+                _swapchainApi.DestroySwapchain(_device, oldSwapchain, null);
+                _swapchain = default;
+                _swapchainImages = [];
+                Width = Height = 0;
+            }
+            Check(createResult, "vkCreateSwapchainKHR");
+        }
+
+        _format = selected.Format;
+        _colorSpace = selected.ColorSpace.ToString();
+        _presentMode = presentMode.ToString();
+        _compositeAlpha = compositeAlpha.ToString();
+        _swapchain = newSwapchain;
         if (oldSwapchain.Handle != 0) _swapchainApi.DestroySwapchain(_device, oldSwapchain, null);
+        ReleaseSwapchainSynchronization();
         uint swapchainImageCount = 0;
         Check(_swapchainApi.GetSwapchainImages(_device, _swapchain, &swapchainImageCount, null),
             "vkGetSwapchainImagesKHR(count)");
@@ -681,13 +832,29 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         for (var index = 0; index < swapchainImageCount; index++)
             Check(_vk.CreateSemaphore(_device, &semaphoreInfo, null, out _renderFinishedSemaphores[index]),
                 "vkCreateSemaphore(render-finished)");
-        CreateBacking(width, height);
+        _surfaceWidth = checked((int)extent.Width);
+        _surfaceHeight = checked((int)extent.Height);
+        var backingStarted = Stopwatch.GetTimestamp();
+        CreateBacking(_surfaceWidth, _surfaceHeight);
+        _lastBackingWrapLatencyMicroseconds = checked((long)
+            Stopwatch.GetElapsedTime(backingStarted).TotalMicroseconds);
+        _maximumBackingWrapLatencyMicroseconds = Math.Max(
+            _maximumBackingWrapLatencyMicroseconds, _lastBackingWrapLatencyMicroseconds);
         _swapchainGeneration++;
+        _surfaceRecreateCount++;
         _lastRecreateReason = reason;
         Width = width;
         Height = height;
+        _lastRecreateLatencyMicroseconds = checked((long)
+            Stopwatch.GetElapsedTime(recreateStarted).TotalMicroseconds);
+        _maximumRecreateLatencyMicroseconds = Math.Max(
+            _maximumRecreateLatencyMicroseconds, _lastRecreateLatencyMicroseconds);
         RecordEvent(
-            $"swapchain generation={_swapchainGeneration} reason={reason} extent={width}x{height} retirementUs={_lastRetirementLatencyMicroseconds}");
+            $"swapchain generation={_swapchainGeneration} reason={reason} " +
+            $"viewport={width}x{height} surface={_surfaceWidth}x{_surfaceHeight} " +
+            $"backingCapacity={_backingCapacityWidth}x{_backingCapacityHeight} " +
+            $"recreateUs={_lastRecreateLatencyMicroseconds} createUs={_lastSwapchainCreateLatencyMicroseconds} " +
+            $"backingUs={_lastBackingWrapLatencyMicroseconds} retirementUs={_lastRetirementLatencyMicroseconds}");
         return true;
     }
 
@@ -720,12 +887,52 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
 
     private void CreateBacking(int width, int height)
     {
+        var reuseStorage = _backingImage.Handle != 0 && _backingFormat == _format &&
+            _backingCapacityWidth >= width && _backingCapacityHeight >= height;
+        ReleaseBackingSurface();
+        if (!reuseStorage)
+        {
+            var capacityWidth = GrowBackingDimension(_backingCapacityWidth, width);
+            var capacityHeight = GrowBackingDimension(_backingCapacityHeight, height);
+            ReleaseBackingStorage();
+            _backingCapacityWidth = capacityWidth;
+            _backingCapacityHeight = capacityHeight;
+            _backingFormat = _format;
+            if (!TryAllocateBackingStorage())
+            {
+                if (_backingCapacityWidth == width && _backingCapacityHeight == height)
+                    throw new InvalidOperationException(
+                        $"Vulkan exact backing allocation for {width}x{height} could not be allocated " +
+                        $"within the {MaximumBackingAllocationBytes}-byte retention bound.");
+                RecordEvent(
+                    $"backing capacity fallback requested={width}x{height} " +
+                    $"candidate={capacityWidth}x{capacityHeight} boundBytes={MaximumBackingAllocationBytes}");
+                _backingCapacityWidth = width;
+                _backingCapacityHeight = height;
+                if (!TryAllocateBackingStorage())
+                    throw new InvalidOperationException(
+                        $"Vulkan exact backing allocation for {width}x{height} could not be allocated " +
+                        $"within the {MaximumBackingAllocationBytes}-byte retention bound.");
+            }
+            _backingAllocationCount++;
+        }
+        else
+        {
+            _backingReuseCount++;
+        }
+
+        WrapBackingSurface(width, height);
+    }
+
+    private bool TryAllocateBackingStorage()
+    {
         var imageInfo = new ImageCreateInfo
         {
             SType = StructureType.ImageCreateInfo,
             ImageType = ImageType.Type2D,
             Format = _format,
-            Extent = new Extent3D(checked((uint)width), checked((uint)height), 1),
+            Extent = new Extent3D(
+                checked((uint)_backingCapacityWidth), checked((uint)_backingCapacityHeight), 1),
             MipLevels = 1,
             ArrayLayers = 1,
             Samples = SampleCountFlags.Count1Bit,
@@ -735,18 +942,60 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
             SharingMode = SharingMode.Exclusive,
             InitialLayout = ImageLayout.Undefined,
         };
-        Check(_vk.CreateImage(_device, &imageInfo, null, out _backingImage), "vkCreateImage(backing)");
+        var createResult = _vk.CreateImage(_device, &imageInfo, null, out _backingImage);
+        if (createResult is Result.ErrorOutOfDeviceMemory or Result.ErrorOutOfHostMemory)
+        {
+            _backingImage = default;
+            _backingAllocationSize = 0;
+            return false;
+        }
+        Check(createResult, "vkCreateImage(backing)");
         _vk.GetImageMemoryRequirements(_device, _backingImage, out var requirements);
+        if (requirements.Size > MaximumBackingAllocationBytes)
+        {
+            // No command references this candidate yet, so it can be rejected
+            // safely before allocation/submission. The caller retries with the
+            // exact requested extent instead of combining independent width and
+            // height high-water marks into an unnecessarily huge image.
+            _vk.DestroyImage(_device, _backingImage, null);
+            _backingImage = default;
+            _backingAllocationSize = 0;
+            return false;
+        }
+        _backingAllocationSize = requirements.Size;
         var allocationInfo = new MemoryAllocateInfo
         {
             SType = StructureType.MemoryAllocateInfo,
             AllocationSize = requirements.Size,
             MemoryTypeIndex = FindMemoryType(requirements.MemoryTypeBits, MemoryPropertyFlags.DeviceLocalBit),
         };
-        Check(_vk.AllocateMemory(_device, &allocationInfo, null, out _backingMemory), "vkAllocateMemory(backing)");
-        Check(_vk.BindImageMemory(_device, _backingImage, _backingMemory, 0), "vkBindImageMemory(backing)");
+        var allocationResult = _vk.AllocateMemory(_device, &allocationInfo, null, out _backingMemory);
+        if (allocationResult is Result.ErrorOutOfDeviceMemory or Result.ErrorOutOfHostMemory)
+        {
+            _vk.DestroyImage(_device, _backingImage, null);
+            _backingImage = default;
+            _backingMemory = default;
+            _backingAllocationSize = 0;
+            return false;
+        }
+        Check(allocationResult, "vkAllocateMemory(backing)");
+        var bindResult = _vk.BindImageMemory(_device, _backingImage, _backingMemory, 0);
+        if (bindResult is Result.ErrorOutOfDeviceMemory or Result.ErrorOutOfHostMemory)
+        {
+            _vk.FreeMemory(_device, _backingMemory, null);
+            _backingMemory = default;
+            _vk.DestroyImage(_device, _backingImage, null);
+            _backingImage = default;
+            _backingAllocationSize = 0;
+            return false;
+        }
+        Check(bindResult, "vkBindImageMemory(backing)");
         TransitionBackingToColorAttachment();
+        return true;
+    }
 
+    private void WrapBackingSurface(int width, int height)
+    {
         var skiaImageInfo = new GRVkImageInfo
         {
             Image = _backingImage.Handle,
@@ -754,7 +1003,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
             {
                 Memory = _backingMemory.Handle,
                 Offset = 0,
-                Size = requirements.Size,
+                Size = _backingAllocationSize,
             },
             ImageTiling = (uint)ImageTiling.Optimal,
             ImageLayout = (uint)ImageLayout.ColorAttachmentOptimal,
@@ -776,6 +1025,21 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
                 $"format={_format}, colorType={colorType}, maxSamples={_context!.GetMaxSurfaceSampleCount(colorType)}).");
     }
 
+    private int GrowBackingDimension(int current, int required)
+    {
+        if (_maximumImageDimension2D != 0 && required > _maximumImageDimension2D)
+            throw new InvalidOperationException(
+                $"Vulkan backing dimension {required} exceeds the device limit {_maximumImageDimension2D}.");
+        if (current >= required) return current;
+        var desired = current == 0
+            ? (long)required
+            : Math.Max((long)required, current + Math.Max(256L, current / 4L));
+        var aligned = checked((desired + 255L) & ~255L);
+        if (_maximumImageDimension2D != 0 && aligned > _maximumImageDimension2D)
+            aligned = required;
+        return checked((int)aligned);
+    }
+
     private uint FindMemoryType(uint typeFilter, MemoryPropertyFlags required)
     {
         _vk.GetPhysicalDeviceMemoryProperties(_physicalDevice, out var properties);
@@ -795,7 +1059,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         _vk.CmdPipelineBarrier(
             _commandBuffer, PipelineStageFlags.TopOfPipeBit, PipelineStageFlags.ColorAttachmentOutputBit,
             0, 0, null, 0, null, 1, &barrier);
-        SubmitCommandsAndWait("Vulkan backing initialization");
+        SubmitCommands("Vulkan backing initialization", waitForCompletion: true);
     }
 
     private void CopyBackingToSwapchain(VkImage destination, uint imageIndex, VkSemaphore renderFinished)
@@ -809,14 +1073,16 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
             destination, _swapchainLayouts[checked((int)imageIndex)], ImageLayout.TransferDstOptimal,
             0, AccessFlags.TransferWriteBit);
         _vk.CmdPipelineBarrier(
-            _commandBuffer, PipelineStageFlags.ColorAttachmentOutputBit, PipelineStageFlags.TransferBit,
+            _commandBuffer,
+            PipelineStageFlags.ColorAttachmentOutputBit | PipelineStageFlags.TransferBit,
+            PipelineStageFlags.TransferBit,
             0, 0, null, 0, null, 2, barriers);
 
         var copy = new ImageCopy
         {
             SrcSubresource = ColorSubresourceLayers(),
             DstSubresource = ColorSubresourceLayers(),
-            Extent = new Extent3D(checked((uint)Width), checked((uint)Height), 1),
+            Extent = new Extent3D(checked((uint)_surfaceWidth), checked((uint)_surfaceHeight), 1),
         };
         _vk.CmdCopyImage(
             _commandBuffer, _backingImage, ImageLayout.TransferSrcOptimal,
@@ -833,7 +1099,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
             PipelineStageFlags.ColorAttachmentOutputBit | PipelineStageFlags.BottomOfPipeBit,
             0, 0, null, 0, null, 2, barriers);
         _swapchainLayouts[checked((int)imageIndex)] = ImageLayout.PresentSrcKhr;
-        SubmitCommandsAndWait("Vulkan backing copy", _acquireSemaphore, renderFinished);
+        SubmitCommands(
+            "Vulkan backing copy", _acquireSemaphore, renderFinished,
+            waitForCompletion: false);
     }
 
     private static ImageMemoryBarrier ImageBarrier(
@@ -870,11 +1138,15 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         Check(_vk.BeginCommandBuffer(_commandBuffer, &beginInfo), "vkBeginCommandBuffer");
     }
 
-    private void SubmitCommandsAndWait(
+    private void SubmitCommands(
         string identity,
         VkSemaphore waitSemaphore = default,
-        VkSemaphore signalSemaphore = default)
+        VkSemaphore signalSemaphore = default,
+        bool waitForCompletion = true)
     {
+        if (_copySubmissionPending)
+            throw new InvalidOperationException(
+                "The Vulkan copy command buffer cannot be reused before its fence completes.");
         Check(_vk.EndCommandBuffer(_commandBuffer), "vkEndCommandBuffer");
         ResetFence();
         var commandBuffer = _commandBuffer;
@@ -899,7 +1171,28 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         _lastSubmitResult = _vk.QueueSubmit(_queue, 1, &submitInfo, _fence);
         Check(_lastSubmitResult, "vkQueueSubmit");
         GpuSubmitCount++;
-        WaitFence(identity);
+        if (waitForCompletion)
+        {
+            WaitFence(identity);
+        }
+        else
+        {
+            _copySubmissionPending = true;
+            _deferredCopySubmissionCount++;
+        }
+    }
+
+    private void WaitForPendingCopySubmission()
+    {
+        if (!_copySubmissionPending) return;
+        var started = Stopwatch.GetTimestamp();
+        WaitFence("previous Vulkan backing copy");
+        _lastCopyFenceWaitMicroseconds = checked((long)
+            Stopwatch.GetElapsedTime(started).TotalMicroseconds);
+        _maximumCopyFenceWaitMicroseconds = Math.Max(
+            _maximumCopyFenceWaitMicroseconds, _lastCopyFenceWaitMicroseconds);
+        _copyFenceWaitCount++;
+        _copySubmissionPending = false;
     }
 
     private void ResetFence() => Check(_vk.ResetFences(_device, 1, in _fence), "vkResetFences");
@@ -918,6 +1211,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     {
         if (_swapchain.Handle == 0) return;
         Check(_vk.QueueWaitIdle(_queue), "vkQueueWaitIdle(swapchain retirement)");
+        _copySubmissionPending = false;
         _queueIdleRetirementWaitCount++;
     }
 
@@ -931,38 +1225,84 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
 
     private void WaitIdle()
     {
-        if (_device.Handle != 0) Check(_vk.DeviceWaitIdle(_device), "vkDeviceWaitIdle");
+        if (_device.Handle == 0) return;
+        var result = TakeInjectedResult("DEVICE_LOST_ON_WAIT_IDLE")
+            ? Result.ErrorDeviceLost
+            : _vk.DeviceWaitIdle(_device);
+        Check(result, "vkDeviceWaitIdle");
     }
 
-    private void ReleaseBacking()
+    private void ReleaseBackingSurface()
     {
         _backingSurface?.Dispose();
         _backingSurface = null;
         _backingTarget?.Dispose();
         _backingTarget = null;
+    }
+
+    private void ReleaseBackingStorage()
+    {
         if (_backingImage.Handle != 0) _vk.DestroyImage(_device, _backingImage, null);
         _backingImage = default;
         if (_backingMemory.Handle != 0) _vk.FreeMemory(_device, _backingMemory, null);
         _backingMemory = default;
+        _backingAllocationSize = 0;
+        _backingFormat = default;
+        _backingCapacityWidth = 0;
+        _backingCapacityHeight = 0;
     }
 
-    private void ReleaseDevice(bool deviceLost)
+    private void ReleaseDevice(bool deviceLost, bool waitForIdle = true)
     {
         if (_instance.Handle == 0) return;
-        if (!deviceLost) WaitIdle();
+        if (!deviceLost && waitForIdle)
+        {
+            try
+            {
+                WaitIdle();
+            }
+            catch (WindowsManagedVulkanDeviceLostException)
+            {
+                // vkDeviceWaitIdle can be the first call to report loss. From
+                // this point Skia must be abandoned without releasing backend
+                // resources through the dead device, but native handles still
+                // need deterministic teardown.
+                deviceLost = true;
+                RecordEvent("device loss observed during release; abandoning Skia context");
+            }
+        }
+        if (deviceLost)
+        {
+            // A lost backend must be abandoned before any Skia-owned wrapper
+            // is disposed so its destructors make no Vulkan calls.
+            AbandonContextForDeviceLossCore();
+        }
+        if (deviceLost || _contextAbandoned)
+        {
+            ReleaseBackingSurface();
+        }
+        else
+        {
+            _copySubmissionPending = false;
+            ReleaseBackingSurface();
+            // The device is still valid, so let Skia release its backend
+            // resources before Vulkan device destruction.
+            _context?.AbandonContext(true);
+        }
         _acquired = false;
-        ReleaseBacking();
-        ReleaseSwapchainSynchronization();
-        if (_swapchain.Handle != 0) _swapchainApi?.DestroySwapchain(_device, _swapchain, null);
-        _swapchain = default;
-        _swapchainImages = [];
-        _context?.AbandonContext(deviceLost);
+        _copySubmissionPending = false;
         _context?.Dispose();
         _context = null;
+        _contextAbandoned = false;
         _skiaBackend?.Dispose();
         _skiaBackend = null;
         _skiaExtensions?.Dispose();
         _skiaExtensions = null;
+        ReleaseBackingStorage();
+        ReleaseSwapchainSynchronization();
+        if (_swapchain.Handle != 0) _swapchainApi?.DestroySwapchain(_device, _swapchain, null);
+        _swapchain = default;
+        _swapchainImages = [];
         if (_fence.Handle != 0) _vk.DestroyFence(_device, _fence, null);
         _fence = default;
         if (_acquireSemaphore.Handle != 0) _vk.DestroySemaphore(_device, _acquireSemaphore, null);
@@ -986,8 +1326,16 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         _physicalDevice = default;
         _window = 0;
         Width = Height = 0;
+        _surfaceWidth = _surfaceHeight = 0;
         AdapterDescription = "uninitialized";
-        _flushAfterResizePresent = false;
+    }
+
+    private void AbandonContextForDeviceLossCore()
+    {
+        if (_context is null || _contextAbandoned) return;
+        _context.AbandonContext(false);
+        _contextAbandoned = true;
+        TryRecordEvent("Vulkan context abandoned before renderer invalidation");
     }
 
     private void Check(Result result, string operation, bool allowSuboptimal = false)
@@ -1066,6 +1414,26 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         }
     }
 
+    private void TryRecordEvent(string value)
+    {
+        try
+        {
+            RecordEvent(value);
+        }
+        catch
+        {
+            // Diagnostics must never prevent abandon/teardown safety work.
+        }
+    }
+
+    private void RecordRendererReleaseTeardown()
+    {
+        TryRecordEvent(_rendererReleasePreflightReportedDeviceLoss
+            ? "device-loss renderer resources invalidated; starting native teardown"
+            : "unsafe-backend renderer resources invalidated; starting native teardown");
+        _rendererReleasePreflightReportedDeviceLoss = false;
+    }
+
     private string[] SnapshotEvents()
     {
         lock (_eventGate) return _recentEvents.ToArray();
@@ -1095,11 +1463,63 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         _disposed = true;
     }
 
+    internal override void DisposeAfterRendererGpuResourceRelease(bool deviceLost)
+    {
+        if (_disposed) return;
+        if (deviceLost)
+            RecordRendererReleaseTeardown();
+        ReleaseDevice(deviceLost, waitForIdle: false);
+        _vk.Dispose();
+        _disposed = true;
+    }
+
+    internal override void DisposeAfterRendererGpuResourceReleaseFailure()
+    {
+        if (_disposed) return;
+
+        // vkDeviceWaitIdle failed without VK_ERROR_DEVICE_LOST, so neither
+        // execution completion nor presentation-resource retirement is known.
+        // Dispose only Skia's already-abandoned managed wrappers. Vulkan/Silk
+        // objects and the loader stay quarantined for process reclamation;
+        // destroying them here could violate in-use object lifetime rules.
+        var failures = new List<Exception>();
+        void Cleanup(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception failure)
+            {
+                failures.Add(failure);
+            }
+        }
+
+        if (_backingSurface is { } surface) Cleanup(surface.Dispose);
+        _backingSurface = null;
+        if (_backingTarget is { } target) Cleanup(target.Dispose);
+        _backingTarget = null;
+        if (_context is { } context) Cleanup(context.Dispose);
+        _context = null;
+        if (_skiaBackend is { } backend) Cleanup(backend.Dispose);
+        _skiaBackend = null;
+        if (_skiaExtensions is { } extensions) Cleanup(extensions.Dispose);
+        _skiaExtensions = null;
+        _disposed = true;
+        TryRecordEvent("unsafe Vulkan native objects quarantined after failed idle preflight");
+
+        if (failures.Count == 1)
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failures[0]).Throw();
+        if (failures.Count > 1)
+            throw new AggregateException("Unsafe Vulkan managed-wrapper cleanup failed.", failures);
+    }
+
     [LibraryImport("kernel32.dll", EntryPoint = "GetModuleHandleW", StringMarshalling = StringMarshalling.Utf16)]
     private static partial nint GetModuleHandle(string? moduleName);
 
     [DllImport("dwmapi.dll", ExactSpelling = true)]
     private static extern int DwmFlush();
+
 }
 
 internal sealed class WindowsManagedVulkanDeviceLostException(string message)
@@ -1126,6 +1546,19 @@ internal sealed record VulkanPresenterSnapshot(
     string CompositeAlpha,
     string PresentMode,
     int ImageCount,
+    int SurfaceWidth,
+    int SurfaceHeight,
+    ulong RetainedSurfaceReuses,
+    ulong SurfaceRecreates,
+    int BackingCapacityWidth,
+    int BackingCapacityHeight,
+    ulong BackingAllocationBytes,
+    ulong BackingAllocations,
+    ulong BackingReuses,
+    ulong DeferredCopySubmissions,
+    ulong CopyFenceWaits,
+    long LastCopyFenceWaitMicroseconds,
+    long MaximumCopyFenceWaitMicroseconds,
     int Width,
     int Height,
     ulong SwapchainGeneration,
@@ -1134,6 +1567,7 @@ internal sealed record VulkanPresenterSnapshot(
     ulong SuccessfulPresents,
     int OutstandingAcquired,
     int OutstandingImageIndex,
+    int OutstandingCopySubmission,
     ulong MaximumOutstandingAcquired,
     ulong DeviceLostResults,
     ulong SurfaceLostResults,
@@ -1148,6 +1582,12 @@ internal sealed record VulkanPresenterSnapshot(
     int MaximumRetiredSwapchains,
     string LastRecreateReason,
     long LastRetirementLatencyMicroseconds,
+    long LastRecreateLatencyMicroseconds,
+    long MaximumRecreateLatencyMicroseconds,
+    long LastSwapchainCreateLatencyMicroseconds,
+    long MaximumSwapchainCreateLatencyMicroseconds,
+    long LastBackingWrapLatencyMicroseconds,
+    long MaximumBackingWrapLatencyMicroseconds,
     long FirstPresentQpc,
     long LastTargetQpc,
     long LastPresentQpc,

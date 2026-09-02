@@ -20,6 +20,8 @@ enum { DOROTI_WINDOWS_ABI_VERSION_V1 = 1 };
 typedef enum doroti_windows_required_feature_v1 {
   DOROTI_WINDOWS_FEATURE_NONE_V1 = 0,
   DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1 = 1ull << 0,
+  DOROTI_WINDOWS_FEATURE_POST_PRESENT_DWM_FLUSH_V1 = 1ull << 1,
+  DOROTI_WINDOWS_FEATURE_RETAINED_OVERSIZED_CHILD_SURFACE_V1 = 1ull << 2,
 } doroti_windows_required_feature_v1;
 
 typedef enum doroti_windows_status_v1 {

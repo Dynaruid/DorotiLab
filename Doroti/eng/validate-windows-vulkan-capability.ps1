@@ -17,13 +17,122 @@ if ([string]::IsNullOrWhiteSpace($OutputDirectory)) {
     $OutputDirectory = Join-Path $repoRoot ".doroti/evidence/$runId"
 }
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
+$globalLockDirectory = Join-Path $repoRoot '.doroti/locks'
+New-Item -ItemType Directory -Path $globalLockDirectory -Force | Out-Null
+$globalLockPath = Join-Path $globalLockDirectory 'windows-vulkan-validator.lock'
+try {
+    $globalValidationLock = [IO.FileStream]::new(
+        $globalLockPath, [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite,
+        [IO.FileShare]::None, 1, [IO.FileOptions]::DeleteOnClose)
+} catch [IO.IOException] {
+    throw 'Another repository-wide Vulkan validator is already building or running shared artifacts.'
+}
+try {
 New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null
+$lockPath = Join-Path $OutputDirectory '.doroti-vulkan-validation.lock'
+try {
+    $outputDirectoryLock = [IO.FileStream]::new(
+        $lockPath, [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite,
+        [IO.FileShare]::None, 1, [IO.FileOptions]::DeleteOnClose)
+} catch [IO.IOException] {
+    throw "Another Vulkan validator already owns output directory '$OutputDirectory'."
+}
+try {
+    $existingOutput = @(Get-ChildItem -LiteralPath $OutputDirectory -Force |
+        Where-Object FullName -ne $lockPath)
+    if ($existingOutput.Count -ne 0) {
+        throw "Vulkan validation output directory must be empty: '$OutputDirectory'."
+    }
 $project = Join-Path $repoRoot 'Doroti/validation/windows-vulkan-capability/Doroti.Validation.WindowsVulkanCapability.csproj'
 $targetProject = Join-Path $repoRoot 'Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj'
 $productProject = Join-Path $repoRoot 'Doroti/validation/hwnd-exact-cpp-product/Doroti.Validation.HwndExactCppProduct.csproj'
+$productExecutable = Join-Path $repoRoot 'Doroti/validation/hwnd-exact-cpp-product/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Validation.HwndExactCppProduct.exe'
+$productDirectory = Split-Path -Parent $productExecutable
+$productAssembly = Join-Path $productDirectory 'Doroti.Validation.HwndExactCppProduct.dll'
+$managedHostPath = Join-Path $productDirectory 'Doroti.Host.WindowsAppSdk.dll'
+$nativeHostPath = Join-Path $productDirectory 'doroti_windows_appsdk_host_v1.dll'
+$probeDirectory = Join-Path $repoRoot 'Doroti/validation/windows-vulkan-capability/bin/Release/net10.0-windows10.0.19041.0/win-x64'
+$probeExecutable = Join-Path $probeDirectory 'Doroti.Validation.WindowsVulkanCapability.exe'
+$probeAssembly = Join-Path $probeDirectory 'Doroti.Validation.WindowsVulkanCapability.dll'
+$sourceFingerprintPaths = @(
+    'Doroti/eng/validate-windows-vulkan-capability.ps1',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenterBase.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs',
+    'Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_host_v1.h',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/exports.cpp',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/Doroti.Host.WindowsAppSdk.Native.vcxproj',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj',
+    'Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj',
+    'Doroti/validation/contracts/windows-vulkan-v0.json',
+    'Doroti/validation/windows-vulkan-capability/Program.cs',
+    'Doroti/validation/windows-vulkan-capability/Doroti.Validation.WindowsVulkanCapability.csproj',
+    'Doroti/validation/hwnd-exact-cpp-product/Program.cs',
+    'Doroti/validation/hwnd-exact-cpp-product/Doroti.Validation.HwndExactCppProduct.csproj',
+    'Doroti/validation/hwnd-exact-cpp-product/doroti-application-manifest.json',
+    'Doroti/eng/build-hwnd-exact-cpp-native.ps1',
+    'Doroti/Directory.Build.props',
+    'Doroti/Directory.Build.targets',
+    'Doroti/Directory.Packages.props'
+)
 
 function Assert-True([bool] $Condition, [string] $Message) {
     if (-not $Condition) { throw $Message }
+}
+
+function Get-TrackedDiffSha256 {
+    $diff = @(& git -C $repoRoot diff --binary --no-ext-diff HEAD -- @sourceFingerprintPaths)
+    Assert-True ($LASTEXITCODE -eq 0) 'Could not fingerprint the implementation working-tree diff.'
+    $bytes = [Text.Encoding]::UTF8.GetBytes(($diff -join "`n"))
+    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+}
+
+function Get-RepositoryDiffSha256 {
+    $diff = @(& git -C $repoRoot diff --binary --no-ext-diff HEAD)
+    Assert-True ($LASTEXITCODE -eq 0) 'Could not fingerprint the repository working-tree diff.'
+    $bytes = [Text.Encoding]::UTF8.GetBytes(($diff -join "`n"))
+    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+}
+
+function Get-UntrackedFileSha256 {
+    $hashes = [ordered]@{}
+    $relativePaths = @(& git -C $repoRoot ls-files --others --exclude-standard)
+    Assert-True ($LASTEXITCODE -eq 0) 'Could not enumerate untracked repository files.'
+    foreach ($relativePath in $relativePaths | Sort-Object) {
+        $absolutePath = Join-Path $repoRoot $relativePath
+        if (Test-Path -LiteralPath $absolutePath -PathType Leaf) {
+            $hashes[$relativePath] =
+                (Get-FileHash -LiteralPath $absolutePath -Algorithm SHA256).Hash.ToLowerInvariant()
+        }
+    }
+    return $hashes
+}
+
+function Get-SourceFileSha256 {
+    $hashes = [ordered]@{}
+    foreach ($relativePath in $sourceFingerprintPaths) {
+        $absolutePath = Join-Path $repoRoot $relativePath
+        $hashes[$relativePath] = (Get-FileHash -LiteralPath $absolutePath -Algorithm SHA256).Hash.ToLowerInvariant()
+    }
+    return $hashes
+}
+
+function Get-BinaryFileSha256([System.Collections.IDictionary] $Files) {
+    $hashes = [ordered]@{}
+    foreach ($entry in $Files.GetEnumerator()) {
+        Assert-True (Test-Path -LiteralPath $entry.Value -PathType Leaf) "Missing binary: $($entry.Value)"
+        $hashes[[string]$entry.Key] =
+            (Get-FileHash -LiteralPath $entry.Value -Algorithm SHA256).Hash.ToLowerInvariant()
+    }
+    return $hashes
+}
+
+function Test-Sha256MapsEqual(
+    [System.Collections.IDictionary] $Starting,
+    [System.Collections.IDictionary] $Ending) {
+    return ($Starting | ConvertTo-Json -Compress) -ceq ($Ending | ConvertTo-Json -Compress)
 }
 
 function Invoke-BoundedProcess {
@@ -67,6 +176,10 @@ function Invoke-Probe {
 
 $startingStatus = @(& git -C $repoRoot status --short)
 $head = (& git -C $repoRoot rev-parse HEAD).Trim()
+$startingDiffSha256 = Get-TrackedDiffSha256
+$startingSourceFileSha256 = Get-SourceFileSha256
+$startingRepositoryDiffSha256 = Get-RepositoryDiffSha256
+$startingUntrackedFileSha256 = Get-UntrackedFileSha256
 $oldReference = (& git -C $repoRoot rev-parse 'aa3f532^').Trim()
 $oldSource = & git -C $repoRoot show 'aa3f532^:Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs'
 $oldSourceHash = ($oldSource -join "`n" | & git -C $repoRoot hash-object --stdin).Trim()
@@ -85,6 +198,16 @@ if (-not $SkipBuild) {
         'build',$productProject,'-c','Release')
     Assert-True ($productBuild.exitCode -eq 0) "Windows product validation build failed: $($productBuild.stderr)"
 }
+
+$binaryFiles = [ordered]@{
+    productExecutable=$productExecutable
+    productAssembly=$productAssembly
+    managedHost=$managedHostPath
+    nativeHost=$nativeHostPath
+    capabilityProbeExecutable=$probeExecutable
+    capabilityProbeAssembly=$probeAssembly
+}
+$startingBinarySha256 = Get-BinaryFileSha256 $binaryFiles
 
 $anglePath = Join-Path $OutputDirectory 'angle-product.json'
 $angle = Invoke-BoundedProcess -FileName 'dotnet' -Name 'ANGLE product baseline' -ArgumentList @(
@@ -151,15 +274,19 @@ Assert-True ($vulkanProductReport.diagnostics.failedTerminals -eq 0 -and
 Assert-True ($vulkanProductReport.diagnostics.deviceGenerations -eq 2) 'Vulkan product device-reset qualification differs.'
 
 $injectedResults = [ordered]@{}
-foreach ($resultName in @('OUT_OF_DATE','SUBOPTIMAL','SURFACE_LOST','DEVICE_LOST')) {
+foreach ($resultName in @('OUT_OF_DATE','SUBOPTIMAL','SURFACE_LOST','DEVICE_LOST','DEVICE_LOST_ON_WAIT_IDLE')) {
     $resultSlug = $resultName.ToLowerInvariant()
     $resultPath = Join-Path $OutputDirectory "vulkan-inject-$resultSlug.json"
-    $resultRun = Invoke-BoundedProcess -FileName 'dotnet' -Name "Vulkan $resultName injection" -Environment @{
-        DOROTI_WINDOWS_VULKAN_DEVICE = $Device
-    } -ArgumentList @(
+    $resultArguments = @(
         'run','--project',$productProject,'-c','Release','--no-build','--',
         '--presenter','Vulkan','--inject-vulkan-result',$resultName,'--lifecycle-cycles','0','--no-resize-burst',
         '--smoke-ms','5000','--report',$resultPath)
+    if ($resultName -eq 'DEVICE_LOST_ON_WAIT_IDLE') {
+        $resultArguments += @('--device-resets','1')
+    }
+    $resultRun = Invoke-BoundedProcess -FileName 'dotnet' -Name "Vulkan $resultName injection" -Environment @{
+        DOROTI_WINDOWS_VULKAN_DEVICE = $Device
+    } -ArgumentList $resultArguments
     Assert-True ($resultRun.exitCode -eq 0) "Vulkan $resultName injection failed: $($resultRun.stderr)"
     $resultReport = Get-Content -LiteralPath $resultPath -Raw | ConvertFrom-Json -Depth 100
     Assert-True ($resultReport.status -eq 'PASS' -and
@@ -167,6 +294,25 @@ foreach ($resultName in @('OUT_OF_DATE','SUBOPTIMAL','SURFACE_LOST','DEVICE_LOST
         $resultReport.diagnostics.duplicateResizeTerminals -eq 0 -and
         $resultReport.diagnostics.vulkan.outstandingAcquired -eq 0) `
         "Vulkan $resultName injection did not drain one-to-one."
+    $deviceLossRecoveryOrder = $null
+    if ($resultName -in @('DEVICE_LOST','DEVICE_LOST_ON_WAIT_IDLE')) {
+        $events = @($resultReport.diagnostics.vulkan.recentEvents)
+        $abandonIndex = -1
+        $teardownIndex = -1
+        for ($eventIndex = 0; $eventIndex -lt $events.Count; $eventIndex++) {
+            if ($events[$eventIndex] -like '*device-loss context abandoned before renderer invalidation*') {
+                $abandonIndex = $eventIndex
+            }
+            if ($events[$eventIndex] -like '*device-loss renderer resources invalidated; starting native teardown*') {
+                $teardownIndex = $eventIndex
+            }
+        }
+        $deviceLossRecoveryOrder = $abandonIndex -ge 0 -and $teardownIndex -gt $abandonIndex
+        Assert-True $deviceLossRecoveryOrder `
+            'Synthetic DEVICE_LOST did not prove context abandon before renderer invalidation/native teardown.'
+        Assert-True ([int]$resultReport.diagnostics.vulkan.deviceLostResults -ge 1) `
+            'Synthetic DEVICE_LOST did not reach Vulkan device-loss accounting.'
+    }
     $injectedResults[$resultName] = [ordered]@{
         status='PASS'; report=$resultPath
         failedTerminals=$resultReport.diagnostics.failedTerminals
@@ -175,6 +321,7 @@ foreach ($resultName in @('OUT_OF_DATE','SUBOPTIMAL','SURFACE_LOST','DEVICE_LOST
         acquired=$resultReport.diagnostics.vulkan.acquired
         presented=$resultReport.diagnostics.vulkan.presented
         outstanding=$resultReport.diagnostics.vulkan.outstandingAcquired
+        deviceLossRecoveryOrder=$deviceLossRecoveryOrder
     }
 }
 
@@ -215,7 +362,11 @@ $resizeRun = Invoke-BoundedProcess -FileName 'dotnet' -Name 'Vulkan exact resize
 Assert-True ($resizeRun.exitCode -eq 0) "Vulkan exact resize x10 failed: $($resizeRun.stderr)"
 $resizeReport = Get-Content -LiteralPath $resizePath -Raw | ConvertFrom-Json -Depth 100
 Assert-True ($resizeReport.status -eq 'PASS' -and $resizeReport.completedResizeRequests -eq 10 -and
-    $resizeReport.diagnostics.resizeBuffers -ge 10 -and $resizeReport.diagnostics.presents -ge 10 -and
+    $resizeReport.diagnostics.vulkan.surfaceWidth -ge $resizeReport.diagnostics.vulkan.width -and
+    $resizeReport.diagnostics.vulkan.surfaceHeight -ge $resizeReport.diagnostics.vulkan.height -and
+    $resizeReport.diagnostics.vulkan.surfaceRecreates -ge 1 -and
+    $resizeReport.diagnostics.vulkan.retainedSurfaceReuses -ge 9 -and
+    $resizeReport.diagnostics.presents -ge 10 -and
     $resizeReport.diagnostics.gpuCopies -ge 10 -and
     $resizeReport.diagnostics.vulkan.outstandingAcquired -eq 0) 'Vulkan exact resize x10 gate failed.'
 
@@ -300,6 +451,22 @@ namespace Doroti.VulkanCapabilityValidation {
 '@
 }
 $systemDpi = [Doroti.VulkanCapabilityValidation.NativeMethods]::GetDpiForSystem()
+$endingDiffSha256 = Get-TrackedDiffSha256
+$endingHead = (& git -C $repoRoot rev-parse HEAD).Trim()
+$endingSourceFileSha256 = Get-SourceFileSha256
+$keySourceFilesStable = Test-Sha256MapsEqual $startingSourceFileSha256 $endingSourceFileSha256
+$sourceStable = $head -eq $endingHead -and
+    $startingDiffSha256 -eq $endingDiffSha256 -and $keySourceFilesStable
+Assert-True $sourceStable 'Tracked source changed during Vulkan qualification.'
+$endingRepositoryDiffSha256 = Get-RepositoryDiffSha256
+$endingUntrackedFileSha256 = Get-UntrackedFileSha256
+$repositoryStable = $head -eq $endingHead -and
+    $startingRepositoryDiffSha256 -eq $endingRepositoryDiffSha256 -and
+    (Test-Sha256MapsEqual $startingUntrackedFileSha256 $endingUntrackedFileSha256)
+Assert-True $repositoryStable 'Repository working tree changed during Vulkan qualification.'
+$endingBinarySha256 = Get-BinaryFileSha256 $binaryFiles
+$binariesStable = Test-Sha256MapsEqual $startingBinarySha256 $endingBinarySha256
+Assert-True $binariesStable 'Qualification binaries changed during Vulkan qualification.'
 $manifest = [ordered]@{
     schemaVersion='doroti.windows.vulkan-v0-v2-validation/v1'
     runId=$runId
@@ -307,7 +474,30 @@ $manifest = [ordered]@{
     capturedAt=[DateTimeOffset]::Now.ToString('o')
     repository=[ordered]@{
         head=$head
+        endingHead=$endingHead
         startingStatus=$startingStatus
+        implementationDiffSha256=$startingDiffSha256
+        sourceStableDuringRun=$sourceStable
+        endingImplementationDiffSha256=$endingDiffSha256
+        endingFileSha256=$endingSourceFileSha256
+        keySourceFilesStableAtEndpoints=$keySourceFilesStable
+        repositoryDiffSha256=$startingRepositoryDiffSha256
+        endingRepositoryDiffSha256=$endingRepositoryDiffSha256
+        untrackedFileSha256=$startingUntrackedFileSha256
+        endingUntrackedFileSha256=$endingUntrackedFileSha256
+        repositoryStableDuringRun=$repositoryStable
+        fileSha256=$startingSourceFileSha256
+        buildPerformed=(-not $SkipBuild)
+        sourceToBinaryCorrespondence=if ($SkipBuild) { 'notVerified-skip-build' } else { 'PASS-built-after-source-fingerprint' }
+        binarySha256AtStart=$startingBinarySha256
+        binarySha256AtEnd=$endingBinarySha256
+        binariesStableDuringRun=$binariesStable
+        productExecutableSha256=$startingBinarySha256.productExecutable
+        productAssemblySha256=$startingBinarySha256.productAssembly
+        managedHostSha256=$startingBinarySha256.managedHost
+        nativeHostSha256=$startingBinarySha256.nativeHost
+        capabilityProbeExecutableSha256=$startingBinarySha256.capabilityProbeExecutable
+        capabilityProbeAssemblySha256=$startingBinarySha256.capabilityProbeAssembly
         oldVulkanReferenceCommit=$oldReference
         oldVulkanReferenceSourceHash=$oldSourceHash
         cherryPicked=$false
@@ -397,3 +587,11 @@ $manifest | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $manifestPath -
 Write-Host "status=PASS"
 Write-Host "gate=V2-PASS-qualification"
 Write-Host "evidence=$OutputDirectory"
+}
+finally {
+    $outputDirectoryLock.Dispose()
+}
+}
+finally {
+    $globalValidationLock.Dispose()
+}

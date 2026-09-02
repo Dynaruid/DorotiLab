@@ -7,6 +7,8 @@ internal abstract class WindowsManagedHwndPresenterBase : IDisposable
     internal abstract string BackendName { get; }
     internal abstract string RuntimeEffectsBackend { get; }
     internal abstract string DiagnosticCoverage { get; }
+    internal virtual ulong NativeRequiredFeatures => 0;
+    internal virtual bool InvalidatesRendererSurfaceResourcesOnResize => true;
     internal abstract int Width { get; set; }
     internal abstract int Height { get; set; }
     internal abstract ulong DeviceGeneration { get; set; }
@@ -27,6 +29,11 @@ internal abstract class WindowsManagedHwndPresenterBase : IDisposable
     internal abstract void SealInitializationDebugBaseline();
     internal abstract void CaptureOperationalDebugMessages();
     internal abstract T RenderAndPresent<T>(Func<SKSurface, T> paint, Predicate<T> shouldPresent);
+    internal virtual bool PrepareForRendererGpuResourceRelease() => false;
+    internal virtual bool TryAbandonGpuContextAfterRendererReleasePreflightFailure() => false;
+    internal virtual void ResetDeviceAfterRendererGpuResourceRelease(bool deviceLost) => ResetDevice();
+    internal virtual void DisposeAfterRendererGpuResourceRelease(bool deviceLost) => Dispose();
+    internal virtual void DisposeAfterRendererGpuResourceReleaseFailure() => Dispose();
     internal abstract void ResetDevice();
     public abstract void Dispose();
 }

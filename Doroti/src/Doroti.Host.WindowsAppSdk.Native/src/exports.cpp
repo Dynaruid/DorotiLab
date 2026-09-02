@@ -175,6 +175,12 @@ class ProductHost final {
               const doroti_windows_callbacks_v1& callbacks)
       : configuration_(configuration), callbacks_(callbacks),
         platform_thread_id_(GetCurrentThreadId()),
+        post_present_dwm_flush_(
+            (configuration.required_features &
+             DOROTI_WINDOWS_FEATURE_POST_PRESENT_DWM_FLUSH_V1) != 0),
+        retained_oversized_child_surface_(
+            (configuration.required_features &
+             DOROTI_WINDOWS_FEATURE_RETAINED_OVERSIZED_CHILD_SURFACE_V1) != 0),
         composition_requested_(
             (configuration.required_features &
              DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1) != 0),
@@ -286,12 +292,30 @@ class ProductHost final {
               }
               return 0;
             }
-            // Match Flutter's host_window.cc contract: the one visible child
-            // is always exactly the top-level physical client extent. The
-            // child's WM_SIZE owns metrics and the bounded render transaction.
-            if (!SetWindowPos(child_, nullptr, 0, 0, static_cast<int>(width),
-                              static_cast<int>(height),
-                              SWP_NOZORDER | SWP_NOACTIVATE)) {
+            if (retained_oversized_child_surface_) {
+              // Vulkan Win32 WSI couples swapchain extent to the surface HWND.
+              // Keep that child at a retained capacity and let the parent clip
+              // it to the exact visible client. Logical metrics still advance
+              // for every top-level size, without forcing a WSI reallocation.
+              if (!EnsureRetainedChildSurfaceCapacity(width, height)) {
+                fatal_ = true;
+                PostMessageW(top_, WM_CLOSE, 0, 0);
+                return 0;
+              }
+              const auto scale =
+                  static_cast<double>(GetDpiForWindow(top_)) / 96.0;
+              if (UpdateMetrics(width, height, scale)) {
+                const auto generation = current_generation_;
+                const auto causal = QueueRender();
+                WaitForExactResize(generation, causal);
+              }
+            } else if (!SetWindowPos(
+                           child_, nullptr, 0, 0, static_cast<int>(width),
+                           static_cast<int>(height),
+                           SWP_NOZORDER | SWP_NOACTIVATE)) {
+              // Match Flutter's host_window.cc contract for ANGLE: the one
+              // visible child is exactly the top-level physical client extent,
+              // and its WM_SIZE owns the bounded render transaction.
               fatal_ = true;
               PostMessageW(top_, WM_CLOSE, 0, 0);
             }
@@ -303,7 +327,12 @@ class ProductHost final {
         return 0;
       case WM_ENTERSIZEMOVE:
         interactive_move_ = true;
-        composition_interactive_.store(true, std::memory_order_relaxed);
+        composition_interactive_.store(true, std::memory_order_release);
+        // A timed-out or failed final-settle request must not leak a DwmFlush
+        // into the next interactive sizing loop. WM_EXITSIZEMOVE publishes a
+        // fresh generation after clearing this state.
+        composition_flush_generation_.store(0, std::memory_order_release);
+        opaque_flush_generation_.store(0, std::memory_order_release);
         interactive_move_dirty_ = true;
         if (!composition_active_)
           SetTimer(window, kInteractiveMoveTimer, kInteractiveMoveIntervalMs,
@@ -321,7 +350,7 @@ class ProductHost final {
         break;
       case WM_EXITSIZEMOVE:
         interactive_move_ = false;
-        composition_interactive_.store(false, std::memory_order_relaxed);
+        composition_interactive_.store(false, std::memory_order_release);
         KillTimer(window, kInteractiveMoveTimer);
         EnteredDifferentMonitor();
         // Finish native sizing with one exact frame for the actual WM_SIZE
@@ -334,7 +363,13 @@ class ProductHost final {
                                                std::memory_order_release);
           QueueRender();
         } else if (RepublishCurrentMetrics()) {
-          QueueRender();
+          const auto generation = current_generation_;
+          if (post_present_dwm_flush_ && !interactive_move_)
+            opaque_flush_generation_.store(generation,
+                                           std::memory_order_release);
+          const auto causal = QueueRender();
+          if (post_present_dwm_flush_)
+            WaitForExactResize(generation, causal);
         }
         interactive_move_dirty_ = false;
         return 0;
@@ -471,11 +506,18 @@ class ProductHost final {
         return 1;
       case WM_SIZE: {
         if (composition_active_) return 0;
+        if (retained_oversized_child_surface_) return 0;
         if (!render_worker_started_ || wparam == SIZE_MINIMIZED)
           return 0;
         if (PublishMetrics()) {
           const auto generation = current_generation_;
+          if (post_present_dwm_flush_ && !interactive_move_)
+            opaque_flush_generation_.store(generation,
+                                           std::memory_order_release);
           const auto causal = QueueRender();
+          // Match Flutter's bounded exact-size handshake: the modal sizing
+          // loop advances after this generation crosses QueuePresent. GPU
+          // completion and the final-settle DwmFlush stay outside this wait.
           WaitForExactResize(generation, causal);
         }
         return 0;
@@ -885,17 +927,65 @@ class ProductHost final {
     }
   }
 
+  DWORD TopWindowStyle() const noexcept {
+    return WS_OVERLAPPEDWINDOW |
+           (retained_oversized_child_surface_ ? WS_CLIPCHILDREN : 0u);
+  }
+
+  SIZE ResolveRetainedChildSurfaceCapacity(uint32_t width,
+                                           uint32_t height) const noexcept {
+    auto desired_width = static_cast<LONG>(std::max(1u, width));
+    auto desired_height = static_cast<LONG>(std::max(1u, height));
+    const auto monitor = MonitorFromWindow(top_, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO info{};
+    info.cbSize = sizeof(info);
+    if (monitor != nullptr && GetMonitorInfoW(monitor, &info)) {
+      desired_width = std::max(desired_width,
+                               info.rcWork.right - info.rcWork.left);
+      desired_height = std::max(desired_height,
+                                info.rcWork.bottom - info.rcWork.top);
+    }
+
+    // A window spanning beyond its monitor grows in bounded chunks. Ordinary
+    // maximize/restore and border drags within the work area require no child
+    // resize and therefore no Vulkan swapchain recreation.
+    if (retained_surface_width_ > 0 && desired_width > retained_surface_width_)
+      desired_width = std::max(
+          desired_width,
+          retained_surface_width_ + std::max(256L, retained_surface_width_ / 4));
+    if (retained_surface_height_ > 0 && desired_height > retained_surface_height_)
+      desired_height = std::max(
+          desired_height,
+          retained_surface_height_ + std::max(256L, retained_surface_height_ / 4));
+    return {desired_width, desired_height};
+  }
+
+  bool EnsureRetainedChildSurfaceCapacity(uint32_t width, uint32_t height) {
+    if (!retained_oversized_child_surface_) return true;
+    if (width <= static_cast<uint32_t>(retained_surface_width_) &&
+        height <= static_cast<uint32_t>(retained_surface_height_))
+      return true;
+    const auto capacity = ResolveRetainedChildSurfaceCapacity(width, height);
+    if (!SetWindowPos(child_, nullptr, 0, 0, capacity.cx, capacity.cy,
+                      SWP_NOZORDER | SWP_NOACTIVATE))
+      return false;
+    retained_surface_width_ = capacity.cx;
+    retained_surface_height_ = capacity.cy;
+    return true;
+  }
+
   void CreateWindows() {
     const auto instance = GetModuleHandleW(nullptr);
     const auto dpi = GetDpiForSystem();
     RECT bounds{0, 0,
                 static_cast<LONG>(std::max(1u, configuration_.initial_width_px)),
                 static_cast<LONG>(std::max(1u, configuration_.initial_height_px))};
-    if (!AdjustWindowRectExForDpi(&bounds, WS_OVERLAPPEDWINDOW, FALSE, 0, dpi))
+    const auto top_style = TopWindowStyle();
+    if (!AdjustWindowRectExForDpi(&bounds, top_style, FALSE, 0, dpi))
       throw std::bad_alloc();
     auto title = Decode(configuration_.title);
     if (title.empty()) title = L"Doroti";
-    top_ = CreateWindowExW(0, kTopClass, title.c_str(), WS_OVERLAPPEDWINDOW,
+    top_ = CreateWindowExW(0, kTopClass, title.c_str(), top_style,
                            CW_USEDEFAULT, CW_USEDEFAULT, bounds.right - bounds.left,
                            bounds.bottom - bounds.top, nullptr, nullptr, instance, this);
     if (top_ == nullptr) throw std::bad_alloc();
@@ -903,15 +993,23 @@ class ProductHost final {
     stable_monitor_ = MonitorFromWindow(top_, MONITOR_DEFAULTTONEAREST);
     const auto child_style =
         WS_CHILD | (composition_active_ ? 0u : static_cast<uint32_t>(WS_VISIBLE));
+    RECT client{};
+    if (!GetClientRect(top_, &client)) throw std::bad_alloc();
+    auto child_width = std::max(1L, client.right - client.left);
+    auto child_height = std::max(1L, client.bottom - client.top);
+    if (retained_oversized_child_surface_) {
+      const auto capacity = ResolveRetainedChildSurfaceCapacity(
+          static_cast<uint32_t>(child_width), static_cast<uint32_t>(child_height));
+      child_width = retained_surface_width_ = capacity.cx;
+      child_height = retained_surface_height_ = capacity.cy;
+    }
     child_ = CreateWindowExW(0, kChildClass, L"", child_style,
-                             0, 0, 1, 1, top_, nullptr, instance, this);
+                             0, 0, child_width, child_height,
+                             top_, nullptr, instance, this);
     task_ = CreateWindowExW(0, kTaskClass, L"", 0, 0, 0, 0, 0, HWND_MESSAGE,
                             nullptr, instance, this);
     if (child_ == nullptr || task_ == nullptr) throw std::bad_alloc();
-    RECT client{};
-    if (!GetClientRect(top_, &client) ||
-        !SetWindowPos(child_, nullptr, 0, 0, client.right - client.left,
-                      client.bottom - client.top,
+    if (!SetWindowPos(child_, nullptr, 0, 0, child_width, child_height,
                       SWP_NOZORDER | SWP_NOACTIVATE))
       throw std::bad_alloc();
   }
@@ -1235,7 +1333,9 @@ class ProductHost final {
   }
 
   bool PublishMetrics() {
-    const auto authority = composition_active_ ? top_ : child_;
+    const auto authority = composition_active_ || retained_oversized_child_surface_
+                               ? top_
+                               : child_;
     if (authority == nullptr || callbacks_.metrics == nullptr) return false;
     RECT client{};
     if (!GetClientRect(authority, &client)) return false;
@@ -1404,21 +1504,45 @@ class ProductHost final {
         last_render_terminal_kind_ = terminal;
       }
       resize_condition_.notify_all();
-      if (composition_active_ &&
-          terminal == DOROTI_WINDOWS_FRAME_PRESENTED_V1) {
-        auto flush_generation =
-            composition_flush_generation_.load(std::memory_order_acquire);
-        if (flush_generation != 0 &&
-            work.request.generation >= flush_generation &&
-            composition_flush_generation_.compare_exchange_strong(
-                flush_generation, 0, std::memory_order_acq_rel)) {
-          // DwmFlush is a one-shot final-settle acknowledgement. Never put it
-          // in the interactive resize cadence or ordinary animation path.
-          (void)DwmFlush();
-        }
+      if (terminal == DOROTI_WINDOWS_FRAME_PRESENTED_V1) {
+        if (composition_active_)
+          TryFinalSettleDwmFlush(composition_flush_generation_, work);
+        if (post_present_dwm_flush_)
+          TryFinalSettleDwmFlush(opaque_flush_generation_, work);
       }
       PostMessageW(task_, kRenderCompleted, 0, 0);
     }
+  }
+
+  void TryFinalSettleDwmFlush(std::atomic<uint64_t>& requested_generation,
+                              const RenderWork& work) {
+    if (composition_interactive_.load(std::memory_order_acquire)) return;
+    {
+      std::lock_guard lock(render_mutex_);
+      if (render_stopping_) return;
+    }
+    auto generation = requested_generation.load(std::memory_order_acquire);
+    if (generation == 0 || work.request.generation < generation) return;
+
+    // Claim this settle request once. A failure is diagnostic rather than an
+    // instruction to stall every later frame with an unbounded retry loop.
+    if (!requested_generation.compare_exchange_strong(
+            generation, 0, std::memory_order_acq_rel))
+      return;
+    if (composition_interactive_.load(std::memory_order_acquire)) return;
+
+    // Terminal waiters are already awake. This one-shot compositor
+    // acknowledgement therefore stays outside the platform-thread wait.
+    const auto result = DwmFlush();
+    if (SUCCEEDED(result)) return;
+
+    // Make the failure observable without converting it into an unbounded
+    // retry on every later non-interactive present.
+    ++dwm_flush_failure_count_;
+    wchar_t message[128]{};
+    swprintf_s(message, L"Doroti final-settle DwmFlush failed: 0x%08X\n",
+               static_cast<unsigned int>(result));
+    OutputDebugStringW(message);
   }
 
   bool WaitForExactResize(
@@ -1502,7 +1626,7 @@ class ProductHost final {
 
   void ResizeTop(uint32_t width, uint32_t height) {
     RECT bounds{0, 0, static_cast<LONG>(width), static_cast<LONG>(height)};
-    if (!AdjustWindowRectExForDpi(&bounds, WS_OVERLAPPEDWINDOW, FALSE, 0,
+    if (!AdjustWindowRectExForDpi(&bounds, TopWindowStyle(), FALSE, 0,
                                   GetDpiForWindow(top_)) ||
         !SetWindowPos(top_, nullptr, 0, 0, bounds.right - bounds.left,
                       bounds.bottom - bounds.top,
@@ -1745,8 +1869,14 @@ class ProductHost final {
   bool semantics_smoke_emitted_{};
   bool minimized_{};
   bool interactive_move_{};
+  bool post_present_dwm_flush_{};
+  bool retained_oversized_child_surface_{};
+  LONG retained_surface_width_{};
+  LONG retained_surface_height_{};
   std::atomic_bool composition_interactive_{};
   std::atomic<uint64_t> composition_flush_generation_{};
+  std::atomic<uint64_t> opaque_flush_generation_{};
+  std::atomic<uint64_t> dwm_flush_failure_count_{};
   bool interactive_move_dirty_{};
   bool composition_requested_{};
   bool composition_active_{};
@@ -1870,7 +2000,10 @@ doroti_windows_status_v1 DOROTI_WINDOWS_CALL doroti_windows_run_v1(
       configuration->initial_height_px == 0)
     return DOROTI_WINDOWS_STATUS_INVALID_ARGUMENT_V1;
   if ((configuration->required_features &
-       ~static_cast<uint64_t>(DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1)) != 0)
+       ~static_cast<uint64_t>(
+           DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1 |
+           DOROTI_WINDOWS_FEATURE_POST_PRESENT_DWM_FLUSH_V1 |
+           DOROTI_WINDOWS_FEATURE_RETAINED_OVERSIZED_CHILD_SURFACE_V1)) != 0)
     return DOROTI_WINDOWS_STATUS_NOT_IMPLEMENTED_V1;
 
   bool bootstrap_initialized = false;

@@ -13,8 +13,23 @@ namespace Doroti.Host.WindowsAppSdk;
 
 public static unsafe partial class DorotiWindowsAppSdkRunner
 {
+    private static readonly object?[] UnsafeGpuQuarantine = new object?[64];
     internal static WindowsProductRunDiagnostics? LastRunDiagnostics { get; private set; }
     internal static NativeHostProvenance? LastNativeProvenance { get; private set; }
+
+    private static void QuarantineUnsafeGpuState(object state)
+    {
+        // Preallocated storage avoids another allocation on an already-failing
+        // cleanup path. Retaining the state prevents Skia/Vulkan finalizers from
+        // touching an idle-unverified device; the process owns reclamation.
+        for (var index = 0; index < UnsafeGpuQuarantine.Length; index++)
+        {
+            if (Interlocked.CompareExchange(ref UnsafeGpuQuarantine[index], state, null) is null)
+                return;
+        }
+        Environment.FailFast(
+            "The unsafe GPU quarantine is full; continuing could finalize wrappers against an idle-unverified device.");
+    }
 
     public static int Run(DorotiApplicationDescriptor descriptor)
     {
@@ -45,22 +60,27 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
     private static int RunCore(DorotiApplicationDescriptor descriptor)
     {
         LastRunDiagnostics = null;
-        using var application = DorotiApplicationBoundary.Load(
-            descriptor.ManifestAssembly,
-            descriptor.ApplicationAssembly,
-            descriptor.LaunchContext.RuntimeIdentifier,
-            descriptor.NativePluginHandlers);
-        using var session = new DorotiHostSession(descriptor.EntrypointFactory());
-        using var state = new WindowsManagedState(session, application, descriptor.ViewConfiguration);
-        // Experimental ContentIsland activation must occur on the HWND thread
-        // during host-ready. Its process-wide DLL search restriction is
-        // applied there immediately after attach and still before first show.
-        // Opaque does not need that delayed WinRT activation.
-        if (state.NativeRequiredFeatures == 0)
-            WindowsNativeV1.RestrictProcessDllSearch();
-        var handle = GCHandle.Alloc(state);
+        DorotiApplicationBoundary? application = null;
+        DorotiHostSession? session = null;
+        WindowsManagedState? state = null;
+        var handle = default(GCHandle);
+        Exception? runFailure = null;
         try
         {
+            application = DorotiApplicationBoundary.Load(
+                descriptor.ManifestAssembly,
+                descriptor.ApplicationAssembly,
+                descriptor.LaunchContext.RuntimeIdentifier,
+                descriptor.NativePluginHandlers);
+            session = new DorotiHostSession(descriptor.EntrypointFactory());
+            state = new WindowsManagedState(session, application, descriptor.ViewConfiguration);
+            // Experimental ContentIsland activation must occur on the HWND thread
+            // during host-ready. Its process-wide DLL search restriction is
+            // applied there immediately after attach and still before first show.
+            // Opaque does not need that delayed WinRT activation.
+            if ((state.NativeRequiredFeatures & WindowsNativeV1.ExperimentalAcrylicFeature) == 0)
+                WindowsNativeV1.RestrictProcessDllSearch();
+            handle = GCHandle.Alloc(state);
             session.Start(deferFrameworkBootstrap: true);
             var applicationId = Encoding.UTF8.GetBytes(application.Manifest.ApplicationId);
             var title = Encoding.UTF8.GetBytes(descriptor.ViewConfiguration.title);
@@ -111,9 +131,44 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 return 0;
             }
         }
+        catch (Exception failure)
+        {
+            runFailure = failure;
+            throw;
+        }
         finally
         {
-            if (handle.IsAllocated) handle.Free();
+            var cleanupFailures = new List<Exception>();
+            void Cleanup(Action action)
+            {
+                try
+                {
+                    action();
+                }
+                catch (Exception failure)
+                {
+                    cleanupFailures.Add(failure);
+                }
+            }
+
+            if (handle.IsAllocated) Cleanup(handle.Free);
+            if (state is { } activeState) Cleanup(activeState.Dispose);
+            if (state is not { UnsafeGpuCleanupQuarantined: true })
+            {
+                if (session is { } activeSession) Cleanup(activeSession.Dispose);
+                if (application is { } activeApplication) Cleanup(activeApplication.Dispose);
+            }
+            if (cleanupFailures.Count != 0)
+            {
+                if (runFailure is not null)
+                    cleanupFailures.Insert(0, runFailure);
+                if (cleanupFailures.Count == 1)
+                    System.Runtime.ExceptionServices.ExceptionDispatchInfo
+                        .Capture(cleanupFailures[0]).Throw();
+                throw new AggregateException(
+                    "The Windows host run or one or more cleanup stages failed.",
+                    cleanupFailures);
+            }
         }
     }
 
@@ -192,12 +247,14 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 Presenter = CreatePresenter(ShouldWriteDiagnostics(), RequestedPresenter);
                 EffectiveMode = "opaque";
             }
+            NativeRequiredFeatures |= Presenter.NativeRequiredFeatures;
         }
 
         internal WindowsManagedProductHost? Host { get; private set; }
         internal WindowsManagedHwndPresenterBase Presenter { get; private set; }
         internal SkiaSceneRenderer? Renderer { get; private set; }
         internal DorotiView? View { get; private set; }
+        internal bool UnsafeGpuCleanupQuarantined { get; private set; }
         internal string RequestedMode { get; }
         internal string EffectiveMode { get; private set; }
         internal string RequestedPresenter { get; }
@@ -375,11 +432,11 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             RecordThread(ref _rasterThreadId, "raster");
             var host = Host ?? throw new InvalidOperationException("Render arrived before host-ready.");
             var renderer = Renderer ?? throw new InvalidOperationException("Renderer is unavailable.");
-            var dispatchedFrameworkFrame = host.BeginFrame(in request);
             var width = checked((int)request.WidthPx);
             var height = checked((int)request.HeightPx);
             var causalFrameId = checked((long)request.CausalFrameId);
             var resizeGeneration = request.Generation;
+            var dispatchedFrameworkFrame = host.BeginFrame(in request);
             var requiresPresenterQualification =
                 _completedDeviceResets < _requestedDeviceResets ||
                 _vulkanRecoveryPending ||
@@ -399,8 +456,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             if (_completedDeviceResets < _requestedDeviceResets &&
                 Interlocked.Read(ref _renderCallbacks) >= 1)
             {
+                var deviceLost = Presenter.PrepareForRendererGpuResourceRelease();
                 renderer.InvalidateGpuContextResources();
-                Presenter.ResetDevice();
+                Presenter.ResetDeviceAfterRendererGpuResourceRelease(deviceLost);
                 _completedDeviceResets++;
             }
             var scale = host.ResizeTarget.DeviceScaleX;
@@ -410,9 +468,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 // A cross-DPI transition invalidates ANGLE, Skia, and pooled
                 // GPU state together. The move-end generation below performs
                 // one final surface-only refresh after shell geometry settles.
+                var deviceLost = Presenter.PrepareForRendererGpuResourceRelease();
                 renderer.InvalidateGpuContextResources();
                 if (Presenter is WindowsManagedAngleEglPresenter)
                     Presenter.ResetDevice();
+                else if (deviceLost)
+                    Presenter.ResetDeviceAfterRendererGpuResourceRelease(deviceLost: true);
             }
             var stableMoveRefresh = _presenterResizeGeneration > 0 &&
                 _presenterResizeGeneration != resizeGeneration &&
@@ -424,7 +485,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             }
             var windowSurfaceChanged = Presenter.Width != width || Presenter.Height != height;
             if (windowSurfaceChanged && !stableMoveRefresh &&
-                Presenter is not WindowsManagedAcrylicCompositionPresenter)
+                Presenter is not WindowsManagedAcrylicCompositionPresenter &&
+                Presenter.InvalidatesRendererSurfaceResourcesOnResize)
                 renderer.InvalidateWindowSurfaceResources();
             if (!Presenter.EnsureTarget(host.ChildHwnd, width, height))
             {
@@ -492,6 +554,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     "The Vulkan device was lost again after the single allowed recovery.", failure);
             var renderer = Renderer ?? throw new InvalidOperationException("Renderer is unavailable.", failure);
             renderer.FailOutstandingGpuPaints(failure.Message);
+            // A genuinely lost device must be abandoned before cached Skia GPU
+            // objects run their destructors. Native Vulkan handles are released
+            // only after the renderer has dropped those abandoned wrappers.
+            vulkan.AbandonContextForDeviceLoss();
             renderer.InvalidateGpuContextResources();
             vulkan.RecoverAfterDeviceLoss();
             _vulkanRecoveryPending = true;
@@ -508,8 +574,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     "The Vulkan Win32 surface was lost again after the single allowed recovery.", failure);
             var renderer = Renderer ?? throw new InvalidOperationException("Renderer is unavailable.", failure);
             renderer.FailOutstandingGpuPaints(failure.Message);
+            var deviceLost = vulkan.PrepareForRendererGpuResourceRelease();
             renderer.InvalidateGpuContextResources();
-            vulkan.RecoverAfterSurfaceLoss();
+            vulkan.RecoverAfterSurfaceLoss(deviceLost);
             _vulkanRecoveryPending = true;
             Host?.RequestInvalidate();
             Interlocked.Increment(ref _renderCallbacks);
@@ -761,19 +828,87 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         {
             if (_disposed) return;
             _disposed = true;
-            if (View is { } view)
+
+            var failures = new List<Exception>();
+            void Cleanup(Action action)
             {
-                _session.DetachView(view);
-                view.Dispose();
+                try
+                {
+                    action();
+                }
+                catch (Exception failure)
+                {
+                    failures.Add(failure);
+                }
+            }
+
+            var deviceLost = false;
+            var preflightCompleted = false;
+            Cleanup(() =>
+            {
+                deviceLost = Presenter.PrepareForRendererGpuResourceRelease();
+                preflightCompleted = true;
+            });
+            var contextAbandoned = preflightCompleted && deviceLost;
+            if (!preflightCompleted)
+            {
+                Cleanup(() => contextAbandoned =
+                    Presenter.TryAbandonGpuContextAfterRendererReleasePreflightFailure());
+            }
+            if (!preflightCompleted && !contextAbandoned)
+            {
+                UnsafeGpuCleanupQuarantined = true;
+                QuarantineUnsafeGpuState(this);
+            }
+
+            var rendererCleanupCompleted = Renderer is null;
+            if (!UnsafeGpuCleanupQuarantined && Renderer is { } renderer)
+            {
+                Cleanup(() =>
+                {
+                    renderer.Dispose();
+                    rendererCleanupCompleted = true;
+                });
+                if (!rendererCleanupCompleted && !contextAbandoned)
+                    Cleanup(() => contextAbandoned =
+                        Presenter.TryAbandonGpuContextAfterRendererReleasePreflightFailure());
+                if (!rendererCleanupCompleted && !contextAbandoned)
+                {
+                    UnsafeGpuCleanupQuarantined = true;
+                    QuarantineUnsafeGpuState(this);
+                }
+                else
+                {
+                    Renderer = null;
+                }
+            }
+
+            if (!UnsafeGpuCleanupQuarantined && View is { } view)
+            {
+                Cleanup(() => _session.DetachView(view));
+                Cleanup(view.Dispose);
                 View = null;
             }
-            Renderer?.Dispose();
-            Renderer = null;
-            Presenter.Dispose();
-            Host?.Dispose();
-            Host = null;
-            _capabilities?.Dispose();
-            _capabilities = null;
+
+            if (!UnsafeGpuCleanupQuarantined && preflightCompleted)
+            {
+                Cleanup(() => Presenter.DisposeAfterRendererGpuResourceRelease(deviceLost));
+            }
+            else if (!UnsafeGpuCleanupQuarantined)
+            {
+                Cleanup(Presenter.DisposeAfterRendererGpuResourceReleaseFailure);
+            }
+            if (!UnsafeGpuCleanupQuarantined)
+            {
+                if (Host is { } host) Cleanup(host.Dispose);
+                Host = null;
+                if (_capabilities is { } capabilities) Cleanup(capabilities.Dispose);
+                _capabilities = null;
+            }
+
+            if (failures.Count == 1)
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failures[0]).Throw();
+            if (failures.Count > 1) throw new AggregateException("Windows runner cleanup failed.", failures);
         }
 
         private static string ResolveRequestedPresenter() =>
