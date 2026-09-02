@@ -333,6 +333,7 @@ internal static class Program
                 gate = "C5-A",
                 status = "FAIL",
                 exception = exception.ToString(),
+                lifecycleStates = ProductEntrypoint.LifecycleStates,
             });
             Console.Error.WriteLine(exception);
             Console.Error.WriteLine($"report={reportPath}");

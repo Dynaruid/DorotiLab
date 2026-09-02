@@ -5,6 +5,7 @@ param(
     [string] $Device = $env:DOROTI_WINDOWS_VULKAN_DEVICE,
     [switch] $SkipBuild,
     [switch] $Probe,
+    [switch] $FullEightEdgeMatrix,
     [switch] $FullCurrentDpiMatrix,
     [switch] $ExternalValidation
 )
@@ -507,7 +508,7 @@ $binaryFiles = [ordered]@{
 $startingBinarySha256 = Get-BinaryFileSha256 $binaryFiles
 
 $definitions = if ($Probe) {
-    @([ordered]@{ run=1; edge='Left'; motion='reverse'; duration=600 })
+    @([ordered]@{ run=1; edge='TopLeft'; motion='reverse'; duration=600 })
 } elseif ($FullCurrentDpiMatrix) {
     @(
         foreach ($run in 1..3) {
@@ -520,7 +521,7 @@ $definitions = if ($Probe) {
             }
         }
     )
-} else {
+} elseif ($FullEightEdgeMatrix) {
     @(
         foreach ($run in 1..3) {
             foreach ($edge in @('Left','Right','Top','Bottom','TopLeft','TopRight','BottomLeft','BottomRight')) {
@@ -528,10 +529,20 @@ $definitions = if ($Probe) {
             }
         }
     )
+} else {
+    @(
+        [ordered]@{ run=1; edge='Left'; motion='reverse'; duration=600 }
+        [ordered]@{ run=1; edge='TopLeft'; motion='reverse'; duration=600 }
+    )
 }
 
-$angleBefore = Invoke-CapturedCase -Presenter 'AngleD3D11' -Slug 'angle-before' `
-    -Edge 'Left' -Motion 'reverse' -DragMilliseconds 600
+$runAngleBaselines = [bool]$FullEightEdgeMatrix -or [bool]$FullCurrentDpiMatrix
+$angleBefore = $null
+$angleAfter = $null
+if ($runAngleBaselines) {
+    $angleBefore = Invoke-CapturedCase -Presenter 'AngleD3D11' -Slug 'angle-before' `
+        -Edge 'Left' -Motion 'reverse' -DragMilliseconds 600
+}
 $cases = @()
 $caseIndex = 0
 $definitionCount = @($definitions).Count
@@ -543,10 +554,13 @@ foreach ($definition in $definitions) {
     $cases += Invoke-CapturedCase -Presenter 'Vulkan' -Slug $slug -Edge $definition.edge `
         -Motion $definition.motion -DragMilliseconds $definition.duration
 }
-$angleAfter = Invoke-CapturedCase -Presenter 'AngleD3D11' -Slug 'angle-after' `
-    -Edge 'Left' -Motion 'reverse' -DragMilliseconds 600
+if ($runAngleBaselines) {
+    $angleAfter = Invoke-CapturedCase -Presenter 'AngleD3D11' -Slug 'angle-after' `
+        -Edge 'Left' -Motion 'reverse' -DragMilliseconds 600
+}
 
-$baselineCadenceValid = $angleBefore.status -eq 'PASS' -and $angleAfter.status -eq 'PASS' -and
+$baselineCadenceValid = $runAngleBaselines -and
+    $angleBefore.status -eq 'PASS' -and $angleAfter.status -eq 'PASS' -and
     $angleBefore.cadence.measured -and $angleAfter.cadence.measured -and
     [int]$angleBefore.cadence.outerRectChanges -ge 8 -and
     [int]$angleAfter.cadence.outerRectChanges -ge 8 -and
@@ -590,6 +604,13 @@ foreach ($case in $cases) {
         [int]$case.definition.dragPixels -eq 600
     if (-not $matched) {
         $case['cadenceComparison'] = [ordered]@{ status='notRun'; reason='no matched ANGLE duration/motion baseline' }
+        continue
+    }
+    if (-not $runAngleBaselines) {
+        $case['cadenceComparison'] = [ordered]@{
+            status='notRun'
+            reason='focused validation omits ANGLE baselines; use -FullEightEdgeMatrix for cadence qualification'
+        }
         continue
     }
 
@@ -639,12 +660,13 @@ foreach ($case in $cases) {
 $videoControllers = @(Get-CimInstance Win32_VideoController |
     Select-Object Name,DriverVersion,CurrentRefreshRate,VideoModeDescription,PNPDeviceID)
 $casePass = @($cases | Where-Object status -ne 'PASS').Count -eq 0
-$anglePass = $angleBefore.status -eq 'PASS' -and $angleAfter.status -eq 'PASS'
-$cadencePass = $matchedCadenceCases -gt 0 -and
+$anglePass = -not $runAngleBaselines -or
+    ($angleBefore.status -eq 'PASS' -and $angleAfter.status -eq 'PASS')
+$cadencePass = $runAngleBaselines -and $matchedCadenceCases -gt 0 -and
     @($cases | Where-Object {
         $_.cadenceComparison.status -ne 'notRun' -and $_.cadenceComparison.starvationGuard -ne 'PASS'
     }).Count -eq 0
-$targetDeltaPass = $matchedCadenceCases -gt 0 -and
+$targetDeltaPass = $runAngleBaselines -and $matchedCadenceCases -gt 0 -and
     @($cases | Where-Object {
         $_.cadenceComparison.status -ne 'notRun' -and $_.cadenceComparison.targetToPresentAngleDelta -ne 'PASS'
     }).Count -eq 0
@@ -653,9 +675,11 @@ $reverse600Cases = @($cases | Where-Object {
     [int]$_.definition.dragMilliseconds -eq 600 -and
     [int]$_.definition.dragPixels -eq 600
 })
-$expectedReverse600Cases = if ($Probe) { 1 } else { 24 }
+$expectedReverse600Cases = if ($Probe) { 1 } elseif ($runAngleBaselines) { 24 } else { 2 }
 $reverse600Qualified = $reverse600Cases.Count -eq $expectedReverse600Cases -and
-    @($reverse600Cases | Where-Object { $_.cadenceComparison.status -ne 'PASS' }).Count -eq 0
+    @($reverse600Cases | Where-Object { $_.status -ne 'PASS' }).Count -eq 0 -and
+    (-not $runAngleBaselines -or
+        @($reverse600Cases | Where-Object { $_.cadenceComparison.status -ne 'PASS' }).Count -eq 0)
 $endingDiffSha256 = Get-TrackedDiffSha256
 $endingHead = (& git -C $repoRoot rev-parse HEAD).Trim()
 $endingSourceFileSha256 = Get-SourceFileSha256
@@ -675,6 +699,8 @@ $externalValidationPass = -not $ExternalValidation -or
         -not $_.validationLayerActivationProven -or
         -not $_.validationMessagesClean
     }).Count -eq 0
+$sequence = @($cases)
+if ($runAngleBaselines) { $sequence = @($angleBefore) + @($cases) + @($angleAfter) }
 $manifest = [ordered]@{
     schemaVersion='doroti.windows.vulkan-live-resize/v1'
     runId=$runId
@@ -718,12 +744,14 @@ $manifest = [ordered]@{
             (Get-Content -LiteralPath $cases[0].capturePath -Raw | ConvertFrom-Json).displayRefreshHz
         } else { $null }
     }
-    sequence=@($angleBefore) + @($cases) + @($angleAfter)
+    sequence=$sequence
     gates=[ordered]@{
-        angleBeforeAfter=if ($anglePass) { 'PASS' } else { 'FAIL' }
+        angleBeforeAfter=if (-not $runAngleBaselines) { 'notRun' } elseif ($anglePass) { 'PASS' } else { 'FAIL' }
         vulkanCurrentMonitor=if ($casePass) { 'PASS' } else { 'FAIL' }
-        resizePresentationCadence=if ($cadencePass) { 'PASS' } else { 'FAIL' }
-        eightEdgesReverse600msThreeRuns=if ($Probe) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
+        resizePresentationCadence=if (-not $runAngleBaselines) { 'notRun' } elseif ($cadencePass) { 'PASS' } else { 'FAIL' }
+        focusedLeftAndTopLeftReverse600msOnce=if ($runAngleBaselines -or $Probe) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
+        focusedTopLeftReverse600msOnce=if (-not $Probe) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
+        eightEdgesReverse600msThreeRuns=if (-not $runAngleBaselines) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
         slowMediumFastExpandShrinkReverse=if ($FullCurrentDpiMatrix) {
             'notVerified-no-matched-angle-cadence'
         } else { 'notRun' }
@@ -735,7 +763,7 @@ $manifest = [ordered]@{
         refreshMatrix60_120_144_165='notVerified'
         mixedDpiSnapMaximizeAltTabOcclusion='notVerified'
         physicalBorderDragAndScanout='notVerified'
-        targetToPresentAngleDelta=if ($targetDeltaPass) { 'PASS' } else { 'FAIL' }
+        targetToPresentAngleDelta=if (-not $runAngleBaselines) { 'notRun' } elseif ($targetDeltaPass) { 'PASS' } else { 'FAIL' }
         externalValidationLayer=if (-not $ExternalValidation) { 'notRun' } elseif ($externalValidationPass) { 'PASS' } else { 'FAIL' }
         sourceStableDuringRun=if ($sourceStable) { 'PASS' } else { 'FAIL' }
         keySourceFilesStableAtEndpoints=if ($keySourceFilesStable) { 'PASS' } else { 'FAIL' }
@@ -743,7 +771,7 @@ $manifest = [ordered]@{
         binariesStableDuringRun=if ($binariesStable) { 'PASS' } else { 'FAIL' }
     }
     cases=$cases
-    evidenceBoundary='Automation proves native non-client input, WGC transport, monotonic visible generation markers, final exact geometry, terminal accounting, bounded Vulkan resources, no Vulkan device/surface loss, and receipt-to-terminal cadence/latency comparisons only for matched reverse-600 ms cases. External validation is qualified only when the loader positively reports VK_LAYER_KHRONOS_validation activation and zero validation warning/error messages. Source diff and key source files are SHA-256 fingerprinted; product executable/IL, managed/native host, and observer binaries are hashed before and after execution, while source-to-binary correspondence is PASS only when the validator performed the build. A strict cadence or target-latency miss remains FAIL. WGC does not prove physical scan-out or human-perceived drag smoothness; unmatched motion/duration, unlisted monitor, DPI, refresh, window-management, and physical cases remain notVerified.'
+    evidenceBoundary='Focused validation runs only left/top-left Vulkan cases and proves native non-client input, WGC transport, monotonic visible generation markers, final exact geometry, terminal accounting, bounded Vulkan resources, and no Vulkan device/surface loss. ANGLE cadence/latency comparison and the repeated eight-edge matrix run only when -FullEightEdgeMatrix or -FullCurrentDpiMatrix is explicitly selected. External validation is qualified only when the loader positively reports VK_LAYER_KHRONOS_validation activation and zero validation warning/error messages. Source diff and key source files are SHA-256 fingerprinted; product executable/IL, managed/native host, and observer binaries are hashed before and after execution, while source-to-binary correspondence is PASS only when the validator performed the build. WGC does not prove physical scan-out, transient DWM shell pixels, or human-perceived drag smoothness; those remain notVerified and require one direct physical check.'
 }
 $manifestPath = Join-Path $OutputDirectory 'manifest.json'
 $manifest | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $manifestPath -Encoding utf8

@@ -1,7 +1,7 @@
 # Doroti Windows App SDK Silk.NET Vulkan 작업계획
 
 - 작성일: 2026-09-02
-- 상태: **retained-surface implementation partial / automated lifecycle PASS / 24-case strict live-resize PASS-automated-partial / unextended present-retirement notVerified / physical acceptance notVerified**
+- 상태: **pre-geometry DWM sync implementation partial / post-masking-removal build PASS / current live resize notRun / prior proposed-size physical resize FAIL-observed / current physical acceptance notVerified / unextended present-retirement notVerified**
 - 대상: `Doroti.Host.WindowsAppSdk`의 opaque `HwndExactCpp` 경로에 Silk.NET 기반 direct Vulkan presenter 추가
 - 현재 기본값: managed ANGLE/EGL-D3D11
 - 새 선택값: `DOROTI_WINDOWS_PRESENTER=Vulkan`
@@ -11,7 +11,7 @@
 
 추가는 가능하지만 2026-08-26에 제거한 구현을 그대로 복원하지 않는다. 당시 direct Vulkan은 build, controlled product probe, self-contained publish까지 통과했지만 실제 방향 전환 border resize에서 `vkQueueSubmit ... ErrorDeviceLost`가 반복돼 제품 경로에서 제거됐다. 자동 PASS를 현재 Vulkan 품질로 재사용하지 않는다.
 
-현재 코드와 제거된 presenter를 대조한 결과, 새 경로가 먼저 해결해야 할 핵심은 바인딩 선택이 아니라 WSI 상태와 수명주기다. 2026-09-02 AMD live-resize 후속 계측에서는 Skia paint나 queue retirement가 아니라 매 exact extent의 `vkCreateSwapchainKHR`가 약 19~25 ms를 차지하는 주 병목으로 확인됐다. 2026-09-03에는 top의 exact logical viewport와 grow-only child/swapchain capacity를 분리해 ordinary resize에서 이 재생성 비용과 compositor stretch 구간을 제거했다.
+현재 코드와 제거된 presenter를 대조한 결과, 새 경로가 먼저 해결해야 할 핵심은 바인딩 선택이 아니라 WSI 상태와 수명주기다. 2026-09-02 AMD live-resize 후속 계측에서는 Skia paint나 queue retirement가 아니라 매 exact extent의 `vkCreateSwapchainKHR`가 약 19~25 ms를 차지하는 주 병목으로 확인됐다. 2026-09-03에는 top의 exact logical viewport와 grow-only child/swapchain capacity를 분리해 ordinary resize에서 이 재생성 비용을 제거했다. 이후 실물 확인에서 검정/흰 노출과 특히 좌·상단 raster 떨림이 보고되어 proposed `WM_SIZING` 크기의 frame을 준비했다. 첫 후속도 약간만 개선되고 같은 노출이 남았으므로, compositor 동기화를 실제 `WM_SIZE` 뒤가 아니라 proposed geometry가 노출되기 전으로 옮겼다. Parent 배경색으로 노출을 가리는 처리는 사용하지 않는다.
 
 | 검토 항목 | 결론 |
 |---|---|
@@ -72,7 +72,7 @@ Vulkan device loss는 같은 창에서 ANGLE로 전환하지 않는다. raster w
 - accepted generation은 `presented`, `superseded`, `failed` 중 정확히 terminal 하나로 끝난다.
 - running 1 + latest pending 1을 유지하며 stale generation을 visible하게 present하지 않는다.
 - HWND client physical extent가 surface/swapchain extent의 authority다. idle과 resize settle의 visible content는 exact physical size다.
-- WndProc/platform thread는 Vulkan API나 `DwmFlush`를 직접 호출하지 않는다. 다만 opaque child `WM_SIZE`는 Flutter와 같은 bounded exact handshake로 raster terminal을 최대 100 ms 기다리므로, 그 terminal 앞의 swapchain recreate/present 비용을 간접적으로 기다릴 수 있다.
+- WndProc/platform thread는 Vulkan API를 직접 호출하지 않는다. Retained Vulkan의 interactive `WM_SIZING`은 proposed viewport terminal을 최대 16 ms 기다리고, 성공하면 proposed geometry를 USER32가 노출하기 전에 platform thread가 `DwmFlush`를 한 번 완료한다. 이는 고정 30/60 fps timer가 아니라 pre-geometry compositor synchronization이며, final exact wait는 최대 100 ms다.
 - resize, scene, input generation을 합치거나 old frame을 latest라고 재명명하지 않는다.
 - first frame과 새 surface의 첫 exact present ordering은 별도 진단한다. `DwmFlush`는 ordering gate일 뿐 scan-out 증명이 아니다.
 
@@ -143,7 +143,7 @@ stale generation은 acquire 전에 끝내며, acquired image는 다음 상태만
 
 ## 6. swapchain 생성, resize, retirement
 
-- `WM_SIZE`는 metrics/latest render를 publish하고 opaque child 경로에서는 그 generation의 terminal을 최대 100 ms 기다린다. Vulkan API와 swapchain 작업 자체는 raster worker가 수행한다.
+- Retained Vulkan의 `WM_SIZING`은 proposed outer rect와 현재 non-client delta에서 다음 client extent를 계산해 metrics/latest render를 먼저 publish하고 terminal을 최대 16 ms 기다린다. 실제 `WM_SIZE`가 같은 extent를 승인하면 준비된 terminal을 재사용하고, 다르면 actual client extent를 새 authority로 다시 publish한다. Vulkan API와 swapchain 작업 자체는 raster worker가 수행한다.
 - 0×0/minimized target은 swapchain을 만들거나 acquire하지 않고 lifecycle terminal로 끝낸다.
 - create/recreate 전에 surface capabilities/formats/present modes를 다시 조회한다.
 - 새 `VkSwapchainCreateInfoKHR.oldSwapchain`에 직전 swapchain을 전달하되 즉시 파괴하지 않는다.
@@ -276,6 +276,8 @@ Strict gate를 처음 적용한 `.doroti/evidence/windows-vulkan-smooth-resize-p
 
 ### 현재 evidence
 
+- proposed-size admission 종합 qualification: `.doroti/evidence/windows-vulkan-wmsizing-prepare-capability-rerun2/manifest.json` — `PASS`; AMD capability/real WSI/product, 5종 actual result injection, reset/minimize-restore/resize/start-close, loader/package negative, source→binary correspondence 통과
+- proposed-size admission final source-locked 8-edge live reverse 3회: `.doroti/evidence/windows-vulkan-wmsizing-prepare-final/manifest.json` — `PASS-automated-partial`; 24/24, motion accepted/presented 1,140/1,140, supersede/timeout/marker regression 0, 최소 77.75 Hz, target→present p95 최대 14.54 ms/max 16.65 ms, source/repository/binary endpoint stable
 - retained oversized child final source-locked 24-case: `.doroti/evidence/windows-vulkan-retained-surface-final/manifest.json` — `PASS-automated-partial`; 24/24, WGC blank/marker regression/Vulkan error 0, motion 최소 119.15 presentations/s, target→present p95 최대 4.92 ms/max 8.13 ms, source/repository/binary endpoint stable, source→binary correspondence PASS
 - retained oversized child 종합 qualification: `.doroti/evidence/windows-vulkan-retained-surface-capability/manifest.json` — `PASS`; AMD capability/WSI/product, actual result injection, reset/minimize-restore/resize/start-close, loader/package negative, source→binary correspondence 통과
 - retained oversized child 8-edge live reverse 3회: `.doroti/evidence/windows-vulkan-retained-surface-eight-edges-3x/manifest.json` — `PASS-automated-partial`; 24/24, blank/Vulkan error 0, motion 최소 119.15 presentations/s, target→present p95 최대 4.95 ms, max 최대 9.00 ms, surface recreate process당 1회
@@ -375,7 +377,11 @@ evidence는 `.doroti/evidence/windows-vulkan-<timestamp>-<id>/` 아래 immutable
 - [Vulkan specification](https://registry.khronos.org/vulkan/specs/latest-ratified/pdf/vkspec.pdf)
 - [Flutter Windows resize handshake and post-present DwmFlush](https://github.com/flutter/flutter/blob/master/engine/src/flutter/shell/platform/windows/flutter_windows_view.cc)
 - [Flutter Windows child-window sizing](https://github.com/flutter/flutter/blob/master/engine/src/flutter/shell/platform/windows/host_window.cc)
+- [Win32 `WM_SIZING` proposed rectangle contract](https://learn.microsoft.com/en-us/windows/win32/winmsg/wm-sizing)
+- [Win32 `DwmFlush` compositor synchronization](https://learn.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmflush)
 - [Win32 child-window clipping](https://learn.microsoft.com/en-us/windows/win32/winmsg/window-features)
+- [Vulkan `vkQueuePresentKHR` queueing contract](https://docs.vulkan.org/refpages/latest/refpages/source/vkQueuePresentKHR.html)
+- [Vulkan present modes](https://docs.vulkan.org/refpages/latest/refpages/source/VkPresentModeKHR.html)
 - [Skia surface API](https://github.com/google/skia/blob/main/include/core/SkSurface.h)
 - [SkiaSharp `GRVkBackendContext` API](https://github.com/mono/SkiaSharp-API-docs/blob/main/SkiaSharpAPI/SkiaSharp/GRVkBackendContext.xml)
 
@@ -436,3 +442,44 @@ evidence는 `.doroti/evidence/windows-vulkan-<timestamp>-<id>/` 아래 immutable
 - WGC pixel/cadence와 terminal ledger는 자동 evidence일 뿐 물리 scan-out과 사람이 느끼는 border drag를 증명하지 않는다. 실제 창 재확인과 GPU/driver/DPI/refresh full matrix 전에는 Vulkan을 기본값으로 승격하지 않는다.
 - `VK_EXT_swapchain_maintenance1`이 없는 장치의 unextended present-resource retirement와 SkiaSharp가 노출하지 않는 arbitrary-workload Vulkan image-layout 계약은 이전과 같이 별도 specification-level `notVerified`다.
 - 따라서 이전 exact-per-extent strict `FAIL`은 역사 evidence로 유지하되, 이번 shared-path 구조에 대한 자동 live-resize 결과는 `PASS-automated-partial`로 별도 기록한다. 작업계획은 physical/matrix/retirement 완료 조건이 남아 있으므로 archive하지 않는다.
+
+## 14. 2026-09-03 실물 resize 보고 후 proposed-size admission 후속
+
+### 관찰과 원인 판정
+
+- retained surface 24-case 자동 PASS 뒤 사용자가 실물 창에서 검정/흰 영역과 raster가 창 크기에 뒤늦게 맞춰지는 느낌, 특히 좌·상단 resize의 내부 떨림을 보고했다. 따라서 이전 자동 결과는 물리 acceptance가 아니며 이 실물 증상은 pre-fix `FAIL-observed`로 기록한다.
+- retained child가 swapchain 재생성을 없애도 top-level HWND의 위치/extent는 USER32가 먼저 바꾼다. 좌·상단 drag는 창 origin과 client extent를 동시에 바꾸므로, 직전 logical viewport frame이 이동한 새 origin에 잠시 놓였다가 다음 frame에서 새 layout으로 바뀌는 geometry/presentation phase mismatch가 특히 잘 보인다.
+- `vkQueuePresentKHR` 성공은 presentation request가 queue에 들어갔다는 뜻이지 DWM scan-out 완료가 아니다. FIFO를 유지한 채 native resize를 30/60 fps로 고정하면 old frame이 남는 시간을 오히려 늘릴 수 있으므로 고정 limiter는 채택하지 않았다.
+
+### 구현
+
+- Retained Vulkan에만 `WM_SIZING` proposed outer rect를 현재 non-client delta로 client extent로 바꾸고, top geometry가 바뀌기 전에 해당 logical viewport generation을 queue한 뒤 interactive 16 ms bound 안에서 exact terminal을 준비한다.
+- 이어지는 실제 `WM_SIZE`가 같은 extent면 준비된 generation을 그대로 승인한다. 다르거나 prepare가 실패/timeout이면 actual client extent를 새 generation으로 republish해 기존 exact 계약으로 복구한다. Prepare state는 enter/exit sizing과 admission 뒤 명시적으로 지운다.
+- 준비된 frame이 실제 geometry로 승인된 뒤에만 platform thread가 `DwmFlush`를 호출한다. 이것은 고정 FPS cap이 아니라 현재 DWM cadence에 다음 USER32 geometry step을 맞추는 admission barrier다. ANGLE과 Acrylic은 retained feature를 요청하지 않으므로 `WM_SIZING` 동작이 바뀌지 않는다.
+- 자동 lifecycle smoke는 첫 show/device-reset과 겹친 minimize 명령이 실제 `SIZE_MINIMIZED`에 도달하지 않았는데 phase를 넘길 수 있었다. `IsIconic`과 native minimized state가 일치한 뒤에만 minimize/restore phase를 진행하도록 고쳤고, 실패 보고서에도 실제 lifecycle 배열을 남긴다.
+
+### 현재 자동 evidence
+
+| 검증 | 결과 | 핵심 수치 |
+|---|---|---|
+| Release native + managed product build | `PASS` | warning/error 0 |
+| AMD capability/lifecycle aggregate | `V2-PASS-qualification` | capability/real WSI/product, 5종 result injection, reset/minimize/resize/start-close 반복 PASS |
+| 8 edges/corners × 3 reverse, 600 px/600 ms | `PASS-automated-partial` | 24/24, motion accepted/presented 1,140/1,140, superseded/timeout/marker regression 0, 최소 77.75 Hz, target→present p95 최대 14.54 ms/max 16.65 ms, process당 surface create 1 |
+
+새 수치는 DWM admission pacing 때문에 이전 119.15 Hz 이상의 unconstrained 제출률보다 낮지만, 임의 30/60 fps 제한이 아니며 같은-run ANGLE 허용치와 strict latency gate를 모두 통과했다. 자동 WGC/terminal 결과만으로 검정/흰 영역이나 좌·상단 체감 떨림 제거를 확정하지 않는다. 동일 명령의 사람 border drag, 물리 scan-out, 전체 GPU/DPI/refresh/monitor matrix는 post-fix `notVerified`이며 사용자의 재확인이 필요하다.
+
+## 15. 2026-09-03 두 번째 실물 보고와 검증 축소
+
+### 판정과 변경
+
+- Proposed-size admission 적용 뒤에도 사용자가 “약간 나아졌지만 흰색/검정 영역은 남는다”고 재확인했다. 따라서 14절 구현의 실물 결과는 `FAIL-observed`이며, 당시 24-case WGC PASS를 시각 acceptance로 해석하지 않는다.
+- 원인은 준비된 frame의 `DwmFlush`가 matching `WM_SIZE` 안에서 실행되어 top-level geometry가 이미 노출된 다음이었다. 성공한 prepare의 compositor 동기화를 `WM_SIZING` 반환 전으로 옮겨, USER32 geometry가 frame보다 앞서 보이는 순서를 제거했다.
+- Parent 영역을 view의 light/dark background RGB로 채우는 fallback은 실제 top/child 표시 간격을 제거하지 않고 증상을 가리므로 채택하지 않는다. 관련 native ABI 필드와 `WM_ERASEBKGND`/`WM_PAINT` painting은 제거했다.
+- 이는 frame rate를 30/60 Hz로 제한하는 변경이 아니다. 현재 display/DWM 경계를 proposed geometry 앞에 두는 ordering 변경이다.
+
+### 축소한 검증 정책과 결과
+
+- 기본 validator는 `Left`와 `TopLeft`를 각 1회만 실행한다. `-Probe`는 가장 민감한 `TopLeft` 1회만 실행하고 ANGLE before/after 비교도 생략한다.
+- 이전 8 edges/corners × 3회 검증은 `-FullEightEdgeMatrix`, slow/medium/fast 전체 조합은 `-FullCurrentDpiMatrix`를 명시할 때만 실행한다.
+- Pre-geometry ordering과 parent masking이 함께 있던 revision의 `.doroti/evidence/windows-vulkan-pregeometry-flush-focused-final/manifest.json`은 `PASS-automated-partial`이었지만, masking 제거 뒤의 현재 source와 같지 않으므로 현재 시각 evidence로 재사용하지 않는다. Masking 제거 후에는 요청대로 반복 capture 없이 native Release와 managed product build만 다시 통과시켰고, 현재 live resize는 `notRun`이다.
+- Focused probe는 crash, Vulkan/terminal/resource, final exact geometry 회귀만 좁게 확인한다. WGC가 포착하지 못하는 DWM shell transient와 실제 사람 체감은 그대로 `notVerified`이며, 다음 판단은 DemoApp의 좌측 및 좌상단 직접 drag 한 번을 권위 결과로 사용한다.
