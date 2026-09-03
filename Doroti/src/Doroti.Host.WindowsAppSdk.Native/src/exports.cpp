@@ -57,7 +57,6 @@ constexpr UINT_PTR kSmokeTimer = 1;
 constexpr UINT_PTR kLifecycleTimer = 2;
 constexpr UINT_PTR kInteractiveMoveTimer = 3;
 constexpr UINT kInteractiveMoveIntervalMs = 8;
-constexpr auto kInteractiveResizeWait = std::chrono::milliseconds(16);
 constexpr auto kExactResizeWait = std::chrono::milliseconds(100);
 
 template <typename T>
@@ -261,19 +260,6 @@ class ProductHost final {
     switch (message) {
       case WM_ERASEBKGND:
         return 1;
-      case WM_SIZING:
-        if (retained_oversized_child_surface_ && render_worker_started_ &&
-            !minimized_ && lparam != 0) {
-          // A left/top drag changes the top-level origin and client extent in
-          // one USER32 transaction. Preparing the next logical viewport from
-          // the proposed outer rectangle keeps the retained Vulkan surface one
-          // step ahead of that geometry instead of showing the old layout for
-          // one frame after the origin has already moved.
-          PrepareRetainedResize(
-              *reinterpret_cast<const RECT*>(lparam));
-          return TRUE;
-        }
-        break;
       case WM_SIZE:
         if (wparam == SIZE_MINIMIZED) {
           minimized_ = true;
@@ -318,23 +304,19 @@ class ProductHost final {
               }
               const auto scale =
                   static_cast<double>(GetDpiForWindow(top_)) / 96.0;
+              auto exact_presented = false;
               if (UpdateMetrics(width, height, scale)) {
                 const auto generation = current_generation_;
                 const auto causal = QueueRender();
-                WaitForExactResize(generation, causal);
-              } else if (prepared_resize_generation_ == current_generation_ &&
-                         prepared_resize_width_ == width &&
-                         prepared_resize_height_ == height) {
-                if (!prepared_resize_presented_ && RepublishCurrentMetrics()) {
-                  // The proposed-size prepare timed out or failed. Do not
-                  // treat its generation as visible merely because USER32
-                  // admitted the same geometry; recover with a fresh exact
-                  // generation for the actual client size.
-                  const auto generation = current_generation_;
-                  WaitForExactResize(generation, QueueRender());
-                }
+                // Match Flutter's Windows protocol at the actual-size
+                // authority: keep this WM_SIZE transaction open until the
+                // raster worker presents the same generation or the shared
+                // 100 ms fail-safe expires. The HWND thread never renders.
+                exact_presented = WaitForExactResize(generation, causal);
               }
-              ClearPreparedResize();
+              if (post_present_dwm_flush_ && interactive_move_ &&
+                  exact_presented)
+                FlushPresentedResizeToDwm();
             } else if (!SetWindowPos(
                            child_, nullptr, 0, 0, static_cast<int>(width),
                            static_cast<int>(height),
@@ -359,7 +341,6 @@ class ProductHost final {
         // fresh generation after clearing this state.
         composition_flush_generation_.store(0, std::memory_order_release);
         opaque_flush_generation_.store(0, std::memory_order_release);
-        ClearPreparedResize();
         interactive_move_dirty_ = true;
         if (!composition_active_)
           SetTimer(window, kInteractiveMoveTimer, kInteractiveMoveIntervalMs,
@@ -399,7 +380,6 @@ class ProductHost final {
             WaitForExactResize(generation, causal);
         }
         interactive_move_dirty_ = false;
-        ClearPreparedResize();
         return 0;
       case WM_DPICHANGED: {
         const auto* suggested = reinterpret_cast<const RECT*>(lparam);
@@ -972,76 +952,19 @@ class ProductHost final {
            (retained_oversized_child_surface_ ? WS_CLIPCHILDREN : 0u);
   }
 
-  void ClearPreparedResize() noexcept {
-    prepared_resize_generation_ = 0;
-    prepared_resize_width_ = 0;
-    prepared_resize_height_ = 0;
-    prepared_resize_presented_ = false;
-  }
-
-  void PrepareRetainedResize(const RECT& proposed_window) {
-    if (top_ == nullptr || child_ == nullptr) return;
-    RECT current_window{};
-    RECT current_client{};
-    if (!GetWindowRect(top_, &current_window) ||
-        !GetClientRect(top_, &current_client))
-      return;
-
-    const auto current_window_width =
-        std::max(0L, current_window.right - current_window.left);
-    const auto current_window_height =
-        std::max(0L, current_window.bottom - current_window.top);
-    const auto current_client_width =
-        std::max(0L, current_client.right - current_client.left);
-    const auto current_client_height =
-        std::max(0L, current_client.bottom - current_client.top);
-    const auto frame_width =
-        std::max(0L, current_window_width - current_client_width);
-    const auto frame_height =
-        std::max(0L, current_window_height - current_client_height);
-    const auto proposed_width = proposed_window.right - proposed_window.left;
-    const auto proposed_height = proposed_window.bottom - proposed_window.top;
-    if (proposed_width <= frame_width || proposed_height <= frame_height)
-      return;
-
-    const auto width = static_cast<uint32_t>(proposed_width - frame_width);
-    const auto height = static_cast<uint32_t>(proposed_height - frame_height);
-    if (!EnsureRetainedChildSurfaceCapacity(width, height)) {
-      fatal_ = true;
-      PostMessageW(top_, WM_CLOSE, 0, 0);
-      return;
-    }
-    const auto scale = static_cast<double>(GetDpiForWindow(top_)) / 96.0;
-    if (!UpdateMetrics(width, height, scale)) return;
-
-    prepared_resize_generation_ = current_generation_;
-    prepared_resize_width_ = width;
-    prepared_resize_height_ = height;
-    prepared_resize_presented_ = false;
-    const auto causal = QueueRender();
-    prepared_resize_presented_ =
-        WaitForExactResize(prepared_resize_generation_, causal,
-                           kInteractiveResizeWait);
-    if (post_present_dwm_flush_ && interactive_move_ &&
-        prepared_resize_presented_)
-      FlushPreparedResizeToDwm();
-  }
-
-  void FlushPreparedResizeToDwm() noexcept {
-    // vkQueuePresentKHR only queues presentation; it does not include the
-    // presentation engine's processing. Complete that processing while still
-    // inside WM_SIZING, before USER32 exposes the proposed top-level geometry.
-    // The retained child already contains the larger frame, so the following
-    // clip/origin change reveals initialized pixels rather than outrunning it.
+  void FlushPresentedResizeToDwm() noexcept {
+    // The exact logical frame has crossed vkQueuePresentKHR while the actual
+    // WM_SIZE transaction is still open. Hold the HWND thread through one DWM
+    // boundary so USER32 cannot immediately outrun that presented generation.
     const auto result = DwmFlush();
     if (SUCCEEDED(result)) {
-      ++prepared_resize_dwm_flush_count_;
+      ++presented_resize_dwm_flush_count_;
       return;
     }
     ++dwm_flush_failure_count_;
     wchar_t message[160]{};
     swprintf_s(message,
-               L"Doroti prepared-resize DwmFlush failed: 0x%08X\n",
+               L"Doroti presented-resize DwmFlush failed: 0x%08X\n",
                static_cast<unsigned int>(result));
     OutputDebugStringW(message);
   }
@@ -1991,11 +1914,7 @@ class ProductHost final {
   std::atomic<uint64_t> composition_flush_generation_{};
   std::atomic<uint64_t> opaque_flush_generation_{};
   std::atomic<uint64_t> dwm_flush_failure_count_{};
-  uint64_t prepared_resize_dwm_flush_count_{};
-  uint64_t prepared_resize_generation_{};
-  uint32_t prepared_resize_width_{};
-  uint32_t prepared_resize_height_{};
-  bool prepared_resize_presented_{};
+  uint64_t presented_resize_dwm_flush_count_{};
   bool interactive_move_dirty_{};
   bool composition_requested_{};
   bool composition_active_{};

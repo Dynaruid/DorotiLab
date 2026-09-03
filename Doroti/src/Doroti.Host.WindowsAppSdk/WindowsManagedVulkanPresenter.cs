@@ -133,7 +133,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     internal override string DiagnosticCoverage =>
         "direct Vulkan 1.1 device, retained oversized Win32 child surface with parent-client clipping, FIFO swapchain, acquire-as-presentation-commit, " +
         "unconditional copy/present after acquire, asynchronous Skia plus next-use copy-fence wait, practical unextended queue-idle swapchain retirement, " +
-        "bounded exact resize handshake, proposed WM_SIZING viewport preparation, pre-geometry DWM synchronization, checked VkResult values, and final-settle DwmFlush";
+        "Flutter-style actual WM_SIZE 100 ms exact-present handshake, presented-resize DWM synchronization, checked VkResult values, and final-settle DwmFlush";
     internal override int Width { get; set; }
     internal override int Height { get; set; }
     internal override ulong DeviceGeneration { get; set; }
