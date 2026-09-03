@@ -1,11 +1,11 @@
 # Doroti Windows App SDK Silk.NET Vulkan 작업계획
 
 - 작성일: 2026-09-02
-- 상태: **Flutter-style actual-WM_SIZE blocking implementation partial / Release build PASS / focused TopLeft PASS-automated-partial / proposed/pre-geometry physical resize FAIL-observed / current physical acceptance notVerified / unextended present-retirement notVerified**
-- 대상: `Doroti.Host.WindowsAppSdk`의 opaque `HwndExactCpp` 경로에 Silk.NET 기반 direct Vulkan presenter 추가
+- 상태: **Vulkan offscreen + retained-child DirectComposition presentation implemented / user-observed Left·TopLeft PASS / strict repeat 11/12 matrices PARTIAL / Presentation-manager loss recovery notVerified**
+- 대상: `Doroti.Host.WindowsAppSdk`의 opaque `HwndExactCpp` opt-in Vulkan 경로
 - 현재 기본값: managed ANGLE/EGL-D3D11
 - 새 선택값: `DOROTI_WINDOWS_PRESENTER=Vulkan`
-- 핵심 결정: Vulkan은 명시적 opt-in 경로로만 추가한다. ANGLE 기본값, C++ HWND/input/lifecycle 소유권, `experimentalAcrylic` Composition 경로는 바꾸지 않는다.
+- 핵심 결정: Vulkan은 명시적 opt-in 경로로만 유지하고, visible Win32 WSI 대신 same-LUID external memory와 Windows Presentation API를 거쳐 retained child HWND의 native DirectComposition target이 표시를 소유한다. USER32의 proposed RECT는 수정하지 않고 pre-geometry CompositionFrame gate만 적용한다. ANGLE 기본값과 별도 `experimentalAcrylic` 경로는 바꾸지 않는다. 현재 source와 acceptance의 권위 있는 체크포인트는 18절이며 0~17절은 결정 과정과 이전 evidence다.
 
 ## 0. 검토 결론
 
@@ -20,7 +20,7 @@
 | 과거 acquired-image 결함 | 제거된 구현은 acquire와 copy 뒤 `shouldPresent`가 false가 되면 `vkQueuePresentKHR`도 release도 하지 않고 반환할 수 있었다. 이 경로가 과거 device loss의 단독 원인이었다고 단정하지 않지만, 새 구현에서는 허용하지 않는다. |
 | swapchain retirement | acquire 전까지 stale 여부를 확정하고 acquire 성공을 presentation commit으로 삼는다. 현재 recreate는 raster worker의 `vkQueueWaitIdle` 뒤 old swapchain을 파괴한다. 이 방식은 실기기/validation에서 동작하지만, Khronos가 설명하듯 unextended Vulkan의 WaitIdle은 presentation-engine resource retirement를 명세상 보장하지 않는다. AMD가 `VK_EXT_swapchain_maintenance1`/present fence를 제공하지 않아 이 항목은 `notVerified`다. |
 | 기본 present mode | 첫 제품 후보는 `FIFO`로 고정한다. `MAILBOX`/`IMMEDIATE`는 correctness와 resize gate를 통과한 뒤 별도 진단 비교만 허용한다. |
-| Acrylic 관계 | Vulkan은 opaque child-HWND swapchain만 소유한다. `experimentalAcrylic`의 ContentIsland/Presentation/ANGLE 경로와 결합하거나 fallback으로 숨기지 않는다. |
+| Acrylic 관계 | Vulkan은 opaque offscreen raster와 retained-child DirectComposition target을 소유한다. `experimentalAcrylic`의 ContentIsland/Presentation/ANGLE 경로와 결합하거나 fallback으로 숨기지 않는다. |
 
 기존 Acrylic 상태는 [2026-09-02 체크포인트](history/26-09-02/windows-appsdk-experimental-acrylic-checkpoint.md)에 보존했다. 그 경로의 600ms resize FAIL, 전체 matrix `notRun`, 실물 `notVerified` 판정은 그대로다.
 
@@ -504,3 +504,76 @@ evidence는 `.doroti/evidence/windows-vulkan-<timestamp>-<id>/` 아래 immutable
 - 사용자 입력이 겹쳐 pointer resize 자체가 성립하지 않은 첫 시도는 구현 판정에서 제외했다. 간섭 없이 다시 실행한 `.doroti/evidence/windows-vulkan-flutter-wmsize-focused-clean/manifest.json`의 유일한 `TopLeft` case는 `PASS-automated-partial`이다.
 - Clean focused run은 captured 79, outer-rect change 33, motion target accepted 31, presented terminal 32, superseded 0, platform wait timeout 0, marker regression 0이었다. Presentation rate는 54.09 Hz, target→present p95/max는 22.71/26.47 ms였고 Vulkan acquire/present는 44/44, outstanding 0, surface recreate 1/retained reuse 37이었다.
 - Probe는 `-SkipBuild`였으므로 manifest 자체의 source→binary 표기는 `notVerified-skip-build`다. 다만 그 직전에 동일 source로 별도 native/managed Release build를 성공시켰고, clean run 도중 source/repository/binary endpoint hash는 모두 안정적이었다. 이것을 물리 시각 증거로 승격하지 않는다.
+
+## 17. 2026-09-03 Vulkan offscreen + Composition presentation 전환
+
+### 최종 원인과 선택
+
+- Retained visible child/WSI는 ordinary resize의 swapchain recreation을 제거했지만, USER32 top-level geometry와 별도 visible Vulkan child buffer라는 두 표시 소유자를 유지했다. `WM_SIZE` blocking과 `DwmFlush`는 이 둘을 하나의 atomic commit으로 만들 수 없었고, 사용자 실물 Left/TopLeft drag에서 흰색/검정 transient와 raster 떨림이 계속 관찰됐다.
+- Vulkan은 app raster만 offscreen으로 수행하고, 최종 표시를 Windows Presentation API와 하나의 `ContentIsland`에 맡기는 구조를 선택했다. 공개 API상 top-level USER32 geometry와 Presentation buffer 자체가 완전히 같은 transaction은 아니므로 post-fix 물리 결과는 여전히 별도 acceptance다.
+- Parent-color masking, fixed 30/60 FPS limiter, CPU readback/upload, full-frame stretch는 도입하지 않았다. ANGLE 기본 경로와 experimental Acrylic 경로도 그대로 유지한다.
+
+### shared runtime 구현
+
+- Native ABI feature `COMPOSITION_PRESENTATION = 1 << 3`과 Vulkan Composition create/destroy/replace/availability/present/crop/retire exports를 추가했다. ABI GPU pointer count는 0을 유지한다.
+- Composition 요청 시 top-level HWND가 input과 exact client metrics의 authority가 되고 bootstrap child는 숨긴다. `WM_SIZE`는 `ContentIsland` viewport와 latest raster generation을 비동기로 갱신하며 visible child WSI를 생성하지 않는다.
+- Vulkan physical device의 정확한 LUID로 D3D11 device를 만들고 `B8G8R8A8Unorm` shared NT texture 3개를 Presentation manager에 등록한다. Vulkan은 각 texture를 `D3D11TextureBit`, dedicated external memory, `TransferDstBit` 용도로 import한다.
+- Skia/Vulkan retained backing에서 선택된 Presentation texture로 copy한 뒤 Vulkan fence를 CPU에서 확인하고 cropped Present를 commit한다. 각 texture의 availability event가 재사용과 retirement의 authority이며 active/retired WSI swapchain은 항상 0이다.
+- teardown에서는 null surface binding 대신 native-only 1×1 successor texture를 먼저 present한다. 그 뒤 imported 3-slot availability를 기다려 Vulkan image/memory를 파괴하므로 현재 표시 중인 마지막 buffer도 수명주기가 닫힌다.
+- 최초 viewport는 retained capacity 중앙에 배치한다. 성공한 present/crop의 실제 `sourceX/sourceY/width/height`를 저장하고, Left/TopLeft에서는 그 사각형의 right/bottom 고정 edge를 기준으로 다음 crop과 exact frame 위치를 계산한다. 반복 crop과 방향 전환도 같은 표시 사각형에서 이어진다.
+- Platform crop, raster present, retirement 전환은 같은 viewport gate를 사용한다. retirement 상태 게시 뒤에는 새 crop/present를 허용하지 않으며, negative Present/Crop HRESULT는 manager를 poison한다. `WaitForMultipleObjects`의 `WAIT_FAILED`도 명시적으로 실패시킨다.
+- 느린 Vulkan 초기화 전에 실행되던 input smoke를 첫 exact present 뒤로 옮겼다. Composition focus authority는 top-level `WM_ACTIVATE`이며, product validator는 lifecycle restore 뒤의 최종 상태와 무관하게 실제 synthetic gain→loss 순서를 검사한다.
+
+### 자동 검증
+
+| 검증 | 결과 | 핵심 증거 |
+|---|---|---|
+| Native Release + managed/product Release | `PASS` | warning/error 0 |
+| Windows App SDK native ABI | `PASS` | AMD64, feature bit 8, Composition exports 7개, buffer count 3 |
+| AMD aggregate capability/lifecycle | `Vulkan-Composition-PASS-automated-partial` | exact-LUID external memory, validation warning/error 0, product, device-loss 2종, reset 10, minimize/restore 10, resize 10, start/close 10 PASS; source→binary `PASS-built-after-source-fingerprint` |
+| Focused TopLeft live probe | `PASS-automated-partial` | 600 px/600 ms reverse, outer changes 74, motion accepted 73, motion presented 72, superseded/timeout/marker regression 0, 121.69 Hz, target→present p95/max 9.93/10.45 ms, final exact PASS |
+
+- Aggregate evidence: `.doroti/evidence/windows-vulkan-composition-capability-final4/manifest.json`
+- Focused live evidence: `.doroti/evidence/windows-vulkan-composition-live-probe-final/manifest.json`
+- Live probe의 Vulkan snapshot은 present/copy-fence wait 86/86, buffer 3, active WSI 0, backing allocation/reuse 1/85, outstanding 0이었다.
+
+### 판정과 남은 경계
+
+- 구현과 AMD 자동 검증은 `PASS-automated-partial`이다. 기존 direct-WSI two-visible-owner 원인은 현재 제품 경로에서 제거됐다.
+- WGC와 Presentation receipt는 물리 scan-out, DWM shell transient, 사람의 체감 smoothness를 증명하지 않는다. 사용자의 post-fix Left/TopLeft 실물 확인 전에는 `problem.md`를 물리 PASS로 닫거나 이 계획을 archive하지 않는다.
+- NVIDIA/Intel, refresh/DPI/mixed-monitor/Snap/maximize/occlusion matrix와 물리 IME/accessibility는 `notVerified`다.
+- `PRESENTATION_ERROR_LOST`는 현재 context poison/fail-fast이며 Presentation manager/import graph 자동 재생성은 후속 P1이다. Native C export 예외 경계와 반환 snapshot hardening은 후속 P2다.
+
+## 18. 2026-09-03 retained-child pre-geometry 최종 acceptance
+
+### host geometry 제한 실험의 결론
+
+- `WM_SIZING` proposed RECT를 마지막 승인 geometry로 되돌리고 posted message 또는 timer가 준비된 크기를 `SetWindowPos`하는 host limiter를 시험했다. USER32가 보관한 이전 proposal이 나중에 적용되며 cursor와 창 geometry가 어긋났고, intermittent gap이 오히려 커졌다.
+- 이 limiter와 cursor-anchor/pending-rectangle 상태는 최종 코드에서 제거했다. USER32가 top-level geometry를 계속 단독 소유하고 Doroti는 proposed RECT를 수정하지 않는다. 고정 30/60 FPS window limiter도 사용하지 않는다.
+
+### 현재 shared runtime
+
+- Vulkan은 retained offscreen backing만 rasterize하고, same-LUID D3D11 shared texture 3개를 Windows Presentation API에 공급한다. Native DirectComposition target은 숨겨진 top-level 대상이 아니라 monitor work-area 이상으로 유지되는 visible child HWND에 붙는다.
+- Top HWND는 `WS_CLIPCHILDREN`, Composition 요청 시 `WS_EX_NOREDIRECTIONBITMAP`을 사용한다. Retained child의 full-capacity Presentation surface에는 마지막 app-owned frame guard가 유지되어 parent clip이 old/new geometry 어느 쪽을 먼저 보더라도 미소유 tail을 노출하지 않는다.
+- `WM_SIZING`은 proposed outer RECT에서 client size만 계산하고 matching generation을 발행한다. Raster worker가 Vulkan copy/Present를 끝낸 뒤, native Presentation API가 같은 present id와 content tag의 `CompositionFrame` 통계를 관찰할 때까지 기다리고서 handler가 반환한다.
+- 이어지는 `WM_SIZE`가 prepared extent와 일치하면 중복 render 없이 승인한다. 준비가 timeout/실패했거나 실제 client size가 다르면 actual geometry를 새 generation으로 republish하고 기존 exact terminal 경로로 복구한다. Retained child capacity는 monitor 이동과 growth 때만 확대한다.
+
+### 반복 자동 evidence
+
+- `.doroti/evidence/windows-vulkan-fixed-child-pregeometry-probe1`부터 `probe12`까지 focused Left/TopLeft reverse 600 ms matrix를 12회 실행했다. `probe1`은 현재 source에서 build했고 `probe2`~`probe12`는 같은 binary를 반복 관찰했다.
+- matrix 11/12, case 22/24가 통과했다. 유일한 strict 실패인 `probe7`에서 Left는 한 capture frame에 최대 8 px, TopLeft는 한 capture frame에 최대 60 px의 validation-background right gap을 검출했다.
+- 같은 두 실패 case도 transport/resource/final-exact 계약은 통과했다. CompositionFrame wait/observed는 Left 30/30, TopLeft 28/28이고 timeout은 모두 0이었다. 다른 11개 matrix에서는 두 case 모두 통과했다.
+- 따라서 자동 판정은 의도적으로 `PARTIAL`로 유지한다. 단일 반복 실패를 삭제하거나 12/12 PASS로 재분류하지 않는다.
+
+### 사용자 acceptance
+
+- 사용자가 위 headed 반복 test가 실제 화면에 표시되는 것을 직접 확인하고 현재 결과면 통과로 보아도 된다고 승인했다. 이 문제의 사람 체감 판정은 2026-09-03 `PASS-observed`다.
+- 이 승인은 AMD Radeon 780M 선택, 96 DPI, 165 Hz의 현재 화면과 Left/TopLeft test에 한정한다. NVIDIA/Intel, 다른 DPI/refresh, mixed-monitor/Snap/maximize/occlusion과 물리 IME/accessibility는 `notVerified`다.
+- 검은 띠 이슈는 현재 scope에서 해결로 닫는다. strict oracle의 1회성 두 frame은 알려진 잔여 evidence로 유지하고, 다른 환경에서 사람이 다시 증상을 관찰할 때 별도 matrix 결함으로 재개한다. Presentation-manager loss recovery와 C ABI hardening은 이 acceptance와 별개의 후속 작업이다.
+
+### 최종 source-built 회귀 확인
+
+- `.doroti/evidence/windows-vulkan-fixed-child-pregeometry-final2/manifest.json`은 `PASS-automated-partial`이다. Source→binary correspondence, source/repository/binary endpoint 안정성과 retained-child visible-owner gate가 모두 PASS했다.
+- Left는 gap 0, outer change 26, accepted/presented 25/26, 45.22 Hz, target→present p95 25.24 ms, CompositionFrame wait/observed 30/30, timeout 0이었다.
+- TopLeft는 gap 0, outer change 26, accepted/presented 25/26, 45.88 Hz, target→present p95 26.53 ms, CompositionFrame wait/observed 31/31, timeout 0이었다. 두 case 모두 final exact와 resource gate를 통과했다.
+- `.doroti/evidence/windows-vulkan-fixed-child-pregeometry-capability-final2/manifest.json`은 aggregate `PASS`, gate `Vulkan-Composition-PASS-automated-partial`이다. Product, exact resize 10, device reset 10, minimize/restore 10, start/close 10/10이 통과했고 Composition buffer 3, active WSI 0, source/repository/binary endpoint 안정성을 확인했다.

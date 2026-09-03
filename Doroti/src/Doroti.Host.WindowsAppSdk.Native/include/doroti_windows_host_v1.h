@@ -22,6 +22,7 @@ typedef enum doroti_windows_required_feature_v1 {
   DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1 = 1ull << 0,
   DOROTI_WINDOWS_FEATURE_POST_PRESENT_DWM_FLUSH_V1 = 1ull << 1,
   DOROTI_WINDOWS_FEATURE_RETAINED_OVERSIZED_CHILD_SURFACE_V1 = 1ull << 2,
+  DOROTI_WINDOWS_FEATURE_COMPOSITION_PRESENTATION_V1 = 1ull << 3,
 } doroti_windows_required_feature_v1;
 
 typedef enum doroti_windows_status_v1 {
@@ -233,7 +234,8 @@ typedef void(DOROTI_WINDOWS_CALL* doroti_windows_platform_brightness_callback_v1
 typedef void(DOROTI_WINDOWS_CALL* doroti_windows_platform_resources_shutdown_callback_v1)(
     void* callback_context);
 typedef void(DOROTI_WINDOWS_CALL* doroti_windows_composition_resize_callback_v1)(
-    void* callback_context, uint32_t width_px, uint32_t height_px, double scale);
+    void* callback_context, uint32_t width_px, uint32_t height_px, double scale,
+    uint32_t sizing_edge, uint32_t pre_geometry);
 
 typedef struct doroti_windows_configuration_v1 {
   uint32_t abi_version;

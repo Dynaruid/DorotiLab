@@ -49,7 +49,7 @@ internal static class Program
             Require(ProductEntrypoint.AttachCount == 1 && ProductEntrypoint.DetachCount == 1 &&
                     ProductEntrypoint.DrawCount >= 1 && ProductEntrypoint.ShutdownCount == 1,
                 "Framework session/view lifecycle did not complete exactly once.");
-            var expectedRecoveryFailure = injectedResult is "DEVICE_LOST" or "SURFACE_LOST" ? 1 : 0;
+            var expectedRecoveryFailure = injectedResult == "DEVICE_LOST" ? 1 : 0;
             Require(diagnostics.RenderCallbacks >= 1 && diagnostics.PresentedTerminals >= 1 &&
                     diagnostics.FailedTerminals == expectedRecoveryFailure,
                 "Product frame terminal coverage failed.");
@@ -73,9 +73,14 @@ internal static class Program
             else if (resizeCycles > 0)
             {
                 var resizeSurfaceContract = diagnostics.Vulkan is { } resizeVulkan
-                    ? resizeVulkan.SurfaceWidth >= resizeVulkan.Width &&
+                    ? resizeVulkan.PresentMode == "CompositionSwapchain" &&
+                      resizeVulkan.ImageCount == 3 &&
+                      resizeVulkan.SurfaceWidth >= resizeVulkan.Width &&
                       resizeVulkan.SurfaceHeight >= resizeVulkan.Height &&
-                      resizeVulkan.SurfaceRecreates >= 1 &&
+                      resizeVulkan.SurfaceRecreates == 0 &&
+                      resizeVulkan.ActiveSwapchains == 0 &&
+                      resizeVulkan.RetiredSwapchains == 0 &&
+                      resizeVulkan.RetirementMode == "presentation-buffer-availability" &&
                       resizeVulkan.RetainedSurfaceReuses >= (ulong)Math.Max(0, resizeCycles - 1)
                     : diagnostics.ResizeBuffers >= (ulong)resizeCycles;
                 Require(ProductEntrypoint.CompletedResizeRequests == resizeCycles &&
@@ -108,11 +113,21 @@ internal static class Program
             }
             var presentationContract = diagnostics.Vulkan is { } vulkan
                 ? vulkan.OutstandingAcquired == 0 &&
-                  vulkan.OutstandingCopySubmission <= 1 &&
+                  vulkan.OutstandingCopySubmission == 0 &&
+                  vulkan.MaximumOutstandingAcquired <= 1 &&
                   vulkan.Acquired == vulkan.Presented &&
-                  vulkan.Presented == diagnostics.GpuCopies &&
-                  vulkan.DeferredCopySubmissions == diagnostics.GpuCopies &&
-                  vulkan.SuccessfulPresents == diagnostics.Presents
+                  vulkan.Presented == vulkan.SuccessfulPresents &&
+                  vulkan.SuccessfulPresents == diagnostics.Presents &&
+                  vulkan.Presented <= diagnostics.GpuCopies &&
+                  vulkan.DeferredCopySubmissions == 0 &&
+                  vulkan.CopyFenceWaits == diagnostics.GpuCopies &&
+                  vulkan.PresentMode == "CompositionSwapchain" &&
+                  vulkan.ImageCount == 3 &&
+                  vulkan.ActiveSwapchains == 0 &&
+                  vulkan.RetiredSwapchains == 0 &&
+                  vulkan.MaximumRetiredSwapchains == 0 &&
+                  vulkan.QueueIdleRetirementWaits == 0 &&
+                  vulkan.RetirementMode == "presentation-buffer-availability"
                 : diagnostics.Presents == diagnostics.GpuCopies;
             Require(diagnostics.CompletedDeviceResets == diagnostics.RequestedDeviceResets &&
                     diagnostics.DeviceGenerations ==
@@ -124,12 +139,17 @@ internal static class Program
                     diagnostics.GpuCopies <= diagnostics.GpuSubmits,
                 "Managed presenter ordering or injected device recreation differs in the product path.");
             var expectedBackend = requestedPresenter.Equals("Vulkan", StringComparison.OrdinalIgnoreCase)
-                ? "Vulkan" : "ANGLE/EGL-D3D11";
+                ? "Vulkan/Composition-Swapchain" : "ANGLE/EGL-D3D11";
             Require(diagnostics.PresenterBackend == expectedBackend &&
                     diagnostics.RequestedPresenter.Equals(requestedPresenter, StringComparison.OrdinalIgnoreCase) &&
                     diagnostics.EffectivePresenter == expectedBackend,
                 "Product validation did not select the explicitly requested presenter.");
-            Require((expectedBackend == "Vulkan" ||
+            Require(expectedBackend != "Vulkan/Composition-Swapchain" ||
+                    diagnostics.PresenterDiagnosticCoverage.Contains("DirectComposition", StringComparison.Ordinal) &&
+                    diagnostics.PresenterDiagnosticCoverage.Contains("three-slot", StringComparison.Ordinal) &&
+                    diagnostics.PresenterDiagnosticCoverage.Contains("availability", StringComparison.Ordinal),
+                "Explicit Vulkan did not select the native retained-child DirectComposition topology.");
+            Require((expectedBackend == "Vulkan/Composition-Swapchain" ||
                      diagnostics.AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase) &&
                      (diagnostics.AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
                       diagnostics.AdapterDescription.Contains("Direct3D11", StringComparison.OrdinalIgnoreCase))) &&
@@ -141,15 +161,11 @@ internal static class Program
             if (injectedResult == "DEVICE_LOST")
                 Require(diagnostics.VulkanDeviceLossRecoveries == 1 && diagnostics.Vulkan is { DeviceLostResults: 1 },
                     "Injected Vulkan DEVICE_LOST did not take the single recovery branch.");
-            if (injectedResult == "SURFACE_LOST")
-                Require(diagnostics.VulkanSurfaceLossRecoveries == 1 && diagnostics.Vulkan is { SurfaceLostResults: 1 },
-                    "Injected Vulkan SURFACE_LOST did not take the single recovery branch.");
-            if (injectedResult == "OUT_OF_DATE")
-                Require(diagnostics.Vulkan is { OutOfDateResults: >= 1 },
-                    "Injected Vulkan OUT_OF_DATE did not take the acquire branch.");
-            if (injectedResult == "SUBOPTIMAL")
-                Require(diagnostics.Vulkan is { SuboptimalResults: >= 1 },
-                    "Injected Vulkan SUBOPTIMAL did not take the present branch.");
+            if (diagnostics.Vulkan is { } compositionVulkan)
+                Require(compositionVulkan.SurfaceLostResults == 0 &&
+                        compositionVulkan.OutOfDateResults == 0 &&
+                        compositionVulkan.SuboptimalResults == 0,
+                    "The Vulkan Composition path emitted a legacy WSI result.");
             var layout = WindowsNativeV1.ValidateLayout();
             Require(layout.GpuPointerCount == 0, "Product ABI exposes a GPU pointer.");
             Require(ProductEntrypoint.PointerChanges.Take(5).SequenceEqual([
@@ -160,8 +176,11 @@ internal static class Program
                 "Synthetic mouse wheel did not cross the PointerSignalKind.scroll path exactly once.");
             Require(ProductEntrypoint.KeyTypes.SequenceEqual([KeyEventType.down, KeyEventType.up]),
                 "Synthetic keyboard lifecycle differs.");
-            Require(ProductEntrypoint.FocusStates.Count >= 2 &&
-                    ProductEntrypoint.FocusStates.First() && !ProductEntrypoint.FocusStates.Last(),
+            var focusGainIndex = ProductEntrypoint.FocusStates.FindIndex(
+                static focused => focused);
+            Require(focusGainIndex >= 0 &&
+                    ProductEntrypoint.FocusStates.Skip(focusGainIndex + 1)
+                        .Any(static focused => !focused),
                 "Synthetic focus lifecycle differs.");
             Require(ProductEntrypoint.InputDispatchThreadIds.Count == 1 &&
                     ProductEntrypoint.DrawThreadIds.SetEquals(ProductEntrypoint.InputDispatchThreadIds),
@@ -246,7 +265,7 @@ internal static class Program
                 injectedVulkanResult = injectedResult,
                 lifecycleCycles,
                 abiGpuPointerCount = layout.GpuPointerCount,
-                scopeBoundary = $"Automated product bootstrap, framework scene, managed {expectedBackend} exact presentation, and clean close. Physical scan-out and human resize behavior remain notVerified.",
+                scopeBoundary = $"Automated product bootstrap, framework scene, managed {expectedBackend} exact presentation, terminal drain, and clean close. Composition Present completion is not physical scan-out; human resize behavior remains notVerified.",
             };
             Write(reportPath, report);
             var c6ReportPath = IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c6-input.json"));
@@ -289,7 +308,9 @@ internal static class Program
                     fragment = "IRawElementProviderFragment",
                     patterns = new[] { "Invoke", "Value", "Toggle", "SelectionItem", "RangeValue" },
                     actions = ProductEntrypoint.SemanticsActions,
-                    boundsAuthority = "current child HWND screen origin plus current metrics scale",
+                    boundsAuthority = expectedBackend == "Vulkan/Composition-Swapchain"
+                        ? "current retained child DirectComposition target screen origin plus current metrics scale"
+                        : "current child HWND screen origin plus current metrics scale",
                 },
                 scopeBoundary = "Automated ABI, composition-state, UIA provider tree/bounds/pattern, and action dispatch contract. Physical Korean two-beolsik candidate UI, Narrator, and Accessibility Insights remain notVerified.",
             });
@@ -305,7 +326,7 @@ internal static class Program
                 diagnostics.PresentedResizeGenerations,
                 diagnostics.UnterminatedResizeGenerations,
                 diagnostics.DuplicateResizeTerminals,
-                scopeBoundary = "Automated minimize/restore/display-change/detach, ANGLE device recreation, and terminal drain only. DPI matrix, mixed-monitor, Snap/system-menu/keyboard sizing, injected hardware removal, visible first-frame/restore, and shutdown-at-each-wait-point remain notVerified.",
+                scopeBoundary = "Automated minimize/restore/display-change/detach, presenter device recreation, Composition-buffer retirement, and terminal drain only. DPI matrix, mixed-monitor, Snap/system-menu/keyboard sizing, injected hardware removal, visible first-frame/restore, and shutdown-at-each-wait-point remain notVerified.",
             });
             var c9ReportPath = IoPath.GetFullPath(IoPath.Combine(".doroti", "evidence", "hwnd-exact-cpp-c9-provenance.json"));
             Write(c9ReportPath, new
@@ -314,7 +335,12 @@ internal static class Program
                 gate = "C9-runtime-provenance",
                 status = "PASS",
                 adapter = "HwndExactCpp",
-                nativeViewType = "Win32.ChildHwnd",
+                nativeViewType = expectedBackend == "Vulkan/Composition-Swapchain"
+                    ? "IDCompositionTarget"
+                    : "Win32.ChildHwnd",
+                visibleOwner = expectedBackend == "Vulkan/Composition-Swapchain"
+                    ? "retained child DirectComposition target"
+                    : "child HWND",
                 graphicsBackend = diagnostics.PresenterBackend,
                 diagnostics.AdapterDescription,
                 provenance,
@@ -333,6 +359,7 @@ internal static class Program
                 gate = "C5-A",
                 status = "FAIL",
                 exception = exception.ToString(),
+                focusStates = ProductEntrypoint.FocusStates,
                 lifecycleStates = ProductEntrypoint.LifecycleStates,
             });
             Console.Error.WriteLine(exception);
@@ -418,7 +445,7 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
             foreach (var pointer in packet.data)
             {
                 if (pointer.physicalX < 0 || pointer.physicalY < 0)
-                    throw new InvalidOperationException("Pointer coordinates escaped the child client.");
+                    throw new InvalidOperationException("Pointer coordinates escaped the visible client.");
                 PointerChanges.Add(pointer.change);
                 if (pointer.signalKind == PointerSignalKind.scroll)
                 {

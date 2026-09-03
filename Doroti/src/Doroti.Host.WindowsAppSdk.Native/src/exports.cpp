@@ -181,9 +181,13 @@ class ProductHost final {
         retained_oversized_child_surface_(
             (configuration.required_features &
              DOROTI_WINDOWS_FEATURE_RETAINED_OVERSIZED_CHILD_SURFACE_V1) != 0),
+        composition_presentation_requested_(
+            (configuration.required_features &
+             DOROTI_WINDOWS_FEATURE_COMPOSITION_PRESENTATION_V1) != 0),
         composition_requested_(
             (configuration.required_features &
-             DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1) != 0),
+             (DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1 |
+              DOROTI_WINDOWS_FEATURE_COMPOSITION_PRESENTATION_V1)) != 0),
         composition_active_(composition_requested_),
         platform_brightness_(ResolvePlatformBrightness()) {}
 
@@ -192,9 +196,9 @@ class ProductHost final {
   doroti_windows_status_v1 Run() {
     RegisterClasses();
     CreateWindows();
-    // The managed experimental topology owns the AppWindow association and
-    // ContentIsland dispatcher. Holding a second native AppWindow projection
-    // before that association makes ContentIsland creation fail fast.
+    // The selected managed Composition topology owns any AppWindow association
+    // and dispatcher setup it needs. Holding a second native AppWindow
+    // projection before that setup can make activation fail fast.
     if (!composition_active_) ConnectAppWindow();
     doroti_windows_host_v1 host{
         DOROTI_WINDOWS_ABI_VERSION_V1,
@@ -222,8 +226,9 @@ class ProductHost final {
         &SetCompositionChild,
     };
     callbacks_.host_ready(callbacks_.callback_context, &host);
-    // Host-ready attaches the ContentIsland synchronously. Publish its initial
-    // viewport after that attachment and before the first raster request.
+    // Host-ready attaches the managed Composition tree synchronously. Publish
+    // its initial viewport after that attachment and before the first raster
+    // request.
     if (composition_active_) {
       RECT client{};
       if (!GetClientRect(top_, &client)) throw std::bad_alloc();
@@ -239,7 +244,6 @@ class ProductHost final {
     if (PublishMetrics() && composition_active_)
       composition_flush_generation_.store(current_generation_,
                                             std::memory_order_release);
-    RunInputSmoke();
     ConfigureSmokeTimer();
     QueueRender();
 
@@ -260,8 +264,23 @@ class ProductHost final {
     switch (message) {
       case WM_ERASEBKGND:
         return 1;
+      case WM_SIZING:
+        if (composition_active_ && lparam != 0) {
+          const auto* proposed = reinterpret_cast<const RECT*>(lparam);
+          if (!PrepareCompositionSizingFrame(
+                  *proposed, static_cast<uint32_t>(wparam))) {
+            fatal_ = true;
+            PostMessageW(top_, WM_CLOSE, 0, 0);
+          }
+          // USER32 remains the sole geometry owner. The proposed rectangle is
+          // intentionally left untouched; this handler only makes its matching
+          // retained frame observable to DWM before the sizing loop commits it.
+          return TRUE;
+        }
+        break;
       case WM_SIZE:
         if (wparam == SIZE_MINIMIZED) {
+          ClearPreparedResize();
           minimized_ = true;
           EmitLifecycle(2);
           EmitLifecycle(3);
@@ -277,19 +296,16 @@ class ProductHost final {
           const auto height = static_cast<uint32_t>(HIWORD(lparam));
           if (width > 0 && height > 0) {
             if (composition_active_) {
-              // DesktopChildSiteBridge owns its WS_CHILD geometry. Keep the
-              // shell lane nonblocking: publish the actual top-client extent,
-              // latest-queue raster work, and return without resizing the
-              // hidden opaque child or waiting for a terminal.
-              ResizeCompositionViewport(width, height);
-              const auto scale =
-                  static_cast<double>(GetDpiForWindow(top_)) / 96.0;
-              if (UpdateMetrics(width, height, scale)) {
-                if (!interactive_move_)
-                  composition_flush_generation_.store(
-                      current_generation_, std::memory_order_release);
-                QueueRender();
+              // The Composition target lives on a retained child. Keep that
+              // child large enough for the current monitor before admitting
+              // this logical viewport so its app-painted guard can cover
+              // USER32/DWM's transient resize geometry in either direction.
+              if (!EnsureRetainedChildSurfaceCapacity(width, height)) {
+                fatal_ = true;
+                PostMessageW(top_, WM_CLOSE, 0, 0);
+                return 0;
               }
+              ApplyCompositionResize(width, height, false);
               return 0;
             }
             if (retained_oversized_child_surface_) {
@@ -333,7 +349,13 @@ class ProductHost final {
       case WM_ACTIVATEAPP:
         if (!minimized_) EmitLifecycle(wparam != 0 ? 1u : 2u);
         return 0;
+      case WM_ACTIVATE:
+        if (composition_active_) {
+          EmitFocus(LOWORD(wparam) != WA_INACTIVE);
+        }
+        break;
       case WM_ENTERSIZEMOVE:
+        ClearPreparedResize();
         interactive_move_ = true;
         composition_interactive_.store(true, std::memory_order_release);
         // A timed-out or failed final-settle request must not leak a DwmFlush
@@ -348,6 +370,27 @@ class ProductHost final {
         return 0;
       case WM_WINDOWPOSCHANGED:
         if (interactive_move_) interactive_move_dirty_ = true;
+        if (composition_active_ && child_ != nullptr) {
+          RECT client{};
+          bool capacity_changed = false;
+          if (GetClientRect(top_, &client)) {
+            const auto width = static_cast<uint32_t>(
+                std::max(0L, client.right - client.left));
+            const auto height = static_cast<uint32_t>(
+                std::max(0L, client.bottom - client.top));
+            if (width > 0 && height > 0 &&
+                !EnsureRetainedChildSurfaceCapacity(
+                    width, height, &capacity_changed)) {
+              fatal_ = true;
+              PostMessageW(top_, WM_CLOSE, 0, 0);
+              return 0;
+            }
+          }
+          // A position-only monitor transition has no WM_SIZE. Republish the
+          // current viewport once so the managed retained backing observes the
+          // enlarged child before another interactive drag begins.
+          if (capacity_changed && RepublishCurrentMetrics()) QueueRender();
+        }
         // WM_DPICHANGED can arrive while the shell window still straddles two
         // monitors. Wait until the committed window rectangle is wholly on a
         // different monitor before rebuilding the fixed-size EGL surface.
@@ -357,19 +400,24 @@ class ProductHost final {
           QueueRender();
         break;
       case WM_EXITSIZEMOVE:
+        KillTimer(window, kInteractiveMoveTimer);
         interactive_move_ = false;
         composition_interactive_.store(false, std::memory_order_release);
-        KillTimer(window, kInteractiveMoveTimer);
         EnteredDifferentMonitor();
-        // Finish native sizing with one exact frame for the actual WM_SIZE
-        // metrics. Composition stays asynchronous; the raster worker performs
-        // DWM flush after its successful terminal. Opaque retains its existing
-        // child-HWND exact transaction.
+        // Finish native sizing with one exact frame for the actual geometry.
+        // Unlike the interactive pipeline there is no following WM_SIZING call
+        // to admit it, so settle synchronously within the existing 100 ms bound.
         if (composition_active_) {
-          RepublishCurrentMetrics();
-          composition_flush_generation_.store(current_generation_,
-                                               std::memory_order_release);
-          QueueRender();
+          ClearPreparedResize();
+          RECT client{};
+          if (GetClientRect(top_, &client)) {
+            const auto width = static_cast<uint32_t>(
+                std::max(0L, client.right - client.left));
+            const auto height = static_cast<uint32_t>(
+                std::max(0L, client.bottom - client.top));
+            if (width > 0 && height > 0)
+              ApplyCompositionResize(width, height, true);
+          }
         } else if (RepublishCurrentMetrics()) {
           const auto generation = current_generation_;
           if (post_present_dwm_flush_ && !interactive_move_)
@@ -382,6 +430,7 @@ class ProductHost final {
         interactive_move_dirty_ = false;
         return 0;
       case WM_DPICHANGED: {
+        ClearPreparedResize();
         const auto* suggested = reinterpret_cast<const RECT*>(lparam);
         if (suggested != nullptr)
           SetWindowPos(top_, nullptr, suggested->left, suggested->top,
@@ -550,9 +599,7 @@ class ProductHost final {
         break;
       case WM_SETFOCUS:
       case WM_KILLFOCUS:
-        if (callbacks_.focus != nullptr)
-          callbacks_.focus(callbacks_.callback_context, 1,
-                           message == WM_SETFOCUS ? 1u : 0u, QpcNow());
+        EmitFocus(message == WM_SETFOCUS);
         return 0;
       case WM_GETOBJECT:
         if (const auto result = accessibility_.HandleGetObject(wparam, lparam); result != 0)
@@ -741,12 +788,15 @@ class ProductHost final {
                : 1u;
   }
 
-  void ResizeCompositionViewport(uint32_t width, uint32_t height) {
+  void ResizeCompositionViewport(uint32_t width, uint32_t height,
+                                 uint32_t sizing_edge = 0,
+                                 uint32_t pre_geometry = 0) {
     if (callbacks_.composition_resize == nullptr || width == 0 || height == 0)
       return;
     const auto scale = static_cast<double>(GetDpiForWindow(top_)) / 96.0;
     callbacks_.composition_resize(
-        callbacks_.callback_context, width, height, scale);
+        callbacks_.callback_context, width, height, scale, sizing_edge,
+        pre_geometry);
   }
 
   static uint32_t DOROTI_WINDOWS_CALL SetCursor(void* context, uint32_t cursor) {
@@ -952,10 +1002,64 @@ class ProductHost final {
            (retained_oversized_child_surface_ ? WS_CLIPCHILDREN : 0u);
   }
 
+  DWORD TopWindowExtendedStyle() const noexcept {
+    // The retained Composition child is the only client content owner. Avoid
+    // a parent USER32 redirection bitmap whose geometry could race the child's
+    // DesktopWindowTarget visual tree during top/left resizing.
+    return composition_presentation_requested_
+               ? static_cast<DWORD>(WS_EX_NOREDIRECTIONBITMAP)
+               : 0u;
+  }
+
+  void ClearPreparedResize() noexcept {
+    prepared_resize_generation_ = 0;
+    prepared_resize_width_ = 0;
+    prepared_resize_height_ = 0;
+    prepared_resize_displayed_ = false;
+  }
+
+  bool PrepareCompositionSizingFrame(
+      const RECT& proposed_window, uint32_t sizing_edge) {
+    if (top_ == nullptr || child_ == nullptr) return false;
+    RECT current_window{};
+    RECT current_client{};
+    if (!GetWindowRect(top_, &current_window) ||
+        !GetClientRect(top_, &current_client))
+      return false;
+
+    const auto frame_width = std::max(
+        0L, (current_window.right - current_window.left) -
+                (current_client.right - current_client.left));
+    const auto frame_height = std::max(
+        0L, (current_window.bottom - current_window.top) -
+                (current_client.bottom - current_client.top));
+    const auto proposed_width = proposed_window.right - proposed_window.left;
+    const auto proposed_height = proposed_window.bottom - proposed_window.top;
+    if (proposed_width <= frame_width || proposed_height <= frame_height)
+      return true;
+
+    const auto width = static_cast<uint32_t>(proposed_width - frame_width);
+    const auto height = static_cast<uint32_t>(proposed_height - frame_height);
+    if (!EnsureRetainedChildSurfaceCapacity(width, height)) return false;
+
+    ClearPreparedResize();
+    ResizeCompositionViewport(width, height, sizing_edge, 1);
+    const auto scale = static_cast<double>(GetDpiForWindow(top_)) / 96.0;
+    if (UpdateMetrics(width, height, scale) || RepublishCurrentMetrics()) {
+      prepared_resize_generation_ = current_generation_;
+      prepared_resize_width_ = width;
+      prepared_resize_height_ = height;
+      prepared_resize_displayed_ = WaitForExactResize(
+          prepared_resize_generation_, QueueRender());
+    }
+    return true;
+  }
+
   void FlushPresentedResizeToDwm() noexcept {
-    // The exact logical frame has crossed vkQueuePresentKHR while the actual
-    // WM_SIZE transaction is still open. Hold the HWND thread through one DWM
-    // boundary so USER32 cannot immediately outrun that presented generation.
+    // The exact logical frame has completed its presenter-specific GPU and
+    // presentation commit while the actual WM_SIZE transaction is still open.
+    // Hold the HWND thread through one DWM boundary so USER32 cannot immediately
+    // outrun that presented generation.
     const auto result = DwmFlush();
     if (SUCCEEDED(result)) {
       ++presented_resize_dwm_flush_count_;
@@ -965,6 +1069,53 @@ class ProductHost final {
     wchar_t message[160]{};
     swprintf_s(message,
                L"Doroti presented-resize DwmFlush failed: 0x%08X\n",
+               static_cast<unsigned int>(result));
+    OutputDebugStringW(message);
+  }
+
+  void ApplyCompositionResize(uint32_t width, uint32_t height,
+                              bool geometry_transaction_returned) {
+    if (geometry_transaction_returned)
+      FlushCompositionShrinkGeometryToDwm();
+    const auto prepared_matches =
+        prepared_resize_generation_ == current_generation_ &&
+        prepared_resize_width_ == width &&
+        prepared_resize_height_ == height;
+    if (prepared_matches && prepared_resize_displayed_) {
+      // WM_SIZING already observed this exact tagged frame in a DWM
+      // composition frame before USER32 committed the new geometry.
+      ClearPreparedResize();
+      return;
+    }
+    const auto recover_prepared =
+        prepared_matches && !prepared_resize_displayed_;
+    ClearPreparedResize();
+    ResizeCompositionViewport(width, height, 0, 0);
+    const auto scale = static_cast<double>(GetDpiForWindow(top_)) / 96.0;
+    auto exact_presented = false;
+    if (UpdateMetrics(width, height, scale) ||
+        (recover_prepared && RepublishCurrentMetrics())) {
+      const auto generation = current_generation_;
+      const auto causal = QueueRender();
+      exact_presented = WaitForExactResize(generation, causal);
+    }
+    if (post_present_dwm_flush_ && exact_presented)
+      FlushPresentedResizeToDwm();
+  }
+
+  void FlushCompositionShrinkGeometryToDwm() noexcept {
+    // WM_SIZE observes USER32's new client metrics before that smaller clip is
+    // necessarily visible in DWM.  Publishing a smaller Presentation viewport
+    // immediately can therefore race the previous, larger on-screen window and
+    // expose its unowned right/bottom tail.  Drain the already-issued HWND
+    // geometry first; the current larger frame remains safely parent-clipped
+    // until the exact smaller replacement is presented below.
+    const auto result = DwmFlush();
+    if (SUCCEEDED(result)) return;
+    ++dwm_flush_failure_count_;
+    wchar_t message[176]{};
+    swprintf_s(message,
+               L"Doroti composition shrink-geometry DwmFlush failed: 0x%08X\n",
                static_cast<unsigned int>(result));
     OutputDebugStringW(message);
   }
@@ -997,7 +1148,10 @@ class ProductHost final {
     return {desired_width, desired_height};
   }
 
-  bool EnsureRetainedChildSurfaceCapacity(uint32_t width, uint32_t height) {
+  bool EnsureRetainedChildSurfaceCapacity(
+      uint32_t width, uint32_t height,
+      bool* capacity_changed = nullptr) {
+    if (capacity_changed != nullptr) *capacity_changed = false;
     if (!retained_oversized_child_surface_) return true;
     if (width <= static_cast<uint32_t>(retained_surface_width_) &&
         height <= static_cast<uint32_t>(retained_surface_height_))
@@ -1008,6 +1162,7 @@ class ProductHost final {
       return false;
     retained_surface_width_ = capacity.cx;
     retained_surface_height_ = capacity.cy;
+    if (capacity_changed != nullptr) *capacity_changed = true;
     return true;
   }
 
@@ -1022,14 +1177,16 @@ class ProductHost final {
       throw std::bad_alloc();
     auto title = Decode(configuration_.title);
     if (title.empty()) title = L"Doroti";
-    top_ = CreateWindowExW(0, kTopClass, title.c_str(), top_style,
+    top_ = CreateWindowExW(TopWindowExtendedStyle(), kTopClass, title.c_str(), top_style,
                            CW_USEDEFAULT, CW_USEDEFAULT, bounds.right - bounds.left,
                            bounds.bottom - bounds.top, nullptr, nullptr, instance, this);
     if (top_ == nullptr) throw std::bad_alloc();
     ApplyTopLevelTheme();
     stable_monitor_ = MonitorFromWindow(top_, MONITOR_DEFAULTTONEAREST);
-    const auto child_style =
-        WS_CHILD | (composition_active_ ? 0u : static_cast<uint32_t>(WS_VISIBLE));
+    const auto child_style = WS_CHILD |
+        (!composition_active_ || composition_presentation_requested_
+             ? static_cast<uint32_t>(WS_VISIBLE)
+             : 0u);
     RECT client{};
     if (!GetClientRect(top_, &client)) throw std::bad_alloc();
     auto child_width = std::max(1L, client.right - client.left);
@@ -1630,14 +1787,20 @@ class ProductHost final {
       completions.swap(render_completions_);
     }
     for (const auto& receipt : completions) {
+      auto run_input_smoke = false;
       if (receipt.terminal_kind == DOROTI_WINDOWS_FRAME_PRESENTED_V1 &&
           !first_exact_present_) {
         first_exact_present_ = true;
+        run_input_smoke = true;
         if (show_requested_) ShowWindow(top_, ResolveShowCommand());
         if (EnvironmentOne(L"DOROTI_WINDOWS_APPSDK_C8_SMOKE"))
           SetTimer(top_, kLifecycleTimer, 120, nullptr);
       }
       callbacks_.frame_terminal(callbacks_.callback_context, &receipt);
+      // The input smoke must run after the first framework frame has attached
+      // its input listeners. Running it during native bootstrap races a slower
+      // presenter initialization and can drop the synthetic focus-gained edge.
+      if (run_input_smoke) RunInputSmoke();
     }
   }
 
@@ -1726,7 +1889,10 @@ class ProductHost final {
         value[0] != L'1')
       return;
     const auto target = InputWindow();
-    SendMessageW(target, WM_SETFOCUS, 0, 0);
+    if (composition_active_)
+      SendMessageW(target, WM_ACTIVATE, WA_ACTIVE, 0);
+    else
+      SendMessageW(target, WM_SETFOCUS, 0, 0);
     SendMessageW(target, WM_MOUSEMOVE, 0, MAKELPARAM(10, 20));
     SendMessageW(target, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(10, 20));
     SendMessageW(target, WM_MOUSEMOVE, MK_LBUTTON, MAKELPARAM(18, 25));
@@ -1743,7 +1909,16 @@ class ProductHost final {
     }
     SendMessageW(target, WM_KEYDOWN, 'A', 1 | (0x1Eu << 16));
     SendMessageW(target, WM_KEYUP, 'A', 1 | (0x1Eu << 16) | (1u << 30) | (1u << 31));
-    SendMessageW(target, WM_KILLFOCUS, 0, 0);
+    if (composition_active_)
+      SendMessageW(target, WM_ACTIVATE, WA_INACTIVE, 0);
+    else
+      SendMessageW(target, WM_KILLFOCUS, 0, 0);
+  }
+
+  void EmitFocus(bool focused) {
+    if (callbacks_.focus != nullptr)
+      callbacks_.focus(callbacks_.callback_context, 1, focused ? 1u : 0u,
+                       QpcNow());
   }
 
   void EmitPointer(uint32_t change, WPARAM wparam, LPARAM lparam,
@@ -1908,6 +2083,7 @@ class ProductHost final {
   bool interactive_move_{};
   bool post_present_dwm_flush_{};
   bool retained_oversized_child_surface_{};
+  bool composition_presentation_requested_{};
   LONG retained_surface_width_{};
   LONG retained_surface_height_{};
   std::atomic_bool composition_interactive_{};
@@ -1915,6 +2091,10 @@ class ProductHost final {
   std::atomic<uint64_t> opaque_flush_generation_{};
   std::atomic<uint64_t> dwm_flush_failure_count_{};
   uint64_t presented_resize_dwm_flush_count_{};
+  uint64_t prepared_resize_generation_{};
+  uint32_t prepared_resize_width_{};
+  uint32_t prepared_resize_height_{};
+  bool prepared_resize_displayed_{};
   bool interactive_move_dirty_{};
   bool composition_requested_{};
   bool composition_active_{};
@@ -2041,7 +2221,8 @@ doroti_windows_status_v1 DOROTI_WINDOWS_CALL doroti_windows_run_v1(
        ~static_cast<uint64_t>(
            DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1 |
            DOROTI_WINDOWS_FEATURE_POST_PRESENT_DWM_FLUSH_V1 |
-           DOROTI_WINDOWS_FEATURE_RETAINED_OVERSIZED_CHILD_SURFACE_V1)) != 0)
+           DOROTI_WINDOWS_FEATURE_RETAINED_OVERSIZED_CHILD_SURFACE_V1 |
+           DOROTI_WINDOWS_FEATURE_COMPOSITION_PRESENTATION_V1)) != 0)
     return DOROTI_WINDOWS_STATUS_NOT_IMPLEMENTED_V1;
 
   bool bootstrap_initialized = false;

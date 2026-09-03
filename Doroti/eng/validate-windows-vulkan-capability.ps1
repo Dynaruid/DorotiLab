@@ -3,7 +3,8 @@
 param(
     [string] $OutputDirectory,
     [string] $Device = $env:DOROTI_WINDOWS_VULKAN_DEVICE,
-    [switch] $SkipBuild
+    [switch] $SkipBuild,
+    [switch] $LegacyWsiEvidence
 )
 
 $ErrorActionPreference = 'Stop'
@@ -62,7 +63,9 @@ $sourceFingerprintPaths = @(
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs',
     'Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_host_v1.h',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_vulkan_composition_v1.h',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/exports.cpp',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/vulkan_composition.cpp',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/Doroti.Host.WindowsAppSdk.Native.vcxproj',
     'Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj',
     'Doroti/src/Doroti.Target.Windows.WindowsAppSdk.win-x64/Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj',
@@ -80,6 +83,29 @@ $sourceFingerprintPaths = @(
 
 function Assert-True([bool] $Condition, [string] $Message) {
     if (-not $Condition) { throw $Message }
+}
+
+function Assert-VulkanCompositionSnapshot($Report, [string] $Identity) {
+    $vulkan = $Report.diagnostics.vulkan
+    Assert-True ($null -ne $vulkan) "$Identity did not publish Vulkan diagnostics."
+    Assert-True ($vulkan.presentMode -eq [string]$contract.presentationMode -and
+        $vulkan.imageCount -eq [int]$contract.compositionBufferCount -and
+        $vulkan.activeSwapchains -eq 0 -and $vulkan.retiredSwapchains -eq 0 -and
+        $vulkan.maximumRetiredSwapchains -eq 0 -and $vulkan.surfaceRecreates -eq 0) `
+        "$Identity did not retain exactly three Composition buffers and zero WSI swapchains."
+    Assert-True ($vulkan.outstandingAcquired -eq 0 -and
+        $vulkan.outstandingCopySubmission -eq 0 -and
+        $vulkan.deferredCopySubmissions -eq 0 -and
+        $vulkan.retainedFrameAllocationBytes -gt 0 -and
+        $vulkan.retainedFrameInitialized -and
+        $vulkan.copyFenceWaits -eq $Report.diagnostics.gpuCopies) `
+        "$Identity did not retain and synchronously copy an initialized Vulkan guard before Present."
+    Assert-True ($vulkan.retirementMode -eq [string]$contract.retirementMode -and
+        $vulkan.queueIdleRetirementWaits -eq 0) `
+        "$Identity did not use Presentation buffer availability as its retirement authority."
+    Assert-True ($vulkan.surfaceLostResults -eq 0 -and
+        $vulkan.outOfDateResults -eq 0 -and $vulkan.suboptimalResults -eq 0) `
+        "$Identity emitted a legacy WSI-only result."
 }
 
 function Get-TrackedDiffSha256 {
@@ -229,33 +255,65 @@ Assert-True ($capability.status -eq 'PASS') 'Vulkan capability report is not PAS
 Assert-True ($capability.packages.requestedVersion -eq [string]$contract.packageVersion) 'Silk.NET version differs.'
 Assert-True ($capability.instance.validationWarnings -le [int]$contract.maximumValidationWarnings) 'Validation warning gate failed.'
 Assert-True ($capability.instance.validationErrors -le [int]$contract.maximumValidationErrors) 'Validation error gate failed.'
-Assert-True ([bool]$capability.presentationCommitPolicy.acquireAfterLatestCheck) 'Acquire is not behind the latest-frame commit check.'
-Assert-True ([bool]$capability.presentationCommitPolicy.unconditionalCopyAndPresentAfterAcquire) 'Post-acquire copy/present is not unconditional.'
-Assert-True (-not [bool]$capability.presentationCommitPolicy.acquiredImageReleaseRequired) 'Capability still requires acquired-image release.'
+Assert-True (@($capability.instance.requiredExtensions).Count -eq @($contract.requiredInstanceExtensions).Count) `
+    'Composition capability unexpectedly depends on a Vulkan WSI instance extension.'
+Assert-True ([bool]$capability.device.luidValid) 'Selected Vulkan device does not expose a valid Windows adapter LUID.'
+foreach ($requiredExtension in @($contract.requiredDeviceExtensions)) {
+    Assert-True ($requiredExtension -in @($capability.device.requiredExtensions)) `
+        "Capability omitted required device extension '$requiredExtension'."
+}
+Assert-True ($capability.externalMemory.format -eq [string]$contract.externalMemory.format -and
+    $capability.externalMemory.tiling -eq [string]$contract.externalMemory.tiling -and
+    $capability.externalMemory.usage -eq [string]$contract.externalMemory.usage -and
+    $capability.externalMemory.handleType -eq [string]$contract.externalMemory.handleType) `
+    'External-memory format/tiling/usage/handle query differs from the product contract.'
+Assert-True ([bool]$capability.externalMemory.importable -and
+    [bool]$capability.externalMemory.dedicatedOnly -and
+    [bool]$capability.externalMemory.compatibleHandleType) `
+    'BGRA8 optimal D3D11 texture external memory is not importable, dedicated, and compatible.'
+Assert-True ($capability.presentation.mode -eq [string]$contract.presentationMode -and
+    $capability.presentation.visibleOwner -eq [string]$contract.visibleOwner -and
+    $capability.presentation.bufferCount -eq [int]$contract.compositionBufferCount -and
+    $capability.presentation.activeSwapchains -eq [int]$contract.activeSwapchains -and
+    $capability.presentation.bufferReuseAuthority -eq [string]$contract.retirementMode) `
+    'Vulkan Composition presentation topology differs from the contract.'
+Assert-True ($capability.presentationCommitPolicy.policy -eq [string]$contract.presentationCommitPolicy) `
+    'Composition presentation commit policy differs from the contract.'
+Assert-True ([bool]$capability.presentationCommitPolicy.availableBufferAfterLatestCheck) `
+    'Presentation-buffer availability selection is not behind the latest-frame check.'
+Assert-True ([bool]$capability.presentationCommitPolicy.synchronousVulkanCopyFenceCompletion -and
+    [bool]$capability.presentationCommitPolicy.presentAfterCopyFenceCompletion) `
+    'Vulkan copy completion is not synchronous before native Composition Present.'
+Assert-True ([bool]$capability.presentationCommitPolicy.availabilityEventReuseAuthority) `
+    'Presentation buffer availability is not the reuse authority.'
 Assert-True ($capability.presentationCommitPolicy.retirementMode -eq [string]$contract.retirementMode) 'Retirement mode differs.'
 Assert-True ($capability.presentationCommitPolicy.outstandingImages -eq 0) 'Capability probe left an acquired image outstanding.'
+Assert-True ($capability.presentationCommitPolicy.activeSwapchains -eq 0) 'Composition capability unexpectedly owns a WSI swapchain.'
 
-$wsiPath = Join-Path $OutputDirectory 'wsi-qualification.json'
-$wsiRun = Invoke-Probe -Name 'Vulkan WSI qualification' -Arguments @(
-    '--device',$Device,'--wsi-qualification','--output',$wsiPath)
-Assert-True ($wsiRun.exitCode -eq 0) "Vulkan WSI qualification failed: $($wsiRun.stderr) $($wsiRun.stdout)"
-$wsiDocument = Get-Content -LiteralPath $wsiPath -Raw | ConvertFrom-Json -Depth 100
-$wsi = $wsiDocument.wsiStress
-Assert-True ($wsiDocument.status -eq 'PASS' -and $wsi.status -eq 'PASS') 'Vulkan WSI qualification report is not PASS.'
-Assert-True ($wsi.profile -eq 'qualification') 'Vulkan WSI qualification used the wrong profile.'
-Assert-True ($wsi.requestedPresentIterations -eq 3) 'Vulkan WSI qualification present count drifted.'
-Assert-True ($wsi.requestedStaleIterationsPerStage -eq 3) 'Vulkan WSI qualification stale count drifted.'
-Assert-True ($wsi.requestedRecreateIterations -eq 3) 'Vulkan WSI qualification recreate count drifted.'
-Assert-True ($wsi.requestedLifecycleIterations -eq 2) 'Vulkan WSI qualification lifecycle count drifted.'
-Assert-True ($wsi.outstandingAcquired -eq 0) 'Vulkan WSI qualification leaked an acquired image.'
-Assert-True ($wsi.unconsumedSignals -eq 0) 'Vulkan WSI qualification left an unconsumed semaphore signal.'
-Assert-True ($wsi.committedAfterStale -eq 9) 'Post-commit stale cases did not all finish presentation.'
-Assert-True ($wsi.supersededBeforeCommit -eq 7) 'Pre-commit/lifecycle superseded terminal count differs.'
-Assert-True ($wsi.retirementMode -eq [string]$contract.retirementMode) 'WSI retirement mode differs.'
-Assert-True ($wsi.maximumRetiredSwapchains -le 2) 'Vulkan WSI qualification exceeded the retired swapchain bound.'
-Assert-True ($wsi.activeSwapchains -eq 1) 'Vulkan WSI qualification did not finish with one active swapchain.'
-Assert-True ($wsiDocument.instance.validationWarnings -eq 0) 'Vulkan WSI qualification emitted validation warnings.'
-Assert-True ($wsiDocument.instance.validationErrors -eq 0) 'Vulkan WSI qualification emitted validation errors.'
+$wsiPath = $null
+$wsi = $null
+$legacyWsi = [ordered]@{
+    status='notRun-separate-legacy-evidence'
+    productGate=$false
+}
+if ($LegacyWsiEvidence) {
+    $wsiPath = Join-Path $OutputDirectory 'legacy-wsi-qualification.json'
+    $wsiRun = Invoke-Probe -Name 'legacy Vulkan WSI evidence' -Arguments @(
+        '--device',$Device,'--wsi-qualification','--output',$wsiPath)
+    $wsiDocument = if (Test-Path -LiteralPath $wsiPath -PathType Leaf) {
+        Get-Content -LiteralPath $wsiPath -Raw | ConvertFrom-Json -Depth 100
+    } else { $null }
+    $wsi = if ($null -ne $wsiDocument) { $wsiDocument.wsiStress } else { $null }
+    $legacyWsi = [ordered]@{
+        status=if ($wsiRun.exitCode -eq 0 -and $null -ne $wsi -and $wsi.status -eq 'PASS') {
+            'PASS-legacy-non-gating'
+        } else { 'FAIL-legacy-non-gating' }
+        productGate=$false
+        exitCode=$wsiRun.exitCode
+        report=$wsiPath
+        stderr=$wsiRun.stderr
+    }
+}
 
 $vulkanProductPath = Join-Path $OutputDirectory 'vulkan-product.json'
 $vulkanProduct = Invoke-BoundedProcess -FileName 'dotnet' -Name 'Vulkan product qualification' -Environment @{
@@ -267,14 +325,16 @@ Assert-True ($vulkanProduct.exitCode -eq 0) "Vulkan product qualification failed
 $vulkanProductReport = Get-Content -LiteralPath $vulkanProductPath -Raw | ConvertFrom-Json -Depth 100
 Assert-True ($vulkanProductReport.status -eq 'PASS') 'Vulkan product qualification report is not PASS.'
 Assert-True ($vulkanProductReport.diagnostics.requestedPresenter -eq 'Vulkan' -and
-    $vulkanProductReport.diagnostics.effectivePresenter -eq 'Vulkan') 'Explicit Vulkan did not remain effective.'
+    $vulkanProductReport.diagnostics.effectivePresenter -eq 'Vulkan/Composition-Swapchain') `
+    'Explicit Vulkan Composition presenter did not remain effective.'
 Assert-True ($vulkanProductReport.diagnostics.failedTerminals -eq 0 -and
     $vulkanProductReport.diagnostics.unterminatedResizeGenerations -eq 0 -and
     $vulkanProductReport.diagnostics.duplicateResizeTerminals -eq 0) 'Vulkan product terminal gate failed.'
 Assert-True ($vulkanProductReport.diagnostics.deviceGenerations -eq 2) 'Vulkan product device-reset qualification differs.'
+Assert-VulkanCompositionSnapshot $vulkanProductReport 'Vulkan product qualification'
 
 $injectedResults = [ordered]@{}
-foreach ($resultName in @('OUT_OF_DATE','SUBOPTIMAL','SURFACE_LOST','DEVICE_LOST','DEVICE_LOST_ON_WAIT_IDLE')) {
+foreach ($resultName in @('DEVICE_LOST','DEVICE_LOST_ON_WAIT_IDLE')) {
     $resultSlug = $resultName.ToLowerInvariant()
     $resultPath = Join-Path $OutputDirectory "vulkan-inject-$resultSlug.json"
     $resultArguments = @(
@@ -292,7 +352,13 @@ foreach ($resultName in @('OUT_OF_DATE','SUBOPTIMAL','SURFACE_LOST','DEVICE_LOST
     Assert-True ($resultReport.status -eq 'PASS' -and
         $resultReport.diagnostics.unterminatedResizeGenerations -eq 0 -and
         $resultReport.diagnostics.duplicateResizeTerminals -eq 0 -and
-        $resultReport.diagnostics.vulkan.outstandingAcquired -eq 0) `
+        $resultReport.diagnostics.vulkan.outstandingAcquired -eq 0 -and
+        $resultReport.diagnostics.vulkan.outstandingCopySubmission -eq 0 -and
+        $resultReport.diagnostics.vulkan.presentMode -eq [string]$contract.presentationMode -and
+        $resultReport.diagnostics.vulkan.imageCount -eq [int]$contract.compositionBufferCount -and
+        $resultReport.diagnostics.vulkan.activeSwapchains -eq 0 -and
+        $resultReport.diagnostics.vulkan.deferredCopySubmissions -eq 0 -and
+        $resultReport.diagnostics.vulkan.retirementMode -eq [string]$contract.retirementMode) `
         "Vulkan $resultName injection did not drain one-to-one."
     $deviceLossRecoveryOrder = $null
     if ($resultName -in @('DEVICE_LOST','DEVICE_LOST_ON_WAIT_IDLE')) {
@@ -338,6 +404,7 @@ Assert-True ($resetReport.status -eq 'PASS' -and
     $resetReport.diagnostics.completedDeviceResets -eq 10 -and
     $resetReport.diagnostics.failedTerminals -eq 0 -and
     $resetReport.diagnostics.vulkan.outstandingAcquired -eq 0) 'Vulkan device reset x10 gate failed.'
+Assert-VulkanCompositionSnapshot $resetReport 'Vulkan device reset x10'
 
 $lifecyclePath = Join-Path $OutputDirectory 'vulkan-lifecycle-10.json'
 $lifecycleRun = Invoke-BoundedProcess -FileName 'dotnet' -Name 'Vulkan minimize/restore x10' -Environment @{
@@ -351,6 +418,7 @@ Assert-True ($lifecycleReport.status -eq 'PASS' -and
     $lifecycleReport.lifecycleCycles -eq 10 -and
     $lifecycleReport.diagnostics.failedTerminals -eq 0 -and
     $lifecycleReport.diagnostics.vulkan.outstandingAcquired -eq 0) 'Vulkan lifecycle x10 gate failed.'
+Assert-VulkanCompositionSnapshot $lifecycleReport 'Vulkan lifecycle x10'
 
 $resizePath = Join-Path $OutputDirectory 'vulkan-exact-resize-10.json'
 $resizeRun = Invoke-BoundedProcess -FileName 'dotnet' -Name 'Vulkan exact resize x10' -Environment @{
@@ -364,11 +432,12 @@ $resizeReport = Get-Content -LiteralPath $resizePath -Raw | ConvertFrom-Json -De
 Assert-True ($resizeReport.status -eq 'PASS' -and $resizeReport.completedResizeRequests -eq 10 -and
     $resizeReport.diagnostics.vulkan.surfaceWidth -ge $resizeReport.diagnostics.vulkan.width -and
     $resizeReport.diagnostics.vulkan.surfaceHeight -ge $resizeReport.diagnostics.vulkan.height -and
-    $resizeReport.diagnostics.vulkan.surfaceRecreates -ge 1 -and
+    $resizeReport.diagnostics.vulkan.surfaceRecreates -eq 0 -and
     $resizeReport.diagnostics.vulkan.retainedSurfaceReuses -ge 9 -and
     $resizeReport.diagnostics.presents -ge 10 -and
     $resizeReport.diagnostics.gpuCopies -ge 10 -and
     $resizeReport.diagnostics.vulkan.outstandingAcquired -eq 0) 'Vulkan exact resize x10 gate failed.'
+Assert-VulkanCompositionSnapshot $resizeReport 'Vulkan exact resize x10'
 
 $startCloseCycles = @()
 foreach ($cycle in 1..10) {
@@ -384,6 +453,7 @@ foreach ($cycle in 1..10) {
     Assert-True ($startCloseReport.status -eq 'PASS' -and
         $startCloseReport.diagnostics.failedTerminals -eq 0 -and
         $startCloseReport.diagnostics.vulkan.outstandingAcquired -eq 0) "Vulkan start/close $cycle gate failed."
+    Assert-VulkanCompositionSnapshot $startCloseReport "Vulkan start/close $cycle"
     $startCloseCycles += [ordered]@{
         cycle=$cycle; status='PASS'; report=$startClosePath
         presents=$startCloseReport.diagnostics.presents
@@ -468,7 +538,7 @@ $endingBinarySha256 = Get-BinaryFileSha256 $binaryFiles
 $binariesStable = Test-Sha256MapsEqual $startingBinarySha256 $endingBinarySha256
 Assert-True $binariesStable 'Qualification binaries changed during Vulkan qualification.'
 $manifest = [ordered]@{
-    schemaVersion='doroti.windows.vulkan-v0-v2-validation/v1'
+    schemaVersion='doroti.windows.vulkan-composition-v0-validation/v1'
     runId=$runId
     status='PASS'
     capturedAt=[DateTimeOffset]::Now.ToString('o')
@@ -523,19 +593,20 @@ $manifest = [ordered]@{
         report=$anglePath
     }
     capability=$capability
-    wsiQualification=[ordered]@{
+    compositionQualification=[ordered]@{
         status='PASS'
-        profile=$wsi.profile
-        report=$wsiPath
-        accepted=$wsi.accepted
-        presented=$wsi.presented
-        outstandingAcquired=$wsi.outstandingAcquired
-        unconsumedSignals=$wsi.unconsumedSignals
-        maximumRetiredSwapchains=$wsi.maximumRetiredSwapchains
-        actualResultInjection=$injectedResults
-        stress='notRun-opt-in'
-        soak='notRun-opt-in'
+        mode=$vulkanProductReport.diagnostics.vulkan.presentMode
+        visibleOwner='retained child DirectComposition target'
+        compositionBuffers=$vulkanProductReport.diagnostics.vulkan.imageCount
+        activeSwapchains=$vulkanProductReport.diagnostics.vulkan.activeSwapchains
+        retirementMode=$vulkanProductReport.diagnostics.vulkan.retirementMode
+        synchronousCopyFenceWaits=$vulkanProductReport.diagnostics.vulkan.copyFenceWaits
+        retainedFrameAllocationBytes=$vulkanProductReport.diagnostics.vulkan.retainedFrameAllocationBytes
+        retainedFrameInitialized=$vulkanProductReport.diagnostics.vulkan.retainedFrameInitialized
+        externalMemory=$capability.externalMemory
+        actualDeviceLossInjection=$injectedResults
     }
+    legacyWsiQualification=$legacyWsi
     vulkanProduct=[ordered]@{
         status='PASS'
         report=$vulkanProductPath
@@ -578,14 +649,14 @@ $manifest = [ordered]@{
         appLocalLoaderPresent=$false
         icdBundled=$false
     }
-    gate='V2-PASS-qualification'
-    next='V3-allowed'
-    evidenceBoundary='ANGLE product/counters, maintenance-free Vulkan capability/acquire-as-commit, short real-WSI, actual result injection, exact resize, reset, lifecycle, start/close, and automated input/IME/UIA transport passed. Opt-in stress/soak, physical scan-out, physical IME/accessibility acceptance, and the full GPU/DPI/refresh matrix remain notVerified.'
+    gate='Vulkan-Composition-PASS-automated-partial'
+    next='physical-left-and-top-left-required'
+    evidenceBoundary='ANGLE baseline plus Vulkan exact-LUID external-memory capability, native retained-child DirectComposition topology, three Composition buffers, synchronous Vulkan copy completion, availability-based reuse, device-loss recovery, exact resize, reset, lifecycle, start/close, and automated input/IME/UIA transport passed. Legacy visible-HWND WSI is separate non-product evidence. Composition Present completion and WGC do not prove physical scan-out; physical left/top-left drag, physical IME/accessibility acceptance, and the full GPU/DPI/refresh matrix remain notVerified.'
 }
 $manifestPath = Join-Path $OutputDirectory 'manifest.json'
 $manifest | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $manifestPath -Encoding utf8
 Write-Host "status=PASS"
-Write-Host "gate=V2-PASS-qualification"
+Write-Host "gate=Vulkan-Composition-PASS-automated-partial"
 Write-Host "evidence=$OutputDirectory"
 }
 finally {

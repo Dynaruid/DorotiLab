@@ -16,7 +16,12 @@ namespace Doroti.Validation.WindowsVulkanCapability;
 internal static unsafe partial class Program
 {
     private const string ExtDebugUtilsExtensionName = "VK_EXT_debug_utils";
+    private const string KhrExternalMemoryExtensionName = "VK_KHR_external_memory";
+    private const string KhrExternalMemoryWin32ExtensionName = "VK_KHR_external_memory_win32";
+    private const string KhrGetMemoryRequirements2ExtensionName = "VK_KHR_get_memory_requirements2";
+    private const string KhrDedicatedAllocationExtensionName = "VK_KHR_dedicated_allocation";
     private const uint VulkanApiVersion11 = (1u << 22) | (1u << 12);
+    private const int CompositionBufferCount = 3;
     private const ulong FenceTimeoutNanoseconds = 5_000_000_000;
     private const uint WsOverlappedWindow = 0x00CF0000;
     private const uint WsChild = 0x40000000;
@@ -36,7 +41,7 @@ internal static unsafe partial class Program
         CapabilityReport report;
         try
         {
-            report = Run(options);
+            report = options.WsiStress ? RunLegacyWsi(options) : RunComposition(options);
         }
         catch (Exception exception)
         {
@@ -55,7 +60,173 @@ internal static unsafe partial class Program
         return report.Status == "PASS" ? 0 : 1;
     }
 
-    private static CapabilityReport Run(Options options)
+    private static CapabilityReport RunComposition(Options options)
+    {
+        if (options.SelfTest == "software-device")
+            throw new InvalidOperationException("Software Vulkan device rejected: 'synthetic CPU ICD'.");
+        var loaderPath = Path.GetFullPath(options.LoaderPath ?? Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.System), "vulkan-1.dll"));
+        if (!File.Exists(loaderPath))
+            throw new FileNotFoundException("The explicitly resolved Vulkan loader is missing.", loaderPath);
+        if (!loaderPath.Equals(Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.System), "vulkan-1.dll"),
+                StringComparison.OrdinalIgnoreCase) && !options.AllowNonSystemLoader)
+            throw new InvalidOperationException($"The Vulkan loader must be the System32 loader: '{loaderPath}'.");
+
+        var loader = InspectPortableExecutable(loaderPath);
+        if (!loader.Machine.Contains("Amd64", StringComparison.OrdinalIgnoreCase))
+            throw new BadImageFormatException($"The Vulkan loader is not x64: {loader.Machine}.");
+
+        using var vk = new Vk(new DefaultNativeContext(loaderPath));
+        uint loaderApiVersion = VulkanApiVersion11;
+        Check(vk.EnumerateInstanceVersion(&loaderApiVersion), "vkEnumerateInstanceVersion");
+        if (loaderApiVersion < VulkanApiVersion11)
+            throw new InvalidOperationException(
+                $"Vulkan loader API {FormatVersion(loaderApiVersion)} is below the required 1.1.");
+
+        var instanceExtensions = EnumerateInstanceExtensions(vk);
+        var requiredInstanceExtensions = Array.Empty<string>();
+        var layers = EnumerateInstanceLayers(vk);
+        var validationAvailable = layers.Contains("VK_LAYER_KHRONOS_validation", StringComparer.Ordinal);
+        var validationEnabled = validationAvailable && !options.DisableValidation;
+        if (validationEnabled && !instanceExtensions.Contains(ExtDebugUtilsExtensionName))
+            throw new InvalidOperationException("Validation was requested but VK_EXT_debug_utils is unavailable.");
+
+        Instance instance = default;
+        DebugUtilsMessengerEXT debugMessenger = default;
+        VkDevice device = default;
+        try
+        {
+            var enabledInstanceExtensions = new List<string>();
+            if (validationEnabled) enabledInstanceExtensions.Add(ExtDebugUtilsExtensionName);
+            instance = CreateInstance(vk, enabledInstanceExtensions, validationEnabled);
+            if (validationEnabled) debugMessenger = CreateDebugMessenger(vk, instance);
+
+            var candidates = EnumerateDevices(vk, instance, null, default, options);
+            var selected = SelectDevice(candidates, options.DeviceSelector);
+            if (selected.ApiVersion < VulkanApiVersion11)
+                throw new InvalidOperationException(
+                    $"Selected device API {FormatVersion(selected.ApiVersion)} is below the required 1.1.");
+            if (selected.DeviceType == PhysicalDeviceType.Cpu && !options.AllowSoftware)
+                throw new InvalidOperationException($"Software Vulkan device rejected: '{selected.Name}'.");
+            if (selected.Luid.Length != checked((int)Vk.LuidSize * 2))
+                throw new InvalidOperationException(
+                    $"Selected Vulkan device '{selected.Name}' does not expose a valid Windows adapter LUID.");
+
+            var requiredDeviceExtensions = new List<string>
+            {
+                KhrExternalMemoryExtensionName,
+                KhrExternalMemoryWin32ExtensionName,
+                KhrGetMemoryRequirements2ExtensionName,
+                KhrDedicatedAllocationExtensionName,
+            };
+            if (!string.IsNullOrWhiteSpace(options.RequiredDeviceExtension))
+                requiredDeviceExtensions.Add(options.RequiredDeviceExtension);
+            RequireAll(selected.Extensions, requiredDeviceExtensions, "device extension");
+
+            var externalMemory = QueryCompositionExternalMemory(vk, selected.Handle);
+            if (!externalMemory.Importable)
+                throw new InvalidOperationException(
+                    "BGRA8 optimal transfer-destination D3D11 texture memory is not importable.");
+            if (!externalMemory.DedicatedOnly)
+                throw new InvalidOperationException(
+                    "BGRA8 D3D11 texture import does not require the dedicated allocation used by the product contract.");
+            if (!externalMemory.CompatibleHandleType)
+                throw new InvalidOperationException(
+                    "BGRA8 external image properties do not include D3D11TextureBit as a compatible handle type.");
+
+            var priority = 1f;
+            var queueInfo = new DeviceQueueCreateInfo
+            {
+                SType = StructureType.DeviceQueueCreateInfo,
+                QueueFamilyIndex = selected.QueueFamily,
+                QueueCount = 1,
+                PQueuePriorities = &priority,
+            };
+            var extensionPointers = (byte**)SilkMarshal.StringArrayToPtr(requiredDeviceExtensions);
+            try
+            {
+                var deviceInfo = new DeviceCreateInfo
+                {
+                    SType = StructureType.DeviceCreateInfo,
+                    QueueCreateInfoCount = 1,
+                    PQueueCreateInfos = &queueInfo,
+                    EnabledExtensionCount = checked((uint)requiredDeviceExtensions.Count),
+                    PpEnabledExtensionNames = extensionPointers,
+                };
+                Check(vk.CreateDevice(selected.Handle, &deviceInfo, null, out device), "vkCreateDevice");
+            }
+            finally
+            {
+                FreeStringArray(extensionPointers, requiredDeviceExtensions.Count);
+            }
+
+            if (_validationWarnings != 0 || _validationErrors != 0)
+                throw new InvalidOperationException(
+                    $"Vulkan validation emitted warnings={_validationWarnings}, errors={_validationErrors}: " +
+                    string.Join(" | ", ValidationMessages.Take(8)));
+
+            return CapabilityReport.PassedComposition(
+                options, loaderPath, loader, loaderApiVersion, requiredInstanceExtensions,
+                requiredDeviceExtensions, validationAvailable, _validationWarnings, _validationErrors,
+                ValidationMessages.ToArray(), selected, externalMemory);
+        }
+        finally
+        {
+            if (device.Handle != 0)
+            {
+                _ = vk.DeviceWaitIdle(device);
+                vk.DestroyDevice(device, null);
+            }
+            if (debugMessenger.Handle != 0) DestroyDebugMessenger(vk, instance, debugMessenger);
+            if (instance.Handle != 0) vk.DestroyInstance(instance, null);
+        }
+    }
+
+    private static ExternalMemoryCapability QueryCompositionExternalMemory(
+        Vk vk, PhysicalDevice physicalDevice)
+    {
+        var handleType = ExternalMemoryHandleTypeFlags.D3D11TextureBit;
+        var externalInfo = new PhysicalDeviceExternalImageFormatInfo
+        {
+            SType = StructureType.PhysicalDeviceExternalImageFormatInfo,
+            HandleType = handleType,
+        };
+        var formatInfo = new PhysicalDeviceImageFormatInfo2
+        {
+            SType = StructureType.PhysicalDeviceImageFormatInfo2,
+            PNext = &externalInfo,
+            Format = Format.B8G8R8A8Unorm,
+            Type = ImageType.Type2D,
+            Tiling = ImageTiling.Optimal,
+            Usage = ImageUsageFlags.TransferDstBit,
+        };
+        var externalProperties = new ExternalImageFormatProperties
+        {
+            SType = StructureType.ExternalImageFormatProperties,
+        };
+        var properties = new ImageFormatProperties2
+        {
+            SType = StructureType.ImageFormatProperties2,
+            PNext = &externalProperties,
+        };
+        Check(vk.GetPhysicalDeviceImageFormatProperties2(physicalDevice, &formatInfo, &properties),
+            "vkGetPhysicalDeviceImageFormatProperties2(BGRA8/D3D11TextureBit)");
+
+        var memory = externalProperties.ExternalMemoryProperties;
+        return new ExternalMemoryCapability(
+            Format.B8G8R8A8Unorm.ToString(),
+            ImageTiling.Optimal.ToString(),
+            ImageUsageFlags.TransferDstBit.ToString(),
+            handleType.ToString(),
+            memory.ExternalMemoryFeatures.ToString(),
+            memory.CompatibleHandleTypes.ToString(),
+            (memory.ExternalMemoryFeatures & ExternalMemoryFeatureFlags.ImportableBit) != 0,
+            (memory.ExternalMemoryFeatures & ExternalMemoryFeatureFlags.DedicatedOnlyBit) != 0,
+            (memory.CompatibleHandleTypes & handleType) != 0);
+    }
+
+    private static CapabilityReport RunLegacyWsi(Options options)
     {
         if (options.SelfTest == "software-device")
             throw new InvalidOperationException("Software Vulkan device rejected: 'synthetic CPU ICD'.");
@@ -233,7 +404,7 @@ internal static unsafe partial class Program
                     $"Vulkan validation emitted warnings={_validationWarnings}, errors={_validationErrors}: " +
                     string.Join(" | ", ValidationMessages.Take(8)));
 
-            return CapabilityReport.Passed(
+            return CapabilityReport.PassedLegacyWsi(
                 options, loaderPath, loader, loaderApiVersion, requiredInstanceExtensions,
                 validationAvailable, _validationWarnings, _validationErrors,
                 ValidationMessages.ToArray(), selected, selectedFormat, presentModes, capabilities,
@@ -780,6 +951,17 @@ internal static unsafe partial class Program
         }
     }
 
+    private sealed record ExternalMemoryCapability(
+        string Format,
+        string Tiling,
+        string Usage,
+        string HandleType,
+        string Features,
+        string CompatibleHandleTypes,
+        bool Importable,
+        bool DedicatedOnly,
+        bool CompatibleHandleType);
+
     private sealed record WsiStressReport
     {
         public string Status { get; init; } = "FAIL";
@@ -845,7 +1027,7 @@ internal static unsafe partial class Program
     }
 
     private static IReadOnlyList<DeviceCandidate> EnumerateDevices(
-        Vk vk, Instance instance, KhrSurface surfaceApi, SurfaceKHR surface, Options options)
+        Vk vk, Instance instance, KhrSurface? surfaceApi, SurfaceKHR surface, Options options)
     {
         uint count = 0;
         Check(vk.EnumeratePhysicalDevices(instance, &count, null), "vkEnumeratePhysicalDevices(count)");
@@ -878,9 +1060,12 @@ internal static unsafe partial class Program
             for (uint family = 0; family < familyCount; family++)
             {
                 if ((families[family].QueueFlags & QueueFlags.GraphicsBit) == 0) continue;
-                Check(surfaceApi.GetPhysicalDeviceSurfaceSupport(handle, family, surface, out Bool32 present),
-                    "vkGetPhysicalDeviceSurfaceSupportKHR");
-                if (!present) continue;
+                if (surfaceApi is not null)
+                {
+                    Check(surfaceApi.GetPhysicalDeviceSurfaceSupport(handle, family, surface, out Bool32 present),
+                        "vkGetPhysicalDeviceSurfaceSupportKHR");
+                    if (!present) continue;
+                }
                 candidates.Add(new DeviceCandidate(
                     handle,
                     name,
@@ -913,7 +1098,7 @@ internal static unsafe partial class Program
     private static DeviceCandidate SelectDevice(IReadOnlyList<DeviceCandidate> candidates, string? selector)
     {
         if (candidates.Count == 0)
-            throw new InvalidOperationException("No hardware Vulkan graphics/present device is available.");
+            throw new InvalidOperationException("No hardware Vulkan graphics device is available.");
         if (string.IsNullOrWhiteSpace(selector))
         {
             if (candidates.Count > 1)
@@ -1083,7 +1268,7 @@ internal static unsafe partial class Program
 
     private sealed record CapabilityReport
     {
-        public string SchemaVersion { get; init; } = "doroti.windows.vulkan-capability/v2";
+        public string SchemaVersion { get; init; } = "doroti.windows.vulkan-capability/v3";
         public string Status { get; init; } = "FAIL";
         public string? Failure { get; init; }
         public object? Loader { get; init; }
@@ -1091,12 +1276,14 @@ internal static unsafe partial class Program
         public object? Packages { get; init; }
         public object? Instance { get; init; }
         public object? Device { get; init; }
+        public object? ExternalMemory { get; init; }
+        public object? Presentation { get; init; }
         public object? Surface { get; init; }
         public object? PresentationCommitPolicy { get; init; }
         public WsiStressReport? WsiStress { get; init; }
         public object? NegativeContracts { get; init; }
         public string EvidenceBoundary { get; init; } =
-            "Capability and swapchain creation only; product rendering, resize, scan-out, input, IME, and UIA are not verified.";
+            "Vulkan external-memory query and logical-device creation only; native D3D11 texture creation/import, product rendering, resize, scan-out, input, IME, and UIA are not verified.";
 
         internal static CapabilityReport Failed(Options options, Exception exception) => new()
         {
@@ -1105,7 +1292,74 @@ internal static unsafe partial class Program
             NegativeContracts = NegativeDocument(),
         };
 
-        internal static CapabilityReport Passed(
+        internal static CapabilityReport PassedComposition(
+            Options options,
+            string loaderPath,
+            (string Machine, long Length, string Sha256) loader,
+            uint loaderApiVersion,
+            IReadOnlyList<string> requiredInstanceExtensions,
+            IReadOnlyList<string> requiredDeviceExtensions,
+            bool validationAvailable,
+            int validationWarnings,
+            int validationErrors,
+            IReadOnlyList<string> validationMessages,
+            DeviceCandidate selected,
+            ExternalMemoryCapability externalMemory) => new()
+        {
+            Status = "PASS",
+            Loader = new { path = loaderPath, loader.Machine, loader.Length, loader.Sha256 },
+            LoaderApiVersion = FormatVersion(loaderApiVersion),
+            Packages = PackageDocument(),
+            Instance = new
+            {
+                requiredExtensions = requiredInstanceExtensions,
+                validationLayerAvailable = validationAvailable,
+                validationEnabled = validationAvailable && !options.DisableValidation,
+                validationWarnings,
+                validationErrors,
+                validationMessages,
+            },
+            Device = new
+            {
+                selected.Name,
+                type = selected.DeviceType.ToString(),
+                vendorId = $"0x{selected.VendorId:x4}",
+                deviceId = $"0x{selected.DeviceId:x4}",
+                selected.DriverVersion,
+                apiVersion = FormatVersion(selected.ApiVersion),
+                selected.QueueFamily,
+                selected.Luid,
+                luidValid = selected.Luid.Length == checked((int)Vk.LuidSize * 2),
+                requiredExtensions = requiredDeviceExtensions,
+                extensions = selected.Extensions.Order().ToArray(),
+            },
+            ExternalMemory = externalMemory,
+            Presentation = new
+            {
+                mode = "CompositionSwapchain",
+                visibleOwner = "retained child DirectComposition target",
+                bufferCount = CompositionBufferCount,
+                activeSwapchains = 0,
+                bufferReuseAuthority = "presentation-buffer-availability",
+            },
+            PresentationCommitPolicy = new
+            {
+                policy = "available-buffer-after-latest-check-synchronous-copy-present",
+                availableBufferAfterLatestCheck = true,
+                synchronousVulkanCopyFenceCompletion = true,
+                presentAfterCopyFenceCompletion = true,
+                availabilityEventReuseAuthority = true,
+                retirementMode = "presentation-buffer-availability",
+                outstandingImages = 0,
+                activeSwapchains = 0,
+            },
+            NegativeContracts = NegativeDocument(),
+            EvidenceBoundary =
+                "Vulkan external-memory capability, exact adapter LUID, and logical-device extension enablement only. " +
+                "Native D3D11 texture creation/import, three-buffer availability behavior, product rendering, physical scan-out, input, IME, and UIA are not verified.",
+        };
+
+        internal static CapabilityReport PassedLegacyWsi(
             Options options,
             string loaderPath,
             (string Machine, long Length, string Sha256) loader,

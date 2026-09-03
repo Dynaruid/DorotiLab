@@ -103,6 +103,7 @@ struct FrameRecord {
     std::optional<double> titleScaleRatio;
     int detectedUncoveredLeftGap{-1};
     int detectedUncoveredRightGap{-1};
+    std::optional<int> validationBackgroundRightGap;
     std::optional<int> gridRightTail;
     std::optional<int> gridBottomTail;
     std::optional<double> gridSpacingX;
@@ -593,6 +594,55 @@ bool IsLavender(std::uint8_t const* pixel) {
 
 std::uint8_t const* Pixel(std::vector<std::uint8_t> const& pixels, int width, int x, int y) {
     return pixels.data() + (static_cast<std::size_t>(y) * width + x) * 4;
+}
+
+std::optional<int> ValidationBackgroundRightGap(
+    std::vector<std::uint8_t> const& pixels, int width, int height,
+    double scale) {
+    // The HwndExactCpp product probe paints #10243a over its logical viewport.
+    // Locate that fill and the native title-bar edge in the same raw WGC frame;
+    // callback-time HWND geometry can already describe a later resize step.
+    int backgroundTop = height;
+    int backgroundRight = -1;
+    std::size_t backgroundPixels = 0;
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            auto const pixel = Pixel(pixels, width, x, y);
+            if (pixel[0] != 0x3a || pixel[1] != 0x24 || pixel[2] != 0x10)
+                continue;
+            backgroundTop = std::min(backgroundTop, y);
+            backgroundRight = std::max(backgroundRight, x);
+            ++backgroundPixels;
+        }
+    }
+    if (backgroundRight < 0 || backgroundTop >= height ||
+        backgroundPixels < 1024)
+        return std::nullopt;
+
+    auto const titleOffset =
+        std::max(4, static_cast<int>(std::lround(10 * scale)));
+    auto const titleY = backgroundTop - titleOffset;
+    if (titleY < 0) return std::nullopt;
+    auto const seed = Pixel(pixels, width, backgroundRight, titleY);
+    if (!IsNativeTitleBarFill(seed)) return std::nullopt;
+
+    auto similarToSeed = [seed](std::uint8_t const* pixel) {
+        return std::abs(static_cast<int>(pixel[0]) - seed[0]) <= 6 &&
+            std::abs(static_cast<int>(pixel[1]) - seed[1]) <= 6 &&
+            std::abs(static_cast<int>(pixel[2]) - seed[2]) <= 6;
+    };
+    int titleRight = backgroundRight;
+    int misses = 0;
+    auto const searchRight = std::min(width - 1, backgroundRight + 1024);
+    for (int x = backgroundRight; x <= searchRight; ++x) {
+        if (similarToSeed(Pixel(pixels, width, x, titleY))) {
+            titleRight = x;
+            misses = 0;
+        } else if (++misses > 24) {
+            break;
+        }
+    }
+    return std::max(0, titleRight - backgroundRight);
 }
 
 std::optional<int> DecodeFrameIdAtScale(
@@ -1100,6 +1150,7 @@ private:
             std::optional<std::pair<int, int>> appBar;
             std::optional<double> circle;
             std::optional<double> titleScale;
+            std::optional<int> validationBackgroundRightGap;
             int leftGap = -1, rightGap = -1;
                 doroti::resize_oracle::GridMetrics grid;
                 if (slot.analyzeFrame) {
@@ -1111,6 +1162,8 @@ private:
                              static_cast<int>(client.right), static_cast<int>(client.bottom)},
                             scale);
                     }
+                    validationBackgroundRightGap = ValidationBackgroundRightGap(
+                        pixels, slot.width, slot.height, scale);
             }
                 if (slot.analyzeShapeFrame) {
                     circle = CircleAspect(pixels, slot.width, client, scale);
@@ -1189,6 +1242,7 @@ private:
             record.titleScaleRatio = titleScale;
             record.detectedUncoveredLeftGap = leftGap;
             record.detectedUncoveredRightGap = rightGap;
+            record.validationBackgroundRightGap = validationBackgroundRightGap;
             record.gridRightTail = grid.rightTail;
             record.gridBottomTail = grid.bottomTail;
             record.gridSpacingX = grid.spacingX;
@@ -1208,14 +1262,16 @@ private:
                 baselineAppBarHeight_ = record.appBarLogicalHeight;
             }
                 bool const oracleFailure = slot.analyzeFrame && (record.blank || !record.appBarLogicalHeight ||
-                (baselineAppBarHeight_ && record.appBarLogicalHeight &&
-                    std::abs(*record.appBarLogicalHeight - *baselineAppBarHeight_) > 1.1) ||
-                (record.circleAspect && std::abs(*record.circleAspect - 1.0) > std::max(1.0, std::ceil(scale)) / 18.0) ||
-                (record.titleScaleRatio && std::abs(*record.titleScaleRatio - 1.0) > 0.04) ||
-                (options_.f6r && (!record.gridParsed ||
-                    (record.gridNonUniformScaleRatio &&
-                        std::abs(*record.gridNonUniformScaleRatio - 1.0) > 0.02))) ||
-                leftGap > static_cast<int>(std::ceil(scale)) || rightGap > static_cast<int>(std::ceil(scale)));
+                    (baselineAppBarHeight_ && record.appBarLogicalHeight &&
+                        std::abs(*record.appBarLogicalHeight - *baselineAppBarHeight_) > 1.1) ||
+                    (record.circleAspect && std::abs(*record.circleAspect - 1.0) > std::max(1.0, std::ceil(scale)) / 18.0) ||
+                    (record.titleScaleRatio && std::abs(*record.titleScaleRatio - 1.0) > 0.04) ||
+                    (options_.f6r && (!record.gridParsed ||
+                        (record.gridNonUniformScaleRatio &&
+                            std::abs(*record.gridNonUniformScaleRatio - 1.0) > 0.02))) ||
+                leftGap > static_cast<int>(std::ceil(scale)) || rightGap > static_cast<int>(std::ceil(scale)) ||
+                (record.validationBackgroundRightGap &&
+                    *record.validationBackgroundRightGap > static_cast<int>(std::ceil(scale * 2))));
                 if (slot.encodeStrideFrame || (oracleFailure && options_.anomalyPngs)) {
                 std::ostringstream filename;
                     filename << "frame-" << std::setw(6) << std::setfill('0') << slot.captureIndex << ".png";
@@ -2043,6 +2099,9 @@ void WriteEvidence(
     };
     int blank = 0, appBarFailure = 0, circleFailure = 0, circleObserved = 0;
     int titleFailure = 0, titleObserved = 0, edgeGapFrames = 0;
+    int validationBackgroundObservedFrames = 0;
+    int validationBackgroundRightGapFrames = 0;
+    int maximumValidationBackgroundRightGap = 0;
     int maximumLeftGap = 0, maximumRightGap = 0;
     int currentGapFrames = 0, maximumConsecutiveGapFrames = 0;
     long long currentGapStart = 0, maximumGapDurationTicks = 0;
@@ -2075,6 +2134,15 @@ void WriteEvidence(
         if (frame.titleScaleRatio) {
             ++titleObserved;
             if (std::abs(*frame.titleScaleRatio - 1.0) > 0.04) ++titleFailure;
+        }
+        if (frame.validationBackgroundRightGap) {
+            ++validationBackgroundObservedFrames;
+            maximumValidationBackgroundRightGap = std::max(
+                maximumValidationBackgroundRightGap,
+                *frame.validationBackgroundRightGap);
+            if (*frame.validationBackgroundRightGap >
+                static_cast<int>(std::ceil(scale * 2)))
+                ++validationBackgroundRightGapFrames;
         }
         int const leftGapDelta = baselineLeftGap
             ? std::max(0, frame.detectedUncoveredLeftGap - *baselineLeftGap)
@@ -2218,6 +2286,9 @@ void WriteEvidence(
         << ",\"circleAspectFailures\":" << circleFailure
         << ",\"titleObservedFrames\":" << titleObserved
         << ",\"titleNonUniformScaleFailures\":" << titleFailure
+        << ",\"validationBackgroundObservedFrames\":" << validationBackgroundObservedFrames
+        << ",\"validationBackgroundRightGapFrames\":" << validationBackgroundRightGapFrames
+        << ",\"maximumValidationBackgroundRightGapPixels\":" << maximumValidationBackgroundRightGap
         << ",\"uncoveredEdgeGapFrames\":" << edgeGapFrames
         << ",\"maximumDetectedUncoveredLeftGapPixels\":" << maximumLeftGap
         << ",\"maximumDetectedUncoveredRightGapPixels\":" << maximumRightGap
@@ -2312,7 +2383,9 @@ void WriteEvidence(
         output << ",\"titleScaleRatio\":"; WriteOptional(output, frame.titleScaleRatio);
         output << ",\"detectedUncoveredLeftGap\":" << frame.detectedUncoveredLeftGap
             << ",\"detectedUncoveredRightGap\":" << frame.detectedUncoveredRightGap
-            << ",\"gridRightTail\":"; WriteOptional(output, frame.gridRightTail);
+            << ",\"validationBackgroundRightGap\":";
+        WriteOptional(output, frame.validationBackgroundRightGap);
+        output << ",\"gridRightTail\":"; WriteOptional(output, frame.gridRightTail);
         output << ",\"gridBottomTail\":"; WriteOptional(output, frame.gridBottomTail);
         output << ",\"gridSpacingX\":"; WriteOptional(output, frame.gridSpacingX);
         output << ",\"gridSpacingY\":"; WriteOptional(output, frame.gridSpacingY);

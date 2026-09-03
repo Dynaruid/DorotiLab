@@ -12,6 +12,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
+$timeoutMilliseconds = 20 * 60 * 1000
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $runId = 'windows-vulkan-live-{0}-{1}' -f (Get-Date -Format 'yyyyMMdd-HHmmss'),
     ([Guid]::NewGuid().ToString('N').Substring(0, 10))
@@ -62,7 +63,9 @@ $sourceFingerprintPaths = @(
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs',
     'Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_host_v1.h',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_vulkan_composition_v1.h',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/exports.cpp',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/vulkan_composition.cpp',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/Doroti.Host.WindowsAppSdk.Native.vcxproj',
     'Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj',
     'Doroti/validation/hwnd-exact-cpp-product/Program.cs',
@@ -180,9 +183,9 @@ function Invoke-BoundedProcess {
     Assert-True $process.Start() "$Name failed to start."
     $stdoutTask = $process.StandardOutput.ReadToEndAsync()
     $stderrTask = $process.StandardError.ReadToEndAsync()
-    if (-not $process.WaitForExit(60000)) {
+    if (-not $process.WaitForExit($timeoutMilliseconds)) {
         $process.Kill($true)
-        throw "$Name exceeded 60 seconds."
+        throw "$Name exceeded the 20-minute timeout."
     }
     $result = [ordered]@{
         exitCode = $process.ExitCode
@@ -393,6 +396,8 @@ function Invoke-CapturedCase {
             [int]$capture.poolCapacityExceededFrames -eq 0 -and
             @($frames | Where-Object blank).Count -eq 0
         $markerPass = $decodedIds.Count -gt 0 -and $markerRegressions -eq 0
+        $pixelCoveragePass = [int]$capture.visualOracle.validationBackgroundObservedFrames -gt 0 -and
+            [int]$capture.visualOracle.validationBackgroundRightGapFrames -eq 0
         $diagnostics = $app.diagnostics
         $combinedOutput = "$stdout`n$stderr"
         $validationMessageCount = [regex]::Matches(
@@ -409,34 +414,62 @@ function Invoke-CapturedCase {
             [int]$diagnostics.unterminatedResizeGenerations -eq 0 -and
             [int]$diagnostics.duplicateResizeTerminals -eq 0 -and
             ($Presenter -ne 'Vulkan' -or (
+                $diagnostics.presenterBackend -eq 'Vulkan/Composition-Swapchain' -and
+                $details.ownership.visibleOwner -eq 'retained child DirectComposition target' -and
                 [int]$diagnostics.vulkan.deviceLostResults -eq 0 -and
                 [int]$diagnostics.vulkan.surfaceLostResults -eq 0 -and
+                [int]$diagnostics.vulkan.outOfDateResults -eq 0 -and
+                [int]$diagnostics.vulkan.suboptimalResults -eq 0 -and
                 [int]$diagnostics.vulkan.outstandingAcquired -eq 0 -and
-                [int]$diagnostics.vulkan.outstandingCopySubmission -le 1 -and
+                [int]$diagnostics.vulkan.outstandingCopySubmission -eq 0 -and
                 [int]$diagnostics.vulkan.maximumOutstandingAcquired -le 1 -and
-                [long]$diagnostics.vulkan.deferredCopySubmissions -eq [long]$diagnostics.gpuCopies -and
+                [long]$diagnostics.vulkan.acquired -eq [long]$diagnostics.vulkan.presented -and
+                [long]$diagnostics.vulkan.presented -eq [long]$diagnostics.vulkan.successfulPresents -and
+                [long]$diagnostics.vulkan.successfulPresents -eq [long]$diagnostics.presents -and
+                [long]$diagnostics.vulkan.presented -le [long]$diagnostics.gpuCopies -and
+                [long]$diagnostics.vulkan.deferredCopySubmissions -eq 0 -and
+                [long]$diagnostics.vulkan.copyFenceWaits -eq [long]$diagnostics.gpuCopies -and
+                [long]$diagnostics.vulkan.retainedFrameAllocationBytes -gt 0 -and
+                [bool]$diagnostics.vulkan.retainedFrameInitialized -and
+                $diagnostics.vulkan.presentMode -eq 'CompositionSwapchain' -and
+                [int]$diagnostics.vulkan.imageCount -eq 3 -and
                 [int]$diagnostics.vulkan.surfaceWidth -ge [int]$diagnostics.vulkan.width -and
                 [int]$diagnostics.vulkan.surfaceHeight -ge [int]$diagnostics.vulkan.height -and
-                [long]$diagnostics.vulkan.surfaceRecreates -ge 1 -and
-                [int]$diagnostics.vulkan.activeSwapchains -le 1 -and
-                [int]$diagnostics.vulkan.retiredSwapchains -le 2))
-        $status = if ($transportPass -and $markerPass -and $finalExact -and $resourcePass) { 'PASS' } else { 'FAIL' }
+                [long]$diagnostics.vulkan.surfaceRecreates -eq 0 -and
+                [int]$diagnostics.vulkan.activeSwapchains -eq 0 -and
+                [int]$diagnostics.vulkan.retiredSwapchains -eq 0 -and
+                [int]$diagnostics.vulkan.maximumRetiredSwapchains -eq 0 -and
+                [long]$diagnostics.vulkan.queueIdleRetirementWaits -eq 0 -and
+                [long]$diagnostics.vulkan.compositionFrameWaits -gt 0 -and
+                [long]$diagnostics.vulkan.compositionFrameWaits -eq
+                    [long]$diagnostics.vulkan.compositionFrameObserved -and
+                [long]$diagnostics.vulkan.compositionFrameWaitTimeouts -eq 0 -and
+                $diagnostics.vulkan.retirementMode -eq 'presentation-buffer-availability'))
+        $status = if ($transportPass -and $markerPass -and $pixelCoveragePass -and
+            $finalExact -and $resourcePass) { 'PASS' } else { 'FAIL' }
         return [ordered]@{
             name=$Slug; status=$status; presenter=$Presenter
             definition=[ordered]@{ edge=$Edge; motion=$Motion; dragMilliseconds=$DragMilliseconds; dragPixels=$DragPixels }
-            transport=$transportPass; marker=$markerPass; finalExact=$finalExact; resource=$resourcePass
+            transport=$transportPass; marker=$markerPass; pixelCoverage=$pixelCoveragePass
+            finalExact=$finalExact; resource=$resourcePass
             validationMessagesClean=$validationMessagesClean; validationMessageCount=$validationMessageCount
             validationLayerRequested=$validationLayerRequested
             validationLayerActivationProven=if ($validationLayerRequested) { $validationLayerActivationProven } else { $null }
             capturedFrames=[int]$capture.capturedFrames; inputSamples=[int]$capture.inputSamples
             displayRefreshHz=[double]$capture.displayRefreshHz
             decodedFrames=$decodedIds.Count; markerRegressions=$markerRegressions
+            validationBackgroundObservedFrames=[int]$capture.visualOracle.validationBackgroundObservedFrames
+            validationBackgroundRightGapFrames=[int]$capture.visualOracle.validationBackgroundRightGapFrames
+            maximumValidationBackgroundRightGapPixels=[int]$capture.visualOracle.maximumValidationBackgroundRightGapPixels
             frameIdFirst=if ($decodedIds.Count) { $decodedIds[0] } else { $null }
             frameIdLast=if ($decodedIds.Count) { $decodedIds[-1] } else { $null }
             captureIntervalP95Microseconds=$capture.captureIntervalMicroseconds.p95
             cadence=Get-ResizeCadence $capture $details
             vulkan=if ($Presenter -eq 'Vulkan') { [ordered]@{
-                acquired=$diagnostics.vulkan.acquired; presented=$diagnostics.vulkan.presented
+                visibleOwner=$details.ownership.visibleOwner
+                presentationMode=$diagnostics.vulkan.presentMode
+                selectedAvailableBuffers=$diagnostics.vulkan.acquired; presented=$diagnostics.vulkan.presented
+                copiedButSupersededBeforePresent=([long]$diagnostics.gpuCopies - [long]$diagnostics.vulkan.presented)
                 outstanding=$diagnostics.vulkan.outstandingAcquired
                 outstandingCopySubmission=$diagnostics.vulkan.outstandingCopySubmission
                 maximumOutstanding=$diagnostics.vulkan.maximumOutstandingAcquired
@@ -444,17 +477,24 @@ function Invoke-CapturedCase {
                 copyFenceWaits=$diagnostics.vulkan.copyFenceWaits
                 maximumCopyFenceWaitMicroseconds=$diagnostics.vulkan.maximumCopyFenceWaitMicroseconds
                 backingAllocationBytes=$diagnostics.vulkan.backingAllocationBytes
+                retainedFrameAllocationBytes=$diagnostics.vulkan.retainedFrameAllocationBytes
+                retainedFrameInitialized=$diagnostics.vulkan.retainedFrameInitialized
                 backingAllocations=$diagnostics.vulkan.backingAllocations
                 backingReuses=$diagnostics.vulkan.backingReuses
                 viewportWidth=$diagnostics.vulkan.width; viewportHeight=$diagnostics.vulkan.height
-                surfaceWidth=$diagnostics.vulkan.surfaceWidth; surfaceHeight=$diagnostics.vulkan.surfaceHeight
-                retainedSurfaceReuses=$diagnostics.vulkan.retainedSurfaceReuses
-                surfaceRecreates=$diagnostics.vulkan.surfaceRecreates
+                compositionBufferWidth=$diagnostics.vulkan.surfaceWidth
+                compositionBufferHeight=$diagnostics.vulkan.surfaceHeight
+                compositionBufferCount=$diagnostics.vulkan.imageCount
+                compositionBufferReuses=$diagnostics.vulkan.retainedSurfaceReuses
+                legacySurfaceRecreates=$diagnostics.vulkan.surfaceRecreates
                 deviceLost=$diagnostics.vulkan.deviceLostResults; surfaceLost=$diagnostics.vulkan.surfaceLostResults
                 outOfDate=$diagnostics.vulkan.outOfDateResults; suboptimal=$diagnostics.vulkan.suboptimalResults
                 activeSwapchains=$diagnostics.vulkan.activeSwapchains; retiredSwapchains=$diagnostics.vulkan.retiredSwapchains
                 retirementMode=$diagnostics.vulkan.retirementMode
                 queueIdleRetirementWaits=$diagnostics.vulkan.queueIdleRetirementWaits
+                compositionFrameWaits=$diagnostics.vulkan.compositionFrameWaits
+                compositionFrameObserved=$diagnostics.vulkan.compositionFrameObserved
+                compositionFrameWaitTimeouts=$diagnostics.vulkan.compositionFrameWaitTimeouts
                 maximumRecreateLatencyMicroseconds=$diagnostics.vulkan.maximumRecreateLatencyMicroseconds
                 maximumSwapchainCreateLatencyMicroseconds=$diagnostics.vulkan.maximumSwapchainCreateLatencyMicroseconds
             } } else { $null }
@@ -702,7 +742,7 @@ $externalValidationPass = -not $ExternalValidation -or
 $sequence = @($cases)
 if ($runAngleBaselines) { $sequence = @($angleBefore) + @($cases) + @($angleAfter) }
 $manifest = [ordered]@{
-    schemaVersion='doroti.windows.vulkan-live-resize/v1'
+    schemaVersion='doroti.windows.vulkan-composition-live-resize/v1'
     runId=$runId
     generatedAt=[DateTime]::UtcNow.ToString('O')
     status=if ($casePass -and $anglePass -and $sourceStable -and $repositoryStable -and $binariesStable) { 'PASS-automated-partial' } else { 'FAIL' }
@@ -748,6 +788,17 @@ $manifest = [ordered]@{
     gates=[ordered]@{
         angleBeforeAfter=if (-not $runAngleBaselines) { 'notRun' } elseif ($anglePass) { 'PASS' } else { 'FAIL' }
         vulkanCurrentMonitor=if ($casePass) { 'PASS' } else { 'FAIL' }
+        compositionSingleVisibleOwnerAndThreeBuffers=if (@($cases | Where-Object {
+            $_.vulkan.visibleOwner -ne 'retained child DirectComposition target' -or
+            $_.vulkan.presentationMode -ne 'CompositionSwapchain' -or
+            [int]$_.vulkan.compositionBufferCount -ne 3 -or
+            [int]$_.vulkan.activeSwapchains -ne 0
+        }).Count -eq 0) { 'PASS' } else { 'FAIL' }
+        synchronousVulkanCopyAndAvailabilityRetirement=if (@($cases | Where-Object {
+            [int]$_.vulkan.outstandingCopySubmission -ne 0 -or
+            [long]$_.vulkan.deferredCopySubmissions -ne 0 -or
+            $_.vulkan.retirementMode -ne 'presentation-buffer-availability'
+        }).Count -eq 0) { 'PASS' } else { 'FAIL' }
         resizePresentationCadence=if (-not $runAngleBaselines) { 'notRun' } elseif ($cadencePass) { 'PASS' } else { 'FAIL' }
         focusedLeftAndTopLeftReverse600msOnce=if ($runAngleBaselines -or $Probe) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
         focusedTopLeftReverse600msOnce=if (-not $Probe) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
@@ -771,7 +822,7 @@ $manifest = [ordered]@{
         binariesStableDuringRun=if ($binariesStable) { 'PASS' } else { 'FAIL' }
     }
     cases=$cases
-    evidenceBoundary='Focused validation runs only left/top-left Vulkan cases and proves native non-client input, WGC transport, monotonic visible generation markers, final exact geometry, terminal accounting, bounded Vulkan resources, and no Vulkan device/surface loss. ANGLE cadence/latency comparison and the repeated eight-edge matrix run only when -FullEightEdgeMatrix or -FullCurrentDpiMatrix is explicitly selected. External validation is qualified only when the loader positively reports VK_LAYER_KHRONOS_validation activation and zero validation warning/error messages. Source diff and key source files are SHA-256 fingerprinted; product executable/IL, managed/native host, and observer binaries are hashed before and after execution, while source-to-binary correspondence is PASS only when the validator performed the build. WGC does not prove physical scan-out, transient DWM shell pixels, or human-perceived drag smoothness; those remain notVerified and require one direct physical check.'
+    evidenceBoundary='Focused validation runs only left/top-left Vulkan cases and proves native retained-child DirectComposition routing, three Composition buffers, synchronous Vulkan copy completion, availability-based buffer reuse, native non-client input, WGC transport, monotonic visible generation markers, raw validation-background coverage, final exact geometry, terminal accounting, zero active WSI swapchains, and no Vulkan device loss or legacy WSI results. ANGLE cadence/latency comparison and the repeated eight-edge matrix run only when -FullEightEdgeMatrix or -FullCurrentDpiMatrix is explicitly selected. External validation is qualified only when the loader positively reports VK_LAYER_KHRONOS_validation activation and zero validation warning/error messages. Source diff and key source files are SHA-256 fingerprinted; product executable/IL, managed/native host, and observer binaries are hashed before and after execution, while source-to-binary correspondence is PASS only when the validator performed the build. Composition Present receipts and WGC do not prove physical scan-out, transient DWM shell pixels, or human-perceived drag smoothness; those remain notVerified and require direct physical left/top-left checks.'
 }
 $manifestPath = Join-Path $OutputDirectory 'manifest.json'
 $manifest | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $manifestPath -Encoding utf8

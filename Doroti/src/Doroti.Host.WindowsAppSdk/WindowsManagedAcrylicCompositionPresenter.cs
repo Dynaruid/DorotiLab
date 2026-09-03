@@ -137,6 +137,7 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
 
     internal override string BackendName => "ANGLE-D3D11/Composition-Swapchain";
     internal override string RuntimeEffectsBackend => DorotiSkiaRuntimeEffects.WindowsAngleEglBackend;
+    internal override bool UsesCompositionTopology => true;
     internal override string DiagnosticCoverage =>
         "experimental Acrylic, same-device ANGLE D3D11 texture import, premultiplied Composition Swapchain, " +
         "three-slot IPresentationBuffer availability, no CPU copy, nonblocking interactive resize, raster-thread exact DwmFlush, " +
@@ -158,7 +159,7 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
     internal override ulong OperationalDebugWarningCount { get; set; }
     internal override string AdapterDescription { get; set; } = "uninitialized";
 
-    internal void AttachWindow(nint topLevelWindow)
+    internal override void AttachWindow(nint topLevelWindow)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (topLevelWindow == 0) throw new ArgumentOutOfRangeException(nameof(topLevelWindow));
@@ -239,8 +240,11 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
         _composition.Invoke(() => _scene.Apply(_options, _systemBrightness));
     }
 
-    internal void ResizeViewport(int width, int height, double scale)
+    internal override void ResizeViewport(
+        int width, int height, double scale, uint sizingEdge, bool preGeometry)
     {
+        _ = sizingEdge;
+        _ = preGeometry;
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
@@ -490,6 +494,8 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
         ObjectDisposedException.ThrowIf(_disposed, this);
         _resetPending = true;
     }
+
+    internal override void ReleaseCompositionResources() => Dispose();
 
     public override void Dispose()
     {

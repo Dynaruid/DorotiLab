@@ -48,9 +48,11 @@
   <ItemGroup>
     <ClInclude Include="include\doroti_windows_host_v1.h" />
     <ClInclude Include="include\doroti_windows_acrylic_composition_v1.h" />
+    <ClInclude Include="include\doroti_windows_vulkan_composition_v1.h" />
     <ClInclude Include="src\accessibility_bridge.h" />
     <ClCompile Include="src\exports.cpp" />
     <ClCompile Include="src\acrylic_composition.cpp" />
+    <ClCompile Include="src\vulkan_composition.cpp" />
     <ClCompile Include="src\accessibility_bridge.cpp" />
   </ItemGroup>
   <Target Name="GenerateWindowsAppSdkCppWinRT" BeforeTargets="ClCompile"

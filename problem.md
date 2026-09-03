@@ -2,160 +2,161 @@
 
 ## 현재 판정
 
-- 상태: **FAIL-observed — 이전보다 미세하게 개선됐지만 해결되지 않음**
-- 대상: `HwndExactCpp` runner의 실험적 `DOROTI_WINDOWS_PRESENTER=Vulkan` 경로
-- 주요 장치: AMD Radeon 780M
-- 가장 민감한 동작: 창의 왼쪽 및 왼쪽 위 border를 잡고 확대·축소
-- 자동 상태: focused `TopLeft` probe는 `PASS-automated-partial`
-- 물리 상태: 사용자의 실제 border drag에서 흰색/검정 영역과 내부 raster 떨림이 계속 관찰됨
+- 사용자 시각 판정: **PASS-observed (2026-09-03)**
+- 구현 판정: **accepted** — 현재 shared runtime 수정을 이 문제의 해법으로 채택
+- 엄격 자동 판정: **PARTIAL** — 정식 반복 세트는 matrix 12회 중 11회, case 24개 중 22개 통과; 이후 최종 source-built matrix는 별도 PASS
+- 대상: `HwndExactCpp` runner의 opt-in `DOROTI_WINDOWS_PRESENTER=Vulkan`
+- 관찰 환경: AMD Radeon 780M 선택, 96 DPI, 165 Hz
 
-자동 검증 통과는 프레임 요청과 Vulkan present가 정상적으로 끝났다는 뜻일 뿐, DWM이 실제 화면에 어떤 중간 상태를 표시했는지는 증명하지 않는다. 이 문제에서는 사람에게 보이는 결과를 최종 판정으로 사용한다.
+사용자가 화면에 표시된 반복 Left/TopLeft headed test를 직접 보고, 검은 띠나
+resize 거동이 더 이상 사용을 막을 정도가 아니라고 확인했다. 따라서 이 문제의
+사람 체감 acceptance는 `PASS-observed`로 닫는다.
 
-## 재현 방법
+다만 이것을 자동 검출까지 100% 통과했다는 뜻으로 확대하지 않는다. 12번째까지의
+반복 중 7회차에서 Left와 TopLeft 각각 한 프레임의 validation-background gap이
+검출됐다. 아래에 그 결과를 `PARTIAL`로 그대로 남긴다.
 
-```powershell
-$env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
-$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD'
-Remove-Item Env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC -ErrorAction SilentlyContinue
+## 근본 원인
 
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
-  -App ./DorotiDemoApp `
-  -Platform windows `
-  -Configuration Release
-```
+초기 Vulkan 경로는 화면 표시가 다음 두 수명주기로 갈라져 있었다.
 
-실행된 창에서 다음을 확인한다.
+1. USER32/DWM이 top-level HWND의 origin, extent와 client clip을 갱신했다.
+2. 별도의 visible child HWND와 Vulkan WSI swapchain이 app raster를 표시했다.
 
-1. 왼쪽 border를 빠르게 확대·축소한다.
-2. 왼쪽 위 corner를 대각선으로 확대·축소한다.
-3. 내부 내용이 새 창 크기에 늦게 맞춰지는지 관찰한다.
-4. 새로 생긴 영역이나 가장자리에 흰색 또는 검정 영역이 순간적으로 나타나는지 관찰한다.
+Retained oversized child로 매 resize step의 `vkCreateSwapchainKHR` 비용은
+없앴지만, top-level geometry와 child WSI buffer를 하나의 표시 transaction으로
+만들 수는 없었다. 특히 Left/TopLeft drag는 origin과 extent가 함께 변하므로
+geometry가 먼저 보이는 순간 검정/흰 영역과 이전 raster의 늦은 이동이 두드러졌다.
 
-## 관찰되는 증상
+`WM_SIZE`에서 exact frame을 기다리는 방식과 `DwmFlush`만으로는 이미 변경된
+USER32 geometry와 별도 WSI present를 원자적으로 묶을 수 없었다.
 
-### 1. 흰색 또는 검정 영역
+## 채택한 구조
 
-창의 visible client 영역이 변하는 도중, 아직 같은 geometry에 대응하는 앱 프레임이 DWM에 표시되지 않은 구간이 순간적으로 보인다. 이 색만으로 parent, child surface, DWM 중 어느 계층이 노출됐는지를 확정할 수는 없다. 다만 앱의 정상 scene이 아닌 중간 presentation 상태가 보인다는 것은 분명하다.
-
-Parent를 앱의 light/dark 배경색으로 칠하는 fallback은 사용하지 않는다. 그것은 ownership 간격을 제거하지 않고 결함을 가리기 때문이다.
-
-### 2. 내부 raster가 뒤늦게 창 크기에 맞춰짐
-
-창 외곽은 이미 새 위치와 크기로 보이는데, 내부에는 직전 logical viewport로 그린 프레임이 잠시 남는다. 이후 exact-size 프레임이 도착하면 내용이 새 크기로 다시 배치되며, 사용자는 raster가 창을 한 단계 늦게 따라오는 것으로 느낀다.
-
-### 3. 왼쪽·위쪽 조절에서 더 큰 떨림
-
-오른쪽·아래쪽 resize는 일반적으로 창 origin을 유지한 채 extent만 바뀐다. 왼쪽·위쪽 resize는 화면상의 origin과 extent가 동시에 바뀐다. 그 결과 이전 프레임의 화면 위치 이동과 새 layout 교체가 겹쳐 보이고, 같은 presentation 지연도 더 큰 내부 흔들림으로 인식된다.
-
-## 현재 구조
-
-현재 visible 경로에는 두 개의 독립적인 소유자가 있다.
-
-1. USER32/DWM은 top-level HWND의 화면 위치, 크기와 client clip을 갱신한다.
-2. Doroti raster worker와 Vulkan WSI는 child HWND surface에 새 logical viewport 프레임을 그리고 present한다.
-
-Retained Vulkan 경로는 child HWND와 swapchain을 monitor work-area 수준의 grow-only capacity로 유지한다. Top-level client가 그 oversized child를 `WS_CLIPCHILDREN`으로 자르므로 일반적인 resize에서는 child 또는 swapchain을 매번 재생성하지 않는다.
-
-현재 resize 순서는 개념적으로 다음과 같다.
+현재 opt-in Vulkan 제품 경로는 visible Vulkan WSI를 사용하지 않는다.
 
 ```text
-pointer drag
-  → USER32가 top-level origin/extent 변경
-  → 실제 WM_SIZE 전달
-  → Doroti가 새 logical metrics와 generation 발행
-  → raster worker가 layout/draw/copy/present
-  → HWND thread가 exact present terminal까지 최대 100 ms 대기
-  → 성공 시 DwmFlush 후 WM_SIZE 반환
+Skia/Vulkan retained offscreen backing
+  → Vulkan copy
+  → same-LUID D3D11 BGRA shared texture 3개
+  → Windows Presentation API
+  → retained child HWND의 native DirectComposition target
+  → top-level client clip
 ```
 
-Vulkan 호출과 scene rendering은 HWND thread가 아니라 raster worker에서 수행된다. HWND thread는 렌더링을 직접 하지 않고 exact generation의 terminal을 기다린다.
+핵심 계약은 다음과 같다.
 
-## 핵심 원인
+- top-level HWND는 USER32의 window geometry와 input authority로 남는다.
+- visible content는 monitor work-area 이상으로 유지되는 child HWND의
+  DirectComposition target 하나가 소유하고, parent가 `WS_CLIPCHILDREN`으로
+  현재 client 영역만 표시한다.
+- parent에는 `WS_EX_NOREDIRECTIONBITMAP`을 적용해 parent redirection bitmap과
+  child DComp tree가 서로 다른 frame에 합성되는 경로를 만들지 않는다.
+- Vulkan 장치와 같은 adapter LUID의 D3D11 device가 만든 BGRA shared texture
+  3개를 Vulkan에 dedicated external memory로 import한다.
+- Skia backing의 현재 logical viewport를 retained-frame image에 갱신하고, 나머지
+  capacity는 마지막 app-owned pixels로 유지한다. 매 Present에는 이 full-capacity
+  guard를 복사해 새 geometry가 드러나도 미소유 검정 영역이 나타나지 않게 한다.
+- Vulkan copy fence가 완료된 뒤에만 `IPresentationManager::Present`를 호출한다.
+  buffer 재사용과 teardown은 Presentation availability event가 결정한다.
+- `PRESENTATION_ERROR_LOST`처럼 결과가 불확정하면 context를 poison하고
+  fail-fast한다.
 
-핵심은 **window geometry와 rendered frame이 하나의 atomic transaction으로 표시되지 않는 two-owner 구조**다.
+## resize 순서
 
-### 대기가 시작될 때는 geometry가 이미 변경됨
+최종 구현은 호스트 창의 크기나 위치를 임의 FPS로 제한하지 않는다.
 
-`WM_SIZE`는 새 client 크기의 authority로서는 정확하지만, USER32가 창 크기를 변경한 뒤 전달된다. 따라서 `WM_SIZE` 안에서 exact frame까지 기다리면 다음 resize step이 렌더보다 계속 앞서가는 현상은 억제할 수 있지만, 현재 step의 geometry가 먼저 노출된 사실까지 취소할 수는 없다.
+```text
+WM_SIZING proposed RECT
+  → RECT를 수정하지 않고 proposed client 크기 계산
+  → retained child capacity 확인
+  → proposed logical viewport generation 발행
+  → exact Vulkan frame Present
+  → 같은 present-id/tag의 CompositionFrame 통계 관찰
+  → WM_SIZING 반환
+  → USER32가 원래 proposed RECT를 commit
+  → WM_SIZE에서 matching prepared frame 승인
+     또는 mismatch/timeout이면 actual client 크기로 exact fallback
+```
 
-### `vkQueuePresentKHR` 반환은 실제 화면 표시 완료가 아님
+즉 USER32가 geometry의 유일한 소유자이고, Doroti는 다음 geometry를 대신
+`SetWindowPos`하지 않는다. 대신 그 geometry에 대응하는 app frame이 DWM
+composition frame에 들어간 것을 먼저 확인하는 pre-geometry frame gate만 둔다.
 
-현재 exact-present terminal은 올바른 generation이 `vkQueuePresentKHR`를 통과했음을 뜻한다. 이는 presentation engine에 요청이 enqueue됐다는 강한 render-side 증거지만, 해당 프레임과 USER32 geometry가 동일한 DWM composition에서 원자적으로 보였다는 증거는 아니다.
+## 호스트 resize 제한안을 채택하지 않은 이유
 
-### `DwmFlush`도 cross-owner atomic commit을 만들지 못함
+검토한 제한안은 `WM_SIZING`의 proposed RECT를 마지막 승인 크기로 되돌리고,
+posted message 또는 timer가 준비된 크기를 `SetWindowPos`하는 방식이었다.
+실험에서는 USER32가 나중에 이전 proposal을 다시 적용하면서 cursor와 창 geometry가
+어긋났고, 간헐적 gap이 오히려 커졌다.
 
-`DwmFlush`는 outstanding compositor 작업의 진행을 기다려 ordering과 pacing을 개선한다. 그러나 USER32의 top-level 위치/clip 변경과 Vulkan child surface의 buffer를 하나의 공개된 transaction으로 묶는 계약은 아니다. 따라서 노출 시간을 줄일 수는 있어도 중간 상태가 절대로 보이지 않는다고 보장하지 못한다.
+따라서 다음 항목은 최종 코드에서 제거했다.
 
-## 지금까지 개선된 부분
+- host-owned pending sizing rectangle
+- cursor-anchor 기반 geometry 재계산
+- posted/timer `SetWindowPos` commit
+- 30/60 FPS 같은 고정 window-resize limiter
 
-### Per-size swapchain recreation 제거
+## 검증 결과
 
-이전 exact-size child/swapchain 경로에서는 AMD에서 매 resize step의 `vkCreateSwapchainKHR`가 보통 약 19~25 ms를 차지했다. Retained oversized child/surface로 ordinary resize의 이 비용을 제거했다. 현재 focused run에서는 surface recreate 1회, retained reuse 37회였다.
+### 사용자 관찰
 
-### Flutter-style actual-size blocking
+반복 자동 pointer resize가 실제 화면에 표시되는 동안 사용자가 직접 Left와
+TopLeft 동작을 확인했다. 현재 보이는 결과를 수용 가능하다고 판단했으므로
+이 문제의 최종 시각 판정은 `PASS-observed`다.
 
-실패한 `WM_SIZING` provisional layout과 16 ms prepare 상태를 제거했다. 현재는 실제 `WM_SIZE`가 새 generation을 발행한 뒤 exact present까지 최대 100 ms 기다린다. 이 변경으로 체감이 미세하게 개선됐지만 two-owner atomicity 문제는 남아 있다.
+이 판정은 현재 AMD/96 DPI/165 Hz 환경에 한정한다. 사용자가 보지 않은 GPU,
+DPI, refresh-rate와 mixed-monitor 조합까지 통과했다는 뜻은 아니다.
 
-### 고정 FPS 제한을 사용하지 않음
+### focused 반복 자동 검증
 
-30/60 Hz 같은 native-window limiter는 이전 프레임이 남아 있는 시간을 늘릴 수 있다. 현재 구현은 fixed timer가 아니라 render completion이 USER32 진행에 backpressure를 주는 방식이다.
+- evidence: `.doroti/evidence/windows-vulkan-fixed-child-pregeometry-probe1`
+  부터 `probe12`
+- matrix: 11/12 `PASS-automated-partial`
+- case: 22/24 `PASS`
+- source에서 직접 build한 최초 matrix: `probe1`
+- `probe2`~`probe12`: 동일 binary 반복 관찰을 위한 `-SkipBuild`
 
-### 배경색 masking을 사용하지 않음
+유일한 strict 실패인 `probe7`:
 
-Parent의 노출 영역을 앱 배경색으로 채우지 않는다. 흰색/검정 영역이 계속 존재하면 그대로 관찰 가능해야 하며, 실제 구조 수정으로 제거됐을 때만 해결로 판정한다.
+| case | gap 검출 | 나머지 계약 |
+|---|---:|---|
+| Left | 1 frame, 최대 8 px | transport/resource/final exact PASS, CompositionFrame 30/30, timeout 0 |
+| TopLeft | 1 frame, 최대 60 px | transport/resource/final exact PASS, CompositionFrame 28/28, timeout 0 |
 
-## 현재 evidence가 말하는 것
+`probe1`과 `probe2`~`probe6`, `probe8`~`probe12`에서는 두 case가 모두
+통과했다. 따라서 strict pixel oracle은 `PARTIAL`이며, 일회성 검출을 삭제하거나
+완전한 자동 PASS로 재분류하지 않는다.
 
-간섭 없이 실행한 focused `TopLeft` 1회 결과는 다음과 같다.
+### 최종 source-built 회귀 검증
 
-| 항목 | 결과 |
-|---|---:|
-| outer-rect changes | 33 |
-| accepted targets during motion | 31 |
-| presented terminals during motion | 32 |
-| superseded targets | 0 |
-| platform wait timeouts | 0 |
-| marker regressions | 0 |
-| presentation rate | 54.09 Hz |
-| target→present p95 / max | 22.71 / 26.47 ms |
-| Vulkan acquire / present | 44 / 44 |
-| surface recreate / retained reuse | 1 / 37 |
+- live resize: `.doroti/evidence/windows-vulkan-fixed-child-pregeometry-final2`
+  — `PASS-automated-partial`, source→binary correspondence PASS
+- Left: gap 0, outer change 26, accepted/presented 25/26,
+  CompositionFrame 30/30, timeout 0, final exact/resource PASS
+- TopLeft: gap 0, outer change 26, accepted/presented 25/26,
+  CompositionFrame 31/31, timeout 0, final exact/resource PASS
+- capability/lifecycle: `.doroti/evidence/windows-vulkan-fixed-child-pregeometry-capability-final2`
+  — aggregate PASS, product/exact-resize/device-reset/minimize-restore/start-close 10회 PASS,
+  Composition buffer 3, active WSI 0, source/repository/binary endpoint 안정성 PASS
 
-이 결과는 request/terminal 누락, timeout, 반복 swapchain recreation이 현재 증상의 직접 원인일 가능성을 낮춘다. 반대로 165 Hz display에서 render-side target→present p95 22.71 ms는 여러 refresh interval에 해당하며, 그 뒤의 presentation-engine 처리와 geometry 결합은 계측하지 못한다.
+## 범위 밖 또는 후속 확인
 
-WGC capture도 모든 물리 scan-out을 포착하지 않는다. 따라서 blank frame 0이나 marker regression 0만으로 실제 흰색/검정 transient가 없었다고 결론 내릴 수 없다.
+- NVIDIA/Intel 선택 경로
+- 125/150/200% DPI
+- 60/120/144 Hz 및 다른 monitor
+- mixed-DPI 이동, Snap, maximize/restore, alt-tab/occlusion
+- 물리 IME와 accessibility acceptance
+- `PRESENTATION_ERROR_LOST` 뒤 manager/import graph 자동 재생성
 
-## 이미 실패했거나 채택하지 않은 접근
+이 항목들은 `notVerified`지만 현재 사용자가 승인한 검은 띠 문제를 다시
+미해결로 만들지는 않는다. 별도 환경에서 같은 증상이 관찰될 때 해당 matrix의
+새 결함으로 재개한다.
 
-- 매 크기마다 child HWND와 swapchain을 exact extent로 재생성: AMD driver 비용과 exposed interval이 큼
-- `WM_SIZING` proposed extent를 16 ms 동안 미리 렌더링: 약간 개선됐지만 실제 resize에서 흰색/검정과 떨림이 남음
-- Proposed frame 뒤 `DwmFlush`: ordering을 개선했지만 geometry/frame atomicity를 만들지 못함
-- Parent를 앱 배경색으로 채우기: 문제를 가리므로 명시적으로 제외
-- 창 resize를 임의의 30/60 FPS로 제한: stale frame 지속 시간을 늘릴 수 있어 제외
-- 자동 검증 반복 확대: 물리 transient 검출력이 충분하지 않아 focused 1회로 축소
+## 결론
 
-## 남은 해결 방향
-
-현재 direct Vulkan WSI + visible child HWND 구조 안에서 할 수 있는 backpressure와 surface-retention 완화는 대부분 적용됐다. 다음 구조 변경의 목표는 **top-level geometry/clip과 visible buffer를 같은 compositor ownership 아래에서 commit하는 것**이다.
-
-검토할 수 있는 방향은 다음과 같다.
-
-1. Vulkan은 offscreen raster만 담당하고, 최종 이미지를 DXGI/DirectComposition 또는 Windows App SDK composition surface로 전달한다.
-2. Visual offset, clip, size와 새 buffer를 하나의 composition commit에 포함한다.
-3. 가능하다면 visible child HWND 경계를 제거해 top-level visual과 presentation surface의 소유자를 통합한다.
-4. AMD뿐 아니라 NVIDIA/Intel에서도 동작하는 Windows 표준 interop 및 synchronization API만 사용한다.
-
-이는 아직 선택된 구현안이 아니라 다음 실험이 만족해야 할 구조적 조건이다. Vulkan→DXGI 공유 방식, 복사 비용, keyed fence/semaphore 지원, device-loss 수명주기와 SkiaSharp 제약을 별도로 검증해야 한다.
-
-## 완료 조건
-
-다음 조건을 모두 만족하기 전에는 해결로 판정하지 않는다.
-
-- 실제 마우스로 왼쪽 및 왼쪽 위를 반복 확대·축소할 때 흰색/검정 영역이 보이지 않음
-- 내부 raster가 새 창 위치나 크기에 뒤늦게 맞춰지는 움직임이 보이지 않음
-- App-color parent masking 없이 통과
-- resize 중 request/terminal 누락, timeout, Vulkan 오류가 없음
-- resize 종료 후 final viewport와 client extent가 정확히 일치
-- AMD에서 우선 통과하고, 이후 NVIDIA/Intel 및 DPI/monitor 이동 matrix를 별도 확인
-
-현재 결론은 **Flutter-style window-thread blocking으로 증상의 빈도와 정도는 줄었지만, USER32 geometry와 Vulkan presentation의 분리된 소유권 때문에 근본 문제는 남아 있다**는 것이다.
+현재 결론은 **PASS-observed / automated PARTIAL**이다. visible Vulkan WSI의
+two-owner 문제를 제거하고, retained child DirectComposition target과
+pre-geometry CompositionFrame gate를 적용했다. 사용자가 직접 본 headed
+Left/TopLeft 결과는 수용 기준을 통과했으며, 반복 자동 검출의 1회성 두 프레임은
+남은 계측 경계로 정직하게 보존한다.
