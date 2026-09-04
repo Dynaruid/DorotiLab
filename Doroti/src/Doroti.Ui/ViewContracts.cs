@@ -589,9 +589,9 @@ public enum WindowBackdropMode
     transparent,
     acrylic,
     /// <summary>
-    /// Opts a newly-created Windows App SDK window into the bounded-resize
-    /// ANGLE D3D11 to Composition Swapchain Acrylic path. This mode is
-    /// intentionally experimental and is never selected by <see cref="system"/>.
+    /// Opts a newly-created Windows App SDK window into an Acrylic composition
+    /// topology supported by the selected ANGLE or Vulkan presenter. This mode
+    /// is intentionally experimental and is never selected by <see cref="system"/>.
     /// </summary>
     experimentalAcrylic,
 }

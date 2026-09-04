@@ -6,7 +6,7 @@
   "host": "document-or-split-ui-raster-workers",
   "graphicsBackend": "document-webgl2-or-worker-canvaskit-webgl2-or-worker-direct-webgl2-or-offscreen-webgl2-imagebitmap",
   "blazorWebAssemblyVersion": "10.0.11",
-  "skiaSharpVersion": "4.151.1",
+  "skiaSharpVersion": "4.152.0-rc.1.26426.14",
   "skiaSharpManagedPackage": "SkiaSharp",
   "skiaSharpNativePackage": "SkiaSharp.NativeAssets.WebAssembly",
   "canvasKitVersion": "0.42.0",

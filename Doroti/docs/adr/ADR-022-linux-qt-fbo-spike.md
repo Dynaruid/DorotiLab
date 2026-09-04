@@ -35,7 +35,7 @@ This was a measured `QOpenGLWidget` failure, not `notVerified`. It does not clas
 2. `QSGRenderNode`/QRhi: deferred. It adds Qt Quick and render-thread ownership before the current GL procedure/context question is isolated.
 3. Native-owned executable plus `hostfxr`: deferred. Reversing process ownership does not change the app-local SkiaSharp GL binary or the current software renderer.
 4. CPU raster fallback: rejected by the roadmap because it would hide the required GPU path and full-frame copy budget.
-5. SkiaSharp upgrade/downgrade: excluded from this work; `4.151.1` remains pinned.
+5. SkiaSharp upgrade/downgrade was excluded from this spike. The repository later moved to `4.152.0-rc.1.26426.14`; this historical 4.151.1 diagnosis must be rerun before inferring current Linux behavior.
 
 ## Resume criteria
 

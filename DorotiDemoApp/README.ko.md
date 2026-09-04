@@ -12,7 +12,9 @@ DorotiDemoApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱�
 # Windows 기본 backend로 실행
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
-# Windows 11 24H2+ experimental Acrylic opt-in
+# Windows 11 24H2+: Vulkan + experimental Acrylic
+$env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
+$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # 또는 정확하거나 유일한 다른 device 이름 조각
 $env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC = '1'
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -Configuration Release
 
@@ -129,7 +131,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 
 ### Windows optional Vulkan presenter로 실행
 
-Windows App SDK runner는 실험적 direct Vulkan/Skia presenter를 명시적으로 선택할 수 있습니다. 기본값은 계속 ANGLE입니다. Acrylic opt-in이 설정되지 않은 shell에서 다음 명령을 실행합니다.
+Windows App SDK runner는 실험적 direct Vulkan/Skia presenter를 명시적으로 선택할 수 있습니다. 기본값은 계속 ANGLE입니다. 불투명 Vulkan은 Acrylic opt-in을 지운 상태에서 실행합니다.
 
 ```powershell
 $env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
@@ -142,7 +144,20 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
   -Configuration Release
 ```
 
-capability를 만족하는 GPU가 정확히 하나라면 `DOROTI_WINDOWS_VULKAN_DEVICE`는 생략할 수 있습니다. 선택을 재현 가능하게 고정하려면 정확한 device name 또는 유일한 이름 조각을 지정합니다. Vulkan은 System32 Vulkan 1.1 loader와 surface/Win32-surface/swapchain 지원을 요구하지만 swapchain-maintenance extension은 요구하지 않습니다. ANGLE로 자동 fallback하지 않으며 `DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1`과 충돌합니다. 기본 ANGLE presenter로 돌아가려면 실행 후 `DOROTI_WINDOWS_PRESENTER`를 지웁니다.
+Windows 11 24H2 이상에서 Vulkan presenter와 Acrylic을 함께 실행하려면 아래 블록 전체를 저장소 루트의 PowerShell에 복사해 실행합니다.
+
+```powershell
+$env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
+$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # 또는 정확하거나 유일한 다른 device 이름 조각
+$env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC = '1'
+
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
+  -App ./DorotiDemoApp `
+  -Platform windows `
+  -Configuration Release
+```
+
+capability를 만족하는 GPU가 정확히 하나라면 `DOROTI_WINDOWS_VULKAN_DEVICE`는 생략할 수 있습니다. 선택을 재현 가능하게 고정하려면 정확한 device name 또는 유일한 이름 조각을 지정합니다. 제품 경로는 System32 Vulkan 1.1 loader와 dedicated importable D3D11-texture external memory를 요구하고 Windows Presentation으로 표시하며 Vulkan WSI swapchain은 0개입니다. ANGLE로 자동 fallback하지 않습니다. Vulkan+Acrylic은 premultiplied Vulkan Presentation surface를 native topmost DirectComposition target에 유지하고, host-backdrop-enabled non-topmost `DesktopWindowTarget`의 active `DesktopAcrylicController` 위에 배치합니다. 기본 불투명 ANGLE presenter로 돌아가려면 실행 후 `DOROTI_WINDOWS_PRESENTER`, `DOROTI_WINDOWS_VULKAN_DEVICE`, `DOROTI_DEMO_EXPERIMENTAL_ACRYLIC`을 지웁니다.
 
 ### Android 실기기와 에뮬레이터 연결
 
@@ -260,13 +275,13 @@ Linux 데모는 `WindowBackdropMode.acrylic`과 `WindowBackdropFallback.transpar
 
 Windows 기본 경로는 self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host입니다. Native C++은 top-level/child/task HWND와 input/lifecycle ingress를, managed code는 Doroti scene 생성과 hardware-D3D11 ANGLE/EGL/Skia raster/presentation을 소유합니다. Exact-size GPU backing을 `EGL_FIXED_SIZE_ANGLE` window surface로 blit하며 새 surface는 첫 swap 뒤 initial show 또는 resize 완료 전에 `DwmFlush`합니다. 8 ms refresh는 interactive move가 두 monitor에 걸쳐 있고 pending/in-flight render가 없을 때만 동작합니다.
 
-`DOROTI_WINDOWS_PRESENTER=Vulkan`은 같은 `HwndExactCpp` runner의 별도 실험적 Vulkan/Skia 경로를 선택합니다. stale work는 image acquire 전에 버리고, acquire 성공은 unconditional copy/present commit이므로 acquired-image release가 필요 없습니다. Resize 경로는 Skia를 비동기로 submit하고 copy fence 한 건의 wait를 다음 재사용 시점까지 미룹니다. 새 required native feature는 visible child HWND를 현재 monitor work area로 시작하는 grow-only surface capacity에 유지하고, exact parent client가 `WS_CLIPCHILDREN`으로 이를 자릅니다. Flutter Windows handshake처럼 `WM_SIZING`에서는 provisional layout을 그리지 않습니다. 실제 top-client `WM_SIZE`가 authoritative logical extent를 발행하고, raster worker가 같은 generation을 present할 때까지 HWND thread를 최대 100ms 유지합니다. 성공한 interactive present는 transaction 반환 전 `DwmFlush` 경계를 한 번 통과합니다. 이는 고정 30/60 fps limiter가 아니라 render cadence에 따른 USER32 backpressure입니다. App-color parent fallback은 그리지 않습니다. Capacity 안의 logical viewport 변경은 child resize, Win32 surface/swapchain 재생성, raster scaling 없이 다시 그리고 present합니다. 전체 capacity는 app background로 clear하고 scene은 logical viewport로 clip하며, capacity를 넘을 때만 한 번 grow/recreate합니다.
+`DOROTI_WINDOWS_PRESENTER=Vulkan`은 같은 `HwndExactCpp` runner의 실험적 Vulkan/Skia 경로를 선택합니다. SkiaSharp는 `4.152.0-rc.1.26426.14`로 고정하고 `SkiaSharp.Vulkan.Silk.NET`의 typed `GRSilkNetBackendContext`를 사용합니다. Skia가 retained Vulkan backing의 app-owned 전체 capacity에 그리면 host가 exact-LUID D3D11 shared texture 3개로 copy해 Windows Presentation으로 표시합니다. Top-level HWND의 native topmost DirectComposition target이 유일한 visible raster owner이며 native child는 숨겨진 capacity infrastructure일 뿐 별도 visible geometry timeline이 아닙니다. Presentation은 전체 capacity를 identity로 제출하고 HWND client clip만 exact viewport를 정합니다. `WM_SIZING`은 capacity만 확인합니다. 좌·상단처럼 origin이 움직이는 edge는 현재 raster를 같은 HWND에 둔 채 actual `WM_SIZE` generation을 running 1 + latest pending 1로 coalesce하고 per-step wait를 하지 않으며, `WM_EXITSIZEMOVE`에서 한 번 bounded exact settle합니다. Origin 고정 edge는 기존 bounded exact-frame/CompositionFrame handshake를 유지합니다. Edge source translation, child-position correction, 고정 30/60 fps limiter와 CSS식 stretch는 사용하지 않습니다.
 
-AMD Radeon 780M에서 10회 resize product run은 최종 950x670 viewport에 1280x752 surface 하나를 사용해 retained reuse 9회와 accepted/presented 10/10을 기록했습니다. 첫 retained-surface 자동 실행은 24/24를 통과했지만, 이후 실물 확인에서 일시적인 검정/흰 영역과 좌·상단 raster 떨림이 보고되었으므로 그 관찰을 pre-fix 권위 결과로 유지합니다. Proposed-size admission 추가 뒤 최종 source-locked `ANGLE → Vulkan → ANGLE` 자동 실행은 8개 border/corner 각각 600 px/600 ms reverse를 3회 반복한 24/24 case를 통과했습니다. Motion target 1,140/1,140을 present했고 supersede/platform wait timeout/marker regression은 0, 최소 77.75 presentations/s, target→present p95/max 최악값은 14.54/16.65 ms였습니다. Capability/WSI, result injection, reset, lifecycle, resize, start/close gate도 통과했습니다. 이전 exact-per-extent 구조의 19~25 ms `vkCreateSwapchainKHR` 비용은 first show 전 또는 드문 capacity growth에서만 발생합니다. 이 장치는 swapchain-maintenance present fence가 없어 unextended present-resource retirement는 별도 명세 수준 `notVerified`입니다. 자동 WGC와 terminal evidence는 수정 후 실제 scan-out, 사람의 resize, IME, accessibility, 큰 monitor의 memory/startup 또는 전체 DPI/GPU matrix를 대신하지 않으므로 Vulkan은 계속 opt-in입니다. [ADR-027](../Doroti/docs/adr/ADR-027-windows-optional-vulkan.md)과 [구현 체크포인트](../history/26-09-02/windows-appsdk-vulkan-implementation-checkpoint.md)를 참고하세요.
+AMD Radeon 780M에서 top-level owner `TopLeft` reverse 600 ms 3회와 별도 `Left`/`Right` 회귀가 validation-background gap 0, exact final geometry, 단조 증가 marker와 정상 resource accounting을 통과했습니다. Source-built `TopLeft`는 151.49 presentations/s와 accepted→next-present p95 7.65 ms를 기록했습니다. 이전 retained-child와 synchronous post-geometry 실패는 삭제하거나 PASS로 바꾸지 않고 history로 유지합니다. 자동 capture/terminal evidence는 수정 뒤 physical scan-out, 사람 resize, IME/accessibility, 큰 monitor의 memory/startup과 전체 DPI/GPU matrix를 대신하지 않습니다. Vulkan은 opt-in이며 최신 left/top 사람 재확인은 `notVerified`입니다. [ADR-027](../Doroti/docs/adr/ADR-027-windows-optional-vulkan.md), [problem.md](../problem.md), [구현 체크포인트](../history/26-09-02/windows-appsdk-vulkan-implementation-checkpoint.md)를 참고하세요.
 
-`DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1`은 별도 opt-in ContentIsland/Composition Swapchain 경로를 선택합니다. 이 경로는 `WM_SIZING`을 제한하지 않으며 Composition `WM_SIZE`에서 terminal, fence, buffer event 또는 `DwmFlush`를 기다리지 않습니다. ContentIsland가 child-site geometry를 소유하고 이미 physical-pixel인 surface를 `OverrideScale=1`, `Stretch=None`, identity transform과 1:1 source crop으로 표시합니다. 이전 256px dark overscan/erase-fill/stretch 경로는 좌·상단 검은 영역과 raster 떨림의 원인이어서 제거했습니다. 현재 200% DPI/165Hz TopLeft 3초 자동 capture는 active/inactive 9/0px와 settle 29.16ms로 PASS하지만, 600ms case는 active 37px와 visual gap/title oracle 때문에 FAIL입니다. Release/ABI/opaque/empty-PATH/option/fallback 회귀는 PASS했습니다. 현재 바이너리의 사람 실물 재확인과 IME/accessibility/full matrix는 `notVerified`이며 opaque가 계속 기본값입니다.
+`DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1`은 presenter가 unset 또는 `AngleD3D11`이면 기존 opt-in ANGLE ContentIsland/Composition Swapchain 경로를 유지합니다. Explicit `Vulkan`에서는 dedicated system DispatcherQueue thread가 non-topmost `DesktopWindowTarget`을 소유하고 `DesktopAcrylicController.SetTarget(WindowId, CompositionTarget)`을 호출합니다. HWND에는 `DWMWA_USE_HOSTBACKDROPBRUSH`를 설정하고 native topmost target은 그 위에 premultiplied Vulkan pixel을 표시합니다. Attach 또는 active-state 실패는 단순 transparency나 조용한 presenter 변경으로 바꾸지 않습니다. Vulkan도 같은 controller option 계약으로 kind/theme/tint/luminosity를 적용합니다. AMD Radeon 780M의 현재 product qualification은 `DesktopAcrylicController`, state `Active`, target/host flag true, ContentIsland false, Presentation buffer 3, failed/unterminated terminal 0과 정상 device-reset/lifecycle을 보고했습니다. Current-monitor capture에서는 uncovered wallpaper의 날카로운 형상이 확산되지만, 사람의 backdrop 품질과 순간 resize 체감, physical scan-out, IME/accessibility, 전체 GPU/DPI/refresh matrix는 계속 `notVerified`이며 불투명 ANGLE이 기본값입니다.
 
-확인한 Windows 실제 resize와 mixed-DPI 경계 동작은 사용자 acceptance를 받았습니다. Strict synthetic input qualification과 pixel/cadence FAIL은 acceptance로 재분류하지 않고 유지합니다. 자동 input은 PASS했고 IME/UIA 및 lifecycle/device는 automated partial 범위입니다. 실제 한글 IME 후보창/caret, Narrator/Accessibility Insights, 미실행 edge/speed/DPI/monitor 조합, device removal, installer/MSIX, 각 wait 지점 shutdown은 `notVerified`입니다. 명시적 MAUI backend는 별도 evidence 경계를 가지며 silent fallback으로 사용하지 않습니다. 마지막 Windows 전체 product solution Release 실행은 Windows target 통과 뒤 macOS project가 없는 `sips`를 호출해 실패했으므로 Windows 작업에는 위 target-scoped 명령을 사용합니다.
+과거 Windows 실제 resize acceptance 중 Vulkan 좌·상단 범위는 최신 사용자 보고로 supersede됐으며, 수정 binary를 사람이 다시 drag하기 전에는 PASS로 되돌리지 않습니다. Strict synthetic input qualification과 pixel/cadence FAIL도 과거 acceptance로 재분류하지 않습니다. 자동 input은 PASS했고 IME/UIA 및 lifecycle/device는 automated partial 범위입니다. 실제 한글 IME 후보창/caret, Narrator/Accessibility Insights, 미실행 edge/speed/DPI/monitor 조합, device removal, installer/MSIX, 각 wait 지점 shutdown은 `notVerified`입니다. 명시적 MAUI backend는 별도 evidence 경계를 가지며 silent fallback으로 사용하지 않습니다. 마지막 Windows 전체 product solution Release 실행은 Windows target 통과 뒤 macOS project가 없는 `sips`를 호출해 실패했으므로 Windows 작업에는 위 target-scoped 명령을 사용합니다.
 
 native AppKit과 Mac Catalyst를 서로 독립적으로 포함한 자동 build를 검증합니다. AppKit backend는 실험적이며 Microsoft 지원 대상이 아니고 최소 macOS 14, 첫 RID는 `osx-arm64`입니다.
 

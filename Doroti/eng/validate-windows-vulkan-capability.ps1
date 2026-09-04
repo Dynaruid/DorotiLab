@@ -58,6 +58,8 @@ $probeAssembly = Join-Path $probeDirectory 'Doroti.Validation.WindowsVulkanCapab
 $sourceFingerprintPaths = @(
     'Doroti/eng/validate-windows-vulkan-capability.ps1',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsAcrylicOptionsState.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedAcrylicCompositionPresenter.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenterBase.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs',
@@ -273,8 +275,11 @@ Assert-True ([bool]$capability.externalMemory.importable -and
     'BGRA8 optimal D3D11 texture external memory is not importable, dedicated, and compatible.'
 Assert-True ($capability.presentation.mode -eq [string]$contract.presentationMode -and
     $capability.presentation.visibleOwner -eq [string]$contract.visibleOwner -and
+    $capability.presentation.topology -eq [string]$contract.topology -and
     $capability.presentation.bufferCount -eq [int]$contract.compositionBufferCount -and
     $capability.presentation.activeSwapchains -eq [int]$contract.activeSwapchains -and
+    $capability.presentation.movingOriginPolicy -eq [string]$contract.movingOriginPolicy -and
+    $capability.presentation.rasterPlacement -eq [string]$contract.rasterPlacement -and
     $capability.presentation.bufferReuseAuthority -eq [string]$contract.retirementMode) `
     'Vulkan Composition presentation topology differs from the contract.'
 Assert-True ($capability.presentationCommitPolicy.policy -eq [string]$contract.presentationCommitPolicy) `
@@ -332,6 +337,45 @@ Assert-True ($vulkanProductReport.diagnostics.failedTerminals -eq 0 -and
     $vulkanProductReport.diagnostics.duplicateResizeTerminals -eq 0) 'Vulkan product terminal gate failed.'
 Assert-True ($vulkanProductReport.diagnostics.deviceGenerations -eq 2) 'Vulkan product device-reset qualification differs.'
 Assert-VulkanCompositionSnapshot $vulkanProductReport 'Vulkan product qualification'
+
+$vulkanAcrylicProductPath = Join-Path $OutputDirectory 'vulkan-acrylic-product.json'
+$vulkanAcrylicProduct = Invoke-BoundedProcess -FileName 'dotnet' -Name 'Vulkan Acrylic product qualification' -Environment @{
+    DOROTI_WINDOWS_VULKAN_DEVICE = $Device
+} -ArgumentList @(
+    'run','--project',$productProject,'-c','Release','--no-build','--',
+    '--presenter','Vulkan','--experimental-acrylic','--report',$vulkanAcrylicProductPath)
+Assert-True ($vulkanAcrylicProduct.exitCode -eq 0) `
+    "Vulkan Acrylic product qualification failed: $($vulkanAcrylicProduct.stderr)"
+$vulkanAcrylicProductReport = Get-Content -LiteralPath $vulkanAcrylicProductPath -Raw |
+    ConvertFrom-Json -Depth 100
+Assert-True ($vulkanAcrylicProductReport.status -eq 'PASS') `
+    'Vulkan Acrylic product qualification report is not PASS.'
+Assert-True ($vulkanAcrylicProductReport.diagnostics.requestedPresenter -eq 'Vulkan' -and
+    $vulkanAcrylicProductReport.diagnostics.effectivePresenter -eq 'Vulkan/Composition-Swapchain' -and
+    $vulkanAcrylicProductReport.diagnostics.requestedMode -eq 'experimentalAcrylic' -and
+    $vulkanAcrylicProductReport.diagnostics.effectiveMode -eq 'experimentalAcrylic') `
+    'Explicit Vulkan Acrylic did not remain the effective presenter and backdrop mode.'
+Assert-True ($vulkanAcrylicProductReport.diagnostics.acrylic.backdropTargetAdded -and
+    [bool]$vulkanAcrylicProductReport.diagnostics.acrylic.contentIslandConnected -eq
+        [bool]$contract.acrylic.contentIslandConnected -and
+    [bool]$vulkanAcrylicProductReport.diagnostics.acrylic.desktopWindowTargetConnected -eq
+        [bool]$contract.acrylic.desktopWindowTargetConnected -and
+    [bool]$vulkanAcrylicProductReport.diagnostics.acrylic.hostBackdropBrushEnabled -eq
+        [bool]$contract.acrylic.hostBackdropBrushEnabled -and
+    $vulkanAcrylicProductReport.diagnostics.acrylic.backdropTransport -eq
+        [string]$contract.acrylic.transport -and
+    $null -eq $vulkanAcrylicProductReport.diagnostics.acrylic.systemBackdropType -and
+    -not $vulkanAcrylicProductReport.diagnostics.acrylic.redirectionBitmapAlphaEnabled -and
+    $vulkanAcrylicProductReport.diagnostics.acrylic.backdropState -eq
+        [string]$contract.acrylic.backdropState -and
+    $vulkanAcrylicProductReport.diagnostics.vulkan.compositeAlpha -eq
+        [string]$contract.acrylic.compositeAlpha) `
+    'Vulkan Acrylic did not layer a premultiplied top-level target over an active, host-backdrop-enabled Desktop Acrylic window target.'
+Assert-True ($vulkanAcrylicProductReport.diagnostics.failedTerminals -eq 0 -and
+    $vulkanAcrylicProductReport.diagnostics.unterminatedResizeGenerations -eq 0 -and
+    $vulkanAcrylicProductReport.diagnostics.duplicateResizeTerminals -eq 0) `
+    'Vulkan Acrylic product terminal gate failed.'
+Assert-VulkanCompositionSnapshot $vulkanAcrylicProductReport 'Vulkan Acrylic product qualification'
 
 $injectedResults = [ordered]@{}
 foreach ($resultName in @('DEVICE_LOST','DEVICE_LOST_ON_WAIT_IDLE')) {
@@ -487,6 +531,16 @@ $packageGraph = Invoke-BoundedProcess -FileName 'dotnet' -Name 'package graph' -
 Assert-True ($packageGraph.exitCode -eq 0) "Package graph failed: $($packageGraph.stderr)"
 $coreMatches = @([regex]::Matches($packageGraph.stdout, 'Silk.NET.Core\s+2\.23\.0')).Count
 Assert-True ($coreMatches -eq 1) "Expected one resolved Silk.NET.Core 2.23.0 row, found $coreMatches."
+$skiaVersion = [string]$contract.skiaSharpVersion
+$skiaPattern = [regex]::Escape($skiaVersion)
+$skiaMatches = @([regex]::Matches(
+    $packageGraph.stdout, "SkiaSharp\s+$skiaPattern\s+$skiaPattern")).Count
+$skiaSilkAdapterMatches = @([regex]::Matches(
+    $packageGraph.stdout, "$([regex]::Escape([string]$contract.skiaVulkanAdapter))\s+$skiaPattern\s+$skiaPattern")).Count
+Assert-True ($skiaMatches -eq 1) `
+    "Expected one direct SkiaSharp $skiaVersion row, found $skiaMatches."
+Assert-True ($skiaSilkAdapterMatches -eq 1) `
+    "Expected one direct SkiaSharp.Vulkan.Silk.NET $skiaVersion row, found $skiaSilkAdapterMatches."
 
 $loaderFile = Get-Item -LiteralPath $capability.loader.path
 $monitor = Get-CimInstance Win32_DesktopMonitor | Where-Object ScreenWidth | Select-Object -First 1
@@ -596,7 +650,10 @@ $manifest = [ordered]@{
     compositionQualification=[ordered]@{
         status='PASS'
         mode=$vulkanProductReport.diagnostics.vulkan.presentMode
-        visibleOwner='retained child DirectComposition target'
+        visibleOwner=[string]$contract.visibleOwner
+        topology=[string]$contract.topology
+        movingOriginPolicy=[string]$contract.movingOriginPolicy
+        rasterPlacement=[string]$contract.rasterPlacement
         compositionBuffers=$vulkanProductReport.diagnostics.vulkan.imageCount
         activeSwapchains=$vulkanProductReport.diagnostics.vulkan.activeSwapchains
         retirementMode=$vulkanProductReport.diagnostics.vulkan.retirementMode
@@ -619,6 +676,27 @@ $manifest = [ordered]@{
         inputImeUia='PASS-automated-by-product-contract'
         visibleCapture='separate-validate-windows-vulkan-live-resize.ps1'
     }
+    vulkanAcrylicProduct=[ordered]@{
+        status='PASS'
+        report=$vulkanAcrylicProductPath
+        requestedPresenter=$vulkanAcrylicProductReport.diagnostics.requestedPresenter
+        effectivePresenter=$vulkanAcrylicProductReport.diagnostics.effectivePresenter
+        requestedMode=$vulkanAcrylicProductReport.diagnostics.requestedMode
+        effectiveMode=$vulkanAcrylicProductReport.diagnostics.effectiveMode
+        backdropTargetAdded=[bool]$vulkanAcrylicProductReport.diagnostics.acrylic.backdropTargetAdded
+        contentIslandConnected=[bool]$vulkanAcrylicProductReport.diagnostics.acrylic.contentIslandConnected
+        desktopWindowTargetConnected=[bool]$vulkanAcrylicProductReport.diagnostics.acrylic.desktopWindowTargetConnected
+        hostBackdropBrushEnabled=[bool]$vulkanAcrylicProductReport.diagnostics.acrylic.hostBackdropBrushEnabled
+        backdropState=$vulkanAcrylicProductReport.diagnostics.acrylic.backdropState
+        compositeAlpha=$vulkanAcrylicProductReport.diagnostics.vulkan.compositeAlpha
+        rasterOwner='top-level DirectComposition Vulkan Presentation target'
+        backdropOwner='host-backdrop-enabled top-level Desktop Acrylic window target'
+        backdropTransport=$vulkanAcrylicProductReport.diagnostics.acrylic.backdropTransport
+        systemBackdropType=$vulkanAcrylicProductReport.diagnostics.acrylic.systemBackdropType
+        redirectionBitmapAlphaEnabled=[bool]$vulkanAcrylicProductReport.diagnostics.acrylic.redirectionBitmapAlphaEnabled
+        visibleCapture='separate-current-monitor-desktop-duplication-evidence'
+        physicalBackdrop='notVerified'
+    }
     frameAndLifecycle=[ordered]@{
         exactResize10=[ordered]@{
             status='PASS'; report=$resizePath; resizeBuffers=$resizeReport.diagnostics.resizeBuffers
@@ -640,6 +718,9 @@ $manifest = [ordered]@{
     }
     packageGraph=[ordered]@{
         silkNetCoreResolvedRows=$coreMatches
+        skiaSharpVersion=$skiaVersion
+        skiaSharpResolvedRows=$skiaMatches
+        skiaSharpVulkanSilkNetResolvedRows=$skiaSilkAdapterMatches
         vulnerabilityWarnings=if($packageGraph.stdout -match 'vulnerab'){ 'present-review-output' } else { 'none-observed' }
         duplicateNativeAsset='none-observed'
         output=$packageGraph.stdout
@@ -651,7 +732,7 @@ $manifest = [ordered]@{
     }
     gate='Vulkan-Composition-PASS-automated-partial'
     next='physical-left-and-top-left-required'
-    evidenceBoundary='ANGLE baseline plus Vulkan exact-LUID external-memory capability, native retained-child DirectComposition topology, three Composition buffers, synchronous Vulkan copy completion, availability-based reuse, device-loss recovery, exact resize, reset, lifecycle, start/close, and automated input/IME/UIA transport passed. Legacy visible-HWND WSI is separate non-product evidence. Composition Present completion and WGC do not prove physical scan-out; physical left/top-left drag, physical IME/accessibility acceptance, and the full GPU/DPI/refresh matrix remain notVerified.'
+    evidenceBoundary='ANGLE baseline plus Vulkan exact-LUID external-memory capability, top-level native topmost Presentation with full-capacity identity raster placement and one client geometry, active host-backdrop-enabled DesktopAcrylicController window target, three Composition buffers, synchronous Vulkan copy completion, availability-based reuse, device-loss recovery, exact resize, reset, lifecycle, start/close, and automated input/IME/UIA transport passed. Legacy visible-HWND WSI is separate non-product evidence. Composition Present completion and current-monitor capture do not prove physical scan-out or human-perceived Acrylic blur quality; physical left/top-left drag, physical backdrop, physical IME/accessibility acceptance, and the full GPU/DPI/refresh matrix remain notVerified.'
 }
 $manifestPath = Join-Path $OutputDirectory 'manifest.json'
 $manifest | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $manifestPath -Encoding utf8

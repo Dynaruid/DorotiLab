@@ -1,6 +1,8 @@
 {
-  "schemaVersion": "doroti.windows.vulkan-capability-contract/v3",
+  "schemaVersion": "doroti.windows.vulkan-capability-contract/v5",
   "packageVersion": "2.23.0",
+  "skiaSharpVersion": "4.152.0-rc.1.26426.14",
+  "skiaVulkanAdapter": "SkiaSharp.Vulkan.Silk.NET",
   "minimumApiVersion": "1.1",
   "requiredInstanceExtensions": [],
   "requiredDeviceExtensions": [
@@ -10,11 +12,22 @@
     "VK_KHR_dedicated_allocation"
   ],
   "presentationMode": "CompositionSwapchain",
-  "visibleOwner": "retained child DirectComposition target",
+  "visibleOwner": "top-level DirectComposition Vulkan Presentation target",
+  "topology": "top-level-dcomp-vulkan-presentation",
   "compositionBufferCount": 3,
   "activeSwapchains": 0,
   "presentationCommitPolicy": "available-buffer-after-latest-check-synchronous-copy-present",
+  "movingOriginPolicy": "top-level-current-plus-latest",
+  "rasterPlacement": "top-level-capacity-origin",
   "retirementMode": "presentation-buffer-availability",
+  "acrylic": {
+    "transport": "DesktopAcrylicController",
+    "contentIslandConnected": false,
+    "desktopWindowTargetConnected": true,
+    "hostBackdropBrushEnabled": true,
+    "backdropState": "Active",
+    "compositeAlpha": "Premultiplied"
+  },
   "externalMemory": {
     "format": "B8G8R8A8Unorm",
     "tiling": "Optimal",

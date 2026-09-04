@@ -4,7 +4,7 @@ Hardware selection is fail-closed. `SkiaSurfaceFactory.CreateHardware` requires 
 
 `IAsyncInteractiveFrameSink.PresentAsync` separates commit submission from terminal ACK. `InteractiveApplication.PumpFrameNonBlocking` completes build/layout/paint/commit on the UI thread, submits to the one-in-flight/one-latest mailbox, and posts the terminal ACK bookkeeping back through `QueuedUiDispatcher`. The product entrypoints do not call `GetAwaiter().GetResult()` for frame presentation. Synchronous `IInteractiveFrameSink.Present` remains only as a compatibility contract for deterministic fixtures.
 
-Both GPU and diagnostic Skia canvases call `SkiaSharp.HarfBuzz.SKShaper`; the managed rectangle-glyph implementation remains reachable only through explicitly selected managed software diagnostics. `SkiaSharp.HarfBuzz` is pinned at the same `4.151.1` version as SkiaSharp.
+Both GPU and diagnostic Skia canvases call `SkiaSharp.HarfBuzz.SKShaper`; the managed rectangle-glyph implementation remains reachable only through explicitly selected managed software diagnostics. `SkiaSharp.HarfBuzz` is pinned at the same `4.152.0-rc.1.26426.14` version as SkiaSharp.
 
 The former `DorotiDemoApp --runtime-v2` diagnostic entrypoint was removed when
 the product demo was consolidated into the Goal6 Material application. This

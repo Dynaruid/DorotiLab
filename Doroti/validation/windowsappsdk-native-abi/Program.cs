@@ -15,6 +15,8 @@ if (args.Length != 1)
     throw new ArgumentException("Expected the app-directory native DLL path.");
 if (WindowsNativeV1.CompositionPresentationFeature != 1UL << 3)
     throw new InvalidOperationException("The managed Composition-presentation feature bit differs from ABI v1.");
+if (WindowsNativeV1.VulkanAcrylicFeature != 1UL << 4)
+    throw new InvalidOperationException("The managed Vulkan-Acrylic feature bit differs from ABI v1.");
 
 var expectedPath = Path.GetFullPath(args[0]);
 if (!File.Exists(expectedPath))
@@ -46,6 +48,7 @@ try
         "doroti_windows_acrylic_place_v1",
         "doroti_windows_vulkan_composition_create_v1",
         "doroti_windows_vulkan_composition_attach_window_v1",
+        "doroti_windows_vulkan_composition_set_premultiplied_alpha_v1",
         "doroti_windows_vulkan_composition_destroy_v1",
         "doroti_windows_vulkan_composition_replace_buffer_v1",
         "doroti_windows_vulkan_composition_is_available_v1",
@@ -131,6 +134,7 @@ try
         managedToNativeValidation = "PASS",
         platformBrightnessContract = "PASS",
         compositionPresentationFeature = WindowsNativeV1.CompositionPresentationFeature,
+        vulkanAcrylicFeature = WindowsNativeV1.VulkanAcrylicFeature,
         compositionPresentationBufferCount = 3,
         exports,
         sizes = new

@@ -16,13 +16,16 @@ internal static class DemoTheme
 {
     private static readonly UiColor Seed = new(0xff6750a4L);
 
-    internal static Material.ThemeData Create(Brightness brightness)
+    internal static Material.ThemeData Create(
+        Brightness brightness, bool revealSystemBackdrop = false)
     {
         var isDark = brightness == Brightness.dark;
+        var surfaceAlpha = revealSystemBackdrop ? 0x99L : 0xccL;
         var palette = Material.ColorScheme.CreateFromSeed(
             seedColor: Seed,
             brightness: brightness,
-            surface: new UiColor(isDark ? 0xcc141218L : 0xccfffbfeL),
+            surface: new UiColor((surfaceAlpha << 24) |
+                (isDark ? 0x00141218L : 0x00fffbfeL)),
             surfaceContainer: new UiColor(isDark ? 0xff211f26L : 0xfff3edf7L),
             surfaceContainerHigh: new UiColor(isDark ? 0xff2b2930L : 0xffece6f0L),
             outline: new UiColor(isDark ? 0xff938f99L : 0xff79747eL));
@@ -150,8 +153,10 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
             ? new Material.MaterialApp(
                 title: "Doroti Material Demo",
                 color: new UiColor(0xff6750a4L),
-                themeFactory: () => DemoTheme.Create(Brightness.light),
-                darkThemeFactory: () => DemoTheme.Create(Brightness.dark),
+                themeFactory: () => DemoTheme.Create(
+                    Brightness.light, App.ExperimentalAcrylicEnabled),
+                darkThemeFactory: () => DemoTheme.Create(
+                    Brightness.dark, App.ExperimentalAcrylicEnabled),
                 themeMode: Material.ThemeMode.system,
                 locale: new Locale("en", "US"),
                 debugShowCheckedModeBanner: false,
@@ -162,8 +167,10 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
             : new Material.MaterialApp(
                 title: "Doroti Material Demo",
                 color: new UiColor(0xff6750a4L),
-                themeFactory: () => DemoTheme.Create(Brightness.light),
-                darkThemeFactory: () => DemoTheme.Create(Brightness.dark),
+                themeFactory: () => DemoTheme.Create(
+                    Brightness.light, App.ExperimentalAcrylicEnabled),
+                darkThemeFactory: () => DemoTheme.Create(
+                    Brightness.dark, App.ExperimentalAcrylicEnabled),
                 themeMode: Material.ThemeMode.system,
                 locale: new Locale("en", "US"),
                 debugShowCheckedModeBanner: false,
@@ -611,13 +618,20 @@ internal static class App
     internal static Func<IDorotiViewEntrypoint> Definition =>
         () => new MaterialDemoEntrypoint(DemoEntryMode.Home, requireExternalUia: false);
 
-    private static bool ExperimentalAcrylicEnabled => string.Equals(
+    internal static bool ExperimentalAcrylicEnabled => string.Equals(
         Environment.GetEnvironmentVariable("DOROTI_DEMO_EXPERIMENTAL_ACRYLIC"),
         "1", StringComparison.Ordinal);
 
     internal static DorotiViewConfiguration ViewConfiguration { get; } =
         new("Doroti Material Demo", new Size(720, 640),
-            new UiColor(0xccfffbfeL), new UiColor(0xcc141218L),
+            // The Scaffold already paints the 80%-opaque Material surface.
+            // Keep the renderer base transparent in Acrylic mode so that tint
+            // is applied once and the system-blurred backdrop is not hidden by
+            // two stacked translucent fills.
+            ExperimentalAcrylicEnabled
+                ? new UiColor(0x00000000L) : new UiColor(0xccfffbfeL),
+            ExperimentalAcrylicEnabled
+                ? new UiColor(0x00000000L) : new UiColor(0xcc141218L),
             ExperimentalAcrylicEnabled
                 ? new WindowBackdropOptions(
                     WindowBackdropMode.experimentalAcrylic,

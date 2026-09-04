@@ -222,7 +222,7 @@ internal sealed class DorotiMetalSurface : View, IDisposable
             backendPackage = "Microsoft.Maui.Platforms.MacOS/0.1.0-preview.12.26368.2",
             backendSourceCommit = "229f764fd688754497fe5822213e7b13b4e9caa3",
             mauiVersion = "10.0.90",
-            skiaSharpVersion = "4.151.1",
+            skiaSharpVersion = "4.152.0-rc.1.26426.14",
             native,
             frame = new
             {

@@ -22,6 +22,9 @@ internal static class Program
         var resizeCycles = int.Parse(resizeCyclesText);
         var externalResize = args.Contains("--external-resize", StringComparer.Ordinal);
         var skipResizeBurst = args.Contains("--no-resize-burst", StringComparer.Ordinal);
+        var experimentalAcrylic = args.Contains(
+            "--experimental-acrylic", StringComparer.Ordinal);
+        ProductStartup.ExperimentalAcrylic = experimentalAcrylic;
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_ADAPTER", "HwndExactCpp");
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER", requestedPresenter);
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_VULKAN_INJECT_RESULT", injectedResult);
@@ -144,11 +147,34 @@ internal static class Program
                     diagnostics.RequestedPresenter.Equals(requestedPresenter, StringComparison.OrdinalIgnoreCase) &&
                     diagnostics.EffectivePresenter == expectedBackend,
                 "Product validation did not select the explicitly requested presenter.");
+            var expectedMode = experimentalAcrylic ? "experimentalAcrylic" : "opaque";
+            Require(diagnostics.RequestedMode == expectedMode &&
+                    diagnostics.EffectiveMode == expectedMode &&
+                    (experimentalAcrylic
+                        ? diagnostics.Acrylic is { BackdropTargetAdded: true }
+                        : diagnostics.Acrylic is null),
+                "Product validation did not preserve the requested window backdrop mode.");
+            if (experimentalAcrylic && expectedBackend == "Vulkan/Composition-Swapchain")
+                Require(diagnostics.Acrylic is {
+                            ContentIslandConnected: false,
+                            DesktopWindowTargetConnected: true
+                        } &&
+                        diagnostics.Acrylic is {
+                            HostBackdropBrushEnabled: true,
+                            BackdropTransport: "DesktopAcrylicController",
+                            SystemBackdropType: null,
+                            RedirectionBitmapAlphaEnabled: false,
+                            BackdropState: "Active"
+                        } &&
+                        diagnostics.Vulkan is { CompositeAlpha: "Premultiplied" },
+                    "Vulkan Acrylic did not layer a premultiplied top-level Presentation target over an active, host-backdrop-enabled DesktopAcrylicController window target.");
             Require(expectedBackend != "Vulkan/Composition-Swapchain" ||
-                    diagnostics.PresenterDiagnosticCoverage.Contains("DirectComposition", StringComparison.Ordinal) &&
+                    diagnostics.PresenterDiagnosticCoverage.Contains("topmost DirectComposition target on the top-level HWND", StringComparison.Ordinal) &&
+                    diagnostics.PresenterDiagnosticCoverage.Contains("single top-level client geometry", StringComparison.Ordinal) &&
+                    diagnostics.PresenterDiagnosticCoverage.Contains("identity full-capacity", StringComparison.Ordinal) &&
                     diagnostics.PresenterDiagnosticCoverage.Contains("three-slot", StringComparison.Ordinal) &&
                     diagnostics.PresenterDiagnosticCoverage.Contains("availability", StringComparison.Ordinal),
-                "Explicit Vulkan did not select the native retained-child DirectComposition topology.");
+                "Explicit Vulkan did not select the single-geometry top-level full-capacity Presentation topology.");
             Require((expectedBackend == "Vulkan/Composition-Swapchain" ||
                      diagnostics.AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase) &&
                      (diagnostics.AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
@@ -309,7 +335,7 @@ internal static class Program
                     patterns = new[] { "Invoke", "Value", "Toggle", "SelectionItem", "RangeValue" },
                     actions = ProductEntrypoint.SemanticsActions,
                     boundsAuthority = expectedBackend == "Vulkan/Composition-Swapchain"
-                        ? "current retained child DirectComposition target screen origin plus current metrics scale"
+                        ? "current top-level HWND screen origin plus current metrics scale"
                         : "current child HWND screen origin plus current metrics scale",
                 },
                 scopeBoundary = "Automated ABI, composition-state, UIA provider tree/bounds/pattern, and action dispatch contract. Physical Korean two-beolsik candidate UI, Narrator, and Accessibility Insights remain notVerified.",
@@ -336,10 +362,14 @@ internal static class Program
                 status = "PASS",
                 adapter = "HwndExactCpp",
                 nativeViewType = expectedBackend == "Vulkan/Composition-Swapchain"
-                    ? "IDCompositionTarget"
+                    ? experimentalAcrylic
+                        ? "top-level Vulkan Presentation plus Desktop Acrylic window target"
+                        : "top-level Vulkan Presentation"
                     : "Win32.ChildHwnd",
                 visibleOwner = expectedBackend == "Vulkan/Composition-Swapchain"
-                    ? "retained child DirectComposition target"
+                    ? experimentalAcrylic
+                        ? "top-level DirectComposition Vulkan Presentation target over a top-level Desktop Acrylic window target"
+                        : "top-level DirectComposition Vulkan Presentation target"
                     : "child HWND",
                 graphicsBackend = diagnostics.PresenterBackend,
                 diagnostics.AdapterDescription,
@@ -404,9 +434,20 @@ internal static class Program
 
 public sealed class ProductStartup : IDorotiApplicationStartup
 {
+    internal static bool ExperimentalAcrylic { get; set; }
+
     public void Configure(DorotiApplicationBuilder builder) => builder
         .UseEntrypoint(() => new ProductEntrypoint())
-        .UseView(new DorotiViewConfiguration("Doroti C5-A presenter validation", new Size(640, 480)));
+        .UseView(new DorotiViewConfiguration(
+            "Doroti C5-A presenter validation",
+            new Size(640, 480),
+            ExperimentalAcrylic ? new Color(0xccfffbfeL) : new Color(0xff10243aL),
+            ExperimentalAcrylic ? new Color(0xcc141218L) : new Color(0xff10243aL),
+            ExperimentalAcrylic
+                ? new WindowBackdropOptions(
+                    WindowBackdropMode.experimentalAcrylic,
+                    WindowBackdropFallback.transparent)
+                : null));
 }
 
 public sealed class ProductEntrypoint : IDorotiViewEntrypoint
@@ -595,6 +636,16 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
             new Paint { color = new Color(0xff4fc3f7) });
         canvas.drawCircle(new Offset(312, 116), 72,
             new Paint { color = new Color(0x80ff4081) });
+        // Keep an exact-background sentinel at the logical right edge. At the
+        // minimum TopRight qualification size the fixed cyan rectangle can be
+        // clipped by that edge, so the capture oracle must not mistake valid
+        // foreground coverage for a short composition surface. A real surface
+        // shortfall still removes this sentinel and is therefore observable.
+        var logicalWidth = view.metrics.logicalSize.width;
+        if (logicalWidth > 0)
+            canvas.drawRect(Rect.fromLTWH(Math.Max(0, logicalWidth - 4), 0, 4,
+                    Math.Max(0, view.metrics.logicalSize.height)),
+                new Paint { color = new Color(0xff10243a) });
         using var picture = recorder.endRecording();
         var builder = new SceneBuilder(view.viewId);
         builder.addPicture(Offset.zero, picture);

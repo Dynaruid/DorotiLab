@@ -184,6 +184,10 @@ class ProductHost final {
         composition_presentation_requested_(
             (configuration.required_features &
              DOROTI_WINDOWS_FEATURE_COMPOSITION_PRESENTATION_V1) != 0),
+        opaque_composition_background_(
+            composition_presentation_requested_ &&
+            (configuration.required_features &
+             DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1) == 0),
         composition_requested_(
             (configuration.required_features &
              (DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1 |
@@ -194,6 +198,7 @@ class ProductHost final {
   ~ProductHost() { Destroy(); }
 
   doroti_windows_status_v1 Run() {
+    CreateCompositionBackgroundBrush();
     RegisterClasses();
     CreateWindows();
     // The selected managed Composition topology owns any AppWindow association
@@ -263,7 +268,19 @@ class ProductHost final {
       return HandleChild(window, message, wparam, lparam);
     switch (message) {
       case WM_ERASEBKGND:
+        if (opaque_composition_background_ && wparam != 0) {
+          PaintCompositionBackground(reinterpret_cast<HDC>(wparam));
+        }
         return 1;
+      case WM_PAINT:
+        if (opaque_composition_background_) {
+          PAINTSTRUCT paint{};
+          const auto dc = BeginPaint(window, &paint);
+          if (dc != nullptr) PaintCompositionBackground(dc);
+          EndPaint(window, &paint);
+          return 0;
+        }
+        break;
       case WM_SIZING:
         if (composition_active_ && lparam != 0) {
           const auto* proposed = reinterpret_cast<const RECT*>(lparam);
@@ -273,14 +290,15 @@ class ProductHost final {
             PostMessageW(top_, WM_CLOSE, 0, 0);
           }
           // USER32 remains the sole geometry owner. The proposed rectangle is
-          // intentionally left untouched; this handler only makes its matching
-          // retained frame observable to DWM before the sizing loop commits it.
+          // intentionally left untouched; this callback only ensures retained
+          // capacity. The actual geometry and raster are admitted together
+          // after WM_WINDOWPOSCHANGED default processing.
           return TRUE;
         }
         break;
       case WM_SIZE:
         if (wparam == SIZE_MINIMIZED) {
-          ClearPreparedResize();
+          composition_sizing_edge_ = 0;
           minimized_ = true;
           EmitLifecycle(2);
           EmitLifecycle(3);
@@ -296,15 +314,11 @@ class ProductHost final {
           const auto height = static_cast<uint32_t>(HIWORD(lparam));
           if (width > 0 && height > 0) {
             if (composition_active_) {
-              // The Composition target lives on a retained child. Keep that
-              // child large enough for the current monitor before admitting
-              // this logical viewport so its app-painted guard can cover
-              // USER32/DWM's transient resize geometry in either direction.
-              if (!EnsureRetainedChildSurfaceCapacity(width, height)) {
-                fatal_ = true;
-                PostMessageW(top_, WM_CLOSE, 0, 0);
-                return 0;
-              }
+              PaintCompositionBackgroundNow();
+              // The top-level DirectComposition target and its client clip
+              // share one HWND geometry transaction. The retained child is
+              // only a hidden capacity handle and cannot race the visible
+              // raster during a moving-origin resize.
               ApplyCompositionResize(width, height, false);
               return 0;
             }
@@ -355,7 +369,7 @@ class ProductHost final {
         }
         break;
       case WM_ENTERSIZEMOVE:
-        ClearPreparedResize();
+        composition_sizing_edge_ = 0;
         interactive_move_ = true;
         composition_interactive_.store(true, std::memory_order_release);
         // A timed-out or failed final-settle request must not leak a DwmFlush
@@ -386,9 +400,9 @@ class ProductHost final {
               return 0;
             }
           }
-          // A position-only monitor transition has no WM_SIZE. Republish the
-          // current viewport once so the managed retained backing observes the
-          // enlarged child before another interactive drag begins.
+          // The hidden retained child's capacity is also the managed backing
+          // request. A position-only monitor transition has
+          // no WM_SIZE, so republish it once after the parent geometry changes.
           if (capacity_changed && RepublishCurrentMetrics()) QueueRender();
         }
         // WM_DPICHANGED can arrive while the shell window still straddles two
@@ -408,7 +422,6 @@ class ProductHost final {
         // Unlike the interactive pipeline there is no following WM_SIZING call
         // to admit it, so settle synchronously within the existing 100 ms bound.
         if (composition_active_) {
-          ClearPreparedResize();
           RECT client{};
           if (GetClientRect(top_, &client)) {
             const auto width = static_cast<uint32_t>(
@@ -430,7 +443,7 @@ class ProductHost final {
         interactive_move_dirty_ = false;
         return 0;
       case WM_DPICHANGED: {
-        ClearPreparedResize();
+        composition_sizing_edge_ = 0;
         const auto* suggested = reinterpret_cast<const RECT*>(lparam);
         if (suggested != nullptr)
           SetWindowPos(top_, nullptr, suggested->left, suggested->top,
@@ -572,7 +585,18 @@ class ProductHost final {
   LRESULT HandleChild(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
     switch (message) {
       case WM_ERASEBKGND:
+        if (opaque_composition_background_ && wparam != 0)
+          PaintCompositionChildBackground(reinterpret_cast<HDC>(wparam));
         return 1;
+      case WM_PAINT:
+        if (opaque_composition_background_) {
+          PAINTSTRUCT paint{};
+          const auto dc = BeginPaint(window, &paint);
+          if (dc != nullptr) PaintCompositionChildBackground(dc);
+          EndPaint(window, &paint);
+          return 0;
+        }
+        break;
       case WM_SIZE: {
         if (composition_active_) return 0;
         if (retained_oversized_child_surface_) return 0;
@@ -780,9 +804,8 @@ class ProductHost final {
       void* context, void* child_hwnd) {
     auto* host = static_cast<ProductHost*>(context);
     (void)child_hwnd;
-    // ABI v1 compatibility slot. DesktopChildSiteBridge.ResizePolicy now owns
-    // the bridge HWND geometry, so native registration is intentionally a
-    // no-op until a future ABI revision can remove this callback.
+    // ABI v1 compatibility slot. The product exposes its hidden capacity
+    // child through opaque_child_hwnd; visible Composition owns the top HWND.
     return host != nullptr && GetCurrentThreadId() == host->platform_thread_id_
                ? 0u
                : 1u;
@@ -790,13 +813,14 @@ class ProductHost final {
 
   void ResizeCompositionViewport(uint32_t width, uint32_t height,
                                  uint32_t sizing_edge = 0,
-                                 uint32_t pre_geometry = 0) {
+                                 uint32_t resize_phase =
+                                     DOROTI_WINDOWS_COMPOSITION_RESIZE_POST_GEOMETRY_V1) {
     if (callbacks_.composition_resize == nullptr || width == 0 || height == 0)
       return;
     const auto scale = static_cast<double>(GetDpiForWindow(top_)) / 96.0;
     callbacks_.composition_resize(
         callbacks_.callback_context, width, height, scale, sizing_edge,
-        pre_geometry);
+        resize_phase);
   }
 
   static uint32_t DOROTI_WINDOWS_CALL SetCursor(void* context, uint32_t cursor) {
@@ -982,14 +1006,21 @@ class ProductHost final {
     const struct Entry {
       const wchar_t* name;
       WNDPROC procedure;
-    } entries[]{{kTopClass, TopProcedure}, {kChildClass, ChildProcedure},
-                {kTaskClass, TaskProcedure}};
+      UINT style;
+      HBRUSH background;
+    } entries[]{
+        {kTopClass, TopProcedure, CS_HREDRAW | CS_VREDRAW,
+         composition_background_brush_},
+        {kChildClass, ChildProcedure, 0, composition_background_brush_},
+        {kTaskClass, TaskProcedure, 0, nullptr}};
     for (const auto& entry : entries) {
       WNDCLASSEXW value{};
       value.cbSize = sizeof(value);
+      value.style = entry.style;
       value.lpfnWndProc = entry.procedure;
       value.hInstance = instance;
       value.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+      value.hbrBackground = entry.background;
       value.lpszClassName = entry.name;
       if (!RegisterClassExW(&value) &&
           GetLastError() != ERROR_CLASS_ALREADY_EXISTS)
@@ -998,24 +1029,65 @@ class ProductHost final {
   }
 
   DWORD TopWindowStyle() const noexcept {
+    // Composition presentation has no visible child geometry. Keep
+    // WS_CLIPCHILDREN only for the legacy retained-child WSI path.
     return WS_OVERLAPPEDWINDOW |
-           (retained_oversized_child_surface_ ? WS_CLIPCHILDREN : 0u);
+           (retained_oversized_child_surface_ && !composition_active_
+                ? WS_CLIPCHILDREN
+                : 0u);
   }
 
   DWORD TopWindowExtendedStyle() const noexcept {
-    // The retained Composition child is the only client content owner. Avoid
-    // a parent USER32 redirection bitmap whose geometry could race the child's
-    // DesktopWindowTarget visual tree during top/left resizing.
-    return composition_presentation_requested_
-               ? static_cast<DWORD>(WS_EX_NOREDIRECTIONBITMAP)
-               : 0u;
+    // Keep the ordinary top-level redirection surface available as the opaque
+    // Vulkan fallback. Acrylic supplies its material through a host-backdrop-
+    // enabled non-topmost DesktopWindowTarget under the native topmost target.
+    return 0;
   }
 
-  void ClearPreparedResize() noexcept {
-    prepared_resize_generation_ = 0;
-    prepared_resize_width_ = 0;
-    prepared_resize_height_ = 0;
-    prepared_resize_displayed_ = false;
+  void CreateCompositionBackgroundBrush() {
+    if (!opaque_composition_background_ ||
+        composition_background_brush_ != nullptr)
+      return;
+    const auto argb = configuration_.composition_background_argb != 0
+                          ? configuration_.composition_background_argb
+                          : 0xff000000u;
+    composition_background_brush_ = CreateSolidBrush(RGB(
+        (argb >> 16) & 0xffu, (argb >> 8) & 0xffu, argb & 0xffu));
+    if (composition_background_brush_ == nullptr) throw std::bad_alloc();
+  }
+
+  void PaintCompositionBackground(HDC dc) noexcept {
+    if (!opaque_composition_background_ || dc == nullptr ||
+        composition_background_brush_ == nullptr || top_ == nullptr)
+      return;
+    RECT client{};
+    if (GetClientRect(top_, &client))
+      FillRect(dc, &client, composition_background_brush_);
+  }
+
+  void PaintCompositionBackgroundNow() noexcept {
+    if (!opaque_composition_background_ || top_ == nullptr) return;
+    const auto dc = GetDC(top_);
+    if (dc == nullptr) return;
+    PaintCompositionBackground(dc);
+    ReleaseDC(top_, dc);
+  }
+
+  void PaintCompositionChildBackground(HDC dc) noexcept {
+    if (!opaque_composition_background_ || dc == nullptr ||
+        composition_background_brush_ == nullptr || child_ == nullptr)
+      return;
+    RECT client{};
+    if (GetClientRect(child_, &client))
+      FillRect(dc, &client, composition_background_brush_);
+  }
+
+  void PaintCompositionChildBackgroundNow() noexcept {
+    if (!opaque_composition_background_ || child_ == nullptr) return;
+    const auto dc = GetDC(child_);
+    if (dc == nullptr) return;
+    PaintCompositionChildBackground(dc);
+    ReleaseDC(child_, dc);
   }
 
   bool PrepareCompositionSizingFrame(
@@ -1040,19 +1112,10 @@ class ProductHost final {
 
     const auto width = static_cast<uint32_t>(proposed_width - frame_width);
     const auto height = static_cast<uint32_t>(proposed_height - frame_height);
-    if (!EnsureRetainedChildSurfaceCapacity(width, height)) return false;
-
-    ClearPreparedResize();
-    ResizeCompositionViewport(width, height, sizing_edge, 1);
-    const auto scale = static_cast<double>(GetDpiForWindow(top_)) / 96.0;
-    if (UpdateMetrics(width, height, scale) || RepublishCurrentMetrics()) {
-      prepared_resize_generation_ = current_generation_;
-      prepared_resize_width_ = width;
-      prepared_resize_height_ = height;
-      prepared_resize_displayed_ = WaitForExactResize(
-          prepared_resize_generation_, QueueRender());
-    }
-    return true;
+    composition_sizing_edge_ = sizing_edge;
+    // Grow the hidden capacity child only when monitor capacity changes;
+    // ordinary top-level resize never changes the visible target.
+    return EnsureRetainedChildSurfaceCapacity(width, height);
   }
 
   void FlushPresentedResizeToDwm() noexcept {
@@ -1075,49 +1138,38 @@ class ProductHost final {
 
   void ApplyCompositionResize(uint32_t width, uint32_t height,
                               bool geometry_transaction_returned) {
-    if (geometry_transaction_returned)
-      FlushCompositionShrinkGeometryToDwm();
-    const auto prepared_matches =
-        prepared_resize_generation_ == current_generation_ &&
-        prepared_resize_width_ == width &&
-        prepared_resize_height_ == height;
-    if (prepared_matches && prepared_resize_displayed_) {
-      // WM_SIZING already observed this exact tagged frame in a DWM
-      // composition frame before USER32 committed the new geometry.
-      ClearPreparedResize();
-      return;
-    }
-    const auto recover_prepared =
-        prepared_matches && !prepared_resize_displayed_;
-    ClearPreparedResize();
-    ResizeCompositionViewport(width, height, 0, 0);
+    ResizeCompositionViewport(
+        width, height, composition_sizing_edge_,
+        DOROTI_WINDOWS_COMPOSITION_RESIZE_POST_GEOMETRY_V1);
     const auto scale = static_cast<double>(GetDpiForWindow(top_)) / 96.0;
     auto exact_presented = false;
-    if (UpdateMetrics(width, height, scale) ||
-        (recover_prepared && RepublishCurrentMetrics())) {
+    if (UpdateMetrics(width, height, scale)) {
       const auto generation = current_generation_;
       const auto causal = QueueRender();
-      exact_presented = WaitForExactResize(generation, causal);
+      const auto origin_moving_edge =
+          composition_sizing_edge_ == WMSZ_LEFT ||
+          composition_sizing_edge_ == WMSZ_TOP ||
+          composition_sizing_edge_ == WMSZ_TOPLEFT ||
+          composition_sizing_edge_ == WMSZ_TOPRIGHT ||
+          composition_sizing_edge_ == WMSZ_BOTTOMLEFT;
+      // A synchronous GPU wait in every left/top WM_SIZE throttles USER32's
+      // moving origin to raster cadence and makes the entire client appear to
+      // jump. Keep the current full-capacity frame attached to the HWND while
+      // the raster worker coalesces pending work to the latest generation.
+      // Fixed-origin edges retain their exact per-step handshake. The final
+      // WM_EXITSIZEMOVE transaction always settles synchronously.
+      if (geometry_transaction_returned || !interactive_move_ ||
+          !origin_moving_edge) {
+        exact_presented = WaitForExactResize(generation, causal);
+      }
     }
-    if (post_present_dwm_flush_ && exact_presented)
+    // The top-level DirectComposition target has already observed the requested
+    // Presentation frame before returning its terminal. A second platform-
+    // thread DwmFlush here serializes the modal sizing loop for no additional
+    // ownership guarantee and visibly lowers drag cadence.
+    if (post_present_dwm_flush_ && exact_presented &&
+        !composition_presentation_requested_)
       FlushPresentedResizeToDwm();
-  }
-
-  void FlushCompositionShrinkGeometryToDwm() noexcept {
-    // WM_SIZE observes USER32's new client metrics before that smaller clip is
-    // necessarily visible in DWM.  Publishing a smaller Presentation viewport
-    // immediately can therefore race the previous, larger on-screen window and
-    // expose its unowned right/bottom tail.  Drain the already-issued HWND
-    // geometry first; the current larger frame remains safely parent-clipped
-    // until the exact smaller replacement is presented below.
-    const auto result = DwmFlush();
-    if (SUCCEEDED(result)) return;
-    ++dwm_flush_failure_count_;
-    wchar_t message[176]{};
-    swprintf_s(message,
-               L"Doroti composition shrink-geometry DwmFlush failed: 0x%08X\n",
-               static_cast<unsigned int>(result));
-    OutputDebugStringW(message);
   }
 
   SIZE ResolveRetainedChildSurfaceCapacity(uint32_t width,
@@ -1128,10 +1180,20 @@ class ProductHost final {
     MONITORINFO info{};
     info.cbSize = sizeof(info);
     if (monitor != nullptr && GetMonitorInfoW(monitor, &info)) {
-      desired_width = std::max(desired_width,
-                               info.rcWork.right - info.rcWork.left);
-      desired_height = std::max(desired_height,
-                                info.rcWork.bottom - info.rcWork.top);
+      // WM_SIZE/client coordinates in this host are logical while monitor
+      // rectangles are physical on a scaled display. Keep the retained child
+      // and managed Presentation capacity in the same coordinate space.
+      const auto dpi = std::max(96u, GetDpiForWindow(top_));
+      const auto monitor_width = std::max<LONG>(
+          1, static_cast<LONG>(MulDiv(
+                 info.rcWork.right - info.rcWork.left, 96,
+                 static_cast<int>(dpi))));
+      const auto monitor_height = std::max<LONG>(
+          1, static_cast<LONG>(MulDiv(
+                 info.rcWork.bottom - info.rcWork.top, 96,
+                 static_cast<int>(dpi))));
+      desired_width = std::max(desired_width, monitor_width);
+      desired_height = std::max(desired_height, monitor_height);
     }
 
     // A window spanning beyond its monitor grows in bounded chunks. Ordinary
@@ -1145,6 +1207,13 @@ class ProductHost final {
       desired_height = std::max(
           desired_height,
           retained_surface_height_ + std::max(256L, retained_surface_height_ / 4));
+    constexpr LONG kPresentationCapacityQuantum = 256;
+    desired_width =
+        ((desired_width + kPresentationCapacityQuantum - 1) /
+         kPresentationCapacityQuantum) * kPresentationCapacityQuantum;
+    desired_height =
+        ((desired_height + kPresentationCapacityQuantum - 1) /
+         kPresentationCapacityQuantum) * kPresentationCapacityQuantum;
     return {desired_width, desired_height};
   }
 
@@ -1153,16 +1222,21 @@ class ProductHost final {
       bool* capacity_changed = nullptr) {
     if (capacity_changed != nullptr) *capacity_changed = false;
     if (!retained_oversized_child_surface_) return true;
-    if (width <= static_cast<uint32_t>(retained_surface_width_) &&
-        height <= static_cast<uint32_t>(retained_surface_height_))
-      return true;
-    const auto capacity = ResolveRetainedChildSurfaceCapacity(width, height);
-    if (!SetWindowPos(child_, nullptr, 0, 0, capacity.cx, capacity.cy,
-                      SWP_NOZORDER | SWP_NOACTIVATE))
-      return false;
-    retained_surface_width_ = capacity.cx;
-    retained_surface_height_ = capacity.cy;
-    if (capacity_changed != nullptr) *capacity_changed = true;
+    const auto needs_capacity =
+        width > static_cast<uint32_t>(retained_surface_width_) ||
+        height > static_cast<uint32_t>(retained_surface_height_);
+    if (needs_capacity) {
+      const auto capacity = ResolveRetainedChildSurfaceCapacity(width, height);
+      if (!SetWindowPos(child_, nullptr, 0, 0, capacity.cx, capacity.cy,
+                        SWP_NOZORDER | SWP_NOACTIVATE))
+        return false;
+      PaintCompositionChildBackgroundNow();
+      RECT actual{};
+      if (!GetClientRect(child_, &actual)) return false;
+      retained_surface_width_ = actual.right - actual.left;
+      retained_surface_height_ = actual.bottom - actual.top;
+      if (capacity_changed != nullptr) *capacity_changed = true;
+    }
     return true;
   }
 
@@ -1181,12 +1255,19 @@ class ProductHost final {
                            CW_USEDEFAULT, CW_USEDEFAULT, bounds.right - bounds.left,
                            bounds.bottom - bounds.top, nullptr, nullptr, instance, this);
     if (top_ == nullptr) throw std::bad_alloc();
+    if (opaque_composition_background_) PaintCompositionBackgroundNow();
     ApplyTopLevelTheme();
     stable_monitor_ = MonitorFromWindow(top_, MONITOR_DEFAULTTONEAREST);
+    // Vulkan Composition keeps this child only as a stable monitor-sized
+    // capacity authority for the managed backing allocation. It is hidden;
+    // the native topmost target on the top-level HWND is the sole app-raster
+    // owner. Non-Composition presenters keep the ordinary visible child.
     const auto child_style = WS_CHILD |
-        (!composition_active_ || composition_presentation_requested_
-             ? static_cast<uint32_t>(WS_VISIBLE)
-             : 0u);
+        (!composition_active_ ? static_cast<uint32_t>(WS_VISIBLE) : 0u);
+    const auto child_extended_style =
+        composition_active_ && !opaque_composition_background_
+            ? WS_EX_NOREDIRECTIONBITMAP
+            : 0u;
     RECT client{};
     if (!GetClientRect(top_, &client)) throw std::bad_alloc();
     auto child_width = std::max(1L, client.right - client.left);
@@ -1197,7 +1278,7 @@ class ProductHost final {
       child_width = retained_surface_width_ = capacity.cx;
       child_height = retained_surface_height_ = capacity.cy;
     }
-    child_ = CreateWindowExW(0, kChildClass, L"", child_style,
+    child_ = CreateWindowExW(child_extended_style, kChildClass, L"", child_style,
                              0, 0, child_width, child_height,
                              top_, nullptr, instance, this);
     task_ = CreateWindowExW(0, kTaskClass, L"", 0, 0, 0, 0, 0, HWND_MESSAGE,
@@ -1206,6 +1287,13 @@ class ProductHost final {
     if (!SetWindowPos(child_, nullptr, 0, 0, child_width, child_height,
                       SWP_NOZORDER | SWP_NOACTIVATE))
       throw std::bad_alloc();
+    PaintCompositionChildBackgroundNow();
+    if (retained_oversized_child_surface_) {
+      RECT actual{};
+      if (!GetClientRect(child_, &actual)) throw std::bad_alloc();
+      retained_surface_width_ = actual.right - actual.left;
+      retained_surface_height_ = actual.bottom - actual.top;
+    }
   }
 
   void AttachInputServices() {
@@ -2042,6 +2130,9 @@ class ProductHost final {
     if (child_ != nullptr) DestroyWindow(child_);
     if (top_ != nullptr) DestroyWindow(top_);
     task_ = child_ = top_ = nullptr;
+    if (composition_background_brush_ != nullptr)
+      DeleteObject(composition_background_brush_);
+    composition_background_brush_ = nullptr;
     app_window_ = nullptr;
   }
 
@@ -2050,6 +2141,7 @@ class ProductHost final {
   HWND top_{};
   HWND child_{};
   HWND task_{};
+  HBRUSH composition_background_brush_{};
   HMONITOR stable_monitor_{};
   winrt::Microsoft::UI::Windowing::AppWindow app_window_{nullptr};
   DWORD platform_thread_id_{};
@@ -2084,17 +2176,15 @@ class ProductHost final {
   bool post_present_dwm_flush_{};
   bool retained_oversized_child_surface_{};
   bool composition_presentation_requested_{};
+  bool opaque_composition_background_{};
   LONG retained_surface_width_{};
   LONG retained_surface_height_{};
+  uint32_t composition_sizing_edge_{};
   std::atomic_bool composition_interactive_{};
   std::atomic<uint64_t> composition_flush_generation_{};
   std::atomic<uint64_t> opaque_flush_generation_{};
   std::atomic<uint64_t> dwm_flush_failure_count_{};
   uint64_t presented_resize_dwm_flush_count_{};
-  uint64_t prepared_resize_generation_{};
-  uint32_t prepared_resize_width_{};
-  uint32_t prepared_resize_height_{};
-  bool prepared_resize_displayed_{};
   bool interactive_move_dirty_{};
   bool composition_requested_{};
   bool composition_active_{};
@@ -2222,7 +2312,8 @@ doroti_windows_status_v1 DOROTI_WINDOWS_CALL doroti_windows_run_v1(
            DOROTI_WINDOWS_FEATURE_EXPERIMENTAL_ACRYLIC_V1 |
            DOROTI_WINDOWS_FEATURE_POST_PRESENT_DWM_FLUSH_V1 |
            DOROTI_WINDOWS_FEATURE_RETAINED_OVERSIZED_CHILD_SURFACE_V1 |
-           DOROTI_WINDOWS_FEATURE_COMPOSITION_PRESENTATION_V1)) != 0)
+           DOROTI_WINDOWS_FEATURE_COMPOSITION_PRESENTATION_V1 |
+           DOROTI_WINDOWS_FEATURE_VULKAN_ACRYLIC_V1)) != 0)
     return DOROTI_WINDOWS_STATUS_NOT_IMPLEMENTED_V1;
 
   bool bootstrap_initialized = false;

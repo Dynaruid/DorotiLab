@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using Doroti.Skia.RuntimeEffects;
+using Microsoft.UI.Composition.SystemBackdrops;
 using Silk.NET.Core;
 using Silk.NET.Core.Contexts;
 using Silk.NET.Core.Native;
@@ -12,10 +13,16 @@ using SkiaSharp;
 using VkDevice = Silk.NET.Vulkan.Device;
 using VkImage = Silk.NET.Vulkan.Image;
 using VkSemaphore = Silk.NET.Vulkan.Semaphore;
+using SystemComposition = Windows.UI.Composition;
+using SystemCompositionDesktop = Windows.UI.Composition.Desktop;
+using Brightness = Doroti.Ui.Brightness;
+using WindowBackdropOptions = Doroti.Ui.WindowBackdropOptions;
 
 namespace Doroti.Host.WindowsAppSdk;
 
-internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsManagedHwndPresenterBase
+internal sealed unsafe partial class WindowsManagedVulkanPresenter :
+    WindowsManagedHwndPresenterBase,
+    IWindowsAcrylicPresenter
 {
     private const ulong FenceTimeoutNanoseconds = 5_000_000_000;
     private const ulong MaximumRetainedStorageAllocationBytes = 512UL * 1024 * 1024;
@@ -26,9 +33,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     private const uint WaitFailed = uint.MaxValue;
     private const int BufferCount = 3;
     private const int CapacityQuantum = 256;
+    private const int DwmwaUseHostBackdropBrush = 17;
     private const ImageUsageFlags PresentationImageUsage = ImageUsageFlags.TransferDstBit;
 
     private readonly bool _diagnosticsEnabled;
+    private readonly WindowsAcrylicOptionsState? _acrylicOptions;
     private readonly string _loaderPath;
     private readonly string _loaderSha256;
     private readonly Vk _vk;
@@ -43,7 +52,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     private KhrSwapchain? _swapchainApi;
     private KhrExternalMemoryWin32? _externalMemoryApi;
     private GRVkExtensions? _skiaExtensions;
-    private GRVkBackendContext? _skiaBackend;
+    private GRSilkNetBackendContext? _skiaBackend;
     private GRContext? _context;
     private VkImage _backingImage;
     private DeviceMemory _backingMemory;
@@ -75,14 +84,22 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     private nint _presentationContext;
     private nint _compositionSurfaceHandle;
     private int _selectedSlot = -1;
+    private long _selectedViewportRevision;
     private ulong _presentTag;
     private readonly object _viewportGate = new();
+    private SystemCompositionWorker? _composition;
+    private VulkanAcrylicScene? _acrylicScene;
     private long _viewportRevision;
     private long _displayWaitViewportRevision;
     private int _viewportWidth;
     private int _viewportHeight;
     private double _viewportScale = 1;
-    private nint _presentationWindow;
+    private nint _topLevelWindow;
+    private bool _backdropTargetAdded;
+    private bool _contentIslandConnected;
+    private bool _desktopWindowTargetConnected;
+    private bool _compositionSurfaceConnected;
+    private bool _hostBackdropBrushEnabled;
     private VulkanCompositionProbe _compositionProbe;
     private bool _presentationPoisoned;
     private bool _presentationRetiring;
@@ -117,6 +134,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     private ulong _compositionFrameWaitCount;
     private ulong _compositionFrameObservedCount;
     private ulong _compositionFrameWaitTimeoutCount;
+    private ulong _maximumRegisteredPresentationSlots;
+    private ulong _unavailablePresentationSkipCount;
     private long _lastCompositionFrameWaitMicroseconds;
     private long _maximumCompositionFrameWaitMicroseconds;
     private long _lastCopyFenceWaitMicroseconds;
@@ -150,9 +169,15 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     private bool _rendererReleasePreflightReportedDeviceLoss;
     private bool _disposed;
 
-    internal WindowsManagedVulkanPresenter(bool enableDiagnostics)
+    internal WindowsManagedVulkanPresenter(
+        bool enableDiagnostics,
+        WindowBackdropOptions? acrylicOptions = null,
+        Brightness systemBrightness = Brightness.light)
     {
         _diagnosticsEnabled = enableDiagnostics;
+        if (acrylicOptions is not null)
+            _acrylicOptions = new WindowsAcrylicOptionsState(
+                acrylicOptions, systemBrightness);
         _loaderPath = Path.GetFullPath(Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.System), "vulkan-1.dll"));
         if (!File.Exists(_loaderPath))
@@ -168,16 +193,27 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     internal override ulong NativeRequiredFeatures =>
         WindowsNativeV1.PostPresentDwmFlushFeature |
         WindowsNativeV1.RetainedOversizedChildSurfaceFeature |
-        WindowsNativeV1.CompositionPresentationFeature;
+        WindowsNativeV1.CompositionPresentationFeature |
+        (_acrylicOptions is null
+            ? 0
+            : WindowsNativeV1.ExperimentalAcrylicFeature |
+              WindowsNativeV1.VulkanAcrylicFeature);
     internal override bool UsesCompositionTopology => true;
-    internal override string VisibleOwner => "retained child DirectComposition target";
-    internal override string TopologySlug => "retained-child-directcomposition-target";
+    internal override string VisibleOwner => _acrylicOptions is null
+        ? "top-level DirectComposition Vulkan Presentation target"
+        : "top-level DirectComposition Vulkan Presentation target over a top-level Desktop Acrylic window target";
+    internal override string TopologySlug => _acrylicOptions is null
+        ? "top-level-dcomp-vulkan-presentation"
+        : "top-level-dcomp-vulkan-presentation-acrylic";
     internal override bool InvalidatesRendererSurfaceResourcesOnResize => false;
     internal override string DiagnosticCoverage =>
         "Vulkan 1.1 retained offscreen backing, exact-LUID D3D11 Presentation buffers, dedicated D3D11_TEXTURE imports, " +
         "external queue-family ownership transfers, CPU copy-fence completion before native Present, three-slot availability retirement, " +
-        "pre-geometry tagged composition-frame acknowledgement, native retained-child DirectComposition clipping, " +
-        "identity full-capacity Presentation coverage with a Vulkan-retained previous-frame guard, " +
+        "post-geometry current-plus-latest presentation with nonblocking moving-origin resize, a native topmost DirectComposition target on the top-level HWND, " +
+        "identity full-capacity Presentation coverage clipped by the single top-level client geometry, " +
+        (_acrylicOptions is null
+            ? "opaque alpha, "
+            : "premultiplied content over a host-backdrop-enabled DesktopAcrylicController window target, ") +
         "checked VkResult/HRESULT values, and bounded actual-size fallback";
     internal override int Width { get; set; }
     internal override int Height { get; set; }
@@ -240,6 +276,64 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         MaximumCompositionFrameWaitMicroseconds: _maximumCompositionFrameWaitMicroseconds,
         RecentEvents: SnapshotEvents());
 
+    bool IWindowsAcrylicPresenter.AcrylicEnabled => _acrylicOptions is not null;
+
+    void IWindowsAcrylicPresenter.ApplySystemBrightness(Brightness brightness) =>
+        ApplySystemBrightness(brightness);
+
+    internal void ApplySystemBrightness(Brightness brightness)
+    {
+        _acrylicOptions?.ApplySystemBrightness(brightness);
+    }
+
+    ValueTask<ReadOnlyMemory<byte>?> IWindowsAcrylicPresenter.HandleRuntimeMessageAsync(
+        ReadOnlyMemory<byte>? data,
+        CancellationToken cancellationToken)
+    {
+        var options = _acrylicOptions ?? throw new InvalidOperationException(
+            "The Vulkan presenter was not configured for Acrylic.");
+        return options.HandleRuntimeMessageAsync(
+            data, cancellationToken, CreateAcrylicSnapshot);
+    }
+
+    AcrylicPresenterSnapshot IWindowsAcrylicPresenter.Snapshot() =>
+        CreateAcrylicSnapshot();
+
+    private AcrylicPresenterSnapshot CreateAcrylicSnapshot()
+    {
+        var state = _acrylicOptions ?? throw new InvalidOperationException(
+            "The Vulkan presenter was not configured for Acrylic.");
+        var options = state.Options;
+        var backdropState = _composition is not null && _acrylicScene is not null
+            ? _composition.Invoke(() => _acrylicScene.State)
+            : null;
+        return new AcrylicPresenterSnapshot(
+            "experimentalAcrylic", "experimentalAcrylic", null,
+            _compositionProbe.PresentationSupported != 0,
+            _compositionProbe.IndependentFlipSupported != 0,
+            $"{_adapterLuidHigh}:{_adapterLuidLow}",
+            _deviceVendorId, _deviceId,
+            options.acrylicKind.ToString(), state.EffectiveTheme,
+            options.tintColor?.value, options.tintOpacity, options.luminosityOpacity,
+            WindowsManagedAcrylicCompositionPresenter.LogicalEdgeBudget,
+            WindowsManagedAcrylicCompositionPresenter.PhysicalEdgeBudget,
+            _maximumRegisteredPresentationSlots,
+            _backingReuseCount,
+            _unavailablePresentationSkipCount,
+            state.AcceptedOptionRevisions,
+            state.AppliedOptionRevisions,
+            state.SupersededOptionRevisions,
+            state.FailedOptionRevisions,
+            _backdropTargetAdded,
+            _contentIslandConnected,
+            _desktopWindowTargetConnected,
+            _hostBackdropBrushEnabled,
+            BackdropTransport: "DesktopAcrylicController",
+            SystemBackdropType: null,
+            RedirectionBitmapAlphaEnabled: false,
+            BackdropState: backdropState);
+    }
+
     internal bool HasPendingInjectedResult
     {
         get
@@ -252,20 +346,66 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
 
     internal override void AttachWindow(nint topLevelWindow)
     {
-        AttachWindows(topLevelWindow, topLevelWindow);
+        AttachTopLevelWindow(topLevelWindow);
     }
 
-    internal void AttachWindows(nint topLevelWindow, nint presentationWindow)
+    internal void AttachTopLevelWindow(nint topLevelWindow)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (topLevelWindow == 0) throw new ArgumentOutOfRangeException(nameof(topLevelWindow));
-        if (presentationWindow == 0) throw new ArgumentOutOfRangeException(nameof(presentationWindow));
-        if (_presentationWindow != 0)
+        if (_topLevelWindow != 0)
             throw new InvalidOperationException("The Vulkan Composition presenter already owns a window.");
 
-        _presentationWindow = presentationWindow;
         _compositionReleased = false;
-        RecordEvent("retained child DirectComposition target requested");
+        _topLevelWindow = topLevelWindow;
+        try
+        {
+            if (_acrylicOptions is not null)
+            {
+                InitializeAcrylicTarget(topLevelWindow);
+                RecordEvent("Desktop Acrylic window target connected; top-level Vulkan target pending first surface");
+            }
+            else
+            {
+                RecordEvent("top-level HWND attached; top-level Vulkan target pending first surface");
+            }
+        }
+        catch
+        {
+            ReleaseAcrylicTarget();
+            _topLevelWindow = 0;
+            throw;
+        }
+    }
+
+    private void InitializeAcrylicTarget(nint topLevelWindow)
+    {
+        if (_composition is not null || _acrylicScene is not null)
+            throw new InvalidOperationException("The Vulkan Acrylic window-target topology is already initialized.");
+        var acrylic = _acrylicOptions ?? throw new InvalidOperationException(
+            "The Vulkan presenter was not configured for Acrylic.");
+        if (!DesktopAcrylicController.IsSupported())
+            throw new PlatformNotSupportedException(
+                "Desktop Acrylic is not supported by this Windows session.");
+
+        SetHostBackdropBrush(topLevelWindow, enabled: true, throwOnFailure: true);
+
+        _composition = new SystemCompositionWorker();
+        var composition = _composition;
+        _acrylicScene = composition.Invoke(() => new VulkanAcrylicScene(
+            composition.Compositor, topLevelWindow,
+            acrylic.Options, acrylic.SystemBrightness));
+        _backdropTargetAdded = _acrylicScene.BackdropTargetAdded;
+        _desktopWindowTargetConnected = _acrylicScene.DesktopWindowTargetConnected;
+        if (!_backdropTargetAdded)
+            throw new InvalidOperationException(
+                "DesktopAcrylicController.SetTarget did not attach to the top-level window target.");
+        if (!_desktopWindowTargetConnected)
+            throw new InvalidOperationException(
+                "The Vulkan Desktop Acrylic window target did not connect.");
+        var scene = _acrylicScene;
+        acrylic.Attach((options, brightness) =>
+            composition.Invoke(() => scene.ApplyAcrylic(options, brightness)));
     }
 
     internal override void ResizeViewport(
@@ -275,8 +415,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
         if (!double.IsFinite(scale) || scale <= 0) throw new ArgumentOutOfRangeException(nameof(scale));
-        if (_presentationWindow == 0)
-            throw new InvalidOperationException("The Vulkan DirectComposition target is not attached.");
+        if (_topLevelWindow == 0)
+            throw new InvalidOperationException("The Vulkan top-level window is not attached.");
 
         lock (_viewportGate)
         {
@@ -284,9 +424,20 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
             _viewportWidth = width;
             _viewportHeight = height;
             _viewportScale = scale;
-            _displayWaitViewportRevision = preGeometry ? _viewportRevision : 0;
+            // Left/top moves the HWND origin. Waiting for DWM on every such
+            // raster would throttle the USER32 geometry loop and make all
+            // client pixels jump together. The top-level Composition target
+            // moves with that same HWND while the worker coalesces to latest.
+            // Fixed-origin edges preserve their per-step display boundary.
+            _displayWaitViewportRevision =
+                preGeometry || sizingEdge != 0 && !MovesClientOrigin(sizingEdge)
+                    ? _viewportRevision
+                    : 0;
         }
     }
+
+    private static bool MovesClientOrigin(uint sizingEdge) =>
+        sizingEdge is 1 or 3 or 4 or 5 or 7;
 
     internal override bool EnsureTarget(nint childWindow, int width, int height)
     {
@@ -297,8 +448,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
         _lastTargetQpc = Stopwatch.GetTimestamp();
 
-        if (_presentationWindow == 0)
-            throw new InvalidOperationException("The Vulkan DirectComposition topology is not attached.");
+        if (_topLevelWindow == 0)
+            throw new InvalidOperationException("The Vulkan top-level topology is not attached.");
         if (_presentationPoisoned)
             throw new InvalidOperationException(
                 "The Vulkan Composition manager is poisoned after an indeterminate Present failure.");
@@ -309,7 +460,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
 
         var capacityWidth = width;
         var capacityHeight = height;
-        // The retained child can grow when its top-level parent moves to a
+        // The retained backing can grow when its top-level parent moves to a
         // larger monitor without changing the logical viewport. Always fold
         // its current capacity into the backing requirement; checking only on
         // first allocation leaves the guard stranded at the creation monitor.
@@ -322,7 +473,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         capacityHeight = RoundCapacity(capacityHeight);
         var resized = Width != 0 && (Width != width || Height != height);
         EnsureBackingCapacity(capacityWidth, capacityHeight);
-
+        EnsureAcrylicTarget();
         if (_presentationSlots.All(static slot => !slot.Registered))
         {
             for (var index = 0; index < BufferCount; index++)
@@ -337,6 +488,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         if (_selectedSlot < 0)
         {
             _lastAcquireResult = Result.NotReady;
+            _unavailablePresentationSkipCount++;
             return false;
         }
         var slot = _presentationSlots[_selectedSlot];
@@ -353,13 +505,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
                 _selectedSlot = -1;
                 return false;
             }
-            // The Presentation surface stays at the retained capacity with an
-            // identity transform. Paint the logical viewport at its origin so
-            // the parent HWND may clip either the old or new geometry without
-            // ever exposing an uncovered transformed-surface tail.
+            Width = width;
+            Height = height;
+            _selectedViewportRevision = _viewportRevision;
         }
-        Width = width;
-        Height = height;
         if (resized) ResizeBuffersCount++;
         _acquired = true;
         _acquiredImageIndex = checked((uint)_selectedSlot);
@@ -390,8 +539,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         LastPresentSucceeded = false;
         try
         {
-            T result;
-            result = paint(backing);
+            // The raster target and client clip share one top-level HWND
+            // geometry. Paint replacements at the same origin; an edge-based
+            // offset would make the entire scene jump at raster cadence.
+            var result = paint(backing);
             backing.Canvas.Flush();
             context.Flush(backing);
             context.Submit(false);
@@ -426,6 +577,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
             lock (_viewportGate)
             {
                 if (!shouldPresent(result) ||
+                    _viewportRevision != _selectedViewportRevision ||
                     _viewportWidth != Width || _viewportHeight != Height)
                     return result;
                 // Keep the viewport authority stable while the retained guard
@@ -437,10 +589,14 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
                     _displayWaitViewportRevision == _viewportRevision;
                 var waitStarted = waitForCompositionFrame
                     ? Stopwatch.GetTimestamp() : 0;
+                // Keep the full retained buffer at identity. The top-level
+                // client is the only clip; there is no visible child geometry
+                // or visual transform that can commit out of phase with it.
                 var present = PresentCropped(
                     _presentationContext, checked((uint)slotIndex),
                     0, 0,
-                    checked((uint)Width), checked((uint)Height), ++_presentTag,
+                    checked((uint)slot.CapacityWidth),
+                    checked((uint)slot.CapacityHeight), ++_presentTag,
                     waitForCompositionFrame ? 1u : 0u,
                     CompositionFrameWaitMilliseconds,
                     out var compositionFrameObserved,
@@ -481,7 +637,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
                 _surfaceHeight = slot.CapacityHeight;
                 RecordEvent(
                     $"composition present slot={slotIndex} id={presentId} retiring={retiringFenceValue} " +
-                    $"source=0,0,{Width}x{Height} " +
+                    $"source=0,0,{slot.CapacityWidth}x{slot.CapacityHeight} " +
+                    $"viewport={Width}x{Height}@0,0 " +
                     $"displayWait={(waitForCompositionFrame ? 1 : 0)} " +
                     $"displayObserved={(compositionFrameReady ? 1 : 0)}");
             }
@@ -497,6 +654,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         finally
         {
             _selectedSlot = -1;
+            _selectedViewportRevision = 0;
             _acquired = false;
         }
     }
@@ -599,6 +757,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         slot.AvailableEvent = availableEvent;
         slot.CapacityWidth = width;
         slot.CapacityHeight = height;
+        _maximumRegisteredPresentationSlots = Math.Max(
+            _maximumRegisteredPresentationSlots,
+            checked((ulong)_presentationSlots.Count(static item => item.Registered)));
         try
         {
             ImportPresentationTexture(slot, sharedHandle);
@@ -731,21 +892,22 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
             PipelineStageFlags.TransferBit, 0,
             0, null, 0, null, 3, acquireBarriers);
 
-        // On first use the full backing has just been app-cleared, so seed the
-        // entire guard. Later frames replace only their exact logical viewport;
-        // pixels outside it remain the last app-owned frame rather than the HWND
-        // validation/background color while geometry and Present commits cross.
-        var viewportCopy = new ImageCopy
+        // Refresh the complete retained capacity. The renderer has cleared it
+        // to the app background and painted this frame's exact viewport at the
+        // top-level origin, so an old layout cannot remain in any overscan
+        // pixels exposed by an asynchronously moving HWND.
+        var retainedCopyFromBacking = new ImageCopy
         {
             SrcSubresource = ColorSubresourceLayers(),
             DstSubresource = ColorSubresourceLayers(),
             Extent = new Extent3D(
-                checked((uint)(_retainedFrameInitialized ? Width : _backingCapacityWidth)),
-                checked((uint)(_retainedFrameInitialized ? Height : _backingCapacityHeight)), 1),
+                checked((uint)_backingCapacityWidth),
+                checked((uint)_backingCapacityHeight), 1),
         };
         _vk.CmdCopyImage(
             _commandBuffer, _backingImage, ImageLayout.TransferSrcOptimal,
-            _retainedFrameImage, ImageLayout.TransferDstOptimal, 1, &viewportCopy);
+            _retainedFrameImage, ImageLayout.TransferDstOptimal, 1,
+            &retainedCopyFromBacking);
 
         var retainedReady = ImageBarrier(
             _retainedFrameImage, ImageLayout.TransferDstOptimal, ImageLayout.TransferSrcOptimal,
@@ -906,8 +1068,33 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     {
         if (_compositionReleased) return;
         _compositionReleased = true;
-        _presentationWindow = 0;
-        RecordEvent("retained child DirectComposition target release requested");
+        _acrylicOptions?.Detach();
+        ReleaseAcrylicTarget();
+        RecordEvent(_acrylicOptions is null
+            ? "top-level Vulkan topology released"
+            : "top-level Vulkan plus Desktop Acrylic window-target topology released");
+        _compositionSurfaceConnected = false;
+        _topLevelWindow = 0;
+        _backdropTargetAdded = false;
+        _contentIslandConnected = false;
+        _acrylicOptions?.Dispose();
+    }
+
+    private void ClearCompositionSurfaceBinding()
+    {
+        if (!_compositionSurfaceConnected) return;
+        _compositionSurfaceConnected = false;
+    }
+
+    private void ReleaseAcrylicTarget()
+    {
+        if (_acrylicScene is not null && _composition is not null)
+            _composition.Invoke(_acrylicScene.Dispose);
+        _acrylicScene = null;
+        _composition?.Dispose();
+        _composition = null;
+        if (_hostBackdropBrushEnabled && _topLevelWindow != 0)
+            SetHostBackdropBrush(_topLevelWindow, enabled: false, throwOnFailure: false);
     }
 
     internal override bool PrepareForRendererGpuResourceRelease()
@@ -1011,15 +1198,18 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         if (_compositionProbe.ActualAdapterLuidLow != unchecked((int)_adapterLuidLow) ||
             _compositionProbe.ActualAdapterLuidHigh != _adapterLuidHigh)
             throw new InvalidOperationException("The D3D11 and Vulkan adapter LUIDs differ.");
-        if (_presentationWindow == 0)
-            throw new InvalidOperationException("The Vulkan DirectComposition target window is unavailable.");
-        var attach = AttachCompositionWindow(
-            _presentationContext, unchecked((ulong)_presentationWindow));
-        if (attach < 0) Marshal.ThrowExceptionForHR(attach);
-        RecordEvent("retained child DirectComposition target ready");
+        if (_acrylicOptions is not null)
+        {
+            var alpha = SetCompositionPremultipliedAlpha(_presentationContext, 1);
+            if (alpha < 0) Marshal.ThrowExceptionForHR(alpha);
+        }
+        ConnectCompositionSurface();
+        RecordEvent(_acrylicOptions is null
+            ? "Vulkan Presentation surface connected to top-level DirectComposition"
+            : "premultiplied top-level Vulkan surface connected over Desktop Acrylic window target");
         _format = Format.B8G8R8A8Unorm;
         _colorSpace = "RGB_FULL_G22_NONE_P709";
-        _compositeAlpha = "Ignore";
+        _compositeAlpha = _acrylicOptions is null ? "Ignore" : "Premultiplied";
         _presentMode = "CompositionSwapchain";
         lock (_viewportGate)
         {
@@ -1028,6 +1218,25 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         }
         DeviceGeneration++;
         _debugBaselineSealed = false;
+    }
+
+    private void EnsureAcrylicTarget()
+    {
+        if (_acrylicOptions is null) return;
+        if (_composition is null || _acrylicScene is null)
+            throw new InvalidOperationException("The Vulkan Acrylic window target is unavailable.");
+    }
+
+    private void ConnectCompositionSurface()
+    {
+        if (_compositionSurfaceHandle == 0)
+            throw new InvalidOperationException("The Vulkan Presentation surface handle is unavailable.");
+        if (_topLevelWindow == 0)
+            throw new InvalidOperationException("The Vulkan top-level HWND is unavailable.");
+        var attach = AttachCompositionWindow(
+            _presentationContext, unchecked((ulong)_topLevelWindow));
+        if (attach < 0) Marshal.ThrowExceptionForHR(attach);
+        _compositionSurfaceConnected = true;
     }
 
     private void CreateInstance()
@@ -1304,18 +1513,19 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
             "VK_KHR_get_memory_requirements2",
             "VK_KHR_dedicated_allocation",
         ];
-        _skiaExtensions = GRVkExtensions.Create(
+        _skiaExtensions = new GRVkExtensions();
+        _skiaExtensions.Initialize(
             GetVulkanProcedureAddress,
-            _instance.Handle,
-            _physicalDevice.Handle,
+            _instance,
+            _physicalDevice,
             instanceExtensions,
             deviceExtensions);
-        _skiaBackend = new GRVkBackendContext
+        _skiaBackend = new GRSilkNetBackendContext
         {
-            VkInstance = _instance.Handle,
-            VkPhysicalDevice = _physicalDevice.Handle,
-            VkDevice = _device.Handle,
-            VkQueue = _queue.Handle,
+            VkInstance = _instance,
+            VkPhysicalDevice = _physicalDevice,
+            VkDevice = _device,
+            VkQueue = _queue,
             GraphicsQueueIndex = _queueFamily,
             GetProcedureAddress = GetVulkanProcedureAddress,
             Extensions = _skiaExtensions,
@@ -1326,10 +1536,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         _contextAbandoned = false;
     }
 
-    private nint GetVulkanProcedureAddress(string name, nint instance, nint device)
+    private nint GetVulkanProcedureAddress(
+        string name, Instance instance, VkDevice device)
     {
-        if (device != 0) return _vk.GetDeviceProcAddr(new VkDevice(device), name);
-        return _vk.GetInstanceProcAddr(new Instance(instance), name);
+        if (device.Handle != 0) return _vk.GetDeviceProcAddr(device, name);
+        return _vk.GetInstanceProcAddr(instance, name);
     }
 
     private bool RecreateSwapchain(int width, int height, string reason)
@@ -2088,6 +2299,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         _skiaExtensions = null;
         ReleaseBackingStorage();
         foreach (var slot in _presentationSlots) ReleasePresentationSlotVulkan(slot);
+        ClearCompositionSurfaceBinding();
         if (_presentationContext != 0) DestroyComposition(_presentationContext);
         lock (_viewportGate)
         {
@@ -2238,6 +2450,28 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     private string[] SnapshotEvents()
     {
         lock (_eventGate) return _recentEvents.ToArray();
+    }
+
+    private void SetHostBackdropBrush(
+        nint window, bool enabled, bool throwOnFailure)
+    {
+        var requested = enabled ? 1 : 0;
+        try
+        {
+            var set = DwmSetWindowAttribute(
+                window, DwmwaUseHostBackdropBrush, ref requested, sizeof(int));
+            if (set < 0) Marshal.ThrowExceptionForHR(set);
+            // DWMWA_USE_HOSTBACKDROPBRUSH is accepted by DwmSetWindowAttribute
+            // on supported systems but DwmGetWindowAttribute returns
+            // E_INVALIDARG on current Windows builds. Treat the checked set
+            // call as the contract and verify the controller/island separately.
+            _hostBackdropBrushEnabled = enabled;
+            RecordEvent($"host backdrop brush enabled={(_hostBackdropBrushEnabled ? 1 : 0)}");
+        }
+        catch when (!throwOnFailure)
+        {
+            _hostBackdropBrushEnabled = false;
+        }
     }
 
     private Exception RecordOperationalFailure(string message, bool resize)
@@ -2403,6 +2637,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
         ref VulkanCompositionProbe snapshot);
 
     [LibraryImport(WindowsNativeV1.LibraryName,
+        EntryPoint = "doroti_windows_vulkan_composition_set_premultiplied_alpha_v1")]
+    private static partial int SetCompositionPremultipliedAlpha(
+        nint context, uint enabled);
+
+    [LibraryImport(WindowsNativeV1.LibraryName,
         EntryPoint = "doroti_windows_vulkan_composition_attach_window_v1")]
     private static partial int AttachCompositionWindow(
         nint context, ulong targetWindow);
@@ -2456,6 +2695,172 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter : WindowsMana
     [DllImport("dwmapi.dll", ExactSpelling = true)]
     private static extern int DwmFlush();
 
+    [LibraryImport("dwmapi.dll")]
+    private static partial int DwmSetWindowAttribute(
+        nint window, int attribute, ref int value, int valueSize);
+
+}
+
+internal sealed class SystemCompositionWorker : IDisposable
+{
+    private readonly Windows.System.DispatcherQueueController _dispatcher;
+    private bool _disposed;
+
+    internal SystemCompositionWorker()
+    {
+        _dispatcher = Windows.System.DispatcherQueueController.CreateOnDedicatedThread();
+        Invoke(() =>
+        {
+            ThreadId = Environment.CurrentManagedThreadId;
+            Compositor = new SystemComposition.Compositor();
+        });
+    }
+
+    internal int ThreadId { get; private set; }
+    internal SystemComposition.Compositor Compositor { get; private set; } = null!;
+
+    internal T Invoke<T>(Func<T> callback)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (ThreadId != 0 && Environment.CurrentManagedThreadId == ThreadId) return callback();
+        using var completed = new ManualResetEventSlim();
+        Exception? failure = null;
+        T? result = default;
+        if (!_dispatcher.DispatcherQueue.TryEnqueue(() =>
+            {
+                try { result = callback(); }
+                catch (Exception exception) { failure = exception; }
+                finally { completed.Set(); }
+            }))
+            throw new InvalidOperationException("System Composition DispatcherQueue rejected work.");
+        if (!completed.Wait(TimeSpan.FromSeconds(15)))
+            throw new TimeoutException("System Composition DispatcherQueue work timed out.");
+        if (failure is not null)
+            throw new InvalidOperationException(
+                $"System Composition DispatcherQueue work failed: {failure.GetType().Name}: {failure.Message}",
+                failure);
+        return result!;
+    }
+
+    internal void Invoke(Action callback) => Invoke(() =>
+    {
+        callback();
+        return true;
+    });
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        Invoke(Compositor.Dispose);
+        _disposed = true;
+        _dispatcher.ShutdownQueueAsync().AsTask().GetAwaiter().GetResult();
+    }
+}
+
+internal sealed class VulkanAcrylicScene : IDisposable
+{
+    private readonly SystemComposition.ContainerVisual _root;
+    private readonly SystemCompositionDesktop.DesktopWindowTarget _target;
+    private readonly DesktopAcrylicController _backdrop;
+    private readonly SystemBackdropConfiguration _configuration;
+    private bool _disposed;
+
+    internal VulkanAcrylicScene(
+        SystemComposition.Compositor compositor,
+        nint topLevelWindow,
+        WindowBackdropOptions acrylicOptions,
+        Brightness systemBrightness)
+    {
+        if (topLevelWindow == 0)
+            throw new ArgumentOutOfRangeException(nameof(topLevelWindow));
+        _root = compositor.CreateContainerVisual();
+        _target = SystemDesktopCompositionInterop.CreateDesktopWindowTarget(
+            compositor, topLevelWindow);
+        _target.Root = _root;
+        _configuration = new SystemBackdropConfiguration { IsInputActive = true };
+        _backdrop = new DesktopAcrylicController();
+        BackdropTargetAdded = _backdrop.SetTarget(
+            Microsoft.UI.Win32Interop.GetWindowIdFromWindow(topLevelWindow), _target);
+        DesktopWindowTargetConnected = _target.Root is not null;
+        ApplyAcrylic(acrylicOptions, systemBrightness);
+    }
+
+    internal bool BackdropTargetAdded { get; }
+    internal bool DesktopWindowTargetConnected { get; }
+    internal string State => _backdrop.State.ToString();
+
+    internal void ApplyAcrylic(
+        WindowBackdropOptions options,
+        Brightness systemBrightness)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _backdrop.ResetProperties();
+        _backdrop.Kind = options.acrylicKind switch
+        {
+            Doroti.Ui.WindowAcrylicKind.@base => DesktopAcrylicKind.Base,
+            Doroti.Ui.WindowAcrylicKind.thin => DesktopAcrylicKind.Thin,
+            _ => DesktopAcrylicKind.Default,
+        };
+        if (options.tintColor is { } tint)
+        {
+            var value = tint.value;
+            _backdrop.TintColor = Windows.UI.Color.FromArgb(
+                (byte)(value >> 24), (byte)(value >> 16),
+                (byte)(value >> 8), (byte)value);
+        }
+        if (options.tintOpacity is { } tintOpacity)
+            _backdrop.TintOpacity = (float)tintOpacity;
+        if (options.luminosityOpacity is { } luminosityOpacity)
+            _backdrop.LuminosityOpacity = (float)luminosityOpacity;
+        _configuration.Theme = options.theme switch
+        {
+            Doroti.Ui.WindowBackdropTheme.light => SystemBackdropTheme.Light,
+            Doroti.Ui.WindowBackdropTheme.dark => SystemBackdropTheme.Dark,
+            _ => systemBrightness == Brightness.dark
+                ? SystemBackdropTheme.Dark : SystemBackdropTheme.Light,
+        };
+        _backdrop.SetSystemBackdropConfiguration(_configuration);
+    }
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _backdrop.Dispose();
+        _target.Root = null;
+        _root.Dispose();
+        _target.Dispose();
+    }
+}
+
+internal static class SystemDesktopCompositionInterop
+{
+    private static readonly Guid CompositorDesktopInteropIid =
+        new("29E691FA-4567-4DCA-B319-D0F207EB6807");
+
+    internal static unsafe SystemCompositionDesktop.DesktopWindowTarget CreateDesktopWindowTarget(
+        SystemComposition.Compositor compositor,
+        nint window)
+    {
+        ArgumentNullException.ThrowIfNull(compositor);
+        if (window == 0) throw new ArgumentOutOfRangeException(nameof(window));
+        using var interop = ((WinRT.IWinRTObject)compositor).NativeObject.As(
+            CompositorDesktopInteropIid);
+        var thisPointer = interop.ThisPtr;
+        var vtable = *(nint**)thisPointer;
+        var create = (delegate* unmanaged[Stdcall]<nint, nint, int, nint*, int>)vtable[3];
+        nint result = 0;
+        var hresult = create(thisPointer, window, 0, &result);
+        if (hresult < 0) Marshal.ThrowExceptionForHR(hresult);
+        try
+        {
+            return WinRT.MarshalInterface<SystemCompositionDesktop.DesktopWindowTarget>.FromAbi(result);
+        }
+        finally
+        {
+            Marshal.Release(result);
+        }
+    }
 }
 
 internal sealed class WindowsManagedVulkanDeviceLostException(string message)

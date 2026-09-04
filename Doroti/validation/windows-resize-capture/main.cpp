@@ -67,12 +67,14 @@ struct Options {
     int requestedLogicalHeight{};
     bool visualOracles{true};
     bool anomalyPngs{true};
+    bool gapAnomalyOnly{};
     bool desktopDuplication{true};
     bool qualification{};
     bool f6r{};
     bool decodeFrameId{};
     bool logOnly{};
     bool observeOnly{};
+    bool observeDesktop{};
     int dragPixels{600};
     int dragMilliseconds{150};
     std::string motion{"expand"};
@@ -116,6 +118,8 @@ struct FrameRecord {
     bool gridParsed{};
     std::optional<int> frameId;
     RECT window{};
+    RECT retainedChild{};
+    bool retainedChildObserved{};
     POINT cursor{};
     std::string png;
 };
@@ -286,6 +290,7 @@ Options ParseOptions(int argc, wchar_t** argv) {
             options.anomalyPngs = false;
         }
         else if (key == L"--no-anomaly-png") options.anomalyPngs = false;
+        else if (key == L"--gap-anomaly-only") options.gapAnomalyOnly = true;
         else if (key == L"--no-desktop-duplication") options.desktopDuplication = false;
         else if (key == L"--qualification") options.qualification = true;
         else if (key == L"--f6r") options.f6r = true;
@@ -296,6 +301,13 @@ Options ParseOptions(int argc, wchar_t** argv) {
             options.visualOracles = false;
             options.anomalyPngs = false;
             options.desktopDuplication = false;
+        }
+        else if (key == L"--observe-desktop") {
+            options.observeOnly = true;
+            options.observeDesktop = true;
+            options.visualOracles = false;
+            options.anomalyPngs = false;
+            options.desktopDuplication = true;
         }
         else if (key == L"--drag-pixels") options.dragPixels = std::stoi(next());
         else if (key == L"--drag-ms") options.dragMilliseconds = std::stoi(next());
@@ -1012,6 +1024,8 @@ private:
         bool analyzeShapeFrame{};
         RECT window{};
         RECT clientScreen{};
+        RECT retainedChildScreen{};
+        bool retainedChildObserved{};
         POINT cursor{};
     };
 
@@ -1073,6 +1087,13 @@ private:
                 slot.analyzeShapeFrame = analyzeShapeFrame;
                 GetWindowRect(options_.captureHwnd, &slot.window);
                 slot.clientScreen = VisibleVisualClientRectScreen(options_);
+                slot.retainedChildObserved = false;
+                if (auto const child = FindWindowExW(
+                        options_.captureHwnd, nullptr,
+                        L"Doroti.Product.HwndExact.Child.v1", nullptr)) {
+                    slot.retainedChildObserved =
+                        GetWindowRect(child, &slot.retainedChildScreen) != FALSE;
+                }
                 GetCursorPos(&slot.cursor);
                 {
                     std::lock_guard lock(ringMutex_);
@@ -1256,6 +1277,8 @@ private:
                 if (!options_.f6r || options_.decodeFrameId)
                     record.frameId = DecodeFrameId(pixels, slot.width, slot.height, client, scale);
                 record.window = slot.window;
+                record.retainedChild = slot.retainedChildScreen;
+                record.retainedChildObserved = slot.retainedChildObserved;
                 record.cursor = slot.cursor;
 
             if (record.appBarLogicalHeight && !baselineAppBarHeight_) {
@@ -1272,7 +1295,16 @@ private:
                 leftGap > static_cast<int>(std::ceil(scale)) || rightGap > static_cast<int>(std::ceil(scale)) ||
                 (record.validationBackgroundRightGap &&
                     *record.validationBackgroundRightGap > static_cast<int>(std::ceil(scale * 2))));
-                if (slot.encodeStrideFrame || (oracleFailure && options_.anomalyPngs)) {
+                bool const gapAnomaly = slot.analyzeFrame &&
+                    (record.blank ||
+                     leftGap > static_cast<int>(std::ceil(scale)) ||
+                     rightGap > static_cast<int>(std::ceil(scale)) ||
+                     (record.validationBackgroundRightGap &&
+                         *record.validationBackgroundRightGap >
+                             static_cast<int>(std::ceil(scale * 2))));
+                auto const saveAnomaly = options_.gapAnomalyOnly
+                    ? gapAnomaly : oracleFailure;
+                if (slot.encodeStrideFrame || (saveAnomaly && options_.anomalyPngs)) {
                 std::ostringstream filename;
                     filename << "frame-" << std::setw(6) << std::setfill('0') << slot.captureIndex << ".png";
                 auto const path = framesDirectory_ / filename.str();
@@ -1335,7 +1367,8 @@ class DesktopDuplicationRunner {
 public:
     explicit DesktopDuplicationRunner(Options const& options)
         : options_(options), framesDirectory_(options.output.parent_path() / (options.runId + ".monitor-frames")) {
-        if (options_.f6r) std::filesystem::create_directories(framesDirectory_);
+        if (options_.f6r || options_.observeDesktop)
+            std::filesystem::create_directories(framesDirectory_);
         monitor_ = MonitorFromWindow(options_.captureHwnd, MONITOR_DEFAULTTONEAREST);
         com_ptr<IDXGIFactory1> factory;
         check_hresult(CreateDXGIFactory1(IID_PPV_ARGS(factory.put())));
@@ -1384,7 +1417,7 @@ public:
     void Stop() {
         if (stopped_.exchange(true)) return;
         if (worker_.joinable()) worker_.join();
-        if (options_.f6r) {
+        if (options_.f6r || options_.observeDesktop) {
             for (auto& frame : deferredFrames_) encoder_.Enqueue(std::move(frame));
             deferredFrames_.clear();
         }
@@ -1429,7 +1462,7 @@ private:
                 POINT clientTopLeft{clientScreen.left, clientScreen.top};
                 POINT clientBottomRight{clientScreen.right, clientScreen.bottom};
                 RECT const desktop = outputDescription_.DesktopCoordinates;
-                RECT const clipped = options_.f6r ? desktop : RECT{
+                RECT const clipped = options_.f6r || options_.observeDesktop ? desktop : RECT{
                     std::clamp(extended.left, desktop.left, desktop.right),
                     std::clamp(extended.top, desktop.top, desktop.bottom),
                     std::clamp(extended.right, desktop.left, desktop.right),
@@ -1520,7 +1553,8 @@ private:
                         std::max(1.0, GetDpiForWindow(options_.visualHwnd) / 96.0));
                 }
                 GetCursorPos(&record.cursor);
-                if (options_.f6r) {
+                if (options_.f6r ||
+                    (options_.observeDesktop && frameIndex % options_.pngStride == 0)) {
                     std::ostringstream filename;
                     filename << "monitor-" << std::setw(6) << std::setfill('0') << frameIndex << ".png";
                     auto const path = framesDirectory_ / filename.str();
@@ -2398,6 +2432,9 @@ void WriteEvidence(
             << ",\"frameId\":";
         if (frame.frameId) output << *frame.frameId; else output << "null";
         output << ",\"window\":"; WriteRect(output, frame.window);
+        output << ",\"retainedChild\":";
+        if (frame.retainedChildObserved) WriteRect(output, frame.retainedChild);
+        else output << "null";
         output << ",\"cursor\":{\"x\":" << frame.cursor.x << ",\"y\":" << frame.cursor.y << "}";
         output << ",\"png\":" << (frame.png.empty() ? "null" : "\"" + EscapeJson(frame.png) + "\"")
             << "}" << (index + 1 == frames.size() ? "\n" : ",\n");

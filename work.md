@@ -1,11 +1,11 @@
 # Doroti Windows App SDK Silk.NET Vulkan 작업계획
 
 - 작성일: 2026-09-02
-- 상태: **Vulkan offscreen + retained-child DirectComposition presentation implemented / user-observed Left·TopLeft PASS / strict repeat 11/12 matrices PARTIAL / Presentation-manager loss recovery notVerified**
-- 대상: `Doroti.Host.WindowsAppSdk`의 opaque `HwndExactCpp` opt-in Vulkan 경로
+- 상태: **top-level DirectComposition single-owner raster + nonblocking moving-origin current/latest implemented / DesktopAcrylicController active / SkiaSharp RC1 Silk bridge integrated / user recheck pending**
+- 대상: `Doroti.Host.WindowsAppSdk`의 `HwndExactCpp` opt-in Vulkan 및 Vulkan+Acrylic 경로
 - 현재 기본값: managed ANGLE/EGL-D3D11
 - 새 선택값: `DOROTI_WINDOWS_PRESENTER=Vulkan`
-- 핵심 결정: Vulkan은 명시적 opt-in 경로로만 유지하고, visible Win32 WSI 대신 same-LUID external memory와 Windows Presentation API를 거쳐 retained child HWND의 native DirectComposition target이 표시를 소유한다. USER32의 proposed RECT는 수정하지 않고 pre-geometry CompositionFrame gate만 적용한다. ANGLE 기본값과 별도 `experimentalAcrylic` 경로는 바꾸지 않는다. 현재 source와 acceptance의 권위 있는 체크포인트는 18절이며 0~17절은 결정 과정과 이전 evidence다.
+- 핵심 결정: Vulkan은 명시적 opt-in 경로로만 유지한다. Visible app raster는 top-level HWND의 native topmost DirectComposition target에 full-capacity/identity로 붙고 HWND 자체가 유일한 viewport clip이다. Origin이 움직이는 edge는 현재 raster를 같은 HWND와 함께 이동시키고 actual generation을 running 1 + latest pending 1로 비동기 교체한다. Windows 11 24H2+의 explicit Vulkan+Acrylic은 non-topmost `Windows.UI.Composition.DesktopWindowTarget`에 `DesktopAcrylicController.SetTarget`을 적용하고, native premultiplied Vulkan target을 그 위에 둔다. SkiaSharp 계열은 `4.152.0-rc.1.26426.14`이며 Vulkan bridge는 `SkiaSharp.Vulkan.Silk.NET`이다. 현재 source와 acceptance의 권위 있는 체크포인트는 23절이며 0~22절은 결정 과정과 이전 evidence다.
 
 ## 0. 검토 결론
 
@@ -15,12 +15,12 @@
 
 | 검토 항목 | 결론 |
 |---|---|
-| Silk.NET 패키지 | `Silk.NET.Vulkan`과 `Silk.NET.Vulkan.Extensions.KHR` 2.23.0을 같은 버전으로 중앙 고정한다. 2.23.0은 현재 확인한 stable이며 Vulkan 1.4.336 registry 기반 binding을 제공한다. |
+| Skia/Silk 패키지 | `Silk.NET.Vulkan`과 `Silk.NET.Vulkan.Extensions.KHR`는 2.23.0, 모든 SkiaSharp 계열과 `SkiaSharp.Vulkan.Silk.NET`은 `4.152.0-rc.1.26426.14`로 중앙 고정한다. Vulkan Skia context는 typed `GRSilkNetBackendContext`를 사용한다. |
 | native runtime | Silk.NET은 binding이다. 제품에 임의의 `vulkan-1.dll`이나 ICD를 복사하지 않고 `%SystemRoot%\System32\vulkan-1.dll`을 명시적으로 연다. loader/driver/필수 extension이 없으면 Vulkan 요청을 fail-fast한다. |
 | 과거 acquired-image 결함 | 제거된 구현은 acquire와 copy 뒤 `shouldPresent`가 false가 되면 `vkQueuePresentKHR`도 release도 하지 않고 반환할 수 있었다. 이 경로가 과거 device loss의 단독 원인이었다고 단정하지 않지만, 새 구현에서는 허용하지 않는다. |
 | swapchain retirement | acquire 전까지 stale 여부를 확정하고 acquire 성공을 presentation commit으로 삼는다. 현재 recreate는 raster worker의 `vkQueueWaitIdle` 뒤 old swapchain을 파괴한다. 이 방식은 실기기/validation에서 동작하지만, Khronos가 설명하듯 unextended Vulkan의 WaitIdle은 presentation-engine resource retirement를 명세상 보장하지 않는다. AMD가 `VK_EXT_swapchain_maintenance1`/present fence를 제공하지 않아 이 항목은 `notVerified`다. |
 | 기본 present mode | 첫 제품 후보는 `FIFO`로 고정한다. `MAILBOX`/`IMMEDIATE`는 correctness와 resize gate를 통과한 뒤 별도 진단 비교만 허용한다. |
-| Acrylic 관계 | Vulkan은 opaque offscreen raster와 retained-child DirectComposition target을 소유한다. `experimentalAcrylic`의 ContentIsland/Presentation/ANGLE 경로와 결합하거나 fallback으로 숨기지 않는다. |
+| Acrylic 관계 | Opaque Vulkan과 Vulkan+Acrylic은 같은 native top raster target을 사용한다. Acrylic은 host-backdrop-enabled non-topmost `DesktopWindowTarget`, active `DesktopAcrylicController`, premultiplied top raster가 모두 성립해야 하며 ANGLE/opaque로 조용히 fallback하지 않는다. |
 
 기존 Acrylic 상태는 [2026-09-02 체크포인트](history/26-09-02/windows-appsdk-experimental-acrylic-checkpoint.md)에 보존했다. 그 경로의 600ms resize FAIL, 전체 matrix `notRun`, 실물 `notVerified` 판정은 그대로다.
 
@@ -577,3 +577,167 @@ evidence는 `.doroti/evidence/windows-vulkan-<timestamp>-<id>/` 아래 immutable
 - Left는 gap 0, outer change 26, accepted/presented 25/26, 45.22 Hz, target→present p95 25.24 ms, CompositionFrame wait/observed 30/30, timeout 0이었다.
 - TopLeft는 gap 0, outer change 26, accepted/presented 25/26, 45.88 Hz, target→present p95 26.53 ms, CompositionFrame wait/observed 31/31, timeout 0이었다. 두 case 모두 final exact와 resource gate를 통과했다.
 - `.doroti/evidence/windows-vulkan-fixed-child-pregeometry-capability-final2/manifest.json`은 aggregate `PASS`, gate `Vulkan-Composition-PASS-automated-partial`이다. Product, exact resize 10, device reset 10, minimize/restore 10, start/close 10/10이 통과했고 Composition buffer 3, active WSI 0, source/repository/binary endpoint 안정성을 확인했다.
+
+## 19. 2026-09-03 direction-aware resize 및 Vulkan+Acrylic
+
+### 최신 사용자 보고와 원인
+
+- 18절의 `PASS-observed` 뒤 최신 사용자 확인에서 우측·하단은 양호하지만 좌측·상단 resize 중 내부 raster가 떨리는 것처럼 보인다고 보고됐다. 최신 보고가 이전 acceptance를 supersede한다.
+- Pre-geometry gate가 proposed logical layout을 이전 screen origin에서 먼저 표시하고, 이어 USER32가 left/top origin을 commit하면서 전체 raster가 다시 이동한 것이 직접 원인이다. Client origin이 고정되는 우측·하단에는 같은 이중 이동이 없다.
+
+### 채택한 shared runtime 수정
+
+- Native `WM_SIZING`은 `Left`, `Top`, `TopLeft`, `TopRight`, `BottomLeft`에서 proposed logical generation을 만들지 않고 현재 retained frame을 유지한다.
+- 실제 `WM_SIZE`가 이동한 origin과 extent의 authority가 된 뒤 exact generation을 발행하고 기존 100 ms terminal wait와 성공 시 `DwmFlush`를 사용한다.
+- `Right`, `Bottom`, `BottomRight`는 기존 proposed-size CompositionFrame gate를 유지한다. USER32 geometry를 수정하거나 별도 timer/FPS limiter를 두지 않는다.
+- Validator는 origin-moving edge에서 CompositionFrame wait/observed/timeout `0/0/0`, fixed-origin edge에서는 wait=observed>0/timeout 0을 요구한다.
+
+### Vulkan+Acrylic 구조
+
+- Explicit `Vulkan` + `WindowBackdropMode.experimentalAcrylic`을 Windows 11 24H2+에서 허용한다. 다른 unsupported presenter 조합은 계속 fail-fast한다.
+- Retained child DirectComposition target이 유일한 app-raster owner다. Native Presentation surface는 first buffer 전 `DXGI_ALPHA_MODE_PREMULTIPLIED`로 설정한다.
+- 별도 `Windows.System.DispatcherQueueController` dedicated thread가 top-level HWND의 `Windows.UI.Composition.DesktopWindowTarget`과 `DesktopAcrylicController`만 소유한다. Top-level에는 `DWMWA_USE_HOSTBACKDROPBRUSH`를 설정한다.
+- Vulkan/D3D11 GPU object를 backdrop owner에 넘기지 않고 ContentIsland도 만들지 않는다. Runtime kind/theme/tint last-wins channel은 ANGLE/Vulkan 구현이 같은 interface로 제공한다.
+
+### 검증과 판정
+
+- focused source-built: `.doroti/evidence/windows-vulkan-direction-aware-focused-final-20260903/manifest.json` — `PASS-automated-partial`; Left/TopLeft 600 ms reverse 모두 gap 0/final exact/resource PASS, 각각 outer 27/25, motion accepted 25/23, presented 26/24, 44.57/42.04 Hz, device loss 0, CompositionFrame wait 0, source/repository/binary endpoint stability PASS.
+- full 8-edge × 3: `.doroti/evidence/windows-vulkan-direction-aware-eight-edge-20260903/manifest.json` — `FAIL` 보존. Vulkan 24/24 transport/marker/final-exact/resource와 ordering contract는 PASS지만 trailing ANGLE pixel failure가 cadence reference를 무효화했고 Vulkan 11/24에서 WGC pixel-coverage failure가 있었다.
+- Vulkan+Acrylic: `.doroti/evidence/windows-vulkan-acrylic-product-dedicated-20260903/report.json` — PASS; target true, ContentIsland false, premultiplied, option 500 terminal/failed 0.
+- lifecycle/reset: `.doroti/evidence/windows-vulkan-acrylic-lifecycle-reset-20260903/report.json` — PASS; device reset 1/1, minimize/restore, clean close.
+- 기존 ANGLE Acrylic 구조 회귀: `.doroti/evidence/windows-angle-acrylic-structural-after-vulkan-20260903/manifest.json` — `PASS-automated-partial`; ABI, 부팅, option 500, 강제 opaque fallback, clean close PASS. 별도 Right/reverse 3초 strict WGC capture는 최대 12 px/최장 60.605 ms edge coverage로 FAIL했고, pre-change에도 같은 검사가 반복적으로 PASS/FAIL이 갈렸으므로 시각 acceptance로 승격하지 않는다.
+- Release DemoApp headed 실행에서 Acrylic 표시와 좌상단/우측 resize 뒤 exact final layout을 확인했다. Captured final state는 transient physical scan-out과 사람 체감을 증명하지 않으므로 최신 binary의 사용자 left/top recheck는 `notVerified`다.
+
+현재 결론은 `repaired-pending-user-recheck / automated PARTIAL`이다. ANGLE은 기본값이고 Vulkan은 experimental opt-in을 유지한다. Presentation-manager loss recovery, 전체 GPU/DPI/refresh/mixed-monitor matrix, 물리 IME/accessibility는 여전히 후속 범위다.
+
+## 20. 2026-09-03 system ContentIsland, grow/shrink resize, SkiaSharp RC1
+
+### 최신 실패를 반영한 재진단
+
+- 사용자의 최신 확인에서 19절의 방향 분리 뒤에도 좌·상단 raster 떨림이 남았고 Vulkan Acrylic은 blur 없이 단순 투명처럼 보였다. 따라서 19절의 구현/headed 판정은 물리 해결 근거로 사용하지 않는다.
+- Retained visible child와 top-level HWND가 별도 geometry timeline을 가진 것이 resize의 공통 원인이었다. 또 reverse drag는 같은 edge에서도 grow와 shrink가 번갈아 edge 방향만으로 pre/post를 고정할 수 없었다.
+- Vulkan raster와 별도 top-level Acrylic target을 두는 구조는 alpha passthrough와 실제 system backdrop을 같은 visual tree에서 합성하지 못했다.
+
+### 최종 shared runtime 구조
+
+- `Windows.UI.Composition.Compositor`를 전용 system DispatcherQueue thread에서 만들고, 그 system visual로 `ContentIsland.CreateForSystemVisual`을 생성한다.
+- `DesktopAttachedSiteBridge.CreateFromWindowId`가 이 island를 top-level HWND에 직접 연결한다. Vulkan Presentation surface와 optional `DesktopAcrylicController`는 같은 root visual/island에 있고 visible app-created child geometry timeline은 없다.
+- Vulkan+Acrylic은 top-level에 `DWMWA_USE_HOSTBACKDROPBRUSH`를 설정하고 native Presentation surface를 premultiplied alpha로 만든다. `BackdropTargetAdded`, `ContentIslandConnected`, `HostBackdropBrushEnabled` 셋을 제품 validator가 모두 요구한다.
+- Grow는 `WM_SIZING`에서 exact layout과 visual extent를 준비하고 CompositionFrame을 관찰한 뒤 USER32가 geometry를 commit한다. Shrink는 현재 큰 raster를 유지한 채 USER32 parent clip을 먼저 commit/DwmFlush하고 actual `WM_SIZE`에서 작은 exact frame을 present한다.
+- Sizing edge는 visual의 right/bottom anchor 선택에만 쓰며 transaction ordering은 현재 width/height 대비 grow/shrink가 결정한다. Stretch, parent-color masking, fixed FPS limiter는 없다.
+
+### SkiaSharp 4.152.0 RC1
+
+- 중앙 패키지, runner SDK default, Web manifest, MAUI/Metal assertions와 notices를 `4.152.0-rc.1.26426.14`로 맞췄다.
+- Windows host가 `SkiaSharp.Vulkan.Silk.NET`을 직접 참조하고 `GRSilkNetBackendContext`, typed Vulkan instance/device/queue와 `GRVkExtensions.Initialize` callback으로 Skia context를 구성한다.
+- Package graph validator는 `SkiaSharp`, Win32 native assets, `SkiaSharp.Vulkan.Silk.NET`의 요청/해결 버전 일치를 fail-closed로 검사한다.
+
+### 현재 evidence와 판정
+
+- Source-built focused resize: `.doroti/evidence/windows-vulkan-system-island-final-20260903/manifest.json` — `PASS-automated-partial`. Left/TopLeft reverse 600 ms는 각각 input/capture 145/163, 145/166, CompositionFrame wait/observed/timeout 14/14/0, gap 0 frame/0 px, final exact PASS다. 단일 island/3-buffer/active WSI 0과 source→binary correspondence도 PASS다.
+- Vulkan+Acrylic 정상 제품 스모크: `.doroti/evidence/vulkan-acrylic-system-product-final-20260903.json` — `PASS`; effective Vulkan+experimentalAcrylic, backdrop/island/host brush true, premultiplied, terminal failure 0, reset 1/1이다.
+- Current-monitor 표시 evidence: `.doroti/evidence/vulkan-acrylic-system-desktop-20260903/vulkan-acrylic-system-desktop-20260903.monitor-frames/monitor-000000.png` — Material raster와 Acrylic surface가 함께 표시되며 이전 raw wallpaper passthrough는 보이지 않는다.
+- 이 결과는 자동/캡처 `PASS-automated-partial`이다. 사용자가 최신 binary에서 직접 Left/TopLeft를 drag해 느끼는 smoothness와 실제 backdrop blur 품질은 `notVerified`이므로 active plan과 `problem.md`를 아직 archive하지 않는다.
+
+## 21. 2026-09-03 native DirectComposition atomic viewport 및 실제 Acrylic backdrop
+
+20절의 single-ContentIsland 구현도 사용자의 최신 물리 확인을 통과하지 못했으므로 현재 구조가 아니다. 아래 내용이 2026-09-03 source의 권위 있는 체크포인트다.
+
+### shared runtime 수정
+
+- Windows Presentation surface를 top-level HWND의 native `IDCompositionTarget`에 직접 연결하고 `topmost=TRUE`로 app raster z-order를 고정했다. Native child는 더 이상 visible raster target이 아니다.
+- 각 Vulkan frame은 전체 retained capacity를 app-owned background로 clear한 뒤 exact viewport를 edge guard 위치에 그린다. 전체 capacity를 selected D3D11 Presentation slot로 복사한다.
+- Native `SetPresentationSource`는 full-capacity source rect와 `(-sourceX,-sourceY)` transform을 설정한다. Buffer와 transform은 같은 `IPresentationManager::Present`에서 commit되어 WinRT raster visual의 별도 commit race가 없다.
+- Opaque Vulkan에서는 top-level HWND redirection surface를 app background로 동기 paint해 transient geometry가 raster보다 앞서도 white/desktop이 아니라 app-owned color만 보이게 한다. Acrylic에서는 이 opaque plane을 만들지 않는다.
+- Grow-before-geometry, shrink-after-parent-clip transaction과 right/bottom anchor 선택은 유지한다.
+
+### Vulkan Acrylic 수정
+
+- Top-level HWND에 `DWMWA_USE_HOSTBACKDROPBRUSH`를 설정한다.
+- Dedicated Composition thread의 non-topmost `DesktopWindowTarget`과 `DesktopAcrylicController`가 bottom system backdrop만 소유한다.
+- Native topmost target의 Vulkan Presentation surface는 first buffer 전 `DXGI_ALPHA_MODE_PREMULTIPLIED`로 바뀌며 app raster만 소유한다.
+- 이전 Desktop target의 opaque underlay/fixed-raster extent 코드는 제거했다. `BackdropTargetAdded`, `DesktopWindowTargetConnected`, `HostBackdropBrushEnabled`, premultiplied alpha를 모두 제품 gate로 요구한다. `ContentIslandConnected=false`가 의도된 현재 topology다.
+
+### SkiaSharp RC1 및 adapter
+
+- 모든 SkiaSharp 관련 중앙 버전, runner default, Web manifest와 platform assertions를 `4.152.0-rc.1.26426.14`로 통일했다.
+- Windows Vulkan host가 `SkiaSharp.Vulkan.Silk.NET`을 참조하고 `GRSilkNetBackendContext`, typed Silk.NET handles와 `GRVkExtensions.Initialize` callback을 사용한다.
+
+### 현재 evidence
+
+- Focused `Left`/`TopLeft` reverse 600 ms는 `.doroti/evidence/windows-vulkan-native-dcomp-overscan-amd-20260903`와 repeat 1~3에서 연속 PASS했다. Validation-background gap 0, marker monotonic, final exact, resource clean, device loss 0, WSI swapchain 0이다.
+- 첫 전체 8-edge run의 `TopRight` pixel 실패는 최소 폭에서 검증용 cyan foreground가 우측 끝을 정상적으로 덮어 background-right 탐지기가 낸 오탐이었다. 실제 generic uncovered edge는 `-1`이었다. 검증 제품의 우측 background sentinel 추가 뒤 `.doroti/evidence/windows-vulkan-native-dcomp-topright-sentinel-amd-20260903/manifest.json`이 PASS했다. 최종 full matrix는 source 고정 뒤 재실행한다.
+- `.doroti/evidence/windows-vulkan-native-dcomp-acrylic-capability-amd-20260903/manifest.json`은 aggregate PASS다. Vulkan+experimentalAcrylic effective, backdrop/bottom target/host brush true, ContentIsland false, premultiplied, Presentation buffer 3, injection/reset/lifecycle/start-close가 통과했다.
+- `.doroti/evidence/vulkan-acrylic-live-20260903.monitor-frames/monitor-000100.png` current-monitor frame과 창을 다른 output으로 이동한 뒤 같은 위치의 raw wallpaper를 비교했다. App 내부 wallpaper 성분은 unblurred alpha보다 약 24 physical-pixel Gaussian blur reference에 더 잘 맞아 실제 spatial blur가 관찰됐다.
+
+현재 판정은 `repaired-pending-user-recheck / PASS-automated-partial`이다. 최신 source의 physical Left/TopLeft 체감과 Acrylic 재질 품질, 전체 GPU/DPI/refresh/mixed-monitor, 물리 IME/accessibility는 `notVerified`다.
+
+## 22. 2026-09-03 top-level identity raster, post-geometry resize, DWM Acrylic
+
+21절의 edge-anchored source translation과 별도 `DesktopWindowTarget` Acrylic도 사용자의 다음 물리 확인을 통과하지 못했다. 해당 내용과 evidence는 실패한 설계의 기록이며 현재 구조가 아니다.
+
+### 좌·상단 shared runtime 수정
+
+- Native topmost DirectComposition target은 계속 top-level HWND에 직접 붙지만, Presentation source는 이제 항상 full retained capacity와 identity transform을 사용한다. HWND client clip만 exact viewport를 정한다.
+- 매 frame 전체 retained capacity를 app-owned background로 새로 만든다. 이전 layout이나 edge guard pixel이 overscan에 남지 않는다.
+- `Left`, `Top`, `TopLeft`, `TopRight`, `BottomLeft`는 `WM_SIZING`에서 proposed layout을 미리 표시하지 않는다. Capacity만 보장한다.
+- Outer `WM_WINDOWPOSCHANGED`가 `DefWindowProc`를 통해 actual `WM_MOVE`/`WM_SIZE`를 끝낸 다음 `DwmFlush`로 top-level geometry 경계를 관찰한다. 그 뒤 actual generation을 queue하고 Presentation commit의 CompositionFrame까지 관찰한 후 terminal을 반환한다.
+- Origin이 고정되는 edge의 grow-before-geometry와 모든 shrink의 parent-clip-first 규칙은 유지한다. Fixed FPS timer, stretch, child-position correction은 없다.
+
+### Vulkan Acrylic 수정
+
+- 별도 WinRT `DesktopAcrylicController`, ContentIsland, bottom `DesktopWindowTarget`을 Vulkan topology에서 제거했다.
+- Top-level HWND에 `DWMWA_SYSTEMBACKDROP_TYPE=DWMSBT_TRANSIENTWINDOW`, `DWMWA_REDIRECTIONBITMAP_ALPHA=TRUE`를 직접 설정한다. 설정 직후 `DwmGetWindowAttribute`로 각각 `3`, `1`을 read-back하며 다르면 fail-fast한다.
+- Native Vulkan DirectComposition surface는 premultiplied alpha로 유지되어 DWM material 위에 app raster만 합성한다. Opaque HWND background paint는 Acrylic일 때 비활성이다.
+- DWM transport는 OS system material이므로 Vulkan에서는 light/dark/system theme만 지원한다. Custom kind/tint/luminosity는 적용 성공으로 위장하지 않고 명시적으로 거절하며, ANGLE Acrylic의 기존 custom option 동작은 바꾸지 않는다.
+
+### SkiaSharp RC1
+
+- 모든 중앙 SkiaSharp version과 runner default는 `4.152.0-rc.1.26426.14`다.
+- Windows host는 같은 version의 `SkiaSharp.Vulkan.Silk.NET`을 직접 참조하고 `GRSilkNetBackendContext`, typed Silk handles, `GRVkExtensions.Initialize`로 backend를 만든다.
+- `Doroti.Product.slnx --force-evaluate` restore가 Windows/Web/Linux/Android/iOS/macOS target graph에서 성공했다.
+
+### 현재 evidence
+
+- `TopLeft` reverse 600 ms는 `.doroti/evidence/windows-vulkan-top-level-postgeometry-topleft-r2-20260903`부터 `r7`까지 6회 연속 PASS했다. 별도 `Left`와 fixed-origin `Right`도 각각 PASS했다. Marker regression, validation-background gap, failed terminal은 모두 0이다.
+- `.doroti/evidence/windows-vulkan-top-level-dwm-acrylic-capability-20260903/manifest.json`은 aggregate PASS이며 report가 `DwmSystemBackdrop`, `TransientWindow`, redirection alpha true, premultiplied Vulkan, Presentation buffer 3개를 기록했다.
+- `.doroti/evidence/vulkan-dwm-acrylic-demo-20260903.monitor-frames/monitor-000160.png`은 동일 monitor의 uncovered wallpaper와 달리 날카로운 배경 형상이 억제된 system material 결과를 보인다.
+
+현재 판정은 여전히 `repaired-pending-user-recheck / PASS-automated-partial`이다. 최신 binary의 physical Left/TopLeft 체감, Acrylic 재질 만족도와 전체 GPU/DPI/refresh/mixed-monitor, 물리 IME/accessibility는 `notVerified`다.
+
+## 23. 2026-09-04 top-level current/latest resize and controller-backed Acrylic
+
+22절의 synchronous post-geometry moving-origin path와 DWM transient-backdrop path도 사용자의 최신 물리 확인을 통과하지 못했다. 이 절이 현재 source와 acceptance의 권위 있는 체크포인트다.
+
+### 잔여 떨림 원인과 shared runtime 수정
+
+- Retained child를 parent-local `(0,0)`에 두고 Presentation source를 full capacity로 바꾼 뒤에도 `.doroti/evidence/windows-vulkan-parent-local-child-fill-topleft-r3-20260904`에서 84 capture frame 중 1 frame에 실제 wallpaper 18 px가 노출됐다. Child GDI plane을 즉시 app background로 채워도 남았으므로 원인은 미초기화 tail이 아니라 top-level shell/client와 visible child subtree의 서로 다른 DWM commit이었다.
+- Native `IDCompositionTarget`을 `topmost=TRUE`로 top-level HWND에 직접 연결했다. Native child는 hidden monitor-capacity handle만 담당하며 visible pixel과 screen geometry를 소유하지 않는다. `WS_CLIPCHILDREN`도 Composition path에서는 사용하지 않는다.
+- Presentation source는 full retained capacity, transform은 identity, raster origin은 항상 `(0,0)`이다. Top-level HWND client clip이 유일한 exact viewport다.
+- `WM_SIZING`은 모든 edge에서 capacity만 확인하고 proposed layout을 표시하지 않는다. Actual `WM_SIZE`가 metrics authority다.
+- `Left`, `Top`, `TopLeft`, `TopRight`, `BottomLeft`에서는 각 interactive step을 GPU/CompositionFrame까지 기다리지 않는다. 현재 top-level raster가 HWND와 함께 이동하는 동안 raster worker가 running 1 + latest pending 1로 actual generation을 coalesce한다. `WM_EXITSIZEMOVE`의 마지막 generation만 bounded exact settle한다.
+- `Right`, `Bottom`, `BottomRight`는 origin이 고정되므로 actual `WM_SIZE` generation의 기존 bounded terminal/CompositionFrame handshake를 유지한다. Fixed FPS limiter, stretch, source translation, child-position correction은 없다.
+
+### 실제 Acrylic 수정
+
+- Dedicated `Windows.System.DispatcherQueueController` thread가 `Windows.UI.Composition.Compositor`와 non-topmost `DesktopWindowTarget`을 소유한다.
+- 공식 Win32 계약대로 `DesktopAcrylicController.SetTarget(WindowId, CompositionTarget)`을 호출하고 top-level HWND에 `DWMWA_USE_HOSTBACKDROPBRUSH`를 설정한다.
+- Native topmost Vulkan Presentation target은 `DXGI_ALPHA_MODE_PREMULTIPLIED`로 controller target 위에 app raster만 합성한다. ContentIsland는 만들지 않는다.
+- Product gate는 backdrop target, desktop target, host backdrop, controller state `Active`, ContentIsland false, premultiplied alpha를 모두 요구한다. Kind/theme/tint/luminosity option은 같은 controller에 last-wins로 적용된다.
+
+### SkiaSharp RC1와 Silk adapter
+
+- 중앙 패키지, runner SDK default, Web manifest, platform assertions와 notice를 실제 RC1 `4.152.0-rc.1.26426.14`로 맞췄다.
+- Windows Vulkan host는 `SkiaSharp.Vulkan.Silk.NET`의 `GRSilkNetBackendContext`, typed `Instance`/`PhysicalDevice`/`Device`/`Queue`, `GRVkExtensions.Initialize` callback으로 Skia context를 만든다.
+- Capability package graph는 `SkiaSharp`, `SkiaSharp.NativeAssets.Win32`, `SkiaSharp.Vulkan.Silk.NET`의 요청/해결 version 일치를 확인했다.
+- 강제 restore 뒤 `Doroti.Host.Maui` Release의 Windows/Android/iOS/macOS/MacCatalyst 전체 TFM과 `DorotiDemoApp` Windows runner가 warning/error 0으로 빌드됐다. Windows 전체 solution build의 남은 실패는 macOS 전용 외부 도구 `sips` 부재뿐이다.
+
+### 최종 자동 evidence
+
+- Source-built TopLeft: `.doroti/evidence/windows-vulkan-top-level-current-latest-topleft-final2-20260904/manifest.json` — `PASS-automated-partial`, capture 71, outer change 93, motion present 92, 155.50 Hz, present-gap p95/max 12.66/14.57 ms, accepted→next-present p95/max 8.02/9.50 ms, gap 0, marker regression 0, CompositionFrame wait/timeout 0, device loss 0. source-to-binary와 실행 중 source/repository/binary 안정성도 PASS다.
+- 동일 binary TopLeft 반복 `r5`/`r6` — 160.57/158.88 Hz, gap 0, marker regression 0, device loss 0.
+- `left-r7`/`right-r8` — 둘 다 gap 0/final exact/resource PASS. Left는 165.64 Hz와 wait 0, Right는 81.70 Hz와 CompositionFrame wait 53/timeout 0이다.
+- `.doroti/evidence/windows-vulkan-top-level-acrylic-capability-final2-20260904/manifest.json` — 최종 source-built aggregate `PASS`, `Vulkan-Composition-PASS-automated-partial`; source-to-binary와 실행 중 source/repository/binary 안정성, exact resize/reset/minimize-restore/start-close 각 반복, device-loss ordering, 자동 input/IME/UIA와 package graph가 통과했다. Vulkan+Acrylic report는 `DesktopAcrylicController`, state `Active`, target/host flags true, ContentIsland false, premultiplied, buffer 3, active WSI 0을 기록했다.
+- `.doroti/evidence/windows-vulkan-top-level-acrylic-visual-final-20260904/desktop.capture.json` — WGC 29/오류 0, Desktop Duplication 193/오류 0. `monitor-000180.png`은 창 밖의 선명한 wallpaper와 달리 창 안 배경 세부가 확산·억제된 system material을 보여 준다.
+
+현재 판정은 **repaired-pending-user-recheck / PASS-automated-partial**이다. 최신 binary의 physical Left/TopLeft 체감과 Acrylic 재질 만족도, 다른 GPU/DPI/refresh/mixed-monitor, 물리 IME/accessibility 및 실제 device-removal은 계속 `notVerified`다. ANGLE은 기본값이고 Vulkan은 explicit opt-in으로 유지한다.

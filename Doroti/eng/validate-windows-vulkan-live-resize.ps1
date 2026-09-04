@@ -7,7 +7,10 @@ param(
     [switch] $Probe,
     [switch] $FullEightEdgeMatrix,
     [switch] $FullCurrentDpiMatrix,
-    [switch] $ExternalValidation
+    [switch] $ExternalValidation,
+    [switch] $SaveAnomalyPngs,
+    [ValidateSet('Left','Right','Top','Bottom','TopLeft','TopRight','BottomLeft','BottomRight')]
+    [string] $FocusedEdge
 )
 
 $ErrorActionPreference = 'Stop'
@@ -57,6 +60,8 @@ $observer = Join-Path $observerBuild 'Release/Doroti.WindowsResizeCapture.exe'
 $deadline = [DateTime]::UtcNow.AddMinutes(20)
 $sourceFingerprintPaths = @(
     'Doroti/eng/validate-windows-vulkan-live-resize.ps1',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsAcrylicOptionsState.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedAcrylicCompositionPresenter.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenterBase.cs',
@@ -366,11 +371,15 @@ function Invoke-CapturedCase {
             Start-Sleep -Milliseconds 50
         }
         $ready = Get-Content -LiteralPath $readyPath -Raw | ConvertFrom-Json
-        $captureRun = Invoke-BoundedProcess -FileName $observer -Name "$Slug WGC border resize" -ArgumentList @(
+        $captureArguments = @(
             '--hwnd',[string]$ready.hwnd,'--output',$capturePath,'--run-id',"$runId-$Slug",
-            '--capture-only','--decode-frame-id','--f6r','--input-hz','240','--png-stride','60',
+            '--decode-frame-id','--f6r','--input-hz','240','--png-stride','60',
             '--capture-ring-size','64','--edge',$Edge,'--drag-pixels',[string]$DragPixels,
             '--drag-ms',[string]$DragMilliseconds,'--motion',$Motion,'--duration','1')
+        if ($SaveAnomalyPngs) { $captureArguments += '--gap-anomaly-only' }
+        else { $captureArguments += '--capture-only' }
+        $captureRun = Invoke-BoundedProcess -FileName $observer -Name "$Slug WGC border resize" `
+            -ArgumentList $captureArguments
         Assert-True ($captureRun.exitCode -eq 0) `
             "$Slug WGC border resize failed: $($captureRun.stderr) $($captureRun.stdout)"
         Request-AppClose ([long]$ready.hwnd)
@@ -406,6 +415,21 @@ function Invoke-CapturedCase {
         $validationLayerActivationProven = $validationLayerRequested -and
             $combinedOutput -match '(?im)Inserted (?:instance|device) layer "VK_LAYER_KHRONOS_validation"' -and
             $combinedOutput -match '(?im)Enabled By:\s*Environment Variable VK_INSTANCE_LAYERS'
+        $originMovingEdge = $Edge -in @('Left','Top','TopLeft','TopRight','BottomLeft')
+        if ($Presenter -ne 'Vulkan') {
+            $compositionFrameContract = $true
+        } elseif ($originMovingEdge) {
+            $compositionFrameContract =
+                [long]$diagnostics.vulkan.compositionFrameWaits -eq 0 -and
+                [long]$diagnostics.vulkan.compositionFrameObserved -eq 0 -and
+                [long]$diagnostics.vulkan.compositionFrameWaitTimeouts -eq 0
+        } else {
+            $compositionFrameContract =
+                [long]$diagnostics.vulkan.compositionFrameWaits -gt 0 -and
+                [long]$diagnostics.vulkan.compositionFrameWaits -eq
+                    [long]$diagnostics.vulkan.compositionFrameObserved -and
+                [long]$diagnostics.vulkan.compositionFrameWaitTimeouts -eq 0
+        }
         $resourcePass = $process.ExitCode -eq 0 -and $app.status -eq 'PASS' -and
             $validationMessagesClean -and
             (-not $validationLayerRequested -or $validationLayerActivationProven) -and
@@ -415,7 +439,7 @@ function Invoke-CapturedCase {
             [int]$diagnostics.duplicateResizeTerminals -eq 0 -and
             ($Presenter -ne 'Vulkan' -or (
                 $diagnostics.presenterBackend -eq 'Vulkan/Composition-Swapchain' -and
-                $details.ownership.visibleOwner -eq 'retained child DirectComposition target' -and
+                $details.ownership.visibleOwner -eq 'top-level DirectComposition Vulkan Presentation target' -and
                 [int]$diagnostics.vulkan.deviceLostResults -eq 0 -and
                 [int]$diagnostics.vulkan.surfaceLostResults -eq 0 -and
                 [int]$diagnostics.vulkan.outOfDateResults -eq 0 -and
@@ -440,10 +464,7 @@ function Invoke-CapturedCase {
                 [int]$diagnostics.vulkan.retiredSwapchains -eq 0 -and
                 [int]$diagnostics.vulkan.maximumRetiredSwapchains -eq 0 -and
                 [long]$diagnostics.vulkan.queueIdleRetirementWaits -eq 0 -and
-                [long]$diagnostics.vulkan.compositionFrameWaits -gt 0 -and
-                [long]$diagnostics.vulkan.compositionFrameWaits -eq
-                    [long]$diagnostics.vulkan.compositionFrameObserved -and
-                [long]$diagnostics.vulkan.compositionFrameWaitTimeouts -eq 0 -and
+                $compositionFrameContract -and
                 $diagnostics.vulkan.retirementMode -eq 'presentation-buffer-availability'))
         $status = if ($transportPass -and $markerPass -and $pixelCoveragePass -and
             $finalExact -and $resourcePass) { 'PASS' } else { 'FAIL' }
@@ -495,6 +516,7 @@ function Invoke-CapturedCase {
                 compositionFrameWaits=$diagnostics.vulkan.compositionFrameWaits
                 compositionFrameObserved=$diagnostics.vulkan.compositionFrameObserved
                 compositionFrameWaitTimeouts=$diagnostics.vulkan.compositionFrameWaitTimeouts
+                resizeOrdering='top-level-current-plus-latest-moving-origin'
                 maximumRecreateLatencyMicroseconds=$diagnostics.vulkan.maximumRecreateLatencyMicroseconds
                 maximumSwapchainCreateLatencyMicroseconds=$diagnostics.vulkan.maximumSwapchainCreateLatencyMicroseconds
             } } else { $null }
@@ -547,7 +569,9 @@ $binaryFiles = [ordered]@{
 }
 $startingBinarySha256 = Get-BinaryFileSha256 $binaryFiles
 
-$definitions = if ($Probe) {
+$definitions = if (-not [string]::IsNullOrWhiteSpace($FocusedEdge)) {
+    @([ordered]@{ run=1; edge=$FocusedEdge; motion='reverse'; duration=600 })
+} elseif ($Probe) {
     @([ordered]@{ run=1; edge='TopLeft'; motion='reverse'; duration=600 })
 } elseif ($FullCurrentDpiMatrix) {
     @(
@@ -788,8 +812,8 @@ $manifest = [ordered]@{
     gates=[ordered]@{
         angleBeforeAfter=if (-not $runAngleBaselines) { 'notRun' } elseif ($anglePass) { 'PASS' } else { 'FAIL' }
         vulkanCurrentMonitor=if ($casePass) { 'PASS' } else { 'FAIL' }
-        compositionSingleVisibleOwnerAndThreeBuffers=if (@($cases | Where-Object {
-            $_.vulkan.visibleOwner -ne 'retained child DirectComposition target' -or
+        topLevelRasterOwnerAndThreeBuffers=if (@($cases | Where-Object {
+            $_.vulkan.visibleOwner -ne 'top-level DirectComposition Vulkan Presentation target' -or
             $_.vulkan.presentationMode -ne 'CompositionSwapchain' -or
             [int]$_.vulkan.compositionBufferCount -ne 3 -or
             [int]$_.vulkan.activeSwapchains -ne 0
@@ -822,7 +846,7 @@ $manifest = [ordered]@{
         binariesStableDuringRun=if ($binariesStable) { 'PASS' } else { 'FAIL' }
     }
     cases=$cases
-    evidenceBoundary='Focused validation runs only left/top-left Vulkan cases and proves native retained-child DirectComposition routing, three Composition buffers, synchronous Vulkan copy completion, availability-based buffer reuse, native non-client input, WGC transport, monotonic visible generation markers, raw validation-background coverage, final exact geometry, terminal accounting, zero active WSI swapchains, and no Vulkan device loss or legacy WSI results. ANGLE cadence/latency comparison and the repeated eight-edge matrix run only when -FullEightEdgeMatrix or -FullCurrentDpiMatrix is explicitly selected. External validation is qualified only when the loader positively reports VK_LAYER_KHRONOS_validation activation and zero validation warning/error messages. Source diff and key source files are SHA-256 fingerprinted; product executable/IL, managed/native host, and observer binaries are hashed before and after execution, while source-to-binary correspondence is PASS only when the validator performed the build. Composition Present receipts and WGC do not prove physical scan-out, transient DWM shell pixels, or human-perceived drag smoothness; those remain notVerified and require direct physical left/top-left checks.'
+    evidenceBoundary='Focused validation runs only left/top-left Vulkan cases and proves a top-level native topmost DirectComposition target with an identity-transformed full-capacity Presentation source, one top-level client geometry, nonblocking current-plus-latest moving-origin delivery, three Composition buffers, synchronous Vulkan copy completion, availability-based buffer reuse, native non-client input, WGC transport, monotonic visible generation markers, raw validation-background coverage, final exact geometry, terminal accounting, zero active WSI swapchains, and no Vulkan device loss or legacy WSI results. ANGLE cadence/latency comparison and the repeated eight-edge matrix run only when -FullEightEdgeMatrix or -FullCurrentDpiMatrix is explicitly selected. External validation is qualified only when the loader positively reports VK_LAYER_KHRONOS_validation activation and zero validation warning/error messages. Source diff and key source files are SHA-256 fingerprinted; product executable/IL, managed/native host, and observer binaries are hashed before and after execution, while source-to-binary correspondence is PASS only when the validator performed the build. Composition Present receipts and WGC do not prove physical scan-out, transient DWM shell pixels, Acrylic blur quality, or human-perceived drag smoothness; those remain notVerified and require direct physical left/top-left and backdrop checks.'
 }
 $manifestPath = Join-Path $OutputDirectory 'manifest.json'
 $manifest | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $manifestPath -Encoding utf8

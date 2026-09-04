@@ -5,16 +5,17 @@
   <ItemGroup>
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
     <PackageVersion Include="MaterialColorUtilities" Version="0.3.0" />
-    <PackageVersion Include="SkiaSharp" Version="4.151.1" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="4.151.1" />
+    <PackageVersion Include="SkiaSharp" Version="4.152.0-rc.1.26426.14" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="4.152.0-rc.1.26426.14" />
     <PackageVersion Include="Avalonia.Angle.Windows.Natives" Version="2.1.27548.20260419" />
     <PackageVersion Include="Silk.NET.Vulkan" Version="2.23.0" />
     <PackageVersion Include="Silk.NET.Vulkan.Extensions.KHR" Version="2.23.0" />
-    <PackageVersion Include="SkiaSharp.HarfBuzz" Version="4.151.1" />
-    <PackageVersion Include="SkiaSharp.Views.Blazor" Version="4.151.1" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="4.151.1" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="4.151.1" />
-    <PackageVersion Include="SkiaSharp.Direct3D.Vortice" Version="4.151.1" />
+    <PackageVersion Include="SkiaSharp.HarfBuzz" Version="4.152.0-rc.1.26426.14" />
+    <PackageVersion Include="SkiaSharp.Views.Blazor" Version="4.152.0-rc.1.26426.14" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="4.152.0-rc.1.26426.14" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="4.152.0-rc.1.26426.14" />
+    <PackageVersion Include="SkiaSharp.Direct3D.Vortice" Version="4.152.0-rc.1.26426.14" />
+    <PackageVersion Include="SkiaSharp.Vulkan.Silk.NET" Version="4.152.0-rc.1.26426.14" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" />
     <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="7.0.0" />
@@ -22,8 +23,8 @@
     <PackageVersion Include="Microsoft.Maui.Platforms.MacOS" Version="[0.1.0-preview.12.26368.2]" />
     <PackageVersion Include="Microsoft.Maui.Platforms.MacOS.Essentials" Version="[0.1.0-preview.12.26368.2]" />
     <PackageVersion Include="CommunityToolkit.Maui.Markup" Version="8.0.0" />
-    <PackageVersion Include="SkiaSharp.Views" Version="4.151.1" />
-    <PackageVersion Include="SkiaSharp.Views.Maui.Controls" Version="4.151.1" />
+    <PackageVersion Include="SkiaSharp.Views" Version="4.152.0-rc.1.26426.14" />
+    <PackageVersion Include="SkiaSharp.Views.Maui.Controls" Version="4.152.0-rc.1.26426.14" />
     <PackageVersion Include="Vortice.DXGI" Version="3.8.3" />
     <PackageVersion Include="Vortice.Direct3D11" Version="3.8.3" />
     <PackageVersion Include="Vortice.Direct3D12" Version="3.8.3" />

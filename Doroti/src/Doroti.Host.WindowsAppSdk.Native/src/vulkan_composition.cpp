@@ -4,6 +4,7 @@
 #include <Presentation.h>
 #include <d3d11_4.h>
 #include <dcomp.h>
+#include <dwmapi.h>
 #include <dxgi1_6.h>
 #include <wrl/client.h>
 
@@ -59,6 +60,7 @@ struct VulkanCompositionContext {
   uint32_t bound_slot{kBufferCount};
   uint32_t bound_width{};
   uint32_t bound_height{};
+  DXGI_ALPHA_MODE alpha_mode{DXGI_ALPHA_MODE_IGNORE};
 
   ~VulkanCompositionContext() {
     if (composition_target) composition_target->SetRoot(nullptr);
@@ -263,17 +265,15 @@ HRESULT IsAvailable(const BufferSlot& slot, bool& available) noexcept {
 }
 
 HRESULT SetRetainedSource(
-    VulkanCompositionContext& composition, uint32_t capacity_width,
-    uint32_t capacity_height,
-    uint64_t tag) noexcept {
-  // Keep both the sampled source and its on-screen transform at the retained
-  // capacity. A negative viewport transform reduces the surface's on-screen
-  // coverage even when SetSourceRect names the full buffer; DWM can then show
-  // the HWND background while geometry and Presentation commits cross. The
-  // producer paints its logical viewport at (0,0), and the parent HWND is the
-  // only viewport clip.
-  RECT source{0, 0, static_cast<LONG>(capacity_width),
-              static_cast<LONG>(capacity_height)};
+    VulkanCompositionContext& composition, uint32_t source_x,
+    uint32_t source_y, uint32_t source_width,
+    uint32_t source_height, uint64_t tag) noexcept {
+  // The Presentation surface stays at identity on the top-level target. The
+  // top-level client is the only viewport clip and managed raster replacements
+  // use the same retained-capacity origin.
+  RECT source{static_cast<LONG>(source_x), static_cast<LONG>(source_y),
+              static_cast<LONG>(source_x + source_width),
+              static_cast<LONG>(source_y + source_height)};
   auto result = composition.surface->SetSourceRect(&source);
   if (FAILED(result)) return result;
   PresentationTransform identity{1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f};
@@ -438,6 +438,20 @@ doroti_windows_vulkan_composition_attach_window_v1(
 }
 
 extern "C" int32_t DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
+doroti_windows_vulkan_composition_set_premultiplied_alpha_v1(
+    void* context, uint32_t enabled) {
+  if (context == nullptr || enabled > 1) return Result(E_INVALIDARG);
+  auto& composition = *static_cast<VulkanCompositionContext*>(context);
+  std::lock_guard lock(composition.gate);
+  if (composition.bound_slot < kBufferCount)
+    return Result(HRESULT_FROM_WIN32(ERROR_INVALID_STATE));
+  composition.alpha_mode = enabled != 0
+                               ? DXGI_ALPHA_MODE_PREMULTIPLIED
+                               : DXGI_ALPHA_MODE_IGNORE;
+  return Result(S_OK);
+}
+
+extern "C" int32_t DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
 doroti_windows_vulkan_composition_replace_buffer_v1(
     void* context, uint32_t slot_index, uint32_t width, uint32_t height,
     uint64_t* shared_texture_handle, uint64_t* available_event,
@@ -584,10 +598,10 @@ doroti_windows_vulkan_composition_present_cropped_v1(
   result = composition.surface->SetColorSpace(
       DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
   if (FAILED(result)) return Result(result);
-  result = composition.surface->SetAlphaMode(DXGI_ALPHA_MODE_IGNORE);
+  result = composition.surface->SetAlphaMode(composition.alpha_mode);
   if (FAILED(result)) return Result(result);
   result = SetRetainedSource(
-      composition, slot.width, slot.height, tag);
+      composition, source_x, source_y, width, height, tag);
   if (FAILED(result)) return Result(result);
 
   const auto id = composition.manager->GetNextPresentId();
@@ -601,11 +615,19 @@ doroti_windows_vulkan_composition_present_cropped_v1(
                                ? composition.retiring_fence->GetCompletedValue()
                                : 0;
   if (wait_for_composition_frame != 0) {
-    bool observed{};
-    result = WaitForCompositionFrame(
-        composition, id, tag, wait_timeout_ms, observed);
-    if (FAILED(result)) return Result(result);
-    *composition_frame_observed = observed ? 1u : 0u;
+    if (composition.composition_target) {
+      // The product path attaches the Presentation surface to a native topmost
+      // target on the top-level HWND. DwmFlush observes its commit at a DWM boundary.
+      result = DwmFlush();
+      if (FAILED(result)) return Result(result);
+      *composition_frame_observed = 1;
+    } else {
+      bool observed{};
+      result = WaitForCompositionFrame(
+          composition, id, tag, wait_timeout_ms, observed);
+      if (FAILED(result)) return Result(result);
+      *composition_frame_observed = observed ? 1u : 0u;
+    }
   }
   return Result(S_OK);
 }
@@ -626,7 +648,7 @@ doroti_windows_vulkan_composition_crop_v1(
       height > composition.bound_height - source_y)
     return Result(E_INVALIDARG);
   auto result = SetRetainedSource(
-      composition, composition.bound_width, composition.bound_height, tag);
+      composition, source_x, source_y, width, height, tag);
   if (FAILED(result)) return Result(result);
   return Result(composition.manager->Present());
 }
@@ -668,8 +690,12 @@ doroti_windows_vulkan_composition_retire_buffers_v1(
     if (FAILED(result)) return Result(result);
     ComPtr<ID3D11DeviceContext> device_context;
     composition.device->GetImmediateContext(&device_context);
-    constexpr float clear[4]{0.0f, 0.0f, 0.0f, 1.0f};
-    device_context->ClearRenderTargetView(view.Get(), clear);
+    constexpr float transparent[4]{0.0f, 0.0f, 0.0f, 0.0f};
+    constexpr float opaque_black[4]{0.0f, 0.0f, 0.0f, 1.0f};
+    device_context->ClearRenderTargetView(
+        view.Get(), composition.alpha_mode == DXGI_ALPHA_MODE_PREMULTIPLIED
+                        ? transparent
+                        : opaque_black);
     device_context->Flush();
     ComPtr<IPresentationBuffer> retirement_buffer;
     result = composition.manager->AddBufferFromResource(
@@ -683,7 +709,7 @@ doroti_windows_vulkan_composition_retire_buffers_v1(
   result = composition.surface->SetColorSpace(
       DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
   if (FAILED(result)) return Result(result);
-  result = composition.surface->SetAlphaMode(DXGI_ALPHA_MODE_IGNORE);
+  result = composition.surface->SetAlphaMode(composition.alpha_mode);
   if (FAILED(result)) return Result(result);
   RECT source{0, 0, 1, 1};
   result = composition.surface->SetSourceRect(&source);

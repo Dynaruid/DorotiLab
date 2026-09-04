@@ -13,7 +13,7 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 ## SkiaSharp
 
 - Upstream: https://github.com/mono/SkiaSharp
-- Package: `SkiaSharp` 4.151.1; platform-native assets are selected transitively by the target RID graph
+- Packages: `SkiaSharp` and platform native assets `4.152.0-rc.1.26426.14`; `SkiaSharp.Vulkan.Silk.NET` provides the typed Silk.NET Vulkan bridge on Windows
 - Use: GPU surface implementation behind the Windows App SDK, MAUI, AppKit, Web, and Linux/Qt hosts
 - License: MIT; package license metadata is preserved by NuGet restore and distribution packaging
 

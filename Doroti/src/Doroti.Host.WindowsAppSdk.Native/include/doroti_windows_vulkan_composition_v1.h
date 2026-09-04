@@ -73,14 +73,20 @@ doroti_windows_vulkan_composition_create_v1(
     uint64_t* composition_surface_handle,
     doroti_windows_vulkan_composition_probe_v1* snapshot);
 
-// Binds the Presentation surface handle to the retained child HWND through a
-// native DirectComposition target. The top-level client clips that oversized
-// child, while the surface wrapper and target stay on one DComp device during
-// non-client top/left resizing.
+// Binds the Presentation surface handle to a product HWND through a native
+// DirectComposition target. The current product passes its top-level HWND.
 DOROTI_WINDOWS_VULKAN_COMPOSITION_API int32_t
 DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
 doroti_windows_vulkan_composition_attach_window_v1(
     void* context, uint64_t target_window);
+
+// Selects premultiplied-alpha composition before the first Presentation
+// buffer is committed. This lets Vulkan app pixels reveal a system backdrop
+// owned by the non-topmost DesktopWindowTarget below the topmost native target.
+DOROTI_WINDOWS_VULKAN_COMPOSITION_API int32_t
+DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
+doroti_windows_vulkan_composition_set_premultiplied_alpha_v1(
+    void* context, uint32_t enabled);
 
 DOROTI_WINDOWS_VULKAN_COMPOSITION_API void
 DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
@@ -102,9 +108,9 @@ doroti_windows_vulkan_composition_is_available_v1(
     void* context, uint32_t slot_index, uint32_t* available);
 
 // The Vulkan producer must complete all writes to the selected texture before
-// calling this function. The producer paints the requested viewport at (0,0);
-// the retained full source stays identity-transformed so its on-screen coverage
-// cannot become smaller than an asynchronously changing parent HWND clip.
+// calling this function. The following IPresentationManager::Present call
+// atomically selects a full-capacity identity source. The top-level HWND clips
+// its exact viewport while app-background overscan remains around it.
 DOROTI_WINDOWS_VULKAN_COMPOSITION_API int32_t
 DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
 doroti_windows_vulkan_composition_present_cropped_v1(

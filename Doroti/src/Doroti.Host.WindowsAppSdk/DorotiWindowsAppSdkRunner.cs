@@ -98,6 +98,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     InitialHeightPx = ToDimension(descriptor.ViewConfiguration.logicalSize.height * initialScale),
                     NCmdShow = 1,
                     RequiredFeatures = state.NativeRequiredFeatures,
+                    CompositionBackgroundArgb =
+                        state.EffectiveMode == "opaque" && state.Presenter.UsesCompositionTopology
+                            ? descriptor.ViewConfiguration.backgroundColor?.value ?? 0xff000000U
+                            : 0,
                 };
                 var callbacks = new WindowsNativeV1.Callbacks
                 {
@@ -216,11 +220,17 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             RequestedPresenter = ResolveRequestedPresenter();
             RequestedMode = configuration.backdrop?.mode == WindowBackdropMode.experimentalAcrylic
                 ? "experimentalAcrylic" : "opaque";
-            if (RequestedMode == "experimentalAcrylic" && RequestedPresenter != "AngleD3D11")
+            if (RequestedMode == "experimentalAcrylic" && RequestedPresenter == "Vulkan")
+            {
+                Presenter = new WindowsManagedVulkanPresenter(
+                    ShouldWriteDiagnostics(), configuration.backdrop!, Brightness.light);
+                EffectiveMode = "experimentalAcrylic";
+            }
+            else if (RequestedMode == "experimentalAcrylic" && RequestedPresenter != "AngleD3D11")
                 throw new InvalidOperationException(
                     $"DOROTI_WINDOWS_PRESENTER={RequestedPresenter} conflicts with experimentalAcrylic. " +
-                    "Direct Vulkan/D3D12 and the ContentIsland Acrylic path are separate presenters.");
-            if (RequestedMode == "experimentalAcrylic")
+                    "Only AngleD3D11 and Vulkan support the experimental Acrylic topology.");
+            else if (RequestedMode == "experimentalAcrylic")
             {
                 try
                 {
@@ -238,13 +248,15 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 catch (Exception exception)
                 {
                     FallbackReason = $"pre-window:{exception.GetType().Name}:{exception.Message}";
-                    Presenter = CreatePresenter(ShouldWriteDiagnostics(), RequestedPresenter);
+                    Presenter = CreatePresenter(
+                        ShouldWriteDiagnostics(), RequestedPresenter);
                     EffectiveMode = "opaque";
                 }
             }
             else
             {
-                Presenter = CreatePresenter(ShouldWriteDiagnostics(), RequestedPresenter);
+                Presenter = CreatePresenter(
+                    ShouldWriteDiagnostics(), RequestedPresenter);
                 EffectiveMode = "opaque";
             }
             NativeRequiredFeatures |= Presenter.NativeRequiredFeatures;
@@ -269,22 +281,23 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             {
                 try
                 {
-                    var acrylic = Presenter as WindowsManagedAcrylicCompositionPresenter;
-                    if (acrylic is not null && ShouldWriteDiagnostics())
-                        Console.Error.WriteLine("doroti.windows.experimental-acrylic=content-island-attach-start");
-                    acrylic?.ApplySystemBrightness((Brightness)native.InitialPlatformBrightness);
+                    var acrylic = Presenter as IWindowsAcrylicPresenter;
+                    if (acrylic is { AcrylicEnabled: true } && ShouldWriteDiagnostics())
+                        Console.Error.WriteLine("doroti.windows.experimental-acrylic=backdrop-topology-attach-start");
+                    if (acrylic is { AcrylicEnabled: true })
+                        acrylic.ApplySystemBrightness((Brightness)native.InitialPlatformBrightness);
                     if (Presenter is WindowsManagedVulkanPresenter vulkan)
-                        vulkan.AttachWindows(
-                            native.TopLevelHwnd, native.OpaqueChildHwnd);
+                        vulkan.AttachTopLevelWindow(native.TopLevelHwnd);
                     else
                         Presenter.AttachWindow(native.TopLevelHwnd);
                     effectiveNative.ChildHwnd = native.OpaqueChildHwnd;
-                    if (acrylic is not null && string.Equals(
+                    if (acrylic is { AcrylicEnabled: true } && string.Equals(
                             Environment.GetEnvironmentVariable("DOROTI_WINDOWS_EXPERIMENTAL_ACRYLIC_OPTION_SMOKE"),
                             "1", StringComparison.Ordinal))
-                        _optionSmoke = Task.Run(() => RunAcrylicOptionSmoke(acrylic));
-                    if (acrylic is not null && ShouldWriteDiagnostics())
-                        Console.Error.WriteLine("doroti.windows.experimental-acrylic=content-island-attach-pass");
+                        _optionSmoke = Task.Run(() => RunAcrylicOptionSmoke(
+                            acrylic, systemMaterialOnly: false));
+                    if (acrylic is { AcrylicEnabled: true } && ShouldWriteDiagnostics())
+                        Console.Error.WriteLine("doroti.windows.experimental-acrylic=backdrop-topology-attach-pass");
                 }
                 catch (Exception exception) when (Presenter is WindowsManagedAcrylicCompositionPresenter acrylic)
                 {
@@ -297,7 +310,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                             exception);
                     FallbackReason = $"pre-show:{exception.GetType().Name}:{exception.Message}";
                     EffectiveMode = "opaque";
-                    Presenter = CreatePresenter(ShouldWriteDiagnostics(), RequestedPresenter);
+                    Presenter = CreatePresenter(
+                        ShouldWriteDiagnostics(), RequestedPresenter);
                     effectiveNative.ChildHwnd = native.OpaqueChildHwnd;
                 }
             }
@@ -313,7 +327,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 target, Presenter.RuntimeEffectsBackend,
                 $"windowsappsdk-2.4-hwnd-{presenterSlug}-skia-managed");
             var messages = new WindowsAppSdkPlatformMessageCapability();
-            if (Presenter is WindowsManagedAcrylicCompositionPresenter activeAcrylic)
+            if (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } activeAcrylic)
                 messages.SetMessageHandler(
                     WindowsManagedAcrylicCompositionPresenter.RuntimeChannel,
                     activeAcrylic.HandleRuntimeMessageAsync);
@@ -361,32 +375,38 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 .ApplyMetrics(in metrics);
 
         internal void ResizeComposition(
-            uint width, uint height, double scale, uint sizingEdge, bool preGeometry)
+            uint width, uint height, double scale, uint sizingEdge, uint resizePhase)
         {
             if (!Presenter.UsesCompositionTopology)
                 throw new InvalidOperationException(
                     "A Composition viewport resize arrived without a Composition presenter.");
             Presenter.ResizeViewport(
                 checked((int)width), checked((int)height), scale,
-                sizingEdge, preGeometry);
+                sizingEdge, resizePhase == 1);
         }
 
-        private static void RunAcrylicOptionSmoke(WindowsManagedAcrylicCompositionPresenter acrylic)
+        private static void RunAcrylicOptionSmoke(
+            IWindowsAcrylicPresenter acrylic,
+            bool systemMaterialOnly)
         {
             const int requestCount = 500;
             var requests = new Task<ReadOnlyMemory<byte>?>[requestCount];
             for (var index = 0; index < requestCount; index++)
             {
-                var kind = (index % 3) switch { 0 => "default", 1 => "base", _ => "thin" };
+                var kind = systemMaterialOnly
+                    ? "default"
+                    : (index % 3) switch { 0 => "default", 1 => "base", _ => "thin" };
                 var theme = index % 2 == 0 ? "light" : "dark";
-                var payload = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new
-                {
-                    kind,
-                    theme,
-                    tintColor = 0xff204060u + (uint)(index & 0x1f),
-                    tintOpacity = (index % 11) / 10d,
-                    luminosityOpacity = (index % 6) / 5d,
-                }));
+                var payload = Encoding.UTF8.GetBytes(systemMaterialOnly
+                    ? JsonSerializer.Serialize(new { kind, theme })
+                    : JsonSerializer.Serialize(new
+                    {
+                        kind,
+                        theme,
+                        tintColor = 0xff204060u + (uint)(index & 0x1f),
+                        tintOpacity = (index % 11) / 10d,
+                        luminosityOpacity = (index % 6) / 5d,
+                    }));
                 requests[index] = acrylic.HandleRuntimeMessageAsync(payload, CancellationToken.None).AsTask();
             }
             Task.WaitAll(requests);
@@ -406,7 +426,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 var snapshot = acrylic.Snapshot();
                 if (snapshot.AcceptedOptionRevisions != requestCount || snapshot.FailedOptionRevisions != 0 ||
                     snapshot.AppliedOptionRevisions + snapshot.SupersededOptionRevisions != requestCount ||
-                    snapshot.AcrylicKind != "base" || snapshot.Theme != "Dark")
+                    snapshot.AcrylicKind != (systemMaterialOnly ? "default" : "base") ||
+                    snapshot.Theme != "Dark")
                     throw new InvalidDataException(
                         $"Acrylic option smoke counters or last-request-wins state differ: {snapshot}.");
             }
@@ -427,12 +448,12 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             Host?.MarkNativeStopped();
             if (Presenter.UsesCompositionTopology)
             {
-                if (Presenter is WindowsManagedAcrylicCompositionPresenter acrylic)
+                if (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } acrylic)
                 {
                     if (_optionSmoke is { } smoke && !smoke.Wait(TimeSpan.FromSeconds(5)))
                         throw new TimeoutException("Acrylic option smoke did not drain before platform shutdown.");
                     _releasedAcrylicSnapshot = acrylic.Snapshot();
-                    _releasedAdapterDescription = acrylic.AdapterDescription;
+                    _releasedAdapterDescription = Presenter.AdapterDescription;
                 }
                 Presenter.ReleaseCompositionResources();
             }
@@ -695,7 +716,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         {
             (Host ?? throw new InvalidOperationException("Platform brightness arrived before host-ready."))
                 .ApplyPlatformBrightness(brightness);
-            if (Presenter is WindowsManagedAcrylicCompositionPresenter acrylic)
+            if (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } acrylic)
                 acrylic.ApplySystemBrightness((Brightness)brightness);
         }
 
@@ -779,7 +800,10 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 _releasedAdapterDescription ?? Presenter.AdapterDescription,
                 RequestedPresenter, Presenter.BackendName,
                 RequestedMode, EffectiveMode, FallbackReason,
-                _releasedAcrylicSnapshot ?? (Presenter as WindowsManagedAcrylicCompositionPresenter)?.Snapshot(),
+                _releasedAcrylicSnapshot ??
+                    (Presenter is IWindowsAcrylicPresenter { AcrylicEnabled: true } acrylic
+                        ? acrylic.Snapshot()
+                        : null),
                 (Presenter as WindowsManagedVulkanPresenter)?.Snapshot(),
                 _platformThreadId, _rasterThreadId, _inputThreadId,
                 _renderCallbacks, _presented, _superseded, _failed,
@@ -1003,9 +1027,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static void OnCompositionResize(
         nint context, uint width, uint height, double scale,
-        uint sizingEdge, uint preGeometry) =>
+        uint sizingEdge, uint resizePhase) =>
         GuardVoid(context, state => state.ResizeComposition(
-            width, height, scale, sizingEdge, preGeometry != 0));
+            width, height, scale, sizingEdge, resizePhase));
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static uint OnRender(nint context, WindowsNativeV1.FrameRequest* request)

@@ -13,7 +13,9 @@ using SkiaSharp;
 
 namespace Doroti.Host.WindowsAppSdk;
 
-internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter : WindowsManagedHwndPresenterBase
+internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
+    WindowsManagedHwndPresenterBase,
+    IWindowsAcrylicPresenter
 {
     internal const string RuntimeChannel = "doroti/windows/experimental-acrylic";
     internal const int LogicalEdgeBudget = 6;
@@ -333,6 +335,15 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
         _supersededOptionRevisions, _failedOptionRevisions,
         _backdropTargetAdded,
         _contentIslandConnected);
+
+    bool IWindowsAcrylicPresenter.AcrylicEnabled => true;
+    void IWindowsAcrylicPresenter.ApplySystemBrightness(Brightness brightness) =>
+        ApplySystemBrightness(brightness);
+    ValueTask<ReadOnlyMemory<byte>?> IWindowsAcrylicPresenter.HandleRuntimeMessageAsync(
+        ReadOnlyMemory<byte>? data,
+        CancellationToken cancellationToken) =>
+        HandleRuntimeMessageAsync(data, cancellationToken);
+    AcrylicPresenterSnapshot IWindowsAcrylicPresenter.Snapshot() => Snapshot();
 
     internal override bool EnsureTarget(nint childWindow, int width, int height)
     {
@@ -1291,7 +1302,13 @@ internal sealed record AcrylicPresenterSnapshot(
     long SupersededOptionRevisions,
     long FailedOptionRevisions,
     bool BackdropTargetAdded,
-    bool ContentIslandConnected);
+    bool ContentIslandConnected,
+    bool DesktopWindowTargetConnected = false,
+    bool HostBackdropBrushEnabled = false,
+    string BackdropTransport = "DesktopAcrylicController",
+    string? SystemBackdropType = null,
+    bool RedirectionBitmapAlphaEnabled = false,
+    string? BackdropState = null);
 
 internal sealed class AcrylicCompositionWorker : IDisposable
 {
@@ -1465,7 +1482,7 @@ internal sealed class AcrylicScene : IDisposable
         _surface = null;
     }
 
-    private static unsafe ICompositionSurface CreateCompositionSurfaceForHandle(
+    internal static unsafe ICompositionSurface CreateCompositionSurfaceForHandle(
         Compositor compositor, nint surfaceHandle)
     {
         var iid = new Guid("FC084699-67D8-40E1-ADE7-08901D84FFDA");

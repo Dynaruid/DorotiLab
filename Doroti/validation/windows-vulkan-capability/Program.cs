@@ -1337,10 +1337,13 @@ internal static unsafe partial class Program
             Presentation = new
             {
                 mode = "CompositionSwapchain",
-                visibleOwner = "retained child DirectComposition target",
+                visibleOwner = "top-level DirectComposition Vulkan Presentation target",
+                topology = "top-level-dcomp-vulkan-presentation",
                 bufferCount = CompositionBufferCount,
                 activeSwapchains = 0,
                 bufferReuseAuthority = "presentation-buffer-availability",
+                movingOriginPolicy = "top-level-current-plus-latest",
+                rasterPlacement = "top-level-capacity-origin",
             },
             PresentationCommitPolicy = new
             {

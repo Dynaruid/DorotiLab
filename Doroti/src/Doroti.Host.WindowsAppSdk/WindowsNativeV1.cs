@@ -13,6 +13,7 @@ internal static partial class WindowsNativeV1
     internal const ulong PostPresentDwmFlushFeature = 1UL << 1;
     internal const ulong RetainedOversizedChildSurfaceFeature = 1UL << 2;
     internal const ulong CompositionPresentationFeature = 1UL << 3;
+    internal const ulong VulkanAcrylicFeature = 1UL << 4;
     internal const string LibraryName = "doroti_windows_appsdk_host_v1";
     private const uint LoadLibrarySearchDllLoadDir = 0x00000100;
     private const uint LoadLibrarySearchApplicationDir = 0x00000200;
@@ -194,7 +195,7 @@ internal static partial class WindowsNativeV1
         internal uint InitialWidthPx;
         internal uint InitialHeightPx;
         internal uint NCmdShow;
-        internal uint Reserved;
+        internal uint CompositionBackgroundArgb;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]

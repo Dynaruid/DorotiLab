@@ -63,7 +63,7 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         if (contextChanged)
         {
             ReleaseGpuResources();
-            // Qt's GLX resolver returns thunk addresses that SkiaSharp 4.151.1 cannot
+            // Qt's GLX resolver returned thunk addresses that SkiaSharp 4.151.1 could not
             // safely assemble on this Mesa/xcb path. libGL's current-context resolver
             // is correct for GLX; Wayland/EGL continues to use Qt's resolver.
             _interface = _usePlatformGlResolver
