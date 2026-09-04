@@ -162,19 +162,22 @@ internal static class Program
                         diagnostics.Acrylic is {
                             HostBackdropBrushEnabled: true,
                             BackdropTransport: "DesktopAcrylicController",
-                            SystemBackdropType: null,
+                            SystemBackdropType: "TransientWindowUnderlay",
                             RedirectionBitmapAlphaEnabled: false,
                             BackdropState: "Active"
                         } &&
                         diagnostics.Vulkan is { CompositeAlpha: "Premultiplied" },
-                    "Vulkan Acrylic did not layer a premultiplied exact-child Presentation target over an active, host-backdrop-enabled DesktopAcrylicController window target.");
+                    "Vulkan Acrylic did not layer a premultiplied top-level Presentation target over an active DesktopAcrylicController target and its DWM transient-backdrop resize underlay.");
             Require(expectedBackend != "Vulkan/Composition-Swapchain" ||
-                    diagnostics.PresenterDiagnosticCoverage.Contains("topmost DirectComposition target on the exact child HWND", StringComparison.Ordinal) &&
-                    diagnostics.PresenterDiagnosticCoverage.Contains("child geometry in the parent resize transaction", StringComparison.Ordinal) &&
-                    diagnostics.PresenterDiagnosticCoverage.Contains("identity full-capacity", StringComparison.Ordinal) &&
+                     diagnostics.PresenterDiagnosticCoverage.Contains("topmost DirectComposition target on the top-level HWND", StringComparison.Ordinal) &&
+                     diagnostics.PresenterDiagnosticCoverage.Contains("single top-level client geometry", StringComparison.Ordinal) &&
+                     diagnostics.PresenterDiagnosticCoverage.Contains("exact proposed-size Skia raster and Presentation submission before geometry on every interactive edge", StringComparison.Ordinal) &&
+                     diagnostics.PresenterDiagnosticCoverage.Contains("DWM display waiting only for fixed-origin edges", StringComparison.Ordinal) &&
+                     diagnostics.PresenterDiagnosticCoverage.Contains("moving-origin submission can coalesce with the following HWND transaction", StringComparison.Ordinal) &&
+                     diagnostics.PresenterDiagnosticCoverage.Contains("identity full-capacity", StringComparison.Ordinal) &&
                     diagnostics.PresenterDiagnosticCoverage.Contains("three-slot", StringComparison.Ordinal) &&
                     diagnostics.PresenterDiagnosticCoverage.Contains("availability", StringComparison.Ordinal),
-                "Explicit Vulkan did not select the exact-child full-capacity Presentation topology.");
+                "Explicit Vulkan did not select the synchronous top-level full-capacity Presentation topology.");
             Require((expectedBackend == "Vulkan/Composition-Swapchain" ||
                      diagnostics.AdapterDescription.Contains("ANGLE", StringComparison.OrdinalIgnoreCase) &&
                      (diagnostics.AdapterDescription.Contains("D3D11", StringComparison.OrdinalIgnoreCase) ||
@@ -363,13 +366,13 @@ internal static class Program
                 adapter = "HwndExactCpp",
                 nativeViewType = expectedBackend == "Vulkan/Composition-Swapchain"
                     ? experimentalAcrylic
-                        ? "exact-child Vulkan Presentation plus Desktop Acrylic window target"
-                        : "exact-child Vulkan Presentation"
+                        ? "synchronous top-level Vulkan Presentation plus Desktop Acrylic window target"
+                        : "synchronous top-level Vulkan Presentation"
                     : "Win32.ChildHwnd",
                 visibleOwner = expectedBackend == "Vulkan/Composition-Swapchain"
                     ? experimentalAcrylic
-                        ? "exact child HWND DirectComposition Vulkan Presentation target over a top-level Desktop Acrylic window target"
-                        : "exact child HWND DirectComposition Vulkan Presentation target"
+                        ? "top-level HWND DirectComposition Vulkan Presentation target over a top-level Desktop Acrylic window target"
+                        : "top-level HWND DirectComposition Vulkan Presentation target"
                     : "child HWND",
                 graphicsBackend = diagnostics.PresenterBackend,
                 diagnostics.AdapterDescription,

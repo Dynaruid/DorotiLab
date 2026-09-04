@@ -287,7 +287,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     if (acrylic is { AcrylicEnabled: true })
                         acrylic.ApplySystemBrightness((Brightness)native.InitialPlatformBrightness);
                     if (Presenter is WindowsManagedVulkanPresenter vulkan)
-                        vulkan.AttachWindows(native.TopLevelHwnd, native.OpaqueChildHwnd);
+                        vulkan.AttachTopLevelWindow(native.TopLevelHwnd);
                     else
                         Presenter.AttachWindow(native.TopLevelHwnd);
                     effectiveNative.ChildHwnd = native.OpaqueChildHwnd;
@@ -738,7 +738,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         internal void ValidateTerminalCoverage()
         {
             var rendered = Interlocked.Read(ref _renderCallbacks);
-            var terminals = Interlocked.Read(ref _presented) + Interlocked.Read(ref _superseded) + Interlocked.Read(ref _failed);
+            var terminals = Interlocked.Read(ref _presented) + Interlocked.Read(ref _superseded) +
+                Interlocked.Read(ref _failed);
             LastRunDiagnostics = CreateDiagnostics();
             if (rendered == 0 || terminals < rendered)
                 throw new InvalidOperationException($"Product terminal coverage differs: render={rendered}, terminal={terminals}.");

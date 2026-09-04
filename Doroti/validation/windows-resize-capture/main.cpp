@@ -636,12 +636,24 @@ std::optional<int> ValidationBackgroundRightGap(
     auto const titleY = backgroundTop - titleOffset;
     if (titleY < 0) return std::nullopt;
     auto const seed = Pixel(pixels, width, backgroundRight, titleY);
-    if (!IsNativeTitleBarFill(seed)) return std::nullopt;
+    // Desktop Acrylic deliberately tints the native caption with the sampled
+    // backdrop, so it is neither the ordinary light nor dark solid fill. The
+    // seed is still reliable because it is vertically tied to the exact app
+    // background edge in this same WGC frame. Reject known app primitives and
+    // accept a bounded material color for the local caption-edge walk.
+    bool const ordinaryTitle = IsNativeTitleBarFill(seed);
+    int const seedMinimum = std::min({seed[0], seed[1], seed[2]});
+    int const seedMaximum = std::max({seed[0], seed[1], seed[2]});
+    bool const materialTitle = seedMinimum >= 24 && seedMaximum <= 224 &&
+        !(seed[0] == 0x3a && seed[1] == 0x24 && seed[2] == 0x10) &&
+        !IsPurple(seed) && !IsAppBarFill(seed) && !IsLavender(seed);
+    if (!ordinaryTitle && !materialTitle) return std::nullopt;
 
-    auto similarToSeed = [seed](std::uint8_t const* pixel) {
-        return std::abs(static_cast<int>(pixel[0]) - seed[0]) <= 6 &&
-            std::abs(static_cast<int>(pixel[1]) - seed[1]) <= 6 &&
-            std::abs(static_cast<int>(pixel[2]) - seed[2]) <= 6;
+    auto const tolerance = ordinaryTitle ? 6 : 18;
+    auto similarToSeed = [seed, tolerance](std::uint8_t const* pixel) {
+        return std::abs(static_cast<int>(pixel[0]) - seed[0]) <= tolerance &&
+            std::abs(static_cast<int>(pixel[1]) - seed[1]) <= tolerance &&
+            std::abs(static_cast<int>(pixel[2]) - seed[2]) <= tolerance;
     };
     int titleRight = backgroundRight;
     int misses = 0;

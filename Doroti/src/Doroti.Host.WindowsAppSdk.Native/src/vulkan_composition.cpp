@@ -268,9 +268,9 @@ HRESULT SetRetainedSource(
     VulkanCompositionContext& composition, uint32_t source_x,
     uint32_t source_y, uint32_t source_width,
     uint32_t source_height, uint64_t tag) noexcept {
-  // The Presentation surface stays at identity on the exact child target. The
-  // child HWND is the viewport clip and managed raster replacements use the
-  // same retained-capacity origin.
+  // The Presentation surface stays at identity on the top-level target. The
+  // top-level client is the only viewport clip and managed raster replacements
+  // use the same retained-capacity origin.
   RECT source{static_cast<LONG>(source_x), static_cast<LONG>(source_y),
               static_cast<LONG>(source_x + source_width),
               static_cast<LONG>(source_y + source_height)};

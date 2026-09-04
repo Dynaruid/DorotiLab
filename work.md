@@ -1,11 +1,11 @@
 # Doroti Windows App SDK Silk.NET Vulkan 작업계획
 
 - 작성일: 2026-09-02
-- 상태: **top-level DirectComposition single-owner raster + nonblocking moving-origin current/latest implemented / DesktopAcrylicController active / SkiaSharp RC1 Silk bridge integrated / user recheck pending**
+- 상태: **plan-only: moving-origin just-in-time window-position handoff / current source v9 rollback / Left·Top physical FAIL-observed**
 - 대상: `Doroti.Host.WindowsAppSdk`의 `HwndExactCpp` opt-in Vulkan 및 Vulkan+Acrylic 경로
 - 현재 기본값: managed ANGLE/EGL-D3D11
 - 새 선택값: `DOROTI_WINDOWS_PRESENTER=Vulkan`
-- 핵심 결정: Vulkan은 명시적 opt-in 경로로만 유지한다. Visible app raster는 top-level HWND의 native topmost DirectComposition target에 full-capacity/identity로 붙고 HWND 자체가 유일한 viewport clip이다. Origin이 움직이는 edge는 현재 raster를 같은 HWND와 함께 이동시키고 actual generation을 running 1 + latest pending 1로 비동기 교체한다. Windows 11 24H2+의 explicit Vulkan+Acrylic은 non-topmost `Windows.UI.Composition.DesktopWindowTarget`에 `DesktopAcrylicController.SetTarget`을 적용하고, native premultiplied Vulkan target을 그 위에 둔다. SkiaSharp 계열은 `4.152.0-rc.1.26426.14`이며 Vulkan bridge는 `SkiaSharp.Vulkan.Silk.NET`이다. 현재 source와 acceptance의 권위 있는 체크포인트는 23절이며 0~22절은 결정 과정과 이전 evidence다.
+- 핵심 결정: Vulkan은 명시적 opt-in 경로로만 유지한다. Visible app raster는 top-level HWND의 native topmost DirectComposition target에 full-capacity/identity로 붙고 HWND 자체가 유일한 viewport clip이다. Windows 11 24H2+의 explicit Vulkan+Acrylic은 non-topmost `Windows.UI.Composition.DesktopWindowTarget`에 `DesktopAcrylicController.SetTarget`을 적용하고, native premultiplied Vulkan target을 그 위에 둔다. SkiaSharp 계열은 `4.152.0-rc.1.26426.14`이며 Vulkan bridge는 `SkiaSharp.Vulkan.Silk.NET`이다. 현재 source는 v9 ordering으로 복귀했으며, 다음 작업은 표준 HWND를 유지한 채 moving-origin frame을 준비하고 실제 `WM_WINDOWPOSCHANGING` 직전에만 visible commit하는 just-in-time handoff다. Arm N/fixed envelope/custom non-client와 고정 FPS 제한은 사용하지 않는다. 현재 계획과 acceptance의 권위 있는 체크포인트는 31절이며 0~30절은 결정 과정과 이전 evidence다.
 
 ## 0. 검토 결론
 
@@ -764,3 +764,302 @@ evidence는 `.doroti/evidence/windows-vulkan-<timestamp>-<id>/` 아래 immutable
 - `pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows -Configuration Release` — warning 0, error 0.
 
 현재 판정은 **repaired-pending-user-recheck / PASS-automated-partial**이다. 새 exact-child binary의 physical Left/TopLeft 체감과 실제 Acrylic 품질은 `notVerified`이며 사용자의 직접 확인만 acceptance authority다. 다른 GPU/DPI/refresh/mixed-monitor, 물리 IME/accessibility 및 실제 device-removal도 계속 `notVerified`다. ANGLE은 기본값이고 Vulkan은 explicit opt-in으로 유지한다.
+
+## 25. 2026-09-04 Skia-first host admission과 Acrylic material underlay
+
+24절 exact-child 경로도 사용자의 직접 확인에서 창 resize 중 흰색/검은색 영역과 `Left`/`TopLeft` 내부 raster 떨림을 남겼다. 이 절이 현재 source와 acceptance의 권위 있는 체크포인트다. 목표 우선순위는 높은 resize FPS가 아니라 **새 창 범위를 노출하기 전에 그 크기의 Skia pixel을 준비하는 것**이다.
+
+### Shared runtime 수정
+
+- Visible Vulkan raster target을 top-level HWND의 native topmost DirectComposition target으로 되돌리고, hidden child는 monitor/DPI capacity probe로만 유지한다. Top-level client가 shell geometry와 visible clip의 단일 소유자다.
+- Composition path의 top-level HWND에는 `WS_EX_NOREDIRECTIONBITMAP`을 적용해 target commit 사이에 별도 USER32 white backing plane이 나타나지 않게 한다.
+- `WM_SIZING`이 proposed window rect에서 client extent를 계산하고 retained capacity를 먼저 확보한다. 이어 proposed viewport metrics를 발행하고 exact generation을 Skia raster → Vulkan copy → Windows Presentation → DWM boundary까지 완료한 뒤에만 반환한다.
+- USER32는 준비가 끝난 다음 top-level geometry를 적용한다. Actual `WM_SIZE`가 같은 metrics를 받으면 두 번째 raster를 만들지 않고, programmatic/mismatch resize만 기존 100 ms bounded exact fallback을 사용한다.
+- 모든 edge가 같은 Skia-first 순서를 사용한다. 100 ms는 fail-safe이며 fixed FPS cap이 아니다. Source translation, stretch, edge별 scene 이동, visible child correction은 없다.
+
+### Acrylic 수정
+
+- 기존 host-backdrop-enabled non-topmost `DesktopWindowTarget`과 active `DesktopAcrylicController`를 정상 material 소유자로 유지한다.
+- 같은 HWND에 `DWMWA_SYSTEMBACKDROP_TYPE=DWMSBT_TRANSIENTWINDOW` underlay를 추가한다. 이것은 premultiplied Vulkan target이 아직 새 logical viewport를 덮지 못한 transient pixel을 app 색이 아니라 같은 system material로 채운다.
+- Native topmost Vulkan Presentation은 premultiplied alpha, full-capacity identity source를 유지한다. ContentIsland나 visible raster child는 만들지 않는다.
+- Product/capability gate는 controller active state, desktop target, host backdrop, transient underlay, premultiplied alpha를 모두 요구한다. 하나라도 실패하면 explicit Vulkan+Acrylic을 fail-fast하며 ANGLE/plain transparency로 조용히 바꾸지 않는다.
+
+### 자동 evidence
+
+- `.doroti/evidence/codex-vulkan-skia-first-opaque-topleft-20260904/manifest.json` — 불투명 `TopLeft` `PASS-automated-partial`: capture 68, outer change 49, accepted 48, motion present 49, 84 Hz, validation-background gap 0 frame/0 px, Composition wait/observed/timeout 53/53/0, final exact/resource PASS.
+- `.doroti/evidence/codex-vulkan-skia-first-underlay-acrylic-topleft-r3-20260904/manifest.json` — transport/marker/final exact/resource와 top-level raster-owner gate PASS, capture 74, outer/accepted/present 48/47/48, 82.29 Hz, Composition wait/observed/timeout 52/52/0. 기존 strict opaque app-background coverage는 26/74 frame, 최대 35 px 때문에 `FAIL`이며 `FAIL-strict-app-raster-coverage-material-underlay-may-be-visible`로 구분하고 PASS로 재분류하지 않는다. 직접 확인한 anomaly frame 21/45/60/69에는 solid white/black bar가 보이지 않지만 이는 물리 scan-out 증명이 아니다.
+- `.doroti/evidence/codex-vulkan-skia-first-underlay-capability-r2-20260904` — 최종 source-built aggregate `PASS`, gate `Vulkan-Composition-PASS-automated-partial`; exact-LUID import, Presentation buffer 3, device reset, minimize/restore, exact resize, start/close와 Acrylic controller/underlay 계약 PASS.
+- `DorotiDemoApp` Windows Release build — warning 0, error 0.
+
+현재 판정은 **repaired-pending-user-recheck / mixed automated evidence**다. 불투명 pixel coverage와 Vulkan+Acrylic capability는 자동 PASS지만 Acrylic strict app-raster coverage는 FAIL로 보존한다. 실제 흰색/검은색 영역 제거, `Left`/`TopLeft` 떨림과 Acrylic 재질은 사용자가 같은 Vulkan+AMD+Acrylic 실행으로 직접 확인하기 전까지 `notVerified`다. ANGLE 기본값과 Vulkan explicit opt-in 정책은 바뀌지 않는다.
+
+## 26. 2026-09-04 moving-origin post-geometry admission
+
+25절 universal Skia-first 후보를 사용자가 직접 확인한 결과 빈 영역은 사라졌고 `Right`/`Bottom`은 완벽에 가까웠지만, `Left`/`Top`에는 잔상 같은 내부 raster 떨림이 남았다. 이 최신 물리 관찰이 25절의 자동 결과보다 우선하며, 이 절이 현재 source의 권위 있는 체크포인트다.
+
+### 원인과 수정
+
+- `Right`/`Bottom`은 screen origin이 고정되어 proposed logical layout을 먼저 표시해도 scene이 한 번만 변한다.
+- `Left`/`Top` 계열은 pre-geometry proposed layout이 이전 screen origin에서 먼저 보인 뒤 USER32가 HWND origin을 옮겨 scene이 두 번 움직이는 것처럼 보였다.
+- `Right`, `Bottom`, `BottomRight`는 25절의 Skia-first proposed-size Presentation+DWM admission을 그대로 유지한다.
+- `Left`, `Top`, `TopLeft`, `TopRight`, `BottomLeft`의 `WM_SIZING`은 proposed retained capacity만 확보하고 logical metrics/raster를 발행하지 않는다. USER32가 현재 full-capacity raster와 top-level HWND를 함께 이동/clip한 뒤 actual `WM_SIZE`가 exact metrics를 발행하고 matching Skia/Vulkan Present+DWM terminal까지 기다린다.
+- Top-level 단일 visible owner, `WS_EX_NOREDIRECTIONBITMAP`, retained opaque guard와 Acrylic transient material underlay는 유지한다. 따라서 moving-origin의 post-geometry 구간도 solid white/black으로 채우지 않는다.
+- Fixed FPS limiter, source translation, stretch, visible child geometry correction은 없다. 100 ms는 실패를 무한 대기하지 않기 위한 bound다.
+
+### Fail-closed 방향 counter
+
+- Managed presenter가 `fixedOriginPreGeometryAdmissions`, `movingOriginPostGeometryAdmissions`, `movingOriginPreGeometryViolations`를 report한다.
+- Focused validator는 moving-origin case에서 moving-post가 1 이상이고 moving-pre violation이 0이어야 하며, fixed-origin case에서는 fixed-pre가 1 이상이어야 resource contract를 통과시킨다.
+
+### 자동 evidence
+
+- `.doroti/evidence/codex-vulkan-directional-postgeometry-opaque-topleft-20260904/manifest.json` — 불투명 `TopLeft` `PASS-automated-partial`: capture 76, outer/accepted/present 50/49/49, 83.41 Hz, target latency p95 10.79 ms, DWM wait/observed/timeout 54/54/0, strict gap 0 frame/0 px, fixed-pre/moving-post/moving-pre-violation 0/54/0, final/resource/source/repository/binary stability PASS.
+- `.doroti/evidence/codex-vulkan-directional-postgeometry-acrylic-topleft-r2-20260904/manifest.json` — `TopLeft`: transport/marker/final-exact/resource/owner PASS, capture 59, outer/accepted/present 45/43/44, 75.43 Hz, target latency p95 11.91 ms, DWM wait/observed/timeout 49/49/0, fixed-pre/moving-post/moving-pre-violation 0/49/0.
+- `.doroti/evidence/codex-vulkan-directional-pregeometry-acrylic-right-r2-20260904/manifest.json` — `Right`: transport/marker/final-exact/resource/owner PASS, capture 64, outer/accepted/present 49/48/48, 82.32 Hz, DWM wait/observed/timeout 53/53/0, fixed-pre/moving-post/moving-pre-violation 53/0/0.
+- 두 Acrylic case의 전체 status는 기존 strict opaque app-background sentinel gate 때문에 `FAIL`로 보존한다. Material tail은 `TopLeft` 26/59 frame 최대 38 px, `Right` 2/64 frame 최대 27 px이며, 저장한 `TopLeft` anomaly frame에는 solid white/black bar가 보이지 않았다. 캡처는 물리 잔상 판정이 아니다.
+- `.doroti/evidence/codex-vulkan-directional-acrylic-capability-r2-20260904` — 최종 source-built aggregate `PASS`, v7 policy `fixed-origin-pregeometry-moving-origin-postgeometry-present-dwm`, Acrylic target/underlay와 source/repository/binary stability PASS.
+- 첫 capability 시도는 ANGLE baseline의 stale-input copy 1개가 supersede되어 `Presents 24 != GpuCopies 25`로 FAIL했다. 이 간헐 실패는 보존하며 재실행 PASS가 지우지 않는다.
+- Windows Release build는 warning 0, error 0이다.
+
+현재 판정은 **repaired-pending-user-recheck / mixed automated evidence**다. Right/Bottom의 물리 관찰은 현재 사용자 기준 양호하지만 새 binary의 Left/Top 잔상 감소와 solid gap 부재는 다시 직접 확인해야 한다. Acrylic strict app-raster coverage, 실제 scan-out, 다른 GPU/DPI/refresh/mixed-monitor 및 물리 IME/accessibility는 계속 `notVerified` 또는 `FAIL`로 보존한다.
+
+## 27. 2026-09-04 moving-origin offscreen prepare / post-geometry commit
+
+사용자가 26절 후보의 `TopLeft` 물리 캡처를 제공했다. 새 top-level client의 오른쪽 약 수십 pixel이 초록빛 Acrylic material로 남고 Skia grid가 그 이전에서 끝난다. 따라서 26절에서 잔상으로 해석한 증상의 직접 원인은 old raster를 actual `WM_SIZE`까지 유지한 결과인 **새 HWND geometry와 이전 Skia extent의 실시간 불일치**다. 이 최신 관찰이 26절의 post-geometry-only 정책을 supersede한다.
+
+### 채택한 두 단계 admission
+
+- `Right`, `Bottom`, `BottomRight`는 이미 물리적으로 양호했던 proposed-size Skia/Vulkan Presentation+DWM 선행 admission을 유지한다.
+- `Left`, `Top`, `TopLeft`, `TopRight`, `BottomLeft`의 `WM_SIZING`도 proposed metrics를 발행하고 Skia raster와 Vulkan copy를 먼저 완료한다. 다만 새 logical layout을 이전 screen origin에서 표시하지 않고, copy가 끝난 Presentation slot을 reserved 상태로 둔 뒤 `PREPARED` terminal만 반환한다.
+- USER32가 proposed top-level origin/extent를 적용해 actual `WM_SIZE`가 오면, render worker는 input sequence, resize generation, exact extent와 prepared slot을 다시 검증하고 같은 buffer를 `Present`한다. 그 Presentation의 CompositionFrame/DWM 경계가 관찰된 뒤에만 resize generation을 `Presented`로 완료한다.
+- 새 input/frame/extent가 끼어들면 prepared slot과 paint completion을 fail-closed로 supersede하고 actual geometry의 exact render로 fallback한다. Reserved slot은 availability 기반 선택과 wait 대상에서 제외한다.
+- `Prepared`는 Skia/GPU copy 완료이지 화면 표시 완료가 아니므로 resize coordinator를 완료하지 않는다. Product terminal coverage는 presented/superseded/failed/prepared 네 terminal을 모두 계수하고, renderer paint completion은 actual Presented terminal의 causal frame으로 이전한다.
+- Fixed FPS limiter, source offset/translation, stretch, visible child geometry correction은 사용하지 않는다. 100 ms는 preparation과 actual commit이 영원히 UI transaction을 막지 않게 하는 fail-safe다.
+
+### Counter와 validator
+
+- Presenter는 `movingOriginPreGeometryPreparations`, `movingOriginPostGeometryAdmissions`, `movingOriginPreGeometryViolations`를 report한다.
+- Moving-origin focused validation은 prepare와 post-geometry commit이 각각 1 이상이고 violation/timeout이 0이어야 resource contract를 통과한다.
+- Capability contract는 v8 `fixed-origin-pregeometry-present-moving-origin-pregeometry-prepare-postgeometry-present-dwm`으로 갱신했다.
+
+### 현재 자동 evidence
+
+- `.doroti/evidence/codex-vulkan-prepared-commit-opaque-topleft-final-r2-20260904/manifest.json` — final fingerprint `PASS-automated-partial`; capture 74, outer/accepted/present 50/49/49, 82.82 Hz, target latency p95 13.35 ms, strict gap 0 frame/0 px, prepare/commit/violation 53/53/0, DWM wait/observed/timeout 54/54/0, final/resource/source/repository/binary stability PASS.
+- 바로 앞 `.doroti/evidence/codex-vulkan-prepared-commit-opaque-topleft-final-20260904/manifest.json`은 ordering 52/52, DWM 53/53, timeout/failure 0과 final/resource PASS였지만 capture 67 중 1 frame에서 strict app-raster 8 px gap이 검출되어 전체 `FAIL`이다. 이 간헐 결과는 반복 PASS로 삭제하거나 재분류하지 않는다.
+- `.doroti/evidence/codex-vulkan-prepared-commit-acrylic-topleft-r2-20260904/manifest.json` — 전체 status는 strict opaque sentinel gate 때문에 `FAIL`이지만 transport/marker/final-exact/resource/owner는 PASS; capture 81, outer/accepted/present 48/47/47, 79.44 Hz, target latency p95 14.06 ms, prepare/commit/violation 51/51/0, DWM wait/observed/timeout 52/52/0, failed terminal 0. Strict material-tail 판정은 26/81 frame 최대 27 px로 보존한다. 저장 anomaly frame을 직접 확인하면 dark-blue app raster와 도형이 client right edge까지 이어져 사용자가 캡처한 큰 material strip은 보이지 않지만, 이는 물리 scan-out acceptance가 아니다.
+- `.doroti/evidence/codex-vulkan-prepared-commit-acrylic-right-20260904/manifest.json` — fixed-origin 회귀는 prepare terminal 0, fixed-pre 53, DWM wait/observed/timeout 53/53/0, 84.61 Hz이며 transport/marker/final/resource PASS다. Strict Acrylic sentinel은 3/72 frame 최대 35 px로 FAIL을 유지한다.
+- `.doroti/evidence/codex-vulkan-prepared-commit-acrylic-capability-20260904/manifest.json` — source-built aggregate `PASS`, gate `Vulkan-Composition-PASS-automated-partial`; v8 prepared-commit/Presentation, exact-LUID import, Acrylic target/underlay, reset/lifecycle/start-close, source/repository/binary stability PASS.
+- Native Release와 managed product Release build는 warning 0, error 0이다.
+
+현재 판정은 **repaired-pending-user-recheck / mixed automated evidence**다. 새 binary에서 사용자가 같은 Vulkan+AMD+Acrylic `Left`/`TopLeft` drag를 직접 확인해야 물리 해결 여부를 판정할 수 있다. ANGLE default, Vulkan explicit opt-in/no-silent-fallback, Acrylic strict pixel `FAIL`, 다른 GPU/DPI/refresh/mixed-monitor와 물리 IME/accessibility `notVerified` 경계는 유지한다.
+
+## 28. 2026-09-04 moving-origin pre-geometry Present submission
+
+27절의 two-phase `Prepared → post-geometry Present` 후보도 사용자의 직접 확인을 통과하지 못했다. `Left`/`Top`에서 여전히 떨림이 느껴졌고, 캡처에는 새 client geometry 뒤에 이전 Skia extent가 남긴 material 영역이 보였다. 27절의 자동 결과는 보존하지만 물리 acceptance에는 사용하지 않는다.
+
+### Shared runtime 수정
+
+- 모든 interactive edge가 proposed extent의 metrics를 발행하고 exact Skia raster와 synchronous Vulkan copy를 완료한 뒤 `IPresentationManager::Present`를 geometry 전에 제출한다.
+- `Right`, `Bottom`, `BottomRight`는 기존처럼 pre-geometry CompositionFrame/DWM 표시 경계까지 기다린다. Screen origin이 고정되므로 새 layout을 먼저 표시해도 이중 이동이 없다.
+- `Left`, `Top`, `TopLeft`, `TopRight`, `BottomLeft`는 `Present` 제출 terminal까지만 기다리고 pre-geometry CompositionFrame/DwmFlush는 기다리지 않는다. 따라서 새 raster는 HWND geometry보다 뒤에 제출되지 않지만, 새 layout을 이전 screen origin에서 반드시 한 번 표시하는 동작도 없다.
+- Actual `WM_SIZE`의 extent/scale이 이미 pre-submitted metrics와 같으면 viewport revision을 다시 만들거나 두 번째 raster/Present를 하지 않는다. Programmatic/DPI/mismatch resize만 post-geometry bounded exact fallback을 사용한다.
+- `WM_EXITSIZEMOVE`는 마지막 actual geometry에서 `DwmFlush`를 한 번 호출한다. 이는 interactive frame마다 기다리는 경로가 아니라, modal resize가 끝난 뒤 마지막 제출과 geometry를 settle하는 경계다.
+- 이전 `Prepared=4` terminal, reserved Presentation slot, post-geometry prepared commit 경로와 관련 managed paint-completion 이전을 제거했다. ABI v1 terminal은 다시 Presented/Superseded/Failed 세 종류다.
+- Fixed FPS limiter, source translation/stretch, visible child geometry correction은 추가하지 않았다. Vulkan은 계속 explicit opt-in이고 ANGLE 기본 경로는 바뀌지 않는다.
+
+### Contract와 현재 evidence
+
+- Capability contract는 v9이며 policy는 `fixed-origin-pregeometry-present-dwm-moving-origin-pregeometry-present-submit`이다.
+- Presenter/validator는 `movingOriginPreGeometryAdmissions`와 `movingOriginPreGeometryDisplayWaits`를 기록한다. Moving-origin case는 admission이 1 이상이고 그 단계의 display wait가 0이어야 한다.
+- `.doroti/evidence/codex-vulkan-moving-submit-final-acrylic-topleft-20260904/manifest.json`은 strict Acrylic app-background coverage 때문에 전체 `FAIL`이다: 82 capture 중 23 frame, 최대 9 px material tail을 검출했다. 이 실패는 재분류하지 않는다.
+- 같은 run의 transport, marker, final exact, resource, top-level owner는 PASS다. Moving-origin pre-submit/display-wait는 97/0, 전체 CompositionFrame wait/observed/timeout은 2/2/0, outer/accepted/present는 94/93/93, 157.19 presentations/s, accepted-to-next-present p95/max는 5.773/7.170 ms다.
+- `.doroti/evidence/codex-vulkan-moving-submit-final-opaque-topleft-20260904/manifest.json`은 final/resource와 moving pre-submit/display-wait 106/0이 PASS지만 67 capture 중 2 frame, 최대 18 px exact app-raster gap 때문에 전체 `FAIL`이다. 저장 anomaly PNG에서도 좁은 오른쪽 tail을 확인했다. 직전 0 frame/0 px PASS는 이 간헐 실패를 지우지 않는다.
+- `.doroti/evidence/codex-vulkan-moving-submit-acrylic-right-20260904/manifest.json`은 fixed-origin regression의 transport/marker/final/resource, fixed pre-admission 53, DWM wait/observed/timeout 55/55/0이 PASS다. Strict Acrylic sentinel은 5/69 frame 최대 27 px로 전체 `FAIL`을 유지한다.
+- `.doroti/evidence/codex-vulkan-moving-submit-final-acrylic-capability-r4-20260904/manifest.json`은 현재 source에서 build한 aggregate `PASS`, gate `Vulkan-Composition-PASS-automated-partial`이다. Source-to-binary `PASS-built-after-source-fingerprint`, native SHA-256 `1a00c5bc78b67c1c9c9b5b7118ade347d3e2661bba5f03d926505b9c488b62d0`, v9 policy, exact-LUID/import, active Acrylic target/underlay, exact resize/reset/minimize/start-close 각 10회, device-loss 주입과 source/repository/binary stability가 통과했다.
+- 첫 aggregate `.doroti/evidence/codex-vulkan-moving-submit-acrylic-capability-20260904`는 ANGLE baseline에서 stale-input copy 1개가 supersede되어 `Presents 24 != GpuCopies 25`로 중단됐다. 재실행 PASS가 이 간헐 failure를 삭제하거나 재분류하지 않는다.
+- Release DemoApp build는 warning 0/error 0이고 native ABI fixture는 PASS다.
+
+현재 판정은 **repaired-pending-user-recheck / mixed automated evidence**다. 이 ordering이 실제 `Left`/`TopLeft` 떨림과 material strip을 줄였는지는 동일 Vulkan+AMD+Acrylic 실행의 물리 확인 전까지 `notVerified`다. 다른 GPU/DPI/refresh/mixed-monitor, 물리 IME/accessibility와 device-removal도 계속 `notVerified`다.
+
+## 29. 2026-09-05 moving-origin geometry+raster 40 FPS pacing
+
+사용자가 28절 후보를 직접 확인한 결과 이전보다 조금 나아졌지만 `Left`/`Top` 떨림은 남았다. 사용자는 resize 중 최대 40 FPS까지의 cadence 희생을 허용했다. 따라서 28절의 무제한 moving-origin cadence는 물리 acceptance에서 supersede하며, fixed-origin ordering은 그대로 유지한다.
+
+### 구현
+
+- `Left`, `Top`, `TopLeft`, `TopRight`, `BottomLeft`의 changed `WM_SIZING` step 시작 간격을 최소 25 ms로 제한한다. `Right`, `Bottom`, `BottomRight`에는 limiter를 적용하지 않는다.
+- pacing은 proposed metrics 발행 전 platform thread에서 수행한다. 따라서 기다리는 동안은 이전 HWND geometry와 이전 exact Skia raster가 함께 유지되고, 새 geometry만 renderer보다 먼저 진행하지 않는다.
+- deadline은 `CREATE_WAITABLE_TIMER_HIGH_RESOLUTION` timer로 기다린다. 일반 `sleep_until`/`sleep_for(1ms)`는 이 세션에서 약 15.6 ms timer quantum 때문에 30~33 fps로 overshoot해 폐기했다. High-resolution timer 생성/설정 실패 시에만 deadline까지 yield하는 fail-soft 경로를 사용한다.
+- wake 시각을 다음 기준으로 사용해 느린 raster 뒤에 catch-up burst를 만들지 않는다. 중복 extent는 pacing과 새 viewport revision 없이 반환한다.
+- 이후 ordering은 28절과 같다: exact Skia raster, synchronous Vulkan copy, pre-geometry `Present` 제출, moving-origin display wait 0, matching actual `WM_SIZE`의 중복 raster 0, `WM_EXITSIZEMOVE` final one-shot DWM settle이다.
+- Capability contract는 v10이며 policy는 `fixed-origin-pregeometry-present-dwm-moving-origin-40fps-pregeometry-present-submit`, `movingOriginMaximumFps=40`이다. ANGLE default와 Vulkan explicit opt-in/no-silent-fallback은 바뀌지 않는다.
+
+### 현재 자동 evidence
+
+- `.doroti/evidence/codex-vulkan-moving-40fps-hires-opaque-topleft-20260905/manifest.json` — `PASS-automated-partial`; 87 capture, strict gap 0 frame/0 px, outer/accepted/present 24/23/22, 37.99 presentations/s, present gap p95/max 27.659/29.277 ms, accepted-to-next-present p95/max 5.726/6.753 ms, moving pre-submit/display-wait 28/0, final exact/resource PASS다.
+- `.doroti/evidence/codex-vulkan-moving-40fps-hires-acrylic-topleft-20260905/manifest.json` — transport/marker/final exact/resource, outer/accepted/present 24/23/23, 39.43 presentations/s, moving pre-submit/display-wait 28/0, Composition wait/observed/timeout 2/2/0은 PASS다. Strict material tail은 31/73 frame, 최대 59 px이므로 전체 `FAIL`을 유지한다.
+- `.doroti/evidence/codex-vulkan-moving-40fps-opaque-topleft-20260905`와 `.doroti/evidence/codex-vulkan-moving-40fps-precise-opaque-topleft-20260905`는 strict gap 0이지만 각각 33.53/30.22 fps로 40 FPS 목표보다 과도하게 느린 폐기 후보다.
+- `.doroti/evidence/codex-vulkan-moving-40fps-hires-capability-r2-20260905/manifest.json` — 현재 source-built aggregate `PASS`, gate `Vulkan-Composition-PASS-automated-partial`; v10 policy/40 FPS contract, source-to-binary, exact-LUID/import, Acrylic target/underlay, device-loss, exact resize/reset/minimize/start-close 각 10회와 source/repository/binary stability가 PASS다. Native SHA-256은 `8b787b3375c16a2715e1891f343d649cedae616556e9fd7ab7bd9e873d73eb60`이다.
+- 첫 v10 aggregate `.doroti/evidence/codex-vulkan-moving-40fps-hires-capability-20260905`는 기존 ANGLE baseline에서 stale-input copy 1개가 supersede되어 `Presents 24 != GpuCopies 25`로 중단됐다. 재실행 PASS가 이 간헐 failure를 삭제하거나 재분류하지 않는다.
+- 최종 DemoApp Release build는 warning 0/error 0이며 native SHA-256이 aggregate와 같은 `8b787b3375c16a2715e1891f343d649cedae616556e9fd7ab7bd9e873d73eb60`이다. Native ABI fixture는 PASS다.
+- 현재 물리 Left/Top/TopLeft smoothness는 `notVerified`다. 40 FPS pacing이 떨림을 줄였는지, 큰 step의 choppiness로 바꿨는지는 사용자 직접 확인을 acceptance authority로 사용한다.
+
+## 30. 2026-09-05 40 FPS physical failure와 ownership 전환점
+
+사용자의 동일 Vulkan+AMD+Acrylic 직접 확인에서 40 FPS 후보도 `Left`/`Top` 떨림을 남겼다. 따라서 29절의 자동 PASS는 보존하지만 물리 acceptance는 **FAIL-observed**로 확정한다.
+
+- High-resolution waitable timer, moving-origin 25 ms pacing state, 중복 extent short-circuit을 제거했다. FPS 제한은 원인이 아니며 renderer/geometry cadence를 더 낮추지 않는다.
+- Capability contract와 presenter/validator diagnostics는 현재 source가 다시 사용하는 v9 `fixed-origin-pregeometry-present-dwm-moving-origin-pregeometry-present-submit`로 복귀했다. v10/40 FPS evidence는 historical rejected candidate다.
+- 표준 top-level HWND의 origin/extent는 USER32/DWM transaction이고 Vulkan Presentation frame/clip은 DirectComposition transaction이다. 우측·하단처럼 origin이 고정되면 차이가 거의 보이지 않지만, 좌측·상단에서는 두 transaction을 application이 원자적으로 묶을 수 없어 잔상 같은 이중 이동이 남는다.
+- Fixed work-area envelope와 custom non-client shell을 사용하는 app-owned geometry(Arm N)는 ownership 분석에서 구조적 대안으로 식별했지만, 사용자의 결정에 따라 채택하지 않는다. 관련 ABI/positioned-Presentation 구현은 남기지 않는다.
+- 따라서 현재 승인된 다음 구현 후보는 없다. 표준 HWND v9 경로의 `Left`/`Top` 떨림은 **미해결/FAIL-observed**로 유지하고, ANGLE default와 Vulkan explicit opt-in/no-silent-fallback도 유지한다.
+- v9 rollback 이후 DemoApp Windows Release, Vulkan capability probe, HWND product validator build는 모두 warning 0/error 0이다. Contract JSON과 두 PowerShell validator parse, native ABI fixture도 PASS다. Rebuilt native SHA-256은 `0951603f86caae1844debf483430a5e981d529ae731aca5250467df8cc746691`이다. 물리 left/top은 이미 FAIL-observed이므로 새 자동 live-resize artifact를 물리 PASS 대용으로 만들지 않는다.
+
+## 31. 2026-09-05 moving-origin just-in-time window-position handoff 계획
+
+30절에서 표준 HWND의 두 transaction 경계를 확인했지만 사용자는 Arm N/fixed envelope/custom non-client 구조를 채택하지 않기로 했다. 현재 v9 경로는 빈 검정·흰 영역을 대부분 제거했고 `Right`/`Bottom`은 물리적으로 거의 완벽하므로, 이 계획은 topology를 다시 바꾸지 않고 `Left`/`Top` 계열의 간헐적 이중 이동만 줄이는 최소 변경을 목표로 한다. **이 절은 계획 전용이며 아직 구현 또는 PASS를 뜻하지 않는다.**
+
+### 31.1 목표와 최종 판정 기준
+
+- 대상 edge는 `Left`, `Top`, `TopLeft`, `TopRight`, `BottomLeft`다. Origin이 고정되는 `Right`, `Bottom`, `BottomRight`의 현재 pre-geometry Present+DWM wait ordering은 변경하지 않는다.
+- 표준 top-level HWND, system caption/non-client, Snap Layouts, system menu, maximize/restore와 현재 input/focus/IME/UIA ownership을 유지한다.
+- Moving-origin resize의 exact Skia raster와 Vulkan copy를 미리 끝내되, 그 frame을 `WM_SIZING`에서 visible하게 제출하지 않는다. 실제 top-level geometry가 적용되기 직전인 `WM_WINDOWPOSCHANGING`에서만 commit한다.
+- 우선순위는 1) 검정·흰 빈 영역 0, 2) 물리 `Left`/`TopLeft` 잔상·이중 이동 0, 3) final exact geometry, 4) responsiveness다. 높은 FPS는 앞의 세 조건을 훼손하지 않는 범위에서만 최적화한다.
+- 자동 WGC, counter, Composition receipt는 ordering과 회귀를 증명하는 partial evidence다. 최종 acceptance authority는 사용자의 동일 Vulkan+AMD+Acrylic 실제 border drag이며, 눈에 보이는 간헐적 떨림이 한 번이라도 재현되면 물리 PASS가 아니다.
+
+### 31.2 비범위와 금지 사항
+
+- Arm N, fixed monitor/work-area envelope, `WS_POPUP`, custom non-client, `SetWindowRgn` click region을 도입하지 않는다.
+- 25 ms/40 FPS 같은 고정 cadence limiter, 일반 sleep, debounce로 증상을 감추지 않는다.
+- Parent 색 채우기, 검정·흰 bar masking, source stretch, 임시 scale, edge별 scene translation으로 gap을 숨기지 않는다.
+- `IPresentationManager::SetTargetTime`만 단독 적용하지 않는다. Presentation만 늦추고 USER32 geometry를 같은 목표 시각에 묶지 못하면 반대 방향의 old-raster/new-geometry 불일치를 만들 수 있다.
+- ANGLE 기본값을 바꾸지 않으며 explicit Vulkan 실패를 ANGLE PASS로 재분류하거나 조용히 fallback하지 않는다.
+
+### 31.3 현재 race와 목표 ordering
+
+현재 v9 moving-origin ordering은 다음과 같다.
+
+```text
+WM_SIZING
+  → exact Skia raster
+  → synchronous Vulkan copy
+  → raster worker IPresentationManager::Present
+  → worker terminal notify
+  → platform thread wake / WM_SIZING return
+  → USER32 sizing loop
+  → WM_WINDOWPOSCHANGING
+  → HWND origin/extent 적용
+```
+
+`Present`와 `WM_WINDOWPOSCHANGING` 사이에 compositor frame이 끼면 새 layout이 이전 screen origin에서 먼저 보이거나, geometry가 먼저 보이면 이전 raster가 잠깐 이동한다. 평균 latency가 낮아도 간헐적 떨림이 남는 이유로 이 구간을 우선 검증한다.
+
+목표 ordering은 다음과 같다.
+
+```text
+WM_SIZING
+  → proposed outer/client extent 계산
+  → exact Skia raster + synchronous Vulkan copy
+  → prepared slot 예약 (아직 SetBuffer/Present 없음)
+
+WM_WINDOWPOSCHANGING
+  → WINDOWPOS와 prepared epoch/edge/extent 재검증
+  → 필요 시 compositor-clock 1회 bounded wait
+  → prepared slot SetBuffer + IPresentationManager::Present
+  → 즉시 반환
+  → USER32가 HWND origin/extent 적용
+
+WM_SIZE
+  → matching prepared commit이면 acknowledgement만 수행
+  → mismatch/programmatic/DPI resize만 bounded exact fallback
+```
+
+### 31.4 소유권과 상태 불변조건
+
+- Raster worker만 Skia draw, Vulkan command, copy/fence와 Presentation buffer contents를 생성한다. Platform/WndProc thread는 Vulkan 명령이나 GPU fence wait를 수행하지 않는다.
+- Platform thread가 수행할 수 있는 GPU 관련 동작은 이미 copy가 완료된 prepared slot의 짧고 bounded한 Presentation commit뿐이다. 이 경로에서 raster, copy, buffer 재생성 또는 Vulkan wait를 시작하지 않는다.
+- `PreparedMovingFrame`은 최소한 `resizeEpoch`, `metricsGeneration`, `inputSequence`, `sizingEdge`, proposed outer rect, client extent, scale, slot index와 copy-complete 상태를 갖는다.
+- 동시에 visible한 front는 항상 하나다. Prepared slot은 `IPresentationSurface::SetBuffer`와 `Present` 전까지 화면에 연결하지 않고, 일반 acquire 후보에서도 제외한다.
+- 한 epoch당 prepared slot은 최대 하나이며 latest-wins로 교체한다. 교체·mismatch·취소된 slot은 visible하게 present하지 않고 availability/terminal ledger를 정확히 복구한다.
+- `WM_WINDOWPOSCHANGING`의 `WINDOWPOS`가 size/move flag, edge, outer rect, client extent 또는 scale 중 하나라도 prepared key와 다르면 commit하지 않는다. 해당 geometry는 현재 bounded exact fallback으로 처리하고 mismatch counter를 남긴다.
+- Prepared commit 뒤 matching `WM_SIZE`는 새 metrics generation, 두 번째 raster 또는 두 번째 Present를 만들지 않는다.
+- `WM_EXITSIZEMOVE`, minimize, DPI/monitor transition, device reset/loss, close가 시작되면 prepared state를 먼저 취소·drain한 뒤 기존 lifecycle을 진행한다.
+- Lock order는 platform handoff state → 짧은 Presentation commit gate 순으로 고정한다. Platform thread가 render completion을 기다리는 동안 Presentation gate를 소유하거나, raster worker가 terminal notify 중 platform state를 기다리는 순환을 금지한다.
+
+### 31.5 단계별 hard gate
+
+각 gate는 앞 단계가 PASS한 뒤에만 진행한다. FAIL evidence는 보존하며 같은 결과를 이름만 바꿔 PASS로 만들지 않는다.
+
+#### J0 — 현행 v9 기준선과 message-order 계측
+
+- [ ] `WM_SIZING` entry/return, render/copy complete, `Present` call, worker terminal notify, `WM_WINDOWPOSCHANGING` entry/return, `WM_WINDOWPOSCHANGED`, `WM_SIZE`를 동일 QPC clock과 resize epoch로 기록한다.
+- [ ] `TopLeft` 반복에서 `Present → WM_WINDOWPOSCHANGING` 간격과 그 사이 compositor/display observation 여부를 기록해 간헐 race 가설을 검증한다.
+- [ ] 이 gate에서는 visible ordering을 바꾸지 않는다. 계측만 추가한 Release build와 native ABI fixture가 PASS해야 한다.
+- 중단 조건: 실제 moving-origin message order가 준비/직전-commit 모델과 일치하지 않거나 target rect를 안정적으로 연결할 수 없으면 J1을 구현하지 않고 계획을 재검토한다.
+
+#### J1 — non-visible prepared slot 분리
+
+- [ ] Managed Vulkan presenter의 현재 `RenderAndPresent` 경로를 ordinary direct-present와 moving-origin prepare로 분리한다.
+- [ ] Prepare는 exact Skia raster, flush/submit, synchronous Vulkan→D3D11 texture copy까지만 완료하고 `IPresentationSurface::SetBuffer`/`IPresentationManager::Present`를 호출하지 않는다.
+- [ ] Prepared slot reservation, latest replacement, stale rejection, cancel/drain과 device-loss terminal을 단위/제품 validator에 추가한다.
+- [ ] Fixed-origin과 ordinary app frame은 기존 direct-present path를 그대로 사용한다.
+- 중단 조건: prepared slot이 다른 frame에 의해 재사용되거나, shutdown/reset에서 reserved/outstanding count가 0으로 복귀하지 않거나, drain 뒤 재사용 대상 slot의 availability event가 signal되지 않거나, 한 generation이 둘 이상의 terminal을 가지면 J2로 진행하지 않는다.
+
+#### J2 — `WM_WINDOWPOSCHANGING` just-in-time commit
+
+- [ ] Native host가 moving-origin `WM_SIZING`에서 prepare 완료만 기다리고, `WM_WINDOWPOSCHANGING`에서 exact prepared key를 검증한 뒤 synchronous commit callback을 호출하도록 한다.
+- [ ] ABI는 prepare와 commit을 명확히 구분하고 commit 성공/불일치/실패를 동기적으로 반환할 수 있어야 한다. `void` callback 예외에 의존하지 않는다.
+- [ ] Commit은 prepared buffer 선택, source/alpha/color/identity state와 `Present`만 수행하고 즉시 반환한다.
+- [ ] Matching `WM_SIZE` acknowledgement와 mismatch exact fallback을 검증한다. Commit failure는 geometry를 무기한 막지 않고 기존 v9 수준으로 fail-soft하되 qualification은 FAIL-closed한다.
+- [ ] `Right`/`Bottom` ordering과 Acrylic target/underlay/controller topology의 binary identity가 바뀌지 않았음을 확인한다.
+- 중단 조건: system caption drag, Snap preview, maximize/restore, resize cursor 또는 pointer capture가 달라지면 이 후보를 제거하고 v9로 복귀한다.
+
+#### J3 — compositor-clock phase alignment A/B
+
+- [ ] J2의 just-in-time commit만으로 focused 자동 계측과 첫 물리 확인을 수행한다. 떨림이 남거나 commit 직전에 compositor boundary가 관찰될 때만 clock-gated variant를 활성화한다.
+- [ ] Clock variant는 prepared copy 완료 뒤 platform thread의 commit 직전에 `DCompositionWaitForCompositorClock`을 최대 1회 호출하고, 반환 직후 `Present → WM_WINDOWPOSCHANGING return`을 연속 수행한다.
+- [ ] Wait는 최대 32 ms로 제한한다. Timeout/실패/occlusion은 즉시 commit하는 fail-soft 경로로 진행하되 `clockWaitTimeout`/status를 기록하고 해당 qualification run은 PASS로 만들지 않는다.
+- [ ] 이 wait는 고정 FPS 목표가 아니다. Catch-up burst, 25 ms pacing state와 sleep timer를 추가하지 않는다.
+- [ ] `SetTargetTime`은 J3 결과와 present-statistics로 별도 필요성이 증명되기 전에는 결합하지 않는다. 여러 timing 기법을 한 번에 넣어 원인을 흐리지 않는다.
+- 선택 기준: J2와 J3 중 solid gap, exactness, terminal, latency가 모두 통과한 후보만 물리 A/B에 올리고, 사용자가 더 안정적이라고 확인한 하나만 남긴다.
+
+#### J4 — build, contract와 focused 자동 검증
+
+- [ ] DemoApp Windows Release, Vulkan capability project, HWND product validator와 native ABI fixture를 각각 warning 0/error 0으로 통과시킨다. 모든 test/process timeout은 repository 규칙대로 최대 20분이다.
+- [ ] Capability contract는 acceptance 전까지 current v9를 유지한다. 후보가 채택될 때만 새 schema/policy로 올리고 폐기된 v10/40 FPS 이름을 재사용하지 않는다.
+- [ ] 새 diagnostics에 `movingOriginPrepared`, `movingOriginWindowPosCommitAttempt`, `...Committed`, `...Mismatch`, `...Cancelled`, `clockWait`, `clockWaitObserved`, `clockWaitTimeout`, `postGeometryFallback`을 포함한다.
+- [ ] Focused opaque `TopLeft`를 새 output directory에서 최소 5회 실행한다. 각 run은 source/binary stability, final exact, terminal/resource, prepared→commit ordering, timeout 0과 solid white/black gap 0을 요구한다.
+- [ ] Focused Acrylic `Left`, `Top`, `TopLeft`를 각각 실행하고 anomaly PNG를 보존한다. Material underlay가 검출된 strict app-raster failure는 삭제하거나 opaque PASS로 재분류하지 않는다.
+- [ ] Fixed-origin `Right`와 `Bottom` 회귀를 실행해 현재 pre-geometry admission/DWM wait, final exact와 사용자가 확인한 양호한 동작을 훼손하지 않았는지 확인한다.
+- [ ] Capability/lifecycle에서 exact resize, reset, minimize/restore, start/close, injected device loss와 source-to-binary/repository stability를 다시 통과시킨다.
+- 자동 hard FAIL: visible-before-windowpos commit, prepared/commit count 불일치, stale present, double present, platform/compositor timeout, final mismatch, device loss, solid gap 1 px 이상 또는 기존 fixed-origin 회귀 중 하나라도 발생한다.
+
+#### J5 — 사용자 물리 acceptance
+
+- [ ] 자동 gate가 모두 통과한 동일 source-built Release binary를 아래 기존 명령으로 실행한다. 추가 환경변수 없이 explicit Vulkan+Acrylic 경로가 후보를 사용해야 한다.
+
+```powershell
+$env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
+$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD'
+$env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC = '1'
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -Configuration Release
+```
+
+- [ ] `Left`, `Top`, `TopLeft`를 slow/medium/fast로 확장·축소·왕복하고, 검정·흰 영역, material tail, grid/text 이중 이동 또는 잔상 같은 떨림이 한 번도 보이지 않아야 한다.
+- [ ] `Right`, `Bottom`, `BottomRight`도 짧게 확인해 기존의 거의 완벽한 물리 동작이 유지되어야 한다.
+- [ ] Resize cursor, caption button, Snap Layout, maximize/restore, Alt+Space system menu와 창 밖 click이 표준 HWND 그대로 동작해야 한다.
+- [ ] 사용자가 직접 PASS라고 확인하기 전에는 결과를 `PASS-automated-partial / physical notVerified`로만 기록한다. 한 번이라도 떨림이 재현되면 `FAIL-observed`이며 clock wait/FPS 수치를 조정하는 무한 반복으로 이어가지 않는다.
+
+#### J6 — 채택 또는 완전 롤백
+
+- PASS 시: 선택된 J2 또는 J3 하나만 남기고 validation-only A/B switch와 불필요한 diagnostics를 정리한다. Contract를 새 version으로 올리고 README/ADR/`problem.md`에 표준-HWND just-in-time handoff와 물리 확인 범위를 동기화한다.
+- FAIL 시: prepared slot, commit ABI와 compositor-clock 코드를 제거하고 v9 contract/source로 완전히 복귀한다. 실패 artifact와 사용자 관찰은 보존하며 Arm N, fixed FPS, stretch/masking을 자동 다음 후보로 되살리지 않는다.
+- 두 경우 모두 ANGLE default, Vulkan explicit opt-in/no-silent-fallback과 Acrylic strict pixel failure 기록을 유지한다.
+
+### 31.6 계획 완료 조건
+
+이 계획은 다음 중 하나일 때만 닫는다.
+
+1. J0~J5를 순서대로 통과하고 사용자가 `Left`/`Top`/`TopLeft`의 빈 영역과 간헐적 떨림이 모두 사라졌다고 직접 확인한 뒤 J6 채택 정리를 끝낸다.
+2. J0~J4 중 hard FAIL 또는 J5 물리 FAIL이 발생해 후보를 완전히 제거하고 v9 rollback, 실패 evidence와 잔여 한계를 문서화한다.
+
+자동 capture가 깨끗하거나 평균 FPS가 높다는 이유만으로 계획을 완료하지 않는다.

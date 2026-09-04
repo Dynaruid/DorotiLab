@@ -62,6 +62,7 @@ $sourceFingerprintPaths = @(
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedAcrylicCompositionPresenter.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenterBase.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedProductHost.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs',
     'Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_host_v1.h',
@@ -364,7 +365,8 @@ Assert-True ($vulkanAcrylicProductReport.diagnostics.acrylic.backdropTargetAdded
         [bool]$contract.acrylic.hostBackdropBrushEnabled -and
     $vulkanAcrylicProductReport.diagnostics.acrylic.backdropTransport -eq
         [string]$contract.acrylic.transport -and
-    $null -eq $vulkanAcrylicProductReport.diagnostics.acrylic.systemBackdropType -and
+    $vulkanAcrylicProductReport.diagnostics.acrylic.systemBackdropType -eq
+        [string]$contract.acrylic.systemBackdropType -and
     -not $vulkanAcrylicProductReport.diagnostics.acrylic.redirectionBitmapAlphaEnabled -and
     $vulkanAcrylicProductReport.diagnostics.acrylic.backdropState -eq
         [string]$contract.acrylic.backdropState -and
@@ -689,7 +691,7 @@ $manifest = [ordered]@{
         hostBackdropBrushEnabled=[bool]$vulkanAcrylicProductReport.diagnostics.acrylic.hostBackdropBrushEnabled
         backdropState=$vulkanAcrylicProductReport.diagnostics.acrylic.backdropState
         compositeAlpha=$vulkanAcrylicProductReport.diagnostics.vulkan.compositeAlpha
-        rasterOwner='exact child HWND DirectComposition Vulkan Presentation target'
+        rasterOwner='top-level HWND DirectComposition Vulkan Presentation target'
         backdropOwner='host-backdrop-enabled top-level Desktop Acrylic window target'
         backdropTransport=$vulkanAcrylicProductReport.diagnostics.acrylic.backdropTransport
         systemBackdropType=$vulkanAcrylicProductReport.diagnostics.acrylic.systemBackdropType
@@ -732,7 +734,7 @@ $manifest = [ordered]@{
     }
     gate='Vulkan-Composition-PASS-automated-partial'
     next='physical-left-and-top-left-required'
-    evidenceBoundary='ANGLE baseline plus Vulkan exact-LUID external-memory capability, top-level native topmost Presentation with full-capacity identity raster placement and one client geometry, active host-backdrop-enabled DesktopAcrylicController window target, three Composition buffers, synchronous Vulkan copy completion, availability-based reuse, device-loss recovery, exact resize, reset, lifecycle, start/close, and automated input/IME/UIA transport passed. Legacy visible-HWND WSI is separate non-product evidence. Composition Present completion and current-monitor capture do not prove physical scan-out or human-perceived Acrylic blur quality; physical left/top-left drag, physical backdrop, physical IME/accessibility acceptance, and the full GPU/DPI/refresh matrix remain notVerified.'
+    evidenceBoundary='ANGLE baseline plus Vulkan exact-LUID external-memory capability, a top-level native topmost Presentation target with full-capacity identity raster placement and one client geometry, exact proposed-size Skia/Vulkan Presentation submission before geometry on every interactive edge, fixed-origin pre-geometry DWM display admission, and moving-origin pre-geometry submission without a forced old-origin display wait, active host-backdrop-enabled DesktopAcrylicController target plus an HWND-wide DWM transient-backdrop resize underlay, three Composition buffers, synchronous Vulkan copy completion, availability-based reuse, device-loss recovery, exact resize, reset, lifecycle, start/close, and automated input/IME/UIA transport passed. Legacy visible-HWND WSI is separate non-product evidence. Capability and Presentation completion do not prove physical scan-out, a gap-free physical border drag, or human-perceived Acrylic quality; physical left/top-left drag, backdrop, IME/accessibility acceptance, and the full GPU/DPI/refresh matrix remain notVerified.'
 }
 $manifestPath = Join-Path $OutputDirectory 'manifest.json'
 $manifest | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $manifestPath -Encoding utf8

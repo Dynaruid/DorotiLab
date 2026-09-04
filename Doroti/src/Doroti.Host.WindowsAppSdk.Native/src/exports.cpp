@@ -210,7 +210,7 @@ class ProductHost final {
         sizeof(doroti_windows_host_v1),
         this,
         top_,
-        child_,
+        composition_active_ ? top_ : child_,
         child_,
         task_,
         &RequestFrame,
@@ -283,10 +283,18 @@ class ProductHost final {
         break;
       case WM_SIZING:
         if (composition_active_ && lparam != 0) {
-          composition_sizing_edge_ = static_cast<uint32_t>(wparam);
-          // USER32 remains the sole geometry owner. The proposed rectangle is
-          // intentionally left untouched. The exact visible child and its
-          // matching raster are advanced by the nested WM_SIZE transaction.
+          const auto* proposed = reinterpret_cast<const RECT*>(lparam);
+          if (!PrepareCompositionSizingFrame(
+                  *proposed, static_cast<uint32_t>(wparam))) {
+            fatal_ = true;
+            PostMessageW(top_, WM_CLOSE, 0, 0);
+          }
+          // USER32 still owns and applies the proposed rectangle. Every edge
+          // reaches Presentation submission after its proposed Skia raster.
+          // Fixed-origin edges additionally wait for a DWM display boundary;
+          // moving-origin edges return immediately after submission so DWM can
+          // consume the frame with the following HWND geometry instead of
+          // displaying the new layout once at the old screen origin.
           return TRUE;
         }
         break;
@@ -308,17 +316,10 @@ class ProductHost final {
           const auto height = static_cast<uint32_t>(HIWORD(lparam));
           if (width > 0 && height > 0) {
             if (composition_active_) {
-              // Match the ANGLE ownership/order: resize the one visible child
-              // to the actual top-level client extent. Its nested WM_SIZE
-              // publishes and waits for the matching Presentation submission
-              // before this parent geometry transaction can return.
-              if (!SetWindowPos(child_, nullptr, 0, 0,
-                                static_cast<int>(width),
-                                static_cast<int>(height),
-                                SWP_NOZORDER | SWP_NOACTIVATE)) {
-                fatal_ = true;
-                PostMessageW(top_, WM_CLOSE, 0, 0);
-              }
+              // The top-level HWND is both shell geometry and raster clip.
+              // Admit the actual extent and hold this WM_SIZE through the
+              // matching Presentation plus DWM commit boundary.
+              ApplyCompositionResize(width, height);
               return 0;
             }
             if (retained_oversized_child_surface_) {
@@ -383,6 +384,27 @@ class ProductHost final {
         return 0;
       case WM_WINDOWPOSCHANGED:
         if (interactive_move_) interactive_move_dirty_ = true;
+        if (composition_active_ && child_ != nullptr) {
+          RECT client{};
+          bool capacity_changed = false;
+          if (GetClientRect(top_, &client)) {
+            const auto width = static_cast<uint32_t>(
+                std::max(0L, client.right - client.left));
+            const auto height = static_cast<uint32_t>(
+                std::max(0L, client.bottom - client.top));
+            if (width > 0 && height > 0 &&
+                !EnsureRetainedChildSurfaceCapacity(
+                    width, height, &capacity_changed)) {
+              fatal_ = true;
+              PostMessageW(top_, WM_CLOSE, 0, 0);
+              return 0;
+            }
+          }
+          // The hidden child is only a retained-capacity probe. A monitor
+          // transition can grow it without changing the top-level extent, so
+          // republish the current metrics once when its capacity changes.
+          if (capacity_changed && RepublishCurrentMetrics()) QueueRender();
+        }
         // WM_DPICHANGED can arrive while the shell window still straddles two
         // monitors. Wait until the committed window rectangle is wholly on a
         // different monitor before rebuilding the fixed-size EGL surface.
@@ -396,9 +418,11 @@ class ProductHost final {
         interactive_move_ = false;
         composition_interactive_.store(false, std::memory_order_release);
         EnteredDifferentMonitor();
-        // Finish native sizing with one exact frame for the actual geometry.
-        // Unlike the interactive pipeline there is no following WM_SIZING call
-        // to admit it, so settle synchronously within the existing 100 ms bound.
+        // Finish native sizing at the exact actual geometry. A matching
+        // pre-submitted frame does not need a second raster, but after the
+        // modal loop ends it is safe to observe one DWM boundary at the final
+        // origin. Programmatic/mismatched geometry still renders exactly in
+        // ApplyCompositionResize before this final settle.
         if (composition_active_) {
           RECT client{};
           if (GetClientRect(top_, &client)) {
@@ -406,8 +430,10 @@ class ProductHost final {
                 std::max(0L, client.right - client.left));
             const auto height = static_cast<uint32_t>(
                 std::max(0L, client.bottom - client.top));
-            if (width > 0 && height > 0)
+            if (width > 0 && height > 0) {
               ApplyCompositionResize(width, height);
+              FlushPresentedResizeToDwm();
+            }
           }
         } else if (RepublishCurrentMetrics()) {
           const auto generation = current_generation_;
@@ -576,14 +602,7 @@ class ProductHost final {
         }
         break;
       case WM_SIZE: {
-        if (composition_active_) {
-          if (!render_worker_started_ || wparam == SIZE_MINIMIZED) return 0;
-          const auto width = static_cast<uint32_t>(LOWORD(lparam));
-          const auto height = static_cast<uint32_t>(HIWORD(lparam));
-          if (width == 0 || height == 0) return 0;
-          ApplyCompositionResize(width, height);
-          return 0;
-        }
+        if (composition_active_) return 0;
         if (retained_oversized_child_surface_) return 0;
         if (!render_worker_started_ || wparam == SIZE_MINIMIZED)
           return 0;
@@ -607,8 +626,8 @@ class ProductHost final {
         }
         break;
       case WM_NCHITTEST:
-        // Composition keeps input, focus, IME, and accessibility ingress on
-        // the top-level HWND even though its exact child owns visible pixels.
+        // Composition keeps both visible pixels and input/focus/IME/UIA on the
+        // top-level HWND; the hidden capacity child must never intercept input.
         if (composition_active_) return HTTRANSPARENT;
         break;
       case WM_SETFOCUS:
@@ -794,8 +813,8 @@ class ProductHost final {
       void* context, void* child_hwnd) {
     auto* host = static_cast<ProductHost*>(context);
     (void)child_hwnd;
-    // ABI v1 compatibility slot. The product-created exact child is exposed
-    // through both child_hwnd and opaque_child_hwnd and remains native-owned.
+    // ABI v1 compatibility slot. The hidden retained-capacity child remains
+    // native-owned; the top-level HWND is the Composition raster authority.
     return host != nullptr && GetCurrentThreadId() == host->platform_thread_id_
                ? 0u
                : 1u;
@@ -1019,8 +1038,8 @@ class ProductHost final {
   }
 
   DWORD TopWindowStyle() const noexcept {
-    // Composition presentation has no visible child geometry. Keep
-    // WS_CLIPCHILDREN only for the legacy retained-child WSI path.
+    // The Composition path has no visible child. Non-Composition retained WSI
+    // keeps its oversized child clipped by the top-level client.
     return WS_OVERLAPPEDWINDOW |
            (retained_oversized_child_surface_ && !composition_active_
                 ? WS_CLIPCHILDREN
@@ -1028,10 +1047,15 @@ class ProductHost final {
   }
 
   DWORD TopWindowExtendedStyle() const noexcept {
-    // Keep the ordinary top-level redirection surface available as the opaque
-    // Vulkan fallback. Acrylic supplies its material through a host-backdrop-
-    // enabled non-topmost DesktopWindowTarget under the native topmost target.
-    return 0;
+    // Composition owns every client pixel through HWND-attached visual trees.
+    // A separate USER32 redirection bitmap can expose its default white erase
+    // between the shell geometry commit and the next target-size commit during
+    // top/left resize. Remove that third plane; opaque Composition supplies its
+    // own background visual and Acrylic supplies the non-topmost backdrop
+    // target beneath the native topmost Vulkan target.
+    return composition_active_
+               ? static_cast<DWORD>(WS_EX_NOREDIRECTIONBITMAP)
+               : 0u;
   }
 
   void CreateCompositionBackgroundBrush() {
@@ -1098,28 +1122,77 @@ class ProductHost final {
     OutputDebugStringW(message);
   }
 
+  bool PrepareCompositionSizingFrame(
+      const RECT& proposed_window, uint32_t sizing_edge) {
+    if (top_ == nullptr || child_ == nullptr || !render_worker_started_)
+      return false;
+    RECT current_window{};
+    RECT current_client{};
+    if (!GetWindowRect(top_, &current_window) ||
+        !GetClientRect(top_, &current_client))
+      return false;
+
+    const auto frame_width = std::max(
+        0L, (current_window.right - current_window.left) -
+                (current_client.right - current_client.left));
+    const auto frame_height = std::max(
+        0L, (current_window.bottom - current_window.top) -
+                (current_client.bottom - current_client.top));
+    const auto proposed_width = proposed_window.right - proposed_window.left;
+    const auto proposed_height = proposed_window.bottom - proposed_window.top;
+    if (proposed_width <= frame_width || proposed_height <= frame_height)
+      return true;
+
+    const auto width = static_cast<uint32_t>(proposed_width - frame_width);
+    const auto height = static_cast<uint32_t>(proposed_height - frame_height);
+    composition_sizing_edge_ = sizing_edge;
+    bool capacity_changed = false;
+    if (!EnsureRetainedChildSurfaceCapacity(
+            width, height, &capacity_changed))
+      return false;
+
+    ResizeCompositionViewport(
+        width, height, sizing_edge,
+        DOROTI_WINDOWS_COMPOSITION_RESIZE_PRE_GEOMETRY_V1);
+    const auto scale = static_cast<double>(GetDpiForWindow(top_)) / 96.0;
+    if (!UpdateMetrics(width, height, scale) && !capacity_changed)
+      return true;
+    if (capacity_changed && current_width_ == width && current_height_ == height)
+      RepublishCurrentMetrics();
+
+    const auto generation = current_generation_;
+    const auto causal = QueueRender();
+    // Every edge completes exact Skia raster, Vulkan copy, and Presentation
+    // submission before USER32 applies the proposed geometry. The presenter
+    // itself waits for a DWM display boundary only on fixed-origin edges. On a
+    // moving-origin edge, not forcing a pre-geometry scan-out avoids the old
+    // origin/new-layout double movement while still queuing the new pixels
+    // ahead of the HWND transaction. The 100 ms exact wait remains a failure
+    // bound rather than a resize cadence control.
+    return WaitForExactResize(generation, causal);
+  }
+
   void ApplyCompositionResize(uint32_t width, uint32_t height) {
+    const auto scale = static_cast<double>(GetDpiForWindow(top_)) / 96.0;
+    // An interactive WM_SIZING already published and submitted this exact
+    // viewport. Preserve that revision so the next ordinary app frame cannot
+    // accidentally inherit a post-geometry display wait. Programmatic, DPI,
+    // and otherwise mismatched geometry still take the exact fallback below.
+    if (current_generation_ != 0 && current_width_ == width &&
+        current_height_ == height && current_scale_ == scale)
+      return;
     ResizeCompositionViewport(
         width, height, composition_sizing_edge_,
         DOROTI_WINDOWS_COMPOSITION_RESIZE_POST_GEOMETRY_V1);
-    const auto scale = static_cast<double>(GetDpiForWindow(top_)) / 96.0;
-    auto exact_presented = false;
     if (UpdateMetrics(width, height, scale)) {
       const auto generation = current_generation_;
       const auto causal = QueueRender();
-      // The visible child and its Presentation target are inside this same
-      // USER32 resize transaction. Hold it only through the matching present
-      // submission, exactly as the ANGLE child path does; GPU completion and
-      // DWM scan-out remain outside the bounded wait.
-      exact_presented = WaitForExactResize(generation, causal);
+      // Programmatic and mismatched resizes that did not pass WM_SIZING still
+      // fall back to an exact post-geometry render here. Interactive border
+      // resizes normally arrive with the same pre-submitted metrics and do not
+      // create a second frame.
+      WaitForExactResize(generation, causal);
     }
-    // The exact-child DirectComposition target has accepted the requested
-    // Presentation frame before returning its terminal. A platform-
-    // thread DwmFlush here serializes the modal sizing loop for no additional
-    // ownership guarantee and visibly lowers drag cadence.
-    if (post_present_dwm_flush_ && exact_presented &&
-        !composition_presentation_requested_)
-      FlushPresentedResizeToDwm();
   }
 
   SIZE ResolveRetainedChildSurfaceCapacity(uint32_t width,
@@ -1208,10 +1281,12 @@ class ProductHost final {
     if (opaque_composition_background_) PaintCompositionBackgroundNow();
     ApplyTopLevelTheme();
     stable_monitor_ = MonitorFromWindow(top_, MONITOR_DEFAULTTONEAREST);
-    // ANGLE and Vulkan Composition both keep one visible exact-size child.
-    // USER32 can therefore commit parent origin, child clip, and the frame
-    // admitted by the child's WM_SIZE as one ordered resize transaction.
-    const auto child_style = WS_CHILD | WS_VISIBLE;
+    // Composition uses the top-level HWND as the sole visible raster clip. Its
+    // child remains hidden and only carries retained monitor capacity for the
+    // managed backing allocation. Non-Composition presenters keep the normal
+    // visible child HWND.
+    const auto child_style = WS_CHILD |
+        (!composition_active_ ? static_cast<uint32_t>(WS_VISIBLE) : 0u);
     const auto child_extended_style =
         composition_active_ && !opaque_composition_background_
             ? WS_EX_NOREDIRECTIONBITMAP
@@ -1220,7 +1295,7 @@ class ProductHost final {
     if (!GetClientRect(top_, &client)) throw std::bad_alloc();
     auto child_width = std::max(1L, client.right - client.left);
     auto child_height = std::max(1L, client.bottom - client.top);
-    if (retained_oversized_child_surface_ && !composition_active_) {
+    if (retained_oversized_child_surface_) {
       const auto capacity = ResolveRetainedChildSurfaceCapacity(
           static_cast<uint32_t>(child_width), static_cast<uint32_t>(child_height));
       child_width = retained_surface_width_ = capacity.cx;

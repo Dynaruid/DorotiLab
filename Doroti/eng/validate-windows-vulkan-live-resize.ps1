@@ -9,6 +9,7 @@ param(
     [switch] $FullCurrentDpiMatrix,
     [switch] $ExternalValidation,
     [switch] $SaveAnomalyPngs,
+    [switch] $ExperimentalAcrylic,
     [ValidateSet('Left','Right','Top','Bottom','TopLeft','TopRight','BottomLeft','BottomRight')]
     [string] $FocusedEdge
 )
@@ -65,6 +66,7 @@ $sourceFingerprintPaths = @(
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenterBase.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedProductHost.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs',
     'Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_host_v1.h',
@@ -354,10 +356,13 @@ function Invoke-CapturedCase {
         $caseEnvironment.VK_LAYER_VALIDATE_SYNC = '1'
         $caseEnvironment.VK_LOADER_DEBUG = 'layer'
     }
-    $process.StartInfo = New-StartInfo -FileName $productExecutable -ArgumentList @(
+    $productArguments = @(
         '--presenter',$Presenter,'--lifecycle-cycles','0','--external-resize',
-        '--smoke-ms','15000','--report',$appPath
-    ) -Environment $caseEnvironment -Visible
+        '--smoke-ms','15000','--report',$appPath)
+    $useExperimentalAcrylic = $ExperimentalAcrylic -and $Presenter -eq 'Vulkan'
+    if ($useExperimentalAcrylic) { $productArguments += '--experimental-acrylic' }
+    $process.StartInfo = New-StartInfo -FileName $productExecutable `
+        -ArgumentList $productArguments -Environment $caseEnvironment -Visible
     Assert-True $process.Start() "$Slug product failed to start."
     $stdoutTask = $process.StandardOutput.ReadToEndAsync()
     $stderrTask = $process.StandardError.ReadToEndAsync()
@@ -416,13 +421,28 @@ function Invoke-CapturedCase {
             $combinedOutput -match '(?im)Inserted (?:instance|device) layer "VK_LAYER_KHRONOS_validation"' -and
             $combinedOutput -match '(?im)Enabled By:\s*Environment Variable VK_INSTANCE_LAYERS'
         $originMovingEdge = $Edge -in @('Left','Top','TopLeft','TopRight','BottomLeft')
+        $expectedVulkanVisibleOwner = if ($useExperimentalAcrylic) {
+            'top-level HWND DirectComposition Vulkan Presentation target over a top-level Desktop Acrylic window target'
+        } else {
+            'top-level HWND DirectComposition Vulkan Presentation target'
+        }
         if ($Presenter -ne 'Vulkan') {
             $compositionFrameContract = $true
+            $directionalAdmissionContract = $true
         } else {
             $compositionFrameContract =
-                [long]$diagnostics.vulkan.compositionFrameWaits -eq 0 -and
-                [long]$diagnostics.vulkan.compositionFrameObserved -eq 0 -and
-                [long]$diagnostics.vulkan.compositionFrameWaitTimeouts -eq 0
+                [long]$diagnostics.vulkan.compositionFrameObserved -eq
+                    [long]$diagnostics.vulkan.compositionFrameWaits -and
+                [long]$diagnostics.vulkan.compositionFrameWaitTimeouts -eq 0 -and
+                ($originMovingEdge -or
+                    [long]$diagnostics.vulkan.compositionFrameWaits -gt 0)
+            $directionalAdmissionContract =
+                $(if ($originMovingEdge) {
+                    [long]$diagnostics.vulkan.movingOriginPreGeometryAdmissions -gt 0 -and
+                    [long]$diagnostics.vulkan.movingOriginPreGeometryDisplayWaits -eq 0
+                } else {
+                    [long]$diagnostics.vulkan.fixedOriginPreGeometryAdmissions -gt 0
+                })
         }
         $resourcePass = $process.ExitCode -eq 0 -and $app.status -eq 'PASS' -and
             $validationMessagesClean -and
@@ -433,7 +453,7 @@ function Invoke-CapturedCase {
             [int]$diagnostics.duplicateResizeTerminals -eq 0 -and
             ($Presenter -ne 'Vulkan' -or (
                 $diagnostics.presenterBackend -eq 'Vulkan/Composition-Swapchain' -and
-                $details.ownership.visibleOwner -eq 'exact child HWND DirectComposition Vulkan Presentation target' -and
+                $details.ownership.visibleOwner -eq $expectedVulkanVisibleOwner -and
                 [int]$diagnostics.vulkan.deviceLostResults -eq 0 -and
                 [int]$diagnostics.vulkan.surfaceLostResults -eq 0 -and
                 [int]$diagnostics.vulkan.outOfDateResults -eq 0 -and
@@ -459,13 +479,20 @@ function Invoke-CapturedCase {
                 [int]$diagnostics.vulkan.maximumRetiredSwapchains -eq 0 -and
                 [long]$diagnostics.vulkan.queueIdleRetirementWaits -eq 0 -and
                 $compositionFrameContract -and
+                $directionalAdmissionContract -and
                 $diagnostics.vulkan.retirementMode -eq 'presentation-buffer-availability'))
         $status = if ($transportPass -and $markerPass -and $pixelCoveragePass -and
             $finalExact -and $resourcePass) { 'PASS' } else { 'FAIL' }
         return [ordered]@{
             name=$Slug; status=$status; presenter=$Presenter
+            mode=if ($useExperimentalAcrylic) { 'experimentalAcrylic' } else { 'opaque' }
             definition=[ordered]@{ edge=$Edge; motion=$Motion; dragMilliseconds=$DragMilliseconds; dragPixels=$DragPixels }
             transport=$transportPass; marker=$markerPass; pixelCoverage=$pixelCoveragePass
+            pixelCoverageInterpretation=if ($useExperimentalAcrylic -and -not $pixelCoveragePass) {
+                'FAIL-strict-app-raster-coverage-material-underlay-may-be-visible'
+            } elseif ($pixelCoveragePass) { 'PASS-exact-app-raster-coverage' } else {
+                'FAIL-exact-app-raster-coverage'
+            }
             finalExact=$finalExact; resource=$resourcePass
             validationMessagesClean=$validationMessagesClean; validationMessageCount=$validationMessageCount
             validationLayerRequested=$validationLayerRequested
@@ -510,7 +537,10 @@ function Invoke-CapturedCase {
                 compositionFrameWaits=$diagnostics.vulkan.compositionFrameWaits
                 compositionFrameObserved=$diagnostics.vulkan.compositionFrameObserved
                 compositionFrameWaitTimeouts=$diagnostics.vulkan.compositionFrameWaitTimeouts
-                resizeOrdering='exact-child-wm-size-bounded-present'
+                fixedOriginPreGeometryAdmissions=$diagnostics.vulkan.fixedOriginPreGeometryAdmissions
+                movingOriginPreGeometryAdmissions=$diagnostics.vulkan.movingOriginPreGeometryAdmissions
+                movingOriginPreGeometryDisplayWaits=$diagnostics.vulkan.movingOriginPreGeometryDisplayWaits
+                resizeOrdering='fixed-origin-pregeometry-present-dwm-moving-origin-pregeometry-present-submit-with-backdrop-underlay'
                 maximumRecreateLatencyMicroseconds=$diagnostics.vulkan.maximumRecreateLatencyMicroseconds
                 maximumSwapchainCreateLatencyMicroseconds=$diagnostics.vulkan.maximumSwapchainCreateLatencyMicroseconds
             } } else { $null }
@@ -806,8 +836,8 @@ $manifest = [ordered]@{
     gates=[ordered]@{
         angleBeforeAfter=if (-not $runAngleBaselines) { 'notRun' } elseif ($anglePass) { 'PASS' } else { 'FAIL' }
         vulkanCurrentMonitor=if ($casePass) { 'PASS' } else { 'FAIL' }
-        exactChildRasterOwnerAndThreeBuffers=if (@($cases | Where-Object {
-            $_.vulkan.visibleOwner -ne 'exact child HWND DirectComposition Vulkan Presentation target' -or
+        topLevelRasterOwnerAndThreeBuffers=if (@($cases | Where-Object {
+            $_.vulkan.visibleOwner -notlike 'top-level HWND DirectComposition Vulkan Presentation target*' -or
             $_.vulkan.presentationMode -ne 'CompositionSwapchain' -or
             [int]$_.vulkan.compositionBufferCount -ne 3 -or
             [int]$_.vulkan.activeSwapchains -ne 0
@@ -840,7 +870,7 @@ $manifest = [ordered]@{
         binariesStableDuringRun=if ($binariesStable) { 'PASS' } else { 'FAIL' }
     }
     cases=$cases
-    evidenceBoundary='Focused validation runs only left/top-left Vulkan cases and proves a native topmost DirectComposition target on one visible exact-size child, identity-transformed full-capacity Presentation source clipped by that child, a bounded matching-present wait inside the parent/child WM_SIZE transaction, three Composition buffers, synchronous Vulkan copy completion, availability-based buffer reuse, top-level native input ingress, WGC transport, monotonic visible generation markers, raw validation-background coverage, final exact geometry, terminal accounting, zero active WSI swapchains, and no Vulkan device loss or legacy WSI results. ANGLE cadence/latency comparison and the repeated eight-edge matrix run only when -FullEightEdgeMatrix or -FullCurrentDpiMatrix is explicitly selected. External validation is qualified only when the loader positively reports VK_LAYER_KHRONOS_validation activation and zero validation warning/error messages. Source diff and key source files are SHA-256 fingerprinted; product executable/IL, managed/native host, and observer binaries are hashed before and after execution, while source-to-binary correspondence is PASS only when the validator performed the build. Composition Present receipts and WGC do not prove physical scan-out, transient DWM shell pixels, Acrylic blur quality, or human-perceived drag smoothness; those remain notVerified and require direct physical left/top-left and backdrop checks.'
+    evidenceBoundary='Focused validation runs one requested Vulkan edge and proves direction-aware ordering on one visible top-level HWND: every interactive edge completes the proposed-size Skia raster, synchronous Vulkan copy, and Presentation submission before geometry. Fixed-origin right/bottom edges also wait for a DWM display boundary. Moving-origin left/top edges do not force the new layout to display at the old screen origin and return immediately after Present submission so it can coalesce with the following HWND transaction. An HWND-wide DWM transient-backdrop underlay remains below the premultiplied content target. The validator also checks three Composition buffers, synchronous Vulkan copy completion, availability-based buffer reuse, top-level native input ingress, WGC transport, monotonic visible generation markers, raw validation-background coverage, final exact geometry, terminal accounting, zero active WSI swapchains, and no Vulkan device loss or legacy WSI results. The strict pixel gate continues to fail when Acrylic material rather than exact app-background sentinel pixels occupies a transient tail; that result is not reclassified as app-raster coverage PASS. ANGLE cadence/latency comparison and the repeated eight-edge matrix run only when -FullEightEdgeMatrix or -FullCurrentDpiMatrix is explicitly selected. External validation is qualified only when the loader positively reports VK_LAYER_KHRONOS_validation activation and zero validation warning/error messages. Source diff and key source files are SHA-256 fingerprinted; product executable/IL, managed/native host, and observer binaries are hashed before and after execution, while source-to-binary correspondence is PASS only when the validator performed the build. Present submission receipts, DWM backdrop coverage, saved WGC frames, and current-monitor capture do not prove physical scan-out, transient DWM shell pixels, Acrylic blur quality, or human-perceived drag smoothness; those remain notVerified and require direct physical left/top-left and backdrop checks.'
 }
 $manifestPath = Join-Path $OutputDirectory 'manifest.json'
 $manifest | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $manifestPath -Encoding utf8

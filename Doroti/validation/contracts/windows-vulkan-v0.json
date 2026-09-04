@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "doroti.windows.vulkan-capability-contract/v5",
+  "schemaVersion": "doroti.windows.vulkan-capability-contract/v9",
   "packageVersion": "2.23.0",
   "skiaSharpVersion": "4.152.0-rc.1.26426.14",
   "skiaVulkanAdapter": "SkiaSharp.Vulkan.Silk.NET",
@@ -12,19 +12,20 @@
     "VK_KHR_dedicated_allocation"
   ],
   "presentationMode": "CompositionSwapchain",
-  "visibleOwner": "exact child HWND DirectComposition Vulkan Presentation target",
-  "topology": "exact-child-dcomp-vulkan-presentation",
+  "visibleOwner": "top-level HWND DirectComposition Vulkan Presentation target",
+  "topology": "top-level-dcomp-vulkan-presentation-synchronous",
   "compositionBufferCount": 3,
   "activeSwapchains": 0,
-  "presentationCommitPolicy": "available-buffer-after-latest-check-synchronous-copy-present",
-  "movingOriginPolicy": "exact-child-bounded-present",
-  "rasterPlacement": "exact-child-capacity-origin",
+  "presentationCommitPolicy": "available-buffer-after-latest-check-synchronous-copy-present-submit",
+  "movingOriginPolicy": "fixed-origin-pregeometry-present-dwm-moving-origin-pregeometry-present-submit",
+  "rasterPlacement": "top-level-capacity-origin",
   "retirementMode": "presentation-buffer-availability",
   "acrylic": {
     "transport": "DesktopAcrylicController",
     "contentIslandConnected": false,
     "desktopWindowTargetConnected": true,
     "hostBackdropBrushEnabled": true,
+    "systemBackdropType": "TransientWindowUnderlay",
     "backdropState": "Active",
     "compositeAlpha": "Premultiplied"
   },
