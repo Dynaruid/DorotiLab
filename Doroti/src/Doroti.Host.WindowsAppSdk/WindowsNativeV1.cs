@@ -14,6 +14,7 @@ internal static partial class WindowsNativeV1
     internal const ulong RetainedOversizedChildSurfaceFeature = 1UL << 2;
     internal const ulong CompositionPresentationFeature = 1UL << 3;
     internal const ulong VulkanAcrylicFeature = 1UL << 4;
+    internal const ulong PreparedGeometryReceiptFeature = 1UL << 5;
     internal const string LibraryName = "doroti_windows_appsdk_host_v1";
     private const uint LoadLibrarySearchDllLoadDir = 0x00000100;
     private const uint LoadLibrarySearchApplicationDir = 0x00000200;
@@ -39,6 +40,7 @@ internal static partial class WindowsNativeV1
         Presented = 1,
         Superseded = 2,
         Failed = 3,
+        Prepared = 4,
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -220,6 +222,21 @@ internal static partial class WindowsNativeV1
         internal nint PlatformBrightness;
         internal nint PlatformResourcesShutdown;
         internal nint CompositionResize;
+        internal nint MovingFrame;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    internal struct MovingFrame
+    {
+        internal ulong ResizeEpoch;
+        internal ulong Generation;
+        internal uint SizingEdge;
+        internal int Left, Top, Right, Bottom;
+        internal uint Width, Height;
+        internal double Scale;
+        internal readonly MovingFrameKey ToKey(long inputSequence) => new(
+            ResizeEpoch, Generation, inputSequence, SizingEdge,
+            Left, Top, Right, Bottom, checked((int)Width), checked((int)Height), Scale);
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]

@@ -17,6 +17,10 @@ extern "C" {
 enum { DOROTI_WINDOWS_VULKAN_COMPOSITION_ABI_VERSION_V1 = 1 };
 enum { DOROTI_WINDOWS_VULKAN_COMPOSITION_BUFFER_COUNT_V1 = 3 };
 
+DOROTI_WINDOWS_VULKAN_COMPOSITION_API void
+DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
+doroti_windows_vulkan_composition_trace_prepared_v1(void);
+
 #pragma pack(push, 8)
 
 typedef struct doroti_windows_vulkan_composition_probe_v1 {
@@ -111,6 +115,9 @@ doroti_windows_vulkan_composition_is_available_v1(
 // calling this function. The following IPresentationManager::Present call
 // atomically selects a full-capacity identity source. The top-level HWND clips
 // its exact viewport while app-background overscan remains around it.
+// wait_for_composition_frame: 0 submits only; 1 retains the legacy DWM boundary
+// path; 2 waits at most wait_timeout_ms for matching present ID + content tag
+// CompositionFrame statistics with a display instance (no DwmFlush fallback).
 DOROTI_WINDOWS_VULKAN_COMPOSITION_API int32_t
 DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
 doroti_windows_vulkan_composition_present_cropped_v1(

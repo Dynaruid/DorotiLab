@@ -99,6 +99,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private VulkanAcrylicScene? _acrylicScene;
     private long _viewportRevision;
     private long _displayWaitViewportRevision;
+    private ulong _resizeClockWaitCount;
+    private ulong _resizeClockSignalCount;
+    private ulong _resizeClockFailureCount;
+    private uint _lastResizeClockStatus;
+    private long _maximumResizeClockWaitMicroseconds;
     private int _viewportWidth;
     private int _viewportHeight;
     private double _viewportScale = 1;
@@ -206,6 +211,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         WindowsNativeV1.PostPresentDwmFlushFeature |
         WindowsNativeV1.RetainedOversizedChildSurfaceFeature |
         WindowsNativeV1.CompositionPresentationFeature |
+        WindowsNativeV1.PreparedGeometryReceiptFeature |
         (_acrylicOptions is null
             ? 0
             : WindowsNativeV1.ExperimentalAcrylicFeature |
@@ -221,7 +227,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     internal override string DiagnosticCoverage =>
         "Vulkan 1.1 retained offscreen backing, exact-LUID D3D11 Presentation buffers, dedicated D3D11_TEXTURE imports, " +
         "external queue-family ownership transfers, CPU copy-fence completion before native Present, three-slot availability retirement, " +
-        "exact proposed-size Skia raster and Presentation submission before geometry on every interactive edge, with DWM display waiting only for fixed-origin edges so moving-origin submission can coalesce with the following HWND transaction, a native topmost DirectComposition target on the top-level HWND, " +
+        "exact proposed-size Skia raster with non-visible moving-origin preparation, bounded pre-geometry compositor-clock alignment and immediate WM_WINDOWPOSCHANGED commit; fixed-origin submission retains its pre-geometry DWM wait, a native topmost DirectComposition target on the top-level HWND, " +
         "identity full-capacity Presentation coverage clipped by the single top-level client geometry, " +
         (_acrylicOptions is null
             ? "opaque alpha, "
@@ -287,8 +293,23 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         FixedOriginPreGeometryAdmissions: _fixedOriginPreGeometryAdmissionCount,
         MovingOriginPreGeometryAdmissions: _movingOriginPreGeometryAdmissionCount,
         MovingOriginPreGeometryDisplayWaits: _movingOriginPreGeometryDisplayWaitCount,
+        MovingOriginPrepared: PreparedDiagnostics.Prepared,
+        MovingOriginWindowPosCommitAttempt: MovingOriginWindowPosCommitAttempt,
+        MovingOriginWindowPosCommitted: PreparedDiagnostics.Committed,
+        MovingOriginWindowPosMismatch: MovingOriginWindowPosCommitMismatch,
+        MovingOriginWindowPosCancelled: PreparedDiagnostics.Cancelled,
+        MovingOriginWindowPosFailed: MovingOriginWindowPosCommitFailed,
+        MovingOriginReserved: PreparedDiagnostics.Reserved,
+        ClockWait: 0, ClockWaitObserved: 0, ClockWaitTimeout: 0,
+        PostGeometryFallback: _postGeometryFallback,
+        CandidatePolicy: "moving-origin-clock-geometry-prepared-commit-receipt",
         LastCompositionFrameWaitMicroseconds: _lastCompositionFrameWaitMicroseconds,
         MaximumCompositionFrameWaitMicroseconds: _maximumCompositionFrameWaitMicroseconds,
+        ResizeClockWaits: _resizeClockWaitCount,
+        ResizeClockSignals: _resizeClockSignalCount,
+        ResizeClockFailures: _resizeClockFailureCount,
+        LastResizeClockStatus: _lastResizeClockStatus,
+        MaximumResizeClockWaitMicroseconds: _maximumResizeClockWaitMicroseconds,
         RecentEvents: SnapshotEvents());
 
     bool IWindowsAcrylicPresenter.AcrylicEnabled => _acrylicOptions is not null;
@@ -437,6 +458,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         lock (_viewportGate)
         {
             var movingOrigin = SizingEdgeMovesWindowOrigin(sizingEdge);
+            if (!preGeometry && _viewportRevision != 0) _postGeometryFallback++;
+            _preparedMoving.Cancel();
+            _movingPrepareRequest = null;
+            _phaseAlignedFrame = null;
             _viewportRevision++;
             _viewportWidth = width;
             _viewportHeight = height;
@@ -564,6 +589,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             throw new InvalidOperationException("No Vulkan Composition buffer is admitted.");
 
         LastPresentSucceeded = false;
+        MovingFrameKey? prepareRequest;
+        lock (_viewportGate) prepareRequest = _movingPrepareRequest;
         try
         {
             // The raster target and client clip share one top-level HWND geometry.
@@ -611,6 +638,15 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 // replace pixels that belong to the last displayed geometry.
                 CopyBackingToPresentation(slot);
                 GpuCopyCount++;
+                if (prepareRequest is { } prepareKey)
+                {
+                    if (_movingPrepareRequest != prepareRequest) return result;
+                    _preparedMoving.Reserve(new PreparedMovingFrame(
+                        prepareKey, slotIndex, _viewportRevision));
+                    TracePreparedCopyComplete();
+                    LastPrepareSucceeded = true;
+                    return result;
+                }
                 PresentSlotLocked(
                     slotIndex, _viewportRevision,
                     _displayWaitViewportRevision == _viewportRevision
@@ -630,10 +666,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         }
     }
 
-    private void PresentSlotLocked(int slotIndex, long viewportRevision, string admission)
+    private void PresentSlotLocked(int slotIndex, long viewportRevision, string admission, bool waitForResizeReceipt = false)
     {
         var slot = _presentationSlots[slotIndex];
-        var waitForCompositionFrame = _displayWaitViewportRevision == viewportRevision;
+        var waitForCompositionFrame = waitForResizeReceipt || _displayWaitViewportRevision == viewportRevision;
         var waitStarted = waitForCompositionFrame ? Stopwatch.GetTimestamp() : 0;
         // Keep the full retained buffer at identity. The top-level client is
         // the only raster clip; no transform moves the scene independently
@@ -643,7 +679,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             0, 0,
             checked((uint)slot.CapacityWidth),
             checked((uint)slot.CapacityHeight), ++_presentTag,
-            waitForCompositionFrame ? 1u : 0u,
+            waitForResizeReceipt ? 2u : waitForCompositionFrame ? 1u : 0u,
             CompositionFrameWaitMilliseconds,
             out var compositionFrameObserved,
             out var presentId, out var retiringFenceValue);
@@ -730,6 +766,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     {
         for (var index = 0; index < BufferCount; index++)
         {
+            lock (_viewportGate)
+                if (_preparedMoving.IsReserved(index)) continue;
             var slot = _presentationSlots[index];
             if (slot.Poisoned) continue;
             if (!slot.Registered) return index;
@@ -761,6 +799,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         uint count = 0;
         for (var index = 0; index < _presentationSlots.Length; index++)
         {
+            lock (_viewportGate)
+                if (_preparedMoving.IsReserved(index)) continue;
             var slot = _presentationSlots[index];
             if (slot.Poisoned || !slot.Registered || slot.AvailableEvent == 0) continue;
             handles[count++] = unchecked((nint)slot.AvailableEvent);
@@ -777,6 +817,9 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void ReplacePresentationSlot(int index, int width, int height)
     {
+        lock (_viewportGate)
+            if (_preparedMoving.IsReserved(index))
+                throw new InvalidOperationException("A prepared Presentation slot cannot be replaced.");
         var slot = _presentationSlots[index];
         if (slot.Poisoned)
             throw new InvalidOperationException("A failed Presentation slot cannot be replaced in-place.");
@@ -1143,6 +1186,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     internal override bool PrepareForRendererGpuResourceRelease()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        CancelPreparedMovingFrame();
         if (_instance.Handle == 0) return false;
         _rendererReleasePreflightReportedDeviceLoss = false;
         try
@@ -2265,6 +2309,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void UnbindPresentationSurfaceForRetirement()
     {
+        CancelPreparedMovingFrame();
         nint context;
         ulong tag;
         lock (_viewportGate)
@@ -2294,6 +2339,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     private void ReleaseDevice(bool deviceLost, bool waitForIdle = true)
     {
+        CancelPreparedMovingFrame();
         if (_instance.Handle == 0) return;
         if (!deviceLost && waitForIdle)
         {
@@ -2755,6 +2801,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     [LibraryImport("kernel32.dll", EntryPoint = "GetModuleHandleW", StringMarshalling = StringMarshalling.Utf16)]
     private static partial nint GetModuleHandle(string? moduleName);
 
+    [LibraryImport("dcomp.dll")]
+    private static partial uint DCompositionWaitForCompositorClock(
+        uint count, nint handles, uint timeoutInMs);
+
     [DllImport("dwmapi.dll", ExactSpelling = true)]
     private static extern int DwmFlush();
 
@@ -3005,6 +3055,23 @@ internal sealed record VulkanPresenterSnapshot(
     ulong FixedOriginPreGeometryAdmissions,
     ulong MovingOriginPreGeometryAdmissions,
     ulong MovingOriginPreGeometryDisplayWaits,
+    ulong MovingOriginPrepared,
+    ulong MovingOriginWindowPosCommitAttempt,
+    ulong MovingOriginWindowPosCommitted,
+    ulong MovingOriginWindowPosMismatch,
+    ulong MovingOriginWindowPosCancelled,
+    ulong MovingOriginWindowPosFailed,
+    int MovingOriginReserved,
+    ulong ClockWait,
+    ulong ClockWaitObserved,
+    ulong ClockWaitTimeout,
+    ulong PostGeometryFallback,
+    string CandidatePolicy,
     long LastCompositionFrameWaitMicroseconds,
     long MaximumCompositionFrameWaitMicroseconds,
+    ulong ResizeClockWaits,
+    ulong ResizeClockSignals,
+    ulong ResizeClockFailures,
+    uint LastResizeClockStatus,
+    long MaximumResizeClockWaitMicroseconds,
     string[] RecentEvents);

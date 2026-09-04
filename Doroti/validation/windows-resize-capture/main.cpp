@@ -8,6 +8,7 @@
 #include <windows.graphics.directx.direct3d11.interop.h>
 
 #include "grid_oracle.h"
+#include "validation_background_oracle.h"
 
 #include <winrt/base.h>
 #include <winrt/Windows.Foundation.h>
@@ -944,6 +945,18 @@ public:
             if (!GetWindowRect(options_.captureHwnd, &frameBounds)) Fail("Could not resolve initial capture bounds.");
         }
         RECT const clientScreen = VisibleVisualClientRectScreen(options_);
+        initialClientRight_ = clientScreen.right;
+        RECT initialWindow{};
+        if (!GetWindowRect(options_.captureHwnd, &initialWindow))
+            Fail("Could not resolve fixed-edge window bounds.");
+        initialOuterRight_ = initialWindow.right;
+        initialWindowDpi_ = GetDpiForWindow(options_.captureHwnd);
+        captureMonitorLeft_ = monitor.rcMonitor.left;
+        fixedRightCoverage_ = options_.f6r && !options_.qualification &&
+            !options_.observeOnly &&
+            (options_.edge == "Left" || options_.edge == "Top" ||
+             options_.edge == "TopLeft" || options_.edge == "BottomLeft" ||
+             options_.edge == "Bottom");
         clientInsets_ = RECT{
             std::max(0L, clientScreen.left - frameBounds.left),
             std::max(0L, clientScreen.top - frameBounds.top),
@@ -1014,6 +1027,7 @@ public:
     int RingDropped() const { return ringDropped_.load(); }
     int CapacityExceeded() const { return capacityExceeded_.load(); }
     int RecreateCount() const { return 0; }
+    bool FixedRightCoverage() const { return fixedRightCoverage_; }
     SizeInt32 Capacity() const { return capacity_; }
     bool MinUpdateIntervalSupported() const { return captureMinUpdateIntervalSupported_; }
     long long MinUpdateIntervalRequested100ns() const { return captureMinUpdateIntervalRequested100ns_; }
@@ -1031,6 +1045,7 @@ private:
         long long systemRelative100ns{};
         int width{};
         int height{};
+        UINT windowDpi{};
         bool encodeStrideFrame{};
         bool analyzeFrame{};
         bool analyzeShapeFrame{};
@@ -1098,6 +1113,7 @@ private:
                 slot.analyzeFrame = analyzeFrame;
                 slot.analyzeShapeFrame = analyzeShapeFrame;
                 GetWindowRect(options_.captureHwnd, &slot.window);
+                slot.windowDpi = GetDpiForWindow(options_.captureHwnd);
                 slot.clientScreen = VisibleVisualClientRectScreen(options_);
                 slot.retainedChildObserved = false;
                 if (auto const child = FindWindowExW(
@@ -1195,8 +1211,23 @@ private:
                              static_cast<int>(client.right), static_cast<int>(client.bottom)},
                             scale);
                     }
-                    validationBackgroundRightGap = ValidationBackgroundRightGap(
-                        pixels, slot.width, slot.height, scale);
+                    if (fixedRightCoverage_) {
+                        // Fail closed if the supposedly fixed reference moves.
+                        // Callback-time left/top may be newer than the pixels;
+                        // the invariant right edge is valid for both epochs.
+                        // GetClientRect + ClientToScreen is not one snapshot:
+                        // old width plus new origin can invent a moving right
+                        // edge. Use the atomic outer RECT and unchanged DPI.
+                        if (slot.window.right == initialOuterRight_ &&
+                            slot.windowDpi == initialWindowDpi_)
+                            validationBackgroundRightGap =
+                                doroti::resize_oracle::ValidationBackgroundGapAtFixedRight(
+                                    pixels, slot.width, slot.height,
+                                    static_cast<int>(initialClientRight_ - captureMonitorLeft_));
+                    } else {
+                        validationBackgroundRightGap = ValidationBackgroundRightGap(
+                            pixels, slot.width, slot.height, scale);
+                    }
             }
                 if (slot.analyzeShapeFrame) {
                     circle = CircleAspect(pixels, slot.width, client, scale);
@@ -1351,6 +1382,11 @@ private:
     event_token frameToken_{};
     SizeInt32 capacity_{};
     RECT clientInsets_{};
+    LONG initialClientRight_{};
+    LONG initialOuterRight_{};
+    UINT initialWindowDpi_{};
+    LONG captureMonitorLeft_{};
+    bool fixedRightCoverage_{};
     bool captureMinUpdateIntervalSupported_{};
     long long captureMinUpdateIntervalRequested100ns_{};
     long long captureMinUpdateIntervalApplied100ns_{};
@@ -2333,6 +2369,8 @@ void WriteEvidence(
         << ",\"titleObservedFrames\":" << titleObserved
         << ",\"titleNonUniformScaleFailures\":" << titleFailure
         << ",\"validationBackgroundObservedFrames\":" << validationBackgroundObservedFrames
+        << ",\"validationBackgroundSource\":\""
+        << (capture && capture->FixedRightCoverage() ? "fixed-client-right-anchor" : "caption-color-edge") << "\""
         << ",\"validationBackgroundRightGapFrames\":" << validationBackgroundRightGapFrames
         << ",\"maximumValidationBackgroundRightGapPixels\":" << maximumValidationBackgroundRightGap
         << ",\"uncoveredEdgeGapFrames\":" << edgeGapFrames

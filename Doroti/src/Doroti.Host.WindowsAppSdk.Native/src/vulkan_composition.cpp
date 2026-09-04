@@ -1,4 +1,5 @@
 #include "doroti_windows_vulkan_composition_v1.h"
+#include "resize_order_trace.h"
 
 #include <windows.h>
 #include <Presentation.h>
@@ -15,6 +16,11 @@
 #include <mutex>
 
 using Microsoft::WRL::ComPtr;
+
+extern "C" void DOROTI_WINDOWS_VULKAN_COMPOSITION_CALL
+doroti_windows_vulkan_composition_trace_prepared_v1(void) {
+  doroti::resize_trace::Record("prepare-copy-complete", doroti::resize_trace::render_key);
+}
 
 namespace {
 
@@ -574,6 +580,9 @@ doroti_windows_vulkan_composition_present_cropped_v1(
     uint32_t wait_for_composition_frame, uint32_t wait_timeout_ms,
     uint32_t* composition_frame_observed,
     uint64_t* present_id, uint64_t* retiring_fence_value) {
+  // Managed caller enters only after exact raster and synchronous copy finish.
+  doroti::resize_trace::Record("render-copy-complete-handoff",
+                               doroti::resize_trace::render_key);
   if (context == nullptr || slot_index >= kBufferCount || width == 0 ||
       height == 0 || composition_frame_observed == nullptr ||
       present_id == nullptr || retiring_fence_value == nullptr)
@@ -605,7 +614,9 @@ doroti_windows_vulkan_composition_present_cropped_v1(
   if (FAILED(result)) return Result(result);
 
   const auto id = composition.manager->GetNextPresentId();
+  doroti::resize_trace::Record("present-call", doroti::resize_trace::render_key);
   result = composition.manager->Present();
+  doroti::resize_trace::Record("present-return", doroti::resize_trace::render_key);
   if (FAILED(result)) return Result(result);
   composition.bound_slot = slot_index;
   composition.bound_width = slot.width;
@@ -615,7 +626,7 @@ doroti_windows_vulkan_composition_present_cropped_v1(
                                ? composition.retiring_fence->GetCompletedValue()
                                : 0;
   if (wait_for_composition_frame != 0) {
-    if (composition.composition_target) {
+    if (composition.composition_target && wait_for_composition_frame == 1) {
       // The product path attaches the Presentation surface to a native topmost
       // target on the top-level HWND. DwmFlush observes its commit at a DWM boundary.
       result = DwmFlush();
@@ -627,6 +638,9 @@ doroti_windows_vulkan_composition_present_cropped_v1(
           composition, id, tag, wait_timeout_ms, observed);
       if (FAILED(result)) return Result(result);
       *composition_frame_observed = observed ? 1u : 0u;
+      if (wait_for_composition_frame == 2)
+        doroti::resize_trace::Record("present-receipt", doroti::resize_trace::render_key,
+                                     observed ? 1u : 0u);
     }
   }
   return Result(S_OK);

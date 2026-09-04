@@ -1,5 +1,6 @@
 #include "doroti_windows_host_v1.h"
 #include "accessibility_bridge.h"
+#include "resize_order_trace.h"
 
 #include <windows.h>
 #include <windowsx.h>
@@ -58,6 +59,7 @@ constexpr UINT_PTR kLifecycleTimer = 2;
 constexpr UINT_PTR kInteractiveMoveTimer = 3;
 constexpr UINT kInteractiveMoveIntervalMs = 8;
 constexpr auto kExactResizeWait = std::chrono::milliseconds(100);
+constexpr uint32_t kFramePrepared = 4;
 
 template <typename T>
 bool ValidHeader(const T* value) noexcept {
@@ -146,6 +148,7 @@ struct RenderWork {
   doroti_windows_metrics_v1 metrics;
   doroti_windows_frame_request_v1 request;
   int64_t accepted_qpc;
+  doroti::resize_trace::Key trace_key{};
 };
 
 struct TextCommand {
@@ -198,6 +201,7 @@ class ProductHost final {
   ~ProductHost() { Destroy(); }
 
   doroti_windows_status_v1 Run() {
+    doroti::resize_trace::Initialize();
     CreateCompositionBackgroundBrush();
     RegisterClasses();
     CreateWindows();
@@ -258,12 +262,51 @@ class ProductHost final {
       DispatchMessageW(&message);
     }
     StopRenderWorker();
+    doroti::resize_trace::Flush();
     ReleasePlatformResources();
     return fatal_ ? DOROTI_WINDOWS_STATUS_NATIVE_FAILURE_V1
                   : DOROTI_WINDOWS_STATUS_OK_V1;
   }
 
   LRESULT HandleTop(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
+    doroti::resize_trace::MessageScope trace_scope{
+        nullptr, {}, current_generation_};
+    if (doroti::resize_trace::enabled && composition_active_) {
+      const char* entry = nullptr;
+      if (message == WM_SIZING && lparam != 0) {
+        trace_key_ = {++trace_epoch_, current_generation_,
+                      static_cast<uint32_t>(wparam),
+                      *reinterpret_cast<const RECT*>(lparam)};
+        entry = "sizing-entry";
+        trace_scope.end = "sizing-return";
+      } else if (message == WM_WINDOWPOSCHANGING) {
+        entry = "windowposchanging-entry";
+        trace_scope.end = "windowposchanging-return";
+      } else if (message == WM_WINDOWPOSCHANGED) {
+        entry = "windowposchanged-entry";
+        trace_scope.end = "windowposchanged-return";
+      } else if (message == WM_SIZE) {
+        entry = "size-entry";
+        trace_scope.end = "size-return";
+      }
+      trace_scope.key = trace_key_;
+      trace_scope.key.generation = current_generation_;
+      if ((message == WM_WINDOWPOSCHANGING || message == WM_WINDOWPOSCHANGED) &&
+          lparam != 0) {
+        const auto& pos = *reinterpret_cast<const WINDOWPOS*>(lparam);
+        RECT actual{};
+        GetWindowRect(window, &actual);
+        const auto x = (pos.flags & SWP_NOMOVE) ? actual.left : pos.x;
+        const auto y = (pos.flags & SWP_NOMOVE) ? actual.top : pos.y;
+        const auto w = (pos.flags & SWP_NOSIZE) ? actual.right - actual.left : pos.cx;
+        const auto h = (pos.flags & SWP_NOSIZE) ? actual.bottom - actual.top : pos.cy;
+        trace_scope.key.outer = {x, y, x + w, y + h};
+        trace_scope.flags = pos.flags;
+      }
+      if (entry != nullptr)
+        doroti::resize_trace::Record(entry, trace_scope.key, trace_scope.flags,
+                                    message == WM_WINDOWPOSCHANGING);
+    }
     if (composition_active_ && IsClientInputMessage(message))
       return HandleChild(window, message, wparam, lparam);
     switch (message) {
@@ -289,17 +332,24 @@ class ProductHost final {
             fatal_ = true;
             PostMessageW(top_, WM_CLOSE, 0, 0);
           }
-          // USER32 still owns and applies the proposed rectangle. Every edge
-          // reaches Presentation submission after its proposed Skia raster.
-          // Fixed-origin edges additionally wait for a DWM display boundary;
-          // moving-origin edges return immediately after submission so DWM can
-          // consume the frame with the following HWND geometry instead of
-          // displaying the new layout once at the old screen origin.
+          // USER32 still owns the proposed rectangle. Fixed-origin edges have
+          // submitted and observed the raster; moving-origin edges have only
+          // prepared it, for the following WINDOWPOS commit.
           return TRUE;
+        }
+        break;
+      case WM_WINDOWPOSCHANGING:
+        if (composition_active_ && lparam != 0 && moving_key_) {
+          // Align the prepared transaction before geometry, but keep its pixels
+          // non-visible until WM_WINDOWPOSCHANGED reports the actual new origin.
+          const auto result = DefWindowProcW(window, message, wparam, lparam);
+          CommitMovingFrame(*reinterpret_cast<const WINDOWPOS*>(lparam), true);
+          return result;
         }
         break;
       case WM_SIZE:
         if (wparam == SIZE_MINIMIZED) {
+          CancelMovingFrame();
           composition_sizing_edge_ = 0;
           minimized_ = true;
           EmitLifecycle(2);
@@ -383,6 +433,8 @@ class ProductHost final {
                    nullptr);
         return 0;
       case WM_WINDOWPOSCHANGED:
+        if (composition_active_ && lparam != 0 && moving_key_)
+          CommitMovingFrame(*reinterpret_cast<const WINDOWPOS*>(lparam), false);
         if (interactive_move_) interactive_move_dirty_ = true;
         if (composition_active_ && child_ != nullptr) {
           RECT client{};
@@ -414,6 +466,8 @@ class ProductHost final {
           QueueRender();
         break;
       case WM_EXITSIZEMOVE:
+        CancelMovingFrame();
+        trace_key_ = {};
         KillTimer(window, kInteractiveMoveTimer);
         interactive_move_ = false;
         composition_interactive_.store(false, std::memory_order_release);
@@ -447,6 +501,7 @@ class ProductHost final {
         interactive_move_dirty_ = false;
         return 0;
       case WM_DPICHANGED: {
+        CancelMovingFrame();
         composition_sizing_edge_ = 0;
         const auto* suggested = reinterpret_cast<const RECT*>(lparam);
         if (suggested != nullptr)
@@ -465,6 +520,7 @@ class ProductHost final {
         RefreshPlatformBrightness();
         break;
       case WM_CLOSE:
+        CancelMovingFrame();
         // Close the managed posting gate before joining the raster worker.
         // A final in-flight scene submit may request another frame while the
         // worker is draining; that invalidation is obsolete once close has
@@ -1124,6 +1180,7 @@ class ProductHost final {
 
   bool PrepareCompositionSizingFrame(
       const RECT& proposed_window, uint32_t sizing_edge) {
+    CancelMovingFrame();
     if (top_ == nullptr || child_ == nullptr || !render_worker_started_)
       return false;
     RECT current_window{};
@@ -1161,15 +1218,100 @@ class ProductHost final {
       RepublishCurrentMetrics();
 
     const auto generation = current_generation_;
+    const auto moving = composition_presentation_requested_ &&
+        callbacks_.moving_frame != nullptr &&
+        (sizing_edge == WMSZ_LEFT || sizing_edge == WMSZ_TOP ||
+         sizing_edge == WMSZ_TOPLEFT || sizing_edge == WMSZ_TOPRIGHT ||
+         sizing_edge == WMSZ_BOTTOMLEFT);
+    if (moving) {
+      moving_key_ = doroti_windows_moving_frame_v1{
+          ++moving_epoch_, generation, sizing_edge,
+          proposed_window.left, proposed_window.top,
+          proposed_window.right, proposed_window.bottom, width, height, scale};
+      if (callbacks_.moving_frame(callbacks_.callback_context, 1, &*moving_key_) != 0) {
+        CancelMovingFrame();
+        return false;
+      }
+    }
     const auto causal = QueueRender();
-    // Every edge completes exact Skia raster, Vulkan copy, and Presentation
-    // submission before USER32 applies the proposed geometry. The presenter
-    // itself waits for a DWM display boundary only on fixed-origin edges. On a
-    // moving-origin edge, not forcing a pre-geometry scan-out avoids the old
-    // origin/new-layout double movement while still queuing the new pixels
-    // ahead of the HWND transaction. The 100 ms exact wait remains a failure
-    // bound rather than a resize cadence control.
-    return WaitForExactResize(generation, causal);
+    // Moving-origin completion means a non-visible copied slot is reserved.
+    // Fixed-origin completion still includes Present and its display wait.
+    // The platform never performs raster work or waits on a Vulkan fence.
+    return WaitForExactResize(generation, causal, kExactResizeWait, true, moving);
+  }
+
+  void ResolvePreparedFrame(uint32_t terminal) {
+    {
+      std::lock_guard lock(render_mutex_);
+      if (!prepared_work_) return;
+      render_completions_.push_back(MakeTerminal(*prepared_work_, terminal,
+          terminal == DOROTI_WINDOWS_FRAME_FAILED_V1 ? 1u : 0u));
+      prepared_work_.reset();
+    }
+    render_condition_.notify_one();
+    PostMessageW(task_, kRenderCompleted, 0, 0);
+  }
+
+  void CancelMovingFrame() {
+    moving_phase_aligned_ = false;
+    if (moving_key_) {
+      callbacks_.moving_frame(callbacks_.callback_context, 3, &*moving_key_);
+      moving_key_.reset();
+      composition_force_exact_ = true;
+    }
+    ResolvePreparedFrame(DOROTI_WINDOWS_FRAME_SUPERSEDED_V1);
+  }
+
+  void CommitMovingFrame(const WINDOWPOS& pos, bool align_only) {
+    if (!moving_key_) return;
+    const auto key = *moving_key_;
+    RECT outer{}, client{};
+    const auto rectangles = GetWindowRect(top_, &outer) && GetClientRect(top_, &client);
+    const auto frame_width = outer.right - outer.left - (client.right - client.left);
+    const auto frame_height = outer.bottom - outer.top - (client.bottom - client.top);
+    const auto match = rectangles && (pos.flags & (SWP_NOMOVE | SWP_NOSIZE)) == 0 &&
+        pos.x == key.left && pos.y == key.top && pos.x + pos.cx == key.right &&
+        pos.y + pos.cy == key.bottom && pos.cx - frame_width == static_cast<int>(key.width) &&
+        pos.cy - frame_height == static_cast<int>(key.height) &&
+        key.generation == current_generation_ && key.sizing_edge == composition_sizing_edge_ &&
+        key.scale == static_cast<double>(GetDpiForWindow(top_)) / 96.0;
+    bool ready = false;
+    {
+      std::lock_guard lock(render_mutex_);
+      ready = prepared_work_ && prepared_work_->request.generation == key.generation;
+    }
+    const auto actual_matches = align_only ||
+        (moving_phase_aligned_ && outer.left == key.left && outer.top == key.top &&
+         outer.right == key.right && outer.bottom == key.bottom &&
+         client.right - client.left == static_cast<LONG>(key.width) &&
+         client.bottom - client.top == static_cast<LONG>(key.height));
+    if (!match || !ready || !actual_matches) {
+      doroti::resize_trace::Record("prepared-windowpos-mismatch", trace_key_);
+      callbacks_.moving_frame(callbacks_.callback_context, 4, &key);
+      CancelMovingFrame();
+      return;
+    }
+    doroti::resize_trace::render_key = {
+        trace_key_.epoch, key.generation, key.sizing_edge,
+        {key.left, key.top, key.right, key.bottom}};
+    const auto result = callbacks_.moving_frame(callbacks_.callback_context, align_only ? 5u : 2u, &key);
+    if (align_only) {
+      moving_phase_aligned_ = result == 0;
+      doroti::resize_trace::Record("prepared-clock-ready", doroti::resize_trace::render_key);
+      if (result != 0) CancelMovingFrame();
+      return;
+    }
+    moving_phase_aligned_ = false;
+    moving_key_.reset();
+    if (result == 0) {
+      composition_force_exact_ = false;
+      ResolvePreparedFrame(DOROTI_WINDOWS_FRAME_PRESENTED_V1);
+    } else {
+      callbacks_.moving_frame(callbacks_.callback_context, 3, &key);
+      composition_force_exact_ = true;
+      ResolvePreparedFrame(result < 0 ? DOROTI_WINDOWS_FRAME_FAILED_V1 :
+                                      DOROTI_WINDOWS_FRAME_SUPERSEDED_V1);
+    }
   }
 
   void ApplyCompositionResize(uint32_t width, uint32_t height) {
@@ -1178,13 +1320,17 @@ class ProductHost final {
     // viewport. Preserve that revision so the next ordinary app frame cannot
     // accidentally inherit a post-geometry display wait. Programmatic, DPI,
     // and otherwise mismatched geometry still take the exact fallback below.
-    if (current_generation_ != 0 && current_width_ == width &&
+    if (!composition_force_exact_ && current_generation_ != 0 && current_width_ == width &&
         current_height_ == height && current_scale_ == scale)
       return;
     ResizeCompositionViewport(
         width, height, composition_sizing_edge_,
         DOROTI_WINDOWS_COMPOSITION_RESIZE_POST_GEOMETRY_V1);
-    if (UpdateMetrics(width, height, scale)) {
+    const auto changed = UpdateMetrics(width, height, scale);
+    const auto forced = composition_force_exact_;
+    composition_force_exact_ = false;
+    if (forced && !changed) RepublishCurrentMetrics();
+    if (changed || forced) {
       const auto generation = current_generation_;
       const auto causal = QueueRender();
       // Programmatic and mismatched resizes that did not pass WM_SIZING still
@@ -1742,7 +1888,9 @@ class ProductHost final {
                          causal,
                          accepted,
                      },
-                    accepted};
+                    accepted,
+                    trace_key_};
+    work.trace_key.generation = current_generation_;
     {
       std::lock_guard lock(render_mutex_);
       if (render_stopping_) return 0;
@@ -1780,7 +1928,7 @@ class ProductHost final {
       {
         std::unique_lock lock(render_mutex_);
         render_condition_.wait(lock, [this] {
-          return render_stopping_ || render_pending_.has_value();
+          return render_stopping_ || (render_pending_.has_value() && !prepared_work_);
         });
         if (render_stopping_ && !render_pending_.has_value()) break;
         work = *render_pending_;
@@ -1791,8 +1939,10 @@ class ProductHost final {
         callbacks_.metrics(callbacks_.callback_context, &work.metrics);
         delivered_metrics_generation_ = work.metrics.generation;
       }
+      doroti::resize_trace::render_key = work.trace_key;
       auto terminal = callbacks_.render(callbacks_.callback_context, &work.request);
       if (terminal != DOROTI_WINDOWS_FRAME_PRESENTED_V1 &&
+          terminal != kFramePrepared &&
           terminal != DOROTI_WINDOWS_FRAME_SUPERSEDED_V1 &&
           terminal != DOROTI_WINDOWS_FRAME_FAILED_V1)
         terminal = DOROTI_WINDOWS_FRAME_FAILED_V1;
@@ -1803,11 +1953,13 @@ class ProductHost final {
         auto receipt = MakeTerminal(work, terminal, error);
         if (resize_wait_timeouts_.erase(work.request.generation) != 0)
           receipt.platform_wait_timed_out = 1;
-        render_completions_.push_back(receipt);
+        if (terminal == kFramePrepared) prepared_work_ = work;
+        else render_completions_.push_back(receipt);
         last_render_terminal_generation_ = work.request.generation;
         last_render_terminal_causal_frame_id_ = work.request.causal_frame_id;
         last_render_terminal_kind_ = terminal;
       }
+      doroti::resize_trace::Record("worker-terminal-notify", work.trace_key);
       resize_condition_.notify_all();
       if (terminal == DOROTI_WINDOWS_FRAME_PRESENTED_V1) {
         if (composition_active_)
@@ -1853,7 +2005,7 @@ class ProductHost final {
   bool WaitForExactResize(
       uint64_t generation, uint64_t causal_frame_id,
       std::chrono::milliseconds timeout = kExactResizeWait,
-      bool record_timeout = true) {
+      bool record_timeout = true, bool allow_prepared = false) {
     const auto deadline = std::chrono::steady_clock::now() + timeout;
     while (causal_frame_id != 0) {
       std::unique_lock lock(render_mutex_);
@@ -1870,6 +2022,8 @@ class ProductHost final {
       if (last_render_terminal_causal_frame_id_ == causal_frame_id &&
           last_render_terminal_generation_ == generation) {
         if (last_render_terminal_kind_ == DOROTI_WINDOWS_FRAME_PRESENTED_V1)
+          return true;
+        if (allow_prepared && last_render_terminal_kind_ == kFramePrepared)
           return true;
         if (last_render_terminal_kind_ == DOROTI_WINDOWS_FRAME_FAILED_V1)
           return false;
@@ -1925,6 +2079,11 @@ class ProductHost final {
     render_condition_.notify_one();
     resize_condition_.notify_all();
     render_thread_.join();
+    if (composition_presentation_requested_ && callbacks_.moving_frame != nullptr) {
+      const doroti_windows_moving_frame_v1 cancelled{};
+      callbacks_.moving_frame(callbacks_.callback_context, 3, &cancelled);
+    }
+    CancelMovingFrame();
     render_worker_started_ = false;
     DrainRenderCompletions();
   }
@@ -2177,6 +2336,13 @@ class ProductHost final {
   uint64_t delivered_metrics_generation_{};
   bool show_requested_{};
   bool first_exact_present_{};
+  uint64_t trace_epoch_{};
+  uint64_t moving_epoch_{};
+  bool composition_force_exact_{};
+  bool moving_phase_aligned_{};
+  std::optional<doroti_windows_moving_frame_v1> moving_key_;
+  std::optional<RenderWork> prepared_work_;
+  doroti::resize_trace::Key trace_key_{};
   bool fatal_{};
   bool mouse_inside_{};
   bool pointer_down_{};
@@ -2272,6 +2438,7 @@ static_assert(std::is_standard_layout_v<doroti_windows_text_configuration_v1>);
 static_assert(std::is_standard_layout_v<doroti_windows_text_state_v1>);
 static_assert(std::is_standard_layout_v<doroti_windows_configuration_v1>);
 static_assert(std::is_standard_layout_v<doroti_windows_callbacks_v1>);
+static_assert(sizeof(doroti_windows_moving_frame_v1) == 56);
 
 }  // namespace
 
@@ -2336,8 +2503,15 @@ doroti_windows_status_v1 DOROTI_WINDOWS_CALL doroti_windows_run_v1(
            DOROTI_WINDOWS_FEATURE_POST_PRESENT_DWM_FLUSH_V1 |
            DOROTI_WINDOWS_FEATURE_RETAINED_OVERSIZED_CHILD_SURFACE_V1 |
            DOROTI_WINDOWS_FEATURE_COMPOSITION_PRESENTATION_V1 |
-           DOROTI_WINDOWS_FEATURE_VULKAN_ACRYLIC_V1)) != 0)
+           DOROTI_WINDOWS_FEATURE_VULKAN_ACRYLIC_V1 |
+           DOROTI_WINDOWS_FEATURE_PREPARED_GEOMETRY_RECEIPT_V1)) != 0)
     return DOROTI_WINDOWS_STATUS_NOT_IMPLEMENTED_V1;
+  if ((configuration->required_features &
+       DOROTI_WINDOWS_FEATURE_PREPARED_GEOMETRY_RECEIPT_V1) != 0 &&
+      (callbacks->moving_frame == nullptr ||
+       (configuration->required_features &
+        DOROTI_WINDOWS_FEATURE_COMPOSITION_PRESENTATION_V1) == 0))
+    return DOROTI_WINDOWS_STATUS_INVALID_ARGUMENT_V1;
 
   bool bootstrap_initialized = false;
   try {

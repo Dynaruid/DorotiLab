@@ -171,9 +171,12 @@ internal static class Program
             Require(expectedBackend != "Vulkan/Composition-Swapchain" ||
                      diagnostics.PresenterDiagnosticCoverage.Contains("topmost DirectComposition target on the top-level HWND", StringComparison.Ordinal) &&
                      diagnostics.PresenterDiagnosticCoverage.Contains("single top-level client geometry", StringComparison.Ordinal) &&
-                     diagnostics.PresenterDiagnosticCoverage.Contains("exact proposed-size Skia raster and Presentation submission before geometry on every interactive edge", StringComparison.Ordinal) &&
-                     diagnostics.PresenterDiagnosticCoverage.Contains("DWM display waiting only for fixed-origin edges", StringComparison.Ordinal) &&
-                     diagnostics.PresenterDiagnosticCoverage.Contains("moving-origin submission can coalesce with the following HWND transaction", StringComparison.Ordinal) &&
+                     diagnostics.Vulkan is { CandidatePolicy: "moving-origin-clock-geometry-prepared-commit-receipt", MovingOriginReserved: 0 } &&
+                     diagnostics.Vulkan.MovingOriginPrepared ==
+                         diagnostics.Vulkan.MovingOriginWindowPosCommitted + diagnostics.Vulkan.MovingOriginWindowPosCancelled &&
+                     diagnostics.Vulkan.MovingOriginWindowPosFailed == 0 &&
+                     diagnostics.Vulkan.ResizeClockWaits == diagnostics.Vulkan.MovingOriginWindowPosCommitted &&
+                     diagnostics.Vulkan.ResizeClockSignals + diagnostics.Vulkan.ResizeClockFailures == diagnostics.Vulkan.ResizeClockWaits &&
                      diagnostics.PresenterDiagnosticCoverage.Contains("identity full-capacity", StringComparison.Ordinal) &&
                     diagnostics.PresenterDiagnosticCoverage.Contains("three-slot", StringComparison.Ordinal) &&
                     diagnostics.PresenterDiagnosticCoverage.Contains("availability", StringComparison.Ordinal),

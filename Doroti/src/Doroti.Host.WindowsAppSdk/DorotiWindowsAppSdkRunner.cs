@@ -124,6 +124,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     PlatformBrightness = (nint)(delegate* unmanaged[Cdecl]<nint, ulong, uint, void>)&OnPlatformBrightness,
                     PlatformResourcesShutdown = (nint)(delegate* unmanaged[Cdecl]<nint, void>)&OnPlatformResourcesShutdown,
                     CompositionResize = (nint)(delegate* unmanaged[Cdecl]<nint, uint, uint, double, uint, uint, void>)&OnCompositionResize,
+                    MovingFrame = (nint)(delegate* unmanaged[Cdecl]<nint, uint, WindowsNativeV1.MovingFrame*, int>)&OnMovingFrame,
                 };
                 var status = WindowsNativeV1.Run(in configuration, in callbacks);
                 state.MarkNativeStopped();
@@ -374,6 +375,57 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             (Host ?? throw new InvalidOperationException("Metrics arrived before host-ready."))
                 .ApplyMetrics(in metrics);
 
+        private MovingFrameKey? _movingFrame;
+        private bool _preparedMismatchInjected;
+
+        internal int MovingFrame(uint action, in WindowsNativeV1.MovingFrame nativeKey)
+        {
+            if (Presenter is not WindowsManagedVulkanPresenter vulkan) return 1;
+            var host = Host ?? throw new InvalidOperationException("Moving frame before host-ready.");
+            lock (_gate)
+            {
+                if (action == 4)
+                {
+                    vulkan.RecordPreparedMismatch();
+                    return 1;
+                }
+                if (action == 3)
+                {
+                    _movingFrame = null;
+                    vulkan.CancelPreparedMovingFrame();
+                    return 0;
+                }
+                if (action == 1)
+                {
+                    vulkan.CancelPreparedMovingFrame();
+                    _movingFrame = nativeKey.ToKey(host.InputSequence);
+                    return 0;
+                }
+                if (action is not (2 or 5) || _movingFrame is not { } key) return 1;
+                if (action == 2) _movingFrame = null;
+                if (!_preparedMismatchInjected &&
+                    Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PREPARED_FRAME_TEST_MISMATCH") == "1")
+                {
+                    _preparedMismatchInjected = true;
+                    vulkan.RecordPreparedMismatch();
+                    vulkan.CancelPreparedMovingFrame();
+                    return 1;
+                }
+                if (key != nativeKey.ToKey(key.InputSequence) ||
+                    !host.IsInputSequenceCurrent(key.InputSequence) ||
+                    !host.IsLatestResizeGeneration(key.MetricsGeneration))
+                {
+                    vulkan.RecordPreparedMismatch();
+                    vulkan.CancelPreparedMovingFrame();
+                    return 1;
+                }
+                if (action == 5) return vulkan.AlignPreparedMovingFrame(key);
+                var status = vulkan.CommitPreparedMovingFrame(key);
+                if (status == 0) _lastPresentedResizeGeneration = key.MetricsGeneration;
+                return status;
+            }
+        }
+
         internal void ResizeComposition(
             uint width, uint height, double scale, uint sizingEdge, uint resizePhase)
         {
@@ -531,8 +583,9 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             Presenter.SealInitializationDebugBaseline();
             var presented = false;
             var staleInputPrevented = false;
-            var result = Presenter.RenderAndPresent(
-                surface =>
+            MovingFrameKey? prepareKey;
+            lock (_gate) prepareKey = _movingFrame;
+            SkiaPaintResult Paint(SKSurface surface)
                 {
                     var paintResult = renderer.Paint(
                         surface, width, height, host.ResizeTarget, causalFrameId);
@@ -540,8 +593,8 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                         DrawValidationFrameMarker(
                             surface.Canvas, width, height, scale, checked((long)resizeGeneration));
                     return paintResult;
-                },
-                value =>
+                }
+            bool ShouldPresent(SkiaPaintResult value)
                 {
                     if (!value.ShouldPresent || value.Completion is not { } candidate)
                         return presented = false;
@@ -551,10 +604,15 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                         return presented = false;
                     }
                     return presented = host.IsLatestResizeGeneration(resizeGeneration);
-                });
+                }
+            var preparing = prepareKey is { } pending && pending.MetricsGeneration == resizeGeneration;
+            var result = preparing && Presenter is WindowsManagedVulkanPresenter preparingVulkan
+                ? preparingVulkan.RenderAndPrepare(prepareKey!.Value, Paint, ShouldPresent)
+                : Presenter.RenderAndPresent(Paint, ShouldPresent);
+            var prepared = preparing && Presenter is WindowsManagedVulkanPresenter { LastPrepareSucceeded: true };
             presented &= Presenter.LastPresentSucceeded;
             if (staleInputPrevented) Interlocked.Increment(ref _staleInputPresentPrevented);
-            if (!presented && result.Completion is { IsNewFrame: true } stale)
+            if (!presented && !prepared && result.Completion is { IsNewFrame: true } stale)
             {
                 var reason = host.IsInputSequenceCurrent(stale.InputSequence)
                     ? "native presentation was superseded before swap"
@@ -569,11 +627,11 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             Interlocked.Increment(ref _renderCallbacks);
             if (presented)
                 _lastPresentedResizeGeneration = resizeGeneration;
-            if (presented && result.Completion is { } completion)
+            if ((presented || prepared) && result.Completion is { } completion)
             {
                 lock (_gate) _paintCompletions.Add(request.CausalFrameId, completion);
             }
-            return presented
+            return prepared ? (uint)WindowsNativeV1.FrameTerminalKind.Prepared : presented
                 ? (uint)WindowsNativeV1.FrameTerminalKind.Presented
                 : (uint)WindowsNativeV1.FrameTerminalKind.Superseded;
         }
@@ -1031,6 +1089,21 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         uint sizingEdge, uint resizePhase) =>
         GuardVoid(context, state => state.ResizeComposition(
             width, height, scale, sizingEdge, resizePhase));
+
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static int OnMovingFrame(nint context, uint action, WindowsNativeV1.MovingFrame* key)
+    {
+        try
+        {
+            if (key is null) return -1;
+            return GetState(context).MovingFrame(action, in *key);
+        }
+        catch (Exception exception)
+        {
+            TryCaptureFatal(context, exception);
+            return -1;
+        }
+    }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
     private static uint OnRender(nint context, WindowsNativeV1.FrameRequest* request)

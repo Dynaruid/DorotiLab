@@ -24,6 +24,7 @@ typedef enum doroti_windows_required_feature_v1 {
   DOROTI_WINDOWS_FEATURE_RETAINED_OVERSIZED_CHILD_SURFACE_V1 = 1ull << 2,
   DOROTI_WINDOWS_FEATURE_COMPOSITION_PRESENTATION_V1 = 1ull << 3,
   DOROTI_WINDOWS_FEATURE_VULKAN_ACRYLIC_V1 = 1ull << 4,
+  DOROTI_WINDOWS_FEATURE_PREPARED_GEOMETRY_RECEIPT_V1 = 1ull << 5,
 } doroti_windows_required_feature_v1;
 
 typedef enum doroti_windows_status_v1 {
@@ -242,6 +243,21 @@ typedef void(DOROTI_WINDOWS_CALL* doroti_windows_composition_resize_callback_v1)
     void* callback_context, uint32_t width_px, uint32_t height_px, double scale,
     uint32_t sizing_edge, uint32_t resize_phase);
 
+typedef struct doroti_windows_moving_frame_v1 {
+  uint64_t resize_epoch;
+  uint64_t generation;
+  uint32_t sizing_edge;
+  int32_t left, top, right, bottom;
+  uint32_t width, height;
+  double scale;
+} doroti_windows_moving_frame_v1;
+// action: 1 begin prepare, 2 commit after geometry, 3 cancel, 4 mismatch,
+// 5 align compositor phase before geometry. Result: 0 success, 1 mismatch,
+// negative failure. Prepared is an internal render result (4), never a terminal.
+typedef int32_t(DOROTI_WINDOWS_CALL* doroti_windows_moving_frame_callback_v1)(
+    void* callback_context, uint32_t action,
+    const doroti_windows_moving_frame_v1* key);
+
 typedef struct doroti_windows_configuration_v1 {
   uint32_t abi_version;
   uint32_t struct_size;
@@ -274,6 +290,7 @@ typedef struct doroti_windows_callbacks_v1 {
   doroti_windows_platform_brightness_callback_v1 platform_brightness;
   doroti_windows_platform_resources_shutdown_callback_v1 platform_resources_shutdown;
   doroti_windows_composition_resize_callback_v1 composition_resize;
+  doroti_windows_moving_frame_callback_v1 moving_frame;
 } doroti_windows_callbacks_v1;
 
 typedef struct doroti_windows_abi_layout_v1 {

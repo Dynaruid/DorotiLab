@@ -11,3 +11,7 @@ target_link_libraries(Doroti.WindowsResizeCapture PRIVATE d3d11 dxgi dwmapi ole3
 add_executable(Doroti.WindowsResizeGridOracleTests grid_oracle_tests.cpp)
 target_compile_features(Doroti.WindowsResizeGridOracleTests PRIVATE cxx_std_20)
 target_compile_options(Doroti.WindowsResizeGridOracleTests PRIVATE /W4 /permissive- /EHsc)
+
+add_executable(Doroti.WindowsResizeBackgroundOracleTests validation_background_oracle_tests.cpp)
+target_compile_features(Doroti.WindowsResizeBackgroundOracleTests PRIVATE cxx_std_20)
+target_compile_options(Doroti.WindowsResizeBackgroundOracleTests PRIVATE /W4 /permissive- /EHsc)

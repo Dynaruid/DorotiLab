@@ -10,8 +10,15 @@ param(
     [switch] $ExternalValidation,
     [switch] $SaveAnomalyPngs,
     [switch] $ExperimentalAcrylic,
+    [switch] $ResizeOrderTrace,
+    [ValidateSet('COMPOSITOR_CLOCK_TIMEOUT')]
+    [string] $InjectVulkanResult,
     [ValidateSet('Left','Right','Top','Bottom','TopLeft','TopRight','BottomLeft','BottomRight')]
-    [string] $FocusedEdge
+    [string] $FocusedEdge,
+    [ValidateRange(150, 10000)]
+    [int] $FocusedDragMilliseconds = 600,
+    [ValidateSet('expand','shrink','reverse')]
+    [string] $FocusedMotion = 'reverse'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -61,9 +68,12 @@ $observer = Join-Path $observerBuild 'Release/Doroti.WindowsResizeCapture.exe'
 $deadline = [DateTime]::UtcNow.AddMinutes(20)
 $sourceFingerprintPaths = @(
     'Doroti/eng/validate-windows-vulkan-live-resize.ps1',
+    'Doroti/eng/analyze-windows-resize-order.ps1',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsAcrylicOptionsState.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedAcrylicCompositionPresenter.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Prepared.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsPreparedMovingFrame.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedHwndPresenterBase.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedProductHost.cs',
@@ -72,6 +82,7 @@ $sourceFingerprintPaths = @(
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_host_v1.h',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_vulkan_composition_v1.h',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/exports.cpp',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/resize_order_trace.h',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/vulkan_composition.cpp',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/Doroti.Host.WindowsAppSdk.Native.vcxproj',
     'Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj',
@@ -82,6 +93,8 @@ $sourceFingerprintPaths = @(
     'Doroti/validation/windows-resize-capture/main.cpp',
     'Doroti/validation/windows-resize-capture/grid_oracle.h',
     'Doroti/validation/windows-resize-capture/grid_oracle_tests.cpp',
+    'Doroti/validation/windows-resize-capture/validation_background_oracle.h',
+    'Doroti/validation/windows-resize-capture/validation_background_oracle_tests.cpp',
     'Doroti/eng/build-hwnd-exact-cpp-native.ps1',
     'Doroti/Directory.Build.props',
     'Doroti/Directory.Build.targets',
@@ -351,6 +364,9 @@ function Invoke-CapturedCase {
         VK_LAYER_VALIDATE_SYNC=''
         VK_LOADER_DEBUG=''
     }
+    if ($ResizeOrderTrace) {
+        $caseEnvironment.DOROTI_WINDOWS_RESIZE_ORDER_TRACE = $OutputDirectory
+    }
     if ($validationLayerRequested) {
         $caseEnvironment.VK_INSTANCE_LAYERS = 'VK_LAYER_KHRONOS_validation'
         $caseEnvironment.VK_LAYER_VALIDATE_SYNC = '1'
@@ -361,6 +377,9 @@ function Invoke-CapturedCase {
         '--smoke-ms','15000','--report',$appPath)
     $useExperimentalAcrylic = $ExperimentalAcrylic -and $Presenter -eq 'Vulkan'
     if ($useExperimentalAcrylic) { $productArguments += '--experimental-acrylic' }
+    if ($Presenter -eq 'Vulkan' -and $InjectVulkanResult) {
+        $productArguments += @('--inject-vulkan-result', $InjectVulkanResult)
+    }
     $process.StartInfo = New-StartInfo -FileName $productExecutable `
         -ArgumentList $productArguments -Environment $caseEnvironment -Visible
     Assert-True $process.Start() "$Slug product failed to start."
@@ -410,8 +429,16 @@ function Invoke-CapturedCase {
             [int]$capture.poolCapacityExceededFrames -eq 0 -and
             @($frames | Where-Object blank).Count -eq 0
         $markerPass = $decodedIds.Count -gt 0 -and $markerRegressions -eq 0
-        $pixelCoveragePass = [int]$capture.visualOracle.validationBackgroundObservedFrames -gt 0 -and
+        $pixelCoveragePass = [int]$capture.visualOracle.validationBackgroundObservedFrames -eq [int]$capture.capturedFrames -and
+            [int]$capture.capturedFrames -gt 0 -and
             [int]$capture.visualOracle.validationBackgroundRightGapFrames -eq 0
+        if ($capture.visualOracle.validationBackgroundSource -eq 'fixed-client-right-anchor') {
+            $pixelCoveragePass = $pixelCoveragePass -and
+                [int]$capture.initialGeometry.clientScreen.right -eq [int]$capture.finalGeometry.clientScreen.right -and
+                @($frames | Where-Object { [int]$_.window.right -ne [int]$capture.initialGeometry.outer.right }).Count -eq 0 -and
+                @($capture.windowSamples | Where-Object { [int]$_.window.right -ne [int]$capture.initialGeometry.outer.right }).Count -eq 0
+        }
+        Assert-True ($app.status -eq 'PASS') "Product validation failed: $($app | ConvertTo-Json -Depth 5 -Compress)"
         $diagnostics = $app.diagnostics
         $combinedOutput = "$stdout`n$stderr"
         $validationMessageCount = [regex]::Matches(
@@ -439,12 +466,40 @@ function Invoke-CapturedCase {
             $directionalAdmissionContract =
                 $(if ($originMovingEdge) {
                     [long]$diagnostics.vulkan.movingOriginPreGeometryAdmissions -gt 0 -and
+                    [long]$diagnostics.vulkan.resizeClockWaits -gt 0 -and
+                    [long]$diagnostics.vulkan.resizeClockSignals -eq [long]$diagnostics.vulkan.resizeClockWaits -and
+                    [long]$diagnostics.vulkan.resizeClockFailures -eq 0 -and
                     [long]$diagnostics.vulkan.movingOriginPreGeometryDisplayWaits -eq 0
                 } else {
+                    [long]$diagnostics.vulkan.resizeClockWaits -eq 0 -and
                     [long]$diagnostics.vulkan.fixedOriginPreGeometryAdmissions -gt 0
                 })
         }
+        $preparedContract = $true
+        $orderReportPath = $null
+        if ($Presenter -eq 'Vulkan') {
+            $vulkan = $diagnostics.vulkan
+            $preparedContract = $vulkan.movingOriginReserved -eq 0 -and
+                $vulkan.movingOriginWindowPosMismatch -eq 0 -and
+                $vulkan.movingOriginWindowPosFailed -eq 0 -and
+                $vulkan.movingOriginWindowPosCancelled -eq 0 -and
+                $vulkan.movingOriginPrepared -eq $vulkan.movingOriginWindowPosCommitted -and
+                $vulkan.movingOriginWindowPosCommitAttempt -eq $vulkan.movingOriginWindowPosCommitted -and
+                $vulkan.resizeClockWaits -eq $vulkan.movingOriginWindowPosCommitted -and
+                (-not $originMovingEdge -or $vulkan.movingOriginPrepared -gt 0)
+            if ($ResizeOrderTrace -and $originMovingEdge) {
+                $tracePath = Join-Path $OutputDirectory "resize-order-$($process.Id).csv"
+                $orderReportPath = Join-Path $OutputDirectory "$Slug.order.json"
+                $orderRun = Invoke-BoundedProcess -FileName 'pwsh' -Name 'prepared WINDOWPOS ordering' -ArgumentList @(
+                    '-NoProfile','-File',(Join-Path $PSScriptRoot 'analyze-windows-resize-order.ps1'),
+                    '-TracePath',$tracePath,'-OutputPath',$orderReportPath,'-WindowPosCommit','-AfterGeometry','-Receipt')
+                $orderRun.stdout | Set-Content (Join-Path $OutputDirectory "$Slug.order.stdout.txt")
+                $orderRun.stderr | Set-Content (Join-Path $OutputDirectory "$Slug.order.stderr.txt")
+                $preparedContract = $preparedContract -and $orderRun.exitCode -eq 0
+            }
+        }
         $resourcePass = $process.ExitCode -eq 0 -and $app.status -eq 'PASS' -and
+            $preparedContract -and
             $validationMessagesClean -and
             (-not $validationLayerRequested -or $validationLayerActivationProven) -and
             [int]$diagnostics.operationalDebugErrors -eq 0 -and
@@ -540,12 +595,23 @@ function Invoke-CapturedCase {
                 fixedOriginPreGeometryAdmissions=$diagnostics.vulkan.fixedOriginPreGeometryAdmissions
                 movingOriginPreGeometryAdmissions=$diagnostics.vulkan.movingOriginPreGeometryAdmissions
                 movingOriginPreGeometryDisplayWaits=$diagnostics.vulkan.movingOriginPreGeometryDisplayWaits
-                resizeOrdering='fixed-origin-pregeometry-present-dwm-moving-origin-pregeometry-present-submit-with-backdrop-underlay'
+                resizeClockWaits=$diagnostics.vulkan.resizeClockWaits
+                resizeClockSignals=$diagnostics.vulkan.resizeClockSignals
+                resizeClockFailures=$diagnostics.vulkan.resizeClockFailures
+                lastResizeClockStatus=$diagnostics.vulkan.lastResizeClockStatus
+                maximumResizeClockWaitMicroseconds=$diagnostics.vulkan.maximumResizeClockWaitMicroseconds
+                resizeOrdering=$diagnostics.vulkan.candidatePolicy
+                movingOriginPrepared=$diagnostics.vulkan.movingOriginPrepared
+                movingOriginWindowPosCommitted=$diagnostics.vulkan.movingOriginWindowPosCommitted
+                movingOriginWindowPosMismatch=$diagnostics.vulkan.movingOriginWindowPosMismatch
+                movingOriginWindowPosCancelled=$diagnostics.vulkan.movingOriginWindowPosCancelled
+                movingOriginReserved=$diagnostics.vulkan.movingOriginReserved
                 maximumRecreateLatencyMicroseconds=$diagnostics.vulkan.maximumRecreateLatencyMicroseconds
                 maximumSwapchainCreateLatencyMicroseconds=$diagnostics.vulkan.maximumSwapchainCreateLatencyMicroseconds
             } } else { $null }
             appPath=$appPath; capturePath=$capturePath
             detailsPath=$detailsPath
+            preparedContract=$preparedContract; orderReportPath=$orderReportPath
             stdout=$stdout.Trim(); stderr=$stderr.Trim()
         }
     }
@@ -581,6 +647,8 @@ if (-not $SkipBuild) {
     $observerResult = Invoke-BoundedProcess -FileName 'cmake' -Name 'WGC observer build' -ArgumentList @(
         '--build',$observerBuild,'--config','Release')
     Assert-True ($observerResult.exitCode -eq 0) "Observer build failed: $($observerResult.stderr)"
+    $backgroundOracle = Invoke-BoundedProcess -FileName (Join-Path $observerBuild 'Release/Doroti.WindowsResizeBackgroundOracleTests.exe') -Name 'fixed-edge background oracle tests' -ArgumentList @()
+    Assert-True ($backgroundOracle.exitCode -eq 0) "Background oracle tests failed: $($backgroundOracle.stderr)"
 }
 Assert-True (Test-Path -LiteralPath $productExecutable -PathType Leaf) "Missing product executable: $productExecutable"
 Assert-True (Test-Path -LiteralPath $observer -PathType Leaf) "Missing WGC observer: $observer"
@@ -594,7 +662,7 @@ $binaryFiles = [ordered]@{
 $startingBinarySha256 = Get-BinaryFileSha256 $binaryFiles
 
 $definitions = if (-not [string]::IsNullOrWhiteSpace($FocusedEdge)) {
-    @([ordered]@{ run=1; edge=$FocusedEdge; motion='reverse'; duration=600 })
+    @([ordered]@{ run=1; edge=$FocusedEdge; motion=$FocusedMotion; duration=$FocusedDragMilliseconds })
 } elseif ($Probe) {
     @([ordered]@{ run=1; edge='TopLeft'; motion='reverse'; duration=600 })
 } elseif ($FullCurrentDpiMatrix) {
@@ -825,6 +893,7 @@ $manifest = [ordered]@{
         windowsBuild=[Environment]::OSVersion.Version.Build
         videoControllers=$videoControllers
         selectedVulkanDevice=$Device
+        injectedVulkanResult=$InjectVulkanResult
         observedWindowDpi=if ($cases.Count) {
             (Get-Content -LiteralPath $cases[0].capturePath -Raw | ConvertFrom-Json).windowDpi
         } else { $null }
@@ -848,9 +917,10 @@ $manifest = [ordered]@{
             $_.vulkan.retirementMode -ne 'presentation-buffer-availability'
         }).Count -eq 0) { 'PASS' } else { 'FAIL' }
         resizePresentationCadence=if (-not $runAngleBaselines) { 'notRun' } elseif ($cadencePass) { 'PASS' } else { 'FAIL' }
-        focusedLeftAndTopLeftReverse600msOnce=if ($runAngleBaselines -or $Probe) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
-        focusedTopLeftReverse600msOnce=if (-not $Probe) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
-        eightEdgesReverse600msThreeRuns=if (-not $runAngleBaselines) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
+        focusedSelectedEdge=if (-not $FocusedEdge) { 'notRun' } elseif ($cases.Count -eq 1 -and $casePass) { 'PASS' } else { 'FAIL' }
+        focusedLeftAndTopLeftReverse600msOnce=if ($FocusedEdge -or $runAngleBaselines -or $Probe) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
+        focusedTopLeftReverse600msOnce=if ($FocusedEdge -or -not $Probe) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
+        eightEdgesReverse600msThreeRuns=if ($FocusedEdge -or -not $runAngleBaselines) { 'notRun' } elseif ($reverse600Qualified) { 'PASS' } else { 'FAIL' }
         slowMediumFastExpandShrinkReverse=if ($FullCurrentDpiMatrix) {
             'notVerified-no-matched-angle-cadence'
         } else { 'notRun' }
@@ -870,7 +940,7 @@ $manifest = [ordered]@{
         binariesStableDuringRun=if ($binariesStable) { 'PASS' } else { 'FAIL' }
     }
     cases=$cases
-    evidenceBoundary='Focused validation runs one requested Vulkan edge and proves direction-aware ordering on one visible top-level HWND: every interactive edge completes the proposed-size Skia raster, synchronous Vulkan copy, and Presentation submission before geometry. Fixed-origin right/bottom edges also wait for a DWM display boundary. Moving-origin left/top edges do not force the new layout to display at the old screen origin and return immediately after Present submission so it can coalesce with the following HWND transaction. An HWND-wide DWM transient-backdrop underlay remains below the premultiplied content target. The validator also checks three Composition buffers, synchronous Vulkan copy completion, availability-based buffer reuse, top-level native input ingress, WGC transport, monotonic visible generation markers, raw validation-background coverage, final exact geometry, terminal accounting, zero active WSI swapchains, and no Vulkan device loss or legacy WSI results. The strict pixel gate continues to fail when Acrylic material rather than exact app-background sentinel pixels occupies a transient tail; that result is not reclassified as app-raster coverage PASS. ANGLE cadence/latency comparison and the repeated eight-edge matrix run only when -FullEightEdgeMatrix or -FullCurrentDpiMatrix is explicitly selected. External validation is qualified only when the loader positively reports VK_LAYER_KHRONOS_validation activation and zero validation warning/error messages. Source diff and key source files are SHA-256 fingerprinted; product executable/IL, managed/native host, and observer binaries are hashed before and after execution, while source-to-binary correspondence is PASS only when the validator performed the build. Present submission receipts, DWM backdrop coverage, saved WGC frames, and current-monitor capture do not prove physical scan-out, transient DWM shell pixels, Acrylic blur quality, or human-perceived drag smoothness; those remain notVerified and require direct physical left/top-left and backdrop checks.'
+    evidenceBoundary='Moving-origin resize copies and reserves a non-visible slot on the raster worker. WM_WINDOWPOSCHANGING validates the exact prepared key after default min/max handling and waits once for the compositor clock (32 ms failure bound), without exposing pixels. WM_WINDOWPOSCHANGED validates actual geometry and immediately submits that slot on the platform thread without rendering, then waits up to 50 ms for the matching present ID, content tag and display instance CompositionFrame receipt (no DwmFlush fallback). Matching WM_SIZE acknowledges the commit. Clock failures, slot/terminal mismatches and optional QPC ordering failures reject qualification; a clock signal is not a display receipt or an atomic HWND/Presentation commit. Fixed-origin right/bottom ordering is unchanged. Focused drags with an invariant right edge measure exact app-background pixels against that fixed screen-space anchor, avoiding Acrylic caption/desktop color ambiguity. Every captured frame must have usable coverage evidence; atomic outer RECT right coordinates and DPI must remain invariant. ClientToScreen plus GetClientRect is not treated as an atomic geometry sample. Other runs retain the caption-color oracle and its known Acrylic limitation. Real sentinel gaps still fail. Historical manifests are never rewritten. Resource, terminal, WGC transport, monotonic marker, final geometry, source/build/binary stability and optional validation-layer checks remain required. ANGLE comparison and the repeated eight-edge matrix run only with the explicit full-matrix flags. These automated checks do not prove physical scan-out, left/top text jitter, Acrylic blur quality, or other GPU/DPI/refresh configurations; those remain notVerified.'
 }
 $manifestPath = Join-Path $OutputDirectory 'manifest.json'
 $manifest | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $manifestPath -Encoding utf8

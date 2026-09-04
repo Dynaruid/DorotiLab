@@ -3,6 +3,12 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using Doroti.Host.WindowsAppSdk;
 
+if (args is ["--prepared-frame"])
+{
+    PreparedMovingFrameFixture.Run();
+    return;
+}
+
 if (!OperatingSystem.IsWindows())
     throw new PlatformNotSupportedException("The native ABI fixture is Windows-only.");
 if (WindowsKeyMap.Physical(0x1e, 'A') != 0x00070004 ||
@@ -17,6 +23,8 @@ if (WindowsNativeV1.CompositionPresentationFeature != 1UL << 3)
     throw new InvalidOperationException("The managed Composition-presentation feature bit differs from ABI v1.");
 if (WindowsNativeV1.VulkanAcrylicFeature != 1UL << 4)
     throw new InvalidOperationException("The managed Vulkan-Acrylic feature bit differs from ABI v1.");
+if (Marshal.SizeOf<WindowsNativeV1.MovingFrame>() != 56)
+    throw new InvalidOperationException("The moving-frame handoff key ABI differs.");
 
 var expectedPath = Path.GetFullPath(args[0]);
 if (!File.Exists(expectedPath))

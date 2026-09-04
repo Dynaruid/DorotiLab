@@ -58,6 +58,8 @@ $probeAssembly = Join-Path $probeDirectory 'Doroti.Validation.WindowsVulkanCapab
 $sourceFingerprintPaths = @(
     'Doroti/eng/validate-windows-vulkan-capability.ps1',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Prepared.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsPreparedMovingFrame.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsAcrylicOptionsState.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedAcrylicCompositionPresenter.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs',
@@ -68,6 +70,7 @@ $sourceFingerprintPaths = @(
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_host_v1.h',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_vulkan_composition_v1.h',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/exports.cpp',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/resize_order_trace.h',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/vulkan_composition.cpp',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/Doroti.Host.WindowsAppSdk.Native.vcxproj',
     'Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj',
@@ -654,7 +657,9 @@ $manifest = [ordered]@{
         mode=$vulkanProductReport.diagnostics.vulkan.presentMode
         visibleOwner=[string]$contract.visibleOwner
         topology=[string]$contract.topology
-        movingOriginPolicy=[string]$contract.movingOriginPolicy
+        baselineMovingOriginPolicy=[string]$contract.movingOriginPolicy
+        movingOriginPolicy=$vulkanProductReport.diagnostics.vulkan.candidatePolicy
+        physicalAcceptance='notVerified-current-candidate'
         rasterPlacement=[string]$contract.rasterPlacement
         compositionBuffers=$vulkanProductReport.diagnostics.vulkan.imageCount
         activeSwapchains=$vulkanProductReport.diagnostics.vulkan.activeSwapchains
