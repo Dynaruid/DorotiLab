@@ -287,7 +287,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                     if (acrylic is { AcrylicEnabled: true })
                         acrylic.ApplySystemBrightness((Brightness)native.InitialPlatformBrightness);
                     if (Presenter is WindowsManagedVulkanPresenter vulkan)
-                        vulkan.AttachTopLevelWindow(native.TopLevelHwnd);
+                        vulkan.AttachWindows(native.TopLevelHwnd, native.OpaqueChildHwnd);
                     else
                         Presenter.AttachWindow(native.TopLevelHwnd);
                     effectiveNative.ChildHwnd = native.OpaqueChildHwnd;

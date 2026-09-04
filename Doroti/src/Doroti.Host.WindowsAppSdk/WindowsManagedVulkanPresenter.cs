@@ -95,6 +95,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     private int _viewportHeight;
     private double _viewportScale = 1;
     private nint _topLevelWindow;
+    private nint _presentationWindow;
     private bool _backdropTargetAdded;
     private bool _contentIslandConnected;
     private bool _desktopWindowTargetConnected;
@@ -200,17 +201,17 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
               WindowsNativeV1.VulkanAcrylicFeature);
     internal override bool UsesCompositionTopology => true;
     internal override string VisibleOwner => _acrylicOptions is null
-        ? "top-level DirectComposition Vulkan Presentation target"
-        : "top-level DirectComposition Vulkan Presentation target over a top-level Desktop Acrylic window target";
+        ? "exact child HWND DirectComposition Vulkan Presentation target"
+        : "exact child HWND DirectComposition Vulkan Presentation target over a top-level Desktop Acrylic window target";
     internal override string TopologySlug => _acrylicOptions is null
-        ? "top-level-dcomp-vulkan-presentation"
-        : "top-level-dcomp-vulkan-presentation-acrylic";
+        ? "exact-child-dcomp-vulkan-presentation"
+        : "exact-child-dcomp-vulkan-presentation-acrylic";
     internal override bool InvalidatesRendererSurfaceResourcesOnResize => false;
     internal override string DiagnosticCoverage =>
         "Vulkan 1.1 retained offscreen backing, exact-LUID D3D11 Presentation buffers, dedicated D3D11_TEXTURE imports, " +
         "external queue-family ownership transfers, CPU copy-fence completion before native Present, three-slot availability retirement, " +
-        "post-geometry current-plus-latest presentation with nonblocking moving-origin resize, a native topmost DirectComposition target on the top-level HWND, " +
-        "identity full-capacity Presentation coverage clipped by the single top-level client geometry, " +
+        "actual-size child WM_SIZE admission with a bounded matching-present wait, a native topmost DirectComposition target on the exact child HWND, " +
+        "identity full-capacity Presentation coverage clipped by child geometry in the parent resize transaction, " +
         (_acrylicOptions is null
             ? "opaque alpha, "
             : "premultiplied content over a host-backdrop-enabled DesktopAcrylicController window target, ") +
@@ -346,34 +347,37 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
     internal override void AttachWindow(nint topLevelWindow)
     {
-        AttachTopLevelWindow(topLevelWindow);
+        AttachWindows(topLevelWindow, topLevelWindow);
     }
 
-    internal void AttachTopLevelWindow(nint topLevelWindow)
+    internal void AttachWindows(nint topLevelWindow, nint presentationWindow)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (topLevelWindow == 0) throw new ArgumentOutOfRangeException(nameof(topLevelWindow));
+        if (presentationWindow == 0) throw new ArgumentOutOfRangeException(nameof(presentationWindow));
         if (_topLevelWindow != 0)
             throw new InvalidOperationException("The Vulkan Composition presenter already owns a window.");
 
         _compositionReleased = false;
         _topLevelWindow = topLevelWindow;
+        _presentationWindow = presentationWindow;
         try
         {
             if (_acrylicOptions is not null)
             {
                 InitializeAcrylicTarget(topLevelWindow);
-                RecordEvent("Desktop Acrylic window target connected; top-level Vulkan target pending first surface");
+                RecordEvent("Desktop Acrylic window target connected; exact-child Vulkan target pending first surface");
             }
             else
             {
-                RecordEvent("top-level HWND attached; top-level Vulkan target pending first surface");
+                RecordEvent("top-level and exact child HWNDs attached; Vulkan target pending first surface");
             }
         }
         catch
         {
             ReleaseAcrylicTarget();
             _topLevelWindow = 0;
+            _presentationWindow = 0;
             throw;
         }
     }
@@ -424,20 +428,13 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             _viewportWidth = width;
             _viewportHeight = height;
             _viewportScale = scale;
-            // Left/top moves the HWND origin. Waiting for DWM on every such
-            // raster would throttle the USER32 geometry loop and make all
-            // client pixels jump together. The top-level Composition target
-            // moves with that same HWND while the worker coalesces to latest.
-            // Fixed-origin edges preserve their per-step display boundary.
-            _displayWaitViewportRevision =
-                preGeometry || sizingEdge != 0 && !MovesClientOrigin(sizingEdge)
-                    ? _viewportRevision
-                    : 0;
+            // Native holds the exact child WM_SIZE transaction through this
+            // generation's Presentation submission. A CompositionFrame/DWM
+            // wait here would serialize the modal sizing loop and recreate
+            // the left/top raster cadence jitter that child ordering fixes.
+            _displayWaitViewportRevision = 0;
         }
     }
-
-    private static bool MovesClientOrigin(uint sizingEdge) =>
-        sizingEdge is 1 or 3 or 4 or 5 or 7;
 
     internal override bool EnsureTarget(nint childWindow, int width, int height)
     {
@@ -450,6 +447,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
 
         if (_topLevelWindow == 0)
             throw new InvalidOperationException("The Vulkan top-level topology is not attached.");
+        if (_presentationWindow == 0 || childWindow != _presentationWindow)
+            throw new InvalidOperationException("The Vulkan exact presentation child is not attached.");
         if (_presentationPoisoned)
             throw new InvalidOperationException(
                 "The Vulkan Composition manager is poisoned after an indeterminate Present failure.");
@@ -1071,10 +1070,11 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         _acrylicOptions?.Detach();
         ReleaseAcrylicTarget();
         RecordEvent(_acrylicOptions is null
-            ? "top-level Vulkan topology released"
-            : "top-level Vulkan plus Desktop Acrylic window-target topology released");
+            ? "exact-child Vulkan topology released"
+            : "exact-child Vulkan plus Desktop Acrylic window-target topology released");
         _compositionSurfaceConnected = false;
         _topLevelWindow = 0;
+        _presentationWindow = 0;
         _backdropTargetAdded = false;
         _contentIslandConnected = false;
         _acrylicOptions?.Dispose();
@@ -1205,8 +1205,8 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
         }
         ConnectCompositionSurface();
         RecordEvent(_acrylicOptions is null
-            ? "Vulkan Presentation surface connected to top-level DirectComposition"
-            : "premultiplied top-level Vulkan surface connected over Desktop Acrylic window target");
+            ? "Vulkan Presentation surface connected to exact-child DirectComposition"
+            : "premultiplied exact-child Vulkan surface connected over Desktop Acrylic window target");
         _format = Format.B8G8R8A8Unorm;
         _colorSpace = "RGB_FULL_G22_NONE_P709";
         _compositeAlpha = _acrylicOptions is null ? "Ignore" : "Premultiplied";
@@ -1231,10 +1231,10 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
     {
         if (_compositionSurfaceHandle == 0)
             throw new InvalidOperationException("The Vulkan Presentation surface handle is unavailable.");
-        if (_topLevelWindow == 0)
-            throw new InvalidOperationException("The Vulkan top-level HWND is unavailable.");
+        if (_presentationWindow == 0)
+            throw new InvalidOperationException("The Vulkan exact child HWND is unavailable.");
         var attach = AttachCompositionWindow(
-            _presentationContext, unchecked((ulong)_topLevelWindow));
+            _presentationContext, unchecked((ulong)_presentationWindow));
         if (attach < 0) Marshal.ThrowExceptionForHR(attach);
         _compositionSurfaceConnected = true;
     }

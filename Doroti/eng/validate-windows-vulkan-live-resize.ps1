@@ -418,16 +418,10 @@ function Invoke-CapturedCase {
         $originMovingEdge = $Edge -in @('Left','Top','TopLeft','TopRight','BottomLeft')
         if ($Presenter -ne 'Vulkan') {
             $compositionFrameContract = $true
-        } elseif ($originMovingEdge) {
+        } else {
             $compositionFrameContract =
                 [long]$diagnostics.vulkan.compositionFrameWaits -eq 0 -and
                 [long]$diagnostics.vulkan.compositionFrameObserved -eq 0 -and
-                [long]$diagnostics.vulkan.compositionFrameWaitTimeouts -eq 0
-        } else {
-            $compositionFrameContract =
-                [long]$diagnostics.vulkan.compositionFrameWaits -gt 0 -and
-                [long]$diagnostics.vulkan.compositionFrameWaits -eq
-                    [long]$diagnostics.vulkan.compositionFrameObserved -and
                 [long]$diagnostics.vulkan.compositionFrameWaitTimeouts -eq 0
         }
         $resourcePass = $process.ExitCode -eq 0 -and $app.status -eq 'PASS' -and
@@ -439,7 +433,7 @@ function Invoke-CapturedCase {
             [int]$diagnostics.duplicateResizeTerminals -eq 0 -and
             ($Presenter -ne 'Vulkan' -or (
                 $diagnostics.presenterBackend -eq 'Vulkan/Composition-Swapchain' -and
-                $details.ownership.visibleOwner -eq 'top-level DirectComposition Vulkan Presentation target' -and
+                $details.ownership.visibleOwner -eq 'exact child HWND DirectComposition Vulkan Presentation target' -and
                 [int]$diagnostics.vulkan.deviceLostResults -eq 0 -and
                 [int]$diagnostics.vulkan.surfaceLostResults -eq 0 -and
                 [int]$diagnostics.vulkan.outOfDateResults -eq 0 -and
@@ -516,7 +510,7 @@ function Invoke-CapturedCase {
                 compositionFrameWaits=$diagnostics.vulkan.compositionFrameWaits
                 compositionFrameObserved=$diagnostics.vulkan.compositionFrameObserved
                 compositionFrameWaitTimeouts=$diagnostics.vulkan.compositionFrameWaitTimeouts
-                resizeOrdering='top-level-current-plus-latest-moving-origin'
+                resizeOrdering='exact-child-wm-size-bounded-present'
                 maximumRecreateLatencyMicroseconds=$diagnostics.vulkan.maximumRecreateLatencyMicroseconds
                 maximumSwapchainCreateLatencyMicroseconds=$diagnostics.vulkan.maximumSwapchainCreateLatencyMicroseconds
             } } else { $null }
@@ -812,8 +806,8 @@ $manifest = [ordered]@{
     gates=[ordered]@{
         angleBeforeAfter=if (-not $runAngleBaselines) { 'notRun' } elseif ($anglePass) { 'PASS' } else { 'FAIL' }
         vulkanCurrentMonitor=if ($casePass) { 'PASS' } else { 'FAIL' }
-        topLevelRasterOwnerAndThreeBuffers=if (@($cases | Where-Object {
-            $_.vulkan.visibleOwner -ne 'top-level DirectComposition Vulkan Presentation target' -or
+        exactChildRasterOwnerAndThreeBuffers=if (@($cases | Where-Object {
+            $_.vulkan.visibleOwner -ne 'exact child HWND DirectComposition Vulkan Presentation target' -or
             $_.vulkan.presentationMode -ne 'CompositionSwapchain' -or
             [int]$_.vulkan.compositionBufferCount -ne 3 -or
             [int]$_.vulkan.activeSwapchains -ne 0
@@ -846,7 +840,7 @@ $manifest = [ordered]@{
         binariesStableDuringRun=if ($binariesStable) { 'PASS' } else { 'FAIL' }
     }
     cases=$cases
-    evidenceBoundary='Focused validation runs only left/top-left Vulkan cases and proves a top-level native topmost DirectComposition target with an identity-transformed full-capacity Presentation source, one top-level client geometry, nonblocking current-plus-latest moving-origin delivery, three Composition buffers, synchronous Vulkan copy completion, availability-based buffer reuse, native non-client input, WGC transport, monotonic visible generation markers, raw validation-background coverage, final exact geometry, terminal accounting, zero active WSI swapchains, and no Vulkan device loss or legacy WSI results. ANGLE cadence/latency comparison and the repeated eight-edge matrix run only when -FullEightEdgeMatrix or -FullCurrentDpiMatrix is explicitly selected. External validation is qualified only when the loader positively reports VK_LAYER_KHRONOS_validation activation and zero validation warning/error messages. Source diff and key source files are SHA-256 fingerprinted; product executable/IL, managed/native host, and observer binaries are hashed before and after execution, while source-to-binary correspondence is PASS only when the validator performed the build. Composition Present receipts and WGC do not prove physical scan-out, transient DWM shell pixels, Acrylic blur quality, or human-perceived drag smoothness; those remain notVerified and require direct physical left/top-left and backdrop checks.'
+    evidenceBoundary='Focused validation runs only left/top-left Vulkan cases and proves a native topmost DirectComposition target on one visible exact-size child, identity-transformed full-capacity Presentation source clipped by that child, a bounded matching-present wait inside the parent/child WM_SIZE transaction, three Composition buffers, synchronous Vulkan copy completion, availability-based buffer reuse, top-level native input ingress, WGC transport, monotonic visible generation markers, raw validation-background coverage, final exact geometry, terminal accounting, zero active WSI swapchains, and no Vulkan device loss or legacy WSI results. ANGLE cadence/latency comparison and the repeated eight-edge matrix run only when -FullEightEdgeMatrix or -FullCurrentDpiMatrix is explicitly selected. External validation is qualified only when the loader positively reports VK_LAYER_KHRONOS_validation activation and zero validation warning/error messages. Source diff and key source files are SHA-256 fingerprinted; product executable/IL, managed/native host, and observer binaries are hashed before and after execution, while source-to-binary correspondence is PASS only when the validator performed the build. Composition Present receipts and WGC do not prove physical scan-out, transient DWM shell pixels, Acrylic blur quality, or human-perceived drag smoothness; those remain notVerified and require direct physical left/top-left and backdrop checks.'
 }
 $manifestPath = Join-Path $OutputDirectory 'manifest.json'
 $manifest | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $manifestPath -Encoding utf8

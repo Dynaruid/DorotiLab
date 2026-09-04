@@ -741,3 +741,26 @@ evidence는 `.doroti/evidence/windows-vulkan-<timestamp>-<id>/` 아래 immutable
 - `.doroti/evidence/windows-vulkan-top-level-acrylic-visual-final-20260904/desktop.capture.json` — WGC 29/오류 0, Desktop Duplication 193/오류 0. `monitor-000180.png`은 창 밖의 선명한 wallpaper와 달리 창 안 배경 세부가 확산·억제된 system material을 보여 준다.
 
 현재 판정은 **repaired-pending-user-recheck / PASS-automated-partial**이다. 최신 binary의 physical Left/TopLeft 체감과 Acrylic 재질 만족도, 다른 GPU/DPI/refresh/mixed-monitor, 물리 IME/accessibility 및 실제 device-removal은 계속 `notVerified`다. ANGLE은 기본값이고 Vulkan은 explicit opt-in으로 유지한다.
+
+## 24. 2026-09-04 exact-child Vulkan Presentation resize ordering
+
+23절의 top-level DirectComposition target/current+latest 경로는 사용자가 같은 날 다시 물리 확인한 결과 흰색·검은색 영역과 좌·상단 내부 raster 떨림을 **전혀 해결하지 못했다**. 따라서 23절의 자동 PASS는 보존하되 물리 acceptance로 사용하지 않는다. 이 절이 현재 source의 권위 있는 체크포인트다.
+
+### Shared runtime 수정
+
+- Vulkan Composition의 native child를 hidden monitor-capacity handle에서 `WS_VISIBLE` exact-size client child로 되돌렸다. Vulkan Presentation의 native topmost `IDCompositionTarget`은 top-level HWND가 아니라 이 child HWND에 붙는다.
+- Acrylic의 `DesktopAcrylicController`와 non-topmost `DesktopWindowTarget`은 계속 top-level HWND에 남고, premultiplied exact-child Vulkan target이 그 위의 app raster를 소유한다.
+- Top-level `WM_SIZING`은 edge만 기록하고 proposed raster나 child geometry를 선행 변경하지 않는다.
+- Actual top-level `WM_SIZE` 안에서 `SetWindowPos(child, 0, 0, exact width, exact height)`를 호출한다. 중첩 child `WM_SIZE`가 actual metrics를 발행하고 matching generation의 Presentation 제출 terminal까지 bounded wait한 뒤 parent transaction을 반환한다. 이는 기존 ANGLE child ordering과 동일한 USER32 ownership이다.
+- Interactive `CompositionFrame`/`DwmFlush` wait는 제거했다. Bounded wait는 Vulkan copy fence와 `IPresentationManager::Present` 제출까지만 포함하며 물리 scan-out을 resize loop에 직렬화하지 않는다.
+- Composition path의 hidden oversized-child growth와 `WM_WINDOWPOSCHANGED` capacity republish를 제거했다. Retained Vulkan backing/3-slot Presentation buffer는 계속 viewport보다 큰 capacity와 identity source를 사용할 수 있지만 visible clip은 exact child 하나다.
+- Visible child의 `WM_NCHITTEST`는 `HTTRANSPARENT`를 반환해 input/focus/IME/accessibility ingress는 top-level HWND 한 곳에 유지한다.
+- Capability/live-resize contract와 provenance 문자열을 `exact-child-dcomp-vulkan-presentation`, `exact-child-bounded-present`, `exact-child-capacity-origin`으로 갱신했다.
+
+### 자동 evidence
+
+- `.doroti/evidence/codex-vulkan-exact-child-topleft-r2-20260904/manifest.json` — source-built `TopLeft` reverse 600 ms `PASS-automated-partial`: capture 84, outer change 70, motion present 69, 118.29 Hz, present-gap p95/max 9.75/15.58 ms, accepted→next-present p95/max 4.41/7.39 ms, validation background right gap 0, final exact true, platform/CompositionFrame timeout 0.
+- `.doroti/evidence/codex-vulkan-exact-child-acrylic-20260904/manifest.json` — source-built aggregate `PASS`, gate `Vulkan-Composition-PASS-automated-partial`; Acrylic controller `Active`, backdrop target/desktop target/host backdrop true, ContentIsland false, premultiplied, exact resize 10, device reset 10, minimize/restore 10, start/close 10/10 PASS.
+- `pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows -Configuration Release` — warning 0, error 0.
+
+현재 판정은 **repaired-pending-user-recheck / PASS-automated-partial**이다. 새 exact-child binary의 physical Left/TopLeft 체감과 실제 Acrylic 품질은 `notVerified`이며 사용자의 직접 확인만 acceptance authority다. 다른 GPU/DPI/refresh/mixed-monitor, 물리 IME/accessibility 및 실제 device-removal도 계속 `notVerified`다. ANGLE은 기본값이고 Vulkan은 explicit opt-in으로 유지한다.
