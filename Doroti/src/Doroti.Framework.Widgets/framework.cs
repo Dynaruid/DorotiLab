@@ -280,6 +280,7 @@ public abstract class State<T> : IState, global::Doroti.Framework.Foundation.Dia
 
     public virtual void setState(global::System.Action fn)
     {
+        FrameworkWorkCounters.Add(FrameworkWork.SetState);
         DartRuntimePrimitives.Assert(() =>
             {
                 if ((object.Equals(this._debugLifecycleState, _StateLifecycle__framework.defunct)))
@@ -653,10 +654,14 @@ public class BuildScope
 
     internal virtual void _scheduleBuildFor(Element element)
     {
+        FrameworkWorkCounters.Add(FrameworkWork.BuildEnqueueAttempt);
+        if (_building) FrameworkWorkCounters.Add(FrameworkWork.BuildDuringFlush);
+        if (element._inDirtyList) FrameworkWorkCounters.Add(FrameworkWork.BuildEnqueueDuplicate);
         DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(((Element)element).buildScope, this));
         if (!((Element)element)._inDirtyList)
         {
             this._dirtyElements.Add(element);
+            FrameworkWorkCounters.Add(FrameworkWork.BuildEnqueued);
             element._inDirtyList = true;
         }
         if ((!this._buildScheduled && !this._building))
@@ -717,6 +722,7 @@ public class BuildScope
 
     internal virtual void _flushDirtyElements(Element debugBuildRoot)
     {
+        FrameworkWorkCounters.Add(FrameworkWork.BuildSort);
         DartRuntimePrimitives.Assert(() => (this._dirtyElementsNeedsResorting is null), () => (object?)"_flushDirtyElements must be non-reentrant");
         this._dirtyElements.sort(Element._sort);
         _dirtyElementsNeedsResorting = false;
@@ -764,6 +770,7 @@ public class BuildScope
             return (index + 1L);
         }
         index += 1L;
+        FrameworkWorkCounters.Add(FrameworkWork.BuildResort);
         this._dirtyElements.sort(Element._sort);
         _dirtyElementsNeedsResorting = false;
         while (((index > 0L) && this._dirtyElements[(int)((index - 1L))].dirty))
@@ -2367,6 +2374,7 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
     {
         DartRuntimePrimitives.Assert(() => (object.Equals(this._lifecycleState, _ElementLifecycle__framework.active)));
         DartRuntimePrimitives.Assert(() => _debugCheckOwnerBuildTargetExists("didChangeDependencies"));
+        FrameworkWorkCounters.Add(FrameworkWork.DependencyChanged);
         markNeedsBuild();
     }
 
@@ -2467,6 +2475,8 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
     public virtual bool dirty => this._dirty;
     public virtual void markNeedsBuild()
     {
+        FrameworkWorkCounters.Add(FrameworkWork.MarkBuild);
+        if (_dirty) FrameworkWorkCounters.Add(FrameworkWork.MarkBuildAlreadyDirty);
         DartRuntimePrimitives.Assert(() => (!object.Equals(this._lifecycleState, _ElementLifecycle__framework.defunct)));
         if ((!object.Equals(this._lifecycleState, _ElementLifecycle__framework.active)))
         {
@@ -2546,6 +2556,8 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
             });
         try
         {
+            FrameworkWorkCounters.Add(FrameworkWork.Rebuild);
+            if (force) FrameworkWorkCounters.Add(FrameworkWork.ForcedRebuild);
             performRebuild();
         }
         finally

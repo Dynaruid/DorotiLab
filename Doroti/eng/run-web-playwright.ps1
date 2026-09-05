@@ -5,6 +5,9 @@ param(
 
     [switch] $SkipBuild,
 
+    # Explicit isolated publish root for revision-bound comparisons.
+    [string] $PublishDirectory = '',
+
     [ValidateSet('Build', 'Publish', 'PublishAot', 'PublishAotPartial')]
     [string] $BuildMode = 'Build',
 
@@ -50,6 +53,10 @@ if ($resolvedArtifactLabel -match '\.\.' -or $resolvedArtifactLabel -notmatch '^
 $artifactRoot = Join-Path $playwrightRoot "artifacts/wrapper/$resolvedArtifactLabel"
 $baseUrl = "http://127.0.0.1:$Port"
 $publishRoot = Join-Path $repositoryRoot ".doroti/publish/web-$BuildMode-$Configuration"
+if ($PublishDirectory) {
+    if ($BuildMode -eq 'Build') { throw '-PublishDirectory requires a Publish build mode.' }
+    $publishRoot = [IO.Path]::GetFullPath($PublishDirectory, $repositoryRoot)
+}
 $buildArtifactsRoot = Join-Path $repositoryRoot ".doroti/artifacts/web-$BuildMode"
 
 if ($HeadlessOnly -and $HeadedOnly) {

@@ -25,6 +25,8 @@ def analyze(report):
     end = report["stimulus"]["motionEndEpochMilliseconds"]
     framework = stages["ui"].get("framework", {}).get("trace", {})
     entries = framework.get("entries", [])
+    work = framework.get("work", {})
+    work_by_sequence = {s["traceSequence"]: s for s in work.get("samples", [])}
     if not entries or not all(e.get("recordedAtMicroseconds", 0) > 0 for e in entries):
         raise ValueError("No complete actual managed phase clock; causal timestamps cannot time work")
     managed_by_scene = {}
@@ -70,12 +72,27 @@ def analyze(report):
                            ("terminalToUi", "raster-terminal-sent", "ui-terminal-received")]:
             if a in lookup and b in lookup:
                 costs[name] = lookup[b]["time"] - lookup[a]["time"]
+        counters = {}
+        if "build" in phases and "sceneSubmitted" in phases:
+            a = work_by_sequence.get(phases["build"]["sequence"])
+            b = work_by_sequence.get(phases["sceneSubmitted"]["sequence"])
+            if a and b:
+                counters = dict(zip(work["names"], [y-x for x,y in zip(a["totals"],b["totals"])]))
         frames.append({"callback": callback, "scene": sequence, "generation": encoded["generation"],
+                       "workWithinBuildToSubmit": counters,
                        "milliseconds": costs, "details": [e for e in same if e["stage"] in
                            ["canvaskit-encoding-cache", "canvaskit-picture-count", "canvaskit-mapped-command-count"]]})
     keys = sorted({key for f in frames for key in f["milliseconds"]})
-    return {"schema": "doroti.resize-phases/v1", "corpus": report["corpus"],
+    resize = [e for e in ui if e["stage"] == "ui-resize-applied" and start <= e["time"] <= end]
+    resize_keys = ["applyMilliseconds", "epochMilliseconds", "snapshotJsonMilliseconds",
+                   "managedSnapshotMilliseconds", "ingressWaitMilliseconds"]
+    return {"schema": "doroti.resize-phases/v2", "corpus": report["corpus"],
             "source": report["manifest"]["source"], "frames": frames,
+            "resizeOutsideFrame": resize,
+            "resizeMilliseconds": {key: stats([e["detail"][key] for e in resize if key in e["detail"]]) for key in resize_keys},
+            "workDropped": work.get("dropped"),
+            "workWithinBuildToSubmit": {key: stats([f["workWithinBuildToSubmit"][key] for f in frames if key in f["workWithinBuildToSubmit"]])
+                                       for key in work.get("names", [])},
             "milliseconds": {key: stats([f["milliseconds"][key] for f in frames if key in f["milliseconds"]]) for key in keys},
             "limitations": ["Only callbacks beginning during native motion; single diagnostic trial",
                             "Paragraph is included in layout/paint; sceneResidual is a subtraction, not a new phase clock",

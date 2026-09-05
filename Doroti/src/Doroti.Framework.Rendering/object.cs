@@ -56,6 +56,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
 
     internal static void _repaintCompositedChild(RenderObject child, bool debugAlsoPaintedParent = false, PaintingContext? childContext = null)
     {
+        FrameworkWorkCounters.Add(FrameworkWork.RepaintBoundary);
         DartRuntimePrimitives.Assert(() => ((RenderObject)child).isRepaintBoundary);
         DartRuntimePrimitives.Assert(() =>
             {
@@ -288,6 +289,7 @@ public class PaintingContext : global::Doroti.Framework.Painting.ClipContext
                 return true;
             });
         this._currentLayer!.picture = this._recorder!.endRecording();
+        FrameworkWorkCounters.Add(FrameworkWork.NewPicture);
         _currentLayer = null;
         _recorder = null;
         _canvas = null;
@@ -1510,6 +1512,8 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
 
     public virtual void markNeedsLayout()
     {
+        FrameworkWorkCounters.Add(FrameworkWork.MarkLayout);
+        if (_needsLayout) FrameworkWorkCounters.Add(FrameworkWork.MarkLayoutAlreadyDirty);
         DartRuntimePrimitives.Assert(() => this._debugCanPerformMutations);
         if (this._needsLayout)
         {
@@ -1519,6 +1523,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         _needsLayout = true;
         if (this.owner is PipelineOwner ownerLocal && (((this._isRelayoutBoundary ?? false))))
         {
+            FrameworkWorkCounters.Add(FrameworkWork.LayoutBoundary);
             DartRuntimePrimitives.Assert(() =>
                 {
                     if (global::Doroti.Framework.Rendering.DebugLibrary.debugPrintMarkNeedsLayoutStacks)
@@ -1548,6 +1553,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         if (!this._doingThisLayoutWithCallback)
         {
             parentLocal.markNeedsLayout();
+            FrameworkWorkCounters.Add(FrameworkWork.LayoutParentPropagation);
         }
         else
         {
@@ -1621,6 +1627,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
 
     public virtual void layout(Constraints constraints, bool parentUsesSize = false)
     {
+        FrameworkWorkCounters.Add(FrameworkWork.LayoutEntry);
         DartRuntimePrimitives.Assert(() => !this._debugDisposed);
         if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled))
         {
@@ -1676,6 +1683,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         _isRelayoutBoundary = (((!parentUsesSize || this.sizedByParent) || ((Constraints)constraints).isTight) || (this.parent is null));
         if ((!this._needsLayout && (object.Equals(constraints, this._constraints))))
         {
+            FrameworkWorkCounters.Add(FrameworkWork.LayoutFastPath);
             DartRuntimePrimitives.Assert(() =>
                 {
                     _debugDoingThisResize = this.sizedByParent;
@@ -1694,7 +1702,10 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             }
             return;
         }
+        if (FrameworkWorkCounters.Enabled && _needsLayout && object.Equals(constraints, _constraints))
+            FrameworkWorkCounters.Add(FrameworkWork.LayoutDirtySameConstraints);
         _constraints = constraints;
+        FrameworkWorkCounters.Add(FrameworkWork.LayoutWork);
         DartRuntimePrimitives.Assert(() => !this._debugMutationsLocked);
         DartRuntimePrimitives.Assert(() => !this._doingThisLayoutWithCallback);
         DartRuntimePrimitives.Assert(() =>
@@ -1964,6 +1975,8 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     }
     public virtual void markNeedsPaint()
     {
+        FrameworkWorkCounters.Add(FrameworkWork.MarkPaint);
+        if (_needsPaint) FrameworkWorkCounters.Add(FrameworkWork.MarkPaintAlreadyDirty);
         DartRuntimePrimitives.Assert(() => !this._debugDisposed);
         DartRuntimePrimitives.Assert(() => ((this.owner is null) || !this.owner!.debugDoingPaint));
         if (this._needsPaint)
@@ -1973,6 +1986,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         _needsPaint = true;
         if ((this.isRepaintBoundary && this._wasRepaintBoundary))
         {
+            FrameworkWorkCounters.Add(FrameworkWork.PaintBoundary);
             DartRuntimePrimitives.Assert(() =>
                 {
                     if (global::Doroti.Framework.Rendering.DebugLibrary.debugPrintMarkNeedsPaintStacks)
@@ -1993,6 +2007,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             if ((this.parent is not null))
             {
                 this.parent!.markNeedsPaint();
+                FrameworkWorkCounters.Add(FrameworkWork.PaintParentPropagation);
             }
             else
             {

@@ -189,10 +189,13 @@ function scheduleManagedFrame(): void {
   if (typeof globalThis.requestAnimationFrame !== "function")
     throw new Error("Doroti CanvasKit UI Worker requires requestAnimationFrame.");
 
+  const scheduledAt = stageTrace.enabled ? performance.now() : 0;
   const scheduledRaf = globalThis.requestAnimationFrame((timestamp) => {
     if (managedFrameRaf !== scheduledRaf) return;
     managedFrameRaf = 0;
-    flushPendingResize();
+    if (stageTrace.enabled) stageTrace.record("ui-raf-dispatch", snapshot?.resizeEpoch.generation, 0,
+      { waitMilliseconds: performance.now() - scheduledAt });
+    flushPendingResize("frame");
     const pending = pendingManagedFrame;
     if (pending === null) return;
 
@@ -430,17 +433,19 @@ function configureUiWorkerBridge(): void {
   });
 }
 
-function flushPendingResize(): void {
+function flushPendingResize(reason: string): void {
   if (!pendingResizeMessage) return;
   const message = pendingResizeMessage;
   pendingResizeMessage = null;
   applyingResizeMessage = true;
-  try { applyResizeMessage(message); }
+  try { applyResizeMessage(message, reason); }
   finally { applyingResizeMessage = false; }
 }
 
-function applyResizeMessage(message: Record<string, unknown>): void {
+function applyResizeMessage(message: Record<string, unknown>, reason = "immediate"): void {
   const epoch = message.resizeEpoch as ResizeEpoch;
+  const started = stageTrace.enabled ? performance.now() : 0;
+  let epochMilliseconds = 0, snapshotJsonMilliseconds = 0, managedSnapshotMilliseconds = 0;
   snapshot = {
     ...requireSnapshot(), logicalWidth: epoch.logicalWidth, logicalHeight: epoch.logicalHeight,
     devicePixelRatio: epoch.devicePixelRatio,
@@ -452,12 +457,26 @@ function applyResizeMessage(message: Record<string, unknown>): void {
   };
   if (rasterReady) postRaster("resize-target", { resizeEpoch: epoch });
   if (managedHostReady) {
+    const epochStart = stageTrace.enabled ? performance.now() : 0;
     dispatchWorkerResizeEpoch(Number(message.hostId), Number(message.hostGeneration), epoch.generation,
       epoch.logicalWidth, epoch.logicalHeight, epoch.physicalWidth, epoch.physicalHeight,
       epoch.devicePixelRatio, epoch.timestampMicroseconds);
-    dispatchWorkerSnapshot(Number(message.hostId), JSON.stringify(snapshot));
+    const jsonStart = stageTrace.enabled ? performance.now() : 0;
+    const json = JSON.stringify(snapshot);
+    const snapshotStart = stageTrace.enabled ? performance.now() : 0;
+    dispatchWorkerSnapshot(Number(message.hostId), json);
+    if (stageTrace.enabled) {
+      epochMilliseconds = jsonStart - epochStart;
+      snapshotJsonMilliseconds = snapshotStart - jsonStart;
+      managedSnapshotMilliseconds = performance.now() - snapshotStart;
+    }
   }
-  stageTrace.record("ui-resize-applied", epoch.generation);
+  if (stageTrace.enabled) stageTrace.record("ui-resize-applied", epoch.generation, 0, {
+    reason, applyMilliseconds: performance.now() - started,
+    epochMilliseconds, snapshotJsonMilliseconds, managedSnapshotMilliseconds,
+    // Includes coalescing/dispatch wait, excludes the apply work above.
+    ingressWaitMilliseconds: started - lastResizeEpochIngressMilliseconds,
+  });
 }
 
 function installMainListener(): void {
@@ -472,7 +491,7 @@ function installMainListener(): void {
     try {
       // Input, focus, IME, snapshots and lifecycle are barriers. Only adjacent
       // metrics may be replaced, and a frame flushes metrics before it starts.
-      if (message.kind !== "resize-epoch") { flushPendingResize(); scheduleManagedFrame(); }
+      if (message.kind !== "resize-epoch") { flushPendingResize(String(message.kind)); scheduleManagedFrame(); }
       switch (message.kind) {
         case "collect-stage-trace":
           post("stage-trace", { collectionId: message.collectionId,

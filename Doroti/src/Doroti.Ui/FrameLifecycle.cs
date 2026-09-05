@@ -205,6 +205,8 @@ public sealed class DorotiFrameTrace
                 MeasureRecordingTime ? DorotiFrameClock.Now.Ticks / 10 : 0);
             _nextEntryIndex = (_nextEntryIndex + 1) % Capacity;
             if (_entryCount < Capacity) _entryCount++;
+            FrameworkWorkCounters.Record(_nextSequence, viewId, phase, resizeTargetGeneration,
+                frameworkFrameNumber, sceneSequence);
         }
     }
 

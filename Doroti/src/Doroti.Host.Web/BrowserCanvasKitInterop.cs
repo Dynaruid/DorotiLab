@@ -60,6 +60,31 @@ internal static partial class BrowserCanvasKitInterop
                     writer.WriteEndObject();
                 }
             writer.WriteEndArray();
+            var work = FrameworkWorkCounters.Snapshot();
+            writer.WriteStartObject("work");
+            writer.WriteBoolean("enabled", work.Enabled);
+            writer.WriteNumber("dropped", work.Dropped);
+            writer.WriteStartArray("names");
+            foreach (var name in work.Names) writer.WriteStringValue(name);
+            writer.WriteEndArray();
+            writer.WriteStartArray("samples");
+            foreach (var sample in work.Samples)
+            {
+                writer.WriteStartObject();
+                writer.WriteNumber("traceSequence", sample.Boundary.TraceSequence);
+                writer.WriteNumber("viewId", sample.Boundary.ViewId);
+                writer.WriteString("phase", sample.Boundary.Phase.ToString());
+                writer.WriteNumber("recordedAtMicroseconds", sample.Boundary.RecordedAtMicroseconds);
+                writer.WriteNumber("generation", sample.Boundary.Generation);
+                writer.WriteNumber("frame", sample.Boundary.Frame);
+                writer.WriteNumber("scene", sample.Boundary.Scene);
+                writer.WriteStartArray("totals");
+                foreach (var value in sample.Totals) writer.WriteNumberValue(value);
+                writer.WriteEndArray();
+                writer.WriteEndObject();
+            }
+            writer.WriteEndArray();
+            writer.WriteEndObject();
             writer.WriteEndObject();
         }
         return Encoding.UTF8.GetString(stream.ToArray());

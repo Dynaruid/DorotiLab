@@ -526,10 +526,15 @@ internal static class BrowserDisplayListMapper
 
     private static DisplayPath ToPath(Doroti.Ui.Path path)
     {
-        var verbs = new List<DisplayPathVerb>(path.Commands.Count);
-        var values = new List<float>();
-        foreach (var command in path.Commands)
+        var commands = path.Commands;
+        var argumentCount = 0;
+        for (var index = 0; index < commands.Count; index++)
+            argumentCount = checked(argumentCount + commands[index].Arguments.Count);
+        var verbs = new List<DisplayPathVerb>(commands.Count);
+        var values = new List<float>(argumentCount);
+        for (var index = 0; index < commands.Count; index++)
         {
+            var command = commands[index];
             verbs.Add(command.Operation switch
             {
                 "moveTo" => DisplayPathVerb.MoveTo,
@@ -550,7 +555,8 @@ internal static class BrowserDisplayListMapper
                 _ => throw new NotSupportedException(
                     $"Doroti path operation '{command.Operation}' has no DisplayList mapping."),
             });
-            values.AddRange(command.Arguments.Select(value => checked((float)value)));
+            for (var argument = 0; argument < command.Arguments.Count; argument++)
+                values.Add(checked((float)command.Arguments[argument]));
         }
         return new((DisplayPathFillType)path.fillType, verbs, values);
     }

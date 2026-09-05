@@ -69,6 +69,35 @@ VerifyUnicodeStringTable();
 VerifyDeterministicFuzz(encoded);
 
 Console.WriteLine($"DisplayList contract: PASS ({encoded.Length} bytes, SHA-256 {goldenSha256})");
+if (args.Contains("--measure-encoder", StringComparer.Ordinal)) MeasureEncoder(representative);
+
+static void MeasureEncoder(DisplayListDocument representative)
+{
+    // Inputs and cache warmup are outside the measured interval. This measures
+    // CLR allocations, not WASM GC or browser presentation latency.
+    foreach (var count in new[] { 1, 16 })
+    foreach (var cached in new[] { false, true })
+    {
+        var document = new DisplayListDocument(representative.Scene, representative.Resources,
+            Enumerable.Range(0, count).SelectMany(_ => representative.Commands));
+        var cache = cached ? new DisplayListEncodingCache() : null;
+        for (var i = 0; i < 100; i++) DisplayListEncoder.Encode(document, cache);
+        var batches = new List<object>();
+        byte[] last = [];
+        for (var batch = 0; batch < 5; batch++)
+        {
+            var before = GC.GetAllocatedBytesForCurrentThread();
+            var started = System.Diagnostics.Stopwatch.GetTimestamp();
+            for (var i = 0; i < 200; i++) last = DisplayListEncoder.Encode(document, cache);
+            var elapsed = System.Diagnostics.Stopwatch.GetElapsedTime(started).TotalMilliseconds;
+            var allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+            batches.Add(new { iterations = 200, allocatedBytes = allocated, milliseconds = elapsed });
+        }
+        Console.WriteLine("ENCODER_MEASURE " + JsonSerializer.Serialize(new {
+            commandCount = document.Commands.Count, cached, wireBytes = last.Length,
+            sha256 = Convert.ToHexString(SHA256.HashData(last)), batches }));
+    }
+}
 
 static void VerifySceneTerminals()
 {
@@ -143,6 +172,15 @@ static void VerifyEncodingCache(DisplayListDocument document, byte[] expected)
         "Encoding-cache eviction respects entry and charged-memory bounds.");
     cache.Clear();
     Require(cache.EntryCount == 0 && cache.RetainedBytes == 0, "Producer disposal releases the encoding cache.");
+    var retainedWire = DisplayListEncoder.Encode(document, cache);
+    var large = new DisplayListDocument(document.Scene, [], Enumerable.Repeat<DisplayListCommand>(
+        new DisplayDrawRectCommand(new DisplayRect(1, 2, 31, 42), new DisplayPaint(0xff123456)), 20000));
+    foreach (var next in new[] { large, changed, large, document })
+        Require(DisplayListEncoder.Encode(next, cache).AsSpan().SequenceEqual(DisplayListEncoder.Encode(next)),
+            "Growing and shrinking scenes preserve exact bytes with a warm producer.");
+    cache.Clear();
+    Require(retainedWire.AsSpan().SequenceEqual(expected),
+        "Later encodes and producer reset never mutate an earlier owned wire buffer.");
 }
 
 static void VerifyMalformedBuffers(byte[] canonical)

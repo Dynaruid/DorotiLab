@@ -16,6 +16,11 @@ public sealed class DisplayListEncodingCache
     public int FrameHits { get; private set; }
     public int FrameMisses { get; private set; }
     internal void BeginFrame() { FrameHits = 0; FrameMisses = 0; }
+    // Remember only a size, never a scratch buffer. The cap limits over-allocation
+    // after a large scene; the next successful scene immediately replaces it.
+    internal int CommandCapacityHint { get; private set; } = 256;
+    internal void RecordCommandLength(int length) =>
+        CommandCapacityHint = Math.Clamp(length, 256, 1024 * 1024);
     internal bool TryGet(DisplayListCommand command, out byte[] payload)
     {
         if (Eligible(command) && _payloads.TryGetValue(command, out payload!))
@@ -38,7 +43,7 @@ public sealed class DisplayListEncodingCache
         _payloads.Add(command, payload.ToArray());
         RetainedBytes += charge;
     }
-    public void Clear() { _payloads.Clear(); RetainedBytes = 0; BeginFrame(); }
+    public void Clear() { _payloads.Clear(); RetainedBytes = 0; CommandCapacityHint = 256; BeginFrame(); }
     private static bool Eligible(DisplayListCommand command) => command switch
     {
         DisplaySaveCommand or DisplayRestoreCommand or DisplayTransformCommand or

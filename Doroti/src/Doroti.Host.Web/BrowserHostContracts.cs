@@ -736,10 +736,15 @@ public sealed class BrowserHostAdapter :
 
     private void ApplySnapshot(BrowserHostSnapshot next)
     {
+        FrameworkWorkCounters.Add(FrameworkWork.HostSnapshotApply);
         next = Validate(next);
         var previous = _snapshot;
         _snapshot = next;
-        if (ToMetrics(previous) != ToMetrics(next)) MetricsChanged?.Invoke(ToMetrics(next));
+        if (ToMetrics(previous) != ToMetrics(next))
+        {
+            FrameworkWorkCounters.Add(FrameworkWork.HostMetricsNotified);
+            MetricsChanged?.Invoke(ToMetrics(next));
+        }
         var previousState = Lifecycle(previous);
         var nextState = Lifecycle(next);
         if (previousState != nextState) LifecycleChanged?.Invoke(nextState);

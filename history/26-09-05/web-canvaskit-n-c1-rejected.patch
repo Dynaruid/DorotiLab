@@ -1,0 +1,63 @@
+diff --git a/Doroti/src/Doroti.Framework.Widgets/media_query.cs b/Doroti/src/Doroti.Framework.Widgets/media_query.cs
+index 563b4bd..346183e 100644
+--- a/Doroti/src/Doroti.Framework.Widgets/media_query.cs
++++ b/Doroti/src/Doroti.Framework.Widgets/media_query.cs
+@@ -458,12 +458,52 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
+     {
+         FrameworkWorkCounters.Add(FrameworkWork.MediaDependentCheck);
+         FrameworkWorkCounters.Add(FrameworkWork.MediaAspectSubscriptions, dependencies.Count);
+-        var __oldWidget = (MediaQuery)(object)oldWidget;
+-        var __dependencies = new HashSet<object>(dependencies.Cast<object>());
+-        var notified = __dependencies.any(((dependency) => ((dependency is _MediaQueryAspect__media_query) && (((_MediaQueryAspect__media_query)dependency) switch { _MediaQueryAspect__media_query.size => (!object.Equals(((MediaQueryData)this.data).size, ((MediaQuery)__oldWidget).data.size)), _MediaQueryAspect__media_query.width => (((MediaQueryData)this.data).size.width != ((MediaQuery)__oldWidget).data.size.width), _MediaQueryAspect__media_query.height => (((MediaQueryData)this.data).size.height != ((MediaQuery)__oldWidget).data.size.height), _MediaQueryAspect__media_query.orientation => (!object.Equals(((MediaQueryData)this.data).orientation, ((MediaQuery)__oldWidget).data.orientation)), _MediaQueryAspect__media_query.devicePixelRatio => (((MediaQueryData)this.data).devicePixelRatio != ((MediaQuery)__oldWidget).data.devicePixelRatio), _MediaQueryAspect__media_query.textScaleFactor => (((MediaQueryData)this.data).textScaleFactor != ((MediaQuery)__oldWidget).data.textScaleFactor), _MediaQueryAspect__media_query.textScaler => (!object.Equals(((MediaQueryData)this.data).textScaler, ((MediaQuery)__oldWidget).data.textScaler)), _MediaQueryAspect__media_query.platformBrightness => (!object.Equals(((MediaQueryData)this.data).platformBrightness, ((MediaQuery)__oldWidget).data.platformBrightness)), _MediaQueryAspect__media_query.padding => (!object.Equals(((MediaQueryData)this.data).padding, ((MediaQuery)__oldWidget).data.padding)), _MediaQueryAspect__media_query.viewInsets => (!object.Equals(((MediaQueryData)this.data).viewInsets, ((MediaQuery)__oldWidget).data.viewInsets)), _MediaQueryAspect__media_query.viewPadding => (!object.Equals(((MediaQueryData)this.data).viewPadding, ((MediaQuery)__oldWidget).data.viewPadding)), _MediaQueryAspect__media_query.invertColors => (((MediaQueryData)this.data).invertColors != ((MediaQuery)__oldWidget).data.invertColors), _MediaQueryAspect__media_query.highContrast => (((MediaQueryData)this.data).highContrast != ((MediaQuery)__oldWidget).data.highContrast), _MediaQueryAspect__media_query.onOffSwitchLabels => (((MediaQueryData)this.data).onOffSwitchLabels != ((MediaQuery)__oldWidget).data.onOffSwitchLabels), _MediaQueryAspect__media_query.disableAnimations => (((MediaQueryData)this.data).disableAnimations != ((MediaQuery)__oldWidget).data.disableAnimations), _MediaQueryAspect__media_query.reduceMotion => (((MediaQueryData)this.data).reduceMotion != ((MediaQuery)__oldWidget).data.reduceMotion), _MediaQueryAspect__media_query.boldText => (((MediaQueryData)this.data).boldText != ((MediaQuery)__oldWidget).data.boldText), _MediaQueryAspect__media_query.supportsAnnounce => (((MediaQueryData)this.data).supportsAnnounce != ((MediaQuery)__oldWidget).data.supportsAnnounce), _MediaQueryAspect__media_query.navigationMode => (!object.Equals(((MediaQueryData)this.data).navigationMode, ((MediaQuery)__oldWidget).data.navigationMode)), _MediaQueryAspect__media_query.gestureSettings => (!object.Equals(((MediaQueryData)this.data).gestureSettings, ((MediaQuery)__oldWidget).data.gestureSettings)), _MediaQueryAspect__media_query.displayFeatures => (!object.Equals(((MediaQueryData)this.data).displayFeatures, ((MediaQuery)__oldWidget).data.displayFeatures)), _MediaQueryAspect__media_query.systemGestureInsets => (!object.Equals(((MediaQueryData)this.data).systemGestureInsets, ((MediaQuery)__oldWidget).data.systemGestureInsets)), _MediaQueryAspect__media_query.accessibleNavigation => (((MediaQueryData)this.data).accessibleNavigation != ((MediaQuery)__oldWidget).data.accessibleNavigation), _MediaQueryAspect__media_query.alwaysUse24HourFormat => (((MediaQueryData)this.data).alwaysUse24HourFormat != ((MediaQuery)__oldWidget).data.alwaysUse24HourFormat), _MediaQueryAspect__media_query.supportsShowingSystemContextMenu => (((MediaQueryData)this.data).supportsShowingSystemContextMenu != ((MediaQuery)__oldWidget).data.supportsShowingSystemContextMenu), _MediaQueryAspect__media_query.lineHeightScaleFactorOverride => (((MediaQueryData)this.data).lineHeightScaleFactorOverride != ((MediaQuery)__oldWidget).data.lineHeightScaleFactorOverride), _MediaQueryAspect__media_query.letterSpacingOverride => (((MediaQueryData)this.data).letterSpacingOverride != ((MediaQuery)__oldWidget).data.letterSpacingOverride), _MediaQueryAspect__media_query.wordSpacingOverride => (((MediaQueryData)this.data).wordSpacingOverride != ((MediaQuery)__oldWidget).data.wordSpacingOverride), _MediaQueryAspect__media_query.paragraphSpacingOverride => (((MediaQueryData)this.data).paragraphSpacingOverride != ((MediaQuery)__oldWidget).data.paragraphSpacingOverride), _MediaQueryAspect__media_query.displayCornerRadii => (!object.Equals(((MediaQueryData)this.data).displayCornerRadii, ((MediaQuery)__oldWidget).data.displayCornerRadii)), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }))));
+-        if (notified) FrameworkWorkCounters.Add(FrameworkWork.MediaDependentNotified);
+-        return notified;
+-        throw new InvalidOperationException("Dart control flow completed without a value.");
++        var previous = ((MediaQuery)oldWidget).data;
++        // The override already receives typed aspects. Preserve short-circuit
++        // semantics without cloning the set or boxing every enum value.
++        foreach (var dependency in dependencies)
++        {
++            var notified = dependency switch
++            {
++                _MediaQueryAspect__media_query.size => (!object.Equals(data.size, previous.size)),
++                _MediaQueryAspect__media_query.width => (data.size.width != previous.size.width),
++                _MediaQueryAspect__media_query.height => (data.size.height != previous.size.height),
++                _MediaQueryAspect__media_query.orientation => (!object.Equals(data.orientation, previous.orientation)),
++                _MediaQueryAspect__media_query.devicePixelRatio => (data.devicePixelRatio != previous.devicePixelRatio),
++                _MediaQueryAspect__media_query.textScaleFactor => (data.textScaleFactor != previous.textScaleFactor),
++                _MediaQueryAspect__media_query.textScaler => (!object.Equals(data.textScaler, previous.textScaler)),
++                _MediaQueryAspect__media_query.platformBrightness => (!object.Equals(data.platformBrightness, previous.platformBrightness)),
++                _MediaQueryAspect__media_query.padding => (!object.Equals(data.padding, previous.padding)),
++                _MediaQueryAspect__media_query.viewInsets => (!object.Equals(data.viewInsets, previous.viewInsets)),
++                _MediaQueryAspect__media_query.viewPadding => (!object.Equals(data.viewPadding, previous.viewPadding)),
++                _MediaQueryAspect__media_query.invertColors => (data.invertColors != previous.invertColors),
++                _MediaQueryAspect__media_query.highContrast => (data.highContrast != previous.highContrast),
++                _MediaQueryAspect__media_query.onOffSwitchLabels => (data.onOffSwitchLabels != previous.onOffSwitchLabels),
++                _MediaQueryAspect__media_query.disableAnimations => (data.disableAnimations != previous.disableAnimations),
++                _MediaQueryAspect__media_query.reduceMotion => (data.reduceMotion != previous.reduceMotion),
++                _MediaQueryAspect__media_query.boldText => (data.boldText != previous.boldText),
++                _MediaQueryAspect__media_query.supportsAnnounce => (data.supportsAnnounce != previous.supportsAnnounce),
++                _MediaQueryAspect__media_query.navigationMode => (!object.Equals(data.navigationMode, previous.navigationMode)),
++                _MediaQueryAspect__media_query.gestureSettings => (!object.Equals(data.gestureSettings, previous.gestureSettings)),
++                _MediaQueryAspect__media_query.displayFeatures => (!object.Equals(data.displayFeatures, previous.displayFeatures)),
++                _MediaQueryAspect__media_query.systemGestureInsets => (!object.Equals(data.systemGestureInsets, previous.systemGestureInsets)),
++                _MediaQueryAspect__media_query.accessibleNavigation => (data.accessibleNavigation != previous.accessibleNavigation),
++                _MediaQueryAspect__media_query.alwaysUse24HourFormat => (data.alwaysUse24HourFormat != previous.alwaysUse24HourFormat),
++                _MediaQueryAspect__media_query.supportsShowingSystemContextMenu => (data.supportsShowingSystemContextMenu != previous.supportsShowingSystemContextMenu),
++                _MediaQueryAspect__media_query.lineHeightScaleFactorOverride => (data.lineHeightScaleFactorOverride != previous.lineHeightScaleFactorOverride),
++                _MediaQueryAspect__media_query.letterSpacingOverride => (data.letterSpacingOverride != previous.letterSpacingOverride),
++                _MediaQueryAspect__media_query.wordSpacingOverride => (data.wordSpacingOverride != previous.wordSpacingOverride),
++                _MediaQueryAspect__media_query.paragraphSpacingOverride => (data.paragraphSpacingOverride != previous.paragraphSpacingOverride),
++                _MediaQueryAspect__media_query.displayCornerRadii => (!object.Equals(data.displayCornerRadii, previous.displayCornerRadii)),
++                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.")
++            };
++            if (notified)
++            {
++                FrameworkWorkCounters.Add(FrameworkWork.MediaDependentNotified);
++                return true;
++            }
++        }
++        return false;
+     }
+ 
+ }

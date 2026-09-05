@@ -40,25 +40,22 @@ public static class DisplayListEncoder
             .Select((value, index) => (value, index))
             .ToDictionary(item => item.value.Value, item => checked((uint)item.index), StringComparer.Ordinal);
 
-        var resourceWriter = new DisplayListBinaryWriter();
-        foreach (var resource in resources)
-        {
-            WriteResourceDescriptor(resourceWriter, resource);
-        }
-
-        var stringWriter = new DisplayListBinaryWriter();
+        // Table sizes are known before encoding commands. Write these tables
+        // straight into the final owned buffer instead of growing two scratch
+        // arrays and copying their contents once more at the end.
+        var resourceByteLength = checked(resources.Count * DisplayListFormat.ResourceEntrySize);
+        var stringByteLength = 0;
         foreach (var value in strings)
         {
-            stringWriter.WriteUInt32(checked((uint)value.Bytes.Length));
-            stringWriter.WriteBytes(value.Bytes);
+            stringByteLength = checked(stringByteLength + sizeof(uint) + value.Bytes.Length);
         }
 
-        if (stringWriter.Length > DisplayListFormat.MaximumStringTableByteLength)
+        if (stringByteLength > DisplayListFormat.MaximumStringTableByteLength)
         {
             throw new ArgumentException("The DisplayList string-table byte limit was exceeded.", nameof(document));
         }
 
-        var commandWriter = new DisplayListBinaryWriter();
+        var commandWriter = new DisplayListBinaryWriter(cache?.CommandCapacityHint ?? 256);
         var context = new EncoderContext(resourceCatalog, stringIds);
         foreach (var command in document.Commands)
         {
@@ -82,8 +79,8 @@ public static class DisplayListEncoder
 
         var byteLength = checked(
             DisplayListFormat.HeaderSize +
-            resourceWriter.Length +
-            stringWriter.Length +
+            resourceByteLength +
+            stringByteLength +
             commandWriter.Length);
         if (byteLength > DisplayListFormat.MaximumByteLength)
         {
@@ -100,17 +97,25 @@ public static class DisplayListEncoder
         WriteScene(header, document.Scene);
         BinaryPrimitives.WriteUInt32LittleEndian(header[84..], checked((uint)document.Commands.Count));
         BinaryPrimitives.WriteUInt32LittleEndian(header[88..], checked((uint)resources.Count));
-        BinaryPrimitives.WriteUInt32LittleEndian(header[92..], checked((uint)stringWriter.Length));
+        BinaryPrimitives.WriteUInt32LittleEndian(header[92..], checked((uint)stringByteLength));
         BinaryPrimitives.WriteUInt32LittleEndian(header[96..], checked((uint)commandWriter.Length));
-        BinaryPrimitives.WriteUInt32LittleEndian(header[100..], checked((uint)resourceWriter.Length));
+        BinaryPrimitives.WriteUInt32LittleEndian(header[100..], checked((uint)resourceByteLength));
         BinaryPrimitives.WriteUInt32LittleEndian(header[104..], 0);
         BinaryPrimitives.WriteUInt32LittleEndian(header[108..], 0);
 
         var destinationOffset = (int)DisplayListFormat.HeaderSize;
-        resourceWriter.WrittenSpan.CopyTo(buffer.AsSpan(destinationOffset));
-        destinationOffset += resourceWriter.Length;
-        stringWriter.WrittenSpan.CopyTo(buffer.AsSpan(destinationOffset));
-        destinationOffset += stringWriter.Length;
+        foreach (var resource in resources)
+        {
+            WriteResourceDescriptor(buffer.AsSpan(destinationOffset, DisplayListFormat.ResourceEntrySize), resource);
+            destinationOffset += DisplayListFormat.ResourceEntrySize;
+        }
+        foreach (var value in strings)
+        {
+            BinaryPrimitives.WriteUInt32LittleEndian(buffer.AsSpan(destinationOffset), checked((uint)value.Bytes.Length));
+            destinationOffset += sizeof(uint);
+            value.Bytes.CopyTo(buffer.AsSpan(destinationOffset));
+            destinationOffset += value.Bytes.Length;
+        }
         commandWriter.WrittenSpan.CopyTo(buffer.AsSpan(destinationOffset));
 
         if ((document.Flags & DisplayListFlags.ChecksumPresent) != 0)
@@ -120,6 +125,7 @@ public static class DisplayListEncoder
                 DisplayListChecksum.Compute(buffer));
         }
 
+        cache?.RecordCommandLength(commandWriter.Length);
         return buffer;
     }
 
@@ -224,15 +230,15 @@ public static class DisplayListEncoder
     }
 
     private static void WriteResourceDescriptor(
-        DisplayListBinaryWriter writer,
+        Span<byte> destination,
         DisplayResourceDescriptor descriptor)
     {
-        writer.WriteUInt16((ushort)descriptor.Reference.Kind);
-        writer.WriteUInt16((ushort)descriptor.Flags);
-        writer.WriteUInt32(descriptor.Reference.Version);
-        writer.WriteUInt64(descriptor.Reference.Id);
-        writer.WriteUInt64(descriptor.Fingerprint.Low);
-        writer.WriteUInt64(descriptor.Fingerprint.High);
+        BinaryPrimitives.WriteUInt16LittleEndian(destination, (ushort)descriptor.Reference.Kind);
+        BinaryPrimitives.WriteUInt16LittleEndian(destination[2..], (ushort)descriptor.Flags);
+        BinaryPrimitives.WriteUInt32LittleEndian(destination[4..], descriptor.Reference.Version);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination[8..], descriptor.Reference.Id);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination[16..], descriptor.Fingerprint.Low);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination[24..], descriptor.Fingerprint.High);
     }
 
     private static void WriteCommandPayload(
