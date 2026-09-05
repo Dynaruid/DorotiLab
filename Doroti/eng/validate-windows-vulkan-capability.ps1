@@ -58,6 +58,7 @@ $probeAssembly = Join-Path $probeDirectory 'Doroti.Validation.WindowsVulkanCapab
 $sourceFingerprintPaths = @(
     'Doroti/eng/validate-windows-vulkan-capability.ps1',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs',
+    'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsGpuSelection.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.Prepared.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsPreparedMovingFrame.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsAcrylicOptionsState.cs',
@@ -68,8 +69,10 @@ $sourceFingerprintPaths = @(
     'Doroti/src/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs',
     'Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_host_v1.h',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_gpu_selection_v1.h',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/include/doroti_windows_vulkan_composition_v1.h',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/exports.cpp',
+    'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/gpu_selection.cpp',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/resize_order_trace.h',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/src/vulkan_composition.cpp',
     'Doroti/src/Doroti.Host.WindowsAppSdk.Native/Doroti.Host.WindowsAppSdk.Native.vcxproj',
@@ -341,6 +344,24 @@ Assert-True ($vulkanProductReport.diagnostics.failedTerminals -eq 0 -and
     $vulkanProductReport.diagnostics.duplicateResizeTerminals -eq 0) 'Vulkan product terminal gate failed.'
 Assert-True ($vulkanProductReport.diagnostics.deviceGenerations -eq 2) 'Vulkan product device-reset qualification differs.'
 Assert-VulkanCompositionSnapshot $vulkanProductReport 'Vulkan product qualification'
+
+foreach ($gpuPreference in @('NoPreference', 'LowPowerPreference', 'HighPerformancePreference')) {
+    $automaticDevicePath = Join-Path $OutputDirectory "vulkan-$gpuPreference-product.json"
+    $automaticDevice = Invoke-BoundedProcess -FileName 'dotnet' -Name "Vulkan $gpuPreference device selection" -Environment @{
+        DOROTI_WINDOWS_VULKAN_DEVICE = ''
+        DOROTI_WINDOWS_GPU_PREFERENCE = $gpuPreference
+    } -ArgumentList @(
+        'run','--project',$productProject,'-c','Release','--no-build','--',
+        '--presenter','default','--acrylic','--lifecycle-cycles','0','--no-resize-burst',
+        '--smoke-ms','5000','--report',$automaticDevicePath)
+    Assert-True ($automaticDevice.exitCode -eq 0) "Vulkan $gpuPreference device selection failed: $($automaticDevice.stderr)"
+    $automaticDeviceReport = Get-Content -LiteralPath $automaticDevicePath -Raw | ConvertFrom-Json -Depth 100
+    Assert-True ($automaticDeviceReport.status -eq 'PASS' -and
+        $automaticDeviceReport.diagnostics.effectivePresenter -eq 'Vulkan/Composition-Swapchain' -and
+        $automaticDeviceReport.diagnostics.visibleAfterExactPresent -and
+        $automaticDeviceReport.diagnostics.failedTerminals -eq 0) "Vulkan $gpuPreference did not present successfully."
+    Assert-VulkanCompositionSnapshot $automaticDeviceReport "Vulkan $gpuPreference device selection"
+}
 
 $vulkanAcrylicProductPath = Join-Path $OutputDirectory 'vulkan-acrylic-product.json'
 $vulkanAcrylicProduct = Invoke-BoundedProcess -FileName 'dotnet' -Name 'Vulkan Acrylic product qualification' -Environment @{

@@ -12,7 +12,7 @@ Install the .NET 10 SDK and PowerShell 7. Building the Web host from this source
 # Run the default Windows backend
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
-# Select a Vulkan device for the default Acrylic demo on Windows 11 24H2+
+# Optional: override automatic GPU selection for Acrylic on Windows 11 24H2+
 $env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # or another exact/unique device-name fragment
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -Configuration Release
 
@@ -132,14 +132,25 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 Windows App SDK defaults to Vulkan, and the demo requests ordinary `WindowBackdropMode.acrylic`. Acrylic is applied on Windows 11 24H2+ without an experimental flag.
 
 ```powershell
-$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # exact/unique GPU name if multiple GPUs qualify
+$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # optional exact/unique GPU name override
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
   -App ./DorotiDemoApp `
   -Platform windows `
   -Configuration Release
 ```
 
-Device selection can be omitted when exactly one GPU qualifies. Set `DOROTI_WINDOWS_PRESENTER=AngleD3D11` to select ANGLE explicitly. For an opaque window, omit the app backdrop or request `WindowBackdropMode.solid`. `experimentalAcrylic` and the existing environment flag remain available to reproduce the legacy mode.
+Device selection is optional. The default `NoPreference` follows the system default hardware device. Set `DOROTI_WINDOWS_GPU_PREFERENCE` to `LowPowerPreference` or `HighPerformancePreference` to use Windows/DXGI preference ordering. These preferences apply to Vulkan and ANGLE; an explicit `DOROTI_WINDOWS_VULKAN_DEVICE` takes precedence for Vulkan. Set `DOROTI_WINDOWS_PRESENTER=AngleD3D11` to select ANGLE explicitly. For an opaque window, omit the app backdrop or request `WindowBackdropMode.solid`. `experimentalAcrylic` and the existing environment flag remain available to reproduce the legacy mode.
+
+To prefer a GPU without naming a device:
+
+```powershell
+$env:DOROTI_WINDOWS_GPU_PREFERENCE = 'HighPerformancePreference' # or LowPowerPreference
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
+
+# Return to the system default. Clear a Vulkan name override too, if one was set.
+Remove-Item Env:DOROTI_WINDOWS_GPU_PREFERENCE -ErrorAction SilentlyContinue
+Remove-Item Env:DOROTI_WINDOWS_VULKAN_DEVICE -ErrorAction SilentlyContinue
+```
 
 ### Connect an Android device or emulator
 

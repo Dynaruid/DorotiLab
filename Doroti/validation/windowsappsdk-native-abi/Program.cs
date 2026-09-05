@@ -3,6 +3,12 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using Doroti.Host.WindowsAppSdk;
 
+if (args is ["--gpu-selection"])
+{
+    GpuSelectionFixture.Run();
+    return;
+}
+
 if (args is ["--prepared-frame"])
 {
     PreparedMovingFrameFixture.Run();
@@ -43,6 +49,7 @@ try
     var exports = new[]
     {
         "doroti_windows_get_abi_version_v1",
+        "doroti_windows_gpu_select_adapter_v1",
         "doroti_windows_get_abi_layout_v1",
         "doroti_windows_run_v1",
         "doroti_windows_acrylic_create_v1",

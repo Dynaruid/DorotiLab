@@ -10,10 +10,6 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
     private const int EglFalse = 0;
     private const int EglNone = 0x3038;
     private const uint EglPlatformAngle = 0x3202;
-    private const int EglPlatformAngleType = 0x3203;
-    private const int EglPlatformAngleTypeD3D11 = 0x3208;
-    private const int EglPlatformAngleDeviceType = 0x3209;
-    private const int EglPlatformAngleDeviceTypeHardware = 0x320A;
     private const int EglRedSize = 0x3024;
     private const int EglGreenSize = 0x3023;
     private const int EglBlueSize = 0x3022;
@@ -218,12 +214,7 @@ internal sealed unsafe class WindowsManagedAngleEglPresenter : WindowsManagedHwn
     private void EnsureDevice()
     {
         if (_display != 0) return;
-        var platformAttributes = new[]
-        {
-            EglPlatformAngleType, EglPlatformAngleTypeD3D11,
-            EglPlatformAngleDeviceType, EglPlatformAngleDeviceTypeHardware,
-            EglNone,
-        };
+        var platformAttributes = WindowsGpuSelection.AnglePlatformAttributes();
         _display = EglGetPlatformDisplayExt(EglPlatformAngle, 0, platformAttributes);
         if (_display == 0) ThrowEgl("eglGetPlatformDisplayEXT(D3D11 hardware)");
         if (EglInitialize(_display, out _, out _) == EglFalse) ThrowEgl("eglInitialize");

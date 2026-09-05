@@ -12,7 +12,7 @@ DorotiDemoApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱�
 # Windows 기본 backend로 실행
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
-# Windows 11 24H2+: 기본 Vulkan + Acrylic의 GPU 선택
+# 선택 사항: Windows 11 24H2+에서 기본 Vulkan + Acrylic의 GPU 직접 지정
 $env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # 또는 정확하거나 유일한 다른 device 이름 조각
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -Configuration Release
 
@@ -132,14 +132,25 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 Windows App SDK는 Vulkan이 기본값이며 데모는 일반 `WindowBackdropMode.acrylic`을 요청합니다. Windows 11 24H2 이상에서 별도 실험 플래그 없이 Acrylic이 적용됩니다.
 
 ```powershell
-$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # exact/unique GPU name if multiple GPUs qualify
+$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # 선택 사항: 정확하거나 유일한 GPU 이름 일부
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
   -App ./DorotiDemoApp `
   -Platform windows `
   -Configuration Release
 ```
 
-지원 GPU가 하나이면 장치 선택은 생략할 수 있습니다. ANGLE을 명시적으로 사용하려면 `DOROTI_WINDOWS_PRESENTER=AngleD3D11`을 설정합니다. 불투명 창은 앱에서 backdrop을 생략하거나 `WindowBackdropMode.solid`를 요청합니다. `experimentalAcrylic`과 기존 환경변수는 이전 mode 재현을 위해 유지합니다.
+장치 지정은 생략할 수 있습니다. 기본 `NoPreference`는 시스템 기본 하드웨어 장치를 따릅니다. `DOROTI_WINDOWS_GPU_PREFERENCE`를 `LowPowerPreference` 또는 `HighPerformancePreference`로 지정하면 Windows/DXGI 선호 순서를 적용합니다. Vulkan과 ANGLE에 공통으로 적용하며, Vulkan에서는 명시한 `DOROTI_WINDOWS_VULKAN_DEVICE`가 우선합니다. ANGLE을 명시적으로 사용하려면 `DOROTI_WINDOWS_PRESENTER=AngleD3D11`을 설정합니다. 불투명 창은 앱에서 backdrop을 생략하거나 `WindowBackdropMode.solid`를 요청합니다. `experimentalAcrylic`과 기존 환경변수는 이전 mode 재현을 위해 유지합니다.
+
+장치 이름 대신 GPU 선호도를 지정할 수도 있습니다.
+
+```powershell
+$env:DOROTI_WINDOWS_GPU_PREFERENCE = 'HighPerformancePreference' # 또는 LowPowerPreference
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
+
+# 시스템 기본값으로 복원합니다. Vulkan 장치 이름을 지정했다면 함께 해제합니다.
+Remove-Item Env:DOROTI_WINDOWS_GPU_PREFERENCE -ErrorAction SilentlyContinue
+Remove-Item Env:DOROTI_WINDOWS_VULKAN_DEVICE -ErrorAction SilentlyContinue
+```
 
 ### Android 실기기와 에뮬레이터 연결
 

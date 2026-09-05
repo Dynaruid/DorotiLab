@@ -1442,14 +1442,28 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
                 "No hardware Vulkan device satisfies the graphics/LUID/external-memory requirements" +
                 (rejectedCandidates.Count == 0 ? "." : $": {string.Join("; ", rejectedCandidates)}."));
         var selector = Environment.GetEnvironmentVariable("DOROTI_WINDOWS_VULKAN_DEVICE")?.Trim();
-        if (string.IsNullOrWhiteSpace(selector) && candidates.Count != 1)
-            throw new InvalidOperationException(
-                "Multiple Vulkan devices are eligible. Set DOROTI_WINDOWS_VULKAN_DEVICE to an exact or unique device-name fragment.");
-        var selected = string.IsNullOrWhiteSpace(selector)
-            ? candidates[0]
-            : candidates.SingleOrDefault(value => value.Name.Contains(selector, StringComparison.OrdinalIgnoreCase));
-        if (selected.Device.Handle == 0)
-            throw new InvalidOperationException($"DOROTI_WINDOWS_VULKAN_DEVICE='{selector}' did not match exactly one Vulkan device.");
+        var preference = WindowsGpuSelection.RequestedPreference;
+        var selected = candidates[0];
+        if (!string.IsNullOrWhiteSpace(selector))
+        {
+            var matches = candidates.Where(value =>
+                value.Name.Equals(selector, StringComparison.OrdinalIgnoreCase)).ToArray();
+            if (matches.Length == 0)
+                matches = candidates.Where(value =>
+                    value.Name.Contains(selector, StringComparison.OrdinalIgnoreCase)).ToArray();
+            if (matches.Length != 1)
+                throw new InvalidOperationException(
+                    $"DOROTI_WINDOWS_VULKAN_DEVICE='{selector}' did not match exactly one Vulkan device " +
+                    $"(matched {matches.Length}). Available devices: {string.Join(", ", candidates.Select(value => value.Name))}.");
+            selected = matches[0];
+        }
+        else
+        {
+            var eligibleLuids = candidates.Select(value => WindowsGpuSelection.ParseVulkanLuid(value.Luid)).ToArray();
+            var luid = WindowsGpuSelection.SelectAdapter(preference, eligibleLuids);
+            selected = candidates[Array.IndexOf(eligibleLuids, luid)];
+        }
+        RecordEvent($"gpu-selection preference={preference} override={selector ?? "none"} device={selected.Name} luid={selected.Luid}");
         if (selected.Properties.ApiVersion < VulkanApiVersion11)
             throw new InvalidOperationException($"Vulkan device '{selected.Name}' does not support Vulkan 1.1.");
         _physicalDevice = selected.Device;
