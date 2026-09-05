@@ -12,6 +12,10 @@ param(
     [ValidateSet('worker-direct-webgl', 'worker-canvaskit-webgl')] [string] $RendererMode = 'worker-direct-webgl',
     [ValidateSet('canvaskit', 'skwasm')] [string] $FlutterRenderer = 'canvaskit',
     [switch] $Resize,
+    [switch] $Fixtures,
+    [switch] $NativeFixtures,
+    [string] $DorotiPublishDirectory = '',
+    [ValidatePattern('^[a-zA-Z0-9-]+$')] [string] $ArtifactLabel = 'flutter-differential',
     [switch] $SkipBuild
 )
 
@@ -21,7 +25,7 @@ $dorotiRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $repositoryRoot = [IO.Path]::GetFullPath((Join-Path $dorotiRoot '..'))
 $flutterRoot = Join-Path $repositoryRoot 'reference/flutter_sample_app'
 $playwrightRoot = Join-Path $dorotiRoot 'validation/web-playwright'
-$artifactRoot = Join-Path $playwrightRoot 'artifacts/wrapper/flutter-differential'
+$artifactRoot = Join-Path $playwrightRoot "artifacts/wrapper/$ArtifactLabel"
 $dorotiProject = Join-Path $repositoryRoot 'DorotiDemoApp/web/DorotiDemoApp.Web.csproj'
 $dorotiUrl = "http://127.0.0.1:$DorotiPort"
 $flutterUrl = "http://127.0.0.1:$FlutterPort"
@@ -77,8 +81,15 @@ Invoke-DifferentialProcess -FilePath $flutter.FlutterCommand `
     -WorkingDirectory $flutterRoot -Name 'flutter-build'
 }
 
-$dorotiServer = Start-Process -FilePath $dotnet `
-    -ArgumentList @('run', '--project', $dorotiProject, '--configuration', $Configuration, '--no-build', '--no-restore', '--no-launch-profile', '--urls', $dorotiUrl) `
+$dorotiServerFile = $dotnet
+$dorotiServerArguments = @('run', '--project', $dorotiProject, '--configuration', $Configuration, '--no-build', '--no-restore', '--no-launch-profile', '--urls', $dorotiUrl)
+if ($DorotiPublishDirectory) {
+    if (-not (Test-Path (Join-Path $DorotiPublishDirectory 'index.html'))) { throw 'Published Doroti index.html is missing.' }
+    $dorotiServerFile = $python
+    $dorotiServerArguments = @((Join-Path $PSScriptRoot 'serve-web-static.py'), '--port', "$DorotiPort", '--directory', $DorotiPublishDirectory)
+}
+$dorotiServer = Start-Process -FilePath $dorotiServerFile `
+    -ArgumentList $dorotiServerArguments `
     -WorkingDirectory $repositoryRoot -WindowStyle Hidden -PassThru `
     -RedirectStandardOutput (Join-Path $artifactRoot 'doroti-server.stdout.log') `
     -RedirectStandardError (Join-Path $artifactRoot 'doroti-server.stderr.log')
@@ -108,6 +119,7 @@ try {
         Runs = $env:DOROTI_DIFFERENTIAL_RUNS
         FlutterRenderer = $env:DOROTI_FLUTTER_RENDERER
         FlutterRevision = $env:DOROTI_FLUTTER_REVISION
+        BuildMode = $env:DOROTI_DIFFERENTIAL_BUILD_MODE
     }
     try {
         $env:DOROTI_WEB_BASE_URL = $dorotiUrl
@@ -115,11 +127,13 @@ try {
         $env:DOROTI_WEB_RENDERER_MODE = $RendererMode
         $env:DOROTI_FLUTTER_RENDERER = $FlutterRenderer
         $env:DOROTI_FLUTTER_REVISION = $flutter.Revision
-        $env:DOROTI_WEB_ARTIFACT_LABEL = 'flutter-differential'
+        $env:DOROTI_DIFFERENTIAL_BUILD_MODE = if ($DorotiPublishDirectory) { 'Publish' } else { 'Build' }
+        $env:DOROTI_WEB_ARTIFACT_LABEL = $ArtifactLabel
         $env:DOROTI_DIFFERENTIAL_RUNS = [string]$Runs
-        $testFile = if ($Resize) { 'tests/flutter-resize-differential.spec.ts' } else { 'tests/flutter-differential.spec.ts' }
+        $testFile = if ($NativeFixtures) { 'tests/flutter-native-fixtures.spec.ts' } elseif ($Fixtures) { 'tests/flutter-resize-fixtures.spec.ts' } elseif ($Resize) { 'tests/flutter-resize-differential.spec.ts' } else { 'tests/flutter-differential.spec.ts' }
+        $testProject = if ($NativeFixtures) { '--project=desktop-chrome-headed' } else { '--project=chromium-hardware' }
         Invoke-DifferentialProcess -FilePath $npx `
-            -ArgumentList @('playwright', 'test', $testFile, '--project=chromium-hardware') `
+            -ArgumentList @('playwright', 'test', $testFile, $testProject) `
             -WorkingDirectory $playwrightRoot -Name 'playwright'
     }
     finally {
@@ -130,6 +144,7 @@ try {
         if ($null -eq $previous.Runs) { Remove-Item Env:DOROTI_DIFFERENTIAL_RUNS -ErrorAction SilentlyContinue } else { $env:DOROTI_DIFFERENTIAL_RUNS = $previous.Runs }
         if ($null -eq $previous.FlutterRenderer) { Remove-Item Env:DOROTI_FLUTTER_RENDERER -ErrorAction SilentlyContinue } else { $env:DOROTI_FLUTTER_RENDERER = $previous.FlutterRenderer }
         if ($null -eq $previous.FlutterRevision) { Remove-Item Env:DOROTI_FLUTTER_REVISION -ErrorAction SilentlyContinue } else { $env:DOROTI_FLUTTER_REVISION = $previous.FlutterRevision }
+        if ($null -eq $previous.BuildMode) { Remove-Item Env:DOROTI_DIFFERENTIAL_BUILD_MODE -ErrorAction SilentlyContinue } else { $env:DOROTI_DIFFERENTIAL_BUILD_MODE = $previous.BuildMode }
     }
 }
 finally {

@@ -5,8 +5,12 @@ import 'dart:js_interop_unsafe';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
+import 'resize_fixture.dart';
 
-void main() => runApp(const DifferentialApp());
+void main() {
+  final fixture = Uri.base.queryParameters['dorotiResizeFixture'];
+  runApp(['F0', 'F1', 'F2'].contains(fixture) ? ResizeFixture(fixture!) : const DifferentialApp());
+}
 
 class DifferentialApp extends StatelessWidget {
   const DifferentialApp({super.key});

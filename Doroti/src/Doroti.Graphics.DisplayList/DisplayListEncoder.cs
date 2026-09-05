@@ -11,9 +11,12 @@ public static class DisplayListEncoder
         DisplayListFlags.DiagnosticCapture;
     private const DisplayResourceFlags KnownResourceFlags = DisplayResourceFlags.Recoverable;
 
-    public static byte[] Encode(DisplayListDocument document)
+    public static byte[] Encode(DisplayListDocument document) => Encode(document, null);
+
+    public static byte[] Encode(DisplayListDocument document, DisplayListEncodingCache? cache)
     {
         ArgumentNullException.ThrowIfNull(document);
+        cache?.BeginFrame();
         ValidateScene(document.Scene);
         if ((document.Flags & ~KnownFlags) != 0)
         {
@@ -66,7 +69,13 @@ public static class DisplayListEncoder
             var payloadLengthOffset = commandWriter.Length;
             commandWriter.WriteUInt32(0);
             var payloadOffset = commandWriter.Length;
-            WriteCommandPayload(commandWriter, command, context);
+            if (cache is not null && cache.TryGet(command, out var cachedPayload))
+                commandWriter.WriteBytes(cachedPayload);
+            else
+            {
+                WriteCommandPayload(commandWriter, command, context);
+                cache?.Add(command, commandWriter.WrittenSpan[payloadOffset..]);
+            }
             commandWriter.PatchUInt32(
                 payloadLengthOffset,
                 checked((uint)(commandWriter.Length - payloadOffset)));

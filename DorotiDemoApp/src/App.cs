@@ -145,7 +145,9 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     private Material.MaterialApp CreateRootApp()
     {
-        Widget Gallery() => new MaterialGallery(
+        Widget Gallery() => Environment.GetEnvironmentVariable("DOROTI_RESIZE_FIXTURE") is "F0" or "F1" or "F2"
+            ? new ResizeFixture(Environment.GetEnvironmentVariable("DOROTI_RESIZE_FIXTURE")!)
+            : new MaterialGallery(
                 state => GalleryState = state,
                 scaffold => RootScaffold = scaffold);
 

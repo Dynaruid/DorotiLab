@@ -72,6 +72,9 @@ interface HostSnapshot {
 }
 
 interface PresenterState {
+  presentation: string;
+  bitmapConsumed: number;
+  bitmapClosed: number;
   canvas: HTMLCanvasElement;
   uiWorker: Worker;
   rasterWorker: Worker;
@@ -102,12 +105,19 @@ const rasterRestartBudget = 3;
 const manifestLogicalUrl = `_content/Doroti.Host.Web/canvaskit/${canvasKitVersion}/canvaskit.manifest.json`;
 const mainInboundKinds = new Set([
   "bootstrap-ready", "ui-canvaskit-ready", "gpu-ready", "runtime-ready", "ui-heartbeat",
-  "ui-diagnostics", "raster-diagnostics", "direct-commit", "managed-work", "control", "control-request",
+  "ui-diagnostics", "raster-diagnostics", "direct-commit", "bitmap-commit", "managed-work", "control", "control-request",
   "closed", "context-lost", "raster-fatal", "disposed", "fatal", "stage-trace",
 ]);
 
 export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
   requireCapabilities();
+  const presentation = new URL(location.href).searchParams.get("dorotiPresentation") ?? "direct";
+  if (!["direct", "bitmap-crop", "bitmap-exact"].includes(presentation)) throw new Error("Unknown CanvasKit presentation candidate");
+  const createRasterCanvas = (element: HTMLCanvasElement): OffscreenCanvas | null => {
+    if (presentation === "direct") return createWorkerVisibleSurface(element, true).offscreen;
+    if (!element.getContext("bitmaprenderer")) throw new Error("P2 bitmaprenderer unsupported");
+    return new OffscreenCanvas(element.width, element.height);
+  };
   const { manifest, verification: assetVerification } = await loadCanvasKitManifest();
   const baseUrl = new URL(`./${manifest.logicalBasePath}`, document.baseURI);
   // URL objects are accepted by Worker/fetch but are not structured-cloneable.
@@ -134,6 +144,7 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
   let currentSnapshot: HostSnapshot | null = null;
   const pendingUiMessages: PendingUiMessage[] = [];
   let disposed = false;
+  let cleanupPendingBitmap = (): void => {};
   let restarting = false;
   let diagnosticContextLossPending = false;
   let resolveReady!: (value: "started") => void;
@@ -215,6 +226,7 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
   let uiWorker = createDorotiClassicWorker(bootstrapUrl);
   let rasterWorker = createDorotiClassicWorker(bootstrapUrl);
   presenter = {
+    presentation, bitmapConsumed: 0, bitmapClosed: 0,
     canvas, uiWorker, rasterWorker,
     uiSessionId: 1, rasterSessionId: 1, canvasLeaseId: 0, restartCount: 0,
     contextGeneration: 0, surfaceGeneration: 0, frontGeneration: 0, frontRequestId: 0,
@@ -418,16 +430,48 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
 
   const attachRasterWorker = (worker: Worker): void => {
     const workerSessionId = presenter.rasterSessionId;
-    worker.addEventListener("message", (event) => {
-      if (worker !== presenter.rasterWorker || workerSessionId !== presenter.rasterSessionId) return;
+    let pending: Record<string, unknown> | null = null;
+    let pendingRaf = 0;
+    const discard = (message: Record<string, unknown>): void => {
+      if (message.bitmap instanceof ImageBitmap) { message.bitmap.close(); presenter.bitmapClosed++; }
+      worker.postMessage({ protocolVersion, topologyVersion, kind: "bitmap-consumed",
+        rasterSessionId: workerSessionId, requestId: message.requestId });
+    };
+    cleanupPendingBitmap = () => {
+      if (pendingRaf) cancelAnimationFrame(pendingRaf);
+      pendingRaf = 0;
+      if (pending) discard(pending);
+      pending = null;
+    };
+    const receive = (event: MessageEvent): void => {
+      if (disposed || worker !== presenter.rasterWorker || workerSessionId !== presenter.rasterSessionId) {
+        if (event.data?.bitmap instanceof ImageBitmap) event.data.bitmap.close();
+        return;
+      }
       let message: Record<string, unknown>;
       try {
         message = decodeDorotiMessage(event.data, mainInboundKinds);
       } catch (error) {
+        if (event.data?.bitmap instanceof ImageBitmap) { event.data.bitmap.close(); presenter.bitmapClosed++; }
         void restartRaster(`Raster control protocol violation: ${String(error)}`);
         return;
       }
-      if (Number(message.rasterSessionId ?? presenter.rasterSessionId) !== presenter.rasterSessionId) return;
+      if (Number(message.rasterSessionId ?? presenter.rasterSessionId) !== presenter.rasterSessionId) {
+        if (message.bitmap instanceof ImageBitmap) message.bitmap.close();
+        return;
+      }
+      if (message.kind === "bitmap-commit" && !message.applyFromRaf &&
+          new URL(location.href).searchParams.get("dorotiBitmapApply") === "raf") {
+        if (pending) discard(pending);
+        pending = message;
+        if (!pendingRaf) pendingRaf = requestAnimationFrame(() => {
+          pendingRaf = 0;
+          const ready = pending;
+          pending = null;
+          if (ready) receive(new MessageEvent("message", { data: { ...ready, applyFromRaf: true } }));
+        });
+        return;
+      }
       switch (message.kind) {
         case "stage-trace": collectors.get(Number(message.collectionId))?.("raster", message.trace); break;
         case "gpu-ready": {
@@ -447,7 +491,9 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
           break;
         }
         case "raster-diagnostics": presenter.rasterDiagnostics = message.diagnostics as Record<string, unknown>; break;
+        case "bitmap-commit":
         case "direct-commit": {
+          const bitmap = message.bitmap;
           const generation = Number(message.generation);
           const logicalWidth = Number(message.logicalWidth);
           const logicalHeight = Number(message.logicalHeight);
@@ -468,8 +514,30 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
               !Number.isSafeInteger(capacityHeight) || capacityHeight < physicalHeight ||
               physicalWidth !== Math.round(logicalWidth * devicePixelRatio) ||
               physicalHeight !== Math.round(logicalHeight * devicePixelRatio)) {
+            if (bitmap instanceof ImageBitmap) { bitmap.close(); presenter.bitmapClosed++; }
             void restartRaster("CanvasKit Raster emitted an invalid or non-monotonic direct commit");
             break;
+          }
+          if (presentation !== "direct") {
+            if (!(bitmap instanceof ImageBitmap) || bitmap.width !== physicalWidth || bitmap.height !== physicalHeight) {
+              if (bitmap instanceof ImageBitmap) { bitmap.close(); presenter.bitmapClosed++; }
+              void restartRaster("P2 bitmap identity/size mismatch");
+              break;
+            }
+            try {
+              canvas.width = physicalWidth;
+              canvas.height = physicalHeight;
+              const context = canvas.getContext("bitmaprenderer");
+              if (!context) throw new Error("P2 bitmaprenderer disappeared");
+              context.transferFromImageBitmap(bitmap);
+              presenter.bitmapConsumed++;
+              worker.postMessage({ protocolVersion, topologyVersion, kind: "bitmap-consumed",
+                rasterSessionId: presenter.rasterSessionId, requestId: message.requestId });
+            } catch (error) {
+              bitmap.close(); presenter.bitmapClosed++;
+              void restartRaster(`P2 consumption failed: ${String(error)}`);
+              break;
+            }
           }
           commitCanvasKitFrontGeometry(
             canvas, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
@@ -509,7 +577,8 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
           break;
         }
       }
-    });
+    };
+    worker.addEventListener("message", receive);
     worker.addEventListener("error", (event) => {
       if (worker !== presenter.rasterWorker || workerSessionId !== presenter.rasterSessionId) return;
       void restartRaster(String(event.message));
@@ -526,6 +595,7 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
   const fail = (reason: unknown): void => {
     if (disposed) return;
     disposed = true;
+    cleanupPendingBitmap();
     root.dataset.dorotiWorkerRuntime = "failed";
     presenter.uiWorker.terminate();
     presenter.rasterWorker.terminate();
@@ -551,6 +621,9 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
       topologyVersion,
       kind: "canvaskit-bootstrap-init",
       role: "raster",
+      presentation,
+      frameMarker: new URL(location.href).searchParams.get("dorotiFrameMarker") === "1",
+      drainScheduling: new URL(location.href).searchParams.get("dorotiRasterScheduling") ?? "microtask",
       sessionId: presenter.uiSessionId,
       rasterSessionId: presenter.rasterSessionId,
       canvasKitJsUrl,
@@ -573,6 +646,9 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
     restarting = true;
     try {
       presenter.restartCount++;
+      cleanupPendingBitmap();
+      presenter.bitmapConsumed = 0;
+      presenter.bitmapClosed = 0;
       presenter.rasterSessionId++;
       diagnosticContextLossPending = false;
       presenter.rasterReady = false;
@@ -606,7 +682,7 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
       presenter.rasterWorker = nextWorker;
       const leaseId = leaseLedger.create(canvas.id, presenter.rasterSessionId);
       presenter.canvasLeaseId = leaseId;
-      const offscreen = createWorkerVisibleSurface(canvas, true).offscreen;
+      const offscreen = createRasterCanvas(canvas);
       if (!offscreen) throw new Error("Doroti CanvasKit replacement canvas transfer failed.");
       startRaster(nextWorker, nextChannel.port2, offscreen, leaseId);
       recordExternalWorkerTrace(1, "worker-restart", "canvaskit-supervisor", {
@@ -628,6 +704,11 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
     topologyVersion,
     kind: "canvaskit-bootstrap-init",
     role: "ui",
+    resizeFixture: new URL(location.href).searchParams.get("dorotiResizeFixture") ?? "F3",
+    copyOwnership: new URL(location.href).searchParams.get("dorotiCopyOwnership") ?? "baseline",
+    pictureCache: new URL(location.href).searchParams.get("dorotiPictureCache") === "1",
+    encodingCache: new URL(location.href).searchParams.get("dorotiEncodingCache") === "1",
+    metricsCoalescing: new URL(location.href).searchParams.get("dorotiMetricsCoalescing") ?? "immediate",
     stageTrace: stageTrace.enabled,
     resizeScheduling: new URL(location.href).searchParams.get("dorotiResizeScheduling") === "display" ? "display" : "baseline-30fps",
     sessionId: presenter.uiSessionId,
@@ -641,13 +722,14 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
   }, [initialChannel.port1]);
   const initialLeaseId = leaseLedger.create(canvas.id, presenter.rasterSessionId);
   presenter.canvasLeaseId = initialLeaseId;
-  const offscreen = createWorkerVisibleSurface(canvas, true).offscreen;
+  const offscreen = createRasterCanvas(canvas);
   if (!offscreen) throw new Error("Doroti CanvasKit visible canvas transfer failed.");
   startRaster(rasterWorker, initialChannel.port2, offscreen, initialLeaseId);
 
   globalThis.addEventListener("pagehide", () => {
     if (disposed) return;
     disposed = true;
+    cleanupPendingBitmap();
     presenter.uiWorker.postMessage({ protocolVersion, topologyVersion, kind: "dispose" });
     presenter.rasterWorker.postMessage({ protocolVersion, topologyVersion, kind: "dispose" });
     leaseLedger.retire(presenter.canvasLeaseId);
@@ -688,7 +770,8 @@ function presenterSnapshot(
     frontFramebufferId: null,
     stagingFramebufferId: null,
     rasterCanvasAttached: false,
-    visibleContext: "transferred-offscreen-webgl2-canvaskit",
+    visibleContext: presenter.presentation === "direct" ? "transferred-offscreen-webgl2-canvaskit" : "bitmaprenderer-canvaskit",
+    presentation: presenter.presentation,
     rasterWidth: Number(raster.physicalWidth ?? 0),
     rasterHeight: Number(raster.physicalHeight ?? 0),
     displayWidth: Number(raster.capacityWidth ?? raster.physicalWidth ?? 0),
@@ -699,12 +782,12 @@ function presenterSnapshot(
     uiCanvasKitOwnerCount: Number(ui.canvasKitOwnerCount ?? 0),
     rasterCanvasKitOwnerCount: Number(raster.canvasKitOwnerCount ?? 0),
     rasterWebGlOwnerCount: Number(raster.visibleCanvasContextOwnerCount ?? 0),
-    mainCanvasGetContextCount: 0,
+    mainCanvasGetContextCount: presenter.presentation === "direct" ? 0 : 1,
     uiCanvasGetContextCount: 0,
-    bitmapCreated: 0,
-    bitmapConsumed: 0,
-    bitmapClosed: 0,
-    activeBitmaps: 0,
+    bitmapCreated: Number(raster.bitmapCreated ?? 0),
+    bitmapConsumed: presenter.bitmapConsumed,
+    bitmapClosed: presenter.bitmapClosed,
+    activeBitmaps: Number(raster.bitmapCredits ?? 0),
     workerRestartCount: presenter.restartCount,
     workerRestartBudget: rasterRestartBudget,
     runtimeSessionId: presenter.uiSessionId,

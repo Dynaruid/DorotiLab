@@ -1,5 +1,6 @@
 import type { CanvasKit, CanvasKitInitOptions } from "canvaskit-wasm";
 import { CanvasKitStageTrace } from "./doroti.canvaskit.trace.js";
+import { captureCanvasKitFrameworkTrace } from "./doroti.web.js";
 import {
   completeCanvasKitResource,
   completeCanvasKitScene,
@@ -90,6 +91,14 @@ const inboundKinds = new Set([
 ]);
 const pool = new TransferBufferPool(4);
 const stageTrace = new CanvasKitStageTrace();
+let resizeFixture = "F3";
+let adoptManagedCopy = false;
+let pictureCache = false;
+let encodingCache = false;
+let coalesceMetrics = false;
+let pendingResizeMessage: Record<string, unknown> | null = null;
+let applyingResizeMessage = false;
+let coalescedResizeCount = 0;
 const resources = new Map<number, JournalResource>();
 const resourceOperations = new Set<string>();
 const pendingControls = new Map<number, { resolve(value: string): void; reject(reason: unknown): void }>();
@@ -176,13 +185,14 @@ function postRaster(kind: string, payload: Record<string, unknown> = {}, transfe
 }
 
 function scheduleManagedFrame(): void {
-  if (pendingManagedFrame === null || managedFrameRaf !== 0) return;
+  if ((pendingManagedFrame === null && pendingResizeMessage === null) || managedFrameRaf !== 0 || applyingResizeMessage) return;
   if (typeof globalThis.requestAnimationFrame !== "function")
     throw new Error("Doroti CanvasKit UI Worker requires requestAnimationFrame.");
 
   const scheduledRaf = globalThis.requestAnimationFrame((timestamp) => {
     if (managedFrameRaf !== scheduledRaf) return;
     managedFrameRaf = 0;
+    flushPendingResize();
     const pending = pendingManagedFrame;
     if (pending === null) return;
 
@@ -237,6 +247,10 @@ function scheduleManagedFrame(): void {
 }
 
 const bridge: CanvasKitUiBridge = {
+  get adoptsManagedCopy() { return adoptManagedCopy; },
+  recordInteropCopy(milliseconds, bytes, copies) {
+    stageTrace.record("interop-copy", snapshot?.resizeEpoch.generation, 0, { milliseconds, bytes, copies, callbackId: activeFrameCallbackId });
+  },
   submitDisplayList(bytes) {
     const copyStarted = performance.now();
     const document = validateDorotiDisplayList(bytes);
@@ -248,7 +262,9 @@ const bridge: CanvasKitUiBridge = {
     sceneAdmissions++;
     const scene: QueuedScene = {
       sequence,
-      bytes: bytes.slice(),
+      // The bridge transfers exclusive ownership of its managed->JS copy.
+      // Keep this journal through terminal/rebind; pool.copy remains necessary.
+      bytes: adoptManagedCopy ? bytes : bytes.slice(),
       expectedContextGeneration: exactGeneration(
         document.metadata.contextGeneration, "DisplayList contextGeneration"),
       expectedSurfaceGeneration: exactGeneration(
@@ -322,6 +338,13 @@ const bridge: CanvasKitUiBridge = {
 export async function startCanvasKitRole(context: CanvasKitRoleContext): Promise<void> {
   const envelope = context.initEnvelope;
   stageTrace.enabled = envelope.stageTrace === true;
+  resizeFixture = String(envelope.resizeFixture ?? "F3");
+  if (!["baseline", "owned"].includes(String(envelope.copyOwnership ?? "baseline"))) throw new Error("Unknown copy ownership");
+  adoptManagedCopy = envelope.copyOwnership === "owned";
+  pictureCache = envelope.pictureCache === true;
+  encodingCache = envelope.encodingCache === true;
+  coalesceMetrics = envelope.metricsCoalescing === "frame";
+  if (!["F0", "F1", "F2", "F3"].includes(resizeFixture)) throw new Error("Unknown resize fixture");
   liveResizeThrottleEnabled = envelope.resizeScheduling !== "display";
   if (envelope.role !== "ui") throw new Error("Doroti UI role received a non-UI bootstrap envelope.");
   sessionId = positiveInteger(envelope.sessionId, "sessionId");
@@ -383,7 +406,8 @@ function configureUiWorkerBridge(): void {
       scheduleManagedFrame();
     },
     recordManagedRaster(id, phase, width, height, duration) {
-      stageTrace.record(phase, snapshot?.resizeEpoch.generation, 0, { durationMicroseconds: duration, callbackId: activeFrameCallbackId });
+      stageTrace.record(phase, snapshot?.resizeEpoch.generation, 0, { durationMicroseconds: duration, width, height, callbackId: activeFrameCallbackId });
+      if (phase.startsWith("canvaskit-picture-") || phase === "canvaskit-mapped-command-count") return;
       if (phase === "canvaskit-map" || phase === "canvaskit-encode") return;
       post("managed-work", { hostId: id, phase, width, height, durationMicroseconds: duration });
     },
@@ -406,6 +430,36 @@ function configureUiWorkerBridge(): void {
   });
 }
 
+function flushPendingResize(): void {
+  if (!pendingResizeMessage) return;
+  const message = pendingResizeMessage;
+  pendingResizeMessage = null;
+  applyingResizeMessage = true;
+  try { applyResizeMessage(message); }
+  finally { applyingResizeMessage = false; }
+}
+
+function applyResizeMessage(message: Record<string, unknown>): void {
+  const epoch = message.resizeEpoch as ResizeEpoch;
+  snapshot = {
+    ...requireSnapshot(), logicalWidth: epoch.logicalWidth, logicalHeight: epoch.logicalHeight,
+    devicePixelRatio: epoch.devicePixelRatio,
+    generation: Math.max(requireSnapshot().generation, Number(message.hostGeneration)),
+    surfaceGeneration: canvasKitSurfaceGeneration(rasterSessionId, epoch.generation),
+    gpu: { ...requireSnapshot().gpu, contextGeneration: rasterSessionId,
+      surfaceGeneration: canvasKitSurfaceGeneration(rasterSessionId, epoch.generation) },
+    resizeEpoch: epoch,
+  };
+  if (rasterReady) postRaster("resize-target", { resizeEpoch: epoch });
+  if (managedHostReady) {
+    dispatchWorkerResizeEpoch(Number(message.hostId), Number(message.hostGeneration), epoch.generation,
+      epoch.logicalWidth, epoch.logicalHeight, epoch.physicalWidth, epoch.physicalHeight,
+      epoch.devicePixelRatio, epoch.timestampMicroseconds);
+    dispatchWorkerSnapshot(Number(message.hostId), JSON.stringify(snapshot));
+  }
+  stageTrace.record("ui-resize-applied", epoch.generation);
+}
+
 function installMainListener(): void {
   globalThis.addEventListener("message", (event: MessageEvent) => {
     let message: Record<string, unknown>;
@@ -416,9 +470,13 @@ function installMainListener(): void {
       return;
     }
     try {
+      // Input, focus, IME, snapshots and lifecycle are barriers. Only adjacent
+      // metrics may be replaced, and a frame flushes metrics before it starts.
+      if (message.kind !== "resize-epoch") { flushPendingResize(); scheduleManagedFrame(); }
       switch (message.kind) {
         case "collect-stage-trace":
-          post("stage-trace", { collectionId: message.collectionId, trace: stageTrace.snapshot() });
+          post("stage-trace", { collectionId: message.collectionId,
+            trace: { ...stageTrace.snapshot(), framework: captureCanvasKitFrameworkTrace() } });
           break;
         case "snapshot":
           snapshot = withRasterIdentity(message.snapshot as HostSnapshot);
@@ -432,31 +490,11 @@ function installMainListener(): void {
           const epoch = message.resizeEpoch as ResizeEpoch;
           stageTrace.record("ui-resize-received", epoch.generation);
           lastResizeEpochIngressMilliseconds = performance.now();
-          snapshot = {
-            ...requireSnapshot(),
-            logicalWidth: epoch.logicalWidth,
-            logicalHeight: epoch.logicalHeight,
-            devicePixelRatio: epoch.devicePixelRatio,
-            generation: Math.max(requireSnapshot().generation, Number(message.hostGeneration)),
-            surfaceGeneration: canvasKitSurfaceGeneration(rasterSessionId, epoch.generation),
-            gpu: {
-              ...requireSnapshot().gpu,
-              contextGeneration: rasterSessionId,
-              surfaceGeneration: canvasKitSurfaceGeneration(rasterSessionId, epoch.generation),
-            },
-            resizeEpoch: epoch,
-          };
-          // Preserve UI -> Raster ordering: the immutable target must be
-          // admitted before managed code can submit a DisplayList for it.
-          if (rasterReady) postRaster("resize-target", { resizeEpoch: epoch });
-          if (managedHostReady) {
-            dispatchWorkerResizeEpoch(
-              Number(message.hostId), Number(message.hostGeneration), epoch.generation,
-              epoch.logicalWidth, epoch.logicalHeight, epoch.physicalWidth, epoch.physicalHeight,
-              epoch.devicePixelRatio, epoch.timestampMicroseconds);
-            dispatchWorkerSnapshot(Number(message.hostId), JSON.stringify(snapshot));
-          }
-          stageTrace.record("ui-resize-applied", epoch.generation);
+          if (coalesceMetrics && managedHostReady) {
+            if (pendingResizeMessage) coalescedResizeCount++;
+            pendingResizeMessage = message;
+            scheduleManagedFrame();
+          } else applyResizeMessage(message);
           break;
         }
         case "input":
@@ -688,8 +726,13 @@ function maybeStartManagedRuntime(): void {
 async function startManagedRuntime(): Promise<void> {
   try {
     const resolvedDotnetModuleUrl = dotnetModuleUrl || new URL("../../_framework/dotnet.js", import.meta.url).href;
-    const dotnetModule = await import(resolvedDotnetModuleUrl) as { dotnet: { create(): Promise<DotnetRuntime> } };
-    const runtime = await dotnetModule.dotnet.create();
+    type RuntimeBuilder = { create(): Promise<DotnetRuntime>; withEnvironmentVariables(values: Record<string, string>): RuntimeBuilder };
+    const dotnetModule = await import(resolvedDotnetModuleUrl) as { dotnet: RuntimeBuilder };
+    const runtime = await dotnetModule.dotnet.withEnvironmentVariables({
+      DOROTI_RESIZE_FIXTURE: resizeFixture, DOROTI_PICTURE_CACHE: pictureCache ? "1" : "0",
+      DOROTI_ENCODING_CACHE: encodingCache ? "1" : "0",
+      DOROTI_STAGE_TRACE: stageTrace.enabled ? "1" : "0",
+    }).create();
     managedRuntime = runtime;
     await initializeManagedCallbacks();
     await initializeCanvasKitManagedCallbacks();
@@ -713,6 +756,7 @@ async function startManagedRuntime(): Promise<void> {
 }
 
 function disposeUiRole(): void {
+  pendingResizeMessage = null;
   if (heartbeatTimer !== 0) globalThis.clearInterval(heartbeatTimer);
   heartbeatTimer = 0;
   if (managedFrameRaf !== 0 && typeof globalThis.cancelAnimationFrame === "function")
@@ -750,6 +794,10 @@ function publishDiagnostics(): void {
 
 function diagnostics(): Readonly<Record<string, unknown>> {
   return {
+    copyOwnership: adoptManagedCopy ? "owned" : "baseline",
+    pictureCache,
+    encodingCache,
+    resizeFixture,
     topologyVersion,
     canvasKitOwnerCount: canvasKit ? 1 : 0,
     managedRuntimeCount: managedRuntime ? 1 : 0,
@@ -771,6 +819,8 @@ function diagnostics(): Readonly<Record<string, unknown>> {
     heartbeatSequence,
     inputDispatchCount,
     lastInputSequence,
+    metricsCoalescing: coalesceMetrics ? "frame" : "immediate",
+    coalescedResizeCount,
     frameTimings: {
       count: frameDispatchCount,
       dispatchTotalMilliseconds: frameDispatchTotalMilliseconds,

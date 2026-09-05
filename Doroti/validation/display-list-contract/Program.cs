@@ -61,6 +61,7 @@ Require(withoutChecksum.AsSpan().SequenceEqual(DisplayListEncoder.Encode(decoded
 
 VerifySceneTerminals();
 VerifyEncoderGuards();
+VerifyEncodingCache(representative, encoded);
 VerifyMalformedBuffers(encoded);
 VerifyResourceFailures();
 VerifyStringFailures();
@@ -114,6 +115,33 @@ static void VerifyEncoderGuards()
     ExpectException<ArgumentOutOfRangeException>(
         () => DisplayListEncoder.Encode(Fixtures.WithInvalidParagraphHeightMultiplier()),
         "The encoder rejects a nonpositive paragraph height multiplier.");
+}
+
+static void VerifyEncodingCache(DisplayListDocument document, byte[] expected)
+{
+    var cache = new DisplayListEncodingCache();
+    Require(DisplayListEncoder.Encode(document, cache).AsSpan().SequenceEqual(expected),
+        "A cold encoding cache preserves the entire canonical golden.");
+    Require(DisplayListEncoder.Encode(Fixtures.Representative(), cache).AsSpan().SequenceEqual(expected),
+        "Fresh immutable values reuse payloads without changing canonical bytes.");
+    Require(cache.FrameHits > 0 && cache.EntryCount > 0, "The warm encoding cache actually reuses payloads.");
+    ExpectException<ArgumentException>(() => DisplayListEncoder.Encode(Fixtures.WithMissingImageResource(), cache),
+        "Warm cached payloads never bypass per-scene resource validation.");
+    ExpectException<ArgumentOutOfRangeException>(() => DisplayListEncoder.Encode(Fixtures.WithInvalidOpacity(), cache),
+        "A warm encoding cache preserves malformed-value rejection.");
+    var changed = new DisplayListDocument(document.Scene, [], [
+        new DisplayDrawRectCommand(new DisplayRect(1, 2, 31, 42), new DisplayPaint(0xff123456)),
+    ]);
+    Require(DisplayListEncoder.Encode(changed, cache).AsSpan().SequenceEqual(DisplayListEncoder.Encode(changed)),
+        "Changed geometry and paint cannot retrieve stale encoded payloads.");
+    for (var i = 0; i < 9000; i++)
+        DisplayListEncoder.Encode(new DisplayListDocument(document.Scene, [], [
+            new DisplayDrawColorCommand((uint)i, DisplayBlendMode.Source),
+        ]), cache);
+    Require(cache.EntryCount <= 8192 && cache.RetainedBytes <= 8 * 1024 * 1024,
+        "Encoding-cache eviction respects entry and charged-memory bounds.");
+    cache.Clear();
+    Require(cache.EntryCount == 0 && cache.RetainedBytes == 0, "Producer disposal releases the encoding cache.");
 }
 
 static void VerifyMalformedBuffers(byte[] canonical)

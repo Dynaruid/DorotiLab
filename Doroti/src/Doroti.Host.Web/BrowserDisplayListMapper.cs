@@ -5,6 +5,58 @@ using UiImage = Doroti.Ui.Image;
 
 namespace Doroti.Host.Web;
 
+// Per view/producer instance, bounded CPU-only cache. Resource-bearing blocks
+// remain inline so resource generations and paragraph widths cannot go stale.
+// Only fixed-size commands/paints are retained: 32768 commands at a conservative
+// 1 KiB accounting charge each gives a 32 MiB CPU envelope. Paths, point arrays,
+// shaders and filter graphs are excluded instead of hiding unbounded payloads.
+internal sealed class BrowserPictureBlockCache(bool enabled)
+{
+    internal bool Enabled => enabled;
+    private readonly Dictionary<long, DisplayListCommand[]> _blocks = [];
+    private int _commandCount;
+    internal int Pictures { get; private set; }
+    internal int Hits { get; private set; }
+    internal int MappedCommands { get; set; }
+    internal void BeginFrame() { Pictures = 0; Hits = 0; MappedCommands = 0; }
+    internal void Clear() { _blocks.Clear(); _commandCount = 0; BeginFrame(); }
+    internal bool TryGet(long id, out DisplayListCommand[] block)
+    {
+        Pictures++;
+        if (enabled && _blocks.TryGetValue(id, out block!)) { Hits++; return true; }
+        block = [];
+        return false;
+    }
+    internal void Add(long id, DisplayListCommand[] commands)
+    {
+        if (!enabled || commands.Length > 4096 || commands.Any(command => !IsBounded(command))) return;
+        while (_blocks.Count >= 128 || _commandCount + commands.Length > 32768)
+        {
+            var first = _blocks.First();
+            _commandCount -= first.Value.Length;
+            _blocks.Remove(first.Key);
+        }
+        _blocks.Add(id, commands);
+        _commandCount += commands.Length;
+    }
+    private static bool IsBounded(DisplayListCommand command) => command switch
+    {
+        DisplaySaveCommand or DisplayRestoreCommand or DisplayTransformCommand or
+            DisplayClipRectCommand or DisplayClipRoundedRectCommand or DisplayDrawColorCommand => true,
+        DisplayDrawRectCommand c => IsSimple(c.Paint),
+        DisplayDrawRoundedRectCommand c => IsSimple(c.Paint),
+        DisplayDrawDoubleRoundedRectCommand c => IsSimple(c.Paint),
+        DisplayDrawCircleCommand c => IsSimple(c.Paint),
+        DisplayDrawOvalCommand c => IsSimple(c.Paint),
+        DisplayDrawLineCommand c => IsSimple(c.Paint),
+        DisplayDrawArcCommand c => IsSimple(c.Paint),
+        DisplayDrawPaintCommand c => IsSimple(c.Paint),
+        _ => false,
+    };
+    private static bool IsSimple(DisplayPaint paint) => paint.Shader is null &&
+        paint.ColorFilter is null && paint.MaskFilter is null && paint.ImageFilter is null;
+}
+
 internal interface IBrowserDisplayListResources
 {
     DisplayResourceReference DefaultFont { get; }
@@ -26,7 +78,8 @@ internal static class BrowserDisplayListMapper
         Scene scene,
         DisplayListSceneMetadata metadata,
         uint backgroundColor,
-        IBrowserDisplayListResources resources)
+        IBrowserDisplayListResources resources,
+        BrowserPictureBlockCache? cache = null)
     {
         ArgumentNullException.ThrowIfNull(scene);
         ArgumentNullException.ThrowIfNull(resources);
@@ -39,7 +92,8 @@ internal static class BrowserDisplayListMapper
             new DisplayDrawColorCommand(backgroundColor, DisplayBlendMode.Source),
         };
         var referenced = new Dictionary<DisplayResourceReference, DisplayResourceDescriptor>();
-        AppendScene(scene.Commands, commands, referenced, scopedResources);
+        cache?.BeginFrame();
+        AppendScene(scene.Commands, commands, referenced, scopedResources, cache);
         return new(metadata, referenced.Values, commands);
     }
 
@@ -47,7 +101,8 @@ internal static class BrowserDisplayListMapper
         IReadOnlyList<SceneCommand> source,
         List<DisplayListCommand> destination,
         Dictionary<DisplayResourceReference, DisplayResourceDescriptor> referenced,
-        IBrowserDisplayListResources resources)
+        IBrowserDisplayListResources resources,
+        BrowserPictureBlockCache? cache)
     {
         foreach (var command in source)
         {
@@ -56,7 +111,27 @@ internal static class BrowserDisplayListMapper
                 case "picture" when command.HostPayload is ScenePicturePayload picture:
                     destination.Add(new DisplaySaveCommand());
                     destination.Add(new DisplayTransformCommand(Translation(picture.Offset.dx, picture.Offset.dy)));
-                    AppendPicture(picture.Commands, destination, referenced, resources);
+                    if (cache is not null && cache.TryGet(picture.SnapshotIdentity, out var block))
+                        destination.AddRange(block);
+                    else if (cache?.Enabled != true)
+                    {
+                        var before = destination.Count;
+                        AppendPicture(picture.Commands, destination, referenced, resources);
+                        if (cache is not null) cache.MappedCommands += destination.Count - before;
+                    }
+                    else
+                    {
+                        var mapped = new List<DisplayListCommand>();
+                        var dependencies = new Dictionary<DisplayResourceReference, DisplayResourceDescriptor>();
+                        AppendPicture(picture.Commands, mapped, dependencies, resources);
+                        destination.AddRange(mapped);
+                        foreach (var dependency in dependencies) referenced.TryAdd(dependency.Key, dependency.Value);
+                        if (cache is not null)
+                        {
+                            cache.MappedCommands += mapped.Count;
+                            if (dependencies.Count == 0) cache.Add(picture.SnapshotIdentity, mapped.ToArray());
+                        }
+                    }
                     destination.Add(new DisplayRestoreCommand());
                     break;
                 case "offset" when command.HostPayload is SceneOffsetPayload offset:
@@ -114,7 +189,7 @@ internal static class BrowserDisplayListMapper
                 case "retained" when command.HostPayload is SceneRetainedPayload retained:
                     // Retained CLR array identity is deliberately not a wire key.  Inline its
                     // immutable value snapshot until the producer assigns a stable resource ID.
-                    AppendScene(retained.Commands, destination, referenced, resources);
+                    AppendScene(retained.Commands, destination, referenced, resources, cache);
                     break;
                 case "pop":
                     destination.Add(new DisplayRestoreCommand());

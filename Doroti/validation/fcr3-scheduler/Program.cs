@@ -6,10 +6,25 @@ VerifyFlutterSchedulerOrdering();
 VerifyMonotonicTimestampFence();
 VerifyBoundedTraceCausality();
 VerifyMetricsActivityUsesArrivalClock();
+VerifyRecordingClockIsIndependentOfHostTimestamp();
 VerifyPlatformEventDrainsMicrotasks();
 VerifyLatestMetricsFrameAdmission();
 
 Console.WriteLine($"FCR-3 scheduler runtime contract: PASS (configuration={ConfigurationName()})");
+
+static void VerifyRecordingClockIsIndependentOfHostTimestamp()
+{
+    var trace = new DorotiFrameTrace { MeasureRecordingTime = true };
+    var before = DorotiFrameClock.Now.Ticks / 10;
+    trace.Record(DorotiFramePhase.beginFrame, 1, TimeSpan.FromDays(1));
+    trace.Record(DorotiFramePhase.layout, 1, DorotiFrameClock.Now);
+    var after = DorotiFrameClock.Now.Ticks / 10;
+    var entries = trace.Snapshot();
+    Require(entries[0].TimestampMicroseconds == entries[1].TimestampMicroseconds,
+        "Historical causal timestamps keep their forward clamp.");
+    Require(entries.All(entry => entry.RecordedAtMicroseconds >= before && entry.RecordedAtMicroseconds <= after),
+        "Diagnostic phase timing uses actual runtime recording time even after a future host timestamp.");
+}
 
 static void VerifyFlutterSchedulerOrdering()
 {

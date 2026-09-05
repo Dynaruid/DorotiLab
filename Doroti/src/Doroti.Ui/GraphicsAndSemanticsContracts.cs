@@ -337,6 +337,7 @@ public sealed record SceneCommand(string Operation, object? Payload)
 }
 
 internal sealed record ScenePicturePayload(
+    long SnapshotIdentity,
     Offset Offset,
     IReadOnlyList<PathCommand> Commands,
     Rect? CanvasBounds,
@@ -586,7 +587,7 @@ public sealed class SceneBuilder
             // Picture is a Dart-side handle whose dispose may run as soon as a
             // replacement layer is built. The scene owns the immutable command
             // snapshot so raster/replay never observes that handle's lifetime.
-            HostPayload = new ScenePicturePayload(offset, commands, canvasBounds, isComplexHint, willChangeHint),
+            HostPayload = new ScenePicturePayload(picture.SnapshotIdentity, offset, commands, canvasBounds, isComplexHint, willChangeHint),
         });
     }
 

@@ -124,3 +124,8 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
     });
   });
 });
+// Preserve worker-side stacks: ErrorEvent.error is not cloned to the main
+// Worker error event, which otherwise loses WASM startup failure evidence.
+globalThis.addEventListener("error", (event: ErrorEvent) => {
+  console.error("CanvasKit worker uncaught error", event.error?.stack ?? event.message);
+});

@@ -25,4 +25,22 @@
     <DorotiJavaScriptPlugin Include="echo" Channel="doroti.example/echo" ExportName="invoke" ModuleUrl="./plugins/echo.js" />
   </ItemGroup>
   <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+  <Target Name="DorotiSelectExperimentalAotCompiler" BeforeTargets="_WasmAotCompileApp"
+          Condition="'$(DorotiAotCompilerPath)' != ''">
+    <Error Condition="!Exists('$(DorotiAotCompilerPath)')" Text="Experimental AOT compiler does not exist." />
+    <ItemGroup>
+      <MonoAotCrossCompiler Remove="@(MonoAotCrossCompiler)" />
+      <MonoAotCrossCompiler Include="$(DorotiAotCompilerPath)" RuntimeIdentifier="browser-wasm" />
+    </ItemGroup>
+    <Message Importance="High" Text="Doroti experimental AOT compiler: @(MonoAotCrossCompiler)" />
+  </Target>
+  <Target Name="DorotiSelectPartialAot" BeforeTargets="_WasmAotCompileApp"
+          Condition="'$(DorotiPartialAot)' == 'true'">
+    <ItemGroup>
+      <_WasmAssembliesInternal Update="@(_WasmAssembliesInternal)" Condition="'%(Filename)' == 'Doroti.Framework.Material'">
+        <AOT_InternalForceToInterpret>true</AOT_InternalForceToInterpret>
+      </_WasmAssembliesInternal>
+    </ItemGroup>
+    <Message Importance="High" Text="Doroti partial AOT: Material remains interpreted; full AOT compiler failure is not reclassified." />
+  </Target>
 </Project>

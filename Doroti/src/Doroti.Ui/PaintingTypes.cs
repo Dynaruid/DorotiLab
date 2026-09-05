@@ -280,13 +280,15 @@ public class Shadow(Color color, Offset offset, double blurRadius)
 
 public sealed class Picture : IDisposable
 {
+    private static long _nextSnapshotIdentity;
+    internal long SnapshotIdentity { get; } = Interlocked.Increment(ref _nextSnapshotIdentity);
     private int _disposed;
     public Picture(IReadOnlyList<PathCommand>? commands = null)
         : this((commands ?? []).ToArray())
     {
     }
 
-    private Picture(PathCommand[] ownedCommands) => Commands = ownedCommands;
+    private Picture(PathCommand[] ownedCommands) => Commands = Array.AsReadOnly(ownedCommands);
 
     internal static Picture FromOwnedCommands(PathCommand[] ownedCommands) =>
         new(ownedCommands ?? throw new ArgumentNullException(nameof(ownedCommands)));

@@ -76,7 +76,8 @@ public sealed record DorotiFrameTraceEntry(
     long MetricsGeneration = 0,
     long FrameworkFrameNumber = 0,
     long CausalFrameId = 0,
-    long ContextGeneration = 0);
+    long ContextGeneration = 0,
+    long RecordedAtMicroseconds = 0);
 
 /// <summary>
 /// Small ring buffer deliberately shared by framework dispatch and host raster.
@@ -103,6 +104,9 @@ public sealed class DorotiFrameTrace
     private long _previousMetricsTimestampMicroseconds;
     private long _lastMetricsTimestampMicroseconds;
     private readonly HashSet<long> _activeScrollPositions = [];
+    // Opt-in diagnostic wall-work clock. TimestampMicroseconds remains the
+    // historical causally clamped host clock and must not time phase work.
+    public bool MeasureRecordingTime { get; set; }
 
     public bool HasActiveScrollActivity
     {
@@ -197,7 +201,8 @@ public sealed class DorotiFrameTrace
                 metricsGeneration,
                 frameworkFrameNumber,
                 causalFrameId,
-                contextGeneration);
+                contextGeneration,
+                MeasureRecordingTime ? DorotiFrameClock.Now.Ticks / 10 : 0);
             _nextEntryIndex = (_nextEntryIndex + 1) % Capacity;
             if (_entryCount < Capacity) _entryCount++;
         }
@@ -279,7 +284,8 @@ public sealed class DorotiFrameTrace
         long MetricsGeneration,
         long FrameworkFrameNumber,
         long CausalFrameId,
-        long ContextGeneration)
+        long ContextGeneration,
+        long RecordedAtMicroseconds)
     {
         internal DorotiFrameTraceEntry ToEntry() => new(
             Sequence,
@@ -303,6 +309,7 @@ public sealed class DorotiFrameTrace
             MetricsGeneration,
             FrameworkFrameNumber,
             CausalFrameId,
-            ContextGeneration);
+            ContextGeneration,
+            RecordedAtMicroseconds);
     }
 }

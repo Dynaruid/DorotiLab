@@ -22,7 +22,17 @@ export class CanvasKitStageTrace {
     this.count++;
   }
   snapshot(): Record<string, unknown> {
+    const deltas: number[] = [];
+    let prior = performance.now();
+    for (let index = 0; index < 256; index++) {
+      const now = performance.now();
+      if (now > prior) deltas.push(now - prior);
+      prior = now;
+    }
     return {
+      clockResolutionProbe: { reads: 256, positiveDeltas: deltas.length,
+        minimumMilliseconds: deltas.length ? Math.min(...deltas) : null,
+        limitation: "sampled timer precision, not clock synchronization accuracy" },
       timeOrigin: performance.timeOrigin,
       clock: "performance.timeOrigin + performance.now",
       dropped: Math.max(0, this.count - 8192),

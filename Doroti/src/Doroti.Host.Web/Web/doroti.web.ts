@@ -27,6 +27,8 @@ export interface DorotiManagedMemoryView {
 }
 
 export interface CanvasKitUiBridge {
+  readonly adoptsManagedCopy?: boolean;
+  recordInteropCopy?(milliseconds: number, bytes: number, copies: number): void;
   submitDisplayList(bytes: Uint8Array): number;
   registerResource(
     resourceId: number,
@@ -40,6 +42,7 @@ export interface CanvasKitUiBridge {
 }
 
 interface CanvasKitManagedCallbacks {
+  captureFrameTrace(): string;
   completeScene(sceneSequence: number, terminal: string, reason: string, receiptJson: string): void;
   completeResource(
     resourceId: number,
@@ -362,6 +365,7 @@ interface DorotiCanvasKitAssemblyExports {
       Web: {
         BrowserCanvasKitInterop: {
           CompleteScene: CanvasKitManagedCallbacks["completeScene"];
+          CaptureFrameTrace: CanvasKitManagedCallbacks["captureFrameTrace"];
           CompleteResource: CanvasKitManagedCallbacks["completeResource"];
         };
       };
@@ -454,7 +458,12 @@ export function configureCanvasKitUiBridge(bridge: CanvasKitUiBridge): void {
 export function submitCanvasKitDisplayList(bytes: Uint8Array | DorotiManagedMemoryView): number {
   if (!canvasKitManagedCallbacks)
     throw new Error("Doroti CanvasKit managed terminal callbacks are not initialized.");
-  return requireCanvasKitUiBridge().submitDisplayList(copyManagedBytes(bytes));
+  const bridge = requireCanvasKitUiBridge();
+  const started = performance.now();
+  const owned = copyManagedBytes(bytes, bridge.adoptsManagedCopy === true);
+  bridge.recordInteropCopy?.(performance.now() - started, owned.byteLength,
+    bytes instanceof Uint8Array || bridge.adoptsManagedCopy ? 1 : 2);
+  return bridge.submitDisplayList(owned);
 }
 
 export function registerCanvasKitResource(
@@ -505,13 +514,16 @@ function requireCanvasKitUiBridge(): CanvasKitUiBridge {
   return activeCanvasKitUiBridge;
 }
 
-function copyManagedBytes(value: Uint8Array | DorotiManagedMemoryView): Uint8Array {
+function copyManagedBytes(value: Uint8Array | DorotiManagedMemoryView, adoptSlice = false): Uint8Array {
   if (value instanceof Uint8Array) return value.slice();
   if (!value || typeof value.slice !== "function")
     throw new Error("Doroti CanvasKit byte input must be a Uint8Array or managed memory view.");
   const sliced = value.slice();
   try {
-    return new Uint8Array(sliced.buffer, sliced.byteOffset, sliced.byteLength).slice();
+    // .NET MemoryView.slice() returns a fresh JS-owned typed array (verified
+    // against the served runtime). Never retain the managed view or detach WASM.
+    const owned = new Uint8Array(sliced.buffer, sliced.byteOffset, sliced.byteLength);
+    return adoptSlice ? owned : owned.slice();
   } finally {
     value.dispose?.();
   }
@@ -1801,10 +1813,17 @@ export async function initializeCanvasKitManagedCallbacks(): Promise<"ready"> {
     throw new Error("Doroti CanvasKit managed callback ABI v1 is unavailable.");
   }
   canvasKitManagedCallbacks = {
+    captureFrameTrace: interop.CaptureFrameTrace,
     completeScene: interop.CompleteScene,
     completeResource: interop.CompleteResource,
   };
   return "ready";
+}
+
+export function captureCanvasKitFrameworkTrace(): Record<string, unknown> {
+  const before = performance.timeOrigin + performance.now();
+  const trace = canvasKitManagedCallbacks ? JSON.parse(canvasKitManagedCallbacks.captureFrameTrace()) : null;
+  return { before, after: performance.timeOrigin + performance.now(), trace };
 }
 
 export function createHost(hostId: number, canvasId: string, logicalWidth: number, logicalHeight: number): string {

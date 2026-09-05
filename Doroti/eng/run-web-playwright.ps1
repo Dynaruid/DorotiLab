@@ -5,6 +5,11 @@ param(
 
     [switch] $SkipBuild,
 
+    [ValidateSet('Build', 'Publish', 'PublishAot', 'PublishAotPartial')]
+    [string] $BuildMode = 'Build',
+
+    [string] $AotCompilerPath = '',
+
     [switch] $HeadlessOnly,
 
     [switch] $HeadedOnly,
@@ -44,6 +49,8 @@ if ($resolvedArtifactLabel -match '\.\.' -or $resolvedArtifactLabel -notmatch '^
 }
 $artifactRoot = Join-Path $playwrightRoot "artifacts/wrapper/$resolvedArtifactLabel"
 $baseUrl = "http://127.0.0.1:$Port"
+$publishRoot = Join-Path $repositoryRoot ".doroti/publish/web-$BuildMode-$Configuration"
+$buildArtifactsRoot = Join-Path $repositoryRoot ".doroti/artifacts/web-$BuildMode"
 
 if ($HeadlessOnly -and $HeadedOnly) {
     throw '-HeadlessOnly and -HeadedOnly are mutually exclusive.'
@@ -95,9 +102,25 @@ if ($listener) {
 }
 
 if (-not $SkipBuild) {
-    Invoke-OwnedProcess -FilePath $dotnet `
-        -ArgumentList @('build', $project, '--configuration', $Configuration, '--nologo') `
-        -WorkingDirectory $repositoryRoot -Name 'build'
+    if ($BuildMode -eq 'Build') {
+        Invoke-OwnedProcess -FilePath $dotnet `
+            -ArgumentList @('build', $project, '--configuration', $Configuration, '--nologo') `
+            -WorkingDirectory $repositoryRoot -Name 'build'
+    } else {
+        $aot = if ($BuildMode -like 'PublishAot*') { 'true' } else { 'false' }
+        # AOT IL stripping mutates intermediate assemblies. Separate every
+        # project's bin/obj by mode so a later interpreter publish cannot reuse
+        # stripped method bodies from an AOT experiment.
+        $publishArguments = @('publish', $project, '--configuration', $Configuration, '--nologo', '--artifacts-path', $buildArtifactsRoot, '-o', $publishRoot, "-p:RunAOTCompilation=$aot")
+        if ($BuildMode -eq 'PublishAotPartial') { $publishArguments += @('-p:DorotiPartialAot=true','-p:WasmDedup=false') }
+        if ($AotCompilerPath) {
+            if ($BuildMode -ne 'PublishAot' -or -not (Test-Path -LiteralPath $AotCompilerPath -PathType Leaf)) { throw 'AotCompilerPath requires PublishAot and an existing compiler.' }
+            $publishArguments += "-p:DorotiAotCompilerPath=$([IO.Path]::GetFullPath($AotCompilerPath))"
+        }
+        Invoke-OwnedProcess -FilePath $dotnet `
+            -ArgumentList $publishArguments `
+            -WorkingDirectory $repositoryRoot -Name 'publish'
+    }
 }
 if ($FastResize) {
     $cmake = (Get-Command cmake -ErrorAction Stop).Source
@@ -111,8 +134,22 @@ if ($FastResize) {
 
 $serverStdout = Join-Path $artifactRoot 'server.stdout.log'
 $serverStderr = Join-Path $artifactRoot 'server.stderr.log'
-$server = Start-Process -FilePath $dotnet `
-    -ArgumentList @('run', '--project', $project, '--configuration', $Configuration, '--no-build', '--no-restore', '--no-launch-profile', '--urls', $baseUrl) `
+$serverFile = $dotnet
+$serverArguments = @('run', '--project', $project, '--configuration', $Configuration, '--no-build', '--no-restore', '--no-launch-profile', '--urls', $baseUrl)
+if ($BuildMode -ne 'Build') {
+    $staticRoot = Join-Path $publishRoot 'wwwroot'
+    if (-not (Test-Path (Join-Path $staticRoot 'index.html'))) { throw "Published index.html not found: $staticRoot" }
+    $serverFile = (Get-Command python.exe -ErrorAction Stop).Source
+    $serverArguments = @((Join-Path $PSScriptRoot 'serve-web-static.py'), '--port', "$Port", '--directory', $staticRoot)
+}
+@{ buildMode = $BuildMode; configuration = $Configuration; skipBuild = [bool]$SkipBuild; aotCompilerOverride = $AotCompilerPath;
+    serveDirectory = if ($BuildMode -eq 'Build') { $null } else { $staticRoot };
+    buildArtifactsDirectory = if ($BuildMode -eq 'Build') { $null } else { $buildArtifactsRoot };
+    serverFile = $serverFile; serverArguments = $serverArguments;
+    sdk = (& $dotnet --version); timestamp = [DateTime]::UtcNow.ToString('o') } |
+    ConvertTo-Json -Depth 5 | Set-Content (Join-Path $artifactRoot 'build-manifest.json')
+$server = Start-Process -FilePath $serverFile `
+    -ArgumentList $serverArguments `
     -WorkingDirectory $repositoryRoot -WindowStyle Hidden -PassThru `
     -RedirectStandardOutput $serverStdout -RedirectStandardError $serverStderr
 
@@ -144,12 +181,14 @@ try {
     $previousRequireLatency = $env:DOROTI_WEB_REQUIRE_LATENCY
     $previousArtifactLabel = $env:DOROTI_WEB_ARTIFACT_LABEL
     $previousFastResize = $env:DOROTI_WEB_FAST_RESIZE
+    $previousBuildMode = $env:DOROTI_WEB_BUILD_MODE
     try {
         $env:DOROTI_WEB_BASE_URL = $baseUrl
         $env:DOROTI_WEB_RENDERER_MODE = $RendererMode
         $env:DOROTI_WEB_REQUIRE_LATENCY = if ($RequireLatencyGate) { '1' } else { '0' }
         $env:DOROTI_WEB_ARTIFACT_LABEL = $resolvedArtifactLabel
         $env:DOROTI_WEB_FAST_RESIZE = if ($FastResize) { '1' } else { '0' }
+        $env:DOROTI_WEB_BUILD_MODE = $BuildMode
         $arguments = @('playwright', 'test')
         if ($TestFile.Count -gt 0) { $arguments += $TestFile }
         if ($HeadlessOnly) {
@@ -163,6 +202,8 @@ try {
             -WorkingDirectory $playwrightRoot -Name 'playwright'
     }
     finally {
+        if ($null -eq $previousBuildMode) { Remove-Item Env:DOROTI_WEB_BUILD_MODE -ErrorAction SilentlyContinue }
+        else { $env:DOROTI_WEB_BUILD_MODE = $previousBuildMode }
         if ($null -eq $previousFastResize) { Remove-Item Env:DOROTI_WEB_FAST_RESIZE -ErrorAction SilentlyContinue }
         else { $env:DOROTI_WEB_FAST_RESIZE = $previousFastResize }
         if ($null -eq $previousBaseUrl) { Remove-Item Env:DOROTI_WEB_BASE_URL -ErrorAction SilentlyContinue }

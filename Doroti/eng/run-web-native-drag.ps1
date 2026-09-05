@@ -5,7 +5,8 @@ param(
     [ValidateSet('Left', 'Right', 'Top', 'Bottom', 'TopLeft', 'TopRight', 'BottomLeft', 'BottomRight')]
     [string] $Edge = 'TopLeft',
     [ValidateSet('expand', 'shrink', 'reverse')] [string] $Motion = 'reverse',
-    [ValidateSet(150, 600, 1200)] [int] $DragMilliseconds = 150
+    [ValidateSet(150, 600, 1200)] [int] $DragMilliseconds = 150,
+    [switch] $Capture
 )
 
 $ErrorActionPreference = 'Stop'
@@ -53,12 +54,16 @@ $start.RedirectStandardOutput = $true
 $start.RedirectStandardError = $true
 # Use the very same QPC-deadline SendInput driver as Windows/Vulkan. Log-only
 # removes capture cost, without replacing the native border drag by SetWindowPos.
-foreach ($argument in @('--hwnd', [string]$targetHandles[0], '--output', $output, '--run-id', $TitleToken,
+# Keep capture folder names short: nested Playwright paths otherwise exceed
+# the native encoder's Windows path limit before the drag even starts.
+$captureRunId = [IO.Path]::GetFileNameWithoutExtension($output)
+foreach ($argument in @('--hwnd', [string]$targetHandles[0], '--output', $output, '--run-id', $captureRunId,
     '--f6r', '--input-hz', '240', '--drag-pixels', '600', '--drag-ms', [string]$DragMilliseconds,
     '--f6r-base-width', [string]$baseWidth, '--f6r-base-height', [string]$baseHeight,
-    '--edge', $Edge, '--motion', $Motion, '--duration', '1', '--log-only', '--capture-only')) {
+    '--edge', $Edge, '--motion', $Motion, '--duration', '1', '--capture-only')) {
     $start.ArgumentList.Add($argument)
 }
+if (-not $Capture) { $start.ArgumentList.Add('--log-only') }
 $process = [Diagnostics.Process]::new()
 $process.StartInfo = $start
 function Get-ClockCalibration {

@@ -23,6 +23,11 @@ internal sealed class BrowserCanvasKitCapabilities :
     private readonly uint _lightBackgroundColor;
     private readonly uint _darkBackgroundColor;
     private readonly Dictionary<long, PendingScene> _pending = [];
+    private readonly BrowserPictureBlockCache _pictureBlocks = new(
+        Environment.GetEnvironmentVariable("DOROTI_PICTURE_CACHE") == "1");
+    private readonly DisplayListEncodingCache? _encodingCache =
+        Environment.GetEnvironmentVariable("DOROTI_ENCODING_CACHE") == "1" ? new() : null;
+    private readonly bool _stageTraceEnabled = Environment.GetEnvironmentVariable("DOROTI_STAGE_TRACE") == "1";
     private readonly DorotiFrameTerminalLedger _terminalLedger = new();
     private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
     private readonly Dictionary<int, SemanticsNodeUpdate> _lastSentSemantics = [];
@@ -87,8 +92,12 @@ internal sealed class BrowserCanvasKitCapabilities :
         _ = invalidate;
     }
 
-    public void AttachFrameworkTrace(DorotiFrameTrace trace) =>
+    public void AttachFrameworkTrace(DorotiFrameTrace trace)
+    {
         _frameTrace = trace ?? throw new ArgumentNullException(nameof(trace));
+        trace.MeasureRecordingTime = _stageTraceEnabled;
+        BrowserCanvasKitInterop.RegisterTrace(_viewId, trace);
+    }
 
     public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation)
     {
@@ -166,14 +175,21 @@ internal sealed class BrowserCanvasKitCapabilities :
                 : _lightBackgroundColor;
             var mappingStarted = DorotiFrameClock.Now;
             var document = BrowserDisplayListMapper.Create(
-                submission.Scene, sceneMetadata, background, _resources);
+                submission.Scene, sceneMetadata, background, _resources, _pictureBlocks);
+            if (_stageTraceEnabled)
+            {
+                _host.RecordRaster("canvaskit-picture-count", _pictureBlocks.Pictures, _pictureBlocks.Hits, TimeSpan.Zero);
+                _host.RecordRaster("canvaskit-mapped-command-count", _pictureBlocks.MappedCommands, document.Commands.Count, TimeSpan.Zero);
+            }
             _host.RecordRaster("canvaskit-map", descriptor.PhysicalWidth, descriptor.PhysicalHeight,
                 DorotiFrameClock.Now - mappingStarted);
             sceneResources = document.Resources.Select(value => value.Reference).ToArray();
             _resources.RetainSceneResources(sceneResources);
             resourcesRetained = true;
             var encodingStarted = DorotiFrameClock.Now;
-            var wireBytes = DisplayListEncoder.Encode(document);
+            var wireBytes = DisplayListEncoder.Encode(document, _encodingCache);
+            if (_stageTraceEnabled && _encodingCache is not null)
+                _host.RecordRaster("canvaskit-encoding-cache", _encodingCache.FrameMisses, _encodingCache.FrameHits, TimeSpan.Zero);
             _host.RecordRaster("canvaskit-encode", descriptor.PhysicalWidth, descriptor.PhysicalHeight,
                 DorotiFrameClock.Now - encodingStarted);
             lock (_gate)
@@ -780,6 +796,7 @@ internal sealed class BrowserCanvasKitCapabilities :
 
     public void Dispose()
     {
+        BrowserCanvasKitInterop.ForgetTrace(_viewId);
         PendingScene[] pending;
         lock (_gate)
         {
@@ -790,6 +807,8 @@ internal sealed class BrowserCanvasKitCapabilities :
             _failed += pending.Length;
         }
         _host.SemanticsAction -= HandleSemanticsAction;
+        _encodingCache?.Clear();
+        _pictureBlocks.Clear();
         foreach (var scene in pending)
         {
             try

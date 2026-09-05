@@ -1,6 +1,9 @@
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
+using System.Text;
+using System.Text.Json;
+using Doroti.Ui;
 
 namespace Doroti.Host.Web;
 
@@ -29,6 +32,38 @@ internal static partial class BrowserCanvasKitInterop
 {
     private const string Module = "doroti.web";
     private static readonly ConcurrentDictionary<long, ICanvasKitSceneCallback> Scenes = new();
+    private static readonly ConcurrentDictionary<ulong, DorotiFrameTrace> Traces = new();
+    internal static void RegisterTrace(ulong viewId, DorotiFrameTrace trace) => Traces[viewId] = trace;
+    internal static void ForgetTrace(ulong viewId) => Traces.TryRemove(viewId, out _);
+
+    [JSExport]
+    internal static string CaptureFrameTrace()
+    {
+        using var stream = new MemoryStream();
+        using (var writer = new Utf8JsonWriter(stream))
+        {
+            writer.WriteStartObject();
+            writer.WriteNumber("clockMicroseconds", DorotiFrameClock.Now.Ticks / 10);
+            writer.WriteStartArray("entries");
+            foreach (var trace in Traces.Values)
+                foreach (var entry in trace.Snapshot())
+                {
+                    writer.WriteStartObject();
+                    writer.WriteNumber("sequence", entry.Sequence);
+                      writer.WriteNumber("timestampMicroseconds", entry.TimestampMicroseconds);
+                      writer.WriteNumber("recordedAtMicroseconds", entry.RecordedAtMicroseconds);
+                    writer.WriteString("phase", entry.Phase.ToString());
+                    writer.WriteNumber("viewId", entry.ViewId);
+                    writer.WriteNumber("frame", entry.FrameworkFrameNumber);
+                    writer.WriteNumber("resizeGeneration", entry.ResizeTargetGeneration);
+                    writer.WriteNumber("scene", entry.SceneSequence);
+                    writer.WriteEndObject();
+                }
+            writer.WriteEndArray();
+            writer.WriteEndObject();
+        }
+        return Encoding.UTF8.GetString(stream.ToArray());
+    }
     private static readonly ConcurrentDictionary<(long Id, long Generation), ICanvasKitResourceCallback> Resources = new();
 
     [JSImport("initializeCanvasKitManagedCallbacks", Module)]

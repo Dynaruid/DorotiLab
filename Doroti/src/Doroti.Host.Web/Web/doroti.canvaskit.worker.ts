@@ -254,6 +254,14 @@ let contextLossExtension: WEBGL_lose_context | null = null;
 let currentScene: RasterScene | null = null;
 let latestScene: RasterScene | null = null;
 let draining = false;
+let drainScheduling = "microtask";
+let presentation = "direct";
+let frameMarker = false;
+let rasterDisposed = false;
+const bitmapCredits = new Set<number>();
+const bitmapBudgetBytes = 128 * 1024 * 1024;
+let bitmapCreated = 0;
+let bitmapAcknowledged = 0;
 let queueHighWater = 0;
 let admittedScenes = 0;
 let terminalScenes = 0;
@@ -311,10 +319,10 @@ let resizeStagingCapacityWidth = 0;
 let resizeStagingCapacityHeight = 0;
 let resizeStagingPeakPixels = 0;
 
-function post(kind: string, payload: Record<string, unknown> = {}): void {
-  (globalThis as unknown as { postMessage(message: unknown): void }).postMessage({
+function post(kind: string, payload: Record<string, unknown> = {}, transfer: Transferable[] = []): void {
+  (globalThis as unknown as { postMessage(message: unknown, transfer: Transferable[]): void }).postMessage({
     protocolVersion, topologyVersion, role: "raster", sessionId, rasterSessionId, kind, ...payload,
-  });
+  }, transfer);
 }
 
 function postPort(kind: string, payload: Record<string, unknown> = {}, transfer: Transferable[] = []): void {
@@ -324,7 +332,14 @@ function postPort(kind: string, payload: Record<string, unknown> = {}, transfer:
 
 export async function startCanvasKitRole(context: CanvasKitRoleContext): Promise<void> {
   stageTrace.enabled = context.initEnvelope.stageTrace === true;
+  drainScheduling = String(context.initEnvelope.drainScheduling ?? "microtask");
+  if (!["microtask", "raf"].includes(drainScheduling)) throw new Error("Unknown Raster drain scheduling");
+  if (drainScheduling === "raf" && typeof globalThis.requestAnimationFrame !== "function")
+    throw new Error("P1 requires Worker requestAnimationFrame");
   const envelope = context.initEnvelope;
+  presentation = String(envelope.presentation ?? "direct");
+  frameMarker = envelope.frameMarker === true;
+  if (!["direct", "bitmap-crop", "bitmap-exact"].includes(presentation)) throw new Error("Unknown CanvasKit presentation");
   if (envelope.role !== "raster") throw new Error("Doroti Raster role received a non-Raster bootstrap envelope.");
   sessionId = positiveInteger(envelope.sessionId, "sessionId");
   rasterSessionId = positiveInteger(envelope.rasterSessionId, "rasterSessionId");
@@ -366,6 +381,7 @@ export async function startCanvasKitRole(context: CanvasKitRoleContext): Promise
     throw new Error("Doroti CanvasKit requires an explicit hardware OffscreenCanvas WebGL2 context.");
   grContext = canvasKit.MakeWebGLContext(contextHandle);
   if (!grContext) throw new Error("Doroti CanvasKit MakeWebGLContext failed; software fallback is forbidden.");
+  if (presentation !== "direct") grContext.setResourceCacheLimitBytes(64 * 1024 * 1024);
   countCreated("GrDirectContext", 0);
   const gl = canvas.getContext("webgl2");
   if (!gl) throw new Error("Doroti CanvasKit context is not WebGL2.");
@@ -468,6 +484,13 @@ function installGlobalListener(): void {
           mainFastLaneResizeTargetCount++;
           break;
         }
+        case "bitmap-consumed":
+          if (message.topologyVersion !== topologyVersion || Number(message.rasterSessionId) !== rasterSessionId) break;
+          if (!bitmapCredits.delete(Number(message.requestId))) throw new Error("Duplicate/unknown bitmap acknowledgement");
+          bitmapAcknowledged++;
+          scheduleDrain();
+          publishDiagnostics();
+          break;
         case "collect-stage-trace":
           if (message.topologyVersion === topologyVersion && Number(message.rasterSessionId) === rasterSessionId)
             post("stage-trace", { collectionId: message.collectionId, trace: stageTrace.snapshot() });
@@ -535,14 +558,15 @@ function admitScene(message: Record<string, unknown>): void {
 }
 
 function scheduleDrain(): void {
-  if (draining || currentScene || contextLost || !latestScene) return;
+  if (draining || currentScene || contextLost || rasterDisposed || !latestScene || bitmapCredits.size >= 2) return;
   draining = true;
-  queueMicrotask(() => {
+  const drain = async () => {
     try {
-      while (!contextLost && !currentScene && latestScene) {
+      while (!contextLost && !rasterDisposed && !currentScene && latestScene && bitmapCredits.size < 2) {
         currentScene = latestScene;
         latestScene = null;
-        render(currentScene);
+        const completion = render(currentScene);
+        if (completion) await completion;
         currentScene = null;
       }
     } finally {
@@ -550,10 +574,12 @@ function scheduleDrain(): void {
       if (!currentScene && latestScene && !contextLost) scheduleDrain();
       publishDiagnostics();
     }
-  });
+  };
+  if (drainScheduling === "raf") globalThis.requestAnimationFrame(drain);
+  else queueMicrotask(drain);
 }
 
-function render(scene: RasterScene): void {
+function render(scene: RasterScene): void | Promise<void> {
   stageTrace.record("raster-start", Number(scene.document.metadata.resizeEpoch), scene.sequence);
   scene.attempted = true;
   rasterAttempts++;
@@ -607,11 +633,38 @@ function render(scene: RasterScene): void {
         latestTargetPriorityForcedProgressiveScenes++;
     }
     const visible = requireCanvas();
+    if (presentation !== "direct") {
+      const grows = visible.width < target.physicalWidth || visible.height < target.physicalHeight;
+      const nextWidth = presentation === "bitmap-exact" ? target.physicalWidth :
+        resizeStagingCapacity(visible.width, target.physicalWidth);
+      const nextHeight = presentation === "bitmap-exact" ? target.physicalHeight :
+        resizeStagingCapacity(visible.height, target.physicalHeight);
+      // Check before any growth: old/new output during replacement, staging,
+      // two in-flight exports and the main bitmaprenderer backing.
+      const pixels = nextWidth * nextHeight + 3 * target.physicalWidth * target.physicalHeight +
+        (grows ? visible.width * visible.height + nextWidth * nextHeight :
+          resizeStagingCapacityWidth * resizeStagingCapacityHeight);
+      if (pixels * 4 > bitmapBudgetBytes) throw new Error("P2 backing/staging/bitmap budget exceeded before allocation");
+    }
+    if (presentation === "bitmap-exact" &&
+        (visible.width !== target.physicalWidth || visible.height !== target.physicalHeight)) {
+      if (4 * target.physicalWidth * target.physicalHeight * 4 > bitmapBudgetBytes)
+        throw new Error("P2 exact bitmap/backing budget exceeded");
+      // This surface is independent of the visible bitmaprenderer. Recreate
+      // exact backing as the P2a allocation experiment before drawing a frame.
+      if (surface) { surface.delete(); countDeleted("Surface", 0); surface = null; }
+      visible.width = target.physicalWidth;
+      visible.height = target.physicalHeight;
+    }
     if (visible.width < target.physicalWidth || visible.height < target.physicalHeight)
       renderThroughResizeStaging(scene, target);
     else {
       ensureSurface(target);
       replayIntoVisibleCapacity(scene, target, requireSurface());
+      requireSurface().flush();
+    }
+    if (frameMarker) {
+      drawFrameMarker(target);
       requireSurface().flush();
     }
     flushCount++;
@@ -623,7 +676,7 @@ function render(scene: RasterScene): void {
     pruneResizeTargets();
     receiptScene(scene, true, "CanvasKit surface.flush submitted GPU work");
     terminalScene(scene, "submitted", "CanvasKit exact surface GPU work submitted", false);
-    post("direct-commit", {
+    const commit = {
       requestId: scene.sequence,
       transferId: scene.transferId,
       generation: target.generation,
@@ -634,16 +687,57 @@ function render(scene: RasterScene): void {
       logicalWidth: target.logicalWidth,
       logicalHeight: target.logicalHeight,
       devicePixelRatio: target.devicePixelRatio,
-      capacityWidth: visible.width,
-      capacityHeight: visible.height,
+      capacityWidth: presentation === "direct" ? visible.width : target.physicalWidth,
+      capacityHeight: presentation === "direct" ? visible.height : target.physicalHeight,
       targetGeneration: latestTarget.generation,
       progressive,
       commitEpochMilliseconds: performance.timeOrigin + performance.now(),
-    });
+    };
+    if (presentation === "direct") post("direct-commit", commit);
+    else {
+      // Two exported bitmaps plus raster/display backing. GPU resource caches
+      // have separate budgets; this is an explicit prototype bitmap envelope.
+      if ((visible.width * visible.height + 3 * target.physicalWidth * target.physicalHeight) * 4 > bitmapBudgetBytes)
+        throw new Error("P2 bitmap/backing budget exceeded");
+      bitmapCredits.add(scene.sequence);
+      const started = performance.now();
+      return createImageBitmap(visible, 0, 0, target.physicalWidth, target.physicalHeight).then(bitmap => {
+        if (rasterDisposed || contextLost) { bitmap.close(); bitmapCredits.delete(scene.sequence); return; }
+        bitmapCreated++;
+        stageTrace.record("bitmap-created", target.generation, scene.sequence, { milliseconds: performance.now() - started });
+        try { post("bitmap-commit", { ...commit, bitmap }, [bitmap]); }
+        catch (error) { bitmap.close(); throw error; }
+      }).catch(error => {
+        bitmapCredits.delete(scene.sequence);
+        post("fatal", { error: `P2 bitmap export failed: ${String(error)}` });
+      });
+    }
   } catch (error) {
+    if (scene.terminal) { post("fatal", { error: String(error) }); return; }
     if (!scene.receipt) receiptScene(scene, false, String(error));
     terminalScene(scene, "failed", String(error), false);
   }
+}
+
+function drawFrameMarker(target: ResizeEpoch): void {
+  const targetCanvas = requireSurface().getCanvas();
+  const paint = new (requireCanvasKit().Paint)();
+  const values = [target.generation, target.physicalWidth, target.physicalHeight];
+  const colors = [[0, 1, 1, 1], [1, 0, 1, 1], [0, 1, 1, 1], [1, 0, 1, 1]];
+  for (let field = 0; field < values.length; field++)
+    for (let bit = 0; bit < (field === 0 ? 32 : 16); bit++)
+      colors.push((values[field] >>> bit) & 1 ? [0, 1, 0, 1] : [0, 0, 0, 1]);
+  const save = targetCanvas.save();
+  try {
+    const inverse = requireCanvasKit().Matrix.invert(targetCanvas.getTotalMatrix());
+    if (!inverse) throw new Error("Frame marker requires an invertible canvas transform");
+    targetCanvas.concat(inverse);
+    paint.setAntiAlias(false);
+    colors.forEach((color, index) => {
+      paint.setColor(new Float32Array(color));
+      targetCanvas.drawRect(new Float32Array([32 + index * 4, 32, 36 + index * 4, 36]), paint);
+    });
+  } finally { targetCanvas.restoreToCount(save); paint.delete(); }
 }
 
 function replaySupportedCommands(scene: RasterScene, targetSurface: Surface): void {
@@ -3190,6 +3284,7 @@ function deleteResource(resource: RasterResource): void {
 }
 
 function disposeRasterRole(): void {
+  rasterDisposed = true;
   if (currentScene && !currentScene.terminal) failScene(currentScene, "Raster Worker disposing", false);
   if (latestScene && !latestScene.terminal) failScene(latestScene, "Raster Worker disposing", false);
   currentScene = null;
@@ -3252,6 +3347,12 @@ function diagnostics(): Readonly<Record<string, unknown>> {
     canvasKitOwnerCount: canvasKit ? 1 : 0,
     managedRuntimeCount: 0,
     visibleCanvasContextOwnerCount: contextHandle ? 1 : 0,
+    drainScheduling,
+    presentation,
+    bitmapCredits: bitmapCredits.size,
+    bitmapCreated,
+    bitmapAcknowledged,
+    bitmapBudgetBytes,
     contextGeneration,
     surfaceGeneration,
     contextLost,
@@ -3341,6 +3442,8 @@ function diagnostics(): Readonly<Record<string, unknown>> {
     physicalHeight: frontPhysicalHeight,
     capacityWidth: canvas?.width ?? 0,
     capacityHeight: canvas?.height ?? 0,
+    gpuResourceCacheLimitBytes: grContext?.getResourceCacheLimitBytes() ?? null,
+    gpuResourceCacheUsageBytes: grContext?.getResourceCacheUsageBytes() ?? null,
   };
 }
 
