@@ -10,7 +10,7 @@ test("Doroti direct and Flutter use the matching interaction workload", async ({
   const runCount = Number(process.env.DOROTI_DIFFERENTIAL_RUNS ?? 3);
   for (let run = 0; run < runCount; run++) {
     const initial = await openDoroti(page);
-    expect(initial.presenter.mode).toBe("worker-direct-webgl");
+    expect(initial.presenter.mode).toBe(process.env.DOROTI_WEB_RENDERER_MODE ?? "worker-direct-webgl");
     const doroti: number[] = [];
     for (let sample = 0; sample < 40; sample++) {
       const before = await captureDiagnostics(page);

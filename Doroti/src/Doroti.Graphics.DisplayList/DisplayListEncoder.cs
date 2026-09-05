@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Doroti.Graphics.DisplayList;
@@ -911,7 +912,11 @@ public static class DisplayListEncoder
             throw new ArgumentOutOfRangeException(name, $"The {name} value is not defined.");
         }
 
-        writer.WriteByte(Convert.ToByte(value, System.Globalization.CultureInfo.InvariantCulture));
+        // All byte-valued wire enums declare ': byte'. Avoid boxing each paint,
+        // clip and paragraph enum through IConvertible on the WASM hot path.
+        // BitCast checks equal sizes; the IsDefined guard above still rejects
+        // unknown values, and the encoded byte remains identical.
+        writer.WriteByte(Unsafe.BitCast<TEnum, byte>(value));
     }
 
     private static uint CheckedCount(int count, string name)

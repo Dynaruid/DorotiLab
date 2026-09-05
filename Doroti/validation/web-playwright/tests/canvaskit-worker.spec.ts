@@ -395,12 +395,19 @@ test("CanvasKit continuous resize keeps its grow-only backing unscaled while exa
     .toBeGreaterThanOrEqual(raster.latestTargetPriority.skippedScenes > 0 ? 2 : 0);
   expect(raster.resizeTargetIngress.mainFastLaneCount).toBeGreaterThan(0);
   expect(raster.resizeTargetIngress.uiOrderedCount).toBeGreaterThan(0);
+  const displayScheduling = process.env.DOROTI_RESIZE_EXPERIMENT_QUERY?.includes("dorotiResizeScheduling=display") ?? false;
+  expect(ui.frameTimings.liveResizeThrottle.enabled).toBe(!displayScheduling);
   expect(ui.frameTimings.liveResizeThrottle.targetFramesPerSecond).toBe(30);
   expect(ui.frameTimings.liveResizeThrottle.frameIntervalMilliseconds).toBeCloseTo(1000 / 30, 6);
   expect(ui.frameTimings.liveResizeThrottle.activityWindowMilliseconds).toBe(100);
   expect(ui.frameTimings.liveResizeThrottle.dispatchCount).toBeGreaterThan(0);
   expect(ui.frameTimings.liveResizeThrottle.minimumDispatchIntervalMilliseconds).not.toBeNull();
-  expect(ui.frameTimings.liveResizeThrottle.minimumDispatchIntervalMilliseconds!).toBeGreaterThanOrEqual(32);
+  if (displayScheduling) {
+    expect(ui.frameTimings.liveResizeThrottle.scheduling).toBe("display-raf");
+    expect(ui.frameTimings.liveResizeThrottle.deferredRafCount).toBe(0);
+  } else {
+    expect(ui.frameTimings.liveResizeThrottle.minimumDispatchIntervalMilliseconds!).toBeGreaterThanOrEqual(32);
+  }
   expect(raster.paragraphCache.hits).toBeGreaterThan(initialParagraphCache.hits);
   expect(raster.paragraphCache.size).toBeGreaterThan(0);
   expect(raster.paragraphCache.size).toBeLessThanOrEqual(raster.paragraphCache.capacity);

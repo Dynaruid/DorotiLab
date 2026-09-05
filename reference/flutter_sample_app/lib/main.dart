@@ -35,6 +35,7 @@ class _DifferentialPageState extends State<DifferentialPage> {
   bool blur = true;
   int interactionSequence = 0;
   SemanticsHandle? semanticsHandle;
+  int resizeFrameSequence = 0;
 
   @override
   void initState() {
@@ -66,7 +67,23 @@ class _DifferentialPageState extends State<DifferentialPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final dpr = MediaQuery.devicePixelRatioOf(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!kIsWeb) return;
+      globalContext.setProperty('__flutterResizeFrame'.toJS, <String, Object>{
+        'sequence': ++resizeFrameSequence,
+        'width': size.width,
+        'height': size.height,
+        'dpr': dpr,
+        'endpoint': 'framework-post-frame; not GPU submit or scan-out',
+      }.jsify());
+    });
+    return _buildPage(context);
+  }
+
+  Widget _buildPage(BuildContext context) => Scaffold(
     appBar: AppBar(
       title: const Text('Doroti / Flutter frame pipeline fixture'),
     ),

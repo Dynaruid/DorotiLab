@@ -1,3 +1,6 @@
+import { CanvasKitStageTrace } from "./doroti.canvaskit.trace.js";
+const stageTrace = new CanvasKitStageTrace();
+
 import type {
   Canvas,
   CanvasKit,
@@ -320,6 +323,7 @@ function postPort(kind: string, payload: Record<string, unknown> = {}, transfer:
 }
 
 export async function startCanvasKitRole(context: CanvasKitRoleContext): Promise<void> {
+  stageTrace.enabled = context.initEnvelope.stageTrace === true;
   const envelope = context.initEnvelope;
   if (envelope.role !== "raster") throw new Error("Doroti Raster role received a non-Raster bootstrap envelope.");
   sessionId = positiveInteger(envelope.sessionId, "sessionId");
@@ -460,9 +464,14 @@ function installGlobalListener(): void {
           const next = message.resizeEpoch as ResizeEpoch;
           validateResizeTarget(next);
           rememberResizeTarget(next);
+          stageTrace.record("raster-target-received", next.generation);
           mainFastLaneResizeTargetCount++;
           break;
         }
+        case "collect-stage-trace":
+          if (message.topologyVersion === topologyVersion && Number(message.rasterSessionId) === rasterSessionId)
+            post("stage-trace", { collectionId: message.collectionId, trace: stageTrace.snapshot() });
+          break;
         case "context":
           if (message.action === "lose") contextLossExtension?.loseContext();
           else contextLossExtension?.restoreContext();
@@ -492,6 +501,7 @@ function installGlobalListener(): void {
 }
 
 function admitScene(message: Record<string, unknown>): void {
+  stageTrace.record("raster-scene-received", 0, Number(message.sceneSequence));
   const buffer = message.buffer;
   if (!(buffer instanceof ArrayBuffer))
     throw new Error("Doroti CanvasKit display-list message requires a transferred ArrayBuffer.");
@@ -516,6 +526,7 @@ function admitScene(message: Record<string, unknown>): void {
   const scene: RasterScene = {
     sequence, transferId, buffer, document, terminal: false, attempted: false, receipt: false,
   };
+  stageTrace.record("raster-decoded", Number(document.metadata.resizeEpoch), sequence);
   admittedScenes++;
   if (latestScene) terminalScene(latestScene, "superseded", "Raster current+latest mailbox replaced pending scene", true);
   latestScene = scene;
@@ -543,6 +554,7 @@ function scheduleDrain(): void {
 }
 
 function render(scene: RasterScene): void {
+  stageTrace.record("raster-start", Number(scene.document.metadata.resizeEpoch), scene.sequence);
   scene.attempted = true;
   rasterAttempts++;
   try {
@@ -603,6 +615,7 @@ function render(scene: RasterScene): void {
       requireSurface().flush();
     }
     flushCount++;
+    stageTrace.record("gpu-submit", target.generation, scene.sequence);
     lastFrontGeneration = target.generation;
     lastFrontCommitMilliseconds = performance.now();
     frontPhysicalWidth = target.physicalWidth;
@@ -3037,11 +3050,13 @@ function terminalScene(
   }
   const payload: Record<string, unknown> = {
     sceneSequence: scene.sequence,
+    sentTime: stageTrace.enabled ? performance.timeOrigin + performance.now() : undefined,
     terminal,
     reason,
     attempted: scene.attempted,
     receiptCount: Number(scene.receipt),
   };
+  stageTrace.record("raster-terminal-sent", Number(scene.document.metadata.resizeEpoch), scene.sequence, { terminal });
   if (returnBuffer && scene.buffer.byteLength > 0) {
     payload.transferId = scene.transferId;
     payload.buffer = scene.buffer;

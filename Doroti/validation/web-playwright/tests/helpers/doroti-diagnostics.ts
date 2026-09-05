@@ -155,6 +155,8 @@ export interface CanvasKitUiDiagnostics {
     waitMaximumMilliseconds: number;
     coalescedRequestCount: number;
     liveResizeThrottle: {
+      enabled: boolean;
+      scheduling: string;
       targetFramesPerSecond: number;
       frameIntervalMilliseconds: number;
       activityWindowMilliseconds: number;
@@ -301,11 +303,11 @@ function readJson<T>(value: string): T {
   return JSON.parse(value) as T;
 }
 
-export async function openDoroti(page: Page): Promise<DiagnosticBundle> {
+export async function openDoroti(page: Page, experimentQuery = process.env.DOROTI_RESIZE_EXPERIMENT_QUERY ?? ""): Promise<DiagnosticBundle> {
   const rendererMode = process.env.DOROTI_WEB_RENDERER_MODE;
   const rendererQuery = rendererMode && rendererMode !== "auto"
     ? `&dorotiRenderer=${encodeURIComponent(rendererMode)}` : "";
-  await page.goto(`/?dorotiResizeDiagnostics=1${rendererQuery}`, { waitUntil: "domcontentloaded" });
+  await page.goto(`/?dorotiResizeDiagnostics=1${rendererQuery}${experimentQuery}`, { waitUntil: "domcontentloaded" });
   await expect(page.locator(".doroti-root")).toBeVisible({ timeout: 120_000 });
   await expect(page.locator("#doroti-surface")).toBeVisible({ timeout: 120_000 });
   await page.waitForFunction(() => {

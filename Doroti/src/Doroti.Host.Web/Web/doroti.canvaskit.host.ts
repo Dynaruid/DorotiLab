@@ -1,4 +1,5 @@
 import { createDorotiDomEndpoints, createReplacementCanvas } from "./doroti.web.dom.js";
+import { CanvasKitStageTrace } from "./doroti.canvaskit.trace.js";
 import { createWorkerVisibleSurface } from "./doroti.web.surface.js";
 import {
   captureHostSnapshot,
@@ -102,7 +103,7 @@ const manifestLogicalUrl = `_content/Doroti.Host.Web/canvaskit/${canvasKitVersio
 const mainInboundKinds = new Set([
   "bootstrap-ready", "ui-canvaskit-ready", "gpu-ready", "runtime-ready", "ui-heartbeat",
   "ui-diagnostics", "raster-diagnostics", "direct-commit", "managed-work", "control", "control-request",
-  "closed", "context-lost", "raster-fatal", "disposed", "fatal",
+  "closed", "context-lost", "raster-fatal", "disposed", "fatal", "stage-trace",
 ]);
 
 export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
@@ -143,6 +144,36 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
   });
 
   let presenter!: PresenterState;
+  const stageTrace = new CanvasKitStageTrace();
+  stageTrace.enabled = new URL(location.href).searchParams.get("dorotiCanvasKitTrace") === "1";
+  let collectionId = 0;
+  const collectors = new Map<number, (role: string, trace: unknown) => void>();
+  if (stageTrace.enabled) {
+    Object.assign(globalThis, {
+      __dorotiCanvasKitExperiment: {
+        async collect() {
+          const id = ++collectionId;
+          return new Promise<Record<string, unknown>>((resolve, reject) => {
+            const result: Record<string, unknown> = { main: stageTrace.snapshot() };
+            const timeout = setTimeout(() => {
+              collectors.delete(id);
+              reject(new Error("CanvasKit stage collection timed out"));
+            }, 5000);
+            collectors.set(id, (role, trace) => {
+              result[role] = trace;
+              if (result.ui && result.raster) {
+                clearTimeout(timeout);
+                collectors.delete(id);
+                resolve(result);
+              }
+            });
+            presenter.uiWorker.postMessage({ protocolVersion, topologyVersion, kind: "collect-stage-trace", collectionId: id });
+            presenter.rasterWorker.postMessage({ protocolVersion, topologyVersion, kind: "collect-stage-trace", collectionId: id, rasterSessionId: presenter.rasterSessionId });
+          });
+        },
+      },
+    });
+  }
   const diagnostics: ExternalWorkerPresenterDiagnostics = {
     commitCanvasCssWithFront: true,
     snapshot: () => presenterSnapshot(
@@ -253,6 +284,7 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
         });
       }
       postUi("resize-epoch", { hostId, hostGeneration, resizeEpoch });
+      stageTrace.record("main-resize-observed", resizeEpoch.generation, 0, { ...resizeEpoch });
     },
     dispatchPointerBatch: (hostId, phase, kind, pointerId, buttons, modifiers, inputSequence, samples) =>
       postInput("pointer", hostId, inputSequence, { phase, kind, pointerId, buttons, modifiers, samples }),
@@ -334,6 +366,7 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
         return;
       }
       switch (message.kind) {
+        case "stage-trace": collectors.get(Number(message.collectionId))?.("ui", message.trace); break;
         case "ui-canvaskit-ready":
           presenter.uiReady = true;
           flushPendingUiMessages();
@@ -396,6 +429,7 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
       }
       if (Number(message.rasterSessionId ?? presenter.rasterSessionId) !== presenter.rasterSessionId) return;
       switch (message.kind) {
+        case "stage-trace": collectors.get(Number(message.collectionId))?.("raster", message.trace); break;
         case "gpu-ready": {
           presenter.rasterReady = true;
           presenter.contextLost = false;
@@ -441,6 +475,9 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
             canvas, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
             capacityWidth, capacityHeight, devicePixelRatio);
           presenter.frontGeneration = generation;
+          stageTrace.record("main-commit-received", generation, Number(message.requestId), {
+            logicalWidth, logicalHeight, commitTime: message.commitEpochMilliseconds,
+          });
           presenter.frontRequestId = Number(message.requestId);
           presenter.contextGeneration = Number(message.contextGeneration);
           presenter.surfaceGeneration = Number(message.surfaceGeneration);
@@ -519,6 +556,7 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
       canvasKitJsUrl,
       canvasKitWasmUrl,
       roleModuleUrl: rasterRoleUrl,
+      stageTrace: stageTrace.enabled,
       resizeEpoch: currentSnapshot!.resizeEpoch,
       canvas: offscreen,
       rasterPort: channelPort,
@@ -590,6 +628,8 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
     topologyVersion,
     kind: "canvaskit-bootstrap-init",
     role: "ui",
+    stageTrace: stageTrace.enabled,
+    resizeScheduling: new URL(location.href).searchParams.get("dorotiResizeScheduling") === "display" ? "display" : "baseline-30fps",
     sessionId: presenter.uiSessionId,
     rasterSessionId: presenter.rasterSessionId,
     canvasKitJsUrl,

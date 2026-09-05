@@ -1,4 +1,5 @@
 import type { CanvasKit, CanvasKitInitOptions } from "canvaskit-wasm";
+import { CanvasKitStageTrace } from "./doroti.canvaskit.trace.js";
 import {
   completeCanvasKitResource,
   completeCanvasKitScene,
@@ -85,9 +86,10 @@ interface JournalResource {
 const protocolVersion = dorotiProtocolVersion;
 const topologyVersion = dorotiCanvasKitTopologyVersion;
 const inboundKinds = new Set([
-  "snapshot", "resize-epoch", "input", "control-response", "raster-port-rebind", "dispose", "crash",
+  "snapshot", "resize-epoch", "input", "control-response", "raster-port-rebind", "dispose", "crash", "collect-stage-trace",
 ]);
 const pool = new TransferBufferPool(4);
+const stageTrace = new CanvasKitStageTrace();
 const resources = new Map<number, JournalResource>();
 const resourceOperations = new Set<string>();
 const pendingControls = new Map<number, { resolve(value: string): void; reject(reason: unknown): void }>();
@@ -126,7 +128,11 @@ let frameDispatchTotalMilliseconds = 0;
 let frameDispatchMaximumMilliseconds = 0;
 let frameWaitTotalMilliseconds = 0;
 let frameWaitMaximumMilliseconds = 0;
+let tracedParagraphMilliseconds = 0;
+let tracedParagraphCount = 0;
+let activeFrameCallbackId = 0;
 const liveResizeTargetFramesPerSecond = 30;
+let liveResizeThrottleEnabled = true;
 const liveResizeFrameIntervalMilliseconds = 1000 / liveResizeTargetFramesPerSecond;
 const liveResizeActivityWindowMilliseconds = 100;
 const liveResizeFrameIntervalToleranceMilliseconds = 0.25;
@@ -184,7 +190,7 @@ function scheduleManagedFrame(): void {
     const dispatchInterval = now - lastManagedFrameDispatchMilliseconds;
     const liveResizeActive =
       now - lastResizeEpochIngressMilliseconds <= liveResizeActivityWindowMilliseconds;
-    if (liveResizeActive && Number.isFinite(lastManagedFrameDispatchMilliseconds) &&
+    if (liveResizeThrottleEnabled && liveResizeActive && Number.isFinite(lastManagedFrameDispatchMilliseconds) &&
         dispatchInterval + liveResizeFrameIntervalToleranceMilliseconds <
           liveResizeFrameIntervalMilliseconds) {
       const deferredMilliseconds = liveResizeFrameIntervalMilliseconds - dispatchInterval;
@@ -209,7 +215,17 @@ function scheduleManagedFrame(): void {
     }
     const wait = now - pending.requestedMilliseconds;
     const started = performance.now();
-    dispatchWorkerAnimationFrame(pending.hostId, pending.callbackId, timestamp);
+    const paragraphStarted = tracedParagraphMilliseconds;
+    const paragraphCount = tracedParagraphCount;
+    stageTrace.record("frame-start", snapshot?.resizeEpoch.generation, 0, { callbackId: pending.callbackId, wait });
+    activeFrameCallbackId = pending.callbackId;
+    try { dispatchWorkerAnimationFrame(pending.hostId, pending.callbackId, timestamp); }
+    finally { activeFrameCallbackId = 0; }
+    stageTrace.record("frame-end", snapshot?.resizeEpoch.generation, lastAdmittedSceneSequence, {
+      callbackId: pending.callbackId,
+      paragraphMilliseconds: tracedParagraphMilliseconds - paragraphStarted,
+      paragraphCount: tracedParagraphCount - paragraphCount,
+    });
     const duration = performance.now() - started;
     frameDispatchCount++;
     frameDispatchTotalMilliseconds += duration;
@@ -222,6 +238,7 @@ function scheduleManagedFrame(): void {
 
 const bridge: CanvasKitUiBridge = {
   submitDisplayList(bytes) {
+    const copyStarted = performance.now();
     const document = validateDorotiDisplayList(bytes);
     const sequence = displayListSequenceAsNumber(document.metadata.sceneSequence);
     if (sequence <= lastAdmittedSceneSequence)
@@ -244,6 +261,10 @@ const bridge: CanvasKitUiBridge = {
       receiptSurfaceGeneration: null,
       terminal: false,
     };
+    stageTrace.record("scene-encoded", Number(document.metadata.resizeEpoch), sequence, {
+      validateAndCopyMilliseconds: performance.now() - copyStarted, bytes: bytes.byteLength,
+      callbackId: activeFrameCallbackId,
+    });
     if (!currentScene) {
       currentScene = scene;
     } else {
@@ -288,12 +309,20 @@ const bridge: CanvasKitUiBridge = {
     publishDiagnostics();
   },
   layoutParagraph(requestJson) {
-    return requireTextService().layout(requestJson);
+    if (!stageTrace.enabled) return requireTextService().layout(requestJson);
+    const started = performance.now();
+    try { return requireTextService().layout(requestJson); }
+    finally {
+      tracedParagraphMilliseconds += performance.now() - started;
+      tracedParagraphCount++;
+    }
   },
 };
 
 export async function startCanvasKitRole(context: CanvasKitRoleContext): Promise<void> {
   const envelope = context.initEnvelope;
+  stageTrace.enabled = envelope.stageTrace === true;
+  liveResizeThrottleEnabled = envelope.resizeScheduling !== "display";
   if (envelope.role !== "ui") throw new Error("Doroti UI role received a non-UI bootstrap envelope.");
   sessionId = positiveInteger(envelope.sessionId, "sessionId");
   dotnetModuleUrl = String(envelope.dotnetModuleUrl ?? "");
@@ -354,6 +383,8 @@ function configureUiWorkerBridge(): void {
       scheduleManagedFrame();
     },
     recordManagedRaster(id, phase, width, height, duration) {
+      stageTrace.record(phase, snapshot?.resizeEpoch.generation, 0, { durationMicroseconds: duration, callbackId: activeFrameCallbackId });
+      if (phase === "canvaskit-map" || phase === "canvaskit-encode") return;
       post("managed-work", { hostId: id, phase, width, height, durationMicroseconds: duration });
     },
     requestPresent() {
@@ -386,6 +417,9 @@ function installMainListener(): void {
     }
     try {
       switch (message.kind) {
+        case "collect-stage-trace":
+          post("stage-trace", { collectionId: message.collectionId, trace: stageTrace.snapshot() });
+          break;
         case "snapshot":
           snapshot = withRasterIdentity(message.snapshot as HostSnapshot);
           if (!managedHostReady) snapshot = {
@@ -396,6 +430,7 @@ function installMainListener(): void {
           break;
         case "resize-epoch": {
           const epoch = message.resizeEpoch as ResizeEpoch;
+          stageTrace.record("ui-resize-received", epoch.generation);
           lastResizeEpochIngressMilliseconds = performance.now();
           snapshot = {
             ...requireSnapshot(),
@@ -421,6 +456,7 @@ function installMainListener(): void {
               epoch.devicePixelRatio, epoch.timestampMicroseconds);
             dispatchWorkerSnapshot(Number(message.hostId), JSON.stringify(snapshot));
           }
+          stageTrace.record("ui-resize-applied", epoch.generation);
           break;
         }
         case "input":
@@ -525,6 +561,7 @@ function handleRasterMessage(event: MessageEvent): void {
       }
       case "scene-terminal": {
         const sequence = Number(message.sceneSequence);
+        stageTrace.record("ui-terminal-received", 0, sequence, { terminal: message.terminal, sentTime: message.sentTime });
         const scene = currentScene?.sequence === sequence ? currentScene : latestScene?.sequence === sequence ? latestScene : null;
         if (!scene) throw new Error(`Unexpected CanvasKit scene terminal ${sequence}.`);
         if (message.buffer instanceof ArrayBuffer) releaseSceneBuffer(scene, message);
@@ -590,9 +627,11 @@ function handleRasterMessage(event: MessageEvent): void {
 
 function sendCurrentScene(): void {
   if (!rasterReady || !currentScene || currentScene.sent) return;
+  const copyStarted = performance.now();
   const transfer = pool.copy(currentScene.bytes, rasterSessionId);
   currentScene.sent = true;
   currentScene.transferId = transfer.transferId;
+  stageTrace.record("scene-send", 0, currentScene.sequence, { copyMilliseconds: performance.now() - copyStarted });
   postRaster("display-list", {
     sceneSequence: currentScene.sequence,
     byteLength: currentScene.bytes.byteLength,
@@ -608,6 +647,7 @@ function finishScene(scene: QueuedScene, terminal: DorotiSceneTerminal, reason: 
     throw new Error(`Duplicate Doroti CanvasKit terminal for scene ${scene.sequence}.`);
   scene.terminal = true;
   sceneTerminals++;
+  stageTrace.record("ui-scene-terminal", 0, scene.sequence, { terminal });
   completeCanvasKitScene(scene.sequence, terminal, reason, JSON.stringify({
     rasterReceiptCount: scene.receiptCount,
     rasterReceiptSuccess: scene.receiptSuccess,
@@ -739,6 +779,8 @@ function diagnostics(): Readonly<Record<string, unknown>> {
       waitMaximumMilliseconds: frameWaitMaximumMilliseconds,
       coalescedRequestCount: managedFrameRequestCoalescedCount,
       liveResizeThrottle: {
+        enabled: liveResizeThrottleEnabled,
+        scheduling: liveResizeThrottleEnabled ? "baseline-30fps" : "display-raf",
         targetFramesPerSecond: liveResizeTargetFramesPerSecond,
         frameIntervalMilliseconds: liveResizeFrameIntervalMilliseconds,
         activityWindowMilliseconds: liveResizeActivityWindowMilliseconds,

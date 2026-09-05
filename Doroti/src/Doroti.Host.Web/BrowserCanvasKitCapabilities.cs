@@ -164,12 +164,18 @@ internal sealed class BrowserCanvasKitCapabilities :
             var background = _host.Configuration.platformBrightness == Brightness.dark
                 ? _darkBackgroundColor
                 : _lightBackgroundColor;
+            var mappingStarted = DorotiFrameClock.Now;
             var document = BrowserDisplayListMapper.Create(
                 submission.Scene, sceneMetadata, background, _resources);
+            _host.RecordRaster("canvaskit-map", descriptor.PhysicalWidth, descriptor.PhysicalHeight,
+                DorotiFrameClock.Now - mappingStarted);
             sceneResources = document.Resources.Select(value => value.Reference).ToArray();
             _resources.RetainSceneResources(sceneResources);
             resourcesRetained = true;
+            var encodingStarted = DorotiFrameClock.Now;
             var wireBytes = DisplayListEncoder.Encode(document);
+            _host.RecordRaster("canvaskit-encode", descriptor.PhysicalWidth, descriptor.PhysicalHeight,
+                DorotiFrameClock.Now - encodingStarted);
             lock (_gate)
             {
                 ObjectDisposedException.ThrowIf(_disposed, this);

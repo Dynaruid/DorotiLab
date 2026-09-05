@@ -78,6 +78,8 @@ struct Options {
     bool observeDesktop{};
     int dragPixels{600};
     int dragMilliseconds{150};
+    int f6rBaseWidth{520};
+    int f6rBaseHeight{300};
     std::string motion{"expand"};
 };
 
@@ -312,6 +314,8 @@ Options ParseOptions(int argc, wchar_t** argv) {
         }
         else if (key == L"--drag-pixels") options.dragPixels = std::stoi(next());
         else if (key == L"--drag-ms") options.dragMilliseconds = std::stoi(next());
+        else if (key == L"--f6r-base-width") options.f6rBaseWidth = std::stoi(next());
+        else if (key == L"--f6r-base-height") options.f6rBaseHeight = std::stoi(next());
         else if (key == L"--motion") options.motion = NarrowWide(next());
         else Fail("Unknown command-line option.");
     }
@@ -334,6 +338,9 @@ Options ParseOptions(int argc, wchar_t** argv) {
         Fail("--drag-pixels must be between 1 and 4000.");
     if (options.dragMilliseconds < 20 || options.dragMilliseconds > 10'000)
         Fail("--drag-ms must be between 20 and 10000.");
+    if (options.f6rBaseWidth < 1 || options.f6rBaseWidth > 4000 ||
+        options.f6rBaseHeight < 1 || options.f6rBaseHeight > 4000)
+        Fail("--f6r-base-width and --f6r-base-height must be between 1 and 4000.");
     if (options.motion != "expand" && options.motion != "shrink" && options.motion != "reverse")
         Fail("--motion must be expand, shrink, or reverse.");
     if (options.logOnly) options.desktopDuplication = false;
@@ -1719,11 +1726,11 @@ void PrepareF6RWindow(Options const& options) {
     RECT const work = monitor.rcWork;
     bool const expandsFirst = options.motion != "shrink";
     int width = motion.left || motion.right
-        ? (expandsFirst ? 520 : options.dragPixels + 520)
-        : 800;
+        ? (expandsFirst ? options.f6rBaseWidth : options.dragPixels + options.f6rBaseWidth)
+        : std::max(800, options.f6rBaseWidth);
     int height = motion.top || motion.bottom
-        ? (expandsFirst ? 300 : options.dragPixels + 300)
-        : 600;
+        ? (expandsFirst ? options.f6rBaseHeight : options.dragPixels + options.f6rBaseHeight)
+        : std::max(600, options.f6rBaseHeight);
     int const workWidth = static_cast<int>(work.right - work.left);
     int const workHeight = static_cast<int>(work.bottom - work.top);
     width = std::min(width, std::max(360, workWidth - 100));
@@ -2277,6 +2284,8 @@ void WriteEvidence(
     output << "  \"motion\": \"" << EscapeJson(options.motion) << "\",\n";
     output << "  \"dragPixels\": " << options.dragPixels << ",\n";
     output << "  \"dragMillisecondsRequested\": " << options.dragMilliseconds << ",\n";
+    output << "  \"f6rBaseWidth\": " << options.f6rBaseWidth << ",\n";
+    output << "  \"f6rBaseHeight\": " << options.f6rBaseHeight << ",\n";
     output << "  \"dragTiming\": {\"hoverCounter\":" << driveTiming.hoverCounter
         << ",\"mouseDownCounter\":" << driveTiming.mouseDownCounter
         << ",\"dragStartCounter\":" << driveTiming.dragStartCounter
