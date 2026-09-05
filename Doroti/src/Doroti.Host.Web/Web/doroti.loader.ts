@@ -97,9 +97,8 @@ function selectRendererMode(): "worker-canvaskit-webgl" | "worker-direct-webgl" 
   if (value === "worker-canvaskit-webgl" || value === "document-webgl" || value === "offscreen-bitmap" || value === "offscreen-worker" ||
       value === "worker-direct-webgl")
     return value;
-  // Both ImageBitmap backends remain first-class opt-in paths until their A/B
-  // latency gate passes on the current browser/machine.
-  return "document-webgl";
+  // An omitted, auto, or unrecognized selection uses the product default.
+  return "worker-canvaskit-webgl";
 }
 
 async function ensureBlazorWebAssembly(): Promise<BlazorGlobal> {

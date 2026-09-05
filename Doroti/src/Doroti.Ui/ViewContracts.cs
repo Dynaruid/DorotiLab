@@ -587,11 +587,14 @@ public enum WindowBackdropMode
     system,
     solid,
     transparent,
+    /// <summary>
+    /// Requests Acrylic for this window. Windows App SDK supports this with
+    /// the Vulkan (default) and ANGLE presenters on Windows 11 24H2 or newer.
+    /// </summary>
     acrylic,
     /// <summary>
-    /// Opts a newly-created Windows App SDK window into an Acrylic composition
-    /// topology supported by the selected ANGLE or Vulkan presenter. This mode
-    /// is intentionally experimental and is never selected by <see cref="system"/>.
+    /// Legacy explicit Acrylic mode, using the same Windows composition path
+    /// as <see cref="acrylic"/>. Neither is selected by <see cref="system"/>.
     /// </summary>
     experimentalAcrylic,
 }

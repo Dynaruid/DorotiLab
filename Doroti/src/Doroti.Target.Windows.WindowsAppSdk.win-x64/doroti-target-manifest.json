@@ -4,16 +4,16 @@
   "targetFramework": "net10.0-windows10.0.19041.0",
   "rid": "win-x64",
   "nativeViewType": "Win32.ChildHwnd",
-  "graphicsBackend": "windowsappsdk-2.4/HwndExactCpp/managed-ANGLE-EGL-D3D11-Skia",
-  "defaultRenderer": "AngleD3D11",
+  "graphicsBackend": "windowsappsdk-2.4/HwndExactCpp/managed-Vulkan-Composition-Swapchain-Skia",
+  "defaultRenderer": "Vulkan",
   "optionalRenderers": [
-    "Vulkan"
+    "AngleD3D11"
   ],
   "defaultAdapter": "HwndExactCpp",
   "adapterCapabilities": [
     "HwndExactCpp"
   ],
-  "cutoverDecision": "WindowsAppSdk/HwndExactCpp/ANGLE-D3D11 remains the default; Vulkan is experimental opt-in and remains notVerified for physical resize/scan-out acceptance",
+  "cutoverDecision": "Vulkan is the default; Acrylic is available when requested by the app through WindowBackdropMode.acrylic; broader GPU/DPI/refresh qualification remains incomplete",
   "nativeArtifactPolicy": "app-directory/exact-version/sha256/win-x64/no-PATH-fallback",
   "softwareFallback": false
 }

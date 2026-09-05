@@ -322,7 +322,7 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
     }
 
     internal AcrylicPresenterSnapshot Snapshot() => new(
-        "experimentalAcrylic", "experimentalAcrylic", null,
+        _options.mode.ToString(), _options.mode.ToString(), null,
         _probe.PresentationSupported != 0,
         _probe.IndependentFlipSupported != 0,
         $"{_probe.AdapterLuidHigh}:{unchecked((uint)_probe.AdapterLuidLow)}",
@@ -987,7 +987,7 @@ internal sealed unsafe partial class WindowsManagedAcrylicCompositionPresenter :
 
     private static WindowBackdropOptions ValidateOptions(WindowBackdropOptions options)
     {
-        if (options.mode != WindowBackdropMode.experimentalAcrylic)
+        if (options.mode is not (WindowBackdropMode.acrylic or WindowBackdropMode.experimentalAcrylic))
             throw new ArgumentException("A runtime Acrylic update cannot change the window topology.", nameof(options));
         if (options.tintOpacity is { } tint && (!double.IsFinite(tint) || tint is < 0 or > 1))
             throw new ArgumentOutOfRangeException(nameof(options.tintOpacity));

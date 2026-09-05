@@ -3,6 +3,10 @@
 - Status: Accepted
 - Date: 2026-08-26
 
+## Amendment: 2026-09-05 defaults
+
+The default presenter is now Vulkan/Skia with Windows Presentation. ANGLE remains selectable with `DOROTI_WINDOWS_PRESENTER=AngleD3D11`; the ANGLE topology and evidence below describe that explicit path. Apps can request `WindowBackdropMode.acrylic` without an experimental flag on Windows 11 24H2+, while an omitted backdrop or `system` stays opaque. The legacy `experimentalAcrylic` mode remains compatible. This changes product defaults without reclassifying prior failures or completing broader qualification. See the [default change record](../../../history/26-09-05/renderer-defaults.md).
+
 ## Decision
 
 The canonical `windows` runner is the self-contained unpackaged Windows App SDK 2.4 `win-x64` target. It uses the `HwndExactCpp` adapter and a managed ANGLE/EGL-D3D11 Skia presenter. Windows MAUI remains an explicit independent backend; it is not the default and is never selected as a runtime fallback.

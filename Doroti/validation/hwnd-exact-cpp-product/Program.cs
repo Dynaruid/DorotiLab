@@ -12,7 +12,9 @@ internal static class Program
     private static int Main(string[] args)
     {
         var reportPath = ResolveReportPath(args);
-        var requestedPresenter = ResolveOption(args, "--presenter") ?? "AngleD3D11";
+        var presenterOption = ResolveOption(args, "--presenter") ?? "AngleD3D11";
+        var useDefaultPresenter = presenterOption.Equals("default", StringComparison.OrdinalIgnoreCase);
+        var requestedPresenter = useDefaultPresenter ? "Vulkan" : presenterOption;
         var injectedResult = ResolveOption(args, "--inject-vulkan-result");
         var resetCountText = ResolveOption(args, "--device-resets");
         var smokeMilliseconds = ResolveOption(args, "--smoke-ms") ?? "5000";
@@ -24,9 +26,11 @@ internal static class Program
         var skipResizeBurst = args.Contains("--no-resize-burst", StringComparer.Ordinal);
         var experimentalAcrylic = args.Contains(
             "--experimental-acrylic", StringComparer.Ordinal);
-        ProductStartup.ExperimentalAcrylic = experimentalAcrylic;
+        var acrylicRequested = experimentalAcrylic || args.Contains("--acrylic", StringComparer.Ordinal);
+        ProductStartup.BackdropMode = experimentalAcrylic ? WindowBackdropMode.experimentalAcrylic
+            : acrylicRequested ? WindowBackdropMode.acrylic : null;
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_ADAPTER", "HwndExactCpp");
-        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER", requestedPresenter);
+        Environment.SetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER", useDefaultPresenter ? null : requestedPresenter);
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_VULKAN_INJECT_RESULT", injectedResult);
         Environment.SetEnvironmentVariable("DOROTI_WINDOWS_VULKAN_INJECT_AFTER_PRESENTS",
             injectedResult is null ? null : "1");
@@ -131,7 +135,10 @@ internal static class Program
                   vulkan.MaximumRetiredSwapchains == 0 &&
                   vulkan.QueueIdleRetirementWaits == 0 &&
                   vulkan.RetirementMode == "presentation-buffer-availability"
-                : diagnostics.Presents == diagnostics.GpuCopies;
+                : acrylicRequested
+                    ? diagnostics.GpuCopies == 0 && diagnostics.Presents <= diagnostics.GpuSubmits &&
+                      diagnostics.Acrylic is { ContentIslandConnected: true, MaximumRegisteredSlots: > 0 and <= 3 }
+                    : diagnostics.Presents == diagnostics.GpuCopies;
             Require(diagnostics.CompletedDeviceResets == diagnostics.RequestedDeviceResets &&
                     diagnostics.DeviceGenerations ==
                         1UL + checked((ulong)diagnostics.CompletedDeviceResets) +
@@ -142,19 +149,20 @@ internal static class Program
                     diagnostics.GpuCopies <= diagnostics.GpuSubmits,
                 "Managed presenter ordering or injected device recreation differs in the product path.");
             var expectedBackend = requestedPresenter.Equals("Vulkan", StringComparison.OrdinalIgnoreCase)
-                ? "Vulkan/Composition-Swapchain" : "ANGLE/EGL-D3D11";
+                ? "Vulkan/Composition-Swapchain"
+                : acrylicRequested ? "ANGLE-D3D11/Composition-Swapchain" : "ANGLE/EGL-D3D11";
             Require(diagnostics.PresenterBackend == expectedBackend &&
                     diagnostics.RequestedPresenter.Equals(requestedPresenter, StringComparison.OrdinalIgnoreCase) &&
                     diagnostics.EffectivePresenter == expectedBackend,
                 "Product validation did not select the explicitly requested presenter.");
-            var expectedMode = experimentalAcrylic ? "experimentalAcrylic" : "opaque";
+            var expectedMode = ProductStartup.BackdropMode?.ToString() ?? "opaque";
             Require(diagnostics.RequestedMode == expectedMode &&
                     diagnostics.EffectiveMode == expectedMode &&
-                    (experimentalAcrylic
+                    (acrylicRequested
                         ? diagnostics.Acrylic is { BackdropTargetAdded: true }
                         : diagnostics.Acrylic is null),
                 "Product validation did not preserve the requested window backdrop mode.");
-            if (experimentalAcrylic && expectedBackend == "Vulkan/Composition-Swapchain")
+            if (acrylicRequested && expectedBackend == "Vulkan/Composition-Swapchain")
                 Require(diagnostics.Acrylic is {
                             ContentIslandConnected: false,
                             DesktopWindowTargetConnected: true
@@ -368,15 +376,15 @@ internal static class Program
                 status = "PASS",
                 adapter = "HwndExactCpp",
                 nativeViewType = expectedBackend == "Vulkan/Composition-Swapchain"
-                    ? experimentalAcrylic
+                    ? acrylicRequested
                         ? "synchronous top-level Vulkan Presentation plus Desktop Acrylic window target"
                         : "synchronous top-level Vulkan Presentation"
-                    : "Win32.ChildHwnd",
+                    : acrylicRequested ? "ContentIsland/Composition-Swapchain" : "Win32.ChildHwnd",
                 visibleOwner = expectedBackend == "Vulkan/Composition-Swapchain"
-                    ? experimentalAcrylic
+                    ? acrylicRequested
                         ? "top-level HWND DirectComposition Vulkan Presentation target over a top-level Desktop Acrylic window target"
                         : "top-level HWND DirectComposition Vulkan Presentation target"
-                    : "child HWND",
+                    : acrylicRequested ? "ContentIsland Composition Swapchain" : "child HWND",
                 graphicsBackend = diagnostics.PresenterBackend,
                 diagnostics.AdapterDescription,
                 provenance,
@@ -440,18 +448,18 @@ internal static class Program
 
 public sealed class ProductStartup : IDorotiApplicationStartup
 {
-    internal static bool ExperimentalAcrylic { get; set; }
+    internal static WindowBackdropMode? BackdropMode { get; set; }
 
     public void Configure(DorotiApplicationBuilder builder) => builder
         .UseEntrypoint(() => new ProductEntrypoint())
         .UseView(new DorotiViewConfiguration(
             "Doroti C5-A presenter validation",
             new Size(640, 480),
-            ExperimentalAcrylic ? new Color(0xccfffbfeL) : new Color(0xff10243aL),
-            ExperimentalAcrylic ? new Color(0xcc141218L) : new Color(0xff10243aL),
-            ExperimentalAcrylic
+            BackdropMode.HasValue ? new Color(0xccfffbfeL) : new Color(0xff10243aL),
+            BackdropMode.HasValue ? new Color(0xcc141218L) : new Color(0xff10243aL),
+            BackdropMode.HasValue
                 ? new WindowBackdropOptions(
-                    WindowBackdropMode.experimentalAcrylic,
+                    BackdropMode!.Value,
                     WindowBackdropFallback.transparent)
                 : null));
 }

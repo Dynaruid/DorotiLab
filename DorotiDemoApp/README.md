@@ -12,10 +12,8 @@ Install the .NET 10 SDK and PowerShell 7. Building the Web host from this source
 # Run the default Windows backend
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
-# Run Vulkan + experimental Acrylic on Windows 11 24H2+
-$env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
+# Select a Vulkan device for the default Acrylic demo on Windows 11 24H2+
 $env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # or another exact/unique device-name fragment
-$env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC = '1'
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -Configuration Release
 
 # Run the Web app (Release configuration by default)
@@ -24,18 +22,18 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 
 After the Web runner starts, open `http://127.0.0.1:5088` in a browser. To compare renderer backends explicitly, use these addresses:
 
-- Automatic selection: `http://127.0.0.1:5088`
+- Default CanvasKit Worker: `http://127.0.0.1:5088`
 - Document WebGL2: `http://127.0.0.1:5088/?dorotiRenderer=document-webgl`
-- Split .NET UI Worker + CanvasKit Raster Worker (qualification opt-in): `http://127.0.0.1:5088/?dorotiRenderer=worker-canvaskit-webgl`
+- Split .NET UI Worker + CanvasKit Raster Worker (default): `http://127.0.0.1:5088/?dorotiRenderer=worker-canvaskit-webgl`
 - Direct visible canvas in the persistent .NET Worker (qualification candidate): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
 - Same-thread OffscreenCanvas: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-bitmap`
 - Persistent .NET Worker: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-worker`
 
-`worker-canvaskit-webgl` is a forced opt-in mode. The main thread owns DOM/input/IME/semantics, logical CSS geometry, Worker supervision, restart policy, and canvas-lease replacement; the UI Worker owns the .NET runtime and a CPU text-layout CanvasKit instance; the Raster Worker owns the visible `OffscreenCanvas` and hardware-WebGL2 CanvasKit instance. If the explicitly requested mode cannot initialize its Workers, WebGL2 context, or packaged assets, it surfaces the failure instead of silently selecting an older renderer.
+`worker-canvaskit-webgl` is the default mode. The main thread owns DOM/input/IME/semantics, logical CSS geometry, Worker supervision, restart policy, and canvas-lease replacement; the UI Worker owns the .NET runtime and a CPU text-layout CanvasKit instance; the Raster Worker owns the visible `OffscreenCanvas` and hardware-WebGL2 CanvasKit instance. If this mode cannot initialize its Workers, WebGL2 context, or packaged assets, it surfaces the failure instead of silently selecting an older renderer.
 
 The Web host source build acquires the exact default variant of `canvaskit-wasm@0.42.0` under lockfile integrity. At runtime it uses only the same-origin JS/WASM packaged by `Doroti.Host.Web` under `/_content/Doroti.Host.Web/canvaskit/0.42.0/`; it does not download CanvasKit from a CDN or the npm registry. `canvaskit.manifest.json` in that path records the version, variant, lockfile integrity, byte length, and SHA-256 of every allowed file. The package also carries the type declarations and upstream `LICENSE`, and consuming applications do not need Node/npm during restore, build, or publish.
 
-`auto` remains `document-webgl` until CanvasKit automatic correctness, performance, physical 60/120 Hz, trackpad, Korean IME, and screen-reader qualification all pass. A successful opt-in run does not promote the default.
+`auto` and URLs without a renderer option select `worker-canvaskit-webgl`. This default change does not complete the remaining performance, physical presentation, IME, or accessibility qualification.
 
 ### CanvasKit qualification evidence (2026-08-31)
 
@@ -65,7 +63,7 @@ Press `Ctrl+C` in the terminal that launched the app to stop it. See [Run by pla
 
 - `Program.cs`, `src/`, `assets/`: shared startup, widget tree, and application assets
 - `doroti-workspace.json`: includes distinct `macos` (AppKit) and `maccatalyst` (UIKit) aliases
-- `windowsappsdk/`: Windows App SDK 2.4 `HwndExactCpp` child-HWND runner with managed ANGLE/EGL-D3D11 Skia presentation.
+- `windowsappsdk/`: Windows App SDK 2.4 `HwndExactCpp` child-HWND runner with managed Vulkan/Skia presentation (ANGLE selectable).
 - `windows/`: first-class MAUI backend runner and package identity
 - `web/`: Blazor WebAssembly runner, TypeScript source, and `wwwroot`
 - `android/`: .NET Android/MAUI runner plus the default Gradle AAR and .NET binding
@@ -129,35 +127,19 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform linux -Rid linux-x64
 ```
 
-### Run Windows with the optional Vulkan presenter
+### Run Windows with Vulkan and Acrylic
 
-The Windows App SDK runner can explicitly select the experimental direct Vulkan/Skia presenter. ANGLE remains the default. For opaque Vulkan, leave the Acrylic opt-in unset:
+Windows App SDK defaults to Vulkan, and the demo requests ordinary `WindowBackdropMode.acrylic`. Acrylic is applied on Windows 11 24H2+ without an experimental flag.
 
 ```powershell
-$env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
-$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # or another exact/unique device-name fragment
-Remove-Item Env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC -ErrorAction SilentlyContinue
-
+$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # exact/unique GPU name if multiple GPUs qualify
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
   -App ./DorotiDemoApp `
   -Platform windows `
   -Configuration Release
 ```
 
-To run the Vulkan presenter over Acrylic on Windows 11 24H2+, copy and run this entire block from the repository root in PowerShell:
-
-```powershell
-$env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
-$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # or another exact/unique device-name fragment
-$env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC = '1'
-
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
-  -App ./DorotiDemoApp `
-  -Platform windows `
-  -Configuration Release
-```
-
-`DOROTI_WINDOWS_VULKAN_DEVICE` is optional when exactly one capable GPU is eligible; use an exact or unique device-name fragment when deterministic selection is required. The product path requires the System32 Vulkan 1.1 loader and dedicated importable D3D11-texture external memory, then uses Windows Presentation with zero Vulkan WSI swapchains. It has no automatic ANGLE fallback. Vulkan+Acrylic keeps the premultiplied Vulkan Presentation surface in a native topmost DirectComposition target and places it above a host-backdrop-enabled non-topmost `DesktopWindowTarget` with an active `DesktopAcrylicController`. Clear `DOROTI_WINDOWS_PRESENTER`, `DOROTI_WINDOWS_VULKAN_DEVICE`, and `DOROTI_DEMO_EXPERIMENTAL_ACRYLIC` afterward to return to the default opaque ANGLE presenter.
+Device selection can be omitted when exactly one GPU qualifies. Set `DOROTI_WINDOWS_PRESENTER=AngleD3D11` to select ANGLE explicitly. For an opaque window, omit the app backdrop or request `WindowBackdropMode.solid`. `experimentalAcrylic` and the existing environment flag remain available to reproduce the legacy mode.
 
 ### Connect an Android device or emulator
 
@@ -273,13 +255,13 @@ On Linux the demo requests `WindowBackdropMode.acrylic` with `WindowBackdropFall
 
 ## Support and evidence status
 
-The default Windows route is the self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host. Native C++ owns the top-level/child/task HWNDs and input/lifecycle ingress; managed code owns Doroti scene construction and hardware-D3D11 ANGLE/EGL/Skia raster and presentation. Each exact-size GPU backing is blitted to an `EGL_FIXED_SIZE_ANGLE` window surface, and a newly created surface is `DwmFlush`ed after its first swap before initial show or resize completion. An 8 ms refresh is active only while an interactive move straddles two monitors and no render is pending or in flight.
+The default Windows route is the self-contained Windows App SDK 2.4 `HwndExactCpp` host with the Vulkan/Skia presenter. Native C++ owns HWNDs and input/lifecycle ingress; managed code owns Doroti scenes and GPU raster/presentation. ANGLE remains an explicit alternative renderer.
 
-`DOROTI_WINDOWS_PRESENTER=Vulkan` selects the experimental Vulkan/Skia path for this same `HwndExactCpp` runner. SkiaSharp is pinned to `4.152.0-rc.1.26426.14`, and `SkiaSharp.Vulkan.Silk.NET` supplies the typed `GRSilkNetBackendContext`. Skia renders into a retained Vulkan backing; the host copies its complete app-owned capacity into three exact-LUID D3D11 shared textures and presents them through Windows Presentation. A native topmost DirectComposition target on the top-level HWND is the sole visible raster owner; the native child is hidden capacity infrastructure rather than a second visible geometry timeline. Presentation uses the full-capacity source at identity and the HWND client clip defines the exact viewport. `WM_SIZING` only ensures capacity. Moving-origin left/top edges keep the current raster attached to the same HWND and coalesce actual `WM_SIZE` generations to running one plus the latest pending frame without a per-step wait; `WM_EXITSIZEMOVE` performs one bounded exact settle. Fixed-origin edges retain their bounded exact-frame/CompositionFrame handshake. No edge source translation, child-position correction, fixed 30/60 fps limiter, or CSS-style stretching is used.
+Vulkan copies its retained backing into three exact-LUID D3D11 shared textures and presents through Windows Presentation. The top-level HWND DirectComposition target owns the visible raster. See the [September 5 history](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md) for current resize behavior, earlier failures, and observed results.
 
 On the tested AMD Radeon 780M, three focused top-level-owner `TopLeft` reverse-600 ms runs plus separate `Left` and `Right` regressions passed with zero validation-background gaps, exact final geometry, monotonic markers, and clean resources. The source-built `TopLeft` run reached 151.49 presentations/s with 7.65 ms accepted-to-next-present p95. Earlier retained-child and synchronous post-geometry failures remain historical evidence rather than being reclassified. Automated capture and terminal evidence do not substitute for post-fix physical scan-out, human resize, IME, accessibility, larger-monitor memory/startup, or the full DPI/GPU matrix; Vulkan remains opt-in and the latest left/top human recheck is `notVerified`. See [ADR-027](../Doroti/docs/adr/ADR-027-windows-optional-vulkan.md), [problem.md](../problem.md), and the [implementation checkpoint](../history/26-09-02/windows-appsdk-vulkan-implementation-checkpoint.md).
 
-`DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1` keeps the established opt-in ANGLE ContentIsland/Composition Swapchain path when the presenter is unset or `AngleD3D11`. With explicit `Vulkan`, a dedicated system DispatcherQueue thread owns a non-topmost `DesktopWindowTarget` and calls `DesktopAcrylicController.SetTarget(WindowId, CompositionTarget)`; the HWND enables `DWMWA_USE_HOSTBACKDROPBRUSH`, and the native topmost target presents premultiplied Vulkan pixels above it. Attach or active-state failure is explicit and never becomes plain transparency or a silent presenter change. Vulkan applies kind/theme/tint/luminosity through the same controller option contract. Current product qualification reports `DesktopAcrylicController`, state `Active`, target/host flags true, ContentIsland false, three Presentation buffers, zero failed/unterminated terminals, and clean device-reset/lifecycle coverage on AMD Radeon 780M. Current-monitor capture diffuses sharp wallpaper structure beneath Material content, but human backdrop quality, transient-resize perception, physical scan-out, IME, accessibility, and the full GPU/DPI/refresh matrix remain `notVerified`; opaque ANGLE remains the default.
+Ordinary `acrylic` and compatibility `experimentalAcrylic` use the same Acrylic implementation for the selected presenter. Default Vulkan composites its premultiplied Presentation surface over a non-topmost `DesktopWindowTarget` and `DesktopAcrylicController`. ANGLE uses ContentIsland/Composition Swapchain. Full GPU/DPI/refresh and physical IME/accessibility qualification remains incomplete.
 
 Earlier Windows physical resize acceptance is superseded for Vulkan left/top by the latest user report; the repaired binary needs a fresh human drag before that scope can return to PASS. Strict synthetic input qualification and pixel/cadence failures remain failures rather than being reclassified by earlier acceptance. Automated input passed; automated IME/UIA and lifecycle/device coverage is partial. Physical Korean IME candidate/caret behavior, Narrator/Accessibility Insights, untested edge/speed/DPI/monitor combinations, device removal, installer/MSIX, and shutdown at every wait point remain `notVerified`. The explicit MAUI backend has its own evidence boundary and never serves as a silent fallback. The last full product-solution Release run on Windows failed after the Windows target passed because a macOS project invoked unavailable `sips`; use the target-scoped commands above for Windows work.
 

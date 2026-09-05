@@ -6,7 +6,7 @@ import { openDoroti, waitForSettledPresenter, captureDiagnostics } from './helpe
 test.use({ trace: 'off', video: 'off' });
 test('F3 responsive gallery text crosses a stationary wrap threshold', async ({ page }, testInfo) => {
   const renderer = process.env.DOROTI_WEB_RENDERER_MODE ?? 'auto';
-  test.fail(renderer === 'auto' || renderer === 'document-webgl',
+  test.fail(renderer === 'document-webgl',
     'C0 and C1 document raster retains one clipped line despite multiline semantics; see web-canvaskit-n-results.md. An eventual fix must remove this expected failure.');
   await page.setViewportSize({ width: 640, height: 800 });
   await openDoroti(page, '&dorotiResizeScheduling=display&dorotiCopyOwnership=owned&dorotiEncodingCache=1&dorotiMetricsCoalescing=frame');

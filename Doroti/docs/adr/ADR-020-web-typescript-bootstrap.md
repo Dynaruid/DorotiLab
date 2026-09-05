@@ -13,7 +13,7 @@ Doroti Web application policy, the Doroti loader, browser interop, and JavaScrip
 - `Microsoft.TypeScript.MSBuild` 7.0.0 is restored only by a Web runner with `web/tsconfig.json`.
 - The compiler writes under target/configuration-specific `obj`; Release publish excludes maps, TypeScript source, config, and compiler/tool assets.
 - Node, npm, Bun, and bundlers are not required.
-- `doroti.loader.ts` selects `document-webgl`, `worker-direct-webgl`, `offscreen-bitmap`, or `offscreen-worker` before any managed runtime starts. Repeated `startDoroti()` calls share one startup promise.
+- `doroti.loader.ts` selects `worker-canvaskit-webgl` by default, or explicit `document-webgl`, `worker-direct-webgl`, `offscreen-bitmap`, or `offscreen-worker` before any managed runtime starts. Repeated `startDoroti()` calls share one startup promise.
 - Same-thread modes load `_framework/blazor.webassembly.js` and call `Blazor.start()` exactly once.
 - Worker modes do not call `Blazor.start()` on main. Main TypeScript owns DOM input, IME, semantics, plugins, clipboard, and runtime supervision. One persistent module Worker starts the .NET runtime from `_framework/dotnet.js` and exclusively owns the Doroti app/framework and Skia. The legacy Worker path returns `ImageBitmap` objects to main; the direct qualification path owns Worker rAF and WebGL2 on the transferred visible canvas.
 
@@ -68,7 +68,7 @@ When a custom `loadBootResource` performs `fetch`, it must pass the received int
 - `worker-direct-webgl` transfers the visible canvas exactly once. The persistent Worker owns Emscripten WebGL2 framebuffer 0, Skia submission, surface/context generation, and Worker rAF. The direct path creates no `ImageBitmap`, has no `bitmaprenderer` display receipt, and remains explicit opt-in while qualification is incomplete.
 - Main/Worker messages use runtime-validated protocol v2 envelopes. Unknown versions, kinds, non-positive sequences, or illegal runtime transitions fail closed. A fatal direct Worker is restarted at most once; its external leases are closed as `failed(runtime-lost)`, the dead transferred canvas node is replaced, and DOM/input/IME/semantics endpoints are rebound through a new host.
 - All async presenters keep one started `current` and one replaceable `latest` request. Request id, resize generation, context generation, terminal, and bitmap ownership remain paired. A main display receipt is named `submitted`, not scan-out/presented.
-- `auto` remains `document-webgl` until the repository's automated differential gates and physical 60/120 Hz, border-drag, precision-trackpad, Korean IME, and screen-reader acceptance all pass, followed by a separate burn-in. Correct Worker implementations remain explicit modes while any promotion gate is open.
+- As of 2026-09-05, `auto` and omitted renderer selection use `worker-canvaskit-webgl` by product decision. Explicit renderer overrides remain available; prior evidence and outstanding qualification gates remain recorded in history.
 
 ## Failure and evidence boundary
 

@@ -344,7 +344,7 @@ internal sealed unsafe partial class WindowsManagedVulkanPresenter :
             ? _composition.Invoke(() => _acrylicScene.State)
             : null;
         return new AcrylicPresenterSnapshot(
-            "experimentalAcrylic", "experimentalAcrylic", null,
+            options.mode.ToString(), options.mode.ToString(), null,
             _compositionProbe.PresentationSupported != 0,
             _compositionProbe.IndependentFlipSupported != 0,
             $"{_adapterLuidHigh}:{_adapterLuidLow}",

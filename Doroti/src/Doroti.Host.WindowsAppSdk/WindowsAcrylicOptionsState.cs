@@ -43,7 +43,7 @@ internal sealed class WindowsAcrylicOptionsState : IDisposable
         _systemBrightness = systemBrightness;
         if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 26100))
             throw new PlatformNotSupportedException(
-                "Vulkan experimentalAcrylic requires Windows 11 24H2 build 26100 or newer.");
+                "Vulkan Acrylic requires Windows 11 24H2 build 26100 or newer.");
     }
 
     internal WindowBackdropOptions Options => _options;
@@ -234,7 +234,7 @@ internal sealed class WindowsAcrylicOptionsState : IDisposable
     private static WindowBackdropOptions ValidateOptions(WindowBackdropOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
-        if (options.mode != WindowBackdropMode.experimentalAcrylic)
+        if (options.mode is not (WindowBackdropMode.acrylic or WindowBackdropMode.experimentalAcrylic))
             throw new ArgumentException(
                 "A runtime Acrylic update cannot change the window topology.", nameof(options));
         if (options.tintOpacity is { } tint && (!double.IsFinite(tint) || tint is < 0 or > 1))

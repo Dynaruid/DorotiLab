@@ -12,10 +12,8 @@ DorotiDemoApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱�
 # Windows 기본 backend로 실행
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
 
-# Windows 11 24H2+: Vulkan + experimental Acrylic
-$env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
+# Windows 11 24H2+: 기본 Vulkan + Acrylic의 GPU 선택
 $env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # 또는 정확하거나 유일한 다른 device 이름 조각
-$env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC = '1'
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -Configuration Release
 
 # Web으로 실행(기본 Release 구성)
@@ -26,16 +24,16 @@ Web runner가 시작되면 브라우저에서 `http://127.0.0.1:5088`을 엽니�
 
 - 기본 자동 선택: `http://127.0.0.1:5088`
 - document WebGL2: `http://127.0.0.1:5088/?dorotiRenderer=document-webgl`
-- 분리된 .NET UI Worker + CanvasKit Raster Worker(qualification opt-in): `http://127.0.0.1:5088/?dorotiRenderer=worker-canvaskit-webgl`
+- 분리된 .NET UI Worker + CanvasKit Raster Worker(기본값): `http://127.0.0.1:5088/?dorotiRenderer=worker-canvaskit-webgl`
 - persistent .NET Worker의 direct visible canvas(qualification 후보): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
 - 같은 thread OffscreenCanvas: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-bitmap`
 - persistent .NET Worker: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-worker`
 
-`worker-canvaskit-webgl`은 main thread가 DOM/input/IME/semantics, logical CSS geometry, Worker supervision, restart policy와 canvas lease 교체를, UI Worker가 .NET runtime과 CPU text-layout CanvasKit을, Raster Worker가 visible `OffscreenCanvas`와 hardware WebGL2 CanvasKit을 소유하는 강제 opt-in mode입니다. 이 mode를 URL로 명시했는데 Worker, WebGL2 또는 packaged asset 초기화가 실패하면 이전 renderer로 조용히 fallback하지 않고 오류를 노출합니다.
+`worker-canvaskit-webgl`은 main thread가 DOM/input/IME/semantics, logical CSS geometry, Worker supervision, restart policy와 canvas lease 교체를, UI Worker가 .NET runtime과 CPU text-layout CanvasKit을, Raster Worker가 visible `OffscreenCanvas`와 hardware WebGL2 CanvasKit을 소유하는 기본 mode입니다. 이 mode에서 Worker, WebGL2 또는 packaged asset 초기화가 실패하면 이전 renderer로 조용히 fallback하지 않고 오류를 노출합니다.
 
 Web host source build는 exact `canvaskit-wasm@0.42.0` default variant와 lockfile integrity로 asset을 취득합니다. 실행 시에는 CDN이나 npm registry가 아니라 `Doroti.Host.Web` package에 포함된 same-origin `/_content/Doroti.Host.Web/canvaskit/0.42.0/`의 JS/WASM만 사용합니다. 같은 경로의 `canvaskit.manifest.json`에는 version, variant, lockfile integrity, 허용된 각 파일의 byte length와 SHA-256이 있으며 package에는 type declaration과 upstream `LICENSE`도 포함됩니다. package 소비 앱의 restore/build/publish에는 Node/npm이 필요하지 않습니다.
 
-CanvasKit automatic correctness, 성능, physical 60/120 Hz, trackpad, 한글 IME와 screen reader qualification을 모두 통과하기 전까지 `auto`는 계속 `document-webgl`입니다. opt-in CanvasKit 실행 결과는 기본값 승격을 뜻하지 않습니다.
+`auto`와 renderer 옵션 없는 URL은 `worker-canvaskit-webgl`을 선택합니다. 이번 기본값 변경은 남은 성능·물리 표시·IME·접근성 검증의 완료를 의미하지 않습니다.
 
 ### CanvasKit qualification evidence (2026-08-31)
 
@@ -65,7 +63,7 @@ pwsh -NoProfile -File ./Doroti/eng/run-web-playwright.ps1 `
 
 - `Program.cs`, `src/`, `assets/`: 공용 startup, widget tree, 앱 asset
 - `doroti-workspace.json`: `macos`(AppKit)와 `maccatalyst`(UIKit)를 구분하는 runner 경로
-- `windowsappsdk/`: Windows App SDK 2.4 `HwndExactCpp` child-HWND runner와 managed ANGLE/EGL-D3D11 Skia presentation 경로입니다.
+- `windowsappsdk/`: Windows App SDK 2.4 `HwndExactCpp` child-HWND runner와 managed Vulkan/Skia presentation (ANGLE selectable) 경로입니다.
 - `windows/`: 정식 MAUI backend runner와 package identity
 - `web/`: Blazor WebAssembly runner, TypeScript source, `wwwroot`
 - `android/`: .NET Android/MAUI runner와 기본 Gradle AAR/.NET binding
@@ -129,35 +127,19 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform linux -Rid linux-x64
 ```
 
-### Windows optional Vulkan presenter로 실행
+### Windows Vulkan과 Acrylic 실행
 
-Windows App SDK runner는 실험적 direct Vulkan/Skia presenter를 명시적으로 선택할 수 있습니다. 기본값은 계속 ANGLE입니다. 불투명 Vulkan은 Acrylic opt-in을 지운 상태에서 실행합니다.
+Windows App SDK는 Vulkan이 기본값이며 데모는 일반 `WindowBackdropMode.acrylic`을 요청합니다. Windows 11 24H2 이상에서 별도 실험 플래그 없이 Acrylic이 적용됩니다.
 
 ```powershell
-$env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
-$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # 또는 정확하거나 유일한 다른 device 이름 조각
-Remove-Item Env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC -ErrorAction SilentlyContinue
-
+$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # exact/unique GPU name if multiple GPUs qualify
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
   -App ./DorotiDemoApp `
   -Platform windows `
   -Configuration Release
 ```
 
-Windows 11 24H2 이상에서 Vulkan presenter와 Acrylic을 함께 실행하려면 아래 블록 전체를 저장소 루트의 PowerShell에 복사해 실행합니다.
-
-```powershell
-$env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
-$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # 또는 정확하거나 유일한 다른 device 이름 조각
-$env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC = '1'
-
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
-  -App ./DorotiDemoApp `
-  -Platform windows `
-  -Configuration Release
-```
-
-capability를 만족하는 GPU가 정확히 하나라면 `DOROTI_WINDOWS_VULKAN_DEVICE`는 생략할 수 있습니다. 선택을 재현 가능하게 고정하려면 정확한 device name 또는 유일한 이름 조각을 지정합니다. 제품 경로는 System32 Vulkan 1.1 loader와 dedicated importable D3D11-texture external memory를 요구하고 Windows Presentation으로 표시하며 Vulkan WSI swapchain은 0개입니다. ANGLE로 자동 fallback하지 않습니다. Vulkan+Acrylic은 premultiplied Vulkan Presentation surface를 native topmost DirectComposition target에 유지하고, host-backdrop-enabled non-topmost `DesktopWindowTarget`의 active `DesktopAcrylicController` 위에 배치합니다. 기본 불투명 ANGLE presenter로 돌아가려면 실행 후 `DOROTI_WINDOWS_PRESENTER`, `DOROTI_WINDOWS_VULKAN_DEVICE`, `DOROTI_DEMO_EXPERIMENTAL_ACRYLIC`을 지웁니다.
+지원 GPU가 하나이면 장치 선택은 생략할 수 있습니다. ANGLE을 명시적으로 사용하려면 `DOROTI_WINDOWS_PRESENTER=AngleD3D11`을 설정합니다. 불투명 창은 앱에서 backdrop을 생략하거나 `WindowBackdropMode.solid`를 요청합니다. `experimentalAcrylic`과 기존 환경변수는 이전 mode 재현을 위해 유지합니다.
 
 ### Android 실기기와 에뮬레이터 연결
 
@@ -273,13 +255,13 @@ Linux 데모는 `WindowBackdropMode.acrylic`과 `WindowBackdropFallback.transpar
 
 ## 지원과 evidence 상태
 
-Windows 기본 경로는 self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host입니다. Native C++은 top-level/child/task HWND와 input/lifecycle ingress를, managed code는 Doroti scene 생성과 hardware-D3D11 ANGLE/EGL/Skia raster/presentation을 소유합니다. Exact-size GPU backing을 `EGL_FIXED_SIZE_ANGLE` window surface로 blit하며 새 surface는 첫 swap 뒤 initial show 또는 resize 완료 전에 `DwmFlush`합니다. 8 ms refresh는 interactive move가 두 monitor에 걸쳐 있고 pending/in-flight render가 없을 때만 동작합니다.
+Windows 기본 경로는 self-contained Windows App SDK 2.4 `HwndExactCpp` host와 Vulkan/Skia presenter입니다. Native C++은 HWND와 input/lifecycle ingress를, managed code는 Doroti scene과 GPU raster/presentation을 소유합니다. ANGLE은 명시적 대체 renderer로 유지합니다.
 
-`DOROTI_WINDOWS_PRESENTER=Vulkan`은 같은 `HwndExactCpp` runner의 실험적 Vulkan/Skia 경로를 선택합니다. SkiaSharp는 `4.152.0-rc.1.26426.14`로 고정하고 `SkiaSharp.Vulkan.Silk.NET`의 typed `GRSilkNetBackendContext`를 사용합니다. Skia가 retained Vulkan backing의 app-owned 전체 capacity에 그리면 host가 exact-LUID D3D11 shared texture 3개로 copy해 Windows Presentation으로 표시합니다. Top-level HWND의 native topmost DirectComposition target이 유일한 visible raster owner이며 native child는 숨겨진 capacity infrastructure일 뿐 별도 visible geometry timeline이 아닙니다. Presentation은 전체 capacity를 identity로 제출하고 HWND client clip만 exact viewport를 정합니다. `WM_SIZING`은 capacity만 확인합니다. 좌·상단처럼 origin이 움직이는 edge는 현재 raster를 같은 HWND에 둔 채 actual `WM_SIZE` generation을 running 1 + latest pending 1로 coalesce하고 per-step wait를 하지 않으며, `WM_EXITSIZEMOVE`에서 한 번 bounded exact settle합니다. Origin 고정 edge는 기존 bounded exact-frame/CompositionFrame handshake를 유지합니다. Edge source translation, child-position correction, 고정 30/60 fps limiter와 CSS식 stretch는 사용하지 않습니다.
+Vulkan은 retained backing을 exact-LUID D3D11 shared texture 3개로 복사하고 Windows Presentation으로 표시합니다. Top-level HWND의 DirectComposition target이 visible raster를 소유합니다. 현재 resize 동작과 이전 실패, 관찰 결과는 [9월 5일 기록](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md)을 참조합니다.
 
 AMD Radeon 780M에서 top-level owner `TopLeft` reverse 600 ms 3회와 별도 `Left`/`Right` 회귀가 validation-background gap 0, exact final geometry, 단조 증가 marker와 정상 resource accounting을 통과했습니다. Source-built `TopLeft`는 151.49 presentations/s와 accepted→next-present p95 7.65 ms를 기록했습니다. 이전 retained-child와 synchronous post-geometry 실패는 삭제하거나 PASS로 바꾸지 않고 history로 유지합니다. 자동 capture/terminal evidence는 수정 뒤 physical scan-out, 사람 resize, IME/accessibility, 큰 monitor의 memory/startup과 전체 DPI/GPU matrix를 대신하지 않습니다. Vulkan은 opt-in이며 최신 left/top 사람 재확인은 `notVerified`입니다. [ADR-027](../Doroti/docs/adr/ADR-027-windows-optional-vulkan.md), [problem.md](../problem.md), [구현 체크포인트](../history/26-09-02/windows-appsdk-vulkan-implementation-checkpoint.md)를 참고하세요.
 
-`DOROTI_DEMO_EXPERIMENTAL_ACRYLIC=1`은 presenter가 unset 또는 `AngleD3D11`이면 기존 opt-in ANGLE ContentIsland/Composition Swapchain 경로를 유지합니다. Explicit `Vulkan`에서는 dedicated system DispatcherQueue thread가 non-topmost `DesktopWindowTarget`을 소유하고 `DesktopAcrylicController.SetTarget(WindowId, CompositionTarget)`을 호출합니다. HWND에는 `DWMWA_USE_HOSTBACKDROPBRUSH`를 설정하고 native topmost target은 그 위에 premultiplied Vulkan pixel을 표시합니다. Attach 또는 active-state 실패는 단순 transparency나 조용한 presenter 변경으로 바꾸지 않습니다. Vulkan도 같은 controller option 계약으로 kind/theme/tint/luminosity를 적용합니다. AMD Radeon 780M의 현재 product qualification은 `DesktopAcrylicController`, state `Active`, target/host flag true, ContentIsland false, Presentation buffer 3, failed/unterminated terminal 0과 정상 device-reset/lifecycle을 보고했습니다. Current-monitor capture에서는 uncovered wallpaper의 날카로운 형상이 확산되지만, 사람의 backdrop 품질과 순간 resize 체감, physical scan-out, IME/accessibility, 전체 GPU/DPI/refresh matrix는 계속 `notVerified`이며 불투명 ANGLE이 기본값입니다.
+일반 `acrylic`과 호환 `experimentalAcrylic`은 선택된 presenter의 같은 Acrylic 구현을 사용합니다. 기본 Vulkan은 non-topmost `DesktopWindowTarget`과 `DesktopAcrylicController` 위에 premultiplied Presentation surface를 합성합니다. ANGLE은 ContentIsland/Composition Swapchain을 사용합니다. 전체 GPU/DPI/주사율 및 물리 IME/접근성 검증은 완료되지 않았습니다.
 
 과거 Windows 실제 resize acceptance 중 Vulkan 좌·상단 범위는 최신 사용자 보고로 supersede됐으며, 수정 binary를 사람이 다시 drag하기 전에는 PASS로 되돌리지 않습니다. Strict synthetic input qualification과 pixel/cadence FAIL도 과거 acceptance로 재분류하지 않습니다. 자동 input은 PASS했고 IME/UIA 및 lifecycle/device는 automated partial 범위입니다. 실제 한글 IME 후보창/caret, Narrator/Accessibility Insights, 미실행 edge/speed/DPI/monitor 조합, device removal, installer/MSIX, 각 wait 지점 shutdown은 `notVerified`입니다. 명시적 MAUI backend는 별도 evidence 경계를 가지며 silent fallback으로 사용하지 않습니다. 마지막 Windows 전체 product solution Release 실행은 Windows target 통과 뒤 macOS project가 없는 `sips`를 호출해 실패했으므로 Windows 작업에는 위 target-scoped 명령을 사용합니다.
 

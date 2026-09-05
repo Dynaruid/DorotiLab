@@ -219,19 +219,20 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             _configuration = configuration;
             _requestedDeviceResets = ResolveRequestedDeviceResets();
             RequestedPresenter = ResolveRequestedPresenter();
-            RequestedMode = configuration.backdrop?.mode == WindowBackdropMode.experimentalAcrylic
-                ? "experimentalAcrylic" : "opaque";
-            if (RequestedMode == "experimentalAcrylic" && RequestedPresenter == "Vulkan")
+            var acrylicRequested = configuration.backdrop?.mode is
+                WindowBackdropMode.acrylic or WindowBackdropMode.experimentalAcrylic;
+            RequestedMode = acrylicRequested ? configuration.backdrop!.mode.ToString() : "opaque";
+            if (acrylicRequested && RequestedPresenter == "Vulkan")
             {
                 Presenter = new WindowsManagedVulkanPresenter(
                     ShouldWriteDiagnostics(), configuration.backdrop!, Brightness.light);
-                EffectiveMode = "experimentalAcrylic";
+                EffectiveMode = RequestedMode;
             }
-            else if (RequestedMode == "experimentalAcrylic" && RequestedPresenter != "AngleD3D11")
+            else if (acrylicRequested && RequestedPresenter != "AngleD3D11")
                 throw new InvalidOperationException(
-                    $"DOROTI_WINDOWS_PRESENTER={RequestedPresenter} conflicts with experimentalAcrylic. " +
-                    "Only AngleD3D11 and Vulkan support the experimental Acrylic topology.");
-            else if (RequestedMode == "experimentalAcrylic")
+                    $"DOROTI_WINDOWS_PRESENTER={RequestedPresenter} conflicts with Acrylic. " +
+                    "Only AngleD3D11 and Vulkan support the Acrylic topology.");
+            else if (acrylicRequested)
             {
                 try
                 {
@@ -241,7 +242,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                         ShouldWriteDiagnostics(),
                         configuration.backdrop!,
                         Brightness.light);
-                    EffectiveMode = "experimentalAcrylic";
+                    EffectiveMode = RequestedMode;
                     NativeRequiredFeatures = WindowsNativeV1.ExperimentalAcrylicFeature;
                     if (ShouldWriteDiagnostics())
                         Console.Error.WriteLine("doroti.windows.experimental-acrylic=pre-window-probe-pass");
@@ -898,7 +899,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             var diagnostics = CreateDiagnostics();
             return new
             {
-                schemaVersion = EffectiveMode == "experimentalAcrylic"
+                schemaVersion = EffectiveMode is "acrylic" or "experimentalAcrylic"
                     ? "doroti.windows.experimental-acrylic-product/v1"
                     : "doroti.windows.hwnd-exact-cpp-product/v1",
                 ownership = new
@@ -1008,7 +1009,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         private static string ResolveRequestedPresenter() =>
             Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER")?.Trim() switch
             {
-                null or "" => "AngleD3D11",
+                null or "" => "Vulkan",
                 var value when value.Equals("AngleD3D11", StringComparison.OrdinalIgnoreCase) =>
                     "AngleD3D11",
                 var value when value.Equals("Vulkan", StringComparison.OrdinalIgnoreCase) =>

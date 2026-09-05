@@ -156,9 +156,9 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
                 title: "Doroti Material Demo",
                 color: new UiColor(0xff6750a4L),
                 themeFactory: () => DemoTheme.Create(
-                    Brightness.light, App.ExperimentalAcrylicEnabled),
+                    Brightness.light, App.AcrylicEnabled),
                 darkThemeFactory: () => DemoTheme.Create(
-                    Brightness.dark, App.ExperimentalAcrylicEnabled),
+                    Brightness.dark, App.AcrylicEnabled),
                 themeMode: Material.ThemeMode.system,
                 locale: new Locale("en", "US"),
                 debugShowCheckedModeBanner: false,
@@ -170,9 +170,9 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
                 title: "Doroti Material Demo",
                 color: new UiColor(0xff6750a4L),
                 themeFactory: () => DemoTheme.Create(
-                    Brightness.light, App.ExperimentalAcrylicEnabled),
+                    Brightness.light, App.AcrylicEnabled),
                 darkThemeFactory: () => DemoTheme.Create(
-                    Brightness.dark, App.ExperimentalAcrylicEnabled),
+                    Brightness.dark, App.AcrylicEnabled),
                 themeMode: Material.ThemeMode.system,
                 locale: new Locale("en", "US"),
                 debugShowCheckedModeBanner: false,
@@ -624,15 +624,17 @@ internal static class App
         Environment.GetEnvironmentVariable("DOROTI_DEMO_EXPERIMENTAL_ACRYLIC"),
         "1", StringComparison.Ordinal);
 
+    internal static bool AcrylicEnabled => OperatingSystem.IsWindows() || ExperimentalAcrylicEnabled;
+
     internal static DorotiViewConfiguration ViewConfiguration { get; } =
         new("Doroti Material Demo", new Size(720, 640),
             // The Scaffold already paints the 80%-opaque Material surface.
             // Keep the renderer base transparent in Acrylic mode so that tint
             // is applied once and the system-blurred backdrop is not hidden by
             // two stacked translucent fills.
-            ExperimentalAcrylicEnabled
+            AcrylicEnabled
                 ? new UiColor(0x00000000L) : new UiColor(0xccfffbfeL),
-            ExperimentalAcrylicEnabled
+            AcrylicEnabled
                 ? new UiColor(0x00000000L) : new UiColor(0xcc141218L),
             ExperimentalAcrylicEnabled
                 ? new WindowBackdropOptions(
