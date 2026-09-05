@@ -74,7 +74,8 @@ for (const edge of edges) for (const duration of durations) for (const motion of
       const captured = capturedFrames.map(frame => ({ ...frame,
         callbackEpochMilliseconds: toEpochTime(Number(frame.callbackEntryCounter)),
       }));
-      const initialCapture = captured.find(frame => frame.marker && frame.callbackEpochMilliseconds < motionStart);
+      // The first setup PNG can still contain the prior resize epoch.
+      const initialCapture = captured.filter(frame => frame.marker && frame.callbackEpochMilliseconds < motionStart).at(-1);
       const margins = initialCapture?.marker ? {
         chromeWidth: initialCapture.window.right - initialCapture.window.left - initialCapture.marker.physicalWidth,
         chromeHeight: initialCapture.window.bottom - initialCapture.window.top - initialCapture.marker.physicalHeight,

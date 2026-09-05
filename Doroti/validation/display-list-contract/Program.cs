@@ -65,6 +65,7 @@ VerifyEncodingCache(representative, encoded);
 VerifyMalformedBuffers(encoded);
 VerifyResourceFailures();
 VerifyStringFailures();
+VerifyUnicodeStringTable();
 VerifyDeterministicFuzz(encoded);
 
 Console.WriteLine($"DisplayList contract: PASS ({encoded.Length} bytes, SHA-256 {goldenSha256})");
@@ -257,6 +258,36 @@ static void VerifyStringFailures()
         first.CopyTo(bytes.AsSpan(stringOffset + entryLength));
     });
     AssertFailure(nonCanonicalOrder, DisplayListFailureCode.NonCanonicalEncoding, canonicalSequence: 9);
+}
+
+static void VerifyUnicodeStringTable()
+{
+    // UTF-8 order differs from UTF-16 ordinal order at this boundary. Repeated
+    // family/locale occurrences must still use one canonical string entry.
+    var source = Fixtures.ThreeStrings("\U00010000", "\uE000", "\uE000");
+    var document = new DisplayListDocument(source.Scene, source.Resources,
+        Enumerable.Repeat(source.Commands[0], 32));
+    var bytes = DisplayListEncoder.Encode(document);
+    var offset = (int)DisplayListFormat.HeaderSize + (int)BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(100));
+    var tableEnd = offset + (int)BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(92));
+    var values = new List<string>();
+    while (offset < tableEnd)
+    {
+        var length = (int)BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(offset));
+        offset += sizeof(uint);
+        values.Add(System.Text.Encoding.UTF8.GetString(bytes, offset, length));
+        offset += length;
+    }
+    Require(values.SequenceEqual(new[] { "\uE000", "\U00010000" }),
+        "Repeated non-BMP strings preserve canonical UTF-8 byte ordering and deduplication.");
+    var decoded = DisplayListDecoder.Decode(bytes);
+    Require(decoded.IsSuccess && decoded.Document is not null &&
+        bytes.AsSpan().SequenceEqual(DisplayListEncoder.Encode(decoded.Document)),
+        "A repeated Unicode paragraph scene round-trips without changing wire bytes.");
+    foreach (var invalid in new[] { Fixtures.ThreeStrings("\uD800"),
+                 Fixtures.ThreeStrings(family: "\uDC00"), Fixtures.ThreeStrings(locale: "\uD800") })
+        ExpectException<ArgumentException>(() => DisplayListEncoder.Encode(invalid),
+            "Invalid Unicode in text, family or locale is rejected before emitting a scene.");
 }
 
 static void VerifyDeterministicFuzz(byte[] canonical)
@@ -544,13 +575,13 @@ internal static class Fixtures
         ],
         []);
 
-    internal static DisplayListDocument ThreeStrings()
+    internal static DisplayListDocument ThreeStrings(string text = "a", string family = "b", string locale = "c")
     {
         var font = new DisplayResourceReference(DisplayResourceKind.Font, 1, 1);
         var paragraph = new DisplayParagraphRecipe(
-            "a", font, "b", 12, 1.2f, 0xFF000000, 400,
+            text, font, family, 12, 1.2f, 0xFF000000, 400,
             DisplayFontSlant.Normal, DisplayTextDirection.LeftToRight, DisplayTextAlign.Start,
-            "c", 1, null, 10, 10, 10, 1);
+            locale, 1, null, 10, 10, 10, 1);
         return new DisplayListDocument(
             Scene(9),
             [Resource(font, 1)],

@@ -1,6 +1,11 @@
-import { writeFile } from "node:fs/promises";
+import { readFile, mkdir, writeFile } from "node:fs/promises";
+import { spawn, execFile } from "node:child_process";
+import { chromium } from "@playwright/test";
 import { test, expect } from "./helpers/fixtures.js";
 import { openDoroti, captureDiagnostics, waitForSettledPresenter, assertPresenterContract } from "./helpers/doroti-diagnostics.js";
+
+// Keep capture out of the actual background/foreground lifecycle exercise.
+test.use({ video: "off", trace: "off", screenshot: "only-on-failure" });
 
 const candidate = process.env.DOROTI_RESIZE_EXPERIMENT_QUERY ??
   "&dorotiResizeScheduling=display&dorotiCopyOwnership=owned&dorotiEncodingCache=1&dorotiMetricsCoalescing=frame";
@@ -38,52 +43,87 @@ test("CanvasKit main and UI 100ms stalls recover the latest resize", async ({ pa
   await writeFile(testInfo.outputPath("stall-recovery.json"), JSON.stringify(reports, null, 2));
 });
 
-test("@headed CanvasKit maximize restore and background return keep exact geometry", async ({ page, context, runtimeErrors }, testInfo) => {
+test("@headed CanvasKit maximize restore and background return keep exact geometry", async ({}, testInfo) => {
   test.skip(process.env.DOROTI_WEB_RENDERER_MODE !== "worker-canvaskit-webgl");
-  await openDoroti(page, candidate);
-  const cdp = await context.newCDPSession(page);
-  const { windowId, bounds } = await cdp.send("Browser.getWindowForTarget");
-  const reports: unknown[] = [];
-  const record = async (phase: string) => {
-    await expect.poll(async () => {
-      const { width, height } = await page.evaluate(() => ({ width: innerWidth, height: innerHeight }));
-      const epoch = (await captureDiagnostics(page)).snapshot.resizeEpoch;
-      return epoch.logicalWidth === width && epoch.logicalHeight === height;
-    }).toBe(true);
-    const final = await waitForSettledPresenter(page);
-    assertPresenterContract(final);
-    expect(final.presenter.uiDiagnostics?.buffers.outstanding).toBe(0);
-    reports.push({ phase, final });
-  };
+  // Focus emulation is session-owned: a second CDP session cannot cancel the
+  // Playwright session's override. Use an isolated owned browser and attach
+  // without default emulation so real tab visibility reaches the application.
+  const profile = testInfo.outputPath("lifecycle-profile");
+  await mkdir(profile, { recursive: true });
+  const chromiumProcess = spawn(chromium.executablePath(), ["--remote-debugging-port=0",
+    `--user-data-dir=${profile}`, "--no-first-run", "--no-default-browser-check",
+    "--enable-gpu-rasterization", "--ignore-gpu-blocklist", "--disable-features=Translate", "about:blank"],
+    { windowsHide: true, stdio: "ignore" });
+  let browser: Awaited<ReturnType<typeof chromium.connectOverCDP>> | undefined;
   try {
-    const beforeMaximize = (await captureDiagnostics(page)).snapshot.resizeEpoch.generation;
-    await cdp.send("Browser.setWindowBounds", { windowId, bounds: { windowState: "maximized" } });
-    await expect.poll(async () => (await captureDiagnostics(page)).snapshot.resizeEpoch.generation).toBeGreaterThan(beforeMaximize);
-    await expect.poll(async () => (await cdp.send("Browser.getWindowBounds", { windowId })).bounds.windowState).toBe("maximized");
-    await record("maximized");
-    const beforeRestore = (await captureDiagnostics(page)).snapshot.resizeEpoch.generation;
-    await cdp.send("Browser.setWindowBounds", { windowId, bounds: { windowState: "normal" } });
-    const { windowState: _, ...normalBounds } = bounds;
-    await cdp.send("Browser.setWindowBounds", { windowId, bounds: normalBounds });
-    await expect.poll(async () => (await captureDiagnostics(page)).snapshot.resizeEpoch.generation).toBeGreaterThan(beforeRestore);
-    await record("restored");
-    const other = await context.newPage();
+    let port = "";
+    await expect.poll(async () => {
+      port = await readFile(`${profile}/DevToolsActivePort`, "utf8").then(s => s.split(/\r?\n/)[0]).catch(() => "");
+      return port;
+    }).not.toBe("");
+    browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`, { noDefaults: true });
+    const context = browser.contexts()[0];
+    const page = context.pages()[0];
+    const runtimeErrors: string[] = [];
+    page.on("pageerror", error => runtimeErrors.push(error.message));
+    page.on("console", message => { if (message.type() === "error") runtimeErrors.push(message.text()); });
+    await openDoroti(page, candidate, process.env.DOROTI_WEB_BASE_URL ?? "http://127.0.0.1:5088");
+    const cdp = await context.newCDPSession(page);
+    const { windowId, bounds } = await cdp.send("Browser.getWindowForTarget");
+    const reports: unknown[] = [];
+    const record = async (phase: string) => {
+      await expect.poll(async () => {
+        const { width, height } = await page.evaluate(() => ({ width: innerWidth, height: innerHeight }));
+        const epoch = (await captureDiagnostics(page)).snapshot.resizeEpoch;
+        return epoch.logicalWidth === width && epoch.logicalHeight === height;
+      }).toBe(true);
+      const final = await waitForSettledPresenter(page);
+      assertPresenterContract(final);
+      expect(final.presenter.uiDiagnostics?.buffers.outstanding).toBe(0);
+      reports.push({ phase, final });
+    };
     try {
-      await other.goto("about:blank");
-      await other.bringToFront();
-      await expect.poll(() => page.evaluate(() => document.visibilityState)).toBe("hidden");
+      const beforeMaximize = (await captureDiagnostics(page)).snapshot.resizeEpoch.generation;
+      await cdp.send("Browser.setWindowBounds", { windowId, bounds: { windowState: "maximized" } });
+      await expect.poll(async () => (await captureDiagnostics(page)).snapshot.resizeEpoch.generation).toBeGreaterThan(beforeMaximize);
+      await expect.poll(async () => (await cdp.send("Browser.getWindowBounds", { windowId })).bounds.windowState).toBe("maximized");
+      await record("maximized");
+      const beforeRestore = (await captureDiagnostics(page)).snapshot.resizeEpoch.generation;
+      await cdp.send("Browser.setWindowBounds", { windowId, bounds: { windowState: "normal" } });
+      const { windowState: _, ...normalBounds } = bounds;
+      await cdp.send("Browser.setWindowBounds", { windowId, bounds: normalBounds });
+      await expect.poll(async () => (await captureDiagnostics(page)).snapshot.resizeEpoch.generation).toBeGreaterThan(beforeRestore);
+      await record("restored");
+      const other = await context.newPage();
+      try {
+        const otherCdp = await context.newCDPSession(other);
+        try {
+          expect((await otherCdp.send("Browser.getWindowForTarget")).windowId).toBe(windowId);
+        } finally { await otherCdp.detach(); }
+        await other.bringToFront();
+        await expect.poll(() => page.evaluate(() => document.visibilityState)).toBe("hidden");
+      } finally {
+        await other.close();
+        await page.bringToFront();
+      }
+      await expect.poll(() => page.evaluate(() => document.visibilityState)).toBe("visible");
+      await record("background-return");
+      expect(runtimeErrors).toEqual([]);
     } finally {
-      await other.close();
-      await page.bringToFront();
+      await writeFile(testInfo.outputPath("window-lifecycle.json"), JSON.stringify(reports, null, 2));
+      await cdp.send("Browser.setWindowBounds", { windowId, bounds: { windowState: "normal" } });
+      const { windowState: _, ...normalBounds } = bounds;
+      await cdp.send("Browser.setWindowBounds", { windowId, bounds: normalBounds });
+      await cdp.detach();
     }
-    await expect.poll(() => page.evaluate(() => document.visibilityState)).toBe("visible");
-    await record("background-return");
-    expect(runtimeErrors).toEqual([]);
-    await writeFile(testInfo.outputPath("window-lifecycle.json"), JSON.stringify(reports, null, 2));
   } finally {
-    await cdp.send("Browser.setWindowBounds", { windowId, bounds: { windowState: "normal" } });
-    const { windowState: _, ...normalBounds } = bounds;
-    await cdp.send("Browser.setWindowBounds", { windowId, bounds: normalBounds });
-    await cdp.detach();
+    if (browser) {
+      try { await (await browser.newBrowserCDPSession()).send("Browser.close"); } catch { }
+      await browser.close();
+    }
+    if (chromiumProcess.exitCode === null && chromiumProcess.pid) {
+      await new Promise<void>(resolve => execFile("taskkill", ["/PID", String(chromiumProcess.pid), "/T", "/F"],
+        { windowsHide: true }, () => resolve()));
+    }
   }
 });

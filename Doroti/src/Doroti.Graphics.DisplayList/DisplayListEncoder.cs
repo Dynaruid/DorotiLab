@@ -38,7 +38,7 @@ public static class DisplayListEncoder
         var strings = CanonicalizeStrings(document.Commands);
         var stringIds = strings
             .Select((value, index) => (value, index))
-            .ToDictionary(item => item.value, item => checked((uint)item.index), StringComparer.Ordinal);
+            .ToDictionary(item => item.value.Value, item => checked((uint)item.index), StringComparer.Ordinal);
 
         var resourceWriter = new DisplayListBinaryWriter();
         foreach (var resource in resources)
@@ -49,9 +49,8 @@ public static class DisplayListEncoder
         var stringWriter = new DisplayListBinaryWriter();
         foreach (var value in strings)
         {
-            var bytes = DisplayListUtf8.StrictEncoding.GetBytes(value);
-            stringWriter.WriteUInt32(checked((uint)bytes.Length));
-            stringWriter.WriteBytes(bytes);
+            stringWriter.WriteUInt32(checked((uint)value.Bytes.Length));
+            stringWriter.WriteBytes(value.Bytes);
         }
 
         if (stringWriter.Length > DisplayListFormat.MaximumStringTableByteLength)
@@ -170,7 +169,7 @@ public static class DisplayListEncoder
         return result;
     }
 
-    private static List<string> CanonicalizeStrings(IReadOnlyList<DisplayListCommand> commands)
+    private static List<(string Value, byte[] Bytes)> CanonicalizeStrings(IReadOnlyList<DisplayListCommand> commands)
     {
         var values = new HashSet<string>(StringComparer.Ordinal);
         foreach (var command in commands)
@@ -198,25 +197,29 @@ public static class DisplayListEncoder
             }
         }
 
-        var encoded = values
-            .Select(value => (Value: value, Bytes: DisplayListUtf8.StrictEncoding.GetBytes(value)))
-            .ToList();
+        // Repeated paragraph/run strings need one strict conversion per scene.
+        // Keep those bytes through sorting and writing instead of validating
+        // every occurrence and encoding each unique value twice. Nothing is
+        // retained across scenes and resource/command validation is unchanged.
+        var encoded = new List<(string Value, byte[] Bytes)>(values.Count);
+        foreach (var value in values)
+        {
+            try
+            {
+                encoded.Add((value, DisplayListUtf8.StrictEncoding.GetBytes(value)));
+            }
+            catch (EncoderFallbackException exception)
+            {
+                throw new ArgumentException("DisplayList strings must contain valid Unicode scalar values.", nameof(value), exception);
+            }
+        }
         encoded.Sort((left, right) => DisplayListUtf8.Compare(left.Bytes, right.Bytes));
-        return encoded.Select(item => item.Value).ToList();
+        return encoded;
     }
 
     private static void AddString(HashSet<string> values, string value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        try
-        {
-            _ = DisplayListUtf8.StrictEncoding.GetByteCount(value);
-        }
-        catch (EncoderFallbackException exception)
-        {
-            throw new ArgumentException("DisplayList strings must contain valid Unicode scalar values.", nameof(value), exception);
-        }
-
         values.Add(value);
     }
 

@@ -46,7 +46,7 @@ for (const fixture of ["F0", "F1", "F2"]) {
         });
         const times = [start, ...newFrames.map((f: any) => f.callbackEntryCounter), end];
         const gaps = times.slice(1).map((time: number, i: number) => (time - times[i]) / frequency * 1000);
-        const initial = frames.find((f: any) => f.callbackEntryCounter < start && f.marker);
+        const initial = frames.filter((f: any) => f.callbackEntryCounter < start && f.marker).at(-1);
         const chromeWidth = initial ? initial.window.right - initial.window.left - initial.marker.physicalWidth : null;
         const chromeHeight = initial ? initial.window.bottom - initial.window.top - initial.marker.physicalHeight : null;
         const geometry = active.filter((f: any) => f.marker && initial).map((f: any) => ({

@@ -1081,7 +1081,11 @@ private:
             }
             int const frameIndex = frameCount_.fetch_add(1);
             bool const encodeStrideFrame = frameIndex % options_.pngStride == 0;
-            bool const analyzeFrame = options_.f6r || options_.visualOracles;
+            // F6-R selects monitor capture and native stimulus, not an oracle.
+            // Capture-only Web callers decode their own pixel markers later.
+            // Running the unrelated Windows grid/shape scans here can exhaust
+            // the capture ring even though visualOraclesEnabled reports false.
+            bool const analyzeFrame = options_.visualOracles;
             bool const analyzeShapeFrame = analyzeFrame && frameIndex % options_.oracleStride == 0;
             std::size_t slotIndex = ring_.size();
             {
