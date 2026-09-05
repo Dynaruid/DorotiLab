@@ -21,6 +21,7 @@ internal sealed unsafe class QtHostAdapter :
     private readonly QtNativeV2.HostApi _hostApi;
     private Action<TimeSpan>? _pendingFrame;
     private readonly Dictionary<ulong, TaskCompletionSource<string?>> _clipboardRequests = [];
+    private readonly Dictionary<long, long> _pressedLogicalKeys = [];
     private ulong _nextFrameToken = 1UL << 63;
     private ulong _nextClipboardRequest;
     private long _metricsGeneration;
@@ -201,14 +202,33 @@ internal sealed unsafe class QtHostAdapter :
         var eventType = (KeyEventType)value.Type;
         var eventCharacter = eventType == KeyEventType.up || string.IsNullOrEmpty(character)
             ? null : character;
-        KeyData?.Invoke(new(1, timestamp, (KeyEventType)value.Type,
-            QtKeyMap.Physical(value.Physical, value.Logical), QtKeyMap.Logical(value.Logical, character),
+        var physical = QtKeyMap.Physical(value.Physical, value.Logical);
+        var logical = QtKeyMap.Logical(value.Logical, character);
+        if (eventType == KeyEventType.up)
+        {
+            if (_pressedLogicalKeys.Remove(physical, out var pressedLogical)) logical = pressedLogical;
+        }
+        else
+        {
+            if (_pressedLogicalKeys.TryGetValue(physical, out var pressedLogical)) logical = pressedLogical;
+            _pressedLogicalKeys[physical] = logical;
+        }
+        KeyData?.Invoke(new(1, timestamp, eventType, physical, logical,
             false, eventCharacter));
         InputReceived?.Invoke(sequence, timestamp);
     }
 
-    internal void ApplyFocus(bool focused, long timestampMicroseconds) =>
-        FocusData?.Invoke(new(1, focused, MapTimestamp(timestampMicroseconds)));
+    internal void ApplyFocus(bool focused, long timestampMicroseconds)
+    {
+        var timestamp = MapTimestamp(timestampMicroseconds);
+        if (!focused)
+        {
+            foreach (var (physical, logical) in _pressedLogicalKeys)
+                KeyData?.Invoke(new(1, timestamp, KeyEventType.up, physical, logical, true));
+            _pressedLogicalKeys.Clear();
+        }
+        FocusData?.Invoke(new(1, focused, timestamp));
+    }
 
     internal void ApplyTextEditing(string text, int selectionBase, int selectionExtent,
         int composingBase, int composingExtent)
@@ -274,10 +294,14 @@ internal sealed unsafe class QtHostAdapter :
     public ValueTask<string?> GetClipboardTextAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var completion = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+        // Native QClipboard replies arrive on the Qt GUI thread. Preserve that
+        // thread for awaiting editing/status updates instead of forcing them
+        // onto the ThreadPool (Qt has no managed SynchronizationContext).
+        var completion = new TaskCompletionSource<string?>();
         ulong requestId;
         lock (_gate)
         {
+            ObjectDisposedException.ThrowIf(_disposed, this);
             requestId = unchecked(++_nextClipboardRequest);
             if (requestId == 0) requestId = unchecked(++_nextClipboardRequest);
             _clipboardRequests.Add(requestId, completion);
@@ -342,12 +366,16 @@ internal sealed unsafe class QtHostAdapter :
     {
         if (_disposed) return;
         _disposed = true;
+        TaskCompletionSource<string?>[] clipboardRequests;
         lock (_gate)
         {
             _pendingFrame = null;
-            foreach (var request in _clipboardRequests.Values) request.TrySetCanceled();
+            clipboardRequests = _clipboardRequests.Values.ToArray();
             _clipboardRequests.Clear();
         }
+        // Continuations can now run inline; never invoke them while enumerating
+        // requests or holding the adapter lock.
+        foreach (var request in clipboardRequests) request.TrySetCanceled();
         GC.KeepAlive(MetricsChanged);
         GC.KeepAlive(LifecycleChanged);
         GC.KeepAlive(CloseRequested);

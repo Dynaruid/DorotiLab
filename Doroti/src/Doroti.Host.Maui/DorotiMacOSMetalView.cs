@@ -22,6 +22,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private readonly GRMtlBackendContext _backendContext;
     private GRContext? _grContext;
     private DorotiMacOSMetalSurface? _owner;
+    private readonly Dictionary<long, long> _pressedKeys = [];
     private NSTrackingArea? _trackingArea;
     private NSObject? _windowBecameKeyObserver;
     private NSObject? _windowResignedKeyObserver;
@@ -399,6 +400,17 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         theEvent.IsARepeat ? KeyEventType.repeat : KeyEventType.down);
     public override void KeyUp(NSEvent theEvent) => DispatchKey(theEvent, KeyEventType.up);
 
+    public override void FlagsChanged(NSEvent theEvent)
+    {
+        var mask = MacOSKeyMap.ModifierMask(theEvent.KeyCode);
+        if (mask == 0) { base.FlagsChanged(theEvent); return; }
+        var physical = MacOSKeyMap.Physical(theEvent.KeyCode);
+        var down = ((ulong)theEvent.ModifierFlags & mask) != 0;
+        if (down == _pressedKeys.ContainsKey(physical)) return;
+        EmitKey(TimeSpan.FromSeconds(theEvent.Timestamp), down ? KeyEventType.down : KeyEventType.up,
+            physical, MauiKeyMap.Logical("", physical), null);
+    }
+
     private void DispatchPointer(NSEvent native, PointerChange change, int buttons,
         double scrollX = 0, double scrollY = 0, PointerSignalKind signal = PointerSignalKind.none)
     {
@@ -415,10 +427,31 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private void DispatchKey(NSEvent native, KeyEventType type)
     {
         var characters = native.CharactersIgnoringModifiers ?? string.Empty;
-        var physical = PhysicalKey(native.KeyCode);
-        _owner?.RaiseKey(new(_owner.ViewId, TimeSpan.FromSeconds(native.Timestamp), type,
-            physical, LogicalKey(characters, physical), false,
-            characters.Length == 1 && !char.IsControl(characters[0]) ? characters : null));
+        var physical = MacOSKeyMap.Physical(native.KeyCode);
+        EmitKey(TimeSpan.FromSeconds(native.Timestamp), type, physical, MauiKeyMap.Logical(characters, physical),
+            characters.Length == 1 && !char.IsControl(characters[0]) ? characters : null);
+    }
+
+    private void EmitKey(TimeSpan timestamp, KeyEventType type, long physical, long logical, string? character)
+    {
+        if (type == KeyEventType.up)
+        {
+            if (!_pressedKeys.Remove(physical, out logical)) return;
+        }
+        else
+        {
+            if (_pressedKeys.TryGetValue(physical, out var pressedLogical)) logical = pressedLogical;
+            _pressedKeys[physical] = logical;
+        }
+        _owner?.RaiseKey(new(_owner.ViewId, timestamp, type, physical, logical, false,
+            type == KeyEventType.up ? null : character));
+    }
+
+    private void ReleasePressedKeys()
+    {
+        foreach (var (physical, logical) in _pressedKeys)
+            _owner?.RaiseKey(new(_owner.ViewId, TimeSpan.Zero, KeyEventType.up, physical, logical, true));
+        _pressedKeys.Clear();
     }
 
     private double BackingScale() =>
@@ -432,26 +465,6 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
                ((pressed & 4) != 0 ? 4 : 0);
     }
 
-    private static long PhysicalKey(ushort keyCode) => keyCode switch
-    {
-        0x24 => 0x70028, 0x35 => 0x70029, 0x33 => 0x7002a, 0x30 => 0x7002b,
-        0x31 => 0x7002c, 0x75 => 0x7004c, 0x7c => 0x7004f, 0x7b => 0x70050,
-        0x7d => 0x70051, 0x7e => 0x70052,
-        _ => 0x100000000 | keyCode,
-    };
-
-    private static long LogicalKey(string key, long physical)
-    {
-        if (key.Length == 1 && !char.IsControl(key[0])) return char.ToLowerInvariant(key[0]);
-        return physical switch
-        {
-            0x70028 => 0x10000000d, 0x70029 => 0x10000001b, 0x7002a => 0x100000008,
-            0x7002b => 0x100000009, 0x7004c => 0x10000007f, 0x7004f => 0x100000303,
-            0x70050 => 0x100000302, 0x70051 => 0x100000301, 0x70052 => 0x100000304,
-            _ => physical == 0 ? 0 : 0x100000000 | physical,
-        };
-    }
-
     private void AttachWindowObservers()
     {
         DetachWindowObservers();
@@ -459,7 +472,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         _windowBecameKeyObserver = NSNotificationCenter.DefaultCenter.AddObserver(
             NSWindow.DidBecomeKeyNotification, _ => _owner?.RaiseFocus(true), Window);
         _windowResignedKeyObserver = NSNotificationCenter.DefaultCenter.AddObserver(
-            NSWindow.DidResignKeyNotification, _ => _owner?.RaiseFocus(false), Window);
+            NSWindow.DidResignKeyNotification, _ => { ReleasePressedKeys(); _owner?.RaiseFocus(false); }, Window);
     }
 
     private void DetachWindowObservers()

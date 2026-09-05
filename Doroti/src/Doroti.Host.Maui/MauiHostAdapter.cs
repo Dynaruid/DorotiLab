@@ -582,13 +582,31 @@ internal sealed class MauiHostAdapter :
     public async ValueTask<string?> GetClipboardTextAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        return await Clipboard.Default.GetTextAsync();
+        return await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return Clipboard.Default.GetTextAsync();
+        });
     }
 
     public async ValueTask SetClipboardTextAsync(string text, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        await Clipboard.Default.SetTextAsync(text ?? string.Empty);
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return Clipboard.Default.SetTextAsync(text ?? string.Empty);
+        });
+    }
+
+    public async ValueTask<bool> HasClipboardTextAsync(CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        return await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return Clipboard.Default.HasText;
+        });
     }
 
     public void SetCursor(DorotiMouseCursorKind cursor) => _surface.SetCursor(cursor);

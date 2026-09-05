@@ -664,7 +664,7 @@ public sealed class BrowserHostAdapter :
             BrowserKeyMap.Physical(code),
             BrowserKeyMap.Logical(code, key),
             synthesized,
-            BrowserKeyMap.Character(key)));
+            down ? BrowserKeyMap.Character(key) : null));
     }
 
     internal static void DispatchSemanticsAction(

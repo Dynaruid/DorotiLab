@@ -80,8 +80,10 @@ internal static class WindowsKeyMap
             0x08 => 0x100000008,
             0x09 => 0x100000009,
             0x0d => extended ? 8589935117L : 0x10000000d,
-            0x10 => (scanCode & 0xff) == 0x36 ? 0x200000101 : 0x200000100,
-            0x11 => extended ? 0x200000103 : 0x200000102,
+            // Flutter's logical modifier order is Control, Shift, Alt, Meta;
+            // Win32's VK_SHIFT/VK_CONTROL numeric order is the reverse.
+            0x10 => (scanCode & 0xff) == 0x36 ? 0x200000103 : 0x200000102,
+            0x11 => extended ? 0x200000101 : 0x200000100,
             0x12 => extended ? 0x200000105 : 0x200000104,
             0x14 => 0x100000104,
             0x1b => 0x10000001b,

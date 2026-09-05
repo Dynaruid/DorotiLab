@@ -1,5 +1,7 @@
 # Doroti documentation map
 
+Platform widget behavior: [context menus / 플랫폼별 컨텍스트 메뉴](context-menus.md).
+
 Start with [ADR-019](adr/ADR-019-product-framework-source-ownership.md). For Web source and startup policy, continue with [ADR-020](adr/ADR-020-web-typescript-bootstrap.md). The current default Windows host and presenter are defined by [ADR-025](adr/ADR-025-windowsappsdk-hwndexact-angle.md).
 
 - `adr/`: durable decisions. Later ADRs supersede conflicting earlier decisions.

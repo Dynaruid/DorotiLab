@@ -183,15 +183,15 @@ public abstract class FocusTraversalPolicy : global::Doroti.Framework.Foundation
             {
                 _FocusTraversalGroupNode__focus_traversal? parentGroup = ((_FocusTraversalGroupNode__focus_traversal?)(object?)FocusTraversalGroup._getGroupNode(groupNode!.parent!));
                 groups.putIfAbsent(parentGroup, () => new _FocusTraversalGroupInfo__focus_traversal(parentGroup, members: new List<FocusNode>(), defaultPolicy: defaultPolicyLocal));
-                DartRuntimePrimitives.Assert(() => !groups.GetValueOrDefault(DartRuntimePrimitives.RequireReference(parentGroup))!.members.Contains(node));
-                groups.GetValueOrDefault(DartRuntimePrimitives.RequireReference(parentGroup))!.members.Add(groupNode);
+                DartRuntimePrimitives.Assert(() => !groups[parentGroup].members.Contains(node));
+                groups[parentGroup].members.Add(groupNode);
                 continue;
             }
             if (((object.Equals(node, currentNode)) || ((((FocusNode)node).canRequestFocus && !((FocusNode)node).skipTraversal))))
             {
                 groups.putIfAbsent(groupNode, () => new _FocusTraversalGroupInfo__focus_traversal(groupNode, members: new List<FocusNode>(), defaultPolicy: defaultPolicyLocal));
-                DartRuntimePrimitives.Assert(() => !groups.GetValueOrDefault(DartRuntimePrimitives.RequireReference(groupNode))!.members.Contains(node));
-                groups.GetValueOrDefault(DartRuntimePrimitives.RequireReference(groupNode))!.members.Add(node);
+                DartRuntimePrimitives.Assert(() => !groups[groupNode].members.Contains(node));
+                groups[groupNode].members.Add(node);
             }
         }
         return groups;
@@ -204,9 +204,9 @@ public abstract class FocusTraversalPolicy : global::Doroti.Framework.Foundation
         DartMap<FocusNode?, _FocusTraversalGroupInfo__focus_traversal> groups = ((DartMap<FocusNode?, _FocusTraversalGroupInfo__focus_traversal>)(object?)FocusTraversalPolicy._findGroups(scope, scopeGroupNode, currentNode));
         foreach (FocusNode? key in groups.Keys)
         {
-            List<FocusNode> sortedMembers = groups.GetValueOrDefault(DartRuntimePrimitives.RequireReference(key))!.policy.sortDescendants(groups.GetValueOrDefault(DartRuntimePrimitives.RequireReference(key))!.members.Cast<FocusNode>(), currentNode).ToList().ToList();
-            groups.GetValueOrDefault(DartRuntimePrimitives.RequireReference(key))!.members.Clear();
-            groups.GetValueOrDefault(DartRuntimePrimitives.RequireReference(key))!.members.AddRange(sortedMembers.Cast<FocusNode>());
+            List<FocusNode> sortedMembers = groups[key].policy.sortDescendants(groups[key].members.Cast<FocusNode>(), currentNode).ToList().ToList();
+            groups[key].members.Clear();
+            groups[key].members.AddRange(sortedMembers.Cast<FocusNode>());
         }
         var sortedDescendants = new List<FocusNode>();
         void visitGroups(_FocusTraversalGroupInfo__focus_traversal info)
@@ -225,7 +225,7 @@ public abstract class FocusTraversalPolicy : global::Doroti.Framework.Foundation
         }
         if ((System.Linq.Enumerable.Any(groups) && groups.ContainsKey(scopeGroupNode)))
         {
-            visitGroups(groups.GetValueOrDefault(DartRuntimePrimitives.RequireReference(scopeGroupNode))!);
+            visitGroups(groups[scopeGroupNode]);
         }
         sortedDescendants.removeWhere(((node) =>
         {
@@ -1100,7 +1100,7 @@ public class ReadingOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocu
         {
             return nodes;
         }
-        var data = new List<_ReadingOrderSortData__focus_traversal>();
+        var data = nodes.Select(node => new _ReadingOrderSortData__focus_traversal(node)).ToList();
         var sortedList = new List<FocusNode>();
         var unplaced = data;
         _ReadingOrderSortData__focus_traversal current = ((_ReadingOrderSortData__focus_traversal)(object?)ReadingOrderTraversalPolicy._pickNext(unplaced));
@@ -2348,7 +2348,7 @@ public class RequestFocusAction : Action<RequestFocusIntent>
     public override object? invoke(RequestFocusIntent intent, BuildContext? context = null)
     {
         intent.requestFocusCallback(((RequestFocusIntent)intent).focusNode);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return null;
     }
 
 }
@@ -2467,4 +2467,3 @@ public class ExcludeFocusTraversal : StatelessWidget
     }
 
 }
-

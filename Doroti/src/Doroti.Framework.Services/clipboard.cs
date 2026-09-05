@@ -31,30 +31,29 @@ public abstract class Clipboard
 
     public static async Future setData(ClipboardData data)
     {
-        await SystemChannels.platform.invokeMethod<object?>("Clipboard.setData", new DartMap<string, object> { ["text"] = data.text });
+        await RequireHost("setData").SetClipboardTextAsync(data.text ?? string.Empty);
     }
 
     public static async Future<ClipboardData?> getData(string format)
     {
-        DartMap<string, object>? result = await SystemChannels.platform.invokeMethod<DartMap<string, object>?>("Clipboard.getData", format);
-        if ((result is null))
-        {
-            return null;
-        }
-        return new ClipboardData(text: ((string?)result.GetValueOrDefault("text"))!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        if (format != kTextPlain) return null;
+        var text = await RequireHost("getData").GetClipboardTextAsync();
+        return text is null ? null : new ClipboardData(text);
     }
 
     public static async Future<bool> hasStrings()
     {
-        DartMap<string, object>? result = await SystemChannels.platform.invokeMethod<DartMap<string, object>?>("Clipboard.hasStrings", Clipboard.kTextPlain);
-        if ((result is null))
-        {
-            return false;
-        }
-        return ((bool)result.GetValueOrDefault("value"));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return await RequireHost("hasStrings").HasClipboardTextAsync();
+    }
+
+    private static IPlatformServicesHostCapability RequireHost(string operation)
+    {
+        var invocation = DartUiInvocation.Managed($"package:flutter/services.dart#Clipboard.{operation}");
+        var dispatcher = PlatformDispatcher.instance;
+        var view = dispatcher.implicitView ?? dispatcher.views.FirstOrDefault()
+            ?? throw new DorotiCapabilityException(DorotiCapabilityIds.PlatformServices, null,
+                invocation, "clipboard access requires an attached DorotiView");
+        return view.RequireCapability<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, invocation);
     }
 
 }
-

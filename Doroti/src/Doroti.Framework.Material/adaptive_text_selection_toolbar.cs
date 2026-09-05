@@ -128,7 +128,7 @@ public class AdaptiveTextSelectionToolbar : global::Doroti.Framework.Widgets.Sta
                 {
                     return buttonItems.map<global::Doroti.Framework.Widgets.ContextMenuButtonItem, global::Doroti.Framework.Widgets.Widget>(((buttonItem) =>
                     {
-                        return DesktopTextSelectionToolbarButton.CreateText(context: context, onPressed: () => ((global::Doroti.Framework.Widgets.ContextMenuButtonItem)buttonItem).onPressed(), text: AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem));
+                        return DesktopTextSelectionToolbarButton.CreateText(context: context, onPressed: buttonItem.onPressed, text: AdaptiveTextSelectionToolbar.getButtonLabel(context, buttonItem));
                         throw new InvalidOperationException("Dart closure completed without a value.");
                     }));
                 }

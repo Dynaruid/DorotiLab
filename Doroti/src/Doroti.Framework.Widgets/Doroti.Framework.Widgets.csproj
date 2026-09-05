@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Doroti.Validation.Fcr6Semantics" />
+    <InternalsVisibleTo Include="Doroti.Validation.Fcr7MaterialWidget" />
     <ProjectReference Include="..\Doroti.Runtime\Doroti.Runtime.csproj" />
     <ProjectReference Include="..\Doroti.Ui\Doroti.Ui.csproj" />
     <ProjectReference Include="..\Doroti.Hosting\Doroti.Hosting.csproj" />

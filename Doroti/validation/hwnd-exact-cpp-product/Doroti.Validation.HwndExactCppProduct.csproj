@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Doroti.Host.WindowsAppSdk\Doroti.Host.WindowsAppSdk.csproj" />
+    <ProjectReference Include="..\..\src\Doroti.Framework.Services\Doroti.Framework.Services.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="doroti-application-manifest.json" LogicalName="Doroti.Application.Manifest" />

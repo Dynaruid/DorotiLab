@@ -579,7 +579,10 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
                 increasedValue: "0.3", decreasedValue: "0.1", minValue: "0", maxValue: "1"),
         ], SemanticsUpdateUrgency.immediate));
         services.SetCursor(DorotiMouseCursorKind.click);
-        services.SetClipboardTextAsync("Doroti C6 한글 clipboard").AsTask().GetAwaiter().GetResult();
+        // Exercise the public Services API as well as the native ABI. A direct
+        // host-only round trip misses a disconnected framework clipboard.
+        Doroti.Framework.Services.Clipboard.setData(new Doroti.Framework.Services.ClipboardData("Doroti C6 한글 clipboard"))
+            .GetAwaiter().GetResult();
         var resizeCycles = int.TryParse(
             Environment.GetEnvironmentVariable("DOROTI_WINDOWS_APPSDK_PRODUCT_RESIZE_CYCLES"),
             out var configuredResizeCycles) ? configuredResizeCycles : 0;
@@ -643,6 +646,10 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
         var view = _view ?? throw new InvalidOperationException("C5 view is unavailable.");
         ClipboardRoundTrip ??= (_services ?? throw new InvalidOperationException("C6 services are unavailable."))
             .GetClipboardTextAsync().AsTask().GetAwaiter().GetResult();
+        if (Doroti.Framework.Services.Clipboard.getData(Doroti.Framework.Services.Clipboard.kTextPlain)
+                .GetAwaiter().GetResult()?.text != ClipboardRoundTrip ||
+            !Doroti.Framework.Services.Clipboard.hasStrings().GetAwaiter().GetResult())
+            throw new InvalidOperationException("Services clipboard read/status differs from the native host.");
         var recorder = new PictureRecorder();
         var canvas = new Canvas(recorder);
         canvas.drawColor(new Color(0xff10243a), BlendMode.src);

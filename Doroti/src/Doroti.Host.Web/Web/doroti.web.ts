@@ -1994,7 +1994,10 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     // web engine does. While the native input is active, let it own text,
     // selection, clipboard, and IME keys and report the result through input
     // events. Tab remains a framework focus-traversal key.
-    if (nativeTextEditing && key.key !== "Tab") return;
+    // Keep modifier state current for framework-owned Tab/Shift+Tab even
+    // while the DOM input owns editing and clipboard commands.
+    const modifierKey = ["Shift", "Control", "Alt", "Meta"].includes(key.key);
+    if (nativeTextEditing && key.key !== "Tab" && !modifierKey) return;
     if (key.key === "Tab" ||
         (!nativeTextEditing && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(key.key)))
       key.preventDefault();
@@ -2005,8 +2008,9 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
   observe(document, "keyup", (event) => {
     const key = event as KeyboardEvent;
     if (!host.pressedKeys.has(key.code)) return;
+    const pressedKey = host.pressedKeys.get(key.code)!;
     host.pressedKeys.delete(key.code);
-    requireManaged().dispatchKey(host.id, false, false, false, key.code, key.key, key.timeStamp,
+    requireManaged().dispatchKey(host.id, false, false, false, key.code, pressedKey, key.timeStamp,
       ++host.inputSequence);
   });
   observe(canvas, "focus", (event) => setViewFocus(host, true, event.timeStamp));

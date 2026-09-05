@@ -1,0 +1,142 @@
+namespace Doroti.Host.Maui;
+
+/// <summary>AppKit virtual key codes, using the pinned Flutter macOS HID table.</summary>
+internal static class MacOSKeyMap
+{
+    internal static long Physical(ushort keyCode) => keyCode switch
+    {
+        0x00 => 0x70004, // keyA
+        0x01 => 0x70016, // keyS
+        0x02 => 0x70007, // keyD
+        0x03 => 0x70009, // keyF
+        0x04 => 0x7000b, // keyH
+        0x05 => 0x7000a, // keyG
+        0x06 => 0x7001d, // keyZ
+        0x07 => 0x7001b, // keyX
+        0x08 => 0x70006, // keyC
+        0x09 => 0x70019, // keyV
+        0x0a => 0x70064, // intlBackslash
+        0x0b => 0x70005, // keyB
+        0x0c => 0x70014, // keyQ
+        0x0d => 0x7001a, // keyW
+        0x0e => 0x70008, // keyE
+        0x0f => 0x70015, // keyR
+        0x10 => 0x7001c, // keyY
+        0x11 => 0x70017, // keyT
+        0x12 => 0x7001e, // digit1
+        0x13 => 0x7001f, // digit2
+        0x14 => 0x70020, // digit3
+        0x15 => 0x70021, // digit4
+        0x16 => 0x70023, // digit6
+        0x17 => 0x70022, // digit5
+        0x18 => 0x7002e, // equal
+        0x19 => 0x70026, // digit9
+        0x1a => 0x70024, // digit7
+        0x1b => 0x7002d, // minus
+        0x1c => 0x70025, // digit8
+        0x1d => 0x70027, // digit0
+        0x1e => 0x70030, // bracketRight
+        0x1f => 0x70012, // keyO
+        0x20 => 0x70018, // keyU
+        0x21 => 0x7002f, // bracketLeft
+        0x22 => 0x7000c, // keyI
+        0x23 => 0x70013, // keyP
+        0x24 => 0x70028, // enter
+        0x25 => 0x7000f, // keyL
+        0x26 => 0x7000d, // keyJ
+        0x27 => 0x70034, // quote
+        0x28 => 0x7000e, // keyK
+        0x29 => 0x70033, // semicolon
+        0x2a => 0x70031, // backslash
+        0x2b => 0x70036, // comma
+        0x2c => 0x70038, // slash
+        0x2d => 0x70011, // keyN
+        0x2e => 0x70010, // keyM
+        0x2f => 0x70037, // period
+        0x30 => 0x7002b, // tab
+        0x31 => 0x7002c, // space
+        0x32 => 0x70035, // backquote
+        0x33 => 0x7002a, // backspace
+        0x35 => 0x70029, // escape
+        0x36 => 0x700e7, // metaRight
+        0x37 => 0x700e3, // metaLeft
+        0x38 => 0x700e1, // shiftLeft
+        0x39 => 0x70039, // capsLock
+        0x3a => 0x700e2, // altLeft
+        0x3b => 0x700e0, // controlLeft
+        0x3c => 0x700e5, // shiftRight
+        0x3d => 0x700e6, // altRight
+        0x3e => 0x700e4, // controlRight
+        0x3f => 0x12, // fn
+        0x40 => 0x7006c, // f17
+        0x41 => 0x70063, // numpadDecimal
+        0x43 => 0x70055, // numpadMultiply
+        0x45 => 0x70057, // numpadAdd
+        0x47 => 0x70053, // numLock
+        0x48 => 0x70080, // audioVolumeUp
+        0x49 => 0x70081, // audioVolumeDown
+        0x4a => 0x7007f, // audioVolumeMute
+        0x4b => 0x70054, // numpadDivide
+        0x4c => 0x70058, // numpadEnter
+        0x4e => 0x70056, // numpadSubtract
+        0x4f => 0x7006d, // f18
+        0x50 => 0x7006e, // f19
+        0x51 => 0x70067, // numpadEqual
+        0x52 => 0x70062, // numpad0
+        0x53 => 0x70059, // numpad1
+        0x54 => 0x7005a, // numpad2
+        0x55 => 0x7005b, // numpad3
+        0x56 => 0x7005c, // numpad4
+        0x57 => 0x7005d, // numpad5
+        0x58 => 0x7005e, // numpad6
+        0x59 => 0x7005f, // numpad7
+        0x5a => 0x7006f, // f20
+        0x5b => 0x70060, // numpad8
+        0x5c => 0x70061, // numpad9
+        0x5d => 0x70089, // intlYen
+        0x5e => 0x70087, // intlRo
+        0x5f => 0x70085, // numpadComma
+        0x60 => 0x7003e, // f5
+        0x61 => 0x7003f, // f6
+        0x62 => 0x70040, // f7
+        0x63 => 0x7003c, // f3
+        0x64 => 0x70041, // f8
+        0x65 => 0x70042, // f9
+        0x66 => 0x70091, // lang2
+        0x67 => 0x70044, // f11
+        0x68 => 0x70090, // lang1
+        0x69 => 0x70068, // f13
+        0x6a => 0x7006b, // f16
+        0x6b => 0x70069, // f14
+        0x6d => 0x70043, // f10
+        0x6e => 0x70065, // contextMenu
+        0x6f => 0x70045, // f12
+        0x71 => 0x7006a, // f15
+        0x72 => 0x70049, // insert
+        0x73 => 0x7004a, // home
+        0x74 => 0x7004b, // pageUp
+        0x75 => 0x7004c, // delete
+        0x76 => 0x7003d, // f4
+        0x77 => 0x7004d, // end
+        0x78 => 0x7003b, // f2
+        0x79 => 0x7004e, // pageDown
+        0x7a => 0x7003a, // f1
+        0x7b => 0x70050, // arrowLeft
+        0x7c => 0x7004f, // arrowRight
+        0x7d => 0x70051, // arrowDown
+        0x7e => 0x70052, // arrowUp
+        _ => 0x100000000 | keyCode,
+    };
+
+    // AppKit device-dependent modifier flags, as in Flutter KeyCodeMap_Internal.h.
+    // Use each side's flag so releasing one Shift while the other is held
+    // does not produce a second key-down event.
+    internal static ulong ModifierMask(ushort keyCode) => keyCode switch
+    {
+        0x3b => 0x1, 0x3e => 0x200, // Control
+        0x38 => 0x2, 0x3c => 0x4,   // Shift
+        0x3a => 0x20, 0x3d => 0x40, // Option
+        0x37 => 0x8, 0x36 => 0x10,  // Command
+        _ => 0,
+    };
+}

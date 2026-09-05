@@ -72,6 +72,10 @@ public interface IPlatformServicesHostCapability
 
     ValueTask SetClipboardTextAsync(string text, CancellationToken cancellationToken = default);
 
+    /// <summary>Queries availability without reading content when the platform supports it.</summary>
+    async ValueTask<bool> HasClipboardTextAsync(CancellationToken cancellationToken = default) =>
+        !string.IsNullOrEmpty(await GetClipboardTextAsync(cancellationToken));
+
     void SetCursor(DorotiMouseCursorKind cursor);
 }
 

@@ -1397,6 +1397,19 @@ public class EditableTextState : State<EditableText>, AutomaticKeepAliveClientMi
 {
     var __cascade = ((buttonItemsForToolbarOptions() ?? (List<ContextMenuButtonItem>)EditableText.getEditableButtonItems(clipboardStatus: this.clipboardStatus.value, onCopy: ((global::System.Action)(this.copyEnabled ? (() => { copySelection(global::Doroti.Framework.Services.SelectionChangedCause.toolbar); }) : null)), onCut: ((global::System.Action)(this.cutEnabled ? (() => { cutSelection(global::Doroti.Framework.Services.SelectionChangedCause.toolbar); }) : null)), onPaste: ((global::System.Action)(this.pasteEnabled ? (() => { _ = _pasteTextWithReporting(global::Doroti.Framework.Services.SelectionChangedCause.toolbar); }) : null)), onSelectAll: ((global::System.Action)(this.selectAllEnabled ? (() => { selectAll(global::Doroti.Framework.Services.SelectionChangedCause.toolbar); }) : null)), onLookUp: ((global::System.Action)(this.lookUpEnabled ? (() => { _ = lookUpSelection(global::Doroti.Framework.Services.SelectionChangedCause.toolbar); }) : null)), onSearchWeb: ((global::System.Action)(this.searchWebEnabled ? (() => { _ = searchWebForSelection(global::Doroti.Framework.Services.SelectionChangedCause.toolbar); }) : null)), onShare: ((global::System.Action)(this.shareEnabled ? (() => { _ = shareSelection(global::Doroti.Framework.Services.SelectionChangedCause.toolbar); }) : null)), onLiveTextInput: ((global::System.Action)(this.liveTextInputEnabled ? (() => { _startLiveTextInput(global::Doroti.Framework.Services.SelectionChangedCause.toolbar); }) : null)))));
     __cascade.AddRange(this._textProcessingActionButtonItems.Cast<ContextMenuButtonItem>());
+    // An empty desktop field still has a context menu when the clipboard is
+    // empty (or its asynchronous availability query is pending).
+    if (__cascade.Count == 0 && this.widget.selectionEnabled && !this.widget.readOnly &&
+        this.widget.selectionControls is TextSelectionHandleControls &&
+        object.Equals(this.widget.toolbarOptions, ToolbarOptions.empty) &&
+        this.textEditingValue.text.Length == 0 &&
+        global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform is
+            global::Doroti.Framework.Foundation.TargetPlatform.windows or
+            global::Doroti.Framework.Foundation.TargetPlatform.linux or
+            global::Doroti.Framework.Foundation.TargetPlatform.macOS)
+    {
+        __cascade.Add(new ContextMenuButtonItem(onPressed: null, type: ContextMenuButtonType.paste));
+    }
     return __cascade;
 }))();
             return default!;
@@ -4283,7 +4296,7 @@ internal class _CopySelectionAction__editable_text : ContextAction<CopySelection
         {
             this.state.copySelection(((CopySelectionTextIntent)intent).cause);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return null;
     }
 
 }
@@ -4304,14 +4317,14 @@ internal class _PasteSelectionAction__editable_text : ContextAction<PasteTextInt
             return default!;
         }
         DartRuntimePrimitives.Ignore(this.state._pasteTextWithReporting(((PasteTextIntent)intent).cause));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return null;
     }
 
 }
 
 internal class _WebClipboardStatusNotifier__editable_text : ClipboardStatusNotifier
 {
-    public virtual ClipboardStatus value { get; set; } = ClipboardStatus.pasteable;
+    internal _WebClipboardStatusNotifier__editable_text() : base(ClipboardStatus.pasteable) { }
 
     public override Future update()
     {

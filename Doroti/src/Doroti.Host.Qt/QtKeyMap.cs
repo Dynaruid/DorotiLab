@@ -43,8 +43,12 @@ internal static class QtKeyMap
     internal static long Logical(long qtKey, string character)
     {
         if (!string.IsNullOrEmpty(character) &&
-            character.EnumerateRunes().Take(2).ToArray() is [var rune])
+            character.EnumerateRunes().Take(2).ToArray() is [var rune] && !Rune.IsControl(rune))
             return Rune.ToLowerInvariant(rune).Value;
+        // QKeyEvent.text() can contain a control character for Ctrl+letter,
+        // and can be empty on release. Neither changes the logical letter.
+        if (qtKey is >= 'A' and <= 'Z') return 'a' + qtKey - 'A';
+        if (qtKey is >= '0' and <= '9') return qtKey;
         if (qtKey is >= 0x01000030 and <= 0x01000047)
             return 0x100000801 + qtKey - 0x01000030;
         return qtKey switch
@@ -62,8 +66,8 @@ internal static class QtKeyMap
             0x01000010 => 0x100000306,
             0x01000017 => 0x100000307,
             0x01000016 => 0x100000308,
-            0x01000020 => 0x200000100,
-            0x01000021 => 0x200000102,
+            0x01000020 => 0x200000102,
+            0x01000021 => 0x200000100,
             0x01000023 => 0x200000104,
             0x01000022 => 0x200000106,
             _ => 0x140000000 | (qtKey & 0xffffffff),

@@ -3,6 +3,12 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args is ["--shortcuts"])
+{
+    KeyboardShortcutContracts.Verify();
+    return;
+}
+
 var requiredComponents = new HashSet<string>(StringComparer.Ordinal)
 {
     "scaffold-background", "app-bar-text", "floating-action-button",
@@ -81,6 +87,8 @@ VerifyFrameworkLifecycleContracts();
 VerifyButtonStyleDispatch();
 VerifyHostTextInputVisibilityContract();
 VerifyDefaultTextEditingShortcutContracts();
+KeyboardShortcutContracts.Verify();
+ContextMenuContracts.Verify();
 
 var widgetsBinding = (Doroti.Framework.Widgets.WidgetsFlutterBinding)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(
     typeof(Doroti.Framework.Widgets.WidgetsFlutterBinding));

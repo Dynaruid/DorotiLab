@@ -525,8 +525,12 @@ public class ShortcutManager : ChangeNotifier, global::Doroti.Framework.Foundati
     }
     internal virtual IEnumerable<_ActivatorIntentPair__shortcuts> _getCandidates(global::Doroti.Framework.Services.LogicalKeyboardKey key)
     {
-        return ((IEnumerable<_ActivatorIntentPair__shortcuts>)(object?)new List<_ActivatorIntentPair__shortcuts>());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        // Match the trigger-specific entries first, then activators that accept
+        // any trigger. Preserve registration order within each group.
+        if (_indexedShortcuts.TryGetValue(key, out var indexed))
+            foreach (var candidate in indexed) yield return candidate;
+        if (_indexedShortcuts.TryGetValue(null, out var unindexed))
+            foreach (var candidate in unindexed) yield return candidate;
     }
 
     internal virtual Intent? _find(global::Doroti.Framework.Services.KeyEvent @event, global::Doroti.Framework.Services.HardwareKeyboard state)
@@ -546,13 +550,15 @@ public class ShortcutManager : ChangeNotifier, global::Doroti.Framework.Foundati
     {
         Intent? intentLocal = ((Intent?)(object?)_find(@event, global::Doroti.Framework.Services.HardwareKeyboard.instance));
         BuildContext? contextLocal = global::Doroti.Framework.Widgets.Focus_managerLibrary.primaryFocus?.context;
-        dynamic action = Actions.maybeFind<Intent>(contextLocal!, intent: intentLocal);
-        if ((((intentLocal is not null) && (contextLocal is not null)) && (action is not null)))
+        if (intentLocal is not null && contextLocal is not null)
         {
-            var (enabled, invokeResult) = DartRuntimePrimitives.ConvertValue<(bool, object?)>((object)Actions.of(contextLocal).invokeActionIfEnabled(action, intentLocal, contextLocal));
-            if (enabled)
+            // Action<SpecificIntent> is not Action<Intent> in C#. Use the
+            // type-erased bridge while retaining scoped dispatch and overrides.
+            var action = Actions._maybeFindWithoutDependingOn(contextLocal, intentLocal, declareDependency: true);
+            if (action is not null)
             {
-                return ((KeyEventResult)((dynamic)action).toKeyEventResult(intentLocal, invokeResult));
+                var (enabled, invokeResult) = Actions.of(contextLocal).invokeActionIfEnabled(action, intentLocal, contextLocal);
+                if (enabled) return action.ToKeyEventResultForIntent(intentLocal, invokeResult);
             }
         }
         return (this.modal ? KeyEventResult.skipRemainingHandlers : KeyEventResult.ignored);

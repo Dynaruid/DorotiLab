@@ -4,6 +4,11 @@
     <AssemblyName>Doroti.Validation.Fcr7MaterialWidget</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\src\Doroti.Host.WindowsAppSdk\WindowsKeyMap.cs" Link="WindowsKeyMap.cs" />
+    <Compile Include="..\..\src\Doroti.Host.Web\BrowserKeyMap.cs" Link="BrowserKeyMap.cs" />
+    <Compile Include="..\..\src\Doroti.Host.Qt\QtKeyMap.cs" Link="QtKeyMap.cs" />
+    <Compile Include="..\..\src\Doroti.Host.Maui\MauiKeyMap.cs" Link="MauiKeyMap.cs" />
+    <Compile Include="..\..\src\Doroti.Host.Maui\MacOSKeyMap.cs" Link="MacOSKeyMap.cs" />
     <ProjectReference Include="..\..\src\Doroti.Framework.Material\Doroti.Framework.Material.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Skia.Rendering\Doroti.Skia.Rendering.csproj" />
     <ProjectReference Include="..\..\src\Doroti.Ui\Doroti.Ui.csproj" />

@@ -18,6 +18,7 @@ public class ContextMenuController
 {
     public virtual global::System.Action? onRemove { get; private set; }
     internal static global::System.Func<BuildContext, Widget>? _contextMenuBuilder = default;
+    internal static CapturedThemes? _capturedThemes;
     internal static ContextMenuController? _shownInstance = default;
     internal static OverlayEntry? _menuOverlayEntry = default;
 
@@ -28,21 +29,22 @@ public class ContextMenuController
 
     public virtual void show(BuildContext context, global::System.Func<BuildContext, Widget> contextMenuBuilder, Widget? debugRequiredFor = null)
     {
+        OverlayState overlayState = Overlay.of(context, rootOverlay: true, debugRequiredFor: debugRequiredFor);
+        // Capture from the caller before crossing into the root overlay. A local
+        // Theme can override both the platform toolbar and its light/dark palette.
+        CapturedThemes capturedThemes = InheritedTheme.capture(from: context, to: overlayState.context);
         if (this.isShown)
         {
             _contextMenuBuilder = (global::System.Func<BuildContext, Widget>)contextMenuBuilder;
+            _capturedThemes = capturedThemes;
             _menuOverlayEntry?.markNeedsBuild();
             return;
         }
         ContextMenuController.removeAny();
-        OverlayState overlayState = ((OverlayState)(object?)Overlay.of(context, rootOverlay: true, debugRequiredFor: debugRequiredFor));
         _contextMenuBuilder = (global::System.Func<BuildContext, Widget>)contextMenuBuilder;
-        _menuOverlayEntry = new OverlayEntry(builder: ((global::System.Func<BuildContext, Widget>)((context) =>
-        {
-            CapturedThemes capturedThemes = ((CapturedThemes)(object?)InheritedTheme.capture(from: context, to: Navigator.maybeOf(context)?.context));
-            return ((Widget)(object?)capturedThemes.wrap(_contextMenuBuilder!(context)));
-            throw new InvalidOperationException("Dart closure completed without a value.");
-        })));
+        _capturedThemes = capturedThemes;
+        _menuOverlayEntry = new OverlayEntry(builder: overlayContext =>
+            _capturedThemes!.wrap(new Builder(builder: menuContext => _contextMenuBuilder!(menuContext))));
         _shownInstance = this;
         overlayState.insert(_menuOverlayEntry!);
     }
@@ -53,6 +55,7 @@ public class ContextMenuController
         _menuOverlayEntry?.dispose();
         _menuOverlayEntry = null;
         _contextMenuBuilder = null;
+        _capturedThemes = null;
         if ((_shownInstance is not null))
         {
             _shownInstance!.onRemove?.Invoke();

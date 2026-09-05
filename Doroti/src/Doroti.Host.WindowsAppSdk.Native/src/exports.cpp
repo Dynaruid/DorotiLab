@@ -905,7 +905,9 @@ class ProductHost final {
     if (host == nullptr || !ValidHeader(&text)) return 1;
     try {
       const auto wide = Decode(text);
-      if (!OpenClipboard(nullptr)) return 4;
+      // EmptyClipboard transfers ownership to this HWND. A null owner makes
+      // the subsequent SetClipboardData call invalid.
+      if (!OpenClipboard(host->InputWindow())) return 4;
       if (!EmptyClipboard()) {
         CloseClipboard();
         return 4;

@@ -12,57 +12,6 @@ internal static class MauiNativeInput
     internal static void SetCursor(SKGLView view, DorotiMouseCursorKind cursor) =>
         NativeCursor.Set(view, cursor);
 
-    private static long Logical(string key, long physical)
-    {
-        if (key.Length == 1 && !char.IsControl(key[0])) return char.ToLowerInvariant(key[0]);
-        if (key.Length is 2 or 3 && key[0] == 'F' && int.TryParse(key.AsSpan(1), out var function) && function is >= 1 and <= 24)
-            return 0x100000801 + function - 1;
-        return key switch
-        {
-            "Backspace" => 0x100000008,
-            "Tab" => 0x100000009,
-            "Enter" => 0x10000000d,
-            "Escape" => 0x10000001b,
-            "Delete" => 0x10000007f,
-            "ArrowDown" => 0x100000301,
-            "ArrowLeft" => 0x100000302,
-            "ArrowRight" => 0x100000303,
-            "ArrowUp" => 0x100000304,
-            "End" => 0x100000305,
-            "Home" => 0x100000306,
-            "PageDown" => 0x100000307,
-            "PageUp" => 0x100000308,
-            "ShiftLeft" => 0x200000100,
-            "ShiftRight" => 0x200000101,
-            "ControlLeft" => 0x200000102,
-            "ControlRight" => 0x200000103,
-            "AltLeft" => 0x200000104,
-            "AltRight" => 0x200000105,
-            "MetaLeft" => 0x200000106,
-            "MetaRight" => 0x200000107,
-            _ => physical switch
-            {
-                0x70028 => 0x10000000d,
-                0x70029 => 0x10000001b,
-                0x7002a => 0x100000008,
-                0x7002b => 0x100000009,
-                0x7004c => 0x10000007f,
-                0x7004f => 0x100000303,
-                0x70050 => 0x100000302,
-                0x70051 => 0x100000301,
-                0x70052 => 0x100000304,
-                0x700e0 => 0x200000102,
-                0x700e1 => 0x200000100,
-                0x700e2 => 0x200000104,
-                0x700e3 => 0x200000106,
-                0x700e4 => 0x200000103,
-                0x700e5 => 0x200000101,
-                0x700e6 => 0x200000105,
-                0x700e7 => 0x200000107,
-                _ => physical == 0 ? 0 : 0x100000000 | physical,
-            },
-        };
-    }
 
 #if WINDOWS
     private sealed class NativeKeyboardSubscription : IDisposable
@@ -126,13 +75,13 @@ internal static class MauiNativeInput
         private void Dispatch(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs args, KeyEventType type, bool synthesized)
         {
             var key = KeyName(args.Key);
-            var physical = Physical(args.Key);
-            var logical = Logical(key, physical);
+            var physical = Physical(args.Key, args.KeyStatus.ScanCode, args.KeyStatus.IsExtendedKey);
+            var logical = MauiKeyMap.Logical(key, physical);
             var character = key.Length == 1 ? key : null;
             if (type is KeyEventType.down or KeyEventType.repeat) _pressed[physical] = (logical, character);
             else _pressed.Remove(physical);
             _dispatch(new(_viewId, TimeSpan.FromTicks(DateTime.UtcNow.Ticks), type,
-                physical, logical, synthesized, character));
+                physical, logical, synthesized, type == KeyEventType.up ? null : character));
             args.Handled = true;
         }
 
@@ -143,11 +92,11 @@ internal static class MauiNativeInput
         {
             var timestamp = TimeSpan.FromTicks(DateTime.UtcNow.Ticks);
             foreach (var (physical, value) in _pressed)
-                _dispatch(new(_viewId, timestamp, KeyEventType.up, physical, value.Logical, true, value.Character));
+                _dispatch(new(_viewId, timestamp, KeyEventType.up, physical, value.Logical, true, null));
             _pressed.Clear();
         }
 
-        private static long Physical(Windows.System.VirtualKey key)
+        private static long Physical(Windows.System.VirtualKey key, uint scanCode, bool extended)
         {
             var value = (int)key;
             if (value is >= 65 and <= 90) return 0x70004 + value - 65;
@@ -171,9 +120,15 @@ internal static class MauiNativeInput
                 Windows.System.VirtualKey.Left => 0x70050,
                 Windows.System.VirtualKey.Down => 0x70051,
                 Windows.System.VirtualKey.Up => 0x70052,
-                Windows.System.VirtualKey.Control => 0x700e0,
-                Windows.System.VirtualKey.Shift => 0x700e1,
-                Windows.System.VirtualKey.Menu => 0x700e2,
+                Windows.System.VirtualKey.Control => extended ? 0x700e4 : 0x700e0,
+                Windows.System.VirtualKey.Shift => scanCode == 0x36 ? 0x700e5 : 0x700e1,
+                Windows.System.VirtualKey.Menu => extended ? 0x700e6 : 0x700e2,
+                Windows.System.VirtualKey.LeftControl => 0x700e0,
+                Windows.System.VirtualKey.RightControl => 0x700e4,
+                Windows.System.VirtualKey.LeftShift => 0x700e1,
+                Windows.System.VirtualKey.RightShift => 0x700e5,
+                Windows.System.VirtualKey.LeftMenu => 0x700e2,
+                Windows.System.VirtualKey.RightMenu => 0x700e6,
                 Windows.System.VirtualKey.LeftWindows => 0x700e3,
                 Windows.System.VirtualKey.RightWindows => 0x700e7,
                 _ => 0x100000000 | (uint)value,
@@ -334,7 +289,7 @@ internal static class MauiNativeInput
                 var characters = key.CharactersIgnoringModifiers ?? string.Empty;
                 var name = characters.Length == 0 ? key.KeyCode.ToString() : characters;
                 dispatch(new(viewId, TimeSpan.FromTicks(DateTime.UtcNow.Ticks), type,
-                    physical, Logical(name, physical), false, characters.Length == 1 ? characters : null));
+                    physical, MauiKeyMap.Logical(name, physical), false, type != KeyEventType.up && characters.Length == 1 && !char.IsControl(characters[0]) ? characters : null));
             }
         }
     }
@@ -446,27 +401,11 @@ internal static class MauiNativeInput
             var character = unicode > 0 && !char.IsControl((char)unicode) ? char.ConvertFromUtf32(unicode) : null;
             var name = character ?? KeyName(args.KeyCode);
             _dispatch(new(_viewId, TimeSpan.FromTicks(DateTime.UtcNow.Ticks), type,
-                physical, Logical(name, physical), false, character));
+                physical, MauiKeyMap.Logical(name, physical), false, type == KeyEventType.up ? null : character));
             args.Handled = true;
         }
 
-        private static long Physical(Android.Views.Keycode key) => key switch
-        {
-            >= Android.Views.Keycode.A and <= Android.Views.Keycode.Z => 0x70004 + (int)key - (int)Android.Views.Keycode.A,
-            >= Android.Views.Keycode.Num1 and <= Android.Views.Keycode.Num9 => 0x7001e + (int)key - (int)Android.Views.Keycode.Num1,
-            Android.Views.Keycode.Num0 => 0x70027,
-            Android.Views.Keycode.Enter => 0x70028,
-            Android.Views.Keycode.Escape or Android.Views.Keycode.Back => 0x70029,
-            Android.Views.Keycode.Del => 0x7002a,
-            Android.Views.Keycode.Tab => 0x7002b,
-            Android.Views.Keycode.Space => 0x7002c,
-            Android.Views.Keycode.ForwardDel => 0x7004c,
-            Android.Views.Keycode.DpadRight => 0x7004f,
-            Android.Views.Keycode.DpadLeft => 0x70050,
-            Android.Views.Keycode.DpadDown => 0x70051,
-            Android.Views.Keycode.DpadUp => 0x70052,
-            _ => 0x100000000 | (uint)key,
-        };
+        private static long Physical(Android.Views.Keycode key) => MauiKeyMap.AndroidPhysical((int)key);
 
         private static string KeyName(Android.Views.Keycode key) => key switch
         {

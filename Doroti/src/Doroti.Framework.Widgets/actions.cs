@@ -81,6 +81,8 @@ public interface IIntentAction : IActionListenerSource
     bool IsEnabledForIntent(Intent intent, BuildContext? context);
     object? InvokeIntent(Intent intent, BuildContext? context);
     bool ConsumesKeyForIntent(Intent intent);
+    KeyEventResult ToKeyEventResultForIntent(Intent intent, object? invokeResult) =>
+        ConsumesKeyForIntent(intent) ? KeyEventResult.handled : KeyEventResult.skipRemainingHandlers;
     void UpdateCallingAction(IIntentAction? value);
 }
 
@@ -132,6 +134,7 @@ public abstract class Action<T> : global::Doroti.Framework.Foundation.Diagnostic
     bool IIntentAction.IsActionEnabled => isActionEnabled;
     bool IIntentAction.DebugCanHandleIntent(Intent? intent) => _debugCanHandleIntent(intent);
     bool IIntentAction.ConsumesKeyForIntent(Intent intent) => consumesKey((T)intent);
+    KeyEventResult IIntentAction.ToKeyEventResultForIntent(Intent intent, object? invokeResult) => toKeyEventResult((T)intent, invokeResult);
     void IIntentAction.UpdateCallingAction(IIntentAction? value) => _updateCallingAction(value);
     public virtual void addActionListener(global::System.Action<object> listener) => this._listeners.add(listener);
     public virtual void removeActionListener(global::System.Action<object> listener) => this._listeners.remove(listener);
@@ -968,7 +971,7 @@ public class PrioritizedAction : ContextAction<PrioritizedIntents>
     public override object? invoke(PrioritizedIntents intent, BuildContext? context = null)
     {
         this._selectedAction.InvokeIntent(this._selectedIntent, context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return null;
     }
 
 }
