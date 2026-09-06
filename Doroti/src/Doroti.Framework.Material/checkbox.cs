@@ -241,7 +241,7 @@ internal class _CheckboxState__checkbox : global::Doroti.Framework.Widgets.State
         }
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
         CheckboxThemeData checkboxTheme = CheckboxTheme.of(context);
-        dynamic defaults = (Theme.of(context).useMaterial3 ? new _CheckboxDefaultsM3__checkbox(context) : new _CheckboxDefaultsM2__checkbox(context));
+        dynamic defaults = ((new _CheckboxDefaultsM3__checkbox(context)));
         MaterialTapTargetSize effectiveMaterialTapTargetSize = DartRuntimePrimitives.RequireValue(((Checkbox)this.widget).materialTapTargetSize ?? checkboxTheme.materialTapTargetSize ?? defaults.materialTapTargetSize);
         VisualDensity effectiveVisualDensity = ((((Checkbox)this.widget).visualDensity ?? checkboxTheme.visualDensity) ?? defaults.visualDensity!);
         global::Doroti.Ui.Size sizeLocal = ((global::Doroti.Ui.Size)(object?)(effectiveMaterialTapTargetSize switch { var __constant18361 when (object.Equals(__constant18361, MaterialTapTargetSize.padded)) => new global::Doroti.Ui.Size(ConstantsLibrary.kMinInteractiveDimension, ConstantsLibrary.kMinInteractiveDimension), var __constant18488 when (object.Equals(__constant18488, MaterialTapTargetSize.shrinkWrap)) => new global::Doroti.Ui.Size((ConstantsLibrary.kMinInteractiveDimension - 8.0), (ConstantsLibrary.kMinInteractiveDimension - 8.0)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
@@ -348,7 +348,6 @@ internal class _CheckboxState__checkbox : global::Doroti.Framework.Widgets.State
     __cascade.inactiveSide = inactiveSideLocal;
     return __cascade;
 }))())));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
@@ -815,103 +814,6 @@ internal class _CheckboxPainter__checkbox : global::Doroti.Framework.Widgets.Tog
         }
     }
 
-}
-
-internal class _CheckboxDefaultsM2__checkbox : CheckboxThemeData
-{
-    internal virtual ThemeData _theme { get; private set; } = default!;
-    internal virtual ColorScheme _colors { get; private set; } = default!;
-
-    internal _CheckboxDefaultsM2__checkbox(global::Doroti.Framework.Widgets.BuildContext context)
-    {
-        this._theme = Theme.of(context);
-        this._colors = Theme.of(context).colorScheme;
-    }
-
-    public virtual global::Doroti.Framework.Widgets.WidgetStateBorderSide? side
-    {
-        get
-        {
-            return global::Doroti.Framework.Widgets.WidgetStateBorderSide.CreateResolveWith(((states) =>
-            {
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-                {
-                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-                    {
-                        return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: Colors.transparent);
-                    }
-                    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._theme.disabledColor);
-                }
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-                {
-                    return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: Colors.transparent);
-                }
-                return new global::Doroti.Framework.Painting.BorderSide(width: 2.0, color: this._theme.unselectedWidgetColor);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }));
-            return default!;
-        }
-    }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> fillColor
-    {
-        get
-        {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-                {
-                    if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-                    {
-                        return (this._theme.disabledColor);
-                    }
-                    return (Colors.transparent);
-                }
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-                {
-                    return (this._colors.secondary);
-                }
-                return (Colors.transparent);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }));
-            return default!;
-        }
-    }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> checkColor
-    {
-        get
-        {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.all<global::Doroti.Ui.Color>(new global::Doroti.Ui.Color(4294967295L)));
-            return default!;
-        }
-    }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> overlayColor
-    {
-        get
-        {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-                {
-                    return (this.fillColor.resolve(states).withAlpha(ConstantsLibrary.kRadialReactionAlpha));
-                }
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-                {
-                    return (this._theme.hoverColor);
-                }
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-                {
-                    return (this._theme.focusColor);
-                }
-                return (Colors.transparent);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }));
-            return default!;
-        }
-    }
-    public virtual double splashRadius => ConstantsLibrary.kRadialReactionRadius;
-    public virtual MaterialTapTargetSize materialTapTargetSize => this._theme.materialTapTargetSize;
-    public virtual VisualDensity visualDensity => this._theme.visualDensity;
-    public virtual global::Doroti.Framework.Painting.OutlinedBorder shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(1.0))));
 }
 
 internal class _CheckboxDefaultsM3__checkbox : CheckboxThemeData

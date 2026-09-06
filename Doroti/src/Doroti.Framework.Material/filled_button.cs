@@ -67,14 +67,12 @@ public class FilledButton : ButtonStyleButton
         ButtonStyle buttonStyle = (this._variant switch { _FilledButtonVariant__filled_button.filled => DartRuntimePrimitives.ConvertValue<ButtonStyle>(new _FilledButtonDefaultsM3__filled_button(context)), _FilledButtonVariant__filled_button.tonal => DartRuntimePrimitives.ConvertValue<ButtonStyle>(new _FilledTonalButtonDefaultsM3__filled_button(context)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         if (this._addPadding)
         {
-            bool useMaterial3Local = Theme.of(context).useMaterial3;
             double defaultFontSize = (buttonStyle.textStyle?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.fontSize ?? 14.0);
             double effectiveTextScale = (MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0);
-            global::Doroti.Framework.Painting.EdgeInsetsGeometry scaledPaddingLocal = (useMaterial3Local ? ButtonStyleButton.scaledPadding(new global::Doroti.Framework.Painting.EdgeInsetsDirectional(16, 0, 24, 0), new global::Doroti.Framework.Painting.EdgeInsetsDirectional(8, 0, 12, 0), new global::Doroti.Framework.Painting.EdgeInsetsDirectional(4, 0, 6, 0), effectiveTextScale) : ButtonStyleButton.scaledPadding(new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12, 0, 16, 0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8), new global::Doroti.Framework.Painting.EdgeInsetsDirectional(8, 0, 4, 0), effectiveTextScale));
+            global::Doroti.Framework.Painting.EdgeInsetsGeometry scaledPaddingLocal = ((ButtonStyleButton.scaledPadding(new global::Doroti.Framework.Painting.EdgeInsetsDirectional(16, 0, 24, 0), new global::Doroti.Framework.Painting.EdgeInsetsDirectional(8, 0, 12, 0), new global::Doroti.Framework.Painting.EdgeInsetsDirectional(4, 0, 6, 0), effectiveTextScale)));
             return buttonStyle.copyWith(padding: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(scaledPaddingLocal));
         }
         return buttonStyle;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual ButtonStyle? themeStyleOf(global::Doroti.Framework.Widgets.BuildContext context)
@@ -92,9 +90,8 @@ public static partial class Filled_buttonLibrary
         ThemeData theme = Theme.of(context);
         double defaultFontSize = (theme.textTheme.labelLarge?.fontSize ?? 14.0);
         double effectiveTextScale = (MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0);
-        var padding1x = (theme.useMaterial3 ? 24.0 : 16.0);
+        var padding1x = ((24.0));
         return ButtonStyleButton.scaledPadding(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: padding1x), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: (padding1x / 2L)), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: ((padding1x / 2L) / 2L)), effectiveTextScale);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 

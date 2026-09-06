@@ -89,31 +89,12 @@ public class Card : global::Doroti.Framework.Widgets.StatelessWidget
     {
         CardThemeData cardTheme = CardTheme.of(context);
         CardThemeData defaults = default!;
-        if (Theme.of(context).useMaterial3)
         {
             defaults = (this._variant switch { _CardVariant__card.elevated => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _CardDefaultsM3__card(context)), _CardVariant__card.filled => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _FilledCardDefaultsM3__card(context)), _CardVariant__card.outlined => DartRuntimePrimitives.ConvertValue<CardThemeData>(new _OutlinedCardDefaultsM3__card(context)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         }
-        else
-        {
-            defaults = DartRuntimePrimitives.ConvertValue<CardThemeData>(new _CardDefaultsM2__card(context));
-        }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: this.semanticContainer, child: new global::Doroti.Framework.Widgets.Padding(padding: ((this.margin ?? cardTheme.margin) ?? defaults.margin!), child: new Material(type: MaterialType.card, color: ((this.color ?? cardTheme.color) ?? defaults.color), shadowColor: ((this.shadowColor ?? cardTheme.shadowColor) ?? defaults.shadowColor), surfaceTintColor: ((this.surfaceTintColor ?? cardTheme.surfaceTintColor) ?? defaults.surfaceTintColor), elevation: ((this.elevation ?? cardTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation)), shape: ((this.shape ?? cardTheme.shape) ?? defaults.shape), borderOnForeground: this.borderOnForeground, clipBehavior: ((this.clipBehavior ?? cardTheme.clipBehavior) ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior)), child: new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: !this.semanticContainer, child: this.child)))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-}
-
-internal class _CardDefaultsM2__card : CardThemeData
-{
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
-
-    internal _CardDefaultsM2__card(global::Doroti.Framework.Widgets.BuildContext context) : base(clipBehavior: Clip.none, elevation: 1.0, margin: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0), shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(4.0))))
-    {
-        this.context = context;
-    }
-
-    public virtual global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Theme.of(this.context).cardColor);
-    public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Theme.of(this.context).shadowColor);
 }
 
 internal class _CardDefaultsM3__card : CardThemeData

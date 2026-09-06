@@ -19,7 +19,6 @@ void main() {
       find.widgetWithIcon(AppBar, Icons.dark_mode_outlined),
       findsOneWidget,
     );
-    expect(find.widgetWithIcon(AppBar, Icons.filter_2), findsOneWidget);
     expect(find.widgetWithIcon(AppBar, Icons.palette_outlined), findsOneWidget);
 
     // Elements on the component screen

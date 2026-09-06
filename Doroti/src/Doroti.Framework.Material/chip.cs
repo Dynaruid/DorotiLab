@@ -468,7 +468,6 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
 
     internal virtual global::Doroti.Ui.Color? _getBackgroundColor(ThemeData theme, ChipThemeData chipTheme, ChipThemeData chipDefaults)
     {
-        if (theme.useMaterial3)
         {
             global::Doroti.Ui.Color? disabledColorLocal = ((global::Doroti.Ui.Color?)(object?)resolveColor(color: (((RawChip)this.widget).color ?? chipTheme.color), disabledColor: (((RawChip)this.widget).disabledColor ?? chipTheme.disabledColor), defaultColor: chipDefaults.color));
             global::Doroti.Ui.Color? backgroundColorLocal = ((global::Doroti.Ui.Color?)(object?)resolveColor(color: (((RawChip)this.widget).color ?? chipTheme.color), backgroundColor: (((RawChip)this.widget).backgroundColor ?? chipTheme.backgroundColor), defaultColor: chipDefaults.color));
@@ -477,13 +476,6 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
             var selectTween = new global::Doroti.Framework.Animation.ColorTween(begin: backgroundTween.evaluate(this.enableController), end: selectedColorLocal);
             return ((global::Doroti.Ui.Color?)(object?)selectTween.evaluate(this.selectionFade));
         }
-        else
-        {
-            var backgroundTweenLocal = new global::Doroti.Framework.Animation.ColorTween(begin: ((((RawChip)this.widget).disabledColor ?? chipTheme.disabledColor) ?? theme.disabledColor), end: (((((RawChip)this.widget).backgroundColor ?? chipTheme.backgroundColor) ?? theme.chipTheme.backgroundColor) ?? chipDefaults.backgroundColor));
-            var selectTweenLocal = new global::Doroti.Framework.Animation.ColorTween(begin: backgroundTweenLocal.evaluate(this.enableController), end: (((((RawChip)this.widget).selectedColor ?? chipTheme.selectedColor) ?? theme.chipTheme.selectedColor) ?? chipDefaults.selectedColor));
-            return ((global::Doroti.Ui.Color?)(object?)selectTweenLocal.evaluate(this.selectionFade));
-        }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void didUpdateWidget(RawChip oldWidget)
@@ -584,7 +576,7 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
         ThemeData themeLocal = Theme.of(context);
         ChipThemeData chipTheme = ChipTheme.of(context);
         global::Doroti.Ui.Brightness brightnessLocal = (chipTheme.brightness ?? themeLocal.brightness);
-        ChipThemeData chipDefaults = (((RawChip)this.widget).defaultProperties ?? ((themeLocal.useMaterial3 ? new _ChipDefaultsM3__chip(context, ((RawChip)this.widget).isEnabled) : new ChipThemeData(brightness: brightnessLocal, secondarySelectedColor: ((object.Equals(brightnessLocal, Brightness.dark)) ? Colors.tealAccent[200L]! : themeLocal.primaryColor), labelStyle: themeLocal.textTheme.bodyLarge!))));
+        ChipThemeData chipDefaults = (((RawChip)this.widget).defaultProperties ?? (((new _ChipDefaultsM3__chip(context, ((RawChip)this.widget).isEnabled)))));
         global::Doroti.Ui.TextDirection? textDirection = Directionality.maybeOf(context);
         global::Doroti.Framework.Painting.OutlinedBorder resolvedShape = ((global::Doroti.Framework.Painting.OutlinedBorder)(object?)_getShape(themeLocal, chipTheme, chipDefaults));
         double elevationLocal = (((((RawChip)this.widget).elevation ?? chipTheme.elevation) ?? chipDefaults.elevation) ?? 0);
@@ -635,7 +627,6 @@ internal class _RawChipState__chip : global::Doroti.Framework.Widgets.State<RawC
         }
         result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _ChipRedirectingHitDetectionWidget__chip(constraints: constraintsLocal, child: new global::Doroti.Framework.Widgets.Center(widthFactor: 1.0, heightFactor: 1.0, child: result)));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(button: ((RawChip)this.widget).tapEnabled, container: true, selected: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? null : ((RawChip)this.widget).selected), @checked: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? ((RawChip)this.widget).selected : null), enabled: (((RawChip)this.widget).tapEnabled ? this.canTap : null), child: result));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
@@ -1472,12 +1463,9 @@ public class _RenderChip__chip : global::Doroti.Framework.Rendering.RenderBox, g
     public virtual global::Doroti.Framework.Rendering.RenderBox? childForSlot(_ChipSlot__chip slot) => this._slotToChild.GetValueOrDefault(slot);
     public virtual string debugNameForSlot(_ChipSlot__chip slot)
     {
-        if (true)
         {
             return slot.ToString();
         }
-        return slot.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void redepthChildren()

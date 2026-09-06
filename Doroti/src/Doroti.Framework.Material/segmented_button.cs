@@ -180,10 +180,9 @@ public class SegmentedButtonState<T> : global::Doroti.Framework.Widgets.State<Se
             var effectiveSegmentStyle = segmentStyle;
             if ((iconLocal is not null))
             {
-                bool useMaterial3Local = Theme.of(context).useMaterial3;
                 double defaultFontSize = (segmentStyle.textStyle?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.fontSize ?? 14.0);
                 double effectiveTextScale = (MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0);
-                global::Doroti.Framework.Painting.EdgeInsetsGeometry scaledPaddingLocal = ButtonStyleButton.scaledPadding((useMaterial3Local ? new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12, 8, 16, 8) : global::Doroti.Framework.Painting.EdgeInsets.CreateAll(8)), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4), effectiveTextScale);
+                global::Doroti.Framework.Painting.EdgeInsetsGeometry scaledPaddingLocal = ButtonStyleButton.scaledPadding(((new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12, 8, 16, 8))), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4), effectiveTextScale);
                 effectiveSegmentStyle = segmentStyle.copyWith(padding: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(scaledPaddingLocal));
                 double scaleLocal = (Dart_uiLibrary.clampDouble(effectiveTextScale, 1.0, 2.0) - 1.0);
                 TextButtonThemeData textButtonTheme = TextButtonTheme.of(context);
@@ -205,7 +204,6 @@ public class SegmentedButtonState<T> : global::Doroti.Framework.Widgets.State<Se
             })), onPressed: ((global::System.Action)(((this._enabled && ((ButtonSegment<T>)segment).enabled)) ? (() => { _handleOnPressed(((ButtonSegment<T>)segment).value); }) : null)), child: content));
             global::Doroti.Framework.Widgets.Widget buttonWithTooltip = ((((ButtonSegment<T>)segment).tooltip is not null) ? new Tooltip(message: ((ButtonSegment<T>)segment).tooltip, child: button) : button);
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MergeSemantics(child: new global::Doroti.Framework.Widgets.Semantics(selected: segmentSelected, inMutuallyExclusiveGroup: (((SegmentedButton<T>)(object)this.widget).multiSelectionEnabled ? null : true), child: buttonWithTooltip)));
-            throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         global::Doroti.Framework.Painting.OutlinedBorder effectiveBorder = (resolve<global::Doroti.Framework.Painting.OutlinedBorder?>(((style) => style?.shape)) ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder());
         global::Doroti.Framework.Painting.OutlinedBorder resolvedDisabledBorder = (resolve<global::Doroti.Framework.Painting.OutlinedBorder?>(((style) => style?.shape), disabledState) ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder());
@@ -225,7 +223,6 @@ public class SegmentedButtonState<T> : global::Doroti.Framework.Widgets.State<Se
         double effectedButtonHeight = Math.Max((fontSizeLocal + effectiveVerticalPadding), adjustButtonMinHeight);
         double tapTargetVerticalPaddingLocal = (resolvedTapTargetSize switch { var __constant25770 when (object.Equals(__constant25770, MaterialTapTargetSize.shrinkWrap)) => 0.0, var __constant25817 when (object.Equals(__constant25817, MaterialTapTargetSize.padded)) => Math.Max(0, ((global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension + densityAdjustment.dy) - effectedButtonHeight)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new Material(type: MaterialType.transparency, elevation: DartRuntimePrimitives.RequireValue(resolve<double?>(((style) => style?.elevation))), shadowColor: resolve<global::Doroti.Ui.Color?>(((style) => style?.shadowColor)), surfaceTintColor: resolve<global::Doroti.Ui.Color?>(((style) => style?.surfaceTintColor)), child: new TextButtonTheme(data: new TextButtonThemeData(style: segmentThemeStyle), child: new global::Doroti.Framework.Widgets.Padding(padding: (((SegmentedButton<T>)(object)this.widget).expandedInsets ?? global::Doroti.Framework.Painting.EdgeInsets.zero), child: new _SegmentedButtonRenderWidget__segmented_button<T>(tapTargetVerticalPadding: tapTargetVerticalPaddingLocal, segments: ((SegmentedButton<T>)(object)this.widget).segments, enabledBorder: (this._enabled ? enabledBorderLocal : disabledBorderLocal), disabledBorder: disabledBorderLocal, direction: ((SegmentedButton<T>)(object)this.widget).direction, textDirection: textDirectionLocal, isExpanded: (((SegmentedButton<T>)(object)this.widget).expandedInsets is not null), children: buttons)))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void dispose()

@@ -21,7 +21,7 @@ public static partial class Calendar_date_pickerLibrary
 
 public static partial class Calendar_date_pickerLibrary
 {
-    internal static double _dayPickerRowHeightM2 = 42.0;
+    internal static double _dayPickerRowHeightLandscape = 42.0;
 }
 
 public static partial class Calendar_date_pickerLibrary
@@ -36,7 +36,7 @@ public static partial class Calendar_date_pickerLibrary
 
 public static partial class Calendar_date_pickerLibrary
 {
-    internal static double _maxDayPickerHeightM2 = (Calendar_date_pickerLibrary._dayPickerRowHeightM2 * ((Calendar_date_pickerLibrary._maxDayPickerRowCount + 1L)));
+    internal static double _maxDayPickerHeightLandscape = (Calendar_date_pickerLibrary._dayPickerRowHeightLandscape * ((Calendar_date_pickerLibrary._maxDayPickerRowCount + 1L)));
 }
 
 public static partial class Calendar_date_pickerLibrary
@@ -330,11 +330,10 @@ internal class _CalendarDatePickerState__calendar_date_picker : global::Doroti.F
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasDirectionality(context));
         double textScaleFactor = (MediaQuery.textScalerOf(context).clamp(maxScaleFactor: Calendar_date_pickerLibrary._kMaxTextScaleFactor).scale(Calendar_date_pickerLibrary._fontSizeToScale) / Calendar_date_pickerLibrary._fontSizeToScale);
         global::Doroti.Framework.Widgets.Orientation orientation = MediaQuery.orientationOf(context);
-        double maxDayPickerHeight = ((Theme.of(context).useMaterial3 && (object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait))) ? Calendar_date_pickerLibrary._maxDayPickerHeightM3 : Calendar_date_pickerLibrary._maxDayPickerHeightM2);
+        double maxDayPickerHeight = ((((object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait)))) ? Calendar_date_pickerLibrary._maxDayPickerHeightM3 : Calendar_date_pickerLibrary._maxDayPickerHeightLandscape);
         double scaledMaxDayPickerHeight = ((textScaleFactor > 1.3) ? (maxDayPickerHeight + ((((Calendar_date_pickerLibrary._maxDayPickerRowCount + 1L)) * ((((textScaleFactor - 1L)) * 8L))))) : maxDayPickerHeight);
         var picker = new global::Doroti.Framework.Widgets.SizedBox(height: (Calendar_date_pickerLibrary._subHeaderHeight + scaledMaxDayPickerHeight), child: _buildPicker());
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Stack(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection15772 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((MediaQuery.maybeSupportsAnnounceOf(context) ?? false)) { __collection15772.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(picker)); } else { __collection15772.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(container: true, liveRegion: true, accessibilityFocusBlockType: global::Doroti.Framework.Semantics.AccessibilityFocusBlockType.blockNode, label: this._announcementText, child: picker))); } __collection15772.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(MediaQuery.withClampedTextScaling(maxScaleFactor: Calendar_date_pickerLibrary._kModeToggleButtonMaxScaleFactor, child: new _DatePickerModeToggleButton__calendar_date_picker(mode: this._mode, title: ((CalendarDatePicker)this.widget).calendarDelegate.formatMonthYear(this._currentDisplayedMonthDate, this._localizations), onTitlePressed: ((global::System.Action)(() => { _handleModeChanged((this._mode switch { DatePickerMode.day => DatePickerMode.year, DatePickerMode.year => DatePickerMode.day, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })); })))))); return __collection15772; }))()));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
@@ -880,9 +879,8 @@ internal class _DayPickerState__calendar_date_picker : global::Doroti.Framework.
                 dayItems.Add(new _Day__calendar_date_picker(dayToBuild, key: new global::Doroti.Framework.Foundation.ValueKey<DateTime>(dayToBuild), isDisabled: isDisabledLocal, isSelectedDay: isSelectedDayLocal, isToday: isTodayLocal, onChanged: (global::System.Action<DateTime>)((_DayPicker__calendar_date_picker)this.widget).onChanged, focusNode: this._dayFocusNodes[(int)((day - 1L))], calendarDelegate: ((_DayPicker__calendar_date_picker)this.widget).calendarDelegate));
             }
         }
-        double monthPickerHorizontalPadding = ((Theme.of(context).useMaterial3 && !isLandscapeOrientation) ? Calendar_date_pickerLibrary._monthPickerHorizontalPaddingPortraitM3 : Calendar_date_pickerLibrary._monthPickerHorizontalPaddingOther);
+        double monthPickerHorizontalPadding = (((!isLandscapeOrientation)) ? Calendar_date_pickerLibrary._monthPickerHorizontalPaddingPortraitM3 : Calendar_date_pickerLibrary._monthPickerHorizontalPaddingOther);
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: monthPickerHorizontalPadding), child: MediaQuery.withClampedTextScaling(maxScaleFactor: (isLandscapeOrientation ? Calendar_date_pickerLibrary._kDayPickerGridLandscapeMaxScaleFactor : Calendar_date_pickerLibrary._kDayPickerGridPortraitMaxScaleFactor), child: global::Doroti.Framework.Widgets.GridView.CreateCustom(physics: new global::Doroti.Framework.Widgets.ClampingScrollPhysics(), gridDelegate: new _DayPickerGridDelegate__calendar_date_picker(context), childrenDelegate: new global::Doroti.Framework.Widgets.SliverChildListDelegate(dayItems, addRepaintBoundaries: false)))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
@@ -947,7 +945,7 @@ internal class _DayState__calendar_date_picker : global::Doroti.Framework.Widget
         var decorationLocal = (((_Day__calendar_date_picker)this.widget).isToday ? new global::Doroti.Framework.Painting.ShapeDecoration(color: dayBackgroundColorLocal, shape: dayShapeLocal.copyWith(side: todayBorderSide)) : new global::Doroti.Framework.Painting.ShapeDecoration(color: dayBackgroundColorLocal, shape: dayShapeLocal));
         global::Doroti.Framework.Widgets.Widget dayWidget = ((global::Doroti.Framework.Widgets.Widget)(object?)new Ink(decoration: decorationLocal, child: new global::Doroti.Framework.Widgets.Center(child: new global::Doroti.Framework.Widgets.Text(localizations.formatDecimal(((_Day__calendar_date_picker)this.widget).day.Day), style: dayStyleLocal?.apply(color: dayForegroundColorLocal)))));
         global::Doroti.Framework.Widgets.Orientation orientation = MediaQuery.orientationOf(context);
-        if ((Theme.of(context).useMaterial3 && (object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait))))
+        if ((((object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait)))))
         {
             dayWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0), child: dayWidget));
         }
@@ -957,7 +955,6 @@ internal class _DayState__calendar_date_picker : global::Doroti.Framework.Widget
             dayWidget = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkResponse(focusNode: ((_Day__calendar_date_picker)this.widget).focusNode, onTap: (() => { this.widget.onChanged(((_Day__calendar_date_picker)this.widget).day); }), statesController: this._statesController, overlayColor: dayOverlayColorLocal, customBorder: dayShapeLocal, containedInkWell: true, child: dayWidget));
         }
         return dayWidget;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void dispose()
@@ -981,13 +978,12 @@ internal class _DayPickerGridDelegate__calendar_date_picker : global::Doroti.Fra
     {
         double textScaleFactor = (MediaQuery.textScalerOf(this.context).clamp(maxScaleFactor: 3.0).scale(Calendar_date_pickerLibrary._fontSizeToScale) / Calendar_date_pickerLibrary._fontSizeToScale);
         global::Doroti.Framework.Widgets.Orientation orientation = MediaQuery.orientationOf(this.context);
-        double dayPickerRowHeight = ((Theme.of(this.context).useMaterial3 && (object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait))) ? Calendar_date_pickerLibrary._dayPickerRowHeightM3 : Calendar_date_pickerLibrary._dayPickerRowHeightM2);
+        double dayPickerRowHeight = ((((object.Equals(orientation, global::Doroti.Framework.Widgets.Orientation.portrait)))) ? Calendar_date_pickerLibrary._dayPickerRowHeightM3 : Calendar_date_pickerLibrary._dayPickerRowHeightLandscape);
         double scaledRowHeight = ((textScaleFactor > 1.3) ? (((((textScaleFactor - 1L)) * 30L)) + dayPickerRowHeight) : dayPickerRowHeight);
         long columnCount = 7L;
         double tileWidth = (((global::Doroti.Framework.Rendering.SliverConstraints)constraints).crossAxisExtent / columnCount);
         double tileHeight = Math.Min(scaledRowHeight, (((global::Doroti.Framework.Rendering.SliverConstraints)constraints).viewportMainAxisExtent / ((Calendar_date_pickerLibrary._maxDayPickerRowCount + 1L))));
         return ((global::Doroti.Framework.Rendering.SliverGridLayout)(object?)new global::Doroti.Framework.Rendering.SliverGridRegularTileLayout(childCrossAxisExtent: tileWidth, childMainAxisExtent: tileHeight, crossAxisCount: columnCount, crossAxisStride: tileWidth, mainAxisStride: tileHeight, reverseCrossAxis: global::Doroti.Framework.Painting.Basic_typesLibrary.axisDirectionIsReversed(((global::Doroti.Framework.Rendering.SliverConstraints)constraints).crossAxisDirection)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual bool shouldRelayout(global::Doroti.Framework.Rendering.SliverGridDelegate oldDelegate) => false;

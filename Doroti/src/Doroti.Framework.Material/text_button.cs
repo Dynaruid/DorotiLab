@@ -43,16 +43,15 @@ public class TextButton : ButtonStyleButton
     {
         ThemeData theme = Theme.of(context);
         ColorScheme colorSchemeLocal = theme.colorScheme;
-        ButtonStyle buttonStyle = (theme.useMaterial3 ? new _TextButtonDefaultsM3__text_button(context) : TextButton.styleFrom(foregroundColor: colorSchemeLocal.primary, disabledForegroundColor: colorSchemeLocal.onSurface.withOpacity(0.38), backgroundColor: Colors.transparent, disabledBackgroundColor: Colors.transparent, shadowColor: theme.shadowColor, elevation: 0, textStyle: theme.textTheme.labelLarge, padding: Text_buttonLibrary._scaledPadding(context), minimumSize: new global::Doroti.Ui.Size(64, 36), maximumSize: Size.infinite, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(4))), enabledMouseCursor: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.SystemMouseCursors.basic), disabledMouseCursor: global::Doroti.Framework.Services.SystemMouseCursors.basic, visualDensity: theme.visualDensity, tapTargetSize: theme.materialTapTargetSize, animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: global::Doroti.Framework.Painting.Alignment.center, splashFactory: InkRipple.splashFactory));
+        ButtonStyle buttonStyle = ((new _TextButtonDefaultsM3__text_button(context)));
         if (this._addPadding)
         {
             double defaultFontSize = (buttonStyle.textStyle?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.fontSize ?? 14.0);
             double effectiveTextScale = (MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0);
-            global::Doroti.Framework.Painting.EdgeInsetsGeometry scaledPaddingLocal = ButtonStyleButton.scaledPadding((theme.useMaterial3 ? new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12, 8, 16, 8) : global::Doroti.Framework.Painting.EdgeInsets.CreateAll(8)), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4), effectiveTextScale);
+            global::Doroti.Framework.Painting.EdgeInsetsGeometry scaledPaddingLocal = ButtonStyleButton.scaledPadding(((new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12, 8, 16, 8))), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4), effectiveTextScale);
             return buttonStyle.copyWith(padding: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(scaledPaddingLocal));
         }
         return buttonStyle;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual ButtonStyle? themeStyleOf(global::Doroti.Framework.Widgets.BuildContext context)
@@ -70,8 +69,7 @@ public static partial class Text_buttonLibrary
         ThemeData theme = Theme.of(context);
         double defaultFontSize = (theme.textTheme.labelLarge?.fontSize ?? 14.0);
         double effectiveTextScale = (MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0);
-        return ButtonStyleButton.scaledPadding((theme.useMaterial3 ? global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 12, vertical: 8) : global::Doroti.Framework.Painting.EdgeInsets.CreateAll(8)), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4), effectiveTextScale);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return ButtonStyleButton.scaledPadding(((global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 12, vertical: 8))), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 4), effectiveTextScale);
     }
 }
 

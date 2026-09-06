@@ -103,7 +103,7 @@ public class TextTheme : global::Doroti.Framework.Foundation.Diagnosticable
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.displayLarge, this.displayMedium, this.displaySmall, this.headlineLarge, this.headlineMedium, this.headlineSmall, this.titleLarge, this.titleMedium, this.titleSmall, this.bodyLarge, this.bodyMedium, this.bodySmall, this.labelLarge, this.labelMedium, this.labelSmall));
     public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
-        TextTheme defaultTheme = Typography.CreateMaterial2018(platform: global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform).black;
+        TextTheme defaultTheme = Typography.CreateMaterial2021(platform: global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform).black;
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displayLarge", this.displayLarge, defaultValue: ((TextTheme)defaultTheme).displayLarge));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displayMedium", this.displayMedium, defaultValue: ((TextTheme)defaultTheme).displayMedium));
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Painting.TextStyle>("displaySmall", this.displaySmall, defaultValue: ((TextTheme)defaultTheme).displaySmall));

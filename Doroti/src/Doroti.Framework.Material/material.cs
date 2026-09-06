@@ -128,7 +128,7 @@ internal class _MaterialState__material : global::Doroti.Framework.Widgets.State
     {
         ThemeData theme = Theme.of(context);
         global::Doroti.Ui.Color? backgroundColor = ((global::Doroti.Ui.Color?)(object?)(((Material)this.widget).color ?? (((Material)this.widget).type switch { MaterialType.canvas => theme.canvasColor, MaterialType.card => theme.cardColor, MaterialType.button or MaterialType.circle => DartRuntimePrimitives.ConvertValue<Color>(null), MaterialType.transparency => DartRuntimePrimitives.ConvertValue<Color>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") })));
-        global::Doroti.Ui.Color modelShadowColor = ((global::Doroti.Ui.Color)(object?)(((Material)this.widget).shadowColor ?? ((theme.useMaterial3 ? theme.colorScheme.shadow : theme.shadowColor))));
+        global::Doroti.Ui.Color modelShadowColor = ((global::Doroti.Ui.Color)(object?)(((Material)this.widget).shadowColor ?? (((theme.colorScheme.shadow)))));
         DartRuntimePrimitives.Assert(() => ((backgroundColor is not null) || (object.Equals(((Material)this.widget).type, MaterialType.transparency))), () => (object?)"If Material type is not MaterialType.transparency, a color must " + "either be passed in through the `color` property, or be defined " + "in the theme (ex. canvasColor != null if type is set to " + "MaterialType.canvas)");
         global::Doroti.Framework.Widgets.Widget? contents = ((Material)this.widget).child;
         if ((contents is not null))
@@ -145,7 +145,7 @@ internal class _MaterialState__material : global::Doroti.Framework.Widgets.State
         global::Doroti.Framework.Painting.ShapeBorder? shapeLocal = ((((Material)this.widget).borderRadius is not null) ? new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: ((Material)this.widget).borderRadius!) : ((Material)this.widget).shape);
         if (((object.Equals(((Material)this.widget).type, MaterialType.canvas)) && (shapeLocal is null)))
         {
-            global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)(object?)(theme.useMaterial3 ? ElevationOverlay.applySurfaceTint(backgroundColor!, ((Material)this.widget).surfaceTintColor, ((Material)this.widget).elevation) : ElevationOverlay.applyOverlay(context, backgroundColor!, ((Material)this.widget).elevation)));
+            global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)(object?)((ElevationOverlay.applySurfaceTint(backgroundColor!, ((Material)this.widget).surfaceTintColor, ((Material)this.widget).elevation))));
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedPhysicalModel(curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, duration: ((Material)this.widget).animationDuration, clipBehavior: ((Material)this.widget).clipBehavior, elevation: ((Material)this.widget).elevation, color: colorLocal, shadowColor: modelShadowColor, animateColor: ((Material)this.widget).animateColor, child: contents));
         }
         shapeLocal ??= (((Material)this.widget).type switch { MaterialType.circle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.CircleBorder()), MaterialType.canvas => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder()), MaterialType.transparency => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder()), MaterialType.card => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(2.0)))), MaterialType.button => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(2.0)))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
@@ -154,7 +154,6 @@ internal class _MaterialState__material : global::Doroti.Framework.Widgets.State
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ClipPath(clipper: new global::Doroti.Framework.Rendering.ShapeBorderClipper(shape: shapeLocal, textDirection: Directionality.maybeOf(context)), clipBehavior: ((Material)this.widget).clipBehavior, child: new _ShapeBorderPaint__material(shape: shapeLocal, child: contents)));
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new _MaterialInterior__material(curve: global::Doroti.Framework.Animation.Curves.fastOutSlowIn, duration: ((Material)this.widget).animationDuration, shape: shapeLocal, borderOnForeground: ((Material)this.widget).borderOnForeground, clipBehavior: ((Material)this.widget).clipBehavior, elevation: ((Material)this.widget).elevation, color: backgroundColor!, shadowColor: modelShadowColor, surfaceTintColor: ((Material)this.widget).surfaceTintColor, child: contents));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
@@ -396,7 +395,7 @@ public abstract class InkFeature
             if ((fromDepth >= toDepth))
             {
                 global::Doroti.Framework.Rendering.RenderObject? fromParent = ((global::Doroti.Framework.Rendering.RenderObject)@from).parent;
-                if ((false || !((bool)((dynamic)fromParent).paintsChild(@from))))
+                if (((!((bool)((dynamic)fromParent).paintsChild(@from)))))
                 {
                     return null;
                 }
@@ -406,7 +405,7 @@ public abstract class InkFeature
             if ((fromDepth <= toDepth))
             {
                 global::Doroti.Framework.Rendering.RenderObject? toParent = ((global::Doroti.Framework.Rendering.RenderObject)to).parent;
-                if ((false || !((bool)((dynamic)toParent).paintsChild(to))))
+                if (((!((bool)((dynamic)toParent).paintsChild(to)))))
                 {
                     return null;
                 }
@@ -432,7 +431,6 @@ public abstract class InkFeature
     __cascade.multiply(transform);
     return __cascade;
 }))()) : null);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _paint(Canvas canvas)
@@ -519,10 +517,9 @@ internal class _MaterialInteriorState__material : global::Doroti.Framework.Widge
     {
         global::Doroti.Framework.Painting.ShapeBorder shapeLocal = this._border!.evaluate(this.animation)!;
         double elevationLocal = this._elevation!.evaluate(this.animation);
-        global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)(object?)(Theme.of(context).useMaterial3 ? ElevationOverlay.applySurfaceTint(((_MaterialInterior__material)this.widget).color, this._surfaceTintColor?.evaluate(this.animation), elevationLocal) : ElevationOverlay.applyOverlay(context, ((_MaterialInterior__material)this.widget).color, elevationLocal)));
+        global::Doroti.Ui.Color colorLocal = ((global::Doroti.Ui.Color)(object?)((ElevationOverlay.applySurfaceTint(((_MaterialInterior__material)this.widget).color, this._surfaceTintColor?.evaluate(this.animation), elevationLocal))));
         global::Doroti.Ui.Color shadowColorLocal = ((global::Doroti.Ui.Color)(object?)this._shadowColor!.evaluate(this.animation)!);
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.PhysicalShape(clipper: new global::Doroti.Framework.Rendering.ShapeBorderClipper(shape: shapeLocal, textDirection: Directionality.maybeOf(context)), clipBehavior: ((_MaterialInterior__material)this.widget).clipBehavior, elevation: elevationLocal, color: colorLocal, shadowColor: shadowColorLocal, child: new _ShapeBorderPaint__material(shape: shapeLocal, borderOnForeground: ((_MaterialInterior__material)this.widget).borderOnForeground, child: ((_MaterialInterior__material)this.widget).child)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }

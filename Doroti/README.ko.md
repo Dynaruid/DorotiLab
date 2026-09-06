@@ -4,6 +4,8 @@
 
 Doroti는 Windows App SDK, 선택적 Windows MAUI, Android, iOS, native AppKit macOS, Mac Catalyst, Blazor WebAssembly와 Linux/Qt에서 공용 widget, layout, painting, semantics, rendering pipeline을 사용하는 C#/.NET UI framework입니다.
 
+Material 테마는 Material 3 전용입니다. `ThemeData` factory, 생성자, `copyWith`의 `useMaterial3` 인자와 버전 속성을 제거했으므로 앱 코드에서 해당 인자를 생략합니다. Typography는 `Create` 또는 `CreateMaterial2021`을 사용하며 2014/2018 preset은 제거했습니다.
+
 ## 개발 방식
 
 `src/Doroti.Framework.*`는 직접 유지보수하는 제품 source입니다. 공개 namespace는 project, assembly, package 이름과 같은 `Doroti.Framework.*`입니다. 기능 추가와 정확성 수정은 소유 framework/runtime/host project에서 직접 수행하고, 바뀐 공용 계약의 모든 consumer를 함께 고칩니다.

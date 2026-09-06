@@ -18,10 +18,8 @@ class Home extends StatefulWidget {
   const Home({
     super.key,
     required this.useLightMode,
-    required this.useMaterial3,
     required this.colorSelected,
     required this.handleBrightnessChange,
-    required this.handleMaterialVersionChange,
     required this.handleColorSelect,
     required this.handleImageSelect,
     required this.colorSelectionMethod,
@@ -29,13 +27,11 @@ class Home extends StatefulWidget {
   });
 
   final bool useLightMode;
-  final bool useMaterial3;
   final ColorSeed colorSelected;
   final ColorImageProvider imageSelected;
   final ColorSelectionMethod colorSelectionMethod;
 
   final void Function(bool useLightMode) handleBrightnessChange;
-  final void Function() handleMaterialVersionChange;
   final void Function(int value) handleColorSelect;
   final void Function(int value) handleImageSelect;
 
@@ -133,16 +129,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   PreferredSizeWidget _createAppBar() {
     return AppBar(
-      title: widget.useMaterial3
-          ? const Text('Material 3')
-          : const Text('Material 2'),
+      title: const Text('Material 3'),
       actions: !showMediumSizeLayout && !showLargeSizeLayout
           ? [
               BrightnessButton(
                 handleBrightnessChange: widget.handleBrightnessChange,
-              ),
-              Material3Button(
-                handleMaterialVersionChange: widget.handleMaterialVersionChange,
               ),
               ColorSeedButton(
                 handleColorSelect: widget.handleColorSelect,
@@ -165,12 +156,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
       Flexible(
         child: BrightnessButton(
           handleBrightnessChange: widget.handleBrightnessChange,
-          showTooltipBelow: false,
-        ),
-      ),
-      Flexible(
-        child: Material3Button(
-          handleMaterialVersionChange: widget.handleMaterialVersionChange,
           showTooltipBelow: false,
         ),
       ),
@@ -222,9 +207,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     ? ExpandedTrailingActions(
                         useLightMode: widget.useLightMode,
                         handleBrightnessChange: widget.handleBrightnessChange,
-                        useMaterial3: widget.useMaterial3,
-                        handleMaterialVersionChange:
-                            widget.handleMaterialVersionChange,
                         handleImageSelect: widget.handleImageSelect,
                         handleColorSelect: widget.handleColorSelect,
                         colorSelectionMethod: widget.colorSelectionMethod,

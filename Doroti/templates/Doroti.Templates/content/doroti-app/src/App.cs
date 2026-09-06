@@ -52,7 +52,6 @@ public static class AppTheme
             surfaceContainerHigh: new UiColor(isDark ? 0xff2b2930L : 0xffece6f0L),
             outline: new UiColor(isDark ? 0xff938f99L : 0xff79747eL));
         return Material.ThemeData.Create(
-            useMaterial3: true,
             colorScheme: palette,
             scaffoldBackgroundColor: palette.surface);
     }

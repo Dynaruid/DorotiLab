@@ -13,8 +13,6 @@ class ExpandedTrailingActions extends StatelessWidget {
     super.key,
     required this.useLightMode,
     required this.handleBrightnessChange,
-    required this.useMaterial3,
-    required this.handleMaterialVersionChange,
     required this.handleColorSelect,
     required this.handleImageSelect,
     required this.imageSelected,
@@ -23,12 +21,10 @@ class ExpandedTrailingActions extends StatelessWidget {
   });
 
   final void Function(bool) handleBrightnessChange;
-  final void Function() handleMaterialVersionChange;
   final void Function(int) handleImageSelect;
   final void Function(int) handleColorSelect;
 
   final bool useLightMode;
-  final bool useMaterial3;
 
   final ColorImageProvider imageSelected;
   final ColorSeed colorSelected;
@@ -52,20 +48,6 @@ class ExpandedTrailingActions extends StatelessWidget {
                 value: useLightMode,
                 onChanged: (value) {
                   handleBrightnessChange(value);
-                },
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              useMaterial3
-                  ? const Text('Material 3')
-                  : const Text('Material 2'),
-              Expanded(child: Container()),
-              Switch(
-                value: useMaterial3,
-                onChanged: (_) {
-                  handleMaterialVersionChange();
                 },
               ),
             ],

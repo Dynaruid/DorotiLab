@@ -682,34 +682,8 @@ public static partial class Navigation_barLibrary
 {
     internal static NavigationBarThemeData _defaultsFor(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return (Theme.of(context).useMaterial3 ? new _NavigationBarDefaultsM3__navigation_bar(context) : new _NavigationBarDefaultsM2__navigation_bar(context));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return ((new _NavigationBarDefaultsM3__navigation_bar(context)));
     }
-}
-
-internal class _NavigationBarDefaultsM2__navigation_bar : NavigationBarThemeData
-{
-    internal virtual ThemeData _theme { get; private set; } = default!;
-    internal virtual ColorScheme _colors { get; private set; } = default!;
-
-    internal _NavigationBarDefaultsM2__navigation_bar(global::Doroti.Framework.Widgets.BuildContext context) : base(height: 80.0, elevation: 0.0, indicatorShape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(16))), labelBehavior: NavigationDestinationLabelBehavior.alwaysShow)
-    {
-        this._theme = Theme.of(context);
-        this._colors = Theme.of(context).colorScheme;
-    }
-
-    public virtual global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(ElevationOverlay.colorWithOverlay(this._colors.surface, this._colors.onSurface, 3.0));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.IconThemeData?>? iconTheme
-    {
-        get
-        {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.IconThemeData?>?)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Widgets.IconThemeData>(new global::Doroti.Framework.Widgets.IconThemeData(size: 24, color: this._colors.onSurface)));
-            return default!;
-        }
-    }
-    public virtual global::Doroti.Ui.Color? indicatorColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondary.withOpacity(0.24));
-    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? labelTextStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.TextStyle?>(this._theme.textTheme.labelSmall!.copyWith(color: this._colors.onSurface)));
-    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? labelPadding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: 4));
 }
 
 internal class _NavigationBarDefaultsM3__navigation_bar : NavigationBarThemeData

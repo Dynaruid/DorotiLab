@@ -352,9 +352,9 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual List<global::Doroti.Framework.Widgets.Widget> _buildButtons(List<DropdownMenuEntry<T>> filteredEntries, TextDirection textDirection, long? focusedIndex = null, bool enableScrollToHighlight = true, bool excludeSemantics = false, bool? useMaterial3 = null)
+    internal virtual List<global::Doroti.Framework.Widgets.Widget> _buildButtons(List<DropdownMenuEntry<T>> filteredEntries, TextDirection textDirection, long? focusedIndex = null, bool enableScrollToHighlight = true, bool excludeSemantics = false)
     {
-        double effectiveInputStartGap = ((useMaterial3 ?? false) ? Dropdown_menuLibrary._kInputStartGap : 0.0);
+        double effectiveInputStartGap = ((Dropdown_menuLibrary._kInputStartGap));
         var result = new List<global::Doroti.Framework.Widgets.Widget>();
         for (var i = 0L; (i < checked((long)(filteredEntries.Count))); i++)
         {
@@ -413,7 +413,6 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
             result.Add(menuItemButton);
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual void handleUpKey(_ArrowUpIntent__dropdown_menu __unused0)
@@ -520,9 +519,8 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        bool useMaterial3Local = Theme.of(context).useMaterial3;
         global::Doroti.Ui.TextDirection textDirection = Directionality.of(context);
-        _initialMenu ??= _buildButtons(((DropdownMenu<T>)(object)this.widget).dropdownMenuEntries, textDirection, enableScrollToHighlight: false, excludeSemantics: true, useMaterial3: DartRuntimePrimitives.RequireValue(useMaterial3Local));
+        _initialMenu ??= _buildButtons(((DropdownMenu<T>)(object)this.widget).dropdownMenuEntries, textDirection, enableScrollToHighlight: false, excludeSemantics: true);
         DropdownMenuThemeData theme = DropdownMenuTheme.of(context);
         DropdownMenuThemeData defaults = ((DropdownMenuThemeData)(object?)new _DropdownMenuDefaultsM3__dropdown_menu(context));
         if (this._enableFilter)
@@ -549,7 +547,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
                 scrollToHighlight();
             }
         }
-        List<global::Doroti.Framework.Widgets.Widget> menu = ((List<global::Doroti.Framework.Widgets.Widget>)(object?)_buildButtons(this.filteredEntries, textDirection, focusedIndex: this.currentHighlight, useMaterial3: DartRuntimePrimitives.RequireValue(useMaterial3Local)));
+        List<global::Doroti.Framework.Widgets.Widget> menu = ((List<global::Doroti.Framework.Widgets.Widget>)(object?)_buildButtons(this.filteredEntries, textDirection, focusedIndex: this.currentHighlight));
         global::Doroti.Framework.Painting.TextStyle? baseTextStyle = ((((DropdownMenu<T>)(object)this.widget).textStyle ?? theme.textStyle) ?? defaults.textStyle);
         global::Doroti.Ui.Color? disabledColorLocal = ((global::Doroti.Ui.Color?)(object?)(theme.disabledColor ?? defaults.disabledColor));
         global::Doroti.Framework.Painting.TextStyle? effectiveTextStyle = (((DropdownMenu<T>)(object)this.widget).enabled ? baseTextStyle : (baseTextStyle?.copyWith(color: disabledColorLocal) ?? new global::Doroti.Framework.Painting.TextStyle(color: disabledColorLocal)));
@@ -625,7 +623,6 @@ internal class _DropdownMenuState__dropdown_menu<T> : global::Doroti.Framework.W
         }
         menuAnchor = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.topStart, widthFactor: 1.0, heightFactor: 1.0, child: menuAnchor));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Actions(actions: new DartMap<Type, dynamic> { [typeof(_ArrowUpIntent__dropdown_menu)] = new global::Doroti.Framework.Widgets.CallbackAction<_ArrowUpIntent__dropdown_menu>(onInvoke: (__arg0) => { ((global::System.Action<_ArrowUpIntent__dropdown_menu>)this.handleUpKey)(__arg0); return default!; }), [typeof(_ArrowDownIntent__dropdown_menu)] = new global::Doroti.Framework.Widgets.CallbackAction<_ArrowDownIntent__dropdown_menu>(onInvoke: (__arg0) => { ((global::System.Action<_ArrowDownIntent__dropdown_menu>)this.handleDownKey)(__arg0); return default!; }), [typeof(_EnterIntent__dropdown_menu)] = new global::Doroti.Framework.Widgets.CallbackAction<_EnterIntent__dropdown_menu>(onInvoke: (__arg0) => { ((global::System.Action<_EnterIntent__dropdown_menu>)this.handleEnterKey)(__arg0); return default!; }), [typeof(global::Doroti.Framework.Widgets.DismissIntent)] = new global::Doroti.Framework.Widgets.DismissMenuAction(controller: this._controller) }, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Shortcuts(shortcuts: new DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> { [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowUp)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new _ArrowUpIntent__dropdown_menu()), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.arrowDown)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new _ArrowDownIntent__dropdown_menu()), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.enter)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new _EnterIntent__dropdown_menu()), [new global::Doroti.Framework.Widgets.SingleActivator(global::Doroti.Framework.Services.LogicalKeyboardKey.escape)] = ((global::Doroti.Framework.Widgets.Intent)(object?)new global::Doroti.Framework.Widgets.DismissIntent()) }, child: new global::Doroti.Framework.Widgets.Focus(focusNode: this._internalFocusNode, skipTraversal: true, child: global::Doroti.Framework.Widgets.SizedBox.CreateShrink()))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(menuAnchor) })));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual InputDecoration _buildDefaultDecoration(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.MenuController controller)

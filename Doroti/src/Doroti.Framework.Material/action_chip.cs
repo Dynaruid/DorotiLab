@@ -117,9 +117,8 @@ public class ActionChip : global::Doroti.Framework.Widgets.StatelessWidget, Chip
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterial(context));
-        ChipThemeData? defaults = ((ChipThemeData?)(object?)(Theme.of(context).useMaterial3 ? new _ActionChipDefaultsM3__action_chip(context, this.isEnabled, this._chipVariant) : null));
+        ChipThemeData? defaults = ((ChipThemeData?)(object?)((new _ActionChipDefaultsM3__action_chip(context, this.isEnabled, this._chipVariant))));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new RawChip(defaultProperties: defaults, avatar: this.avatar, label: this.label, onPressed: () => this.onPressed(), pressElevation: this.pressElevation, tooltip: this.tooltip, labelStyle: this.labelStyle, color: this.color, backgroundColor: this.backgroundColor, side: this.side, shape: this.shape, clipBehavior: this.clipBehavior, focusNode: this.focusNode, autofocus: this.autofocus, disabledColor: this.disabledColor, padding: this.padding, visualDensity: this.visualDensity, isEnabled: this.isEnabled, labelPadding: this.labelPadding, materialTapTargetSize: this.materialTapTargetSize, elevation: this.elevation, shadowColor: this.shadowColor, surfaceTintColor: this.surfaceTintColor, iconTheme: this.iconTheme, avatarBoxConstraints: this.avatarBoxConstraints, chipAnimationStyle: this.chipAnimationStyle, mouseCursor: this.mouseCursor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }

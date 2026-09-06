@@ -200,14 +200,14 @@ public class PopupMenuItemState<T, W> : global::Doroti.Framework.Widgets.State<W
     {
         ThemeData theme = Theme.of(context);
         PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
-        PopupMenuThemeData defaults = (theme.useMaterial3 ? new _PopupMenuDefaultsM3__popup_menu(context) : new _PopupMenuDefaultsM2__popup_menu(context));
+        PopupMenuThemeData defaults = ((new _PopupMenuDefaultsM3__popup_menu(context)));
         var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection14434 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!((PopupMenuItem<T>)(object)this.widget).enabled) { __collection14434.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } return __collection14434; }))();
-        global::Doroti.Framework.Painting.TextStyle styleLocal = (theme.useMaterial3 ? (((((PopupMenuItem<T>)(object)this.widget).labelTextStyle?.resolve(states) ?? popupMenuTheme.labelTextStyle?.resolve(states)!) ?? defaults.labelTextStyle!.resolve(states)!)) : (((((PopupMenuItem<T>)(object)this.widget).textStyle ?? popupMenuTheme.textStyle) ?? defaults.textStyle!)));
-        if ((!((PopupMenuItem<T>)(object)this.widget).enabled && !theme.useMaterial3))
+        global::Doroti.Framework.Painting.TextStyle styleLocal = (((((((PopupMenuItem<T>)(object)this.widget).labelTextStyle?.resolve(states) ?? popupMenuTheme.labelTextStyle?.resolve(states)!) ?? defaults.labelTextStyle!.resolve(states)!))));
+        if ((!((PopupMenuItem<T>)(object)this.widget).enabled && false))
         {
             styleLocal = styleLocal.copyWith(color: theme.disabledColor);
         }
-        global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)(((PopupMenuItem<T>)(object)this.widget).padding ?? ((theme.useMaterial3 ? _PopupMenuDefaultsM3__popup_menu.menuItemPadding : _PopupMenuDefaultsM2__popup_menu.menuItemPadding))));
+        global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)(((PopupMenuItem<T>)(object)this.widget).padding ?? (((_PopupMenuDefaultsM3__popup_menu.menuItemPadding)))));
         global::Doroti.Framework.Widgets.Widget item = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.AnimatedDefaultTextStyle(style: styleLocal, duration: ConstantsLibrary.kThemeChangeDuration, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: new global::Doroti.Framework.Rendering.BoxConstraints(minHeight: ((PopupMenuItem<T>)(object)this.widget).height), child: new global::Doroti.Framework.Widgets.Padding(padding: paddingLocal, child: new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.centerStart, child: buildChild())))));
         if (!((PopupMenuItem<T>)(object)this.widget).enabled)
         {
@@ -215,7 +215,6 @@ public class PopupMenuItemState<T, W> : global::Doroti.Framework.Widgets.State<W
             item = IconTheme.merge(data: new global::Doroti.Framework.Widgets.IconThemeData(opacity: (isDark ? 0.5 : 0.38)), child: item);
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MergeSemantics(child: buildSemantics(child: new InkWell(onTap: ((global::System.Action)(((PopupMenuItem<T>)(object)this.widget).enabled ? this.handleTap : null)), canRequestFocus: ((PopupMenuItem<T>)(object)this.widget).enabled, mouseCursor: new _EffectiveMouseCursor__popup_menu(((PopupMenuItem<T>)(object)this.widget).mouseCursor, popupMenuTheme.mouseCursor), child: ListTileTheme.merge(contentPadding: global::Doroti.Framework.Painting.EdgeInsets.zero, titleTextStyle: styleLocal, child: item)))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Widgets.Widget buildSemantics(global::Doroti.Framework.Widgets.Widget child)
@@ -303,11 +302,10 @@ internal class _CheckedPopupMenuItemState__popup_menu<T> : PopupMenuItemState<T,
     {
         ThemeData theme = Theme.of(this.context);
         PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(this.context);
-        PopupMenuThemeData defaults = (theme.useMaterial3 ? new _PopupMenuDefaultsM3__popup_menu(this.context) : new _PopupMenuDefaultsM2__popup_menu(this.context));
+        PopupMenuThemeData defaults = ((new _PopupMenuDefaultsM3__popup_menu(this.context)));
         var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection22101 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (((CheckedPopupMenuItem<T>)(object)this.widget).@checked) { __collection22101.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection22101; }))();
         global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? effectiveLabelTextStyle = ((((PopupMenuItem<T>)(object)this.widget).labelTextStyle ?? popupMenuTheme.labelTextStyle) ?? defaults.labelTextStyle);
         return ((global::Doroti.Framework.Widgets.Widget?)(object?)new global::Doroti.Framework.Widgets.IgnorePointer(child: ListTileTheme.merge(contentPadding: global::Doroti.Framework.Painting.EdgeInsets.zero, child: new ListTile(enabled: ((PopupMenuItem<T>)(object)this.widget).enabled, titleTextStyle: effectiveLabelTextStyle?.resolve(states), leading: new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._opacity, child: new global::Doroti.Framework.Widgets.Icon((this._controller.isDismissed ? null : Icons.done))), title: ((CheckedPopupMenuItem<T>)(object)this.widget).child))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
@@ -437,7 +435,7 @@ internal class _PopupMenuState__popup_menu<T> : global::Doroti.Framework.Widgets
         var childrenLocal = new List<global::Doroti.Framework.Widgets.Widget>();
         ThemeData theme = Theme.of(context);
         PopupMenuThemeData popupMenuTheme = PopupMenuTheme.of(context);
-        PopupMenuThemeData defaults = (theme.useMaterial3 ? new _PopupMenuDefaultsM3__popup_menu(context) : new _PopupMenuDefaultsM2__popup_menu(context));
+        PopupMenuThemeData defaults = ((new _PopupMenuDefaultsM3__popup_menu(context)));
         for (var i = 0L; (i < checked((long)(((_PopupMenu__popup_menu<T>)(object)this.widget).route.items.Count))); i += 1L)
         {
             global::Doroti.Framework.Animation.CurvedAnimation opacityLocal = this._opacities[(int)(i)];
@@ -460,7 +458,6 @@ internal class _PopupMenuState__popup_menu<T> : global::Doroti.Framework.Widgets
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FadeTransition(opacity: opacityAlternate.animate(((_PopupMenu__popup_menu<T>)(object)this.widget).route.animation!), child: new Material(shape: ((((_PopupMenu__popup_menu<T>)(object)this.widget).route.shape ?? popupMenuTheme.shape) ?? defaults.shape), color: ((((_PopupMenu__popup_menu<T>)(object)this.widget).route.color ?? popupMenuTheme.color) ?? defaults.color), clipBehavior: ((_PopupMenu__popup_menu<T>)(object)this.widget).clipBehavior, type: MaterialType.card, elevation: ((((_PopupMenu__popup_menu<T>)(object)this.widget).route.elevation ?? popupMenuTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation)), shadowColor: ((((_PopupMenu__popup_menu<T>)(object)this.widget).route.shadowColor ?? popupMenuTheme.shadowColor) ?? defaults.shadowColor), surfaceTintColor: ((((_PopupMenu__popup_menu<T>)(object)this.widget).route.surfaceTintColor ?? popupMenuTheme.surfaceTintColor) ?? defaults.surfaceTintColor), child: new global::Doroti.Framework.Widgets.Align(alignment: global::Doroti.Framework.Painting.AlignmentDirectional.topEnd, widthFactor: width.evaluate(((_PopupMenu__popup_menu<T>)(object)this.widget).route.animation!), heightFactor: height.evaluate(((_PopupMenu__popup_menu<T>)(object)this.widget).route.animation!), child: child))));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), child: childLocal));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
@@ -961,48 +958,6 @@ internal class _EffectiveMouseCursor__popup_menu : global::Doroti.Framework.Widg
     }
 
     public override string debugDescription => "WidgetStateMouseCursor(PopupMenuItemState)";
-}
-
-internal class _PopupMenuDefaultsM2__popup_menu : PopupMenuThemeData
-{
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
-    private bool __late__theme_initialized;
-    private ThemeData __late__theme = default!;
-    internal virtual ThemeData _theme
-    {
-        get
-        {
-            if (!__late__theme_initialized)
-            {
-                __late__theme = Theme.of(this.context);
-                __late__theme_initialized = true;
-            }
-            return __late__theme;
-        }
-    }
-    private bool __late__textTheme_initialized;
-    private TextTheme __late__textTheme = default!;
-    internal virtual TextTheme _textTheme
-    {
-        get
-        {
-            if (!__late__textTheme_initialized)
-            {
-                __late__textTheme = this._theme.textTheme;
-                __late__textTheme_initialized = true;
-            }
-            return __late__textTheme;
-        }
-    }
-    public static global::Doroti.Framework.Painting.EdgeInsets menuItemPadding = global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0);
-
-    internal _PopupMenuDefaultsM2__popup_menu(global::Doroti.Framework.Widgets.BuildContext context) : base(elevation: 8.0)
-    {
-        this.context = context;
-    }
-
-    public override global::Doroti.Framework.Painting.TextStyle? textStyle => this._textTheme.titleMedium;
-    public virtual global::Doroti.Framework.Painting.EdgeInsets? menuPadding => global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 8.0);
 }
 
 internal class _PopupMenuDefaultsM3__popup_menu : PopupMenuThemeData

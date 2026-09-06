@@ -42,8 +42,8 @@ public class OutlinedButton : ButtonStyleButton
     {
         ThemeData theme = Theme.of(context);
         ColorScheme colorSchemeLocal = theme.colorScheme;
-        ButtonStyle buttonStyle = (theme.useMaterial3 ? new _OutlinedButtonDefaultsM3__outlined_button(context) : OutlinedButton.styleFrom(foregroundColor: colorSchemeLocal.primary, disabledForegroundColor: colorSchemeLocal.onSurface.withOpacity(0.38), backgroundColor: Colors.transparent, disabledBackgroundColor: Colors.transparent, shadowColor: theme.shadowColor, elevation: 0, textStyle: theme.textTheme.labelLarge, padding: Outlined_buttonLibrary._scaledPadding(context), minimumSize: new global::Doroti.Ui.Size(64, 36), maximumSize: Size.infinite, side: new global::Doroti.Framework.Painting.BorderSide(color: colorSchemeLocal.onSurface.withOpacity(0.12)), shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(4))), enabledMouseCursor: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.SystemMouseCursors.basic), disabledMouseCursor: global::Doroti.Framework.Services.SystemMouseCursors.basic, visualDensity: theme.visualDensity, tapTargetSize: theme.materialTapTargetSize, animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: global::Doroti.Framework.Painting.Alignment.center, splashFactory: InkRipple.splashFactory));
-        if ((this._addPadding && theme.useMaterial3))
+        ButtonStyle buttonStyle = ((new _OutlinedButtonDefaultsM3__outlined_button(context)));
+        if (((this._addPadding)))
         {
             double defaultFontSize = (buttonStyle.textStyle?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.fontSize ?? 14.0);
             double effectiveTextScale = (MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0);
@@ -51,7 +51,6 @@ public class OutlinedButton : ButtonStyleButton
             return buttonStyle.copyWith(padding: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(scaledPaddingLocal));
         }
         return buttonStyle;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override ButtonStyle? themeStyleOf(global::Doroti.Framework.Widgets.BuildContext context)
@@ -67,11 +66,10 @@ public static partial class Outlined_buttonLibrary
     internal static global::Doroti.Framework.Painting.EdgeInsetsGeometry _scaledPadding(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        var padding1x = (theme.useMaterial3 ? 24.0 : 16.0);
+        var padding1x = ((24.0));
         double defaultFontSize = (theme.textTheme.labelLarge?.fontSize ?? 14.0);
         double effectiveTextScale = (MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0);
         return ButtonStyleButton.scaledPadding(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: padding1x), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: (padding1x / 2L)), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: ((padding1x / 2L) / 2L)), effectiveTextScale);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 

@@ -355,10 +355,9 @@ internal class _TextFieldState__text_field : global::Doroti.Framework.Widgets.St
         }
         if (this._hasIntrinsicError)
         {
-            return effectiveDecoration.copyWith(errorText: (effectiveDecoration.errorText ?? ""), counterStyle: (effectiveDecoration.errorStyle ?? ((themeData.useMaterial3 ? Text_fieldLibrary._m3CounterErrorStyle(this.context) : Text_fieldLibrary._m2CounterErrorStyle(this.context)))), counterText: counterTextLocal, semanticCounterText: semanticCounterTextLocal);
+            return effectiveDecoration.copyWith(errorText: (effectiveDecoration.errorText ?? ""), counterStyle: (effectiveDecoration.errorStyle ?? (((Text_fieldLibrary._m3CounterErrorStyle(this.context))))), counterText: counterTextLocal, semanticCounterText: semanticCounterTextLocal);
         }
         return effectiveDecoration.copyWith(counterText: counterTextLocal, semanticCounterText: semanticCounterTextLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void initState()
@@ -642,10 +641,9 @@ internal class _TextFieldState__text_field : global::Doroti.Framework.Widgets.St
     internal virtual global::Doroti.Framework.Painting.TextStyle _getInputStyleForState(global::Doroti.Framework.Painting.TextStyle style)
     {
         ThemeData theme = Theme.of(this.context);
-        global::Doroti.Framework.Painting.TextStyle stateStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)WidgetStateProperty.resolveAs((theme.useMaterial3 ? Text_fieldLibrary._m3StateInputStyle(this.context)! : Text_fieldLibrary._m2StateInputStyle(this.context)!), this._statesController.value));
+        global::Doroti.Framework.Painting.TextStyle stateStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)WidgetStateProperty.resolveAs(((Text_fieldLibrary._m3StateInputStyle(this.context)!)), this._statesController.value));
         global::Doroti.Framework.Painting.TextStyle providedStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)WidgetStateProperty.resolveAs(style, this._statesController.value));
         return ((global::Doroti.Framework.Painting.TextStyle)(object?)providedStyle.merge(stateStyle));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
@@ -657,7 +655,7 @@ internal class _TextFieldState__text_field : global::Doroti.Framework.Widgets.St
         ThemeData theme = Theme.of(context);
         global::Doroti.Framework.Widgets.DefaultSelectionStyle selectionStyle = ((global::Doroti.Framework.Widgets.DefaultSelectionStyle)(object?)DefaultSelectionStyle.of(context));
         global::Doroti.Framework.Painting.TextStyle? providedStyle = ((global::Doroti.Framework.Painting.TextStyle?)(object?)WidgetStateProperty.resolveAs(((TextField)this.widget).style, this._statesController.value));
-        global::Doroti.Framework.Painting.TextStyle styleLocal = ((global::Doroti.Framework.Painting.TextStyle)(object?)_getInputStyleForState((theme.useMaterial3 ? Text_fieldLibrary._m3InputStyle(context) : theme.textTheme.titleMedium!)).merge(providedStyle));
+        global::Doroti.Framework.Painting.TextStyle styleLocal = ((global::Doroti.Framework.Painting.TextStyle)(object?)_getInputStyleForState(((Text_fieldLibrary._m3InputStyle(context)))).merge(providedStyle));
         global::Doroti.Ui.Brightness keyboardAppearanceLocal = (((TextField)this.widget).keyboardAppearance ?? theme.brightness);
         global::Doroti.Framework.Widgets.TextEditingController controllerLocal = this._effectiveController;
         global::Doroti.Framework.Widgets.FocusNode focusNodeLocal = this._effectiveFocusNode;
@@ -829,7 +827,6 @@ internal class _TextFieldState__text_field : global::Doroti.Framework.Widgets.St
             }) : null)), child: child));
             throw new InvalidOperationException("Dart closure completed without a value.");
         })), child: this._selectionGestureDetectorBuilder.buildGestureDetector(behavior: global::Doroti.Framework.Rendering.HitTestBehavior.translucent, child: childLocal))))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Services.RestorationBucket? bucket => this._bucket;

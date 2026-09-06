@@ -107,7 +107,7 @@ internal class _SnackBarActionState__snack_bar : global::Doroti.Framework.Widget
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        SnackBarThemeData defaults = (Theme.of(context).useMaterial3 ? new _SnackbarDefaultsM3__snack_bar(context) : new _SnackbarDefaultsM2__snack_bar(context));
+        SnackBarThemeData defaults = ((new _SnackbarDefaultsM3__snack_bar(context)));
         SnackBarThemeData snackBarTheme = SnackBarTheme.of(context);
         global::Doroti.Framework.Widgets.WidgetStateColor resolveForegroundColor()
         {
@@ -171,7 +171,6 @@ internal class _SnackBarActionState__snack_bar : global::Doroti.Framework.Widget
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new TextButton(style: TextButton.styleFrom(overlayColor: resolveForegroundColor()).copyWith(foregroundColor: resolveForegroundColor(), backgroundColor: resolveBackgroundColor()), onPressed: ((global::System.Action)(this._haveTriggeredAction ? null : this._handlePressed)), child: new global::Doroti.Framework.Widgets.Text(((SnackBarAction)this.widget).label)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
@@ -322,9 +321,9 @@ internal class _SnackBarState__snack_bar : global::Doroti.Framework.Widgets.Stat
         SnackBarThemeData snackBarTheme = SnackBarTheme.of(context);
         var isThemeDark = (object.Equals(theme.brightness, Brightness.dark));
         global::Doroti.Ui.Color buttonColor = ((global::Doroti.Ui.Color)(object?)(isThemeDark ? colorSchemeLocal.primary : colorSchemeLocal.secondary));
-        SnackBarThemeData defaults = (theme.useMaterial3 ? new _SnackbarDefaultsM3__snack_bar(context) : new _SnackbarDefaultsM2__snack_bar(context));
+        SnackBarThemeData defaults = ((new _SnackbarDefaultsM3__snack_bar(context)));
         global::Doroti.Ui.Brightness brightnessLocal = (isThemeDark ? Brightness.light : Brightness.dark);
-        ThemeData effectiveTheme = (theme.useMaterial3 ? theme : theme.copyWith(colorScheme: new ColorScheme(primary: colorSchemeLocal.onPrimary, secondary: buttonColor, surface: colorSchemeLocal.onSurface, background: defaults.backgroundColor, error: colorSchemeLocal.onError, onPrimary: colorSchemeLocal.primary, onSecondary: colorSchemeLocal.secondary, onSurface: colorSchemeLocal.surface, onBackground: colorSchemeLocal.background, onError: colorSchemeLocal.error, brightness: brightnessLocal)));
+        ThemeData effectiveTheme = ((theme));
         global::Doroti.Framework.Painting.TextStyle? contentTextStyleLocal = (snackBarTheme.contentTextStyle ?? defaults.contentTextStyle);
         SnackBarBehavior snackBarBehavior = DartRuntimePrimitives.RequireValue(((SnackBar)this.widget).behavior ?? snackBarTheme.behavior ?? defaults.behavior);
         double? widthLocal = (((SnackBar)this.widget).width ?? snackBarTheme.width);
@@ -386,7 +385,7 @@ internal class _SnackBarState__snack_bar : global::Doroti.Framework.Widgets.Stat
         global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(object?)((((SnackBar)this.widget).backgroundColor ?? snackBarTheme.backgroundColor) ?? defaults.backgroundColor!));
         global::Doroti.Framework.Painting.ShapeBorder? shapeLocal = ((((SnackBar)this.widget).shape ?? snackBarTheme.shape) ?? ((isFloatingSnackBar ? defaults.shape : null)));
         global::Doroti.Framework.Widgets.DismissDirection dismissDirectionLocal = ((((SnackBar)this.widget).dismissDirection ?? snackBarTheme.dismissDirection) ?? global::Doroti.Framework.Widgets.DismissDirection.down);
-        snackBar = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Material(shape: shapeLocal, elevation: elevationLocal, color: backgroundColorLocal, clipBehavior: ((SnackBar)this.widget).clipBehavior, child: new Theme(data: effectiveTheme, child: ((accessibleNavigation || theme.useMaterial3) ? snackBar : new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._fadeOutAnimation!, child: snackBar)))));
+        snackBar = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Material(shape: shapeLocal, elevation: elevationLocal, color: backgroundColorLocal, clipBehavior: ((SnackBar)this.widget).clipBehavior, child: new Theme(data: effectiveTheme, child: ((snackBar)))));
         if (isFloatingSnackBar)
         {
             if ((widthLocal is not null))
@@ -414,13 +413,13 @@ internal class _SnackBarState__snack_bar : global::Doroti.Framework.Widgets.Stat
         }
         else
         {
-            if ((isFloatingSnackBar && !theme.useMaterial3))
+            if ((isFloatingSnackBar && false))
             {
                 snackBarTransition = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._fadeInAnimation!, child: snackBar));
             }
             else
             {
-                if ((isFloatingSnackBar && theme.useMaterial3))
+                if (((isFloatingSnackBar)))
                 {
                     snackBarTransition = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.FadeTransition(opacity: this._fadeInM3Animation!, child: new global::Doroti.Framework.Widgets.ValueListenableBuilder<double>(valueListenable: this._heightM3Animation!, builder: ((global::System.Func<global::Doroti.Framework.Widgets.BuildContext, double, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>)((context, value, child) =>
                     {
@@ -439,32 +438,8 @@ internal class _SnackBarState__snack_bar : global::Doroti.Framework.Widgets.Stat
             }
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Hero(tag: $"<SnackBar Hero tag - {((SnackBar)this.widget).content}>", transitionOnUserGestures: true, child: new global::Doroti.Framework.Widgets.ClipRect(clipBehavior: ((SnackBar)this.widget).clipBehavior, child: snackBarTransition)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-}
-
-internal class _SnackbarDefaultsM2__snack_bar : SnackBarThemeData
-{
-    internal virtual ThemeData _theme { get; private set; } = default!;
-    internal virtual ColorScheme _colors { get; private set; } = default!;
-
-    internal _SnackbarDefaultsM2__snack_bar(global::Doroti.Framework.Widgets.BuildContext context) : base(elevation: 6.0)
-    {
-        this._theme = Theme.of(context);
-        this._colors = Theme.of(context).colorScheme;
-    }
-
-    public virtual global::Doroti.Ui.Color backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((object.Equals(this._theme.brightness, Brightness.light)) ? Dart_uiLibrary.Color.alphaBlend(this._colors.onSurface.withOpacity(0.8), this._colors.surface) : this._colors.onSurface));
-    public override global::Doroti.Framework.Painting.TextStyle? contentTextStyle => ThemeData.Create(useMaterial3: this._theme.useMaterial3, brightness: ((object.Equals(this._theme.brightness, Brightness.light)) ? Brightness.dark : Brightness.light)).textTheme.titleMedium;
-    public virtual SnackBarBehavior behavior => SnackBarBehavior.@fixed;
-    public virtual global::Doroti.Ui.Color actionTextColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondary);
-    public virtual global::Doroti.Ui.Color disabledActionTextColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurface.withOpacity(((object.Equals(this._theme.brightness, Brightness.light)) ? 0.38 : 0.3)));
-    public virtual global::Doroti.Framework.Painting.ShapeBorder shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(4.0))));
-    public virtual global::Doroti.Framework.Painting.EdgeInsets insetPadding => new global::Doroti.Framework.Painting.EdgeInsets(15.0, 5.0, 15.0, 10.0);
-    public virtual bool showCloseIcon => false;
-    public virtual global::Doroti.Ui.Color closeIconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurface);
-    public virtual double actionOverflowThreshold => 0.25;
 }
 
 internal class _SnackbarDefaultsM3__snack_bar : SnackBarThemeData

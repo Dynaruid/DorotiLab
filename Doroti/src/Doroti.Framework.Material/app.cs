@@ -256,7 +256,7 @@ public class MaterialScrollBehavior : global::Doroti.Framework.Widgets.ScrollBeh
 
     public override global::Doroti.Framework.Widgets.Widget buildOverscrollIndicator(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.Widget child, global::Doroti.Framework.Widgets.ScrollableDetails details)
     {
-        global::Doroti.Framework.Widgets.AndroidOverscrollIndicator indicator = (Theme.of(context).useMaterial3 ? global::Doroti.Framework.Widgets.AndroidOverscrollIndicator.stretch : global::Doroti.Framework.Widgets.AndroidOverscrollIndicator.glow);
+        global::Doroti.Framework.Widgets.AndroidOverscrollIndicator indicator = ((global::Doroti.Framework.Widgets.AndroidOverscrollIndicator.stretch));
         switch (getPlatform(context))
         {
             case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
@@ -289,7 +289,6 @@ public class MaterialScrollBehavior : global::Doroti.Framework.Widgets.ScrollBeh
                 }
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.GlowingOverscrollIndicator(axisDirection: ((global::Doroti.Framework.Widgets.ScrollableDetails)details).direction, color: Theme.of(context).colorScheme.secondary, child: child));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }

@@ -71,12 +71,10 @@ public class Drawer : global::Doroti.Framework.Widgets.StatelessWidget
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
         DrawerThemeData drawerTheme = DrawerTheme.of(context);
         string? labelLocal = (global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform switch { global::Doroti.Framework.Foundation.TargetPlatform.iOS => this.semanticLabel, global::Doroti.Framework.Foundation.TargetPlatform.macOS => this.semanticLabel, global::Doroti.Framework.Foundation.TargetPlatform.android or global::Doroti.Framework.Foundation.TargetPlatform.fuchsia or global::Doroti.Framework.Foundation.TargetPlatform.linux => (this.semanticLabel ?? MaterialLocalizations.of(context).drawerLabel), global::Doroti.Framework.Foundation.TargetPlatform.windows => (this.semanticLabel ?? MaterialLocalizations.of(context).drawerLabel), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        bool useMaterial3Local = Theme.of(context).useMaterial3;
         var isDrawerStart = (!object.Equals(DrawerController.maybeOf(context)?.alignment, DrawerAlignment.end));
-        DrawerThemeData defaults = (useMaterial3Local ? new _DrawerDefaultsM3__drawer(context) : new _DrawerDefaultsM2__drawer(context));
+        DrawerThemeData defaults = ((new _DrawerDefaultsM3__drawer(context)));
         global::Doroti.Framework.Painting.ShapeBorder? effectiveShape = (this.shape ?? ((isDrawerStart ? ((drawerTheme.shape ?? defaults.shape)) : ((drawerTheme.endShape ?? defaults.endShape)))));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(scopesRoute: true, namesRoute: true, explicitChildNodes: true, label: labelLocal, child: new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateExpand(width: ((this.width ?? drawerTheme.width) ?? DrawerLibrary._kWidth)), child: new Material(color: ((this.backgroundColor ?? drawerTheme.backgroundColor) ?? defaults.backgroundColor), elevation: ((this.elevation ?? drawerTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation)), shadowColor: ((this.shadowColor ?? drawerTheme.shadowColor) ?? defaults.shadowColor), surfaceTintColor: ((this.surfaceTintColor ?? drawerTheme.surfaceTintColor) ?? defaults.surfaceTintColor), shape: effectiveShape, clipBehavior: ((effectiveShape is not null) ? (((this.clipBehavior ?? drawerTheme.clipBehavior) ?? DartRuntimePrimitives.RequireValue(defaults.clipBehavior))) : Clip.none), child: this.child))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
@@ -436,18 +434,6 @@ public class DrawerControllerState : global::Doroti.Framework.Widgets.State<Draw
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
-}
-
-internal class _DrawerDefaultsM2__drawer : DrawerThemeData
-{
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
-
-    internal _DrawerDefaultsM2__drawer(global::Doroti.Framework.Widgets.BuildContext context) : base(elevation: 16.0, clipBehavior: Clip.hardEdge)
-    {
-        this.context = context;
-    }
-
-    public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Theme.of(this.context).shadowColor);
 }
 
 internal class _DrawerDefaultsM3__drawer : DrawerThemeData

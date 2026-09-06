@@ -273,7 +273,7 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
         base.didUpdateWidget(oldWidget);
         ThemeData theme = Theme.of(this.context);
         _expansionTileTheme = ExpansionTileTheme.of(this.context);
-        ExpansionTileThemeData defaults = (theme.useMaterial3 ? new _ExpansionTileDefaultsM3__expansion_tile(this.context) : new _ExpansionTileDefaultsM2__expansion_tile(this.context));
+        ExpansionTileThemeData defaults = ((new _ExpansionTileDefaultsM3__expansion_tile(this.context)));
         if (((!object.Equals(((ExpansionTile)this.widget).collapsedShape, ((ExpansionTile)oldWidget).collapsedShape)) || (!object.Equals(((ExpansionTile)this.widget).shape, ((ExpansionTile)oldWidget).shape))))
         {
             _updateShapeBorder(theme);
@@ -311,7 +311,7 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
     {
         ThemeData theme = Theme.of(this.context);
         _expansionTileTheme = ExpansionTileTheme.of(this.context);
-        ExpansionTileThemeData defaults = (theme.useMaterial3 ? new _ExpansionTileDefaultsM3__expansion_tile(this.context) : new _ExpansionTileDefaultsM2__expansion_tile(this.context));
+        ExpansionTileThemeData defaults = ((new _ExpansionTileDefaultsM3__expansion_tile(this.context)));
         _updateAnimationDuration();
         _updateShapeBorder(theme);
         _updateHeaderColor(defaults);
@@ -382,49 +382,6 @@ internal class _ExpansionTileState__expansion_tile : global::Doroti.Framework.Wi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-}
-
-internal class _ExpansionTileDefaultsM2__expansion_tile : ExpansionTileThemeData
-{
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
-    private bool __late__theme_initialized;
-    private ThemeData __late__theme = default!;
-    internal virtual ThemeData _theme
-    {
-        get
-        {
-            if (!__late__theme_initialized)
-            {
-                __late__theme = Theme.of(this.context);
-                __late__theme_initialized = true;
-            }
-            return __late__theme;
-        }
-    }
-    private bool __late__colorScheme_initialized;
-    private ColorScheme __late__colorScheme = default!;
-    internal virtual ColorScheme _colorScheme
-    {
-        get
-        {
-            if (!__late__colorScheme_initialized)
-            {
-                __late__colorScheme = this._theme.colorScheme;
-                __late__colorScheme_initialized = true;
-            }
-            return __late__colorScheme;
-        }
-    }
-
-    internal _ExpansionTileDefaultsM2__expansion_tile(global::Doroti.Framework.Widgets.BuildContext context)
-    {
-        this.context = context;
-    }
-
-    public virtual global::Doroti.Ui.Color? textColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colorScheme.primary);
-    public virtual global::Doroti.Ui.Color? iconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colorScheme.primary);
-    public virtual global::Doroti.Ui.Color? collapsedTextColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._theme.textTheme.titleMedium!.color);
-    public virtual global::Doroti.Ui.Color? collapsedIconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._theme.unselectedWidgetColor);
 }
 
 internal class _ExpansionTileDefaultsM3__expansion_tile : ExpansionTileThemeData

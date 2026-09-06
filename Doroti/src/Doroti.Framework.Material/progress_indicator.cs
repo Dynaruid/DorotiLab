@@ -156,7 +156,7 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : global::Dor
     __cascade.color = this.stopIndicatorColor!;
     return __cascade;
 }))();
-            global::Doroti.Ui.Offset position = ((global::Doroti.Ui.Offset)(object?)(this.textDirection switch { TextDirection.rtl => new global::Doroti.Ui.Offset(maxRadius, maxRadius), TextDirection.ltr => new global::Doroti.Ui.Offset((size.width - maxRadius), maxRadius), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
+            global::Doroti.Ui.Offset position = ((global::Doroti.Ui.Offset)(object?)(this.textDirection switch { TextDirection.rtl => new global::Doroti.Ui.Offset(maxRadius, maxRadius),TextDirection.ltr => new global::Doroti.Ui.Offset((size.width - maxRadius), maxRadius),_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
             canvas.drawCircle(position, radius, indicatorPaint);
         }
         double getEffectiveTrackGapFraction(double currentValue, double trackGapFraction)
@@ -307,7 +307,7 @@ internal class _LinearProgressIndicatorState__progress_indicator : global::Dorot
     {
         ProgressIndicatorThemeData indicatorTheme = ProgressIndicatorTheme.of(context);
         bool year2023Local = ((((LinearProgressIndicator)this.widget).year2023 ?? indicatorTheme.year2023) ?? true);
-        ProgressIndicatorThemeData defaults = (((object)Theme.of(context).useMaterial3) switch { true => (year2023Local ? new _LinearProgressIndicatorDefaultsM3Year2023__progress_indicator(context) : new _LinearProgressIndicatorDefaultsM3__progress_indicator(context)), false => DartRuntimePrimitives.ConvertValue<ProgressIndicatorThemeData>(new _LinearProgressIndicatorDefaultsM2__progress_indicator(context)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        ProgressIndicatorThemeData defaults = (((year2023Local ? new _LinearProgressIndicatorDefaultsM3Year2023__progress_indicator(context) : new _LinearProgressIndicatorDefaultsM3__progress_indicator(context))));
         global::Doroti.Ui.Color trackColorLocal = ((global::Doroti.Ui.Color)(object?)((((LinearProgressIndicator)this.widget).backgroundColor ?? indicatorTheme.linearTrackColor) ?? defaults.linearTrackColor!));
         double minHeightLocal = ((((LinearProgressIndicator)this.widget).minHeight ?? indicatorTheme.linearMinHeight) ?? DartRuntimePrimitives.RequireValue(defaults.linearMinHeight));
         global::Doroti.Framework.Painting.BorderRadiusGeometry? borderRadiusLocal = ((((LinearProgressIndicator)this.widget).borderRadius ?? indicatorTheme.borderRadius) ?? defaults.borderRadius);
@@ -320,7 +320,6 @@ internal class _LinearProgressIndicatorState__progress_indicator : global::Dorot
             result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ClipRRect(borderRadius: borderRadiusLocal, child: result));
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)this.widget._buildSemanticsWrapper(context: context, child: result));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
@@ -387,7 +386,7 @@ internal class _LinearProgressIndicatorState__progress_indicator : global::Dorot
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted",(true, _) => "active",(false, true) => "inactive and muted",(false, _) => "inactive",(null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
@@ -627,7 +626,7 @@ internal class _CircularProgressIndicatorState__progress_indicator : global::Dor
     {
         ProgressIndicatorThemeData indicatorTheme = ProgressIndicatorTheme.of(context);
         bool year2023Local = ((((CircularProgressIndicator)this.widget).year2023 ?? indicatorTheme.year2023) ?? true);
-        ProgressIndicatorThemeData defaults = (((object)Theme.of(context).useMaterial3) switch { true => (year2023Local ? new _CircularProgressIndicatorDefaultsM3Year2023__progress_indicator(context, indeterminate: (this.widget._effectiveValue is null)) : new _CircularProgressIndicatorDefaultsM3__progress_indicator(context, indeterminate: (this.widget._effectiveValue is null))), false => DartRuntimePrimitives.ConvertValue<ProgressIndicatorThemeData>(new _CircularProgressIndicatorDefaultsM2__progress_indicator(context, indeterminate: (this.widget._effectiveValue is null))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        ProgressIndicatorThemeData defaults = (((year2023Local ? new _CircularProgressIndicatorDefaultsM3Year2023__progress_indicator(context, indeterminate: (this.widget._effectiveValue is null)) : new _CircularProgressIndicatorDefaultsM3__progress_indicator(context, indeterminate: (this.widget._effectiveValue is null)))));
         global::Doroti.Ui.Color? trackColorLocal = ((global::Doroti.Ui.Color?)(object?)((((CircularProgressIndicator)this.widget).backgroundColor ?? indicatorTheme.circularTrackColor) ?? defaults.circularTrackColor));
         double strokeWidthLocal = ((((CircularProgressIndicator)this.widget).strokeWidth ?? indicatorTheme.strokeWidth) ?? DartRuntimePrimitives.RequireValue(defaults.strokeWidth));
         double strokeAlignLocal = ((((CircularProgressIndicator)this.widget).strokeAlign ?? indicatorTheme.strokeAlign) ?? DartRuntimePrimitives.RequireValue(defaults.strokeAlign));
@@ -641,7 +640,6 @@ internal class _CircularProgressIndicatorState__progress_indicator : global::Dor
             result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: effectivePadding, child: result));
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)this.widget._buildSemanticsWrapper(context: context, child: result));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildAnimation()
@@ -749,7 +747,7 @@ internal class _CircularProgressIndicatorState__progress_indicator : global::Dor
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted",(true, _) => "active",(false, true) => "inactive and muted",(false, _) => "inactive",(null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
@@ -901,75 +899,15 @@ internal class _RefreshProgressIndicatorState__progress_indicator : _CircularPro
         global::Doroti.Ui.Color valueColorLocal = ((global::Doroti.Ui.Color)(object?)this.widget._getValueColor(context));
         double opacityLocal = valueColorLocal.opacity;
         valueColorLocal = valueColorLocal.withOpacity(1.0);
-        ProgressIndicatorThemeData defaults = (((object)Theme.of(context).useMaterial3) switch { true => DartRuntimePrimitives.ConvertValue<ProgressIndicatorThemeData>(new _CircularProgressIndicatorDefaultsM3Year2023__progress_indicator(context, indeterminate: (valueLocal is null))), false => DartRuntimePrimitives.ConvertValue<ProgressIndicatorThemeData>(new _CircularProgressIndicatorDefaultsM2__progress_indicator(context, indeterminate: (valueLocal is null))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        ProgressIndicatorThemeData defaults = ((DartRuntimePrimitives.ConvertValue<ProgressIndicatorThemeData>(new _CircularProgressIndicatorDefaultsM3Year2023__progress_indicator(context, indeterminate: (valueLocal is null)))));
         ProgressIndicatorThemeData indicatorTheme = ProgressIndicatorTheme.of(context);
         global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(object?)((((RefreshProgressIndicator)this.widget).backgroundColor ?? indicatorTheme.refreshBackgroundColor) ?? Theme.of(context).canvasColor));
         double strokeWidthLocal = ((this.widget.strokeWidth ?? indicatorTheme.strokeWidth) ?? DartRuntimePrimitives.RequireValue(defaults.strokeWidth));
         double strokeAlignLocal = ((this.widget.strokeAlign ?? indicatorTheme.strokeAlign) ?? DartRuntimePrimitives.RequireValue(defaults.strokeAlign));
         global::Doroti.Ui.StrokeCap? strokeCapLocal = ((global::Doroti.Ui.StrokeCap?)(object?)(this.widget.strokeCap ?? indicatorTheme.strokeCap));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)this.widget._buildSemanticsWrapper(context: context, child: new global::Doroti.Framework.Widgets.Padding(padding: ((RefreshProgressIndicator)this.widget).indicatorMargin, child: global::Doroti.Framework.Widgets.SizedBox.CreateFromSize(size: new global::Doroti.Ui.Size(_indicatorSize), child: new Material(type: MaterialType.circle, color: backgroundColorLocal, elevation: ((RefreshProgressIndicator)this.widget).elevation, child: new global::Doroti.Framework.Widgets.Padding(padding: ((RefreshProgressIndicator)this.widget).indicatorPadding, child: new global::Doroti.Framework.Widgets.Opacity(opacity: opacityLocal, child: global::Doroti.Framework.Widgets.Transform.CreateRotate(angle: rotation, child: new global::Doroti.Framework.Widgets.CustomPaint(painter: new _RefreshProgressIndicatorPainter__progress_indicator(valueColor: valueColorLocal, value: null, headValue: headValue, tailValue: tailValue, offsetValue: offsetValue, rotationValue: rotationValue, strokeWidth: strokeWidthLocal, strokeAlign: strokeAlignLocal, arrowheadScale: arrowheadScaleLocal, strokeCap: strokeCapLocal))))))))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-}
-
-internal class _CircularProgressIndicatorDefaultsM2__progress_indicator : ProgressIndicatorThemeData
-{
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
-    private bool __late__colors_initialized;
-    private ColorScheme __late__colors = default!;
-    internal virtual ColorScheme _colors
-    {
-        get
-        {
-            if (!__late__colors_initialized)
-            {
-                __late__colors = Theme.of(this.context).colorScheme;
-                __late__colors_initialized = true;
-            }
-            return __late__colors;
-        }
-    }
-    public virtual bool indeterminate { get; private set; } = default!;
-
-    internal _CircularProgressIndicatorDefaultsM2__progress_indicator(global::Doroti.Framework.Widgets.BuildContext context, bool indeterminate)
-    {
-        this.context = context;
-        this.indeterminate = indeterminate;
-    }
-
-    public virtual global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
-    public override double? strokeWidth => 4.0;
-    public override double? strokeAlign => CircularProgressIndicator.strokeAlignCenter;
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 36.0, minHeight: 36.0);
-}
-
-internal class _LinearProgressIndicatorDefaultsM2__progress_indicator : ProgressIndicatorThemeData
-{
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
-    private bool __late__colors_initialized;
-    private ColorScheme __late__colors = default!;
-    internal virtual ColorScheme _colors
-    {
-        get
-        {
-            if (!__late__colors_initialized)
-            {
-                __late__colors = Theme.of(this.context).colorScheme;
-                __late__colors_initialized = true;
-            }
-            return __late__colors;
-        }
-    }
-
-    internal _LinearProgressIndicatorDefaultsM2__progress_indicator(global::Doroti.Framework.Widgets.BuildContext context)
-    {
-        this.context = context;
-    }
-
-    public virtual global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
-    public virtual global::Doroti.Ui.Color linearTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.background);
-    public virtual double linearMinHeight => 4.0;
 }
 
 internal class _CircularProgressIndicatorDefaultsM3Year2023__progress_indicator : ProgressIndicatorThemeData

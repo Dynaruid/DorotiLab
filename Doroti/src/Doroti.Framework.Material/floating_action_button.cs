@@ -209,7 +209,7 @@ public class FloatingActionButton : global::Doroti.Framework.Widgets.StatelessWi
     {
         ThemeData theme = Theme.of(context);
         FloatingActionButtonThemeData floatingActionButtonTheme = FloatingActionButtonTheme.of(context);
-        FloatingActionButtonThemeData defaults = (theme.useMaterial3 ? new _FABDefaultsM3__floating_action_button(context, this._floatingActionButtonType, (this.child is not null)) : new _FABDefaultsM2__floating_action_button(context, this._floatingActionButtonType, (this.child is not null)));
+        FloatingActionButtonThemeData defaults = ((new _FABDefaultsM3__floating_action_button(context, this._floatingActionButtonType, (this.child is not null))));
         global::Doroti.Ui.Color foregroundColorLocal = ((global::Doroti.Ui.Color)(object?)((this.foregroundColor ?? floatingActionButtonTheme.foregroundColor) ?? defaults.foregroundColor!));
         global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(object?)((this.backgroundColor ?? floatingActionButtonTheme.backgroundColor) ?? defaults.backgroundColor!));
         global::Doroti.Ui.Color focusColorLocal = ((global::Doroti.Ui.Color)(object?)((this.focusColor ?? floatingActionButtonTheme.focusColor) ?? defaults.focusColor!));
@@ -263,7 +263,6 @@ public class FloatingActionButton : global::Doroti.Framework.Widgets.StatelessWi
             result = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Hero(tag: this.heroTag!, child: result));
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.MergeSemantics(child: result));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -367,34 +366,6 @@ public class _RenderChildOverflowBox__floating_action_button : global::Doroti.Fr
         }
     }
 
-}
-
-internal class _FABDefaultsM2__floating_action_button : FloatingActionButtonThemeData
-{
-    public virtual _FloatingActionButtonType__floating_action_button type { get; private set; } = default!;
-    public virtual bool hasChild { get; private set; } = default!;
-    internal virtual ThemeData _theme { get; private set; } = default!;
-    internal virtual ColorScheme _colors { get; private set; } = default!;
-
-    internal _FABDefaultsM2__floating_action_button(global::Doroti.Framework.Widgets.BuildContext context, _FloatingActionButtonType__floating_action_button type, bool hasChild) : base(elevation: 6, focusElevation: 6, hoverElevation: 8, highlightElevation: 12, enableFeedback: true, sizeConstraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: 56.0, height: 56.0), smallSizeConstraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: 40.0, height: 40.0), largeSizeConstraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: 96.0, height: 96.0), extendedSizeConstraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(height: 48.0), extendedIconLabelSpacing: 8.0)
-    {
-        this.type = type;
-        this.hasChild = hasChild;
-        this._theme = Theme.of(context);
-        this._colors = Theme.of(context).colorScheme;
-    }
-
-    internal virtual bool _isExtended => DartRuntimePrimitives.ConvertValue<bool>((object.Equals(this.type, _FloatingActionButtonType__floating_action_button.extended)));
-    internal virtual bool _isLarge => DartRuntimePrimitives.ConvertValue<bool>((object.Equals(this.type, _FloatingActionButtonType__floating_action_button.large)));
-    public virtual global::Doroti.Ui.Color? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSecondary);
-    public virtual global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondary);
-    public virtual global::Doroti.Ui.Color? focusColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._theme.focusColor);
-    public virtual global::Doroti.Ui.Color? hoverColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._theme.hoverColor);
-    public virtual global::Doroti.Ui.Color? splashColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._theme.splashColor);
-    public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>((this._isExtended ? new global::Doroti.Framework.Painting.StadiumBorder() : new global::Doroti.Framework.Painting.CircleBorder()));
-    public override double? iconSize => (this._isLarge ? 36.0 : 24.0);
-    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? extendedPadding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: ((this.hasChild && this._isExtended) ? 16.0 : 20.0), end: 20.0));
-    public override global::Doroti.Framework.Painting.TextStyle? extendedTextStyle => this._theme.textTheme.labelLarge!.copyWith(letterSpacing: 1.2);
 }
 
 internal class _FABDefaultsM3__floating_action_button : FloatingActionButtonThemeData

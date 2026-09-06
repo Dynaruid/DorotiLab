@@ -47,16 +47,15 @@ public class ElevatedButton : ButtonStyleButton
     {
         ThemeData theme = Theme.of(context);
         ColorScheme colorSchemeLocal = theme.colorScheme;
-        ButtonStyle buttonStyle = (theme.useMaterial3 ? new _ElevatedButtonDefaultsM3__elevated_button(context) : ElevatedButton.styleFrom(backgroundColor: colorSchemeLocal.primary, foregroundColor: colorSchemeLocal.onPrimary, disabledBackgroundColor: colorSchemeLocal.onSurface.withOpacity(0.12), disabledForegroundColor: colorSchemeLocal.onSurface.withOpacity(0.38), shadowColor: theme.shadowColor, elevation: 2, textStyle: theme.textTheme.labelLarge, padding: Elevated_buttonLibrary._scaledPadding(context), minimumSize: new global::Doroti.Ui.Size(64, 36), maximumSize: Size.infinite, shape: new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(4))), enabledMouseCursor: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? global::Doroti.Framework.Services.SystemMouseCursors.click : global::Doroti.Framework.Services.SystemMouseCursors.basic), disabledMouseCursor: global::Doroti.Framework.Services.SystemMouseCursors.basic, visualDensity: theme.visualDensity, tapTargetSize: theme.materialTapTargetSize, animationDuration: ConstantsLibrary.kThemeChangeDuration, enableFeedback: true, alignment: global::Doroti.Framework.Painting.Alignment.center, splashFactory: InkRipple.splashFactory));
+        ButtonStyle buttonStyle = ((new _ElevatedButtonDefaultsM3__elevated_button(context)));
         if (this._addPadding)
         {
             double defaultFontSize = (buttonStyle.textStyle?.resolve(new HashSet<global::Doroti.Framework.Widgets.WidgetState>())?.fontSize ?? 14.0);
             double effectiveTextScale = (MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0);
-            global::Doroti.Framework.Painting.EdgeInsetsGeometry scaledPaddingLocal = (theme.useMaterial3 ? ButtonStyleButton.scaledPadding(new global::Doroti.Framework.Painting.EdgeInsetsDirectional(16, 0, 24, 0), new global::Doroti.Framework.Painting.EdgeInsetsDirectional(8, 0, 12, 0), new global::Doroti.Framework.Painting.EdgeInsetsDirectional(4, 0, 6, 0), effectiveTextScale) : ButtonStyleButton.scaledPadding(new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12, 0, 16, 0), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 8), new global::Doroti.Framework.Painting.EdgeInsetsDirectional(8, 0, 4, 0), effectiveTextScale));
+            global::Doroti.Framework.Painting.EdgeInsetsGeometry scaledPaddingLocal = ((ButtonStyleButton.scaledPadding(new global::Doroti.Framework.Painting.EdgeInsetsDirectional(16, 0, 24, 0), new global::Doroti.Framework.Painting.EdgeInsetsDirectional(8, 0, 12, 0), new global::Doroti.Framework.Painting.EdgeInsetsDirectional(4, 0, 6, 0), effectiveTextScale)));
             return buttonStyle.copyWith(padding: new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(scaledPaddingLocal));
         }
         return buttonStyle;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override ButtonStyle? themeStyleOf(global::Doroti.Framework.Widgets.BuildContext context)
@@ -72,11 +71,10 @@ public static partial class Elevated_buttonLibrary
     internal static global::Doroti.Framework.Painting.EdgeInsetsGeometry _scaledPadding(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        var padding1x = (theme.useMaterial3 ? 24.0 : 16.0);
+        var padding1x = ((24.0));
         double defaultFontSize = (theme.textTheme.labelLarge?.fontSize ?? 14.0);
         double effectiveTextScale = (MediaQuery.textScalerOf(context).scale(defaultFontSize) / 14.0);
         return ButtonStyleButton.scaledPadding(global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: padding1x), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: (padding1x / 2L)), global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: ((padding1x / 2L) / 2L)), effectiveTextScale);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
 

@@ -294,7 +294,7 @@ internal class _RadioPaintState__radio : global::Doroti.Framework.Widgets.State<
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         RadioThemeData radioTheme = RadioTheme.of(context);
-        dynamic defaults = (Theme.of(context).useMaterial3 ? new _RadioDefaultsM3__radio(context) : new _RadioDefaultsM2__radio(context));
+        dynamic defaults = ((new _RadioDefaultsM3__radio(context)));
         HashSet<global::Doroti.Framework.Widgets.WidgetState> activeStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() =>
 {
     var __cascade = ((HashSet<global::Doroti.Framework.Widgets.WidgetState>)((dynamic)((_RadioPaint__radio)(object)this.widget).toggleableState).states);
@@ -377,7 +377,6 @@ internal class _RadioPaintState__radio : global::Doroti.Framework.Widgets.State<
     __cascade.innerRadius = innerRadiusLocal;
     return __cascade;
 }))()));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
@@ -489,92 +488,6 @@ internal class _RadioPainter__radio : global::Doroti.Framework.Widgets.Toggleabl
         }
     }
 
-}
-
-internal class _RadioDefaultsM2__radio : RadioThemeData
-{
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
-    private bool __late__theme_initialized;
-    private ThemeData __late__theme = default!;
-    internal virtual ThemeData _theme
-    {
-        get
-        {
-            if (!__late__theme_initialized)
-            {
-                __late__theme = Theme.of(this.context);
-                __late__theme_initialized = true;
-            }
-            return __late__theme;
-        }
-    }
-    private bool __late__colors_initialized;
-    private ColorScheme __late__colors = default!;
-    internal virtual ColorScheme _colors
-    {
-        get
-        {
-            if (!__late__colors_initialized)
-            {
-                __late__colors = this._theme.colorScheme;
-                __late__colors_initialized = true;
-            }
-            return __late__colors;
-        }
-    }
-
-    internal _RadioDefaultsM2__radio(global::Doroti.Framework.Widgets.BuildContext context)
-    {
-        this.context = context;
-    }
-
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> fillColor
-    {
-        get
-        {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-                {
-                    return (this._theme.disabledColor);
-                }
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-                {
-                    return (this._colors.secondary);
-                }
-                return (this._theme.unselectedWidgetColor);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }));
-            return default!;
-        }
-    }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> overlayColor
-    {
-        get
-        {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-                {
-                    return (this.fillColor.resolve(states).withAlpha(ConstantsLibrary.kRadialReactionAlpha));
-                }
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-                {
-                    return (this._theme.hoverColor);
-                }
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-                {
-                    return (this._theme.focusColor);
-                }
-                return (Colors.transparent);
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }));
-            return default!;
-        }
-    }
-    public virtual MaterialTapTargetSize materialTapTargetSize => this._theme.materialTapTargetSize;
-    public virtual VisualDensity visualDensity => this._theme.visualDensity;
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(WidgetStateProperty.all<global::Doroti.Ui.Color>(Colors.transparent));
 }
 
 internal class _RadioDefaultsM3__radio : RadioThemeData

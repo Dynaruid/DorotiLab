@@ -180,13 +180,11 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field : gl
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         ThemeData theme = Theme.of(context);
-        bool useMaterial3Local = theme.useMaterial3;
         MaterialLocalizations localizations = ((MaterialLocalizations)(object?)MaterialLocalizations.of(context));
         DatePickerThemeData datePickerThemeLocal = theme.datePickerTheme;
         InputDecorationThemeData inputTheme = ((InputDecorationThemeData)(object?)InputDecorationTheme.of(context));
-        InputBorder effectiveInputBorder = ((datePickerThemeLocal.inputDecorationTheme?.border ?? ((InputDecorationThemeData)inputTheme).border) ?? ((useMaterial3Local ? new OutlineInputBorder() : new UnderlineInputBorder())));
+        InputBorder effectiveInputBorder = ((datePickerThemeLocal.inputDecorationTheme?.border ?? ((InputDecorationThemeData)inputTheme).border) ?? (((new OutlineInputBorder()))));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new TextFormField(decoration: new InputDecoration(hintText: ((((InputDatePickerFormField)this.widget).fieldHintText ?? (string)((InputDatePickerFormField)this.widget).calendarDelegate.dateHelpText(localizations))), labelText: ((((InputDatePickerFormField)this.widget).fieldLabelText ?? (string)((MaterialLocalizations)localizations).dateInputLabel))).applyDefaults(inputTheme.merge(datePickerThemeLocal.inputDecorationTheme).copyWith(border: effectiveInputBorder)), validator: this._validateDate, keyboardType: (((InputDatePickerFormField)this.widget).keyboardType ?? global::Doroti.Framework.Services.TextInputType.datetime), onSaved: this._handleSaved, onFieldSubmitted: this._handleSubmitted, autofocus: ((InputDatePickerFormField)this.widget).autofocus, controller: this._controller, focusNode: ((InputDatePickerFormField)this.widget).focusNode)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }

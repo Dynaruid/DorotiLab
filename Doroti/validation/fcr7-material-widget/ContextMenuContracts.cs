@@ -127,7 +127,7 @@ internal static class ContextMenuContracts
         {
             _widget = new _OverlayEntryWidget__overlay(key: null!, entry: new OverlayEntry(_ => SizedBox.CreateShrink()), overlayState: overlay),
         };
-        var marker = new _RenderTheaterMarker__overlay(null!, entryState, SizedBox.CreateShrink()).createElement();
+        var marker = new RootMarkerElement(new _RenderTheaterMarker__overlay(null!, entryState, SizedBox.CreateShrink()));
         var caller = new MenuContext(TargetPlatform.macOS, marker, root, Brightness.dark);
         var controller = new ContextMenuController();
         var builds = 0;
@@ -160,6 +160,12 @@ internal static class ContextMenuContracts
     private static void Require(bool condition, string message)
     {
         if (!condition) throw new InvalidOperationException(message);
+    }
+
+    // The synthetic overlay root has no ancestors and is not mounted in a widget tree.
+    private sealed class RootMarkerElement(_RenderTheaterMarker__overlay widget) : InheritedElement(widget)
+    {
+        public override void visitAncestorElements(Func<Element, bool> visitor) { }
     }
 
     private sealed class MenuContext : StatelessElement

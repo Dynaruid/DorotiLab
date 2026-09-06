@@ -249,7 +249,7 @@ public class _SliderState__slider : global::Doroti.Framework.Widgets.State<Slide
     internal virtual void _actionHandler(_AdjustSliderIntent__slider intent)
     {
         global::Doroti.Ui.TextDirection directionality = Directionality.of(((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._renderObjectKey).currentContext!);
-        bool shouldIncrease = (((_AdjustSliderIntent__slider)intent).type switch { _SliderAdjustmentType__slider.up => true, _SliderAdjustmentType__slider.down => false, _SliderAdjustmentType__slider.left => (object.Equals(directionality, TextDirection.rtl)), _SliderAdjustmentType__slider.right => (object.Equals(directionality, TextDirection.ltr)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        bool shouldIncrease = (((_AdjustSliderIntent__slider)intent).type switch { _SliderAdjustmentType__slider.up => true,_SliderAdjustmentType__slider.down => false,_SliderAdjustmentType__slider.left => (object.Equals(directionality, TextDirection.rtl)),_SliderAdjustmentType__slider.right => (object.Equals(directionality, TextDirection.ltr)),_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         var slider = ((_RenderSlider__slider?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this._renderObjectKey).currentContext!.findRenderObject()!)!;
         if (shouldIncrease) { slider.increaseAction(); } else { slider.decreaseAction(); }
         return;
@@ -354,7 +354,7 @@ public class _SliderState__slider : global::Doroti.Framework.Widgets.State<Slide
         ThemeData theme = Theme.of(context);
         SliderThemeData sliderThemeLocal = SliderTheme.of(context);
         bool year2023Local = ((((Slider)this.widget).year2023 ?? sliderThemeLocal.year2023) ?? true);
-        dynamic defaults = (((object)theme.useMaterial3) switch { true => (year2023Local ? new _SliderDefaultsM3Year2023__slider(context) : new _SliderDefaultsM3__slider(context)), false => new _SliderDefaultsM2__slider(context), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        dynamic defaults = (((year2023Local ? new _SliderDefaultsM3Year2023__slider(context) : new _SliderDefaultsM3__slider(context))));
         ShowValueIndicator defaultShowValueIndicator = ShowValueIndicator.onlyForDiscrete;
         SliderInteraction defaultAllowedInteraction = SliderInteraction.tapAndSlide;
         var states = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection31364 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if (!this._enabled) { __collection31364.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } if (this._hovering) { __collection31364.Add(global::Doroti.Framework.Widgets.WidgetState.hovered); } if (this._focused) { __collection31364.Add(global::Doroti.Framework.Widgets.WidgetState.focused); } if (this._dragging) { __collection31364.Add(global::Doroti.Framework.Widgets.WidgetState.dragged); } return __collection31364; }))();
@@ -410,10 +410,10 @@ public class _SliderState__slider : global::Doroti.Framework.Widgets.State<Slide
                     break;
                 }
         }
-        DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> shortcutMap = (MediaQuery.navigationModeOf(context) switch { global::Doroti.Framework.Widgets.NavigationMode.directional => _directionalNavShortcutMap, global::Doroti.Framework.Widgets.NavigationMode.traditional => _traditionalNavShortcutMap, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        DartMap<global::Doroti.Framework.Widgets.ShortcutActivator, global::Doroti.Framework.Widgets.Intent> shortcutMap = (MediaQuery.navigationModeOf(context) switch { global::Doroti.Framework.Widgets.NavigationMode.directional => _directionalNavShortcutMap,global::Doroti.Framework.Widgets.NavigationMode.traditional => _traditionalNavShortcutMap,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         double fontSizeLocal = (sliderThemeLocal.valueIndicatorTextStyle?.fontSize ?? global::Doroti.Framework.Painting.Text_painterLibrary.kDefaultFontSize);
         double fontSizeToScale = ((fontSizeLocal == 0.0) ? global::Doroti.Framework.Painting.Text_painterLibrary.kDefaultFontSize : fontSizeLocal);
-        global::Doroti.Framework.Painting.TextScaler textScaler = (theme.useMaterial3 ? MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.3) : MediaQuery.textScalerOf(context));
+        global::Doroti.Framework.Painting.TextScaler textScaler = ((MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.3)));
         double effectiveTextScale = (textScaler.scale(fontSizeToScale) / fontSizeToScale);
         global::Doroti.Framework.Widgets.Widget result = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CompositedTransformTarget(link: this._layerLink, child: new _SliderRenderObjectWidget__slider(key: this._renderObjectKey, value: _convert(((Slider)this.widget).value), secondaryTrackValue: (((((Slider)this.widget).secondaryTrackValue is not null)) ? _convert(DartRuntimePrimitives.RequireValue(((Slider)this.widget).secondaryTrackValue)) : null), divisions: ((Slider)this.widget).divisions, label: ((Slider)this.widget).label, sliderTheme: sliderThemeLocal, textScaleFactor: effectiveTextScale, screenSize: screenSize(), onChanged: ((global::System.Action<double>)((((((Slider)this.widget).onChanged is not null)) && ((((Slider)this.widget).max > ((Slider)this.widget).min))) ? this._handleChanged : null)), onChangeStart: (global::System.Action<double>)this._handleDragStart, onChangeEnd: (global::System.Action<double>)this._handleDragEnd, state: this, semanticFormatterCallback: (SemanticFormatterCallback?)((Slider)this.widget).semanticFormatterCallback, onDidGainAccessibilityFocus: () => handleDidGainAccessibilityFocus(), hasFocus: this._focused, hovering: this._hovering, allowedInteraction: effectiveAllowedInteraction)));
         global::Doroti.Framework.Painting.EdgeInsetsGeometry? paddingLocal = (((Slider)this.widget).padding ?? sliderThemeLocal.padding);
@@ -427,7 +427,6 @@ public class _SliderState__slider : global::Doroti.Framework.Widgets.State<Slide
             throw new InvalidOperationException("Dart closure completed without a value.");
         }), child: result));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.FocusableActionDetector(actions: this._actionMap, shortcuts: shortcutMap, focusNode: this.focusNode, autofocus: ((Slider)this.widget).autofocus, enabled: this._enabled, onShowFocusHighlight: (global::System.Action<bool>)this._handleFocusHighlightChanged, onShowHoverHighlight: (global::System.Action<bool>)this._handleHoverChanged, mouseCursor: effectiveMouseCursor, includeFocusSemantics: false, child: result));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual global::Doroti.Framework.Widgets.Widget _buildCupertinoSlider(global::Doroti.Framework.Widgets.BuildContext context)
@@ -439,8 +438,7 @@ public class _SliderState__slider : global::Doroti.Framework.Widgets.State<Slide
     internal virtual global::Doroti.Framework.Widgets.Widget _buildValueIndicator(ShowValueIndicator showValueIndicator)
     {
         global::Doroti.Framework.Widgets.Widget valueIndicator = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.CompositedTransformFollower(link: this._layerLink, child: new _ValueIndicatorRenderObjectWidget__slider(state: this)));
-        return (showValueIndicator switch { var __constant40364 when (object.Equals(__constant40364, ShowValueIndicator.never)) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.SizedBox.CreateShrink()), var __constant40423 when (object.Equals(__constant40423, ShowValueIndicator.onlyForDiscrete)) => ((((Slider)this.widget).divisions is not null) ? valueIndicator : global::Doroti.Framework.Widgets.SizedBox.CreateShrink()), var __constant40544 when (object.Equals(__constant40544, ShowValueIndicator.onlyForContinuous)) => ((((Slider)this.widget).divisions is null) ? valueIndicator : global::Doroti.Framework.Widgets.SizedBox.CreateShrink()), var __logical40667 when ((object.Equals(__logical40667, ShowValueIndicator.alwaysVisible) || object.Equals(__logical40667, ShowValueIndicator.always))) => valueIndicator, var __constant40744 when (object.Equals(__constant40744, ShowValueIndicator.onDrag)) => valueIndicator, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return (showValueIndicator switch { var __constant40364 when (object.Equals(__constant40364, ShowValueIndicator.never)) => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.SizedBox.CreateShrink()),var __constant40423 when (object.Equals(__constant40423, ShowValueIndicator.onlyForDiscrete)) => ((((Slider)this.widget).divisions is not null) ? valueIndicator : global::Doroti.Framework.Widgets.SizedBox.CreateShrink()),var __constant40544 when (object.Equals(__constant40544, ShowValueIndicator.onlyForContinuous)) => ((((Slider)this.widget).divisions is null) ? valueIndicator : global::Doroti.Framework.Widgets.SizedBox.CreateShrink()),var __logical40667 when ((object.Equals(__logical40667, ShowValueIndicator.alwaysVisible) || object.Equals(__logical40667, ShowValueIndicator.always))) => valueIndicator,var __constant40744 when (object.Equals(__constant40744, ShowValueIndicator.onDrag)) => valueIndicator,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
@@ -964,7 +962,7 @@ public class _RenderSlider__slider : global::Doroti.Framework.Rendering.RenderBo
     }
 
     public virtual bool shouldAlwaysShowValueIndicator => DartRuntimePrimitives.ConvertValue<bool>((object.Equals(this._sliderTheme.showValueIndicator, ShowValueIndicator.alwaysVisible)));
-    public virtual bool shouldShowValueIndicatorWhenDragged => (this._sliderTheme.showValueIndicator! switch { var __constant54689 when (object.Equals(__constant54689, ShowValueIndicator.onlyForDiscrete)) => this.isDiscrete, var __constant54743 when (object.Equals(__constant54743, ShowValueIndicator.onlyForContinuous)) => !this.isDiscrete, var __constant54800 when (object.Equals(__constant54800, ShowValueIndicator.always)) => true, var __constant54829 when (object.Equals(__constant54829, ShowValueIndicator.onDrag)) => true, var __constant54868 when (object.Equals(__constant54868, ShowValueIndicator.never)) => false, var __constant54896 when (object.Equals(__constant54896, ShowValueIndicator.alwaysVisible)) => false, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+    public virtual bool shouldShowValueIndicatorWhenDragged => (this._sliderTheme.showValueIndicator! switch { var __constant54689 when (object.Equals(__constant54689, ShowValueIndicator.onlyForDiscrete)) => this.isDiscrete,var __constant54743 when (object.Equals(__constant54743, ShowValueIndicator.onlyForContinuous)) => !this.isDiscrete,var __constant54800 when (object.Equals(__constant54800, ShowValueIndicator.always)) => true,var __constant54829 when (object.Equals(__constant54829, ShowValueIndicator.onDrag)) => true,var __constant54868 when (object.Equals(__constant54868, ShowValueIndicator.never)) => false,var __constant54896 when (object.Equals(__constant54896, ShowValueIndicator.alwaysVisible)) => false,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     internal virtual double _adjustmentUnit
     {
         get
@@ -1052,8 +1050,7 @@ public class _RenderSlider__slider : global::Doroti.Framework.Rendering.RenderBo
 
     internal virtual double _getValueFromVisualPosition(double visualPosition)
     {
-        return (this.textDirection switch { TextDirection.rtl => (1.0 - visualPosition), TextDirection.ltr => visualPosition, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return (this.textDirection switch { TextDirection.rtl => (1.0 - visualPosition),TextDirection.ltr => visualPosition,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     }
 
     internal virtual double _getValueFromGlobalPosition(Offset globalPosition)
@@ -1168,7 +1165,7 @@ public class _RenderSlider__slider : global::Doroti.Framework.Rendering.RenderBo
                     if ((this._active && this.isInteractive))
                     {
                         double valueDelta = (DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Gestures.DragUpdateDetails)details).primaryDelta) / this._trackRect.width);
-                        _currentDragValue += (this.textDirection switch { TextDirection.rtl => -valueDelta, TextDirection.ltr => valueDelta, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+                        _currentDragValue += (this.textDirection switch { TextDirection.rtl => -valueDelta,TextDirection.ltr => valueDelta,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
                         this.onChanged!(_discretize(this._currentDragValue));
                     }
                     break;
@@ -1235,7 +1232,7 @@ public class _RenderSlider__slider : global::Doroti.Framework.Rendering.RenderBo
     public override void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset offset)
     {
         double controllerValue = ((_SliderState__slider)this._state).positionController.value;
-        var (visualPositionLocal, secondaryVisualPosition) = (this.textDirection switch { TextDirection.rtl when ((this._secondaryTrackValue is null)) => (((double, double?))(((1.0 - controllerValue), (double?)null))), TextDirection.rtl => (((double, double?))(DartRuntimePrimitives.ConvertValue<(double, double?)>(((1.0 - controllerValue), (1.0 - DartRuntimePrimitives.RequireValue(this._secondaryTrackValue)))))), TextDirection.ltr => (((double, double?))((controllerValue, this._secondaryTrackValue))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var (visualPositionLocal, secondaryVisualPosition) = (this.textDirection switch { TextDirection.rtl when ((this._secondaryTrackValue is null)) => (((double, double?))(((1.0 - controllerValue), (double?)null))),TextDirection.rtl => (((double, double?))(DartRuntimePrimitives.ConvertValue<(double, double?)>(((1.0 - controllerValue), (1.0 - DartRuntimePrimitives.RequireValue(this._secondaryTrackValue)))))),TextDirection.ltr => (((double, double?))((controllerValue, this._secondaryTrackValue))),_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         global::Doroti.Ui.Rect trackRectLocal = ((global::Doroti.Ui.Rect)(object?)this._sliderTheme.trackShape!.getPreferredRect(parentBox: this, offset: offset, sliderTheme: this._sliderTheme, isDiscrete: this.isDiscrete));
         global::Doroti.Ui.Offset thumbCenterLocal = ((global::Doroti.Ui.Offset)(object?)_calcThumbCenter(trackRect: trackRectLocal, visualPosition: visualPositionLocal));
         if (this.isInteractive)
@@ -1317,9 +1314,8 @@ public class _RenderSlider__slider : global::Doroti.Framework.Rendering.RenderBo
     {
         get
         {
-            double visualPositionLocal = (this.textDirection switch { TextDirection.rtl => (1.0 - this._value), TextDirection.ltr => this._value, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            double visualPositionLocal = (this.textDirection switch { TextDirection.rtl => (1.0 - this._value),TextDirection.ltr => this._value,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             return _calcThumbCenter(trackRect: this._trackRect, visualPosition: visualPositionLocal);
-            return default!;
         }
     }
     public override void assembleSemanticsNode(global::Doroti.Framework.Semantics.SemanticsNode node, global::Doroti.Framework.Semantics.SemanticsConfiguration config, IEnumerable<global::Doroti.Framework.Semantics.SemanticsNode> children)
@@ -1594,76 +1590,6 @@ public class _RenderValueIndicator__slider : global::Doroti.Framework.Rendering.
         })));
     }
 
-}
-
-internal class _SliderDefaultsM2__slider : SliderThemeData
-{
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
-    private bool __late__colors_initialized;
-    private ColorScheme __late__colors = default!;
-    internal virtual ColorScheme _colors
-    {
-        get
-        {
-            if (!__late__colors_initialized)
-            {
-                __late__colors = Theme.of(this.context).colorScheme;
-                __late__colors_initialized = true;
-            }
-            return __late__colors;
-        }
-    }
-    private bool __late_sliderTheme_initialized;
-    private SliderThemeData __late_sliderTheme = default!;
-    public virtual SliderThemeData sliderTheme
-    {
-        get
-        {
-            if (!__late_sliderTheme_initialized)
-            {
-                __late_sliderTheme = SliderTheme.of(this.context);
-                __late_sliderTheme_initialized = true;
-            }
-            return __late_sliderTheme;
-        }
-    }
-
-    internal _SliderDefaultsM2__slider(global::Doroti.Framework.Widgets.BuildContext context) : base(trackHeight: 4.0)
-    {
-        this.context = context;
-    }
-
-    public virtual global::Doroti.Ui.Color? activeTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
-    public virtual global::Doroti.Ui.Color? inactiveTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary.withOpacity(0.24));
-    public virtual global::Doroti.Ui.Color? secondaryActiveTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary.withOpacity(0.54));
-    public virtual global::Doroti.Ui.Color? disabledActiveTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurface.withOpacity(0.32));
-    public virtual global::Doroti.Ui.Color? disabledInactiveTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurface.withOpacity(0.12));
-    public virtual global::Doroti.Ui.Color? disabledSecondaryActiveTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurface.withOpacity(0.12));
-    public virtual global::Doroti.Ui.Color? activeTickMarkColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onPrimary.withOpacity(0.54));
-    public virtual global::Doroti.Ui.Color? inactiveTickMarkColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary.withOpacity(0.54));
-    public virtual global::Doroti.Ui.Color? disabledActiveTickMarkColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onPrimary.withOpacity(0.12));
-    public virtual global::Doroti.Ui.Color? disabledInactiveTickMarkColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurface.withOpacity(0.12));
-    public virtual global::Doroti.Ui.Color? thumbColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
-    public virtual global::Doroti.Ui.Color? disabledThumbColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Dart_uiLibrary.Color.alphaBlend(this._colors.onSurface.withOpacity(0.38), this._colors.surface));
-    public virtual global::Doroti.Ui.Color? overlayColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary.withOpacity(0.12));
-    public override global::Doroti.Framework.Painting.TextStyle? valueIndicatorTextStyle => Theme.of(this.context).textTheme.bodyLarge!.copyWith(color: this._colors.onPrimary);
-    public virtual global::Doroti.Ui.Color? valueIndicatorColor
-    {
-        get
-        {
-            if ((this.sliderTheme.valueIndicatorShape is RoundedRectSliderValueIndicatorShape))
-            {
-                return this._colors.inverseSurface;
-            }
-            return this._colors.primary;
-            return default!;
-        }
-    }
-    public override SliderComponentShape? valueIndicatorShape => DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new RectangularSliderValueIndicatorShape());
-    public override SliderComponentShape? thumbShape => DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new RoundSliderThumbShape());
-    public override SliderTrackShape? trackShape => DartRuntimePrimitives.ConvertValue<SliderTrackShape>(new RoundedRectSliderTrackShape());
-    public override SliderComponentShape? overlayShape => DartRuntimePrimitives.ConvertValue<SliderComponentShape>(new RoundSliderOverlayShape());
-    public override SliderTickMarkShape? tickMarkShape => DartRuntimePrimitives.ConvertValue<SliderTickMarkShape>(new RoundSliderTickMarkShape());
 }
 
 internal class _SliderDefaultsM3Year2023__slider : SliderThemeData

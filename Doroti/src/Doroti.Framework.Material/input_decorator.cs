@@ -582,7 +582,7 @@ public class _HelperErrorState__input_decorator : global::Doroti.Framework.Widge
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
-        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted", (true, _) => "active", (false, true) => "inactive and muted", (false, _) => "inactive", (null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
+        string? tickerDescription = ((this._ticker?.isActive, this._ticker?.muted) switch { (true, true) => "active but muted",(true, _) => "active",(false, true) => "inactive and muted",(false, _) => "inactive",(null, _) => DartRuntimePrimitives.ConvertValue<string>(null) });
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Scheduler.Ticker>("ticker", this._ticker, description: tickerDescription, showSeparator: false, defaultValue: default));
     }
 
@@ -625,8 +625,7 @@ public class FloatingLabelAlignment
 
     internal static string _stringify(double x)
     {
-        return (x switch { -1.0 => "FloatingLabelAlignment.start", 0.0 => "FloatingLabelAlignment.center", _ => $"FloatingLabelAlignment(x: {x.toStringAsFixed(1L)})" });
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return (x switch { -1.0 => "FloatingLabelAlignment.start",0.0 => "FloatingLabelAlignment.center",_ => $"FloatingLabelAlignment(x: {x.toStringAsFixed(1L)})" });
     }
 
     public override string ToString() => FloatingLabelAlignment._stringify(this._x);
@@ -749,11 +748,10 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
     internal virtual global::Doroti.Framework.Painting.TextAlignVertical? _textAlignVertical { get; set; } = default;
     internal virtual bool _isFocused { get; set; } = default!;
     internal virtual bool _expands { get; set; } = false;
-    internal virtual bool _material3 { get; set; } = false;
     internal virtual Matrix4? _labelTransform { get; set; } = default;
     public virtual DartMap<_DecorationSlot__input_decorator, global::Doroti.Framework.Rendering.RenderBox> _slotToChild { get; set; } = new DartMap<_DecorationSlot__input_decorator, global::Doroti.Framework.Rendering.RenderBox>();
 
-    internal _RenderDecoration__input_decorator(_Decoration__input_decorator decoration, TextDirection textDirection, TextBaseline textBaseline, bool isFocused, bool expands, bool material3, global::Doroti.Framework.Painting.TextAlignVertical? textAlignVertical = null)
+    internal _RenderDecoration__input_decorator(_Decoration__input_decorator decoration, TextDirection textDirection, TextBaseline textBaseline, bool isFocused, bool expands, global::Doroti.Framework.Painting.TextAlignVertical? textAlignVertical = null)
     {
         this._decoration = decoration;
         this._textDirection = textDirection;
@@ -761,12 +759,11 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
         this._textAlignVertical = textAlignVertical;
         this._isFocused = isFocused;
         this._expands = expands;
-        this._material3 = material3;
     }
 
-    public virtual double subtextGap => (this.material3 ? 4.0 : 8.0);
-    public virtual double prefixToInputGap => (this.material3 ? 4.0 : 0.0);
-    public virtual double inputToSuffixGap => (this.material3 ? 4.0 : 0.0);
+    public virtual double subtextGap => ((4.0));
+    public virtual double prefixToInputGap => ((4.0));
+    public virtual double inputToSuffixGap => ((4.0));
     public virtual global::Doroti.Framework.Rendering.RenderBox? icon => childForSlot(DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.icon));
     public virtual global::Doroti.Framework.Rendering.RenderBox? input => childForSlot(DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.input));
     public virtual global::Doroti.Framework.Rendering.RenderBox? label => childForSlot(DartRuntimePrimitives.RequireValue(_DecorationSlot__input_decorator.label));
@@ -877,20 +874,6 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
             markNeedsLayout();
         }
     }
-    public virtual bool material3
-    {
-        get => this._material3;
-        set
-        {
-            var __value = value;
-            if ((this._material3 == DartRuntimePrimitives.RequireValue(__value)))
-            {
-                return;
-            }
-            _material3 = DartRuntimePrimitives.RequireValue(__value);
-            markNeedsLayout();
-        }
-    }
     internal virtual bool _isOutlineAligned
     {
         get
@@ -975,7 +958,7 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
     public virtual global::Doroti.Framework.Painting.EdgeInsetsDirectional contentPadding => ((_Decoration__input_decorator)this.decoration).contentPadding;
     internal virtual (double ascent, double bottomHeight, double subtextHeight)? _computeSubtextSizes(global::Doroti.Framework.Rendering.BoxConstraints constraints, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size> layoutChild, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, double> getBaseline)
     {
-        var (counterSize, counterAscent) = (this.counter switch { global::Doroti.Framework.Rendering.RenderBox box => (((Size, double))((layoutChild(box, constraints), getBaseline(box, constraints)))), null => (((Size, double))((Size.zero, 0.0))) });
+        var (counterSize, counterAscent) = (this.counter switch { global::Doroti.Framework.Rendering.RenderBox box => (((Size, double))((layoutChild(box, constraints), getBaseline(box, constraints)))),null => (((Size, double))((Size.zero, 0.0))) });
         double counterPadding = ((this.counter is not null) ? Input_decoratorLibrary._kSubtextCounterPadding : 0.0);
         global::Doroti.Framework.Rendering.BoxConstraints helperErrorConstraints = ((global::Doroti.Framework.Rendering.BoxConstraints)(object?)constraints.deflate(global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(left: (counterSize.width + counterPadding))));
         double helperErrorHeight = layoutChild(this.helperError, helperErrorConstraints).height;
@@ -987,7 +970,6 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
         double bottomHeightLocal = (Math.Max(counterAscent, helperErrorHeight) + this.subtextGap);
         double subtextHeightLocal = (Math.Max(counterSize.height, helperErrorHeight) + this.subtextGap);
         return (ascent: ascentLocal, bottomHeight: bottomHeightLocal, subtextHeight: subtextHeightLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual _RenderDecorationLayout__input_decorator _layout(global::Doroti.Framework.Rendering.BoxConstraints constraints, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size> layoutChild, global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, double> getBaseline)
@@ -1168,8 +1150,7 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
             return 0.0;
         }
         _RenderDecorationLayout__input_decorator layout = ((_RenderDecorationLayout__input_decorator)(object?)_layout(constraints, layoutChild: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, Size>)global::Doroti.Framework.Rendering.ChildLayoutHelper.dryLayoutChild, getBaseline: (global::System.Func<global::Doroti.Framework.Rendering.RenderBox, global::Doroti.Framework.Rendering.BoxConstraints, double>)_getDryBaseline));
-        return ((baseline switch { TextBaseline.alphabetic => 0.0, TextBaseline.ideographic => (((inputLocal.getDryBaseline(((_RenderDecorationLayout__input_decorator)layout).inputConstraints, TextBaseline.ideographic) ?? inputLocal.getDryLayout(((_RenderDecorationLayout__input_decorator)layout).inputConstraints).height)) - ((inputLocal.getDryBaseline(((_RenderDecorationLayout__input_decorator)layout).inputConstraints, TextBaseline.alphabetic) ?? inputLocal.getDryLayout(((_RenderDecorationLayout__input_decorator)layout).inputConstraints).height))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }) + ((_RenderDecorationLayout__input_decorator)layout).baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return ((baseline switch { TextBaseline.alphabetic => 0.0,TextBaseline.ideographic => (((inputLocal.getDryBaseline(((_RenderDecorationLayout__input_decorator)layout).inputConstraints, TextBaseline.ideographic) ?? inputLocal.getDryLayout(((_RenderDecorationLayout__input_decorator)layout).inputConstraints).height)) - ((inputLocal.getDryBaseline(((_RenderDecorationLayout__input_decorator)layout).inputConstraints, TextBaseline.alphabetic) ?? inputLocal.getDryLayout(((_RenderDecorationLayout__input_decorator)layout).inputConstraints).height))),_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }) + ((_RenderDecorationLayout__input_decorator)layout).baseline);
     }
 
     public override Size computeDryLayout(global::Doroti.Framework.Rendering.BoxConstraints constraints)
@@ -1193,7 +1174,7 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
         {
             var containerConstraints = global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(height: ((_RenderDecorationLayout__input_decorator)layoutLocal).containerHeight, width: (overallWidth - _RenderDecoration__input_decorator._boxSize(this.icon).width));
             containerLocal.layout(containerConstraints, parentUsesSize: true);
-            double xLocal = (this.textDirection switch { TextDirection.rtl => 0.0, TextDirection.ltr => _RenderDecoration__input_decorator._boxSize(this.icon).width, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            double xLocal = (this.textDirection switch { TextDirection.rtl => 0.0,TextDirection.ltr => _RenderDecoration__input_decorator._boxSize(this.icon).width,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             _RenderDecoration__input_decorator._boxParentData(containerLocal).offset = new global::Doroti.Ui.Offset(xLocal, 0.0);
         }
         double heightLocal = ((_RenderDecorationLayout__input_decorator)layoutLocal).containerHeight;
@@ -1205,7 +1186,7 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
         }
         if ((this.icon is not null))
         {
-            double xAlternate = (this.textDirection switch { TextDirection.rtl => (overallWidth - this.icon!.size.width), TextDirection.ltr => 0.0, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+            double xAlternate = (this.textDirection switch { TextDirection.rtl => (overallWidth - this.icon!.size.width),TextDirection.ltr => 0.0,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
             centerLayout(this.icon!, xAlternate);
         }
         double subtextBaseline = (((((_RenderDecorationLayout__input_decorator)layoutLocal).subtextSize?.ascent ?? 0.0)) + ((_RenderDecorationLayout__input_decorator)layoutLocal).containerHeight);
@@ -1365,7 +1346,7 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
                         var offsetToPrefixIcon = 0.0;
                         if (((this.prefixIcon is not null) && !((_Decoration__input_decorator)this.decoration).alignLabelWithHint))
                         {
-                            offsetToPrefixIcon = (this.material3 ? (_RenderDecoration__input_decorator._boxSize(this.prefixIcon).width - ((global::Doroti.Framework.Painting.EdgeInsetsDirectional)this.contentPadding).end) : 0);
+                            offsetToPrefixIcon = (((_RenderDecoration__input_decorator._boxSize(this.prefixIcon).width - ((global::Doroti.Framework.Painting.EdgeInsetsDirectional)this.contentPadding).end)));
                         }
                         ((_Decoration__input_decorator)this.decoration).borderGap.start = Dart_uiLibrary.lerpDouble(((labelX + _RenderDecoration__input_decorator._boxSize(this.label).width) + offsetToPrefixIcon), ((_RenderDecoration__input_decorator._boxSize(containerLocal).width / 2.0) + (floatWidth / 2.0)), floatAlign);
                         break;
@@ -1375,7 +1356,7 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
                         var offsetToPrefixIconLocal = 0.0;
                         if (((this.prefixIcon is not null) && !((_Decoration__input_decorator)this.decoration).alignLabelWithHint))
                         {
-                            offsetToPrefixIconLocal = (this.material3 ? ((-_RenderDecoration__input_decorator._boxSize(this.prefixIcon).width + ((global::Doroti.Framework.Painting.EdgeInsetsDirectional)this.contentPadding).start)) : 0);
+                            offsetToPrefixIconLocal = ((((-_RenderDecoration__input_decorator._boxSize(this.prefixIcon).width + ((global::Doroti.Framework.Painting.EdgeInsetsDirectional)this.contentPadding).start))));
                         }
                         ((_Decoration__input_decorator)this.decoration).borderGap.start = Dart_uiLibrary.lerpDouble(((labelX - _RenderDecoration__input_decorator._boxSize(this.icon).width) + offsetToPrefixIconLocal), ((_RenderDecoration__input_decorator._boxSize(containerLocal).width / 2.0) - (floatWidth / 2.0)), floatAlign);
                         break;
@@ -1429,7 +1410,7 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
                         floatStartX = startX;
                         if ((((this.prefixIcon is not null) && !((_Decoration__input_decorator)this.decoration).alignLabelWithHint) && isOutlineBorder))
                         {
-                            floatStartX += (this.material3 ? (_RenderDecoration__input_decorator._boxSize(this.prefixIcon).width - ((global::Doroti.Framework.Painting.EdgeInsetsDirectional)this.contentPadding).end) : 0.0);
+                            floatStartX += (((_RenderDecoration__input_decorator._boxSize(this.prefixIcon).width - ((global::Doroti.Framework.Painting.EdgeInsetsDirectional)this.contentPadding).end)));
                         }
                         break;
                     }
@@ -1439,7 +1420,7 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
                         floatStartX = startX;
                         if ((((this.prefixIcon is not null) && !((_Decoration__input_decorator)this.decoration).alignLabelWithHint) && isOutlineBorder))
                         {
-                            floatStartX += (this.material3 ? (-_RenderDecoration__input_decorator._boxSize(this.prefixIcon).width + ((global::Doroti.Framework.Painting.EdgeInsetsDirectional)this.contentPadding).start) : 0.0);
+                            floatStartX += (((-_RenderDecoration__input_decorator._boxSize(this.prefixIcon).width + ((global::Doroti.Framework.Painting.EdgeInsetsDirectional)this.contentPadding).start)));
                         }
                         break;
                     }
@@ -1541,12 +1522,9 @@ public class _RenderDecoration__input_decorator : global::Doroti.Framework.Rende
     public virtual global::Doroti.Framework.Rendering.RenderBox? childForSlot(_DecorationSlot__input_decorator slot) => this._slotToChild.GetValueOrDefault(slot);
     public virtual string debugNameForSlot(_DecorationSlot__input_decorator slot)
     {
-        if (true)
         {
             return slot.ToString();
         }
-        return slot.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
@@ -1644,14 +1622,12 @@ internal class _Decorator__input_decorator : global::Doroti.Framework.Widgets.Sl
     public override IEnumerable<_DecorationSlot__input_decorator> slots => DartRuntimePrimitives.ConvertValue<IEnumerable<_DecorationSlot__input_decorator>>(System.Enum.GetValues<_DecorationSlot__input_decorator>().ToList());
     public override global::Doroti.Framework.Widgets.Widget? childForSlot(_DecorationSlot__input_decorator slot)
     {
-        return (slot switch { _DecorationSlot__input_decorator.icon => ((_Decoration__input_decorator)this.decoration).icon, _DecorationSlot__input_decorator.input => ((_Decoration__input_decorator)this.decoration).input, _DecorationSlot__input_decorator.label => ((_Decoration__input_decorator)this.decoration).label, _DecorationSlot__input_decorator.hint => ((_Decoration__input_decorator)this.decoration).hint, _DecorationSlot__input_decorator.prefix => ((_Decoration__input_decorator)this.decoration).prefix, _DecorationSlot__input_decorator.suffix => ((_Decoration__input_decorator)this.decoration).suffix, _DecorationSlot__input_decorator.prefixIcon => ((_Decoration__input_decorator)this.decoration).prefixIcon, _DecorationSlot__input_decorator.suffixIcon => ((_Decoration__input_decorator)this.decoration).suffixIcon, _DecorationSlot__input_decorator.helperError => ((_Decoration__input_decorator)this.decoration).helperError, _DecorationSlot__input_decorator.counter => ((_Decoration__input_decorator)this.decoration).counter, _DecorationSlot__input_decorator.container => ((_Decoration__input_decorator)this.decoration).container, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return (slot switch { _DecorationSlot__input_decorator.icon => ((_Decoration__input_decorator)this.decoration).icon,_DecorationSlot__input_decorator.input => ((_Decoration__input_decorator)this.decoration).input,_DecorationSlot__input_decorator.label => ((_Decoration__input_decorator)this.decoration).label,_DecorationSlot__input_decorator.hint => ((_Decoration__input_decorator)this.decoration).hint,_DecorationSlot__input_decorator.prefix => ((_Decoration__input_decorator)this.decoration).prefix,_DecorationSlot__input_decorator.suffix => ((_Decoration__input_decorator)this.decoration).suffix,_DecorationSlot__input_decorator.prefixIcon => ((_Decoration__input_decorator)this.decoration).prefixIcon,_DecorationSlot__input_decorator.suffixIcon => ((_Decoration__input_decorator)this.decoration).suffixIcon,_DecorationSlot__input_decorator.helperError => ((_Decoration__input_decorator)this.decoration).helperError,_DecorationSlot__input_decorator.counter => ((_Decoration__input_decorator)this.decoration).counter,_DecorationSlot__input_decorator.container => ((_Decoration__input_decorator)this.decoration).container,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
     }
 
     public override global::Doroti.Framework.Rendering.RenderObject createRenderObject(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderDecoration__input_decorator(decoration: this.decoration, textDirection: this.textDirection, textBaseline: this.textBaseline, textAlignVertical: this.textAlignVertical, isFocused: this.isFocused, expands: this.expands, material3: Theme.of(context).useMaterial3));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return ((global::Doroti.Framework.Rendering.RenderObject)(object?)new _RenderDecoration__input_decorator(decoration: this.decoration, textDirection: this.textDirection, textBaseline: this.textBaseline, textAlignVertical: this.textAlignVertical, isFocused: this.isFocused, expands: this.expands));
     }
 
     public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
@@ -1900,34 +1876,6 @@ internal class _InputDecoratorState__input_decorator : global::Doroti.Framework.
         }
     }
 
-    internal virtual global::Doroti.Ui.Color _getDefaultM2BorderColor(ThemeData themeData)
-    {
-        if ((!((InputDecoration)this.decoration).enabled && !this.isFocused))
-        {
-            return ((global::Doroti.Ui.Color)(object?)(((((((InputDecoration)this.decoration).filled ?? false)) && !((((InputDecoration)this.decoration).border?.isOutline ?? false)))) ? Colors.transparent : themeData.disabledColor));
-        }
-        if (this._hasError)
-        {
-            return ((global::Doroti.Ui.Color)(object?)themeData.colorScheme.error);
-        }
-        if (this.isFocused)
-        {
-            return ((global::Doroti.Ui.Color)(object?)themeData.colorScheme.primary);
-        }
-        if (DartRuntimePrimitives.RequireValue(((InputDecoration)this.decoration).filled))
-        {
-            return ((global::Doroti.Ui.Color)(object?)themeData.hintColor);
-        }
-        global::Doroti.Ui.Color enabledColor = ((global::Doroti.Ui.Color)(object?)themeData.colorScheme.onSurface.withOpacity(0.38));
-        if (this.isHovering)
-        {
-            global::Doroti.Ui.Color hoverColorLocal = ((global::Doroti.Ui.Color)(object?)(((InputDecoration)this.decoration).hoverColor ?? themeData.hoverColor));
-            return ((global::Doroti.Ui.Color)(object?)Dart_uiLibrary.Color.alphaBlend(hoverColorLocal.withOpacity(0.12), enabledColor));
-        }
-        return ((global::Doroti.Ui.Color)(object?)enabledColor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
-    }
-
     internal virtual global::Doroti.Ui.Color _getFillColor(ThemeData themeData, InputDecorationThemeData defaults)
     {
         if ((((InputDecoration)this.decoration).filled != true))
@@ -1991,8 +1939,7 @@ internal class _InputDecoratorState__input_decorator : global::Doroti.Framework.
     {
         global::Doroti.Framework.Painting.TextStyle defaultStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)WidgetStateProperty.resolveAs(((InputDecorationThemeData)defaults).hintStyle!, this.widgetState));
         global::Doroti.Framework.Painting.TextStyle? style = ((global::Doroti.Framework.Painting.TextStyle?)(object?)WidgetStateProperty.resolveAs(((InputDecoration)this.decoration).hintStyle, this.widgetState));
-        return ((global::Doroti.Framework.Painting.TextStyle)(object?)((themeData.useMaterial3 ? themeData.textTheme.bodyLarge! : themeData.textTheme.titleMedium!)).merge(((InputDecorator)this.widget).baseStyle).merge(defaultStyle).merge(style));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return ((global::Doroti.Framework.Painting.TextStyle)(object?)(((themeData.textTheme.bodyLarge!))).merge(((InputDecorator)this.widget).baseStyle).merge(defaultStyle).merge(style));
     }
 
     internal virtual global::Doroti.Framework.Painting.TextStyle _getFloatingLabelStyle(ThemeData themeData, InputDecorationThemeData defaults)
@@ -2032,7 +1979,6 @@ internal class _InputDecoratorState__input_decorator : global::Doroti.Framework.
         {
             return borderLocal;
         }
-        if (themeData.useMaterial3)
         {
             if (DartRuntimePrimitives.RequireValue(((InputDecoration)this.decoration).filled))
             {
@@ -2043,10 +1989,6 @@ internal class _InputDecoratorState__input_decorator : global::Doroti.Framework.
             {
                 return borderLocal.copyWith(borderSide: WidgetStateProperty.resolveAs(((InputDecorationThemeData)defaults).outlineBorder, this.widgetState));
             }
-        }
-        else
-        {
-            return borderLocal.copyWith(borderSide: new global::Doroti.Framework.Painting.BorderSide(color: _getDefaultM2BorderColor(themeData), width: (((((DartRuntimePrimitives.RequireValue(((InputDecoration)this.decoration).isCollapsed)) || (object.Equals(((InputDecoration)this.decoration).border, InputBorder.none))) || !((InputDecoration)this.decoration).enabled)) ? 0.0 : (this.isFocused ? 2.0 : 1.0))));
         }
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -2072,8 +2014,7 @@ internal class _InputDecoratorState__input_decorator : global::Doroti.Framework.
     {
         ThemeData themeData = Theme.of(context);
         VisualDensity visualDensityLocal = (((InputDecoration)this.decoration).visualDensity ?? themeData.visualDensity);
-        bool useMaterial3Local = Theme.of(context).useMaterial3;
-        InputDecorationThemeData defaults = (useMaterial3Local ? new _InputDecoratorDefaultsM3__input_decorator(context) : new _InputDecoratorDefaultsM2__input_decorator(context));
+        InputDecorationThemeData defaults = ((new _InputDecoratorDefaultsM3__input_decorator(context)));
         IconButtonThemeData iconButtonTheme = IconButtonTheme.of(context);
         global::Doroti.Framework.Painting.TextStyle labelStyle = ((global::Doroti.Framework.Painting.TextStyle)(object?)_getInlineLabelStyle(themeData, defaults));
         global::Doroti.Ui.TextBaseline textBaselineLocal = DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.TextStyle)labelStyle).textBaseline);
@@ -2110,9 +2051,8 @@ internal class _InputDecoratorState__input_decorator : global::Doroti.Framework.
         {
             labelLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MatrixTransition(animation: this._shakingLabelController, onTransform: ((global::System.Func<double, Matrix4>)((value) =>
             {
-                double shakeOffset = (value switch { <= 0.25 => -value, < 0.75 => (value - 0.5), _ => (((1.0 - value)) * 4.0) });
+                double shakeOffset = (value switch { <= 0.25 => -value,< 0.75 => (value - 0.5),_ => (((1.0 - value)) * 4.0) });
                 return Matrix4.translationValues((shakeOffset * 4.0), 0.0, 0.0);
-                throw new InvalidOperationException("Dart closure completed without a value.");
             })), child: new global::Doroti.Framework.Widgets.AnimatedOpacity(duration: Input_decoratorLibrary._kTransitionDuration, curve: Input_decoratorLibrary._kTransitionCurve, opacity: (this._shouldShowLabel ? 1.0 : 0.0), child: new global::Doroti.Framework.Widgets.AnimatedDefaultTextStyle(duration: Input_decoratorLibrary._kTransitionDuration, curve: Input_decoratorLibrary._kTransitionCurve, style: (this.labelShouldWithdraw ? _getFloatingLabelStyle(themeData, defaults) : labelStyle), child: (((InputDecoration)this.decoration).label ?? new global::Doroti.Framework.Widgets.Text(((InputDecoration)this.decoration).labelText!, overflow: global::Doroti.Framework.Painting.TextOverflow.ellipsis, textAlign: this.textAlign))))));
         }
         bool hasPrefix = ((((InputDecoration)this.decoration).prefix is not null) || (((InputDecoration)this.decoration).prefixText is not null));
@@ -2144,7 +2084,7 @@ internal class _InputDecoratorState__input_decorator : global::Doroti.Framework.
             }
         }
         global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
-        bool flipHorizontal = (textDirectionLocal switch { TextDirection.ltr => false, TextDirection.rtl => true, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        bool flipHorizontal = (textDirectionLocal switch { TextDirection.ltr => false,TextDirection.rtl => true,_ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         global::Doroti.Framework.Painting.EdgeInsets? resolvedPadding = ((global::Doroti.Framework.Painting.EdgeInsets?)(object?)((InputDecoration)this.decoration).contentPadding?.resolve(textDirectionLocal));
         global::Doroti.Framework.Painting.EdgeInsetsDirectional? decorationContentPadding = ((resolvedPadding is null) ? null : new global::Doroti.Framework.Painting.EdgeInsetsDirectional((flipHorizontal ? ((global::Doroti.Framework.Painting.EdgeInsets)resolvedPadding).right : ((global::Doroti.Framework.Painting.EdgeInsets)resolvedPadding).left), ((global::Doroti.Framework.Painting.EdgeInsets)resolvedPadding).top, (flipHorizontal ? ((global::Doroti.Framework.Painting.EdgeInsets)resolvedPadding).left : ((global::Doroti.Framework.Painting.EdgeInsets)resolvedPadding).right), ((global::Doroti.Framework.Painting.EdgeInsets)resolvedPadding).bottom));
         global::Doroti.Framework.Painting.EdgeInsetsDirectional contentPaddingLocal = default!;
@@ -2161,21 +2101,20 @@ internal class _InputDecoratorState__input_decorator : global::Doroti.Framework.
                 floatingLabelHeightLocal = MediaQuery.textScalerOf(context).scale((4.0 + (0.75 * DartRuntimePrimitives.RequireValue(((global::Doroti.Framework.Painting.TextStyle)labelStyle).fontSize))));
                 if ((((InputDecoration)this.decoration).filled ?? false))
                 {
-                    contentPaddingLocal = (decorationContentPadding ?? ((useMaterial3Local ? (decorationIsDense ? new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12.0, 4.0, 12.0, 4.0) : new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12.0, 8.0, 12.0, 8.0)) : (decorationIsDense ? new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12.0, 8.0, 12.0, 8.0) : new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12.0, 12.0, 12.0, 12.0)))));
+                    contentPaddingLocal = (decorationContentPadding ?? ((((decorationIsDense ? new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12.0, 4.0, 12.0, 4.0) : new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12.0, 8.0, 12.0, 8.0))))));
                 }
                 else
                 {
-                    contentPaddingLocal = (decorationContentPadding ?? ((useMaterial3Local ? (decorationIsDense ? new global::Doroti.Framework.Painting.EdgeInsetsDirectional(0.0, 4.0, 0.0, 4.0) : new global::Doroti.Framework.Painting.EdgeInsetsDirectional(0.0, 8.0, 0.0, 8.0)) : (decorationIsDense ? new global::Doroti.Framework.Painting.EdgeInsetsDirectional(0.0, 8.0, 0.0, 8.0) : new global::Doroti.Framework.Painting.EdgeInsetsDirectional(0.0, 12.0, 0.0, 12.0)))));
+                    contentPaddingLocal = (decorationContentPadding ?? ((((decorationIsDense ? new global::Doroti.Framework.Painting.EdgeInsetsDirectional(0.0, 4.0, 0.0, 4.0) : new global::Doroti.Framework.Painting.EdgeInsetsDirectional(0.0, 8.0, 0.0, 8.0))))));
                 }
             }
             else
             {
                 floatingLabelHeightLocal = 0.0;
-                contentPaddingLocal = (decorationContentPadding ?? ((useMaterial3Local ? (decorationIsDense ? new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12.0, 16.0, 12.0, 8.0) : new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12.0, 20.0, 12.0, 12.0)) : (decorationIsDense ? new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12.0, 20.0, 12.0, 12.0) : new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12.0, 24.0, 12.0, 16.0)))));
+                contentPaddingLocal = (decorationContentPadding ?? ((((decorationIsDense ? new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12.0, 16.0, 12.0, 8.0) : new global::Doroti.Framework.Painting.EdgeInsetsDirectional(12.0, 20.0, 12.0, 12.0))))));
             }
         }
         var inputGapLocal = 0.0;
-        if (useMaterial3Local)
         {
             if ((borderLocal is OutlineInputBorder))
             {
@@ -2196,7 +2135,6 @@ internal class _InputDecoratorState__input_decorator : global::Doroti.Framework.
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: constraintsLocal, child: result));
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
@@ -2861,120 +2799,6 @@ public class InputDecorationThemeData : global::Doroti.Framework.Foundation.Diag
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-}
-
-internal class _InputDecoratorDefaultsM2__input_decorator : InputDecorationThemeData
-{
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
-
-    internal _InputDecoratorDefaultsM2__input_decorator(global::Doroti.Framework.Widgets.BuildContext context)
-    {
-        this.context = context;
-    }
-
-    public override global::Doroti.Framework.Painting.TextStyle? hintStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.TextStyle>(global::Doroti.Framework.Widgets.WidgetStateTextStyle.CreateResolveWith(((states) =>
-    {
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-        {
-            return new global::Doroti.Framework.Painting.TextStyle(color: Theme.of(this.context).disabledColor);
-        }
-        return new global::Doroti.Framework.Painting.TextStyle(color: Theme.of(this.context).hintColor);
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    })));
-    public override global::Doroti.Framework.Painting.TextStyle? labelStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.TextStyle>(global::Doroti.Framework.Widgets.WidgetStateTextStyle.CreateResolveWith(((states) =>
-    {
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-        {
-            return new global::Doroti.Framework.Painting.TextStyle(color: Theme.of(this.context).disabledColor);
-        }
-        return new global::Doroti.Framework.Painting.TextStyle(color: Theme.of(this.context).hintColor);
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    })));
-    public override global::Doroti.Framework.Painting.TextStyle? floatingLabelStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.TextStyle>(global::Doroti.Framework.Widgets.WidgetStateTextStyle.CreateResolveWith(((states) =>
-    {
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-        {
-            return new global::Doroti.Framework.Painting.TextStyle(color: Theme.of(this.context).disabledColor);
-        }
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.error))
-        {
-            return new global::Doroti.Framework.Painting.TextStyle(color: Theme.of(this.context).colorScheme.error);
-        }
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-        {
-            return new global::Doroti.Framework.Painting.TextStyle(color: Theme.of(this.context).colorScheme.primary);
-        }
-        return new global::Doroti.Framework.Painting.TextStyle(color: Theme.of(this.context).hintColor);
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    })));
-    public override global::Doroti.Framework.Painting.TextStyle? helperStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.TextStyle>(global::Doroti.Framework.Widgets.WidgetStateTextStyle.CreateResolveWith(((states) =>
-    {
-        ThemeData themeData = Theme.of(this.context);
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-        {
-            return ((global::Doroti.Framework.Painting.TextStyle)(object?)themeData.textTheme.bodySmall!.copyWith(color: Colors.transparent));
-        }
-        return ((global::Doroti.Framework.Painting.TextStyle)(object?)themeData.textTheme.bodySmall!.copyWith(color: themeData.hintColor));
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    })));
-    public override global::Doroti.Framework.Painting.TextStyle? errorStyle => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.TextStyle>(global::Doroti.Framework.Widgets.WidgetStateTextStyle.CreateResolveWith(((states) =>
-    {
-        ThemeData themeData = Theme.of(this.context);
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-        {
-            return ((global::Doroti.Framework.Painting.TextStyle)(object?)themeData.textTheme.bodySmall!.copyWith(color: Colors.transparent));
-        }
-        return ((global::Doroti.Framework.Painting.TextStyle)(object?)themeData.textTheme.bodySmall!.copyWith(color: themeData.colorScheme.error));
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    })));
-    public override Color? fillColor => DartRuntimePrimitives.ConvertValue<Color>(global::Doroti.Framework.Widgets.WidgetStateColor.CreateResolveWith(((states) =>
-    {
-        return ((Theme.brightnessOf(this.context), states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled)) switch { (Brightness.dark, true) => new global::Doroti.Ui.Color(234881023L), (Brightness.dark, false) => new global::Doroti.Ui.Color(452984831L), (Brightness.light, true) => new global::Doroti.Ui.Color(83886080L), (Brightness.light, false) => new global::Doroti.Ui.Color(167772160L) });
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    })));
-    public override Color? iconColor => DartRuntimePrimitives.ConvertValue<Color>(global::Doroti.Framework.Widgets.WidgetStateColor.CreateResolveWith(((states) =>
-    {
-        if ((states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) && !states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused)))
-        {
-            return Theme.of(this.context).disabledColor;
-        }
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-        {
-            return Theme.of(this.context).colorScheme.primary;
-        }
-        return (Theme.brightnessOf(this.context) switch { Brightness.dark => Colors.white70, Brightness.light => Colors.black45, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    })));
-    public override Color? prefixIconColor => DartRuntimePrimitives.ConvertValue<Color>(global::Doroti.Framework.Widgets.WidgetStateColor.CreateResolveWith(((states) =>
-    {
-        if ((states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) && !states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused)))
-        {
-            return Theme.of(this.context).disabledColor;
-        }
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-        {
-            return Theme.of(this.context).colorScheme.primary;
-        }
-        return (Theme.brightnessOf(this.context) switch { Brightness.dark => Colors.white70, Brightness.light => Colors.black45, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    })));
-    public override Color? suffixIconColor => DartRuntimePrimitives.ConvertValue<Color>(global::Doroti.Framework.Widgets.WidgetStateColor.CreateResolveWith(((states) =>
-    {
-        if ((states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled) && !states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused)))
-        {
-            return Theme.of(this.context).disabledColor;
-        }
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.error))
-        {
-            return Theme.of(this.context).colorScheme.error;
-        }
-        if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-        {
-            return Theme.of(this.context).colorScheme.primary;
-        }
-        return (Theme.brightnessOf(this.context) switch { Brightness.dark => Colors.white70, Brightness.light => Colors.black45, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        throw new InvalidOperationException("Dart closure completed without a value.");
-    })));
 }
 
 internal class _InputDecoratorDefaultsM3__input_decorator : InputDecorationThemeData

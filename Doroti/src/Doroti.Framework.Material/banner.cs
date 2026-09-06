@@ -161,7 +161,7 @@ internal class _MaterialBannerState__banner : global::Doroti.Framework.Widgets.S
         DartRuntimePrimitives.Assert(() => System.Linq.Enumerable.Any(((MaterialBanner)this.widget).actions));
         ThemeData theme = Theme.of(context);
         MaterialBannerThemeData bannerTheme = MaterialBannerTheme.of(context);
-        MaterialBannerThemeData defaults = (theme.useMaterial3 ? new _BannerDefaultsM3__banner(context) : new _BannerDefaultsM2__banner(context));
+        MaterialBannerThemeData defaults = ((new _BannerDefaultsM3__banner(context)));
         bool isSingleRow = ((checked((long)(((MaterialBanner)this.widget).actions.Count)) == 1L) && !((MaterialBanner)this.widget).forceActionsBelow);
         global::Doroti.Framework.Painting.EdgeInsetsGeometry paddingLocal = ((((MaterialBanner)this.widget).padding ?? bannerTheme.padding) ?? ((isSingleRow ? global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 16.0, top: 2.0) : global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(start: 16.0, top: 24.0, end: 16.0, bottom: 4.0))));
         global::Doroti.Framework.Painting.EdgeInsetsGeometry leadingPaddingLocal = ((((MaterialBanner)this.widget).leadingPadding ?? bannerTheme.leadingPadding) ?? global::Doroti.Framework.Painting.EdgeInsetsDirectional.CreateOnly(end: 16.0));
@@ -198,24 +198,8 @@ internal class _MaterialBannerState__banner : global::Doroti.Framework.Widgets.S
             })), child: materialBanner));
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Hero(tag: $"<MaterialBanner Hero tag - {((MaterialBanner)this.widget).content}>", child: new global::Doroti.Framework.Widgets.ClipRect(child: materialBannerTransition)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-}
-
-internal class _BannerDefaultsM2__banner : MaterialBannerThemeData
-{
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
-    internal virtual ThemeData _theme { get; private set; } = default!;
-
-    internal _BannerDefaultsM2__banner(global::Doroti.Framework.Widgets.BuildContext context) : base(elevation: 0.0)
-    {
-        this.context = context;
-        this._theme = Theme.of(context);
-    }
-
-    public virtual global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._theme.colorScheme.surface);
-    public override global::Doroti.Framework.Painting.TextStyle? contentTextStyle => this._theme.textTheme.bodyMedium;
 }
 
 internal class _BannerDefaultsM3__banner : MaterialBannerThemeData

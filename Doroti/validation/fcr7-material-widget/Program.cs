@@ -29,11 +29,9 @@ var darkPalette = Doroti.Framework.Material.ColorScheme.CreateFromSeed(
     surface: darkSurface);
 var lightTheme = Doroti.Framework.Material.ThemeData.Create(
     colorScheme: lightPalette,
-    useMaterial3: true,
     platform: Doroti.Framework.Foundation.TargetPlatform.windows);
 var darkTheme = Doroti.Framework.Material.ThemeData.Create(
     colorScheme: darkPalette,
-    useMaterial3: true,
     platform: Doroti.Framework.Foundation.TargetPlatform.windows);
 Require(lightTheme.brightness == Doroti.Ui.Brightness.light, "light palette preserves light brightness");
 Require(darkTheme.brightness == Doroti.Ui.Brightness.dark, "dark palette preserves dark brightness");
@@ -85,6 +83,7 @@ VerifyBrowserInputAndFrontBufferContract();
 VerifyMobileSelectionOverlayContracts();
 VerifyFrameworkLifecycleContracts();
 VerifyButtonStyleDispatch();
+Material3Contracts.Verify();
 VerifyHostTextInputVisibilityContract();
 VerifyDefaultTextEditingShortcutContracts();
 KeyboardShortcutContracts.Verify();

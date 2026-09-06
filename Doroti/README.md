@@ -14,6 +14,8 @@ See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for source
 
 ## Current product boundary
 
+Material themes use Material 3 exclusively. `ThemeData` factories, its constructor, and `copyWith` no longer accept `useMaterial3`, and the version property is removed; omit this argument in application code. Use `Typography.Create` or `CreateMaterial2021` for typography; the 2014/2018 presets are removed.
+
 - `Doroti.Framework.*`: product-owned Foundation, Scheduler, Services, Physics, Animation, Gestures, Painting, Semantics, Rendering, Widgets, Cupertino, and Material libraries
 - `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`: runtime semantics plus the target-neutral startup/builder/descriptor contract
 - `Doroti.App.Sdk`: platform-neutral `net10.0` application assembly and shared asset contract

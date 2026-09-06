@@ -126,17 +126,16 @@ public class Switch : global::Doroti.Framework.Widgets.StatelessWidget
     {
         ThemeData theme = Theme.of(context);
         SwitchThemeData switchTheme = SwitchTheme.of(context);
-        SwitchThemeData defaults = (theme.useMaterial3 ? new _SwitchDefaultsM3__switch(context) : new _SwitchDefaultsM2__switch(context));
+        SwitchThemeData defaults = ((new _SwitchDefaultsM3__switch(context)));
         if ((object.Equals(this._switchType, _SwitchType__switch.adaptive)))
         {
             Adaptation<SwitchThemeData> switchAdaptation = (theme.getAdaptation<SwitchThemeData>() ?? new _SwitchThemeAdaptation__switch());
             switchTheme = switchAdaptation.adapt(theme, switchTheme);
         }
-        _SwitchConfig__switch switchConfig = (theme.useMaterial3 ? new _SwitchConfigM3__switch(context) : new _SwitchConfigM2__switch());
+        _SwitchConfig__switch switchConfig = ((new _SwitchConfigM3__switch(context)));
         MaterialTapTargetSize effectiveMaterialTapTargetSize = ((this.materialTapTargetSize ?? switchTheme.materialTapTargetSize) ?? theme.materialTapTargetSize);
         global::Doroti.Framework.Painting.EdgeInsetsGeometry effectivePadding = ((this.padding ?? switchTheme.padding) ?? defaults.padding!);
         return (effectiveMaterialTapTargetSize switch { var __constant22389 when (object.Equals(__constant22389, MaterialTapTargetSize.padded)) => new global::Doroti.Ui.Size((((_SwitchConfig__switch)switchConfig).switchWidth + ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)effectivePadding).horizontal), (((_SwitchConfig__switch)switchConfig).switchHeight + ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)effectivePadding).vertical)), var __constant22569 when (object.Equals(__constant22569, MaterialTapTargetSize.shrinkWrap)) => new global::Doroti.Ui.Size((((_SwitchConfig__switch)switchConfig).switchWidth + ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)effectivePadding).horizontal), (((_SwitchConfig__switch)switchConfig).switchHeightCollapsed + ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)effectivePadding).vertical)), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
@@ -354,23 +353,12 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
     public virtual Duration? reactionAnimationDuration => ConstantsLibrary.kRadialReactionDuration;
     public virtual void updateCurve()
     {
-        if (Theme.of(this.context).useMaterial3)
         {
             DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.CurvedAnimation>)(() =>
 {
     var __cascade = this.position;
     __cascade.curve = global::Doroti.Framework.Animation.Curves.easeOutBack;
     __cascade.reverseCurve = global::Doroti.Framework.Animation.Curves.easeOutBack.flipped;
-    return __cascade;
-}))());
-        }
-        else
-        {
-            DartRuntimePrimitives.Ignore(((Func<global::Doroti.Framework.Animation.CurvedAnimation>)(() =>
-{
-    var __cascade = this.position;
-    __cascade.curve = global::Doroti.Framework.Animation.Curves.easeIn;
-    __cascade.reverseCurve = global::Doroti.Framework.Animation.Curves.easeOut;
     return __cascade;
 }))());
         }
@@ -427,7 +415,7 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
                             case global::Doroti.Framework.Foundation.TargetPlatform.linux:
                             case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                                 {
-                                    _SwitchConfig__switch config = (Theme.of(this.context).useMaterial3 ? new _SwitchConfigM3__switch(this.context) : new _SwitchConfigM2__switch());
+                                    _SwitchConfig__switch config = ((new _SwitchConfigM3__switch(this.context)));
                                     double trackInnerStart = (((_SwitchConfig__switch)config).trackHeight / 2.0);
                                     double trackInnerEnd = (((_SwitchConfig__switch)config).trackWidth - trackInnerStart);
                                     double trackInnerLength = (trackInnerEnd - trackInnerStart);
@@ -449,7 +437,7 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
                     }
                 case _SwitchType__switch.material:
                     {
-                        _SwitchConfig__switch configAlternate = (Theme.of(this.context).useMaterial3 ? new _SwitchConfigM3__switch(this.context) : new _SwitchConfigM2__switch());
+                        _SwitchConfig__switch configAlternate = ((new _SwitchConfigM3__switch(this.context)));
                         double trackInnerStartAlternate = (((_SwitchConfig__switch)configAlternate).trackHeight / 2.0);
                         double trackInnerEndAlternate = (((_SwitchConfig__switch)configAlternate).trackWidth - trackInnerStartAlternate);
                         double trackInnerLengthAlternate = (trackInnerEndAlternate - trackInnerStartAlternate);
@@ -526,8 +514,8 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
         {
             case _SwitchType__switch.material:
                 {
-                    switchConfig = (theme.useMaterial3 ? new _SwitchConfigM3__switch(context) : new _SwitchConfigM2__switch());
-                    defaults = (theme.useMaterial3 ? new _SwitchDefaultsM3__switch(context) : new _SwitchDefaultsM2__switch(context));
+                    switchConfig = ((new _SwitchConfigM3__switch(context)));
+                    defaults = ((new _SwitchDefaultsM3__switch(context)));
                     break;
                 }
             case _SwitchType__switch.adaptive:
@@ -541,8 +529,8 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
                         case global::Doroti.Framework.Foundation.TargetPlatform.linux:
                         case global::Doroti.Framework.Foundation.TargetPlatform.windows:
                             {
-                                switchConfig = (theme.useMaterial3 ? new _SwitchConfigM3__switch(context) : new _SwitchConfigM2__switch());
-                                defaults = (theme.useMaterial3 ? new _SwitchDefaultsM3__switch(context) : new _SwitchDefaultsM2__switch(context));
+                                switchConfig = ((new _SwitchConfigM3__switch(context)));
+                                defaults = ((new _SwitchDefaultsM3__switch(context)));
                                 break;
                             }
                         case global::Doroti.Framework.Foundation.TargetPlatform.iOS:
@@ -678,7 +666,6 @@ internal class _MaterialSwitchState__switch : global::Doroti.Framework.Widgets.S
     __cascade.isCupertino = this.isCupertino;
     return __cascade;
 }))())))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public virtual global::Doroti.Framework.Scheduler.Ticker createTicker(global::System.Action<Duration> onTick)
@@ -1841,116 +1828,6 @@ internal class _SwitchConfigCupertino__switch : _SwitchConfig__switch
     public virtual long toggleDuration => 140L;
     public virtual double? thumbOffset => DartRuntimePrimitives.ConvertValue<double>(null);
     public virtual Size switchMinSize => new global::Doroti.Ui.Size((global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0));
-}
-
-internal class _SwitchConfigM2__switch : _SwitchConfig__switch
-{
-
-    internal _SwitchConfigM2__switch()
-    {
-    }
-
-    public virtual double activeThumbRadius => 10.0;
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<Color> iconColor => WidgetStateProperty.all<global::Doroti.Ui.Color>(Colors.transparent);
-    public virtual double inactiveThumbRadius => 10.0;
-    public virtual double pressedThumbRadius => 10.0;
-    public virtual double switchHeight => DartRuntimePrimitives.ConvertValue<double>((this.switchMinSize.height + 8.0));
-    public virtual double switchHeightCollapsed => this.switchMinSize.height;
-    public virtual double switchWidth => DartRuntimePrimitives.ConvertValue<double>(((this.trackWidth - (2L * ((this.trackHeight / 2.0)))) + this.switchMinSize.width));
-    public virtual double thumbRadiusWithIcon => 10.0;
-    public virtual List<global::Doroti.Framework.Painting.BoxShadow>? thumbShadow => ShadowsLibrary.kElevationToShadow.GetValueOrDefault(1L);
-    public virtual double trackHeight => 14.0;
-    public virtual double trackWidth => 33.0;
-    public virtual double? thumbOffset => 0.5;
-    public virtual Size transitionalThumbSize => new global::Doroti.Ui.Size(20, 20);
-    public virtual long toggleDuration => 200L;
-    public virtual Size switchMinSize => new global::Doroti.Ui.Size((global::Doroti.Framework.Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0));
-}
-
-internal class _SwitchDefaultsM2__switch : SwitchThemeData
-{
-    internal virtual ThemeData _theme { get; private set; } = default!;
-    internal virtual ColorScheme _colors { get; private set; } = default!;
-
-    internal _SwitchDefaultsM2__switch(global::Doroti.Framework.Widgets.BuildContext context)
-    {
-        this._theme = Theme.of(context);
-        this._colors = Theme.of(context).colorScheme;
-    }
-
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> thumbColor
-    {
-        get
-        {
-            var isDark = (object.Equals(this._theme.brightness, Brightness.dark));
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-                {
-                    return ((isDark ? Colors.grey.shade800 : Colors.grey.shade400));
-                }
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-                {
-                    return (this._colors.secondary);
-                }
-                return ((isDark ? Colors.grey.shade400 : Colors.grey.shade50));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }));
-            return default!;
-        }
-    }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> trackColor
-    {
-        get
-        {
-            var isDark = (object.Equals(this._theme.brightness, Brightness.dark));
-            var black32 = new global::Doroti.Ui.Color(1375731712L);
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color>)(object?)WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
-                {
-                    return ((isDark ? Colors.white10 : Colors.black12));
-                }
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.selected))
-                {
-                    global::Doroti.Ui.Color activeColor = ((global::Doroti.Ui.Color)(object?)this._colors.secondary);
-                    return (activeColor.withAlpha(128L));
-                }
-                return ((isDark ? Colors.white30 : black32));
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }));
-            return default!;
-        }
-    }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? trackOutlineColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>>(new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<global::Doroti.Ui.Color>(Colors.transparent));
-    public virtual MaterialTapTargetSize materialTapTargetSize => this._theme.materialTapTargetSize;
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor> mouseCursor => WidgetStateProperty.resolveWith((states) => global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(states));
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> overlayColor
-    {
-        get
-        {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)(object?)WidgetStateProperty.resolveWith((states) =>
-            {
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
-                {
-                    return (this.thumbColor.resolve(states).withAlpha(ConstantsLibrary.kRadialReactionAlpha));
-                }
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
-                {
-                    return (this._theme.hoverColor);
-                }
-                if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
-                {
-                    return (this._theme.focusColor);
-                }
-                return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
-            }));
-            return default!;
-        }
-    }
-    public virtual double splashRadius => ConstantsLibrary.kRadialReactionRadius;
-    public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? padding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.zero);
 }
 
 internal class _SwitchDefaultsM3__switch : SwitchThemeData

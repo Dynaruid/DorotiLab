@@ -157,7 +157,7 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : global::Doroti.Frame
                 double opacityAlternate = ((FlexibleSpaceBarSettings)settings).toolbarOpacity;
                 if ((opacityAlternate > 0.0))
                 {
-                    global::Doroti.Framework.Painting.TextStyle titleStyle = (theme.useMaterial3 ? theme.textTheme.titleLarge! : theme.primaryTextTheme.titleLarge!);
+                    global::Doroti.Framework.Painting.TextStyle titleStyle = ((theme.textTheme.titleLarge!));
                     titleStyle = titleStyle.copyWith(color: ((global::Doroti.Framework.Painting.TextStyle)titleStyle).color!.withOpacity(opacityAlternate));
                     bool effectiveCenterTitle = _getEffectiveCenterTitle(theme);
                     var leadingPadding = (((((FlexibleSpaceBarSettings)settings).hasLeading ?? true)) ? 72.0 : 0.0);
@@ -178,9 +178,7 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : global::Doroti.Frame
                 }
             }
             return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.ClipRect(child: new global::Doroti.Framework.Widgets.Stack(children: childrenLocal)));
-            throw new InvalidOperationException("Dart closure completed without a value.");
         }))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }

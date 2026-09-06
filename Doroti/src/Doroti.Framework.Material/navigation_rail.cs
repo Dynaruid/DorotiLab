@@ -17,6 +17,8 @@ namespace Doroti.Framework.Material;
 public static partial class Navigation_railLibrary
 {
     internal static double _kCircularIndicatorDiameter = 56;
+    // Compact custom rails keep the same indicator offset below this width.
+    internal const double _compactDestinationWidth = 72.0;
 }
 
 public static partial class Navigation_railLibrary
@@ -165,7 +167,7 @@ internal class _NavigationRailState__navigation_rail : global::Doroti.Framework.
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         NavigationRailThemeData navigationRailTheme = NavigationRailTheme.of(context);
-        NavigationRailThemeData defaults = (Theme.of(context).useMaterial3 ? new _NavigationRailDefaultsM3__navigation_rail(context) : new _NavigationRailDefaultsM2__navigation_rail(context));
+        NavigationRailThemeData defaults = ((new _NavigationRailDefaultsM3__navigation_rail(context)));
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         global::Doroti.Ui.Color backgroundColorLocal = ((global::Doroti.Ui.Color)(object?)((((NavigationRail)this.widget).backgroundColor ?? navigationRailTheme.backgroundColor) ?? defaults.backgroundColor!));
         double elevationLocal = ((((NavigationRail)this.widget).elevation ?? navigationRailTheme.elevation) ?? DartRuntimePrimitives.RequireValue(defaults.elevation));
@@ -180,7 +182,7 @@ internal class _NavigationRailState__navigation_rail : global::Doroti.Framework.
         bool useIndicatorLocal = ((((NavigationRail)this.widget).useIndicator ?? navigationRailTheme.useIndicator) ?? DartRuntimePrimitives.RequireValue(defaults.useIndicator));
         global::Doroti.Ui.Color? indicatorColorLocal = ((global::Doroti.Ui.Color?)(object?)((((NavigationRail)this.widget).indicatorColor ?? navigationRailTheme.indicatorColor) ?? defaults.indicatorColor));
         global::Doroti.Framework.Painting.ShapeBorder? indicatorShapeLocal = ((((NavigationRail)this.widget).indicatorShape ?? navigationRailTheme.indicatorShape) ?? defaults.indicatorShape);
-        global::Doroti.Framework.Widgets.IconThemeData effectiveUnselectedIconTheme = (Theme.of(context).useMaterial3 ? unselectedIconThemeLocal : unselectedIconThemeLocal.copyWith(opacity: (((global::Doroti.Framework.Widgets.IconThemeData)unselectedIconThemeLocal).opacity ?? defaults.unselectedIconTheme!.opacity)));
+        global::Doroti.Framework.Widgets.IconThemeData effectiveUnselectedIconTheme = ((unselectedIconThemeLocal));
         var isRTLDirection = (object.Equals(Directionality.of(context), TextDirection.rtl));
         global::Doroti.Framework.Widgets.Widget mainGroup = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(mainAxisSize: ((((NavigationRail)this.widget).mainAxisAlignment is not null) ? global::Doroti.Framework.Rendering.MainAxisSize.max : global::Doroti.Framework.Rendering.MainAxisSize.min), mainAxisAlignment: (((NavigationRail)this.widget).mainAxisAlignment ?? global::Doroti.Framework.Rendering.MainAxisAlignment.start), children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() =>
         {
@@ -203,7 +205,6 @@ internal class _NavigationRailState__navigation_rail : global::Doroti.Framework.
             mainGroup = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SingleChildScrollView(child: mainGroup));
         }
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new _ExtendedNavigationRailAnimation__navigation_rail(animation: this._extendedAnimation, child: new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: true, child: new Material(elevation: elevationLocal, color: backgroundColorLocal, child: new global::Doroti.Framework.Widgets.SafeArea(right: isRTLDirection, left: !isRTLDirection, child: new global::Doroti.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection22353 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection22353.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Navigation_railLibrary._verticalSpacer)); if ((((NavigationRail)this.widget).leadingAtTop && (((NavigationRail)this.widget).leading is not null))) { __collection22353.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((NavigationRail)this.widget).leading!), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Navigation_railLibrary._verticalSpacer) }); } __collection22353.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.Align(alignment: new global::Doroti.Framework.Painting.Alignment(0, groupAlignmentLocal), child: mainGroup)))); if ((((NavigationRail)this.widget).trailingAtBottom && (((NavigationRail)this.widget).trailing is not null))) { __collection22353.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((NavigationRail)this.widget).trailing!)); } return __collection22353; }))())))))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual void _disposeControllers()
@@ -403,7 +404,6 @@ internal class _RailDestinationState__navigation_rail : global::Doroti.Framework
         DartRuntimePrimitives.Assert(() => (((_RailDestination__navigation_rail)this.widget).useIndicator || (((_RailDestination__navigation_rail)this.widget).indicatorColor is null)), () => (object?)"[NavigationRail.indicatorColor] does not have an effect when [NavigationRail.useIndicator] is false");
         ThemeData theme = Theme.of(context);
         global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
-        bool material3 = theme.useMaterial3;
         global::Doroti.Framework.Painting.EdgeInsets destinationPadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)((((_RailDestination__navigation_rail)this.widget).padding ?? global::Doroti.Framework.Painting.EdgeInsets.zero)).resolve(textDirectionLocal));
         global::Doroti.Ui.Offset indicatorOffsetLocal = default!;
         var applyXOffsetLocal = false;
@@ -416,9 +416,9 @@ internal class _RailDestinationState__navigation_rail : global::Doroti.Framework
         {
             case NavigationRailLabelType.none:
                 {
-                    global::Doroti.Framework.Widgets.Widget? spacing = ((global::Doroti.Framework.Widgets.Widget?)(object?)(material3 ? new global::Doroti.Framework.Widgets.SizedBox(height: (Navigation_railLibrary._verticalDestinationSpacingM3 / 2L)) : null));
+                    global::Doroti.Framework.Widgets.Widget? spacing = ((global::Doroti.Framework.Widgets.Widget?)(object?)((new global::Doroti.Framework.Widgets.SizedBox(height: (Navigation_railLibrary._verticalDestinationSpacingM3 / 2L)))));
                     indicatorOffsetLocal = new global::Doroti.Ui.Offset(((((_RailDestination__navigation_rail)this.widget).minWidth / 2L) + ((global::Doroti.Framework.Painting.EdgeInsets)destinationPadding).left), (((Navigation_railLibrary._verticalDestinationSpacingM3 / 2L) + ((global::Doroti.Framework.Painting.EdgeInsets)destinationPadding).top) + indicatorVerticalOffset));
-                    global::Doroti.Framework.Widgets.Widget iconPart = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection28264 = new List<global::Doroti.Framework.Widgets.Widget>(); var __collectionElement28286 = spacing; if (__collectionElement28286 is { } __nonNullCollectionElement28286) { __collection28264.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement28286)); } __collection28264.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: ((_RailDestination__navigation_rail)this.widget).minWidth, height: (material3 ? null : ((_RailDestination__navigation_rail)this.widget).minWidth), child: new global::Doroti.Framework.Widgets.Center(child: new _AddIndicator__navigation_rail(addIndicator: ((_RailDestination__navigation_rail)this.widget).useIndicator, indicatorColor: ((_RailDestination__navigation_rail)this.widget).indicatorColor, indicatorShape: ((_RailDestination__navigation_rail)this.widget).indicatorShape, isCircular: !material3, indicatorAnimation: ((_RailDestination__navigation_rail)this.widget).destinationAnimation, child: themedIcon))))); var __collectionElement28857 = spacing; if (__collectionElement28857 is { } __nonNullCollectionElement28857) { __collection28264.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement28857)); } return __collection28264; }))()));
+                    global::Doroti.Framework.Widgets.Widget iconPart = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection28264 = new List<global::Doroti.Framework.Widgets.Widget>(); var __collectionElement28286 = spacing; if (__collectionElement28286 is { } __nonNullCollectionElement28286) { __collection28264.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement28286)); } __collection28264.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.SizedBox(width: ((_RailDestination__navigation_rail)this.widget).minWidth, height: ((null)), child: new global::Doroti.Framework.Widgets.Center(child: new _AddIndicator__navigation_rail(addIndicator: ((_RailDestination__navigation_rail)this.widget).useIndicator, indicatorColor: ((_RailDestination__navigation_rail)this.widget).indicatorColor, indicatorShape: ((_RailDestination__navigation_rail)this.widget).indicatorShape, isCircular: false, indicatorAnimation: ((_RailDestination__navigation_rail)this.widget).destinationAnimation, child: themedIcon))))); var __collectionElement28857 = spacing; if (__collectionElement28857 is { } __nonNullCollectionElement28857) { __collection28264.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(__nonNullCollectionElement28857)); } return __collection28264; }))()));
                     if ((((_RailDestination__navigation_rail)this.widget).extendedTransitionAnimation.value == 0L))
                     {
                         content = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: (((_RailDestination__navigation_rail)this.widget).padding ?? global::Doroti.Framework.Painting.EdgeInsets.zero), child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(iconPart), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.SizedBox.CreateShrink(child: global::Doroti.Framework.Widgets.Visibility.CreateMaintain(visible: false, child: ((_RailDestination__navigation_rail)this.widget).label))) })));
@@ -437,14 +437,14 @@ internal class _RailDestinationState__navigation_rail : global::Doroti.Framework
                     double verticalPadding = DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(Navigation_railLibrary._verticalDestinationPaddingNoLabel, Navigation_railLibrary._verticalDestinationPaddingWithLabel, appearingAnimationValue));
                     var interval = (((_RailDestination__navigation_rail)this.widget).selected ? new global::Doroti.Framework.Animation.Interval(0.25, 0.75) : new global::Doroti.Framework.Animation.Interval(0.75, 1.0));
                     global::Doroti.Framework.Animation.Animation<double> labelFadeAnimationLocal = ((global::Doroti.Framework.Animation.Animation<double>)(object?)((_RailDestination__navigation_rail)this.widget).destinationAnimation.drive(new global::Doroti.Framework.Animation.CurveTween(curve: interval)));
-                    double minHeightLocal = (material3 ? 0 : ((_RailDestination__navigation_rail)this.widget).minWidth);
-                    global::Doroti.Framework.Widgets.Widget topSpacing = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: (material3 ? 0 : verticalPadding)));
-                    global::Doroti.Framework.Widgets.Widget labelSpacing = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: (material3 ? DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0L, Navigation_railLibrary._verticalIconLabelSpacingM3, appearingAnimationValue)) : 0)));
-                    global::Doroti.Framework.Widgets.Widget bottomSpacing = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: (material3 ? Navigation_railLibrary._verticalDestinationSpacingM3 : verticalPadding)));
+                    double minHeightLocal = ((0));
+                    global::Doroti.Framework.Widgets.Widget topSpacing = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: ((0))));
+                    global::Doroti.Framework.Widgets.Widget labelSpacing = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: ((DartRuntimePrimitives.RequireValue(Dart_uiLibrary.lerpDouble(0L, Navigation_railLibrary._verticalIconLabelSpacingM3, appearingAnimationValue))))));
+                    global::Doroti.Framework.Widgets.Widget bottomSpacing = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: ((Navigation_railLibrary._verticalDestinationSpacingM3))));
                     double indicatorHorizontalPadding = (((((global::Doroti.Framework.Painting.EdgeInsets)destinationPadding).left / 2L)) - ((((global::Doroti.Framework.Painting.EdgeInsets)destinationPadding).right / 2L)));
                     double indicatorVerticalPadding = ((global::Doroti.Framework.Painting.EdgeInsets)destinationPadding).top;
                     indicatorOffsetLocal = new global::Doroti.Ui.Offset(((((_RailDestination__navigation_rail)this.widget).minWidth / 2L) + indicatorHorizontalPadding), (indicatorVerticalPadding + indicatorVerticalOffset));
-                    if ((((_RailDestination__navigation_rail)this.widget).minWidth < DartRuntimePrimitives.RequireValue(new _NavigationRailDefaultsM2__navigation_rail(context).minWidth)))
+                    if ((((_RailDestination__navigation_rail)this.widget).minWidth < Navigation_railLibrary._compactDestinationWidth))
                     {
                         indicatorOffsetLocal = new global::Doroti.Ui.Offset(((((_RailDestination__navigation_rail)this.widget).minWidth / 2L) + Navigation_railLibrary._horizontalDestinationSpacingM3), (indicatorVerticalPadding + indicatorVerticalOffset));
                     }
@@ -453,14 +453,14 @@ internal class _RailDestinationState__navigation_rail : global::Doroti.Framework
                 }
             case NavigationRailLabelType.all:
                 {
-                    double minHeightAlternate = (material3 ? 0 : ((_RailDestination__navigation_rail)this.widget).minWidth);
-                    global::Doroti.Framework.Widgets.Widget topSpacingLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: (material3 ? 0 : Navigation_railLibrary._verticalDestinationPaddingWithLabel)));
-                    global::Doroti.Framework.Widgets.Widget labelSpacingLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: (material3 ? Navigation_railLibrary._verticalIconLabelSpacingM3 : 0)));
-                    global::Doroti.Framework.Widgets.Widget bottomSpacingLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: (material3 ? Navigation_railLibrary._verticalDestinationSpacingM3 : Navigation_railLibrary._verticalDestinationPaddingWithLabel)));
+                    double minHeightAlternate = ((0));
+                    global::Doroti.Framework.Widgets.Widget topSpacingLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: ((0))));
+                    global::Doroti.Framework.Widgets.Widget labelSpacingLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: ((Navigation_railLibrary._verticalIconLabelSpacingM3))));
+                    global::Doroti.Framework.Widgets.Widget bottomSpacingLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.SizedBox(height: ((Navigation_railLibrary._verticalDestinationSpacingM3))));
                     double indicatorHorizontalPaddingLocal = (((((global::Doroti.Framework.Painting.EdgeInsets)destinationPadding).left / 2L)) - ((((global::Doroti.Framework.Painting.EdgeInsets)destinationPadding).right / 2L)));
                     double indicatorVerticalPaddingLocal = ((global::Doroti.Framework.Painting.EdgeInsets)destinationPadding).top;
                     indicatorOffsetLocal = new global::Doroti.Ui.Offset(((((_RailDestination__navigation_rail)this.widget).minWidth / 2L) + indicatorHorizontalPaddingLocal), (indicatorVerticalPaddingLocal + indicatorVerticalOffset));
-                    if ((((_RailDestination__navigation_rail)this.widget).minWidth < DartRuntimePrimitives.RequireValue(new _NavigationRailDefaultsM2__navigation_rail(context).minWidth)))
+                    if ((((_RailDestination__navigation_rail)this.widget).minWidth < Navigation_railLibrary._compactDestinationWidth))
                     {
                         indicatorOffsetLocal = new global::Doroti.Ui.Offset(((((_RailDestination__navigation_rail)this.widget).minWidth / 2L) + Navigation_railLibrary._horizontalDestinationSpacingM3), (indicatorVerticalPaddingLocal + indicatorVerticalOffset));
                     }
@@ -472,22 +472,19 @@ internal class _RailDestinationState__navigation_rail : global::Doroti.Framework
         bool primaryColorAlphaModified = (colors.primary.alpha < 255.0);
         global::Doroti.Ui.Color effectiveSplashColor = ((global::Doroti.Ui.Color)(object?)(primaryColorAlphaModified ? colors.primary : colors.primary.withOpacity(0.12)));
         global::Doroti.Ui.Color effectiveHoverColor = ((global::Doroti.Ui.Color)(object?)(primaryColorAlphaModified ? colors.primary : colors.primary.withOpacity(0.04)));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, selected: ((_RailDestination__navigation_rail)this.widget).selected, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Material(type: MaterialType.transparency, child: new _IndicatorInkWell__navigation_rail(onTap: ((global::System.Action)(((_RailDestination__navigation_rail)this.widget).disabled ? null : ((_RailDestination__navigation_rail)this.widget).onTap)), borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((((_RailDestination__navigation_rail)this.widget).minWidth / 2.0))), customBorder: ((_RailDestination__navigation_rail)this.widget).indicatorShape, splashColor: effectiveSplashColor, hoverColor: effectiveHoverColor, useMaterial3: material3, indicatorOffset: indicatorOffsetLocal, applyXOffset: applyXOffsetLocal, textDirection: textDirectionLocal, child: content))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(label: ((_RailDestination__navigation_rail)this.widget).indexLabel)) })));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, selected: ((_RailDestination__navigation_rail)this.widget).selected, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new Material(type: MaterialType.transparency, child: new _IndicatorInkWell__navigation_rail(onTap: ((global::System.Action)(((_RailDestination__navigation_rail)this.widget).disabled ? null : ((_RailDestination__navigation_rail)this.widget).onTap)), borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((((_RailDestination__navigation_rail)this.widget).minWidth / 2.0))), customBorder: ((_RailDestination__navigation_rail)this.widget).indicatorShape, splashColor: effectiveSplashColor, hoverColor: effectiveHoverColor, indicatorOffset: indicatorOffsetLocal, applyXOffset: applyXOffsetLocal, textDirection: textDirectionLocal, child: content))), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(label: ((_RailDestination__navigation_rail)this.widget).indexLabel)) })));
     }
 
 }
 
 internal class _IndicatorInkWell__navigation_rail : InkResponse
 {
-    public virtual bool useMaterial3 { get; private set; } = default!;
     public virtual Offset indicatorOffset { get; private set; } = default!;
     public virtual bool applyXOffset { get; private set; } = default!;
     public virtual TextDirection textDirection { get; private set; } = default!;
 
-    internal _IndicatorInkWell__navigation_rail(global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onTap = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, Color? splashColor = null, Color? hoverColor = null, bool useMaterial3 = default!, Offset indicatorOffset = default!, bool applyXOffset = default!, TextDirection textDirection = default!) : base(child: child, onTap: onTap, splashColor: splashColor, hoverColor: hoverColor, containedInkWell: true, highlightShape: global::Doroti.Framework.Painting.BoxShape.rectangle, borderRadius: (useMaterial3 ? null : borderRadius), customBorder: (useMaterial3 ? customBorder : null))
+    internal _IndicatorInkWell__navigation_rail(global::Doroti.Framework.Widgets.Widget? child = null, global::System.Action? onTap = null, global::Doroti.Framework.Painting.ShapeBorder? customBorder = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, Color? splashColor = null, Color? hoverColor = null, Offset indicatorOffset = default!, bool applyXOffset = default!, TextDirection textDirection = default!) : base(child: child, onTap: onTap, splashColor: splashColor, hoverColor: hoverColor, containedInkWell: true, highlightShape: global::Doroti.Framework.Painting.BoxShape.rectangle, borderRadius: ((null)), customBorder: ((customBorder)))
     {
-        this.useMaterial3 = useMaterial3;
         this.indicatorOffset = indicatorOffset;
         this.applyXOffset = applyXOffset;
         this.textDirection = textDirection;
@@ -495,7 +492,6 @@ internal class _IndicatorInkWell__navigation_rail : InkResponse
 
     public virtual RectCallback? getRectCallback(global::Doroti.Framework.Rendering.RenderBox referenceBox)
     {
-        if (this.useMaterial3)
         {
             double boxWidth = ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).size.width;
             double indicatorHorizontalCenter = (this.applyXOffset ? this.indicatorOffset.dx : (boxWidth / 2L));
@@ -509,8 +505,6 @@ internal class _IndicatorInkWell__navigation_rail : InkResponse
                 throw new InvalidOperationException("Dart closure completed without a value.");
             }));
         }
-        return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
@@ -630,52 +624,6 @@ public static partial class Navigation_railLibrary
 public static partial class Navigation_railLibrary
 {
     internal static double _horizontalDestinationSpacingM3 = 12.0;
-}
-
-internal class _NavigationRailDefaultsM2__navigation_rail : NavigationRailThemeData
-{
-    internal virtual ThemeData _theme { get; private set; } = default!;
-    internal virtual ColorScheme _colors { get; private set; } = default!;
-
-    internal _NavigationRailDefaultsM2__navigation_rail(global::Doroti.Framework.Widgets.BuildContext context) : base(elevation: 0, groupAlignment: -1, labelType: NavigationRailLabelType.none, useIndicator: false, minWidth: 72.0, minExtendedWidth: 256)
-    {
-        this._theme = Theme.of(context);
-        this._colors = Theme.of(context).colorScheme;
-    }
-
-    public virtual global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surface);
-    public virtual global::Doroti.Framework.Painting.TextStyle? unselectedLabelTextStyle
-    {
-        get
-        {
-            return ((global::Doroti.Framework.Painting.TextStyle?)(object?)this._theme.textTheme.bodyLarge!.copyWith(color: this._colors.onSurface.withOpacity(0.64)));
-            return default!;
-        }
-    }
-    public virtual global::Doroti.Framework.Painting.TextStyle? selectedLabelTextStyle
-    {
-        get
-        {
-            return ((global::Doroti.Framework.Painting.TextStyle?)(object?)this._theme.textTheme.bodyLarge!.copyWith(color: this._colors.primary));
-            return default!;
-        }
-    }
-    public virtual global::Doroti.Framework.Widgets.IconThemeData? unselectedIconTheme
-    {
-        get
-        {
-            return new global::Doroti.Framework.Widgets.IconThemeData(size: 24.0, color: this._colors.onSurface, opacity: 0.64);
-            return default!;
-        }
-    }
-    public virtual global::Doroti.Framework.Widgets.IconThemeData? selectedIconTheme
-    {
-        get
-        {
-            return new global::Doroti.Framework.Widgets.IconThemeData(size: 24.0, color: this._colors.primary, opacity: 1.0);
-            return default!;
-        }
-    }
 }
 
 internal class _NavigationRailDefaultsM3__navigation_rail : NavigationRailThemeData

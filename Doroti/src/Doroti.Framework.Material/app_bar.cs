@@ -260,7 +260,7 @@ internal class _AppBarState__app_bar : global::Doroti.Framework.Widgets.State<Ap
         ThemeData theme = Theme.of(context);
         IconButtonThemeData iconButtonTheme = IconButtonTheme.of(context);
         AppBarThemeData appBarTheme = AppBarTheme.of(context);
-        AppBarThemeData defaults = (theme.useMaterial3 ? new _AppBarDefaultsM3__app_bar(context) : new _AppBarDefaultsM2__app_bar(context));
+        AppBarThemeData defaults = ((new _AppBarDefaultsM3__app_bar(context)));
         ScaffoldState? scaffold = Scaffold.maybeOf(context);
         dynamic parentRoute = global::Doroti.Framework.Widgets.ModalRoute<object>.of<object>(context);
         FlexibleSpaceBarSettings? settings = ((FlexibleSpaceBarSettings?)(object?)context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>());
@@ -312,7 +312,6 @@ internal class _AppBarState__app_bar : global::Doroti.Framework.Widgets.State<Ap
         }
         if ((leadingLocal is not null))
         {
-            if (theme.useMaterial3)
             {
                 IconButtonThemeData effectiveIconButtonTheme = default!;
                 if ((object.Equals(overallIconTheme, defaults.iconTheme)))
@@ -325,10 +324,6 @@ internal class _AppBarState__app_bar : global::Doroti.Framework.Widgets.State<Ap
                     effectiveIconButtonTheme = new IconButtonThemeData(style: iconButtonTheme.style?.copyWith(foregroundColor: leadingIconButtonStyle.foregroundColor, overlayColor: leadingIconButtonStyle.overlayColor, iconSize: leadingIconButtonStyle.iconSize));
                 }
                 leadingLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new IconButtonTheme(data: effectiveIconButtonTheme, child: ((leadingLocal is IconButton) ? new global::Doroti.Framework.Widgets.Center(child: ((IconButton)leadingLocal)) : leadingLocal)));
-                leadingLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: ((((AppBar)this.widget).leadingWidth ?? appBarTheme.leadingWidth) ?? App_barLibrary._kLeadingWidth)), child: leadingLocal));
-            }
-            else
-            {
                 leadingLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.ConstrainedBox(constraints: global::Doroti.Framework.Rendering.BoxConstraints.CreateTightFor(width: ((((AppBar)this.widget).leadingWidth ?? appBarTheme.leadingWidth) ?? App_barLibrary._kLeadingWidth)), child: leadingLocal));
             }
         }
@@ -346,7 +341,7 @@ internal class _AppBarState__app_bar : global::Doroti.Framework.Widgets.State<Ap
         global::Doroti.Framework.Widgets.Widget? actionsLocal = default!;
         if (((((AppBar)this.widget).actions is not null) && System.Linq.Enumerable.Any(((AppBar)this.widget).actions!)))
         {
-            actionsLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: actionsPaddingLocal, child: new global::Doroti.Framework.Widgets.Row(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: (theme.useMaterial3 ? global::Doroti.Framework.Rendering.CrossAxisAlignment.center : global::Doroti.Framework.Rendering.CrossAxisAlignment.stretch), children: ((AppBar)this.widget).actions!)));
+            actionsLocal = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: actionsPaddingLocal, child: new global::Doroti.Framework.Widgets.Row(mainAxisSize: global::Doroti.Framework.Rendering.MainAxisSize.min, crossAxisAlignment: ((global::Doroti.Framework.Rendering.CrossAxisAlignment.center)), children: ((AppBar)this.widget).actions!)));
         }
         else
         {
@@ -384,9 +379,8 @@ internal class _AppBarState__app_bar : global::Doroti.Framework.Widgets.State<Ap
         {
             appBar = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Stack(fit: global::Doroti.Framework.Rendering.StackFit.passthrough, children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(sortKey: (((AppBar)this.widget).useDefaultSemanticsOrder ? new global::Doroti.Framework.Semantics.OrdinalSortKey(1.0) : null), explicitChildNodes: true, child: ((AppBar)this.widget).flexibleSpace)), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(sortKey: (((AppBar)this.widget).useDefaultSemanticsOrder ? new global::Doroti.Framework.Semantics.OrdinalSortKey(0.0) : null), explicitChildNodes: true, child: new Material(type: MaterialType.transparency, child: appBar))) }));
         }
-        global::Doroti.Framework.Services.SystemUiOverlayStyle overlayStyle = ((((((AppBar)this.widget).systemOverlayStyle ?? appBarTheme.systemOverlayStyle) ?? defaults.systemOverlayStyle) ?? (global::Doroti.Framework.Services.SystemUiOverlayStyle)_systemOverlayStyleForBrightness(ThemeData.estimateBrightnessForColor(effectiveBackgroundColor), (theme.useMaterial3 ? new global::Doroti.Ui.Color(0L) : null))));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new global::Doroti.Framework.Widgets.AnnotatedRegion<global::Doroti.Framework.Services.SystemUiOverlayStyle>(value: overlayStyle, child: new Material(color: (theme.useMaterial3 ? effectiveBackgroundColor : backgroundColorLocal), elevation: effectiveElevation, type: (((AppBar)this.widget).forceMaterialTransparency ? MaterialType.transparency : MaterialType.canvas), shadowColor: ((((AppBar)this.widget).shadowColor ?? appBarTheme.shadowColor) ?? defaults.shadowColor), surfaceTintColor: ((((AppBar)this.widget).surfaceTintColor ?? appBarTheme.surfaceTintColor) ?? ((theme.useMaterial3 ? theme.colorScheme.surfaceTint : null))), shape: ((((AppBar)this.widget).shape ?? appBarTheme.shape) ?? defaults.shape), animateColor: ((AppBar)this.widget).animateColor, child: new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: true, child: appBar)))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        global::Doroti.Framework.Services.SystemUiOverlayStyle overlayStyle = ((((((AppBar)this.widget).systemOverlayStyle ?? appBarTheme.systemOverlayStyle) ?? defaults.systemOverlayStyle) ?? (global::Doroti.Framework.Services.SystemUiOverlayStyle)_systemOverlayStyleForBrightness(ThemeData.estimateBrightnessForColor(effectiveBackgroundColor), ((new global::Doroti.Ui.Color(0L))))));
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(container: true, child: new global::Doroti.Framework.Widgets.AnnotatedRegion<global::Doroti.Framework.Services.SystemUiOverlayStyle>(value: overlayStyle, child: new Material(color: ((effectiveBackgroundColor)), elevation: effectiveElevation, type: (((AppBar)this.widget).forceMaterialTransparency ? MaterialType.transparency : MaterialType.canvas), shadowColor: ((((AppBar)this.widget).shadowColor ?? appBarTheme.shadowColor) ?? defaults.shadowColor), surfaceTintColor: ((((AppBar)this.widget).surfaceTintColor ?? appBarTheme.surfaceTintColor) ?? (((theme.colorScheme.surfaceTint)))), shape: ((((AppBar)this.widget).shape ?? appBarTheme.shape) ?? defaults.shape), animateColor: ((AppBar)this.widget).animateColor, child: new global::Doroti.Framework.Widgets.Semantics(explicitChildNodes: true, child: appBar)))));
     }
 
 }
@@ -964,7 +958,7 @@ internal class _ScrollUnderFlexibleSpace__app_bar : global::Doroti.Framework.Wid
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         AppBarThemeData appBarTheme = AppBarTheme.of(context);
-        AppBarThemeData defaults = (Theme.of(context).useMaterial3 ? new _AppBarDefaultsM3__app_bar(context) : new _AppBarDefaultsM2__app_bar(context));
+        AppBarThemeData defaults = ((new _AppBarDefaultsM3__app_bar(context)));
         FlexibleSpaceBarSettings settings = context.dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>()!;
         _ScrollUnderFlexibleConfig__app_bar config = this.configBuilder(context);
         DartRuntimePrimitives.Assert(() => ((_ScrollUnderFlexibleConfig__app_bar)config).expandedTitlePadding.isNonNegative, () => (object?)"The _ExpandedTitleWithPadding widget assumes that the expanded title padding is non-negative. " + "Update its implementation to handle negative padding.");
@@ -973,7 +967,6 @@ internal class _ScrollUnderFlexibleSpace__app_bar : global::Doroti.Framework.Wid
         global::Doroti.Framework.Painting.EdgeInsets resolvedTitlePadding = ((global::Doroti.Framework.Painting.EdgeInsets)(object?)((_ScrollUnderFlexibleConfig__app_bar)config).expandedTitlePadding.resolve(Directionality.of(context)));
         global::Doroti.Framework.Painting.EdgeInsetsGeometry expandedTitlePaddingLocal = ((global::Doroti.Framework.Painting.EdgeInsetsGeometry)(object?)((this.bottomHeight > 0L) ? resolvedTitlePadding.copyWith(bottom: 0) : resolvedTitlePadding));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)MediaQuery.withClampedTextScaling(maxScaleFactor: App_barLibrary._kMaxTitleTextScaleFactor, child: new global::Doroti.Framework.Widgets.Column(children: ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection89388 = new List<global::Doroti.Framework.Widgets.Widget>(); __collection89388.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(top: (((FlexibleSpaceBarSettings)settings).minExtent - this.bottomHeight))))); __collection89388.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Flexible(child: new global::Doroti.Framework.Widgets.ClipRect(child: new _ExpandedTitleWithPadding__app_bar(padding: expandedTitlePaddingLocal, maxExtent: (((FlexibleSpaceBarSettings)settings).maxExtent - ((FlexibleSpaceBarSettings)settings).minExtent), child: expandedTitle))))); if ((this.bottomHeight > 0L)) { __collection89388.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: this.bottomHeight)))); } return __collection89388; }))())));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
 }
@@ -1143,51 +1136,6 @@ internal interface _ScrollUnderFlexibleConfig__app_bar
     public global::Doroti.Framework.Painting.TextStyle? collapsedTextStyle { get; }
     public global::Doroti.Framework.Painting.TextStyle? expandedTextStyle { get; }
     public global::Doroti.Framework.Painting.EdgeInsetsGeometry expandedTitlePadding { get; }
-}
-
-internal class _AppBarDefaultsM2__app_bar : AppBarThemeData
-{
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
-    private bool __late__theme_initialized;
-    private ThemeData __late__theme = default!;
-    internal virtual ThemeData _theme
-    {
-        get
-        {
-            if (!__late__theme_initialized)
-            {
-                __late__theme = Theme.of(this.context);
-                __late__theme_initialized = true;
-            }
-            return __late__theme;
-        }
-    }
-    private bool __late__colors_initialized;
-    private ColorScheme __late__colors = default!;
-    internal virtual ColorScheme _colors
-    {
-        get
-        {
-            if (!__late__colors_initialized)
-            {
-                __late__colors = this._theme.colorScheme;
-                __late__colors_initialized = true;
-            }
-            return __late__colors;
-        }
-    }
-
-    internal _AppBarDefaultsM2__app_bar(global::Doroti.Framework.Widgets.BuildContext context) : base(elevation: 4.0, shadowColor: new global::Doroti.Ui.Color(4278190080L), titleSpacing: global::Doroti.Framework.Widgets.NavigationToolbar.kMiddleSpacing, toolbarHeight: ConstantsLibrary.kToolbarHeight)
-    {
-        this.context = context;
-    }
-
-    public virtual global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((object.Equals(this._colors.brightness, Brightness.dark)) ? this._colors.surface : this._colors.primary));
-    public virtual global::Doroti.Ui.Color? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(((object.Equals(this._colors.brightness, Brightness.dark)) ? this._colors.onSurface : this._colors.onPrimary));
-    public override global::Doroti.Framework.Widgets.IconThemeData? iconTheme => this._theme.iconTheme;
-    public override global::Doroti.Framework.Painting.TextStyle? toolbarTextStyle => this._theme.textTheme.bodyMedium;
-    public override global::Doroti.Framework.Painting.TextStyle? titleTextStyle => this._theme.textTheme.titleLarge;
-    public virtual global::Doroti.Framework.Painting.EdgeInsets? actionsPadding => global::Doroti.Framework.Painting.EdgeInsets.zero;
 }
 
 internal class _AppBarDefaultsM3__app_bar : AppBarThemeData

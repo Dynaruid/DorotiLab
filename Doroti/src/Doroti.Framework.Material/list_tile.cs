@@ -161,7 +161,7 @@ public class ListTile : global::Doroti.Framework.Widgets.StatelessWidget
         IconButtonThemeData iconButtonTheme = IconButtonTheme.of(context);
         ListTileThemeData tileTheme = ListTileTheme.of(context);
         ListTileStyle listTileStyle = (((this.style ?? tileTheme.style) ?? theme.listTileTheme.style) ?? ListTileStyle.list);
-        ListTileThemeData defaults = (theme.useMaterial3 ? new _LisTileDefaultsM3__list_tile(context) : new _LisTileDefaultsM2__list_tile(context, listTileStyle));
+        ListTileThemeData defaults = ((new _LisTileDefaultsM3__list_tile(context)));
         global::Doroti.Ui.Color backgroundColor = ((this.tileColor ?? tileTheme.tileColor) ?? theme.listTileTheme.tileColor) ?? defaults.tileColor ?? new global::Doroti.Ui.Color(0L);
         global::Doroti.Ui.Color selectedBackgroundColor = ((this.selectedTileColor ?? tileTheme.selectedTileColor) ?? theme.listTileTheme.selectedTileColor) ?? defaults.tileColor ?? new global::Doroti.Ui.Color(0L);
         var effectiveTileColor = (this.selected ? selectedBackgroundColor : backgroundColor);
@@ -217,9 +217,8 @@ public class ListTile : global::Doroti.Framework.Widgets.StatelessWidget
         global::Doroti.Framework.Painting.EdgeInsets resolvedContentPadding = ((((this.contentPadding?.resolve(textDirectionLocal) ?? (global::Doroti.Framework.Painting.EdgeInsets)tileTheme.contentPadding?.resolve(textDirectionLocal))) ?? (global::Doroti.Framework.Painting.EdgeInsets)defaults.contentPadding!.resolve(textDirectionLocal)));
         var mouseStates = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection36732 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((!this.enabled || (((this.onTap is null) && (this.onLongPress is null))))) { __collection36732.Add(global::Doroti.Framework.Widgets.WidgetState.disabled); } return __collection36732; }))();
         global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = ((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(this.mouseCursor, mouseStates) ?? (global::Doroti.Framework.Services.MouseCursor)tileTheme.mouseCursor?.resolve(mouseStates))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(mouseStates)));
-        ListTileTitleAlignment effectiveTitleAlignment = ((this.titleAlignment ?? tileTheme.titleAlignment) ?? ((theme.useMaterial3 ? ListTileTitleAlignment.threeLine : ListTileTitleAlignment.titleHeight)));
+        ListTileTitleAlignment effectiveTitleAlignment = ((this.titleAlignment ?? tileTheme.titleAlignment) ?? (((ListTileTitleAlignment.threeLine))));
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new InkWell(customBorder: (this.shape ?? tileTheme.shape), onTap: ((global::System.Action)(this.enabled ? this.onTap : null)), onLongPress: ((global::System.Action)(this.enabled ? this.onLongPress : null)), onFocusChange: this.onFocusChange, mouseCursor: effectiveMouseCursor, canRequestFocus: this.enabled, focusNode: this.focusNode, focusColor: this.focusColor, hoverColor: this.hoverColor, splashColor: this.splashColor, autofocus: this.autofocus, enableFeedback: ((this.enableFeedback ?? tileTheme.enableFeedback) ?? true), statesController: this.statesController, child: new global::Doroti.Framework.Widgets.Semantics(button: (this.internalAddSemanticForOnTap && (((this.onTap is not null) || (this.onLongPress is not null)))), selected: this.selected, enabled: this.enabled, child: new Ink(decoration: new global::Doroti.Framework.Painting.ShapeDecoration(shape: ((this.shape ?? tileTheme.shape) ?? new global::Doroti.Framework.Painting.Border()), color: effectiveTileColor), child: new global::Doroti.Framework.Widgets.SafeArea(top: false, bottom: false, minimum: resolvedContentPadding, child: IconTheme.merge(data: iconThemeData, child: new IconButtonTheme(data: iconButtonThemeData, child: new _ListTile__list_tile(leading: leadingIcon, title: titleText, subtitle: subtitleText, trailing: trailingIcon, isDense: _isDenseLayout(theme, tileTheme), visualDensity: ((this.visualDensity ?? tileTheme.visualDensity) ?? theme.visualDensity), isThreeLine: (((this.isThreeLine ?? tileTheme.isThreeLine) ?? theme.listTileTheme.isThreeLine) ?? false), textDirection: textDirectionLocal, titleBaselineType: (((global::Doroti.Framework.Painting.TextStyle)titleStyle).textBaseline ?? DartRuntimePrimitives.RequireValue(defaults.titleTextStyle!.textBaseline)), subtitleBaselineType: (subtitleStyle?.textBaseline ?? DartRuntimePrimitives.RequireValue(defaults.subtitleTextStyle!.textBaseline)), horizontalTitleGap: ((this.horizontalTitleGap ?? tileTheme.horizontalTitleGap) ?? 16), minVerticalPadding: ((this.minVerticalPadding ?? tileTheme.minVerticalPadding) ?? DartRuntimePrimitives.RequireValue(defaults.minVerticalPadding)), minLeadingWidth: ((this.minLeadingWidth ?? tileTheme.minLeadingWidth) ?? DartRuntimePrimitives.RequireValue(defaults.minLeadingWidth)), minTileHeight: (this.minTileHeight ?? tileTheme.minTileHeight), titleAlignment: effectiveTitleAlignment))))))));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
@@ -819,12 +818,9 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
     public virtual global::Doroti.Framework.Rendering.RenderBox? childForSlot(_ListTileSlot__list_tile slot) => this._slotToChild.GetValueOrDefault(slot);
     public virtual string debugNameForSlot(_ListTileSlot__list_tile slot)
     {
-        if (true)
         {
             return slot.ToString();
         }
-        return slot.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     public override void attach(global::Doroti.Framework.Rendering.PipelineOwner owner)
@@ -898,51 +894,6 @@ public class _RenderListTile__list_tile : global::Doroti.Framework.Rendering.Ren
         _setChild(child, slot);
     }
 
-}
-
-internal class _LisTileDefaultsM2__list_tile : ListTileThemeData
-{
-    public virtual global::Doroti.Framework.Widgets.BuildContext context { get; private set; } = default!;
-    private bool __late__theme_initialized;
-    private ThemeData __late__theme = default!;
-    internal virtual ThemeData _theme
-    {
-        get
-        {
-            if (!__late__theme_initialized)
-            {
-                __late__theme = Theme.of(this.context);
-                __late__theme_initialized = true;
-            }
-            return __late__theme;
-        }
-    }
-    private bool __late__textTheme_initialized;
-    private TextTheme __late__textTheme = default!;
-    internal virtual TextTheme _textTheme
-    {
-        get
-        {
-            if (!__late__textTheme_initialized)
-            {
-                __late__textTheme = this._theme.textTheme;
-                __late__textTheme_initialized = true;
-            }
-            return __late__textTheme;
-        }
-    }
-
-    internal _LisTileDefaultsM2__list_tile(global::Doroti.Framework.Widgets.BuildContext context, ListTileStyle style) : base(contentPadding: global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(horizontal: 16.0), minLeadingWidth: 40, minVerticalPadding: 4, shape: new global::Doroti.Framework.Painting.Border(), style: style)
-    {
-        this.context = context;
-    }
-
-    public virtual global::Doroti.Ui.Color? tileColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public override global::Doroti.Framework.Painting.TextStyle? titleTextStyle => (DartRuntimePrimitives.RequireValue(style) switch { ListTileStyle.drawer => this._textTheme.bodyLarge, ListTileStyle.list => this._textTheme.titleMedium, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-    public override global::Doroti.Framework.Painting.TextStyle? subtitleTextStyle => this._textTheme.bodyMedium!.copyWith(color: this._textTheme.bodySmall!.color);
-    public override global::Doroti.Framework.Painting.TextStyle? leadingAndTrailingTextStyle => this._textTheme.bodyMedium;
-    public virtual global::Doroti.Ui.Color? selectedColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._theme.colorScheme.primary);
-    public virtual global::Doroti.Ui.Color? iconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((this._theme.brightness switch { Brightness.light => Colors.black45, Brightness.dark => DartRuntimePrimitives.ConvertValue<Color>(null), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") }));
 }
 
 internal class _LisTileDefaultsM3__list_tile : ListTileThemeData

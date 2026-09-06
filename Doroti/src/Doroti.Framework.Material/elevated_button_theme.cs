@@ -33,7 +33,7 @@ public class ElevatedButtonThemeData : global::Doroti.Framework.Foundation.Diagn
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(this.style.GetHashCode());
+    public override int GetHashCode() => this.style?.GetHashCode() ?? 0;
     public override bool Equals(object? other)
     {
         var __other = other as ElevatedButtonThemeData;
