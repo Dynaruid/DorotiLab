@@ -11,20 +11,33 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_sample_app/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Material demo starts and switches theme', (
+    WidgetTester tester,
+  ) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const DifferentialApp());
+    await tester.pumpWidget(const App());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('Counter 0'), findsOneWidget);
-    expect(find.text('Counter 1'), findsNothing);
+    // The demo starts with the system theme.
+    expect(find.text('Material 3'), findsOneWidget);
+    expect(
+      tester.widget<MaterialApp>(find.byType(MaterialApp)).themeMode,
+      ThemeMode.system,
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    // Switch to the dark theme using the app bar action.
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.byIcon(Icons.dark_mode_outlined),
+      ),
+    );
     await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
 
-    // Verify that our counter has incremented.
-    expect(find.text('Counter 0'), findsNothing);
-    expect(find.text('Counter 1'), findsOneWidget);
+    // The selected theme is applied to the app.
+    expect(
+      tester.widget<MaterialApp>(find.byType(MaterialApp)).themeMode,
+      ThemeMode.dark,
+    );
   });
 }

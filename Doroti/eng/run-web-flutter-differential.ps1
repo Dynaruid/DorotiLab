@@ -74,7 +74,7 @@ if (-not $SkipBuild) {
 Invoke-DifferentialProcess -FilePath $dotnet `
     -ArgumentList @('build', $dorotiProject, '--configuration', $Configuration, '--nologo') `
     -WorkingDirectory $repositoryRoot -Name 'doroti-build'
-$flutterArguments = @('build', 'web', '--release')
+$flutterArguments = @('build', 'web', '--release', '--target', 'lib/differential_main.dart')
 if ($FlutterRenderer -eq 'skwasm') { $flutterArguments += '--wasm' }
 Invoke-DifferentialProcess -FilePath $flutter.FlutterCommand `
     -ArgumentList $flutterArguments `

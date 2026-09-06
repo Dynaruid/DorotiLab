@@ -1,11 +1,11 @@
 {
-    "name": "flutter_sample_app",
-    "short_name": "flutter_sample_app",
+    "name": "Material 3 Demo",
+    "short_name": "Material 3 Demo",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Flutter Material 3 components, colors, typography and elevation.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
