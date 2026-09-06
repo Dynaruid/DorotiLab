@@ -15,7 +15,7 @@ Doroti does not embed Flutter in a WebView and does not compose its UI from a pl
 
 The project began by translating large Flutter source slices through a semantic compiler. That bootstrap made the current framework possible, but it is no longer the normal feature workflow.
 
-Today `Doroti/src/Doroti.Framework.*` is product-owned C# source with matching `Doroti.Framework.*` namespaces, assemblies, and packages. Features and fixes are developed directly in the owning framework/runtime/renderer/host contract. The Dart-to-C# compiler and pinned Flutter checkout remain optional import and reference-differential tools; they never overwrite product source. `DorotiDemoApp` and generated `doroti-app` projects are C#-only, and active validation never creates a Dart package inside them.
+Today `Doroti/src/Doroti.Framework.*` is product-owned C# source with matching `Doroti.Framework.*` namespaces, assemblies, and packages. Features and fixes are developed directly in the owning framework/runtime/renderer/host contract. The Dart-to-C# compiler and pinned Flutter checkout remain optional import and reference-differential tools; they never overwrite product source. `DorotiTestbedApp` and generated `doroti-app` projects are C#-only, and active validation never creates a Dart package inside them.
 
 See [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md), [ADR-022](Doroti/docs/adr/ADR-022-default-native-platform-bridge.md), and the current [Windows host decision](Doroti/docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md).
 
@@ -53,9 +53,9 @@ Flutter source is consulted when fidelity work needs a behavioral reference. Com
 Requires .NET SDK 10.0.400, matching 10.0.11 runtimes/workloads, and PowerShell 7.
 
 ```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -LastSuccessful
+pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -LastSuccessful
 ```
 
 The Windows command selects Windows App SDK/`HwndExactCpp` by default. Use `-WindowsBackend Maui` only when the independent Windows MAUI runner is intended.
@@ -68,7 +68,7 @@ Windows App SDK now defaults to `Vulkan`; select `DOROTI_WINDOWS_PRESENTER=Angle
 | Path | Description |
 | --- | --- |
 | [`Doroti/src/`](Doroti/src/) | Product framework, runtime, rendering, hosts, target packages, and SDK |
-| [`DorotiDemoApp/`](DorotiDemoApp/) | Platform-workspace Material dogfood application |
+| [`DorotiTestbedApp/`](DorotiTestbedApp/) | Platform-workspace Material dogfood application |
 | [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` template |
 | [`Doroti/eng/`](Doroti/eng/) | Build, SDK preparation, local-state, and optional diagnostic tools |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | Optional Dart/Flutter import and migration compiler |

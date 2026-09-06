@@ -18,7 +18,7 @@ function countPixelDifferences(first: Buffer, second: Buffer): number {
 
 test("semantics, pointer, keyboard, and native text endpoint remain available", async ({ page, runtimeErrors }) => {
   const initial = await openDoroti(page);
-  await expect(page.getByRole("application", { name: "Doroti Material Demo" })).toBeAttached();
+  await expect(page.getByRole("application", { name: "Doroti Material Testbed" })).toBeAttached();
   const button = page.getByRole("button", { name: "G6 Material button" });
   await expect(button).toBeAttached();
   const clickStarted = await page.evaluate(() => performance.now());

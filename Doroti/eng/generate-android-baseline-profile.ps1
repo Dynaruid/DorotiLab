@@ -3,7 +3,7 @@
 param(
     [Parameter(Mandatory)] [string] $Serial,
     [Parameter(Mandatory)] [string] $Apk,
-    [string] $Package = 'dev.doroti.demo',
+    [string] $Package = 'dev.doroti.testbed',
     [string] $OutputDirectory
 )
 

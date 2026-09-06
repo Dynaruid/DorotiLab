@@ -149,7 +149,7 @@ pwsh -NoProfile -File ./Doroti/eng/run-web-playwright.ps1 -Configuration Release
 $env:DOROTI_FAST_RESIZE_TRACE='1'
 pwsh -NoProfile -File ./Doroti/eng/run-web-playwright.ps1 -Configuration Release -SkipBuild -FastResize -Port 5188 -ArtifactLabel resize-v2-w0-diagnostic
 npm.cmd --prefix Doroti/validation/web-playwright run check
-dotnet msbuild DorotiDemoApp/web/DorotiDemoApp.Web.csproj -p:Configuration=Release -getProperty:Configuration,RunAOTCompilation,WasmBuildNative,TargetFramework,RuntimeIdentifier
+dotnet msbuild DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -p:Configuration=Release -getProperty:Configuration,RunAOTCompilation,WasmBuildNative,TargetFramework,RuntimeIdentifier
 ```
 
 합성 회귀는 `Doroti/validation/web-playwright`에서 `npx playwright test tests/resize-following.spec.ts --project=chromium-hardware`를 실행했다. PowerShell Start-Process/WaitForExit(1200000)으로 프로세스 제한을 적용했다.

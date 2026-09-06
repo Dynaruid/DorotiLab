@@ -41,4 +41,4 @@ The retired G5-5 milestone gate validated two Material applications, one Cuperti
 
 The aggregate result is `migration/flutter-framework/g5-5-evidence.json` using `doroti.g5-5-evidence/v1`.
 
-Physical Windows plugin integration, physical font/asset rendering, and physical localization UI remain `notVerified`. They are intentionally deferred to the G5-8 `DorotiDemoApp` target-machine stage.
+Physical Windows plugin integration, physical font/asset rendering, and physical localization UI remain `notVerified`. They are intentionally deferred to the G5-8 `DorotiTestbedApp` target-machine stage.

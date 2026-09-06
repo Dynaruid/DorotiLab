@@ -14,8 +14,8 @@
 ## 2. 최종 아키텍처
 
 ```text
-DorotiDemoApp/
-  DorotiDemoApp.csproj          # net10.0 플랫폼 중립 앱 library
+DorotiTestbedApp/
+  DorotiTestbedApp.csproj          # net10.0 플랫폼 중립 앱 library
   Program.cs                    # IDorotiApplicationStartup
   src/
   assets/
@@ -142,7 +142,7 @@ Doroti .NET runner
 - package-only `doroti-app` 설치, identity/version 치환, 7개 project 생성: `PASS`
 - 외부 template root/Windows/Web build: `PASS`
 - `pwsh -NoProfile -File .\Doroti\eng\doroti.ps1 validate -ValidationSuite Developer`: `PASS`
-- `doroti doctor -App .\DorotiDemoApp`: `PASS`
+- `doroti doctor -App .\DorotiTestbedApp`: `PASS`
 - 종료 시점 `git diff --check`: `PASS`
 
 이 결과는 2026-08-19의 미커밋 작업 트리에서 얻은 종료 기록이다. 구조를 추가 변경한 뒤에는 재사용하지 않고 다시 검증해야 한다.
@@ -215,7 +215,7 @@ Windows cross-build PASS는 Apple native PASS가 아니다.
 - `Doroti/validation/contracts/`
 - `Doroti/validation/evidence/`
 - `Doroti/docs/adr/ADR-021-platform-runner-workspaces.md`
-- `DorotiDemoApp/`
+- `DorotiTestbedApp/`
 
 ## 9. 재개 시 주의사항
 

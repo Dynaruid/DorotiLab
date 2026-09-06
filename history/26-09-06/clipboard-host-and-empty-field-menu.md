@@ -38,7 +38,7 @@
 저장소 루트 `C:\Users\parti\Labo\DorotiLab`에서 수정된 앱 실행:
 
 ```powershell
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
 ```
 
-이 루트에서 `../DorotiDemoApp`는 상위 디렉터리를 가리켜 workspace manifest 조회에 실패한다. 빌드는 `./DorotiDemoApp`로 수행했다. 이미 떠 있는 앱에는 DLL 변경이 소급 적용되지 않으므로 새 실행이 필요하다.
+이 루트에서 `../DorotiTestbedApp`는 상위 디렉터리를 가리켜 workspace manifest 조회에 실패한다. 빌드는 `./DorotiTestbedApp`로 수행했다. 이미 떠 있는 앱에는 DLL 변경이 소급 적용되지 않으므로 새 실행이 필요하다.

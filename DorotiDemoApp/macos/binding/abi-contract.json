@@ -1,8 +1,0 @@
-{
-  "schemaVersion": "doroti.native-binding-abi/v1",
-  "platform": "MacCatalyst",
-  "module": "DorotiDemoAppNative",
-  "scheme": "DorotiDemoAppNative",
-  "bridgeVersion": "1.0.0",
-  "exports": ["platformInfo", "echo:", "echoOnMainThreadWithValue:completion:"]
-}

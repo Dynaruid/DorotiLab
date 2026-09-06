@@ -34,19 +34,19 @@ Doroti platform runner
 기본 앱은 root app, 6개 runner, 3개 binding으로 총 10개의 `.csproj`를 가진다. Android, iOS, Mac Catalyst에는 각각 독립 native project와 binding project가 있다.
 
 ```text
-DorotiDemoApp/
-  DorotiDemoApp.csproj
+DorotiTestbedApp/
+  DorotiTestbedApp.csproj
   android/
-    DorotiDemoApp.Android.csproj
-    binding/DorotiDemoApp.Android.Native.csproj
+    DorotiTestbedApp.Android.csproj
+    binding/DorotiTestbedApp.Android.Native.csproj
     native/                         # Gradle library project
   ios/
-    DorotiDemoApp.iOS.csproj
-    binding/DorotiDemoApp.iOS.Native.csproj
+    DorotiTestbedApp.iOS.csproj
+    binding/DorotiTestbedApp.iOS.Native.csproj
     native/                         # iOS Xcode framework project
   macos/
-    DorotiDemoApp.MacCatalyst.csproj
-    binding/DorotiDemoApp.MacCatalyst.Native.csproj
+    DorotiTestbedApp.MacCatalyst.csproj
+    binding/DorotiTestbedApp.MacCatalyst.Native.csproj
     native/                         # Mac Catalyst Xcode framework project
   linux/
   web/
@@ -184,9 +184,9 @@ Windows cross-build PASS를 Apple Xcode/native PASS로 해석하지 않는다.
 - `Doroti/validation/contracts/`
 - `Doroti/validation/evidence/`
 - `Doroti/docs/adr/ADR-021-platform-runner-workspaces.md`
-- `DorotiDemoApp/android/`
-- `DorotiDemoApp/ios/`
-- `DorotiDemoApp/macos/`
+- `DorotiTestbedApp/android/`
+- `DorotiTestbedApp/ios/`
+- `DorotiTestbedApp/macos/`
 
 ## 10. 재개 시 주의사항
 

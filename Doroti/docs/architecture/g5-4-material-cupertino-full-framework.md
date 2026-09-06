@@ -44,4 +44,4 @@ The four dimensions must all produce `G5-4-GALLERY-DIFFERENTIAL-PASS`.
 
 The aggregate result is `migration/flutter-framework/g5-4-evidence.json`. It links the closure, batch index, Material/Cupertino API manifests, gallery differential result, and reviewed build log.
 
-Physical Windows IME, external accessibility, sustained GPU, and cross-monitor DPI proof are deliberately not used to close G5-4. They remain `notVerified` and are deferred to the G5-8 `DorotiDemoApp` target-machine stage.
+Physical Windows IME, external accessibility, sustained GPU, and cross-monitor DPI proof are deliberately not used to close G5-4. They remain `notVerified` and are deferred to the G5-8 `DorotiTestbedApp` target-machine stage.

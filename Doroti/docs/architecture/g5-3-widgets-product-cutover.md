@@ -35,4 +35,4 @@ A generated application exercises the promoted Widgets surface. The gate perform
 
 The aggregate index is `migration/flutter-framework/g5-3-evidence.json`. It links predecessor, W0–W7, platform, text-input, API, disposition, behavior, and external application evidence.
 
-Automated current-machine Windows evidence includes actual HWND bootstrap/attach/frame/GPU present/ACK/shutdown and typed capability round trips. Physical Windows IME, external physical accessibility, sustained physical GPU, and cross-monitor DPI remain `notVerified` until G5-8 `DorotiDemoApp` target-machine execution.
+Automated current-machine Windows evidence includes actual HWND bootstrap/attach/frame/GPU present/ACK/shutdown and typed capability round trips. Physical Windows IME, external physical accessibility, sustained physical GPU, and cross-monitor DPI remain `notVerified` until G5-8 `DorotiTestbedApp` target-machine execution.

@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+    <AssemblyName>DorotiTestbedApp.Web</AssemblyName>
+    <RootNamespace>DorotiTestbedApp.Web</RootNamespace>
+    <DorotiAppProject>..\DorotiTestbedApp.csproj</DorotiAppProject>
+    <DorotiTarget>Web</DorotiTarget>
+    <DorotiHostKind>BlazorWebAssembly</DorotiHostKind>
+    <DorotiNativeEntryKind>Managed-Main</DorotiNativeEntryKind>
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <WasmBuildNative>true</WasmBuildNative>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
+    <EmccExtraLDFlags>$(EmccExtraLDFlags) --js-library="$(MSBuildThisFileDirectory)..\..\Doroti\src\Doroti.Target.Web.browser-wasm\build\DorotiSkiaInterop.js"</EmccExtraLDFlags>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.11" />
+    <DorotiTargetDescriptor Include="Web" HostKind="BlazorWebAssembly" NativeEntryKind="Managed-Main"
+        RuntimeIdentifier="browser-wasm" TargetFramework="net10.0" TargetPackage="Doroti.Target.Web.browser-wasm" />
+    <ProjectReference Include="..\..\Doroti\src\Doroti.Target.Web.browser-wasm\Doroti.Target.Web.browser-wasm.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.11" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="7.0.0" PrivateAssets="all" />
+    <DorotiJavaScriptPlugin Include="echo" Channel="doroti.example/echo" ExportName="invoke" ModuleUrl="./plugins/echo.js" />
+  </ItemGroup>
+  <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+  <Target Name="DorotiSelectExperimentalAotCompiler" BeforeTargets="_WasmAotCompileApp"
+          Condition="'$(DorotiAotCompilerPath)' != ''">
+    <Error Condition="!Exists('$(DorotiAotCompilerPath)')" Text="Experimental AOT compiler does not exist." />
+    <ItemGroup>
+      <MonoAotCrossCompiler Remove="@(MonoAotCrossCompiler)" />
+      <MonoAotCrossCompiler Include="$(DorotiAotCompilerPath)" RuntimeIdentifier="browser-wasm" />
+    </ItemGroup>
+    <Message Importance="High" Text="Doroti experimental AOT compiler: @(MonoAotCrossCompiler)" />
+  </Target>
+  <Target Name="DorotiSelectPartialAot" BeforeTargets="_WasmAotCompileApp"
+          Condition="'$(DorotiPartialAot)' == 'true'">
+    <ItemGroup>
+      <_WasmAssembliesInternal Update="@(_WasmAssembliesInternal)" Condition="'%(Filename)' == 'Doroti.Framework.Material'">
+        <AOT_InternalForceToInterpret>true</AOT_InternalForceToInterpret>
+      </_WasmAssembliesInternal>
+    </ItemGroup>
+    <Message Importance="High" Text="Doroti partial AOT: Material remains interpreted; full AOT compiler failure is not reclassified." />
+  </Target>
+</Project>

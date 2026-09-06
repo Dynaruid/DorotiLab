@@ -11,7 +11,7 @@
 
 이 문서는 삭제한 루트 `goal7.md`의 완료 결과, 부분 결과와 미실행 gate를 압축해 보존하는 역사 기록이다. 새로운 active roadmap이나 실행 지시서가 아니다.
 
-Goal7은 동일한 일반 C# `DorotiDemoApp`을 Windows `win-x64`, Apple Silicon macOS `osx-arm64`와 Blazor WebAssembly `browser-wasm`으로 build/publish/run하는 제품 경계를 목표로 했다. Flutter SDK와 Dart project는 framework 생성 및 reference differential에만 사용하고, 사용자 제품 경로는 표준 .NET SDK와 배포된 Doroti template/package만 사용하도록 고정했다.
+Goal7은 동일한 일반 C# `DorotiTestbedApp`을 Windows `win-x64`, Apple Silicon macOS `osx-arm64`와 Blazor WebAssembly `browser-wasm`으로 build/publish/run하는 제품 경계를 목표로 했다. Flutter SDK와 Dart project는 framework 생성 및 reference differential에만 사용하고, 사용자 제품 경로는 표준 .NET SDK와 배포된 Doroti template/package만 사용하도록 고정했다.
 
 ## 2. 고정된 제품·검증 원칙
 

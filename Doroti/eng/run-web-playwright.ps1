@@ -44,7 +44,7 @@ if ($FastResize) {
 $timeout = [TimeSpan]::FromMinutes(20)
 $dorotiRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $repositoryRoot = [IO.Path]::GetFullPath((Join-Path $dorotiRoot '..'))
-$project = Join-Path $repositoryRoot 'DorotiDemoApp/web/DorotiDemoApp.Web.csproj'
+$project = Join-Path $repositoryRoot 'DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj'
 $playwrightRoot = Join-Path $dorotiRoot 'validation/web-playwright'
 $resolvedArtifactLabel = if ([string]::IsNullOrWhiteSpace($ArtifactLabel)) { $RendererMode } else { $ArtifactLabel }
 if ($resolvedArtifactLabel -match '\.\.' -or $resolvedArtifactLabel -notmatch '^[a-zA-Z0-9._/-]+$') {

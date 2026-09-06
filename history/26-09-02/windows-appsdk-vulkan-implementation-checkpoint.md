@@ -12,7 +12,7 @@ Silk.NET Vulkan 2.23.0 is integrated into the opaque `HwndExactCpp` product path
 
 Stale work now terminates before acquire; successful acquire commits the image to unconditional copy/present. This removes acquired-image release, signal-drain, swapchain-maintenance, and present-fence requirements. Recreate retires the old swapchain with raster-thread `vkQueueWaitIdle`, and same-image reacquire proves previous present-wait semaphore consumption.
 
-The tested NVIDIA GeForce RTX 4060 Laptop GPU passed the existing comprehensive qualification. The AMD Radeon 780M, which lacks `VK_KHR_swapchain_maintenance1`, passed the revised maintenance-free capability/WSI contracts, product path, DorotiDemoApp Release smoke run, and one automated live-resize probe.
+The tested NVIDIA GeForce RTX 4060 Laptop GPU passed the existing comprehensive qualification. The AMD Radeon 780M, which lacks `VK_KHR_swapchain_maintenance1`, passed the revised maintenance-free capability/WSI contracts, product path, DorotiTestbedApp Release smoke run, and one automated live-resize probe.
 
 ## Evidence ledger
 

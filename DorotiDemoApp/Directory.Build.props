@@ -1,8 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <ApplicationTitle>Doroti Material Demo</ApplicationTitle>
-    <ApplicationId>dev.doroti.demo</ApplicationId>
-    <ApplicationDisplayVersion>0.2.0</ApplicationDisplayVersion>
-    <ApplicationVersion>2</ApplicationVersion>
-  </PropertyGroup>
-</Project>

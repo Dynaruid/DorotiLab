@@ -5,7 +5,7 @@
 > 정리일: 2026-08-18
 > 기준 Doroti revision: `19c6be0` + 이 작업 변경
 > Flutter source pin: `56b8e1a851a594b1a154f8ea93270807dab22b9a`
-> 1차 제품 대상: `DorotiDemoApp`, Android MAUI physical, Windows MAUI live
+> 1차 제품 대상: `DorotiTestbedApp`, Android MAUI physical, Windows MAUI live
 > 이전 기록: [`goal7-summary.md`](../26-08-16/goal7-summary.md)
 
 ## 1. 문서 성격

@@ -6,7 +6,7 @@ Hardware selection is fail-closed. `SkiaSurfaceFactory.CreateHardware` requires 
 
 Both GPU and diagnostic Skia canvases call `SkiaSharp.HarfBuzz.SKShaper`; the managed rectangle-glyph implementation remains reachable only through explicitly selected managed software diagnostics. `SkiaSharp.HarfBuzz` is pinned at the same `4.152.0-rc.1.26426.14` version as SkiaSharp.
 
-The former `DorotiDemoApp --runtime-v2` diagnostic entrypoint was removed when
+The former `DorotiTestbedApp --runtime-v2` diagnostic entrypoint was removed when
 the product demo was consolidated into the Goal6 Material application. This
 document describes the historical A2 application path. The remaining
 current-machine target-report verifier is:

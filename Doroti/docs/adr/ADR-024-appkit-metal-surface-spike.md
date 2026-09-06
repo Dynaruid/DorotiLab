@@ -69,7 +69,7 @@ The accepted surface now lives in `Doroti.Host.Maui` behind `IMauiSkiaSurface`.
 `MauiSkglSurface` preserves the Windows/iOS/Android/Mac Catalyst path, while
 `DorotiMacOSMetalSurface` and `DorotiMacOSMetalView` own AppKit/MTKView/Metal.
 The product graph exposes `Doroti.Target.MacOS.Maui.osx-arm64`, an
-`AppKit-Main` bootstrap, `DorotiDemoApp.MacOS`, the `macos` workspace alias,
+`AppKit-Main` bootstrap, `DorotiTestbedApp.MacOS`, the `macos` workspace alias,
 and a separate `maccatalyst` alias. Build evidence does not promote unrun IME,
 VoiceOver, physical-input, signing, or notarization gates beyond
 `notVerified`.

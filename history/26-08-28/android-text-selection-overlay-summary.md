@@ -1,13 +1,13 @@
 # Android 텍스트 선택 확대경·컨텍스트 메뉴 수정 요약
 
 - 기록일: 2026-08-28
-- 대상: `DorotiDemoApp` / Android x86_64 에뮬레이터 / Material `TextField`
+- 대상: `DorotiTestbedApp` / Android x86_64 에뮬레이터 / Material `TextField`
 - 주요 범위: `TextSelectionHandleControls`, `RawMagnifier`, Material selection toolbar, Dart→C# compatibility lowering
 - 최종 판정: **Android 에뮬레이터에서 길게 누르는 동안 Magnifier가 표시되고, 손을 뗀 뒤 Cut / Copy / Share 컨텍스트 메뉴가 표시되는 것을 실제 화면으로 확인해 PASS했다. 실제 Android 물리 기기는 `notVerified`다.**
 
 ## 1. 증상
 
-`DorotiDemoApp`을 Android 에뮬레이터에서 실행해 `TextField`의 텍스트를 길게 누르면 selection highlight는 생겼지만 다음 overlay UI가 나타나지 않았다.
+`DorotiTestbedApp`을 Android 에뮬레이터에서 실행해 `TextField`의 텍스트를 길게 누르면 selection highlight는 생겼지만 다음 overlay UI가 나타나지 않았다.
 
 - 드래그·길게 누르기 중 Android Magnifier
 - 선택을 마친 뒤 Material 컨텍스트 메뉴
@@ -73,7 +73,7 @@ FCR-7에는 Material controls의 marker 관계, Magnifier paint override, toolba
 | --- | --- |
 | `Doroti.DartToCSharp` Release build | **PASS**, 경고 0개 / 오류 0개 |
 | FCR-7 Material/Widget runtime contract | **PASS** |
-| `DorotiDemoApp.Android` Release `android-x64` build | **PASS**, 경고 0개 / 오류 0개 |
+| `DorotiTestbedApp.Android` Release `android-x64` build | **PASS**, 경고 0개 / 오류 0개 |
 | `git diff --check` | **PASS** |
 
 ### Android 에뮬레이터 runtime

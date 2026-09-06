@@ -22,8 +22,8 @@ if ([string]::IsNullOrWhiteSpace($OutputDirectory)) {
 $OutputDirectory = [IO.Path]::GetFullPath($OutputDirectory)
 New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null
 $startingStatus = @(& git -C $repoRoot status --short)
-$demoProject = Join-Path $repoRoot 'DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj'
-$demoExecutable = Join-Path $repoRoot 'DorotiDemoApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiDemoApp.WindowsAppSdk.exe'
+$demoProject = Join-Path $repoRoot 'DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj'
+$demoExecutable = Join-Path $repoRoot 'DorotiTestbedApp/windowsappsdk/bin/Release/net10.0-windows10.0.19041.0/win-x64/DorotiTestbedApp.WindowsAppSdk.exe'
 $opaqueProject = Join-Path $repoRoot 'Doroti/validation/hwnd-exact-cpp-product/Doroti.Validation.HwndExactCppProduct.csproj'
 $opaqueExecutable = Join-Path $repoRoot 'Doroti/validation/hwnd-exact-cpp-product/bin/Release/net10.0-windows10.0.19041.0/win-x64/Doroti.Validation.HwndExactCppProduct.exe'
 $abiProject = Join-Path $repoRoot 'Doroti/validation/windowsappsdk-native-abi/Doroti.Validation.WindowsAppSdkNativeAbi.csproj'

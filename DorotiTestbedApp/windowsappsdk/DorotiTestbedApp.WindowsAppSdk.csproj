@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>DorotiTestbedApp.WindowsAppSdk</AssemblyName>
+    <RootNamespace>DorotiTestbedApp.WindowsAppSdk</RootNamespace>
+    <DorotiAppProject>..\DorotiTestbedApp.csproj</DorotiAppProject>
+    <DorotiTarget>Windows</DorotiTarget>
+    <DorotiHostKind>WindowsAppSdk</DorotiHostKind>
+    <DorotiNativeEntryKind>Win32-WinMain</DorotiNativeEntryKind>
+    <DorotiWindowsAdapterDefault>HwndExactCpp</DorotiWindowsAdapterDefault>
+    <UseMaui>false</UseMaui>
+    <DefineConstants>$(DefineConstants);WINDOWS;DOROTI_WINDOWS_APPSDK</DefineConstants>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>false</PublishSingleFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" VersionOverride="2.4.0" />
+    <DorotiTargetDescriptor Include="Windows" HostKind="WindowsAppSdk" NativeEntryKind="Win32-WinMain"
+        RuntimeIdentifier="win-x64" TargetFramework="net10.0-windows10.0.19041.0"
+        TargetPackage="Doroti.Target.Windows.WindowsAppSdk.win-x64"
+        AdapterDefault="$(DorotiWindowsAdapterDefault)"
+        AdapterCapabilities="HwndExactCpp" />
+    <ProjectReference Include="..\..\Doroti\src\Doroti.Target.Windows.WindowsAppSdk.win-x64\Doroti.Target.Windows.WindowsAppSdk.win-x64.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\Doroti\src\Doroti.Runner.Sdk\Sdk\Sdk.targets" />
+</Project>

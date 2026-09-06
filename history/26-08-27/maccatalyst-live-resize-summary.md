@@ -63,7 +63,7 @@ dotnet build Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj \
 
 ```sh
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build \
-  -App ./DorotiDemoApp \
+  -App ./DorotiTestbedApp \
   -Platform maccatalyst \
   -Rid maccatalyst-arm64
 ```
@@ -74,7 +74,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build \
 
 ```sh
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run \
-  -App ./DorotiDemoApp \
+  -App ./DorotiTestbedApp \
   -Platform maccatalyst \
   -Rid maccatalyst-arm64
 ```

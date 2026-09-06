@@ -1,7 +1,7 @@
 # Web Playwright 연속성 구현과 검증
 
 - 날짜: 2026-08-29
-- 대상: `DorotiDemoApp` / browser-wasm / WebGL2
+- 대상: `DorotiTestbedApp` / browser-wasm / WebGL2
 - 자동 브라우저: Playwright hardware Chromium, DPR 2 Chromium, headed Desktop Chrome
 
 ## 원인과 수정

@@ -236,7 +236,7 @@ pwsh -NoProfile -File Doroti/eng/validate-flutter-windows-resize-baseline.ps1 `
   -Edges Left
 
 pwsh -NoProfile -File Doroti/eng/doroti.ps1 run `
-  -App DorotiDemoApp `
+  -App DorotiTestbedApp `
   -Platform windows
 ```
 

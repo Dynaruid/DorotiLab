@@ -42,8 +42,8 @@ DemoApp 한정 수정이 아니라 공통 Widgets의 단축키 디스패치 및 
 저장소 루트 기준 빌드/실행:
 
 ```powershell
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform windows
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
 ```
 
-이 checkout에서 저장소 루트 기준 `-App ../DorotiDemoApp`는 상위 디렉터리의 workspace manifest를 찾다가 실패하므로, 검증에는 `./DorotiDemoApp`를 사용했다.
+이 checkout에서 저장소 루트 기준 `-App ../DorotiTestbedApp`는 상위 디렉터리의 workspace manifest를 찾다가 실패하므로, 검증에는 `./DorotiTestbedApp`를 사용했다.

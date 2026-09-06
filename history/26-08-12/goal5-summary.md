@@ -1,7 +1,7 @@
 # Doroti 5차 목표 — Flutter Framework 제품 경로 완결과 다중 target release [종료]
 
 > 상태: **종료(미완료 항목 Goal6 이관)** — G5-0~G5-6W의 당시 산출물은 보존하되 Goal5 최종 완료를 주장하지 않음
-> 종료 판정: reviewed framework의 compile/API coverage와 synthetic gallery가 실제 `DorotiDemoApp` Material frame 실행 가능성을 증명하지 못함
+> 종료 판정: reviewed framework의 compile/API coverage와 synthetic gallery가 실제 `DorotiTestbedApp` Material frame 실행 가능성을 증명하지 못함
 > 작성일: 2026-08-10
 > 종료일: 2026-08-12
 > 후속 기록: [`goal6-summary.md`](../26-08-14/goal6-summary.md) — live framework bring-up과 component runtime coverage
@@ -10,7 +10,7 @@
 
 ## 종료 결정
 
-Goal5는 2026-08-12 기준으로 더 진행하지 않는다. G5-0~G5-6W에서 생성기, public API, reviewed aggregate build, application/package boundary와 Windows RID synthetic host까지는 의미 있는 산출물을 만들었지만, 실제 `DorotiDemoApp`에 reviewed `MaterialApp`/`Scaffold`/`AppBar`를 연결하자 첫 프레임 전에 framework runtime 오류가 연속해서 드러났다.
+Goal5는 2026-08-12 기준으로 더 진행하지 않는다. G5-0~G5-6W에서 생성기, public API, reviewed aggregate build, application/package boundary와 Windows RID synthetic host까지는 의미 있는 산출물을 만들었지만, 실제 `DorotiTestbedApp`에 reviewed `MaterialApp`/`Scaffold`/`AppBar`를 연결하자 첫 프레임 전에 framework runtime 오류가 연속해서 드러났다.
 
 확인된 공백은 nullable super parameter 전달, binding/mixin 초기화, implicit view, generic covariance, `Future` 값 보존, restoration, route dispatch, animation controller 초기화, multi-child render object 연결과 Material theme/component 기본값 등이다. 이는 한 위젯의 국소 결함이 아니라 analyzer/IR/lowerer/runtime/Widgets/Material을 가로지르는 bring-up 공백이다.
 
@@ -52,7 +52,7 @@ Goal5는 2026-08-12 기준으로 더 진행하지 않는다. G5-0~G5-6W에서 �
 - W0–W7 누적 dependency slice를 각각 clean/incremental byte identity와 0 warning / 0 error로 빌드했다. root/stateless/stateful/key/focus/action/overlay/route/scroll/image/editable-text product behavior gate가 모두 PASS다.
 - full 186-library / 1,715-declaration candidate를 185개 파일로 clean regenerate해 0 warning / 0 error로 닫고 `Doroti.Flutter.Framework.Widgets`에 승격했다. `widgets.dart` exported library 169개, public declaration occurrence 952개, API missing/extra 0, disposition 1,715개, unowned 0, handwritten Widget/Element product owner 0이다.
 - navigation, route, `EditableText`를 포함한 실제 Dart application을 1개 generated C# file로 변환·빌드했다. 12개 NuGet package를 repository 밖 isolated consumer에서 restore/build/run했으며 repository-private fallback은 0이다.
-- 자동화 증적은 `Doroti/migration/flutter-framework/g5-3-evidence.json`을 aggregate index로 사용한다. physical Windows IME/accessibility/sustained GPU/cross-monitor DPI는 성공으로 간주하지 않고 G5-8 `DorotiDemoApp`까지 `notVerified`로 유지한다.
+- 자동화 증적은 `Doroti/migration/flutter-framework/g5-3-evidence.json`을 aggregate index로 사용한다. physical Windows IME/accessibility/sustained GPU/cross-monitor DPI는 성공으로 간주하지 않고 G5-8 `DorotiTestbedApp`까지 `notVerified`로 유지한다.
 
 ---
 
@@ -144,7 +144,7 @@ G5-3 최종 완료 gate:
 - handwritten C# Widget/Element lifecycle owner 0
 - actual Windows native-host resize/pointer/keyboard/text-input/accessibility/GPU automated scenario PASS
 - repository 밖 generated Dart app consumer automated run PASS
-- G5-8 `DorotiDemoApp`이 사용할 capability/diagnostic hook 준비 완료
+- G5-8 `DorotiTestbedApp`이 사용할 capability/diagnostic hook 준비 완료
 - physical Windows IME/accessibility/GPU/DPI 실행은 G5-8까지 `notVerified`
 
 완료 결과 (2026-08-12):
@@ -228,7 +228,7 @@ G5-3B가 Windows에서 Flutter application을 실행하기 위한 selected sourc
 #### G5-6W — Windows 준비 ✅ (RID package/synthetic host 범위)
 
 - G5-3B의 WGL/OpenGL strict GPU, input/IME, clipboard, accessibility, monitor/DPI와 recovery capability를 Windows RID package에 고정하고 source-port selection/provenance를 release input으로 승격한다.
-- `DorotiDemoApp`에서 사용할 frame/input/automation/resource diagnostic hook와 target identity 수집 계약을 준비한다.
+- `DorotiTestbedApp`에서 사용할 frame/input/automation/resource diagnostic hook와 target identity 수집 계약을 준비한다.
 - Windows publish artifact와 isolated restore/build/synthetic smoke를 통과시킨다.
 
 완료 결과 (2026-08-12):
@@ -241,18 +241,18 @@ G5-3B가 Windows에서 Flutter application을 실행하기 위한 selected sourc
 
 
 - Windows와 같은 capability ID를 Linux implementation에 등록한다.
-- Linux RID package와 `DorotiDemoApp` target build/publish 경로를 구성한다.
+- Linux RID package와 `DorotiTestbedApp` target build/publish 경로를 구성한다.
 - X11/Wayland physical run은 수행하지 않고 G5-8까지 각각 `notVerified`로 남긴다.
 
 
 - source revision, flags, architecture, signing/notarization input과 license를 기록한다.
-- macOS RID package와 `DorotiDemoApp` target build/publish 경로를 구성한다.
+- macOS RID package와 `DorotiTestbedApp` target build/publish 경로를 구성한다.
 - physical macOS run은 수행하지 않고 G5-8까지 `notVerified`로 남긴다.
 
 공통 완료 gate:
 
 - framework package 재생성 없이 host/RID package를 교체할 수 있음
-- Windows/Linux/macOS target package와 `DorotiDemoApp` build/publish 진입점 존재
+- Windows/Linux/macOS target package와 `DorotiTestbedApp` build/publish 진입점 존재
 - capability/diagnostic contract와 target identity schema가 RID 간 일치
 - physical target/backend/device 결과를 G5-6 성공 판정에 사용한 항목 0
 
@@ -275,15 +275,15 @@ G5-3B가 Windows에서 Flutter application을 실행하기 위한 selected sourc
 - Windows와 Linux/macOS 중 최소 한 개 non-Windows RID external consumer restore/build/publish PASS
 - 승인 없는 source/API/capability 변경의 product 유입 0
 
-### 1.6 G5-8 — `DorotiDemoApp` 기반 최종 실기기 검증 (미착수, Goal6 이관)
+### 1.6 G5-8 — `DorotiTestbedApp` 기반 최종 실기기 검증 (미착수, Goal6 이관)
 
 상태: **Goal5의 가장 마지막 작업 — 그전까지 모든 physical gate는 `notVerified`**
 
 진입 조건: G5-3, G5-4, G5-5, G5-6과 G5-7 완료.
 
-목적: 완성된 framework/host/RID release package를 사용하는 `DorotiDemoApp` 하나로 누적된 모든 실기기 gate를 마지막에 일괄 검증한다. 중간 milestone은 physical gate 때문에 막지 않되, G5-8 전에는 Goal5를 완료 처리하지 않는다.
+목적: 완성된 framework/host/RID release package를 사용하는 `DorotiTestbedApp` 하나로 누적된 모든 실기기 gate를 마지막에 일괄 검증한다. 중간 milestone은 physical gate 때문에 막지 않되, G5-8 전에는 Goal5를 완료 처리하지 않는다.
 
-`DorotiDemoApp` 변경:
+`DorotiTestbedApp` 변경:
 
 - reviewed Widgets/Material/Cupertino 경로로 navigation, dialog, EditableText, image, asset/font/localization, platform channel과 1,000-item list를 포함한 최종 검증 화면을 구성한다.
 - final verification mode가 G5-7 release package와 RID native asset을 isolated restore하여 사용하게 한다. repository-private compiler/candidate와 제품 밖 project reference에 의존하지 않는다.
@@ -296,7 +296,7 @@ G5-3B가 Windows에서 Flutter application을 실행하기 위한 selected sourc
 최종 실행 계약:
 
 ```powershell
-DorotiDemoApp --verify-g5-8 --duration-minutes 30 --artifact-root <target-artifact-path>
+DorotiTestbedApp --verify-g5-8 --duration-minutes 30 --artifact-root <target-artifact-path>
 ```
 
 `--verify-g5-8`은 target identity를 자동 기록하고 automated scenario 뒤 interactive physical-input/IME/accessibility checklist를 이어서 실행한다. 옵션과 evidence schema는 G5-8 구현 시 고정한다.
@@ -306,7 +306,7 @@ DorotiDemoApp --verify-g5-8 --duration-minutes 30 --artifact-root <target-artifa
 - G5-1에서 이월된 physical mouse/trackpad/touch recording과 reference differential PASS
 - Windows physical multi-monitor/DPI, pointer/keyboard/Korean IME, clipboard, accessibility와 strict-GPU sustained run PASS
 - 최소 한 개 physical non-Windows target에서 GPU, input/text, scale, clipboard, accessibility와 packaged app run PASS
-- release package만 사용하는 fresh `DorotiDemoApp` install/run/uninstall 또는 동등한 배포 lifecycle PASS
+- release package만 사용하는 fresh `DorotiTestbedApp` install/run/uninstall 또는 동등한 배포 lifecycle PASS
 - frame latency, dropped/replaced frame, terminal ACK, resource/handle count와 peak memory가 tolerance와 함께 기록됨
 - physical action과 native accessibility action이 Flutter behavior/state update로 왕복
 - 실행하지 않은 target/backend/device를 성공으로 기록한 항목 0
@@ -333,7 +333,7 @@ candidate, aggregate build, API review/promotion, product owner cutover, managed
 
 generated `.g.cs`와 Migration IR을 직접 고쳐 오류를 숨기지 않는다. 해결은 공용 analyzer/typed IR/lowerer/runtime contract 또는 reviewed promotion source에 귀속한다.
 
-남은 필수 제품 순서는 다음과 같다. G5-3의 compile, managed behavior와 automated native-host gate는 현재 machine에서 닫되, physical device/monitor/IME와 cross-OS 검증은 package/rebase까지 고정한 뒤 `DorotiDemoApp`을 수정해 G5-8에서 한 번에 수행한다.
+남은 필수 제품 순서는 다음과 같다. G5-3의 compile, managed behavior와 automated native-host gate는 현재 machine에서 닫되, physical device/monitor/IME와 cross-OS 검증은 package/rebase까지 고정한 뒤 `DorotiTestbedApp`을 수정해 G5-8에서 한 번에 수행한다.
 
 ```text
 G5-3A baseline taxonomy + predecessor closure
@@ -343,7 +343,7 @@ G5-3A baseline taxonomy + predecessor closure
   -> G5-5 general app/assets/plugins compiler
   -> G5-6 Windows RID packaging + Linux/macOS source-port readiness
   -> G5-7 package/release/rebase
-  -> G5-8 DorotiDemoApp physical target validation
+  -> G5-8 DorotiTestbedApp physical target validation
 ```
 
 G5-1 physical input, G5-2 physical cross-monitor DPI, G5-3 physical IME/accessibility/GPU와 G5-6 cross-OS 실행 gate는 G5-8로 이월한다. 이월된 항목은 G5-8 실행 전까지 `notVerified`이며, 선행 milestone의 compiler/product/automated-native 완료를 막지 않는다.
@@ -378,7 +378,7 @@ dotnet format Doroti/Doroti.slnx --verify-no-changes --no-restore --verbosity mi
 git diff --check
 ```
 
-Native automated gate는 compile suite와 구분한다. physical/interactive input·IME·accessibility, cross-monitor visual/DPI, sustained performance와 cross-OS gate는 G5-8의 `DorotiDemoApp` 실기기 run으로만 닫으며, machine/device/backend, raw trace와 tolerance를 별도 artifact에 남긴다.
+Native automated gate는 compile suite와 구분한다. physical/interactive input·IME·accessibility, cross-monitor visual/DPI, sustained performance와 cross-OS gate는 G5-8의 `DorotiTestbedApp` 실기기 run으로만 닫으며, machine/device/backend, raw trace와 tolerance를 별도 artifact에 남긴다.
 
 G5-3 구현 시 다음 전용 entrypoint를 추가한다. 이름만 존재하는 script를 성공 증거로 삼지 않고 각 script가 자신이 소유한 evidence를 원자적으로 갱신해야 한다.
 
@@ -426,7 +426,7 @@ Goal5는 다음이 모두 사실일 때만 완료할 예정이었으나, 종료 
 - 목표 Flutter framework closure가 reviewed C# packages로 존재하고 public API diff가 0이다.
 - Scheduler, Services, Gestures, Painting, Rendering, Semantics, Widgets, Material과 Cupertino가 같은 Dart application에서 연결된다.
 - 모든 low-level call은 typed UI/service capability를 통과하며 unsupported capability의 silent success가 없다.
-- G5-7 release package를 사용하는 `DorotiDemoApp`이 Windows와 최소 한 개 physical non-Windows target에서 strict GPU, input/IME, accessibility와 배포 lifecycle gate를 통과한다.
+- G5-7 release package를 사용하는 `DorotiTestbedApp`이 Windows와 최소 한 개 physical non-Windows target에서 strict GPU, input/IME, accessibility와 배포 lifecycle gate를 통과한다.
 - frame mailbox terminal ACK, resize/DPI/device-loss와 sustained-runtime evidence가 수치로 존재한다.
 - external automation client action이 native provider를 거쳐 Flutter semantics로 왕복한다.
 - full compiler performance matrix가 elapsed budget을 통과한다. memory는 별도 관찰 지표로 기록한다.

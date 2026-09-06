@@ -30,7 +30,7 @@ if (-not $resolvedOutput.StartsWith($evidenceRoot, [StringComparison]::OrdinalIg
 }
 
 $summary = Get-Content -LiteralPath $resolvedSummary -Raw | ConvertFrom-Json
-$processLabel = "DorotiDemoApp.Windows.exe ($($summary.processId))"
+$processLabel = "DorotiTestbedApp.Windows.exe ($($summary.processId))"
 $generationMinimum = [long] $summary.generationMinimum
 $generationMaximum = [long] $summary.generationMaximum
 $markerProvider = '{5a846f8d-54a1-4a4c-9e56-5b5a84e3b3c1}'

@@ -27,7 +27,7 @@
   </Folder>
   <Project Path="src/Doroti.App.Sdk/Doroti.App.Sdk.csproj" />
   <Folder Name="/samples/">
-    <Project Path="../DorotiDemoApp/DorotiDemoApp.csproj" />
+    <Project Path="../DorotiTestbedApp/DorotiTestbedApp.csproj" />
   </Folder>
   <Folder Name="/templates/">
     <Project Path="templates/Doroti.Templates/Doroti.Templates.csproj" />

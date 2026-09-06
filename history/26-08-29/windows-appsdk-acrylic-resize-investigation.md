@@ -2,7 +2,7 @@
 
 - 기록일: 2026-08-29
 - 분석 기준 checkout: `82be4421` + 작업 트리의 Windows 다크모드 변경
-- 재현 명령: `pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows`
+- 재현 명령: `pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows`
 - 비교 기준: 아크릴 도입 전 `WindowsAppSdk` + `HwndExactCpp` + managed ANGLE/EGL-D3D11
 - 최종 결정: **아크릴·투명 composition 실험은 롤백하고 Windows 다크모드 인식만 유지한다.**
 - 사용자-visible 판정: **아크릴 경로는 FAIL. 롤백한 불투명 ANGLE 경로는 사용자가 다시 창 크기를 잘 따라가는 것으로 확인했다.**

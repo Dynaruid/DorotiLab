@@ -58,7 +58,7 @@ ContentIsland는 renderer와 size authority에서 제외했다. 향후 필요성
 ### D3D12
 
 - native-owned frame lease 실험은 `GetGPUDescriptorHandleForHeapStart` 관련 D3D12 debug error ID 1315가 8건 발생해 FAIL이었다.
-- managed 단독 GPU ownership 자체는 ABI/resource contract를 통과했지만, 실제 self-contained `DorotiDemoApp.WindowsAppSdk` scene에서 Skia submit 중 D3D12 operational error ID 1422가 6건 발생해 C5-D3D12가 FAIL했다.
+- managed 단독 GPU ownership 자체는 ABI/resource contract를 통과했지만, 실제 self-contained `DorotiTestbedApp.WindowsAppSdk` scene에서 Skia submit 중 D3D12 operational error ID 1422가 6건 발생해 C5-D3D12가 FAIL했다.
 - 오류 필터, private reflection, CPU fallback, SkiaSharp source patch로 실패를 숨기지 않았다.
 - D3D12 presenter는 `DOROTI_WINDOWS_PRESENTER=D3D12` 명시 진단 경로로만 남고 기본값이나 자동 fallback이 아니다.
 

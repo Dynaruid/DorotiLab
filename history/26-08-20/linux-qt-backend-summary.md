@@ -6,7 +6,7 @@
 
 ## 1. 문서 성격
 
-이 문서는 `DorotiDemoApp/linux`, `Doroti.Host.Qt`, 공용 Skia renderer, template과 validation에 Linux Qt backend를 연결한 작업의 2026-08-20 기준 결과를 보존한다. 새로운 active roadmap이나 모든 Linux 지원의 완료 선언이 아니다.
+이 문서는 `DorotiTestbedApp/linux`, `Doroti.Host.Qt`, 공용 Skia renderer, template과 validation에 Linux Qt backend를 연결한 작업의 2026-08-20 기준 결과를 보존한다. 새로운 active roadmap이나 모든 Linux 지원의 완료 선언이 아니다.
 
 첫 제품 범위는 .NET 10, `linux-x64`, Qt 6.5 이상, Qt Widgets/OpenGL, 단일 `DorotiView`다. managed process가 Doroti lifetime을 소유하고 Qt가 event loop, window, display, input과 desktop service를 소유한다.
 

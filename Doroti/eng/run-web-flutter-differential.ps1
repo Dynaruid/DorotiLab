@@ -26,7 +26,7 @@ $repositoryRoot = [IO.Path]::GetFullPath((Join-Path $dorotiRoot '..'))
 $flutterRoot = Join-Path $repositoryRoot 'reference/flutter_sample_app'
 $playwrightRoot = Join-Path $dorotiRoot 'validation/web-playwright'
 $artifactRoot = Join-Path $playwrightRoot "artifacts/wrapper/$ArtifactLabel"
-$dorotiProject = Join-Path $repositoryRoot 'DorotiDemoApp/web/DorotiDemoApp.Web.csproj'
+$dorotiProject = Join-Path $repositoryRoot 'DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj'
 $dorotiUrl = "http://127.0.0.1:$DorotiPort"
 $flutterUrl = "http://127.0.0.1:$FlutterPort"
 if ($DorotiPort -eq $FlutterPort) { throw 'DorotiPort and FlutterPort must differ.' }

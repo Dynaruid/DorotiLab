@@ -314,8 +314,8 @@ animation gap max:   39.179 ms
 ## 실행 명령
 
 ```powershell
-dotnet restore ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Windows --locked-mode
-dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj --no-restore -p:DorotiTarget=Windows
+dotnet restore ./DorotiTestbedApp/DorotiTestbedApp.csproj -p:DorotiTarget=Windows --locked-mode
+dotnet run --project ./DorotiTestbedApp/DorotiTestbedApp.csproj --no-restore -p:DorotiTarget=Windows
 ```
 
 Release 자동 검증:
@@ -330,7 +330,7 @@ Release 자동 검증:
 
 ## Windows 창 비활성화/캡처 종료 조사
 
-`dotnet run --project ./DorotiDemoApp/DorotiDemoApp.csproj -p:DorotiTarget=Windows`로 렌더가 끝난 뒤 다른 창을 활성화하거나 `Win+Shift+S`를 시작할 때 종료되는 경로를 조사했다.
+`dotnet run --project ./DorotiTestbedApp/DorotiTestbedApp.csproj -p:DorotiTarget=Windows`로 렌더가 끝난 뒤 다른 창을 활성화하거나 `Win+Shift+S`를 시작할 때 종료되는 경로를 조사했다.
 
 최종적으로 확보한 managed exception evidence는 다음 경로다.
 

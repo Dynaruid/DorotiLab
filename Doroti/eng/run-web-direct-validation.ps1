@@ -48,7 +48,7 @@ $builds = @(
     @{ Name = 'build-qt'; Project = 'Doroti/src/Doroti.Host.Qt/Doroti.Host.Qt.csproj'; Extra = @() },
     @{ Name = 'build-windowsappsdk'; Project = 'Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj'; Extra = @() },
     @{ Name = 'build-maui'; Project = 'Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj'; Extra = @('-p:DorotiHostTargetFrameworks=net10.0-windows10.0.19041.0') },
-    @{ Name = 'build-demo-web'; Project = 'DorotiDemoApp/web/DorotiDemoApp.Web.csproj'; Extra = @() }
+    @{ Name = 'build-demo-web'; Project = 'DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj'; Extra = @() }
 )
 foreach ($build in $builds) {
     Invoke-ValidationProcess -FilePath $dotnet `

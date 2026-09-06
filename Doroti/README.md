@@ -28,7 +28,7 @@ See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for source
 
 Web execution source is TypeScript-owned. Applications edit `web/src/**/*.ts`; Doroti owns `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` 7.0.0 compiles both into runner-local `obj` directories, and publish contains only the resulting JavaScript. Node, npm, Bun, and a bundler are not application requirements. The opt-in `worker-direct-webgl` qualification backend transfers the visible canvas once and keeps .NET, Skia, WebGL2, and Worker rAF in one persistent Worker; `auto` defaults to the split UI/Raster Worker `worker-canvaskit-webgl` backend. See [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md).
 
-Material applications follow system dark mode with `MaterialApp(theme:, darkTheme:, themeMode: ThemeMode.system)`. Build both palettes with `ColorScheme.CreateFromSeed`, `Brightness.light`/`Brightness.dark`, and optional role overrides such as `surface`, `primary`, or `outline`; widgets read the active roles from `Theme.of(context).colorScheme`. See the [DorotiDemoApp dark-mode guide](../DorotiDemoApp/README.md#system-dark-mode-and-color-palettes) for the MAUI/Web change flow and a complete example.
+Material applications follow system dark mode with `MaterialApp(theme:, darkTheme:, themeMode: ThemeMode.system)`. Build both palettes with `ColorScheme.CreateFromSeed`, `Brightness.light`/`Brightness.dark`, and optional role overrides such as `surface`, `primary`, or `outline`; widgets read the active roles from `Theme.of(context).colorScheme`. See the [DorotiTestbedApp dark-mode guide](../DorotiTestbedApp/README.md#system-dark-mode-and-color-palettes) for the MAUI/Web change flow and a complete example.
 
 Android, iOS, native AppKit macOS, and Mac Catalyst runners each reference a default app-owned native binding. Android uses `AndroidGradleProject`; each Apple product has an explicit `XcodeProject` binding contract. The .NET runner still owns the final app. Build results do not prove native launch, device behavior, accessibility, signing, or archive; those gates remain `notVerified` until run.
 
@@ -51,7 +51,7 @@ Run from the repository root:
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 doctor
-pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform windows
 ```
 
 The active command surface is intentionally small:

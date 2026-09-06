@@ -3,7 +3,7 @@
 G0 added an executable diagnostic scenario; it did not promote the old H1-H6
 evidence to the new runtime standard.
 
-The former `DorotiDemoApp --runtime-v2` diagnostic entrypoint was removed when
+The former `DorotiTestbedApp --runtime-v2` diagnostic entrypoint was removed when
 the product demo was consolidated into the Goal6 Material application. The
 baseline below remains historical evidence rather than a current run command.
 

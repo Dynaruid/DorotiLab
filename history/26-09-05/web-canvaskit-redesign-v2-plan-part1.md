@@ -65,7 +65,7 @@ native 창 변화 → 브라우저 viewport/layout → main observer
 | `doroti.canvaskit.worker.ts`: `scheduleDrain` | message 후 microtask에서 동기 replay | microtask는 다음 resize message를 먼저 처리하도록 양보하는 수단이 아니다. 실행 중 replay는 선점되지 않는다. |
 | `doroti.canvaskit.host.ts`, `doroti.canvaskit.worker.ts` | screen/초기 크기 기반 capacity, CSS zoom=1/DPR, root clip, capacity 안에서 surface 재사용 | 매 resize surface 재생성이 주원인이라는 설명은 맞지 않는다. shrink 후 clear 영역 재노출과 DPR/capacity 경계는 별도 조사한다. |
 | `Doroti.Framework.Widgets/binding.cs`: `drawFrame` | build/layout/paint/sceneBuild phase 기록과 dirty pipeline이 이미 있다. | frame trace를 stage ring에 연결한다. framework scheduling을 중복 구현하지 않는다. |
-| `DorotiDemoApp/web/DorotiDemoApp.Web.csproj`, `run-web-playwright.ps1` | WasmBuildNative=true; wrapper는 dotnet build 후 dotnet run --no-build | 이것만으로 managed AOT 실행을 증명할 수 없다. 평가된 속성과 실제 배포 파일을 확인한다. |
+| `DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj`, `run-web-playwright.ps1` | WasmBuildNative=true; wrapper는 dotnet build 후 dotnet run --no-build | 이것만으로 managed AOT 실행을 증명할 수 없다. 평가된 속성과 실제 배포 파일을 확인한다. |
 
 **우선 가설:** 전체 scene 재전개·인코딩·복사와 UI 점유가 최신 metrics 처리 및 frame 생성을 늦춘다. **독립 가설:** Raster 제출과 브라우저 표시 사이의 위상·geometry ownership이 체감 지연을 더한다. 어느 하나도 이번 코드 조사만으로 확정된 주원인은 아니다.
 

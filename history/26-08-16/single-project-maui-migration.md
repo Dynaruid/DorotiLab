@@ -211,9 +211,9 @@ dotnet publish .\SampleApp.csproj -c Release -p:DorotiTarget=Web
 - source-name 치환 후 assembly/application ID/bundle ID/Web manifest가 일치하게 한다.
 - 생성 결과에 `.csproj` 1개, Windows bootstrap XAML 1개, 그 외 XAML 0개, user Razor 0개, Flutter/Dart scaffold 0개를 강제한다.
 
-### M6. DorotiDemoApp dogfood 이관
+### M6. DorotiTestbedApp dogfood 이관
 
-- `DorotiDemoApp.Web.csproj`를 제거하고 `DorotiDemoApp.csproj` 하나로 통합한다.
+- `DorotiTestbedApp.Web.csproj`를 제거하고 `DorotiTestbedApp.csproj` 하나로 통합한다.
 - 공용 Material gallery/widget/state를 `src/App.cs`와 `src/*`로 분리한다.
 - root `Program.cs`를 template과 같은 thin bootstrap으로 축소한다.
 - Demo 전용 smoke/evidence 코드는 generated template에 유입시키지 않고 platform validation adapter로 분리한다.
@@ -233,7 +233,7 @@ dotnet publish .\SampleApp.csproj -c Release -p:DorotiTarget=Web
 - M2 `PARTIAL`: `Doroti.Host.Maui`가 externally owned `SKSurface`에 Doroti scene을 raster하고 session/view/frame lifecycle, invalidate coalescing, context/surface generation, strict GPU diagnostics를 제공한다. Windows live는 submitted/presented 3/3, failed 0, software fallback 0이다. resize/DPI/context-recreate와 Mac Metal live는 `notVerified`다.
 - M3 `PARTIAL`: 공용 touch press/move/release, focus request, clipboard와 text capability adapter를 연결했다. Windows/Mac native hover/wheel/capture/key/IME와 UIA/UIAccessibility tree/action은 구현·검증되지 않았으므로 `notVerified`다.
 - M5 `PARTIAL`: template을 `.csproj` 1개, root `Program.cs`, `src/App.cs`, `Platforms/*`, Windows bootstrap XAML 1개와 다른 XAML 0개 구조로 이관했다. 저장소 밖 local package feed에서 create/restore/Web native-link compile/publish를 통과했다. Windows package-only와 Mac Catalyst package-only/native gate는 `notVerified`다.
-- M6 `PARTIAL`: `DorotiDemoApp.Web.csproj`와 `WebHost/`를 제거하고 `DorotiDemoApp.csproj` 하나로 통합했다. Material app은 `src/App.cs`, root bootstrap은 얇은 `Program.cs`로 분리했다. 기존 Demo 전용 Win32/AppKit smoke adapter는 새 native capability gate가 완성되지 않아 이관하지 않았다.
+- M6 `PARTIAL`: `DorotiTestbedApp.Web.csproj`와 `WebHost/`를 제거하고 `DorotiTestbedApp.csproj` 하나로 통합했다. Material app은 `src/App.cs`, root bootstrap은 얇은 `Program.cs`로 분리했다. 기존 Demo 전용 Win32/AppKit smoke adapter는 새 native capability gate가 완성되지 않아 이관하지 않았다.
 - M7 `PARTIAL`: `validate-g7-web-build.ps1`의 Graph/Template/Compile/Publish와 새 `validate-g7-maui-single-project.ps1`의 Windows/Mac Catalyst/Web Graph, target 순환 Build, Windows Live, Evidence를 통과했고 English/Korean root/runtime/Demo README와 solution graph를 갱신했다. G6 predecessor validator의 native input/IME/accessibility 가정은 M3 후속 작업으로 남긴다.
 
 ## 6. 검증 매트릭스

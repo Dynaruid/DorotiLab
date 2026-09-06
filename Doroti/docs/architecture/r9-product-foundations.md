@@ -22,7 +22,7 @@ R9 adds the design-system-neutral services that Material and Cupertino must cons
 
 `tests/Doroti.R9.Tests` is part of `Doroti.RuntimeTests.slnx` and the `runtime`/`full` engineering suites. Its seven scenarios cover notification and fake-time ordering, a 1,000-item lazy list and drag competition, focus/actions, editable composition/caret, encoded image/cache/cancellation, semantics actions, and overlay/navigation lifetime.
 
-`DorotiDemoApp` is the target smoke path. It renders 1,000 logical items through `VirtualListView` backed by `RenderSliverFixedExtentViewport`; only the visible/cache range is mounted. The current A2 path uses the source-ported Win32 shell and strict Skia GPU frame pipeline. F2's 30-second target measures continuous scroll and animation frame cadence; the separate four-scale DPI/input report remains an explicit target gate.
+`DorotiTestbedApp` is the target smoke path. It renders 1,000 logical items through `VirtualListView` backed by `RenderSliverFixedExtentViewport`; only the visible/cache range is mounted. The current A2 path uses the source-ported Win32 shell and strict Skia GPU frame pipeline. F2's 30-second target measures continuous scroll and animation frame cadence; the separate four-scale DPI/input report remains an explicit target gate.
 
 ## Deliberate release boundary
 

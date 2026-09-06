@@ -1,8 +1,8 @@
 # Web 한글·연속 스크롤·래스터·resize 수정
 
 - 날짜: 2026-08-29
-- 대상: `DorotiDemoApp` / `browser-wasm` / Chrome WebGL2
-- 실행 명령: `pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform web`
+- 대상: `DorotiTestbedApp` / `browser-wasm` / Chrome WebGL2
+- 실행 명령: `pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web`
 
 ## 원인과 변경
 
@@ -19,7 +19,7 @@
 
 ## 검증
 
-- `dotnet build DorotiDemoApp/web/DorotiDemoApp.Web.csproj -c Release`: **PASS**, 경고 0, 오류 0.
+- `dotnet build DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -c Release`: **PASS**, 경고 0, 오류 0.
 - resize contract v4: **PASS**, 22/22 terminal, max queue depth 2, stale present 0.
 - FCR-7 Material/widget runtime contract: **PASS**. 포함 font decode와 `한`, `글` glyph 존재를 검사한다.
 - Chrome / Windows / DPR 2 / AMD Radeon 780M WebGL2:

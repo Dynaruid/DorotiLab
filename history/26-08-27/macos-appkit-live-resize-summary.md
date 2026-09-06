@@ -11,7 +11,7 @@ native AppKit 경로를 아래 명령으로 실행해 창 크기를 조절하면
 
 ```sh
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run \
-  -App ./DorotiDemoApp \
+  -App ./DorotiTestbedApp \
   -Platform macos \
   -Rid osx-arm64
 ```
@@ -80,7 +80,7 @@ Demo와 동일한 macOS Release/AOT 전체 graph도 실행했다.
 
 ```sh
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build \
-  -App ./DorotiDemoApp \
+  -App ./DorotiTestbedApp \
   -Platform macos \
   -Rid osx-arm64
 ```

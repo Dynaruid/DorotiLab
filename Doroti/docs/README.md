@@ -12,9 +12,9 @@ Current commands are:
 
 ```powershell
 pwsh -File ./Doroti/eng/doroti.ps1 doctor
-pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -WindowsBackend Maui
+pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -WindowsBackend Maui
 ```
 
 The first Windows command selects Windows App SDK 2.4, `HwndExactCpp`, and managed ANGLE/EGL-D3D11. The second selects the independent MAUI backend; neither path silently falls back to the other.

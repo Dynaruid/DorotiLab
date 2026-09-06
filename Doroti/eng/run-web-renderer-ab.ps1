@@ -15,7 +15,7 @@ $root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $wrapper = Join-Path $PSScriptRoot 'run-web-playwright.ps1'
 $wrapperArtifacts = Join-Path $root 'Doroti/validation/web-playwright/artifacts/wrapper'
 $artifact = Join-Path $root 'Doroti/validation/web-playwright/artifacts/renderer-ab.json'
-$project = Join-Path $root 'DorotiDemoApp/web/DorotiDemoApp.Web.csproj'
+$project = Join-Path $root 'DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj'
 $processArtifacts = Join-Path $root 'Doroti/validation/web-playwright/artifacts/wrapper/renderer-ab'
 [IO.Directory]::CreateDirectory($processArtifacts) | Out-Null
 

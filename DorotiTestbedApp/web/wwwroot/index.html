@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <base href="/" />
+  <title>Doroti Material Testbed</title>
+  <link rel="icon" href="data:," />
+  <link rel="preload" id="webassembly" />
+  <link rel="preload" id="doroti-blazor-loader"
+        href="_framework/blazor.webassembly#[.{fingerprint}].js"
+        as="script" fetchpriority="high" />
+  <link rel="stylesheet" href="_content/Doroti.Host.Web/doroti.web.css" />
+  <script type="importmap"></script>
+</head>
+<body>
+  <div id="app">Loading Doroti…</div>
+  <script type="module" src="doroti_bootstrap.js"></script>
+</body>
+</html>

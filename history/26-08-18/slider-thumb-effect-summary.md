@@ -2,11 +2,11 @@
 
 - 기록일: 2026-08-18
 - 상태: **공용 원인 수정, 자동 회귀 검증 및 사용자 수동 확인 완료**
-- 범위: Dart→C# lowerer, `Doroti.Ui`, `Doroti.Framework.Material`, FCR-7 Material/widget 계약, `DorotiDemoApp`
+- 범위: Dart→C# lowerer, `Doroti.Ui`, `Doroti.Framework.Material`, FCR-7 Material/widget 계약, `DorotiTestbedApp`
 
 ## 해결한 문제
 
-`DorotiDemoApp`의 Slider thumb가 hover 또는 drag 상태일 때 표시하는 원형 overlay가 트랙 시작점
+`DorotiTestbedApp`의 Slider thumb가 hover 또는 drag 상태일 때 표시하는 원형 overlay가 트랙 시작점
 부근에서 간헐적으로 반쪽만 보이듯 잘렸다. MAUI surface나 native clip을 국소적으로 넓혀야 하는 문제가
 아니라, Flutter의 `Size.fromRadius(radius)` named factory가 C#으로 잘못 번역된 공용 의미 결함이었다.
 

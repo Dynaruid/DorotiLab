@@ -15,7 +15,7 @@ Doroti는 Flutter를 WebView에 넣지 않으며 플랫폼 UI control tree로 UI
 
 프로젝트 초반에는 semantic compiler로 Flutter source의 큰 범위를 일괄 변환해 기반을 만들었습니다. 이 bootstrap은 현재 framework를 만드는 데 유효했지만 이제 일반 기능 개발 방식은 아닙니다.
 
-현재 `Doroti/src/Doroti.Framework.*`는 제품이 직접 소유하는 C# source이며 namespace, assembly, package는 `Doroti.Framework.*`로 일치합니다. 기능과 수정은 소유 framework/runtime/renderer/host 계약에서 직접 개발합니다. Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·reference differential 도구로 남고 제품 source를 덮어쓰지 않습니다. `DorotiDemoApp`과 생성된 `doroti-app` project는 C# 전용이며 활성 validation은 그 내부에 Dart package를 만들지 않습니다.
+현재 `Doroti/src/Doroti.Framework.*`는 제품이 직접 소유하는 C# source이며 namespace, assembly, package는 `Doroti.Framework.*`로 일치합니다. 기능과 수정은 소유 framework/runtime/renderer/host 계약에서 직접 개발합니다. Dart-to-C# compiler와 고정 Flutter checkout은 선택적인 import·reference differential 도구로 남고 제품 source를 덮어쓰지 않습니다. `DorotiTestbedApp`과 생성된 `doroti-app` project는 C# 전용이며 활성 validation은 그 내부에 Dart package를 만들지 않습니다.
 
 자세한 source 소유권은 [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md), 기본 native bridge graph는 [ADR-022](Doroti/docs/adr/ADR-022-default-native-platform-bridge.md), 현재 Windows host 결정은 [ADR-025](Doroti/docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md)를 참고하세요.
 
@@ -53,9 +53,9 @@ Flutter source는 fidelity 작업에서 동작 reference가 필요할 때 사용
 .NET SDK 10.0.400, 일치하는 10.0.11 runtime/workload와 PowerShell 7이 필요합니다.
 
 ```powershell
-pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiDemoApp -Platform windows
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows
-pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -LastSuccessful
+pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -LastSuccessful
 ```
 
 Windows 명령은 기본적으로 Windows App SDK/`HwndExactCpp`를 선택합니다. 독립 Windows MAUI runner가 필요할 때만 `-WindowsBackend Maui`를 명시합니다.
@@ -68,7 +68,7 @@ Windows App SDK 기본 presenter는 이제 `Vulkan`이며, ANGLE은 `DOROTI_WIND
 | 경로 | 설명 |
 | --- | --- |
 | [`Doroti/src/`](Doroti/src/) | 제품 framework, runtime, rendering, host, target package와 SDK |
-| [`DorotiDemoApp/`](DorotiDemoApp/) | 플랫폼 중립 앱, 7 runner, 4 native binding을 dogfood하는 앱 |
+| [`DorotiTestbedApp/`](DorotiTestbedApp/) | 플랫폼 중립 앱, 7 runner, 4 native binding을 dogfood하는 앱 |
 | [`Doroti/templates/`](Doroti/templates/) | `dotnet new doroti-app` template |
 | [`Doroti/eng/`](Doroti/eng/) | build, SDK 준비, 로컬 상태와 선택적 진단 도구 |
 | [`tools/Doroti.DartToCSharp/`](tools/Doroti.DartToCSharp/) | 선택적 Dart/Flutter import·migration compiler |

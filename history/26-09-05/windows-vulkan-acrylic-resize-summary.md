@@ -90,14 +90,14 @@ Fixed-origin Right/Bottom의 pre-geometry 제출/DWM wait는 유지한다. Full-
 $env:DOROTI_WINDOWS_PRESENTER = 'Vulkan'
 $env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD'
 $env:DOROTI_DEMO_EXPERIMENTAL_ACRYLIC = '1'
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiDemoApp -Platform windows -Configuration Release
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
 ```
 
 별도 R2R 게시 및 실행 명령 (정리 시점 `doroti.ps1`에는 R2R 인자 전달 옵션이 없음):
 
 ```powershell
-dotnet publish ./DorotiDemoApp/windowsappsdk/DorotiDemoApp.WindowsAppSdk.csproj -c Release -r win-x64 --self-contained true -p:PublishReadyToRun=true -o ./.doroti/publish/DorotiDemoApp-win-x64-r2r
-& ./.doroti/publish/DorotiDemoApp-win-x64-r2r/DorotiDemoApp.WindowsAppSdk.exe
+dotnet publish ./DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release -r win-x64 --self-contained true -p:PublishReadyToRun=true -o ./.doroti/publish/DorotiTestbedApp-win-x64-r2r
+& ./.doroti/publish/DorotiTestbedApp-win-x64-r2r/DorotiTestbedApp.WindowsAppSdk.exe
 ```
 
 R2R 실행도 위 세 환경변수를 설정한 shell에서 실행한다. 당시 DemoApp Release와 product validator의 DLL SHA-256은 다음과 같았고, R2R publish의 native DLL도 동일했다. R2R 변환된 managed DLL을 일반 Release managed hash와 동일하다고 주장하지 않는다.

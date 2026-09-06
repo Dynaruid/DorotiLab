@@ -1,0 +1,34 @@
+# DorotiTestbedApp ignore rules
+# Every platform runner owns its local output and lock file.
+
+[Bb]in/
+[Oo]bj/
+
+# Local publish output (for example ./publish/doroti-testbed-web)
+[Pp]ublish/
+
+# MAUI / Windows App SDK packaging leftovers
+[Aa]pp[Pp]ackages/
+[Bb]undle[Aa]rtifacts/
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+*.appinstaller
+
+# In-place Blazor/_framework dumps under source wwwroot
+web/wwwroot/_framework/
+
+# Native workspace output and per-user Apple state
+**/.gradle/
+**/native/**/[Bb]uild/
+**/DerivedData/
+**/xcuserdata/
+**/.xcode.env.local
+**/native/**/*.aar
+**/native/**/*.xcframework/
+
+# MSBuild / IDE user state
+*.user
+*.suo
+**/local.properties

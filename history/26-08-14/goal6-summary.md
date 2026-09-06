@@ -43,7 +43,7 @@ Goal6는 Goal5의 compile/API/synthetic 성공을 실제 framework runtime 성�
 
 ### G6-3 — 최소 Material DemoApp
 
-- `DorotiDemoApp`을 promoted Material 제품 프로젝트를 사용하는 단일 reviewed 진입점으로 전환했다.
+- `DorotiTestbedApp`을 promoted Material 제품 프로젝트를 사용하는 단일 reviewed 진입점으로 전환했다.
 - `MaterialApp.builder`와 `home` 경로에서 Theme, Scaffold, AppBar, Card, ListTile, FAB, 주요 selection/action control, layout과 scrolling을 strict-GPU로 표시했다.
 - 실제 Win32 pointer가 노출한 hit-test storage, covariant event, painter adapter와 `List.sublist` lowering 결함을 공용 producer에서 수정하고 regression으로 고정했다.
 - package-only 외부 consumer와 30초/300-frame smoke를 통과했다.

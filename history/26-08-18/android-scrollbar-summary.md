@@ -2,7 +2,7 @@
 
 - 기록일: 2026-08-18
 - 상태: **구현 및 자동 회귀 검증 완료, 사용자 수동 동작 확인 완료**
-- 범위: `Doroti.Framework.Widgets`, Dart→C# lowerer 회귀 계약, FCR-5/FCR-7/FCR-8 evidence, `DorotiDemoApp`
+- 범위: `Doroti.Framework.Widgets`, Dart→C# lowerer 회귀 계약, FCR-5/FCR-7/FCR-8 evidence, `DorotiTestbedApp`
 
 ## 해결한 문제
 
@@ -38,7 +38,7 @@ scrollbar로 바꾸고 README의 설명도 동기화했다.
 - `validate-fcr5-scroll.ps1` Debug/Release: `PASS`
 - `validate-fcr7-material-widget.ps1` Debug/Release: `PASS`
 - 관련 Widgets/Material build: `PASS`
-- `DorotiDemoApp` Android graph 및 `net10.0-android`/`android-arm64` Release AOT build: `PASS`
+- `DorotiTestbedApp` Android graph 및 `net10.0-android`/`android-arm64` Release AOT build: `PASS`
 - SM-S931N/API 36 FCR-8 physical stability: `PASS`
   - 120 Hz, 737 frames / 6.934 s = 106.287 FPS
   - missed-vsync 0
@@ -64,6 +64,6 @@ Windows에서는 사용자 육안 smoke가 정상이었지만 nested ownership �
 - `Doroti/validation/fcr5-scroll/` 및 `Doroti/eng/validate-fcr5-scroll.ps1`
 - `Doroti/validation/fcr7-material-widget/` 및 `Doroti/eng/validate-fcr7-material-widget.ps1`
 - `Doroti/validation/evidence/flutter-conformance/`
-- `DorotiDemoApp/src/App.cs`
-- `DorotiDemoApp/README.md`, `DorotiDemoApp/README.ko.md`
+- `DorotiTestbedApp/src/App.cs`
+- `DorotiTestbedApp/README.md`, `DorotiTestbedApp/README.ko.md`
 
