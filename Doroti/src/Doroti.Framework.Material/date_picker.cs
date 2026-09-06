@@ -129,7 +129,7 @@ public static partial class Date_pickerLibrary
                 dialog = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(global::Doroti.Framework.Widgets.Localizations.CreateOverride(context: context, locale: datePickerTheme.locale, child: dialog));
             }
         }
-        return await DialogLibrary.showDialog<DateTime>(context: context, barrierDismissible: barrierDismissible, barrierColor: barrierColor, barrierLabel: barrierLabel, useRootNavigator: useRootNavigator, routeSettings: routeSettings, builder: ((context) =>
+        return await DialogLibrary.showDialog<DateTime?>(context: context, barrierDismissible: barrierDismissible, barrierColor: barrierColor, barrierLabel: barrierLabel, useRootNavigator: useRootNavigator, routeSettings: routeSettings, builder: ((context) =>
         {
             return ((builder is null) ? dialog : builder(context, dialog));
             throw new InvalidOperationException("Dart closure completed without a value.");

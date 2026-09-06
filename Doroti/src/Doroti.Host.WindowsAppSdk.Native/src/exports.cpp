@@ -1239,15 +1239,29 @@ class ProductHost final {
     // Moving-origin completion means a non-visible copied slot is reserved.
     // Fixed-origin completion still includes Present and its display wait.
     // The platform never performs raster work or waits on a Vulkan fence.
-    return WaitForExactResize(generation, causal, kExactResizeWait, true, moving);
+    bool timed_out = false;
+    if (WaitForExactResize(generation, causal, kExactResizeWait, true, moving,
+                           &timed_out))
+      return true;
+    if (!timed_out) return false;
+    // The bounded platform wait is a responsiveness fail-safe, not a render
+    // failure. Retire any late prepared slot and let WM_SIZE render the actual
+    // committed geometry with a fresh generation. Keep the timeout receipt.
+    doroti::resize_trace::Record("sizing-timeout-recover", trace_key_);
+    CancelMovingFrame();
+    composition_force_exact_ = true;
+    return true;
   }
 
   void ResolvePreparedFrame(uint32_t terminal) {
     {
       std::lock_guard lock(render_mutex_);
       if (!prepared_work_) return;
-      render_completions_.push_back(MakeTerminal(*prepared_work_, terminal,
-          terminal == DOROTI_WINDOWS_FRAME_FAILED_V1 ? 1u : 0u));
+      auto receipt = MakeTerminal(*prepared_work_, terminal,
+          terminal == DOROTI_WINDOWS_FRAME_FAILED_V1 ? 1u : 0u);
+      if (resize_wait_timeouts_.erase(prepared_work_->request.generation) != 0)
+        receipt.platform_wait_timed_out = 1;
+      render_completions_.push_back(receipt);
       prepared_work_.reset();
     }
     render_condition_.notify_one();
@@ -1257,6 +1271,11 @@ class ProductHost final {
   void CancelMovingFrame() {
     moving_phase_aligned_ = false;
     if (moving_key_) {
+      {
+        std::lock_guard lock(render_mutex_);
+        cancelled_prepared_generation_ = std::max(
+            cancelled_prepared_generation_, moving_key_->generation);
+      }
       callbacks_.moving_frame(callbacks_.callback_context, 3, &*moving_key_);
       moving_key_.reset();
       composition_force_exact_ = true;
@@ -1952,8 +1971,14 @@ class ProductHost final {
           terminal == DOROTI_WINDOWS_FRAME_FAILED_V1 ? 1u : 0u;
       {
         std::lock_guard lock(render_mutex_);
+        // Cancellation can win after the managed prepare returns but before
+        // this worker publishes it. Never park the worker on that stale slot.
+        if (terminal == kFramePrepared &&
+            work.request.generation <= cancelled_prepared_generation_)
+          terminal = DOROTI_WINDOWS_FRAME_SUPERSEDED_V1;
         auto receipt = MakeTerminal(work, terminal, error);
-        if (resize_wait_timeouts_.erase(work.request.generation) != 0)
+        if (terminal != kFramePrepared &&
+            resize_wait_timeouts_.erase(work.request.generation) != 0)
           receipt.platform_wait_timed_out = 1;
         if (terminal == kFramePrepared) prepared_work_ = work;
         else render_completions_.push_back(receipt);
@@ -2007,7 +2032,9 @@ class ProductHost final {
   bool WaitForExactResize(
       uint64_t generation, uint64_t causal_frame_id,
       std::chrono::milliseconds timeout = kExactResizeWait,
-      bool record_timeout = true, bool allow_prepared = false) {
+      bool record_timeout = true, bool allow_prepared = false,
+      bool* timed_out = nullptr) {
+    if (timed_out != nullptr) *timed_out = false;
     const auto deadline = std::chrono::steady_clock::now() + timeout;
     while (causal_frame_id != 0) {
       std::unique_lock lock(render_mutex_);
@@ -2017,6 +2044,7 @@ class ProductHost final {
                    last_render_terminal_causal_frame_id_ >= causal_frame_id;
           });
       if (!completed) {
+        if (timed_out != nullptr) *timed_out = true;
         if (record_timeout) resize_wait_timeouts_.insert(generation);
         return false;
       }
@@ -2032,6 +2060,7 @@ class ProductHost final {
       }
       lock.unlock();
       if (std::chrono::steady_clock::now() >= deadline) {
+        if (timed_out != nullptr) *timed_out = true;
         if (record_timeout) {
           std::lock_guard timeout_lock(render_mutex_);
           resize_wait_timeouts_.insert(generation);
@@ -2344,6 +2373,7 @@ class ProductHost final {
   bool moving_phase_aligned_{};
   std::optional<doroti_windows_moving_frame_v1> moving_key_;
   std::optional<RenderWork> prepared_work_;
+  uint64_t cancelled_prepared_generation_{};
   doroti::resize_trace::Key trace_key_{};
   bool fatal_{};
   bool mouse_inside_{};

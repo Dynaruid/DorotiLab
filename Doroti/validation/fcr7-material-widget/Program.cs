@@ -3,6 +3,18 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args.Length >= 1 && args[0] is "--windows-sample" or "--appbar-raster")
+{
+    if (args[0] == "--appbar-raster")
+    {
+        Environment.SetEnvironmentVariable("DOROTI_VALIDATION_GPU_RASTER", "1");
+        Environment.SetEnvironmentVariable("DOROTI_VALIDATION_APPBAR_RASTER", "1");
+    }
+    if (args.Length > 1) WindowsSampleContracts.OutputDirectory = args[1];
+    await WindowsSampleContracts.Verify();
+    return;
+}
+
 if (args.Length >= 3 && args[0] == "--image-files")
 {
     using var environment = new ImageFixtureEnvironment();

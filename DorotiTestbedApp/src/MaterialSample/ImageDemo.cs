@@ -23,12 +23,22 @@ internal sealed class SampleImageDemoState : State<SampleImageDemo>
         using var bytes = new MemoryStream(); stream.CopyTo(bytes); return new Uint8List(bytes.ToArray());
     });
     private bool _url, _cover, _loading;
-    private int _revision;
+    private int _revision, _reload;
     private string? _error;
     private M.ColorScheme? _light, _dark;
     private object Provider() => _url ? new NetworkImageIo(Url) : new MemoryImage(LocalBytes.Value);
     public override void initState() { base.initState(); }
-    public override void didChangeDependencies() { base.didChangeDependencies(); if (_revision == 0) Load(); }
+    private void SelectSource(bool url)
+    {
+        if (_url == url) return;
+        setState(() => { _url = url; _revision++; _light = _dark = null; _loading = false; _error = null; });
+    }
+    private async void RetryImage()
+    {
+        var revision = _revision;
+        await ((dynamic)Provider()).evict();
+        if (mounted && revision == _revision) setState(() => _reload++);
+    }
     private async void Load()
     {
         var revision = ++_revision;
@@ -48,15 +58,18 @@ internal sealed class SampleImageDemoState : State<SampleImageDemo>
         new Wrap(spacing: 10, children:
         [
             new M.SegmentedButton<string>(segments: [new("Local", label: new Text("Local image")), new("URL", label: new Text("URL image"))], selected: [_url ? "URL" : "Local"],
-                onSelectionChanged: values => { setState(() => _url = values.Contains("URL")); Load(); }),
+                onSelectionChanged: values => SelectSource(values.Contains("URL"))),
             new M.SegmentedButton<string>(segments: [new("Contain", label: new Text("Contain")), new("Cover", label: new Text("Cover"))], selected: [_cover ? "Cover" : "Contain"],
                 onSelectionChanged: values => setState(() => _cover = values.Contains("Cover"))),
         ]),
-        new SizedBox(height: 240, child: new Image(image: Provider(), fit: _cover ? BoxFit.cover : BoxFit.contain,
+        new SizedBox(height: 240, child: new Image(key: new Doroti.Framework.Foundation.ValueKey<int>(_reload), image: Provider(), fit: _cover ? BoxFit.cover : BoxFit.contain,
             errorBuilder: (_, error, _) => new Center(child: new Text($"Image unavailable: {error}")))),
         _loading ? new M.LinearProgressIndicator() : SizedBox.CreateShrink(),
         _error is null ? SizedBox.CreateShrink() : new Text($"Image failed: {_error}"),
-        new M.TextButton(child: new Text("Retry image demo"), onPressed: Load),
+        new Wrap(spacing: 10, children: [
+            new M.FilledButton(child: new Text(_loading ? "Extracting colors…" : "Extract colors"), onPressed: _loading ? null : Load),
+            new M.TextButton(child: new Text("Retry image"), onPressed: RetryImage),
+        ]),
         Palette("Light palette", _light), Palette("Dark palette", _dark),
     ]);
     private static Widget Palette(string title, M.ColorScheme? scheme)

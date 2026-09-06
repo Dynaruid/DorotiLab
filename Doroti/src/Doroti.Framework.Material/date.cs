@@ -69,7 +69,7 @@ public class GregorianCalendarDelegate : CalendarDelegate<DateTime>
     {
     }
 
-    public override DateTime now() => new DateTime();
+    public override DateTime now() => DateTime.Now;
     public override DateTime dateOnly(DateTime date) => DateUtils.dateOnly(date);
     public override long monthDelta(DateTime startDate, DateTime endDate) => DateUtils.monthDelta(startDate, endDate);
     public override DateTime addMonthsToMonthDate(DateTime monthDate, long monthsToAdd)
@@ -186,8 +186,8 @@ public abstract class DateUtils
     {
         long weekdayFromMonday = (DartRuntimePrimitives.CreateDateTime(year, month).DayOfWeek.ToDartWeekday() - 1L);
         long firstDayOfWeekIndexLocal = ((MaterialLocalizations)localizations).firstDayOfWeekIndex;
-        firstDayOfWeekIndexLocal = (((firstDayOfWeekIndexLocal - 1L)) % 7L);
-        return (((weekdayFromMonday - firstDayOfWeekIndexLocal)) % 7L);
+        firstDayOfWeekIndexLocal = (firstDayOfWeekIndexLocal + 6) % 7;
+        return (weekdayFromMonday - firstDayOfWeekIndexLocal + 7) % 7;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 

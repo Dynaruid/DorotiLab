@@ -931,7 +931,7 @@ public sealed class Paragraph : IDisposable
     public double minIntrinsicWidth => _hostMinIntrinsicWidth ?? ComputeMinIntrinsicWidth();
     public double maxIntrinsicWidth => _hostMaxIntrinsicWidth ?? _naturalWidth;
     public double longestLine => _hostLongestLine ?? Math.Min(_naturalWidth, width);
-    public double alphabeticBaseline => _hostAlphabeticBaseline ?? _lineHeight * 0.8;
+    public double alphabeticBaseline => _hostAlphabeticBaseline ?? NativeAlphabeticBaseline ?? _lineHeight * 0.8;
     public double ideographicBaseline => _hostIdeographicBaseline ?? _lineHeight;
     public bool didExceedMaxLines { get; private set; }
     public int numberOfLines { get; private set; }
@@ -943,6 +943,10 @@ public sealed class Paragraph : IDisposable
     internal TextAlign CanvasKitTextAlign { get; init; } = TextAlign.start;
     internal string? CanvasKitEllipsis { get; init; }
     internal IReadOnlyList<ParagraphTextRun> TextRuns { get; }
+    internal double? NativeAlphabeticBaseline { get; init; }
+    internal IEnumerable<(int Start, int End, double Left, double Baseline)> PaintLines =>
+        _lines.Select(line => (line.Start, line.End, line.Left, line.Baseline));
+    internal double TextAdvance(int start, int end) => AdvanceBetween(start, end);
     internal Func<double, ParagraphHostLayoutSnapshot>? CanvasKitRelayout { get; init; }
     internal uint CanvasKitMaxLines => _maxLines is null
         ? 0
@@ -1321,10 +1325,17 @@ public sealed class Paragraph : IDisposable
     private ParagraphLine CreateFallbackLine(
         int start, int end, double lineWidth, bool hardBreak, int lineNumber)
     {
-        var ascent = _lineHeight * 0.8;
+        var ascent = NativeAlphabeticBaseline ?? _lineHeight * 0.8;
+        var align = CanvasKitTextAlign switch
+        {
+            TextAlign.start => CanvasKitTextDirection == TextDirection.rtl ? TextAlign.right : TextAlign.left,
+            TextAlign.end => CanvasKitTextDirection == TextDirection.rtl ? TextAlign.left : TextAlign.right,
+            _ => CanvasKitTextAlign,
+        };
+        var left = align == TextAlign.center ? (width - lineWidth) / 2 : align == TextAlign.right ? width - lineWidth : 0;
         return new(
             start, end, lineWidth, hardBreak,
-            ascent, _lineHeight - ascent, _lineHeight, 0,
+            ascent, _lineHeight - ascent, _lineHeight, left,
             (lineNumber * _lineHeight) + ascent);
     }
 

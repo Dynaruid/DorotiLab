@@ -12,7 +12,7 @@ using TextStyle = Doroti.Framework.Painting.TextStyle;
 
 namespace MaterialSample;
 
-internal sealed class ComponentsScreen(bool twoColumns, double secondFraction, double secondOffset, GlobalKey<M.ScaffoldState> scaffold) : StatefulWidget
+internal sealed class ComponentsScreen(bool twoColumns, double secondFraction, double secondOffset, GlobalKey<M.ScaffoldState> scaffold, Key? key = null) : StatefulWidget(key: key)
 {
     internal bool TwoColumns => twoColumns;
     internal double SecondFraction => secondFraction;
@@ -41,6 +41,13 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     private M.TimeOfDay? _time;
     private static readonly string[] SearchColors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "purple", "pink", "silver", "gold", "beige", "brown", "grey", "black", "white"];
     private static readonly long[] SearchArgb = [0xfff44336, 0xffff9800, 0xffffeb3b, 0xff4caf50, 0xff2196f3, 0xff3f51b5, 0xff8f00ff, 0xff9c27b0, 0xffe91e63, 0xff808080, 0xffffd700, 0xfff5f5dc, 0xff795548, 0xff9e9e9e, 0xff000000, 0xffffffff];
+    internal bool OwnsScrollNotification(ScrollNotification notification)
+    {
+        // Observer depth describes the notification's route. Check its source
+        // as well: inline demos and drawers have independent scroll positions.
+        var source = notification.context is { } context ? Scrollable.maybeOf(context)?.position : null;
+        return source is not null && (_firstScroll.positions.Contains(source) || _secondScroll.positions.Contains(source));
+    }
     public override void dispose()
     {
         _firstScroll.dispose(); _secondScroll.dispose();
@@ -77,8 +84,10 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
                 child: new Padding(padding: EdgeInsets.CreateSymmetric(vertical: 20), child: new Column(children:
                     [new Text(labels[index], style: M.Theme.of(ctx).textTheme.titleLarge), new SizedBox(height: 10), content])))));
     }
+    // Preserve each demo's preferred width, as in the reference. Stretching a
+    // Drawer makes its InkWell wider than the centered selection indicator.
     private static Widget Section(string label, params Widget[] children) => new ComponentSection(label,
-        new Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, spacing: 10, children: children.ToList()));
+        new Column(mainAxisSize: MainAxisSize.min, spacing: 10, children: children.ToList()));
     private static Widget Flow(params Widget[] children) => new Wrap(spacing: 10, runSpacing: 10, children: children.ToList());
     private static void DisplayAction() { } // Pinned reference display-only callbacks.
     private Widget Actions()

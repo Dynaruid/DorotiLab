@@ -10,6 +10,8 @@ No new screenshot is a replacement for a historical failure.
 ```powershell
 ./Doroti/eng/test-material-sample.ps1 -Suite Blockers
 ./Doroti/eng/test-material-sample.ps1 -Suite Regression
+./Doroti/eng/test-material-sample.ps1 -Suite Windows
+./Doroti/eng/test-material-sample.ps1 -Suite AppBarRaster
 ./Doroti/eng/run-web-playwright.ps1 -HeadlessOnly -RendererMode worker-canvaskit-webgl `
   -TestFile @('tests/material-sample.spec.ts','tests/material-sample-selection.spec.ts',
     'tests/material-sample-network.spec.ts','tests/material-sample-boundaries.spec.ts') `
@@ -32,6 +34,31 @@ older evidence. A presented frame must have visible content and zero Raster fail
 DOM semantics alone does not prove successful painting. Progress starts stopped at 0.7;
 Play enables indeterminate animation. Presented frame generations, rather than global
 queue-idle, determine sample frame completion.
+
+The `Windows` suite exercises native Skia paragraph pixels and ready-to-paint image
+decoding, independent rail callbacks, and every hour/minute dial conversion. It also
+mounts Material date/time dialogs against an offscreen host, injects framework pointer
+down/up events at rendered targets, and verifies date selection/confirmation/cancellation
+and 24-hour hour/minute selection/confirmation. Native PNGs are written under the run's
+output directory. This covers framework hit testing and native raster, not Win32 input,
+GPU presentation, physical display acceptance, or measured scrolling cadence.
+
+The suite also mounts the actual sample sections and SampleHome. It checks drawer
+indicator/InkWell geometry and pointer selection, scrolls the inline Top app bars
+through the viewport in both directions, and exercises both outer columns. A synthetic
+forwarded depth-zero metrics notification from each inner app bar verifies the sample's
+scroll-source filter, including the root Material color and a raster background pixel.
+This is a source-isolation contract, not a reproduction of the user's original flicker.
+
+The Windows-only `AppBarRaster` suite uses an offscreen D3D12 Skia context to exercise
+the shared native picture cache. It mounts the dark sample at 1275x640 and moves both
+columns through 70 positions, checking six intermediate frames per position and three
+GPU replays per scene. The uncached CPU scene is the reference. The root toolbar check
+includes text and actions; inline bars compare solid interiors to exclude fractional
+GPU sampling versus CPU glyph antialiasing differences. The fixture requires cache
+pressure beyond 24 admissions and cache hits. Before the cache eviction repair, the
+root toolbar lost all 71,400 pixels at step 19. This is a raster regression, separate
+from Vulkan presentation and physical display acceptance. See work.md section 15.
 
 ## Shared API contracts
 

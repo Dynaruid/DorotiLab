@@ -61,7 +61,7 @@ public sealed class SkiaSceneRenderer :
     private long _lastPresentedInputSequence;
     private long _contextGeneration;
     private long _shaderImageFiltersRendered;
-    private long _pictureRasterFrame;
+    private long _pictureRasterUseSequence;
     private long _pictureRasterPixels;
     private long _pictureRasterCacheHits;
     private long _pictureRasterCacheMisses;
@@ -392,7 +392,6 @@ public sealed class SkiaSceneRenderer :
             // into physical pixels. Applying host DPR here would scale twice.
             var rasterStart = DorotiFrameClock.Now;
             DorotiSkiaImageFilterRenderer.BeginFrame(RuntimeEffectBackend, _contextGeneration);
-            _pictureRasterFrame++;
             _frameTrace.Record(DorotiFramePhase.raster, _viewId, rasterStart,
                 frame.InputSequence, frame.SceneSequence, _host.SurfaceGeneration,
                 isNewFrame ? null : "retained scene replay", rasterStart - frame.SubmittedAt,
@@ -568,32 +567,66 @@ public sealed class SkiaSceneRenderer :
             var advances = MeasureTextRuns(request, textRuns);
             var naturalWidth = advances.Sum();
             var width = double.IsFinite(request.Width) ? Math.Min(request.Width, naturalWidth) : naturalWidth;
-            return new Paragraph(
+            var ascent = 0.0;
+            var descent = 0.0;
+            var metricRuns = textRuns.Count == 0
+                ? new[] { new ParagraphTextRun(request.Text, new TextStyle(fontFamily: request.FontFamily, fontSize: request.FontSize)) }
+                : textRuns;
+            foreach (var run in metricRuns)
+            {
+                var style = run.Style;
+                var resources = GetTextRenderResources(style.fontFamily ?? request.FontFamily,
+                    (float)(style.fontSize ?? request.FontSize), SKColors.Black, style);
+                var metrics = resources.Metrics(run.Text);
+                var naturalHeight = metrics.Ascent + metrics.Descent;
+                var lineHeight = style.height is { } multiplier ? (style.fontSize ?? request.FontSize) * multiplier
+                    : request.Height ?? naturalHeight;
+                var extra = lineHeight - naturalHeight;
+                var above = style.leadingDistribution == TextLeadingDistribution.even
+                    ? extra / 2 : extra * metrics.Ascent / Math.Max(1, naturalHeight);
+                ascent = Math.Max(ascent, metrics.Ascent + above);
+                descent = Math.Max(descent, metrics.Descent + extra - above);
+            }
+            var paragraph = new Paragraph(
                 request.Text,
                 width,
-                request.Height ?? request.FontSize * 1.2,
+                ascent + descent,
                 request.FontSize,
                 request.MaxLines,
                 request.FontFamily,
                 request.Color,
                 advances,
-                textRuns);
+                textRuns)
+            {
+                NativeAlphabeticBaseline = ascent,
+                CanvasKitTextAlign = request.TextAlign ?? TextAlign.start,
+                CanvasKitTextDirection = request.TextDirection ?? TextDirection.ltr,
+            };
+            paragraph.layout(new ParagraphConstraints(request.Width));
+            return paragraph;
         }
     }
 
-    public ValueTask<UiImage> DecodeAsync(
+    public async ValueTask<UiImage> DecodeAsync(
         ReadOnlyMemory<byte> bytes,
         DartUiInvocation invocation,
         CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         cancellationToken.ThrowIfCancellationRequested();
-        var data = SKData.CreateCopy(bytes.Span);
-        var image = SKImage.FromEncodedData(data);
-        data.Dispose();
-        if (image is null) throw new InvalidDataException("SkiaSharp could not decode the image resource.");
-        var handle = new SkiaImageHandle(image);
-        return ValueTask.FromResult(new UiImage(_viewId, image.Width, image.Height, handle.Release) { HostHandle = handle });
+        // Fully decode away from the UI/raster threads. FromEncodedData creates a
+        // lazy image and otherwise makes the first visible scroll frame pay for decoding.
+        return await Task.Run(() =>
+        {
+            using var data = SKData.CreateCopy(bytes.Span);
+            using var bitmap = SKBitmap.Decode(data)
+                ?? throw new InvalidDataException("SkiaSharp could not decode the image resource.");
+            cancellationToken.ThrowIfCancellationRequested();
+            bitmap.SetImmutable();
+            var image = SKImage.FromBitmap(bitmap);
+            var handle = new SkiaImageHandle(image);
+            return new UiImage(_viewId, image.Width, image.Height, handle.Release) { HostHandle = handle };
+        }, cancellationToken).ConfigureAwait(false);
     }
 
     public ValueTask<UiImage> RasterizeAsync(Picture picture, int width, int height,
@@ -1061,14 +1094,24 @@ public sealed class SkiaSceneRenderer :
         var cacheKey = (object)commands;
         if (payload.WillChangeHint || payload.CanvasBounds is not { } canvasBounds ||
             !canvasBounds.IsFinite || canvasBounds.isEmpty ||
-            (!payload.IsComplexHint && commands.Count < PictureRasterComplexityThreshold) ||
+            (!payload.IsComplexHint && commands.Count < PictureRasterComplexityThreshold &&
+                !HasDownscaledImage(commands)) ||
             canvas.Context is not { } context)
         {
             DrawPicture(canvas, commands);
             return;
         }
 
-        var mappedBounds = canvas.TotalMatrix.MapRect(ToRect(canvasBounds));
+        var transform = canvas.TotalMatrix;
+        // Perspective changes the sampling geometry; it is not translation-only
+        // reuse and must go through the ordinary draw path.
+        if (transform.Persp0 != 0 || transform.Persp1 != 0 || transform.Persp2 != 1)
+        {
+            DrawPicture(canvas, commands);
+            return;
+        }
+        var mappedBounds = transform.MapRect(ToRect(canvasBounds));
+        var rasterExtent = PictureRasterExtent(transform, ToRect(canvasBounds));
         if (!IsFinite(mappedBounds) || mappedBounds.Width <= 0 || mappedBounds.Height <= 0)
         {
             DrawPicture(canvas, commands);
@@ -1082,8 +1125,10 @@ public sealed class SkiaSceneRenderer :
             return;
         }
 
-        var width = checked((int)Math.Ceiling(mappedBounds.Width));
-        var height = checked((int)Math.Ceiling(mappedBounds.Height));
+        // Subtracting translated float endpoints can change ceil(height) by a
+        // pixel on every fractional scroll tick and repeatedly discard a cache.
+        var width = checked((int)Math.Ceiling(rasterExtent.Width));
+        var height = checked((int)Math.Ceiling(rasterExtent.Height));
         var pixels = (long)width * height;
         if (pixels <= 0 || pixels > MaxCacheablePicturePixels)
         {
@@ -1096,7 +1141,7 @@ public sealed class SkiaSceneRenderer :
         {
             if (cached.Width == width && cached.Height == height && cached.Transform == signature)
             {
-                cached.LastUsedFrame = _pictureRasterFrame;
+                cached.LastUsedSequence = ++_pictureRasterUseSequence;
                 DrawRasterImage(canvas, cached.Image, mappedBounds.Left, mappedBounds.Top);
                 Interlocked.Increment(ref _pictureRasterCacheHits);
                 return;
@@ -1127,13 +1172,13 @@ public sealed class SkiaSceneRenderer :
         rasterCanvas.Flush();
         var image = surface.Snapshot()
             ?? throw new InvalidOperationException("Doroti picture raster cache could not snapshot its GPU surface.");
-        cached = new(image, width, height, signature, _pictureRasterFrame);
+        cached = new(image, width, height, signature, ++_pictureRasterUseSequence);
         _pictureRasterCache.Add(cacheKey, cached);
         Interlocked.Increment(ref _pictureRasterCacheEntries);
         _pictureRasterPixels += cached.Pixels;
         _pictureRasterWarmups.Remove(cacheKey);
-        TrimPictureRasterCache();
         DrawRasterImage(canvas, image, mappedBounds.Left, mappedBounds.Top);
+        TrimPictureRasterCache();
         Interlocked.Increment(ref _pictureRasterCacheMisses);
     }
 
@@ -1145,12 +1190,28 @@ public sealed class SkiaSceneRenderer :
         canvas.Restore();
     }
 
+    private static bool HasDownscaledImage(IReadOnlyList<PathCommand> commands) =>
+        commands.Any(command => command.HostPayload is CanvasImagePayload image &&
+            (image.Source.width > image.Destination.width * 2 || image.Source.height > image.Destination.height * 2));
+
+    private static SKSize PictureRasterExtent(SKMatrix matrix, SKRect bounds)
+    {
+        matrix.TransX = 0;
+        matrix.TransY = 0;
+        var mapped = matrix.MapRect(bounds);
+        return new SKSize(mapped.Width, mapped.Height);
+    }
+
     private void TrimPictureRasterCache()
     {
         while (_pictureRasterCache.Count > MaxPictureRasterCacheEntries ||
                _pictureRasterPixels > MaxPictureRasterPixels)
         {
-            var oldest = _pictureRasterCache.MinBy(pair => pair.Value.LastUsedFrame);
+            // A frame can draw more pictures than the cache holds. Frame numbers
+            // tie in that case, and Dictionary reuses removed slots: MinBy could
+            // select the newly inserted image and dispose it before its draw.
+            // Order every access, including accesses within the same frame.
+            var oldest = _pictureRasterCache.MinBy(pair => pair.Value.LastUsedSequence);
             if (oldest.Key is null) break;
             RemovePictureRaster(oldest.Key, oldest.Value);
         }
@@ -1192,21 +1253,23 @@ public sealed class SkiaSceneRenderer :
         int width,
         int height,
         PictureRasterTransform transform,
-        long lastUsedFrame)
+        long lastUsedSequence)
     {
         internal SKImage Image { get; } = image;
         internal int Width { get; } = width;
         internal int Height { get; } = height;
         internal PictureRasterTransform Transform { get; } = transform;
-        internal long LastUsedFrame { get; set; } = lastUsedFrame;
+        internal long LastUsedSequence { get; set; } = lastUsedSequence;
         internal long Pixels => (long)Width * Height;
     }
 
-    private TextRenderResources GetTextRenderResources(string? fontFamily, float fontSize, SKColor color)
+    private TextRenderResources GetTextRenderResources(string? fontFamily, float fontSize, SKColor color, TextStyle? style = null)
     {
-        var key = new TextRenderKey(fontFamily ?? string.Empty, fontSize, color);
+        var key = new TextRenderKey(fontFamily ?? string.Empty, fontSize, color,
+            style?.fontWeight?.value ?? 400, style?.fontStyle == FontStyle.italic,
+            (float)(style?.letterSpacing ?? 0), (float)(style?.wordSpacing ?? 0));
         if (_textRenderResources.TryGetValue(key, out var resources)) return resources;
-        resources = new TextRenderResources(fontFamily, fontSize, color, _fallbackFonts);
+        resources = new TextRenderResources(fontFamily, fontSize, color, _fallbackFonts, key);
         _textRenderResources.Add(key, resources);
         return resources;
     }
@@ -1239,7 +1302,7 @@ public sealed class SkiaSceneRenderer :
             var resources = GetTextRenderResources(
                 style.fontFamily ?? request.FontFamily,
                 (float)(style.fontSize ?? request.FontSize),
-                ToColor(style.foreground?.color ?? style.color ?? request.Color ?? new UiColor(0xFF000000)));
+                ToColor(style.foreground?.color ?? style.color ?? request.Color ?? new UiColor(0xFF000000)), style);
             var runAdvances = resources.MeasureCodeUnitAdvances(run.Text);
             Array.Copy(runAdvances, 0, advances, offset, runAdvances.Length);
             offset += runAdvances.Length;
@@ -1249,36 +1312,44 @@ public sealed class SkiaSceneRenderer :
 
     private void DrawParagraphText(SKCanvas canvas, Paragraph paragraph, Offset offset)
     {
-        var x = (float)offset.dx;
-        var baseline = (float)(offset.dy + paragraph.alphabeticBaseline);
-        if (paragraph.TextRuns.Count == 0)
+        foreach (var line in paragraph.PaintLines)
         {
-            GetTextRenderResources(
-                    paragraph.fontFamily,
-                    (float)paragraph.fontSize,
-                    ToColor(paragraph.color))
-                .DrawText(canvas, paragraph.text, x, baseline);
-            return;
-        }
-
-        foreach (var run in paragraph.TextRuns)
-        {
-            var style = run.Style;
-            var resources = GetTextRenderResources(
-                style.fontFamily ?? paragraph.fontFamily,
-                (float)(style.fontSize ?? paragraph.fontSize),
-                ToColor(style.foreground?.color ?? style.color ?? paragraph.color));
-            resources.DrawText(canvas, run.Text, x, baseline);
-            x += (float)resources.MeasureCodeUnitAdvances(run.Text).Sum();
+            var x = (float)(offset.dx + line.Left);
+            var baseline = (float)(offset.dy + line.Baseline);
+            if (paragraph.TextRuns.Count == 0)
+            {
+                GetTextRenderResources(paragraph.fontFamily, (float)paragraph.fontSize, ToColor(paragraph.color))
+                    .DrawText(canvas, paragraph.text[line.Start..line.End], x, baseline);
+                continue;
+            }
+            var runStart = 0;
+            foreach (var run in paragraph.TextRuns)
+            {
+                var start = Math.Max(line.Start, runStart);
+                var end = Math.Min(line.End, runStart + run.Text.Length);
+                if (end > start)
+                {
+                    var style = run.Style;
+                    GetTextRenderResources(style.fontFamily ?? paragraph.fontFamily,
+                        (float)(style.fontSize ?? paragraph.fontSize),
+                        ToColor(style.foreground?.color ?? style.color ?? paragraph.color), style)
+                        .DrawText(canvas, run.Text[(start - runStart)..(end - runStart)], x, baseline);
+                    x += (float)paragraph.TextAdvance(start, end);
+                }
+                runStart += run.Text.Length;
+                if (runStart >= line.End) break;
+            }
         }
     }
 
-    private readonly record struct TextRenderKey(string FontFamily, float FontSize, SKColor Color);
+    private readonly record struct TextRenderKey(string FontFamily, float FontSize, SKColor Color,
+        int Weight, bool Italic, float LetterSpacing, float WordSpacing);
 
     private sealed class TextRenderResources : IDisposable
     {
         private readonly TextFontResource _primary;
         private readonly SkiaFallbackFontCollection? _registeredFallbacks;
+        private readonly float _letterSpacing, _wordSpacing;
         private readonly Dictionary<int, TextFontResource> _fallbackByCodePoint = [];
         private readonly Dictionary<string, TextFontResource> _fallbackByFamily =
             new(StringComparer.OrdinalIgnoreCase);
@@ -1287,19 +1358,48 @@ public sealed class SkiaSceneRenderer :
             string? fontFamily,
             float fontSize,
             SKColor color,
-            SkiaFallbackFontCollection? registeredFallbacks)
+            SkiaFallbackFontCollection? registeredFallbacks, TextRenderKey key)
         {
             _registeredFallbacks = registeredFallbacks;
-            var registered = registeredFallbacks?.MatchFamily(fontFamily);
-            _primary = new TextFontResource(registered ?? SKTypeface.FromFamilyName(fontFamily), fontSize, ownsTypeface: registered is null);
+            _letterSpacing = key.LetterSpacing;
+            _wordSpacing = key.WordSpacing;
+            using var fontStyle = new SKFontStyle(key.Weight, 5, key.Italic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright);
+            var registered = registeredFallbacks?.MatchFamily(fontFamily, fontStyle);
+            _primary = new TextFontResource(registered ?? SKTypeface.FromFamilyName(fontFamily, fontStyle), fontSize, ownsTypeface: registered is null);
             Paint = new SKPaint { Color = color, IsAntialias = true };
         }
 
         internal SKPaint Paint { get; }
 
+        internal (double Ascent, double Descent) Metrics(string text)
+        {
+            var ascent = -(double)_primary.Font.Metrics.Ascent;
+            var descent = (double)_primary.Font.Metrics.Descent;
+            for (var index = 0; index < text.Length;)
+            {
+                var font = ResolveFont(CodePointAt(text, index, out var length)).Font;
+                ascent = Math.Max(ascent, -font.Metrics.Ascent);
+                descent = Math.Max(descent, font.Metrics.Descent);
+                index += length;
+            }
+            return (ascent, descent);
+        }
+
         internal void DrawText(SKCanvas canvas, string text, float x, float baseline)
         {
             if (text.Length == 0) return;
+            if (_letterSpacing != 0 || _wordSpacing != 0)
+            {
+                for (var index = 0; index < text.Length;)
+                {
+                    var font = ResolveFont(CodePointAt(text, index, out var length)).Font;
+                    var glyph = text.Substring(index, length);
+                    canvas.DrawText(glyph, x + _letterSpacing / 2, baseline, SKTextAlign.Left, font, Paint);
+                    x += font.MeasureText(glyph, Paint) + _letterSpacing + (glyph == " " ? _wordSpacing : 0);
+                    index += length;
+                }
+                return;
+            }
 
             var runStart = 0;
             var runFont = ResolveFont(CodePointAt(text, 0, out var firstLength));
@@ -1348,6 +1448,7 @@ public sealed class SkiaSceneRenderer :
                         advances[cursor] = glyphIndex < widths.Length
                             ? Math.Max(0, widths[glyphIndex++])
                             : Math.Max(0, runFont.Font.MeasureText(text.AsSpan(cursor, codePointLength), Paint));
+                        advances[cursor] += _letterSpacing + (text[cursor] == ' ' ? _wordSpacing : 0);
                         cursor += codePointLength;
                     }
                     runStart = index;

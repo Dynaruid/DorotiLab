@@ -21,13 +21,19 @@ internal sealed class QuantizerResult
 
 internal sealed class QuantizerCelebi
 {
-    internal Future<QuantizerResult> quantize(dynamic pixels, long maxColors, bool returnInputPixelToClusterPixel = false)
+    internal async Future<QuantizerResult> quantize(dynamic pixels, long maxColors, bool returnInputPixelToClusterPixel = false)
     {
-        var result = new QuantizerResult();
-        foreach (var entry in MaterialImageColorRuntime.Quantize(
-            ((System.Collections.IEnumerable)pixels).Cast<object>().Select(Convert.ToInt64), checked((int)maxColors)))
-            result.colorToCount[entry.Key] = entry.Value;
-        return Future<QuantizerResult>.value(result);
+        var input = ((System.Collections.IEnumerable)pixels).Cast<object>().Select(Convert.ToInt64).ToArray();
+        var limit = checked((int)maxColors);
+        // Quantization is CPU work and must not block the UI continuation which
+        // receives an image while a lazily mounted section is scrolling into view.
+        return await Task.Run(() =>
+        {
+            var result = new QuantizerResult();
+            foreach (var entry in MaterialImageColorRuntime.Quantize(input, limit))
+                result.colorToCount[entry.Key] = entry.Value;
+            return result;
+        });
     }
 }
 

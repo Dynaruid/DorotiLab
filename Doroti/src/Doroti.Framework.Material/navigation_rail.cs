@@ -189,11 +189,12 @@ internal class _NavigationRailState__navigation_rail : global::Doroti.Framework.
             var __collection20149 = new List<global::Doroti.Framework.Widgets.Widget>(); if ((!((NavigationRail)this.widget).leadingAtTop && (((NavigationRail)this.widget).leading is not null))) { __collection20149.AddRange(new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(((NavigationRail)this.widget).leading!), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(Navigation_railLibrary._verticalSpacer) }); }
             for (long i = 0L; (i < checked((long)(((NavigationRail)this.widget).destinations.Count))); i += 1L)
             {
+                var destinationIndex = i;
                 __collection20149.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new _RailDestination__navigation_rail(minWidth: minWidthLocal, minExtendedWidth: minExtendedWidthLocal, extendedTransitionAnimation: this._extendedAnimation, selected: (((NavigationRail)this.widget).selectedIndex == i), icon: ((((NavigationRail)this.widget).selectedIndex == i) ? ((NavigationRail)this.widget).destinations[(int)(i)].selectedIcon : ((NavigationRail)this.widget).destinations[(int)(i)].icon), label: ((NavigationRail)this.widget).destinations[(int)(i)].label, destinationAnimation: this._destinationAnimations[(int)(i)], labelType: labelTypeLocal, iconTheme: ((((NavigationRail)this.widget).selectedIndex == i) ? selectedIconThemeLocal : effectiveUnselectedIconTheme), labelTextStyle: ((((NavigationRail)this.widget).selectedIndex == i) ? selectedLabelTextStyleLocal : unselectedLabelTextStyleLocal), padding: ((NavigationRail)this.widget).destinations[(int)(i)].padding, useIndicator: useIndicatorLocal, indicatorColor: (useIndicatorLocal ? indicatorColorLocal : null), indicatorShape: (useIndicatorLocal ? indicatorShapeLocal : null), onTap: ((global::System.Action)(() =>
                 {
                     if ((((NavigationRail)this.widget).onDestinationSelected is not null))
                     {
-                        ((NavigationRail)this.widget).onDestinationSelected!(i);
+                        ((NavigationRail)this.widget).onDestinationSelected!(destinationIndex);
                     }
                 })), indexLabel: localizations.tabLabel(tabIndex: (i + 1L), tabCount: checked((long)(((NavigationRail)this.widget).destinations.Count))), disabled: ((NavigationRail)this.widget).destinations[(int)(i)].disabled)));
             }

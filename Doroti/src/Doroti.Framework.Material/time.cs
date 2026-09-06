@@ -44,7 +44,7 @@ public class TimeOfDay : IComparable<TimeOfDay>
 
     public static TimeOfDay CreateNow()
     {
-        return TimeOfDay.CreateFromDateTime(new DateTime());
+        return TimeOfDay.CreateFromDateTime(DateTime.Now);
     }
 
     public virtual TimeOfDay replacing(long? hour = null, long? minute = null)

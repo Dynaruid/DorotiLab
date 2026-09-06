@@ -264,13 +264,13 @@ internal class _DialHourControl__time_picker : global::Doroti.Framework.Widgets.
                 case _HourDialType__time_picker.twentyFourHourDoubleRing:
                     {
                         long selectedHour = ((TimeOfDay)selectedTime).hour;
-                        return ((TimeOfDay)(object?)selectedTime.replacing(hour: (((selectedHour + hoursToAdd)) % TimeOfDay.hoursPerDay)));
+                        return ((TimeOfDay)(object?)selectedTime.replacing(hour: (((selectedHour + hoursToAdd + TimeOfDay.hoursPerDay)) % TimeOfDay.hoursPerDay)));
                     }
                 case _HourDialType__time_picker.twelveHour:
                     {
                         long periodOffsetLocal = ((TimeOfDay)selectedTime).periodOffset;
                         long hours = ((TimeOfDay)selectedTime).hourOfPeriod;
-                        return ((TimeOfDay)(object?)selectedTime.replacing(hour: (periodOffsetLocal + (((hours + hoursToAdd)) % TimeOfDay.hoursPerPeriod))));
+                        return ((TimeOfDay)(object?)selectedTime.replacing(hour: (periodOffsetLocal + (((hours + hoursToAdd + TimeOfDay.hoursPerPeriod)) % TimeOfDay.hoursPerPeriod))));
                     }
                 default:
                     throw new InvalidOperationException("Non-exhaustive Dart switch value.");
@@ -331,7 +331,7 @@ internal class _DialMinuteControl__time_picker : global::Doroti.Framework.Widget
         string formattedMinute = localizations.formatMinute(selectedTime);
         TimeOfDay nextMinute = ((TimeOfDay)(object?)selectedTime.replacing(minute: (((((TimeOfDay)selectedTime).minute + 1L)) % TimeOfDay.minutesPerHour)));
         string formattedNextMinute = localizations.formatMinute(nextMinute);
-        TimeOfDay previousMinute = ((TimeOfDay)(object?)selectedTime.replacing(minute: (((((TimeOfDay)selectedTime).minute - 1L)) % TimeOfDay.minutesPerHour)));
+        TimeOfDay previousMinute = ((TimeOfDay)(object?)selectedTime.replacing(minute: (((((TimeOfDay)selectedTime).minute + TimeOfDay.minutesPerHour - 1L)) % TimeOfDay.minutesPerHour)));
         string formattedPreviousMinute = localizations.formatMinute(previousMinute);
         return ((global::Doroti.Framework.Widgets.Widget)(object?)new global::Doroti.Framework.Widgets.Semantics(excludeSemantics: true, value: $"{localizations.timePickerMinuteModeAnnouncement} {formattedMinute}", increasedValue: formattedNextMinute, onIncrease: ((global::System.Action)(() =>
         {
@@ -965,8 +965,8 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
     return __cascade;
 }))());
         }
-        animateToValue(target: targetTheta, animation: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.AnimationController>(this._theta), tween: this._thetaTween, controller: this._animationController, min: (((global::Doroti.Framework.Animation.Animation<double>)this._theta).value - Time_pickerLibrary._kTwoPi), max: (((global::Doroti.Framework.Animation.Animation<double>)this._theta).value + Time_pickerLibrary._kTwoPi));
-        animateToValue(target: targetRadius, animation: DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.AnimationController>(this._radius), tween: this._radiusTween, controller: this._animationController, min: 0, max: 1);
+        animateToValue(target: targetTheta, animation: this._theta, tween: this._thetaTween, controller: this._animationController, min: (((global::Doroti.Framework.Animation.Animation<double>)this._theta).value - Time_pickerLibrary._kTwoPi), max: (((global::Doroti.Framework.Animation.Animation<double>)this._theta).value + Time_pickerLibrary._kTwoPi));
+        animateToValue(target: targetRadius, animation: this._radius, tween: this._radiusTween, controller: this._animationController, min: 0, max: 1);
     }
 
     internal virtual double _getRadiusForTime(TimeOfDay time)
@@ -990,14 +990,16 @@ public class _DialState__time_picker : global::Doroti.Framework.Widgets.State<_D
     internal virtual double _getThetaForTime(TimeOfDay time)
     {
         long hoursFactor = (((_Dial__time_picker)this.widget).hourDialType switch { _HourDialType__time_picker.twentyFourHourDoubleRing => TimeOfDay.hoursPerPeriod, _HourDialType__time_picker.twelveHour => TimeOfDay.hoursPerPeriod, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        double fraction = (((_Dial__time_picker)this.widget).hourMinuteMode switch { _HourMinuteMode__time_picker.hour => (((((TimeOfDay)time).hour / hoursFactor)) % hoursFactor), _HourMinuteMode__time_picker.minute => (((((TimeOfDay)time).minute / TimeOfDay.minutesPerHour)) % TimeOfDay.minutesPerHour), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
-        return ((((Dart_mathLibrary.pi / 2L) - (fraction * Time_pickerLibrary._kTwoPi))) % Time_pickerLibrary._kTwoPi);
+        double fraction = (((_Dial__time_picker)this.widget).hourMinuteMode switch { _HourMinuteMode__time_picker.hour => (double)(time.hour % hoursFactor) / hoursFactor, _HourMinuteMode__time_picker.minute => (double)time.minute / TimeOfDay.minutesPerHour, _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        var theta = (Dart_mathLibrary.pi / 2) - fraction * Time_pickerLibrary._kTwoPi;
+        return (theta % Time_pickerLibrary._kTwoPi + Time_pickerLibrary._kTwoPi) % Time_pickerLibrary._kTwoPi;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
     internal virtual TimeOfDay _getTimeForTheta(double theta, bool roundMinutes = false, double radius = default!)
     {
-        double fraction = (((0.25 - (((theta % Time_pickerLibrary._kTwoPi)) / Time_pickerLibrary._kTwoPi))) % 1L);
+        // Dart modulo is nonnegative; CLR remainder is negative on the left half of the dial.
+        double fraction = ((0.25 - theta / Time_pickerLibrary._kTwoPi) % 1 + 1) % 1;
         switch (((_Dial__time_picker)this.widget).hourMinuteMode)
         {
             case _HourMinuteMode__time_picker.hour:

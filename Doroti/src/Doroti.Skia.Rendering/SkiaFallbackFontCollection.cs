@@ -35,8 +35,11 @@ public sealed class SkiaFallbackFontCollection : IDisposable
         return MatchCharacter(codePoint) is not null;
     }
 
-    internal SKTypeface? MatchFamily(string? family) => string.IsNullOrWhiteSpace(family) ? null :
-        _fonts.LastOrDefault(font => string.Equals(font.Alias ?? font.Typeface.FamilyName, family, StringComparison.OrdinalIgnoreCase))?.Typeface;
+    internal SKTypeface? MatchFamily(string? family, SKFontStyle? style = null) => string.IsNullOrWhiteSpace(family) ? null :
+        _fonts.AsEnumerable().Reverse().Where(font => string.Equals(font.Alias ?? font.Typeface.FamilyName, family, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(font => Math.Abs(font.Typeface.FontWeight - (style?.Weight ?? 400)) +
+                (font.Typeface.FontSlant == (style?.Slant ?? SKFontStyleSlant.Upright) ? 0 : 1000))
+            .FirstOrDefault()?.Typeface;
 
     internal SKTypeface? MatchCharacter(int codePoint)
     {

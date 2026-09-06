@@ -2,7 +2,7 @@
 
 - 작성일: **2026-09-06**
 - 분석 기준: Doroti HEAD `d8efedd` 및 현재 로컬 reference source.
-- 상태: **C# sample 및 D08–D26 수리 / Windows·Linux 관리 코드·Android 빌드 PASS / Web 상호작용·8개 light/dark 비교 수행 / 전체 PARTIAL**. P3/P5 잔여 검증·native shadow 및 P6 target gate가 남아 기본 화면은 diagnostics다. 최신 결과는 §9, 기존 이력은 §7–§8 참고.
+- 상태: **C# sample 및 D08–D36 수리 / Windows native 회귀 PASS / 전체 PARTIAL**. 이미지 스크롤 실측·사용자 앱바 증상은 §12–§14의 notVerified 항목이다. P3/P5 잔여 검증·native shadow 및 P6 target gate가 남아 기본 화면은 diagnostics다. 2026-09-07 Windows 사용자 보고 후속은 §10–§14, 이전 target·Web 결과는 §7–§9 참고.
 - 최초 계획 작성: 사전 검토와 계획을 작성하고, 사용자 의도에 따라 **샘플 구현 과정에서 Doroti의 미흡·누락 기능을 고치고 만드는 것**을 주목적으로 명시했다. 당시 제품·테스트·Flutter source는 변경하지 않았고 build/앱 실행/성능 측정은 하지 않았다.
 - 후속 범위 정리: 참조 앱과 Doroti Material을 Material 3 전용으로 정리하고 이 계획의 구성·테마 조작·비교 조건도 이에 맞췄다. 아래 샘플 이식 단계의 완료를 의미하지 않는다.
 - 참조 경로: 요청의 `reference\flutter\_sample\_app`는 현재 checkout에 없다. 실제 존재하고 요청 내용에 해당하는 **[reference/flutter_sample_app](reference/flutter_sample_app/README.md)** 기준이다.
@@ -622,3 +622,220 @@ P0/P1 골격과 P2–P4의 앱/public API를 구현했고, 기존 진단·공용
 수치는 **MEASURED_NOT_ACCEPTANCE**다. 남은 text raster/weight·spacing 차이와 native
 shadow를 숨기기 위한 tolerance를 임의로 설정하지 않았다. 독립 MCU role ARGB의
 정확 일치 PASS는 §8이며 이 screenshot 결과와 다른 계약이다.
+
+## 10. 2026-09-07 Windows sample 사용자 보고 후속
+
+범위: `DOROTI_RESIZE_FIXTURE` 제거, `DOROTI_TESTBED_MODE=sample`, Windows Release에서
+사용자가 보고한 이미지 영역 스크롤 끊김, 아이콘 위치, 날짜·시간 피커, 네비게이션.
+기존 §7–§9의 실패 및 미검증 판정은 유지한다.
+
+### 공용 원인 및 수정
+
+- **D27 NavigationRail:** C# for-loop의 동일 인덱스를 모든 onTap closure가 캡처하여
+  네 destination 모두 4를 전달했다. iteration별 index를 캡처하도록 수정했다.
+  실제 build 결과에서 꺼낸 네 callback이 각각 0/1/2/3을 전달하는 회귀를 추가했다.
+- **D28 native text:** Skia가 임의의 `lineHeight * 0.8` 기준선으로 모든 glyph를 그렸고,
+  정렬·줄바꿈 geometry와 무관하게 전체 문자열을 한 줄로 다시 측정·그렸다.
+  실제 font ascent/descent와 run height/leading을 사용하고 layout의 line offset,
+  baseline, run advance를 그대로 paint한다. MaterialIcons 24px em/기준선, 중앙 정렬
+  피커 숫자, 둘째 줄 우측 정렬을 픽셀·geometry로 검증했다.
+- **D29 time picker:** 시/분 비율이 정수 나눗셈으로 잘렸고 Dart modulo를 CLR remainder로
+  옮긴 코드가 음수 선택값을 만들었다. 실수 나눗셈과 양수 범위 정규화 및 0시/0분의
+  감소 wrap을 수정했다. 현재 시간 factory도 `new DateTime()` 대신 `DateTime.Now`를 쓴다.
+  모든 24시간·60분, 12h/24h ring, 양수/음수/한 바퀴 추가 각도를 검증했다.
+  **native-v9 실제 mounted FAIL:** 선택 변경의 `_animateTo`가 driven animation을
+  AnimationController로 변환하면서 InvalidCastException을 발생시켰다.
+  이미 요구 타입인 Animation<double>을 그대로 넘기도록 수리했다.
+- **D30 date picker:** Gregorian 현재 날짜가 서기 1년이던 코드와 locale별 weekday
+  modulo를 수정했다. dialog route를 `DateTime?` 결과로 만들어 취소를 null로 보존한다.
+  mounted pointer로 9/18 선택·OK 결과, 다시 열기·Cancel null을 확인했다.
+- **D31 image scroll:** native `SKImage.FromEncodedData`는 첫 paint에서 decode를 수행하는
+  lazy image였다. thread pool에서 immutable bitmap까지 decode한 뒤 Image를 반환한다.
+  색상 quantization도 CPU 작업을 thread pool로 옮겼다. text paint의 반복 glyph width
+  측정도 D28에서 제거했다. 디코딩 결과 `IsLazyGenerated=false`와 image RGBA/PNG 회귀를
+  확인했다. **실제 연속 스크롤 cadence·체감 개선은 notVerified**이며 성능 PASS로 바꾸지 않는다.
+
+### 검증 및 증거
+
+증거 루트: `.doroti/evidence/windows-sample-repair-20260907/`.
+모든 실행 wrapper의 timeout은 20분이다.
+
+- `native-v11`: **PASS**. 공용 계약 외에 MaterialApp에 날짜·시간 dialog를 mount하고,
+  native Skia로 raster했다. RenderBox 좌표에서 framework pointer down/up을 주입하여
+  날짜 선택/확정/취소, 24시간 inner ring의 17시 선택, 45분 선택, 확정을 확인했다.
+  각 단계 PNG는 해당 run의 `mounted/`에 있다. `native-v10`은 callback 기반 통과 이력이다.
+- `blockers-v2`: **PASS**, 기존 image readback/PNG/stream 및 palette·Material sample 계약.
+- `regression-v1`: **PASS**, FCR-7 Release light/dark·shortcut·context menu 포함.
+- `windows-release.*.log`: **PASS**, Windows Release 빌드 경고 0/오류 0.
+- 마지막 `_animateTo` 수리까지 포함한 `regression-final`도 **PASS**이며,
+  `windows-release-final.*.log`의 최종 Windows Release 빌드도 경고 0/오류 0이다.
+- `windows-smoke.*.log`: **실행·자동 종료 PASS**, 사용자 실행 환경에 있던 Vulkan presenter,
+  FailedTerminals=0 / OperationalDebugErrors=0. 이 smoke는 마지막 `_animateTo` 수리 전이며
+  피커 조작·최초 sample content·전체 화면 acceptance 근거로 사용하지 않는다.
+- 초기 `contracts-first`, `native-v1`–`native-v8`은 fixture 컴파일/host 구성 실패 기록이다.
+  `native-v9`는 위 D29 제품 결함 재현이며 원본 log와 PNG를 유지했다.
+- Windows Computer Use native pipe는 재시도·세션 초기화 후에도 연결 실패했다.
+  OS 마우스 입력·실제 창 스크롤·physical display 확인은 **notVerified**다.
+  offscreen pointer/raster와 자동 실행 성공을 사용자 실측으로 분류하지 않는다.
+
+## 11. 2026-09-07 Windows sample 창 크기 변경 크래시
+
+- **D32 원인:** `WM_SIZING`의 `PrepareCompositionSizingFrame`이 100ms exact-frame
+  대기 시간 초과를 렌더 실패와 같은 `false`로 반환했다. 상위 host는 `fatal_`을 설정하고
+  창을 닫아 `Native HwndExactCpp product host failed: NativeFailure`로 종료했다.
+- **수리:** 시간 초과를 별도로 구분하고, 늦은 prepared frame을 취소한 뒤 `WM_SIZE`에서
+  실제 확정된 크기의 새 generation을 그린다. 실제 render failure의 fatal 처리는 유지한다.
+  취소와 worker의 prepared 결과 게시가 경합해도 취소된 generation이 worker를 붙잡지
+  않게 처리했다. prepared terminal에도 기존 timeout 진단을 보존한다.
+- **수정 전 FAIL:** Windows 이벤트 2026-09-07 04:28:20 및 실제 sample resize 재현.
+  `.doroti/evidence/windows-sample-resize-20260907/original-event.txt`,
+  `before-visible.stderr.log`에 원본 실패를 보존했다.
+- **수정 후 PASS-observed-by-agent:** 같은 Release sample/Vulkan/AMD Radeon 780M에서
+  computer-use를 통한 OS 창 메뉴 크기 조절(Left/Right), 최대화, 좁은/넓은 화면 재배치,
+  크기 변경 후 Color 내비게이션 전환과 닫기 버튼 정상 종료를 확인했다.
+  `resize-order-14360.csv`에 sizing entry 33회(Left 7/Right 26), 실제
+  `sizing-timeout-recover` 1회가 있다. `after.stderr.log`의 종료 summary는
+  FailedTerminals=0, AcceptedResizeGenerations=7, PresentedResizeGenerations=6,
+  SupersededResizeGenerations=1, UnterminatedResizeGenerations=0,
+  DuplicateResizeTerminals=0, OperationalDebugErrors=0이다.
+- **회귀 PASS:** native Release build 및 app Release build(경고 0/오류 0),
+  `--prepared-frame` fixture의 prepare/cancel/commit 및 clock failure injection
+  (prepared=10, cancelled=8, reserved=0, presents=3). 빌드/테스트 timeout은 20분이다.
+- Computer-use의 이전 연결 실패 이력은 §10에 남긴다. 이번 연결에서는 실제 OS 입력을
+  확인했지만, 전 방향 연속 드래그의 부드러움·다른 GPU/DPI 환경과 사용자 physical
+  acceptance는 **notVerified**다. 시간 초과를 복구했다는 결과를 성능 gate PASS로 쓰지 않는다.
+
+## 12. 2026-09-07 Flutter 비교: 이미지 스크롤·버튼·앱바
+
+증거: `.doroti/evidence/windows-sample-scroll-20260907/`.
+
+- **색상 추출 호출 검토:** 매 프레임 추출은 재현되지 않았다. `image-before.nettrace`는
+  섹션 진입을 포함하고, `image-loaded.nettrace`는 이미 로드된 이미지 주변 왕복 스크롤이다.
+  후자에서 반복 quantize/decode 호출은 관측하지 못했다. 샘플은 기존에 섹션 mount/source
+  선택 때 자동 추출했지만 참조 Flutter `image_demo.dart`는 명시적인 Extract colors였다.
+- **D33 이미지:** 참조와 같이 명시적 Extract colors, 별도의 Retry image(evict/reload)로
+  맞췄다. 창 크기·스크롤·Contain/Cover 변경은 색상 추출을 시작하지 않는다.
+  크게 축소된 이미지 picture도 기존의 bounded GPU raster cache 대상으로 포함했다.
+  캐시 extent는 translation을 제외한 행렬로 계산한다. 부동소수점 endpoint 차감에 따른
+  915/916px 왕복 재할당 사례가 이제 915px로 고정된다. perspective는 일반 draw 경로다.
+- **D34 버튼 텍스트:** native Skia 측정/그리기에서 fontWeight/fontStyle/letterSpacing/
+  wordSpacing을 무시하던 경로를 수리했다. 등록된 Roboto regular/medium/bold는 요청 굵기에
+  맞게 고르고, 같은 굵기 등록이 여러 번이면 최신 폰트를 쓴다. 캐시 key에도 스타일을 넣었다.
+  실제 medium 폰트의 글리프 폭 + 자간과 paragraph intrinsic width를 비교한다.
+- **앱바: 미재현/추가 확인 필요.** 중첩 SliverAppBar를 포함한 실제 MaterialApp mount에서
+  내부 scroll depth=1은 root app bar의 scrolledUnder 상태를 바꾸지 않고, 외부 depth=0은
+  root 상태를 바꾼다. Flutter SDK 구현과 같은 결과여서 app bar 제품 동작은 변경하지 않았다.
+  사용자가 본 변화의 종류/상황은 아직 특정하지 못했다.
+- **자동 검증 PASS:** `contracts-final`은 실제 샘플 ImageDemo를 mount하고 decode=1,
+  자동 palette rasterization=0, 명시적 light/dark 추출=2, 이후 스크롤 재연산=0을 확인한다.
+  버튼 폰트/자간, raster cache extent, 앱바 상태 분리, 기존 날짜·시간 pointer/raster 회귀 포함.
+  `blockers-final`은 기존 image readback/MCU/Material 계약 PASS.
+  `regression-final`은 기존 FCR-7 light/dark, keyboard, context menu 계약 PASS.
+  `release-build.stdout.log`는 Windows Release 경고 0/오류 0.
+- `contracts-before`는 두 번째 fixture root의 wrapWithDefaultView 누락 실패,
+  `contracts-v3`은 테스트 using 누락 컴파일 실패다. 원본을 유지했다.
+  `contracts-v5/v6`은 통과했지만 fractional rounding 예제는 아직 경계를 넘지 않았고,
+  `contracts-v7/final`에서 실제 기존 915/916px 사례를 확인했다.
+- OS 입력으로 수정 전 Flutter Debug/현재 Doroti를 비교하고 프로파일을 수집했다.
+  Escape로 computer-use가 중단됐으며, 사용자가 실수였다고 알린 뒤 재연결도 같은 중단
+  상태를 반환했다. 이후 UI 입력은 하지 않았다. 수정 후 실제 Windows 연속 스크롤의
+  부드러움·최종 화면 비교·전체 앱바 사용자 증상은 **notVerified**다.
+  CPU 샘플의 unmanaged wait 누적 시간을 프레임 지연값으로 해석하지 않는다.
+  모든 실행 테스트 wrapper의 timeout은 20분이다.
+
+## 13. 2026-09-07 드로어 선택 배경·InkWell 후속
+
+증거: `.doroti/evidence/windows-sample-geometry-20260907/`.
+
+- **사용자 범위 확인:** 052835/052845 스크린샷의 문제는 Navigation drawer의 선택
+  배경이다. 사용자는 Common buttons가 아닌 이 영역을 가리켰다고 확인했다.
+  §12의 폰트 수리는 이 드로어 문제의 해결 근거가 아니다.
+- **D35 원인/수리:** 샘플의 공통 Section Column이 `CrossAxisAlignment.stretch`로
+  Drawer의 선호 너비를 무시했다. 아이콘/InkWell은 늘어난 전체 너비를 사용하지만
+  가운데 선택 indicator는 기본 최대 336px이므로 서로 어긋났다. 참조 샘플처럼
+  Column의 기본 중앙 정렬과 느슨한 가로 제약으로 복구했다. 실제 304px Drawer의
+  280px destination 안에 아이콘·라벨·선택 배경·InkWell이 함께 놓인다.
+- **자동 검증 PASS:** `final`은 실제 ComponentsScreen/Section/GalleryDrawer 소스를
+  mount하여 indicator/InkWell의 시작점·너비 일치, 아이콘 클릭, 오른쪽 내부 가장자리
+  클릭, 영역 밖 클릭 무시를 검증한다. 기존 날짜/시간/이미지/글꼴 회귀도 PASS.
+  테스트 timeout은 20분이다. `before`의 Clipboard fixture capability 누락 실패는
+  그대로 보존하고 `before-v2`부터 기존 ClipboardFixtureHost를 등록했다.
+- **Windows 실제 입력 확인:** 수정 전 드로어의 어긋남을 확인했고, 수정한 Release
+  앱에서 아이콘/선택 배경/hover 정렬 및 Inbox → Outbox 아이콘 클릭 전환을 확인했다.
+  빌드 `release-build`는 이전 앱의 DLL 잠금으로 실패했다. 해당 검사 프로세스를
+  종료한 뒤 `release-build-v2`는 경고 0/오류 0으로 통과했다.
+- **앱바는 미해결/미재현:** 사용자가 설명한 외곽 Scaffold app bar 깜빡임은 실제
+  Windows에서 Top app bars 구간 진입·통과 및 Medium 내부 스크롤로 재현하지 못했다.
+  실제 샘플의 단일/두 열 mount 추적에서도 외곽 depth=0, 내부 depth=1이었다.
+  최종 회귀는 두 열 샘플에서 해당 섹션이 화면 밖으로 지나갈 때 root scrolledUnder가
+  유지되고 외곽 스크롤이 0으로 돌아가면 해제되는 것을 검증한다. 이것을 사용자 증상
+  해결이나 모든 프레임의 시각적 안정성 PASS로 해석하지 않는다. 앱바 제품 소스는
+  추정으로 바꾸지 않았으며, 정확한 재현 입력 조건 확인이 남아 있다.
+
+## 14. 2026-09-07 앱바 코드 비교 및 외곽 스크롤 출처 제한
+
+증거: `.doroti/evidence/windows-appbar-compare-20260907/`.
+
+- **비교 기준:** 저장소 `reference/flutter-master/packages/flutter/lib/src/`와 사용자가
+  `flutter run`으로 사용하는 `C:/Users/parti/flutter/packages/flutter/lib/src/`의
+  `material/app_bar.dart`, `widgets/scroll_notification_observer.dart`는 diff가 없다.
+  Doroti의 AppBar scrolledUnder 판정, 색/elevation/surfaceTint 선택, Material의
+  AnimatedPhysicalModel, 알림 observer 및 일반 Viewport depth 전달도 같은 흐름이다.
+  일반 스크롤 전달에서 Flutter와 다른 depth 계산 오류를 발견했다고 주장하지 않는다.
+- **D36 변경:** 샘플의 기본 `depth == 0` 조건에 실제 발신 ScrollPosition 소유권 검사를
+  추가했다. SampleHome은 GlobalKey로 현재 ComponentsState를 참조하고, ComponentsState는
+  두 외곽 ScrollController에 붙은 position만 허용한다. 따라서 내부 Medium/Large·drawer
+  등의 알림은 전달 depth가 0이어도 root app bar 상태/색을 바꾸지 못한다. Components의
+  두 외곽 목록과 나머지 Color/Typography/Elevation 화면의 기존 동작은 유지한다.
+- **근거의 한계:** `full-sample-before`는 수정 전 실제 SampleHome의 위·아래 왕복
+  스크롤에서도 상태 이상이 없었다. 별도 회귀의 depth=0 내부 metrics 전달은 observer의
+  발신원 제한을 검증하기 위한 합성 입력이다. 사용자에게서 관측된 원래 깜빡임의 입력
+  순서나 렌더러 원인을 재현한 증거로 쓰지 않는다. D36은 명시적 출처 제한이며,
+  사용자의 실제 창에서 원래 깜빡임이 없어졌는지는 **notVerified**다.
+- **검증 PASS:** `final`은 전체 SampleHome 왕복 스크롤, 두 외곽 목록의 상태 변경/원점
+  복귀, Medium/Large에서 합성 전달한 metrics 거부, root Material 색과 PNG 배경 픽셀
+  보존을 확인했다. 기존 Windows 날짜/시간/이미지/드로어 회귀도 통과했다.
+  `default-predicate-negative`는 출처 검사를 잠시 뺀 비교 실행으로, 내부 알림이 root를
+  초기화하여 의도대로 FAIL했다. 비교 직후 출처 검사 코드를 복구했으며 실패 로그를
+  유지했다. `columns-guard`의 fixture 괄호 컴파일 실패, `columns-guard-v2`의 fixture
+  locale 누락 실패도 보존했다. `release-build`는 Windows Release 경고 0/오류 0이다.
+  테스트와 빌드 timeout은 모두 20분이다.
+
+## 15. 2026-09-07 공통 GPU 그림 캐시의 앱바 누락 재현 및 수정
+
+증거: `.doroti/evidence/windows-appbar-raster-20260907/`.
+
+- **원인 재현:** 사용자가 외곽 앱바뿐 아니라 모든 앱바의 깜빡임을 재보고했다.
+  Windows 실제 창에서 제목/버튼/배경이 함께 사라진 상태를 확인했다. 기존 CPU
+  스냅샷, 한 열만 움직이는 검사, 애니메이션 종료 후 검사는 이 현상을 재현하지
+  못했다. `intermediate-before-v2`는 1275×640의 어두운 실제 SampleHome에서 두 열을
+  함께 이동하고 중간 프레임을 GPU로 반복 그려 step 19에서 상단 71,400픽셀 누락을
+  재현했다. 같은 immutable scene의 CPU 직접 렌더링에는 앱바가 남아 있었다.
+- **삭제 경로 확인:** 캐시 정리에서 프레임 번호로 LRU를 판단하여 같은 프레임의
+  항목들이 동률이 됐다. Dictionary의 삭제 슬롯 재사용 때문에 새로 넣은 항목이
+  MinBy의 첫 항목이 될 수 있었고, 그리기 전 Trim이 그 이미지를 Dispose했다.
+  `eviction-before`에 임시 진단으로 `Picture cache evicted its pending draw: 114`
+  실패를 보존했다. 추정 canvas bounds와 스크롤 출처 필터는 이 누락의 원인이 아니다.
+- **공통 렌더러 수정:** 그림마다 증가하는 사용 순번으로 실제 최근 사용 순서를
+  구분하고, 새 이미지의 draw를 마친 뒤 캐시를 정리한다. 24개/픽셀 예산과 이미지
+  축소 캐시를 유지한다. 임시 앱바 추적/예외 코드는 제거했다. 개별 AppBar에 대한
+  특별 처리 없이 공통 SkiaSceneRenderer에서 수리한다.
+- **회귀 검사:** `AppBarRaster` suite를 추가했다. Windows D3D12 offscreen GPU와 CPU의
+  같은 장면을 비교하고 캐시 한도 초과 admission과 hit를 요구한다. 70개 스크롤 위치의
+  420개 중간 프레임을 검사한다. `intermediate-after`의 외곽 앱바 전체 픽셀 비교는
+  전 프레임 PASS였다. 내부 앱바 검사 확장 중 `final`/`regions-check`는 소수점 위치의
+  Tabs 글자 가장자리 CPU/GPU 샘플링 차이 517픽셀로 실패했다. 이 실패는 유지하고,
+  내부 앱바만 3×3 동일색 내부 픽셀을 비교하도록 검사 목적을 명확히 했다. 외곽
+  앱바의 원래 전체 픽셀 검사와 임계값은 그대로 유지했다.
+  `final-v2`의 외곽 전체 픽셀/내부 동일색 영역 비교는 420개 중간 프레임 모두 PASS,
+  캐시 hit 23,074회와 admission 456회를 확인했다.
+  `windows-final`은 GPU 캐시를 켠 기존 Windows 날짜/시간/이미지/드로어/스크롤 상태
+  회귀도 PASS했다.
+- **빌드/실제 창:** `fixed-build` Windows Release 경고 0/오류 0. 수정한 앱에서
+  두 열 스크롤, Top app bars 구간 진입/통과/역방향을 확인하는 동안 외곽 및 내부
+  앱바가 표시됐다. 전체 사용자 입력 조합이나 물리적 모든 프레임의 flicker-free
+  acceptance를 주장하지 않는다. 사용자 재확인은 별도다. 이전 §14 출처 제한의
+  합성 입력 검증을 이 GPU 누락의 원인 검증으로 재해석하지 않는다.
+- **실패 보존:** `columns-before` fixture 이름 충돌 컴파일 실패,
+  `intermediate-before` 이전 검사 프로세스에 의한 apphost 잠금 실패도 보존했다.
+  모든 검사와 빌드 timeout은 20분이다.

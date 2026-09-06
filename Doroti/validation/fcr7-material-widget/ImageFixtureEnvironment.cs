@@ -5,16 +5,18 @@ internal sealed class ImageFixtureEnvironment : IDisposable
 {
     private readonly PlatformDispatcher _dispatcher = new();
     private readonly IDisposable _scope;
+    internal SkiaSceneRenderer Renderer { get; }
     public ImageFixtureEnvironment()
     {
         _scope = _dispatcher.EnterScope();
         var host = new ImageHost();
-        var renderer = new SkiaSceneRenderer(91, host, null, null, "validation/skia", "validation", "validation");
+        var renderer = Renderer = new SkiaSceneRenderer(91, host, null, null, "validation/skia", "validation", "validation");
         _dispatcher.RegisterView(91, new DorotiViewCapabilities("validation/skia")
             .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, new ClipboardFixtureHost())
-            .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer));
+            .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer)
+            .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, renderer));
     }
-    public void Dispose() { _scope.Dispose(); _dispatcher.Dispose(); }
+    public void Dispose() { _scope.Dispose(); _dispatcher.Dispose(); Renderer.Dispose(); }
 
     private sealed class ImageHost : ISkiaSceneRendererHost
     {

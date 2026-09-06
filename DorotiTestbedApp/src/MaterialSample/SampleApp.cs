@@ -112,6 +112,7 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
     }
     public override void activate() { base.activate(); UpdateTickerMode(); }
     private readonly GlobalKey<M.ScaffoldState> _scaffold = new();
+    private readonly GlobalKey<ComponentsState> _components = new();
     private AnimationController _controller = null!;
     private CurvedAnimation _rail = null!, _barCurve = null!, _railSize = null!, _railOffset = null!, _barSize = null!, _barOffset = null!;
     private ReverseAnimation _bar = null!;
@@ -146,6 +147,9 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
         _controller.dispose(); _tickerMode?.removeListener(UpdateTicker); base.dispose();
     }
     private void Navigate(long value) => setState(() => _destination = checked((int)value));
+    private bool AcceptAppBarScroll(ScrollNotification notification) =>
+        Scroll_notificationLibrary.defaultScrollNotificationPredicate(notification) &&
+        (_destination != 0 || _components.currentState?.OwnsScrollNotification(notification) == true);
     private Widget BrightnessAction() => new M.IconButton(tooltip: "Toggle brightness", onPressed: widget.Brightness, icon: new Icon(M.Theme.of(context).brightness == Brightness.light ? M.Icons.dark_mode_outlined : M.Icons.light_mode_outlined));
     private Widget SeedAction() => new M.PopupMenuButton<int>(tooltip: "Select seed color", icon: new Icon(M.Icons.palette_outlined),
         initialValue: widget.Seed, onSelected: widget.SelectSeed,
@@ -184,11 +188,12 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
         var barFactor = _barSize.value;
         Widget body = _destination switch
         {
-            0 => new ComponentsScreen(twoColumns: _wide, secondFraction: _railSize.value, secondOffset: 1 - _railOffset.value, scaffold: _scaffold),
+            0 => new ComponentsScreen(twoColumns: _wide, secondFraction: _railSize.value, secondOffset: 1 - _railOffset.value, scaffold: _scaffold, key: _components),
             1 => new ColorScreen(), 2 => new TypographyScreen(), _ => new ElevationScreen(),
         };
         return new M.Scaffold(key: _scaffold,
-            appBar: new M.AppBar(title: new Text("Doroti Material 3"), actions: !_wide ? [BrightnessAction(), SeedAction(), ImageAction()] : []),
+            appBar: new M.AppBar(title: new Text("Doroti Material 3"), notificationPredicate: AcceptAppBarScroll,
+                actions: !_wide ? [BrightnessAction(), SeedAction(), ImageAction()] : []),
             endDrawer: new GalleryDrawer(),
             body: new Column(children:
             [
