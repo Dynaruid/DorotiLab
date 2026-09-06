@@ -486,6 +486,9 @@ internal interface IDorotiImageHandle
 {
     IDorotiImageHandle Clone();
 
+    ValueTask<ByteData> ReadBytesAsync(ImageByteFormat format) =>
+        ValueTask.FromException<ByteData>(new NotSupportedException($"Image readback for {format} is unavailable."));
+
     void Release();
 }
 
@@ -1386,6 +1389,12 @@ public sealed class Paragraph : IDisposable
 public interface IImageHostCapability
 {
     ValueTask<Image> DecodeAsync(ReadOnlyMemory<byte> bytes, DartUiInvocation invocation, CancellationToken cancellationToken = default);
+
+    /// <summary>Rasterizes at 1 logical unit per pixel onto transparent sRGB storage, independent of window DPR.</summary>
+    ValueTask<Image> RasterizeAsync(Picture picture, int width, int height, DartUiInvocation invocation,
+        CancellationToken cancellationToken = default) => ValueTask.FromException<Image>(
+            new DorotiCapabilityException(DorotiCapabilityIds.GraphicsImage, null, invocation,
+                "picture rasterization is not registered by the active host"));
 }
 
 public sealed class Image : IDisposable
@@ -1412,6 +1421,7 @@ public sealed class Image : IDisposable
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
     public Image clone()
     {
+        ObjectDisposedException.ThrowIf(debugDisposed, this);
         if (HostHandle is IDorotiImageHandle handle)
         {
             var clone = handle.Clone();
@@ -1421,8 +1431,17 @@ public sealed class Image : IDisposable
     }
     public bool isCloneOf(Image other) => ReferenceEquals(this, other) || (viewId == other.viewId && width == other.width && height == other.height);
     public static IReadOnlyList<string> debugGetOpenHandleStackTraces() => [];
-    public Future<ByteData?> toByteData(ImageByteFormat format = ImageByteFormat.rawRgba)
+    public async Future<ByteData?> toByteData(ImageByteFormat format = ImageByteFormat.rawRgba)
     {
+        ObjectDisposedException.ThrowIf(debugDisposed, this);
+        if (!Enum.IsDefined(format)) throw new ArgumentOutOfRangeException(nameof(format));
+        if (HostHandle is IDorotiImageHandle handle)
+        {
+            // Pin storage across an asynchronous host read even if the caller releases this handle.
+            var lease = handle.Clone();
+            try { return await lease.ReadBytesAsync(format); }
+            finally { lease.Release(); }
+        }
         throw new DorotiCapabilityException(
             DorotiCapabilityIds.GraphicsImage,
             viewId,

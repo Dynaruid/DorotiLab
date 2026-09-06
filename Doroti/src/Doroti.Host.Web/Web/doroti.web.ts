@@ -39,6 +39,7 @@ export interface CanvasKitUiBridge {
   ): void;
   releaseResource(resourceId: number, generation: number): void;
   layoutParagraph(requestJson: string): string;
+  imageOperation(requestJson: string, bytes: Uint8Array): Promise<Uint8Array>;
 }
 
 interface CanvasKitManagedCallbacks {
@@ -487,6 +488,18 @@ export function releaseCanvasKitResource(resourceId: number, generation: number)
 
 export function layoutCanvasKitParagraph(requestJson: string): string {
   return requireCanvasKitUiBridge().layoutParagraph(requestJson);
+}
+
+export async function canvasKitImageOperation(requestJson: string, encodedBytes: string): Promise<string> {
+  const binary = atob(encodedBytes);
+  const input = Uint8Array.from(binary, character => character.charCodeAt(0));
+  const result = await requireCanvasKitUiBridge().imageOperation(requestJson, input);
+  // .NET's Promise marshaller does not support byte[]. Only this local UI/.NET boundary is encoded;
+  // UI/Raster messages continue to transfer owned binary buffers.
+  const chunks: string[] = [];
+  for (let offset = 0; offset < result.length; offset += 8192)
+    chunks.push(String.fromCharCode(...result.subarray(offset, offset + 8192)));
+  return btoa(chunks.join(""));
 }
 
 export function completeCanvasKitScene(

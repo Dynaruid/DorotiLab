@@ -437,6 +437,9 @@ function installPort(): void {
         case "display-list":
           admitScene(message);
           break;
+        case "image-operation":
+          imageOperation(message);
+          break;
         case "retain-resource":
           retainResource(message);
           break;
@@ -740,7 +743,7 @@ function drawFrameMarker(target: ResizeEpoch): void {
   } finally { targetCanvas.restoreToCount(save); paint.delete(); }
 }
 
-function replaySupportedCommands(scene: RasterScene, targetSurface: Surface): void {
+function replaySupportedCommands(scene: RasterScene, targetSurface: Surface, measureFrame = true): void {
   const started = performance.now();
   const kit = requireCanvasKit();
   const targetCanvas = targetSurface.getCanvas();
@@ -762,10 +765,12 @@ function replaySupportedCommands(scene: RasterScene, targetSurface: Surface): vo
   try { replayCommandRange(scene, context, 0, scene.document.commands.length); }
   finally {
     targetCanvas.restoreToCount(rootSaveCount);
+    if (measureFrame) {
     replayLastMilliseconds = performance.now() - started;
     replayTotalMilliseconds += replayLastMilliseconds;
     replayMaximumMilliseconds = Math.max(replayMaximumMilliseconds, replayLastMilliseconds);
     replayCount++;
+    }
   }
 }
 
@@ -3164,6 +3169,66 @@ function failScene(scene: RasterScene, reason: string, attempted: boolean): void
   scene.attempted ||= attempted;
   if (scene.attempted && !scene.receipt && scene.buffer.byteLength > 0) receiptScene(scene, false, reason);
   if (!scene.terminal) terminalScene(scene, "failed", reason, !scene.receipt);
+}
+
+// Offscreen picture/readback requests use the same Raster owner and typed DisplayList interpreter.
+// They never draw on the visible surface or enter the frame/resize terminal ledger.
+function imageOperation(message: Record<string, unknown>): void {
+  const requestId = positiveInteger(message.requestId, "image requestId");
+  let offscreen: Surface | null = null;
+  let snapshotImage: Image | null = null;
+  try {
+    const kit = requireCanvasKit();
+    const request = JSON.parse(String(message.requestJson));
+    let image: Image;
+    if (request.operation === "rasterize") {
+      const width = positiveInteger(request.width, "picture width");
+      const height = positiveInteger(request.height, "picture height");
+      if (width * height > 536_870_911) throw new Error("Picture byte size exceeds the managed buffer limit.");
+      const buffer = message.buffer;
+      if (!(buffer instanceof ArrayBuffer)) throw new Error("Picture requires a transferred DisplayList.");
+      const document = validateDorotiDisplayList(new Uint8Array(buffer));
+      if (document.metadata.physicalWidth !== width || document.metadata.physicalHeight !== height ||
+          document.metadata.devicePixelRatio !== 1) throw new Error("Picture dimensions do not match its DisplayList.");
+      offscreen = kit.MakeRenderTarget(requireGrContext(), width, height);
+      if (!offscreen) throw new Error("CanvasKit could not allocate picture storage.");
+      offscreen.getCanvas().clear(kit.TRANSPARENT);
+      const scene: RasterScene = { sequence: 1, transferId: 0, buffer, document, terminal: false, attempted: false, receipt: false };
+      replaySupportedCommands(scene, offscreen, false);
+      offscreen.flush();
+      image = snapshotImage = offscreen.makeImageSnapshot();
+    } else if (request.operation === "readback") {
+      const id = positiveInteger(request.resourceId, "image resourceId");
+      const generation = positiveInteger(request.generation, "image generation");
+      const resource = resources.get(resourceKey(2, BigInt(id), generation));
+      if (!resource || resource.kind !== "image") throw new Error("Image resource is released or belongs to another generation.");
+      image = resource.object as Image;
+    } else throw new Error("Unknown image operation.");
+    const format = request.operation === "rasterize" ? "png" : request.format;
+    let bytes: Uint8Array;
+    if (format === "png") {
+      const encoded = image.encodeToBytes();
+      if (!encoded) throw new Error("CanvasKit PNG encoding failed.");
+      bytes = encoded;
+    } else {
+      if (!["rawRgba", "rawStraightRgba", "rawUnmodified"].includes(format)) throw new Error("Unsupported image format.");
+      const pixels = image.readPixels(0, 0, {
+        width: image.width(), height: image.height(), colorType: kit.ColorType.RGBA_8888,
+        alphaType: format === "rawStraightRgba" ? kit.AlphaType.Unpremul : kit.AlphaType.Premul,
+        colorSpace: kit.ColorSpace.SRGB,
+      });
+      if (!(pixels instanceof Uint8Array) || pixels.byteLength !== image.width() * image.height() * 4)
+        throw new Error("CanvasKit RGBA readback failed or returned invalid stride.");
+      bytes = pixels;
+    }
+    const buffer = bytes.slice().buffer;
+    postPort("image-response", { requestId, buffer }, [buffer]);
+  } catch (error) {
+    postPort("image-response", { requestId, error: String(error) });
+  } finally {
+    snapshotImage?.delete();
+    offscreen?.delete();
+  }
 }
 
 function retainResource(message: Record<string, unknown>): void {

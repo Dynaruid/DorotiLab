@@ -297,7 +297,18 @@ public sealed class Picture : IDisposable
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
     public void Dispose() => Interlocked.Exchange(ref _disposed, 1);
     public void dispose() => Dispose();
-    public Future<Image> toImage(long width, long height) => Future<Image>.value(new Image(0, checked((int)width), checked((int)height)));
+    public Future<Image> toImage(long width, long height)
+    {
+        ObjectDisposedException.ThrowIf(debugDisposed, this);
+        if (width <= 0 || height <= 0 || width > int.MaxValue || height > int.MaxValue || width * height > int.MaxValue / 4)
+            throw new ArgumentOutOfRangeException(nameof(width), "Image dimensions must be positive and fit an RGBA byte buffer.");
+        var invocation = DartUiInvocation.Managed("dart:ui#Picture.toImage");
+        var dispatcher = PlatformDispatcher.instance;
+        var view = dispatcher.implicitView ?? dispatcher.views.FirstOrDefault()
+            ?? throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsImage, null, invocation, "picture rasterization requires an attached view");
+        return Future<Image>.fromTask(view.RequireCapability<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, invocation)
+            .RasterizeAsync(this, (int)width, (int)height, invocation).AsTask());
+    }
 }
 
 public sealed class PictureRecorder

@@ -3,6 +3,28 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args.Length >= 3 && args[0] == "--image-files")
+{
+    using var environment = new ImageFixtureEnvironment();
+    await Doroti.Validation.ImagePipelineValidation.VerifyPixels();
+    Directory.CreateDirectory(args[1]);
+    foreach (var fixture in Doroti.Validation.ImagePipelineValidation.PaletteFixtures())
+        File.WriteAllText(System.IO.Path.Combine(args[1], "synthetic-" + fixture.Key + ".json"), fixture.Value);
+    foreach (var path in args.Skip(2))
+    {
+        var result = await Doroti.Validation.ImagePipelineValidation.Inspect(File.ReadAllBytes(path));
+        File.WriteAllText(System.IO.Path.Combine(args[1], System.IO.Path.GetFileNameWithoutExtension(path) + ".json"), result);
+        Console.WriteLine($"Image pipeline: PASS {path}");
+    }
+    return;
+}
+
+if (args is ["--material-sample"] or ["--material-sample-search"])
+{
+    Environment.ExitCode = await MaterialSampleContracts.Verify(args[0] == "--material-sample-search");
+    return;
+}
+
 if (args is ["--shortcuts"])
 {
     KeyboardShortcutContracts.Verify();
@@ -84,6 +106,8 @@ VerifyMobileSelectionOverlayContracts();
 VerifyFrameworkLifecycleContracts();
 VerifyButtonStyleDispatch();
 Material3Contracts.Verify();
+Require(await MaterialSampleContracts.Verify(searchOnly: true) == 0,
+    "SearchAnchor optional arguments retain their public defaults");
 VerifyHostTextInputVisibilityContract();
 VerifyDefaultTextEditingShortcutContracts();
 KeyboardShortcutContracts.Verify();

@@ -593,6 +593,29 @@ public sealed class SkiaSceneRenderer :
         return ValueTask.FromResult(new UiImage(_viewId, image.Width, image.Height, handle.Release) { HostHandle = handle });
     }
 
+    public ValueTask<UiImage> RasterizeAsync(Picture picture, int width, int height,
+        DartUiInvocation invocation, CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ObjectDisposedException.ThrowIf(picture.debugDisposed, picture);
+        cancellationToken.ThrowIfCancellationRequested();
+        if (width <= 0 || height <= 0 || (long)width * height > int.MaxValue / 4)
+            throw new ArgumentOutOfRangeException(nameof(width));
+        lock (_paintGate)
+        {
+            // Offscreen pictures have their own storage and never borrow the visible swapchain.
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            using var colorSpace = SKColorSpace.CreateSrgb();
+            using var surface = SKSurface.Create(new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul, colorSpace))
+                ?? throw new InvalidOperationException("Skia could not allocate picture storage.");
+            surface.Canvas.Clear(SKColors.Transparent);
+            DrawPicture(surface.Canvas, picture.Commands);
+            surface.Canvas.Flush();
+            var handle = new SkiaImageHandle(surface.Snapshot());
+            return ValueTask.FromResult(new UiImage(_viewId, width, height, handle.Release) { HostHandle = handle });
+        }
+    }
+
     public void SetEnabled(bool enabled, DartUiInvocation invocation)
     {
         _semanticsEnabled = enabled;
@@ -1667,6 +1690,26 @@ public sealed class SkiaSceneRenderer :
         private SkiaImageHandle(SharedImage shared) { _shared = shared; Interlocked.Increment(ref shared.References); }
         internal SKImage Image => _shared.Image;
         public IDorotiImageHandle Clone() => new SkiaImageHandle(_shared);
+        public ValueTask<Doroti.Runtime.ByteData> ReadBytesAsync(ImageByteFormat format)
+        {
+            if (format == ImageByteFormat.png)
+            {
+                using var encoded = Image.Encode(SKEncodedImageFormat.Png, 100)
+                    ?? throw new InvalidOperationException("Skia PNG encoding failed.");
+                return ValueTask.FromResult(new Doroti.Runtime.ByteData(new Doroti.Runtime.Uint8List(encoded.ToArray())));
+            }
+            var alpha = format == ImageByteFormat.rawStraightRgba ? SKAlphaType.Unpremul : SKAlphaType.Premul;
+            // rawUnmodified is canonicalized to this host's tightly packed RGBA8/premultiplied storage.
+            using var colorSpace = SKColorSpace.CreateSrgb();
+            using var bitmap = new SKBitmap(new SKImageInfo(Image.Width, Image.Height, SKColorType.Rgba8888, alpha, colorSpace));
+            if (!Image.ReadPixels(bitmap.Info, bitmap.GetPixels(), bitmap.RowBytes, 0, 0))
+                throw new InvalidOperationException("Skia image pixel readback failed.");
+            var bytes = new byte[checked(Image.Width * Image.Height * 4)];
+            for (var row = 0; row < Image.Height; row++)
+                System.Runtime.InteropServices.Marshal.Copy(bitmap.GetPixels() + row * bitmap.RowBytes,
+                    bytes, row * Image.Width * 4, Image.Width * 4);
+            return ValueTask.FromResult(new Doroti.Runtime.ByteData(new Doroti.Runtime.Uint8List(bytes)));
+        }
         public void Release() { if (Interlocked.Decrement(ref _shared.References) == 0) _shared.Image.Dispose(); }
         private sealed class SharedImage(SKImage image) { internal readonly SKImage Image = image; internal int References = 1; }
     }

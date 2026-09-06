@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'image_demo.dart';
 
 const rowDivider = SizedBox(width: 20);
 const colDivider = SizedBox(height: 10);
@@ -40,6 +41,8 @@ class FirstComponentList extends StatelessWidget {
         const Selection(),
         colDivider,
         const TextInputs(),
+        colDivider,
+        const ImageDemo(),
       ],
     ];
     List<double?> heights = List.filled(children.length, null);
@@ -84,6 +87,8 @@ class SecondComponentList extends StatelessWidget {
       const Selection(),
       colDivider,
       const TextInputs(),
+      colDivider,
+      const ImageDemo(),
     ];
     List<double?> heights = List.filled(children.length, null);
 

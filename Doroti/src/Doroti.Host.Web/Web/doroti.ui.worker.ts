@@ -296,6 +296,26 @@ const bridge: CanvasKitUiBridge = {
     publishDiagnostics();
     return sequence;
   },
+  imageOperation(requestJson, bytes) {
+    if (!rasterReady) return Promise.reject(new Error("Raster image owner is not ready."));
+    if (imageRequests.size >= 16) return Promise.reject(new Error("Raster image request limit reached."));
+    const requestId = ++nextImageRequest;
+    return new Promise<Uint8Array>((resolve, reject) => {
+      const timer = setTimeout(() => {
+        imageRequests.delete(requestId);
+        reject(new Error("Raster image operation timed out after 30 seconds."));
+      }, 30_000);
+      imageRequests.set(requestId, { resolve, reject, timer });
+      try {
+        const buffer = bytes.buffer as ArrayBuffer;
+        postRaster("image-operation", { requestId, requestJson, buffer }, [buffer]);
+      } catch (error) {
+        clearTimeout(timer);
+        imageRequests.delete(requestId);
+        reject(error);
+      }
+    });
+  },
   registerResource(resourceId, generation, kind, descriptorJson, bytes) {
     validateResourceIdentity(resourceId, generation, kind);
     const key = resourceKey(resourceId, generation, "retain");
@@ -569,7 +589,17 @@ function bindRasterPort(port: MessagePort, nextRasterSessionId: number): void {
   port.start();
 }
 
+let nextImageRequest = 0;
+const imageRequests = new Map<number, {
+  resolve: (bytes: Uint8Array) => void; reject: (reason: unknown) => void; timer: ReturnType<typeof setTimeout>;
+}>();
+
 function unbindRasterPort(): void {
+  for (const request of imageRequests.values()) {
+    clearTimeout(request.timer);
+    request.reject(new Error("Raster image owner stopped or restarted."));
+  }
+  imageRequests.clear();
   if (!rasterPort) return;
   rasterPort.removeEventListener("message", handleRasterMessage);
   rasterPort.close();
@@ -628,6 +658,17 @@ function handleRasterMessage(event: MessageEvent): void {
         if (terminal === "submitted" && scene.receiptSuccess !== true)
           throw new Error(`CanvasKit scene ${sequence} was submitted without a Raster receipt.`);
         finishScene(scene, terminal, String(message.reason ?? "Raster terminal"));
+        break;
+      }
+      case "image-response": {
+        const requestId = positiveInteger(message.requestId, "image requestId");
+        const request = imageRequests.get(requestId);
+        if (!request) break; // A timed-out response owns no managed resources; its transferred bytes are reclaimed.
+        imageRequests.delete(requestId);
+        clearTimeout(request.timer);
+        if (message.error) request.reject(new Error(String(message.error)));
+        else if (message.buffer instanceof ArrayBuffer) request.resolve(new Uint8Array(message.buffer));
+        else request.reject(new Error("Invalid raster image response buffer."));
         break;
       }
       case "resource-receipt": {

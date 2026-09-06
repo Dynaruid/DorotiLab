@@ -386,7 +386,8 @@ public abstract class ImageStreamCompleter : Diagnosticable
     public virtual void reportError(DiagnosticsNode? context = null, object exception = default!, global::System.Diagnostics.StackTrace? stack = null, InformationCollector? informationCollector = null, bool silent = false)
     {
         _currentError = new FlutterErrorDetails(exception: exception, stack: stack, library: "image resource service", context: context, informationCollector: informationCollector, silent: silent);
-        var localErrorListeners = new List<Action<object, global::System.Diagnostics.StackTrace?>>();
+        var localErrorListeners = this._listeners.Where(listener => listener.onError is not null)
+            .Select(listener => listener.onError!).Concat(this._ephemeralErrorListeners).ToList();
         this._ephemeralErrorListeners.Clear();
         var handled = false;
         foreach (var errorListener in localErrorListeners)
@@ -473,6 +474,29 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
     {
         this._informationCollector = informationCollector;
         this._scale = scale;
+        this.debugLabel = debugLabel;
+        _ = ObserveCodec(codec);
+        if (chunkEvents is not null)
+            _chunkSubscription = chunkEvents.listen(reportImageChunkEvent,
+                (object error, global::System.Diagnostics.StackTrace? stack) =>
+                    reportError(context: new ErrorDescription("loading an image"), exception: error,
+                        stack: stack, informationCollector: informationCollector, silent: true));
+    }
+
+    private async Task ObserveCodec(Future<Codec> codec)
+    {
+        try
+        {
+            var decoded = await codec;
+            if (_disposed) decoded.dispose();
+            else _handleCodecReady(decoded);
+        }
+        catch (Exception exception)
+        {
+            if (!_disposed) reportError(context: new ErrorDescription("resolving an image codec"),
+                exception: exception, stack: new global::System.Diagnostics.StackTrace(exception),
+                informationCollector: _informationCollector, silent: true);
+        }
     }
 
     internal virtual void _handleCodecReady(Codec codec)
@@ -495,11 +519,12 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
         DartRuntimePrimitives.Assert(() => (this._nextFrame is not null));
         if ((_isFirstFrame() || _hasFrameDurationPassed(timestamp)))
         {
-            _emitFrame(new ImageInfo(image: this._nextFrame!.image.clone(), scale: this._scale, debugLabel: debugLabel));
-            _shownTimestamp = timestamp;
-            _frameDuration = this._nextFrame!.duration;
-            this._nextFrame!.image.dispose();
+            var frame = this._nextFrame!;
             _nextFrame = null;
+            _shownTimestamp = timestamp;
+            _frameDuration = frame.duration;
+            using (frame.image)
+                _emitFrame(new ImageInfo(image: frame.image.clone(), scale: this._scale, debugLabel: debugLabel));
             if ((this._codec is null))
             {
                 return;
@@ -549,6 +574,8 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
         }
         if ((this._codec is null))
         {
+            this._nextFrame?.image.dispose();
+            _nextFrame = null;
             return;
         }
         if ((this._codec!.frameCount == 1L))
@@ -557,9 +584,10 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
             {
                 return;
             }
-            _emitFrame(new ImageInfo(image: this._nextFrame!.image.clone(), scale: this._scale, debugLabel: debugLabel));
-            this._nextFrame!.image.dispose();
+            var frame = this._nextFrame!;
             _nextFrame = null;
+            using (frame.image)
+                _emitFrame(new ImageInfo(image: frame.image.clone(), scale: this._scale, debugLabel: debugLabel));
             this._codec?.dispose();
             _codec = null;
             return;
@@ -585,11 +613,12 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
 
     public override void addListener(ImageStreamListener listener)
     {
-        if (((!hasListeners && (this._codec is not null)) && (((_currentImage is null) || (this._codec!.frameCount > 1L)))))
+        var startDecoding = !hasListeners && _codec is not null && (_currentImage is null || _codec.frameCount > 1);
+        base.addListener(listener);
+        if (startDecoding && !_disposed && _codec is not null)
         {
             _ = _decodeNextFrameAndSchedule();
         }
-        base.addListener(listener);
     }
 
     public override void removeListener(ImageStreamListener listener)
@@ -612,6 +641,8 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
             _chunkSubscription = null;
             this._codec?.dispose();
             _codec = null;
+            this._nextFrame?.image.dispose();
+            _nextFrame = null;
         }
     }
 

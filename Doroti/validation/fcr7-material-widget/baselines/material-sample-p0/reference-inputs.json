@@ -1,0 +1,446 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-09-06T20:04:20.4812124+09:00",
+  "repositoryRevision": "48343b7c8511c040faba8704e59aa32a80062374",
+  "sampleStatus": "local source is authoritative; hashes include local adaptations",
+  "flutterSdkRoot": "C:\\Users\\parti\\flutter",
+  "flutterSdkRevision": "6b182d2c7585eba26d4edce0f97630effd256c33",
+  "flutterSdkDirty": [
+    " M pubspec.lock"
+  ],
+  "packageConfigGeneratorVersion": "3.12.2",
+  "materialColorUtilitiesRoot": "C:\\Users\\parti\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\material_color_utilities-0.13.0",
+  "inputs": [
+    {
+      "path": "reference/flutter_sample_app/fonts/NanumGothic-Regular.ttf",
+      "bytes": 2054744,
+      "sha256": "76f45ef4a6bcff344c837c95a7dcc26e017e38b5846d5ae0cdcb5b86be2e2d31"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/differential_main.dart",
+      "bytes": 7415,
+      "sha256": "082d6b9c970abcd5235c05df562cd2592505c74bf1bddcb107038b27298f1b81"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/main.dart",
+      "bytes": 2868,
+      "sha256": "3bf9d3cdab610ad01371a4c2df486b094803f77158a313e94cf9c918410a5f70"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/resize_fixture.dart",
+      "bytes": 3463,
+      "sha256": "ad2a6ae8043be041af65d6a4e081fbb5bf9761c6db11fffbb5130ee3c3d41e3d"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/animations.dart",
+      "bytes": 900,
+      "sha256": "6a1ba92c5947836d88c77bc182b8aa7a3f469f624be40cae6f866995ecc866d5"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/bar_transition.dart",
+      "bytes": 1484,
+      "sha256": "88b2fdc71129d566b322b1a24816b5f397b9bf66a97a169304d32c490e601b23"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/buttons.dart",
+      "bytes": 4635,
+      "sha256": "9a46392f100e602f6e68607a1da7abb1fc03503b0fcd559754da7be19ff6e894"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/color_box.dart",
+      "bytes": 2922,
+      "sha256": "98e28f4e6a4ffac90d000e7f666bc5cfe0f9efb471bf2421afe29838b3072f99"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/color_palettes_screen.dart",
+      "bytes": 14066,
+      "sha256": "f731c56a661ce2deb37c9ee67e57dca8be1fd0790e1bdb4d5e919a1c746d0e5b"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/component_screen.dart",
+      "bytes": 74832,
+      "sha256": "bdd60d60da416b376cdfa9b3a9eb4dab2d56e204b6aa303ef8a5e9f8ca925c19"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/constants.dart",
+      "bytes": 2176,
+      "sha256": "66851c8ec9aca02951ab7c22864877c766cc454b71b02d92b255c396fce46fbe"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/elevation_screen.dart",
+      "bytes": 5556,
+      "sha256": "37336396e0b301ac1e6de1d9c66067f7210dc74b150e1a283bee24f37f601143"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/expanded_color_seed_action.dart",
+      "bytes": 1367,
+      "sha256": "86c0f0905ef21d7b721a5456bd7fb8134e7505756d995bda5f9897683f224d8b"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/expanded_image_color_action.dart",
+      "bytes": 2263,
+      "sha256": "aa533b43662dbcd13c4904db388581414c52d18cd1cb50a50d6941b440af8daa"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/expanded_trailing_actions.dart",
+      "bytes": 2336,
+      "sha256": "e7ed3150000b2eab047307a3ddd74be6f236c77c7f9eb990334b36bdabfd593a"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/home.dart",
+      "bytes": 7705,
+      "sha256": "2625d8f288199bc82e571bfaf4784e8fe502d1b6b1000d5316a591a428fe3956"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/navigation_transition.dart",
+      "bytes": 2195,
+      "sha256": "141e74a3aa7673848d3d53b313fad49bf711e6dc87ecb2a9f80662ee1cd358a5"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/one_two_transition.dart",
+      "bytes": 1561,
+      "sha256": "bea8f5a5914a0bf5441301fd5373b39d9c92f0f2a9b53cb9b7a76c3dc76a0f3b"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/rail_transition.dart",
+      "bytes": 1743,
+      "sha256": "ec375562d63fe99efe4d7fc789e885ada888427edcec5b4578cdda0ebcdc448d"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/scheme.dart",
+      "bytes": 17488,
+      "sha256": "23198bbcc307f68f79f638e4a53f202aadbc912ec775559b6ee9f16690a4226b"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/typography_screen.dart",
+      "bytes": 2394,
+      "sha256": "55301643d0e1501d6ba4353e9122f608f4e55ff9dea65c2c775a00bbc8985204"
+    },
+    {
+      "path": "reference/flutter_sample_app/test/color_screen_test.dart",
+      "bytes": 5480,
+      "sha256": "d172bce8abd85670eb68347d2a1be5c920c7c4582f09e36ea26a43e96d01c8ea"
+    },
+    {
+      "path": "reference/flutter_sample_app/test/component_screen_test.dart",
+      "bytes": 7855,
+      "sha256": "d28393ff4534674ae44e9dc7e50fb60089605374bb642e37a26ea44dcbb5cb91"
+    },
+    {
+      "path": "reference/flutter_sample_app/test/elevation_screen_test.dart",
+      "bytes": 3196,
+      "sha256": "e8d3fff61baa854bdd6326284ad74457540cc235d6f9395f6a81d18623d76713"
+    },
+    {
+      "path": "reference/flutter_sample_app/test/typography_screen_test.dart",
+      "bytes": 3696,
+      "sha256": "1a42e09bca09347e7fe3cd7caf3185f929679705d780d9ed993ccba8261d05d3"
+    },
+    {
+      "path": "reference/flutter_sample_app/test/widget_test.dart",
+      "bytes": 1406,
+      "sha256": "3d5a3884b491559f581c2f613e9025ecd9befb6158b518fdea1abeac71ee6a95"
+    },
+    {
+      "path": "reference/flutter_sample_app/pubspec.yaml",
+      "bytes": 4131,
+      "sha256": "cb06495ba72b0e100529734a974696f60b20bae77665a0fc814a55a41cfe34c1"
+    },
+    {
+      "path": "reference/flutter_sample_app/pubspec.lock",
+      "bytes": 10121,
+      "sha256": "92ebbdd8680449a00b40c09be06217bf405dfe148a5edc32869b73ee1378d3d1"
+    },
+    {
+      "path": "reference/flutter_sample_app/LICENSE",
+      "bytes": 17477,
+      "sha256": "687c3d4c3a553c0fa995e9d3c35b245872fa4a0f5c2bd6494decc2fa410f7ce9"
+    }
+  ],
+  "sdkInputs": [
+    {
+      "path": "pubspec.lock",
+      "bytes": 35199,
+      "sha256": "c6fe8b7191584d4fe7b3798d90e59366032113353817ad999d217b72041b2b1f"
+    },
+    {
+      "path": "packages/flutter/lib/src/material/search_anchor.dart",
+      "bytes": 73453,
+      "sha256": "00863507a11d29c4b8861d3e7a30d917a70d3b6cc3d14688f17d1412e6babf1c"
+    },
+    {
+      "path": "packages/flutter/lib/src/material/color_scheme.dart",
+      "bytes": 90924,
+      "sha256": "05a8329ab5b429c58770f4845acf630158875399a596dfa1de7689980de26aa7"
+    },
+    {
+      "path": "bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf",
+      "bytes": 1645184,
+      "sha256": "d9865b671a09d683d13a863089d8825e0f61a37696ce5d7d448bc8023aa62453"
+    }
+  ],
+  "colorInputs": [
+    {
+      "path": "lib/blend/blend.dart",
+      "bytes": 3348,
+      "sha256": "b976c827710dc188d77caf36cf4ef331d6cfd6c902efeb530ed23d5664818345"
+    },
+    {
+      "path": "lib/contrast/contrast.dart",
+      "bytes": 5726,
+      "sha256": "9462970b871707babc5f5cdafb2185a52ad56719a030090f367fdd5e7db93f2e"
+    },
+    {
+      "path": "lib/dislike/dislike_analyzer.dart",
+      "bytes": 1588,
+      "sha256": "14fb17df5231506be0d5ba5f97aa125192a9d943d666a7feee571c147f467702"
+    },
+    {
+      "path": "lib/dynamiccolor/dynamic_color.dart",
+      "bytes": 15915,
+      "sha256": "ac249ef38c1c8201d220e14d7e9ccd70dfed87e62eb2dbc50da7c4326c302aac"
+    },
+    {
+      "path": "lib/dynamiccolor/dynamic_scheme.dart",
+      "bytes": 8420,
+      "sha256": "9239a4a1f77546b5c970fe1eb25889658c0d2c931144ccc3f18e6e4411c608cd"
+    },
+    {
+      "path": "lib/dynamiccolor/material_dynamic_colors.dart",
+      "bytes": 23017,
+      "sha256": "5fe9d7583c0e4fa16db039eefc38899cf204b1c174049713b3702c08471a4d61"
+    },
+    {
+      "path": "lib/dynamiccolor/src/contrast_curve.dart",
+      "bytes": 1997,
+      "sha256": "6d39414dc8b42153d1bb25083741f8552222a0da4aff9ea63bcb3f6361ba6617"
+    },
+    {
+      "path": "lib/dynamiccolor/src/tone_delta_pair.dart",
+      "bytes": 2394,
+      "sha256": "6c2dda4eb26f3065f79dc465488faf5601c97f0efd9db83e9113a80499fabd7e"
+    },
+    {
+      "path": "lib/dynamiccolor/variant.dart",
+      "bytes": 2340,
+      "sha256": "a5a9bc8c84f693a6e69630f855b3684b596ac8b2dbc3a7deeaf7a47ea81dec12"
+    },
+    {
+      "path": "lib/hct/cam16.dart",
+      "bytes": 12998,
+      "sha256": "8183a0315470e8826f69d1a7102c389203334bb39854e80e9a80df6e67fc84b8"
+    },
+    {
+      "path": "lib/hct/hct.dart",
+      "bytes": 5428,
+      "sha256": "4501c5159b950ed63e393fb923171371cdb9f2f2fda74a9661cc0e1cc4e9e274"
+    },
+    {
+      "path": "lib/hct/src/hct_solver.dart",
+      "bytes": 19719,
+      "sha256": "127a11073be29b85837794c2afdc8263a70c32d3a16e3b6f54256a4b0d017c13"
+    },
+    {
+      "path": "lib/hct/viewing_conditions.dart",
+      "bytes": 7105,
+      "sha256": "2bc91688f4ce36eb147ff605abdb98dd90dc63e9d2264c34d8e6666b7352aa34"
+    },
+    {
+      "path": "lib/material_color_utilities.dart",
+      "bytes": 1763,
+      "sha256": "84f6e5415f11e610d93d2b902490ca0019eeac9e43540e550e88d94818059311"
+    },
+    {
+      "path": "lib/palettes/core_palette.dart",
+      "bytes": 5150,
+      "sha256": "f096dc24eb6e7708f4738f726cc5ab878ac7d4aa78609317875e775bd3c7be9a"
+    },
+    {
+      "path": "lib/palettes/core_palettes.dart",
+      "bytes": 1122,
+      "sha256": "05174b1b84cadda46cdd54549e95fa0990524252eb93b8b12fd69cf7571101d1"
+    },
+    {
+      "path": "lib/palettes/tonal_palette.dart",
+      "bytes": 8009,
+      "sha256": "d25b8a55ce58cc64965b8e98311f9a46dd1a1935b47c4ccc83b7ec8d657a880b"
+    },
+    {
+      "path": "lib/quantize/quantizer_celebi.dart",
+      "bytes": 1306,
+      "sha256": "fd1856e14b032719b60142ce2479e9e238740d51117f51dbf384b89e8ede79de"
+    },
+    {
+      "path": "lib/quantize/quantizer_map.dart",
+      "bytes": 1076,
+      "sha256": "73ef4e7410f81c4d02fc30b40b048543630a26b6568436b1d022e675d27eaee2"
+    },
+    {
+      "path": "lib/quantize/quantizer_wsmeans.dart",
+      "bytes": 9057,
+      "sha256": "db8a616c1716395ce4060c20d4e5f2e3d34805c8a472afca31f6b99dbfb4f163"
+    },
+    {
+      "path": "lib/quantize/quantizer_wu.dart",
+      "bytes": 13424,
+      "sha256": "7f0743c175702721cf589798bfa7d657c70c5ec189e227c5381aa7c480673c56"
+    },
+    {
+      "path": "lib/quantize/quantizer.dart",
+      "bytes": 893,
+      "sha256": "c5bf54364467de0efccf0364ebaad7d72c43187374bbbb0280acf695750320d5"
+    },
+    {
+      "path": "lib/quantize/src/point_provider_lab.dart",
+      "bytes": 1518,
+      "sha256": "25e5d875c0922be50b04f3cb85457e300932d20f0149ec667159604263d306ad"
+    },
+    {
+      "path": "lib/quantize/src/point_provider.dart",
+      "bytes": 740,
+      "sha256": "c391ec8608f899f98ae066f323b64680115dc63fd7e2d195c4246313125b4417"
+    },
+    {
+      "path": "lib/scheme/scheme_content.dart",
+      "bytes": 2382,
+      "sha256": "3b4b886a7daadc51ace614e296c2f066ad943d376ce4208039419ac79c5f432e"
+    },
+    {
+      "path": "lib/scheme/scheme_expressive.dart",
+      "bytes": 2463,
+      "sha256": "5de74ee64b610252468979521165fad92029a3098d95d213ebf655ad3df1d215"
+    },
+    {
+      "path": "lib/scheme/scheme_fidelity.dart",
+      "bytes": 2247,
+      "sha256": "b9c8f2846e141b1e4b6aae7245f6aac59e1dd4c613e991bf832fa019d873fbcb"
+    },
+    {
+      "path": "lib/scheme/scheme_fruit_salad.dart",
+      "bytes": 1552,
+      "sha256": "f535c6e4e4900de89853d56c86ec0a42b240127789ea7a1b0892c76ff5653e2b"
+    },
+    {
+      "path": "lib/scheme/scheme_monochrome.dart",
+      "bytes": 1333,
+      "sha256": "fabdf6f06f2babf979ee6dc863d628e51e670a7da6599e9af8943573608b4822"
+    },
+    {
+      "path": "lib/scheme/scheme_neutral.dart",
+      "bytes": 1331,
+      "sha256": "18f46d844464fbd0cda04f2c3a2cbc801e7e72fa17671d3a7bebb353df3b33dc"
+    },
+    {
+      "path": "lib/scheme/scheme_rainbow.dart",
+      "bytes": 1467,
+      "sha256": "394c15c27698ac9955fc8f2858ccb80640be49b7dc8b7e8cf3ac174b694f480a"
+    },
+    {
+      "path": "lib/scheme/scheme_tonal_spot.dart",
+      "bytes": 1586,
+      "sha256": "945b8a2699a4079d354ad4d6ca31c13b664784ce07e84615199bad6653b9b0a9"
+    },
+    {
+      "path": "lib/scheme/scheme_vibrant.dart",
+      "bytes": 2321,
+      "sha256": "9601f9a11a2ca8100a705b6a18e2c5b09918ca40876ac4c67c37e37459e98379"
+    },
+    {
+      "path": "lib/scheme/scheme.dart",
+      "bytes": 5903,
+      "sha256": "69e7772637687cb5ca20fbeadbc8ca0b19d0e5e3fc224ba05716133608ee6fbe"
+    },
+    {
+      "path": "lib/score/score.dart",
+      "bytes": 5672,
+      "sha256": "b76b8f71076970202f4b697feeb28d4ec5699fc65d73d078ac70f4fb58a6e9a6"
+    },
+    {
+      "path": "lib/temperature/temperature_cache.dart",
+      "bytes": 10535,
+      "sha256": "b7c08412e4faa15d0fe8d77eae6ab6cd2e4ba2c583b8dc3d21314c97d2abb92c"
+    },
+    {
+      "path": "lib/utils/color_utils.dart",
+      "bytes": 8049,
+      "sha256": "8517117789ae02c22c0e2e79908ac21b22eb68500832f3acbecda88eb677858e"
+    },
+    {
+      "path": "lib/utils/math_utils.dart",
+      "bytes": 3809,
+      "sha256": "94ca4571d775cd23f454eda5c00a026d0c9d3a09b73e50c39f4c87411333cfb6"
+    },
+    {
+      "path": "lib/utils/string_utils.dart",
+      "bytes": 1206,
+      "sha256": "b4600ad49041efec9e79488127b312d2f89c6629ee7a27ac5931b87ae95fdf92"
+    }
+  ],
+  "images": [
+    {
+      "url": "https://flutter.github.io/assets-for-api-docs/assets/material/content_based_color_scheme_1.png",
+      "status": "downloaded-for-validation",
+      "error": null,
+      "file": {
+        "path": ".doroti/evidence/material-sample-p0/content_based_color_scheme_1.png",
+        "bytes": 371788,
+        "sha256": "d4e2b276fd6034372f0300586553bb1ee33c3a203bd69c4c8413c513a76103aa"
+      }
+    },
+    {
+      "url": "https://flutter.github.io/assets-for-api-docs/assets/material/content_based_color_scheme_2.png",
+      "status": "downloaded-for-validation",
+      "error": null,
+      "file": {
+        "path": ".doroti/evidence/material-sample-p0/content_based_color_scheme_2.png",
+        "bytes": 220884,
+        "sha256": "510387bb2c5bb9eb8692ba9775eb445929484c6ba7c062120b2c7ff5e6c7d30f"
+      }
+    },
+    {
+      "url": "https://flutter.github.io/assets-for-api-docs/assets/material/content_based_color_scheme_3.png",
+      "status": "downloaded-for-validation",
+      "error": null,
+      "file": {
+        "path": ".doroti/evidence/material-sample-p0/content_based_color_scheme_3.png",
+        "bytes": 242528,
+        "sha256": "b203058b883898a9123c6e57b0587807c51be50e46d6f804aed0e5c2a870b99c"
+      }
+    },
+    {
+      "url": "https://flutter.github.io/assets-for-api-docs/assets/material/content_based_color_scheme_4.png",
+      "status": "downloaded-for-validation",
+      "error": null,
+      "file": {
+        "path": ".doroti/evidence/material-sample-p0/content_based_color_scheme_4.png",
+        "bytes": 468481,
+        "sha256": "c8f5e41b0ac2836bb1d95fee101a0fb219845dc753e7db7de11e9144b32f453b"
+      }
+    },
+    {
+      "url": "https://flutter.github.io/assets-for-api-docs/assets/material/content_based_color_scheme_5.png",
+      "status": "downloaded-for-validation",
+      "error": null,
+      "file": {
+        "path": ".doroti/evidence/material-sample-p0/content_based_color_scheme_5.png",
+        "bytes": 389352,
+        "sha256": "e496b41837e66c7eaac19297272abc89c2480c3a2b751cd900a7115b44a606c9"
+      }
+    },
+    {
+      "url": "https://flutter.github.io/assets-for-api-docs/assets/material/content_based_color_scheme_6.png",
+      "status": "downloaded-for-validation",
+      "error": null,
+      "file": {
+        "path": ".doroti/evidence/material-sample-p0/content_based_color_scheme_6.png",
+        "bytes": 279520,
+        "sha256": "1832ddf93bc21b595d4eab18add878734a1df191e2495129a9432af6f9281a04"
+      }
+    }
+  ],
+  "limits": [
+    "Downloaded images are validation evidence, not a product offline bundle.",
+    "Font hashes identify inputs; actual per-target selected font and fallback remain notVerified.",
+    "Source hashes and network download do not establish runtime parity or browser CORS success."
+  ]
+}

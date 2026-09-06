@@ -469,4 +469,13 @@ internal sealed class CanvasKitImageHandle(CanvasKitImageResource resource) : ID
     }
 
     public void Release() => resource.Release();
+
+    public async ValueTask<Doroti.Runtime.ByteData> ReadBytesAsync(ImageByteFormat format)
+    {
+        var bytes = await BrowserCanvasKitInterop.ImageOperation(JsonSerializer.Serialize(new
+        {
+            operation = "readback", resourceId = Reference.Id, generation = Reference.Version, format = format.ToString(),
+        }), []);
+        return new Doroti.Runtime.ByteData(new Doroti.Runtime.Uint8List(bytes));
+    }
 }

@@ -225,6 +225,7 @@ public static partial class Decoration_imageLibrary
 {
     public static void paintImage(Canvas canvas, Rect rect, Image image, string? debugImageLabel = null, double scale = 1.0, double opacity = 1.0, ColorFilter? colorFilter = null, BoxFit? fit = null, Alignment alignment = default!, Rect? centerSlice = null, ImageRepeat repeat = ImageRepeat.noRepeat, bool flipHorizontally = false, bool invertColors = false, FilterQuality filterQuality = FilterQuality.medium, bool isAntiAlias = false, BlendMode blendMode = BlendMode.srcOver)
     {
+        alignment ??= Alignment.center;
         DartRuntimePrimitives.Assert(() => ((((long?)(global::Doroti.Ui.Image.debugGetOpenHandleStackTraces()?.Count)) is { } __count19740 ? __count19740 != 0 : (bool?)null) ?? true));
         if (rect.isEmpty)
         {
@@ -502,4 +503,3 @@ internal class _BlendedDecorationImagePainter__decoration_image : DecorationImag
     }
 
 }
-

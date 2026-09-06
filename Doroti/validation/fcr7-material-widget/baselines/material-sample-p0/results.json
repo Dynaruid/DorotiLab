@@ -1,0 +1,140 @@
+{
+  "status": "PARTIAL",
+  "repositoryRevision": "48343b7c8511c040faba8704e59aa32a80062374",
+  "search": "PASS 4/4 construction and optional callback contracts; mounted route notVerified",
+  "regression": "FCR-7 PASS",
+  "blockerResults": [
+    "D04/default-enabled: PASS",
+    "D04/default-bar: PASS",
+    "D04/optional-callbacks: PASS",
+    "D04/explicit-options: PASS",
+    "D01-D02/picture-raw-rgba: FAIL",
+    "D03/max-colors: FAIL",
+    "D03/score-gray-majority: FAIL",
+    "D03/score-empty-fallback: FAIL"
+  ],
+  "windows": [
+    {
+      "fixture": "gallery",
+      "status": "PASS startup only",
+      "presenter": {
+        "requested": "Vulkan",
+        "effective": "Vulkan/Composition-Swapchain"
+      },
+      "frames": {
+        "adapterDescription": "AMD Radeon 780M Graphics; vendor=0x1002; device=0x1900; api=1.3.302",
+        "presentedTerminals": 3,
+        "supersededTerminals": 3,
+        "failedTerminals": 0,
+        "visibleAfterExactPresent": true,
+        "initializationDebugErrors": 0,
+        "operationalDebugErrors": 0
+      },
+      "resize": {
+        "acceptedCount": 1,
+        "presentedCount": 0,
+        "supersededCount": 1,
+        "failedCount": 0,
+        "duplicateTerminalCount": 0,
+        "unterminatedCount": 0
+      },
+      "source": ".doroti/evidence/material-sample-p0/windows-gallery-v2.json"
+    },
+    {
+      "fixture": "F0",
+      "status": "PASS startup only",
+      "presenter": {
+        "requested": "Vulkan",
+        "effective": "Vulkan/Composition-Swapchain"
+      },
+      "frames": {
+        "adapterDescription": "AMD Radeon 780M Graphics; vendor=0x1002; device=0x1900; api=1.3.302",
+        "presentedTerminals": 4,
+        "supersededTerminals": 3,
+        "failedTerminals": 0,
+        "visibleAfterExactPresent": true,
+        "initializationDebugErrors": 0,
+        "operationalDebugErrors": 0
+      },
+      "resize": {
+        "acceptedCount": 1,
+        "presentedCount": 0,
+        "supersededCount": 1,
+        "failedCount": 0,
+        "duplicateTerminalCount": 0,
+        "unterminatedCount": 0
+      },
+      "source": ".doroti/evidence/material-sample-p0/windows-F0-v2.json"
+    },
+    {
+      "fixture": "F1",
+      "status": "PASS startup only",
+      "presenter": {
+        "requested": "Vulkan",
+        "effective": "Vulkan/Composition-Swapchain"
+      },
+      "frames": {
+        "adapterDescription": "AMD Radeon 780M Graphics; vendor=0x1002; device=0x1900; api=1.3.302",
+        "presentedTerminals": 4,
+        "supersededTerminals": 3,
+        "failedTerminals": 0,
+        "visibleAfterExactPresent": true,
+        "initializationDebugErrors": 0,
+        "operationalDebugErrors": 0
+      },
+      "resize": {
+        "acceptedCount": 1,
+        "presentedCount": 0,
+        "supersededCount": 1,
+        "failedCount": 0,
+        "duplicateTerminalCount": 0,
+        "unterminatedCount": 0
+      },
+      "source": ".doroti/evidence/material-sample-p0/windows-F1-v2.json"
+    },
+    {
+      "fixture": "F2",
+      "status": "PASS startup only",
+      "presenter": {
+        "requested": "Vulkan",
+        "effective": "Vulkan/Composition-Swapchain"
+      },
+      "frames": {
+        "adapterDescription": "AMD Radeon 780M Graphics; vendor=0x1002; device=0x1900; api=1.3.302",
+        "presentedTerminals": 4,
+        "supersededTerminals": 3,
+        "failedTerminals": 0,
+        "visibleAfterExactPresent": true,
+        "initializationDebugErrors": 0,
+        "operationalDebugErrors": 0
+      },
+      "resize": {
+        "acceptedCount": 1,
+        "presentedCount": 0,
+        "supersededCount": 1,
+        "failedCount": 0,
+        "duplicateTerminalCount": 0,
+        "unterminatedCount": 0
+      },
+      "source": ".doroti/evidence/material-sample-p0/windows-F2-v2.json"
+    }
+  ],
+  "web": {
+    "source": "Doroti/validation/web-playwright/artifacts/wrapper/material-sample-p0-baseline-v2/playwright.stdout.log",
+    "status": "PASS 4/4",
+    "renderer": "worker-canvaskit-webgl"
+  },
+  "invalidAttempts": [
+    "Initial fixture compilation: Uint8List element type mismatch; corrected before runtime baseline.",
+    "Windows direct Hidden app startup: visible-after-present failure; retained as invalid execution condition.",
+    "Web comma-string TestFile: No tests found; corrected PowerShell array invocation."
+  ],
+  "remaining": [
+    "Mounted SearchAnchor open/close/focus and sample integration",
+    "Image host raster/readback, ownership, formats and disposal",
+    "Celebi and Score parity",
+    "URL capability and activation",
+    "P1-P7 sample implementation and acceptance",
+    "Physical resize, IME, accessibility and other target execution"
+  ]
+}

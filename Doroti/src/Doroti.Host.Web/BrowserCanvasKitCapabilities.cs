@@ -668,6 +668,32 @@ internal sealed class BrowserCanvasKitCapabilities :
     private static double? OptionalNonnegativeSingle(double? value, string name) =>
         value is null ? null : NonnegativeSingle(value.Value, name);
 
+    public async ValueTask<UiImage> RasterizeAsync(Picture picture, int width, int height,
+        DartUiInvocation invocation, CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        cancellationToken.ThrowIfCancellationRequested();
+        if (width <= 0 || height <= 0 || (long)width * height > int.MaxValue / 4)
+            throw new ArgumentOutOfRangeException(nameof(width));
+        var builder = new SceneBuilder(_viewId);
+        builder.addPicture(Offset.zero, picture);
+        using var scene = builder.build();
+        var metadata = new DisplayListSceneMetadata(_viewId, 1, 1, 1, 1, 1, width, height, (uint)width, (uint)height, 1);
+        var document = BrowserDisplayListMapper.Create(scene, metadata, 0, _resources);
+        var references = document.Resources.Select(resource => resource.Reference).ToArray();
+        _resources.RetainSceneResources(references);
+        try
+        {
+            var wire = DisplayListEncoder.Encode(document);
+            var encoded = await BrowserCanvasKitInterop.ImageOperation(
+                JsonSerializer.Serialize(new { operation = "rasterize", width, height }), wire);
+            cancellationToken.ThrowIfCancellationRequested();
+            // Retain encoded storage in the existing resource journal, so Raster restart can replay it.
+            return await _resources.RegisterImageAsync(_viewId, encoded, cancellationToken);
+        }
+        finally { _resources.ReleaseSceneResources(references); }
+    }
+
     public ValueTask<UiImage> DecodeAsync(
         ReadOnlyMemory<byte> bytes,
         DartUiInvocation invocation,

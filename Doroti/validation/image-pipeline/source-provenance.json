@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "package": "material_color_utilities",
+      "revision": "0.13.0",
+      "path": "lib/quantize/quantizer_celebi.dart",
+      "sha256": "FD1856E14B032719B60142CE2479E9E238740D51117F51DBF384B89E8EDE79DE",
+      "license": "Apache-2.0"
+    },
+    {
+      "package": "material_color_utilities",
+      "revision": "0.13.0",
+      "path": "lib/quantize/quantizer_wu.dart",
+      "sha256": "7F0743C175702721CF589798BFA7D657C70C5EC189E227C5381AA7C480673C56",
+      "license": "Apache-2.0"
+    },
+    {
+      "package": "material_color_utilities",
+      "revision": "0.13.0",
+      "path": "lib/quantize/quantizer_wsmeans.dart",
+      "sha256": "DB8A616C1716395CE4060C20D4E5F2E3D34805C8A472AFCA31F6B99DBFB4F163",
+      "license": "Apache-2.0"
+    },
+    {
+      "package": "material_color_utilities",
+      "revision": "0.13.0",
+      "path": "lib/score/score.dart",
+      "sha256": "B76B8F71076970202F4B697FEEB28D4EC5699FC65D73D078AC70F4FB58A6E9A6",
+      "license": "Apache-2.0"
+    },
+    {
+      "package": "MaterialColorUtilities",
+      "revision": "v0.3.0",
+      "path": "MaterialColorUtilities/Quantize/QuantizerWu.cs",
+      "url": "https://raw.githubusercontent.com/albi005/MaterialColorUtilities/v0.3.0/MaterialColorUtilities/Quantize/QuantizerWu.cs",
+      "sha256": "8C1BEE6B7D921E2DCBC5F1DB7DEBD344EB344C4D869D11F7BF1210089E897390",
+      "license": "Apache-2.0"
+    },
+    {
+      "package": "Dart SDK",
+      "revision": "3.12.2",
+      "path": "lib/_internal/vm/lib/math_patch.dart",
+      "sha256": "3CD16C96C4C1B6985317C6D3F9FAB3E4B0466B87A9450230784249070D687790",
+      "license": "BSD-3-Clause",
+      "selected": "seeded Random setup, MWC state, bounded nextInt"
+    }
+  ],
+  "adapted": [
+    {
+      "path": "Doroti/src/Doroti.Runtime/MaterialImageColorRuntime.cs",
+      "sha256": "D14CC4791286EADBBBB5DFB6003BB01A5106CC1D619C95982EED84A26E4F1D96"
+    },
+    {
+      "path": "Doroti/src/Doroti.Runtime/MaterialImageQuantizerWu.cs",
+      "sha256": "F421B25ECFFDDF87E074AB8B7FE9BBF4E0ECAFEF6C0BA8BBECCE19A59A157FCE"
+    }
+  ],
+  "changes": [
+    "64-bit moments and floating-point squared sums avoid C# overflow and integer division",
+    "Dart positive-half rounding for Wu centroids",
+    "Pinned round-robin five-iteration Wsmeans and seeded extra centers",
+    "Score chroma/excited-proportion filtering and hue separation",
+    "RGBA input byte conversion; Wu/WSmeans alpha policy retained"
+  ],
+  "dependencyClosure": [
+    "Existing MaterialColorUtilities 0.3.0: PointProviderLab, Hct, ColorUtils, QuantizerMap, QuantizerResult",
+    "Doroti.Runtime existing MaterialColorRuntime for dynamic scheme roles"
+  ],
+  "validation": "test-image-pipeline.ps1 and color-oracle.dart; pixel-input differential, not cross-decoder pixel equality"
+}

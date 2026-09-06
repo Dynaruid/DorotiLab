@@ -2,7 +2,7 @@
 
 - 작성일: **2026-09-06**
 - 분석 기준: Doroti HEAD `d8efedd` 및 현재 로컬 reference source.
-- 상태: **사전 소스 검토 완료 / 샘플 이식 구현 미착수 / 샘플 실행 검증 notVerified**.
+- 상태: **P0 진행 / D01–D03 이미지 공용 경로 및 D04 기본 인자 회귀 PASS / reference Image demo 추가 / Doroti 샘플 이식 미착수 / 전체 PARTIAL**. 실행 결과와 한계는 §7–§8 참고.
 - 최초 계획 작성: 사전 검토와 계획을 작성하고, 사용자 의도에 따라 **샘플 구현 과정에서 Doroti의 미흡·누락 기능을 고치고 만드는 것**을 주목적으로 명시했다. 당시 제품·테스트·Flutter source는 변경하지 않았고 build/앱 실행/성능 측정은 하지 않았다.
 - 후속 범위 정리: 참조 앱과 Doroti Material을 Material 3 전용으로 정리하고 이 계획의 구성·테마 조작·비교 조건도 이에 맞췄다. 아래 샘플 이식 단계의 완료를 의미하지 않는다.
 - 참조 경로: 요청의 `reference\flutter\_sample\_app`는 현재 checkout에 없다. 실제 존재하고 요청 내용에 해당하는 **[reference/flutter_sample_app](reference/flutter_sample_app/README.md)** 기준이다.
@@ -87,6 +87,8 @@ App._handleImageSelect
 
 ### 3.2 SearchAnchor — 기본 호출과 충돌하는 null 처리
 
+아래는 최초 사전 검토 당시의 결함 기록이다. 2026-09-06 공용 수정 및 기본 인자 회귀 결과는 §7에 기록했으며, 실제 mounted open/close·focus 검증은 아직 남아 있다.
+
 - 샘플의 `SearchAnchor.bar`는 hint와 suggestionsBuilder만 넘기며 trailing/open/close callback을 생략한다.
 - [search_anchor.cs](Doroti/src/Doroti.Framework.Material/search_anchor.cs)의 `_SearchAnchorWithSearchBar__search_anchor`는 `barTrailing.Cast<Widget>()`와 `viewOnOpen: () => onOpen()`, `viewOnClose: () => onClose()`를 사용한다. 해당 인자는 null 기본값이므로 기본 구성 또는 열기/닫기에서 예외가 발생할 경로가 있다.
 - 같은 factory/constructor의 scrollPadding·contextMenuBuilder 기본값 전달도 확인 대상이다.
@@ -145,16 +147,18 @@ App._handleImageSelect
 
 ### 4.1 공용 결함·누락 추적표
 
-구현 중 이 표를 갱신한다. 항목별로 최소 재현/실패 증거, 수정 파일·공용 계약, 회귀 결과, Testbed 통합 결과, target별 남은 검증을 연결한다. 표의 현재 상태는 실행 검증 결과가 아니다.
+구현 중 이 표를 갱신한다. 항목별로 최소 재현/실패 증거, 수정 파일·공용 계약, 회귀 결과, Testbed 통합 결과, target별 남은 검증을 연결한다. 사전 분석과 후속 실행 증거를 구분한다.
 
 | ID | 기대하는 공용 기능 | 현재 근거/상태 | 소유 계층·완료 증거 |
 | --- | --- | --- | --- |
-| D01 | Picture 명령을 실제 Image로 rasterize | 크기만 가진 Image 반환, source 확인 | Ui + Rendering/Host; 알려진 그림을 독립 fixture에서 rasterize하고 픽셀 비교 |
-| D02 | Image rawRgba 읽기와 자원 수명 | toByteData가 항상 capability 예외, source 확인 | Ui + Rendering/Host; D01과 연결, format/크기/dispose 및 Worker 응답 검증 |
-| D03 | Flutter와 대응하는 이미지 quantization/score | 빈도 집계·정렬 구현, source 확인 | Material + color runtime; 동일 입력 seed/role differential |
-| D04 | optional 인자를 생략한 SearchAnchor 기본 동작 | null 처리 결함 경로, 실행 재현 필요 | Material/Widgets; 최소 public API 호출로 생성·열기·닫기·focus 복귀 |
-| D05 | target 공통 URL 실행 API와 플랫폼 동작 | 대응 연결 미발견, 재사용 계약 조사 필요 | 공용 service + Host; 독립 호출 및 실제 사용자 클릭의 성공/실패 |
-| D06+ | 이식 중 드러나는 theme/layout/scroll/input/semantics 등 | 발견 시 구체 항목으로 추가 | 원인 소유 계층; 최소 재현 → 공용 수정 → 회귀 → Testbed 검증 |
+| D01 | Picture 명령을 실제 Image로 rasterize | 기존 크기-only Image FAIL → Skia/CanvasKit 실제 픽셀 fixture PASS | Ui + Rendering/Host; §8, 다른 OS live·복잡한 Picture 전체는 notVerified |
+| D02 | Image rawRgba 읽기와 자원 수명 | 기존 capability 예외 FAIL → RGBA/straight/PNG·dispose/clone·Worker 응답 PASS | Ui + Rendering/Host; §8, 강제 restart 중 read 검증은 notVerified |
+| D03 | Flutter와 대응하는 이미지 quantization/score | 기존 maxColors/gray/fallback FAIL → pinned Dart MCU palette·seed·46×2 roles 정확 일치 | Material + color runtime; §8, 각 host readback을 동일 입력으로 비교. host 간 decode 픽셀 동일성 아님 |
+| D04 | optional 인자를 생략한 SearchAnchor 기본 동작 | 기본 enabled=false, null trailing/callback 실행 FAIL → 공용 수정 후 기본 인자 회귀 4/4 PASS | Material/Widgets; factory 및 route 전달 수정. **mounted open/close·focus 복귀·Testbed 통합은 notVerified** |
+| D05 | target 공통 URL 실행 API와 플랫폼 동작 | clipboard/cursor의 view-scoped service 경로 재사용 가능; URL API는 없음 | 공용 Services + optional URL host capability 제안 확정; 실제 구현/사용자 활성화 검증 남음 |
+| D06 | paintImage 기본 alignment | 실제 사진 처리 null 예외 → Alignment.center 기본값 복원, 사진 fixture PASS | Framework.Painting, §8 |
+| D07 | ImageProvider codec 완료와 오류 전달 | MemoryImage timeout → MultiFrame constructor codec 연결·정상/ephemeral 오류 전달 복원, 실제 MemoryImage/NetworkImageIo PASS | Framework.Painting, §8; animated playback 전체 검증 아님 |
+| D08+ | 이식 중 드러나는 theme/layout/scroll/input/semantics 등 | 발견 시 구체 항목으로 추가 | 원인 소유 계층; 최소 재현 → 공용 수정 → 회귀 → Testbed 검증 |
 
 `source 확인 → 실행 재현 FAIL → 수정 중 → 공용 회귀 PASS → Testbed 통합 PASS` 순으로 증거를 남긴다. 환경 부족은 `notVerified`로 기록하며 수정 완료나 미지원 확정으로 바꾸지 않는다.
 
@@ -164,12 +168,12 @@ P0–P7은 통합 milestone이다. **각 단계에서 발견한 공용 결함의
 
 ### P0 — 기준 고정과 최소 위험 재현
 
-- [ ] reference `main.dart`, `lib/src`, pubspec/lock, 사용 Flutter SDK revision과 font/image 입력 hash를 기록한다. reference는 현재 로컬 내용 그대로 기준으로 삼는다.
-- [ ] 4개 화면/6개 그룹의 항목·상태·callback 목록과 Doroti API 대응표를 작성한다. 이번 정적 확인을 runtime PASS로 기록하지 않는다.
-- [ ] 현재 Testbed의 Windows/Web 대표 실행, G6 입력 및 resize fixture 기준 상태를 확보한다. 기존 FAIL을 보존한다.
+- [x] reference `main.dart`, `lib/src`, pubspec/lock, 사용 Flutter SDK revision과 font/image 입력 hash를 기록한다. reference는 현재 로컬 내용 그대로 기준으로 삼는다. → §7, `reference-inputs.json`.
+- [x] 4개 화면/6개 그룹의 항목·상태·callback 목록과 Doroti API 대응표를 작성한다. 이번 정적 확인을 runtime PASS로 기록하지 않는다. → [inventory](Doroti/validation/fcr7-material-widget/material-sample-inventory.md).
+- [x] 현재 Testbed의 Windows/Web 대표 실행, G6 입력 및 resize fixture 기준 상태를 확보한다. 기존 FAIL을 보존한다. → Windows startup smoke 4/4, Web 4/4; physical 검증 아님.
 - [ ] SearchAnchor 최소 인자 생성/open/close, Picture→Image→bytes, 이미지 quantizer를 작은 독립 fixture로 재현한다.
-- [ ] URL adapter에 재사용 가능한 기존 service/host 계약을 더 조사하고 실제 수정 범위를 확정한다.
-- [ ] D01–D05의 최소 재현과 의존 관계를 기록하고, 진행 중 발견하는 공용 결함을 같은 추적표에 등록한다.
+- [x] URL adapter에 재사용 가능한 기존 service/host 계약을 더 조사하고 실제 수정 범위를 확정한다. → inventory의 D05; 구현은 P4.
+- [x] D01–D05의 최소 재현과 의존 관계를 기록하고, 진행 중 발견하는 공용 결함을 같은 추적표에 등록한다. → §4.1/§7 및 inventory. D05는 API 부재로 source 조사이며 실행 재현으로 표시하지 않는다.
 
 완료 조건: 확정 blocker와 실행 미검증 항목이 구분되고, 최소 재현과 각 수정 소유자가 결정됨. P0 실패가 있으면 해당 기능의 선행 보완부터 진행한다.
 
@@ -204,9 +208,9 @@ P0–P7은 통합 milestone이다. **각 단계에서 발견한 공용 결함의
 
 ### P4 — 이미지 색상·URL 완성
 
-- [ ] 공용 Picture rasterization 및 Image rawRgba readback을 구현한다. 크기·stride·RGBA/ABGR·premultiplied alpha·종료/dispose 계약을 명시한다.
+- [x] 공용 Picture rasterization 및 Image rawRgba readback을 구현한다. 크기·stride·RGBA/ABGR·premultiplied alpha·종료/dispose 계약을 명시한다. §8의 Skia/CanvasKit 범위.
 - [ ] Windows와 기본 Web Worker 경로에서 동일 pixel fixture를 읽고, 나머지 host는 구현/미지원 상태를 각각 기록한다.
-- [ ] Celebi quantization 및 scoring을 고정 reference와 대조해 보완한다. 기존 HCT seed→role 경로는 재사용하되 역할별 색상을 검증한다.
+- [x] Celebi quantization 및 scoring을 고정 reference와 대조해 보완한다. 기존 HCT seed→role 경로는 재사용하되 역할별 색상을 검증한다. §8의 동일 readback 입력 differential.
 - [ ] 6개 이미지의 thumbnail·색상 선택·light/dark 전환과 loading/error/retry/latest selection 처리.
 - [ ] URL 실행 공용 adapter/target 구현과 Color 안내 링크를 연결한다. Web popup과 native shell 실패 결과를 검증한다.
 
@@ -257,4 +261,128 @@ P0–P7은 통합 milestone이다. **각 단계에서 발견한 공용 결함의
 
 샘플 기본 화면 전환은 중간 산출물의 배포 기준이다. 공용 결함이나 target별 검증이 남아 있으면 전체 작업은 PARTIAL/notVerified로 유지한다. 픽셀/입력 parity 및 전 플랫폼 완료는 각각의 검증 gate를 추가로 통과해야 한다.
 
-현재 체크 상태는 모두 미착수다. 우선 실행할 작업은 **P0의 SearchAnchor·이미지 readback 최소 재현과 기존 diagnostics 기준 확보**다.
+## 7. 2026-09-06 P0 실행 및 D04 첫 공용 수정
+
+**전체 PARTIAL, P0 진행 중.** 샘플 네 화면 이식/P1–P7과 기본 화면 전환은 아직 수행하지 않았다. 시작 checkout은 clean, HEAD `48343b7c8511c040faba8704e59aa32a80062374`였다. §3의 사전 source 분석과 이번 실행 증거를 구분한다.
+
+### 7.1 구현과 고정 입력
+
+- [MaterialSampleContracts.cs](Doroti/validation/fcr7-material-widget/MaterialSampleContracts.cs): Testbed에 의존하지 않는 public SearchAnchor 기본/명시 인자 검사, 2×1 red/transparent Picture readback, 내부 quantizer/Score 독립 재현을 추가했다. 내부 색상 경로는 public 이미지 경로가 막혀 reflection으로 한정 호출한다.
+- [search_anchor.cs](Doroti/src/Doroti.Framework.Material/search_anchor.cs): CreateBar의 기본 `enabled=true`, nullable bar/view trailing의 typed 전달, optional lifecycle callback 직접 전달, context-menu 기본값의 실제 builder 전달을 수정했다. route 생성과 view content 생성 경로의 nullable trailing도 함께 수정했다. 앱 측 빈 callback/배열 우회는 추가하지 않았다.
+- Search 회귀 4개를 기존 FCR-7 기본 실행에도 연결했다. 별도 `--material-sample`은 남은 이미지 결함을 그대로 FAIL/exit 1로 반환한다.
+- [inventory](Doroti/validation/fcr7-material-widget/material-sample-inventory.md)에 4개 화면/6개 그룹의 상태·callback·공용 API·D01–D05 소유권/의존성을 기록했다. 실제 reference의 InputChip 삭제 callback은 빈 함수이므로 P3의 삭제 항목은 reference 범위를 확인해 처리해야 한다.
+- [snapshot-material-sample.ps1](Doroti/eng/snapshot-material-sample.ps1)이 source/tests/pubspec/lock/LICENSE/font와 6개 PNG의 SHA-256을 기록한다. SDK는 sample package config가 가리키는 `C:/Users/parti/flutter`, revision `6b182d2c7585eba26d4edce0f97630effd256c33`; SDK `pubspec.lock`의 기존 수정도 기록한다. 이미지는 `.doroti` validation 입력이며 제품 bundle은 아니다. HTTP 다운로드 성공은 Web CORS/decode 성공을 뜻하지 않는다.
+- [material-color-oracle.dart](Doroti/validation/fcr7-material-widget/material-color-oracle.dart)를 sample의 pinned `material_color_utilities 0.13.0`으로 실행했다. maxColors=1은 단일 cluster `{4290476659:3}`, 회색 100/빨강 10의 선택은 `0xffff0000`, 빈 score fallback은 `0xff4285f4`다. Doroti의 현재 세 결과는 모두 불일치한다.
+
+### 7.2 실행 증거
+
+로컬 evidence root: `.doroti/evidence/material-sample-p0/`. 모든 build/test 프로세스는 **20분 timeout**으로 실행했으며 소유한 앱·server는 종료했다.
+
+| 검증 | 결과 | 증거/한계 |
+| --- | --- | --- |
+| 수정 전 독립 contracts | **FAIL 5** | `contracts-before-v2.stdout.log`: Search 기본값/null 3개 + Picture/readback + quantizer 실패, explicit options 1개 PASS. 최초 fixture compile의 Uint8List 원소형 오류는 `contracts-before.*`에 보존 |
+| 수정 후 Search 기본 인자 | **PASS 4/4** | `search-final.stdout.log`; 생성/builder/callback 전달 검증이며 mounted route/input 검증 아님 |
+| 기존 FCR-7 + Search 통합 회귀 | **PASS** | `integrated-regression/contracts.stdout.log`: Material 3, shortcut, context-menu 등 기존 회귀 포함 |
+| 이미지/색상 blocker 최종 재현 | **FAIL 4** | `contracts-final.stdout.log`, `final-byte-view-contract/contracts.stdout.log`: readback 1, quantization/score 3; Search 4개는 PASS. ByteData view의 offset/length를 존중하도록 fixture를 보완한 후에도 동일한 결과. 실패를 기대 성공으로 바꾸지 않음 |
+| Dart color oracle | **PASS 실행/결과 확보** | `color-oracle.json`, `color-oracle.stderr.log`; Doroti parity PASS 아님 |
+| Windows Release build | **PASS**, warning/error 0 | `windows-build.*` |
+| Windows Vulkan gallery/F0/F1/F2 startup smoke | **PASS 4/4**, exit 0 | `windows-{gallery,F0,F1,F2}-v2.json` 및 로그. 각각 visible-after-exact-present/terminal 보고, startup 자동 검증만 의미 |
+| 최초 Windows hidden 직접 실행 | **실행 조건 FAIL 보존** | `windows-{gallery,F0,F1,F2}.*`: Hidden 때문에 visible-after-present 요구 실패. hidden CLI helper에서 정상 app launch로 수정한 v2만 유효 startup 기준 |
+| Web Release build | **PASS**, warning/error 0 | `Doroti/validation/web-playwright/artifacts/wrapper/material-sample-p0-baseline/build.stdout.log` |
+| 최초 Web 호출 | **실행 인자 FAIL 보존** | `material-sample-p0-baseline/playwright.*`: pwsh 외부 호출에서 두 test 경로가 comma 문자열이 되어 No tests found. 배열 직접 전달한 v2에서 실행 |
+| Web CanvasKit Worker, Chromium hardware headless | **PASS 4/4** | `Doroti/validation/web-playwright/artifacts/wrapper/material-sample-p0-baseline-v2/playwright.stdout.log`; F0/F1/F2 direct/bitmap crop resize + G6 semantics/pointer/keyboard/native text endpoint. screenshot/diagnostics는 `artifacts/material-sample-p0-baseline-v2/test-results/` |
+| 새 sample, mounted Search focus, physical resize/IME/accessibility, 다른 OS | **notVerified** | 기존 diagnostics 자동 PASS로 대체하지 않음 |
+
+재실행:
+
+```powershell
+# 20분 timeout을 내장한 공용 회귀/결함 실행기. Blockers는 현재 FAIL이다.
+./Doroti/eng/test-material-sample.ps1 -Suite Regression
+./Doroti/eng/test-material-sample.ps1 -Suite Search
+./Doroti/eng/test-material-sample.ps1 -Suite Blockers
+
+./Doroti/eng/snapshot-material-sample.ps1 -FetchImages `
+  -OutputDirectory .doroti/evidence/material-sample-inputs-new
+
+./Doroti/eng/run-web-playwright.ps1 -HeadlessOnly `
+  -RendererMode worker-canvaskit-webgl `
+  -TestFile @('tests/input-regression.spec.ts', 'tests/canvaskit-resize-fixtures.spec.ts') `
+  -ArtifactLabel material-sample-next-baseline -Port 5096
+```
+
+**다음 순서:** P0의 mounted SearchAnchor 생성→open→close→focus 복귀 fixture를 완료한다. D04는 현재 기본 인자 회귀만 PASS다. 이후 P1 diagnostics 분리/명시적 모드/root 골격을 진행하고, 이미지 연결 전에 D01/D02의 view/resource/Worker readback 계약과 D03의 실제 Celebi/Score를 구현한다. P7 이전까지 기존 기본 화면과 renderer 기본값은 유지한다.
+
+## 8. 2026-09-06 이미지 공용 수리와 reference Image demo
+
+사용자의 후속 요청으로 D01–D03을 먼저 구현했다. §7은 수리 전 이력이다.
+이번 범위는 **공용 이미지 경로 및 reference 섹션 추가 완료**, 전체 P0–P7은
+계속 **PARTIAL**이다. Doroti의 네 화면 이식·기본 진입점 전환은 수행하지 않았다.
+
+### 8.1 공용 변경
+
+- `Picture.toImage`가 활성 view의 image capability로 실제 rasterization을 요청한다.
+  Skia는 별도 CPU surface, CanvasKit은 Raster Worker offscreen target을 사용한다.
+  visible frame/resize ledger에는 넣지 않는다.
+- `Image.toByteData`는 RGBA8 premultiplied/straight 및 PNG를 반환하고 비동기 읽기
+  동안 storage clone을 보유한다. 크기·format·dispose 오류를 명시한다.
+  CanvasKit 요청은 기존 session envelope, transferable buffer, 최대 16 pending,
+  30초 timeout/port 종료 실패를 사용한다. 생성 PNG는 기존 resource journal에 보존한다.
+- 실제 MCU Wu/Wsmeans/Score를 연결했다. 이전 NuGet Wu의 정수 오버플로·정수 나눗셈,
+  centroid 반올림, Wsmeans 초기화/반복 정책 차이는 pinned Dart 0.13.0 기준으로 수정했다.
+  이미지 bytes는 view 범위 안에서 RGBA→ARGB로 명시 변환하며, quantization 뒤의
+  잘못된 채널 재변환을 제거했다. **MCU 동일 ARGB 입력 parity**를 검증한 것이며
+  Flutter SDK의 endian 재해석 경로를 포함한 모든 이미지 public API parity를 주장하지 않는다.
+- `paintImage`의 기본 `Alignment.center` 누락(D06), `MultiFrameImageStreamCompleter`
+  생성자의 codec 완료 연결 및 오류 listener 목록 누락(D07)을 실제 사진/MemoryImage로
+  재현해 수정했다. 완료 전 해제, 동기 프레임, normal/ephemeral error도 검증한다.
+- 계약·한계·재실행: [image-pipeline/README.md](Doroti/validation/image-pipeline/README.md).
+  채택한 소스와 라이선스는 [source-provenance.json](Doroti/validation/image-pipeline/source-provenance.json),
+  [THIRD-PARTY-NOTICES.md](Doroti/THIRD-PARTY-NOTICES.md)에 기록했다.
+
+### 8.2 현재 입력과 reference UI
+
+- 로컬 최종 입력: `mae-mu-9002s2VnOAY-unsplash.webp`, 680,944 bytes,
+  SHA-256 `67D80A7D869C6983B4ECB79B26D62233473B74FFB3CA2F36267655C7274CA5A2`.
+  최초 `marcel-l-PQewPJqNKwQ-unsplash.jpg` 결과는 이력으로 보존한다.
+- URL: `https://plus.unsplash.com/premium_photo-1734210255965-0a721514a34e`.
+  네이티브 다운로드 입력 SHA-256
+  `D4B657DE982CCD6985E5DF9964059A83AD0BFEF8BBDB230D725B363E02A46A06`.
+  Web은 URL을 실제 요청하고 `NetworkImageIo`에서도 로드한다.
+- [reference Image demo](reference/flutter_sample_app/lib/src/image_demo.dart)는
+  Components의 Text inputs 뒤에 추가했다. 로컬/URL, Contain/Cover, 실패 재시도,
+  라이트·다크 Primary/Secondary/Tertiary와 RGB 표시를 제공한다. 비동기 추출은
+  선택 generation/mounted를 확인해 이전 선택 결과가 새 선택을 덮지 못하게 한다.
+  WebP를 reference asset으로 복사했으며 루트의 사용자 원본 파일은 유지했다.
+  기존 6개 이미지 테마 선택은 유지한다. 이 섹션은 사용자 요청에 따른 reference 확장이다.
+- 새 입력 snapshot은 `reference-webp-snapshot/reference-inputs.json`에 별도로 보관했다.
+  snapshot 실행기는 assets도 포함하며 기존 manifest 덮어쓰기를 거부한다.
+
+### 8.3 실행 결과와 남은 경계
+
+증거 root는 `.doroti/evidence/material-image-repair/`이다. 모든 테스트/빌드에는
+20분 timeout을 적용했으며 실행기가 소유한 앱/server는 종료한다.
+
+| 검증 | 결과 | 증거/경계 |
+| --- | --- | --- |
+| Search + 이미지 독립 contracts | **PASS 8/8** | `contracts-final/contracts.stdout.log`; 실제 2×1/3×1 readback·alpha·PNG·dispose·stream 검증 포함 |
+| Native WebP + URL 파일 + 합성 4종 | **PASS 6/6 differential** | `final-webp-native/oracle.stdout.log`; 각 palette 전체 key/count, seed, 46 light+46 dark roles 정확 일치 |
+| Web CanvasKit 실제 MemoryImage/NetworkImageIo | **PASS 2개 사진 + 픽셀/수명/손상 이미지** | `artifacts/wrapper/material-image-repair-webp-final/playwright.stdout.log`; `webp-oracle-final.stdout.log` 정확 일치 |
+| 기존 FCR-7 통합 | **PASS** | `regression-final/contracts.stdout.log` |
+| 기존 Web F0/F1/F2 resize + 입력 + JPEG/URL 이미지 | **PASS 5/5** | `artifacts/wrapper/material-image-repair-v3/playwright.stdout.log`; 이후 local WebP만 교체한 별도 최종 이미지 재검증 PASS |
+| Windows/Web Release | **PASS**, warning/error 0 | `windows-build-final.*`, `web-validation-build-final.*` |
+| Windows Vulkan gallery 시작 | **8초 smoke PASS**, 최초 2.5초 smoke **FAIL 보존** | `windows-smoke-v2.json`: visible-after-exact-present, failed terminal 0. 최초 `windows-smoke-final.*`는 presented=0으로 실패. 짧은 startup 예산 결과를 PASS로 재해석하지 않음 |
+| Flutter analyze + 전체 widget tests | **PASS**, issues 0 / 15 tests | `flutter-analyze.*`, `flutter-tests-v1.*`; 실제 palette 추출 및 390 폭 source/fit 전환 포함 |
+| Flutter WebP Web build | **PASS** | `flutter-webp-build.*` |
+| Flutter reference 실제 asset/URL + palette | **PASS**, 1280×1000 screenshot 확인 | `.doroti/evidence/flutter-image-demo-webp-v5/`; `artifacts/flutter-image-demo-webp-v5/.../{local,url}-palette.png`. semantics click 검증이며 physical pointer acceptance 아님 |
+| 이전 실패/불충분 검사 | **보존** | compile 중간 로그, `native-oracle-v3/v5`, Web image v1 timeout, Flutter browser v1–v3 harness 실패; v4는 URL 선택 후 이전 palette 상태를 기다리지 않아 불충분, v5에서 clear→새 완료를 기다리도록 보완 |
+
+표의 `artifacts/` 경로는 `Doroti/validation/web-playwright/artifacts/` 기준이다.
+동일 파일도 host decoding/리샘플링 차이로 픽셀이 조금 달라질 수 있다. 이번 WebP의
+seed는 native `0xFFF38301`, Web `0xFFF78C02`; URL은 둘 다 `0xFF769296`였다.
+각 readback의 MCU differential은 PASS지만 **cross-host 전체 픽셀/seed 동일성은 아니다**.
+강제 Worker restart 중 read, animated playback, wide-gamut, 다른 OS live, physical
+scan-out/IME/accessibility 및 Doroti sample 통합은 **notVerified**로 유지한다.
+
+**다음 순서:** mounted Search open/close/focus gate를 완료하고 P1부터 Doroti sample
+이식을 이어간다. 이미지 공용 경로는 이제 사용할 수 있다. P4의 6개 테마 이미지 UI와
+latest-selection/error/retry 통합, D05 URL 실행, P5–P7은 별도로 남아 있다.

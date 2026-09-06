@@ -116,6 +116,13 @@ internal static partial class BrowserCanvasKitInterop
     [JSImport("layoutCanvasKitParagraph", Module)]
     internal static partial string LayoutParagraph(string requestJson);
 
+    [JSImport("canvasKitImageOperation", Module)]
+    [return: JSMarshalAs<JSType.Promise<JSType.String>>]
+    private static partial Task<string> ImageOperationCore(string requestJson, string encodedBytes);
+
+    internal static async Task<byte[]> ImageOperation(string requestJson, byte[] bytes) =>
+        Convert.FromBase64String(await ImageOperationCore(requestJson, Convert.ToBase64String(bytes)));
+
     internal static long Submit(
         long sceneSequence,
         byte[] wireBytes,

@@ -10,6 +10,17 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - License: BSD 3-Clause; see `../reference/flutter-master/LICENSE`
 - Copyright: Copyright 2014 The Flutter Authors
 
+## Material color image extraction
+
+- Upstream behavior: https://github.com/material-foundation/material-color-utilities, Dart package `material_color_utilities 0.13.0`
+- C# Wu source: https://github.com/albi005/MaterialColorUtilities/blob/v0.3.0/MaterialColorUtilities/Quantize/QuantizerWu.cs
+- Adapted files: `src/Doroti.Runtime/MaterialImageQuantizerWu.cs`, `src/Doroti.Runtime/MaterialImageColorRuntime.cs`
+- Copyright 2021 Google LLC; Copyright 2021-2022 project contributors
+- License: Apache-2.0, reproduced in [LICENSES/material-color-utilities-Apache-2.0.txt](LICENSES/material-color-utilities-Apache-2.0.txt)
+- Changes: 64-bit histogram moments, floating-point squared sums, Dart centroid rounding, pinned five-iteration Wsmeans initialization and score filtering/hue separation, explicit RGBA-to-ARGB conversion.
+- `PaletteRandom` adapts seeded Dart VM Random from `sdk/lib/_internal/vm/lib/math_patch.dart`; Copyright 2012, the Dart project authors, BSD-3-Clause, reproduced in [LICENSES/dart-BSD-3-Clause.txt](LICENSES/dart-BSD-3-Clause.txt).
+- Selected sources, hashes, and dependency closure: [image-pipeline/source-provenance.json](validation/image-pipeline/source-provenance.json). Existing NuGet `MaterialColorUtilities 0.3.0` supplies Lab/HCT color math.
+
 ## SkiaSharp
 
 - Upstream: https://github.com/mono/SkiaSharp

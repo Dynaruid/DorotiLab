@@ -24,8 +24,9 @@ internal sealed class QuantizerCelebi
     internal Future<QuantizerResult> quantize(dynamic pixels, long maxColors, bool returnInputPixelToClusterPixel = false)
     {
         var result = new QuantizerResult();
-        foreach (var pixel in pixels) { var value = Convert.ToInt64(pixel); result.colorToCount[value] = result.colorToCount.GetValueOrDefault(value) + 1; }
-        if (result.colorToCount.Count == 0) result.colorToCount[0xff6750a4] = 1;
+        foreach (var entry in MaterialImageColorRuntime.Quantize(
+            ((System.Collections.IEnumerable)pixels).Cast<object>().Select(Convert.ToInt64), checked((int)maxColors)))
+            result.colorToCount[entry.Key] = entry.Value;
         return Future<QuantizerResult>.value(result);
     }
 }
@@ -33,7 +34,7 @@ internal sealed class QuantizerCelebi
 internal static class Score
 {
     internal static IEnumerable<long> score(DartMap<long, long> colors, long desired = 1) =>
-        colors.OrderByDescending(entry => entry.Value).Take(checked((int)desired)).Select(entry => entry.Key);
+        MaterialImageColorRuntime.Score(colors.ToDictionary(entry => entry.Key, entry => entry.Value), checked((int)desired));
 }
 
 internal sealed class Hct
@@ -614,7 +615,7 @@ public class ColorScheme : global::Doroti.Framework.Foundation.Diagnosticable
     public static async Future<ColorScheme> fromImageProvider(dynamic provider, Brightness brightness = Brightness.light, DynamicSchemeVariant dynamicSchemeVariant = DynamicSchemeVariant.tonalSpot, double contrastLevel = 0.0, Color? primary = null, Color? onPrimary = null, Color? primaryContainer = null, Color? onPrimaryContainer = null, Color? primaryFixed = null, Color? primaryFixedDim = null, Color? onPrimaryFixed = null, Color? onPrimaryFixedVariant = null, Color? secondary = null, Color? onSecondary = null, Color? secondaryContainer = null, Color? onSecondaryContainer = null, Color? secondaryFixed = null, Color? secondaryFixedDim = null, Color? onSecondaryFixed = null, Color? onSecondaryFixedVariant = null, Color? tertiary = null, Color? onTertiary = null, Color? tertiaryContainer = null, Color? onTertiaryContainer = null, Color? tertiaryFixed = null, Color? tertiaryFixedDim = null, Color? onTertiaryFixed = null, Color? onTertiaryFixedVariant = null, Color? error = null, Color? onError = null, Color? errorContainer = null, Color? onErrorContainer = null, Color? outline = null, Color? outlineVariant = null, Color? surface = null, Color? onSurface = null, Color? surfaceDim = null, Color? surfaceBright = null, Color? surfaceContainerLowest = null, Color? surfaceContainerLow = null, Color? surfaceContainer = null, Color? surfaceContainerHigh = null, Color? surfaceContainerHighest = null, Color? onSurfaceVariant = null, Color? inverseSurface = null, Color? onInverseSurface = null, Color? inversePrimary = null, Color? shadow = null, Color? scrim = null, Color? surfaceTint = null, Color? background = null, Color? onBackground = null, Color? surfaceVariant = null)
     {
         QuantizerResult quantizerResult = await ColorScheme._extractColorsFromImageProvider(provider);
-        DartMap<long, long> colorToCountLocal = quantizerResult.colorToCount.map<long, long, long, long>(((key, value) => new MapEntry<long, long>(ColorScheme._getArgbFromAbgr(key), value)));
+        DartMap<long, long> colorToCountLocal = quantizerResult.colorToCount;
         List<long> scoredResults = Score.score(colorToCountLocal, desired: 1L).ToList();
         var baseColor = new global::Doroti.Ui.Color(scoredResults.First());
         DynamicScheme scheme = ((DynamicScheme)(object?)ColorScheme._buildDynamicScheme(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(brightness)), baseColor, dynamicSchemeVariant, contrastLevel));
@@ -624,58 +625,58 @@ public class ColorScheme : global::Doroti.Framework.Foundation.Diagnosticable
 
     internal static async Future<QuantizerResult> _extractColorsFromImageProvider(dynamic imageProvider)
     {
-        global::Doroti.Ui.Image scaledImage = ((global::Doroti.Ui.Image)(object?)await ColorScheme._imageProviderToScaled(imageProvider));
-        ByteData? imageBytes = await scaledImage.toByteData();
-        QuantizerResult quantizerResult = await new QuantizerCelebi().quantize(imageBytes!.buffer.asUint32List(), 128L, returnInputPixelToClusterPixel: true);
-        return quantizerResult;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        using global::Doroti.Ui.Image scaledImage = await _imageProviderToScaled(imageProvider);
+        var bytes = await scaledImage.toByteData(ImageByteFormat.rawRgba)
+            ?? throw new InvalidOperationException("Image readback returned no RGBA bytes.");
+        return await new QuantizerCelebi().quantize(MaterialImageColorRuntime.ArgbFromRgba(bytes.asMemory().Span), 128L);
     }
 
     internal static async Future<global::Doroti.Ui.Image> _imageProviderToScaled(dynamic imageProvider)
     {
-        var maxDimension = 112.0;
-        global::Doroti.Framework.Painting.ImageStream stream = ((global::Doroti.Framework.Painting.ImageStream)(object?)((global::Doroti.Framework.Painting.ImageStream)((dynamic)imageProvider).resolve(new global::Doroti.Framework.Painting.ImageConfiguration(size: new global::Doroti.Ui.Size(maxDimension, maxDimension)))));
-        var imageCompleter = new Completer<global::Doroti.Ui.Image>();
-        global::Doroti.Framework.Painting.ImageStreamListener listener = default!;
-        global::Doroti.Ui.Image scaledImage = default!;
-        Timer? loadFailureTimeout = default!;
-        listener = new global::Doroti.Framework.Painting.ImageStreamListener(((global::System.Action<global::Doroti.Framework.Painting.ImageInfo, bool>)(async (info, sync) =>
+        var stream = (global::Doroti.Framework.Painting.ImageStream)imageProvider.resolve(
+            new global::Doroti.Framework.Painting.ImageConfiguration(size: new Size(112, 112)));
+        var completion = new TaskCompletionSource<global::Doroti.Ui.Image>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var admitted = 0;
+        var removed = 0;
+        global::Doroti.Framework.Painting.ImageStreamListener listener = null!;
+        void RemoveListener()
         {
-            loadFailureTimeout?.cancel();
-            stream.removeListener(listener);
-            global::Doroti.Ui.Image imageLocal = ((global::Doroti.Ui.Image)(object?)((global::Doroti.Framework.Painting.ImageInfo)info).image);
-            long widthLocal = imageLocal.width;
-            long heightLocal = imageLocal.height;
-            double paintWidth = widthLocal.toDouble();
-            double paintHeight = heightLocal.toDouble();
-            DartRuntimePrimitives.Assert(() => ((widthLocal > 0L) && (heightLocal > 0L)));
-            bool rescale = ((widthLocal > maxDimension) || (heightLocal > maxDimension));
-            if (rescale)
+            if (System.Threading.Interlocked.Exchange(ref removed, 1) == 0) stream.removeListener(listener);
+        }
+        listener = new global::Doroti.Framework.Painting.ImageStreamListener(async (info, synchronous) =>
+        {
+            using var image = info.image;
+            if (System.Threading.Interlocked.Exchange(ref admitted, 1) != 0) return;
+            try
             {
-                paintWidth = (((widthLocal > heightLocal)) ? maxDimension : (((maxDimension / heightLocal)) * widthLocal));
-                paintHeight = (((heightLocal > widthLocal)) ? maxDimension : (((maxDimension / widthLocal)) * heightLocal));
+                RemoveListener();
+                if (image.width <= 0 || image.height <= 0) throw new InvalidDataException("Image has invalid dimensions.");
+                var scale = Math.Min(1.0, 112.0 / Math.Max(image.width, image.height));
+                var paintWidth = image.width * scale;
+                var paintHeight = image.height * scale;
+                var recorder = new PictureRecorder();
+                var canvas = new Canvas(recorder);
+                global::Doroti.Framework.Painting.Decoration_imageLibrary.paintImage(canvas: canvas,
+                    rect: Rect.fromLTRB(0, 0, paintWidth, paintHeight), image: image, filterQuality: FilterQuality.none);
+                using var picture = recorder.endRecording();
+                var scaled = await picture.toImage(Math.Max(1, (int)paintWidth), Math.Max(1, (int)paintHeight));
+                if (!completion.TrySetResult(scaled)) scaled.Dispose();
             }
-            var pictureRecorder = new global::Doroti.Ui.PictureRecorder();
-            var canvasLocal = new global::Doroti.Ui.Canvas(pictureRecorder);
-            global::Doroti.Framework.Painting.Decoration_imageLibrary.paintImage(canvas: canvasLocal, rect: global::Doroti.Ui.Rect.fromLTRB(0, 0, paintWidth, paintHeight), image: imageLocal, filterQuality: FilterQuality.none);
-            global::Doroti.Ui.Picture picture = ((global::Doroti.Ui.Picture)(object?)pictureRecorder.endRecording());
-            scaledImage = await picture.toImage(paintWidth.toInt(), paintHeight.toInt());
-            imageCompleter.complete(((global::Doroti.Framework.Painting.ImageInfo)info).image);
-        })), onError: ((global::System.Action<object, global::System.Diagnostics.StackTrace?>)((exception, stackTrace) =>
+            catch (Exception exception) { completion.TrySetException(exception); }
+        }, onError: (exception, stack) => completion.TrySetException(
+            exception as Exception ?? new InvalidOperationException($"Failed to load image: {exception}")));
+        try
         {
-            loadFailureTimeout?.cancel();
-            stream.removeListener(listener);
-            imageCompleter.completeError(new Exception($"Failed to render image: {exception}"), stackTrace);
-        })));
-        loadFailureTimeout = new Timer(Duration.Create(seconds: 5L), (() =>
+            stream.addListener(listener);
+            return await completion.Task.WaitAsync(TimeSpan.FromSeconds(30));
+        }
+        catch (Exception exception)
         {
-            stream.removeListener(listener);
-            imageCompleter.completeError(new TimeoutException("Timeout occurred trying to load image"));
-        }));
-        stream.addListener(listener);
-        await imageCompleter.future;
-        return ((global::Doroti.Ui.Image)(object?)scaledImage);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+            // Late raster completions must release their output instead of leaking after timeout.
+            completion.TrySetException(exception);
+            throw;
+        }
+        finally { RemoveListener(); }
     }
 
     internal static long _getArgbFromAbgr(long abgr)

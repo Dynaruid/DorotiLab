@@ -23,6 +23,20 @@ flutter run -d chrome
 이미지 기반 색상 선택에는 인터넷 연결이 필요합니다.
 원본 Flutter samples의 저작권 헤더와 BSD 라이선스(`LICENSE`)를 포함합니다.
 
+## Image demo
+
+Components 맨 아래의 **Image demo**에서 로컬 사진과 이미지 URL을 전환하고
+Contain/Cover 표시를 비교할 수 있습니다. **Extract colors**는 선택한 이미지의
+라이트·다크 Primary/Secondary/Tertiary와 RGB 값을 표시합니다.
+로딩 실패 시 **Retry image**로 재시도할 수 있으며, 추출 실패는 섹션 안에 표시됩니다.
+
+- 로컬: `assets/images/mae-mu-9002s2VnOAY-unsplash.webp` (사용자 제공, Mae Mu / Unsplash)
+- URL: `https://plus.unsplash.com/premium_photo-1734210255965-0a721514a34e` (사용자 제공)
+
+로컬 사진은 asset으로 포함되어 오프라인에서도 사용할 수 있습니다.
+URL 사진은 네트워크 연결과 브라우저 CORS 허용이 필요합니다.
+이 섹션은 reference 앱에 추가한 로컬 확장이며 기존 6개 테마 이미지 선택은 유지합니다.
+
 ## 검증
 
 ```powershell
