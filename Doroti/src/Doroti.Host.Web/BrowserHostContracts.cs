@@ -121,6 +121,9 @@ internal static partial class BrowserInterop
     [JSImport("clearTextInput", Module)]
     internal static partial void ClearTextInput(int hostId);
 
+    [JSImport("launchExternalUrl", Module)]
+    internal static partial Task<string> LaunchExternalUrlAsync(string url);
+
     [JSImport("readClipboardText", Module)]
     [return: JSMarshalAs<JSType.Promise<JSType.String>>]
     internal static partial Task<string> ReadClipboardTextAsync();
@@ -272,6 +275,7 @@ public sealed class BrowserHostAdapter :
     IInputHostCapability,
     IViewFocusRequestCapability,
     IPlatformServicesHostCapability,
+    IUrlLauncherHostCapability,
     ITextInputHostCapability
 {
     private static readonly object RegistryGate = new();
@@ -392,6 +396,13 @@ public sealed class BrowserHostAdapter :
         cancellationToken.ThrowIfCancellationRequested();
         await BrowserInterop.WriteClipboardTextAsync(text ?? string.Empty);
         cancellationToken.ThrowIfCancellationRequested();
+    }
+
+    public async ValueTask<UrlLaunchResult> LaunchUrlAsync(string absoluteUrl, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var status = await BrowserInterop.LaunchExternalUrlAsync(absoluteUrl);
+        return status == "opened" ? new(UrlLaunchStatus.opened) : new(UrlLaunchStatus.blocked, "The browser blocked the new tab. Allow popups and retry the link.");
     }
 
     public void SetCursor(DorotiMouseCursorKind cursor) => BrowserInterop.SetCursor(HostId, CursorName(cursor));

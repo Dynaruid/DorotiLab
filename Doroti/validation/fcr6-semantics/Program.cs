@@ -55,6 +55,26 @@ Require(viewCoordinates.Single(node => node.id == 21).rect == Rect.fromLTWH(15, 
 Require(viewCoordinates.Single(node => node.id == 22).rect == Rect.fromLTWH(17, 30, 10, 8),
     "nested semantics bounds accumulate every parent origin");
 
+// A clipped ancestor has nonzero rect.top, but its coordinate origin is unchanged.
+var clippedParent = Node(30, 0, 92, 500, 800, "clipped", children: [31]) with {
+    coordinateTransform = new double[] { 2,0,0,0, 0,2,0,0, 0,0,1,0, 5,0,0,1 }
+};
+var clippedChild = Node(31, 20, 0, 100, 48, "sheet", SemanticsAction.tap) with {
+    coordinateTransform = new double[] { 1,0,0,0, 0,1,0,0, 0,0,1,0, 300,72,0,1 }
+};
+var clippedProjection = SemanticsGeometryProjection.ToViewCoordinates([clippedParent, clippedChild]);
+Require(clippedProjection.Single(n => n.id == 31).rect == Rect.fromLTWH(645, 144, 200, 96),
+    "clipped semantics parent retains its transform origin and composes ancestor scale");
+var movedChild = clippedChild with { coordinateTransform = new double[] { 1,0,0,0, 0,1,0,0, 0,0,1,0, 300,52,0,1 } };
+var highDpiProjection = SemanticsGeometryProjection.ToViewCoordinates([clippedParent, clippedChild], 2);
+Require(highDpiProjection.Single(n => n.id == 31).rect == Rect.fromLTWH(322.5, 72, 100, 48),
+    "framework physical semantics are converted to logical coordinates once at the view boundary");
+Require(SemanticsGeometryProjection.ToViewCoordinates([localRoot, localChild, localGrandchild], 2)
+    .Single(n => n.id == 22).rect == Rect.fromLTWH(17, 30, 10, 8),
+    "legacy logical semantics are not divided by device pixel ratio");
+var transformDelta = SemanticsUpdateDiffer.Diff(new Dictionary<int, SemanticsNodeUpdate> { [31] = clippedChild }, [movedChild]);
+Require(transformDelta.IsGeometryOnly && transformDelta.HasChanges, "transform-only scroll updates remain visible to geometry coalescing");
+
 var builder = new SemanticsUpdateBuilder();
 builder.updateNode(
     id: 7,

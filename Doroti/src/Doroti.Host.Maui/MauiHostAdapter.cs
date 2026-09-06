@@ -20,8 +20,20 @@ internal sealed class MauiHostAdapter :
     IInputHostCapability,
     IViewFocusRequestCapability,
     IPlatformServicesHostCapability,
+    IUrlLauncherHostCapability,
     ITextInputHostCapability
 {
+    public async ValueTask<UrlLaunchResult> LaunchUrlAsync(string absoluteUrl, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        try
+        {
+            var opened = await MainThread.InvokeOnMainThreadAsync(() => Launcher.Default.TryOpenAsync(absoluteUrl));
+            return opened ? new(UrlLaunchStatus.opened) : new(UrlLaunchStatus.failed, "No application accepted this URL.");
+        }
+        catch (Exception error) { return new(UrlLaunchStatus.failed, error.Message); }
+    }
+
     private readonly ulong _viewId;
     private readonly IMauiSkiaSurface _surface;
     private readonly object _gate = new();

@@ -12,6 +12,7 @@ namespace Doroti.Skia.Rendering;
 public sealed class SkiaSceneRenderer :
     ISceneHostCapability,
     IParagraphHostCapability,
+    IFontHostCapability,
     IImageHostCapability,
     ISemanticsHostCapability,
     IDisposable
@@ -30,7 +31,8 @@ public sealed class SkiaSceneRenderer :
     private readonly string _runtimeEffectBackend;
     private readonly string _diagnosticsBackend;
     private readonly bool _enablePictureRasterCache;
-    private readonly SkiaFallbackFontCollection? _fallbackFonts;
+    private readonly SkiaFallbackFontCollection _fallbackFonts;
+    private readonly bool _ownsFallbackFonts;
     private SKColor _backgroundColor;
     private readonly object _gate = new();
     private readonly object _paintGate = new();
@@ -89,7 +91,8 @@ public sealed class SkiaSceneRenderer :
         _runtimeEffectBackend = runtimeEffectBackend;
         _diagnosticsBackend = diagnosticsBackend;
         _enablePictureRasterCache = enablePictureRasterCache;
-        _fallbackFonts = fallbackFonts;
+        _fallbackFonts = fallbackFonts ?? new SkiaFallbackFontCollection();
+        _ownsFallbackFonts = fallbackFonts is null;
         _backgroundColor = ResolveBackgroundColor(_host.Configuration.platformBrightness);
         _host.SemanticsAction += HandleSemanticsAction;
         _host.InputReceived += HandleInput;
@@ -632,7 +635,7 @@ public sealed class SkiaSceneRenderer :
         if (!_semanticsEnabled) return;
         foreach (var node in update.nodes) _semantics[node.id] = node;
         PruneUnreachableSemantics(_semantics);
-        var nodes = SemanticsGeometryProjection.ToViewCoordinates(_semantics.Values)
+        var nodes = SemanticsGeometryProjection.ToViewCoordinates(_semantics.Values, update.viewDevicePixelRatio)
             .OrderBy(node => node.indexInParent ?? int.MaxValue)
             .ThenBy(node => node.id)
             .ToArray();
@@ -653,6 +656,20 @@ public sealed class SkiaSceneRenderer :
         }
         foreach (var staleId in nodes.Keys.Where(id => !reachable.Contains(id)).ToArray())
             nodes.Remove(staleId);
+    }
+
+    public ValueTask RegisterFontAsync(ReadOnlyMemory<byte> bytes, string? family, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        lock (_paintGate)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            _fallbackFonts.Register(bytes, family);
+            foreach (var resources in _textRenderResources.Values) resources.Dispose();
+            _textRenderResources.Clear();
+            ClearPictureRasterCache();
+        }
+        return ValueTask.CompletedTask;
     }
 
     public void Dispose()
@@ -683,6 +700,7 @@ public sealed class SkiaSceneRenderer :
             ClearPictureRasterCache();
         }
         _semantics.Clear();
+        if (_ownsFallbackFonts) _fallbackFonts.Dispose();
     }
 
     private void HandleSemanticsAction(int nodeId, SemanticsAction action, object? arguments)
@@ -1272,7 +1290,8 @@ public sealed class SkiaSceneRenderer :
             SkiaFallbackFontCollection? registeredFallbacks)
         {
             _registeredFallbacks = registeredFallbacks;
-            _primary = new TextFontResource(SKTypeface.FromFamilyName(fontFamily), fontSize);
+            var registered = registeredFallbacks?.MatchFamily(fontFamily);
+            _primary = new TextFontResource(registered ?? SKTypeface.FromFamilyName(fontFamily), fontSize, ownsTypeface: registered is null);
             Paint = new SKPaint { Color = color, IsAntialias = true };
         }
 

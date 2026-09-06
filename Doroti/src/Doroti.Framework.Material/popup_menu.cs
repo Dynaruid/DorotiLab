@@ -1012,7 +1012,7 @@ internal class _PopupMenuDefaultsM3__popup_menu : PopupMenuThemeData
         this.context = context;
     }
 
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? labelTextStyle
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? labelTextStyle
     {
         get
         {
@@ -1029,9 +1029,9 @@ internal class _PopupMenuDefaultsM3__popup_menu : PopupMenuThemeData
             return default!;
         }
     }
-    public virtual global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surfaceContainer);
-    public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.shadow);
-    public virtual global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
+    public override global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surfaceContainer);
+    public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.shadow);
+    public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
     public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(4.0))));
-    public virtual global::Doroti.Framework.Painting.EdgeInsets? menuPadding => global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 8.0);
+    public override global::Doroti.Framework.Painting.EdgeInsets? menuPadding => global::Doroti.Framework.Painting.EdgeInsets.CreateSymmetric(vertical: 8.0);
 }

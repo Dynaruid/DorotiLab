@@ -479,8 +479,8 @@ internal class _SnackbarDefaultsM3__snack_bar : SnackBarThemeData
         this.context = context;
     }
 
-    public virtual global::Doroti.Ui.Color backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.inverseSurface);
-    public virtual global::Doroti.Ui.Color actionTextColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(global::Doroti.Framework.Widgets.WidgetStateColor.CreateResolveWith(((states) =>
+    public override global::Doroti.Ui.Color backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.inverseSurface);
+    public override global::Doroti.Ui.Color actionTextColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(global::Doroti.Framework.Widgets.WidgetStateColor.CreateResolveWith(((states) =>
     {
         if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.disabled))
         {
@@ -501,13 +501,13 @@ internal class _SnackbarDefaultsM3__snack_bar : SnackBarThemeData
         return this._colors.inversePrimary;
         throw new InvalidOperationException("Dart closure completed without a value.");
     })));
-    public virtual global::Doroti.Ui.Color disabledActionTextColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.inversePrimary);
-    public virtual global::Doroti.Framework.Painting.TextStyle contentTextStyle => Theme.of(this.context).textTheme.bodyMedium!.copyWith(color: this._colors.onInverseSurface);
-    public virtual double elevation => 6.0;
-    public virtual global::Doroti.Framework.Painting.ShapeBorder shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(4.0))));
-    public virtual SnackBarBehavior behavior => SnackBarBehavior.@fixed;
-    public virtual global::Doroti.Framework.Painting.EdgeInsets insetPadding => new global::Doroti.Framework.Painting.EdgeInsets(15.0, 5.0, 15.0, 10.0);
-    public virtual bool showCloseIcon => false;
-    public virtual global::Doroti.Ui.Color? closeIconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onInverseSurface);
-    public virtual double actionOverflowThreshold => 0.25;
+    public override global::Doroti.Ui.Color disabledActionTextColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.inversePrimary);
+    public override global::Doroti.Framework.Painting.TextStyle contentTextStyle => Theme.of(this.context).textTheme.bodyMedium!.copyWith(color: this._colors.onInverseSurface);
+    public override double? elevation => 6.0;
+    public override global::Doroti.Framework.Painting.ShapeBorder shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(4.0))));
+    public override SnackBarBehavior? behavior => SnackBarBehavior.@fixed;
+    public override global::Doroti.Framework.Painting.EdgeInsets insetPadding => new global::Doroti.Framework.Painting.EdgeInsets(15.0, 5.0, 15.0, 10.0);
+    public override bool? showCloseIcon => false;
+    public override global::Doroti.Ui.Color? closeIconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onInverseSurface);
+    public override double? actionOverflowThreshold => 0.25;
 }

@@ -663,8 +663,8 @@ internal class _NavigationRailDefaultsM3__navigation_rail : NavigationRailThemeD
         this.context = context;
     }
 
-    public virtual global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surface);
-    public virtual global::Doroti.Framework.Painting.TextStyle? unselectedLabelTextStyle
+    public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surface);
+    public override global::Doroti.Framework.Painting.TextStyle? unselectedLabelTextStyle
     {
         get
         {
@@ -672,7 +672,7 @@ internal class _NavigationRailDefaultsM3__navigation_rail : NavigationRailThemeD
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Painting.TextStyle? selectedLabelTextStyle
+    public override global::Doroti.Framework.Painting.TextStyle? selectedLabelTextStyle
     {
         get
         {
@@ -680,7 +680,7 @@ internal class _NavigationRailDefaultsM3__navigation_rail : NavigationRailThemeD
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.IconThemeData? unselectedIconTheme
+    public override global::Doroti.Framework.Widgets.IconThemeData? unselectedIconTheme
     {
         get
         {
@@ -688,7 +688,7 @@ internal class _NavigationRailDefaultsM3__navigation_rail : NavigationRailThemeD
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.IconThemeData? selectedIconTheme
+    public override global::Doroti.Framework.Widgets.IconThemeData? selectedIconTheme
     {
         get
         {
@@ -696,6 +696,6 @@ internal class _NavigationRailDefaultsM3__navigation_rail : NavigationRailThemeD
             return default!;
         }
     }
-    public virtual global::Doroti.Ui.Color? indicatorColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondaryContainer);
+    public override global::Doroti.Ui.Color? indicatorColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondaryContainer);
     public override global::Doroti.Framework.Painting.ShapeBorder? indicatorShape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.StadiumBorder());
 }

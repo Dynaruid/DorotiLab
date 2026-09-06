@@ -177,7 +177,7 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
             }
         }
         global::System.Action? callback = ((global::System.Action)((this._needsBuild || (!EqualityComparer<LayoutInfoType>.Default.Equals(layoutInfoLocal, this._previousLayoutInfo))) ? updateChildCallback : null));
-        this.owner!.buildScope(this, () => callback());
+        this.owner!.buildScope(this, callback);
     }
 
     public override void insertRenderObjectChild(global::Doroti.Framework.Rendering.RenderObject child, object? slot)

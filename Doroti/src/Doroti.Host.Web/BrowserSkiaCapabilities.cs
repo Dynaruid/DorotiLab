@@ -153,6 +153,9 @@ internal sealed class BrowserSkiaCapabilities :
         }
     }
 
+    public ValueTask RegisterFontAsync(ReadOnlyMemory<byte> bytes, string? family, CancellationToken cancellationToken = default) =>
+        _renderer.RegisterFontAsync(bytes, family, cancellationToken);
+
     public void Dispose()
     {
         lock (_paintGate)

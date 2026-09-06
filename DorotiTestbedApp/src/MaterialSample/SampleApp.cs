@@ -1,0 +1,214 @@
+// Copyright 2021 The Flutter team. All rights reserved.
+// Adapted from reference/flutter_sample_app; BSD license in LICENSE.flutter.
+using Doroti.Framework.Animation;
+using Doroti.Framework.Foundation;
+using Doroti.Framework.Painting;
+using Doroti.Framework.Rendering;
+using Doroti.Framework.Widgets;
+using Doroti.Runtime;
+using Doroti.Ui;
+using M = Doroti.Framework.Material;
+using Image = Doroti.Framework.Widgets.Image;
+using TextStyle = Doroti.Framework.Painting.TextStyle;
+
+namespace MaterialSample;
+
+internal static class SampleConstants
+{
+    internal static readonly string[] Destinations = ["Components", "Color", "Typography", "Elevation"];
+    internal static readonly IconData[] DestinationIcons = [M.Icons.widgets_outlined, M.Icons.format_paint_outlined, M.Icons.text_snippet_outlined, M.Icons.invert_colors_on_outlined];
+    internal static readonly IconData[] SelectedDestinationIcons = [M.Icons.widgets, M.Icons.format_paint, M.Icons.text_snippet, M.Icons.opacity];
+    internal static readonly (string Label, Color Color)[] Seeds =
+    [
+        ("M3 Baseline", new(0xff6750a4)), ("Indigo", new(0xff3f51b5)), ("Blue", new(0xff2196f3)),
+        ("Teal", new(0xff009688)), ("Green", new(0xff4caf50)), ("Yellow", new(0xffffeb3b)),
+        ("Orange", new(0xffff9800)), ("Deep Orange", new(0xffff5722)), ("Pink", new(0xffe91e63)),
+    ];
+    internal static readonly string[] Images = ["Leaves", "Peonies", "Bubbles", "Seaweed", "Sea Grapes", "Petals"];
+    internal static string ImageUrl(int index) => $"https://flutter.github.io/assets-for-api-docs/assets/material/content_based_color_scheme_{index + 1}.png";
+    internal static List<Widget> BarDestinations() => Destinations.Select((label, i) => (Widget)new M.NavigationDestination(icon: new Icon(DestinationIcons[i]), selectedIcon: new Icon(SelectedDestinationIcons[i]), tooltip: "", label: label)).ToList();
+}
+
+internal sealed class SampleApp : StatefulWidget
+{
+    public override IState createState() => new SampleAppState();
+}
+
+internal sealed class SampleAppState : State<SampleApp>
+{
+    private M.ThemeMode _mode = M.ThemeMode.system;
+    private int _seed, _image, _revision;
+    private bool _fromImage, _loading;
+    private string? _error;
+    private M.ColorScheme? _imageScheme;
+    private M.ThemeData _light = M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorSchemeSeed: SampleConstants.Seeds[0].Color);
+    private M.ThemeData _dark = M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorSchemeSeed: SampleConstants.Seeds[0].Color, brightness: Brightness.dark);
+
+    private void UpdateThemes()
+    {
+        var seed = _fromImage ? _imageScheme!.primary : SampleConstants.Seeds[_seed].Color;
+        _light = _fromImage ? M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorScheme: _imageScheme) : M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorSchemeSeed: seed);
+        _dark = M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorSchemeSeed: seed, brightness: Brightness.dark);
+    }
+    private void SelectSeed(int value) => setState(() =>
+    {
+        _revision++; _seed = value; _fromImage = false; _loading = false; _error = null; UpdateThemes();
+    });
+    private async void SelectImage(int value)
+    {
+        var revision = ++_revision;
+        setState(() => { _image = value; _loading = true; _error = null; });
+        try
+        {
+            var scheme = await M.ColorScheme.fromImageProvider(provider: new NetworkImageIo(SampleConstants.ImageUrl(value)));
+            if (!mounted || revision != _revision) return;
+            setState(() => { _imageScheme = scheme; _fromImage = true; _loading = false; UpdateThemes(); });
+        }
+        catch (Exception exception)
+        {
+            if (mounted && revision == _revision) setState(() => { _loading = false; _error = $"Could not load {SampleConstants.Images[value]}: {exception.Message}"; });
+        }
+    }
+    public override void dispose() { _revision++; base.dispose(); }
+    public override Widget build(BuildContext context) => new M.MaterialApp(
+        title: "Doroti Material 3", debugShowCheckedModeBanner: false,
+        locale: new Doroti.Ui.Locale("en", "US"), theme: _light, darkTheme: _dark, themeMode: _mode,
+        home: new SampleHome(_seed, _image, _fromImage, _loading, _error,
+            () => setState(() => _mode = (_mode == M.ThemeMode.dark || (_mode == M.ThemeMode.system && View.of(context).platformDispatcher.platformBrightness == Brightness.dark)) ? M.ThemeMode.light : M.ThemeMode.dark),
+            SelectSeed, SelectImage));
+}
+
+internal sealed class SampleHome(int seed, int image, bool fromImage, bool loading, string? error,
+    Action brightness, System.Action<int> selectSeed, System.Action<int> selectImage) : StatefulWidget
+{
+    internal int Seed => seed;
+    internal int Image => image;
+    internal bool FromImage => fromImage;
+    internal bool Loading => loading;
+    internal string? Error => error;
+    internal Action Brightness => brightness;
+    internal System.Action<int> SelectSeed => selectSeed;
+    internal System.Action<int> SelectImage => selectImage;
+    public override IState createState() => new SampleHomeState();
+}
+
+internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Scheduler.TickerProvider
+{
+    private Doroti.Framework.Scheduler.Ticker? _ticker;
+    private ValueListenable<TickerModeData>? _tickerMode;
+    public Doroti.Framework.Scheduler.Ticker createTicker(System.Action<Duration> onTick)
+    {
+        if (_ticker is not null) throw new InvalidOperationException("Home owns one navigation ticker.");
+        _ticker = new Doroti.Framework.Scheduler.Ticker(onTick);
+        UpdateTickerMode();
+        return _ticker;
+    }
+    private void UpdateTicker() { if (_ticker is not null && _tickerMode is not null) { _ticker.muted = !_tickerMode.value.enabled; _ticker.forceFrames = _tickerMode.value.forceFrames; } }
+    private void UpdateTickerMode()
+    {
+        var notifier = TickerMode.getValuesNotifier(context);
+        if (!ReferenceEquals(notifier, _tickerMode)) { _tickerMode?.removeListener(UpdateTicker); _tickerMode = notifier; notifier.addListener(UpdateTicker); }
+        UpdateTicker();
+    }
+    public override void activate() { base.activate(); UpdateTickerMode(); }
+    private readonly GlobalKey<M.ScaffoldState> _scaffold = new();
+    private AnimationController _controller = null!;
+    private CurvedAnimation _rail = null!, _barCurve = null!, _railSize = null!, _railOffset = null!, _barSize = null!, _barOffset = null!;
+    private ReverseAnimation _bar = null!;
+    private bool _initialized, _wide, _extended;
+    private int _destination;
+    public override void initState()
+    {
+        base.initState();
+        _controller = new AnimationController(duration: new Duration(1_000_000L), vsync: this);
+        _rail = new CurvedAnimation(parent: _controller, curve: new Interval(0.5, 1));
+        _barCurve = new CurvedAnimation(parent: _controller, curve: new Interval(0, 0.5));
+        _bar = new ReverseAnimation(_barCurve);
+        _railSize = SizeAnimation(_rail); _railOffset = OffsetAnimation(_rail);
+        _barSize = SizeAnimation(_bar); _barOffset = OffsetAnimation(_bar);
+    }
+    public override void didChangeDependencies()
+    {
+        base.didChangeDependencies();
+        var width = MediaQuery.of(context).size.width;
+        _wide = width > 1000; _extended = width > 1500;
+        if (!_initialized) { _initialized = true; _controller.value = _wide ? 1 : 0; }
+        else if (_wide && _controller.status is not (AnimationStatus.forward or AnimationStatus.completed)) _controller.forward();
+        else if (!_wide && _controller.status is not (AnimationStatus.reverse or AnimationStatus.dismissed)) _controller.reverse();
+    }
+    private static CurvedAnimation SizeAnimation(Animation<double> parent) => new(parent, new Interval(0.2, 0.8, curve: Curves.easeInOutCubicEmphasized),
+        reverseCurve: new Interval(0, 0.2, curve: Curves.easeInOutCubicEmphasized.flipped));
+    private static CurvedAnimation OffsetAnimation(Animation<double> parent) => new(parent, new Interval(0.4, 1, curve: Curves.easeInOutCubicEmphasized),
+        reverseCurve: new Interval(0, 0.2, curve: Curves.easeInOutCubicEmphasized.flipped));
+    public override void dispose()
+    {
+        _railSize.dispose(); _railOffset.dispose(); _barSize.dispose(); _barOffset.dispose(); _barCurve.dispose(); _rail.dispose();
+        _controller.dispose(); _tickerMode?.removeListener(UpdateTicker); base.dispose();
+    }
+    private void Navigate(long value) => setState(() => _destination = checked((int)value));
+    private Widget BrightnessAction() => new M.IconButton(tooltip: "Toggle brightness", onPressed: widget.Brightness, icon: new Icon(M.Theme.of(context).brightness == Brightness.light ? M.Icons.dark_mode_outlined : M.Icons.light_mode_outlined));
+    private Widget SeedAction() => new M.PopupMenuButton<int>(tooltip: "Select seed color", icon: new Icon(M.Icons.palette_outlined),
+        initialValue: widget.Seed, onSelected: widget.SelectSeed,
+        itemBuilder: _ => SampleConstants.Seeds.Select((seed, i) => (M.PopupMenuEntry<int>)new M.PopupMenuItem<int>(value: i,
+            child: new Row(spacing: 12, children: [new Icon(!widget.FromImage && widget.Seed == i ? M.Icons.check_circle : M.Icons.circle, color: seed.Color), new Text(seed.Label)]))).ToList());
+    private Widget ImageAction() => new M.PopupMenuButton<int>(tooltip: "Select image color", icon: new Icon(M.Icons.image_outlined),
+        initialValue: widget.Image, onSelected: widget.SelectImage,
+        itemBuilder: _ => SampleConstants.Images.Select((label, i) => (M.PopupMenuEntry<int>)new M.PopupMenuItem<int>(value: i,
+            child: new Row(spacing: 12, children: [Image.CreateNetwork(SampleConstants.ImageUrl(i), width: 32, height: 32, fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => new Icon(M.Icons.broken_image)), new Text(label), ifSelected(i)]))).ToList());
+    private Widget ifSelected(int i) => widget.FromImage && widget.Image == i ? new Icon(M.Icons.check) : SizedBox.CreateShrink();
+    private Widget Settings()
+    {
+        Widget body = new Container(width: 250, padding: EdgeInsets.CreateSymmetric(horizontal: 30), child: new Column(
+            mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children:
+            [
+                new Row(children: [new Text("Brightness"), new Expanded(child: SizedBox.CreateShrink()),
+                    new M.Switch(value: M.Theme.of(context).brightness == Brightness.light, onChanged: _ => widget.Brightness())]),
+                new M.Divider(),
+                new SizedBox(height: 190, child: GridView.CreateCount(crossAxisCount: 3, primary: false, children:
+                    SampleConstants.Seeds.Select((seed, i) => (Widget)new M.IconButton(tooltip: seed.Label, color: seed.Color,
+                        icon: new Icon(M.Icons.radio_button_unchecked), selectedIcon: new Icon(M.Icons.circle),
+                        isSelected: !widget.FromImage && widget.Seed == i, onPressed: () => widget.SelectSeed(i))).ToList())),
+                new M.Divider(),
+                new SizedBox(height: 142, child: GridView.CreateCount(crossAxisCount: 3, primary: false, children:
+                    SampleConstants.Images.Select((label, i) => (Widget)new M.IconButton(tooltip: label, isSelected: widget.FromImage && widget.Image == i,
+                        onPressed: () => widget.SelectImage(i), icon: Image.CreateNetwork(SampleConstants.ImageUrl(i), width: 40, height: 40,
+                            fit: BoxFit.cover, errorBuilder: (_, _, _) => new Icon(M.Icons.broken_image)))).ToList())),
+            ]));
+        return new Expanded(child: new Align(alignment: Alignment.bottomCenter,
+            child: MediaQuery.of(context).size.height > 740 ? body : new SingleChildScrollView(child: body)));
+    }
+    public override Widget build(BuildContext context) => new AnimatedBuilder(animation: _controller, builder: (ctx, _) =>
+    {
+
+        var barFactor = _barSize.value;
+        Widget body = _destination switch
+        {
+            0 => new ComponentsScreen(twoColumns: _wide, secondFraction: _railSize.value, secondOffset: 1 - _railOffset.value, scaffold: _scaffold),
+            1 => new ColorScreen(), 2 => new TypographyScreen(), _ => new ElevationScreen(),
+        };
+        return new M.Scaffold(key: _scaffold,
+            appBar: new M.AppBar(title: new Text("Doroti Material 3"), actions: !_wide ? [BrightnessAction(), SeedAction(), ImageAction()] : []),
+            endDrawer: new GalleryDrawer(),
+            body: new Column(children:
+            [
+                ifLoading(),
+                new Expanded(child: new Row(crossAxisAlignment: CrossAxisAlignment.stretch, children:
+                [
+                    Rail(), new Expanded(child: body),
+                ])),
+            ]),
+            bottomNavigationBar: new ExcludeSemantics(excluding: barFactor <= 0, child: new ClipRect(child: new Align(alignment: Alignment.topLeft, heightFactor: barFactor,
+                child: new FractionalTranslation(translation: new Offset(0, 1 - _barOffset.value),
+                    child: new M.NavigationBar(selectedIndex: _destination, destinations: SampleConstants.BarDestinations(), onDestinationSelected: Navigate))))));
+    });
+    private Widget Rail() => new ExcludeSemantics(excluding: _railSize.value <= 0, child: new ClipRect(child: new Align(alignment: Alignment.topLeft, widthFactor: _railSize.value,
+        child: new FractionalTranslation(translation: new Offset((_railOffset.value - 1) * (Directionality.of(context) == TextDirection.ltr ? 1 : -1), 0),
+            child: new M.NavigationRail(extended: _extended, selectedIndex: _destination,
+                onDestinationSelected: Navigate, destinations: SampleConstants.Destinations.Select((label, i) =>
+                    new M.NavigationRailDestination(icon: new Icon(SampleConstants.DestinationIcons[i]), selectedIcon: new Icon(SampleConstants.SelectedDestinationIcons[i]), label: new Text(label))).ToList(),
+                trailing: _extended ? Settings() : new Column(mainAxisSize: MainAxisSize.min, children: [BrightnessAction(), SeedAction(), ImageAction()]))))));
+    private Widget ifLoading() => widget.Loading ? new Column(mainAxisSize: MainAxisSize.min, children:
+        [new M.LinearProgressIndicator(), new Text($"Loading {SampleConstants.Images[widget.Image]}…")]) : widget.Error is { } error
+        ? new M.ListTile(title: new Text(error), trailing: new M.TextButton(onPressed: () => widget.SelectImage(widget.Image), child: new Text("Retry image"))) : SizedBox.CreateShrink();
+}

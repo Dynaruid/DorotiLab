@@ -9,6 +9,7 @@ public static class DorotiCapabilityIds
     public const string InputEvents = "input.events";
     public const string InputCursor = "input.cursor";
     public const string TextInput = "text.input";
+    public const string UrlLauncher = "platform.url-launcher";
     public const string PlatformServices = "platform.services";
     public const string PlatformEnvironment = "platform.environment";
     public const string PlatformMessaging = "platform.messaging";
@@ -16,6 +17,7 @@ public static class DorotiCapabilityIds
     public const string PlatformPlugins = "platform.plugins";
     public const string DartPerformanceMode = "runtime.dart-performance-mode";
     public const string GraphicsScene = "graphics.scene";
+    public const string GraphicsFont = "graphics.font";
     public const string GraphicsText = "graphics.text";
     public const string GraphicsImage = "graphics.image";
     public const string AccessibilitySemantics = "accessibility.semantics";

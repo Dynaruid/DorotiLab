@@ -39,7 +39,7 @@ internal class _WillPopScopeState__will_pop_scope : State<WillPopScope>
         {
             ((dynamic)this._route)?.removeScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
         }
-        _route = ModalRoute<object>.of<object>(this.context);
+        _route = ModalRoute<object>.untypedOf(this.context);
         if ((((WillPopScope)this.widget).onWillPop is not null))
         {
             ((dynamic)this._route)?.addScopedWillPopCallback(((WillPopScope)this.widget).onWillPop!);
@@ -73,4 +73,3 @@ internal class _WillPopScopeState__will_pop_scope : State<WillPopScope>
 
     public override Widget build(BuildContext context) => ((WillPopScope)this.widget).child;
 }
-

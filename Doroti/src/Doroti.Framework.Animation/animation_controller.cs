@@ -278,7 +278,7 @@ public class AnimationController : Animation<double>, AnimationEagerListenerMixi
             }
             _status = (((object.Equals(this._direction, _AnimationDirection__animation_controller.forward))) ? AnimationStatus.completed : AnimationStatus.dismissed);
             _checkStatusChanged();
-            return new TickerFuture();
+            return TickerFuture.CreateComplete();
         }
         DartRuntimePrimitives.Assert(() => (DartRuntimePrimitives.RequireValue(simulationDuration) > Duration.zero));
         DartRuntimePrimitives.Assert(() => !this.isAnimating);

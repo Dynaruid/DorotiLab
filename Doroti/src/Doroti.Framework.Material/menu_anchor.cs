@@ -420,7 +420,7 @@ internal class _MenuAnchorState__menu_anchor : global::Doroti.Framework.Widgets.
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new _MenuAnchorScope__menu_anchor(state: this, animationStatus: ((global::Doroti.Framework.Animation.AnimationController)this._animationController).status, child: new global::Doroti.Framework.Widgets.RawMenuAnchor(onOpenRequested: (global::System.Action<Offset?, global::System.Action>)this._handleMenuOpenRequest, onCloseRequested: (global::System.Action<global::System.Action>)this._handleMenuCloseRequest, useRootOverlay: ((MenuAnchor)(object)this.widget).useRootOverlay, onOpen: () => ((MenuAnchor)(object)this.widget).onOpen(), onClose: () => ((MenuAnchor)(object)this.widget).onClose(), consumeOutsideTaps: ((MenuAnchor)(object)this.widget).consumeOutsideTap, controller: this._menuController, childFocusNode: ((MenuAnchor)(object)this.widget).childFocusNode, overlayBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.RawMenuOverlayInfo, global::Doroti.Framework.Widgets.Widget>)this._buildOverlay, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>?)((MenuAnchor)(object)this.widget).builder, child: ((MenuAnchor)(object)this.widget).child)));
+        global::Doroti.Framework.Widgets.Widget childLocal = ((global::Doroti.Framework.Widgets.Widget)(object?)new _MenuAnchorScope__menu_anchor(state: this, animationStatus: ((global::Doroti.Framework.Animation.AnimationController)this._animationController).status, child: new global::Doroti.Framework.Widgets.RawMenuAnchor(onOpenRequested: (global::System.Action<Offset?, global::System.Action>)this._handleMenuOpenRequest, onCloseRequested: (global::System.Action<global::System.Action>)this._handleMenuCloseRequest, useRootOverlay: ((MenuAnchor)(object)this.widget).useRootOverlay, onOpen: ((MenuAnchor)(object)this.widget).onOpen, onClose: ((MenuAnchor)(object)this.widget).onClose, consumeOutsideTaps: ((MenuAnchor)(object)this.widget).consumeOutsideTap, controller: this._menuController, childFocusNode: ((MenuAnchor)(object)this.widget).childFocusNode, overlayBuilder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.RawMenuOverlayInfo, global::Doroti.Framework.Widgets.Widget>)this._buildOverlay, builder: (global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.MenuController, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>?)((MenuAnchor)(object)this.widget).builder, child: ((MenuAnchor)(object)this.widget).child)));
         if ((((MenuAnchor)(object)this.widget).layerLink is null))
         {
             return childLocal;
@@ -2171,7 +2171,12 @@ internal class _MenuPanelState__menu_anchor : global::Doroti.Framework.Widgets.S
 
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
-        var (themeStyle, defaultStyle) = (((_MenuPanel__menu_anchor)(object)this.widget).orientation switch { global::Doroti.Framework.Painting.Axis.horizontal => (((MenuStyle?, MenuStyle))(DartRuntimePrimitives.ConvertValue<(MenuStyle?, MenuStyle)>((MenuBarTheme.of(context).style, new _MenuBarDefaultsM3__menu_anchor(context))))), global::Doroti.Framework.Painting.Axis.vertical => (((MenuStyle?, MenuStyle))(DartRuntimePrimitives.ConvertValue<(MenuStyle?, MenuStyle)>((MenuTheme.of(context).style, new _MenuDefaultsM3__menu_anchor(context))))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        (MenuStyle? themeStyle, MenuStyle defaultStyle) = this.widget.orientation switch
+        {
+            global::Doroti.Framework.Painting.Axis.horizontal => (MenuBarTheme.of(context).style, (MenuStyle)new _MenuBarDefaultsM3__menu_anchor(context)),
+            global::Doroti.Framework.Painting.Axis.vertical => (MenuTheme.of(context).style, (MenuStyle)new _MenuDefaultsM3__menu_anchor(context)),
+            _ => throw new InvalidOperationException("Unexpected menu orientation.")
+        };
         MenuStyle? widgetStyle = ((_MenuPanel__menu_anchor)(object)this.widget).menuStyle;
         P? effectiveValue<P>(global::System.Func<MenuStyle?, P?> getProperty)
         {
@@ -2289,7 +2294,12 @@ internal class _Submenu__menu_anchor : global::Doroti.Framework.Widgets.Stateles
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Ui.TextDirection textDirectionLocal = Directionality.of(context);
-        var (themeStyle, defaultStyle) = (((_MenuAnchorState__menu_anchor)this.anchor)._parent?._orientation switch { global::Doroti.Framework.Painting.Axis.horizontal => (((MenuStyle?, MenuStyle))(DartRuntimePrimitives.ConvertValue<(MenuStyle?, MenuStyle)>((MenuBarTheme.of(context).style, new _MenuBarDefaultsM3__menu_anchor(context))))), null => (((MenuStyle?, MenuStyle))(DartRuntimePrimitives.ConvertValue<(MenuStyle?, MenuStyle)>((MenuBarTheme.of(context).style, new _MenuBarDefaultsM3__menu_anchor(context))))), global::Doroti.Framework.Painting.Axis.vertical => (((MenuStyle?, MenuStyle))(DartRuntimePrimitives.ConvertValue<(MenuStyle?, MenuStyle)>((MenuTheme.of(context).style, new _MenuDefaultsM3__menu_anchor(context))))), _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
+        (MenuStyle? themeStyle, MenuStyle defaultStyle) = this.anchor._parent?._orientation switch
+        {
+            global::Doroti.Framework.Painting.Axis.horizontal or null => (MenuBarTheme.of(context).style, (MenuStyle)new _MenuBarDefaultsM3__menu_anchor(context)),
+            global::Doroti.Framework.Painting.Axis.vertical => (MenuTheme.of(context).style, (MenuStyle)new _MenuDefaultsM3__menu_anchor(context)),
+            _ => throw new InvalidOperationException("Unexpected menu orientation.")
+        };
         T? effectiveValue<T>(global::System.Func<MenuStyle?, T?> getProperty)
         {
             return ((getProperty(this.menuStyle) ?? getProperty(themeStyle)) ?? getProperty(defaultStyle));
@@ -2514,7 +2524,7 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
         this.context = context;
     }
 
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? backgroundColor
     {
         get
         {
@@ -2522,15 +2532,15 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double>? elevation
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? elevation
     {
         get
         {
-            return ButtonStyleButton.allOrNull<double>(0.0);
+            return ButtonStyleButton.allOrNull<double?>(0.0);
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? foregroundColor
     {
         get
         {
@@ -2558,7 +2568,7 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? iconColor
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? iconColor
     {
         get
         {
@@ -2586,15 +2596,15 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<double>? iconSize
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<double?>? iconSize
     {
         get
         {
-            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<double>?)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(24.0));
+            return ((global::Doroti.Framework.Widgets.WidgetStateProperty<double?>?)(object?)new global::Doroti.Framework.Widgets.WidgetStatePropertyAll<double?>(24.0));
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? maximumSize
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? maximumSize
     {
         get
         {
@@ -2602,7 +2612,7 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? minimumSize
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Size>? minimumSize
     {
         get
         {
@@ -2611,7 +2621,7 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
         }
     }
     public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>? mouseCursor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Services.MouseCursor?>>(global::Doroti.Framework.Widgets.WidgetStateMouseCursor.adaptiveClickable);
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? overlayColor
     {
         get
         {
@@ -2635,7 +2645,7 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>? padding
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.EdgeInsetsGeometry>? padding
     {
         get
         {
@@ -2643,7 +2653,7 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>? shape
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.OutlinedBorder>? shape
     {
         get
         {
@@ -2653,7 +2663,7 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
     }
     public override InteractiveInkFeatureFactory? splashFactory => Theme.of(this.context).splashFactory;
     public override MaterialTapTargetSize? tapTargetSize => Theme.of(this.context).materialTapTargetSize;
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?> textStyle
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?> textStyle
     {
         get
         {

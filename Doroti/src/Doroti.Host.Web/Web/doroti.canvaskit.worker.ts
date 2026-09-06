@@ -189,6 +189,7 @@ interface ParagraphGraphemeSnapshot {
 interface ReplayContext {
   readonly kit: CanvasKit;
   readonly canvas: Canvas;
+  readonly devicePixelRatio: number;
   readonly view: DataView;
   readonly strings: readonly string[];
   readonly declaredResources: ReadonlyMap<string, string>;
@@ -752,6 +753,7 @@ function replaySupportedCommands(scene: RasterScene, targetSurface: Surface, mea
   const context: ReplayContext = {
     kit,
     canvas: targetCanvas,
+    devicePixelRatio: scene.document.metadata.devicePixelRatio,
     view: new DataView(scene.buffer),
     strings: readStringTable(scene),
     declaredResources,
@@ -2787,7 +2789,10 @@ function registerParagraphFont(
 ): void {
   const resource = requireResource(reference, context);
   const descriptor = parseDescriptor(resource.descriptorJson);
-  const family = (requestedFamily?.trim() || String(descriptor.family ?? descriptor.fontFamily ?? "").trim());
+  // A requested family may be unavailable (e.g. Segoe UI on Web). Relabeling
+  // the fallback resource as that family bypasses the text run's fallback list
+  // and disagrees with the UI worker's font provider. Preserve registered names.
+  const family = (String(descriptor.family ?? descriptor.fontFamily ?? "").trim() || requestedFamily?.trim());
   if (!family) throw new Error(`CanvasKit font ${reference.id}/${reference.version} has no family name.`);
   const key = `${reference.id}/${reference.version}/${family}`;
   if (seen.has(key)) return;
@@ -2944,28 +2949,15 @@ function drawShadow(
   elevation: number,
   transparentOccluder: boolean,
 ): void {
-  const drawPass = (offsetY: number, opacity: number, sigma: number): void => {
-    const filter = own("ImageFilter", context.kit.ImageFilter.MakeBlur(
-      sigma, sigma, context.kit.TileMode.Decal, null));
-    const paint = own("Paint", new context.kit.Paint());
-    try {
-      paint.object.setColor(withOpacityByte(context.kit, color, opacity));
-      paint.object.setImageFilter(filter.object);
-      paint.object.setAntiAlias(true);
-      context.canvas.save();
-      try {
-        context.canvas.translate(0, offsetY);
-        context.canvas.drawPath(path, paint.object);
-      } finally {
-        context.canvas.restore();
-      }
-    } finally {
-      deleteOwned(paint);
-      deleteOwned(filter);
-    }
-  };
-  drawPass(elevation * 0.2, transparentOccluder ? 0.18 : 0.24, Math.max(0.75, elevation * 0.45));
-  drawPass(elevation * 0.55, transparentOccluder ? 0.24 : 0.32, Math.max(1, elevation * 0.8));
+  // Flutter engine/lib/web_ui/lib/src/engine/canvaskit/util.dart (BSD-3-Clause):
+  // use Skia's directional ambient/spot shadows, including tonal colors. The Z
+  // plane is in device units; the canvas transform does not scale it for us.
+  const shadowColor = (opacity: number): Float32Array => context.kit.Color(
+    (color >>> 16) & 255, (color >>> 8) & 255, color & 255,
+    Math.round(((color >>> 24) & 255) * opacity) / 255);
+  const tonal = context.kit.computeTonalColors({ ambient: shadowColor(0.039), spot: shadowColor(0.25) });
+  context.canvas.drawShadow(path, [0, 0, context.devicePixelRatio * Math.max(0, elevation)],
+    [0, -1, 1], 800 / 600, tonal.ambient, tonal.spot, 4 | (transparentOccluder ? 1 : 0));
 }
 
 function drawImage(

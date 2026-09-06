@@ -2428,7 +2428,7 @@ internal class _RenderLayoutBuilder__overlay : global::Doroti.Framework.Renderin
     public virtual void layoutCallback()
     {
         _layoutInfo = _computeNewLayoutInfo();
-        DartRuntimePrimitives.Noop();
+        this._callback!(this.constraints);
     }
 
     public override void performLayout()

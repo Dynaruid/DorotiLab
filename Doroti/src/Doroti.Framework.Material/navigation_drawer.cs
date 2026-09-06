@@ -52,8 +52,11 @@ public class NavigationDrawer : global::Doroti.Framework.Widgets.StatelessWidget
         var destinationIndex = 0L;
         global::Doroti.Framework.Widgets.Widget wrapChild(global::Doroti.Framework.Widgets.Widget child, long index)
         {
-            return ((global::Doroti.Framework.Widgets.Widget)(object?)new _NavigationDrawerDestinationInfo__navigation_drawer(index: index, totalNumberOfDestinations: totalNumberOfDestinationsLocal, selectedAnimation: new global::Doroti.Framework.Animation.AlwaysStoppedAnimation<double>((this.selectedIndex == index) ? 1.0 : 0.0), indicatorColor: this.indicatorColor, indicatorShape: this.indicatorShape, tilePadding: this.tilePadding, onTap: ((global::System.Action)(() => { this.onDestinationSelected?.Invoke(index); })), child: child));
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            return new _SelectableAnimatedBuilder__navigation_drawer(isSelected: this.selectedIndex == index, duration: new Duration(500_000L),
+                builder: (_, animation) => new _NavigationDrawerDestinationInfo__navigation_drawer(index: index,
+                    totalNumberOfDestinations: totalNumberOfDestinationsLocal, selectedAnimation: animation,
+                    indicatorColor: this.indicatorColor, indicatorShape: this.indicatorShape, tilePadding: this.tilePadding,
+                    onTap: () => this.onDestinationSelected?.Invoke(index), child: child));
         }
         var wrappedChildren = ((Func<List<global::Doroti.Framework.Widgets.Widget>>)(() => { var __collection6931 = new List<global::Doroti.Framework.Widgets.Widget>(); foreach (var childLocal in this.children) { if ((childLocal is not NavigationDrawerDestination)) { __collection6931.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(childLocal)); } else { __collection6931.Add(DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(wrapChild(((NavigationDrawerDestination)childLocal), destinationIndex++))); } } return __collection6931; }))();
         NavigationDrawerThemeData navigationDrawerTheme = NavigationDrawerTheme.of(context);
@@ -378,11 +381,11 @@ internal class _NavigationDrawerDefaultsM3__navigation_drawer : NavigationDrawer
         this.context = context;
     }
 
-    public virtual global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surfaceContainerLow);
-    public virtual global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public virtual global::Doroti.Ui.Color? indicatorColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondaryContainer);
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.IconThemeData?>? iconTheme
+    public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surfaceContainerLow);
+    public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
+    public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
+    public override global::Doroti.Ui.Color? indicatorColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondaryContainer);
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Widgets.IconThemeData?>? iconTheme
     {
         get
         {
@@ -394,7 +397,7 @@ internal class _NavigationDrawerDefaultsM3__navigation_drawer : NavigationDrawer
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? labelTextStyle
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? labelTextStyle
     {
         get
         {

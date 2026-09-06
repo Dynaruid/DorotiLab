@@ -3168,7 +3168,7 @@ public static partial class Time_pickerLibrary
         {
             return ((builder is null) ? dialog : builder(context, dialog));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }), routeSettings: routeSettings, anchorPoint: DartRuntimePrimitives.RequireValue(anchorPoint));
+        }), routeSettings: routeSettings, anchorPoint: anchorPoint);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }

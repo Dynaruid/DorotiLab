@@ -2,7 +2,7 @@
 
 - 작성일: **2026-09-06**
 - 분석 기준: Doroti HEAD `d8efedd` 및 현재 로컬 reference source.
-- 상태: **P0 진행 / D01–D03 이미지 공용 경로 및 D04 기본 인자 회귀 PASS / reference Image demo 추가 / Doroti 샘플 이식 미착수 / 전체 PARTIAL**. 실행 결과와 한계는 §7–§8 참고.
+- 상태: **C# sample 및 D08–D26 수리 / Windows·Linux 관리 코드·Android 빌드 PASS / Web 상호작용·8개 light/dark 비교 수행 / 전체 PARTIAL**. P3/P5 잔여 검증·native shadow 및 P6 target gate가 남아 기본 화면은 diagnostics다. 최신 결과는 §9, 기존 이력은 §7–§8 참고.
 - 최초 계획 작성: 사전 검토와 계획을 작성하고, 사용자 의도에 따라 **샘플 구현 과정에서 Doroti의 미흡·누락 기능을 고치고 만드는 것**을 주목적으로 명시했다. 당시 제품·테스트·Flutter source는 변경하지 않았고 build/앱 실행/성능 측정은 하지 않았다.
 - 후속 범위 정리: 참조 앱과 Doroti Material을 Material 3 전용으로 정리하고 이 계획의 구성·테마 조작·비교 조건도 이에 맞췄다. 아래 샘플 이식 단계의 완료를 의미하지 않는다.
 - 참조 경로: 요청의 `reference\flutter\_sample\_app`는 현재 checkout에 없다. 실제 존재하고 요청 내용에 해당하는 **[reference/flutter_sample_app](reference/flutter_sample_app/README.md)** 기준이다.
@@ -62,6 +62,9 @@ Components의 범위는 다음과 같다. 단순 대표 위젯 몇 개로 축소
 참조에서 원래 빈 callback인 전시용 버튼은 동일한 데모 범위로 유지한다. 반면 값을 바꾸거나 overlay를 여는 예제를 무동작 callback으로 대체하지 않는다. `dynamic_color`는 Color 화면의 안내 링크일 뿐 실제 plugin 사용이 아니므로 OS wallpaper 기반 dynamic color 구현은 이번 범위가 아니다.
 
 ## 3. 현재 소스에서 확인한 공용 보완 과제
+
+이 절은 최초 분석 당시의 결함 기록이다. 아래의 "현재 미구현" 표현을 수정 후
+소스 상태로 해석하지 않는다. D01–D07 수리는 §8, D08 이후와 최신 검증은 §9다.
 
 ### 3.1 이미지 기반 색상 — 확정된 선행 차단 요인
 
@@ -127,7 +130,8 @@ App._handleImageSelect
 
 ## 4. 파일 구성과 변경 소유권
 
-아래 새 경로는 제안이며 아직 생성하지 않았다.
+아래는 최초 구성 제안이다. 실제 구현은 §9의 파일 구성과 연결하며, 제안 파일명을
+그대로 만들었는지보다 각 소유 책임과 동작으로 완료를 판정한다.
 
 | 파일/소유자 | 현재 → 변경 | 검증 |
 | --- | --- | --- |
@@ -154,8 +158,8 @@ App._handleImageSelect
 | D01 | Picture 명령을 실제 Image로 rasterize | 기존 크기-only Image FAIL → Skia/CanvasKit 실제 픽셀 fixture PASS | Ui + Rendering/Host; §8, 다른 OS live·복잡한 Picture 전체는 notVerified |
 | D02 | Image rawRgba 읽기와 자원 수명 | 기존 capability 예외 FAIL → RGBA/straight/PNG·dispose/clone·Worker 응답 PASS | Ui + Rendering/Host; §8, 강제 restart 중 read 검증은 notVerified |
 | D03 | Flutter와 대응하는 이미지 quantization/score | 기존 maxColors/gray/fallback FAIL → pinned Dart MCU palette·seed·46×2 roles 정확 일치 | Material + color runtime; §8, 각 host readback을 동일 입력으로 비교. host 간 decode 픽셀 동일성 아님 |
-| D04 | optional 인자를 생략한 SearchAnchor 기본 동작 | 기본 enabled=false, null trailing/callback 실행 FAIL → 공용 수정 후 기본 인자 회귀 4/4 PASS | Material/Widgets; factory 및 route 전달 수정. **mounted open/close·focus 복귀·Testbed 통합은 notVerified** |
-| D05 | target 공통 URL 실행 API와 플랫폼 동작 | clipboard/cursor의 view-scoped service 경로 재사용 가능; URL API는 없음 | 공용 Services + optional URL host capability 제안 확정; 실제 구현/사용자 활성화 검증 남음 |
+| D04 | optional 인자를 생략한 SearchAnchor 기본 동작 | 초기 기본값/null/typed route FAIL → 공용 회귀와 Web mounted 검색·이력·선택·재열기·Esc PASS | Material/Widgets; D18 후속 포함, §9. physical IME는 notVerified |
+| D05 | target 공통 URL 실행 API와 플랫폼 동작 | typed URL capability와 Windows/Web/MAUI/Qt adapter 구현; 독립 결과 계약 및 Web 실제 탭/차단 feedback PASS | Services/Ui/Host; native 실제 browser activation은 notVerified |
 | D06 | paintImage 기본 alignment | 실제 사진 처리 null 예외 → Alignment.center 기본값 복원, 사진 fixture PASS | Framework.Painting, §8 |
 | D07 | ImageProvider codec 완료와 오류 전달 | MemoryImage timeout → MultiFrame constructor codec 연결·정상/ephemeral 오류 전달 복원, 실제 MemoryImage/NetworkImageIo PASS | Framework.Painting, §8; animated playback 전체 검증 아님 |
 | D08+ | 이식 중 드러나는 theme/layout/scroll/input/semantics 등 | 발견 시 구체 항목으로 추가 | 원인 소유 계층; 최소 재현 → 공용 수정 → 회귀 → Testbed 검증 |
@@ -171,7 +175,7 @@ P0–P7은 통합 milestone이다. **각 단계에서 발견한 공용 결함의
 - [x] reference `main.dart`, `lib/src`, pubspec/lock, 사용 Flutter SDK revision과 font/image 입력 hash를 기록한다. reference는 현재 로컬 내용 그대로 기준으로 삼는다. → §7, `reference-inputs.json`.
 - [x] 4개 화면/6개 그룹의 항목·상태·callback 목록과 Doroti API 대응표를 작성한다. 이번 정적 확인을 runtime PASS로 기록하지 않는다. → [inventory](Doroti/validation/fcr7-material-widget/material-sample-inventory.md).
 - [x] 현재 Testbed의 Windows/Web 대표 실행, G6 입력 및 resize fixture 기준 상태를 확보한다. 기존 FAIL을 보존한다. → Windows startup smoke 4/4, Web 4/4; physical 검증 아님.
-- [ ] SearchAnchor 최소 인자 생성/open/close, Picture→Image→bytes, 이미지 quantizer를 작은 독립 fixture로 재현한다.
+- [x] SearchAnchor 최소 인자 생성/open/close, Picture→Image→bytes, 이미지 quantizer를 작은 독립 fixture로 재현한다. → §8–§9. 실제 mounted Search는 Web 통합 검사로 추가 확인.
 - [x] URL adapter에 재사용 가능한 기존 service/host 계약을 더 조사하고 실제 수정 범위를 확정한다. → inventory의 D05; 구현은 P4.
 - [x] D01–D05의 최소 재현과 의존 관계를 기록하고, 진행 중 발견하는 공용 결함을 같은 추적표에 등록한다. → §4.1/§7 및 inventory. D05는 API 부재로 source 조사이며 실행 재현으로 표시하지 않는다.
 
@@ -179,27 +183,27 @@ P0–P7은 통합 milestone이다. **각 단계에서 발견한 공용 결함의
 
 ### P1 — 기존 진단 보존과 새 앱 골격
 
-- [ ] 기존 MaterialGallery를 diagnostics 파일로 분리하되 label/상태/entrypoint contract를 유지한다.
-- [ ] 명시적 sample/diagnostics 모드 선택을 추가한다. 예: 신규 `DOROTI_TESTBED_MODE=sample|diagnostics`; 실제 env/config 전달은 native와 Web 양쪽에서 검증한다. 기존 `DOROTI_RESIZE_FIXTURE`를 최우선으로 유지한다.
-- [ ] 새 sample root의 StatefulWidget/theme state와 4개 destination을 구성한다. 앱 기본값 전환은 P7에서 수행한다.
-- [ ] sample의 opaque surface와 diagnostics의 Acrylic view 설정을 같은 모드 선택에 연결한다. 무관한 host 기본값은 변경하지 않는다.
-- [ ] 기존 자동화는 diagnostics 모드를 명시하도록 먼저 갱신한다.
+- [x] 기존 MaterialGallery를 diagnostics 파일로 분리하되 label/상태/entrypoint contract를 유지한다. → §9. 통합 gate는 별도.
+- [x] 명시적 sample/diagnostics 모드 선택을 추가한다. `DOROTI_TESTBED_MODE=sample|diagnostics`, 기본 Web Worker query 전달, Windows sample smoke와 Web diagnostics/F0/F1/F2 회귀 PASS. fixture가 우선한다.
+- [x] 새 sample root의 StatefulWidget/theme state와 4개 destination을 구성한다. 앱 기본값 전환은 P7에서 수행한다. → §9. 통합 gate는 별도.
+- [x] sample의 opaque surface와 diagnostics의 Acrylic view 설정을 같은 모드 선택에 연결한다. 무관한 host 기본값은 변경하지 않는다. → §9. 통합 gate는 별도.
+- [x] 기존 자동화는 diagnostics 모드를 명시하도록 먼저 갱신한다. → §9. 통합 gate는 별도.
 
 완료 조건: 두 모드와 resize fixture가 각각 의도한 root를 표시하고 기존 테스트 대상을 잃지 않음.
 
 ### P2 — 기본 테마와 네 화면의 정적 내용
 
-- [ ] Material 3 전용으로 system 초기값·light/dark 토글·9개 seed를 구현한다. theme cache가 선택 변화에 반응하도록 한다.
-- [ ] Home 1열/2열/extended rail 및 action 배치를 구현한다. animation 전에는 최종 geometry를 먼저 검증한다.
-- [ ] Color의 chip/SchemePreview, Typography 15종, Elevation 3×6 card를 이식한다.
+- [x] Material 3 전용으로 system 초기값·light/dark 토글·9개 seed를 구현한다. theme cache와 실제 9개 선택·brightness Web 검사 PASS (§9).
+- [x] Home 1열/2열/extended rail 및 action 배치를 구현한다. animation 전에는 최종 geometry를 먼저 검증한다. → §9. 통합 gate는 별도.
+- [x] Color의 chip/SchemePreview, Typography 15종, Elevation 3×6 card를 이식한다. → §9. 통합 gate는 별도.
 - [ ] reference와 같은 role 값, 표시 문자열, spacing, typography, enabled/disabled style을 대조한다.
 
 완료 조건: 네 destination이 동작하고 theme/seed가 모든 화면에 반영됨. 이 단계만으로 전체 앱 완료를 선언하지 않는다.
 
 ### P3 — Components 전체와 공용 widget 보완
 
-- [ ] Actions → Communication → Containment → Navigation → Selection → Text inputs 순서로 이식한다.
-- [ ] SearchAnchor의 null/default 인자 문제를 공용 source에서 고치고 재현 fixture를 통과시킨 뒤 검색 화면을 연결한다.
+- [x] Actions → Communication → Containment → Navigation → Selection → Text inputs 순서로 이식한다. → §9. 통합 gate는 별도.
+- [x] SearchAnchor의 null/default 인자 문제를 공용 source에서 고치고 재현 fixture를 통과시킨 뒤 검색 화면을 연결한다. → D04/D18, 공용 FCR-7 및 Web mounted 검색 시나리오 PASS.
 - [ ] snackbar/sheet/dialog/drawer/picker/menu의 open/close·취소/확정·focus 복귀와 controller dispose를 구현한다.
 - [ ] 검색 suggestions/history, 메뉴 선택, chip 삭제, radio/segmented 다중 선택, carousel snapping 등 상태 변화를 대조한다.
 - [ ] Sliver height cache와 두 목록의 scroll ownership, 입력 focus 순서를 재현한다. 폭 변경으로 cache가 stale해지면 원인을 공용/앱 소유 경계에 맞춰 수정한다.
@@ -209,9 +213,9 @@ P0–P7은 통합 milestone이다. **각 단계에서 발견한 공용 결함의
 ### P4 — 이미지 색상·URL 완성
 
 - [x] 공용 Picture rasterization 및 Image rawRgba readback을 구현한다. 크기·stride·RGBA/ABGR·premultiplied alpha·종료/dispose 계약을 명시한다. §8의 Skia/CanvasKit 범위.
-- [ ] Windows와 기본 Web Worker 경로에서 동일 pixel fixture를 읽고, 나머지 host는 구현/미지원 상태를 각각 기록한다.
+- [x] Windows와 기본 Web Worker 경로에서 동일 pixel fixture를 읽고, 나머지 host는 구현/실행 미검증을 구분해 기록한다. → §8 및 §9 target matrix. 다른 OS 실행 미검증을 capability 미지원으로 단정하지 않는다.
 - [x] Celebi quantization 및 scoring을 고정 reference와 대조해 보완한다. 기존 HCT seed→role 경로는 재사용하되 역할별 색상을 검증한다. §8의 동일 readback 입력 differential.
-- [ ] 6개 이미지의 thumbnail·색상 선택·light/dark 전환과 loading/error/retry/latest selection 처리.
+- [x] 6개 이미지의 thumbnail·색상 선택·light/dark 전환과 loading/error/retry/latest selection 처리. → 실제 6개 원격 PNG, 손상 bytes, 지연 응답 역전, 마지막 성공 theme 보존 Web PASS.
 - [ ] URL 실행 공용 adapter/target 구현과 Color 안내 링크를 연결한다. Web popup과 native shell 실패 결과를 검증한다.
 
 완료 조건: 실제 이미지 bytes로 추출한 theme가 생성되고 여섯 선택이 성공함. 네트워크 차단/재시도/연속 선택에서도 마지막 유효 상태 유지. 임시 고정 palette나 미지원 버튼 상태는 P4 미완료다.
@@ -219,7 +223,7 @@ P0–P7은 통합 milestone이다. **각 단계에서 발견한 공용 결함의
 ### P5 — 반응형 motion·시각·입력 정합
 
 - [ ] Bar/Rail/OneTwo transition과 reverse를 연결한다. resize 중 state·focus·scroll 손실 및 마지막 frame geometry를 확인한다.
-- [ ] Home 폭 999/1000/1001, 1499/1500/1501과 Color content 폭 499/500/501, Elevation crossAxisExtent 449/450/451, 확장 action 높이 739/740/741을 확인한다.
+- [x] Home 폭 999/1000/1001, 1499/1500/1501과 Color content 폭 499/500/501, Elevation crossAxisExtent 449/450/451, 확장 action 높이 739/740/741을 확인한다. → `material-sample-suite-v16` PASS, logical geometry/실제 pointer 기준.
 - [ ] 대표 전체 viewport 390×844, 800×900, 1280×900, 1600×1000에서 overflow/스크롤 끝/설정 접근을 확인한다. threshold는 physical pixel이 아닌 logical/content 크기로 판정한다.
 - [ ] Material 3의 light/dark 대표 화면을 고정 font/DPR/OS 조건으로 Flutter와 비교한다. 동일 seed의 Color role ARGB는 정확 일치를 목표로 하고 pixel AA/그림자 허용차는 영역별 근거를 기록한다.
 - [ ] 실제 pointer hit test, keyboard traversal, IME 조합/취소, selection/clipboard, 접근성 label/selected/disabled 상태를 확인한다.
@@ -232,16 +236,16 @@ P0–P7은 통합 milestone이다. **각 단계에서 발견한 공용 결함의
 - [ ] Android, native AppKit macOS, Mac Catalyst, iOS, Linux는 각 runner의 build와 live 동작을 분리 기록한다. 해당 OS/device에서만 확인 가능한 입력/URL/readback/accessibility는 다른 target 결과로 대체하지 않는다.
 - [ ] 새 sample validation은 reference `test/*.dart`의 항목·상태를 acceptance 자료로 활용한다. Flutter test 자체를 Doroti 테스트로 간주하지 않는다.
 - [ ] `integration_test/integration_test.dart`는 `app.main()` 호출만 수행하므로 전체 상호작용 증거로 쓰지 않는다.
-- [ ] 기존 G6/입력/resize 진단과 새 sample 결과를 각각 보관한다. 기존 `flutter-differential.spec.ts`의 counter workload는 새 Material sample 비교로 재해석하지 않는다.
-- [ ] 추가·수정한 공용 API가 Testbed 내부 상태 없이 독립 fixture에서 사용되는지 확인한다. 관련 public API 변경은 다른 소비자와 template의 영향을 검증한다.
+- [x] 기존 G6/입력/resize 진단과 새 sample 결과를 각각 보관한다. `material-sample-diagnostics-v1` 6 PASS, sample suite 별도. 기존 counter workload는 새 Material sample 비교로 재해석하지 않는다.
+- [x] 추가·수정한 공용 API를 Testbed 내부 상태 없는 FCR-6/FCR-7 fixture로 확인한다. 기존 interface implementer에 새 mandatory member를 추가하지 않고 optional capability로 연결했다. target 소비자 build 결과는 §9.
 
 완료 조건: target/renderer별 build·live·visual·input·physical 결과가 있는 matrix 작성. 실행하지 못한 target은 **notVerified**이며 전체 플랫폼 parity는 미완료로 유지한다.
 
 ### P7 — 기본 화면 전환과 정리
 
 - [ ] P1–P5 및 P6의 Windows/Web 대표 gate 통과 후 sample을 기본 진입점으로 바꾼다. diagnostics와 F0/F1/F2 진입은 보존한다.
-- [ ] README 한·영에 기본 화면, 진단 실행, 네트워크 요구, 플랫폼별 잔여 항목을 갱신한다.
-- [ ] adaptation source의 저작권/notice를 반영한다. 새 screenshot/상태 baseline에는 reference revision·viewport·DPR·font·theme·renderer를 기록한다.
+- [x] README 한·영에 현재 diagnostics 기본값, sample/진단 실행, 네트워크 요구, 플랫폼별 잔여 항목을 갱신한다.
+- [x] adaptation source의 저작권/notice를 반영한다. reference revision·viewport·DPR·font·theme·renderer와 실행 결과를 sample validation 문서에 기록한다. screenshot 확보를 pixel parity PASS로 간주하지 않는다.
 - [ ] `work.md`에 실행 명령·증거 경로·PASS/FAIL/PARTIAL/notVerified를 갱신한다. 다른 플랫폼 미검증이 있으면 기본 전환 완료와 전체 parity 완료를 구분한다.
 
 ## 6. 검증 규칙과 최종 완료 기준
@@ -383,6 +387,238 @@ seed는 native `0xFFF38301`, Web `0xFFF78C02`; URL은 둘 다 `0xFF769296`였다
 강제 Worker restart 중 read, animated playback, wide-gamut, 다른 OS live, physical
 scan-out/IME/accessibility 및 Doroti sample 통합은 **notVerified**로 유지한다.
 
-**다음 순서:** mounted Search open/close/focus gate를 완료하고 P1부터 Doroti sample
-이식을 이어간다. 이미지 공용 경로는 이제 사용할 수 있다. P4의 6개 테마 이미지 UI와
-latest-selection/error/retry 통합, D05 URL 실행, P5–P7은 별도로 남아 있다.
+**당시 다음 순서:** mounted Search와 P1 sample 이식이었다. 해당 후속 구현 및
+6개 테마 이미지/error/retry/URL의 현재 결과는 §9로 이어진다.
+
+
+## 9. 2026-09-06 전체 작업 후속 구현 (진행 중)
+
+현재 작업은 P1–P5의 Doroti C# sample 통합과 발견한 공용 결함 수리다.
+기존 diagnostics는 `src/Diagnostics/LegacyMaterialGallery.cs`로 분리했고
+`DOROTI_TESTBED_MODE=sample` 및 기본 CanvasKit Worker의
+`?dorotiTestbedMode=sample`로 새 root를 선택한다. F0/F1/F2가 우선한다.
+P7 전환 gate 미통과이므로 기본은 diagnostics다.
+
+- 네 destination, 9 seed/6 image 선택, theme loading/error/retry/revision,
+  Components 여섯 그룹 및 local/URL Image demo의 C# 구현을 추가했다.
+  이 목록은 구현 범위이며 runtime/visual parity 완료 선언이 아니다.
+- URL은 `IUrlLauncherHostCapability`와 `UrlLauncher.launchUrl`로 분리했다.
+  Windows shell/Web main/MAUI/Qt adapter를 추가했다. Web은 Worker 요청이
+  사용자 활성화를 잃거나 popup이 차단되면 blocked 결과를 반환한다.
+- **D08 실행 FAIL:** Scaffold drawer/endDrawer에서 invariant generic
+  `GlobalKey<DrawerControllerState>`를 `GlobalKey<IState>`로 cast했다.
+  DrawerController의 key를 GlobalKeyBase로 받아 키 identity를 보존하도록 수리했다.
+- **D09 실행 FAIL:** Material 3 navigation 기본 테마가 부모의 virtual
+  property를 override하지 않고 숨겨 base theme 참조에서 null이 반환됐다.
+  NavigationBar/Rail/Drawer 및 sample에서 사용하는 default theme/style의
+  override와 nullable numeric state-property 계약을 수리했다.
+- **D10 실행 FAIL:** 선택적인 ActionButton.standardComponent를 강제 unwrap했다.
+  원 source의 nullable key 계약으로 수정했다.
+- 증거 root: `.doroti/evidence/material-sample-implementation/`, Web은
+  `Doroti/validation/web-playwright/artifacts/wrapper/material-sample-implementation-v*/`.
+  build v1의 폐기된 CLI 인자, v2의 C# keyword, v3–v4 API 차이,
+  Web v1 drawer, v2 default theme 예외, v3 수리 중 compile 실패는 보존한다.
+  Windows build v5/v6는 warning/error 0. Windows sample v1은 창 표시가
+  성공했어도 framework exception이 있으므로 **sample FAIL**이다.
+
+### 9.1 추가 공용 수리와 검증 경계
+
+- D09를 BottomAppBar·IconButton·Chip 기본 style까지 확장했다. 부모 virtual을
+  숨기던 getter/method를 override하고 nullable state-property 타입을 맞췄다.
+  임시 `effectiveIconColor => null` 경로도 실제 widget/theme/default 우선순위로 복원했다.
+- **D11** `loadFontFromList`의 no-op을 view font capability로 교체했다.
+  Skia typeface 등록/캐시 갱신 및 CanvasKit UI/Raster의 retained font 등록 완료를 기다린다.
+  byte view offset/length, family, 등록 후 `fontsChange` 알림을 독립 contract로 확인한다.
+- **D12 Web v5 FAIL:** UI Worker는 등록된 두 폰트를 사용했으나 Raster DisplayList는
+  기본 폰트만 전달해 metrics hash 불일치와 빈 화면이 발생했다. Paragraph에 동일한
+  registered font collection을 전달한다. metrics gate는 유지한다. v6 이후 실제 화면 표시.
+- **D13 Web v8 FAIL:** Image widget이 서로 다른 키 타입을 `ImageProvider<object>`로
+  cast했다. generic factory가 실제 provider의 T를 보존하도록 수정했다.
+- **D14 Web v12 FAIL:** Carousel overlay의 색상 resolver를 CarouselView 타입으로
+  잘못 변환했다. Color nullable 계약으로 수정했고, itemExtentBuilder의 숨김과 null→0
+  변환도 수리해 실제 item layout을 복원했다.
+- **D15 Web v12–v13 pointer FAIL:** clip된 부모 rect의 top을 자식 좌표 원점으로 더해
+  표시 위치와 semantics 위치가 92px 어긋났다. Ui semantics node에 coordinateTransform을
+  보존해 전체 ancestor matrix를 합성한다. 기존 direct node의 rect-relative 계약은 유지한다.
+  FCR-6에서 clip origin/scale/transform-only delta를 검증했고 Web v14에서 sheet/dialog
+  실제 pointer open/close가 진행됐다.
+- **D16 Web v14 FAIL:** Switch thumb icon의 선택적 shadow 목록에 ToList를 강제 호출했다.
+  nullable 목록을 보존했다. 중간 paint exception에 따른 unbalanced save도 실패 이력으로 남긴다.
+- **D17:** button icon factory가 child를 버리던 코드와 IconButton의 null onPressed를
+  호출 가능한 closure로 바꾸던 코드를 수리했다. 아이콘 색상과 disabled 상태를 복원했다.
+- **D18 Web v16 FAIL:** string 결과의 Search route에서 object ModalRoute로 cast하던
+  상태 질의를 generic 독립 scope 조회로 수정했다. Search suggestion timer 끝의 무조건
+  throw도 제거했다. optional Dart VM performance capability가 없는 managed host에서는
+  scheduler hint request를 null로 거절한다. VM 동작을 가짜로 구현한 것이 아니다.
+
+### 9.2 최신 실행 결과 (2026-09-07)
+
+`material-sample-final-v27`: **13 PASS, 6.2분**, 최신 sample 4개 suite와 독립 radio 및
+resize reversal 포함. 기본 CanvasKit Worker의 DPR 1/2 프로젝트다. 이전 FAIL은 별도
+artifact에 보존한다. 이 통합 PASS를 P5 physical 또는 다른 OS acceptance로 확대하지 않는다.
+
+| 검증 | 결과 | 증거/경계 |
+| --- | --- | --- |
+| 공용 Search/URL/font/image/MCU contracts | **PASS** | `contracts-v6/contracts.stdout.log` |
+| 기존 FCR-7 Material/keyboard/context menu | **PASS** | `regression-v10/contracts.stdout.log`; route dispatch·날짜 정규화·nullable restoration·Dropdown theme wrapper 포함 |
+| FCR-6 semantics clip/transform 독립 fixture | **PASS** | `semantics-v2.stdout.log` |
+| Windows Release | **PASS**, warning/error 0 | `windows-build-v11.stdout.log` |
+| Windows sample Vulkan opaque 시작 | **8초 smoke PASS** | `windows-sample-v7.*`; exit 0, visibleAfterExactPresent=true, renderer terminal presented=2/failed=0. reference처럼 progress 초기값은 stopped다. 전체 입력/physical acceptance 아님 |
+| Android arm64 Release package | **PASS**, warning/error 0 | `android-build-v5.stdout.log`; `android-devices-v1`에 연결 기기 없음, device 실행 notVerified |
+| Linux managed cross-build | **PASS**, warning/error 0 | `linux-managed-build-v6.stdout.log`; v1 unsafe await compile FAIL 보존. native Qt/live Linux는 notVerified |
+| Web pointer 4 destination + 폭 경계 | **PASS** | `material-sample-final-v27`; 기본 CanvasKit Worker, DPR1, light/dark 전체 destination |
+| Web lazy 전체 목록 및 로컬 Image demo palette | **PASS** | `material-sample-final-v27` inventory; Raster failedScenes 0. 독립 raw readback differential은 §8 |
+| Web sheet/dialog/Search 실제 pointer·입력 | **PASS** | `material-sample-final-v27`; modal/persistent sheet, 일반/fullscreen dialog, 검색 제안/선택/이력/재열기/Esc |
+| Web 9 seed/6 실제 image theme | **PASS** | `material-sample-final-v27` theme 시나리오 |
+| Web 이미지 실패/재시도/늦은 응답/brightness | **PASS** | `material-sample-final-v27`; 손상 bytes, last good 유지, Petals 지연 후 Blue seed 우선 |
+| Web Color/Elevation 경계·URL·낮은 높이 설정 | **PASS** | `material-sample-final-v27`; actual popup, blocked feedback, 739/740/741 설정 클릭 |
+| Web picker/menu/Dropdown/selection/clipboard | **PASS** | `material-sample-final-v27`; 실제 hover 하위 메뉴, checkbox tri-state/filter/radio/segmented 상태, picker/Dropdown/clipboard |
+| DPR 2 sample pointer 및 headed TextField | **PASS** | `material-sample-final-v27` DPR 2 sheet; `material-sample-text-regression-v2` spaces/caret pixel 검사 |
+| 기존 diagnostics 입력/F0/F1/F2/DisplayList | **PASS 6개** | `material-sample-diagnostics-v1`; image validation 전용 build가 아닌 image-pipeline 항목은 SKIP, 해당 이미지 결과는 §8로 구분 |
+| Flutter reference Web build / light·dark capture | **PASS** | `flutter-reference-build-v1`, `flutter-material-sample-v4`: light 800/1600, dark 800, height 900/DPR1. capture 자체는 pixel parity PASS 아님 |
+| Playwright TypeScript | **PASS** | `typescript-v5.stdout.log`; radio 독립 fixture 및 resize reversal 포함 |
+| Radio checked/selected 독립 Web 계약 | **PASS** | `material-sample-final-v25`; explicit radio와 mutuallyExclusive flags의 4개 조합 |
+| 중간 resize 방향 반전 후 destination 유지 | **자동 geometry PASS** | `material-sample-motion-v1`; 800→1280→800 두 차례, 선택/최종 bar 위치/단일 settings 버튼 유지. physical smoothness 아님 |
+| 4개 destination light/dark 캡처 및 body pixel 대조 | **측정 완료, parity 미판정** | `material-sample-capture-v26`, `visual-comparison-v2.json`; §9.6 |
+| Mac AppKit/Mac Catalyst/iOS 및 physical IME/accessibility | **notVerified** | 현재 Windows 환경, 해당 OS/device acceptance 증거 없음 |
+
+v7/v9/v15 compile 실패, v8 framework/이미지 오류, v11 lazy locator 대기 오류,
+v12/v13 좌표·Carousel 오류, v14 Switch·Search 단계 오류, v16 Search route 오류는
+모두 원 artifact에 보존한다. v6의 queue-idle timeout은 continuous animation을 고려하지
+못한 검사였으며 기존 FAIL을 덮지 않고 이후 검사는 frame generation/Raster receipt로 판정한다.
+
+새 구성은 `SampleApp.cs`, `Components.cs`, `Selection.cs`, `Screens.cs`, `SchemePreview.cs`,
+`ImageDemo.cs`, `CachedSlivers.cs`, `Decorations.cs`로 분리했다. reference의 component
+card/focus wrapper, Mail/Labels drawer, enabled/disabled/icon 버튼 열을 다시 대조했다.
+reference 공통 버튼은 고정 enabled/disabled 열이며 초기 inventory의 "toggle" 설명을
+실제 source 기준으로 정정한다. 사용자 관찰·Flutter 픽셀 parity·OS 전체 완료를 주장하지 않는다.
+
+### 9.3 Picker 및 overlay 통합에서 추가로 발견한 결함
+
+- **D18 후속:** Search route `didPop`이 부모 메서드를 숨겨 선택 후 anchor가
+  사라졌다(v18). override를 복원했다. v19는 선택 후 hint가 사라진 textbox를
+  이전 이름으로 찾은 harness FAIL이며 v3 controls에서 재열기/이력/Esc까지 PASS다.
+- **D19:** showDatePicker의 기본 GregorianCalendarDelegate와 nullable anchorPoint,
+  Dart 날짜 생성의 month/day overflow 정규화, WillPopScope의 generic 독립 route
+  조회를 복원했다. RestorableBoolN/DoubleN/IntN은 null 기본값을 유지한다.
+  시간 picker의 internal InheritedModel은 dynamic binder 대신 공통 aspect interface로
+  조회한다. Date picker/Time picker 실제 pointer 열기/OK 닫기는 suite-v16에서 PASS다.
+- **D20:** MenuAnchor의 optional onOpen/onClose를 null delegate로 전달한다.
+  OverlayPortal layout callback의 no-op을 실제 child builder 호출로 교체하고,
+  LayoutBuilder의 생략 가능한 build callback을 직접 전달한다. 메뉴 style tuple은
+  derived generic tuple을 강제 변환하지 않고 명시적 MenuStyle 값으로 구성한다.
+- `selection-v1` calendar null, v2 날짜/route/menu callback, v3 nullable restoration,
+  v4 internal inherited model, v5 overlay 내용 생성 후 tuple 오류, controls v6/v7
+  수정 중 compile 실패를 보존한다. 이들 실행에서 OK 버튼이 보여도 picker 내부
+  framework exception이 있었으므로 picker PASS로 간주하지 않는다.
+- MaterialIcons의 실제 pinned SDK license는 **CC BY 4.0**이었다. notice의 잘못된
+  Apache 표기를 수정했다. sample용 Roboto regular/medium/bold도 같은 SDK에서
+  포함해 public font loading으로 등록한다. Roboto는 별도 Apache-2.0 license와
+  파일 hash를 기록한다. 폰트 추가 후 Web 통합 및 Windows/Linux/Android build를 다시 통과했다.
+
+### 9.4 2026-09-07 고해상도·reference 구성 후속 수리
+
+- **D20 후속:** RawMenuAnchor/Group의 내부 공통 계약에서 불필요한 generic을 제거해
+  이종 anchor의 부모/자식 연결을 유지한다. DismissMenuAction을 연결하고, 완료 후
+  무조건 throw를 제거했다. zero-duration animation은 완료된 TickerFuture를 반환한다.
+  controls-v19에서 Menu 3 hover → Menu 3.2 실제 pointer 선택 → 전체 메뉴 닫기 PASS.
+- **D21:** 플랫폼 primary font를 유지하면서 Roboto 3개 weight를 public font API로
+  등록했다. Raster가 기본 NanumGothic bytes를 존재하지 않는 Segoe UI family로
+  alias해 UI/Raster metrics를 다르게 만들던 등록을 수정했다. unconstrained paragraph의
+  public intrinsic width는 backend가 실제 line break를 유지하는 finite width를 사용한다.
+  wire metrics/hash는 수정하지 않는다. TextField의 null onEditingComplete도 직접 전달한다.
+- **D22 실행 FAIL:** headed TextField는 실제 글자가 표시됐어도 semantics rect에 DPR을
+  두 번 적용해 다른 위치를 캡처했다. SemanticsUpdate에 view DPR을 전달하고 framework
+  transform tree의 physical 좌표를 host 진입에서 한 번 logical 좌표로 바꾼다.
+  direct legacy node의 logical 좌표는 유지한다. FCR-6 독립 DPR/clip fixture,
+  headed TextField spaces/caret 검사 및 DPR 2 sample sheet pointer 모두 PASS.
+- **D23 실행 FAIL:** reference의 DropdownMenu InputDecorationTheme wrapper가 data로
+  강제 cast됐다. wrapper.data / 직접 InputDecorationThemeData 두 계약을 공용 getter에서
+  처리하고 FCR-7 독립 fixture로 확인했다. sample에서 data만 직접 넘기는 우회는 하지 않는다.
+- **D24 시각 FAIL:** Web drawShadow의 두 번 blur 근사가 Flutter Elevation/FAB 그림자와
+  달랐다. pinned Flutter engine의 ambient/spot alpha·tonal colors·directional light·DPR
+  계약으로 CanvasKit의 실제 Skia drawShadow를 호출한다. native SkiaSharp의 기존 근사는
+  별도로 남으며 이 Web 수리로 Windows 그림자 parity를 주장하지 않는다.
+- C# 구성을 reference와 재대조해 공통 버튼 중앙 정렬, FAB 순서/tooltip, selected
+  navigation icon, badge의 4 destination/count, example navigation destinations,
+  checkbox/radio list tile, chip 기본 선택/disabled 상태, menu 선택 결과 아이콘,
+  picker icon/24-hour/결과 snackbar, tabs/app bar 내용, card 배치를 맞췄다.
+  progress는 reference처럼 초기 stopped/0.7이며 재생 버튼으로 indeterminate로 바뀐다.
+  zero-width rail/bar는 accessibility에서 제외한다. 이 목록은 구현 기록이며 각 화면의
+  모든 pixel/focus/physical 동작이 같다는 선언은 아니다.
+
+추가 실패는 원 artifact에 보존했다. controls-v11은 font metrics mismatch, selection-v14는
+wire intrinsic metrics를 바꾼 실패한 시도이며 원상 복원했다. selection-v15는 null
+onEditingComplete 실행 FAIL, controls-v13은 IME client handoff 완료 전에 타이핑한 harness
+FAIL이었다. 이후 새 client의 empty editing state를 기다리고 clipboard까지 재검증했다.
+낮은 높이 설정 v1의 Petals 실패는 blocked-URL snackbar가 click을 덮은 조건이었다.
+feedback의 실제 표시/소멸 후 클릭하는 v16/v17 및 resize-only 시나리오가 통과했다.
+
+suite-v17은 9 PASS/1 FAIL이었다. 실패는 tooltip을 accessible name으로 찾던 추가 메뉴
+locator였고, controls-v18의 메뉴 실패는 hover 후 click으로 다시 닫은 조건이었다.
+controls-v19는 메뉴 및 DPR 2가 PASS, dark capture 진입은 resize 완료를 기다리지 않아
+전환 중 두 settings 버튼이 조회된 strict-mode FAIL이었다. 최종 resize generation과
+1초 transition 완료, 단일 접근 가능 button을 확인한 state-v23/capture-v26에서 통과했다.
+components-v20의 TextStyle alias compile FAIL, v21의 Dropdown theme wrapper
+runtime FAIL도 보존했으며 v21은 원인 확인 후 중단했다.
+
+Windows sample-v4는 잘못된 smoke env 이름으로 보고서를 만들지 못해 소유한 앱을
+종료했고, v5는 Hidden 시작 옵션 때문에 native visible gate에서 FAIL이었다. 같은
+소스의 v6는 실제 창을 표시하고 8초 실행하여 PASS했다. 이 초기 실패들을 v6의 성공으로
+재분류하지 않는다. regression-v9 자체는 PASS였으나 이를 감싼 임시 shell이 유효하지
+않은 LASTEXITCODE를 읽어 다음 build 시작을 막았다. build는 별도로 실행해 PASS했다.
+
+### 9.5 남은 완료 조건
+
+P0/P1 골격과 P2–P4의 앱/public API를 구현했고, 기존 진단·공용 계약·자동 입력
+증거를 확보했다. 아래 미완료 조건 때문에 전체 완료 또는 sample 기본 전환으로 처리하지 않는다.
+
+- **P3/P5 잔여:** 모든 overlay의 취소/확정 후 focus 복귀, carousel snapping 수치,
+  animation 도중 방향 반전의 연속 geometry, 실제 한글 IME·screen reader·physical
+  resize/scroll acceptance는 아직 완료 증거가 없다. 구현/일부 자동 PASS와 구분한다.
+- **P5 시각 잔여:** 동일 조건의 light/dark capture를 확보했지만 전체 화면별 pixel
+  허용차와 Windows native 그림자 parity gate는 미완료다. Web의 새 Skia shadow 결과를
+  Windows 결과로 확대하지 않는다. 현재 SkiaSharp 4.152.0-rc.1.26426.14 Win64 binary의
+  990개 export 중 shadow 관련은 두 drop-shadow image filter뿐이다
+  (`native-shadow-exports-v1.json`). 실제 SkShadowUtils 연결에는 native binding/배포
+  작업이 추가로 필요하며 image filter를 동일한 shadow 계약으로 간주하지 않는다.
+- **P6 잔여:** Android 연결 기기 없음. AppKit/macOS·Mac Catalyst·iOS용 Apple runner,
+  Linux Qt native/live runner 증거 없음. 각 target의 입력/URL/readback/accessibility는
+  다른 target의 build나 smoke로 대체하지 않는다.
+- **P7:** 위 Windows/Web P1–P5 gate 미통과 상태에서 기본 진입을 sample로 전환하지
+  않는다. 현재 diagnostics 기본, sample explicit, F0/F1/F2 최우선이다.
+
+### 9.6 상태 유지·접근성 후속 수리 및 시각 측정
+
+- **D25 앱 cache FAIL:** selection 상태 변경 때 section height 배열을 새로 만들어
+  offscreen 추정치가 0으로 리셋되고 scroll offset이 clamp됐다. 배열을 ComponentsState
+  수명에 보관하고 두 목록이 같은 section index를 사용한다. mounted section은 layout에서
+  높이를 갱신한다. offscreen 항목은 재측정 전 기존 추정치를 사용하므로 모든 폭/theme의
+  scroll 안정성을 검증 완료했다고 확대하지 않는다. state-v24 선택 시나리오에서 PASS.
+- **D26 공용 Web semantics FAIL:** RadioListTile의 checked=true를 별개의 tile selected=false가
+  덮어썼다. checked가 있으면 이를 유지하고 selected-only radio에서만 selected를 사용한다.
+  independent fixture가 추가로 드러낸 explicit radio role 누락도 수정했다.
+  state-v24 실제 list tile 선택은 PASS, 독립 fixture는 FAIL이었다. final-v25에서 4가지
+  explicit/flag-derived radio의 role/checked를 검증해 PASS했다. 이전 FAIL을 보존한다.
+- final-v22는 **15 PASS/2 FAIL**이었다. state-v23은 **1 PASS/1 FAIL**, state-v24는
+  **3 PASS/1 FAIL**이었다. 마지막 두 실패 원인은 위 D26 단계별 수리와 연결한다.
+  final-v25는 line selector가 옮겨진 sample test를 선택하지 않아 radio 1개만 실행했다.
+  올바른 선언 line을 사용한 capture-v26에서 네 destination/폭/light/dark가 PASS했다.
+- `visual-comparison-v1.json`의 dark Color는 이전 Components frame을 캡처한 잘못된
+  비교다. 선택 상태·presented request를 확인한 capture-v26에서 다시 캡처했다.
+  원본 v1을 보존하고 `compare_screens.py`로 v2를 별도 생성했다.
+
+비교 조건: Chromium hardware CanvasKit, DPR 1, 800×900, pinned Roboto/MaterialIcons,
+동일 baseline seed, body crop `(0,56)–(800,820)`. title branding과 navigation chrome은
+제외했으며 전체 viewport parity가 아니다. MAE는 RGB channel당 0–255 척도다.
+
+| 화면 | light MAE / channel 차이 >2인 pixel | dark MAE / channel 차이 >2인 pixel |
+| --- | --- | --- |
+| Components | 1.277 / 2.43% | 1.180 / 2.08% |
+| Color | 1.853 / 3.06% | 1.107 / 2.37% |
+| Typography | 0.248 / 0.38% | 0.238 / 0.38% |
+| Elevation | 0.362 / 0.99% | 0.372 / 0.97% |
+
+수치는 **MEASURED_NOT_ACCEPTANCE**다. 남은 text raster/weight·spacing 차이와 native
+shadow를 숨기기 위한 tolerance를 임의로 설정하지 않았다. 독립 MCU role ARGB의
+정확 일치 PASS는 §8이며 이 screenshot 결과와 다른 계약이다.

@@ -518,7 +518,10 @@ internal sealed class BrowserCanvasKitCapabilities :
             response.AlphabeticBaseline,
             response.IdeographicBaseline,
             response.MinIntrinsicWidth,
-            response.MaxIntrinsicWidth,
+            // The UI service proves this finite f32 width retains the unbounded
+            // line breaks. Intrinsic layout must reuse it instead of a rounded
+            // down SkParagraph scalar that can wrap the final glyph.
+            unconstrained ? response.Width : response.MaxIntrinsicWidth,
             response.LongestLine,
             response.DidExceedMaxLines,
             metricsHash,
@@ -722,7 +725,7 @@ internal sealed class BrowserCanvasKitCapabilities :
         if (!_semanticsEnabled) return;
         foreach (var node in update.nodes) _semantics[node.id] = node;
         PruneUnreachable(_semantics);
-        var orderedNodes = SemanticsGeometryProjection.ToViewCoordinates(_semantics.Values)
+        var orderedNodes = SemanticsGeometryProjection.ToViewCoordinates(_semantics.Values, update.viewDevicePixelRatio)
             .OrderBy(node => node.indexInParent ?? int.MaxValue)
             .ThenBy(node => node.id)
             .ToArray();
@@ -818,6 +821,13 @@ internal sealed class BrowserCanvasKitCapabilities :
 
     public void InvalidateWindowSurfaceResources()
     {
+    }
+
+    public ValueTask RegisterFontAsync(ReadOnlyMemory<byte> bytes, string? family, CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        cancellationToken.ThrowIfCancellationRequested();
+        return _resources.RegisterFontAsync(bytes, family ?? "DorotiFallback", cancellationToken);
     }
 
     public void Dispose()

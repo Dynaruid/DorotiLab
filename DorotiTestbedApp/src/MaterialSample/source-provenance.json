@@ -1,0 +1,163 @@
+{
+  "schema": "doroti.material-sample-adaptation/v1",
+  "date": "2026-09-06",
+  "repositoryHead": "e12c1dc4e42598bc8684a298e31214a5b86788d6",
+  "flutterSdkRevision": "6b182d2c7585eba26d4edce0f97630effd256c33",
+  "reference": "local reference/flutter_sample_app",
+  "licenses": {
+    "flutterSamples": "BSD-3-Clause; LICENSE.flutter",
+    "materialIcons": "CC-BY-4.0; pinned SDK assets/fonts/LICENSE.materialicons.txt",
+    "localImage": "Unsplash; see reference image provenance and THIRD-PARTY-NOTICES.md",
+    "roboto": "Apache-2.0; assets/fonts/LICENSE.roboto.txt"
+  },
+  "files": [
+    {
+      "path": "reference/flutter_sample_app/LICENSE",
+      "bytes": 17477,
+      "sha256": "687c3d4c3a553c0fa995e9d3c35b245872fa4a0f5c2bd6494decc2fa410f7ce9"
+    },
+    {
+      "path": "reference/flutter_sample_app/pubspec.lock",
+      "bytes": 10121,
+      "sha256": "92ebbdd8680449a00b40c09be06217bf405dfe148a5edc32869b73ee1378d3d1"
+    },
+    {
+      "path": "DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf",
+      "bytes": 1645184,
+      "sha256": "d9865b671a09d683d13a863089d8825e0f61a37696ce5d7d448bc8023aa62453"
+    },
+    {
+      "path": "reference/flutter_sample_app/assets/images/mae-mu-9002s2VnOAY-unsplash.webp",
+      "bytes": 680944,
+      "sha256": "67d80a7d869c6983b4ecb79b26d62233473b74ffb3ca2f36267655c7274ca5a2"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/differential_main.dart",
+      "bytes": 7415,
+      "sha256": "082d6b9c970abcd5235c05df562cd2592505c74bf1bddcb107038b27298f1b81"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/main.dart",
+      "bytes": 2868,
+      "sha256": "3bf9d3cdab610ad01371a4c2df486b094803f77158a313e94cf9c918410a5f70"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/resize_fixture.dart",
+      "bytes": 3463,
+      "sha256": "ad2a6ae8043be041af65d6a4e081fbb5bf9761c6db11fffbb5130ee3c3d41e3d"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/animations.dart",
+      "bytes": 900,
+      "sha256": "6a1ba92c5947836d88c77bc182b8aa7a3f469f624be40cae6f866995ecc866d5"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/bar_transition.dart",
+      "bytes": 1484,
+      "sha256": "88b2fdc71129d566b322b1a24816b5f397b9bf66a97a169304d32c490e601b23"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/buttons.dart",
+      "bytes": 4635,
+      "sha256": "9a46392f100e602f6e68607a1da7abb1fc03503b0fcd559754da7be19ff6e894"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/color_box.dart",
+      "bytes": 2922,
+      "sha256": "98e28f4e6a4ffac90d000e7f666bc5cfe0f9efb471bf2421afe29838b3072f99"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/color_palettes_screen.dart",
+      "bytes": 14066,
+      "sha256": "f731c56a661ce2deb37c9ee67e57dca8be1fd0790e1bdb4d5e919a1c746d0e5b"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/component_screen.dart",
+      "bytes": 74948,
+      "sha256": "25245c889667593a1437796d2f453434c23cc631b993c5d34bc0c36e5d3b50e7"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/constants.dart",
+      "bytes": 2176,
+      "sha256": "66851c8ec9aca02951ab7c22864877c766cc454b71b02d92b255c396fce46fbe"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/elevation_screen.dart",
+      "bytes": 5556,
+      "sha256": "37336396e0b301ac1e6de1d9c66067f7210dc74b150e1a283bee24f37f601143"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/expanded_color_seed_action.dart",
+      "bytes": 1367,
+      "sha256": "86c0f0905ef21d7b721a5456bd7fb8134e7505756d995bda5f9897683f224d8b"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/expanded_image_color_action.dart",
+      "bytes": 2263,
+      "sha256": "aa533b43662dbcd13c4904db388581414c52d18cd1cb50a50d6941b440af8daa"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/expanded_trailing_actions.dart",
+      "bytes": 2336,
+      "sha256": "e7ed3150000b2eab047307a3ddd74be6f236c77c7f9eb990334b36bdabfd593a"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/home.dart",
+      "bytes": 7713,
+      "sha256": "149de78e5ac1373d7c2a2babe0b2b3fcf682266309398c776a86aeef72859e46"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/image_demo.dart",
+      "bytes": 7100,
+      "sha256": "010f9c9d6e168a68aea7b79606a8b770ad1fd7cb7554b7656e78a13e2bd2c7e8"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/navigation_transition.dart",
+      "bytes": 2195,
+      "sha256": "141e74a3aa7673848d3d53b313fad49bf711e6dc87ecb2a9f80662ee1cd358a5"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/one_two_transition.dart",
+      "bytes": 1561,
+      "sha256": "bea8f5a5914a0bf5441301fd5373b39d9c92f0f2a9b53cb9b7a76c3dc76a0f3b"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/rail_transition.dart",
+      "bytes": 1743,
+      "sha256": "ec375562d63fe99efe4d7fc789e885ada888427edcec5b4578cdda0ebcdc448d"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/scheme.dart",
+      "bytes": 17488,
+      "sha256": "23198bbcc307f68f79f638e4a53f202aadbc912ec775559b6ee9f16690a4226b"
+    },
+    {
+      "path": "reference/flutter_sample_app/lib/src/typography_screen.dart",
+      "bytes": 2394,
+      "sha256": "55301643d0e1501d6ba4353e9122f608f4e55ff9dea65c2c775a00bbc8985204"
+    },
+    {
+      "path": "DorotiTestbedApp/assets/fonts/Roboto-bold.ttf",
+      "sha256": "7d0b991ee3e0be7af01ad7ea8cd2beea6c00a25e679a0226b6737f079aafff86",
+      "bytes": 170760
+    },
+    {
+      "path": "DorotiTestbedApp/assets/fonts/Roboto-medium.ttf",
+      "sha256": "f205cc511821ea56078a105557fcea6253129404d411c997e1866fbd006abb68",
+      "bytes": 172064
+    },
+    {
+      "path": "DorotiTestbedApp/assets/fonts/Roboto-regular.ttf",
+      "sha256": "79e851404657dac2106b3d22ad256d47824a9a5765458edb72c9102a45816d95",
+      "bytes": 171676
+    }
+  ],
+  "externalSources": [
+    {
+      "path": "C:/Users/parti/flutter/engine/src/flutter/lib/web_ui/lib/src/engine/canvaskit/util.dart",
+      "sha256": "ae6177caac904ebf227e0e7507ddc8456a7c32f06f556f32d66a24f19f88fa9d",
+      "use": "D24 CanvasKit directional shadow parameters",
+      "license": "Flutter BSD-3-Clause"
+    }
+  ]
+}

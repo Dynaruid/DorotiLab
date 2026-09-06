@@ -6,6 +6,35 @@ DorotiTestbedApp dogfoods the platform-workspace contract. The root project is t
 
 The application ID is `dev.doroti.testbed` (`dev.doroti.testbed.macos` for AppKit). The renamed app installs separately from the previous demo package.
 
+## Material sample mode
+
+The C# Material sample is available explicitly while its acceptance gates in
+[work.md](../work.md) are being completed. Diagnostics remains the default.
+The renderer defaults remain Windows Vulkan and Web CanvasKit Worker.
+
+```powershell
+$env:DOROTI_TESTBED_MODE = 'sample'
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
+# Return to the original diagnostics gallery:
+$env:DOROTI_TESTBED_MODE = 'diagnostics'
+```
+
+For Web, open `http://127.0.0.1:5088/?dorotiTestbedMode=sample` using the default
+CanvasKit Worker. `?dorotiTestbedMode=diagnostics` selects the original gallery.
+F0/F1/F2 resize fixtures take priority over sample mode. The sample uses an opaque
+Material surface and contains Components, Color, Typography and Elevation, nine
+seed colors, six image themes, and a local/URL Image demo. Image themes require
+network access to `flutter.github.io`; the URL demo uses `plus.unsplash.com`.
+Failed theme loads preserve the last successful theme and offer Retry. The local
+WebP, MaterialIcons and Roboto regular/medium/bold fonts are embedded. Their licenses and provenance are in
+[src/MaterialSample](src/MaterialSample) and [assets/fonts](assets/fonts).
+
+External HTTP(S) links use a view-scoped URL launcher. A successful result means
+the host accepted the request; Web popup blocking is reported to the user.
+Native URL opening, physical display/IME and other OS acceptance require separate
+live verification. See [sample validation](../Doroti/validation/material-sample/README.md)
+for commands and the current evidence boundaries.
+
 ## Quick start
 
 Install the .NET 10 SDK and PowerShell 7. Building the Web host from this source tree also requires Node.js 20 or newer and npm 10 or newer so the pinned CanvasKit assets can be restored and verified. Then run one of the following commands from the repository root. The first run can take a while because it restores packages and builds the selected runner.

@@ -20,6 +20,7 @@ internal sealed class CanvasKitResourceRegistry :
     private readonly Dictionary<DisplayResourceReference, Entry> _entries = [];
     private readonly Dictionary<string, DisplayResourceReference> _effects = new(StringComparer.Ordinal);
     private DisplayResourceReference? _defaultFont;
+    private readonly Dictionary<string, DisplayResourceReference> _fontFamilies = new(StringComparer.Ordinal);
     private bool _disposed;
 
     public DisplayResourceReference DefaultFont
@@ -39,7 +40,27 @@ internal sealed class CanvasKitResourceRegistry :
         }
     }
 
-    internal string RegisterFont(ReadOnlyMemory<byte> bytes, string family = "DorotiFallback")
+    public DisplayResourceReference ResolveFont(string? family)
+    {
+        lock (_gate) return family is not null && _fontFamilies.TryGetValue(family, out var font) ? font : DefaultFont;
+    }
+
+    public IReadOnlyList<DisplayResourceReference> RegisteredFonts
+    {
+        get { lock (_gate) { ObjectDisposedException.ThrowIf(_disposed, this); return _entries.Values.Where(entry => entry.Kind == "font").Select(entry => entry.Reference).ToArray(); } }
+    }
+
+    internal string RegisterFont(ReadOnlyMemory<byte> bytes, string family = "DorotiFallback") => RegisterFontCore(bytes, family).Label;
+
+    internal async ValueTask RegisterFontAsync(ReadOnlyMemory<byte> bytes, string family, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var registration = RegisterFontCore(bytes, family);
+        try { await registration.Entry.Completion.Task.WaitAsync(TimeSpan.FromSeconds(30), cancellationToken); }
+        catch { Release(registration.Entry.Reference); throw; }
+    }
+
+    private (string Label, Entry Entry) RegisterFontCore(ReadOnlyMemory<byte> bytes, string family)
     {
         if (bytes.IsEmpty) throw new ArgumentException("Font bytes cannot be empty.", nameof(bytes));
         ArgumentException.ThrowIfNullOrWhiteSpace(family);
@@ -76,7 +97,8 @@ internal sealed class CanvasKitResourceRegistry :
                 throw;
             }
         }
-        return $"{family}/{reference.Id}/{reference.Version}";
+        lock (_gate) _fontFamilies[family] = reference;
+        return ($"{family}/{reference.Id}/{reference.Version}", entry);
     }
 
     internal async ValueTask<UiImage> RegisterImageAsync(
@@ -288,6 +310,11 @@ internal sealed class CanvasKitResourceRegistry :
                 foreach (var key in _effects.Where(pair => pair.Value == reference).Select(pair => pair.Key).ToArray())
                     _effects.Remove(key);
             }
+            if (reference.Kind == DisplayResourceKind.Font)
+            {
+                foreach (var family in _fontFamilies.Where(pair => pair.Value == reference).Select(pair => pair.Key).ToArray()) _fontFamilies.Remove(family);
+                if (_defaultFont == reference) _defaultFont = _entries.Values.FirstOrDefault(value => value.Kind == "font")?.Reference;
+            }
             release = entry;
         }
         if (release is not null)
@@ -315,6 +342,7 @@ internal sealed class CanvasKitResourceRegistry :
             entries = _entries.Values.ToArray();
             _entries.Clear();
             _effects.Clear();
+            _fontFamilies.Clear();
             _defaultFont = null;
         }
         foreach (var entry in entries)

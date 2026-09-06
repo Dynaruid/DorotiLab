@@ -14,7 +14,12 @@ using Match = Doroti.Runtime.DartMatch;
 
 namespace Doroti.Framework.Widgets;
 
-public abstract class InheritedModel<T> : InheritedWidget where T : notnull
+internal interface IInheritedModelAspect
+{
+    bool isSupportedAspect(object aspect);
+}
+
+public abstract class InheritedModel<T> : InheritedWidget, IInheritedModelAspect where T : notnull
 {
     protected InheritedModel(global::Doroti.Framework.Foundation.Key? key = null, Widget child = default!) : base(key: key, child: child)
     {
@@ -33,7 +38,7 @@ public abstract class InheritedModel<T> : InheritedWidget where T : notnull
         results.Add(model);
         DartRuntimePrimitives.Assert(() => (model.widget is T));
         var modelWidget = ((T?)(object?)model.widget)!;
-        if (((bool)((dynamic)modelWidget).isSupportedAspect(aspect)))
+        if (((IInheritedModelAspect)modelWidget).isSupportedAspect(aspect))
         {
             return;
         }
@@ -123,4 +128,3 @@ public class InheritedModelElement<T> : InheritedElement
     }
 
 }
-

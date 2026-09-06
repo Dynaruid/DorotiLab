@@ -254,6 +254,9 @@ public sealed class ChannelBuffers
     }
 
     public void clearListener(string channel) => _listeners.Remove(channel);
+
+    internal Future? NotifyFramework(string channel, ByteData data) =>
+        _listeners.TryGetValue(channel, out var listener) ? listener(data, _ => { }) : null;
 }
 
 public static class Dart_uiLibrary
@@ -536,13 +539,19 @@ public static class Dart_uiLibrary
 
     public static ChannelBuffers channelBuffers => global::Doroti.Ui.PlatformDispatcher.instance.channelBuffers;
 
-    public static Doroti.Runtime.Future loadFontFromList(
+    public static async Doroti.Runtime.Future loadFontFromList(
         Doroti.Runtime.Uint8List list,
         string? fontFamily = null)
     {
         ArgumentNullException.ThrowIfNull(list);
-        _ = fontFamily;
-        return Doroti.Runtime.Future.value();
+        var dispatcher = PlatformDispatcher.instance;
+        var view = dispatcher.implicitView ?? dispatcher.views.FirstOrDefault()
+            ?? throw new DorotiCapabilityException(DorotiCapabilityIds.GraphicsFont, null, DartUiInvocation.Managed("loadFontFromList"), "font loading requires an attached view");
+        await view.RequireCapability<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, DartUiInvocation.Managed("loadFontFromList"))
+            .RegisterFontAsync(new Doroti.Runtime.ByteData(list).asMemory(), fontFamily);
+        var notification = dispatcher.channelBuffers.NotifyFramework("flutter/system",
+            new Doroti.Runtime.ByteData(new Doroti.Runtime.Uint8List(System.Text.Encoding.UTF8.GetBytes("{\"type\":\"fontsChange\"}"))));
+        if (notification is not null) await notification;
     }
 
     public static class RootIsolateToken

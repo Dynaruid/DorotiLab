@@ -91,6 +91,7 @@ const inboundKinds = new Set([
 ]);
 const pool = new TransferBufferPool(4);
 const stageTrace = new CanvasKitStageTrace();
+let testbedMode = "diagnostics";
 let resizeFixture = "F3";
 let adoptManagedCopy = false;
 let pictureCache = false;
@@ -362,6 +363,7 @@ export async function startCanvasKitRole(context: CanvasKitRoleContext): Promise
   const envelope = context.initEnvelope;
   stageTrace.enabled = envelope.stageTrace === true;
   resizeFixture = String(envelope.resizeFixture ?? "F3");
+  testbedMode = String(envelope.testbedMode ?? "diagnostics");
   if (!["baseline", "owned"].includes(String(envelope.copyOwnership ?? "baseline"))) throw new Error("Unknown copy ownership");
   adoptManagedCopy = envelope.copyOwnership === "owned";
   pictureCache = envelope.pictureCache === true;
@@ -789,7 +791,7 @@ async function startManagedRuntime(): Promise<void> {
     type RuntimeBuilder = { create(): Promise<DotnetRuntime>; withEnvironmentVariables(values: Record<string, string>): RuntimeBuilder };
     const dotnetModule = await import(resolvedDotnetModuleUrl) as { dotnet: RuntimeBuilder };
     const runtime = await dotnetModule.dotnet.withEnvironmentVariables({
-      DOROTI_RESIZE_FIXTURE: resizeFixture, DOROTI_PICTURE_CACHE: pictureCache ? "1" : "0",
+      DOROTI_TESTBED_MODE: testbedMode, DOROTI_RESIZE_FIXTURE: resizeFixture, DOROTI_PICTURE_CACHE: pictureCache ? "1" : "0",
       DOROTI_ENCODING_CACHE: encodingCache ? "1" : "0",
       DOROTI_STAGE_TRACE: stageTrace.enabled ? "1" : "0",
     }).create();

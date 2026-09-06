@@ -4,8 +4,10 @@ Baseline: repository `48343b7c8511c040faba8704e59aa32a80062374`, local
 `reference/flutter_sample_app/lib/main.dart` and `lib/src`. SDK resolved by the
 sample's package config: `C:/Users/parti/flutter`, revision
 `6b182d2c7585eba26d4edce0f97630effd256c33` (SDK `pubspec.lock` locally modified).
-This is a source inventory, not runtime acceptance. All sample integration rows
-remain `notVerified` until implemented and exercised.
+This is the original source inventory, not a blanket runtime acceptance. Integration results are maintained in [work.md section 9](../../../work.md#9-2026-09-06-전체-작업-후속-구현-진행-중).
+The initial blocker table below is historical. All four screens and six component groups
+now have C# implementations in `DorotiTestbedApp/src/MaterialSample`; the implementation
+and validation sections below supersede the initial "blocked" and "notVerified" states.
 
 `Doroti/eng/snapshot-material-sample.ps1 -FetchImages` records source, tests,
 pubspec/lock, license, font, SDK SearchAnchor/ColorScheme and color-utilities hashes
@@ -36,7 +38,7 @@ the behavior. Reference empty callbacks stay display examples.
 
 | Group / source class | States and callback effects | Doroti public API |
 | --- | --- | --- |
-| Actions / Buttons, ButtonsWithoutIcon, ButtonsWithIcon | Toggle enabled/disabled variants; Elevated/Filled/tonal/Outlined/Text, with and without icon; display button callbacks empty | ElevatedButton, FilledButton/CreateTonal, OutlinedButton, TextButton, icon factories |
+| Actions / Buttons, ButtonsWithoutIcon, ButtonsWithIcon | Fixed enabled/disabled/icon columns; Elevated/Filled/tonal/Outlined/Text, with and without icon; display button callbacks empty | ElevatedButton, FilledButton/CreateTonal, OutlinedButton, TextButton, icon factories |
 | Actions / FloatingActionButtons | small/default/large/extended; display callbacks | FloatingActionButton factories |
 | Actions / IconToggleButtons | Four independent selected flags; standard/filled/tonal/outlined, disabled variants | IconButton, isSelected/onPressed |
 | Actions / SegmentedButtons, SingleChoice | day/week/month/year single selection, default day; update selected set | SegmentedButton<T>, ButtonSegment<T> |
@@ -84,6 +86,31 @@ additional deletion demo needs its own acceptance condition.
 Dependencies: P3 Search uses D04; P4 image theme uses D01 → D02 → D03 and
 async latest-selection/error/dispose handling; P4 Color link uses D05. P1/P2
 composition does not prove any blocker complete. No renderer default changes.
+
+## C# integration and current acceptance
+
+`SampleApp.cs` owns theme revisions, navigation and reversible responsive transitions;
+`Components.cs`/`Selection.cs` contain all six groups; `Screens.cs` and `SchemePreview.cs`
+contain the other destinations; `CachedSlivers.cs` owns measured section heights;
+`Decorations.cs` contains section focus/card wrappers and the drawer; `ImageDemo.cs`
+uses the real image pipeline. Source and font provenance is in `src/MaterialSample/source-provenance.json`.
+
+Search minimal-argument construction and the mounted Web route both pass, including
+selection, history, reopen and Escape. All nine seed choices and six real image themes
+pass; intercepted corrupt/late responses verify retry and last-success/latest-selection
+behavior. URL service contracts and Web opening/blocked results pass. Public font, default
+theme dispatch, typed routes, nullable restoration, calendar normalization, private
+InheritedModel lookup, overlay layout, zero-duration animation completion and DPR semantics
+have independent regressions. See work section 9 for exact artifact labels and newer tests.
+
+The source comparison also corrected FAB order, selected destination icons, badge counts,
+navigation example destinations, checkbox/radio list tiles, chip enabled/disabled states,
+menu selection preview, tabs and app bars. Reference InputChip delete callbacks remain empty.
+The final `material-sample-final-v27` integration run passes all 13 scenarios. Section
+height estimates now survive selection rebuilds, and Web radio semantics keeps checked
+state separate from tile highlighting. Light/dark body measurements are recorded in
+`visual-comparison-v2.json`. These results do not establish full pixel parity, every
+focus transition, carousel snapping accuracy or physical IME acceptance.
 
 ## Image repair and reference extension — 2026-09-06
 

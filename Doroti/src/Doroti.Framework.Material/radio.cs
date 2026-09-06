@@ -527,7 +527,7 @@ internal class _RadioDefaultsM3__radio : RadioThemeData
         this.context = context;
     }
 
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> fillColor
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> fillColor
     {
         get
         {
@@ -575,7 +575,7 @@ internal class _RadioDefaultsM3__radio : RadioThemeData
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> overlayColor
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> overlayColor
     {
         get
         {
@@ -615,7 +615,7 @@ internal class _RadioDefaultsM3__radio : RadioThemeData
             return default!;
         }
     }
-    public virtual MaterialTapTargetSize materialTapTargetSize => this._theme.materialTapTargetSize;
-    public virtual VisualDensity visualDensity => this._theme.visualDensity;
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(WidgetStateProperty.all<global::Doroti.Ui.Color>(Colors.transparent));
+    public override MaterialTapTargetSize? materialTapTargetSize => this._theme.materialTapTargetSize;
+    public override VisualDensity visualDensity => this._theme.visualDensity;
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color>>(WidgetStateProperty.all<global::Doroti.Ui.Color>(Colors.transparent));
 }

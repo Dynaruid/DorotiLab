@@ -148,9 +148,11 @@ public static unsafe partial class DorotiQtRunner
                 .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
                 .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, host)
                 .Register<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, host)
+                .Register<IUrlLauncherHostCapability>(DorotiCapabilityIds.UrlLauncher, host)
                 .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host)
                 .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, renderer)
                 .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, renderer)
+                .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, renderer)
                 .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer)
                 .Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, renderer);
             _application.Configure(capabilities, messages);

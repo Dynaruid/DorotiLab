@@ -827,7 +827,7 @@ internal class _CheckboxDefaultsM3__checkbox : CheckboxThemeData
         this._colors = Theme.of(context).colorScheme;
     }
 
-    public virtual global::Doroti.Framework.Widgets.WidgetStateBorderSide? side
+    public override global::Doroti.Framework.Widgets.WidgetStateBorderSide? side
     {
         get
         {
@@ -867,7 +867,7 @@ internal class _CheckboxDefaultsM3__checkbox : CheckboxThemeData
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> fillColor
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> fillColor
     {
         get
         {
@@ -895,7 +895,7 @@ internal class _CheckboxDefaultsM3__checkbox : CheckboxThemeData
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> checkColor
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> checkColor
     {
         get
         {
@@ -923,7 +923,7 @@ internal class _CheckboxDefaultsM3__checkbox : CheckboxThemeData
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> overlayColor
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color> overlayColor
     {
         get
         {
@@ -978,8 +978,8 @@ internal class _CheckboxDefaultsM3__checkbox : CheckboxThemeData
             return default!;
         }
     }
-    public virtual double splashRadius => DartRuntimePrimitives.ConvertValue<double>((40.0 / 2L));
-    public virtual MaterialTapTargetSize materialTapTargetSize => this._theme.materialTapTargetSize;
-    public virtual VisualDensity visualDensity => VisualDensity.standard;
-    public virtual global::Doroti.Framework.Painting.OutlinedBorder shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(2.0))));
+    public override double? splashRadius => DartRuntimePrimitives.ConvertValue<double>((40.0 / 2L));
+    public override MaterialTapTargetSize? materialTapTargetSize => this._theme.materialTapTargetSize;
+    public override VisualDensity visualDensity => VisualDensity.standard;
+    public override global::Doroti.Framework.Painting.OutlinedBorder shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.OutlinedBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(2.0))));
 }

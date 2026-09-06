@@ -58,6 +58,15 @@ internal static class MaterialSampleContracts
                 "explicit editing options are retained");
             return Task.CompletedTask;
         });
+        await Check("D05-D11/host-boundaries", SampleHostContracts.Verify);
+        await Check("D09/default-theme-dispatch", () => { SampleDefaultsContracts.Verify(); return Task.CompletedTask; });
+        await Check("D08/drawer-typed-key", () =>
+        {
+            var key = new GlobalKey<Material.DrawerControllerState>();
+            var drawer = new Material.DrawerController(key: key, alignment: Material.DrawerAlignment.end, child: new Text("Independent drawer"));
+            Require(ReferenceEquals(drawer.key, key), "typed drawer key must retain identity without invariant generic casts");
+            return Task.CompletedTask;
+        });
         if (!searchOnly)
         {
             await Check("D01-D02/picture-raw-rgba", async () =>

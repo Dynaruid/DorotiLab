@@ -11,6 +11,7 @@ namespace Doroti.Host.Web;
 internal interface IBrowserGraphicsCapabilities :
     ISceneHostCapability,
     IParagraphHostCapability,
+    IFontHostCapability,
     IImageHostCapability,
     ISemanticsHostCapability,
     IDisposable

@@ -1175,7 +1175,7 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
         this.context = context;
     }
 
-    public virtual ButtonStyle? style
+    public override ButtonStyle? style
     {
         get
         {

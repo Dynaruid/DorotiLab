@@ -163,7 +163,7 @@ public class DropdownMenu<T> : global::Doroti.Framework.Widgets.StatefulWidget
             {
                 return default;
             }
-            return DartRuntimePrimitives.ConvertValue<InputDecorationThemeData>(this._inputDecorationTheme);
+            return this._inputDecorationTheme is InputDecorationTheme theme ? theme.data : (InputDecorationThemeData)this._inputDecorationTheme;
             return default!;
         }
     }
@@ -1285,7 +1285,7 @@ internal class _DropdownMenuDefaultsM3__dropdown_menu : DropdownMenuThemeData
     }
 
     public override global::Doroti.Framework.Painting.TextStyle? textStyle => this._theme.textTheme.bodyLarge;
-    public virtual MenuStyle menuStyle
+    public override MenuStyle menuStyle
     {
         get
         {
@@ -1293,7 +1293,7 @@ internal class _DropdownMenuDefaultsM3__dropdown_menu : DropdownMenuThemeData
             return default!;
         }
     }
-    public virtual InputDecorationThemeData inputDecorationTheme
+    public override InputDecorationThemeData inputDecorationTheme
     {
         get
         {

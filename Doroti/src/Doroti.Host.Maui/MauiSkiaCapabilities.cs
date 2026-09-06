@@ -9,6 +9,7 @@ namespace Doroti.Host.Maui;
 internal sealed class MauiSkiaCapabilities :
     ISceneHostCapability,
     IParagraphHostCapability,
+    IFontHostCapability,
     IImageHostCapability,
     ISemanticsHostCapability,
     IDisposable
@@ -132,6 +133,9 @@ internal sealed class MauiSkiaCapabilities :
 
     public void Update(SemanticsUpdate update, DartUiInvocation invocation) =>
         _renderer.Update(update, invocation);
+
+    public ValueTask RegisterFontAsync(ReadOnlyMemory<byte> bytes, string? family, CancellationToken cancellationToken = default) =>
+        _renderer.RegisterFontAsync(bytes, family, cancellationToken);
 
     public void Dispose() => _renderer.Dispose();
 

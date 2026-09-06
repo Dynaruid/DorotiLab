@@ -2392,6 +2392,17 @@ export function clearTextInput(hostId: number): void {
   host.canvas.focus({ preventScroll: true });
 }
 
+export async function launchExternalUrl(url: string): Promise<string> {
+  if (activeWorkerBridge) return activeWorkerBridge.requestControl("url-launch", { url });
+  const parsed = new URL(url);
+  if (parsed.protocol !== "https:" && parsed.protocol !== "http:") throw new Error("Unsupported URL scheme");
+  // A Worker round trip can lose transient activation. Report the browser result explicitly.
+  const opened = window.open(parsed.href, "_blank");
+  if (!opened) return "blocked";
+  opened.opener = null;
+  return "opened";
+}
+
 export async function readClipboardText(): Promise<string> {
   if (activeWorkerBridge) return activeWorkerBridge.requestControl("clipboard-read", {});
   if (!navigator.clipboard?.readText) throw new Error("Doroti clipboard read capability is unavailable.");
@@ -3082,6 +3093,7 @@ export async function startDorotiWorkerHost(
           const kind = String(message.controlKind);
           const payload = (message.payload ?? {}) as Record<string, unknown>;
           void (async () => {
+            if (kind === "url-launch") return launchExternalUrl(String(payload.url));
             if (kind === "clipboard-read") return readClipboardText();
             if (kind === "clipboard-write") return writeClipboardText(String(payload.text));
             if (kind === "plugin") return invokePlugin(
@@ -3460,7 +3472,11 @@ function applySemanticsFlags(element: HTMLElement, flags: SemanticsFlags | undef
   if (flags.liveRegion) element.setAttribute("aria-live", "polite");
   if (flags.checked && flags.checked !== "none") element.setAttribute("aria-checked", flags.checked === "mixed" ? "mixed" : String(flags.checked === "isTrue"));
   if (flags.selected !== undefined && flags.selected !== null) {
-    element.setAttribute(role === "radio" ? "aria-checked" : "aria-selected", String(flags.selected));
+    // A merged RadioListTile has the radio's checked state and the independent
+    // tile-highlight selected state. Only selected-only segmented radios derive
+    // aria-checked from selected; a tile highlight must not overwrite a radio.
+    if (role !== "radio") element.setAttribute("aria-selected", String(flags.selected));
+    else if (!flags.checked || flags.checked === "none") element.setAttribute("aria-checked", String(flags.selected));
   }
   if (flags.enabled === false) element.setAttribute("aria-disabled", "true");
   if (flags.toggled !== undefined && flags.toggled !== null) {
@@ -3497,6 +3513,7 @@ function semanticsRole(node: SemanticsNode): string {
   if (key === "cell") return "cell";
   if (key === "table") return "table";
   if (key.includes("radiogroup")) return "radiogroup";
+  if (key === "radio") return "radio";
   if (key.includes("tooltip")) return "tooltip";
   if (key.includes("button")) return "button";
   if (key.includes("textfield")) return "textbox";

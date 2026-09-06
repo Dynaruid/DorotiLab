@@ -13,6 +13,7 @@ internal sealed unsafe class QtHostAdapter :
     ITextInputHostCapability,
     IPlatformEnvironmentHostCapability,
     IPlatformServicesHostCapability,
+    IUrlLauncherHostCapability,
     ISkiaSceneRendererHost
 {
     private delegate void TextStateCallback(QtNativeV2.TextState* state);
@@ -38,6 +39,9 @@ internal sealed unsafe class QtHostAdapter :
             ViewPadding.zero, ViewPadding.zero, AppLifecycleState.resumed, 0, 0);
         Configuration = new(ResolveLocales(), Brightness.light, false, false, HostOperatingSystem.linux);
     }
+
+    public ValueTask<UrlLaunchResult> LaunchUrlAsync(string absoluteUrl, CancellationToken cancellationToken = default) =>
+        QtUrlLauncher.LaunchUrlAsync(absoluteUrl, cancellationToken);
 
     public ViewMetrics Metrics { get; private set; }
     public PlatformConfiguration Configuration { get; private set; }

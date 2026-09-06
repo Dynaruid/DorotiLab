@@ -15,7 +15,7 @@ public sealed class SkiaFallbackFontCollection : IDisposable
 
     public IReadOnlyList<string> Families => _fonts.Select(font => font.Typeface.FamilyName).ToArray();
 
-    public string Register(ReadOnlyMemory<byte> bytes)
+    public string Register(ReadOnlyMemory<byte> bytes, string? family = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         if (bytes.IsEmpty) throw new ArgumentException("Font data cannot be empty.", nameof(bytes));
@@ -23,7 +23,7 @@ public sealed class SkiaFallbackFontCollection : IDisposable
         using var data = SKData.CreateCopy(bytes.ToArray());
         var typeface = SKTypeface.FromData(data)
             ?? throw new InvalidDataException("Skia could not decode the supplied fallback font.");
-        var font = new RegisteredFont(typeface);
+        var font = new RegisteredFont(typeface, family);
         _fonts.Add(font);
         return typeface.FamilyName;
     }
@@ -34,6 +34,9 @@ public sealed class SkiaFallbackFontCollection : IDisposable
             throw new ArgumentOutOfRangeException(nameof(codePoint));
         return MatchCharacter(codePoint) is not null;
     }
+
+    internal SKTypeface? MatchFamily(string? family) => string.IsNullOrWhiteSpace(family) ? null :
+        _fonts.LastOrDefault(font => string.Equals(font.Alias ?? font.Typeface.FamilyName, family, StringComparison.OrdinalIgnoreCase))?.Typeface;
 
     internal SKTypeface? MatchCharacter(int codePoint)
     {
@@ -53,8 +56,9 @@ public sealed class SkiaFallbackFontCollection : IDisposable
         _fonts.Clear();
     }
 
-    private sealed class RegisteredFont(SKTypeface typeface) : IDisposable
+    private sealed class RegisteredFont(SKTypeface typeface, string? alias) : IDisposable
     {
+        internal string? Alias { get; } = alias;
         internal SKTypeface Typeface { get; } = typeface;
         internal SKFont Probe { get; } = new(typeface, 16);
 

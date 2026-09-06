@@ -39,9 +39,14 @@ public static class DartRuntimePrimitives
         long second = 0,
         long millisecond = 0,
         long microsecond = 0) =>
-        new DateTime(checked((int)year), checked((int)month), checked((int)day), checked((int)hour),
-            checked((int)minute), checked((int)second), checked((int)millisecond), DateTimeKind.Unspecified)
-            .AddTicks(checked(microsecond * 10));
+        // Dart constructors normalize overflowing fields (for example month 13
+        // and day 0). Keep that behavior within System.DateTime's supported range.
+        new DateTime(checked((int)year), 1, 1, 0, 0, 0, DateTimeKind.Unspecified)
+            .AddMonths(checked((int)(month - 1)))
+            .AddTicks(checked((day - 1) * TimeSpan.TicksPerDay
+                + hour * TimeSpan.TicksPerHour + minute * TimeSpan.TicksPerMinute
+                + second * TimeSpan.TicksPerSecond + millisecond * TimeSpan.TicksPerMillisecond
+                + microsecond * 10));
     private sealed class DartNullRuntimeType;
 
     public static Exception AsException(object? value) =>

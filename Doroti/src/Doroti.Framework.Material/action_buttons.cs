@@ -28,7 +28,7 @@ public abstract class _ActionButton__action_buttons : IconButton
     public override global::Doroti.Framework.Widgets.Widget build(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMaterialLocalizations(context));
-        return ((global::Doroti.Framework.Widgets.Widget)(object?)new IconButton(key: StandardComponentTypeMembers.key(DartRuntimePrimitives.RequireValue(this.standardComponent)), icon: this.icon, style: this.style, color: this.color, tooltip: _getTooltip(context), onPressed: (() =>
+        return ((global::Doroti.Framework.Widgets.Widget)(object?)new IconButton(key: this.standardComponent is { } component ? StandardComponentTypeMembers.key(component) : null, icon: this.icon, style: this.style, color: this.color, tooltip: _getTooltip(context), onPressed: (() =>
         {
             if ((this.onPressed is not null))
             {

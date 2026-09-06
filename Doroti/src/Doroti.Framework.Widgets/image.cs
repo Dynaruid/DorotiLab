@@ -330,9 +330,12 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         _invertColors = (MediaQuery.maybeInvertColorsOf(this.context) ?? global::Doroti.Framework.Semantics.SemanticsBinding.instance.accessibilityFeatures.invertColors);
     }
 
+    private ScrollAwareImageProvider<T> CreateScrollAwareProvider<T>(global::Doroti.Framework.Painting.ImageProvider<T> imageProvider) =>
+        new(context: this._scrollAwareContext, imageProvider: imageProvider);
+
     internal virtual void _resolveImage()
     {
-        var provider = new ScrollAwareImageProvider<object>(context: this._scrollAwareContext, imageProvider: ((Image)this.widget).image);
+        dynamic provider = CreateScrollAwareProvider(((Image)this.widget).image);
         global::Doroti.Framework.Painting.ImageStream newStream = ((global::Doroti.Framework.Painting.ImageStream)(object?)provider.resolve(ImageLibrary.createLocalImageConfiguration(this.context, size: (((((Image)this.widget).width is not null) && (((Image)this.widget).height is not null)) ? new global::Doroti.Ui.Size(DartRuntimePrimitives.RequireValue(((Image)this.widget).width), DartRuntimePrimitives.RequireValue(((Image)this.widget).height)) : null))));
         _updateSourceStream(newStream);
     }

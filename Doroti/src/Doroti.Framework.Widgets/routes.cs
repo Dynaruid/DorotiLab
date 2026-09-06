@@ -738,13 +738,19 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public static bool? isCurrentOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.isCurrent)?.isCurrent;
-    public static bool? canPopOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.canPop)?.canPop;
-    public static RouteSettings? settingsOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.settings)?.settings;
-    public static bool? isActiveOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.isActive)?.isActive;
-    public static bool? isFirstOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.isFirst)?.isFirst;
-    public static bool? opaqueOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.opaque)?.opaque;
-    public static RoutePopDisposition? popDispositionOf(BuildContext context) => ModalRoute<T>._of<T>(context, _ModalRouteAspect__routes.popDisposition)?.popDisposition;
+    internal static RouteBase? untypedOf(BuildContext context) => context.dependOnInheritedWidgetOfExactType<_ModalScopeStatus__routes>()?.route;
+
+    private static _ModalScopeStatus__routes? ScopeOf(BuildContext context, _ModalRouteAspect__routes aspect) =>
+        InheritedModel<object>.inheritFrom<_ModalScopeStatus__routes>(context, aspect: aspect);
+    // These queries do not depend on the route's result type. Search uses a string
+    // route inside object-valued navigators; invariant generic casts are invalid here.
+    public static bool? isCurrentOf(BuildContext context) => ScopeOf(context, _ModalRouteAspect__routes.isCurrent)?.isCurrent;
+    public static bool? canPopOf(BuildContext context) => ScopeOf(context, _ModalRouteAspect__routes.canPop)?.canPop;
+    public static RouteSettings? settingsOf(BuildContext context) => ScopeOf(context, _ModalRouteAspect__routes.settings)?.route.settings;
+    public static bool? isActiveOf(BuildContext context) => ScopeOf(context, _ModalRouteAspect__routes.isActive)?.route.isActive;
+    public static bool? isFirstOf(BuildContext context) => ScopeOf(context, _ModalRouteAspect__routes.isFirst)?.route.isFirst;
+    public static bool? opaqueOf(BuildContext context) => ScopeOf(context, _ModalRouteAspect__routes.opaque)?.opaque;
+    public static RoutePopDisposition? popDispositionOf(BuildContext context) => ScopeOf(context, _ModalRouteAspect__routes.popDisposition)?.route.popDisposition;
     public virtual void setState(global::System.Action fn)
     {
         if ((((GlobalKey<_ModalScopeState__routes<T>>)this._scopeKey).currentState is not null))

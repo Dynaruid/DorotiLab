@@ -307,7 +307,8 @@ export async function openDoroti(page: Page, experimentQuery = process.env.DOROT
   const rendererMode = process.env.DOROTI_WEB_RENDERER_MODE;
   const rendererQuery = rendererMode && rendererMode !== "auto"
     ? `&dorotiRenderer=${encodeURIComponent(rendererMode)}` : "";
-  await page.goto(`${baseUrl}/?dorotiResizeDiagnostics=1${rendererQuery}${experimentQuery}`, { waitUntil: "domcontentloaded" });
+  const modeQuery = experimentQuery.includes("dorotiTestbedMode=") ? "" : "&dorotiTestbedMode=diagnostics";
+  await page.goto(`${baseUrl}/?dorotiResizeDiagnostics=1${rendererQuery}${modeQuery}${experimentQuery}`, { waitUntil: "domcontentloaded" });
   await expect(page.locator(".doroti-root")).toBeVisible({ timeout: 120_000 });
   await expect(page.locator("#doroti-surface")).toBeVisible({ timeout: 120_000 });
   await page.waitForFunction(() => {

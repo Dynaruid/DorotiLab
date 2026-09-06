@@ -390,7 +390,7 @@ internal class _BadgeDefaultsM3__badge : BadgeThemeData
         this.context = context;
     }
 
-    public virtual global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.error);
-    public virtual global::Doroti.Ui.Color? textColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onError);
+    public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.error);
+    public override global::Doroti.Ui.Color? textColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onError);
     public override global::Doroti.Framework.Painting.TextStyle? textStyle => Theme.of(this.context).textTheme.labelSmall;
 }

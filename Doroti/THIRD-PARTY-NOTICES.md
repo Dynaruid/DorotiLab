@@ -56,3 +56,21 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - License: LGPL-2.1-or-later; SPDX notices are preserved in each vendored XML file
 
 Distribution packaging must reproduce the applicable notice and license text for every promoted third-party source.
+
+
+## DorotiTestbedApp Material sample adaptation
+
+`DorotiTestbedApp/src/MaterialSample/` adapts the local Flutter Material sample
+in `reference/flutter_sample_app` (Flutter team, BSD-3-Clause). The original
+copyright headers and license are retained in `LICENSE.flutter` in that directory.
+The local Image demo and its WebP resource are the already retained reference extension.
+
+`DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf` is copied from the pinned
+local Flutter SDK `bin/cache/artifacts/material_fonts/materialicons-regular.otf`.
+Its pinned SDK license (CC BY 4.0) is retained alongside it as `LICENSE.materialicons.txt`.
+The Roboto regular/medium/bold fonts come from the same SDK directory; their
+Apache-2.0 license is retained as `LICENSE.roboto.txt`.
+
+The CanvasKit `drawShadow` adapter follows the directional light and tonal-color
+parameters in the pinned Flutter engine's `lib/web_ui/lib/src/engine/canvaskit/util.dart`
+(Flutter authors, BSD-3-Clause). It calls CanvasKit's Skia shadow implementation.

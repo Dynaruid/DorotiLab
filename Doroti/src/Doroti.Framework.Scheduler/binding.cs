@@ -730,6 +730,8 @@ public abstract class SchedulerBinding : BindingBase
 
     public virtual PerformanceModeRequestHandle? requestPerformanceMode(DartPerformanceMode mode)
     {
+        // Managed hosts without a Dart VM decline this optional hint explicitly.
+        if (!PlatformDispatcher.instance.supportsDartPerformanceMode) return null;
         if (((_performanceMode is not null) && (!object.Equals(_performanceMode, mode))))
         {
             return null;

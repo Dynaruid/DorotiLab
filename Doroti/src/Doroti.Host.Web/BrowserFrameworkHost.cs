@@ -59,9 +59,11 @@ public sealed class BrowserFrameworkHost : IDisposable
             .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
             .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, host)
             .Register<IPlatformServicesHostCapability>(DorotiCapabilityIds.PlatformServices, host)
+                .Register<IUrlLauncherHostCapability>(DorotiCapabilityIds.UrlLauncher, host)
             .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host)
             .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, graphics)
             .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, graphics)
+                .Register<IFontHostCapability>(DorotiCapabilityIds.GraphicsFont, graphics)
             .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, graphics)
             .Register<ISemanticsHostCapability>(DorotiCapabilityIds.AccessibilitySemantics, graphics);
         if (application is null)

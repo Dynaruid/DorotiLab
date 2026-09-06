@@ -251,19 +251,19 @@ internal class _CarouselViewState__carousel : global::Doroti.Framework.Widgets.S
         double effectiveElevation = ((((CarouselView)this.widget).elevation ?? carouselTheme.elevation) ?? 0.0);
         global::Doroti.Framework.Painting.ShapeBorder effectiveShape = ((((CarouselView)this.widget).shape ?? carouselTheme.shape) ?? new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular(28.0))));
         global::Doroti.Ui.Clip effectiveItemClipBehavior = ((((CarouselView)this.widget).itemClipBehavior ?? carouselTheme.itemClipBehavior) ?? Clip.antiAlias);
-        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> effectiveOverlayColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)(((((CarouselView)this.widget).overlayColor ?? carouselTheme.overlayColor) ?? (global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, CarouselView>)((states) =>
+        global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> effectiveOverlayColor = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)(((((CarouselView)this.widget).overlayColor ?? carouselTheme.overlayColor) ?? (global::Doroti.Framework.Widgets.WidgetStateProperty<Color?>)WidgetStateProperty.resolveWith(((global::System.Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>, Color?>)((states) =>
         {
             if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.pressed))
             {
-                return ((CarouselView)(object?)colorScheme.onSurface.withOpacity(0.1));
+                return ((Color?)(object?)colorScheme.onSurface.withOpacity(0.1));
             }
             if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.hovered))
             {
-                return ((CarouselView)(object?)colorScheme.onSurface.withOpacity(0.08));
+                return ((Color?)(object?)colorScheme.onSurface.withOpacity(0.08));
             }
             if (states.Contains(global::Doroti.Framework.Widgets.WidgetState.focused))
             {
-                return ((CarouselView)(object?)colorScheme.onSurface.withOpacity(0.1));
+                return ((Color?)(object?)colorScheme.onSurface.withOpacity(0.1));
             }
             return null;
             throw new InvalidOperationException("Dart closure completed without a value.");
@@ -490,8 +490,8 @@ public class _RenderSliverFixedExtentCarousel__carousel : global::Doroti.Framewo
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public override double? itemExtent => DartRuntimePrimitives.ConvertValue<double>(null);
-    public new ItemExtentBuilder? itemExtentBuilder => (index, dimensions) => this._buildItemExtent(index, dimensions);
+    public override double? itemExtent => null;
+    public override ItemExtentBuilder? itemExtentBuilder => (index, dimensions) => this._buildItemExtent(index, dimensions);
 }
 
 internal class _SliverWeightedCarousel__carousel : global::Doroti.Framework.Widgets.SliverMultiBoxAdaptorWidget
@@ -916,8 +916,8 @@ public class _RenderSliverWeightedCarousel__carousel : global::Doroti.Framework.
         this.childManager.didFinishLayout();
     }
 
-    public override double? itemExtent => DartRuntimePrimitives.ConvertValue<double>(null);
-    public new ItemExtentBuilder? itemExtentBuilder => (index, dimensions) => this._buildItemExtent(index, dimensions);
+    public override double? itemExtent => null;
+    public override ItemExtentBuilder? itemExtentBuilder => (index, dimensions) => this._buildItemExtent(index, dimensions);
 }
 
 public class CarouselScrollPhysics : global::Doroti.Framework.Widgets.ScrollPhysics

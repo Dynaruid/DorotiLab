@@ -60,6 +60,8 @@ internal sealed class BrowserPictureBlockCache(bool enabled)
 internal interface IBrowserDisplayListResources
 {
     DisplayResourceReference DefaultFont { get; }
+    DisplayResourceReference ResolveFont(string? family);
+    IReadOnlyList<DisplayResourceReference> RegisteredFonts { get; }
 
     DisplayResourceDescriptor Describe(DisplayResourceReference reference);
 
@@ -310,8 +312,10 @@ internal static class BrowserDisplayListMapper
                         draw.Color.value, ToBlendMode(draw.BlendMode)));
                     break;
                 case "drawParagraph" when command.HostPayload is CanvasParagraphPayload draw:
-                    var font = resources.DefaultFont;
+                    var font = resources.ResolveFont(draw.Paragraph.fontFamily);
                     AddReference(font, referenced, resources);
+                    var fallbackFonts = resources.RegisteredFonts;
+                    foreach (var fallbackFont in fallbackFonts) AddReference(fallbackFont, referenced, resources);
                     destination.Add(new DisplayDrawParagraphCommand(
                         new DisplayParagraphRecipe(
                             draw.Paragraph.text,
@@ -341,7 +345,7 @@ internal static class BrowserDisplayListMapper
                             checked((float)draw.Paragraph.longestLine),
                             checked((float)draw.Paragraph.height),
                             draw.Paragraph.CanvasKitMetricsHash,
-                            [font],
+                            fallbackFonts,
                             draw.Paragraph.TextRuns.Select(ToParagraphTextRun)),
                         ToPoint(draw.Offset)));
                     break;
@@ -734,6 +738,8 @@ internal static class BrowserDisplayListMapper
         IBrowserDisplayListResources inner) : IBrowserDisplayListResources
     {
         public DisplayResourceReference DefaultFont => inner.DefaultFont;
+        public DisplayResourceReference ResolveFont(string? family) => inner.ResolveFont(family);
+        public IReadOnlyList<DisplayResourceReference> RegisteredFonts => inner.RegisteredFonts;
 
         public DisplayResourceDescriptor Describe(DisplayResourceReference reference) =>
             inner.Describe(reference);

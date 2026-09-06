@@ -111,7 +111,7 @@ public class DrawerController : global::Doroti.Framework.Widgets.StatefulWidget
     public virtual double? edgeDragWidth { get; private set; }
     public virtual bool isDrawerOpen { get; private set; } = default!;
 
-    public DrawerController(global::Doroti.Framework.Widgets.GlobalKey<IState>? key = null, global::Doroti.Framework.Widgets.Widget child = default!, DrawerAlignment alignment = default!, bool isDrawerOpen = false, global::System.Action<bool>? drawerCallback = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, Color? scrimColor = null, double? edgeDragWidth = null, bool enableOpenDragGesture = true, bool drawerBarrierDismissible = true) : base(key: key)
+    public DrawerController(global::Doroti.Framework.Widgets.GlobalKeyBase? key = null, global::Doroti.Framework.Widgets.Widget child = default!, DrawerAlignment alignment = default!, bool isDrawerOpen = false, global::System.Action<bool>? drawerCallback = null, global::Doroti.Framework.Gestures.DragStartBehavior dragStartBehavior = global::Doroti.Framework.Gestures.DragStartBehavior.start, Color? scrimColor = null, double? edgeDragWidth = null, bool enableOpenDragGesture = true, bool drawerBarrierDismissible = true) : base(key: key)
     {
         this.child = child;
         this.alignment = alignment;
@@ -459,9 +459,9 @@ internal class _DrawerDefaultsM3__drawer : DrawerThemeData
         this.context = context;
     }
 
-    public virtual global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Theme.of(this.context).colorScheme.surfaceContainerLow);
-    public virtual global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
+    public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Theme.of(this.context).colorScheme.surfaceContainerLow);
+    public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
+    public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
     public override global::Doroti.Framework.Painting.ShapeBorder? shape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadiusDirectional.CreateHorizontal(end: global::Doroti.Ui.Radius.circular(16.0)).resolve(this.direction)));
     public override global::Doroti.Framework.Painting.ShapeBorder? endShape => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.ShapeBorder>(new global::Doroti.Framework.Painting.RoundedRectangleBorder(borderRadius: global::Doroti.Framework.Painting.BorderRadiusDirectional.CreateHorizontal(start: global::Doroti.Ui.Radius.circular(16.0)).resolve(this.direction)));
 }

@@ -935,10 +935,10 @@ internal class _CircularProgressIndicatorDefaultsM3Year2023__progress_indicator 
         this.indeterminate = indeterminate;
     }
 
-    public virtual global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
-    public virtual double strokeWidth => 4.0;
+    public override global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
+    public override double? strokeWidth => 4.0;
     public override double? strokeAlign => CircularProgressIndicator.strokeAlignCenter;
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 36.0, minHeight: 36.0);
+    public override global::Doroti.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 36.0, minHeight: 36.0);
 }
 
 internal class _LinearProgressIndicatorDefaultsM3Year2023__progress_indicator : ProgressIndicatorThemeData
@@ -964,9 +964,9 @@ internal class _LinearProgressIndicatorDefaultsM3Year2023__progress_indicator : 
         this.context = context;
     }
 
-    public virtual global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
-    public virtual global::Doroti.Ui.Color linearTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondaryContainer);
-    public virtual double linearMinHeight => 4.0;
+    public override global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
+    public override global::Doroti.Ui.Color linearTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondaryContainer);
+    public override double? linearMinHeight => 4.0;
 }
 
 internal class _CircularProgressIndicatorDefaultsM3__progress_indicator : ProgressIndicatorThemeData
@@ -994,11 +994,11 @@ internal class _CircularProgressIndicatorDefaultsM3__progress_indicator : Progre
         this.indeterminate = indeterminate;
     }
 
-    public virtual global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
-    public virtual global::Doroti.Ui.Color? circularTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((this.indeterminate ? null : this._colors.secondaryContainer));
-    public virtual double strokeWidth => 4.0;
+    public override global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
+    public override global::Doroti.Ui.Color? circularTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>((this.indeterminate ? null : this._colors.secondaryContainer));
+    public override double? strokeWidth => 4.0;
     public override double? strokeAlign => CircularProgressIndicator.strokeAlignInside;
-    public virtual global::Doroti.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 40.0, minHeight: 40.0);
+    public override global::Doroti.Framework.Rendering.BoxConstraints constraints => new global::Doroti.Framework.Rendering.BoxConstraints(minWidth: 40.0, minHeight: 40.0);
     public override double? trackGap => 4.0;
     public override global::Doroti.Framework.Painting.EdgeInsetsGeometry? circularTrackPadding => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Painting.EdgeInsetsGeometry>(global::Doroti.Framework.Painting.EdgeInsets.CreateAll(4.0));
 }
@@ -1026,11 +1026,11 @@ internal class _LinearProgressIndicatorDefaultsM3__progress_indicator : Progress
         this.context = context;
     }
 
-    public virtual global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
-    public virtual global::Doroti.Ui.Color linearTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondaryContainer);
-    public virtual double linearMinHeight => 4.0;
-    public virtual global::Doroti.Framework.Painting.BorderRadius borderRadius => global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((4.0 / 2L)));
-    public virtual global::Doroti.Ui.Color stopIndicatorColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
+    public override global::Doroti.Ui.Color color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
+    public override global::Doroti.Ui.Color linearTrackColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.secondaryContainer);
+    public override double? linearMinHeight => 4.0;
+    public override global::Doroti.Framework.Painting.BorderRadius borderRadius => global::Doroti.Framework.Painting.BorderRadius.CreateAll(global::Doroti.Ui.Radius.circular((4.0 / 2L)));
+    public override global::Doroti.Ui.Color stopIndicatorColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
     public override double? stopIndicatorRadius => DartRuntimePrimitives.ConvertValue<double>((4.0 / 2L));
     public override double? trackGap => 4.0;
 }

@@ -728,10 +728,10 @@ internal class _BottomSheetDefaultsM3__bottom_sheet : BottomSheetThemeData
         this.context = context;
     }
 
-    public virtual global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surfaceContainerLow);
-    public virtual global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public virtual global::Doroti.Ui.Color? dragHandleColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurfaceVariant);
-    public virtual global::Doroti.Ui.Size? dragHandleSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Size>(new global::Doroti.Ui.Size(32, 4));
+    public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surfaceContainerLow);
+    public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
+    public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
+    public override global::Doroti.Ui.Color? dragHandleColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurfaceVariant);
+    public override global::Doroti.Ui.Size? dragHandleSize => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Size>(new global::Doroti.Ui.Size(32, 4));
     public override global::Doroti.Framework.Rendering.BoxConstraints? constraints => new global::Doroti.Framework.Rendering.BoxConstraints(maxWidth: 640.0);
 }

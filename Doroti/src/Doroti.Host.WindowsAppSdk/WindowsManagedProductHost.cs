@@ -14,6 +14,7 @@ internal sealed unsafe class WindowsManagedProductHost :
     IInputHostCapability,
     IViewFocusRequestCapability,
     IPlatformServicesHostCapability,
+    IUrlLauncherHostCapability,
     IPlatformEnvironmentHostCapability,
     ITextInputHostCapability,
     ISkiaSceneRendererHost
@@ -61,6 +62,17 @@ internal sealed unsafe class WindowsManagedProductHost :
     internal bool IsLatestResizeGeneration(ulong generation) =>
         generation <= long.MaxValue && _coordinator.IsLatest((long)generation);
     internal bool IsInputSequenceCurrent(long inputSequence) => inputSequence >= InputSequence;
+    public ValueTask<UrlLaunchResult> LaunchUrlAsync(string absoluteUrl, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        try
+        {
+            using var process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(absoluteUrl) { UseShellExecute = true });
+            return ValueTask.FromResult(new UrlLaunchResult(UrlLaunchStatus.opened));
+        }
+        catch (Exception error) { return ValueTask.FromResult(new UrlLaunchResult(UrlLaunchStatus.failed, error.Message)); }
+    }
+
     public ViewMetrics Metrics { get; private set; }
     public PlatformConfiguration Configuration { get; private set; }
     public long InputSequence => Volatile.Read(ref _inputSequence);

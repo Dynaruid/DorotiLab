@@ -52,7 +52,7 @@ internal static class Material3Contracts
         if (!condition) throw new InvalidOperationException(message);
     }
 
-    private sealed class ThemeContext : StatelessElement
+    internal sealed class ThemeContext : StatelessElement
     {
         private readonly InheritedTheme _theme;
         private readonly MediaQuery _mediaQuery = new(data: new MediaQueryData(), child: SizedBox.CreateShrink());

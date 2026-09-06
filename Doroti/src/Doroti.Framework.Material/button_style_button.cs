@@ -190,11 +190,12 @@ internal class _ButtonStyleState__button_style_button : global::Doroti.Framework
         }
         Color? effectiveIconColor()
         {
-            // Icon color is optional for text-only buttons. Avoid eagerly
-            // resolving nullable style properties; IconTheme below supplies
-            // the foreground fallback when an icon is actually present.
-            return null;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            return widgetStyle?.iconColor?.resolve(this.statesController.value)
+                ?? themeStyle?.iconColor?.resolve(this.statesController.value)
+                ?? widgetStyle?.foregroundColor?.resolve(this.statesController.value)
+                ?? themeStyle?.foregroundColor?.resolve(this.statesController.value)
+                ?? defaultStyle.iconColor?.resolve(this.statesController.value)
+                ?? defaultStyle.foregroundColor?.resolve(this.statesController.value);
         }
         double? resolvedElevation = resolve<double?>(((style) => style?.elevation)) ?? 0.0;
         global::Doroti.Framework.Painting.TextStyle? resolvedTextStyle = resolve<global::Doroti.Framework.Painting.TextStyle?>(((style) => style?.textStyle));

@@ -139,7 +139,7 @@ public class RestorableBool : _RestorablePrimitiveValue__restoration_properties<
 
 public class RestorableBoolN : _RestorablePrimitiveValueN__restoration_properties<bool?>
 {
-    public RestorableBoolN(bool? defaultValue) : base(DartRuntimePrimitives.RequireValue(defaultValue))
+    public RestorableBoolN(bool? defaultValue) : base(defaultValue)
     {
     }
 
@@ -155,7 +155,7 @@ public class RestorableNumN<T> : _RestorablePrimitiveValueN__restoration_propert
 
 public class RestorableDoubleN : RestorableNumN<double?>
 {
-    public RestorableDoubleN(double? defaultValue) : base(DartRuntimePrimitives.RequireValue(defaultValue))
+    public RestorableDoubleN(double? defaultValue) : base(defaultValue)
     {
     }
 
@@ -163,7 +163,7 @@ public class RestorableDoubleN : RestorableNumN<double?>
 
 public class RestorableIntN : RestorableNumN<long?>
 {
-    public RestorableIntN(long? defaultValue) : base(DartRuntimePrimitives.RequireValue(defaultValue))
+    public RestorableIntN(long? defaultValue) : base(defaultValue)
     {
     }
 

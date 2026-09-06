@@ -9,6 +9,7 @@ import {
   createHost,
   invokePlugin,
   readClipboardText,
+  launchExternalUrl,
   recordExternalWorkerTrace,
   registerExternalWorkerPresenter,
   requestFocus,
@@ -405,6 +406,7 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
           const kind = String(message.controlKind);
           const payload = (message.payload ?? {}) as Record<string, unknown>;
           void (async () => {
+            if (kind === "url-launch") return launchExternalUrl(String(payload.url));
             if (kind === "clipboard-read") return readClipboardText();
             if (kind === "clipboard-write") return writeClipboardText(String(payload.text));
             if (kind === "plugin") return invokePlugin(
@@ -704,6 +706,7 @@ export async function startDorotiCanvasKitWorkerHost(): Promise<"started"> {
     topologyVersion,
     kind: "canvaskit-bootstrap-init",
     role: "ui",
+    testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
     resizeFixture: new URL(location.href).searchParams.get("dorotiResizeFixture") ?? "F3",
     copyOwnership: new URL(location.href).searchParams.get("dorotiCopyOwnership") ?? "baseline",
     pictureCache: new URL(location.href).searchParams.get("dorotiPictureCache") === "1",

@@ -69,6 +69,9 @@ public sealed class PlatformDispatcher : IDisposable
         }
     }
 
+    /// <summary>Whether the host provides optional Dart VM performance hints.</summary>
+    public bool supportsDartPerformanceMode => _performanceModeCapability is not null;
+
     public void requestDartPerformanceMode(DartPerformanceMode mode)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -900,7 +903,7 @@ public sealed class DorotiView : IDisposable
 
     public void UpdateSemantics(SemanticsUpdate update, DartUiInvocation invocation) =>
         _capabilities.Require<ISemanticsHostCapability>(viewId, DorotiCapabilityIds.AccessibilitySemantics, invocation)
-            .Update(update, invocation);
+            .Update(update with { viewDevicePixelRatio = devicePixelRatio }, invocation);
 
     internal void SetSemanticsTreeEnabled(bool enabled, DartUiInvocation invocation) =>
         _capabilities.Require<ISemanticsHostCapability>(viewId, DorotiCapabilityIds.AccessibilitySemantics, invocation)

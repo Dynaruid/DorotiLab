@@ -1776,7 +1776,8 @@ public sealed record SemanticsNodeUpdate(
     long? scrollChildCount = null,
     long? scrollIndex = null,
     IReadOnlyList<string>? controlsNodes = null,
-    Locale? locale = null);
+    Locale? locale = null,
+    IReadOnlyList<double>? coordinateTransform = null);
 
 public enum SemanticsUpdateUrgency
 {
@@ -1791,7 +1792,8 @@ public enum SemanticsUpdateUrgency
 public sealed record SemanticsUpdate(
     long generation,
     IReadOnlyList<SemanticsNodeUpdate> nodes,
-    SemanticsUpdateUrgency urgency = SemanticsUpdateUrgency.automatic);
+    SemanticsUpdateUrgency urgency = SemanticsUpdateUrgency.automatic,
+    double viewDevicePixelRatio = 1);
 
 /// <summary>
 /// Projects the framework's parent-relative semantics rectangles into logical view
@@ -1801,41 +1803,59 @@ public sealed record SemanticsUpdate(
 public static class SemanticsGeometryProjection
 {
     public static IReadOnlyList<SemanticsNodeUpdate> ToViewCoordinates(
-        IEnumerable<SemanticsNodeUpdate> source)
+        IEnumerable<SemanticsNodeUpdate> source, double viewDevicePixelRatio = 1)
     {
         ArgumentNullException.ThrowIfNull(source);
+        if (!double.IsFinite(viewDevicePixelRatio) || viewDevicePixelRatio <= 0)
+            throw new ArgumentOutOfRangeException(nameof(viewDevicePixelRatio));
         var input = source.ToArray();
         var nodes = input.ToDictionary(node => node.id);
         var childIds = nodes.Values.SelectMany(node => node.children).ToHashSet();
         var projected = new Dictionary<int, SemanticsNodeUpdate>();
 
         foreach (var root in nodes.Values.Where(node => !childIds.Contains(node.id)).OrderBy(node => node.id))
-            Project(root.id, 0, 0, nodes, projected, []);
+            Project(root.id, RootTransform(root), nodes, projected, []);
         foreach (var orphan in nodes.Values.Where(node => !projected.ContainsKey(node.id)).OrderBy(node => node.id))
-            Project(orphan.id, 0, 0, nodes, projected, []);
+            Project(orphan.id, RootTransform(orphan), nodes, projected, []);
 
         return input.Select(node => projected[node.id]).ToArray();
+
+        Matrix4 RootTransform(SemanticsNodeUpdate root) => root.coordinateTransform is { Count: 16 }
+            ? Matrix4.diagonal3Values(1 / viewDevicePixelRatio, 1 / viewDevicePixelRatio, 1)
+            : Matrix4.identity(); // Direct legacy host nodes already use logical view coordinates.
     }
 
     private static void Project(
         int id,
-        double parentLeft,
-        double parentTop,
+        Matrix4 parentTransform,
         IReadOnlyDictionary<int, SemanticsNodeUpdate> nodes,
         IDictionary<int, SemanticsNodeUpdate> projected,
         HashSet<int> activePath)
     {
         if (projected.ContainsKey(id) || !nodes.TryGetValue(id, out var node) || !activePath.Add(id)) return;
-        var rect = new Rect(
-            node.rect.left + parentLeft,
-            node.rect.top + parentTop,
-            node.rect.right + parentLeft,
-            node.rect.bottom + parentTop);
-        projected[id] = node with { rect = rect };
+        var transform = new Matrix4(parentTransform.storage.ToArray());
+        var explicitTransform = node.coordinateTransform is { Count: 16 };
+        if (explicitTransform) transform.multiply(new Matrix4(node.coordinateTransform!.ToArray()));
+        var rect = TransformRect(node.rect, transform);
+        projected[id] = node with { rect = rect, coordinateTransform = null };
+        // Legacy manually supplied nodes use a rect-relative child origin. Framework
+        // nodes carry a coordinate transform: a clipped rect must never move that origin.
+        if (!explicitTransform) transform.multiply(Matrix4.translationValues(node.rect.left, node.rect.top, 0));
         foreach (var childId in node.children)
-            Project(childId, rect.left, rect.top, nodes, projected, activePath);
+            Project(childId, transform, nodes, projected, activePath);
         activePath.Remove(id);
     }
+    private static Rect TransformRect(Rect rect, Matrix4 matrix)
+    {
+        var corners = new[] {
+            matrix.perspectiveTransform(new Vector3(rect.left, rect.top, 0)),
+            matrix.perspectiveTransform(new Vector3(rect.right, rect.top, 0)),
+            matrix.perspectiveTransform(new Vector3(rect.left, rect.bottom, 0)),
+            matrix.perspectiveTransform(new Vector3(rect.right, rect.bottom, 0)),
+        };
+        return new Rect(corners.Min(p => p.x), corners.Min(p => p.y), corners.Max(p => p.x), corners.Max(p => p.y));
+    }
+
 }
 
 [Flags]
@@ -1986,7 +2006,7 @@ public static class SemanticsUpdateDiffer
     private static SemanticsNodeProperty ChangedProperties(SemanticsNodeUpdate previous, SemanticsNodeUpdate current)
     {
         var result = SemanticsNodeProperty.none;
-        if (previous.rect != current.rect) result |= SemanticsNodeProperty.bounds;
+        if (previous.rect != current.rect || !(previous.coordinateTransform ?? []).SequenceEqual(current.coordinateTransform ?? [])) result |= SemanticsNodeProperty.bounds;
         if (!string.Equals(previous.label, current.label, StringComparison.Ordinal)) result |= SemanticsNodeProperty.label;
         if (!string.Equals(previous.value, current.value, StringComparison.Ordinal)) result |= SemanticsNodeProperty.value;
         if (previous.actions != current.actions) result |= SemanticsNodeProperty.actions;
@@ -2093,7 +2113,7 @@ public sealed class SemanticsUpdateBuilder
         var hitTestChildren = ToNodeIds(childrenInHitTestOrder);
         updateNode(new SemanticsNodeUpdate(
             checked((int)id),
-            TransformRect(rect, transform),
+            rect,
             label,
             value,
             actionFlags,
@@ -2124,27 +2144,8 @@ public sealed class SemanticsUpdateBuilder
             NormalizeOptionalLong(scrollChildren),
             NormalizeOptionalLong(scrollIndex),
             controlsNodes?.ToArray(),
-            locale));
-    }
-
-    private static Rect TransformRect(Rect rect, object transform)
-    {
-        if (transform is not IEnumerable<double> values) return rect;
-        var storage = values.ToArray();
-        if (storage.Length != 16) return rect;
-        var matrix = new Matrix4(storage);
-        var corners = new[]
-        {
-            matrix.perspectiveTransform(new Vector3(rect.left, rect.top, 0)),
-            matrix.perspectiveTransform(new Vector3(rect.right, rect.top, 0)),
-            matrix.perspectiveTransform(new Vector3(rect.left, rect.bottom, 0)),
-            matrix.perspectiveTransform(new Vector3(rect.right, rect.bottom, 0)),
-        };
-        return new Rect(
-            corners.Min(point => point.x),
-            corners.Min(point => point.y),
-            corners.Max(point => point.x),
-            corners.Max(point => point.y));
+            locale,
+            transform is IEnumerable<double> matrix && matrix.Count() == 16 ? matrix.ToArray() : Matrix4.identity().storage.ToArray()));
     }
 
     // The generated framework ABI represents an absent scroll metric as NaN.

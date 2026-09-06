@@ -6,6 +6,34 @@ DorotiTestbedApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood �
 
 앱 ID는 `dev.doroti.testbed`이며, AppKit은 `dev.doroti.testbed.macos`를 사용합니다. 이름을 변경한 앱은 이전 demo 패키지와 별도로 설치됩니다.
 
+## Material 샘플 모드
+
+C# Material 샘플은 [work.md](../work.md)의 acceptance gate를 검증하는 동안
+명시적 모드로 제공합니다. 기본 화면은 기존 diagnostics이며 renderer 기본값은
+Windows Vulkan, Web CanvasKit Worker입니다.
+
+```powershell
+$env:DOROTI_TESTBED_MODE = 'sample'
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
+# 기존 diagnostics 갤러리로 복귀:
+$env:DOROTI_TESTBED_MODE = 'diagnostics'
+```
+
+Web 기본 CanvasKit Worker에서는
+`http://127.0.0.1:5088/?dorotiTestbedMode=sample`로 실행합니다.
+`?dorotiTestbedMode=diagnostics`는 기존 갤러리입니다. F0/F1/F2 resize fixture는
+sample보다 우선합니다. 새 샘플은 불투명 Material surface 위에 Components,
+Color, Typography, Elevation과 9 seed·6 image 테마, local/URL Image demo를 제공합니다.
+이미지 테마는 `flutter.github.io`, URL 데모는 `plus.unsplash.com` 접근이 필요합니다.
+테마 로드 실패 시 마지막 성공 테마를 유지하고 Retry를 제공합니다. 로컬 WebP와
+MaterialIcons·Roboto regular/medium/bold는 embedded resource이며 라이선스·출처는
+[src/MaterialSample](src/MaterialSample), [assets/fonts](assets/fonts)에 있습니다.
+
+외부 HTTP(S) 링크는 view 범위 URL launcher를 사용합니다. 성공 결과는 host의
+요청 수락을 뜻하며 Web popup 차단은 사용자에게 표시합니다. Native URL 실행,
+physical display·IME·다른 OS의 실기기 검증은 별도입니다.
+실행 명령과 검증 범위는 [sample validation](../Doroti/validation/material-sample/README.md)을 참고하세요.
+
 ## 빠르게 실행하기
 
 .NET 10 SDK와 PowerShell 7을 설치합니다. 이 source tree에서 Web host를 빌드할 때는 고정된 CanvasKit asset을 복원하고 검증하기 위해 Node.js 20 이상과 npm 10 이상도 필요합니다. 그 뒤 저장소 루트에서 다음 명령을 실행합니다. 첫 실행은 필요한 package를 복원하고 runner를 빌드하므로 시간이 걸릴 수 있습니다.

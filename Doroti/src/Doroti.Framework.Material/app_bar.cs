@@ -1189,15 +1189,15 @@ internal class _AppBarDefaultsM3__app_bar : AppBarThemeData
         this.context = context;
     }
 
-    public virtual global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surface);
-    public virtual global::Doroti.Ui.Color? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurface);
-    public virtual global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
-    public virtual global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
+    public override global::Doroti.Ui.Color? backgroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.surface);
+    public override global::Doroti.Ui.Color? foregroundColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurface);
+    public override global::Doroti.Ui.Color? shadowColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
+    public override global::Doroti.Ui.Color? surfaceTintColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
     public override global::Doroti.Framework.Widgets.IconThemeData? iconTheme => new global::Doroti.Framework.Widgets.IconThemeData(color: this._colors.onSurface, size: 24.0);
     public override global::Doroti.Framework.Widgets.IconThemeData? actionsIconTheme => new global::Doroti.Framework.Widgets.IconThemeData(color: this._colors.onSurfaceVariant, size: 24.0);
     public override global::Doroti.Framework.Painting.TextStyle? toolbarTextStyle => this._textTheme.bodyMedium;
     public override global::Doroti.Framework.Painting.TextStyle? titleTextStyle => this._textTheme.titleLarge;
-    public virtual global::Doroti.Framework.Painting.EdgeInsets? actionsPadding => global::Doroti.Framework.Painting.EdgeInsets.zero;
+    public override global::Doroti.Framework.Painting.EdgeInsets? actionsPadding => global::Doroti.Framework.Painting.EdgeInsets.zero;
 }
 
 internal class _MediumScrollUnderFlexibleConfig__app_bar : _ScrollUnderFlexibleConfig__app_bar

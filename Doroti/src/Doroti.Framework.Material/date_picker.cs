@@ -101,6 +101,7 @@ public static partial class Date_pickerLibrary
 {
     public static async Future<DateTime?> showDatePicker(global::Doroti.Framework.Widgets.BuildContext context, DateTime? initialDate = null, DateTime firstDate = default!, DateTime lastDate = default!, DateTime? currentDate = null, DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar, global::System.Func<DateTime, bool>? selectableDayPredicate = null, string? helpText = null, string? cancelText = null, string? confirmText = null, Locale? locale = null, bool barrierDismissible = true, Color? barrierColor = null, string? barrierLabel = null, bool useRootNavigator = true, global::Doroti.Framework.Widgets.RouteSettings? routeSettings = null, TextDirection? textDirection = null, global::System.Func<global::Doroti.Framework.Widgets.BuildContext, global::Doroti.Framework.Widgets.Widget?, global::Doroti.Framework.Widgets.Widget>? builder = null, DatePickerMode initialDatePickerMode = DatePickerMode.day, string? errorFormatText = null, string? errorInvalidText = null, string? fieldHintText = null, string? fieldLabelText = null, global::Doroti.Framework.Services.TextInputType? keyboardType = null, Offset? anchorPoint = null, global::System.Action<DatePickerEntryMode>? onDatePickerModeChange = null, global::Doroti.Framework.Widgets.Icon? switchToInputEntryModeIcon = null, global::Doroti.Framework.Widgets.Icon? switchToCalendarEntryModeIcon = null, CalendarDelegate<DateTime> calendarDelegate = default!)
     {
+        calendarDelegate ??= new GregorianCalendarDelegate();
         initialDate = ((initialDate is null) ? null : calendarDelegate.dateOnly(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(initialDate))));
         firstDate = calendarDelegate.dateOnly(firstDate);
         lastDate = calendarDelegate.dateOnly(lastDate);
@@ -132,7 +133,7 @@ public static partial class Date_pickerLibrary
         {
             return ((builder is null) ? dialog : builder(context, dialog));
             throw new InvalidOperationException("Dart closure completed without a value.");
-        }), anchorPoint: DartRuntimePrimitives.RequireValue(anchorPoint));
+        }), anchorPoint: anchorPoint);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 }
