@@ -1,402 +1,231 @@
-# Doroti cross-platform 최초 부트 개선 작업 계획
+# Doroti cross-platform 부트 개선 작업 계획
 
-- 작성일: 2026-08-28
-- 상태: **2026-08-29 MVP 구현 실행 완료**. 구조적으로 안전한 공용/Windows/Android/Web/Linux/CLI 항목은 구현했고, 장치·OS·배포 환경이 필요한 gate와 선택적 tuning/operator 결정은 `notVerified` 또는 후속으로 유지한다. 판정과 증거는 `history/26-08-29/cross-platform-first-boot-implementation.md`에 기록했다.
-- 목표: 설치된 Release 앱의 process cold start에서 첫 유효 Doroti content가 실제 compositor에 표시되고 입력 가능한 시점까지의 시간을 줄인다.
-- 부목표: `doroti.ps1 run`의 불필요한 restore/build/native build/AOT/deploy를 줄이고 안전한 재사용 경로를 제공하되, 앱 runtime 부트 개선과 별도 작업으로 유지한다.
+- 재작성일: **2026-09-06**
+- 분석 기준: HEAD `0499c1d`의 source, runner/target SDK, Testbed/template 설정 및 저장소 실행 기록.
+- 상태: **계획 작성 완료 / 새 구현 미착수**. 이번 작업은 source 재분석과 문서 갱신이며 build, publish, 앱 실행, 부트 시간 측정은 수행하지 않았다.
+- 목표: 설치된 Release 앱의 첫 유효 content 표시와 입력 준비까지 불필요한 직렬 작업을 줄인다. CLI build/deploy 시간은 별도 트랙으로 개선한다.
+- 이전 계획: [2026-08-28 원문 보존본](history/26-09-06/cross-platform-first-boot-plan-2026-08-28.md). 당시 구현 및 실패 기록: [2026-08-29 MVP 결과](history/26-08-29/cross-platform-first-boot-implementation.md).
 
-## 1. 판정 범위
+## 1. 이전 계획과 달라진 현재 기준
 
-이 계획에서 “최초 부트”는 다음 네 구간을 섞지 않는다.
+이전 계획의 미완료 목록을 그대로 재실행하지 않는다. 현재 제품 기본값은 **Windows App SDK + Vulkan**, **Web CanvasKit UI/Raster Worker**다. 기본값 변경 자체는 resize 성능이나 physical scan-out의 합격을 뜻하지 않는다.
 
-| 구간 | 정의 | 정량 보고 시 지표 |
+| 항목 | 현재 source에서 확인한 사실 | 이번 계획의 처리 |
 | --- | --- | --- |
-| first-install | 새 설치 또는 앱 데이터 초기화 뒤 첫 실행 | TTID, TTFD, package/runtime 준비 시간 |
-| process cold | 설치된 Release 앱이 실행 중이지 않은 상태에서 새 process 시작 | TTID p50/p95 |
-| warm/resume | process가 남아 있거나 background에서 resume | resume-to-present p50/p95 |
-| developer launch | `doroti.ps1 run` 시작부터 build, deploy, process start까지 | restore/build/native/AOT/deploy/launch 구간별 시간 |
+| Windows | presenter 미지정/빈 값은 `Vulkan`. 명시적 `AngleD3D11`, 진단 `D3D12` 유지 | Vulkan opaque와 앱 요청 Acrylic 우선. ANGLE은 명시적 호환 경로 |
+| Web | renderer 미지정/auto/미인식 값은 `worker-canvaskit-webgl` | 기본 Worker 경로를 분석 기준으로 사용. `document-webgl` 등은 명시적 회귀 대상 |
+| Application boundary | source-generated `JsonSerializerContext` 사용. embedded JSON 파싱은 여전히 실행 | reflection metadata 제거 완료와 JSON parsing 제거를 구분 |
+| Theme | Testbed RootApp/light·dark factory가 lazy. Material factory memoization 존재 | 같은 lazy theme 작업을 다시 제안하지 않음 |
+| MAUI text | Entry/Editor 관리 객체는 constructor에서 생성, native attach는 on-demand | 남은 관리 객체 생성만 추가 개선 후보 |
+| Semantics | MAUI와 Web Worker가 view 준비 시 semantics 활성화 | 접근성 상태 계약 없이 일괄 지연하지 않음 |
+| Android | x64 AOT off + trim on, marshal methods off. Baseline Profile 파일/packaging 존재 | trimming 복구와 profile 최초 도입 대신 현재 APK 적합성 검증 |
+| Web Release | trimming/symbol 제거 설정 존재. Testbed는 `WasmBuildNative=true` | trimming 도입을 반복하지 않음. native WASM build를 managed AOT로 부르지 않음 |
+| Windows provenance | 정상 부트 full DLL hash는 audit-only. D3D12 diagnostics assembly 분리 | 해시 제거 대신 presenter별 필수 DLL 검사 재검토 |
+| CLI | NoBuild/NoRestore/LastSuccessful과 source fingerprint 존재 | 새 옵션 대신 입력·출력 검증과 탐색 비용 보완 |
 
-`TTID(Time To Initial Display)`는 splash/background clear가 아니라 첫 유효 Doroti content가 terminal `presented`에 도달한 시점이다. `TTFD(Time To Fully Drawn)`는 첫 content 표시 뒤 기본 pointer/key/text/accessibility 경로가 준비되고 startup main-thread 작업이 끝난 시점이다. Android에서는 TTID와 `reportFullyDrawn`에 대응하고, Web canvas는 DOM의 일반 FCP/LCP만 믿지 않고 첫 성공 WebGL commit marker를 사용한다.
+기본값 근거는 [renderer-defaults 기록](history/26-09-05/renderer-defaults.md)과 현재 source다. 과거 기록의 ANGLE default, CanvasKit opt-in, auto=document-webgl은 해당 실행 당시 조건으로만 읽는다. 이전 APK/Web payload 크기와 과거 PASS를 현재 artifact의 크기·성능으로 재사용하지 않는다.
 
-다음 원칙을 유지한다.
+## 2. 현재 부트 구성과 개선 근거
 
-- Debug, build 성공, splash 표시, process 생존은 Release TTID/TTFD의 PASS가 아니다.
-- profiler가 켜진 trace는 원인 분석용이다. 정량 성능을 실제로 보고하는 경우에만 profiler-free Release 반복 실행에서 최종 숫자를 얻는다.
-- first-install, process cold, warm, emulator/simulator, VM, 물리 기기 결과는 서로 대신하지 않는다.
-- accessibility를 끄거나 빈 화면을 먼저 present해서 숫자만 줄이지 않는다. 정량 추적을 할 때는 첫 content와 semantics-ready를 구분한다.
-- 기존 `presented`/`replayed`/`superseded`/`failed` terminal, 정확한 surface size, hardware GPU와 fail-closed 계약은 유지한다.
-- 공용 원인은 가장 낮은 `Framework`/`Hosting`/renderer 소유층에서 고치고 DemoApp만 우회하지 않는다.
-- source와 실행 구조상 동기 작업·할당·DLR/reflection·중복 초기화를 제거하면 분명히 일이 줄어드는 변경은 새 profiler/baseline 없이 구현한다.
-- 계측은 설계 선택이 애매하거나 회귀가 의심되거나 정량 성능 수치를 보고해야 할 때만 사용한다. 계측 미수행은 구조 개선의 착수 조건이나 자동 rollback 사유가 아니다.
+### 2.1 공용 경계
 
-## 2. 현재 source·artifact 분석
+- [workspace](DorotiTestbedApp/doroti-workspace.json)가 플랫폼별 runner 경로를 선택한다. windows는 windowsappsdk runner이며 MAUI는 CLI에서 별도로 선택한다.
+- [Program.cs](DorotiTestbedApp/Program.cs)는 `IDorotiApplicationStartup`으로 entrypoint/view를 등록한다. native entry/generated bootstrap은 [Runner SDK](Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets)가 소유한다.
+- [DorotiApplicationBoundary.cs](Doroti/src/Doroti.Hosting/DorotiApplicationBoundary.cs)는 manifest schema/RID와 plugin handler/ABI를 검증한다. resource SHA-256 검증은 `LoadAsync` 시점이다. 모든 resource를 startup에 읽는 구조는 아니다.
+- [DorotiHostSession.cs](Doroti/src/Doroti.Hosting/DorotiHostSession.cs)는 deferred Start 뒤 첫 AttachView에서 framework를 한 번 bootstrap한다. GPU surface와 attach의 선후 관계는 host마다 달라 단일 순서를 강제하지 않는다.
+- [Testbed App](DorotiTestbedApp/src/App.cs)은 frame callback에서 root를 attach한다. 갤러리 자체 비용과 Framework/host 비용을 구분하고, Demo 화면을 단순화해 공용 개선으로 보고하지 않는다.
 
-아래 수치는 현재 checkout에 남아 있는 대표 Release 산출물의 정적 snapshot이다. clean publish와 실기 launch를 이번 계획 작성에서 새로 실행한 결과가 아니며, 지연의 인과관계도 아직 `notVerified`다.
+### 2.2 Web — 우선 개선 대상
 
-### 2.1 공용 startup 경로
-
-현재 모든 runner는 대체로 다음 순서를 사용한다.
+현재 기본 경로의 주요 의존성은 다음과 같다.
 
 ```text
-native/process entry
-  -> generated DorotiBootstrap / DorotiApplicationFactory
-  -> DorotiApplicationBoundary.Load(manifest JSON)
-  -> platform window/view + GPU surface/context
-  -> DorotiHostSession.Start(deferFrameworkBootstrap: true)
-  -> RegisterView / AttachView
-  -> WidgetsFlutterBinding 초기화
-  -> root widget + ThemeData 생성
-  -> build/layout/semantics/scene/raster
-  -> native compositor present terminal
+HTML / doroti_bootstrap.ts
+  -> startDoroti singleton / renderer 선택
+  -> CanvasKit manifest fetch
+  -> JS fetch + 길이/SHA-256 검증
+  -> WASM fetch + 길이/SHA-256 검증
+  -> DOM endpoints + UI/Raster Worker 생성 및 초기 메시지
+     ├─ UI: classic importScripts -> CanvasKitInit -> text service
+     └─ Raster: classic importScripts -> CanvasKitInit -> WebGL2 / gpu-ready
+  -> UI CanvasKit ready AND Raster ready
+  -> UI Worker의 dotnet.js import / runtime.create
+  -> generated StartWorker
+  -> NanumGothic fetch / font registration
+  -> boundary + session/view + semantics
+  -> build/layout -> DisplayList encode -> resource readiness -> Raster submit
 ```
 
-확인한 공용 개선 후보는 다음과 같다.
+직접 확인한 사실과 후보:
 
-- `DorotiApplicationBoundary.Load`가 매 launch에서 embedded manifest를 `System.Text.Json`으로 역직렬화한다. manifest가 작아 우선 원인으로 단정할 수는 없지만 모든 플랫폼의 첫-frame closure에 들어간다.
-- Demo의 `RootApp` 첫 접근은 light/dark `ThemeData`를 모두 만든다. `ThemeData.Create`는 typography와 다수 component theme default를 구성한다.
-- `Doroti.Framework.Material`은 현재 약 4.29 MiB assembly/9.33 MiB source이고 정적 객체 초기화 후보가 매우 많다. 기본 root가 직접 참조하지 않는 animated icon과 catalog 같은 대형 정적 object graph는 source reachability와 초기화 구조를 기준으로 first-frame 밖으로 옮긴다.
-- Framework에는 `dynamic`/DLR 관련 call site가 175개 파일, 1,747개 검색 일치로 남아 있다. first-frame closure에 들어온 call site는 Windows/Linux JIT, Android x64 JIT/interpreter, Apple AOT+interpreter, Web download/trimming에 동시에 영향을 줄 수 있다.
-- 2026-08-28 S2 실행에서 first-frame 공용 반복 경로의 C1 render-tree, C2 Navigator/Route, C3 Actions를 direct/interface/non-generic base 계약으로 정적화했다. 선택 owner의 compiler-generated `CallSite<T>`는 0개이며 `Doroti.Framework.Widgets` 전체 field는 기준 1,386개에서 1,128개로 감소했다. 이는 구조 지표이고 정량 TTID/CPU 개선 수치는 `notVerified`다.
-- MAUI surface는 첫 frame 전에 hidden `Entry`, `Editor`, semantics layer와 render surface를 만든다. Windows만 text proxy의 native attach를 지연하며 Android/iOS/Mac Catalyst/AppKit은 두 input view를 visual tree에 즉시 추가한다.
-- MAUI와 Web은 view attach 직후 semantics tree를 활성화한다. 실제 accessibility 사용 중에는 이 동작을 보존하고, 비활성 상태의 full semantics build/apply는 first present 뒤로 안전하게 지연할 수 있는지 lifecycle과 기능 검증으로 판단한다.
-- end-to-end process-entry→first-present startup trace는 없다. 따라서 이 계획은 trace 구축을 기다리지 않고 source에서 확인되는 동기 hashing, parsing, DLR, 미사용 초기화와 package graph부터 직접 줄인다.
+1. [doroti.loader.ts](Doroti/src/Doroti.Host.Web/Web/doroti.loader.ts): Worker 경로는 `Blazor.start()`를 호출하지 않는다. `context.blazorOptions`는 document 경로에 전달되며 기본 CanvasKit 경로에는 전달되지 않는다. 앱의 loadBootResource callback이 기본 Worker 다운로드를 제어한다고 가정하면 안 된다.
+2. [doroti.canvaskit.host.ts](Doroti/src/Doroti.Host.Web/Web/doroti.canvaskit.host.ts): loadCanvasKitManifest가 JS/WASM을 **순차 fetch·검증한 뒤** Worker를 시작한다. 두 파일의 검증은 독립적이다. `cache: no-cache`는 재검증 정책이며 매번 전체 네트워크 다운로드한다는 뜻은 아니다.
+3. [classic bootstrap](Doroti/src/Doroti.Host.Web/Web/doroti.canvaskit.bootstrap.ts), [UI role](Doroti/src/Doroti.Host.Web/Web/doroti.ui.worker.ts), [Raster role](Doroti/src/Doroti.Host.Web/Web/doroti.canvaskit.worker.ts): 각 Worker가 CanvasKit instance를 초기화한다. 검증용 bytes를 그대로 소비하는 경로는 아니므로 이후 URL load와의 중복 요청/byte 처리량은 조사 대상이다. 실제 wire 중복량은 HTTP cache를 포함해 확인해야 한다.
+4. UI의 maybeStartManagedRuntime는 두 role readiness를 모두 기다린다. 독립적인 runtime 준비를 앞당길 여지가 있으나 bridge 설치·GPU/text capability·root attach는 준비 완료 순서를 보존해야 한다.
+5. [DorotiWebWorkerRunner.cs](Doroti/src/Doroti.Target.Web.browser-wasm/DorotiWebWorkerRunner.cs)는 managed 진입 후 fallback font를 fetch한다. [CanvasKitResourceRegistry.cs](Doroti/src/Doroti.Host.Web/CanvasKitResourceRegistry.cs)의 retained resource 수명과 ACK 계약을 유지하면서 요청을 앞당길 수 있다.
+6. host settleReady는 rasterReady와 runtimeReady로 loader started를 완료한다. **첫 content 표시 신호가 아니다.** front/scene/resource/terminal을 연결한 별도 부트 판정이 필요하다.
+7. [index.html](DorotiTestbedApp/web/wwwroot/index.html)은 Blazor loader preload를 유지한다. 기본 Worker에서 실제로 사용되는 요청인지, framework 자동 preload와 CanvasKit/font 우선순위가 맞는지 확인해야 한다.
 
-### 2.2 Windows
+UI=managed Framework/layout/text, Raster=visible OffscreenCanvas/WebGL2, main=DOM/input/IME/semantics 경계를 유지한다. UI CanvasKit은 text layout을 담당하므로 단순 중복 instance로 보고 삭제하지 않는다.
 
-기본 경로는 `WindowsAppSdk`/`HwndExactCpp` + managed ANGLE/EGL-D3D11이다. MAUI는 명시적 별도 backend다.
+### 2.3 Windows
 
-확인한 기본 경로의 후보:
+- [DorotiWindowsAppSdkRunner.cs](Doroti/src/Doroti.Host.WindowsAppSdk/DorotiWindowsAppSdkRunner.cs): native loading 준비 → ABI/Windows App Runtime/COM 준비 → boundary/session → presenter 선택과 native host 실행 → view/framework → 첫 raster/presentation 경로다.
+- [WindowsManagedVulkanPresenter.cs](Doroti/src/Doroti.Host.WindowsAppSdk/WindowsManagedVulkanPresenter.cs)의 backend는 `Vulkan/Composition-Swapchain`이다. opaque도 Composition topology를 사용하며 Acrylic은 backdrop 준비를 더한다. ANGLE/EGL 첫 swap 순서를 기본 부트 설명으로 사용할 수 없다.
+- [WindowsNativeV1.cs](Doroti/src/Doroti.Host.WindowsAppSdk/WindowsNativeV1.cs)의 ConfigureAppDirectoryLoading은 presenter 선택 전에 host/bootstrap/`av_libglesv2.dll` 존재와 PE를 검사한다. Vulkan 부트에서도 ANGLE 파일 검사는 실행된다. 이것이 곧 ANGLE GPU 초기화라는 뜻은 아니다.
+- [host project](Doroti/src/Doroti.Host.WindowsAppSdk/Doroti.Host.WindowsAppSdk.csproj)는 Windows App SDK 2.4.0, ANGLE native package, Silk Vulkan/Skia Vulkan을 함께 참조한다. 복수 backend 배포와 selected backend의 startup 필수 dependency를 구분할 필요가 있다.
+- 현재 Acrylic/Composition 사용을 고려하면 “AppWindow를 보관만 하므로 Windows App SDK 제거”라는 옛 판단을 적용할 수 없다. raw Win32 재분류는 이번 범위에서 제외한다.
 
-- managed entry에서 native host, Windows App Runtime bootstrap, ANGLE DLL의 존재·PE를 검사한 뒤 세 파일의 SHA-256을 매 launch마다 전체 파일 read로 계산한다. 이 provenance hash는 diagnostics가 꺼져 있어도 실행된다.
-- 이어서 ABI layout 검사, `RoInitialize`, `MddBootstrapInitialize2`, 세 HWND 생성, `AppWindow::GetFromWindowId`, render worker 시작이 순차 실행된다.
-- 현재 native C++에서 `AppWindow`는 연결·보관·해제 외의 제품 동작에 사용되지 않는다. Windows App SDK identity를 유지할지 raw Win32 host로 재분류할지는 필요한 제품 기능과 배포 계약을 기준으로 ADR에서 결정한다.
-- 첫 render callback에서 ANGLE D3D11 display/context, fixed EGL surface, Skia `GRContext`, window/backing surface가 생성되고 첫 swap 뒤 `DwmFlush`한다. 이 ordering은 first-frame 가시성 계약이므로 제거 대상이 아니다.
-- 기존 Release app directory는 397개 파일/약 337.5 MiB였고 PDB와 현재 기본값이 아닌 D3D12 diagnostic dependency도 포함한다. 배포에 필요하지 않은 symbol과 diagnostic dependency는 loader 기여도 측정을 기다리지 않고 제품 artifact에서 분리한다.
-- default ANGLE host assembly가 diagnostic D3D12 presenter와 Vortice/D3D12 package를 함께 참조한다. 기본 제품에서 진단 backend를 별도 assembly/package로 분리할 여지가 있다.
+### 2.4 Android / Apple / Linux
 
-명시적 Windows MAUI 경로는 WinUI/MAUI/CommunityToolkit.Markup/SkiaSharp와 공용 hidden text/semantics 초기화 비용을 가진다. 기본 backend와 섞지 않고 독립 제품 경로로 검증한다.
-
-### 2.3 Android
-
-- `android-arm64` Release는 full Mono AOT/trimming 경로다. 현재 APK는 약 25.85 MiB이고 assembly/AOT/native library 유사 entry가 131개다.
-- `android-x64` Release는 알려진 Mono AOT startup fault를 피하려고 AOT와 trimming을 모두 끈다. 현재 APK는 약 42.13 MiB이며 raw `libassembly-store.so`가 약 35.71 MiB다.
-- Android marshal methods도 startup fault 이력 때문에 전 RID에서 꺼져 있다. 근거 없이 다시 켜지 않고 현재 .NET 10 runtime에서 crash reproduction과 device matrix를 먼저 닫아야 한다.
-- 현재 Release APK에는 app-owned Baseline Profile entry가 없다. Java/AndroidX startup profile과 managed AOT profile은 서로 다른 최적화이므로 별도 계약으로 추가·검증한다.
-- 2026-08-28 S2 검증 artifact는 `android-arm64` signed APK 27,384,351 bytes였다. `R3CY30KZA4B`에 설치해 first frame, foreground PID/focus, pointer state 변경, scroll, crash/ANR 0건을 확인했지만 이는 Baseline Profile이나 cold/warm 정량 개선 결과가 아니다.
-- `MainApplication`에서 MAUI builder와 descriptor를 만들고, 첫 Activity view 생성 때 hidden `Entry`/`Editor`, semantics, `SKGLTextureView`/OpenGL ES 경로를 붙인다.
-- x64 emulator는 arm64 physical 결과를 대신하지 않는다. 대표 성능 판정은 arm64 물리 기기에서 한다.
-
-### 2.4 iOS, Mac Catalyst, native AppKit macOS
-
-- iOS와 Mac Catalyst는 UIKit/MAUI, native AppKit은 `NSApplication` + experimental MAUI AppKit host를 사용한다. 세 제품을 별도 검증한다.
-- Apple target은 managed assembly AOT와 DLR용 interpreter 제약을 함께 가진다. first-frame `dynamic` call site를 줄이지 않은 채 AOT/linker flag만 바꾸면 기능 회귀 또는 효과 없는 binary 증가가 될 수 있다.
-- iOS/Mac Catalyst도 공용 hidden text input 두 개와 semantics layer를 첫 view에 즉시 만든다.
-- iOS/Mac Catalyst GPU context는 첫 native drawable/paint에서 생성한다. AppKit은 `MTLDevice`, command queue, `MTKView`를 먼저 준비하고 첫 drawable에서 Skia Metal `GRContext`/surface를 만든다.
-- 현재 Apple output directory는 각 target 약 130 MiB 수준이다. signed bundle에 불필요한 symbol/resource를 제외하고, 실제 install footprint는 실행 환경이 있을 때 별도 기록한다.
-- simulator, Mac Catalyst, AppKit 결과를 iPhone/iPad physical launch나 서로 다른 macOS backend의 결과로 바꾸지 않는다.
-
-### 2.5 Web
-
-- Web runner는 loader의 단일 `Blazor.start()`가 끝난 뒤 managed host를 만들고, 첫 Razor render 이후 JS host/WebGL surface/framework view를 연결한다.
-- product contract가 `PublishTrimmed=false`를 강제하고 `WasmBuildNative=true`를 사용한다.
-- 현재 Release `_framework`의 원본 initial payload는 약 47.2 MiB, gzip 파일 합계는 약 17.6 MiB다. `.wasm` 222개가 원본 약 41.0 MiB이고 PDB 21개가 약 3.0 MiB이며 전체 ICU data가 약 2.5 MiB다.
-- Material 약 4.29 MiB, Widgets 약 2.55 MiB, Cupertino 약 0.96 MiB와 여러 범용 BCL assembly가 initial graph에 들어간다. first screen에 필요 없는 assembly/type data를 trim/lazy-load하지 못하는 것이 현재 가장 강한 정적 병목 후보다.
-- `started` loader stage는 Blazor runtime 시작 완료일 뿐 Doroti canvas first commit이 아니다. download, WebAssembly compile, managed main, JS module import, WebGL context, first Doroti present를 나눠야 한다.
-- 2026-08-28 S2 검증 publish의 `wwwroot`는 714개 파일, plain 46,255,091 bytes, Brotli 12,932,420 bytes, gzip 16,976,949 bytes였다. Chrome live에서 실제 canvas first present, text input, pointer action, scroll과 console error/warning 0건을 확인했다. trimming/payload 최적화 자체는 아직 수행하지 않았다.
-
-### 2.6 Linux/Qt
-
-- Linux runner는 framework-dependent `net10.0`, managed-owned process + Qt C ABI v2이며 ReadyToRun/trimming startup 설정이 없다.
-- managed descriptor/session을 만든 뒤 `QApplication`, `QOpenGLWindow`, accessibility factory를 만들고 framework view를 attach한 다음 window를 show한다.
-- first paint에서 Qt current FBO를 Skia가 감싸고 `frameSwapped`이 유일한 presented terminal이다.
-- Wayland acrylic registry 처리는 show 뒤 timer/event queue로 진행되므로 현재 source상 동기 roundtrip이 아니며 우선 최적화 대상에서 제외한다. 실제 회귀가 의심될 때만 trace로 확인한다.
-- `dotnet run`이 수행하는 CMake native build는 developer launch 시간이며 게시된 executable의 runtime TTID와 분리한다.
-
-### 2.7 CLI/developer launch
-
-`doroti.ps1 run`은 현재 항상 `dotnet run --project ... --configuration Release`를 호출한다. 따라서 첫 invocation에는 restore, C#/TypeScript/native build, Android/Apple AOT, deploy가 앱 launch 앞에 붙을 수 있다. 사용자가 체감한 “부트”가 이 전체 구간이라면 runtime 최적화만으로 해결되지 않는다.
-
-## 3. 공통 작업 및 최소 검증 계약
-
-### S0. 구조적 개선 판단
-
-상태: `inProgress` — first-frame DLR cluster에 적용 완료, 나머지 구조 후보는 미착수
-
-다음 중 하나가 source, project graph 또는 runtime 계약에서 확인되면 별도 profiler/baseline 없이 구현한다.
-
-- first-frame closure에서 매 실행 반복되는 JSON parsing, hashing, reflection, DLR binding 또는 불필요한 allocation을 제거한다.
-- 첫 화면이 사용하지 않는 theme/catalog/resource/service를 lazy화하거나 별도 package로 옮긴다.
-- 이미 build/publish에서 알 수 있는 manifest, hash, generated metadata를 runtime에 다시 계산하지 않는다.
-- 동일한 의미를 더 적은 assembly/file/module load와 더 짧은 synchronous chain으로 제공한다.
-- developer launch에서 input fingerprint가 같은 build/deploy 단계를 안전하게 재사용한다.
-
-구조 개선은 public 의미, fail-closed 검증, 첫 유효 content, input/IME/accessibility, terminal exactly-once를 보존해야 한다. 복잡한 cache나 adapter를 추가해 비용을 다른 곳으로 옮기는 변경은 채택하지 않는다.
-
-### S1. 최소 validation과 선택적 진단
-
-상태: `inProgress` — first-frame DLR focused/FCR/target smoke 적용 완료, 전체 부트 gate는 미완료
-
-- 각 변경은 owning build/test와 관련 FCR validation을 먼저 통과한다.
-- 가능한 대표 target에서 Release launch 1회 이상의 first content, crash/hang/blank, input, resize/scroll, text와 accessibility smoke를 확인한다.
-- 실행하지 못한 physical target과 정량 TTID/TTFD는 `notVerified`로 남기되 다른 target의 구조 개선을 막지 않는다.
-- exact CPU/allocation/TTID 수치가 필요하거나 회귀가 의심될 때만 기존 `B00`~`B13` marker, EventPipe/Perfetto/signpost/browser performance marker 또는 짧은 profiler-free A/B를 사용한다.
-- 반복 sample 수, p50/p95와 confidence interval은 정량 benchmark를 실제로 수행하는 경우에만 정한다. 모든 patch의 기본 gate로 요구하지 않는다.
-
-결과는 기능 `PASS`/`FAIL`, 실행하지 않은 항목 `notVerified`, 구조상 예상되는 성능 개선 `expectedImprovement`로 구분한다. `expectedImprovement`는 정량 성능 PASS를 뜻하지 않는다.
-
-## 4. 실행 순서
-
-### S2. 공용 first-frame closure 축소
-
-상태: `completed` (안전한 MVP 범위) — 항목 1/2/3/4의 text handler/5 완료. OS accessibility 활성 상태를 신뢰성 있게 판별할 계약이 없어 semantics 지연은 적용하지 않았다.
-
-S0의 구조 판단과 S1의 최소 validation을 적용해 다음 순서로 진행한다.
-
-1. **Typed manifest/bootstrap**
-   - Runner SDK가 manifest의 resource/plugin descriptor를 generated C# 배열 또는 source-generated JSON context로 만든다.
-   - 매 launch reflection 기반 JSON metadata 초기화를 제거하되 resource hash, RID, plugin ABI fail-closed 검증은 유지한다.
-   - generated 경로가 단순하고 fail-closed 계약을 유지할 수 있으면 manifest 크기와 무관하게 매 launch 역직렬화를 제거한다. 더 복잡한 runtime cache가 필요하면 범위에서 제외한다.
-
-2. **Theme와 대형 type initializer**
-   - RootApp과 first screen이 직접 구성하는 theme/type initializer를 source에서 추적한다. 필요하면 EventPipe/loader trace는 확인용으로만 사용한다.
-   - Demo가 active/inactive light/dark `ThemeData`를 모두 동기 생성하지 않도록 호환 API의 lazy factory를 설계한다.
-   - `ThemeData.Create`의 immutable default typography/component theme는 안전한 shared template/copy-on-write 여부를 참조 의미와 mutation test로 판단한다.
-   - first frame에서 사용하지 않은 animated icon/path table과 Cupertino catalog는 type-local `Lazy<T>` 또는 별도 lazy-load assembly/resource로 이동한다.
-   - 전체 9천여 정적 후보를 기계적으로 바꾸지 않고 기본 root에서 도달하거나 Web initial payload 기여가 큰 data만 수정한다.
-
-3. **First-frame `dynamic` 제거 — `completed` (2026-08-28)**
-   - layout/build/paint/semantics와 initial route의 source reachability 및 반복성을 기준으로 DLR call site를 고른다.
-   - binder 제거가 분명한 공용 경로부터 typed generic/interface/direct 호출로 바꾼다.
-   - public 의미와 Flutter reference 동작을 유지하며, 전체 Framework의 일괄 변환은 별도 follow-up으로 둔다.
-   - Web trim/AOT warning과 Apple interpreter 필요 범위가 줄었는지 target별로 검증한다.
-   - 실행 결과: C1 render-tree core, C2 initial Navigator/Route, C3 Actions를 구현하고 신규 dynamic-dispatch focused validation과 FCR-3~7을 PASS했다. Windows/Web/Android 가능한 Release build/live smoke도 PASS했다.
-   - 경계: Web trim dependency와 Apple interpreter 범위 감소, Windows dark/Narrator, Android physical 문자 commit/TalkBack, Apple/Linux runtime, profiler-free 반복 TTID/CPU/allocation은 `notVerified`다.
-
-4. **Lazy platform service**
-   - hidden `Entry`/`Editor` native handler는 첫 text client activation 때 만든다. text field가 initial screen에 있으면 TTFD 전에 생성하고 caret/IME를 잃지 않는다.
-   - accessibility가 OS에서 활성인 경우 초기 semantics를 지연하지 않는다. 비활성인 경우 lifecycle상 안전하면 first content present 다음 idle/frame으로 옮기고 기능 회귀를 검증한다.
-   - clipboard/plugin/native bridge, shader warm-up과 image cache는 first screen이 요구하는 최소 항목만 동기 준비한다.
-
-5. **불필요한 MAUI registration 제거**
-   - 제품 source와 generated registration graph가 쓰지 않는 `CommunityToolkit.Maui.Markup` registration/package를 제거한다.
-   - Skia handler나 platform lifecycle에 transitive side effect가 있으면 유지하고 이유를 기록한다.
-
-S2 공용 gate:
-
-- FCR-0/FCR-3/FCR-4/FCR-6/FCR-7 Release validation PASS
-- light/dark first frame, system theme live switch, initial text field/IME, accessibility-active launch 회귀 0
-- 수정이 영향을 준 owning project와 가능한 platform source/build PASS, 실행 환경이 없는 target은 `notVerified`
-
-### S3. Windows 기본/MAUI 분리 최적화
-
-상태: `completed` (W1/W3), W2와 ReadyToRun A/B는 계획대로 후속
-
-#### W1. 기본 HwndExactCpp 빠른 경로
-
-1. native DLL SHA-256을 build/publish manifest에 기록하고 일반 launch에서는 file metadata + PE header + ABI/version만 fail-fast 검증한다. 전체 hash 재계산은 diagnostics/audit 명령에서만 수행한다.
-2. `RoInitialize`, Windows App Runtime bootstrap, HWND, `AppWindow`, render worker, ANGLE/Skia context와 first present의 기존 순서를 보존한다. 병목이 남을 때만 `B02→B11` 세부 marker를 추가한다.
-3. 기본 ANGLE assembly/package에서 D3D12 diagnostic presenter와 Vortice/D3D12 dependency를 분리한다. `DOROTI_WINDOWS_PRESENTER=D3D12`는 별도 진단 artifact가 있을 때만 명시적으로 허용하고 silent fallback은 두지 않는다.
-4. clean publish에서 PDB, diagnostic symbols, 사용하지 않는 optional runtime asset을 배포 파일에서 제외한다. Windows App SDK가 지원하는 self-contained file set만 사용하고 임의 DLL 삭제는 금지한다.
-5. ReadyToRun on/off는 구조상 우열이 분명하지 않은 tuning이므로 MVP를 막지 않는 선택적 후속으로 둔다. 수행할 때만 짧은 동일-artifact A/B로 결정한다.
-6. first exact present 전 show 금지와 첫 swap 후 `DwmFlush`는 유지한다. 이를 제거한 숫자는 acceptance에 사용하지 않는다.
-
-#### W2. Windows App SDK identity 후속 결정
-
-`AppWindow`가 현재 연결·보관·해제 외의 제품 동작에 쓰이지 않는다는 source 사실과 deployment 요구를 기준으로 다음 둘 중 하나를 operator decision/ADR로 선택한다. 성능 A/B는 필수 선행 조건이 아니다.
-
-- Windows App SDK backend identity를 유지하고 해당 비용을 수용한다.
-- raw Win32 + ANGLE host를 새 backend/target package로 분리하고 기존 Windows App SDK 계약과 migration을 문서화한다.
-
-기존 backend 이름만 유지한 채 bootstrap을 몰래 제거하지 않는다. 이 항목은 MVP 후속이다.
-
-#### W3. 명시적 Windows MAUI
-
-- S2 lazy text/semantics/package 정리를 적용한다.
-- WinUI bootstrap, MAUI DI/build, DXGI/Skia context와 first present는 독립 경로로 유지한다. 추가 marker는 원인 분리가 필요할 때만 넣는다.
-- 기본 HwndExactCpp보다 느리다는 이유로 제거하거나 자동 fallback하지 않는다.
-
-Windows acceptance:
-
-- target-scoped Release publish, empty `PATH` launch와 native provenance audit PASS
-- 가능한 process-cold와 warm launch smoke에서 first exact content visible, failed terminal 0
-- resize/mixed-DPI/input 기존 gate 유지
-- 실제 한글 IME/Narrator는 수행 전까지 `notVerified`
-
-### S4. Android arm64 physical 우선 최적화
-
-상태: `partial` — arm64 physical/profile packaging과 x64 trimmed build 완료, x64 emulator launch 및 marshal-method 재활성화 matrix는 `notVerified`
-
-1. 고정 serial의 arm64 물리 기기에서 Release 설치·실행, screenshot, Activity/PID, crash/ANR, input smoke를 먼저 닫는다. `am start -W`, Perfetto와 managed trace는 정량 보고나 회귀 분석이 필요할 때만 사용한다.
-2. app startup Critical User Journey로 Android Baseline Profile과 Startup Profile을 생성·패키징하고 `baseline.prof`, dex layout, device compilation state를 검증한다.
-3. arm64 full AOT/default/profiled AOT의 우열은 구조상 확정할 수 없으므로 MVP 구조 개선과 분리한 선택적 tuning으로 둔다. 실제로 선택할 때만 같은 Release APK 조건의 짧은 A/B를 수행한다.
-4. x64는 AOT off를 유지한 채 trimming을 다시 켜서 assembly store를 줄이되, Release build와 emulator launch에서 기존 startup fault가 재발하면 즉시 기존 설정으로 복귀하고 `FAIL`을 기록한다.
-5. `AndroidEnableMarshalMethods`는 기존 startup fault의 최소 재현, fixed runtime 확인과 arm64/x64 matrix가 먼저다. 재활성화 후보가 실패하면 계속 off로 두고 `FAIL` 근거를 남긴다.
-6. hidden text handler, semantics, inactive theme를 lazy화하고 첫 화면에 TextField가 있는 별도 cold-start case로 TTFD/IME를 검증한다.
-7. splash 종료 시점과 Doroti first content를 같은 color라서 오인하지 않도록 screenshot/pixel + `B11`을 함께 사용한다.
-
-Android acceptance:
-
-- fixed physical arm64 Release first-install/cold/warm 각 가능한 smoke PASS
-- APK 설치, foreground Activity/PID, screenshot, crash/ANR 확인. `gfxinfo`/Perfetto는 선택적 진단
-- first input, text selection/overlay, TalkBack-active launch와 scroll cadence 회귀 확인
-- emulator x64 PASS는 physical arm64 PASS를 대신하지 않음
-
-### S5. Apple 세 제품 독립 최적화
-
-상태: `partial` — S2 공용 변경과 Windows-hosted managed compile 적용, Apple OS의 signed runtime gate는 `notVerified`
-
-1. generated entry, UIApplication/NSApplication, MAUI builder, native view, Metal context, root/type init과 first-command-buffer ordering을 source에서 정리한다. signpost/startup marker는 원인 분리가 필요할 때만 연결한다.
-2. iOS physical, iOS simulator, Mac Catalyst, native AppKit을 별도 artifact와 기능 결과표로 기록한다.
-3. S2의 first-frame `dynamic` 제거 뒤 AOT/interpreter 범위를 재평가한다. linker/AOT/registrar 설정은 size, launch, native bridge와 reflection 회귀를 같이 통과할 때만 변경한다.
-4. hidden `Entry`/`Editor` handler와 inactive theme를 lazy화한다. 첫 화면 TextField/VoiceOver-active case는 TTFD 전에 준비한다.
-5. Metal device/queue/context 조기 prewarm은 비용 이동 여부가 불명확하므로 기본 범위에서 제외한다. 이후 실제 대기가 의심될 때만 별도 실험한다.
-6. signed install, dyld/managed assembly mapping, AOT fallback 또는 first drawable 대기가 문제로 남을 때만 Instruments/xctrace로 분해한다.
-
-Apple acceptance:
-
-- iPhone/iPad physical iOS, Mac Catalyst, AppKit Release launch 결과를 각각 기록
-- 첫 Metal completion과 visible screenshot 일치, failed/stale terminal 0
-- Korean IME/VoiceOver/signing/notarization을 실제 수행하지 않으면 `notVerified`
-
-### S6. Web payload/compile 경로 우선 최적화
-
-상태: `partial` — trimming/symbol/payload와 desktop Chrome live 완료, assembly 분할·실제 배포 HTTP header·fresh profile/mobile은 후속 또는 `notVerified`
-
-1. navigation, loader, boot resource graph, `Blazor.start`, managed main, JS module import, WebGL context, framework attach와 first WebGL commit의 synchronous chain을 source에서 정리한다. `performance.mark/measure`는 병목 분리가 필요할 때만 연결한다.
-2. generated Framework graph가 trim-safe해지도록 first screen에 필요한 reflection/dynamic root를 명시하고 product Release의 `PublishTrimmed=true` 금지 gate를 단계적으로 제거한다.
-3. trim warning 0만으로 PASS하지 않고 Material gallery, plugin, image/font/shader, semantics, resize, text input browser live gate를 통과한다.
-4. initial route에서 필요 없는 Cupertino, animated icon/catalog, diagnostics와 optional BCL assembly를 assembly lazy loading 또는 package 분할로 뒤로 보낸다. root Material/Skia/runtime assembly는 억지 lazy-load하지 않는다.
-5. Release publish에서 PDB/source map을 symbol artifact로 분리하고 실제 HTTP Brotli/gzip, immutable fingerprint cache header를 검증한다.
-6. 지원 locale을 operator가 확정한 뒤 필요한 ICU shard만 initial load하거나 추가 culture data를 lazy-load한다. 한국어 text/IME/locale fallback이 깨지면 full ICU를 유지한다.
-7. service worker/repeat cache는 warm navigation만 개선한 것으로 기록하고 fresh-profile cold TTID를 대체하지 않는다.
-8. initial compressed payload는 사용하지 않는 assembly/symbol/ICU/resource를 제거한 만큼 줄인다. 임의의 50% 수치를 구현 gate로 두지 않고 first scene 기능을 완료 기준으로 삼는다.
-
-Web acceptance:
-
-- clean Release publish + 실제 HTTP compression과 fresh browser profile launch smoke
-- 가능한 desktop Chrome와 한 개 mid-tier mobile browser/device의 cold/repeat 기능 결과
-- first canvas pixel, pointer/key/IME/clipboard/ARIA/resize live PASS
-- loader `started`만으로 first-present PASS 선언 금지
-
-### S7. Linux/Qt startup 최적화
-
-상태: `partial` — managed Release build와 Qt ABI contract 완료, 실제 Wayland/X11 runtime은 `notVerified`
-
-1. published executable 기준으로 hostfxr/CoreCLR, managed main, `dlopen` Qt/Skia/native shim, `QApplication`, QPA plugin, `QOpenGLWindow`, GL/Skia context와 first `frameSwapped`의 source ordering을 유지한다.
-2. `perf`, `strace`, `LD_DEBUG=statistics`, EventPipe는 실제 Linux startup 문제가 남을 때만 원인 분석용으로 수집한다.
-3. framework-dependent IL/ReadyToRun/self-contained ReadyToRun 비교는 구조상 우열이 불명확한 선택적 tuning으로 두고 MVP를 막지 않는다.
-4. S2 lazy text/semantics/theme를 적용하고 QAccessible factory/backdrop event가 TTFD에 미치는 영향을 확인한다.
-5. native shim은 published artifact에서 재빌드하지 않는다. CMake incremental 개선은 developer launch 항목에서 별도로 처리한다.
-
-Linux acceptance:
-
-- 실제 Wayland와 실제 X11 session을 독립 검증하고 VM/WSLg는 보조 결과로만 유지
-- first `frameSwapped`, screenshot, input/IME/accessibility와 terminal invariant 확인
-- 물리 Linux/한글 IME/Orca를 실행하지 않으면 `notVerified`
-
-### S8. CLI/developer iteration 개선
-
-상태: `completed` — fingerprint 기반 normal/last-successful Windows 실행과 missing/stale state fail-closed 계약 검증 완료
-
-1. `-NoBuild`/`-NoRestore` 또는 명시적 fast-run option을 먼저 설계한다. runner/configuration/RID/artifact fingerprint가 맞지 않으면 stale binary를 실행하지 않고 재build 필요를 명확히 실패시킨다.
-2. workspace resolve, restore, managed compile, TypeScript/native build, AOT/link, deploy, process launch timer는 재사용 실패 원인을 구분해야 할 때만 추가한다.
-3. Release 기본값은 acceptance 재현성을 위해 유지한다. 일상 개발에는 명시적 Debug fast path와 “마지막 성공 artifact 재실행” 명령을 문서화한다.
-4. Android Gradle AAR, Apple Xcode binding, Linux CMake와 Web TypeScript output은 input hash가 같으면 재사용하도록 dependency/fingerprint 계약을 고친다. 필요하면 MSBuild binlog로 원인을 확인한다.
-5. CLI는 실행한 artifact의 configuration/RID/fingerprint와 생략·재실행한 단계를 명확히 출력한다. 상세 시간은 선택적이다.
-
-CLI acceptance:
-
-- clean first run은 필요한 build/deploy를 생략하지 않음
-- no-build run은 동일 artifact를 사용하고 runtime TTID가 일반 run과 같음
-- stale RID/config/native binding은 fail-closed
-- README.md/README.ko.md와 template 명령 동기화
-
-## 5. MVP와 후속 경계
-
-### MVP
-
-1. S0 구조 판단과 S1 최소 validation 계약 적용
-2. inactive theme/type initializer, first-frame DLR, hidden text/semantics의 명백한 공용 비용 제거
-3. Windows production hash 제거와 D3D12 diagnostic 분리
-4. Android Baseline/Startup Profile 패키징, arm64 physical smoke와 x64 trimming 복구
-5. Web trimming 해제에 필요한 최소 graph 정리, production symbol/ICU/payload 축소
-6. Apple/Linux에 S2 공용 구조 개선 적용과 가능한 기능 검증
-7. 안전한 no-build/no-restore 재실행과 artifact fingerprint 검증
-
-### 후속
-
-- Windows App SDK를 raw Win32 target으로 대체/병행하는 architecture 변경
-- 전체 Framework의 `dynamic` 제거, 전체 assembly 재분할 또는 NativeAOT 전환
-- 모든 Material/Cupertino catalog의 binary/resource 재설계
-- app-specific deferred route/data/network loading
-- store installer, production telemetry sampling, cloud profile/field metric 운영
-
-## 6. 검증 matrix와 상태 기록
-
-| Gate | 필수 결과 | 현재 상태 |
+| 제품 | 현재 구성 | 남은 방향 |
 | --- | --- | --- |
-| G0 source/architecture | first-frame reachability, generated metadata, no avoidable pre-present parsing/hash/file I/O | `PASS`: source-generated manifest metadata, lazy active theme, launch-time Windows full hash 제거. 정량 개선폭은 `notVerified` |
-| G1 common runtime | FCR-0/3/4/6/7, theme/text/semantics first-frame 회귀 없음 | `partial`: FCR-3/4/6/7와 lazy theme/text activation `PASS`; 현재 checkout에 실행 가능한 FCR-0 aggregate가 없어 FCR-0은 `notVerified`, accessibility-active launch도 `notVerified` |
-| G2 Windows default | HwndExactCpp Release cold/warm, exact visible present, input/resize 유지 | `PASS`(자동화 범위): C5-A/C9, empty PATH, normal/audit provenance, failed terminal 0. 물리 IME/Narrator와 정량 TTID는 `notVerified` |
-| G3 Windows MAUI | 독립 Release cold/warm 기능 smoke와 common regression | `partial`: Release build `PASS`; 독립 live cold/warm는 `notVerified` |
-| G4 Android arm64 | physical first-install/cold/warm smoke, ANR/crash/screenshot/input | `PASS`(수행 범위): `R3CY30KZA4B` Release install, profile install-dm, cold/warm, PID/foreground/screenshot/ASCII IME, crash·ANR 0. 한글 commit/TalkBack은 `notVerified` |
-| G5 Android x64 | emulator dev path, AOT-off + trim 후보와 startup fault | `partial`: trimmed Release build/profile strict validation `PASS`, APK 22,990,835 bytes; x64 emulator launch는 `notVerified` |
-| G6 iOS physical | signed Release cold/warm, Metal present, IME/VoiceOver | `notVerified` |
-| G7 Mac Catalyst | 독립 Release cold/warm, Metal present | `notVerified` |
-| G8 AppKit | 독립 Release cold/warm, Metal completion present | `notVerified` |
-| G9 Web | trimmed clean publish, payload, fresh/repeat browser first commit | `partial`: trimmed publish와 desktop Chrome canvas/Korean text/action/scroll/ARIA `PASS`; fresh profile/mobile/실제 배포 compression·cache header는 `notVerified` |
-| G10 Linux | actual Wayland/X11 published launch와 frameSwapped | `partial`: managed Release build와 Qt ABI `PASS`; 실제 Wayland/X11은 `notVerified` |
-| G11 CLI | clean/fast developer launch phase 분리와 stale artifact 거부 | `PASS`: 동일 fingerprint normal/`-LastSuccessful` 실행과 missing state fail-closed 확인 |
-| G12 cross-target | package/template/README와 전체 Release regression | `FAIL`: 개별 Windows/Android/Web/Linux 및 Apple managed compile은 진행됐으나 전체 solution은 Windows에 없는 macOS `sips`에서 1 error |
+| Android arm64 | MAUI, Release AOT/trimming 기본 경로, marshal methods off | 정확한 APK/profile 적합성, 첫 text client/semantics 검증 |
+| Android x64 | MAUI, AOT off + trim on | 현재 emulator startup gate. arm64 결과로 대체 금지 |
+| iOS | MAUI/UIKit entry, physical/simulator RID 분리 | signed Release/Metal first content와 첫 입력. DLR을 위한 interpreter 설정 보존 |
+| Mac Catalyst | MAUI/UIKit entry, maccatalyst-arm64 | iOS와 별도 cold launch/Metal/input 결과 |
+| native AppKit | net10.0-macos, osx-arm64, AppKit-Main, MAUI 공용층 + 전용 Metal surface | Catalyst와 별도 NSWindow/Metal lifecycle 검증 |
+| Linux | Qt native shim + managed host, SelfContained=false, linux-x64 | published executable의 QPA/GL/first frame, Wayland/X11 분리 |
 
-모든 test/build job에는 repository 지침대로 20분 timeout을 적용한다. 한 플랫폼의 PASS나 사용자의 체감 개선으로 다른 플랫폼의 자동 FAIL/`notVerified`를 PASS로 바꾸지 않는다.
+[Runner SDK](Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets)의 iOS/Catalyst `MtouchInterpreter=-all`은 managed AOT와 런타임 생성 DLR 코드 지원을 함께 고려한 설정이다. “모든 assembly를 interpreter로 실행” 또는 “interpreter 제거 완료”로 단순 해석하지 않는다.
 
-## 7. 우선순위와 중단 기준
+[DorotiMauiSurface.cs](Doroti/src/Doroti.Host.Maui/DorotiMauiSurface.cs)는 hidden input 관리 객체를 즉시 생성하고 [MauiTextInputBridge.cs](Doroti/src/Doroti.Host.Maui/MauiTextInputBridge.cs)가 active client의 native attach를 담당한다. 객체 생성과 native attach를 별도 최적화로 다룬다.
 
-구현 우선순위는 다음과 같다.
+Android [profile README](DorotiTestbedApp/android/profiles/README.md)는 기존 CUJ와 재생성 조건을 기록한다. 파일 존재만으로 현재 DEX에 유효하거나 DEX layout용 Startup Profile까지 적용됐다고 판정하지 않는다.
 
-1. source와 runtime 계약상 불필요한 동기 작업을 확실히 제거할 수 있으면 계측·baseline 없이 바로 구현한다.
-2. 여러 플랫폼이 공유하는 Framework/Hosting의 theme/type initializer, first-frame DLR, hidden text/semantics를 먼저 고친다.
-3. 정적 증거가 큰 Web initial payload, Windows launch-time hashing/diagnostic graph, Android x64 untrimmed store를 플랫폼 우선 작업으로 둔다.
-4. 각 변경은 좁은 patch로 구현하고 owning test/FCR/Release smoke에서 correctness를 확인한다.
-5. 기능 계약을 깨거나 비용을 reflection/cache/adapter로 옮기는 변경은 되돌리고 `FAIL`을 남긴다. 정량 계측이 없거나 개선폭이 작다는 이유만으로 구조적으로 타당한 변경을 제거하지 않는다.
+Linux [runner](DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj)의 BuildDorotiQtNative는 build 시 CMake configure/build를 호출한다. 설치된 executable runtime 부트와 별도인 developer iteration 비용이다.
 
-## 8. 구현과 병행할 operator 결정
+### 2.5 CLI / SDK / template
 
-아래 결정은 해당 항목의 제품 범위를 바꿀 때만 필요하며, 앞선 공용 구조 개선의 착수 조건이 아니다.
+[doroti.ps1](Doroti/eng/doroti.ps1)의 fingerprint는 workspace, Doroti/src, Doroti/eng를 재귀 탐색한 뒤 확장자 목록에 맞는 파일 내용을 hash한다.
 
-- 기준 장치/OS: Android physical serial과 refresh rate, iPhone/iPad, macOS 기기, Windows CPU/GPU, Linux Wayland/X11, Web mobile device/network profile
-- Web locale 범위: 한국어/영어 고정인지 임의 locale의 offline 전환까지 필요한지
-- Windows deployment: self-contained Windows App SDK identity를 반드시 유지할지 raw Win32 + ANGLE 신규 target을 허용할지
-- public API: `MaterialApp`/`ThemeData` lazy factory를 additive API로 노출할지 내부 shared-default 최적화만 허용할지
-- 사용자가 말한 “처음 부트”에서 developer first run과 설치된 앱의 cold start 중 어느 체감을 제품 우선순위로 둘지
+- 제외 경로 검사는 재귀 열거 후 수행하며 node_modules가 제외 목록에 없다. 설치된 Web dependency tree가 있으면 광범위 탐색/hash 후보가 된다.
+- Doroti 루트의 Directory.Build.props/targets, Directory.Packages.props는 위 세 root 밖이다. ttf/png/prof/profm 등 binary resource도 현재 확장자 목록 밖이다. 실제 build input을 기준으로 누락을 검증해야 한다.
+- state는 runner/configuration/RID/source fingerprint를 기록하지만 실행 artifact의 파일별 hash나 toolchain identity는 기록하지 않는다. missing/tampered output, SDK/workload 변경에 대한 거부 계약을 보완해야 한다.
+- state 저장은 정상 dotnet run 반환 후다. “build 성공 artifact”와 “run 정상 종료”를 같은 상태로 쓰는 것이 의도인지 구분한다.
+- Testbed Web에는 native-build/AOT 실험 target이 있지만 template은 동일 설정이 아니다. 공용 최적화는 Runner/Target/Host에 두고 Testbed와 새 template 앱을 각각 검증한다.
 
-## 9. 구현 참고 자료
+## 3. 판정과 증거 계약
 
-- [.NET ReadyToRun deployment](https://learn.microsoft.com/dotnet/core/deploying/ready-to-run)
-- [.NET for Android build properties](https://learn.microsoft.com/dotnet/android/building-apps/build-properties)
-- [Android Baseline Profiles](https://developer.android.com/topic/performance/baselineprofiles/overview)
-- [Blazor WebAssembly lazy-loaded assemblies](https://learn.microsoft.com/aspnet/core/blazor/webassembly-lazy-load-assemblies)
-- [Blazor WebAssembly host/deploy and Release trimming](https://learn.microsoft.com/aspnet/core/blazor/host-and-deploy/webassembly/)
+### 3.1 분리할 시나리오
 
-> 현재 결론: source와 기존 artifact만으로 Web payload, Windows production hashing/diagnostic dependency, Android x64 untrimmed store, 공용 ThemeData/type initializer/DLR/hidden platform view는 런타임 작업을 분명히 줄일 수 있는 구현 대상으로 확정한다. live startup trace는 이 작업들의 선행 조건이 아니며, 정량 수치나 남은 병목을 설명해야 할 때만 사용한다.
+| 시나리오 | 시작 기준 | 종료/결과 |
+| --- | --- | --- |
+| first-install | 새 설치/명시적 데이터 초기화 후 launch | 첫 content/input-ready, 설치·런타임 준비 상태 |
+| process cold | process가 없는 설치된 Release 앱 launch | launch-to-first-content, launch-to-input-ready |
+| warm/resume | 살아 있는 process의 resume | resume-to-valid-content, focus/input 복원 |
+| Web cold navigation | 새 browser profile/cache 조건을 기록한 navigation | navigation-to-first-content/input-ready, transferred/decoded bytes |
+| Web repeat navigation | 동일 배포/cache 조건의 재탐색 | HTTP/runtime 상태를 표시한 별도 결과 |
+| developer launch | CLI 진입 | fingerprint/restore/build/native/AOT/deploy/launch 분리 |
 
-## 10. 진행 이력
+OS의 TTID/TTFD와 Doroti marker는 별도 필드로 기록한다. Android am start -W 또는 reportFullyDrawn 값을 Doroti first content와 무조건 동일시하지 않는다.
 
-### 2026-08-29 — 최초 부트 MVP 구현 실행
+### 3.2 최소 marker와 검증 원칙
 
-- 공용 manifest source generation, active-theme lazy factory, MAUI text native handler on-demand, 미사용 CommunityToolkit Markup 제거를 적용했다.
-- Windows launch-time full hash를 audit-only로 옮기고 build/publish provenance, D3D12 diagnostics assembly 분리, Release symbol 제거를 구현했다. C5-A와 C9 normal/audit/negative probe가 PASS했다.
-- Android arm64 startup CUJ profile을 실제 장치에서 수집·패키징했고 `install-dm/speed-profile`, cold/warm와 text activation을 확인했다. x64는 AOT off+trim on build와 profile strict validation이 PASS했다.
-- Web trimming과 Release symbol 제거를 적용해 initial uncompressed 27,049,342 bytes/Brotli 7,447,738 bytes로 줄였고 desktop Chrome live를 PASS했다.
-- CLI normal/last-successful fingerprint 재사용을 구현해 동일 artifact 실행과 missing state fail-closed를 확인했다.
-- 상세 결과와 `notVerified`/후속 경계는 `history/26-08-29/cross-platform-first-boot-implementation.md`에 남겼다.
+- 공용 어휘: launch-start, host-ready, framework-attached, first-scene, first-submit, first-content-evidence, input-ready, startup-failed.
+- 기존 frame/resize/resource trace를 재사용하고 빈 부트 구간에만 marker를 추가한다. 새 범용 telemetry 시스템은 만들지 않는다.
+- run ID, revision/artifact identity, platform/RID/configuration, renderer/backdrop, view/session/context/surface generation과 scene sequence를 연결한다. Web role 간 clock 기준을 명시하고 서로 다른 원시 performance.now를 직접 빼지 않는다.
+- GPU submit/flush, API completion, browser front notification, 캡처에서 확인한 content, physical scan-out을 각각 다른 증거 수준으로 기록한다. presented라는 이름만으로 마지막 수준까지 확인됐다고 보고하지 않는다.
+- first content는 clear/splash/Loading text가 아닌 해당 root의 유효 장면이다. input-ready는 pointer/key/첫 text client와 semantics 준비를 검증한다. 실제 한글 IME와 screen reader 결과는 별도로 남긴다.
+- 명백한 동기 작업/할당 중복 제거는 profiler baseline 없이 구현한다. 숫자로 개선을 주장하거나 병렬화/AOT/캐시의 우열을 선택할 때만 짧은 대응 측정을 한다.
+- 정량 비교는 같은 장치·Release·renderer·cache 조건, profiler off로 실행한다. 기본은 조건당 전후 10회 이내로 원시값과 중앙값을 기록하며 소표본 p95를 안정적인 tail 성능 보장으로 쓰지 않는다. native resize 대규모 matrix는 다시 돌리지 않는다.
 
-### 2026-08-28 — S2 First-frame `dynamic` 제거 완료
+## 4. 실행 작업과 완료 기준
 
-- 당시 작업 계획의 W0~W4를 실행해 C1 render-tree core, C2 Navigator/Route, C3 Actions를 `keep`으로 확정했다. 결과는 `history/26-08-29/cross-platform-first-boot-implementation.md`에 보존했다.
-- 신규 focused validation에서 render child ordering/해제, 서로 다른 `Route<T>` result, Actions intent/override/listener exactly-once와 선택 owner `CallSite<T> = 0`을 검증했다.
-- FCR-3~7, Widgets/Material, Windows default, Web publish, Android arm64 build를 PASS했다.
-- 실제 Windows는 system-light first frame, TextField, pointer action, wheel scroll을 확인했고 Web은 canvas/input/action/scroll 및 console error/warning 0건을 확인했다.
-- Android physical `R3CY30KZA4B`는 first frame, PID/focus, pointer action, scroll, crash/ANR 0건을 확인했다.
-- 구조적 판정은 `expectedImprovement`다. 반복 TTID/TTFD/CPU/allocation A/B와 실행하지 않은 physical accessibility/Apple/Linux gate는 `notVerified`로 유지한다.
+모든 신규 항목은 미완료다. 순서는 **P0 → P1 → P2 → P3 → P4 → P5 → P6**다. 장치가 없는 플랫폼의 runtime gate는 notVerified로 남기고 가능한 후속 작업은 진행한다.
+
+### P0. 현재 부트 계약 고정
+
+- [ ] 위 source graph를 기준으로 최소 marker/evidence schema를 기존 validator에 연결한다. 실제 dependency 차이는 이 문서에 갱신한다.
+- [ ] Windows 기본 Vulkan opaque/Acrylic과 Web 기본 CanvasKit에 first-content/input-ready 판정을 연결한다. loader started의 의미를 소리 없이 변경하지 않는다.
+- [ ] TextField 없는 첫 화면, 첫 화면 TextField autofocus, system dark, accessibility-active 시나리오를 구분한다. 최소 fixture와 실제 Testbed를 둘 다 사용한다.
+- [ ] revision/evaluated property/artifact/default·explicit renderer를 결과에 남긴다. 과거 build 폴더 크기나 PASS를 새 baseline으로 복사하지 않는다.
+
+완료 기준: 첫 장면과 startup failure를 식별하고 loader/GPU ready만으로 content PASS가 발생하지 않는다. 정량 baseline 수집은 모든 구조 개선의 선행 조건이 아니다.
+
+### P1. Web 기본 경로의 불필요한 직렬 대기 축소
+
+소유 파일: doroti.canvaskit.host.ts, doroti.ui.worker.ts, doroti.canvaskit.bootstrap.ts, DorotiWebWorkerRunner.cs, 공용 loader/types/contract 및 HTML template.
+
+- [ ] **자산 검증 병렬화:** manifest 검증 뒤 독립적인 JS/WASM fetch·length/hash 검증을 병렬 시작한다. 둘 다 성공하기 전 실행 금지, 실패 정리, 동일 origin/path/version/integrity 거부 계약을 보존한다.
+- [ ] **runtime 준비 분리:** CanvasKit 준비와 겹칠 수 있는 dotnet.js import/runtime resource 준비를 분리한다. runtime.create 선행은 callback/bridge 초기화에 안전한 범위만 허용한다. StartWorker/view attach는 GPU/text 준비 뒤 한 번만 호출한다.
+- [ ] **폰트 요청 앞당기기:** managed entry 뒤에서 시작하는 font waterfall을 줄인다. base path/CORS/cache가 일치하는 preload 또는 동일 session의 단일 요청 경로를 우선 적용한다. decode/register/resource ACK는 기존 소유층에서 처리하고 fallback font를 빼거나 첫 장면을 잘못된 글꼴로 그리지 않는다.
+- [ ] **부트 옵션 계약:** document용 blazorOptions와 Worker runtime 설정의 지원 범위를 API/type/docs에 명시한다. 필요한 Worker 옵션은 명시적 계약으로 연결하고 함수/Response를 무리하게 structured clone하지 않는다.
+- [ ] **preload/payload 재산정:** 기본 CanvasKit과 명시적 document의 실제 request graph를 따로 기록한다. 불필요한 Blazor loader preload와 필요한 dotnet/CanvasKit/font 우선순위를 정리하되 alternate renderer 및 fingerprint/importmap 계약을 유지한다.
+- [ ] **중복 처리 후속 판단:** main verification → Worker URL load의 요청/byte copy/compile를 확인한다. verified bytes/compiled module 재사용은 pinned upstream 지원과 ownership/integrity 동등성이 확인될 때만 별도 적용한다. runtime hash 삭제나 unverified cache hit로 대체하지 않는다.
+
+완료 기준: TypeScript/loader 계약, 기본 CanvasKit 첫 content·한글 text·plugin·ARIA·resize/context recovery와 명시적 document 회귀 PASS. 404/hash mismatch/WASM init 실패 원인이 남고 Worker/port/canvas lease가 정리된다. 요청·검증·compile 절감과 사용자 부트 시간 개선은 별도 판정한다.
+
+### P2. 공용 first-frame 비용의 남은 부분
+
+- [ ] **MAUI 관리 input 객체 lazy화:** Entry/Editor와 구독을 factory로 바꾸는 범위를 검토·구현한다. single-line 첫 client에는 해당 객체만, multiline 전환 시 나머지를 생성한다. focus/handler attach, hide/show, unload/reload, selection, disposal exactly-once를 유지한다.
+- [ ] **manifest 직접 생성 검토:** generated descriptor에 typed manifest를 제공해 JSON parsing/중간 할당을 없앨 수 있는지 SDK/boundary 계약으로 검토한다. public JSON Load 경로와 schema/RID/duplicate/plugin ABI/resource integrity 검증을 보존한다. 두 manifest를 따로 관리하거나 복잡한 runtime cache가 필요하면 후속으로 남긴다.
+- [ ] **현재 첫 화면의 도달 경로만 정리:** theme default/type initializer/DLR 중 현재 root의 build/layout/paint에서 도달하는 eager 생성·중복 변환만 고친다. 과거 C1/C2/C3 정적화 완료를 다시 작업으로 세지 않는다.
+- [ ] **semantics 유지:** 상태와 무관한 전체 지연은 하지 않는다. 첫 publish에 중복 snapshot/serialization이 있으면 내용·순서·actions를 보존하는 범위만 정리한다.
+
+완료 기준: descriptor/boundary negative cases, session exactly-once, FCR scheduler/rendering/semantics/Material, lazy input lifecycle PASS. text 없는 화면의 관리 객체 생성 감소를 확인하고 첫 text 입력으로 비용이 과도하게 이동하지 않았는지 확인한다. 전체 Framework dynamic 제거는 범위 밖이다.
+
+### P3. Windows Vulkan/Composition 부트 정리
+
+- [ ] **presenter 선택 선행:** renderer/GPU/backdrop 정책을 먼저 확정하고 selected backend별 native 검사 목록을 분리한다. Vulkan-only 부트의 ANGLE 존재/PE 검사 제거 가능성은 native host의 실제 import graph까지 확인한다.
+- [ ] **배포/검사 계약 동기화:** 복수 backend 지원을 유지하며 startup 필수 파일과 optional backend 파일을 구분한다. selected backend의 missing/wrong-architecture/ABI는 fail-closed로 처리하고 audit manifest/C9도 함께 갱신한다.
+- [ ] **Vulkan 초기화 중복 정리:** adapter/device/Skia/Composition/backdrop 준비에서 중복 probe/device가 있는지 확인해 실제 중복만 제거한다. UI/Composition/raster thread ownership과 첫 exact content 공개 순서를 보존한다.
+- [ ] **opaque/Acrylic 분리:** Acrylic activation은 요청 창에만 수행한다. 불필요한 작업과 first-present에 필수인 fence/commit 대기를 구분하고 첫 buffer 공개 전에 content를 준비한다.
+- [ ] **명시적 경로 회귀:** ANGLE opaque/Acrylic, Windows MAUI, 진단 D3D12의 선택/실패 의미를 유지한다. Vulkan 실패를 ANGLE로 자동 fallback하지 않는다.
+
+완료 기준: target Release publish, empty-PATH normal/audit/negative probe, Vulkan opaque/Acrylic 첫 content/input PASS. no app-local Vulkan loader/ICD와 provenance 계약 유지. resize/IME/Narrator/physical scan-out 미수행은 별도 notVerified이며 과거 resize FAIL을 닫지 않는다.
+
+### P4. Android·Apple·Linux 적용과 남은 target gate
+
+- [ ] **Android arm64:** 현재 signed APK 기준 install/process-cold/warm, foreground PID/activity, first content, 첫 text client, crash/ANR를 확인한다. profile strict decode/DEX 적합성과 ART compilation state를 검증하고 변경된 DEX에 맞춰 필요 시 CUJ profile을 재생성한다.
+- [ ] **Android x64:** AOT off + trim on Release emulator launch로 남은 runtime gate를 수행한다. 오류 artifact/원인을 보존하며 무조건 trimming 전체를 끄는 것을 기본 해법으로 삼지 않는다.
+- [ ] **Android 선택 실험:** Baseline Profile과 DEX layout용 Startup Profile/managed AOT profile을 구분한다. AOT 비교와 marshal methods 재활성화는 재현 가능한 fault 수정 및 장치 matrix가 확보됐을 때만 별도 진행한다.
+- [ ] **Apple 3제품:** iOS physical/simulator, Catalyst, AppKit을 각각 Apple host에서 build/sign/launch한다. P2의 첫 focus, Metal first content, suspend/resume, 한글 IME/VoiceOver를 검증한다. DLR이 남은 상태에서 interpreter를 일괄 제거하지 않는다.
+- [ ] **Linux:** framework-dependent published executable로 실제 Wayland/X11 각각 Qt/QPA/GL 초기화, first frame, input/IME/semantics를 검증한다. WSLg/VM은 별도 표시한다.
+
+완료 기준: target별 build/runtime/input/accessibility 범위를 기록한다. Windows의 macOS sips 부재를 전체 solution 필수 gate로 반복하지 않고 Apple packaging은 Apple host에서 수행한다. 과거 해당 FAIL은 유지한다.
+
+### P5. CLI 안전한 재실행과 build graph 개선
+
+- [ ] **fingerprint 입력 정확성 우선:** 상속 props/targets/package pin/SDK 선택, native source, binary resource/profile/font를 build dependency 기준으로 포함한다. 실제 입력 변경에도 같은 fingerprint가 되는 negative case를 먼저 막는다.
+- [ ] **출력 identity 확인:** 성공 artifact 목록/RID/configuration/toolchain을 state에 묶고 missing/변조/stale output을 거부한다. build 성공과 run 종료 기록 분리 여부 및 state schema upgrade/fail-closed 정책을 정한다.
+- [ ] **탐색 비용 축소:** generated output/dependency directory를 재귀 진입 전에 제외한다. package-lock/pin과 build input은 유지하며 mtime-only cache로 정확성을 낮추지 않는다. unrelated target invalidation은 의존 graph가 확인된 만큼만 줄인다.
+- [ ] **native/asset incremental:** Qt CMake, CanvasKit restore/prepare, TypeScript, Android/Apple binding target의 inputs/outputs를 검토한다. source/pin/toolchain 변경 시 재실행하고 해당 target build에만 참여하게 정리한다.
+- [ ] **template 동기화:** 공용 SDK/target에 구현하고 Testbed와 새 template 앱으로 clean build/재실행/changed-input/removed-output을 검증한다. README 영문/한글의 명령과 실제 재사용 단계를 맞춘다.
+
+완료 기준: clean build는 필요한 단계 수행, unchanged run은 유효한 artifact 재사용, source/config/RID/native/resource/toolchain/output 불일치는 명확히 거부. fingerprint 시간을 포함한 developer launch 결과를 앱 runtime TTID와 분리한다.
+
+### P6. 결과 정리와 채택
+
+- [ ] implemented, structural PASS, runtime PASS, performance notVerified를 구분한다. 환경 부재는 notVerified, 실제 실행 실패는 FAIL로 남긴다.
+- [ ] 정량 비교를 했다면 동일 조건 원시 launch 기록과 변화량을 남긴다. package byte/init 호출 수 감소만으로 TTID 개선률을 만들지 않는다.
+- [ ] 결과는 `history/<실행일>/cross-platform-boot-results.md`, 로그/JSON/capture는 `.doroti/evidence/boot/<run-id>/`에 저장하고 이 문서에서 연결한다.
+- [ ] 기본값/API/template/문서 일치와 미수행 physical/Apple/Linux/mobile Web/accessibility gate를 다음 작업 목록으로 남긴다.
+
+## 5. 검증 진입점과 현재 상태
+
+아래는 재사용할 기존 진입점이며 **이번 재작성에서 실행한 결과가 아니다**. 기존 project/script/Playwright fixture를 확장하고 아직 없는 command를 실행 가능한 것처럼 기록하지 않는다.
+
+| 영역 | 기존 진입점 | 신규 실행 상태 |
+| --- | --- | --- |
+| Bootstrap/공용 | Doroti/validation/app-bootstrap, app-runner, dynamic-dispatch, fcr3-scheduler, fcr4-retained-rendering, fcr6-semantics, fcr7-material-widget | notRun |
+| Web loader | Doroti/validation/web-typescript/loader-contract.json, Host Web TypeScript | notRun |
+| Web 실제 앱 | Doroti/validation/web-playwright/tests/startup.spec.ts, canvaskit-worker.spec.ts, canvaskit-text-field.spec.ts, canvaskit-display-list.spec.ts, resize lifecycle tests | notRun |
+| Windows | Doroti/eng/test-hwnd-exact-cpp-c9-publish.ps1, validation/hwnd-exact-cpp-product, Vulkan capability validator | notRun |
+| Android | Doroti/eng/generate-android-baseline-profile.ps1, 각 RID runner와 fixed device/emulator | notRun |
+| Apple | iOS/Catalyst/AppKit 각 runner 및 Apple host | notRun |
+| Linux | Doroti/validation/linux-qt-contract, Qt runner 및 실제 Wayland/X11 | notRun |
+| CLI/template | Doroti/validation/app-runner, workspace/template 계약과 입력·출력 무효화 사례 | notRun |
+
+- 모든 test/build 및 자식 프로세스는 [.github/copilot-instructions.md](.github/copilot-instructions.md)에 따라 **20분 timeout**을 적용하고, timeout 시 해당 작업이 시작한 process tree를 종료한다.
+- 좁은 correctness gate가 통과하면 해당 target Release smoke로 진행한다. 문서 갱신만을 위해 full build/native drag/기기 설치를 수행하지 않는다.
+- P1/P3은 기본 renderer 외 명시적 대체 경로도 검증한다. 실제 배포 Brotli/gzip/cache header, mobile browser, 물리 IME/accessibility는 로컬 desktop PASS와 별개다.
+
+## 6. 범위 밖과 보류 기준
+
+- Web full/partial AOT 재시도, CanvasKit 단일 Worker 재설계, Windows raw Win32 전환, Framework 전체 dynamic 제거, 전체 Material assembly 재분할은 필수 작업이 아니다.
+- [CanvasKit 재설계 결과](history/26-09-05/web-canvaskit-redesign-v2-results.md)의 full AOT compiler 실패와 isolated partial-AOT browser startup stack overflow는 유지한다. publish 성공만으로 AOT startup 성공을 선언하거나 기존 실패를 재분류하지 않는다.
+- [CanvasKit 2부 기록](history/26-09-05/web-canvaskit-redesign-v2-part2-results.md)의 resize/latency 실패와 [Vulkan resize 기록](history/26-09-05/windows-vulkan-acrylic-resize-summary.md)은 유지한다. cache 옵션·resize FPS·presentation topology를 부트 최적화에 섞어 변경하지 않는다.
+- theme/manifest/input 중 작은 구조 변경으로 끝나지 않는 항목은 원인/예상 이득/호환 비용을 남기고 후속으로 분리한다. 정량 계측이 없다는 이유만으로 명백한 중복 제거를 중단하지 않는다.
+- integrity/ABI/generation/ownership를 약화하거나 첫 입력/semantics/글꼴 품질을 희생하는 변경은 채택하지 않는다. 실패 원인과 원본 evidence를 보존한다.
+- locale 축소, OS 최소 버전 상향, backend 제거, public API breaking change가 필요할 때 해당 제품 결정을 별도로 확정한다. 나머지 공용/기본 경로 개선은 그 결정을 기다리지 않고 진행한다.
