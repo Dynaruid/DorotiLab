@@ -12,16 +12,52 @@ The C# Material sample is available explicitly while its acceptance gates in
 [work.md](../work.md) are being completed. Diagnostics remains the default.
 The renderer defaults remain Windows Vulkan and Web CanvasKit Worker.
 
+Run the commands below in PowerShell 7 from the **repository root, `DorotiLab`**.
+See [Quick start](#quick-start) for the required SDK and tools.
+
+### Run the sample on Windows
+
 ```powershell
+# Clear any previous resize fixture, which would take priority over the sample.
+Remove-Item Env:DOROTI_RESIZE_FIXTURE -ErrorAction SilentlyContinue
 $env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
-# Return to the original diagnostics gallery:
-$env:DOROTI_TESTBED_MODE = 'diagnostics'
 ```
 
-For Web, open `http://127.0.0.1:5088/?dorotiTestbedMode=sample` using the default
-CanvasKit Worker. `?dorotiTestbedMode=diagnostics` selects the original gallery.
-F0/F1/F2 resize fixtures take priority over sample mode. The sample uses an opaque
+The first run restores packages, builds the runner, and opens the sample window.
+The environment variable applies to the current PowerShell session and apps launched
+from it; changing it does not switch an already running app.
+
+### Run the sample in a browser
+
+Start the Web server and leave this terminal open:
+
+```powershell
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release
+```
+
+Once the server starts, [open the Material sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample)
+at `http://127.0.0.1:5088/?dorotiTestbedMode=sample`.
+Web selects the screen using **`dorotiTestbedMode` in the URL**, rather than the shell's
+`DOROTI_TESTBED_MODE`. Omitting the renderer option uses the default CanvasKit Worker.
+Press `Ctrl+C` in the server terminal to stop it.
+
+### Run the original diagnostics gallery
+
+On Windows, close the sample window and run these commands in the same terminal:
+
+```powershell
+$env:DOROTI_TESTBED_MODE = 'diagnostics'
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
+# To remove the mode override for subsequent launches:
+Remove-Item Env:DOROTI_TESTBED_MODE -ErrorAction SilentlyContinue
+```
+
+On Web, [open diagnostics](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics)
+without restarting the server. `http://127.0.0.1:5088/` also selects diagnostics.
+Explicit F0/F1/F2 resize fixtures take priority over sample mode.
+
+The sample uses an opaque
 Material surface and contains Components, Color, Typography and Elevation, nine
 seed colors, six image themes, and a local/URL Image demo. Image themes require
 network access to `flutter.github.io`; the URL demo uses `plus.unsplash.com`.

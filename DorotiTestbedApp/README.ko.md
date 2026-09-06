@@ -12,17 +12,53 @@ C# Material 샘플은 [work.md](../work.md)의 acceptance gate를 검증하는 �
 명시적 모드로 제공합니다. 기본 화면은 기존 diagnostics이며 renderer 기본값은
 Windows Vulkan, Web CanvasKit Worker입니다.
 
+아래 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell 7로 실행합니다.
+필요한 SDK와 도구는 [빠르게 실행하기](#빠르게-실행하기)를 참고하세요.
+
+### Windows에서 샘플 실행
+
 ```powershell
+# 이전에 설정한 resize fixture가 샘플보다 우선하지 않도록 해제
+Remove-Item Env:DOROTI_RESIZE_FIXTURE -ErrorAction SilentlyContinue
 $env:DOROTI_TESTBED_MODE = 'sample'
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
-# 기존 diagnostics 갤러리로 복귀:
-$env:DOROTI_TESTBED_MODE = 'diagnostics'
 ```
 
-Web 기본 CanvasKit Worker에서는
-`http://127.0.0.1:5088/?dorotiTestbedMode=sample`로 실행합니다.
-`?dorotiTestbedMode=diagnostics`는 기존 갤러리입니다. F0/F1/F2 resize fixture는
-sample보다 우선합니다. 새 샘플은 불투명 Material surface 위에 Components,
+첫 실행은 복원·빌드 후 샘플 창을 엽니다. 환경변수는 현재 PowerShell 세션과
+그 세션에서 시작한 앱에 적용되며, 이미 실행 중인 앱의 화면을 바꾸지는 않습니다.
+
+### 브라우저에서 샘플 실행
+
+먼저 Web 서버를 실행하고 이 터미널을 열어 둡니다.
+
+```powershell
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release
+```
+
+서버가 시작되면 브라우저에서
+[Material 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample)를 누릅니다.
+주소는 `http://127.0.0.1:5088/?dorotiTestbedMode=sample`입니다.
+Web에서는 셸의 `DOROTI_TESTBED_MODE` 대신 **URL의 `dorotiTestbedMode`**가 화면을
+선택합니다. renderer 옵션을 생략하면 기본 CanvasKit Worker로 실행됩니다.
+서버를 종료하려면 실행한 터미널에서 `Ctrl+C`를 누릅니다.
+
+### 기존 진단 화면으로 실행
+
+Windows에서는 샘플 창을 닫고 같은 터미널에서 다음 명령으로 다시 실행합니다.
+
+```powershell
+$env:DOROTI_TESTBED_MODE = 'diagnostics'
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
+# 이후 실행에서 모드 환경변수를 사용하지 않으려면:
+Remove-Item Env:DOROTI_TESTBED_MODE -ErrorAction SilentlyContinue
+```
+
+Web에서는 서버를 다시 시작하지 않고
+[진단 화면 열기](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics)를 누릅니다.
+모드 옵션 없는 `http://127.0.0.1:5088/`도 diagnostics입니다.
+F0/F1/F2 resize fixture를 명시하면 sample보다 우선합니다.
+
+새 샘플은 불투명 Material surface 위에 Components,
 Color, Typography, Elevation과 9 seed·6 image 테마, local/URL Image demo를 제공합니다.
 이미지 테마는 `flutter.github.io`, URL 데모는 `plus.unsplash.com` 접근이 필요합니다.
 테마 로드 실패 시 마지막 성공 테마를 유지하고 Retry를 제공합니다. 로컬 WebP와
