@@ -262,6 +262,42 @@ internal static class MountedPickerContracts
                 Console.WriteLine("two-column app bars: CPU/GPU raster parity through inline bars, cache pressure and reuse PASS");
                 return;
             }
+            VerifyTabs();
+            if (Environment.GetEnvironmentVariable("DOROTI_VALIDATION_TABS") == "1") return;
+
+            void VerifyTabs()
+            {
+                M.TabController? controller = null;
+                long tapped = -1, hovered = -1, focused = -1;
+                var labels = new[] { "Video", "Photos", "Audio" };
+                view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new M.MaterialApp(
+                    locale: new Locale("en", "US"), home: new M.DefaultTabController(length: 3,
+                        child: new Builder(builder: context =>
+                        {
+                            controller = M.DefaultTabController.of(context);
+                            return new Center(child: new SizedBox(height: 80, child: new M.Scaffold(appBar: new M.AppBar(bottom:
+                                new M.TabBar(tabs: labels.Select(label => (Widget)new M.Tab(text: label,
+                                    icon: new Icon(M.Icons.photo_outlined), iconMargin: Doroti.Framework.Painting.EdgeInsets.zero)).ToList(),
+                                    onTap: index => tapped = index, onHover: (_, index) => hovered = index,
+                                    onFocusChange: (_, index) => focused = index)))));
+                        }))))));
+                Pump("tabs-initial");
+                foreach (var expected in new[] { 1, 2, 0, 2, 1, 1, 0 })
+                {
+                    var tab = Elements(binding.rootElement!).Single(element => element.widget is M.Tab value && value.text == labels[expected]);
+                    TapElement(tab);
+                    Pump("tabs-selected-" + expected);
+                    if (tapped != expected || controller!.index != expected || controller.indexIsChanging || controller.animation!.value != expected)
+                        throw new Exception($"Tab {expected}: callback={tapped}, selection={controller!.index}, animation={controller.animation!.value}");
+                    var bar = Elements(binding.rootElement!).Single(element => element.widget is M.TabBar);
+                    var ink = (M.InkWell)Elements(bar).Where(element => element.widget is M.InkWell).ElementAt(expected).widget;
+                    view.DispatchPlatformEvent(() => { ink.onHover!(true); ink.onFocusChange!(true); });
+                    if (hovered != expected || focused != expected)
+                        throw new Exception($"Tab {expected}: hover={hovered}, focus={focused}");
+                }
+                Console.WriteLine("Tabs: pointer selection, animation completion, repeated taps and hover/focus indices PASS");
+            }
+
             var independentKey = new GlobalKey<IState>();
             var dependentKey = new GlobalKey<IState>();
             double observedWidth = 0;

@@ -1237,6 +1237,8 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
         long tabCountLocal = checked((long)(((TabBar)(object)this.widget).tabs.Count));
         for (var indexLocal = 0L; (indexLocal < tabCountLocal); indexLocal += 1L)
         {
+            // Dart captures a separate loop variable per iteration; C# for loops do not.
+            var tabIndex = indexLocal;
             var selectedState = ((Func<HashSet<global::Doroti.Framework.Widgets.WidgetState>>)(() => { var __collection75624 = new HashSet<global::Doroti.Framework.Widgets.WidgetState>(); if ((indexLocal == this._currentIndex)) { __collection75624.Add(global::Doroti.Framework.Widgets.WidgetState.selected); } return __collection75624; }))();
             global::Doroti.Framework.Services.MouseCursor effectiveMouseCursor = ((((WidgetStateProperty.resolveAs<global::Doroti.Framework.Services.MouseCursor?>(((TabBar)(object)this.widget).mouseCursor, selectedState) ?? (global::Doroti.Framework.Services.MouseCursor)tabBarTheme.mouseCursor?.resolve(selectedState))) ?? (global::Doroti.Framework.Services.MouseCursor)global::Doroti.Framework.Widgets.WidgetStateMouseCursor.clickable.resolve(selectedState)));
             global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?> defaultOverlay = ((global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>)(object?)WidgetStateProperty.resolveWith<global::Doroti.Ui.Color?>((states) =>
@@ -1252,13 +1254,13 @@ internal class _TabBarState__tabs : global::Doroti.Framework.Widgets.State<TabBa
             }));
             wrappedTabs[(int)(indexLocal)] = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new InkWell(mouseCursor: effectiveMouseCursor, onTap: (() =>
             {
-                _handleTap(indexLocal);
+                _handleTap(tabIndex);
             }), onHover: ((value) =>
             {
-                ((TabBar)(object)this.widget).onHover?.Invoke(value, indexLocal);
+                ((TabBar)(object)this.widget).onHover?.Invoke(value, tabIndex);
             }), onFocusChange: ((value) =>
             {
-                ((TabBar)(object)this.widget).onFocusChange?.Invoke(value, indexLocal);
+                ((TabBar)(object)this.widget).onFocusChange?.Invoke(value, tabIndex);
             }), enableFeedback: (((TabBar)(object)this.widget).enableFeedback ?? true), overlayColor: ((((TabBar)(object)this.widget).overlayColor ?? tabBarTheme.overlayColor) ?? defaultOverlay), splashFactory: ((((TabBar)(object)this.widget).splashFactory ?? tabBarTheme.splashFactory) ?? this._defaults.splashFactory), borderRadius: ((((TabBar)(object)this.widget).splashBorderRadius ?? tabBarTheme.splashBorderRadius) ?? this._defaults.splashBorderRadius), child: new global::Doroti.Framework.Widgets.Padding(padding: global::Doroti.Framework.Painting.EdgeInsets.CreateOnly(bottom: ((TabBar)(object)this.widget).indicatorWeight), child: new global::Doroti.Framework.Widgets.Semantics(role: SemanticsRole.tab, child: new global::Doroti.Framework.Widgets.Stack(children: new List<global::Doroti.Framework.Widgets.Widget> { DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(wrappedTabs[(int)(indexLocal)]), DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.Semantics(selected: (indexLocal == this._currentIndex), label: (global::Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? null : localizations.tabLabel(tabIndex: (indexLocal + 1L), tabCount: tabCountLocal)))) })))));
             wrappedTabs[(int)(indexLocal)] = DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Widgets.Widget>(new global::Doroti.Framework.Widgets.MergeSemantics(child: wrappedTabs[(int)(indexLocal)]));
             if ((!((TabBar)(object)this.widget).isScrollable && (object.Equals(effectiveTabAlignment, TabAlignment.fill))))

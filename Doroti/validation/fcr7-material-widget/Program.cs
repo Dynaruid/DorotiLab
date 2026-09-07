@@ -64,6 +64,13 @@ if (args is ["--material-sample"] or ["--material-sample-search"])
     return;
 }
 
+if (args is ["--tabs"])
+{
+    Environment.SetEnvironmentVariable("DOROTI_VALIDATION_TABS", "1");
+    MountedPickerContracts.Verify();
+    return;
+}
+
 if (args is ["--mounted-text"])
 {
     Environment.SetEnvironmentVariable("DOROTI_VALIDATION_MOUNTED_TEXT", "1");
