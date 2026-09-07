@@ -16,12 +16,40 @@ internal static class WindowsSampleContracts
     {
         using var platform = PlatformEnvironmentContext.Enter(new PlatformConfiguration(
             [new Locale("en", "US")], Brightness.light, false, false, HostOperatingSystem.windows));
+        Material3Contracts.Verify();
         VerifyRail();
         VerifyClock();
         VerifyCalendar();
         await VerifyNativeText();
+        VerifyNativeShadows();
         MountedPickerContracts.Verify();
         Console.WriteLine("Windows sample regressions: PASS");
+    }
+
+    private static void VerifyNativeShadows()
+    {
+        using var environment = new ImageFixtureEnvironment();
+        var draw = typeof(SkiaSceneRenderer).GetMethod("DrawShadow", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        var convert = typeof(SkiaSceneRenderer).GetMethod("ToPath", BindingFlags.Static | BindingFlags.NonPublic, [typeof(Doroti.Ui.Path)])!;
+        var path = new Doroti.Ui.Path();
+        path.addRRect(RRect.fromRectAndCorners(Rect.fromLTWH(40, 30, 80, 60), topLeft: Radius.circular(12), topRight: Radius.circular(12)));
+        using var nativePath = (SKPath)convert.Invoke(null, [path])!;
+        Require(nativePath.Contains(41, 89) && !nativePath.Contains(41, 31), "asymmetric card corners survive native path conversion");
+        foreach (var elevation in new double[] { 0, 1, 3, 6, 8, 12 })
+        {
+            using var bitmap = new SKBitmap(160, 140);
+            using var canvas = new SKCanvas(bitmap);
+            canvas.Clear(SKColors.Transparent);
+            draw.Invoke(environment.Renderer, [canvas, new CanvasShadowPayload(path, new Color(0xff000000), elevation, false)]);
+            var pixels = bitmap.Pixels;
+            Require(elevation == 0 ? pixels.All(pixel => pixel.Alpha == 0) : pixels.Any(pixel => pixel.Alpha > 0),
+                $"elevation {elevation} shadow visibility");
+            Require(bitmap.GetPixel(80, 60).Alpha == 0, "opaque occluder interior is excluded from shadow");
+            using var image = SKImage.FromBitmap(bitmap);
+            using var png = image.Encode(SKEncodedImageFormat.Png, 100);
+            File.WriteAllBytes(System.IO.Path.Combine(OutputDirectory, $"shadow-{elevation}.png"), png.ToArray());
+        }
+        Console.WriteLine("native shadows: zero elevation, all six levels, opaque occlusion and asymmetric corners PASS; tessellation pixel parity not asserted");
     }
 
     private static void VerifyClock()
@@ -99,6 +127,11 @@ internal static class WindowsSampleContracts
         var expectedWidth = font.MeasureText(label) + label.Length * 0.1;
         Require(Math.Abs(measured.maxIntrinsicWidth - expectedWidth) < 0.01,
             $"button label must use medium font and letter spacing: {measured.maxIntrinsicWidth} vs {expectedWidth}");
+        var fallbackStyle = new TextStyle(fontFamily: "Missing sample font", fontFamilyFallback: ["Roboto"], fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1);
+        using var fallback = environment.Renderer.Layout(new ParagraphRequest(label, double.PositiveInfinity, null, 14,
+            TextRuns: [new ParagraphTextRun(label, fallbackStyle)]), DartUiInvocation.Managed("explicit-fallback-font-metrics"));
+        Require(Math.Abs(fallback.maxIntrinsicWidth - measured.maxIntrinsicWidth) < 0.01,
+            "An unavailable primary family must use the loaded Roboto fallback, including its weight");
         var extentMethod = typeof(SkiaSceneRenderer).GetMethod("PictureRasterExtent", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!;
         var bounds = SKRect.Create(0, 0, 590, 732);
         var translatedHeights = new HashSet<double>();

@@ -156,7 +156,7 @@ internal static class MountedPickerContracts
                     new MaterialSample.SampleImageDemo(), new SizedBox(height: 1000),
                 ])))))));
             Pump("image-ready");
-            var imageFailures = Elements(binding.rootElement!).Where(element => element.widget is Text { data: not null } text && text.data.StartsWith("Image unavailable:"))
+            var imageFailures = Elements(binding.rootElement!).Where(element => element.widget is Text { data: not null } text && text.data == "Image could not be loaded.")
                 .Select(element => ((Text)element.widget).data).ToArray();
             if (imageFailures.Length > 0) throw new Exception(string.Join("\n", imageFailures));
             if (images.Decodes != 1 || images.Rasterizations != 0) throw new Exception($"Image mount should decode once without color extraction: {images.Decodes}/{images.Rasterizations}");
@@ -172,8 +172,8 @@ internal static class MountedPickerContracts
             if (images.Rasterizations != 2) throw new Exception($"Explicit extraction should rasterize light/dark once each: {images.Rasterizations}");
             view.DispatchPlatformEvent(() => imageScroll.jumpTo(80));
             Pump("image-colors-scrolled");
-            if (images.Decodes != 2 || images.Rasterizations != 2) throw new Exception("Scrolling repeated explicit palette work");
-            Console.WriteLine("image sample: display decode once, original decode only for explicit extraction, no repeated scroll work PASS");
+            if (images.Decodes != 1 || images.Rasterizations != 2) throw new Exception($"Scrolling repeated explicit palette work: {images.Decodes}/{images.Rasterizations}");
+            Console.WriteLine("image sample: shared original decode once, explicit light/dark extraction only, no repeated scroll work PASS");
 
             var sampleBar = new M.AppBar(title: new Text("Sample root"));
             view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new M.MaterialApp(locale: new Locale("en", "US"), home:

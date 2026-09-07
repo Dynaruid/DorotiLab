@@ -113,10 +113,10 @@ test("Material sample high DPI pointer opens and closes a sheet @dpr", async ({ 
   const button = page.getByRole("button", { name: "Show modal bottom sheet", exact: true });
   await scrollTo(page, button, 600);
   await pointer(page, button);
-  const close = page.getByRole("button", { name: "Close bottom sheet", exact: true });
-  await expect(close).toBeAttached();
-  await pointer(page, close);
-  await expect(close).not.toBeAttached();
+  const share = page.getByRole("group", { name: "Share", exact: true });
+  await expect(share).toBeAttached();
+  await page.mouse.click(300, 100);
+  await expect(share).not.toBeAttached();
   const frame = await captureDiagnostics(page);
   expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0).toBe(0);
   expect(runtimeErrors).toEqual([]);

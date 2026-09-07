@@ -19,23 +19,23 @@ internal sealed partial class ComponentsState
             new M.CheckboxListTile(title: new Text("Option 2"), tristate: true, value: _checkB, onChanged: value => setState(() => _checkB = value)),
             new M.CheckboxListTile(title: new Text("Option 3"), tristate: true, value: _checkC, onChanged: value => setState(() => _checkC = value)),
             new M.CheckboxListTile(title: new Text("Option 4"), tristate: true, value: true, onChanged: null)),
-        () => Section("Chips", Flow(new M.ActionChip(avatar: new Icon(M.Icons.@event), label: new Text("Assist"), onPressed: DisplayAction),
+        () => SpacedSection("Chips", Flow(new M.ActionChip(avatar: new Icon(M.Icons.@event), label: new Text("Assist"), onPressed: DisplayAction),
             new M.FilterChip(label: new Text("Filter"), selected: _filtered, onSelected: value => setState(() => _filtered = value)),
             new M.InputChip(label: new Text("Input"), onPressed: DisplayAction, onDeleted: DisplayAction), new M.ActionChip(label: new Text("Suggestion"), onPressed: DisplayAction)),
             Flow(new M.ActionChip(avatar: new Icon(M.Icons.@event), label: new Text("Assist")), new M.FilterChip(label: new Text("Filter"), selected: _filtered, onSelected: null),
                 new M.InputChip(label: new Text("Input"), onDeleted: DisplayAction, isEnabled: false), new M.ActionChip(label: new Text("Suggestion")))),
         () => Section("Date picker", M.TextButton.CreateIcon(icon: new Icon(M.Icons.calendar_month), label: new Text("Show date picker", style: new TextStyle(fontWeight: FontWeight.bold)), onPressed: () => PickDate(ctx, setState))),
         () => Section("Time picker", M.TextButton.CreateIcon(icon: new Icon(M.Icons.schedule), label: new Text("Show time picker", style: new TextStyle(fontWeight: FontWeight.bold)), onPressed: () => PickTime(ctx, setState))),
-        () => Section("Menus", new Row(mainAxisAlignment: MainAxisAlignment.center, spacing: 10, children: [Menu(false), Menu(true)]),
-            Flow(new M.DropdownMenu<string>(controller: _colorMenu, initialSelection: _menuColor, enableFilter: true, label: new Text("Color"), inputDecorationTheme: new M.InputDecorationTheme(filled: true),
+        () => SpacedSection("Menus", new Row(mainAxisAlignment: MainAxisAlignment.center, spacing: 20, children: [Menu(false), Menu(true)]),
+            new Wrap(alignment: WrapAlignment.spaceAround, runAlignment: WrapAlignment.center, crossAxisAlignment: WrapCrossAlignment.center, spacing: 10, runSpacing: 10, children: [new M.DropdownMenu<string>(controller: _colorMenu, initialSelection: _menuColor, enableFilter: true, label: new Text("Color"), inputDecorationTheme: new M.InputDecorationTheme(filled: true),
                 dropdownMenuEntries: new[] { "Blue", "Pink", "Green", "Yellow", "Grey" }.Select(label => new M.DropdownMenuEntry<string>(value: label, label: label, enabled: label != "Grey")).ToList(), onSelected: value => { if (value is not null) setState(() => _menuColor = value); }),
             new M.DropdownMenu<string>(controller: _iconMenu, initialSelection: _menuIcon, leadingIcon: new Icon(M.Icons.search), label: new Text("Icon"),
                 dropdownMenuEntries: new[] { "Smile", "Cloud", "Brush", "Heart" }.Select(label => new M.DropdownMenuEntry<string>(value: label, label: label)).ToList(), onSelected: value => { if (value is not null) setState(() => _menuIcon = value); }),
-            new Icon(MenuIcon(_menuIcon), color: _menuColor switch { "Blue" => M.Colors.blue, "Pink" => M.Colors.pink, "Green" => M.Colors.green, "Yellow" => M.Colors.yellow, _ => M.Colors.grey.withAlpha(128) }))),
+            new Icon(MenuIcon(_menuIcon), color: _menuColor switch { "Blue" => M.Colors.blue, "Pink" => M.Colors.pink, "Green" => M.Colors.green, "Yellow" => M.Colors.yellow, _ => M.Colors.grey.withAlpha(128) })])),
         () => Section("Radio buttons", new RadioGroup<string>(groupValue: _radio, onChanged: value => setState(() => _radio = value!), child: new Column(children:
             [new M.RadioListTile<string>(value: "first", title: new Text("Option 1")), new M.RadioListTile<string>(value: "second", title: new Text("Option 2")), new M.RadioListTile<string>(value: "disabled", title: new Text("Option 3"), enabled: false)]))),
-        () => Section("Sliders", new M.Slider(value: _sliderA, max: 100, label: $"{_sliderA:0}", onChanged: value => setState(() => _sliderA = value)),
-            new SizedBox(height: 10), new M.Slider(value: _sliderB, max: 100, divisions: 5, label: $"{_sliderB:0}", onChanged: value => setState(() => _sliderB = value))),
+        () => Section("Sliders", new M.Slider(value: _sliderA, max: 100, onChanged: value => setState(() => _sliderA = value)),
+            new SizedBox(height: 20), new M.Slider(value: _sliderB, max: 100, divisions: 5, label: $"{_sliderB:0}", onChanged: value => setState(() => _sliderB = value))),
         () => Section("Switches", new Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children:
             [new M.Switch(value: _switchA, onChanged: value => setState(() => _switchA = value)), new M.Switch(value: _switchB, onChanged: value => setState(() => _switchB = value), thumbIcon: SwitchIcon())]),
             new Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [new M.Switch(value: false, onChanged: null), new M.Switch(value: true, onChanged: null, thumbIcon: SwitchIcon())])),
@@ -77,8 +77,10 @@ internal sealed partial class ComponentsState
                     border: outlined ? new M.OutlineInputBorder() : null, prefixIcon: new Icon(M.Icons.search),
                     suffixIcon: new M.IconButton(tooltip: "Clear text", icon: new Icon(M.Icons.close), onPressed: state == 2 ? null : () => controller.clear())));
         }
-        Widget Pair(bool outlined) => new Row(spacing: 10, children: [new Expanded(child: Field(outlined, 1)), new Expanded(child: Field(outlined, 2))]);
-        return Section("Text fields", Field(false, 0), Pair(false), Field(true, 0), Pair(true));
+        Widget Pad(Widget child) => new Padding(padding: EdgeInsets.CreateAll(10), child: child);
+        Widget Pair(bool outlined) => new Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, spacing: 10, children: [
+            new Flexible(child: new SizedBox(width: 200, child: Field(outlined, 1))), new Flexible(child: new SizedBox(width: 200, child: Field(outlined, 2)))]);
+        return Section("Text fields", Pad(Field(false, 0)), Pad(Pair(false)), Pad(Field(true, 0)), Pad(Pair(true)));
     }
 }
 

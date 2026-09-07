@@ -37,6 +37,7 @@ public sealed class SkiaSceneRenderer :
     private readonly SkiaFallbackFontCollection _fallbackFonts;
     private readonly bool _ownsFallbackFonts;
     private SKColor _backgroundColor;
+    private double _shadowDeviceScale = 1; // Scoped by _paintGate; offscreen pictures use logical pixels.
     private readonly object _gate = new();
     private readonly object _paintGate = new();
     private readonly Dictionary<TextRenderKey, TextRenderResources> _textRenderResources = [];
@@ -344,7 +345,13 @@ public sealed class SkiaSceneRenderer :
         ArgumentNullException.ThrowIfNull(desiredTarget);
         if (causalFrameId < 0) throw new ArgumentOutOfRangeException(nameof(causalFrameId));
         ObjectDisposedException.ThrowIf(_disposed, this);
-        lock (_paintGate) return PaintCore(surface, pixelWidth, pixelHeight, desiredTarget, causalFrameId);
+        lock (_paintGate)
+        {
+            var previousScale = _shadowDeviceScale;
+            _shadowDeviceScale = desiredTarget.DeviceScaleY;
+            try { return PaintCore(surface, pixelWidth, pixelHeight, desiredTarget, causalFrameId); }
+            finally { _shadowDeviceScale = previousScale; }
+        }
     }
 
     private SkiaPaintResult PaintCore(
@@ -704,7 +711,10 @@ public sealed class SkiaSceneRenderer :
             using var surface = SKSurface.Create(new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul, colorSpace))
                 ?? throw new InvalidOperationException("Skia could not allocate picture storage.");
             surface.Canvas.Clear(SKColors.Transparent);
-            DrawPicture(surface.Canvas, picture.Commands);
+            var previousScale = _shadowDeviceScale;
+            _shadowDeviceScale = 1;
+            try { DrawPicture(surface.Canvas, picture.Commands); }
+            finally { _shadowDeviceScale = previousScale; }
             surface.Canvas.Flush();
             var handle = new SkiaImageHandle(surface.Snapshot());
             return ValueTask.FromResult(new UiImage(_viewId, width, height, handle.Release) { HostHandle = handle });
@@ -1374,9 +1384,10 @@ public sealed class SkiaSceneRenderer :
     {
         var key = new TextRenderKey(fontFamily ?? string.Empty, fontSize, color,
             style?.fontWeight?.value ?? 400, style?.fontStyle == FontStyle.italic,
-            (float)(style?.letterSpacing ?? 0), (float)(style?.wordSpacing ?? 0));
+            (float)(style?.letterSpacing ?? 0), (float)(style?.wordSpacing ?? 0),
+            System.Text.Json.JsonSerializer.Serialize(style?.fontFamilyFallback ?? []));
         if (_textRenderResources.TryGetValue(key, out var resources)) return resources;
-        resources = new TextRenderResources(fontFamily, fontSize, color, _fallbackFonts, key);
+        resources = new TextRenderResources(fontFamily, fontSize, color, _fallbackFonts, key, style?.fontFamilyFallback);
         _textRenderResources.Add(key, resources);
         return resources;
     }
@@ -1450,7 +1461,7 @@ public sealed class SkiaSceneRenderer :
     }
 
     private readonly record struct TextRenderKey(string FontFamily, float FontSize, SKColor Color,
-        int Weight, bool Italic, float LetterSpacing, float WordSpacing);
+        int Weight, bool Italic, float LetterSpacing, float WordSpacing, string FallbackFamilies);
 
     private sealed class TextRenderResources : IDisposable
     {
@@ -1465,14 +1476,26 @@ public sealed class SkiaSceneRenderer :
             string? fontFamily,
             float fontSize,
             SKColor color,
-            SkiaFallbackFontCollection? registeredFallbacks, TextRenderKey key)
+            SkiaFallbackFontCollection? registeredFallbacks, TextRenderKey key, IReadOnlyList<string>? fallbackFamilies)
         {
             _registeredFallbacks = registeredFallbacks;
             _letterSpacing = key.LetterSpacing;
             _wordSpacing = key.WordSpacing;
             using var fontStyle = new SKFontStyle(key.Weight, 5, key.Italic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright);
-            var registered = registeredFallbacks?.MatchFamily(fontFamily, fontStyle);
-            _primary = new TextFontResource(registered ?? SKTypeface.FromFamilyName(fontFamily, fontStyle), fontSize, ownsTypeface: registered is null);
+            // FromFamilyName silently returns the platform default for an unknown
+            // name. Resolve the explicit fallback list before accepting that face.
+            var families = new[] { fontFamily }.Concat(fallbackFamilies ?? []).Where(family => !string.IsNullOrWhiteSpace(family));
+            SKTypeface? primary = null;
+            var ownsPrimary = false;
+            foreach (var family in families)
+            {
+                primary = registeredFallbacks?.MatchFamily(family, fontStyle);
+                if (primary is not null) break;
+                primary = SKFontManager.Default.MatchFamily(family, fontStyle);
+                if (primary is not null) { ownsPrimary = true; break; }
+            }
+            if (primary is null) { primary = SKTypeface.FromFamilyName(null, fontStyle); ownsPrimary = true; }
+            _primary = new TextFontResource(primary, fontSize, ownsTypeface: ownsPrimary);
             Paint = new SKPaint { Color = color, IsAntialias = true };
         }
 
@@ -1789,27 +1812,55 @@ public sealed class SkiaSceneRenderer :
         _ => new SKSamplingOptions(SKFilterMode.Nearest),
     };
 
-    private static void DrawShadow(SKCanvas canvas, CanvasShadowPayload shadow)
+    private void DrawShadow(SKCanvas canvas, CanvasShadowPayload shadow)
     {
+        var elevation = Math.Max(0, shadow.Elevation) * _shadowDeviceScale;
+        if (elevation <= 0 || shadow.Color.alpha == 0) return;
         using var path = ToPath(shadow.Path);
-        var elevation = Math.Max(0, shadow.Elevation);
-        DrawPass(elevation * .2, .18, .24, Math.Max(.75, elevation * .45));
-        DrawPass(elevation * .55, .24, .32, Math.Max(1, elevation * .8));
-
-        void DrawPass(double offsetY, double transparentOpacity, double opaqueOpacity, double sigma)
+        path.Transform(canvas.TotalMatrix);
+        var ambientRadius = Math.Min(elevation * 0.5, 150);
+        var ambientBlur = 0.5 * ambientRadius * (1 + elevation / 128);
+        var ambientStroke = 0.5 * (ambientRadius - ambientBlur);
+        var ambient = new SKColor(0, 0, 0, (byte)Math.Round(shadow.Color.alpha * 0.039, MidpointRounding.AwayFromZero));
+        var spot = TonalSpotColor(ToColor(shadow.Color));
+        var saved = canvas.Save();
+        try
         {
-            var opacity = shadow.TransparentOccluder ? transparentOpacity : opaqueOpacity;
-            using var paint = new SKPaint
-            {
-                Color = ToColor(shadow.Color).WithAlpha((byte)Math.Clamp(Math.Round(shadow.Color.alpha * opacity), 0, 255)),
-                ImageFilter = SKImageFilter.CreateBlur((float)sigma, (float)sigma),
-                IsAntialias = true,
-            };
-            canvas.Save();
+            canvas.ResetMatrix();
+            if (!shadow.TransparentOccluder) canvas.ClipPath(path, SKClipOperation.Difference, true);
+            DrawPass(0, ambient, ambientBlur, ambientStroke);
+            DrawPass(elevation, spot, elevation * (800.0 / 600), 0);
+        }
+        finally { canvas.RestoreToCount(saved); }
+
+        void DrawPass(double offsetY, SKColor color, double radius, double stroke)
+        {
+            if (color.Alpha == 0) return;
+            using var mask = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, (float)(radius * 0.57735 + 0.5), false);
+            using var paint = new SKPaint { Color = color, MaskFilter = mask, IsAntialias = true,
+                Style = stroke > 0 ? SKPaintStyle.StrokeAndFill : SKPaintStyle.Fill, StrokeWidth = (float)Math.Max(0, stroke) };
+            var save = canvas.Save();
             canvas.Translate(0, (float)offsetY);
             canvas.DrawPath(path, paint);
-            canvas.Restore();
+            canvas.RestoreToCount(save);
         }
+    }
+
+    // Skia's tonal color and blur fallback equations, used because SkiaSharp
+    // does not expose SkShadowUtils. CanvasKit uses Skia's tessellated path.
+    // https://github.com/google/skia/blob/main/src/utils/SkShadowUtils.cpp
+    private static SKColor TonalSpotColor(SKColor color)
+    {
+        var alpha = Math.Round(color.Alpha * 0.25, MidpointRounding.AwayFromZero) / 255;
+        if (alpha == 0) return SKColors.Transparent;
+        var luminance = (Math.Max(color.Red, Math.Max(color.Green, color.Blue)) + Math.Min(color.Red, Math.Min(color.Green, color.Blue))) / 510.0;
+        var adjusted = (2.6 + (-2.66667 + 1.06667 * alpha) * alpha) * alpha;
+        var colorAlpha = Math.Clamp(adjusted * (3.544762 + (-4.891428 + 2.3466 * luminance) * luminance) * luminance, 0, 1);
+        var greyAlpha = Math.Clamp(alpha * (1 - 0.4 * luminance), 0, 1);
+        var colorScale = colorAlpha * (1 - greyAlpha);
+        var tonalAlpha = colorScale + greyAlpha;
+        var scale = colorScale / tonalAlpha;
+        return new SKColor((byte)(scale * color.Red), (byte)(scale * color.Green), (byte)(scale * color.Blue), (byte)(tonalAlpha * 255.999));
     }
 
     private static SKPath ToPath(UiPath path)
@@ -1833,7 +1884,16 @@ public sealed class SkiaSceneRenderer :
                     new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
                     (float)(a[4] * 180 / Math.PI),
                     (float)(a[5] * 180 / Math.PI)); break;
-                case "addRRect": builder.AddRoundRect(new((float)a[0], (float)a[1], (float)a[2], (float)a[3]), (float)a[4], (float)a[5], SKPathDirection.Clockwise); break;
+                case "addRRect":
+                    using (var rounded = new SKRoundRect())
+                    {
+                        var radii = a.Count >= 12
+                            ? new[] { new SKPoint((float)a[4], (float)a[5]), new SKPoint((float)a[6], (float)a[7]), new SKPoint((float)a[8], (float)a[9]), new SKPoint((float)a[10], (float)a[11]) }
+                            : Enumerable.Repeat(new SKPoint((float)a[4], (float)a[5]), 4).ToArray();
+                        rounded.SetRectRadii(new((float)a[0], (float)a[1], (float)a[2], (float)a[3]), radii);
+                        builder.AddRoundRect(rounded, SKPathDirection.Clockwise);
+                    }
+                    break;
                 case "close": builder.Close(); break;
             }
         }

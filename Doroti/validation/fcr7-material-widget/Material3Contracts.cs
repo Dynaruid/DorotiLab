@@ -25,6 +25,8 @@ internal static class Material3Contracts
                 "theme factories, copies and interpolation retain Material 3 typography");
             var context = new ThemeContext(theme);
             var resolved = Material.Theme.of(context);
+            Require(Material.Divider.createBorderSide(context).color == resolved.colorScheme.outlineVariant,
+                "divider defaults dispatch to the Material 3 outlineVariant role");
             Require(resolved.textTheme.displayLarge!.fontSize == 57,
                 "localized theme applies Material 3 display geometry");
             var button = new Material.ElevatedButton(onPressed: () => { }, child: SizedBox.CreateShrink());

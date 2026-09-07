@@ -110,5 +110,5 @@ internal class _DividerDefaultsM3__divider : DividerThemeData
         this.context = context;
     }
 
-    public virtual global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Theme.of(this.context).colorScheme.outlineVariant);
+    public override global::Doroti.Ui.Color? color => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Theme.of(this.context).colorScheme.outlineVariant);
 }

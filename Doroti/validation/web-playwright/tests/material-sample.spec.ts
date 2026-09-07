@@ -56,7 +56,7 @@ test("Material sample four destinations, theme controls, and responsive navigati
     await page.screenshot({ path: testInfo.outputPath(`${destination.toLowerCase()}-800.png`) });
   }
   for (const width of [999, 1000, 1001, 1499, 1500, 1501, 390, 1280, 1600]) {
-    await page.setViewportSize({ width, height: width === 390 ? 844 : width === 1600 ? 1000 : 900 });
+    await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
     await expect.poll(async () => {
       const bundle = await captureDiagnostics(page);
       return bundle.snapshot.logicalWidth === width && bundle.presenter.frontGeneration === bundle.snapshot.resizeEpoch.generation;
@@ -66,6 +66,17 @@ test("Material sample four destinations, theme controls, and responsive navigati
     const frame = await captureDiagnostics(page);
     expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0, frame.presenter.rasterDiagnostics?.lastFailureReason).toBe(0);
     await page.screenshot({ path: testInfo.outputPath(`responsive-${width}.png`) });
+  }
+  for (const destination of ["Color", "Typography", "Elevation", "Components"]) {
+    const target = page.getByRole("group", { name: new RegExp(`^${destination} Tab [1-4] of 4$`) });
+    const before = await captureDiagnostics(page);
+    await pointer(page, target);
+    await expect(target).toHaveAttribute("aria-selected", "true");
+    await expect.poll(async () => (await captureDiagnostics(page)).presenter.frontRequestId ?? 0).toBeGreaterThan(before.presenter.frontRequestId ?? 0);
+    if (destination === "Components") await expect(page.getByRole("button", { name: "Elevated", exact: true }).first()).toBeAttached();
+    await page.mouse.move(1580, 40);
+    await page.waitForTimeout(1000);
+    await page.screenshot({ path: testInfo.outputPath(`${destination.toLowerCase()}-1600.png`) });
   }
   await page.setViewportSize({ width: 800, height: 900 });
   await expect.poll(async () => {
@@ -103,7 +114,7 @@ test("Material sample pointer controls, sheets, dialogs, search and image scroll
   const elevated = page.getByRole("button", { name: "Elevated", exact: true });
   await expect(elevated.first()).not.toHaveAttribute("aria-disabled", "true");
   await expect(elevated.nth(1)).toHaveAttribute("aria-disabled", "true");
-  for (const [open, close] of [["Show modal bottom sheet", "Close bottom sheet"], ["Show bottom sheet", "Close bottom sheet"], ["Show dialog", "Confirm"], ["Show fullscreen dialog", "Close"]]) {
+  for (const [open, close] of [["Show dialog", "Okay"], ["Show full-screen dialog", "Close"]]) {
     const target = page.getByRole("button", { name: open, exact: true });
     await scrollTo(page, target, 600);
     await page.screenshot({ path: testInfo.outputPath(open.replaceAll(" ", "-") + "-before.png") });
@@ -112,6 +123,16 @@ test("Material sample pointer controls, sheets, dialogs, search and image scroll
     await expect(dismiss).toBeAttached();
     await pointer(page, dismiss);
     await expect(dismiss).not.toBeAttached();
+  }
+  for (const modal of [true, false]) {
+    const open = page.getByRole("button", { name: modal ? "Show modal bottom sheet" : "Show bottom sheet", exact: true });
+    await scrollTo(page, open, 600, -1);
+    await pointer(page, open);
+    await expect(page.getByRole("group", { name: "Share", exact: true })).toBeAttached();
+    await page.screenshot({ path: testInfo.outputPath(modal ? "modal-sheet.png" : "persistent-sheet.png") });
+    if (modal) await page.mouse.click(300, 100);
+    else await pointer(page, page.getByRole("button", { name: "Hide bottom sheet", exact: true }));
+    await expect(page.getByRole("group", { name: "Share", exact: true })).not.toBeAttached();
   }
   const search = page.getByRole("textbox", { name: "Search colors", exact: true });
   await scrollTo(page, search, 1250);
@@ -154,14 +175,14 @@ test("Material sample lazy component inventory and theme images", async ({ page,
     }
   }
   await testInfo.attach("inventory-semantics", { body: await page.locator("body").ariaSnapshot(), contentType: "text/plain" });
-  await expect(page.getByRole("radio", { name: "URL image", exact: true })).toBeAttached();
+  await expect(page.getByRole("radio", { name: "Image URL", exact: true })).toBeAttached();
   // D33 follows Flutter's explicit extraction action. Scrolling into the demo
   // must not start quantization; exercise that action before expecting palettes.
-  await expect(page.getByLabel(/Primary.*RGB/)).toHaveCount(0);
+  await expect(page.getByLabel(/Primary\s+#[0-9A-F]{6}/)).toHaveCount(0);
   const extract = page.getByRole("button", { name: "Extract colors", exact: true });
   await scrollTo(page, extract, 1250);
   await pointer(page, extract);
-  await expect(page.getByLabel(/Primary.*RGB/).first()).toBeAttached();
+  await expect(page.getByLabel(/Primary\s+#[0-9A-F]{6}/).first()).toBeAttached();
   const frame = await captureDiagnostics(page);
   expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0, frame.presenter.rasterDiagnostics?.lastFailureReason).toBe(0);
   expect(runtimeErrors).toEqual([]);
@@ -176,7 +197,7 @@ test("Material sample visited sections preserve local state across a full scroll
   await scrollTo(page, outbox, 1250);
   await pointer(page, outbox);
   await expect(outbox).toHaveAttribute("aria-selected", "true");
-  await scrollTo(page, page.getByRole("radio", { name: "URL image", exact: true }), 1250);
+  await scrollTo(page, page.getByRole("radio", { name: "Image URL", exact: true }), 1250);
   await scrollTo(page, outbox, 1250, -1);
   await expect(outbox).toHaveAttribute("aria-selected", "true");
   expect(runtimeErrors).toEqual([]);

@@ -13,6 +13,38 @@ internal sealed class ComponentSection(string label, Widget child) : StatefulWid
 {
     internal string Label => label;
     internal Widget Child => child;
+    internal string Tooltip => Label switch
+    {
+        "Common buttons" => "Use ElevatedButton, FilledButton, FilledButton.tonal, OutlinedButton, or TextButton",
+        "Floating action buttons" => "Use FloatingActionButton or FloatingActionButton.extended",
+        "Cards" => "Use Card",
+        "Text fields" => "Use TextField with different InputDecoration",
+        "Dialog" => "Use showDialog with Dialog.fullscreen, AlertDialog, or SimpleDialog",
+        "Dividers" => "Use Divider or VerticalDivider",
+        "Switches" => "Use SwitchListTile or Switch",
+        "Checkboxes" => "Use CheckboxListTile or Checkbox",
+        "Radio buttons" => "Use RadioListTile<T> or Radio<T>",
+        "Progress indicators" => "Use CircularProgressIndicator or LinearProgressIndicator",
+        "Badges" => "Use Badge or Badge.count",
+        "Navigation bar" => "Use NavigationBar",
+        "Icon buttons" => "Use IconButton, IconButton.filled, IconButton.filledTonal, and IconButton.outlined",
+        "Chips" => "Use ActionChip, FilterChip, or InputChip. \nActionChip can also be used for suggestion chip",
+        "Date picker" => "Use showDatePicker",
+        "Time picker" => "Use showTimePicker",
+        "Segmented buttons" => "Use SegmentedButton<T>",
+        "Snackbar" => "Use ScaffoldMessenger.of(context).showSnackBar with SnackBar",
+        "Bottom sheet" => "Use showModalBottomSheet<T> or showBottomSheet<T>",
+        "Bottom app bar" => "Use BottomAppBar",
+        "Navigation drawer" => "Use NavigationDrawer. For modal navigation drawers, see Scaffold.endDrawer",
+        "Navigation rail" => "Use NavigationRail",
+        "Tabs" => "Use TabBar",
+        "Top app bars" => "Use AppBar, SliverAppBar, SliverAppBar.medium, or  SliverAppBar.large",
+        "Menus" => "Use MenuAnchor or DropdownMenu<T>",
+        "Sliders" => "Use Slider or RangeSlider",
+        "Search" => "Use SearchAnchor or SearchAnchor.bar",
+        "Carousel" => "Use CarouselView",
+        _ => "",
+    };
     public override IState createState() => new ComponentSectionState();
 }
 internal sealed class ComponentSectionState : State<ComponentSection>
@@ -24,7 +56,7 @@ internal sealed class ComponentSectionState : State<ComponentSection>
         [
             new Row(mainAxisAlignment: MainAxisAlignment.center, children:
             [new Text(widget.Label, style: M.Theme.of(context).textTheme.titleMedium),
-             new M.Tooltip(message: "Use " + widget.Label, child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 5), child: new Icon(M.Icons.info_outline, size: 16)))]),
+             new M.Tooltip(message: widget.Tooltip, child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 5), child: new Icon(M.Icons.info_outline, size: 16)))]),
             new ConstrainedBox(constraints: BoxConstraints.CreateTightFor(width: 450), child: new Focus(focusNode: _focus,
                 child: new GestureDetector(onTapDown: _ => _focus.requestFocus(), behavior: HitTestBehavior.opaque,
                     child: new M.Card(elevation: 0, shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateCircular(12),

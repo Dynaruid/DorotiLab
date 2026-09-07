@@ -192,7 +192,7 @@ public class AnimatedModalBarrier : AnimatedWidget
     public virtual global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?> color => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?>>(((global::Doroti.Framework.Animation.Animation<global::Doroti.Ui.Color?>?)(object?)this.listenable)!);
     public override Widget build(BuildContext context)
     {
-        return ((Widget)(object?)new ModalBarrier(color: ((global::Doroti.Framework.Animation.Animation<Color?>)this.color).value, dismissible: this.dismissible, semanticsLabel: this.semanticsLabel, barrierSemanticsDismissible: this.barrierSemanticsDismissible, onDismiss: () => this.onDismiss(), clipDetailsNotifier: this.clipDetailsNotifier, semanticsOnTapHint: this.semanticsOnTapHint));
+        return ((Widget)(object?)new ModalBarrier(color: ((global::Doroti.Framework.Animation.Animation<Color?>)this.color).value, dismissible: this.dismissible, semanticsLabel: this.semanticsLabel, barrierSemanticsDismissible: this.barrierSemanticsDismissible, onDismiss: this.onDismiss, clipDetailsNotifier: this.clipDetailsNotifier, semanticsOnTapHint: this.semanticsOnTapHint));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -271,4 +271,3 @@ internal class _ModalBarrierGestureDetector__modal_barrier : StatelessWidget
     }
 
 }
-

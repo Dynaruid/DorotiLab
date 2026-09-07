@@ -82,26 +82,42 @@ internal sealed class ColorScreen : StatelessWidget
         {
             var wide = constraints.maxWidth >= 500;
             var children = new List<Widget>();
-            if (!wide) children.Add(new M.TextButton(onPressed: () => Launch(context), child: new Text("Create platform dynamic color schemes with the dynamic_color package.")));
+            if (!wide) children.Add(new Column(children: [new DynamicColorNotice(), new SizedBox(height: 10)]));
             foreach (var brightness in new[] { Brightness.light, Brightness.dark })
             {
-                var scheme = M.ColorScheme.CreateFromSeed(seedColor: seed, brightness: brightness);
+                var scheme = M.ColorScheme.CreateFromSeed(seedColor: wide ? seed : M.Theme.of(context).primaryColor, brightness: brightness);
                 var groups = Groups(scheme);
                 var label = brightness == Brightness.light ? "Light ColorScheme" : "Dark ColorScheme";
                 Widget view = wide ? new SchemePreview(label, scheme) : new Column(children: [
-                    new Padding(padding: EdgeInsets.CreateSymmetric(vertical: 15), child: new Text(label)),
-                    .. groups.Select(group => (Widget)new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 15, vertical: 5),
+                    new Padding(padding: EdgeInsets.CreateSymmetric(vertical: 15), child: new Text(label, style: new TextStyle(fontWeight: FontWeight.bold))),
+                    .. groups.Select(group => (Widget)new Padding(padding: EdgeInsets.CreateOnly(left: 15, right: 15, bottom: 10),
                         child: new M.Card(clipBehavior: Clip.antiAlias, child: new Column(children: group.Select(role => Chip(role, null)).ToList()))))]);
-                children.Add(view); children.Add(new SizedBox(height: 16));
+                children.Add(view); if (wide || brightness == Brightness.light) children.Add(new SizedBox(height: wide ? 16 : 10));
             }
             return new SingleChildScrollView(child: new Padding(padding: EdgeInsets.CreateAll(wide ? 8 : 0), child: new Column(children: children)));
         });
     }
     private static Widget Chip((string Label, Color Color, Color On) role, double? width) => new Container(width: width,
-        color: role.Color, padding: EdgeInsets.CreateAll(16), child: new Text(role.Label, style: new TextStyle(color: role.On)));
-    private static async void Launch(BuildContext context)
+        color: role.Color, padding: EdgeInsets.CreateAll(16), child: new Row(children: [new Expanded(child: new Text(role.Label, style: new TextStyle(color: role.On)))]));
+    internal static async void Launch(BuildContext context)
     {
         var result = await Doroti.Framework.Services.UrlLauncher.launchUrl("https://pub.dev/packages/dynamic_color");
         if (context.mounted && !result.Succeeded) M.ScaffoldMessenger.of(context).showSnackBar(new M.SnackBar(content: new Text(result.Message ?? "Could not open link")));
     }
+}
+
+internal sealed class DynamicColorNotice : StatefulWidget
+{
+    public override IState createState() => new DynamicColorNoticeState();
+}
+internal sealed class DynamicColorNoticeState : State<DynamicColorNotice>
+{
+    private readonly Doroti.Framework.Gestures.TapGestureRecognizer _tap = new();
+    public override void initState() { base.initState(); _tap.onTap = () => ColorScreen.Launch(context); }
+    public override void dispose() { _tap.dispose(); base.dispose(); }
+    public override Widget build(BuildContext context) => new RichText(textAlign: TextAlign.center, text: new TextSpan(
+        style: M.Theme.of(context).textTheme.bodySmall, children: [
+            new TextSpan(text: "To create color schemes based on a platform's implementation of dynamic color, use the "),
+            new TextSpan(text: "dynamic_color", style: new TextStyle(decoration: TextDecoration.underline), recognizer: _tap),
+            new TextSpan(text: " package.")]));
 }

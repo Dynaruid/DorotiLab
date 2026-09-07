@@ -27,9 +27,6 @@ internal sealed class SampleImageDemoState : State<SampleImageDemo>
     private string? _error;
     private M.ColorScheme? _light, _dark;
     private object Provider() => _url ? new NetworkImageIo(Url) : new MemoryImage(LocalBytes.Value);
-    private object DisplayProvider(BuildContext context) => new ResizeImage(Provider(),
-        width: checked((long)Math.Ceiling(1024 * MediaQuery.devicePixelRatioOf(context))));
-    public override void initState() { base.initState(); }
     private void SelectSource(bool url)
     {
         if (_url == url) return;
@@ -38,7 +35,6 @@ internal sealed class SampleImageDemoState : State<SampleImageDemo>
     private async void RetryImage()
     {
         var revision = _revision;
-        await ((dynamic)DisplayProvider(context)).evict();
         await ((dynamic)Provider()).evict();
         if (mounted && revision == _revision) setState(() => _reload++);
     }
@@ -56,30 +52,36 @@ internal sealed class SampleImageDemoState : State<SampleImageDemo>
         catch (Exception error) { if (mounted && revision == _revision) setState(() => { _error = error.Message; _loading = false; }); }
     }
     public override void dispose() { _revision++; base.dispose(); }
-    public override Widget build(BuildContext context) => new Column(crossAxisAlignment: CrossAxisAlignment.stretch, spacing: 10, children:
+    public override Widget build(BuildContext context) => new M.Card(child: new Padding(padding: EdgeInsets.CreateAll(16),
+        child: new Column(crossAxisAlignment: CrossAxisAlignment.start, children:
     [
-        new Wrap(spacing: 10, children:
+        new Text("Image demo", style: M.Theme.of(context).textTheme.titleLarge), new SizedBox(height: 12),
+        new M.SegmentedButton<string>(segments: [new("Local", label: new Text("Local asset")), new("URL", label: new Text("Image URL"))], selected: [_url ? "URL" : "Local"],
+            onSelectionChanged: values => SelectSource(values.Contains("URL"))),
+        new SizedBox(height: 12), new Text(_url ? "Unsplash · remote image" : "Mae Mu · Unsplash"), new SizedBox(height: 8),
+        new ClipRRect(borderRadius: BorderRadius.CreateCircular(12), child: new ColoredBox(color: M.Theme.of(context).colorScheme.surfaceContainerHighest,
+            child: new SizedBox(width: double.PositiveInfinity, height: 240, child: new Image(key: new Doroti.Framework.Foundation.ValueKey<int>(_reload),
+                image: Provider(), fit: _cover ? BoxFit.cover : BoxFit.contain,
+                semanticLabel: _url ? "Photo loaded from the Unsplash image URL" : "Local Unsplash photo by Mae Mu",
+                frameBuilder: (_, child, frame, synchronous) => frame is not null || synchronous ? child : new Center(child: new Text("Loading image…")),
+                errorBuilder: (_, _, _) => new Center(child: new Column(mainAxisSize: MainAxisSize.min, children:
+                    [new Text("Image could not be loaded."), new M.TextButton(child: new Text("Retry image"), onPressed: RetryImage)])))))),
+        new SizedBox(height: 12),
+        new Wrap(spacing: 8, runSpacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children:
         [
-            new M.SegmentedButton<string>(segments: [new("Local", label: new Text("Local image")), new("URL", label: new Text("URL image"))], selected: [_url ? "URL" : "Local"],
-                onSelectionChanged: values => SelectSource(values.Contains("URL"))),
-            new M.SegmentedButton<string>(segments: [new("Contain", label: new Text("Contain")), new("Cover", label: new Text("Cover"))], selected: [_cover ? "Cover" : "Contain"],
-                onSelectionChanged: values => setState(() => _cover = values.Contains("Cover"))),
+            new M.ChoiceChip(label: new Text("Contain"), selected: !_cover, onSelected: _ => setState(() => _cover = false)),
+            new M.ChoiceChip(label: new Text("Cover"), selected: _cover, onSelected: _ => setState(() => _cover = true)),
+            M.FilledButton.CreateTonal(child: new Text(_loading ? "Extracting…" : "Extract colors"), onPressed: _loading ? null : Load),
         ]),
-        new SizedBox(height: 240, child: new Image(key: new Doroti.Framework.Foundation.ValueKey<int>(_reload), image: DisplayProvider(context), fit: _cover ? BoxFit.cover : BoxFit.contain,
-            errorBuilder: (_, error, _) => new Center(child: new Text($"Image unavailable: {error}")))),
-        _loading ? new M.LinearProgressIndicator() : SizedBox.CreateShrink(),
-        _error is null ? SizedBox.CreateShrink() : new Text($"Image failed: {_error}"),
-        new Wrap(spacing: 10, children: [
-            new M.FilledButton(child: new Text(_loading ? "Extracting colors…" : "Extract colors"), onPressed: _loading ? null : Load),
-            new M.TextButton(child: new Text("Retry image"), onPressed: RetryImage),
-        ]),
-        Palette("Light palette", _light), Palette("Dark palette", _dark),
-    ]);
-    private static Widget Palette(string title, M.ColorScheme? scheme)
+        .. _error is null ? Array.Empty<Widget>() : [new SizedBox(height: 12), new Text("Could not extract colors. Check the image and try again.")],
+        .. _light is null || _dark is null ? Array.Empty<Widget>() : [new SizedBox(height: 16), Palette(context, "Light palette", _light), new SizedBox(height: 12), Palette(context, "Dark palette", _dark)],
+    ])));
+    private static Widget Palette(BuildContext context, string title, M.ColorScheme scheme)
     {
-        if (scheme is null) return SizedBox.CreateShrink();
         (string Label, Color Color, Color On)[] colors = [("Primary", scheme.primary, scheme.onPrimary), ("Secondary", scheme.secondary, scheme.onSecondary), ("Tertiary", scheme.tertiary, scheme.onTertiary)];
-        return new Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [new Text(title), .. colors.Select(role => (Widget)new Container(
-            padding: EdgeInsets.CreateAll(12), color: role.Color, child: new Text($"{role.Label} RGB({role.Color.red}, {role.Color.green}, {role.Color.blue})", style: new TextStyle(color: role.On))))]);
+        return new Column(crossAxisAlignment: CrossAxisAlignment.start, children: [new Text(title, style: M.Theme.of(context).textTheme.titleSmall), new SizedBox(height: 8),
+            new Wrap(spacing: 8, runSpacing: 8, children: colors.Select(role => (Widget)new Container(width: 108,
+                padding: EdgeInsets.CreateAll(10), decoration: new BoxDecoration(color: role.Color, borderRadius: BorderRadius.CreateCircular(8)),
+                child: new Text($"{role.Label}\n#{role.Color.red:X2}{role.Color.green:X2}{role.Color.blue:X2}", style: new TextStyle(color: role.On)))).ToList())]);
     }
 }

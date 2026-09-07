@@ -113,6 +113,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     private sealed record SectionEntry(int Group, bool First, bool Last, Widget Child);
     private Widget GroupPiece(BuildContext ctx, SectionEntry entry)
     {
+        if (entry.Group == 6) return entry.Child; // ImageDemo owns its card, as in Flutter.
         string[] labels = ["Actions", "Communication", "Containment", "Navigation", "Selection", "Text inputs", "Image demo"];
         var content = entry.Child;
         // Keep the continuous group card, but mount/layout one component section
@@ -132,8 +133,11 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     // Preserve each demo's preferred width, as in the reference. Stretching a
     // Drawer makes its InkWell wider than the centered selection indicator.
     private static Widget Section(string label, params Widget[] children) => new ComponentSection(label,
+        new Column(mainAxisSize: MainAxisSize.min, children: children.ToList()));
+    private static Widget SpacedSection(string label, params Widget[] children) => new ComponentSection(label,
         new Column(mainAxisSize: MainAxisSize.min, spacing: 10, children: children.ToList()));
     private static Widget Flow(params Widget[] children) => new Wrap(spacing: 10, runSpacing: 10, children: children.ToList());
+    private static Widget Bold(string label) => new Text(label, style: new TextStyle(fontWeight: FontWeight.bold));
     private static void DisplayAction() { } // Pinned reference display-only callbacks.
     private IReadOnlyList<Func<Widget>> Actions(BuildContext ctx, StateSetter setState)
     {
@@ -170,7 +174,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
                  M.FloatingActionButton.CreateLarge(heroTag: "sample-large", tooltip: "Large", onPressed: DisplayAction, child: icon)]))),
             () => Section("Icon buttons", new Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: Enumerable.Range(0, 4).Select(i => (Widget)new Column(spacing: 10,
                 children: [ToggleIcon(i, true), ToggleIcon(i, false)])).ToList())),
-            () => Section("Segmented buttons", new StatefulBuilder(builder: (_, change) => new M.SegmentedButton<string>(segments: new[] { "Day", "Week", "Month", "Year" }.Select((label, i) => new M.ButtonSegment<string>(value: label, label: new Text(label),
+            () => SpacedSection("Segmented buttons", new StatefulBuilder(builder: (_, change) => new M.SegmentedButton<string>(segments: new[] { "Day", "Week", "Month", "Year" }.Select((label, i) => new M.ButtonSegment<string>(value: label, label: new Text(label),
                 icon: new Icon(new[] { M.Icons.calendar_view_day, M.Icons.calendar_view_week, M.Icons.calendar_view_month, M.Icons.calendar_today }[i]))).ToList(),
                 selected: _single, onSelectionChanged: value => change(() => _single = value))),
                 new StatefulBuilder(builder: (_, change) => new M.SegmentedButton<string>(segments: new[] { "XS", "S", "M", "L", "XL" }.Select(label => new M.ButtonSegment<string>(value: label, label: new Text(label))).ToList(),
@@ -179,33 +183,42 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     }
     private IReadOnlyList<Func<Widget>> Communication(BuildContext ctx, StateSetter setState) =>
     [
-        () => Section("Badge", new M.NavigationBar(selectedIndex: _badgeIndex, onDestinationSelected: value => setState(() => _badgeIndex = value), destinations:
+        () => Section("Badges", new M.NavigationBar(selectedIndex: _badgeIndex, onDestinationSelected: value => setState(() => _badgeIndex = value), destinations:
             [new M.NavigationDestination(icon: new M.Badge(label: new Text("999+"), child: new Icon(M.Icons.mail_outline)), selectedIcon: new M.Badge(label: new Text("999+"), child: new Icon(M.Icons.mail)), label: "Mail"),
              new M.NavigationDestination(icon: new M.Badge(label: new Text("10"), child: new Icon(M.Icons.chat_bubble_outline)), selectedIcon: new M.Badge(label: new Text("10"), child: new Icon(M.Icons.chat_bubble)), label: "Chat"),
              new M.NavigationDestination(icon: new M.Badge(child: new Icon(M.Icons.group_outlined)), selectedIcon: new M.Badge(child: new Icon(M.Icons.group_rounded)), label: "Rooms"),
              new M.NavigationDestination(icon: new M.Badge(label: new Text("3"), child: new Icon(M.Icons.videocam_outlined)), selectedIcon: new M.Badge(label: new Text("3"), child: new Icon(M.Icons.videocam)), label: "Meet") ])),
-        () => BroadProgressScope ? Section("Progress indicators", new Row(spacing: 10, children:
+        () => BroadProgressScope ? Section("Progress indicators", new Row(children:
             [new M.IconButton(tooltip: _progress ? "Stop progress" : "Start progress", isSelected: _progress, selectedIcon: new Icon(M.Icons.pause), icon: new Icon(M.Icons.play_arrow), onPressed: () => this.setState(() => { _progress = !_progress; _sections = null; _lists.Clear(); })),
-             new M.CircularProgressIndicator(value: _progress ? null : 0.7), new Expanded(child: new M.LinearProgressIndicator(value: _progress ? null : 0.7)), new SizedBox(width: 10)])) : new ProgressIndicators(key: _progressKey),
-        () => Section("Snackbar", new M.TextButton(child: new Text("Show snackbar"), onPressed: () => M.ScaffoldMessenger.of(ctx).showSnackBar(new M.SnackBar(
-            content: new Text("This is a snackbar"), behavior: M.SnackBarBehavior.floating, action: new M.SnackBarAction(label: "Close", onPressed: DisplayAction))))),
+             new SizedBox(width: 20), new M.CircularProgressIndicator(value: _progress ? null : 0.7), new SizedBox(width: 20), new Expanded(child: new M.LinearProgressIndicator(value: _progress ? null : 0.7)), new SizedBox(width: 20)])) : new ProgressIndicators(key: _progressKey),
+        () => Section("Snackbar", new M.TextButton(child: Bold("Show snackbar"), onPressed: () => M.ScaffoldMessenger.of(ctx).showSnackBar(new M.SnackBar(
+            content: new Text("This is a snackbar"), width: 400, behavior: M.SnackBarBehavior.floating, action: new M.SnackBarAction(label: "Close", onPressed: DisplayAction))))),
     ];
     private IReadOnlyList<Func<Widget>> Containment(BuildContext ctx, StateSetter setState)
     {
-        Widget Sheet(BuildContext sheetContext) => new SizedBox(height: 200, child: new Center(child: new M.TextButton(child: new Text("Close bottom sheet"), onPressed: () => Navigator.of(sheetContext).pop<object>())));
+        Widget Sheet(BuildContext sheetContext) => new SizedBox(height: 150, child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 32),
+            child: new ListView(shrinkWrap: true, scrollDirection: Axis.horizontal, children:
+                new[] { M.Icons.share_outlined, M.Icons.add, M.Icons.delete_outline, M.Icons.archive_outlined, M.Icons.settings_outlined, M.Icons.favorite_border }
+                    .Select((icon, i) => (Widget)new Padding(padding: EdgeInsets.CreateFromLTRB(20, 30, 20, 20), child: new Column(children:
+                        [new M.IconButton(icon: new Icon(icon), onPressed: DisplayAction), new Text(new[] { "Share", "Add to", "Trash", "Archive", "Settings", "Favorite" }[i])]))).ToList())));
         return
         [
-            () => Section("Bottom sheets", Flow(new M.TextButton(child: new Text("Show modal bottom sheet"), onPressed: () => M.Bottom_sheetLibrary.showModalBottomSheet<object>(ctx, Sheet)),
-                new M.TextButton(child: new Text("Show bottom sheet"), onPressed: _sheet is not null ? null : () => OpenSheet(Sheet, setState)))),
+            () => Section("Bottom sheet", new Wrap(alignment: WrapAlignment.spaceEvenly, children: [
+                new M.TextButton(child: Bold("Show modal bottom sheet"), onPressed: () => M.Bottom_sheetLibrary.showModalBottomSheet<object>(ctx, Sheet, showDragHandle: true, constraints: new BoxConstraints(maxWidth: 640))),
+                new M.TextButton(child: Bold(_sheet is null ? "Show bottom sheet" : "Hide bottom sheet"), onPressed: () => { if (_sheet is not null) _sheet.close(); else OpenSheet(Sheet, setState); })])),
             () => Section("Cards", new Wrap(alignment: WrapAlignment.spaceEvenly, children: [Card(ctx, 0), Card(ctx, 1), Card(ctx, 2)])),
-            () => Section("Carousel", new Text("Uncontained Carousel"), Carousel(ctx, false), new Text("Uncontained Carousel with snapping effect"), Carousel(ctx, true)),
-            () => Section("Dialogs", Flow(new M.TextButton(child: new Text("Show dialog"), onPressed: () => M.DialogLibrary.showDialog<object>(ctx, dialogContext => new M.AlertDialog(
-                    title: new Text("Dialog title"), content: new Text("A dialog is a type of modal window that appears in front of app content."), actions:
-                    [new M.TextButton(child: new Text("Cancel"), onPressed: () => Navigator.of(dialogContext).pop<object>()), new M.TextButton(child: new Text("Confirm"), onPressed: () => Navigator.of(dialogContext).pop<object>())]))),
-                new M.TextButton(child: new Text("Show fullscreen dialog"), onPressed: () => M.DialogLibrary.showDialog<object>(ctx, dialogContext => M.Dialog.CreateFullscreen(child:
-                    new M.Scaffold(appBar: new M.AppBar(title: new Text("Full-screen dialog"), leading: new M.IconButton(icon: new Icon(M.Icons.close), onPressed: () => Navigator.of(dialogContext).pop<object>())),
-                        body: new Center(child: new M.TextButton(child: new Text("Close"), onPressed: () => Navigator.of(dialogContext).pop<object>())))))))),
-            () => Section("Dividers", new M.Divider(), new SizedBox(height: 40, child: new Row(children: [new Expanded(child: new Text("Before")), new M.VerticalDivider(), new Expanded(child: new Text("After"))]))),
+            () => Section("Carousel", new Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                new Padding(padding: EdgeInsets.CreateOnly(left: 8), child: new Text("Uncontained Carousel")), Carousel(ctx, false), new SizedBox(height: 10),
+                new Padding(padding: EdgeInsets.CreateOnly(left: 8), child: new Text("Uncontained Carousel with snapping effect")), Carousel(ctx, true)])),
+            () => Section("Dialog", new Wrap(alignment: WrapAlignment.spaceBetween, children: [
+                new M.TextButton(child: Bold("Show dialog"), onPressed: () => M.DialogLibrary.showDialog<object>(ctx, dialogContext => new M.AlertDialog(
+                    title: new Text("What is a dialog?"), content: new Text("A dialog is a type of modal window that appears in front of app content to provide critical information, or prompt for a decision to be made."), actions:
+                    [new M.TextButton(child: new Text("Dismiss"), onPressed: () => Navigator.of(dialogContext).pop<object>()), new M.FilledButton(child: new Text("Okay"), onPressed: () => Navigator.of(dialogContext).pop<object>())]))),
+                new M.TextButton(child: Bold("Show full-screen dialog"), onPressed: () => M.DialogLibrary.showDialog<object>(ctx, dialogContext => M.Dialog.CreateFullscreen(child:
+                    new Padding(padding: EdgeInsets.CreateAll(20), child: new M.Scaffold(appBar: new M.AppBar(title: new Text("Full-screen dialog"), centerTitle: false,
+                        leading: new M.IconButton(icon: new Icon(M.Icons.close), onPressed: () => Navigator.of(dialogContext).pop<object>()),
+                        actions: [new M.TextButton(child: new Text("Close"), onPressed: () => Navigator.of(dialogContext).pop<object>())]))))))])),
+            () => Section("Dividers", new M.Divider()),
         ];
     }
     private Widget Card(BuildContext context, int style)
@@ -222,7 +235,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
         shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateCircular(10), side: new BorderSide(color: M.Theme.of(context).colorScheme.outline)), children: Enumerable.Range(0, 20).Select(i => (Widget)new Center(child: new Text($"Item {i}"))).ToList()));
     private async void OpenSheet(Func<BuildContext, Widget> builder, StateSetter setState)
     {
-        var controller = widget.Scaffold.currentState!.showBottomSheet(builder);
+        var controller = widget.Scaffold.currentState!.showBottomSheet(builder, elevation: 8, constraints: new BoxConstraints(maxWidth: 640));
         setState(() => _sheet = controller);
         await controller.closed;
         if (mounted) setState(() => _sheet = null);
@@ -237,8 +250,8 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
             [new M.NavigationDestination(icon: new Icon(M.Icons.explore_outlined), selectedIcon: new Icon(M.Icons.explore), label: "Explore"),
              new M.NavigationDestination(icon: new Icon(M.Icons.pets_outlined), selectedIcon: new Icon(M.Icons.pets), label: "Pets"),
              new M.NavigationDestination(icon: new Icon(M.Icons.account_box_outlined), selectedIcon: new Icon(M.Icons.account_box), label: "Account")])),
-        () => Section("Navigation drawer", new M.TextButton(child: new Text("Show modal end drawer"), onPressed: () => widget.Scaffold.currentState!.openEndDrawer()),
-            new SizedBox(height: 520, child: new GalleryDrawer())),
+        () => Section("Navigation drawer", new SizedBox(height: 520, child: new GalleryDrawer()), new SizedBox(height: 20),
+            new M.TextButton(child: Bold("Show modal navigation drawer"), onPressed: () => widget.Scaffold.currentState!.openEndDrawer())),
         () => Section("Navigation rail", new IntrinsicWidth(child: new SizedBox(height: 420, child: new M.NavigationRail(selectedIndex: _railIndex,
             onDestinationSelected: value => setState(() => _railIndex = value), elevation: 4, groupAlignment: 0, labelType: M.NavigationRailLabelType.selected,
             leading: new M.FloatingActionButton(heroTag: "sample-rail-fab", child: new Icon(M.Icons.create), onPressed: DisplayAction),
@@ -247,9 +260,9 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
             new M.TabBar(tabs: [new M.Tab(text: "Video", icon: new Icon(M.Icons.videocam_outlined), iconMargin: EdgeInsets.zero),
                 new M.Tab(text: "Photos", icon: new Icon(M.Icons.photo_outlined), iconMargin: EdgeInsets.zero),
                 new M.Tab(text: "Audio", icon: new Icon(M.Icons.audiotrack_sharp), iconMargin: EdgeInsets.zero)])))))),
-        () => Section("Search", M.SearchAnchor.CreateBar(barHintText: "Search colors", suggestionsBuilder: (_, controller) => Suggestions(controller, setState)),
+        () => SpacedSection("Search", M.SearchAnchor.CreateBar(barHintText: "Search colors", suggestionsBuilder: (_, controller) => Suggestions(controller, setState)),
             new Text(_selectedColor is null ? "Select a color" : $"Last selected color is {_selectedColor}")),
-        () => Section("Top app bars", new M.AppBar(title: new Text("Center-aligned"), leading: new M.BackButton(), centerTitle: true,
+        () => SpacedSection("Top app bars", new M.AppBar(title: new Text("Center-aligned"), leading: new M.BackButton(), centerTitle: true,
                 actions: [new M.IconButton(iconSize: 32, icon: new Icon(M.Icons.account_circle_outlined), onPressed: DisplayAction)]),
             new M.AppBar(title: new Text("Small"), leading: new M.BackButton(), actions: TopBarActions(), centerTitle: false),
             new SizedBox(height: 100, child: new CustomScrollView(slivers: [M.SliverAppBar.CreateMedium(title: new Text("Medium"), leading: new M.BackButton(), actions: TopBarActions()), new SliverFillRemaining()])),
@@ -279,10 +292,10 @@ internal sealed class ProgressIndicatorsState : State<ProgressIndicators>
 {
     private bool _progress;
     public override Widget build(BuildContext context) => new ComponentSection("Progress indicators",
-        new Column(mainAxisSize: MainAxisSize.min, spacing: 10, children: [new Row(spacing: 10, children:
+        new Column(mainAxisSize: MainAxisSize.min, spacing: 10, children: [new Row(children:
             [new M.IconButton(tooltip: _progress ? "Stop progress" : "Start progress", isSelected: _progress,
                 selectedIcon: new Icon(M.Icons.pause), icon: new Icon(M.Icons.play_arrow),
                 onPressed: () => setState(() => _progress = !_progress)),
-             new M.CircularProgressIndicator(value: _progress ? null : 0.7),
-             new Expanded(child: new M.LinearProgressIndicator(value: _progress ? null : 0.7)), new SizedBox(width: 10)])]));
+             new SizedBox(width: 20), new M.CircularProgressIndicator(value: _progress ? null : 0.7), new SizedBox(width: 20),
+             new Expanded(child: new M.LinearProgressIndicator(value: _progress ? null : 0.7)), new SizedBox(width: 20)])]));
 }

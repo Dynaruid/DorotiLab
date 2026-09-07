@@ -155,16 +155,25 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
         Scroll_notificationLibrary.defaultScrollNotificationPredicate(notification) &&
         (_destination != 0 || _components.currentState?.OwnsScrollNotification(notification) == true);
     private Widget BrightnessAction() => new M.IconButton(tooltip: "Toggle brightness", onPressed: widget.Brightness, icon: new Icon(M.Theme.of(context).brightness == Brightness.light ? M.Icons.dark_mode_outlined : M.Icons.light_mode_outlined));
-    private Widget SeedAction() => new M.PopupMenuButton<int>(tooltip: "Select seed color", icon: new Icon(M.Icons.palette_outlined),
-        initialValue: widget.Seed, onSelected: widget.SelectSeed,
+    private Widget SeedAction() => new M.PopupMenuButton<int>(tooltip: "Select a seed color", icon: new Icon(M.Icons.palette_outlined),
+        shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateCircular(10)), onSelected: widget.SelectSeed,
         itemBuilder: _ => SampleConstants.Seeds.Select((seed, i) => (M.PopupMenuEntry<int>)new M.PopupMenuItem<int>(value: i,
-            child: new Row(spacing: 12, children: [new Icon(!widget.FromImage && widget.Seed == i ? M.Icons.check_circle : M.Icons.circle, color: seed.Color), new Text(seed.Label)]))).ToList());
-    private Widget ImageAction() => new M.PopupMenuButton<int>(tooltip: "Select image color", icon: new Icon(M.Icons.image_outlined),
-        initialValue: widget.Image, onSelected: widget.SelectImage,
+            enabled: widget.FromImage || widget.Seed != i, child: new Wrap(children: [
+                new Padding(padding: EdgeInsets.CreateOnly(left: 10), child: new Icon(!widget.FromImage && widget.Seed == i ? M.Icons.color_lens : M.Icons.color_lens_outlined, color: seed.Color)),
+                new Padding(padding: EdgeInsets.CreateOnly(left: 20), child: new Text(seed.Label))]))).ToList());
+    private Widget ImageAction() => new M.PopupMenuButton<int>(tooltip: "Select a color extraction image", icon: new Icon(M.Icons.image_outlined),
+        shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateCircular(10)), onSelected: widget.SelectImage,
         itemBuilder: _ => SampleConstants.Images.Select((label, i) => (M.PopupMenuEntry<int>)new M.PopupMenuItem<int>(value: i,
-            child: new Row(spacing: 12, children: [Image.CreateNetwork(SampleConstants.ImageUrl(i), width: 32, height: 32, fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => new Icon(M.Icons.broken_image)), new Text(label), ifSelected(i)]))).ToList());
-    private Widget ifSelected(int i) => widget.FromImage && widget.Image == i ? new Icon(M.Icons.check) : SizedBox.CreateShrink();
+            enabled: !widget.FromImage || widget.Image != i, child: new Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: [
+                new Padding(padding: EdgeInsets.CreateOnly(left: 10), child: new ConstrainedBox(constraints: new BoxConstraints(maxWidth: 48),
+                    child: new Padding(padding: EdgeInsets.CreateAll(4), child: new ClipRRect(borderRadius: BorderRadius.CreateCircular(8), child: ThemeImage(i))))),
+                new Padding(padding: EdgeInsets.CreateOnly(left: 20), child: new Text(label))]))).ToList());
+    private static Widget ThemeImage(int i) => Image.CreateNetwork(SampleConstants.ImageUrl(i), errorBuilder: (_, _, _) => new Icon(M.Icons.broken_image));
+    private Widget ImageTile(int i) => new Semantics(selected: widget.FromImage && widget.Image == i, child: new M.Tooltip(message: SampleConstants.Images[i],
+        child: new M.InkWell(borderRadius: BorderRadius.CreateCircular(4), onTap: widget.FromImage && widget.Image == i ? null : () => widget.SelectImage(i),
+            child: new Padding(padding: EdgeInsets.CreateAll(8), child: new M.Material(borderRadius: BorderRadius.CreateCircular(4),
+                elevation: widget.FromImage && widget.Image == i ? 0 : 3, child: new Padding(padding: EdgeInsets.CreateAll(4),
+                    child: new ClipRRect(borderRadius: BorderRadius.CreateCircular(4), child: ThemeImage(i))))))));
     private Widget Settings()
     {
         Widget body = new Container(width: 250, padding: EdgeInsets.CreateSymmetric(horizontal: 30), child: new Column(
@@ -173,18 +182,16 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
                 new Row(children: [new Text("Brightness"), new Expanded(child: SizedBox.CreateShrink()),
                     new M.Switch(value: M.Theme.of(context).brightness == Brightness.light, onChanged: _ => widget.Brightness())]),
                 new M.Divider(),
-                new SizedBox(height: 190, child: GridView.CreateCount(crossAxisCount: 3, primary: false, children:
+                new ConstrainedBox(constraints: new BoxConstraints(maxHeight: 200), child: GridView.CreateCount(crossAxisCount: 3, primary: false, children:
                     SampleConstants.Seeds.Select((seed, i) => (Widget)new M.IconButton(tooltip: seed.Label, color: seed.Color,
                         icon: new Icon(M.Icons.radio_button_unchecked), selectedIcon: new Icon(M.Icons.circle),
                         isSelected: !widget.FromImage && widget.Seed == i, onPressed: () => widget.SelectSeed(i))).ToList())),
                 new M.Divider(),
-                new SizedBox(height: 142, child: GridView.CreateCount(crossAxisCount: 3, primary: false, children:
-                    SampleConstants.Images.Select((label, i) => (Widget)new M.IconButton(tooltip: label, isSelected: widget.FromImage && widget.Image == i,
-                        onPressed: () => widget.SelectImage(i), icon: Image.CreateNetwork(SampleConstants.ImageUrl(i), width: 40, height: 40,
-                            fit: BoxFit.cover, errorBuilder: (_, _, _) => new Icon(M.Icons.broken_image)))).ToList())),
+                new ConstrainedBox(constraints: new BoxConstraints(maxHeight: 150), child: new Padding(padding: EdgeInsets.CreateSymmetric(vertical: 8),
+                    child: GridView.CreateCount(crossAxisCount: 3, primary: false, children: Enumerable.Range(0, SampleConstants.Images.Length).Select(ImageTile).ToList()))),
             ]));
-        return new Expanded(child: new Align(alignment: Alignment.bottomCenter,
-            child: MediaQuery.heightOf(context) > 740 ? body : new SingleChildScrollView(child: body)));
+        return new Align(alignment: Alignment.bottomCenter,
+            child: MediaQuery.heightOf(context) > 740 ? body : new SingleChildScrollView(child: body));
     }
     private Widget? _home;
     private SampleHome? _homeWidget;
@@ -218,7 +225,7 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
         };
         return new M.Scaffold(key: _scaffold,
             appBar: new M.AppBar(title: new Text("Doroti Material 3"), notificationPredicate: AcceptAppBarScroll,
-                actions: !_wide ? [BrightnessAction(), SeedAction(), ImageAction()] : []),
+                actions: !_wide ? [BrightnessAction(), SeedAction(), ImageAction()] : [new Container()]),
             endDrawer: new GalleryDrawer(),
             body: new Column(children:
             [
@@ -237,7 +244,8 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
             child: new M.NavigationRail(extended: _extended, selectedIndex: _destination,
                 onDestinationSelected: Navigate, destinations: SampleConstants.Destinations.Select((label, i) =>
                     new M.NavigationRailDestination(icon: new Icon(SampleConstants.DestinationIcons[i]), selectedIcon: new Icon(SampleConstants.SelectedDestinationIcons[i]), label: new Text(label))).ToList(),
-                trailing: _extended ? Settings() : new Column(mainAxisSize: MainAxisSize.min, children: [BrightnessAction(), SeedAction(), ImageAction()]))))));
+                trailing: new Expanded(child: new Padding(padding: EdgeInsets.CreateOnly(bottom: 20), child: _extended ? Settings() :
+                    new Column(mainAxisAlignment: MainAxisAlignment.end, children: [new Flexible(child: BrightnessAction()), new Flexible(child: SeedAction()), new Flexible(child: ImageAction())]))))))));
     private Widget ifLoading() => widget.Loading ? new Column(mainAxisSize: MainAxisSize.min, children:
         [new M.LinearProgressIndicator(), new Text($"Loading {SampleConstants.Images[widget.Image]}…")]) : widget.Error is { } error
         ? new M.ListTile(title: new Text(error), trailing: new M.TextButton(onPressed: () => widget.SelectImage(widget.Image), child: new Text("Retry image"))) : SizedBox.CreateShrink();
