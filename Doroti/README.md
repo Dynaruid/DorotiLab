@@ -14,6 +14,10 @@ See [ADR-019](docs/adr/ADR-019-product-framework-source-ownership.md) for source
 
 ## Current product boundary
 
+Widget applications use `new Doroti.Framework.DorotiWidgetEntrypoint(() => new MyApp())`.
+The entrypoint attaches the root and requests the initial frame automatically; application code does not need `scheduleFrameCallback` or `scheduleForcedFrame` to start.
+An optional second `Func<Task>` argument prepares resources (for example, fonts) before root creation. Completion returns to the owning view's event loop, and detaching or shutting down prevents a pending initialization from attaching a root.
+
 Material themes use Material 3 exclusively. `ThemeData` factories, its constructor, and `copyWith` no longer accept `useMaterial3`, and the version property is removed; omit this argument in application code. Use `Typography.Create` or `CreateMaterial2021` for typography; the 2014/2018 presets are removed.
 
 - `Doroti.Framework.*`: product-owned Foundation, Scheduler, Services, Physics, Animation, Gestures, Painting, Semantics, Rendering, Widgets, Cupertino, and Material libraries

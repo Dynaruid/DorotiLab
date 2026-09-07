@@ -16,6 +16,10 @@ Source 소유권은 [ADR-019](docs/adr/ADR-019-product-framework-source-ownershi
 
 ## 현재 제품 경계
 
+Widget 앱은 `new Doroti.Framework.DorotiWidgetEntrypoint(() => new MyApp())`를 사용합니다.
+공통 진입점이 루트 연결과 초기 프레임 요청을 자동으로 처리하므로, 앱 시작을 위해 `scheduleFrameCallback`이나 `scheduleForcedFrame`을 직접 호출할 필요가 없습니다.
+선택적인 두 번째 `Func<Task>` 인자로 폰트 등 리소스를 준비한 뒤 루트를 생성할 수 있습니다. 완료 처리는 해당 뷰의 이벤트 루프로 돌아오며, 준비 중 뷰가 분리되거나 종료되면 루트를 연결하지 않습니다.
+
 - `Doroti.Framework.*`: 제품이 소유하는 Foundation, Scheduler, Services, Physics, Animation, Gestures, Painting, Semantics, Rendering, Widgets, Cupertino, Material library
 - `Doroti.Runtime`, `Doroti.Ui`, `Doroti.Hosting`: runtime 의미와 target-neutral startup/builder/descriptor 계약
 - `Doroti.App.Sdk`: 플랫폼 중립 `net10.0` 앱 assembly와 공용 asset 계약

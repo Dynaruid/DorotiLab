@@ -7,6 +7,79 @@ using M = Doroti.Framework.Material;
 
 internal static class MountedPickerContracts
 {
+    internal static void VerifyWidgetStartup()
+    {
+        foreach (var mode in new[] { "default", "delayed", "detached", "shutdown", "failure" })
+        {
+            using var dispatcher = new PlatformDispatcher();
+            using var scope = dispatcher.EnterScope();
+            using var host = new Host();
+            using var renderer = new SkiaSceneRenderer(1, host, new Color(0xffffffff), null,
+                "startup-fixture", "startup-fixture", "startup-fixture");
+            using var view = dispatcher.RegisterView(1, new DorotiViewCapabilities("startup-fixture")
+                .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
+                .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
+                .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
+                .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, host)
+                .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, renderer)
+                .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, renderer)
+                .Register<IPlatformMessageHostCapability>(DorotiCapabilityIds.PlatformMessaging, host)
+                .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host));
+            var ready = new TaskCompletionSource();
+            var created = 0;
+            var initialized = 0;
+            Widget Root()
+            {
+                if (!ReferenceEquals(PlatformDispatcher.instance, dispatcher))
+                    throw new Exception("Root construction lost the owning dispatcher.");
+                created++;
+                return new ColoredBox(color: new Color(0xff1256ab), child: new SizedBox(width: 32, height: 32));
+            }
+            var entrypoint = mode == "default"
+                ? new Doroti.Framework.DorotiWidgetEntrypoint(Root)
+                : new Doroti.Framework.DorotiWidgetEntrypoint(Root, () => { initialized++; return ready.Task; });
+            var errors = new List<FlutterErrorDetails>();
+            var previousError = FlutterError.onError;
+            FlutterError.onError = errors.Add;
+            try
+            {
+                entrypoint.Bootstrap(dispatcher);
+                entrypoint.AttachView(view);
+                if (!host.HasPendingFrame) throw new Exception("Entrypoint did not schedule its own bootstrap.");
+                host.Fire();
+                if (mode != "default")
+                {
+                    if (created != 0 || initialized != 1) throw new Exception("Root did not await initialization exactly once.");
+                    if (mode == "detached") entrypoint.DetachView(view);
+                    if (mode == "shutdown") entrypoint.Shutdown();
+                    if (mode == "failure") ready.SetException(new InvalidOperationException("startup fixture failure"));
+                    else ready.SetResult();
+                    if (created != 0) throw new Exception("Async completion attached outside the host event loop.");
+                }
+                // Deliver only frames actually requested by production code.
+                for (var frame = 0; frame < 8 && host.HasPendingFrame; frame++) host.Fire();
+                var shouldAttach = mode is "default" or "delayed";
+                if (shouldAttach)
+                {
+                    using var surface = SKSurface.Create(new SKImageInfo(Width, Height));
+                    var completion = renderer.Paint(surface, Width, Height)
+                        ?? throw new Exception($"Widget startup {mode} did not produce a paintable scene.");
+                    renderer.CompletePaint(completion, DorotiFrameTerminal.submitted);
+                }
+                if (created != (shouldAttach ? 1 : 0) || (shouldAttach && renderer.Diagnostics.Submitted < 1))
+                    throw new Exception($"Widget startup {mode}: roots={created}, scenes={renderer.Diagnostics.Submitted}, errors={string.Join("; ", errors.Select(e => e.exceptionThrown))}");
+                if (errors.Count != (mode == "failure" ? 1 : 0))
+                    throw new Exception($"Widget startup {mode} produced unexpected framework errors: {string.Join("; ", errors.Select(e => e.exceptionThrown))}");
+                Console.WriteLine($"Widget startup {mode}: PASS");
+            }
+            finally
+            {
+                entrypoint.Shutdown();
+                FlutterError.onError = previousError;
+            }
+        }
+    }
+
     private static bool AppBarRaster => Environment.GetEnvironmentVariable("DOROTI_VALIDATION_APPBAR_RASTER") == "1";
     private static bool SamplePopups => Environment.GetEnvironmentVariable("DOROTI_VALIDATION_SAMPLE_POPUPS") == "1";
     private static int Width => SamplePopups ? int.Parse(Environment.GetEnvironmentVariable("DOROTI_VALIDATION_POPUP_WIDTH")!) : AppBarRaster ? 1275 : 800;
@@ -559,6 +632,7 @@ internal static class MountedPickerContracts
         public void SetCaretRect(Rect rect) { }
         public void ClearClient() { }
         private System.Action<TimeSpan>? _frame;
+        internal bool HasPendingFrame => _frame is not null;
         public ValueTask<ReadOnlyMemory<byte>?> SendAsync(string channel, ReadOnlyMemory<byte>? data, CancellationToken cancellationToken = default) => ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
         public void SetMessageHandler(string channel, PlatformMessageHandler? handler) { }
         public void RequestFocus(ViewFocusState state, ViewFocusDirection direction) { }

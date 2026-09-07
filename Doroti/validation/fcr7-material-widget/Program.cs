@@ -3,6 +3,12 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args is ["--widget-startup"])
+{
+    MountedPickerContracts.VerifyWidgetStartup();
+    return;
+}
+
 if (args.Length >= 1 && args[0] == "--sample-popups")
 {
     Environment.SetEnvironmentVariable("DOROTI_VALIDATION_SAMPLE_POPUPS", "1");

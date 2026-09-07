@@ -15,6 +15,7 @@ using UiColor = Doroti.Ui.Color;
 internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requireExternalUia) : IDorotiViewEntrypoint
 {
     private WidgetsFlutterBinding? _binding;
+    private Doroti.Framework.DorotiWidgetEntrypoint? _widgetEntrypoint;
     private DorotiView? _view;
 
     internal Material.Scaffold? RootScaffold { get; private set; }
@@ -49,7 +50,9 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
             FirstFrameworkError ??= details;
             Console.Error.WriteLine(details.exceptionThrown);
         };
-        _binding = new WidgetsFlutterBinding(dispatcher);
+        _widgetEntrypoint = new Doroti.Framework.DorotiWidgetEntrypoint(() => RootApp, PrepareResourcesAsync);
+        _widgetEntrypoint.Bootstrap(dispatcher);
+        _binding = (WidgetsFlutterBinding)WidgetsFlutterBinding.ensureInitialized();
     }
 
     public void AttachView(DorotiView view)
@@ -64,33 +67,31 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
         }
 
         _view = view;
-        _binding.scheduleFrameCallback(async _ =>
+        _widgetEntrypoint!.AttachView(view);
+    }
+
+    private static async Task PrepareResourcesAsync()
+    {
+        if (App.SampleEnabled)
         {
-            try
+            using var stream = typeof(MaterialDemoEntrypoint).Assembly.GetManifestResourceStream("MaterialSample.icons.otf")
+                ?? throw new InvalidOperationException("MaterialIcons resource is missing.");
+            using var bytes = new MemoryStream(); stream.CopyTo(bytes);
+            await Dart_uiLibrary.loadFontFromList(new Uint8List(bytes.ToArray()), fontFamily: "MaterialIcons");
+            // Flutter Web registers its regular Roboto fallback; native hosts also use weight faces.
+            foreach (var weight in (Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? new[] { "regular" } : new[] { "medium", "bold", "regular" }))
             {
-                if (App.SampleEnabled)
-                {
-                    using var stream = typeof(MaterialDemoEntrypoint).Assembly.GetManifestResourceStream("MaterialSample.icons.otf")
-                        ?? throw new InvalidOperationException("MaterialIcons resource is missing.");
-                    using var bytes = new MemoryStream(); stream.CopyTo(bytes);
-                    await Dart_uiLibrary.loadFontFromList(new Uint8List(bytes.ToArray()), fontFamily: "MaterialIcons");
-                    // Flutter Web registers its regular Roboto fallback; native hosts also use weight faces.
-                    foreach (var weight in (Doroti.Framework.Foundation.ConstantsLibrary.kIsWeb ? new[] { "regular" } : new[] { "medium", "bold", "regular" }))
-                    {
-                        using var fontStream = typeof(MaterialDemoEntrypoint).Assembly.GetManifestResourceStream($"MaterialSample.Roboto-{weight}.ttf")
-                            ?? throw new InvalidOperationException($"Roboto {weight} resource is missing.");
-                        using var fontBytes = new MemoryStream(); fontStream.CopyTo(fontBytes);
-                        await Dart_uiLibrary.loadFontFromList(new Uint8List(fontBytes.ToArray()), fontFamily: "Roboto");
-                    }
-                }
-                if (_binding is { } binding && ReferenceEquals(_view, view)) binding.attachRootWidget(binding.wrapWithDefaultView(RootApp));
+                using var fontStream = typeof(MaterialDemoEntrypoint).Assembly.GetManifestResourceStream($"MaterialSample.Roboto-{weight}.ttf")
+                    ?? throw new InvalidOperationException($"Roboto {weight} resource is missing.");
+                using var fontBytes = new MemoryStream(); fontStream.CopyTo(fontBytes);
+                await Dart_uiLibrary.loadFontFromList(new Uint8List(fontBytes.ToArray()), fontFamily: "Roboto");
             }
-            catch (Exception error) { FlutterError.reportError(new FlutterErrorDetails(error, library: "Material sample bootstrap")); }
-        });
+        }
     }
 
     public void DetachView(DorotiView view)
     {
+        _widgetEntrypoint?.DetachView(view);
         if (ReferenceEquals(_view, view))
         {
             _view = null;
@@ -132,7 +133,8 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     public void Shutdown()
     {
-        _binding?.Dispose();
+        _widgetEntrypoint?.Shutdown();
+        _widgetEntrypoint = null;
         _binding = null;
         _view = null;
         FlutterError.onError = null;
