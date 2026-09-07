@@ -6,6 +6,7 @@
     <AssemblyName>Doroti.Validation.WindowsAppSdkNativeAbi</AssemblyName>
     <RootNamespace>Doroti.Validation.WindowsAppSdkNativeAbi</RootNamespace>
     <IsPackable>false</IsPackable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Doroti.Host.WindowsAppSdk\Doroti.Host.WindowsAppSdk.csproj" />

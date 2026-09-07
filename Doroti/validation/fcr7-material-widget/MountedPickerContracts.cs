@@ -168,6 +168,20 @@ internal static partial class MountedPickerContracts
                 Send(0x7002a, Doroti.Framework.Services.LogicalKeyboardKey.backspace.keyId, KeyEventType.up);
                 Pump("text-backspace");
                 if(controller.text.Length != beforeDelete - 1) throw new Exception("Backspace must delete once");
+                view.DispatchPlatformEvent(() => {
+                    controller.text = "one two three";
+                    controller.selection = Doroti.Framework.Services.TextSelection.CreateCollapsed(controller.text.Length);
+                });
+                Pump("text-word-delete-initial");
+                Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.down);
+                foreach (var expected in new[] { "one two ", "one ", "", "" }) {
+                    Send(0x7002a, Doroti.Framework.Services.LogicalKeyboardKey.backspace.keyId, KeyEventType.down);
+                    Send(0x7002a, Doroti.Framework.Services.LogicalKeyboardKey.backspace.keyId, KeyEventType.up);
+                    Pump("text-word-delete-" + expected.Length);
+                    if(controller.text != expected || controller.selection.extentOffset != expected.Length)
+                        throw new Exception($"Ctrl+Backspace must delete one word: text={controller.text}, selection={controller.selection}");
+                }
+                Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.up);
                 var longInput = string.Concat(Enumerable.Repeat("Long native input ", 20));
                 view.DispatchPlatformEvent(() => host.Edit(new DorotiTextEditingState(longInput, new(longInput.Length, longInput.Length), null)));
                 Pump("text-native-long");
@@ -203,7 +217,7 @@ internal static partial class MountedPickerContracts
                 Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.up);
                 Pump("text-redo");
                 if(controller.text != longInput) throw new Exception("Ctrl+Shift+Z did not redo native input");
-                Console.WriteLine("mounted text: Ctrl+A/C/X/V/Z, Ctrl+Shift+Z, Shift+Left, Ctrl+Home/Right, Backspace, native long input caret/scroll and raster clipping PASS");
+                Console.WriteLine("mounted text: Ctrl+A/C/X/V/Z, Ctrl+Shift+Z, Shift+Left, Ctrl+Home/Right, Backspace, repeated Ctrl+Backspace, native long input caret/scroll and raster clipping PASS");
                 return;
             }
             if (SamplePopups)

@@ -3,6 +3,12 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using Doroti.Host.WindowsAppSdk;
 
+if (args is ["--text-input"])
+{
+    TextInputFixture.Run();
+    return;
+}
+
 if (args is ["--gpu-selection"])
 {
     GpuSelectionFixture.Run();

@@ -1631,8 +1631,9 @@ class ProductHost final {
       character = L'\n';
     }
     // WM_KEYDOWN already dispatched Backspace to EditableText. TranslateMessage
-    // also produces WM_CHAR(\b); consuming it here prevents a second deletion.
-    if (character < L' ' && character != L'\n') return;
+    // also produces WM_CHAR(\b), or WM_CHAR(DEL) for Ctrl+Backspace.
+    // Consume both so the shortcut cannot delete twice or insert a control glyph.
+    if ((character < L' ' && character != L'\n') || character == L'\x7f') return;
     ReplaceActiveRange(std::wstring(1, character), false);
     EmitTextEditing();
   }
