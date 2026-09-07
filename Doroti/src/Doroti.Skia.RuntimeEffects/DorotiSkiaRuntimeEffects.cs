@@ -51,13 +51,13 @@ public static partial class DorotiSkiaRuntimeEffects
         FragmentShaderSnapshot snapshot,
         Func<Image, SKShader> imageShaderFactory,
         string backend = ValidationBackend,
-        long contextGeneration = 0)
+        long contextGeneration = 0, object? contextOwner = null)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         ArgumentNullException.ThrowIfNull(imageShaderFactory);
         var state = snapshot.State;
         EnsureBackendSupported(backend, state.DebugName);
-        var compiled = GetCompiledEffect(state, backend, contextGeneration);
+        var compiled = GetCompiledEffect(state, backend, contextGeneration, contextOwner);
         var effect = compiled.Effect;
         using var uniforms = new SKRuntimeEffectUniforms(effect);
         BindFloats(compiled, uniforms, state);
@@ -93,14 +93,14 @@ public static partial class DorotiSkiaRuntimeEffects
         SKSamplingOptions inputSampling,
         Func<Image, SKShader> imageShaderFactory,
         string backend = ValidationBackend,
-        long contextGeneration = 0)
+        long contextGeneration = 0, object? contextOwner = null)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(imageShaderFactory);
         var state = snapshot.State;
         EnsureBackendSupported(backend, state.DebugName);
-        var compiled = GetCompiledEffect(state, backend, contextGeneration);
+        var compiled = GetCompiledEffect(state, backend, contextGeneration, contextOwner);
         var effect = compiled.Effect;
         if (effect.Children.Count == 0)
             throw new InvalidDataException(
@@ -159,18 +159,30 @@ public static partial class DorotiSkiaRuntimeEffects
     /// Removes effects compiled for prior graphics-context generations. Native shaders
     /// created from the old generation must be gone before the host calls this method.
     /// </summary>
-    public static void InvalidateContext(string backend, long currentContextGeneration)
+    public static void InvalidateContext(string backend, long currentContextGeneration) =>
+        InvalidateContext(backend, currentContextGeneration, null);
+
+    internal static void InvalidateContext(string backend, long currentContextGeneration, object? contextOwner)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(backend);
         foreach (var pair in EffectCache.ToArray())
         {
-            if (!string.Equals(pair.Key.Backend, backend, StringComparison.Ordinal) ||
+            if (!ReferenceEquals(pair.Key.ContextOwner, contextOwner) ||
+                !string.Equals(pair.Key.Backend, backend, StringComparison.Ordinal) ||
                 pair.Key.ContextGeneration == currentContextGeneration ||
                 !EffectCache.TryRemove(pair.Key, out var removed) ||
                 !removed.IsValueCreated)
                 continue;
             removed.Value.Dispose();
         }
+    }
+
+    internal static void ReleaseContext(string backend, long contextGeneration, object? contextOwner = null)
+    {
+        foreach (var pair in EffectCache.ToArray())
+            if (ReferenceEquals(pair.Key.ContextOwner, contextOwner) && pair.Key.Backend == backend &&
+                pair.Key.ContextGeneration == contextGeneration && EffectCache.TryRemove(pair.Key, out var removed) &&
+                removed.IsValueCreated) removed.Value.Dispose();
     }
 
     private static void BindFloats(
@@ -219,11 +231,11 @@ public static partial class DorotiSkiaRuntimeEffects
     private static CompiledRuntimeEffect GetCompiledEffect(
         FragmentShaderState state,
         string backend,
-        long contextGeneration)
+        long contextGeneration, object? contextOwner)
     {
         var sourceHash = Convert.ToHexString(
             SHA256.HashData(Encoding.UTF8.GetBytes(state.Source))).ToLowerInvariant();
-        var key = new RuntimeEffectCacheKey(sourceHash, backend, contextGeneration);
+        var key = new RuntimeEffectCacheKey(sourceHash, backend, contextGeneration, contextOwner);
         var lazy = EffectCache.GetOrAdd(key, _ =>
             new Lazy<CompiledRuntimeEffect>(
                 () => CompileEffect(state.Source, state.DebugName),
@@ -314,7 +326,7 @@ public static partial class DorotiSkiaRuntimeEffects
     private sealed record RuntimeEffectCacheKey(
         string SourceSha256,
         string Backend,
-        long ContextGeneration);
+        long ContextGeneration, object? ContextOwner);
 
     [GeneratedRegex(@"(?m)^\s*(?:layout\s*\([^)]*\)\s*)?uniform\s+(?<type>(?:float|half)(?:[234](?:x[234])?)?)\s+(?<name>[A-Za-z_]\w*)\s*(?:\[\s*(?<array>\d+)\s*\])?\s*;")]
     private static partial Regex UniformDeclarationRegex();

@@ -110,6 +110,32 @@ internal static partial class MountedPickerContracts
                 .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host));
             var binding = new WidgetsFlutterBinding(dispatcher);
             renderer.RegisterFontAsync(File.ReadAllBytes("DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf"), "MaterialIcons").GetAwaiter().GetResult();
+            if (Environment.GetEnvironmentVariable("DOROTI_VALIDATION_SAMPLE_COLUMNS") == "1")
+            {
+                view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new M.MaterialApp(
+                    locale: new Locale("en", "US"), home: new MaterialSample.SampleHome(0, 0, false, false, null, () => { }, _ => { }, _ => { })))));
+                foreach (var width in new[] { 800, 1280, 800, 1001, 1000, 390, 1501, 800 })
+                {
+                    view.DispatchPlatformEvent(() => host.Resize(width));
+                    for (var frame = 0; frame < 130; frame++)
+                    {
+                        host.Fire(); Thread.Sleep(10);
+                        var element = (StatefulElement)Elements(binding.rootElement!).Single(e => e.widget is MaterialSample.ComponentsScreen);
+                        var current = (MaterialSample.ComponentsScreen)element.widget;
+                        var right = (ScrollController)element.state.GetType().GetField("_secondScroll", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(element.state)!;
+                        if (current.TwoColumns != (width > 1000) || right.hasClients != current.TwoColumns)
+                            throw new Exception($"Columns disagree with viewport during transition: width={width}, frame={frame}, right={right.hasClients}");
+                    }
+                    if (errors.Count != 0) throw new Exception(string.Join("\n", errors.Select(e => e.exceptionThrown)));
+                    var screen = (MaterialSample.ComponentsScreen)Elements(binding.rootElement!).Single(e => e.widget is MaterialSample.ComponentsScreen).widget;
+                    var home = ((StatefulElement)Elements(binding.rootElement!).Single(e => e.widget is MaterialSample.SampleHome)).state;
+                    var controller = (Doroti.Framework.Animation.AnimationController)home.GetType().GetField("_controller", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(home)!;
+                    Console.WriteLine($"COLUMNS width={width} two={screen.TwoColumns} controller={controller.value} status={controller.status}");
+                    if (screen.TwoColumns != (width > 1000) || controller.value != (width > 1000 ? 1 : 0))
+                        throw new Exception("Sample columns did not settle at width " + width);
+                }
+                return;
+            }
             if (Environment.GetEnvironmentVariable("DOROTI_VALIDATION_MOUNTED_TEXT") == "1")
             {
                 var controller = new TextEditingController();
@@ -429,7 +455,7 @@ internal static partial class MountedPickerContracts
 
             var sampleBar = new M.AppBar(title: new Text("Sample root"));
             view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new M.MaterialApp(locale: new Locale("en", "US"), home:
-                new M.Scaffold(appBar: sampleBar, body: new MaterialSample.ComponentsScreen(true, 1, 0, new GlobalKey<M.ScaffoldState>()))))));
+                new M.Scaffold(appBar: sampleBar, body: new MaterialSample.ComponentsScreen(true, new GlobalKey<M.ScaffoldState>()))))));
             Pump("sample-drawer-initial");
             var drawer = Elements(binding.rootElement!).Single(element => element.widget is MaterialSample.GalleryDrawer);
             var destinations = Elements(drawer).Where(element => element.widget is M.NavigationDrawerDestination).ToArray();
@@ -694,13 +720,21 @@ internal static partial class MountedPickerContracts
         public event System.Action<RawFocusData>? FocusData { add { } remove { } }
         public void Fire() { var frame = _frame; _frame = null; frame?.Invoke(DorotiFrameClock.Now); }
         public void ScheduleFrame(System.Action<TimeSpan> callback) => _frame = callback;
-        public ViewMetrics Metrics { get; } = new(new Size(Width, Height), 1, default, default, default, AppLifecycleState.resumed, 1, 1);
-        public DorotiViewEpoch ViewEpoch { get; } = new(1, 1, 1, Width, Height, Width, Height, 1, 1, 0);
-        public DorotiResizeEpoch ResizeTarget { get; } = new(1, Width, Height, Width, Height, 1, 0);
+        public ViewMetrics Metrics { get; private set; } = new(new Size(Width, Height), 1, default, default, default, AppLifecycleState.resumed, 1, 1);
+        public void Resize(int width)
+        {
+            var generation = ViewEpoch.ResizeTargetGeneration + 1;
+            Metrics = Metrics with { physicalSize = new Size(width, Height), generation = generation };
+            ViewEpoch = new(1, generation, generation, width, Height, width, Height, 1, 1, 0);
+            ResizeTarget = new(generation, width, Height, width, Height, 1, 0);
+            MetricsChanged?.Invoke(Metrics);
+        }
+        public DorotiViewEpoch ViewEpoch { get; private set; } = new(1, 1, 1, Width, Height, Width, Height, 1, 1, 0);
+        public DorotiResizeEpoch ResizeTarget { get; private set; } = new(1, Width, Height, Width, Height, 1, 0);
         public long InputSequence => 0;
         public long SurfaceGeneration => 1;
         public PlatformConfiguration Configuration { get; } = new([new Locale("en", "US")], Brightness.light, false, false, HostOperatingSystem.windows);
-        public event System.Action<ViewMetrics>? MetricsChanged { add { } remove { } }
+        public event System.Action<ViewMetrics>? MetricsChanged;
         public event System.Action<AppLifecycleState>? LifecycleChanged { add { } remove { } }
         public event Action? CloseRequested { add { } remove { } }
         public event Action? Closed { add { } remove { } }

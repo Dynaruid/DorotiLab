@@ -22,6 +22,8 @@ public static partial class DorotiWebWorkerSurface
     private static SKSurface? _surface;
     private static SKSizeI _surfaceSize;
     private static int _framebuffer;
+    private static int _sampleCount;
+    private static int _stencilBits;
     private static long _contextGeneration;
     private static bool _initialized;
 
@@ -160,7 +162,10 @@ public static partial class DorotiWebWorkerSurface
             _contextGeneration = contextGeneration;
         }
         var size = new SKSizeI(width, height);
-        if (_renderTarget is null || _surfaceSize != size || _framebuffer != framebuffer || !_renderTarget.IsValid)
+        sampleCount = Math.Max(0, sampleCount);
+        stencilBits = Math.Max(0, stencilBits);
+        if (_renderTarget is null || _surfaceSize != size || _framebuffer != framebuffer ||
+            _sampleCount != sampleCount || _stencilBits != stencilBits || !_renderTarget.IsValid)
         {
             if (_renderTarget is not null) _target?.InvalidateSkiaWindowSurface(_viewId);
             _surface?.Dispose();
@@ -168,9 +173,11 @@ public static partial class DorotiWebWorkerSurface
             _renderTarget?.Dispose();
             var glInfo = new GRGlFramebufferInfo((uint)framebuffer, SKColorType.Rgba8888.ToGlSizedFormat());
             _renderTarget = new GRBackendRenderTarget(
-                width, height, Math.Max(0, sampleCount), Math.Max(0, stencilBits), glInfo);
+                width, height, sampleCount, stencilBits, glInfo);
             _surfaceSize = size;
             _framebuffer = framebuffer;
+            _sampleCount = sampleCount;
+            _stencilBits = stencilBits;
         }
         _surface ??= SKSurface.Create(
             _context, _renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888)
@@ -190,6 +197,8 @@ public static partial class DorotiWebWorkerSurface
         _glInterface = null;
         _surfaceSize = SKSizeI.Empty;
         _framebuffer = 0;
+        _sampleCount = 0;
+        _stencilBits = 0;
         _contextGeneration = 0;
     }
 

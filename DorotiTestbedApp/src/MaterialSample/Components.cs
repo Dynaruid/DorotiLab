@@ -12,11 +12,9 @@ using TextStyle = Doroti.Framework.Painting.TextStyle;
 
 namespace MaterialSample;
 
-internal sealed class ComponentsScreen(bool twoColumns, double secondFraction, double secondOffset, GlobalKey<M.ScaffoldState> scaffold, Key? key = null) : StatefulWidget(key: key)
+internal sealed class ComponentsScreen(bool twoColumns, GlobalKey<M.ScaffoldState> scaffold, Key? key = null) : StatefulWidget(key: key)
 {
     internal bool TwoColumns => twoColumns;
-    internal double SecondFraction => secondFraction;
-    internal double SecondOffset => secondOffset;
     internal GlobalKey<M.ScaffoldState> Scaffold => scaffold;
     public override IState createState() => new ComponentsState();
 }
@@ -107,8 +105,10 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
         return new Row(crossAxisAlignment: CrossAxisAlignment.stretch, children:
         [
             new Flexible(flex: 1000, child: List(false)),
-            widget.SecondFraction <= 0 ? SizedBox.CreateShrink() : new Flexible(flex: Math.Max(1, (long)(widget.SecondFraction * 1000)),
-                child: new FractionalTranslation(translation: new Offset(widget.SecondOffset, 0), child: List(true))),
+            // The list partition and its visible columns must change together.
+            // Navigation's reverse animation can still be at 1 after shrinking;
+            // using it here mounts the second list twice in a narrow viewport.
+            widget.TwoColumns ? new Flexible(flex: 1000, child: List(true)) : SizedBox.CreateShrink(),
         ]);
     }
     private sealed record SectionEntry(int Group, bool First, bool Last, Widget Child);

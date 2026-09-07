@@ -15,6 +15,9 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
     private uint _framebufferObject;
     private int _pixelWidth;
     private int _pixelHeight;
+    private int _sampleCount;
+    private int _stencilBits;
+    private uint _colorFormat;
     private bool _usePlatformGlResolver;
     private bool _disposed;
 
@@ -55,7 +58,9 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         _surface is null || _surfaceGeneration != descriptor.SurfaceGeneration ||
         _contextIdentity != descriptor.ContextIdentity ||
         _framebufferObject != descriptor.FramebufferObject ||
-        _pixelWidth != descriptor.PixelWidth || _pixelHeight != descriptor.PixelHeight;
+        _pixelWidth != descriptor.PixelWidth || _pixelHeight != descriptor.PixelHeight ||
+        _sampleCount != Math.Max(0, descriptor.SampleCount) ||
+        _stencilBits != Math.Max(0, descriptor.StencilBits) || _colorFormat != descriptor.ColorFormat;
 
     private void CreateSurface(in QtNativeV2.Surface descriptor)
     {
@@ -88,6 +93,9 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         _framebufferObject = descriptor.FramebufferObject;
         _pixelWidth = descriptor.PixelWidth;
         _pixelHeight = descriptor.PixelHeight;
+        _sampleCount = Math.Max(0, descriptor.SampleCount);
+        _stencilBits = Math.Max(0, descriptor.StencilBits);
+        _colorFormat = descriptor.ColorFormat;
     }
 
     private void ReleaseGpuResources()
@@ -110,6 +118,9 @@ internal sealed class QtSkiaSurface(GRGlGetProcedureAddressDelegate getProcedure
         _framebufferObject = 0;
         _pixelWidth = 0;
         _pixelHeight = 0;
+        _sampleCount = 0;
+        _stencilBits = 0;
+        _colorFormat = 0;
     }
 
     private static void Validate(in QtNativeV2.Surface descriptor)

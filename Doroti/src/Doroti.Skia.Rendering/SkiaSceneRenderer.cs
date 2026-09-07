@@ -65,6 +65,7 @@ public sealed class SkiaSceneRenderer :
     private long _lastSubmittedInputSequence;
     private long _lastPresentedInputSequence;
     private long _contextGeneration;
+    private readonly object _runtimeEffectContextOwner = new();
     private long _shaderImageFiltersRendered;
     private long _pictureRasterUseSequence;
     private long _pictureRasterPixels;
@@ -158,19 +159,19 @@ public sealed class SkiaSceneRenderer :
         ObjectDisposedException.ThrowIf(_disposed, this);
         bool hasFrame;
         long contextGeneration;
-        lock (_gate)
-        {
-            _invalidate = invalidate;
-            _contextGeneration++;
-            contextGeneration = _contextGeneration;
-            hasFrame = _pendingFrame is not null || _presentedFrame is not null;
-        }
-        DorotiSkiaRuntimeEffects.InvalidateContext(
-            RuntimeEffectBackend, contextGeneration);
-        DorotiSkiaImageFilterRenderer.InvalidateContext(
-            RuntimeEffectBackend, contextGeneration);
         lock (_paintGate)
         {
+            lock (_gate)
+            {
+                _invalidate = invalidate;
+                _contextGeneration++;
+                contextGeneration = _contextGeneration;
+                hasFrame = _pendingFrame is not null || _presentedFrame is not null;
+            }
+            DorotiSkiaRuntimeEffects.InvalidateContext(
+                RuntimeEffectBackend, contextGeneration, _runtimeEffectContextOwner);
+            DorotiSkiaImageFilterRenderer.InvalidateContext(
+                RuntimeEffectBackend, contextGeneration, _runtimeEffectContextOwner);
             ClearPictureRasterCache();
         }
         if (hasFrame) invalidate();
@@ -187,7 +188,7 @@ public sealed class SkiaSceneRenderer :
         lock (_paintGate)
         {
             DorotiSkiaImageFilterRenderer.InvalidateSurface(
-                RuntimeEffectBackend, _contextGeneration);
+                RuntimeEffectBackend, _contextGeneration, _runtimeEffectContextOwner);
             ClearPictureRasterCache();
         }
     }
@@ -200,17 +201,17 @@ public sealed class SkiaSceneRenderer :
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         long contextGeneration;
-        lock (_gate)
-        {
-            _contextGeneration++;
-            contextGeneration = _contextGeneration;
-        }
-        DorotiSkiaRuntimeEffects.InvalidateContext(
-            RuntimeEffectBackend, contextGeneration);
-        DorotiSkiaImageFilterRenderer.InvalidateContext(
-            RuntimeEffectBackend, contextGeneration);
         lock (_paintGate)
         {
+            lock (_gate)
+            {
+                _contextGeneration++;
+                contextGeneration = _contextGeneration;
+            }
+            DorotiSkiaRuntimeEffects.InvalidateContext(
+                RuntimeEffectBackend, contextGeneration, _runtimeEffectContextOwner);
+            DorotiSkiaImageFilterRenderer.InvalidateContext(
+                RuntimeEffectBackend, contextGeneration, _runtimeEffectContextOwner);
             foreach (var filter in _imageFilterResources.Values) filter.Dispose();
             _imageFilterResources.Clear();
             ClearPictureRasterCache();
@@ -414,7 +415,7 @@ public sealed class SkiaSceneRenderer :
             // into physical pixels. Applying host DPR here would scale twice.
             var rasterStart = DorotiFrameClock.Now;
             BeginPictureRasterFrame();
-            DorotiSkiaImageFilterRenderer.BeginFrame(RuntimeEffectBackend, _contextGeneration);
+            DorotiSkiaImageFilterRenderer.BeginFrame(RuntimeEffectBackend, _contextGeneration, _runtimeEffectContextOwner);
             _frameTrace.Record(DorotiFramePhase.raster, _viewId, rasterStart,
                 frame.InputSequence, frame.SceneSequence, _host.SurfaceGeneration,
                 isNewFrame ? null : "retained scene replay", rasterStart - frame.SubmittedAt,
@@ -781,9 +782,10 @@ public sealed class SkiaSceneRenderer :
         _host.SemanticsAction -= HandleSemanticsAction;
         _host.InputReceived -= HandleInput;
         _host.ConfigurationChanged -= HandleConfigurationChanged;
-        DorotiSkiaImageFilterRenderer.ReleaseContext(RuntimeEffectBackend, _contextGeneration);
         lock (_paintGate)
         {
+            DorotiSkiaImageFilterRenderer.ReleaseContext(RuntimeEffectBackend, _contextGeneration, _runtimeEffectContextOwner);
+            DorotiSkiaRuntimeEffects.ReleaseContext(RuntimeEffectBackend, _contextGeneration, _runtimeEffectContextOwner);
             lock (_gate)
             {
                 if (_pendingFrame is { } pending)
@@ -1016,7 +1018,7 @@ public sealed class SkiaSceneRenderer :
                                 _contextGeneration,
                                 image.CacheKey,
                                 image.CacheGeneration,
-                                out var cacheHit);
+                                out var cacheHit, _runtimeEffectContextOwner);
                             if (rendered && !cacheHit)
                                 Interlocked.Increment(ref _shaderImageFiltersRendered);
                             commandIndex = matchingPop;
@@ -1165,7 +1167,7 @@ public sealed class SkiaSceneRenderer :
             !canvasBounds.IsFinite || canvasBounds.isEmpty ||
             (!payload.IsComplexHint && commands.Count < PictureRasterComplexityThreshold &&
                 !HasDownscaledImage(commands)) ||
-            canvas.Context is not { } context)
+            canvas.Context is not { } context || !PictureCanCompositeOverBackground(commands))
         {
             DrawPicture(canvas, commands);
             return;
@@ -1194,10 +1196,16 @@ public sealed class SkiaSceneRenderer :
             return;
         }
 
-        // Subtracting translated float endpoints can change ceil(height) by a
-        // pixel on every fractional scroll tick and repeatedly discard a cache.
-        var width = checked((int)Math.Ceiling(rasterExtent.Width));
-        var height = checked((int)Math.Ceiling(rasterExtent.Height));
+        // Keep the original device-pixel phase when switching from direct draw
+        // to an image. Removing the fractional origin changes glyph hinting;
+        // drawing that image back at a fractional position changes sampling too.
+        var rasterLeft = MathF.Floor(mappedBounds.Left);
+        var rasterTop = MathF.Floor(mappedBounds.Top);
+        var phaseX = mappedBounds.Left - rasterLeft;
+        var phaseY = mappedBounds.Top - rasterTop;
+        // Use the untranslated extent to avoid cancellation in float endpoints.
+        var width = checked((int)Math.Ceiling(rasterExtent.Width + phaseX));
+        var height = checked((int)Math.Ceiling(rasterExtent.Height + phaseY));
         var pixels = (long)width * height;
         if (pixels <= 0 || pixels > MaxCacheablePicturePixels)
         {
@@ -1205,13 +1213,19 @@ public sealed class SkiaSceneRenderer :
             return;
         }
 
-        var signature = PictureRasterTransform.From(canvas.TotalMatrix);
+        // Font rasterization also depends on the destination surface policy.
+        // In particular, device-independent fonts must not switch to hinted
+        // glyphs merely because a picture was promoted to an offscreen image.
+        using var surfaceProperties = canvas.Surface?.SurfaceProperties;
+        var signature = PictureRasterTransform.From(transform, phaseX, phaseY,
+            surfaceProperties?.Flags ?? SKSurfacePropsFlags.None,
+            surfaceProperties?.PixelGeometry ?? SKPixelGeometry.Unknown);
         if (_pictureRasterCache.TryGetValue(cacheKey, out var cached))
         {
             if (cached.Width == width && cached.Height == height && cached.Transform == signature)
             {
                 cached.LastUsedSequence = ++_pictureRasterUseSequence;
-                DrawRasterImage(canvas, cached.Image, mappedBounds.Left, mappedBounds.Top);
+                DrawRasterImage(canvas, cached.Image, rasterLeft, rasterTop);
                 Interlocked.Increment(ref _pictureRasterCacheHits);
                 return;
             }
@@ -1230,7 +1244,11 @@ public sealed class SkiaSceneRenderer :
             _pictureRasterWarmupOrder.Remove(warmup.Node);
             _pictureRasterWarmupOrder.AddLast(warmup.Node);
         }
-        warmup.Uses = Math.Min(PictureRasterWarmupFrames, warmup.Uses + 1);
+        // A moving subpixel phase cannot reuse this raster. Wait until it is
+        // stable instead of promoting a new image on every animation tick.
+        warmup.Uses = warmup.Transform == signature
+            ? Math.Min(PictureRasterWarmupFrames, warmup.Uses + 1) : 1;
+        warmup.Transform = signature;
         warmup.LastFrame = _rasterFrame;
         // Never spend several synchronous surface/replay/flush/snapshot costs
         // in one frame. A single promotion is non-preemptible; record its real
@@ -1245,13 +1263,13 @@ public sealed class SkiaSceneRenderer :
 
         var promotionStarted = DorotiFrameClock.Now;
         var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
-        using var surface = SKSurface.Create(context, true, info)
+        using var surface = SKSurface.Create(context, true, info, surfaceProperties)
             ?? throw new InvalidOperationException(
                 $"Doroti picture raster cache could not allocate a {width}x{height} GPU surface.");
         var rasterCanvas = surface.Canvas;
         rasterCanvas.Clear(SKColors.Transparent);
         rasterCanvas.Save();
-        rasterCanvas.Translate(-mappedBounds.Left, -mappedBounds.Top);
+        rasterCanvas.Translate(-rasterLeft, -rasterTop);
         var matrix = canvas.TotalMatrix;
         rasterCanvas.Concat(in matrix);
         DrawPicture(rasterCanvas, commands);
@@ -1264,7 +1282,7 @@ public sealed class SkiaSceneRenderer :
         Interlocked.Increment(ref _pictureRasterCacheEntries);
         _pictureRasterPixels += cached.Pixels;
         RemovePictureWarmup(cacheKey);
-        DrawRasterImage(canvas, image, mappedBounds.Left, mappedBounds.Top);
+        DrawRasterImage(canvas, image, rasterLeft, rasterTop);
         TrimPictureRasterCache();
         Interlocked.Increment(ref _pictureRasterCacheMisses);
         var promotionMicroseconds = (DorotiFrameClock.Now - promotionStarted).Ticks / 10;
@@ -1295,6 +1313,7 @@ public sealed class SkiaSceneRenderer :
     {
         internal LinkedListNode<object> Node { get; } = node;
         internal int Uses;
+        internal PictureRasterTransform? Transform;
         internal long LastFrame;
     }
 
@@ -1309,6 +1328,35 @@ public sealed class SkiaSceneRenderer :
     private static bool HasDownscaledImage(IReadOnlyList<PathCommand> commands) =>
         commands.Any(command => command.HostPayload is CanvasImagePayload image &&
             (image.Source.width > image.Destination.width * 2 || image.Source.height > image.Destination.height * 2));
+
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<object, PictureCompositePolicy> PictureCompositePolicies = new();
+
+    private static bool PictureCanCompositeOverBackground(IReadOnlyList<PathCommand> commands) =>
+        PictureCompositePolicies.GetValue(commands, static key => new(((IReadOnlyList<PathCommand>)key).All(static command =>
+            command.HostPayload switch
+            {
+                CanvasColorPayload color => color.BlendMode == BlendMode.srcOver,
+                PaintSnapshot paint => paint.BlendMode == BlendMode.srcOver,
+                CanvasSaveLayerPayload layer => layer.Paint.BlendMode == BlendMode.srcOver,
+                CanvasPathPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                CanvasRectPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                CanvasRRectPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                CanvasRSuperellipsePayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                CanvasDRRectPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                CanvasImagePayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                CanvasImageNinePayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                CanvasCirclePayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                CanvasLinePayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                CanvasPointsPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                CanvasOvalPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                CanvasArcPayload draw => draw.Paint.BlendMode == BlendMode.srcOver,
+                _ => true,
+            }))).CanComposite;
+
+    // A picture cache is drawn with srcOver onto the existing destination. A
+    // clear/src/destination-dependent operation cannot be flattened against
+    // transparent pixels first. Replay those pictures against the real target.
+    private sealed record PictureCompositePolicy(bool CanComposite);
 
     private static SKSize PictureRasterExtent(SKMatrix matrix, SKRect bounds)
     {
@@ -1358,11 +1406,16 @@ public sealed class SkiaSceneRenderer :
         float ScaleY,
         float Persp0,
         float Persp1,
-        float Persp2)
+        float Persp2,
+        float PhaseX,
+        float PhaseY,
+        SKSurfacePropsFlags SurfaceFlags,
+        SKPixelGeometry PixelGeometry)
     {
-        internal static PictureRasterTransform From(SKMatrix matrix) => new(
+        internal static PictureRasterTransform From(SKMatrix matrix, float phaseX, float phaseY,
+            SKSurfacePropsFlags surfaceFlags, SKPixelGeometry pixelGeometry) => new(
             matrix.ScaleX, matrix.SkewX, matrix.SkewY, matrix.ScaleY,
-            matrix.Persp0, matrix.Persp1, matrix.Persp2);
+            matrix.Persp0, matrix.Persp1, matrix.Persp2, phaseX, phaseY, surfaceFlags, pixelGeometry);
     }
 
     private sealed class PictureRasterCacheEntry(
@@ -1734,7 +1787,7 @@ public sealed class SkiaSceneRenderer :
         GradientShaderSnapshot gradient => ToGradientShader(gradient),
         ImageShaderSnapshot image => ToImageShader(image),
         FragmentShaderSnapshot fragment => DorotiSkiaRuntimeEffects.CreateShader(
-            fragment, CreateImageShader, RuntimeEffectBackend, _contextGeneration),
+            fragment, CreateImageShader, RuntimeEffectBackend, _contextGeneration, _runtimeEffectContextOwner),
         UnsupportedShaderSnapshot unsupported => throw new NotSupportedException(
             $"The Doroti Skia backend rejects shader family '{unsupported.Family}'."),
         _ => throw new NotSupportedException($"The Doroti Skia backend rejects shader snapshot '{value.GetType().Name}'."),

@@ -3,6 +3,31 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args is ["--sample-columns"])
+{
+    Environment.SetEnvironmentVariable("DOROTI_VALIDATION_SAMPLE_COLUMNS", "1");
+    MountedPickerContracts.Verify();
+    return;
+}
+
+if (args is ["--text-hover"])
+{
+    TextHoverContracts.Verify();
+    return;
+}
+
+if (args is ["--gpu-compositing", var contract])
+{
+    GpuCompositingContracts.Verify(contract);
+    return;
+}
+
+if (args is ["--text-platforms"])
+{
+    TextHoverContracts.Verify(platformSurfaces: true);
+    return;
+}
+
 if (args.Length >= 2 && args[0] == "--selection-controls")
 {
     MountedPickerContracts.VerifySelectionControls(args[1]);

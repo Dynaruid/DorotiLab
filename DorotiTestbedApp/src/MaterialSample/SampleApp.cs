@@ -220,7 +220,7 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
         var barFactor = _barSize.value;
         Widget body = _destination switch
         {
-            0 => new ComponentsScreen(twoColumns: _wide, secondFraction: _railSize.value, secondOffset: 1 - _railOffset.value, scaffold: _scaffold, key: _components),
+            0 => new ComponentsScreen(twoColumns: _wide, scaffold: _scaffold, key: _components),
             1 => new ColorScreen(), 2 => new TypographyScreen(), _ => new ElevationScreen(),
         };
         return new M.Scaffold(key: _scaffold,

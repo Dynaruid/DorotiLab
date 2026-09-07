@@ -6,11 +6,11 @@ internal sealed class ImageFixtureEnvironment : IDisposable
     private readonly PlatformDispatcher _dispatcher = new();
     private readonly IDisposable _scope;
     internal SkiaSceneRenderer Renderer { get; }
-    public ImageFixtureEnvironment()
+    public ImageFixtureEnvironment(string runtimeEffectBackend = "validation")
     {
         _scope = _dispatcher.EnterScope();
         var host = new ImageHost();
-        var renderer = Renderer = new SkiaSceneRenderer(91, host, null, null, "validation/skia", "validation", "validation");
+        var renderer = Renderer = new SkiaSceneRenderer(91, host, null, null, "validation/skia", runtimeEffectBackend, "validation");
         _dispatcher.RegisterView(91, new DorotiViewCapabilities("validation/skia")
             .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, new ClipboardFixtureHost())
             .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, renderer)
