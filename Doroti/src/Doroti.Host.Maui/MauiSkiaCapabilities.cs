@@ -118,6 +118,10 @@ internal sealed class MauiSkiaCapabilities :
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation) =>
         _renderer.Layout(request, invocation);
 
+    public ValueTask<UiImage> DecodeSizedAsync(ReadOnlyMemory<byte> bytes, Func<long, long, TargetImageSize?> targetSize,
+        bool allowUpscaling, DartUiInvocation invocation, CancellationToken cancellationToken = default) =>
+        _renderer.DecodeSizedAsync(bytes, targetSize, allowUpscaling, invocation, cancellationToken);
+
     public ValueTask<UiImage> RasterizeAsync(Picture picture, int width, int height,
         DartUiInvocation invocation, CancellationToken cancellationToken = default) =>
         _renderer.RasterizeAsync(picture, width, height, invocation, cancellationToken);

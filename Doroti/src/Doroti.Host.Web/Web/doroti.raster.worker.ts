@@ -63,6 +63,7 @@ interface SurfaceExports {
 interface PresentRequest extends ResizeEpoch {
   requestId: number;
   terminal: boolean;
+  inputSequence: number;
 }
 
 interface WorkerPresenter {
@@ -107,6 +108,7 @@ let stopManagedRuntime: (() => void) | null = null;
 let managedRuntime: DotnetRuntime | null = null;
 let dotnetModuleUrl: string | null = null;
 let testbedMode = "diagnostics";
+let progressScope = "local";
 let managedHostReady = false;
 let workerMode: WorkerMode = "offscreen-worker";
 let transferredCanvas: OffscreenCanvas | null = null;
@@ -119,6 +121,7 @@ let workerFrameTimer = 0;
 let lastResizeAdmissionMilliseconds = Number.NEGATIVE_INFINITY;
 let resizeWakeBudget = 0;
 const pendingManagedInputs: Record<string, unknown>[] = [];
+let lastDispatchedInputSequence = 0;
 let requestSequence = 0;
 let controlSequence = 0;
 const pendingControls = new Map<number, { resolve(value: string): void; reject(reason: unknown): void }>();
@@ -433,7 +436,7 @@ function terminal(request: PresentRequest, value: "submitted" | "superseded" | "
 
 function requestPresent(epoch: ResizeEpoch): void {
   const value = ensurePresenter();
-  const request: PresentRequest = { ...epoch, requestId: ++value.nextRequestId, terminal: false };
+  const request: PresentRequest = { ...epoch, requestId: ++value.nextRequestId, terminal: false, inputSequence: lastDispatchedInputSequence };
   post("present-requested", { requestId: request.requestId, epoch });
   if (value.latest) terminal(value.latest, "superseded", "latest worker request replaced");
   value.latest = request;
@@ -542,6 +545,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
       terminal(request, "submitted", "exact direct visible framebuffer submitted in the worker");
       post("direct-commit", {
         sceneDisposition: result,
+        inputSequence: request.inputSequence,
         requestId: request.requestId, generation: request.generation,
         commitEpochMilliseconds: performance.timeOrigin + directFinalizeCompleted,
         managedSurfaceMicroseconds: Math.round(
@@ -697,6 +701,7 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
         throw new Error("Doroti direct worker init requires a transferred visible OffscreenCanvas.");
       dotnetModuleUrl = String(message.dotnetModuleUrl ?? "");
       testbedMode = String(message.testbedMode ?? "diagnostics");
+      progressScope = String(message.progressScope ?? "local");
       void startManagedRuntime();
       break;
     case "snapshot":
@@ -724,6 +729,7 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
         if (pendingManagedInputs.length >= 256) pendingManagedInputs.shift();
         pendingManagedInputs.push(message);
       } else {
+        lastDispatchedInputSequence = Number(message.inputSequence ?? 0);
         dispatchWorkerInput(message);
       }
       break;
@@ -803,6 +809,8 @@ async function startManagedRuntime(): Promise<void> {
     } };
     const runtime = await dotnetModule.dotnet.withEnvironmentVariables({
       DOROTI_TESTBED_MODE: testbedMode, DOROTI_WEB_DIRECT_TRACE: diagnosticsEnabled ? "1" : "0",
+      DOROTI_STAGE_TRACE: diagnosticsEnabled ? "1" : "0",
+      DOROTI_SAMPLE_PROGRESS_SCOPE: progressScope,
     }).create();
     managedRuntime = runtime;
     await initializeManagedCallbacks();
@@ -830,7 +838,10 @@ async function startManagedRuntime(): Promise<void> {
       pendingManagedSnapshot = null;
       applyManagedSnapshot(pending.hostId, pending.value);
     }
-    for (const input of pendingManagedInputs.splice(0)) dispatchWorkerInput(input);
+    for (const input of pendingManagedInputs.splice(0)) {
+      lastDispatchedInputSequence = Number(input.inputSequence ?? 0);
+      dispatchWorkerInput(input);
+    }
     post("runtime-ready", { result, mainManagedRuntimeCount: 0, workerManagedRuntimeCount: 1 });
   } catch (error) {
     post("fatal", { error: String(error instanceof Error ? error.stack ?? error.message : error) });

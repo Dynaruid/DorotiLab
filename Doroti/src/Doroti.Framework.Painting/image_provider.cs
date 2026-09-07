@@ -464,7 +464,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
             return decode(buffer, this.allowUpscaling, this.height, this.width);
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        ImageStreamCompleter completer = this.imageProvider.loadBuffer(((ResizeImageKey)key)._providerCacheKey, ((Func<ImmutableBuffer, bool, long?, long?, Future<Codec>>)((__buffer, __allowUpscaling, __cacheWidth, __cacheHeight) => decodeResize(__buffer, __cacheWidth, __cacheHeight, __allowUpscaling))));
+        ImageStreamCompleter completer = this.imageProvider.loadBuffer((dynamic)key._providerCacheKey, ((Func<ImmutableBuffer, bool, long?, long?, Future<Codec>>)((__buffer, __allowUpscaling, __cacheWidth, __cacheHeight) => decodeResize(__buffer, __cacheWidth, __cacheHeight, __allowUpscaling))));
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             completer.debugLabel = $"{((ImageStreamCompleter)completer).debugLabel} - Resized({((ResizeImageKey)key)._width}×{((ResizeImageKey)key)._height})";
@@ -504,7 +504,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                         }
                     case ResizeImagePolicy.fit:
                         {
-                            double aspectRatio = (intrinsicWidth / intrinsicHeight);
+                            double aspectRatio = ((double)intrinsicWidth / intrinsicHeight);
                             long maxWidth = (this.width ?? intrinsicWidth);
                             long maxHeight = (this.height ?? intrinsicHeight);
                             var targetWidthLocal = intrinsicWidth;
@@ -550,7 +550,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
             }));
             throw new InvalidOperationException("Dart control flow completed without a value.");
         }
-        ImageStreamCompleter completer = this.imageProvider.loadImage(((ResizeImageKey)key)._providerCacheKey, (Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>>)decodeResize);
+        ImageStreamCompleter completer = this.imageProvider.loadImage((dynamic)key._providerCacheKey, (Func<ImmutableBuffer, Func<long, long, TargetImageSize>?, Future<Codec>>)decodeResize);
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
         {
             completer.debugLabel = $"{((ImageStreamCompleter)completer).debugLabel} - Resized({((ResizeImageKey)key)._width}×{((ResizeImageKey)key)._height})";
@@ -571,29 +571,22 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
         })));
     }
 
-    public override Future<ResizeImageKey> obtainKey(ImageConfiguration configuration)
+    public override Future<ResizeImageKey> obtainKey(ImageConfiguration configuration) =>
+        WrapKey(this.imageProvider.obtainKey(configuration));
+
+    private Future<ResizeImageKey> WrapKey<T>(Future<T> pending)
     {
-        Completer<ResizeImageKey>? completer = default!;
-        SynchronousFuture<ResizeImageKey>? result = default!;
-        _ = this.imageProvider.obtainKey(configuration).then((Action<object>)((key) =>
-        {
-            if ((completer is null))
-            {
-                result = new SynchronousFuture<ResizeImageKey>(new ResizeImageKey(key, this.policy, this.width, this.height, this.allowUpscaling));
-            }
-            else
-            {
-                completer.complete(new ResizeImageKey(key, this.policy, this.width, this.height, this.allowUpscaling));
-            }
-        }));
-        if ((result is not null))
-        {
-            return result!;
-        }
-        completer = new Completer<ResizeImageKey>();
-        return completer.future;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        // Preserve completed keys synchronously and forward asynchronous errors.
+        // Avoid the result/completer race introduced by an Action continuation.
+        var task = pending.asTask();
+        if (task.IsCompletedSuccessfully)
+            return new SynchronousFuture<ResizeImageKey>(MakeKey(task.Result!));
+        return Future<ResizeImageKey>.fromTask(CompleteKey(task));
     }
+
+    private ResizeImageKey MakeKey(object key) => new(key, this.policy, this.width, this.height, this.allowUpscaling);
+
+    private async Task<ResizeImageKey> CompleteKey<T>(Task<T> pending) => MakeKey((await pending)!);
 
     public override bool Equals(object? other)
     {

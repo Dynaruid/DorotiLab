@@ -982,7 +982,9 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
                 }
                 this._firstFrameSent = true;
             }
+            this.platformDispatcher.frameTrace.Record(DorotiFramePhase.finalizeTree, frameViewId, DorotiFrameClock.Now);
             this.buildOwner!.finalizeTree();
+            this.platformDispatcher.frameTrace.Record(DorotiFramePhase.finalizeTreeEnd, frameViewId, DorotiFrameClock.Now);
         }
         finally
         {

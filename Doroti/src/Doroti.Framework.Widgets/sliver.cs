@@ -274,6 +274,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
         var __newWidget = (SliverMultiBoxAdaptorWidget)(object)newWidget;
         var oldWidget = ((SliverMultiBoxAdaptorWidget?)(object?)this.widget)!;
         base.update(__newWidget);
+        FrameworkWorkCounters.Add(FrameworkWork.DelegateUpdate);
         SliverChildDelegate newDelegate = ((SliverMultiBoxAdaptorWidget)__newWidget).@delegate;
         SliverChildDelegate oldDelegate = ((SliverMultiBoxAdaptorWidget)oldWidget).@delegate;
         if (((!object.Equals(newDelegate, oldDelegate)) && (((!object.Equals(DartRuntimePrimitives.RuntimeType(newDelegate), DartRuntimePrimitives.RuntimeType(oldDelegate))) || newDelegate.shouldRebuild(oldDelegate)))))
@@ -285,6 +286,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
     public override void performRebuild()
     {
         base.performRebuild();
+        FrameworkWorkCounters.Add(FrameworkWork.DelegateRebuild);
         _currentBeforeChild = null;
         var childrenUpdated = false;
         DartRuntimePrimitives.Assert(() => (this._currentlyUpdatingChildIndex is null));
@@ -331,6 +333,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, global::Doroti.
             }
             foreach (long indexLocal in this._childElements.Keys.ToList())
             {
+                FrameworkWorkCounters.Add(FrameworkWork.RetainedChildVisit);
                 global::Doroti.Framework.Foundation.Key? keyLocal = this._childElements.GetValueOrDefault(indexLocal)!.widget.key;
                 long? newIndex = ((keyLocal is null) ? null : ((SliverMultiBoxAdaptorWidget)adaptorWidget).@delegate.findIndexByKey(keyLocal));
                 var childParentData = ((global::Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData?)(object?)((global::Doroti.Framework.Rendering.ParentData?)((dynamic)this._childElements.GetValueOrDefault(indexLocal)!.renderObject)?.parentData))!;

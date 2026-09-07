@@ -626,26 +626,66 @@ public sealed class SkiaSceneRenderer :
         }
     }
 
-    public async ValueTask<UiImage> DecodeAsync(
-        ReadOnlyMemory<byte> bytes,
-        DartUiInvocation invocation,
-        CancellationToken cancellationToken = default)
+    public ValueTask<UiImage> DecodeAsync(ReadOnlyMemory<byte> bytes, DartUiInvocation invocation,
+        CancellationToken cancellationToken = default) =>
+        DecodeSizedAsync(bytes, static (_, _) => null, false, invocation, cancellationToken);
+
+    public async ValueTask<UiImage> DecodeSizedAsync(ReadOnlyMemory<byte> bytes, Func<long, long, TargetImageSize?> targetSize,
+        bool allowUpscaling, DartUiInvocation invocation, CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         cancellationToken.ThrowIfCancellationRequested();
-        // Fully decode away from the UI/raster threads. FromEncodedData creates a
-        // lazy image and otherwise makes the first visible scroll frame pay for decoding.
+        using var data = SKData.CreateCopy(bytes.Span);
+        using var codec = SKCodec.Create(data) ?? throw new InvalidDataException("SkiaSharp could not open the image resource.");
+        var original = codec.Info;
+        var target = ImageDecodeSizing.Resolve(original.Width, original.Height, targetSize(original.Width, original.Height), allowUpscaling);
+        // Run the target-size callback on the calling context. Only pixel work
+        // moves off-thread on hosts with threads; Web still benefits from scaled decode.
         return await Task.Run(() =>
         {
-            using var data = SKData.CreateCopy(bytes.Span);
-            using var bitmap = SKBitmap.Decode(data)
-                ?? throw new InvalidDataException("SkiaSharp could not decode the image resource.");
+            var scale = Math.Min(1, Math.Max((double)target.Width / original.Width, (double)target.Height / original.Height));
+            // GetScaledDimensions' float P/Invoke aborts the trimmed .NET 10
+            // WASM runtime. Ask GetPixels to validate the requested scale there;
+            // unsupported codec scales use intrinsic pixels and then resample.
+            var scaled = OperatingSystem.IsBrowser()
+                ? new SKSizeI(Math.Max(1, (int)Math.Round(original.Width * scale)), Math.Max(1, (int)Math.Round(original.Height * scale)))
+                : codec.GetScaledDimensions((float)scale);
+            var info = new SKImageInfo(scaled.Width, scaled.Height, SKColorType.Rgba8888, SKAlphaType.Premul, original.ColorSpace);
+            using var bitmap = DecodePixels(codec, info, original);
             cancellationToken.ThrowIfCancellationRequested();
-            bitmap.SetImmutable();
-            var image = SKImage.FromBitmap(bitmap);
-            var handle = new SkiaImageHandle(image);
-            return new UiImage(_viewId, image.Width, image.Height, handle.Release) { HostHandle = handle };
+            SKBitmap? resized = null;
+            try
+            {
+                var pixels = bitmap;
+                if (bitmap.Width != target.Width || bitmap.Height != target.Height)
+                    pixels = resized = bitmap.Resize(new SKSizeI(target.Width, target.Height), new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.None))
+                        ?? throw new InvalidDataException("SkiaSharp could not resize the decoded image.");
+                pixels.SetImmutable();
+                var handle = new SkiaImageHandle(SKImage.FromBitmap(pixels));
+                return new UiImage(_viewId, target.Width, target.Height, handle.Release) { HostHandle = handle };
+            }
+            finally { resized?.Dispose(); }
         }, cancellationToken).ConfigureAwait(false);
+    }
+
+    private static SKBitmap DecodePixels(SKCodec codec, SKImageInfo requested, SKImageInfo original)
+    {
+        var bitmap = new SKBitmap(requested);
+        try
+        {
+            var result = codec.GetPixels(requested, bitmap.GetPixels());
+            if (result == SKCodecResult.InvalidScale && (requested.Width != original.Width || requested.Height != original.Height))
+            {
+                bitmap.Dispose();
+                var full = new SKImageInfo(original.Width, original.Height, requested.ColorType, requested.AlphaType, requested.ColorSpace);
+                bitmap = new SKBitmap(full);
+                result = codec.GetPixels(full, bitmap.GetPixels());
+            }
+            if (result is not SKCodecResult.Success and not SKCodecResult.IncompleteInput)
+                throw new InvalidDataException($"SkiaSharp could not decode the image resource: {result}.");
+            return bitmap;
+        }
+        catch { bitmap.Dispose(); throw; }
     }
 
     public ValueTask<UiImage> RasterizeAsync(Picture picture, int width, int height,

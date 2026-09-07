@@ -135,7 +135,7 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
     public override void didChangeDependencies()
     {
         base.didChangeDependencies();
-        var width = MediaQuery.of(context).size.width;
+        var width = MediaQuery.widthOf(context);
         _wide = width > 1000; _extended = width > 1500;
         if (!_initialized) { _initialized = true; _controller.value = _wide ? 1 : 0; }
         else if (_wide && _controller.status is not (AnimationStatus.forward or AnimationStatus.completed)) _controller.forward();
@@ -184,9 +184,30 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
                             fit: BoxFit.cover, errorBuilder: (_, _, _) => new Icon(M.Icons.broken_image)))).ToList())),
             ]));
         return new Expanded(child: new Align(alignment: Alignment.bottomCenter,
-            child: MediaQuery.of(context).size.height > 740 ? body : new SingleChildScrollView(child: body)));
+            child: MediaQuery.heightOf(context) > 740 ? body : new SingleChildScrollView(child: body)));
     }
-    public override Widget build(BuildContext context) => new AnimatedBuilder(animation: _controller, builder: (ctx, _) =>
+    private Widget? _home;
+    private SampleHome? _homeWidget;
+    private M.ThemeData? _homeTheme;
+    private bool _homeWide, _homeExtended, _homeShort;
+    private int _homeDestination;
+    public override Widget build(BuildContext context)
+    {
+        var theme = M.Theme.of(context);
+        var shortWindow = MediaQuery.heightOf(context) <= 740;
+        // Pixel-size changes still flow through render constraints. Rebuild the
+        // navigation configuration only when its actual inputs change; its
+        // AnimatedBuilder independently listens to breakpoint transitions.
+        if (_home is null || !ReferenceEquals(_homeWidget, widget) || !Equals(_homeTheme, theme) ||
+            _homeWide != _wide || _homeExtended != _extended || _homeShort != shortWindow || _homeDestination != _destination)
+        {
+            _homeWidget = widget; _homeTheme = theme;
+            _homeWide = _wide; _homeExtended = _extended; _homeShort = shortWindow; _homeDestination = _destination;
+            _home = BuildAnimatedHome();
+        }
+        return _home;
+    }
+    private Widget BuildAnimatedHome() => new AnimatedBuilder(animation: _controller, builder: (ctx, _) =>
     {
 
         var barFactor = _barSize.value;

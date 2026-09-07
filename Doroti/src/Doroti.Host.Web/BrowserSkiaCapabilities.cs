@@ -130,6 +130,10 @@ internal sealed class BrowserSkiaCapabilities :
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation) =>
         _renderer.Layout(request, invocation);
 
+    public ValueTask<UiImage> DecodeSizedAsync(ReadOnlyMemory<byte> bytes, Func<long, long, TargetImageSize?> targetSize,
+        bool allowUpscaling, DartUiInvocation invocation, CancellationToken cancellationToken = default) =>
+        _renderer.DecodeSizedAsync(bytes, targetSize, allowUpscaling, invocation, cancellationToken);
+
     public ValueTask<UiImage> RasterizeAsync(Picture picture, int width, int height,
         DartUiInvocation invocation, CancellationToken cancellationToken = default) =>
         _renderer.RasterizeAsync(picture, width, height, invocation, cancellationToken);
@@ -205,22 +209,71 @@ internal sealed class BrowserSkiaCapabilities :
             remove => _host.ConfigurationChanged -= value;
         }
 
+        private readonly Dictionary<int, (SemanticsNodeUpdate Node, bool Compact, byte[] Json)> _semanticsJson = [];
+        private int _semanticsJsonBytes;
+        private const int SemanticsJsonBudget = 2 * 1024 * 1024;
+
         public void UpdateSemantics(SemanticsUpdate update)
         {
+            using var totalProfile = FrameworkWorkCounters.Enabled ? FrameworkWorkProfile.Begin(GetType(), 2) : default;
             foreach (var node in update.nodes) _semantics[node.id] = node;
             PruneUnreachable(_semantics);
+            foreach (var stale in _semanticsJson.Keys.Where(id => !_semantics.ContainsKey(id)).ToArray())
+            {
+                _semanticsJsonBytes -= _semanticsJson[stale].Json.Length;
+                _semanticsJson.Remove(stale);
+            }
             var orderedNodes = _semantics.Values
                 .OrderBy(node => node.indexInParent ?? int.MaxValue).ThenBy(node => node.id)
                 .ToArray();
-            var nodes = orderedNodes.Select(node =>
+            byte[][] nodes;
+            // Reuse one writer/buffer for geometry-only nodes. Their fixed wire
+            // shape needs no anonymous DTO, rectangle array or serializer traversal.
+            var compactBuffer = new System.Buffers.ArrayBufferWriter<byte>(256);
+            using var compactWriter = new Utf8JsonWriter(compactBuffer);
+            using (FrameworkWorkCounters.Enabled ? FrameworkWorkProfile.Begin(GetType(), 3) : default)
+            {
+            nodes = orderedNodes.Select(node =>
             {
                 // Projection creates a new record for geometry changes while
                 // retaining the content objects of unchanged nodes. Ignore the
                 // projected rectangle when deciding whether the DOM needs a
                 // fresh ARIA/action payload.
                 var contentUnchanged = _lastSentSemantics.TryGetValue(node.id, out var previous) &&
-                    previous with { rect = node.rect } == node;
-                return new
+                    (previous == node || previous with { rect = node.rect } == node);
+                if (_semanticsJson.TryGetValue(node.id, out var cached) && cached.Compact == contentUnchanged && cached.Node == node)
+                {
+                    FrameworkWorkCounters.Add(FrameworkWork.SemanticsJsonCacheHit);
+                    return cached.Json;
+                }
+                byte[] bytes;
+                if (contentUnchanged)
+                {
+                    // The receiver already retains content for this node. Avoid
+                    // constructing and visiting the full content DTO on every
+                    // geometry update; emit exactly its non-null wire fields.
+                    using var compactProfile = FrameworkWorkCounters.Enabled ? FrameworkWorkProfile.Begin(GetType(), 4) : default;
+                    compactBuffer.Clear();
+                    compactWriter.Reset(compactBuffer);
+                    compactWriter.WriteStartObject();
+                    compactWriter.WriteNumber("id", node.id);
+                    compactWriter.WriteBoolean("contentUnchanged", true);
+                    compactWriter.WriteStartArray("children");
+                    foreach (var child in node.children) compactWriter.WriteNumberValue(child);
+                    compactWriter.WriteEndArray();
+                    compactWriter.WriteStartArray("rect");
+                    compactWriter.WriteNumberValue(node.rect.left);
+                    compactWriter.WriteNumberValue(node.rect.top);
+                    compactWriter.WriteNumberValue(node.rect.right);
+                    compactWriter.WriteNumberValue(node.rect.bottom);
+                    compactWriter.WriteEndArray();
+                    compactWriter.WriteEndObject();
+                    compactWriter.Flush();
+                    bytes = compactBuffer.WrittenSpan.ToArray();
+                }
+                else
+                {
+                var payload = new
                 {
                     node.id,
                     contentUnchanged,
@@ -273,9 +326,33 @@ internal sealed class BrowserSkiaCapabilities :
                     textSelectionExtent = contentUnchanged ? (long?)null : node.textSelectionExtent,
                     rect = new[] { node.rect.left, node.rect.top, node.rect.right, node.rect.bottom },
                 };
+                using (FrameworkWorkCounters.Enabled ? FrameworkWorkProfile.Begin(GetType(), 4) : default)
+                    bytes = JsonSerializer.SerializeToUtf8Bytes(payload, SemanticsJsonOptions);
+                }
+                FrameworkWorkCounters.Add(FrameworkWork.SemanticsJsonSerializedNode);
+                if (_semanticsJson.Remove(node.id, out var old)) _semanticsJsonBytes -= old.Json.Length;
+                if (_semanticsJson.Count < 2048 && bytes.Length <= 16384 && _semanticsJsonBytes + bytes.Length <= SemanticsJsonBudget)
+                {
+                    _semanticsJson[node.id] = (node, contentUnchanged, bytes);
+                    _semanticsJsonBytes += bytes.Length;
+                }
+                return bytes;
             }).ToArray();
-            _host.UpdateSemantics(JsonSerializer.Serialize(
-                new { generation = update.generation, nodes }, SemanticsJsonOptions));
+            }
+            using var stream = new System.IO.MemoryStream();
+            using (var writer = new Utf8JsonWriter(stream))
+            {
+                writer.WriteStartObject();
+                writer.WriteNumber("generation", update.generation);
+                writer.WriteStartArray("nodes");
+                foreach (var bytes in nodes) writer.WriteRawValue(bytes, skipInputValidation: true);
+                writer.WriteEndArray();
+                writer.WriteEndObject();
+            }
+            var json = System.Text.Encoding.UTF8.GetString(stream.GetBuffer(), 0, checked((int)stream.Length));
+            FrameworkWorkCounters.Add(FrameworkWork.SemanticsPayloadBytes, stream.Length);
+            using (FrameworkWorkCounters.Enabled ? FrameworkWorkProfile.Begin(GetType(), 5) : default)
+                _host.UpdateSemantics(json);
             _lastSentSemantics.Clear();
             foreach (var node in orderedNodes) _lastSentSemantics[node.id] = node;
         }
@@ -284,6 +361,8 @@ internal sealed class BrowserSkiaCapabilities :
         {
             _semantics.Clear();
             _lastSentSemantics.Clear();
+            _semanticsJson.Clear();
+            _semanticsJsonBytes = 0;
             _host.UpdateSemantics("{\"generation\":0,\"nodes\":[]}");
         }
 
@@ -295,6 +374,8 @@ internal sealed class BrowserSkiaCapabilities :
             Invalidate = null;
             _semantics.Clear();
             _lastSentSemantics.Clear();
+            _semanticsJson.Clear();
+            _semanticsJsonBytes = 0;
         }
 
         private void HandleSemanticsAction(long nodeId, long action, string argumentsJson)

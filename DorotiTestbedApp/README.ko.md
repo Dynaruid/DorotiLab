@@ -8,7 +8,9 @@ DorotiTestbedApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood �
 
 ## Material 샘플 모드
 
-C# Material 샘플은 [work.md](../work.md)의 acceptance gate를 검증하는 동안
+선택 예제는 해당 부분만 갱신하고, resize에서는 동일한 예제 내용과 내비게이션 구성을 재사용합니다. 측정과 남은 지연 기준 미달은 [상태/resize 후속 기록](../history/26-09-07/web-state-resize-followup.md)을 참조하세요.
+
+C# Material 샘플은 [Material 샘플 수용 이력](../history/26-09-07/material-sample-work-summary.md)의 acceptance gate를 검증하는 동안
 명시적 모드로 제공합니다. 기본 화면은 기존 diagnostics이며 renderer 기본값은
 Windows Vulkan, Web SkiaSharp direct Worker입니다.
 
@@ -109,6 +111,21 @@ Web runner가 시작되면 다음 링크를 브라우저에서 엽니다.
 필요는 없습니다. 렌더러 코드를 다시 빌드했다면 runner를 재시작하고 페이지를
 새로고침하여 새 빌드를 불러옵니다. URL 옵션은 해당 페이지에만 적용되며 앱의
 기본 렌더러 설정을 바꾸지 않습니다.
+
+
+progress 데모는 Flutter reference처럼 별도 State에서 갱신합니다. direct Worker에서
+기존 화면 전체 재빌드와 대조하려면 `&dorotiProgressScope=broad`를 추가합니다.
+기본값은 `local`입니다. `dorotiResizeDiagnostics=1`은 크기 제한이 있는 framework
+작업량·타입 계측도 켭니다. 최소 입력→새 scene commit 측정에는
+`dorotiResizeDiagnostics=0&dorotiInputMarkers=1`을 사용합니다. commit 알림은 실제
+화면 표시 지연과 다릅니다. 남은 성능 FAIL과 검증 한계는
+[framework 조사 실행 결과](../history/26-09-07/web-framework-work2-results.md)에 기록합니다.
+
+Image demo의 표시용 이미지는 너비 `1024 × DPR`로 축소 디코딩하며 종횡비를
+유지합니다. 원본보다 확대하지 않고, Contain/Cover와 스크롤은 같은 캐시를 사용합니다.
+`Extract colors`를 누를 때만 원본으로 색상을 추출합니다. 이미지 처리 부담은 줄였지만
+첫 구간 생성과 스크롤 재시작의 성능 수용은 아직 PARTIAL입니다.
+[이미지 스크롤 후속 결과](../history/26-09-07/web-image-scroll-followup.md)를 참고하세요.
 
 ### 그 밖의 렌더러 URL
 
@@ -362,7 +379,7 @@ Windows 기본 경로는 self-contained Windows App SDK 2.4 `HwndExactCpp` host�
 
 Vulkan은 retained backing을 exact-LUID D3D11 shared texture 3개로 복사하고 Windows Presentation으로 표시합니다. Top-level HWND의 DirectComposition target이 visible raster를 소유합니다. 현재 resize 동작과 이전 실패, 관찰 결과는 [9월 5일 기록](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md)을 참조합니다.
 
-AMD Radeon 780M에서 top-level owner `TopLeft` reverse 600 ms 3회와 별도 `Left`/`Right` 회귀가 validation-background gap 0, exact final geometry, 단조 증가 marker와 정상 resource accounting을 통과했습니다. Source-built `TopLeft`는 151.49 presentations/s와 accepted→next-present p95 7.65 ms를 기록했습니다. 이전 retained-child와 synchronous post-geometry 실패는 삭제하거나 PASS로 바꾸지 않고 history로 유지합니다. 자동 capture/terminal evidence는 수정 뒤 physical scan-out, 사람 resize, IME/accessibility, 큰 monitor의 memory/startup과 전체 DPI/GPU matrix를 대신하지 않습니다. Vulkan은 opt-in이며 최신 left/top 사람 재확인은 `notVerified`입니다. [ADR-027](../Doroti/docs/adr/ADR-027-windows-optional-vulkan.md), [problem.md](../problem.md), [구현 체크포인트](../history/26-09-02/windows-appsdk-vulkan-implementation-checkpoint.md)를 참고하세요.
+AMD Radeon 780M에서 top-level owner `TopLeft` reverse 600 ms 3회와 별도 `Left`/`Right` 회귀가 validation-background gap 0, exact final geometry, 단조 증가 marker와 정상 resource accounting을 통과했습니다. Source-built `TopLeft`는 151.49 presentations/s와 accepted→next-present p95 7.65 ms를 기록했습니다. 이전 retained-child와 synchronous post-geometry 실패는 삭제하거나 PASS로 바꾸지 않고 history로 유지합니다. 자동 capture/terminal evidence는 수정 뒤 physical scan-out, 사람 resize, IME/accessibility, 큰 monitor의 memory/startup과 전체 DPI/GPU matrix를 대신하지 않습니다. Vulkan은 opt-in이며 최신 left/top 사람 재확인은 `notVerified`입니다. [ADR-027](../Doroti/docs/adr/ADR-027-windows-optional-vulkan.md), [보관된 창 조절 조사](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md), [구현 체크포인트](../history/26-09-02/windows-appsdk-vulkan-implementation-checkpoint.md)를 참고하세요.
 
 일반 `acrylic`과 호환 `experimentalAcrylic`은 선택된 presenter의 같은 Acrylic 구현을 사용합니다. 기본 Vulkan은 non-topmost `DesktopWindowTarget`과 `DesktopAcrylicController` 위에 premultiplied Presentation surface를 합성합니다. ANGLE은 ContentIsland/Composition Swapchain을 사용합니다. 전체 GPU/DPI/주사율 및 물리 IME/접근성 검증은 완료되지 않았습니다.
 

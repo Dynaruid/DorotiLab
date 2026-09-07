@@ -15,13 +15,15 @@ public enum FrameworkWork
     RepaintBoundary, NewPicture,
     MediaUpdate, MediaChanged, MediaDependentCheck, MediaDependentNotified, MediaAspectSubscriptions,
     HostSnapshotApply, HostMetricsNotified,
+    DelegateUpdate, DelegateRebuild, RetainedChildVisit, ImplicitTweenCheck, ImplicitAnimationRestart,
+    SemanticsJsonCacheHit, SemanticsJsonSerializedNode, SemanticsPayloadBytes,
     Count,
 }
 
 public static class FrameworkWorkCounters
 {
     public static bool Enabled { get; } = Environment.GetEnvironmentVariable("DOROTI_STAGE_TRACE") == "1";
-    private const int Capacity = 2048;
+    private const int Capacity = 8192;
     private const int Width = (int)FrameworkWork.Count;
     [ThreadStatic] private static Buffer? _buffer;
     private sealed class Buffer
@@ -48,6 +50,7 @@ public static class FrameworkWorkCounters
         if (!Enabled || phase is not (DorotiFramePhase.metrics or DorotiFramePhase.build or
             DorotiFramePhase.layout or DorotiFramePhase.paint or DorotiFramePhase.sceneBuild or
             DorotiFramePhase.sceneSubmitted or DorotiFramePhase.drawFrame)) return;
+        FrameworkWorkProfile.Record(sequence, phase);
         var buffer = _buffer ??= new Buffer();
         var slot = (int)(buffer.Count++ % Capacity);
         buffer.Boundaries[slot] = new(sequence, view, phase, DorotiFrameClock.Now.Ticks / 10, generation, frame, scene);

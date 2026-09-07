@@ -12,7 +12,7 @@ namespace MaterialSample;
 
 internal sealed partial class ComponentsState
 {
-    private IReadOnlyList<Func<Widget>> Selection(BuildContext ctx) =>
+    private IReadOnlyList<Func<Widget>> Selection(BuildContext ctx, StateSetter setState) =>
     [
         () => Section("Checkboxes",
             new M.CheckboxListTile(title: new Text("Option 1"), tristate: true, value: _checkA, onChanged: value => setState(() => _checkA = value)),
@@ -24,8 +24,8 @@ internal sealed partial class ComponentsState
             new M.InputChip(label: new Text("Input"), onPressed: DisplayAction, onDeleted: DisplayAction), new M.ActionChip(label: new Text("Suggestion"), onPressed: DisplayAction)),
             Flow(new M.ActionChip(avatar: new Icon(M.Icons.@event), label: new Text("Assist")), new M.FilterChip(label: new Text("Filter"), selected: _filtered, onSelected: null),
                 new M.InputChip(label: new Text("Input"), onDeleted: DisplayAction, isEnabled: false), new M.ActionChip(label: new Text("Suggestion")))),
-        () => Section("Date picker", M.TextButton.CreateIcon(icon: new Icon(M.Icons.calendar_month), label: new Text("Show date picker", style: new TextStyle(fontWeight: FontWeight.bold)), onPressed: () => PickDate(ctx))),
-        () => Section("Time picker", M.TextButton.CreateIcon(icon: new Icon(M.Icons.schedule), label: new Text("Show time picker", style: new TextStyle(fontWeight: FontWeight.bold)), onPressed: () => PickTime(ctx))),
+        () => Section("Date picker", M.TextButton.CreateIcon(icon: new Icon(M.Icons.calendar_month), label: new Text("Show date picker", style: new TextStyle(fontWeight: FontWeight.bold)), onPressed: () => PickDate(ctx, setState))),
+        () => Section("Time picker", M.TextButton.CreateIcon(icon: new Icon(M.Icons.schedule), label: new Text("Show time picker", style: new TextStyle(fontWeight: FontWeight.bold)), onPressed: () => PickTime(ctx, setState))),
         () => Section("Menus", new Row(mainAxisAlignment: MainAxisAlignment.center, spacing: 10, children: [Menu(false), Menu(true)]),
             Flow(new M.DropdownMenu<string>(controller: _colorMenu, initialSelection: _menuColor, enableFilter: true, label: new Text("Color"), inputDecorationTheme: new M.InputDecorationTheme(filled: true),
                 dropdownMenuEntries: new[] { "Blue", "Pink", "Green", "Yellow", "Grey" }.Select(label => new M.DropdownMenuEntry<string>(value: label, label: label, enabled: label != "Grey")).ToList(), onSelected: value => { if (value is not null) setState(() => _menuColor = value); }),
@@ -49,7 +49,7 @@ internal sealed partial class ComponentsState
            new M.MenuItemButton(leadingIcon: new Icon(M.Icons.remove_red_eye_outlined), child: new Text("Item 2"), onPressed: DisplayAction),
            new M.MenuItemButton(leadingIcon: new Icon(M.Icons.refresh), child: new Text("Item 3"), onPressed: DisplayAction)],
         builder: (_, controller, _) => icon ? new M.IconButton(icon: new Icon(M.Icons.more_vert), tooltip: "Open menu", onPressed: () => { if (controller.isOpen) controller.close(); else controller.open(); })
-            : M.FilledButton.CreateTonal(child: new Text("Show menu"), onPressed: () => { if (controller.isOpen) controller.close(); else controller.open(); }));    private async void PickDate(BuildContext ctx)
+            : M.FilledButton.CreateTonal(child: new Text("Show menu"), onPressed: () => { if (controller.isOpen) controller.close(); else controller.open(); }));    private async void PickDate(BuildContext ctx, StateSetter setState)
     {
         var now = DateTime.Now;
         var result = await M.Date_pickerLibrary.showDatePicker(ctx, initialDate: _date ?? now, firstDate: new DateTime(now.Year - 2, 1, 1), lastDate: new DateTime(now.Year + 1, 1, 1));
@@ -57,7 +57,7 @@ internal sealed partial class ComponentsState
         setState(() => _date = result);
         if (result is { } date) M.ScaffoldMessenger.of(ctx).showSnackBar(new M.SnackBar(content: new Text($"Selected Date: {date.Day}/{date.Month}/{date.Year}")));
     }
-    private async void PickTime(BuildContext ctx)
+    private async void PickTime(BuildContext ctx, StateSetter setState)
     {
         var result = await M.Time_pickerLibrary.showTimePicker(ctx, initialTime: _time ?? M.TimeOfDay.CreateNow(),
             builder: (dialogContext, child) => new MediaQuery(data: MediaQuery.of(dialogContext).copyWith(alwaysUse24HourFormat: true), child: child!));

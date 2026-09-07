@@ -299,9 +299,7 @@ public static class Dart_uiLibrary
         bool allowUpscaling = false) =>
         Future<global::Doroti.Ui.Codec>.fromTask(DecodeImageCodecAsync(
             buffer,
-            image => targetWidth is null && targetHeight is null
-                ? null
-                : new global::Doroti.Ui.TargetImageSize(targetWidth ?? image.width, targetHeight ?? image.height),
+            (width, height) => new global::Doroti.Ui.TargetImageSize(targetWidth, targetHeight),
             allowUpscaling,
             "dart:ui#instantiateImageCodecFromBuffer"));
 
@@ -310,13 +308,13 @@ public static class Dart_uiLibrary
         Func<long, long, global::Doroti.Ui.TargetImageSize>? getTargetSize = null) =>
         Future<global::Doroti.Ui.Codec>.fromTask(DecodeImageCodecAsync(
             buffer,
-            image => getTargetSize?.Invoke(image.width, image.height),
+            (width, height) => getTargetSize?.Invoke(width, height),
             allowUpscaling: true,
             "dart:ui#instantiateImageCodecWithSize"));
 
     private static async Task<global::Doroti.Ui.Codec> DecodeImageCodecAsync(
         global::Doroti.Ui.ImmutableBuffer buffer,
-        Func<global::Doroti.Ui.Image, global::Doroti.Ui.TargetImageSize?> targetSize,
+        Func<long, long, global::Doroti.Ui.TargetImageSize?> targetSize,
         bool allowUpscaling,
         string elementId)
     {
@@ -328,19 +326,7 @@ public static class Dart_uiLibrary
                 null,
                 DartUiInvocation.Managed(elementId),
                 "image decoding requires an attached DorotiView");
-        var image = await view.DecodeImageAsync(buffer.asMemory(), DartUiInvocation.Managed(elementId));
-        var requested = targetSize(image);
-        if (requested is not null &&
-            (requested.width != image.width || requested.height != image.height) &&
-            (!allowUpscaling || requested.width > image.width || requested.height > image.height))
-        {
-            image.Dispose();
-            throw new DorotiCapabilityException(
-                DorotiCapabilityIds.GraphicsImage,
-                view.viewId,
-                DartUiInvocation.Managed(elementId),
-                $"the registered image capability cannot satisfy requested size {requested.width}x{requested.height}");
-        }
+        var image = await view.DecodeSizedImageAsync(buffer.asMemory(), targetSize, allowUpscaling, DartUiInvocation.Managed(elementId));
         return new global::Doroti.Ui.Codec([
             new global::Doroti.Ui.FrameInfo(image, global::Doroti.Runtime.Duration.zero),
         ]);

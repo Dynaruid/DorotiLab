@@ -28,6 +28,8 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     private readonly TextEditingController _filled = new(), _outlined = new(), _colorMenu = new(), _iconMenu = new();
     private readonly List<string> _history = [];
     private string? _selectedColor;
+    private readonly GlobalKey<ProgressIndicatorsState> _progressKey = new();
+    private static readonly bool BroadProgressScope = Environment.GetEnvironmentVariable("DOROTI_SAMPLE_PROGRESS_SCOPE") == "broad";
     private bool _progress, _filtered = true, _switchA, _switchB = true;
     private readonly bool[] _icons = [false, false, false, false];
     private bool? _checkA = true, _checkB, _checkC = false;
@@ -54,25 +56,52 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
         _filled.dispose(); _outlined.dispose(); _colorMenu.dispose(); _iconMenu.dispose();
         base.dispose();
     }
+    private SectionEntry[]? _sections;
+    private readonly List<GlobalKey<IState>> _sectionKeys = [];
+    private readonly Dictionary<(int First, int Count), Widget> _lists = new();
+    private int _split;
+    private SectionEntry[] CreateSections(BuildContext context)
+    {
+        Func<BuildContext, StateSetter, IReadOnlyList<Func<Widget>>>[] factories =
+            [Actions, Communication, Containment, Navigation, Selection, (_, _) => [TextInputs], (_, _) => [() => new SampleImageDemo()]];
+        var entries = new List<SectionEntry>();
+        for (var group = 0; group < factories.Length; group++)
+        {
+            var factory = factories[group];
+            var count = factory(context, setState).Count;
+            for (var index = 0; index < count; index++)
+            {
+                var sectionIndex = index;
+                // State data belongs to the screen; each mounted demo owns its
+                // redraw scope. The local context keeps inherited dependencies local.
+                if (_sectionKeys.Count == entries.Count) _sectionKeys.Add(new GlobalKey<IState>());
+                Widget child = new StatefulBuilder(key: _sectionKeys[entries.Count], builder: (ctx, change) =>
+                    factory(ctx, fn => { if (ctx.mounted) change(fn); })[sectionIndex]());
+                var entry = new SectionEntry(group, index == 0, index == count - 1, child);
+                entries.Add(entry with { Child = new Builder(builder: ctx => GroupPiece(ctx, entry)) });
+            }
+            if (group == 2) _split = entries.Count;
+        }
+        return entries.ToArray();
+    }
     public override Widget build(BuildContext context)
     {
-        IReadOnlyList<Func<Widget>>[] groups = [Actions(), Communication(context), Containment(context),
-            Navigation(context), Selection(context), [TextInputs], [() => new SampleImageDemo()]];
-        var sections = groups.SelectMany((items, group) => items.Select((build, index) =>
-            new SectionEntry(group, index == 0, index == items.Count - 1, build))).ToArray();
+        var sections = _sections ??= CreateSections(context);
         if (_sectionHeights.Length != sections.Length) Array.Resize(ref _sectionHeights, sections.Length);
-        var split = groups.Take(3).Sum(items => items.Count);
         Widget List(bool second)
         {
-            // Keep estimates across selection changes. Mounted sections refresh their
-            // measured height on layout; resetting unseen entries to zero clamps scrolling.
-            var firstIndex = second ? split : 0;
-            var count = second ? sections.Length - split : widget.TwoColumns ? split : sections.Length;
-            return new FocusTraversalGroup(child: new CustomScrollView(
-                controller: second ? _secondScroll : _firstScroll, primary: false,
-                slivers: [new SliverList(@delegate: new MeasuredSlivers(_sectionHeights, firstIndex, count, (ctx, index) =>
-                    new CacheHeight(_sectionHeights, checked((int)index) + firstIndex,
-                        GroupPiece(ctx, sections[checked((int)index) + firstIndex]))))]));
+            var firstIndex = second ? _split : 0;
+            var count = second ? sections.Length - _split : widget.TwoColumns ? _split : sections.Length;
+            if (!_lists.TryGetValue((firstIndex, count), out var list))
+            {
+                list = new FocusTraversalGroup(child: new CustomScrollView(
+                    controller: second ? _secondScroll : _firstScroll, primary: false,
+                    slivers: [new SliverList(@delegate: new MeasuredSlivers(_sectionHeights, firstIndex, count, (ctx, index) =>
+                        new CacheHeight(_sectionHeights, checked((int)index) + firstIndex,
+                            sections[checked((int)index) + firstIndex].Child)))]));
+                _lists.Add((firstIndex, count), list);
+            }
+            return new Padding(padding: EdgeInsets.CreateOnly(right: widget.TwoColumns ? 10 : 0), child: list);
         }
         return new Row(crossAxisAlignment: CrossAxisAlignment.stretch, children:
         [
@@ -81,18 +110,18 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
                 child: new FractionalTranslation(translation: new Offset(widget.SecondOffset, 0), child: List(true))),
         ]);
     }
-    private sealed record SectionEntry(int Group, bool First, bool Last, Func<Widget> Build);
+    private sealed record SectionEntry(int Group, bool First, bool Last, Widget Child);
     private Widget GroupPiece(BuildContext ctx, SectionEntry entry)
     {
         string[] labels = ["Actions", "Communication", "Containment", "Navigation", "Selection", "Text inputs", "Image demo"];
-        var content = entry.Build();
+        var content = entry.Child;
         // Keep the continuous group card, but mount/layout one component section
         // per sliver child. Entering a group must not build every offscreen demo.
         var radius = new Radius(12, 12);
         var shape = new RoundedRectangleBorder(borderRadius: BorderRadius.CreateOnly(
             topLeft: entry.First ? radius : default, topRight: entry.First ? radius : default,
             bottomLeft: entry.Last ? radius : default, bottomRight: entry.Last ? radius : default));
-        return new Padding(padding: EdgeInsets.CreateOnly(bottom: entry.Last ? 10 : 0, right: widget.TwoColumns ? 10 : 0), child:
+        return new Padding(padding: EdgeInsets.CreateOnly(bottom: entry.Last ? 10 : 0), child:
             new FocusTraversalGroup(child: new M.Card(margin: EdgeInsets.zero, elevation: 0,
                 shape: shape,
                 color: M.Theme.of(ctx).colorScheme.surfaceContainerHighest.withAlpha(77),
@@ -106,7 +135,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
         new Column(mainAxisSize: MainAxisSize.min, spacing: 10, children: children.ToList()));
     private static Widget Flow(params Widget[] children) => new Wrap(spacing: 10, runSpacing: 10, children: children.ToList());
     private static void DisplayAction() { } // Pinned reference display-only callbacks.
-    private IReadOnlyList<Func<Widget>> Actions()
+    private IReadOnlyList<Func<Widget>> Actions(BuildContext ctx, StateSetter setState)
     {
         var icon = new Icon(M.Icons.add);
         Widget Buttons(bool disabled, bool withIcon)
@@ -141,35 +170,35 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
                  M.FloatingActionButton.CreateLarge(heroTag: "sample-large", tooltip: "Large", onPressed: DisplayAction, child: icon)]))),
             () => Section("Icon buttons", new Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: Enumerable.Range(0, 4).Select(i => (Widget)new Column(spacing: 10,
                 children: [ToggleIcon(i, true), ToggleIcon(i, false)])).ToList())),
-            () => Section("Segmented buttons", new M.SegmentedButton<string>(segments: new[] { "Day", "Week", "Month", "Year" }.Select((label, i) => new M.ButtonSegment<string>(value: label, label: new Text(label),
+            () => Section("Segmented buttons", new StatefulBuilder(builder: (_, change) => new M.SegmentedButton<string>(segments: new[] { "Day", "Week", "Month", "Year" }.Select((label, i) => new M.ButtonSegment<string>(value: label, label: new Text(label),
                 icon: new Icon(new[] { M.Icons.calendar_view_day, M.Icons.calendar_view_week, M.Icons.calendar_view_month, M.Icons.calendar_today }[i]))).ToList(),
-                selected: _single, onSelectionChanged: value => setState(() => _single = value)),
-                new M.SegmentedButton<string>(segments: new[] { "XS", "S", "M", "L", "XL" }.Select(label => new M.ButtonSegment<string>(value: label, label: new Text(label))).ToList(),
-                    selected: _multiple, multiSelectionEnabled: true, onSelectionChanged: value => setState(() => _multiple = value))),
+                selected: _single, onSelectionChanged: value => change(() => _single = value))),
+                new StatefulBuilder(builder: (_, change) => new M.SegmentedButton<string>(segments: new[] { "XS", "S", "M", "L", "XL" }.Select(label => new M.ButtonSegment<string>(value: label, label: new Text(label))).ToList(),
+                    selected: _multiple, multiSelectionEnabled: true, onSelectionChanged: value => change(() => _multiple = value)))),
         ];
     }
-    private IReadOnlyList<Func<Widget>> Communication(BuildContext ctx) =>
+    private IReadOnlyList<Func<Widget>> Communication(BuildContext ctx, StateSetter setState) =>
     [
         () => Section("Badge", new M.NavigationBar(selectedIndex: _badgeIndex, onDestinationSelected: value => setState(() => _badgeIndex = value), destinations:
             [new M.NavigationDestination(icon: new M.Badge(label: new Text("999+"), child: new Icon(M.Icons.mail_outline)), selectedIcon: new M.Badge(label: new Text("999+"), child: new Icon(M.Icons.mail)), label: "Mail"),
              new M.NavigationDestination(icon: new M.Badge(label: new Text("10"), child: new Icon(M.Icons.chat_bubble_outline)), selectedIcon: new M.Badge(label: new Text("10"), child: new Icon(M.Icons.chat_bubble)), label: "Chat"),
              new M.NavigationDestination(icon: new M.Badge(child: new Icon(M.Icons.group_outlined)), selectedIcon: new M.Badge(child: new Icon(M.Icons.group_rounded)), label: "Rooms"),
              new M.NavigationDestination(icon: new M.Badge(label: new Text("3"), child: new Icon(M.Icons.videocam_outlined)), selectedIcon: new M.Badge(label: new Text("3"), child: new Icon(M.Icons.videocam)), label: "Meet") ])),
-        () => Section("Progress indicators", new Row(spacing: 10, children:
-            [new M.IconButton(tooltip: _progress ? "Stop progress" : "Start progress", isSelected: _progress, selectedIcon: new Icon(M.Icons.pause), icon: new Icon(M.Icons.play_arrow), onPressed: () => setState(() => _progress = !_progress)),
-             new M.CircularProgressIndicator(value: _progress ? null : 0.7), new Expanded(child: new M.LinearProgressIndicator(value: _progress ? null : 0.7)), new SizedBox(width: 10)])),
+        () => BroadProgressScope ? Section("Progress indicators", new Row(spacing: 10, children:
+            [new M.IconButton(tooltip: _progress ? "Stop progress" : "Start progress", isSelected: _progress, selectedIcon: new Icon(M.Icons.pause), icon: new Icon(M.Icons.play_arrow), onPressed: () => this.setState(() => { _progress = !_progress; _sections = null; _lists.Clear(); })),
+             new M.CircularProgressIndicator(value: _progress ? null : 0.7), new Expanded(child: new M.LinearProgressIndicator(value: _progress ? null : 0.7)), new SizedBox(width: 10)])) : new ProgressIndicators(key: _progressKey),
         () => Section("Snackbar", new M.TextButton(child: new Text("Show snackbar"), onPressed: () => M.ScaffoldMessenger.of(ctx).showSnackBar(new M.SnackBar(
             content: new Text("This is a snackbar"), behavior: M.SnackBarBehavior.floating, action: new M.SnackBarAction(label: "Close", onPressed: DisplayAction))))),
     ];
-    private IReadOnlyList<Func<Widget>> Containment(BuildContext ctx)
+    private IReadOnlyList<Func<Widget>> Containment(BuildContext ctx, StateSetter setState)
     {
         Widget Sheet(BuildContext sheetContext) => new SizedBox(height: 200, child: new Center(child: new M.TextButton(child: new Text("Close bottom sheet"), onPressed: () => Navigator.of(sheetContext).pop<object>())));
         return
         [
             () => Section("Bottom sheets", Flow(new M.TextButton(child: new Text("Show modal bottom sheet"), onPressed: () => M.Bottom_sheetLibrary.showModalBottomSheet<object>(ctx, Sheet)),
-                new M.TextButton(child: new Text("Show bottom sheet"), onPressed: _sheet is not null ? null : () => OpenSheet(Sheet)))),
-            () => Section("Cards", new Wrap(alignment: WrapAlignment.spaceEvenly, children: [Card(0), Card(1), Card(2)])),
-            () => Section("Carousel", new Text("Uncontained Carousel"), Carousel(false), new Text("Uncontained Carousel with snapping effect"), Carousel(true)),
+                new M.TextButton(child: new Text("Show bottom sheet"), onPressed: _sheet is not null ? null : () => OpenSheet(Sheet, setState)))),
+            () => Section("Cards", new Wrap(alignment: WrapAlignment.spaceEvenly, children: [Card(ctx, 0), Card(ctx, 1), Card(ctx, 2)])),
+            () => Section("Carousel", new Text("Uncontained Carousel"), Carousel(ctx, false), new Text("Uncontained Carousel with snapping effect"), Carousel(ctx, true)),
             () => Section("Dialogs", Flow(new M.TextButton(child: new Text("Show dialog"), onPressed: () => M.DialogLibrary.showDialog<object>(ctx, dialogContext => new M.AlertDialog(
                     title: new Text("Dialog title"), content: new Text("A dialog is a type of modal window that appears in front of app content."), actions:
                     [new M.TextButton(child: new Text("Cancel"), onPressed: () => Navigator.of(dialogContext).pop<object>()), new M.TextButton(child: new Text("Confirm"), onPressed: () => Navigator.of(dialogContext).pop<object>())]))),
@@ -179,7 +208,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
             () => Section("Dividers", new M.Divider(), new SizedBox(height: 40, child: new Row(children: [new Expanded(child: new Text("Before")), new M.VerticalDivider(), new Expanded(child: new Text("After"))]))),
         ];
     }
-    private Widget Card(int style)
+    private Widget Card(BuildContext context, int style)
     {
         var child = new Padding(padding: EdgeInsets.CreateFromLTRB(10, 5, 5, 10), child: new Column(children:
             [new Align(alignment: Alignment.topRight, child: new M.IconButton(icon: new Icon(M.Icons.more_vert), onPressed: DisplayAction)),
@@ -189,16 +218,16 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
             1 => new M.Card(elevation: 0, color: M.Theme.of(context).colorScheme.surfaceContainerHighest, child: child),
             _ => new M.Card(elevation: 0, shape: new RoundedRectangleBorder(side: new BorderSide(color: M.Theme.of(context).colorScheme.outline), borderRadius: BorderRadius.CreateCircular(12)), child: child) });
     }
-    private Widget Carousel(bool snapping) => new SizedBox(height: 150, child: new M.CarouselView(itemSnapping: snapping, itemExtent: 180, shrinkExtent: 100,
+    private Widget Carousel(BuildContext context, bool snapping) => new SizedBox(height: 150, child: new M.CarouselView(itemSnapping: snapping, itemExtent: 180, shrinkExtent: 100,
         shape: new RoundedRectangleBorder(borderRadius: BorderRadius.CreateCircular(10), side: new BorderSide(color: M.Theme.of(context).colorScheme.outline)), children: Enumerable.Range(0, 20).Select(i => (Widget)new Center(child: new Text($"Item {i}"))).ToList()));
-    private async void OpenSheet(Func<BuildContext, Widget> builder)
+    private async void OpenSheet(Func<BuildContext, Widget> builder, StateSetter setState)
     {
         var controller = widget.Scaffold.currentState!.showBottomSheet(builder);
         setState(() => _sheet = controller);
         await controller.closed;
         if (mounted) setState(() => _sheet = null);
     }
-    private IReadOnlyList<Func<Widget>> Navigation(BuildContext ctx) =>
+    private IReadOnlyList<Func<Widget>> Navigation(BuildContext ctx, StateSetter setState) =>
     [
         () => Section("Bottom app bar", new SizedBox(height: 80, child: new M.Scaffold(bottomNavigationBar: new M.BottomAppBar(child: new Row(children:
             [Menu(true), new M.IconButton(icon: new Icon(M.Icons.search), tooltip: "Search", onPressed: DisplayAction), new M.IconButton(icon: new Icon(M.Icons.favorite), tooltip: "Favorite", onPressed: DisplayAction)])),
@@ -218,7 +247,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
             new M.TabBar(tabs: [new M.Tab(text: "Video", icon: new Icon(M.Icons.videocam_outlined), iconMargin: EdgeInsets.zero),
                 new M.Tab(text: "Photos", icon: new Icon(M.Icons.photo_outlined), iconMargin: EdgeInsets.zero),
                 new M.Tab(text: "Audio", icon: new Icon(M.Icons.audiotrack_sharp), iconMargin: EdgeInsets.zero)])))))),
-        () => Section("Search", M.SearchAnchor.CreateBar(barHintText: "Search colors", suggestionsBuilder: (_, controller) => Suggestions(controller)),
+        () => Section("Search", M.SearchAnchor.CreateBar(barHintText: "Search colors", suggestionsBuilder: (_, controller) => Suggestions(controller, setState)),
             new Text(_selectedColor is null ? "Select a color" : $"Last selected color is {_selectedColor}")),
         () => Section("Top app bars", new M.AppBar(title: new Text("Center-aligned"), leading: new M.BackButton(), centerTitle: true,
                 actions: [new M.IconButton(iconSize: 32, icon: new Icon(M.Icons.account_circle_outlined), onPressed: DisplayAction)]),
@@ -228,7 +257,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     ];
     private static List<Widget> TopBarActions() => new[] { M.Icons.attach_file, M.Icons.@event, M.Icons.more_vert }
         .Select(icon => (Widget)new M.IconButton(icon: new Icon(icon), onPressed: DisplayAction)).ToList();
-    private List<Widget> Suggestions(M.SearchController controller)
+    private List<Widget> Suggestions(M.SearchController controller, StateSetter setState)
     {
         var history = string.IsNullOrEmpty(controller.text);
         if (history && _history.Count == 0) return [new Center(child: new Text("No search history."))];
@@ -238,4 +267,22 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
             trailing: new M.IconButton(icon: new Icon(M.Icons.call_missed), onPressed: () => { controller.text = color; controller.selection = TextSelection.CreateCollapsed(offset: color.Length); }),
             onTap: () => { controller.closeView(color); setState(() => { _selectedColor = color; if (_history.Count >= 5) _history.RemoveAt(_history.Count - 1); _history.Insert(0, color); }); })).ToList();
     }
+}
+
+// Match the reference's progress-only State. A stable key preserves the local
+// state when the responsive list changes its column configuration.
+internal sealed class ProgressIndicators(Key? key = null) : StatefulWidget(key: key)
+{
+    public override IState createState() => new ProgressIndicatorsState();
+}
+internal sealed class ProgressIndicatorsState : State<ProgressIndicators>
+{
+    private bool _progress;
+    public override Widget build(BuildContext context) => new ComponentSection("Progress indicators",
+        new Column(mainAxisSize: MainAxisSize.min, spacing: 10, children: [new Row(spacing: 10, children:
+            [new M.IconButton(tooltip: _progress ? "Stop progress" : "Start progress", isSelected: _progress,
+                selectedIcon: new Icon(M.Icons.pause), icon: new Icon(M.Icons.play_arrow),
+                onPressed: () => setState(() => _progress = !_progress)),
+             new M.CircularProgressIndicator(value: _progress ? null : 0.7),
+             new Expanded(child: new M.LinearProgressIndicator(value: _progress ? null : 0.7)), new SizedBox(width: 10)])]));
 }

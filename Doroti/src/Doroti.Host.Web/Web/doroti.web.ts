@@ -794,7 +794,8 @@ function recordResize(
     "timestampMicroseconds" | "durationMicroseconds" | "rafId" | "backingWidth" | "backingHeight" |
     "surfaceWidth" | "surfaceHeight" | "terminal" | "detail" |
     "inputSequence" | "requestId">> = {}): void {
-  if (!diagnosticsEnabled()) return;
+  if (!diagnosticsEnabled() && !(phase === "front-commit" && source === "worker-direct-surface" &&
+      new URL(location.href).searchParams.get("dorotiInputMarkers") === "1")) return;
   const entry: ResizeTraceEntry = {
     sequence: ++host.resizeTraceSequence,
     timestampMicroseconds: options.timestampMicroseconds ?? Math.round(performance.now() * 1000),
@@ -3052,7 +3053,7 @@ export async function startDorotiWorkerHost(
             timestampMicroseconds: Number.isFinite(Number(message.commitEpochMilliseconds))
               ? Math.round((Number(message.commitEpochMilliseconds) - performance.timeOrigin) * 1000)
               : undefined,
-            requestId, rafId: requestId,
+            requestId, rafId: requestId, inputSequence: Number(message.inputSequence ?? 0),
             backingWidth: capacityWidth, backingHeight: capacityHeight,
             surfaceWidth: display.rasterWidth, surfaceHeight: display.rasterHeight,
             detail: JSON.stringify({
@@ -3174,6 +3175,7 @@ export async function startDorotiWorkerHost(
               protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
               dotnetModuleUrl, mode, canvas: replacementOffscreen,
               testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
+    progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",
               resizeDiagnostics: diagnosticsEnabled(),
             }, replacementOffscreen ? [replacementOffscreen] : []);
           } else if (!ready) rejectReady(error);
@@ -3196,6 +3198,7 @@ export async function startDorotiWorkerHost(
     protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
     dotnetModuleUrl, mode, canvas: initialOffscreen,
     testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
+    progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",
     resizeDiagnostics: diagnosticsEnabled(),
   };
   activeWorker.postMessage(initialMessage, initialOffscreen ? [initialOffscreen] : []);

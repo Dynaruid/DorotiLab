@@ -60,6 +60,32 @@ internal static class MountedPickerContracts
                 Console.WriteLine("two-column app bars: CPU/GPU raster parity through inline bars, cache pressure and reuse PASS");
                 return;
             }
+            var independentKey = new GlobalKey<IState>();
+            var dependentKey = new GlobalKey<IState>();
+            double observedWidth = 0;
+            var independent = new StatefulBuilder(key: independentKey, builder: (_, _) => new SizedBox(width: 10, height: 10));
+            var dependent = new StatefulBuilder(key: dependentKey, builder: (ctx, _) =>
+            { observedWidth = MediaQuery.widthOf(ctx); return new SizedBox(width: 10, height: 10); });
+            void MoveKeyedChildren(bool right)
+            {
+                Widget Branch(bool target, double width) => new MediaQuery(data: new MediaQueryData(size: new Size(width, Height)),
+                    child: new SizedBox(width: 100, child: new Column(children: target ? [independent, dependent] : [])));
+                view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new M.MaterialApp(
+                    locale: new Locale("en", "US"), home: new Row(children: [Branch(!right, 111), Branch(right, 222)])))));
+                Pump("keyed-reparent-" + right);
+            }
+            MoveKeyedChildren(false);
+            var independentState = independentKey.currentState;
+            var dependentState = dependentKey.currentState;
+            foreach (var right in new[] { true, false, true })
+            {
+                MoveKeyedChildren(right);
+                if (!ReferenceEquals(independentState, independentKey.currentState) || !ReferenceEquals(dependentState, dependentKey.currentState))
+                    throw new Exception("GlobalKey reparenting replaced retained State");
+                if (observedWidth != (right ? 222 : 111)) throw new Exception("Reparented dependent did not observe its new inherited value");
+            }
+            Console.WriteLine("GlobalKey reparent: dependency-free and inherited-dependent State survives repeated parent moves PASS");
+
             BuildContext? context = null;
             view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new M.MaterialApp(locale: new Locale("en", "US"),
                 home: new Builder(builder: ctx => { context = ctx; return new M.Scaffold(body: new Text("Picker fixture")); })))));
@@ -130,6 +156,9 @@ internal static class MountedPickerContracts
                     new MaterialSample.SampleImageDemo(), new SizedBox(height: 1000),
                 ])))))));
             Pump("image-ready");
+            var imageFailures = Elements(binding.rootElement!).Where(element => element.widget is Text { data: not null } text && text.data.StartsWith("Image unavailable:"))
+                .Select(element => ((Text)element.widget).data).ToArray();
+            if (imageFailures.Length > 0) throw new Exception(string.Join("\n", imageFailures));
             if (images.Decodes != 1 || images.Rasterizations != 0) throw new Exception($"Image mount should decode once without color extraction: {images.Decodes}/{images.Rasterizations}");
             for (var step = 0; step < 8; step++)
             {
@@ -143,8 +172,8 @@ internal static class MountedPickerContracts
             if (images.Rasterizations != 2) throw new Exception($"Explicit extraction should rasterize light/dark once each: {images.Rasterizations}");
             view.DispatchPlatformEvent(() => imageScroll.jumpTo(80));
             Pump("image-colors-scrolled");
-            if (images.Decodes != 1 || images.Rasterizations != 2) throw new Exception("Scrolling repeated explicit palette work");
-            Console.WriteLine("image sample: decode once, no automatic extraction, explicit light/dark extraction once, no repeated scroll work PASS");
+            if (images.Decodes != 2 || images.Rasterizations != 2) throw new Exception("Scrolling repeated explicit palette work");
+            Console.WriteLine("image sample: display decode once, original decode only for explicit extraction, no repeated scroll work PASS");
 
             var sampleBar = new M.AppBar(title: new Text("Sample root"));
             view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new M.MaterialApp(locale: new Locale("en", "US"), home:
@@ -385,6 +414,9 @@ internal static class MountedPickerContracts
         internal int Decodes, Rasterizations;
         public ValueTask<Doroti.Ui.Image> DecodeAsync(ReadOnlyMemory<byte> bytes, DartUiInvocation invocation, CancellationToken cancellationToken = default)
         { Interlocked.Increment(ref Decodes); return renderer.DecodeAsync(bytes, invocation, cancellationToken); }
+        public ValueTask<Doroti.Ui.Image> DecodeSizedAsync(ReadOnlyMemory<byte> bytes, Func<long, long, TargetImageSize?> targetSize,
+            bool allowUpscaling, DartUiInvocation invocation, CancellationToken cancellationToken = default)
+        { Interlocked.Increment(ref Decodes); return renderer.DecodeSizedAsync(bytes, targetSize, allowUpscaling, invocation, cancellationToken); }
         public ValueTask<Doroti.Ui.Image> RasterizeAsync(Picture picture, int width, int height, DartUiInvocation invocation, CancellationToken cancellationToken = default)
         { Interlocked.Increment(ref Rasterizations); return renderer.RasterizeAsync(picture, width, height, invocation, cancellationToken); }
     }

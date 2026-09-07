@@ -48,16 +48,42 @@ Require(child.LayoutCount == 2, "explicit invalidation preserves layout with equ
 
 Require(FrameworkWorkCounters.Enabled, "diagnostic test explicitly enabled");
 var trace = new DorotiFrameTrace();
-for (var i = 0; i < 2050; i++) {
+for (var i = 0; i < 8194; i++) {
     FrameworkWorkCounters.Add(FrameworkWork.NewPicture);
     trace.Record(DorotiFramePhase.build, 42, DorotiFrameClock.Now, frameworkFrameNumber: i);
 }
 var snapshot = FrameworkWorkCounters.Snapshot();
-Require(snapshot.Samples.Length == 2048 && snapshot.Dropped == 2, "bounded ring reports overwritten samples");
-Require(snapshot.Samples[0].Boundary.Frame == 2 && snapshot.Samples[^1].Boundary.Frame == 2049,
+Require(snapshot.Samples.Length == 8192 && snapshot.Dropped == 2, "bounded ring reports overwritten samples");
+Require(snapshot.Samples[0].Boundary.Frame == 2 && snapshot.Samples[^1].Boundary.Frame == 8193,
     "ring wrap preserves chronological frame identity");
-Require(snapshot.Samples[^1].Totals[(int)FrameworkWork.NewPicture] - snapshot.Samples[0].Totals[(int)FrameworkWork.NewPicture] == 2047,
+Require(snapshot.Samples[^1].Totals[(int)FrameworkWork.NewPicture] - snapshot.Samples[0].Totals[(int)FrameworkWork.NewPicture] == 8191,
     "cumulative deltas survive ring wrap");
+
+// Profile scopes must unwind on exceptions and remain owned by their UI thread.
+using (FrameworkWorkProfile.Begin(typeof(LayoutProbe), 99))
+{
+    try { using var nested = FrameworkWorkProfile.Begin(typeof(LayoutProbe), 100); throw new InvalidOperationException(); }
+    catch (InvalidOperationException) { }
+}
+var profile = System.Text.Json.JsonSerializer.SerializeToElement(FrameworkWorkProfile.Snapshot());
+var entries = profile.GetProperty("entries").EnumerateArray().ToArray();
+var outer = entries.Single(e => e.GetProperty("Kind").GetInt32() == 99);
+var inner = entries.Single(e => e.GetProperty("Kind").GetInt32() == 100);
+Require(outer.GetProperty("Calls").GetInt64() == 1 && inner.GetProperty("Calls").GetInt64() == 1,
+    "nested profile scopes unwind through exceptions");
+Require(outer.GetProperty("InclusiveMicroseconds").GetInt64() >= outer.GetProperty("SelfMicroseconds").GetInt64(),
+    "profile inclusive time contains self time");
+var isolated = false;
+var thread = new Thread(() => {
+    var other = System.Text.Json.JsonSerializer.SerializeToElement(FrameworkWorkProfile.Snapshot());
+    isolated = other.GetProperty("entries").GetArrayLength() == 0;
+});
+thread.Start(); thread.Join();
+Require(isolated, "profile never mixes worker threads");
+for(var kind=1000;kind<1600;kind++) FrameworkWorkProfile.Count(typeof(LayoutProbe),kind);
+var bounded = System.Text.Json.JsonSerializer.SerializeToElement(FrameworkWorkProfile.Snapshot());
+Require(bounded.GetProperty("entries").GetArrayLength() == 512 && bounded.GetProperty("dropped").GetInt64() > 0,
+    "profile type table is bounded and reports overflow");
 
 sealed class LayoutProbe : RenderBox
 {

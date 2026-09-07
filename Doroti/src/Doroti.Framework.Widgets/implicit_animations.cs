@@ -189,6 +189,8 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
             _animation = _createCurve();
         }
         this.controller.duration = ((ImplicitlyAnimatedWidget)(object)this.widget).duration;
+        using var profile = FrameworkWorkCounters.Enabled ? FrameworkWorkProfile.Begin(GetType(), 1) : default;
+        FrameworkWorkCounters.Add(FrameworkWork.ImplicitTweenCheck);
         if (_constructTweens())
         {
             forEachTween(((global::System.Func<global::Doroti.Framework.Animation.IDartTween?, object, global::System.Func<object, global::Doroti.Framework.Animation.IDartTween>, global::Doroti.Framework.Animation.IDartTween?>)((tween, targetValue, constructor) =>
@@ -203,6 +205,8 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
                 }))();
                 throw new InvalidOperationException("Dart closure completed without a value.");
             })));
+            FrameworkWorkCounters.Add(FrameworkWork.ImplicitAnimationRestart);
+            if (FrameworkWorkCounters.Enabled) FrameworkWorkProfile.Count(GetType(), 6);
             this.controller.forward(from: 0.0);
             didUpdateTweens();
         }

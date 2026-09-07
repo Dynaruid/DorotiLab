@@ -1,9 +1,7 @@
 # Web framework 병목 조사 및 개선 작업계획
 
 - 작성일: 2026-09-07
-- 상태: **실행 결과 PARTIAL — P0/P1/P3 개선과 자동 검증 수행, 성능 수용 미완료**
-- 실행 보고: [2026-09-07 framework 실행 결과](history/26-09-07/web-framework-work2-results.md). 계획 원문은 [보관본](history/26-09-07/web-framework-work2-plan.md)에 보존했다.
-- 아래 조사 범위·과거 시제는 계획 작성 당시 기록이다. 현재 사용자의 전체 실행 요청을 제한하지 않는다.
+- 상태: **조사·계획 작성 완료 / 아래 P0~P6 구현은 미실행**
 - 요청 범위: 현재 코드, Flutter 구현, 공식 Web/.NET 문서를 검토하고 개선 계획을 작성한다.
 - 검토 기준: HEAD `c9b9eb21d45eceaf9beb04c6d0338cf8cc54bd25` + 이전 direct 작업의 미커밋 변경. HEAD 단독으로 현재 실행 상태를 재현할 수 없다.
 - Flutter 대조 기준: 로컬 `C:/Users/parti/flutter` HEAD와 reference 앱 `.metadata` 모두 `6b182d2c7585eba26d4edce0f97630effd256c33`.
@@ -154,21 +152,21 @@ Flutter 공식 [build 비용 지침](https://docs.flutter.dev/perf/best-practice
 ## 4. 실행 계획
 
 순서: **P0 → P1 → P2/P3/P4 중 측정상 큰 비용 순서 → P5 조건 판단 → P6**.
-계획 당시 체크박스이며, 이번 실행에서 충족한 항목만 갱신했다. 성능 FAIL과 미검증 항목은 남긴다. 실행 시 source fingerprint/dirty diff부터 갱신한다.
+이번 요청은 계획 작성이므로 체크박스는 앞으로의 실행 상태다. 실행 시 source fingerprint/dirty diff부터 갱신한다.
 `Doroti.Framework.*`는 유지보수하는 제품 소스다. 일반 수정에 전체 Dart 재생성이나 Flutter 최신판 일괄 이식은 필요하지 않다.
 
 ### P0. 측정 경계 보완과 원인 귀속
 
-- [x] 기존 direct trace 옵션에 opt-in work-counter 수집을 연결한다. runtime 생성 전에 env를 설정하고 초기화 시점/ThreadStatic 소유를 검증한다.
+- [ ] 기존 direct trace 옵션에 opt-in work-counter 수집을 연결한다. runtime 생성 전에 env를 설정하고 초기화 시점/ThreadStatic 소유를 검증한다.
 - [ ] input sequence → Worker 수신 → callback 시작 → build/layout/paint/scene/raster → commit → callback 종료를 같은 frame에 연결한다.
   semantics tree/projection/serialize/post/DOM apply, finalizeTree도 별도 span으로 남긴다.
-- [x] dirty/rebuild/delegate/keep-alive/animation owner별 bounded 집계를 추가한다. numeric type ID+후처리 이름표를 사용하고,
+- [ ] dirty/rebuild/delegate/keep-alive/animation owner별 bounded 집계를 추가한다. numeric type ID+후처리 이름표를 사용하고,
   진단 OFF 경로에 문자열·stack·트리 참조 보관을 넣지 않는다. retained node 참조로 GC를 방해하지 않는다.
-- [x] 주요 type의 inclusive/self time을 구분한다. 상세 CPU sampling/할당 프로파일은 짧은 별도 원인 조사 run으로 수집한다.
+- [ ] 주요 type의 inclusive/self time을 구분한다. 상세 CPU sampling/할당 프로파일은 짧은 별도 원인 조사 run으로 수집한다.
   Worker/Wasm symbol이 불완전하면 귀속 불가로 기록하고 선택한 함수에 제한된 span을 추가한다. JS stack만으로 managed 함수 이름을 추정하지 않는다.
-- [x] managed GC/할당, Wasm heap, GPU resource 수는 지원되는 관측 범위 안에서 기록한다. native allocation 측정값을 Web 값으로 대체하지 않는다.
-- [x] 브라우저 main long-task/LoAF 정보와 Worker 자체 callback을 별도 열로 저장한다. main long task 0으로 Worker 정상 판정을 하지 않는다.
-- [x] 상세 진단 ON 원인 조사와 최소 계측/OFF 사용자 동작을 분리한다. OFF에서도 최소 input/commit marker로 onset을 잴 수 있게 하고,
+- [ ] managed GC/할당, Wasm heap, GPU resource 수는 지원되는 관측 범위 안에서 기록한다. native allocation 측정값을 Web 값으로 대체하지 않는다.
+- [ ] 브라우저 main long-task/LoAF 정보와 Worker 자체 callback을 별도 열로 저장한다. main long task 0으로 Worker 정상 판정을 하지 않는다.
+- [ ] 상세 진단 ON 원인 조사와 최소 계측/OFF 사용자 동작을 분리한다. OFF에서도 최소 input/commit marker로 onset을 잴 수 있게 하고,
   observer 비용을 짧은 ON/OFF 대조로 추정한다. 진단 자체가 지연을 바꾸면 수치와 한계를 함께 기록한다.
 
 산출물: trace schema/분석기, frame별 비용표, 상위 5개 type/호출 경로와 할당 후보, 비용 귀속이 안 된 잔여 구간.
@@ -176,21 +174,21 @@ Flutter 공식 [build 비용 지침](https://docs.flutter.dev/perf/best-practice
 
 ### P1. Flutter와 같은 상태 범위의 대조 및 샘플 이식 수정
 
-- [x] 원래 넓은 State fixture(A)를 보존하고 progress만 별도 State로 옮긴 fixture(B)를 만든다. 동작·레이아웃·입력은 같게 유지한다.
+- [ ] 원래 넓은 State fixture(A)를 보존하고 progress만 별도 State로 옮긴 fixture(B)를 만든다. 동작·레이아웃·입력은 같게 유지한다.
 - [ ] 실제 Flutter reference의 progress 동작(C)을 같은 viewport/DPR/폰트/진입 순서/접근성 조건에서 비교한다.
   Flutter Web는 Chrome Performance timeline을 사용한다. native DevTools profile 절차를 Web에 그대로 적용하지 않는다.
-- [x] A/B의 work counter와 first frame 비용을 비교해 “작업량 감소”를 먼저 입증한다. Flutter와 비교할 때는 lazy 경계/방문 child 수 차이를 함께 표시한다.
+- [ ] A/B의 work counter와 first frame 비용을 비교해 “작업량 감소”를 먼저 입증한다. Flutter와 비교할 때는 lazy 경계/방문 child 수 차이를 함께 표시한다.
 - [ ] B에서 다른 section의 재빌드가 멈추고 개선이 확인되면 sample에 Flutter와 같은 state ownership을 반영한다.
   icon/selection/text 등 나머지 control도 같은 문제가 있는지 검토하고 필요한 부분만 상태 경계를 나눈다.
 - [ ] 기존 lazy section, scroll controller, height estimate, key, focus, selection, theme 갱신, 한/두 column 전환에서 상태 보존을 확인한다.
-- [x] A의 넓은 갱신 fixture는 공용 framework 스트레스 회귀로 유지한다. B의 성공을 A 또는 resize 성공으로 대체하지 않는다.
+- [ ] A의 넓은 갱신 fixture는 공용 framework 스트레스 회귀로 유지한다. B의 성공을 A 또는 resize 성공으로 대체하지 않는다.
 
 판단: B만 빨라지면 sample의 과도한 invalidation이 큰 원인이다. B도 느리거나 같은 child 수에서 Doroti 비용이 크면 P2의 공용 경로를 우선한다.
 산출물: A/B/C 비교표, 상태 소유 변경 근거, 공용 수정이 여전히 필요한 범위.
 
 ### P2. 공용 rebuild·dependency·implicit animation 비용 감소
 
-- [x] P0 hot path 순서로 `Widgets/framework.cs`, `sliver.cs`, `implicit_animations.cs`, 관련 Material widget을 검토한다.
+- [ ] P0 hot path 순서로 `Widgets/framework.cs`, `sliver.cs`, `implicit_animations.cs`, 관련 Material widget을 검토한다.
   pinned Flutter의 동일 API와 최소 fixture를 나란히 비교한다.
 - [ ] 중복 dependency 알림/불필요한 forced rebuild/반복 정렬이 확인되면 소유 경계에서 제거한다.
   기존 `_inDirtyList`, dirty depth 순서, build 중 dirty 추가, GlobalKey 이동, deactivate/dispose 계약을 보존한다.
@@ -211,7 +209,7 @@ InheritedWidget/MediaQuery/theme/locale 갱신, callback 중 setState, 정당한
   `generation`, baseline generation, upsert/remove, child order/parent 관계, geometry/content 변경을 각각 표현한다.
 - [ ] worker sender와 main receiver를 함께 수정한다. delta에서 빠진 node는 삭제가 아니며 삭제는 explicit remove로 전달한다.
   parent 변경·subtree 제거·root 교체·unknown baseline·restart/context recovery는 전체 snapshot으로 정확하게 복구한다.
-- [x] 기존 `contentUnchanged`와 node/listener 재사용을 보존한다. 전체 snapshot protocol을 계속 쓸 경우에도 stable 순서와 변경 집계로 중복 allocation을 줄인다.
+- [ ] 기존 `contentUnchanged`와 node/listener 재사용을 보존한다. 전체 snapshot protocol을 계속 쓸 경우에도 stable 순서와 변경 집계로 중복 allocation을 줄인다.
 - [ ] coalescing 중 최신 content/action/focus/IME 갱신이 밀리지 않도록 우선순위와 최종 flush 계약을 검증한다.
   semantics 전체 비활성화는 비용 분리용 실험만 허용하며 제품 개선으로 채택하지 않는다.
 
@@ -258,13 +256,13 @@ terminal accounting, latest exact settle, context/surface resource 정리, 스�
 
 ### P6. 통합 검증과 결과 보존
 
-- [x] 변경된 공용 API의 계약/native Material/sample 회귀를 먼저 실행한다. Web TypeScript 및 Release build/publish를 검증한다.
+- [ ] 변경된 공용 API의 계약/native Material/sample 회귀를 먼저 실행한다. Web TypeScript 및 Release build/publish를 검증한다.
 - [ ] 기본/auto/오타와 explicit renderer, progress pixel 변화·정지, selection/text/scroll, resize admission,
   DPR/zoom, restart/context-loss 복구를 이전 suite로 확인한다. strict resize FAIL assertion을 낮추지 않는다.
 - [ ] source runner와 별도 package 소비 앱에서 실제 public framework/host 변경이 반영되는지 확인한다.
   package/template/API 영향 시 한국어·영어 실행 문서와 ADR을 현재 기본값/상태에 맞춘다.
-- [x] 아래 matrix를 실행하고 구현 완료, 자동 기능, 자동 성능, 사용자 관찰, notVerified를 별도로 보고한다.
-- [x] 처음 실패·중간 실험·최종 결과를 dated history에 남기고 원본 JSON/trace와 source fingerprint를 연결한다.
+- [ ] 아래 matrix를 실행하고 구현 완료, 자동 기능, 자동 성능, 사용자 관찰, notVerified를 별도로 보고한다.
+- [ ] 처음 실패·중간 실험·최종 결과를 dated history에 남기고 원본 JSON/trace와 source fingerprint를 연결한다.
   gate가 실패하면 PARTIAL을 유지한다. 계획 체크 완료나 build PASS를 성능 수용 PASS로 바꾸지 않는다.
 
 ## 5. 측정·수용 기준
@@ -320,52 +318,3 @@ terminal accounting, latest exact settle, context/surface resource 정리, 스�
 캐시 숫자 조정, AOT 전환, Worker 분리부터 시작하지 않는다. 기존 성능 FAIL과 사용자 체감은 그대로 기준선으로 보존한다.
 
 문서 검증: 기존 work2의 byte-identical archive, 로컬 링크, 현재 소스/Flutter revision, 기존 dirty 파일 보존 및 whitespace를 확인한다.
-
-
-## 7. 2026-09-07 실행 상태와 남은 수용
-
-| 단계 | 이번 결과 | 남은 항목 |
-| --- | --- | --- |
-| P0 | direct work/profile/GC 관측, early causal capture, 최소 OFF marker, main/Worker 분리, Chrome CPU trace | 정확한 managed 함수 symbol/GC pause·Wasm heap 귀속, 모든 ingress/span의 완전성 및 cold app boot end-to-end |
-| P1 | broad/local fixture, rebuild 2796→56·delegate 3→0, local progress 채택, scroll/column/state/픽셀 회귀, Flutter timeline 3회 | 나머지 control의 broad 갱신; Flutter commit/pixel endpoint와 lazy 단위가 달라 엄밀한 C 동등성은 미완료 |
-| P2 | pinned source·상위 hot type·implicit owner 검토/계측 | 별도의 공용 불필요한 rebuild 결함은 미확정. dirty/key/keep-alive 계약을 우회하는 수정은 채택하지 않음 |
-| P3 | 동일 노드 JSON 재사용, 2MiB/2048개 상한, 전체 snapshot·content/geometry·listener 계약 유지 | tree projection·전체 traversal/bytes O(n), 물리 접근성 검증. delta 도입 조건은 보류 |
-| P4 | 새/방문 section 각각 3회, DPR1/2 grow 완료→복귀, strict resize FAIL 원본, context recovery | 새 section CPU 및 resize 지연 gate 미달. 중복 paragraph/promotion 단독 원인은 미확정이므로 캐시 확대/queue 우회는 미채택 |
-| P5 | SDK/runtime 실제 속성 및 공식 문서 대조, 조건부 채택 여부 판정 | 동일 work-count native/Web 비용 비율 미분리. AOT/Worker 분리 보류, 과거 실패 보존 |
-| P6 | source/Release publish/native/package 자동 검증, 한국어/영어 실행 안내, 원본·fingerprint 보존 | 물리 입력/시각/IME/120Hz 및 별도 package Web 앱의 실제 browser 수용 notVerified |
-
-최종 수치와 실패 로그는 실행 보고를 따른다. 첫 progress·resize hard gate가 남아 있으므로
-이 문서를 삭제하거나 전체 완료/PASS로 전환하지 않는다. 다음 수정은 새/방문 section 및 resize의
-지연 frame에서 공용 build/layout 비용을 더 좁히고, 변경 전후 동일 작업량의 end-to-end gate로 판단한다.
-
-
-## 8. 사용자 확인 후 상태 변경/resize 추가 개선
-
-이전 progress 시작 버벅임은 사용자가 체감상 해소됐다고 확인했다. 새 요청에 따라
-선택/버튼 예제를 각각 갱신하고 responsive 내용/delegate 및 navigation 구성을 재사용했다.
-공용 Web semantics의 geometry-only 직렬화 경로도 줄였다.
-[후속 실행 보고](history/26-09-07/web-state-resize-followup.md)에 최초 실패, 변경별 원인 대조,
-최종 3회 측정과 검증을 별도로 보존했다.
-
-- 선택 버튼 상세 대조: 508.1→80.5ms. 최종 최소 계측 3회: 78.9 / 80.9 / 78.3ms.
-- 같은 열 구성 resize 최종 3회: latest exact 51.2 / 69.6 / 59.7ms.
-  active tracking p95 122.7 / 126.8 / 131.5ms로 전체 실시간 수용은 여전히 PARTIAL이다.
-- 변경한 State/위젯 재사용과 제어/테마/DOM 유지 회귀는 통과했다.
-  strict resize DPR1/2 성능 FAIL 및 물리 입력/표시 검증 미완료를 유지한다.
-
-## 9. 이미지 구간 진입 및 멈춘 뒤 스크롤 재시작
-
-사용자 관찰은 어느 위치든 멈춘 뒤 재시작할 때 끊기며, 이미지 구간의 상단 진입에서
-특히 심하다는 것이다. 공용 target-size 디코딩과 ResizeImage의 키/종횡비/전달 결함을
-수정하고, 샘플 표시용 픽셀 수를 줄였다. geometry-only semantics 직렬화의 임시
-객체도 줄였다. 실제 이미지 표시와 성능을 따로 검증하며 중간 실패를 보존한다.
-[이미지 스크롤 후속 보고](history/26-09-07/web-image-scroll-followup.md)에 결과를 기록한다.
-첫 구간 생성과 전체 스크롤 재시작/resize의 수용 상태는 PARTIAL로 유지한다.
-
-## 10. 열 구성 복귀 시 오른쪽 누락 회귀
-
-2열에서 스크롤한 뒤 1열→2열로 돌아오면 오른쪽이 회색으로 남는 오류를 재현했다.
-공용 Element.activate의 nullable dependency 정리를 수정하고, 반복 부모 이동의
-State/inherited 값 유지와 오른쪽 실제 픽셀 검사를 추가했다.
-[열 복귀 수정 보고](history/26-09-07/web-column-return-fix.md)에 최초 실패와 검증을 보존한다.
-이 correctness 수정으로 이전 성능 수용 PARTIAL을 변경하지 않는다.

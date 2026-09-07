@@ -3,6 +3,12 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args is ["--image-sizing"])
+{
+    await ImageSizingContracts.Verify();
+    return;
+}
+
 if (args.Length >= 1 && args[0] == "--raster-budget")
 {
     RasterBudgetContracts.Verify();

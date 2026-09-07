@@ -51,6 +51,8 @@ public enum DorotiFramePhase
     semanticsApply,
     semanticsApplyEnd,
     semanticsDeferred,
+    finalizeTree,
+    finalizeTreeEnd,
 }
 
 /// <summary>One causally ordered item in a bounded per-view frame trace.</summary>

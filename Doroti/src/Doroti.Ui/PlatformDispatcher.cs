@@ -901,6 +901,11 @@ public sealed class DorotiView : IDisposable
         _capabilities.Require<IImageHostCapability>(viewId, DorotiCapabilityIds.GraphicsImage, invocation)
             .DecodeAsync(bytes, invocation, cancellationToken);
 
+    public ValueTask<Image> DecodeSizedImageAsync(ReadOnlyMemory<byte> bytes, Func<long, long, TargetImageSize?> targetSize,
+        bool allowUpscaling, DartUiInvocation invocation, CancellationToken cancellationToken = default) =>
+        _capabilities.Require<IImageHostCapability>(viewId, DorotiCapabilityIds.GraphicsImage, invocation)
+            .DecodeSizedAsync(bytes, targetSize, allowUpscaling, invocation, cancellationToken);
+
     public void UpdateSemantics(SemanticsUpdate update, DartUiInvocation invocation) =>
         _capabilities.Require<ISemanticsHostCapability>(viewId, DorotiCapabilityIds.AccessibilitySemantics, invocation)
             .Update(update with { viewDevicePixelRatio = devicePixelRatio }, invocation);

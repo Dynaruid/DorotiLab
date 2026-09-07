@@ -2103,7 +2103,7 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
         DartRuntimePrimitives.Assert(() => (this.owner is not null));
         bool hadDependencies = ((((this._dependencies is { } __items203339 ? System.Linq.Enumerable.Any(__items203339) : (bool?)null) ?? false)) || this._hadUnsatisfiedDependencies);
         _lifecycleState = _ElementLifecycle__framework.active;
-        this._dependencies.Clear();
+        this._dependencies?.Clear();
         _hadUnsatisfiedDependencies = false;
         _updateInheritance();
         attachNotificationTree();
@@ -2558,6 +2558,7 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
         {
             FrameworkWorkCounters.Add(FrameworkWork.Rebuild);
             if (force) FrameworkWorkCounters.Add(FrameworkWork.ForcedRebuild);
+            using var profile = FrameworkWorkCounters.Enabled ? FrameworkWorkProfile.Begin(widget.GetType()) : default;
             performRebuild();
         }
         finally

@@ -41,6 +41,8 @@ public static partial class DorotiWebWorkerSurface
     public static string CaptureDiagnostics() => System.Text.Json.JsonSerializer.Serialize(new {
         clockMicroseconds = DorotiFrameClock.Now.Ticks / 10,
         frame = _target?.CaptureFrameDiagnostics(_viewId),
+        work = FrameworkWorkCounters.Snapshot(),
+        profile = FrameworkWorkProfile.Snapshot(),
     });
 
     [JSExport]

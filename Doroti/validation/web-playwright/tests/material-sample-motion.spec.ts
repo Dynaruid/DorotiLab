@@ -25,6 +25,25 @@ test("Material sample progress animation changes presented pixels and stops", as
   const during = await captureDiagnostics(page);
   expect(during.presenter.frontRequestId).toBeGreaterThan(before.presenter.frontRequestId ?? 0);
   expect(first.equals(second), "The running indicator changes rendered pixels").toBe(false);
+  // The progress State survives the retained sliver leaving the viewport and
+  // the responsive list switching between one and two columns.
+  await page.mouse.move(500, 600);
+  await page.mouse.wheel(0, 1600); await page.waitForTimeout(600);
+  await page.mouse.wheel(0, -1600); await page.waitForTimeout(600);
+  for (let step=0; step<10 && !await stop.count() && !await start.count(); step++) {
+    await page.mouse.move(500,600); await page.mouse.wheel(0,200); await page.waitForTimeout(400);
+  }
+  await expect(stop).toBeAttached();
+  for (const width of [800, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect(stop).toHaveCount(1);
+    await page.waitForTimeout(800);
+  }
+  for (let step=0; step<10; step++) {
+    const box=await stop.boundingBox();
+    if(box && box.y>150 && box.y+box.height<780) break;
+    await page.mouse.move(500,600); await page.mouse.wheel(0,box && box.y<150?-200:200); await page.waitForTimeout(400);
+  }
   const stopBounds = (await stop.boundingBox())!;
   await page.mouse.click(stopBounds.x + stopBounds.width / 2, stopBounds.y + stopBounds.height / 2);
   await expect(start).toBeAttached();

@@ -8,8 +8,10 @@ The application ID is `dev.doroti.testbed` (`dev.doroti.testbed.macos` for AppKi
 
 ## Material sample mode
 
+Selection demos now update locally, and resizing reuses unchanged section content and navigation configuration. See the [state/resize follow-up](../history/26-09-07/web-state-resize-followup.md) for measurements and remaining latency failures.
+
 The C# Material sample is available explicitly while its acceptance gates in
-[work.md](../work.md) are being completed. Diagnostics remains the default.
+[Material sample acceptance history](../history/26-09-07/material-sample-work-summary.md) are being completed. Diagnostics remains the default.
 The renderer defaults remain Windows Vulkan and Web SkiaSharp direct Worker.
 
 Run the commands below in PowerShell 7 from the **repository root, `DorotiLab`**.
@@ -110,6 +112,22 @@ animation; also scroll into sections you have not visited yet. Changing the URL
 does not require restarting the server. If a renderer was rebuilt, restart the
 runner and reload the page to load the new build. These links select a renderer
 for that page only and do not change the application default.
+
+
+The progress demo now owns its own State, matching the Flutter reference. For
+an explicit direct-Worker stress comparison, add `&dorotiProgressScope=broad`
+to retain the original screen-wide rebuild; the default is `local`.
+`dorotiResizeDiagnostics=1` also enables bounded framework work/type counters.
+Use `dorotiResizeDiagnostics=0&dorotiInputMarkers=1` for minimal input-to-new-scene
+commit measurements. These are submit notifications, not display latency.
+See [the framework investigation results](../history/26-09-07/web-framework-work2-results.md)
+for remaining performance failures and verification limits.
+
+The Image demo decodes its display image at `1024 × DPR` pixels wide, preserving
+the aspect ratio without upscaling. Contain/Cover and scrolling share that cache.
+Only `Extract colors` decodes the original for palette extraction. Image processing
+work is reduced, but first section entry and scroll restart acceptance remain PARTIAL.
+See the [image scroll follow-up](../history/26-09-07/web-image-scroll-followup.md).
 
 ### Other renderer URLs
 
@@ -363,7 +381,7 @@ The default Windows route is the self-contained Windows App SDK 2.4 `HwndExactCp
 
 Vulkan copies its retained backing into three exact-LUID D3D11 shared textures and presents through Windows Presentation. The top-level HWND DirectComposition target owns the visible raster. See the [September 5 history](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md) for current resize behavior, earlier failures, and observed results.
 
-On the tested AMD Radeon 780M, three focused top-level-owner `TopLeft` reverse-600 ms runs plus separate `Left` and `Right` regressions passed with zero validation-background gaps, exact final geometry, monotonic markers, and clean resources. The source-built `TopLeft` run reached 151.49 presentations/s with 7.65 ms accepted-to-next-present p95. Earlier retained-child and synchronous post-geometry failures remain historical evidence rather than being reclassified. Automated capture and terminal evidence do not substitute for post-fix physical scan-out, human resize, IME, accessibility, larger-monitor memory/startup, or the full DPI/GPU matrix; Vulkan remains opt-in and the latest left/top human recheck is `notVerified`. See [ADR-027](../Doroti/docs/adr/ADR-027-windows-optional-vulkan.md), [problem.md](../problem.md), and the [implementation checkpoint](../history/26-09-02/windows-appsdk-vulkan-implementation-checkpoint.md).
+On the tested AMD Radeon 780M, three focused top-level-owner `TopLeft` reverse-600 ms runs plus separate `Left` and `Right` regressions passed with zero validation-background gaps, exact final geometry, monotonic markers, and clean resources. The source-built `TopLeft` run reached 151.49 presentations/s with 7.65 ms accepted-to-next-present p95. Earlier retained-child and synchronous post-geometry failures remain historical evidence rather than being reclassified. Automated capture and terminal evidence do not substitute for post-fix physical scan-out, human resize, IME, accessibility, larger-monitor memory/startup, or the full DPI/GPU matrix; Vulkan remains opt-in and the latest left/top human recheck is `notVerified`. See [ADR-027](../Doroti/docs/adr/ADR-027-windows-optional-vulkan.md), [archived resize investigation](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md), and the [implementation checkpoint](../history/26-09-02/windows-appsdk-vulkan-implementation-checkpoint.md).
 
 Ordinary `acrylic` and compatibility `experimentalAcrylic` use the same Acrylic implementation for the selected presenter. Default Vulkan composites its premultiplied Presentation surface over a non-topmost `DesktopWindowTarget` and `DesktopAcrylicController`. ANGLE uses ContentIsland/Composition Swapchain. Full GPU/DPI/refresh and physical IME/accessibility qualification remains incomplete.
 

@@ -27,6 +27,8 @@ internal sealed class SampleImageDemoState : State<SampleImageDemo>
     private string? _error;
     private M.ColorScheme? _light, _dark;
     private object Provider() => _url ? new NetworkImageIo(Url) : new MemoryImage(LocalBytes.Value);
+    private object DisplayProvider(BuildContext context) => new ResizeImage(Provider(),
+        width: checked((long)Math.Ceiling(1024 * MediaQuery.devicePixelRatioOf(context))));
     public override void initState() { base.initState(); }
     private void SelectSource(bool url)
     {
@@ -36,6 +38,7 @@ internal sealed class SampleImageDemoState : State<SampleImageDemo>
     private async void RetryImage()
     {
         var revision = _revision;
+        await ((dynamic)DisplayProvider(context)).evict();
         await ((dynamic)Provider()).evict();
         if (mounted && revision == _revision) setState(() => _reload++);
     }
@@ -62,7 +65,7 @@ internal sealed class SampleImageDemoState : State<SampleImageDemo>
             new M.SegmentedButton<string>(segments: [new("Contain", label: new Text("Contain")), new("Cover", label: new Text("Cover"))], selected: [_cover ? "Cover" : "Contain"],
                 onSelectionChanged: values => setState(() => _cover = values.Contains("Cover"))),
         ]),
-        new SizedBox(height: 240, child: new Image(key: new Doroti.Framework.Foundation.ValueKey<int>(_reload), image: Provider(), fit: _cover ? BoxFit.cover : BoxFit.contain,
+        new SizedBox(height: 240, child: new Image(key: new Doroti.Framework.Foundation.ValueKey<int>(_reload), image: DisplayProvider(context), fit: _cover ? BoxFit.cover : BoxFit.contain,
             errorBuilder: (_, error, _) => new Center(child: new Text($"Image unavailable: {error}")))),
         _loading ? new M.LinearProgressIndicator() : SizedBox.CreateShrink(),
         _error is null ? SizedBox.CreateShrink() : new Text($"Image failed: {_error}"),

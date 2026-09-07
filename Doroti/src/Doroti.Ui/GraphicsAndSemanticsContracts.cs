@@ -1429,11 +1429,52 @@ public interface IImageHostCapability
 {
     ValueTask<Image> DecodeAsync(ReadOnlyMemory<byte> bytes, DartUiInvocation invocation, CancellationToken cancellationToken = default);
 
+    async ValueTask<Image> DecodeSizedAsync(ReadOnlyMemory<byte> bytes, Func<long, long, TargetImageSize?> targetSize,
+        bool allowUpscaling, DartUiInvocation invocation, CancellationToken cancellationToken = default)
+    {
+        var image = await DecodeAsync(bytes, invocation, cancellationToken);
+        try
+        {
+            var size = ImageDecodeSizing.Resolve(image.width, image.height, targetSize(image.width, image.height), allowUpscaling);
+            if (size.Width == image.width && size.Height == image.height) return image;
+            var recorder = new PictureRecorder();
+            var canvas = new Canvas(recorder);
+            canvas.drawImageRect(image, Rect.fromLTWH(0, 0, image.width, image.height),
+                Rect.fromLTWH(0, 0, size.Width, size.Height), new Paint { filterQuality = FilterQuality.medium });
+            using var picture = recorder.endRecording();
+            var resized = await RasterizeAsync(picture, size.Width, size.Height, invocation, cancellationToken);
+            image.Dispose();
+            return resized;
+        }
+        catch { image.Dispose(); throw; }
+    }
+
     /// <summary>Rasterizes at 1 logical unit per pixel onto transparent sRGB storage, independent of window DPR.</summary>
     ValueTask<Image> RasterizeAsync(Picture picture, int width, int height, DartUiInvocation invocation,
         CancellationToken cancellationToken = default) => ValueTask.FromException<Image>(
             new DorotiCapabilityException(DorotiCapabilityIds.GraphicsImage, null, invocation,
                 "picture rasterization is not registered by the active host"));
+}
+
+public static class ImageDecodeSizing
+{
+    public static (int Width, int Height) Resolve(int width, int height, TargetImageSize? requested, bool allowUpscaling)
+    {
+        if (width <= 0 || height <= 0 || requested?.width <= 0 || requested?.height <= 0)
+            throw new ArgumentOutOfRangeException(nameof(requested));
+        var targetWidth = requested?.width;
+        var targetHeight = requested?.height;
+        if (!allowUpscaling)
+        {
+            if (targetWidth is not null) targetWidth = Math.Min(targetWidth.Value, width);
+            if (targetHeight is not null) targetHeight = Math.Min(targetHeight.Value, height);
+        }
+        targetWidth ??= targetHeight is null ? width : Math.Max(1, (long)Math.Round((double)width * targetHeight.Value / height, MidpointRounding.AwayFromZero));
+        targetHeight ??= Math.Max(1, (long)Math.Round((double)height * targetWidth.Value / width, MidpointRounding.AwayFromZero));
+        var result = (Width: checked((int)targetWidth.Value), Height: checked((int)targetHeight.Value));
+        if ((long)result.Width * result.Height > int.MaxValue / 4) throw new ArgumentOutOfRangeException(nameof(requested));
+        return result;
+    }
 }
 
 public sealed class Image : IDisposable
