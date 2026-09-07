@@ -3,6 +3,15 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args.Length >= 1 && args[0] == "--sample-popups")
+{
+    Environment.SetEnvironmentVariable("DOROTI_VALIDATION_SAMPLE_POPUPS", "1");
+    Environment.SetEnvironmentVariable("DOROTI_VALIDATION_POPUP_WIDTH", args.Length > 1 ? args[1] : "1275");
+    Environment.SetEnvironmentVariable("DOROTI_VALIDATION_POPUP_HEIGHT", args.Length > 2 ? args[2] : "640");
+    MountedPickerContracts.Verify();
+    return;
+}
+
 if (args is ["--image-sizing"])
 {
     await ImageSizingContracts.Verify();

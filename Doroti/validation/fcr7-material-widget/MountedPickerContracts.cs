@@ -8,8 +8,9 @@ using M = Doroti.Framework.Material;
 internal static class MountedPickerContracts
 {
     private static bool AppBarRaster => Environment.GetEnvironmentVariable("DOROTI_VALIDATION_APPBAR_RASTER") == "1";
-    private static int Width => AppBarRaster ? 1275 : 800;
-    private static int Height => AppBarRaster ? 640 : 900;
+    private static bool SamplePopups => Environment.GetEnvironmentVariable("DOROTI_VALIDATION_SAMPLE_POPUPS") == "1";
+    private static int Width => SamplePopups ? int.Parse(Environment.GetEnvironmentVariable("DOROTI_VALIDATION_POPUP_WIDTH")!) : AppBarRaster ? 1275 : 800;
+    private static int Height => SamplePopups ? int.Parse(Environment.GetEnvironmentVariable("DOROTI_VALIDATION_POPUP_HEIGHT")!) : AppBarRaster ? 640 : 900;
     internal static void Verify()
     {
         using var dispatcher = new PlatformDispatcher();
@@ -35,6 +36,37 @@ internal static class MountedPickerContracts
                 .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host));
             var binding = new WidgetsFlutterBinding(dispatcher);
             renderer.RegisterFontAsync(File.ReadAllBytes("DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf"), "MaterialIcons").GetAwaiter().GetResult();
+            if (SamplePopups)
+            {
+                var selectedSeed = -1;
+                var selectedImage = -1;
+                view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new M.MaterialApp(
+                    locale: new Locale("en", "US"), home: new MaterialSample.SampleHome(0, 0, false, false, null,
+                        () => { }, value => selectedSeed = value, value => selectedImage = value)))));
+                Pump("popups-initial");
+                foreach (var (tooltip, label, expected) in new[] {
+                    ("Select a seed color", "Blue", 2),
+                    ("Select a color extraction image", "Peonies", 1) })
+                {
+                    // The collapsed rail stays mounted on narrow screens.
+                    var actions = Elements(binding.rootElement!).First(element => Width > 1000
+                        ? element.widget is M.NavigationRail : element.widget is M.AppBar);
+                    var button = Elements(actions).Single(element => element.widget is M.PopupMenuButton<int> popup && popup.tooltip == tooltip);
+                    TapElement(button);
+                    Pump("popup-open-" + expected);
+                    var entry = Elements(binding.rootElement!).SingleOrDefault(element => element.widget is M.PopupMenuItem<int> item && item.value == expected);
+                    if (entry is null) throw new Exception($"{tooltip}: pointer tap did not open menu at width {Width}");
+                    var rect = Bounds(entry);
+                    if (rect.width <= 0 || rect.height <= 0 || rect.left < 0 || rect.top < 0 || rect.right > Width || rect.bottom > Height)
+                        throw new Exception($"{label}: menu entry is outside viewport: {rect}");
+                    TapElement(entry);
+                    Pump("popup-selected-" + expected);
+                    if ((expected == 2 ? selectedSeed : selectedImage) != expected)
+                        throw new Exception($"{label}: menu selection was not delivered");
+                }
+                Console.WriteLine($"sample popups: seed/image pointer open, visible bounds and selection at {Width}x{Height} PASS");
+                return;
+            }
             if (AppBarRaster)
             {
                 view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new M.MaterialApp(

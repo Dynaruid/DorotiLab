@@ -31,17 +31,17 @@ public static partial class Popup_menuLibrary
 
 public static partial class Popup_menuLibrary
 {
-    internal static double _kMenuMaxWidth = (5.0 * Popup_menuLibrary._kMenuWidthStep);
+    internal const double _kMenuMaxWidth = (5.0 * Popup_menuLibrary._kMenuWidthStep);
 }
 
 public static partial class Popup_menuLibrary
 {
-    internal static double _kMenuMinWidth = (2.0 * Popup_menuLibrary._kMenuWidthStep);
+    internal const double _kMenuMinWidth = (2.0 * Popup_menuLibrary._kMenuWidthStep);
 }
 
 public static partial class Popup_menuLibrary
 {
-    internal static double _kMenuWidthStep = 56.0;
+    internal const double _kMenuWidthStep = 56.0;
 }
 
 public static partial class Popup_menuLibrary
@@ -438,6 +438,9 @@ internal class _PopupMenuState__popup_menu<T> : global::Doroti.Framework.Widgets
         PopupMenuThemeData defaults = ((new _PopupMenuDefaultsM3__popup_menu(context)));
         for (var i = 0L; (i < checked((long)(((_PopupMenu__popup_menu<T>)(object)this.widget).route.items.Count))); i += 1L)
         {
+            // Layout runs after this loop. Capture the entry index rather than
+            // the shared C# loop variable, which has advanced past the list.
+            var itemIndex = checked((int)i);
             global::Doroti.Framework.Animation.CurvedAnimation opacityLocal = this._opacities[(int)(i)];
             global::Doroti.Framework.Widgets.Widget item = ((global::Doroti.Framework.Widgets.Widget)(object?)((_PopupMenu__popup_menu<T>)(object)this.widget).route.items[(int)(i)]);
             if (((((_PopupMenu__popup_menu<T>)(object)this.widget).route.initialValue is not null) && ((_PopupMenu__popup_menu<T>)(object)this.widget).route.items[(int)(i)].represents(((_PopupMenu__popup_menu<T>)(object)this.widget).route.initialValue)))
@@ -446,7 +449,7 @@ internal class _PopupMenuState__popup_menu<T> : global::Doroti.Framework.Widgets
             }
             childrenLocal.Add(new _MenuItem__popup_menu(onLayout: ((global::System.Action<Size>)((size) =>
             {
-                ((_PopupMenu__popup_menu<T>)(object)this.widget).route.itemSizes[(int)(i)] = size;
+                ((_PopupMenu__popup_menu<T>)(object)this.widget).route.itemSizes[itemIndex] = size;
             })), child: new global::Doroti.Framework.Widgets.FadeTransition(key: ((_PopupMenu__popup_menu<T>)(object)this.widget).itemKeys[(int)(i)], opacity: opacityLocal, child: item)));
         }
         var opacityAlternate = new global::Doroti.Framework.Animation.CurveTween(curve: new global::Doroti.Framework.Animation.Interval(0.0, (1.0 / 3.0)));
