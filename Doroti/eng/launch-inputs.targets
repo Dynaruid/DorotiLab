@@ -1,0 +1,18 @@
+<Project>
+  <Target Name="DorotiCollectLaunchInputs" Returns="@(_DorotiLaunchInput)">
+    <ItemGroup>
+      <_DorotiLaunchInput Include="@(Compile);@(EmbeddedResource);@(Content);@(None);@(AdditionalFiles);$(MSBuildAllProjects)" />
+      <_DorotiLaunchInput Include="$(MSBuildProjectFullPath)" />
+      <_DorotiLaunchProject Include="@(ProjectReference)" Condition="'%(ProjectReference.Extension)' == '.csproj'" />
+    </ItemGroup>
+    <MSBuild Projects="@(_DorotiLaunchProject)" Targets="DorotiCollectLaunchInputs"
+             BuildInParallel="false" SkipNonexistentProjects="false">
+      <Output TaskParameter="TargetOutputs" ItemName="_DorotiLaunchReferencedInput" />
+    </MSBuild>
+    <ItemGroup>
+      <_DorotiLaunchAbsolute Include="@(_DorotiLaunchInput->'%(FullPath)');@(_DorotiLaunchReferencedInput)" />
+      <_DorotiLaunchInput Remove="@(_DorotiLaunchInput)" />
+      <_DorotiLaunchInput Include="@(_DorotiLaunchAbsolute)" />
+    </ItemGroup>
+  </Target>
+</Project>

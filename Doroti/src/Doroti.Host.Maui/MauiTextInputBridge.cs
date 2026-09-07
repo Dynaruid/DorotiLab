@@ -5,11 +5,13 @@ namespace Doroti.Host.Maui;
 
 public sealed class MauiTextInputBridge : IDisposable
 {
-    private readonly Entry _entry;
-    private readonly Editor _editor;
+    private readonly Func<Entry> _entryFactory;
+    private Entry? _entry;
+    private readonly Func<Editor> _editorFactory;
+    private Editor? _editor;
     private readonly Layout? _visualHost;
     private readonly bool _attachOnDemand;
-    private InputView _active;
+    private InputView? _active;
     private DorotiTextInputConfiguration _configuration;
     private bool _hasClient;
     private bool _suspended;
@@ -27,34 +29,42 @@ public sealed class MauiTextInputBridge : IDisposable
     private bool _hasLastCaretRect;
 
     internal MauiTextInputBridge(
-        Entry entry,
-        Editor editor,
-        Layout? visualHost = null,
-        bool attachOnDemand = false)
+        Entry entry, Editor editor, Layout? visualHost = null, bool attachOnDemand = false)
+        : this(() => entry, () => editor, visualHost, attachOnDemand)
     {
-        _entry = entry;
-        _editor = editor;
+        _entry = Subscribe(entry);
+        _editor = Subscribe(editor);
+        _active = entry;
+    }
+
+    internal MauiTextInputBridge(
+        Func<Entry> entryFactory, Func<Editor> editorFactory,
+        Layout? visualHost = null, bool attachOnDemand = false)
+    {
+        _entryFactory = entryFactory ?? throw new ArgumentNullException(nameof(entryFactory));
+        _editorFactory = editorFactory ?? throw new ArgumentNullException(nameof(editorFactory));
         _visualHost = visualHost;
         _attachOnDemand = attachOnDemand;
         if (_attachOnDemand && _visualHost is null)
             throw new ArgumentNullException(nameof(visualHost), "On-demand MAUI text input requires a visual host.");
-        _active = entry;
-        _entry.TextChanged += HandleTextChanged;
-        _editor.TextChanged += HandleTextChanged;
-        _entry.PropertyChanged += HandleInputPropertyChanged;
-        _editor.PropertyChanged += HandleInputPropertyChanged;
-        _entry.Completed += HandleCompleted;
-        _editor.Completed += HandleCompleted;
-        _entry.Focused += HandleFocused;
-        _editor.Focused += HandleFocused;
-        _entry.Unfocused += HandleUnfocused;
-        _editor.Unfocused += HandleUnfocused;
+    }
+
+    private T Subscribe<T>(T input) where T : InputView
+    {
+        input.TextChanged += HandleTextChanged;
+        input.PropertyChanged += HandleInputPropertyChanged;
+        input.Focused += HandleFocused;
+        input.Unfocused += HandleUnfocused;
+        if (input is Entry entry) entry.Completed += HandleCompleted;
+        if (input is Editor editor) editor.Completed += HandleCompleted;
+        return input;
     }
 
     internal event Action<DorotiTextEditingState>? EditingStateChanged;
     internal event Action<DorotiTextInputAction>? ActionPerformed;
     internal event Action<bool>? FocusChanged;
-    internal IReadOnlyList<InputView> Inputs => [_entry, _editor];
+    internal IReadOnlyList<InputView> Inputs =>
+        _entry is null ? (_editor is null ? [] : [_editor]) : (_editor is null ? [_entry] : [_entry, _editor]);
     internal bool HasClient => _hasClient;
 
     internal void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState state)
@@ -62,10 +72,12 @@ public sealed class MauiTextInputBridge : IDisposable
         ObjectDisposedException.ThrowIf(_disposed, this);
         _configuration = configuration;
         _hasClient = true;
-        var next = configuration.inputType == DorotiTextInputType.multiline ? (InputView)_editor : _entry;
+        var next = configuration.inputType == DorotiTextInputType.multiline
+            ? (InputView)(_editor ??= Subscribe(_editorFactory()))
+            : (_entry ??= Subscribe(_entryFactory()));
         if (!ReferenceEquals(_active, next))
         {
-            _active.Unfocus();
+            _active?.Unfocus();
             _active = next;
         }
         Configure(_active, configuration);
@@ -76,6 +88,7 @@ public sealed class MauiTextInputBridge : IDisposable
     internal void UpdateState(DorotiTextEditingState state)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_active is null || !_hasClient) return;
         var length = state.text.Length;
         var start = Math.Clamp(Math.Min(state.selection.baseOffset, state.selection.extentOffset), 0, length);
         var end = Math.Clamp(Math.Max(state.selection.baseOffset, state.selection.extentOffset), start, length);
@@ -110,6 +123,7 @@ public sealed class MauiTextInputBridge : IDisposable
 
     internal void SetCaretRect(Doroti.Ui.Rect rect)
     {
+        if (_disposed || _active is null || !_hasClient) return;
         lock (_caretGate)
         {
             _pendingCaretRect = rect;
@@ -141,7 +155,7 @@ public sealed class MauiTextInputBridge : IDisposable
             _caretDispatchPending = false;
         }
 
-        if (_disposed) return;
+        if (_disposed || _active is null) return;
         var active = _active;
         if (_hasLastCaretRect && ReferenceEquals(_lastCaretInput, active) && _lastCaretRect == rect) return;
 
@@ -166,9 +180,12 @@ public sealed class MauiTextInputBridge : IDisposable
         _pendingNativeText = null;
         _pendingNativeInput = null;
         DeactivateActiveInput(clearFocus: true);
-        _active.Text = string.Empty;
-        _active.WidthRequest = 1;
-        _active.HeightRequest = 1;
+        if (_active is not null)
+        {
+            _active.Text = string.Empty;
+            _active.WidthRequest = 1;
+            _active.HeightRequest = 1;
+        }
         DetachInputs();
     }
 
@@ -202,6 +219,7 @@ public sealed class MauiTextInputBridge : IDisposable
 
     private void AttachActiveInput(bool requestFocus)
     {
+        if (_disposed || _active is null || !_hasClient) return;
         if (!_attachOnDemand)
         {
             if (requestFocus) _active.Dispatcher.Dispatch(() => _active.Focus());
@@ -244,6 +262,7 @@ public sealed class MauiTextInputBridge : IDisposable
     private void DispatchActiveInputMutation(Action<InputView> mutation)
     {
         var expected = _active;
+        if (expected is null) return;
         void Apply()
         {
             if (_disposed || !ReferenceEquals(expected, _active)) return;
@@ -334,7 +353,7 @@ public sealed class MauiTextInputBridge : IDisposable
 
     private void HandleTextChanged(object? sender, TextChangedEventArgs args)
     {
-        if (_updating || !ReferenceEquals(sender, _active)) return;
+        if (_disposed || _active is null || _updating || !ReferenceEquals(sender, _active)) return;
         var text = args.NewTextValue ?? string.Empty;
         var selection = ResolveSelectionAfterTextChange(args.OldTextValue ?? string.Empty, text);
         _publishingNativeTextChange = true;
@@ -357,7 +376,7 @@ public sealed class MauiTextInputBridge : IDisposable
 
     private void HandleInputPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs args)
     {
-        if (_updating || !ReferenceEquals(sender, _active) ||
+        if (_disposed || _active is null || _updating || !ReferenceEquals(sender, _active) ||
             args.PropertyName is not (nameof(InputView.CursorPosition) or nameof(InputView.SelectionLength))) return;
         QueueNativeEditingState(_active, _active.Text ?? string.Empty);
     }
@@ -488,16 +507,15 @@ public sealed class MauiTextInputBridge : IDisposable
     {
         if (_disposed) return;
         _disposed = true;
-        _entry.TextChanged -= HandleTextChanged;
-        _editor.TextChanged -= HandleTextChanged;
-        _entry.PropertyChanged -= HandleInputPropertyChanged;
-        _editor.PropertyChanged -= HandleInputPropertyChanged;
-        _entry.Completed -= HandleCompleted;
-        _editor.Completed -= HandleCompleted;
-        _entry.Focused -= HandleFocused;
-        _editor.Focused -= HandleFocused;
-        _entry.Unfocused -= HandleUnfocused;
-        _editor.Unfocused -= HandleUnfocused;
+        foreach (var input in Inputs)
+        {
+            input.TextChanged -= HandleTextChanged;
+            input.PropertyChanged -= HandleInputPropertyChanged;
+            input.Focused -= HandleFocused;
+            input.Unfocused -= HandleUnfocused;
+            if (input is Entry entry) entry.Completed -= HandleCompleted;
+            if (input is Editor editor) editor.Completed -= HandleCompleted;
+        }
         DetachInputs();
     }
 }

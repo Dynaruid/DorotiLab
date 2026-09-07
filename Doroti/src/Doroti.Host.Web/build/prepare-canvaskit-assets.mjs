@@ -342,7 +342,9 @@ function assertSafeOutput(outputRoot, intermediateRoot, webRoot) {
   }
 }
 
-function atomicCopy(source, destination) {
+function atomicCopy(source, destination, expected) {
+  if (existsSync(destination) && statSync(destination).size === expected.byteLength &&
+      sha256File(destination) === expected.sha256) return;
   mkdirSync(path.dirname(destination), { recursive: true });
   const temporary = `${destination}.tmp-${process.pid}`;
   try {
@@ -355,6 +357,7 @@ function atomicCopy(source, destination) {
 }
 
 function atomicWriteText(destination, contents) {
+  if (existsSync(destination) && readFileSync(destination, "utf8") === contents) return;
   mkdirSync(path.dirname(destination), { recursive: true });
   const temporary = `${destination}.tmp-${process.pid}`;
   try {
@@ -376,7 +379,7 @@ function prepareAssets(webRoot, stampPath, intermediateRoot, outputRoot, logical
   }
 
   for (const file of inputs.pin.files) {
-    atomicCopy(path.resolve(installed.packageRoot, file.source), path.resolve(outputRoot, file.target));
+    atomicCopy(path.resolve(installed.packageRoot, file.source), path.resolve(outputRoot, file.target), file);
   }
 
   const logicalBase = logicalBasePath.endsWith("/") ? logicalBasePath : `${logicalBasePath}/`;

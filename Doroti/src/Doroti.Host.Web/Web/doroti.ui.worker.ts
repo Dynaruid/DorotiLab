@@ -61,6 +61,11 @@ interface DotnetRuntime {
   exit(code: number, reason?: unknown): void;
 }
 
+interface RuntimeBuilder {
+  create(): Promise<DotnetRuntime>;
+  withEnvironmentVariables(values: Record<string, string>): RuntimeBuilder;
+}
+
 interface QueuedScene {
   readonly sequence: number;
   readonly bytes: Uint8Array;
@@ -133,6 +138,7 @@ let uiCanvasKitReady = false;
 let managedRuntime: DotnetRuntime | null = null;
 let stopManagedRuntime: (() => void) | null = null;
 let dotnetModuleUrl = "";
+let preparedDotnetModule: Promise<{ dotnet: RuntimeBuilder }> | null = null;
 let frameDispatchCount = 0;
 let frameDispatchTotalMilliseconds = 0;
 let frameDispatchMaximumMilliseconds = 0;
@@ -381,6 +387,12 @@ export async function startCanvasKitRole(context: CanvasKitRoleContext): Promise
   bindRasterPort(requireMessagePort(envelope.rasterPort), positiveInteger(envelope.rasterSessionId, "rasterSessionId"));
   snapshot = withRasterIdentity(snapshot);
   const started = performance.now();
+  stageTrace.record("host-ready", snapshot.resizeEpoch.generation, 0, { sessionId });
+  // Import overlaps CanvasKit initialization. Runtime creation and all managed
+  // callbacks still wait for the text bridge AND the Raster GPU owner.
+  const runtimeUrl = dotnetModuleUrl || new URL("../../_framework/dotnet.js", import.meta.url).href;
+  preparedDotnetModule = import(runtimeUrl) as Promise<{ dotnet: RuntimeBuilder }>;
+  void preparedDotnetModule.catch(() => {}); // startManagedRuntime reports the original failure.
   canvasKit = await context.CanvasKitInit({
     locateFile(file) {
       if (file === "canvaskit.wasm" || file.endsWith("/canvaskit.wasm")) return context.canvasKitWasmUrl;
@@ -787,9 +799,8 @@ function maybeStartManagedRuntime(): void {
 
 async function startManagedRuntime(): Promise<void> {
   try {
-    const resolvedDotnetModuleUrl = dotnetModuleUrl || new URL("../../_framework/dotnet.js", import.meta.url).href;
-    type RuntimeBuilder = { create(): Promise<DotnetRuntime>; withEnvironmentVariables(values: Record<string, string>): RuntimeBuilder };
-    const dotnetModule = await import(resolvedDotnetModuleUrl) as { dotnet: RuntimeBuilder };
+    if (!preparedDotnetModule) throw new Error("Doroti runtime module preparation was not started.");
+    const dotnetModule = await preparedDotnetModule;
     const runtime = await dotnetModule.dotnet.withEnvironmentVariables({
       DOROTI_TESTBED_MODE: testbedMode, DOROTI_RESIZE_FIXTURE: resizeFixture, DOROTI_PICTURE_CACHE: pictureCache ? "1" : "0",
       DOROTI_ENCODING_CACHE: encodingCache ? "1" : "0",
@@ -804,6 +815,7 @@ async function startManagedRuntime(): Promise<void> {
     };
     stopManagedRuntime = appExports.Doroti.Generated.DorotiBootstrap.StopWorker;
     const result = await appExports.Doroti.Generated.DorotiBootstrap.StartWorker();
+    stageTrace.record("framework-attached", requireSnapshot().resizeEpoch.generation, 0, { sessionId });
     managedHostReady = true;
     for (const input of pendingInputs.splice(0)) dispatchWorkerInput(input);
     post("runtime-ready", {
@@ -813,6 +825,7 @@ async function startManagedRuntime(): Promise<void> {
       rasterManagedRuntimeCount: 0,
     });
   } catch (error) {
+    stageTrace.record("startup-failed", 0, 0, { sessionId, error: String(error) });
     post("fatal", { error: String(error instanceof Error ? error.stack ?? error.message : error) });
   }
 }

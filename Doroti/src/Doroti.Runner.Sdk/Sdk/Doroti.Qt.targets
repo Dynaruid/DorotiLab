@@ -1,0 +1,19 @@
+<Project>
+  <PropertyGroup Condition="'$(DorotiHostKind)' == 'Qt'">
+    <DorotiBuildQtNative Condition="'$(DorotiBuildQtNative)' == '' and $([MSBuild]::IsOSPlatform('Linux'))">true</DorotiBuildQtNative>
+    <DorotiQtNativeBuildDirectory Condition="'$(DorotiQtNativeBuildDirectory)' == ''">$(BaseIntermediateOutputPath)$(Configuration)/qt-native</DorotiQtNativeBuildDirectory>
+  </PropertyGroup>
+  <!-- CMake owns dependency/toolchain discovery and its incremental native graph.
+       Keep configuration outputs separate and do not replace it with an mtime stamp. -->
+  <Target Name="BuildDorotiQtNative" BeforeTargets="Build"
+          Condition="'$(DorotiHostKind)' == 'Qt' and '$(DorotiBuildQtNative)' == 'true'">
+    <MakeDir Directories="$(DorotiQtNativeBuildDirectory)" />
+    <Exec Command="cmake -S &quot;$(MSBuildProjectDirectory)/native&quot; -B &quot;$(DorotiQtNativeBuildDirectory)&quot; -DCMAKE_BUILD_TYPE=$(Configuration)" Timeout="1200000" />
+    <Exec Command="cmake --build &quot;$(DorotiQtNativeBuildDirectory)&quot; --config $(Configuration)" Timeout="1200000" />
+  </Target>
+  <Target Name="CopyDorotiQtNative" AfterTargets="Build;Publish"
+          Condition="'$(DorotiHostKind)' == 'Qt' and Exists('$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so')">
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" Condition="'$(PublishDir)' != ''" />
+  </Target>
+</Project>

@@ -49,6 +49,19 @@ Linux runner는 Linux x64 호스트에서 Qt 6.5 이상 Core/Gui/Widgets/OpenGL,
 
 ## 명령
 
+기본 Web Worker는 CanvasKit JS/WASM을 병렬 검증하며 둘 다 성공한 뒤 Worker를 시작합니다. UI Worker는 CanvasKit 초기화와 `dotnet.js` import를 겹치지만 runtime 생성과 attach는 GPU/text readiness를 기다립니다. `blazorOptions`와 `loadBootResource`는 document/Blazor 경로에만 적용합니다. Testbed/template은 같은 origin의 fallback font를 preload하고 fingerprinted Blazor loader 링크는 document 경로의 지연 로드 정보로 유지합니다. Loader `started`는 runtime/GPU 준비이며 첫 content 표시를 뜻하지 않습니다.
+
+Qt CMake target은 공용 Runner SDK가 configuration별 출력 경로로 관리합니다. CMake의 native dependency 검사는 유지하고, 무결성이 확인된 동일 CanvasKit 자산은 다시 쓰지 않습니다. TypeScript와 플랫폼 binding build의 기존 검증은 유지합니다.
+
+검증된 build 결과를 재사용하려면 repository root에서 다음 순서로 실행합니다.
+
+```powershell
+pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform web -Configuration Release
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release -LastSuccessful
+```
+
+`build`는 성공 artifact를 기록하며 일반 `run`은 build 성공을 기록한 뒤 앱을 시작합니다. `-LastSuccessful`/`-NoBuild`는 launch-state v2와 source/resource/native 입력, 상속 설정, 평가된 project item, SDK/workload 및 확인된 tool identity, 출력 hash(평가된 static Web asset 포함)가 모두 일치해야 합니다. 파일 누락·변조와 기존 v1 기록은 거부하므로 재사용 옵션 없이 다시 build합니다. generated/dependency 디렉터리는 진입 전에 제외하지만 binary resource와 lock 파일은 입력에 포함합니다. mtime cache를 사용하지 않으며 출력하는 fingerprint/toolchain 시간은 runtime TTID와 별개입니다. 추가 외부 입력을 동적으로 찾는 custom target은 해당 dependency를 별도로 선언해야 합니다.
+
 Repository root에서 실행합니다.
 
 ```powershell

@@ -33,7 +33,7 @@ function New-Probe([string] $Name) {
     return $directory
 }
 
-function Invoke-Probe([string] $Name, [string] $Directory, [switch] $Audit, [string] $Presenter) {
+function Invoke-Probe([string] $Name, [string] $Directory, [switch] $Audit, [string] $Presenter, [switch] $Acrylic) {
     Assert-WithinRunRoot $Directory
     $executable = Join-Path $Directory 'Doroti.Validation.HwndExactCppProduct.exe'
     $report = Join-Path $Directory "$Name-report.json"
@@ -55,6 +55,7 @@ function Invoke-Probe([string] $Name, [string] $Directory, [switch] $Audit, [str
         [void]$start.ArgumentList.Add('0')
         [void]$start.ArgumentList.Add('--no-resize-burst')
     }
+    if ($Acrylic) { [void]$start.ArgumentList.Add('--acrylic') }
     $process = [Diagnostics.Process]::new()
     $process.StartInfo = $start
     if (-not $process.Start()) { throw "C9 $Name probe failed to start." }
@@ -64,6 +65,8 @@ function Invoke-Probe([string] $Name, [string] $Directory, [switch] $Audit, [str
         $process.Kill($true)
         throw "C9 $Name probe exceeded the 20-minute timeout."
     }
+    $stdoutTask.GetAwaiter().GetResult() | Set-Content (Join-Path $Directory "$Name.stdout.log")
+    $stderrTask.GetAwaiter().GetResult() | Set-Content (Join-Path $Directory "$Name.stderr.log")
     [pscustomobject]@{
         name = $Name
         exitCode = $process.ExitCode
@@ -107,6 +110,14 @@ $audit = Invoke-Probe 'audit-success' $auditDirectory -Audit
 $vulkanDirectory = New-Probe 'vulkan-success'
 $vulkan = Invoke-Probe -Name 'vulkan-success' -Directory $vulkanDirectory -Presenter 'Vulkan'
 
+$vulkanNoAngleDirectory = New-Probe 'vulkan-without-angle'
+$optionalAngle = Join-Path $vulkanNoAngleDirectory 'av_libglesv2.dll'
+Assert-WithinRunRoot $optionalAngle
+Remove-Item -LiteralPath $optionalAngle -Force
+$vulkanNoAngle = Invoke-Probe 'vulkan-without-angle' $vulkanNoAngleDirectory -Presenter 'Vulkan'
+$vulkanAcrylic = Invoke-Probe 'vulkan-acrylic-without-angle' $vulkanNoAngleDirectory -Presenter 'Vulkan' -Acrylic
+$vulkanAuditMissing = Invoke-Probe 'vulkan-audit-missing-angle' $vulkanNoAngleDirectory -Presenter 'Vulkan' -Audit
+
 $missingDirectory = New-Probe 'missing-native'
 $missingTarget = Join-Path $missingDirectory 'doroti_windows_appsdk_host_v1.dll'
 Assert-WithinRunRoot $missingTarget
@@ -135,9 +146,15 @@ if ($success.exitCode -ne 0) { throw 'C9 app-directory success launch failed.' }
 if ($audit.exitCode -ne 0) { throw 'C9 full-hash provenance audit launch failed.' }
 if ($vulkan.exitCode -ne 0) { throw 'C9 Vulkan empty-PATH launch failed.' }
 $vulkanReport = Get-Content -LiteralPath $vulkan.report -Raw | ConvertFrom-Json -Depth 100
-if ($vulkanReport.status -ne 'PASS' -or $vulkanReport.diagnostics.effectivePresenter -ne 'Vulkan' -or
+if ($vulkanReport.status -ne 'PASS' -or $vulkanReport.diagnostics.effectivePresenter -ne 'Vulkan/Composition-Swapchain' -or
     $vulkanReport.diagnostics.vulkan.loaderPath -notmatch '\\System32\\vulkan-1\.dll$') {
     throw 'C9 Vulkan publish did not use the System32 loader as the effective presenter.'
+}
+if ($vulkanNoAngle.exitCode -ne 0 -or $vulkanAcrylic.exitCode -ne 0) {
+    throw 'C9 Vulkan opaque/Acrylic must boot without the optional ANGLE runtime.'
+}
+if ($vulkanAuditMissing.exitCode -eq 0 -or $vulkanAuditMissing.stderr -notmatch 'ANGLE EGL/GLES runtime is missing') {
+    throw 'C9 full deployment audit must reject a missing optional backend.'
 }
 if ($missing.exitCode -eq 0 -or $missing.stderr -notmatch 'missing from the application directory') {
     throw 'C9 missing-native launch did not fail fast with the expected identity.'
@@ -177,11 +194,11 @@ $report = [ordered]@{
     publishDirectory = $publishDirectory
     searchPolicy = 'PATH empty in all probes; app-directory native resolver excludes PATH/current-directory'
     nativeFiles = $nativeFiles
-    probes = @($success, $audit, $vulkan, $missing, $missingAngle, $architecture, $version) | ForEach-Object {
+    probes = @($success, $audit, $vulkan, $vulkanNoAngle, $vulkanAcrylic, $vulkanAuditMissing, $missing, $missingAngle, $architecture, $version) | ForEach-Object {
         [ordered]@{
             name = $_.name
             exitCode = $_.exitCode
-            expected = if ($_.name -in @('success', 'audit-success', 'vulkan-success')) { 'success' } else { 'explicit fail-fast' }
+            expected = if ($_.name -in @('success', 'audit-success', 'vulkan-success', 'vulkan-without-angle', 'vulkan-acrylic-without-angle')) { 'success' } else { 'explicit fail-fast' }
         }
     }
     vulkan = [ordered]@{

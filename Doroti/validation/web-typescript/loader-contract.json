@@ -12,5 +12,12 @@
   "missingBlazorDiagnostic": "DOROTIWEB020",
   "failedStageCallbackDiagnostic": "DOROTIWEB021",
   "errorCallbackDiagnostic": "DOROTIWEB022",
-  "preserveOriginalError": true
+  "preserveOriginalError": true,
+  "startedEvidence": "runtime-ready; not first content",
+  "blazorOptionsScope": "document/Blazor only; callbacks and Response values are not cloned to Workers",
+  "workerRuntimeOptions": "host-owned; no public configureRuntime or loadBootResource callback",
+  "canvasKitVerification": "parallel JS/WASM fetch-length-SHA256; both pass before Worker creation; abort peer on failure",
+  "workerRuntimePreparation": "dotnet.js import overlaps UI CanvasKit init; create and StartWorker wait for UI text and Raster GPU readiness",
+  "fontPreload": "same-origin fetch, anonymous CORS, base-relative NanumGothic; managed decode/register and ACK unchanged",
+  "blazorLoaderLink": "fingerprinted URL metadata without eager preload; loaded on document renderer selection"
 }

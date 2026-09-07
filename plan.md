@@ -2,11 +2,14 @@
 
 - 재작성일: **2026-09-06**
 - 분석 기준: HEAD `0499c1d`의 source, runner/target SDK, Testbed/template 설정 및 저장소 실행 기록.
-- 상태: **계획 작성 완료 / 새 구현 미착수**. 이번 작업은 source 재분석과 문서 갱신이며 build, publish, 앱 실행, 부트 시간 측정은 수행하지 않았다.
+- 실행 갱신: **2026-09-07**, 시작 HEAD `ccf61de` clean tree에서 source 재확인 후 구현·build·publish·실행 검증 수행. **가능한 구현/검증 및 결과 정리 완료, 전체 플랫폼 acceptance 미완료**. Apple/arm64 실기기/물리 IME·접근성·scan-out/전후 성능은 `notVerified`다.
+- 실행 결과: [cross-platform-boot-results.md](history/26-09-07/cross-platform-boot-results.md), [원시 로그·JSON·캡처](.doroti/evidence/boot/20260907-implementation/). 아래 1–2절은 변경 전 분석 근거로 보존하며 다음 구현 delta가 현재 source를 설명한다.
 - 목표: 설치된 Release 앱의 첫 유효 content 표시와 입력 준비까지 불필요한 직렬 작업을 줄인다. CLI build/deploy 시간은 별도 트랙으로 개선한다.
 - 이전 계획: [2026-08-28 원문 보존본](history/26-09-06/cross-platform-first-boot-plan-2026-08-28.md). 당시 구현 및 실패 기록: [2026-08-29 MVP 결과](history/26-08-29/cross-platform-first-boot-implementation.md).
 
 ## 1. 이전 계획과 달라진 현재 기준
+
+2026-09-07 구현 delta: Web JS/WASM 검증은 병렬이며 UI `dotnet.js` import는 CanvasKit 초기화와 겹친다. runtime.create/attach readiness는 유지한다. Testbed/template의 font preload와 document 전용 Blazor metadata를 동기화했다. MAUI Entry/Editor와 실제 MaterialSample light/dark theme를 lazy화했다. Windows presenter 선택을 native 검사 앞으로 옮겨 normal Vulkan/D3D12의 ANGLE 검사를 생략하되 audit는 유지한다. CLI는 binary/상속/evaluated external 입력과 toolchain/output을 묶은 state v2를 사용하며 build 성공을 launch 전에 기록한다. Qt target은 공용 Runner SDK에 있다. Android profile은 현재 DEX로 rebind/strict 검증했다. 과거 root의 lazy theme 완료와 현재 sample의 남은 eager 필드를 구분했다.
 
 이전 계획의 미완료 목록을 그대로 재실행하지 않는다. 현재 제품 기본값은 **Windows App SDK + Vulkan**, **Web CanvasKit UI/Raster Worker**다. 기본값 변경 자체는 resize 성능이나 physical scan-out의 합격을 뜻하지 않는다.
 
@@ -132,14 +135,14 @@ OS의 TTID/TTFD와 Doroti marker는 별도 필드로 기록한다. Android am st
 
 ## 4. 실행 작업과 완료 기준
 
-모든 신규 항목은 미완료다. 순서는 **P0 → P1 → P2 → P3 → P4 → P5 → P6**다. 장치가 없는 플랫폼의 runtime gate는 notVerified로 남기고 가능한 후속 작업은 진행한다.
+P0–P6를 실행했다. 체크는 해당 구현 또는 명시된 검토의 완료이며 모든 하위 physical/performance acceptance의 PASS를 뜻하지 않는다. 장치/환경이 없는 항목과 부분 검증은 unchecked로 남긴다. 조건별 실제 결과와 보류 설계는 연결된 실행 결과 문서를 따른다.
 
 ### P0. 현재 부트 계약 고정
 
-- [ ] 위 source graph를 기준으로 최소 marker/evidence schema를 기존 validator에 연결한다. 실제 dependency 차이는 이 문서에 갱신한다.
-- [ ] Windows 기본 Vulkan opaque/Acrylic과 Web 기본 CanvasKit에 first-content/input-ready 판정을 연결한다. loader started의 의미를 소리 없이 변경하지 않는다.
-- [ ] TextField 없는 첫 화면, 첫 화면 TextField autofocus, system dark, accessibility-active 시나리오를 구분한다. 최소 fixture와 실제 Testbed를 둘 다 사용한다.
-- [ ] revision/evaluated property/artifact/default·explicit renderer를 결과에 남긴다. 과거 build 폴더 크기나 PASS를 새 baseline으로 복사하지 않는다.
+- [x] 위 source graph를 기준으로 최소 marker/evidence schema를 기존 validator에 연결한다. 실제 dependency 차이는 이 문서에 갱신한다.
+- [x] Windows 기본 Vulkan opaque/Acrylic과 Web 기본 CanvasKit에 first-content/input-ready 판정을 연결한다. loader started의 의미를 소리 없이 변경하지 않는다.
+- [x] TextField 없는 첫 화면, 첫 화면 TextField autofocus, system dark, accessibility-active 시나리오를 구분한다. 최소 fixture와 실제 Testbed를 둘 다 사용한다.
+- [x] revision/evaluated property/artifact/default·explicit renderer를 결과에 남긴다. 과거 build 폴더 크기나 PASS를 새 baseline으로 복사하지 않는다.
 
 완료 기준: 첫 장면과 startup failure를 식별하고 loader/GPU ready만으로 content PASS가 발생하지 않는다. 정량 baseline 수집은 모든 구조 개선의 선행 조건이 아니다.
 
@@ -147,30 +150,30 @@ OS의 TTID/TTFD와 Doroti marker는 별도 필드로 기록한다. Android am st
 
 소유 파일: doroti.canvaskit.host.ts, doroti.ui.worker.ts, doroti.canvaskit.bootstrap.ts, DorotiWebWorkerRunner.cs, 공용 loader/types/contract 및 HTML template.
 
-- [ ] **자산 검증 병렬화:** manifest 검증 뒤 독립적인 JS/WASM fetch·length/hash 검증을 병렬 시작한다. 둘 다 성공하기 전 실행 금지, 실패 정리, 동일 origin/path/version/integrity 거부 계약을 보존한다.
-- [ ] **runtime 준비 분리:** CanvasKit 준비와 겹칠 수 있는 dotnet.js import/runtime resource 준비를 분리한다. runtime.create 선행은 callback/bridge 초기화에 안전한 범위만 허용한다. StartWorker/view attach는 GPU/text 준비 뒤 한 번만 호출한다.
-- [ ] **폰트 요청 앞당기기:** managed entry 뒤에서 시작하는 font waterfall을 줄인다. base path/CORS/cache가 일치하는 preload 또는 동일 session의 단일 요청 경로를 우선 적용한다. decode/register/resource ACK는 기존 소유층에서 처리하고 fallback font를 빼거나 첫 장면을 잘못된 글꼴로 그리지 않는다.
-- [ ] **부트 옵션 계약:** document용 blazorOptions와 Worker runtime 설정의 지원 범위를 API/type/docs에 명시한다. 필요한 Worker 옵션은 명시적 계약으로 연결하고 함수/Response를 무리하게 structured clone하지 않는다.
-- [ ] **preload/payload 재산정:** 기본 CanvasKit과 명시적 document의 실제 request graph를 따로 기록한다. 불필요한 Blazor loader preload와 필요한 dotnet/CanvasKit/font 우선순위를 정리하되 alternate renderer 및 fingerprint/importmap 계약을 유지한다.
-- [ ] **중복 처리 후속 판단:** main verification → Worker URL load의 요청/byte copy/compile를 확인한다. verified bytes/compiled module 재사용은 pinned upstream 지원과 ownership/integrity 동등성이 확인될 때만 별도 적용한다. runtime hash 삭제나 unverified cache hit로 대체하지 않는다.
+- [x] **자산 검증 병렬화:** manifest 검증 뒤 독립적인 JS/WASM fetch·length/hash 검증을 병렬 시작한다. 둘 다 성공하기 전 실행 금지, 실패 정리, 동일 origin/path/version/integrity 거부 계약을 보존한다.
+- [x] **runtime 준비 분리:** CanvasKit 준비와 겹칠 수 있는 dotnet.js import/runtime resource 준비를 분리한다. runtime.create 선행은 callback/bridge 초기화에 안전한 범위만 허용한다. StartWorker/view attach는 GPU/text 준비 뒤 한 번만 호출한다.
+- [x] **폰트 요청 앞당기기:** managed entry 뒤에서 시작하는 font waterfall을 줄인다. base path/CORS/cache가 일치하는 preload 또는 동일 session의 단일 요청 경로를 우선 적용한다. decode/register/resource ACK는 기존 소유층에서 처리하고 fallback font를 빼거나 첫 장면을 잘못된 글꼴로 그리지 않는다.
+- [x] **부트 옵션 계약:** document용 blazorOptions와 Worker runtime 설정의 지원 범위를 API/type/docs에 명시한다. 필요한 Worker 옵션은 명시적 계약으로 연결하고 함수/Response를 무리하게 structured clone하지 않는다.
+- [x] **preload/payload 재산정:** 기본 CanvasKit과 명시적 document의 실제 request graph를 따로 기록한다. 불필요한 Blazor loader preload와 필요한 dotnet/CanvasKit/font 우선순위를 정리하되 alternate renderer 및 fingerprint/importmap 계약을 유지한다.
+- [x] **중복 처리 후속 판단:** main verification → Worker URL load의 요청/byte copy/compile를 확인한다. verified bytes/compiled module 재사용은 pinned upstream 지원과 ownership/integrity 동등성이 확인될 때만 별도 적용한다. runtime hash 삭제나 unverified cache hit로 대체하지 않는다.
 
 완료 기준: TypeScript/loader 계약, 기본 CanvasKit 첫 content·한글 text·plugin·ARIA·resize/context recovery와 명시적 document 회귀 PASS. 404/hash mismatch/WASM init 실패 원인이 남고 Worker/port/canvas lease가 정리된다. 요청·검증·compile 절감과 사용자 부트 시간 개선은 별도 판정한다.
 
 ### P2. 공용 first-frame 비용의 남은 부분
 
-- [ ] **MAUI 관리 input 객체 lazy화:** Entry/Editor와 구독을 factory로 바꾸는 범위를 검토·구현한다. single-line 첫 client에는 해당 객체만, multiline 전환 시 나머지를 생성한다. focus/handler attach, hide/show, unload/reload, selection, disposal exactly-once를 유지한다.
-- [ ] **manifest 직접 생성 검토:** generated descriptor에 typed manifest를 제공해 JSON parsing/중간 할당을 없앨 수 있는지 SDK/boundary 계약으로 검토한다. public JSON Load 경로와 schema/RID/duplicate/plugin ABI/resource integrity 검증을 보존한다. 두 manifest를 따로 관리하거나 복잡한 runtime cache가 필요하면 후속으로 남긴다.
-- [ ] **현재 첫 화면의 도달 경로만 정리:** theme default/type initializer/DLR 중 현재 root의 build/layout/paint에서 도달하는 eager 생성·중복 변환만 고친다. 과거 C1/C2/C3 정적화 완료를 다시 작업으로 세지 않는다.
-- [ ] **semantics 유지:** 상태와 무관한 전체 지연은 하지 않는다. 첫 publish에 중복 snapshot/serialization이 있으면 내용·순서·actions를 보존하는 범위만 정리한다.
+- [x] **MAUI 관리 input 객체 lazy화:** Entry/Editor와 구독을 factory로 바꾸는 범위를 검토·구현한다. single-line 첫 client에는 해당 객체만, multiline 전환 시 나머지를 생성한다. focus/handler attach, hide/show, unload/reload, selection, disposal exactly-once를 유지한다.
+- [x] **manifest 직접 생성 검토:** generated descriptor에 typed manifest를 제공해 JSON parsing/중간 할당을 없앨 수 있는지 SDK/boundary 계약으로 검토한다. public JSON Load 경로와 schema/RID/duplicate/plugin ABI/resource integrity 검증을 보존한다. 두 manifest를 따로 관리하거나 복잡한 runtime cache가 필요하면 후속으로 남긴다.
+- [x] **현재 첫 화면의 도달 경로만 정리:** theme default/type initializer/DLR 중 현재 root의 build/layout/paint에서 도달하는 eager 생성·중복 변환만 고친다. 과거 C1/C2/C3 정적화 완료를 다시 작업으로 세지 않는다.
+- [x] **semantics 유지:** 상태와 무관한 전체 지연은 하지 않는다. 첫 publish에 중복 snapshot/serialization이 있으면 내용·순서·actions를 보존하는 범위만 정리한다.
 
 완료 기준: descriptor/boundary negative cases, session exactly-once, FCR scheduler/rendering/semantics/Material, lazy input lifecycle PASS. text 없는 화면의 관리 객체 생성 감소를 확인하고 첫 text 입력으로 비용이 과도하게 이동하지 않았는지 확인한다. 전체 Framework dynamic 제거는 범위 밖이다.
 
 ### P3. Windows Vulkan/Composition 부트 정리
 
-- [ ] **presenter 선택 선행:** renderer/GPU/backdrop 정책을 먼저 확정하고 selected backend별 native 검사 목록을 분리한다. Vulkan-only 부트의 ANGLE 존재/PE 검사 제거 가능성은 native host의 실제 import graph까지 확인한다.
-- [ ] **배포/검사 계약 동기화:** 복수 backend 지원을 유지하며 startup 필수 파일과 optional backend 파일을 구분한다. selected backend의 missing/wrong-architecture/ABI는 fail-closed로 처리하고 audit manifest/C9도 함께 갱신한다.
-- [ ] **Vulkan 초기화 중복 정리:** adapter/device/Skia/Composition/backdrop 준비에서 중복 probe/device가 있는지 확인해 실제 중복만 제거한다. UI/Composition/raster thread ownership과 첫 exact content 공개 순서를 보존한다.
-- [ ] **opaque/Acrylic 분리:** Acrylic activation은 요청 창에만 수행한다. 불필요한 작업과 first-present에 필수인 fence/commit 대기를 구분하고 첫 buffer 공개 전에 content를 준비한다.
+- [x] **presenter 선택 선행:** renderer/GPU/backdrop 정책을 먼저 확정하고 selected backend별 native 검사 목록을 분리한다. Vulkan-only 부트의 ANGLE 존재/PE 검사 제거 가능성은 native host의 실제 import graph까지 확인한다.
+- [x] **배포/검사 계약 동기화:** 복수 backend 지원을 유지하며 startup 필수 파일과 optional backend 파일을 구분한다. selected backend의 missing/wrong-architecture/ABI는 fail-closed로 처리하고 audit manifest/C9도 함께 갱신한다.
+- [x] **Vulkan 초기화 중복 정리:** adapter/device/Skia/Composition/backdrop 준비에서 중복 probe/device가 있는지 확인해 실제 중복만 제거한다. UI/Composition/raster thread ownership과 첫 exact content 공개 순서를 보존한다.
+- [x] **opaque/Acrylic 분리:** Acrylic activation은 요청 창에만 수행한다. 불필요한 작업과 first-present에 필수인 fence/commit 대기를 구분하고 첫 buffer 공개 전에 content를 준비한다.
 - [ ] **명시적 경로 회귀:** ANGLE opaque/Acrylic, Windows MAUI, 진단 D3D12의 선택/실패 의미를 유지한다. Vulkan 실패를 ANGLE로 자동 fallback하지 않는다.
 
 완료 기준: target Release publish, empty-PATH normal/audit/negative probe, Vulkan opaque/Acrylic 첫 content/input PASS. no app-local Vulkan loader/ICD와 provenance 계약 유지. resize/IME/Narrator/physical scan-out 미수행은 별도 notVerified이며 과거 resize FAIL을 닫지 않는다.
@@ -178,8 +181,8 @@ OS의 TTID/TTFD와 Doroti marker는 별도 필드로 기록한다. Android am st
 ### P4. Android·Apple·Linux 적용과 남은 target gate
 
 - [ ] **Android arm64:** 현재 signed APK 기준 install/process-cold/warm, foreground PID/activity, first content, 첫 text client, crash/ANR를 확인한다. profile strict decode/DEX 적합성과 ART compilation state를 검증하고 변경된 DEX에 맞춰 필요 시 CUJ profile을 재생성한다.
-- [ ] **Android x64:** AOT off + trim on Release emulator launch로 남은 runtime gate를 수행한다. 오류 artifact/원인을 보존하며 무조건 trimming 전체를 끄는 것을 기본 해법으로 삼지 않는다.
-- [ ] **Android 선택 실험:** Baseline Profile과 DEX layout용 Startup Profile/managed AOT profile을 구분한다. AOT 비교와 marshal methods 재활성화는 재현 가능한 fault 수정 및 장치 matrix가 확보됐을 때만 별도 진행한다.
+- [x] **Android x64:** AOT off + trim on Release emulator launch로 남은 runtime gate를 수행한다. 오류 artifact/원인을 보존하며 무조건 trimming 전체를 끄는 것을 기본 해법으로 삼지 않는다.
+- [x] **Android 선택 실험:** Baseline Profile과 DEX layout용 Startup Profile/managed AOT profile을 구분한다. AOT 비교와 marshal methods 재활성화는 재현 가능한 fault 수정 및 장치 matrix가 확보됐을 때만 별도 진행한다.
 - [ ] **Apple 3제품:** iOS physical/simulator, Catalyst, AppKit을 각각 Apple host에서 build/sign/launch한다. P2의 첫 focus, Metal first content, suspend/resume, 한글 IME/VoiceOver를 검증한다. DLR이 남은 상태에서 interpreter를 일괄 제거하지 않는다.
 - [ ] **Linux:** framework-dependent published executable로 실제 Wayland/X11 각각 Qt/QPA/GL 초기화, first frame, input/IME/semantics를 검증한다. WSLg/VM은 별도 표시한다.
 
@@ -187,35 +190,35 @@ OS의 TTID/TTFD와 Doroti marker는 별도 필드로 기록한다. Android am st
 
 ### P5. CLI 안전한 재실행과 build graph 개선
 
-- [ ] **fingerprint 입력 정확성 우선:** 상속 props/targets/package pin/SDK 선택, native source, binary resource/profile/font를 build dependency 기준으로 포함한다. 실제 입력 변경에도 같은 fingerprint가 되는 negative case를 먼저 막는다.
-- [ ] **출력 identity 확인:** 성공 artifact 목록/RID/configuration/toolchain을 state에 묶고 missing/변조/stale output을 거부한다. build 성공과 run 종료 기록 분리 여부 및 state schema upgrade/fail-closed 정책을 정한다.
-- [ ] **탐색 비용 축소:** generated output/dependency directory를 재귀 진입 전에 제외한다. package-lock/pin과 build input은 유지하며 mtime-only cache로 정확성을 낮추지 않는다. unrelated target invalidation은 의존 graph가 확인된 만큼만 줄인다.
-- [ ] **native/asset incremental:** Qt CMake, CanvasKit restore/prepare, TypeScript, Android/Apple binding target의 inputs/outputs를 검토한다. source/pin/toolchain 변경 시 재실행하고 해당 target build에만 참여하게 정리한다.
-- [ ] **template 동기화:** 공용 SDK/target에 구현하고 Testbed와 새 template 앱으로 clean build/재실행/changed-input/removed-output을 검증한다. README 영문/한글의 명령과 실제 재사용 단계를 맞춘다.
+- [x] **fingerprint 입력 정확성 우선:** 상속 props/targets/package pin/SDK 선택, native source, binary resource/profile/font를 build dependency 기준으로 포함한다. 실제 입력 변경에도 같은 fingerprint가 되는 negative case를 먼저 막는다.
+- [x] **출력 identity 확인:** 성공 artifact 목록/RID/configuration/toolchain을 state에 묶고 missing/변조/stale output을 거부한다. build 성공과 run 종료 기록 분리 여부 및 state schema upgrade/fail-closed 정책을 정한다.
+- [x] **탐색 비용 축소:** generated output/dependency directory를 재귀 진입 전에 제외한다. package-lock/pin과 build input은 유지하며 mtime-only cache로 정확성을 낮추지 않는다. unrelated target invalidation은 의존 graph가 확인된 만큼만 줄인다.
+- [x] **native/asset incremental:** Qt CMake, CanvasKit restore/prepare, TypeScript, Android/Apple binding target의 inputs/outputs를 검토한다. source/pin/toolchain 변경 시 재실행하고 해당 target build에만 참여하게 정리한다.
+- [x] **template 동기화:** 공용 SDK/target에 구현하고 Testbed와 새 template 앱으로 clean build/재실행/changed-input/removed-output을 검증한다. README 영문/한글의 명령과 실제 재사용 단계를 맞춘다.
 
 완료 기준: clean build는 필요한 단계 수행, unchanged run은 유효한 artifact 재사용, source/config/RID/native/resource/toolchain/output 불일치는 명확히 거부. fingerprint 시간을 포함한 developer launch 결과를 앱 runtime TTID와 분리한다.
 
 ### P6. 결과 정리와 채택
 
-- [ ] implemented, structural PASS, runtime PASS, performance notVerified를 구분한다. 환경 부재는 notVerified, 실제 실행 실패는 FAIL로 남긴다.
-- [ ] 정량 비교를 했다면 동일 조건 원시 launch 기록과 변화량을 남긴다. package byte/init 호출 수 감소만으로 TTID 개선률을 만들지 않는다.
-- [ ] 결과는 `history/<실행일>/cross-platform-boot-results.md`, 로그/JSON/capture는 `.doroti/evidence/boot/<run-id>/`에 저장하고 이 문서에서 연결한다.
-- [ ] 기본값/API/template/문서 일치와 미수행 physical/Apple/Linux/mobile Web/accessibility gate를 다음 작업 목록으로 남긴다.
+- [x] implemented, structural PASS, runtime PASS, performance notVerified를 구분한다. 환경 부재는 notVerified, 실제 실행 실패는 FAIL로 남긴다.
+- [x] 정량 비교를 했다면 동일 조건 원시 launch 기록과 변화량을 남긴다. package byte/init 호출 수 감소만으로 TTID 개선률을 만들지 않는다.
+- [x] 결과는 `history/<실행일>/cross-platform-boot-results.md`, 로그/JSON/capture는 `.doroti/evidence/boot/<run-id>/`에 저장하고 이 문서에서 연결한다.
+- [x] 기본값/API/template/문서 일치와 미수행 physical/Apple/Linux/mobile Web/accessibility gate를 다음 작업 목록으로 남긴다.
 
 ## 5. 검증 진입점과 현재 상태
 
-아래는 재사용할 기존 진입점이며 **이번 재작성에서 실행한 결과가 아니다**. 기존 project/script/Playwright fixture를 확장하고 아직 없는 command를 실행 가능한 것처럼 기록하지 않는다.
+기존 project/script/Playwright fixture를 확장해 실행했다. 아래는 2026-09-07의 결과 요약이며 개별 실패·수정·재실행 label은 결과 문서에 보존한다.
 
 | 영역 | 기존 진입점 | 신규 실행 상태 |
 | --- | --- | --- |
-| Bootstrap/공용 | Doroti/validation/app-bootstrap, app-runner, dynamic-dispatch, fcr3-scheduler, fcr4-retained-rendering, fcr6-semantics, fcr7-material-widget | notRun |
-| Web loader | Doroti/validation/web-typescript/loader-contract.json, Host Web TypeScript | notRun |
-| Web 실제 앱 | Doroti/validation/web-playwright/tests/startup.spec.ts, canvaskit-worker.spec.ts, canvaskit-text-field.spec.ts, canvaskit-display-list.spec.ts, resize lifecycle tests | notRun |
-| Windows | Doroti/eng/test-hwnd-exact-cpp-c9-publish.ps1, validation/hwnd-exact-cpp-product, Vulkan capability validator | notRun |
-| Android | Doroti/eng/generate-android-baseline-profile.ps1, 각 RID runner와 fixed device/emulator | notRun |
-| Apple | iOS/Catalyst/AppKit 각 runner 및 Apple host | notRun |
-| Linux | Doroti/validation/linux-qt-contract, Qt runner 및 실제 Wayland/X11 | notRun |
-| CLI/template | Doroti/validation/app-runner, workspace/template 계약과 입력·출력 무효화 사례 | notRun |
+| Bootstrap/공용 | app-bootstrap descriptor/lazy-input, dynamic-dispatch, FCR3/4/6/7 | PASS; native input acceptance 별도 |
+| Web loader | loader contract, Host Web TypeScript | build/typecheck/404/hash/init cleanup/parallel gate PASS |
+| Web 실제 앱 | startup, worker/display-list/resize/recovery, input/ARIA | content/한글 값 PASS; JS plugin endpoint PASS, managed roundtrip/physical IME 미검증 |
+| Windows | C9 publish/product validator, MAUI publish/live | 최종 C9 PASS; 초기 2 FAIL 보존, MAUI frame/semantics PASS, D3D12 missing diagnostic 거부 확인; 물리 입력 미검증 |
+| Android | signed Release 두 RID, strict profile, x64 emulator | build/profile PASS, x64 content/runtime 확인; arm64 runtime notVerified |
+| Apple | iOS/Catalyst/AppKit 각 runner 및 Apple host | notVerified: Apple host 없음 |
+| Linux | linux-qt-contract, published Qt Wayland/xcb | WSLg explicit D3D12 API smoke PASS; default llvmpipe FAIL, native input 미검증 |
+| CLI/template | launch-identity/reuse contract, 새 source-wired template | build/reuse/negative PASS; NuGet release 설치는 미검증 |
 
 - 모든 test/build 및 자식 프로세스는 [.github/copilot-instructions.md](.github/copilot-instructions.md)에 따라 **20분 timeout**을 적용하고, timeout 시 해당 작업이 시작한 process tree를 종료한다.
 - 좁은 correctness gate가 통과하면 해당 target Release smoke로 진행한다. 문서 갱신만을 위해 full build/native drag/기기 설치를 수행하지 않는다.

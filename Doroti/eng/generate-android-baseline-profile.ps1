@@ -36,6 +36,10 @@ if ($LASTEXITCODE -ne 0) { throw 'Android profile snapshot failed. Exercise the 
 if ($LASTEXITCODE -ne 0) { throw 'Android profile pull failed.' }
 & $profgen dumpProfile -p $snapshot -a $Apk -o $humanReadable
 if ($LASTEXITCODE -ne 0) { throw 'profgen could not convert the device snapshot to HRF.' }
+if (-not (Test-Path -LiteralPath $humanReadable -PathType Leaf) -or
+    [string]::IsNullOrWhiteSpace([IO.File]::ReadAllText($humanReadable))) {
+    throw 'The device snapshot contains no startup rules. Exercise the CUJ and flush ART profiles before replacing the baseline.'
+}
 & $profgen validate $humanReadable
 if ($LASTEXITCODE -ne 0) { throw 'profgen rejected the generated HRF.' }
 & $profgen bin $humanReadable -a $Apk -o $binaryProfile -om $binaryMetadata -pf v0_1_0_p

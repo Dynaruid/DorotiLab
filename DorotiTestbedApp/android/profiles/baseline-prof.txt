@@ -3111,10 +3111,10 @@ HSPLcom/microsoft/maui/PlatformWrapperView;->requestLayout()V
 HSPLcom/microsoft/maui/glide/ShadowBitmapPool;-><init>(I)V
 HSPLcom/microsoft/maui/glide/ShadowBitmapPool;->createBitmapPool(Landroid/content/Context;)Lcom/microsoft/maui/glide/ShadowBitmapPool;
 HSPLcom/microsoft/maui/glide/ShadowBitmapPool;->get(Landroid/content/Context;)Lcom/bumptech/glide/load/engine/bitmap_recycle/BitmapPool;
-HSPLcrc641bb9c91451c1be9f/MainActivity;-><clinit>()V
-HSPLcrc641bb9c91451c1be9f/MainActivity;-><init>()V
-HSPLcrc641bb9c91451c1be9f/MainApplication;-><clinit>()V
-HSPLcrc641bb9c91451c1be9f/MainApplication;-><init>()V
+HSPLcrc64c80c495bd333b69c/MainActivity;-><clinit>()V
+HSPLcrc64c80c495bd333b69c/MainActivity;-><init>()V
+HSPLcrc64c80c495bd333b69c/MainApplication;-><clinit>()V
+HSPLcrc64c80c495bd333b69c/MainApplication;-><init>()V
 HSPLcrc643f2b18b2570eaa5a/PlatformGraphicsView;-><clinit>()V
 HSPLcrc643f2b18b2570eaa5a/PlatformGraphicsView;-><init>(Landroid/content/Context;)V
 HSPLcrc643f2b18b2570eaa5a/PlatformGraphicsView;->draw(Landroid/graphics/Canvas;)V
@@ -3442,8 +3442,8 @@ Lcom/microsoft/maui/PlatformMauiAppCompatActivity;
 Lcom/microsoft/maui/PlatformViewGroup;
 Lcom/microsoft/maui/PlatformWrapperView;
 Lcom/microsoft/maui/glide/ShadowBitmapPool;
-Lcrc641bb9c91451c1be9f/MainActivity;
-Lcrc641bb9c91451c1be9f/MainApplication;
+Lcrc64c80c495bd333b69c/MainActivity;
+Lcrc64c80c495bd333b69c/MainApplication;
 Lcrc643f2b18b2570eaa5a/PlatformGraphicsView;
 Lcrc6452ffdc5b34af3a0f/AccessibilityDelegateCompatWrapper;
 Lcrc6452ffdc5b34af3a0f/BorderDrawable;

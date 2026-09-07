@@ -271,7 +271,9 @@ internal static class Program
                         provenance.ApplicationDirectory.TrimEnd(IoPath.DirectorySeparatorChar) &&
                     provenance.NativeHostLength > 0 &&
                     provenance.BootstrapLength > 0 &&
-                    provenance.AngleRuntimeLength > 0 &&
+                    provenance.SelectedPresenter == requestedPresenter &&
+                    provenance.AngleRuntimeInspected == (requestedPresenter == "AngleD3D11" || provenanceAudit) &&
+                    (provenance.AngleRuntimeInspected ? provenance.AngleRuntimeLength > 0 : provenance.AngleRuntimeLength == 0) &&
                     provenance.FullHashAudit == provenanceAudit &&
                     (provenanceAudit
                         ? provenance.NativeHostSha256?.Length == 64 &&
@@ -289,6 +291,20 @@ internal static class Program
                 gate = "C5-A",
                 status = "PASS",
                 exitCode,
+                boot = new
+                {
+                    schemaVersion = "doroti.boot-evidence/v1",
+                    renderer = requestedPresenter,
+                    rendererSelection = useDefaultPresenter ? "default" : "explicit",
+                    backdrop = acrylicRequested ? "acrylic" : "opaque",
+                    scenario = "process-cold",
+                    markers = new[] { "launch-start", "host-ready", "framework-attached", "first-scene", "first-submit", "first-content-evidence", "input-ready" },
+                    firstContentEvidence = "framework-scene-and-exact-present-api",
+                    inputEvidence = "automated-pointer-key-text-semantics",
+                    physicalScanOut = "notVerified",
+                    physicalImeAndScreenReader = "notVerified",
+                    performance = "notVerified",
+                },
                 framework = new
                 {
                     ProductEntrypoint.AttachCount,

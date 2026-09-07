@@ -49,6 +49,19 @@ The `reference/flutter-master` checkout is needed only for explicit Flutter refe
 
 ## Commands
 
+The default Web Worker verifies CanvasKit JS and WASM concurrently and starts workers after both integrity checks succeed. The UI worker imports `dotnet.js` while CanvasKit initializes; runtime creation and attachment still wait for GPU/text readiness. `blazorOptions` (including `loadBootResource`) applies only to the document/Blazor path. Testbed and template preload the same-origin fallback font; the fingerprinted Blazor loader link remains lazy document-path metadata. Loader `started` is runtime/GPU readiness, not first visible content.
+
+The Runner SDK owns the Qt CMake target with configuration-specific output. CMake retains native dependency checking; unchanged, integrity-verified CanvasKit assets are no longer rewritten. TypeScript and platform binding builds retain their existing correctness checks.
+
+For validated build reuse, run from the repository root:
+
+```powershell
+pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform web -Configuration Release
+pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release -LastSuccessful
+```
+
+`build` records a successful artifact; ordinary `run` records its build before launching. `-LastSuccessful`/`-NoBuild` requires launch-state v2 and matching source/resource/native inputs, inherited settings, evaluated project items, SDK/workload and resolved tool identities, and hashed outputs (including evaluated static Web assets). Missing/changed artifacts and old v1 records are rejected; rebuild without reuse flags. Generated/dependency directories are pruned before traversal while binary resources and lock files remain inputs. This uses content hashing, not an mtime cache. Printed fingerprint/toolchain time is separate from runtime TTID. Custom targets discovering additional external inputs need corresponding dependency declarations.
+
 Run from the repository root:
 
 ```powershell

@@ -259,6 +259,7 @@ internal sealed class MaterialGalleryState : State<MaterialGallery>
             ? "Enter text to test keyboard and IME input"
             : $"Entered: {_textValue}";
         var textField = new Material.TextField(
+            autofocus: Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "boot-autofocus",
             controller: _textController,
             focusNode: _textFocusNode,
             decoration: new Material.InputDecoration(

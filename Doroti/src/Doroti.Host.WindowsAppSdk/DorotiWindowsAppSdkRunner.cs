@@ -42,14 +42,15 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             throw new InvalidOperationException(
                 $"Unsupported Windows App SDK adapter '{adapter}'. Expected HwndExactCpp.");
 
-        LastNativeProvenance = WindowsNativeV1.ConfigureAppDirectoryLoading();
+        var selectedPresenter = WindowsManagedState.ResolveRequestedPresenter();
+        LastNativeProvenance = WindowsNativeV1.ConfigureAppDirectoryLoading(selectedPresenter);
         WindowsNativeV1.ValidateLayout();
         WindowsNativeV1.EnsureSelfContainedWindowsAppRuntime();
         var initializeResult = RoInitialize(0);
         if (initializeResult < 0) Marshal.ThrowExceptionForHR(initializeResult);
         try
         {
-            return RunCore(descriptor);
+            return RunCore(descriptor, selectedPresenter);
         }
         finally
         {
@@ -57,7 +58,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         }
     }
 
-    private static int RunCore(DorotiApplicationDescriptor descriptor)
+    private static int RunCore(DorotiApplicationDescriptor descriptor, string selectedPresenter)
     {
         LastRunDiagnostics = null;
         DorotiApplicationBoundary? application = null;
@@ -73,7 +74,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
                 descriptor.LaunchContext.RuntimeIdentifier,
                 descriptor.NativePluginHandlers);
             session = new DorotiHostSession(descriptor.EntrypointFactory());
-            state = new WindowsManagedState(session, application, descriptor.ViewConfiguration);
+            state = new WindowsManagedState(session, application, descriptor.ViewConfiguration, selectedPresenter);
             // Presenter-specific Composition activation must occur on the HWND
             // thread during host-ready. Its process-wide DLL search restriction
             // is applied there immediately after attach and before first show.
@@ -212,13 +213,13 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
         internal WindowsManagedState(
             DorotiHostSession session,
             DorotiApplicationBoundary application,
-            DorotiViewConfiguration configuration)
+            DorotiViewConfiguration configuration, string selectedPresenter)
         {
             _session = session;
             _application = application;
             _configuration = configuration;
             _requestedDeviceResets = ResolveRequestedDeviceResets();
-            RequestedPresenter = ResolveRequestedPresenter();
+            RequestedPresenter = selectedPresenter;
             var acrylicRequested = configuration.backdrop?.mode is
                 WindowBackdropMode.acrylic or WindowBackdropMode.experimentalAcrylic;
             RequestedMode = acrylicRequested ? configuration.backdrop!.mode.ToString() : "opaque";
@@ -1008,7 +1009,7 @@ public static unsafe partial class DorotiWindowsAppSdkRunner
             if (failures.Count > 1) throw new AggregateException("Windows runner cleanup failed.", failures);
         }
 
-        private static string ResolveRequestedPresenter() =>
+        internal static string ResolveRequestedPresenter() =>
             Environment.GetEnvironmentVariable("DOROTI_WINDOWS_PRESENTER")?.Trim() switch
             {
                 null or "" => "Vulkan",

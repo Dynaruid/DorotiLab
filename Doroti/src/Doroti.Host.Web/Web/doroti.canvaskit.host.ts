@@ -839,14 +839,15 @@ async function loadCanvasKitManifest(): Promise<{
         !/^[0-9a-f]{64}$/.test(file.sha256))
       throw new Error(`DOROTIWEB034: CanvasKit manifest is missing verified '${path}'.`);
   }
-  let verifiedRuntimeAssetBytes = 0;
   const baseUrl = new URL(`./${manifest.logicalBasePath}`, document.baseURI);
-  for (const path of [manifest.canvasKitJsPath, manifest.canvasKitWasmPath]) {
+  const abort = new AbortController();
+  const verify = async (path: string): Promise<number> => {
     const expected = files.get(path)!;
     const assetUrl = requireSameOrigin(new URL(path, baseUrl), `CanvasKit runtime asset '${path}'`);
     const assetResponse = await fetch(assetUrl, {
       credentials: "same-origin",
       cache: "no-cache",
+      signal: abort.signal,
     });
     if (!assetResponse.ok)
       throw new Error(`DOROTIWEB034: CanvasKit runtime asset '${path}' fetch failed (${assetResponse.status}).`);
@@ -860,7 +861,16 @@ async function loadCanvasKitManifest(): Promise<{
       .map((value) => value.toString(16).padStart(2, "0")).join("");
     if (actualSha256 !== expected.sha256)
       throw new Error(`DOROTIWEB034: CanvasKit runtime asset '${path}' SHA-256 mismatch.`);
-    verifiedRuntimeAssetBytes += bytes.byteLength;
+    return bytes.byteLength;
+  };
+  let verifiedRuntimeAssetBytes: number;
+  try {
+    // Neither worker executes until both independent integrity checks pass.
+    const lengths = await Promise.all([manifest.canvasKitJsPath, manifest.canvasKitWasmPath].map(verify));
+    verifiedRuntimeAssetBytes = lengths.reduce((total, length) => total + length, 0);
+  } catch (error) {
+    abort.abort();
+    throw error;
   }
   return {
     manifest,

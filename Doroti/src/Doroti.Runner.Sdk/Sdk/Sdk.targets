@@ -69,6 +69,8 @@
     <AndroidManifest>AndroidManifest.xml</AndroidManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(DorotiTarget)' == 'Web'">
+    <!-- Generated StartWorker/StopWorker JS exports require unsafe stubs. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RuntimeFrameworkVersion Condition="'$(RuntimeFrameworkVersion)' == ''">$(DorotiWebRuntimeVersion)</RuntimeFrameworkVersion>
     <PublishTrimmed>true</PublishTrimmed>
     <DorotiWebTypeScript Condition="Exists('tsconfig.json')">true</DorotiWebTypeScript>
@@ -375,4 +377,5 @@
           Condition="'$(DorotiWebTypeScript)' == 'true' and Exists('$(MSBuildThisFileDirectory)Doroti.TypeScript.targets')" />
   <Import Project="$(MSBuildThisFileDirectory)..\..\Doroti.App.Sdk\Sdk\Doroti.TypeScript.targets"
           Condition="'$(DorotiWebTypeScript)' == 'true' and !Exists('$(MSBuildThisFileDirectory)Doroti.TypeScript.targets')" />
+  <Import Project="$(MSBuildThisFileDirectory)Doroti.Qt.targets" />
 </Project>

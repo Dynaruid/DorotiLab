@@ -44,6 +44,7 @@ $repositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $dorotiRoot '..'))
 $solution = Join-Path $dorotiRoot 'Doroti.slnx'
 $productSolution = Join-Path $dorotiRoot 'Doroti.Product.slnx'
 $artifacts = Join-Path $dorotiRoot 'artifacts'
+. (Join-Path $PSScriptRoot 'launch-identity.ps1')
 
 function Invoke-Checked {
     param(
@@ -190,7 +191,10 @@ function Invoke-WorkspaceDotNet {
     if (($effectiveNoBuild -or $effectiveNoRestore -or $LastSuccessful) -and $Verb -cne 'run') {
         throw '-NoBuild, -NoRestore, and -LastSuccessful are supported only by the run command.'
     }
+    $fingerprintWatch = [Diagnostics.Stopwatch]::StartNew()
     $launchFingerprint = Get-DorotiLaunchFingerprint $workspace $runner
+    $toolchain = Get-DorotiToolchainIdentity $workspace.Root
+    $fingerprintWatch.Stop()
     $stateDirectory = Join-Path $workspace.Root '.doroti/launch-state'
     $stateKey = @($Platform, $WindowsBackend, $Configuration, $(if ([string]::IsNullOrWhiteSpace($Rid)) { 'default-rid' } else { $Rid })) -join '-'
     $stateKey = $stateKey -replace '[^A-Za-z0-9_.-]', '_'
@@ -200,13 +204,17 @@ function Invoke-WorkspaceDotNet {
             throw "No successful artifact record exists for this target. Run once without -NoBuild: $statePath"
         }
         $state = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
-        if ($state.schemaVersion -cne 'doroti.launch-state/v1' -or
+        if ($state.schemaVersion -cne 'doroti.launch-state/v2' -or
             $state.runner -cne $runner -or
             $state.configuration -cne $Configuration -or
             $state.rid -cne $(if ([string]::IsNullOrWhiteSpace($Rid)) { '' } else { $Rid }) -or
-            $state.fingerprint -cne $launchFingerprint) {
+            $state.fingerprint -cne $launchFingerprint -or
+            $state.toolchain -cne $toolchain) {
             throw 'The last successful artifact is stale for the selected runner/configuration/RID or current source/native inputs. Run again without -NoBuild.'
         }
+    }
+    if ($effectiveNoBuild) {
+        Assert-DorotiArtifactIdentity $state.artifact (Get-DorotiArtifactIdentity $runner $Configuration $Rid $workspace.Root)
     }
     $arguments = if ($Verb -ceq 'run') { @('run', '--project', $runner) } else { @($Verb, $runner) }
     $arguments += @('--configuration', $Configuration)
@@ -232,21 +240,36 @@ function Invoke-WorkspaceDotNet {
             $env:DOTNET_HOST_PATH = (Get-Command dotnet -ErrorAction Stop).Source
         }
         Write-Host "Doroti artifact: configuration=$Configuration rid=$(if ([string]::IsNullOrWhiteSpace($Rid)) { 'project-default' } else { $Rid }) fingerprint=$launchFingerprint"
-        Write-Host "Doroti steps: build=$(if ($effectiveNoBuild) { 'reused' } else { 'execute' }) restore=$(if ($effectiveNoRestore) { 'reused' } else { 'execute' }) deploy=execute launch=execute"
-        Invoke-Checked 'dotnet' $arguments $workspace.Root
+        Write-Host "Doroti steps: build=$(if ($effectiveNoBuild) { 'reused' } else { 'execute' }) restore=$(if ($effectiveNoRestore) { 'reused' } else { 'execute' }) deploy=$(if ($Verb -ceq 'run') { 'execute' } else { 'not-requested' }) launch=$(if ($Verb -ceq 'run') { 'execute' } else { 'not-requested' })"
+        Write-Host "Doroti fingerprint/toolchain check: $($fingerprintWatch.Elapsed.TotalMilliseconds.ToString('F1')) ms"
+        # Save a build artifact before launching a long-running application.
         if ($Verb -ceq 'run' -and -not $effectiveNoBuild) {
+            $buildArguments = @('build', $runner, '--configuration', $Configuration, '--nologo')
+            if ($effectiveNoRestore) { $buildArguments += '--no-restore' }
+            if ($Rid) { $buildArguments += "-p:RuntimeIdentifier=$Rid" }
+            Invoke-Checked 'dotnet' $buildArguments $workspace.Root
+            $arguments += '--no-build'
+        } elseif ($Verb -cne 'run') {
+            Invoke-Checked 'dotnet' $arguments $workspace.Root
+        }
+        if ($Verb -in @('run', 'build') -and -not $effectiveNoBuild) {
             [IO.Directory]::CreateDirectory($stateDirectory) | Out-Null
             $state = [ordered]@{
-                schemaVersion = 'doroti.launch-state/v1'
+                schemaVersion = 'doroti.launch-state/v2'
                 runner = $runner
                 configuration = $Configuration
                 rid = $(if ([string]::IsNullOrWhiteSpace($Rid)) { '' } else { $Rid })
                 fingerprint = $launchFingerprint
-                completedUtc = [DateTime]::UtcNow.ToString('O')
+                toolchain = $toolchain
+                artifact = Get-DorotiArtifactIdentity $runner $Configuration $Rid $workspace.Root
+                buildCompletedUtc = [DateTime]::UtcNow.ToString('O')
             }
-            [IO.File]::WriteAllText($statePath, (($state | ConvertTo-Json) -replace "`r`n", "`n") + "`n", [Text.UTF8Encoding]::new($false))
+            $temporaryStatePath = "$statePath.tmp-$PID"
+            [IO.File]::WriteAllText($temporaryStatePath, (($state | ConvertTo-Json -Depth 10) -replace "`r`n", "`n") + "`n", [Text.UTF8Encoding]::new($false))
+            [IO.File]::Move($temporaryStatePath, $statePath, $true)
             Write-Host "Doroti successful artifact record: $statePath"
         }
+        if ($Verb -ceq 'run') { Invoke-Checked 'dotnet' $arguments $workspace.Root }
     }
     finally {
         if ($hadAdapter) { $env:DOROTI_WINDOWS_ADAPTER = $previousAdapter }
@@ -262,40 +285,13 @@ function Get-DorotiLaunchFingerprint {
         [Parameter(Mandatory)] [string] $Runner
     )
 
-    $extensions = @(
-        '.cs', '.csproj', '.props', '.targets', '.json', '.xml', '.xaml', '.manifest',
-        '.ts', '.js', '.gradle', '.kts', '.cmake', '.cpp', '.cc', '.c', '.h', '.hpp',
-        '.m', '.mm', '.swift', '.plist', '.entitlements', '.lock', '.toml', '.yml', '.yaml',
-        '.ps1', '.sh', '.bat', '.cmd'
-    )
     $roots = @($Workspace.Root, (Join-Path $dorotiRoot 'src'), (Join-Path $dorotiRoot 'eng'))
-    $files = foreach ($root in $roots) {
-        if (-not (Test-Path -LiteralPath $root -PathType Container)) { continue }
-        Get-ChildItem -LiteralPath $root -Recurse -File | Where-Object {
-            $_.FullName -notmatch '[\\/](bin|obj|\.doroti|artifacts|\.git|\.gradle|\.idea)[\\/]' -and
-            $_.Extension.ToLowerInvariant() -in $extensions
-        }
-    }
+    $files = @(Get-DorotiInputFiles $roots)
+    $files += @(Get-DorotiInheritedInputs ($roots + @([IO.Path]::GetDirectoryName($Runner))))
+    $files += @(Get-DorotiEvaluatedInputFiles @($Workspace.ApplicationProject, $Runner) $Configuration $Rid $Workspace.Root)
     $files += Get-Item -LiteralPath $Workspace.Manifest, $Workspace.ApplicationProject, $Runner
-    $hash = [Security.Cryptography.IncrementalHash]::CreateHash([Security.Cryptography.HashAlgorithmName]::SHA256)
-    try {
-        foreach ($file in @($files | Sort-Object FullName -Unique)) {
-            $identity = [Text.Encoding]::UTF8.GetBytes($file.FullName.ToLowerInvariant() + "`n")
-            $hash.AppendData($identity)
-            $stream = [IO.File]::OpenRead($file.FullName)
-            try {
-                $buffer = [byte[]]::new(65536)
-                while (($read = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) {
-                    $hash.AppendData($buffer, 0, $read)
-                }
-            }
-            finally { $stream.Dispose() }
-        }
-        $selection = [Text.Encoding]::UTF8.GetBytes("$Runner|$Platform|$WindowsBackend|$Configuration|$Rid")
-        $hash.AppendData($selection)
-        return [Convert]::ToHexString($hash.GetHashAndReset()).ToLowerInvariant()
-    }
-    finally { $hash.Dispose() }
+    Get-DorotiContentFingerprint $files "$Runner|$Platform|$WindowsBackend|$Configuration|$Rid"
+
 }
 
 function Resolve-DorotiNativeWorkspace {

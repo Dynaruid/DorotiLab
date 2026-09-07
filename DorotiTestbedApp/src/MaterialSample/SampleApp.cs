@@ -41,15 +41,19 @@ internal sealed class SampleAppState : State<SampleApp>
     private bool _fromImage, _loading;
     private string? _error;
     private M.ColorScheme? _imageScheme;
-    private M.ThemeData _light = M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorSchemeSeed: SampleConstants.Seeds[0].Color);
-    private M.ThemeData _dark = M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorSchemeSeed: SampleConstants.Seeds[0].Color, brightness: Brightness.dark);
+    private M.ThemeData? _light;
+    private M.ThemeData? _dark;
 
     private void UpdateThemes()
     {
-        var seed = _fromImage ? _imageScheme!.primary : SampleConstants.Seeds[_seed].Color;
-        _light = _fromImage ? M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorScheme: _imageScheme) : M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorSchemeSeed: seed);
-        _dark = M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorSchemeSeed: seed, brightness: Brightness.dark);
+        _light = null;
+        _dark = null;
     }
+    private M.ThemeData LightTheme() => _light ??= _fromImage
+        ? M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorScheme: _imageScheme)
+        : M.ThemeData.Create(fontFamilyFallback: ["Roboto"], colorSchemeSeed: SampleConstants.Seeds[_seed].Color);
+    private M.ThemeData DarkTheme() => _dark ??= M.ThemeData.Create(fontFamilyFallback: ["Roboto"],
+        colorSchemeSeed: _fromImage ? _imageScheme!.primary : SampleConstants.Seeds[_seed].Color, brightness: Brightness.dark);
     private void SelectSeed(int value) => setState(() =>
     {
         _revision++; _seed = value; _fromImage = false; _loading = false; _error = null; UpdateThemes();
@@ -72,7 +76,7 @@ internal sealed class SampleAppState : State<SampleApp>
     public override void dispose() { _revision++; base.dispose(); }
     public override Widget build(BuildContext context) => new M.MaterialApp(
         title: "Doroti Material 3", debugShowCheckedModeBanner: false,
-        locale: new Doroti.Ui.Locale("en", "US"), theme: _light, darkTheme: _dark, themeMode: _mode,
+        locale: new Doroti.Ui.Locale("en", "US"), themeFactory: LightTheme, darkThemeFactory: DarkTheme, themeMode: _mode,
         home: new SampleHome(_seed, _image, _fromImage, _loading, _error,
             () => setState(() => _mode = (_mode == M.ThemeMode.dark || (_mode == M.ThemeMode.system && View.of(context).platformDispatcher.platformBrightness == Brightness.dark)) ? M.ThemeMode.light : M.ThemeMode.dark),
             SelectSeed, SelectImage));

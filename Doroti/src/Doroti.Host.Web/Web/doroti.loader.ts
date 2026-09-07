@@ -14,6 +14,7 @@ export interface DorotiBlazorStartOptions {
 }
 
 export interface DorotiBootstrapContext {
+  /** Document/Blazor renderers only. Worker runtimes do not clone callbacks or Responses. */
   readonly blazorOptions: DorotiBlazorStartOptions;
   stage: DorotiBootstrapStage;
   rendererMode?: "worker-canvaskit-webgl" | "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";

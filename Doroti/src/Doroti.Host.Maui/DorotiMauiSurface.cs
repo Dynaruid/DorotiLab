@@ -21,8 +21,6 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
     private DorotiHostSession? _session;
     private MauiFrameworkHost? _host;
     private readonly IMauiSkiaSurface _renderSurface;
-    private readonly Entry _singleLineInput;
-    private readonly Editor _multilineInput;
     private readonly MauiTextInputBridge _textInput;
     private readonly AbsoluteLayout _semanticsLayer;
     private bool _attached;
@@ -42,10 +40,8 @@ public sealed class DorotiMauiSurface : Grid, IDisposable
         var startupColor = ResolveBackgroundColor(Application.Current?.RequestedTheme ?? AppTheme.Unspecified);
         BackgroundColor = new Microsoft.Maui.Graphics.Color(
             (float)startupColor.r, (float)startupColor.g, (float)startupColor.b, (float)startupColor.a);
-        _singleLineInput = CreateHiddenInput<Entry>();
-        _multilineInput = CreateHiddenInput<Editor>();
         _semanticsLayer = new AbsoluteLayout { InputTransparent = true, CascadeInputTransparent = false };
-        _textInput = new(_singleLineInput, _multilineInput, this, attachOnDemand: true);
+        _textInput = new(CreateHiddenInput<Entry>, CreateHiddenInput<Editor>, this, attachOnDemand: true);
 #if MACOS
         _renderSurface = new DorotiMacOSMetalSurface(_viewId);
 #elif WINDOWS
