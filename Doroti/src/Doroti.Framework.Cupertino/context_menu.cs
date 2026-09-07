@@ -697,7 +697,7 @@ internal class _ContextMenuRoute__context_menu<T> : global::Doroti.Framework.Wid
         changedInternalState();
     }
 
-    public virtual bool didPop(T? result)
+    public override bool didPop(T? result)
     {
         _updateTweenRects();
         return base.didPop(result);

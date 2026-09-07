@@ -109,7 +109,7 @@ public class AppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme, glob
     }
 
     public override string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
-    public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
+    public override string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
         DartRuntimePrimitives.Assert(() =>
@@ -121,7 +121,7 @@ public class AppBarTheme : global::Doroti.Framework.Widgets.InheritedTheme, glob
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
+    public override DiagnosticsNode toDiagnosticsNode(string? name = null, DiagnosticsTreeStyle? style = null)
     {
         return ((DiagnosticsNode)(object?)new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -229,6 +229,8 @@ public class AppBarThemeData : global::Doroti.Framework.Foundation.Diagnosticabl
     }
 
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;

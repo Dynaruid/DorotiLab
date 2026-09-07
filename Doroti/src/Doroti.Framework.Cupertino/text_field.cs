@@ -1068,7 +1068,7 @@ internal class _BaselineAlignedStack__text_field : global::Doroti.Framework.Widg
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.SlottedContainerRenderObjectMixin<_BaselineAlignedStackSlot__text_field, global::Doroti.Framework.Rendering.RenderBox> renderObject)
+    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderBaselineAlignedStack__text_field)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderBaselineAlignedStack__text_field>)(() =>

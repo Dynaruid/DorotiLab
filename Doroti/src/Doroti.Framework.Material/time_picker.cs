@@ -3177,39 +3177,39 @@ public static partial class Time_pickerLibrary
 
 internal abstract class _TimePickerDefaults__time_picker : TimePickerThemeData
 {
-    public abstract global::Doroti.Ui.Color backgroundColor { get; }
-    public abstract ButtonStyle cancelButtonStyle { get; }
-    public abstract ButtonStyle confirmButtonStyle { get; }
-    public abstract global::Doroti.Framework.Painting.BorderSide dayPeriodBorderSide { get; }
-    public abstract global::Doroti.Ui.Color dayPeriodColor { get; }
-    public abstract global::Doroti.Framework.Painting.OutlinedBorder dayPeriodShape { get; }
+    public abstract override global::Doroti.Ui.Color backgroundColor { get; }
+    public abstract override ButtonStyle cancelButtonStyle { get; }
+    public abstract override ButtonStyle confirmButtonStyle { get; }
+    public abstract override global::Doroti.Framework.Painting.BorderSide dayPeriodBorderSide { get; }
+    public abstract override global::Doroti.Ui.Color dayPeriodColor { get; }
+    public abstract override global::Doroti.Framework.Painting.OutlinedBorder dayPeriodShape { get; }
     public abstract global::Doroti.Ui.Size dayPeriodInputSize { get; }
     public abstract global::Doroti.Ui.Size dayPeriodLandscapeSize { get; }
     public abstract global::Doroti.Ui.Size dayPeriodPortraitSize { get; }
-    public abstract global::Doroti.Ui.Color dayPeriodTextColor { get; }
-    public abstract global::Doroti.Framework.Painting.TextStyle dayPeriodTextStyle { get; }
-    public abstract global::Doroti.Ui.Color dialBackgroundColor { get; }
-    public abstract global::Doroti.Ui.Color dialHandColor { get; }
+    public abstract override global::Doroti.Ui.Color dayPeriodTextColor { get; }
+    public abstract override global::Doroti.Framework.Painting.TextStyle dayPeriodTextStyle { get; }
+    public abstract override global::Doroti.Ui.Color dialBackgroundColor { get; }
+    public abstract override global::Doroti.Ui.Color dialHandColor { get; }
     public abstract global::Doroti.Ui.Size dialSize { get; }
     public abstract double handWidth { get; }
     public abstract double dotRadius { get; }
     public abstract double centerRadius { get; }
-    public abstract global::Doroti.Ui.Color dialTextColor { get; }
-    public abstract global::Doroti.Framework.Painting.TextStyle dialTextStyle { get; }
-    public abstract double elevation { get; }
-    public abstract global::Doroti.Ui.Color entryModeIconColor { get; }
-    public abstract global::Doroti.Framework.Painting.TextStyle helpTextStyle { get; }
-    public abstract global::Doroti.Ui.Color hourMinuteColor { get; }
-    public abstract global::Doroti.Framework.Painting.ShapeBorder hourMinuteShape { get; }
+    public abstract override global::Doroti.Ui.Color dialTextColor { get; }
+    public abstract override global::Doroti.Framework.Painting.TextStyle dialTextStyle { get; }
+    public abstract override double? elevation { get; }
+    public abstract override global::Doroti.Ui.Color entryModeIconColor { get; }
+    public abstract override global::Doroti.Framework.Painting.TextStyle helpTextStyle { get; }
+    public abstract override global::Doroti.Ui.Color hourMinuteColor { get; }
+    public abstract override global::Doroti.Framework.Painting.ShapeBorder hourMinuteShape { get; }
     public abstract global::Doroti.Ui.Size hourMinuteSize { get; }
     public abstract global::Doroti.Ui.Size hourMinuteSize24Hour { get; }
     public abstract global::Doroti.Ui.Size hourMinuteInputSize { get; }
     public abstract global::Doroti.Ui.Size hourMinuteInputSize24Hour { get; }
-    public abstract global::Doroti.Ui.Color hourMinuteTextColor { get; }
-    public abstract global::Doroti.Framework.Painting.TextStyle hourMinuteTextStyle { get; }
-    public abstract InputDecorationThemeData inputDecorationTheme { get; }
-    public abstract global::Doroti.Framework.Painting.EdgeInsetsGeometry padding { get; }
-    public abstract global::Doroti.Framework.Painting.ShapeBorder shape { get; }
+    public abstract override global::Doroti.Ui.Color hourMinuteTextColor { get; }
+    public abstract override global::Doroti.Framework.Painting.TextStyle hourMinuteTextStyle { get; }
+    public abstract override InputDecorationThemeData inputDecorationTheme { get; }
+    public abstract override global::Doroti.Framework.Painting.EdgeInsetsGeometry padding { get; }
+    public abstract override global::Doroti.Framework.Painting.ShapeBorder shape { get; }
 }
 
 public static partial class Time_pickerLibrary
@@ -3461,7 +3461,7 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
             return default!;
         }
     }
-    public override double elevation
+    public override double? elevation
     {
         get
         {
@@ -3683,7 +3683,7 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? timeSelectorSeparatorColor
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Ui.Color?>? timeSelectorSeparatorColor
     {
         get
         {
@@ -3691,7 +3691,7 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
             return default!;
         }
     }
-    public virtual global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? timeSelectorSeparatorTextStyle
+    public override global::Doroti.Framework.Widgets.WidgetStateProperty<global::Doroti.Framework.Painting.TextStyle?>? timeSelectorSeparatorTextStyle
     {
         get
         {

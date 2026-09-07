@@ -777,16 +777,10 @@ class ProductHost final {
       case WM_SYSKEYDOWN:
       case WM_KEYUP:
       case WM_SYSKEYUP: {
-        // The custom HWND has no native edit control, so it owns the editing
-        // keys below while a text client is active. Do not also route them
-        // through the framework shortcut map or one press can edit twice.
-        const auto native_editing_key = text_client_active_ &&
-            (wparam == VK_BACK || wparam == VK_DELETE || wparam == VK_LEFT ||
-             wparam == VK_RIGHT || wparam == VK_HOME || wparam == VK_END);
-        if (!native_editing_key) EmitKey(message, wparam, lparam);
-        if (native_editing_key && (message == WM_KEYDOWN || message == WM_SYSKEYDOWN) &&
-            wparam != VK_BACK)
-          HandleNavigationKey(wparam);
+        // Like Flutter's Windows text-input plugin, leave editing/navigation
+        // keys to framework Shortcuts/Actions. Native handling here used to
+        // swallow Shift selection and Ctrl word/document shortcuts.
+        EmitKey(message, wparam, lparam);
         return 0;
       }
       default:
@@ -1636,37 +1630,10 @@ class ProductHost final {
       }
       character = L'\n';
     }
-    if (character == L'\b') {
-      if (text_selection_base_ == text_selection_extent_ && text_selection_base_ > 0) {
-        auto start = text_selection_base_ - 1;
-        if (start > 0 && text_[static_cast<size_t>(start)] >= 0xDC00 &&
-            text_[static_cast<size_t>(start)] <= 0xDFFF &&
-            text_[static_cast<size_t>(start - 1)] >= 0xD800 &&
-            text_[static_cast<size_t>(start - 1)] <= 0xDBFF)
-          --start;
-        text_selection_base_ = start;
-      }
-      ReplaceActiveRange(L"", false);
-    } else if (character >= L' ') {
-      ReplaceActiveRange(std::wstring(1, character), false);
-    } else {
-      return;
-    }
-    EmitTextEditing();
-  }
-
-  void HandleNavigationKey(WPARAM key) {
-    const auto length = static_cast<int32_t>(text_.size());
-    if (key == VK_DELETE) {
-      if (text_selection_base_ == text_selection_extent_ && text_selection_extent_ < length)
-        ++text_selection_extent_;
-      ReplaceActiveRange(L"", false);
-    } else {
-      const auto next = key == VK_HOME ? 0 : key == VK_END ? length :
-          std::clamp(text_selection_extent_ + (key == VK_LEFT ? -1 : 1), 0, length);
-      text_selection_base_ = text_selection_extent_ = next;
-      text_composing_base_ = text_composing_extent_ = -1;
-    }
+    // WM_KEYDOWN already dispatched Backspace to EditableText. TranslateMessage
+    // also produces WM_CHAR(\b); consuming it here prevents a second deletion.
+    if (character < L' ' && character != L'\n') return;
+    ReplaceActiveRange(std::wstring(1, character), false);
     EmitTextEditing();
   }
 
@@ -2210,6 +2177,13 @@ class ProductHost final {
     }
     SendMessageW(target, WM_KEYDOWN, 'A', 1 | (0x1Eu << 16));
     SendMessageW(target, WM_KEYUP, 'A', 1 | (0x1Eu << 16) | (1u << 30) | (1u << 31));
+    // Editing keys must cross the native callback even with an active client.
+    for (const auto editing_key : {VK_BACK, VK_DELETE, VK_LEFT, VK_RIGHT, VK_HOME, VK_END}) {
+      const auto scan = MapVirtualKeyW(editing_key, MAPVK_VK_TO_VSC);
+      const auto flags = 1 | (static_cast<LPARAM>(scan) << 16);
+      SendMessageW(target, WM_KEYDOWN, editing_key, flags);
+      SendMessageW(target, WM_KEYUP, editing_key, flags | (1LL << 30) | (1LL << 31));
+    }
     if (composition_active_)
       SendMessageW(target, WM_ACTIVATE, WA_INACTIVE, 0);
     else

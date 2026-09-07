@@ -56,7 +56,7 @@ public class IconDataProperty : global::Doroti.Framework.Foundation.DiagnosticsP
     {
     }
 
-    public virtual DartMap<string, object> toJsonMap(global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate @delegate)
+    public override DartMap<string, object> toJsonMap(global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate? @delegate = null)
     {
         DartMap<string, object?> json = ((DartMap<string, object?>)(object?)base.toJsonMap(@delegate));
         if ((this.value is not null))

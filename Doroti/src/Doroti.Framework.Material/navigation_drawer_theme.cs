@@ -88,6 +88,8 @@ public class NavigationDrawerThemeData : global::Doroti.Framework.Foundation.Dia
     }
 
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;

@@ -207,9 +207,9 @@ internal class _IndicatorInkWell__navigation_bar : InkResponse
         this.labelBehavior = labelBehavior;
     }
 
-    public virtual RectCallback? getRectCallback(global::Doroti.Framework.Rendering.RenderBox referenceBox)
+    public override global::System.Func<Rect>? getRectCallback(global::Doroti.Framework.Rendering.RenderBox referenceBox)
     {
-        return ((RectCallback?)(object?)(() =>
+        return ((global::System.Func<Rect>?)(object?)(() =>
         {
             var iconBox = ((global::Doroti.Framework.Rendering.RenderBox?)(object?)((global::Doroti.Framework.Widgets.GlobalKey<IState>)this.iconKey).currentContext!.findRenderObject()!)!;
             global::Doroti.Ui.Rect iconRect = ((global::Doroti.Ui.Rect)(object?)(((Offset)((dynamic)iconBox).localToGlobal(Offset.zero)) & ((global::Doroti.Framework.Rendering.RenderBox)iconBox).size));

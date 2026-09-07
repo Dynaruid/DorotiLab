@@ -708,6 +708,8 @@ public class ColorScheme : global::Doroti.Framework.Foundation.Diagnosticable
 
     public static ColorScheme of(global::Doroti.Framework.Widgets.BuildContext context) => Theme.of(context).colorScheme;
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;

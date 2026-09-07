@@ -2066,9 +2066,11 @@ public class _RenderDeferredLayoutBox__overlay : global::Doroti.Framework.Render
 {
     internal virtual _RenderLayoutSurrogateProxyBox__overlay _layoutSurrogate { get; private set; } = default!;
     internal virtual object? _childIdentifier { get; set; } = default;
-    internal virtual bool _needsLayout { get; set; } = true;
+    // Dart library-private member: distinct from the same name in the base library.
+    internal new virtual bool _needsLayout { get; set; } = true;
     internal virtual bool _doingLayoutFromTreeWalk { get; set; } = false;
-    internal virtual bool _debugMutationsLocked { get; set; } = false;
+    // Dart library-private member: distinct from the same name in the base library.
+    internal new virtual bool _debugMutationsLocked { get; set; } = false;
 
     internal _RenderDeferredLayoutBox__overlay(_RenderLayoutSurrogateProxyBox__overlay _layoutSurrogate, object? childIdentifier)
     {
@@ -2442,28 +2444,28 @@ internal class _RenderLayoutBuilder__overlay : global::Doroti.Framework.Renderin
         _callbackId ??= global::Doroti.Framework.Scheduler.SchedulerBinding.instance.scheduleFrameCallback((global::System.Action<Duration>)this._frameCallback, scheduleNewFrame: false);
     }
 
-    public virtual double computeMinIntrinsicWidth(double height)
+    public override double computeMinIntrinsicWidth(double height)
     {
         DartRuntimePrimitives.Assert(() => debugCannotComputeDryLayout(reason: _speculativeLayoutErrorMessage));
         return 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double computeMaxIntrinsicWidth(double height)
+    public override double computeMaxIntrinsicWidth(double height)
     {
         DartRuntimePrimitives.Assert(() => debugCannotComputeDryLayout(reason: _speculativeLayoutErrorMessage));
         return 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double computeMinIntrinsicHeight(double width)
+    public override double computeMinIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => debugCannotComputeDryLayout(reason: _speculativeLayoutErrorMessage));
         return 0.0;
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double computeMaxIntrinsicHeight(double width)
+    public override double computeMaxIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => debugCannotComputeDryLayout(reason: _speculativeLayoutErrorMessage));
         return 0.0;
@@ -2477,7 +2479,7 @@ internal class _RenderLayoutBuilder__overlay : global::Doroti.Framework.Renderin
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
+    public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => debugCannotComputeDryLayout(reason: "Calculating the dry baseline would require running the layout callback " + "speculatively, which might mutate the live render object tree."));
         return null;
@@ -2509,7 +2511,7 @@ internal class _RenderLayoutBuilder__overlay : global::Doroti.Framework.Renderin
         }
     }
 
-    public virtual double? computeDistanceToActualBaseline(TextBaseline baseline)
+    public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => !this.debugNeedsLayout);
         global::Doroti.Framework.Rendering.BaselineOffset baselineOffset = global::Doroti.Framework.Rendering.BaselineOffset.noBaseline;

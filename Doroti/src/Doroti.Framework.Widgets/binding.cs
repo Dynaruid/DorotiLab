@@ -317,7 +317,7 @@ public class RootElement : Element, RootElementMixin
         }
     }
 
-    public virtual bool debugDoingBuild => false;
+    public override bool debugDoingBuild => false;
     public override bool debugExpectsRenderObjectForSlot(object? slot) => false;
     public virtual void assignOwner(BuildOwner owner)
     {
@@ -496,21 +496,21 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void evict(string asset)
+    public override void evict(string asset)
     {
         base.evict(asset);
         this.imageCache.clear();
         this.imageCache.clearLiveImages();
     }
 
-    public virtual void handleMemoryPressure()
+    public override void handleMemoryPressure()
     {
         base.handleMemoryPressure();
         this.imageCache.clear();
     }
 
     public virtual global::Doroti.Framework.Foundation.Listenable systemFonts => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Foundation.Listenable>(this._systemFonts);
-    public async virtual Future handleSystemMessage(object systemMessage)
+    public async override Future handleSystemMessage(object systemMessage)
     {
         await base.handleSystemMessage(systemMessage);
         var message = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)systemMessage);
@@ -1150,7 +1150,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
             this._debugExcludeRootWidgetInspector = __value;
         }
     }
-    public virtual void resetInternalState()
+    public override void resetInternalState()
     {
         base.resetInternalState();
         this._debugShowWidgetInspectorOverrideNotifierObject?.dispose();
@@ -1213,7 +1213,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public async virtual Future<global::Doroti.Ui.AppExitResponse> handleRequestAppExit()
+    public async override Future<global::Doroti.Ui.AppExitResponse> handleRequestAppExit()
     {
         var didCancel = false;
         foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
@@ -1445,7 +1445,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void handleAppLifecycleStateChanged(AppLifecycleState state)
+    public override void handleAppLifecycleStateChanged(AppLifecycleState state)
     {
         base.handleAppLifecycleStateChanged(state);
         foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
@@ -1462,7 +1462,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         }
     }
 
-    public virtual void handleViewFocusChanged(ViewFocusEvent @event)
+    public override void handleViewFocusChanged(ViewFocusEvent @event)
     {
         DartRuntimePrimitives.Noop();
         foreach (var observer in new List<WidgetsBindingObserver>(DartRuntimePrimitives.ConvertEnumerable<WidgetsBindingObserver>(this._observers)))
@@ -1498,7 +1498,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
 
     public virtual Element? rootElement => this._rootElement;
     public virtual Element? renderViewElement => this.rootElement;
-    public virtual bool framesEnabled => DartRuntimePrimitives.ConvertValue<bool>((base.framesEnabled && this._readyToProduceFrames));
+    public override bool framesEnabled => DartRuntimePrimitives.ConvertValue<bool>((base.framesEnabled && this._readyToProduceFrames));
     public virtual Widget wrapWithDefaultView(Widget rootWidget)
     {
         if ((this.platformDispatcher.implicitView is null))

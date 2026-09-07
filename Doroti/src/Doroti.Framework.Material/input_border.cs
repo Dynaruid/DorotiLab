@@ -27,6 +27,9 @@ public abstract class InputBorder : global::Doroti.Framework.Painting.ShapeBorde
 
     public abstract InputBorder copyWith(global::Doroti.Framework.Painting.BorderSide? borderSide = null, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null, double? gapPadding = null, global::Doroti.Framework.Painting.ShapeBorder? shape = null);
     public abstract bool isOutline { get; }
+    public override void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, global::Doroti.Framework.Painting.BoxShape shape = global::Doroti.Framework.Painting.BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null) =>
+        paint(canvas, rect, textDirection: textDirection, gapStart: 0.0, gapExtent: 0.0, gapPercentage: 0.0, shape: shape, borderRadius: borderRadius);
+
     public abstract void paint(Canvas canvas, Rect rect, TextDirection? textDirection = null, double? gapStart = 0.0, double gapExtent = 0.0, double gapPercentage = default!, global::Doroti.Framework.Painting.BoxShape shape = global::Doroti.Framework.Painting.BoxShape.rectangle, global::Doroti.Framework.Painting.BorderRadius? borderRadius = null);
 }
 

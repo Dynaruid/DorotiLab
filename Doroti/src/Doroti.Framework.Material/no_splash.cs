@@ -40,13 +40,13 @@ public class NoSplash : InteractiveInkFeature
     {
     }
 
-    public virtual void confirm()
+    public override void confirm()
     {
         base.confirm();
         dispose();
     }
 
-    public virtual void cancel()
+    public override void cancel()
     {
         base.cancel();
         dispose();

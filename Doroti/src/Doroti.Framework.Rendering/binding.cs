@@ -407,21 +407,21 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void evict(string asset)
+    public override void evict(string asset)
     {
         base.evict(asset);
         this.imageCache.clear();
         this.imageCache.clearLiveImages();
     }
 
-    public virtual void handleMemoryPressure()
+    public override void handleMemoryPressure()
     {
         base.handleMemoryPressure();
         this.imageCache.clear();
     }
 
     public virtual Listenable systemFonts => this._systemFonts;
-    public async virtual Future handleSystemMessage(object systemMessage)
+    public async override Future handleSystemMessage(object systemMessage)
     {
         await base.handleSystemMessage(systemMessage);
         var message = DartRuntimePrimitives.ConvertMap<string, object>((System.Collections.IDictionary)systemMessage);
@@ -609,7 +609,7 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
         })));
     }
 
-    public virtual void dispatchEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestResult? hitTestResult)
+    public override void dispatchEvent(global::Doroti.Framework.Gestures.PointerEvent @event, HitTestResult? hitTestResult)
     {
         this._mouseTracker!.updateWithEvent(@event, ((@event is global::Doroti.Framework.Gestures.PointerMoveEvent) ? null : hitTestResult));
         base.dispatchEvent(@event, hitTestResult);
@@ -722,7 +722,7 @@ public class RenderingFlutterBinding : global::Doroti.Framework.Gestures.Gesture
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void hitTestInView(HitTestResult result, Offset position, long viewId)
+    public override void hitTestInView(HitTestResult result, Offset position, long viewId)
     {
         this._viewIdToRenderView.GetValueOrDefault(viewId)?.hitTest(result, position: position);
         base.hitTestInView(result, position, viewId);

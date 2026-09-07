@@ -168,6 +168,8 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, global::Doroti.Fr
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.brightness, this.primaryColor, this.primaryContrastingColor, this.textTheme, this.barBackgroundColor, this.scaffoldBackgroundColor, this.selectionHandleColor, this.applyThemeToAll));
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;

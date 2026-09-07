@@ -264,7 +264,7 @@ public class CupertinoMenuAnchor : global::Doroti.Framework.Widgets.StatefulWidg
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _CupertinoMenuAnchorState__menu_anchor());
-    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
         return this.menuChildren.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Foundation.DiagnosticsNode>(((child) => ((Diagnosticable)child).toDiagnosticsNode())).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -618,7 +618,7 @@ internal class _MenuOverlayState__menu_anchor : global::Doroti.Framework.Widgets
         }
     }
 
-    public virtual void didChangeAccessibilityFeatures()
+    public override void didChangeAccessibilityFeatures()
     {
         base.didChangeAccessibilityFeatures();
         _resolveMotion();

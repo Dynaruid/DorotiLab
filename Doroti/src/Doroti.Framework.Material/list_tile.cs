@@ -388,7 +388,7 @@ internal class _ListTile__list_tile : global::Doroti.Framework.Widgets.SlottedMu
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.SlottedContainerRenderObjectMixin<_ListTileSlot__list_tile, global::Doroti.Framework.Rendering.RenderBox> renderObject)
+    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderListTile__list_tile)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderListTile__list_tile>)(() =>
@@ -947,10 +947,10 @@ internal class _LisTileDefaultsM3__list_tile : ListTileThemeData
         this.context = context;
     }
 
-    public virtual global::Doroti.Ui.Color? tileColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
+    public override global::Doroti.Ui.Color? tileColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(Colors.transparent);
     public override global::Doroti.Framework.Painting.TextStyle? titleTextStyle => this._textTheme.bodyLarge!.copyWith(color: this._colors.onSurface);
     public override global::Doroti.Framework.Painting.TextStyle? subtitleTextStyle => this._textTheme.bodyMedium!.copyWith(color: this._colors.onSurfaceVariant);
     public override global::Doroti.Framework.Painting.TextStyle? leadingAndTrailingTextStyle => this._textTheme.labelSmall!.copyWith(color: this._colors.onSurfaceVariant);
-    public virtual global::Doroti.Ui.Color? selectedColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
-    public virtual global::Doroti.Ui.Color? iconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurfaceVariant);
+    public override global::Doroti.Ui.Color? selectedColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.primary);
+    public override global::Doroti.Ui.Color? iconColor => DartRuntimePrimitives.ConvertValue<global::Doroti.Ui.Color>(this._colors.onSurfaceVariant);
 }

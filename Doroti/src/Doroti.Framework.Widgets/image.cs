@@ -310,7 +310,7 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
         }
     }
 
-    public virtual void didChangeAccessibilityFeatures()
+    public override void didChangeAccessibilityFeatures()
     {
         base.didChangeAccessibilityFeatures();
         setState(((global::System.Action)(() =>

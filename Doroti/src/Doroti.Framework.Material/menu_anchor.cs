@@ -194,7 +194,7 @@ public class MenuAnchor : global::Doroti.Framework.Widgets.StatefulWidget
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MenuAnchorState__menu_anchor());
-    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
         return this.menuChildren.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Foundation.DiagnosticsNode>(((child) => ((Diagnosticable)child).toDiagnosticsNode())).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -495,7 +495,7 @@ internal class _MenuAnchorState__menu_anchor : global::Doroti.Framework.Widgets.
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.debug)
+    public override string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.debug)
     {
         return global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -578,7 +578,7 @@ public class MenuBar : global::Doroti.Framework.Widgets.StatelessWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
         return ((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() => { var __collection33328 = new List<global::Doroti.Framework.Foundation.DiagnosticsNode>(); __collection33328.AddRange(this.children.map<global::Doroti.Framework.Widgets.Widget, global::Doroti.Framework.Foundation.DiagnosticsNode>(((item) => ((Diagnosticable)item).toDiagnosticsNode()))); return __collection33328; }))();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -966,7 +966,7 @@ public class SubmenuButton : global::Doroti.Framework.Widgets.StatefulWidget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
         return ((Func<List<global::Doroti.Framework.Foundation.DiagnosticsNode>>)(() =>
         {
@@ -1724,7 +1724,7 @@ public class MenuAcceleratorLabel : global::Doroti.Framework.Widgets.StatefulWid
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _MenuAcceleratorLabelState__menu_anchor());
-    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info)
+    public override string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info)
     {
         return $"{typeof(MenuAcceleratorLabel)}(\"{this.label}\")";
         throw new InvalidOperationException("Dart control flow completed without a value.");

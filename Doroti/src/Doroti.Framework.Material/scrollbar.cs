@@ -99,6 +99,7 @@ internal class _MaterialScrollbarState__scrollbar : global::Doroti.Framework.Wid
 {
     internal virtual global::Doroti.Framework.Animation.AnimationController _hoverAnimationController { get; set; } = default!;
     internal virtual bool _dragIsActive { get; set; } = false;
+    // Dart library-private member: distinct from the same name in the base library.
     internal virtual bool _hoverIsActive { get; set; } = false;
     internal virtual ColorScheme _colorScheme { get; set; } = default!;
     internal virtual ScrollbarThemeData _scrollbarTheme { get; set; } = default!;

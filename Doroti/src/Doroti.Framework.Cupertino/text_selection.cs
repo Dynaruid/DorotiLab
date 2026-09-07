@@ -70,9 +70,13 @@ public class CupertinoTextSelectionHandleControls : CupertinoTextSelectionContro
     public override bool canCopy(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) => false;
     public override bool canPaste(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) => false;
     public override bool canSelectAll(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) => false;
+    public override void handleCut(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) { }
+
     public virtual void handleCut(global::Doroti.Framework.Services.TextSelectionDelegate @delegate, ClipboardStatusNotifier? clipboardStatus = null)
     {
     }
+
+    public override void handleCopy(global::Doroti.Framework.Services.TextSelectionDelegate @delegate) { }
 
     public virtual void handleCopy(global::Doroti.Framework.Services.TextSelectionDelegate @delegate, ClipboardStatusNotifier? clipboardStatus = null)
     {

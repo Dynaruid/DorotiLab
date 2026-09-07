@@ -672,6 +672,7 @@ internal class _MergeableMaterialListBody__mergeable_material : global::Doroti.F
         this.elevation = elevation;
     }
 
+    // Dart library-private member: distinct from the same name in the base library.
     internal virtual global::Doroti.Framework.Painting.AxisDirection _getDirection(global::Doroti.Framework.Widgets.BuildContext context)
     {
         return global::Doroti.Framework.Widgets.BasicLibrary.getAxisDirectionFromAxisReverseAndDirectionality(context, this.mainAxis, false);

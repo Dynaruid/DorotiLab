@@ -421,7 +421,7 @@ internal class _AnimatedContainerState__implicit_animations : AnimatedWidgetBase
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
         description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.AlignmentGeometryTween>("alignment", this._alignment, showName: false, defaultValue: null));
@@ -472,7 +472,7 @@ internal class _AnimatedPaddingState__implicit_animations : AnimatedWidgetBaseSt
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
         description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<EdgeInsetsGeometryTween>("padding", this._padding, defaultValue: null));
@@ -531,7 +531,7 @@ internal class _AnimatedAlignState__implicit_animations : AnimatedWidgetBaseStat
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
         description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.AlignmentGeometryTween>("alignment", this._alignment, defaultValue: null));
@@ -617,7 +617,7 @@ internal class _AnimatedPositionedState__implicit_animations : AnimatedWidgetBas
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
         description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("left", this._left));
@@ -693,7 +693,7 @@ internal class _AnimatedPositionedDirectionalState__implicit_animations : Animat
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
         description.add(global::Doroti.Framework.Foundation.ObjectFlagProperty<global::Doroti.Framework.Animation.Tween<double>>.CreateHas("start", this._start));
@@ -1115,7 +1115,7 @@ internal class _AnimatedFractionallySizedBoxState__implicit_animations : Animate
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
         description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<global::Doroti.Framework.Rendering.AlignmentGeometryTween>("alignment", this._alignment, defaultValue: null));

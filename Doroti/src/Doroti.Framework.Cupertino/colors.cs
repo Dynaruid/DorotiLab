@@ -156,6 +156,8 @@ public class CupertinoDynamicColor : Color, global::Doroti.Framework.Foundation.
             return default!;
         }
     }
+    public override Color resolveFrom<TContext>(TContext context) => resolveFrom((BuildContext)(object)context!);
+
     public virtual CupertinoDynamicColor resolveFrom(global::Doroti.Framework.Widgets.BuildContext context)
     {
         global::Doroti.Ui.Brightness brightness = (this._isPlatformBrightnessDependent ? (CupertinoTheme.maybeBrightnessOf(context) ?? Brightness.light) : Brightness.light);
@@ -188,6 +190,8 @@ public class CupertinoDynamicColor : Color, global::Doroti.Framework.Foundation.
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this.value, this.color, this.darkColor, this.highContrastColor, this.elevatedColor, this.darkElevatedColor, this.darkHighContrastColor, this.darkHighContrastElevatedColor, this.highContrastElevatedColor));
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info)
     {
         string toString(string name, Color color)

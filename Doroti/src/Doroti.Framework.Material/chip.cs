@@ -818,7 +818,7 @@ internal class _ChipRenderWidget__chip : global::Doroti.Framework.Widgets.Slotte
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Widgets.SlottedContainerRenderObjectMixin<_ChipSlot__chip, global::Doroti.Framework.Rendering.RenderBox> renderObject)
+    public override void updateRenderObject(global::Doroti.Framework.Widgets.BuildContext context, global::Doroti.Framework.Rendering.RenderObject renderObject)
     {
         var __renderObject = (_RenderChip__chip)(object)renderObject;
         DartRuntimePrimitives.Ignore(((Func<_RenderChip__chip>)(() =>

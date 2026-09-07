@@ -289,25 +289,25 @@ public class _RenderIntrinsicHorizontalStadium__badge : global::Doroti.Framework
             markNeedsLayout();
         }
     }
-    public virtual double computeMinIntrinsicWidth(double height)
+    public override double computeMinIntrinsicWidth(double height)
     {
         return getMaxIntrinsicWidth(height);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double computeMaxIntrinsicWidth(double height)
+    public override double computeMaxIntrinsicWidth(double height)
     {
         return Math.Max(getMaxIntrinsicHeight(double.PositiveInfinity), base.computeMaxIntrinsicWidth(height));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double computeMinIntrinsicHeight(double width)
+    public override double computeMinIntrinsicHeight(double width)
     {
         return getMaxIntrinsicHeight(width);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double computeMaxIntrinsicHeight(double width)
+    public override double computeMaxIntrinsicHeight(double width)
     {
         return Math.Max(this.minSize, base.computeMaxIntrinsicHeight(width));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -339,7 +339,7 @@ public class _RenderIntrinsicHorizontalStadium__badge : global::Doroti.Framework
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
+    public override double? computeDryBaseline(global::Doroti.Framework.Rendering.BoxConstraints constraints, TextBaseline baseline)
     {
         global::Doroti.Framework.Rendering.RenderBox childLocal = ((global::Doroti.Framework.Rendering.RenderBox?)((dynamic)this).child)!;
         return childLocal.getDryBaseline(_childConstraints(childLocal, constraints), baseline);

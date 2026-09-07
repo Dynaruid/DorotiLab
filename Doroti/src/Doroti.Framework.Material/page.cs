@@ -65,7 +65,7 @@ public class MaterialPageRoute<T> : global::Doroti.Framework.Widgets.PageRoute<T
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool didPop(T? result)
+    public override bool didPop(T? result)
     {
         this.controller?.reverseDuration = this.reverseTransitionDuration;
         return base.didPop(result);
@@ -182,7 +182,7 @@ internal class _PageBasedMaterialPageRoute__page<T> : global::Doroti.Framework.W
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool didPop(T? result)
+    public override bool didPop(T? result)
     {
         this.controller?.reverseDuration = this.reverseTransitionDuration;
         return base.didPop(result);

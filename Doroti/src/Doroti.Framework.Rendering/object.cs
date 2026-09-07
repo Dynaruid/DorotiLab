@@ -1073,13 +1073,13 @@ public class PipelineOwner : DiagnosticableTreeMixin
          this._nodesNeedingSemanticsGeometryUpdate.Count != 0 ||
          this._children.Any(child => child.hasPendingSemanticsUpdate));
 
-    public virtual List<DiagnosticsNode> debugDescribeChildren()
+    public override List<DiagnosticsNode> debugDescribeChildren()
     {
         return new List<DiagnosticsNode>();
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<RenderObject>("rootNode", this.rootNode, defaultValue: null));
@@ -1202,7 +1202,10 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     internal static RenderObject? _debugActivePaint = default;
     internal virtual bool _wasRepaintBoundary { get; set; } = default!;
     public virtual LayerHandle<ContainerLayer> _layerHandle { get; private set; } = new LayerHandle<ContainerLayer>();
-    internal virtual bool _needsCompositingBitsUpdate { get; set; } = false;
+    // Dart initializes compositing from virtual repaint-boundary getters in
+    // RenderObject's constructor. Derived constructor state may not yet be
+    // available there in C#: compute initial bits on attach instead.
+    internal virtual bool _needsCompositingBitsUpdate { get; set; } = true;
     internal virtual bool _needsCompositing { get; set; } = default!;
     internal virtual bool _needsPaint { get; set; } = true;
     internal virtual bool _needsCompositedLayerUpdate { get; set; } = false;
@@ -2367,7 +2370,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
     }
 
-    public virtual string toStringShort()
+    public override string toStringShort()
     {
         string header = global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
         if (!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode)
@@ -2412,20 +2415,22 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info) => toStringShort();
-    public virtual string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = "", DiagnosticLevel minLevel = DiagnosticLevel.debug, long wrapWidth = 65)
+    public override string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = "", DiagnosticLevel minLevel = DiagnosticLevel.debug, long? wrapWidth = 65)
     {
         return _withDebugActiveLayoutCleared(((Func<string>)(() => base.toStringDeep(prefixLineOne: prefixLineOne, prefixOtherLines: prefixOtherLines, minLevel: minLevel, wrapWidth: wrapWidth))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string toStringShallow(string joiner = ", ", DiagnosticLevel minLevel = DiagnosticLevel.debug)
+    public override string toStringShallow(string joiner = ", ", DiagnosticLevel minLevel = DiagnosticLevel.debug)
     {
         return _withDebugActiveLayoutCleared(((Func<string>)(() => base.toStringShallow(joiner: joiner, minLevel: minLevel))));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new FlagProperty("needsCompositing", value: this._needsCompositing, ifTrue: "needs compositing"));
@@ -2438,7 +2443,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         properties.add(new FlagProperty("isSemanticBoundary", value: ((_RenderObjectSemantics__object)this._semantics).configProvider.effective.isSemanticBoundary, ifTrue: "semantic boundary"));
     }
 
-    public virtual List<DiagnosticsNode> debugDescribeChildren() => new List<DiagnosticsNode>();
+    public override List<DiagnosticsNode> debugDescribeChildren() => new List<DiagnosticsNode>();
     public virtual void showOnScreen(RenderObject? descendant = null, Rect? rect = null, Duration duration = default, Curve curve = default!)
     {
         this.parent?.showOnScreen(descendant: (descendant ?? this), rect: rect, duration: duration, curve: curve);
@@ -2483,14 +2488,14 @@ public abstract class RenderObjectWithLayoutCallbackMixin : RenderObject
     internal virtual bool _needsRebuild { get; set; } = true;
 
     public abstract void layoutCallback();
-    public virtual void runLayoutCallback()
+    public override void runLayoutCallback()
     {
         DartRuntimePrimitives.Assert(() => debugDoingThisLayout);
         invokeLayoutCallback<Constraints>((Constraints _) => layoutCallback());
         _needsRebuild = false;
     }
 
-    public virtual void scheduleLayoutCallback()
+    public override void scheduleLayoutCallback()
     {
         if (this._needsRebuild)
         {

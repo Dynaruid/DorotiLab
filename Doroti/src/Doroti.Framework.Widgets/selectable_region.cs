@@ -1769,14 +1769,14 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
     {
     }
 
-    public virtual void add(global::Doroti.Framework.Rendering.Selectable selectable)
+    public override void add(global::Doroti.Framework.Rendering.Selectable selectable)
     {
         DartRuntimePrimitives.Assert(() => !this.selectables.Contains(selectable));
         this._additions.Add(selectable);
         _scheduleSelectableUpdate();
     }
 
-    public virtual void remove(global::Doroti.Framework.Rendering.Selectable selectable)
+    public override void remove(global::Doroti.Framework.Rendering.Selectable selectable)
     {
         if (this._additions.Remove(selectable))
         {
@@ -1895,7 +1895,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         _updateSelectionGeometry();
     }
 
-    public virtual global::Doroti.Framework.Rendering.SelectionGeometry value => this._selectionGeometry;
+    public override global::Doroti.Framework.Rendering.SelectionGeometry value => this._selectionGeometry;
     internal virtual void _updateSelectionGeometry()
     {
         global::Doroti.Framework.Rendering.SelectionGeometry newValue = ((global::Doroti.Framework.Rendering.SelectionGeometry)(object?)getSelectionGeometry());
@@ -2052,7 +2052,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void pushHandleLayers(global::Doroti.Framework.Rendering.LayerLink? startHandle, global::Doroti.Framework.Rendering.LayerLink? endHandle)
+    public override void pushHandleLayers(global::Doroti.Framework.Rendering.LayerLink? startHandle, global::Doroti.Framework.Rendering.LayerLink? endHandle)
     {
         if (((object.Equals(this._startHandleLayer, startHandle)) && (object.Equals(this._endHandleLayer, endHandle))))
         {
@@ -2109,7 +2109,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         this._endHandleLayerOwner!.pushHandleLayers(((global::Doroti.Framework.Rendering.LayerLink)(object)null), effectiveEndHandle);
     }
 
-    public virtual global::Doroti.Framework.Rendering.SelectedContent? getSelectedContent()
+    public override global::Doroti.Framework.Rendering.SelectedContent? getSelectedContent()
     {
         var selections = new List<global::Doroti.Framework.Rendering.SelectedContent>();
         if (!System.Linq.Enumerable.Any(selections))
@@ -2125,7 +2125,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long contentLength => System.Linq.Enumerable.Aggregate(this.selectables, (long)0L, ((sum, selectable) => (sum + selectable.contentLength)));
+    public override long contentLength => System.Linq.Enumerable.Aggregate(this.selectables, (long)0L, ((sum, selectable) => (sum + selectable.contentLength)));
     internal virtual global::Doroti.Framework.Rendering.SelectedContentRange? _calculateLocalRange(List<(long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range)> selections)
     {
         if (((this.currentSelectionStartIndex == -1L) || (this.currentSelectionEndIndex == -1L)))
@@ -2172,7 +2172,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Rendering.SelectedContentRange? getSelection()
+    public override global::Doroti.Framework.Rendering.SelectedContentRange? getSelection()
     {
         var selections = new List<(long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range)>();
         return ((global::Doroti.Framework.Rendering.SelectedContentRange?)(object?)_calculateLocalRange(selections));
@@ -2442,7 +2442,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Rendering.SelectionResult dispatchSelectionEvent(global::Doroti.Framework.Rendering.SelectionEvent @event)
+    public override global::Doroti.Framework.Rendering.SelectionResult dispatchSelectionEvent(global::Doroti.Framework.Rendering.SelectionEvent @event)
     {
         var selectionWillBeInProgress = (@event is not global::Doroti.Framework.Rendering.ClearSelectionEvent);
         if ((!this._selectionInProgress && selectionWillBeInProgress))
@@ -2832,7 +2832,7 @@ internal class _SelectionListenerDelegate__selectable_region : StaticSelectionCo
         this._selectionNotifier._registerSelectionListenerDelegate(this);
     }
 
-    public virtual void notifyListeners()
+    public override void notifyListeners()
     {
         base.notifyListeners();
         if (((this._initialSelectionGeometry is null) && !((global::Doroti.Framework.Rendering.SelectionGeometry)this.value).hasSelection))

@@ -4737,7 +4737,8 @@ public class RenderAnnotatedRegion<T> : RenderProxyBox
 {
     internal virtual T _value { get; set; } = default!;
     internal virtual bool _sized { get; set; } = default!;
-    public virtual LayerHandle<AnnotatedRegionLayer<T>> _layerHandle { get; private set; } = default!;
+    // Dart library-private member: distinct from the same name in the base library.
+    public new virtual LayerHandle<AnnotatedRegionLayer<T>> _layerHandle { get; private set; } = default!;
     private bool __field_alwaysNeedsCompositing = true;
     public override bool alwaysNeedsCompositing { get => __field_alwaysNeedsCompositing; }
 

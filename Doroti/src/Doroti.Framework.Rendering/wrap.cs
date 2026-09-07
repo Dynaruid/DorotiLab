@@ -525,7 +525,8 @@ public class RenderWrap : RenderBox, ContainerRenderObjectMixin<RenderBox, WrapP
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Ui.Size _computeDryLayout(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild = default!)
+    // Dart library-private member: distinct from the same name in the base library.
+    internal new virtual global::Doroti.Ui.Size _computeDryLayout(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild = default!)
     {
         var (childConstraints, mainAxisLimit) = (this.direction switch { global::Doroti.Framework.Painting.Axis.horizontal => (((BoxConstraints, double))((new BoxConstraints(maxWidth: ((BoxConstraints)constraints).maxWidth), ((BoxConstraints)constraints).maxWidth))), global::Doroti.Framework.Painting.Axis.vertical => (((BoxConstraints, double))((new BoxConstraints(maxHeight: ((BoxConstraints)constraints).maxHeight), ((BoxConstraints)constraints).maxHeight))), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         var mainAxisExtent = 0.0;

@@ -17,7 +17,8 @@ namespace Doroti.Framework.Gestures;
 internal class _CombiningGestureArenaEntry__team : GestureArenaEntry
 {
     internal virtual _CombiningGestureArenaMember__team _combiner { get; private set; } = default!;
-    internal virtual GestureArenaMember _member { get; private set; } = default!;
+    // Dart library-private member: distinct from the same name in the base library.
+    internal new virtual GestureArenaMember _member { get; private set; } = default!;
 
     internal _CombiningGestureArenaEntry__team(_CombiningGestureArenaMember__team _combiner, GestureArenaMember _member)
     {

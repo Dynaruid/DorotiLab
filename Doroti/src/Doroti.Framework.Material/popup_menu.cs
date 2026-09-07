@@ -590,6 +590,7 @@ public class _PopupMenuRoute__popup_menu<T> : global::Doroti.Framework.Widgets.P
     public virtual global::Doroti.Framework.Rendering.BoxConstraints? constraints { get; private set; }
     public virtual Clip clipBehavior { get; private set; } = default!;
     public virtual global::Doroti.Framework.Animation.AnimationStyle? popUpAnimationStyle { get; private set; }
+    // Dart library-private member: distinct from the same name in the base library.
     internal virtual global::Doroti.Framework.Animation.CurvedAnimation? _animation { get; set; } = default;
     private string? __field_barrierLabel = default!;
     public override string? barrierLabel { get => __field_barrierLabel; }

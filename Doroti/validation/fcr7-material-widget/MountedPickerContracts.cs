@@ -28,6 +28,7 @@ internal static class MountedPickerContracts
                 .Register<IViewHostCapability>(DorotiCapabilityIds.ViewLifecycleMetrics, host)
                 .Register<IFrameHostCapability>(DorotiCapabilityIds.ViewFrameDispatch, host)
                 .Register<IInputHostCapability>(DorotiCapabilityIds.InputEvents, host)
+                .Register<ITextInputHostCapability>(DorotiCapabilityIds.TextInput, host)
                 .Register<IParagraphHostCapability>(DorotiCapabilityIds.GraphicsText, renderer)
                 .Register<IImageHostCapability>(DorotiCapabilityIds.GraphicsImage, images)
                 .Register<ISceneHostCapability>(DorotiCapabilityIds.GraphicsScene, renderer)
@@ -36,6 +37,102 @@ internal static class MountedPickerContracts
                 .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host));
             var binding = new WidgetsFlutterBinding(dispatcher);
             renderer.RegisterFontAsync(File.ReadAllBytes("DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf"), "MaterialIcons").GetAwaiter().GetResult();
+            if (Environment.GetEnvironmentVariable("DOROTI_VALIDATION_MOUNTED_TEXT") == "1")
+            {
+                var controller = new TextEditingController();
+                var focus = new FocusNode();
+                view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new M.MaterialApp(
+                    locale: new Locale("en", "US"), home: new M.Scaffold(body: new Center(child: new SizedBox(width: 240, child: new M.TextField(
+                        controller: controller, focusNode: focus))))))));
+                Pump("text-initial");
+                var editable = (EditableTextState)((StatefulElement)Elements(binding.rootElement!).Single(e => e.widget is EditableText)).state;
+                view.DispatchPlatformEvent(() => { focus.requestFocus(); controller.text = "Hello keyboard"; });
+                Pump("text-focused");
+                Console.WriteLine($"focus={focus.hasFocus}, primary={FocusManager.instance.primaryFocus}, selection={controller.selection}");
+                void Send(long physical, long logical, KeyEventType type) => view.DispatchPlatformEvent(() => host.SendKey(new KeyData(1, TimeSpan.Zero, type, physical, logical, false)));
+                Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.down);
+                Send(0x70004, 97, KeyEventType.down);
+                Send(0x70004, 97, KeyEventType.up);
+                Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.up);
+                Pump("text-select-all");
+                if (controller.selection.start != 0 || controller.selection.end != controller.text.Length)
+                    throw new Exception($"Mounted Ctrl+A failed: {controller.selection}");
+                view.DispatchPlatformEvent(() => controller.text = string.Concat(Enumerable.Repeat("Long text input ", 20)));
+                Pump("text-long");
+                Console.WriteLine($"editable size={editable.renderEditable.size}, maxScroll={editable.renderEditable.maxScrollExtent}, offset={editable.renderEditable.offset.pixels}, clip={editable.renderEditable.clipBehavior}, compositing={editable.renderEditable.needsCompositing}");
+                Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.down);
+                foreach (var letter in "ACXV") {
+                    Send(0x70004 + letter - 'A', char.ToLowerInvariant(letter), KeyEventType.down);
+                    Send(0x70004 + letter - 'A', char.ToLowerInvariant(letter), KeyEventType.up);
+                    Pump("text-shortcut-" + letter);
+                    if (controller.text.Length != (letter == 'X' ? 0 : 320)) throw new Exception("Clipboard shortcut " + letter);
+                    Console.WriteLine($"{letter}: length={controller.text.Length}, selection={controller.selection}");
+                }
+                Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.up);
+                view.DispatchPlatformEvent(() => controller.text = "one two three");
+                Pump("text-navigation-initial");
+                view.DispatchPlatformEvent(() => controller.selection = Doroti.Framework.Services.TextSelection.CreateCollapsed(controller.text.Length));
+                Send(0x700e1, Doroti.Framework.Services.LogicalKeyboardKey.shiftLeft.keyId, KeyEventType.down);
+                Send(0x70050, Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft.keyId, KeyEventType.down);
+                Send(0x70050, Doroti.Framework.Services.LogicalKeyboardKey.arrowLeft.keyId, KeyEventType.up);
+                Send(0x700e1, Doroti.Framework.Services.LogicalKeyboardKey.shiftLeft.keyId, KeyEventType.up);
+                Pump("text-shift-left");
+                if(controller.selection.baseOffset != 13 || controller.selection.extentOffset != 12) throw new Exception("Shift+Left: " + controller.selection);
+                Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.down);
+                Send(0x7004a, Doroti.Framework.Services.LogicalKeyboardKey.home.keyId, KeyEventType.down);
+                Send(0x7004a, Doroti.Framework.Services.LogicalKeyboardKey.home.keyId, KeyEventType.up);
+                Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.up);
+                Pump("text-ctrl-home");
+                if(controller.selection.extentOffset != 0) throw new Exception("Ctrl+Home: " + controller.selection);
+                Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.down);
+                Send(0x7004f, Doroti.Framework.Services.LogicalKeyboardKey.arrowRight.keyId, KeyEventType.down);
+                Send(0x7004f, Doroti.Framework.Services.LogicalKeyboardKey.arrowRight.keyId, KeyEventType.up);
+                Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.up);
+                Pump("text-ctrl-right");
+                if(controller.selection.extentOffset != 3) throw new Exception("Ctrl+Right: " + controller.selection);
+                var beforeDelete = controller.text.Length;
+                Send(0x7002a, Doroti.Framework.Services.LogicalKeyboardKey.backspace.keyId, KeyEventType.down);
+                Send(0x7002a, Doroti.Framework.Services.LogicalKeyboardKey.backspace.keyId, KeyEventType.up);
+                Pump("text-backspace");
+                if(controller.text.Length != beforeDelete - 1) throw new Exception("Backspace must delete once");
+                var longInput = string.Concat(Enumerable.Repeat("Long native input ", 20));
+                view.DispatchPlatformEvent(() => host.Edit(new DorotiTextEditingState(longInput, new(longInput.Length, longInput.Length), null)));
+                Pump("text-native-long");
+                var caret = Rect.zero;
+                view.DispatchPlatformEvent(() => caret = editable.renderEditable.getLocalRectForCaret(new TextPosition(longInput.Length)));
+                if(editable.renderEditable.offset.pixels <= 0 || caret.left < -1 || caret.right > editable.renderEditable.size.width + 1)
+                    throw new Exception($"Long input caret not visible: {caret}, scroll={editable.renderEditable.offset.pixels}");
+                // Compare native raster output around the actual editable viewport.
+                var output = System.IO.Path.Combine(WindowsSampleContracts.OutputDirectory, "mounted");
+                var viewport = editable.renderEditable.localToGlobal(Offset.zero) & editable.renderEditable.size;
+                using var empty = SKBitmap.Decode(System.IO.Path.Combine(output, "text-initial.png"));
+                foreach (var stage in new[] { "text-long", "text-shortcut-A", "text-native-long" }) {
+                    using var actual = SKBitmap.Decode(System.IO.Path.Combine(output, stage + ".png"));
+                    var insideChanges = 0;
+                    for(var y = (int)Math.Ceiling(viewport.top); y < (int)viewport.bottom; y++)
+                    for(var x = 0; x < Width; x++) {
+                        if(actual.GetPixel(x,y) == empty.GetPixel(x,y)) continue;
+                        if(x < (int)viewport.left || x >= (int)Math.Ceiling(viewport.right))
+                            throw new Exception($"{stage}: editable pixels escaped viewport at {x},{y}");
+                        insideChanges++;
+                    }
+                    if(insideChanges < 50) throw new Exception(stage + ": text/selection must paint visible pixels");
+                }
+                Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.down);
+                Send(0x7001d, Doroti.Framework.Services.LogicalKeyboardKey.keyZ.keyId, KeyEventType.down);
+                Send(0x7001d, Doroti.Framework.Services.LogicalKeyboardKey.keyZ.keyId, KeyEventType.up);
+                Pump("text-undo");
+                if(controller.text == longInput) throw new Exception("Ctrl+Z did not undo native input");
+                Send(0x700e1, Doroti.Framework.Services.LogicalKeyboardKey.shiftLeft.keyId, KeyEventType.down);
+                Send(0x7001d, Doroti.Framework.Services.LogicalKeyboardKey.keyZ.keyId, KeyEventType.down);
+                Send(0x7001d, Doroti.Framework.Services.LogicalKeyboardKey.keyZ.keyId, KeyEventType.up);
+                Send(0x700e1, Doroti.Framework.Services.LogicalKeyboardKey.shiftLeft.keyId, KeyEventType.up);
+                Send(0x700e0, Doroti.Framework.Services.LogicalKeyboardKey.controlLeft.keyId, KeyEventType.up);
+                Pump("text-redo");
+                if(controller.text != longInput) throw new Exception("Ctrl+Shift+Z did not redo native input");
+                Console.WriteLine("mounted text: Ctrl+A/C/X/V/Z, Ctrl+Shift+Z, Shift+Left, Ctrl+Home/Right, Backspace, native long input caret/scroll and raster clipping PASS");
+                return;
+            }
             if (SamplePopups)
             {
                 var selectedSeed = -1;
@@ -452,14 +549,22 @@ internal static class MountedPickerContracts
         public ValueTask<Doroti.Ui.Image> RasterizeAsync(Picture picture, int width, int height, DartUiInvocation invocation, CancellationToken cancellationToken = default)
         { Interlocked.Increment(ref Rasterizations); return renderer.RasterizeAsync(picture, width, height, invocation, cancellationToken); }
     }
-    private sealed class Host : IViewHostCapability, IFrameHostCapability, ISkiaSceneRendererHost, IPlatformMessageHostCapability, IPlatformEnvironmentHostCapability, IInputHostCapability, IViewFocusRequestCapability
+    private sealed class Host : IViewHostCapability, IFrameHostCapability, ISkiaSceneRendererHost, IPlatformMessageHostCapability, IPlatformEnvironmentHostCapability, IInputHostCapability, IViewFocusRequestCapability, ITextInputHostCapability
     {
+        public event System.Action<DorotiTextEditingState>? EditingStateChanged;
+        public void Edit(DorotiTextEditingState state) => EditingStateChanged?.Invoke(state);
+        public event System.Action<DorotiTextInputAction>? ActionPerformed { add { } remove { } }
+        public void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState initialState) { }
+        public void UpdateState(DorotiTextEditingState state) { }
+        public void SetCaretRect(Rect rect) { }
+        public void ClearClient() { }
         private System.Action<TimeSpan>? _frame;
         public ValueTask<ReadOnlyMemory<byte>?> SendAsync(string channel, ReadOnlyMemory<byte>? data, CancellationToken cancellationToken = default) => ValueTask.FromResult<ReadOnlyMemory<byte>?>(null);
         public void SetMessageHandler(string channel, PlatformMessageHandler? handler) { }
         public void RequestFocus(ViewFocusState state, ViewFocusDirection direction) { }
         public event System.Action<PointerDataPacket>? PointerData { add { } remove { } }
-        public event System.Action<KeyData>? KeyData { add { } remove { } }
+        public event System.Action<KeyData>? KeyData;
+        public void SendKey(KeyData data) => KeyData?.Invoke(data);
         public event System.Action<RawFocusData>? FocusData { add { } remove { } }
         public void Fire() { var frame = _frame; _frame = null; frame?.Invoke(DorotiFrameClock.Now); }
         public void ScheduleFrame(System.Action<TimeSpan> callback) => _frame = callback;

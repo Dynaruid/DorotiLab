@@ -315,7 +315,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor : State<RawMenuAnchor>, _Raw
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!)
+    public override string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!)
     {
         return global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -706,7 +706,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor : State<RawMenuAnchorGr
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!) => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = default!) => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
 }
 
 public class MenuController

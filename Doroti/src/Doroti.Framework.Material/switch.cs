@@ -1677,7 +1677,7 @@ internal class _SwitchThemeAdaptation__switch : Adaptation<SwitchThemeData>
     {
     }
 
-    public virtual SwitchThemeData adapt(ThemeData theme, SwitchThemeData defaultValue)
+    public override SwitchThemeData adapt(ThemeData theme, SwitchThemeData defaultValue)
     {
         switch (theme.platform)
         {

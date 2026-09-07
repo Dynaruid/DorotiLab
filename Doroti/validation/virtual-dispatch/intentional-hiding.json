@@ -1,0 +1,87 @@
+[
+  {
+    "member": "Doroti.Framework.Gestures._CombiningGestureArenaEntry__team._member",
+    "baseMember": "Doroti.Framework.Gestures.GestureArenaEntry._member",
+    "reason": "Distinct Dart library-private identities in gestures/team.dart and gestures/arena.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Material._RenderSliverWeightedCarousel__carousel._getChildConstraints(long)",
+    "baseMember": "Doroti.Framework.Rendering.RenderSliverFixedExtentBoxAdaptor._getChildConstraints(long)",
+    "reason": "Distinct Dart library-private identities in material/carousel.dart and rendering/sliver_fixed_extent_list.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Material.InkSparkle._color",
+    "baseMember": "Doroti.Framework.Material.InteractiveInkFeature._color",
+    "reason": "Distinct Dart library-private identities in material/ink_sparkle.dart and material/ink_well.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Material._MergeableMaterialListBody__mergeable_material._getDirection(Doroti.Framework.Widgets.BuildContext)",
+    "baseMember": "Doroti.Framework.Widgets.ListBody._getDirection(Doroti.Framework.Widgets.BuildContext)",
+    "reason": "Distinct Dart library-private identities in material/mergeable_material.dart and widgets/basic.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Material._PopupMenuRoute__popup_menu<T>._animation",
+    "baseMember": "Doroti.Framework.Widgets.TransitionRoute<T>._animation",
+    "reason": "Distinct Dart library-private identities in material/popup_menu.dart and widgets/routes.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Material._MaterialScrollbarState__scrollbar._hoverIsActive",
+    "baseMember": "Doroti.Framework.Widgets.RawScrollbarState<Doroti.Framework.Material._MaterialScrollbar__scrollbar>._hoverIsActive",
+    "reason": "Distinct Dart library-private identities in material/scrollbar.dart and widgets/scrollbar.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Material._IndicatorPainter__tabs._repaint",
+    "baseMember": "Doroti.Framework.Rendering.CustomPainter._repaint",
+    "reason": "Distinct Dart library-private identities in material/tabs.dart and rendering/custom_paint.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Rendering.RenderAnnotatedRegion<T>._layerHandle",
+    "baseMember": "Doroti.Framework.Rendering.RenderObject._layerHandle",
+    "reason": "Distinct Dart library-private identities in rendering/proxy_box.dart and rendering/object.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Rendering.RenderWrap._computeDryLayout(Doroti.Framework.Rendering.BoxConstraints, System.Func<Doroti.Framework.Rendering.RenderBox, Doroti.Framework.Rendering.BoxConstraints, Doroti.Ui.Size>)",
+    "baseMember": "Doroti.Framework.Rendering.RenderBox._computeDryLayout(Doroti.Framework.Rendering.BoxConstraints, System.Func<Doroti.Framework.Rendering.RenderBox, Doroti.Framework.Rendering.BoxConstraints, Doroti.Ui.Size>)",
+    "reason": "Distinct Dart library-private identities in rendering/wrap.dart and rendering/box.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Widgets._RawIndexedStack__indexed_stack._debugCheckHasDirectionality(Doroti.Framework.Widgets.BuildContext)",
+    "baseMember": "Doroti.Framework.Widgets.Stack._debugCheckHasDirectionality(Doroti.Framework.Widgets.BuildContext)",
+    "reason": "Distinct Dart library-private identities in widgets/indexed_stack.dart and widgets/basic.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Widgets._InheritedNotifierElement__inherited_notifier<T>._dirty",
+    "baseMember": "Doroti.Framework.Widgets.Element._dirty",
+    "reason": "Distinct Dart library-private identities in widgets/inherited_notifier.dart and widgets/framework.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Widgets.RestorableRouteFuture<T>._disposed",
+    "baseMember": "Doroti.Framework.Widgets.RestorableProperty<string?>._disposed",
+    "reason": "Distinct Dart library-private identities in widgets/navigator.dart and widgets/restoration.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Widgets._RenderDeferredLayoutBox__overlay._needsLayout",
+    "baseMember": "Doroti.Framework.Rendering.RenderObject._needsLayout",
+    "reason": "Distinct Dart library-private identities in widgets/overlay.dart and rendering/object.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Widgets._RenderDeferredLayoutBox__overlay._debugMutationsLocked",
+    "baseMember": "Doroti.Framework.Rendering.RenderObject._debugMutationsLocked",
+    "reason": "Distinct Dart library-private identities in widgets/overlay.dart and rendering/object.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Widgets._SelectableTextContainerDelegate__text._adjustSelection(Doroti.Framework.Rendering.SelectionEdgeUpdateEvent, bool)",
+    "baseMember": "Doroti.Framework.Widgets.MultiSelectableSelectionContainerDelegate._adjustSelection(Doroti.Framework.Rendering.SelectionEdgeUpdateEvent, bool)",
+    "reason": "Distinct Dart library-private identities in widgets/text.dart and widgets/selectable_region.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Widgets._SelectableTextContainerDelegate__text._calculateLocalRange(System.Collections.Generic.List<(long contentLength, Doroti.Framework.Rendering.SelectedContentRange? range)>)",
+    "baseMember": "Doroti.Framework.Widgets.MultiSelectableSelectionContainerDelegate._calculateLocalRange(System.Collections.Generic.List<(long contentLength, Doroti.Framework.Rendering.SelectedContentRange? range)>)",
+    "reason": "Distinct Dart library-private identities in widgets/text.dart and widgets/selectable_region.dart; preserve independent state or helpers."
+  },
+  {
+    "member": "Doroti.Framework.Widgets._SelectableTextContainerDelegate__text._flushInactiveSelections()",
+    "baseMember": "Doroti.Framework.Widgets.MultiSelectableSelectionContainerDelegate._flushInactiveSelections()",
+    "reason": "Distinct Dart library-private identities in widgets/text.dart and widgets/selectable_region.dart; preserve independent state or helpers."
+  }
+]

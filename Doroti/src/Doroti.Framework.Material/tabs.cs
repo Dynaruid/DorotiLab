@@ -344,6 +344,7 @@ internal class _IndicatorPainter__tabs : global::Doroti.Framework.Rendering.Cust
     public virtual double? devicePixelRatio { get; private set; }
     public virtual TabIndicatorAnimation indicatorAnimation { get; private set; } = default!;
     public virtual TextDirection textDirection { get; private set; } = default!;
+    // Dart library-private member: distinct from the same name in the base library.
     internal virtual _IndicatorPainterNotifier__tabs _repaint { get; private set; } = default!;
     internal virtual List<double>? _currentTabOffsets { get; set; } = default;
     internal virtual TextDirection? _currentTextDirection { get; set; } = default;

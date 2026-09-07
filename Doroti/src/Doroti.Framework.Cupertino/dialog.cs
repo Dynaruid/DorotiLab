@@ -456,12 +456,12 @@ internal class _TargetSelectionGestureRecognizer__dialog : global::Doroti.Framew
 }))());
     }
 
-    public virtual void acceptGesture(long pointer)
+    public override void acceptGesture(long pointer)
     {
         this._slidingTap.acceptGesture(pointer);
     }
 
-    public virtual void rejectGesture(long pointer)
+    public override void rejectGesture(long pointer)
     {
         this._slidingTap.rejectGesture(pointer);
     }

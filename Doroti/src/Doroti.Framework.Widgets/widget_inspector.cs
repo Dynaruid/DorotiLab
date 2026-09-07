@@ -253,7 +253,7 @@ internal class _MulticastCanvas__widget_inspector : Canvas
         this._screenshot.translate(dx, dy);
     }
 
-    public virtual dynamic noSuchMethod(global::Doroti.Runtime.Invocation invocation)
+    public override dynamic noSuchMethod(global::Doroti.Runtime.Invocation invocation)
     {
         base.noSuchMethod(invocation);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -3602,7 +3602,7 @@ public class InspectorSerializationDelegate : global::Doroti.Framework.Foundatio
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate delegateForNode(global::Doroti.Framework.Foundation.DiagnosticsNode node)
+    public override global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate delegateForNode(global::Doroti.Framework.Foundation.DiagnosticsNode node)
     {
         return ((global::Doroti.Framework.Foundation.DiagnosticsSerializationDelegate)(object?)(((this.summaryTree || (this.subtreeDepth > 1L)) || this.service._shouldShowInSummaryTree(node)) ? copyWith(subtreeDepth: (this.subtreeDepth - 1L)) : this));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -3625,7 +3625,7 @@ public class InspectorSerializationDelegate : global::Doroti.Framework.Foundatio
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> truncateNodesList(List<global::Doroti.Framework.Foundation.DiagnosticsNode> nodes, global::Doroti.Framework.Foundation.DiagnosticsNode? owner)
+    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> truncateNodesList(List<global::Doroti.Framework.Foundation.DiagnosticsNode> nodes, global::Doroti.Framework.Foundation.DiagnosticsNode? owner)
     {
         if ((((this.maxDescendantsTruncatableNode >= 0L) && owner!.allowTruncate) && (checked((long)(nodes.Count)) > this.maxDescendantsTruncatableNode)))
         {

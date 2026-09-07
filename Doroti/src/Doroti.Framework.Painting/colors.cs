@@ -348,7 +348,7 @@ public class ColorProperty : DiagnosticsProperty<Color>
     {
     }
 
-    public virtual DartMap<string, object?> toJsonMap(DiagnosticsSerializationDelegate @delegate)
+    public override DartMap<string, object?> toJsonMap(DiagnosticsSerializationDelegate? @delegate = null)
     {
         DartMap<string, object?> json = base.toJsonMap(@delegate);
         if ((value is not null))

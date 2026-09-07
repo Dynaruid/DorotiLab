@@ -781,6 +781,7 @@ public class _RenderSliverWeightedCarousel__carousel : global::Doroti.Framework.
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
+    // Dart library-private member: distinct from the same name in the base library.
     internal virtual global::Doroti.Framework.Rendering.BoxConstraints _getChildConstraints(long index)
     {
         double extent = DartRuntimePrimitives.RequireValue(this.itemExtentBuilder!(index, this.layoutDimensions));
@@ -1007,7 +1008,10 @@ public class _CarouselMetrics__carousel : global::Doroti.Framework.Widgets.Fixed
         this.consumeMaxWeight = consumeMaxWeight;
     }
 
-    public virtual _CarouselMetrics__carousel copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, double? itemExtent = null, List<long>? flexWeights = null, bool? consumeMaxWeight = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
+    public override _CarouselMetrics__carousel copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null) =>
+        copyWithCarousel(minScrollExtent: minScrollExtent, maxScrollExtent: maxScrollExtent, pixels: pixels, viewportDimension: viewportDimension, axisDirection: axisDirection, devicePixelRatio: devicePixelRatio);
+
+    public virtual _CarouselMetrics__carousel copyWithCarousel(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, double? itemExtent = null, List<long>? flexWeights = null, bool? consumeMaxWeight = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
     {
         return new _CarouselMetrics__carousel(minScrollExtent: (minScrollExtent ?? ((this.hasContentDimensions ? this.minScrollExtent : null))), maxScrollExtent: (maxScrollExtent ?? ((this.hasContentDimensions ? this.maxScrollExtent : null))), pixels: (pixels ?? ((this.hasPixels ? this.pixels : null))), viewportDimension: (viewportDimension ?? ((this.hasViewportDimension ? this.viewportDimension : null))), axisDirection: (axisDirection ?? this.axisDirection), itemExtent: (itemExtent ?? this.itemExtent), flexWeights: (flexWeights ?? this.flexWeights), consumeMaxWeight: (consumeMaxWeight ?? this.consumeMaxWeight), devicePixelRatio: (devicePixelRatio ?? this.devicePixelRatio));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1306,7 +1310,10 @@ internal class _CarouselPosition__carousel : global::Doroti.Framework.Widgets.Sc
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual _CarouselMetrics__carousel copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, double? itemExtent = null, List<long>? flexWeights = null, bool? consumeMaxWeight = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
+    public override _CarouselMetrics__carousel copyWith(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null) =>
+        copyWithCarousel(minScrollExtent: minScrollExtent, maxScrollExtent: maxScrollExtent, pixels: pixels, viewportDimension: viewportDimension, axisDirection: axisDirection, devicePixelRatio: devicePixelRatio);
+
+    public virtual _CarouselMetrics__carousel copyWithCarousel(double? minScrollExtent = null, double? maxScrollExtent = null, double? pixels = null, double? viewportDimension = null, global::Doroti.Framework.Painting.AxisDirection? axisDirection = null, double? devicePixelRatio = null, double? itemExtent = null, List<long>? flexWeights = null, bool? consumeMaxWeight = null, long? itemIndex = null, double? minRange = null, double? maxRange = null, double? correctionOffset = null, double? viewportFraction = null)
     {
         return new _CarouselMetrics__carousel(minScrollExtent: (minScrollExtent ?? ((this.hasContentDimensions ? this.minScrollExtent : null))), maxScrollExtent: (maxScrollExtent ?? ((this.hasContentDimensions ? this.maxScrollExtent : null))), pixels: (pixels ?? ((this.hasPixels ? this.pixels : null))), viewportDimension: (viewportDimension ?? ((this.hasViewportDimension ? this.viewportDimension : null))), axisDirection: (axisDirection ?? this.axisDirection), itemExtent: (itemExtent ?? this.itemExtent), flexWeights: (flexWeights ?? this.flexWeights), consumeMaxWeight: (consumeMaxWeight ?? this.consumeMaxWeight), devicePixelRatio: (devicePixelRatio ?? this.devicePixelRatio));
         throw new InvalidOperationException("Dart control flow completed without a value.");

@@ -325,8 +325,8 @@ public abstract class Layer : DiagnosticableTreeMixin
         _needsAddToScene = false;
     }
 
-    public virtual string toStringShort() => $"{base.toStringShort()}{((this.owner is null) ? " DETACHED" : "")}";
-    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
+    public override string toStringShort() => $"{base.toStringShort()}{((this.owner is null) ? " DETACHED" : "")}";
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new DiagnosticsProperty<object>("owner", this.owner, level: ((this.parent is not null) ? DiagnosticLevel.hidden : DiagnosticLevel.info), defaultValue: null));
@@ -883,7 +883,7 @@ public class ContainerLayer : Layer
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<DiagnosticsNode> debugDescribeChildren()
+    public override List<DiagnosticsNode> debugDescribeChildren()
     {
         var children = new List<DiagnosticsNode>();
         if ((this.firstChild is null))
@@ -1822,6 +1822,8 @@ public class LayerLink
                 return true;
             });
     }
+
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {

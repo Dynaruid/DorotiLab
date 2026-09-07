@@ -826,7 +826,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>
     public virtual global::Doroti.Framework.Animation.Curve barrierCurve => DartRuntimePrimitives.ConvertValue<global::Doroti.Framework.Animation.Curve>(global::Doroti.Framework.Animation.Curves.ease);
     public abstract bool maintainState { get; }
     public virtual bool popGestureInProgress => this.navigator!.userGestureInProgress;
-    public virtual bool popGestureEnabled
+    public override bool popGestureEnabled
     {
         get
         {

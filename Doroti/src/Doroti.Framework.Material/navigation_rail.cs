@@ -491,7 +491,7 @@ internal class _IndicatorInkWell__navigation_rail : InkResponse
         this.textDirection = textDirection;
     }
 
-    public virtual RectCallback? getRectCallback(global::Doroti.Framework.Rendering.RenderBox referenceBox)
+    public override global::System.Func<Rect>? getRectCallback(global::Doroti.Framework.Rendering.RenderBox referenceBox)
     {
         {
             double boxWidth = ((global::Doroti.Framework.Rendering.RenderBox)referenceBox).size.width;
@@ -500,7 +500,7 @@ internal class _IndicatorInkWell__navigation_rail : InkResponse
             {
                 indicatorHorizontalCenter = (boxWidth - indicatorHorizontalCenter);
             }
-            return ((RectCallback?)(object?)(() =>
+            return ((global::System.Func<Rect>?)(object?)(() =>
             {
                 return global::Doroti.Ui.Rect.fromLTWH((indicatorHorizontalCenter - ((Navigation_railLibrary._kCircularIndicatorDiameter / 2L))), this.indicatorOffset.dy, Navigation_railLibrary._kCircularIndicatorDiameter, Navigation_barLibrary._kIndicatorHeight);
                 throw new InvalidOperationException("Dart closure completed without a value.");

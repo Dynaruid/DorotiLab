@@ -59,7 +59,8 @@ public class _RawIndexedStack__indexed_stack : Stack
         System.Diagnostics.Debug.Assert((((index is null) || (((DartRuntimePrimitives.RequireValue(index) == 0L) && (checked((long)(children.Count)) == 0L)))) || (((index >= 0L) && (DartRuntimePrimitives.RequireValue(index) < checked((long)(children.Count)))))));
     }
 
-    internal virtual bool _debugCheckHasDirectionality(BuildContext context)
+    // Dart library-private member: distinct from the same name in the base library.
+    internal new virtual bool _debugCheckHasDirectionality(BuildContext context)
     {
         if (((this.alignment is global::Doroti.Framework.Painting.AlignmentDirectional) && (this.textDirection is null)))
         {

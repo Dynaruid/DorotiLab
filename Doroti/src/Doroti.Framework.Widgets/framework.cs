@@ -171,6 +171,8 @@ public abstract class Widget : global::Doroti.Framework.Foundation.Diagnosticabl
     public virtual string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = null, global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.debug, long wrapWidth = 65) => throw new NotSupportedException();
     public virtual global::Doroti.Framework.Foundation.DiagnosticsNode toDiagnosticsNode(string? name = null, global::Doroti.Framework.Foundation.DiagnosticsTreeStyle? style = null) => throw new NotSupportedException();
     public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren() => throw new NotSupportedException();
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info) => throw new NotSupportedException();
     public abstract Element createElement();
     public virtual string toStringShort()
@@ -354,6 +356,8 @@ public abstract class State<T> : IState, global::Doroti.Framework.Foundation.Dia
     public virtual void didChangeAccessibilityFeatures() { }
 
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
@@ -1322,6 +1326,8 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
 
     public virtual string toStringShallow(string joiner = ", ", global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.debug) => throw new NotSupportedException();
     public virtual string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = null, global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.debug, long wrapWidth = 65) => throw new NotSupportedException();
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info) => throw new NotSupportedException();
     public virtual bool debugDoingBuild => throw new NotSupportedException();
     public override bool Equals(object? other)
@@ -2688,7 +2694,7 @@ public abstract class ComponentElement : Element
     {
     }
 
-    public virtual bool debugDoingBuild => this._debugDoingBuild;
+    public override bool debugDoingBuild => this._debugDoingBuild;
     public override Element? renderObjectAttachingChild => this._child;
     public override void mount(Element? parent, object? newSlot)
     {
@@ -3134,7 +3140,7 @@ public abstract class RenderObjectElement : Element
         }
     }
     public override Element? renderObjectAttachingChild => DartRuntimePrimitives.ConvertValue<Element>(null);
-    public virtual bool debugDoingBuild => this._debugDoingBuild;
+    public override bool debugDoingBuild => this._debugDoingBuild;
     internal virtual RenderObjectElement? _findAncestorRenderObjectElement()
     {
         Element? ancestor = this._parent;
@@ -3732,7 +3738,7 @@ internal class _NullElement__framework : Element
     {
     }
 
-    public virtual bool debugDoingBuild => throw new NotImplementedException();
+    public override bool debugDoingBuild => throw new NotImplementedException();
 }
 
 internal class _NullWidget__framework : Widget

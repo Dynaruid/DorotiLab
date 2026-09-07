@@ -389,9 +389,9 @@ public class TableRowInkWell : InkResponse
     {
     }
 
-    public virtual RectCallback getRectCallback(global::Doroti.Framework.Rendering.RenderBox referenceBox)
+    public override global::System.Func<Rect>? getRectCallback(global::Doroti.Framework.Rendering.RenderBox referenceBox)
     {
-        return ((RectCallback)(object?)(() =>
+        return ((global::System.Func<Rect>)(() =>
         {
             global::Doroti.Framework.Rendering.RenderObject cell = ((global::Doroti.Framework.Rendering.RenderObject)(object?)referenceBox);
             global::Doroti.Framework.Rendering.RenderObject? table = ((global::Doroti.Framework.Rendering.RenderObject)cell).parent;
@@ -423,7 +423,7 @@ public class TableRowInkWell : InkResponse
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual bool debugCheckContext(global::Doroti.Framework.Widgets.BuildContext context)
+    public override bool debugCheckContext(global::Doroti.Framework.Widgets.BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => global::Doroti.Framework.Widgets.DebugLibrary.debugCheckHasTable(context));
         return base.debugCheckContext(context);

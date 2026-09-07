@@ -346,6 +346,8 @@ public abstract class FocusTraversalPolicy : global::Doroti.Framework.Foundation
     }
 
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
@@ -986,6 +988,8 @@ public class _ReadingOrderSortData__focus_traversal : global::Doroti.Framework.F
     }
 
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
@@ -1068,6 +1072,8 @@ internal class _ReadingOrderDirectionalGroupData__focus_traversal : global::Doro
     }
 
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
@@ -1610,6 +1616,8 @@ public abstract class FocusOrder : global::Doroti.Framework.Foundation.Diagnosti
 
     public abstract long doCompare(FocusOrder other);
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;
@@ -1646,7 +1654,7 @@ public class NumericFocusOrder : FocusOrder
     }
 
     public override long doCompare(FocusOrder other) => this.order.CompareTo(((NumericFocusOrder)other).order);
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new global::Doroti.Framework.Foundation.DoubleProperty("order", this.order));
@@ -1664,7 +1672,7 @@ public class LexicalFocusOrder : FocusOrder
     }
 
     public override long doCompare(FocusOrder other) => this.order.CompareTo(((LexicalFocusOrder)other).order);
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new global::Doroti.Framework.Foundation.StringProperty("order", this.order));
@@ -2417,7 +2425,7 @@ public class DirectionalFocusIntent : Intent
         this.ignoreTextFields = ignoreTextFields;
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         properties.add(new global::Doroti.Framework.Foundation.EnumProperty<TraversalDirection>("direction", this.direction));

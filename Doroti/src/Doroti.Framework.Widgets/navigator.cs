@@ -3670,7 +3670,8 @@ public class RestorableRouteFuture<T> : RestorableProperty<string?>
     public virtual global::System.Func<NavigatorState, object, string> onPresent { get; private set; } = default!;
     public virtual global::System.Action<T>? onComplete { get; private set; }
     internal virtual Route<T>? _route { get; set; } = default;
-    internal virtual bool _disposed { get; set; } = false;
+    // Dart library-private member: distinct from the same name in the base library.
+    internal new virtual bool _disposed { get; set; } = false;
 
     public RestorableRouteFuture(global::System.Func<BuildContext, NavigatorState> navigatorFinder = default!, global::System.Func<NavigatorState, object, string> onPresent = default!, global::System.Action<T>? onComplete = null)
     {

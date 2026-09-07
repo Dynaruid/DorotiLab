@@ -886,7 +886,7 @@ public class PlatformRouteInformationProvider : RouteInformationProvider, Widget
         _valueInEngine = routeInformation;
     }
 
-    public virtual RouteInformation value => this._value;
+    public override RouteInformation value => this._value;
     internal virtual void _platformReportsNewRouteInformation(RouteInformation routeInformation)
     {
         if ((object.Equals(this._value, routeInformation)))

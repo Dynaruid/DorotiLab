@@ -58,11 +58,26 @@ if (args is ["--material-sample"] or ["--material-sample-search"])
     return;
 }
 
+if (args is ["--mounted-text"])
+{
+    Environment.SetEnvironmentVariable("DOROTI_VALIDATION_MOUNTED_TEXT", "1");
+    MountedPickerContracts.Verify();
+    return;
+}
+
 if (args is ["--shortcuts"])
 {
     KeyboardShortcutContracts.Verify();
     return;
 }
+
+if (args is ["--virtual-dispatch"])
+{
+    VirtualDispatchContracts.Verify();
+    return;
+}
+
+VirtualDispatchContracts.Verify();
 
 var requiredComponents = new HashSet<string>(StringComparer.Ordinal)
 {

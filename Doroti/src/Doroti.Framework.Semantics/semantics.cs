@@ -955,7 +955,7 @@ internal class _SemanticsDiagnosticableNode__semantics : DiagnosticableNode<Sema
         this.childOrder = childOrder;
     }
 
-    public virtual List<DiagnosticsNode> getChildren() => value.debugDescribeChildren(childOrder: this.childOrder);
+    public override List<DiagnosticsNode> getChildren() => value.debugDescribeChildren(childOrder: this.childOrder);
 }
 
 public class SemanticsHintOverrides : DiagnosticableTree
@@ -2266,8 +2266,8 @@ public class SemanticsNode : DiagnosticableTreeMixin
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual string toStringShort() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsNode"))}#{this.id}";
-    public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
+    public override string toStringShort() => $"{(global::Doroti.Framework.Foundation.objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsNode"))}#{this.id}";
+    public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
     {
         DiagnosticableDefaults.debugFillProperties(properties);
         var hideOwner = true;
@@ -2363,7 +2363,10 @@ public class SemanticsNode : DiagnosticableTreeMixin
         properties.add(new StringProperty("maxValue", this._maxValue, defaultValue: null));
     }
 
-    public virtual string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = null, DiagnosticLevel minLevel = DiagnosticLevel.debug, DebugSemanticsDumpOrder childOrder = DebugSemanticsDumpOrder.traversalOrder, long wrapWidth = 65)
+    public override string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = null, DiagnosticLevel minLevel = DiagnosticLevel.debug, long? wrapWidth = 65) =>
+        toStringDeep(childOrder: DebugSemanticsDumpOrder.traversalOrder, prefixLineOne: prefixLineOne, prefixOtherLines: prefixOtherLines, minLevel: minLevel, wrapWidth: wrapWidth ?? 65);
+
+    public virtual string toStringDeep(DebugSemanticsDumpOrder childOrder, string prefixLineOne = "", string? prefixOtherLines = null, DiagnosticLevel minLevel = DiagnosticLevel.debug, long wrapWidth = 65)
     {
         return toDiagnosticsNode(childOrder: childOrder).toStringDeep(prefixLineOne: prefixLineOne, prefixOtherLines: prefixOtherLines, minLevel: minLevel, wrapWidth: wrapWidth);
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -2375,7 +2378,9 @@ public class SemanticsNode : DiagnosticableTreeMixin
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual List<DiagnosticsNode> debugDescribeChildren(DebugSemanticsDumpOrder childOrder = DebugSemanticsDumpOrder.traversalOrder)
+    public override List<DiagnosticsNode> debugDescribeChildren() => debugDescribeChildren(DebugSemanticsDumpOrder.traversalOrder);
+
+    public virtual List<DiagnosticsNode> debugDescribeChildren(DebugSemanticsDumpOrder childOrder)
     {
         return debugListChildrenInOrder(childOrder).map<SemanticsNode, DiagnosticsNode>(((node) => node.toDiagnosticsNode(childOrder: childOrder))).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");

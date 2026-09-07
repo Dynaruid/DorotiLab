@@ -230,6 +230,8 @@ public class Ticker
             debugLabel ?? _onTick.Target?.GetType().Name ?? "Ticker");
     }
 
+    public override string ToString() => ToString(false);
+
     public virtual string ToString(bool debugIncludeStack = false)
     {
         var buffer = new StringBuffer();

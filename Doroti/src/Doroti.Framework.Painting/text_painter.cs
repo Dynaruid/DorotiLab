@@ -95,7 +95,7 @@ public class WordBoundary : TextBoundary
         this._paragraph = _paragraph;
     }
 
-    public virtual global::Doroti.Ui.TextRange getTextBoundaryAt(long position) => this._paragraph.getWordBoundary(new global::Doroti.Ui.TextPosition(offset: Math.Max(position, 0L)));
+    public override global::Doroti.Ui.TextRange getTextBoundaryAt(long position) => this._paragraph.getWordBoundary(new global::Doroti.Ui.TextPosition(offset: Math.Max(position, 0L)));
     internal static long _codePointFromSurrogates(long highSurrogate, long lowSurrogate)
     {
         DartRuntimePrimitives.Assert(() => TextPainter.isHighSurrogate(highSurrogate));
@@ -144,7 +144,7 @@ internal class _UntilTextBoundary__text_painter : TextBoundary
         this._predicate = _predicate;
     }
 
-    public virtual long? getLeadingTextBoundaryAt(long position)
+    public override long? getLeadingTextBoundaryAt(long position)
     {
         if ((position < 0L))
         {
@@ -155,7 +155,7 @@ internal class _UntilTextBoundary__text_painter : TextBoundary
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual long? getTrailingTextBoundaryAt(long position)
+    public override long? getTrailingTextBoundaryAt(long position)
     {
         long? offset = this._textBoundary.getTrailingTextBoundaryAt(Math.Max(position, 0L));
         return (((offset is null) || this._predicate(DartRuntimePrimitives.RequireValue(offset), true)) ? offset : getTrailingTextBoundaryAt(DartRuntimePrimitives.RequireValue(DartRuntimePrimitives.RequireValue(offset))));

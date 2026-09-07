@@ -170,6 +170,8 @@ public class CupertinoTextThemeData : global::Doroti.Framework.Foundation.Diagno
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(FoundationRuntimePorts.ObjectHash(this._defaults, this._primaryColor, this._textStyle, this._actionTextStyle, this._actionSmallTextStyle, this._tabLabelTextStyle, this._navTitleTextStyle, this._navLargeTitleTextStyle, this._navActionTextStyle, this._pickerTextStyle, this._dateTimePickerTextStyle));
     public virtual string toStringShort() => global::Doroti.Framework.Foundation.DiagnosticsLibrary.describeIdentity(this);
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         string? fullString = default!;

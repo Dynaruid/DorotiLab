@@ -35,7 +35,8 @@ public abstract class InheritedNotifier<T> : InheritedWidget where T : global::D
 
 internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedElement where T : global::Doroti.Framework.Foundation.Listenable
 {
-    internal virtual bool _dirty { get; set; } = false;
+    // Dart library-private member: distinct from the same name in the base library.
+    internal new virtual bool _dirty { get; set; } = false;
 
     internal _InheritedNotifierElement__inherited_notifier(InheritedNotifier<T> widget) : base(widget)
     {

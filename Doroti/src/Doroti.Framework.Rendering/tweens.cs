@@ -20,7 +20,7 @@ public class FractionalOffsetTween : Tween<global::Doroti.Framework.Painting.Fra
     {
     }
 
-    public virtual global::Doroti.Framework.Painting.FractionalOffset? lerp(double t) => FractionalOffset.lerp(begin, end, t);
+    public override global::Doroti.Framework.Painting.FractionalOffset? lerp(double t) => FractionalOffset.lerp(begin, end, t);
 }
 
 public class AlignmentTween : Tween<global::Doroti.Framework.Painting.Alignment>
@@ -29,7 +29,7 @@ public class AlignmentTween : Tween<global::Doroti.Framework.Painting.Alignment>
     {
     }
 
-    public virtual global::Doroti.Framework.Painting.Alignment lerp(double t) => Alignment.lerp(begin, end, t)!;
+    public override global::Doroti.Framework.Painting.Alignment lerp(double t) => Alignment.lerp(begin, end, t)!;
 }
 
 public class AlignmentGeometryTween : Tween<global::Doroti.Framework.Painting.AlignmentGeometry?>
@@ -38,6 +38,6 @@ public class AlignmentGeometryTween : Tween<global::Doroti.Framework.Painting.Al
     {
     }
 
-    public virtual global::Doroti.Framework.Painting.AlignmentGeometry? lerp(double t) => AlignmentGeometry.lerp(begin, end, t);
+    public override global::Doroti.Framework.Painting.AlignmentGeometry? lerp(double t) => AlignmentGeometry.lerp(begin, end, t);
 }
 

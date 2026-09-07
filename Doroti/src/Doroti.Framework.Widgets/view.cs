@@ -572,7 +572,7 @@ internal class _MultiChildComponentElement__view : Element
         }
     }
 
-    public virtual bool debugDoingBuild => false;
+    public override bool debugDoingBuild => false;
     public override Element? renderObjectAttachingChild => this._childElement;
     public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {

@@ -786,7 +786,9 @@ public abstract class RenderTwoDimensionalViewport : global::Doroti.Framework.Re
 
     public virtual bool didResize => this._didResize;
     public virtual bool needsDelegateRebuild => this._needsDelegateRebuild;
-    public virtual void markNeedsLayout(bool withDelegateRebuild = false)
+    public override void markNeedsLayout() => markNeedsLayout(withDelegateRebuild: false);
+
+    public virtual void markNeedsLayout(bool withDelegateRebuild)
     {
         _needsDelegateRebuild = (this._needsDelegateRebuild || withDelegateRebuild);
         base.markNeedsLayout();

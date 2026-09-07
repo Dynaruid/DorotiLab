@@ -583,7 +583,7 @@ internal class _MediaQueryFromViewState__media_query : State<_MediaQueryFromView
         }
     }
 
-    public virtual void didChangeAccessibilityFeatures()
+    public override void didChangeAccessibilityFeatures()
     {
         if ((this._parentData is null))
         {

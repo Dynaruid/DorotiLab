@@ -214,8 +214,11 @@ internal static class Program
                 "Synthetic pointer lifecycle or re-entry coordinates differ.");
             Require(ProductEntrypoint.WheelSignals == 1,
                 "Synthetic mouse wheel did not cross the PointerSignalKind.scroll path exactly once.");
-            Require(ProductEntrypoint.KeyTypes.SequenceEqual([KeyEventType.down, KeyEventType.up]),
-                "Synthetic keyboard lifecycle differs.");
+            Require(ProductEntrypoint.KeyTypes.SequenceEqual(Enumerable.Range(0, 7).SelectMany(_ => new[] { KeyEventType.down, KeyEventType.up })),
+                "Synthetic keyboard lifecycle, including active-client editing keys, differs.");
+            Require(ProductEntrypoint.LogicalKeys.Where((_, index) => index % 2 == 0).SequenceEqual(
+                new long[] { 97, 0x100000008, 0x10000007f, 0x100000302, 0x100000303, 0x100000306, 0x100000305 }),
+                "Native editing keys did not reach framework identities.");
             var focusGainIndex = ProductEntrypoint.FocusStates.FindIndex(
                 static focused => focused);
             Require(focusGainIndex >= 0 &&
@@ -492,6 +495,7 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
     public static List<PointerChange> PointerChanges { get; } = [];
     public static int WheelSignals;
     public static List<KeyEventType> KeyTypes { get; } = [];
+    public static List<long> LogicalKeys { get; } = [];
     public static List<bool> FocusStates { get; } = [];
     public static HashSet<int> InputDispatchThreadIds { get; } = [];
     public static HashSet<int> DrawThreadIds { get; } = [];
@@ -530,6 +534,7 @@ public sealed class ProductEntrypoint : IDorotiViewEntrypoint
         {
             InputDispatchThreadIds.Add(Environment.CurrentManagedThreadId);
             KeyTypes.Add(key.type);
+            LogicalKeys.Add(key.logical);
             return true;
         };
         dispatcher.onFocusData = (_, focus) =>

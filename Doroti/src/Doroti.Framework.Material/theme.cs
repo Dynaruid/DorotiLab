@@ -140,7 +140,7 @@ internal class _AnimatedThemeState__theme : global::Doroti.Framework.Widgets.Ani
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
+    public override void debugFillProperties(global::Doroti.Framework.Foundation.DiagnosticPropertiesBuilder description)
     {
         DiagnosticableDefaults.debugFillProperties(description);
         description.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<ThemeDataTween>("data", this._data, showName: false, defaultValue: null));

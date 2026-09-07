@@ -27,7 +27,13 @@ public abstract class RenderSliverFixedExtentBoxAdaptor : RenderSliverMultiBoxAd
         get => throw new NotSupportedException("Dart getter contract has no base implementation.");
         set => throw new NotSupportedException("Dart setter contract has no base implementation.");
     }
-    public virtual ItemExtentBuilder? itemExtentBuilder => null;
+    // Keep getter and setter in one CLR property so the varied-extent
+    // implementation participates in the adaptor's virtual layout calls.
+    public virtual ItemExtentBuilder? itemExtentBuilder
+    {
+        get => null;
+        set => throw new NotSupportedException("This sliver does not use an item extent builder.");
+    }
     public virtual double indexToLayoutOffset(double itemExtent, long index)
     {
         if ((this.itemExtentBuilder is null))
@@ -364,7 +370,7 @@ public class RenderSliverVariedExtentList : RenderSliverFixedExtentBoxAdaptor
         this._itemExtentBuilder = itemExtentBuilder;
     }
 
-    public new ItemExtentBuilder? itemExtentBuilder
+    public override ItemExtentBuilder? itemExtentBuilder
     {
         get => this._itemExtentBuilder;
         set

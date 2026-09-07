@@ -338,7 +338,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual void didChangeAppLifecycleState(AppLifecycleState state)
+    public override void didChangeAppLifecycleState(AppLifecycleState state)
     {
         _appLifecycleState = state;
         base.didChangeAppLifecycleState(state);

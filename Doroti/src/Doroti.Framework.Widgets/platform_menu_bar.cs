@@ -269,7 +269,7 @@ public class PlatformMenuBar : StatefulWidget
     }
 
     public override IState createState() => DartRuntimePrimitives.ConvertValue<IState>(new _PlatformMenuBarState__platform_menu_bar());
-    public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
+    public override List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren()
     {
         return this.menus.map<PlatformMenuItem, global::Doroti.Framework.Foundation.DiagnosticsNode>(((child) => ((Diagnosticable)child).toDiagnosticsNode())).ToList();
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -466,6 +466,8 @@ public class PlatformMenuItem : global::Doroti.Framework.Foundation.Diagnosticab
         properties.add(new global::Doroti.Framework.Foundation.DiagnosticsProperty<MenuSerializableShortcut?>("shortcut", this.shortcut, defaultValue: null));
         properties.add(new global::Doroti.Framework.Foundation.FlagProperty("enabled", value: (this.onSelected is not null), ifFalse: "DISABLED"));
     }
+
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
 
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {

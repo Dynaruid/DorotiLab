@@ -532,7 +532,8 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Framework.Rendering.SelectionResult _adjustSelection(global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent @event, bool isEnd)
+    // Dart library-private member: distinct from the same name in the base library.
+    internal new virtual global::Doroti.Framework.Rendering.SelectionResult _adjustSelection(global::Doroti.Framework.Rendering.SelectionEdgeUpdateEvent @event, bool isEnd)
     {
         DartRuntimePrimitives.Assert(() =>
             {
@@ -678,7 +679,8 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual global::Doroti.Framework.Rendering.SelectedContentRange? _calculateLocalRange(List<(long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range)> selections)
+    // Dart library-private member: distinct from the same name in the base library.
+    internal new virtual global::Doroti.Framework.Rendering.SelectedContentRange? _calculateLocalRange(List<(long contentLength, global::Doroti.Framework.Rendering.SelectedContentRange? range)> selections)
     {
         if (((this.currentSelectionStartIndex == -1L) || (this.currentSelectionEndIndex == -1L)))
         {
@@ -732,7 +734,8 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    internal virtual void _flushInactiveSelections()
+    // Dart library-private member: distinct from the same name in the base library.
+    internal new virtual void _flushInactiveSelections()
     {
         if (((this.currentSelectionStartIndex == -1L) && (this.currentSelectionEndIndex == -1L)))
         {

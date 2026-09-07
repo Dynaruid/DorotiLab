@@ -27,7 +27,8 @@ public class InkSparkle : InteractiveInkFeature
     internal virtual global::Doroti.Framework.Animation.Animation<double> _alpha { get; set; } = default!;
     internal virtual global::Doroti.Framework.Animation.Animation<double> _sparkleAlpha { get; set; } = default!;
     internal virtual double _turbulenceSeed { get; set; } = default!;
-    internal virtual Color _color { get; private set; } = default!;
+    // Dart library-private member: distinct from the same name in the base library.
+    internal new virtual Color _color { get; private set; } = default!;
     internal virtual Offset _position { get; private set; } = default!;
     internal virtual global::Doroti.Framework.Painting.BorderRadius _borderRadius { get; private set; } = default!;
     internal virtual double _targetRadius { get; private set; } = default!;

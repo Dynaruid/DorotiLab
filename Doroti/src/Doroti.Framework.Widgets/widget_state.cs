@@ -46,7 +46,7 @@ internal class _WidgetStateAnd__widget_state : _WidgetStateCombo__widget_state
     {
     }
 
-    public virtual bool isSatisfiedBy(HashSet<WidgetState> states)
+    public override bool isSatisfiedBy(HashSet<WidgetState> states)
     {
         return (this.first.isSatisfiedBy(states) && this.second.isSatisfiedBy(states));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -68,7 +68,7 @@ internal class _WidgetStateOr__widget_state : _WidgetStateCombo__widget_state
     {
     }
 
-    public virtual bool isSatisfiedBy(HashSet<WidgetState> states)
+    public override bool isSatisfiedBy(HashSet<WidgetState> states)
     {
         return (this.first.isSatisfiedBy(states) || this.second.isSatisfiedBy(states));
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -559,6 +559,8 @@ public class WidgetStateMapper<T> : global::Doroti.Framework.Foundation.Diagnost
     }
 
     public override int GetHashCode() => DartRuntimePrimitives.ConvertValue<int>(new MapEquality<WidgetStatesConstraint, T>().hash(this._map));
+    public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
+
     public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info)
     {
         return $"WidgetStateMapper<{typeof(T)}>({this._map})";
