@@ -84,10 +84,36 @@ $env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # or another exact/unique device-name 
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
 
 # Run the Web app (Release configuration by default)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release
 ```
 
-After the Web runner starts, open `http://127.0.0.1:5088` in a browser. To compare renderer backends explicitly, use these addresses:
+### Compare the Material sample by URL
+
+After the Web runner starts, open one of these links:
+
+| Screen / renderer | URL |
+| --- | --- |
+| Material sample with the default CanvasKit renderer | [Open default sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
+| Material sample with CanvasKit selected explicitly | [Open CanvasKit sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-canvaskit-webgl) |
+| Material sample with SkiaSharp in the direct .NET Worker | [Open SkiaSharp direct sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
+| Diagnostics with the default renderer | [Open diagnostics](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
+
+`dorotiTestbedMode=sample` selects the sample screen; `dorotiRenderer` selects
+the rendering backend. Keep both parameters when comparing the same sample.
+Omitting `dorotiTestbedMode` opens diagnostics, and omitting `dorotiRenderer`
+uses `worker-canvaskit-webgl`.
+
+Switch between the CanvasKit and SkiaSharp direct links in the same browser
+tab, keeping the window size and zoom unchanged. In Components, scroll to
+Communication → Progress indicators and press the play button to compare
+animation; also scroll into sections you have not visited yet. Changing the URL
+does not require restarting the server. If a renderer was rebuilt, restart the
+runner and reload the page to load the new build. These links select a renderer
+for that page only and do not change the application default.
+
+### Other renderer URLs
+
+The following addresses open diagnostics with the selected backend:
 
 - Default CanvasKit Worker: `http://127.0.0.1:5088`
 - Document WebGL2: `http://127.0.0.1:5088/?dorotiRenderer=document-webgl`

@@ -104,6 +104,7 @@ public sealed class DorotiFrameTrace
     private long _previousMetricsTimestampMicroseconds;
     private long _lastMetricsTimestampMicroseconds;
     private readonly HashSet<long> _activeScrollPositions = [];
+    private long _lastScrollUpdateArrivalMicroseconds;
     // Opt-in diagnostic wall-work clock. TimestampMicroseconds remains the
     // historical causally clamped host clock and must not time phase work.
     public bool MeasureRecordingTime { get; set; }
@@ -112,7 +113,10 @@ public sealed class DorotiFrameTrace
     {
         get
         {
-            lock (_gate) return _activeScrollPositions.Count != 0;
+            var now = DorotiFrameClock.Now.Ticks / 10;
+            lock (_gate) return _activeScrollPositions.Count != 0 ||
+                (_lastScrollUpdateArrivalMicroseconds > 0 &&
+                 now - _lastScrollUpdateArrivalMicroseconds <= ActiveMetricsWindowMicroseconds);
         }
     }
 
@@ -228,6 +232,11 @@ public sealed class DorotiFrameTrace
         lock (_gate)
         {
             inputSequence = _lastInputSequence;
+            // Wheel/trackpad pointerScroll begins and ends synchronously. Keep
+            // the quiet interval active across those events, using arrival time
+            // rather than the causally clamped host trace timestamp.
+            if (phase == DorotiFramePhase.scrollUpdate && scrollDelta is not (null or 0))
+                _lastScrollUpdateArrivalMicroseconds = DorotiFrameClock.Now.Ticks / 10;
             if (phase == DorotiFramePhase.scrollStart) _activeScrollPositions.Add(scrollPositionId);
             else if (phase == DorotiFramePhase.scrollEnd) _activeScrollPositions.Remove(scrollPositionId);
         }

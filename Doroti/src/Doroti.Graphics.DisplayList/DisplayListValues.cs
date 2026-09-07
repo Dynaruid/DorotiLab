@@ -175,9 +175,10 @@ public readonly record struct DisplayRoundedRect(
     }
 }
 
-public sealed class DisplayMatrix
+public sealed class DisplayMatrix : IEquatable<DisplayMatrix>
 {
     private readonly ReadOnlyCollection<float> _values;
+    private readonly int _hashCode;
 
     public DisplayMatrix(IEnumerable<float> values)
     {
@@ -187,7 +188,20 @@ public sealed class DisplayMatrix
         {
             throw new ArgumentException("A DisplayList transform must contain exactly 16 values.", nameof(values));
         }
+        var hash = new HashCode();
+        foreach (var value in _values) hash.Add(value);
+        _hashCode = hash.ToHashCode();
     }
+
+    public bool Equals(DisplayMatrix? other)
+    {
+        if (ReferenceEquals(this, other)) return true;
+        if (other is null || _hashCode != other._hashCode) return false;
+        for (var i = 0; i < 16; i++) if (!_values[i].Equals(other._values[i])) return false;
+        return true;
+    }
+    public override bool Equals(object? obj) => obj is DisplayMatrix other && Equals(other);
+    public override int GetHashCode() => _hashCode;
 
     public IReadOnlyList<float> Values => _values;
 

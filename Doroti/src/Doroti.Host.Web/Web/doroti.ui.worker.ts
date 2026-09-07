@@ -252,6 +252,7 @@ function scheduleManagedFrame(): void {
     frameDispatchMaximumMilliseconds = Math.max(frameDispatchMaximumMilliseconds, duration);
     frameWaitTotalMilliseconds += wait;
     frameWaitMaximumMilliseconds = Math.max(frameWaitMaximumMilliseconds, wait);
+    publishDiagnostics();
   });
   managedFrameRaf = scheduledRaf;
 }
@@ -863,8 +864,14 @@ function disposeUiRole(): void {
   close();
 }
 
+let diagnosticsQueued = false;
 function publishDiagnostics(): void {
-  post("ui-diagnostics", { diagnostics: diagnostics() });
+  if (diagnosticsQueued) return;
+  diagnosticsQueued = true;
+  queueMicrotask(() => {
+    diagnosticsQueued = false;
+    post("ui-diagnostics", { diagnostics: diagnostics() });
+  });
 }
 
 function diagnostics(): Readonly<Record<string, unknown>> {

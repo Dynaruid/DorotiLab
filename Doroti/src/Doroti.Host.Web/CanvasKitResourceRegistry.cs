@@ -22,6 +22,7 @@ internal sealed class CanvasKitResourceRegistry :
     private DisplayResourceReference? _defaultFont;
     private readonly Dictionary<string, DisplayResourceReference> _fontFamilies = new(StringComparer.Ordinal);
     private bool _disposed;
+    internal long FontGeneration { get; private set; }
 
     public DisplayResourceReference DefaultFont
     {
@@ -55,16 +56,19 @@ internal sealed class CanvasKitResourceRegistry :
     internal async ValueTask RegisterFontAsync(ReadOnlyMemory<byte> bytes, string family, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var registration = RegisterFontCore(bytes, family);
+        var owned = bytes.ToArray();
+        var digest = await HashResourceAsync(owned, cancellationToken);
+        var registration = RegisterFontCore(owned, family, digest);
         try { await registration.Entry.Completion.Task.WaitAsync(TimeSpan.FromSeconds(30), cancellationToken); }
         catch { Release(registration.Entry.Reference); throw; }
     }
 
-    private (string Label, Entry Entry) RegisterFontCore(ReadOnlyMemory<byte> bytes, string family)
+    private (string Label, Entry Entry) RegisterFontCore(ReadOnlyMemory<byte> bytes, string family, byte[]? digest = null)
     {
         if (bytes.IsEmpty) throw new ArgumentException("Font bytes cannot be empty.", nameof(bytes));
         ArgumentException.ThrowIfNullOrWhiteSpace(family);
         var ownedBytes = bytes.ToArray();
+        digest ??= SHA256.HashData(ownedBytes);
         var reference = CreateReference(DisplayResourceKind.Font);
         var entry = CreateEntry(
             reference,
@@ -78,8 +82,8 @@ internal sealed class CanvasKitResourceRegistry :
                 id = reference.Id,
                 version = reference.Version,
                 family,
-                sha256 = Convert.ToHexStringLower(SHA256.HashData(ownedBytes)),
-            });
+                sha256 = Convert.ToHexStringLower(digest),
+            }, digest);
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
@@ -97,7 +101,7 @@ internal sealed class CanvasKitResourceRegistry :
                 throw;
             }
         }
-        lock (_gate) _fontFamilies[family] = reference;
+        lock (_gate) { _fontFamilies[family] = reference; FontGeneration++; }
         return ($"{family}/{reference.Id}/{reference.Version}", entry);
     }
 
@@ -110,6 +114,7 @@ internal sealed class CanvasKitResourceRegistry :
         cancellationToken.ThrowIfCancellationRequested();
         if (bytes.IsEmpty) throw new ArgumentException("Image bytes cannot be empty.", nameof(bytes));
         var ownedBytes = bytes.ToArray();
+        var digest = await HashResourceAsync(ownedBytes, cancellationToken);
         var reference = CreateReference(DisplayResourceKind.Image);
         var entry = CreateEntry(
             reference,
@@ -122,8 +127,8 @@ internal sealed class CanvasKitResourceRegistry :
                 kind = "image",
                 id = reference.Id,
                 version = reference.Version,
-                sha256 = Convert.ToHexStringLower(SHA256.HashData(ownedBytes)),
-            });
+                sha256 = Convert.ToHexStringLower(digest),
+            }, digest);
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
@@ -312,6 +317,7 @@ internal sealed class CanvasKitResourceRegistry :
             }
             if (reference.Kind == DisplayResourceKind.Font)
             {
+                FontGeneration++;
                 foreach (var family in _fontFamilies.Where(pair => pair.Value == reference).Select(pair => pair.Key).ToArray()) _fontFamilies.Remove(family);
                 if (_defaultFont == reference) _defaultFont = _entries.Values.FirstOrDefault(value => value.Kind == "font")?.Reference;
             }
@@ -361,6 +367,16 @@ internal sealed class CanvasKitResourceRegistry :
         }
     }
 
+    private static async Task<byte[]> HashResourceAsync(byte[] bytes, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var hex = await BrowserCanvasKitInterop.HashResourceAsync(bytes);
+        cancellationToken.ThrowIfCancellationRequested();
+        var digest = Convert.FromHexString(hex);
+        if (digest.Length != 32) throw new InvalidDataException("CanvasKit resource digest must be SHA-256.");
+        return digest;
+    }
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -373,9 +389,10 @@ internal sealed class CanvasKitResourceRegistry :
         DisplayResourceReference reference,
         byte[] bytes,
         string kind,
-        object descriptor)
+        object descriptor,
+        byte[]? digest = null)
     {
-        var hash = SHA256.HashData(bytes);
+        var hash = digest ?? SHA256.HashData(bytes);
         var fingerprint = new DisplayResourceFingerprint(
             BinaryPrimitives.ReadUInt64LittleEndian(hash),
             BinaryPrimitives.ReadUInt64LittleEndian(hash.AsSpan(sizeof(ulong))));
@@ -403,6 +420,12 @@ internal sealed class CanvasKitResourceRegistry :
             if (_entries.Remove(entry.Reference))
             {
                 removed = true;
+                if (entry.Reference.Kind == DisplayResourceKind.Font)
+                {
+                    FontGeneration++;
+                    foreach (var family in _fontFamilies.Where(pair => pair.Value == entry.Reference).Select(pair => pair.Key).ToArray())
+                        _fontFamilies.Remove(family);
+                }
                 if (_defaultFont == entry.Reference)
                     _defaultFont = _entries.Keys.FirstOrDefault(value => value.Kind == DisplayResourceKind.Font) is { Id: > 0 } font
                         ? font

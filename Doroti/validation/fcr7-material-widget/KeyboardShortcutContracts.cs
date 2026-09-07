@@ -66,6 +66,19 @@ internal static class KeyboardShortcutContracts
         var policy = new ReadingOrderTraversalPolicy((node, alignmentPolicy, alignment, duration, curve) => requested = node);
         Require(policy.previous(right) && ReferenceEquals(requested, left), "Shift+Tab selects the previous node with no enclosing traversal group");
         Require(policy.next(right) && ReferenceEquals(requested, nextRow), "Tab selects the next node with no enclosing traversal group");
+        var cachedData = new CachedSliverData();
+        var cachedBox = new Doroti.Framework.Rendering.RenderProxyBox { parentData = cachedData };
+        var cached = new CachedFocusNode(cachedBox);
+        cached._parent = scope; scope._children.Add(cached);
+        Require(cached.skipTraversal && policy.next(right) && ReferenceEquals(requested, nextRow),
+            "Tab excludes unlaid-out descendants retained in a sliver bucket");
+        var anchor = new _RenderLayoutSurrogateProxyBox__overlay(null);
+        cachedBox.child = anchor;
+        var portal = new _RenderDeferredLayoutBox__overlay(anchor, null);
+        Require(KeptAliveSliverVisibility.IsHidden(portal), "portal visibility follows its kept-alive layout anchor");
+        cachedData.Hidden = false;
+        Require(!cached.skipTraversal && !KeptAliveSliverVisibility.IsHidden(portal),
+            "returning a cached child to layout restores traversal and portal eligibility");
     }
 
     private static void VerifyPlatformKeyMaps()
@@ -427,5 +440,21 @@ internal static class KeyboardShortcutContracts
         private readonly Directionality _directionality = new(textDirection: Doroti.Ui.TextDirection.ltr, child: SizedBox.CreateShrink());
         public override T? getInheritedWidgetOfExactType<T>() where T : default => _directionality is T value ? value : default;
         public override InheritedElement? getElementForInheritedWidgetOfExactType<T>() => null;
+        public override Doroti.Framework.Rendering.RenderObject? findRenderObject() => null;
+    }
+    private sealed class CachedSliverData : Doroti.Framework.Rendering.SliverMultiBoxAdaptorParentData
+    {
+        public bool Hidden = true;
+        public override bool keptAlive => Hidden;
+    }
+    private sealed class CachedFocusNode(Doroti.Framework.Rendering.RenderObject box) : FocusNode
+    {
+        public override BuildContext context { get; } = new RenderContext(box);
+        public override Doroti.Ui.Rect rect => throw new InvalidOperationException("Cached geometry must not be read.");
+    }
+    private sealed class RenderContext(Doroti.Framework.Rendering.RenderObject box)
+        : StatelessElement(new Builder(builder: _ => SizedBox.CreateShrink()))
+    {
+        public override Doroti.Framework.Rendering.RenderObject findRenderObject() => box;
     }
 }

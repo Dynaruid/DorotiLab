@@ -83,10 +83,36 @@ $env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # 또는 정확하거나 유일한 다
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
 
 # Web으로 실행(기본 Release 구성)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release
 ```
 
-Web runner가 시작되면 브라우저에서 `http://127.0.0.1:5088`을 엽니다. renderer backend를 직접 비교하려면 다음 주소를 사용할 수 있습니다.
+### URL로 Material 샘플 비교하기
+
+Web runner가 시작되면 다음 링크를 브라우저에서 엽니다.
+
+| 화면 / 렌더러 | URL |
+| --- | --- |
+| 기본 CanvasKit으로 Material 샘플 실행 | [기본 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
+| CanvasKit을 명시하여 Material 샘플 실행 | [CanvasKit 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-canvaskit-webgl) |
+| direct .NET Worker의 SkiaSharp로 Material 샘플 실행 | [SkiaSharp direct 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
+| 기본 렌더러로 진단 화면 실행 | [진단 화면 열기](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
+
+`dorotiTestbedMode=sample`은 샘플 화면을, `dorotiRenderer`는 렌더링 backend를
+선택합니다. 같은 샘플을 비교할 때는 두 옵션을 함께 사용합니다.
+`dorotiTestbedMode`를 생략하면 진단 화면이 열리고, `dorotiRenderer`를 생략하면
+기본값인 `worker-canvaskit-webgl`을 사용합니다.
+
+같은 브라우저 탭에서 창 크기와 확대 비율을 유지한 채 CanvasKit과 SkiaSharp direct
+링크를 번갈아 엽니다. Components의 Communication → Progress indicators까지
+스크롤한 뒤 재생 버튼을 눌러 애니메이션을 비교하고, 아직 방문하지 않은 구간으로
+스크롤할 때의 반응도 확인합니다. URL 변경만으로 전환할 수 있어 서버를 다시 시작할
+필요는 없습니다. 렌더러 코드를 다시 빌드했다면 runner를 재시작하고 페이지를
+새로고침하여 새 빌드를 불러옵니다. URL 옵션은 해당 페이지에만 적용되며 앱의
+기본 렌더러 설정을 바꾸지 않습니다.
+
+### 그 밖의 렌더러 URL
+
+다음 주소는 선택한 backend로 진단 화면을 엽니다.
 
 - 기본 자동 선택: `http://127.0.0.1:5088`
 - document WebGL2: `http://127.0.0.1:5088/?dorotiRenderer=document-webgl`

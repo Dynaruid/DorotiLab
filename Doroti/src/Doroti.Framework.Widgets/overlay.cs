@@ -1048,7 +1048,7 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
             {
                 while (innerIterator.MoveNext())
                 {
-                    yield return innerIterator.Current;
+                    if (!KeptAliveSliverVisibility.IsHidden(innerIterator.Current)) yield return innerIterator.Current;
                 }
             }
             child = childParentData.nextSibling;
@@ -1067,7 +1067,7 @@ public class _RenderTheater__overlay : global::Doroti.Framework.Rendering.Render
             {
                 while (innerIterator.MoveNext())
                 {
-                    yield return innerIterator.Current;
+                    if (!KeptAliveSliverVisibility.IsHidden(innerIterator.Current)) yield return innerIterator.Current;
                 }
             }
             yield return child;

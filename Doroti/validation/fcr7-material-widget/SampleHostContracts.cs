@@ -6,6 +6,14 @@ internal static class SampleHostContracts
 {
     internal static async Task Verify()
     {
+        var imageStorage = new ByteBuffer([9, 1, 2, 3, 8]);
+        var imageView = new Uint8List(imageStorage, 1, 3);
+        using (var immutable = await ImmutableBuffer.fromUint8List(imageView))
+        {
+            imageView[0] = 7;
+            Require(immutable.asMemory().Span.SequenceEqual(new byte[] { 1, 2, 3 }),
+                "bulk image copy honors the sliced byte view and owns immutable storage");
+        }
         using var dispatcher = new PlatformDispatcher();
         using var scope = dispatcher.EnterScope();
         var host = new Host();

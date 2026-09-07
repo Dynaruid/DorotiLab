@@ -16,7 +16,7 @@ test("CanvasKit main and UI 100ms stalls recover the latest resize", async ({ pa
   let uiWorker: ReturnType<typeof page.workers>[number] | undefined;
   for (const worker of page.workers()) {
     if (await worker.evaluate(() => performance.getEntriesByType("resource")
-      .some(entry => entry.name.includes("/doroti.ui.worker.js")))) uiWorker = worker;
+      .some(entry => /\/doroti\.ui\.worker(?:\.[a-z0-9]+)?\.js(?:\?|$)/i.test(entry.name)))) uiWorker = worker;
   }
   expect(uiWorker, "Identify UI by its loaded role module before injecting a stall").toBeDefined();
   const reports: unknown[] = [];

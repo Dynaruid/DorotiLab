@@ -132,7 +132,7 @@ export class CanvasKitTextLayoutService {
     this.#rebuildProvider();
   }
 
-  layout(requestJson: string): string {
+  layout(requestJson: string): number[] {
     if (!this.#ready) throw new Error("Doroti CanvasKit UI text service is not ready.");
     const request = JSON.parse(requestJson) as Partial<ParagraphLayoutRequest>;
     const text = String(request.text ?? "");
@@ -224,7 +224,21 @@ export class CanvasKitTextLayoutService {
         unresolvedCodepoints,
       };
       result.metricsHash = fnv1a64(JSON.stringify(result)).toString(10);
-      return JSON.stringify(result);
+      // Versioned numeric metrics avoid JSON stringify + managed JSON parsing
+      // of every glyph/line on every layout. Hash halves remain exact u32s.
+      const hash = BigInt(result.metricsHash);
+      const packed = [0x4454504d, 1, result.width, result.height,
+        result.alphabeticBaseline, result.ideographicBaseline, result.minIntrinsicWidth,
+        result.maxIntrinsicWidth, result.longestLine, result.didExceedMaxLines ? 1 : 0,
+        Number(hash & 0xffffffffn), Number(hash >> 32n),
+        codeUnitAdvances.length, lines.length, graphemes.length, unresolvedCodepoints.length];
+      for (const value of codeUnitAdvances) packed.push(value);
+      for (const line of lines) packed.push(line.start, line.end, line.hardBreak ? 1 : 0,
+        line.ascent, line.descent, line.height, line.width, line.left, line.baseline);
+      for (const glyph of graphemes) packed.push(glyph.start, glyph.end, glyph.left, glyph.top,
+        glyph.right, glyph.bottom, glyph.strutTop, glyph.strutBottom, glyph.direction === "rtl" ? 1 : 0);
+      for (const codepoint of unresolvedCodepoints) packed.push(codepoint);
+      return packed;
     } finally {
       paragraph?.delete();
       builder.delete();

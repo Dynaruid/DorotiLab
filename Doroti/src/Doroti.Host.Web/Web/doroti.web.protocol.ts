@@ -970,13 +970,21 @@ function readParagraph(
   }
 }
 
-function crc32DisplayList(bytes: Uint8Array): number {
+const displayListCrcTable = (() => {
+  const table = new Uint32Array(256);
+  for (let i = 0; i < table.length; i++) {
+    let value = i;
+    for (let bit = 0; bit < 8; bit++) value = (value >>> 1) ^ ((value & 1) === 0 ? 0 : 0xedb88320);
+    table[i] = value >>> 0;
+  }
+  return table;
+})();
+
+export function crc32DisplayList(bytes: Uint8Array): number {
   let crc = 0xffffffff;
   for (let index = 0; index < bytes.byteLength; index++) {
     const value = index >= 104 && index < 108 ? 0 : bytes[index];
-    crc ^= value;
-    for (let bit = 0; bit < 8; bit++)
-      crc = (crc >>> 1) ^ ((crc & 1) === 0 ? 0 : 0xedb88320);
+    crc = (crc >>> 8) ^ displayListCrcTable[(crc ^ value) & 0xff];
   }
   return (crc ^ 0xffffffff) >>> 0;
 }

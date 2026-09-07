@@ -150,11 +150,54 @@ static void VerifyEncoderGuards()
 static void VerifyEncodingCache(DisplayListDocument document, byte[] expected)
 {
     var cache = new DisplayListEncodingCache();
+    var blockCommands = Enumerable.Range(0, 32).Select(i => (DisplayListCommand)new DisplayDrawRectCommand(
+        new DisplayRect(i, 0, i + 1, 1), new DisplayPaint(0xff123456))).ToArray();
+    var blockDocument = new DisplayListDocument(document.Scene, [], blockCommands);
+    DisplayListEncoder.Encode(blockDocument, cache);
+    Require(DisplayListEncoder.Encode(blockDocument, cache).SequenceEqual(DisplayListEncoder.Encode(blockDocument)) && cache.FrameBlockHits == 2,
+        "Stable instruction runs are copied in validated blocks.");
+    blockCommands[5] = new DisplayDrawRectCommand(new DisplayRect(5, 0, 8, 4), new DisplayPaint(0xff654321));
+    var changedBlock = new DisplayListDocument(document.Scene, [], blockCommands);
+    Require(DisplayListEncoder.Encode(changedBlock, cache).SequenceEqual(DisplayListEncoder.Encode(changedBlock)) && cache.FrameBlockHits == 1,
+        "Changing one command replaces its block and retains the other block.");
+    cache.Clear();
     Require(DisplayListEncoder.Encode(document, cache).AsSpan().SequenceEqual(expected),
         "A cold encoding cache preserves the entire canonical golden.");
     Require(DisplayListEncoder.Encode(Fixtures.Representative(), cache).AsSpan().SequenceEqual(expected),
         "Fresh immutable values reuse payloads without changing canonical bytes.");
+    Require(cache.FrameStringTableHit, "Fresh equal paragraph recipes reuse canonical strings independently of geometry identity.");
     Require(cache.FrameHits > 0 && cache.EntryCount > 0, "The warm encoding cache actually reuses payloads.");
+    var transforms = new DisplayListDocument(document.Scene, [], [new DisplayTransformCommand(DisplayMatrix.Identity)]);
+    DisplayListEncoder.Encode(transforms, cache);
+    var sameTransform = new DisplayListDocument(document.Scene, [], [
+        new DisplayTransformCommand(new DisplayMatrix(DisplayMatrix.Identity.Values))]);
+    Require(DisplayListEncoder.Encode(sameTransform, cache).SequenceEqual(DisplayListEncoder.Encode(transforms)) && cache.FrameHits == 1,
+        "Equal immutable transform values reuse payloads across freshly constructed scenes.");
+    var textCommand = document.Commands.OfType<DisplayDrawParagraphCommand>().Single();
+    var textOnly = new DisplayListDocument(document.Scene, document.Resources, [textCommand]);
+    var textBytes = DisplayListEncoder.Encode(textOnly, cache);
+    Require(DisplayListEncoder.Encode(textOnly, cache).SequenceEqual(textBytes) && cache.FrameHits == 1,
+        "A retained paragraph really reuses its validated encoded payload.");
+    // Adding/removing a lexically earlier string changes indices in the canonical
+    // table even though the original paragraph object is unchanged.
+    var additional = new DisplayParagraphRecipe("!", textCommand.Paragraph.Font, "", 14, 1, 0xff000000,
+        400, DisplayFontSlant.Normal, DisplayTextDirection.LeftToRight, DisplayTextAlign.Start, "", 0, null, 20, 10, 20, 1);
+    var shiftedStrings = new DisplayListDocument(document.Scene, document.Resources,
+        [textCommand, new DisplayDrawParagraphCommand(additional, new DisplayPoint(0, 0))]);
+    var independent = new DisplayDrawRectCommand(new DisplayRect(0, 0, 12, 12), new DisplayPaint(0xff123456));
+    var partialCache = new DisplayListEncodingCache();
+    DisplayListEncoder.Encode(new(document.Scene, document.Resources, [independent, textCommand]), partialCache);
+    var newLabelScene = new DisplayListDocument(document.Scene, document.Resources,
+        [independent, textCommand, new DisplayDrawParagraphCommand(additional, new DisplayPoint(0, 0))]);
+    Require(DisplayListEncoder.Encode(newLabelScene, partialCache).SequenceEqual(DisplayListEncoder.Encode(newLabelScene)) &&
+        partialCache.FrameHits == 1 && partialCache.FrameMisses == 2,
+        "A new visible label invalidates text indices while retaining unrelated geometry instructions.");
+    foreach (var next in new[] { shiftedStrings, textOnly, shiftedStrings, document })
+        Require(DisplayListEncoder.Encode(next, cache).SequenceEqual(DisplayListEncoder.Encode(next)),
+            "Warm paragraph payloads are invalidated when canonical string indices change.");
+    ExpectException<ArgumentException>(() => DisplayListEncoder.Encode(
+        new DisplayListDocument(document.Scene, [], [textCommand]), cache),
+        "A cached paragraph cannot bypass font-resource presence validation.");
     ExpectException<ArgumentException>(() => DisplayListEncoder.Encode(Fixtures.WithMissingImageResource(), cache),
         "Warm cached payloads never bypass per-scene resource validation.");
     ExpectException<ArgumentOutOfRangeException>(() => DisplayListEncoder.Encode(Fixtures.WithInvalidOpacity(), cache),
@@ -171,6 +214,19 @@ static void VerifyEncodingCache(DisplayListDocument document, byte[] expected)
     Require(cache.EntryCount <= 8192 && cache.RetainedBytes <= 8 * 1024 * 1024,
         "Encoding-cache eviction respects entry and charged-memory bounds.");
     cache.Clear();
+    for (var i = 0; i < 16; i++)
+    {
+        // Equal text contents can be different large allocations, while the
+        // encoded paragraph contains only a four-byte string-table index.
+        var largeText = new DisplayParagraphRecipe(new string('x', 500_000), textCommand.Paragraph.Font,
+            "", 14, 1, 0xff000000, 400, DisplayFontSlant.Normal, DisplayTextDirection.LeftToRight,
+            DisplayTextAlign.Start, "", 0, null, 100, 100, 20, 1);
+        DisplayListEncoder.Encode(new DisplayListDocument(document.Scene, document.Resources,
+            [new DisplayDrawParagraphCommand(largeText, new DisplayPoint(0, 0))]), cache);
+    }
+    Require(cache.EntryCount is > 0 and < 16 && cache.RetainedBytes <= 8 * 1024 * 1024,
+        "Large equal but separately allocated text is charged and evicted despite tiny wire references.");
+    cache.Clear();
     Require(cache.EntryCount == 0 && cache.RetainedBytes == 0, "Producer disposal releases the encoding cache.");
     var retainedWire = DisplayListEncoder.Encode(document, cache);
     var large = new DisplayListDocument(document.Scene, [], Enumerable.Repeat<DisplayListCommand>(
@@ -178,7 +234,10 @@ static void VerifyEncodingCache(DisplayListDocument document, byte[] expected)
     foreach (var next in new[] { large, changed, large, document })
         Require(DisplayListEncoder.Encode(next, cache).AsSpan().SequenceEqual(DisplayListEncoder.Encode(next)),
             "Growing and shrinking scenes preserve exact bytes with a warm producer.");
+    Require(cache.BlockCount <= 512 && cache.RetainedBlockBytes <= 4 * 1024 * 1024,
+        "Bulk instruction storage has an independent entry and charged-memory bound.");
     cache.Clear();
+    Require(cache.BlockCount == 0 && cache.RetainedBlockBytes == 0, "Cache reset also releases command blocks.");
     Require(retainedWire.AsSpan().SequenceEqual(expected),
         "Later encodes and producer reset never mutate an earlier owned wire buffer.");
 }

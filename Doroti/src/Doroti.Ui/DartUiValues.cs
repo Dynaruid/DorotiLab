@@ -57,7 +57,7 @@ public sealed class ImmutableBuffer : IDisposable
     private ImmutableBuffer(byte[] bytes) => _bytes = bytes;
     public long length => _bytes.LongLength;
     public static Future<ImmutableBuffer> fromUint8List(Uint8List bytes) =>
-        Future<ImmutableBuffer>.value(new ImmutableBuffer(bytes.Select(value => checked((byte)value)).ToArray()));
+        Future<ImmutableBuffer>.value(new ImmutableBuffer(bytes.ToByteArray()));
     public static Future<ImmutableBuffer> fromAsset(string key) =>
         Future<ImmutableBuffer>.error(new DorotiCapabilityException(
             DorotiCapabilityIds.PlatformMessaging, null,

@@ -78,6 +78,7 @@ public enum StrokeJoin { miter, round, bevel }
 
 public sealed class Paint
 {
+    internal Paint SnapshotForText() => (Paint)MemberwiseClone();
     public Color color { get; set; } = new(0xFF000000);
 
     public PaintingStyle style { get; set; } = PaintingStyle.fill;
@@ -97,6 +98,16 @@ public sealed class Paint
 public sealed class Path
 {
     private readonly List<PathCommand> _commands = [];
+
+    // A recording owns the geometry at draw time, like SkPicture/DlPath. Later
+    // mutations of the caller's Path must not rewrite an already recorded frame.
+    internal Path SnapshotForPainting()
+    {
+        var snapshot = new Path { fillType = fillType };
+        foreach (var command in _commands)
+            snapshot._commands.Add(new(command.Operation, Array.AsReadOnly(command.Arguments.ToArray())));
+        return snapshot;
+    }
 
     public IReadOnlyList<PathCommand> Commands => _commands;
 
@@ -366,9 +377,9 @@ internal sealed record CanvasRectPayload(Rect Rect, PaintSnapshot Paint);
 internal sealed record CanvasRRectPayload(RRect RRect, PaintSnapshot Paint);
 internal sealed record CanvasRSuperellipsePayload(RSuperellipse RSuperellipse, PaintSnapshot Paint);
 internal sealed record CanvasDRRectPayload(RRect Outer, RRect Inner, PaintSnapshot Paint);
-internal sealed record CanvasClipRRectPayload(RRect RRect);
+internal sealed record CanvasClipRRectPayload(RRect RRect, bool DoAntiAlias = true);
 internal sealed record CanvasClipRSuperellipsePayload(RSuperellipse RSuperellipse, bool DoAntiAlias);
-internal sealed record CanvasClipPathPayload(Path Path);
+internal sealed record CanvasClipPathPayload(Path Path, bool DoAntiAlias = true);
 internal sealed record CanvasImagePayload(Image Image, Rect Source, Rect Destination, PaintSnapshot Paint);
 internal sealed record CanvasImageNinePayload(Image Image, Rect Center, Rect Destination, PaintSnapshot Paint);
 internal sealed record CanvasParagraphPayload(Paragraph Paragraph, Offset Offset);
@@ -606,7 +617,7 @@ public sealed class SceneBuilder
     public ClipRSuperellipseEngineLayer pushClipRSuperellipse(RSuperellipse rse, Clip clipBehavior = Clip.antiAlias, ClipRSuperellipseEngineLayer? oldLayer = null) =>
         Push(oldLayer, "clipRSuperellipse", new { rse, clipBehavior }, new SceneClipRSuperellipsePayload(rse));
     public ClipPathEngineLayer pushClipPath(Path path, Clip clipBehavior = Clip.antiAlias, ClipPathEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "clipPath", new { path, clipBehavior }, new SceneClipPathPayload(path));
+        Push(oldLayer, "clipPath", new { path, clipBehavior }, new SceneClipPathPayload(path.SnapshotForPainting()));
     public ColorFilterEngineLayer pushColorFilter(ColorFilter filter, ColorFilterEngineLayer? oldLayer = null) =>
         Push(oldLayer, "colorFilter", filter, new SceneColorFilterPayload(ColorFilterSnapshot.Capture(filter)));
     public ImageFilterEngineLayer pushImageFilter(
@@ -620,7 +631,7 @@ public sealed class SceneBuilder
             new SceneImageFilterPayload(
                 ImageFilterSnapshot.Capture(filter), offset, bounds, cacheKey, cacheGeneration));
     public TransformEngineLayer pushTransform(IReadOnlyList<double> matrix4, TransformEngineLayer? oldLayer = null) =>
-        Push(oldLayer, "transform", matrix4, new SceneTransformPayload(matrix4));
+        Push(oldLayer, "transform", matrix4, new SceneTransformPayload(Array.AsReadOnly(matrix4.ToArray())));
     public OpacityEngineLayer pushOpacity(long alpha, Offset offset = default, OpacityEngineLayer? oldLayer = null) =>
         Push(oldLayer, "opacity", new { alpha, offset }, new SceneOpacityPayload(Math.Clamp(alpha, 0, 255) / 255d, offset));
     public ShaderMaskEngineLayer pushShaderMask(Shader shader, Rect maskRect, BlendMode blendMode, ShaderMaskEngineLayer? oldLayer = null) =>
@@ -686,7 +697,7 @@ public class Canvas
         ArgumentNullException.ThrowIfNull(paint);
         _commands.Add(new PathCommand("drawPath", [path.Commands.Count, paint.color.value, paint.strokeWidth])
         {
-            HostPayload = new CanvasPathPayload(path, PaintSnapshot.Capture(paint)),
+            HostPayload = new CanvasPathPayload(path.SnapshotForPainting(), PaintSnapshot.Capture(paint)),
         });
     }
 
@@ -705,14 +716,14 @@ public class Canvas
     public void scale(double sx, double? sy = null) => _commands.Add(new("scale", [sx, sy ?? sx]));
     public void rotate(double radians) => _commands.Add(new("rotate", [radians]));
     public void skew(double sx, double sy) => _commands.Add(new("skew", [sx, sy]));
-    public void transform(IReadOnlyList<double> matrix4) => _commands.Add(new("transform", matrix4));
+    public void transform(IReadOnlyList<double> matrix4) => _commands.Add(new("transform", Array.AsReadOnly(matrix4.ToArray())));
     public void clipRect(Rect rect, Clip clipBehavior = Clip.antiAlias) => _commands.Add(new("clipRect", [rect.left, rect.top, rect.right, rect.bottom]));
     public void clipRect(Rect rect, ClipOp clipOp, bool doAntiAlias = true) =>
         _commands.Add(new("clipRect", [rect.left, rect.top, rect.right, rect.bottom, (double)clipOp, doAntiAlias ? 1 : 0]));
     public void clipRect(Rect rect, bool doAntiAlias) => _commands.Add(new("clipRect", [rect.left, rect.top, rect.right, rect.bottom, doAntiAlias ? 1 : 0]));
     public void clipRRect(RRect rrect, bool doAntiAlias = true) => _commands.Add(new PathCommand("clipRRect", [rrect.left, rrect.top, rrect.right, rrect.bottom])
     {
-        HostPayload = new CanvasClipRRectPayload(rrect),
+        HostPayload = new CanvasClipRRectPayload(rrect, doAntiAlias),
     });
     public void clipRSuperellipse(RSuperellipse rse, bool doAntiAlias = true) => _commands.Add(new PathCommand("clipRSuperellipse", [rse.outerRect.left, rse.outerRect.top, rse.outerRect.right, rse.outerRect.bottom])
     {
@@ -720,7 +731,7 @@ public class Canvas
     });
     public void clipPath(Path path, bool doAntiAlias = true) => _commands.Add(new PathCommand("clipPath", [path.Commands.Count])
     {
-        HostPayload = new CanvasClipPathPayload(path),
+        HostPayload = new CanvasClipPathPayload(path.SnapshotForPainting(), doAntiAlias),
     });
     public void drawRect(Rect rect, Paint paint) => _commands.Add(new PathCommand("drawRect", [rect.left, rect.top, rect.right, rect.bottom, paint.color.value])
     {
@@ -759,7 +770,7 @@ public class Canvas
     public void drawShadow(Path path, Color color, double elevation, bool transparentOccluder) =>
         _commands.Add(new PathCommand("drawShadow", [path.Commands.Count, color.value, elevation, transparentOccluder ? 1 : 0])
         {
-            HostPayload = new CanvasShadowPayload(path, color, elevation, transparentOccluder),
+            HostPayload = new CanvasShadowPayload(path.SnapshotForPainting(), color, elevation, transparentOccluder),
         });
     public void drawColor(Color color, BlendMode blendMode) =>
         _commands.Add(new PathCommand("drawColor", [color.value, (double)blendMode]) { HostPayload = new CanvasColorPayload(color, blendMode) });
@@ -821,7 +832,7 @@ public class Canvas
         });
     public void drawParagraph(Paragraph paragraph, Offset offset) => _commands.Add(new PathCommand("drawParagraph", [offset.dx, offset.dy, paragraph.width, paragraph.height])
     {
-        HostPayload = new CanvasParagraphPayload(paragraph, offset),
+        HostPayload = new CanvasParagraphPayload(paragraph.SnapshotForPainting(), offset),
     });
 }
 
@@ -842,7 +853,12 @@ public sealed record ParagraphRequest(
     TextDirection? TextDirection = null,
     Locale? Locale = null,
     string? Ellipsis = null,
-    IReadOnlyList<ParagraphTextRun>? TextRuns = null);
+    IReadOnlyList<ParagraphTextRun>? TextRuns = null)
+{
+    // ParagraphBuilder builds drawing state; TextPainter supplies the first
+    // layout width afterwards. Hosts may avoid an otherwise discarded layout.
+    internal bool DeferLayout { get; init; }
+}
 
 internal sealed record ParagraphHostLineSnapshot(
     int Start,
@@ -895,6 +911,18 @@ public sealed class Paragraph : IDisposable
     private double? _hostLongestLine;
     private double? _hostAlphabeticBaseline;
     private double? _hostIdeographicBaseline;
+    internal Paragraph SnapshotForPainting()
+    {
+        // Layout replaces metrics/advance arrays. Keep the current line list
+        // as well, so relayout/dispose of the public handle cannot change a
+        // recorded Picture. No new font shaping or host call is necessary.
+        var snapshot = (Paragraph)MemberwiseClone();
+        snapshot._disposed = 0;
+        snapshot._lines = new(_lines);
+        snapshot.TextRuns = Array.AsReadOnly(TextRuns.Select(run =>
+            new ParagraphTextRun(run.Text, run.Style.SnapshotForPainting())).ToArray());
+        return snapshot;
+    }
     public Paragraph(
         string text,
         double width,
@@ -942,7 +970,7 @@ public sealed class Paragraph : IDisposable
     internal TextDirection CanvasKitTextDirection { get; init; } = TextDirection.ltr;
     internal TextAlign CanvasKitTextAlign { get; init; } = TextAlign.start;
     internal string? CanvasKitEllipsis { get; init; }
-    internal IReadOnlyList<ParagraphTextRun> TextRuns { get; }
+    internal IReadOnlyList<ParagraphTextRun> TextRuns { get; private set; }
     internal double? NativeAlphabeticBaseline { get; init; }
     internal IEnumerable<(int Start, int End, double Left, double Baseline)> PaintLines =>
         _lines.Select(line => (line.Start, line.End, line.Left, line.Baseline));

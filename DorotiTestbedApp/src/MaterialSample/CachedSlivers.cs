@@ -6,9 +6,13 @@ using Doroti.Framework.Widgets;
 namespace MaterialSample;
 
 internal sealed class MeasuredSlivers(double?[] heights, int firstIndex, int count, Func<BuildContext, long, Widget?> builder)
-    : SliverChildBuilderDelegate(builder, childCount: count)
+    : SliverChildBuilderDelegate(builder, childCount: count, addAutomaticKeepAlives: false)
 {
     private readonly int _start = firstIndex;
+    // The inventory is finite (29 sections). Retain only visited sections so a
+    // reverse scroll preserves controls and does not repeat their construction.
+    public override Widget? build(BuildContext context, long index) => base.build(context, index) is { } child
+        ? new KeepAlive(keepAlive: true, child: child) : null;
     public override double? estimateMaxScrollOffset(long firstIndex, long lastIndex, double leadingScrollOffset, double trailingScrollOffset) => heights.Skip(_start).Take(count).Sum(height => height ?? 0);
 }
 

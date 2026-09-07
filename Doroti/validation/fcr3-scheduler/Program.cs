@@ -6,6 +6,7 @@ VerifyFlutterSchedulerOrdering();
 VerifyMonotonicTimestampFence();
 VerifyBoundedTraceCausality();
 VerifyMetricsActivityUsesArrivalClock();
+VerifyPointerScrollActivityUsesArrivalClock();
 VerifyRecordingClockIsIndependentOfHostTimestamp();
 VerifyPlatformEventDrainsMicrotasks();
 VerifyLatestMetricsFrameAdmission();
@@ -96,6 +97,23 @@ static void VerifyMetricsActivityUsesArrivalClock()
     Thread.Sleep(150);
     Require(!trace.HasActiveMetricsActivity,
         "metrics activity expires on the runtime arrival clock despite a future host trace timestamp");
+}
+
+static void VerifyPointerScrollActivityUsesArrivalClock()
+{
+    var trace = new DorotiFrameTrace();
+    trace.Record(DorotiFramePhase.present, 1, TimeSpan.FromDays(1));
+    trace.RecordScroll(DorotiFramePhase.scrollStart, 1, 1, 0, null, "IdleScrollActivity");
+    trace.RecordScroll(DorotiFramePhase.scrollUpdate, 1, 1, 12, 12, "IdleScrollActivity");
+    trace.RecordScroll(DorotiFramePhase.scrollEnd, 1, 1, 12, null, "IdleScrollActivity");
+    Require(trace.HasActiveScrollActivity, "synchronous wheel end preserves the quiet interval for semantics coalescing");
+    Thread.Sleep(150);
+    Require(!trace.HasActiveScrollActivity, "wheel activity expires even after a future host timestamp");
+    trace.RecordScroll(DorotiFramePhase.scrollStart, 1, 2, 0, null, "DragScrollActivity");
+    Thread.Sleep(150);
+    Require(trace.HasActiveScrollActivity, "an ongoing drag remains active beyond the wheel quiet interval");
+    trace.RecordScroll(DorotiFramePhase.scrollEnd, 1, 2, 0, null, "DragScrollActivity");
+    Require(!trace.HasActiveScrollActivity, "ending a drag without a recent update clears activity");
 }
 
 static void VerifyPlatformEventDrainsMicrotasks()

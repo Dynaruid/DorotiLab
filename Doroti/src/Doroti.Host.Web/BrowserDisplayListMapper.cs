@@ -5,58 +5,6 @@ using UiImage = Doroti.Ui.Image;
 
 namespace Doroti.Host.Web;
 
-// Per view/producer instance, bounded CPU-only cache. Resource-bearing blocks
-// remain inline so resource generations and paragraph widths cannot go stale.
-// Only fixed-size commands/paints are retained: 32768 commands at a conservative
-// 1 KiB accounting charge each gives a 32 MiB CPU envelope. Paths, point arrays,
-// shaders and filter graphs are excluded instead of hiding unbounded payloads.
-internal sealed class BrowserPictureBlockCache(bool enabled)
-{
-    internal bool Enabled => enabled;
-    private readonly Dictionary<long, DisplayListCommand[]> _blocks = [];
-    private int _commandCount;
-    internal int Pictures { get; private set; }
-    internal int Hits { get; private set; }
-    internal int MappedCommands { get; set; }
-    internal void BeginFrame() { Pictures = 0; Hits = 0; MappedCommands = 0; }
-    internal void Clear() { _blocks.Clear(); _commandCount = 0; BeginFrame(); }
-    internal bool TryGet(long id, out DisplayListCommand[] block)
-    {
-        Pictures++;
-        if (enabled && _blocks.TryGetValue(id, out block!)) { Hits++; return true; }
-        block = [];
-        return false;
-    }
-    internal void Add(long id, DisplayListCommand[] commands)
-    {
-        if (!enabled || commands.Length > 4096 || commands.Any(command => !IsBounded(command))) return;
-        while (_blocks.Count >= 128 || _commandCount + commands.Length > 32768)
-        {
-            var first = _blocks.First();
-            _commandCount -= first.Value.Length;
-            _blocks.Remove(first.Key);
-        }
-        _blocks.Add(id, commands);
-        _commandCount += commands.Length;
-    }
-    private static bool IsBounded(DisplayListCommand command) => command switch
-    {
-        DisplaySaveCommand or DisplayRestoreCommand or DisplayTransformCommand or
-            DisplayClipRectCommand or DisplayClipRoundedRectCommand or DisplayDrawColorCommand => true,
-        DisplayDrawRectCommand c => IsSimple(c.Paint),
-        DisplayDrawRoundedRectCommand c => IsSimple(c.Paint),
-        DisplayDrawDoubleRoundedRectCommand c => IsSimple(c.Paint),
-        DisplayDrawCircleCommand c => IsSimple(c.Paint),
-        DisplayDrawOvalCommand c => IsSimple(c.Paint),
-        DisplayDrawLineCommand c => IsSimple(c.Paint),
-        DisplayDrawArcCommand c => IsSimple(c.Paint),
-        DisplayDrawPaintCommand c => IsSimple(c.Paint),
-        _ => false,
-    };
-    private static bool IsSimple(DisplayPaint paint) => paint.Shader is null &&
-        paint.ColorFilter is null && paint.MaskFilter is null && paint.ImageFilter is null;
-}
-
 internal interface IBrowserDisplayListResources
 {
     DisplayResourceReference DefaultFont { get; }
@@ -81,20 +29,22 @@ internal static class BrowserDisplayListMapper
         DisplayListSceneMetadata metadata,
         uint backgroundColor,
         IBrowserDisplayListResources resources,
-        BrowserPictureBlockCache? cache = null)
+        BrowserPictureBlockCache? cache = null,
+        BrowserRetainedMappingCache? retained = null)
     {
         ArgumentNullException.ThrowIfNull(scene);
         ArgumentNullException.ThrowIfNull(resources);
         if (scene.viewId != metadata.ViewId)
             throw new InvalidDataException(
                 $"Doroti scene view {scene.viewId} does not match DisplayList view {metadata.ViewId}.");
-        var scopedResources = new ViewScopedResources(metadata.ViewId, resources);
+        var scopedResources = new ViewScopedResources(metadata.ViewId, resources, retained);
+        retained?.BeginFrame(scopedResources.RegisteredFonts);
         var commands = new List<DisplayListCommand>
         {
             new DisplayDrawColorCommand(backgroundColor, DisplayBlendMode.Source),
         };
         var referenced = new Dictionary<DisplayResourceReference, DisplayResourceDescriptor>();
-        cache?.BeginFrame();
+        cache?.BeginFrame(scopedResources.RegisteredFonts);
         AppendScene(scene.Commands, commands, referenced, scopedResources, cache);
         return new(metadata, referenced.Values, commands);
     }
@@ -103,7 +53,7 @@ internal static class BrowserDisplayListMapper
         IReadOnlyList<SceneCommand> source,
         List<DisplayListCommand> destination,
         Dictionary<DisplayResourceReference, DisplayResourceDescriptor> referenced,
-        IBrowserDisplayListResources resources,
+        ViewScopedResources resources,
         BrowserPictureBlockCache? cache)
     {
         foreach (var command in source)
@@ -112,9 +62,12 @@ internal static class BrowserDisplayListMapper
             {
                 case "picture" when command.HostPayload is ScenePicturePayload picture:
                     destination.Add(new DisplaySaveCommand());
-                    destination.Add(new DisplayTransformCommand(Translation(picture.Offset.dx, picture.Offset.dy)));
+                    destination.Add(new DisplayTransformCommand(resources.Translation(picture.Offset.dx, picture.Offset.dy)));
                     if (cache is not null && cache.TryGet(picture.SnapshotIdentity, out var block))
-                        destination.AddRange(block);
+                    {
+                        foreach (var dependency in block.Dependencies) AddReference(dependency, referenced, resources);
+                        destination.AddRange(block.Commands);
+                    }
                     else if (cache?.Enabled != true)
                     {
                         var before = destination.Count;
@@ -131,14 +84,14 @@ internal static class BrowserDisplayListMapper
                         if (cache is not null)
                         {
                             cache.MappedCommands += mapped.Count;
-                            if (dependencies.Count == 0) cache.Add(picture.SnapshotIdentity, mapped.ToArray());
+                            cache.Add(picture.SnapshotIdentity, mapped.ToArray(), dependencies.Keys.ToArray());
                         }
                     }
                     destination.Add(new DisplayRestoreCommand());
                     break;
                 case "offset" when command.HostPayload is SceneOffsetPayload offset:
                     destination.Add(new DisplaySaveCommand());
-                    destination.Add(new DisplayTransformCommand(Translation(offset.Dx, offset.Dy)));
+                    destination.Add(new DisplayTransformCommand(resources.Translation(offset.Dx, offset.Dy)));
                     break;
                 case "clipRect" when command.HostPayload is SceneClipRectPayload clip:
                     destination.Add(new DisplaySaveCommand());
@@ -156,7 +109,7 @@ internal static class BrowserDisplayListMapper
                     break;
                 case "clipPath" when command.HostPayload is SceneClipPathPayload clip:
                     destination.Add(new DisplaySaveCommand());
-                    destination.Add(new DisplayClipPathCommand(ToPath(clip.Path)));
+                    destination.Add(new DisplayClipPathCommand(resources.MapPath(clip.Path)));
                     break;
                 case "transform" when command.HostPayload is SceneTransformPayload transform:
                     destination.Add(new DisplaySaveCommand());
@@ -207,7 +160,7 @@ internal static class BrowserDisplayListMapper
         IReadOnlyList<PathCommand> source,
         List<DisplayListCommand> destination,
         Dictionary<DisplayResourceReference, DisplayResourceDescriptor> referenced,
-        IBrowserDisplayListResources resources)
+        ViewScopedResources resources)
     {
         foreach (var command in source)
         {
@@ -221,7 +174,7 @@ internal static class BrowserDisplayListMapper
                         ToPaint(layer.Paint, referenced, resources)));
                     break;
                 case "translate":
-                    destination.Add(new DisplayTransformCommand(Translation(
+                    destination.Add(new DisplayTransformCommand(resources.Translation(
                         Value(command, 0), Value(command, 1))));
                     break;
                 case "scale":
@@ -249,14 +202,14 @@ internal static class BrowserDisplayListMapper
                             : Value(command, 5) != 0));
                     break;
                 case "clipRRect" when command.HostPayload is CanvasClipRRectPayload clip:
-                    destination.Add(new DisplayClipRoundedRectCommand(ToRoundedRect(clip.RRect)));
+                    destination.Add(new DisplayClipRoundedRectCommand(ToRoundedRect(clip.RRect), IsAntiAlias: clip.DoAntiAlias));
                     break;
                 case "clipRSuperellipse" when command.HostPayload is CanvasClipRSuperellipsePayload clip:
                     destination.Add(new DisplayClipRectCommand(
                         ToRect(clip.RSuperellipse.outerRect), IsAntiAlias: clip.DoAntiAlias));
                     break;
                 case "clipPath" when command.HostPayload is CanvasClipPathPayload clip:
-                    destination.Add(new DisplayClipPathCommand(ToPath(clip.Path)));
+                    destination.Add(new DisplayClipPathCommand(resources.MapPath(clip.Path), IsAntiAlias: clip.DoAntiAlias));
                     break;
                 case "drawRect" when command.HostPayload is CanvasRectPayload draw:
                     destination.Add(new DisplayDrawRectCommand(
@@ -277,7 +230,7 @@ internal static class BrowserDisplayListMapper
                     break;
                 case "drawPath" when command.HostPayload is CanvasPathPayload draw:
                     destination.Add(new DisplayDrawPathCommand(
-                        ToPath(draw.Path), ToPaint(draw.Paint, referenced, resources)));
+                        resources.MapPath(draw.Path), ToPaint(draw.Paint, referenced, resources)));
                     break;
                 case "drawPaint" when command.HostPayload is PaintSnapshot draw:
                     destination.Add(new DisplayDrawPaintCommand(ToPaint(draw, referenced, resources)));
@@ -317,7 +270,7 @@ internal static class BrowserDisplayListMapper
                     var fallbackFonts = resources.RegisteredFonts;
                     foreach (var fallbackFont in fallbackFonts) AddReference(fallbackFont, referenced, resources);
                     destination.Add(new DisplayDrawParagraphCommand(
-                        new DisplayParagraphRecipe(
+                        resources.MapParagraph(draw.Paragraph, font, () => new DisplayParagraphRecipe(
                             draw.Paragraph.text,
                             font,
                             draw.Paragraph.fontFamily ?? "DorotiFallback",
@@ -346,7 +299,7 @@ internal static class BrowserDisplayListMapper
                             checked((float)draw.Paragraph.height),
                             draw.Paragraph.CanvasKitMetricsHash,
                             fallbackFonts,
-                            draw.Paragraph.TextRuns.Select(ToParagraphTextRun)),
+                            draw.Paragraph.TextRuns.Select(ToParagraphTextRun))),
                         ToPoint(draw.Offset)));
                     break;
                 case "drawImage" when command.HostPayload is CanvasImagePayload draw:
@@ -376,7 +329,7 @@ internal static class BrowserDisplayListMapper
                     break;
                 case "drawShadow" when command.HostPayload is CanvasShadowPayload draw:
                     destination.Add(new DisplayDrawShadowCommand(
-                        ToPath(draw.Path), draw.Color.value, checked((float)draw.Elevation),
+                        resources.MapPath(draw.Path), draw.Color.value, checked((float)draw.Elevation),
                         draw.TransparentOccluder));
                     break;
                 default:
@@ -568,8 +521,10 @@ internal static class BrowserDisplayListMapper
     private static void AddReference(
         DisplayResourceReference reference,
         Dictionary<DisplayResourceReference, DisplayResourceDescriptor> referenced,
-        IBrowserDisplayListResources resources) =>
-        referenced.TryAdd(reference, resources.Describe(reference));
+        IBrowserDisplayListResources resources)
+    {
+        if (!referenced.ContainsKey(reference)) referenced.Add(reference, resources.Describe(reference));
+    }
 
     private static DisplayMatrix Translation(double x, double y) => new(
         [
@@ -735,11 +690,18 @@ internal static class BrowserDisplayListMapper
 
     private sealed class ViewScopedResources(
         ulong viewId,
-        IBrowserDisplayListResources inner) : IBrowserDisplayListResources
+        IBrowserDisplayListResources inner,
+        BrowserRetainedMappingCache? retained) : IBrowserDisplayListResources
     {
+        private IReadOnlyList<DisplayResourceReference>? _fonts;
+        internal DisplayMatrix Translation(double x, double y) => retained?.MapTranslation(x, y, BrowserDisplayListMapper.Translation)
+            ?? BrowserDisplayListMapper.Translation(x, y);
+        internal DisplayPath MapPath(Doroti.Ui.Path path) => retained?.MapPath(path, ToPath) ?? ToPath(path);
+        internal DisplayParagraphRecipe MapParagraph(Paragraph paragraph, DisplayResourceReference font,
+            Func<DisplayParagraphRecipe> map) => retained?.MapParagraph(paragraph, font, map) ?? map();
         public DisplayResourceReference DefaultFont => inner.DefaultFont;
         public DisplayResourceReference ResolveFont(string? family) => inner.ResolveFont(family);
-        public IReadOnlyList<DisplayResourceReference> RegisteredFonts => inner.RegisteredFonts;
+        public IReadOnlyList<DisplayResourceReference> RegisteredFonts => _fonts ??= inner.RegisteredFonts;
 
         public DisplayResourceDescriptor Describe(DisplayResourceReference reference) =>
             inner.Describe(reference);

@@ -104,6 +104,7 @@ let presenter: WorkerPresenter | null = null;
 let stopManagedRuntime: (() => void) | null = null;
 let managedRuntime: DotnetRuntime | null = null;
 let dotnetModuleUrl: string | null = null;
+let testbedMode = "diagnostics";
 let managedHostReady = false;
 let workerMode: WorkerMode = "offscreen-worker";
 let transferredCanvas: OffscreenCanvas | null = null;
@@ -681,6 +682,7 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       if (workerMode === "worker-direct-webgl" && !transferredCanvas)
         throw new Error("Doroti direct worker init requires a transferred visible OffscreenCanvas.");
       dotnetModuleUrl = String(message.dotnetModuleUrl ?? "");
+      testbedMode = String(message.testbedMode ?? "diagnostics");
       void startManagedRuntime();
       break;
     case "snapshot":
@@ -782,8 +784,10 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
 async function startManagedRuntime(): Promise<void> {
   try {
     const dotnetUrl = dotnetModuleUrl || new URL("../../_framework/dotnet.js", import.meta.url).href;
-    const dotnetModule = await import(dotnetUrl) as { dotnet: { create(): Promise<DotnetRuntime> } };
-    const runtime = await dotnetModule.dotnet.create();
+    const dotnetModule = await import(dotnetUrl) as { dotnet: {
+      withEnvironmentVariables(values: Record<string, string>): { create(): Promise<DotnetRuntime> };
+    } };
+    const runtime = await dotnetModule.dotnet.withEnvironmentVariables({ DOROTI_TESTBED_MODE: testbedMode }).create();
     managedRuntime = runtime;
     await initializeManagedCallbacks();
     const hostExports = await runtime.getAssemblyExports("Doroti.Host.Web.dll") as {

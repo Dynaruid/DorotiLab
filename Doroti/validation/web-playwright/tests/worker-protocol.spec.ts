@@ -1,6 +1,31 @@
 import { test, expect } from "./helpers/fixtures.js";
 import { captureDiagnostics, openDoroti } from "./helpers/doroti-diagnostics.js";
 
+test("Skia worker preserves sample mode across runtime replacement", async ({ page, runtimeErrors }) => {
+  test.skip(!["worker-direct-webgl", "offscreen-worker"].includes(process.env.DOROTI_WEB_RENDERER_MODE ?? ""),
+    "Skia worker bootstrap validation");
+  await page.setViewportSize({ width: 800, height: 900 });
+  const before = await openDoroti(page, "&dorotiTestbedMode=sample");
+  const heading = page.getByRole("heading", { name: "Doroti Material 3", exact: true });
+  await expect(heading).toBeAttached();
+  await expect(page.getByRole("tab", { name: "Components", exact: true })).toHaveAttribute("aria-selected", "true");
+  expect(await page.evaluate(canvasId => {
+    const diagnostics = (globalThis as typeof globalThis & {
+      __dorotiResizeDiagnostics?: { crashWorker(id: string): boolean };
+    }).__dorotiResizeDiagnostics;
+    return diagnostics?.crashWorker(canvasId) ?? false;
+  }, before.snapshot.canvasId)).toBe(true);
+  await expect.poll(async () => {
+    const value = await captureDiagnostics(page);
+    return value.presenter.workerRestartCount === 1 &&
+      value.presenter.frontGeneration === value.snapshot.resizeEpoch.generation &&
+      value.presenter.queueDepth === 0;
+  }, { timeout: 120_000 }).toBe(true);
+  await expect(heading).toBeAttached();
+  await expect(page.getByRole("tab", { name: "Components", exact: true })).toHaveAttribute("aria-selected", "true");
+  expect(runtimeErrors).toEqual([]);
+});
+
 test("offscreen worker has single runtime ownership and one bounded crash recovery", async ({ page, runtimeErrors }) => {
   const before = await openDoroti(page);
   test.skip(before.presenter.mode !== "offscreen-worker" && before.presenter.mode !== "worker-direct-webgl",

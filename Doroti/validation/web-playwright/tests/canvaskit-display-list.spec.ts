@@ -11,6 +11,52 @@ const goldenPath = new URL(
   "../../display-list-contract/golden/display-list-v2-full.json",
   import.meta.url);
 
+test("CanvasKit asynchronous resource hashing owns the exact byte view", async ({ page }) => {
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const hash = await page.evaluate(async () => {
+    const moduleUrl = "/_content/Doroti.Host.Web/doroti.web.js";
+    const bridge = await import(moduleUrl) as { hashCanvasKitResource(bytes: Uint8Array): Promise<string> };
+    const bytes = new Uint8Array([0, 97, 98, 99, 0]);
+    const pending = bridge.hashCanvasKitResource(bytes.subarray(1, 4));
+    bytes.fill(0);
+    return await pending;
+  });
+  expect(hash).toBe("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+});
+
+test("CanvasKit table CRC preserves checksum bits, slices, and input ownership", async ({ page }) => {
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const cases = await page.evaluate(async () => {
+    const protocolUrl = "/_content/Doroti.Host.Web/doroti.web.protocol.js";
+    const bridgeUrl = "/_content/Doroti.Host.Web/doroti.web.js";
+    const protocol = await import(protocolUrl) as { crc32DisplayList(bytes: Uint8Array): number };
+    const bridge = await import(bridgeUrl) as { computeCanvasKitDisplayListChecksum(bytes: Uint8Array): number };
+    const results = [];
+    for (const length of [112, 113, 119, 120, 256, 4096, 65536]) {
+      const backing = new Uint8Array(length + 6);
+      let seed = 0x12345678;
+      for (let i = 0; i < backing.length; i++) { seed = (Math.imul(seed, 1664525) + 1013904223) | 0; backing[i] = seed >>> 24; }
+      const bytes = backing.subarray(3, 3 + length), original = backing.slice();
+      let crc = 0xffffffff;
+      for (let i = 0; i < length; i++) {
+        crc ^= i >= 104 && i < 108 ? 0 : bytes[i];
+        for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+      }
+      const expected = (crc ^ 0xffffffff) >>> 0;
+      results.push({ length, expected, protocol: protocol.crc32DisplayList(bytes),
+        bridge: bridge.computeCanvasKitDisplayListChecksum(bytes) >>> 0,
+        unchanged: backing.every((value, i) => value === original[i]) });
+    }
+    return results;
+  });
+  for (const result of cases) {
+    expect(result.protocol, `CRC length ${result.length}`).toBe(result.expected);
+    expect(result.bridge).toBe(result.expected);
+    expect(result.unchanged).toBe(true);
+  }
+  expect(cases.some(value => value.expected > 0x7fffffff)).toBe(true);
+});
+
 test("CanvasKit DisplayList v2 validates the all-opcode managed golden", async ({ page }) => {
   const golden = JSON.parse(await readFile(goldenPath, "utf8")) as DisplayListGolden;
   expect(golden.byteLength).toBe(6330);

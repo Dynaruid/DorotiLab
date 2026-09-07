@@ -100,6 +100,10 @@ internal static partial class BrowserCanvasKitInterop
     private static partial long SubmitDisplayList(
         [JSMarshalAs<JSType.MemoryView>] Span<byte> bytes);
 
+    [JSImport("computeCanvasKitDisplayListChecksum", Module)]
+    [return: JSMarshalAs<JSType.Number>]
+    internal static partial int ComputeDisplayListChecksum([JSMarshalAs<JSType.MemoryView>] Span<byte> bytes);
+
     [JSImport("registerCanvasKitResource", Module)]
     private static partial void RegisterResourceCore(
         [JSMarshalAs<JSType.Number>] long resourceId,
@@ -114,7 +118,14 @@ internal static partial class BrowserCanvasKitInterop
         [JSMarshalAs<JSType.Number>] long generation);
 
     [JSImport("layoutCanvasKitParagraph", Module)]
-    internal static partial string LayoutParagraph(string requestJson);
+    [return: JSMarshalAs<JSType.Array<JSType.Number>>]
+    internal static partial double[] LayoutParagraph(string requestJson);
+
+    [JSImport("hashCanvasKitResource", Module)]
+    [return: JSMarshalAs<JSType.Promise<JSType.String>>]
+    private static partial Task<string> HashResourceCore([JSMarshalAs<JSType.Array<JSType.Number>>] byte[] bytes);
+
+    internal static Task<string> HashResourceAsync(byte[] bytes) => HashResourceCore(bytes);
 
     [JSImport("canvasKitImageOperation", Module)]
     [return: JSMarshalAs<JSType.Promise<JSType.String>>]

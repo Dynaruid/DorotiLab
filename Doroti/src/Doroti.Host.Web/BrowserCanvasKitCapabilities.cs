@@ -24,9 +24,10 @@ internal sealed class BrowserCanvasKitCapabilities :
     private readonly uint _darkBackgroundColor;
     private readonly Dictionary<long, PendingScene> _pending = [];
     private readonly BrowserPictureBlockCache _pictureBlocks = new(
-        Environment.GetEnvironmentVariable("DOROTI_PICTURE_CACHE") == "1");
+        Environment.GetEnvironmentVariable("DOROTI_PICTURE_CACHE") != "0");
     private readonly DisplayListEncodingCache? _encodingCache =
-        Environment.GetEnvironmentVariable("DOROTI_ENCODING_CACHE") == "1" ? new() : null;
+        Environment.GetEnvironmentVariable("DOROTI_ENCODING_CACHE") == "0" ? null : new();
+    private readonly BrowserRetainedMappingCache _retainedMapping = new();
     private readonly bool _stageTraceEnabled = Environment.GetEnvironmentVariable("DOROTI_STAGE_TRACE") == "1";
     private readonly DorotiFrameTerminalLedger _terminalLedger = new();
     private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
@@ -175,7 +176,7 @@ internal sealed class BrowserCanvasKitCapabilities :
                 : _lightBackgroundColor;
             var mappingStarted = DorotiFrameClock.Now;
             var document = BrowserDisplayListMapper.Create(
-                submission.Scene, sceneMetadata, background, _resources, _pictureBlocks);
+                submission.Scene, sceneMetadata, background, _resources, _pictureBlocks, _retainedMapping);
             if (_stageTraceEnabled)
             {
                 _host.RecordRaster("canvaskit-picture-count", _pictureBlocks.Pictures, _pictureBlocks.Hits, TimeSpan.Zero);
@@ -187,9 +188,15 @@ internal sealed class BrowserCanvasKitCapabilities :
             _resources.RetainSceneResources(sceneResources);
             resourcesRetained = true;
             var encodingStarted = DorotiFrameClock.Now;
-            var wireBytes = DisplayListEncoder.Encode(document, _encodingCache);
+            var wireBytes = DisplayListEncoder.Encode(document, _encodingCache, _stageTraceEnabled
+                ? (stage, elapsed) => _host.RecordRaster("canvaskit-encode-" + stage, 0, 0, elapsed) : null,
+                static bytes => unchecked((uint)BrowserCanvasKitInterop.ComputeDisplayListChecksum(bytes)));
             if (_stageTraceEnabled && _encodingCache is not null)
+            {
                 _host.RecordRaster("canvaskit-encoding-cache", _encodingCache.FrameMisses, _encodingCache.FrameHits, TimeSpan.Zero);
+                _host.RecordRaster("canvaskit-encoding-block-cache", _encodingCache.FrameBlockHits, 0, TimeSpan.Zero);
+                _host.RecordRaster("canvaskit-encoding-string-table", _encodingCache.FrameStringTableHit ? 1 : 0, 0, TimeSpan.Zero);
+            }
             _host.RecordRaster("canvaskit-encode", descriptor.PhysicalWidth, descriptor.PhysicalHeight,
                 DorotiFrameClock.Now - encodingStarted);
             lock (_gate)
@@ -393,16 +400,25 @@ internal sealed class BrowserCanvasKitCapabilities :
             TextRuns = normalizedRuns,
         };
 
-        var initial = LayoutParagraphSnapshot(normalizedRequest, locale, direction, align);
+        // Unlike a host Layout request, ParagraphBuilder.build does not need
+        // an unconstrained layout before TextPainter chooses its actual width.
+        var layouts = new BrowserParagraphLayoutCache();
+        ParagraphHostLayoutSnapshot Measure(double width)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            return layouts.GetOrCreate(width, _resources.FontGeneration,
+                () => LayoutParagraphSnapshot(normalizedRequest with { Width = width }, locale, direction, align));
+        }
+        var initial = request.DeferLayout ? null : Measure(normalizedRequest.Width);
         var paragraph = new Paragraph(
             normalizedRequest.Text,
-            initial.Width,
-            initial.Height,
+            initial?.Width ?? 0,
+            initial?.Height ?? 0,
             normalizedFontSize,
             normalizedRequest.MaxLines,
             normalizedFontFamily,
             normalizedRequest.Color,
-            initial.CodeUnitAdvances,
+            initial?.CodeUnitAdvances,
             normalizedRuns)
         {
             CanvasKitHeightMultiplier = heightMultiplier,
@@ -410,10 +426,9 @@ internal sealed class BrowserCanvasKitCapabilities :
             CanvasKitTextDirection = direction,
             CanvasKitTextAlign = align,
             CanvasKitEllipsis = normalizedRequest.Ellipsis,
-            CanvasKitRelayout = width => LayoutParagraphSnapshot(
-                normalizedRequest with { Width = width }, locale, direction, align),
+            CanvasKitRelayout = Measure,
         };
-        paragraph.ApplyHostLayout(initial);
+        if (initial is not null) paragraph.ApplyHostLayout(initial);
         return paragraph;
     }
 
@@ -426,7 +441,7 @@ internal sealed class BrowserCanvasKitCapabilities :
         lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
         var unconstrained = double.IsPositiveInfinity(request.Width);
         var layoutWidth = unconstrained ? 1_000_000d : request.Width;
-        var responseJson = BrowserCanvasKitInterop.LayoutParagraph(JsonSerializer.Serialize(new
+        var responseMetrics = BrowserCanvasKitInterop.LayoutParagraph(JsonSerializer.Serialize(new
         {
             schema = "doroti.canvaskit-paragraph/v1",
             text = request.Text,
@@ -496,62 +511,7 @@ internal sealed class BrowserCanvasKitCapabilities :
                 },
             }).ToArray(),
         }));
-        var response = JsonSerializer.Deserialize<CanvasKitParagraphLayout>(responseJson, JsonOptions)
-            ?? throw new InvalidDataException("CanvasKit text layout returned an empty snapshot.");
-        if (response.CodeUnitAdvances is null || response.CodeUnitAdvances.Length != request.Text.Length)
-            throw new InvalidDataException(
-                "CanvasKit text layout code-unit advance count does not match the request text.");
-        if (response.UnresolvedCodepoints is null)
-            throw new InvalidDataException("CanvasKit text layout omitted unresolved-codepoint diagnostics.");
-        if (response.UnresolvedCodepoints.Length != 0)
-            throw new InvalidDataException(
-                $"CanvasKit text layout has unresolved codepoints: {string.Join(',', response.UnresolvedCodepoints)}.");
-        if (!ulong.TryParse(response.MetricsHash, out var metricsHash))
-            throw new InvalidDataException("CanvasKit text layout returned an invalid metrics hash.");
-        if (response.Lines is null || response.Lines.Length != response.NumberOfLines)
-            throw new InvalidDataException("CanvasKit text layout line count does not match its line table.");
-        if (response.Graphemes is null)
-            throw new InvalidDataException("CanvasKit text layout omitted its grapheme geometry table.");
-        return new ParagraphHostLayoutSnapshot(
-            response.Width,
-            response.Height,
-            response.AlphabeticBaseline,
-            response.IdeographicBaseline,
-            response.MinIntrinsicWidth,
-            // The UI service proves this finite f32 width retains the unbounded
-            // line breaks. Intrinsic layout must reuse it instead of a rounded
-            // down SkParagraph scalar that can wrap the final glyph.
-            unconstrained ? response.Width : response.MaxIntrinsicWidth,
-            response.LongestLine,
-            response.DidExceedMaxLines,
-            metricsHash,
-            response.CodeUnitAdvances,
-            response.Lines.Select(line => new ParagraphHostLineSnapshot(
-                line.Start,
-                line.End,
-                line.HardBreak,
-                line.Ascent,
-                line.Descent,
-                line.Height,
-                line.Width,
-                line.Left,
-                line.Baseline)).ToArray(),
-            response.Graphemes.Select(grapheme => new ParagraphHostGraphemeSnapshot(
-                grapheme.Start,
-                grapheme.End,
-                grapheme.Left,
-                grapheme.Top,
-                grapheme.Right,
-                grapheme.Bottom,
-                grapheme.StrutTop,
-                grapheme.StrutBottom,
-                grapheme.Direction switch
-                {
-                    "ltr" => TextDirection.ltr,
-                    "rtl" => TextDirection.rtl,
-                    _ => throw new InvalidDataException(
-                        $"CanvasKit text layout returned direction '{grapheme.Direction}'."),
-                })).ToArray());
+        return BrowserParagraphMetrics.Decode(responseMetrics, request.Text.Length, unconstrained);
     }
 
     private static IReadOnlyList<ParagraphTextRun> NormalizeTextRuns(
@@ -845,6 +805,7 @@ internal sealed class BrowserCanvasKitCapabilities :
         _host.SemanticsAction -= HandleSemanticsAction;
         _encodingCache?.Clear();
         _pictureBlocks.Clear();
+        _retainedMapping.Clear();
         foreach (var scene in pending)
         {
             try
@@ -970,41 +931,4 @@ internal sealed class BrowserCanvasKitCapabilities :
         long SurfaceGeneration = 0,
         long ContextGeneration = 0);
 
-    private sealed record CanvasKitParagraphLayout(
-        double Width,
-        double Height,
-        double AlphabeticBaseline,
-        double IdeographicBaseline,
-        double MinIntrinsicWidth,
-        double MaxIntrinsicWidth,
-        double LongestLine,
-        bool DidExceedMaxLines,
-        int NumberOfLines,
-        string MetricsHash,
-        double[] CodeUnitAdvances,
-        CanvasKitParagraphLine[] Lines,
-        CanvasKitParagraphGrapheme[] Graphemes,
-        int[] UnresolvedCodepoints);
-
-    private sealed record CanvasKitParagraphLine(
-        int Start,
-        int End,
-        bool HardBreak,
-        double Ascent,
-        double Descent,
-        double Height,
-        double Width,
-        double Left,
-        double Baseline);
-
-    private sealed record CanvasKitParagraphGrapheme(
-        int Start,
-        int End,
-        double Left,
-        double Top,
-        double Right,
-        double Bottom,
-        double StrutTop,
-        double StrutBottom,
-        string Direction);
 }

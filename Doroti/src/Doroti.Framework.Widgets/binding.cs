@@ -951,6 +951,9 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
     public virtual void drawFrame()
     {
         var frameViewId = this.platformDispatcher.implicitView?.viewId ?? 0;
+        // A long lazy layout cannot make an ongoing wheel stream idle merely
+        // because the UI thread has not had a chance to receive its next event.
+        var scrollWasActive = this.platformDispatcher.frameTrace.HasActiveScrollActivity;
         this.debugBuildingDirtyElements = true;
         try
         {
@@ -971,7 +974,7 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
                 {
                     renderView.compositeFrame();
                 }
-                if (shouldFlushSemantics(frameViewId))
+                if (shouldFlushSemantics(frameViewId, scrollWasActive))
                 {
                     this.platformDispatcher.frameTrace.Record(DorotiFramePhase.semanticsBuild, frameViewId, DorotiFrameClock.Now);
                     this.rootPipelineOwner.flushSemantics();
@@ -988,13 +991,13 @@ public class WidgetsFlutterBinding : global::Doroti.Framework.Gestures.GestureBi
         this._needToReportFirstFrame = false;
     }
 
-    private bool shouldFlushSemantics(ulong frameViewId)
+    private bool shouldFlushSemantics(ulong frameViewId, bool scrollWasActive)
     {
         if (!this.rootPipelineOwner.hasPendingSemanticsUpdate) return false;
 
         lock (_semanticsFlushGate)
         {
-            var activeScroll = this.platformDispatcher.frameTrace.HasActiveScrollActivity;
+            var activeScroll = scrollWasActive || this.platformDispatcher.frameTrace.HasActiveScrollActivity;
             var activeMetrics = this.platformDispatcher.implicitView
                 ?.coalesceSemanticsGeometryDuringActiveMetrics == true &&
                 this.platformDispatcher.frameTrace.HasActiveMetricsActivity;

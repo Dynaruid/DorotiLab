@@ -25,7 +25,9 @@ async function visibleFrame(page: Page) {
 async function scrollTo(page: Page, locator: Locator, x: number, direction = 1) {
   for (let step = 0; step < 60; step++) {
     const box = await locator.count() ? await locator.first().boundingBox() : null;
-    if (box && box.y > 150 && box.y + box.height < 750) return;
+    // The last action can rest near the viewport bottom at maximum scroll.
+    // Require a fully visible target, without an unreachable 750px cutoff.
+    if (box && box.y > 150 && box.y + box.height < (page.viewportSize()?.height ?? 900) - 16) return;
     await page.mouse.move(x, 780);
     await page.mouse.wheel(0, box && box.y < 150 ? -200 : direction * 200);
     await page.waitForTimeout(500);
@@ -153,12 +155,32 @@ test("Material sample lazy component inventory and theme images", async ({ page,
   }
   await testInfo.attach("inventory-semantics", { body: await page.locator("body").ariaSnapshot(), contentType: "text/plain" });
   await expect(page.getByRole("radio", { name: "URL image", exact: true })).toBeAttached();
+  // D33 follows Flutter's explicit extraction action. Scrolling into the demo
+  // must not start quantization; exercise that action before expecting palettes.
+  await expect(page.getByLabel(/Primary.*RGB/)).toHaveCount(0);
+  const extract = page.getByRole("button", { name: "Extract colors", exact: true });
+  await scrollTo(page, extract, 1250);
+  await pointer(page, extract);
   await expect(page.getByLabel(/Primary.*RGB/).first()).toBeAttached();
   const frame = await captureDiagnostics(page);
   expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0, frame.presenter.rasterDiagnostics?.lastFailureReason).toBe(0);
   expect(runtimeErrors).toEqual([]);
 });
 
+
+test("Material sample visited sections preserve local state across a full scroll", async ({ page, runtimeErrors }) => {
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await openDoroti(page, "&dorotiTestbedMode=sample");
+  await visibleFrame(page);
+  const outbox = page.getByRole("group", { name: /^Outbox Tab 2 of 7$/ });
+  await scrollTo(page, outbox, 1250);
+  await pointer(page, outbox);
+  await expect(outbox).toHaveAttribute("aria-selected", "true");
+  await scrollTo(page, page.getByRole("radio", { name: "URL image", exact: true }), 1250);
+  await scrollTo(page, outbox, 1250, -1);
+  await expect(outbox).toHaveAttribute("aria-selected", "true");
+  expect(runtimeErrors).toEqual([]);
+});
 
 test("Material sample seed and image theme selection preserves latest choice", async ({ page, runtimeErrors }, testInfo) => {
   await page.setViewportSize({ width: 1600, height: 1000 });

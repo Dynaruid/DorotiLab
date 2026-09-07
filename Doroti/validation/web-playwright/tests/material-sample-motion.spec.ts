@@ -1,6 +1,43 @@
 import { test, expect } from "./helpers/fixtures.js";
 import { openDoroti, captureDiagnostics } from "./helpers/doroti-diagnostics.js";
 
+test("Material sample progress animation changes presented pixels and stops", async ({ page, runtimeErrors }, testInfo) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await openDoroti(page, "&dorotiTestbedMode=sample");
+  const start = page.locator('[role="button"][aria-description="Start progress"]');
+  let bounds = null;
+  for (let step = 0; step < 40; step++) {
+    bounds = await start.count() ? await start.boundingBox() : null;
+    if (bounds && bounds.y > 150 && bounds.y + bounds.height < 780) break;
+    await page.mouse.move(500, 600); await page.mouse.wheel(0, 200); await page.waitForTimeout(500);
+  }
+  expect(bounds).not.toBeNull();
+  expect(bounds!.y).toBeGreaterThan(150);
+  expect(bounds!.y + bounds!.height).toBeLessThan(780);
+  await page.mouse.click(bounds!.x + bounds!.width / 2, bounds!.y + bounds!.height / 2);
+  const stop = page.locator('[role="button"][aria-description="Stop progress"]');
+  await expect(stop).toBeAttached();
+  await page.mouse.move(20, 40); await page.waitForTimeout(1000);
+  const before = await captureDiagnostics(page);
+  const first = await page.screenshot();
+  await page.waitForTimeout(350);
+  const second = await page.screenshot();
+  const during = await captureDiagnostics(page);
+  expect(during.presenter.frontRequestId).toBeGreaterThan(before.presenter.frontRequestId ?? 0);
+  expect(first.equals(second), "The running indicator changes rendered pixels").toBe(false);
+  const stopBounds = (await stop.boundingBox())!;
+  await page.mouse.click(stopBounds.x + stopBounds.width / 2, stopBounds.y + stopBounds.height / 2);
+  await expect(start).toBeAttached();
+  await page.mouse.move(20, 40); await page.waitForTimeout(1500);
+  const settled = await captureDiagnostics(page);
+  await page.waitForTimeout(500);
+  const after = await captureDiagnostics(page);
+  expect(after.presenter.frontRequestId).toBe(settled.presenter.frontRequestId);
+  expect(after.presenter.rasterDiagnostics?.failedScenes ?? 0).toBe(0);
+  expect(runtimeErrors).toEqual([]);
+  await testInfo.attach("animation-frame-accounting", { body: JSON.stringify({ before, during, settled, after }), contentType: "application/json" });
+});
+
 test("Material sample navigation preserves destination during resize reversal", async ({ page, runtimeErrors }, testInfo) => {
   await page.setViewportSize({ width: 800, height: 900 });
   await openDoroti(page, "&dorotiTestbedMode=sample");

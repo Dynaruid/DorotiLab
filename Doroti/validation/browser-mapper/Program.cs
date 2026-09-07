@@ -4,6 +4,9 @@ using System.Text.Json;
 using Doroti.Graphics.DisplayList;
 using UiPath = Doroti.Ui.Path;
 
+RetainedMappingContracts.Verify();
+ParagraphMetricsContracts.Verify();
+
 // Exercise the real internal mapper without widening the product API.
 var type = Assembly.Load("Doroti.Host.Web").GetType("Doroti.Host.Web.BrowserDisplayListMapper", true)!;
 var map = type.GetMethod("ToPath", BindingFlags.NonPublic | BindingFlags.Static)!

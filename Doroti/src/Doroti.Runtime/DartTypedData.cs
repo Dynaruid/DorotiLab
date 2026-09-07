@@ -104,6 +104,9 @@ public sealed class Uint8List : IList<long>, IReadOnlyList<long>
     public int Count => checked((int)lengthInBytes);
     public bool IsReadOnly => false;
 
+    /// <summary>Copies exactly this byte view into independently owned storage.</summary>
+    public byte[] ToByteArray() => buffer.Slice(offsetInBytes, lengthInBytes).ToArray();
+
     public long this[int index]
     {
         get => buffer.Get(offsetInBytes + index);

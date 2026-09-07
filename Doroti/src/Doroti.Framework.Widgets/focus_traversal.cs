@@ -162,6 +162,9 @@ public abstract class FocusTraversalPolicy : global::Doroti.Framework.Foundation
         var result = new List<FocusNode>();
         foreach (FocusNode child in ((FocusNode)node).children)
         {
+            // Do not sort a cached subtree (including its traversal groups)
+            // whose replacement render children have not been laid out yet.
+            if (child._isInKeptAliveSliver) continue;
             result.Add(child);
             if ((child is not FocusScopeNode))
             {

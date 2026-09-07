@@ -195,7 +195,7 @@ public class FocusNode : ChangeNotifier
     {
         get
         {
-            if (this._skipTraversal)
+            if (this._skipTraversal || this._isInKeptAliveSliver)
             {
                 return true;
             }
@@ -236,6 +236,7 @@ public class FocusNode : ChangeNotifier
             }
         }
     }
+    internal bool _isInKeptAliveSliver => KeptAliveSliverVisibility.IsHidden(this.context?.findRenderObject());
     internal static bool _allowDescendantsToBeFocused(FocusNode ancestor) => ((FocusNode)ancestor).descendantsAreFocusable;
     public virtual bool descendantsAreFocusable
     {

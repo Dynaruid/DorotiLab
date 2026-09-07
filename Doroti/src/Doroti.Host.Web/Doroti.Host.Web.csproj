@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
+  <ItemGroup><InternalsVisibleTo Include="Doroti.Validation.BrowserMapper" /></ItemGroup>
   <PropertyGroup>
     <AssemblyName>Doroti.Host.Web</AssemblyName>
     <PackageId>Doroti.Host.Web</PackageId>

@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -13,8 +14,20 @@ public static class DisplayListEncoder
 
     public static byte[] Encode(DisplayListDocument document) => Encode(document, null);
 
-    public static byte[] Encode(DisplayListDocument document, DisplayListEncodingCache? cache)
+    public static byte[] Encode(DisplayListDocument document, DisplayListEncodingCache? cache) => Encode(document, cache, null);
+
+    // A platform can supply an equivalent CRC32 implementation. The callback
+    // must leave the owned buffer unchanged and treat checksum bytes as zero.
+    public static byte[] Encode(DisplayListDocument document, DisplayListEncodingCache? cache,
+        Action<string, TimeSpan>? traceStage, Func<byte[], uint>? computeChecksum = null)
     {
+        var stageStarted = traceStage is null ? 0 : Stopwatch.GetTimestamp();
+        void Trace(string stage)
+        {
+            if (traceStage is null) return;
+            traceStage(stage, Stopwatch.GetElapsedTime(stageStarted));
+            stageStarted = Stopwatch.GetTimestamp();
+        }
         ArgumentNullException.ThrowIfNull(document);
         cache?.BeginFrame();
         ValidateScene(document.Scene);
@@ -35,10 +48,17 @@ public static class DisplayListEncoder
 
         var resources = CanonicalizeResources(document.Resources);
         var resourceCatalog = resources.ToDictionary(resource => resource.Reference);
-        var strings = CanonicalizeStrings(document.Commands);
-        var stringIds = strings
-            .Select((value, index) => (value, index))
-            .ToDictionary(item => item.value.Value, item => checked((uint)item.index), StringComparer.Ordinal);
+        List<(string Value, byte[] Bytes)> strings;
+        Dictionary<string, uint> stringIds;
+        if (cache is null || !cache.TryGetStringTable(document.Commands, out strings, out stringIds))
+        {
+            strings = CanonicalizeStrings(document.Commands);
+            stringIds = strings.Select((value, index) => (value, index))
+                .ToDictionary(item => item.value.Value, item => checked((uint)item.index), StringComparer.Ordinal);
+            cache?.RememberStringTable(document.Commands, strings, stringIds);
+        }
+        cache?.SetTables(strings, resources);
+        Trace("tables");
 
         // Table sizes are known before encoding commands. Write these tables
         // straight into the final owned buffer instead of growing two scratch
@@ -57,24 +77,37 @@ public static class DisplayListEncoder
 
         var commandWriter = new DisplayListBinaryWriter(cache?.CommandCapacityHint ?? 256);
         var context = new EncoderContext(resourceCatalog, stringIds);
-        foreach (var command in document.Commands)
+        for (var blockStart = 0; blockStart < document.Commands.Count; blockStart += DisplayListEncodingCache.BlockLength)
         {
-            ArgumentNullException.ThrowIfNull(command);
-            commandWriter.WriteUInt16((ushort)command.Opcode);
-            commandWriter.WriteUInt16(0);
-            var payloadLengthOffset = commandWriter.Length;
-            commandWriter.WriteUInt32(0);
-            var payloadOffset = commandWriter.Length;
-            if (cache is not null && cache.TryGet(command, out var cachedPayload))
-                commandWriter.WriteBytes(cachedPayload);
-            else
+            var blockCount = Math.Min(DisplayListEncodingCache.BlockLength, document.Commands.Count - blockStart);
+            if (cache is not null && cache.TryGetBlock(document.Commands, blockStart, blockCount, out var blockBytes))
+            { commandWriter.WriteBytes(blockBytes); continue; }
+            var blockOffset = commandWriter.Length;
+            for (var commandIndex = blockStart; commandIndex < blockStart + blockCount; commandIndex++)
             {
+                var command = document.Commands[commandIndex];
+                ArgumentNullException.ThrowIfNull(command);
+                if (cache is not null && cache.TryGet(command, out var cachedCommand))
+                {
+                    // Retain the entire validated instruction, including its fixed
+                    // envelope. Rewriting the header for every retained draw still
+                    // performs thousands of tiny managed writes per WASM frame.
+                    commandWriter.WriteBytes(cachedCommand);
+                    continue;
+                }
+                var commandOffset = commandWriter.Length;
+                commandWriter.WriteUInt16((ushort)command.Opcode);
+                commandWriter.WriteUInt16(0);
+                var payloadLengthOffset = commandWriter.Length;
+                commandWriter.WriteUInt32(0);
+                var payloadOffset = commandWriter.Length;
                 WriteCommandPayload(commandWriter, command, context);
-                cache?.Add(command, commandWriter.WrittenSpan[payloadOffset..]);
+                commandWriter.PatchUInt32(
+                    payloadLengthOffset,
+                    checked((uint)(commandWriter.Length - payloadOffset)));
+                cache?.Add(command, commandWriter.WrittenSpan[commandOffset..]);
             }
-            commandWriter.PatchUInt32(
-                payloadLengthOffset,
-                checked((uint)(commandWriter.Length - payloadOffset)));
+            cache?.AddBlock(document.Commands, blockStart, blockCount, commandWriter.WrittenSpan[blockOffset..]);
         }
 
         var byteLength = checked(
@@ -82,6 +115,7 @@ public static class DisplayListEncoder
             resourceByteLength +
             stringByteLength +
             commandWriter.Length);
+        Trace("commands");
         if (byteLength > DisplayListFormat.MaximumByteLength)
         {
             throw new ArgumentException("The DisplayList byte limit was exceeded.", nameof(document));
@@ -117,15 +151,17 @@ public static class DisplayListEncoder
             destinationOffset += value.Bytes.Length;
         }
         commandWriter.WrittenSpan.CopyTo(buffer.AsSpan(destinationOffset));
+        Trace("copy");
 
         if ((document.Flags & DisplayListFlags.ChecksumPresent) != 0)
         {
             BinaryPrimitives.WriteUInt32LittleEndian(
                 header[DisplayListFormat.ChecksumOffset..],
-                DisplayListChecksum.Compute(buffer));
+                computeChecksum is null ? DisplayListChecksum.Compute(buffer) : computeChecksum(buffer));
         }
 
         cache?.RecordCommandLength(commandWriter.Length);
+        Trace("checksum");
         return buffer;
     }
 
@@ -205,8 +241,8 @@ public static class DisplayListEncoder
 
         // Repeated paragraph/run strings need one strict conversion per scene.
         // Keep those bytes through sorting and writing instead of validating
-        // every occurrence and encoding each unique value twice. Nothing is
-        // retained across scenes and resource/command validation is unchanged.
+        // every occurrence and encoding each unique value twice. The optional
+        // producer cache retains this table only for unchanged immutable recipes.
         var encoded = new List<(string Value, byte[] Bytes)>(values.Count);
         foreach (var value in values)
         {

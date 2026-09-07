@@ -839,3 +839,94 @@ shadow를 숨기기 위한 tolerance를 임의로 설정하지 않았다. 독립
 - **실패 보존:** `columns-before` fixture 이름 충돌 컴파일 실패,
   `intermediate-before` 이전 검사 프로세스에 의한 apphost 잠금 실패도 보존했다.
   모든 검사와 빌드 timeout은 20분이다.
+
+## 16. 2026-09-07 Web sample 캐시 무효화 및 스크롤 CPU 비용 개선
+
+- 사용자 실행 조건인 Web Release와 `?dorotiTestbedMode=sample`에서 분석했다.
+  Flutter는 dirty repaint boundary에서 그림을 다시 기록하고, 바뀌지 않은 layer는
+  addRetained로 재사용한다. Doroti의 framework 흐름은 이미 있었으나 Web 변환과
+  명령 인코딩에서 재사용된 그림을 매 프레임 다시 처리하고 있었다.
+- Path·clip/shadow·transform·Paragraph를 그리기 시점에 캡처하고, 경로/문단/동일
+  이동행렬 매핑과 검증된 명령 인코딩을 메모리 한도 내에서 재사용한다. 새 그림,
+  글꼴/리소스/문자열 테이블 변경에 따른 무효화를 검사했다. clipPath/clipRRect의
+  antialias 인자 누락도 공통 캡처와 Web/native 재생에서 수정했다.
+- wheel의 동기 start/update/end 사이에도 100ms 입력 도착 quiet interval을 유지하여
+  매 wheel마다 접근성 트리를 재생성하던 비용을 줄였다. 스크롤 종료 후 갱신한다.
+- 하드웨어 Chromium 1280×900, 왕복 wheel 120회에서 UI callback 중앙값은
+  **69.1 → 23.8ms**, p95는 **115.8 → 61.9ms**였다. 상세 추적을 끈 최종 평균은
+  30.35ms이고 렌더 실패/브라우저 오류는 0이다. 실제 디스플레이 FPS나 Flutter
+  debug와의 동등성 측정이 아니다. 새 lazy 구간의 첫 layout을 포함한 최대 456.6ms
+  지연, retained GPU picture/culling 차이는 남아 있다. 완전한 60fps 수리로 표시하지 않는다.
+- Web Release 빌드, scheduler, mapper/snapshot, DisplayList golden/fuzz/cache,
+  FCR-7 Material/widget 및 TypeScript 검사 PASS. 브라우저 전체 11 PASS/2 FAIL 후
+  이미지 버튼의 잘못된 750px 가시성 제한과 fingerprinted Worker 식별을 고쳤다.
+  해당 2개 재검사 PASS로 선택한 13개 동작을 모두 통과했다. 이전 실패 로그는 보존했다.
+- 원래 명령과 URL에 기본 적용된다. 별도 캐시 query는 필요 없다. 전체 비교표,
+  증거와 한계는 `history/26-09-07/web-sample-retained-rendering.md`에 기록했다.
+
+## 17. 2026-09-07 Web 새 스크롤 구간 및 CanvasKit 연동 병목 후속 수정
+
+- 사용자 재현은 새로고침이 아닌 **스크롤 중 새 구간 진입**이다. Flutter CanvasKit의
+  build/layout 분리와 비교해 문단 생성 시 불필요한 무제한 폭 측정을 제거했다.
+  문단별 최근 두 폭을 재사용하고 글꼴 세대 변경 시 무효화한다. 글자별 JSON 응답을
+  버전이 있는 숫자 배열로 바꾸되 f64 좌표, 정확한 metrics hash와 검증을 유지했다.
+- 불변 그림의 매핑 결과 전체를 256개/16MiB 한도로 재사용한다. 폰트 변경과 리소스
+  생존 여부를 검사한다. 새 문자열 테이블에서는 text 명령만 무효화하여 geometry
+  명령까지 다시 인코딩하던 비용을 제거했다. 기존 sample URL에 기본 적용된다.
+- Sample은 7개 큰 그룹 대신 29개 구성요소 구간을 지연 생성하고 방문한 구간만
+  보존한다. 연속 카드 모양과 로컬 선택 상태를 유지한다. 681KB 이미지의 바이트별
+  LINQ 변환을 bulk copy로 바꾸고, 두 번 하던 SHA-256을 비동기 Web Crypto에서
+  한 번 계산해 재사용한다. 긴 layout이 wheel quiet interval을 넘겨 접근성 갱신을
+  잘못 수행하던 경로도 frame 진입 시 스크롤 상태를 보존하여 수정했다.
+- 브라우저 최초 13 PASS/3 FAIL은 보관 구간의 미배치 컨트롤을 포커스/툴팁 경로가
+  참조한 제품 오류였다. 공통 Widgets의 traversal과 OverlayPortal 처리를 수정했다.
+  실패한 3개와 왕복 상태 보존 재검사 **4 PASS**. 선택한 16개 동작을 passing run으로
+  검증했으며 최초 실패를 보존했다. Release 경고 0/오류 0, scheduler, mapper,
+  metrics, encoder, FCR-7 native 계약, TypeScript 및 diff 검사 PASS.
+- 짧은 동일 왕복 작업의 UI 중앙값 **23.8 → 16.8ms**, p95 **61.9 → 53.3ms**,
+  최대 **456.6 → 135.1ms**. 매핑 중앙값 5.3 → 1.9ms. 최종 렌더 실패/오류 0.
+- **남은 문제:** 두 열 전체 신규 구간 sweep 최종 최대는 **723.8ms**였다. 그중
+  668.5ms가 managed layout/compositing이며 rebuild 824회/layout work 563회,
+  raster replay 11ms였다. 중간 진단의 더 좋은 454.7ms 결과로 최종 값을 대체하지
+  않는다. 큰 컨트롤의 첫 생성/배치, retained GPU picture/culling 성능 작업은 남아
+  있고 전체 60fps 또는 사용자 체감 완전 해결로 표시하지 않는다. Flutter debug
+  FPS와 물리적 표시 acceptance는 미검증이다. 상세 증거는 §16과 같은 history 문서.
+
+## 18. 2026-09-07 Web 연속 애니메이션 인코딩 병목 수정
+
+- 사용자 애니메이션 버벅임을 원형/막대 진행 표시기로 분리 재현했다. 이미 배치된
+  화면에서 typical frame의 layout work와 문단 측정은 0인데 인코딩 중앙값이
+  9.4ms, UI callback 중앙값이 20.1ms였다. GPU 완료 응답도 UI에서 36.3ms 대기했다.
+- 동일 불변 명령의 참조 조회와 16개 연속 명령의 검증된 바이트 묶음 복사를 추가했다.
+  명령이 바뀌면 해당 묶음을 다시 쓰고 canonical table 변경 시 묶음을 무효화한다.
+  추가 묶음 보관은 512개/4MiB 한도다. 문자열 테이블은 텍스트/글꼴 이름/런 문자열이
+  같으면 색상과 좌표 변경에도 재사용한다. 문단 512개/2MiB와 테이블 2MiB 한도를 둔다.
+- Web CRC 생성·검증은 같은 IEEE CRC32 테이블 구현으로 처리한다. 프레임마다
+  managed CRC와 JS의 바이트별 8회 bit loop 비용을 줄였다. schema/checksum/golden은
+  그대로다. unsigned JS import 컴파일 실패는 보존하고 signed i32 bit pattern으로
+  수정했다. 상세 인코딩 단계 계측은 기존 trace 옵션을 켰을 때만 수행한다.
+- 문자열 캐시의 첫 identity 기준은 repaint의 새 문단 객체에 계속 miss했다.
+  해당 `animation-final` 중간 결과를 보존하고 실제 문자열 필드 비교로 고쳤다.
+  최종 `animation-verified`: UI 중앙값 **20.1 → 12.4ms**, p95 **23.0 → 15.6ms**,
+  인코딩 중앙값 **9.4 → 3.0ms**, 약 6초 GPU 제출 **150 → 346회**. 모두 trace-on이다.
+  추적을 끈 `animation-verified-off`는 6.016초 360회 제출, 평균 UI 10.63ms,
+  raster 2.23ms이고 오류 0이다. 실제 디스플레이 FPS를 측정한 것은 아니다.
+- 최종 trace-on 최대 UI 35ms/제출 간격 40.7ms가 남았고 §17의 큰 신규 구간 첫 생성
+  지연은 이 warm animation 검사에 포함되지 않았다. 모든 애니메이션·물리적 표시가
+  완전히 매끄럽다고 표시하지 않는다. Flutter FPS 직접 비교도 하지 않았다.
+- Release 경고 0/오류 0, DisplayList golden/fuzz/cache/문자열·묶음 무효화 계약,
+  TypeScript PASS. 브라우저 **12 PASS**, 마지막 문자열 키 수정 후 애니메이션 픽셀
+  변화/정지·이미지 테마·CRC·golden 재검사 **4 PASS**. 빌드/검사 timeout은 20분이다.
+  최종 서버를 재시작했으며 기존 URL에서 새로고침하면 반영된다. 전체 진단과 증거는
+  `history/26-09-07/web-sample-retained-rendering.md`의 continuous animation 절에 있다.
+
+## 19. SkiaSharp direct Worker 비교
+
+- `worker-direct-webgl`의 샘플 모드 전달 누락을 시작/재시작 모두 수정했다.
+  진단 모드에서 매 Worker 메시지마다 전체 trace를 DOM에 쓰던 비용도 100ms 단위로 묶었다.
+- 같은 warm 진행표시기 6초 단일 비교: CanvasKit 359/direct 360 제출,
+  Worker 제출 간격 p95 19.9/18.5ms, 최대 33.9/23.9ms. 실제 표시 FPS나 반복적 우위,
+  Flutter 동등성, 새 구간 스크롤 개선을 입증한 것은 아니다. 기본값은 유지한다.
+- Release 경고/오류 0, TypeScript PASS, direct 애니메이션 픽셀 변화/정지 PASS.
+  재시작 검사의 넓은 화면 tab 선택자 오류는 원본 FAIL을 남기고 800px로 수정하여 PASS.
+  근거와 비교 URL은 history 문서의 SkiaSharp direct Worker comparison 절에 기록했다.

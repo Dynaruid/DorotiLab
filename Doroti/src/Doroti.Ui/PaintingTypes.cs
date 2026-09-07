@@ -429,6 +429,12 @@ public sealed class TextStyle
     public IReadOnlyList<FontFeature>? fontFeatures { get; }
     public IReadOnlyList<FontVariation>? fontVariations { get; }
 
+    internal TextStyle SnapshotForPainting() => new(
+        color, decoration, decorationColor, decorationStyle, decorationThickness,
+        fontWeight, fontStyle, textBaseline, fontFamily, fontFamilyFallback, fontSize,
+        letterSpacing, wordSpacing, height, leadingDistribution, locale,
+        foreground?.SnapshotForText(), background?.SnapshotForText(), shadows, fontFeatures, fontVariations);
+
     internal TextStyle Merge(TextStyle overlay) => new(
         color: overlay.foreground is null
             ? overlay.color ?? (foreground is null ? color : null)
@@ -553,7 +559,7 @@ public sealed class ParagraphBuilder
             return view.LayoutParagraph(
                 new ParagraphRequest(text, double.PositiveInfinity, fontFamily, fontSize,
                     _style.maxLines, color, lineHeight, _style.textAlign,
-                    _style.textDirection, _style.locale, _style.ellipsis, _runs.ToArray()),
+                    _style.textDirection, _style.locale, _style.ellipsis, _runs.ToArray()) { DeferLayout = true },
                 DartUiInvocation.Managed("dart:ui#ParagraphBuilder.build"));
         }
 

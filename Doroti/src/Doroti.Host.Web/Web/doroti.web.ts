@@ -1,4 +1,4 @@
-import { decodeDorotiMessage, dorotiProtocolVersion } from "./doroti.web.protocol.js";
+import { crc32DisplayList, decodeDorotiMessage, dorotiProtocolVersion } from "./doroti.web.protocol.js";
 import { createDorotiDomEndpoints, createReplacementCanvas } from "./doroti.web.dom.js";
 import { pushBounded } from "./doroti.web.diagnostics.js";
 import { createWorkerVisibleSurface } from "./doroti.web.surface.js";
@@ -38,7 +38,7 @@ export interface CanvasKitUiBridge {
     bytes: Uint8Array,
   ): void;
   releaseResource(resourceId: number, generation: number): void;
-  layoutParagraph(requestJson: string): string;
+  layoutParagraph(requestJson: string): number[];
   imageOperation(requestJson: string, bytes: Uint8Array): Promise<Uint8Array>;
 }
 
@@ -456,6 +456,11 @@ export function configureCanvasKitUiBridge(bridge: CanvasKitUiBridge): void {
   activeCanvasKitUiBridge = bridge;
 }
 
+export function computeCanvasKitDisplayListChecksum(bytes: Uint8Array | DorotiManagedMemoryView): number {
+  // .NET's JS import supports i32; preserve all 32 CRC bits across that boundary.
+  return crc32DisplayList(copyManagedBytes(bytes, true)) | 0;
+}
+
 export function submitCanvasKitDisplayList(bytes: Uint8Array | DorotiManagedMemoryView): number {
   if (!canvasKitManagedCallbacks)
     throw new Error("Doroti CanvasKit managed terminal callbacks are not initialized.");
@@ -486,8 +491,16 @@ export function releaseCanvasKitResource(resourceId: number, generation: number)
   requireCanvasKitUiBridge().releaseResource(resourceId, generation);
 }
 
-export function layoutCanvasKitParagraph(requestJson: string): string {
+export function layoutCanvasKitParagraph(requestJson: string): number[] {
   return requireCanvasKitUiBridge().layoutParagraph(requestJson);
+}
+
+export async function hashCanvasKitResource(bytes: Uint8Array): Promise<string> {
+  // Async imports use an owned array, never a transient managed MemoryView.
+  // Preserve the exact byte view while browser-native hashing runs off the UI task.
+  const owned = bytes.slice();
+  const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", owned.buffer as ArrayBuffer));
+  return Array.from(hash, value => value.toString(16).padStart(2, "0")).join("");
 }
 
 export async function canvasKitImageOperation(requestJson: string, encodedBytes: string): Promise<string> {
@@ -820,6 +833,7 @@ function diagnosticsEnabled(): boolean {
 }
 
 function scheduleResizeDiagnosticsPublish(host: BrowserHost): void {
+  if (!diagnosticsEnabled()) return;
   if (host.diagnosticsPublishTimer !== 0) return;
   host.diagnosticsPublishTimer = globalThis.setTimeout(() => {
     host.diagnosticsPublishTimer = 0;
@@ -3151,6 +3165,7 @@ export async function startDorotiWorkerHost(
             replacement.postMessage({
               protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
               dotnetModuleUrl, mode, canvas: replacementOffscreen,
+              testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
               resizeDiagnostics: diagnosticsEnabled(),
             }, replacementOffscreen ? [replacementOffscreen] : []);
           } else if (!ready) rejectReady(error);
@@ -3158,7 +3173,10 @@ export async function startDorotiWorkerHost(
           break;
         }
       }
-      publishResizeDiagnostics(host);
+      // A frame emits several worker messages. Rewriting the entire trace DOM
+      // on every message overwhelms the main thread during animation probes.
+      // Live capture reads the trace directly; batch only its DOM publication.
+      scheduleResizeDiagnosticsPublish(host);
     });
     worker.addEventListener("error", (event) => {
       if (!ready && display.restartCount >= 1) rejectReady(event.error ?? new Error(event.message));
@@ -3169,6 +3187,7 @@ export async function startDorotiWorkerHost(
   const initialMessage = {
     protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
     dotnetModuleUrl, mode, canvas: initialOffscreen,
+    testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
     resizeDiagnostics: diagnosticsEnabled(),
   };
   activeWorker.postMessage(initialMessage, initialOffscreen ? [initialOffscreen] : []);
