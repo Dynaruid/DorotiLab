@@ -5,7 +5,7 @@ using Doroti.Ui;
 using SkiaSharp;
 using M = Doroti.Framework.Material;
 
-internal static class MountedPickerContracts
+internal static partial class MountedPickerContracts
 {
     internal static void VerifyWidgetStartup()
     {
@@ -486,6 +486,9 @@ internal static class MountedPickerContracts
                     if ((bool)scrolledUnder.GetValue(homeBarState)! != (homeScroll.offset > 0))
                         throw new Exception($"Full SampleHome app bar mismatch at {homeScroll.offset}, step {step}, frame {frame}");
                 }
+                // All sections can be mounted on the initial frame. Capture the
+                // scrolled baseline before testing any forwarded inline metrics.
+                if (step % 20 == 0) Pump("full-sample-scroll-" + step);
                 var inlineBars = Elements(binding.rootElement!).FirstOrDefault(element => element.widget is MaterialSample.ComponentSection section && section.Label == "Top app bars");
                 if (!checkedForeignMetrics && inlineBars is not null && homeScroll.offset > 0)
                 {
@@ -514,7 +517,6 @@ internal static class MountedPickerContracts
                     if (inlineScrolls.Length != 2) throw new Exception("Medium and Large demo scrollers were not mounted");
                     checkedForeignMetrics = true;
                 }
-                if (step % 20 == 0) Pump("full-sample-scroll-" + step);
             }
             if (!checkedForeignMetrics) throw new Exception("Foreign app bar scroll source was not exercised");
             Console.WriteLine("full SampleHome app bar scroll down/up lifecycle PASS");

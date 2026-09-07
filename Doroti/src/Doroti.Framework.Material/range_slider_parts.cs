@@ -268,7 +268,7 @@ public class RoundRangeSliderThumbShape : RangeSliderThumbShape
 
     public virtual void paint(global::Doroti.Framework.Rendering.PaintingContext context, Offset center, global::Doroti.Framework.Animation.Animation<double> activationAnimation, global::Doroti.Framework.Animation.Animation<double> enableAnimation, bool isDiscrete = false, bool isEnabled = false, bool isOnTop = default!, TextDirection textDirection = default!, SliderThemeData sliderTheme = default!, Thumb thumb = default!, bool isPressed = default!)
     {
-        var __sliderTheme = (SliderThemeData)(object)textDirection;
+        var __sliderTheme = sliderTheme;
         DartRuntimePrimitives.Assert(() => (__sliderTheme.showValueIndicator is not null));
         DartRuntimePrimitives.Assert(() => (__sliderTheme.overlappingShapeStrokeColor is not null));
         global::Doroti.Ui.Canvas canvasLocal = ((global::Doroti.Ui.Canvas)(object?)((global::Doroti.Framework.Rendering.PaintingContext)context).canvas);

@@ -9,7 +9,18 @@ public sealed class SynchronousFuture<T> : Doroti.Runtime.Future<T>
 
     public SynchronousFuture(T value) : base(Task.FromResult(value)) => _value = value;
 
-    public new Task<TResult> then<TResult>(Func<T, TResult> onValue) => Task.FromResult(onValue(_value));
+    public override Doroti.Runtime.Future<TResult> then<TResult>(Func<T, TResult> onValue) =>
+        new SynchronousFuture<TResult>(onValue(_value));
+
+    // Localizations keeps heterogeneous delegate results as Future. Preserve
+    // synchronous delivery through that base reference as well as Future<T>.
+    public override Doroti.Runtime.Future<TResult> then<TResult>(Func<object?, object?> onValue, Delegate? onError = null)
+    {
+        var result = onValue(_value);
+        return result is Doroti.Runtime.Future<TResult> future
+            ? future
+            : new SynchronousFuture<TResult>((TResult)result!);
+    }
 
     public Task<TResult> thenAsync<TResult>(Func<T, Task<TResult>> onValue) => onValue(_value);
 

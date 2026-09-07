@@ -908,7 +908,7 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
         double result = Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(value), 0.0, 1.0);
         if (this.isDiscrete)
         {
-            result = (((result * DartRuntimePrimitives.RequireValue(this.divisions))).round() / DartRuntimePrimitives.RequireValue(this.divisions));
+            result = (((result * DartRuntimePrimitives.RequireValue(this.divisions))).round() / (double)DartRuntimePrimitives.RequireValue(this.divisions));
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1149,7 +1149,7 @@ public class _RenderRangeSlider__range_slider : global::Doroti.Framework.Renderi
                 double dyLocal = ((Offset)((dynamic)trackRect).center).dy;
                 for (var i = 0L; (i <= DartRuntimePrimitives.RequireValue(this.divisions)); i++)
                 {
-                    double valueLocal = (i / DartRuntimePrimitives.RequireValue(this.divisions));
+                    double valueLocal = (i / (double)DartRuntimePrimitives.RequireValue(this.divisions));
                     double dxLocal = ((trackRect.left + (DartRuntimePrimitives.RequireValue(valueLocal) * adjustedTrackWidth)) + (discreteTrackPadding / 2L));
                     var tickMarkOffset = new global::Doroti.Ui.Offset(dxLocal, dyLocal);
                     this._sliderTheme.rangeTickMarkShape!.paint(context, tickMarkOffset, parentBox: this, sliderTheme: this._sliderTheme, enableAnimation: this._enableAnimation, textDirection: this._textDirection, startThumbCenter: this._startThumbCenter, endThumbCenter: this._endThumbCenter, isEnabled: this.isEnabled);

@@ -12,6 +12,8 @@ No new screenshot is a replacement for a historical failure.
 ./Doroti/eng/test-material-sample.ps1 -Suite Regression
 ./Doroti/eng/test-material-sample.ps1 -Suite Windows
 ./Doroti/eng/test-material-sample.ps1 -Suite AppBarRaster
+./Doroti/eng/test-material-sample.ps1 -Suite Scroll
+./Doroti/eng/test-material-sample.ps1 -Suite Selection
 ./Doroti/eng/run-web-playwright.ps1 -HeadlessOnly -RendererMode worker-direct-webgl `
   -TestFile @('tests/material-sample.spec.ts','tests/material-sample-selection.spec.ts',
     'tests/material-sample-network.spec.ts','tests/material-sample-boundaries.spec.ts') `
@@ -34,6 +36,16 @@ older evidence. A presented frame must have visible content and zero Raster fail
 DOM semantics alone does not prove successful painting. Progress starts stopped at 0.7;
 Play enables indeterminate animation. Presented frame generations, rather than global
 queue-idle, determine sample frame completion.
+
+The `Selection` suite mounts Slider, RangeSlider and icon Switch controls. It checks
+six distinct, evenly spaced ticks for five divisions, intermediate value snapping,
+continuous mode, pointer input and disabled controls in light/dark and LTR/RTL.
+It verifies MaterialIcons' natural 16px em box/baseline and explicit/inherited
+paragraph heights, and saves native raster PNGs. This is framework input/native
+raster evidence; the actual Web sample needs a separate browser check.
+The suite also protects synchronous value continuations through typed and untyped
+Future references and chained results, while ordinary Future callbacks remain queued.
+This covers the default localization path used when the Web sample first opens.
 
 The `Windows` suite exercises native Skia paragraph pixels and ready-to-paint image
 decoding, independent rail callbacks, and every hour/minute dial conversion. It also
@@ -86,6 +98,16 @@ from Vulkan presentation and physical display acceptance. See work.md section 15
   zero-duration AnimationController operations return an already completed TickerFuture.
 
 ## Evidence and limits
+
+The finite Components gallery lays out all 29 sections before its first scroll.
+Each section has a separate box sliver and repaint boundary, so offscreen sections
+do not paint and the gallery is not one oversized raster-cache entry. This deliberately
+replaces the reference sample's measured-height sum (unvisited sections counted as zero).
+The initial frame does more work; scroll extent no longer grows just by visiting content.
+Actual content changes, width and text scaling still update the extent through layout.
+The `Scroll` suite checks wheel input, stable first-traversal extent, direct access to the
+end, section state retention and width/text-scale/column transitions. It does not certify
+physical-device frame cadence or startup latency.
 
 Current run results, historical failures, and per-target build/live status are recorded
 in [work.md section 9](../../../work.md#9-2026-09-06-전체-작업-후속-구현-진행-중).

@@ -290,7 +290,7 @@ public class _SliderState__slider : global::Doroti.Framework.Widgets.State<Slide
         DartRuntimePrimitives.Assert(() => (((Slider)this.widget).divisions is not null));
         DartRuntimePrimitives.Assert(() => ((value >= 0.0) && (value <= 1.0)));
         long divisionsLocal = DartRuntimePrimitives.RequireValue(((Slider)this.widget).divisions);
-        return (((value * divisionsLocal)).round() / divisionsLocal);
+        return (((value * divisionsLocal)).round() / (double)divisionsLocal);
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
@@ -1065,7 +1065,7 @@ public class _RenderSlider__slider : global::Doroti.Framework.Rendering.RenderBo
         double result = Dart_uiLibrary.clampDouble(DartRuntimePrimitives.RequireValue(value), 0.0, 1.0);
         if (this.isDiscrete)
         {
-            result = (((result * DartRuntimePrimitives.RequireValue(this.divisions))).round() / DartRuntimePrimitives.RequireValue(this.divisions));
+            result = (((result * DartRuntimePrimitives.RequireValue(this.divisions))).round() / (double)DartRuntimePrimitives.RequireValue(this.divisions));
         }
         return result;
         throw new InvalidOperationException("Dart control flow completed without a value.");
@@ -1276,7 +1276,7 @@ public class _RenderSlider__slider : global::Doroti.Framework.Rendering.RenderBo
                 double dyLocal = ((Offset)((dynamic)trackRectLocal).center).dy;
                 for (var i = 0L; (i <= DartRuntimePrimitives.RequireValue(this.divisions)); i++)
                 {
-                    double valueLocal = (i / DartRuntimePrimitives.RequireValue(this.divisions));
+                    double valueLocal = (i / (double)DartRuntimePrimitives.RequireValue(this.divisions));
                     double dx = ((trackRectLocal.left + (DartRuntimePrimitives.RequireValue(valueLocal) * adjustedTrackWidth)) + (discreteTrackPadding / 2L));
                     var tickMarkOffset = new global::Doroti.Ui.Offset(dx, dyLocal);
                     this._sliderTheme.tickMarkShape!.paint(context, tickMarkOffset, parentBox: this, sliderTheme: this._sliderTheme, enableAnimation: this._enableAnimation, textDirection: this._textDirection, thumbCenter: thumbCenterLocal, isEnabled: this.isInteractive);

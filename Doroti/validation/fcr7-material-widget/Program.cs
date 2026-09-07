@@ -3,6 +3,19 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args.Length >= 2 && args[0] == "--selection-controls")
+{
+    MountedPickerContracts.VerifySelectionControls(args[1]);
+    return;
+}
+
+if (args.Length >= 1 && args[0] == "--sample-scroll")
+{
+    if (args.Length > 1) WindowsSampleContracts.OutputDirectory = args[1];
+    MountedPickerContracts.VerifySampleScroll();
+    return;
+}
+
 if (args is ["--widget-startup"])
 {
     MountedPickerContracts.VerifyWidgetStartup();

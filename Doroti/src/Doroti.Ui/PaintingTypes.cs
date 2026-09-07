@@ -521,7 +521,7 @@ public sealed class ParagraphBuilder
             fontStyle: style.fontStyle ?? FontStyle.normal,
             fontFamily: style.fontFamily,
             fontSize: style.fontSize ?? 14,
-            height: style.height ?? 1.2,
+            height: style.height,
             locale: style.locale);
     }
     public long placeholderCount => _text.LongCount(value => value == "\uFFFC");
@@ -552,7 +552,10 @@ public sealed class ParagraphBuilder
         // instead of the paragraph-level geometry defaults, which intentionally
         // do not carry a color.
         var color = firstRunStyle.foreground?.color ?? firstRunStyle.color ?? new Color(0xFF000000);
-        var lineHeight = fontSize * (_style.height ?? 1.2);
+        // An omitted height uses the font's natural ascent/descent. Inventing a
+        // multiplier here shifts glyphs such as Switch thumb icons below their
+        // em box. Keep the host request nullable; only hostless layout estimates.
+        double? lineHeight = _style.height is { } multiplier ? fontSize * multiplier : null;
         var view = PlatformDispatcher.current?.implicitView;
         if (view is not null)
         {
@@ -564,7 +567,7 @@ public sealed class ParagraphBuilder
         }
 
         // Unit-level dart:ui use can intentionally run without a host view.
-        return new(text, 0, lineHeight, fontSize, _style.maxLines, fontFamily, color,
+        return new(text, 0, lineHeight ?? fontSize * 1.2, fontSize, _style.maxLines, fontFamily, color,
             textRuns: _runs.ToArray());
     }
 }

@@ -24,7 +24,6 @@ internal sealed class ComponentsScreen(bool twoColumns, double secondFraction, d
 internal sealed partial class ComponentsState : State<ComponentsScreen>
 {
     private readonly ScrollController _firstScroll = new(), _secondScroll = new();
-    private double?[] _sectionHeights = [];
     private readonly TextEditingController _filled = new(), _outlined = new(), _colorMenu = new(), _iconMenu = new();
     private readonly List<string> _history = [];
     private string? _selectedColor;
@@ -87,7 +86,6 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     public override Widget build(BuildContext context)
     {
         var sections = _sections ??= CreateSections(context);
-        if (_sectionHeights.Length != sections.Length) Array.Resize(ref _sectionHeights, sections.Length);
         Widget List(bool second)
         {
             var firstIndex = second ? _split : 0;
@@ -96,9 +94,12 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
             {
                 list = new FocusTraversalGroup(child: new CustomScrollView(
                     controller: second ? _secondScroll : _firstScroll, primary: false,
-                    slivers: [new SliverList(@delegate: new MeasuredSlivers(_sectionHeights, firstIndex, count, (ctx, index) =>
-                        new CacheHeight(_sectionHeights, checked((int)index) + firstIndex,
-                            sections[checked((int)index) + firstIndex].Child)))]));
+                    // This finite gallery has heterogeneous sections. Lay each one out
+                    // before scrolling so the viewport knows the actual end immediately.
+                    // Separate slivers cull offscreen paint; boundaries retain each
+                    // section's drawing without rasterizing one gallery-sized picture.
+                    slivers: sections.Skip(firstIndex).Take(count).Select(section => (Widget)
+                        new SliverToBoxAdapter(child: new RepaintBoundary(child: section.Child))).ToList()));
                 _lists.Add((firstIndex, count), list);
             }
             return new Padding(padding: EdgeInsets.CreateOnly(right: widget.TwoColumns ? 10 : 0), child: list);
@@ -116,8 +117,8 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
         if (entry.Group == 6) return entry.Child; // ImageDemo owns its card, as in Flutter.
         string[] labels = ["Actions", "Communication", "Containment", "Navigation", "Selection", "Text inputs", "Image demo"];
         var content = entry.Child;
-        // Keep the continuous group card, but mount/layout one component section
-        // per sliver child. Entering a group must not build every offscreen demo.
+        // Keep the continuous group card while retaining an independent layout,
+        // state and paint boundary for each component section.
         var radius = new Radius(12, 12);
         var shape = new RoundedRectangleBorder(borderRadius: BorderRadius.CreateOnly(
             topLeft: entry.First ? radius : default, topRight: entry.First ? radius : default,

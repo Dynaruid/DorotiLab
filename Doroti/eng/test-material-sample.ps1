@@ -1,7 +1,7 @@
 #Requires -Version 7.0
 [CmdletBinding()]
 param(
-    [ValidateSet('Search', 'Blockers', 'Regression', 'Windows', 'AppBarRaster', 'Tabs')]
+    [ValidateSet('Search', 'Blockers', 'Regression', 'Windows', 'AppBarRaster', 'Tabs', 'Scroll', 'Selection')]
     [string] $Suite = 'Search',
     [string] $OutputDirectory = ''
 )
@@ -20,6 +20,8 @@ if ((Test-Path -LiteralPath $stdout) -or (Test-Path -LiteralPath $stderr)) {
 $arguments = @('run', '--project', 'Doroti/validation/fcr7-material-widget', '-c', 'Release')
 if ($Suite -eq 'Search') { $arguments += @('--', '--material-sample-search') }
 if ($Suite -eq 'Tabs') { $arguments += @('--', '--tabs') }
+if ($Suite -eq 'Scroll') { $arguments += @('--', '--sample-scroll', ('"' + $output + '"')) }
+if ($Suite -eq 'Selection') { $arguments += @('--', '--selection-controls', ('"' + $output + '"')) }
 if ($Suite -eq 'Blockers') { $arguments += @('--', '--material-sample') }
 if ($Suite -eq 'Windows') { $arguments += @('--', '--windows-sample', ('"' + $output + '"')) }
 if ($Suite -eq 'AppBarRaster') { $arguments += @('--', '--appbar-raster', ('"' + $output + '"')) }

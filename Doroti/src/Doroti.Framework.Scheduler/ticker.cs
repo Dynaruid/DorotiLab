@@ -333,7 +333,7 @@ public class TickerFuture : Future
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
 
-    public virtual Future<R> then<R>(Func<object?, object> onValue, Delegate? onError = null)
+    public override Future<R> then<R>(Func<object?, object?> onValue, Delegate? onError = null)
     {
         return _primaryCompleter.future.then<R>(onValue, onError: onError);
         throw new InvalidOperationException("Dart control flow completed without a value.");

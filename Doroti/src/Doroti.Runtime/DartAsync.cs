@@ -303,7 +303,7 @@ public class Future<T> : Future
 
     public new TaskAwaiter<T> GetAwaiter() => _typedTask.GetAwaiter();
 
-    public Future<TResult> then<TResult>(Func<T, TResult> callback)
+    public virtual Future<TResult> then<TResult>(Func<T, TResult> callback)
     {
         ArgumentNullException.ThrowIfNull(callback);
         return Future<TResult>.fromTask(ThenAsync(
@@ -590,7 +590,7 @@ public class Future
         fromTask(ThenAsync(
             asObjectTask(), onValue, onError, DartAsyncRuntime.captureMicrotaskScheduler()));
 
-    public Future<TResult> then<TResult>(Func<object?, object?> onValue, Delegate? onError = null) =>
+    public virtual Future<TResult> then<TResult>(Func<object?, object?> onValue, Delegate? onError = null) =>
         Future<TResult>.fromTask(ThenFutureOrAsync<TResult>(
             asObjectTask(), onValue, onError, DartAsyncRuntime.captureMicrotaskScheduler()));
 
