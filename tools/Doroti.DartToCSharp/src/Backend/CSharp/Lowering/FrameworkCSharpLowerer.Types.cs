@@ -529,26 +529,20 @@ internal sealed partial class FrameworkCSharpLowerer
         }
 
         AddParameters(sourceParameters);
-        for (var index = 0; index < sourceParameters.Length && index < parameters.Count; index++)
+        var positional = 0;
+        foreach (var source in sourceParameters)
         {
-            if (sourceParameters[index].Kind is "optional-named" or "optional-positional")
+            var index = source.Kind.Contains("positional", StringComparison.OrdinalIgnoreCase)
+                ? positional++ : parameters.FindIndex(parameter => parameter.Name == source.Name);
+            if (index < 0 || index >= parameters.Count) continue;
+            if (source.Kind is "optional-named" or "optional-positional")
             {
-                // Parameter optionality belongs to the concrete Dart method.
-                // An override may widen a required contract parameter to an
-                // optional one (SelectableRegionState.selectAll is one such
-                // case); keep the canonical family type/name, but retain the
-                // implementation's omission contract and default value.
-                parameters[index] = parameters[index] with
-                {
-                    Kind = sourceParameters[index].Kind,
-                    DefaultValue = sourceParameters[index].DefaultValue
-                };
+                // Named argument order is irrelevant in Dart. Defaults and
+                // optionality belong to this parameter, not its source index.
+                parameters[index] = parameters[index] with { Kind = source.Kind, DefaultValue = source.DefaultValue };
             }
-            if (ContainsUnboundTypeParameter(parameters[index].Type) &&
-                !ContainsUnboundTypeParameter(sourceParameters[index].Type))
-            {
-                parameters[index] = sourceParameters[index];
-            }
+            if (ContainsUnboundTypeParameter(parameters[index].Type) && !ContainsUnboundTypeParameter(source.Type))
+                parameters[index] = parameters[index] with { Type = source.Type };
         }
         return parameters.ToArray();
     }
@@ -603,42 +597,41 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             return new Dictionary<string, string>(StringComparer.Ordinal);
         }
-        var application = new[] { declaration.Element.Supertype }
-            .Concat(declaration.Element.Mixins ?? [])
-            .Concat(declaration.Element.Interfaces ?? [])
-            .Where(type => !string.IsNullOrWhiteSpace(type))
-            .Select(type => StripLibraryPrefix(type!))
-            .FirstOrDefault(type => string.Equals(type.Split('<')[0], owner.Name, StringComparison.Ordinal));
-        if (application is null)
+        var pending = new Queue<(CoreResolvedDeclaration Declaration, IReadOnlyDictionary<string, string> Substitutions)>();
+        pending.Enqueue((declaration, new Dictionary<string, string>(StringComparer.Ordinal)));
+        var visited = new HashSet<string>(StringComparer.Ordinal);
+        while (pending.TryDequeue(out var current))
         {
-            return new Dictionary<string, string>(StringComparer.Ordinal);
+            if (!visited.Add(current.Declaration.Element.CanonicalId)) continue;
+            foreach (var baseName in DirectBaseNames(current.Declaration))
+            {
+                var application = ApplyTypeParameterSubstitutions(baseName, current.Substitutions);
+                var parent = FindGlobalDeclaration(application);
+                if (parent is null) continue;
+                var genericStart = application.IndexOf('<');
+                var arguments = genericStart >= 0 && application.EndsWith('>')
+                    ? SplitGenericArguments(application[(genericStart + 1)..^1]) : [];
+                var substitutions = (parent.Element.TypeParameters ?? [])
+                    .Take(arguments.Length)
+                    .Select((parameter, index) => new KeyValuePair<string, string>(parameter.Name, arguments[index]))
+                    .ToDictionary(item => item.Key, item => item.Value, StringComparer.Ordinal);
+                if (parent.Element.CanonicalId == owner.Element.CanonicalId) return substitutions;
+                pending.Enqueue((parent, substitutions));
+            }
         }
-        var genericStart = application.IndexOf('<');
-        if (genericStart < 0 || !application.EndsWith('>'))
-        {
-            return new Dictionary<string, string>(StringComparer.Ordinal);
-        }
-        var arguments = SplitGenericArguments(application[(genericStart + 1)..^1]);
-        return parameters
-            .Take(Math.Min(parameters.Length, arguments.Length))
-            .Select((parameter, index) => new KeyValuePair<string, string>(parameter.Name, arguments[index]))
-            .ToDictionary(item => item.Key, item => item.Value, StringComparer.Ordinal);
+        return new Dictionary<string, string>(StringComparer.Ordinal);
     }
 
     private static string ApplyTypeParameterSubstitutions(
         string type,
         IReadOnlyDictionary<string, string> substitutions)
     {
-        var result = type;
-        foreach (var substitution in substitutions.OrderByDescending(item => item.Key.Length))
-        {
-            result = Regex.Replace(
-                result,
-                $@"(?<![A-Za-z0-9_]){Regex.Escape(substitution.Key)}(?![A-Za-z0-9_])",
-                substitution.Value,
-                RegexOptions.CultureInvariant);
-        }
-        return result;
+        if (substitutions.Count == 0) return type;
+        // Substitute the original tokens simultaneously: T -> U and U -> int
+        // must not accidentally turn both arguments into int in this step.
+        var names = string.Join("|", substitutions.Keys.Order(StringComparer.Ordinal).Select(Regex.Escape));
+        return Regex.Replace(type, $@"(?<![A-Za-z0-9_])(?:{names})(?![A-Za-z0-9_])",
+            match => substitutions[match.Value], RegexOptions.CultureInvariant);
     }
 
     private bool TryGenericTypeApplication(string type, string expectedOuter, out string[] arguments)

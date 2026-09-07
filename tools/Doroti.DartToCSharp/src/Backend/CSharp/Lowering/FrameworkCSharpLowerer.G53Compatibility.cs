@@ -797,23 +797,6 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
                 StringComparison.Ordinal);
         }
 
-        if (library.EndsWith("/cupertino/text_selection.dart", StringComparison.Ordinal))
-        {
-            // TextSelectionHandleControls is emitted as a CLR marker interface,
-            // allowing the concrete Cupertino superclass and Dart mixin marker
-            // to coexist without multiple class inheritance.
-            source = source
-                .ReplaceGeneratedLocalPattern("public override void handleCut(", "public virtual void handleCut(", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public override void handleCopy(", "public virtual void handleCopy(", StringComparison.Ordinal);
-        }
-
-        if (library.EndsWith("/cupertino/desktop_text_selection.dart", StringComparison.Ordinal))
-        {
-            source = source
-                .ReplaceGeneratedLocalPattern("public override void handleCut(", "public virtual void handleCut(", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public override void handleCopy(", "public virtual void handleCopy(", StringComparison.Ordinal);
-        }
-
         if (library.EndsWith("/cupertino/nav_bar.dart", StringComparison.Ordinal))
         {
             source = source
@@ -987,13 +970,6 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
                 .ReplaceGeneratedLocalPattern("object.Equals(((DateTimeRange<DateTime>)((DateTimeRange<DateTime>)__other)).end, this.end)", "object.Equals(((DateTimeRange<T>)__other).end, this.end)", StringComparison.Ordinal);
         }
 
-        if (library.EndsWith("/material/desktop_text_selection.dart", StringComparison.Ordinal) || library.EndsWith("/material/text_selection.dart", StringComparison.Ordinal))
-        {
-            source = source
-                .ReplaceGeneratedLocalPattern("public override void handleCut(", "public virtual void handleCut(", StringComparison.Ordinal)
-                .ReplaceGeneratedLocalPattern("public override void handleCopy(", "public virtual void handleCopy(", StringComparison.Ordinal);
-        }
-
         if (library.EndsWith("/material/dropdown.dart", StringComparison.Ordinal))
         {
             source = source
@@ -1019,11 +995,6 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
         if (library.EndsWith("/material/ink_sparkle.dart", StringComparison.Ordinal))
         {
             source = source.ReplaceGeneratedLocalPattern("Vector2", "global::System.Numerics.Vector2", StringComparison.Ordinal);
-        }
-
-        if (library.EndsWith("/material/input_border.dart", StringComparison.Ordinal))
-        {
-            source = source.ReplaceGeneratedLocalPattern("public abstract override void paint(", "public abstract void paint(", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/material.dart", StringComparison.Ordinal))
@@ -1218,7 +1189,7 @@ internal static class MaterialDynamicColors
             source = Regex.Replace(source, @"\.max\b(?!\s*\()", ".max()");
             source = Regex.Replace(source, @"\.min\b(?!\s*\()", ".min()");
             source = Regex.Replace(source, @"\.sum\b(?!\s*\()", ".sum()");
-            source = source.ReplaceGeneratedLocalPattern("public new ItemExtentBuilder? itemExtentBuilder => this._buildItemExtent;", "public new ItemExtentBuilder? itemExtentBuilder => (index, dimensions) => this._buildItemExtent(index, dimensions);", StringComparison.Ordinal);
+            source = source.ReplaceGeneratedLocalPattern("public override ItemExtentBuilder? itemExtentBuilder => this._buildItemExtent;", "public override ItemExtentBuilder? itemExtentBuilder => (index, dimensions) => this._buildItemExtent(index, dimensions);", StringComparison.Ordinal);
         }
 
         if (library.EndsWith("/material/slider_parts.dart", StringComparison.Ordinal))

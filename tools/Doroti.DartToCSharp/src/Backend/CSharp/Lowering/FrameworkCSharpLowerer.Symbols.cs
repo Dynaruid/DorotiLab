@@ -25,11 +25,11 @@ internal sealed partial class FrameworkCSharpLowerer
     }
 
     private bool HasGlobalSetterOverride(CoreResolvedDeclaration declaration, string memberName) =>
-        _semanticIndex.TypeUsers(declaration.Name)
-            .Any(candidate =>
-                candidate.Members.Any(member => member.IsSetter && member.Name == memberName) &&
-                DirectBaseNames(candidate).Any(baseName =>
-                    string.Equals(StripLibraryPrefix(baseName).Split('<')[0], declaration.Name, StringComparison.Ordinal)));
+        _semanticIndex.Descendants(declaration.Name).Any(candidate =>
+            IsDescendantOf(candidate, declaration) &&
+            (!memberName.StartsWith('_') ||
+             LibraryUriFromElementId(candidate.Element.CanonicalId) == LibraryUriFromElementId(declaration.Element.CanonicalId)) &&
+            candidate.Members.Any(member => member.IsSetter && member.Name == memberName));
 
     private IEnumerable<CoreResolvedDeclaration> AppliedMixinDeclarations(CoreResolvedDeclaration declaration) =>
         (declaration.Element.Mixins ?? [])

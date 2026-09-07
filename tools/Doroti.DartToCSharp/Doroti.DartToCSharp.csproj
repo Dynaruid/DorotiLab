@@ -14,6 +14,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="validation/**/*.cs" />
     <ProjectReference Include="..\..\Doroti\tools\Doroti.Tooling\Doroti.Tooling.csproj" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Runtime\Doroti.Runtime.csproj" />
     <ProjectReference Include="..\..\Doroti\src\Doroti.Ui\Doroti.Ui.csproj" />

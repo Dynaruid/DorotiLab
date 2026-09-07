@@ -483,7 +483,7 @@ internal sealed partial class FrameworkCSharpLowerer
             return;
         }
 
-        if (name == "length" && prefixType == "String")
+        if (name == "length" && (prefixType is "String" or "string" || node.ElementId == "dart:core#String.length"))
         {
             if (prefixNode is not null) LowerExpression(builder, prefixNode, declaration, package, library, inputPath, diagnostics);
             else builder.Append(SafeIdentifier(prefix));

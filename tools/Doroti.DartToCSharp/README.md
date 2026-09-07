@@ -145,6 +145,15 @@ dotnet run --project ./tools/Doroti.DartToCSharp -- cache-prune --cache-dir ./.d
 
 ## Validation
 
+Run the generated-code virtual dispatch regression suite (20-minute timeout, output only under `.doroti`):
+
+```powershell
+./tools/Doroti.DartToCSharp/validation/virtual-dispatch/validate.ps1
+```
+
+It compiles generated C#, verifies base/interface calls and deterministic output, and checks that unresolved annotated override contracts produce `DOTCONV902`. Add `-Upstream` for focused checks against pinned Flutter source. This does not regenerate or adopt product source. See [validation details](validation/virtual-dispatch/README.md).
+
+
 Validate the Dart frontend and the .NET compiler boundary:
 
 ```powershell

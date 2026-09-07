@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "3.0.0",
+  "migrationIrVersion": "3.0.0",
+  "generationMode": "framework-semantic",
+  "compatibilityProfile": "flutter-framework",
+  "outputNamespace": "CompilerDispatchFixture",
+  "outputAssemblyName": "CompilerDispatchFixture",
+  "flutterBaseline": "flutter-baseline.json",
+  "frameworkMilestone": "FCR-7",
+  "inputs": [
+    {
+      "path": "../../../../../reference/flutter-master/packages/flutter/lib/src/physics/tolerance.dart",
+      "library": "package:flutter/src/physics/tolerance.dart",
+      "symbols": [
+        "*"
+      ],
+      "emissionMode": "graph-only"
+    },
+    {
+      "path": "contracts.dart",
+      "library": "contracts.dart",
+      "symbols": [
+        "*"
+      ]
+    }
+  ]
+}

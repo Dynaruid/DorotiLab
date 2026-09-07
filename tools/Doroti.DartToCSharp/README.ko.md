@@ -159,3 +159,13 @@ Pop-Location
 상세 설계는 [typed framework compilation](../../Doroti/docs/architecture/f0-typed-framework-compiler.md), [multi-library compilation](../../Doroti/docs/architecture/g3-1-multi-library-framework-compiler.md), [port ownership](../../Doroti/docs/architecture/p0-port-ownership.md), [adoption/rebase state](../../Doroti/docs/architecture/p2-port-state-adoption-rebase.md)를 참고하세요.
 
 Doroti는 repository의 [BSD 3-Clause license](../../LICENSE)로 배포됩니다. Upstream 고지는 [Doroti third-party notices](../../Doroti/THIRD-PARTY-NOTICES.md)에 기록되어 있습니다.
+
+## 가상 메서드 재정의 검증
+
+```powershell
+./tools/Doroti.DartToCSharp/validation/virtual-dispatch/validate.ps1
+```
+
+20분 timeout으로 실제 Dart 분석·C# 생성·컴파일 및 기반/인터페이스 호출을 검사합니다. 생성 결과와 소스맵의 병렬/단일 실행 결정성도 확인합니다. 상속 계약이 없는 명시적 `@override`는 `DOTCONV902` 오류로 보고합니다. `-Upstream`을 추가하면 pinned Flutter의 대표 메서드 8곳도 검사합니다.
+
+출력은 `.doroti/compiler-dispatch-*`에만 생성하며 제품 `Doroti/src`와 TestbedApp에는 반영하지 않습니다. 전체 Flutter import 빌드 통과를 의미하지 않습니다. [검증 범위](validation/virtual-dispatch/README.md)를 참고하세요.

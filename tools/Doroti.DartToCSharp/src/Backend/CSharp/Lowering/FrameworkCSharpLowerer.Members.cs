@@ -29,6 +29,7 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             contractField = FindDirectSuperclassMember(declaration, field);
         }
+        ValidateOverrideContract(declaration, field, contractField, WillEmitAsInterface(declaration), package, library, inputPath, diagnostics);
         var initializer = field.Ast.Child(CoreChildRole.initializerOffset);
         var ownType = MapType(field.Element.Type ?? "object");
         // Field elements expose display names such as `TextStyle` without the
@@ -58,7 +59,7 @@ internal sealed partial class FrameworkCSharpLowerer
         }
         var contractType = contractField is null
             ? ownType
-            : MapType(contractField.Element.ReturnType ?? contractField.Element.Type ?? field.Element.Type ?? "object");
+            : MapType(ApplyTypeParameterSubstitutions(contractField.Element.ReturnType ?? contractField.Element.Type ?? field.Element.Type ?? "object", ContractTypeParameterSubstitutions(declaration, contractField)));
         var type = Regex.IsMatch(contractType, @"\b[A-Z]\b", RegexOptions.CultureInvariant) &&
             !Regex.IsMatch(ownType, @"\b[A-Z]\b", RegexOptions.CultureInvariant)
                 ? ownType
@@ -105,8 +106,8 @@ internal sealed partial class FrameworkCSharpLowerer
         var name = SafeIdentifier(field.Name);
         var contractOwner = contractField is null ? null : FindDeclaringDeclaration(contractField);
         var contractOwnerName = contractOwner?.Name;
-        var canOverrideContract = contractOwner is not null && !WillEmitAsInterface(contractOwner) &&
-            contractOwnerName is not ("ValueNotifier" or "DiagnosticsProperty" or "DiagnosticsSerializationDelegate");
+        var canOverrideContract = contractOwner is not null && FindOverriddenBaseMember(declaration, field) is not null &&
+            (IsGeneratedDeclaration(contractOwner) || contractOwnerName is not ("ValueNotifier" or "DiagnosticsProperty" or "DiagnosticsSerializationDelegate"));
         if (declaration.Element.Supertype is { } fieldSupertype &&
             StripLibraryPrefix(fieldSupertype).Split('<')[0] == "DiagnosticsSerializationDelegate")
         {
@@ -583,6 +584,16 @@ internal sealed partial class FrameworkCSharpLowerer
         List<ConverterDiagnostic> diagnostics)
     {
         var sourceParameters = method.Element.Parameters ?? [];
+        if (!isInterface && method.Name == "resolveFrom" && !method.IsStatic &&
+            sourceParameters.Length == 1 && (method.Element.TypeParameters?.Length ?? 0) == 0 &&
+            declaration.Element.Supertype is { } colorBase &&
+            MapType(colorBase) is "Color" or "global::Doroti.Ui.Color")
+        {
+            // The Ui port adds a generic context entry point to Dart's Color.
+            // A typed framework context overload must participate in that slot.
+            builder.AppendLine($"    public override global::Doroti.Ui.Color resolveFrom<TContext>(TContext context) => resolveFrom(({MapType(sourceParameters[0].Type)})(object)context!);");
+        }
+
         if (TryEmitRenderCustomClipCacheMethod(builder, declaration, method))
         {
             return;
@@ -608,8 +619,8 @@ internal sealed partial class FrameworkCSharpLowerer
             overriddenMember = null;
         }
         if (overriddenMember is not null &&
-            FindDeclaringDeclaration(overriddenMember)?.Name is
-                "ChangeNotifier" or "ValueNotifier" or "DiagnosticsProperty" or "DiagnosticsSerializationDelegate")
+            FindDeclaringDeclaration(overriddenMember) is { } promotedOwner && !IsGeneratedDeclaration(promotedOwner) &&
+            promotedOwner.Name is "ValueNotifier" or "DiagnosticsProperty" or "DiagnosticsSerializationDelegate")
         {
             // The promoted host-neutral ChangeNotifier intentionally exposes a
             // non-virtual CLR surface. Dart subclasses may shadow these methods,
@@ -617,6 +628,7 @@ internal sealed partial class FrameworkCSharpLowerer
             overriddenMember = null;
         }
         var contractMember = method.IsStatic ? null : overriddenMember ?? FindBaseContractMember(declaration, method);
+        ValidateOverrideContract(declaration, method, contractMember, isInterface, package, library, inputPath, diagnostics);
         var contractSubstitutions = ContractTypeParameterSubstitutions(declaration, contractMember);
         _session.ActiveMemberContractSubstitutions = contractSubstitutions;
         var parameters = (method.IsStatic
@@ -641,11 +653,6 @@ internal sealed partial class FrameworkCSharpLowerer
             declaration.Name is not ("TextStyle" or "StrutStyle"))
         {
             parameters = [sourceParameters[0]];
-        }
-        if ((method.Name == "markNeedsLayout" || method.Name == "debugDescribeChildren" && sourceParameters.Length == 0) &&
-            !(declaration.Name == "RenderTwoDimensionalViewport" && method.Name == "markNeedsLayout"))
-        {
-            parameters = [];
         }
         if (method.Name == "shouldReclip" && declaration.Element.Supertype is { } clipperBase &&
             StripLibraryPrefix(clipperBase).StartsWith("CustomClipper<", StringComparison.Ordinal) &&
@@ -902,14 +909,7 @@ internal sealed partial class FrameworkCSharpLowerer
             _ when method.IsStatic && overriddenMember is not null => "new ",
             _ => string.Empty,
         };
-        if (declaration.Name == "RenderTwoDimensionalViewport" && method.Name == "markNeedsLayout")
-        {
-            // The Dart override adds an optional named argument. That is not a
-            // CLR override of RenderObject.markNeedsLayout(), but callers still
-            // need the optional argument on this concrete type.
-            overrideModifier = string.Empty;
-        }
-        if (contractMember is not null && FindDeclaringDeclaration(contractMember) is { } contractOwner &&
+        if (overriddenMember is null && contractMember is not null && FindDeclaringDeclaration(contractMember) is { } contractOwner &&
             WillEmitAsInterface(contractOwner))
         {
             overrideModifier = string.Empty;
@@ -948,10 +948,10 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             overrideModifier = "override ";
         }
-        if (declaration.Name == "_SliverResizingHeader" && method.Name is "slots" or "childForSlot" ||
-            declaration.Name is "_WidgetStateAnd" or "_WidgetStateOr" && method.Name == "isSatisfiedBy")
+        if (declaration.Name is "_WidgetStateAnd" or "_WidgetStateOr" && method.Name == "isSatisfiedBy")
         {
-            overrideModifier = "virtual ";
+            // _WidgetStateCombo materializes the inherited interface slot.
+            overrideModifier = "override ";
         }
         if (method.Name == "hashCode")
         {
@@ -1019,7 +1019,6 @@ internal sealed partial class FrameworkCSharpLowerer
         if (overrideModifier == "override " && method.Name == "itemExtentBuilder")
         {
             returnType = "ItemExtentBuilder?";
-            overrideModifier = "new ";
         }
         if (methodName is "ToString" or "GetHashCode" or "Equals" || isInterface)
         {
@@ -1081,12 +1080,15 @@ internal sealed partial class FrameworkCSharpLowerer
         var expression = expressionBody is null ? null : expressionBody.Child(CoreChildRole.expressionOffset);
         var block = blockBody is null ? null : blockBody.Child(CoreChildRole.blockOffset);
         var asyncModifier = IsDartAsync(method.Ast) && (IsFutureType(returnType) || returnType == "Task") ? "async " : string.Empty;
-        IEnumerable<(CoreResolvedParameter First, CoreResolvedParameter Second)> comparableOverrideParameters = sourceParameters.Length == parameters.Length
-            ? sourceParameters.Zip(parameters)
-            : sourceParameters
-                .Select(source => (First: source, Second: parameters.FirstOrDefault(candidate => candidate.Name == source.Name)))
-                .Where(pair => pair.Second is not null)
-                .Select(pair => (pair.First, pair.Second!));
+        var canonicalPositionals = parameters.Where(parameter => parameter.Kind.Contains("positional", StringComparison.OrdinalIgnoreCase)).ToArray();
+        var sourcePositionalIndex = 0;
+        var comparableOverrideParameters = sourceParameters.Select(source =>
+        {
+            var contract = source.Kind.Contains("positional", StringComparison.OrdinalIgnoreCase)
+                ? canonicalPositionals.ElementAtOrDefault(sourcePositionalIndex++)
+                : parameters.FirstOrDefault(candidate => candidate.Name == source.Name);
+            return (First: source, Second: contract ?? source);
+        }).ToArray();
         var promotedOverrideParameters = comparableOverrideParameters
             .Where(pair => pair.First.Type != pair.Second.Type &&
                 pair.Second.Type.EndsWith("?", StringComparison.Ordinal) &&
@@ -1128,12 +1130,32 @@ internal sealed partial class FrameworkCSharpLowerer
                 .Where(item => item.Name != "entry")
                 .ToArray();
         }
-        var renamedOverrideParameters = (sourceParameters.Length == parameters.Length
-            ? sourceParameters.Zip(parameters)
-            : [])
+        var renamedOverrideParameters = comparableOverrideParameters
             .Where(pair => !string.Equals(pair.First.Name, pair.Second.Name, StringComparison.Ordinal))
             .Select(pair => (Source: SafeIdentifier(pair.First.Name), Contract: SafeIdentifier(pair.Second.Name)))
             .ToArray();
+
+        // A referenced base cannot grow its CLR parameter list with this selection.
+        // Retain the Dart overload and route the frozen base signature into it.
+        if (!isInterface && overriddenMember is not null &&
+            FindDeclaringDeclaration(overriddenMember) is { } externalOwner && !IsGeneratedDeclaration(externalOwner) &&
+            !method.IsGetter && !method.IsSetter &&
+            (overriddenMember.Element.Parameters ?? []) is { } externalParameters &&
+            parameters.Length > externalParameters.Length)
+        {
+            var baseParameters = externalParameters.Select(parameter => parameter with
+            {
+                Type = ApplyTypeParameterSubstitutions(parameter.Type, contractSubstitutions)
+            }).ToArray();
+            var callArguments = parameters.Select((parameter, index) => index < baseParameters.Length
+                ? SafeIdentifier(baseParameters[index].Name)
+                : MapDefault(parameter.DefaultValue, parameter.Type));
+            builder.AppendLine($"    {visibility} override {returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(baseParameters))}){overrideTypeParameterConstraints} => {methodName}{typeParameters}({string.Join(", ", callArguments)});");
+            overrideModifier = string.Empty;
+            if (!method.IsAbstract) overrideModifier = "virtual ";
+            overrideTypeParameterConstraints = FormatTypeParameterConstraints(method.Element.TypeParameters,
+                parameters.Select(parameter => MapType(parameter.Type)).Append(returnType));
+        }
 
         if (method.IsOperator && method.Name is "[]" or "[]=")
         {
@@ -1321,9 +1343,44 @@ internal sealed partial class FrameworkCSharpLowerer
             return;
         }
 
+        if (method.Name == "toString" && !method.IsStatic && parameters.Length > 0)
+        {
+            var defaults = parameters.Select(parameter => MapDefault(parameter.DefaultValue, parameter.Type));
+            builder.AppendLine($"    public override string ToString() => {methodName}({string.Join(", ", defaults)});");
+        }
+
         if (method.IsAbstract)
         {
             builder.AppendLine($"    {visibility} abstract {staticModifier}{overrideModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}){overrideTypeParameterConstraints};");
+            return;
+        }
+
+        if (expression is not null && (narrowedOverrideParameters.Length > 0 || promotedOverrideParameters.Length > 0))
+        {
+            builder.AppendLine($"    {visibility} {staticModifier}{asyncModifier}{overrideModifier}{returnType} {methodName}{typeParameters}({string.Join(", ", MapParameters(parameters))}){overrideTypeParameterConstraints}");
+            builder.AppendLine("    {");
+            foreach (var narrowed in narrowedOverrideParameters)
+            {
+                var renamed = renamedOverrideParameters.FirstOrDefault(item => item.Source == narrowed.Name);
+                var parameterName = string.IsNullOrEmpty(renamed.Contract) ? narrowed.Name : renamed.Contract;
+                builder.AppendLine($"        var {narrowed.Local} = ({narrowed.SourceType})(object){parameterName};");
+            }
+            foreach (var promoted in promotedOverrideParameters)
+            {
+                var renamed = renamedOverrideParameters.FirstOrDefault(item => item.Source == promoted.Name);
+                var parameterName = string.IsNullOrEmpty(renamed.Contract) ? promoted.Name : renamed.Contract;
+                builder.AppendLine($"        var {promoted.Local} = DartRuntimePrimitives.ConvertValue<{promoted.SourceType}>({parameterName});");
+            }
+            var expressionBuilder = new CsSyntaxBuilder();
+            LowerExpressionWithExpectedType(expressionBuilder, expression, returnType, declaration, package, library, inputPath, diagnostics);
+            var body = expressionBuilder.Build();
+            foreach (var narrowed in narrowedOverrideParameters) body = body.RenameIdentifier(narrowed.Name, narrowed.Local);
+            foreach (var promoted in promotedOverrideParameters) body = body.RenameIdentifier(promoted.Name, promoted.Local);
+            foreach (var renamed in renamedOverrideParameters) body = body.RenameIdentifier(renamed.Source, renamed.Contract);
+            builder.Append(returnType == "void" ? "        " : "        return ");
+            builder.Append(body);
+            builder.AppendLine(";");
+            builder.AppendLine("    }");
             return;
         }
 
@@ -1649,17 +1706,31 @@ internal sealed partial class FrameworkCSharpLowerer
             return;
         }
 
+        if (HasGlobalSetterOverride(declaration, method.Name))
+        {
+            var propertyModifier = overrideModifier == "override " ? "override " : "virtual ";
+            builder.AppendLine($"    {visibility} {propertyModifier}{staticModifier}{returnType} {methodName}");
+            builder.AppendLine("    {");
+            if (expression is not null)
+            {
+                builder.Append("        get => ");
+                LowerExpressionWithExpectedType(builder, expression, returnType, declaration, package, library, inputPath, diagnostics);
+                builder.AppendLine(";");
+            }
+            else if (block is not null)
+            {
+                builder.AppendLine("        get {");
+                EmitBlockBody(builder, block, declaration, package, library, inputPath, diagnostics, 3);
+                builder.AppendLine("            return default!;");
+                builder.AppendLine("        }");
+            }
+            else builder.AppendLine("        get => throw new NotSupportedException(\"Dart getter contract has no base implementation.\");");
+            builder.AppendLine("        set => throw new NotSupportedException(\"Dart setter contract has no base implementation.\");");
+            builder.AppendLine("    }");
+            return;
+        }
         if (method.IsAbstract || (block is null && expression is null))
         {
-            if (HasGlobalSetterOverride(declaration, method.Name))
-            {
-                builder.AppendLine($"    {visibility} virtual {staticModifier}{returnType} {methodName}");
-                builder.AppendLine("    {");
-                builder.AppendLine("        get => throw new NotSupportedException(\"Dart getter contract has no base implementation.\");");
-                builder.AppendLine("        set => throw new NotSupportedException(\"Dart setter contract has no base implementation.\");");
-                builder.AppendLine("    }");
-                return;
-            }
             builder.AppendLine($"    {visibility} abstract {staticModifier}{overrideModifier}{returnType} {methodName} {{ get; }}");
             return;
         }

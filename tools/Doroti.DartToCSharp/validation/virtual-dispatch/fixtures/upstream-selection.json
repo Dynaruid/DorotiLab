@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "doroti.converter-selection/v4",
+  "converterVersion": "3.0.0",
+  "migrationIrVersion": "3.0.0",
+  "generationMode": "framework-semantic",
+  "compatibilityProfile": "flutter-framework",
+  "outputNamespace": "CompilerDispatchUpstream",
+  "outputAssemblyName": "CompilerDispatchUpstream",
+  "flutterBaseline": "flutter-baseline.json",
+  "frameworkMilestone": "FCR-7",
+  "inputs": [
+    {
+      "path": "../../../../../reference/flutter-master/packages/flutter/lib/src/widgets/widget_state.dart",
+      "library": "package:flutter/src/widgets/widget_state.dart",
+      "symbols": [
+        "*"
+      ]
+    },
+    {
+      "path": "../../../../../reference/flutter-master/packages/flutter/lib/src/animation/tween.dart",
+      "library": "package:flutter/src/animation/tween.dart",
+      "symbols": [
+        "*"
+      ]
+    },
+    {
+      "path": "../../../../../reference/flutter-master/packages/flutter/lib/src/rendering/tweens.dart",
+      "library": "package:flutter/src/rendering/tweens.dart",
+      "symbols": [
+        "*"
+      ]
+    },
+    {
+      "path": "../../../../../reference/flutter-master/packages/flutter/lib/src/painting/alignment.dart",
+      "library": "package:flutter/src/painting/alignment.dart",
+      "symbols": [
+        "*"
+      ]
+    },
+    {
+      "path": "../../../../../reference/flutter-master/packages/flutter/lib/src/painting/fractional_offset.dart",
+      "library": "package:flutter/src/painting/fractional_offset.dart",
+      "symbols": [
+        "*"
+      ]
+    },
+    {
+      "path": "../../../../../reference/flutter-master/packages/flutter/lib/src/services/text_boundary.dart",
+      "library": "package:flutter/src/services/text_boundary.dart",
+      "symbols": [
+        "*"
+      ]
+    },
+    {
+      "path": "../../../../../reference/flutter-master/packages/flutter/lib/src/painting/text_painter.dart",
+      "library": "package:flutter/src/painting/text_painter.dart",
+      "symbols": [
+        "*"
+      ]
+    }
+  ]
+}
