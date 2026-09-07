@@ -99,7 +99,7 @@ function selectRendererMode(): "worker-canvaskit-webgl" | "worker-direct-webgl" 
       value === "worker-direct-webgl")
     return value;
   // An omitted, auto, or unrecognized selection uses the product default.
-  return "worker-canvaskit-webgl";
+  return "worker-direct-webgl";
 }
 
 async function ensureBlazorWebAssembly(): Promise<BlazorGlobal> {

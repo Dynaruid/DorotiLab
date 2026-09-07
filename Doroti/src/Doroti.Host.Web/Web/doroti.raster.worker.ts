@@ -18,6 +18,7 @@ const inboundKinds = new Set([
   "context", "dispose", "crash",
 ]);
 const runtimeState = new DorotiRuntimeStateMachine();
+let diagnosticsEnabled = false;
 
 interface ResizeEpoch {
   generation: number;
@@ -47,6 +48,7 @@ interface HostSnapshot {
 }
 
 interface SurfaceExports {
+  CaptureDiagnostics(): string;
   RenderFrame(
     requestId: number, generation: number, logicalWidth: number, logicalHeight: number,
     physicalWidth: number, physicalHeight: number, backingWidth: number, backingHeight: number,
@@ -167,8 +169,18 @@ function applyManagedSnapshot(messageHostId: number, value: HostSnapshot): void 
 function dispatchPendingWorkerFrame(timestamp: number): void {
   const request = pendingWorkerFrame;
   pendingWorkerFrame = null;
-  if (request)
-    dispatchWorkerAnimationFrame(request.hostId, request.callbackId, timestamp);
+  if (request) {
+    const started = diagnosticsEnabled ? performance.now() : 0;
+    try { dispatchWorkerAnimationFrame(request.hostId, request.callbackId, timestamp); }
+    finally {
+      if (diagnosticsEnabled) post("managed-raster", {
+        phase: "framework-frame", callbackId: request.callbackId,
+        generation: snapshot?.resizeEpoch.generation,
+        epochMilliseconds: performance.timeOrigin + started,
+        durationMicroseconds: Math.round((performance.now() - started) * 1000),
+      });
+    }
+  }
 }
 
 function schedulePendingWorkerFrame(): void {
@@ -529,6 +541,7 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
         "exact direct visible framebuffer submitted in the worker");
       terminal(request, "submitted", "exact direct visible framebuffer submitted in the worker");
       post("direct-commit", {
+        sceneDisposition: result,
         requestId: request.requestId, generation: request.generation,
         commitEpochMilliseconds: performance.timeOrigin + directFinalizeCompleted,
         managedSurfaceMicroseconds: Math.round(
@@ -672,6 +685,7 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
   switch (message.kind) {
     case "init":
       runtimeState.transition("booting");
+      diagnosticsEnabled = Boolean(message.resizeDiagnostics);
       snapshot = message.snapshot as HostSnapshot;
       latestAdmissionGeneration = snapshot.resizeEpoch.generation;
       latestMailboxGeneration = snapshot.resizeEpoch.generation;
@@ -787,13 +801,22 @@ async function startManagedRuntime(): Promise<void> {
     const dotnetModule = await import(dotnetUrl) as { dotnet: {
       withEnvironmentVariables(values: Record<string, string>): { create(): Promise<DotnetRuntime> };
     } };
-    const runtime = await dotnetModule.dotnet.withEnvironmentVariables({ DOROTI_TESTBED_MODE: testbedMode }).create();
+    const runtime = await dotnetModule.dotnet.withEnvironmentVariables({
+      DOROTI_TESTBED_MODE: testbedMode, DOROTI_WEB_DIRECT_TRACE: diagnosticsEnabled ? "1" : "0",
+    }).create();
     managedRuntime = runtime;
     await initializeManagedCallbacks();
     const hostExports = await runtime.getAssemblyExports("Doroti.Host.Web.dll") as {
       Doroti: { Host: { Web: { DorotiWebWorkerSurface: SurfaceExports } } };
     };
     surface = hostExports.Doroti.Host.Web.DorotiWebWorkerSurface;
+    if (diagnosticsEnabled) Object.assign(globalThis, {
+      __dorotiDirectDiagnostics: () => {
+        const epochMilliseconds = performance.timeOrigin + performance.now();
+        const managed = JSON.parse(surface!.CaptureDiagnostics());
+        return { epochMilliseconds, completedEpochMilliseconds: performance.timeOrigin + performance.now(), managed };
+      },
+    });
     const config = runtime.getConfig();
     const appExports = await runtime.getAssemblyExports(config.mainAssemblyName) as {
       Doroti: { Generated: { DorotiBootstrap: { StartWorker(): Promise<string>; StopWorker(): void } } };

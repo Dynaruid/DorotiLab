@@ -3,6 +3,12 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args.Length >= 1 && args[0] == "--raster-budget")
+{
+    RasterBudgetContracts.Verify();
+    return;
+}
+
 if (args.Length >= 1 && args[0] is "--windows-sample" or "--appbar-raster")
 {
     if (args[0] == "--appbar-raster")

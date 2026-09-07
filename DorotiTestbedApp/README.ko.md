@@ -10,7 +10,7 @@ DorotiTestbedApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood �
 
 C# Material 샘플은 [work.md](../work.md)의 acceptance gate를 검증하는 동안
 명시적 모드로 제공합니다. 기본 화면은 기존 diagnostics이며 renderer 기본값은
-Windows Vulkan, Web CanvasKit Worker입니다.
+Windows Vulkan, Web SkiaSharp direct Worker입니다.
 
 아래 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell 7로 실행합니다.
 필요한 SDK와 도구는 [빠르게 실행하기](#빠르게-실행하기)를 참고하세요.
@@ -39,7 +39,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platf
 [Material 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample)를 누릅니다.
 주소는 `http://127.0.0.1:5088/?dorotiTestbedMode=sample`입니다.
 Web에서는 셸의 `DOROTI_TESTBED_MODE` 대신 **URL의 `dorotiTestbedMode`**가 화면을
-선택합니다. renderer 옵션을 생략하면 기본 CanvasKit Worker로 실행됩니다.
+선택합니다. renderer 옵션을 생략하면 기본 SkiaSharp direct Worker로 실행됩니다.
 서버를 종료하려면 실행한 터미널에서 `Ctrl+C`를 누릅니다.
 
 ### 기존 진단 화면으로 실행
@@ -92,7 +92,7 @@ Web runner가 시작되면 다음 링크를 브라우저에서 엽니다.
 
 | 화면 / 렌더러 | URL |
 | --- | --- |
-| 기본 CanvasKit으로 Material 샘플 실행 | [기본 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
+| 기본 SkiaSharp direct으로 Material 샘플 실행 | [기본 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
 | CanvasKit을 명시하여 Material 샘플 실행 | [CanvasKit 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-canvaskit-webgl) |
 | direct .NET Worker의 SkiaSharp로 Material 샘플 실행 | [SkiaSharp direct 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
 | 기본 렌더러로 진단 화면 실행 | [진단 화면 열기](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
@@ -100,7 +100,7 @@ Web runner가 시작되면 다음 링크를 브라우저에서 엽니다.
 `dorotiTestbedMode=sample`은 샘플 화면을, `dorotiRenderer`는 렌더링 backend를
 선택합니다. 같은 샘플을 비교할 때는 두 옵션을 함께 사용합니다.
 `dorotiTestbedMode`를 생략하면 진단 화면이 열리고, `dorotiRenderer`를 생략하면
-기본값인 `worker-canvaskit-webgl`을 사용합니다.
+기본값인 `worker-direct-webgl`을 사용합니다.
 
 같은 브라우저 탭에서 창 크기와 확대 비율을 유지한 채 CanvasKit과 SkiaSharp direct
 링크를 번갈아 엽니다. Components의 Communication → Progress indicators까지
@@ -116,16 +116,16 @@ Web runner가 시작되면 다음 링크를 브라우저에서 엽니다.
 
 - 기본 자동 선택: `http://127.0.0.1:5088`
 - document WebGL2: `http://127.0.0.1:5088/?dorotiRenderer=document-webgl`
-- 분리된 .NET UI Worker + CanvasKit Raster Worker(기본값): `http://127.0.0.1:5088/?dorotiRenderer=worker-canvaskit-webgl`
-- persistent .NET Worker의 direct visible canvas(qualification 후보): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
+- 분리된 .NET UI Worker + CanvasKit Raster Worker(명시적 선택): `http://127.0.0.1:5088/?dorotiRenderer=worker-canvaskit-webgl`
+- persistent .NET Worker의 direct visible canvas(기본값): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
 - 같은 thread OffscreenCanvas: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-bitmap`
 - persistent .NET Worker: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-worker`
 
-`worker-canvaskit-webgl`은 main thread가 DOM/input/IME/semantics, logical CSS geometry, Worker supervision, restart policy와 canvas lease 교체를, UI Worker가 .NET runtime과 CPU text-layout CanvasKit을, Raster Worker가 visible `OffscreenCanvas`와 hardware WebGL2 CanvasKit을 소유하는 기본 mode입니다. 이 mode에서 Worker, WebGL2 또는 packaged asset 초기화가 실패하면 이전 renderer로 조용히 fallback하지 않고 오류를 노출합니다.
+`worker-canvaskit-webgl`은 main thread가 DOM/input/IME/semantics, logical CSS geometry, Worker supervision, restart policy와 canvas lease 교체를, UI Worker가 .NET runtime과 CPU text-layout CanvasKit을, Raster Worker가 visible `OffscreenCanvas`와 hardware WebGL2 CanvasKit을 소유하는 명시적 선택 mode입니다. 기본 `worker-direct-webgl`은 main이 DOM/input/IME/semantics를, persistent .NET Worker 하나가 layout/Skia/visible Offscreen WebGL2를 소유하며 초기화 실패 시 자동 fallback하지 않습니다. 이 mode에서 Worker, WebGL2 또는 packaged asset 초기화가 실패하면 이전 renderer로 조용히 fallback하지 않고 오류를 노출합니다.
 
 Web host source build는 exact `canvaskit-wasm@0.42.0` default variant와 lockfile integrity로 asset을 취득합니다. 실행 시에는 CDN이나 npm registry가 아니라 `Doroti.Host.Web` package에 포함된 same-origin `/_content/Doroti.Host.Web/canvaskit/0.42.0/`의 JS/WASM만 사용합니다. 같은 경로의 `canvaskit.manifest.json`에는 version, variant, lockfile integrity, 허용된 각 파일의 byte length와 SHA-256이 있으며 package에는 type declaration과 upstream `LICENSE`도 포함됩니다. package 소비 앱의 restore/build/publish에는 Node/npm이 필요하지 않습니다.
 
-`auto`와 renderer 옵션 없는 URL은 `worker-canvaskit-webgl`을 선택합니다. 이번 기본값 변경은 남은 성능·물리 표시·IME·접근성 검증의 완료를 의미하지 않습니다.
+`auto`와 renderer 옵션 없는 URL은 `worker-direct-webgl`을 선택합니다. 이번 기본값 변경은 남은 성능·물리 표시·IME·접근성 검증의 완료를 의미하지 않습니다.
 
 ### CanvasKit qualification evidence (2026-08-31)
 
@@ -375,3 +375,7 @@ Archive한 AppKit 기록은 native launch, 화면에 표시된 Material gallery,
 Linux Qt는 Kubuntu 26.04 VMware에서 실제 Material gallery의 Wayland rendering, XWayland/xcb input smoke, swap terminal ACK, 20/30회 resize, semantics tree, framework-dependent/self-contained publish를 확인했습니다. 물리 Linux, 실제 X11 session, 한글 IME/Orca, context 강제 재생성, acrylic blur 시각 acceptance와 장기 성능은 `notVerified`입니다.
 
 [ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md), [ADR-025](../Doroti/docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md), archive한 [platform-runner workspace 요약](../history/26-08-19/platform-runner-workspace-summary.md), [AppKit dual-backend 요약](../history/26-08-20/macos-appkit-dual-backend-summary.md), [Linux Qt backend 요약](../history/26-08-20/linux-qt-backend-summary.md)을 참고하세요.
+
+### direct 성능 검증 상태 (2026-09-07)
+
+기본 전환과 CSS 배율/캐시 수정은 반영됐으나 빠른 resize와 첫 조작 지연은 남아 있습니다. 사용자 관찰도 “일부 개선됐지만 지연이 남음”입니다. [실행 보고서](../history/26-09-07/web-direct-default-execution.md)의 FAIL 및 미확인 항목을 참고하세요.

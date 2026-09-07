@@ -38,6 +38,12 @@ public static partial class DorotiWebWorkerSurface
     }
 
     [JSExport]
+    public static string CaptureDiagnostics() => System.Text.Json.JsonSerializer.Serialize(new {
+        clockMicroseconds = DorotiFrameClock.Now.Ticks / 10,
+        frame = _target?.CaptureFrameDiagnostics(_viewId),
+    });
+
+    [JSExport]
     public static string RenderFrame(
         [JSMarshalAs<JSType.Number>] long requestId,
         [JSMarshalAs<JSType.Number>] long generation,

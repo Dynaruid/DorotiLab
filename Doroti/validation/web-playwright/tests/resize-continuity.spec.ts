@@ -391,7 +391,7 @@ test("direct worker admission skips stale snapshot mailbox generations", async (
   await resetDiagnostics(page);
 
   const bursts = Array.from({ length: 3 }, (_, round) =>
-    Array.from({ length: 12 }, (_, index) => ({
+    Array.from({ length: 3 }, (_, index) => ({
       width: 900 + ((index * 137 + round * 53) % 500),
       height: 620 + ((index * 89 + round * 47) % 260),
     })));

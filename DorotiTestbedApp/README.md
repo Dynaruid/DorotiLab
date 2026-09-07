@@ -10,7 +10,7 @@ The application ID is `dev.doroti.testbed` (`dev.doroti.testbed.macos` for AppKi
 
 The C# Material sample is available explicitly while its acceptance gates in
 [work.md](../work.md) are being completed. Diagnostics remains the default.
-The renderer defaults remain Windows Vulkan and Web CanvasKit Worker.
+The renderer defaults remain Windows Vulkan and Web SkiaSharp direct Worker.
 
 Run the commands below in PowerShell 7 from the **repository root, `DorotiLab`**.
 See [Quick start](#quick-start) for the required SDK and tools.
@@ -39,7 +39,7 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platf
 Once the server starts, [open the Material sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample)
 at `http://127.0.0.1:5088/?dorotiTestbedMode=sample`.
 Web selects the screen using **`dorotiTestbedMode` in the URL**, rather than the shell's
-`DOROTI_TESTBED_MODE`. Omitting the renderer option uses the default CanvasKit Worker.
+`DOROTI_TESTBED_MODE`. Omitting the renderer option uses the default SkiaSharp direct Worker.
 Press `Ctrl+C` in the server terminal to stop it.
 
 ### Run the original diagnostics gallery
@@ -93,7 +93,7 @@ After the Web runner starts, open one of these links:
 
 | Screen / renderer | URL |
 | --- | --- |
-| Material sample with the default CanvasKit renderer | [Open default sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
+| Material sample with the default SkiaSharp direct renderer | [Open default sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
 | Material sample with CanvasKit selected explicitly | [Open CanvasKit sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-canvaskit-webgl) |
 | Material sample with SkiaSharp in the direct .NET Worker | [Open SkiaSharp direct sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
 | Diagnostics with the default renderer | [Open diagnostics](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
@@ -101,7 +101,7 @@ After the Web runner starts, open one of these links:
 `dorotiTestbedMode=sample` selects the sample screen; `dorotiRenderer` selects
 the rendering backend. Keep both parameters when comparing the same sample.
 Omitting `dorotiTestbedMode` opens diagnostics, and omitting `dorotiRenderer`
-uses `worker-canvaskit-webgl`.
+uses `worker-direct-webgl`.
 
 Switch between the CanvasKit and SkiaSharp direct links in the same browser
 tab, keeping the window size and zoom unchanged. In Components, scroll to
@@ -115,18 +115,18 @@ for that page only and do not change the application default.
 
 The following addresses open diagnostics with the selected backend:
 
-- Default CanvasKit Worker: `http://127.0.0.1:5088`
+- Default SkiaSharp direct Worker: `http://127.0.0.1:5088`
 - Document WebGL2: `http://127.0.0.1:5088/?dorotiRenderer=document-webgl`
-- Split .NET UI Worker + CanvasKit Raster Worker (default): `http://127.0.0.1:5088/?dorotiRenderer=worker-canvaskit-webgl`
-- Direct visible canvas in the persistent .NET Worker (qualification candidate): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
+- Split .NET UI Worker + CanvasKit Raster Worker (explicit override): `http://127.0.0.1:5088/?dorotiRenderer=worker-canvaskit-webgl`
+- Direct visible canvas in the persistent .NET Worker (default): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
 - Same-thread OffscreenCanvas: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-bitmap`
 - Persistent .NET Worker: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-worker`
 
-`worker-canvaskit-webgl` is the default mode. The main thread owns DOM/input/IME/semantics, logical CSS geometry, Worker supervision, restart policy, and canvas-lease replacement; the UI Worker owns the .NET runtime and a CPU text-layout CanvasKit instance; the Raster Worker owns the visible `OffscreenCanvas` and hardware-WebGL2 CanvasKit instance. If this mode cannot initialize its Workers, WebGL2 context, or packaged assets, it surfaces the failure instead of silently selecting an older renderer.
+`worker-direct-webgl` is the default: main owns DOM/input/IME/semantics and the persistent .NET Worker owns layout, Skia and visible Offscreen WebGL2. Initialization failures are surfaced without silent fallback. For the explicit CanvasKit mode, the main thread owns DOM/input/IME/semantics, logical CSS geometry, Worker supervision, restart policy, and canvas-lease replacement; the UI Worker owns the .NET runtime and a CPU text-layout CanvasKit instance; the Raster Worker owns the visible `OffscreenCanvas` and hardware-WebGL2 CanvasKit instance. If this mode cannot initialize its Workers, WebGL2 context, or packaged assets, it surfaces the failure instead of silently selecting an older renderer.
 
 The Web host source build acquires the exact default variant of `canvaskit-wasm@0.42.0` under lockfile integrity. At runtime it uses only the same-origin JS/WASM packaged by `Doroti.Host.Web` under `/_content/Doroti.Host.Web/canvaskit/0.42.0/`; it does not download CanvasKit from a CDN or the npm registry. `canvaskit.manifest.json` in that path records the version, variant, lockfile integrity, byte length, and SHA-256 of every allowed file. The package also carries the type declarations and upstream `LICENSE`, and consuming applications do not need Node/npm during restore, build, or publish.
 
-`auto` and URLs without a renderer option select `worker-canvaskit-webgl`. This default change does not complete the remaining performance, physical presentation, IME, or accessibility qualification.
+`auto` and URLs without a renderer option select `worker-direct-webgl`. This default change does not complete the remaining performance, physical presentation, IME, or accessibility qualification.
 
 ### CanvasKit qualification evidence (2026-08-31)
 
@@ -376,3 +376,7 @@ The archived AppKit record proves native launch, the visible Material gallery, M
 Linux Qt evidence covers the real Material gallery under Wayland, an XWayland/xcb input smoke, swap terminal ACK, 20/30 resize cycles, the semantics tree, and framework-dependent/self-contained publish on a Kubuntu 26.04 VMware guest. Physical Linux, a real X11 session, Korean IME/Orca, forced context recreation, visual acrylic-blur acceptance, and long-running performance remain `notVerified`.
 
 See [ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md), [ADR-025](../Doroti/docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md), the archived [platform-runner workspace summary](../history/26-08-19/platform-runner-workspace-summary.md), [AppKit dual-backend summary](../history/26-08-20/macos-appkit-dual-backend-summary.md), and [Linux Qt backend summary](../history/26-08-20/linux-qt-backend-summary.md).
+
+### Direct performance status (2026-09-07)
+
+The default switch and CSS/cache fixes are implemented, but rapid resize and first-interaction latency remain unresolved. The user observed partial improvement with remaining delay. See the [execution report](../history/26-09-07/web-direct-default-execution.md) for failed gates and unverified coverage.

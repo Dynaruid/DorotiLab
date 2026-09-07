@@ -98,8 +98,9 @@ $report = [ordered]@{
     comparisonGate = [ordered]@{ maximumRegressionPercent = 20; maximumRegressionMilliseconds = 5 }
     results = $results
     automatedQualificationCandidate = $automatedCandidate
-    selectedAutoMode = 'document-webgl'
-    autoModeDecision = 'unchanged until physical W7 acceptance and W8 burn-in pass'
+    selectedAutoMode = 'worker-direct-webgl'
+    comparisonScope = 'explicit document-webgl versus explicit worker-direct-webgl; not a default-policy test'
+    autoModeDecision = 'direct selected by product decision on 2026-09-07; performance and physical qualification remain separate'
 }
 [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($artifact)) | Out-Null
 $report | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $artifact -Encoding utf8

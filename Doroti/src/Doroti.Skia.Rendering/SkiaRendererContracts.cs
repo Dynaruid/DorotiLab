@@ -89,4 +89,9 @@ public sealed record SkiaFrameDiagnostics(
     IReadOnlyList<DorotiFrameTraceEntry> Trace,
     long SceneAccepted,
     long CausalPaintAttempts,
-    DorotiFrameTerminalLedgerSnapshot TerminalLedger);
+    DorotiFrameTerminalLedgerSnapshot TerminalLedger,
+    SkiaWorkDiagnostics? Work = null);
+
+public sealed record SkiaWorkDiagnostics(long PromotionCount, long PromotionMicroseconds,
+    long PromotionMaximumMicroseconds, long ParagraphCount, long ParagraphMicroseconds,
+    int WarmupEntries, long RasterPixels, int TextEntries);

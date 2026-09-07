@@ -13,7 +13,7 @@ Doroti Web application policy, the Doroti loader, browser interop, and JavaScrip
 - `Microsoft.TypeScript.MSBuild` 7.0.0 is restored only by a Web runner with `web/tsconfig.json`.
 - The compiler writes under target/configuration-specific `obj`; Release publish excludes maps, TypeScript source, config, and compiler/tool assets.
 - Node, npm, Bun, and bundlers are not required.
-- `doroti.loader.ts` selects `worker-canvaskit-webgl` by default, or explicit `document-webgl`, `worker-direct-webgl`, `offscreen-bitmap`, or `offscreen-worker` before any managed runtime starts. Repeated `startDoroti()` calls share one startup promise.
+- `doroti.loader.ts` selects `worker-direct-webgl` by default, or explicit `document-webgl`, `worker-canvaskit-webgl`, `offscreen-bitmap`, or `offscreen-worker` before any managed runtime starts. Repeated `startDoroti()` calls share one startup promise.
 - Same-thread modes load `_framework/blazor.webassembly.js` and call `Blazor.start()` exactly once.
 - Worker modes do not call `Blazor.start()` on main. Main TypeScript owns DOM input, IME, semantics, plugins, clipboard, and runtime supervision. One persistent module Worker starts the .NET runtime from `_framework/dotnet.js` and exclusively owns the Doroti app/framework and Skia. The legacy Worker path returns `ImageBitmap` objects to main; the direct qualification path owns Worker rAF and WebGL2 on the transferred visible canvas.
 
@@ -75,3 +75,7 @@ When a custom `loadBootResource` performs `fetch`, it must pass the received int
 Missing compiler/config/source/output, unsupported compiler hosts, and TypeScript errors fail with stable `DOROTIWEB` diagnostics. Package/publish evidence separately records the framework loader, application bootstrap, Doroti loader, browser interop, and plugin.
 
 A successful `started` stage proves startup only. Canvas presentation/basic pointer, keyboard/IME/clipboard/resize/interactive ARIA, native targets, physical devices, and cross-target parity retain their separate evidence gates.
+
+## 2026-09-07 direct default
+
+The product decision now selects `worker-direct-webgl` for omitted, `auto`, and unknown selections. CanvasKit remains an explicit override with its packaged assets and prior evidence intact. Direct owns one Worker .NET runtime and a transferred visible WebGL2 canvas. The main thread clips GPU capacity at the viewport without rescaling it on observer updates. Performance and physical acceptance are recorded separately in [the execution report](../../../history/26-09-07/web-direct-default-execution.md).

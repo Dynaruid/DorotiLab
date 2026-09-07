@@ -23,6 +23,9 @@ public sealed class SkiaSceneRenderer :
     private const int MaxPictureRasterCacheEntries = 24;
     private const long MaxPictureRasterPixels = 16L * 1024 * 1024;
     private const long MaxCacheablePicturePixels = 4L * 1024 * 1024;
+    private const int MaxPictureRasterWarmups = 128;
+    private const long PictureWarmupLifetimeFrames = 120;
+    private const long PromotionBudgetMicroseconds = 2000;
     private readonly ulong _viewId;
     private readonly ISkiaSceneRendererHost _host;
     private readonly UiColor? _lightBackgroundColor;
@@ -40,8 +43,9 @@ public sealed class SkiaSceneRenderer :
     private readonly Dictionary<int, SemanticsNodeUpdate> _semantics = [];
     private readonly Dictionary<object, PictureRasterCacheEntry> _pictureRasterCache =
         new(ReferenceEqualityComparer.Instance);
-    private readonly Dictionary<object, int> _pictureRasterWarmups =
+    private readonly Dictionary<object, PictureRasterWarmup> _pictureRasterWarmups =
         new(ReferenceEqualityComparer.Instance);
+    private readonly LinkedList<object> _pictureRasterWarmupOrder = new();
     private readonly Dictionary<ImageFilterSnapshot, SKImageFilter> _imageFilterResources = [];
     private readonly DorotiFrameTerminalLedger _terminalLedger = new();
     private readonly Dictionary<long, SceneFrame> _rasterizedFrames = [];
@@ -66,6 +70,14 @@ public sealed class SkiaSceneRenderer :
     private long _pictureRasterCacheHits;
     private long _pictureRasterCacheMisses;
     private long _pictureRasterCacheEntries;
+    private long _promotionMicroseconds;
+    private long _promotionMaximumMicroseconds;
+    private long _paragraphCount;
+    private long _paragraphMicroseconds;
+    private long _rasterFrame;
+    private int _framePromotions;
+    private long _framePromotionPixels;
+    private long _framePromotionMicroseconds;
     private bool _semanticsEnabled;
     private bool _disposed;
     private DorotiFrameTrace _frameTrace = new();
@@ -126,7 +138,10 @@ public sealed class SkiaSceneRenderer :
                     Volatile.Read(ref _pictureRasterCacheMisses),
                     Volatile.Read(ref _pictureRasterCacheEntries),
                     _frameTrace.Snapshot(), _sceneAccepted, _causalPaintAttempts,
-                    _terminalLedger.Diagnostics);
+                    _terminalLedger.Diagnostics,
+                    new(_pictureRasterCacheMisses, _promotionMicroseconds, _promotionMaximumMicroseconds,
+                        _paragraphCount, _paragraphMicroseconds, _pictureRasterWarmups.Count,
+                        _pictureRasterPixels, _textRenderResources.Count));
         }
     }
 
@@ -391,6 +406,7 @@ public sealed class SkiaSceneRenderer :
             // RenderView's root transform has already converted logical coordinates
             // into physical pixels. Applying host DPR here would scale twice.
             var rasterStart = DorotiFrameClock.Now;
+            BeginPictureRasterFrame();
             DorotiSkiaImageFilterRenderer.BeginFrame(RuntimeEffectBackend, _contextGeneration);
             _frameTrace.Record(DorotiFramePhase.raster, _viewId, rasterStart,
                 frame.InputSequence, frame.SceneSequence, _host.SurfaceGeneration,
@@ -560,6 +576,7 @@ public sealed class SkiaSceneRenderer :
 
     public Paragraph Layout(ParagraphRequest request, DartUiInvocation invocation)
     {
+        var started = DorotiFrameClock.Now;
         ObjectDisposedException.ThrowIf(_disposed, this);
         lock (_paintGate)
         {
@@ -603,6 +620,8 @@ public sealed class SkiaSceneRenderer :
                 CanvasKitTextDirection = request.TextDirection ?? TextDirection.ltr,
             };
             paragraph.layout(new ParagraphConstraints(request.Width));
+            _paragraphCount++;
+            _paragraphMicroseconds += (DorotiFrameClock.Now - started).Ticks / 10;
             return paragraph;
         }
     }
@@ -1149,14 +1168,32 @@ public sealed class SkiaSceneRenderer :
             RemovePictureRaster(cacheKey, cached);
         }
 
-        var warmups = _pictureRasterWarmups.GetValueOrDefault(cacheKey) + 1;
-        _pictureRasterWarmups[cacheKey] = warmups;
-        if (warmups < PictureRasterWarmupFrames)
+        if (!_pictureRasterWarmups.TryGetValue(cacheKey, out var warmup))
+        {
+            if (_pictureRasterWarmups.Count >= MaxPictureRasterWarmups)
+                RemovePictureWarmup(_pictureRasterWarmupOrder.First!.Value);
+            warmup = new PictureRasterWarmup(_pictureRasterWarmupOrder.AddLast(cacheKey));
+            _pictureRasterWarmups.Add(cacheKey, warmup);
+        }
+        else
+        {
+            _pictureRasterWarmupOrder.Remove(warmup.Node);
+            _pictureRasterWarmupOrder.AddLast(warmup.Node);
+        }
+        warmup.Uses = Math.Min(PictureRasterWarmupFrames, warmup.Uses + 1);
+        warmup.LastFrame = _rasterFrame;
+        // Never spend several synchronous surface/replay/flush/snapshot costs
+        // in one frame. A single promotion is non-preemptible; record its real
+        // duration and render every deferred picture through normal replay.
+        if (warmup.Uses < PictureRasterWarmupFrames || _framePromotions >= 2 ||
+            _framePromotionPixels + pixels > MaxCacheablePicturePixels ||
+            _framePromotionMicroseconds >= PromotionBudgetMicroseconds)
         {
             DrawPicture(canvas, commands);
             return;
         }
 
+        var promotionStarted = DorotiFrameClock.Now;
         var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
         using var surface = SKSurface.Create(context, true, info)
             ?? throw new InvalidOperationException(
@@ -1176,10 +1213,39 @@ public sealed class SkiaSceneRenderer :
         _pictureRasterCache.Add(cacheKey, cached);
         Interlocked.Increment(ref _pictureRasterCacheEntries);
         _pictureRasterPixels += cached.Pixels;
-        _pictureRasterWarmups.Remove(cacheKey);
+        RemovePictureWarmup(cacheKey);
         DrawRasterImage(canvas, image, mappedBounds.Left, mappedBounds.Top);
         TrimPictureRasterCache();
         Interlocked.Increment(ref _pictureRasterCacheMisses);
+        var promotionMicroseconds = (DorotiFrameClock.Now - promotionStarted).Ticks / 10;
+        _promotionMicroseconds += promotionMicroseconds;
+        _promotionMaximumMicroseconds = Math.Max(_promotionMaximumMicroseconds, promotionMicroseconds);
+        _framePromotions++;
+        _framePromotionPixels += pixels;
+        _framePromotionMicroseconds += promotionMicroseconds;
+    }
+
+    private void BeginPictureRasterFrame()
+    {
+        _rasterFrame++;
+        _framePromotions = 0;
+        _framePromotionPixels = 0;
+        _framePromotionMicroseconds = 0;
+        while (_pictureRasterWarmupOrder.First is { } first &&
+            _rasterFrame - _pictureRasterWarmups[first.Value].LastFrame >= PictureWarmupLifetimeFrames)
+            RemovePictureWarmup(first.Value);
+    }
+
+    private void RemovePictureWarmup(object key)
+    {
+        if (_pictureRasterWarmups.Remove(key, out var warmup)) _pictureRasterWarmupOrder.Remove(warmup.Node);
+    }
+
+    private sealed class PictureRasterWarmup(LinkedListNode<object> node)
+    {
+        internal LinkedListNode<object> Node { get; } = node;
+        internal int Uses;
+        internal long LastFrame;
     }
 
     private static void DrawRasterImage(SKCanvas canvas, SKImage image, float left, float top)
@@ -1230,6 +1296,7 @@ public sealed class SkiaSceneRenderer :
         foreach (var cached in _pictureRasterCache.Values) cached.Image.Dispose();
         _pictureRasterCache.Clear();
         _pictureRasterWarmups.Clear();
+        _pictureRasterWarmupOrder.Clear();
         _pictureRasterPixels = 0;
         Interlocked.Exchange(ref _pictureRasterCacheEntries, 0);
     }

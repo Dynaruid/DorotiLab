@@ -657,7 +657,7 @@ const resizeDiagnostics: ResizeDiagnostics = {
     if (externalPresenter) return JSON.stringify(externalPresenter.snapshot());
     if (workerPresenter) return JSON.stringify({
       context: 0,
-      requestedMode: "offscreen-worker",
+      requestedMode: presenterPolicy().requested,
       mode: workerPresenter.mode,
       fallbackReason: null,
       contextGeneration: workerPresenter.contextGeneration,
@@ -908,6 +908,10 @@ function commitDirectCanvasLogicalSize(
   // dimensions here would scale the previous front while Raster is producing
   // the matching immutable generation.
   if (externalPresenter?.commitCanvasCssWithFront) return;
+  // Direct Skia also owns a grow-only physical backing. Its completed front
+  // establishes the pixel scale; the root clips it to the observed viewport.
+  // Observer targets must not rescale that backing while a new frame is built.
+  if (host.canvas.dataset.dorotiCapacityWidth) return;
   // Flutter keeps the DOM display canvas in logical CSS pixels while its
   // raster surface uses physical pixels. A transferred canvas still exposes
   // its Worker-mutated width/height attributes to layout, so main must pin the
@@ -2929,6 +2933,9 @@ export async function startDorotiWorkerHost(
         }
         case "managed-raster":
           recordResize(host, String(message.phase), "worker-managed-skia", {
+            timestampMicroseconds: Number.isFinite(Number(message.epochMilliseconds))
+              ? Math.round((Number(message.epochMilliseconds) - performance.timeOrigin) * 1000) : undefined,
+            detail: JSON.stringify({ callbackId: message.callbackId, generation: message.generation }),
             durationMicroseconds: Number(message.durationMicroseconds),
             surfaceWidth: Number(message.width), surfaceHeight: Number(message.height),
           });
@@ -3053,6 +3060,7 @@ export async function startDorotiWorkerHost(
               targetGeneration: host.resizeEpoch.generation,
               contextGeneration: Number(message.contextGeneration),
               direct: true,
+              sceneDisposition: message.sceneDisposition,
               capacityWidth,
               capacityHeight,
               progressive: frameGeneration < host.resizeEpoch.generation,

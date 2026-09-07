@@ -45,7 +45,7 @@ internal sealed class BrowserSkiaCapabilities :
             var value = _renderer.Diagnostics;
             return new(value.Submitted, value.Presented, value.Replayed, value.Failed,
                 value.ContextGeneration, value.SurfaceGeneration, value.LastInputSequence,
-                value.PendingScene, value.Backend);
+                value.PendingScene, value.Backend, value);
         }
     }
 
@@ -55,8 +55,10 @@ internal sealed class BrowserSkiaCapabilities :
         _renderer.AttachSurface(invalidate);
     }
 
-    public void AttachFrameworkTrace(DorotiFrameTrace trace) =>
+    public void AttachFrameworkTrace(DorotiFrameTrace trace) {
+        trace.MeasureRecordingTime = Environment.GetEnvironmentVariable("DOROTI_WEB_DIRECT_TRACE") == "1";
         _renderer.AttachFrameworkTrace(trace);
+    }
 
     public void Submit(ulong viewId, DorotiSceneSubmission submission, DartUiInvocation invocation)
         => _renderer.Submit(viewId, submission, invocation);

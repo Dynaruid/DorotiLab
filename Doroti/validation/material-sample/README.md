@@ -12,13 +12,13 @@ No new screenshot is a replacement for a historical failure.
 ./Doroti/eng/test-material-sample.ps1 -Suite Regression
 ./Doroti/eng/test-material-sample.ps1 -Suite Windows
 ./Doroti/eng/test-material-sample.ps1 -Suite AppBarRaster
-./Doroti/eng/run-web-playwright.ps1 -HeadlessOnly -RendererMode worker-canvaskit-webgl `
+./Doroti/eng/run-web-playwright.ps1 -HeadlessOnly -RendererMode worker-direct-webgl `
   -TestFile @('tests/material-sample.spec.ts','tests/material-sample-selection.spec.ts',
     'tests/material-sample-network.spec.ts','tests/material-sample-boundaries.spec.ts') `
   -ArtifactLabel material-sample-current -Port 5096
 # HeadlessOnly includes both DPR 1 and the explicitly tagged DPR 2 pointer scenario.
 # Separate shared semantics and resize reversal checks:
-./Doroti/eng/run-web-playwright.ps1 -HeadlessOnly -RendererMode worker-canvaskit-webgl `
+./Doroti/eng/run-web-playwright.ps1 -HeadlessOnly -RendererMode worker-direct-webgl `
   -TestFile @('tests/semantics-radio-state.spec.ts','tests/material-sample-motion.spec.ts') `
   -ArtifactLabel material-sample-contracts-current -Port 5096
 ```
