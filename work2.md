@@ -105,6 +105,16 @@ SkiaSceneRenderer.PaintCore → DorotiWebWorkerSurface.RenderFrame → direct-co
 
 ## 4. 단계별 실행 계획
 
+### 공통 테스트 실행 횟수와 중단 기준
+
+- 각 테스트·시나리오는 **기본 10회 이하**, 변동성이나 간헐 실패 등 추가 확인이 필요한 경우에만 **최대 20회**까지 실행한다. 100회 이상 반복하는 검증은 계획하거나 실행하지 않는다.
+- 단순 계약·기능 검증은 1회부터, 성능 기준선·변경 후 비교는 동일 조건에서 기본 3회부터 시작한다. 필요한 근거가 확보되면 종료하며, 10회나 20회를 채우기 위해 반복하지 않는다.
+- 횟수는 동일 코드·환경·입력 조건의 테스트별로 집계하며 자동 retry, 실패 후 재실행, 측정용 warm-up도 포함한다. 단계·명령·배치를 나누어 같은 검증의 상한을 우회하지 않는다. 원인 수정 후에는 변경 내용을 기록하고 해당 테스트를 새 조건으로 검증한다.
+- 10회를 넘길 때는 추가 확인 이유와 예정 총횟수(최대 20회)를 실행 기록에 남긴다. 같은 실패가 반복되면 무작정 재실행하지 않고 원인 분석·수정으로 전환한다.
+- 최대 20회 안에 판정할 수 없으면 실패 증거와 불확실성을 보존하고 `FAIL` 또는 `notVerified`로 기록한다. 통과할 때까지 반복하거나 기존 실패를 이후 PASS로 덮지 않는다.
+- 수명·메모리 검증의 조작 cycle(왕복 resize, 테마 변경 등)도 기본 10회 이하·최대 20회로 제한한다. 대기 관찰 시간과 프레임·이벤트 표본 수는 테스트 실행 횟수와 구분하되, 긴 시간 동안 조작을 무제한 반복하는 방식은 사용하지 않는다.
+- 모든 테스트 프로세스의 timeout은 기존 저장소 규칙대로 **20분**으로 유지한다. 실행 횟수 상한과 별개의 제한이다.
+
 ### P0. direct 기준선과 재현 계측
 
 - [ ] 현재 dirty 상태와 실행 asset/build identity, renderer/GPU, viewport/DPR/zoom, 브라우저·OS·주사율을 기록한다.
@@ -119,7 +129,7 @@ SkiaSceneRenderer.PaintCore → DorotiWebWorkerSurface.RenderFrame → direct-co
 - [ ] cold load 후 첫 조작, 5초 idle 후 재시작, 방문 구간 재스크롤, 새 section 진입을 분리한다.
 - [ ] resize는 정지 화면/진행표시기 실행 중, 양방향 빠른 resize/느린 resize/방향 반전,
   breakpoint 횡단, capacity 내/초과, DPR 1/2, page zoom을 재현한다.
-- [ ] 각 시나리오 최소 3회. FPS만 집계하지 않고 첫 반응 지연·긴 프레임 수·content age·geometry 오차를 보존한다.
+- [ ] 각 시나리오 기본 3회, 통상 10회 이하·필요 시 최대 20회로 측정한다(공통 횟수 기준 적용). FPS만 집계하지 않고 첫 반응 지연·긴 프레임 수·content age·geometry 오차를 보존한다.
 
 완료 조건: 두 증상을 재현하는 실패 증거와 비용 상위 단계가 있고, 자동 재현 불가 항목은 `notVerified`로 남긴다.
 계측으로 확인되지 않은 원인을 확정하지 않는다.
@@ -179,7 +189,7 @@ SkiaSceneRenderer.PaintCore → DorotiWebWorkerSurface.RenderFrame → direct-co
   테마/이미지/폰트·clip/overlay를 검증한다. 공용 Skia 변경에는 관련 native 계약과 host build를 추가한다.
 - [ ] direct 전용 resize 측정에 기존 `resize-following` 분석을 연결한다.
   `-FastResize`의 CanvasKit 전용 검사를 통과했다고 direct PASS로 보고하지 않는다.
-- [ ] P0와 같은 조건에서 최소 3회 재측정하고 각 run 원본/최악값/오류/누락 frame을 보존한다.
+- [ ] P0와 같은 환경·입력 조건에서 기본 3회 재측정하고 각 run 원본/최악값/오류/누락 frame을 보존한다. 통상 10회 이하·필요 시 최대 20회와 retry 포함 집계 기준을 적용한다.
 - [ ] 사용자의 실제 브라우저 창 drag와 첫 scroll/animation 체감을 확인한다.
   자동 증거와 사람 관찰을 별도 기록하며 관찰이 없으면 `notVerified`다.
 - [ ] `history/26-09-07/`의 별도 실행 보고서에 최종 diff/명령/결과/남은 항목을 기록하고,
@@ -199,7 +209,7 @@ P0에서 측정 방식과 환경을 고정한다. 실패 후 통과를 위해 �
 | resize geometry | 완료 scene과 CSS/backing/DPR 관계 일치, 왜곡·검은 band·좌표 어긋남 없음. 실제 viewport와 front 크기 오차/내용 age를 시간별 보고. |
 | 시작 반응 | input→첫 변경 scene p95 ≤50ms, max <100ms. 각 시작 후 첫 1초의 50ms 초과 framework+raster task 0을 목표로 한다. |
 | 지속 애니메이션 | commit 간격 p95 ≤20ms, max ≤33.4ms를 3회 측정. 픽셀 변화·정지 상태도 별도 확인. |
-| cache/수명 | 명시된 entry/pixel/metadata 상한 준수. 반복 조작·resize/테마 변경 후 계속 증가하는 자원 없음. 짧은 성능 측정 외 10분 반복 검증. |
+| cache/수명 | 명시된 entry/pixel/metadata 상한 준수. 조작·resize/테마 변경 cycle은 기본 10회 이하·필요 시 최대 20회. 짧은 성능 측정 외 최대 10분 동안 조작 후 자원 회수·idle 상태를 관찰하며, 시간 충족을 위해 조작을 계속 반복하지 않음. |
 | correctness | 역행 front/잘못된 exact/미종결 request/복구 후 유실된 입력·sample 모드/새 런타임 오류 0. |
 | 사용자 관찰 | 실제 resize 추종과 시작 지연 개선 확인. 자동 submit 수치를 화면 FPS 또는 물리 scan-out으로 표현하지 않음. |
 
