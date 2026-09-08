@@ -1590,6 +1590,8 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
 
     internal virtual void _layoutWithoutResize()
     {
+        using var layoutProfile = FrameworkWorkProfile.LayoutEnabled
+            ? FrameworkWorkProfile.Begin(GetType(), 7) : default;
         DartRuntimePrimitives.Assert(() => this._needsLayout);
         DartRuntimePrimitives.Assert(() => (((this._isRelayoutBoundary ?? false)) || (this is RenderObjectWithLayoutCallbackMixin)));
         RenderObject? debugPreviousActiveLayout = default!;
@@ -1632,6 +1634,8 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
 
     public virtual void layout(Constraints constraints, bool parentUsesSize = false)
     {
+        using var layoutProfile = FrameworkWorkProfile.LayoutEnabled
+            ? FrameworkWorkProfile.Begin(GetType(), 7) : default;
         FrameworkWorkCounters.Add(FrameworkWork.LayoutEntry);
         if (FrameworkWorkTrace.Enabled)
         {

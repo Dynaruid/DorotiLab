@@ -4,6 +4,10 @@ namespace Doroti.Ui;
 // Element, State, delegate, or scene. Names are materialized on capture only.
 public static class FrameworkWorkProfile
 {
+    // Separate opt-in: nested layout timing is diagnostic overhead and must not
+    // silently change the instrumentation of existing latency comparisons.
+    public static readonly bool LayoutEnabled =
+        Environment.GetEnvironmentVariable("DOROTI_LAYOUT_PROFILE") == "1";
     private const int Capacity = 512;
     [ThreadStatic] private static Buffer? _buffer;
     private sealed class Buffer
@@ -95,7 +99,8 @@ public static class FrameworkWorkProfile
     public sealed record Entry(int Id, string Type, int Kind, long Calls, long InclusiveMicroseconds, long SelfMicroseconds);
     public static object Snapshot() => new {
         frames = Frames(), framesDropped = Math.Max(0, (_buffer?.FrameCount ?? 0) - 512),
-        enabled = FrameworkWorkCounters.Enabled, thread = Environment.CurrentManagedThreadId,
+        enabled = FrameworkWorkCounters.Enabled, layoutEnabled = LayoutEnabled,
+        thread = Environment.CurrentManagedThreadId,
         dropped = _buffer?.Dropped ?? 0,
         entries = _buffer?.Ids.Select(pair => new Entry(pair.Value, pair.Key.Item1.FullName ?? pair.Key.Item1.Name,
             pair.Key.Item2, _buffer.Calls[pair.Value], _buffer.Inclusive[pair.Value] / 10, _buffer.Self[pair.Value] / 10)).ToArray() ?? [],

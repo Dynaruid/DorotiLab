@@ -2,6 +2,36 @@
 
 작성: 2026-09-08.
 
+**실행 전환 (2026-09-08):** 사용자의 `work3.md전체 작업해줘` 요청에 따라 아래
+계획의 구현·검증을 시작했다. 아래의 “이번 변경은 문서만”은 이전 계획 작성 당시의
+범위를 보존한 문구이며 이번 실행을 제한하지 않는다. HEAD는
+`69a2cf7e793f440ab00224e16e45c0cee282d23b`, 시작 시 tracked dirty 0이다.
+최종 실행 기록은 [통합 실행 보고서](history/26-09-08/work3-execution.md)를 따른다.
+
+**최초 실행 판정:** U 전환·사용 가능한 플랫폼 회귀 완료, WebGL S2 유지. G는 첫 제품
+출력 후 정상 종료·장치 손실 gate FAIL로 후보를 보존하고 제품을 원복했다. 따라서
+WebGPU 추가는 미완료다. T는 계산 비중 0.3% 미만으로 미채택 종료, J0는
+notApplicable이다. OS별 물리 입력·실기기·정량 성능의 미검증 범위는 보고서에 남겼다.
+
+**후속 구현 요청:** 사용자가 WebGPU·병렬 버전을 직접 보고 싶다고 요청하고
+“병렬레이아웃도 그냥 구현해보면 안되나”로 T 실험 재개를 명시했다. 낮은 계산 비중의
+기존 T1 결과는 보존하되, 속도 개선 여부와 별개로 직접 실행할 수 있는 opt-in
+병렬 treemap 레이아웃을 추가했다. `PreparedTreemapLayout`은 공용 Rendering 계층의
+순수 숫자 엔진이고, `parallel-layout` Testbed가 명시적인 post-frame 비동기 준비
+경계를 제공한다. 두 독립 subtree의 확정된 weights/constraints를 두 계산 스레드에
+분배하며 UI 객체·paint·결과 반영은 기존 owner에 남는다. 기존 RenderFlex 및
+LayoutBuilder 계약을 바꾸지 않는다. 이 한정된 layout island 실험은 T0b 근거를
+제공하지만 임의 기존 widget tree의 T3–T6 통합 완료를 뜻하지 않는다.
+WebGL 병렬 단독 Release에서 두 계산 스레드의 실제 중첩, 직렬/병렬 좌표·타일 픽셀 일치,
+seed·resize 상태 유지, 정상 종료와 기존 Material 회귀가 PASS다. 직접 실행은
+[병렬 비교 화면](http://127.0.0.1:5206/?dorotiRenderer=worker-direct-webgl&dorotiTestbedMode=parallel-layout&dorotiLayoutMode=parallel)을 사용한다.
+
+**WebGPU 결합 후속 요청:** 5204 후보에 병렬 실험을 더해 달라는 사용자 요청으로
+동일 Material 샘플에 opt-in 병렬 패널을 연결했다. [결합 실행 화면](http://127.0.0.1:5208/?dorotiRenderer=worker-direct-webgpu&dorotiTestbedMode=sample&dorotiParallelLayout=1&dorotiLayoutMode=parallel)을
+제공한다. 첫 결합의 GPU texture usage 오류와 owner queue 동기 호출 경고를 수정했다.
+계산 좌표·상태·입력 확인은 성공했지만 정확한 픽셀 비교(23/110,700 차이)와 기존
+WebGPU 종료 gate는 FAIL이므로 J0 수용으로 바꾸지 않는다. [결합 후보 및 증거](history/26-09-08/work3-combined-candidate/README.md)를 따른다.
+
 **현재 작업 기준:** 2026-09-08 사용자가 현재 구조가 이전보다 체감상 낫다고
 평가하고, 이 구조를 기반으로 후속 작업하도록 선택했다. 메인에서 단일 threaded
 .NET runtime을 초기화하고, 같은 runtime의 JSWebWorker에서 기존 framework/layout/
@@ -25,7 +55,7 @@ G 단계가 막혀도 U 단계가 통과했다면 WebGL에서 T 단계를 계속
 근거로 기록한다. 정량적 지연·FPS·메모리 개선율은 아직 측정하지 않았으며,
 전체 물리 기기·입력 기능의 수용 완료와도 구분한다.
 
-**현재 검증 결과:** 메인 runtime + shared-runtime 렌더 Worker로 전환한 최종
+**후속 병렬 실험 전 검증 결과:** 메인 runtime + shared-runtime 렌더 Worker로 전환한 최종
 trimmed Release publish에서 first content·resize·스크롤·선택 상태·테마/열 복귀·
 종료·잘못된 protocol 거부가 PASS다. shared heap과 실제 렌더 thread를 확인했고
 runtime 오류는 0건이다. **T0 기준 구조의 부팅·입력은 PASS**, 추가 계산 스레드의
@@ -265,10 +295,10 @@ ADR에 렌더 Worker의 작업 발행·완료·재개 경계를 명시한다. pu
 
 | 순서 | 작업 | 다음 단계 진입 조건 | 현재 상태 |
 | --- | --- | --- | --- |
-| U0–U3 | 13절: S1 보존, 패키지 전환, WebGL 및 타 host 회귀 | U3 판정 후 새 WebGL 기준선 S2 고정 | 미착수; U0가 다음 작업 |
-| G0–G4 | 14절: 같은 runtime의 Worker WebGPU smoke, surface/공통 렌더러 연결, 기능·성능 판정 | G0 실패 시 후속 GPU 구현 승격 중단; G 결과를 보존하고 T는 WebGL에서 가능 | 미착수 |
-| T1–T7 및 T0b | 아래 기존 병렬 레이아웃 단계 | L을 고정한 뒤 순수 계산 비용·동기 계약·실제 중첩 입증 | 미착수 |
-| J0 | 15절: 독립 통과한 WebGPU와 병렬 graph 조합 | 기능·수명·전체 지연 재검증; 개별 결과로 조합 PASS 추정 금지 | 미착수 |
+| U0–U3 | 13절: S1 보존, 패키지 전환, WebGL 및 타 host 회귀 | U3 판정 후 새 WebGL 기준선 S2 고정 | U0–U3 전환/검증 범위 판정 완료; S2 Web 수용, 물리 기기 notVerified |
+| G0–G4 | 14절: 같은 runtime의 Worker WebGPU smoke, surface/공통 렌더러 연결, 기능·성능 판정 | G0 실패 시 후속 GPU 구현 승격 중단; G 결과를 보존하고 T는 WebGL에서 가능 | G0/첫 제품 출력 PASS; G3 수명 FAIL → 후보 보존·제품 원복, G4 미채택 |
+| T1–T7 및 T0b | 아래 기존 병렬 레이아웃 단계 | L을 고정한 뒤 순수 계산 비용·동기 계약·실제 중첩 입증 | T1 조사·T7 미채택 종료; 가치 있는 순수 계산 후보 없음 |
+| J0 | 15절: 독립 통과한 WebGPU와 병렬 graph 조합 | 기능·수명·전체 지연 재검증; 개별 결과로 조합 PASS 추정 금지 | notApplicable: B 미채택 |
 
 아래 T 단계에서 **L은 해당 실험의 고정 WebGL 기준선**이다. 기본은 U3 통과 후
 S2이며 U 전환 실패로 원복한 경우에만 S1이다. 실행 ledger에 L의 버전·hash를
@@ -277,17 +307,17 @@ S2이며 U 전환 실패로 원복한 경우에만 S1이다. 실행 ledger에 L�
 | 단계 | 실행 | 종료 조건 | 현재 상태 |
 | --- | --- | --- | --- |
 | T0 기준 구조 | 메인 runtime + 렌더 Worker, threads=true, Skia mt/interop/headers/부팅 검사 | first content·입력·오류·shared memory와 role 수명 확인; 지원 한계 기록 | PASS, S1으로 채택; 12절 증거 |
-| T0b 계산 스레드 기반 | L의 같은 runtime에서 bounded 2-thread 순수 계산 smoke | 정확한 결과·두 계산의 실제 중첩·렌더 owner 복귀·취소/종료 확인 | 미착수; T4 통합 전 필수 |
-| T1 L 비용과 의존성 | current HEAD/dirty와 L 고정; 실제 resize의 self time·준비 가능한 계산 폭·임계 경로 조사 | 메인 전달 지연과 렌더 build/layout/paint/encode 구분, 병렬화 가능한 비중과 최초 후보 1개 확정 | U/G 판정 후 |
-| T2 순수 kernel 추출 | 불변 입력→결과, 명시적 의존성, 직렬 executor | 기존 경로 대비 logical target/횟수/필수 순서·geometry 차이 0; 직렬 추출 자체 비용 보고 | 미착수 |
-| T3 owner 연결 | 기존 동기 layout 계약을 지키는 사전 준비/결과 소비 경계, unsupported 구간 유지 | callback 추가/생략/순서 변화 0, 계산 스레드의 live UI 접근 0, owner event loop 교착 0 | 미착수 |
-| T4 2-thread executor | bounded ready/completion 큐, dependency counter, batching, 오류/취소/shutdown | 직렬 graph와 결과 동일, 실제 계산 중첩 확인, bounded memory, 취소 후 참조 해제 | 미착수 |
-| T5 실제 Web 통합 비교 | 동일 메인 runtime + 렌더 Worker에서 L / 직렬 graph A / 2-thread B | L→A의 추출 비용과 A→B의 병렬화 효과, L→B의 전체 지연·비대상 회귀 판정 | 미착수 |
-| T6 플랫폼·내구성 | generator/수동 소스 소유 방식, 다른 host 직렬 동작, Web boot/asset/기기 검사 | 플랫폼별 PASS/FAIL/notVerified, 전체 메모리/사용자 수용 구분 | 미착수 |
-| T7 채택과 기록 | 마지막 변경 후 결과·편차·원본 실패·패치·기본 설정 정리 | 개선 미확인 후보는 L로 원복/미채택; 패키지/G 단계 판정과 분리 | 미착수 |
+| T0b 계산 스레드 기반 | L의 같은 runtime에서 bounded 2-thread 순수 계산 smoke | 정확한 결과·두 계산의 실제 중첩·렌더 owner 복귀·취소/종료 확인 | notApplicable: T1에서 가치 있는 후보 미발견 |
+| T1 L 비용과 의존성 | current HEAD/dirty와 L 고정; 실제 resize의 self time·준비 가능한 계산 폭·임계 경로 조사 | 메인 전달 지연과 렌더 build/layout/paint/encode 구분, 병렬화 가능한 비중과 최초 후보 1개 확정 | 조사 완료: Flex self가 전체 callback의 0.297%/0.169% |
+| T2 순수 kernel 추출 | 불변 입력→결과, 명시적 의존성, 직렬 executor | 기존 경로 대비 logical target/횟수/필수 순서·geometry 차이 0; 직렬 추출 자체 비용 보고 | notApplicable: T1 미채택 |
+| T3 owner 연결 | 기존 동기 layout 계약을 지키는 사전 준비/결과 소비 경계, unsupported 구간 유지 | callback 추가/생략/순서 변화 0, 계산 스레드의 live UI 접근 0, owner event loop 교착 0 | notApplicable: T1 미채택 |
+| T4 2-thread executor | bounded ready/completion 큐, dependency counter, batching, 오류/취소/shutdown | 직렬 graph와 결과 동일, 실제 계산 중첩 확인, bounded memory, 취소 후 참조 해제 | notApplicable: T1 미채택 |
+| T5 실제 Web 통합 비교 | 동일 메인 runtime + 렌더 Worker에서 L / 직렬 graph A / 2-thread B | L→A의 추출 비용과 A→B의 병렬화 효과, L→B의 전체 지연·비대상 회귀 판정 | notApplicable: 병렬 graph 없음 |
+| T6 플랫폼·내구성 | generator/수동 소스 소유 방식, 다른 host 직렬 동작, Web boot/asset/기기 검사 | 플랫폼별 PASS/FAIL/notVerified, 전체 메모리/사용자 수용 구분 | notApplicable: 병렬 제품 변경 없음; U 회귀 별도 |
+| T7 채택과 기록 | 마지막 변경 후 결과·편차·원본 실패·패치·기본 설정 정리 | 개선 미확인 후보는 L로 원복/미채택; 패키지/G 단계 판정과 분리 | 미채택 종료; 상세 trace·기본 비활성 계측·근거 보존 |
 
 U/G 판정 이후 layout 실행은 **L 고정 → T1 비용 조사 → 후보 선정 → T0b/T2 →
-T3 → T4 → T5 → T6/T7**다. 현재 다음 실행은 13절 U0이며 과거 T1 우선 순서를 대체한다.
+T3 → T4 → T5 → T6/T7**다. 현재 판정은 위 상태 표와 통합 실행 보고서를 따른다. 최초 실행은 13절 U0부터 수행했다.
 
 1. 현재 HEAD/dirty와 L manifest의 차이를 확인하고 실험 소스·산출물·입력·계측
    수준을 고정한다. 기존 부팅 진단을 처음부터 반복하지 않는다. runtime/host가
@@ -505,10 +535,10 @@ NuGet을 확인했다. 앞선 “Graphite 바인딩을 직접 추가해야 한�
 
 | 단계 | 실행 내용 | 종료 조건 | 상태 |
 | --- | --- | --- | --- |
-| U0 목록·기준선 고정 | current HEAD/dirty, S1 manifest/원본 산출물 보존; 모든 직접/전이 Skia·HarfBuzz 참조, SDK 기본값, manifest, lock, 배포 native asset 목록 작성 | 영향받는 host/TFM/RID와 정확한 버전 대응표·산출물 hash 고정; 각 대상 NuGet 가용성 확인 | 다음 작업 |
-| U1 패키지·소스 정합성 | 중앙 버전/SDK 기본값 갱신, 정상 restore로 lock 재생성, 필요한 공통 API 호환성 수정 | 구버전 managed/native 혼합 0, dependency downgrade 0, 실제 native/관리 버전 진단 일치 | 미착수 |
-| U2 기존 WebGL 검증 | net10.0 threaded trimmed Release publish, 실제 선택 archive·링크·boot assets 검사, S1과 동일 입력 회귀 | WebGL first content/shared heap/owner/resize/scroll/상태/종료 PASS, runtime 오류 0; 다운로드·부팅·메모리 변화 기록 | 미착수 |
-| U3 타 host·패키징 판정 | 영향 host의 restore/build 및 실행 가능한 first-content·이미지/텍스트 검사, 생성 앱 restore/build/pack 경로 확인 | 플랫폼별 결과와 한계 기록; 필수 사용 host의 FAIL 해결 전 전체 전환 완료 금지; Web gate 통과 시 범위를 명시해 S2 고정 | 미착수 |
+| U0 목록·기준선 고정 | current HEAD/dirty, S1 manifest/원본 산출물 보존; 모든 직접/전이 Skia·HarfBuzz 참조, SDK 기본값, manifest, lock, 배포 native asset 목록 작성 | 영향받는 host/TFM/RID와 정확한 버전 대응표·산출물 hash 고정; 각 대상 NuGet 가용성 확인 | PASS: 19개 NuGet·native/hash 목록, S1 보존 |
+| U1 패키지·소스 정합성 | 중앙 버전/SDK 기본값 갱신, 정상 restore로 lock 재생성, 필요한 공통 API 호환성 수정 | 구버전 managed/native 혼합 0, dependency downgrade 0, 실제 native/관리 버전 진단 일치 | PASS: 4.154 전환·격리 restore, Android CS1705 수정 |
+| U2 기존 WebGL 검증 | net10.0 threaded trimmed Release publish, 실제 선택 archive·링크·boot assets 검사, S1과 동일 입력 회귀 | WebGL first content/shared heap/owner/resize/scroll/상태/종료 PASS, runtime 오류 0; 다운로드·부팅·메모리 변화 기록 | PASS: S2 고정 및 최종 WebGL 7-case 회귀; 정량 성능은 미입증 |
+| U3 타 host·패키징 판정 | 영향 host의 restore/build 및 실행 가능한 first-content·이미지/텍스트 검사, 생성 앱 restore/build/pack 경로 확인 | 플랫폼별 결과와 한계 기록; 필수 사용 host의 FAIL 해결 전 전체 전환 완료 금지; Web gate 통과 시 범위를 명시해 S2 고정 | 가용 build/restore·생성/pack/CLI PASS; 플랫폼별 물리 notVerified 기록 |
 
 구체적인 갱신 대상:
 
@@ -574,11 +604,11 @@ G0에서 증명한다. Graphite의 병렬 recording 기능은 이번 초기 구�
 
 | 단계 | 실행 내용 | 종료 조건 | 상태 |
 | --- | --- | --- | --- |
-| G0 Worker 최소 실증 | S2의 threaded trimmed 환경에서 native Dawn 가용성, 장치/instance/queue 등록, surface, 도형·텍스트·이미지 출력, resize·정상 종료 | 실제 렌더 Worker에서 first pixels와 shared-runtime/owner 확인, async 제출·resource 정리, 오류 0 | 미착수; 후속 통합 선행 gate |
-| G1 host 연결 | loader/types/strict protocol/diagnostics와 모드 선택; WebGPU surface와 프레임 제출 구현 | 명시 모드의 visible canvas 출력, 최신 generation만 반영, unsupported·device lost·종료 경로 정의 | 미착수 |
-| G2 공통 렌더러 대응 | Graphite 이미지 업로드, picture 캐시, runtime effects/image filters, snapshot/readback 지원 | 텍스트·이미지·클립·블렌드·그림자·shader/effect 기능과 리소스 소유권 보존 | 미착수 |
-| G3 기능·수명 회귀 | 아래 corpus를 S2/G에서 비교, fractional DPR·입력·장치 손실·취소·shutdown 검사 | 누락/오래된 화면/상태 소실/owner 위반/미처리 GPU 오류 0; 화면 차이 원인별 판정 | 미착수 |
-| G4 성능·채택 기록 | 같은 버전/직렬 layout/입력의 S2↔G, cold/resize/scroll·GPU/CPU 비용 구분 | 실험 모드 기능 수용과 성능 판정 분리; 기본 WebGL 유지, 미검증 기기 명시 | 미착수 |
+| G0 Worker 최소 실증 | S2의 threaded trimmed 환경에서 native Dawn 가용성, 장치/instance/queue 등록, surface, 도형·텍스트·이미지 출력, resize·정상 종료 | 실제 렌더 Worker에서 first pixels와 shared-runtime/owner 확인, async 제출·resource 정리, 오류 0 | PASS: 같은 shared runtime owner, 도형·텍스트·이미지·resize·정상 종료 smoke |
+| G1 host 연결 | loader/types/strict protocol/diagnostics와 모드 선택; WebGPU surface와 프레임 제출 구현 | 명시 모드의 visible canvas 출력, 최신 generation만 반영, unsupported·device lost·종료 경로 정의 | 첫 제품 출력/resize PASS; G3 FAIL에 따라 제품 원복 |
+| G2 공통 렌더러 대응 | Graphite 이미지 업로드, picture 캐시, runtime effects/image filters, snapshot/readback 지원 | 텍스트·이미지·클립·블렌드·그림자·shader/effect 기능과 리소스 소유권 보존 | 후보 구현 보존·원복; 전체 effects/readback corpus 미완료 |
+| G3 기능·수명 회귀 | 아래 corpus를 S2/G에서 비교, fractional DPR·입력·장치 손실·취소·shutdown 검사 | 누락/오래된 화면/상태 소실/owner 위반/미처리 GPU 오류 0; 화면 차이 원인별 판정 | FAIL: 정상 종료 mapAsync Aborted, device loss disposed 미확인 |
+| G4 성능·채택 기록 | 같은 버전/직렬 layout/입력의 S2↔G, cold/resize/scroll·GPU/CPU 비용 구분 | 실험 모드 기능 수용과 성능 판정 분리; 기본 WebGL 유지, 미검증 기기 명시 | 미채택·performanceUnproven; 필수 G3 실패로 3쌍 성능 미실행 |
 
 G0가 실패하면 장치 등록·JS owner·ABI·native link의 최소 원인을 먼저 분리한다.
 main 전용 또는 독립 runtime에서만 되는 smoke를 현재 topology PASS로 바꾸지 않는다.
@@ -664,10 +694,10 @@ source/asset hash, command·timeout·elapsed, 최초 실패, 기능/성능/물�
 
 - [x] 기존 S1/최초 FAIL/T 계획을 보존하며 U/G/J 계획 통합
 - [x] 목표 태그·배포 NuGet의 Graphite/Dawn/WASM 지원 기반 검토
-- [ ] U0–U3: SkiaSharp 계열 전환 및 플랫폼별 회귀/범위 판정
-- [ ] G0–G4: 같은 렌더 Worker의 WebGPU 경로 구현·기능/성능 판정
-- [ ] T0b/T1–T7: 순수 layout 후보 조사·직렬/병렬 비교·채택 또는 미채택
-- [ ] J0: 독립 통과 후보 조합 수용 또는 미적용 근거 기록
+- [x] U0–U3: SkiaSharp 계열 전환 및 플랫폼별 회귀/범위 판정; 물리 notVerified 별도
+- [ ] G0–G4: WebGPU 추가 미완료 — G3 수명 FAIL로 후보 보존·제품 원복, 미채택 판정 기록
+- [x] T0b/T1–T7: 순수 layout 후보 조사·직렬/병렬 비교·채택 또는 미채택
+- [x] J0: 독립 통과 후보 조합 수용 또는 미적용 근거 기록
 
 이번 문서 수정에서는 제품 패키지·코드를 변경하거나 build/browser/benchmark를
 실행하지 않는다. 문서 구조·상충 지시·상대 링크·diff 검사만 수행한다.

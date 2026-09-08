@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup><Compile Include="../../src/Doroti.Framework.Rendering/PreparedTreemapLayout.cs" Link="PreparedTreemapLayout.cs" /></ItemGroup>
+</Project>

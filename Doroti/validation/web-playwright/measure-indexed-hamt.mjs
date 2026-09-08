@@ -1,23 +1,19 @@
 import { chromium } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { captureRenderWorker } from './render-worker-diagnostics.mjs';
 
 const label=process.argv[2];
 if(!/^[\w-]+$/.test(label)) throw Error('Simple label required');
 const output={label,preparation:[],segments:[],errors:[],limitations:'Detailed sequential CDP workload; no physical display, stable p95, GC pause, or minimally instrumented acceptance.'};
 const deadline=setTimeout(()=>{console.error('20-minute timeout');process.exit(1);},1200000);
-const browser=await chromium.launch({headless:true,args:['--enable-gpu-rasterization','--ignore-gpu-blocklist','--use-angle=default']});
+const browser=await chromium.launch({headless:true,channel:process.env.DOROTI_BROWSER_CHANNEL,args:['--enable-gpu-rasterization','--ignore-gpu-blocklist','--use-angle=default']});
 try {
  const page=await browser.newPage({viewport:{width:1280,height:900},deviceScaleFactor:1});
  page.on('pageerror',error=>output.errors.push(String(error)));
- const url=(process.env.DOROTI_WEB_BASE_URL??'http://127.0.0.1:5189')+'/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1';
+ const url=(process.env.DOROTI_WEB_BASE_URL??'http://127.0.0.1:5189')+'/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1'+(process.env.DOROTI_PERF_QUERY??'');
  await page.goto(url);
  const read=()=>page.evaluate(()=>{const d=globalThis.__dorotiResizeDiagnostics,id=d.hosts()[0];return {time:performance.now(),snapshot:JSON.parse(d.snapshot(id)),presenter:JSON.parse(d.presenter('doroti-surface')),trace:JSON.parse(d.capture(id))};});
- const managed=async()=>{
-  const snapshots=await Promise.all(page.workers().map(worker=>worker.evaluate(()=>globalThis.__dorotiDirectDiagnostics?.()??null)));
-  const result=snapshots.find(value=>value?.managed);
-  if(!result)throw Error('Managed diagnostic export unavailable');
-  return result;
- };
+ const managed=()=>captureRenderWorker(page);
  const ready=width=>page.waitForFunction(width=>{
   const d=globalThis.__dorotiResizeDiagnostics;if(!d?.hosts().length)return false;
   const s=JSON.parse(d.snapshot(d.hosts()[0])),p=JSON.parse(d.presenter('doroti-surface'));

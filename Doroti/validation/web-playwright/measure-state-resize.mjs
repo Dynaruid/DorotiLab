@@ -1,5 +1,6 @@
 import { chromium } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { captureRenderWorker } from './render-worker-diagnostics.mjs';
 
 const label=process.argv[2], scenario=process.argv[3]??'button';
 if(!/^[\w-]+$/.test(label)) throw Error('simple label required');
@@ -14,7 +15,7 @@ try {
  page.on('pageerror',e=>errors.push(String(e)));
  await page.goto((process.env.DOROTI_WEB_BASE_URL??'http://127.0.0.1:5088')+`/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=${detailed?1:0}&dorotiInputMarkers=1`+(process.env.DOROTI_PERF_QUERY??''));
  const read=()=>page.evaluate(()=>{const d=globalThis.__dorotiResizeDiagnostics,id=d.hosts()[0];return {time:performance.now(),snapshot:JSON.parse(d.snapshot(id)),presenter:JSON.parse(d.presenter('doroti-surface')),trace:JSON.parse(d.capture(id))};});
- const managed=async()=>detailed?(await Promise.all(page.workers().map(w=>w.evaluate(()=>globalThis.__dorotiDirectDiagnostics?.()??null)))).filter(Boolean):[];
+ const managed=async()=>detailed?[await captureRenderWorker(page)]:[];
  await page.waitForFunction(()=>globalThis.__dorotiResizeDiagnostics&&JSON.parse(globalThis.__dorotiResizeDiagnostics.presenter('doroti-surface')).frontRequestId>0,null,{timeout:120000});
  await page.waitForTimeout(10000);
  let bounds;

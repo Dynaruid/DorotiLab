@@ -9,7 +9,7 @@ await mkdir(directory, { recursive: true });
 const result = { label, errors: [], consoleErrors: [], steps: [], limitation:
   'Threaded-runtime bootstrap and small UI smoke only; no parallel layout or managed compute overlap proof.' };
 const deadline = setTimeout(() => { console.error('20-minute timeout'); process.exit(1); }, 1200000);
-const browser = await chromium.launch({ headless: true, args:
+const browser = await chromium.launch({ headless: true, channel: process.env.DOROTI_BROWSER_CHANNEL, args:
   ['--enable-gpu-rasterization', '--ignore-gpu-blocklist', '--use-angle=default'] });
 let page;
 try {
@@ -22,7 +22,8 @@ try {
   } });
   console.log('bootstrap: navigating');
   const response = await page.goto((process.env.DOROTI_WEB_BASE_URL ?? 'http://127.0.0.1:5192') +
-    '/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1');
+    '/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1' +
+    (process.env.DOROTI_WEB_RENDERER_MODE ? '&dorotiRenderer=' + process.env.DOROTI_WEB_RENDERER_MODE : ''));
   result.headers = await response.allHeaders();
   result.browser = browser.version();
   result.url = page.url();

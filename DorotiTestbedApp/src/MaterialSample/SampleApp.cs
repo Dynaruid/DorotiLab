@@ -29,8 +29,9 @@ internal static class SampleConstants
     internal static List<Widget> BarDestinations() => Destinations.Select((label, i) => (Widget)new M.NavigationDestination(icon: new Icon(DestinationIcons[i]), selectedIcon: new Icon(SelectedDestinationIcons[i]), tooltip: "", label: label)).ToList();
 }
 
-internal sealed class SampleApp : StatefulWidget
+internal sealed class SampleApp(ParallelLayoutLab? parallelLayout = null) : StatefulWidget
 {
+    internal ParallelLayoutLab? ParallelLayout => parallelLayout;
     public override IState createState() => new SampleAppState();
 }
 
@@ -79,12 +80,13 @@ internal sealed class SampleAppState : State<SampleApp>
         locale: new Doroti.Ui.Locale("en", "US"), themeFactory: LightTheme, darkThemeFactory: DarkTheme, themeMode: _mode,
         home: new SampleHome(_seed, _image, _fromImage, _loading, _error,
             () => setState(() => _mode = (_mode == M.ThemeMode.dark || (_mode == M.ThemeMode.system && View.of(context).platformDispatcher.platformBrightness == Brightness.dark)) ? M.ThemeMode.light : M.ThemeMode.dark),
-            SelectSeed, SelectImage));
+            SelectSeed, SelectImage, widget.ParallelLayout));
 }
 
 internal sealed class SampleHome(int seed, int image, bool fromImage, bool loading, string? error,
-    Action brightness, System.Action<int> selectSeed, System.Action<int> selectImage) : StatefulWidget
+    Action brightness, System.Action<int> selectSeed, System.Action<int> selectImage, ParallelLayoutLab? parallelLayout = null) : StatefulWidget
 {
+    internal ParallelLayoutLab? ParallelLayout => parallelLayout;
     internal int Seed => seed;
     internal int Image => image;
     internal bool FromImage => fromImage;
@@ -231,6 +233,9 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
             body: new Column(children:
             [
                 ifLoading(),
+                widget.ParallelLayout is { } panel
+                    ? new SizedBox(height: Math.Min(380, MediaQuery.heightOf(context) * .45), child: panel)
+                    : SizedBox.CreateShrink(),
                 new Expanded(child: new Row(crossAxisAlignment: CrossAxisAlignment.stretch, children:
                 [
                     Rail(), new Expanded(child: body),

@@ -12,3 +12,9 @@ The UI thread owns Widget, Element and RenderObject mutation and creates a commi
 ## Consequences
 
 R3 provides the ports and deterministic fake. R5 supplies the bounded mailbox, dedicated raster thread, fixed-thread raster cache ownership and ordered shutdown behavior. No temporary single-thread shortcut may change the public contracts.
+
+The 2026-09-08 work3 investigation retained the combined Web JS-affine owner
+described in ADR-003. Its Graphite recorder/context/texture ownership candidate
+was rejected after asynchronous resource teardown failed. No Graphite lifetime
+exception or parallel access to mutable RenderObjects is adopted by this ADR.
+See [the work3 results](../../../history/26-09-08/work3-execution.md).

@@ -699,6 +699,11 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
 
     internal virtual _LayoutSizes__flex _computeSizes(BoxConstraints constraints, Func<RenderBox, BoxConstraints, Size> layoutChild, Func<RenderBox, BoxConstraints, TextBaseline, double?> getBaseline)
     {
+        // Kind 8 self time excludes nested layout/build scopes. It remains an
+        // upper bound for pure numerics: traversal and baseline callbacks are
+        // still owner work and are not declared thread-safe by this timer.
+        using var flexProfile = global::Doroti.Ui.FrameworkWorkProfile.LayoutEnabled
+            ? global::Doroti.Ui.FrameworkWorkProfile.Begin(GetType(), 8) : default;
         DartRuntimePrimitives.Assert(() => this._debugHasNecessaryDirections);
         double maxMainSize = _getMainSize(((BoxConstraints)constraints).biggest);
         bool canFlex = double.IsFinite(maxMainSize);
@@ -1344,4 +1349,3 @@ public class RenderFlex : RenderBox, ContainerRenderObjectMixin<RenderBox, FlexP
     }
 
 }
-
