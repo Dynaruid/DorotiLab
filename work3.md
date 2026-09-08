@@ -13,7 +13,8 @@ isolation은 확인했다. threaded runtime은 기존 Worker 부팅 경로에서
 오류와 `mono_wasm_pthread_on_pthread_attached` 오류로 first content에 도달하지
 못했다. **T0는 FAIL이며 후속 병렬 실행의 선행 해결 과제다.** 상세 증거는 10절.
 
-기준 구현은 `work.md` 9.12절의 **HAMT + indexed**다. 9.13절 C2/C3/C4 실험은
+기준 구현은 [보관된 work.md](history/26-09-08/work.original.md) 9.12절의
+**HAMT + indexed**다. 9.13절 C2/C3/C4 실험은
 미채택·제품 원복 상태이며 기존 패치, 최초 실패, notComparable/PARTIAL 결과를
 보존한다. 새 계획은 이전의 “추가 Worker 제외” 범위를 사용자의 이번 요청에
 따라 확장한다. AOT·렌더러 변경·가상화 확대를 함께 적용하는 계획은 아니다.
@@ -48,7 +49,7 @@ isolation은 확인했다. threaded runtime은 기존 Worker 부팅 경로에서
 | `Ui/PlatformDispatcher.cs`: execution-context dispatcher와 frame dispatch | AsyncLocal이 worker로 전달되더라도 UI 접근 권한을 부여한 것이 아니다. owner 권한을 별도로 검사한다. |
 | `docs/adr/ADR-002-ui-raster-thread-model.md` | Widget/Element/RenderObject 변경은 UI owner, backend canvas/GPU/present는 해당 renderer owner가 담당한다. immutable scene 전송 계약을 유지한다. |
 | `Host.Web/Web/doroti.raster.worker.ts`: direct runtime의 `dotnet.create`와 JSExport 부팅 | 현재 UI 실행을 담당하는 Worker와 .NET pthread 계산 스레드를 구분한다. 계산 스레드마다 독립 .NET UI 런타임을 복제하지 않는다. |
-| `work.md` 9.13절 | C2 cache 호출은 해당 resize에서 0회였다. 열 전환 2쌍은 LayoutWork 1208/1295로 달랐다. 해당 수치를 동일 작업 병렬화 기준선으로 재사용하지 않는다. |
+| [work.md 보관본](history/26-09-08/work.original.md) 9.13절 | C2 cache 호출은 해당 resize에서 0회였다. 열 전환 2쌍은 LayoutWork 1208/1295로 달랐다. 해당 수치를 동일 작업 병렬화 기준선으로 재사용하지 않는다. |
 
 확인한 환경: net10.0/browser-wasm, runtime/SDK pack 10.0.11,
 SkiaSharp.NativeAssets.WebAssembly 4.152.0-rc.1.26426.14. 설치된 SkiaSharp
