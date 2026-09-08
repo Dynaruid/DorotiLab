@@ -1,344 +1,234 @@
 # DorotiTestbedApp
 
-The shared inheritance map now uses HAMT, and the Material gallery uses only the
-indexed section viewport. Open `?dorotiTestbedMode=sample`; no viewport query,
-environment variable or HAMT build flag is required. Dictionary copy, eager gallery
-and standard-list gallery alternatives have been removed.
-See the [decision and validation](../history/26-09-08/hamt-indexed-unification.md)
-and [viewport contract](../Doroti/validation/section-viewport/README.md).
-Measured map allocations decreased; total memory and physical latency gates remain unqualified.
-
 **English** | [한국어](README.ko.md)
 
-DorotiTestbedApp dogfoods the platform-workspace contract. The root project is target-neutral. Seven runner aliases are available; `macos` and `maccatalyst` are separate permanent products.
+A sample and diagnostics app for Doroti's Material widgets and platform hosts.
+One shared C# application runs through Windows, macOS AppKit, Mac Catalyst, Linux, Android, iOS, and Web runners.
 
-The application ID is `dev.doroti.testbed` (`dev.doroti.testbed.macos` for AppKit). The renamed app installs separately from the previous demo package.
+The Material sample includes Components, Color, Typography, Elevation, nine seed colors,
+six image themes, and local/URL image demos. **Diagnostics is the default screen**; the commands below explicitly open sample mode.
+
+- [Prerequisites](#prerequisites)
+- [Platform sample commands](#material-sample-mode)
+- [Screen and renderer settings](#screen-and-renderer-settings)
+- [Build and development](#build-and-development)
+- [Troubleshooting](#troubleshooting)
+
+## Prerequisites
+
+Run all commands in PowerShell 7 from the **repository root, `DorotiLab`**.
+If your macOS/Linux shell is zsh/bash, enter `pwsh -NoProfile` first.
+Use the **.NET SDK 10.0.400 feature band** selected by [global.json](../Doroti/global.json).
+Platform-specific workloads and tools are listed with each command below.
+
+The first run restores packages, builds, and deploys to a device where needed. All examples use Release.
+For Debug, use `-c Debug` with `dotnet run` or `-Configuration Debug` with the workspace CLI.
+Close a running native app before relaunching to apply a mode change.
 
 ## Material sample mode
 
-Selection demos now update locally, and resizing reuses unchanged section content and navigation configuration. See the [state/resize follow-up](../history/26-09-07/web-state-resize-followup.md) for measurements and remaining latency failures.
+[Windows](#windows-sample) · [macOS AppKit](#macos-appkit-sample) · [Mac Catalyst](#mac-catalyst-sample) · [Linux](#linux-sample) · [Android](#android-sample) · [iOS](#ios-sample) · [Web](#web-sample)
 
-The C# Material sample is available explicitly while its acceptance gates in
-[Material sample acceptance history](../history/26-09-07/material-sample-work-summary.md) are being completed. Diagnostics remains the default.
-The renderer defaults remain Windows Vulkan and Web SkiaSharp direct Worker.
+Native apps use `dotnet run -e` to pass `DOROTI_TESTBED_MODE=sample` to the app process.
+Setting only a shell environment variable does not guarantee propagation to Apple/Android apps.
+The accompanying `DOROTI_RESIZE_FIXTURE=none` disables F0/F1/F2 diagnostic fixtures, which take priority over the sample.
+Web selects the mode through its URL.
 
-Run the commands below in PowerShell 7 from the **repository root, `DorotiLab`**.
-See [Quick start](#quick-start) for the required SDK and tools.
+### Windows sample
 
-### Run the sample on Windows
+Run on a Windows host. This selects the default Windows App SDK/Vulkan runner.
 
 ```powershell
-# Clear any previous resize fixture, which would take priority over the sample.
-Remove-Item Env:DOROTI_RESIZE_FIXTURE -ErrorAction SilentlyContinue
-$env:DOROTI_TESTBED_MODE = 'sample'
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
+dotnet run --project ./DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release `
+  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
 ```
 
-The first run restores packages, builds the runner, and opens the sample window.
-The environment variable applies to the current PowerShell session and apps launched
-from it; changing it does not switch an already running app.
+For the independent MAUI backend, replace the project in this command with
+`./DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj`.
 
-### Run the sample in a browser
+### macOS AppKit sample
 
-Start the Web server and leave this terminal open:
+Requires Apple Silicon, macOS 14 or later, and compatible Xcode/macOS workloads.
+The `macos` runner uses native AppKit.
+
+```powershell
+dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64 `
+  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+```
+
+### Mac Catalyst sample
+
+This UIKit runner requires Apple Silicon macOS and Xcode/Mac Catalyst workloads.
+
+```powershell
+dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 `
+  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+```
+
+### Linux sample
+
+Run on a Linux x64 host. Requires Qt 6.5 or later Core/Gui/Widgets/OpenGL, CMake,
+a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`,
+and the `wayland` or `xcb` QPA plugin. The command also builds the native shim.
+
+```powershell
+dotnet run --project ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64 `
+  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+```
+
+### Android sample
+
+Install the Android workload, Android SDK, and OpenJDK 17–21. Start an emulator or
+connect a device with USB debugging enabled. See [Android connection instructions](#connect-an-android-device-or-emulator).
+
+```powershell
+# List available device IDs
+dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj --list-devices
+
+# x64 emulator: replace emulator-5554 with its actual ID
+dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-x64 `
+  --device emulator-5554 -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+```
+
+For an arm64 device or emulator, use `-r android-arm64` and its `--device` ID.
+Use `-c Debug` for faster development builds. Android environment settings also affect
+the build, so do not use `--no-build` when changing modes.
+
+### iOS sample
+
+Use Apple Silicon macOS with Xcode/iOS workloads, and start Simulator first.
+
+```powershell
+# List available simulator/device IDs
+dotnet run --project ./DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj --list-devices
+
+# Replace simulator-udid with an actual ID from the list
+dotnet run --project ./DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 `
+  --device simulator-udid -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+```
+
+For an Intel Mac simulator, use `-r iossimulator-x64`. A physical iPhone/iPad requires
+`-r ios-arm64`, its device ID, and separate signing/provisioning configuration.
+Here, `--device` belongs to `dotnet run`; the `doroti.ps1` wrapper's `-Device` currently supports Android only.
+
+### Web sample
+
+Start the server and leave this terminal open:
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release
 ```
 
-Once the server starts, [open the Material sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample)
-at `http://127.0.0.1:5088/?dorotiTestbedMode=sample`.
-Web selects the screen using **`dorotiTestbedMode` in the URL**, rather than the shell's
-`DOROTI_TESTBED_MODE`. Omitting the renderer option uses the default SkiaSharp direct Worker.
+In a browser, [open the Material sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample).
+Web selects the screen with **`dorotiTestbedMode=sample` in the URL** instead of an environment variable.
+Omitting the renderer option uses the default SkiaSharp direct Worker/WebGPU renderer.
 Press `Ctrl+C` in the server terminal to stop it.
 
-### Run the original diagnostics gallery
+## Screen and renderer settings
 
-On Windows, close the sample window and run these commands in the same terminal:
+### Return to diagnostics
+
+Close the native app, replace `-e DOROTI_TESTBED_MODE=sample` with
+`-e DOROTI_TESTBED_MODE=diagnostics` in its command, and run it again.
+`-e` does not change the current shell environment. Clear any values previously set manually:
 
 ```powershell
-$env:DOROTI_TESTBED_MODE = 'diagnostics'
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
-# To remove the mode override for subsequent launches:
 Remove-Item Env:DOROTI_TESTBED_MODE -ErrorAction SilentlyContinue
+Remove-Item Env:DOROTI_RESIZE_FIXTURE -ErrorAction SilentlyContinue
 ```
 
-On Web, [open diagnostics](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics)
-without restarting the server. `http://127.0.0.1:5088/` also selects diagnostics.
-Explicit F0/F1/F2 resize fixtures take priority over sample mode.
+On Web, switch screens using the URLs below without restarting the server. Omitting the mode also opens diagnostics.
 
-The sample uses an opaque
-Material surface and contains Components, Color, Typography and Elevation, nine
-seed colors, six image themes, and a local/URL Image demo. Image themes require
-network access to `flutter.github.io`; the URL demo uses `plus.unsplash.com`.
-Failed theme loads preserve the last successful theme and offer Retry. The local
-WebP, MaterialIcons and Roboto regular/medium/bold fonts are embedded. Their licenses and provenance are in
-[src/MaterialSample](src/MaterialSample) and [assets/fonts](assets/fonts).
+### Web renderers and measurement options
 
-External HTTP(S) links use a view-scoped URL launcher. A successful result means
-the host accepted the request; Web popup blocking is reported to the user.
-Native URL opening, physical display/IME and other OS acceptance require separate
-live verification. See [sample validation](../Doroti/validation/material-sample/README.md)
-for commands and the current evidence boundaries.
-
-## Quick start
-
-Install the .NET 10 SDK and PowerShell 7. Then run one of the following commands from the repository root. The first run can take a while because it restores packages and builds the selected runner.
-
-```powershell
-# Run the default Windows backend
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
-
-# Optional: override automatic GPU selection for Acrylic on Windows 11 24H2+
-$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # or another exact/unique device-name fragment
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
-
-# Run the Web app (Release configuration by default)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release
-```
-
-### Compare the Material sample by URL
-
-After the Web runner starts, open one of these links:
-
-| Screen / renderer | URL |
+| Screen / renderer | Open |
 | --- | --- |
-| Material sample with the default WebGPU renderer | [Open default sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
-| Material sample with explicit WebGL2 | [Open SkiaSharp direct sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
-| Diagnostics with the default renderer | [Open diagnostics](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
+| Material sample / default WebGPU | [Sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
+| Material sample / WebGL2 | [WebGL2 sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
+| Diagnostics / default WebGPU | [Diagnostics](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
+| Diagnostics / WebGL2 | [WebGL2 diagnostics](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics&dorotiRenderer=worker-direct-webgl) |
 
-`dorotiTestbedMode=sample` selects the sample screen; `dorotiRenderer` selects
-the rendering backend. Keep both parameters when comparing the same sample.
-Omitting `dorotiTestbedMode` opens diagnostics, and omitting `dorotiRenderer`
-uses `worker-direct-webgpu`.
+`dorotiRenderer` selects `worker-direct-webgpu` (default and `auto`) or `worker-direct-webgl`.
+The Web host uses SkiaSharp WASM and Microsoft.TypeScript.MSBuild; no CanvasKit/npm restore is required.
+After rebuilding a renderer, restart the runner and reload the page.
+Check animation with the play button under Components → Communication → Progress indicators.
 
-Use Communication → Progress indicators in Components to check animation.
-After rebuilding a renderer, restart the runner and reload the page to load the new build.
+Add these query parameters to the sample URL only when measuring:
 
+| Query | Purpose |
+| --- | --- |
+| `dorotiProgressScope=broad` | Compare a full-screen rebuild against the default `local` update |
+| `dorotiResizeDiagnostics=1` | Enable framework work/type counters |
+| `dorotiResizeDiagnostics=0&dorotiInputMarkers=1` | Minimal input-to-new-scene commit measurement; not physical display latency |
 
-The progress demo now owns its own State, matching the Flutter reference. For
-an explicit direct-Worker stress comparison, add `&dorotiProgressScope=broad`
-to retain the original screen-wide rebuild; the default is `local`.
-`dorotiResizeDiagnostics=1` also enables bounded framework work/type counters.
-Use `dorotiResizeDiagnostics=0&dorotiInputMarkers=1` for minimal input-to-new-scene
-commit measurements. These are submit notifications, not display latency.
-See [the framework investigation results](../history/26-09-07/web-framework-work2-results.md)
-for remaining performance failures and verification limits.
+### Windows GPU and Acrylic
 
-The Image demo decodes its display image at `1024 × DPR` pixels wide, preserving
-the aspect ratio without upscaling. Contain/Cover and scrolling share that cache.
-Only `Extract colors` decodes the original for palette extraction. Image processing
-work is reduced, but first section entry and scroll restart acceptance remain PARTIAL.
-See the [image scroll follow-up](../history/26-09-07/web-image-scroll-followup.md).
+Windows App SDK defaults to Vulkan; ANGLE is an explicit alternative.
+**The Material sample uses an opaque surface.** Use diagnostics to check Acrylic.
+On Windows 11 24H2 or later, ordinary `WindowBackdropMode.acrylic` needs no experimental flag.
 
-### Other renderer URLs
+| Environment variable | Values / behavior |
+| --- | --- |
+| `DOROTI_WINDOWS_VULKAN_DEVICE` | Exact or unique GPU name fragment (such as `AMD`); overrides GPU preference for Vulkan |
+| `DOROTI_WINDOWS_GPU_PREFERENCE` | `NoPreference` (default), `LowPowerPreference`, `HighPerformancePreference`; applies to Vulkan/ANGLE |
+| `DOROTI_WINDOWS_PRESENTER` | `Vulkan` (default) or `AngleD3D11` |
 
-The following addresses open diagnostics with the selected backend:
+For example, append `-e DOROTI_WINDOWS_GPU_PREFERENCE=HighPerformancePreference` to the Windows command above.
+If you previously set a variable with `$env:`, clear it with `Remove-Item Env:VARIABLE_NAME` and relaunch.
+`experimentalAcrylic` remains a compatibility option for reproducing earlier behavior.
 
-- Default SkiaSharp direct Worker: `http://127.0.0.1:5088`
-- Direct WebGL2 canvas in the render Worker: `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
-- Direct WebGPU canvas in the render Worker (default): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgpu`
+### System dark mode and color palettes
 
-`worker-direct-webgl` uses SkiaSharp WASM. Testbed initializes the runtime on main and its shared-runtime render Worker owns layout, Skia and visible Offscreen WebGL2. Main owns DOM/input/IME/semantics. Initialization failures are reported.
+`MaterialApp` follows the system theme through light/dark `ThemeData` and `ThemeMode.system`.
+Palettes use `ColorScheme.CreateFromSeed`; widgets read `Theme.of(context).colorScheme`.
+The window's `backgroundColor` and `darkBackgroundColor` follow the same transition.
 
-The Web host source build uses NuGet SkiaSharp WASM and Microsoft.TypeScript.MSBuild. CanvasKit npm restore and separate JS/WASM assets have been removed.
+Linux diagnostic windows request Acrylic with a transparent fallback. A Wayland compositor
+supporting `ext-background-effect-v1` or the legacy KDE blur protocol receives a native blur request;
+otherwise, the transparent fallback applies.
 
-`auto` and URLs without a renderer option select `worker-direct-webgpu`. This default change does not complete the remaining performance, physical presentation, IME, or accessibility qualification.
+## Build and development
 
-CanvasKit removal and prior qualification evidence: [archived record](../history/26-09-08/web-canvaskit-retired-readme.md).
+### Workspace CLI
 
-Press `Ctrl+C` in the terminal that launched the app to stop it.
-
-## Layout
-
-- `Program.cs`, `src/`, `assets/`: shared startup, widget tree, and application assets
-- `doroti-workspace.json`: includes distinct `macos` (AppKit) and `maccatalyst` (UIKit) aliases
-- `windowsappsdk/`: Windows App SDK 2.4 `HwndExactCpp` child-HWND runner with managed Vulkan/Skia presentation (ANGLE selectable).
-- `windows/`: first-class MAUI backend runner and package identity
-- `web/`: WebAssembly Worker runner, TypeScript source, and `wwwroot`
-- `android/`: .NET Android/MAUI runner plus the default Gradle AAR and .NET binding
-- `ios/`: .NET iOS/MAUI runner plus an independent Xcode framework and binding
-- `macos/`: native AppKit/osx-arm64 and Mac Catalyst/maccatalyst-arm64 runners, bindings, manifests, and lock files
-- `linux/`: managed runner plus the app-owned CMake/Qt 6 C ABI shim
-
-Generated bootstrap and plugin registration stay below each runner's `obj/<rid>/Doroti.Generated`. Platform icons, splash assets, manifests, entitlements, native source, outputs, and lock files remain in their owning platform directory.
-
-## Commands
-
-Run from the repository root. The workspace CLI resolves the runner path from `doroti-workspace.json`:
-`build`, `run`, and `publish` use the Release configuration by default. Specify `-Configuration Debug` only when a Debug build is needed.
-
-`-Configuration` accepts `Debug` or `Release` and defaults to `Release`. The selected value is forwarded directly to the Web runner as `dotnet run --configuration <value>`.
-
-```powershell
-# Run the Web app with a Release build (the default)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release
-
-# Run the Web app with a Debug build
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Debug
-```
-
-`ASPNETCORE_ENVIRONMENT=Development` in the Web `launchSettings.json` selects the ASP.NET Core hosting environment. It is independent of the `Debug`/`Release` build configuration that controls compilation optimizations and debug symbols. The default invocation therefore runs a **Release build in the Development hosting environment**. Check `Doroti artifact: configuration=...` in the terminal output to confirm the selected build configuration.
+[doroti-workspace.json](doroti-workspace.json) maps platforms to runner projects.
+The CLI's `build`, `run`, and `publish` default to Release. To pass sample mode explicitly,
+use the platform-specific `dotnet run -e` commands above.
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 doctor -App ./DorotiTestbedApp -Platform all
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform windows
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform macos -Rid osx-arm64
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform macos -Rid osx-arm64
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./DorotiTestbedApp -Platform web
 ```
 
 ### Run by platform
 
-Run every command below from the repository root. Run the Linux command on a Linux x64 host because that runner also builds its native shim.
+Replace `-Platform` and `-Rid` in the CLI examples for your target.
 
-```powershell
-# Windows App SDK HwndExactCpp backend (current default)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
+| Target | `-Platform` | `-Rid` / additional options |
+| --- | --- | --- |
+| Windows App SDK | `windows` | Use the default |
+| Windows MAUI | `windows` | `-WindowsBackend Maui` |
+| macOS AppKit | `macos` | `osx-arm64` |
+| Mac Catalyst | `maccatalyst` | `maccatalyst-arm64` |
+| Linux | `linux` | `linux-x64` |
+| Android | `android` | `android-x64` or `android-arm64`; select a device with `-Device` |
+| iOS | `ios` | `iossimulator-arm64`, `iossimulator-x64`, or `ios-arm64` |
+| Web | `web` | Omit |
 
-# Independent Windows MAUI backend
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -WindowsBackend Maui
+Web's `ASPNETCORE_ENVIRONMENT=Development` is independent of the build configuration.
+The default is a **Release build in the Development hosting environment**. Check
+`Doroti artifact: configuration=...` in CLI output to confirm the build configuration.
 
-# Web
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web
+The root `DorotiTestbedApp.csproj` is the shared app library.
+`dotnet run --project DorotiTestbedApp.csproj -p:DorotiTarget=...` fails with `DOROTIAPP100`;
+select a platform runner instead. Build the target you need rather than a full solution requiring tools for other operating systems.
 
-# Android x64 emulator
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform android -Rid android-x64
+### Native bridge
 
-# iOS arm64 simulator (Apple Silicon macOS + Xcode)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform ios -Rid iossimulator-arm64
-
-# Native AppKit arm64 (experimental backend, macOS 14+, Apple Silicon)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform macos -Rid osx-arm64
-
-# Mac Catalyst arm64
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform maccatalyst -Rid maccatalyst-arm64
-
-# Linux x64 (Qt 6 + CMake)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform linux -Rid linux-x64
-```
-
-### Run Windows with Vulkan and Acrylic
-
-Windows App SDK defaults to Vulkan, and the demo requests ordinary `WindowBackdropMode.acrylic`. Acrylic is applied on Windows 11 24H2+ without an experimental flag.
-
-```powershell
-$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # optional exact/unique GPU name override
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
-  -App ./DorotiTestbedApp `
-  -Platform windows `
-  -Configuration Release
-```
-
-Device selection is optional. The default `NoPreference` follows the system default hardware device. Set `DOROTI_WINDOWS_GPU_PREFERENCE` to `LowPowerPreference` or `HighPerformancePreference` to use Windows/DXGI preference ordering. These preferences apply to Vulkan and ANGLE; an explicit `DOROTI_WINDOWS_VULKAN_DEVICE` takes precedence for Vulkan. Set `DOROTI_WINDOWS_PRESENTER=AngleD3D11` to select ANGLE explicitly. For an opaque window, omit the app backdrop or request `WindowBackdropMode.solid`. `experimentalAcrylic` and the existing environment flag remain available to reproduce the legacy mode.
-
-To prefer a GPU without naming a device:
-
-```powershell
-$env:DOROTI_WINDOWS_GPU_PREFERENCE = 'HighPerformancePreference' # or LowPowerPreference
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
-
-# Return to the system default. Clear a Vulkan name override too, if one was set.
-Remove-Item Env:DOROTI_WINDOWS_GPU_PREFERENCE -ErrorAction SilentlyContinue
-Remove-Item Env:DOROTI_WINDOWS_VULKAN_DEVICE -ErrorAction SilentlyContinue
-```
-
-### Connect an Android device or emulator
-
-Android SDK Platform Tools and `adb` are required. Android Studio normally installs them under `%LOCALAPPDATA%\Android\Sdk\platform-tools`. If `adb` is not on `PATH`, set its path explicitly:
-
-```powershell
-$adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
-& $adb version
-& $adb devices -l
-```
-
-A target is ready when the second column of the device list is `device`. When multiple devices or emulators are connected, pass the serial from the first column to `-Device`. You can omit `-Device` when exactly one target is connected.
-
-#### Physical device over USB
-
-1. On the Android device, open **About phone > Software information** and tap **Build number** repeatedly to enable Developer options.
-2. Enable **Developer options > USB debugging**, then connect the device to the computer with USB.
-3. Accept the RSA debugging prompt on the unlocked device and use `adb devices -l` to find its serial.
-4. Use the `android-arm64` RID for a typical arm64 device.
-
-```powershell
-# Check the device ABI
-& $adb -s <device-serial> shell getprop ro.product.cpu.abi
-
-# Build, install, and run with Release + arm64 AOT
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
-  -App ./DorotiTestbedApp `
-  -Platform android `
-  -Rid android-arm64 `
-  -Configuration Release `
-  -Device <device-serial>
-
-# Faster development run with Debug
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
-  -App ./DorotiTestbedApp `
-  -Platform android `
-  -Rid android-arm64 `
-  -Configuration Debug `
-  -Device <device-serial>
-```
-
-Replace `<device-serial>` with the value printed by `adb devices -l`, without the angle brackets. For example, if the serial is `R3CY30KZA4B`, pass `-Device R3CY30KZA4B`.
-
-Android 11 and newer also support wireless debugging on the same network. Open **Developer options > Wireless debugging > Pair device with pairing code**, then use the displayed addresses and ports. The pairing port and connection port can be different.
-
-```powershell
-& $adb pair <device-ip>:<pairing-port>
-& $adb connect <device-ip>:<debug-port>
-& $adb devices -l
-```
-
-#### Android emulator
-
-Create a virtual device with an x86_64 system image in Android Studio's **Device Manager**, then start it before running DorotiTestbedApp. A booted emulator normally appears with a serial such as `emulator-5554`.
-
-```powershell
-& $adb devices -l
-
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
-  -App ./DorotiTestbedApp `
-  -Platform android `
-  -Rid android-x64 `
-  -Device emulator-5554
-```
-
-The current `android-x64` emulator Release uses the JIT/interpreter compatibility path to avoid a Mono AOT startup issue. Validate arm64 Release AOT behavior on a physical device with `android-arm64`.
-
-#### Connection troubleshooting
-
-- `unauthorized`: unlock the device, accept the RSA prompt, and reconnect USB.
-- `offline`: run `& $adb kill-server` followed by `& $adb start-server`, then reconnect the device or emulator.
-- Device not listed: check the USB mode, USB debugging, whether the cable supports data, and the manufacturer's Windows USB driver.
-- More than one target: pass the exact serial from `adb devices -l` to `-Device`.
-- Existing installation has a signing conflict: after confirming that its app data is not needed, run `& $adb -s <device-serial> uninstall dev.doroti.testbed`, then run the app again.
-
-After starting the Web runner, open `http://127.0.0.1:5088` in a browser. Android and iOS require a running emulator or simulator, respectively. To run on an Android arm64 device or an iOS arm64 device, change the RID to `-Rid android-arm64` or `-Rid ios-arm64`; a physical iOS device also requires code-signing configuration.
-
-In addition to the .NET SDK and PowerShell 7, Linux requires Qt 6.5 or newer Core/Gui/Widgets/OpenGL, CMake, a C++ compiler, `pkg-config`, Wayland client development files, `wayland-scanner`, and the `wayland` or `xcb` QPA plugin.
-
-Runner projects also support direct .NET commands:
-
-```powershell
-dotnet build ./DorotiTestbedApp/DorotiTestbedApp.csproj -c Release
-dotnet run --project ./DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release
-dotnet run --project ./DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj # MAUI backend
-dotnet run --project ./DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj
-dotnet build ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-x64
-dotnet build ./DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64
-dotnet build ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64
-dotnet build ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64
-dotnet publish ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64
-```
-
-The old `dotnet run --project DorotiTestbedApp.csproj -p:DorotiTarget=...` path fails with `DOROTIAPP100` and points to the platform runner.
-
-## Default native bridge
-
-Every new app contains Android, iOS, native AppKit macOS, and Mac Catalyst native library/binding contracts. The native library does not replace the final application runner. Diagnose, build, or locate one workspace with:
+Android, iOS, AppKit, and Mac Catalyst include app-owned native libraries and bindings.
+The default ABI provides `platformInfo`, `echo`, and UI-thread callbacks; it is separate from the final app runner.
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native doctor -App ./DorotiTestbedApp -Platform android
@@ -346,34 +236,68 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native build -App ./DorotiTestbedA
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native open -App ./DorotiTestbedApp -Platform ios
 ```
 
-`native open` prints the Android Studio/Xcode project path; add `-Launch` only when the IDE should actually open. The bridge ABI provides `platformInfo`, `echo`, and UI-thread callback operations.
+`native open` prints the Android Studio/Xcode project path. Add `-Launch` to open the IDE too.
 
-## System dark mode and color palettes
+### Project layout and resources
 
-The demo passes light and dark `ThemeData` values plus `ThemeMode.system` to `MaterialApp`. Both palettes come from `ColorScheme.CreateFromSeed`, and widgets consume the active roles through `Theme.of(context).colorScheme`. The window configuration's `backgroundColor` and `darkBackgroundColor` follow the same light/dark transition.
+| Path | Purpose |
+| --- | --- |
+| `Program.cs`, `src/`, `assets/` | Shared startup, widget tree, and app resources |
+| `doroti-workspace.json` | Platform aliases and runner paths |
+| `windowsappsdk/`, `windows/` | Windows App SDK and independent MAUI runners |
+| `web/` | WebAssembly Worker, TypeScript, and `wwwroot` |
+| `android/`, `ios/` | Mobile runners, native projects, and bindings |
+| `macos/` | Separate AppKit/Mac Catalyst runners, bindings, and manifests |
+| `linux/` | Managed runner and CMake/Qt 6 C ABI shim |
 
-On Linux the demo requests `WindowBackdropMode.acrylic` with `WindowBackdropFallback.transparent`. A Wayland compositor that advertises `ext-background-effect-v1` or the legacy KDE blur protocol receives a full-client-surface native blur request; otherwise, the configured transparent fallback is used. The alpha of the two background colors controls the acrylic tint strength. This protocol path is implemented, but visual acceptance of compositor blur remains `notVerified`.
+Generated bootstrap and plugin registration live in `Doroti.Generated` below each runner's `obj` directory.
+Platform icons, splash assets, entitlements, outputs, and lock files stay in their owning platform directory.
+The application ID is `dev.doroti.testbed`, or `dev.doroti.testbed.macos` for AppKit.
 
-## Support and evidence status
+Local WebP images and MaterialIcons/Roboto regular, medium, and bold fonts are embedded resources.
+See [sample source](src/MaterialSample) and [fonts](assets/fonts) for licenses and provenance.
+Image themes access `flutter.github.io`; the URL image demo accesses `plus.unsplash.com`.
+Failed theme loads preserve the last successful theme and offer Retry.
+Display images are decoded at up to `1024 × DPR` pixels wide while preserving aspect ratio;
+`Extract colors` uses the original image for palette extraction.
+External-link success means the host accepted the request; Web popup blocking is shown in the UI.
 
-The default Windows route is the self-contained Windows App SDK 2.4 `HwndExactCpp` host with the Vulkan/Skia presenter. Native C++ owns HWNDs and input/lifecycle ingress; managed code owns Doroti scenes and GPU raster/presentation. ANGLE remains an explicit alternative renderer.
+## Troubleshooting
 
-Vulkan copies its retained backing into three exact-LUID D3D11 shared textures and presents through Windows Presentation. The top-level HWND DirectComposition target owns the visible raster. See the [September 5 history](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md) for current resize behavior, earlier failures, and observed results.
+### Connect an Android device or emulator
 
-On the tested AMD Radeon 780M, three focused top-level-owner `TopLeft` reverse-600 ms runs plus separate `Left` and `Right` regressions passed with zero validation-background gaps, exact final geometry, monotonic markers, and clean resources. The source-built `TopLeft` run reached 151.49 presentations/s with 7.65 ms accepted-to-next-present p95. Earlier retained-child and synchronous post-geometry failures remain historical evidence rather than being reclassified. Automated capture and terminal evidence do not substitute for post-fix physical scan-out, human resize, IME, accessibility, larger-monitor memory/startup, or the full DPI/GPU matrix; Vulkan remains opt-in and the latest left/top human recheck is `notVerified`. See [ADR-027](../Doroti/docs/adr/ADR-027-windows-optional-vulkan.md), [archived resize investigation](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md), and the [implementation checkpoint](../history/26-09-02/windows-appsdk-vulkan-implementation-checkpoint.md).
+Add `adb` from Android SDK Platform Tools to `PATH`. With Android Studio's default Windows installation,
+you can also run `& "$env:LOCALAPPDATA/Android/Sdk/platform-tools/adb.exe" devices -l`.
 
-Ordinary `acrylic` and compatibility `experimentalAcrylic` use the same Acrylic implementation for the selected presenter. Default Vulkan composites its premultiplied Presentation surface over a non-topmost `DesktopWindowTarget` and `DesktopAcrylicController`. ANGLE uses ContentIsland/Composition Swapchain. Full GPU/DPI/refresh and physical IME/accessibility qualification remains incomplete.
+1. On a physical device, enable **USB debugging** in Developer options, connect USB, and accept the RSA prompt.
+2. For an emulator, check the system image ABI in Android Studio's **Device Manager** and start it first.
+3. Check for the `device` status in `adb devices -l`. Pass the serial in its first column to the sample command's `--device`.
+4. Check the ABI with `adb -s device-serial shell getprop ro.product.cpu.abi` and select `android-arm64` or `android-x64`.
 
-Earlier Windows physical resize acceptance is superseded for Vulkan left/top by the latest user report; the repaired binary needs a fresh human drag before that scope can return to PASS. Strict synthetic input qualification and pixel/cadence failures remain failures rather than being reclassified by earlier acceptance. Automated input passed; automated IME/UIA and lifecycle/device coverage is partial. Physical Korean IME candidate/caret behavior, Narrator/Accessibility Insights, untested edge/speed/DPI/monitor combinations, device removal, installer/MSIX, and shutdown at every wait point remain `notVerified`. The explicit MAUI backend has its own evidence boundary and never serves as a silent fallback. The last full product-solution Release run on Windows failed after the Windows target passed because a macOS project invoked unavailable `sips`; use the target-scoped commands above for Windows work.
+Replace `device-serial`, `device-ip`, and ports with actual values.
+For wireless connections on Android 11 or later, use the address shown under
+**Wireless debugging → Pair device with pairing code**. Pairing and connection ports can differ.
 
-Automated builds include native AppKit and Mac Catalyst independently. The AppKit backend is experimental and not Microsoft-supported; its minimum OS is macOS 14 and its first RID is `osx-arm64`.
+```powershell
+adb pair device-ip:pairing-port
+adb connect device-ip:debug-port
+adb devices -l
+```
 
-The archived AppKit record proves native launch, the visible Material gallery, Metal completion-based presentation, zero CPU readback/full-frame copies, a clean AppKit-only bundle, and all three native bridge operations. Pointer/keyboard/IME, accessibility, resize/fullscreen/scale migration, Release live behavior, and signing/notarization/store acceptance remain `notVerified`. Mac Catalyst evidence is never reported as true AppKit macOS evidence.
+| Symptom | Check / fix |
+| --- | --- |
+| `unauthorized` | Unlock the device, accept the RSA prompt, and reconnect USB |
+| `offline` | Run `adb kill-server`, then `adb start-server`, and reconnect |
+| Not listed | Check USB debugging, data cable, USB mode, and the manufacturer's Windows driver |
+| Multiple targets | Supply the exact serial with `--device`, or `-Device` for the workspace CLI |
+| Signing conflict | If you can discard the app's data, run `adb -s device-serial uninstall dev.doroti.testbed` and reinstall |
 
-Linux Qt evidence covers the real Material gallery under Wayland, an XWayland/xcb input smoke, swap terminal ACK, 20/30 resize cycles, the semantics tree, and framework-dependent/self-contained publish on a Kubuntu 26.04 VMware guest. Physical Linux, a real X11 session, Korean IME/Orca, forced context recreation, visual acrylic-blur acceptance, and long-running performance remain `notVerified`.
+`android-x64` Release uses a JIT/interpreter compatibility path to avoid a Mono AOT startup issue.
+Validate arm64 Release AOT separately on a physical `android-arm64` device.
 
-See [ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md), [ADR-025](../Doroti/docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md), the archived [platform-runner workspace summary](../history/26-08-19/platform-runner-workspace-summary.md), [AppKit dual-backend summary](../history/26-08-20/macos-appkit-dual-backend-summary.md), and [Linux Qt backend summary](../history/26-08-20/linux-qt-backend-summary.md).
+### The app opens without the sample
 
-### Direct performance status (2026-09-07)
-
-The default switch and CSS/cache fixes are implemented, but rapid resize and first-interaction latency remain unresolved. The user observed partial improvement with remaining delay. See the [execution report](../history/26-09-07/web-direct-default-execution.md) for failed gates and unverified coverage.
+- Native: close the app and rerun with `-e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none`.
+- Android: rebuild and reinstall without `--no-build` when changing modes.
+- Web: include `dorotiTestbedMode=sample` in the URL. Renderer selection is separate from screen selection.
+- iOS: check that Simulator is running and the `--device` ID is correct. Physical devices also need signing/provisioning.

@@ -1,342 +1,234 @@
 # DorotiTestbedApp
 
-공용 상속 맵은 HAMT, Material 갤러리는 indexed section viewport로 단일화했습니다.
-`?dorotiTestbedMode=sample`로 실행하며 viewport 쿼리·환경변수·HAMT 빌드 플래그가 필요 없습니다.
-Dictionary 복사와 eager·일반 SliverList 갤러리 선택 경로는 제거했습니다.
-[결정·검증 기록](../history/26-09-08/hamt-indexed-unification.md)과
-[viewport 계약](../Doroti/validation/section-viewport/README.md)을 참고하세요.
-확인된 감소는 맵 할당량이며 전체 메모리·물리 지연 기준은 여전히 미검증입니다.
-
 [English](README.md) | **한국어**
 
-DorotiTestbedApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱입니다. 루트 project는 플랫폼 중립이며, `macos`와 `maccatalyst`를 별도 정식 제품으로 둔 7개 runner alias가 있습니다.
+Doroti의 Material 위젯과 플랫폼별 호스트를 확인하는 샘플·진단 앱입니다.
+하나의 공용 C# 앱을 Windows, macOS AppKit, Mac Catalyst, Linux, Android, iOS, Web runner로 실행합니다.
 
-앱 ID는 `dev.doroti.testbed`이며, AppKit은 `dev.doroti.testbed.macos`를 사용합니다. 이름을 변경한 앱은 이전 demo 패키지와 별도로 설치됩니다.
+Material 샘플은 Components, Color, Typography, Elevation, 9개 seed 색상과 6개 이미지 테마,
+로컬·URL 이미지 데모를 제공합니다. **기본 화면은 진단 갤러리**이며, 아래 명령은 샘플 모드를 명시적으로 엽니다.
+
+- [실행 준비](#실행-준비)
+- [플랫폼별 샘플 실행](#material-샘플-모드)
+- [화면과 렌더러 설정](#화면과-렌더러-설정)
+- [빌드와 개발](#빌드와-개발)
+- [문제 해결](#문제-해결)
+
+## 실행 준비
+
+모든 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell 7로 실행합니다.
+macOS/Linux의 기본 셸이 zsh/bash라면 먼저 `pwsh -NoProfile`을 실행하세요.
+.NET SDK는 [global.json](../Doroti/global.json)의 **10.0.400 계열**을 사용하고,
+각 플랫폼에 필요한 workload와 도구는 아래 실행 항목에서 확인하세요.
+
+첫 실행은 패키지 복원과 빌드, 필요한 경우 기기 설치를 포함합니다. 예제는 모두 Release 구성입니다.
+Debug가 필요하면 `dotnet run`은 `-c Debug`, workspace CLI는 `-Configuration Debug`를 지정합니다.
+이미 실행 중인 native 앱은 닫고 다시 실행해야 모드 변경이 적용됩니다.
 
 ## Material 샘플 모드
 
-선택 예제는 해당 부분만 갱신하고, resize에서는 동일한 예제 내용과 내비게이션 구성을 재사용합니다. 측정과 남은 지연 기준 미달은 [상태/resize 후속 기록](../history/26-09-07/web-state-resize-followup.md)을 참조하세요.
+[Windows](#windows-샘플) · [macOS AppKit](#macos-appkit-샘플) · [Mac Catalyst](#mac-catalyst-샘플) · [Linux](#linux-샘플) · [Android](#android-샘플) · [iOS](#ios-샘플) · [Web](#web-샘플)
 
-C# Material 샘플은 [Material 샘플 수용 이력](../history/26-09-07/material-sample-work-summary.md)의 acceptance gate를 검증하는 동안
-명시적 모드로 제공합니다. 기본 화면은 기존 diagnostics이며 renderer 기본값은
-Windows Vulkan, Web SkiaSharp direct Worker입니다.
+Native 앱은 `dotnet run -e`로 앱 프로세스에 `DOROTI_TESTBED_MODE=sample`을 전달합니다.
+Apple/Android에서는 셸 환경변수만 설정하는 것으로 전달을 보장할 수 없습니다.
+함께 지정하는 `DOROTI_RESIZE_FIXTURE=none`은 샘플보다 우선하는 F0/F1/F2 진단 fixture를 해제합니다.
+Web은 URL로 모드를 선택합니다.
 
-아래 명령은 **저장소 루트 `DorotiLab`**에서 PowerShell 7로 실행합니다.
-필요한 SDK와 도구는 [빠르게 실행하기](#빠르게-실행하기)를 참고하세요.
+### Windows 샘플
 
-### Windows에서 샘플 실행
+Windows 호스트에서 실행합니다. 기본 Windows App SDK/Vulkan runner입니다.
 
 ```powershell
-# 이전에 설정한 resize fixture가 샘플보다 우선하지 않도록 해제
-Remove-Item Env:DOROTI_RESIZE_FIXTURE -ErrorAction SilentlyContinue
-$env:DOROTI_TESTBED_MODE = 'sample'
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
+dotnet run --project ./DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release `
+  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
 ```
 
-첫 실행은 복원·빌드 후 샘플 창을 엽니다. 환경변수는 현재 PowerShell 세션과
-그 세션에서 시작한 앱에 적용되며, 이미 실행 중인 앱의 화면을 바꾸지는 않습니다.
+독립 MAUI backend를 사용하려면 위 명령의 project를
+`./DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj`로 바꿉니다.
 
-### 브라우저에서 샘플 실행
+### macOS AppKit 샘플
 
-먼저 Web 서버를 실행하고 이 터미널을 열어 둡니다.
+Apple Silicon, macOS 14 이상과 호환되는 Xcode/macOS workload가 필요합니다.
+`macos`는 native AppKit runner입니다.
+
+```powershell
+dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64 `
+  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+```
+
+### Mac Catalyst 샘플
+
+Apple Silicon macOS에서 Xcode/Mac Catalyst workload로 실행하는 UIKit runner입니다.
+
+```powershell
+dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 `
+  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+```
+
+### Linux 샘플
+
+Linux x64 호스트에서 실행합니다. Qt 6.5 이상 Core/Gui/Widgets/OpenGL, CMake,
+C++ compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`,
+`wayland` 또는 `xcb` QPA plugin이 필요하며 native shim도 함께 빌드합니다.
+
+```powershell
+dotnet run --project ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64 `
+  -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+```
+
+### Android 샘플
+
+Android workload, Android SDK와 OpenJDK 17–21을 준비하고 에뮬레이터를 먼저 시작하거나
+USB 디버깅을 허용한 기기를 연결합니다. 연결 절차는 [Android 연결 안내](#android-실기기와-에뮬레이터-연결)를 참고하세요.
+
+```powershell
+# 실행 가능한 기기의 ID 확인
+dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj --list-devices
+
+# x64 에뮬레이터: emulator-5554를 실제 ID로 변경
+dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-x64 `
+  --device emulator-5554 -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+```
+
+arm64 실기기 또는 arm64 에뮬레이터는 `-r android-arm64`로 바꾸고 해당 `--device` ID를 지정합니다.
+빠른 개발 빌드는 `-c Debug`를 사용합니다. Android 환경변수는 빌드에도 반영되므로
+모드를 바꿀 때 `--no-build`를 사용하지 마세요.
+
+### iOS 샘플
+
+Apple Silicon macOS에서 Xcode/iOS workload를 준비하고 Simulator를 먼저 시작합니다.
+
+```powershell
+# 실행 가능한 시뮬레이터/기기의 ID 확인
+dotnet run --project ./DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj --list-devices
+
+# simulator-udid를 위 목록의 실제 ID로 변경
+dotnet run --project ./DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64 `
+  --device simulator-udid -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+```
+
+Intel Mac의 시뮬레이터는 `-r iossimulator-x64`를 사용합니다. 실제 iPhone/iPad는
+`-r ios-arm64`와 해당 기기의 ID를 지정하며 별도 코드 서명·프로비저닝 설정이 필요합니다.
+여기서 `--device`는 `dotnet run` 옵션입니다. `doroti.ps1`의 `-Device`는 현재 Android 전용입니다.
+
+### Web 샘플
+
+서버를 실행하고 이 터미널을 열어 둡니다.
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release
 ```
 
-서버가 시작되면 브라우저에서
-[Material 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample)를 누릅니다.
-주소는 `http://127.0.0.1:5088/?dorotiTestbedMode=sample`입니다.
-Web에서는 셸의 `DOROTI_TESTBED_MODE` 대신 **URL의 `dorotiTestbedMode`**가 화면을
-선택합니다. renderer 옵션을 생략하면 기본 SkiaSharp direct Worker로 실행됩니다.
-서버를 종료하려면 실행한 터미널에서 `Ctrl+C`를 누릅니다.
+브라우저에서 [Material 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample)를 누릅니다.
+Web은 환경변수 대신 **URL의 `dorotiTestbedMode=sample`**로 화면을 선택합니다.
+renderer 옵션을 생략하면 기본 SkiaSharp direct Worker/WebGPU로 실행됩니다.
+서버는 실행한 터미널에서 `Ctrl+C`로 종료합니다.
 
-### 기존 진단 화면으로 실행
+## 화면과 렌더러 설정
 
-Windows에서는 샘플 창을 닫고 같은 터미널에서 다음 명령으로 다시 실행합니다.
+### 진단 화면으로 돌아가기
+
+Native 앱을 닫고 위 명령의 `-e DOROTI_TESTBED_MODE=sample`을
+`-e DOROTI_TESTBED_MODE=diagnostics`로 바꿔 다시 실행합니다.
+`-e`는 현재 셸의 환경변수를 변경하지 않습니다. 이전에 직접 설정한 값은 다음과 같이 해제합니다.
 
 ```powershell
-$env:DOROTI_TESTBED_MODE = 'diagnostics'
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
-# 이후 실행에서 모드 환경변수를 사용하지 않으려면:
 Remove-Item Env:DOROTI_TESTBED_MODE -ErrorAction SilentlyContinue
+Remove-Item Env:DOROTI_RESIZE_FIXTURE -ErrorAction SilentlyContinue
 ```
 
-Web에서는 서버를 다시 시작하지 않고
-[진단 화면 열기](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics)를 누릅니다.
-모드 옵션 없는 `http://127.0.0.1:5088/`도 diagnostics입니다.
-F0/F1/F2 resize fixture를 명시하면 sample보다 우선합니다.
+Web은 서버 재시작 없이 아래 URL로 화면을 바꿉니다. 모드를 생략해도 진단 화면이 열립니다.
 
-새 샘플은 불투명 Material surface 위에 Components,
-Color, Typography, Elevation과 9 seed·6 image 테마, local/URL Image demo를 제공합니다.
-이미지 테마는 `flutter.github.io`, URL 데모는 `plus.unsplash.com` 접근이 필요합니다.
-테마 로드 실패 시 마지막 성공 테마를 유지하고 Retry를 제공합니다. 로컬 WebP와
-MaterialIcons·Roboto regular/medium/bold는 embedded resource이며 라이선스·출처는
-[src/MaterialSample](src/MaterialSample), [assets/fonts](assets/fonts)에 있습니다.
+### Web 렌더러와 측정 옵션
 
-외부 HTTP(S) 링크는 view 범위 URL launcher를 사용합니다. 성공 결과는 host의
-요청 수락을 뜻하며 Web popup 차단은 사용자에게 표시합니다. Native URL 실행,
-physical display·IME·다른 OS의 실기기 검증은 별도입니다.
-실행 명령과 검증 범위는 [sample validation](../Doroti/validation/material-sample/README.md)을 참고하세요.
-
-## 빠르게 실행하기
-
-.NET 10 SDK와 PowerShell 7을 설치합니다. 그 뒤 저장소 루트에서 다음 명령을 실행합니다. 첫 실행은 필요한 package를 복원하고 runner를 빌드하므로 시간이 걸릴 수 있습니다.
-
-```powershell
-# Windows 기본 backend로 실행
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
-
-# 선택 사항: Windows 11 24H2+에서 기본 Vulkan + Acrylic의 GPU 직접 지정
-$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # 또는 정확하거나 유일한 다른 device 이름 조각
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -Configuration Release
-
-# Web으로 실행(기본 Release 구성)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release
-```
-
-### URL로 Material 샘플 비교하기
-
-Web runner가 시작되면 다음 링크를 브라우저에서 엽니다.
-
-| 화면 / 렌더러 | URL |
+| 화면 / 렌더러 | 열기 |
 | --- | --- |
-| 기본 WebGPU로 Material 샘플 실행 | [기본 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
-| 명시적 WebGL2로 Material 샘플 실행 | [SkiaSharp direct 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
-| 기본 렌더러로 진단 화면 실행 | [진단 화면 열기](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
+| Material 샘플 / 기본 WebGPU | [샘플](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
+| Material 샘플 / WebGL2 | [WebGL2 샘플](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
+| 진단 / 기본 WebGPU | [진단](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
+| 진단 / WebGL2 | [WebGL2 진단](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics&dorotiRenderer=worker-direct-webgl) |
 
-`dorotiTestbedMode=sample`은 샘플 화면을, `dorotiRenderer`는 렌더링 backend를
-선택합니다. 같은 샘플을 비교할 때는 두 옵션을 함께 사용합니다.
-`dorotiTestbedMode`를 생략하면 진단 화면이 열리고, `dorotiRenderer`를 생략하면
-기본값인 `worker-direct-webgpu`를 사용합니다.
+`dorotiRenderer`는 `worker-direct-webgpu`(기본값 및 `auto`) 또는 `worker-direct-webgl`을 선택합니다.
+현재 Web 호스트는 SkiaSharp WASM과 Microsoft.TypeScript.MSBuild를 사용하며 CanvasKit/npm 복원은 필요 없습니다.
+렌더러를 다시 빌드했다면 runner를 재시작하고 페이지를 새로고침하세요.
+Components → Communication → Progress indicators의 재생 버튼으로 애니메이션을 확인할 수 있습니다.
 
-Components의 Communication → Progress indicators에서 재생 버튼을 눌러
-애니메이션을 확인할 수 있습니다. 렌더러를 다시 빌드했다면 runner를 재시작하고
-페이지를 새로고침하여 새 빌드를 불러옵니다.
+측정할 때만 샘플 URL에 다음 쿼리를 추가합니다.
 
+| 쿼리 | 용도 |
+| --- | --- |
+| `dorotiProgressScope=broad` | 기본 `local` 갱신과 화면 전체 재빌드 비교 |
+| `dorotiResizeDiagnostics=1` | framework 작업량·타입 계측 |
+| `dorotiResizeDiagnostics=0&dorotiInputMarkers=1` | 최소 입력→새 scene commit 계측; 실제 화면 표시 지연과는 다름 |
 
-progress 데모는 Flutter reference처럼 별도 State에서 갱신합니다. direct Worker에서
-기존 화면 전체 재빌드와 대조하려면 `&dorotiProgressScope=broad`를 추가합니다.
-기본값은 `local`입니다. `dorotiResizeDiagnostics=1`은 크기 제한이 있는 framework
-작업량·타입 계측도 켭니다. 최소 입력→새 scene commit 측정에는
-`dorotiResizeDiagnostics=0&dorotiInputMarkers=1`을 사용합니다. commit 알림은 실제
-화면 표시 지연과 다릅니다. 남은 성능 FAIL과 검증 한계는
-[framework 조사 실행 결과](../history/26-09-07/web-framework-work2-results.md)에 기록합니다.
+### Windows GPU와 Acrylic
 
-Image demo의 표시용 이미지는 너비 `1024 × DPR`로 축소 디코딩하며 종횡비를
-유지합니다. 원본보다 확대하지 않고, Contain/Cover와 스크롤은 같은 캐시를 사용합니다.
-`Extract colors`를 누를 때만 원본으로 색상을 추출합니다. 이미지 처리 부담은 줄였지만
-첫 구간 생성과 스크롤 재시작의 성능 수용은 아직 PARTIAL입니다.
-[이미지 스크롤 후속 결과](../history/26-09-07/web-image-scroll-followup.md)를 참고하세요.
+Windows App SDK의 기본 렌더러는 Vulkan이며 ANGLE을 명시적으로 선택할 수 있습니다.
+**Material 샘플은 불투명 surface**를 사용합니다. Acrylic은 진단 화면에서 확인하며,
+Windows 11 24H2 이상에서는 일반 `WindowBackdropMode.acrylic`에 별도 실험 플래그가 필요 없습니다.
 
-### 그 밖의 렌더러 URL
+| 환경변수 | 값 / 동작 |
+| --- | --- |
+| `DOROTI_WINDOWS_VULKAN_DEVICE` | 정확하거나 유일한 GPU 이름 일부(예: `AMD`); Vulkan에서 GPU 선호도보다 우선 |
+| `DOROTI_WINDOWS_GPU_PREFERENCE` | `NoPreference`(기본), `LowPowerPreference`, `HighPerformancePreference`; Vulkan/ANGLE 공통 |
+| `DOROTI_WINDOWS_PRESENTER` | `Vulkan`(기본) 또는 `AngleD3D11` |
 
-다음 주소는 선택한 backend로 진단 화면을 엽니다.
+예를 들어 위 Windows 명령에 `-e DOROTI_WINDOWS_GPU_PREFERENCE=HighPerformancePreference`를 추가합니다.
+이전에 `$env:`로 지정했다면 `Remove-Item Env:변수이름`으로 해제한 뒤 앱을 다시 실행하세요.
+`experimentalAcrylic`은 이전 동작을 재현하는 호환 옵션입니다.
 
-- 기본 자동 선택: `http://127.0.0.1:5088`
-- 렌더 Worker의 direct WebGL2 canvas: `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
-- 렌더 Worker의 direct WebGPU canvas(기본값): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgpu`
+### 시스템 다크 모드와 색 팔레트
 
-`worker-direct-webgl`은 SkiaSharp WASM을 사용합니다. Testbed는 main에서 runtime을 초기화하고 같은 runtime의 렌더 Worker가 layout/Skia/visible Offscreen WebGL2를 소유합니다. DOM/input/IME/semantics는 main에 있으며 초기화 오류를 보고합니다.
+`MaterialApp`의 light/dark `ThemeData`와 `ThemeMode.system`으로 시스템 테마를 따릅니다.
+팔레트는 `ColorScheme.CreateFromSeed`로 만들며 위젯은 `Theme.of(context).colorScheme`을 사용합니다.
+창의 `backgroundColor`와 `darkBackgroundColor`도 같은 전환을 따릅니다.
 
-Web host source build는 NuGet의 SkiaSharp WASM과 Microsoft.TypeScript.MSBuild를 사용합니다. CanvasKit npm 복원과 별도 JS/WASM 자산은 제거되었습니다.
+Linux의 진단 창은 Acrylic과 transparent fallback을 요청합니다. Wayland compositor가
+`ext-background-effect-v1` 또는 구형 KDE blur protocol을 제공하면 native blur를 요청하고,
+없으면 transparent fallback을 사용합니다.
 
-`auto`와 renderer 옵션 없는 URL은 `worker-direct-webgpu`를 선택합니다. 이번 기본값 변경은 남은 성능·물리 표시·IME·접근성 검증의 완료를 의미하지 않습니다.
+## 빌드와 개발
 
-CanvasKit removal and prior qualification evidence: [archived record](../history/26-09-08/web-canvaskit-retired-readme.md).
+### Workspace CLI
 
-앱을 실행한 터미널에서 `Ctrl+C`로 종료합니다.
-
-## 구조
-
-- `Program.cs`, `src/`, `assets/`: 공용 startup, widget tree, 앱 asset
-- `doroti-workspace.json`: `macos`(AppKit)와 `maccatalyst`(UIKit)를 구분하는 runner 경로
-- `windowsappsdk/`: Windows App SDK 2.4 `HwndExactCpp` child-HWND runner와 managed Vulkan/Skia presentation (ANGLE selectable) 경로입니다.
-- `windows/`: 정식 MAUI backend runner와 package identity
-- `web/`: WebAssembly Worker runner, TypeScript source, `wwwroot`
-- `android/`: .NET Android/MAUI runner와 기본 Gradle AAR/.NET binding
-- `ios/`: .NET iOS/MAUI runner와 독립 Xcode framework/binding
-- `macos/`: native AppKit/osx-arm64와 Mac Catalyst/maccatalyst-arm64 runner, binding, manifest, lock file
-- `linux/`: managed runner와 앱 소유 CMake/Qt 6 C ABI shim
-
-생성 bootstrap과 plugin registration은 각 runner의 `obj/<rid>/Doroti.Generated` 아래에만 만들어집니다. 플랫폼 icon, splash, manifest, entitlement, native source, output, lock file은 해당 플랫폼 폴더가 소유합니다.
-
-## 명령
-
-저장소 루트에서 실행합니다. workspace CLI는 `doroti-workspace.json`에서 runner를 선택합니다.
-`build`, `run`, `publish`는 기본적으로 Release 구성을 사용하며, 디버깅이 필요할 때만 `-Configuration Debug`를 명시합니다.
-
-`-Configuration`은 `Debug` 또는 `Release`를 받으며, 생략하면 `Release`입니다. 선택한 값은 Web runner의 `dotnet run --configuration <값>`에 그대로 전달됩니다.
-
-```powershell
-# 기본값과 동일한 Release 빌드로 Web 실행
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Release
-
-# Debug 빌드로 Web 실행
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web -Configuration Debug
-```
-
-Web의 `launchSettings.json`에 지정된 `ASPNETCORE_ENVIRONMENT=Development`는 ASP.NET Core의 실행 환경입니다. 이는 컴파일 최적화와 디버그 심볼을 선택하는 `Debug`/`Release` 빌드 구성과 별개이므로, 기본 실행은 **Release 빌드 + Development 실행 환경**입니다. 실행 시 terminal에 출력되는 `Doroti artifact: configuration=...`에서 실제 선택된 빌드 구성을 확인할 수 있습니다.
+[doroti-workspace.json](doroti-workspace.json)이 플랫폼별 runner 경로를 정의합니다.
+CLI의 `build`, `run`, `publish`는 기본 Release 구성입니다. 샘플 모드를 확실히 전달하려면
+위 플랫폼별 `dotnet run -e` 명령을 사용하세요.
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 doctor -App ./DorotiTestbedApp -Platform all
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform windows
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform macos -Rid osx-arm64
+pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform macos -Rid osx-arm64
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 publish -App ./DorotiTestbedApp -Platform web
 ```
 
 ### 플랫폼별 실행
 
-아래 명령은 모두 저장소 루트에서 실행합니다. Linux runner 명령은 native shim을 함께 빌드하므로 Linux x64 호스트에서 실행해야 합니다.
+위 CLI 예제의 `-Platform`과 `-Rid`를 대상에 맞게 바꿉니다.
 
-```powershell
-# Windows App SDK HwndExactCpp backend (현재 기본값)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
+| 대상 | `-Platform` | `-Rid` / 추가 옵션 |
+| --- | --- | --- |
+| Windows App SDK | `windows` | 기본값 사용 |
+| Windows MAUI | `windows` | `-WindowsBackend Maui` |
+| macOS AppKit | `macos` | `osx-arm64` |
+| Mac Catalyst | `maccatalyst` | `maccatalyst-arm64` |
+| Linux | `linux` | `linux-x64` |
+| Android | `android` | `android-x64` 또는 `android-arm64`; 기기는 `-Device`로 선택 |
+| iOS | `ios` | `iossimulator-arm64`, `iossimulator-x64` 또는 `ios-arm64` |
+| Web | `web` | 생략 |
 
-# 독립 Windows MAUI backend
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows -WindowsBackend Maui
+Web의 `ASPNETCORE_ENVIRONMENT=Development`는 빌드 구성과 별개입니다.
+기본 실행은 **Release 빌드 + Development 호스팅 환경**이며 CLI 출력의
+`Doroti artifact: configuration=...`에서 빌드 구성을 확인할 수 있습니다.
 
-# Web
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform web
+루트 `DorotiTestbedApp.csproj`는 공용 앱 라이브러리입니다.
+`dotnet run --project DorotiTestbedApp.csproj -p:DorotiTarget=...`는 `DOROTIAPP100`으로 실패하므로
+플랫폼 runner를 지정하세요. 다른 OS의 도구까지 요구하는 전체 solution보다 대상별 빌드를 사용합니다.
 
-# Android x64 에뮬레이터
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform android -Rid android-x64
+### Native bridge
 
-# iOS arm64 시뮬레이터 (Apple Silicon macOS + Xcode)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform ios -Rid iossimulator-arm64
-
-# Native AppKit arm64 (실험 backend, macOS 14+, Apple Silicon)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform macos -Rid osx-arm64
-
-# Mac Catalyst arm64
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform maccatalyst -Rid maccatalyst-arm64
-
-# Linux x64 (Qt 6 + CMake)
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform linux -Rid linux-x64
-```
-
-### Windows Vulkan과 Acrylic 실행
-
-Windows App SDK는 Vulkan이 기본값이며 데모는 일반 `WindowBackdropMode.acrylic`을 요청합니다. Windows 11 24H2 이상에서 별도 실험 플래그 없이 Acrylic이 적용됩니다.
-
-```powershell
-$env:DOROTI_WINDOWS_VULKAN_DEVICE = 'AMD' # 선택 사항: 정확하거나 유일한 GPU 이름 일부
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
-  -App ./DorotiTestbedApp `
-  -Platform windows `
-  -Configuration Release
-```
-
-장치 지정은 생략할 수 있습니다. 기본 `NoPreference`는 시스템 기본 하드웨어 장치를 따릅니다. `DOROTI_WINDOWS_GPU_PREFERENCE`를 `LowPowerPreference` 또는 `HighPerformancePreference`로 지정하면 Windows/DXGI 선호 순서를 적용합니다. Vulkan과 ANGLE에 공통으로 적용하며, Vulkan에서는 명시한 `DOROTI_WINDOWS_VULKAN_DEVICE`가 우선합니다. ANGLE을 명시적으로 사용하려면 `DOROTI_WINDOWS_PRESENTER=AngleD3D11`을 설정합니다. 불투명 창은 앱에서 backdrop을 생략하거나 `WindowBackdropMode.solid`를 요청합니다. `experimentalAcrylic`과 기존 환경변수는 이전 mode 재현을 위해 유지합니다.
-
-장치 이름 대신 GPU 선호도를 지정할 수도 있습니다.
-
-```powershell
-$env:DOROTI_WINDOWS_GPU_PREFERENCE = 'HighPerformancePreference' # 또는 LowPowerPreference
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
-
-# 시스템 기본값으로 복원합니다. Vulkan 장치 이름을 지정했다면 함께 해제합니다.
-Remove-Item Env:DOROTI_WINDOWS_GPU_PREFERENCE -ErrorAction SilentlyContinue
-Remove-Item Env:DOROTI_WINDOWS_VULKAN_DEVICE -ErrorAction SilentlyContinue
-```
-
-### Android 실기기와 에뮬레이터 연결
-
-Android SDK Platform Tools의 `adb`가 필요합니다. Android Studio를 설치했다면 일반적으로 `%LOCALAPPDATA%\Android\Sdk\platform-tools`에 있습니다. `adb`가 `PATH`에 없으면 아래처럼 경로를 지정할 수 있습니다.
-
-```powershell
-$adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
-& $adb version
-& $adb devices -l
-```
-
-목록의 두 번째 열이 `device`이면 실행할 준비가 된 상태입니다. 여러 기기나 에뮬레이터가 연결되어 있으면 첫 번째 열의 serial을 `-Device`에 전달합니다. 연결 대상이 하나뿐이면 `-Device`를 생략해도 됩니다.
-
-#### USB 실기기
-
-1. Android 설정에서 **휴대전화 정보 > 소프트웨어 정보 > 빌드 번호**를 여러 번 눌러 개발자 옵션을 활성화합니다.
-2. **개발자 옵션 > USB 디버깅**을 켜고 PC에 USB로 연결합니다.
-3. 기기에 표시되는 RSA 디버깅 허용 창을 승인한 뒤 `adb devices -l`로 serial을 확인합니다.
-4. 일반적인 arm64 기기는 `android-arm64` RID로 실행합니다.
-
-```powershell
-# ABI 확인
-& $adb -s <device-serial> shell getprop ro.product.cpu.abi
-
-# Release + arm64 AOT 빌드, 설치, 실행
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
-  -App ./DorotiTestbedApp `
-  -Platform android `
-  -Rid android-arm64 `
-  -Configuration Release `
-  -Device <device-serial>
-
-# 빠른 개발용 Debug 실행
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
-  -App ./DorotiTestbedApp `
-  -Platform android `
-  -Rid android-arm64 `
-  -Configuration Debug `
-  -Device <device-serial>
-```
-
-`<device-serial>`은 꺾쇠까지 포함한 문자열이 아니라 `adb devices -l`에 나온 값으로 바꿉니다. 예를 들어 serial이 `R3CY30KZA4B`이면 `-Device R3CY30KZA4B`로 지정합니다.
-
-Android 11 이상에서는 같은 네트워크에서 무선 디버깅도 사용할 수 있습니다. 기기의 **개발자 옵션 > 무선 디버깅 > 페어링 코드로 기기 페어링** 화면에 나온 주소와 포트를 사용합니다. 페어링 포트와 연결 포트는 서로 다를 수 있습니다.
-
-```powershell
-& $adb pair <device-ip>:<pairing-port>
-& $adb connect <device-ip>:<debug-port>
-& $adb devices -l
-```
-
-#### Android 에뮬레이터
-
-Android Studio의 **Device Manager**에서 x86_64 시스템 이미지로 가상 기기를 만들고 먼저 시작합니다. 부팅이 끝나면 보통 `emulator-5554`와 같은 serial로 표시됩니다.
-
-```powershell
-& $adb devices -l
-
-pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 run `
-  -App ./DorotiTestbedApp `
-  -Platform android `
-  -Rid android-x64 `
-  -Device emulator-5554
-```
-
-현재 `android-x64` 에뮬레이터 Release는 Mono AOT 시작 문제를 피하기 위해 JIT/인터프리터 호환 경로를 사용합니다. 실제 arm64 Release AOT 동작은 `android-arm64` 실기기에서 확인합니다.
-
-#### 연결 문제 해결
-
-- `unauthorized`: 기기 잠금을 해제하고 RSA 허용 창을 승인한 뒤 USB를 다시 연결합니다.
-- `offline`: `& $adb kill-server`와 `& $adb start-server`를 실행하고 기기 또는 에뮬레이터를 다시 연결합니다.
-- 목록에 없음: USB 연결 모드, USB 디버깅, 케이블의 데이터 지원 여부와 Windows 제조사 USB 드라이버를 확인합니다.
-- 대상이 둘 이상이라는 오류: `adb devices -l`의 정확한 serial을 `-Device`에 지정합니다.
-- 기존 설치와 서명이 충돌함: 필요한 앱 데이터가 없는지 확인한 다음 `& $adb -s <device-serial> uninstall dev.doroti.testbed`로 기존 앱을 제거하고 다시 실행합니다.
-
-Web runner가 시작되면 브라우저에서 `http://127.0.0.1:5088`을 엽니다. Android와 iOS는 각각 실행 중인 에뮬레이터 또는 시뮬레이터가 필요합니다. Android arm64 기기와 iOS arm64 기기에서 실행하려면 각각 `-Rid android-arm64`, `-Rid ios-arm64`로 바꾸며, iOS 실제 기기는 별도의 코드 서명 설정이 필요합니다.
-
-Linux에는 .NET SDK와 PowerShell 7 외에 Qt 6.5 이상 Core/Gui/Widgets/OpenGL, CMake, C++ compiler, `pkg-config`, Wayland client 개발 파일, `wayland-scanner`, `wayland` 또는 `xcb` QPA plugin이 필요합니다.
-
-runner를 직접 지정해도 됩니다.
-
-```powershell
-dotnet build ./DorotiTestbedApp/DorotiTestbedApp.csproj -c Release
-dotnet run --project ./DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAppSdk.csproj -c Release
-dotnet run --project ./DorotiTestbedApp/windows/DorotiTestbedApp.Windows.csproj # MAUI backend
-dotnet run --project ./DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj
-dotnet build ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-x64
-dotnet build ./DorotiTestbedApp/ios/DorotiTestbedApp.iOS.csproj -c Release -r iossimulator-arm64
-dotnet build ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64
-dotnet build ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64
-dotnet publish ./DorotiTestbedApp/linux/DorotiTestbedApp.Linux.csproj -c Release -r linux-x64
-```
-
-예전 `dotnet run --project DorotiTestbedApp.csproj -p:DorotiTarget=...` 경로는 `DOROTIAPP100`으로 실패하면서 새 runner 경로를 안내합니다.
-
-## 기본 native bridge
-
-새 앱에는 Android, iOS, native AppKit macOS, Mac Catalyst native library와 binding project가 기본으로 포함됩니다. Native library는 최종 앱 runner를 대체하지 않습니다.
+Android, iOS, AppKit, Mac Catalyst는 앱 소유 native library와 binding을 포함합니다.
+기본 ABI는 `platformInfo`, `echo`, UI-thread callback을 제공하며 최종 앱 runner와 별개입니다.
 
 ```powershell
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native doctor -App ./DorotiTestbedApp -Platform android
@@ -344,34 +236,68 @@ pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native build -App ./DorotiTestbedA
 pwsh -NoProfile -File ./Doroti/eng/doroti.ps1 native open -App ./DorotiTestbedApp -Platform ios
 ```
 
-`native open`은 Android Studio/Xcode project 경로만 출력하며 실제 IDE 실행은 `-Launch`를 명시했을 때만 합니다. 기본 ABI는 `platformInfo`, `echo`, UI-thread callback을 제공합니다.
+`native open`은 Android Studio/Xcode 프로젝트 경로를 출력합니다. IDE도 열려면 `-Launch`를 추가합니다.
 
-## 시스템 다크 모드와 색 팔레트
+### 프로젝트 구조와 리소스
 
-데모는 `MaterialApp`에 light/dark `ThemeData`와 `ThemeMode.system`을 전달합니다. 두 palette는 `ColorScheme.CreateFromSeed`로 만들며 현재 widget은 `Theme.of(context).colorScheme`의 role을 사용합니다. Window configuration의 `backgroundColor`와 `darkBackgroundColor`도 같은 light/dark 전환을 따릅니다.
+| 경로 | 역할 |
+| --- | --- |
+| `Program.cs`, `src/`, `assets/` | 공용 시작 코드, 위젯 트리, 앱 리소스 |
+| `doroti-workspace.json` | 플랫폼 alias와 runner 경로 |
+| `windowsappsdk/`, `windows/` | Windows App SDK와 독립 MAUI runner |
+| `web/` | WebAssembly Worker, TypeScript, `wwwroot` |
+| `android/`, `ios/` | 모바일 runner, native 프로젝트, binding |
+| `macos/` | 별도 AppKit·Mac Catalyst runner, binding, manifest |
+| `linux/` | managed runner와 CMake/Qt 6 C ABI shim |
 
-Linux 데모는 `WindowBackdropMode.acrylic`과 `WindowBackdropFallback.transparent`를 요청합니다. Wayland compositor가 `ext-background-effect-v1` 또는 구형 KDE blur protocol을 제공하면 전체 client surface에 native blur를 요청하고, 제공하지 않으면 설정한 transparent fallback을 사용합니다. 두 background color의 alpha는 acrylic tint 강도를 결정합니다. 이 protocol 경로는 구현되어 있지만 실제 compositor blur의 시각 acceptance는 아직 `notVerified`입니다.
+생성 bootstrap·plugin registration은 각 runner의 `obj` 아래 `Doroti.Generated`에 위치합니다.
+플랫폼별 icon, splash, entitlement, 출력과 lock 파일은 해당 플랫폼 폴더가 소유합니다.
+앱 ID는 `dev.doroti.testbed`, AppKit은 `dev.doroti.testbed.macos`입니다.
 
-## 지원과 evidence 상태
+로컬 WebP와 MaterialIcons·Roboto regular/medium/bold는 embedded resource입니다.
+라이선스·출처는 [샘플 소스](src/MaterialSample)와 [폰트](assets/fonts)를 참고하세요.
+이미지 테마는 `flutter.github.io`, URL 이미지 데모는 `plus.unsplash.com`에 접근합니다.
+테마 로드 실패 시 마지막 성공 테마를 유지하며 Retry로 재시도합니다.
+표시용 이미지는 종횡비를 유지해 최대 너비 `1024 × DPR`로 디코딩하고,
+`Extract colors`를 누를 때 원본으로 색상을 추출합니다.
+외부 링크 실행 결과는 호스트의 요청 수락을 뜻하며, Web 팝업 차단은 화면에 표시합니다.
 
-Windows 기본 경로는 self-contained Windows App SDK 2.4 `HwndExactCpp` host와 Vulkan/Skia presenter입니다. Native C++은 HWND와 input/lifecycle ingress를, managed code는 Doroti scene과 GPU raster/presentation을 소유합니다. ANGLE은 명시적 대체 renderer로 유지합니다.
+## 문제 해결
 
-Vulkan은 retained backing을 exact-LUID D3D11 shared texture 3개로 복사하고 Windows Presentation으로 표시합니다. Top-level HWND의 DirectComposition target이 visible raster를 소유합니다. 현재 resize 동작과 이전 실패, 관찰 결과는 [9월 5일 기록](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md)을 참조합니다.
+### Android 실기기와 에뮬레이터 연결
 
-AMD Radeon 780M에서 top-level owner `TopLeft` reverse 600 ms 3회와 별도 `Left`/`Right` 회귀가 validation-background gap 0, exact final geometry, 단조 증가 marker와 정상 resource accounting을 통과했습니다. Source-built `TopLeft`는 151.49 presentations/s와 accepted→next-present p95 7.65 ms를 기록했습니다. 이전 retained-child와 synchronous post-geometry 실패는 삭제하거나 PASS로 바꾸지 않고 history로 유지합니다. 자동 capture/terminal evidence는 수정 뒤 physical scan-out, 사람 resize, IME/accessibility, 큰 monitor의 memory/startup과 전체 DPI/GPU matrix를 대신하지 않습니다. Vulkan은 opt-in이며 최신 left/top 사람 재확인은 `notVerified`입니다. [ADR-027](../Doroti/docs/adr/ADR-027-windows-optional-vulkan.md), [보관된 창 조절 조사](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md), [구현 체크포인트](../history/26-09-02/windows-appsdk-vulkan-implementation-checkpoint.md)를 참고하세요.
+Android SDK Platform Tools의 `adb`를 `PATH`에 추가합니다. Windows에서 Android Studio의 기본 설치를
+사용한다면 `& "$env:LOCALAPPDATA/Android/Sdk/platform-tools/adb.exe" devices -l`로도 확인할 수 있습니다.
 
-일반 `acrylic`과 호환 `experimentalAcrylic`은 선택된 presenter의 같은 Acrylic 구현을 사용합니다. 기본 Vulkan은 non-topmost `DesktopWindowTarget`과 `DesktopAcrylicController` 위에 premultiplied Presentation surface를 합성합니다. ANGLE은 ContentIsland/Composition Swapchain을 사용합니다. 전체 GPU/DPI/주사율 및 물리 IME/접근성 검증은 완료되지 않았습니다.
+1. 실기기는 개발자 옵션의 **USB 디버깅**을 켜고 USB로 연결한 뒤 RSA 허용 창을 승인합니다.
+2. 에뮬레이터는 Android Studio의 **Device Manager**에서 시스템 이미지의 ABI를 확인하고 먼저 시작합니다.
+3. `adb devices -l`의 상태가 `device`인지 확인합니다. 첫 열의 serial을 샘플 명령의 `--device`에 전달합니다.
+4. `adb -s device-serial shell getprop ro.product.cpu.abi`로 ABI를 확인하고 `android-arm64` 또는 `android-x64`를 선택합니다.
 
-과거 Windows 실제 resize acceptance 중 Vulkan 좌·상단 범위는 최신 사용자 보고로 supersede됐으며, 수정 binary를 사람이 다시 drag하기 전에는 PASS로 되돌리지 않습니다. Strict synthetic input qualification과 pixel/cadence FAIL도 과거 acceptance로 재분류하지 않습니다. 자동 input은 PASS했고 IME/UIA 및 lifecycle/device는 automated partial 범위입니다. 실제 한글 IME 후보창/caret, Narrator/Accessibility Insights, 미실행 edge/speed/DPI/monitor 조합, device removal, installer/MSIX, 각 wait 지점 shutdown은 `notVerified`입니다. 명시적 MAUI backend는 별도 evidence 경계를 가지며 silent fallback으로 사용하지 않습니다. 마지막 Windows 전체 product solution Release 실행은 Windows target 통과 뒤 macOS project가 없는 `sips`를 호출해 실패했으므로 Windows 작업에는 위 target-scoped 명령을 사용합니다.
+아래 예제의 `device-serial`, `device-ip`, 포트는 실제 값으로 바꿉니다.
+Android 11 이상의 무선 연결은 **무선 디버깅 → 페어링 코드로 기기 페어링**의 주소를 사용합니다.
+페어링 포트와 연결 포트는 다를 수 있습니다.
 
-native AppKit과 Mac Catalyst를 서로 독립적으로 포함한 자동 build를 검증합니다. AppKit backend는 실험적이며 Microsoft 지원 대상이 아니고 최소 macOS 14, 첫 RID는 `osx-arm64`입니다.
+```powershell
+adb pair device-ip:pairing-port
+adb connect device-ip:debug-port
+adb devices -l
+```
 
-Archive한 AppKit 기록은 native launch, 화면에 표시된 Material gallery, Metal completion 기반 present, CPU readback/full-frame copy 0건, AppKit-only bundle, native bridge 3개 operation을 증명합니다. Pointer/keyboard/IME, accessibility, resize/fullscreen/scale 이동, Release live, signing/notarization/store gate는 계속 `notVerified`입니다. Mac Catalyst 결과를 native AppKit macOS 결과로 바꾸지 않습니다.
+| 증상 | 확인 / 해결 |
+| --- | --- |
+| `unauthorized` | 기기 잠금 해제, RSA 승인 후 USB 재연결 |
+| `offline` | `adb kill-server`, `adb start-server` 실행 후 재연결 |
+| 목록에 없음 | USB 디버깅, 데이터 케이블, 연결 모드, Windows 제조사 드라이버 확인 |
+| 대상이 여러 개 | `--device`에 정확한 serial 지정; workspace CLI에서는 `-Device` |
+| 설치 서명 충돌 | 앱 데이터 삭제를 감수할 수 있을 때 `adb -s device-serial uninstall dev.doroti.testbed` 후 재설치 |
 
-Linux Qt는 Kubuntu 26.04 VMware에서 실제 Material gallery의 Wayland rendering, XWayland/xcb input smoke, swap terminal ACK, 20/30회 resize, semantics tree, framework-dependent/self-contained publish를 확인했습니다. 물리 Linux, 실제 X11 session, 한글 IME/Orca, context 강제 재생성, acrylic blur 시각 acceptance와 장기 성능은 `notVerified`입니다.
+`android-x64` Release는 Mono AOT 시작 문제를 피하는 JIT/인터프리터 호환 경로입니다.
+arm64 Release AOT는 `android-arm64` 실기기에서 별도로 확인합니다.
 
-[ADR-021](../Doroti/docs/adr/ADR-021-platform-runner-workspaces.md), [ADR-025](../Doroti/docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md), archive한 [platform-runner workspace 요약](../history/26-08-19/platform-runner-workspace-summary.md), [AppKit dual-backend 요약](../history/26-08-20/macos-appkit-dual-backend-summary.md), [Linux Qt backend 요약](../history/26-08-20/linux-qt-backend-summary.md)을 참고하세요.
+### 실행했는데 샘플이 보이지 않을 때
 
-### direct 성능 검증 상태 (2026-09-07)
-
-기본 전환과 CSS 배율/캐시 수정은 반영됐으나 빠른 resize와 첫 조작 지연은 남아 있습니다. 사용자 관찰도 “일부 개선됐지만 지연이 남음”입니다. [실행 보고서](../history/26-09-07/web-direct-default-execution.md)의 FAIL 및 미확인 항목을 참고하세요.
+- Native: 앱을 닫고 `-e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none`을 포함해 다시 실행합니다.
+- Android: 모드 변경 시 `--no-build` 없이 빌드·재설치합니다.
+- Web: URL에 `dorotiTestbedMode=sample`을 넣습니다. renderer 변경과 화면 선택은 별개입니다.
+- iOS: Simulator 실행 상태와 `--device` ID를 확인합니다. 실제 기기는 서명·프로비저닝도 필요합니다.
