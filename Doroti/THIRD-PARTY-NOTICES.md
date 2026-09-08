@@ -70,7 +70,3 @@ local Flutter SDK `bin/cache/artifacts/material_fonts/materialicons-regular.otf`
 Its pinned SDK license (CC BY 4.0) is retained alongside it as `LICENSE.materialicons.txt`.
 The Roboto regular/medium/bold fonts come from the same SDK directory; their
 Apache-2.0 license is retained as `LICENSE.roboto.txt`.
-
-The CanvasKit `drawShadow` adapter follows the directional light and tonal-color
-parameters in the pinned Flutter engine's `lib/web_ui/lib/src/engine/canvaskit/util.dart`
-(Flutter authors, BSD-3-Clause). It calls CanvasKit's Skia shadow implementation.

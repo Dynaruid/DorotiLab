@@ -21,6 +21,7 @@
     <Error Code="DOROTIWEB012" Condition="'@(DorotiTypeScriptSource)' == ''" Text="Doroti Web TypeScript source set is empty under $(DorotiTypeScriptSourceRoot)." />
     <Error Code="DOROTIWEB013" Condition="'$(DorotiTypeScriptCompilerExecutable)' == '' or !Exists('$(DorotiTypeScriptCompilerExecutable)')" Text="Doroti Web TypeScript compiler executable is unavailable for this build host: $(DorotiTypeScriptCompilerExecutable)." />
     <Error Code="DOROTIWEB014" Condition="'$(DorotiTypeScriptOutputRoot)' == '' or !$([System.IO.Path]::GetFullPath('$(DorotiTypeScriptOutputRoot)').StartsWith($([System.IO.Path]::GetFullPath('$(BaseIntermediateOutputPath)')), System.StringComparison.OrdinalIgnoreCase))" Text="Doroti Web TypeScript output must remain under the target intermediate root: $(DorotiTypeScriptOutputRoot)." />
+    <Error Code="DOROTIWEB014" Condition="!$([MSBuild]::NormalizeDirectory('$(DorotiTypeScriptOutputRoot)').StartsWith($([MSBuild]::NormalizeDirectory('$(BaseIntermediateOutputPath)')), System.StringComparison.OrdinalIgnoreCase)) or $([System.String]::Equals($([MSBuild]::NormalizeDirectory('$(DorotiTypeScriptOutputRoot)')), $([MSBuild]::NormalizeDirectory('$(BaseIntermediateOutputPath)')), System.StringComparison.OrdinalIgnoreCase))" Text="Doroti Web TypeScript output must be a child directory of the target intermediate root." />
     <Error Code="DOROTIWEB015" Condition="'$(DorotiTypeScriptTypeRoots)' != '' and !Exists('$(DorotiTypeScriptTypeRoots)')" Text="Doroti Web public TypeScript declarations are unavailable: $(DorotiTypeScriptTypeRoots)." />
   </Target>
 
@@ -28,6 +29,9 @@
           Condition="'$(DorotiWebTypeScript)' == 'true'"
           DependsOnTargets="DorotiValidateTypeScriptToolchain"
           BeforeTargets="Compile;ResolveProjectStaticWebAssets;ResolveCurrentProjectStaticWebAssetsInputs">
+    <!-- This directory contains only generated TypeScript output. Removed source
+         modules must not survive the compile and re-enter static assets/publish. -->
+    <RemoveDir Directories="$(DorotiTypeScriptOutputRoot)" />
     <MakeDir Directories="$(DorotiTypeScriptOutputRoot)" />
     <Exec Command="&quot;$(DorotiTypeScriptCompilerExecutable)&quot; --project &quot;$(DorotiTypeScriptConfig)&quot; $(DorotiTypeScriptAdditionalArguments) --listEmittedFiles"
           IgnoreExitCode="true" ConsoleToMSBuild="true">

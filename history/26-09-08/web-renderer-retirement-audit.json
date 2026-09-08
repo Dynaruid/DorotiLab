@@ -1,0 +1,60 @@
+{
+  "result": "PASS",
+  "head": "2c68e877a66181bb048430c7bacd270df2c094db",
+  "rendererModes": [
+    "worker-direct-webgl",
+    "offscreen-worker"
+  ],
+  "publishPath": ".doroti/canvaskit-removal/worker-only-wwwroot-parent/wwwroot",
+  "publishFiles": 220,
+  "sourceNodeModulesPresent": false,
+  "packages": [
+    {
+      "path": ".doroti/canvaskit-removal/packages/Doroti.Host.Web.0.2.0-beta.nupkg",
+      "bytes": 815936,
+      "sha256": "fc748a19d2599af2541d447cdbb83218290419041abcacfd51a8db73ce4a909a"
+    },
+    {
+      "path": ".doroti/canvaskit-removal/packages/Doroti.Target.Web.browser-wasm.0.2.0-beta.nupkg",
+      "bytes": 23975,
+      "sha256": "38e088d94d3a3591df147b276f114a3d2c6a888877320f4de8b9bebceeda597a"
+    }
+  ],
+  "activeHostModules": {
+    "doroti.loader.js": "c6f0eaf7c68d5b036bf088e5e99a639583d4406f7fd188155829775bcc6c0b99",
+    "doroti.raster.worker.js": "774fff8a5385d85fada7a16dc83f4680f204ab77c593f39dc26ab08276c55d43",
+    "doroti.web.diagnostics.js": "f60d368a853e15488872bd11ebb9b9feb99de242371565c0f91ae691ac90316e",
+    "doroti.web.dom.js": "d1f3c3f0197616768c2d54a59cf84bef28fe54d8dab06ea1c8e47100f5cb590b",
+    "doroti.web.js": "a03fd11d5aa1c5aa2a5e228e840566bbedb9635cb771b208f59b4d6348570276",
+    "doroti.web.managed-worker.js": "81e8b34fe9d21837d768db2f314ca95c06a8862af09e9c27f6eadbd4c77b0d37",
+    "doroti.web.protocol.js": "f5e7a6649c35abeda2a17bf94e8568b575b3b49b37f2182bd40b2cd1c4857b64",
+    "doroti.web.surface.js": "632549c047e95cebd50d81a540242c3a84d1a5b4bc01a08262e64d3e92fa2a71",
+    "doroti.web.worker-host.js": "eeaa1ba141566d10b40dc69e75dd255d08847183e6024281a74e2876d6566dec"
+  },
+  "verification": {
+    "externalTimeoutSeconds": 1200,
+    "automaticRetries": 0,
+    "fullTypeScriptDeclarations": "PASS; no skipLibCheck and no source node_modules",
+    "frameworkContracts": "PASS after normal restore; first no-restore failed with stale SkiaSharp 4.152 assets",
+    "browserResult": "15 PASS",
+    "browserCases": [
+      "ok  1 [chromium-hardware] › tests\\default-renderer.spec.ts:5:3 › renderer selection: omitted (3.3s)",
+      "ok  2 [chromium-hardware] › tests\\default-renderer.spec.ts:5:3 › renderer selection: auto (2.9s)",
+      "ok  3 [chromium-hardware] › tests\\default-renderer.spec.ts:5:3 › renderer selection: worker-direct-webg (3.0s)",
+      "ok  4 [chromium-hardware] › tests\\default-renderer.spec.ts:5:3 › renderer selection: document-webgl (2.8s)",
+      "ok  5 [chromium-hardware] › tests\\default-renderer.spec.ts:5:3 › renderer selection: worker-direct-webgl (2.9s)",
+      "ok  6 [chromium-hardware] › tests\\default-renderer.spec.ts:5:3 › renderer selection: worker-canvaskit-webgl (2.9s)",
+      "ok  7 [chromium-hardware] › tests\\default-renderer.spec.ts:5:3 › renderer selection: offscreen-worker (3.9s)",
+      "ok  8 [chromium-hardware] › tests\\default-renderer.spec.ts:5:3 › renderer selection: offscreen-bitmap (2.8s)",
+      "ok  9 [chromium-hardware] › tests\\material-sample-selection.spec.ts:37:1 › Material sample pickers, menus, selection and text editing (33.6s)",
+      "ok 10 [chromium-hardware] › tests\\material-sample-selection.spec.ts:125:1 › Material sample selection controls update their shared state (18.6s)",
+      "ok 11 [chromium-hardware] › tests\\material-sample.spec.ts:38:1 › Material sample four destinations, theme controls, and responsive navigation (55.1s)",
+      "ok 12 [chromium-hardware] › tests\\material-sample.spec.ts:165:1 › Material sample lazy component inventory and theme images (22.7s)",
+      "ok 13 [chromium-hardware] › tests\\offscreen-capability.spec.ts:4:1 › selected presenter proves its real WebGL2/Skia/display ownership (2.9s)",
+      "ok 14 [chromium-hardware] › tests\\threaded-runtime.spec.ts:37:1 › threaded renderer disposes its role without exiting the main runtime (3.0s)",
+      "ok 15 [chromium-hardware] › tests\\threaded-runtime.spec.ts:57:1 › threaded renderer rejects invalid private-port protocol without a second runtime (3.0s)"
+    ],
+    "physicalAcceptance": "notVerified",
+    "performance": "notMeasured"
+  }
+}

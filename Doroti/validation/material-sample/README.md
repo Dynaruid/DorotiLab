@@ -32,7 +32,7 @@ embedded MaterialIcons and Roboto regular/medium/bold fallback, retaining the pl
 primary family. NanumGothic remains available for Korean fallback. The diagnostics bundle records the
 actual renderer and frame generations. Pointer tests click projected semantic bounds;
 they also catch coordinate/hit-test mismatch. Semantics-only clicks are identified in
-older evidence. A presented frame must have visible content and zero Raster failedScenes;
+older evidence. A presented frame must have visible content and no failed presenter trace entries;
 DOM semantics alone does not prove successful painting. Progress starts stopped at 0.7;
 Play enables indeterminate animation. Presented frame generations, rather than global
 queue-idle, determine sample frame completion.
@@ -80,8 +80,7 @@ from Vulkan presentation and physical display acceptance. See work.md section 15
   `window.open`; MAUI uses Launcher; Linux Qt uses bounded `xdg-open`. Web popup blocking
   is a result surfaced by the sample. Native browser navigation is a separate live check.
 - `Dart_uiLibrary.loadFontFromList`: respects byte-view offset/length and optional family;
-  completion waits for registration in the host's text/raster backend. CanvasKit waits
-  for retained resource acknowledgment. Successful registration emits `fontsChange` to
+  completion waits for registration in the host's SkiaSharp backend. Successful registration emits `fontsChange` to
   the mounted framework. Hosts own font bytes/typefaces until disposal. DrawParagraph
   forwards the same registered font collection used for UI layout; metrics validation
   remains enforced.
@@ -130,9 +129,10 @@ The separate Flutter release build uses its frozen SDK and main.dart. Set
 `DOROTI_FLUTTER_REFERENCE=1` only while serving that reference and running
 `tests/flutter-material-sample.spec.ts`. `flutter-material-sample-v4` captures four light
 screens at 800/1600 and four dark screens at 800, all height 900 and DPR 1. These are
-comparison inputs, not a pixel parity certificate. Web now uses CanvasKit's actual Skia
-drawShadow with the pinned Flutter engine's light/tonal-color/DPR contract. Native
-SkiaSharp still uses the two-blur approximation and has a separate parity gap.
+comparison inputs, not a pixel parity certificate. Those historical Web captures used
+CanvasKit's Skia drawShadow with Flutter's light/tonal-color/DPR contract. The CanvasKit
+backend was removed on 2026-09-08; current Web and native SkiaSharp use the two-blur
+approximation, so the historical shadow parity does not certify current direct output.
 `material-sample-capture-v26` confirms all four light/dark destination captures with
 selection and presentation waits. `visual-comparison-v1.json` contains a stale Components
 frame mislabeled as dark Color; preserve it as invalid comparison evidence, not a product

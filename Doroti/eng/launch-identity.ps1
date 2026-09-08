@@ -103,7 +103,7 @@ function Get-DorotiArtifactIdentity([string] $Runner, [string] $Configuration, [
     })
     # dotnet run serves generated assets from other projects' obj directories.
     # Bind those evaluated identities too; hashing only the manifest misses a
-    # removed or tampered CanvasKit/TypeScript payload behind an unchanged path.
+    # removed or tampered TypeScript payload behind an unchanged path.
     $assets = @()
     $buildManifest = Join-Path $intermediate 'staticwebassets.build.json'
     if (Test-Path -LiteralPath $buildManifest -PathType Leaf) {

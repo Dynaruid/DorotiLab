@@ -4,9 +4,7 @@ using SkiaSharp;
 namespace Doroti.Host.Web;
 
 /// <summary>
-/// Transitional browser graphics boundary.  The existing Skia implementation
-/// and the CanvasKit DisplayList implementation can be selected per runtime
-/// without leaking their ownership decisions into the framework host.
+/// Browser Skia graphics capabilities used by the framework host.
 /// </summary>
 internal interface IBrowserGraphicsCapabilities :
     ISceneHostCapability,

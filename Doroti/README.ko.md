@@ -2,7 +2,7 @@
 
 [English](README.md) | **한국어**
 
-Doroti는 Windows App SDK, 선택적 Windows MAUI, Android, iOS, native AppKit macOS, Mac Catalyst, Blazor WebAssembly와 Linux/Qt에서 공용 widget, layout, painting, semantics, rendering pipeline을 사용하는 C#/.NET UI framework입니다.
+Doroti는 Windows App SDK, 선택적 Windows MAUI, Android, iOS, native AppKit macOS, Mac Catalyst, WebAssembly와 Linux/Qt에서 공용 widget, layout, painting, semantics, rendering pipeline을 사용하는 C#/.NET UI framework입니다.
 
 Material 테마는 Material 3 전용입니다. `ThemeData` factory, 생성자, `copyWith`의 `useMaterial3` 인자와 버전 속성을 제거했으므로 앱 코드에서 해당 인자를 생략합니다. Typography는 `Create` 또는 `CreateMaterial2021`을 사용하며 2014/2018 preset은 제거했습니다.
 
@@ -29,10 +29,10 @@ Widget 앱은 `new Doroti.Framework.DorotiWidgetEntrypoint(() => new MyApp())`�
 - `Doroti.Host.WindowsAppSdk` + `Doroti.Host.WindowsAppSdk.Native`: 기본 Windows App SDK 2.4 host. Native C++은 top-level/child/task HWND와 ingress를, managed code는 Doroti framework와 Vulkan/Skia presentation (ANGLE remains selectable)을 소유
 - `Doroti.Target.Windows.WindowsAppSdk.win-x64`: `HwndExactCpp`, native host/bootstrap, app-directory ANGLE runtime을 포함하는 self-contained unpackaged Windows target
 - `Doroti.Host.Maui`: Android, iOS, Mac Catalyst, AppKit 및 명시적 대안 Windows MAUI backend를 위한 MAUI lifecycle과 SKGLView/AppKit MTKView Metal adapter
-- `Doroti.Host.Web`: host 소유 Blazor composition, WebGL2 canvas, input, accessibility, resource bridge
+- `Doroti.Host.Web`: Worker 부팅, WebGL2 canvas, input, accessibility, resource bridge
 - `Doroti.Host.Qt`: managed-owned Linux process, Qt 6 `QOpenGLWindow`, versioned C ABI v2, GPU surface, input, IME, desktop service와 accessibility adapter
 
-Web 실행 source는 TypeScript가 소유합니다. 앱은 `web/src/**/*.ts`, Doroti는 `src/Doroti.Host.Web/Web/*.ts`를 편집합니다. `Microsoft.TypeScript.MSBuild` 7.0.0이 runner-local `obj`에 JavaScript를 만들며 publish에는 그 결과만 포함됩니다. 앱 도구로 Node, npm, Bun, bundler를 요구하지 않습니다. 기본 `worker-direct-webgl` backend는 visible canvas를 한 번 이전하고 .NET, Skia, WebGL2와 Worker rAF를 persistent Worker 하나에 둡니다. `auto` 기본값은 direct이며 UI/Raster Worker를 분리한 `worker-canvaskit-webgl`도 명시적으로 선택할 수 있습니다. 자세한 결정은 [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md)에 있습니다.
+Web 실행 source는 TypeScript가 소유합니다. 앱은 `web/src/**/*.ts`, Doroti는 `src/Doroti.Host.Web/Web/*.ts`를 편집합니다. `Microsoft.TypeScript.MSBuild` 7.0.0이 runner-local `obj`에 JavaScript를 만들며 publish에는 그 결과만 포함됩니다. 앱 도구로 Node, npm, Bun, bundler를 요구하지 않습니다. 기본 `worker-direct-webgl` backend는 visible canvas를 한 번 이전하고 .NET, Skia, WebGL2와 Worker rAF를 persistent Worker 하나에 둡니다. `auto` 기본값은 SkiaSharp WASM direct이며 별도 CanvasKit backend는 제거했습니다. 자세한 결정은 [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md)에 있습니다.
 
 Material 앱은 `MaterialApp(theme:, darkTheme:, themeMode: ThemeMode.system)`으로 시스템 다크 모드를 따릅니다. `ColorScheme.CreateFromSeed`에 `Brightness.light`/`Brightness.dark`와 `surface`, `primary`, `outline` 같은 role override를 전달해 두 팔레트를 구성하고, widget은 `Theme.of(context).colorScheme`에서 현재 팔레트를 읽습니다. MAUI와 Web의 시스템 변경 전달 및 전체 예시는 [DorotiTestbedApp 다크 모드 문서](../DorotiTestbedApp/README.ko.md#시스템-다크-모드와-색-팔레트)를 참고하세요.
 
@@ -53,9 +53,9 @@ Linux runner는 Linux x64 호스트에서 Qt 6.5 이상 Core/Gui/Widgets/OpenGL,
 
 ## 명령
 
-기본 Web Worker는 CanvasKit JS/WASM을 병렬 검증하며 둘 다 성공한 뒤 Worker를 시작합니다. UI Worker는 CanvasKit 초기화와 `dotnet.js` import를 겹치지만 runtime 생성과 attach는 GPU/text readiness를 기다립니다. `blazorOptions`와 `loadBootResource`는 document/Blazor 경로에만 적용합니다. Testbed/template은 같은 origin의 fallback font를 preload하고 fingerprinted Blazor loader 링크는 document 경로의 지연 로드 정보로 유지합니다. Loader `started`는 runtime/GPU 준비이며 첫 content 표시를 뜻하지 않습니다.
+Web은 SkiaSharp WASM을 사용하며 main 또는 Worker에서 초기화한 단일 runtime에 렌더 역할을 연결합니다. 지원 렌더러는 `worker-direct-webgl`과 `offscreen-worker`이며 앱은 `runtimeLocation`을 설정할 수 있습니다. Testbed/template은 같은 origin의 fallback font를 preload하고 import map의 `dotnet.js`로 runtime을 초기화합니다. Loader `started`는 runtime/GPU 준비이며 첫 content 표시를 뜻하지 않습니다.
 
-Qt CMake target은 공용 Runner SDK가 configuration별 출력 경로로 관리합니다. CMake의 native dependency 검사는 유지하고, 무결성이 확인된 동일 CanvasKit 자산은 다시 쓰지 않습니다. TypeScript와 플랫폼 binding build의 기존 검증은 유지합니다.
+Qt CMake target은 공용 Runner SDK가 configuration별 출력 경로로 관리합니다. CMake의 native dependency 검사는 유지합니다. TypeScript와 플랫폼 binding build의 기존 검증은 유지합니다.
 
 검증된 build 결과를 재사용하려면 repository root에서 다음 순서로 실행합니다.
 

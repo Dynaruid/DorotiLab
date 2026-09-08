@@ -9,10 +9,6 @@ await startDoroti({
   configure(context: DorotiBootstrapContext) {
     context.runtimeLocation = "main";
     document.documentElement.dataset.dorotiBootstrapConfigured = "true";
-    context.blazorOptions.loadBootResource = (_type, _name, _defaultUri, integrity) => {
-      document.documentElement.dataset.dorotiBootIntegrityObserved = integrity ? "true" : "false";
-      return undefined;
-    };
   },
   onStage(stage) {
     document.documentElement.dataset.dorotiBootstrapStage = stage;

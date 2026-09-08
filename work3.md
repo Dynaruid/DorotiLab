@@ -2,6 +2,14 @@
 
 작성·정리: 2026-09-08.
 
+**Web 렌더러 정리:** 후속 사용자 요청으로 별도 CanvasKit backend를 제거했다.
+웹은 SkiaSharp WASM을 사용하며 기본값은 `worker-direct-webgl`이다. CanvasKit의
+UI/Raster Worker·C# 어댑터·npm 자산·배포 요구와 전용 검증을 제거했다.
+6.2에서 추가한 WebGPU 선언 호환 진입점도 더 이상 필요하지 않아 제거했으며,
+전체 선언 검사는 계속 활성화한다. 추가 요청으로 `document-webgl`과
+`offscreen-bitmap`도 제거해 지원 모드는 `worker-direct-webgl`과 `offscreen-worker`만
+남겼다. 기존 모드의 결과는 history에 보존한다.
+
 **현재 범위:** 사용자가 병렬 레이아웃을 실행한 뒤 이득이 작다고 판단하여
 해당 기능의 제거를 요청했다. 순수 treemap 계산 엔진, 별도 실험 화면, Material
 샘플의 병렬 패널, 선택 옵션과 전용 검증을 제거한다. T0b/T1–T7 병렬 레이아웃
@@ -246,6 +254,47 @@ source/asset hash, command·timeout·elapsed, 최초 실패, 기능/성능/물�
 - PASS: 이력 밖의 삭제 기능 코드 참조 없음, 문서 상대 링크와 `git diff --check`.
 - notVerified: 제거 후 Web native publish·실제 브라우저 화면·물리 입력 회귀.
   기존 후보의 실행·성능 결과로 이번 검증을 대체하지 않는다.
+
+### 6.2 WebGPU 선언 중복 수정 (2026-09-08)
+
+6.1의 최초 전체 선언 검사 FAIL을 재현한 뒤 수정했다. CanvasKit 0.42.0의
+`reference types="@webgpu/types"`가 구형 전역 선언을 가져와 TypeScript 7의
+`lib.dom.d.ts`와 충돌했다. Web host의 `typeRoots`에 browser 호환 진입점을 두어
+해당 참조를 기본 DOM 선언으로 연결하고, 자동 ambient package 포함은 `types: []`로
+제한한다. CanvasKit의 명시적 타입 참조와 라이브러리 선언 검사는 계속 수행한다.
+MSBuild의 `--skipLibCheck` 우회도 제거했다. npm 패키지·lock·설치 파일은 수정하지 않았다.
+타입 참조와 검색 경로는 TypeScript의 [reference types 설명](https://www.typescriptlang.org/docs/handbook/triple-slash-directives.html)과
+[typeRoots 설명](https://www.typescriptlang.org/tsconfig/typeRoots.html)을 따른다.
+
+- PASS: Web host `tsc --noEmit` 전체 선언 검사. resolution trace에서 호환 진입점이
+  선택되고 구형 `@webgpu/types/dist/index.d.ts`는 포함되지 않음을 확인했다.
+- PASS: `dotnet build Doroti/src/Doroti.Host.Web/Doroti.Host.Web.csproj -c Release --no-restore --nologo`,
+  5.85초, 경고·오류 0. 제품 TypeScript 컴파일과 정적 JS 산출물 생성 포함.
+- PASS: 임시 `.d.ts`에 잘못된 `GPUDevice.queue` 선언을 넣은 음성 대조 검사에서
+  TS2717로 거부되어 선언 검사가 활성 상태임을 확인했다.
+- PASS: 남은 Playwright TypeScript 전체 선언 검사. 각 실행 timeout은 20분이다.
+- 브라우저 실행은 이번 타입 설정 수정의 검증에 포함하지 않았다.
+
+### 6.3 CanvasKit·document·같은 스레드 bitmap 경로 제거 (2026-09-08)
+
+사용자 요청으로 `worker-canvaskit-webgl`, `document-webgl`, `offscreen-bitmap`을
+제거했다. 현재 지원 모드는 SkiaSharp WASM의 `worker-direct-webgl`(기본값)과
+`offscreen-worker`다. 옛 URL 값은 미인식 값 처리 규칙에 따라 direct를 선택한다.
+CanvasKit 자산·C# 어댑터·분리 Worker, document Razor 구성·presenter·부팅 API,
+전용 검증을 정리했고 템플릿·패키지 manifest·ADR도 갱신했다.
+
+- PASS: 전체 TypeScript 선언 검사; source node_modules와 skipLibCheck 없이 컴파일.
+- PASS: Web Release native publish, Web host/target NuGet pack, 전체 FCR-7 계약.
+- PASS: 최종 Chromium 브라우저 15/15 — 렌더러 선택·텍스트 편집·선택 상태·
+  반응형 화면·이미지 palette·실제 direct 소유권·정상 종료·protocol 거부.
+- PASS: 새 배포 폴더와 패키지에 폐기 자산/실행 경로 없음. 생성 JS 잔여 제거와
+  출력 폴더 경계 검사도 확인했다.
+- 최초 publish의 전용 cache 잔여 참조 FAIL, 옛 document/bitmap의 GL 오류,
+  --no-restore 검증의 오래된 Skia 버전 충돌은 원래 실패로 보존한다.
+
+구현 범위·최초 실패·최종 검증·물리 notVerified는
+[렌더러 정리 기록](history/26-09-08/web-renderer-retirement.md)과
+[자산/패키지 hash 및 browser case](history/26-09-08/web-renderer-retirement-audit.json)를 따른다.
 
 ## 7. 버전 고정 근거
 

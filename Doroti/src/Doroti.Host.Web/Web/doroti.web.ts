@@ -1,4 +1,4 @@
-import { crc32DisplayList, decodeDorotiMessage, dorotiProtocolVersion } from "./doroti.web.protocol.js";
+import { decodeDorotiMessage, dorotiProtocolVersion } from "./doroti.web.protocol.js";
 import { createDorotiDomEndpoints, createReplacementCanvas } from "./doroti.web.dom.js";
 import { pushBounded } from "./doroti.web.diagnostics.js";
 import { createWorkerVisibleSurface } from "./doroti.web.surface.js";
@@ -20,39 +20,6 @@ interface ManagedCallbacks {
   dispatchTextAction(hostId: number, action: number, inputSequence: number): void;
   dispatchTextConnectionClosed(hostId: number, inputSequence: number): void;
   dispatchSemanticsAction(hostId: number, nodeId: number, action: number, inputSequence: number, argumentsJson: string): void;
-}
-
-export interface DorotiManagedMemoryView {
-  slice(): ArrayBufferView;
-  dispose?(): void;
-}
-
-export interface CanvasKitUiBridge {
-  readonly adoptsManagedCopy?: boolean;
-  recordInteropCopy?(milliseconds: number, bytes: number, copies: number): void;
-  submitDisplayList(bytes: Uint8Array): number;
-  registerResource(
-    resourceId: number,
-    generation: number,
-    kind: string,
-    descriptorJson: string,
-    bytes: Uint8Array,
-  ): void;
-  releaseResource(resourceId: number, generation: number): void;
-  layoutParagraph(requestJson: string): number[];
-  imageOperation(requestJson: string, bytes: Uint8Array): Promise<Uint8Array>;
-}
-
-interface CanvasKitManagedCallbacks {
-  captureFrameTrace(): string;
-  completeScene(sceneSequence: number, terminal: string, reason: string, receiptJson: string): void;
-  completeResource(
-    resourceId: number,
-    generation: number,
-    terminal: string,
-    reason: string,
-    receiptJson: string,
-  ): void;
 }
 
 interface GpuIdentity {
@@ -151,73 +118,11 @@ interface ResizeTraceEntry {
   requestId: number;
 }
 
-interface PresentDescriptor extends ResizeEpoch {
-  requestId: number;
-  terminalRecorded: boolean;
-}
-
-interface ManagedCanvasPresenter {
-  invokeMethod<T>(name: string, ...args: unknown[]): T;
-  invokeMethodAsync(name: string, ...args: unknown[]): Promise<unknown>;
-}
-
-interface EmscriptenGlRuntime {
-  createContext(canvas: HTMLCanvasElement | OffscreenCanvas, attributes: Record<string, number>): number;
-  makeContextCurrent(context: number): void;
-  deleteContext?(context: number): void;
-  getNewId<T>(table: Array<T | null>): number;
-  framebuffers: Array<(WebGLFramebuffer & { name?: number }) | null>;
-  currentContext?: { GLctx: WebGL2RenderingContext };
-}
-
-interface GpuSurface {
-  framebuffer: WebGLFramebuffer & { name?: number };
-  framebufferId: number;
-  color: WebGLTexture;
-  depthStencil: WebGLRenderbuffer;
-  width: number;
-  height: number;
-  logicalWidth: number;
-  logicalHeight: number;
-  devicePixelRatio: number;
-  generation: number;
-}
-
-interface CanvasPresenter {
-  canvas: HTMLCanvasElement;
-  mode: "document-webgl" | "offscreen-bitmap";
-  rasterCanvas: HTMLCanvasElement | OffscreenCanvas;
-  display: ImageBitmapRenderingContext | null;
-  callback: ManagedCanvasPresenter;
-  context: number;
-  contextGeneration: number;
-  contextLossExtension: WEBGL_lose_context | null;
-  current: PresentDescriptor | null;
-  latest: PresentDescriptor | null;
-  drainScheduled: boolean;
-  nextRequestId: number;
-  contextLost: boolean;
-  front: GpuSurface | null;
-  frontGeneration: number;
-  frontRequestId: number;
-  staging: GpuSurface | null;
-  glStateDirty: boolean;
-  bitmapCreated: number;
-  bitmapConsumed: number;
-  bitmapClosed: number;
-  activeBitmaps: number;
-  rasterWidth: number;
-  rasterHeight: number;
-  displayWidth: number;
-  displayHeight: number;
-  listeners: ListenerRegistration[];
-}
-
-type RequestedPresenterMode = "auto" | "worker-canvaskit-webgl" | "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
+type RequestedPresenterMode = "auto" | "worker-direct-webgl" | "offscreen-worker";
 
 interface PresenterPolicy {
   requested: RequestedPresenterMode;
-  selected: "document-webgl" | "offscreen-bitmap";
+  selected: "worker-direct-webgl" | "offscreen-worker";
   fallbackReason: string | null;
 }
 
@@ -228,7 +133,7 @@ interface WorkerBridge {
   resizeHost(hostId: number, logicalWidth: number, logicalHeight: number): string;
   requestFrame(hostId: number, callbackId: number): void;
   recordManagedRaster(hostId: number, phase: string, width: number, height: number, duration: number): void;
-  requestPresent(canvasId: string, descriptor: Omit<PresentDescriptor, "requestId" | "terminalRecorded">): void;
+  requestPresent(canvasId: string, descriptor: ResizeEpoch): void;
   captureResizeTrace(hostId: number): string;
   closeHost(hostId: number): void;
   resolveResourceUrl(relativeUrl: string): string;
@@ -260,13 +165,6 @@ interface WorkerDisplayPresenter {
   pendingLeases: Map<number, { runtimeSessionId: number; causalFrameId: number }>;
 }
 
-export interface ExternalWorkerPresenterDiagnostics {
-  readonly commitCanvasCssWithFront?: boolean;
-  snapshot(): Readonly<Record<string, unknown>>;
-  command(action:
-    "lose-context" | "restore-context" | "crash" | "violate-protocol" | "stall-raster-100ms"): boolean;
-}
-
 interface ResizeDiagnostics {
   hosts(): number[];
   capture(hostId: number): string;
@@ -279,7 +177,6 @@ interface ResizeDiagnostics {
   restoreContext(canvasId: string): boolean;
   crashWorker(canvasId: string): boolean;
   violateWorkerProtocol(canvasId: string): boolean;
-  stallRaster100ms(canvasId: string): boolean;
 }
 
 interface SemanticsFlags {
@@ -362,199 +259,16 @@ interface DorotiAssemblyExports {
   };
 }
 
-interface DorotiCanvasKitAssemblyExports {
-  Doroti: {
-    Host: {
-      Web: {
-        BrowserCanvasKitInterop: {
-          CompleteScene: CanvasKitManagedCallbacks["completeScene"];
-          CaptureFrameTrace: CanvasKitManagedCallbacks["captureFrameTrace"];
-          CompleteResource: CanvasKitManagedCallbacks["completeResource"];
-        };
-      };
-    };
-  };
-}
-
 const hosts = new Map<number, BrowserHost>();
-const canvasPresenters = new Map<string, CanvasPresenter>();
 const workerDisplayPresenters = new Map<string, WorkerDisplayPresenter>();
-const externalWorkerPresenters = new Map<string, ExternalWorkerPresenterDiagnostics>();
 let managed: ManagedCallbacks | null = null;
 let activeWorkerBridge: WorkerBridge | null = null;
-let activeCanvasKitUiBridge: CanvasKitUiBridge | null = null;
-let canvasKitManagedCallbacks: CanvasKitManagedCallbacks | null = null;
 let directWorkerBootstrap = false;
-
-export function registerExternalWorkerPresenter(
-  canvasId: string,
-  presenter: ExternalWorkerPresenterDiagnostics,
-): void {
-  if (externalWorkerPresenters.has(canvasId))
-    throw new Error(`External Doroti presenter '${canvasId}' is already registered.`);
-  externalWorkerPresenters.set(canvasId, presenter);
-}
-
-export function unregisterExternalWorkerPresenter(canvasId: string): void {
-  externalWorkerPresenters.delete(canvasId);
-}
-
-export function updateExternalWorkerGpu(hostId: number, gpu: GpuIdentity): void {
-  const host = requireHost(hostId);
-  if (!gpu.hardware || gpu.softwareFallbackUsed || gpu.api !== "webgl2")
-    throw new Error("Doroti rejected a non-hardware external Worker GPU identity.");
-  if (gpu.contextGeneration !== undefined &&
-      (!Number.isSafeInteger(gpu.contextGeneration) || gpu.contextGeneration <= 0))
-    throw new Error("Doroti external Worker context generation must be a positive integer.");
-  if (gpu.surfaceGeneration !== undefined) {
-    if (!Number.isSafeInteger(gpu.surfaceGeneration) || gpu.surfaceGeneration <= 0)
-      throw new Error("Doroti external Worker surface generation must be a positive integer.");
-    host.surfaceGeneration = gpu.surfaceGeneration;
-  }
-  host.gpu = gpu;
-  emit(host);
-}
-
-export function captureHostSnapshot(hostId: number): string {
-  return snapshot(requireHost(hostId));
-}
-
-export function restoreHostInputSequence(hostId: number, inputSequence: number): void {
-  if (!Number.isSafeInteger(inputSequence) || inputSequence < 0)
-    throw new Error("Doroti host input sequence must be a non-negative safe integer.");
-  requireHost(hostId).inputSequence = inputSequence;
-}
-
-export function recordExternalWorkerTrace(
-  hostId: number,
-  phase: string,
-  source: string,
-  detail: Readonly<Record<string, unknown>> = {},
-): void {
-  const host = requireHost(hostId);
-  recordResize(host, phase, source, {
-    requestId: Number(detail.requestId ?? 0),
-    rafId: Number(detail.requestId ?? 0),
-    backingWidth: detail.backingWidth === undefined ? undefined : Number(detail.backingWidth),
-    backingHeight: detail.backingHeight === undefined ? undefined : Number(detail.backingHeight),
-    surfaceWidth: Number(detail.surfaceWidth ?? 0),
-    surfaceHeight: Number(detail.surfaceHeight ?? 0),
-    terminal: typeof detail.terminal === "string" ? detail.terminal : undefined,
-    detail: JSON.stringify(detail),
-  });
-}
 
 export function configureWorkerBridge(bridge: WorkerBridge): void {
   if (typeof document !== "undefined")
     throw new Error("Doroti worker bridge can only be installed in a Web Worker.");
   activeWorkerBridge = bridge;
-}
-
-export function configureCanvasKitUiBridge(bridge: CanvasKitUiBridge): void {
-  if (typeof document !== "undefined")
-    throw new Error("Doroti CanvasKit UI bridge can only be installed in the UI Worker.");
-  if (activeCanvasKitUiBridge)
-    throw new Error("Doroti CanvasKit UI bridge is already installed.");
-  activeCanvasKitUiBridge = bridge;
-}
-
-export function computeCanvasKitDisplayListChecksum(bytes: Uint8Array | DorotiManagedMemoryView): number {
-  // .NET's JS import supports i32; preserve all 32 CRC bits across that boundary.
-  return crc32DisplayList(copyManagedBytes(bytes, true)) | 0;
-}
-
-export function submitCanvasKitDisplayList(bytes: Uint8Array | DorotiManagedMemoryView): number {
-  if (!canvasKitManagedCallbacks)
-    throw new Error("Doroti CanvasKit managed terminal callbacks are not initialized.");
-  const bridge = requireCanvasKitUiBridge();
-  const started = performance.now();
-  const owned = copyManagedBytes(bytes, bridge.adoptsManagedCopy === true);
-  bridge.recordInteropCopy?.(performance.now() - started, owned.byteLength,
-    bytes instanceof Uint8Array || bridge.adoptsManagedCopy ? 1 : 2);
-  return bridge.submitDisplayList(owned);
-}
-
-export function registerCanvasKitResource(
-  resourceId: number,
-  generation: number,
-  kind: string,
-  descriptorJson: string,
-  bytes: Uint8Array | DorotiManagedMemoryView,
-): void {
-  if (!canvasKitManagedCallbacks)
-    throw new Error("Doroti CanvasKit managed resource callbacks are not initialized.");
-  requireCanvasKitUiBridge().registerResource(
-    resourceId, generation, kind, descriptorJson, copyManagedBytes(bytes));
-}
-
-export function releaseCanvasKitResource(resourceId: number, generation: number): void {
-  if (!canvasKitManagedCallbacks)
-    throw new Error("Doroti CanvasKit managed resource callbacks are not initialized.");
-  requireCanvasKitUiBridge().releaseResource(resourceId, generation);
-}
-
-export function layoutCanvasKitParagraph(requestJson: string): number[] {
-  return requireCanvasKitUiBridge().layoutParagraph(requestJson);
-}
-
-export async function hashCanvasKitResource(bytes: Uint8Array): Promise<string> {
-  // Async imports use an owned array, never a transient managed MemoryView.
-  // Preserve the exact byte view while browser-native hashing runs off the UI task.
-  const owned = bytes.slice();
-  const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", owned.buffer as ArrayBuffer));
-  return Array.from(hash, value => value.toString(16).padStart(2, "0")).join("");
-}
-
-export async function canvasKitImageOperation(requestJson: string, encodedBytes: string): Promise<string> {
-  const binary = atob(encodedBytes);
-  const input = Uint8Array.from(binary, character => character.charCodeAt(0));
-  const result = await requireCanvasKitUiBridge().imageOperation(requestJson, input);
-  // .NET's Promise marshaller does not support byte[]. Only this local UI/.NET boundary is encoded;
-  // UI/Raster messages continue to transfer owned binary buffers.
-  const chunks: string[] = [];
-  for (let offset = 0; offset < result.length; offset += 8192)
-    chunks.push(String.fromCharCode(...result.subarray(offset, offset + 8192)));
-  return btoa(chunks.join(""));
-}
-
-export function completeCanvasKitScene(
-  sceneSequence: number,
-  terminal: "submitted" | "superseded" | "failed",
-  reason: string,
-  receiptJson = "{}",
-): void {
-  canvasKitManagedCallbacks?.completeScene(sceneSequence, terminal, reason, receiptJson);
-}
-
-export function completeCanvasKitResource(
-  resourceId: number,
-  generation: number,
-  terminal: string,
-  reason: string,
-  receiptJson = "{}",
-): void {
-  canvasKitManagedCallbacks?.completeResource(resourceId, generation, terminal, reason, receiptJson);
-}
-
-function requireCanvasKitUiBridge(): CanvasKitUiBridge {
-  if (!activeCanvasKitUiBridge)
-    throw new Error("Doroti CanvasKit UI role is not ready.");
-  return activeCanvasKitUiBridge;
-}
-
-function copyManagedBytes(value: Uint8Array | DorotiManagedMemoryView, adoptSlice = false): Uint8Array {
-  if (value instanceof Uint8Array) return value.slice();
-  if (!value || typeof value.slice !== "function")
-    throw new Error("Doroti CanvasKit byte input must be a Uint8Array or managed memory view.");
-  const sliced = value.slice();
-  try {
-    // .NET MemoryView.slice() returns a fresh JS-owned typed array (verified
-    // against the served runtime). Never retain the managed view or detach WASM.
-    const owned = new Uint8Array(sliced.buffer, sliced.byteOffset, sliced.byteLength);
-    return adoptSlice ? owned : owned.slice();
-  } finally {
-    value.dispose?.();
-  }
 }
 
 export function dispatchWorkerSnapshot(hostId: number, json: string): void {
@@ -620,28 +334,9 @@ export function dispatchWorkerInput(message: Record<string, unknown>): void {
 }
 
 function presenterPolicy(): PresenterPolicy {
-  const scope = globalThis as typeof globalThis & {
-    __dorotiRendererPolicy?: PresenterPolicy;
-  };
-  if (scope.__dorotiRendererPolicy) return scope.__dorotiRendererPolicy;
-  const requestedValue = new URLSearchParams(globalThis.location.search).get("dorotiRenderer");
-  const requested: RequestedPresenterMode =
-    requestedValue === "document-webgl" || requestedValue === "offscreen-bitmap" ||
-    requestedValue === "offscreen-worker" || requestedValue === "worker-direct-webgl" ||
-    requestedValue === "worker-canvaskit-webgl" ? requestedValue : "auto";
-  const offscreenAvailable = typeof OffscreenCanvas !== "undefined" &&
-    typeof globalThis.createImageBitmap === "function" &&
-    typeof HTMLCanvasElement !== "undefined" &&
-    typeof HTMLCanvasElement.prototype.getContext === "function";
-  const selected = requested === "document-webgl" || !offscreenAvailable
-    ? "document-webgl" : "offscreen-bitmap";
-  const fallbackReason = requested === "offscreen-worker"
-    ? "worker runtime is selected by the bootstrap before the main managed runtime starts"
-    : !offscreenAvailable && requested !== "document-webgl"
-      ? "OffscreenCanvas/ImageBitmap/bitmaprenderer capability is unavailable"
-      : null;
-  scope.__dorotiRendererPolicy = { requested, selected, fallbackReason };
-  return scope.__dorotiRendererPolicy;
+  const value = new URLSearchParams(globalThis.location.search).get("dorotiRenderer");
+  const requested = value === "worker-direct-webgl" || value === "offscreen-worker" ? value : "auto";
+  return { requested, selected: requested === "auto" ? "worker-direct-webgl" : requested, fallbackReason: null };
 }
 
 const resizeDiagnostics: ResizeDiagnostics = {
@@ -651,13 +346,10 @@ const resizeDiagnostics: ResizeDiagnostics = {
   reset: (hostId) => resetDiagnostics(hostId),
   snapshot: (hostId) => snapshot(requireHost(hostId)),
   presenter: (canvasId) => {
-    const presenter = canvasPresenters.get(canvasId);
     const workerPresenter = workerDisplayPresenters.get(canvasId);
-    const externalPresenter = externalWorkerPresenters.get(canvasId);
-    if (!presenter && !workerPresenter && !externalPresenter)
+    if (!workerPresenter)
       throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
-    if (externalPresenter) return JSON.stringify(externalPresenter.snapshot());
-    if (workerPresenter) return JSON.stringify({
+    return JSON.stringify({
       context: 0,
       requestedMode: presenterPolicy().requested,
       mode: workerPresenter.mode,
@@ -688,53 +380,25 @@ const resizeDiagnostics: ResizeDiagnostics = {
       runtimeSessionId: workerPresenter.runtimeSessionId,
       unpairedRequestCount: workerPresenter.pendingLeases.size,
     });
-    if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
-    return JSON.stringify({
-      context: presenter.context,
-      requestedMode: presenterPolicy().requested,
-      mode: presenter.mode,
-      fallbackReason: presenterPolicy().fallbackReason,
-      contextGeneration: presenter.contextGeneration,
-      currentRequestId: presenter.current?.requestId ?? null,
-      latestRequestId: presenter.latest?.requestId ?? null,
-      queueDepth: Number(presenter.current !== null) + Number(presenter.latest !== null),
-      contextLost: presenter.contextLost,
-      frontGeneration: presenter.frontGeneration || null,
-      frontRequestId: presenter.frontRequestId || null,
-      frontFramebufferId: presenter.front?.framebufferId ?? null,
-      stagingFramebufferId: presenter.staging?.framebufferId ?? null,
-      rasterCanvasAttached: presenter.rasterCanvas instanceof HTMLCanvasElement && presenter.rasterCanvas.isConnected,
-      visibleContext: presenter.display ? "bitmaprenderer" : "webgl2",
-      rasterWidth: presenter.rasterWidth,
-      rasterHeight: presenter.rasterHeight,
-      displayWidth: presenter.displayWidth,
-      displayHeight: presenter.displayHeight,
-      bitmapCreated: presenter.bitmapCreated,
-      bitmapConsumed: presenter.bitmapConsumed,
-      bitmapClosed: presenter.bitmapClosed,
-      activeBitmaps: presenter.activeBitmaps,
-    });
   },
   capability: (canvasId) => {
     const host = [...hosts.values()].find((candidate) => candidate.canvas.id === canvasId);
     if (!host) throw new Error(`Canvas host '${canvasId}' is not initialized.`);
     const workerPresenter = workerDisplayPresenters.get(canvasId);
     const json = JSON.parse(resizeDiagnostics.presenter(canvasId)) as Record<string, unknown>;
-    const isCanvasKit = json.mode === "worker-canvaskit-webgl";
     return JSON.stringify({
       offscreenCanvas: typeof OffscreenCanvas !== "undefined",
       createImageBitmap: typeof globalThis.createImageBitmap === "function",
       bitmaprenderer: typeof HTMLCanvasElement !== "undefined" &&
         typeof HTMLCanvasElement.prototype.getContext === "function",
       mode: json.mode,
-      actualManagedSkiaRaster: !isCanvasKit && Number(json.frontGeneration ?? 0) > 0,
-      actualCanvasKitRaster: isCanvasKit && Number(json.frontGeneration ?? 0) > 0,
+      actualManagedSkiaRaster: Number(json.frontGeneration ?? 0) > 0,
       rasterCanvasAttached: json.rasterCanvasAttached,
       hardwareWebGl2: host.gpu.hardware && !host.gpu.softwareFallbackUsed && host.gpu.api === "webgl2",
       gpu: host.gpu,
-      exactBitmapCommit: json.mode === "worker-direct-webgl" || isCanvasKit
+      exactBitmapCommit: json.mode === "worker-direct-webgl"
         ? false : Number(json.frontGeneration ?? 0) === host.resizeEpoch.generation,
-      exactDirectCommit: (json.mode === "worker-direct-webgl" || isCanvasKit) &&
+      exactDirectCommit: (json.mode === "worker-direct-webgl") &&
         Number(json.frontGeneration ?? 0) === host.resizeEpoch.generation,
       bitmapCreated: json.bitmapCreated,
       bitmapConsumed: json.bitmapConsumed,
@@ -745,24 +409,16 @@ const resizeDiagnostics: ResizeDiagnostics = {
   loseContext: (canvasId) => changeDiagnosticContextState(canvasId, true),
   restoreContext: (canvasId) => changeDiagnosticContextState(canvasId, false),
   crashWorker: (canvasId) => {
-    const external = externalWorkerPresenters.get(canvasId);
-    if (external) return external.command("crash");
     const presenter = workerDisplayPresenters.get(canvasId);
     if (!presenter) return false;
     presenter.worker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "crash" });
     return true;
   },
   violateWorkerProtocol: (canvasId) => {
-    const external = externalWorkerPresenters.get(canvasId);
-    if (external) return external.command("violate-protocol");
     const presenter = workerDisplayPresenters.get(canvasId);
     if (!presenter) return false;
     presenter.worker.postMessage({ protocolVersion: 999, kind: "input" });
     return true;
-  },
-  stallRaster100ms: (canvasId) => {
-    const external = externalWorkerPresenters.get(canvasId);
-    return external?.command("stall-raster-100ms") ?? false;
   },
 };
 (globalThis as typeof globalThis & { __dorotiResizeDiagnostics?: ResizeDiagnostics })
@@ -814,15 +470,10 @@ function recordResize(
     terminal: options.terminal ?? null,
     detail: options.detail ?? null,
     queueDepth: (() => {
-      const presenter = canvasPresenters.get(host.canvas.id);
-      if (presenter) return Number(presenter.current !== null) + Number(presenter.latest !== null);
       const workerPresenter = workerDisplayPresenters.get(host.canvas.id);
       if (workerPresenter) return Number(workerPresenter.currentRequestId !== null) +
         Number(workerPresenter.latestRequestId !== null);
-      const externalPresenter = externalWorkerPresenters.get(host.canvas.id);
-      return externalPresenter
-        ? Number(externalPresenter.snapshot().queueDepth ?? 0)
-        : 0;
+      return 0;
     })(),
     inputSequence: options.inputSequence ?? 0,
     requestId: options.requestId ?? 0,
@@ -903,15 +554,8 @@ function commitDirectCanvasLogicalSize(
   logicalWidth: number,
   logicalHeight: number): void {
   const workerPresenter = workerDisplayPresenters.get(host.canvas.id);
-  const externalPresenter = externalWorkerPresenters.get(host.canvas.id);
-  if (!directWorkerBootstrap && workerPresenter?.mode !== "worker-direct-webgl" &&
-      !externalPresenter) return;
-  // CanvasKit owns a grow-only transferred backing and maps it at a fixed DPR;
-  // the root clips that capacity to the viewport. Applying observer target
-  // dimensions here would scale the previous front while Raster is producing
-  // the matching immutable generation.
-  if (externalPresenter?.commitCanvasCssWithFront) return;
-  // Direct Skia also owns a grow-only physical backing. Its completed front
+  if (!directWorkerBootstrap && workerPresenter?.mode !== "worker-direct-webgl") return;
+  // Direct Skia owns a grow-only physical backing. Its completed front
   // establishes the pixel scale; the root clips it to the observed viewport.
   // Observer targets must not rescale that backing while a new frame is built.
   if (host.canvas.dataset.dorotiCapacityWidth) return;
@@ -1062,659 +706,21 @@ function hostForCanvas(canvas: HTMLCanvasElement): BrowserHost | undefined {
 }
 
 function changeDiagnosticContextState(canvasId: string, lose: boolean): boolean {
-  const presenter = canvasPresenters.get(canvasId);
-  const workerPresenter = workerDisplayPresenters.get(canvasId);
-  const externalPresenter = externalWorkerPresenters.get(canvasId);
-  if (externalPresenter)
-    return externalPresenter.command(lose ? "lose-context" : "restore-context");
-  if (workerPresenter) {
-    workerPresenter.worker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "context", action: lose ? "lose" : "restore" });
-    return true;
-  }
-  if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
-  const extension = presenter.contextLossExtension;
-  if (!extension) return false;
-  if (lose) extension.loseContext();
-  else extension.restoreContext();
+  const presenter = workerDisplayPresenters.get(canvasId);
+  if (!presenter) throw new Error(`Worker presenter '${canvasId}' is not initialized.`);
+  presenter.worker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "context", action: lose ? "lose" : "restore" });
   return true;
-}
-
-// WebGL bootstrap adapted from SkiaSharp 4.151.1 SKHtmlCanvas.js at
-// mono/SkiaSharp commit 279f93f4ffa7f9fe4e9c0bc298bedc3c9e439764 (MIT).
-// Doroti owns the context, rAF queue, backing-store commit and managed callback.
-function emscriptenGl(): EmscriptenGlRuntime {
-  const scope = globalThis as typeof globalThis & {
-    SkiaSharpGL?: EmscriptenGlRuntime;
-    SkiaSharpModule?: { GL?: EmscriptenGlRuntime };
-    Module?: { GL?: EmscriptenGlRuntime };
-    GL?: EmscriptenGlRuntime;
-  };
-  const runtime = scope.SkiaSharpGL ?? scope.SkiaSharpModule?.GL ?? scope.Module?.GL ?? scope.GL;
-  if (!runtime) throw new Error("Doroti could not resolve the SkiaSharp Emscripten GL runtime.");
-  return runtime;
-}
-
-function presenterGlInfo(presenter: CanvasPresenter): {
-  context: number; fboId: number; stencilBits: number; sampleCount: number; depthBits: number;
-} {
-  const runtime = emscriptenGl();
-  runtime.makeContextCurrent(presenter.context);
-  const context = runtime.currentContext?.GLctx;
-  if (!context) throw new Error("Doroti WebGL2 context is not current.");
-  const framebuffer = context.getParameter(context.FRAMEBUFFER_BINDING) as WebGLFramebuffer & { id?: number } | null;
-  return {
-    context: presenter.context,
-    fboId: framebuffer?.id ?? 0,
-    stencilBits: context.getParameter(context.STENCIL_BITS) as number,
-    sampleCount: 0,
-    depthBits: context.getParameter(context.DEPTH_BITS) as number,
-  };
-}
-
-function presenterGl(presenter: CanvasPresenter): WebGL2RenderingContext {
-  const runtime = emscriptenGl();
-  runtime.makeContextCurrent(presenter.context);
-  return runtime.currentContext?.GLctx ??
-    (() => { throw new Error("Doroti WebGL2 context is not current."); })();
-}
-
-function createGpuSurface(presenter: CanvasPresenter, width: number, height: number): GpuSurface {
-  const runtime = emscriptenGl();
-  const gl = presenterGl(presenter);
-  const framebuffer = gl.createFramebuffer() as (WebGLFramebuffer & { name?: number }) | null;
-  const color = gl.createTexture();
-  const depthStencil = gl.createRenderbuffer();
-  if (!framebuffer || !color || !depthStencil)
-    throw new Error("Doroti could not allocate the retained WebGL framebuffer resources.");
-  const framebufferId = runtime.getNewId(runtime.framebuffers);
-  framebuffer.name = framebufferId;
-  runtime.framebuffers[framebufferId] = framebuffer;
-  try {
-    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-    gl.bindTexture(gl.TEXTURE_2D, color);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, color, 0);
-    gl.bindRenderbuffer(gl.RENDERBUFFER, depthStencil);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH24_STENCIL8, width, height);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_STENCIL_ATTACHMENT, gl.RENDERBUFFER, depthStencil);
-    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-    if (status !== gl.FRAMEBUFFER_COMPLETE)
-      throw new Error(`Doroti retained framebuffer is incomplete (0x${status.toString(16)}).`);
-    return {
-      framebuffer, framebufferId, color, depthStencil, width, height,
-      logicalWidth: 0, logicalHeight: 0, devicePixelRatio: 1, generation: 0,
-    };
-  } catch (error) {
-    runtime.framebuffers[framebufferId] = null;
-    framebuffer.name = 0;
-    gl.deleteFramebuffer(framebuffer);
-    gl.deleteTexture(color);
-    gl.deleteRenderbuffer(depthStencil);
-    throw error;
-  } finally {
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    presenter.glStateDirty = true;
-  }
-}
-
-function releaseGpuSurface(presenter: CanvasPresenter, surface: GpuSurface | null, deleteObjects = true): void {
-  if (!surface) return;
-  const runtime = emscriptenGl();
-  runtime.framebuffers[surface.framebufferId] = null;
-  surface.framebuffer.name = 0;
-  if (!deleteObjects || presenter.contextLost) return;
-  const gl = presenterGl(presenter);
-  gl.deleteFramebuffer(surface.framebuffer);
-  gl.deleteTexture(surface.color);
-  gl.deleteRenderbuffer(surface.depthStencil);
-  presenter.glStateDirty = true;
-}
-
-function ensureStaging(presenter: CanvasPresenter, width: number, height: number): GpuSurface {
-  if (presenter.staging &&
-      (presenter.staging.width !== width || presenter.staging.height !== height)) {
-    releaseGpuSurface(presenter, presenter.staging);
-    presenter.staging = null;
-  }
-  return presenter.staging ??= createGpuSurface(presenter, width, height);
-}
-
-function blitRectToDefault(
-  presenter: CanvasPresenter,
-  source: GpuSurface,
-  sourceX0: number,
-  sourceY0: number,
-  sourceX1: number,
-  sourceY1: number,
-  destinationX0: number,
-  destinationY0: number,
-  destinationX1: number,
-  destinationY1: number,
-  destinationWidth: number,
-  destinationHeight: number,
-  filter: number,
-  clearBackground: boolean): {
-    sourceStatus: number; destinationStatus: number; priorErrors: number[]; error: number;
-  } {
-  const gl = presenterGl(presenter);
-  const priorErrors: number[] = [];
-  for (let value = gl.getError(); value !== gl.NO_ERROR; value = gl.getError()) priorErrors.push(value);
-  gl.disable(gl.SCISSOR_TEST);
-  gl.colorMask(true, true, true, true);
-  gl.depthMask(true);
-  gl.stencilMask(0xff);
-  gl.viewport(0, 0, destinationWidth, destinationHeight);
-  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-  gl.drawBuffers([gl.BACK]);
-  if (clearBackground) {
-    const dark = globalThis.matchMedia?.("(prefers-color-scheme: dark)").matches ?? false;
-    gl.clearColor(...(dark ? [20 / 255, 18 / 255, 24 / 255, 1] as const : [1, 251 / 255, 254 / 255, 1] as const));
-    gl.clearDepth(1);
-    gl.clearStencil(0);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-  }
-  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, source.framebuffer);
-  gl.readBuffer(gl.COLOR_ATTACHMENT0);
-  const sourceStatus = gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER);
-  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-  gl.drawBuffers([gl.BACK]);
-  const destinationStatus = gl.checkFramebufferStatus(gl.DRAW_FRAMEBUFFER);
-  if (sourceX1 > sourceX0 && sourceY1 > sourceY0 &&
-      destinationX1 > destinationX0 && destinationY1 > destinationY0) {
-    gl.blitFramebuffer(
-      sourceX0, sourceY0, sourceX1, sourceY1,
-      destinationX0, destinationY0, destinationX1, destinationY1,
-      gl.COLOR_BUFFER_BIT, filter);
-  }
-  const error = gl.getError();
-  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
-  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-  gl.flush();
-  presenter.glStateDirty = true;
-  return { sourceStatus, destinationStatus, priorErrors, error };
-}
-
-function commitCanvasEpoch(
-  host: BrowserHost,
-  presenter: CanvasPresenter,
-  target: ResizeEpoch,
-  source: string): boolean {
-  const changed = host.canvas.width !== target.physicalWidth ||
-    host.canvas.height !== target.physicalHeight;
-  if (changed) {
-    recordResize(host, "backing-reset-start", source, {
-      backingWidth: host.canvas.width,
-      backingHeight: host.canvas.height,
-      detail: `target=${target.physicalWidth}x${target.physicalHeight}`,
-    });
-    host.canvas.width = target.physicalWidth;
-    host.canvas.height = target.physicalHeight;
-    host.surfaceGeneration++;
-    presenter.glStateDirty = true;
-  }
-  host.canvas.style.width = `${target.logicalWidth}px`;
-  host.canvas.style.height = `${target.logicalHeight}px`;
-  host.canvas.style.removeProperty("transform");
-  host.canvas.style.removeProperty("transform-origin");
-  host.canvas.dataset.dorotiFrontLogicalWidth = String(target.logicalWidth);
-  host.canvas.dataset.dorotiFrontLogicalHeight = String(target.logicalHeight);
-  delete host.canvas.dataset.dorotiResizePreview;
-  const gl = presenterGl(presenter);
-  const supported = gl.drawingBufferWidth === target.physicalWidth &&
-    gl.drawingBufferHeight === target.physicalHeight;
-  if (!supported) {
-    recordResize(host, "ack", source, {
-      terminal: "failed",
-      backingWidth: gl.drawingBufferWidth,
-      backingHeight: gl.drawingBufferHeight,
-      detail: JSON.stringify({ reason: "unsupported-size", requested: target }),
-    });
-  } else if (changed) {
-    recordResize(host, "backing-reset-end", source, {
-      detail: `committed=${target.physicalWidth}x${target.physicalHeight}`,
-    });
-  }
-  return supported;
-}
-
-function blitExactToDefault(
-  presenter: CanvasPresenter,
-  source: GpuSurface,
-  width: number,
-  height: number) {
-  const gl = presenterGl(presenter);
-  return blitRectToDefault(
-    presenter, source,
-    0, 0, width, height,
-    0, 0, width, height,
-    width, height, gl.NEAREST, false);
-}
-
-export function consumePresenterGlStateDirty(canvasId: string): boolean {
-  const presenter = canvasPresenters.get(canvasId);
-  if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
-  const dirty = presenter.glStateDirty;
-  presenter.glStateDirty = false;
-  return dirty;
-}
-
-export function initializeCanvasPresenter(
-  canvasId: string,
-  callback: ManagedCanvasPresenter): ReturnType<typeof presenterGlInfo> {
-  if (canvasPresenters.has(canvasId)) throw new Error(`Canvas presenter '${canvasId}' already exists.`);
-  const canvas = document.getElementById(canvasId);
-  if (!(canvas instanceof HTMLCanvasElement)) throw new Error(`Canvas '#${canvasId}' was not found.`);
-  const policy = presenterPolicy();
-  const rasterCanvas: HTMLCanvasElement | OffscreenCanvas = policy.selected === "offscreen-bitmap"
-    ? new OffscreenCanvas(1, 1)
-    : canvas;
-  const display = policy.selected === "offscreen-bitmap"
-    ? canvas.getContext("bitmaprenderer")
-    : null;
-  if (policy.selected === "offscreen-bitmap" && !display)
-    throw new Error("Doroti offscreen mode requires a visible bitmaprenderer context.");
-  const runtime = emscriptenGl();
-  const context = runtime.createContext(rasterCanvas, {
-    alpha: 1, depth: 1, stencil: 8, antialias: 0, premultipliedAlpha: 1,
-    // The visible canvas is composited independently of Doroti's retained
-    // front/staging FBOs. Preserve the last exact default-buffer commit so a
-    // browser repaint never samples a discarded buffer between managed
-    // rasters. This also avoids a full-screen old-front blit on every input
-    // rAF, which caused visible key flicker and wheel/resize latency.
-    preserveDrawingBuffer: policy.selected === "document-webgl" ? 1 : 0,
-    preferLowPowerToHighPerformance: 0,
-    failIfMajorPerformanceCaveat: 1, majorVersion: 2, minorVersion: 0,
-    enableExtensionsByDefault: 1, explicitSwapControl: 0, renderViaOffscreenBackBuffer: 0,
-  });
-  if (!context) throw new Error("Doroti requires a hardware WebGL2 context; creation failed.");
-  const presenter: CanvasPresenter = {
-    canvas, mode: policy.selected, rasterCanvas, display, callback,
-    context, contextGeneration: 1, contextLossExtension: null,
-    current: null, latest: null, drainScheduled: false,
-    nextRequestId: 0, contextLost: false, front: null, frontGeneration: 0, frontRequestId: 0,
-    staging: null, glStateDirty: true,
-    bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
-    rasterWidth: rasterCanvas.width, rasterHeight: rasterCanvas.height,
-    displayWidth: canvas.width, displayHeight: canvas.height,
-    listeners: [],
-  };
-  presenter.contextLossExtension = presenterGl(presenter).getExtension("WEBGL_lose_context");
-  const listen = (name: string, handler: EventListener): void => {
-    rasterCanvas.addEventListener(name, handler);
-    presenter.listeners.push({ target: rasterCanvas, name, handler });
-  };
-  listen("webglcontextlost", (event) => {
-    event.preventDefault();
-    presenter.contextLost = true;
-    releaseGpuSurface(presenter, presenter.front, false);
-    releaseGpuSurface(presenter, presenter.staging, false);
-    presenter.front = null;
-    presenter.staging = null;
-    presenter.frontGeneration = 0;
-    presenter.frontRequestId = 0;
-    const interruptedRequestId = presenter.current?.requestId ?? 0;
-    const interruptedGeneration = presenter.current?.generation ?? 0;
-    if (presenter.current) recordPresenterTerminal(presenter, presenter.current, "superseded", "context lost");
-    presenter.current = null;
-    const host = hostForCanvas(canvas);
-    if (host) {
-      updateResizeEpoch(host, "webgl-context-lost", host.logicalWidth, host.logicalHeight, true);
-      recordResize(host, "context-lost", "doroti-presenter", {
-        detail: `interruptedGeneration=${interruptedGeneration}`,
-      });
-      emit(host);
-    }
-    callback.invokeMethod<void>("ContextLost", interruptedRequestId, interruptedGeneration);
-  });
-  listen("webglcontextrestored", () => {
-    presenter.contextLost = false;
-    presenter.contextGeneration++;
-    const restoredGl = presenterGl(presenter);
-    for (const extensionName of restoredGl.getSupportedExtensions() ?? [])
-      restoredGl.getExtension(extensionName);
-    const host = hostForCanvas(canvas);
-    if (host) {
-      const epoch = host.resizeEpoch;
-      commitObservedResize(
-        host, "webgl-context-restored", host.logicalWidth, host.logicalHeight,
-        epoch.physicalWidth, epoch.physicalHeight, epoch.devicePixelRatio, true);
-      host.surfaceGeneration++;
-      host.gpu = gpuIdentity(canvas);
-      recordResize(host, "context-restored", "doroti-presenter", {
-        backingWidth: canvas.width, backingHeight: canvas.height,
-      });
-    }
-    callback.invokeMethod<void>("ContextRestored");
-    schedulePresenter(presenter);
-  });
-  canvasPresenters.set(canvasId, presenter);
-  return presenterGlInfo(presenter);
 }
 
 export function requestPresent(
   canvasId: string, generation: number, logicalWidth: number, logicalHeight: number,
   physicalWidth: number, physicalHeight: number, devicePixelRatio: number,
   timestampMicroseconds: number): void {
-  if (activeWorkerBridge) {
-    activeWorkerBridge.requestPresent(canvasId, {
-      generation, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
-      devicePixelRatio, timestampMicroseconds,
-    });
-    return;
-  }
-  const presenter = canvasPresenters.get(canvasId);
-  if (!presenter) throw new Error(`Canvas presenter '${canvasId}' is not initialized.`);
-  const descriptor: PresentDescriptor = {
-    requestId: ++presenter.nextRequestId, generation, logicalWidth, logicalHeight,
-    physicalWidth, physicalHeight, devicePixelRatio, timestampMicroseconds,
-    terminalRecorded: false,
-  };
-  const host = hostForCanvas(presenter.canvas);
-  if (host) recordResize(host, "present-requested", "doroti-presenter", {
-    rafId: descriptor.requestId,
-    requestId: descriptor.requestId,
-    surfaceWidth: descriptor.physicalWidth, surfaceHeight: descriptor.physicalHeight,
+  if (!activeWorkerBridge) throw new Error("Doroti presentation requires a render Worker bridge.");
+  activeWorkerBridge.requestPresent(canvasId, {
+    generation, logicalWidth, logicalHeight, physicalWidth, physicalHeight,
+    devicePixelRatio, timestampMicroseconds,
   });
-  if (presenter.latest) recordPresenterTerminal(presenter, presenter.latest, "superseded", "latest replaced");
-  presenter.latest = descriptor;
-  schedulePresenter(presenter);
-}
-
-function schedulePresenter(presenter: CanvasPresenter): void {
-  if (presenter.drainScheduled || presenter.current || presenter.contextLost || !presenter.latest) return;
-  if (presenter.mode === "offscreen-bitmap") {
-    presenter.drainScheduled = true;
-    void drainOffscreenPresenter(presenter);
-    return;
-  }
-  presenter.drainScheduled = true;
-  try {
-    // requestPresent is called from the browser-WASM frame callback after the
-    // framework has produced an exact scene. Deferring the managed raster to a
-    // microtask also waits for the remainder of that managed callback, which
-    // can consume another refresh interval. Drain current + latest
-    // synchronously while preserving one in-flight descriptor and exactly-once
-    // terminal accounting.
-    while (!presenter.current && !presenter.contextLost && presenter.latest)
-      runPresenter(presenter);
-  } finally {
-    presenter.drainScheduled = false;
-  }
-}
-
-async function drainOffscreenPresenter(presenter: CanvasPresenter): Promise<void> {
-  try {
-    while (!presenter.current && !presenter.contextLost && presenter.latest) {
-      const descriptor = presenter.latest;
-      presenter.latest = null;
-      presenter.current = descriptor;
-      await runOffscreenPresenter(presenter, descriptor);
-      presenter.current = null;
-    }
-  } finally {
-    presenter.drainScheduled = false;
-    if (!presenter.current && !presenter.contextLost && presenter.latest)
-      schedulePresenter(presenter);
-  }
-}
-
-async function runOffscreenPresenter(
-  presenter: CanvasPresenter,
-  descriptor: PresentDescriptor): Promise<void> {
-  const host = hostForCanvas(presenter.canvas);
-  if (!host || host.resizeEpoch.generation !== descriptor.generation) {
-    recordPresenterTerminal(presenter, descriptor, "superseded", "target changed before offscreen raster");
-    return;
-  }
-  const started = performance.now();
-  let bitmap: ImageBitmap | null = null;
-  try {
-    if (!(presenter.rasterCanvas instanceof OffscreenCanvas))
-      throw new Error("Doroti offscreen presenter lost its detached raster canvas.");
-    if (presenter.rasterCanvas.width !== descriptor.physicalWidth ||
-        presenter.rasterCanvas.height !== descriptor.physicalHeight) {
-      presenter.rasterCanvas.width = descriptor.physicalWidth;
-      presenter.rasterCanvas.height = descriptor.physicalHeight;
-      presenter.rasterWidth = descriptor.physicalWidth;
-      presenter.rasterHeight = descriptor.physicalHeight;
-      presenter.glStateDirty = true;
-      host.surfaceGeneration++;
-    }
-    const gl = presenterGl(presenter);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.drawBuffers([gl.BACK]);
-    gl.disable(gl.SCISSOR_TEST);
-    gl.colorMask(true, true, true, true);
-    gl.depthMask(true);
-    gl.stencilMask(0xff);
-    gl.viewport(0, 0, descriptor.physicalWidth, descriptor.physicalHeight);
-    presenter.glStateDirty = true;
-    const renderResult = String(presenter.callback.invokeMethod<string>("RenderFrame",
-      descriptor.requestId, descriptor.generation, descriptor.logicalWidth, descriptor.logicalHeight,
-      descriptor.physicalWidth, descriptor.physicalHeight, descriptor.devicePixelRatio,
-      descriptor.timestampMicroseconds, 0, 8, 0, presenter.contextGeneration,
-      presenter.glStateDirty));
-    presenter.glStateDirty = false;
-    const exactRendered = renderResult === "exact-rendered" || renderResult === "replay-rendered";
-    if (!exactRendered) {
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
-        descriptor.generation, "superseded", `managed raster result=${renderResult}`);
-      recordPresenterTerminal(presenter, descriptor, "superseded", `managed raster result=${renderResult}`);
-      return;
-    }
-    gl.flush();
-    bitmap = await createImageBitmap(presenter.rasterCanvas);
-    presenter.bitmapCreated++;
-    presenter.activeBitmaps++;
-    const latestHost = hostForCanvas(presenter.canvas);
-    const epochExact = latestHost && !presenter.contextLost &&
-      presenter.current?.requestId === descriptor.requestId &&
-      descriptor.requestId > presenter.frontRequestId &&
-      descriptor.generation >= presenter.frontGeneration &&
-      descriptor.generation <= latestHost.resizeEpoch.generation &&
-      presenter.contextGeneration > 0 &&
-      bitmap.width === descriptor.physicalWidth && bitmap.height === descriptor.physicalHeight;
-    if (!epochExact) {
-      bitmap.close();
-      bitmap = null;
-      presenter.bitmapClosed++;
-      presenter.activeBitmaps--;
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
-        descriptor.generation, "superseded", "completed ImageBitmap was not a monotonic frame/epoch-exact front");
-      recordPresenterTerminal(presenter, descriptor, "superseded",
-        "completed ImageBitmap was not a monotonic frame/epoch-exact front");
-      return;
-    }
-    // Intrinsic/CSS size and bitmap ownership transfer form one uninterrupted
-    // display commit. No await or managed callback is permitted in this block.
-    presenter.canvas.width = descriptor.physicalWidth;
-    presenter.canvas.height = descriptor.physicalHeight;
-    presenter.canvas.style.width = `${descriptor.logicalWidth}px`;
-    presenter.canvas.style.height = `${descriptor.logicalHeight}px`;
-    presenter.canvas.dataset.dorotiFrontLogicalWidth = String(descriptor.logicalWidth);
-    presenter.canvas.dataset.dorotiFrontLogicalHeight = String(descriptor.logicalHeight);
-    presenter.display!.transferFromImageBitmap(bitmap);
-    bitmap = null;
-    presenter.bitmapConsumed++;
-    presenter.activeBitmaps--;
-    presenter.displayWidth = descriptor.physicalWidth;
-    presenter.displayHeight = descriptor.physicalHeight;
-    presenter.frontGeneration = descriptor.generation;
-    presenter.frontRequestId = descriptor.requestId;
-    presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
-      descriptor.generation, "submitted", "exact ImageBitmap display commit");
-    recordResize(latestHost, "front-commit", "doroti-presenter", {
-      rafId: descriptor.requestId, requestId: descriptor.requestId,
-      backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
-      surfaceWidth: presenter.rasterWidth, surfaceHeight: presenter.rasterHeight,
-      detail: JSON.stringify({
-        mode: presenter.mode,
-        generation: descriptor.generation,
-        targetGeneration: latestHost.resizeEpoch.generation,
-        progressive: descriptor.generation < latestHost.resizeEpoch.generation,
-        contextGeneration: presenter.contextGeneration,
-      }),
-    });
-    recordResize(latestHost, "browser-present-unverified", "browser-compositor", {
-      rafId: descriptor.requestId, requestId: descriptor.requestId,
-      detail: "ImageBitmap ownership transfer is not a display scan-out acknowledgement",
-    });
-    recordPresenterTerminal(presenter, descriptor, "submitted",
-      "exact offscreen ImageBitmap transferred to bitmaprenderer",
-      Math.round((performance.now() - started) * 1000));
-  } catch (error) {
-    if (bitmap) {
-      bitmap.close();
-      presenter.bitmapClosed++;
-      presenter.activeBitmaps--;
-    }
-    try {
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId,
-        descriptor.generation, "failed", String(error));
-    } catch { }
-    recordPresenterTerminal(presenter, descriptor, "failed", String(error));
-  }
-}
-
-function runPresenter(presenter: CanvasPresenter): void {
-  const descriptor = presenter.latest;
-  presenter.latest = null;
-  if (!descriptor || presenter.contextLost) return;
-  presenter.current = descriptor;
-  const host = hostForCanvas(presenter.canvas);
-  if (host && host.resizeEpoch.generation !== descriptor.generation) {
-    recordPresenterTerminal(presenter, descriptor, "superseded", "target changed before presenter drain");
-    presenter.current = null;
-    schedulePresenter(presenter);
-    return;
-  }
-  const started = performance.now();
-  const gl = presenterGl(presenter);
-  const staging = ensureStaging(presenter, descriptor.physicalWidth, descriptor.physicalHeight);
-  gl.bindFramebuffer(gl.FRAMEBUFFER, staging.framebuffer);
-  gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
-  gl.disable(gl.SCISSOR_TEST);
-  gl.colorMask(true, true, true, true);
-  gl.depthMask(true);
-  gl.stencilMask(0xff);
-  gl.viewport(0, 0, staging.width, staging.height);
-  presenter.glStateDirty = true;
-  try {
-    const renderResult = String(presenter.callback.invokeMethod<string>("RenderFrame",
-      descriptor.requestId, descriptor.generation, descriptor.logicalWidth, descriptor.logicalHeight,
-      descriptor.physicalWidth, descriptor.physicalHeight, descriptor.devicePixelRatio,
-      descriptor.timestampMicroseconds, staging.framebufferId, 8, 0, presenter.contextGeneration,
-      presenter.glStateDirty));
-    presenter.glStateDirty = false;
-    const latestHost = hostForCanvas(presenter.canvas);
-    const exactRendered = renderResult === "exact-rendered" || renderResult === "replay-rendered";
-    const exact = latestHost?.resizeEpoch.generation === descriptor.generation;
-    if (!latestHost || !exact) {
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, "superseded",
-        "target changed during staging raster");
-      recordPresenterTerminal(presenter, descriptor, "superseded", "target changed during raster");
-    } else if (!exactRendered) {
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, "superseded",
-        `managed raster result=${renderResult}`);
-      recordPresenterTerminal(presenter, descriptor, "superseded", `managed raster result=${renderResult}`);
-    } else {
-      if (!commitCanvasEpoch(latestHost, presenter, descriptor, "exact-front-commit"))
-        throw new Error(`Doroti canvas rejected exact size ${descriptor.physicalWidth}x${descriptor.physicalHeight}.`);
-      const commitStatus = blitExactToDefault(
-        presenter, staging, descriptor.physicalWidth, descriptor.physicalHeight);
-      if (commitStatus.sourceStatus !== gl.FRAMEBUFFER_COMPLETE ||
-          commitStatus.destinationStatus !== gl.FRAMEBUFFER_COMPLETE ||
-          commitStatus.priorErrors.length !== 0 || commitStatus.error !== gl.NO_ERROR) {
-        throw new Error(`Doroti exact WebGL commit failed: ${JSON.stringify(commitStatus)}`);
-      }
-      const previousFront = presenter.front;
-      staging.logicalWidth = descriptor.logicalWidth;
-      staging.logicalHeight = descriptor.logicalHeight;
-      staging.devicePixelRatio = descriptor.devicePixelRatio;
-      staging.generation = descriptor.generation;
-      presenter.front = staging;
-      presenter.frontGeneration = descriptor.generation;
-      presenter.frontRequestId = descriptor.requestId;
-      presenter.staging = previousFront;
-      presenter.rasterWidth = descriptor.physicalWidth;
-      presenter.rasterHeight = descriptor.physicalHeight;
-      presenter.displayWidth = descriptor.physicalWidth;
-      presenter.displayHeight = descriptor.physicalHeight;
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, "submitted",
-        "front commit");
-      recordResize(latestHost, "front-commit", "doroti-presenter", {
-        rafId: descriptor.requestId,
-        requestId: descriptor.requestId,
-        backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
-        surfaceWidth: descriptor.physicalWidth, surfaceHeight: descriptor.physicalHeight,
-        detail: JSON.stringify({
-          ...commitStatus,
-          generation: descriptor.generation,
-          targetGeneration: latestHost.resizeEpoch.generation,
-          progressive: descriptor.generation < latestHost.resizeEpoch.generation,
-        }),
-      });
-      recordResize(latestHost, "browser-present-unverified", "browser-compositor", {
-        rafId: descriptor.requestId,
-        requestId: descriptor.requestId,
-        detail: "GPU blit and rAF completion are not a display scan-out acknowledgement",
-      });
-      recordPresenterTerminal(presenter, descriptor, "submitted",
-        "exact staging GPU surface committed to the default framebuffer",
-        Math.round((performance.now() - started) * 1000));
-    }
-  } catch (error) {
-    try {
-      presenter.callback.invokeMethod<void>("CompleteFrame", descriptor.requestId, descriptor.generation, "failed", String(error));
-    } catch { }
-    recordPresenterTerminal(presenter, descriptor, "failed", String(error));
-  } finally {
-    presenter.current = null;
-    schedulePresenter(presenter);
-  }
-}
-
-function recordPresenterTerminal(
-  presenter: CanvasPresenter,
-  descriptor: PresentDescriptor,
-  terminal: string,
-  detail: string,
-  durationMicroseconds = 0): void {
-  if (descriptor.terminalRecorded) return;
-  descriptor.terminalRecorded = true;
-  const host = hostForCanvas(presenter.canvas);
-  if (!host) return;
-  recordResize(host, terminal === "submitted" ? "submitted" : "ack", "doroti-presenter", {
-    durationMicroseconds, rafId: descriptor.requestId,
-    requestId: descriptor.requestId,
-    backingWidth: presenter.canvas.width, backingHeight: presenter.canvas.height,
-    surfaceWidth: descriptor.physicalWidth, surfaceHeight: descriptor.physicalHeight,
-    terminal, detail,
-  });
-}
-
-export function disposeCanvasPresenter(canvasId: string): void {
-  const presenter = canvasPresenters.get(canvasId);
-  if (!presenter) return;
-  presenter.drainScheduled = false;
-  if (presenter.current)
-    recordPresenterTerminal(presenter, presenter.current, "superseded", "presenter disposed");
-  if (presenter.latest)
-    recordPresenterTerminal(presenter, presenter.latest, "superseded", "presenter disposed");
-  presenter.current = null;
-  presenter.latest = null;
-  for (const listener of presenter.listeners)
-    listener.target.removeEventListener(listener.name, listener.handler);
-  releaseGpuSurface(presenter, presenter.front);
-  releaseGpuSurface(presenter, presenter.staging);
-  emscriptenGl().deleteContext?.(presenter.context);
-  canvasPresenters.delete(canvasId);
 }
 
 function browserOperatingSystem(): string {
@@ -1753,38 +759,12 @@ function emitResize(host: BrowserHost): void {
 }
 
 function gpuIdentity(canvas: HTMLCanvasElement): GpuIdentity {
-  if (directWorkerBootstrap)
-    return { api: "webgl2", vendor: "worker-pending", renderer: "worker-pending", hardware: true, softwareFallbackUsed: false };
-  const presenter = canvasPresenters.get(canvas.id);
-  const workerPresenter = workerDisplayPresenters.get(canvas.id);
-  if (workerPresenter || externalWorkerPresenters.has(canvas.id)) {
-    const host = hostForCanvas(canvas);
-    return host?.gpu ?? {
-      api: "webgl2", vendor: "worker-probe-pending", renderer: "worker-probe-pending",
-      hardware: true, softwareFallbackUsed: false,
-    };
-  }
-  let gl: WebGL2RenderingContext | null = null;
-  if (presenter) {
-    const runtime = emscriptenGl();
-    runtime.makeContextCurrent(presenter.context);
-    gl = runtime.currentContext?.GLctx ?? null;
-  } else {
-    gl = canvas.getContext("webgl2", {
-      alpha: true,
-      antialias: true,
-      depth: true,
-      failIfMajorPerformanceCaveat: true,
-      premultipliedAlpha: true,
-    });
-  }
-  if (!gl) throw new Error("Doroti requires a hardware WebGL2 canvas; CPU/2D fallback is forbidden.");
-  const debug = gl.getExtension("WEBGL_debug_renderer_info");
-  const vendor = debug ? gl.getParameter(debug.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR);
-  const renderer = debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
-  const softwareFallbackUsed = /swiftshader|llvmpipe|software/.test(`${String(vendor)} ${String(renderer)}`.toLowerCase());
-  if (softwareFallbackUsed) throw new Error(`Doroti rejected software WebGL renderer '${String(renderer)}'.`);
-  return { api: "webgl2", vendor: String(vendor), renderer: String(renderer), hardware: true, softwareFallbackUsed };
+  if (!directWorkerBootstrap && !workerDisplayPresenters.has(canvas.id))
+    throw new Error("Doroti GPU identity requires an initialized render Worker.");
+  return hostForCanvas(canvas)?.gpu ?? {
+    api: "webgl2", vendor: "worker-pending", renderer: "worker-pending",
+    hardware: true, softwareFallbackUsed: false,
+  };
 }
 
 export function configureManagedCallbacks(callbacks: ManagedCallbacks): void {
@@ -1803,18 +783,14 @@ export function configureManagedCallbacks(callbacks: ManagedCallbacks): void {
 }
 
 export function getRendererIdentity(): string {
-  if (activeWorkerBridge) return activeWorkerBridge.rendererIdentity();
-  const mode = presenterPolicy().selected;
-  return mode === "offscreen-bitmap"
-    ? "offscreen-canvas-webgl2-imagebitmap"
-    : "document-canvas-webgl2";
+  return activeWorkerBridge?.rendererIdentity() ?? presenterPolicy().selected;
 }
 
 export async function initializeManagedCallbacks(): Promise<"ready"> {
   if (managed) return "ready";
   const getDotnetRuntime = (globalThis as typeof globalThis & { getDotnetRuntime?: (index: number) => DotnetRuntime }).getDotnetRuntime;
   const runtime = getDotnetRuntime?.(0);
-  if (!runtime) throw new Error("Doroti could not resolve the active Blazor WebAssembly runtime.");
+  if (!runtime) throw new Error("Doroti could not resolve the active Web runtime.");
   const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll") as DorotiAssemblyExports;
   const interop = exports.Doroti.Host.Web.BrowserInterop;
   configureManagedCallbacks({
@@ -1831,33 +807,6 @@ export async function initializeManagedCallbacks(): Promise<"ready"> {
     dispatchSemanticsAction: interop.DispatchSemanticsAction,
   });
   return "ready";
-}
-
-export async function initializeCanvasKitManagedCallbacks(): Promise<"ready"> {
-  if (canvasKitManagedCallbacks) return "ready";
-  const getDotnetRuntime = (globalThis as typeof globalThis & {
-    getDotnetRuntime?: (index: number) => DotnetRuntime;
-  }).getDotnetRuntime;
-  const runtime = getDotnetRuntime?.(0);
-  if (!runtime) throw new Error("Doroti could not resolve the CanvasKit UI Worker .NET runtime.");
-  const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll") as DorotiCanvasKitAssemblyExports;
-  const interop = exports.Doroti?.Host?.Web?.BrowserCanvasKitInterop;
-  if (!interop || typeof interop.CompleteScene !== "function" ||
-      typeof interop.CompleteResource !== "function") {
-    throw new Error("Doroti CanvasKit managed callback ABI v1 is unavailable.");
-  }
-  canvasKitManagedCallbacks = {
-    captureFrameTrace: interop.CaptureFrameTrace,
-    completeScene: interop.CompleteScene,
-    completeResource: interop.CompleteResource,
-  };
-  return "ready";
-}
-
-export function captureCanvasKitFrameworkTrace(): Record<string, unknown> {
-  const before = performance.timeOrigin + performance.now();
-  const trace = canvasKitManagedCallbacks ? JSON.parse(canvasKitManagedCallbacks.captureFrameTrace()) : null;
-  return { before, after: performance.timeOrigin + performance.now(), trace };
 }
 
 export function createHost(hostId: number, canvasId: string, logicalWidth: number, logicalHeight: number): string {
@@ -2685,7 +1634,7 @@ export async function invokePlugin(moduleUrl: string, exportName: string, channe
 }
 
 export async function startDorotiWorkerHost(
-  mode: "worker-direct-webgl" | "offscreen-worker" = "offscreen-worker",
+  mode: "worker-direct-webgl" | "offscreen-worker" = "worker-direct-webgl",
   runtimeLocation: "main" | "worker" = "worker",
 ): Promise<"started"> {
   const direct = mode === "worker-direct-webgl";

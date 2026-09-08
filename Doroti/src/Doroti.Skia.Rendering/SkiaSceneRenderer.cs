@@ -625,8 +625,8 @@ public sealed partial class SkiaSceneRenderer :
                 textRuns)
             {
                 NativeAlphabeticBaseline = ascent,
-                CanvasKitTextAlign = request.TextAlign ?? TextAlign.start,
-                CanvasKitTextDirection = request.TextDirection ?? TextDirection.ltr,
+                LayoutTextAlign = request.TextAlign ?? TextAlign.start,
+                LayoutTextDirection = request.TextDirection ?? TextDirection.ltr,
             };
             paragraph.layout(new ParagraphConstraints(request.Width));
             _paragraphCount++;

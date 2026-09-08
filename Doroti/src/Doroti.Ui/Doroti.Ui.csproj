@@ -6,7 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Doroti.Host.Web" />
-    <InternalsVisibleTo Include="Doroti.Validation.BrowserMapper" />
     <InternalsVisibleTo Include="Doroti.Host.Maui" />
     <InternalsVisibleTo Include="Doroti.Host.Qt" />
     <InternalsVisibleTo Include="Doroti.Skia.Rendering" />

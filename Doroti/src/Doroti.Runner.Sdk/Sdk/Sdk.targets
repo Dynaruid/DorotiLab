@@ -191,7 +191,7 @@
            Text="A runner requires exactly one Doroti.Application.Manifest resource; found '@(_DorotiManifest->Count())'." />
     <Error Code="DOROTIWEB023"
            Condition="'$(DorotiTarget)' == 'Web' and !Exists('$(BlazorWebAssemblyJSPath)')"
-           Text="Doroti Web requires a direct Microsoft.AspNetCore.Components.WebAssembly package reference so the standard _framework/blazor.webassembly.js boot asset is registered." />
+           Text="Doroti Web requires a direct Microsoft.AspNetCore.Components.WebAssembly package reference for the WebAssembly runtime build and asset pipeline." />
     <Error Code="DOROTIWEB025"
            Condition="'$(DorotiTarget)' == 'Web' and '$(OverrideHtmlAssetPlaceholders)' != 'true'"
            Text="Doroti Web requires OverrideHtmlAssetPlaceholders=true so the .NET SDK can generate framework preload and fingerprint metadata." />
@@ -223,7 +223,7 @@
       <_DorotiBootstrapLines Include="            global::Doroti.Hosting.DorotiLaunchContext.Create(&quot;$(DorotiTarget)&quot;, &quot;$(RuntimeIdentifier)&quot;, args), DorotiPluginRegistration.Items, typeof(DorotiBootstrap).Assembly, DorotiNativePluginRegistration.Items)%3B" />
       <_DorotiBootstrapLines Include="    [global::System.Runtime.Versioning.SupportedOSPlatform(&quot;browser&quot;)]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
       <_DorotiBootstrapLines Include="    public static global::System.Threading.Tasks.Task Main(string[] args) =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
-      <_DorotiBootstrapLines Include="        global::Doroti.Target.Web.DorotiWebRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(typeof(DorotiBootstrap).Assembly, args, DorotiPluginRegistration.Items)%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
+      <_DorotiBootstrapLines Include="        global::System.Threading.Tasks.Task.CompletedTask%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
       <_DorotiBootstrapLines Include="    [global::System.Runtime.InteropServices.JavaScript.JSExport]" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
       <_DorotiBootstrapLines Include="    public static global::System.Threading.Tasks.Task&lt;string&gt; StartWorker() =&gt;" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />
       <_DorotiBootstrapLines Include="        global::Doroti.Target.Web.DorotiWebWorkerRunner.RunAsync&lt;global::$(DorotiApplicationType)&gt;(typeof(DorotiBootstrap).Assembly, DorotiPluginRegistration.Items)%3B" Condition="'$(DorotiNativeEntryKind)' == 'Managed-Main'" />

@@ -81,7 +81,7 @@ physical display·IME·다른 OS의 실기기 검증은 별도입니다.
 
 ## 빠르게 실행하기
 
-.NET 10 SDK와 PowerShell 7을 설치합니다. 이 source tree에서 Web host를 빌드할 때는 고정된 CanvasKit asset을 복원하고 검증하기 위해 Node.js 20 이상과 npm 10 이상도 필요합니다. 그 뒤 저장소 루트에서 다음 명령을 실행합니다. 첫 실행은 필요한 package를 복원하고 runner를 빌드하므로 시간이 걸릴 수 있습니다.
+.NET 10 SDK와 PowerShell 7을 설치합니다. 그 뒤 저장소 루트에서 다음 명령을 실행합니다. 첫 실행은 필요한 package를 복원하고 runner를 빌드하므로 시간이 걸릴 수 있습니다.
 
 ```powershell
 # Windows 기본 backend로 실행
@@ -102,7 +102,6 @@ Web runner가 시작되면 다음 링크를 브라우저에서 엽니다.
 | 화면 / 렌더러 | URL |
 | --- | --- |
 | 기본 SkiaSharp direct으로 Material 샘플 실행 | [기본 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
-| CanvasKit을 명시하여 Material 샘플 실행 | [CanvasKit 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-canvaskit-webgl) |
 | direct .NET Worker의 SkiaSharp로 Material 샘플 실행 | [SkiaSharp direct 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
 | 기본 렌더러로 진단 화면 실행 | [진단 화면 열기](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
 
@@ -111,13 +110,9 @@ Web runner가 시작되면 다음 링크를 브라우저에서 엽니다.
 `dorotiTestbedMode`를 생략하면 진단 화면이 열리고, `dorotiRenderer`를 생략하면
 기본값인 `worker-direct-webgl`을 사용합니다.
 
-같은 브라우저 탭에서 창 크기와 확대 비율을 유지한 채 CanvasKit과 SkiaSharp direct
-링크를 번갈아 엽니다. Components의 Communication → Progress indicators까지
-스크롤한 뒤 재생 버튼을 눌러 애니메이션을 비교하고, 아직 방문하지 않은 구간으로
-스크롤할 때의 반응도 확인합니다. URL 변경만으로 전환할 수 있어 서버를 다시 시작할
-필요는 없습니다. 렌더러 코드를 다시 빌드했다면 runner를 재시작하고 페이지를
-새로고침하여 새 빌드를 불러옵니다. URL 옵션은 해당 페이지에만 적용되며 앱의
-기본 렌더러 설정을 바꾸지 않습니다.
+Components의 Communication → Progress indicators에서 재생 버튼을 눌러
+애니메이션을 확인할 수 있습니다. 렌더러를 다시 빌드했다면 runner를 재시작하고
+페이지를 새로고침하여 새 빌드를 불러옵니다.
 
 
 progress 데모는 Flutter reference처럼 별도 State에서 갱신합니다. direct Worker에서
@@ -139,41 +134,18 @@ Image demo의 표시용 이미지는 너비 `1024 × DPR`로 축소 디코딩하
 다음 주소는 선택한 backend로 진단 화면을 엽니다.
 
 - 기본 자동 선택: `http://127.0.0.1:5088`
-- document WebGL2: `http://127.0.0.1:5088/?dorotiRenderer=document-webgl`
-- 분리된 .NET UI Worker + CanvasKit Raster Worker(명시적 선택): `http://127.0.0.1:5088/?dorotiRenderer=worker-canvaskit-webgl`
 - persistent .NET Worker의 direct visible canvas(기본값): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
-- 같은 thread OffscreenCanvas: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-bitmap`
 - persistent .NET Worker: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-worker`
 
-`worker-canvaskit-webgl`은 main thread가 DOM/input/IME/semantics, logical CSS geometry, Worker supervision, restart policy와 canvas lease 교체를, UI Worker가 .NET runtime과 CPU text-layout CanvasKit을, Raster Worker가 visible `OffscreenCanvas`와 hardware WebGL2 CanvasKit을 소유하는 명시적 선택 mode입니다. 기본 `worker-direct-webgl`은 main이 DOM/input/IME/semantics를, persistent .NET Worker 하나가 layout/Skia/visible Offscreen WebGL2를 소유하며 초기화 실패 시 자동 fallback하지 않습니다. 이 mode에서 Worker, WebGL2 또는 packaged asset 초기화가 실패하면 이전 renderer로 조용히 fallback하지 않고 오류를 노출합니다.
+`worker-direct-webgl`은 SkiaSharp WASM을 사용합니다. Testbed는 main에서 runtime을 초기화하고 같은 runtime의 렌더 Worker가 layout/Skia/visible Offscreen WebGL2를 소유합니다. DOM/input/IME/semantics는 main에 있으며 초기화 오류를 보고합니다.
 
-Web host source build는 exact `canvaskit-wasm@0.42.0` default variant와 lockfile integrity로 asset을 취득합니다. 실행 시에는 CDN이나 npm registry가 아니라 `Doroti.Host.Web` package에 포함된 same-origin `/_content/Doroti.Host.Web/canvaskit/0.42.0/`의 JS/WASM만 사용합니다. 같은 경로의 `canvaskit.manifest.json`에는 version, variant, lockfile integrity, 허용된 각 파일의 byte length와 SHA-256이 있으며 package에는 type declaration과 upstream `LICENSE`도 포함됩니다. package 소비 앱의 restore/build/publish에는 Node/npm이 필요하지 않습니다.
+Web host source build는 NuGet의 SkiaSharp WASM과 Microsoft.TypeScript.MSBuild를 사용합니다. CanvasKit npm 복원과 별도 JS/WASM 자산은 제거되었습니다.
 
 `auto`와 renderer 옵션 없는 URL은 `worker-direct-webgl`을 선택합니다. 이번 기본값 변경은 남은 성능·물리 표시·IME·접근성 검증의 완료를 의미하지 않습니다.
 
-### CanvasKit qualification evidence (2026-08-31)
+CanvasKit removal and prior qualification evidence: [archived record](../history/26-09-08/web-canvaskit-retired-readme.md).
 
-Hardware WebGL2 Chromium 대상 전용 suite는 `5/5 PASS`했습니다. 이 자동 evidence가 확인한 범위는 main/UI/Raster 소유권(`.NET` 0/1/0, CanvasKit 0/1/1), 정확한 terminal/receipt accounting, Raster를 100 ms 정지한 동안 UI heartbeat와 input dispatch 진행, DPR2에서 CSS 1080×720/backing 2160×1440/transform 없음, resource replay와 canvas lease terminal을 포함한 Raster Worker 3회 교체, malformed protocol 거부 뒤 bounded recovery입니다.
-
-CanvasKit mode 전체 headless run은 `16 PASS / 다른 renderer 전용 5 SKIP / 0 FAIL`이었습니다. 별도 package audit에서는 필요한 Doroti package 7개를 모두 pack하고 Node/npm poison shim을 둔 clean package consumer를 restore/build/publish했습니다. Node/npm 호출은 0이었고 CanvasKit asset 5개의 hash는 source, nupkg, publish에서 모두 같았습니다. `LICENSE` 제거와 1-byte 변조 package는 각각 `DOROTICK101`, `DOROTICK102`로 fail-closed했습니다.
-
-```powershell
-pwsh -NoProfile -File ./Doroti/eng/run-web-playwright.ps1 `
-  -Configuration Release `
-  -HeadlessOnly `
-  -RendererMode worker-canvaskit-webgl `
-  -TestFile tests/canvaskit-worker.spec.ts
-
-pwsh -NoProfile -File ./Doroti/eng/run-web-playwright.ps1 `
-  -Configuration Release `
-  -HeadlessOnly `
-  -RendererMode worker-canvaskit-webgl `
-  -TestFile tests/canvaskit-display-list.spec.ts
-```
-
-이 결과는 기존 `HostPayload`와 Web SkiaSharp dependency의 완전 제거, same-worker Skia/pixel golden parity, composed runtime-effect filter, 완전한 retained output cache, 상대 성능, 30분 memory churn, compositor scan-out, 실제 60/120 Hz resize, precision trackpad, 한글 IME, screen reader acceptance를 증명하지 않습니다. Package에 legacy Web Skia dependency가 남아 있으므로 그 cutover gate는 `FAIL`이고 나머지 항목은 계속 `PARTIAL` 또는 `notVerified`입니다. Firefox와 Safari를 제품 지원 경로로 승격하지 않습니다.
-
-실행을 종료하려면 명령을 실행한 terminal에서 `Ctrl+C`를 누릅니다. Android, iOS, macOS, Linux와 Windows MAUI 실행 명령은 아래의 [플랫폼별 실행](#플랫폼별-실행)을 참고하세요.
+앱을 실행한 터미널에서 `Ctrl+C`로 종료합니다.
 
 ## 구조
 
@@ -181,7 +153,7 @@ pwsh -NoProfile -File ./Doroti/eng/run-web-playwright.ps1 `
 - `doroti-workspace.json`: `macos`(AppKit)와 `maccatalyst`(UIKit)를 구분하는 runner 경로
 - `windowsappsdk/`: Windows App SDK 2.4 `HwndExactCpp` child-HWND runner와 managed Vulkan/Skia presentation (ANGLE selectable) 경로입니다.
 - `windows/`: 정식 MAUI backend runner와 package identity
-- `web/`: Blazor WebAssembly runner, TypeScript source, `wwwroot`
+- `web/`: WebAssembly Worker runner, TypeScript source, `wwwroot`
 - `android/`: .NET Android/MAUI runner와 기본 Gradle AAR/.NET binding
 - `ios/`: .NET iOS/MAUI runner와 독립 Xcode framework/binding
 - `macos/`: native AppKit/osx-arm64와 Mac Catalyst/maccatalyst-arm64 runner, binding, manifest, lock file

@@ -1,25 +1,10 @@
 declare module "*_content/Doroti.Host.Web/doroti.loader.js" {
   export type DorotiBootstrapStage = "before-start" | "starting" | "started" | "failed";
 
-  export type DorotiBootResourceLoader = (
-    type: string,
-    name: string,
-    defaultUri: string,
-    integrity: string,
-  ) => string | Response | Promise<Response> | null | undefined;
-
-  export interface DorotiBlazorStartOptions {
-    configureRuntime?: (runtime: unknown) => void;
-    loadBootResource?: DorotiBootResourceLoader;
-    [name: string]: unknown;
-  }
-
   export interface DorotiBootstrapContext {
-    /** Document/Blazor renderers only. Worker runtimes do not clone callbacks or Responses. */
-    readonly blazorOptions: DorotiBlazorStartOptions;
     stage: DorotiBootstrapStage;
     runtimeLocation?: "main" | "worker";
-    rendererMode?: "worker-canvaskit-webgl" | "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
+    rendererMode?: "worker-direct-webgl" | "offscreen-worker";
   }
 
   export interface DorotiBootstrapOptions {

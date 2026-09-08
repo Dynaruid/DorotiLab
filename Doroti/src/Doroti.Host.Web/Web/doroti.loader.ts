@@ -1,25 +1,10 @@
 export type DorotiBootstrapStage = "before-start" | "starting" | "started" | "failed";
 
-export type DorotiBootResourceLoader = (
-  type: string,
-  name: string,
-  defaultUri: string,
-  integrity: string,
-) => string | Response | Promise<Response> | null | undefined;
-
-export interface DorotiBlazorStartOptions {
-  configureRuntime?: (runtime: unknown) => void;
-  loadBootResource?: DorotiBootResourceLoader;
-  [name: string]: unknown;
-}
-
 export interface DorotiBootstrapContext {
-  /** Document/Blazor renderers only. Worker runtimes do not clone callbacks or Responses. */
-  readonly blazorOptions: DorotiBlazorStartOptions;
   stage: DorotiBootstrapStage;
   /** Main-owned threaded runtime with a JS-affine render Worker. */
   runtimeLocation?: "main" | "worker";
-  rendererMode?: "worker-canvaskit-webgl" | "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
+  rendererMode?: "worker-direct-webgl" | "offscreen-worker";
 }
 
 export interface DorotiBootstrapOptions {
@@ -28,15 +13,7 @@ export interface DorotiBootstrapOptions {
   onError?: (error: unknown, context: DorotiBootstrapContext) => void;
 }
 
-interface BlazorGlobal {
-  start(options?: DorotiBlazorStartOptions): Promise<void>;
-}
-
-const blazorWebAssemblyScriptPath = "_framework/blazor.webassembly.js";
-const blazorWebAssemblyPreloadId = "doroti-blazor-loader";
-
 let startPromise: Promise<DorotiBootstrapContext> | undefined;
-let blazorLoaderPromise: Promise<void> | undefined;
 
 export function startDoroti(options: DorotiBootstrapOptions = {}): Promise<DorotiBootstrapContext> {
   startPromise ??= runStart(options);
@@ -45,7 +22,6 @@ export function startDoroti(options: DorotiBootstrapOptions = {}): Promise<Dorot
 
 async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstrapContext> {
   const context: DorotiBootstrapContext = {
-    blazorOptions: {},
     stage: "before-start",
   };
 
@@ -56,26 +32,8 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
     notifyStage("starting", context, options);
     context.rendererMode = selectRendererMode();
     document.documentElement.dataset.dorotiRenderer = context.rendererMode;
-    if (context.rendererMode === "worker-canvaskit-webgl") {
-      const module = await import("./doroti.canvaskit.host.js");
-      await module.startDorotiCanvasKitWorkerHost();
-    } else if (context.rendererMode === "offscreen-worker" || context.rendererMode === "worker-direct-webgl") {
-      const module = await import("./doroti.web.js");
-      await module.startDorotiWorkerHost(context.rendererMode, context.runtimeLocation);
-    } else {
-      const scope = globalThis as typeof globalThis & {
-        __dorotiRendererPolicy?: {
-          requested: string; selected: string; fallbackReason: string | null;
-        };
-      };
-      scope.__dorotiRendererPolicy = {
-        requested: context.rendererMode,
-        selected: context.rendererMode,
-        fallbackReason: null,
-      };
-      const blazor = await ensureBlazorWebAssembly();
-      await blazor.start(context.blazorOptions);
-    }
+    const module = await import("./doroti.web.js");
+    await module.startDorotiWorkerHost(context.rendererMode, context.runtimeLocation);
     notifyStage("started", context, options);
     return context;
   } catch (error: unknown) {
@@ -95,57 +53,13 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
   }
 }
 
-function selectRendererMode(): "worker-canvaskit-webgl" | "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl" {
+function selectRendererMode(): "worker-direct-webgl" | "offscreen-worker" {
   const value = new URLSearchParams(globalThis.location.search).get("dorotiRenderer");
-  if (value === "worker-canvaskit-webgl" || value === "document-webgl" || value === "offscreen-bitmap" || value === "offscreen-worker" ||
+  if (value === "offscreen-worker" ||
       value === "worker-direct-webgl")
     return value;
   // An omitted, auto, or unrecognized selection uses the product default.
   return "worker-direct-webgl";
-}
-
-async function ensureBlazorWebAssembly(): Promise<BlazorGlobal> {
-  const existing = getBlazorGlobal();
-  if (existing) return existing;
-
-  blazorLoaderPromise ??= loadBlazorWebAssemblyScript();
-  await blazorLoaderPromise;
-
-  const loaded = getBlazorGlobal();
-  if (!loaded) {
-    throw new Error(
-      `DOROTIWEB020: Blazor.start is unavailable after loading '${blazorWebAssemblyScriptPath}'.`,
-    );
-  }
-  return loaded;
-}
-
-function getBlazorGlobal(): BlazorGlobal | undefined {
-  const blazor = (globalThis as typeof globalThis & { Blazor?: BlazorGlobal }).Blazor;
-  return blazor && typeof blazor.start === "function" ? blazor : undefined;
-}
-
-function loadBlazorWebAssemblyScript(): Promise<void> {
-  const preload = document.getElementById(blazorWebAssemblyPreloadId) as HTMLLinkElement | null;
-  const scriptUrl = preload?.href || new URL(blazorWebAssemblyScriptPath, document.baseURI).href;
-
-  return new Promise<void>((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = scriptUrl;
-    script.async = true;
-    if (preload?.crossOrigin) script.crossOrigin = preload.crossOrigin;
-    if (preload?.integrity) script.integrity = preload.integrity;
-    if (preload?.referrerPolicy) script.referrerPolicy = preload.referrerPolicy;
-    script.setAttribute("autostart", "false");
-    script.dataset.dorotiBlazorLoader = "true";
-    script.addEventListener("load", () => resolve(), { once: true });
-    script.addEventListener(
-      "error",
-      () => reject(new Error(`DOROTIWEB024: Failed to load Blazor WebAssembly bootstrap from '${scriptUrl}'.`)),
-      { once: true },
-    );
-    document.head.append(script);
-  });
 }
 
 function notifyStage(

@@ -948,7 +948,6 @@ public sealed class Paragraph : IDisposable
         _maxLines = maxLines;
         this.width = width;
         this.height = height;
-        CanvasKitMetricsHash = ComputeMetricsHash(text, width, height, this.fontSize, _codeUnitAdvances);
     }
     public string text { get; }
     public double fontSize { get; }
@@ -964,32 +963,19 @@ public sealed class Paragraph : IDisposable
     public bool didExceedMaxLines { get; private set; }
     public int numberOfLines { get; private set; }
     public bool debugDisposed => Volatile.Read(ref _disposed) != 0;
-    internal ulong CanvasKitMetricsHash { get; private set; }
-    internal float CanvasKitHeightMultiplier { get; init; } = 1;
-    internal string CanvasKitLocale { get; init; } = string.Empty;
-    internal TextDirection CanvasKitTextDirection { get; init; } = TextDirection.ltr;
-    internal TextAlign CanvasKitTextAlign { get; init; } = TextAlign.start;
-    internal string? CanvasKitEllipsis { get; init; }
+    internal TextDirection LayoutTextDirection { get; init; } = TextDirection.ltr;
+    internal TextAlign LayoutTextAlign { get; init; } = TextAlign.start;
     internal IReadOnlyList<ParagraphTextRun> TextRuns { get; private set; }
     internal double? NativeAlphabeticBaseline { get; init; }
     internal IEnumerable<(int Start, int End, double Left, double Baseline)> PaintLines =>
         _lines.Select(line => (line.Start, line.End, line.Left, line.Baseline));
     internal double TextAdvance(int start, int end) => AdvanceBetween(start, end);
-    internal Func<double, ParagraphHostLayoutSnapshot>? CanvasKitRelayout { get; init; }
-    internal uint CanvasKitMaxLines => _maxLines is null
-        ? 0
-        : checked((uint)Math.Clamp(_maxLines.Value, 0L, (long)uint.MaxValue));
     public void layout(ParagraphConstraints constraints)
     {
         var availableWidth = constraints.width;
         if (double.IsNaN(availableWidth) || availableWidth < 0)
             throw new ArgumentOutOfRangeException(nameof(constraints),
                 "Paragraph width must be nonnegative or positive infinity.");
-        if (CanvasKitRelayout is { } relayout)
-        {
-            ApplyHostLayout(relayout(availableWidth));
-            return;
-        }
 
         _hostMinIntrinsicWidth = null;
         _hostMaxIntrinsicWidth = null;
@@ -1042,7 +1028,7 @@ public sealed class Paragraph : IDisposable
                 paragraphLine.Top,
                 paragraphLine.Left + AdvanceBetween(paragraphLine.Start, boxEnd),
                 paragraphLine.Top + paragraphLine.Height,
-                CanvasKitTextDirection));
+                LayoutTextDirection));
         }
 
         return boxes;
@@ -1132,7 +1118,7 @@ public sealed class Paragraph : IDisposable
         return new GlyphInfo(
             Rect.fromLTWH(left, line.Top, AdvanceBetween(clusterStart, clusterEnd), line.Height),
             new TextRange(clusterStart, clusterEnd),
-            CanvasKitTextDirection);
+            LayoutTextDirection);
     }
     public GlyphInfo? getClosestGlyphInfoForOffset(Offset offset)
     {
@@ -1207,7 +1193,6 @@ public sealed class Paragraph : IDisposable
         _hostIdeographicBaseline = snapshot.IdeographicBaseline;
         didExceedMaxLines = snapshot.DidExceedMaxLines;
         numberOfLines = lines.Count;
-        CanvasKitMetricsHash = snapshot.MetricsHash;
     }
 
     private static bool IsNonnegativeFinite(double value) => double.IsFinite(value) && value >= 0;
@@ -1272,38 +1257,6 @@ public sealed class Paragraph : IDisposable
         return Math.Max(longest, current);
     }
 
-    private static ulong ComputeMetricsHash(
-        string text,
-        double width,
-        double height,
-        double fontSize,
-        IReadOnlyList<double> advances)
-    {
-        const ulong offset = 14695981039346656037;
-        const ulong prime = 1099511628211;
-        var result = offset;
-        static void Add(ref ulong hash, ulong value)
-        {
-            const ulong localPrime = 1099511628211;
-            for (var index = 0; index < sizeof(ulong); index++)
-            {
-                hash ^= (byte)(value >> (index * 8));
-                hash *= localPrime;
-            }
-        }
-        foreach (var character in text)
-        {
-            result ^= character;
-            result *= prime;
-        }
-        Add(ref result, unchecked((ulong)BitConverter.DoubleToInt64Bits(width)));
-        Add(ref result, unchecked((ulong)BitConverter.DoubleToInt64Bits(height)));
-        Add(ref result, unchecked((ulong)BitConverter.DoubleToInt64Bits(fontSize)));
-        foreach (var advance in advances)
-            Add(ref result, unchecked((ulong)BitConverter.DoubleToInt64Bits(advance)));
-        return result;
-    }
-
     private double ComputeMinIntrinsicWidth()
     {
         var longest = 0.0;
@@ -1354,11 +1307,11 @@ public sealed class Paragraph : IDisposable
         int start, int end, double lineWidth, bool hardBreak, int lineNumber)
     {
         var ascent = NativeAlphabeticBaseline ?? _lineHeight * 0.8;
-        var align = CanvasKitTextAlign switch
+        var align = LayoutTextAlign switch
         {
-            TextAlign.start => CanvasKitTextDirection == TextDirection.rtl ? TextAlign.right : TextAlign.left,
-            TextAlign.end => CanvasKitTextDirection == TextDirection.rtl ? TextAlign.left : TextAlign.right,
-            _ => CanvasKitTextAlign,
+            TextAlign.start => LayoutTextDirection == TextDirection.rtl ? TextAlign.right : TextAlign.left,
+            TextAlign.end => LayoutTextDirection == TextDirection.rtl ? TextAlign.left : TextAlign.right,
+            _ => LayoutTextAlign,
         };
         var left = align == TextAlign.center ? (width - lineWidth) / 2 : align == TextAlign.right ? width - lineWidth : 0;
         return new(

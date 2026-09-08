@@ -50,7 +50,7 @@ test("Material sample four destinations, theme controls, and responsive navigati
     await expect(target).toHaveAttribute("aria-selected", "true");
     await expect.poll(async () => (await captureDiagnostics(page)).presenter.frontRequestId ?? 0).toBeGreaterThan(before.presenter.frontRequestId ?? 0);
     const after = await captureDiagnostics(page);
-    expect(after.presenter.rasterDiagnostics?.failedScenes ?? 0, after.presenter.rasterDiagnostics?.lastFailureReason).toBe(0);
+    expect(after.trace.filter(entry => entry.terminal === "failed")).toEqual([]);
     await page.mouse.move(790, 70);
     await page.waitForTimeout(600);
     await page.screenshot({ path: testInfo.outputPath(`${destination.toLowerCase()}-800.png`) });
@@ -64,7 +64,7 @@ test("Material sample four destinations, theme controls, and responsive navigati
     // The pinned navigation transition lasts one second.
     await page.waitForTimeout(1100);
     const frame = await captureDiagnostics(page);
-    expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0, frame.presenter.rasterDiagnostics?.lastFailureReason).toBe(0);
+    expect(frame.trace.filter(entry => entry.terminal === "failed")).toEqual([]);
     await page.screenshot({ path: testInfo.outputPath(`responsive-${width}.png`) });
   }
   for (const destination of ["Color", "Typography", "Elevation", "Components"]) {
@@ -157,7 +157,7 @@ test("Material sample pointer controls, sheets, dialogs, search and image scroll
   await testInfo.attach("final-semantics", { body: await page.locator("body").ariaSnapshot(), contentType: "text/plain" });
   await page.screenshot({ path: testInfo.outputPath("search-complete.png") });
   const frame = await captureDiagnostics(page);
-  expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0, frame.presenter.rasterDiagnostics?.lastFailureReason).toBe(0);
+  expect(frame.trace.filter(entry => entry.terminal === "failed")).toEqual([]);
   expect(runtimeErrors).toEqual([]);
 });
 
@@ -184,7 +184,7 @@ test("Material sample lazy component inventory and theme images", async ({ page,
   await pointer(page, extract);
   await expect(page.getByLabel(/Primary\s+#[0-9A-F]{6}/).first()).toBeAttached();
   const frame = await captureDiagnostics(page);
-  expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0, frame.presenter.rasterDiagnostics?.lastFailureReason).toBe(0);
+  expect(frame.trace.filter(entry => entry.terminal === "failed")).toEqual([]);
   expect(runtimeErrors).toEqual([]);
 });
 
@@ -220,6 +220,6 @@ test("Material sample seed and image theme selection preserves latest choice", a
     await page.screenshot({ path: testInfo.outputPath(`theme-${name.replaceAll(" ", "-")}.png`) });
   }
   const frame = await captureDiagnostics(page);
-  expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0, frame.presenter.rasterDiagnostics?.lastFailureReason).toBe(0);
+  expect(frame.trace.filter(entry => entry.terminal === "failed")).toEqual([]);
   expect(runtimeErrors).toEqual([]);
 });

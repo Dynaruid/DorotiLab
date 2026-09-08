@@ -79,6 +79,6 @@ test("Material sample image failure, retry, superseded response and brightness",
   await pointer(page, brightness);
   await expect(brightness).toHaveAttribute("aria-checked", "true");
   const frame = await captureDiagnostics(page);
-  expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0, frame.presenter.rasterDiagnostics?.lastFailureReason).toBe(0);
+  expect(frame.trace.filter(entry => entry.terminal === "failed")).toEqual([]);
   expect(runtimeErrors).toEqual([]);
 });

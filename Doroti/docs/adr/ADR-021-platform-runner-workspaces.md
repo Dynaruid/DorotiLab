@@ -27,7 +27,7 @@ It is not an application runner and does not start the .NET runtime from Kotlin 
 ## Runtime ownership
 
 - Windows App SDK, Windows MAUI, Android, iOS, native AppKit macOS, and Mac Catalyst runners own native lifecycle entry points and initialize the shared renderer through platform-specific surface adapters. The Windows App SDK runner splits ownership between native C++ HWND/lifecycle/input ingress and managed ANGLE/Skia framework and presentation code as defined by ADR-025.
-- The Web runner owns Blazor startup and exactly one loader-owned `Blazor.start()` call.
+- The Web runner owns generated Worker entry exports; one loader-owned startup promise starts the render role through `dotnet.js`.
 - Linux uses a managed-owned process with a Qt C ABI shim. Managed code owns startup and Doroti lifetime; Qt owns the native event loop, window, display backend, and native input/IME/clipboard/accessibility integration.
 - Framework host code stays in `Doroti.Host.*`; app platform folders contain only runner entry points, manifests, resources, and explicit customization hooks.
 

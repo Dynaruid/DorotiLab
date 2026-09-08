@@ -20,13 +20,7 @@ public sealed record BrowserTargetPackageManifest(
     string[] ResourceKinds,
     string[] SupportedPublishModes,
     string[] RequiredCapabilities,
-    string[] UnsupportedModes)
-{
-    public string? CanvasKitVersion { get; init; }
-    public string? CanvasKitVariant { get; init; }
-    public string? CanvasKitAssetBase { get; init; }
-    public string? CanvasKitRuntimeOwnership { get; init; }
-}
+    string[] UnsupportedModes);
 
 public sealed record BrowserTargetIdentity(
     string SchemaVersion,

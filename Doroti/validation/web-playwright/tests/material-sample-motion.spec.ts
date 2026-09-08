@@ -62,7 +62,7 @@ test("Material sample progress animation changes presented pixels and stops", as
   await page.waitForTimeout(500);
   const after = await captureDiagnostics(page);
   expect(after.presenter.frontRequestId).toBe(settled.presenter.frontRequestId);
-  expect(after.presenter.rasterDiagnostics?.failedScenes ?? 0).toBe(0);
+  expect(after.trace.filter(entry => entry.terminal === "failed")).toEqual([]);
   expect(runtimeErrors).toEqual([]);
   await testInfo.attach("animation-frame-accounting", { body: JSON.stringify({ before, during, settled, after }), contentType: "application/json" });
 });
@@ -86,7 +86,7 @@ test("Material sample navigation preserves destination during resize reversal", 
         return { x: rect.x, y: rect.y, width: rect.width, height: rect.height, selected: node.getAttribute("aria-selected") };
       }));
       samples.push({ width, front: frame.presenter.frontRequestId, generation: frame.presenter.frontGeneration, bounds });
-      expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0).toBe(0);
+      expect(frame.trace.filter(entry => entry.terminal === "failed")).toEqual([]);
       await page.waitForTimeout(100);
     }
   }

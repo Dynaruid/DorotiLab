@@ -9,19 +9,16 @@ public sealed class BrowserFrameworkHost : IDisposable
 {
     private readonly string _targetIdentity;
     private readonly Doroti.Skia.Rendering.SkiaFallbackFontCollection _fallbackFonts = new();
-    private CanvasKitResourceRegistry? _canvasKitResources;
     private readonly Dictionary<ulong, (DorotiView View, BrowserHostAdapter Host, IBrowserGraphicsCapabilities Graphics)> _views = [];
     private readonly Dictionary<ulong, DorotiHostSession> _sessions = [];
     private bool _disposed;
 
-    public BrowserFrameworkHost(string targetIdentity = "browser-wasm/document-canvas-webgl2") =>
+    public BrowserFrameworkHost(string targetIdentity = "browser-wasm/auto") =>
         _targetIdentity = targetIdentity;
 
     public string RegisterFont(ReadOnlyMemory<byte> bytes)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (UsesCanvasKitRenderer())
-            return EnsureCanvasKitResources().RegisterFont(bytes);
         return _fallbackFonts.Register(bytes);
     }
 
@@ -42,12 +39,7 @@ public sealed class BrowserFrameworkHost : IDisposable
         var backendIdentity = _targetIdentity == "browser-wasm/auto"
             ? $"browser-wasm/{BrowserHostRuntime.RendererIdentity}"
             : _targetIdentity;
-        IBrowserGraphicsCapabilities graphics = UsesCanvasKitRenderer()
-            ? new BrowserCanvasKitCapabilities(
-                viewId, host,
-                configuration.backgroundColor, configuration.darkBackgroundColor,
-                backendIdentity, EnsureCanvasKitResources())
-            : new BrowserSkiaCapabilities(
+        IBrowserGraphicsCapabilities graphics = new BrowserSkiaCapabilities(
                 viewId, host,
                 configuration.backgroundColor, configuration.darkBackgroundColor,
                 backendIdentity, _fallbackFonts);
@@ -159,17 +151,8 @@ public sealed class BrowserFrameworkHost : IDisposable
         }
         _views.Clear();
         _sessions.Clear();
-        _canvasKitResources?.Dispose();
-        _canvasKitResources = null;
         _fallbackFonts.Dispose();
     }
-
-    private bool UsesCanvasKitRenderer() =>
-        string.Equals(BrowserHostRuntime.RendererIdentity, "worker-canvaskit-webgl", StringComparison.Ordinal) ||
-        _targetIdentity.EndsWith("/worker-canvaskit-webgl", StringComparison.Ordinal);
-
-    private CanvasKitResourceRegistry EnsureCanvasKitResources() =>
-        _canvasKitResources ??= new();
 
     private sealed class BrowserPlatformMessageCapability : IPlatformMessageHostCapability
     {

@@ -102,7 +102,7 @@ test("Material sample pickers, menus, selection and text editing", async ({ page
   await page.keyboard.press("Tab");
   await page.screenshot({ path: testInfo.outputPath("text-edited.png") });
   const frame = await captureDiagnostics(page);
-  expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0, frame.presenter.rasterDiagnostics?.lastFailureReason).toBe(0);
+  expect(frame.trace.filter(entry => entry.terminal === "failed")).toEqual([]);
   expect(runtimeErrors).toEqual([]);
 });
 
@@ -118,7 +118,7 @@ test("Material sample high DPI pointer opens and closes a sheet @dpr", async ({ 
   await page.mouse.click(300, 100);
   await expect(share).not.toBeAttached();
   const frame = await captureDiagnostics(page);
-  expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0).toBe(0);
+  expect(frame.trace.filter(entry => entry.terminal === "failed")).toEqual([]);
   expect(runtimeErrors).toEqual([]);
 });
 
@@ -156,6 +156,6 @@ test("Material sample selection controls update their shared state", async ({ pa
   await expect(page.getByRole("radio", { name: "Option 1", exact: true })).toHaveAttribute("aria-checked", "false");
   await expect(page.getByRole("radio", { name: "Option 3", exact: true })).toHaveAttribute("aria-disabled", "true");
   const frame = await captureDiagnostics(page);
-  expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0).toBe(0);
+  expect(frame.trace.filter(entry => entry.terminal === "failed")).toEqual([]);
   expect(runtimeErrors).toEqual([]);
 });

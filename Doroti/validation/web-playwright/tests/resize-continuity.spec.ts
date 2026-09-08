@@ -609,18 +609,6 @@ test("@headed Desktop Chrome live bounds expose only exact, unscaled fronts", as
   expect(samples.every((sample) => sample.canvasConnected && sample.rootConnected)).toBe(true);
   expect(samples.every((sample) => sample.pixel.distinctSampledColors >= 8)).toBe(true);
   expect(samples.every((sample) => sample.transform === "none" && sample.preview === null)).toBe(true);
-  if (bundle.presenter.mode === "worker-canvaskit-webgl") {
-    expect(samples.every((sample) => sample.objectFit === "cover")).toBe(true);
-    expect(samples.every((sample) => sample.canvasLogicalWidth >= sample.logicalWidth &&
-      sample.canvasLogicalHeight >= sample.logicalHeight)).toBe(true);
-    expect(new Set(samples.map((sample) =>
-      `${sample.canvasBackingWidth}x${sample.canvasBackingHeight}`)).size).toBe(1);
-    expect(new Set(samples.map((sample) =>
-      `${sample.canvasLogicalWidth}x${sample.canvasLogicalHeight}`)).size).toBe(1);
-    expect(samples.every((sample) =>
-      Math.abs(sample.backingScaleX - 1 / sample.devicePixelRatio) <= 0.000001 &&
-      Math.abs(sample.backingScaleY - 1 / sample.devicePixelRatio) <= 0.000001)).toBe(true);
-  }
   if (bundle.presenter.mode === "worker-direct-webgl") {
     expect(samples.every((sample) => sample.objectFit === "cover")).toBe(true);
     expect(samples.every((sample) => sample.canvasLogicalWidth >= sample.logicalWidth &&
@@ -955,16 +943,6 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
     expect(nativeSamples.every((sample) =>
       Math.abs(sample.backingScaleX - sample.backingScaleY) <= 0.000001 &&
       Math.abs(sample.backingScaleX - 1 / sample.devicePixelRatio) <= 0.000001)).toBe(true);
-  } else if (bundle.presenter.mode === "worker-canvaskit-webgl") {
-    expect(nativeSamples.every((sample) =>
-      sample.canvasWidth >= sample.rootWidth && sample.canvasHeight >= sample.rootHeight)).toBe(true);
-    expect(new Set(nativeSamples.map((sample) =>
-      `${sample.backingWidth}x${sample.backingHeight}`)).size).toBe(1);
-    expect(new Set(nativeSamples.map((sample) =>
-      `${sample.canvasWidth}x${sample.canvasHeight}`)).size).toBe(1);
-    expect(nativeSamples.every((sample) =>
-      Math.abs(sample.backingWidth / sample.devicePixelRatio - sample.canvasWidth) <= 0.01 &&
-      Math.abs(sample.backingHeight / sample.devicePixelRatio - sample.canvasHeight) <= 0.01)).toBe(true);
   }
   expect(bundle.trace.filter((entry) => entry.phase === "resize-preview-commit")).toEqual([]);
   expect(bundle.trace.filter((entry) => entry.phase === "preview-front-refresh")).toEqual([]);

@@ -7,7 +7,7 @@ import {
 
 await startDoroti({
   configure(_context: DorotiBootstrapContext) {
-    // Configure context.blazorOptions before Blazor starts.
+    // Configure context.runtimeLocation before the render Worker starts.
   },
   onStage(stage) {
     document.documentElement.dataset.dorotiBootstrapStage = stage;

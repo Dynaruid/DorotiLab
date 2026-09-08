@@ -1,28 +1,21 @@
 # Image readback and Material color validation
 
 The shared `Picture.toImage` → `Image.toByteData` → `ColorScheme.fromImageProvider`
-path is implemented for Skia hosts and the CanvasKit Raster Worker. The validation
+path is implemented by SkiaSharp on native and Web hosts. The validation
 library is independent of Testbed. Its optional Web export runs inside the live
-UI Worker only in builds made with `-p:DorotiImageValidation=true`.
+render Worker only in builds made with `-p:DorotiImageValidation=true`.
 
 ## Contract
 
 - A picture requires an attached view with an image host capability. Width/height
   must be positive, fit `int`, and fit a tightly packed RGBA byte buffer.
 - Rasterization uses the requested pixel size at DPR 1 and transparent clear.
-  Native Skia uses an offscreen CPU surface; CanvasKit uses an offscreen target
-  on the Raster owner. It does not submit a visible frame or change resize counters.
+  SkiaSharp uses an offscreen CPU surface on the renderer owner. It does not submit a visible frame or change resize counters.
 - `rawRgba` is tightly packed RGBA8, sRGB, premultiplied alpha; `rawStraightRgba`
   is unpremultiplied. `rawUnmodified` is canonical RGBA8/premultiplied on these hosts.
   PNG is encoded. ByteData views preserve their offset/length.
 - A pending read retains image storage until completion. Disposed image/picture
-  use fails. PNG-backed CanvasKit images use the existing resource journal so
-  committed images can be replayed after a Raster restart.
-- UI/Raster messages carry transferred buffers with request IDs and the existing
-  session envelope. Maximum 16 pending image operations, 30-second timeout;
-  port teardown rejects pending calls. PNG/base64 interchange is intended for
-  occasional extraction, not per-frame capture. Restart rejection is implemented
-  but a forced-restart-during-read acceptance test has not been run.
+  use fails.
 - `fromImageProvider` extracts the first frame, scales the longest edge to at most
   112 pixels, removes its listener, disposes intermediate images, and forwards
   decode/raster errors. A 30-second load timeout releases late output.
@@ -44,7 +37,7 @@ The Dart oracle compares **the exact readback bytes from each host**: all palett
 keys/populations, selected seed, and 46 light + 46 dark Tonal Spot roles. It also
 covers near colors requiring extra centers, uniform white, mixed alpha, and fully
 transparent inputs. This does not assert identical decoding/scaling pixels
-between native Skia, CanvasKit, and Flutter engines. Such small pixel differences
+between native Skia, Web SkiaSharp, and Flutter engines. Such small pixel differences
 can change the selected seed. Wide-gamut, animated-image playback, other native
 OS live execution and physical display acceptance remain unverified.
 
@@ -66,7 +59,7 @@ For Web, build Testbed with `-p:DorotiImageValidation=true` and run:
 ```powershell
 $env:DOROTI_IMAGE_VALIDATION = '1'
 ./Doroti/eng/run-web-playwright.ps1 -SkipBuild -HeadlessOnly `
-  -RendererMode worker-canvaskit-webgl -TestFile tests/image-pipeline.spec.ts `
+  -RendererMode worker-direct-webgl -TestFile tests/image-pipeline.spec.ts `
   -ArtifactLabel image-pipeline-new -Port 5096
 ```
 
@@ -82,3 +75,6 @@ distinct from Doroti's image-pipeline test.
 
 Source versions, hashes and license mapping are in `source-provenance.json` and
 `../../THIRD-PARTY-NOTICES.md`.
+
+The separate CanvasKit adapter and its resource-journal/restart path were removed on
+2026-09-08. Earlier CanvasKit results remain historical evidence.

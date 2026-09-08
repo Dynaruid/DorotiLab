@@ -3,35 +3,23 @@
   "packageId": "Doroti.Target.Web.browser-wasm",
   "packageVersion": "0.2.0-beta",
   "rid": "browser-wasm",
-  "host": "document-or-split-ui-raster-workers",
+  "host": "managed-render-worker",
   "defaultRenderer": "worker-direct-webgl",
-  "graphicsBackend": "document-webgl2-or-worker-canvaskit-webgl2-or-worker-direct-webgl2-or-offscreen-webgl2-imagebitmap",
+  "graphicsBackend": "worker-direct-webgl2-or-offscreen-worker-webgl2-imagebitmap",
   "blazorWebAssemblyVersion": "10.0.11",
   "skiaSharpVersion": "4.154.0-preview.1.26454.9",
   "skiaSharpManagedPackage": "SkiaSharp",
   "skiaSharpNativePackage": "SkiaSharp.NativeAssets.WebAssembly",
-  "canvasKitVersion": "0.42.0",
-  "canvasKitVariant": "default",
-  "canvasKitAssetBase": "_content/Doroti.Host.Web/canvaskit/0.42.0/",
-  "bootLoader": "_framework/blazor.webassembly.js",
-  "bootLoaderPreloadId": "doroti-blazor-loader",
+  "bootLoader": "_framework/dotnet.js",
   "frameworkPreloadPlaceholderId": "webassembly",
   "hostComponents": [
-    "Doroti.Host.Web.DorotiRoot",
-    "Doroti.Host.Web.DorotiSurface",
-    "Doroti.Host.Web.DorotiWebGlSurface",
-    "Doroti.Host.Web.DorotiWebWorkerSurface",
-    "Doroti.Host.Web.BrowserCanvasKitCapabilities"
+    "Doroti.Host.Web.DorotiWebWorkerSurface"
   ],
   "rendererModes": [
-    "document-webgl",
-    "worker-canvaskit-webgl",
     "worker-direct-webgl",
-    "offscreen-bitmap",
     "offscreen-worker"
   ],
-  "workerRuntimeOwnership": "main-managed-runtime-zero-ui-managed-runtime-one-raster-managed-runtime-zero",
-  "canvasKitRuntimeOwnership": "main-zero-ui-text-one-raster-gpu-one",
+  "workerRuntimeOwnership": "single-managed-runtime; bootstrap-main-or-render-worker; framework-and-skia-on-render-worker",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
   "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",
   "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
@@ -39,16 +27,12 @@
   "resourceKinds": [
     "asset",
     "font",
-    "localization",
-    "canvaskit-font",
-    "canvaskit-image",
-    "canvaskit-runtime-effect"
+    "localization"
   ],
   "supportedPublishModes": [
     "interpreter",
     "aot-build-probe",
-    "persistent-dotnet-web-worker",
-    "split-ui-canvaskit-raster-workers"
+    "persistent-dotnet-web-worker"
   ],
   "requiredCapabilities": [
     "window.lifecycle",

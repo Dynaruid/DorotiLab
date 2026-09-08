@@ -80,7 +80,7 @@ test("Material sample content and settings thresholds, URL activation", async ({
     await page.screenshot({ path: testInfo.outputPath(`settings-${height}.png`) });
   }
   const frame = await captureDiagnostics(page);
-  expect(frame.presenter.rasterDiagnostics?.failedScenes ?? 0, frame.presenter.rasterDiagnostics?.lastFailureReason).toBe(0);
+  expect(frame.trace.filter(entry => entry.terminal === "failed")).toEqual([]);
   expect(runtimeErrors).toEqual([]);
 });
 test("Material sample initial low height image activation", async ({ page, runtimeErrors }, testInfo) => {

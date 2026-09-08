@@ -2,7 +2,7 @@
 
 **English** | [한국어](README.ko.md)
 
-Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semantics, and rendering pipeline for Windows App SDK, optional Windows MAUI, native AppKit macOS, Mac Catalyst, Android, iOS, Blazor WebAssembly, and Linux/Qt.
+Doroti is a C#/.NET UI framework with a shared widget, layout, painting, semantics, and rendering pipeline for Windows App SDK, optional Windows MAUI, native AppKit macOS, Mac Catalyst, Android, iOS, WebAssembly, and Linux/Qt.
 
 ## Development model
 
@@ -29,10 +29,10 @@ Material themes use Material 3 exclusively. `ThemeData` factories, its construct
 - `Doroti.Host.WindowsAppSdk` + `Doroti.Host.WindowsAppSdk.Native`: default Windows App SDK 2.4 host; native C++ owns the top-level/child/task HWNDs and ingress, while managed code owns the Doroti framework and Vulkan/Skia presentation (ANGLE remains selectable)
 - `Doroti.Target.Windows.WindowsAppSdk.win-x64`: self-contained unpackaged Windows target with `HwndExactCpp`, native host/bootstrap, and app-directory ANGLE runtime
 - `Doroti.Host.Maui`: MAUI lifecycle and SKGLView/AppKit-owned MTKView/Metal adapters for Android, iOS, Mac Catalyst, AppKit, and the explicit alternative Windows MAUI backend
-- `Doroti.Host.Web`: host-owned Blazor composition, WebGL2 canvas, input, accessibility, and resource bridge
+- `Doroti.Host.Web`: Worker bootstrap, WebGL2 canvas, input, accessibility, and resource bridge
 - `Doroti.Host.Qt`: managed-owned Linux process with a Qt 6 `QOpenGLWindow`, versioned C ABI v2, GPU surface, input, IME, desktop services, and an accessibility adapter
 
-Web execution source is TypeScript-owned. Applications edit `web/src/**/*.ts`; Doroti owns `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` 7.0.0 compiles both into runner-local `obj` directories, and publish contains only the resulting JavaScript. Node, npm, Bun, and a bundler are not application requirements. The default `worker-direct-webgl` backend transfers the visible canvas once and keeps .NET, Skia, WebGL2, and Worker rAF in one persistent Worker; `auto` selects direct; the split UI/Raster Worker `worker-canvaskit-webgl` backend remains an explicit override. See [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md).
+Web execution source is TypeScript-owned. Applications edit `web/src/**/*.ts`; Doroti owns `src/Doroti.Host.Web/Web/*.ts`. `Microsoft.TypeScript.MSBuild` 7.0.0 compiles both into runner-local `obj` directories, and publish contains only the resulting JavaScript. Node, npm, Bun, and a bundler are not application requirements. The default `worker-direct-webgl` backend transfers the visible canvas once and keeps .NET, Skia, WebGL2, and Worker rAF in one persistent Worker; `auto` selects SkiaSharp WASM direct; the separate CanvasKit backend has been removed. See [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md).
 
 Material applications follow system dark mode with `MaterialApp(theme:, darkTheme:, themeMode: ThemeMode.system)`. Build both palettes with `ColorScheme.CreateFromSeed`, `Brightness.light`/`Brightness.dark`, and optional role overrides such as `surface`, `primary`, or `outline`; widgets read the active roles from `Theme.of(context).colorScheme`. See the [DorotiTestbedApp dark-mode guide](../DorotiTestbedApp/README.md#system-dark-mode-and-color-palettes) for the MAUI/Web change flow and a complete example.
 
@@ -53,9 +53,9 @@ The `reference/flutter-master` checkout is needed only for explicit Flutter refe
 
 ## Commands
 
-The default Web Worker verifies CanvasKit JS and WASM concurrently and starts workers after both integrity checks succeed. The UI worker imports `dotnet.js` while CanvasKit initializes; runtime creation and attachment still wait for GPU/text readiness. `blazorOptions` (including `loadBootResource`) applies only to the document/Blazor path. Testbed and template preload the same-origin fallback font; the fingerprinted Blazor loader link remains lazy document-path metadata. Loader `started` is runtime/GPU readiness, not first visible content.
+Web uses SkiaSharp WASM with a single runtime initialized on main or in the render Worker. The supported renderers are `worker-direct-webgl` and `offscreen-worker`; applications can configure `runtimeLocation`. Testbed and template preload the same-origin fallback font and initialize the runtime through the import-mapped `dotnet.js`. Loader `started` is runtime/GPU readiness, not first visible content.
 
-The Runner SDK owns the Qt CMake target with configuration-specific output. CMake retains native dependency checking; unchanged, integrity-verified CanvasKit assets are no longer rewritten. TypeScript and platform binding builds retain their existing correctness checks.
+The Runner SDK owns the Qt CMake target with configuration-specific output. CMake retains native dependency checking. TypeScript and platform binding builds retain their existing correctness checks.
 
 For validated build reuse, run from the repository root:
 

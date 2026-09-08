@@ -183,9 +183,7 @@ try {
   if(after.presenter.mode==='worker-direct-webgl') {
     console.log(JSON.stringify({label,errors,elapsed:after.time-before.time,mode:after.presenter.mode,commits:diagnostics?directCommits.length:null,frontRequestAdvance:after.presenter.frontRequestId-before.presenter.frontRequestId,directSurfaceMilliseconds,directCommitIntervals,frameworkFrameMilliseconds,onsetWindows,work:directDiagnostics[0]?.managed?.frame?.Skia?.Work,gpu:after.snapshot.gpu},null,2));
   } else {
-  const a=before.presenter.uiDiagnostics.frameTimings,b=after.presenter.uiDiagnostics.frameTimings;
-  const ra=before.presenter.rasterDiagnostics,rb=after.presenter.rasterDiagnostics;
-  console.log(JSON.stringify({label,errors,elapsed:after.time-before.time,frames:b.count-a.count,uiFrameMilliseconds,dispatchMean:(b.dispatchTotalMilliseconds-a.dispatchTotalMilliseconds)/(b.count-a.count),rasterMean:(rb.timings.replayTotalMilliseconds-ra.timings.replayTotalMilliseconds)/(rb.timings.replayCount-ra.timings.replayCount),submits:rb.submittedScenes-ra.submittedScenes,failed:rb.failedScenes,mode:after.presenter.mode,gpu:after.snapshot.gpu},null,2));
+    console.log(JSON.stringify({label,errors,elapsed:after.time-before.time,mode:after.presenter.mode,frontRequestAdvance:after.presenter.frontRequestId-before.presenter.frontRequestId,gpu:after.snapshot.gpu},null,2));
   }
   if (!process.argv.includes('--no-screenshot')) await page.screenshot({path:`artifacts/${label}.png`});
 } catch(error) {

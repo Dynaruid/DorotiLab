@@ -310,12 +310,6 @@ static void VerifyBrowserInputAndFrontBufferContract()
     var path = System.IO.Path.Combine(AppContext.BaseDirectory, "web", "doroti.web.ts");
     Require(File.Exists(path), "the browser host source is packaged with the validation fixture");
     var source = File.ReadAllText(path);
-    Require(source.Contains("policy.selected === \"document-webgl\" ? 1 : 0", StringComparison.Ordinal),
-        "the direct fallback preserves its visible exact front while offscreen modes avoid retained default buffers");
-    Require(source.Contains("new OffscreenCanvas(1, 1)", StringComparison.Ordinal) &&
-            source.Contains("canvas.getContext(\"bitmaprenderer\")", StringComparison.Ordinal) &&
-            source.Contains("createImageBitmap(presenter.rasterCanvas)", StringComparison.Ordinal),
-        "the same-thread offscreen backend uses a detached raster surface and exact ImageBitmap display commits");
     Require(!source.Contains("applyProvisionalEpoch(host, host.resizeEpoch, \"host-frame\")", StringComparison.Ordinal),
         "input rAF does not re-blit an older full-screen front before every managed raster");
     Require(source.Contains("if (host.composing) return;", StringComparison.Ordinal),
@@ -339,14 +333,13 @@ static void VerifyBrowserInputAndFrontBufferContract()
     Require(!source.Contains("applyRetainedFrontPreview", StringComparison.Ordinal) &&
             !source.Contains("resize-preview-commit", StringComparison.Ordinal) &&
             source.Contains("recordResize(host, \"managed-snapshot-dispatched\", \"resize-metrics\");", StringComparison.Ordinal) &&
-            source.Contains("commitCanvasEpoch(latestHost, presenter, descriptor, \"exact-front-commit\")", StringComparison.Ordinal),
+            source.Contains("frameGeneration >= display.frontGeneration", StringComparison.Ordinal),
         "ResizeObserver publishes immutable metrics without mutating or scaling the retained visible front");
     Require(!source.Contains("managedResizeInFlightGeneration", StringComparison.Ordinal) &&
             !source.Contains("managedResizePending", StringComparison.Ordinal) &&
             !source.Contains("preview-front-refresh", StringComparison.Ordinal) &&
             source.Contains("function emitResize(host: BrowserHost)", StringComparison.Ordinal) &&
-            source.Contains("if (!host || host.resizeEpoch.generation !== descriptor.generation)", StringComparison.Ordinal) &&
-            source.Contains("if (!epochExact)", StringComparison.Ordinal),
+            source.Contains("frameGeneration >= display.frontGeneration", StringComparison.Ordinal),
         "interactive resize metrics are independent from presentation and visible surfaces remain exact for an immutable epoch");
     Require(source.Contains("globalThis.visualViewport ?? globalThis", StringComparison.Ordinal) &&
             source.Contains("observeFullPageViewport", StringComparison.Ordinal) &&
@@ -386,8 +379,7 @@ static void VerifyBrowserInputAndFrontBufferContract()
                 "progressive epoch-exact ImageBitmap consumed during live resize",
                 StringComparison.Ordinal) &&
             source.Contains("requestId > display.frontRequestId", StringComparison.Ordinal) &&
-            source.Contains("frameGeneration >= display.frontGeneration", StringComparison.Ordinal) &&
-            source.Contains("descriptor.requestId > presenter.frontRequestId", StringComparison.Ordinal),
+            source.Contains("frameGeneration >= display.frontGeneration", StringComparison.Ordinal),
         "completed worker frames remain epoch-exact and admit same-size interaction frames monotonically without starving live resize");
     Require(workerSource.Contains("pendingReceiptWork.size >= 2", StringComparison.Ordinal) &&
             workerSource.Contains("await Promise.race(pendingReceiptWork);", StringComparison.Ordinal),
