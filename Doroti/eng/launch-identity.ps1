@@ -23,7 +23,7 @@ function Get-DorotiInheritedInputs([string[]] $Roots) {
         while ($null -ne $directory) {
             foreach ($name in $names) {
                 $path = Join-Path $directory.FullName $name
-                if (Test-Path -LiteralPath $path -PathType Leaf) { Get-Item -LiteralPath $path }
+                if (Test-Path -LiteralPath $path -PathType Leaf) { Get-Item -LiteralPath $path -Force }
             }
             $directory = $directory.Parent
         }
@@ -58,7 +58,8 @@ function Get-DorotiEvaluatedInputFiles([string[]] $Projects, [string] $Configura
             foreach ($item in $result.Items) {
                 $path = $item.Identity
                 if ($path -match '[\\/](bin|obj|node_modules|\.doroti|artifacts)[\\/]') { continue }
-                if (Test-Path -LiteralPath $path -PathType Leaf) { Get-Item -LiteralPath $path }
+                # MSBuild includes hidden inputs such as .gitignore on Unix.
+                if (Test-Path -LiteralPath $path -PathType Leaf) { Get-Item -LiteralPath $path -Force }
             }
         }
     } finally { Pop-Location }
@@ -81,7 +82,7 @@ function Get-DorotiDependencyIdentity([string] $Runner, [string] $Configuration,
             if (!(Test-Path -LiteralPath $item.Identity -PathType Leaf)) {
                 throw "Resolved dependency is missing: $($item.Identity)"
             }
-            Get-Item -LiteralPath $item.Identity
+            Get-Item -LiteralPath $item.Identity -Force
         }
         Get-DorotiContentFingerprint @($files) "$Runner|$Configuration|$Rid"
     } finally { Pop-Location }
@@ -100,7 +101,7 @@ function Get-DorotiToolchainIdentity([string] $WorkingDirectory) {
         # Tool paths and bytes catch replacement at the same SDK/native-tool version.
         $tools = foreach ($name in @('dotnet','node','cmake','ninja','java','clang','cl','msbuild')) {
             $command = Get-Command $name -ErrorAction SilentlyContinue | Select-Object -First 1
-            if ($command -and (Test-Path -LiteralPath $command.Source -PathType Leaf)) { Get-Item -LiteralPath $command.Source }
+            if ($command -and (Test-Path -LiteralPath $command.Source -PathType Leaf)) { Get-Item -LiteralPath $command.Source -Force }
         }
         Get-DorotiContentFingerprint @($tools) $info
     } finally { Pop-Location }
@@ -138,7 +139,7 @@ function Get-DorotiArtifactIdentity([string] $Runner, [string] $Configuration, [
         $assets = @((Get-Content -LiteralPath $buildManifest -Raw | ConvertFrom-Json).Assets | ForEach-Object {
             $assetPath = [IO.Path]::GetFullPath($_.Identity)
             if (!(Test-Path -LiteralPath $assetPath -PathType Leaf)) { throw "Evaluated static web asset is missing: $assetPath" }
-            $assetFile = Get-Item -LiteralPath $assetPath
+            $assetFile = Get-Item -LiteralPath $assetPath -Force
             [ordered]@{path=$assetPath;length=$assetFile.Length;sha256=(Get-FileHash -LiteralPath $assetPath -Algorithm SHA256).Hash}
         })
     }
