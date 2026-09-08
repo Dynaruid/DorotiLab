@@ -1,34 +1,42 @@
-# 트리 의존성에 따라 확장되는 WASM 병렬 레이아웃 구성 계획
+# 메인 런타임 + 렌더 Worker 기반 WASM 병렬 레이아웃 작업계획
 
 작성: 2026-09-08.
 
-**후속 범위 변경:** 사용자가 부팅 오류 수정을 요청한 뒤, “메인 런타임 초기화 +
-렌더 Worker 분리로 전환”을 선택했다. T0는 이제 메인에서 단일 threaded runtime을
-초기화하고 해당 runtime의 JSWebWorker에서 기존 direct 프레임워크/Skia 역할을
-실행하는 구조로 진행한다. layout과 raster의 별도 병렬화는 아직 아니다.
-소유권·전용 MessagePort·종료 계약은
+**현재 작업 기준:** 2026-09-08 사용자가 현재 구조가 이전보다 체감상 낫다고
+평가하고, 이 구조를 기반으로 후속 작업하도록 선택했다. 메인에서 단일 threaded
+.NET runtime을 초기화하고, 같은 runtime의 JSWebWorker에서 기존 framework/layout/
+Skia direct 렌더링을 수행하는 구성을 **현재 기준선 S1**로 채택한다.
+후속 최적화와 원복의 출발점은 S1이다. 소유권·전용 MessagePort·종료 계약은
 [ADR-003](Doroti/docs/adr/ADR-003-web-main-runtime-render-worker.md)을 따른다.
-아래 최초 FAIL은 이전 Worker-root 부팅의 원본 결과로 보존한다.
 
-**이번 요청 범위:** 새로운 구성 작업계획을 작성하고,
-`DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj`에 `WasmEnableThreads=true`를
-실제로 설정한다. 병렬 레이아웃 엔진의 구현은 아래 후속 단계이며 이번 문서
-작성만으로 실행 완료로 표시하지 않는다. 스레딩 런타임 활성화와 레이아웃의
-실제 병렬 실행·성능 수용은 서로 다른 상태다.
+**이번 요청 범위:** 현재 구현·검증 결과를 기준으로 이 작업계획의 소유권,
+실행 순서, 비교군, 채택·원복 기준을 갱신한다. 제품 코드 변경이나 병렬 계산
+구현은 이번 문서 수정에 포함하지 않는다. `WasmEnableThreads=true`와
+`runtimeLocation="main"`, `worker-direct-webgl`을 후속 작업에서도 유지한다.
+
+**사용자 관찰:** 기존 구조보다 체감이 좋아졌다는 피드백을 기준 구조 선택의
+근거로 기록한다. 정량적 지연·FPS·메모리 개선율은 아직 측정하지 않았으며,
+전체 물리 기기·입력 기능의 수용 완료와도 구분한다.
 
 **현재 검증 결과:** 메인 runtime + shared-runtime 렌더 Worker로 전환한 최종
 trimmed Release publish에서 first content·resize·스크롤·선택 상태·테마/열 복귀·
 종료·잘못된 protocol 거부가 PASS다. shared heap과 실제 렌더 thread를 확인했고
-runtime 오류는 0건이다. **T0 부팅·입력은 PASS, 계산 중첩 검증은 미완료**다.
+runtime 오류는 0건이다. **T0 기준 구조의 부팅·입력은 PASS**, 추가 계산 스레드의
+실제 중첩 검증(T0b)은 미완료다.
 최초 Worker-root FAIL은 10절에 보존하고 후속 결과는 12절에 기록한다.
 
-기준 구현은 [보관된 work.md](history/26-09-08/work.original.md) 9.12절의
-**HAMT + indexed**다. 9.13절 C2/C3/C4 실험은
+S1은 [보관된 work.md](history/26-09-08/work.original.md) 9.12절의
+**HAMT + indexed**에 현재 메인 runtime + 렌더 Worker 구성을 적용한 상태다.
+9.13절 C2/C3/C4 실험은
 미채택·제품 원복 상태이며 기존 패치, 최초 실패, notComparable/PARTIAL 결과를
-보존한다. 새 계획은 이전의 “추가 Worker 제외” 범위를 사용자의 이번 요청에
-따라 확장한다. AOT·렌더러 변경·가상화 확대를 함께 적용하는 계획은 아니다.
+보존한다. 병렬 레이아웃 계획은 앞선 사용자 요청에 따라 이전의 “추가 Worker 제외”
+범위를 확장한 것이다. AOT·렌더러 변경·가상화 확대를 함께 적용하지 않는다.
 
 ## 1. 목표와 핵심 가설
+
+현재 S1의 부팅·입력·소유권 계약을 유지하면서 렌더 Worker의 실제 비용을 먼저
+조사한다. 추가 계산 스레드로 옮길 가치가 있는 순수 계산을 찾은 뒤 아래 graph를
+단계적으로 적용한다. 후보가 없거나 전체 비용이 늘면 S1을 유지한다.
 
 부모 계산이 끝나 자식의 입력과 의존성이 확정되면, 동시에 실행 가능한
 작업의 폭이 넓어진다. 독립적인 계산이 끝날 때마다 후속 작업을 준비 상태로
@@ -57,7 +65,10 @@ runtime 오류는 0건이다. **T0 부팅·입력은 PASS, 계산 중첩 검증�
 | `Rendering/box.cs`: intrinsic/dry/baseline 캐시와 virtual compute | dry layout도 캐시·override·재진입 계약이 있다. “dry”라는 이름을 순수·스레드 안전의 증거로 쓰지 않는다. |
 | `Ui/PlatformDispatcher.cs`: execution-context dispatcher와 frame dispatch | AsyncLocal이 worker로 전달되더라도 UI 접근 권한을 부여한 것이 아니다. owner 권한을 별도로 검사한다. |
 | `docs/adr/ADR-002-ui-raster-thread-model.md` | Widget/Element/RenderObject 변경은 UI owner, backend canvas/GPU/present는 해당 renderer owner가 담당한다. immutable scene 전송 계약을 유지한다. |
-| `Host.Web/Web/doroti.raster.worker.ts`: direct runtime의 `dotnet.create`와 JSExport 부팅 | 현재 UI 실행을 담당하는 Worker와 .NET pthread 계산 스레드를 구분한다. 계산 스레드마다 독립 .NET UI 런타임을 복제하지 않는다. |
+| `DorotiTestbedApp/web/src/doroti_bootstrap.ts`, Web csproj | `runtimeLocation="main"`, `WasmEnableThreads=true`가 현재 Testbed 기준이다. |
+| `Host.Web/Web/doroti.web.managed-worker.ts`, `BrowserManagedRenderThread.cs` | 메인에서 runtime 1개 초기화, shared-runtime JSWebWorker에 렌더 역할 연결. 전용 MessagePort와 trim 보존된 JSWebWorker adapter 유지. |
+| `Host.Web/Web/doroti.raster.worker.ts` | 현재 S1은 기존 runtime을 받아 framework/layout/Skia를 실행한다. 파일에 남은 독립 Worker runtime 생성 경로는 S1의 부팅 경로가 아니다. |
+| `Host.Web/BrowserHostContracts.cs`, `Host.Web/Web/doroti.web.ts` | timer의 JS frame 요청을 캡처한 owner context로 전달하고 `disposed`까지 DOM endpoint 유지. 후속 계산 완료·취소에도 이 경계를 유지한다. |
 | [work.md 보관본](history/26-09-08/work.original.md) 9.13절 | C2 cache 호출은 해당 resize에서 0회였다. 열 전환 2쌍은 LayoutWork 1208/1295로 달랐다. 해당 수치를 동일 작업 병렬화 기준선으로 재사용하지 않는다. |
 
 확인한 환경: net10.0/browser-wasm, runtime/SDK pack 10.0.11,
@@ -67,17 +78,24 @@ targets는 WasmEnableThreads=true에서 `mt`, SIMD=true에서 `mt,simd` archive�
 
 ## 3. 소유권과 실행 구조
 
-### 3.1 세 실행 영역
+### 3.1 현재 두 실행 영역과 추가할 계산 영역
 
 | 영역 | 책임 | 금지 |
 | --- | --- | --- |
-| UI owner | build/lifecycle/GlobalKey, constraints 확정, 입력 snapshot, 결과 검증·반영, dirty/semantics 관리 | 임의 live UI 객체를 계산 worker에 전달 |
-| 계산 스레드 풀 | 불변 입력과 전용 출력 영역으로 등록된 순수 kernel 실행, 완료 신호 | Widget/Element/RenderObject 접근·변경, JS/DOM 호출, GPU/공유 Paragraph handle 사용 |
-| renderer owner | 기존 committed scene 소비·그리기·present | 계산 worker가 canvas/context를 빌려 쓰거나 중간 geometry를 직접 표시 |
+| 브라우저 메인 (현재) | .NET runtime 1개 초기화, DOM/input/IME/semantics endpoint, 렌더 역할과 전용 port 통신 | runtime 초기화 위치를 UI 트리 변경 권한으로 해석 |
+| 렌더 JSWebWorker (현재 UI owner + renderer owner) | build/lifecycle/GlobalKey, constraints 확정, snapshot, 결과 검증·반영, dirty/semantics 계산, Skia/GPU/present | live UI 객체·canvas/context를 계산 스레드에 전달, 중간 geometry 표시 |
+| managed 계산 스레드 2개 (추가 예정) | 같은 runtime/shared heap에서 불변 입력과 전용 출력 영역으로 순수 kernel 실행, 완료 신호 | Widget/Element/RenderObject 접근·변경, JS/DOM 호출, GPU/공유 Paragraph handle 사용 |
 
-첫 구현은 **계산 스레드 2개**로 고정한다. CPU core 수를 그대로 worker 수로
-사용하지 않는다. UI owner와 renderer가 같은 Worker에 있는 현재 direct 경로도
-별도 renderer로 변경하지 않는다. 계산 worker의 추가만 독립적으로 비교한다.
+이 문서의 **UI owner는 브라우저 메인이 아니라 현재 렌더 JSWebWorker**다.
+layout과 raster의 소유 스레드는 그대로 두고 순수 계산만 추가 영역으로 분리한다.
+첫 병렬 executor의 동시 실행 한도는 **계산 스레드 2개**다. 렌더 Worker와
+runtime 내부 pthread까지 포함한 전체 브라우저 Worker 수가 2개라는 뜻은 아니다.
+CPU core 수를 그대로 worker 수로 사용하거나 계산 스레드마다 runtime을 복제하지 않는다.
+
+메인↔렌더 통신의 전용 MessagePort, strict protocol, owner context의 JS interop,
+`closed`→`disposed` 종료 순서를 유지한다. 계산 완료는 렌더 owner로 전달하고
+메인 DOM 스레드에서 geometry를 반영하지 않는다. 순수 계산용 실행 API는 T0b에서
+확정하며 JS-affine 렌더 역할을 일반 Task.Run으로 대체하지 않는다.
 
 ### 3.2 계산 그래프
 
@@ -166,9 +184,9 @@ observable callback 순서를 바꾸지 않는다. 이를 만족하는 integrati
 6. geometry만 같아서는 부족하다. layout 경계, parentUsesSize, dirty 등록/해제,
    GlobalKey 수명, scroll extent/anchor, hit-test, focus, semantics를 함께 검증한다.
 
-## 5. WasmEnableThreads 활성화와 호스팅
+## 5. 현재 런타임 설정과 후속 빌드·호스팅
 
-이번 요청에서 실제 설정한 위치:
+현재 유지할 설정:
 
 ```xml
 <!-- DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj -->
@@ -180,8 +198,10 @@ observable callback 순서를 바꾸지 않는다. 이를 만족하는 integrati
 않으며 SIMD와 현재 renderer 선택도 별도 변경하지 않는다. Web target 패키지나
 모든 앱 템플릿에 스레딩을 일괄 강제하지 않고 이 Testbed 실행 헤드에서 시작한다.
 
-- 단일/멀티 스레드 빌드의 obj/bin, runtime native WASM, pthread JS, Skia archive가
-  섞이지 않도록 `--artifacts-path .doroti/work3-threads/artifacts`에서 처음 빌드한다.
+- 검증된 S1 산출물은 `.doroti/threads-fix/repaired-wwwroot`이며 source/asset hash는
+  [manifest](history/26-09-08/wasm-main-runtime-manifest.json)에 있다. 후속 실험은
+  고유 label의 `--artifacts-path .doroti/work3-layout/<label>/artifacts`와 별도 served
+  디렉터리를 사용한다. S1 및 최초 FAIL 산출물에 덮어쓰지 않는다.
 - 런타임 pack이 `Microsoft.NETCore.App.Runtime.Mono.multithread.browser-wasm`
   계열인지, JS thread module과 shared WebAssembly.Memory가 실제 로드됐는지 확인한다.
   csproj/evaluated property true만으로 runtime 활성화를 PASS 처리하지 않는다.
@@ -202,7 +222,9 @@ observable callback 순서를 바꾸지 않는다. 이를 만족하는 integrati
 
 | 제안 위치 | 책임 |
 | --- | --- |
-| `DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj` | 실제 threaded runtime 활성화; 이번 요청 반영 |
+| `DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj`, `web/src/doroti_bootstrap.ts` | 현재 threads=true/main runtime 설정 유지 |
+| `Doroti/src/Doroti.Host.Web/BrowserManagedRenderThread.cs`, `Web/doroti.web.managed-worker.ts` | 단일 runtime과 JS-affine 렌더 역할 부팅·전용 port 계약 유지 |
+| `Doroti/src/Doroti.Host.Web/BrowserHostContracts.cs`, `Web/doroti.web.ts`, `Web/doroti.raster.worker.ts` | 렌더 owner 복귀·frame 요청·종료 순서와 계산 작업 수명 연결 |
 | `Doroti/src/Doroti.Framework.LayoutCompute/` (신규 제안) | UI 라이브 객체에 의존하지 않는 값 타입 입력/결과, kernel, dependency graph, 직렬 실행기 |
 | 같은 모듈의 실행기 또는 작은 공용 Runtime 모듈 | bounded queue, 두 계산 스레드, 완료/취소/버퍼 수명. thread API 허용 프로젝트 참조는 실제 SDK에 맞춰 확정 |
 | `Doroti/src/Doroti.Framework.Rendering/` | 지원 경로의 snapshot/결과 bridge와 owner integration; reviewed source marker 유지 |
@@ -212,40 +234,39 @@ observable callback 순서를 바꾸지 않는다. 이를 만족하는 integrati
 | `Doroti/validation/web-playwright/` | 격리 origin 확인, thread bootstrap, 같은 입력 성능/회귀 |
 | `history/26-09-08/` 및 후속 실행 날짜 | 최초 실패, source/asset hashes, run ledger, 채택/미채택 및 미검증 증거 |
 
-ADR-002의 UI 변경 소유권은 유지한다. frame 준비/재개를 추가할 경우 새로운
-ADR에서 현재 topology별 owner를 명시한다. public layout/callback 계약을 바꾸는
+ADR-002와 ADR-003의 UI 변경·렌더 소유권을 유지한다. frame 준비/재개를 추가할 경우
+ADR에 렌더 Worker의 작업 발행·완료·재개 경계를 명시한다. public layout/callback 계약을 바꾸는
 방향이 필요하면 기존 호환 최적화와 구분해 계획을 수정한 뒤 진행한다.
 
 ## 7. 실행 단계와 종료 조건
 
 | 단계 | 실행 | 종료 조건 | 현재 상태 |
 | --- | --- | --- | --- |
-| T0 스레딩 기반 | flag true, 격리 빌드, Skia mt/interop/headers/부팅 검사 | 새 runtime에서 first content·입력·오류·shared memory 확인; 지원 한계 기록 | 부팅·입력·shared heap PASS; 계산 중첩 미검증 |
-| T1 비용과 의존성 | current HEAD/dirty 고정; 실제 resize의 self time·준비 가능한 계산 폭·임계 경로 조사 | callback/build/layout/paint/encode 구분, 병렬화 가능한 비중과 최초 후보 1개 확정 | 미착수 |
+| T0 기준 구조 | 메인 runtime + 렌더 Worker, threads=true, Skia mt/interop/headers/부팅 검사 | first content·입력·오류·shared memory와 role 수명 확인; 지원 한계 기록 | PASS, S1으로 채택; 12절 증거 |
+| T0b 계산 스레드 기반 | S1의 같은 runtime에서 bounded 2-thread 순수 계산 smoke | 정확한 결과·두 계산의 실제 중첩·렌더 owner 복귀·취소/종료 확인 | 미착수; T4 통합 전 필수 |
+| T1 S1 비용과 의존성 | current HEAD/dirty와 S1 고정; 실제 resize의 self time·준비 가능한 계산 폭·임계 경로 조사 | 메인 전달 지연과 렌더 build/layout/paint/encode 구분, 병렬화 가능한 비중과 최초 후보 1개 확정 | 다음 작업 |
 | T2 순수 kernel 추출 | 불변 입력→결과, 명시적 의존성, 직렬 executor | 기존 경로 대비 logical target/횟수/필수 순서·geometry 차이 0; 직렬 추출 자체 비용 보고 | 미착수 |
-| T3 owner 연결 | 기존 동기 layout 계약을 지키는 사전 준비/결과 소비 경계, unsupported 구간 유지 | callback 추가/생략/순서 변화 0, live UI 접근 0, owner event loop 교착 0 | 미착수 |
+| T3 owner 연결 | 기존 동기 layout 계약을 지키는 사전 준비/결과 소비 경계, unsupported 구간 유지 | callback 추가/생략/순서 변화 0, 계산 스레드의 live UI 접근 0, owner event loop 교착 0 | 미착수 |
 | T4 2-thread executor | bounded ready/completion 큐, dependency counter, batching, 오류/취소/shutdown | 직렬 graph와 결과 동일, 실제 계산 중첩 확인, bounded memory, 취소 후 참조 해제 | 미착수 |
-| T5 실제 Web 통합 비교 | 동일 threaded runtime에서 직렬 executor A / 2-thread B | 그래프 구성·snapshot·동기화·반영 포함 전체 callback/정착 지연과 비대상 회귀 판정 | 미착수 |
+| T5 실제 Web 통합 비교 | 동일 메인 runtime + 렌더 Worker에서 S1 / 직렬 graph A / 2-thread B | S1→A의 추출 비용과 A→B의 병렬화 효과, S1→B의 전체 지연·비대상 회귀 판정 | 미착수 |
 | T6 플랫폼·내구성 | generator/수동 소스 소유 방식, 다른 host 직렬 동작, Web boot/asset/기기 검사 | 플랫폼별 PASS/FAIL/notVerified, 전체 메모리/사용자 수용 구분 | 미착수 |
-| T7 채택과 기록 | 마지막 변경 후 결과·편차·원본 실패·패치·기본 설정 정리 | 개선 미확인 후보는 원복/미채택; 사용자 요청의 thread flag 상태를 별도로 명시 | 미착수 |
+| T7 채택과 기록 | 마지막 변경 후 결과·편차·원본 실패·패치·기본 설정 정리 | 개선 미확인 후보는 S1으로 원복/미채택; 현재 runtime/renderer 구조 유지 | 미착수 |
 
-T0의 최초 진단 순서는 아래와 같다. 1–3과 4의 부팅·입력 부분은 후속 수정에서
-완료했다(12절). 다음 미완료 항목은 managed 계산 중첩 검증이다.
+다음 실행은 **S1 고정 → T1 비용 조사 → 후보 선정 → T0b/T2 → T3 → T4 → T5**다.
 
-1. 현재 .NET 10.0.11과 Worker 내부 `dotnet.create()`의 최소 재현을 만든다.
-   Doroti protocol 오류와 runtime attach 오류를 분리하고, 실제 Worker 메시지의
-   envelope·발신자를 수집한다. 현재 오류만으로 .NET threading 전체가 지원되지
-   않는다고 결론 내리지 않는다.
-2. 공식 runtime 메시지와 Doroti 메시지의 소유 경계를 확인한다. 모든 미지의
-   메시지를 무시하는 수정은 금지하고, Doroti protocol 검증을 유지한다.
-   메시지 분리만으로 runtime의 `dispatchEvent` 오류까지 해결됐다고 추정하지 않는다.
-3. 설치 버전의 runtime 초기화·JS interop affinity를 검증한다. generated runtime
-   파일이나 내부 상태를 임의 패치해 통과시키지 않는다. 현재 Worker owner 구조를
-   유지하는 해결책을 우선 검증하며 topology 변경이 필수라면 ADR와 이 계획의
-   소유권·비교군을 먼저 갱신한다.
-4. 해결 후 새로운 label로 first content → shared heap/runtime flag → resize/input
-   → managed 계산 중첩을 검증한다. 최초 FAIL은 보존한다. T1의 비용 조사는
-   기존 S0에서 가능하지만 T4/T5 실제 threaded 실행은 T0 통과 전 승격하지 않는다.
+1. 현재 HEAD/dirty와 S1 manifest의 차이를 확인하고 실험 소스·산출물·입력·계측
+   수준을 고정한다. 기존 부팅 진단을 처음부터 반복하지 않는다. runtime/host가
+   바뀌면 영향받는 기존 bootstrap·owner·lifecycle 검사를 다시 실행한다.
+2. S1에서 메인 input 전달, 렌더 owner callback/build/layout/paint/raster/present
+   비용과 지연을 나눠 측정한다. 사용자 체감이 좋아진 원인을 미리 단정하지 않는다.
+3. 순수 계산 후보의 비용·의존성·동기 계약 경계를 확인한다. 가치 있는 후보가
+   있을 때 T0b smoke와 T2 직렬 추출을 진행한다. T0b 미완료가 T1 조사를 막지는
+   않지만 T4의 실제 병렬 executor 통합은 T0b 통과 전 승격하지 않는다.
+4. A/B는 같은 S1 topology 위에서 비교하고, S1보다 전체 비용이 좋아지는지도
+   확인한다. 계산 owner 복귀·취소·종료와 기존 부팅/입력 회귀를 함께 확인한다.
+
+완료된 Worker-root 오류 재현·메시지 분리·부팅 전환의 순서와 최초 FAIL은
+10·12절 및 history 실행 보고서에 남긴다.
 
 T1은 단순 전체 inclusive timer 합계를 사용하지 않는다. 기존 320ms급 callback
 전체가 순수 layout 비용이라는 전제를 두지 않는다. 후보 kernel의 비용·count와
@@ -255,14 +276,22 @@ snapshot/commit 비용을 분해하고, profile 수집 불가 항목은 notMeasu
 
 ### 8.1 비교군
 
-- **S0:** 기존 단일 스레드 runtime + 현재 HAMT/indexed. T0에서 threading 자체의
-  boot/메모리/interop 영향을 분리할 때만 사용하며 고정 artifact로 보존한다.
-- **S1:** threaded runtime + 기존 layout. flag 활성화가 layout 병렬화가 아님을 확인.
-- **A:** threaded runtime + 추출한 graph의 직렬 실행. 구조 추출 overhead를 S1과 비교.
-- **B:** 같은 threaded runtime/graph/kernel + 계산 스레드 2개. A/B로 병렬화만 비교.
+- **S0 (이전 구조·참고 전용):** 기존 단일 스레드 Worker-root runtime + HAMT/indexed.
+  `.doroti/c234/before-wwwroot`를 보존한다. 후속 layout 최적화의 주 비교군이나
+  원복 목적지는 아니다. S0↔S1은 runtime 위치와 threading이 함께 바뀌므로 결과를
+  threading 단독 효과로 해석하지 않는다.
+- **S1 (현재 기준선):** 메인 runtime 1개 + shared-runtime 렌더 JSWebWorker,
+  threads=true, HAMT/indexed, 기존 owner 직렬 layout·Skia direct WebGL.
+  현재 검증 산출물·manifest를 보존하고 모든 추가 최적화의 출발점으로 삼는다.
+- **A (직렬 graph):** S1의 동일 topology + 추출한 graph를 렌더 owner에서 직렬 실행.
+  S1↔A로 입력 추출·graph·결과 소비 자체의 비용을 확인한다.
+- **B (병렬 graph):** S1의 동일 topology/graph/kernel + 순수 계산 스레드 2개.
+  A↔B로 병렬화 효과, S1↔B로 추가 구조를 모두 포함한 최종 개선을 확인한다.
 
 각 실험에서 어느 쌍을 비교하는지 먼저 고정한다. AOT·renderer·DPR·font·diagnostics
-수준이 다른 산출물을 섞지 않는다. contract trace와 latency trace는 분리한다.
+수준이 다른 산출물을 섞지 않는다. runtime 버전·부팅 위치·Skia threading·입력도
+고정한다. A/B의 계산 동시 실행 수와 runtime 내부 Worker 수는 별도로 기록한다.
+contract trace와 latency trace는 분리한다.
 
 ### 8.2 계약 fixture
 
@@ -306,7 +335,7 @@ ledger를 만든다. 초기 실행은 기본 10회 이내, 독립 검증 추가�
 ## 9. 채택 gate와 중단 조건
 
 **필수 기능 gate:** 동일 target/compute/callback 계약 차이 0, State·geometry·
-anchor·hit-test·semantics 회귀 0, worker의 live UI 접근 0, 오래된 결과 반영 0,
+anchor·hit-test·semantics 회귀 0, 계산 스레드의 live UI 접근 0, 오래된 결과 반영 0,
 deadlock 0. 함수 반환/콜백을 뒤로 미루거나 대상 계산을 생략해서 얻은 개선은
 이번 “같은 작업 병렬화”의 성과로 세지 않는다.
 
@@ -321,11 +350,16 @@ target 불일치, owner blocking 또는 3쌍에서 개선 미확인은 승격 �
 스레드 풀의 기본 상주 메모리까지 포함한다. 단일 kernel이 충분히 크지 않거나
 의존성 때문에 동시에 준비되는 작업량이 작으면 무리하게 worker 수를 늘리지 않는다.
 
-성능 후보를 원복하더라도 이번에 사용자가 명시한 WasmEnableThreads 활성화와
-실제 지원 상태를 별도 기록한다. 런타임 자체가 실행되지 않는 경우는 설정 반영과
-실행 실패를 구분하고 정상 실행이라고 보고하지 않는다.
+성능 후보가 실패하면 추가 graph/executor 변경을 걷어내고 **S1으로 돌아간다**.
+메인 runtime 초기화, shared-runtime 렌더 Worker, 전용 port, owner context,
+정상 종료 수정과 WasmEnableThreads=true는 유지한다. S0 회귀나 runtime 위치·렌더러
+변경은 이번 후속 최적화의 원복 절차에 포함하지 않는다. 현재 구조의 사용자 체감
+선호와 새 병렬 후보의 정량 수용 여부를 별도로 기록한다.
 
 ## 10. 최초 계획 작성·flag 활성화 실행 기록 (후속 수정 전)
+
+이 절은 당시의 FAIL·미완료 상태를 보존한 기록이다. 현재 상태와 다음 작업은
+7절을 따르며, 아래 부팅 진단을 다시 수행할 미완료 목록으로 해석하지 않는다.
 
 - [x] 현재 소스·ADR·이전 C2/C3/C4 실패와 비교 한계 검토
 - [x] 이 계획 작성: 의존성 graph, owner 경계, 직렬 기준선과 2-thread 후보,
