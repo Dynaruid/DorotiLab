@@ -96,7 +96,8 @@ public sealed record RSuperellipse(Rect outerRect, Radius tlRadius, Radius trRad
     public static RSuperellipse fromRectAndCorners(Rect rect, Radius? topLeft = null, Radius? topRight = null, Radius? bottomRight = null, Radius? bottomLeft = null) =>
         new(rect, topLeft ?? Radius.zero, topRight ?? Radius.zero, bottomRight ?? Radius.zero, bottomLeft ?? Radius.zero);
     public static RSuperellipse fromRectAndRadius(Rect rect, Radius radius) => new(rect, radius, radius, radius, radius);
-    public RSuperellipse inflate(double delta) => new(outerRect.inflate(delta), tlRadius, trRadius, brRadius, blRadius);
+    public RSuperellipse inflate(double delta) => new(outerRect.inflate(delta),
+        Inflate(tlRadius, delta), Inflate(trRadius, delta), Inflate(brRadius, delta), Inflate(blRadius, delta));
     public RSuperellipse deflate(double delta) => inflate(-delta);
     public RSuperellipse shift(Offset offset) => this with { outerRect = outerRect.shift(offset) };
     public bool contains(Offset point) => outerRect.contains(point);
@@ -108,6 +109,7 @@ public sealed record RSuperellipse(Rect outerRect, Radius tlRadius, Radius trRad
     public double brRadiusY => brRadius.y;
     public double blRadiusX => blRadius.x;
     public double blRadiusY => blRadius.y;
+    private static Radius Inflate(Radius radius, double delta) => new(Math.Max(0, radius.x + delta), Math.Max(0, radius.y + delta));
 }
 
 public abstract class Shader;

@@ -10,6 +10,14 @@ Doroti is independently implemented. Reference checkouts are not runtime depende
 - License: BSD 3-Clause; see `../reference/flutter-master/LICENSE`
 - Copyright: Copyright 2014 The Flutter Authors
 
+## Flutter rounded superellipse paths
+
+- Upstream: Flutter engine `lib/web_ui/lib/rsuperellipse_param.dart`, revision `35e669cfa38f3f66d1a743486c1ddceed23f0841`
+- Adapted file: `src/Doroti.Skia.Rendering/SkiaRSuperellipsePath.cs`
+- Copyright 2013 The Flutter Authors; BSD 3-Clause, reproduced in [LICENSES/Flutter-LICENSE.md](LICENSES/Flutter-LICENSE.md).
+- Changes: C# Skia path construction, radius normalization, roundoff guard and a shared contour for painting and clipping.
+- Selected source, hashes and dependency closure: [mac-menu-source-provenance.json](validation/fcr7-material-widget/mac-menu-source-provenance.json).
+
 ## Material color image extraction
 
 - Upstream behavior: https://github.com/material-foundation/material-color-utilities, Dart package `material_color_utilities 0.13.0`

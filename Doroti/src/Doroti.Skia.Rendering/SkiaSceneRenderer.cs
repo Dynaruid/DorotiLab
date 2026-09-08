@@ -959,7 +959,9 @@ public sealed partial class SkiaSceneRenderer :
                         using (var path = ToPath(clip.RRect)) canvas.ClipPath(path, SKClipOperation.Intersect, true);
                         break;
                     case "clipRSuperellipse" when command.HostPayload is SceneClipRSuperellipsePayload clip:
-                        canvas.Save(); restoreCounts.Push(1); canvas.ClipRect(ToRect(clip.RSuperellipse.outerRect), SKClipOperation.Intersect, true); break;
+                        canvas.Save(); restoreCounts.Push(1);
+                        using (var path = SkiaRSuperellipsePath.Create(clip.RSuperellipse)) canvas.ClipPath(path, SKClipOperation.Intersect, true);
+                        break;
                     case "clipPath" when command.HostPayload is SceneClipPathPayload clip:
                         canvas.Save(); restoreCounts.Push(1);
                         using (var path = ToPath(clip.Path)) canvas.ClipPath(path, SKClipOperation.Intersect, true);
@@ -1125,12 +1127,12 @@ public sealed partial class SkiaSceneRenderer :
                 case "transform": Concat(canvas, command.Arguments); break;
                 case "clipRect": canvas.ClipRect(new((float)command.Arguments[0], (float)command.Arguments[1], (float)command.Arguments[2], (float)command.Arguments[3]), SKClipOperation.Intersect, true); break;
                 case "clipRRect" when command.HostPayload is CanvasClipRRectPayload clip: using (var path = ToPath(clip.RRect)) canvas.ClipPath(path, SKClipOperation.Intersect, clip.DoAntiAlias); break;
-                case "clipRSuperellipse" when command.HostPayload is CanvasClipRSuperellipsePayload clip: canvas.ClipRect(ToRect(clip.RSuperellipse.outerRect), SKClipOperation.Intersect, clip.DoAntiAlias); break;
+                case "clipRSuperellipse" when command.HostPayload is CanvasClipRSuperellipsePayload clip: using (var path = SkiaRSuperellipsePath.Create(clip.RSuperellipse)) canvas.ClipPath(path, SKClipOperation.Intersect, clip.DoAntiAlias); break;
                 case "clipPath" when command.HostPayload is CanvasClipPathPayload clip: using (var path = ToPath(clip.Path)) canvas.ClipPath(path, SKClipOperation.Intersect, clip.DoAntiAlias); break;
                 case "drawRect" when command.HostPayload is CanvasRectPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawRect(ToRect(draw.Rect), paint); break;
                 case "drawRRect" when command.HostPayload is CanvasRRectPayload draw: DrawRRect(canvas, draw); break;
                 case "drawDRRect" when command.HostPayload is CanvasDRRectPayload draw: DrawDRRect(canvas, draw); break;
-                case "drawRSuperellipse" when command.HostPayload is CanvasRSuperellipsePayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawRect(ToRect(draw.RSuperellipse.outerRect), paint); break;
+                case "drawRSuperellipse" when command.HostPayload is CanvasRSuperellipsePayload draw: using (var path = SkiaRSuperellipsePath.Create(draw.RSuperellipse)) using (var paint = ToPaint(draw.Paint)) canvas.DrawPath(path, paint); break;
                 case "drawPath" when command.HostPayload is CanvasPathPayload draw: using (var path = ToPath(draw.Path)) using (var paint = ToPaint(draw.Paint)) canvas.DrawPath(path, paint); break;
                 case "drawPaint" when command.HostPayload is PaintSnapshot draw: using (var paint = ToPaint(draw)) canvas.DrawPaint(paint); break;
                 case "drawCircle" when command.HostPayload is CanvasCirclePayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawCircle((float)draw.Center.dx, (float)draw.Center.dy, (float)draw.Radius, paint); break;
@@ -1172,7 +1174,7 @@ public sealed partial class SkiaSceneRenderer :
             !canvasBounds.IsFinite || canvasBounds.isEmpty ||
             (!payload.IsComplexHint && commands.Count < PictureRasterComplexityThreshold &&
                 !HasDownscaledImage(commands)) ||
-            !SkiaGpuSurfaces.IsGpu(canvas) || !PictureCanCompositeOverBackground(commands))
+            !SkiaGpuSurfaces.IsGpu(canvas) || !PictureCanCompositeOverBackground(commands) || HasBlurredPaint(commands))
         {
             DrawRetainedPicture(canvas, payload);
             return;
@@ -1737,6 +1739,17 @@ public sealed partial class SkiaSceneRenderer :
             StrokeJoin = value.StrokeJoin switch { StrokeJoin.round => SKStrokeJoin.Round, StrokeJoin.bevel => SKStrokeJoin.Bevel, _ => SKStrokeJoin.Miter },
         };
         if (value.Shader is not null) paint.Shader = ToShader(value.Shader);
+        if (value.MaskFilter is { sigma: > 0 } blur)
+        {
+            using var filter = SKMaskFilter.CreateBlur(blur.style switch
+            {
+                BlurStyle.solid => SKBlurStyle.Solid,
+                BlurStyle.outer => SKBlurStyle.Outer,
+                BlurStyle.inner => SKBlurStyle.Inner,
+                _ => SKBlurStyle.Normal,
+            }, (float)blur.sigma);
+            paint.MaskFilter = filter;
+        }
         return paint;
     }
 
@@ -1943,10 +1956,14 @@ public sealed partial class SkiaSceneRenderer :
                     new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
                     (float)(a[4] * 180 / Math.PI),
                     (float)(a[5] * 180 / Math.PI)); break;
-                // SkiaSharp has no native rounded-superellipse path primitive.
-                // Preserve its bounds and corner radii with the rounded-rect
-                // approximation; dropping it makes ShapeDecoration clips empty.
                 case "addRSuperellipse":
+                    using (var superellipse = SkiaRSuperellipsePath.Create(new RSuperellipse(
+                        Rect.fromLTRB(a[0], a[1], a[2], a[3]),
+                        Radius.elliptical(a[4], a[5]),
+                        Radius.elliptical(a[6], a[7]),
+                        Radius.elliptical(a[8], a[9]),
+                        Radius.elliptical(a[10], a[11])))) builder.AddPath(superellipse);
+                    break;
                 case "addRRect":
                     using (var rounded = new SKRoundRect())
                     {

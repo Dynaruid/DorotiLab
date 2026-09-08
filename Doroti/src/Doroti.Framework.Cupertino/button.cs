@@ -295,7 +295,7 @@ internal class _CupertinoButtonState__button : global::Doroti.Framework.Widgets.
             {
                 _animate();
             }
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            return null!;
         }))));
     }
 

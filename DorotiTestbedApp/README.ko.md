@@ -63,6 +63,10 @@ Mac UI idiom을 사용해 iPad 호환 모드의 77% 축소 없이 표시합니�
 렌더링과 입력 좌표는 Metal 뷰의 배율을 기준으로 처리합니다.
 트랙패드 스크롤은 손가락을 뗀 뒤 감속하며, 일반 마우스 휠에는 추가 관성을 적용하지 않습니다.
 두 Mac runner 모두 텍스트 필드에서 우클릭 또는 Control+클릭으로 편집 메뉴를 엽니다.
+메뉴는 Flutter Cupertino 기준의 연속 곡선 모서리와 흐린 그림자를 사용하며,
+항목에 마우스를 올리면 테마 강조색과 대비되는 글자색을 표시합니다.
+`dotnet run --project ./Doroti/validation/fcr7-material-widget -- --mac-text-menu`로
+밝은/어두운 테마의 강조·눌림 상태, 그림자와 편집 동작을 검증할 수 있습니다.
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 `

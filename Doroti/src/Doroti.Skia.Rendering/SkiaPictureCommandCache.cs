@@ -21,7 +21,7 @@ public sealed partial class SkiaSceneRenderer
     private void DrawRetainedPicture(SKCanvas canvas, ScenePicturePayload payload)
     {
         var commands = payload.Commands;
-        if (payload.WillChangeHint || commands.Count == 0 || commands.Count > MaxRetainedPictureCommands ||
+        if (payload.WillChangeHint || commands.Count == 0 || commands.Count > MaxRetainedPictureCommands || HasBlurredPaint(commands) ||
             payload.CanvasBounds is not { } bounds || !bounds.IsFinite || bounds.isEmpty)
         {
             DrawPicture(canvas, commands);
@@ -106,4 +106,32 @@ public sealed partial class SkiaSceneRenderer
         internal SKPicture? Picture;
         internal long Bytes;
     }
+
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<object, BlurPolicy> BlurPolicies = new();
+
+    // CanvasBounds describes the unfiltered geometry. Until filter outsets are
+    // tracked through transforms, replay blurred pictures on the destination:
+    // both a recording's cull rect and a raster cache can otherwise cut off halos.
+    private static bool HasBlurredPaint(IReadOnlyList<PathCommand> commands) =>
+        BlurPolicies.GetValue(commands, static key => new(((IReadOnlyList<PathCommand>)key).Any(static command =>
+            (command.HostPayload switch
+            {
+                PaintSnapshot paint => paint,
+                CanvasSaveLayerPayload layer => layer.Paint,
+                CanvasPathPayload draw => draw.Paint,
+                CanvasRectPayload draw => draw.Paint,
+                CanvasRRectPayload draw => draw.Paint,
+                CanvasRSuperellipsePayload draw => draw.Paint,
+                CanvasDRRectPayload draw => draw.Paint,
+                CanvasImagePayload draw => draw.Paint,
+                CanvasImageNinePayload draw => draw.Paint,
+                CanvasCirclePayload draw => draw.Paint,
+                CanvasLinePayload draw => draw.Paint,
+                CanvasPointsPayload draw => draw.Paint,
+                CanvasOvalPayload draw => draw.Paint,
+                CanvasArcPayload draw => draw.Paint,
+                _ => null,
+            })?.MaskFilter is { sigma: > 0 }))).HasBlur;
+
+    private sealed record BlurPolicy(bool HasBlur);
 }

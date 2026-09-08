@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "package": "Flutter",
+      "revision": "35e669cfa38f3f66d1a743486c1ddceed23f0841",
+      "path": "engine/src/flutter/lib/web_ui/lib/rsuperellipse_param.dart",
+      "sha256": "5434c1db6343bf5e42d8496734841f9abc1f370363add620bbebaa78e88b96c1",
+      "license": "BSD-3-Clause",
+      "selected": "Octant parameters, conic/cubic fitting, quadrant transforms and exact contour construction; excludes the Flutter path cache"
+    }
+  ],
+  "adapted": [
+    {
+      "path": "Doroti/src/Doroti.Skia.Rendering/SkiaRSuperellipsePath.cs",
+      "sha256": "66cc99ec58a459da9fea9f0471390ec6d4ee38572c67d866e06664a0d908f693"
+    }
+  ],
+  "changes": [
+    "C# SKPathBuilder adapter using existing Doroti Offset, Radius and RSuperellipse values",
+    "Normalize corner radii before building the contour",
+    "Clamp negative floating-point roundoff in the circle-center square root",
+    "Share the contour between drawRSuperellipse, clipRSuperellipse and Path.addRSuperellipse"
+  ],
+  "dependencyClosure": [
+    "Doroti.Ui geometry values",
+    "SkiaSharp (existing package); no Flutter runtime dependency"
+  ],
+  "validation": "dotnet run --project Doroti/validation/fcr7-material-widget -- --mac-text-menu"
+}

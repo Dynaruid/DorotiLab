@@ -5,6 +5,7 @@ using Doroti.Ui;
 
 if (args is ["--mac-text-menu"])
 {
+    MacMenuRenderingContracts.Verify();
     ScrollMomentumContracts.Verify();
     MountedPickerContracts.VerifyMacTextMenu();
     return;

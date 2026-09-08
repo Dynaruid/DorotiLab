@@ -63,6 +63,10 @@ It uses the Mac UI idiom without the iPad compatibility mode's 77% downscaling.
 Rendering and pointer coordinates use the Metal view's scale factor.
 Trackpad scrolling decelerates after release; discrete mouse-wheel input receives no added inertia.
 Both Mac runners open the text field editing menu with a secondary click or Control-click.
+The menu follows Flutter Cupertino's continuous corners and blurred shadow;
+hovered items use the theme accent and contrasting text color.
+Run `dotnet run --project ./Doroti/validation/fcr7-material-widget -- --mac-text-menu`
+to check light/dark hover and pressed states, shadows, and editing actions.
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 `
