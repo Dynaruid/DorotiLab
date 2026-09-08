@@ -15,13 +15,15 @@ if (-not (Test-Path -LiteralPath $vswhere)) { throw "vswhere.exe is missing: $vs
 $msbuild = @(& $vswhere -latest -products * -requires Microsoft.Component.MSBuild -find 'MSBuild\**\Bin\MSBuild.exe')[0]
 if ([string]::IsNullOrWhiteSpace($msbuild)) { throw 'MSBuild.exe was not found.' }
 
-$sdkVersion = '10.0.26100.0'
+[xml] $nativeVersions = Get-Content -LiteralPath (Join-Path (Split-Path -Parent $projectPath) 'Doroti.NativeVersions.props') -Raw
+$versions = $nativeVersions.Project.PropertyGroup
+$sdkVersion = [string] $versions.DorotiNativeWindowsSdkVersion
 $cppWinRt = Join-Path ${env:ProgramFiles(x86)} "Windows Kits\10\bin\$sdkVersion\x64\cppwinrt.exe"
 $nugetRoot = (& dotnet nuget locals global-packages --list).Split(':', 2)[1].Trim()
-$interactiveRoot = Join-Path $nugetRoot 'microsoft.windowsappsdk.interactiveexperiences\2.1.6'
+$interactiveRoot = Join-Path $nugetRoot "microsoft.windowsappsdk.interactiveexperiences\$($versions.DorotiNativeInteractiveVersion)"
 $metadataRoot = Join-Path $interactiveRoot 'metadata\10.0.18362.0'
-$foundationRoot = Join-Path $nugetRoot 'microsoft.windowsappsdk.foundation\2.3.9'
-$runtimeRoot = Join-Path $nugetRoot 'microsoft.windowsappsdk.runtime\2.4.0'
+$foundationRoot = Join-Path $nugetRoot "microsoft.windowsappsdk.foundation\$($versions.DorotiNativeFoundationVersion)"
+$runtimeRoot = Join-Path $nugetRoot "microsoft.windowsappsdk.runtime\$($versions.DorotiNativeRuntimeVersion)"
 if (-not (Test-Path -LiteralPath $cppWinRt)) { throw "Pinned C++/WinRT tool is missing: $cppWinRt" }
 $arguments = @(
     $projectPath,
@@ -32,6 +34,7 @@ $arguments = @(
     '/p:Configuration=Release',
     '/p:Platform=x64',
     "/p:CppWinRTExe=$cppWinRt",
+    "/p:CppWinRTSdkMetadata=$(Join-Path ${env:ProgramFiles(x86)} "Windows Kits\10\UnionMetadata\$sdkVersion\Windows.winmd")",
     "/p:MicrosoftUiWinmd=$(Join-Path $metadataRoot 'Microsoft.UI.winmd')",
     "/p:MicrosoftFoundationWinmd=$(Join-Path $metadataRoot 'Microsoft.Foundation.winmd')",
     "/p:MicrosoftGraphicsWinmd=$(Join-Path $metadataRoot 'Microsoft.Graphics.winmd')",

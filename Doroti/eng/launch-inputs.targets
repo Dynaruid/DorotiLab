@@ -1,11 +1,27 @@
 <Project>
-  <Target Name="DorotiCollectLaunchInputs" Returns="@(_DorotiLaunchInput)">
+  <!-- Resolve package/runtime assets without compiling project references. This
+       must run after restore; source item lists alone omit the actual DLLs. -->
+  <Target Name="DorotiCollectLaunchDependencies" DependsOnTargets="ResolvePackageAssets;ResolveRuntimePackAssets;PrepareProjectReferences"
+          Returns="@(_DorotiLaunchDependency)">
+    <ItemGroup>
+      <_DorotiLaunchDependencyCandidate Include="@(ResolvedCompileFileDefinitions);@(RuntimeCopyLocalItems);@(NativeCopyLocalItems);@(RuntimeTargetsCopyLocalItems);@(ResourceCopyLocalItems);@(RuntimePackAsset);@(NativeFileReference);@(DorotiLaunchDependency);@(Reference->'%(HintPath)');$(ProjectAssetsFile);$(MSBuildAllProjects)" />
+      <_DorotiLaunchDependency Include="@(_DorotiLaunchDependencyCandidate->'%(FullPath)')" />
+    </ItemGroup>
+    <MSBuild Projects="@(_MSBuildProjectReferenceExistent)" Targets="DorotiCollectLaunchDependencies"
+             Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration);%(_MSBuildProjectReferenceExistent.SetPlatform);%(_MSBuildProjectReferenceExistent.SetTargetFramework)"
+             RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)$(_GlobalPropertiesToRemoveFromProjectReferences)"
+             BuildInParallel="false" SkipNonexistentProjects="false">
+      <Output TaskParameter="TargetOutputs" ItemName="_DorotiLaunchDependency" />
+    </MSBuild>
+  </Target>
+  <Target Name="DorotiCollectLaunchInputs" DependsOnTargets="PrepareProjectReferences" Returns="@(_DorotiLaunchInput)">
     <ItemGroup>
       <_DorotiLaunchInput Include="@(Compile);@(EmbeddedResource);@(Content);@(None);@(AdditionalFiles);$(MSBuildAllProjects)" />
       <_DorotiLaunchInput Include="$(MSBuildProjectFullPath)" />
-      <_DorotiLaunchProject Include="@(ProjectReference)" Condition="'%(ProjectReference.Extension)' == '.csproj'" />
     </ItemGroup>
-    <MSBuild Projects="@(_DorotiLaunchProject)" Targets="DorotiCollectLaunchInputs"
+    <MSBuild Projects="@(_MSBuildProjectReferenceExistent)" Targets="DorotiCollectLaunchInputs"
+             Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration);%(_MSBuildProjectReferenceExistent.SetPlatform);%(_MSBuildProjectReferenceExistent.SetTargetFramework)"
+             RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)$(_GlobalPropertiesToRemoveFromProjectReferences)"
              BuildInParallel="false" SkipNonexistentProjects="false">
       <Output TaskParameter="TargetOutputs" ItemName="_DorotiLaunchReferencedInput" />
     </MSBuild>

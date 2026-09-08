@@ -9,11 +9,16 @@
           Condition="'$(DorotiHostKind)' == 'Qt' and '$(DorotiBuildQtNative)' == 'true'">
     <MakeDir Directories="$(DorotiQtNativeBuildDirectory)" />
     <Exec Command="cmake -S &quot;$(MSBuildProjectDirectory)/native&quot; -B &quot;$(DorotiQtNativeBuildDirectory)&quot; -DCMAKE_BUILD_TYPE=$(Configuration)" Timeout="1200000" />
-    <Exec Command="cmake --build &quot;$(DorotiQtNativeBuildDirectory)&quot; --config $(Configuration)" Timeout="1200000" />
+    <PropertyGroup>
+      <_DorotiQtCleanFirst Condition="'$(DorotiRebuildDependencies)' == 'true'">--clean-first</_DorotiQtCleanFirst>
+    </PropertyGroup>
+    <Exec Command="cmake --build &quot;$(DorotiQtNativeBuildDirectory)&quot; --config $(Configuration) $(_DorotiQtCleanFirst)" Timeout="1200000" />
   </Target>
   <Target Name="CopyDorotiQtNative" AfterTargets="Build;Publish"
           Condition="'$(DorotiHostKind)' == 'Qt' and Exists('$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so')">
-    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" Condition="'$(PublishDir)' != ''" />
+    <!-- Equal length/mtime does not imply equal native code (restored artifacts
+         can preserve both). Always copy the library selected by this build. -->
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="$(DorotiQtNativeBuildDirectory)/libdoroti_qt_host.so" DestinationFolder="$(PublishDir)" Condition="'$(PublishDir)' != ''" />
   </Target>
 </Project>

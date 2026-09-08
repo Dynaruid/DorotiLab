@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="Doroti.NativeVersions.props" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -11,7 +12,7 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{79F19036-2541-46EC-8DB1-91008365886E}</ProjectGuid>
     <RootNamespace>DorotiHostWindowsAppSdkNative</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(DorotiNativeWindowsSdkVersion)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -58,13 +59,6 @@
     <ClCompile Include="src\vulkan_composition.cpp" />
     <ClCompile Include="src\accessibility_bridge.cpp" />
   </ItemGroup>
-  <Target Name="GenerateWindowsAppSdkCppWinRT" BeforeTargets="ClCompile"
-          Inputs="$(MicrosoftUiWinmd);$(MicrosoftFoundationWinmd);$(MicrosoftGraphicsWinmd)"
-          Outputs="$(GeneratedHeaders)\winrt\Microsoft.UI.Windowing.h">
-    <Error Condition="!Exists('$(CppWinRTExe)')" Text="cppwinrt.exe is missing: $(CppWinRTExe)" />
-    <Error Condition="!Exists('$(MicrosoftUiWinmd)')" Text="Microsoft.UI.winmd is missing: $(MicrosoftUiWinmd)" />
-    <MakeDir Directories="$(GeneratedHeaders)" />
-    <Exec Command="&quot;$(CppWinRTExe)&quot; -input &quot;$(MicrosoftUiWinmd)&quot; -reference &quot;$(MicrosoftFoundationWinmd)&quot; -reference &quot;$(MicrosoftGraphicsWinmd)&quot; -reference sdk -output &quot;$(GeneratedHeaders)&quot; -overwrite" />
-  </Target>
+  <Import Project="Doroti.CppWinRT.targets" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

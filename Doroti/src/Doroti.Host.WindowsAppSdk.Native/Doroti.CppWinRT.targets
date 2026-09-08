@@ -1,0 +1,48 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <CppWinRTSdkMetadata Condition="'$(CppWinRTSdkMetadata)' == ''">$(WindowsSdkDir)UnionMetadata\$(WindowsTargetPlatformVersion)\Windows.winmd</CppWinRTSdkMetadata>
+    <_DorotiCppWinRTTargets>$(MSBuildThisFileFullPath)</_DorotiCppWinRTTargets>
+  </PropertyGroup>
+  <!-- Package timestamps can be older than generated headers. Bind both the
+       complete generator inputs and its output inventory by content instead. -->
+  <Target Name="GenerateWindowsAppSdkCppWinRT" BeforeTargets="ClCompile">
+    <Error Condition="!Exists('$(CppWinRTExe)')" Text="cppwinrt.exe is missing: $(CppWinRTExe)" />
+    <ItemGroup>
+      <_DorotiCppWinRTInput Include="$(CppWinRTExe);$(MicrosoftUiWinmd);$(MicrosoftFoundationWinmd);$(MicrosoftGraphicsWinmd);$(_DorotiCppWinRTTargets)" />
+      <_DorotiCppWinRTSdkMetadata Include="$(CppWinRTSdkMetadata)" />
+      <_DorotiCppWinRTInput Include="@(_DorotiCppWinRTSdkMetadata)" />
+      <_DorotiCppWinRTHeader Include="$(GeneratedHeaders)\**\*.h" />
+    </ItemGroup>
+    <Error Condition="!Exists('$(CppWinRTSdkMetadata)')" Text="Pinned Windows SDK metadata is missing: $(CppWinRTSdkMetadata)" />
+    <GetFileHash Files="@(_DorotiCppWinRTInput)" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiCppWinRTHashedInput" />
+    </GetFileHash>
+    <GetFileHash Files="@(_DorotiCppWinRTHeader)" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiCppWinRTHashedHeader" />
+    </GetFileHash>
+    <ItemGroup>
+      <_DorotiCppWinRTIdentity Include="@(_DorotiCppWinRTHashedInput->'input|%(FullPath)|%(FileHash)');@(_DorotiCppWinRTHashedHeader->'output|%(FullPath)|%(FileHash)')" />
+    </ItemGroup>
+    <ReadLinesFromFile File="$(GeneratedHeaders)\doroti-cppwinrt.identity" Condition="Exists('$(GeneratedHeaders)\doroti-cppwinrt.identity')">
+      <Output TaskParameter="Lines" ItemName="_DorotiCppWinRTPreviousIdentity" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <_DorotiRegenerateCppWinRT Condition="'@(_DorotiCppWinRTIdentity)' != '@(_DorotiCppWinRTPreviousIdentity)' or !Exists('$(GeneratedHeaders)\winrt\Microsoft.UI.Windowing.h')">true</_DorotiRegenerateCppWinRT>
+    </PropertyGroup>
+    <MakeDir Directories="$(GeneratedHeaders)" Condition="'$(_DorotiRegenerateCppWinRT)' == 'true'" />
+    <!-- Delete the previously enumerated files, never a computed directory tree.
+         Removed metadata must not leave obsolete generated declarations behind. -->
+    <Delete Files="@(_DorotiCppWinRTHeader)" Condition="'$(_DorotiRegenerateCppWinRT)' == 'true'" />
+    <Exec Command="&quot;$(CppWinRTExe)&quot; -input &quot;$(MicrosoftUiWinmd)&quot; -reference &quot;$(MicrosoftFoundationWinmd)&quot; -reference &quot;$(MicrosoftGraphicsWinmd)&quot; -reference &quot;$(CppWinRTSdkMetadata)&quot; -output &quot;$(GeneratedHeaders)&quot; -overwrite" Timeout="1200000" Condition="'$(_DorotiRegenerateCppWinRT)' == 'true'" />
+    <Error Condition="!Exists('$(GeneratedHeaders)\winrt\Microsoft.UI.Windowing.h')" Text="C++/WinRT did not produce Microsoft.UI.Windowing.h." />
+    <ItemGroup>
+      <_DorotiCppWinRTNewHeader Include="$(GeneratedHeaders)\**\*.h" />
+    </ItemGroup>
+    <GetFileHash Files="@(_DorotiCppWinRTNewHeader)" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiCppWinRTHashedNewHeader" />
+    </GetFileHash>
+    <WriteLinesToFile File="$(GeneratedHeaders)\doroti-cppwinrt.identity"
+                      Lines="@(_DorotiCppWinRTHashedInput->'input|%(FullPath)|%(FileHash)');@(_DorotiCppWinRTHashedNewHeader->'output|%(FullPath)|%(FileHash)')"
+                      Overwrite="true" WriteOnlyWhenDifferent="true" />
+  </Target>
+</Project>

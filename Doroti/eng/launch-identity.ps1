@@ -64,6 +64,34 @@ function Get-DorotiEvaluatedInputFiles([string[]] $Projects, [string] $Configura
     } finally { Pop-Location }
 }
 
+function Get-DorotiDependencyIdentity([string] $Runner, [string] $Configuration, [string] $Rid, [string] $WorkingDirectory) {
+    $collector = Join-Path $PSScriptRoot 'launch-inputs.targets'
+    $arguments = @('msbuild', $Runner, '-nologo', "-p:Configuration=$Configuration",
+        "-p:CustomAfterMicrosoftCommonTargets=$collector", '-getTargetResult:DorotiCollectLaunchDependencies')
+    if ($Rid) { $arguments += "-p:RuntimeIdentifier=$Rid" }
+    Push-Location $WorkingDirectory
+    try {
+        $json = & dotnet @arguments
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot establish restored dependency identity. Restore/build before using -NoBuild.' }
+        $result = ($json -join "`n" | ConvertFrom-Json -Depth 100).TargetResults.DorotiCollectLaunchDependencies
+        if ($result.Result -ne 'Success') { throw 'Dependency discovery failed.' }
+        $files = foreach ($item in $result.Items) {
+            # obj/project.assets.json is deliberately included: it selects the
+            # resolved graph. Do not apply the source-tree obj/bin exclusion.
+            if (!(Test-Path -LiteralPath $item.Identity -PathType Leaf)) {
+                throw "Resolved dependency is missing: $($item.Identity)"
+            }
+            Get-Item -LiteralPath $item.Identity
+        }
+        Get-DorotiContentFingerprint @($files) "$Runner|$Configuration|$Rid"
+    } finally { Pop-Location }
+}
+
+function Test-DorotiDependencyRebuild($State, [string] $Dependencies, [string] $Toolchain) {
+    !$State -or $State.schemaVersion -cne 'doroti.launch-state/v3' -or
+        $State.dependencies -cne $Dependencies -or $State.toolchain -cne $Toolchain
+}
+
 function Get-DorotiToolchainIdentity([string] $WorkingDirectory) {
     Push-Location $WorkingDirectory
     try {

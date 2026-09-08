@@ -1,0 +1,8 @@
+<Project>
+  <PropertyGroup>
+    <DorotiNativeWindowsSdkVersion>10.0.26100.0</DorotiNativeWindowsSdkVersion>
+    <DorotiNativeInteractiveVersion>2.1.6</DorotiNativeInteractiveVersion>
+    <DorotiNativeFoundationVersion>2.3.9</DorotiNativeFoundationVersion>
+    <DorotiNativeRuntimeVersion>2.4.0</DorotiNativeRuntimeVersion>
+  </PropertyGroup>
+</Project>

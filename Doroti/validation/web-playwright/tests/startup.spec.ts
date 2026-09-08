@@ -78,3 +78,29 @@ test("Boot plugin endpoint remains available", async ({ page, runtimeErrors }) =
   expect(response).toEqual({ hasValue: true, base64: "AAECAw==" });
   expect(runtimeErrors).toEqual([]);
 });
+
+for (const path of ["/", "/?dorotiTestbedMode=sample"]) {
+  test(`default Web startup renders content: ${path}`, async ({ page, runtimeErrors }, testInfo) => {
+    // Exercise the user's launch URL without renderer overrides or diagnostics.
+    await page.goto(path);
+    await page.waitForFunction(() =>
+      ["started", "failed"].includes(document.documentElement.dataset.dorotiBootstrapStage ?? ""));
+    const state = await page.evaluate(() => ({ ...document.documentElement.dataset }));
+    expect(state.dorotiBootstrapStage, state.dorotiBootstrapError).toBe("started");
+    expect(state.dorotiBootstrapError).toBeUndefined();
+    expect(state.dorotiRuntimeLocation).toBe("main");
+    const canvas = page.locator("#doroti-surface");
+    await expect(canvas).toBeVisible();
+    // Runtime readiness can precede the first framework frame. Require actual
+    // painted canvas content rather than accepting an empty ready surface.
+    await expect.poll(async () => {
+      const png = PNG.sync.read(await canvas.screenshot());
+      const colors = new Set<number>();
+      for (let offset = 0; offset < png.data.length; offset += 16)
+        colors.add(png.data.readUInt32BE(offset));
+      return colors.size;
+    }).toBeGreaterThan(20);
+    await testInfo.attach("first-content", { body: await page.screenshot(), contentType: "image/png" });
+    expect(runtimeErrors).toEqual([]);
+  });
+}

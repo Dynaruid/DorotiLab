@@ -1,0 +1,40 @@
+<Project>
+  <!-- WebCIL conversion reuses outputs by timestamp. Switching runtime packs
+       (notably WasmEnableThreads) or NuGet versions can select different DLLs
+       whose package timestamps predate those outputs. Track package content and
+       paths so managed runtime/Skia assemblies match the native relink, including
+       caches created before this identity file was introduced. -->
+  <Target Name="DorotiInvalidateWebDependencyWebCil"
+          BeforeTargets="_ResolveWasmOutputs;ProcessPublishFilesForWasm"
+          DependsOnTargets="ResolveReferences;_ResolveWasmConfiguration"
+          Condition="'$(DorotiTarget)' == 'Web' and '$(WasmEnableWebcil)' != 'false'">
+    <ItemGroup>
+      <_DorotiWebDependencyAssembly Include="@(ReferenceCopyLocalPaths)"
+          Condition="'%(ReferenceCopyLocalPaths.Extension)' == '.dll' and '%(ReferenceCopyLocalPaths.NuGetPackageId)' != ''" />
+    </ItemGroup>
+    <GetFileHash Files="@(_DorotiWebDependencyAssembly)" Algorithm="SHA256">
+      <Output TaskParameter="Items" ItemName="_DorotiWebDependencyHashedAssembly" />
+    </GetFileHash>
+    <PropertyGroup>
+      <_DorotiWebDependencyIdentityFile>$(IntermediateOutputPath)doroti-webcil-dependencies.identity</_DorotiWebDependencyIdentityFile>
+    </PropertyGroup>
+    <ItemGroup>
+      <_DorotiWebDependencyIdentity Include="@(_DorotiWebDependencyHashedAssembly->'%(FullPath)|%(FileHash)')" />
+    </ItemGroup>
+    <ReadLinesFromFile File="$(_DorotiWebDependencyIdentityFile)" Condition="Exists('$(_DorotiWebDependencyIdentityFile)')">
+      <Output TaskParameter="Lines" ItemName="_DorotiPreviousWebDependencyIdentity" />
+    </ReadLinesFromFile>
+    <ItemGroup Condition="'@(_DorotiWebDependencyIdentity)' != '@(_DorotiPreviousWebDependencyIdentity)'">
+      <_DorotiStaleWebDependencyWebCil Include="@(_DorotiWebDependencyAssembly->'$(IntermediateOutputPath)webcil/%(Filename).wasm')" />
+      <_DorotiStaleWebDependencyWebCil Include="@(_DorotiWebDependencyAssembly->'$(IntermediateOutputPath)webcil/publish/%(Filename).wasm')" />
+    </ItemGroup>
+    <Delete Files="@(_DorotiStaleWebDependencyWebCil)" />
+    <Message Importance="High" Text="Doroti Web: dependency identity changed; regenerating cached package WebCIL assemblies."
+             Condition="'@(_DorotiStaleWebDependencyWebCil)' != ''" />
+    <WriteLinesToFile File="$(_DorotiWebDependencyIdentityFile)" Lines="@(_DorotiWebDependencyIdentity)"
+                      Overwrite="true" WriteOnlyWhenDifferent="true" Condition="'@(_DorotiWebDependencyIdentity)' != ''" />
+    <ItemGroup>
+      <FileWrites Include="$(_DorotiWebDependencyIdentityFile)" />
+    </ItemGroup>
+  </Target>
+</Project>

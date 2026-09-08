@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Doroti.Host.WindowsAppSdk.Native\Doroti.NativeVersions.props" />
   <PropertyGroup>
     <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
@@ -29,7 +30,19 @@
              Pack="true"
              PackagePath="runtimes\win-x64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" />
   </ItemGroup>
+  <!-- The source native host is built by a script, outside ProjectReference.
+       Declare its external generator/SDK/package inputs for CLI reuse checks. -->
+  <ItemGroup>
+    <DorotiLaunchDependency Include="$(MSBuildProgramFiles32)\Windows Kits\10\bin\$(DorotiNativeWindowsSdkVersion)\x64\cppwinrt.exe;$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(DorotiNativeWindowsSdkVersion)\Windows.winmd" />
+    <DorotiLaunchDependency Include="$(NuGetPackageRoot)microsoft.windowsappsdk.interactiveexperiences\$(DorotiNativeInteractiveVersion)\metadata\10.0.18362.0\*.winmd;$(NuGetPackageRoot)microsoft.windowsappsdk.interactiveexperiences\$(DorotiNativeInteractiveVersion)\include\**\*.h" />
+    <DorotiLaunchDependency Include="$(NuGetPackageRoot)microsoft.windowsappsdk.foundation\$(DorotiNativeFoundationVersion)\include\**\*.h;$(NuGetPackageRoot)microsoft.windowsappsdk.foundation\$(DorotiNativeFoundationVersion)\lib\native\x64\*.lib;$(NuGetPackageRoot)microsoft.windowsappsdk.foundation\$(DorotiNativeFoundationVersion)\runtimes\win-x64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" />
+    <DorotiLaunchDependency Include="$(NuGetPackageRoot)microsoft.windowsappsdk.runtime\$(DorotiNativeRuntimeVersion)\include\**\*.h" />
+  </ItemGroup>
   <Target Name="BuildDorotiWindowsAppSdkNative" BeforeTargets="PrepareForBuild">
-    <Exec Command="pwsh -NoProfile -File &quot;$(MSBuildProjectDirectory)\..\..\eng\build-hwnd-exact-cpp-native.ps1&quot;" />
+    <PropertyGroup>
+      <_DorotiNativeBuildTarget>Build</_DorotiNativeBuildTarget>
+      <_DorotiNativeBuildTarget Condition="'$(DorotiRebuildDependencies)' == 'true'">Rebuild</_DorotiNativeBuildTarget>
+    </PropertyGroup>
+    <Exec Command="pwsh -NoProfile -File &quot;$(MSBuildProjectDirectory)\..\..\eng\build-hwnd-exact-cpp-native.ps1&quot; -Target $(_DorotiNativeBuildTarget)" />
   </Target>
 </Project>

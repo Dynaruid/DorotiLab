@@ -191,20 +191,31 @@ function Invoke-WorkspaceDotNet {
     if (($effectiveNoBuild -or $effectiveNoRestore -or $LastSuccessful) -and $Verb -cne 'run') {
         throw '-NoBuild, -NoRestore, and -LastSuccessful are supported only by the run command.'
     }
+    # Resolve the graph before recording its identity. A build-internal restore
+    # could otherwise select different dependencies after the fingerprint.
+    if (-not $effectiveNoRestore) {
+        $restoreArguments = @('restore', $runner, '--nologo', "-p:Configuration=$Configuration")
+        if ($Rid) { $restoreArguments += "-p:RuntimeIdentifier=$Rid" }
+        Invoke-Checked 'dotnet' $restoreArguments $workspace.Root
+    }
     $fingerprintWatch = [Diagnostics.Stopwatch]::StartNew()
     $launchFingerprint = Get-DorotiLaunchFingerprint $workspace $runner
     $toolchain = Get-DorotiToolchainIdentity $workspace.Root
+    $dependencies = Get-DorotiDependencyIdentity $runner $Configuration $Rid $workspace.Root
     $fingerprintWatch.Stop()
     $stateDirectory = Join-Path $workspace.Root '.doroti/launch-state'
     $stateKey = @($Platform, $WindowsBackend, $Configuration, $(if ([string]::IsNullOrWhiteSpace($Rid)) { 'default-rid' } else { $Rid })) -join '-'
     $stateKey = $stateKey -replace '[^A-Za-z0-9_.-]', '_'
     $statePath = Join-Path $stateDirectory "$stateKey.json"
+    $state = if (Test-Path -LiteralPath $statePath -PathType Leaf) {
+        Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
+    } else { $null }
+    $rebuildDependencies = Test-DorotiDependencyRebuild $state $dependencies $toolchain
     if ($effectiveNoBuild) {
         if (-not (Test-Path -LiteralPath $statePath -PathType Leaf)) {
             throw "No successful artifact record exists for this target. Run once without -NoBuild: $statePath"
         }
-        $state = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
-        if ($state.schemaVersion -cne 'doroti.launch-state/v2' -or
+        if ($rebuildDependencies -or
             $state.runner -cne $runner -or
             $state.configuration -cne $Configuration -or
             $state.rid -cne $(if ([string]::IsNullOrWhiteSpace($Rid)) { '' } else { $Rid }) -or
@@ -219,7 +230,11 @@ function Invoke-WorkspaceDotNet {
     $arguments = if ($Verb -ceq 'run') { @('run', '--project', $runner) } else { @($Verb, $runner) }
     $arguments += @('--configuration', $Configuration)
     if ($effectiveNoBuild) { $arguments += '--no-build' }
-    if ($effectiveNoRestore) { $arguments += '--no-restore' }
+    $arguments += '--no-restore'
+    # A long-lived compiler may retain metadata for an older package at the
+    # same path/mtime, even after a one-off isolated rebuild. Keep CLI compiler
+    # invocations isolated; MSBuild still skips unchanged compilations.
+    if ($Verb -cne 'run') { $arguments += '-p:UseSharedCompilation=false' }
     if (-not [string]::IsNullOrWhiteSpace($Rid)) { $arguments += "-p:RuntimeIdentifier=$Rid" }
     if (-not [string]::IsNullOrWhiteSpace($Device)) {
         if ($Verb -cne 'run' -or $Platform -cne 'android') {
@@ -243,24 +258,39 @@ function Invoke-WorkspaceDotNet {
         Write-Host "Doroti steps: build=$(if ($effectiveNoBuild) { 'reused' } else { 'execute' }) restore=$(if ($effectiveNoRestore) { 'reused' } else { 'execute' }) deploy=$(if ($Verb -ceq 'run') { 'execute' } else { 'not-requested' }) launch=$(if ($Verb -ceq 'run') { 'execute' } else { 'not-requested' })"
         Write-Host "Doroti fingerprint/toolchain check: $($fingerprintWatch.Elapsed.TotalMilliseconds.ToString('F1')) ms"
         # Save a build artifact before launching a long-running application.
-        if ($Verb -ceq 'run' -and -not $effectiveNoBuild) {
-            $buildArguments = @('build', $runner, '--configuration', $Configuration, '--nologo')
-            if ($effectiveNoRestore) { $buildArguments += '--no-restore' }
+        if (($Verb -ceq 'run' -and -not $effectiveNoBuild) -or ($Verb -ceq 'publish' -and $rebuildDependencies)) {
+            $buildArguments = @('build', $runner, '--configuration', $Configuration, '--nologo', '--no-restore', '-p:UseSharedCompilation=false')
+            if ($rebuildDependencies) {
+                Write-Host 'Doroti dependencies/toolchain changed or untracked: rebuilding before recording success.'
+                $buildArguments += @('-t:Rebuild', '-p:DorotiRebuildDependencies=true')
+            }
             if ($Rid) { $buildArguments += "-p:RuntimeIdentifier=$Rid" }
             Invoke-Checked 'dotnet' $buildArguments $workspace.Root
-            $arguments += '--no-build'
-        } elseif ($Verb -cne 'run') {
+            if ($Verb -ceq 'run') { $arguments += '--no-build' }
+        }
+        if ($Verb -cne 'run') {
+            if ($Verb -ceq 'build' -and $rebuildDependencies) {
+                Write-Host 'Doroti dependencies/toolchain changed or untracked: rebuilding before recording success.'
+                $arguments += @('-t:Rebuild', '-p:DorotiRebuildDependencies=true')
+            }
             Invoke-Checked 'dotnet' $arguments $workspace.Root
+        }
+        if (-not $effectiveNoBuild) {
+            $builtDependencies = Get-DorotiDependencyIdentity $runner $Configuration $Rid $workspace.Root
+            if ($builtDependencies -cne $dependencies) {
+                throw 'Dependencies changed during the build; the artifact cannot be recorded or launched. Build again.'
+            }
         }
         if ($Verb -in @('run', 'build') -and -not $effectiveNoBuild) {
             [IO.Directory]::CreateDirectory($stateDirectory) | Out-Null
             $state = [ordered]@{
-                schemaVersion = 'doroti.launch-state/v2'
+                schemaVersion = 'doroti.launch-state/v3'
                 runner = $runner
                 configuration = $Configuration
                 rid = $(if ([string]::IsNullOrWhiteSpace($Rid)) { '' } else { $Rid })
                 fingerprint = $launchFingerprint
                 toolchain = $toolchain
+                dependencies = $dependencies
                 artifact = Get-DorotiArtifactIdentity $runner $Configuration $Rid $workspace.Root
                 buildCompletedUtc = [DateTime]::UtcNow.ToString('O')
             }
