@@ -40,7 +40,6 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
     internal IReadOnlyList<string> NativeEffectHitTestTargets { get; set; } = [];
 
     private Widget? _rootApp;
-    private ParallelLayoutLab? _sampleParallelPanel;
 
     internal FlutterErrorDetails? FirstFrameworkError { get; private set; }
 
@@ -73,7 +72,7 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     private static async Task PrepareResourcesAsync()
     {
-        if (App.SampleEnabled || App.ParallelLayoutEnabled)
+        if (App.SampleEnabled)
         {
             using var stream = typeof(MaterialDemoEntrypoint).Assembly.GetManifestResourceStream("MaterialSample.icons.otf")
                 ?? throw new InvalidOperationException("MaterialIcons resource is missing.");
@@ -134,9 +133,6 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     public void Shutdown()
     {
-        // This experimental root owns compute threads beyond the render role's lifetime.
-        if (_rootApp is ParallelLayoutLab layoutLab) layoutLab.Dispose();
-        _sampleParallelPanel?.Dispose();
         _widgetEntrypoint?.Shutdown();
         _widgetEntrypoint = null;
         _binding = null;
@@ -146,9 +142,7 @@ internal sealed class MaterialDemoEntrypoint(DemoEntryMode entryMode, bool requi
 
     private Widget CreateRootApp()
     {
-        if (App.ParallelLayoutEnabled) return new ParallelLayoutLab();
-        if (App.SampleEnabled) return new MaterialSample.SampleApp(_sampleParallelPanel =
-            Environment.GetEnvironmentVariable("DOROTI_SAMPLE_PARALLEL_LAYOUT") == "1" ? new ParallelLayoutLab(embedded: true) : null);
+        if (App.SampleEnabled) return new MaterialSample.SampleApp();
         Widget Gallery() => Environment.GetEnvironmentVariable("DOROTI_RESIZE_FIXTURE") is "F0" or "F1" or "F2"
             ? new ResizeFixture(Environment.GetEnvironmentVariable("DOROTI_RESIZE_FIXTURE")!)
             : new MaterialGallery(
@@ -188,7 +182,6 @@ internal enum DemoEntryMode { Builder, Home }
 
 internal static class App
 {
-    internal static bool ParallelLayoutEnabled => Environment.GetEnvironmentVariable("DOROTI_TESTBED_MODE") == "parallel-layout";
     internal static Func<IDorotiViewEntrypoint> Definition =>
         () => new MaterialDemoEntrypoint(DemoEntryMode.Home, requireExternalUia: false);
 

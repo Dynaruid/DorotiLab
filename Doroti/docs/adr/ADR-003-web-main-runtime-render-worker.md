@@ -40,9 +40,8 @@ is implied by runtime placement.
 
 Framework mutation and current Skia rendering remain on the same JS-affine
 owner, preserving ADR-002's ownership rules for the combined direct path.
-Future work3.md compute jobs must use immutable inputs and owner-side result
-validation. This bootstrap change alone neither implements parallel layout nor
-demonstrates performance improvement.
+This bootstrap topology does not imply parallel framework layout or a
+quantitatively demonstrated performance improvement.
 
 ## Evidence and remaining acceptance
 
@@ -59,9 +58,9 @@ synchronization context and retains DOM endpoints until role disposal completes.
 The complete 20-command ledger, including intermediate failures, is recorded in
 [the execution report](../../../history/26-09-08/wasm-main-runtime-render-worker.md).
 The experimental JSWebWorker reflection boundary is verified for .NET 10.0.11,
-including trimming; it must be revalidated when upgrading the runtime. Managed
-compute overlap, parallel layout, performance improvement, physical-device
-acceptance, other browsers, and production hosting headers remain unverified.
+including trimming; it must be revalidated when upgrading the runtime.
+Quantitative performance improvement, physical-device acceptance, other
+browsers, and production hosting headers remain unverified.
 
 ## 2026-09-08 work3 follow-up
 
@@ -82,33 +81,16 @@ This diagnostic option neither changes runtime topology nor proves a speedup.
 병렬 layout은 순수 계산 비용의 이득 근거가 없어 미채택했다. 상세 결과의 자동
 검증과 물리 기기 `notVerified`를 구분한다.
 
-## User-requested numeric layout experiment
+## Numeric layout experiment retired (2026-09-08)
 
-The subsequent request to implement a visible parallel version overrides the
-profiling-based stop decision for a bounded experiment. `PreparedTreemapLayout`
-now computes two immutable, weighted rectangle subtrees on two managed threads
-in the same runtime. Its one-batch queue is bounded; readiness and completion
-are awaited outside synchronous layout, and shutdown cancels pending work.
-The `parallel-layout` Testbed root explicitly owns and disposes this executor.
-The owner coalesces resize generations and applies only current results.
+After trying the numeric parallel layout experiment, the user requested its
+removal because the benefit was small. The compute engine, dedicated Testbed
+root, embedded Material panel, selection options, and dedicated validation have
+been removed. Framework layout and raster remain on the render owner; the
+main runtime, shared heap, and render Worker lifecycle are unchanged.
 
-Chromium Release validation observed owner 8 and compute threads 11/12, positive
-compute overlap, identical serial/parallel coordinates and pixels, resize/seed
-continuity, normal render-role shutdown, and zero runtime errors. Existing
-Material sample state/resize/theme regression also passed on this build.
-This is a specialized numeric layout island, not an automatic parallelization
-of RenderFlex, RenderBox callbacks or arbitrary widget trees. General T3–T6,
-speedup acceptance and WebGPU combination J0 remain unverified. The earlier G3
-failure and T1 cost measurement remain unchanged.
-
-직접 비교: `?dorotiTestbedMode=parallel-layout&dorotiLayoutMode=parallel`.
-`dorotiLayoutMode=serial`은 같은 입력과 알고리즘을 owner에서 계산한다.
-
-The user subsequently requested a WebGPU combination. An isolated candidate
-adds the same numeric panel to the Material sample with `dorotiParallelLayout=1`.
-It fixes missing canvas texture-binding/copy-source usage and switches the
-shared numeric executor to Channels so owner submission avoids the synchronous
-semaphore API used inside BlockingCollection.TryAdd. The root WebGPU candidate
-remains retired. Numeric/thread/state checks passed, but exact combined pixels
-and the existing required shutdown gate failed; J0 acceptance remains partial.
-See the [combination evidence](../../../history/26-09-08/work3-combined-candidate/README.md).
+The [parallel execution record](../../../history/26-09-08/work3-parallel-execution.json)
+and [combination evidence](../../../history/26-09-08/work3-execution.md)
+preserve the earlier overlap, geometry, state and pixel results and the failed
+combination gates. These describe retired experiment artifacts, not active
+product features. General parallel layout and combination work are closed.

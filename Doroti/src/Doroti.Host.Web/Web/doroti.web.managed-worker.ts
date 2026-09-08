@@ -80,9 +80,7 @@ async function initializeMainRuntime(dotnetUrl: string): Promise<MainRuntime> {
     const module = await import(dotnetUrl);
     const params = new URL(location.href).searchParams;
     const diagnostics = params.get("dorotiResizeDiagnostics") === "1";
-      const runtime = await module.dotnet.withEnvironmentVariables({
-        DOROTI_LAYOUT_MODE: params.get("dorotiLayoutMode") ?? "parallel",
-        DOROTI_SAMPLE_PARALLEL_LAYOUT: params.get("dorotiParallelLayout") === "1" ? "1" : "0",
+    const runtime = await module.dotnet.withEnvironmentVariables({
       DOROTI_TESTBED_MODE: params.get("dorotiTestbedMode") ?? "diagnostics",
       DOROTI_LAYOUT_PROFILE: params.get("dorotiLayoutProfile") === "1" ? "1" : "0",
       DOROTI_WEB_DIRECT_TRACE: diagnostics ? "1" : "0", DOROTI_STAGE_TRACE: diagnostics ? "1" : "0",
