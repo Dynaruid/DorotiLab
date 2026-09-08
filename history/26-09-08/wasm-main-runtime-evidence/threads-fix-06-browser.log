@@ -1,0 +1,104 @@
+bootstrap: navigating
+bootstrap: document isolated true
+bootstrap: exact first content
+{
+  "label": "main-render-2",
+  "errors": [],
+  "consoleErrors": [],
+  "steps": [],
+  "limitation": "Threaded-runtime bootstrap and small UI smoke only; no parallel layout or managed compute overlap proof.",
+  "headers": {
+    "cache-control": "no-store",
+    "content-length": "8714",
+    "content-type": "text/html",
+    "cross-origin-embedder-policy": "require-corp",
+    "cross-origin-opener-policy": "same-origin",
+    "cross-origin-resource-policy": "same-origin",
+    "date": "Tue, 08 Sep 2026 05:26:57 GMT",
+    "last-modified": "Tue, 08 Sep 2026 05:22:29 GMT",
+    "server": "SimpleHTTP/0.6 Python/3.13.13"
+  },
+  "browser": "151.0.7922.34",
+  "url": "http://127.0.0.1:5193/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+  "documentIsolated": true,
+  "mainRuntime": {
+    "location": "main",
+    "info": {
+      "productVersion": "10.0.11",
+      "gitHash": "e2f47b0110ed922f21a1522da67279133ce28f32",
+      "buildConfiguration": "Release",
+      "wasmEnableThreads": true,
+      "wasmEnableSIMD": true,
+      "wasmEnableExceptionHandling": true
+    },
+    "sharedHeap": true
+  },
+  "workers": [
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    }
+  ],
+  "initialColors": 1,
+  "status": "FAIL",
+  "failure": "Error: Initial image has insufficient painted content",
+  "stack": "Error: Initial image has insufficient painted content\n    at file:///C:/Users/parti/Labo/DorotiLab/Doroti/validation/web-playwright/probe-threaded-bootstrap.mjs:58:32",
+  "failureWorkers": [
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5193/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    }
+  ]
+}

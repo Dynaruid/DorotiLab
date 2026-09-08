@@ -129,9 +129,25 @@ const pendingReceipts = new Map<number, {
   resolve(value: { committed: boolean; consumed: boolean; reason: string }): void;
 }>();
 const pendingReceiptWork = new Set<Promise<void>>();
+let managedPort: MessagePort | null = null;
+let finishManagedRole: (() => void) | null = null;
+
+/** Called from a JSWebWorker in the main-owned shared runtime. */
+export function startSharedRuntimeRole(sessionToken: string): Promise<void> {
+  if (managedPort) throw new Error("The managed render role is already connected.");
+  const channel = new MessageChannel();
+  managedPort = channel.port1;
+  managedPort.addEventListener("message", handleHostMessage);
+  managedPort.start();
+  const lifetime = new Promise<void>(resolve => { finishManagedRole = resolve; });
+  (globalThis as unknown as { postMessage(message: unknown, transfer: Transferable[]): void }).postMessage({
+    protocolVersion, kind: "doroti-managed-port", sessionToken, port: channel.port2,
+  }, [channel.port2]);
+  return lifetime;
+}
 
 function post(kind: string, payload: Record<string, unknown> = {}, transfer: Transferable[] = []): void {
-  (globalThis as unknown as { postMessage(message: unknown, transfer: Transferable[]): void })
+  (managedPort ?? globalThis as unknown as { postMessage(message: unknown, transfer: Transferable[]): void })
     .postMessage({ protocolVersion, hostId, kind, ...payload }, transfer);
 }
 
@@ -666,7 +682,7 @@ configureWorkerBridge({
   captureResizeTrace() { return "[]"; },
   closeHost(id) { post("closed", { hostId: id }); },
   resolveResourceUrl(relativeUrl) {
-    const applicationBase = new URL("../../", globalThis.location.href);
+    const applicationBase = new URL("../../", import.meta.url);
     return new URL(relativeUrl, applicationBase).href;
   },
   postControl(kind, payload) { post("control", { controlKind: kind, payload }); },
@@ -678,7 +694,7 @@ configureWorkerBridge({
   },
 });
 
-globalThis.addEventListener("message", (event: MessageEvent) => {
+function handleHostMessage(event: MessageEvent): void {
   let message: Record<string, unknown>;
   try {
     message = decodeDorotiMessage(event.data, inboundKinds);
@@ -759,6 +775,9 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       else ensurePresenter().extension?.restoreContext();
       break;
     case "dispose":
+      // pagehide and a terminal host failure can both request owner shutdown.
+      // A runtime-owned pthread may still drain already queued port messages.
+      if (runtimeState.state === "disposing" || runtimeState.state === "disposed") return;
       runtimeState.transition("disposing");
       if (workerFrameRaf !== 0 && typeof globalThis.cancelAnimationFrame === "function")
         globalThis.cancelAnimationFrame(workerFrameRaf);
@@ -787,27 +806,38 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       }
       stopManagedRuntime?.();
       stopManagedRuntime = null;
-      glRuntime().deleteContext?.(presenter?.context ?? 0);
-      managedRuntime?.exit(0);
+      if (presenter) glRuntime().deleteContext?.(presenter.context);
+      if (!managedPort) managedRuntime?.exit(0);
       managedRuntime = null;
       runtimeState.transition("disposed");
       post("disposed", { activeRequests: 0, activeReceipts: pendingReceipts.size });
-      close();
+      if (managedPort) {
+        managedPort.removeEventListener("message", handleHostMessage);
+        finishManagedRole?.();
+      }
+      else close();
       break;
     case "crash":
       runtimeState.transition("fatal");
       post("fatal", { error: "diagnostic worker crash" });
       break;
   }
-});
+}
+
+// A managed pthread owns its global channel. Doroti uses only its transferred
+// MessagePort there, retaining strict protocol validation on that private port.
+if (!(globalThis as unknown as { getDotnetRuntime?: (id: number) => unknown }).getDotnetRuntime?.(0))
+  globalThis.addEventListener("message", handleHostMessage);
 
 async function startManagedRuntime(): Promise<void> {
   try {
     const dotnetUrl = dotnetModuleUrl || new URL("../../_framework/dotnet.js", import.meta.url).href;
-    const dotnetModule = await import(dotnetUrl) as { dotnet: {
+    const dotnetModule = managedPort ? null : await import(dotnetUrl) as { dotnet: {
       withEnvironmentVariables(values: Record<string, string>): { create(): Promise<DotnetRuntime> };
     } };
-    const runtime = await dotnetModule.dotnet.withEnvironmentVariables({
+    const runtime = managedPort
+      ? (globalThis as unknown as { getDotnetRuntime(id: number): DotnetRuntime }).getDotnetRuntime(0)
+      : await dotnetModule!.dotnet.withEnvironmentVariables({
       DOROTI_TESTBED_MODE: testbedMode, DOROTI_WEB_DIRECT_TRACE: diagnosticsEnabled ? "1" : "0",
       DOROTI_STAGE_TRACE: diagnosticsEnabled ? "1" : "0",
       DOROTI_SAMPLE_PROGRESS_SCOPE: progressScope,
@@ -815,7 +845,8 @@ async function startManagedRuntime(): Promise<void> {
     managedRuntime = runtime;
     await initializeManagedCallbacks();
     const hostExports = await runtime.getAssemblyExports("Doroti.Host.Web.dll") as {
-      Doroti: { Host: { Web: { DorotiWebWorkerSurface: SurfaceExports } } };
+      Doroti: { Host: { Web: { DorotiWebWorkerSurface: SurfaceExports;
+        BrowserManagedRenderThread: { CaptureThreadId(): number } } } };
     };
     surface = hostExports.Doroti.Host.Web.DorotiWebWorkerSurface;
     if (diagnosticsEnabled) Object.assign(globalThis, {
@@ -842,7 +873,10 @@ async function startManagedRuntime(): Promise<void> {
       lastDispatchedInputSequence = Number(input.inputSequence ?? 0);
       dispatchWorkerInput(input);
     }
-    post("runtime-ready", { result, mainManagedRuntimeCount: 0, workerManagedRuntimeCount: 1 });
+    post("runtime-ready", { result, mainManagedRuntimeCount: managedPort ? 1 : 0,
+      workerManagedRuntimeCount: managedPort ? 0 : 1, sharedRuntimeRenderThread: !!managedPort,
+      renderThreadId: hostExports.Doroti.Host.Web.BrowserManagedRenderThread.CaptureThreadId(),
+      workerIsolated: crossOriginIsolated });
   } catch (error) {
     post("fatal", { error: String(error instanceof Error ? error.stack ?? error.message : error) });
   }

@@ -1,0 +1,2 @@
+# Preserve the bounded execution ledger, including original failed runs.
+!*.log

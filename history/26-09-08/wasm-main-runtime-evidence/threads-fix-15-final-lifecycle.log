@@ -1,0 +1,87 @@
+
+Running 2 tests using 1 worker
+
+  x  1 [chromium-hardware] › tests\threaded-runtime.spec.ts:37:1 › threaded renderer disposes its role without exiting the main runtime (5.0s)
+  ok 2 [chromium-hardware] › tests\threaded-runtime.spec.ts:57:1 › threaded renderer rejects invalid private-port protocol without a second runtime (4.1s)
+
+
+  1) [chromium-hardware] › tests\threaded-runtime.spec.ts:37:1 › threaded renderer disposes its role without exiting the main runtime 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 8
+
+    - Array []
+    + Array [
+    +   "console.error: Doroti worker control failed. Error: Doroti browser host 1 is not active.
+    +     at requireHost (http://127.0.0.1:5196/_content/Doroti.Host.Web/doroti.web.js:2713:15)
+    +     at setCursor (http://127.0.0.1:5196/_content/Doroti.Host.Web/doroti.web.js:1700:18)
+    +     at handleControl (http://127.0.0.1:5196/_content/Doroti.Host.Web/doroti.web.js:2293:17)
+    +     at ManagedEndpoint.<anonymous> (http://127.0.0.1:5196/_content/Doroti.Host.Web/doroti.web.js:2581:26)
+    +     at MessagePort.<anonymous> (http://127.0.0.1:5196/_content/Doroti.Host.Web/doroti.web.managed-worker.js:14:18) (http://127.0.0.1:5196/_content/Doroti.Host.Web/doroti.web.js:2580)",
+    + ]
+
+      52 |   expect(state.hosts).toEqual([]);
+      53 |   expect(state.heap).toBeGreaterThan(0);
+    > 54 |   expect(runtimeErrors).toEqual([]);
+         |                         ^
+      55 | });
+      56 |
+      57 | test('threaded renderer rejects invalid private-port protocol without a second runtime', async ({ page, runtimeErrors }) => {
+        at C:\Users\parti\Labo\DorotiLab\Doroti\validation\web-playwright\tests\threaded-runtime.spec.ts:54:25
+
+    Error: browser runtime errors
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 8
+
+    - Array []
+    + Array [
+    +   "console.error: Doroti worker control failed. Error: Doroti browser host 1 is not active.
+    +     at requireHost (http://127.0.0.1:5196/_content/Doroti.Host.Web/doroti.web.js:2713:15)
+    +     at setCursor (http://127.0.0.1:5196/_content/Doroti.Host.Web/doroti.web.js:1700:18)
+    +     at handleControl (http://127.0.0.1:5196/_content/Doroti.Host.Web/doroti.web.js:2293:17)
+    +     at ManagedEndpoint.<anonymous> (http://127.0.0.1:5196/_content/Doroti.Host.Web/doroti.web.js:2581:26)
+    +     at MessagePort.<anonymous> (http://127.0.0.1:5196/_content/Doroti.Host.Web/doroti.web.managed-worker.js:14:18) (http://127.0.0.1:5196/_content/Doroti.Host.Web/doroti.web.js:2580)",
+    + ]
+
+       at helpers\fixtures.ts:25
+
+      23 |     await use(runtimeErrors);
+      24 |     await attachDiagnostics(page, testInfo);
+    > 25 |     expect(runtimeErrors, "browser runtime errors").toEqual([]);
+         |                                                     ^
+      26 |   },
+      27 | });
+      28 |
+        at Object.runtimeErrors (C:\Users\parti\Labo\DorotiLab\Doroti\validation\web-playwright\tests\helpers\fixtures.ts:25:53)
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts\threads-lifecycle-final\test-results\threaded-runtime-threaded--4fe6c-ut-exiting-the-main-runtime-chromium-hardware\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    artifacts\threads-lifecycle-final\test-results\threaded-runtime-threaded--4fe6c-ut-exiting-the-main-runtime-chromium-hardware\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts\threads-lifecycle-final\test-results\threaded-runtime-threaded--4fe6c-ut-exiting-the-main-runtime-chromium-hardware\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts\threads-lifecycle-final\test-results\threaded-runtime-threaded--4fe6c-ut-exiting-the-main-runtime-chromium-hardware\trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts\threads-lifecycle-final\test-results\threaded-runtime-threaded--4fe6c-ut-exiting-the-main-runtime-chromium-hardware\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium-hardware] › tests\threaded-runtime.spec.ts:37:1 › threaded renderer disposes its role without exiting the main runtime 
+  1 passed (11.3s)
+
+To open last HTML report run:
+[36m[39m
+[36m  npx playwright show-report artifacts\threads-lifecycle-final\report[39m
+[36m[39m

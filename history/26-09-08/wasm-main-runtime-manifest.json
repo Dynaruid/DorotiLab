@@ -1,0 +1,1837 @@
+{
+  "date": "2026-09-08",
+  "baseHead": "9464a84e87fbdd2f9e546eac7baca6c30ea93880",
+  "dirtySource": true,
+  "runtime": "10.0.11",
+  "runtimeGitHash": "e2f47b0110ed922f21a1522da67279133ce28f32",
+  "preview": "http://127.0.0.1:5197/?dorotiTestbedMode=sample",
+  "frozenAssets": ".doroti\\threads-fix\\repaired-wwwroot",
+  "sourceHashes": [
+    {
+      "path": "Doroti/src/Doroti.Host.Web/BrowserHostContracts.cs",
+      "sha256": "29bfe4311714891711cceb453bcdeafa2a91894d655d725ace09cd9139ea211f"
+    },
+    {
+      "path": "Doroti/src/Doroti.Host.Web/BrowserManagedRenderThread.cs",
+      "sha256": "16c60ce891679836e42924ca0105351d119dc372f5b56f64cb215a339347f32b"
+    },
+    {
+      "path": "Doroti/src/Doroti.Host.Web/Web/doroti.loader.ts",
+      "sha256": "b7a5e3602b9cd93e7ca19d4526a8e73bfccc212f833c62bd2a7b0d6eb4cdbe99"
+    },
+    {
+      "path": "Doroti/src/Doroti.Host.Web/Web/doroti.raster.worker.ts",
+      "sha256": "34f01a2774ed0e22cc187a0d892b31253ff91dd59aef60a4f4a683c1b86d1929"
+    },
+    {
+      "path": "Doroti/src/Doroti.Host.Web/Web/doroti.web.managed-worker.ts",
+      "sha256": "737e56675764b1bc8638b2c652f36a8d61566b3f1956d92a48a649730133ef21"
+    },
+    {
+      "path": "Doroti/src/Doroti.Host.Web/Web/doroti.web.ts",
+      "sha256": "8aa5a150ba6102bc79c073809fd1b754d7ff46dd251c3d3810fd47149dc44c9b"
+    },
+    {
+      "path": "Doroti/src/Doroti.Host.Web/Web/types/doroti-loader/index.d.ts",
+      "sha256": "0858ce40871e50ec2e2c5622307fe836182e1df74ce9f62d44640b21a39fbc53"
+    },
+    {
+      "path": "Doroti/validation/web-playwright/probe-threaded-bootstrap.mjs",
+      "sha256": "c15fb845ae0d0345f1b72e71c6af76318ae802fdf1a85b7a517905afffd2374b"
+    },
+    {
+      "path": "Doroti/validation/web-playwright/probe-threaded-main-runtime.mjs",
+      "sha256": "74844efafcdeec047fc6ccb98af21743ddf1b5f29ea097e4259ae97f56a2fed1"
+    },
+    {
+      "path": "Doroti/validation/web-playwright/probe-threaded-messages.mjs",
+      "sha256": "97cc6307adda30aab05e145d9cef880d02517147c48a430838b1e3509b000e9e"
+    },
+    {
+      "path": "Doroti/validation/web-playwright/tests/threaded-runtime.spec.ts",
+      "sha256": "f9880ae946abf15f03b2babf9f08d438d55fc98c54848576b25e7e8e142a41bc"
+    },
+    {
+      "path": "DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj",
+      "sha256": "6cfa6ab130ebe212ef166b44c56cb41ccdfcb602198153d2db3b470fbb23bfa6"
+    },
+    {
+      "path": "DorotiTestbedApp/web/src/doroti_bootstrap.ts",
+      "sha256": "2466927871897cd4c706786bdda5c0060871a25c5a617267fd9b2f40eb0489ae"
+    }
+  ],
+  "evidenceCopies": [
+    {
+      "source": "Doroti/validation/web-playwright/artifacts/threads-bootstrap/fix-before.json",
+      "copy": "wasm-main-runtime-evidence/fix-before.json",
+      "sha256": "c0aefb7aa2d6c3b72a47e636fb9a982ae4349919d6cc8a212aa67f5b957287cb"
+    },
+    {
+      "source": "Doroti/validation/web-playwright/artifacts/threads-bootstrap/main-runtime-only.json",
+      "copy": "wasm-main-runtime-evidence/main-runtime-only.json",
+      "sha256": "37b73efb2b104df77475263ed6bed059baf44df29f0b1eaed9755ccf1900e288"
+    },
+    {
+      "source": "Doroti/validation/web-playwright/artifacts/threads-bootstrap/main-render-2.json",
+      "copy": "wasm-main-runtime-evidence/main-render-2.json",
+      "sha256": "e4592c13dc005695367060c3f0a9ca621539860e967fc7eb88fdceea7428a84e"
+    },
+    {
+      "source": "Doroti/validation/web-playwright/artifacts/threads-bootstrap/main-render-content.json",
+      "copy": "wasm-main-runtime-evidence/main-render-content.json",
+      "sha256": "2cb7025af00de279d78af1d016368e901cd2db9aa467c8a764435363748f2804"
+    },
+    {
+      "source": "Doroti/validation/web-playwright/artifacts/threads-bootstrap/main-verified.json",
+      "copy": "wasm-main-runtime-evidence/main-verified.json",
+      "sha256": "59418f63b2c5f199f7b8f18f7bc379d6eb0f39e00bf664c4c4c415923016d03d"
+    },
+    {
+      "source": "Doroti/validation/web-playwright/artifacts/threads-bootstrap/main-verified-initial.png",
+      "copy": "wasm-main-runtime-evidence/main-verified-initial.png",
+      "sha256": "4ba4444dae6aeb06892f299b8a963c44800b0e53524ca453ff78461d75990852"
+    },
+    {
+      "source": "Doroti/validation/web-playwright/artifacts/threads-bootstrap/main-verified-scrolled.png",
+      "copy": "wasm-main-runtime-evidence/main-verified-scrolled.png",
+      "sha256": "7169ef7f936a3ab867381ed9b82cd34eae47206d07768ccda1311e3d30978eea"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-01-diagnose.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-01-diagnose.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-01-diagnose.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-01-diagnose.log",
+      "sha256": "451b868edab8fb3760028deb661b9326131162514b4958b3fe833f01e78f938e"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-02-main-runtime.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-02-main-runtime.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-02-main-runtime.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-02-main-runtime.log",
+      "sha256": "87784cb015f4a1c9af7f16240095d332441bce89abad35d089e44bf4f762d120"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-03-build.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-03-build.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-03-build.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-03-build.log",
+      "sha256": "aac532abbe5068b52d5edcfafe628f8c8032b76e4b4ab9c71d7b35dcdd76789e"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-04-build.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-04-build.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-04-build.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-04-build.log",
+      "sha256": "c52efbdfe94b33fb673586111a4f2b0bee67aa22c604d30fedbf49abffed3a64"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-05-browser.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-05-browser.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-05-browser.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-05-browser.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-06-browser.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-06-browser.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-06-browser.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-06-browser.log",
+      "sha256": "08bdbdaa31357d1e12e72769a8b7ef656267fa8f03c0a63c3aa25131411da4cb"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-07-content.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-07-content.err.log",
+      "sha256": "8609b17096f346546e39041cd87dfa8f2bdb8a8aa203101a92b42a8d7dd4fed8"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-07-content.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-07-content.log",
+      "sha256": "649b7ff9e801de2c5670abf49186403994bc29e3fb935bb8e03c50a65284d7d0"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-08-owner-build.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-08-owner-build.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-08-owner-build.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-08-owner-build.log",
+      "sha256": "0fb72c4eda6d82ec2650e207958f59ab62cd08050fc7d5090acb3db85d68bc97"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-09-owner-browser.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-09-owner-browser.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-09-owner-browser.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-09-owner-browser.log",
+      "sha256": "768d9a26c535b669757cd802d4d9534fa65ad1b1f2017a36b19fd1905b025b24"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-10-publish.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-10-publish.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-10-publish.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-10-publish.log",
+      "sha256": "895874c99c0335ba4e729536df6897d4d856de6dc4a77b54f57610e737efe5ba"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-11-publish-browser.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-11-publish-browser.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-11-publish-browser.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-11-publish-browser.log",
+      "sha256": "531f4e42746b75f72375c79cf22ea32aa62b09a0819c900ef03c7d41f3d6979b"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-12-lifecycle.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-12-lifecycle.err.log",
+      "sha256": "e113c8a6543466fb0a2410e33652b47c9335a87b437fd67268c4c5a4a141be1f"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-12-lifecycle.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-12-lifecycle.log",
+      "sha256": "f1281fdda0469c7aa061bb17e05193c96dfa8f70bbe91acc103aaa832ad81d56"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-13-final-publish.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-13-final-publish.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-13-final-publish.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-13-final-publish.log",
+      "sha256": "3f30ce4db76acdcd5c23ee1122ac16dc54f7a12ca26bb728a6c05c0742a703b3"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-14-final-browser.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-14-final-browser.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-14-final-browser.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-14-final-browser.log",
+      "sha256": "8373da1bb8cb818542af7c5446a3bba96d8a3ffc2caf289ccfb5e87e9c4b5a54"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-15-final-lifecycle.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-15-final-lifecycle.err.log",
+      "sha256": "2087d1093e31e3b392a2538848f4a6f0d8ab390b5f882e8f8d8884d0bbe6c4ea"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-15-final-lifecycle.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-15-final-lifecycle.log",
+      "sha256": "671e6cd9d4c6a868f2abcbe0d8ddca6d8a81678e9ec672a1cf61a0a5aa368ebd"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-16-shutdown-publish.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-16-shutdown-publish.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-16-shutdown-publish.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-16-shutdown-publish.log",
+      "sha256": "efd0048c4a3059db36c71e7b7c21eaacfbb5e0a2315b82afa791366b647cce5c"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-17-closed-publish.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-17-closed-publish.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-17-closed-publish.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-17-closed-publish.log",
+      "sha256": "24f70a1396602fe962f8c143d02bb3f4f8b1e3808abe59d346ff4183cfdd7683"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-18-repaired-lifecycle.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-18-repaired-lifecycle.err.log",
+      "sha256": "8f1b6c9f1682fde1d0df8d26dc70473efa5586d55f4fd2bb08cd8a1d411a88f9"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-18-repaired-lifecycle.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-18-repaired-lifecycle.log",
+      "sha256": "2971b73366dcd5551c33a71256b9b7c25902224d05cd79263c001dcf098ed27a"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-19-regression.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-19-regression.err.log",
+      "sha256": "acc8b95bb88bf0e063e928500ce16f6e33d1fba136e6d10a594424ac25a8efab"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-19-regression.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-19-regression.log",
+      "sha256": "96fb0e22c0c803d2b962ca869b74c536d54cc586f2a31ac4fab88e820226ff26"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-20-verified-browser.err.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-20-verified-browser.err.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "Doroti/artifacts/framework-web-work2/threads-fix-20-verified-browser.log",
+      "copy": "wasm-main-runtime-evidence/threads-fix-20-verified-browser.log",
+      "sha256": "f2682beee53e7fd03a6f663186f9ca8eb027ef89a3348421c72be84d6a57313f"
+    }
+  ],
+  "assetHashes": [
+    {
+      "path": "_content/Doroti.Host.Web/canvaskit/0.42.0/canvaskit.js",
+      "bytes": 120877,
+      "sha256": "443777592179808354031cf411d8d43cac9f6b98d1227123c5c22d401b0fbf7f"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/canvaskit/0.42.0/canvaskit.js.br",
+      "bytes": 32993,
+      "sha256": "ca6492b2b2991340f78f62f9814c378313650c0bef99903b12c2ef424133e7cc"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/canvaskit/0.42.0/canvaskit.js.gz",
+      "bytes": 37853,
+      "sha256": "3d6850549a1240cc8fe8d2fd018b5a172ce7af45b62a53ac334edb3f5bc77661"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/canvaskit/0.42.0/canvaskit.manifest.json",
+      "bytes": 1460,
+      "sha256": "b3d6627d4a08862aacd62155f5d8c87b9e4b75ad2ad09b030e71b2230061813f"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/canvaskit/0.42.0/canvaskit.manifest.json.br",
+      "bytes": 637,
+      "sha256": "ee81b1bdf611fa9fd1408efd669f3d19d83c445a966ab8312dbfe8afcdfa9e11"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/canvaskit/0.42.0/canvaskit.manifest.json.gz",
+      "bytes": 715,
+      "sha256": "d50c63925b61c6d5bfbe74d09c659df0db427a49b291524a14ff1b8a74e804a3"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/canvaskit/0.42.0/canvaskit.wasm",
+      "bytes": 7317345,
+      "sha256": "25ebed8e60158c5854f8dc807b936daca21354f8bfb6a2231266b0a93812f301"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/canvaskit/0.42.0/canvaskit.wasm.br",
+      "bytes": 2275862,
+      "sha256": "6807e18885ce4178cba09dcd6a83da333f90bfd923937324db73bcb19a4b2e24"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/canvaskit/0.42.0/canvaskit.wasm.gz",
+      "bytes": 2989794,
+      "sha256": "754683ed7de4a4d29dd9f7fbbe85904222fa14a70053dc84b66604bab5041721"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/canvaskit/0.42.0/LICENSE",
+      "bytes": 1635,
+      "sha256": "d27678cba0d529e77201e2d2a053628143e986aad8f1e77f7039ad4366c8f978"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/canvaskit/0.42.0/types/index.d.ts",
+      "bytes": 174139,
+      "sha256": "a7017a8fd21f27fdd1afe8036841d7ce0979b2410954fcc6d3f80444c171a6c6"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.bootstrap.js",
+      "bytes": 4939,
+      "sha256": "c45db9bb132a83604a41ee8d5e6f8678d184691e713d57788b07fcca4f325a77"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.bootstrap.js.br",
+      "bytes": 1439,
+      "sha256": "3cd51693428ba9aecfb4c6719305b372d1f5654b26bce59d1002f8f9f0ef1a5f"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.bootstrap.js.gz",
+      "bytes": 1709,
+      "sha256": "9cac0d931a2f9888a3a650c9f9b9e26a914585e37ddfe89110ff3c2aa97cd0de"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.host.js",
+      "bytes": 47210,
+      "sha256": "8dc503733957a6a1e7a4986608c58188f2c93ed6df0da380ea112a9d194a226a"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.host.js.br",
+      "bytes": 8769,
+      "sha256": "5881739bcaf942e2fb0023a5be399da777fd593cab244828f88d62bcd78283c6"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.host.js.gz",
+      "bytes": 10135,
+      "sha256": "197ede1ed832a7c1cf84312132844e3385040fd6f7e799fe16079347918e1315"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.text.js",
+      "bytes": 26476,
+      "sha256": "8813d3ad1bc50406a91323ef719c395149daab8217f319c6373d3dfb02e5d466"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.text.js.br",
+      "bytes": 5603,
+      "sha256": "6702c97f1f47e7c926c62fa907701d413b195dff734548fb9a7ec1700fd7079f"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.text.js.gz",
+      "bytes": 6339,
+      "sha256": "ebe343ac8db9ad56a434c48baaab1d1a80da8501b2ffdd0235e4fbad9f5d7abb"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.trace.js",
+      "bytes": 1331,
+      "sha256": "599938f88835953bf21d9c24dbcc2c6de7de72647d6a65f94ab4eca639f8edde"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.trace.js.br",
+      "bytes": 478,
+      "sha256": "9a66b1f4aa7397add69627a79f2ef6aae16ce199024a1742cfbb3ebd62d6475c"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.trace.js.gz",
+      "bytes": 551,
+      "sha256": "bd68f28880dcc391e7ca72329496c74d7539bd8dbfe0d5653980f5bcf1a12238"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.worker.js",
+      "bytes": 150388,
+      "sha256": "d7197e090b6441b55f1371a23732b1780e00adce9fdeaf2d99c07d06ed862db9"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.worker.js.br",
+      "bytes": 25487,
+      "sha256": "975a9592b170bca7f59fa9e8e39ce1de88a53249a7014f86661bca05895a33c6"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.canvaskit.worker.js.gz",
+      "bytes": 30772,
+      "sha256": "bcfaaa396ee8fc40a1245090fb16ee0101833c7b66d2a6c7d97f099991b0cb20"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.loader.js",
+      "bytes": 4341,
+      "sha256": "02ef37a4aae3495f0ef9fd835584d646129eff004331cc288227ea3fcd141b51"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.loader.js.br",
+      "bytes": 1144,
+      "sha256": "e9a690c9bfcfb195f65554cc83706181e7a2b2f37ce04f5730e7b894d0d2d84c"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.loader.js.gz",
+      "bytes": 1346,
+      "sha256": "973ca4b4449fead464ab910880dd9a296caec18d4641f13467e3139f7193f6ac"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.raster.worker.js",
+      "bytes": 37710,
+      "sha256": "774fff8a5385d85fada7a16dc83f4680f204ab77c593f39dc26ab08276c55d43"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.raster.worker.js.br",
+      "bytes": 7943,
+      "sha256": "85772c618b475112f99b19e1d7fbaba3abd048ada67127f8b3a9a943aebe7b43"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.raster.worker.js.gz",
+      "bytes": 9210,
+      "sha256": "1bf44ccbfff71965a2d0c0618d0dd8487591a77e143e16d01c5c253bf2dce99f"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.ui.worker.js",
+      "bytes": 43812,
+      "sha256": "28e9c88d227032fa9a0244064ac95966601fe54579aeec44ee571d10e9ce0ec6"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.ui.worker.js.br",
+      "bytes": 8234,
+      "sha256": "3d0b0356cd16ec658aa74a6725e6fdf5fe122aaf817ad4a21c438f3b8deb3016"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.ui.worker.js.gz",
+      "bytes": 9392,
+      "sha256": "57e12d68572b7e824cf540f7a6f80c90f0f10b5c63f3a447c88816c15cdab720"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.css",
+      "bytes": 1628,
+      "sha256": "c284df459bedb769c582b0d94eb933b0684685fa5d14b548f0f2db7e409f768d"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.css.br",
+      "bytes": 537,
+      "sha256": "0fcfa4db7f37f8d6c63fe128696ca108c67628412a0a51f2a9eb65a663a78e62"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.css.gz",
+      "bytes": 691,
+      "sha256": "40fb57064f0d93f1ce563bc4c7d98a778ecf0c11058cc781eb5fb928834dfa85"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.diagnostics.js",
+      "bytes": 167,
+      "sha256": "f60d368a853e15488872bd11ebb9b9feb99de242371565c0f91ae691ac90316e"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.diagnostics.js.br",
+      "bytes": 93,
+      "sha256": "a74f70f2c1210b452d1935677103152ba7f0c96289c41ac7f35d511613280b07"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.diagnostics.js.gz",
+      "bytes": 123,
+      "sha256": "8236ffb764186f28262347c78617a37ec99d62a34283ad1bffe5a5129a5184a4"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.dom.js",
+      "bytes": 1269,
+      "sha256": "d1f3c3f0197616768c2d54a59cf84bef28fe54d8dab06ea1c8e47100f5cb590b"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.dom.js.br",
+      "bytes": 360,
+      "sha256": "e6a2180b7bdfd583bad03c5a27defb2fe7630207b720c72d588ae7fb287e8358"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.dom.js.gz",
+      "bytes": 434,
+      "sha256": "646a501461fee2ea0ac68f1ac6e1edcb25e033454657b971f84c589910f3b3a3"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.js",
+      "bytes": 160074,
+      "sha256": "9ab28b68c53ce67d730d089291431477e16e320a230829e6877029507ea8b2d0"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.js.br",
+      "bytes": 27529,
+      "sha256": "e112e107043e365d13290567ee59d4975c52825a8c825e5ae569656f5d26d870"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.js.gz",
+      "bytes": 33416,
+      "sha256": "fa52bf459338d04889532ffad9925cc5f16ef208dfa6ebbd325f06bae3f84825"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.managed-worker.js",
+      "bytes": 5445,
+      "sha256": "f0323bf32f86afe53eba93e15f0272439ebb3bc8b3267c8898e85fa469f0c9d9"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.managed-worker.js.br",
+      "bytes": 1653,
+      "sha256": "9fd95980d5459eb16f4d3134914cb22f670d9004ace35656a5bba429011a10e2"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.managed-worker.js.gz",
+      "bytes": 1951,
+      "sha256": "7c3c94cc1c2c9f9439e6f9f737d0efb38d102d8ea25cd1e29a8778dbb8f25dd8"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.protocol.js",
+      "bytes": 36044,
+      "sha256": "e4732fa2fc5b2373b9c9e1ae4156222c0afa7f189063c4a2837d5f3a2464450c"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.protocol.js.br",
+      "bytes": 5758,
+      "sha256": "959a9b47166bba10e44c669f172118abec5763277aaa7d9545e975174be3f019"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.protocol.js.gz",
+      "bytes": 6591,
+      "sha256": "90694ff54ad218b503045e098d13f10c062e4739b867b2939acbfd63495a65a0"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.surface.js",
+      "bytes": 519,
+      "sha256": "632549c047e95cebd50d81a540242c3a84d1a5b4bc01a08262e64d3e92fa2a71"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.surface.js.br",
+      "bytes": 208,
+      "sha256": "8869196ac84cb4d02332181aef1a1d0d9f2a0652d54bd005a3cf9cc9d6b9b4ce"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.surface.js.gz",
+      "bytes": 258,
+      "sha256": "2b6e6d6039a95bb46e02c84885a7c46ccda722b8ca1c08a1207cf55f2afef003"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.worker-host.js",
+      "bytes": 6166,
+      "sha256": "db75ae0907c6c67e7337a3d5c993d0e2b54f7d5b1e026967f621fabe4cc3bc29"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.worker-host.js.br",
+      "bytes": 1365,
+      "sha256": "9c1d486ba978c267fecad455b49ce6018742ae36b1730090c769cfc43c48ec37"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/doroti.web.worker-host.js.gz",
+      "bytes": 1573,
+      "sha256": "29e46d370d329393b47c1838b069c1232b2616227d616531cf803880439aed49"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/fonts/NanumGothic-Regular.ttf",
+      "bytes": 2054744,
+      "sha256": "76f45ef4a6bcff344c837c95a7dcc26e017e38b5846d5ae0cdcb5b86be2e2d31"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/fonts/OFL.txt",
+      "bytes": 4534,
+      "sha256": "eeacf16032901d0ed0456876ec77b8f0fda6b3fecec7d972f8543eb602e6c30f"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/fonts/OFL.txt.br",
+      "bytes": 1463,
+      "sha256": "0435b3cb34a95768e956bb11c8b601c7f9c66c3eb956e9f6b82b3e234d535dbd"
+    },
+    {
+      "path": "_content/Doroti.Host.Web/fonts/OFL.txt.gz",
+      "bytes": 2023,
+      "sha256": "d2f939a1e4f35f28f20fe056b5b8da4ba939ceebddcbadde87516c23b33f693d"
+    },
+    {
+      "path": "_framework/blazor.webassembly.w3qd1tpl0e.js",
+      "bytes": 60682,
+      "sha256": "9435ec0d81609bad85f9852fc444bb20e4c25d8a621e9537b91e3961d0ba9aae"
+    },
+    {
+      "path": "_framework/blazor.webassembly.w3qd1tpl0e.js.br",
+      "bytes": 16754,
+      "sha256": "83f4930ecf83b31d86025511ab1a7f329a5b7d4e3cfbde580b90e92621879fcb"
+    },
+    {
+      "path": "_framework/blazor.webassembly.w3qd1tpl0e.js.gz",
+      "bytes": 18922,
+      "sha256": "af6191e972fc94753e0fd5bfd9405c42c8836a5f66c6c08af7f98ba1dc9babb1"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Animation.w35eqxxfv4.wasm",
+      "bytes": 68373,
+      "sha256": "5c5fc93df1fe2625692568263bc7482cb63d12a6faec37371f420c5835032fa9"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Animation.w35eqxxfv4.wasm.br",
+      "bytes": 24342,
+      "sha256": "c89b590a04fa050e80ea0e8a76a2195bff749e27ba8d98bf79bbbb4eb8c0318b"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Animation.w35eqxxfv4.wasm.gz",
+      "bytes": 29294,
+      "sha256": "ef5dd26c1e8efd5fe0fb5b416fdd73caa3252664706ceef40d970446c5c6847d"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Cupertino.cp3eihmqpt.wasm",
+      "bytes": 1009429,
+      "sha256": "402047daa3675a58562d25921e0a08c768e7fb0107be67dd4b8fd0525e963bdf"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Cupertino.cp3eihmqpt.wasm.br",
+      "bytes": 268918,
+      "sha256": "f3d2ce7f0d38a948bba6a1a2c484db5455efb2184a03efdd171d14f406b50b33"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Cupertino.cp3eihmqpt.wasm.gz",
+      "bytes": 353001,
+      "sha256": "1ea16958cb9d63666d8e71d02a4858f063e2672529d6dd674f0bd8b8f39d528c"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Foundation.z5quktmvqt.wasm",
+      "bytes": 138517,
+      "sha256": "f727ce9e6883e6a836fb95a62962f6817ab8538e4f6962d21d1cba0cca4e23c1"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Foundation.z5quktmvqt.wasm.br",
+      "bytes": 51507,
+      "sha256": "39e7c976a4cc48f0c5a42f34c05d494337766473cea572c1db1eecf0bb9822ea"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Foundation.z5quktmvqt.wasm.gz",
+      "bytes": 61610,
+      "sha256": "df9d372258d175f102dd5adeb9450a90a2e58a0fda5dfb207784584d377f6404"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Gestures.dpzbpmkgmr.wasm",
+      "bytes": 288533,
+      "sha256": "819a86ed2a5ece8926c9916dc8efe041530c0006ad766743bc9fecb9ccc50602"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Gestures.dpzbpmkgmr.wasm.br",
+      "bytes": 71207,
+      "sha256": "bab3626f87b6883fe3715be1775e823d5e41210bd49f9122a7d21bb25d57dcac"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Gestures.dpzbpmkgmr.wasm.gz",
+      "bytes": 94556,
+      "sha256": "af5e6c57ba481bd9aa01f677adfd077b53fecbef50c4d8d459026b1c19b60aa6"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Material.crpw6s9fob.wasm",
+      "bytes": 4441369,
+      "sha256": "98aff3cae62db058a3bdfbf5340ee2fc2b45975d5bc6fae583d0a5e7cc6d9ad7"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Material.crpw6s9fob.wasm.br",
+      "bytes": 911574,
+      "sha256": "43099fff294e66cf95576087383e3c75f81a1237f9a3c9df6dddb04755544c6d"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Material.crpw6s9fob.wasm.gz",
+      "bytes": 1285841,
+      "sha256": "cf9dd1ec9962377ddd7f27f6265112d16bd084b2f7c20fa295ef1add9679524d"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Painting.yumsj2we6f.wasm",
+      "bytes": 342293,
+      "sha256": "46e2f3dcdbb2a565e7aa038314b1d5ef520c9c05eebe5a24389332b233355b7e"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Painting.yumsj2we6f.wasm.br",
+      "bytes": 109400,
+      "sha256": "5ca6c2e3c584113335bb179055433ea52b2adfd0b804c76e818f0cd5a181b261"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Painting.yumsj2we6f.wasm.gz",
+      "bytes": 135867,
+      "sha256": "9544a25371a8f2a484948dc8797aedc4b92ad3738e3559ceaaa79049cb751fdb"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Physics.t0xvrhwydu.wasm",
+      "bytes": 18709,
+      "sha256": "13e884f280211d7695ebfde9c6077ccb3d9818c8bd3117d66b5706467affec78"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Physics.t0xvrhwydu.wasm.br",
+      "bytes": 6763,
+      "sha256": "dea653338d8b12ec0f084714521e6b8c9d831bea592cef5d9a254b7850c612eb"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Physics.t0xvrhwydu.wasm.gz",
+      "bytes": 7852,
+      "sha256": "069976c2e5a7639acc8cb9779db28ca46c7ac99873e928b321d8e99323df63ea"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Rendering.fsmj99snow.wasm",
+      "bytes": 746261,
+      "sha256": "e11886b070a159a8f1ca9bf97037e08583c1367cc3d8f9cf122e1e343f20c2f1"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Rendering.fsmj99snow.wasm.br",
+      "bytes": 220774,
+      "sha256": "93874830ad949eb4be25ec281030696ad9ecd1ea6634c69aff94fc6186cbbef6"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Rendering.fsmj99snow.wasm.gz",
+      "bytes": 285137,
+      "sha256": "e8effaba61b8415167e581304ab414f70e592e6e692c88a9f4146cbae4454cea"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Scheduler.brv9ti3vqy.wasm",
+      "bytes": 36117,
+      "sha256": "07be167e165d909721895bfa65a55c54a7f758a356edd72d28a18387033e4240"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Scheduler.brv9ti3vqy.wasm.br",
+      "bytes": 14081,
+      "sha256": "a305219a128d9672e7133dd6848710e94a11386245db1774d1da005f5020aa6e"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Scheduler.brv9ti3vqy.wasm.gz",
+      "bytes": 16455,
+      "sha256": "88599c6e53e385f1fdee01092a8624f926605fee69a0d863bc11cda9f2afe012"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Semantics.lrn7tyraw7.wasm",
+      "bytes": 145173,
+      "sha256": "ef56a81d93f992b1fb075f4bfc11809da5a6f188fc09e44f3515fffca6c091e8"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Semantics.lrn7tyraw7.wasm.br",
+      "bytes": 44416,
+      "sha256": "b8900828bec4ee9b3b35bf738b21a7b05a9d5645d8534b42c2f967a622d09b8e"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Semantics.lrn7tyraw7.wasm.gz",
+      "bytes": 56961,
+      "sha256": "b249acda7bfc121932512e1336ff456bd929879726d231071bbcd330f54db34a"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Services.0nnf2wp7lq.wasm",
+      "bytes": 432917,
+      "sha256": "6c374c18b6801e0f78f344ff4a8f43d71e26b4454777961a104522acc3a30bbb"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Services.0nnf2wp7lq.wasm.br",
+      "bytes": 121473,
+      "sha256": "1e3983ecc8ff2c03385f0ebe6dfa653ea759e0fb4ecee50de89061ca32f9e239"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Services.0nnf2wp7lq.wasm.gz",
+      "bytes": 161365,
+      "sha256": "107a0f1c4cdf6e8bc5fc44fe69c2e0b4bbabc53214783f2e711ce12168fbf9fa"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Widgets.6tj1rcypyu.wasm",
+      "bytes": 2641177,
+      "sha256": "76da0cd0f873a695de4117073a280b13d688459438c03943e968a1022c8c6479"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Widgets.6tj1rcypyu.wasm.br",
+      "bytes": 705921,
+      "sha256": "a23827270bef81032f35f12719f7dbe012c822dcfd21189796b804d9026f09e8"
+    },
+    {
+      "path": "_framework/Doroti.Framework.Widgets.6tj1rcypyu.wasm.gz",
+      "bytes": 929442,
+      "sha256": "5e8acd802a04c8474ce1dcb17d5fe05863acc9e145f41a8df12058a657d663be"
+    },
+    {
+      "path": "_framework/Doroti.Graphics.DisplayList.0nomq4osk4.wasm",
+      "bytes": 185621,
+      "sha256": "3c9061bd36e850d85c74ef40d3a5d625fc3a6416169d05bb0d3a9d32c8ce65ed"
+    },
+    {
+      "path": "_framework/Doroti.Graphics.DisplayList.0nomq4osk4.wasm.br",
+      "bytes": 55686,
+      "sha256": "adeb19d53115e7e934093714ef16119b31c67f0a1541ba08fda72c4154c31397"
+    },
+    {
+      "path": "_framework/Doroti.Graphics.DisplayList.0nomq4osk4.wasm.gz",
+      "bytes": 71237,
+      "sha256": "340968ea6a1820902b4d9f83340aac2ced72a526f3e041ce3fa9b8a49fac0005"
+    },
+    {
+      "path": "_framework/Doroti.Host.Web.j56yo0602i.wasm",
+      "bytes": 281365,
+      "sha256": "a7cba30760c83d9e14c8333dfe6810627ee244dcc211db83113fd7866825c1b1"
+    },
+    {
+      "path": "_framework/Doroti.Host.Web.j56yo0602i.wasm.br",
+      "bytes": 90603,
+      "sha256": "4100b5b69e4b8bcedcc296f923f98a6d089ecb04caa93a93efb1f33bd589b787"
+    },
+    {
+      "path": "_framework/Doroti.Host.Web.j56yo0602i.wasm.gz",
+      "bytes": 113424,
+      "sha256": "23a4fe857de282c8adbc3342482d9e59a3b662e948ecc9668d8197a0467aec42"
+    },
+    {
+      "path": "_framework/Doroti.Hosting.7yg394nn9k.wasm",
+      "bytes": 75029,
+      "sha256": "8fe1ee39d0750b8479d043178605234ee8a170f779a186aa9670c6862b384714"
+    },
+    {
+      "path": "_framework/Doroti.Hosting.7yg394nn9k.wasm.br",
+      "bytes": 22490,
+      "sha256": "776ea78eaca66034ef587b38f3eca620ad89995b1d66be94ddd966955cfdabc6"
+    },
+    {
+      "path": "_framework/Doroti.Hosting.7yg394nn9k.wasm.gz",
+      "bytes": 28278,
+      "sha256": "e175b901e366719e08bf113d07e19e5ab6c99a336c49a1d209a7da9b4177aa06"
+    },
+    {
+      "path": "_framework/Doroti.Runtime.bhz1i0jypj.wasm",
+      "bytes": 179989,
+      "sha256": "df6bb6042a33a0c406cf9e522139197bf401f241e0a65d80b026c9bcc5d24c19"
+    },
+    {
+      "path": "_framework/Doroti.Runtime.bhz1i0jypj.wasm.br",
+      "bytes": 68127,
+      "sha256": "69f65b8845a40837aacb3005edf9a5ff4c7d3a11b4475ec9f6b77f1e887960a8"
+    },
+    {
+      "path": "_framework/Doroti.Runtime.bhz1i0jypj.wasm.gz",
+      "bytes": 82048,
+      "sha256": "73c2f9490ed4c8afff204cd055e37bf731e0b83bec8efc82c5ca4450e8cc3da8"
+    },
+    {
+      "path": "_framework/Doroti.Skia.Rendering.537kb8pwlc.wasm",
+      "bytes": 110869,
+      "sha256": "e1fb32a9ca1658cd2f860cb6612f7c9a280d29ad9c7d577ed02c5b42db790bb2"
+    },
+    {
+      "path": "_framework/Doroti.Skia.Rendering.537kb8pwlc.wasm.br",
+      "bytes": 41326,
+      "sha256": "4db6e54ac9dc87e5c86a88a0fdcc5c1d7b414b1fd25a96c4ce75c56081ce927d"
+    },
+    {
+      "path": "_framework/Doroti.Skia.Rendering.537kb8pwlc.wasm.gz",
+      "bytes": 49586,
+      "sha256": "d9acb78109503316212d80e07eab91e04d3b3beb271ae80d8fc1bc66ca8fafea"
+    },
+    {
+      "path": "_framework/Doroti.Skia.RuntimeEffects.ifk50cyz9w.wasm",
+      "bytes": 49941,
+      "sha256": "5279b0596b618a00c1df05dc04614f5109af3a46b026c0f5bfcd5b21bad3b07a"
+    },
+    {
+      "path": "_framework/Doroti.Skia.RuntimeEffects.ifk50cyz9w.wasm.br",
+      "bytes": 19620,
+      "sha256": "05466bc6997e344ecc8394555a66b9afc4872e12d09cf56907d1c692bafe08a8"
+    },
+    {
+      "path": "_framework/Doroti.Skia.RuntimeEffects.ifk50cyz9w.wasm.gz",
+      "bytes": 23122,
+      "sha256": "ec77524f2288e8ffa56961910ca6040a9c1edc908d2a347a90d85cbd757204a0"
+    },
+    {
+      "path": "_framework/Doroti.Target.Web.feick5n35x.wasm",
+      "bytes": 27413,
+      "sha256": "d91f63d68227ea7cdae2b39a546ae81c57058d74d0cb3e8909e88e786e69c3cc"
+    },
+    {
+      "path": "_framework/Doroti.Target.Web.feick5n35x.wasm.br",
+      "bytes": 10096,
+      "sha256": "d5f6ce5dede9fc9443d590a6cde21d27499be8b8e959af0d6ac710f0364dcc1e"
+    },
+    {
+      "path": "_framework/Doroti.Target.Web.feick5n35x.wasm.gz",
+      "bytes": 11973,
+      "sha256": "4d3eef10e87d31dcd1f27f0412475921d407204bb75d24212abca34e6b17ec0c"
+    },
+    {
+      "path": "_framework/Doroti.Ui.mkysq4l9ge.wasm",
+      "bytes": 604437,
+      "sha256": "06182e58507831701061f36b0b348c4b70ac141d306622a797c534d0f42dddfe"
+    },
+    {
+      "path": "_framework/Doroti.Ui.mkysq4l9ge.wasm.br",
+      "bytes": 164810,
+      "sha256": "e573462c4d1787b6e11b70006e3bfc6743e1797150943b347faa9b3a9400fbd7"
+    },
+    {
+      "path": "_framework/Doroti.Ui.mkysq4l9ge.wasm.gz",
+      "bytes": 219694,
+      "sha256": "9a84589cb279d169c3206520f5336daa7d1948b0c06af957ea08670ff0fe92d2"
+    },
+    {
+      "path": "_framework/DorotiTestbedApp.9hisroawf4.wasm",
+      "bytes": 3034905,
+      "sha256": "73b87a927dc620c9f33627f897f1af53240f0e142b29c241920b0c5fbf2a68a5"
+    },
+    {
+      "path": "_framework/DorotiTestbedApp.9hisroawf4.wasm.br",
+      "bytes": 1338795,
+      "sha256": "c335fc7d8e13c42f329280886c805e08993e89c8b22f9fbc753afdf14a1ac7db"
+    },
+    {
+      "path": "_framework/DorotiTestbedApp.9hisroawf4.wasm.gz",
+      "bytes": 1595626,
+      "sha256": "dcf4eaf78df4d5589ce4402594c47732119a46a9f877f3a3ce1b48c4fc32855c"
+    },
+    {
+      "path": "_framework/DorotiTestbedApp.Web.978bev6wlr.wasm",
+      "bytes": 10005,
+      "sha256": "45088c0717a0440365a7a1a42297d08ce325789ec0aa17f75fd8136124c3fa16"
+    },
+    {
+      "path": "_framework/DorotiTestbedApp.Web.978bev6wlr.wasm.br",
+      "bytes": 3723,
+      "sha256": "5197f98f7013de6d8b5e25b9d81e065f0f52a32f406045a63787761de2d9ac05"
+    },
+    {
+      "path": "_framework/DorotiTestbedApp.Web.978bev6wlr.wasm.gz",
+      "bytes": 4279,
+      "sha256": "52181e98d0ae7775d72b528e76dc86fee943693a6bfdcf74adcafe64cccd03a2"
+    },
+    {
+      "path": "_framework/dotnet.cwkxk4hhtz.js",
+      "bytes": 59961,
+      "sha256": "0c5cbec999ff3a7b1d232ecc5b6eba846be7e5e4f0f24c7d4eda05a476acfa20"
+    },
+    {
+      "path": "_framework/dotnet.cwkxk4hhtz.js.br",
+      "bytes": 15677,
+      "sha256": "d8fddf3b34df35365399d7e438f26dd411be444178a3d2c6ecdfe39ff9d026af"
+    },
+    {
+      "path": "_framework/dotnet.cwkxk4hhtz.js.gz",
+      "bytes": 17917,
+      "sha256": "19dbf5f41388f1931171c14f359b78ee78f127cfde61e35399a1d07a1be94b9d"
+    },
+    {
+      "path": "_framework/dotnet.native.gt1yqsfybr.wasm",
+      "bytes": 8737453,
+      "sha256": "b4f7e9eb0dbd7cb119ca767d7f09b16fcedb648f70c2b1ad1bbf3d89e98ca664"
+    },
+    {
+      "path": "_framework/dotnet.native.gt1yqsfybr.wasm.br",
+      "bytes": 2477422,
+      "sha256": "01d0be54473c47d4fda77c95176ece77675d9d9b0ce73838b3ba9f497ec603ca"
+    },
+    {
+      "path": "_framework/dotnet.native.gt1yqsfybr.wasm.gz",
+      "bytes": 3274627,
+      "sha256": "55961bb1eb9a1794b929452389fff7501ecfe41cd203669c93832cf2d58eb130"
+    },
+    {
+      "path": "_framework/dotnet.native.ojqsxydp9w.js",
+      "bytes": 288711,
+      "sha256": "9cf1e2d0f8dd4a1e971451fe8a9caf979c11dae9102fbf70d9e7632d0158398a"
+    },
+    {
+      "path": "_framework/dotnet.native.ojqsxydp9w.js.br",
+      "bytes": 47361,
+      "sha256": "79ee056b91ac551164795f0e7a3b3f7a583c84b99875a1dd5f0df0b1d121d97a"
+    },
+    {
+      "path": "_framework/dotnet.native.ojqsxydp9w.js.gz",
+      "bytes": 56543,
+      "sha256": "64ed72ccfceeb8e5c41504fcf7fd8efcd0992a864aa36e66776ea94a5265c921"
+    },
+    {
+      "path": "_framework/dotnet.native.worker.3pea7uf3ce.mjs",
+      "bytes": 6655,
+      "sha256": "1948b583d231103481759e83e5155ce63f446a021024b9685a6c91845dbde7d6"
+    },
+    {
+      "path": "_framework/dotnet.native.worker.3pea7uf3ce.mjs.br",
+      "bytes": 2264,
+      "sha256": "6ee1be6a691788046bd02f1d9faf9f1f060df2a2f43ad73499090748034c87dc"
+    },
+    {
+      "path": "_framework/dotnet.native.worker.3pea7uf3ce.mjs.gz",
+      "bytes": 2680,
+      "sha256": "5547b5710800bf68b3f025a5dca2b26f5f9aae0175cf644f88c0614802b5e400"
+    },
+    {
+      "path": "_framework/dotnet.runtime.xevcx800hs.js",
+      "bytes": 214697,
+      "sha256": "090bcd86bfb4efed6045c49b55dd4c8b495d715511e9d84a533a4e2870044ffe"
+    },
+    {
+      "path": "_framework/dotnet.runtime.xevcx800hs.js.br",
+      "bytes": 51666,
+      "sha256": "6af81d25faa6d802671f52b10792e2ac99bfd877e09c9112dc8b0adc10a43a7e"
+    },
+    {
+      "path": "_framework/dotnet.runtime.xevcx800hs.js.gz",
+      "bytes": 62649,
+      "sha256": "ba14b88ba590985c635d51f4e970f59041d984ffd78112d49b3c6ecc8fdd6c76"
+    },
+    {
+      "path": "_framework/icudt_CJK.tjcz0u77k5.dat",
+      "bytes": 956416,
+      "sha256": "4992ed42745cd09930a8769bd155153fb4f7b813d2798cf1cc39e9c4fa549c79"
+    },
+    {
+      "path": "_framework/icudt_CJK.tjcz0u77k5.dat.br",
+      "bytes": 248840,
+      "sha256": "a8fcd127bbe9657ce07e7ff344de2c1350c290830e86fd2e86921effa50c623e"
+    },
+    {
+      "path": "_framework/icudt_CJK.tjcz0u77k5.dat.gz",
+      "bytes": 359741,
+      "sha256": "e8fbacdb74608f480520fa144bc72c8c27f75a6ffd8265a165ac5d54c92245de"
+    },
+    {
+      "path": "_framework/icudt_EFIGS.tptq2av103.dat",
+      "bytes": 550832,
+      "sha256": "f1f22d7ad618f24434c30ea8c704cb893de85e50701caba66de3f6a51178c937"
+    },
+    {
+      "path": "_framework/icudt_EFIGS.tptq2av103.dat.br",
+      "bytes": 143983,
+      "sha256": "f02d24fa2b5ee677a3e0bd5b8e2789a7a5ac7fd0d8f369fa7fce6f09e7492bf6"
+    },
+    {
+      "path": "_framework/icudt_EFIGS.tptq2av103.dat.gz",
+      "bytes": 220093,
+      "sha256": "13bf9ba749393a5d01a9cb11f44c8d40d1f545ba089ee637c04a04cd720b4bd5"
+    },
+    {
+      "path": "_framework/icudt_no_CJK.lfu7j35m59.dat",
+      "bytes": 1107168,
+      "sha256": "2fbb15ecd1183f7eff42bd853c278fa39709a918135d1c061eec05e50fb435fb"
+    },
+    {
+      "path": "_framework/icudt_no_CJK.lfu7j35m59.dat.br",
+      "bytes": 222250,
+      "sha256": "7eff6642a201babfc94327b17caad5623769c3bcdd696e33578ab1224ce0c652"
+    },
+    {
+      "path": "_framework/icudt_no_CJK.lfu7j35m59.dat.gz",
+      "bytes": 347783,
+      "sha256": "919befacd5d8cd3e9bbcfd5097c03678387306df09fea10d303e3d7ac8e6a610"
+    },
+    {
+      "path": "_framework/MaterialColorUtilities.nbmkf1qf9v.wasm",
+      "bytes": 22293,
+      "sha256": "0321cc1dd48cfe6c668acfdde1bdb8a634741796e6d7984800a6c07410824717"
+    },
+    {
+      "path": "_framework/MaterialColorUtilities.nbmkf1qf9v.wasm.br",
+      "bytes": 10426,
+      "sha256": "c104d01deebd9a029faa041dda19461125d4e75d642f0680a7bdc3b4ee6636a4"
+    },
+    {
+      "path": "_framework/MaterialColorUtilities.nbmkf1qf9v.wasm.gz",
+      "bytes": 12487,
+      "sha256": "bd2b5de5f292e49afbf548de0731d06d12608883395482f5de6fbfb8040a232a"
+    },
+    {
+      "path": "_framework/Microsoft.AspNetCore.Components.bi33x7ivcl.wasm",
+      "bytes": 173845,
+      "sha256": "8351533143a3e3fc56be55d5163372c02a7c1482a8df1ec2b1aeb1de8351919e"
+    },
+    {
+      "path": "_framework/Microsoft.AspNetCore.Components.bi33x7ivcl.wasm.br",
+      "bytes": 62292,
+      "sha256": "8a0c970935f13b9dd6623915b778622e546580656ad212ac59ecf8637618d578"
+    },
+    {
+      "path": "_framework/Microsoft.AspNetCore.Components.bi33x7ivcl.wasm.gz",
+      "bytes": 73630,
+      "sha256": "973ec14136e15727c1b4e322cff0417db376b187fbe32b5b1f33a5639789d7c6"
+    },
+    {
+      "path": "_framework/Microsoft.AspNetCore.Components.Web.qrglnpf4fb.wasm",
+      "bytes": 55573,
+      "sha256": "da4cc3977fefea4de98ebfa1450f37ee8a9fb96db644c1043163ff8a5c2dc53b"
+    },
+    {
+      "path": "_framework/Microsoft.AspNetCore.Components.Web.qrglnpf4fb.wasm.br",
+      "bytes": 19155,
+      "sha256": "673149a0e9d110bad1fa814667a31679c1ef96bd1f5683670cb399105b351f6b"
+    },
+    {
+      "path": "_framework/Microsoft.AspNetCore.Components.Web.qrglnpf4fb.wasm.gz",
+      "bytes": 22988,
+      "sha256": "66979bc022251f1a59c70439c74cb87e811ae897876fe02b4ac7e86f31e43473"
+    },
+    {
+      "path": "_framework/Microsoft.AspNetCore.Components.WebAssembly.oyld0w4fmy.wasm",
+      "bytes": 118549,
+      "sha256": "7030fee74caf70906f5d08278e7227a4e40d0ccc213b0ad41416d1972e3cef94"
+    },
+    {
+      "path": "_framework/Microsoft.AspNetCore.Components.WebAssembly.oyld0w4fmy.wasm.br",
+      "bytes": 40600,
+      "sha256": "1a2eaef5d325c9304b7cfc6db89f45d96474281cb84dc45d75139f32e038421d"
+    },
+    {
+      "path": "_framework/Microsoft.AspNetCore.Components.WebAssembly.oyld0w4fmy.wasm.gz",
+      "bytes": 48609,
+      "sha256": "e93c99dbad5718a6203e5131e24cff5670b6636310840f9c854975dcfba535cc"
+    },
+    {
+      "path": "_framework/Microsoft.CSharp.2s3bju139a.wasm",
+      "bytes": 257813,
+      "sha256": "e2e25882d9b5921035f26797b149f85c78516bc8887e75a1f285491cef8b24d8"
+    },
+    {
+      "path": "_framework/Microsoft.CSharp.2s3bju139a.wasm.br",
+      "bytes": 96110,
+      "sha256": "cf4ea7423051cbc6f07f5d9fd3c78b74bd427f48147d226857e806341372f10d"
+    },
+    {
+      "path": "_framework/Microsoft.CSharp.2s3bju139a.wasm.gz",
+      "bytes": 117309,
+      "sha256": "9288e827dc4248ea54c3df5dbfc1199a6ad3cca1a7fa6ea17e510d00a9cc686b"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Configuration.Abstractions.phvn7pjmsp.wasm",
+      "bytes": 6933,
+      "sha256": "2d1ad6fd2da302632a7fbd44bb03b180c6d576b0eeed0a698e52bc3e38988005"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Configuration.Abstractions.phvn7pjmsp.wasm.br",
+      "bytes": 2366,
+      "sha256": "4bd0bc51e686283319d0be9b38b5ca0ede1d67da8fac98eb5cdba08f68fda6f1"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Configuration.Abstractions.phvn7pjmsp.wasm.gz",
+      "bytes": 2713,
+      "sha256": "c38e39fd7f10bbf163f835dd34ef355463233de59b9ce59d6136c704077f73de"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Configuration.Json.jygd6wn873.wasm",
+      "bytes": 10517,
+      "sha256": "e5b2686e5d8299599c24b2c59f3f4209d8f7c48684c99e9ad15003d1de7f2244"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Configuration.Json.jygd6wn873.wasm.br",
+      "bytes": 4193,
+      "sha256": "bfd528ee9e5a36f4bf34f9d23923b4955ac60612e7d28ada64d4c63abafcc71c"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Configuration.Json.jygd6wn873.wasm.gz",
+      "bytes": 4860,
+      "sha256": "358bac3996ae33a9504f3389c2fb47961304b04c33f60c35e8e48a78d268e5dd"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Configuration.t6ukke4ckb.wasm",
+      "bytes": 8981,
+      "sha256": "d5a19b7ce95177a901746104aa56235686ed9ae41d879853d501a9c337ae603e"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Configuration.t6ukke4ckb.wasm.br",
+      "bytes": 3643,
+      "sha256": "57bfb917f5bae7b988cf72358343ce38c4b2d33fca9fbb068c717f99996df3fd"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Configuration.t6ukke4ckb.wasm.gz",
+      "bytes": 4228,
+      "sha256": "0197d01eddceff6bfe704235cd92bccbd79cc1b3aa3765e7cd675ae68bf2abba"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.DependencyInjection.39rq5qhzej.wasm",
+      "bytes": 46869,
+      "sha256": "77a944143fc854bb56c4254c23170da9c96899ce650c2ea6a3b0931408d63673"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.DependencyInjection.39rq5qhzej.wasm.br",
+      "bytes": 19520,
+      "sha256": "0e8843f55999f98a05cf1fbf016f62e1be745ec87d2be16df35628302f0e869c"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.DependencyInjection.39rq5qhzej.wasm.gz",
+      "bytes": 22683,
+      "sha256": "4deb5c93b2725c651442528483b41c59523a23246331bd3afecc8d93c4d8ef86"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.DependencyInjection.Abstractions.vec9jc22jj.wasm",
+      "bytes": 26389,
+      "sha256": "e915f921f47e7a67ae56c831102846290d2a8284e299a60707e9e1534c1b65a6"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.DependencyInjection.Abstractions.vec9jc22jj.wasm.br",
+      "bytes": 10106,
+      "sha256": "7195a5676875e54ebeaf313fad389bb2a1f0a25f92a7cf3c114a4863632b2e4c"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.DependencyInjection.Abstractions.vec9jc22jj.wasm.gz",
+      "bytes": 11759,
+      "sha256": "72d66b0ba3708be623b3300cebe5663c2c788b9e35a32cf89c9b08bef67311f5"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Logging.Abstractions.w2uony6n45.wasm",
+      "bytes": 27413,
+      "sha256": "480dc3dc26d46aa3722f0a8317f658382c2aca65fd7bf09f4037c0fc5af6e991"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Logging.Abstractions.w2uony6n45.wasm.br",
+      "bytes": 10990,
+      "sha256": "7afe6f1e46c0172c6d105171229903db4e87de6f3ccaccf07060f99b1b40b813"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Logging.Abstractions.w2uony6n45.wasm.gz",
+      "bytes": 12969,
+      "sha256": "009574d3228f955aaa8eeea523a352fc33270a33529b0508b7cf731984c92598"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Logging.dy5gfgwl7j.wasm",
+      "bytes": 17685,
+      "sha256": "2571e68397d1dd1a711d1706372cd27e8abcc244882e0571e09fe55476b5df2f"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Logging.dy5gfgwl7j.wasm.br",
+      "bytes": 7643,
+      "sha256": "9599ab6fa1bdedb88406167f939223487cd1a034f372accc347ca9d35579a45b"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Logging.dy5gfgwl7j.wasm.gz",
+      "bytes": 8848,
+      "sha256": "33bdb6a37f9c6f111e38b361f1a43172380e2cf9e91fdceadbdd1788d4eccaee"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Options.7gy7mvxil0.wasm",
+      "bytes": 16661,
+      "sha256": "d9134603797845aecb7715d02275ead38d219ccf48aa4df88d108222c4e4b899"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Options.7gy7mvxil0.wasm.br",
+      "bytes": 7036,
+      "sha256": "b3e150e087200b128e66c5ae6912d21f1552de90d93120ca9d5b017b9b86394c"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Options.7gy7mvxil0.wasm.gz",
+      "bytes": 8157,
+      "sha256": "2a85738a6c558ac73e1291723eaf7be609809ac8bc2e478e6334db8132db2fb8"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Primitives.li83f5rbkp.wasm",
+      "bytes": 8981,
+      "sha256": "239fccf20b0b93d0a040f3e0c8781d2177e480930328e5713d31d534b1dcfb84"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Primitives.li83f5rbkp.wasm.br",
+      "bytes": 3365,
+      "sha256": "73b5ed14e4e61d09f33c5849673684718a947feaafc5a6d25d8f1425cfcabe3a"
+    },
+    {
+      "path": "_framework/Microsoft.Extensions.Primitives.li83f5rbkp.wasm.gz",
+      "bytes": 3886,
+      "sha256": "5f4df8aa03e42d27b76b328439ed3da268b296bfb1890da3c9583c753a995bb7"
+    },
+    {
+      "path": "_framework/Microsoft.JSInterop.mzph2c0m4u.wasm",
+      "bytes": 45845,
+      "sha256": "d20f858b73dba0ef43f9eae81091917283d58158364a566b13331f183ea5befe"
+    },
+    {
+      "path": "_framework/Microsoft.JSInterop.mzph2c0m4u.wasm.br",
+      "bytes": 18280,
+      "sha256": "c54aa0983a0aaa3001e5e775eedb2583d3cf58ccbb28e63f57397a64f37496a4"
+    },
+    {
+      "path": "_framework/Microsoft.JSInterop.mzph2c0m4u.wasm.gz",
+      "bytes": 21123,
+      "sha256": "626b885f35652cfb932457447987860ba4c71504233c8cc1b5363b280fe8958a"
+    },
+    {
+      "path": "_framework/Microsoft.JSInterop.WebAssembly.cok88e5v83.wasm",
+      "bytes": 12053,
+      "sha256": "ac2a91475ba8bf232d114656ade4111ce6f338806dfd36fafb81ebd618eb2623"
+    },
+    {
+      "path": "_framework/Microsoft.JSInterop.WebAssembly.cok88e5v83.wasm.br",
+      "bytes": 4911,
+      "sha256": "a27bd57c638831da46c7487882f6177d641622f01ba379999898d2ca9db4f1d0"
+    },
+    {
+      "path": "_framework/Microsoft.JSInterop.WebAssembly.cok88e5v83.wasm.gz",
+      "bytes": 5757,
+      "sha256": "78a5a087937b5f4db15a4026f38652e9a2a081429cdacc93a1780e2b363abb70"
+    },
+    {
+      "path": "_framework/SkiaSharp.mhomi124mg.wasm",
+      "bytes": 108309,
+      "sha256": "86c46ab9d6fb2a00c3dd74ee16eb5d48696c20248866f78f607218840e21beba"
+    },
+    {
+      "path": "_framework/SkiaSharp.mhomi124mg.wasm.br",
+      "bytes": 39398,
+      "sha256": "cd9e159618ef0adcba4ead4bb7abe56526993219fab4b897bbb1bb2ea525be6f"
+    },
+    {
+      "path": "_framework/SkiaSharp.mhomi124mg.wasm.gz",
+      "bytes": 48497,
+      "sha256": "b75dd16099e394ae0937789df9d581e9ceb776ea5b8d46dca29ddbc60c583ecf"
+    },
+    {
+      "path": "_framework/System.Collections.35q27ci6qu.wasm",
+      "bytes": 55061,
+      "sha256": "295824b975dae4c5b81740fc3b3008816e1a0da23d8e9385ce0361f60b4d3bad"
+    },
+    {
+      "path": "_framework/System.Collections.35q27ci6qu.wasm.br",
+      "bytes": 20083,
+      "sha256": "b69e2f1ace4fb86f9594f94e11f7593f0c23f389a150b76599f0dc21b47ac262"
+    },
+    {
+      "path": "_framework/System.Collections.35q27ci6qu.wasm.gz",
+      "bytes": 23698,
+      "sha256": "4879b8cf83cf9ab742a74f7bc4dc1a31e0c1ae9deb663b47b1779c4b75fa3d79"
+    },
+    {
+      "path": "_framework/System.Collections.Concurrent.ntzcieavtr.wasm",
+      "bytes": 25365,
+      "sha256": "5bea94377b42bb6b7a6bf9630a95cd26d0559b21661e7ff87c5da453f39f55af"
+    },
+    {
+      "path": "_framework/System.Collections.Concurrent.ntzcieavtr.wasm.br",
+      "bytes": 10168,
+      "sha256": "5932a21a49ee49bc667e2a5bf6e28b587407e8a942120926c185cf1f4bea32cf"
+    },
+    {
+      "path": "_framework/System.Collections.Concurrent.ntzcieavtr.wasm.gz",
+      "bytes": 11557,
+      "sha256": "e5bd6428f4beffdcb6145e43920a01f752f2b38450e71322a8ace325ffdaa1b9"
+    },
+    {
+      "path": "_framework/System.Collections.Immutable.507fmtdujm.wasm",
+      "bytes": 57109,
+      "sha256": "358bdd340734c705666190bf08fbbb95fe60297f32aef8d7d7acb65e453f6fce"
+    },
+    {
+      "path": "_framework/System.Collections.Immutable.507fmtdujm.wasm.br",
+      "bytes": 20901,
+      "sha256": "62356b4b61be89738d406e742f4007705f4351bfad5b00eaadc52416cf78a840"
+    },
+    {
+      "path": "_framework/System.Collections.Immutable.507fmtdujm.wasm.gz",
+      "bytes": 24816,
+      "sha256": "1a9c4da1debb033ecd00dd7caceea1fdaaa86bfdac0719ea163cdb0677525d84"
+    },
+    {
+      "path": "_framework/System.ComponentModel.tpqldnnl29.wasm",
+      "bytes": 4885,
+      "sha256": "81139dd6618f1fc15a120ce1d275090442fc303fdda107391885ba609603dd6e"
+    },
+    {
+      "path": "_framework/System.ComponentModel.tpqldnnl29.wasm.br",
+      "bytes": 1713,
+      "sha256": "426030e149775b79a440b00a68a99750e634eab7bc02d12d95249ebcd1d1d8a3"
+    },
+    {
+      "path": "_framework/System.ComponentModel.tpqldnnl29.wasm.gz",
+      "bytes": 1942,
+      "sha256": "e3f7800169e4a3a5ec2f02cdfb9bc1230f3ee25c64038f862fb76eddeb47ce73"
+    },
+    {
+      "path": "_framework/System.Console.zzz180ifqx.wasm",
+      "bytes": 15125,
+      "sha256": "7f5461dab98c69124852c9f326701e4d8e2e6adf718cbdb83b0a2f301070727c"
+    },
+    {
+      "path": "_framework/System.Console.zzz180ifqx.wasm.br",
+      "bytes": 6293,
+      "sha256": "cb4f74670c97aa94d2101eb545e48b6812c66e486ee1b060e1b8ef977d2a079a"
+    },
+    {
+      "path": "_framework/System.Console.zzz180ifqx.wasm.gz",
+      "bytes": 7363,
+      "sha256": "31c14c2fc1909b66e708d14a158fc38653c4902a18814fdc1383a413a079a881"
+    },
+    {
+      "path": "_framework/System.Diagnostics.DiagnosticSource.gpjrhhbi40.wasm",
+      "bytes": 40213,
+      "sha256": "846106e73fd1a4e7239e98f6cb22bfc3c44be2d7352bf2851dae623caabe4018"
+    },
+    {
+      "path": "_framework/System.Diagnostics.DiagnosticSource.gpjrhhbi40.wasm.br",
+      "bytes": 16796,
+      "sha256": "c788c76f0c8a19bf209f05fc277904d800eeb73d484c8dadb4038ae054f1be0e"
+    },
+    {
+      "path": "_framework/System.Diagnostics.DiagnosticSource.gpjrhhbi40.wasm.gz",
+      "bytes": 19339,
+      "sha256": "f85b8bc2b5e252b87adea7121e4978e78084d2b34feeeaa9888ad3c2f9234d76"
+    },
+    {
+      "path": "_framework/System.Diagnostics.StackTrace.cdek55sawu.wasm",
+      "bytes": 4885,
+      "sha256": "40e14f457e5fa95ab927a0513e2cc67b62401b29ea45c83398971e145e41ed80"
+    },
+    {
+      "path": "_framework/System.Diagnostics.StackTrace.cdek55sawu.wasm.br",
+      "bytes": 1740,
+      "sha256": "eb9be523b7f67e9f7214d3e1bbdc7f2593d0909d3c3d9736bcd7725cc66382bc"
+    },
+    {
+      "path": "_framework/System.Diagnostics.StackTrace.cdek55sawu.wasm.gz",
+      "bytes": 1956,
+      "sha256": "3ecffb66145971f98e81fb4bf7b26e3c62bee2ca92dff2d834bef141124e66c1"
+    },
+    {
+      "path": "_framework/System.IO.Compression.e3n3xurirw.wasm",
+      "bytes": 31509,
+      "sha256": "563f3e4bc204d72099b9efe23fd3795e3c748450d9b47164973a9dcfc03ccfa6"
+    },
+    {
+      "path": "_framework/System.IO.Compression.e3n3xurirw.wasm.br",
+      "bytes": 11794,
+      "sha256": "78af0e4d0ce7605942e74073b7c1016f2346031b8082bee5f99c00a2e95ce867"
+    },
+    {
+      "path": "_framework/System.IO.Compression.e3n3xurirw.wasm.gz",
+      "bytes": 13904,
+      "sha256": "aff7e134bc71c465b94b5199f6b07c03d1cbee9e6a21580eb8329b43b29b5664"
+    },
+    {
+      "path": "_framework/System.IO.Pipelines.9azjszgsci.wasm",
+      "bytes": 5909,
+      "sha256": "6141d43f77dbf2652210539d7d0a8cfecb5cdcec667f20dd10897c3f59fa179a"
+    },
+    {
+      "path": "_framework/System.IO.Pipelines.9azjszgsci.wasm.br",
+      "bytes": 2348,
+      "sha256": "dfa35a13dab2ed74f530b779cbb48ddb486a23b08bb08b966bf3c5e72e5cf5c9"
+    },
+    {
+      "path": "_framework/System.IO.Pipelines.9azjszgsci.wasm.gz",
+      "bytes": 2733,
+      "sha256": "4062c5acfe29aea758fe2ec311c966b3a896c691b0515ef3596dbacaef6c5ea7"
+    },
+    {
+      "path": "_framework/System.Linq.5iuwgq1k4q.wasm",
+      "bytes": 84757,
+      "sha256": "6d2abe4ccccc7b0710f715b71e67fae037e85c6d13be4a5a06699f9bfb7fc1d4"
+    },
+    {
+      "path": "_framework/System.Linq.5iuwgq1k4q.wasm.br",
+      "bytes": 30482,
+      "sha256": "f103640e0c95c2a4658604411af0ebec1a5d6013f9c493997166a707da8eed70"
+    },
+    {
+      "path": "_framework/System.Linq.5iuwgq1k4q.wasm.gz",
+      "bytes": 36603,
+      "sha256": "809866abd507a990de522bc20286ae90f405bb24d2d37dfc7465874653ebf90e"
+    },
+    {
+      "path": "_framework/System.Linq.Expressions.3radxzdea5.wasm",
+      "bytes": 414485,
+      "sha256": "aff434426cb2e3d413a21016f7cea506650ed61078599a3cea2242a5092f3f88"
+    },
+    {
+      "path": "_framework/System.Linq.Expressions.3radxzdea5.wasm.br",
+      "bytes": 130093,
+      "sha256": "5aabd2691ea9f50bd1c276dae5f16b052eec5bc3c631af011f7acf07a69a33ae"
+    },
+    {
+      "path": "_framework/System.Linq.Expressions.3radxzdea5.wasm.gz",
+      "bytes": 159643,
+      "sha256": "30f514a812d0634a4cca41d76a0477f9e9dfbb7409b4778d1f716a2ed8e5b22f"
+    },
+    {
+      "path": "_framework/System.Memory.9y1cuv1i6u.wasm",
+      "bytes": 16149,
+      "sha256": "1f218fb719183df599284905459609bb9ba6b7fe0589c39144942f515b5f5d20"
+    },
+    {
+      "path": "_framework/System.Memory.9y1cuv1i6u.wasm.br",
+      "bytes": 7012,
+      "sha256": "acd5a7b6e30b1413d0c1c703eb041bcb82174fb25793e82cf1f81b04def889c5"
+    },
+    {
+      "path": "_framework/System.Memory.9y1cuv1i6u.wasm.gz",
+      "bytes": 7939,
+      "sha256": "ce33b7abc5433ba100e6d7d1550aa8c1cfc36b37cabf158d0581d56814a4ae24"
+    },
+    {
+      "path": "_framework/System.Net.Http.l6wdcr6253.wasm",
+      "bytes": 140053,
+      "sha256": "d3637b561546bb9d9a8a6954e20fe9085536aabd816d9ababf1b0e1f5e3edd3a"
+    },
+    {
+      "path": "_framework/System.Net.Http.l6wdcr6253.wasm.br",
+      "bytes": 52335,
+      "sha256": "abe398773c12a7fb9fa99856b4c393dbc2f5d368e9b51d8d7b8f17c421d41b1d"
+    },
+    {
+      "path": "_framework/System.Net.Http.l6wdcr6253.wasm.gz",
+      "bytes": 61449,
+      "sha256": "1e7e26d9eb772bff8f65045da8f6456eed92bf98f0b447c3c97503d69150d8e5"
+    },
+    {
+      "path": "_framework/System.Net.Primitives.mphe71cz89.wasm",
+      "bytes": 7445,
+      "sha256": "d62344a9124134addf90f8dd8589499a3e0bc4373318dcc5cc310fd249bbd6a6"
+    },
+    {
+      "path": "_framework/System.Net.Primitives.mphe71cz89.wasm.br",
+      "bytes": 2850,
+      "sha256": "a6f3540a6c3063654bbbe4b1913229c721d26e9a890bf9ca668590bc2ca17690"
+    },
+    {
+      "path": "_framework/System.Net.Primitives.mphe71cz89.wasm.gz",
+      "bytes": 3407,
+      "sha256": "4332581782887b7b282c0a0b49fccbaedccc3138d3554a7a6d66be9791c72037"
+    },
+    {
+      "path": "_framework/System.Numerics.Vectors.mjqfklq3f4.wasm",
+      "bytes": 4885,
+      "sha256": "229c1cb12a6b3a3227e7cb7955eea364f72c9fac70d5061dc4c70814a29b68c2"
+    },
+    {
+      "path": "_framework/System.Numerics.Vectors.mjqfklq3f4.wasm.br",
+      "bytes": 1693,
+      "sha256": "b288293571cce3127a1a7beb33068b86624c058274dacf2c5e2a5f153658a7a5"
+    },
+    {
+      "path": "_framework/System.Numerics.Vectors.mjqfklq3f4.wasm.gz",
+      "bytes": 1922,
+      "sha256": "8573e9eb66899c0febb89b422656703d7a64669e07d520a7ce2b24befdde1e53"
+    },
+    {
+      "path": "_framework/System.Private.CoreLib.c9xmpmcbkg.wasm",
+      "bytes": 1868565,
+      "sha256": "205d2f2d27164a889844019c482a2578a1a59c94f040246a251deeb0b377c572"
+    },
+    {
+      "path": "_framework/System.Private.CoreLib.c9xmpmcbkg.wasm.br",
+      "bytes": 575115,
+      "sha256": "b27aed4bb684ecc3a0f613149d6d1dc8812c18f4f2b44d4521d8204bba176a9d"
+    },
+    {
+      "path": "_framework/System.Private.CoreLib.c9xmpmcbkg.wasm.gz",
+      "bytes": 716038,
+      "sha256": "69f0de1b8bea4d84bf0a16ecc077bcaafc721cc76d3a47ca015b140866624ba1"
+    },
+    {
+      "path": "_framework/System.Private.Uri.gbhwtisbin.wasm",
+      "bytes": 68373,
+      "sha256": "549b61477676eab1f879f4cc9ed95ec3e07b23912cb62be2ee8fc9c25712a723"
+    },
+    {
+      "path": "_framework/System.Private.Uri.gbhwtisbin.wasm.br",
+      "bytes": 27547,
+      "sha256": "8ed8a21f78b9a13e18e2184294a90c5d881012988e1dd14dd39a2146664bf815"
+    },
+    {
+      "path": "_framework/System.Private.Uri.gbhwtisbin.wasm.gz",
+      "bytes": 31456,
+      "sha256": "b21f289d2f78da8f2d9ed0376e28bb9db6aa244d1486430cfe6482aeb5ab04d9"
+    },
+    {
+      "path": "_framework/System.Runtime.dm7m1lthh1.wasm",
+      "bytes": 13589,
+      "sha256": "eb0a5b046c8e9bbada4e546a9cdedf52b5c8ae39c92c6e7991ec48d33fb4c2af"
+    },
+    {
+      "path": "_framework/System.Runtime.dm7m1lthh1.wasm.br",
+      "bytes": 3820,
+      "sha256": "e1879517a15c958a9de766bd3af640742d170b135ea96843f19029eff179c628"
+    },
+    {
+      "path": "_framework/System.Runtime.dm7m1lthh1.wasm.gz",
+      "bytes": 4601,
+      "sha256": "69bc4521cccbf73ad6e5e279935ce20a8ba223d1c1f89bc8363ef413b931334e"
+    },
+    {
+      "path": "_framework/System.Runtime.InteropServices.870bngaj2y.wasm",
+      "bytes": 8981,
+      "sha256": "3c13718b47d932e9aeaf6a0803001f370cf95e10aa06ee6d74966dfd15629c1e"
+    },
+    {
+      "path": "_framework/System.Runtime.InteropServices.870bngaj2y.wasm.br",
+      "bytes": 2913,
+      "sha256": "b44f4571b0679663594e6d9d75da73a86764a8f5d1038e7649cc29a3fdd275cb"
+    },
+    {
+      "path": "_framework/System.Runtime.InteropServices.870bngaj2y.wasm.gz",
+      "bytes": 3412,
+      "sha256": "a65bd11e0d9f468eced04aafebaba8ab9cf2f83b2fd8d1fae8914526f5427f11"
+    },
+    {
+      "path": "_framework/System.Runtime.InteropServices.JavaScript.8lxlykpb4a.wasm",
+      "bytes": 64277,
+      "sha256": "b4e0f249c7c266d9fb744b951f3b082a686900dfb4864c08b7140c34f80aebe8"
+    },
+    {
+      "path": "_framework/System.Runtime.InteropServices.JavaScript.8lxlykpb4a.wasm.br",
+      "bytes": 24103,
+      "sha256": "64d6296e26e2b2b8059dbb1a55d1956a95b9c2082aec220262d1f8e9b2cbbc63"
+    },
+    {
+      "path": "_framework/System.Runtime.InteropServices.JavaScript.8lxlykpb4a.wasm.gz",
+      "bytes": 28092,
+      "sha256": "57d9384ac6f5ac5f31a72bef35065bb9197b59fbe306b4a84e7779e54bd5fd1c"
+    },
+    {
+      "path": "_framework/System.Security.Cryptography.2lkfgnu7ed.wasm",
+      "bytes": 20757,
+      "sha256": "f681e32c300755c22acb077f3cd639a2baa62c5b71a8cdc15f09e11e7b67be34"
+    },
+    {
+      "path": "_framework/System.Security.Cryptography.2lkfgnu7ed.wasm.br",
+      "bytes": 8147,
+      "sha256": "4fab3e1586d3b0108dddb1cb5c3c66c06fb4b44081e1748b86849504937e9410"
+    },
+    {
+      "path": "_framework/System.Security.Cryptography.2lkfgnu7ed.wasm.gz",
+      "bytes": 9736,
+      "sha256": "5211bfa41616024d01a5866330ef02f5acd5b2f9a338fdf2553f51316eb12738"
+    },
+    {
+      "path": "_framework/System.Text.Encoding.Extensions.b6au5wwidv.wasm",
+      "bytes": 4885,
+      "sha256": "03b4350debbac2fd4c709c99724476f89b52acc66f9877b8c7d3c6034316909f"
+    },
+    {
+      "path": "_framework/System.Text.Encoding.Extensions.b6au5wwidv.wasm.br",
+      "bytes": 1702,
+      "sha256": "78a723e5cdab06f76e71e7ca097d1afcd39fb2f4ef4d462b586905e3e3da6725"
+    },
+    {
+      "path": "_framework/System.Text.Encoding.Extensions.b6au5wwidv.wasm.gz",
+      "bytes": 1899,
+      "sha256": "1400c17a0d8f4b1c7f0935eedce28111dbb60480fba301bf2c04280901ba3ef8"
+    },
+    {
+      "path": "_framework/System.Text.Encodings.Web.6bajiqlcj3.wasm",
+      "bytes": 29461,
+      "sha256": "0efbe9d0a016b616d01e1a2a34f56f15ad11f91908879eb6df0b9378e29de4e2"
+    },
+    {
+      "path": "_framework/System.Text.Encodings.Web.6bajiqlcj3.wasm.br",
+      "bytes": 9558,
+      "sha256": "453415e1681cefc171fe91f1d770f99aa64e6294d336364456433a576ca07612"
+    },
+    {
+      "path": "_framework/System.Text.Encodings.Web.6bajiqlcj3.wasm.gz",
+      "bytes": 11063,
+      "sha256": "3350c6ec743a2bbeeea2f787d8f7536f909ebccfaa04384bd3c5fc72d5f5da72"
+    },
+    {
+      "path": "_framework/System.Text.Json.nayfy7eyjb.wasm",
+      "bytes": 392469,
+      "sha256": "5f9963c2de7c80574fc5376f772bdc7177e3d3731f4379ac9f2a1d3e9aff71f5"
+    },
+    {
+      "path": "_framework/System.Text.Json.nayfy7eyjb.wasm.br",
+      "bytes": 129938,
+      "sha256": "21663742e2a8b325bc54a01b712e935c5538782ba758cf574232419e8a48ed04"
+    },
+    {
+      "path": "_framework/System.Text.Json.nayfy7eyjb.wasm.gz",
+      "bytes": 156148,
+      "sha256": "bd7a72b39581b871351c42051ba377d8ab5ba5b5dbda2257e12eb205c73b4051"
+    },
+    {
+      "path": "_framework/System.Text.RegularExpressions.x1qlw46ngq.wasm",
+      "bytes": 251669,
+      "sha256": "25473840ff8f0fbf745d9bad6ac85f69e67d955f26aa6b0708cbe3c7ec858595"
+    },
+    {
+      "path": "_framework/System.Text.RegularExpressions.x1qlw46ngq.wasm.br",
+      "bytes": 98473,
+      "sha256": "c10b8a26bdbe425b09fc5430824161ec3ef3d0d690844ac3c54837c24182c756"
+    },
+    {
+      "path": "_framework/System.Text.RegularExpressions.x1qlw46ngq.wasm.gz",
+      "bytes": 118809,
+      "sha256": "e0b254a80ee39f65eaf51a5cd5e031843d67483ae8bd4b28b604ad1c1d7a171c"
+    },
+    {
+      "path": "_framework/System.Threading.Channels.q1p0alsenb.wasm",
+      "bytes": 27413,
+      "sha256": "ce7cf07c3c26046b6250a626af1f419a0fd59403d0c5ec2606b5040da5ee65a0"
+    },
+    {
+      "path": "_framework/System.Threading.Channels.q1p0alsenb.wasm.br",
+      "bytes": 11199,
+      "sha256": "7bab310f204da6a5892205c6a284c6e0d779c17a6c376aed3d082182ce64f943"
+    },
+    {
+      "path": "_framework/System.Threading.Channels.q1p0alsenb.wasm.gz",
+      "bytes": 12832,
+      "sha256": "4be3add38936bafeb46e6294246ec78a4ec94573992a1e7a51d9d3a4fdde7979"
+    },
+    {
+      "path": "_framework/System.Threading.rpvpapj610.wasm",
+      "bytes": 12053,
+      "sha256": "3195bec67f64e404db58f851c8d7b79e311d5bafee5d4d84ae6e61edce291a9c"
+    },
+    {
+      "path": "_framework/System.Threading.rpvpapj610.wasm.br",
+      "bytes": 3768,
+      "sha256": "03328e2355c3c19020c466e61be497fe350bc9ae8f0e9f869f222f4838f6cf88"
+    },
+    {
+      "path": "_framework/System.Threading.rpvpapj610.wasm.gz",
+      "bytes": 4488,
+      "sha256": "f811ac0396eeaca6a0c0619bb9bca2f5fd890f427251b6d78a187bf0792d0e72"
+    },
+    {
+      "path": "assets/doroti-mark.txt",
+      "bytes": 41,
+      "sha256": "8f6640fdd27fb0090fa3ce2fa081a5e6fd81745c33b783d16b1047e82d249b3b"
+    },
+    {
+      "path": "assets/doroti-mark.txt.br",
+      "bytes": 41,
+      "sha256": "0bd53a06ebf69ad83258672b9270bd8c87ea4a45e0fe4905f099dd98dc4eb341"
+    },
+    {
+      "path": "assets/doroti-mark.txt.gz",
+      "bytes": 61,
+      "sha256": "32faf1e524548a4ee9c71be327ec04dc59d0bee973d00df27b39f925257ef6e1"
+    },
+    {
+      "path": "doroti-app-manifest.json",
+      "bytes": 247,
+      "sha256": "ca61db0e4f8fc2813de4ab4457f3b97061a33148c2c2d22d58e2ddd7c50e778f"
+    },
+    {
+      "path": "doroti-app-manifest.json.br",
+      "bytes": 158,
+      "sha256": "3ad7f231f86bd4695a0c69c031b51fa6de3ea392398c74af43183af62602035b"
+    },
+    {
+      "path": "doroti-app-manifest.json.gz",
+      "bytes": 195,
+      "sha256": "9fba5078df767aa9fe1915638d73e314f1608b1a51fc582264e2ccd192ccb3a1"
+    },
+    {
+      "path": "doroti_bootstrap.js",
+      "bytes": 1065,
+      "sha256": "320f91dacd0d2974ca8cbf1b7bdf8e03fbe4df3f93c0e82d1d7acbab0f496e62"
+    },
+    {
+      "path": "doroti_bootstrap.js.br",
+      "bytes": 368,
+      "sha256": "4e30e9ae25ea6c7d1d5ac4f82d06b1225750e91a98ee2b8e0f9990f189668d4b"
+    },
+    {
+      "path": "doroti_bootstrap.js.gz",
+      "bytes": 447,
+      "sha256": "3110500a72b57cec95444b766f4d3eadc4bf8e781360d009930e99ecae194f82"
+    },
+    {
+      "path": "index.html",
+      "bytes": 2436,
+      "sha256": "59406ca79c3813bdf1262211e0e957885d8b659a55484989fef9e7362e467f7a"
+    },
+    {
+      "path": "index.html.br",
+      "bytes": 714,
+      "sha256": "34ecdcb54b79772d3f9411640101dddba3e36535621a97b5bfbaa149f3a08933"
+    },
+    {
+      "path": "index.html.gz",
+      "bytes": 867,
+      "sha256": "290e95b4ff98548397d1a1675f2b19c1828f91a250952f37f1e89b3a9a16633d"
+    },
+    {
+      "path": "locales/en-US.json",
+      "bytes": 82,
+      "sha256": "ef52b9effebfe57bcc62c5989b9af00c3901a6d70889df85ac866c522cd908ae"
+    },
+    {
+      "path": "locales/en-US.json.br",
+      "bytes": 73,
+      "sha256": "e5f32eeeaf392e9be1285dc2f05e36ee4aef5e96d8b41f5c1daa4c07e3d099f7"
+    },
+    {
+      "path": "locales/en-US.json.gz",
+      "bytes": 90,
+      "sha256": "026cc0d226742d26a581dd4b86c7ab89ca14ae3acf2e83f25a127e4f2b1c4be1"
+    },
+    {
+      "path": "plugins/echo.js",
+      "bytes": 70,
+      "sha256": "9396491637e8db384112f655f310d6429cd7eaed3a6cf41c6a861aaa1d740a0e"
+    },
+    {
+      "path": "plugins/echo.js.br",
+      "bytes": 68,
+      "sha256": "76ddb3fd3929a59539ea77d66dfb4d016b425c8de253688bfd6f2ed3b662b617"
+    },
+    {
+      "path": "plugins/echo.js.gz",
+      "bytes": 85,
+      "sha256": "2349012a0462d493ec9650f32c81f20c23c110a74750810b86abbed9c0699b91"
+    }
+  ],
+  "abortedRun": {
+    "label": "threads-fix-05-browser",
+    "status": "aborted-notAccepted",
+    "cause": "Probe evaluated idle pthread Workers parked in Atomics.wait; manually stopped after approximately four minutes. No completed browser result."
+  }
+}

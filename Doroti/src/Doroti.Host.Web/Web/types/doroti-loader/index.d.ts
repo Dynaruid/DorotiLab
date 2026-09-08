@@ -18,6 +18,7 @@ declare module "*_content/Doroti.Host.Web/doroti.loader.js" {
     /** Document/Blazor renderers only. Worker runtimes do not clone callbacks or Responses. */
     readonly blazorOptions: DorotiBlazorStartOptions;
     stage: DorotiBootstrapStage;
+    runtimeLocation?: "main" | "worker";
     rendererMode?: "worker-canvaskit-webgl" | "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
   }
 

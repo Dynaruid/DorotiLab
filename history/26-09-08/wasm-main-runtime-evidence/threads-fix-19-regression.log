@@ -1,0 +1,12 @@
+
+Running 2 tests using 1 worker
+
+  ok 1 [chromium-hardware] › tests\material-sample-selection.spec.ts:125:1 › Material sample selection controls update their shared state (18.1s)
+  ok 2 [chromium-hardware] › tests\retained-columns.spec.ts:4:1 › parked right sections survive a narrow theme change and move on demand (24.5s)
+
+  2 passed (43.5s)
+
+To open last HTML report run:
+[36m[39m
+[36m  npx playwright show-report artifacts\threads-regression-final\report[39m
+[36m[39m

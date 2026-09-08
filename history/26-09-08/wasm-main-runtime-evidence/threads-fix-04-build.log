@@ -1,0 +1,85 @@
+  복원할 프로젝트를 확인하는 중...
+  복원할 모든 프로젝트가 최신 상태입니다.
+  Doroti.Graphics.DisplayList -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Graphics.DisplayList\release\Doroti.Graphics.DisplayList.dll
+  Doroti.Runtime -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Runtime\release\Doroti.Runtime.dll
+  Doroti.Ui -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Ui\release\Doroti.Ui.dll
+  CanvasKit npm restore is current (canvaskit-wasm@0.42.0).
+  Doroti.Framework.Foundation -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Foundation\release\Doroti.Framework.Foundation.dll
+  Doroti.Skia.RuntimeEffects -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Skia.RuntimeEffects\release\Doroti.Skia.RuntimeEffects.dll
+  Doroti.Hosting -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Hosting\release\Doroti.Hosting.dll
+  Doroti.Framework.Scheduler -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Scheduler\release\Doroti.Framework.Scheduler.dll
+  Doroti.Skia.Rendering -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Skia.Rendering\release\Doroti.Skia.Rendering.dll
+  Doroti.Framework.Services -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Services\release\Doroti.Framework.Services.dll
+  Doroti.Framework.Physics -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Physics\release\Doroti.Framework.Physics.dll
+  Doroti.Framework.Gestures -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Gestures\release\Doroti.Framework.Gestures.dll
+  Doroti.Framework.Animation -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Animation\release\Doroti.Framework.Animation.dll
+  Prepared verified CanvasKit 0.42.0 default assets at 'C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\obj\Doroti.Host.Web\release\Doroti.CanvasKit\wwwroot\canvaskit\0.42.0'.
+  Doroti.Framework.Painting -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Painting\release\Doroti.Framework.Painting.dll
+  Doroti.Framework.Semantics -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Semantics\release\Doroti.Framework.Semantics.dll
+  Doroti.Framework.Rendering -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Rendering\release\Doroti.Framework.Rendering.dll
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.bootstrap.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.dom.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.trace.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.surface.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.protocol.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.diagnostics.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.worker-host.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.managed-worker.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.host.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.text.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.worker.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.loader.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.raster.worker.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.ui.worker.js
+  Doroti.Framework.Widgets -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Widgets\release\Doroti.Framework.Widgets.dll
+  Doroti.Framework.Cupertino -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Cupertino\release\Doroti.Framework.Cupertino.dll
+  Doroti.Framework.Material -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Material\release\Doroti.Framework.Material.dll
+  Doroti.Host.Web -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Host.Web\release\Doroti.Host.Web.dll
+  Doroti.Target.Web.browser-wasm -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Target.Web.browser-wasm\release\Doroti.Target.Web.dll
+  DorotiTestbedApp -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\DorotiTestbedApp\release\DorotiTestbedApp.dll
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/DorotiTestbedApp.Web/Release/net10.0/Doroti.Generated/wwwroot/doroti_bootstrap.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/DorotiTestbedApp.Web/Release/net10.0/Doroti.Generated/wwwroot/plugins/echo.js
+  Compiling native assets with C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\10.0.11\Sdk\..\tools\emscripten\emcc with -Oz. This may take a while ...
+  [1/4] corebindings.c -> corebindings.o [took 0.80s]
+  [2/4] driver.c -> driver.o [took 0.82s]
+  [3/4] pinvoke.c -> pinvoke.o [took 0.85s]
+  [4/4] runtime.c -> runtime.o [took 0.88s]
+  Linking for initial memory $(WasmInitialHeapSize)=47251456 bytes. Set this msbuild property to change the value.
+  Linking with emcc with -O2. This may take a while ...
+   "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\10.0.11\tools\bin\clang.exe" -target wasm32-unknown-emscripten -fvisibility=default -mllvm -combiner-global-alias-analysis=false -mllvm -wasm-enable-sjlj -mllvm -disable-lsr "--sysroot=C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Cache.win-x64\10.0.11\tools\emscripten\cache\sysroot" -D__EMSCRIPTEN_SHARED_MEMORY__=1 -DEMSCRIPTEN -Werror=implicit-function-declaration -Xclang -iwithsysroot/include\fakesdl -Xclang -iwithsysroot/include\compat -msimd128 -Wno-unused-command-line-argument -O2 -v -g3 -fwasm-exceptions -isystem C:/Users/parti/.nuget/packages/skiasharp.nativeassets.webassembly/4.152.0-rc.1.26426.14/buildTransitive/netstandard1.0/emdawnwebgpu_pkg/webgpu/include -isystem C:/Users/parti/.nuget/packages/skiasharp.nativeassets.webassembly/4.152.0-rc.1.26426.14/buildTransitive/netstandard1.0/emdawnwebgpu_pkg/webgpu_cpp/include -std=c++20 -pthread C:/Users/parti/.nuget/packages/skiasharp.nativeassets.webassembly/4.152.0-rc.1.26426.14/buildTransitive/netstandard1.0/emdawnwebgpu_pkg/webgpu/src/webgpu.cpp -c -o C:\Users\parti\AppData\Local\Temp\emscripten_temp_c23i3m1_\webgpu_0.o
+  clang version 19.1.0 (https://dnceng@dev.azure.com/dnceng/internal/_git/dotnet-llvm-project 2cfe42ea4a7fe364dcb197beca469af8edec0ad6)
+  Target: wasm32-unknown-emscripten
+  Thread model: posix
+  InstalledDir: C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\10.0.11\tools\bin
+   (in-process)
+   "C:\\Program Files\\dotnet\\packs\\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\\10.0.11\\tools\\bin\\clang.exe" -cc1 -triple wasm32-unknown-emscripten -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name webgpu.cpp -mrelocation-model static -mframe-pointer=none -ffp-contract=on -fno-rounding-math -mconstructor-aliases -target-feature +atomics -target-feature +bulk-memory -target-feature +mutable-globals -target-feature +sign-ext -target-feature +exception-handling -mllvm -wasm-enable-eh -target-feature +multivalue -target-feature +reference-types -target-feature +exception-handling -exception-model=wasm -target-feature +multivalue -target-feature +reference-types -target-cpu generic -target-feature +simd128 -debug-info-kind=constructor -dwarf-version=4 -debugger-tuning=gdb "-fdebug-compilation-dir=C:\\Users\\parti\\Labo\\DorotiLab\\DorotiTestbedApp\\web" -v "-fcoverage-compilation-dir=C:\\Users\\parti\\Labo\\DorotiLab\\DorotiTestbedApp\\web" -resource-dir "C:\\Program Files\\dotnet\\packs\\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\\10.0.11\\tools\\lib\\clang\\19" -isystem C:/Users/parti/.nuget/packages/skiasharp.nativeassets.webassembly/4.152.0-rc.1.26426.14/buildTransitive/netstandard1.0/emdawnwebgpu_pkg/webgpu/include -isystem C:/Users/parti/.nuget/packages/skiasharp.nativeassets.webassembly/4.152.0-rc.1.26426.14/buildTransitive/netstandard1.0/emdawnwebgpu_pkg/webgpu_cpp/include -D __EMSCRIPTEN_SHARED_MEMORY__=1 -D EMSCRIPTEN -isysroot "C:\\Program Files\\dotnet\\packs\\Microsoft.NET.Runtime.Emscripten.3.1.56.Cache.win-x64\\10.0.11\\tools\\emscripten\\cache\\sysroot" -internal-isystem "C:\\Program Files\\dotnet\\packs\\Microsoft.NET.Runtime.Emscripten.3.1.56.Cache.win-x64\\10.0.11\\tools\\emscripten\\cache\\sysroot/include/wasm32-emscripten/c++/v1" -internal-isystem "C:\\Program Files\\dotnet\\packs\\Microsoft.NET.Runtime.Emscripten.3.1.56.Cache.win-x64\\10.0.11\\tools\\emscripten\\cache\\sysroot/include/c++/v1" -internal-isystem "C:\\Program Files\\dotnet\\packs\\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\\10.0.11\\tools\\lib\\clang\\19\\include" -internal-isystem "C:\\Program Files\\dotnet\\packs\\Microsoft.NET.Runtime.Emscripten.3.1.56.Cache.win-x64\\10.0.11\\tools\\emscripten\\cache\\sysroot/include/wasm32-emscripten" -internal-isystem "C:\\Program Files\\dotnet\\packs\\Microsoft.NET.Runtime.Emscripten.3.1.56.Cache.win-x64\\10.0.11\\tools\\emscripten\\cache\\sysroot/include" -O2 -Werror=implicit-function-declaration -Wno-unused-command-line-argument -std=c++20 -fdeprecated-macro -ferror-limit 19 -fvisibility=default -pthread -fgnuc-version=4.2.1 -fno-implicit-modules -fskip-odr-check-in-gmf -fcxx-exceptions -fexceptions -exception-model=wasm -vectorize-loops -vectorize-slp "-iwithsysroot/include\\fakesdl" "-iwithsysroot/include\\compat" -mllvm -combiner-global-alias-analysis=false -mllvm -wasm-enable-sjlj -mllvm -disable-lsr -o "C:\\Users\\parti\\AppData\\Local\\Temp\\emscripten_temp_c23i3m1_\\webgpu_0.o" -x c++ C:/Users/parti/.nuget/packages/skiasharp.nativeassets.webassembly/4.152.0-rc.1.26426.14/buildTransitive/netstandard1.0/emdawnwebgpu_pkg/webgpu/src/webgpu.cpp
+  clang -cc1 version 19.1.0 based upon LLVM 19.1.0 default target x86_64-pc-windows-msvc
+  ignoring nonexistent directory "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Cache.win-x64\10.0.11\tools\emscripten\cache\sysroot/include/wasm32-emscripten/c++/v1"
+  ignoring nonexistent directory "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Cache.win-x64\10.0.11\tools\emscripten\cache\sysroot/include/wasm32-emscripten"
+  #include "..." search starts here:
+  #include <...> search starts here:
+   C:/Users/parti/.nuget/packages/skiasharp.nativeassets.webassembly/4.152.0-rc.1.26426.14/buildTransitive/netstandard1.0/emdawnwebgpu_pkg/webgpu/include
+   C:/Users/parti/.nuget/packages/skiasharp.nativeassets.webassembly/4.152.0-rc.1.26426.14/buildTransitive/netstandard1.0/emdawnwebgpu_pkg/webgpu_cpp/include
+   C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Cache.win-x64\10.0.11\tools\emscripten\cache\sysroot/include\fakesdl
+   C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Cache.win-x64\10.0.11\tools\emscripten\cache\sysroot/include\compat
+   C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Cache.win-x64\10.0.11\tools\emscripten\cache\sysroot/include/c++/v1
+   C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\10.0.11\tools\lib\clang\19\include
+   C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Cache.win-x64\10.0.11\tools\emscripten\cache\sysroot/include
+  End of search list.
+   "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\10.0.11\tools\bin\clang.exe" --version
+   "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Node.win-x64\10.0.11\tools\bin\node.exe" "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\10.0.11\tools\emscripten\src\compiler.mjs" C:\Users\parti\AppData\Local\Temp\tmpxyv41tai.json --symbols-only
+   "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\10.0.11\tools\bin\wasm-ld.exe" @C:\Users\parti\AppData\Local\Temp\emscripten_vxmh1aad.rsp.utf-8
+   "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\10.0.11\tools\bin\llvm-objcopy.exe" C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\obj\DorotiTestbedApp.Web\release\wasm\for-build\dotnet.native.wasm C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\obj\DorotiTestbedApp.Web\release\wasm\for-build\dotnet.native.wasm --remove-section=producers
+   "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Node.win-x64\10.0.11\tools\bin\node.exe" "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\10.0.11\tools\emscripten\src\compiler.mjs" C:\Users\parti\AppData\Local\Temp\tmpyuht_3xn.json
+   "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\10.0.11\tools\bin\wasm-opt" --strip-target-features --post-emscripten -O2 --low-memory-unused --zero-filled-memory --pass-arg=directize-initial-contents-immutable C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\obj\DorotiTestbedApp.Web\release\wasm\for-build\dotnet.native.wasm -o C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\obj\DorotiTestbedApp.Web\release\wasm\for-build\dotnet.native.wasm -g --mvp-features --enable-threads --enable-bulk-memory --enable-exception-handling --enable-multivalue --enable-mutable-globals --enable-reference-types --enable-sign-ext --enable-simd
+   "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Node.win-x64\10.0.11\tools\bin\node.exe" "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\10.0.11\tools\emscripten\tools\acorn-optimizer.mjs" C:\Users\parti\AppData\Local\Temp\emscripten_temp_c23i3m1_\dotnet.native.js growableHeap --closureFriendly --exportES6 -o C:\Users\parti\AppData\Local\Temp\emscripten_temp_c23i3m1_\dotnet.native.jso1.js
+   "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Node.win-x64\10.0.11\tools\bin\node.exe" "C:\Program Files\dotnet\packs\Microsoft.NET.Runtime.Emscripten.3.1.56.Sdk.win-x64\10.0.11\tools\emscripten\tools\preprocessor.mjs" C:\Users\parti\AppData\Local\Temp\emscripten_temp_c23i3m1_\settings.js worker.js --expandMacros
+  DorotiTestbedApp.Web -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\DorotiTestbedApp.Web\release\DorotiTestbedApp.Web.dll
+  DorotiTestbedApp.Web (Blazor output) -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\DorotiTestbedApp.Web\release\wwwroot
+
+빌드했습니다.
+    경고 0개
+    오류 0개
+
+경과 시간: 00:00:48.61

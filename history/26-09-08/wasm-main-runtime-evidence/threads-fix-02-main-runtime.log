@@ -1,0 +1,16 @@
+{
+  "label": "main-runtime-only",
+  "errors": [],
+  "limitation": "Runtime creation only; no Doroti app, renderer or input acceptance.",
+  "runtime": {
+    "isolated": true,
+    "productVersion": "10.0.11",
+    "gitHash": "e2f47b0110ed922f21a1522da67279133ce28f32",
+    "buildConfiguration": "Release",
+    "wasmEnableThreads": true,
+    "wasmEnableSIMD": true,
+    "wasmEnableExceptionHandling": true,
+    "sharedHeap": true
+  },
+  "status": "PASS"
+}

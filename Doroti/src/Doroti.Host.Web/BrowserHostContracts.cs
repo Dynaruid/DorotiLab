@@ -283,6 +283,8 @@ public sealed class BrowserHostAdapter :
     private static int _nextHostId;
 
     private readonly object _gate = new();
+    private readonly SynchronizationContext? _ownerContext = SynchronizationContext.Current;
+    private readonly int _ownerThreadId = Environment.CurrentManagedThreadId;
     private Action<TimeSpan, DorotiViewEpoch>? _pendingFrame;
     private int _pendingFrameId;
     private readonly Dictionary<ulong, (double X, double Y)> _pointerPositions = [];
@@ -544,6 +546,24 @@ public sealed class BrowserHostAdapter :
             callbackId = checked(++_nextCallbackId);
             _pendingFrame = callback;
             _pendingFrameId = callbackId;
+        }
+        // Dart timers enqueue work from the managed pool. AsyncLocal dispatcher
+        // scope does not grant access to this host's JS module. Wake the owning
+        // JS event loop instead of letting interop proxy to the browser main.
+        if (Environment.CurrentManagedThreadId != _ownerThreadId)
+        {
+            if (_ownerContext is null)
+                throw new InvalidOperationException("The browser host has no JS owner synchronization context.");
+            _ownerContext.Post(_ => RequestFrameOnOwner(callbackId), null);
+        }
+        else RequestFrameOnOwner(callbackId);
+    }
+
+    private void RequestFrameOnOwner(int callbackId)
+    {
+        lock (_gate)
+        {
+            if (_disposed || _pendingFrameId != callbackId || _pendingFrame is null) return;
         }
         BrowserInterop.RequestFrame(HostId, callbackId);
     }

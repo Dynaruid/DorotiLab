@@ -1,0 +1,475 @@
+{
+  "label": "main-verified",
+  "errors": [],
+  "consoleErrors": [],
+  "steps": [
+    {
+      "width": 800,
+      "exact": true
+    },
+    {
+      "width": 1280,
+      "exact": true
+    }
+  ],
+  "limitation": "Threaded-runtime bootstrap and small UI smoke only; no parallel layout or managed compute overlap proof.",
+  "headers": {
+    "cache-control": "no-store",
+    "content-length": "2436",
+    "content-type": "text/html",
+    "cross-origin-embedder-policy": "require-corp",
+    "cross-origin-opener-policy": "same-origin",
+    "cross-origin-resource-policy": "same-origin",
+    "date": "Tue, 08 Sep 2026 05:49:56 GMT",
+    "last-modified": "Tue, 08 Sep 2026 05:37:00 GMT",
+    "server": "SimpleHTTP/0.6 Python/3.13.13"
+  },
+  "browser": "151.0.7922.34",
+  "url": "http://127.0.0.1:5197/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+  "documentIsolated": true,
+  "hostState": {
+    "stage": "started",
+    "role": {
+      "dorotiHost": "worker-offscreen-canvas",
+      "dorotiHostId": "1",
+      "dorotiResizeDiagnostics": "{\"snapshot\":{\"canvasId\":\"doroti-surface\",\"logicalWidth\":1280,\"logicalHeight\":900,\"devicePixelRatio\":1,\"visible\":true,\"focused\":true,\"languageTag\":\"ko\",\"brightness\":\"light\",\"operatingSystem\":\"windows\",\"generation\":1,\"surfaceGeneration\":0,\"inputSequence\":1,\"gpu\":{\"api\":\"webgl2\",\"vendor\":\"Google Inc. (AMD)\",\"renderer\":\"ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)\",\"hardware\":true,\"softwareFallbackUsed\":false},\"resizeEpoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895}},\"trace\":[{\"sequence\":1,\"timestampMicroseconds\":597175,\"phase\":\"target-observed\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"host-initial\",\"durationMicroseconds\":0,\"rafId\":0,\"backingWidth\":300,\"backingHeight\":150,\"surfaceWidth\":0,\"surfaceHeight\":0,\"terminal\":null,\"detail\":null,\"queueDepth\":0,\"inputSequence\":0,\"requestId\":0},{\"sequence\":2,\"timestampMicroseconds\":605420,\"phase\":\"size-signal\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"host-observer\",\"durationMicroseconds\":0,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":0,\"surfaceHeight\":0,\"terminal\":null,\"detail\":\"unchanged\",\"queueDepth\":0,\"inputSequence\":0,\"requestId\":0},{\"sequence\":3,\"timestampMicroseconds\":997990,\"phase\":\"managed-snapshot-dispatched\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"browser-state\",\"durationMicroseconds\":0,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":0,\"surfaceHeight\":0,\"terminal\":null,\"detail\":null,\"queueDepth\":0,\"inputSequence\":0,\"requestId\":0},{\"sequence\":4,\"timestampMicroseconds\":998205,\"phase\":\"worker-snapshot-queued\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-mailbox\",\"durationMicroseconds\":0,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":0,\"surfaceHeight\":0,\"terminal\":null,\"detail\":null,\"queueDepth\":0,\"inputSequence\":0,\"requestId\":0},{\"sequence\":5,\"timestampMicroseconds\":998410,\"phase\":\"worker-snapshot-sent\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-mailbox\",\"durationMicroseconds\":0,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":0,\"surfaceHeight\":0,\"terminal\":null,\"detail\":\"{\\\"generation\\\":1}\",\"queueDepth\":0,\"inputSequence\":0,\"requestId\":0},{\"sequence\":6,\"timestampMicroseconds\":998575,\"phase\":\"present-requested\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-presenter\",\"durationMicroseconds\":0,\"rafId\":1,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":1280,\"surfaceHeight\":900,\"terminal\":null,\"detail\":null,\"queueDepth\":1,\"inputSequence\":0,\"requestId\":1},{\"sequence\":7,\"timestampMicroseconds\":1010865,\"phase\":\"managed-raster-start\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-managed-skia\",\"durationMicroseconds\":0,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":1280,\"surfaceHeight\":900,\"terminal\":null,\"detail\":\"{}\",\"queueDepth\":1,\"inputSequence\":0,\"requestId\":0},{\"sequence\":8,\"timestampMicroseconds\":1015740,\"phase\":\"managed-raster-end\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-managed-skia\",\"durationMicroseconds\":5430.2,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":1280,\"surfaceHeight\":900,\"terminal\":null,\"detail\":\"{}\",\"queueDepth\":1,\"inputSequence\":0,\"requestId\":0},{\"sequence\":9,\"timestampMicroseconds\":1017145,\"phase\":\"ack\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-presenter\",\"durationMicroseconds\":0,\"rafId\":1,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":0,\"surfaceHeight\":0,\"terminal\":\"superseded\",\"detail\":\"managed raster result=empty\",\"queueDepth\":0,\"inputSequence\":0,\"requestId\":1},{\"sequence\":10,\"timestampMicroseconds\":1023395,\"phase\":\"worker-snapshot-applied\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-mailbox\",\"durationMicroseconds\":0,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":0,\"surfaceHeight\":0,\"terminal\":null,\"detail\":\"{\\\"generation\\\":1}\",\"queueDepth\":0,\"inputSequence\":0,\"requestId\":0},{\"sequence\":11,\"timestampMicroseconds\":1758770,\"phase\":\"managed-snapshot-dispatched\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"browser-state\",\"durationMicroseconds\":0,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":0,\"surfaceHeight\":0,\"terminal\":null,\"detail\":null,\"queueDepth\":0,\"inputSequence\":0,\"requestId\":0},{\"sequence\":12,\"timestampMicroseconds\":1758855,\"phase\":\"worker-snapshot-queued\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-mailbox\",\"durationMicroseconds\":0,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":0,\"surfaceHeight\":0,\"terminal\":null,\"detail\":null,\"queueDepth\":0,\"inputSequence\":0,\"requestId\":0},{\"sequence\":13,\"timestampMicroseconds\":1758865,\"phase\":\"worker-snapshot-sent\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-mailbox\",\"durationMicroseconds\":0,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":0,\"surfaceHeight\":0,\"terminal\":null,\"detail\":\"{\\\"generation\\\":1}\",\"queueDepth\":0,\"inputSequence\":0,\"requestId\":0},{\"sequence\":14,\"timestampMicroseconds\":1023495,\"phase\":\"framework-frame\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-managed-skia\",\"durationMicroseconds\":743220,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":null,\"surfaceHeight\":null,\"terminal\":null,\"detail\":\"{\\\"callbackId\\\":2,\\\"generation\\\":1}\",\"queueDepth\":0,\"inputSequence\":0,\"requestId\":0},{\"sequence\":15,\"timestampMicroseconds\":1772970,\"phase\":\"worker-snapshot-applied\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-mailbox\",\"durationMicroseconds\":0,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":0,\"surfaceHeight\":0,\"terminal\":null,\"detail\":\"{\\\"generation\\\":1}\",\"queueDepth\":0,\"inputSequence\":0,\"requestId\":0},{\"sequence\":16,\"timestampMicroseconds\":2555320,\"phase\":\"present-requested\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-presenter\",\"durationMicroseconds\":0,\"rafId\":2,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":1280,\"surfaceHeight\":900,\"terminal\":null,\"detail\":null,\"queueDepth\":1,\"inputSequence\":0,\"requestId\":2},{\"sequence\":17,\"timestampMicroseconds\":2555530,\"phase\":\"managed-raster-start\",\"epoch\":{\"generation\":1,\"logicalWidth\":1280,\"logicalHeight\":900,\"physicalWidth\":1280,\"physicalHeight\":900,\"devicePixelRatio\":1,\"timestampMicroseconds\":596895},\"threadId\":0,\"source\":\"worker-managed-skia\",\"durationMicroseconds\":0,\"rafId\":0,\"backingWidth\":1920,\"backingHeight\":1350,\"surfaceWidth\":1280,\"surfaceHeight\":900,\"terminal\":null,\"detail\":\"{}\",\"queueDepth\":1,\"inputSequence\":0,\"requestId\":0}]}",
+      "dorotiWorkerRuntime": "ready",
+      "dorotiSharedRuntimeRenderThread": "true",
+      "dorotiRenderThreadId": "8",
+      "dorotiRenderWorkerIsolated": "true"
+    },
+    "presenter": {
+      "context": 0,
+      "requestedMode": "auto",
+      "mode": "worker-direct-webgl",
+      "fallbackReason": null,
+      "contextGeneration": 1,
+      "currentRequestId": null,
+      "latestRequestId": null,
+      "queueDepth": 0,
+      "contextLost": false,
+      "frontGeneration": 1,
+      "frontRequestId": 2,
+      "frontFramebufferId": null,
+      "stagingFramebufferId": null,
+      "rasterCanvasAttached": false,
+      "visibleContext": "transferred-offscreen-webgl2",
+      "rasterWidth": 1280,
+      "rasterHeight": 900,
+      "displayWidth": 1920,
+      "displayHeight": 1350,
+      "bitmapCreated": 0,
+      "bitmapConsumed": 0,
+      "bitmapClosed": 0,
+      "activeBitmaps": 0,
+      "mainManagedRuntimeCount": 1,
+      "workerManagedRuntimeCount": 0,
+      "workerRestartCount": 0,
+      "runtimeSessionId": 1,
+      "unpairedRequestCount": 0
+    },
+    "snapshot": {
+      "canvasId": "doroti-surface",
+      "logicalWidth": 1280,
+      "logicalHeight": 900,
+      "devicePixelRatio": 1,
+      "visible": true,
+      "focused": true,
+      "languageTag": "ko",
+      "brightness": "light",
+      "operatingSystem": "windows",
+      "generation": 1,
+      "surfaceGeneration": 0,
+      "inputSequence": 1,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "resizeEpoch": {
+        "generation": 1,
+        "logicalWidth": 1280,
+        "logicalHeight": 900,
+        "physicalWidth": 1280,
+        "physicalHeight": 900,
+        "devicePixelRatio": 1,
+        "timestampMicroseconds": 596895
+      }
+    },
+    "trace": [
+      {
+        "sequence": 9,
+        "timestampMicroseconds": 1017145,
+        "phase": "ack",
+        "epoch": {
+          "generation": 1,
+          "logicalWidth": 1280,
+          "logicalHeight": 900,
+          "physicalWidth": 1280,
+          "physicalHeight": 900,
+          "devicePixelRatio": 1,
+          "timestampMicroseconds": 596895
+        },
+        "threadId": 0,
+        "source": "worker-presenter",
+        "durationMicroseconds": 0,
+        "rafId": 1,
+        "backingWidth": 1920,
+        "backingHeight": 1350,
+        "surfaceWidth": 0,
+        "surfaceHeight": 0,
+        "terminal": "superseded",
+        "detail": "managed raster result=empty",
+        "queueDepth": 0,
+        "inputSequence": 0,
+        "requestId": 1
+      },
+      {
+        "sequence": 10,
+        "timestampMicroseconds": 1023395,
+        "phase": "worker-snapshot-applied",
+        "epoch": {
+          "generation": 1,
+          "logicalWidth": 1280,
+          "logicalHeight": 900,
+          "physicalWidth": 1280,
+          "physicalHeight": 900,
+          "devicePixelRatio": 1,
+          "timestampMicroseconds": 596895
+        },
+        "threadId": 0,
+        "source": "worker-mailbox",
+        "durationMicroseconds": 0,
+        "rafId": 0,
+        "backingWidth": 1920,
+        "backingHeight": 1350,
+        "surfaceWidth": 0,
+        "surfaceHeight": 0,
+        "terminal": null,
+        "detail": "{\"generation\":1}",
+        "queueDepth": 0,
+        "inputSequence": 0,
+        "requestId": 0
+      },
+      {
+        "sequence": 11,
+        "timestampMicroseconds": 1758770,
+        "phase": "managed-snapshot-dispatched",
+        "epoch": {
+          "generation": 1,
+          "logicalWidth": 1280,
+          "logicalHeight": 900,
+          "physicalWidth": 1280,
+          "physicalHeight": 900,
+          "devicePixelRatio": 1,
+          "timestampMicroseconds": 596895
+        },
+        "threadId": 0,
+        "source": "browser-state",
+        "durationMicroseconds": 0,
+        "rafId": 0,
+        "backingWidth": 1920,
+        "backingHeight": 1350,
+        "surfaceWidth": 0,
+        "surfaceHeight": 0,
+        "terminal": null,
+        "detail": null,
+        "queueDepth": 0,
+        "inputSequence": 0,
+        "requestId": 0
+      },
+      {
+        "sequence": 12,
+        "timestampMicroseconds": 1758855,
+        "phase": "worker-snapshot-queued",
+        "epoch": {
+          "generation": 1,
+          "logicalWidth": 1280,
+          "logicalHeight": 900,
+          "physicalWidth": 1280,
+          "physicalHeight": 900,
+          "devicePixelRatio": 1,
+          "timestampMicroseconds": 596895
+        },
+        "threadId": 0,
+        "source": "worker-mailbox",
+        "durationMicroseconds": 0,
+        "rafId": 0,
+        "backingWidth": 1920,
+        "backingHeight": 1350,
+        "surfaceWidth": 0,
+        "surfaceHeight": 0,
+        "terminal": null,
+        "detail": null,
+        "queueDepth": 0,
+        "inputSequence": 0,
+        "requestId": 0
+      },
+      {
+        "sequence": 13,
+        "timestampMicroseconds": 1758865,
+        "phase": "worker-snapshot-sent",
+        "epoch": {
+          "generation": 1,
+          "logicalWidth": 1280,
+          "logicalHeight": 900,
+          "physicalWidth": 1280,
+          "physicalHeight": 900,
+          "devicePixelRatio": 1,
+          "timestampMicroseconds": 596895
+        },
+        "threadId": 0,
+        "source": "worker-mailbox",
+        "durationMicroseconds": 0,
+        "rafId": 0,
+        "backingWidth": 1920,
+        "backingHeight": 1350,
+        "surfaceWidth": 0,
+        "surfaceHeight": 0,
+        "terminal": null,
+        "detail": "{\"generation\":1}",
+        "queueDepth": 0,
+        "inputSequence": 0,
+        "requestId": 0
+      },
+      {
+        "sequence": 14,
+        "timestampMicroseconds": 1023495,
+        "phase": "framework-frame",
+        "epoch": {
+          "generation": 1,
+          "logicalWidth": 1280,
+          "logicalHeight": 900,
+          "physicalWidth": 1280,
+          "physicalHeight": 900,
+          "devicePixelRatio": 1,
+          "timestampMicroseconds": 596895
+        },
+        "threadId": 0,
+        "source": "worker-managed-skia",
+        "durationMicroseconds": 743220,
+        "rafId": 0,
+        "backingWidth": 1920,
+        "backingHeight": 1350,
+        "surfaceWidth": null,
+        "surfaceHeight": null,
+        "terminal": null,
+        "detail": "{\"callbackId\":2,\"generation\":1}",
+        "queueDepth": 0,
+        "inputSequence": 0,
+        "requestId": 0
+      },
+      {
+        "sequence": 15,
+        "timestampMicroseconds": 1772970,
+        "phase": "worker-snapshot-applied",
+        "epoch": {
+          "generation": 1,
+          "logicalWidth": 1280,
+          "logicalHeight": 900,
+          "physicalWidth": 1280,
+          "physicalHeight": 900,
+          "devicePixelRatio": 1,
+          "timestampMicroseconds": 596895
+        },
+        "threadId": 0,
+        "source": "worker-mailbox",
+        "durationMicroseconds": 0,
+        "rafId": 0,
+        "backingWidth": 1920,
+        "backingHeight": 1350,
+        "surfaceWidth": 0,
+        "surfaceHeight": 0,
+        "terminal": null,
+        "detail": "{\"generation\":1}",
+        "queueDepth": 0,
+        "inputSequence": 0,
+        "requestId": 0
+      },
+      {
+        "sequence": 16,
+        "timestampMicroseconds": 2555320,
+        "phase": "present-requested",
+        "epoch": {
+          "generation": 1,
+          "logicalWidth": 1280,
+          "logicalHeight": 900,
+          "physicalWidth": 1280,
+          "physicalHeight": 900,
+          "devicePixelRatio": 1,
+          "timestampMicroseconds": 596895
+        },
+        "threadId": 0,
+        "source": "worker-presenter",
+        "durationMicroseconds": 0,
+        "rafId": 2,
+        "backingWidth": 1920,
+        "backingHeight": 1350,
+        "surfaceWidth": 1280,
+        "surfaceHeight": 900,
+        "terminal": null,
+        "detail": null,
+        "queueDepth": 1,
+        "inputSequence": 0,
+        "requestId": 2
+      },
+      {
+        "sequence": 17,
+        "timestampMicroseconds": 2555530,
+        "phase": "managed-raster-start",
+        "epoch": {
+          "generation": 1,
+          "logicalWidth": 1280,
+          "logicalHeight": 900,
+          "physicalWidth": 1280,
+          "physicalHeight": 900,
+          "devicePixelRatio": 1,
+          "timestampMicroseconds": 596895
+        },
+        "threadId": 0,
+        "source": "worker-managed-skia",
+        "durationMicroseconds": 0,
+        "rafId": 0,
+        "backingWidth": 1920,
+        "backingHeight": 1350,
+        "surfaceWidth": 1280,
+        "surfaceHeight": 900,
+        "terminal": null,
+        "detail": "{}",
+        "queueDepth": 1,
+        "inputSequence": 0,
+        "requestId": 0
+      },
+      {
+        "sequence": 18,
+        "timestampMicroseconds": 2862400,
+        "phase": "managed-raster-end",
+        "epoch": {
+          "generation": 1,
+          "logicalWidth": 1280,
+          "logicalHeight": 900,
+          "physicalWidth": 1280,
+          "physicalHeight": 900,
+          "devicePixelRatio": 1,
+          "timestampMicroseconds": 596895
+        },
+        "threadId": 0,
+        "source": "worker-managed-skia",
+        "durationMicroseconds": 306415,
+        "rafId": 0,
+        "backingWidth": 1920,
+        "backingHeight": 1350,
+        "surfaceWidth": 1280,
+        "surfaceHeight": 900,
+        "terminal": null,
+        "detail": "{}",
+        "queueDepth": 1,
+        "inputSequence": 0,
+        "requestId": 0
+      },
+      {
+        "sequence": 19,
+        "timestampMicroseconds": 2863930,
+        "phase": "submitted",
+        "epoch": {
+          "generation": 1,
+          "logicalWidth": 1280,
+          "logicalHeight": 900,
+          "physicalWidth": 1280,
+          "physicalHeight": 900,
+          "devicePixelRatio": 1,
+          "timestampMicroseconds": 596895
+        },
+        "threadId": 0,
+        "source": "worker-presenter",
+        "durationMicroseconds": 0,
+        "rafId": 2,
+        "backingWidth": 1920,
+        "backingHeight": 1350,
+        "surfaceWidth": 0,
+        "surfaceHeight": 0,
+        "terminal": "submitted",
+        "detail": "exact direct visible framebuffer submitted in the worker",
+        "queueDepth": 0,
+        "inputSequence": 0,
+        "requestId": 2
+      },
+      {
+        "sequence": 20,
+        "timestampMicroseconds": 2862550,
+        "phase": "front-commit",
+        "epoch": {
+          "generation": 1,
+          "logicalWidth": 1280,
+          "logicalHeight": 900,
+          "physicalWidth": 1280,
+          "physicalHeight": 900,
+          "devicePixelRatio": 1,
+          "timestampMicroseconds": 596895
+        },
+        "threadId": 0,
+        "source": "worker-direct-surface",
+        "durationMicroseconds": 0,
+        "rafId": 2,
+        "backingWidth": 1920,
+        "backingHeight": 1350,
+        "surfaceWidth": 1280,
+        "surfaceHeight": 900,
+        "terminal": null,
+        "detail": "{\"generation\":1,\"targetGeneration\":1,\"contextGeneration\":1,\"direct\":true,\"sceneDisposition\":\"exact-rendered\",\"capacityWidth\":1920,\"capacityHeight\":1350,\"progressive\":false,\"admitted\":true,\"managedSurfaceMicroseconds\":306995,\"directFinalizeMicroseconds\":300}",
+        "queueDepth": 0,
+        "inputSequence": 1,
+        "requestId": 2
+      }
+    ]
+  },
+  "mainRuntime": {
+    "location": "main",
+    "info": {
+      "productVersion": "10.0.11",
+      "gitHash": "e2f47b0110ed922f21a1522da67279133ce28f32",
+      "buildConfiguration": "Release",
+      "wasmEnableThreads": true,
+      "wasmEnableSIMD": true,
+      "wasmEnableExceptionHandling": true
+    },
+    "sharedHeap": true
+  },
+  "workers": [
+    {
+      "url": "http://127.0.0.1:5197/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5197/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5197/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5197/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5197/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5197/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5197/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5197/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5197/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    },
+    {
+      "url": "http://127.0.0.1:5197/_framework/dotnet.native.worker.3pea7uf3ce.mjs"
+    }
+  ],
+  "initialColors": 1380,
+  "wheelChangedPixels": true,
+  "status": "PASS"
+}

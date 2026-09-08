@@ -17,6 +17,8 @@ export interface DorotiBootstrapContext {
   /** Document/Blazor renderers only. Worker runtimes do not clone callbacks or Responses. */
   readonly blazorOptions: DorotiBlazorStartOptions;
   stage: DorotiBootstrapStage;
+  /** Main-owned threaded runtime with a JS-affine render Worker. */
+  runtimeLocation?: "main" | "worker";
   rendererMode?: "worker-canvaskit-webgl" | "worker-direct-webgl" | "offscreen-worker" | "offscreen-bitmap" | "document-webgl";
 }
 
@@ -59,7 +61,7 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
       await module.startDorotiCanvasKitWorkerHost();
     } else if (context.rendererMode === "offscreen-worker" || context.rendererMode === "worker-direct-webgl") {
       const module = await import("./doroti.web.js");
-      await module.startDorotiWorkerHost(context.rendererMode);
+      await module.startDorotiWorkerHost(context.rendererMode, context.runtimeLocation);
     } else {
       const scope = globalThis as typeof globalThis & {
         __dorotiRendererPolicy?: {

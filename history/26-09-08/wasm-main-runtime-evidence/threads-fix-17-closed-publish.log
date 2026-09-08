@@ -1,0 +1,87 @@
+  복원할 프로젝트를 확인하는 중...
+  복원할 모든 프로젝트가 최신 상태입니다.
+  Doroti.Graphics.DisplayList -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Graphics.DisplayList\release\Doroti.Graphics.DisplayList.dll
+  Doroti.Runtime -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Runtime\release\Doroti.Runtime.dll
+  Doroti.Ui -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Ui\release\Doroti.Ui.dll
+  Doroti.Hosting -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Hosting\release\Doroti.Hosting.dll
+  Doroti.Framework.Foundation -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Foundation\release\Doroti.Framework.Foundation.dll
+  Doroti.Skia.RuntimeEffects -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Skia.RuntimeEffects\release\Doroti.Skia.RuntimeEffects.dll
+  CanvasKit npm restore is current (canvaskit-wasm@0.42.0).
+  Doroti.Skia.Rendering -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Skia.Rendering\release\Doroti.Skia.Rendering.dll
+  Doroti.Framework.Scheduler -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Scheduler\release\Doroti.Framework.Scheduler.dll
+  Doroti.Framework.Services -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Services\release\Doroti.Framework.Services.dll
+  Doroti.Framework.Physics -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Physics\release\Doroti.Framework.Physics.dll
+  Doroti.Framework.Gestures -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Gestures\release\Doroti.Framework.Gestures.dll
+  Prepared verified CanvasKit 0.42.0 default assets at 'C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\obj\Doroti.Host.Web\release\Doroti.CanvasKit\wwwroot\canvaskit\0.42.0'.
+  Doroti.Framework.Animation -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Animation\release\Doroti.Framework.Animation.dll
+  Doroti.Framework.Painting -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Painting\release\Doroti.Framework.Painting.dll
+  Doroti.Framework.Semantics -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Semantics\release\Doroti.Framework.Semantics.dll
+  Doroti.Framework.Rendering -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Rendering\release\Doroti.Framework.Rendering.dll
+  Doroti.Framework.Widgets -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Widgets\release\Doroti.Framework.Widgets.dll
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.bootstrap.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.dom.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.trace.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.surface.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.protocol.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.diagnostics.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.worker-host.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.managed-worker.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.host.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.text.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.worker.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.loader.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.raster.worker.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.ui.worker.js
+  Doroti.Framework.Cupertino -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Cupertino\release\Doroti.Framework.Cupertino.dll
+  Doroti.Framework.Material -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Material\release\Doroti.Framework.Material.dll
+  Doroti.Host.Web -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Host.Web\release\Doroti.Host.Web.dll
+  Doroti.Target.Web.browser-wasm -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Target.Web.browser-wasm\release\Doroti.Target.Web.dll
+  DorotiTestbedApp -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\DorotiTestbedApp\release\DorotiTestbedApp.dll
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/DorotiTestbedApp.Web/Release/net10.0/Doroti.Generated/wwwroot/doroti_bootstrap.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/DorotiTestbedApp.Web/Release/net10.0/Doroti.Generated/wwwroot/plugins/echo.js
+  DorotiTestbedApp.Web -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\DorotiTestbedApp.Web\release\DorotiTestbedApp.Web.dll
+  DorotiTestbedApp.Web (Blazor output) -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\DorotiTestbedApp.Web\release\wwwroot
+  크기에 맞게 어셈블리를 최적화하면 앱의 동작이 변경될 수 있습니다. 퍼블리싱 후 꼭 테스트 해보세요. 참조: https://aka.ms/dotnet-illink
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/DorotiTestbedApp.Web/Release/net10.0/Doroti.Generated/wwwroot/doroti_bootstrap.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/DorotiTestbedApp.Web/Release/net10.0/Doroti.Generated/wwwroot/plugins/echo.js
+  Doroti.Graphics.DisplayList -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Graphics.DisplayList\release\Doroti.Graphics.DisplayList.dll
+  Doroti.Runtime -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Runtime\release\Doroti.Runtime.dll
+  Doroti.Ui -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Ui\release\Doroti.Ui.dll
+  Doroti.Hosting -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Hosting\release\Doroti.Hosting.dll
+  Doroti.Skia.RuntimeEffects -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Skia.RuntimeEffects\release\Doroti.Skia.RuntimeEffects.dll
+  Doroti.Framework.Foundation -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Foundation\release\Doroti.Framework.Foundation.dll
+  Doroti.Framework.Scheduler -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Scheduler\release\Doroti.Framework.Scheduler.dll
+  Doroti.Skia.Rendering -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Skia.Rendering\release\Doroti.Skia.Rendering.dll
+  CanvasKit npm restore is current (canvaskit-wasm@0.42.0).
+  Doroti.Framework.Services -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Services\release\Doroti.Framework.Services.dll
+  Doroti.Framework.Physics -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Physics\release\Doroti.Framework.Physics.dll
+  Doroti.Framework.Gestures -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Gestures\release\Doroti.Framework.Gestures.dll
+  Doroti.Framework.Animation -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Animation\release\Doroti.Framework.Animation.dll
+  Doroti.Framework.Painting -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Painting\release\Doroti.Framework.Painting.dll
+  Doroti.Framework.Semantics -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Semantics\release\Doroti.Framework.Semantics.dll
+  Doroti.Framework.Rendering -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Rendering\release\Doroti.Framework.Rendering.dll
+  Prepared verified CanvasKit 0.42.0 default assets at 'C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\obj\Doroti.Host.Web\release\Doroti.CanvasKit\wwwroot\canvaskit\0.42.0'.
+  Doroti.Framework.Widgets -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Widgets\release\Doroti.Framework.Widgets.dll
+  Doroti.Framework.Cupertino -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Cupertino\release\Doroti.Framework.Cupertino.dll
+  Doroti.Framework.Material -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Framework.Material\release\Doroti.Framework.Material.dll
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.bootstrap.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.dom.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.trace.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.surface.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.protocol.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.diagnostics.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.worker-host.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.managed-worker.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.web.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.host.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.text.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.canvaskit.worker.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.loader.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.raster.worker.js
+  TSFILE: C:/Users/parti/Labo/DorotiLab/.doroti/threads-fix/artifacts/obj/Doroti.Host.Web/Release/net10.0/Doroti.Web/wwwroot/doroti.ui.worker.js
+  Doroti.Host.Web -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Host.Web\release\Doroti.Host.Web.dll
+  Doroti.Target.Web.browser-wasm -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\Doroti.Target.Web.browser-wasm\release\Doroti.Target.Web.dll
+  DorotiTestbedApp -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\bin\DorotiTestbedApp\release\DorotiTestbedApp.dll
+  크기에 맞게 어셈블리를 최적화하면 앱의 동작이 변경될 수 있습니다. 퍼블리싱 후 꼭 테스트 해보세요. 참조: https://aka.ms/dotnet-illink
+  DorotiTestbedApp.Web -> C:\Users\parti\Labo\DorotiLab\.doroti\threads-fix\artifacts\publish\DorotiTestbedApp.Web\release\

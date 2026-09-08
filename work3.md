@@ -2,16 +2,25 @@
 
 작성: 2026-09-08.
 
+**후속 범위 변경:** 사용자가 부팅 오류 수정을 요청한 뒤, “메인 런타임 초기화 +
+렌더 Worker 분리로 전환”을 선택했다. T0는 이제 메인에서 단일 threaded runtime을
+초기화하고 해당 runtime의 JSWebWorker에서 기존 direct 프레임워크/Skia 역할을
+실행하는 구조로 진행한다. layout과 raster의 별도 병렬화는 아직 아니다.
+소유권·전용 MessagePort·종료 계약은
+[ADR-003](Doroti/docs/adr/ADR-003-web-main-runtime-render-worker.md)을 따른다.
+아래 최초 FAIL은 이전 Worker-root 부팅의 원본 결과로 보존한다.
+
 **이번 요청 범위:** 새로운 구성 작업계획을 작성하고,
 `DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj`에 `WasmEnableThreads=true`를
 실제로 설정한다. 병렬 레이아웃 엔진의 구현은 아래 후속 단계이며 이번 문서
 작성만으로 실행 완료로 표시하지 않는다. 스레딩 런타임 활성화와 레이아웃의
 실제 병렬 실행·성능 수용은 서로 다른 상태다.
 
-**현재 검증 결과:** 설정·Release 빌드·Skia `mt,simd` 선택·문서의 cross-origin
-isolation은 확인했다. threaded runtime은 기존 Worker 부팅 경로에서 protocol
-오류와 `mono_wasm_pthread_on_pthread_attached` 오류로 first content에 도달하지
-못했다. **T0는 FAIL이며 후속 병렬 실행의 선행 해결 과제다.** 상세 증거는 10절.
+**현재 검증 결과:** 메인 runtime + shared-runtime 렌더 Worker로 전환한 최종
+trimmed Release publish에서 first content·resize·스크롤·선택 상태·테마/열 복귀·
+종료·잘못된 protocol 거부가 PASS다. shared heap과 실제 렌더 thread를 확인했고
+runtime 오류는 0건이다. **T0 부팅·입력은 PASS, 계산 중첩 검증은 미완료**다.
+최초 Worker-root FAIL은 10절에 보존하고 후속 결과는 12절에 기록한다.
 
 기준 구현은 [보관된 work.md](history/26-09-08/work.original.md) 9.12절의
 **HAMT + indexed**다. 9.13절 C2/C3/C4 실험은
@@ -211,7 +220,7 @@ ADR에서 현재 topology별 owner를 명시한다. public layout/callback 계�
 
 | 단계 | 실행 | 종료 조건 | 현재 상태 |
 | --- | --- | --- | --- |
-| T0 스레딩 기반 | flag true, 격리 빌드, Skia mt/interop/headers/부팅 검사 | 새 runtime에서 first content·입력·오류·shared memory 확인; 지원 한계 기록 | 설정·빌드 PASS, browser bootstrap FAIL |
+| T0 스레딩 기반 | flag true, 격리 빌드, Skia mt/interop/headers/부팅 검사 | 새 runtime에서 first content·입력·오류·shared memory 확인; 지원 한계 기록 | 부팅·입력·shared heap PASS; 계산 중첩 미검증 |
 | T1 비용과 의존성 | current HEAD/dirty 고정; 실제 resize의 self time·준비 가능한 계산 폭·임계 경로 조사 | callback/build/layout/paint/encode 구분, 병렬화 가능한 비중과 최초 후보 1개 확정 | 미착수 |
 | T2 순수 kernel 추출 | 불변 입력→결과, 명시적 의존성, 직렬 executor | 기존 경로 대비 logical target/횟수/필수 순서·geometry 차이 0; 직렬 추출 자체 비용 보고 | 미착수 |
 | T3 owner 연결 | 기존 동기 layout 계약을 지키는 사전 준비/결과 소비 경계, unsupported 구간 유지 | callback 추가/생략/순서 변화 0, live UI 접근 0, owner event loop 교착 0 | 미착수 |
@@ -220,7 +229,8 @@ ADR에서 현재 topology별 owner를 명시한다. public layout/callback 계�
 | T6 플랫폼·내구성 | generator/수동 소스 소유 방식, 다른 host 직렬 동작, Web boot/asset/기기 검사 | 플랫폼별 PASS/FAIL/notVerified, 전체 메모리/사용자 수용 구분 | 미착수 |
 | T7 채택과 기록 | 마지막 변경 후 결과·편차·원본 실패·패치·기본 설정 정리 | 개선 미확인 후보는 원복/미채택; 사용자 요청의 thread flag 상태를 별도로 명시 | 미착수 |
 
-T0의 다음 작업은 아래 순서로 진행한다.
+T0의 최초 진단 순서는 아래와 같다. 1–3과 4의 부팅·입력 부분은 후속 수정에서
+완료했다(12절). 다음 미완료 항목은 managed 계산 중첩 검증이다.
 
 1. 현재 .NET 10.0.11과 Worker 내부 `dotnet.create()`의 최소 재현을 만든다.
    Doroti protocol 오류와 runtime attach 오류를 분리하고, 실제 Worker 메시지의
@@ -315,7 +325,7 @@ target 불일치, owner blocking 또는 3쌍에서 개선 미확인은 승격 �
 실제 지원 상태를 별도 기록한다. 런타임 자체가 실행되지 않는 경우는 설정 반영과
 실행 실패를 구분하고 정상 실행이라고 보고하지 않는다.
 
-## 10. 이번 요청의 실제 실행 기록
+## 10. 최초 계획 작성·flag 활성화 실행 기록 (후속 수정 전)
 
 - [x] 현재 소스·ADR·이전 C2/C3/C4 실패와 비교 한계 검토
 - [x] 이 계획 작성: 의존성 graph, owner 경계, 직렬 기준선과 2-thread 후보,
@@ -352,7 +362,7 @@ protocol로 decode하고, `doroti.raster.worker.ts`가 Worker 안에서 runtime�
 `Doroti/validation/web-playwright/probe-threaded-bootstrap.mjs`다. 이 서버는 로컬
 검증 전용이며 운영 호스팅의 header 설정 완료를 뜻하지 않는다.
 
-`WasmEnableThreads=true`는 유지한다. 현재 설정의 새 Web 빌드는 위 부팅 실패가
+`WasmEnableThreads=true`는 유지한다. 이 최초 검증 시점의 새 Web 빌드는 위 부팅 실패가
 있으며 정상 실행으로 승격하지 않았다. 기존 단일 스레드 비교 산출물 S0는 별도로
 보존했다. 병렬 레이아웃 엔진 구현과 성능 개선은 아직 완료하지 않았다.
 
@@ -368,3 +378,27 @@ protocol로 decode하고, `doroti.raster.worker.ts`가 Worker 안에서 runtime�
 - R5: Flutter [Inside Flutter](https://docs.flutter.dev/resources/inside-flutter), 고정 revision `56b8e1a851a594b1a154f8ea93270807dab22b9a`의 로컬 `reference/flutter-master/packages/flutter/lib/src/rendering/{object,flex,box}.dart` 및 `widgets/layout_builder.dart`.
 - R6: SkiaSharp [native assets threading 선택](https://github.com/mono/SkiaSharp/blob/main/binding/IncludeNativeAssets.SkiaSharp.targets). 실제 선택 근거는 설치된 `4.152.0-rc.1.26426.14/buildTransitive/netstandard1.0/SkiaSharp.NativeAssets.WebAssembly.targets`.
 - R7: dotnet/runtime v10.0.0 [pthread worker 초기화와 attach](https://github.com/dotnet/runtime/blob/v10.0.0/src/mono/browser/runtime/pthreads/worker-thread.ts), [pthread 제어 메시지](https://github.com/dotnet/runtime/blob/v10.0.0/src/mono/browser/runtime/pthreads/shared.ts). 오류 경로 해석용이며 설치 10.0.11의 원인 확정 증거와 구분한다.
+
+## 12. 후속 부팅 수정: 메인 runtime + 렌더 Worker
+
+사용자의 topology 전환 선택에 따라 메인에서 .NET runtime 하나를 초기화하고,
+같은 shared heap을 쓰는 JSWebWorker로 기존 framework/layout/Skia 역할을 옮겼다.
+`WasmEnableThreads=true`와 `worker-direct-webgl`을 유지한다. DOM/input은 메인,
+현재 layout과 raster는 같은 렌더 Worker owner다. 두 계산 스레드의 layout graph는
+아직 구현하지 않았다.
+
+- [x] runtime 제어 메시지와 Doroti protocol을 전용 MessagePort로 분리
+- [x] owner SynchronizationContext에서 JS frame 요청 실행
+- [x] 종료 시 renderer disposal 완료까지 DOM endpoint 유지; `closed`/`disposed` 구분
+- [x] 최종 trimmed Release publish와 first content·shared heap·resize·wheel PASS
+- [x] 선택 상태 및 좁은 화면의 테마 변경 후 열 복귀 회귀 2건 PASS
+- [x] 정상 role 종료 및 잘못된 protocol 거부 통합 검사 2건 PASS
+- [ ] 독립 managed 계산의 실제 중첩, T1–T7 및 성능/물리 기기 수용
+
+이번 후속 수정 ledger는 build/진단/검증 명령 **20회**이며, 최초 활성화 2회와
+구분한다. 모든 실행은 외부 timeout 20분, retry 0이다. lifecycle/회귀 명령당
+2개의 순차 case가 포함되며 실패·중단 실행도 모두 기록했다. 초기 진단 이후
+trimmed publish, JS owner, 종료 순서의 독립 검증을 위해 최대 20회까지 확장했다.
+상세 결과·최초 실패·source/asset hash는
+[실행 보고서](history/26-09-08/wasm-main-runtime-render-worker.md)에 있다.
+검증 미리보기는 <http://127.0.0.1:5197/?dorotiTestbedMode=sample>이다.

@@ -1,0 +1,12 @@
+
+Running 2 tests using 1 worker
+
+  ok 1 [chromium-hardware] › tests\threaded-runtime.spec.ts:37:1 › threaded renderer disposes its role without exiting the main runtime (4.3s)
+  ok 2 [chromium-hardware] › tests\threaded-runtime.spec.ts:57:1 › threaded renderer rejects invalid private-port protocol without a second runtime (4.0s)
+
+  2 passed (8.9s)
+
+To open last HTML report run:
+[36m[39m
+[36m  npx playwright show-report artifacts\threads-lifecycle-repaired\report[39m
+[36m[39m
