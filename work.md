@@ -2,6 +2,8 @@
 
 작성: 2026-09-07. 기존 실행: 2026-09-08. 기존 결과: **최종 수용 PARTIAL / indexed 승격 보류**.
 
+2026-09-08 C2/C3/C4 후속 결과: **세 후보를 함께 구현·검증·WASM 3쌍 비교했으나 개선 미확인으로 미채택, 제품 코드는 9.12절의 HAMT + indexed로 원복했다.** [9.13절](#913-c2c3c4-적용-실험과-원복)에 실패·미비교 조건과 보존 패치를 기록한다.
+
 2026-09-08 현재 결과: **사용자의 명시적 후속 요청에 따라 HAMT + indexed 단일화와 대체 경로 제거를 완료했다. [9.12절](#912-hamt--indexed-단일화)이 현재 구현 범위이며, 앞선 성능·메모리 gate 미달은 유지한다.**
 
 2026-09-08 이전 구현 갱신: **현재 작업 범위는 [9절](#9-flutter와-같은-작업-대상을-유지하는-net-wasm-실행-구조-연구)이다. 공용 HAMT 실험 경로·동일 대상 fixture·WASM 3쌍 비교 구현/실행. 최종 수용 PARTIAL / componentOnly / 기본 승격 보류.** 앞선 연구 요청은 “재빌드와 레이아웃 작업 타겟은 Flutter와 동일하게 잡되 .NET WASM 연산 특성에 맞춰 재구성할 수 있는지 연구하고 work.md에 작성”이었고, 이번 사용자의 명시적 재구성 요청에 따라 구현·검증까지 실행했다. 새 단계에서는 처리 대상·수명·실행 시점을 줄이거나 바꾸는 가상화/소유권 변경을 성능 개선에 포함하지 않는다.
@@ -486,3 +488,53 @@ TypeScript 검사 및 옵션 없는 Web 브라우저 회귀 2건 PASS. runtime/b
 검증 명령 7회, 재시도 0회, 명령당 timeout 20분으로 완료했다. 5189는 단일화
 빌드로 갱신했고 이전 5188 비교 서버는 종료했다. 물리 host와 전체 메모리
 수용을 추가로 검증한 것은 아니다.
+
+### 9.13 C2/C3/C4 적용 실험과 원복
+
+사용자의 `C2, C3, C4적용 바로 해보자` 요청에 따라 현재 HAMT + indexed를
+기준으로 세 후보를 실제 공용 코드에 적용하고 검사했다. **실험 실행 완료 /
+성능 미채택 / 제품 원복**이다. 9.7절의 개선 없는 후보 원복 조건을 적용했으며,
+최종 제품 소스와 Web 산출물은 다시 9.12절의 HAMT + indexed다.
+
+- [x] C2: intrinsic 어댑터 4개 공유, intrinsic/dry/baseline 캐시의 중첩 클로저 제거.
+  기존 cache equality·null baseline·예외·재진입·무효화·virtual compute 계약 PASS.
+  CLR에서 종류별 캐시 hit 8회의 할당은 2,272→1,312 bytes(-42.3%). 이번 Web
+  resize에서는 해당 캐시 호출이 0회여서 이 절감을 resize 성능 개선으로 해석하지 않는다.
+- [x] C3: SliverMultiBoxAdaptorElement의 타입이 확정된 renderObject/parentData
+  접근과 insert/move/remove/indexOf 호출을 typed 경로로 변경. 오버라이드/호출
+  순서 계약과 compiled DLR call-site 0 검사 PASS. 전역 변환/생성기 변경은 하지 않았다.
+- [x] C4: BuildScope/PipelineOwner의 비교자 재사용, 새 dirty 합류 시 tail 임시
+  목록 제거, sliver key 배열 snapshot. 기존 정렬 의미·처리 순서·snapshot 유지.
+  새 dirty 병합, 섹션 재정렬/추가/삭제·포커스·State·깊은 anchor 검사 PASS.
+- [x] 전후 20노드/155이벤트 및 고정 Flutter callback 비교 PASS. Web Release
+  빌드·기존 virtual dispatch·브라우저 열 복귀/선택/테마 회귀 2건 PASS.
+- [x] Web 3쌍(AB/BA/AB), 각 실행 29개 섹션 방문 및 resize 16입력. 모든 실행
+  runtime error 0, 모든 구간 최종 generation exact-rendered commit 확인.
+- [x] 계측을 줄인 scroll 대조 1쌍: 픽셀 변화·오류 0 확인. commit 간격 중앙값은
+  모두 16.7ms지만 1쌍만으로 성능 수용·물리 FPS를 입증하지 않는다.
+- [x] 미채택 패치·원시 집계·최초 실패 보존, 제품 원복 및 최종 Web build PASS.
+
+같은 열에서 세 쌍의 aggregate 작업 수는 동일했고 최대 callback 중앙값은
+320.8→330.4ms(+3.0%)로 증가했다. 전체 callback 합계는 871.2→884.9ms,
+최종 정착은 356.5→349.6ms였으나 쌍별 방향이 섞여 반복 가능한 개선이 아니다.
+
+열 전환의 최대 callback 중앙값은 402.0→417.1ms였지만, **2·3번 쌍에서
+LayoutWork가 기준선 1,208회 / 후보 1,295회로 달라 동일 작업 지연 비교는
+notComparable**이다. 연속 입력의 처리 차이 원인은 분리하지 못했으므로 이를
+코드 자체의 지연 악화나 전체 Flutter 대상 불일치로 단정하지 않는다. 최초
+한 쌍의 aggregate는 같았지만 이것만으로 채택하지 않는다. 계측 JSON 비용이
+섞인 전체 allocated bytes 역시 UI 할당·전체 live memory 절감으로 쓰지 않는다.
+
+두 초기 검사 setup 실패(Path 모호성, reflection field/property 착오)와 재시도,
+복구 빌드를 포함해 **총 20개 test/build/browser 명령**, 각 timeout 20분으로
+종료했다. 브라우저 기능검사 명령은 순차 test 2건을 포함한다. 10회를 넘긴
+이유는 3쌍 비교와 독립 native/브라우저/대조군 검사이며, 19회 계획에 제품
+원복 산출물을 확인하는 최종 빌드 1회를 추가했다. 자동 retry와 별도 warm-up
+실행은 없었다. 추가 후보 분리 실험·전체 Flutter trace·전체 메모리·물리
+입력/IME/접근성 수용은 미완료로 유지한다.
+
+재검토 가능한 [실험 패치](history/26-09-08/wasm-c234-candidate.patch),
+[실행 기록](history/26-09-08/wasm-c234-execution.md),
+[원시 집계](history/26-09-08/wasm-c234-summary.json),
+[재현 방법](Doroti/validation/framework-work/README.execution-cost.md)을 보존했다.
+`5189` 미리보기는 원복한 HAMT + indexed 빌드이며 C2/C3/C4 후보 기본 적용 상태가 아니다.

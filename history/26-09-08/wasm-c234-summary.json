@@ -1,0 +1,1688 @@
+{
+  "rows": [
+    {
+      "scenario": "resize-wide",
+      "callbacksMs": [
+        314.1,
+        272.8,
+        284.3
+      ],
+      "callbackMaxMs": 314.1,
+      "callbackTotalMs": 871.2,
+      "finalSettleMs": 393.60000002384186,
+      "managedAllocatedBytes": 24240864,
+      "heapEstimateBefore": 49765576,
+      "heapEstimateAfter": 42230056,
+      "gcCollections": [
+        3,
+        1,
+        1
+      ],
+      "pair": 1,
+      "mode": "before",
+      "work": {
+        "BuildEnqueueAttempt": 201,
+        "BuildEnqueued": 201,
+        "BuildEnqueueDuplicate": 0,
+        "BuildDuringFlush": 105,
+        "BuildSort": 12,
+        "BuildResort": 51,
+        "Rebuild": 2100,
+        "ForcedRebuild": 1932,
+        "MarkBuild": 206,
+        "MarkBuildAlreadyDirty": 5,
+        "SetState": 17,
+        "DependencyChanged": 189,
+        "LayoutEntry": 975,
+        "LayoutFastPath": 105,
+        "LayoutWork": 870,
+        "LayoutDirtySameConstraints": 9,
+        "MarkLayout": 141,
+        "MarkLayoutAlreadyDirty": 16,
+        "LayoutBoundary": 25,
+        "LayoutParentPropagation": 120,
+        "MarkPaint": 1777,
+        "MarkPaintAlreadyDirty": 811,
+        "PaintBoundary": 92,
+        "PaintParentPropagation": 874,
+        "RepaintBoundary": 84,
+        "NewPicture": 132,
+        "MediaUpdate": 8,
+        "MediaChanged": 8,
+        "MediaDependentCheck": 3093,
+        "MediaDependentNotified": 24,
+        "MediaAspectSubscriptions": 5439,
+        "HostSnapshotApply": 8,
+        "HostMetricsNotified": 8,
+        "DelegateUpdate": 3,
+        "DelegateRebuild": 0,
+        "RetainedChildVisit": 0,
+        "ImplicitTweenCheck": 138,
+        "ImplicitAnimationRestart": 1,
+        "SemanticsJsonCacheHit": 33,
+        "SemanticsJsonSerializedNode": 279,
+        "SemanticsPayloadBytes": 71920
+      },
+      "components": {
+        "InheritancePut": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "InheritanceRemove": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "IntrinsicCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "DryCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "BaselineCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        }
+      },
+      "generation": 9,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "environment": {
+        "url": "http://127.0.0.1:5188/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+        "browser": "151.0.7922.34",
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "dpr": 1
+      }
+    },
+    {
+      "scenario": "resize-break",
+      "callbacksMs": [
+        415,
+        172.1,
+        404.8,
+        316,
+        64
+      ],
+      "callbackMaxMs": 415,
+      "callbackTotalMs": 1371.9,
+      "finalSettleMs": 788.4000000715241,
+      "managedAllocatedBytes": 40484688,
+      "heapEstimateBefore": 51175744,
+      "heapEstimateAfter": 44378880,
+      "gcCollections": [
+        5,
+        1,
+        1
+      ],
+      "pair": 1,
+      "mode": "before",
+      "work": {
+        "BuildEnqueueAttempt": 286,
+        "BuildEnqueued": 286,
+        "BuildEnqueueDuplicate": 0,
+        "BuildDuringFlush": 164,
+        "BuildSort": 16,
+        "BuildResort": 43,
+        "Rebuild": 3681,
+        "ForcedRebuild": 3403,
+        "MarkBuild": 295,
+        "MarkBuildAlreadyDirty": 9,
+        "SetState": 46,
+        "DependencyChanged": 249,
+        "LayoutEntry": 1450,
+        "LayoutFastPath": 155,
+        "LayoutWork": 1295,
+        "LayoutDirtySameConstraints": 20,
+        "MarkLayout": 369,
+        "MarkLayoutAlreadyDirty": 168,
+        "LayoutBoundary": 40,
+        "LayoutParentPropagation": 162,
+        "MarkPaint": 2706,
+        "MarkPaintAlreadyDirty": 1260,
+        "PaintBoundary": 115,
+        "PaintParentPropagation": 1327,
+        "RepaintBoundary": 113,
+        "NewPicture": 180,
+        "MediaUpdate": 6,
+        "MediaChanged": 6,
+        "MediaDependentCheck": 3104,
+        "MediaDependentNotified": 24,
+        "MediaAspectSubscriptions": 5454,
+        "HostSnapshotApply": 6,
+        "HostMetricsNotified": 6,
+        "DelegateUpdate": 7,
+        "DelegateRebuild": 4,
+        "RetainedChildVisit": 58,
+        "ImplicitTweenCheck": 198,
+        "ImplicitAnimationRestart": 6,
+        "SemanticsJsonCacheHit": 23,
+        "SemanticsJsonSerializedNode": 415,
+        "SemanticsPayloadBytes": 130161
+      },
+      "components": {
+        "InheritancePut": {
+          "calls": 30,
+          "ticks100ns": 3000,
+          "allocatedBytes": 5760,
+          "inputItems": 789
+        },
+        "InheritanceRemove": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "IntrinsicCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "DryCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "BaselineCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        }
+      },
+      "generation": 17,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "environment": {
+        "url": "http://127.0.0.1:5188/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+        "browser": "151.0.7922.34",
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "dpr": 1
+      }
+    },
+    {
+      "scenario": "resize-wide",
+      "callbacksMs": [
+        323.7,
+        278.3,
+        263.8
+      ],
+      "callbackMaxMs": 323.7,
+      "callbackTotalMs": 865.8,
+      "finalSettleMs": 342.59999999999854,
+      "managedAllocatedBytes": 24236776,
+      "heapEstimateBefore": 49765544,
+      "heapEstimateAfter": 42199464,
+      "gcCollections": [
+        3,
+        1,
+        1
+      ],
+      "pair": 1,
+      "mode": "after",
+      "work": {
+        "BuildEnqueueAttempt": 201,
+        "BuildEnqueued": 201,
+        "BuildEnqueueDuplicate": 0,
+        "BuildDuringFlush": 105,
+        "BuildSort": 12,
+        "BuildResort": 51,
+        "Rebuild": 2100,
+        "ForcedRebuild": 1932,
+        "MarkBuild": 206,
+        "MarkBuildAlreadyDirty": 5,
+        "SetState": 17,
+        "DependencyChanged": 189,
+        "LayoutEntry": 975,
+        "LayoutFastPath": 105,
+        "LayoutWork": 870,
+        "LayoutDirtySameConstraints": 9,
+        "MarkLayout": 141,
+        "MarkLayoutAlreadyDirty": 16,
+        "LayoutBoundary": 25,
+        "LayoutParentPropagation": 120,
+        "MarkPaint": 1777,
+        "MarkPaintAlreadyDirty": 811,
+        "PaintBoundary": 92,
+        "PaintParentPropagation": 874,
+        "RepaintBoundary": 84,
+        "NewPicture": 132,
+        "MediaUpdate": 8,
+        "MediaChanged": 8,
+        "MediaDependentCheck": 3093,
+        "MediaDependentNotified": 24,
+        "MediaAspectSubscriptions": 5439,
+        "HostSnapshotApply": 8,
+        "HostMetricsNotified": 8,
+        "DelegateUpdate": 3,
+        "DelegateRebuild": 0,
+        "RetainedChildVisit": 0,
+        "ImplicitTweenCheck": 138,
+        "ImplicitAnimationRestart": 1,
+        "SemanticsJsonCacheHit": 33,
+        "SemanticsJsonSerializedNode": 279,
+        "SemanticsPayloadBytes": 71920
+      },
+      "components": {
+        "InheritancePut": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "InheritanceRemove": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "IntrinsicCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "DryCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "BaselineCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        }
+      },
+      "generation": 9,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "environment": {
+        "url": "http://127.0.0.1:5189/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+        "browser": "151.0.7922.34",
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "dpr": 1
+      }
+    },
+    {
+      "scenario": "resize-break",
+      "callbacksMs": [
+        426.3,
+        177.3,
+        403.8,
+        320.1,
+        63.9
+      ],
+      "callbackMaxMs": 426.3,
+      "callbackTotalMs": 1391.4,
+      "finalSettleMs": 772.8000000476823,
+      "managedAllocatedBytes": 40494928,
+      "heapEstimateBefore": 51126848,
+      "heapEstimateAfter": 44484640,
+      "gcCollections": [
+        5,
+        1,
+        1
+      ],
+      "pair": 1,
+      "mode": "after",
+      "work": {
+        "BuildEnqueueAttempt": 286,
+        "BuildEnqueued": 286,
+        "BuildEnqueueDuplicate": 0,
+        "BuildDuringFlush": 164,
+        "BuildSort": 16,
+        "BuildResort": 43,
+        "Rebuild": 3681,
+        "ForcedRebuild": 3403,
+        "MarkBuild": 295,
+        "MarkBuildAlreadyDirty": 9,
+        "SetState": 46,
+        "DependencyChanged": 249,
+        "LayoutEntry": 1450,
+        "LayoutFastPath": 155,
+        "LayoutWork": 1295,
+        "LayoutDirtySameConstraints": 20,
+        "MarkLayout": 369,
+        "MarkLayoutAlreadyDirty": 168,
+        "LayoutBoundary": 40,
+        "LayoutParentPropagation": 162,
+        "MarkPaint": 2706,
+        "MarkPaintAlreadyDirty": 1260,
+        "PaintBoundary": 115,
+        "PaintParentPropagation": 1327,
+        "RepaintBoundary": 113,
+        "NewPicture": 180,
+        "MediaUpdate": 6,
+        "MediaChanged": 6,
+        "MediaDependentCheck": 3104,
+        "MediaDependentNotified": 24,
+        "MediaAspectSubscriptions": 5454,
+        "HostSnapshotApply": 6,
+        "HostMetricsNotified": 6,
+        "DelegateUpdate": 7,
+        "DelegateRebuild": 4,
+        "RetainedChildVisit": 58,
+        "ImplicitTweenCheck": 198,
+        "ImplicitAnimationRestart": 6,
+        "SemanticsJsonCacheHit": 23,
+        "SemanticsJsonSerializedNode": 412,
+        "SemanticsPayloadBytes": 129801
+      },
+      "components": {
+        "InheritancePut": {
+          "calls": 30,
+          "ticks100ns": 3000,
+          "allocatedBytes": 5760,
+          "inputItems": 789
+        },
+        "InheritanceRemove": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "IntrinsicCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "DryCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "BaselineCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        }
+      },
+      "generation": 17,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "environment": {
+        "url": "http://127.0.0.1:5189/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+        "browser": "151.0.7922.34",
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "dpr": 1
+      }
+    },
+    {
+      "scenario": "resize-wide",
+      "callbacksMs": [
+        327.5,
+        272.1,
+        286.2
+      ],
+      "callbackMaxMs": 327.5,
+      "callbackTotalMs": 885.8,
+      "finalSettleMs": 356.49999992847734,
+      "managedAllocatedBytes": 23996408,
+      "heapEstimateBefore": 52222320,
+      "heapEstimateAfter": 43095696,
+      "gcCollections": [
+        3,
+        1,
+        1
+      ],
+      "pair": 2,
+      "mode": "before",
+      "work": {
+        "BuildEnqueueAttempt": 201,
+        "BuildEnqueued": 201,
+        "BuildEnqueueDuplicate": 0,
+        "BuildDuringFlush": 105,
+        "BuildSort": 12,
+        "BuildResort": 51,
+        "Rebuild": 2100,
+        "ForcedRebuild": 1932,
+        "MarkBuild": 206,
+        "MarkBuildAlreadyDirty": 5,
+        "SetState": 17,
+        "DependencyChanged": 189,
+        "LayoutEntry": 975,
+        "LayoutFastPath": 105,
+        "LayoutWork": 870,
+        "LayoutDirtySameConstraints": 9,
+        "MarkLayout": 141,
+        "MarkLayoutAlreadyDirty": 16,
+        "LayoutBoundary": 25,
+        "LayoutParentPropagation": 120,
+        "MarkPaint": 1777,
+        "MarkPaintAlreadyDirty": 811,
+        "PaintBoundary": 92,
+        "PaintParentPropagation": 874,
+        "RepaintBoundary": 84,
+        "NewPicture": 132,
+        "MediaUpdate": 8,
+        "MediaChanged": 8,
+        "MediaDependentCheck": 3093,
+        "MediaDependentNotified": 24,
+        "MediaAspectSubscriptions": 5439,
+        "HostSnapshotApply": 8,
+        "HostMetricsNotified": 8,
+        "DelegateUpdate": 3,
+        "DelegateRebuild": 0,
+        "RetainedChildVisit": 0,
+        "ImplicitTweenCheck": 138,
+        "ImplicitAnimationRestart": 1,
+        "SemanticsJsonCacheHit": 33,
+        "SemanticsJsonSerializedNode": 279,
+        "SemanticsPayloadBytes": 71920
+      },
+      "components": {
+        "InheritancePut": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "InheritanceRemove": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "IntrinsicCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "DryCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "BaselineCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        }
+      },
+      "generation": 9,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "environment": {
+        "url": "http://127.0.0.1:5188/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+        "browser": "151.0.7922.34",
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "dpr": 1
+      }
+    },
+    {
+      "scenario": "resize-break",
+      "callbacksMs": [
+        397.5,
+        137.9,
+        386.2,
+        296.2,
+        62.6
+      ],
+      "callbackMaxMs": 397.5,
+      "callbackTotalMs": 1280.3999999999999,
+      "finalSettleMs": 697.0999999999985,
+      "managedAllocatedBytes": 40943408,
+      "heapEstimateBefore": 51240168,
+      "heapEstimateAfter": 46119904,
+      "gcCollections": [
+        5,
+        1,
+        1
+      ],
+      "pair": 2,
+      "mode": "before",
+      "work": {
+        "BuildEnqueueAttempt": 286,
+        "BuildEnqueued": 286,
+        "BuildEnqueueDuplicate": 0,
+        "BuildDuringFlush": 164,
+        "BuildSort": 16,
+        "BuildResort": 43,
+        "Rebuild": 3681,
+        "ForcedRebuild": 3403,
+        "MarkBuild": 295,
+        "MarkBuildAlreadyDirty": 9,
+        "SetState": 46,
+        "DependencyChanged": 249,
+        "LayoutEntry": 1345,
+        "LayoutFastPath": 137,
+        "LayoutWork": 1208,
+        "LayoutDirtySameConstraints": 15,
+        "MarkLayout": 363,
+        "MarkLayoutAlreadyDirty": 168,
+        "LayoutBoundary": 39,
+        "LayoutParentPropagation": 157,
+        "MarkPaint": 2550,
+        "MarkPaintAlreadyDirty": 1182,
+        "PaintBoundary": 105,
+        "PaintParentPropagation": 1259,
+        "RepaintBoundary": 103,
+        "NewPicture": 167,
+        "MediaUpdate": 6,
+        "MediaChanged": 6,
+        "MediaDependentCheck": 3104,
+        "MediaDependentNotified": 24,
+        "MediaAspectSubscriptions": 5454,
+        "HostSnapshotApply": 6,
+        "HostMetricsNotified": 6,
+        "DelegateUpdate": 7,
+        "DelegateRebuild": 4,
+        "RetainedChildVisit": 58,
+        "ImplicitTweenCheck": 198,
+        "ImplicitAnimationRestart": 6,
+        "SemanticsJsonCacheHit": 20,
+        "SemanticsJsonSerializedNode": 353,
+        "SemanticsPayloadBytes": 108184
+      },
+      "components": {
+        "InheritancePut": {
+          "calls": 30,
+          "ticks100ns": 0,
+          "allocatedBytes": 5760,
+          "inputItems": 789
+        },
+        "InheritanceRemove": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "IntrinsicCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "DryCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "BaselineCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        }
+      },
+      "generation": 17,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "environment": {
+        "url": "http://127.0.0.1:5188/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+        "browser": "151.0.7922.34",
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "dpr": 1
+      }
+    },
+    {
+      "scenario": "resize-wide",
+      "callbacksMs": [
+        334.4,
+        274.2,
+        280.6
+      ],
+      "callbackMaxMs": 334.4,
+      "callbackTotalMs": 889.1999999999999,
+      "finalSettleMs": 373.09999999999854,
+      "managedAllocatedBytes": 32140912,
+      "heapEstimateBefore": 49759624,
+      "heapEstimateAfter": 48911416,
+      "gcCollections": [
+        3,
+        1,
+        1
+      ],
+      "pair": 2,
+      "mode": "after",
+      "work": {
+        "BuildEnqueueAttempt": 201,
+        "BuildEnqueued": 201,
+        "BuildEnqueueDuplicate": 0,
+        "BuildDuringFlush": 105,
+        "BuildSort": 12,
+        "BuildResort": 51,
+        "Rebuild": 2100,
+        "ForcedRebuild": 1932,
+        "MarkBuild": 206,
+        "MarkBuildAlreadyDirty": 5,
+        "SetState": 17,
+        "DependencyChanged": 189,
+        "LayoutEntry": 975,
+        "LayoutFastPath": 105,
+        "LayoutWork": 870,
+        "LayoutDirtySameConstraints": 9,
+        "MarkLayout": 141,
+        "MarkLayoutAlreadyDirty": 16,
+        "LayoutBoundary": 25,
+        "LayoutParentPropagation": 120,
+        "MarkPaint": 1777,
+        "MarkPaintAlreadyDirty": 811,
+        "PaintBoundary": 92,
+        "PaintParentPropagation": 874,
+        "RepaintBoundary": 84,
+        "NewPicture": 132,
+        "MediaUpdate": 8,
+        "MediaChanged": 8,
+        "MediaDependentCheck": 3093,
+        "MediaDependentNotified": 24,
+        "MediaAspectSubscriptions": 5439,
+        "HostSnapshotApply": 8,
+        "HostMetricsNotified": 8,
+        "DelegateUpdate": 3,
+        "DelegateRebuild": 0,
+        "RetainedChildVisit": 0,
+        "ImplicitTweenCheck": 138,
+        "ImplicitAnimationRestart": 1,
+        "SemanticsJsonCacheHit": 33,
+        "SemanticsJsonSerializedNode": 279,
+        "SemanticsPayloadBytes": 71920
+      },
+      "components": {
+        "InheritancePut": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "InheritanceRemove": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "IntrinsicCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "DryCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "BaselineCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        }
+      },
+      "generation": 9,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "environment": {
+        "url": "http://127.0.0.1:5189/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+        "browser": "151.0.7922.34",
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "dpr": 1
+      }
+    },
+    {
+      "scenario": "resize-break",
+      "callbacksMs": [
+        417.1,
+        169.7,
+        396.3,
+        319.5,
+        67.1
+      ],
+      "callbackMaxMs": 417.1,
+      "callbackTotalMs": 1369.6999999999998,
+      "finalSettleMs": 750.5999999523192,
+      "managedAllocatedBytes": 28978592,
+      "heapEstimateBefore": 61081712,
+      "heapEstimateAfter": 42807680,
+      "gcCollections": [
+        4,
+        1,
+        1
+      ],
+      "pair": 2,
+      "mode": "after",
+      "work": {
+        "BuildEnqueueAttempt": 286,
+        "BuildEnqueued": 286,
+        "BuildEnqueueDuplicate": 0,
+        "BuildDuringFlush": 164,
+        "BuildSort": 16,
+        "BuildResort": 43,
+        "Rebuild": 3681,
+        "ForcedRebuild": 3403,
+        "MarkBuild": 295,
+        "MarkBuildAlreadyDirty": 9,
+        "SetState": 46,
+        "DependencyChanged": 249,
+        "LayoutEntry": 1450,
+        "LayoutFastPath": 155,
+        "LayoutWork": 1295,
+        "LayoutDirtySameConstraints": 20,
+        "MarkLayout": 369,
+        "MarkLayoutAlreadyDirty": 168,
+        "LayoutBoundary": 40,
+        "LayoutParentPropagation": 162,
+        "MarkPaint": 2706,
+        "MarkPaintAlreadyDirty": 1260,
+        "PaintBoundary": 115,
+        "PaintParentPropagation": 1327,
+        "RepaintBoundary": 113,
+        "NewPicture": 180,
+        "MediaUpdate": 6,
+        "MediaChanged": 6,
+        "MediaDependentCheck": 3104,
+        "MediaDependentNotified": 24,
+        "MediaAspectSubscriptions": 5454,
+        "HostSnapshotApply": 6,
+        "HostMetricsNotified": 6,
+        "DelegateUpdate": 7,
+        "DelegateRebuild": 4,
+        "RetainedChildVisit": 58,
+        "ImplicitTweenCheck": 198,
+        "ImplicitAnimationRestart": 6,
+        "SemanticsJsonCacheHit": 23,
+        "SemanticsJsonSerializedNode": 415,
+        "SemanticsPayloadBytes": 130370
+      },
+      "components": {
+        "InheritancePut": {
+          "calls": 30,
+          "ticks100ns": 0,
+          "allocatedBytes": 5760,
+          "inputItems": 789
+        },
+        "InheritanceRemove": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "IntrinsicCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "DryCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "BaselineCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        }
+      },
+      "generation": 17,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "environment": {
+        "url": "http://127.0.0.1:5189/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+        "browser": "151.0.7922.34",
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "dpr": 1
+      }
+    },
+    {
+      "scenario": "resize-wide",
+      "callbacksMs": [
+        320.8,
+        271.6,
+        276.4
+      ],
+      "callbackMaxMs": 320.8,
+      "callbackTotalMs": 868.8000000000001,
+      "finalSettleMs": 353.90000000000146,
+      "managedAllocatedBytes": 23794160,
+      "heapEstimateBefore": 52187696,
+      "heapEstimateAfter": 43094704,
+      "gcCollections": [
+        3,
+        1,
+        1
+      ],
+      "pair": 3,
+      "mode": "before",
+      "work": {
+        "BuildEnqueueAttempt": 201,
+        "BuildEnqueued": 201,
+        "BuildEnqueueDuplicate": 0,
+        "BuildDuringFlush": 105,
+        "BuildSort": 12,
+        "BuildResort": 51,
+        "Rebuild": 2100,
+        "ForcedRebuild": 1932,
+        "MarkBuild": 206,
+        "MarkBuildAlreadyDirty": 5,
+        "SetState": 17,
+        "DependencyChanged": 189,
+        "LayoutEntry": 975,
+        "LayoutFastPath": 105,
+        "LayoutWork": 870,
+        "LayoutDirtySameConstraints": 9,
+        "MarkLayout": 141,
+        "MarkLayoutAlreadyDirty": 16,
+        "LayoutBoundary": 25,
+        "LayoutParentPropagation": 120,
+        "MarkPaint": 1777,
+        "MarkPaintAlreadyDirty": 811,
+        "PaintBoundary": 92,
+        "PaintParentPropagation": 874,
+        "RepaintBoundary": 84,
+        "NewPicture": 132,
+        "MediaUpdate": 8,
+        "MediaChanged": 8,
+        "MediaDependentCheck": 3093,
+        "MediaDependentNotified": 24,
+        "MediaAspectSubscriptions": 5439,
+        "HostSnapshotApply": 8,
+        "HostMetricsNotified": 8,
+        "DelegateUpdate": 3,
+        "DelegateRebuild": 0,
+        "RetainedChildVisit": 0,
+        "ImplicitTweenCheck": 138,
+        "ImplicitAnimationRestart": 1,
+        "SemanticsJsonCacheHit": 33,
+        "SemanticsJsonSerializedNode": 279,
+        "SemanticsPayloadBytes": 71920
+      },
+      "components": {
+        "InheritancePut": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "InheritanceRemove": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "IntrinsicCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "DryCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "BaselineCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        }
+      },
+      "generation": 9,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "environment": {
+        "url": "http://127.0.0.1:5188/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+        "browser": "151.0.7922.34",
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "dpr": 1
+      }
+    },
+    {
+      "scenario": "resize-break",
+      "callbacksMs": [
+        393,
+        134.5,
+        402,
+        295.3,
+        61
+      ],
+      "callbackMaxMs": 402,
+      "callbackTotalMs": 1285.8,
+      "finalSettleMs": 685.6999999999971,
+      "managedAllocatedBytes": 40787496,
+      "heapEstimateBefore": 51138152,
+      "heapEstimateAfter": 46263424,
+      "gcCollections": [
+        5,
+        1,
+        1
+      ],
+      "pair": 3,
+      "mode": "before",
+      "work": {
+        "BuildEnqueueAttempt": 286,
+        "BuildEnqueued": 286,
+        "BuildEnqueueDuplicate": 0,
+        "BuildDuringFlush": 164,
+        "BuildSort": 16,
+        "BuildResort": 43,
+        "Rebuild": 3681,
+        "ForcedRebuild": 3403,
+        "MarkBuild": 295,
+        "MarkBuildAlreadyDirty": 9,
+        "SetState": 46,
+        "DependencyChanged": 249,
+        "LayoutEntry": 1345,
+        "LayoutFastPath": 137,
+        "LayoutWork": 1208,
+        "LayoutDirtySameConstraints": 15,
+        "MarkLayout": 363,
+        "MarkLayoutAlreadyDirty": 168,
+        "LayoutBoundary": 39,
+        "LayoutParentPropagation": 157,
+        "MarkPaint": 2550,
+        "MarkPaintAlreadyDirty": 1182,
+        "PaintBoundary": 105,
+        "PaintParentPropagation": 1259,
+        "RepaintBoundary": 103,
+        "NewPicture": 167,
+        "MediaUpdate": 6,
+        "MediaChanged": 6,
+        "MediaDependentCheck": 3104,
+        "MediaDependentNotified": 24,
+        "MediaAspectSubscriptions": 5454,
+        "HostSnapshotApply": 6,
+        "HostMetricsNotified": 6,
+        "DelegateUpdate": 7,
+        "DelegateRebuild": 4,
+        "RetainedChildVisit": 58,
+        "ImplicitTweenCheck": 198,
+        "ImplicitAnimationRestart": 6,
+        "SemanticsJsonCacheHit": 20,
+        "SemanticsJsonSerializedNode": 353,
+        "SemanticsPayloadBytes": 108207
+      },
+      "components": {
+        "InheritancePut": {
+          "calls": 30,
+          "ticks100ns": 1000,
+          "allocatedBytes": 5760,
+          "inputItems": 789
+        },
+        "InheritanceRemove": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "IntrinsicCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "DryCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "BaselineCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        }
+      },
+      "generation": 17,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "environment": {
+        "url": "http://127.0.0.1:5188/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+        "browser": "151.0.7922.34",
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "dpr": 1
+      }
+    },
+    {
+      "scenario": "resize-wide",
+      "callbacksMs": [
+        330.4,
+        286.5,
+        268
+      ],
+      "callbackMaxMs": 330.4,
+      "callbackTotalMs": 884.9,
+      "finalSettleMs": 349.6000000715285,
+      "managedAllocatedBytes": 31936408,
+      "heapEstimateBefore": 49636928,
+      "heapEstimateAfter": 41580488,
+      "gcCollections": [
+        3,
+        1,
+        1
+      ],
+      "pair": 3,
+      "mode": "after",
+      "work": {
+        "BuildEnqueueAttempt": 201,
+        "BuildEnqueued": 201,
+        "BuildEnqueueDuplicate": 0,
+        "BuildDuringFlush": 105,
+        "BuildSort": 12,
+        "BuildResort": 51,
+        "Rebuild": 2100,
+        "ForcedRebuild": 1932,
+        "MarkBuild": 206,
+        "MarkBuildAlreadyDirty": 5,
+        "SetState": 17,
+        "DependencyChanged": 189,
+        "LayoutEntry": 975,
+        "LayoutFastPath": 105,
+        "LayoutWork": 870,
+        "LayoutDirtySameConstraints": 9,
+        "MarkLayout": 141,
+        "MarkLayoutAlreadyDirty": 16,
+        "LayoutBoundary": 25,
+        "LayoutParentPropagation": 120,
+        "MarkPaint": 1777,
+        "MarkPaintAlreadyDirty": 811,
+        "PaintBoundary": 92,
+        "PaintParentPropagation": 874,
+        "RepaintBoundary": 84,
+        "NewPicture": 132,
+        "MediaUpdate": 8,
+        "MediaChanged": 8,
+        "MediaDependentCheck": 3093,
+        "MediaDependentNotified": 24,
+        "MediaAspectSubscriptions": 5439,
+        "HostSnapshotApply": 8,
+        "HostMetricsNotified": 8,
+        "DelegateUpdate": 3,
+        "DelegateRebuild": 0,
+        "RetainedChildVisit": 0,
+        "ImplicitTweenCheck": 138,
+        "ImplicitAnimationRestart": 1,
+        "SemanticsJsonCacheHit": 33,
+        "SemanticsJsonSerializedNode": 279,
+        "SemanticsPayloadBytes": 71920
+      },
+      "components": {
+        "InheritancePut": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "InheritanceRemove": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "IntrinsicCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "DryCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "BaselineCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        }
+      },
+      "generation": 9,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "environment": {
+        "url": "http://127.0.0.1:5189/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+        "browser": "151.0.7922.34",
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "dpr": 1
+      }
+    },
+    {
+      "scenario": "resize-break",
+      "callbacksMs": [
+        400.3,
+        177.2,
+        398.8,
+        321.2,
+        64.7
+      ],
+      "callbackMaxMs": 400.3,
+      "callbackTotalMs": 1362.2,
+      "finalSettleMs": 765.6000000953645,
+      "managedAllocatedBytes": 29038296,
+      "heapEstimateBefore": 53718456,
+      "heapEstimateAfter": 42809432,
+      "gcCollections": [
+        4,
+        1,
+        1
+      ],
+      "pair": 3,
+      "mode": "after",
+      "work": {
+        "BuildEnqueueAttempt": 286,
+        "BuildEnqueued": 286,
+        "BuildEnqueueDuplicate": 0,
+        "BuildDuringFlush": 164,
+        "BuildSort": 16,
+        "BuildResort": 43,
+        "Rebuild": 3681,
+        "ForcedRebuild": 3403,
+        "MarkBuild": 295,
+        "MarkBuildAlreadyDirty": 9,
+        "SetState": 46,
+        "DependencyChanged": 249,
+        "LayoutEntry": 1450,
+        "LayoutFastPath": 155,
+        "LayoutWork": 1295,
+        "LayoutDirtySameConstraints": 20,
+        "MarkLayout": 369,
+        "MarkLayoutAlreadyDirty": 168,
+        "LayoutBoundary": 40,
+        "LayoutParentPropagation": 162,
+        "MarkPaint": 2706,
+        "MarkPaintAlreadyDirty": 1260,
+        "PaintBoundary": 115,
+        "PaintParentPropagation": 1327,
+        "RepaintBoundary": 113,
+        "NewPicture": 180,
+        "MediaUpdate": 6,
+        "MediaChanged": 6,
+        "MediaDependentCheck": 3104,
+        "MediaDependentNotified": 24,
+        "MediaAspectSubscriptions": 5454,
+        "HostSnapshotApply": 6,
+        "HostMetricsNotified": 6,
+        "DelegateUpdate": 7,
+        "DelegateRebuild": 4,
+        "RetainedChildVisit": 58,
+        "ImplicitTweenCheck": 198,
+        "ImplicitAnimationRestart": 6,
+        "SemanticsJsonCacheHit": 23,
+        "SemanticsJsonSerializedNode": 414,
+        "SemanticsPayloadBytes": 124960
+      },
+      "components": {
+        "InheritancePut": {
+          "calls": 30,
+          "ticks100ns": 1000,
+          "allocatedBytes": 5760,
+          "inputItems": 789
+        },
+        "InheritanceRemove": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "IntrinsicCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "DryCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        },
+        "BaselineCache": {
+          "calls": 0,
+          "ticks100ns": 0,
+          "allocatedBytes": 0,
+          "inputItems": 0
+        }
+      },
+      "generation": 17,
+      "gpu": {
+        "api": "webgl2",
+        "vendor": "Google Inc. (AMD)",
+        "renderer": "ANGLE (AMD, AMD Radeon 780M Graphics (0x00001900) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware": true,
+        "softwareFallbackUsed": false
+      },
+      "environment": {
+        "url": "http://127.0.0.1:5189/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+        "browser": "151.0.7922.34",
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "dpr": 1
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "scenario": "resize-wide",
+      "callbackMaxMs": {
+        "before": [
+          314.1,
+          327.5,
+          320.8
+        ],
+        "after": [
+          323.7,
+          334.4,
+          330.4
+        ],
+        "medianBefore": 320.8,
+        "medianAfter": 330.4,
+        "pairedChangePercent": [
+          3.0563514804202274,
+          2.106870229007618,
+          2.9925187032418865
+        ],
+        "medianChangePercent": 2.9925187032418865
+      },
+      "callbackTotalMs": {
+        "before": [
+          871.2,
+          885.8,
+          868.8000000000001
+        ],
+        "after": [
+          865.8,
+          889.1999999999999,
+          884.9
+        ],
+        "medianBefore": 871.2,
+        "medianAfter": 884.9,
+        "pairedChangePercent": [
+          -0.6198347107438162,
+          0.3838338225333082,
+          1.853130755064436
+        ],
+        "medianChangePercent": 1.5725436179981456
+      },
+      "finalSettleMs": {
+        "before": [
+          393.60000002384186,
+          356.49999992847734,
+          353.90000000000146
+        ],
+        "after": [
+          342.59999999999854,
+          373.09999999999854,
+          349.6000000715285
+        ],
+        "medianBefore": 356.49999992847734,
+        "medianAfter": 349.6000000715285,
+        "pairedChangePercent": [
+          -12.957317078443609,
+          4.656381507672247,
+          -1.2150324748440133
+        ],
+        "medianChangePercent": -1.9354838312295009
+      }
+    },
+    {
+      "scenario": "resize-break",
+      "callbackMaxMs": {
+        "before": [
+          415,
+          397.5,
+          402
+        ],
+        "after": [
+          426.3,
+          417.1,
+          400.3
+        ],
+        "medianBefore": 402,
+        "medianAfter": 417.1,
+        "pairedChangePercent": [
+          2.722891566265062,
+          4.93081761006291,
+          -0.42288557213929767
+        ],
+        "medianChangePercent": 3.7562189054726414
+      },
+      "callbackTotalMs": {
+        "before": [
+          1371.9,
+          1280.3999999999999,
+          1285.8
+        ],
+        "after": [
+          1391.4,
+          1369.6999999999998,
+          1362.2
+        ],
+        "medianBefore": 1285.8,
+        "medianAfter": 1369.6999999999998,
+        "pairedChangePercent": [
+          1.4213863984255504,
+          6.974383005310836,
+          5.941826100482195
+        ],
+        "medianChangePercent": 6.525120547519037
+      },
+      "finalSettleMs": {
+        "before": [
+          788.4000000715241,
+          697.0999999999985,
+          685.6999999999971
+        ],
+        "after": [
+          772.8000000476823,
+          750.5999999523192,
+          765.6000000953645
+        ],
+        "medianBefore": 697.0999999999985,
+        "medianAfter": 765.6000000953645,
+        "pairedChangePercent": [
+          -1.9786910226314847,
+          7.6746521234142495,
+          11.652326104034971
+        ],
+        "medianChangePercent": 9.826423769239145
+      }
+    }
+  ],
+  "caveat": "Three pairs of detailed, short sequences. Aggregate work is not full node trace; CLR and diagnostic-window allocation are not total live memory.",
+  "workConsistency": [
+    {
+      "scenario": "resize-wide",
+      "identical": true,
+      "counts": [
+        {
+          "Rebuild": 2100,
+          "LayoutEntry": 975,
+          "LayoutWork": 870,
+          "SetState": 17,
+          "DelegateRebuild": 0,
+          "RetainedChildVisit": 0,
+          "BuildSort": 12,
+          "BuildResort": 51
+        },
+        {
+          "Rebuild": 2100,
+          "LayoutEntry": 975,
+          "LayoutWork": 870,
+          "SetState": 17,
+          "DelegateRebuild": 0,
+          "RetainedChildVisit": 0,
+          "BuildSort": 12,
+          "BuildResort": 51
+        },
+        {
+          "Rebuild": 2100,
+          "LayoutEntry": 975,
+          "LayoutWork": 870,
+          "SetState": 17,
+          "DelegateRebuild": 0,
+          "RetainedChildVisit": 0,
+          "BuildSort": 12,
+          "BuildResort": 51
+        },
+        {
+          "Rebuild": 2100,
+          "LayoutEntry": 975,
+          "LayoutWork": 870,
+          "SetState": 17,
+          "DelegateRebuild": 0,
+          "RetainedChildVisit": 0,
+          "BuildSort": 12,
+          "BuildResort": 51
+        },
+        {
+          "Rebuild": 2100,
+          "LayoutEntry": 975,
+          "LayoutWork": 870,
+          "SetState": 17,
+          "DelegateRebuild": 0,
+          "RetainedChildVisit": 0,
+          "BuildSort": 12,
+          "BuildResort": 51
+        },
+        {
+          "Rebuild": 2100,
+          "LayoutEntry": 975,
+          "LayoutWork": 870,
+          "SetState": 17,
+          "DelegateRebuild": 0,
+          "RetainedChildVisit": 0,
+          "BuildSort": 12,
+          "BuildResort": 51
+        }
+      ]
+    },
+    {
+      "scenario": "resize-break",
+      "identical": false,
+      "counts": [
+        {
+          "Rebuild": 3681,
+          "LayoutEntry": 1450,
+          "LayoutWork": 1295,
+          "SetState": 46,
+          "DelegateRebuild": 4,
+          "RetainedChildVisit": 58,
+          "BuildSort": 16,
+          "BuildResort": 43
+        },
+        {
+          "Rebuild": 3681,
+          "LayoutEntry": 1450,
+          "LayoutWork": 1295,
+          "SetState": 46,
+          "DelegateRebuild": 4,
+          "RetainedChildVisit": 58,
+          "BuildSort": 16,
+          "BuildResort": 43
+        },
+        {
+          "Rebuild": 3681,
+          "LayoutEntry": 1345,
+          "LayoutWork": 1208,
+          "SetState": 46,
+          "DelegateRebuild": 4,
+          "RetainedChildVisit": 58,
+          "BuildSort": 16,
+          "BuildResort": 43
+        },
+        {
+          "Rebuild": 3681,
+          "LayoutEntry": 1450,
+          "LayoutWork": 1295,
+          "SetState": 46,
+          "DelegateRebuild": 4,
+          "RetainedChildVisit": 58,
+          "BuildSort": 16,
+          "BuildResort": 43
+        },
+        {
+          "Rebuild": 3681,
+          "LayoutEntry": 1345,
+          "LayoutWork": 1208,
+          "SetState": 46,
+          "DelegateRebuild": 4,
+          "RetainedChildVisit": 58,
+          "BuildSort": 16,
+          "BuildResort": 43
+        },
+        {
+          "Rebuild": 3681,
+          "LayoutEntry": 1450,
+          "LayoutWork": 1295,
+          "SetState": 46,
+          "DelegateRebuild": 4,
+          "RetainedChildVisit": 58,
+          "BuildSort": 16,
+          "BuildResort": 43
+        }
+      ]
+    }
+  ],
+  "classification": "notAdopted / product reverted; no demonstrated resize improvement; breakpoint pairs 2 and 3 are notComparable as same-work latency",
+  "scrollControl": [
+    {
+      "mode": "before",
+      "changed": true,
+      "errors": [],
+      "detailed": false,
+      "callbacks": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "commitIntervals": {
+        "n": 226,
+        "p50": 16.7,
+        "p95": 49,
+        "max": 607.2
+      },
+      "coastIntervals": {
+        "n": 189,
+        "p50": 16.6,
+        "p95": 41.2,
+        "max": 607.2
+      },
+      "commits": 232
+    },
+    {
+      "mode": "after",
+      "changed": true,
+      "errors": [],
+      "detailed": false,
+      "callbacks": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "commitIntervals": {
+        "n": 241,
+        "p50": 16.7,
+        "p95": 33.4,
+        "max": 405
+      },
+      "coastIntervals": {
+        "n": 215,
+        "p50": 16.7,
+        "p95": 24.7,
+        "max": 405
+      },
+      "commits": 247
+    }
+  ]
+}

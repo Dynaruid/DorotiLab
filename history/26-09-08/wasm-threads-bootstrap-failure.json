@@ -1,0 +1,33 @@
+{
+  "label": "enabled-1",
+  "errors": [
+    "Error: Doroti worker runtime failed: protocol violation: Error: Unsupported Doroti protocol version 'undefined'.",
+    "TypeError: Cannot read properties of undefined (reading 'dispatchEvent')"
+  ],
+  "consoleErrors": [
+    "[0x0019bf1c--UI-] MONO_WASM: mono_wasm_pthread_on_pthread_attached () failed TypeError: Cannot read properties of undefined (reading 'dispatchEvent')",
+    "MONO_WASM: Cannot read properties of undefined (reading 'dispatchEvent')\nTypeError: Cannot read properties of undefined (reading 'dispatchEvent')\n    at cl (http://127.0.0.1:5192/_framework/dotnet.runtime.xevcx800hs.js:3:161284)\n    at http://127.0.0.1:5192/_framework/dotnet.native.rnfw9460zo.wasm:wasm-function[1561]:0x65d95\n    at http://127.0.0.1:5192/_framework/dotnet.native.rnfw9460zo.wasm:wasm-function[4402]:0xf2f98\n    at http://127.0.0.1:5192/_framework/dotnet.native.rnfw9460zo.wasm:wasm-function[4399]:0xf2e3f\n    at http://127.0.0.1:5192/_framework/dotnet.native.rnfw9460zo.wasm:wasm-function[1569]:0x65e57\n    at e.<computed> (http://127.0.0.1:5192/_framework/dotnet.runtime.xevcx800hs.js:3:205922)\n    at http://127.0.0.1:5192/_framework/dotnet.runtime.xevcx800hs.js:3:202392",
+    "[0x0019bf1c--UI-] MONO_WASM: mono_wasm_pthread_on_pthread_attached () failed TypeError: Cannot read properties of undefined (reading 'dispatchEvent')",
+    "MONO_WASM: Cannot read properties of undefined (reading 'dispatchEvent')\nTypeError: Cannot read properties of undefined (reading 'dispatchEvent')\n    at cl (http://127.0.0.1:5192/_framework/dotnet.runtime.xevcx800hs.js:3:161284)\n    at http://127.0.0.1:5192/_framework/dotnet.native.rnfw9460zo.wasm:wasm-function[1561]:0x65d95\n    at http://127.0.0.1:5192/_framework/dotnet.native.rnfw9460zo.wasm:wasm-function[4402]:0xf2f98\n    at http://127.0.0.1:5192/_framework/dotnet.native.rnfw9460zo.wasm:wasm-function[4399]:0xf2e3f\n    at http://127.0.0.1:5192/_framework/dotnet.native.rnfw9460zo.wasm:wasm-function[1569]:0x65e57\n    at e.<computed> (http://127.0.0.1:5192/_framework/dotnet.runtime.xevcx800hs.js:3:205922)\n    at http://127.0.0.1:5192/_framework/dotnet.runtime.xevcx800hs.js:3:202392",
+    "Doroti Web bootstrap failed. Error: Doroti worker runtime failed: protocol violation: Error: Unsupported Doroti protocol version 'undefined'.\n    at Worker.<anonymous> (http://127.0.0.1:5192/_content/Doroti.Host.Web/doroti.web.7o6n696bx8.js:2594:35)"
+  ],
+  "steps": [],
+  "limitation": "Threaded-runtime bootstrap and small UI smoke only; no parallel layout or managed compute overlap proof.",
+  "headers": {
+    "cache-control": "no-store",
+    "content-length": "8331",
+    "content-type": "text/html",
+    "cross-origin-embedder-policy": "require-corp",
+    "cross-origin-opener-policy": "same-origin",
+    "cross-origin-resource-policy": "same-origin",
+    "date": "Tue, 08 Sep 2026 04:45:50 GMT",
+    "last-modified": "Tue, 08 Sep 2026 04:44:29 GMT",
+    "server": "SimpleHTTP/0.6 Python/3.13.13"
+  },
+  "browser": "151.0.7922.34",
+  "url": "http://127.0.0.1:5192/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=1&dorotiInputMarkers=1",
+  "documentIsolated": true,
+  "status": "FAIL",
+  "failure": "TimeoutError: page.waitForFunction: Timeout 120000ms exceeded.",
+  "stack": "page.waitForFunction: Timeout 120000ms exceeded.\n    at ready (C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\web-playwright\\probe-threaded-bootstrap.mjs:25:31)\n    at C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\web-playwright\\probe-threaded-bootstrap.mjs:34:9"
+}

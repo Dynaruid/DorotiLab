@@ -4,6 +4,14 @@ using Doroti.Framework.Rendering;
 using Doroti.Ui;
 using Aspect = Doroti.Framework.Widgets._MediaQueryAspect__media_query;
 
+if (args is ["--execution-cost", var costOutput])
+{
+    ExecutionCostContracts.Verify(costOutput);
+    PersistentMapContracts.Verify();
+    SameWorkContracts.Verify(costOutput + ".trace.json");
+    return;
+}
+
 if (args is ["--same-work", var output])
 {
     PersistentMapContracts.Verify();
