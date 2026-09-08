@@ -109,7 +109,9 @@ public readonly record struct ViewConstraints(double minWidth, double maxWidth, 
 public readonly record struct Rect(double left, double top, double right, double bottom) : IDartTweenValue<Rect>
 {
     public static Rect zero { get; } = new(0, 0, 0, 0);
-    public static Rect largest { get; } = new(double.MinValue, double.MinValue, double.MaxValue, double.MaxValue);
+    // Flutter's kGiantRect bounds must remain finite when converted to Skia floats.
+    // Double extrema become infinities and invalidate inverse magnifier clips.
+    public static Rect largest { get; } = new(-1.0e9, -1.0e9, 1.0e9, 1.0e9);
     public static Rect fromLTWH(double left, double top, double width, double height) => new(left, top, left + width, top + height);
     public static Rect fromLTRB(double left, double top, double right, double bottom) => new(left, top, right, bottom);
     public static Rect fromCircle(Offset center, double radius) => new(center.dx - radius, center.dy - radius, center.dx + radius, center.dy + radius);

@@ -3,6 +3,12 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args is ["--magnifier-shadows"])
+{
+    MountedPickerContracts.VerifyMagnifierShadows();
+    return;
+}
+
 if (args is ["--mac-text-menu"])
 {
     MacMenuRenderingContracts.Verify();

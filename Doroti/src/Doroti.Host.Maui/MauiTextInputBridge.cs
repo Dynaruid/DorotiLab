@@ -1,5 +1,6 @@
 using Doroti.Ui;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Dispatching;
 
 namespace Doroti.Host.Maui;
 
@@ -11,13 +12,18 @@ public sealed partial class MauiTextInputBridge : IDisposable
     private Editor? _editor;
     private readonly Layout? _visualHost;
     private readonly bool _attachOnDemand;
+    private readonly IDispatcher _inputDispatcher;
+    private readonly object _inputMutationGate = new();
+    private readonly Queue<(Action Apply, bool ChangesClient)> _inputMutations = new();
+    private int _pendingClientChanges;
+    private bool _drainingInputMutations;
     private InputView? _active;
     private DorotiTextInputConfiguration _configuration;
     private bool _hasClient;
     private bool _suspended;
     private bool _updating;
     private bool _publishingNativeTextChange;
-    private bool _disposed;
+    private volatile bool _disposed;
     private bool _editingStateDispatchPending;
     private string? _pendingNativeText;
     private InputView? _pendingNativeInput;
@@ -45,6 +51,8 @@ public sealed partial class MauiTextInputBridge : IDisposable
         _editorFactory = editorFactory ?? throw new ArgumentNullException(nameof(editorFactory));
         _visualHost = visualHost;
         _attachOnDemand = attachOnDemand;
+        _inputDispatcher = visualHost?.Dispatcher ?? Dispatcher.GetForCurrentThread()
+            ?? throw new InvalidOperationException("Text input must be created on a MAUI dispatcher thread.");
         if (_attachOnDemand && _visualHost is null)
             throw new ArgumentNullException(nameof(visualHost), "On-demand MAUI text input requires a visual host.");
     }
@@ -75,6 +83,12 @@ public sealed partial class MauiTextInputBridge : IDisposable
     internal void SetClient(DorotiTextInputConfiguration configuration, DorotiTextEditingState state)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        DispatchInputMutation(() => SetClientCore(configuration, state), changesClient: true);
+    }
+
+    private void SetClientCore(DorotiTextInputConfiguration configuration, DorotiTextEditingState state)
+    {
+        if (_disposed) return;
         _configuration = configuration;
         _hasClient = true;
         var next = configuration.inputType == DorotiTextInputType.multiline
@@ -86,13 +100,19 @@ public sealed partial class MauiTextInputBridge : IDisposable
             _active = next;
         }
         Configure(_active, configuration);
-        UpdateState(state);
+        UpdateStateCore(state);
         AttachActiveInput(requestFocus: true);
     }
 
     internal void UpdateState(DorotiTextEditingState state)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        DispatchInputMutation(() => UpdateStateCore(state));
+    }
+
+    private void UpdateStateCore(DorotiTextEditingState state)
+    {
+        if (_disposed) return;
         if (_active is null || !_hasClient) return;
         var length = state.text.Length;
         var start = Math.Clamp(Math.Min(state.selection.baseOffset, state.selection.extentOffset), 0, length);
@@ -179,6 +199,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
     }
 
     internal void ClearClient()
+        => DispatchInputMutation(ClearClientCore, changesClient: true);
+
+    private void ClearClientCore()
     {
         if (_disposed) return;
         _hasClient = false;
@@ -195,6 +218,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
     }
 
     internal void Suspend()
+        => DispatchInputMutation(SuspendCore);
+
+    private void SuspendCore()
     {
         if (_disposed || !_attachOnDemand) return;
         _suspended = true;
@@ -203,6 +229,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
     }
 
     internal void Resume()
+        => DispatchInputMutation(ResumeCore);
+
+    private void ResumeCore()
     {
         if (_disposed || !_attachOnDemand) return;
         _suspended = false;
@@ -210,6 +239,9 @@ public sealed partial class MauiTextInputBridge : IDisposable
     }
 
     internal void ShowTextInput()
+        => DispatchInputMutation(ShowTextInputCore);
+
+    private void ShowTextInputCore()
     {
         if (_disposed || _suspended || !_hasClient) return;
         AttachActiveInput(requestFocus: false);
@@ -217,21 +249,81 @@ public sealed partial class MauiTextInputBridge : IDisposable
     }
 
     internal void HideTextInput()
+        => DispatchInputMutation(HideTextInputCore);
+
+    private void HideTextInputCore()
     {
         if (_disposed) return;
         DeactivateActiveInput(clearFocus: false);
     }
 
+    // Framework focus/microtask work can originate on Android's GL thread.
+    // Marshal the entire input operation, including Text/selection/configuration
+    // and ClearClient, not only focus and visual-tree attachment. Never block
+    // that thread waiting for the UI thread, which may be entering the isolate.
+    // Drain older queued commands before a new UI-thread command so a delayed
+    // clear cannot erase a newly attached client's text.
+    private void DispatchInputMutation(Action mutation, bool changesClient = false)
+    {
+        lock (_inputMutationGate)
+        {
+            _inputMutations.Enqueue((mutation, changesClient));
+            if (changesClient) _pendingClientChanges++;
+        }
+        if (_inputDispatcher.IsDispatchRequired) _inputDispatcher.Dispatch(DrainInputMutations);
+        else DrainInputMutations();
+    }
+
+    private void DrainInputMutations()
+    {
+        if (_drainingInputMutations) return;
+        _drainingInputMutations = true;
+        try
+        {
+            while (true)
+            {
+                (Action Apply, bool ChangesClient) mutation;
+                lock (_inputMutationGate)
+                {
+                    if (!_inputMutations.TryDequeue(out mutation)) return;
+                    if (mutation.ChangesClient) _pendingClientChanges--;
+                }
+                mutation.Apply();
+            }
+        }
+        finally
+        {
+            _drainingInputMutations = false;
+            bool pending;
+            lock (_inputMutationGate) pending = _inputMutations.Count > 0;
+            if (pending) _inputDispatcher.Dispatch(DrainInputMutations);
+        }
+    }
+
+    private bool HasPendingInputMutation
+    {
+        get { lock (_inputMutationGate) return _inputMutations.Count > 0; }
+    }
+
+    private bool HasPendingClientChange
+    {
+        get { lock (_inputMutationGate) return _pendingClientChanges > 0; }
+    }
+
     private void AttachActiveInput(bool requestFocus)
     {
         if (_disposed || _active is null || !_hasClient) return;
+        var expected = _active;
         if (!_attachOnDemand)
         {
-            if (requestFocus) _active.Dispatcher.Dispatch(() => FocusInput(_active));
+            if (requestFocus) _inputDispatcher.Dispatch(() =>
+            {
+                if (!_disposed && _hasClient && !HasPendingInputMutation && ReferenceEquals(expected, _active))
+                    FocusInput(expected);
+            });
             return;
         }
         if (_visualHost is null || _suspended || !_hasClient) return;
-        var expected = _active;
         DispatchVisualMutation(() =>
         {
             if (_disposed || _suspended || !_hasClient || !ReferenceEquals(expected, _active)) return;
@@ -371,7 +463,8 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void HandleTextChanged(object? sender, TextChangedEventArgs args)
     {
-        if (_disposed || _active is null || _updating || !ReferenceEquals(sender, _active)) return;
+        if (_disposed || _active is null || _updating || _drainingInputMutations || HasPendingClientChange ||
+            !ReferenceEquals(sender, _active)) return;
         var text = args.NewTextValue ?? string.Empty;
         var selection = ResolveSelectionAfterTextChange(args.OldTextValue ?? string.Empty, text);
         _publishingNativeTextChange = true;
@@ -394,7 +487,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
 
     private void HandleInputPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs args)
     {
-        if (_disposed || _active is null || _updating || !ReferenceEquals(sender, _active) ||
+        if (_disposed || _active is null || _updating || _drainingInputMutations || HasPendingClientChange || !ReferenceEquals(sender, _active) ||
             args.PropertyName is not (nameof(InputView.CursorPosition) or nameof(InputView.SelectionLength))) return;
         QueueNativeEditingState(_active, _active.Text ?? string.Empty);
     }
@@ -424,7 +517,7 @@ public sealed partial class MauiTextInputBridge : IDisposable
         var text = _pendingNativeText;
         _pendingNativeInput = null;
         _pendingNativeText = null;
-        if (_disposed || _updating || !_hasClient || text is null ||
+        if (_disposed || _updating || _drainingInputMutations || HasPendingClientChange || !_hasClient || text is null ||
             input is null || !ReferenceEquals(input, _active)) return;
 
         // UIKit and Android can both normalize selection after their text
@@ -525,6 +618,11 @@ public sealed partial class MauiTextInputBridge : IDisposable
     {
         if (_disposed) return;
         _disposed = true;
+        DispatchInputMutation(DisposeCore);
+    }
+
+    private void DisposeCore()
+    {
         foreach (var input in Inputs)
         {
             input.TextChanged -= HandleTextChanged;
