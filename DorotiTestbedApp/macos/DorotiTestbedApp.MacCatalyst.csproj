@@ -18,6 +18,9 @@
     <DorotiCompileExclude>AppKitDelegate.cs;DorotiNativePlatformBridge.MacOS.cs</DorotiCompileExclude>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Track plist edits as manifest inputs as well. The current Catalyst
+         SDK's incremental manifest target omits the primary plist file. -->
+    <PartialAppManifest Include="Info.plist" />
     <DorotiNativeBindingProject Include="binding\DorotiTestbedApp.MacCatalyst.Native.csproj" />
     <DorotiTargetDescriptor Include="MacCatalyst" HostKind="Maui" NativeEntryKind="UIKit-Main"
         RuntimeIdentifier="maccatalyst-arm64" TargetFramework="net10.0-maccatalyst"

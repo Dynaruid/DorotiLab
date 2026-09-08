@@ -24,6 +24,7 @@ public sealed class DorotiMacCatalystSkglViewHandler : SKGLViewHandler
     private sealed class DorotiMacCatalystMetalView : SKMetalView
     {
         private CGSize _lastLayoutSize;
+        private double _lastLayoutScale;
         private bool _drawingLayout;
 
         public DorotiMacCatalystMetalView()
@@ -33,11 +34,11 @@ public sealed class DorotiMacCatalystSkglViewHandler : SKGLViewHandler
             // stretches the previous drawable for a frame or two. Own the
             // drawable size here so bounds and backing pixels change together.
             AutoResizeDrawable = false;
-            // A Catalyst resize driven from the left or bottom also moves the
-            // native window origin. Presenting Metal independently from Core
-            // Animation lets the drawable and the window geometry land in
-            // adjacent commits, which appears as a one-frame positional shake.
-            PresentsWithTransaction = true;
+            // SKMetalView presents through MTLCommandBuffer.PresentDrawable.
+            // Transaction presentation instead requires WaitUntilScheduled
+            // followed by drawable.Present, which that delegate does not use.
+            // Enabling it here leaves rendered interaction frames off screen.
+            PresentsWithTransaction = false;
             Layer.ContentsGravity = CALayer.GravityTopLeft;
             Layer.MasksToBounds = true;
         }
@@ -46,24 +47,23 @@ public sealed class DorotiMacCatalystSkglViewHandler : SKGLViewHandler
         {
             base.LayoutSubviews();
             var size = Bounds.Size;
+            var scale = (double)(ContentScaleFactor > 0
+                ? ContentScaleFactor
+                : Window?.Screen.Scale ?? UIScreen.MainScreen.Scale);
             if (_drawingLayout || Window is null || size.Width <= 0 || size.Height <= 0 ||
-                size.Equals(_lastLayoutSize)) return;
+                (size.Equals(_lastLayoutSize) && scale.Equals(_lastLayoutScale))) return;
 
             _lastLayoutSize = size;
+            _lastLayoutScale = scale;
             try
             {
                 _drawingLayout = true;
-                var scale = ContentScaleFactor > 0
-                    ? ContentScaleFactor
-                    : UIScreen.MainScreen.Scale;
                 var drawableSize = new CGSize(
                     Math.Max(1, Math.Round(size.Width * scale)),
                     Math.Max(1, Math.Round(size.Height * scale)));
 
-                // Commit the new backing size and the Metal presentation with
-                // the same Core Animation transaction. This is important for
-                // the left and bottom edges, where AppKit changes the window
-                // origin as well as its size.
+                // Update backing geometry without implicit layer animations,
+                // then draw immediately. SKMetalView owns GPU presentation.
                 CATransaction.Begin();
                 try
                 {
@@ -72,7 +72,7 @@ public sealed class DorotiMacCatalystSkglViewHandler : SKGLViewHandler
                     // construction, so pin it again in the actual resize callback.
                     Layer.ContentsGravity = CALayer.GravityTopLeft;
                     DrawableSize = drawableSize;
-                    Layer.ContentsScale = scale;
+                    Layer.ContentsScale = (System.Runtime.InteropServices.NFloat)scale;
 
                     // MTKView.Draw invokes the existing SkiaSharp delegate with
                     // the drawable that exactly matches the current bounds.

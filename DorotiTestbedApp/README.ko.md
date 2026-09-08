@@ -59,6 +59,8 @@ dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c R
 ### Mac Catalyst 샘플
 
 Apple Silicon macOS에서 Xcode/Mac Catalyst workload로 실행하는 UIKit runner입니다.
+Mac UI idiom을 사용해 iPad 호환 모드의 77% 축소 없이 표시합니다.
+렌더링과 입력 좌표는 Metal 뷰의 배율을 기준으로 처리합니다.
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 `

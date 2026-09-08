@@ -13,7 +13,8 @@
     <!-- <string>public.app-category.YOUR-CATEGORY-HERE</string> -->
 	<key>UIDeviceFamily</key>
 	<array>
-		<integer>2</integer>
+		<!-- Use native Mac points instead of Catalyst's 77% iPad scaling. -->
+		<integer>6</integer>
 	</array>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.lifestyle</string>
@@ -38,5 +39,4 @@
 	<string>Assets.xcassets/appicon.appiconset</string>
 </dict>
 </plist>
-
 

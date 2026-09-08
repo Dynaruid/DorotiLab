@@ -154,6 +154,13 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
         {
             var nativeType = _view.Handler?.PlatformView?.GetType().FullName ?? "unknown";
             var density = Math.Max(1, Microsoft.Maui.Devices.DeviceDisplay.Current.MainDisplayInfo.Density);
+#if MACCATALYST
+            // DeviceDisplay describes the main monitor, which need not own
+            // this window. Match the scale used by the Metal drawable and
+            // SKTouchHandler's conversion from UIKit points to pixels.
+            if (_view.Handler?.PlatformView is UIKit.UIView nativeView)
+                density = Math.Max(1, (double)nativeView.ContentScaleFactor);
+#endif
 #if MACCATALYST || IOS || ANDROID
             PublishDrawableMetrics(
                 args.BackendRenderTarget.Width, args.BackendRenderTarget.Height, density);

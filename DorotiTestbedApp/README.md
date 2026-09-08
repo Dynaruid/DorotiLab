@@ -59,6 +59,8 @@ dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c R
 ### Mac Catalyst sample
 
 This UIKit runner requires Apple Silicon macOS and Xcode/Mac Catalyst workloads.
+It uses the Mac UI idiom without the iPad compatibility mode's 77% downscaling.
+Rendering and pointer coordinates use the Metal view's scale factor.
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 `
