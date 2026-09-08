@@ -747,7 +747,9 @@ public class KeepAlive : ParentDataWidget<global::Doroti.Framework.Rendering.Kee
             parentDataLocal.keepAlive = this.keepAlive;
             if (!this.keepAlive)
             {
-                ((dynamic)((global::Doroti.Framework.Rendering.RenderObject)renderObject).parent)?.markNeedsLayout();
+                if (renderObject.parent is global::Doroti.Framework.Rendering.KeepAliveReleaseListener listener && renderObject is global::Doroti.Framework.Rendering.RenderBox box)
+                    listener.ReleaseKeepAlive(box);
+                else renderObject.parent?.markNeedsLayout();
             }
         }
     }

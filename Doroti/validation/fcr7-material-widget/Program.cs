@@ -3,6 +3,26 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args is ["--scaffold-metrics"])
+{
+    MountedPickerContracts.VerifyScaffoldMetrics();
+    return;
+}
+
+if (args is ["--picture-commands"])
+{
+    PictureCommandContracts.Verify();
+    return;
+}
+
+if (args is ["--section-index"])
+{
+    SectionExtentContracts.Verify();
+    Environment.SetEnvironmentVariable("DOROTI_VALIDATION_SECTION_VIEWPORT", "1");
+    MountedPickerContracts.Verify();
+    return;
+}
+
 if (args is ["--sample-columns"])
 {
     Environment.SetEnvironmentVariable("DOROTI_VALIDATION_SAMPLE_COLUMNS", "1");

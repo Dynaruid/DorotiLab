@@ -173,7 +173,7 @@ public abstract class Widget : global::Doroti.Framework.Foundation.Diagnosticabl
     public virtual List<global::Doroti.Framework.Foundation.DiagnosticsNode> debugDescribeChildren() => throw new NotSupportedException();
     public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
 
-    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info) => throw new NotSupportedException();
+    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info) => toStringShort();
     public abstract Element createElement();
     public virtual string toStringShort()
     {
@@ -1328,7 +1328,8 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
     public virtual string toStringDeep(string prefixLineOne = "", string? prefixOtherLines = null, global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.debug, long wrapWidth = 65) => throw new NotSupportedException();
     public override string ToString() => ToString(global::Doroti.Framework.Foundation.DiagnosticLevel.info);
 
-    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info) => throw new NotSupportedException();
+    public virtual string ToString(global::Doroti.Framework.Foundation.DiagnosticLevel minLevel = global::Doroti.Framework.Foundation.DiagnosticLevel.info) =>
+        $"{GetType().Name}({_widget?.GetType().Name ?? "unmounted"})";
     public virtual bool debugDoingBuild => throw new NotSupportedException();
     public override bool Equals(object? other)
     {

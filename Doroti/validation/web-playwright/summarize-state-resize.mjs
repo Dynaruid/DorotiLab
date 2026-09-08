@@ -4,6 +4,7 @@ import { measureResizeFollowing } from './tests/helpers/resize-following.ts';
 const root='artifacts/state-resize', results=[];
 for(const file of (await readdir(root)).filter(f=>f.endsWith('.json')&&f!=='summary.json')) {
  const p=JSON.parse(await readFile(`${root}/${file}`,'utf8'));
+ if(!Array.isArray(p.profiles)||!p.after?.trace)continue; // Failure records and derived summaries are not latency samples.
  const m=p.profiles[0]?.managed, start=p.profileBefore[0]?.managed?.clockMicroseconds;
  const trace=m?.frame?.Skia?.Trace??[], entries=new Map((m?.profile?.entries??[]).map(e=>[e.Id,e]));
  const counts=new Map((m?.work?.Samples??[]).map(s=>[s.Boundary.TraceSequence,s.Totals]));

@@ -156,13 +156,13 @@ public abstract class RenderSliverMultiBoxAdaptor : RenderSliver, ContainerRende
             DartRuntimePrimitives.Assert(() => !EqualityComparer<RenderBox>.Default.Equals(child, after));
             DartRuntimePrimitives.Assert(() => (object.Equals(child.parent, this)));
             var childParentDataLocal = ((SliverMultiBoxAdaptorParentData?)(object?)child.parentData!)!;
-            if (EqualityComparer<RenderBox>.Default.Equals(childParentDataLocal.previousSibling, after))
+            if (!EqualityComparer<RenderBox>.Default.Equals(childParentDataLocal.previousSibling, after))
             {
-                return;
+                _removeFromChildList(child);
+                _insertIntoChildList(child, after: after);
             }
-            _removeFromChildList(child);
-            _insertIntoChildList(child, after: after);
-            markNeedsLayout();
+            // A keyed child can receive a new index while keeping the same
+            // physical predecessor. Its child-manager slot still must update.
             this.childManager.didAdoptChild(child);
             markNeedsLayout();
         }

@@ -1,5 +1,13 @@
 # DorotiTestbedApp
 
+9월 8일 WASM 구조 작업으로 navigation 애니메이션 중 gallery 본문을 재사용하고
+section descriptor가 개별 builder를 직접 호출합니다. 기본값은 eager이며,
+`DOROTI_SAMPLE_SECTION_VIEWPORT=indexed`(Web query
+`dorotiSectionViewport=indexed`)로 공용 indexed viewport 후보를 비교할 수 있습니다.
+[구현·검증 기록](../history/26-09-08/wasm-section-structure.md)과
+[viewport 계약](../Doroti/validation/section-viewport/README.md)을 참고하세요.
+resize 측정 개선은 원래 latency 목표나 물리 입력 검증의 PASS를 뜻하지 않습니다.
+
 [English](README.md) | **한국어**
 
 DorotiTestbedApp은 플랫폼 workspace 계약을 직접 사용하는 dogfood 앱입니다. 루트 project는 플랫폼 중립이며, `macos`와 `maccatalyst`를 별도 정식 제품으로 둔 7개 runner alias가 있습니다.

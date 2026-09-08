@@ -12,7 +12,7 @@ for(const suffix of ['', ' @dpr']) test(`scrolled sample restores the right colu
    return frame.snapshot.logicalWidth === width && frame.presenter.frontGeneration === frame.snapshot.resizeEpoch.generation;
   }, {message:'Resize has presented the requested viewport before scrolling'}).toBe(true);
  }
- for(const x of [600,1255]) {
+ for(const x of [600,1000]) {
   await page.mouse.move(x,700);
   for(let i=0;i<15;i++){await page.mouse.wheel(0,500);await page.waitForTimeout(150);}
  }
@@ -28,8 +28,11 @@ for(const suffix of ['', ' @dpr']) test(`scrolled sample restores the right colu
   }, {message:'Right column must paint content after reparenting'}).toBeGreaterThan(100);
   await page.screenshot({path:testInfo.outputPath(`returned-${pass}.png`)});
   const before=await page.screenshot({clip:{x:750,y:200,width:450,height:600}});
-  await page.mouse.move(1255,700);await page.mouse.wheel(0,500);await page.waitForTimeout(500);
-  expect(before.equals(await page.screenshot({clip:{x:750,y:200,width:450,height:600}})), 'Restored right column responds to scrolling').toBe(false);
+  // The deep-scroll setup may legitimately restore the last section at the end.
+  // Move back into the list; another downward wheel can correctly be clamped.
+  await page.mouse.move(1000,700);await page.mouse.wheel(0,-500);
+  await expect.poll(async () => before.equals(await page.screenshot({clip:{x:750,y:200,width:450,height:600}})),
+    {message:'Restored right column responds to upward scrolling'}).toBe(false);
  }
  expect(runtimeErrors).toEqual([]);
 });

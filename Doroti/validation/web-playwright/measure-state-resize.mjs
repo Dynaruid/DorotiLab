@@ -8,9 +8,11 @@ const deadline=setTimeout(()=>{console.error('20-minute timeout');process.exit(1
 const browser=await chromium.launch({headless:true,args:['--enable-gpu-rasterization','--ignore-gpu-blocklist','--use-angle=default']});
 const stats=a=>{a.sort((a,b)=>a-b);return {n:a.length,p95:a[Math.ceil(a.length*.95)-1]??null,max:a.at(-1)??null};};
 try {
- const page=await browser.newPage({viewport:{width:1280,height:900}}),errors=[];
+ const viewport={width:Number(process.env.DOROTI_PERF_WIDTH??1280),height:Number(process.env.DOROTI_PERF_HEIGHT??900)};
+ const dpr=Number(process.env.DOROTI_PERF_DPR??1);
+ const page=await browser.newPage({viewport,deviceScaleFactor:dpr}),errors=[];
  page.on('pageerror',e=>errors.push(String(e)));
- await page.goto((process.env.DOROTI_WEB_BASE_URL??'http://127.0.0.1:5088')+`/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=${detailed?1:0}&dorotiInputMarkers=1`);
+ await page.goto((process.env.DOROTI_WEB_BASE_URL??'http://127.0.0.1:5088')+`/?dorotiTestbedMode=sample&dorotiResizeDiagnostics=${detailed?1:0}&dorotiInputMarkers=1`+(process.env.DOROTI_PERF_QUERY??''));
  const read=()=>page.evaluate(()=>{const d=globalThis.__dorotiResizeDiagnostics,id=d.hosts()[0];return {time:performance.now(),snapshot:JSON.parse(d.snapshot(id)),presenter:JSON.parse(d.presenter('doroti-surface')),trace:JSON.parse(d.capture(id))};});
  const managed=async()=>detailed?(await Promise.all(page.workers().map(w=>w.evaluate(()=>globalThis.__dorotiDirectDiagnostics?.()??null)))).filter(Boolean):[];
  await page.waitForFunction(()=>globalThis.__dorotiResizeDiagnostics&&JSON.parse(globalThis.__dorotiResizeDiagnostics.presenter('doroti-surface')).frontRequestId>0,null,{timeout:120000});
@@ -36,6 +38,8 @@ try {
  const input=inputs[0],causal=fronts.find(e=>e.inputSequence>=input?.sequence&&JSON.parse(e.detail).sceneDisposition==='exact-rendered');
  const callbacks=trace.filter(e=>e.phase==='framework-frame').map(e=>e.durationMicroseconds/1000);
  const output={label,scenario,detailed,errors,before,after,profileBefore,profiles,inputs,steps,end,
+  environment:{browser:browser.version(),viewport,dpr,url:page.url()},
+  gcPause:'notMeasured',physicalDisplay:'notVerified',
   onsetMs:causal?causal.timestampMicroseconds/1000-input.time:null,callback:stats(callbacks),
   activeFronts:fronts.filter(e=>e.timestampMicroseconds/1000<=end).length,
   selection:scenario==='button'?await page.getByRole('radio',{name:'Week',exact:true}).getAttribute('aria-checked'):null,
@@ -43,4 +47,8 @@ try {
  await mkdir('artifacts/state-resize',{recursive:true});await writeFile(`artifacts/state-resize/${label}.json`,JSON.stringify(output,null,2));
  console.log(JSON.stringify({label,scenario,errors,onsetMs:output.onsetMs,callback:output.callback,activeFronts:output.activeFronts,selection:output.selection}));
  if(errors.length)process.exitCode=1;
+} catch (error) {
+ await mkdir('artifacts/state-resize',{recursive:true});
+ await writeFile(`artifacts/state-resize/${label}.failure.json`,JSON.stringify({label,scenario,detailed,error:String(error),stack:error.stack},null,2));
+ throw error;
 } finally {await browser.close();clearTimeout(deadline);}

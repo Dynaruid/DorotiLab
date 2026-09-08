@@ -62,6 +62,12 @@ try {
       await page.mouse.move(500, 600); await page.mouse.wheel(0, 200); await page.waitForTimeout(500);
     }
     if (!bounds || bounds.y < 150 || bounds.y + bounds.height >= 780) throw new Error('Progress control not visible');
+    // Scrolling can still have an outstanding managed frame after semantics
+    // first reports an in-range target. Settle setup and refresh its hit rect.
+    await page.mouse.move(20, 40);
+    await page.waitForTimeout(2000);
+    bounds = await startProgress.boundingBox();
+    if (!bounds || bounds.y < 150 || bounds.y + bounds.height >= 780) throw new Error('Settled progress control not visible');
     if (restart) {
       await page.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
       await page.locator('[aria-description="Stop progress"]').waitFor({state:'attached'});
@@ -79,9 +85,21 @@ try {
       profileBefore = await profileRead();
       onsetBefore = await read();
     }
+    bounds = await startProgress.boundingBox();
+    if (!bounds) throw new Error('Progress target lost before input');
     await page.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
     await page.locator('[aria-description="Stop progress"]').waitFor({state:'attached'});
-    if (onset && diagnostics) onsetDiagnostics = await profileRead();
+    if (onset && diagnostics) {
+      // Exporting managed diagnostics before the causal front can itself delay
+      // that front. Keep serialization outside the measured response window.
+      if (onsetBefore.presenter.mode === 'worker-direct-webgl') await page.waitForFunction(() => {
+        const stimulus=globalThis.__dorotiPerfStimuli.filter(s=>s.kind==='pointerup').at(-1);
+        const d=globalThis.__dorotiResizeDiagnostics;
+        return stimulus && JSON.parse(d.capture(d.hosts()[0])).some(e=>e.phase==='front-commit' &&
+          e.inputSequence>=stimulus.sequence && JSON.parse(e.detail).sceneDisposition==='exact-rendered');
+      },null,{timeout:120000});
+      onsetDiagnostics = await profileRead();
+    }
     await page.mouse.move(20, 40);
     if (!onset) await page.waitForTimeout(3000);
   }
@@ -170,4 +188,8 @@ try {
   console.log(JSON.stringify({label,errors,elapsed:after.time-before.time,frames:b.count-a.count,uiFrameMilliseconds,dispatchMean:(b.dispatchTotalMilliseconds-a.dispatchTotalMilliseconds)/(b.count-a.count),rasterMean:(rb.timings.replayTotalMilliseconds-ra.timings.replayTotalMilliseconds)/(rb.timings.replayCount-ra.timings.replayCount),submits:rb.submittedScenes-ra.submittedScenes,failed:rb.failedScenes,mode:after.presenter.mode,gpu:after.snapshot.gpu},null,2));
   }
   if (!process.argv.includes('--no-screenshot')) await page.screenshot({path:`artifacts/${label}.png`});
+} catch(error) {
+  await mkdir('artifacts/sample-perf',{recursive:true});
+  await writeFile(`artifacts/sample-perf/${label}.failure.json`,JSON.stringify({label,error:String(error),stack:error.stack},null,2));
+  throw error;
 } finally {await browser.close();clearTimeout(timeout);}

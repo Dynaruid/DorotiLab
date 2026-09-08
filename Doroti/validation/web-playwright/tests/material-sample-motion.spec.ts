@@ -14,6 +14,16 @@ test("Material sample progress animation changes presented pixels and stops", as
   expect(bounds).not.toBeNull();
   expect(bounds!.y).toBeGreaterThan(150);
   expect(bounds!.y + bounds!.height).toBeLessThan(780);
+  await page.mouse.move(20, 40);
+  // Semantics can enter the viewport before the last scroll frame settles.
+  let previousBounds = '';
+  await expect.poll(async () => {
+    const current = JSON.stringify(await start.boundingBox());
+    const stable = current !== 'null' && current === previousBounds;
+    previousBounds = current;
+    return stable;
+  }, {intervals:[150], message:'Progress hit target settles after scrolling'}).toBe(true);
+  bounds = await start.boundingBox();
   await page.mouse.click(bounds!.x + bounds!.width / 2, bounds!.y + bounds!.height / 2);
   const stop = page.locator('[role="button"][aria-description="Stop progress"]');
   await expect(stop).toBeAttached();

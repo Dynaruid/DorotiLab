@@ -1,12 +1,14 @@
 # .NET WASM에 맞춘 Doroti 재빌드·레이아웃 구조 개편 계획
 
-작성: 2026-09-07. 상태: **계획 작성 완료 / 구현 미착수**.
+작성: 2026-09-07. 실행: 2026-09-08. 상태: **구현·실험·검증 실행, 최종 수용 PARTIAL / indexed 승격 보류**.
+
+실행 근거와 미달 gate는 [구조 개편 실행 기록](history/26-09-08/wasm-section-structure.md)에 보존한다. 기본 eager 경로와 indexed 비교 후보를 구분하며, 원래 목표를 완화하거나 계획을 삭제하지 않는다.
 
 ## 1. 목표와 작업 범위
 
 DorotiTestbedApp의 리사이즈, 1열↔2열 전환, 첫 섹션 진입, 버튼·탭·progress 조작에서 발생하는 긴 UI callback을 줄인다. Flutter에서 옮긴 Widget/Element/RenderObject의 공개 동작은 유지하면서, 내부 실행 단위를 .NET WASM의 호출·할당 비용에 맞춰 작게 만든다. 샘플은 재현 앱이자 첫 적용 대상이며, 재사용할 수 있는 기능은 Framework에 둔다.
 
-이번 요청의 산출물은 이 작업계획이다. 코드 변경, benchmark 실행, renderer 기본값 변경, 배포는 이번 문서 작성에 포함하지 않는다. 기존 미커밋 텍스트 raster/cache/compositing 수정과 반응형 열 수정은 보존한다. 실제 실행을 시작할 때 해당 변경을 포함한 기준선을 먼저 고정한다.
+최초 문서 작성 요청의 산출물은 이 작업계획이었다. 후속 요청 `work.md의 전체작업해줘`에 따라 구현과 benchmark/검증을 실행한다. renderer 기본값 변경과 배포는 별도 승격 근거 없이 하지 않는다. 실행 시작 HEAD `0cc805a4`의 작업 트리는 깨끗했고, 문서에서 미커밋으로 언급했던 텍스트 raster/cache/compositing 및 반응형 열 수정은 현재 기준선에 포함되어 있다.
 
 최종 방향은 **변하지 않는 트리를 다시 만들지 않고, 화면에 필요한 영역만 배치하고, 이미 계산한 순수한 결과를 명시적인 의존성으로 재사용하는 구조**다. 모든 Widget을 새 엔진으로 한 번에 교체하지 않는다.
 
@@ -170,12 +172,46 @@ P6에는 채택된 내부 구조, A/B 산출물 경로, gate별 결과, 미채�
 
 ## 8. 실행 체크리스트
 
-- [ ] P0 현재 소스/런타임 기준선 및 분리된 workload 측정
-- [ ] P1 navigation animation과 안정적인 본문 subtree 분리
-- [ ] P2 section descriptor, 국소 변경, 상태/소유권 계약
+- [x] P0 현재 소스/런타임 기준선 및 분리된 workload 측정 — 독립 5회 corpus, GC pause/live/transient peak 미측정은 명시
+- [x] P1 navigation animation과 안정적인 본문 subtree 분리 — 기본 경로 반영, 불필요한 section rebuild 0 자동 검사
+- [x] P2 section descriptor, 국소 변경, 상태/소유권 계약 — 직접 builder, 상태 수명 표, unpin/dispose 검사
 - [ ] P3 section 가상화, 높이 인덱스, anchor·focus·끝 이동
-- [ ] P4 측정으로 선정한 typed layout/할당 후보 A/B
-- [ ] P5 안전한 frame budget 및 조건부 runtime/Worker 실험 판정
-- [ ] P6 기능·성능·메모리·플랫폼 검증과 history 기록
+- [x] P4 측정으로 선정한 typed layout/할당 후보 A/B — indexed prefix/measurement 경로와 기본 eager 별도 5회 비교; 추가 pooling/전역 dispatch 미채택
+- [x] P5 안전한 frame budget 및 조건부 runtime/Worker 실험 판정 — speculative cache 0, build/layout 중 yield 없음; managed UI 병목이 남아 새 Worker/AOT 미채택
+- [ ] P6 기능·성능·메모리·플랫폼 검증과 history 기록 — 이용 가능한 자동 검사/빌드와 실패·미검증 결과 기록, 전체 수용 미완료
 
-첫 실행 작업은 P0이다. 현재 남은 지연이 build, layout, semantics, raster, queue 중 어디서 발생하는지 구분하기 전에는 대규모 공용 엔진 변경을 시작하지 않는다.
+### 실행 결과와 남은 조건
+
+체크된 항목은 해당 구현/실험의 실행을 뜻하며 최종 latency·물리 수용 PASS를 뜻하지 않는다. P3은 공용 `SectionExtentIndex`/`SectionList`/`SectionFocusCoordinator` 후보까지 구현했다. 29/290/4096 항목, lazy 생성·End·anchor·연속 Tab/Shift+Tab, 열 이동 State, unpin/dispose, owner가 명시적으로 매핑한 동적 재정렬·추가·삭제 검사가 통과했다. 이 과정에서 공용 sliver의 앞 형제가 같은 이동에서도 index를 갱신하도록 수정했다. 화면 밖 descendant의 screen-reader 탐색, 전체 dependency/IME/overlay 수용은 아직 확인되지 않아 P3 전체 완료/기본 승격으로 표시하지 않는다.
+
+P1/P2만 반영한 eager 경로의 resize 개선은 약 1–2%였다. 큰 개선은 `DOROTI_SAMPLE_SECTION_VIEWPORT=indexed` 비교 후보에 속한다. 마지막 공용 재정렬 수정 이후 `reorder-wwwroot` 독립 5회 corpus의 callback p95 실행별 중앙값은 같은 열 341→159.1ms, 열 전환 1699.8→351.0ms였다. 30% 구조 개선 수치와 16.7/33.3/50ms 목표 달성은 별개이며, 원래 strict gate는 미달이다. 앞선 memory/startup/progress corpus는 마지막 재정렬 수정 전 checkpoint로 구분한다.
+
+P6에서는 Windows/Web/MAUI/Android/Linux 빌드 및 사용 가능한 자동 검사와 Linux Qt xcb 실행을 확인했다. WSLg Wayland는 이전 publish에서도 재현되는 protocol 오류로 FAIL, Android 기기와 Apple 실행 환경 및 물리 표시·IME·접근성·사용자 체감은 `notVerified`다. 전체 live/transient memory, 정확한 신규 section 지연, 실제 창 테두리 drag 등 미검증 항목을 다른 PASS로 대체하지 않는다.
+
+원본 비교 스위치·실패 로그·timeout·이전 AOT 실패를 유지한다. 이후 작업은 P3의 남은 correctness/접근성 계약과 단일 section 내부의 synchronous layout 비용, 전체 메모리/물리 gate를 해소하는 것이며, 현재 문서를 삭제하거나 전체 완료로 재분류하지 않는다. 상세 source/artifact/검증 matrix는 [실행 기록](history/26-09-08/wasm-section-structure.md)에 있다.
+
+### 2026-09-08 사용자 관찰 후 카로셀·스크롤 개선
+
+사용자는 `?dorotiTestbedMode=sample&dorotiSectionViewport=indexed`에서 이전보다 약 2배 빠르게 느껴지지만 카로셀과 스크롤의 버벅임이 남는다고 보고했다. 앞선 결과의 “사용자 체감 notVerified”는 그 실행 당시 기록이며, 이번 관찰은 indexed 후보의 체감 개선으로 별도 보존한다. 물리 FPS·전체 P3/P6 수용으로 확대하지 않는다.
+
+- [x] 카로셀·snapping·세로 스크롤의 실제 touch drag/coast를 분리하는 측정 추가
+- [x] 공용 Skia 렌더러의 반복 그림을 native 명령으로 재사용하고 임시 path를 즉시 해제
+- [x] 소수점 위치를 보존하고 bounds·font·context 변경 시 무효화, entry/command/byte 상한 적용
+- [x] 최종 A/B·픽셀·애니메이션·열 복귀 회귀 확인 및 5088 수정본 제공
+
+상세 비교·원시 증거·남은 긴 프레임은 [카로셀·스크롤 후속 기록](history/26-09-08/carousel-scroll-performance.md)에 분리한다. indexed는 계속 opt-in이고 기존 latency·접근성·물리 gate는 유지한다.
+
+후속 결과: 각 조건 2회 관성 이동 A/B의 프레임 callback 중앙값은 일반 카로셀 11.7→7.6ms(35%), snapping 11.6→6.8ms(41%), 세로 스크롤 10.15→6.45ms(36%) 감소했다. 세로 스크롤 callback p95는 35.45→18.55ms였다. 계측 OFF 비교와 Web 회귀 7개 및 공용 GPU 픽셀/캐시 검사가 통과했다. 일반 카로셀의 실제 commit 간격 중앙값은 여전히 약 16.5–17ms이며 물리 FPS 상승을 주장하지 않는다. 새 섹션 진입 시 최대 158.6/247.8ms의 긴 callback은 남아 있어 worst latency 개선/전체 수용 완료로 표시하지 않는다. 총 성능 실행은 초기 진단 4회 + 관성 A/B 12회 + 계측 OFF 4회 = 20회이며 모두 보존했다.
+
+### 2026-09-08 창 크기·열 재구성 후속 개선
+
+사용자는 카로셀 개선은 체감하지만 창 크기에 따른 레이아웃 재구성에서는 개선을 느끼지 못한다고 보고했다. 렌더러 재사용과 별도로 resize의 재구성·소유권 비용을 측정하고 다음을 구현했다.
+
+- [x] 공용 Scaffold의 MediaQuery 변환을 각 슬롯으로 이동해 폭만 바뀔 때 Scaffold 전체 재빌드를 방지
+- [x] indexed 오른쪽 scroll owner를 숨긴 채 유지하고, 실제 필요한 섹션만 이동하도록 공용 SectionList의 일시 정지·재소유 기능 적용
+- [x] 섹션 전체에 안정된 소유권 키를 적용해 깊은 스크롤 후 열 복귀 시 State·anchor 보존
+- [x] 최종 Web 빌드, 공용 native 계약, 브라우저 기능 12개, 이전 카로셀 빌드 대비 최종 A/B 및 5088 수정본 제공
+
+열 전환 상세 비교 2회의 최대 callback은 386.8→210.7ms, 377.2→192.5ms로 45.5–49.0% 감소했다. 같은 열에서 폭만 바꾸는 비교는 156.5→123ms였으나 마지막 창 크기의 정확한 화면 반영 지연은 개선되지 않았다. 상세 계측을 끈 한 쌍의 비교에서 최종 크기 반영은 열 전환 686.5→149.7ms, 같은 열 51.5→51.6ms였다. 소수의 CDP resize 실행 결과이며 물리 창 drag/FPS나 모든 크기 변경의 부드러움을 보장하지 않는다.
+
+진단·실패·중간 후보와 최종 비교를 포함한 성능 시도는 19회다. 최초 깊은 State 복귀 실패와 잘못된 tristate 기대값으로 실패한 테스트 원본을 보존했고, 수정 후 해당 검사는 통과했다. 100ms 이상의 긴 callback, 전체 메모리·물리 표시/IME/접근성·플랫폼 gate는 여전히 남아 있다. P3/P6 전체 완료나 indexed 기본 승격으로 표시하지 않는다. 상세 표와 증거는 [레이아웃 후속 기록](history/26-09-08/responsive-layout-followup.md)에 있다.

@@ -1,13 +1,13 @@
 import { test, expect } from './helpers/fixtures.js';
 import { openDoroti, captureDiagnostics } from './helpers/doroti-diagnostics.js';
 
-for (const dpr of [1, 2]) test.describe(`DPR ${dpr}`, () => {
+for (const dpr of [1, 1.25, 1.5, 2]) test.describe(`DPR ${dpr}`, () => {
 test.use({ deviceScaleFactor: dpr });
 for (const initialWidth of [800, 1280]) {
   test(`sample columns follow logical width from ${initialWidth}`, async ({ page, runtimeErrors }, testInfo) => {
     await page.setViewportSize({ width: initialWidth, height: 900 });
     await openDoroti(page, '&dorotiTestbedMode=sample');
-    for (const [step, width] of [initialWidth, 1280, 800, 1001, 1000, 390, 1501, 800].entries()) {
+    for (const [step, width] of [initialWidth, 1280, 800, 999, 1000, 1001, 390, 1500, 1501, 800].entries()) {
       await page.setViewportSize({ width, height: 900 });
       await expect.poll(async () => {
         const frame = await captureDiagnostics(page);

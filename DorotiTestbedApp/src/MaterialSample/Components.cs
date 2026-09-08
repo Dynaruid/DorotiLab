@@ -49,31 +49,105 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     }
     public override void dispose()
     {
+        _sectionFocus?.Dispose();
+        if (IndexedSections) PaintingBinding.instance.systemFonts.removeListener(FontsChanged);
         _firstScroll.dispose(); _secondScroll.dispose();
         _filled.dispose(); _outlined.dispose(); _colorMenu.dispose(); _iconMenu.dispose();
         base.dispose();
     }
     private SectionEntry[]? _sections;
+    private static readonly string SectionViewport = ReadSectionViewport();
+    private static readonly bool LazySections = SectionViewport == "sliver-list";
+    private static readonly bool IndexedSections = SectionViewport == "indexed";
+    private static string ReadSectionViewport() => Environment.GetEnvironmentVariable("DOROTI_SAMPLE_SECTION_VIEWPORT") switch
+    {
+        null or "" or "eager" => "eager",
+        "sliver-list" => "sliver-list",
+        "indexed" => "indexed",
+        _ => throw new ArgumentException("DOROTI_SAMPLE_SECTION_VIEWPORT must be eager, sliver-list, or indexed."),
+    };
+    private readonly HashSet<int> _visitedSections = [];
+    private readonly Dictionary<(int First, int Count), SectionExtentIndex> _indices = new();
+    private SectionExtentIndex? _activeFirstIndex;
+    private (int Index, double Offset)? _primaryAnchor;
+    private object? _metricRevision;
+    private bool _placementChanged;
+    private bool _secondVisited;
+    private double _lastRightWidth;
+    private bool SectionOwnedBy(int id, ScrollController controller)
+    {
+        var context = _sectionKeys[id].currentContext;
+        var scrollable = context is null ? null : Scrollable.maybeOf(context);
+        return scrollable is not null && controller.positions.Contains(scrollable.position);
+    }
+    private long _fontGeneration;
+    private SectionFocusCoordinator? _sectionFocus;
+    private void MaterializeSection(int id)
+    {
+        var second = widget.TwoColumns && id >= _split;
+        var first = second ? _split : 0;
+        var count = second ? _sections!.Length - _split : widget.TwoColumns ? _split : _sections!.Length;
+        SectionList.RequestItem(second ? _secondScroll : _firstScroll, _indices[(first, count)], id - first);
+    }
+    public override void initState()
+    {
+        base.initState();
+        if (IndexedSections) PaintingBinding.instance.systemFonts.addListener(FontsChanged);
+    }
+    private void FontsChanged()
+    {
+        if (mounted) setState(() => { _fontGeneration++; _lists.Clear(); });
+    }
+    private void InvalidateSection(int id)
+    {
+        foreach (var (range, index) in _indices)
+            if (id >= range.First && id < range.First + range.Count) index.Invalidate(id - range.First);
+    }
+    public override void didUpdateWidget(ComponentsScreen oldWidget)
+    {
+        base.didUpdateWidget(oldWidget);
+        if (oldWidget.TwoColumns != widget.TwoColumns)
+        {
+            if (_activeFirstIndex is { } index) _primaryAnchor = (index.AnchorIndex, index.AnchorOffset);
+            _placementChanged = true;
+            _lists.Clear();
+        }
+    }
     private readonly List<GlobalKey<IState>> _sectionKeys = [];
+    private readonly List<GlobalKey<IState>> _sectionOwnerKeys = [];
     private readonly Dictionary<(int First, int Count), Widget> _lists = new();
     private int _split;
+    internal long SectionBuildCount { get; private set; }
+    internal long SectionFirstBuildCount { get; private set; }
     private SectionEntry[] CreateSections(BuildContext context)
     {
-        Func<BuildContext, StateSetter, IReadOnlyList<Func<Widget>>>[] factories =
-            [Actions, Communication, Containment, Navigation, Selection, (_, _) => [TextInputs], (_, _) => [() => new SampleImageDemo()]];
+        // Descriptors hold identities and builders only. Theme/context are supplied
+        // by the mounted view on every build, never captured in a factory cache.
+        (int Count, Func<BuildContext, StateSetter, int, Widget> Build)[] groups =
+            [(4, Actions), (3, Communication), (5, Containment), (7, Navigation),
+             (8, Selection), (1, (_, _, _) => TextInputs()), (1, (_, _, _) => new SampleImageDemo())];
+        if (IndexedSections) _sectionFocus ??= new SectionFocusCoordinator(Enumerable.Range(0, groups.Sum(group => group.Count)), MaterializeSection);
         var entries = new List<SectionEntry>();
-        for (var group = 0; group < factories.Length; group++)
+        for (var group = 0; group < groups.Length; group++)
         {
-            var factory = factories[group];
-            var count = factory(context, setState).Count;
+            var (count, builder) = groups[group];
             for (var index = 0; index < count; index++)
             {
                 var sectionIndex = index;
                 // State data belongs to the screen; each mounted demo owns its
                 // redraw scope. The local context keeps inherited dependencies local.
-                if (_sectionKeys.Count == entries.Count) _sectionKeys.Add(new GlobalKey<IState>());
+                if (_sectionKeys.Count == entries.Count)
+                { _sectionKeys.Add(new GlobalKey<IState>()); _sectionOwnerKeys.Add(new GlobalKey<IState>()); }
+                var sectionId = entries.Count;
+                var built = false;
                 Widget child = new StatefulBuilder(key: _sectionKeys[entries.Count], builder: (ctx, change) =>
-                    factory(ctx, fn => { if (ctx.mounted) change(fn); })[sectionIndex]());
+                {
+                    SectionBuildCount++;
+                    _visitedSections.Add(sectionId);
+                    if (!built) { built = true; SectionFirstBuildCount++; }
+                    var content = builder(ctx, fn => { if (ctx.mounted) change(() => { fn(); InvalidateSection(sectionId); }); }, sectionIndex);
+                    return _sectionFocus?.Wrap(sectionId, content) ?? content;
+                });
                 var entry = new SectionEntry(group, index == 0, index == count - 1, child);
                 entries.Add(entry with { Child = new Builder(builder: ctx => GroupPiece(ctx, entry)) });
             }
@@ -83,6 +157,13 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     }
     public override Widget build(BuildContext context)
     {
+        if (IndexedSections)
+        {
+            // Conservative metric invalidation includes every theme change.
+            // Color-only cache retention can be added after metric parity tests.
+            object revision = (M.Theme.of(context), MediaQuery.textScalerOf(context), Directionality.of(context), _fontGeneration);
+            if (!Equals(revision, _metricRevision)) { _metricRevision = revision; _lists.Clear(); }
+        }
         var sections = _sections ??= CreateSections(context);
         Widget List(bool second)
         {
@@ -90,27 +171,81 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
             var count = second ? sections.Length - _split : widget.TwoColumns ? _split : sections.Length;
             if (!_lists.TryGetValue((firstIndex, count), out var list))
             {
+                Widget? LazyChild(BuildContext _, long index) =>
+                    IndexedSections && second && !widget.TwoColumns && !SectionOwnedBy(firstIndex + (int)index, _secondScroll)
+                    ? null : new KeepAlive(key: IndexedSections ? _sectionOwnerKeys[firstIndex + (int)index] : new ValueKey<int>(firstIndex + (int)index), keepAlive: true,
+                    child: new IndexedSemantics(index: index, child: new RepaintBoundary(child: sections[firstIndex + (int)index].Child)));
+                var children = new SliverChildBuilderDelegate(LazyChild, childCount: count,
+                    findChildIndexCallback: key =>
+                    {
+                        var id = IndexedSections ? _sectionOwnerKeys.FindIndex(ownerKey => ReferenceEquals(ownerKey, key))
+                            : key is ValueKey<int> value ? value.value : -1;
+                        return id >= firstIndex && id < firstIndex + count ? id - firstIndex : null;
+                    },
+                    addAutomaticKeepAlives: false, addRepaintBoundaries: false, addSemanticIndexes: false);
+                if (!_indices.TryGetValue((firstIndex, count), out var extentIndex))
+                    _indices[(firstIndex, count)] = extentIndex = new SectionExtentIndex(count);
+                if (!second) _activeFirstIndex = extentIndex;
+                if (_placementChanged)
+                {
+                    var anchor = _primaryAnchor;
+                    if (anchor is { } primary && primary.Index >= firstIndex && primary.Index < firstIndex + count)
+                        extentIndex.RequestItem(primary.Index - firstIndex, primary.Offset);
+                    else extentIndex.RequestItem(extentIndex.AnchorIndex, extentIndex.AnchorOffset);
+                }
                 list = new FocusTraversalGroup(child: new CustomScrollView(
                     controller: second ? _secondScroll : _firstScroll, primary: false,
+                    cacheExtent: IndexedSections ? 0 : null,
                     // This finite gallery has heterogeneous sections. Lay each one out
                     // before scrolling so the viewport knows the actual end immediately.
                     // Separate slivers cull offscreen paint; boundaries retain each
                     // section's drawing without rasterizing one gallery-sized picture.
-                    slivers: sections.Skip(firstIndex).Take(count).Select(section => (Widget)
-                        new SliverToBoxAdapter(child: new RepaintBoundary(child: section.Child))).ToList()));
+                    slivers: IndexedSections
+                        ? [new SectionList(children, extentIndex, metricRevision: _metricRevision,
+                            retainIndices: _visitedSections.Where(id => id >= firstIndex && id < firstIndex + count &&
+                                (second || widget.TwoColumns || id < _split || SectionOwnedBy(id, _firstScroll))).Select(id => id - firstIndex).ToArray(),
+                            suspended: second && !widget.TwoColumns,
+                            restoreRetainedChildren: second && widget.TwoColumns && _placementChanged)]
+                        : LazySections ? [new SliverList(@delegate: children)]
+                        : sections.Skip(firstIndex).Take(count).Select(section => (Widget)
+                            new SliverToBoxAdapter(child: new RepaintBoundary(child: section.Child))).ToList()));
                 _lists.Add((firstIndex, count), list);
             }
-            return new Padding(padding: EdgeInsets.CreateOnly(right: widget.TwoColumns ? 10 : 0), child: list);
+            return new Padding(padding: EdgeInsets.CreateOnly(right: widget.TwoColumns || (IndexedSections && second) ? 10 : 0), child: list);
         }
-        return new Row(crossAxisAlignment: CrossAxisAlignment.stretch, children:
+        Widget result;
+        if (IndexedSections)
+        {
+            _secondVisited |= widget.TwoColumns;
+            var firstList = List(false);
+            var secondList = _secondVisited ? List(true) : SizedBox.CreateShrink();
+            // Keep the right scroll owner mounted once visited. Hidden sections
+            // stay there until the single-column viewport actually needs them.
+            // Preserve its last finite width while its occupied width is zero.
+            result = new LayoutBuilder(builder: (_, constraints) =>
+            {
+                if (widget.TwoColumns) _lastRightWidth = constraints.maxWidth / 2;
+                return new Row(crossAxisAlignment: CrossAxisAlignment.stretch, children:
+                [
+                    new Expanded(child: firstList),
+                    new SizedBox(width: widget.TwoColumns ? _lastRightWidth : 0,
+                        child: new Offstage(offstage: !widget.TwoColumns,
+                            child: new OverflowBox(minWidth: _lastRightWidth, maxWidth: _lastRightWidth,
+                                alignment: Alignment.topLeft,
+                                child: new TickerMode(enabled: widget.TwoColumns,
+                                    child: new ExcludeFocus(excluding: !widget.TwoColumns, child: secondList))))),
+                ]);
+            });
+        }
+        else result = new Row(crossAxisAlignment: CrossAxisAlignment.stretch, children:
         [
             new Flexible(flex: 1000, child: List(false)),
-            // The list partition and its visible columns must change together.
-            // Navigation's reverse animation can still be at 1 after shrinking;
-            // using it here mounts the second list twice in a narrow viewport.
             widget.TwoColumns ? new Flexible(flex: 1000, child: List(true)) : SizedBox.CreateShrink(),
         ]);
+        _placementChanged = false;
+        return IndexedSections ? new Listener(onPointerDown: _ => _sectionFocus?.CancelPendingTraversal(), child: result) : result;
     }
+
     private sealed record SectionEntry(int Group, bool First, bool Last, Widget Child);
     private Widget GroupPiece(BuildContext ctx, SectionEntry entry)
     {
@@ -140,7 +275,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     private static Widget Flow(params Widget[] children) => new Wrap(spacing: 10, runSpacing: 10, children: children.ToList());
     private static Widget Bold(string label) => new Text(label, style: new TextStyle(fontWeight: FontWeight.bold));
     private static void DisplayAction() { } // Pinned reference display-only callbacks.
-    private IReadOnlyList<Func<Widget>> Actions(BuildContext ctx, StateSetter setState)
+    private Widget Actions(BuildContext ctx, StateSetter setState, int sectionIndex)
     {
         var icon = new Icon(M.Icons.add);
         Widget Buttons(bool disabled, bool withIcon)
@@ -164,54 +299,56 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
             2 => M.IconButton.CreateFilledTonal(icon: new Icon(M.Icons.settings_outlined), selectedIcon: new Icon(M.Icons.settings), isSelected: _icons[i], onPressed: enabled ? () => setState(() => _icons[i] = !_icons[i]) : null),
             _ => M.IconButton.CreateOutlined(icon: new Icon(M.Icons.settings_outlined), selectedIcon: new Icon(M.Icons.settings), isSelected: _icons[i], onPressed: enabled ? () => setState(() => _icons[i] = !_icons[i]) : null),
         };
-        return
-        [
-            () => Section("Common buttons", new Center(child: new SingleChildScrollView(scrollDirection: Axis.horizontal, child: new Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
+        return sectionIndex switch
+        {
+            0 => Section("Common buttons", new Center(child: new SingleChildScrollView(scrollDirection: Axis.horizontal, child: new Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [Buttons(false, false), Buttons(false, true), Buttons(true, false)])))),
-            () => Section("Floating action buttons", new Center(child: new Wrap(crossAxisAlignment: WrapCrossAlignment.center, spacing: 10, runSpacing: 10, children:
+            1 => Section("Floating action buttons", new Center(child: new Wrap(crossAxisAlignment: WrapCrossAlignment.center, spacing: 10, runSpacing: 10, children:
                 [M.FloatingActionButton.CreateSmall(heroTag: "sample-small", tooltip: "Small", onPressed: DisplayAction, child: icon),
                  M.FloatingActionButton.CreateExtended(heroTag: "sample-extended", tooltip: "Extended", onPressed: DisplayAction, icon: icon, label: new Text("Create")),
                  new M.FloatingActionButton(heroTag: "sample-normal", tooltip: "Standard", onPressed: DisplayAction, child: icon),
                  M.FloatingActionButton.CreateLarge(heroTag: "sample-large", tooltip: "Large", onPressed: DisplayAction, child: icon)]))),
-            () => Section("Icon buttons", new Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: Enumerable.Range(0, 4).Select(i => (Widget)new Column(spacing: 10,
+            2 => Section("Icon buttons", new Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: Enumerable.Range(0, 4).Select(i => (Widget)new Column(spacing: 10,
                 children: [ToggleIcon(i, true), ToggleIcon(i, false)])).ToList())),
-            () => SpacedSection("Segmented buttons", new StatefulBuilder(builder: (_, change) => new M.SegmentedButton<string>(segments: new[] { "Day", "Week", "Month", "Year" }.Select((label, i) => new M.ButtonSegment<string>(value: label, label: new Text(label),
+            3 => SpacedSection("Segmented buttons", new StatefulBuilder(builder: (_, change) => new M.SegmentedButton<string>(segments: new[] { "Day", "Week", "Month", "Year" }.Select((label, i) => new M.ButtonSegment<string>(value: label, label: new Text(label),
                 icon: new Icon(new[] { M.Icons.calendar_view_day, M.Icons.calendar_view_week, M.Icons.calendar_view_month, M.Icons.calendar_today }[i]))).ToList(),
                 selected: _single, onSelectionChanged: value => change(() => _single = value))),
                 new StatefulBuilder(builder: (_, change) => new M.SegmentedButton<string>(segments: new[] { "XS", "S", "M", "L", "XL" }.Select(label => new M.ButtonSegment<string>(value: label, label: new Text(label))).ToList(),
                     selected: _multiple, multiSelectionEnabled: true, onSelectionChanged: value => change(() => _multiple = value)))),
-        ];
+            _ => throw new ArgumentOutOfRangeException(nameof(sectionIndex)),
+        };
     }
-    private IReadOnlyList<Func<Widget>> Communication(BuildContext ctx, StateSetter setState) =>
-    [
-        () => Section("Badges", new M.NavigationBar(selectedIndex: _badgeIndex, onDestinationSelected: value => setState(() => _badgeIndex = value), destinations:
+    private Widget Communication(BuildContext ctx, StateSetter setState, int sectionIndex) => sectionIndex switch
+    {
+        0 => Section("Badges", new M.NavigationBar(selectedIndex: _badgeIndex, onDestinationSelected: value => setState(() => _badgeIndex = value), destinations:
             [new M.NavigationDestination(icon: new M.Badge(label: new Text("999+"), child: new Icon(M.Icons.mail_outline)), selectedIcon: new M.Badge(label: new Text("999+"), child: new Icon(M.Icons.mail)), label: "Mail"),
              new M.NavigationDestination(icon: new M.Badge(label: new Text("10"), child: new Icon(M.Icons.chat_bubble_outline)), selectedIcon: new M.Badge(label: new Text("10"), child: new Icon(M.Icons.chat_bubble)), label: "Chat"),
              new M.NavigationDestination(icon: new M.Badge(child: new Icon(M.Icons.group_outlined)), selectedIcon: new M.Badge(child: new Icon(M.Icons.group_rounded)), label: "Rooms"),
              new M.NavigationDestination(icon: new M.Badge(label: new Text("3"), child: new Icon(M.Icons.videocam_outlined)), selectedIcon: new M.Badge(label: new Text("3"), child: new Icon(M.Icons.videocam)), label: "Meet") ])),
-        () => BroadProgressScope ? Section("Progress indicators", new Row(children:
+        1 => BroadProgressScope ? Section("Progress indicators", new Row(children:
             [new M.IconButton(tooltip: _progress ? "Stop progress" : "Start progress", isSelected: _progress, selectedIcon: new Icon(M.Icons.pause), icon: new Icon(M.Icons.play_arrow), onPressed: () => this.setState(() => { _progress = !_progress; _sections = null; _lists.Clear(); })),
              new SizedBox(width: 20), new M.CircularProgressIndicator(value: _progress ? null : 0.7), new SizedBox(width: 20), new Expanded(child: new M.LinearProgressIndicator(value: _progress ? null : 0.7)), new SizedBox(width: 20)])) : new ProgressIndicators(key: _progressKey),
-        () => Section("Snackbar", new M.TextButton(child: Bold("Show snackbar"), onPressed: () => M.ScaffoldMessenger.of(ctx).showSnackBar(new M.SnackBar(
+        2 => Section("Snackbar", new M.TextButton(child: Bold("Show snackbar"), onPressed: () => M.ScaffoldMessenger.of(ctx).showSnackBar(new M.SnackBar(
             content: new Text("This is a snackbar"), width: 400, behavior: M.SnackBarBehavior.floating, action: new M.SnackBarAction(label: "Close", onPressed: DisplayAction))))),
-    ];
-    private IReadOnlyList<Func<Widget>> Containment(BuildContext ctx, StateSetter setState)
+        _ => throw new ArgumentOutOfRangeException(nameof(sectionIndex)),
+    };
+    private Widget Containment(BuildContext ctx, StateSetter setState, int sectionIndex)
     {
         Widget Sheet(BuildContext sheetContext) => new SizedBox(height: 150, child: new Padding(padding: EdgeInsets.CreateSymmetric(horizontal: 32),
             child: new ListView(shrinkWrap: true, scrollDirection: Axis.horizontal, children:
                 new[] { M.Icons.share_outlined, M.Icons.add, M.Icons.delete_outline, M.Icons.archive_outlined, M.Icons.settings_outlined, M.Icons.favorite_border }
                     .Select((icon, i) => (Widget)new Padding(padding: EdgeInsets.CreateFromLTRB(20, 30, 20, 20), child: new Column(children:
                         [new M.IconButton(icon: new Icon(icon), onPressed: DisplayAction), new Text(new[] { "Share", "Add to", "Trash", "Archive", "Settings", "Favorite" }[i])]))).ToList())));
-        return
-        [
-            () => Section("Bottom sheet", new Wrap(alignment: WrapAlignment.spaceEvenly, children: [
+        return sectionIndex switch
+        {
+            0 => Section("Bottom sheet", new Wrap(alignment: WrapAlignment.spaceEvenly, children: [
                 new M.TextButton(child: Bold("Show modal bottom sheet"), onPressed: () => M.Bottom_sheetLibrary.showModalBottomSheet<object>(ctx, Sheet, showDragHandle: true, constraints: new BoxConstraints(maxWidth: 640))),
                 new M.TextButton(child: Bold(_sheet is null ? "Show bottom sheet" : "Hide bottom sheet"), onPressed: () => { if (_sheet is not null) _sheet.close(); else OpenSheet(Sheet, setState); })])),
-            () => Section("Cards", new Wrap(alignment: WrapAlignment.spaceEvenly, children: [Card(ctx, 0), Card(ctx, 1), Card(ctx, 2)])),
-            () => Section("Carousel", new Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            1 => Section("Cards", new Wrap(alignment: WrapAlignment.spaceEvenly, children: [Card(ctx, 0), Card(ctx, 1), Card(ctx, 2)])),
+            2 => Section("Carousel", new Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 new Padding(padding: EdgeInsets.CreateOnly(left: 8), child: new Text("Uncontained Carousel")), Carousel(ctx, false), new SizedBox(height: 10),
                 new Padding(padding: EdgeInsets.CreateOnly(left: 8), child: new Text("Uncontained Carousel with snapping effect")), Carousel(ctx, true)])),
-            () => Section("Dialog", new Wrap(alignment: WrapAlignment.spaceBetween, children: [
+            3 => Section("Dialog", new Wrap(alignment: WrapAlignment.spaceBetween, children: [
                 new M.TextButton(child: Bold("Show dialog"), onPressed: () => M.DialogLibrary.showDialog<object>(ctx, dialogContext => new M.AlertDialog(
                     title: new Text("What is a dialog?"), content: new Text("A dialog is a type of modal window that appears in front of app content to provide critical information, or prompt for a decision to be made."), actions:
                     [new M.TextButton(child: new Text("Dismiss"), onPressed: () => Navigator.of(dialogContext).pop<object>()), new M.FilledButton(child: new Text("Okay"), onPressed: () => Navigator.of(dialogContext).pop<object>())]))),
@@ -219,8 +356,9 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
                     new Padding(padding: EdgeInsets.CreateAll(20), child: new M.Scaffold(appBar: new M.AppBar(title: new Text("Full-screen dialog"), centerTitle: false,
                         leading: new M.IconButton(icon: new Icon(M.Icons.close), onPressed: () => Navigator.of(dialogContext).pop<object>()),
                         actions: [new M.TextButton(child: new Text("Close"), onPressed: () => Navigator.of(dialogContext).pop<object>())]))))))])),
-            () => Section("Dividers", new M.Divider()),
-        ];
+            4 => Section("Dividers", new M.Divider()),
+            _ => throw new ArgumentOutOfRangeException(nameof(sectionIndex)),
+        };
     }
     private Widget Card(BuildContext context, int style)
     {
@@ -241,34 +379,35 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
         await controller.closed;
         if (mounted) setState(() => _sheet = null);
     }
-    private IReadOnlyList<Func<Widget>> Navigation(BuildContext ctx, StateSetter setState) =>
-    [
-        () => Section("Bottom app bar", new SizedBox(height: 80, child: new M.Scaffold(bottomNavigationBar: new M.BottomAppBar(child: new Row(children:
+    private Widget Navigation(BuildContext ctx, StateSetter setState, int sectionIndex) => sectionIndex switch
+    {
+        0 => Section("Bottom app bar", new SizedBox(height: 80, child: new M.Scaffold(bottomNavigationBar: new M.BottomAppBar(child: new Row(children:
             [Menu(true), new M.IconButton(icon: new Icon(M.Icons.search), tooltip: "Search", onPressed: DisplayAction), new M.IconButton(icon: new Icon(M.Icons.favorite), tooltip: "Favorite", onPressed: DisplayAction)])),
             floatingActionButtonLocation: M.FloatingActionButtonLocation.endContained,
             floatingActionButton: new M.FloatingActionButton(heroTag: "bottom-bar-fab", elevation: 0, child: new Icon(M.Icons.add), onPressed: DisplayAction)))),
-        () => Section("Navigation bar", new M.NavigationBar(selectedIndex: _barIndex, onDestinationSelected: value => setState(() => _barIndex = value), destinations:
+        1 => Section("Navigation bar", new M.NavigationBar(selectedIndex: _barIndex, onDestinationSelected: value => setState(() => _barIndex = value), destinations:
             [new M.NavigationDestination(icon: new Icon(M.Icons.explore_outlined), selectedIcon: new Icon(M.Icons.explore), label: "Explore"),
              new M.NavigationDestination(icon: new Icon(M.Icons.pets_outlined), selectedIcon: new Icon(M.Icons.pets), label: "Pets"),
              new M.NavigationDestination(icon: new Icon(M.Icons.account_box_outlined), selectedIcon: new Icon(M.Icons.account_box), label: "Account")])),
-        () => Section("Navigation drawer", new SizedBox(height: 520, child: new GalleryDrawer()), new SizedBox(height: 20),
+        2 => Section("Navigation drawer", new SizedBox(height: 520, child: new GalleryDrawer()), new SizedBox(height: 20),
             new M.TextButton(child: Bold("Show modal navigation drawer"), onPressed: () => widget.Scaffold.currentState!.openEndDrawer())),
-        () => Section("Navigation rail", new IntrinsicWidth(child: new SizedBox(height: 420, child: new M.NavigationRail(selectedIndex: _railIndex,
+        3 => Section("Navigation rail", new IntrinsicWidth(child: new SizedBox(height: 420, child: new M.NavigationRail(selectedIndex: _railIndex,
             onDestinationSelected: value => setState(() => _railIndex = value), elevation: 4, groupAlignment: 0, labelType: M.NavigationRailLabelType.selected,
             leading: new M.FloatingActionButton(heroTag: "sample-rail-fab", child: new Icon(M.Icons.create), onPressed: DisplayAction),
             destinations: Enumerable.Range(0, 4).Select(i => new M.NavigationRailDestination(icon: new Icon(GalleryDrawer.Icons[i]), selectedIcon: new Icon(GalleryDrawer.SelectedIcons[i]), label: new Text(GalleryDrawer.Labels[i]))).ToList())))),
-        () => Section("Tabs", new M.DefaultTabController(length: 3, child: new SizedBox(height: 80, child: new M.Scaffold(appBar: new M.AppBar(bottom:
+        4 => Section("Tabs", new M.DefaultTabController(length: 3, child: new SizedBox(height: 80, child: new M.Scaffold(appBar: new M.AppBar(bottom:
             new M.TabBar(tabs: [new M.Tab(text: "Video", icon: new Icon(M.Icons.videocam_outlined), iconMargin: EdgeInsets.zero),
                 new M.Tab(text: "Photos", icon: new Icon(M.Icons.photo_outlined), iconMargin: EdgeInsets.zero),
                 new M.Tab(text: "Audio", icon: new Icon(M.Icons.audiotrack_sharp), iconMargin: EdgeInsets.zero)])))))),
-        () => SpacedSection("Search", M.SearchAnchor.CreateBar(barHintText: "Search colors", suggestionsBuilder: (_, controller) => Suggestions(controller, setState)),
+        5 => SpacedSection("Search", M.SearchAnchor.CreateBar(barHintText: "Search colors", suggestionsBuilder: (_, controller) => Suggestions(controller, setState)),
             new Text(_selectedColor is null ? "Select a color" : $"Last selected color is {_selectedColor}")),
-        () => SpacedSection("Top app bars", new M.AppBar(title: new Text("Center-aligned"), leading: new M.BackButton(), centerTitle: true,
+        6 => SpacedSection("Top app bars", new M.AppBar(title: new Text("Center-aligned"), leading: new M.BackButton(), centerTitle: true,
                 actions: [new M.IconButton(iconSize: 32, icon: new Icon(M.Icons.account_circle_outlined), onPressed: DisplayAction)]),
             new M.AppBar(title: new Text("Small"), leading: new M.BackButton(), actions: TopBarActions(), centerTitle: false),
             new SizedBox(height: 100, child: new CustomScrollView(slivers: [M.SliverAppBar.CreateMedium(title: new Text("Medium"), leading: new M.BackButton(), actions: TopBarActions()), new SliverFillRemaining()])),
             new SizedBox(height: 130, child: new CustomScrollView(slivers: [M.SliverAppBar.CreateLarge(title: new Text("Large"), leading: new M.BackButton(), actions: TopBarActions()), new SliverFillRemaining()]))),
-    ];
+        _ => throw new ArgumentOutOfRangeException(nameof(sectionIndex)),
+    };
     private static List<Widget> TopBarActions() => new[] { M.Icons.attach_file, M.Icons.@event, M.Icons.more_vert }
         .Select(icon => (Widget)new M.IconButton(icon: new Icon(icon), onPressed: DisplayAction)).ToList();
     private List<Widget> Suggestions(M.SearchController controller, StateSetter setState)

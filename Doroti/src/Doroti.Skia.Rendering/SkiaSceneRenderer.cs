@@ -9,7 +9,7 @@ using UiPath = Doroti.Ui.Path;
 
 namespace Doroti.Skia.Rendering;
 
-public sealed class SkiaSceneRenderer :
+public sealed partial class SkiaSceneRenderer :
     ISceneHostCapability,
     IParagraphHostCapability,
     IFontHostCapability,
@@ -143,7 +143,8 @@ public sealed class SkiaSceneRenderer :
                     _terminalLedger.Diagnostics,
                     new(_pictureRasterCacheMisses, _promotionMicroseconds, _promotionMaximumMicroseconds,
                         _paragraphCount, _paragraphMicroseconds, _pictureRasterWarmups.Count,
-                        _pictureRasterPixels, _textRenderResources.Count));
+                        _pictureRasterPixels, _textRenderResources.Count,
+                        _pictureCommandHits, _pictureCommandRecordings, _pictureCommandCache.Count, _pictureCommandCount, _pictureCommandBytes));
         }
     }
 
@@ -954,11 +955,15 @@ public sealed class SkiaSceneRenderer :
                         canvas.ClipRect(ToRect(clip.Rect), SKClipOperation.Intersect, true);
                         break;
                     case "clipRRect" when command.HostPayload is SceneClipRRectPayload clip:
-                        canvas.Save(); restoreCounts.Push(1); canvas.ClipPath(ToPath(clip.RRect), SKClipOperation.Intersect, true); break;
+                        canvas.Save(); restoreCounts.Push(1);
+                        using (var path = ToPath(clip.RRect)) canvas.ClipPath(path, SKClipOperation.Intersect, true);
+                        break;
                     case "clipRSuperellipse" when command.HostPayload is SceneClipRSuperellipsePayload clip:
                         canvas.Save(); restoreCounts.Push(1); canvas.ClipRect(ToRect(clip.RSuperellipse.outerRect), SKClipOperation.Intersect, true); break;
                     case "clipPath" when command.HostPayload is SceneClipPathPayload clip:
-                        canvas.Save(); restoreCounts.Push(1); canvas.ClipPath(ToPath(clip.Path), SKClipOperation.Intersect, true); break;
+                        canvas.Save(); restoreCounts.Push(1);
+                        using (var path = ToPath(clip.Path)) canvas.ClipPath(path, SKClipOperation.Intersect, true);
+                        break;
                     case "transform" when command.HostPayload is SceneTransformPayload transform:
                         canvas.Save();
                         restoreCounts.Push(1);
@@ -1119,14 +1124,14 @@ public sealed class SkiaSceneRenderer :
                 case "rotate": canvas.RotateRadians((float)command.Arguments[0]); break;
                 case "transform": Concat(canvas, command.Arguments); break;
                 case "clipRect": canvas.ClipRect(new((float)command.Arguments[0], (float)command.Arguments[1], (float)command.Arguments[2], (float)command.Arguments[3]), SKClipOperation.Intersect, true); break;
-                case "clipRRect" when command.HostPayload is CanvasClipRRectPayload clip: canvas.ClipPath(ToPath(clip.RRect), SKClipOperation.Intersect, clip.DoAntiAlias); break;
+                case "clipRRect" when command.HostPayload is CanvasClipRRectPayload clip: using (var path = ToPath(clip.RRect)) canvas.ClipPath(path, SKClipOperation.Intersect, clip.DoAntiAlias); break;
                 case "clipRSuperellipse" when command.HostPayload is CanvasClipRSuperellipsePayload clip: canvas.ClipRect(ToRect(clip.RSuperellipse.outerRect), SKClipOperation.Intersect, clip.DoAntiAlias); break;
-                case "clipPath" when command.HostPayload is CanvasClipPathPayload clip: canvas.ClipPath(ToPath(clip.Path), SKClipOperation.Intersect, clip.DoAntiAlias); break;
+                case "clipPath" when command.HostPayload is CanvasClipPathPayload clip: using (var path = ToPath(clip.Path)) canvas.ClipPath(path, SKClipOperation.Intersect, clip.DoAntiAlias); break;
                 case "drawRect" when command.HostPayload is CanvasRectPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawRect(ToRect(draw.Rect), paint); break;
                 case "drawRRect" when command.HostPayload is CanvasRRectPayload draw: DrawRRect(canvas, draw); break;
                 case "drawDRRect" when command.HostPayload is CanvasDRRectPayload draw: DrawDRRect(canvas, draw); break;
                 case "drawRSuperellipse" when command.HostPayload is CanvasRSuperellipsePayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawRect(ToRect(draw.RSuperellipse.outerRect), paint); break;
-                case "drawPath" when command.HostPayload is CanvasPathPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawPath(ToPath(draw.Path), paint); break;
+                case "drawPath" when command.HostPayload is CanvasPathPayload draw: using (var path = ToPath(draw.Path)) using (var paint = ToPaint(draw.Paint)) canvas.DrawPath(path, paint); break;
                 case "drawPaint" when command.HostPayload is PaintSnapshot draw: using (var paint = ToPaint(draw)) canvas.DrawPaint(paint); break;
                 case "drawCircle" when command.HostPayload is CanvasCirclePayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawCircle((float)draw.Center.dx, (float)draw.Center.dy, (float)draw.Radius, paint); break;
                 case "drawOval" when command.HostPayload is CanvasOvalPayload draw: using (var paint = ToPaint(draw.Paint)) canvas.DrawOval(ToRect(draw.Rect), paint); break;
@@ -1158,7 +1163,7 @@ public sealed class SkiaSceneRenderer :
         var commands = payload.Commands;
         if (!_enablePictureRasterCache)
         {
-            DrawPicture(canvas, commands);
+            DrawRetainedPicture(canvas, payload);
             return;
         }
 
@@ -1169,7 +1174,7 @@ public sealed class SkiaSceneRenderer :
                 !HasDownscaledImage(commands)) ||
             canvas.Context is not { } context || !PictureCanCompositeOverBackground(commands))
         {
-            DrawPicture(canvas, commands);
+            DrawRetainedPicture(canvas, payload);
             return;
         }
 
@@ -1178,21 +1183,21 @@ public sealed class SkiaSceneRenderer :
         // reuse and must go through the ordinary draw path.
         if (transform.Persp0 != 0 || transform.Persp1 != 0 || transform.Persp2 != 1)
         {
-            DrawPicture(canvas, commands);
+            DrawRetainedPicture(canvas, payload);
             return;
         }
         var mappedBounds = transform.MapRect(ToRect(canvasBounds));
         var rasterExtent = PictureRasterExtent(transform, ToRect(canvasBounds));
         if (!IsFinite(mappedBounds) || mappedBounds.Width <= 0 || mappedBounds.Height <= 0)
         {
-            DrawPicture(canvas, commands);
+            DrawRetainedPicture(canvas, payload);
             return;
         }
 
         if (mappedBounds.Width > MaxCacheablePicturePixels ||
             mappedBounds.Height > MaxCacheablePicturePixels)
         {
-            DrawPicture(canvas, commands);
+            DrawRetainedPicture(canvas, payload);
             return;
         }
 
@@ -1209,7 +1214,7 @@ public sealed class SkiaSceneRenderer :
         var pixels = (long)width * height;
         if (pixels <= 0 || pixels > MaxCacheablePicturePixels)
         {
-            DrawPicture(canvas, commands);
+            DrawRetainedPicture(canvas, payload);
             return;
         }
 
@@ -1257,7 +1262,7 @@ public sealed class SkiaSceneRenderer :
             _framePromotionPixels + pixels > MaxCacheablePicturePixels ||
             _framePromotionMicroseconds >= PromotionBudgetMicroseconds)
         {
-            DrawPicture(canvas, commands);
+            DrawRetainedPicture(canvas, payload);
             return;
         }
 
@@ -1272,7 +1277,7 @@ public sealed class SkiaSceneRenderer :
         rasterCanvas.Translate(-rasterLeft, -rasterTop);
         var matrix = canvas.TotalMatrix;
         rasterCanvas.Concat(in matrix);
-        DrawPicture(rasterCanvas, commands);
+        DrawRetainedPicture(rasterCanvas, payload);
         rasterCanvas.Restore();
         rasterCanvas.Flush();
         var image = surface.Snapshot()
@@ -1391,6 +1396,7 @@ public sealed class SkiaSceneRenderer :
 
     private void ClearPictureRasterCache()
     {
+        ClearPictureCommandCache();
         foreach (var cached in _pictureRasterCache.Values) cached.Image.Dispose();
         _pictureRasterCache.Clear();
         _pictureRasterWarmups.Clear();

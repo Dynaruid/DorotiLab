@@ -197,27 +197,28 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
     private SampleHome? _homeWidget;
     private M.ThemeData? _homeTheme;
     private bool _homeWide, _homeExtended, _homeShort;
+    private TextDirection _homeDirection;
     private int _homeDestination;
     public override Widget build(BuildContext context)
     {
         var theme = M.Theme.of(context);
         var shortWindow = MediaQuery.heightOf(context) <= 740;
+        var direction = Directionality.of(context);
         // Pixel-size changes still flow through render constraints. Rebuild the
         // navigation configuration only when its actual inputs change; its
         // AnimatedBuilder independently listens to breakpoint transitions.
         if (_home is null || !ReferenceEquals(_homeWidget, widget) || !Equals(_homeTheme, theme) ||
-            _homeWide != _wide || _homeExtended != _extended || _homeShort != shortWindow || _homeDestination != _destination)
+            _homeWide != _wide || _homeExtended != _extended || _homeShort != shortWindow || _homeDestination != _destination || _homeDirection != direction)
         {
             _homeWidget = widget; _homeTheme = theme;
             _homeWide = _wide; _homeExtended = _extended; _homeShort = shortWindow; _homeDestination = _destination;
+            _homeDirection = direction;
             _home = BuildAnimatedHome();
         }
         return _home;
     }
-    private Widget BuildAnimatedHome() => new AnimatedBuilder(animation: _controller, builder: (ctx, _) =>
+    private Widget BuildAnimatedHome()
     {
-
-        var barFactor = _barSize.value;
         Widget body = _destination switch
         {
             0 => new ComponentsScreen(twoColumns: _wide, scaffold: _scaffold, key: _components),
@@ -235,17 +236,25 @@ internal sealed class SampleHomeState : State<SampleHome>, Doroti.Framework.Sche
                     Rail(), new Expanded(child: body),
                 ])),
             ]),
-            bottomNavigationBar: new ExcludeSemantics(excluding: barFactor <= 0, child: new ClipRect(child: new Align(alignment: Alignment.topLeft, heightFactor: barFactor,
-                child: new FractionalTranslation(translation: new Offset(0, 1 - _barOffset.value),
-                    child: new M.NavigationBar(selectedIndex: _destination, destinations: SampleConstants.BarDestinations(), onDestinationSelected: Navigate))))));
-    });
-    private Widget Rail() => new ExcludeSemantics(excluding: _railSize.value <= 0, child: new ClipRect(child: new Align(alignment: Alignment.topLeft, widthFactor: _railSize.value,
-        child: new FractionalTranslation(translation: new Offset((_railOffset.value - 1) * (Directionality.of(context) == TextDirection.ltr ? 1 : -1), 0),
+            bottomNavigationBar: new AnimatedBuilder(animation: _controller,
+                child: new M.NavigationBar(selectedIndex: _destination, destinations: SampleConstants.BarDestinations(), onDestinationSelected: Navigate),
+                builder: (_, child) => new ExcludeSemantics(excluding: _barSize.value <= 0,
+                    child: new ClipRect(child: new Align(alignment: Alignment.topLeft, heightFactor: _barSize.value,
+                        child: new FractionalTranslation(translation: new Offset(0, 1 - _barOffset.value), child: child))))));
+    }
+    private Widget Rail()
+    {
+        var direction = Directionality.of(context) == TextDirection.ltr ? 1 : -1;
+        return new AnimatedBuilder(animation: _controller,
             child: new M.NavigationRail(extended: _extended, selectedIndex: _destination,
                 onDestinationSelected: Navigate, destinations: SampleConstants.Destinations.Select((label, i) =>
                     new M.NavigationRailDestination(icon: new Icon(SampleConstants.DestinationIcons[i]), selectedIcon: new Icon(SampleConstants.SelectedDestinationIcons[i]), label: new Text(label))).ToList(),
                 trailing: new Expanded(child: new Padding(padding: EdgeInsets.CreateOnly(bottom: 20), child: _extended ? Settings() :
-                    new Column(mainAxisAlignment: MainAxisAlignment.end, children: [new Flexible(child: BrightnessAction()), new Flexible(child: SeedAction()), new Flexible(child: ImageAction())]))))))));
+                    new Column(mainAxisAlignment: MainAxisAlignment.end, children: [new Flexible(child: BrightnessAction()), new Flexible(child: SeedAction()), new Flexible(child: ImageAction())])))),
+            builder: (_, child) => new ExcludeSemantics(excluding: _railSize.value <= 0,
+                child: new ClipRect(child: new Align(alignment: Alignment.topLeft, widthFactor: _railSize.value,
+                    child: new FractionalTranslation(translation: new Offset((_railOffset.value - 1) * direction, 0), child: child)))));
+    }
     private Widget ifLoading() => widget.Loading ? new Column(mainAxisSize: MainAxisSize.min, children:
         [new M.LinearProgressIndicator(), new Text($"Loading {SampleConstants.Images[widget.Image]}…")]) : widget.Error is { } error
         ? new M.ListTile(title: new Text(error), trailing: new M.TextButton(onPressed: () => widget.SelectImage(widget.Image), child: new Text("Retry image"))) : SizedBox.CreateShrink();

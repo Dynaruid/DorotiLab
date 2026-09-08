@@ -110,21 +110,189 @@ internal static partial class MountedPickerContracts
                 .Register<IPlatformEnvironmentHostCapability>(DorotiCapabilityIds.PlatformEnvironment, host));
             var binding = new WidgetsFlutterBinding(dispatcher);
             renderer.RegisterFontAsync(File.ReadAllBytes("DorotiTestbedApp/assets/fonts/MaterialIcons-Regular.otf"), "MaterialIcons").GetAwaiter().GetResult();
+            if (Environment.GetEnvironmentVariable("DOROTI_VALIDATION_SECTION_VIEWPORT") == "1")
+            {
+                foreach (var count in new[] { 29, 290 })
+                {
+                    var measuredItems = new HashSet<int>();
+                    var disposedItems = new List<int>();
+                    var retention = new Dictionary<int, ValueNotifier<bool>>();
+                    var index = new Doroti.Framework.Rendering.SectionExtentIndex(count, 300);
+                    var scroll = new ScrollController();
+                    var children = new SliverChildBuilderDelegate((_, i) =>
+                    {
+                        measuredItems.Add((int)i);
+                        var pin = new ValueNotifier<bool>(true); retention[(int)i] = pin;
+                        return new ValueListenableBuilder<bool>(valueListenable: pin,
+                            builder: (_, keep, child) => new KeepAlive(keepAlive: keep, child: child!),
+                            child: new SectionLifetimeProbe(new LayoutBuilder(builder: (_, constraints) =>
+                                new SizedBox(height: 80 + (i % 5) * 10 + constraints.maxWidth / 100,
+                                    child: new ColoredBox(color: new Color(0xff123456)))), () => disposedItems.Add((int)i)));
+                    }, childCount: count, addAutomaticKeepAlives: false, addRepaintBoundaries: false, addSemanticIndexes: false);
+                    view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new Directionality(
+                        textDirection: TextDirection.ltr, child: new CustomScrollView(controller: scroll, cacheExtent: 0,
+                            slivers: [new SectionList(children, index)])))));
+                    void Frames() { for (var i = 0; i < 5; i++) host.Fire(); }
+                    Frames();
+                    var initial = measuredItems.Count;
+                    if (initial > 10) throw new Exception("Initial viewport eagerly materialized offscreen sections");
+                    view.DispatchPlatformEvent(() => scroll.jumpTo(scroll.position.maxScrollExtent));
+                    Frames();
+                    if (!measuredItems.Contains(count - 1) || measuredItems.Count > initial + 15)
+                        throw new Exception("End failed to materialize last section without synchronous intermediate construction");
+                    view.DispatchPlatformEvent(() => SectionList.RequestItem(scroll, index, count / 2, 7));
+                    Frames();
+                    if (!measuredItems.Contains(count / 2) || index.AnchorIndex != count / 2 || Math.Abs(index.AnchorOffset - 7) > 1)
+                        throw new Exception($"Indexed materialization lost anchor: {index.AnchorIndex}/{index.AnchorOffset}");
+                    foreach (var width in new[] { 390, 1280, 390, 1280 })
+                    {
+                        view.DispatchPlatformEvent(() => host.Resize(width)); Frames();
+                        if (index.AnchorIndex != count / 2 || Math.Abs(index.AnchorOffset - 7) > 1)
+                            throw new Exception($"Width cache restored pixel offset instead of section anchor at {width}: {index.AnchorIndex}/{index.AnchorOffset}");
+                    }
+                    Console.WriteLine($"SECTION_VIEWPORT count={count} initial={initial} visited={measuredItems.Count} anchor={index.AnchorIndex}/{index.AnchorOffset}");
+                    view.DispatchPlatformEvent(() => retention[0].value = false); Frames();
+                    if (disposedItems.Count(i => i == 0) != 1)
+                        throw new Exception("Unpinning an offscreen section did not dispose it in the next layout");
+                    view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new SizedBox())));
+                    Frames(); scroll.dispose();
+                    if (disposedItems.Count != measuredItems.Count) throw new Exception("Section subtree disposal is unbalanced");
+                    foreach (var pin in retention.Values) pin.dispose();
+                }
+                var focusIndex = new Doroti.Framework.Rendering.SectionExtentIndex(3, 1000);
+                var focusScroll = new ScrollController();
+                var focusNodes = Enumerable.Range(0, 6).Select(i => new FocusNode(debugLabel: $"section-test-{i}")).ToArray();
+                var focusCreated = new HashSet<int>();
+                using var coordinator = new SectionFocusCoordinator(Enumerable.Range(0, 3), id => SectionList.RequestItem(focusScroll, focusIndex, id));
+                var focusChildren = new SliverChildBuilderDelegate((_, i) =>
+                {
+                    focusCreated.Add((int)i);
+                    return new KeepAlive(keepAlive: true, child: coordinator.Wrap((int)i, new SizedBox(height: 1000,
+                        child: new Column(children: [
+                            new Focus(focusNode: focusNodes[i * 2], child: new SizedBox(height: 20, width: 30)),
+                            new Focus(focusNode: focusNodes[i * 2 + 1], child: new SizedBox(height: 20, width: 30))]))));
+                }, childCount: 3, addAutomaticKeepAlives: false, addRepaintBoundaries: false, addSemanticIndexes: false);
+                view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new Directionality(textDirection: TextDirection.ltr,
+                    child: new FocusTraversalGroup(child: new CustomScrollView(controller: focusScroll, cacheExtent: 0,
+                        slivers: [new SectionList(focusChildren, focusIndex)]))))));
+                void FocusFrames() { for (var i = 0; i < 10; i++) { host.Fire(); Thread.Sleep(1); } }
+                FocusFrames();
+                if (focusCreated.Contains(1)) throw new Exception("Focus fixture eagerly built its next section");
+                view.DispatchPlatformEvent(() => focusNodes[1].requestFocus()); FocusFrames();
+                void TwoTabs(bool reverse) => view.DispatchPlatformEvent(() =>
+                {
+                    if (reverse) host.SendKey(new KeyData(1, TimeSpan.Zero, KeyEventType.down, 0x700e1, Doroti.Framework.Services.LogicalKeyboardKey.shiftLeft.keyId, false));
+                    for (var n = 0; n < 2; n++)
+                    {
+                        host.SendKey(new KeyData(1, TimeSpan.Zero, KeyEventType.down, 0x7002b, Doroti.Framework.Services.LogicalKeyboardKey.tab.keyId, false));
+                        host.SendKey(new KeyData(1, TimeSpan.Zero, KeyEventType.up, 0x7002b, Doroti.Framework.Services.LogicalKeyboardKey.tab.keyId, false));
+                    }
+                    if (reverse) host.SendKey(new KeyData(1, TimeSpan.Zero, KeyEventType.up, 0x700e1, Doroti.Framework.Services.LogicalKeyboardKey.shiftLeft.keyId, false));
+                });
+                TwoTabs(false); FocusFrames();
+                if (!focusCreated.Contains(1) || !ReferenceEquals(FocusManager.instance.primaryFocus, focusNodes[3]))
+                    throw new Exception("Tab did not materialize the next section and retain the queued second Tab");
+                view.DispatchPlatformEvent(() => focusNodes[2].requestFocus()); FocusFrames();
+                TwoTabs(true); FocusFrames();
+                if (!ReferenceEquals(FocusManager.instance.primaryFocus, focusNodes[0])) throw new Exception("Reverse section traversal lost a queued Shift+Tab");
+                view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new SizedBox())));
+                FocusFrames(); focusScroll.dispose();
+                foreach (var node in focusNodes) node.dispose();
+                Console.WriteLine("SECTION_FOCUS forward/reverse materialization and queued Tab preservation PASS");
+                var dynamicOrder = Enumerable.Range(0, 10).ToArray();
+                var dynamicKeys = Enumerable.Range(0, 11).Select(_ => new GlobalKey<IState>()).ToArray();
+                var dynamicDisposed = new List<int>();
+                var dynamicScroll = new ScrollController();
+                var dynamicIndex = new Doroti.Framework.Rendering.SectionExtentIndex(10, 1000);
+                Widget DynamicList(int[] retained)
+                {
+                    var order = dynamicOrder;
+                    var adapter = new SliverChildBuilderDelegate((_, item) =>
+                    {
+                        var id = order[item];
+                        return new KeepAlive(key: new ValueKey<int>(id), keepAlive: true,
+                            child: new StatefulBuilder(key: dynamicKeys[id], builder: (_, _) =>
+                                new SectionLifetimeProbe(new SizedBox(height: 1000), () => dynamicDisposed.Add(id))));
+                    }, childCount: order.Length,
+                        findChildIndexCallback: key => key is ValueKey<int> value && Array.IndexOf(order, value.value) is var position && position >= 0 ? position : null,
+                        addAutomaticKeepAlives: false, addRepaintBoundaries: false, addSemanticIndexes: false);
+                    return binding.wrapWithDefaultView(new Directionality(textDirection: TextDirection.ltr,
+                        child: new CustomScrollView(controller: dynamicScroll, cacheExtent: 0,
+                            slivers: [new SectionList(adapter, dynamicIndex, retainIndices: retained)])));
+                }
+                view.DispatchPlatformEvent(() => binding.attachRootWidget(DynamicList([]))); FocusFrames();
+                view.DispatchPlatformEvent(() => SectionList.RequestItem(dynamicScroll, dynamicIndex, 3, 7)); FocusFrames();
+                var dynamicState = dynamicKeys[3].currentState ?? throw new Exception("Dynamic fixture did not mount its anchor");
+                dynamicOrder = [3, 1, 2, 4, 5, 6, 7, 8, 9, 10];
+                dynamicIndex = new Doroti.Framework.Rendering.SectionExtentIndex(dynamicOrder.Length, 1000);
+                view.DispatchPlatformEvent(() =>
+                {
+                    // Map surviving id 3 and cancel scroll activity owned by the old configuration.
+                    SectionList.RequestItem(dynamicScroll, dynamicIndex, 0, 7);
+                    binding.attachRootWidget(DynamicList([0]));
+                }); FocusFrames();
+                if (!ReferenceEquals(dynamicKeys[3].currentState, dynamicState) || dynamicIndex.AnchorIndex != 0 || Math.Abs(dynamicIndex.AnchorOffset - 7) > 1)
+                    throw new Exception($"Reordering a surviving section lost State or its mapped anchor: state={ReferenceEquals(dynamicKeys[3].currentState, dynamicState)}, anchor={dynamicIndex.AnchorIndex}/{dynamicIndex.AnchorOffset}, pixels={dynamicScroll.position.pixels}, total={dynamicIndex.Total}, max={dynamicScroll.position.maxScrollExtent}, disposed={string.Join(',', dynamicDisposed)}, errors={string.Join('\n', errors.Select(e => e.exceptionThrown))}");
+                if (dynamicKeys[0].currentState is not null || dynamicDisposed.Count(id => id == 0) != 1 || dynamicKeys[10].currentState is not null)
+                    throw new Exception("Removing/adding a section violated disposal or lazy construction");
+                view.DispatchPlatformEvent(() => SectionList.RequestItem(dynamicScroll, dynamicIndex, 9)); FocusFrames();
+                if (dynamicKeys[10].currentState is null) throw new Exception("New dynamic section could not materialize");
+                view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new SizedBox()))); FocusFrames();
+                dynamicScroll.dispose();
+                if (dynamicDisposed.GroupBy(id => id).Any(group => group.Count() != 1)) throw new Exception("Dynamic section disposed more than once");
+                Console.WriteLine("SECTION_DYNAMIC owner-mapped reorder/add/remove, surviving State and anchor, removed disposal PASS");
+                if (errors.Count != 0) throw new Exception(string.Join("\n", errors.Select(e => e.exceptionThrown)));
+                return;
+            }
             if (Environment.GetEnvironmentVariable("DOROTI_VALIDATION_SAMPLE_COLUMNS") == "1")
             {
                 view.DispatchPlatformEvent(() => binding.attachRootWidget(binding.wrapWithDefaultView(new M.MaterialApp(
                     locale: new Locale("en", "US"), home: new MaterialSample.SampleHome(0, 0, false, false, null, () => { }, _ => { }, _ => { })))));
+                var retainedSections = new Dictionary<GlobalKey<IState>, IState>();
                 foreach (var width in new[] { 800, 1280, 800, 1001, 1000, 390, 1501, 800 })
                 {
+                    (int Item, double Offset)? expectedAnchor = null;
+                    if (Environment.GetEnvironmentVariable("DOROTI_VALIDATION_SECTION_COLUMNS_DEEP") == "1")
+                    {
+                        var mountedGallery = Elements(binding.rootElement!).OfType<StatefulElement>().FirstOrDefault(e => e.widget is MaterialSample.ComponentsScreen);
+                        if (mountedGallery is not null)
+                        {
+                            var stateType = mountedGallery.state.GetType();
+                            var fields = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+                            var activeIndex = (Doroti.Framework.Rendering.SectionExtentIndex?)stateType.GetField("_activeFirstIndex", fields)!.GetValue(mountedGallery.state);
+                            var firstScroll = (ScrollController)stateType.GetField("_firstScroll", fields)!.GetValue(mountedGallery.state)!;
+                            if (activeIndex is not null)
+                            {
+                                view.DispatchPlatformEvent(() => SectionList.RequestItem(firstScroll, activeIndex, activeIndex.Count / 2, 7));
+                                for (var f = 0; f < 5; f++) host.Fire();
+                                expectedAnchor = (activeIndex.Count / 2, 7);
+                            }
+                        }
+                    }
                     view.DispatchPlatformEvent(() => host.Resize(width));
+                    long? previousSectionBuilds = null;
                     for (var frame = 0; frame < 130; frame++)
                     {
                         host.Fire(); Thread.Sleep(10);
                         var element = (StatefulElement)Elements(binding.rootElement!).Single(e => e.widget is MaterialSample.ComponentsScreen);
                         var current = (MaterialSample.ComponentsScreen)element.widget;
                         var right = (ScrollController)element.state.GetType().GetField("_secondScroll", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(element.state)!;
-                        if (current.TwoColumns != (width > 1000) || right.hasClients != current.TwoColumns)
+                        var rightRetained = Environment.GetEnvironmentVariable("DOROTI_SAMPLE_SECTION_VIEWPORT") == "indexed" &&
+                            (bool)element.state.GetType().GetField("_secondVisited", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(element.state)!;
+                        if (current.TwoColumns != (width > 1000) || right.hasClients != (current.TwoColumns || rightRetained))
                             throw new Exception($"Columns disagree with viewport during transition: width={width}, frame={frame}, right={right.hasClients}");
+                        var galleryState = (MaterialSample.ComponentsState)element.state;
+                        var rebuilds = galleryState.SectionBuildCount - galleryState.SectionFirstBuildCount;
+                        if (frame > 2 && previousSectionBuilds != rebuilds)
+                            throw new Exception($"Navigation tick rebuilt a section: width={width}, frame={frame}");
+                        previousSectionBuilds = rebuilds;
+                        var keys = (List<GlobalKey<IState>>)galleryState.GetType().GetField("_sectionKeys", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(galleryState)!;
+                        foreach (var key in keys)
+                        {
+                            if (retainedSections.TryGetValue(key, out var state) && !ReferenceEquals(key.currentState, state))
+                                throw new Exception($"Visited section State lost during column transition: width={width}, frame={frame}, section={keys.IndexOf(key)}");
+                            if (key.currentState is { } mountedState) retainedSections[key] = mountedState;
+                        }
                     }
                     if (errors.Count != 0) throw new Exception(string.Join("\n", errors.Select(e => e.exceptionThrown)));
                     var screen = (MaterialSample.ComponentsScreen)Elements(binding.rootElement!).Single(e => e.widget is MaterialSample.ComponentsScreen).widget;
@@ -133,6 +301,16 @@ internal static partial class MountedPickerContracts
                     Console.WriteLine($"COLUMNS width={width} two={screen.TwoColumns} controller={controller.value} status={controller.status}");
                     if (screen.TwoColumns != (width > 1000) || controller.value != (width > 1000 ? 1 : 0))
                         throw new Exception("Sample columns did not settle at width " + width);
+                    if (expectedAnchor is { } expected)
+                    {
+                        var state = ((StatefulElement)Elements(binding.rootElement!).Single(e => e.widget is MaterialSample.ComponentsScreen)).state;
+                        var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+                        var split = (int)state.GetType().GetField("_split", flags)!.GetValue(state)!;
+                        var indices = (Dictionary<(int First, int Count), Doroti.Framework.Rendering.SectionExtentIndex>)state.GetType().GetField("_indices", flags)!.GetValue(state)!;
+                        var sectionAnchorEntry = indices.Single(pair => pair.Key == (screen.TwoColumns && expected.Item >= split ? (split, 29 - split) : (0, screen.TwoColumns ? split : 29)));
+                        if (sectionAnchorEntry.Value.AnchorIndex + sectionAnchorEntry.Key.First != expected.Item || Math.Abs(sectionAnchorEntry.Value.AnchorOffset - expected.Offset) > 1)
+                            throw new Exception($"Column anchor lost at width {width}: expected {expected}, actual {sectionAnchorEntry.Value.AnchorIndex + sectionAnchorEntry.Key.First}/{sectionAnchorEntry.Value.AnchorOffset}");
+                    }
                 }
                 return;
             }

@@ -1,5 +1,13 @@
 # DorotiTestbedApp
 
+The September 8 WASM structure work retains the gallery body during navigation
+animation and builds section descriptors directly. The eager gallery remains the
+default; `DOROTI_SAMPLE_SECTION_VIEWPORT=indexed` (Web query
+`dorotiSectionViewport=indexed`) selects the experimental shared indexed viewport.
+See the [implementation and evidence](../history/26-09-08/wasm-section-structure.md)
+and [viewport contract](../Doroti/validation/section-viewport/README.md). Improved
+resize measurements do not qualify the original latency or physical-input gates.
+
 **English** | [한국어](README.ko.md)
 
 DorotiTestbedApp dogfoods the platform-workspace contract. The root project is target-neutral. Seven runner aliases are available; `macos` and `maccatalyst` are separate permanent products.

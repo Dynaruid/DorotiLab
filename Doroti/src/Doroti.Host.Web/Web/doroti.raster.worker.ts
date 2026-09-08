@@ -109,6 +109,7 @@ let managedRuntime: DotnetRuntime | null = null;
 let dotnetModuleUrl: string | null = null;
 let testbedMode = "diagnostics";
 let progressScope = "local";
+let sectionViewport = "eager";
 let managedHostReady = false;
 let workerMode: WorkerMode = "offscreen-worker";
 let transferredCanvas: OffscreenCanvas | null = null;
@@ -702,6 +703,7 @@ globalThis.addEventListener("message", (event: MessageEvent) => {
       dotnetModuleUrl = String(message.dotnetModuleUrl ?? "");
       testbedMode = String(message.testbedMode ?? "diagnostics");
       progressScope = String(message.progressScope ?? "local");
+      sectionViewport = String(message.sectionViewport ?? "eager");
       void startManagedRuntime();
       break;
     case "snapshot":
@@ -811,6 +813,7 @@ async function startManagedRuntime(): Promise<void> {
       DOROTI_TESTBED_MODE: testbedMode, DOROTI_WEB_DIRECT_TRACE: diagnosticsEnabled ? "1" : "0",
       DOROTI_STAGE_TRACE: diagnosticsEnabled ? "1" : "0",
       DOROTI_SAMPLE_PROGRESS_SCOPE: progressScope,
+      DOROTI_SAMPLE_SECTION_VIEWPORT: sectionViewport,
     }).create();
     managedRuntime = runtime;
     await initializeManagedCallbacks();

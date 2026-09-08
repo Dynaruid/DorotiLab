@@ -1844,19 +1844,13 @@ public class ScaffoldState : global::Doroti.Framework.Widgets.State<Scaffold>, g
 
     internal virtual void _addIfNonNull(List<global::Doroti.Framework.Widgets.LayoutId> children, global::Doroti.Framework.Widgets.Widget? child, object childId, bool removeLeftPadding, bool removeTopPadding, bool removeRightPadding, bool removeBottomPadding, bool removeBottomInset = false, bool maintainBottomViewPadding = false)
     {
-        global::Doroti.Framework.Widgets.MediaQueryData dataLocal = ((global::Doroti.Framework.Widgets.MediaQueryData)(object?)MediaQuery.of(this.context).removePadding(removeLeft: removeLeftPadding, removeTop: removeTopPadding, removeRight: removeRightPadding, removeBottom: removeBottomPadding));
-        if (removeBottomInset)
-        {
-            dataLocal = dataLocal.removeViewInsets(removeBottom: true);
-        }
-        if ((maintainBottomViewPadding && (((global::Doroti.Framework.Widgets.MediaQueryData)dataLocal).viewInsets.bottom != 0.0)))
-        {
-            dataLocal = dataLocal.copyWith(padding: ((global::Doroti.Framework.Widgets.MediaQueryData)dataLocal).padding.copyWith(bottom: ((global::Doroti.Framework.Widgets.MediaQueryData)dataLocal).viewPadding.bottom));
-        }
-        if ((child is not null))
-        {
-            children.Add(new global::Doroti.Framework.Widgets.LayoutId(id: childId, child: new global::Doroti.Framework.Widgets.MediaQuery(data: dataLocal, child: child)));
-        }
+        if (child is null) return;
+        // A size change must reach each slot's MediaQuery without rebuilding
+        // Scaffold's Material, gesture and layout configuration. Subscribe in
+        // the local wrapper; Scaffold itself observes its padding/inset aspects.
+        children.Add(new LayoutId(id: childId, child: new ScaffoldSlotMediaQuery(child,
+            removeLeftPadding, removeTopPadding, removeRightPadding, removeBottomPadding,
+            removeBottomInset, maintainBottomViewPadding)));
     }
 
     internal virtual void _buildEndDrawer(List<global::Doroti.Framework.Widgets.LayoutId> children, TextDirection textDirection)

@@ -94,4 +94,5 @@ public sealed record SkiaFrameDiagnostics(
 
 public sealed record SkiaWorkDiagnostics(long PromotionCount, long PromotionMicroseconds,
     long PromotionMaximumMicroseconds, long ParagraphCount, long ParagraphMicroseconds,
-    int WarmupEntries, long RasterPixels, int TextEntries);
+    int WarmupEntries, long RasterPixels, int TextEntries,
+    long CommandCacheHits = 0, long CommandRecordings = 0, int CommandEntries = 0, int RetainedCommands = 0, long CommandBytes = 0);
