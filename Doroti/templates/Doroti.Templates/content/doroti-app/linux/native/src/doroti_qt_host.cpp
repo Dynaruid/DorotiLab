@@ -208,6 +208,13 @@ class DorotiSurface final : public QOpenGLWindow {
     wl_display_flush(wayland_display_);
   }
   void DispatchSemanticsAction(std::int64_t id, std::int64_t action) {
+    // Accessibility requests are distinct from publishing node state. Recheck
+    // the current node when an AT action arrives; a retained provider may refer
+    // to a removed, disabled or no-longer-actionable node.
+    const auto* node = Semantic(id);
+    if (closing_ || node == nullptr || !node->enabled || node->hidden ||
+        action == 0 || (node->actions & action) != action) return;
+    if (node->read_only && (action == (1ll << 6) || action == (1ll << 7))) return;
     callbacks_.semantics_action(callback_context_, this, id, action, Utf8("null"));
   }
 

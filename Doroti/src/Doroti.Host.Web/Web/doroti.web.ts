@@ -49,6 +49,9 @@ interface BrowserHost {
   semanticsElements: Map<number, HTMLElement>;
   semanticsListeners: Map<number, AbortController>;
   semanticsContentSignatures: Map<number, string>;
+  semanticsActionNodes: Map<number, SemanticsNode>;
+  semanticsObservedEditing: Map<number, { value: string; base: number; extent: number }>;
+  semanticsProjectionDepth: number;
   focusedTextFieldSemanticsId: number | null;
   logicalWidth: number;
   logicalHeight: number;
@@ -842,6 +845,7 @@ export function createHost(hostId: number, canvasId: string, logicalWidth: numbe
     id: hostId, root, canvas, input, semantics,
     semanticsElements: new Map(), semanticsListeners: new Map(),
     semanticsContentSignatures: new Map(),
+    semanticsActionNodes: new Map(), semanticsObservedEditing: new Map(), semanticsProjectionDepth: 0,
     focusedTextFieldSemanticsId: null,
     logicalWidth, logicalHeight,
     generation: 1, surfaceGeneration: 0, resizeGeneration: 1,
@@ -1169,6 +1173,8 @@ export function closeHost(hostId: number): void {
   for (const controller of host.semanticsListeners.values()) controller.abort();
   host.semanticsListeners.clear();
   host.semanticsElements.clear();
+  host.semanticsActionNodes.clear();
+  host.semanticsObservedEditing.clear();
   host.semanticsContentSignatures.clear();
   host.semantics.replaceChildren();
   delete host.root.dataset.dorotiHostId;
@@ -1402,6 +1408,12 @@ export function updateSemantics(hostId: number, json: string): void {
   const host = requireHost(hostId);
   const started = performance.now();
   const update = JSON.parse(json) as SemanticsUpdate;
+  host.semanticsProjectionDepth++;
+  try { applySemanticsProjection(host, update, started); }
+  finally { host.semanticsProjectionDepth--; }
+}
+
+function applySemanticsProjection(host: BrowserHost, update: SemanticsUpdate, started: number): void {
   host.semantics.dataset.generation = String(update.generation);
   const nodes = update.nodes ?? [];
   const nodesById = new Map(nodes.map((node) => [Number(node.id), node]));
@@ -1422,6 +1434,9 @@ export function updateSemantics(hostId: number, json: string): void {
   for (const node of nodes) {
     const id = Number(node.id);
     liveIds.add(id);
+    const previousActionNode = host.semanticsActionNodes.get(id);
+    host.semanticsActionNodes.set(id, node.contentUnchanged === true && previousActionNode
+      ? { ...previousActionNode, rect: node.rect, children: node.children } : node);
     let element = host.semanticsElements.get(id);
     // A contentUnchanged node intentionally omits flags/role/actions. Preserve
     // the existing native element kind instead of deriving a div from absent
@@ -1481,6 +1496,7 @@ export function updateSemantics(hostId: number, json: string): void {
       const listeners = new AbortController();
       host.semanticsListeners.set(id, listeners);
       resetSemanticsAttributes(element);
+      host.semanticsObservedEditing.delete(id);
       element.dataset.dorotiSemanticsId = String(node.id);
       element.id = semanticsDomId(host.id, id);
       if (node.identifier) element.dataset.dorotiSemanticsIdentifier = node.identifier;
@@ -1538,11 +1554,24 @@ export function updateSemantics(hostId: number, json: string): void {
       }, { signal: listeners.signal });
 
       if (node.flags?.textField && (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) {
+        element.disabled = !enabled;
         element.readOnly = node.flags.readOnly === true;
         if (element instanceof HTMLInputElement) element.type = node.flags.obscured ? "password" : "text";
         element.inputMode = semanticsInputMode(node.inputType);
         if (node.maxValueLength !== undefined && node.maxValueLength >= 0) element.maxLength = node.maxValueLength;
         if (element.value !== (node.value ?? "")) element.value = node.value ?? "";
+        if (node.textSelectionBase !== undefined && node.textSelectionBase >= 0 &&
+            node.textSelectionExtent !== undefined && node.textSelectionExtent >= 0) {
+          const base = Math.min(element.value.length, node.textSelectionBase);
+          const extent = Math.min(element.value.length, node.textSelectionExtent);
+          const actual = textSelectionOffsets(element);
+          if (actual?.base !== base || actual.extent !== extent)
+            element.setSelectionRange(Math.min(base, extent), Math.max(base, extent), base > extent ? "backward" : "forward");
+        }
+        const projectedSelection = textSelectionOffsets(element);
+        host.semanticsObservedEditing.set(id, {
+          value: element.value, base: projectedSelection?.base ?? 0, extent: projectedSelection?.extent ?? 0,
+        });
         element.addEventListener("input", () => dispatchSemantics(host, node.id, 1 << 21, element.value), { signal: listeners.signal });
         const selection = () => {
           if ((actions & (1 << 11)) === 0) return;
@@ -1578,6 +1607,8 @@ export function updateSemantics(hostId: number, json: string): void {
     controller.abort();
     host.semanticsListeners.delete(id);
     host.semanticsContentSignatures.delete(id);
+    host.semanticsActionNodes.delete(id);
+    host.semanticsObservedEditing.delete(id);
     host.semanticsElements.get(id)?.remove();
     host.semanticsElements.delete(id);
   }
@@ -2305,15 +2336,39 @@ function releasePressedKeys(host: BrowserHost): void {
 }
 
 function dispatchSemantics(host: BrowserHost, nodeId: number | string, action: number, args: unknown = null): void {
+  const id = Number(nodeId);
+  const node = host.semanticsActionNodes.get(id);
+  if (host.semanticsProjectionDepth !== 0 || !node || node.flags?.enabled === false ||
+      ((node.actions ?? 0) & action) !== action) return;
+  if (node.flags?.readOnly && (action & ((1 << 21) | (1 << 13) | (1 << 14) | (1 << 6) | (1 << 7))) !== 0) return;
+  // Programmatic value/selection changes can queue DOM events after projection
+  // has ended. Reject their unchanged values, while retaining real AT actions.
+  const observedEditing = host.semanticsObservedEditing.get(id);
+  if (action === (1 << 21) && args === (observedEditing?.value ?? node.value ?? "")) return;
+  if (action === (1 << 11)) {
+    const selection = args as { base: number; extent: number } | null;
+    if (selection && selection.base === (observedEditing?.base ?? node.textSelectionBase) &&
+        selection.extent === (observedEditing?.extent ?? node.textSelectionExtent)) return;
+  }
+  if (action === (1 << 22) && node.flags?.focused === true) return;
+  // Track accepted changes before dispatch (which may synchronously project a
+  // new tree), so editing back to the previous value is still genuine input.
+  if (observedEditing && action === (1 << 21) && typeof args === "string") observedEditing.value = args;
+  if (observedEditing && action === (1 << 11) && args) {
+    const selection = args as { base: number; extent: number };
+    observedEditing.base = selection.base;
+    observedEditing.extent = selection.extent;
+  }
   requireManaged().dispatchSemanticsAction(
-    host.id, Number(nodeId), action, ++host.inputSequence, JSON.stringify(args));
+    host.id, id, action, ++host.inputSequence, JSON.stringify(args));
 }
 
 function textSelectionOffsets(element: HTMLElement): { base: number; extent: number } | null {
   if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
     const base = element.selectionStart;
     const extent = element.selectionEnd;
-    return base === null || extent === null ? null : { base, extent };
+    return base === null || extent === null ? null : element.selectionDirection === "backward"
+      ? { base: extent, extent: base } : { base, extent };
   }
   const selection = globalThis.getSelection?.();
   if (!selection || selection.rangeCount === 0 || !element.contains(selection.anchorNode) || !element.contains(selection.focusNode)) return null;

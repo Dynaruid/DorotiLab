@@ -35,3 +35,15 @@ including captured highlight pixels for each step. Injected mouse selection
 `Year -> Day` also passed. Local captures and the original duplicate-callback
 log are under `.doroti/evidence/segmented-radio-20260909/` at the repository root.
 TalkBack interaction and other physical MAUI platforms were not tested here.
+
+## Whole-tree projection boundary
+
+`SemanticsProjectionContracts.cs` extends this regression to Entry, CheckBox,
+Switch, Slider, Button, and radio state. It checks cross-element notifications
+during an update, native text selection, repeated values, rapid changes back to
+the previous value before another framework update, and disabled/read-only/
+removed/disposed controls. Real native control changes must still dispatch
+actions. These managed tests do not exercise a platform handler or screen reader.
+
+The cross-platform review and separate Web, Windows UIA, and Qt validation are
+recorded in [accessibility-state-and-actions.md](../../../docs/architecture/accessibility-state-and-actions.md).

@@ -436,7 +436,7 @@ class Provider final : public IRawElementProviderSimple,
     if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
     if (!node.enabled || !IsRadio(node) || !Supports(node, kTapAction))
       return UIA_E_NOTSUPPORTED;
-    const auto selected = node.selected >= 0 ? node.selected : node.checked;
+    const auto selected = node.checked >= 0 ? node.checked : node.selected;
     if (selected != 1) state_->Invoke(id_, kTapAction);
     return S_OK;
   }
@@ -451,7 +451,7 @@ class Provider final : public IRawElementProviderSimple,
     if (result == nullptr) return E_POINTER;
     AccessibilityNode node;
     if (!state_->Snapshot(id_, node)) return UIA_E_ELEMENTNOTAVAILABLE;
-    const auto selected = node.selected >= 0 ? node.selected : node.checked;
+    const auto selected = node.checked >= 0 ? node.checked : node.selected;
     *result = selected == 1 ? TRUE : FALSE;
     return S_OK;
   }
@@ -831,8 +831,8 @@ void AccessibilityBridge::Update(uint64_t generation,
                   toggle_state(current));
       if (is_radio(current))
         raise_bool(id, UIA_SelectionItemIsSelectedPropertyId,
-                   (previous.selected >= 0 ? previous.selected : previous.checked) == 1,
-                   (current.selected >= 0 ? current.selected : current.checked) == 1);
+                   (previous.checked >= 0 ? previous.checked : previous.selected) == 1,
+                   (current.checked >= 0 ? current.checked : current.selected) == 1);
     }
   }
 }

@@ -51,6 +51,7 @@ Require(layer.Children.Count == 0, "Semantics Clear retained native radios");
 Project(4);
 Project(1);
 Console.WriteLine("MAUI semantics radios: reverse/forward selection, no projection feedback, independent groups, native activation, deselection and clear/recreate PASS");
+SemanticsProjectionContracts.Verify();
 
 sealed class InlineProvider : IDispatcherProvider
 {
