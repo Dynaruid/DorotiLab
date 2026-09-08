@@ -102,6 +102,22 @@ arm64 실기기 또는 arm64 에뮬레이터는 `-r android-arm64`로 바꾸고 
 빠른 개발 빌드는 `-c Debug`를 사용합니다. Android 환경변수는 빌드에도 반영되므로
 모드를 바꿀 때 `--no-build`를 사용하지 마세요.
 
+**갤럭시 USB 실기기 실행 예제** (`device-serial`을 `adb devices -l`의 첫 열 값으로 변경):
+
+```powershell
+adb devices -l
+adb -s device-serial shell getprop ro.product.cpu.abi
+
+# ABI가 arm64-v8a인 갤럭시폰
+dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
+  --device device-serial -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+```
+
+설치 후 앱 목록의 **Doroti Material Testbed**로 다시 열 수 있습니다.
+2026-09-09 갤럭시 `SM-S931N`에서 Release AOT APK를 아래 ADB 방법으로 설치하고
+`Doroti Material 3`의 Components 화면 표시까지 확인했습니다. 전체 위젯·입력·성능 검증은 포함하지 않습니다.
+자동 배포가 실패하면 [Android 빌드·배포 오류](#android-빌드배포-오류)를 참고하세요.
+
 ### iOS 샘플
 
 Apple Silicon macOS에서 Xcode/iOS workload를 준비하고 Simulator를 먼저 시작합니다.
@@ -302,6 +318,36 @@ adb devices -l
 
 `android-x64` Release는 Mono AOT 시작 문제를 피하는 JIT/인터프리터 호환 경로입니다.
 arm64 Release AOT는 `android-arm64` 실기기에서 별도로 확인합니다.
+
+### Android 빌드·배포 오류
+
+**SkiaSharp 버전 충돌 (`MSB3277`, `CS1705`)**: 현재 패키지 설정과 달리 Android 호스트가
+이전 SkiaSharp를 참조한다면 다음 두 복원 캐시를 갱신한 뒤 샘플 실행 명령을 다시 실행합니다.
+2026-09-09에는 이 방법으로 `4.152`와 `4.154` 충돌을 해결했습니다.
+
+```powershell
+dotnet restore ./Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
+  -p:RuntimeIdentifier=android-arm64 -p:TargetFramework=net10.0-android --force-evaluate -v minimal
+dotnet restore ./Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
+  -p:TargetFramework=net10.0-android -p:DorotiHostTargetFrameworks=net10.0-android --force-evaluate -v minimal
+```
+
+**APK 생성 후 자동 배포 실패 (`DOTNET_HOST_PATH`, `MSB4221`, `MSB4027`)**:
+2026-09-09에는 `dotnet run`의 `DeployToDevice` 단계가 이 오류로 실패했습니다.
+샘플 모드로 방금 생성된 서명 APK가 있다면 ADB로 직접 설치·실행할 수 있습니다.
+아래 경로는 `android-arm64` Release 출력이며, `publish/`의 이전 APK와 구별합니다.
+수정 시각이 이번 빌드와 일치하는지 확인한 뒤 설치하세요.
+
+```powershell
+$sampleApk = './DorotiTestbedApp/android/bin/android-arm64/Release/net10.0-android/android-arm64/dev.doroti.testbed-Signed.apk'
+Get-Item $sampleApk | Select-Object FullName, LastWriteTime, Length
+adb -s device-serial install -r --user 0 $sampleApk
+adb -s device-serial shell monkey -p dev.doroti.testbed -c android.intent.category.LAUNCHER 1
+```
+
+`device-serial`은 연결된 기기의 serial로 바꿉니다. `--user 0`은 기본 사용자에 설치합니다.
+갤럭시 보안 폴더 등 다른 프로필에 대한 shell 권한 오류가 발생하면 패키지 조회도
+`adb -s device-serial shell pm list packages --user 0 dev.doroti.testbed`로 범위를 지정합니다.
 
 ### 실행했는데 샘플이 보이지 않을 때
 

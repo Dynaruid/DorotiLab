@@ -102,6 +102,22 @@ For an arm64 device or emulator, use `-r android-arm64` and its `--device` ID.
 Use `-c Debug` for faster development builds. Android environment settings also affect
 the build, so do not use `--no-build` when changing modes.
 
+**Galaxy phone over USB** (replace `device-serial` with the first column from `adb devices -l`):
+
+```powershell
+adb devices -l
+adb -s device-serial shell getprop ro.product.cpu.abi
+
+# Galaxy phone with the arm64-v8a ABI
+dotnet run --project ./DorotiTestbedApp/android/DorotiTestbedApp.Android.csproj -c Release -r android-arm64 `
+  --device device-serial -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none
+```
+
+After installation, reopen **Doroti Material Testbed** from the app drawer.
+On 2026-09-09, a Release AOT APK was installed on a Galaxy `SM-S931N` using the ADB method below,
+and the `Doroti Material 3` Components screen was visually confirmed. This did not validate all widgets, input, or performance.
+If automatic deployment fails, see [Android build and deployment errors](#android-build-and-deployment-errors).
+
 ### iOS sample
 
 Use Apple Silicon macOS with Xcode/iOS workloads, and start Simulator first.
@@ -302,6 +318,36 @@ adb devices -l
 
 `android-x64` Release uses a JIT/interpreter compatibility path to avoid a Mono AOT startup issue.
 Validate arm64 Release AOT separately on a physical `android-arm64` device.
+
+### Android build and deployment errors
+
+**SkiaSharp version conflict (`MSB3277`, `CS1705`)**: if the Android host references an older
+SkiaSharp version than the current package configuration, refresh both restore caches below,
+then repeat the sample run command. This resolved a `4.152` / `4.154` conflict on 2026-09-09.
+
+```powershell
+dotnet restore ./Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
+  -p:RuntimeIdentifier=android-arm64 -p:TargetFramework=net10.0-android --force-evaluate -v minimal
+dotnet restore ./Doroti/src/Doroti.Host.Maui/Doroti.Host.Maui.csproj `
+  -p:TargetFramework=net10.0-android -p:DorotiHostTargetFrameworks=net10.0-android --force-evaluate -v minimal
+```
+
+**Automatic deployment fails after APK creation (`DOTNET_HOST_PATH`, `MSB4221`, `MSB4027`)**:
+on 2026-09-09, these errors stopped the `DeployToDevice` stage of `dotnet run`.
+If a signed APK has just been built in sample mode, install and launch it directly with ADB.
+The path below is the `android-arm64` Release output; distinguish it from an older APK in `publish/`.
+Check that its modification time matches the current build before installing.
+
+```powershell
+$sampleApk = './DorotiTestbedApp/android/bin/android-arm64/Release/net10.0-android/android-arm64/dev.doroti.testbed-Signed.apk'
+Get-Item $sampleApk | Select-Object FullName, LastWriteTime, Length
+adb -s device-serial install -r --user 0 $sampleApk
+adb -s device-serial shell monkey -p dev.doroti.testbed -c android.intent.category.LAUNCHER 1
+```
+
+Replace `device-serial` with the connected device's serial. `--user 0` installs for the primary user.
+If another profile, such as Galaxy Secure Folder, causes a shell permission error, scope package queries too:
+`adb -s device-serial shell pm list packages --user 0 dev.doroti.testbed`.
 
 ### The app opens without the sample
 
