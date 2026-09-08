@@ -659,6 +659,7 @@ public class BuildScope
     internal virtual void _scheduleBuildFor(Element element)
     {
         FrameworkWorkCounters.Add(FrameworkWork.BuildEnqueueAttempt);
+        if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.Enqueue, element, this, element._inDirtyList ? 1 : 0);
         if (_building) FrameworkWorkCounters.Add(FrameworkWork.BuildDuringFlush);
         if (element._inDirtyList) FrameworkWorkCounters.Add(FrameworkWork.BuildEnqueueDuplicate);
         DartRuntimePrimitives.Assert(() => DartRuntimePrimitives.Identical(((Element)element).buildScope, this));
@@ -1542,6 +1543,7 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
 
     public virtual Element? updateChild(Element? child, Widget? newWidget, object? newSlot)
     {
+        if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.UpdateChild, this, child, newWidget is null ? 0 : 1);
         if ((newWidget is null))
         {
             if ((child is not null))
@@ -2106,6 +2108,7 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
 
     public virtual void activate()
     {
+        if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.Activate, this);
         DartRuntimePrimitives.Assert(() => (object.Equals(this._lifecycleState, _ElementLifecycle__framework.inactive)));
         DartRuntimePrimitives.Assert(() => (this.owner is not null));
         bool hadDependencies = ((((this._dependencies is { } __items203339 ? System.Linq.Enumerable.Any(__items203339) : (bool?)null) ?? false)) || this._hadUnsatisfiedDependencies);
@@ -2126,6 +2129,7 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
 
     public virtual void deactivate()
     {
+        if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.Deactivate, this);
         DartRuntimePrimitives.Assert(() => (object.Equals(this._lifecycleState, _ElementLifecycle__framework.active)));
         DartRuntimePrimitives.Assert(() => (this._widget is not null));
         _ensureDeactivated();
@@ -2137,6 +2141,7 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
         {
             foreach (var dependency in dependencies)
             {
+                if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.RemoveDependency, this, dependency);
                 dependency.removeDependent(this);
             }
         }
@@ -2151,6 +2156,7 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
 
     public virtual void unmount()
     {
+        if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.Unmount, this);
         DartRuntimePrimitives.Assert(() => (object.Equals(this._lifecycleState, _ElementLifecycle__framework.inactive)));
         DartRuntimePrimitives.Assert(() => (this._widget is not null));
         DartRuntimePrimitives.Assert(() => (this.owner is not null));
@@ -2259,6 +2265,7 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
 
     public virtual InheritedWidget dependOnInheritedElement(InheritedElement ancestor, object? aspect = null)
     {
+        if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.RegisterDependency, this, ancestor);
         (_dependencies ??= new HashSet<InheritedElement>()).Add(ancestor);
         ancestor.updateDependencies(this, aspect);
         return ((InheritedWidget?)(object?)ancestor.widget)!;
@@ -2382,6 +2389,7 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
         DartRuntimePrimitives.Assert(() => (object.Equals(this._lifecycleState, _ElementLifecycle__framework.active)));
         DartRuntimePrimitives.Assert(() => _debugCheckOwnerBuildTargetExists("didChangeDependencies"));
         FrameworkWorkCounters.Add(FrameworkWork.DependencyChanged);
+        if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.Dependency, this);
         markNeedsBuild();
     }
 
@@ -2566,6 +2574,7 @@ public abstract class Element : global::Doroti.Framework.Foundation.Diagnosticab
             FrameworkWorkCounters.Add(FrameworkWork.Rebuild);
             if (force) FrameworkWorkCounters.Add(FrameworkWork.ForcedRebuild);
             using var profile = FrameworkWorkCounters.Enabled ? FrameworkWorkProfile.Begin(widget.GetType()) : default;
+            if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.Build, this);
             performRebuild();
         }
         finally
@@ -2860,6 +2869,7 @@ public class StatefulElement : ComponentElement
         DartRuntimePrimitives.Assert(() => (object.Equals(this.widget, __newWidget)));
         StatefulWidget oldWidget = this.state._widget!;
         this.state._widget = ((StatefulWidget?)(object?)this.widget)!;
+        if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.DidUpdateWidget, this, state);
         object? debugCheckForReturnedFuture = DartRuntimePrimitives.CaptureVoid(() => this.state.didUpdateWidget(oldWidget));
         DartRuntimePrimitives.Assert(() =>
             {

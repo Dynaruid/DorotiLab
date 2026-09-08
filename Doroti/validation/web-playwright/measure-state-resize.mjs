@@ -25,7 +25,20 @@ try {
  }
  await page.mouse.move(20,40);await page.waitForTimeout(2000);
  await page.evaluate(()=>{globalThis.__stateInputs=[];document.querySelector('.doroti-root').addEventListener('pointerup',e=>{const time=e.timeStamp;queueMicrotask(()=>{const d=globalThis.__dorotiResizeDiagnostics;globalThis.__stateInputs.push({time,sequence:JSON.parse(d.snapshot(d.hosts()[0])).inputSequence});});});});
+ const preparation=[];
+ if(process.argv.includes('--visit-all')) {
+  for(const x of [500,1000]) {
+   await page.mouse.move(x,700);
+   for(let step=0;step<12;step++) {await page.mouse.wheel(0,600);await page.waitForTimeout(150);}
+   await page.mouse.wheel(0,-20000);await page.waitForTimeout(800);
+   preparation.push({columnX:x,forwardInputs:12,forwardDelta:600,returnDelta:-20000});
+  }
+  await page.mouse.move(20,40);await page.waitForTimeout(2000);
+ }
  const profileBefore=await managed(),before=await read(),steps=[];
+ const visited=profileBefore[0]?.managed?.components?.visitedSections;
+ if(process.argv.includes('--visit-all')&&(!visited||visited.length!==29||visited.some((id,i)=>id!==i)))
+  throw Error('Full materialization requires section IDs 0 through 28: '+JSON.stringify(visited));
  if(scenario==='button')await page.mouse.click(bounds.x+bounds.width/2,bounds.y+bounds.height/2);
  else for(const width of scenario==='resize-wide'?[1240,1200,1160,1120,1160,1200,1240,1280]:[980,900,800,1100,1400,900,1100,1280]) {await page.setViewportSize({width,height:900});steps.push({width,time:await page.evaluate(()=>performance.now())});await page.waitForTimeout(45);}
  const end=await page.evaluate(()=>performance.now());
@@ -37,7 +50,7 @@ try {
  const fronts=trace.filter(e=>e.phase==='front-commit'&&e.source==='worker-direct-surface');
  const input=inputs[0],causal=fronts.find(e=>e.inputSequence>=input?.sequence&&JSON.parse(e.detail).sceneDisposition==='exact-rendered');
  const callbacks=trace.filter(e=>e.phase==='framework-frame').map(e=>e.durationMicroseconds/1000);
- const output={label,scenario,detailed,errors,before,after,profileBefore,profiles,inputs,steps,end,
+ const output={label,scenario,detailed,preparation,visited,errors,before,after,profileBefore,profiles,inputs,steps,end,
   environment:{browser:browser.version(),viewport,dpr,url:page.url()},
   gcPause:'notMeasured',physicalDisplay:'notVerified',
   onsetMs:causal?causal.timestampMicroseconds/1000-input.time:null,callback:stats(callbacks),

@@ -4,6 +4,13 @@ using Doroti.Framework.Rendering;
 using Doroti.Ui;
 using Aspect = Doroti.Framework.Widgets._MediaQueryAspect__media_query;
 
+if (args is ["--same-work", var output])
+{
+    PersistentMapContracts.Verify();
+    SameWorkContracts.Verify(output);
+    return;
+}
+
 var baseline = new MediaQueryData(size: new Size(800, 600));
 void Require(bool value, string message)
 {

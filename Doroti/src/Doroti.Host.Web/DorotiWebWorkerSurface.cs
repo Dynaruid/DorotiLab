@@ -45,6 +45,7 @@ public static partial class DorotiWebWorkerSurface
         frame = _target?.CaptureFrameDiagnostics(_viewId),
         work = FrameworkWorkCounters.Snapshot(),
         profile = FrameworkWorkProfile.Snapshot(),
+        components = FrameworkComponentProfile.Snapshot(),
     });
 
     [JSExport]

@@ -50,22 +50,12 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     public override void dispose()
     {
         _sectionFocus?.Dispose();
-        if (IndexedSections) PaintingBinding.instance.systemFonts.removeListener(FontsChanged);
+        PaintingBinding.instance.systemFonts.removeListener(FontsChanged);
         _firstScroll.dispose(); _secondScroll.dispose();
         _filled.dispose(); _outlined.dispose(); _colorMenu.dispose(); _iconMenu.dispose();
         base.dispose();
     }
     private SectionEntry[]? _sections;
-    private static readonly string SectionViewport = ReadSectionViewport();
-    private static readonly bool LazySections = SectionViewport == "sliver-list";
-    private static readonly bool IndexedSections = SectionViewport == "indexed";
-    private static string ReadSectionViewport() => Environment.GetEnvironmentVariable("DOROTI_SAMPLE_SECTION_VIEWPORT") switch
-    {
-        null or "" or "eager" => "eager",
-        "sliver-list" => "sliver-list",
-        "indexed" => "indexed",
-        _ => throw new ArgumentException("DOROTI_SAMPLE_SECTION_VIEWPORT must be eager, sliver-list, or indexed."),
-    };
     private readonly HashSet<int> _visitedSections = [];
     private readonly Dictionary<(int First, int Count), SectionExtentIndex> _indices = new();
     private SectionExtentIndex? _activeFirstIndex;
@@ -92,7 +82,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     public override void initState()
     {
         base.initState();
-        if (IndexedSections) PaintingBinding.instance.systemFonts.addListener(FontsChanged);
+        PaintingBinding.instance.systemFonts.addListener(FontsChanged);
     }
     private void FontsChanged()
     {
@@ -126,7 +116,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
         (int Count, Func<BuildContext, StateSetter, int, Widget> Build)[] groups =
             [(4, Actions), (3, Communication), (5, Containment), (7, Navigation),
              (8, Selection), (1, (_, _, _) => TextInputs()), (1, (_, _, _) => new SampleImageDemo())];
-        if (IndexedSections) _sectionFocus ??= new SectionFocusCoordinator(Enumerable.Range(0, groups.Sum(group => group.Count)), MaterializeSection);
+        _sectionFocus ??= new SectionFocusCoordinator(Enumerable.Range(0, groups.Sum(group => group.Count)), MaterializeSection);
         var entries = new List<SectionEntry>();
         for (var group = 0; group < groups.Length; group++)
         {
@@ -144,6 +134,7 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
                 {
                     SectionBuildCount++;
                     _visitedSections.Add(sectionId);
+                    Doroti.Ui.FrameworkComponentProfile.VisitSection(sectionId);
                     if (!built) { built = true; SectionFirstBuildCount++; }
                     var content = builder(ctx, fn => { if (ctx.mounted) change(() => { fn(); InvalidateSection(sectionId); }); }, sectionIndex);
                     return _sectionFocus?.Wrap(sectionId, content) ?? content;
@@ -157,13 +148,10 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
     }
     public override Widget build(BuildContext context)
     {
-        if (IndexedSections)
-        {
-            // Conservative metric invalidation includes every theme change.
-            // Color-only cache retention can be added after metric parity tests.
-            object revision = (M.Theme.of(context), MediaQuery.textScalerOf(context), Directionality.of(context), _fontGeneration);
-            if (!Equals(revision, _metricRevision)) { _metricRevision = revision; _lists.Clear(); }
-        }
+        // Conservative metric invalidation includes every theme change.
+        // Color-only cache retention can be added after metric parity tests.
+        object revision = (M.Theme.of(context), MediaQuery.textScalerOf(context), Directionality.of(context), _fontGeneration);
+        if (!Equals(revision, _metricRevision)) { _metricRevision = revision; _lists.Clear(); }
         var sections = _sections ??= CreateSections(context);
         Widget List(bool second)
         {
@@ -172,14 +160,13 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
             if (!_lists.TryGetValue((firstIndex, count), out var list))
             {
                 Widget? LazyChild(BuildContext _, long index) =>
-                    IndexedSections && second && !widget.TwoColumns && !SectionOwnedBy(firstIndex + (int)index, _secondScroll)
-                    ? null : new KeepAlive(key: IndexedSections ? _sectionOwnerKeys[firstIndex + (int)index] : new ValueKey<int>(firstIndex + (int)index), keepAlive: true,
+                    second && !widget.TwoColumns && !SectionOwnedBy(firstIndex + (int)index, _secondScroll)
+                    ? null : new KeepAlive(key: _sectionOwnerKeys[firstIndex + (int)index], keepAlive: true,
                     child: new IndexedSemantics(index: index, child: new RepaintBoundary(child: sections[firstIndex + (int)index].Child)));
                 var children = new SliverChildBuilderDelegate(LazyChild, childCount: count,
                     findChildIndexCallback: key =>
                     {
-                        var id = IndexedSections ? _sectionOwnerKeys.FindIndex(ownerKey => ReferenceEquals(ownerKey, key))
-                            : key is ValueKey<int> value ? value.value : -1;
+                        var id = _sectionOwnerKeys.FindIndex(ownerKey => ReferenceEquals(ownerKey, key));
                         return id >= firstIndex && id < firstIndex + count ? id - firstIndex : null;
                     },
                     addAutomaticKeepAlives: false, addRepaintBoundaries: false, addSemanticIndexes: false);
@@ -195,55 +182,39 @@ internal sealed partial class ComponentsState : State<ComponentsScreen>
                 }
                 list = new FocusTraversalGroup(child: new CustomScrollView(
                     controller: second ? _secondScroll : _firstScroll, primary: false,
-                    cacheExtent: IndexedSections ? 0 : null,
-                    // This finite gallery has heterogeneous sections. Lay each one out
-                    // before scrolling so the viewport knows the actual end immediately.
-                    // Separate slivers cull offscreen paint; boundaries retain each
-                    // section's drawing without rasterizing one gallery-sized picture.
-                    slivers: IndexedSections
-                        ? [new SectionList(children, extentIndex, metricRevision: _metricRevision,
+                    cacheExtent: 0,
+                    // Measure visible sections and retain visited subtrees and their state.
+                    slivers: [new SectionList(children, extentIndex, metricRevision: _metricRevision,
                             retainIndices: _visitedSections.Where(id => id >= firstIndex && id < firstIndex + count &&
                                 (second || widget.TwoColumns || id < _split || SectionOwnedBy(id, _firstScroll))).Select(id => id - firstIndex).ToArray(),
                             suspended: second && !widget.TwoColumns,
-                            restoreRetainedChildren: second && widget.TwoColumns && _placementChanged)]
-                        : LazySections ? [new SliverList(@delegate: children)]
-                        : sections.Skip(firstIndex).Take(count).Select(section => (Widget)
-                            new SliverToBoxAdapter(child: new RepaintBoundary(child: section.Child))).ToList()));
+                            restoreRetainedChildren: second && widget.TwoColumns && _placementChanged)]));
                 _lists.Add((firstIndex, count), list);
             }
-            return new Padding(padding: EdgeInsets.CreateOnly(right: widget.TwoColumns || (IndexedSections && second) ? 10 : 0), child: list);
+            return new Padding(padding: EdgeInsets.CreateOnly(right: widget.TwoColumns || second ? 10 : 0), child: list);
         }
-        Widget result;
-        if (IndexedSections)
+        _secondVisited |= widget.TwoColumns;
+        var firstList = List(false);
+        var secondList = _secondVisited ? List(true) : SizedBox.CreateShrink();
+        // Keep the right scroll owner mounted once visited. Hidden sections
+        // stay there until the single-column viewport actually needs them.
+        // Preserve its last finite width while its occupied width is zero.
+        var result = new LayoutBuilder(builder: (_, constraints) =>
         {
-            _secondVisited |= widget.TwoColumns;
-            var firstList = List(false);
-            var secondList = _secondVisited ? List(true) : SizedBox.CreateShrink();
-            // Keep the right scroll owner mounted once visited. Hidden sections
-            // stay there until the single-column viewport actually needs them.
-            // Preserve its last finite width while its occupied width is zero.
-            result = new LayoutBuilder(builder: (_, constraints) =>
-            {
-                if (widget.TwoColumns) _lastRightWidth = constraints.maxWidth / 2;
-                return new Row(crossAxisAlignment: CrossAxisAlignment.stretch, children:
-                [
-                    new Expanded(child: firstList),
-                    new SizedBox(width: widget.TwoColumns ? _lastRightWidth : 0,
-                        child: new Offstage(offstage: !widget.TwoColumns,
-                            child: new OverflowBox(minWidth: _lastRightWidth, maxWidth: _lastRightWidth,
-                                alignment: Alignment.topLeft,
-                                child: new TickerMode(enabled: widget.TwoColumns,
-                                    child: new ExcludeFocus(excluding: !widget.TwoColumns, child: secondList))))),
-                ]);
-            });
-        }
-        else result = new Row(crossAxisAlignment: CrossAxisAlignment.stretch, children:
-        [
-            new Flexible(flex: 1000, child: List(false)),
-            widget.TwoColumns ? new Flexible(flex: 1000, child: List(true)) : SizedBox.CreateShrink(),
-        ]);
+            if (widget.TwoColumns) _lastRightWidth = constraints.maxWidth / 2;
+            return new Row(crossAxisAlignment: CrossAxisAlignment.stretch, children:
+            [
+                new Expanded(child: firstList),
+                new SizedBox(width: widget.TwoColumns ? _lastRightWidth : 0,
+                    child: new Offstage(offstage: !widget.TwoColumns,
+                        child: new OverflowBox(minWidth: _lastRightWidth, maxWidth: _lastRightWidth,
+                            alignment: Alignment.topLeft,
+                            child: new TickerMode(enabled: widget.TwoColumns,
+                                child: new ExcludeFocus(excluding: !widget.TwoColumns, child: secondList))))),
+            ]);
+        });
         _placementChanged = false;
-        return IndexedSections ? new Listener(onPointerDown: _ => _sectionFocus?.CancelPendingTraversal(), child: result) : result;
+        return new Listener(onPointerDown: _ => _sectionFocus?.CancelPendingTraversal(), child: result);
     }
 
     private sealed record SectionEntry(int Group, bool First, bool Last, Widget Child);

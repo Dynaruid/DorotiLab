@@ -3,7 +3,7 @@ import { openDoroti } from './helpers/doroti-diagnostics.js';
 
 test('parked right sections survive a narrow theme change and move on demand', async ({page,runtimeErrors})=>{
  await page.setViewportSize({width:1280,height:900});
- await openDoroti(page,'&dorotiTestbedMode=sample&dorotiSectionViewport=indexed');
+ await openDoroti(page,'&dorotiTestbedMode=sample');
  const choice=page.getByRole('checkbox',{name:'Option 2',exact:true});
  async function reveal(x:number) {
   for(let step=0;step<35;step++) {

@@ -277,8 +277,7 @@ internal static partial class MountedPickerContracts
                         var element = (StatefulElement)Elements(binding.rootElement!).Single(e => e.widget is MaterialSample.ComponentsScreen);
                         var current = (MaterialSample.ComponentsScreen)element.widget;
                         var right = (ScrollController)element.state.GetType().GetField("_secondScroll", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(element.state)!;
-                        var rightRetained = Environment.GetEnvironmentVariable("DOROTI_SAMPLE_SECTION_VIEWPORT") == "indexed" &&
-                            (bool)element.state.GetType().GetField("_secondVisited", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(element.state)!;
+                        var rightRetained = (bool)element.state.GetType().GetField("_secondVisited", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(element.state)!;
                         if (current.TwoColumns != (width > 1000) || right.hasClients != (current.TwoColumns || rightRetained))
                             throw new Exception($"Columns disagree with viewport during transition: width={width}, frame={frame}, right={right.hasClients}");
                         var galleryState = (MaterialSample.ComponentsState)element.state;

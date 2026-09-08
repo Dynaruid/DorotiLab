@@ -48,19 +48,22 @@ internal static partial class MountedPickerContracts
                             child: new MaterialSample.SampleHome(0, 0, false, false, null, () => { }, _ => { }, _ => { }))));
                 })))));
             Pump("initial");
+            var retained = new Dictionary<GlobalKey<IState>, IState>();
+            var initial = (StatefulElement)Elements(binding.rootElement!).Single(e => e.widget is MaterialSample.ComponentsScreen);
+            CheckRetained(initial);
+            Require(retained.Count is > 0 and < 29, "default viewport must materialize only visible sections initially");
             foreach (var configuration in new[] { (800.0, 1.0), (600.0, 1.25), (1280.0, 1.0), (800.0, 1.0) })
             {
                 view.DispatchPlatformEvent(() => rebuild!(() => { width = configuration.Item1; scale = configuration.Item2; }));
                 Pump("reflow");
                 var components = (StatefulElement)Elements(binding.rootElement!).Single(e => e.widget is MaterialSample.ComponentsScreen);
-                var states = SectionStates(components);
-                foreach (var field in width >= 1000 ? new[] { "_firstScroll", "_secondScroll" } : new[] { "_firstScroll" })
+                CheckRetained(components);
+                foreach (var field in width > 1000 ? new[] { "_firstScroll", "_secondScroll" } : new[] { "_firstScroll" })
                 {
                     var controller = (ScrollController)components.state.GetType().GetField(field, BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(components.state)!;
                     view.DispatchPlatformEvent(() => controller.jumpTo(0));
                     Pump("origin");
-                    var extent = controller.position.maxScrollExtent;
-                    Require(extent > 0 && double.IsFinite(extent), "finite initial scroll extent");
+                    Require(controller.position.maxScrollExtent > 0 && double.IsFinite(controller.position.maxScrollExtent), "finite estimated scroll extent");
                     var scrollElement = Elements(components).OfType<StatefulElement>().Single(e =>
                         e.state is ScrollableState scroll && ReferenceEquals(scroll.position, controller.position));
                     var scrollBox = (RenderBox)scrollElement.findRenderObject()!;
@@ -69,18 +72,31 @@ internal static partial class MountedPickerContracts
                         viewId: 1, position: wheelPosition, scrollDelta: new Offset(0, 120))));
                     Pump("wheel");
                     Require(controller.offset > 0, "wheel input did not move the outer column");
-                    Require(Math.Abs(controller.position.maxScrollExtent - extent) < .01, "wheel changed the initial extent");
-                    Require(states.SequenceEqual(SectionStates(components)), "wheel mounted or replaced component section state");
-                    // Each target is based on the INITIAL extent: never chase an expanding end.
+                    CheckRetained(components);
+                    var first = field == "_secondScroll" ? 12 : 0;
+                    var count = width > 1000 ? first == 0 ? 12 : 17 : 29;
+                    var indices = (Dictionary<(int First, int Count), SectionExtentIndex>)components.state.GetType()
+                        .GetField("_indices", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(components.state)!;
+                    var index = indices[(first, count)];
+                    // Unknown heights are estimates. Visit every item through the indexed
+                    // API before asserting a stable measured extent and direct end access.
+                    for (var item = 0; item < count; item++)
+                    {
+                        var target = item;
+                        view.DispatchPlatformEvent(() => SectionList.RequestItem(controller, index, target));
+                        Pump("materialize");
+                        CheckRetained(components);
+                    }
+                    var extent = controller.position.maxScrollExtent;
                     foreach (var fraction in new[] { .15, .35, .6, .85, 1.0, .5, 0.0 })
                     {
                         view.DispatchPlatformEvent(() => controller.jumpTo(extent * fraction));
                         Pump("scroll");
                         Require(Math.Abs(controller.position.maxScrollExtent - extent) < .01,
-                            $"extent changed during first traversal: {extent} -> {controller.position.maxScrollExtent}, width={width}, scale={scale}, column={field}");
+                            $"measured extent changed: {extent} -> {controller.position.maxScrollExtent}, width={width}, scale={scale}, column={field}");
                         Require(Math.Abs(controller.offset - extent * fraction) < .01, "scroll target was corrected unexpectedly");
-                        Require(states.SequenceEqual(SectionStates(components)), "scroll mounted or replaced component section state");
-                        if (fraction == 1 && field == (width >= 1000 ? "_secondScroll" : "_firstScroll"))
+                        CheckRetained(components);
+                        if (fraction == 1 && field == (width > 1000 ? "_secondScroll" : "_firstScroll"))
                         {
                             var image = Elements(components).Single(e => e.widget is MaterialSample.SampleImageDemo);
                             var box = (RenderBox)image.findRenderObject()!;
@@ -88,16 +104,26 @@ internal static partial class MountedPickerContracts
                             Require(bottom > 0 && bottom <= Height + .01, "initial end did not reveal the final image section");
                         }
                     }
-                    Console.WriteLine($"sample scroll: width={width}, scale={scale}, column={field}, stableExtent={extent:F2}, retainedSections={states.Length} PASS");
+                    Console.WriteLine($"sample scroll: width={width}, scale={scale}, column={field}, stableExtent={extent:F2}, retainedSections={retained.Count} PASS");
                 }
-                Require(states.Length == 29, $"expected all 29 sections ready before scroll, got {states.Length}");
+                Require(retained.Count == 29, $"expected all 29 sections after traversal, got {retained.Count}");
             }
-            Console.WriteLine("Sample scroll: wheel input, first-traversal extent, direct end, section lifetime, width/text-scale reflow and one/two-column transitions PASS; physical cadence notVerified");
+            Console.WriteLine("Sample scroll: default lazy materialization, wheel input, measured extent, direct end, section lifetime, width/text-scale reflow and one/two-column transitions PASS; physical cadence notVerified");
+
+            void CheckRetained(StatefulElement components)
+            {
+                var keys = (List<GlobalKey<IState>>)components.state.GetType()
+                    .GetField("_sectionKeys", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(components.state)!;
+                foreach (var key in keys)
+                {
+                    if (retained.TryGetValue(key, out var state))
+                        Require(ReferenceEquals(key.currentState, state), "visited section lost or replaced its State");
+                    if (key.currentState is { } current) retained[key] = current;
+                }
+            }
         }
         finally { FlutterError.onError = previousError; }
 
-        IState[] SectionStates(Element root) => Elements(root).OfType<StatefulElement>()
-            .Where(e => e.widget is MaterialSample.ComponentSection or MaterialSample.SampleImageDemo).Select(e => e.state).ToArray();
         void Pump(string stage)
         {
             for (var frame = 0; frame < 35; frame++) { host.Fire(); Thread.Sleep(10); }

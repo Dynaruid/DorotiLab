@@ -621,6 +621,7 @@ public class _DryLayout__box : _CachedLayoutCalculation__box<BoxConstraints, Siz
 
     public virtual global::Doroti.Ui.Size memoize(_LayoutCacheStorage__box cacheStorage, BoxConstraints input, Func<BoxConstraints, Size> computer)
     {
+        using var profile = FrameworkComponentProfile.Begin(FrameworkComponentProfile.Kind.DryCache);
         return (cacheStorage._cachedDryLayoutSizes ??= new DartMap<BoxConstraints, Size>()).putIfAbsent(input, (() => computer(input)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }
@@ -647,6 +648,7 @@ public class _Baseline__box : _CachedLayoutCalculation__box<(BoxConstraints, Tex
 
     public virtual BaselineOffset memoize(_LayoutCacheStorage__box cacheStorage, (BoxConstraints, TextBaseline) input, Func<(BoxConstraints, TextBaseline), BaselineOffset> computer)
     {
+        using var profile = FrameworkComponentProfile.Begin(FrameworkComponentProfile.Kind.BaselineCache);
         DartMap<BoxConstraints, BaselineOffset> cache = (input.Item2 switch { TextBaseline.alphabetic => cacheStorage._cachedAlphabeticBaseline ??= new DartMap<BoxConstraints, BaselineOffset>(), TextBaseline.ideographic => cacheStorage._cachedIdeoBaseline ??= new DartMap<BoxConstraints, BaselineOffset>(), _ => throw new InvalidOperationException("Non-exhaustive Dart switch value.") });
         BaselineOffset ifAbsent()
         {
@@ -684,6 +686,7 @@ internal static class _IntrinsicDimension__boxMembers
 {
     public static double memoize(this _IntrinsicDimension__box value, _LayoutCacheStorage__box cacheStorage, double input, Func<double, double> computer)
     {
+        using var profile = FrameworkComponentProfile.Begin(FrameworkComponentProfile.Kind.IntrinsicCache);
         return (cacheStorage._cachedIntrinsicDimensions ??= new DartMap<(_IntrinsicDimension__box, double), double>()).putIfAbsent((value, input), (() => computer(input)));
         throw new InvalidOperationException("Dart control flow completed without a value.");
     }

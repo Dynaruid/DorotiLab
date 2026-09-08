@@ -1,0 +1,7 @@
+name: doroti_same_work_contract
+publish_to: none
+environment:
+  sdk: '>=3.12.0 <4.0.0'
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

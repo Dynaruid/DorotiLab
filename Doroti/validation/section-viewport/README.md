@@ -1,7 +1,8 @@
-# Indexed section viewport experiment
+# Indexed section viewport
 
-`work.md` owns promotion gates. The existing eager gallery remains the default
-until the quantitative, memory, focus and platform gates are qualified.
+The Material gallery uses the indexed viewport exclusively following the explicit
+2026-09-08 user decision. This adoption does not qualify the outstanding
+quantitative, memory, focus or physical-platform gates in `work.md`.
 
 The shared implementation is `SectionExtentIndex` in Rendering and `SectionList`
 in Widgets. It reuses `SliverMultiBoxAdaptorElement`, RenderBox layout, existing
@@ -65,7 +66,7 @@ and automatic item-set reconciliation are not yet qualified. Explicit owner-mapp
 reorder/add/remove is covered by a mounted contract: surviving State and anchor,
 deleted-child disposal and lazy creation of the new item. Metric invalidation in
 the sample conservatively includes all ThemeData changes; color-only reuse is not
-optimized. These remaining contracts keep the experiment behind an explicit switch.
+optimized. These remaining contracts remain unqualified after adoption.
 
 ## Reproduction
 
@@ -83,7 +84,7 @@ Do not reuse one index concurrently in independent lists. Dynamic item replaceme
 requires a fresh index, a stable-key delegate mapping and an explicit surviving
 anchor mapping supplied by the owner (the mounted contract exercises this);
 automatic reconciliation is outside this
-experimental contract. Keep arbitrary stateful sections pinned until an owner can
+indexed contract. Keep arbitrary stateful sections pinned until an owner can
 prove their restoration/disposal contract. Focus traversal tests do not qualify
 physical IME, open overlay migration or screen-reader behavior.
 
@@ -92,17 +93,14 @@ workload at a time. Native contracts:
 
 ```powershell
 dotnet run --project Doroti/validation/fcr7-material-widget -c Release -- --section-index
-$env:DOROTI_SAMPLE_SECTION_VIEWPORT = 'indexed'
 dotnet run --project Doroti/validation/fcr7-material-widget -c Release -- --sample-columns
 $env:DOROTI_VALIDATION_SECTION_COLUMNS_DEEP = '1'
 dotnet run --project Doroti/validation/fcr7-material-widget -c Release -- --sample-columns
 ```
 
-The Web comparison URL is `?dorotiTestbedMode=sample&dorotiSectionViewport=indexed`.
-`eager` selects the reference path; `sliver-list` is the rejected standard-list
-spike retained only for reproducing its State-loss contract failure.
-For existing Playwright tests set `DOROTI_SAMPLE_SECTION_VIEWPORT=indexed`.
-For performance scripts set `DOROTI_PERF_QUERY=&dorotiSectionViewport=indexed`.
+The Web URL is `?dorotiTestbedMode=sample`. The gallery has no viewport selector.
+The former eager and standard-list spike paths are removed; historical evidence
+remains under `history/26-09-08`. Shared SliverList remains available to other widgets.
 
 `freeze-build.py` consumes the full evaluated `staticwebassets.build.json` and
 copies uncompressed endpoints, including referenced `_content` assets and their
@@ -111,6 +109,6 @@ the app's `bin/.../wwwroot` alone is insufficient for a static build server.
 `summarize-wasm-structure.mjs` reports each independent run separately, preserving
 allocation/GC counts, superseded resize targets and boundary-inclusive gaps.
 
-한국어: 기본 경로 승격은 `work.md`의 기능·성능·메모리 gate에 따른다. 위 옵션은
-개발용 비교 경로이며, 자동 검사 통과가 실제 기기 표시·입력·IME·접근성 수용을
-뜻하지 않는다. 원본 실패와 timeout은 성능 0ms나 PASS로 집계하지 않는다.
+한국어: 사용자의 명시적 결정으로 HAMT + indexed를 단일 경로로 채택했다.
+기존 성능 gate 미달과 물리 표시·입력·IME·접근성 미검증은 유지한다.
+원본 실패와 timeout은 성능 0ms나 PASS로 집계하지 않는다.

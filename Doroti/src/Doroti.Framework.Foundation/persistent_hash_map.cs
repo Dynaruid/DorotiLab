@@ -1,7 +1,6 @@
 // <doroti-reviewed-framework-source />
 // Flutter 56b8e1a8: packages/flutter/lib/src/foundation/persistent_hash_map.dart
 using System.Collections;
-using System.Numerics;
 
 namespace Doroti.Framework.Foundation;
 
@@ -9,55 +8,48 @@ namespace Doroti.Framework.Foundation;
 public sealed class PersistentHashMap<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>
     where TKey : notnull
 {
-    private readonly Dictionary<TKey, TValue> _values;
-
-    public PersistentHashMap() : this(new Dictionary<TKey, TValue>()) { }
-
+    private readonly PersistentHashTrie<TKey, TValue>? _root;
+    public PersistentHashMap() { }
+    private PersistentHashMap(PersistentHashTrie<TKey, TValue>? root, int count) { _root = root; Count = count; }
     public static PersistentHashMap<TKey, TValue> CreateEmpty() => new();
-
-    private PersistentHashMap(Dictionary<TKey, TValue> values) => _values = values;
-
-    public int Count => _values.Count;
-    public IEnumerable<TKey> Keys => _values.Keys;
-    public IEnumerable<TValue> Values => _values.Values;
-    public TValue this[TKey key] => _values[key];
-    public bool isEmpty => _values.Count == 0;
-    public bool isNotEmpty => _values.Count != 0;
-
+    public int Count { get; }
+    public IEnumerable<TKey> Keys => this.Select(pair => pair.Key);
+    public IEnumerable<TValue> Values => this.Select(pair => pair.Value);
+    public bool isEmpty => Count == 0;
+    public bool isNotEmpty => Count != 0;
+    public TValue this[TKey key] => TryGetValue(key, out var value) ? value : throw new KeyNotFoundException();
+    private static uint Hash(TKey key)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+        return unchecked((uint)EqualityComparer<TKey>.Default.GetHashCode(key));
+    }
     public PersistentHashMap<TKey, TValue> put(TKey key, TValue value)
     {
-        var copy = new Dictionary<TKey, TValue>(_values) { [key] = value };
-        return new(copy);
+        using var profile = Doroti.Ui.FrameworkComponentProfile.Begin(Doroti.Ui.FrameworkComponentProfile.Kind.InheritancePut, Count);
+        var hash = Hash(key);
+        if (_root is null) return new(new PersistentHashTrie<TKey, TValue>.Leaf(hash, [new(key, value)]), 1);
+        var added = false;
+        var root = _root.Put(key, value, hash, 0, ref added);
+        return new(root, Count + (added ? 1 : 0));
     }
-
     public PersistentHashMap<TKey, TValue> remove(TKey key)
     {
-        if (!_values.ContainsKey(key))
-        {
-            return this;
-        }
-        var copy = new Dictionary<TKey, TValue>(_values);
-        copy.Remove(key);
-        return new(copy);
+        using var profile = Doroti.Ui.FrameworkComponentProfile.Begin(Doroti.Ui.FrameworkComponentProfile.Kind.InheritanceRemove, Count);
+        var hash = Hash(key);
+        var removed = false;
+        var root = _root?.Remove(key, hash, 0, ref removed);
+        return removed ? new(root, Count - 1) : this;
     }
-
-    public bool containsKey(TKey key) => _values.ContainsKey(key);
+    public bool containsKey(TKey key) => TryGetValue(key, out _);
     public bool ContainsKey(TKey key) => containsKey(key);
-    public TValue? valueFor(TKey key) => _values.GetValueOrDefault(key);
-    public bool TryGetValue(TKey key, out TValue value) => _values.TryGetValue(key, out value!);
-    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => _values.GetEnumerator();
+    public TValue? valueFor(TKey key) => TryGetValue(key, out var value) ? value : default;
+    public bool TryGetValue(TKey key, out TValue value)
+    {
+        var hash = Hash(key);
+        if (_root is not null) return _root.Find(key, hash, 0, out value!);
+        value = default!;
+        return false;
+    }
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => (_root?.Entries() ?? []).GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-}
-
-internal abstract class _TrieNode<TKey, TValue> where TKey : notnull;
-internal sealed class _CompressedNode<TKey, TValue> : _TrieNode<TKey, TValue> where TKey : notnull;
-internal sealed class _FullNode<TKey, TValue> : _TrieNode<TKey, TValue> where TKey : notnull;
-internal sealed class _HashCollisionNode<TKey, TValue> : _TrieNode<TKey, TValue> where TKey : notnull;
-
-internal static class PersistentHashMapLibrary
-{
-    internal static int _bitCount(int value) => BitOperations.PopCount((uint)value);
-    internal static T[] _copy<T>(IReadOnlyList<T> source) => source.ToArray();
-    internal static T?[] _makeArray<T>(int length) => new T?[length];
-    internal static T _unsafeCast<T>(object value) => (T)value;
 }

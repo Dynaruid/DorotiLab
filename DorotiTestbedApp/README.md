@@ -1,12 +1,12 @@
 # DorotiTestbedApp
 
-The September 8 WASM structure work retains the gallery body during navigation
-animation and builds section descriptors directly. The eager gallery remains the
-default; `DOROTI_SAMPLE_SECTION_VIEWPORT=indexed` (Web query
-`dorotiSectionViewport=indexed`) selects the experimental shared indexed viewport.
-See the [implementation and evidence](../history/26-09-08/wasm-section-structure.md)
-and [viewport contract](../Doroti/validation/section-viewport/README.md). Improved
-resize measurements do not qualify the original latency or physical-input gates.
+The shared inheritance map now uses HAMT, and the Material gallery uses only the
+indexed section viewport. Open `?dorotiTestbedMode=sample`; no viewport query,
+environment variable or HAMT build flag is required. Dictionary copy, eager gallery
+and standard-list gallery alternatives have been removed.
+See the [decision and validation](../history/26-09-08/hamt-indexed-unification.md)
+and [viewport contract](../Doroti/validation/section-viewport/README.md).
+Measured map allocations decreased; total memory and physical latency gates remain unqualified.
 
 **English** | [한국어](README.ko.md)
 

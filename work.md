@@ -2,11 +2,13 @@
 
 작성: 2026-09-07. 기존 실행: 2026-09-08. 기존 결과: **최종 수용 PARTIAL / indexed 승격 보류**.
 
-2026-09-08 연구 갱신: **현재 작업계획은 [9절](#9-flutter와-같은-작업-대상을-유지하는-net-wasm-실행-구조-연구)이다. 연구·문서 작성 완료, 새 구현·성능 실험 미착수.** 사용자 요청은 “재빌드와 레이아웃 작업 타겟은 Flutter와 동일하게 잡되 .NET WASM 연산 특성에 맞춰 재구성할 수 있는지 연구하고 work.md에 작성”이다. 새 단계에서는 처리 대상·수명·실행 시점을 줄이거나 바꾸는 가상화/소유권 변경을 성능 개선에 포함하지 않는다.
+2026-09-08 현재 결과: **사용자의 명시적 후속 요청에 따라 HAMT + indexed 단일화와 대체 경로 제거를 완료했다. [9.12절](#912-hamt--indexed-단일화)이 현재 구현 범위이며, 앞선 성능·메모리 gate 미달은 유지한다.**
+
+2026-09-08 이전 구현 갱신: **현재 작업 범위는 [9절](#9-flutter와-같은-작업-대상을-유지하는-net-wasm-실행-구조-연구)이다. 공용 HAMT 실험 경로·동일 대상 fixture·WASM 3쌍 비교 구현/실행. 최종 수용 PARTIAL / componentOnly / 기본 승격 보류.** 앞선 연구 요청은 “재빌드와 레이아웃 작업 타겟은 Flutter와 동일하게 잡되 .NET WASM 연산 특성에 맞춰 재구성할 수 있는지 연구하고 work.md에 작성”이었고, 이번 사용자의 명시적 재구성 요청에 따라 구현·검증까지 실행했다. 새 단계에서는 처리 대상·수명·실행 시점을 줄이거나 바꾸는 가상화/소유권 변경을 성능 개선에 포함하지 않는다.
 
 아래 1–8절은 앞서 실행한 계획과 결과의 보존 기록이다. 해당 절의 가상화 확대·작업 대상 축소·추가 Worker 제안은 새 단계의 실행 지시가 아니다. 다음 구현을 진행할 때는 9절의 범위·검증 기준·실행 횟수 제한이 우선하며, 기존 FAIL/PARTIAL과 물리 검증 미완료는 그대로 유지한다.
 
-실행 근거와 미달 gate는 [구조 개편 실행 기록](history/26-09-08/wasm-section-structure.md)에 보존한다. 기본 eager 경로와 indexed 비교 후보를 구분하며, 원래 목표를 완화하거나 계획을 삭제하지 않는다.
+실행 근거와 미달 gate는 [구조 개편 실행 기록](history/26-09-08/wasm-section-structure.md)에 보존한다. 당시의 eager 기준선과 indexed 비교 후보 기록을 구분하며, 원래 목표를 완화하거나 계획을 삭제하지 않는다.
 
 ## 1. 목표와 작업 범위
 
@@ -226,7 +228,7 @@ P6에서는 Windows/Web/MAUI/Android/Linux 빌드 및 사용 가능한 자동 �
 
 **재구성할 가치가 있다. 가장 구체적인 후보는 상속 정보 맵의 전체 복사를 구조 공유로 바꾸는 작업이며, 다음은 intrinsic 캐시의 임시 어댑터/콜백, 반복적인 동적 호출과 작업 목록 처리 비용이다.** 공용 Widget/Element/RenderObject 트리와 Flutter의 갱신 규칙을 유지하면서, 같은 작업을 더 적은 복사·할당·간접 호출로 수행한다. 실제 병목 비중과 개선율은 아직 측정하지 않았으므로 후보 순위는 소스 근거에 따른 조사 순위다.
 
-이번 요청의 산출물은 연구와 실행 가능한 계획이다. 이 절 작성 중에는 앱/Framework/컴파일러 소스, 빌드 설정, 5088 서버를 변경하지 않았고 새 성능 실험도 실행하지 않았다. 이전 결과를 새 구조의 성능 증거로 재사용하지 않는다.
+아래 연구 당시의 산출물은 연구와 실행 가능한 계획이었다. 연구 작성 중에는 앱/Framework/컴파일러 소스, 빌드 설정, 5088 서버를 변경하지 않았고 새 성능 실험도 실행하지 않았다. 이전 결과를 새 구조의 성능 증거로 재사용하지 않는다. 이후 사용자가 승인한 구현 결과는 [9.10절](#910-2026-09-08-구현실험-결과)과 [실행 기록](history/26-09-08/wasm-same-work-execution.md)에 분리한다.
 
 새 단계에서는 다음을 고정한다.
 
@@ -368,11 +370,11 @@ Jiterpreter 통계와 GC pause를 수집할 수 없으면 각각 `notMeasured`�
 
 | 단계 | 실행 내용 / 주요 위치 | 종료 조건 | 현재 상태 |
 | --- | --- | --- | --- |
-| Q0 기준선·출처 고정 | HEAD/dirty/asset, evaluated props/runtime options, Flutter lock과 설치 SDK 차이, fixture 대응표 | 실행 모드와 비교 가능성 명시. 기존 sample 구조 차이는 notComparable로 분리 | 소스·설정 조사 완료; 실행 기준선 미착수 |
-| Q1 동일 대상과 비용 분해 | Ui counters/profile, Widgets/Rendering opt-in trace, Dart 대응 fixture, 전체 방문 probe | 대상/횟수/순서/constraints 차이 목록과 candidate self time·allocation 순위 | 미착수 |
-| Q2 후보 하나 구현 | 우선 C1 비용 확인; 실제 비중에 따라 C2/C3/C4 중 상위 하나 선택 | 기존 경로와 isolated A/B, 원본 실패 보존, local API/override/lifetime 계약 통과 | 미착수 |
-| Q3 WASM 비교·회귀 | 3쌍 주 workload, 필요 시 최소 계측 및 대조군 | 동일 대상 유지와 지연·할당·메모리 tradeoff 보고. 개선 없는 후보 원복 | 미착수 |
-| Q4 재생성·통합 기록 | generator lowering/virtual-dispatch 또는 reviewed source, trimmed publish, native/Web 계약 | 재생성 내구성, 플랫폼별 결과, 채택/미채택/잔여 gate 기록 | 미착수 |
+| Q0 기준선·출처 고정 | HEAD/dirty/asset, evaluated props/runtime options, Flutter lock과 설치 SDK 차이, fixture 대응표 | 실행 모드와 비교 가능성 명시. 기존 sample 구조 차이는 notComparable로 분리 | artifact/소스 고정; runtime 활성 옵션 일부 notMeasured |
+| Q1 동일 대상과 비용 분해 | Ui counters/profile, Widgets/Rendering opt-in trace, Dart 대응 fixture, 전체 방문 probe | 대상/횟수/순서/constraints 차이 목록과 candidate self time·allocation 순위 | bounded fixture·C1 귀속 완료; 전체 trace PARTIAL |
+| Q2 후보 하나 구현 | 우선 C1 비용 확인; 실제 비중에 따라 C2/C3/C4 중 상위 하나 선택 | 기존 경로와 isolated A/B, 원본 실패 보존, local API/override/lifetime 계약 통과 | HAMT opt-in 구현·map/동일 대상 계약 PASS |
+| Q3 WASM 비교·회귀 | 3쌍 주 workload, 필요 시 최소 계측 및 대조군 | 동일 대상 유지와 지연·할당·메모리 tradeoff 보고. 개선 없는 후보 원복 | Web 3쌍 완료; componentOnly, 최소 계측/대조군 미완료 |
+| Q4 재생성·통합 기록 | generator lowering/virtual-dispatch 또는 reviewed source, trimmed publish, native/Web 계약 | 재생성 내구성, 플랫폼별 결과, 채택/미채택/잔여 gate 기록 | reviewed source·최종 계약 PASS; 통합 상태는 9.10절 |
 
 후보별로 hot path 비중을 먼저 확인한다. 전체 시간의 5%인 경로를 두 배 빠르게 해도 전체 처리 시간 감소는 약 2.5%에 불과하다. 소스가 복잡해 보인다는 이유로 낮은 비중 후보를 전면 재작성하지 않는다. C1도 비용 비중이 작거나 맵 조회가 악화되면 우선순위를 내린다.
 
@@ -402,8 +404,85 @@ Jiterpreter 통계와 GC pause를 수집할 수 없으면 각각 `notMeasured`�
 - [x] 대상·수명·실행 시점을 고정한 .NET WASM 내부 구조 후보와 계약·예산 작성
 - [ ] Q0 실행 artifact/runtime 모드 및 Flutter 대응 fixture 확정
 - [ ] Q1 부분/전체 방문 동일 대상 trace와 비용 분해
-- [ ] Q2 상위 후보 하나의 공용 구현 및 correctness 검사
+- [x] Q2 제한된 할당 개선 후보 HAMT 공용 구현 및 correctness 검사 (기본 승격 아님)
 - [ ] Q3 동일 작업 WASM A/B와 계측 최소화·회귀·메모리 확인
 - [ ] Q4 생성기/소스 유지 방식, 통합 검증과 채택 결과 기록
 
-현재 연구 결론은 **실행할 가치가 있는 구체적 후보를 확인했다**는 것이다. 추가 성능 개선, Flutter와의 실제 대상 일치, 모든 플랫폼 수용은 아직 확인하지 않았다.
+연구 당시 결론은 **실행할 가치가 있는 구체적 후보를 확인했다**는 것이었다. 후속 구현은 아래처럼 제한된 계약·할당 개선을 확인했으며, 전체 Flutter 대상 일치와 모든 플랫폼 수용은 여전히 확인하지 않았다.
+
+
+### 9.10 2026-09-08 구현·실험 결과
+
+**PARTIAL / componentOnly.** `-p:DorotiExperimentalHamt=true`에서만 공용
+`PersistentHashMap`이 bitmap HAMT 경로 복사·구조 공유를 사용한다. 정상 빌드는
+기존 Dictionary 복사이며 trie 파일도 제외한다. eager/worker-direct-webgl,
+대상·State 소유권·처리 시점과 AOT/threads 기본값은 유지했다.
+
+- Q0: HEAD `4e853fb9`, 시작 clean, 실제 빌드 endpoint 562개씩 SHA-256 고정.
+  배포 runtime 파일은 10.0.11 Release. 활성 Jiterpreter 옵션/통계는 notMeasured.
+  저장소의 lock Flutter `56b8e1a8`를 직접 실행했으며 설치 SDK와 구분했다.
+- Q1/Q2: weak ID·bounded numeric trace와 맵/캐시 귀속 계측 추가. C# 전후
+  20개 노드/155개 이벤트 순서 일치, Flutter의 17개 lifecycle/build callback 일치.
+  map snapshot/충돌/참조 동일성/삭제·수명 계약 및 29개 섹션 native 회귀 PASS.
+  전체 sample의 모든 logical target·cache·semantics trace를 입증한 것은 아니다.
+- C1 초기 귀속: 2,060 put의 20.9ms는 전체 callback 4,488.8ms의 약 0.47%.
+  주 latency 해결책으로 우선순위를 내리고 제한된 allocation 후보로만 구현했다.
+- Q3: 3쌍 모두 put 2,060회/입력 항목 54,379개. 맵 할당은
+  **1,400,800 → 396,992 bytes (-71.7%)**. 전체 callback 합계는
+  5103.5→4401.6 / 4729.0→4612.6 / 5271.3→4723.9ms지만, 최대 callback은
+  두 번째 쌍에서 2220.4→2295.7ms로 악화. 작은 표본의 p95를 안정적 지표로
+  해석하지 않으며 기존 30%·16.7/33.3/50/100ms gate는 PASS로 바꾸지 않는다.
+- 모든 Web 실행은 materialized ID 0–28, runtime error 0, 최종 generation의
+  exact-rendered commit을 확인했다. eager는 최초부터 29개를 materialize하므로
+  초기 진단을 부분 방문 baseline이라고 부르지 않는다.
+- Q4: 후보 trimmed Web publish 및 실험 옵션 없는 최종 Web build PASS. 정상 빌드 산출물도
+  기본 map 경로로 복귀했다. publish 산출물의 별도 browser 실행은 예산 이후 추가하지 않았다.
+- 최초 실패·컴파일/setup 재시도를 포함해 **총 20회**에서 종료했다. 최소 계측,
+  대조군, 전체 메모리, DPR/입력/semantics/물리 host 검증이 남아 기본 승격하지 않는다.
+  이전 indexed 및 performance FAIL/PARTIAL은 그대로다.
+
+재현 방법은 [검증 README](Doroti/validation/framework-work/README.same-work.md),
+원시 값·20회 ledger·실패 원인·publish/최종 빌드 상태는
+[실행 기록](history/26-09-08/wasm-same-work-execution.md)을 따른다.
+
+
+### 9.11 사용자 요청에 따른 HAMT + indexed 추가 비교
+
+기존 20회 eager 실험과 분리해 **신규 6회(3쌍)** 실행했다. 두 모드 모두
+indexed이며 최초 materialized ID 7개 → 전체 29개를 확인한 뒤, 매 실행에서
+같은 열 resize 8회와 열 전환 8회를 순서대로 측정했다. 빌드·기본값 변경 없음.
+
+**indexed에서는 HAMT의 지연 개선이 확인되지 않았다.** 3회 중앙값 기준
+같은 열 callback 최대 323.3→333.7ms, 최종 정착 350.3→396.4ms(+13.2%).
+열 전환 최대 423.0→419.5ms, 정착 780.3→769.6ms지만 쌍별 방향이 달라
+반복 가능한 개선으로 판정하지 않는다. 같은 열 정착 시간은 세 쌍 모두 악화했다.
+
+각 실행의 aggregate Rebuild/LayoutWork는 동일했다. 같은 열 map put은 0회,
+열 전환은 30회로, 맵 할당 절감은 20,400→5,760 bytes(14,640 bytes)에 그쳤다.
+전체 진단 창 allocated bytes에는 JSON/snapshot 비용이 섞이므로 실제 UI 할당
+개선으로 해석하지 않는다. HAMT 기본 승격 보류와 기존 미달 gate를 유지한다.
+
+원시 3쌍 수치·환경·한계는 [indexed 비교 기록](history/26-09-08/indexed-hamt-comparison.md)을 따른다.
+
+
+### 9.12 HAMT + indexed 단일화
+
+사용자는 처리시간의 뚜렷한 개선이 없더라도 HAMT + indexed를 기반으로 삼고
+다른 경로를 없애도록 명시적으로 요청했다. 공용 PersistentHashMap은 HAMT로,
+Material sample은 indexed SectionList로 단일화한다. Dictionary 복사 구현,
+샘플 eager/일반 SliverList 분기, HAMT 빌드 플래그, viewport 환경변수와 Web
+쿼리 전달을 제거한다. 다른 위젯이 사용하는 공용 SliverList 자체는 유지한다.
+
+이 채택은 이전 gate의 PASS 판정이 아니다. indexed 3쌍 비교에서 확인된 것은
+열 전환 맵 할당량 20,400→5,760 bytes 감소이며, 전체 live heap/프로세스 메모리
+감소나 처리시간 개선은 입증되지 않았다. 9.10/9.11의 당시 결론과 원본은 보존한다.
+실행 주소는 `http://127.0.0.1:5189/?dorotiTestbedMode=sample`이며 옛 viewport
+쿼리는 실행 방식에 영향을 주지 않는다. 구현·검증은
+[단일화 기록](history/26-09-08/hamt-indexed-unification.md)에 남긴다.
+
+단일화 검증: 기본 HAMT 맵 계약과 기존 155개 이벤트 비교, indexed 29개 섹션
+스크롤·State 보존, 포커스·재정렬, 깊은 anchor 열 전환, Web Release build,
+TypeScript 검사 및 옵션 없는 Web 브라우저 회귀 2건 PASS. runtime/build/type
+검증 명령 7회, 재시도 0회, 명령당 timeout 20분으로 완료했다. 5189는 단일화
+빌드로 갱신했고 이전 5188 비교 서버는 종료했다. 물리 host와 전체 메모리
+수용을 추가로 검증한 것은 아니다.

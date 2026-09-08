@@ -1516,6 +1516,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     public virtual void markNeedsLayout()
     {
         FrameworkWorkCounters.Add(FrameworkWork.MarkLayout);
+        if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.MarkLayout, this);
         if (_needsLayout) FrameworkWorkCounters.Add(FrameworkWork.MarkLayoutAlreadyDirty);
         DartRuntimePrimitives.Assert(() => this._debugCanPerformMutations);
         if (this._needsLayout)
@@ -1609,6 +1610,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             });
         try
         {
+            if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.PerformLayout, this);
             performLayout();
             markNeedsSemanticsUpdate();
         }
@@ -1631,6 +1633,12 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     public virtual void layout(Constraints constraints, bool parentUsesSize = false)
     {
         FrameworkWorkCounters.Add(FrameworkWork.LayoutEntry);
+        if (FrameworkWorkTrace.Enabled)
+        {
+            var box = constraints as BoxConstraints;
+            FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.Layout, this, owner, (parentUsesSize ? 1 : 0) | (_needsLayout ? 2 : 0) | (box is null ? 4 : 0),
+                box?.minWidth ?? 0, box?.maxWidth ?? 0, box?.minHeight ?? 0, box?.maxHeight ?? 0);
+        }
         DartRuntimePrimitives.Assert(() => !this._debugDisposed);
         if ((!global::Doroti.Framework.Foundation.ConstantsLibrary.kReleaseMode && global::Doroti.Framework.Rendering.DebugLibrary.debugProfileLayoutsEnabled))
         {
@@ -1687,6 +1695,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         if ((!this._needsLayout && (object.Equals(constraints, this._constraints))))
         {
             FrameworkWorkCounters.Add(FrameworkWork.LayoutFastPath);
+            if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.LayoutFastReturn, this);
             DartRuntimePrimitives.Assert(() =>
                 {
                     _debugDoingThisResize = this.sizedByParent;
@@ -1729,6 +1738,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 });
             try
             {
+                if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.PerformResize, this);
                 performResize();
                 DartRuntimePrimitives.Assert(() =>
                     {
@@ -1757,6 +1767,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             });
         try
         {
+            if (FrameworkWorkTrace.Enabled) FrameworkWorkTrace.Record(FrameworkWorkTrace.Kind.PerformLayout, this);
             performLayout();
             markNeedsSemanticsUpdate();
             DartRuntimePrimitives.Assert(() =>

@@ -3176,7 +3176,6 @@ export async function startDorotiWorkerHost(
               dotnetModuleUrl, mode, canvas: replacementOffscreen,
               testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
     progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",
-    sectionViewport: new URL(location.href).searchParams.get("dorotiSectionViewport") ?? "eager",
               resizeDiagnostics: diagnosticsEnabled(),
             }, replacementOffscreen ? [replacementOffscreen] : []);
           } else if (!ready) rejectReady(error);
@@ -3200,7 +3199,6 @@ export async function startDorotiWorkerHost(
     dotnetModuleUrl, mode, canvas: initialOffscreen,
     testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
     progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",
-    sectionViewport: new URL(location.href).searchParams.get("dorotiSectionViewport") ?? "eager",
     resizeDiagnostics: diagnosticsEnabled(),
   };
   activeWorker.postMessage(initialMessage, initialOffscreen ? [initialOffscreen] : []);
