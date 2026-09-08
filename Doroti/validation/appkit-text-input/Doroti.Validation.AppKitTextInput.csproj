@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-macos</TargetFramework>
+    <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
+    <OutputType>Exe</OutputType>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <EnableDefaultMauiItems>false</EnableDefaultMauiItems>
+    <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+    <ApplicationTitle>Doroti.Validation.AppKitTextInput</ApplicationTitle>
+    <ApplicationId>dev.doroti.validation.appkit-text-input</ApplicationId>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" />
+    <PackageReference Include="Microsoft.Maui.Platforms.MacOS" />
+    <ProjectReference Include="../../src/Doroti.Ui/Doroti.Ui.csproj" />
+    <Compile Include="../../src/Doroti.Host.Maui/MauiTextInputBridge*.cs" Link="%(Filename)%(Extension)" />
+    <Compile Include="../../src/Doroti.Host.Maui/DorotiMacOSLayoutHandler.cs" Link="DorotiMacOSLayoutHandler.cs" />
+  </ItemGroup>
+</Project>

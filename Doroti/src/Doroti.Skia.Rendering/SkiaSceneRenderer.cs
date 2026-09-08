@@ -1943,6 +1943,10 @@ public sealed partial class SkiaSceneRenderer :
                     new((float)a[0], (float)a[1], (float)a[2], (float)a[3]),
                     (float)(a[4] * 180 / Math.PI),
                     (float)(a[5] * 180 / Math.PI)); break;
+                // SkiaSharp has no native rounded-superellipse path primitive.
+                // Preserve its bounds and corner radii with the rounded-rect
+                // approximation; dropping it makes ShapeDecoration clips empty.
+                case "addRSuperellipse":
                 case "addRRect":
                     using (var rounded = new SKRoundRect())
                     {

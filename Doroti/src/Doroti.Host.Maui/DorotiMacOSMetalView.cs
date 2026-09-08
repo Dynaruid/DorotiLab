@@ -46,6 +46,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private bool _releaseRequested;
     private bool _resourcesReleased;
     private bool _cursorHidden;
+    private bool _controlClick;
     private bool _drawingLayout;
     private int _frameRequestPending;
 
@@ -371,9 +372,18 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     public override void MouseEntered(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.add, 0);
     public override void MouseExited(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.remove, 0);
     public override void MouseMoved(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.hover, Buttons());
-    public override void MouseDown(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.down, Buttons() | 1);
-    public override void MouseDragged(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.move, Buttons());
-    public override void MouseUp(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.up, Buttons() & ~1);
+    public override void MouseDown(NSEvent theEvent)
+    {
+        _controlClick = (theEvent.ModifierFlags & NSEventModifierMask.ControlKeyMask) != 0;
+        DispatchPointer(theEvent, PointerChange.down, _controlClick ? (Buttons() & ~1) | 2 : Buttons() | 1);
+    }
+    public override void MouseDragged(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.move,
+        _controlClick ? (Buttons() & ~1) | 2 : Buttons());
+    public override void MouseUp(NSEvent theEvent)
+    {
+        DispatchPointer(theEvent, PointerChange.up, Buttons() & ~1);
+        _controlClick = false;
+    }
     public override void RightMouseDown(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.down, Buttons() | 2);
     public override void RightMouseDragged(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.move, Buttons());
     public override void RightMouseUp(NSEvent theEvent) => DispatchPointer(theEvent, PointerChange.up, Buttons() & ~2);

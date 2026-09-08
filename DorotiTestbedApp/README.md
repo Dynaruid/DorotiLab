@@ -61,6 +61,8 @@ dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c R
 This UIKit runner requires Apple Silicon macOS and Xcode/Mac Catalyst workloads.
 It uses the Mac UI idiom without the iPad compatibility mode's 77% downscaling.
 Rendering and pointer coordinates use the Metal view's scale factor.
+Trackpad scrolling decelerates after release; discrete mouse-wheel input receives no added inertia.
+Both Mac runners open the text field editing menu with a secondary click or Control-click.
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 `

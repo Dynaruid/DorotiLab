@@ -38,7 +38,8 @@ public static class DorotiMauiApplicationBuilderExtensions
             .UseMauiAppMacOS<DorotiMauiApplication>()
             .AddMacOSEssentials()
             .ConfigureMauiHandlers(handlers =>
-                handlers.AddHandler<DorotiMacOSMetalSurface, DorotiMacOSMetalSurfaceHandler>());
+                handlers.AddHandler<DorotiMacOSMetalSurface, DorotiMacOSMetalSurfaceHandler>()
+                    .AddHandler<DorotiMauiSurface, DorotiMacOSLayoutHandler>());
 #else
             .UseMauiApp<DorotiMauiApplication>()
             .UseSkiaSharp()

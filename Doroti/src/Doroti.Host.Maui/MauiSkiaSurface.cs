@@ -93,6 +93,11 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
     internal MauiSkglSurface(MauiTextInputBridge textInput, ulong viewId)
     {
         _view = new SKGLView { HasRenderLoop = false, EnableTouchEvents = true };
+#if MACCATALYST
+        // The UIKit SKTouchHandler discards device kind and UIEvent.ButtonMask.
+        // Own this stream so secondary clicks are not converted to primary taps.
+        _view.EnableTouchEvents = false;
+#endif
         _nativeInput = MauiNativeInput.Attach(_view, textInput, viewId, data => Key?.Invoke(data));
 #if MACCATALYST
         _macCatalystNative = new(_view, data => Pointer?.Invoke(data));
@@ -335,7 +340,17 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
         private readonly Action<MauiSurfacePointerData> _dispatch;
         private UIKit.UIView? _nativeView;
         private UIKit.UIPanGestureRecognizer? _recognizer;
+        private UIKit.UIPanGestureRecognizer? _wheelRecognizer;
+        private MacCatalystPointerRecognizer? _pointerRecognizer;
+        private UIKit.UIContextMenuInteraction? _contextMenuInteraction;
+        private MacCatalystContextMenuDelegate? _contextMenuDelegate;
+        private UIKit.UIHoverGestureRecognizer? _hoverRecognizer;
         private MacCatalystGestureDelegate? _gestureDelegate;
+        private readonly MauiScrollMomentum _momentum = new();
+        private CoreAnimation.CADisplayLink? _displayLink;
+        private CoreGraphics.CGPoint _scrollLocation;
+        private int _mouseButtons;
+        private readonly Foundation.NSObject _deactivationObserver;
 
         internal MacCatalystNativeSubscription(
             SKGLView view,
@@ -343,6 +358,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
         {
             _view = view;
             _dispatch = dispatch;
+            _deactivationObserver = UIKit.UIApplication.Notifications.ObserveWillResignActive((_, _) => StopMomentum());
             _view.HandlerChanged += HandleHandlerChanged;
             AttachCurrent();
         }
@@ -375,7 +391,7 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
             }
             _recognizer = new UIKit.UIPanGestureRecognizer(HandleScroll)
             {
-                AllowedScrollTypesMask = UIKit.UIScrollTypeMask.All,
+                AllowedScrollTypesMask = UIKit.UIScrollTypeMask.Continuous,
                 AllowedTouchTypes = [],
                 CancelsTouchesInView = false,
                 DelaysTouchesBegan = false,
@@ -384,37 +400,132 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
             _gestureDelegate = new MacCatalystGestureDelegate();
             _recognizer.Delegate = _gestureDelegate;
             nativeView.AddGestureRecognizer(_recognizer);
+            _wheelRecognizer = new UIKit.UIPanGestureRecognizer(HandleScroll)
+            {
+                AllowedScrollTypesMask = UIKit.UIScrollTypeMask.Discrete,
+                AllowedTouchTypes = [],
+                CancelsTouchesInView = false,
+                Delegate = _gestureDelegate,
+            };
+            nativeView.AddGestureRecognizer(_wheelRecognizer);
+            _pointerRecognizer = new MacCatalystPointerRecognizer(data =>
+            {
+                if (data.Change == PointerChange.down) StopMomentum();
+                if (data.Kind == PointerDeviceKind.mouse) _mouseButtons = data.Buttons;
+                _dispatch(data);
+            }) { Delegate = _gestureDelegate };
+            nativeView.AddGestureRecognizer(_pointerRecognizer);
+            // In the Mac idiom, UIKit routes secondary clicks through the
+            // context-menu interaction rather than the raw primary touch stream.
+            // Doroti paints the menu, so decline UIKit's native menu after
+            // forwarding the context-click position to the framework.
+            _contextMenuDelegate = new MacCatalystContextMenuDelegate(location =>
+            {
+                StopMomentum();
+                var scale = Math.Max(1, (double)nativeView.ContentScaleFactor);
+                var down = new MauiSurfacePointerData(DorotiFrameClock.Now, PointerChange.down,
+                    PointerDeviceKind.mouse, 1, location.X * scale, location.Y * scale,
+                    2, 0, 0, PointerSignalKind.none, 0);
+                _dispatch(down);
+                _dispatch(down with { Change = PointerChange.up, Buttons = 0 });
+                if (Environment.GetEnvironmentVariable("DOROTI_TRACE_MAC_INPUT") == "1")
+                    Console.WriteLine("[MacCatalyst pointer] context click: down buttons=2, up buttons=0");
+            });
+            _contextMenuInteraction = new UIKit.UIContextMenuInteraction(_contextMenuDelegate);
+            nativeView.AddInteraction(_contextMenuInteraction);
+            _hoverRecognizer = new UIKit.UIHoverGestureRecognizer(recognizer =>
+            {
+                // Hover callbacks during a drag must not clear the pressed mask.
+                if (_mouseButtons != 0) return;
+                var location = recognizer.LocationInView(nativeView);
+                var scale = Math.Max(1, (double)nativeView.ContentScaleFactor);
+                var change = recognizer.State switch
+                {
+                    UIKit.UIGestureRecognizerState.Began => PointerChange.add,
+                    UIKit.UIGestureRecognizerState.Ended => PointerChange.remove,
+                    _ => PointerChange.hover,
+                };
+                _dispatch(new(DorotiFrameClock.Now, change, PointerDeviceKind.mouse, 1,
+                    location.X * scale, location.Y * scale, 0, 0, 0, PointerSignalKind.none, 0));
+            }) { Delegate = _gestureDelegate };
+            nativeView.AddGestureRecognizer(_hoverRecognizer);
         }
 
         private void HandleScroll(UIKit.UIPanGestureRecognizer recognizer)
         {
             if (_nativeView is not { } nativeView) return;
+            if (recognizer.State is UIKit.UIGestureRecognizerState.Began or
+                UIKit.UIGestureRecognizerState.Cancelled or UIKit.UIGestureRecognizerState.Failed)
+                StopMomentum();
             if (recognizer.State is not UIKit.UIGestureRecognizerState.Began and
                 not UIKit.UIGestureRecognizerState.Changed and
                 not UIKit.UIGestureRecognizerState.Ended) return;
 
             var translation = recognizer.TranslationInView(nativeView);
             recognizer.SetTranslation(CoreGraphics.CGPoint.Empty, nativeView);
-            if (translation.X == 0 && translation.Y == 0) return;
+            _scrollLocation = recognizer.LocationInView(nativeView);
+            DispatchScroll(-translation.X, -translation.Y);
+            if (recognizer.State == UIKit.UIGestureRecognizerState.Ended && ReferenceEquals(recognizer, _recognizer))
+            {
+                var velocity = recognizer.VelocityInView(nativeView);
+                if (_momentum.Start(-velocity.X, -velocity.Y, DorotiFrameClock.Now))
+                {
+                    _displayLink = CoreAnimation.CADisplayLink.Create(() =>
+                    {
+                        if (_nativeView?.Window is null) { StopMomentum(); return; }
+                        var delta = _momentum.Advance(DorotiFrameClock.Now);
+                        DispatchScroll(delta.X, delta.Y);
+                        if (!_momentum.IsActive) StopMomentum();
+                    });
+                    _displayLink.AddToRunLoop(Foundation.NSRunLoop.Main, Foundation.NSRunLoopMode.Common);
+                }
+            }
+        }
 
-            var location = recognizer.LocationInView(nativeView);
+        private void DispatchScroll(double x, double y)
+        {
+            if (_nativeView is not { } nativeView || (x == 0 && y == 0)) return;
             var scale = Math.Max(1, (double)nativeView.ContentScaleFactor);
             _dispatch(new(
                 DorotiFrameClock.Now,
                 PointerChange.hover,
                 PointerDeviceKind.mouse,
                 1,
-                location.X * scale,
-                location.Y * scale,
+                _scrollLocation.X * scale,
+                _scrollLocation.Y * scale,
                 0,
-                -translation.X * scale,
-                -translation.Y * scale,
+                x * scale,
+                y * scale,
                 PointerSignalKind.scroll,
                 0));
         }
 
+        private void StopMomentum()
+        {
+            _momentum.Stop();
+            _displayLink?.Invalidate();
+            _displayLink?.Dispose();
+            _displayLink = null;
+        }
+
         private void DetachCurrent()
         {
+            StopMomentum();
+            _mouseButtons = 0;
+            foreach (var gesture in new UIKit.UIGestureRecognizer?[] { _wheelRecognizer, _pointerRecognizer, _hoverRecognizer })
+            {
+                if (gesture is null) continue;
+                _nativeView?.RemoveGestureRecognizer(gesture);
+                gesture.Dispose();
+            }
+            _wheelRecognizer = null;
+            _pointerRecognizer = null;
+            if (_contextMenuInteraction is not null) _nativeView?.RemoveInteraction(_contextMenuInteraction);
+            _contextMenuInteraction?.Dispose();
+            _contextMenuInteraction = null;
+            _contextMenuDelegate?.Dispose();
+            _contextMenuDelegate = null;
+            _hoverRecognizer = null;
             if (_nativeView is not null && _recognizer is not null)
                 _nativeView.RemoveGestureRecognizer(_recognizer);
             _recognizer?.Dispose();
@@ -424,9 +535,97 @@ internal sealed class MauiSkglSurface : IMauiSkiaSurface
             _nativeView = null;
         }
 
+        private sealed class MacCatalystContextMenuDelegate(Action<CoreGraphics.CGPoint> show)
+            : UIKit.UIContextMenuInteractionDelegate
+        {
+            public override UIKit.UIContextMenuConfiguration? GetConfigurationForMenu(
+                UIKit.UIContextMenuInteraction interaction, CoreGraphics.CGPoint location)
+            {
+                show(location);
+                return null;
+            }
+        }
+
+        private sealed class MacCatalystPointerRecognizer : UIKit.UIGestureRecognizer
+        {
+            private readonly Action<MauiSurfacePointerData> _dispatch;
+            private static readonly bool TraceInput = Environment.GetEnvironmentVariable("DOROTI_TRACE_MAC_INPUT") == "1";
+            private readonly HashSet<nint> _mouseTouches = [];
+            private readonly HashSet<nint> _secondaryTouches = [];
+            private bool _controlClick;
+
+            internal MacCatalystPointerRecognizer(Action<MauiSurfacePointerData> dispatch)
+            {
+                _dispatch = dispatch;
+                CancelsTouchesInView = false;
+                DelaysTouchesBegan = false;
+                DelaysTouchesEnded = false;
+            }
+
+            public override void TouchesBegan(Foundation.NSSet touches, UIKit.UIEvent evt)
+            {
+                base.TouchesBegan(touches, evt);
+                Send(touches, evt, PointerChange.down);
+            }
+            public override void TouchesMoved(Foundation.NSSet touches, UIKit.UIEvent evt)
+            {
+                base.TouchesMoved(touches, evt);
+                Send(touches, evt, PointerChange.move);
+            }
+            public override void TouchesEnded(Foundation.NSSet touches, UIKit.UIEvent evt)
+            {
+                base.TouchesEnded(touches, evt);
+                Send(touches, evt, PointerChange.up);
+            }
+            public override void TouchesCancelled(Foundation.NSSet touches, UIKit.UIEvent evt)
+            {
+                base.TouchesCancelled(touches, evt);
+                Send(touches, evt, PointerChange.cancel);
+            }
+
+            private void Send(Foundation.NSSet touches, UIKit.UIEvent evt, PointerChange change)
+            {
+                if (View is not { } view) return;
+                var scale = Math.Max(1, (double)view.ContentScaleFactor);
+                foreach (var touch in touches.Cast<UIKit.UITouch>())
+                {
+                    var handle = (nint)touch.Handle;
+                    // The context-menu interaction owns this sequence even on
+                    // UIKit versions that also expose it as raw touches.
+                    if (change == PointerChange.down && (evt.ButtonMask & UIKit.UIEventButtonMask.Secondary) != 0)
+                        _secondaryTouches.Add(handle);
+                    if (_secondaryTouches.Contains(handle))
+                    {
+                        if (change is PointerChange.up or PointerChange.cancel) _secondaryTouches.Remove(handle);
+                        continue;
+                    }
+                    var mouse = touch.Type == UIKit.UITouchType.IndirectPointer || evt.ButtonMask != 0 || _mouseTouches.Contains(handle);
+                    if (mouse && change == PointerChange.down) _mouseTouches.Add(handle);
+                    var kind = mouse ? PointerDeviceKind.mouse : touch.Type == UIKit.UITouchType.Stylus
+                        ? PointerDeviceKind.stylus : PointerDeviceKind.touch;
+                    var buttons = mouse ? (int)evt.ButtonMask : 1;
+                    if (change == PointerChange.down)
+                        _controlClick = mouse && (buttons & 1) != 0 && (evt.ModifierFlags & UIKit.UIKeyModifierFlags.Control) != 0;
+                    if (_controlClick) buttons = (buttons & ~1) | 2;
+                    if (change is PointerChange.up or PointerChange.cancel) buttons = 0;
+                    var location = touch.LocationInView(view);
+                    if (TraceInput) Console.WriteLine($"[MacCatalyst pointer] {change} native={touch.Type} mask={evt.ButtonMask} kind={kind} buttons={buttons}");
+                    _dispatch(new(TimeSpan.FromSeconds(touch.Timestamp), change, kind,
+                        mouse ? 1UL : unchecked((ulong)(nint)touch.Handle), location.X * scale, location.Y * scale,
+                        buttons, 0, 0, PointerSignalKind.none, (double)touch.Force));
+                    if (change is PointerChange.up or PointerChange.cancel)
+                    {
+                        _controlClick = false;
+                        _mouseTouches.Remove(handle);
+                    }
+                }
+            }
+        }
+
         public void Dispose()
         {
             _view.HandlerChanged -= HandleHandlerChanged;
+            _deactivationObserver.Dispose();
             DetachCurrent();
         }
 

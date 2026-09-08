@@ -61,6 +61,8 @@ dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c R
 Apple Silicon macOS에서 Xcode/Mac Catalyst workload로 실행하는 UIKit runner입니다.
 Mac UI idiom을 사용해 iPad 호환 모드의 77% 축소 없이 표시합니다.
 렌더링과 입력 좌표는 Metal 뷰의 배율을 기준으로 처리합니다.
+트랙패드 스크롤은 손가락을 뗀 뒤 감속하며, 일반 마우스 휠에는 추가 관성을 적용하지 않습니다.
+두 Mac runner 모두 텍스트 필드에서 우클릭 또는 Control+클릭으로 편집 메뉴를 엽니다.
 
 ```powershell
 dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacCatalyst.csproj -c Release -r maccatalyst-arm64 `

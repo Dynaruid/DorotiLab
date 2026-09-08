@@ -106,7 +106,10 @@ public class CupertinoDynamicColor : Color, global::Doroti.Framework.Foundation.
     }
 
     public CupertinoDynamicColor(Color _effectiveColor, Color color, Color darkColor, Color highContrastColor, Color darkHighContrastColor, Color elevatedColor, Color darkElevatedColor, Color highContrastElevatedColor, Color darkHighContrastElevatedColor, global::Doroti.Framework.Widgets.Element? _debugResolveContext, string? _debugLabel)
+        : base(_effectiveColor.a, _effectiveColor.r, _effectiveColor.g, _effectiveColor.b, _effectiveColor.colorSpace)
     {
+        // Color channels are nonvirtual in Doroti.Ui. Populate the immutable
+        // base value too, otherwise painting through Color sees transparent black.
         this._effectiveColor = _effectiveColor;
         this.color = color;
         this.darkColor = darkColor;

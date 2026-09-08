@@ -3,6 +3,13 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args is ["--mac-text-menu"])
+{
+    ScrollMomentumContracts.Verify();
+    MountedPickerContracts.VerifyMacTextMenu();
+    return;
+}
+
 if (args is ["--scaffold-metrics"])
 {
     MountedPickerContracts.VerifyScaffoldMetrics();

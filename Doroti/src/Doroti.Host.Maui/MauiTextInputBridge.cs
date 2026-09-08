@@ -3,7 +3,7 @@ using Microsoft.Maui.Controls;
 
 namespace Doroti.Host.Maui;
 
-public sealed class MauiTextInputBridge : IDisposable
+public sealed partial class MauiTextInputBridge : IDisposable
 {
     private readonly Func<Entry> _entryFactory;
     private Entry? _entry;
@@ -55,7 +55,12 @@ public sealed class MauiTextInputBridge : IDisposable
         input.PropertyChanged += HandleInputPropertyChanged;
         input.Focused += HandleFocused;
         input.Unfocused += HandleUnfocused;
+#if MACOS
+        input.HandlerChanged += HandleMacOSInputHandlerChanged;
+        AttachMacOSInput(input);
+#else
         if (input is Entry entry) entry.Completed += HandleCompleted;
+#endif
         if (input is Editor editor) editor.Completed += HandleCompleted;
         return input;
     }
@@ -222,7 +227,7 @@ public sealed class MauiTextInputBridge : IDisposable
         if (_disposed || _active is null || !_hasClient) return;
         if (!_attachOnDemand)
         {
-            if (requestFocus) _active.Dispatcher.Dispatch(() => _active.Focus());
+            if (requestFocus) _active.Dispatcher.Dispatch(() => FocusInput(_active));
             return;
         }
         if (_visualHost is null || _suspended || !_hasClient) return;
@@ -236,7 +241,10 @@ public sealed class MauiTextInputBridge : IDisposable
                     _visualHost.Children.Remove(input);
             }
             if (expected.Parent is null) _visualHost.Children.Add(expected);
-            if (requestFocus) expected.Focus();
+#if MACOS
+            AttachMacOSInput(expected);
+#endif
+            if (requestFocus) FocusInput(expected);
         });
     }
 
@@ -282,9 +290,9 @@ public sealed class MauiTextInputBridge : IDisposable
         });
     }
 
-    private static void ActivateNativeTextInput(InputView input)
+    private void ActivateNativeTextInput(InputView input)
     {
-        input.Focus();
+        FocusInput(input);
 #if ANDROID
         if (input.Handler?.PlatformView is Android.Views.View nativeView)
         {
@@ -297,6 +305,16 @@ public sealed class MauiTextInputBridge : IDisposable
                     nativeView, Android.Views.InputMethods.ShowFlags.Implicit);
             });
         }
+#endif
+    }
+
+    private bool FocusInput(InputView input)
+    {
+#if MACOS
+        ScheduleMacOSFocus(input);
+        return true;
+#else
+        return input.Focus();
 #endif
     }
 
@@ -513,7 +531,12 @@ public sealed class MauiTextInputBridge : IDisposable
             input.PropertyChanged -= HandleInputPropertyChanged;
             input.Focused -= HandleFocused;
             input.Unfocused -= HandleUnfocused;
+#if MACOS
+            input.HandlerChanged -= HandleMacOSInputHandlerChanged;
+            DetachMacOSInput(input);
+#else
             if (input is Entry entry) entry.Completed -= HandleCompleted;
+#endif
             if (input is Editor editor) editor.Completed -= HandleCompleted;
         }
         DetachInputs();

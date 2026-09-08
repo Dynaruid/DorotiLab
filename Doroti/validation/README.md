@@ -11,6 +11,26 @@ This directory retains Doroti validation contracts, fixtures, and committed evid
 
 ## Evidence boundary
 
+The [AppKit text input regression](appkit-text-input/README.md) exercises real
+native input controls, dynamic layout attachment, focus, insertion, submission,
+and single-line/multiline client lifecycle.
+
+The macOS text-menu and Catalyst momentum regression can be run from the repository root:
+
+```powershell
+dotnet run --project ./Doroti/validation/fcr7-material-widget -c Release -- --mac-text-menu
+```
+
+This mounts a macOS Material text field, opens its menu through secondary pointer
+events, checks visible label pixels in light/dark themes, and clicks Copy, Cut,
+and Paste (including an empty field). Captures go to `Doroti/artifacts/mac-input`.
+The same command checks Catalyst's inertial decay at 60/120 Hz, interruption,
+direction changes, and suspension. Native recognizer delivery and physical
+trackpad feel require running the Mac Catalyst sample; AppKit uses native wheel
+momentum without the Catalyst decay helper.
+Add `-e DOROTI_TRACE_MAC_INPUT=1` to the Catalyst run command to trace native
+pointer kinds, button masks, and context-click delivery (no text contents).
+
 The current Windows product is the Windows App SDK 2.4 `HwndExactCpp` child-HWND host with managed hardware-D3D11 ANGLE/EGL/Skia presentation. Its current validator projects cover ABI/topology, exact-generation terminals, ANGLE runtime selection, first-surface ordering, input packets, automated IMM32/UIA, lifecycle/device recreation, and package provenance. Machine-local HwndExactCpp reports and captures are written under `.doroti/evidence`; the decision and final scope are summarized by [ADR-025](../docs/adr/ADR-025-windowsappsdk-hwndexact-angle.md).
 
 The tested physical resize and mixed-DPI monitor-boundary behavior received user acceptance, but strict synthetic qualification and pixel/cadence failures remain failures. Automated IME/UIA and lifecycle results are not physical Korean IME candidate/caret, Narrator/Accessibility Insights, full DPI/monitor/device/window-management, installer, or deployment acceptance.
