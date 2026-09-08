@@ -89,8 +89,11 @@ export function attachNative(module: NativeDawn) {
 export function acquire(width: number, height: number): number {
   if (failure) throw failure;
   if (disposed || !context || !canvas || !native) throw new Error("Doroti WebGPU is not initialized.");
-  if (canvas.width !== width) canvas.width = width;
-  if (canvas.height !== height) canvas.height = height;
+  // Keep the transferred front at its allocated capacity. Resizing it for
+  // every viewport target lets the browser scale that new texture into the
+  // previous CSS box until main receives direct-commit.
+  if (canvas.width < width) canvas.width = Math.max(width, Math.ceil(canvas.width * 1.5));
+  if (canvas.height < height) canvas.height = Math.max(height, Math.ceil(canvas.height * 1.5));
   return native.WebGPU.importJsTexture(context.getCurrentTexture());
 }
 

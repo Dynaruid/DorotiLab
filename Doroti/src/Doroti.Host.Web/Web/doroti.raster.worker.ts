@@ -505,11 +505,11 @@ async function render(value: WorkerPresenter, request: PresentRequest): Promise<
         managedSurfaceMicroseconds: Math.round((completed - started) * 1000), directFinalizeMicroseconds: 0,
         contextGeneration: value.contextGeneration, physicalWidth: request.physicalWidth,
         physicalHeight: request.physicalHeight, logicalWidth: request.logicalWidth, logicalHeight: request.logicalHeight,
-        devicePixelRatio: request.devicePixelRatio, capacityWidth: request.physicalWidth, capacityHeight: request.physicalHeight,
+        devicePixelRatio: request.devicePixelRatio, capacityWidth: value.canvas.width, capacityHeight: value.canvas.height,
       });
       post("resource", { bitmapCreated: 0, bitmapConsumed: 0, bitmapClosed: 0, activeBitmaps: 0,
         contextGeneration: 1, rasterWidth: request.physicalWidth, rasterHeight: request.physicalHeight,
-        displayWidth: request.physicalWidth, displayHeight: request.physicalHeight });
+        displayWidth: value.canvas.width, displayHeight: value.canvas.height });
       return;
     }
     const capacityChanged =

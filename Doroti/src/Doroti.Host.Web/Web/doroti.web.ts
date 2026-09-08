@@ -595,12 +595,17 @@ function configureDirectCanvasCapacity(
     host.canvas.width = capacityWidth;
     host.canvas.height = capacityHeight;
   }
-  host.canvas.style.width = `${capacityWidth / ratio}px`;
-  host.canvas.style.height = `${capacityHeight / ratio}px`;
-  host.canvas.style.objectFit = "cover";
+  // Let the browser update intrinsic geometry together with the transferred
+  // bitmap. Explicit CSS capacity dimensions arrive via a separate Worker
+  // message and can temporarily squeeze a newly grown front into the old box.
+  // This transform converts physical pixels to CSS pixels only; it never
+  // depends on viewport dimensions or stretches an old frame to a new target.
+  host.canvas.style.width = "auto";
+  host.canvas.style.height = "auto";
+  host.canvas.style.objectFit = "none";
   host.canvas.style.objectPosition = "left top";
-  host.canvas.style.removeProperty("transform");
-  host.canvas.style.removeProperty("transform-origin");
+  host.canvas.style.transform = `scale(${1 / ratio})`;
+  host.canvas.style.transformOrigin = "left top";
   host.canvas.dataset.dorotiCapacityWidth = String(capacityWidth);
   host.canvas.dataset.dorotiCapacityHeight = String(capacityHeight);
   host.canvas.dataset.dorotiCapacityDevicePixelRatio = String(ratio);

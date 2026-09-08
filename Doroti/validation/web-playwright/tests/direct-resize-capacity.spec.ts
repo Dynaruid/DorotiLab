@@ -45,9 +45,9 @@ for (const dpr of [1, 2]) {
         const observe = () => {
           const ratio = Number(canvas.dataset.dorotiCapacityDevicePixelRatio);
           if (samples.length < 512) samples.push({ time: performance.now(), ratio,
-            width: parseFloat(canvas.style.width), height: parseFloat(canvas.style.height),
-            capacityWidth: Number(canvas.dataset.dorotiCapacityWidth),
-            capacityHeight: Number(canvas.dataset.dorotiCapacityHeight) });
+            width: canvas.getBoundingClientRect().width, height: canvas.getBoundingClientRect().height,
+            capacityWidth: canvas.width,
+            capacityHeight: canvas.height });
         };
         new MutationObserver(observe).observe(canvas, { attributes: true, attributeFilter: ['style'] });
         new ResizeObserver(observe).observe(canvas.closest('.doroti-root')!);

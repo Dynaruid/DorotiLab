@@ -60,7 +60,16 @@ public static partial class DorotiWebWorkerSurface
                 SKSurface.Create(_graphiteRecorder, backend, SKColorType.Bgra8888)
                 ?? throw new InvalidOperationException("Graphite current texture surface failed."), _graphiteRecorder);
             var epoch = new DorotiResizeEpoch(generation, logicalWidth, logicalHeight, width, height, dpr, timestamp);
-            var result = _target.PaintSkiaSurface(_viewId, surface, width, height, epoch, requestId);
+            // The current texture has grow-only capacity, while layout and
+            // raster scale use the exact viewport. Clear unused pixels as
+            // WebGPU current textures do not retain the previous frame.
+            surface.Canvas.Clear(SKColors.Transparent);
+            string result;
+            using (new SKAutoCanvasRestore(surface.Canvas, true))
+            {
+                surface.Canvas.ClipRect(new SKRect(0, 0, width, height), SKClipOperation.Intersect, antialias: false);
+                result = _target.PaintSkiaSurface(_viewId, surface, width, height, epoch, requestId);
+            }
             using var recording = _graphiteRecorder.Snap()
                 ?? throw new InvalidOperationException("Graphite produced no recording.");
             if (result is "exact-rendered" or "replay-rendered")
