@@ -327,7 +327,9 @@ static void VerifyBrowserInputAndFrontBufferContract()
             source.Contains("const kind = isTrackpadWheel(host, wheel) ? 3 : 0;", StringComparison.Ordinal),
         "the browser endpoint classifies continuous wheel samples before managed dispatch");
     Require(source.Contains("worker-direct-webgl", StringComparison.Ordinal) &&
-            source.Contains("createWorkerVisibleSurface(canvas, true)", StringComparison.Ordinal) &&
+            source.Contains("worker-direct-webgpu", StringComparison.Ordinal) &&
+            source.Contains("createWorkerVisibleSurface(canvas)", StringComparison.Ordinal) &&
+            !source.Contains("transferFromImageBitmap", StringComparison.Ordinal) &&
             source.Contains("closeExternalLeases(display.pendingLeases", StringComparison.Ordinal),
         "the direct Worker backend transfers the visible canvas and closes external leases during recovery");
     Require(!source.Contains("applyRetainedFrontPreview", StringComparison.Ordinal) &&
@@ -375,21 +377,21 @@ static void VerifyBrowserInputAndFrontBufferContract()
     Require(!workerSource.Contains(
                 "snapshot.resizeEpoch.generation !== request.generation || value.contextLost",
                 StringComparison.Ordinal) &&
-            source.Contains(
-                "progressive epoch-exact ImageBitmap consumed during live resize",
-                StringComparison.Ordinal) &&
+            workerSource.Contains("RenderGraphiteFrame", StringComparison.Ordinal) &&
+            workerSource.Contains("post(\"direct-commit\"", StringComparison.Ordinal) &&
             source.Contains("requestId > display.frontRequestId", StringComparison.Ordinal) &&
             source.Contains("frameGeneration >= display.frontGeneration", StringComparison.Ordinal),
         "completed worker frames remain epoch-exact and admit same-size interaction frames monotonically without starving live resize");
-    Require(workerSource.Contains("pendingReceiptWork.size >= 2", StringComparison.Ordinal) &&
-            workerSource.Contains("await Promise.race(pendingReceiptWork);", StringComparison.Ordinal),
-        "persistent worker display receipts are bounded to two and do not serialize the next raster behind a main-thread ACK");
+    Require(!workerSource.Contains("pendingReceiptWork", StringComparison.Ordinal) &&
+            !workerSource.Contains("createImageBitmap", StringComparison.Ordinal) &&
+            workerSource.Contains("webgpu.waitForCapacity()", StringComparison.Ordinal),
+        "direct workers bound GPU submissions without bitmap transfers or main-thread display ACKs");
     var managedGraphicsPath = System.IO.Path.Combine(AppContext.BaseDirectory, "web", "BrowserSkiaCapabilities.cs");
     Require(File.Exists(managedGraphicsPath), "the managed browser graphics source is packaged with the validation fixture");
     var managedGraphicsSource = File.ReadAllText(managedGraphicsPath);
     Require(managedGraphicsSource.Contains("_pendingPaints[requestId] = completion;", StringComparison.Ordinal) &&
             !managedGraphicsSource.Contains("new browser staging raster replaced pending completion", StringComparison.Ordinal),
-        "managed browser frame completions retain both bounded worker receipt slots until their exact terminal arrives");
+        "managed browser frame completions are paired with their exact terminal");
 }
 
 static void VerifyScrollbarAlphaContract()

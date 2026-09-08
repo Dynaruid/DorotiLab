@@ -18,8 +18,8 @@
   "workerRuntimePreparation": "SkiaSharp WASM render Worker initializes with host-owned runtime options; main runtime with shared render Worker when configured",
   "fontPreload": "same-origin fetch, anonymous CORS, base-relative NanumGothic; managed decode/register and ACK unchanged",
   "rendererModes": [
-    "worker-direct-webgl",
-    "offscreen-worker"
+    "worker-direct-webgpu",
+    "worker-direct-webgl"
   ],
-  "removedRendererSelection": "unknown values use worker-direct-webgl"
+  "removedRendererSelection": "unknown values use worker-direct-webgpu"
 }

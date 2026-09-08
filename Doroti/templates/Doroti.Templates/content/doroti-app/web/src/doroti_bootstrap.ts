@@ -6,8 +6,8 @@ import {
 } from "./_content/Doroti.Host.Web/doroti.loader.js";
 
 await startDoroti({
-  configure(_context: DorotiBootstrapContext) {
-    // Configure context.runtimeLocation before the render Worker starts.
+  configure(context: DorotiBootstrapContext) {
+    context.runtimeLocation = "main";
   },
   onStage(stage) {
     document.documentElement.dataset.dorotiBootstrapStage = stage;

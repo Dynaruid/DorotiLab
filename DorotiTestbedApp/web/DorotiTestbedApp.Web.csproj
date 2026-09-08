@@ -14,10 +14,13 @@
     <WasmEnableThreads>true</WasmEnableThreads>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
-    <EmccExtraLDFlags>$(EmccExtraLDFlags) --js-library="$(MSBuildThisFileDirectory)..\..\Doroti\src\Doroti.Target.Web.browser-wasm\build\DorotiSkiaInterop.js"</EmccExtraLDFlags>
+    <DorotiSkiaInteropLibrary>$(MSBuildThisFileDirectory)..\..\Doroti\src\Doroti.Target.Web.browser-wasm\build\DorotiSkiaInterop.js</DorotiSkiaInteropLibrary>
   </PropertyGroup>
   <ItemGroup>
+    <EmccExportedFunction Include="_wgpuDeviceRelease;_wgpuQueueRelease;_wgpuInstanceRelease" />
     <Compile Remove="Validation\ImagePipelineExport.cs" />
+    <Compile Remove="Validation\TimerValidationExport.cs" />
+    <Compile Include="Validation\TimerValidationExport.cs" Condition="'$(DorotiTimerValidation)' == 'true'" />
     <Compile Include="Validation\ImagePipelineExport.cs" Condition="'$(DorotiImageValidation)' == 'true'" />
     <ProjectReference Include="..\..\Doroti\validation\image-pipeline\Doroti.Validation.ImagePipeline.csproj"
                       Condition="'$(DorotiImageValidation)' == 'true'" />

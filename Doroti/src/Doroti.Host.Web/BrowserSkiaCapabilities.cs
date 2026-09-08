@@ -26,8 +26,9 @@ internal sealed class BrowserSkiaCapabilities :
         _host = host;
         _bridge = new(host);
         _renderer = new(viewId, _bridge, backgroundColor, darkBackgroundColor,
-            backendIdentity, DorotiSkiaRuntimeEffects.WebGpuBackend,
-            "doroti-owned-canvas-webgl2-skia-gpu", fallbackFonts: fallbackFonts);
+            backendIdentity, host.Snapshot.Gpu.Api == "webgpu" ? DorotiSkiaRuntimeEffects.WebGraphiteBackend : DorotiSkiaRuntimeEffects.WebGpuBackend,
+            host.Snapshot.Gpu.Api == "webgpu" ? "doroti-owned-canvas-graphite-dawn" :
+                "doroti-owned-canvas-webgl2-skia-gpu", fallbackFonts: fallbackFonts);
     }
 
     public event Action<SemanticsActionEvent>? Action

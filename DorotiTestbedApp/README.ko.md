@@ -101,14 +101,14 @@ Web runner가 시작되면 다음 링크를 브라우저에서 엽니다.
 
 | 화면 / 렌더러 | URL |
 | --- | --- |
-| 기본 SkiaSharp direct으로 Material 샘플 실행 | [기본 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
-| direct .NET Worker의 SkiaSharp로 Material 샘플 실행 | [SkiaSharp direct 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
+| 기본 WebGPU로 Material 샘플 실행 | [기본 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
+| 명시적 WebGL2로 Material 샘플 실행 | [SkiaSharp direct 샘플 열기](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
 | 기본 렌더러로 진단 화면 실행 | [진단 화면 열기](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
 
 `dorotiTestbedMode=sample`은 샘플 화면을, `dorotiRenderer`는 렌더링 backend를
 선택합니다. 같은 샘플을 비교할 때는 두 옵션을 함께 사용합니다.
 `dorotiTestbedMode`를 생략하면 진단 화면이 열리고, `dorotiRenderer`를 생략하면
-기본값인 `worker-direct-webgl`을 사용합니다.
+기본값인 `worker-direct-webgpu`를 사용합니다.
 
 Components의 Communication → Progress indicators에서 재생 버튼을 눌러
 애니메이션을 확인할 수 있습니다. 렌더러를 다시 빌드했다면 runner를 재시작하고
@@ -134,14 +134,14 @@ Image demo의 표시용 이미지는 너비 `1024 × DPR`로 축소 디코딩하
 다음 주소는 선택한 backend로 진단 화면을 엽니다.
 
 - 기본 자동 선택: `http://127.0.0.1:5088`
-- persistent .NET Worker의 direct visible canvas(기본값): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
-- persistent .NET Worker: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-worker`
+- 렌더 Worker의 direct WebGL2 canvas: `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
+- 렌더 Worker의 direct WebGPU canvas(기본값): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgpu`
 
 `worker-direct-webgl`은 SkiaSharp WASM을 사용합니다. Testbed는 main에서 runtime을 초기화하고 같은 runtime의 렌더 Worker가 layout/Skia/visible Offscreen WebGL2를 소유합니다. DOM/input/IME/semantics는 main에 있으며 초기화 오류를 보고합니다.
 
 Web host source build는 NuGet의 SkiaSharp WASM과 Microsoft.TypeScript.MSBuild를 사용합니다. CanvasKit npm 복원과 별도 JS/WASM 자산은 제거되었습니다.
 
-`auto`와 renderer 옵션 없는 URL은 `worker-direct-webgl`을 선택합니다. 이번 기본값 변경은 남은 성능·물리 표시·IME·접근성 검증의 완료를 의미하지 않습니다.
+`auto`와 renderer 옵션 없는 URL은 `worker-direct-webgpu`를 선택합니다. 이번 기본값 변경은 남은 성능·물리 표시·IME·접근성 검증의 완료를 의미하지 않습니다.
 
 CanvasKit removal and prior qualification evidence: [archived record](../history/26-09-08/web-canvaskit-retired-readme.md).
 

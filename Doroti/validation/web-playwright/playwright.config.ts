@@ -17,7 +17,7 @@ export default defineConfig({
     ["html", { outputFolder: `${artifactRoot}/report`, open: "never" }],
   ],
   use: {
-    channel: process.env.DOROTI_BROWSER_CHANNEL,
+    channel: process.env.DOROTI_BROWSER_CHANNEL ?? "chromium",
     baseURL: process.env.DOROTI_WEB_BASE_URL ?? "http://127.0.0.1:5088",
     actionTimeout: 20_000,
     navigationTimeout: 120_000,

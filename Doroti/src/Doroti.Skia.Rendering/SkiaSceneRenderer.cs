@@ -1172,7 +1172,7 @@ public sealed partial class SkiaSceneRenderer :
             !canvasBounds.IsFinite || canvasBounds.isEmpty ||
             (!payload.IsComplexHint && commands.Count < PictureRasterComplexityThreshold &&
                 !HasDownscaledImage(commands)) ||
-            canvas.Context is not { } context || !PictureCanCompositeOverBackground(commands))
+            !SkiaGpuSurfaces.IsGpu(canvas) || !PictureCanCompositeOverBackground(commands))
         {
             DrawRetainedPicture(canvas, payload);
             return;
@@ -1268,7 +1268,7 @@ public sealed partial class SkiaSceneRenderer :
 
         var promotionStarted = DorotiFrameClock.Now;
         var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
-        using var surface = SKSurface.Create(context, true, info, surfaceProperties)
+        using var surface = SkiaGpuSurfaces.CreateCompatible(canvas, info, surfaceProperties)
             ?? throw new InvalidOperationException(
                 $"Doroti picture raster cache could not allocate a {width}x{height} GPU surface.");
         var rasterCanvas = surface.Canvas;

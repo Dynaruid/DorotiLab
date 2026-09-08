@@ -4,7 +4,7 @@ declare module "*_content/Doroti.Host.Web/doroti.loader.js" {
   export interface DorotiBootstrapContext {
     stage: DorotiBootstrapStage;
     runtimeLocation?: "main" | "worker";
-    rendererMode?: "worker-direct-webgl" | "offscreen-worker";
+    rendererMode?: "worker-direct-webgl" | "worker-direct-webgpu";
   }
 
   export interface DorotiBootstrapOptions {

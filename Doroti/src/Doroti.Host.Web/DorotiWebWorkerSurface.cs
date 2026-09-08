@@ -46,6 +46,11 @@ public static partial class DorotiWebWorkerSurface
         work = FrameworkWorkCounters.Snapshot(),
         profile = FrameworkWorkProfile.Snapshot(),
         components = FrameworkComponentProfile.Snapshot(),
+        backend = _graphiteContext is null ? "Ganesh/WebGL" : "Graphite/Dawn",
+        nativeSkia = SkiaSharpVersion.Native.ToString(),
+        managedSkia = typeof(SKSurface).Assembly.GetName().Version?.ToString(),
+        graphiteImageProviderCalls = _graphiteImageRequests,
+        graphiteBudgetedBytes = _graphiteContext?.CurrentBudgetedBytes ?? 0,
     });
 
     [JSExport]

@@ -91,7 +91,7 @@ internal static class DorotiSkiaImageFilterRenderer
         ArgumentNullException.ThrowIfNull(drawChild);
         if (pixelWidth <= 0 || pixelHeight <= 0)
             throw new ArgumentOutOfRangeException(nameof(pixelWidth), "The GPU filter target must have positive dimensions.");
-        if (target.Context is not { } context)
+        if (!SkiaGpuSurfaces.IsGpu(target))
             throw new NotSupportedException(
                 "Doroti ImageFilter.shader requires the active Skia GPU recording context; software capture is forbidden.");
 
@@ -136,7 +136,7 @@ internal static class DorotiSkiaImageFilterRenderer
 
         if (canCache)
         {
-            var cacheLease = RentSurface(context, backend, contextGeneration, cacheWidth, cacheHeight, contextOwner, properties);
+            var cacheLease = RentSurface(target, backend, contextGeneration, cacheWidth, cacheHeight, contextOwner, properties);
             try
             {
                 RenderChild(cacheLease.Surface, cacheLeft, cacheTop,
@@ -145,7 +145,7 @@ internal static class DorotiSkiaImageFilterRenderer
                     ?? throw new InvalidOperationException("Doroti ImageFilter.shader could not snapshot its GPU input surface.");
                 using var runtimeShader = DorotiSkiaRuntimeEffects.CreateImageFilterShader(
                     shader, inputImage, inputSampling, imageShaderFactory, backend, contextGeneration, contextOwner);
-                using var outputSurface = CreateSurface(context, cacheWidth, cacheHeight, properties);
+                using var outputSurface = CreateSurface(target, cacheWidth, cacheHeight, properties);
                 using (var paint = new SKPaint { Shader = runtimeShader, BlendMode = SKBlendMode.SrcOver })
                     outputSurface.Canvas.DrawRect(SKRect.Create(cacheWidth, cacheHeight), paint);
                 outputSurface.Canvas.Flush();
@@ -169,7 +169,7 @@ internal static class DorotiSkiaImageFilterRenderer
 
         var width = checked(right - left);
         var height = checked(bottom - top);
-        var lease = RentSurface(context, backend, contextGeneration, width, height, contextOwner, properties);
+        var lease = RentSurface(target, backend, contextGeneration, width, height, contextOwner, properties);
         try
         {
             RenderChild(lease.Surface, left, top, matrix, childOffset, drawChild, width, height);
@@ -289,7 +289,7 @@ internal static class DorotiSkiaImageFilterRenderer
         float.IsFinite(rect.Right) && float.IsFinite(rect.Bottom);
 
     private static SurfaceLease RentSurface(
-        GRRecordingContext context,
+        SKCanvas context,
         string backend,
         long contextGeneration,
         int width,
@@ -331,10 +331,10 @@ internal static class DorotiSkiaImageFilterRenderer
             existing.PixelGeometry == (properties?.PixelGeometry ?? SKPixelGeometry.Unknown);
     }
 
-    private static SKSurface CreateSurface(GRRecordingContext context, int width, int height, SKSurfaceProperties? properties)
+    private static SKSurface CreateSurface(SKCanvas context, int width, int height, SKSurfaceProperties? properties)
     {
         var info = new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul);
-        var surface = SKSurface.Create(context, true, info, properties)
+        var surface = SkiaGpuSurfaces.CreateCompatible(context, info, properties)
             ?? throw new InvalidOperationException(
                 $"Doroti ImageFilter.shader could not allocate a {width}x{height} GPU input surface.");
         Interlocked.Increment(ref _surfacesCreated);

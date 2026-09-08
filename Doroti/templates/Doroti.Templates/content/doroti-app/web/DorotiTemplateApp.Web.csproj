@@ -10,6 +10,7 @@
     <DorotiHostKind>BlazorWebAssembly</DorotiHostKind>
     <DorotiNativeEntryKind>Managed-Main</DorotiNativeEntryKind>
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+    <WasmEnableThreads>true</WasmEnableThreads>
     <DefineConstants>$(DefineConstants);DOROTI_BROWSER</DefineConstants>
   </PropertyGroup>
   <ItemGroup>

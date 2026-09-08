@@ -1,0 +1,297 @@
+{
+  "sourceHead": "6423825205354d260b4517ea0051fd14eddf0d7d",
+  "rendererModes": [
+    "worker-direct-webgpu",
+    "worker-direct-webgl"
+  ],
+  "defaultRenderer": "worker-direct-webgpu",
+  "protocolVersion": 3,
+  "nativeAdapterLinked": true,
+  "retiredRendererAssetsAbsent": true,
+  "nativeLibraryLinkCount": 1,
+  "nativeJavaScript": {
+    "path": ".doroti\\webgpu-direct\\final-publish\\wwwroot\\_framework\\dotnet.native.q615jqrddu.js",
+    "sha256": "422064ef86fad9b2404b979022185f28754fa53379894a151be9d177fed96350"
+  },
+  "packages": {
+    "Doroti.Host.Web.0.2.0-beta.nupkg": "2463aed10b1936cd1d997bfeb34a27f67ccde7b81888706c1d4e48502799d700",
+    "Doroti.Runner.Sdk.0.2.0-beta.nupkg": "a49b4b6839a46b470285f76dda4a8c1750db23ae2f73adcbd7c1234cdbc50211",
+    "Doroti.Target.Web.browser-wasm.0.2.0-beta.nupkg": "e5e6d0fb05dad93dd7477f7647cb39db3277040a806891f841d9e777580812d4",
+    "Doroti.Templates.0.2.0-beta.nupkg": "72c60e04e5d48e2d698e81c7fcb810e3d79d1dc619bb0285fbcedcd7f174ada7"
+  },
+  "implementationStatus": "complete",
+  "acceptanceStatus": "PARTIAL",
+  "unresolved": [
+    {
+      "kind": "runtimeFailure",
+      "type": "System.Threading.SynchronizationLockException",
+      "location": "System.Threading.TimerQueueTimer.Fire",
+      "log": ".doroti/webgpu-direct/webgpu-picker-final.log",
+      "relatedUpstreamIssue": "https://github.com/dotnet/runtime/issues/129900",
+      "fixed": false
+    }
+  ],
+  "notVerified": [
+    "physical IME/keyboard",
+    "screen reader",
+    "other browsers and devices",
+    "scan-out/FPS/performance improvement",
+    "package-only external generated app publish"
+  ],
+  "browserExecutions": [
+    {
+      "label": "webgpu-functional-final",
+      "exitCode": 1,
+      "seconds": 264.4,
+      "command": [
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\web-playwright\\node_modules\\.bin\\playwright.cmd",
+        "test",
+        "tests/direct-capability.spec.ts",
+        "tests/threaded-runtime.spec.ts",
+        "tests/webgpu-unavailable.spec.ts",
+        "tests/material-sample.spec.ts",
+        "tests/material-sample-selection.spec.ts",
+        "tests/state-resize-regression.spec.ts",
+        "tests/text-color.spec.ts",
+        "--project=chromium-hardware",
+        "--retries=0"
+      ]
+    },
+    {
+      "label": "webgpu-picker-final",
+      "exitCode": 1,
+      "seconds": 61.55,
+      "command": [
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\web-playwright\\node_modules\\.bin\\playwright.cmd",
+        "test",
+        "tests/material-sample-selection.spec.ts",
+        "--grep",
+        "pickers, menus",
+        "--project=chromium-hardware",
+        "--retries=0"
+      ]
+    },
+    {
+      "label": "webgl-final-2",
+      "exitCode": 0,
+      "seconds": 93.52,
+      "command": [
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\web-playwright\\node_modules\\.bin\\playwright.cmd",
+        "test",
+        "tests/direct-capability.spec.ts",
+        "tests/threaded-runtime.spec.ts",
+        "tests/material-sample-selection.spec.ts",
+        "tests/state-resize-regression.spec.ts",
+        "tests/text-color.spec.ts",
+        "--project=chromium-hardware",
+        "--retries=0"
+      ]
+    },
+    {
+      "label": "webgpu-dpr2",
+      "exitCode": 0,
+      "seconds": 14.72,
+      "command": [
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\web-playwright\\node_modules\\.bin\\playwright.cmd",
+        "test",
+        "tests/material-sample-selection.spec.ts",
+        "--project=chromium-dpr2",
+        "--retries=0"
+      ]
+    },
+    {
+      "label": "webgl-dpr2",
+      "exitCode": 0,
+      "seconds": 14.06,
+      "command": [
+        "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\web-playwright\\node_modules\\.bin\\playwright.cmd",
+        "test",
+        "tests/material-sample-selection.spec.ts",
+        "--project=chromium-dpr2",
+        "--retries=0"
+      ]
+    }
+  ],
+  "rendererSelection": {
+    "log": ".doroti/webgpu-direct/selection-completion.log",
+    "passed": 9,
+    "failed": 0,
+    "gpuQueueCompletionChecked": true
+  },
+  "checks": {
+    "publish": "PASS",
+    "typescriptHost": "PASS",
+    "typescriptValidation": "PASS",
+    "nativeMappedRangeTests": "2/2 PASS",
+    "fcr7": "PASS Debug",
+    "runtimeShader": "PASS Debug",
+    "pack": "4/4 PASS",
+    "packageJsMatchesPublishedJs": true,
+    "nativeInputChangeRelinked": true,
+    "allPublishedFilesIdenticalAfterAttributionChange": 223
+  },
+  "logs": {
+    "browser-initial.log": {
+      "sha256": "c597d07fc33f3bc0fb32ed42118f33aac8c82b40053c36cbd3761a3b46da73c5",
+      "bytes": 15988
+    },
+    "browser-lifetime.log": {
+      "sha256": "9c47d4ab4571857c12fdc10ea6107e8bfee98b8499362e419b59454106d9ab2a",
+      "bytes": 4515
+    },
+    "browser-loss-fixed.log": {
+      "sha256": "8aed46f74ccd884999f544c5fbab6c89291498ccc4729de201fbb52ba99522c0",
+      "bytes": 826
+    },
+    "fcr7-final.log": {
+      "sha256": "836b7e09c32b7d97ca5937fe0f1adefaf364cecda9653c45b8c10eef5b6d2e0b",
+      "bytes": 1042
+    },
+    "fcr7-verified.log": {
+      "sha256": "836b7e09c32b7d97ca5937fe0f1adefaf364cecda9653c45b8c10eef5b6d2e0b",
+      "bytes": 1042
+    },
+    "fcr7.log": {
+      "sha256": "25431f8f2c3ad25810375b721d21a1aa974d627e9c1232d9a15b618e231b6cf0",
+      "bytes": 841
+    },
+    "pack-final.log": {
+      "sha256": "c27c32186fda9af5d67d98c61e7901c7a28fade64e79089699f94500703dd21a",
+      "bytes": 6445
+    },
+    "pack-target-final.log": {
+      "sha256": "f71f808ff560a12f0bd8270777d29e6ca3ddd1a11f92d25549bed1e2d3061152",
+      "bytes": 295
+    },
+    "pack.log": {
+      "sha256": "51ad284640e03af653f19b930a76665ca306730aaa6df09a64ea1dd4274536b5",
+      "bytes": 7604
+    },
+    "probe-validation-error.log": {
+      "sha256": "25ed63ca0221f91ebac290cfed47ac0169b18744c7d35e5f44074684471b7244",
+      "bytes": 6705
+    },
+    "probe.log": {
+      "sha256": "283b37d001b93d0121f48245f518ff6f6677d522db639e5346cb630f9be5e503",
+      "bytes": 6045
+    },
+    "publish-1.log": {
+      "sha256": "c5b0e28b93a190d05513af882f9ebf917142677d9b0ba15cf758ed60ce21dc69",
+      "bytes": 3380
+    },
+    "publish-2.log": {
+      "sha256": "11333a6d38283f2af5c58955a6e97555a21a6c6e7db8c6dcebfd23b055113b1c",
+      "bytes": 19206
+    },
+    "publish-3.log": {
+      "sha256": "904ef0024895de469892a7ef06c6c8b8a13ba85918be70748fe5844f17ee5200",
+      "bytes": 4327
+    },
+    "publish-4.log": {
+      "sha256": "698260aa8f7a67ba9d8a0688c11c4f3232b02ffd4af4cea6b05debbfd8d7d15a",
+      "bytes": 19096
+    },
+    "publish-5.log": {
+      "sha256": "7475394e3b22b59a278e694e5d6ef3d24fbc62b7b639dcda51f1c8e20fd7ccd2",
+      "bytes": 9484
+    },
+    "publish-6.log": {
+      "sha256": "b115bd44ebc42f59971796b725d84a68769dad284c3733dbc476b4d639b59de7",
+      "bytes": 19499
+    },
+    "publish-final.log": {
+      "sha256": "be02e5c182ee57702ae18745ca8e10825670171a4e3c4e84e8007f494f77a55f",
+      "bytes": 18738
+    },
+    "publish-link-input.log": {
+      "sha256": "6eee6c7e39f52e573a1a17f96fdb5d93413ac7915e4ef7d6794ddd850cc51ca4",
+      "bytes": 18744
+    },
+    "publish-texture-fixed.log": {
+      "sha256": "6b57128a39cd2b7821a897b9937ba761dc7391fa0724a54da6024d4a1ddfc074",
+      "bytes": 9490
+    },
+    "publish-texture-usage.log": {
+      "sha256": "10b7ec7ce0c82e1087e8e390d61f4cfd2598776da203068ecfcadfc1aa6c88ab",
+      "bytes": 3559
+    },
+    "selection-completion.log": {
+      "sha256": "84825d10970594851497a74f2583d7d6d1ffb65c67ab0d58549557b229f5a9c8",
+      "bytes": 1239
+    },
+    "shader-contract.log": {
+      "sha256": "c1514786d31fd9b1659426d0362c51de45015651273f603a6ff159272664fa80",
+      "bytes": 38
+    },
+    "webgl-dpr2.log": {
+      "sha256": "578c33ef46ce748d912ab4abfbe6e994f4f8cdb8112717c6586ebb264d39a2ab",
+      "bytes": 364
+    },
+    "webgl-final-2.log": {
+      "sha256": "c82d5f97a5008f356717acb8cd24dcd3c0c5767fc92f6507176240a4571a4c42",
+      "bytes": 1427
+    },
+    "webgpu-dpr2.log": {
+      "sha256": "e7cb0113761eac35c72702b6fdc9104fc4019c0abee4c9fd70df2db3543dd1f4",
+      "bytes": 364
+    },
+    "webgpu-final-2.log": {
+      "sha256": "55fe64cd9451c63784b0f8097acf649efbab23dfa9053977235eb57290b0f2c6",
+      "bytes": 1019
+    },
+    "webgpu-final.log": {
+      "sha256": "214900ed8f97d0c66619e943f671ff50676daad8e43e692b0be462a0968c439a",
+      "bytes": 2490
+    },
+    "webgpu-functional-final.log": {
+      "sha256": "bd7b233205639ca60fa193fba8c7d780bb58b65c17b24859040bbcf3d8ac4475",
+      "bytes": 6594
+    },
+    "webgpu-picker-final.log": {
+      "sha256": "5ddc4d8ed96d7725e12ebe4cac1992fb54e101453804eae943afd914b5a7b8c1",
+      "bytes": 20338
+    }
+  },
+  "sourceFiles": {
+    "Doroti/README.ko.md": "dc535f6e9a77cc23b0804472ce19f65569164841a06371692f1e13d6425623be",
+    "Doroti/README.md": "57a2a43ec0205622c0b1783646f6f91510dd2ad6313fb6c71db618aa0866319e",
+    "Doroti/docs/adr/ADR-003-web-main-runtime-render-worker.md": "fa14d764710659f29da7f4fe2cdba7899af2108db6fb2e82a02012307a96598b",
+    "Doroti/docs/adr/ADR-020-web-typescript-bootstrap.md": "1c861e35d798853ad60a8a091187fd7442540ab00b062d67e0314d68dc9b6252",
+    "Doroti/src/Doroti.Host.Web/BrowserHostContracts.cs": "8360debd019b4750e6b13102b04cfb70591f9eb5a8444e24760a52c74303edef",
+    "Doroti/src/Doroti.Host.Web/BrowserSkiaCapabilities.cs": "665f9cdf92f5c34fc874329280c3f2be71135a2aa1eea895d21887cd84a96441",
+    "Doroti/src/Doroti.Host.Web/DorotiWebWorkerSurface.cs": "2ace975b2008b497ade963e4127391bc6238aa57741aced968c2cc75191687fd",
+    "Doroti/src/Doroti.Host.Web/Web/doroti.loader.ts": "fa03c09f0fba8eda29a3c82210bbd69aca511ffbcc713cef5cf71f2fc3f6ec66",
+    "Doroti/src/Doroti.Host.Web/Web/doroti.raster.worker.ts": "9ec8ab5a93b5fc8c955ba4bda8054da22a0990e902d4a3895a0c45543bba1452",
+    "Doroti/src/Doroti.Host.Web/Web/doroti.web.protocol.ts": "f950b1f959029ebe1e8297ac2a01946c79fde95944caaafca0af499826ab15aa",
+    "Doroti/src/Doroti.Host.Web/Web/doroti.web.surface.ts": "2f403f82bf3ab9e54a4bf509840256f3a2af507a63cae50bb17b86da74cdf162",
+    "Doroti/src/Doroti.Host.Web/Web/doroti.web.ts": "2b1cfc186daa3c362ae331ff9bc439c4c96b0181222312a1032521509d646d85",
+    "Doroti/src/Doroti.Host.Web/Web/types/doroti-loader/index.d.ts": "8587d574dea1d16758f0c5a9896bf750b9bf93acdd14388c6690cbc1d9caf273",
+    "Doroti/src/Doroti.Runner.Sdk/Sdk/Sdk.targets": "8150ca7b6d4d2bc9611eec3ace964a875dff09b27dca43121f8fcd40e4b86c68",
+    "Doroti/src/Doroti.Skia.Rendering/SkiaSceneRenderer.cs": "feb07d352843974cb95374ecd310bcc7c56165711963725e69ba6579eb08146b",
+    "Doroti/src/Doroti.Skia.RuntimeEffects/DorotiSkiaImageFilterRenderer.cs": "ed2f07f8abe7b9fee22ba31b8ebdd5246d2a9c8fca41596abf71b4ec3b47233b",
+    "Doroti/src/Doroti.Skia.RuntimeEffects/DorotiSkiaRuntimeEffects.cs": "d6a3010f97b14eaae97c5fd3b7cb1dca86d85827f7e20308f95cf96cef662fbd",
+    "Doroti/src/Doroti.Target.Web.browser-wasm/build/Doroti.Target.Web.browser-wasm.props": "6c39b87b72e3212354ee23409c0d020bb087978607fd82edf52c4cff53908c25",
+    "Doroti/src/Doroti.Target.Web.browser-wasm/build/DorotiSkiaInterop.js": "cfed909a6175d94ef5c07e76a11a2312fe58afd01e6e89f3e7634a16479b0dfe",
+    "Doroti/src/Doroti.Target.Web.browser-wasm/doroti-target-manifest.json": "2f5eae5d982e001363a3e99de94e33d25dfb8c681b754453686586a17e2f7d1b",
+    "Doroti/templates/Doroti.Templates/content/doroti-app/web/DorotiTemplateApp.Web.csproj": "925a35fa01050e5ad2cf38015093a61cbe12390c82a9c66d911caa9341b4c07d",
+    "Doroti/templates/Doroti.Templates/content/doroti-app/web/src/doroti_bootstrap.ts": "97db6287fc192efac2edb2b4ba1e17867cbed45735c666646b1de7a7e3392ac4",
+    "Doroti/validation/fcr7-material-widget/Program.cs": "8707266d54cabda114bd506513495d789bd138a1b9718fb3cfb10b59ee325c84",
+    "Doroti/validation/web-playwright/playwright.config.ts": "ab1c1eebd0d3ebf2e98341187388fd3b1b5f2bd18c3ea15cfc67b69e64aa7c72",
+    "Doroti/validation/web-playwright/tests/default-renderer.spec.ts": "7d13cc2ae99b60aa823f11e0a93b01816e228912e07869f4336e33bde2987165",
+    "Doroti/validation/web-playwright/tests/helpers/doroti-diagnostics.ts": "eb118363e87a92cd1e7e3e5feb96efb6e8d76910e4a00b546e0419223454ace0",
+    "Doroti/validation/web-playwright/tests/material-sample-selection.spec.ts": "c9927df7a2a40b8023076ed483e82b612e02fbb49fb955400ffe8231ab0f1790",
+    "Doroti/validation/web-playwright/tests/resize-continuity.spec.ts": "d50962ab5489dde27119ce2bc1739538db43733febb6e6be1cd3c91c545ac747",
+    "Doroti/validation/web-playwright/tests/threaded-runtime.spec.ts": "2a57c658e35911d349c79a703f0b2db741a59d1dee7945a5aab58046e8d852ec",
+    "Doroti/validation/web-playwright/tests/worker-protocol.spec.ts": "5d2ae259b99fcca73c28a5d404fa10556e5a79e9603e63c3286effc956104a67",
+    "Doroti/validation/web-typescript/loader-contract.json": "61f6d6986b82417262c0182f1ba275a40600a8ae79dedbbe227c4b2df347398b",
+    "DorotiTestbedApp/README.ko.md": "f46d0ab3f1071fbbb6f6f0472b1987f8d9954335600a925bc045a052091dbeee",
+    "DorotiTestbedApp/README.md": "7ea4e403650d107b333b68f6d4fa08db3048a93b6136c83458158d6e3f88aae2",
+    "DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj": "9b2e48fc29378c21bb377f01e94ee9031d8b7439cd97aba6ee6c8ec7e683f921",
+    "Doroti/src/Doroti.Host.Web/DorotiWebWorkerSurface.Graphite.cs": "e42bb898d2bf2750323b6670f6ca707f75c6813773fd4248102b180ae0f9abde",
+    "Doroti/src/Doroti.Host.Web/Web/doroti.webgpu.ts": "08ac312ca3f3e2596eececb9676b0d045762078337d52d0de73d78970fe38565",
+    "Doroti/src/Doroti.Skia.RuntimeEffects/SkiaGpuSurfaces.cs": "e1b0cb7b5cec2aeab253667a5d482a185213b76a25cb25ccd3cee57f59d968ed",
+    "Doroti/validation/web-native-interop/device-loss.mjs": "470fa8a93ba23699b1bcc9bb3256eb2461e7b66c16e5dd18eb3cfd22362fb1d1",
+    "Doroti/validation/web-playwright/tests/direct-capability.spec.ts": "962b4ccd0a5d68a713ef6ec8b9967032c1d755b15af8b731dcdedc0701fbc582",
+    "Doroti/validation/web-playwright/tests/webgpu-unavailable.spec.ts": "d217e5a7bb48197eb6d1626fa3b103d0c5f836b12eb506ded4e79bc3784b4c7c"
+  }
+}

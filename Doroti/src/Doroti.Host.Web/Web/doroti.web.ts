@@ -1,4 +1,6 @@
-import { decodeDorotiMessage, dorotiProtocolVersion } from "./doroti.web.protocol.js";
+import { decodeDorotiMessage, dorotiProtocolVersion, dorotiWebGpuRendererVersion } from "./doroti.web.protocol.js";
+import { initializeBrowserTimers } from "./doroti.web.timers.js";
+export { scheduleBrowserTimer, cancelBrowserTimer, cancelBrowserTimerOwner } from "./doroti.web.timers.js";
 import { createDorotiDomEndpoints, createReplacementCanvas } from "./doroti.web.dom.js";
 import { pushBounded } from "./doroti.web.diagnostics.js";
 import { createWorkerVisibleSurface } from "./doroti.web.surface.js";
@@ -23,7 +25,7 @@ interface ManagedCallbacks {
 }
 
 interface GpuIdentity {
-  api: "webgl2";
+  api: "webgl2" | "webgpu";
   vendor: string;
   renderer: string;
   hardware: true;
@@ -118,11 +120,11 @@ interface ResizeTraceEntry {
   requestId: number;
 }
 
-type RequestedPresenterMode = "auto" | "worker-direct-webgl" | "offscreen-worker";
+type RequestedPresenterMode = "auto" | "worker-direct-webgl" | "worker-direct-webgpu";
 
 interface PresenterPolicy {
   requested: RequestedPresenterMode;
-  selected: "worker-direct-webgl" | "offscreen-worker";
+  selected: "worker-direct-webgl" | "worker-direct-webgpu";
   fallbackReason: string | null;
 }
 
@@ -144,8 +146,7 @@ interface WorkerBridge {
 interface WorkerDisplayPresenter {
   worker: DorotiWorkerEndpoint;
   runtimeLocation: "main" | "worker";
-  mode: "worker-direct-webgl" | "offscreen-worker";
-  display: ImageBitmapRenderingContext | null;
+  mode: "worker-direct-webgl" | "worker-direct-webgpu";
   currentRequestId: number | null;
   latestRequestId: number | null;
   contextGeneration: number;
@@ -241,6 +242,7 @@ interface DorotiAssemblyExports {
   Doroti: {
     Host: {
       Web: {
+        BrowserTimeProvider: { DispatchTimer(id: number, generation: number): void };
         BrowserInterop: {
           DispatchAnimationFrame: ManagedCallbacks["dispatchAnimationFrame"];
           DispatchSnapshot: ManagedCallbacks["dispatchSnapshot"];
@@ -335,8 +337,8 @@ export function dispatchWorkerInput(message: Record<string, unknown>): void {
 
 function presenterPolicy(): PresenterPolicy {
   const value = new URLSearchParams(globalThis.location.search).get("dorotiRenderer");
-  const requested = value === "worker-direct-webgl" || value === "offscreen-worker" ? value : "auto";
-  return { requested, selected: requested === "auto" ? "worker-direct-webgl" : requested, fallbackReason: null };
+  const requested = value === "worker-direct-webgl" || value === "worker-direct-webgpu" ? value : "auto";
+  return { requested, selected: requested === "auto" ? "worker-direct-webgpu" : requested, fallbackReason: null };
 }
 
 const resizeDiagnostics: ResizeDiagnostics = {
@@ -365,7 +367,7 @@ const resizeDiagnostics: ResizeDiagnostics = {
       stagingFramebufferId: null,
       rasterCanvasAttached: false,
       visibleContext: workerPresenter.mode === "worker-direct-webgl"
-        ? "transferred-offscreen-webgl2" : "bitmaprenderer",
+        ? "transferred-offscreen-webgl2" : "transferred-offscreen-webgpu",
       rasterWidth: workerPresenter.rasterWidth,
       rasterHeight: workerPresenter.rasterHeight,
       displayWidth: workerPresenter.displayWidth,
@@ -388,17 +390,14 @@ const resizeDiagnostics: ResizeDiagnostics = {
     const json = JSON.parse(resizeDiagnostics.presenter(canvasId)) as Record<string, unknown>;
     return JSON.stringify({
       offscreenCanvas: typeof OffscreenCanvas !== "undefined",
-      createImageBitmap: typeof globalThis.createImageBitmap === "function",
-      bitmaprenderer: typeof HTMLCanvasElement !== "undefined" &&
-        typeof HTMLCanvasElement.prototype.getContext === "function",
       mode: json.mode,
       actualManagedSkiaRaster: Number(json.frontGeneration ?? 0) > 0,
       rasterCanvasAttached: json.rasterCanvasAttached,
       hardwareWebGl2: host.gpu.hardware && !host.gpu.softwareFallbackUsed && host.gpu.api === "webgl2",
       gpu: host.gpu,
-      exactBitmapCommit: json.mode === "worker-direct-webgl"
-        ? false : Number(json.frontGeneration ?? 0) === host.resizeEpoch.generation,
-      exactDirectCommit: (json.mode === "worker-direct-webgl") &&
+      hardwareWebGpu: host.gpu.hardware && !host.gpu.softwareFallbackUsed && host.gpu.api === "webgpu",
+      exactBitmapCommit: false,
+      exactDirectCommit:
         Number(json.frontGeneration ?? 0) === host.resizeEpoch.generation,
       bitmapCreated: json.bitmapCreated,
       bitmapConsumed: json.bitmapConsumed,
@@ -554,7 +553,7 @@ function commitDirectCanvasLogicalSize(
   logicalWidth: number,
   logicalHeight: number): void {
   const workerPresenter = workerDisplayPresenters.get(host.canvas.id);
-  if (!directWorkerBootstrap && workerPresenter?.mode !== "worker-direct-webgl") return;
+  if (!directWorkerBootstrap && !workerPresenter) return;
   // Direct Skia owns a grow-only physical backing. Its completed front
   // establishes the pixel scale; the root clips it to the observed viewport.
   // Observer targets must not rescale that backing while a new frame is built.
@@ -793,6 +792,7 @@ export async function initializeManagedCallbacks(): Promise<"ready"> {
   if (!runtime) throw new Error("Doroti could not resolve the active Web runtime.");
   const exports = await runtime.getAssemblyExports("Doroti.Host.Web.dll") as DorotiAssemblyExports;
   const interop = exports.Doroti.Host.Web.BrowserInterop;
+  initializeBrowserTimers(exports.Doroti.Host.Web.BrowserTimeProvider.DispatchTimer);
   configureManagedCallbacks({
     dispatchAnimationFrame: interop.DispatchAnimationFrame,
     dispatchSnapshot: interop.DispatchSnapshot,
@@ -1634,21 +1634,19 @@ export async function invokePlugin(moduleUrl: string, exportName: string, channe
 }
 
 export async function startDorotiWorkerHost(
-  mode: "worker-direct-webgl" | "offscreen-worker" = "worker-direct-webgl",
-  runtimeLocation: "main" | "worker" = "worker",
+  mode: "worker-direct-webgl" | "worker-direct-webgpu" = "worker-direct-webgpu",
+  runtimeLocation: "main" | "worker" = "main",
 ): Promise<"started"> {
-  const direct = mode === "worker-direct-webgl";
+  if (mode === "worker-direct-webgpu" && runtimeLocation !== "main")
+    throw new Error("Doroti WebGPU requires runtimeLocation=main and a threaded build.");
   if (typeof Worker === "undefined" || typeof OffscreenCanvas === "undefined" ||
-      (!direct && typeof createImageBitmap !== "function") ||
-      (direct && typeof HTMLCanvasElement.prototype.transferControlToOffscreen !== "function"))
+      typeof HTMLCanvasElement.prototype.transferControlToOffscreen !== "function")
     throw new Error(`Doroti ${mode} required browser capabilities are unavailable.`);
   const app = document.getElementById("app");
   if (!app) throw new Error("Doroti worker bootstrap could not find '#app'.");
   const endpoints = createDorotiDomEndpoints(app);
   const root = endpoints.root;
   let canvas = endpoints.canvas;
-  const visibleSurface = direct ? null : createWorkerVisibleSurface(canvas, false);
-  const displayContext = visibleSurface?.display ?? null;
   const dotnetModuleUrl = resolveCurrentDotnetModuleUrl();
 
   let activeWorker: DorotiWorkerEndpoint;
@@ -1657,7 +1655,7 @@ export async function startDorotiWorkerHost(
     : createDorotiWorker(new URL("./doroti.raster.worker.js", import.meta.url));
   activeWorker = placeholder;
   const display: WorkerDisplayPresenter = {
-    worker: activeWorker, runtimeLocation, mode, display: displayContext,
+    worker: activeWorker, runtimeLocation, mode,
     currentRequestId: null, latestRequestId: null,
     contextGeneration: 0, contextLost: false, frontGeneration: 0, frontRequestId: 0,
     rasterWidth: 0, rasterHeight: 0, displayWidth: 0, displayHeight: 0,
@@ -1705,7 +1703,7 @@ export async function startDorotiWorkerHost(
     // arrive while one complex frame is rasterizing; everything beyond it is
     // still replaced in the local latest slot. Managed scheduling remains
     // latest-only, so these cheap typed metrics never force stale raster work.
-    if (!direct || admissionInFlightGenerations.size >= 4 || !latestDirectAdmission) return;
+    if (admissionInFlightGenerations.size >= 4 || !latestDirectAdmission) return;
     const next = latestDirectAdmission;
     latestDirectAdmission = null;
     admissionInFlightGenerations.add(next.epoch.generation);
@@ -1721,10 +1719,6 @@ export async function startDorotiWorkerHost(
     hostId, hostGeneration, generation,
     logicalWidth, logicalHeight, physicalWidth, physicalHeight,
     devicePixelRatio, timestampMicroseconds): void => {
-    if (!direct) {
-      queueWorkerSnapshot(hostId, snapshot(requireHost(hostId)));
-      return;
-    }
     latestDirectAdmission = {
       hostId,
       hostGeneration,
@@ -1758,11 +1752,11 @@ export async function startDorotiWorkerHost(
       postInput("semantics-action", hostId, inputSequence, { nodeId, action, argumentsJson }),
   });
   const initialRect = root.getBoundingClientRect();
-  directWorkerBootstrap = direct;
+  directWorkerBootstrap = true;
   createHost(1, canvas.id, Math.max(1, initialRect.width), Math.max(1, initialRect.height));
   directWorkerBootstrap = false;
   let host = requireHost(1);
-  if (direct) {
+  {
     configureDirectCanvasCapacity(
       host, initialRect.width, initialRect.height, host.resizeEpoch.devicePixelRatio,
       undefined, undefined, true);
@@ -1770,6 +1764,7 @@ export async function startDorotiWorkerHost(
   document.documentElement.dataset.dorotiRenderer = mode;
 
   let ready = false;
+  let terminalFailure: Error | null = null;
   let resolveReady!: (value: "started") => void;
   let rejectReady!: (reason: unknown) => void;
   const readyPromise = new Promise<"started">((resolve, reject) => {
@@ -1828,8 +1823,8 @@ export async function startDorotiWorkerHost(
       let message: Record<string, unknown>;
       try {
         message = decodeDorotiMessage((event as MessageEvent).data, new Set([
-          "runtime-ready", "gpu-ready", "snapshot-applied", "admission-applied", "frame-request", "managed-raster",
-          "present-requested", "bitmap", "direct-commit", "terminal", "resource", "context-lost",
+          "runtime-ready", "gpu-ready", "snapshot-applied", "admission-applied", "managed-raster",
+          "present-requested", "direct-commit", "terminal", "resource", "context-lost", "gpu-disposed",
         "context-restored", "control", "control-request", "closed", "disposed", "fatal",
         ]));
       } catch (error) {
@@ -1876,19 +1871,6 @@ export async function startDorotiWorkerHost(
           });
           break;
         }
-        case "frame-request": {
-          const callbackId = Number(message.callbackId);
-          recordResize(host, "framework-frame-requested", "worker-scheduler", {
-            rafId: callbackId,
-          });
-          requestAnimationFrame((timestamp) => {
-            recordResize(host, "framework-frame-dispatched", "worker-raf", {
-              rafId: callbackId,
-            });
-            worker.postMessage({ protocolVersion: dorotiProtocolVersion, kind: "frame", callbackId, timestamp });
-          });
-          break;
-        }
         case "managed-raster":
           recordResize(host, String(message.phase), "worker-managed-skia", {
             timestampMicroseconds: Number.isFinite(Number(message.epochMilliseconds))
@@ -1911,64 +1893,6 @@ export async function startDorotiWorkerHost(
             requestId, rafId: requestId,
             surfaceWidth: (message.epoch as ResizeEpoch).physicalWidth,
             surfaceHeight: (message.epoch as ResizeEpoch).physicalHeight,
-          });
-          break;
-        }
-        case "bitmap": {
-          const bitmap = message.bitmap as ImageBitmap;
-          const requestId = Number(message.requestId);
-          display.bitmapCreated++;
-          display.activeBitmaps++;
-          display.currentRequestId = requestId;
-          if (display.latestRequestId === requestId) display.latestRequestId = null;
-          const frameGeneration = Number(message.generation);
-          const epochExact = requestId > display.frontRequestId &&
-            frameGeneration >= display.frontGeneration &&
-            frameGeneration <= host.resizeEpoch.generation &&
-            bitmap.width === Number(message.physicalWidth) && bitmap.height === Number(message.physicalHeight);
-          const bitmapWidth = bitmap.width;
-          const bitmapHeight = bitmap.height;
-          if (epochExact) {
-            canvas.width = bitmapWidth;
-            canvas.height = bitmapHeight;
-            canvas.style.width = `${Number(message.logicalWidth)}px`;
-            canvas.style.height = `${Number(message.logicalHeight)}px`;
-            canvas.style.removeProperty("transform");
-            canvas.style.removeProperty("transform-origin");
-            canvas.dataset.dorotiFrontLogicalWidth = String(Number(message.logicalWidth));
-            canvas.dataset.dorotiFrontLogicalHeight = String(Number(message.logicalHeight));
-            delete canvas.dataset.dorotiResizePreview;
-            display.display!.transferFromImageBitmap(bitmap);
-            display.bitmapConsumed++;
-            display.activeBitmaps--;
-            display.frontGeneration = frameGeneration;
-            display.frontRequestId = requestId;
-            display.rasterWidth = bitmapWidth;
-            display.rasterHeight = bitmapHeight;
-            display.displayWidth = bitmapWidth;
-            display.displayHeight = bitmapHeight;
-            recordResize(host, "front-commit", "worker-display", {
-              requestId, rafId: requestId, backingWidth: canvas.width, backingHeight: canvas.height,
-              surfaceWidth: bitmapWidth, surfaceHeight: bitmapHeight,
-              detail: JSON.stringify({
-                generation: frameGeneration,
-                targetGeneration: host.resizeEpoch.generation,
-                progressive: frameGeneration < host.resizeEpoch.generation,
-              }),
-            });
-          } else {
-            bitmap.close();
-            display.bitmapClosed++;
-            display.activeBitmaps--;
-          }
-          worker.postMessage({
-            protocolVersion: dorotiProtocolVersion, kind: "receipt", requestId, committed: epochExact,
-            consumed: epochExact,
-            reason: epochExact
-              ? frameGeneration === host.resizeEpoch.generation
-                ? "current epoch-exact ImageBitmap consumed by main bitmaprenderer"
-                : "progressive epoch-exact ImageBitmap consumed during live resize"
-              : "main display rejected non-monotonic or size-mismatched bitmap",
           });
           break;
         }
@@ -1995,8 +1919,7 @@ export async function startDorotiWorkerHost(
             Number.isInteger(capacityHeight) && capacityHeight >= framePhysicalHeight;
           const admitted = validDimensions && requestId > display.frontRequestId &&
             frameGeneration >= display.frontGeneration &&
-            frameGeneration <= host.resizeEpoch.generation &&
-            direct;
+            frameGeneration <= host.resizeEpoch.generation;
           if (admitted) {
             display.frontGeneration = frameGeneration;
             display.frontRequestId = requestId;
@@ -2056,6 +1979,7 @@ export async function startDorotiWorkerHost(
           if (runtimeLocation === "main") {
             closeHost(host.id);
             workerDisplayPresenters.delete(canvas.id);
+            if (terminalFailure) app.textContent = terminalFailure.message;
             return;
           }
           break;
@@ -2117,7 +2041,7 @@ export async function startDorotiWorkerHost(
               });
             });
             let replacementOffscreen: OffscreenCanvas | null = null;
-            if (direct) {
+            {
               const lifetimeInputSequence = host.inputSequence;
               const previousCanvas = canvas;
               closeHost(host.id);
@@ -2131,7 +2055,7 @@ export async function startDorotiWorkerHost(
                 host, rect.width, rect.height, host.resizeEpoch.devicePixelRatio,
                 undefined, undefined, true);
               host.inputSequence = lifetimeInputSequence;
-              replacementOffscreen = createWorkerVisibleSurface(canvas, true).offscreen;
+              replacementOffscreen = createWorkerVisibleSurface(canvas).offscreen;
               workerDisplayPresenters.set(canvas.id, display);
             }
             const replacement = createDorotiWorker(new URL("./doroti.raster.worker.js", import.meta.url));
@@ -2146,6 +2070,8 @@ export async function startDorotiWorkerHost(
               resizeDiagnostics: diagnosticsEnabled(),
             }, replacementOffscreen ? [replacementOffscreen] : []);
           } else {
+            terminalFailure = error;
+            document.documentElement.dataset.dorotiRendererError = error.message;
             if (runtimeLocation === "main") worker.terminate();
             if (!ready) rejectReady(error);
             else root.dataset.dorotiWorkerRuntime = "failed";
@@ -2165,9 +2091,10 @@ export async function startDorotiWorkerHost(
     });
   };
   attachWorker(activeWorker);
-  const initialOffscreen = direct ? createWorkerVisibleSurface(canvas, true).offscreen : null;
+  const initialOffscreen = createWorkerVisibleSurface(canvas).offscreen;
   const initialMessage = {
     protocolVersion: dorotiProtocolVersion, kind: "init", snapshot: JSON.parse(snapshot(host)),
+    rendererContractVersion: mode === "worker-direct-webgpu" ? dorotiWebGpuRendererVersion : undefined,
     dotnetModuleUrl, mode, canvas: initialOffscreen,
     testbedMode: new URL(location.href).searchParams.get("dorotiTestbedMode") ?? "diagnostics",
     progressScope: new URL(location.href).searchParams.get("dorotiProgressScope") ?? "local",

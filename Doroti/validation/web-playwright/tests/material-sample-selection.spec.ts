@@ -77,7 +77,9 @@ test("Material sample pickers, menus, selection and text editing", async ({ page
   await pointer(page, color);
   await expect(page.locator("#doroti-ime")).toBeFocused();
   await page.keyboard.type("Green");
-  await page.keyboard.press("ArrowDown");
+  // Search highlights the matching entry during the next framework frame.
+  // ArrowDown after that frame advances to Blue; Enter accepts the search match.
+  await expect(color).toHaveValue("Green");
   await page.keyboard.press("Enter");
   await expect(color).toHaveValue("Green");
   const filled = page.getByRole("textbox", { name: "Filled", exact: true }).first();

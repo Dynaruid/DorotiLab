@@ -812,9 +812,9 @@ public sealed class BrowserHostAdapter :
             !double.IsFinite(snapshot.LogicalWidth) || !double.IsFinite(snapshot.LogicalHeight) ||
             snapshot.DevicePixelRatio <= 0 || !double.IsFinite(snapshot.DevicePixelRatio))
             throw new InvalidDataException("The browser returned invalid canvas metrics.");
-        if (!snapshot.Gpu.Hardware || snapshot.Gpu.SoftwareFallbackUsed || snapshot.Gpu.Api != "webgl2")
+        if (!snapshot.Gpu.Hardware || snapshot.Gpu.SoftwareFallbackUsed || snapshot.Gpu.Api is not ("webgl2" or "webgpu"))
             throw new PlatformNotSupportedException(
-                $"A hardware WebGL2 canvas is required; browser reported '{snapshot.Gpu.Api}/{snapshot.Gpu.Renderer}'.");
+                $"A hardware WebGL2 or WebGPU canvas is required; browser reported '{snapshot.Gpu.Api}/{snapshot.Gpu.Renderer}'.");
         return snapshot;
     }
 

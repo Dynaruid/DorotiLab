@@ -23,6 +23,7 @@ public static partial class DorotiSkiaRuntimeEffects
     public const string WindowsHwndD3D12Backend = "skiasharp-windows-hwnd-d3d12-gpu";
     public const string AppKitMetalBackend = "skiasharp-appkit-metal-gpu";
     public const string WebGpuBackend = "skiasharp-skglview-webgl2-gpu";
+    public const string WebGraphiteBackend = "skiasharp-graphite-dawn-webgpu";
     public const string QtGpuBackend = "skiasharp-qt-opengl-gpu";
 
     private static readonly IReadOnlySet<string> SupportedBackends =
@@ -36,6 +37,7 @@ public static partial class DorotiSkiaRuntimeEffects
             WindowsHwndD3D12Backend,
             AppKitMetalBackend,
             WebGpuBackend,
+            WebGraphiteBackend,
             QtGpuBackend,
         };
     private static readonly ConcurrentDictionary<RuntimeEffectCacheKey, Lazy<CompiledRuntimeEffect>> EffectCache = [];
@@ -262,6 +264,7 @@ public static partial class DorotiSkiaRuntimeEffects
             backend.StartsWith(WindowsHwndD3D12Backend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(AppKitMetalBackend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(WebGpuBackend + "/", StringComparison.Ordinal) ||
+            backend.StartsWith(WebGraphiteBackend + "/", StringComparison.Ordinal) ||
             backend.StartsWith(QtGpuBackend + "/", StringComparison.Ordinal))
             return;
         var message =

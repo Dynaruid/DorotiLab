@@ -103,14 +103,14 @@ After the Web runner starts, open one of these links:
 
 | Screen / renderer | URL |
 | --- | --- |
-| Material sample with the default SkiaSharp direct renderer | [Open default sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
-| Material sample with SkiaSharp in the direct .NET Worker | [Open SkiaSharp direct sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
+| Material sample with the default WebGPU renderer | [Open default sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample) |
+| Material sample with explicit WebGL2 | [Open SkiaSharp direct sample](http://127.0.0.1:5088/?dorotiTestbedMode=sample&dorotiRenderer=worker-direct-webgl) |
 | Diagnostics with the default renderer | [Open diagnostics](http://127.0.0.1:5088/?dorotiTestbedMode=diagnostics) |
 
 `dorotiTestbedMode=sample` selects the sample screen; `dorotiRenderer` selects
 the rendering backend. Keep both parameters when comparing the same sample.
 Omitting `dorotiTestbedMode` opens diagnostics, and omitting `dorotiRenderer`
-uses `worker-direct-webgl`.
+uses `worker-direct-webgpu`.
 
 Use Communication → Progress indicators in Components to check animation.
 After rebuilding a renderer, restart the runner and reload the page to load the new build.
@@ -136,14 +136,14 @@ See the [image scroll follow-up](../history/26-09-07/web-image-scroll-followup.m
 The following addresses open diagnostics with the selected backend:
 
 - Default SkiaSharp direct Worker: `http://127.0.0.1:5088`
-- Direct visible canvas in the persistent .NET Worker (default): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
-- Persistent .NET Worker: `http://127.0.0.1:5088/?dorotiRenderer=offscreen-worker`
+- Direct WebGL2 canvas in the render Worker: `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgl`
+- Direct WebGPU canvas in the render Worker (default): `http://127.0.0.1:5088/?dorotiRenderer=worker-direct-webgpu`
 
 `worker-direct-webgl` uses SkiaSharp WASM. Testbed initializes the runtime on main and its shared-runtime render Worker owns layout, Skia and visible Offscreen WebGL2. Main owns DOM/input/IME/semantics. Initialization failures are reported.
 
 The Web host source build uses NuGet SkiaSharp WASM and Microsoft.TypeScript.MSBuild. CanvasKit npm restore and separate JS/WASM assets have been removed.
 
-`auto` and URLs without a renderer option select `worker-direct-webgl`. This default change does not complete the remaining performance, physical presentation, IME, or accessibility qualification.
+`auto` and URLs without a renderer option select `worker-direct-webgpu`. This default change does not complete the remaining performance, physical presentation, IME, or accessibility qualification.
 
 CanvasKit removal and prior qualification evidence: [archived record](../history/26-09-08/web-canvaskit-retired-readme.md).
 

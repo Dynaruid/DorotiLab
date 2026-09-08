@@ -330,16 +330,26 @@ public static class HttpStatus { public const long ok = 200; }
 
 public sealed class HttpClient
 {
-    private readonly System.Net.Http.HttpClient _client = new();
+    private readonly System.Net.Http.HttpClient _client = new() {
+        Timeout = OperatingSystem.IsBrowser() ? Timeout.InfiniteTimeSpan : TimeSpan.FromSeconds(100),
+    };
     public bool autoUncompress { get; set; }
-    public Future<HttpClientRequest> getUrl(DartUri uri) => Future<HttpClientRequest>.value(new(_client, uri));
+    public Future<HttpClientRequest> getUrl(DartUri uri) => Future<HttpClientRequest>.value(
+        new(_client, uri, OperatingSystem.IsBrowser() ? DartAsyncRuntime.timeProvider : null));
 }
 
-public sealed class HttpClientRequest(System.Net.Http.HttpClient client, DartUri uri)
+public sealed class HttpClientRequest(System.Net.Http.HttpClient client, DartUri uri, TimeProvider? timeProvider)
 {
+    public HttpClientRequest(System.Net.Http.HttpClient client, DartUri uri) : this(client, uri, null) { }
     public DartHttpHeaders headers { get; } = new();
     public Future<HttpClientResponse> close() => Future<HttpClientResponse>.fromTask(SendAsync());
-    private async Task<HttpClientResponse> SendAsync() => new(await client.GetAsync(uri.ToString(), System.Net.Http.HttpCompletionOption.ResponseHeadersRead));
+    private async Task<HttpClientResponse> SendAsync()
+    {
+        if (timeProvider is null)
+            return new(await client.GetAsync(uri.ToString(), System.Net.Http.HttpCompletionOption.ResponseHeadersRead));
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(100), timeProvider);
+        return new(await client.GetAsync(uri.ToString(), System.Net.Http.HttpCompletionOption.ResponseHeadersRead, timeout.Token));
+    }
 }
 
 public sealed class DartHttpHeaders

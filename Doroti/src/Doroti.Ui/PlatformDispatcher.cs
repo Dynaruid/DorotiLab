@@ -12,6 +12,7 @@ public sealed class PlatformDispatcher : IDisposable
     private readonly DartMicrotaskQueue _microtasks = new();
     private readonly DorotiFrameTrace _frameTrace = new();
     private readonly IDartPerformanceModeCapability? _performanceModeCapability;
+    private readonly TimeProvider _timeProvider;
     private readonly HashSet<Guid> _backgroundIsolates = [];
     private ChannelBuffers? _channelBuffers;
     private AccessibilityFeatures _accessibilityFeatures =
@@ -24,6 +25,7 @@ public sealed class PlatformDispatcher : IDisposable
     public PlatformDispatcher(IDartPerformanceModeCapability? performanceModeCapability = null)
     {
         _performanceModeCapability = performanceModeCapability;
+        _timeProvider = DartAsyncRuntime.timeProvider;
     }
 
     /// <summary>
@@ -46,7 +48,8 @@ public sealed class PlatformDispatcher : IDisposable
         ObjectDisposedException.ThrowIf(_disposed, this);
         var previous = ActiveDispatcher.Value;
         ActiveDispatcher.Value = this;
-        return new DispatcherScope(previous, DartAsyncRuntime.enterMicrotaskScheduler(EnqueueMicrotask));
+        return new DispatcherScope(previous, DartAsyncRuntime.enterMicrotaskScheduler(EnqueueMicrotask),
+            DartAsyncRuntime.enterTimeProvider(_timeProvider));
     }
 
     private void EnqueueMicrotask(Action callback)
@@ -530,7 +533,8 @@ public sealed class PlatformDispatcher : IDisposable
 
     private sealed class DispatcherScope(
         PlatformDispatcher? previous,
-        IDisposable microtaskSchedulerScope) : IDisposable
+        IDisposable microtaskSchedulerScope,
+        IDisposable timeProviderScope) : IDisposable
     {
         private bool _disposed;
 
@@ -544,6 +548,7 @@ public sealed class PlatformDispatcher : IDisposable
             try
             {
                 microtaskSchedulerScope.Dispose();
+                timeProviderScope.Dispose();
             }
             finally
             {
@@ -819,7 +824,7 @@ public sealed class DorotiView : IDisposable
     {
         ArgumentNullException.ThrowIfNull(transaction);
         if (timeout <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(timeout));
-        return transaction.Completion.WaitAsync(timeout, cancellationToken);
+        return transaction.Completion.WaitAsync(timeout, DartAsyncRuntime.timeProvider, cancellationToken);
     }
 
     public async ValueTask<ReadOnlyMemory<byte>?> SendPlatformMessageAsync(

@@ -35,8 +35,8 @@ automatically retried as an independent runtime on a replacement Worker.
 `runtimeLocation: "main"` is a host bootstrap setting, selected by the Testbed.
 It requires WasmEnableThreads, cross-origin isolation, and a real shared heap.
 Existing single-thread consumers retain their independent Worker bootstrap.
-The renderer selection remains worker-direct-webgl; no CanvasKit substitution
-is implied by runtime placement.
+The default renderer is worker-direct-webgpu (Graphite/Dawn); explicit
+worker-direct-webgl uses Ganesh/WebGL2. Runtime placement does not add a renderer.
 
 Framework mutation and current Skia rendering remain on the same JS-affine
 owner, preserving ADR-002's ownership rules for the combined direct path.
@@ -69,7 +69,8 @@ WebGL ownership. A Graphite/Dawn candidate produced Material content on this
 Worker, but failed normal shutdown and device-loss acceptance. Its renderer
 selection, surface, native exports, and common GPU-cache changes were retired.
 The [candidate and execution evidence](../../../history/26-09-08/work3-execution.md)
-preserve that failure; WebGPU is not an enabled product mode.
+preserve that initial failure. This historical retirement is superseded by the
+subsequent direct-only WebGPU default change; its new validation is recorded separately.
 
 Optional `dorotiLayoutProfile=1` (alongside `dorotiResizeDiagnostics=1`) enables
 owner-thread layout self-time instrumentation. It is off by default. The measured
@@ -77,7 +78,7 @@ RenderFlex candidate represented less than 0.3% of callback cost and still
 included owner traversal, so work3 did not adopt a parallel layout executor.
 This diagnostic option neither changes runtime topology nor proves a speedup.
 
-같은 runtime/Worker 소유권을 유지한다. WebGPU 후보는 수명 gate 실패로 원복했고,
+당시 같은 runtime/Worker 소유권을 유지했다. 초기 WebGPU 후보는 수명 gate 실패로 원복했고,
 병렬 layout은 순수 계산 비용의 이득 근거가 없어 미채택했다. 상세 결과의 자동
 검증과 물리 기기 `notVerified`를 구분한다.
 
@@ -94,3 +95,33 @@ and [combination evidence](../../../history/26-09-08/work3-execution.md)
 preserve the earlier overlap, geometry, state and pixel results and the failed
 combination gates. These describe retired experiment artifacts, not active
 product features. General parallel layout and combination work are closed.
+
+## Browser timer ownership (2026-09-08)
+
+The Web runner creates a `BrowserTimeProvider` on its JS-affine owner before
+application construction. `PlatformDispatcher` captures that provider and restores
+it for every framework callback. Dart `Timer`, `Timer.run`, timed `Future` values,
+Future timeout handlers and the shared framework's timed waits use this provider.
+Native hosts retain `TimeProvider.System`.
+
+Web deadlines are scheduled with the render Worker's `setTimeout`. Timer change
+and cancellation from .NET continuations are posted back to that owner. Generation
+checks reject obsolete callbacks. Session shutdown cancels all owned browser timer
+handles. Microtasks retain the host wakeup scheduler so nested timers can wake an
+otherwise idle view. HTTP font/image requests retain their timeout using a
+provider-backed cancellation source rather than HttpClient's internal timer.
+
+This removes Doroti's dependence on the portable .NET TimerQueue that produced
+`SynchronizationLockException` in `TimerQueueTimer.Fire`. The upstream runtime
+itself is not patched. Application code that creates its own .NET timed operations
+should also pass `DartAsyncRuntime.timeProvider`, for example:
+
+```csharp
+await Task.Delay(TimeSpan.FromMilliseconds(250), DartAsyncRuntime.timeProvider);
+```
+
+The owner provider is execution-context scoped; an unscoped browser Dart timer
+fails explicitly instead of silently falling back to the affected .NET timer queue.
+The [timer repair record](../../../history/26-09-08/browser-owner-timers.md) preserves
+the original failure and separates browser stress/interaction evidence from
+physical-device and general runtime acceptance.

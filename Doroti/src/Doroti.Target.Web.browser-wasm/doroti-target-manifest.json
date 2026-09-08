@@ -4,8 +4,8 @@
   "packageVersion": "0.2.0-beta",
   "rid": "browser-wasm",
   "host": "managed-render-worker",
-  "defaultRenderer": "worker-direct-webgl",
-  "graphicsBackend": "worker-direct-webgl2-or-offscreen-worker-webgl2-imagebitmap",
+  "defaultRenderer": "worker-direct-webgpu",
+  "graphicsBackend": "worker-direct-webgpu-graphite-dawn-or-worker-direct-webgl2",
   "blazorWebAssemblyVersion": "10.0.11",
   "skiaSharpVersion": "4.154.0-preview.1.26454.9",
   "skiaSharpManagedPackage": "SkiaSharp",
@@ -16,8 +16,8 @@
     "Doroti.Host.Web.DorotiWebWorkerSurface"
   ],
   "rendererModes": [
-    "worker-direct-webgl",
-    "offscreen-worker"
+    "worker-direct-webgpu",
+    "worker-direct-webgl"
   ],
   "workerRuntimeOwnership": "single-managed-runtime; bootstrap-main-or-render-worker; framework-and-skia-on-render-worker",
   "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",

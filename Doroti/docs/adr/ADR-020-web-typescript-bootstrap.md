@@ -18,21 +18,21 @@ Each TypeScript compile replaces its isolated generated output directory. The bu
 validates that this is a strict child of the intermediate root before cleanup, so a
 removed source module cannot survive in static assets or a subsequent package.
 
-`doroti.loader.ts` supports `worker-direct-webgl` (default) and `offscreen-worker`.
-Omitted, `auto`, and unknown values select direct. Retired `worker-canvaskit-webgl`,
-`document-webgl`, and `offscreen-bitmap` URLs therefore select direct under the same
-unknown-value policy. Required Worker/WebGL capabilities failing is an error; no
-same-thread or CanvasKit fallback is available.
+`doroti.loader.ts` supports `worker-direct-webgpu` (default) and
+`worker-direct-webgl`. Omitted, `auto`, unknown and retired renderer selections
+select WebGPU. Required capabilities failing is an explicit error; there is no
+automatic WebGL, CanvasKit or bitmap fallback.
 
-- Direct transfers the visible canvas to the render Worker once. SkiaSharp WASM and
-  WebGL2 render there; main clips the completed capacity without stretching old content.
-- `offscreen-worker` renders in the Worker and transfers completed ImageBitmaps to
-  main's `bitmaprenderer`. This remains distinct from the retired same-thread bitmap mode.
-- Main owns DOM/input/IME/semantics, clipboard and plugin endpoints. Framework/layout,
-  Skia and GPU objects belong to the render Worker.
-- `runtimeLocation: "worker"` initializes one runtime in that Worker. `"main"` requires
-  threads and cross-origin isolation, initializes one runtime on main, and starts its
-  shared-runtime JSWebWorker render role. See [ADR-003](ADR-003-web-main-runtime-render-worker.md).
+- Both modes transfer the visible canvas to the render Worker once.
+- WebGPU uses SkiaSharp Graphite/Dawn and an exact-size current canvas texture.
+- WebGL uses SkiaSharp Ganesh/WebGL2 and a grow-only backing clipped by main.
+- Main owns DOM/input/IME/semantics, clipboard and plugin endpoints. Framework,
+  layout, Skia and GPU objects belong to the render Worker.
+- `runtimeLocation: "main"` is the default and initializes one threaded runtime
+  on main with a shared-runtime JSWebWorker render role. WebGPU requires this
+  topology, a secure isolated origin and a hardware WebGPU adapter.
+- Explicit WebGL also supports `runtimeLocation: "worker"` for an independent
+  runtime in the render Worker. See [ADR-003](ADR-003-web-main-runtime-render-worker.md).
 
 ## Bootstrap contract
 
@@ -54,7 +54,7 @@ build/asset pipeline; it does not own document-rendered Doroti components.
 ```ts
 await startDoroti({
   configure(context) {
-    context.runtimeLocation = "worker";
+    context.runtimeLocation = "main";
   },
   onStage(stage) {
     document.documentElement.dataset.dorotiBootstrapStage = stage;
@@ -73,7 +73,7 @@ performance, IME or accessibility acceptance.
 
 The original same-thread front/staging and detached bitmap paths, the CanvasKit split
 UI/Raster experiment, and the 2026-09-07 direct-default change are retired or superseded.
-Their original failures and bounded qualification remain in history, including the
+The original failures and bounded qualification remain in history, including the
 [direct-default report](../../../history/26-09-07/web-direct-default-execution.md) and
 [retired CanvasKit README evidence](../../../history/26-09-08/web-canvaskit-retired-readme.md).
 The 2026-09-08 removal does not reclassify those results as passing.

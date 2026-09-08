@@ -674,7 +674,7 @@ public class ColorScheme : global::Doroti.Framework.Foundation.Diagnosticable
         try
         {
             stream.addListener(listener);
-            return await completion.Task.WaitAsync(TimeSpan.FromSeconds(30));
+            return await completion.Task.WaitAsync(TimeSpan.FromSeconds(30), global::Doroti.Runtime.DartAsyncRuntime.timeProvider);
         }
         catch (Exception exception)
         {

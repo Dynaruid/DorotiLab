@@ -4,39 +4,28 @@ namespace Doroti.Runtime;
 
 public sealed class Timer : IDisposable
 {
-    private readonly System.Threading.Timer _timer;
+    private readonly ITimer _timer;
     private int _isActive = 1;
 
     public Timer(Duration duration, Action callback)
-    {
-        ArgumentNullException.ThrowIfNull(callback);
-        var scheduler = DartAsyncRuntime.captureMicrotaskScheduler();
-        _timer = new System.Threading.Timer(
-            _ => DartAsyncRuntime.dispatchCaptured(scheduler, () => InvokeOnce(callback)),
-            null,
-            (TimeSpan)duration,
-            Timeout.InfiniteTimeSpan);
-    }
+        : this(duration, callback is null ? throw new ArgumentNullException(nameof(callback)) : _ => callback(), false) { }
 
-    public Timer(Duration duration, Action<Timer> callback)
-    {
-        ArgumentNullException.ThrowIfNull(callback);
-        var scheduler = DartAsyncRuntime.captureMicrotaskScheduler();
-        _timer = new System.Threading.Timer(
-            _ => DartAsyncRuntime.dispatchCaptured(scheduler, () => InvokeOnce(() => callback(this))),
-            null,
-            (TimeSpan)duration,
-            Timeout.InfiniteTimeSpan);
-    }
+    public Timer(Duration duration, Action<Timer> callback) : this(duration, callback, false) { }
 
     private Timer(Duration duration, Action<Timer> callback, bool periodic)
     {
+        ArgumentNullException.ThrowIfNull(callback);
         var scheduler = DartAsyncRuntime.captureMicrotaskScheduler();
-        _timer = new System.Threading.Timer(
-            _ => DartAsyncRuntime.dispatchCaptured(scheduler, () => InvokePeriodic(callback)),
-            null,
-            (TimeSpan)duration,
-            periodic ? (TimeSpan)duration : Timeout.InfiniteTimeSpan);
+        var delay = (TimeSpan)duration;
+        if (delay < TimeSpan.Zero) delay = TimeSpan.Zero;
+        // Publish the handle before arming a zero-delay timer. The host owns
+        // timer delivery; the captured Dart event loop still owns the callback.
+        _timer = DartAsyncRuntime.timeProvider.CreateTimer(
+            _ => DartAsyncRuntime.dispatchCaptured(scheduler, () => {
+                if (periodic) InvokePeriodic(callback);
+                else InvokeOnce(() => callback(this));
+            }), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+        _timer.Change(delay, periodic ? (delay == TimeSpan.Zero ? TimeSpan.FromMilliseconds(1) : delay) : Timeout.InfiniteTimeSpan);
     }
 
     public bool isActive => Volatile.Read(ref _isActive) == 1;
@@ -46,7 +35,7 @@ public sealed class Timer : IDisposable
     public static void run(Action callback)
     {
         ArgumentNullException.ThrowIfNull(callback);
-        DartRuntimePrimitives.ObserveTask(Task.Run(callback), "Timer.run");
+        _ = new Timer(Duration.zero, callback);
     }
 
     public void cancel()
@@ -63,6 +52,7 @@ public sealed class Timer : IDisposable
         // gesture cancels it. Dart cancellation still suppresses that queued
         // event, so claim the callback only when the host event loop executes.
         if (Interlocked.Exchange(ref _isActive, 0) != 1) return;
+        _timer.Dispose();
         callback();
     }
 
@@ -76,6 +66,32 @@ public sealed class Timer : IDisposable
 public static class DartAsyncRuntime
 {
     private static readonly AsyncLocal<Action<Action>?> MicrotaskScheduler = new();
+    private static readonly AsyncLocal<TimeProvider?> AmbientTimeProvider = new();
+
+    /// <summary>Host-owned time source, captured by timers and timed futures.</summary>
+    public static TimeProvider timeProvider => AmbientTimeProvider.Value ??
+        (OperatingSystem.IsBrowser()
+            ? throw new InvalidOperationException("Doroti browser timers require an active host TimeProvider scope.")
+            : TimeProvider.System);
+
+    public static IDisposable enterTimeProvider(TimeProvider provider)
+    {
+        ArgumentNullException.ThrowIfNull(provider);
+        var previous = AmbientTimeProvider.Value;
+        AmbientTimeProvider.Value = provider;
+        return new TimeProviderScope(previous);
+    }
+
+    private sealed class TimeProviderScope(TimeProvider? previous) : IDisposable
+    {
+        private bool _disposed;
+        public void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
+            AmbientTimeProvider.Value = previous;
+        }
+    }
 
     public static void unawaited(object? future)
     {
@@ -253,7 +269,10 @@ public sealed class DartMicrotaskQueue
 
     public void drain()
     {
-        using var scope = DartAsyncRuntime.enterMicrotaskScheduler(enqueue);
+        // Preserve a host scheduler that also wakes its event loop. Timers
+        // created by a microtask must not capture a queue-only enqueue delegate.
+        using var scope = DartAsyncRuntime.captureMicrotaskScheduler() is null
+            ? DartAsyncRuntime.enterMicrotaskScheduler(enqueue) : null;
         while (true)
         {
             Action? callback;
@@ -283,7 +302,7 @@ public class Future<T> : Future
 
     private static async Task<T> DelayAsync(Duration delay)
     {
-        await Task.Delay((TimeSpan)delay).ConfigureAwait(false);
+        await Task.Delay((TimeSpan)delay, DartAsyncRuntime.timeProvider).ConfigureAwait(false);
         return default!;
     }
 
@@ -481,26 +500,29 @@ public class Future<T> : Future
 
     private static async Task<T> TimeoutAsync(Task<T> task, Duration limit, Func<Future>? onTimeout)
     {
+        var scheduler = DartAsyncRuntime.captureMicrotaskScheduler();
         try
         {
-            return await task.WaitAsync((TimeSpan)limit).ConfigureAwait(false);
+            return await task.WaitAsync((TimeSpan)limit, DartAsyncRuntime.timeProvider).ConfigureAwait(false);
         }
         catch (TimeoutException) when (onTimeout is not null)
         {
-            await onTimeout();
+            var recovery = await DartAsyncRuntime.dispatchCapturedAsync(scheduler, onTimeout).ConfigureAwait(false);
+            await recovery;
             return default!;
         }
     }
 
     private static async Task<T> TimeoutFutureOrAsync(Task<T> task, Duration limit, Func<object> onTimeout)
     {
+        var scheduler = DartAsyncRuntime.captureMicrotaskScheduler();
         try
         {
-            return await task.WaitAsync((TimeSpan)limit).ConfigureAwait(false);
+            return await task.WaitAsync((TimeSpan)limit, DartAsyncRuntime.timeProvider).ConfigureAwait(false);
         }
         catch (TimeoutException)
         {
-            var result = onTimeout();
+            var result = await DartAsyncRuntime.dispatchCapturedAsync(scheduler, onTimeout).ConfigureAwait(false);
             return result switch
             {
                 Future<T> future => await future,
@@ -540,7 +562,7 @@ public class Future
 
     protected Future(Task task) => _task = task ?? throw new ArgumentNullException(nameof(task));
 
-    public Future(Duration delay) : this(Task.Delay((TimeSpan)delay)) { }
+    public Future(Duration delay) : this(Task.Delay((TimeSpan)delay, DartAsyncRuntime.timeProvider)) { }
 
     public Future(Func<Future> computation)
         : this(RunComputation(computation)) { }

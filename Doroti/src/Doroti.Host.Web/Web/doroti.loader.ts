@@ -4,7 +4,7 @@ export interface DorotiBootstrapContext {
   stage: DorotiBootstrapStage;
   /** Main-owned threaded runtime with a JS-affine render Worker. */
   runtimeLocation?: "main" | "worker";
-  rendererMode?: "worker-direct-webgl" | "offscreen-worker";
+  rendererMode?: "worker-direct-webgl" | "worker-direct-webgpu";
 }
 
 export interface DorotiBootstrapOptions {
@@ -53,13 +53,13 @@ async function runStart(options: DorotiBootstrapOptions): Promise<DorotiBootstra
   }
 }
 
-function selectRendererMode(): "worker-direct-webgl" | "offscreen-worker" {
+function selectRendererMode(): "worker-direct-webgl" | "worker-direct-webgpu" {
   const value = new URLSearchParams(globalThis.location.search).get("dorotiRenderer");
-  if (value === "offscreen-worker" ||
+  if (value === "worker-direct-webgpu" ||
       value === "worker-direct-webgl")
     return value;
   // An omitted, auto, or unrecognized selection uses the product default.
-  return "worker-direct-webgl";
+  return "worker-direct-webgpu";
 }
 
 function notifyStage(

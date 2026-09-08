@@ -1,4 +1,19 @@
 <Project>
+  <!-- Append after package evaluation so the owned Dawn device-loss adapter
+       follows SkiaSharp's library_webgpu. Track its content as a link input. -->
+  <Target Name="DorotiConfigureWebNativeInterop" BeforeTargets="_BrowserWasmWriteRspForLinking"
+          Condition="'$(DorotiTarget)' == 'Web' and '$(DorotiSkiaInteropLibrary)' != ''">
+    <Error Condition="!Exists('$(DorotiSkiaInteropLibrary)')" Text="Doroti Web native interop library is missing." />
+    <PropertyGroup>
+      <EmccExtraLDFlags>$(EmccExtraLDFlags) --js-library="$(DorotiSkiaInteropLibrary)"</EmccExtraLDFlags>
+    </PropertyGroup>
+  </Target>
+  <Target Name="DorotiTrackWebNativeInterop" BeforeTargets="_BrowserWasmLinkDotNet"
+          Condition="'$(DorotiTarget)' == 'Web' and '$(DorotiSkiaInteropLibrary)' != ''">
+    <ItemGroup>
+      <_WasmLinkDependencies Include="$(DorotiSkiaInteropLibrary)" />
+    </ItemGroup>
+  </Target>
   <PropertyGroup>
     <DorotiAppProject>$([MSBuild]::NormalizePath('$(MSBuildProjectDirectory)', '$(DorotiAppProject)'))</DorotiAppProject>
     <DorotiApplicationProjectName>$([System.IO.Path]::GetFileNameWithoutExtension('$(DorotiAppProject)'))</DorotiApplicationProjectName>

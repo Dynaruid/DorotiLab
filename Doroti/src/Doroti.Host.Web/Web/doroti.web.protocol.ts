@@ -1,4 +1,5 @@
-export const dorotiProtocolVersion = 2 as const;
+export const dorotiProtocolVersion = 3 as const;
+export const dorotiWebGpuRendererVersion = 1 as const;
 
 export type DorotiProtocolEnvelope = Readonly<Record<string, unknown>> & {
   readonly protocolVersion: typeof dorotiProtocolVersion;

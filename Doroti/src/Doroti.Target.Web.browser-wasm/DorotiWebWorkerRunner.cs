@@ -14,6 +14,7 @@ public static class DorotiWebWorkerRunner
     private static DorotiHostSession? _session;
     private static DorotiView? _view;
     private static HttpClient? _http;
+    private static BrowserTimeProvider? _timeProvider;
 
     public static async Task<string> RunAsync<TStartup>(
         System.Reflection.Assembly manifestAssembly,
@@ -22,14 +23,17 @@ public static class DorotiWebWorkerRunner
     {
         if (_session is not null) return "already-running";
         await BrowserHostRuntime.EnsureInitializedAsync();
+        _timeProvider = new BrowserTimeProvider();
+        using var timeScope = global::Doroti.Runtime.DartAsyncRuntime.enterTimeProvider(_timeProvider);
         var baseAddress = new Uri(BrowserHostRuntime.ResolveResourceUrl("./"));
         var descriptor = DorotiApplicationFactory.Create<TStartup>(
             DorotiLaunchContext.Create("Web", "browser-wasm", [], baseAddress),
             plugins, manifestAssembly);
         _target = new BrowserWasmTarget();
-        _http = new HttpClient();
+        _http = new HttpClient { Timeout = Timeout.InfiniteTimeSpan };
         var fontUrl = BrowserHostRuntime.ResolveResourceUrl(FallbackFontUrl);
-        _target.RegisterFont(await _http.GetByteArrayAsync(fontUrl));
+        using (var fontTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(100), _timeProvider))
+            _target.RegisterFont(await _http.GetByteArrayAsync(fontUrl, fontTimeout.Token));
         _session = new DorotiHostSession(descriptor.EntrypointFactory());
         using var dispatcherScope = _session.dispatcher.EnterScope();
         _session.Start(deferFrameworkBootstrap: true);
@@ -49,18 +53,26 @@ public static class DorotiWebWorkerRunner
 
     public static void Dispose()
     {
-        if (_session is null) return;
-        using var dispatcherScope = _session.dispatcher.EnterScope();
-        DorotiWebWorkerSurface.Dispose();
-        _view?.Dispose();
-        _boundary?.Dispose();
-        _target?.Dispose();
-        _session.Dispose();
-        _http?.Dispose();
-        _view = null;
-        _boundary = null;
-        _target = null;
-        _session = null;
-        _http = null;
+        if (_session is null && _timeProvider is null) return;
+        using var dispatcherScope = _session?.dispatcher.EnterScope();
+        try
+        {
+            DorotiWebWorkerSurface.Dispose();
+            _view?.Dispose();
+            _boundary?.Dispose();
+            _target?.Dispose();
+            _session?.Dispose();
+        }
+        finally
+        {
+            _http?.Dispose();
+            _timeProvider?.Dispose();
+            _view = null;
+            _boundary = null;
+            _target = null;
+            _session = null;
+            _http = null;
+            _timeProvider = null;
+        }
     }
 }

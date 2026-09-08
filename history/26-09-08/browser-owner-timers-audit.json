@@ -1,0 +1,271 @@
+{
+  "sourceHead": "6423825205354d260b4517ea0051fd14eddf0d7d",
+  "status": "PASS for Doroti-owned browser timer paths",
+  "upstreamRuntimePatched": false,
+  "upstreamIssue": "https://github.com/dotnet/runtime/issues/129900",
+  "originalFailure": {
+    "log": ".doroti/webgpu-direct/webgpu-picker-final.log",
+    "sha256": "5ddc4d8ed96d7725e12ebe4cac1992fb54e101453804eae943afd914b5a7b8c1",
+    "status": "FAIL preserved"
+  },
+  "checks": {
+    "runtimeAsync": "PASS",
+    "fcr7": "PASS Debug",
+    "hostAndValidationTypeScript": "PASS",
+    "threadedReleaseProductPublish": "PASS",
+    "productionValidationExportExcluded": true,
+    "originalEditingRegression": "3/3 PASS",
+    "productImageStateLifecycle": "5/5 PASS",
+    "packages": "6/6 PASS"
+  },
+  "timeoutSeconds": 1200,
+  "automaticRetries": 0,
+  "stress": {
+    "browser-timers-initial": {
+      "before": {
+        "backend": "browser-owner-timeout",
+        "ownerThreadId": 8,
+        "liveTimers": 0,
+        "created": 1,
+        "fired": 0,
+        "crossThreadOperations": 0,
+        "systemTimerCount": 0,
+        "pending": 0
+      },
+      "result": {
+        "systemTimerControl": false,
+        "callbacks": 267512,
+        "wrongThread": 0,
+        "canceledCalls": 0,
+        "zeroCalls": 1,
+        "delayed": 42,
+        "timeoutResult": 99,
+        "timedOut": true,
+        "peakSystemTimers": 0,
+        "owner": 8,
+        "diagnostics": {
+          "backend": "browser-owner-timeout",
+          "ownerThreadId": 8,
+          "liveTimers": 25,
+          "created": 33,
+          "fired": 267516,
+          "crossThreadOperations": 3,
+          "systemTimerCount": 0
+        }
+      },
+      "after": {
+        "backend": "browser-owner-timeout",
+        "ownerThreadId": 8,
+        "liveTimers": 0,
+        "created": 33,
+        "fired": 267516,
+        "crossThreadOperations": 3,
+        "systemTimerCount": 0,
+        "pending": 0
+      }
+    },
+    "browser-timers-stress-webgpu": {
+      "before": {
+        "backend": "browser-owner-timeout",
+        "ownerThreadId": 8,
+        "liveTimers": 0,
+        "created": 1,
+        "fired": 0,
+        "crossThreadOperations": 0,
+        "systemTimerCount": 0,
+        "pending": 0
+      },
+      "result": {
+        "systemTimerControl": false,
+        "callbacks": 175724,
+        "wrongThread": 0,
+        "canceledCalls": 0,
+        "zeroCalls": 1,
+        "delayed": 42,
+        "timeoutResult": 99,
+        "timedOut": true,
+        "peakSystemTimers": 0,
+        "owner": 8,
+        "diagnostics": {
+          "backend": "browser-owner-timeout",
+          "ownerThreadId": 8,
+          "liveTimers": 25,
+          "created": 33,
+          "fired": 175731,
+          "crossThreadOperations": 3,
+          "systemTimerCount": 0
+        }
+      },
+      "after": {
+        "backend": "browser-owner-timeout",
+        "ownerThreadId": 8,
+        "liveTimers": 0,
+        "created": 33,
+        "fired": 175731,
+        "crossThreadOperations": 3,
+        "systemTimerCount": 0,
+        "pending": 0
+      }
+    },
+    "browser-timers-stress-webgl": {
+      "before": {
+        "backend": "browser-owner-timeout",
+        "ownerThreadId": 8,
+        "liveTimers": 0,
+        "created": 1,
+        "fired": 0,
+        "crossThreadOperations": 0,
+        "systemTimerCount": 0,
+        "pending": 0
+      },
+      "result": {
+        "systemTimerControl": false,
+        "callbacks": 266408,
+        "wrongThread": 0,
+        "canceledCalls": 0,
+        "zeroCalls": 1,
+        "delayed": 42,
+        "timeoutResult": 99,
+        "timedOut": true,
+        "peakSystemTimers": 0,
+        "owner": 8,
+        "diagnostics": {
+          "backend": "browser-owner-timeout",
+          "ownerThreadId": 8,
+          "liveTimers": 25,
+          "created": 33,
+          "fired": 266415,
+          "crossThreadOperations": 3,
+          "systemTimerCount": 0
+        }
+      },
+      "after": {
+        "backend": "browser-owner-timeout",
+        "ownerThreadId": 8,
+        "liveTimers": 0,
+        "created": 33,
+        "fired": 266415,
+        "crossThreadOperations": 3,
+        "systemTimerCount": 0,
+        "pending": 0
+      }
+    }
+  },
+  "finalStressCallbacks": 442132,
+  "packages": {
+    "Doroti.Framework.Foundation.0.2.0-beta.nupkg": "9331ddbb3e13919df9e3ca6f4b7967d693d172cc1e0119ca2cd35a0163b27fe0",
+    "Doroti.Framework.Material.0.2.0-beta.nupkg": "9a469329365a012f9a6116454110efcc39775ab1e2b77ef789c7c3c275eddac6",
+    "Doroti.Host.Web.0.2.0-beta.nupkg": "d49776209716bcc112b58e4f53c11bd8826af3aff998f2e8bbb41ec394668702",
+    "Doroti.Runtime.0.2.0-beta.nupkg": "0906c002845ed9cd09facb417aeb2b249cac20b0a37c9aacc6aa34e861696ec9",
+    "Doroti.Target.Web.browser-wasm.0.2.0-beta.nupkg": "4dcb1ec5b9789a2ccddb584905c9d9beb6f575d2f5fcd9bb9c80912792eda835",
+    "Doroti.Ui.0.2.0-beta.nupkg": "8133325722e7fc096cf0bc89cc61093991c7572579b110285c33f23f1ffd1aa0"
+  },
+  "sourceFiles": {
+    "Doroti/src/Doroti.Runtime/DartAsync.cs": "25d55b7038fdf144ebff22b32729b4447291e8fa1adc6e7175f9d89ff6ee2611",
+    "Doroti/src/Doroti.Runtime/DartCollectionsAndConvert.cs": "00460583f9d2ba10ff05a2c7d65387e5a91011d7084db407bf1f464fca4ad7b2",
+    "Doroti/src/Doroti.Ui/PlatformDispatcher.cs": "161fd223e4b2316c01eb47740ecb8cc1fea436a680030a1ba0f011f064f24873",
+    "Doroti/src/Doroti.Framework.Foundation/print.cs": "94e03bd904dcae17a0621154f22483a425d3c556dddb7dd6e456ce3b6ea889f9",
+    "Doroti/src/Doroti.Framework.Material/color_scheme.cs": "7f5dbe742a34b5419b9d6b904530b52b4d836943b46b412a507a58b6a7e39022",
+    "Doroti/src/Doroti.Host.Web/BrowserTimeProvider.cs": "0f47db79a9f5c23b02344a2a91973648c0172ab3b05c08a1cffcbb6166717e32",
+    "Doroti/src/Doroti.Host.Web/Web/doroti.web.timers.ts": "44c01777f384e1707067455d96570b56694c2edf5ed7757da4c3101f37f71c46",
+    "Doroti/src/Doroti.Host.Web/Web/doroti.web.ts": "33594f68d77f2e10387424d64263b8cd682182433815ff8e574d54adfd7996fb",
+    "Doroti/src/Doroti.Host.Web/Web/doroti.raster.worker.ts": "35337c942ddb92ac92dd315ec34861727e34aa3020ed845ef2093db150dfe5f4",
+    "Doroti/src/Doroti.Target.Web.browser-wasm/DorotiWebWorkerRunner.cs": "d64a625855bb588022f79f5e7cd2937cf15052289e3ceb9fa1d63f04295a40f8",
+    "Doroti/src/Doroti.Target.Web.browser-wasm/Doroti.Target.Web.browser-wasm.csproj": "1d3d13083b2dc116c317aee2dbef4cb4a24e809259dbe77d71ff8a1e18cd949d",
+    "DorotiTestbedApp/web/DorotiTestbedApp.Web.csproj": "274361879f081655f789c893e131dca61b91f03941e99ae162894041457e9e2c",
+    "DorotiTestbedApp/web/Validation/TimerValidationExport.cs": "3336ca77f48e35a4aeca6d3f298c1754523997de4fb37706e4d2bac29921f519",
+    "Doroti/validation/runtime-async-contract/Program.cs": "c216c571ea64a38acc57d4d19f25273a913d1665426273a7e68758fbebd4f8df",
+    "Doroti/validation/web-playwright/tests/browser-timers.spec.ts": "6e11c5ac3cd64e738ccc84c3f799826db5fec95b1ed2d9f7b2f8cdc70c73e532",
+    "Doroti/validation/web-playwright/tests/threaded-runtime.spec.ts": "d7f816578b9bdb34a8728c5777c36ffc79f49f7f1e2dce0185af5e7df542e86f"
+  },
+  "logs": {
+    ".doroti\\browser-timers\\browser-initial.log": {
+      "sha256": "f6887906f1809c25548e817dd4590a06784d9f7668eb54054b52a5fe38117609",
+      "bytes": 852
+    },
+    ".doroti\\browser-timers\\build-1.log": {
+      "sha256": "f314ce2156424b131a4e571076593bd547247dd9d7e8525ef621d9e747341648",
+      "bytes": 3182
+    },
+    ".doroti\\browser-timers\\fcr7-final.log": {
+      "sha256": "836b7e09c32b7d97ca5937fe0f1adefaf364cecda9653c45b8c10eef5b6d2e0b",
+      "bytes": 1042
+    },
+    ".doroti\\browser-timers\\fcr7.log": {
+      "sha256": "836b7e09c32b7d97ca5937fe0f1adefaf364cecda9653c45b8c10eef5b6d2e0b",
+      "bytes": 1042
+    },
+    ".doroti\\browser-timers\\pack.log": {
+      "sha256": "5dccae451998f18940091184f4fcf3a9d0371a47f93f8527b143f8bd534d6527",
+      "bytes": 3076
+    },
+    ".doroti\\browser-timers\\product-editing.log": {
+      "sha256": "5c60a9bea819bd0abd94788741bcfdb0d370a2fb52dccea373c86b87c3053567",
+      "bytes": 985
+    },
+    ".doroti\\browser-timers\\product-regression.log": {
+      "sha256": "ac85ace2e4adab9207606fbad0bd61207afc3aed1722f86dcf2e9e154a7bab53",
+      "bytes": 982
+    },
+    ".doroti\\browser-timers\\publish-final-product.log": {
+      "sha256": "879fc13f5946814617e3b63dcd6c150cd1475728bb2d9be3a05a8c74ec603f8f",
+      "bytes": 9854
+    },
+    ".doroti\\browser-timers\\publish-product.log": {
+      "sha256": "222ed9ececd22462655246cd94633626b284b6d1a591adce9c6a2b6e3faca66d",
+      "bytes": 19406
+    },
+    ".doroti\\browser-timers\\publish-validation-1.log": {
+      "sha256": "3bf2f0f0724630c83bb20a0ea71e34f9fc5b86471566da4d4c34a9b151ba412f",
+      "bytes": 4447
+    },
+    ".doroti\\browser-timers\\publish-validation-2.log": {
+      "sha256": "7e2304bb05764d5cbbee06e335d4b3f67e80237a43450eb7e1515459801d946e",
+      "bytes": 19707
+    },
+    ".doroti\\browser-timers\\publish-validation-final.log": {
+      "sha256": "c9fabafcbdc82b6ccc1856642a5720f9054d442636beb4d3fd6f80c0d6a70ac6",
+      "bytes": 9857
+    },
+    ".doroti\\browser-timers\\runtime-contract-1.log": {
+      "sha256": "a66931b272c3e3197cb6d8d93abe87f95c83ec9cd3484f9d6b9b5aa633bb3b6c",
+      "bytes": 30
+    },
+    ".doroti\\browser-timers\\runtime-contract-2.log": {
+      "sha256": "a66931b272c3e3197cb6d8d93abe87f95c83ec9cd3484f9d6b9b5aa633bb3b6c",
+      "bytes": 30
+    },
+    ".doroti\\browser-timers\\runtime-contract-final.log": {
+      "sha256": "a66931b272c3e3197cb6d8d93abe87f95c83ec9cd3484f9d6b9b5aa633bb3b6c",
+      "bytes": 30
+    },
+    ".doroti\\browser-timers\\stress-webgl.log": {
+      "sha256": "04691b93242985be7a74b8028fccf015fc18a836052fc88067368f06529e0936",
+      "bytes": 388
+    },
+    ".doroti\\browser-timers\\stress-webgpu.log": {
+      "sha256": "f650e59795c80fdf24a0b996144e340f3e78df61ca9493ae8230a3f9d78f9077",
+      "bytes": 388
+    }
+  },
+  "productAssets": {
+    "_content\\Doroti.Host.Web\\doroti.loader.js": "cff2048b4da8e83446fb0fbfd2ae4915c9369b1d041ab360abee0eeedffc646f",
+    "_content\\Doroti.Host.Web\\doroti.raster.worker.js": "38dbeda9e3f7da6c0da2147db1a668d6e016719c4950933e0a62e674963e5e85",
+    "_content\\Doroti.Host.Web\\doroti.web.diagnostics.js": "f60d368a853e15488872bd11ebb9b9feb99de242371565c0f91ae691ac90316e",
+    "_content\\Doroti.Host.Web\\doroti.web.dom.js": "d1f3c3f0197616768c2d54a59cf84bef28fe54d8dab06ea1c8e47100f5cb590b",
+    "_content\\Doroti.Host.Web\\doroti.web.js": "903ae20e5c4e2566c1e4af6c2450a22b7d5bbc81ea6b92dd15cca12b0d8d9923",
+    "_content\\Doroti.Host.Web\\doroti.web.managed-worker.js": "81e8b34fe9d21837d768db2f314ca95c06a8862af09e9c27f6eadbd4c77b0d37",
+    "_content\\Doroti.Host.Web\\doroti.web.protocol.js": "c261988ab515952bc8260080feaeb3a2410903f896860178cfd732d43dbbf861",
+    "_content\\Doroti.Host.Web\\doroti.web.surface.js": "86b907a74718458a8e5e0c55953933ba3ec55ce2b7f8c0c91b1be1d290ab3624",
+    "_content\\Doroti.Host.Web\\doroti.web.timers.js": "67ccef8296da82dc5c4884c0be21a6c39a968609aa89126d67e9fa91fd9007ca",
+    "_content\\Doroti.Host.Web\\doroti.web.worker-host.js": "eeaa1ba141566d10b40dc69e75dd255d08847183e6024281a74e2876d6566dec",
+    "_content\\Doroti.Host.Web\\doroti.webgpu.js": "fef4b1e450e981c0815fdc771e697ac94ba41c3a5a02044b4d086499cad11eda"
+  },
+  "notVerified": [
+    "upstream .NET runtime timer queue repair",
+    "third-party direct System.Threading.Timer or default Task.Delay",
+    "other browsers and physical devices",
+    "long-duration soak",
+    "performance improvement"
+  ]
+}

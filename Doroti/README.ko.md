@@ -32,7 +32,7 @@ Widget 앱은 `new Doroti.Framework.DorotiWidgetEntrypoint(() => new MyApp())`�
 - `Doroti.Host.Web`: Worker 부팅, WebGL2 canvas, input, accessibility, resource bridge
 - `Doroti.Host.Qt`: managed-owned Linux process, Qt 6 `QOpenGLWindow`, versioned C ABI v2, GPU surface, input, IME, desktop service와 accessibility adapter
 
-Web 실행 source는 TypeScript가 소유합니다. 앱은 `web/src/**/*.ts`, Doroti는 `src/Doroti.Host.Web/Web/*.ts`를 편집합니다. `Microsoft.TypeScript.MSBuild` 7.0.0이 runner-local `obj`에 JavaScript를 만들며 publish에는 그 결과만 포함됩니다. 앱 도구로 Node, npm, Bun, bundler를 요구하지 않습니다. 기본 `worker-direct-webgl` backend는 visible canvas를 한 번 이전하고 .NET, Skia, WebGL2와 Worker rAF를 persistent Worker 하나에 둡니다. `auto` 기본값은 SkiaSharp WASM direct이며 별도 CanvasKit backend는 제거했습니다. 자세한 결정은 [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md)에 있습니다.
+Web 실행 source는 TypeScript가 소유합니다. 앱은 `web/src/**/*.ts`, Doroti는 `src/Doroti.Host.Web/Web/*.ts`를 편집합니다. `Microsoft.TypeScript.MSBuild` 7.0.0이 runner-local `obj`에 JavaScript를 만들며 publish에는 그 결과만 포함됩니다. 앱 도구로 Node, npm, Bun, bundler를 요구하지 않습니다. 기본 `worker-direct-webgpu`는 main에서 초기화한 단일 .NET runtime의 렌더 Worker에서 SkiaSharp Graphite/Dawn을 사용합니다. `worker-direct-webgl`을 명시하면 Ganesh/WebGL2를 사용합니다. 두 경로 모두 visible canvas를 한 번 이전합니다. `auto`와 미지원 값은 WebGPU를 선택하며 GPU 초기화 실패 시 자동 전환하지 않습니다. CanvasKit과 bitmap 표시 경로는 제거했습니다. 자세한 결정은 [ADR-020](docs/adr/ADR-020-web-typescript-bootstrap.md)에 있습니다.
 
 Material 앱은 `MaterialApp(theme:, darkTheme:, themeMode: ThemeMode.system)`으로 시스템 다크 모드를 따릅니다. `ColorScheme.CreateFromSeed`에 `Brightness.light`/`Brightness.dark`와 `surface`, `primary`, `outline` 같은 role override를 전달해 두 팔레트를 구성하고, widget은 `Theme.of(context).colorScheme`에서 현재 팔레트를 읽습니다. MAUI와 Web의 시스템 변경 전달 및 전체 예시는 [DorotiTestbedApp 다크 모드 문서](../DorotiTestbedApp/README.ko.md#시스템-다크-모드와-색-팔레트)를 참고하세요.
 
@@ -53,7 +53,7 @@ Linux runner는 Linux x64 호스트에서 Qt 6.5 이상 Core/Gui/Widgets/OpenGL,
 
 ## 명령
 
-Web은 SkiaSharp WASM을 사용하며 main 또는 Worker에서 초기화한 단일 runtime에 렌더 역할을 연결합니다. 지원 렌더러는 `worker-direct-webgl`과 `offscreen-worker`이며 앱은 `runtimeLocation`을 설정할 수 있습니다. Testbed/template은 같은 origin의 fallback font를 preload하고 import map의 `dotnet.js`로 runtime을 초기화합니다. Loader `started`는 runtime/GPU 준비이며 첫 content 표시를 뜻하지 않습니다.
+Web은 SkiaSharp WASM을 사용하며 main 또는 Worker에서 초기화한 단일 runtime에 렌더 역할을 연결합니다. 지원 렌더러는 `worker-direct-webgpu`(기본값)와 `worker-direct-webgl`이며 WebGPU는 `runtimeLocation: "main"`, WASM threads, COOP/COEP 격리와 hardware WebGPU adapter가 필요합니다. 명시적 WebGL은 독립 Worker runtime도 지원합니다. Testbed/template은 같은 origin의 fallback font를 preload하고 import map의 `dotnet.js`로 runtime을 초기화합니다. Loader `started`는 runtime/GPU 준비이며 첫 content 표시를 뜻하지 않습니다.
 
 Qt CMake target은 공용 Runner SDK가 configuration별 출력 경로로 관리합니다. CMake의 native dependency 검사는 유지합니다. TypeScript와 플랫폼 binding build의 기존 검증은 유지합니다.
 
@@ -88,7 +88,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 build -App ./DorotiTestbedApp -Platform windo
 
 Windows에서 `-Platform windows`는 Windows App SDK/`HwndExactCpp`를 선택하며, 독립 MAUI runner는 `-WindowsBackend Maui`로 선택합니다. `eng/`의 target-specific script는 서로 대체 가능한 제품 명령이 아니라 maintainer 진단 도구입니다. 계약과 evidence 경계는 [validation](validation/README.md)에, 과거 실행 결과는 repository root의 `history/`에 보존합니다.
 
-Windows App SDK 기본 presenter는 이제 `Vulkan`이며, ANGLE은 `DOROTI_WINDOWS_PRESENTER=AngleD3D11`로 선택합니다. GPU 선택 기본값은 시스템 기본 장치를 따르는 `NoPreference`입니다. `DOROTI_WINDOWS_GPU_PREFERENCE`를 `LowPowerPreference` 또는 `HighPerformancePreference`로 설정하면 Vulkan과 ANGLE에 Windows/DXGI 선호도를 적용합니다. Vulkan에서 장치를 직접 선택하려면 `DOROTI_WINDOWS_VULKAN_DEVICE`에 정확하거나 유일한 장치 이름 일부를 지정합니다. Windows 11 24H2 이상에서 앱은 실험 플래그 없이 `new WindowBackdropOptions(WindowBackdropMode.acrylic)`으로 아크릴을 요청할 수 있습니다. Backdrop 미지정과 `system`은 불투명 창을 유지하며 데모는 이미 Acrylic을 요청합니다. Vulkan은 System32 Vulkan 1.1, dedicated D3D11-texture external memory, Windows Presentation을 사용하며 자동 presenter fallback은 없습니다. Web은 `auto`를 포함해 `worker-direct-webgl`이 기본값이고 다른 렌더러도 명시적으로 선택할 수 있습니다. 이번 기본값 변경이 기존 검증 기록을 바꾸거나 남은 GPU/DPI/주사율/IME/접근성 검증을 완료한 것은 아닙니다.
+Windows App SDK 기본 presenter는 이제 `Vulkan`이며, ANGLE은 `DOROTI_WINDOWS_PRESENTER=AngleD3D11`로 선택합니다. GPU 선택 기본값은 시스템 기본 장치를 따르는 `NoPreference`입니다. `DOROTI_WINDOWS_GPU_PREFERENCE`를 `LowPowerPreference` 또는 `HighPerformancePreference`로 설정하면 Vulkan과 ANGLE에 Windows/DXGI 선호도를 적용합니다. Vulkan에서 장치를 직접 선택하려면 `DOROTI_WINDOWS_VULKAN_DEVICE`에 정확하거나 유일한 장치 이름 일부를 지정합니다. Windows 11 24H2 이상에서 앱은 실험 플래그 없이 `new WindowBackdropOptions(WindowBackdropMode.acrylic)`으로 아크릴을 요청할 수 있습니다. Backdrop 미지정과 `system`은 불투명 창을 유지하며 데모는 이미 Acrylic을 요청합니다. Vulkan은 System32 Vulkan 1.1, dedicated D3D11-texture external memory, Windows Presentation을 사용하며 자동 presenter fallback은 없습니다. Web은 `auto`를 포함해 `worker-direct-webgpu`가 기본값이고 `worker-direct-webgl`도 명시적으로 선택할 수 있습니다. 이번 기본값 변경이 기존 검증 기록을 바꾸거나 남은 GPU/DPI/주사율/IME/접근성 검증을 완료한 것은 아닙니다.
 
 Vulkan의 moving-origin resize는 준비된 frame을 HWND geometry 변경 직후 제출하고 CompositionFrame receipt를 기다립니다. 구현과 이전 실패, 관찰된 resize 개선, 검증 범위는 [9월 5일 기록](../history/26-09-05/windows-vulkan-acrylic-resize-summary.md)에 보존되어 있습니다. `experimentalAcrylic`은 기존 앱을 위한 호환 mode로 같은 Acrylic 구현을 사용합니다.
 

@@ -2,10 +2,11 @@ import { test, expect } from "./helpers/fixtures.js";
 import { captureDiagnostics, openDoroti } from "./helpers/doroti-diagnostics.js";
 
 test("Skia worker preserves sample mode across runtime replacement", async ({ page, runtimeErrors }) => {
-  test.skip(!["worker-direct-webgl", "offscreen-worker"].includes(process.env.DOROTI_WEB_RENDERER_MODE ?? ""),
+  test.skip(!["worker-direct-webgl", "worker-direct-webgpu"].includes(process.env.DOROTI_WEB_RENDERER_MODE ?? ""),
     "Skia worker bootstrap validation");
   await page.setViewportSize({ width: 800, height: 900 });
   const before = await openDoroti(page, "&dorotiTestbedMode=sample");
+  test.skip(before.presenter.mainManagedRuntimeCount === 1, "Shared runtime shutdown is covered in threaded-runtime.spec.ts.");
   const heading = page.getByRole("heading", { name: "Doroti Material 3", exact: true });
   await expect(heading).toBeAttached();
   await expect(page.getByRole("tab", { name: "Components", exact: true })).toHaveAttribute("aria-selected", "true");
@@ -26,9 +27,10 @@ test("Skia worker preserves sample mode across runtime replacement", async ({ pa
   expect(runtimeErrors).toEqual([]);
 });
 
-test("offscreen worker has single runtime ownership and one bounded crash recovery", async ({ page, runtimeErrors }) => {
+test("independent WebGL worker has single runtime ownership and one bounded crash recovery", async ({ page, runtimeErrors }) => {
   const before = await openDoroti(page);
-  test.skip(before.presenter.mode !== "offscreen-worker" && before.presenter.mode !== "worker-direct-webgl",
+  test.skip(before.presenter.mainManagedRuntimeCount === 1, "Shared runtime shutdown is covered in threaded-runtime.spec.ts.");
+  test.skip(before.presenter.mode !== "worker-direct-webgpu" && before.presenter.mode !== "worker-direct-webgl",
     "worker-only protocol validation");
   expect(before.presenter.mainManagedRuntimeCount).toBe(0);
   expect(before.presenter.workerManagedRuntimeCount).toBe(1);
@@ -64,9 +66,10 @@ test("offscreen worker has single runtime ownership and one bounded crash recove
   expect(runtimeErrors).toEqual([]);
 });
 
-test("protocol v2 rejects malformed envelopes and recovers once", async ({ page, runtimeErrors }) => {
+test("protocol v3 rejects malformed envelopes and recovers once", async ({ page, runtimeErrors }) => {
   const before = await openDoroti(page);
-  test.skip(before.presenter.mode !== "offscreen-worker" && before.presenter.mode !== "worker-direct-webgl",
+  test.skip(before.presenter.mainManagedRuntimeCount === 1, "Shared runtime shutdown is covered in threaded-runtime.spec.ts.");
+  test.skip(before.presenter.mode !== "worker-direct-webgpu" && before.presenter.mode !== "worker-direct-webgl",
     "worker-only protocol validation");
   const localValidation = await page.evaluate(async () => {
     const moduleUrl = "/_content/Doroti.Host.Web/doroti.web.protocol.js";
@@ -74,7 +77,7 @@ test("protocol v2 rejects malformed envelopes and recovers once", async ({ page,
     const allowed = new Set(["ready"]);
     const failures: string[] = [];
     for (const value of [null, {}, { protocolVersion: 1, kind: "ready" },
-      { protocolVersion: 2, kind: "unknown" }]) {
+      { protocolVersion: 3, kind: "unknown" }]) {
       try { protocol.decodeDorotiMessage(value, allowed); }
       catch (error) { failures.push(String(error)); }
     }

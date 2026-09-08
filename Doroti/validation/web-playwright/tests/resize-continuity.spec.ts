@@ -634,11 +634,6 @@ test("@headed Desktop Chrome live bounds expose only exact, unscaled fronts", as
   expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
   expect(bundle.presenter.queueDepth).toBe(0);
   expect(bundle.presenter.activeBitmaps).toBe(0);
-  if (bundle.presenter.mode === "offscreen-worker") {
-    expect(bundle.presenter.bitmapCreated).toBe(bundle.presenter.bitmapConsumed + bundle.presenter.bitmapClosed);
-    expect(report.workerMailbox.sent).toBeGreaterThan(0);
-    expect(report.workerMailbox.applied).toBeGreaterThan(0);
-  }
   assertPresenterContract(bundle);
 });
 
@@ -959,9 +954,5 @@ test("@headed Windows native edge resize keeps metrics independent from presenta
   expect(report.semanticsAfterFinalTarget).toBeGreaterThan(0);
   expect(bundle.presenter.frontGeneration).toBe(bundle.snapshot.resizeEpoch.generation);
   expect(bundle.presenter.activeBitmaps).toBe(0);
-  if (bundle.presenter.mode === "offscreen-worker") {
-    expect(report.workerAdvancedBeforePriorTerminal).toBe(true);
-    expect(bundle.presenter.bitmapCreated).toBe(bundle.presenter.bitmapConsumed + bundle.presenter.bitmapClosed);
-  }
   assertPresenterContract(bundle);
 });

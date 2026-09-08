@@ -218,7 +218,7 @@ export async function attachDiagnostics(
 }
 
 export function assertPresenterContract(bundle: DiagnosticBundle): void {
-  expect(bundle.snapshot.gpu.api).toBe("webgl2");
+  expect(bundle.snapshot.gpu.api).toBe(bundle.presenter.mode === "worker-direct-webgpu" ? "webgpu" : "webgl2");
   expect(bundle.snapshot.gpu.hardware).toBe(true);
   expect(bundle.snapshot.gpu.softwareFallbackUsed).toBe(false);
   expect(bundle.presenter.contextLost).toBe(false);
@@ -241,7 +241,7 @@ export function assertPresenterContract(bundle: DiagnosticBundle): void {
       `request ${requestId} terminal count; evidence=${JSON.stringify(evidence)}`).toBe(1);
   }
 
-  if (bundle.presenter.mode === "worker-direct-webgl") {
+  if (bundle.presenter.mode === "worker-direct-webgl" || bundle.presenter.mode === "worker-direct-webgpu") {
     let priorGeneration = 0;
     let priorRequestId = 0;
     for (const entry of bundle.trace.filter((candidate) =>
