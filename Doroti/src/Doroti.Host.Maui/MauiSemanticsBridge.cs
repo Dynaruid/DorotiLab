@@ -321,7 +321,10 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
         {
             NativeElementKind.TextField => new Entry { Opacity = 0 },
             NativeElementKind.Checkbox => new CheckBox { Opacity = 0 },
-            NativeElementKind.Radio => new RadioButton { Opacity = 0 },
+            // These are projections of framework-owned groups. MAUI otherwise
+            // groups every RadioButton in this flat layer together and unchecks
+            // siblings during an update, emitting spurious actions for them.
+            NativeElementKind.Radio => new RadioButton { Opacity = 0, GroupName = Guid.NewGuid().ToString("N") },
             NativeElementKind.Toggle => new Microsoft.Maui.Controls.Switch { Opacity = 0 },
             NativeElementKind.Slider => new Slider { Opacity = 0 },
             NativeElementKind.Button => new Button { Opacity = 0 },
@@ -360,7 +363,9 @@ internal sealed class MauiSemanticsBridge(AbsoluteLayout layer) : IMauiSemantics
         }
         else if (element is RadioButton radio)
         {
-            radio.CheckedChanged += (_, _) => PerformTap(state);
+            // Selecting a radio is an activation; deselection is a consequence
+            // of another selection and must never re-activate the old option.
+            radio.CheckedChanged += (_, args) => { if (args.Value) PerformTap(state); };
         }
         else if (element is Microsoft.Maui.Controls.Switch toggle)
         {
