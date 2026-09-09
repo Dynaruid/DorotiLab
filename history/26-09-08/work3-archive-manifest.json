@@ -1,0 +1,13 @@
+{
+  "archivedAt": "2026-09-09T20:32:16.1195538+09:00",
+  "reason": "User requested archival under history/26-09-08 and removal of root work3.md. Archival does not imply acceptance completion.",
+  "originalLinksBase": "repository root",
+  "files": [
+    {
+      "source": "work3.md",
+      "archive": "history/26-09-08/work3.original.md",
+      "bytes": 26806,
+      "sha256": "073E7954572959E689B9F447FCF91F2C04770BB9148153E1C17D3BFCE14079A7"
+    }
+  ]
+}

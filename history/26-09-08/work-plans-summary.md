@@ -10,7 +10,7 @@
 | [work.md 원본](work.original.md) | 구조 개편, 동일 작업 실행 비용 연구, HAMT + indexed 단일화, C2/C3/C4 실험의 최종 기록 |
 | [work2.md 원본](work2.original.md) | framework 병목 조사, 상태 범위·semantics·이미지·열 복귀 개선 기록 |
 | [보관 manifest](work-plans-archive-manifest.json) | 삭제 전 원본의 byte 길이·SHA-256·보관 경로 |
-| [후속 구성 계획](../../work3.md) | WASM 의존성 기반 병렬 계산 계획 및 threads 부팅 선행 과제 |
+| [후속 작업 보관](work3-summary.md) | work3의 SkiaSharp·WebGPU 전환과 병렬 계산 실험·제거 기록 |
 
 원본은 byte 단위로 보존했다. **원본 안의 상대 경로는 작성 당시 저장소 루트
 기준**이므로 보관 디렉터리 기준으로 해석하지 않는다. 아래 요약의 링크는
