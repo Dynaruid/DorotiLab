@@ -4,9 +4,9 @@
   "packageVersion": "0.2.0-beta",
   "rid": "linux-x64",
   "host": "qt6-c-abi",
-  "graphicsBackend": "qt-rhi-skia-surface",
+  "graphicsBackend": "qt6/QOpenGLWindow/Ganesh-OpenGL-Skia",
   "processOwner": "managed",
-  "nativeAbi": "doroti.qt-host/v1",
+  "nativeAbi": "doroti.qt-host/v2",
   "requiredCapabilities": [
     "window.lifecycle",
     "view.lifecycle-metrics",

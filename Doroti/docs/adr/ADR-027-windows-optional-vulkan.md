@@ -2,9 +2,15 @@
 
 - Status: Experimental
 - Date: 2026-09-02
-- Last updated: 2026-09-04
+- Last updated: 2026-09-09
 
-## Decision
+## Current decision (2026-09-09)
+
+The runner now defaults to `Vulkan` (Ganesh Skia); `AngleD3D11` is an explicit comparison/recovery selection. Acrylic uses `WindowBackdropMode.acrylic`. Vulkan retains the Windows Presentation/DirectComposition boundary, with no automatic presenter fallback. Central SkiaSharp packages are `4.154.0-preview.1.26454.9`. Native Graphite migration is **PARTIAL**, with the pinned native interop probe described in [the NG0/NG1 execution report](../validation/native-graphite-2026-09-09.md). No Graphite product promotion is implied by that probe.
+
+The original decision and its historical qualification evidence below are preserved as dated records; references to the ANGLE default, experimental Acrylic option, or earlier package versions describe that earlier state.
+
+## Original decision (2026-09-02)
 
 The Windows App SDK `HwndExactCpp` target keeps managed hardware-D3D11 ANGLE/EGL as its default presenter. `DOROTI_WINDOWS_PRESENTER=Vulkan` explicitly selects a separate direct Vulkan/Skia presenter; there is no automatic Vulkan-to-ANGLE fallback. On Windows 11 24H2+, an explicit Vulkan selection may be combined with `WindowBackdropMode.experimentalAcrylic`. That combination preserves the Vulkan presenter and fails explicitly if its Desktop Acrylic target cannot attach; it never substitutes the ANGLE ContentIsland presenter.
 

@@ -3,11 +3,11 @@
 작성·정리: 2026-09-08.
 
 **Web 렌더러 정리:** 후속 사용자 요청으로 별도 CanvasKit backend를 제거했다.
-웹은 SkiaSharp WASM을 사용하며 기본값은 `worker-direct-webgl`이다. CanvasKit의
+웹은 SkiaSharp WASM을 사용하며 현재 기본값은 `worker-direct-webgpu`이다. CanvasKit의
 UI/Raster Worker·C# 어댑터·npm 자산·배포 요구와 전용 검증을 제거했다.
 6.2에서 추가한 WebGPU 선언 호환 진입점도 더 이상 필요하지 않아 제거했으며,
 전체 선언 검사는 계속 활성화한다. 추가 요청으로 `document-webgl`과
-`offscreen-bitmap`도 제거해 지원 모드는 `worker-direct-webgl`과 `offscreen-worker`만
+`offscreen-bitmap`도 제거해 지원 모드는 `worker-direct-webgpu`와 `worker-direct-webgl`만
 남겼다. 기존 모드의 결과는 history에 보존한다.
 
 **현재 범위:** 사용자가 병렬 레이아웃을 실행한 뒤 이득이 작다고 판단하여

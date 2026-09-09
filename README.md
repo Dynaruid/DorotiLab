@@ -24,8 +24,8 @@ See [ADR-019](Doroti/docs/adr/ADR-019-product-framework-source-ownership.md), [A
 - Shared Material/Cupertino widget, element, layout, paint, semantics, and state infrastructure
 - A platform-neutral C# application library plus fixed-target runners; `macos` selects native AppKit and `maccatalyst` selects UIKit Mac Catalyst
 - One public target-neutral `Program` startup, host-owned native initialization, and runner-local generated bootstrap code
-- Windows defaults to a self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host with managed hardware-D3D11 ANGLE/EGL and Skia; Windows MAUI remains an explicit independent backend
-- Strict Skia GPU rendering through WebGL2 on the Web
+- Windows defaults to a self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host with managed Vulkan/Ganesh Skia and Windows Presentation; Windows MAUI remains an explicit independent backend
+- Web defaults to Graphite/Dawn WebGPU, with explicit WebGL2 support
 - Automated fixed-runner builds include native AppKit macOS/osx-arm64 and the independently retained Mac Catalyst product
 - Linux x64 uses a Qt 6 `QOpenGLWindow`, a versioned C ABI v2, and direct Skia rendering into the Qt framebuffer
 - Package-only template creation includes both Apple desktop runners and their native bindings (twelve projects total)
@@ -42,8 +42,8 @@ product-owned Doroti.Framework.* source
                  │
                  ▼
         target host + GPU surface
-  Windows App SDK/ANGLE · Windows MAUI · AppKit · Mac Catalyst
-                 WebGL2 · Linux Qt/Skia GL
+  Windows App SDK/Vulkan · Windows MAUI · AppKit · Mac Catalyst
+             WebGPU / WebGL2 · Linux Qt/Skia GL
 ```
 
 Flutter source is consulted when fidelity work needs a behavioral reference. Compiler output is an isolated candidate, not the product source of truth.
@@ -60,7 +60,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
 
 The Windows command selects Windows App SDK/`HwndExactCpp` by default. Use `-WindowsBackend Maui` only when the independent Windows MAUI runner is intended.
 
-Windows App SDK now defaults to `Vulkan`; select `DOROTI_WINDOWS_PRESENTER=AngleD3D11` to use ANGLE explicitly. GPU selection defaults to `NoPreference` (system default). Set `DOROTI_WINDOWS_GPU_PREFERENCE` to `LowPowerPreference` or `HighPerformancePreference` for a Windows/DXGI preference; this applies to Vulkan and ANGLE. `DOROTI_WINDOWS_VULKAN_DEVICE` optionally overrides the Vulkan choice with an exact or unique device-name fragment. On Windows 11 24H2+, an app can request `new WindowBackdropOptions(WindowBackdropMode.acrylic)` without an experimental flag; omitted backdrop options and `system` remain opaque. The demo already requests Acrylic. Vulkan uses System32 Vulkan 1.1, dedicated D3D11-texture external memory, and Windows Presentation, with no automatic presenter fallback. Web defaults to `worker-direct-webgl`, including `auto`; other renderers remain explicitly selectable. These defaults do not change the recorded validation results or complete the remaining GPU/DPI/refresh/IME/accessibility qualification.
+Windows App SDK now defaults to `Vulkan`; select `DOROTI_WINDOWS_PRESENTER=AngleD3D11` to use ANGLE explicitly. GPU selection defaults to `NoPreference` (system default). Set `DOROTI_WINDOWS_GPU_PREFERENCE` to `LowPowerPreference` or `HighPerformancePreference` for a Windows/DXGI preference; this applies to Vulkan and ANGLE. `DOROTI_WINDOWS_VULKAN_DEVICE` optionally overrides the Vulkan choice with an exact or unique device-name fragment. On Windows 11 24H2+, an app can request `new WindowBackdropOptions(WindowBackdropMode.acrylic)` without an experimental flag; omitted backdrop options and `system` remain opaque. The demo already requests Acrylic. Vulkan uses System32 Vulkan 1.1, dedicated D3D11-texture external memory, and Windows Presentation, with no automatic presenter fallback. Web defaults to `worker-direct-webgpu` (Graphite/Dawn), including `auto`; `worker-direct-webgl` remains explicitly selectable. Native Graphite migration is still in NG0/NG1 qualification; see [the execution report](Doroti/docs/validation/native-graphite-2026-09-09.md). These defaults do not change the recorded validation results or complete the remaining GPU/DPI/refresh/IME/accessibility qualification.
 `-LastSuccessful` (or `-NoBuild`) requires a v3 success record matching the runner, configuration, RID, source/native inputs, restored dependency contents, toolchain, and output hashes. Ordinary build/run restores before collecting dependency identities and rebuilds when dependencies/toolchains changed or were not previously tracked. Old records require a normal build/run first. `-NoRestore` skips restore without skipping dependency verification or the build.
 
 ## Repository layout

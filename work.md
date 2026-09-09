@@ -1,6 +1,18 @@
 # 네이티브 Graphite Vulkan·Metal 전환 작업계획
 
-작성일: 2026-09-09. 상태: **검토·계획 작성 완료 / 구현·실행 검증 미착수**.
+작성일: 2026-09-09. 상태: **전체 전환 PARTIAL — NG0·NG1 Windows 진단/동일 Skia native bridge 구현·실행, NG7 현재 문서 일부 정리. 제품 host 전환 미완료**.
+
+## 0. 후속 구현 실행 현황 (2026-09-09)
+
+이번 `work.md의 전체작업` 요청으로 구현을 시작했다. 아래 최초 계획의 단계와 수용 기준을 유지한다. [상세 실행 보고서](Doroti/docs/validation/native-graphite-2026-09-09.md)와 [버전 관리되는 결과·hash·첫 실패](history/26-09-09/native-graphite-execution.json)에 근거를 남겼다.
+
+- **NG0 PARTIAL:** baseline commit/diff, OS/GPU/driver, target manifest, 고정 NuGet의 native asset inventory/hash, 실제 probe 로딩 경로, budget·in-flight 한도를 기록했다. 현재 Vulkan/D3D11 capability는 RTX 4060 Laptop·Radeon 780M 모두 PASS다. 실제 앱 장면/성능/메모리/물리 기준선과 최종 지원 정책은 미완료다.
+- **NG1 PARTIAL:** 기존 검증 프로젝트에 Graphite probe를 구현했다. context/recorder, color/text/gradient/offscreen draw, raster upload, 비동기 readback과 정상 종료를 실행했다. 고정 Skia 안에 texture state 조회/갱신·wait/signal semaphore·GPU 작업 polling C ABI를 통합하고 win-x64 DLL을 재빌드했다. 두 GPU에서 각각 36프레임의 외부 texture → Vulkan copy → 동일 wrapper 재사용이 PASS, synchronization validation 경고/오류 0이다. 원본/재빌드의 작은 offscreen 장면 hash도 일치한다. 텍스트/gradient 시각 승인, 출력 자원 반환, device loss/미완료 작업 종료, Metal, feature/extension 전달 및 RID 패키징은 아직 미검증/미구현이다.
+- **NG2–NG6 미완료:** NG1 전체 gate가 열려 있어 제품 session/host 교체와 기본값 승격은 수행하지 않았다. Apple 실행 환경 및 연결된 Android 장치도 확보되지 않았다. Windows MAUI·Catalyst 유지 범위를 축소하거나 이전 제품 경로를 삭제하지 않았다.
+- **NG7 PARTIAL:** README 양 언어판·ADR의 현재 기본값, `work3.md`, Linux target의 실제 v2 ABI/GL backend 표기를 정리했다. 제품 승격·dependency 제거·clean publish는 미완료다.
+- FCR-7 Material/widget 계약과 Linux Qt ABI/keyboard/clipboard 계약 PASS. 각 검증에 외부 20분 timeout을 적용했다. Web browser·실기기·physical scan-out·성능 개선은 `notVerified`다.
+
+실행/복구 명령은 [native bridge README](Doroti/native/graphite/README.md)에 있다. 시험 DLL은 별도 probe 프로세스에만 명시적으로 로드하며 NuGet cache나 제품 산출물을 교체하지 않는다. 아래 `[ ]`는 부분 증거만으로 체크하지 않은 **전체 완료 조건**이다.
 
 ## 1. 목표와 검토 결론
 
@@ -18,7 +30,7 @@
 
 Windows의 `Graphite → Vulkan`은 **Skia의 GPU 렌더링 API**를 뜻한다. 현재 제품의 D3D11 공유 texture 및 Windows Presentation/DirectComposition을 통한 최종 합성은 재사용한다. D3D 계열 출력 연동까지 제거하고 Win32 Vulkan WSI로 바꾸는 것은 이번 계획의 목표가 아니다.
 
-이번 요청의 산출물은 이 계획이다. 제품 코드·패키지·기본값은 이번 작성 작업에서 변경하지 않는다. 루트에 기존 `work.md`가 없어 새로 작성하며, `work3.md`와 `history/`의 과거 실행·실패 기록은 보존한다. 후속 구현 요청은 아래 단계의 범위를 따른다.
+최초 검토·작성 요청의 산출물은 이 계획이었으며 당시 제품 코드·패키지·기본값을 변경하지 않았다. 후속 전체 구현 요청의 진행은 0절에 기록한다. `work3.md`와 `history/`의 과거 실행·실패 기록은 보존하며 구현은 아래 단계의 범위를 따른다.
 
 ## 2. 현재 코드 기준선
 
@@ -104,7 +116,7 @@ Windows의 `Graphite → Vulkan`은 **Skia의 GPU 렌더링 API**를 뜻한다. 
 
 ## 5. 실행 단계
 
-상태 표기: `TODO` 미착수, `PASS` 해당 증거 범위 통과, `PARTIAL` 구현/일부 검증 완료, `BLOCKED` 선행 기술 조건 미충족, `notVerified` 실행 환경·측정 증거 없음. 아래 구현 단계는 모두 TODO다.
+상태 표기: `TODO` 미착수, `PASS` 해당 증거 범위 통과, `PARTIAL` 구현/일부 검증 완료, `BLOCKED` 선행 기술 조건 미충족, `notVerified` 실행 환경·측정 증거 없음. 현재 단계 상태는 0절 및 실행 보고서를 따르며, 아래 checkbox는 각 항목의 전체 완료 여부다.
 
 ### NG0 — 재현 가능한 기준선과 지원 표 확정
 
@@ -198,9 +210,9 @@ Windows의 `Graphite → Vulkan`은 **Skia의 GPU 렌더링 API**를 뜻한다. 
 
 | 검증 축 | 필요한 증거 | 현재 상태 |
 | --- | --- | --- |
-| 패키지/API | RID별 native backend 포함·ABI·loader·실제 context 생성 | 소스 API 존재만 확인, 실행 notVerified |
-| GPU interop | Vulkan validation/Metal validation, texture 상태·제출 순서·자원 반환 | notVerified |
-| 공통 기능 | FCR-7 Material, retained rendering, image pipeline, RuntimeEffects, paragraph/text·clip·alpha·blur | notVerified |
+| 패키지/API | RID별 native backend 포함·ABI·loader·실제 context 생성 | Windows stock/bridge probe context PASS; 전체 RID 패키징 notVerified |
+| GPU interop | Vulkan validation/Metal validation, texture 상태·제출 순서·자원 반환 | Windows 두 GPU external-copy/synchronization validation PASS; platform present/Metal notVerified |
+| 공통 기능 | FCR-7 Material, retained rendering, image pipeline, RuntimeEffects, paragraph/text·clip·alpha·blur | 기존 FCR-7 계약 PASS; native Graphite 제품 연결 notVerified |
 | 프레임 계약 | generation·DPR·resize·replay/superseded·중복 terminal 없음·bounded queue | notVerified |
 | native lifecycle | 장치/표면 재생성, 시작/종료, background, 최소화/복귀, 다중 view | notVerified |
 | 플랫폼 기능 | Windows Acrylic/UIA, Linux Wayland/X11/Orca, Apple VoiceOver, Android TalkBack·IME | notVerified |
@@ -227,4 +239,4 @@ Windows의 `Graphite → Vulkan`은 **Skia의 GPU 렌더링 API**를 뜻한다. 
 - [ ] Web 기존 경로 회귀가 없고 Framework 작업 대상·동작 의미가 유지된다.
 - [ ] 이전 제품 경로 정리와 README/ADR/manifest/템플릿 동기화가 끝났으며 과거 실패 증거가 보존된다.
 
-현재 완료된 것은 **소스·고정 upstream API 검토와 작업계획 작성**이다. Graphite native backend 실제 가용성, native 출력, build/publish, 성능 및 실기기 검증은 수행하지 않았다.
+현재 완료 증거는 **소스·고정 API 검토, Windows Graphite probe와 동일 Skia native bridge 빌드, 두 GPU의 제한된 offscreen/외부 copy 검증, 기존 FCR-7·Qt 계약 및 현재 문서 정리**다. NG1 전체 수명·배포 gate와 NG2–NG6 제품 전환은 미완료이며, native 화면 출력·publish·성능·실기기 검증은 `notVerified`다. 전체 전환 완료로 기록하지 않는다.

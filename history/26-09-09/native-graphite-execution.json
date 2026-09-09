@@ -1,0 +1,1767 @@
+{
+  "schema": "doroti.native-graphite-execution/v1",
+  "utc": "2026-09-09T09:59:19.148551+00:00",
+  "status": "PARTIAL",
+  "baselineCommit": "a92e687e1444258fb265eb92f8aea43de052f238",
+  "productMigration": "notImplemented",
+  "performance": "notVerified",
+  "physicalScanOut": "notVerified",
+  "sourceBuild": {
+    "schema": "doroti.graphite-native-build/v1",
+    "rid": "win-x64",
+    "skiaRevision": "cc43af052d3d98e605bee4ddc98671dafded1c57",
+    "skiaSharpRevision": "143a933a753dbfeca1909524b2c06c546c5c3e20",
+    "bridgeAbi": 1,
+    "productQualified": false,
+    "files": [
+      {
+        "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\native-graphite\\skia-build\\out\\doroti-win-x64\\libSkiaSharp.dll",
+        "sha256": "24bcb823503c3d924f780652a71a4e26546fa4f942a1e073518530e646ba6f04"
+      },
+      {
+        "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\native\\graphite\\doroti_graphite_interop.inc",
+        "sha256": "6727c25aee1b11ad8b9770b7ebe3de2877d2bf9b8bfc48f7c906e9040f5c31a8"
+      },
+      {
+        "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\native-graphite\\skia-build\\out\\doroti-win-x64\\args.gn",
+        "sha256": "75ea65a5c491ace7497aed8ff29be11a1e618c70b3d34d5669d25cf697f62440"
+      },
+      {
+        "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\native-graphite\\skia-build\\DEPS",
+        "sha256": "b6d641a6ab6cbb097796a824fc8151549c2b40b8e4aa5433f4a3f5af206f5a90"
+      },
+      {
+        "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\native-graphite\\skia-build\\bin\\gn.exe",
+        "sha256": "cf28c1ea5c5c6c2ec1c2e4e12b360f276595ceea8de6a35368dfd1f9b39b527d"
+      }
+    ]
+  },
+  "devices": [
+    {
+      "bridge": {
+        "schema": "doroti.native-graphite-probe/v1",
+        "utc": "2026-09-09T09:54:21.0125619+00:00",
+        "status": "PARTIAL",
+        "externalTextureRoundTrip": "PASS",
+        "platformPresent": "notVerified",
+        "physicalScanOut": "notVerified",
+        "performance": "notVerified",
+        "contextBudgetBytes": 268435456,
+        "recorderBudgetBytes": 67108864,
+        "requestedNativeAsset": {
+          "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\native-graphite\\skia-build\\out\\doroti-win-x64\\libSkiaSharp.dll",
+          "bytes": 13605888,
+          "sha256": "24bcb823503c3d924f780652a71a4e26546fa4f942a1e073518530e646ba6f04"
+        },
+        "managedAsset": {
+          "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\windows-vulkan-capability\\bin\\Release\\net10.0-windows10.0.19041.0\\win-x64\\SkiaSharp.dll",
+          "bytes": 561464,
+          "sha256": "702657b10552a9aa75dd65ca63fac752e0bb795a9cab3fb169ff52cb2ecee7b9"
+        },
+        "assemblyVersion": "4.154.0+release-4.154.0-preview.1.143a933a753dbfeca1909524b2c06c546c5c3e20.143a933a753dbfeca1909524b2c06c546c5c3e20",
+        "backends": {
+          "Dawn": false,
+          "Metal": false,
+          "Vulkan": true
+        },
+        "loadedNativeAsset": {
+          "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\native-graphite\\skia-build\\out\\doroti-win-x64\\libSkiaSharp.dll",
+          "bytes": 13605888,
+          "sha256": "24bcb823503c3d924f780652a71a4e26546fa4f942a1e073518530e646ba6f04"
+        },
+        "publicInteropContract": {
+          "backendContext": [
+            "VkInstance",
+            "VkPhysicalDevice",
+            "VkDevice",
+            "VkQueue",
+            "GraphicsQueueIndex",
+            "MaxApiVersion",
+            "ProtectedContext",
+            "GetProcedureAddress"
+          ],
+          "backendTexture": [
+            "Boolean get_IsValid()",
+            "SkiaSharp.SKGraphiteBackend get_Backend()",
+            "SkiaSharp.SKSizeI get_Dimensions()"
+          ],
+          "insertRecording": [
+            "Recording",
+            "TargetSurface",
+            "TargetTranslationX",
+            "TargetTranslationY",
+            "TargetClip"
+          ],
+          "submit": [
+            "Sync",
+            "MarkBoundary",
+            "FrameID"
+          ]
+        },
+        "loader": {
+          "path": "C:\\WINDOWS\\system32\\vulkan-1.dll",
+          "bytes": 1740728,
+          "sha256": "0419974f00e82a3d619077ba414da265a774f8db9d45ad93bc1843f44b2c2c1f"
+        },
+        "validationEnabled": true,
+        "synchronizationValidationEnabled": true,
+        "device": {
+          "Name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+          "VendorId": 4318,
+          "DeviceId": 10464,
+          "DriverVersion": 2559541248,
+          "apiVersion": "1.4.341",
+          "Luid": "703F010000000000",
+          "QueueFamily": 0
+        },
+        "enabledDeviceFeatures": [],
+        "enabledDeviceExtensions": [],
+        "lastOperation": "dispose-context",
+        "contextCreated": true,
+        "actualBackend": "Vulkan",
+        "offscreenFrames": [
+          {
+            "generation": 1,
+            "size": 64,
+            "readbackMilliseconds": 2.842,
+            "pixelCheck": "PASS",
+            "rgbaSha256": "1c58325167d982f37936ee596413e963a4fe178bb4615db8ce4728f96c2e2d6d"
+          },
+          {
+            "generation": 2,
+            "size": 128,
+            "readbackMilliseconds": 3.0489,
+            "pixelCheck": "PASS",
+            "rgbaSha256": "fcbc659f4d617ec2f24f13a70a53898d4f994ef17c3308c123b20ed53ee13707"
+          },
+          {
+            "generation": 3,
+            "size": 192,
+            "readbackMilliseconds": 3.1715,
+            "pixelCheck": "PASS",
+            "rgbaSha256": "b00d90f80fae9364e91324d71ffc269141939c941a6dfd8a70c8bc96b015989c"
+          }
+        ],
+        "offscreenReadback": "PASS",
+        "bridgeAbi": 1,
+        "externalTextureFrames": [
+          {
+            "size": 64,
+            "frames": 12,
+            "persistentWrapper": true,
+            "wrapperRecreationsPerFrame": 0,
+            "actualLayouts": [
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal"
+            ],
+            "returnLayout": "General",
+            "pixelCheck": "PASS",
+            "waitSignalSemaphores": "PASS",
+            "gpuCompletion": "PASS",
+            "maximumInFlight": 1
+          },
+          {
+            "size": 128,
+            "frames": 12,
+            "persistentWrapper": true,
+            "wrapperRecreationsPerFrame": 0,
+            "actualLayouts": [
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal"
+            ],
+            "returnLayout": "General",
+            "pixelCheck": "PASS",
+            "waitSignalSemaphores": "PASS",
+            "gpuCompletion": "PASS",
+            "maximumInFlight": 1
+          },
+          {
+            "size": 96,
+            "frames": 12,
+            "persistentWrapper": true,
+            "wrapperRecreationsPerFrame": 0,
+            "actualLayouts": [
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal"
+            ],
+            "returnLayout": "General",
+            "pixelCheck": "PASS",
+            "waitSignalSemaphores": "PASS",
+            "gpuCompletion": "PASS",
+            "maximumInFlight": 1
+          }
+        ],
+        "normalTeardown": "PASS",
+        "blocker": "Diagnostic external texture roundtrip passed; device recreation/loss, platform present, enabled-feature binding and RID packaging remain unqualified.",
+        "validationWarnings": 0,
+        "validationErrors": 0,
+        "validationMessages": []
+      },
+      "stock": {
+        "schema": "doroti.native-graphite-probe/v1",
+        "utc": "2026-09-09T09:57:01.7279263+00:00",
+        "status": "PARTIAL",
+        "externalTextureRoundTrip": "notVerified",
+        "platformPresent": "notVerified",
+        "physicalScanOut": "notVerified",
+        "performance": "notVerified",
+        "contextBudgetBytes": 268435456,
+        "recorderBudgetBytes": 67108864,
+        "managedAsset": {
+          "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\windows-vulkan-capability\\bin\\Release\\net10.0-windows10.0.19041.0\\win-x64\\SkiaSharp.dll",
+          "bytes": 561464,
+          "sha256": "702657b10552a9aa75dd65ca63fac752e0bb795a9cab3fb169ff52cb2ecee7b9"
+        },
+        "assemblyVersion": "4.154.0+release-4.154.0-preview.1.143a933a753dbfeca1909524b2c06c546c5c3e20.143a933a753dbfeca1909524b2c06c546c5c3e20",
+        "backends": {
+          "Dawn": false,
+          "Metal": false,
+          "Vulkan": true
+        },
+        "loadedNativeAsset": {
+          "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\windows-vulkan-capability\\bin\\Release\\net10.0-windows10.0.19041.0\\win-x64\\libSkiaSharp.DLL",
+          "bytes": 13456696,
+          "sha256": "07ce51fd59e099b9561b0327223c27b21aa5605b5b8f4484dd297fdb8c8725a1"
+        },
+        "publicInteropContract": {
+          "backendContext": [
+            "VkInstance",
+            "VkPhysicalDevice",
+            "VkDevice",
+            "VkQueue",
+            "GraphicsQueueIndex",
+            "MaxApiVersion",
+            "ProtectedContext",
+            "GetProcedureAddress"
+          ],
+          "backendTexture": [
+            "Boolean get_IsValid()",
+            "SkiaSharp.SKGraphiteBackend get_Backend()",
+            "SkiaSharp.SKSizeI get_Dimensions()"
+          ],
+          "insertRecording": [
+            "Recording",
+            "TargetSurface",
+            "TargetTranslationX",
+            "TargetTranslationY",
+            "TargetClip"
+          ],
+          "submit": [
+            "Sync",
+            "MarkBoundary",
+            "FrameID"
+          ]
+        },
+        "loader": {
+          "path": "C:\\WINDOWS\\system32\\vulkan-1.dll",
+          "bytes": 1740728,
+          "sha256": "0419974f00e82a3d619077ba414da265a774f8db9d45ad93bc1843f44b2c2c1f"
+        },
+        "validationEnabled": true,
+        "synchronizationValidationEnabled": true,
+        "device": {
+          "Name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+          "VendorId": 4318,
+          "DeviceId": 10464,
+          "DriverVersion": 2559541248,
+          "apiVersion": "1.4.341",
+          "Luid": "703F010000000000",
+          "QueueFamily": 0
+        },
+        "enabledDeviceFeatures": [],
+        "enabledDeviceExtensions": [],
+        "lastOperation": "dispose-context",
+        "contextCreated": true,
+        "actualBackend": "Vulkan",
+        "offscreenFrames": [
+          {
+            "generation": 1,
+            "size": 64,
+            "readbackMilliseconds": 2.8315,
+            "pixelCheck": "PASS",
+            "rgbaSha256": "1c58325167d982f37936ee596413e963a4fe178bb4615db8ce4728f96c2e2d6d"
+          },
+          {
+            "generation": 2,
+            "size": 128,
+            "readbackMilliseconds": 3.0837,
+            "pixelCheck": "PASS",
+            "rgbaSha256": "fcbc659f4d617ec2f24f13a70a53898d4f994ef17c3308c123b20ed53ee13707"
+          },
+          {
+            "generation": 3,
+            "size": 192,
+            "readbackMilliseconds": 2.5359,
+            "pixelCheck": "PASS",
+            "rgbaSha256": "b00d90f80fae9364e91324d71ffc269141939c941a6dfd8a70c8bc96b015989c"
+          }
+        ],
+        "offscreenReadback": "PASS",
+        "bridgeAbi": "notAvailable",
+        "normalTeardown": "PASS",
+        "blocker": "NG1 external texture state/queue synchronization requires a same-build native bridge; offscreen success does not qualify NG3/NG5/NG6.",
+        "validationWarnings": 0,
+        "validationErrors": 0,
+        "validationMessages": []
+      },
+      "stockVsBridgeOffscreenHashesEqual": true,
+      "vulkanD3D11Capability": {
+        "SchemaVersion": "doroti.windows.vulkan-capability/v3",
+        "Status": "PASS",
+        "Failure": null,
+        "Loader": {
+          "path": "C:\\WINDOWS\\system32\\vulkan-1.dll",
+          "Machine": "Amd64",
+          "Length": 1740728,
+          "Sha256": "0419974f00e82a3d619077ba414da265a774f8db9d45ad93bc1843f44b2c2c1f"
+        },
+        "LoaderApiVersion": "1.4.350",
+        "Packages": {
+          "vulkan": "2.23.0.0",
+          "khr": "2.23.0.0",
+          "requestedVersion": "2.23.0"
+        },
+        "Instance": {
+          "requiredExtensions": [],
+          "validationLayerAvailable": true,
+          "validationEnabled": true,
+          "validationWarnings": 0,
+          "validationErrors": 0,
+          "validationMessages": []
+        },
+        "Device": {
+          "Name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+          "type": "DiscreteGpu",
+          "vendorId": "0x10de",
+          "deviceId": "0x28e0",
+          "DriverVersion": 2559541248,
+          "apiVersion": "1.4.341",
+          "QueueFamily": 0,
+          "Luid": "703F010000000000",
+          "luidValid": true,
+          "requiredExtensions": [
+            "VK_KHR_external_memory",
+            "VK_KHR_external_memory_win32",
+            "VK_KHR_get_memory_requirements2",
+            "VK_KHR_dedicated_allocation"
+          ],
+          "extensions": [
+            "VK_AMD_buffer_marker",
+            "VK_EXT_4444_formats",
+            "VK_EXT_attachment_feedback_loop_dynamic_state",
+            "VK_EXT_attachment_feedback_loop_layout",
+            "VK_EXT_blend_operation_advanced",
+            "VK_EXT_border_color_swizzle",
+            "VK_EXT_buffer_device_address",
+            "VK_EXT_calibrated_timestamps",
+            "VK_EXT_color_write_enable",
+            "VK_EXT_conditional_rendering",
+            "VK_EXT_conservative_rasterization",
+            "VK_EXT_custom_border_color",
+            "VK_EXT_custom_resolve",
+            "VK_EXT_depth_bias_control",
+            "VK_EXT_depth_clamp_control",
+            "VK_EXT_depth_clamp_zero_one",
+            "VK_EXT_depth_clip_control",
+            "VK_EXT_depth_clip_enable",
+            "VK_EXT_depth_range_unrestricted",
+            "VK_EXT_descriptor_buffer",
+            "VK_EXT_descriptor_heap",
+            "VK_EXT_descriptor_indexing",
+            "VK_EXT_device_address_binding_report",
+            "VK_EXT_device_fault",
+            "VK_EXT_device_generated_commands",
+            "VK_EXT_discard_rectangles",
+            "VK_EXT_dynamic_rendering_unused_attachments",
+            "VK_EXT_extended_dynamic_state",
+            "VK_EXT_extended_dynamic_state2",
+            "VK_EXT_extended_dynamic_state3",
+            "VK_EXT_external_memory_host",
+            "VK_EXT_fragment_shader_interlock",
+            "VK_EXT_full_screen_exclusive",
+            "VK_EXT_global_priority",
+            "VK_EXT_global_priority_query",
+            "VK_EXT_graphics_pipeline_library",
+            "VK_EXT_hdr_metadata",
+            "VK_EXT_host_image_copy",
+            "VK_EXT_host_query_reset",
+            "VK_EXT_image_2d_view_of_3d",
+            "VK_EXT_image_robustness",
+            "VK_EXT_image_sliced_view_of_3d",
+            "VK_EXT_image_view_min_lod",
+            "VK_EXT_index_type_uint8",
+            "VK_EXT_inline_uniform_block",
+            "VK_EXT_legacy_vertex_attributes",
+            "VK_EXT_line_rasterization",
+            "VK_EXT_load_store_op_none",
+            "VK_EXT_memory_budget",
+            "VK_EXT_memory_decompression",
+            "VK_EXT_memory_priority",
+            "VK_EXT_mesh_shader",
+            "VK_EXT_multi_draw",
+            "VK_EXT_mutable_descriptor_type",
+            "VK_EXT_nested_command_buffer",
+            "VK_EXT_non_seamless_cube_map",
+            "VK_EXT_opacity_micromap",
+            "VK_EXT_pageable_device_local_memory",
+            "VK_EXT_pci_bus_info",
+            "VK_EXT_pipeline_creation_cache_control",
+            "VK_EXT_pipeline_creation_feedback",
+            "VK_EXT_pipeline_library_group_handles",
+            "VK_EXT_pipeline_robustness",
+            "VK_EXT_post_depth_coverage",
+            "VK_EXT_present_mode_fifo_latest_ready",
+            "VK_EXT_present_timing",
+            "VK_EXT_primitive_topology_list_restart",
+            "VK_EXT_primitives_generated_query",
+            "VK_EXT_private_data",
+            "VK_EXT_provoking_vertex",
+            "VK_EXT_queue_family_foreign",
+            "VK_EXT_ray_tracing_invocation_reorder",
+            "VK_EXT_robustness2",
+            "VK_EXT_sample_locations",
+            "VK_EXT_sampler_filter_minmax",
+            "VK_EXT_scalar_block_layout",
+            "VK_EXT_separate_stencil_usage",
+            "VK_EXT_shader_64bit_indexing",
+            "VK_EXT_shader_atomic_float",
+            "VK_EXT_shader_demote_to_helper_invocation",
+            "VK_EXT_shader_float8",
+            "VK_EXT_shader_image_atomic_int64",
+            "VK_EXT_shader_long_vector",
+            "VK_EXT_shader_module_identifier",
+            "VK_EXT_shader_object",
+            "VK_EXT_shader_replicated_composites",
+            "VK_EXT_shader_subgroup_ballot",
+            "VK_EXT_shader_subgroup_partitioned",
+            "VK_EXT_shader_subgroup_vote",
+            "VK_EXT_shader_uniform_buffer_unsized_array",
+            "VK_EXT_shader_viewport_index_layer",
+            "VK_EXT_subgroup_size_control",
+            "VK_EXT_swapchain_maintenance1",
+            "VK_EXT_texel_buffer_alignment",
+            "VK_EXT_tooling_info",
+            "VK_EXT_transform_feedback",
+            "VK_EXT_vertex_attribute_divisor",
+            "VK_EXT_vertex_attribute_robustness",
+            "VK_EXT_vertex_input_dynamic_state",
+            "VK_EXT_ycbcr_2plane_444_formats",
+            "VK_EXT_ycbcr_image_arrays",
+            "VK_EXT_zero_initialize_device_memory",
+            "VK_GOOGLE_hlsl_functionality1",
+            "VK_GOOGLE_user_type",
+            "VK_KHR_16bit_storage",
+            "VK_KHR_8bit_storage",
+            "VK_KHR_acceleration_structure",
+            "VK_KHR_bind_memory2",
+            "VK_KHR_buffer_device_address",
+            "VK_KHR_calibrated_timestamps",
+            "VK_KHR_compute_shader_derivatives",
+            "VK_KHR_cooperative_matrix",
+            "VK_KHR_copy_commands2",
+            "VK_KHR_copy_memory_indirect",
+            "VK_KHR_create_renderpass2",
+            "VK_KHR_dedicated_allocation",
+            "VK_KHR_deferred_host_operations",
+            "VK_KHR_depth_clamp_zero_one",
+            "VK_KHR_depth_stencil_resolve",
+            "VK_KHR_descriptor_update_template",
+            "VK_KHR_device_group",
+            "VK_KHR_draw_indirect_count",
+            "VK_KHR_driver_properties",
+            "VK_KHR_dynamic_rendering",
+            "VK_KHR_dynamic_rendering_local_read",
+            "VK_KHR_external_fence",
+            "VK_KHR_external_fence_win32",
+            "VK_KHR_external_memory",
+            "VK_KHR_external_memory_win32",
+            "VK_KHR_external_semaphore",
+            "VK_KHR_external_semaphore_win32",
+            "VK_KHR_format_feature_flags2",
+            "VK_KHR_fragment_shader_barycentric",
+            "VK_KHR_fragment_shading_rate",
+            "VK_KHR_get_memory_requirements2",
+            "VK_KHR_global_priority",
+            "VK_KHR_image_format_list",
+            "VK_KHR_imageless_framebuffer",
+            "VK_KHR_index_type_uint8",
+            "VK_KHR_internally_synchronized_queues",
+            "VK_KHR_line_rasterization",
+            "VK_KHR_load_store_op_none",
+            "VK_KHR_maintenance1",
+            "VK_KHR_maintenance10",
+            "VK_KHR_maintenance2",
+            "VK_KHR_maintenance3",
+            "VK_KHR_maintenance4",
+            "VK_KHR_maintenance5",
+            "VK_KHR_maintenance6",
+            "VK_KHR_maintenance7",
+            "VK_KHR_maintenance8",
+            "VK_KHR_maintenance9",
+            "VK_KHR_map_memory2",
+            "VK_KHR_multiview",
+            "VK_KHR_pipeline_binary",
+            "VK_KHR_pipeline_executable_properties",
+            "VK_KHR_pipeline_library",
+            "VK_KHR_present_id",
+            "VK_KHR_present_id2",
+            "VK_KHR_present_mode_fifo_latest_ready",
+            "VK_KHR_present_wait",
+            "VK_KHR_present_wait2",
+            "VK_KHR_push_descriptor",
+            "VK_KHR_ray_query",
+            "VK_KHR_ray_tracing_maintenance1",
+            "VK_KHR_ray_tracing_pipeline",
+            "VK_KHR_ray_tracing_position_fetch",
+            "VK_KHR_relaxed_block_layout",
+            "VK_KHR_robustness2",
+            "VK_KHR_sampler_mirror_clamp_to_edge",
+            "VK_KHR_sampler_ycbcr_conversion",
+            "VK_KHR_separate_depth_stencil_layouts",
+            "VK_KHR_shader_atomic_int64",
+            "VK_KHR_shader_bfloat16",
+            "VK_KHR_shader_clock",
+            "VK_KHR_shader_draw_parameters",
+            "VK_KHR_shader_expect_assume",
+            "VK_KHR_shader_float_controls",
+            "VK_KHR_shader_float_controls2",
+            "VK_KHR_shader_float16_int8",
+            "VK_KHR_shader_fma",
+            "VK_KHR_shader_integer_dot_product",
+            "VK_KHR_shader_maximal_reconvergence",
+            "VK_KHR_shader_non_semantic_info",
+            "VK_KHR_shader_quad_control",
+            "VK_KHR_shader_relaxed_extended_instruction",
+            "VK_KHR_shader_subgroup_extended_types",
+            "VK_KHR_shader_subgroup_rotate",
+            "VK_KHR_shader_subgroup_uniform_control_flow",
+            "VK_KHR_shader_terminate_invocation",
+            "VK_KHR_shader_untyped_pointers",
+            "VK_KHR_spirv_1_4",
+            "VK_KHR_storage_buffer_storage_class",
+            "VK_KHR_swapchain",
+            "VK_KHR_swapchain_maintenance1",
+            "VK_KHR_swapchain_mutable_format",
+            "VK_KHR_synchronization2",
+            "VK_KHR_timeline_semaphore",
+            "VK_KHR_unified_image_layouts",
+            "VK_KHR_uniform_buffer_standard_layout",
+            "VK_KHR_variable_pointers",
+            "VK_KHR_vertex_attribute_divisor",
+            "VK_KHR_video_decode_av1",
+            "VK_KHR_video_decode_h264",
+            "VK_KHR_video_decode_h265",
+            "VK_KHR_video_decode_queue",
+            "VK_KHR_video_decode_vp9",
+            "VK_KHR_video_encode_av1",
+            "VK_KHR_video_encode_h264",
+            "VK_KHR_video_encode_h265",
+            "VK_KHR_video_encode_intra_refresh",
+            "VK_KHR_video_encode_quantization_map",
+            "VK_KHR_video_encode_queue",
+            "VK_KHR_video_maintenance1",
+            "VK_KHR_video_maintenance2",
+            "VK_KHR_video_queue",
+            "VK_KHR_vulkan_memory_model",
+            "VK_KHR_win32_keyed_mutex",
+            "VK_KHR_workgroup_memory_explicit_layout",
+            "VK_KHR_zero_initialize_workgroup_memory",
+            "VK_NV_acquire_winrt_display",
+            "VK_NV_clip_space_w_scaling",
+            "VK_NV_cluster_acceleration_structure",
+            "VK_NV_compute_occupancy_priority",
+            "VK_NV_compute_shader_derivatives",
+            "VK_NV_cooperative_matrix",
+            "VK_NV_cooperative_matrix2",
+            "VK_NV_cooperative_vector",
+            "VK_NV_copy_memory_indirect",
+            "VK_NV_corner_sampled_image",
+            "VK_NV_coverage_reduction_mode",
+            "VK_NV_cuda_kernel_launch",
+            "VK_NV_dedicated_allocation",
+            "VK_NV_dedicated_allocation_image_aliasing",
+            "VK_NV_descriptor_pool_overallocation",
+            "VK_NV_device_diagnostic_checkpoints",
+            "VK_NV_device_diagnostics_config",
+            "VK_NV_device_generated_commands",
+            "VK_NV_device_generated_commands_compute",
+            "VK_NV_disk_cache_utils",
+            "VK_NV_external_compute_queue",
+            "VK_NV_external_memory",
+            "VK_NV_external_memory_win32",
+            "VK_NV_fill_rectangle",
+            "VK_NV_fragment_coverage_to_color",
+            "VK_NV_fragment_shader_barycentric",
+            "VK_NV_fragment_shading_rate_enums",
+            "VK_NV_framebuffer_mixed_samples",
+            "VK_NV_geometry_shader_passthrough",
+            "VK_NV_inherited_viewport_scissor",
+            "VK_NV_internal_nvpresent",
+            "VK_NV_linear_color_attachment",
+            "VK_NV_low_latency",
+            "VK_NV_low_latency2",
+            "VK_NV_memory_decompression",
+            "VK_NV_mesh_shader",
+            "VK_NV_optical_flow",
+            "VK_NV_partitioned_acceleration_structure",
+            "VK_NV_present_metering",
+            "VK_NV_push_constant_bank",
+            "VK_NV_raw_access_chains",
+            "VK_NV_ray_tracing",
+            "VK_NV_ray_tracing_invocation_reorder",
+            "VK_NV_ray_tracing_motion_blur",
+            "VK_NV_representative_fragment_test",
+            "VK_NV_sample_mask_override_coverage",
+            "VK_NV_scissor_exclusive",
+            "VK_NV_shader_atomic_float16_vector",
+            "VK_NV_shader_image_footprint",
+            "VK_NV_shader_sm_builtins",
+            "VK_NV_shader_subgroup_partitioned",
+            "VK_NV_shading_rate_image",
+            "VK_NV_viewport_array2",
+            "VK_NV_viewport_swizzle",
+            "VK_NV_win32_keyed_mutex",
+            "VK_NVX_binary_import",
+            "VK_NVX_image_view_handle",
+            "VK_NVX_multiview_per_view_attributes"
+          ]
+        },
+        "ExternalMemory": {
+          "Format": "B8G8R8A8Unorm",
+          "Tiling": "Optimal",
+          "Usage": "TransferDstBit",
+          "HandleType": "D3D11TextureBit",
+          "Features": "DedicatedOnlyBit, ImportableBit",
+          "CompatibleHandleTypes": "D3D11TextureBit",
+          "Importable": true,
+          "DedicatedOnly": true,
+          "CompatibleHandleType": true
+        },
+        "Presentation": {
+          "mode": "CompositionSwapchain",
+          "visibleOwner": "top-level HWND DirectComposition Vulkan Presentation target",
+          "topology": "top-level-dcomp-vulkan-presentation-synchronous",
+          "bufferCount": 3,
+          "activeSwapchains": 0,
+          "bufferReuseAuthority": "presentation-buffer-availability",
+          "movingOriginPolicy": "fixed-origin-pregeometry-present-dwm-moving-origin-pregeometry-present-submit",
+          "rasterPlacement": "top-level-capacity-origin"
+        },
+        "Surface": null,
+        "PresentationCommitPolicy": {
+          "policy": "available-buffer-after-latest-check-synchronous-copy-present-submit",
+          "availableBufferAfterLatestCheck": true,
+          "synchronousVulkanCopyFenceCompletion": true,
+          "presentAfterCopyFenceCompletion": true,
+          "availabilityEventReuseAuthority": true,
+          "retirementMode": "presentation-buffer-availability",
+          "outstandingImages": 0,
+          "activeSwapchains": 0
+        },
+        "WsiStress": null,
+        "NegativeContracts": {
+          "missingLoader": "fail-fast",
+          "nonSystemLoader": "fail-fast unless explicit validation-only override",
+          "missingExtension": "fail-fast",
+          "softwareDevice": "fail-fast",
+          "multiGpuWithoutOverride": "fail-fast"
+        },
+        "EvidenceBoundary": "Vulkan external-memory capability, exact adapter LUID, and logical-device extension enablement only. Native D3D11 texture creation/import, three-buffer availability behavior, product rendering, physical scan-out, input, IME, and UIA are not verified."
+      }
+    },
+    {
+      "bridge": {
+        "schema": "doroti.native-graphite-probe/v1",
+        "utc": "2026-09-09T09:54:22.5667459+00:00",
+        "status": "PARTIAL",
+        "externalTextureRoundTrip": "PASS",
+        "platformPresent": "notVerified",
+        "physicalScanOut": "notVerified",
+        "performance": "notVerified",
+        "contextBudgetBytes": 268435456,
+        "recorderBudgetBytes": 67108864,
+        "requestedNativeAsset": {
+          "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\native-graphite\\skia-build\\out\\doroti-win-x64\\libSkiaSharp.dll",
+          "bytes": 13605888,
+          "sha256": "24bcb823503c3d924f780652a71a4e26546fa4f942a1e073518530e646ba6f04"
+        },
+        "managedAsset": {
+          "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\windows-vulkan-capability\\bin\\Release\\net10.0-windows10.0.19041.0\\win-x64\\SkiaSharp.dll",
+          "bytes": 561464,
+          "sha256": "702657b10552a9aa75dd65ca63fac752e0bb795a9cab3fb169ff52cb2ecee7b9"
+        },
+        "assemblyVersion": "4.154.0+release-4.154.0-preview.1.143a933a753dbfeca1909524b2c06c546c5c3e20.143a933a753dbfeca1909524b2c06c546c5c3e20",
+        "backends": {
+          "Dawn": false,
+          "Metal": false,
+          "Vulkan": true
+        },
+        "loadedNativeAsset": {
+          "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\artifacts\\native-graphite\\skia-build\\out\\doroti-win-x64\\libSkiaSharp.dll",
+          "bytes": 13605888,
+          "sha256": "24bcb823503c3d924f780652a71a4e26546fa4f942a1e073518530e646ba6f04"
+        },
+        "publicInteropContract": {
+          "backendContext": [
+            "VkInstance",
+            "VkPhysicalDevice",
+            "VkDevice",
+            "VkQueue",
+            "GraphicsQueueIndex",
+            "MaxApiVersion",
+            "ProtectedContext",
+            "GetProcedureAddress"
+          ],
+          "backendTexture": [
+            "Boolean get_IsValid()",
+            "SkiaSharp.SKGraphiteBackend get_Backend()",
+            "SkiaSharp.SKSizeI get_Dimensions()"
+          ],
+          "insertRecording": [
+            "Recording",
+            "TargetSurface",
+            "TargetTranslationX",
+            "TargetTranslationY",
+            "TargetClip"
+          ],
+          "submit": [
+            "Sync",
+            "MarkBoundary",
+            "FrameID"
+          ]
+        },
+        "loader": {
+          "path": "C:\\WINDOWS\\system32\\vulkan-1.dll",
+          "bytes": 1740728,
+          "sha256": "0419974f00e82a3d619077ba414da265a774f8db9d45ad93bc1843f44b2c2c1f"
+        },
+        "validationEnabled": true,
+        "synchronizationValidationEnabled": true,
+        "device": {
+          "Name": "AMD Radeon 780M Graphics",
+          "VendorId": 4098,
+          "DeviceId": 6400,
+          "DriverVersion": 8388939,
+          "apiVersion": "1.3.302",
+          "Luid": "D71D010000000000",
+          "QueueFamily": 0
+        },
+        "enabledDeviceFeatures": [],
+        "enabledDeviceExtensions": [],
+        "lastOperation": "dispose-context",
+        "contextCreated": true,
+        "actualBackend": "Vulkan",
+        "offscreenFrames": [
+          {
+            "generation": 1,
+            "size": 64,
+            "readbackMilliseconds": 9.0142,
+            "pixelCheck": "PASS",
+            "rgbaSha256": "6f6c075685259d9bb09df550544e3170cf3f1a255fcd904fe4b30367a9046f63"
+          },
+          {
+            "generation": 2,
+            "size": 128,
+            "readbackMilliseconds": 24.2392,
+            "pixelCheck": "PASS",
+            "rgbaSha256": "e8b0196056e0b8733409e0062c099fa2ac89d2fab9cb619a9c3b099008b9a956"
+          },
+          {
+            "generation": 3,
+            "size": 192,
+            "readbackMilliseconds": 26.3439,
+            "pixelCheck": "PASS",
+            "rgbaSha256": "aae33f005da68facb3a7822a1d277407048ff989b2e755bc77d874dce00ca579"
+          }
+        ],
+        "offscreenReadback": "PASS",
+        "bridgeAbi": 1,
+        "externalTextureFrames": [
+          {
+            "size": 64,
+            "frames": 12,
+            "persistentWrapper": true,
+            "wrapperRecreationsPerFrame": 0,
+            "actualLayouts": [
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal"
+            ],
+            "returnLayout": "General",
+            "pixelCheck": "PASS",
+            "waitSignalSemaphores": "PASS",
+            "gpuCompletion": "PASS",
+            "maximumInFlight": 1
+          },
+          {
+            "size": 128,
+            "frames": 12,
+            "persistentWrapper": true,
+            "wrapperRecreationsPerFrame": 0,
+            "actualLayouts": [
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal"
+            ],
+            "returnLayout": "General",
+            "pixelCheck": "PASS",
+            "waitSignalSemaphores": "PASS",
+            "gpuCompletion": "PASS",
+            "maximumInFlight": 1
+          },
+          {
+            "size": 96,
+            "frames": 12,
+            "persistentWrapper": true,
+            "wrapperRecreationsPerFrame": 0,
+            "actualLayouts": [
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal",
+              "ColorAttachmentOptimal"
+            ],
+            "returnLayout": "General",
+            "pixelCheck": "PASS",
+            "waitSignalSemaphores": "PASS",
+            "gpuCompletion": "PASS",
+            "maximumInFlight": 1
+          }
+        ],
+        "normalTeardown": "PASS",
+        "blocker": "Diagnostic external texture roundtrip passed; device recreation/loss, platform present, enabled-feature binding and RID packaging remain unqualified.",
+        "validationWarnings": 0,
+        "validationErrors": 0,
+        "validationMessages": []
+      },
+      "stock": {
+        "schema": "doroti.native-graphite-probe/v1",
+        "utc": "2026-09-09T09:57:02.9441021+00:00",
+        "status": "PARTIAL",
+        "externalTextureRoundTrip": "notVerified",
+        "platformPresent": "notVerified",
+        "physicalScanOut": "notVerified",
+        "performance": "notVerified",
+        "contextBudgetBytes": 268435456,
+        "recorderBudgetBytes": 67108864,
+        "managedAsset": {
+          "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\windows-vulkan-capability\\bin\\Release\\net10.0-windows10.0.19041.0\\win-x64\\SkiaSharp.dll",
+          "bytes": 561464,
+          "sha256": "702657b10552a9aa75dd65ca63fac752e0bb795a9cab3fb169ff52cb2ecee7b9"
+        },
+        "assemblyVersion": "4.154.0+release-4.154.0-preview.1.143a933a753dbfeca1909524b2c06c546c5c3e20.143a933a753dbfeca1909524b2c06c546c5c3e20",
+        "backends": {
+          "Dawn": false,
+          "Metal": false,
+          "Vulkan": true
+        },
+        "loadedNativeAsset": {
+          "path": "C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\windows-vulkan-capability\\bin\\Release\\net10.0-windows10.0.19041.0\\win-x64\\libSkiaSharp.DLL",
+          "bytes": 13456696,
+          "sha256": "07ce51fd59e099b9561b0327223c27b21aa5605b5b8f4484dd297fdb8c8725a1"
+        },
+        "publicInteropContract": {
+          "backendContext": [
+            "VkInstance",
+            "VkPhysicalDevice",
+            "VkDevice",
+            "VkQueue",
+            "GraphicsQueueIndex",
+            "MaxApiVersion",
+            "ProtectedContext",
+            "GetProcedureAddress"
+          ],
+          "backendTexture": [
+            "Boolean get_IsValid()",
+            "SkiaSharp.SKGraphiteBackend get_Backend()",
+            "SkiaSharp.SKSizeI get_Dimensions()"
+          ],
+          "insertRecording": [
+            "Recording",
+            "TargetSurface",
+            "TargetTranslationX",
+            "TargetTranslationY",
+            "TargetClip"
+          ],
+          "submit": [
+            "Sync",
+            "MarkBoundary",
+            "FrameID"
+          ]
+        },
+        "loader": {
+          "path": "C:\\WINDOWS\\system32\\vulkan-1.dll",
+          "bytes": 1740728,
+          "sha256": "0419974f00e82a3d619077ba414da265a774f8db9d45ad93bc1843f44b2c2c1f"
+        },
+        "validationEnabled": true,
+        "synchronizationValidationEnabled": true,
+        "device": {
+          "Name": "AMD Radeon 780M Graphics",
+          "VendorId": 4098,
+          "DeviceId": 6400,
+          "DriverVersion": 8388939,
+          "apiVersion": "1.3.302",
+          "Luid": "D71D010000000000",
+          "QueueFamily": 0
+        },
+        "enabledDeviceFeatures": [],
+        "enabledDeviceExtensions": [],
+        "lastOperation": "dispose-context",
+        "contextCreated": true,
+        "actualBackend": "Vulkan",
+        "offscreenFrames": [
+          {
+            "generation": 1,
+            "size": 64,
+            "readbackMilliseconds": 3.5507,
+            "pixelCheck": "PASS",
+            "rgbaSha256": "6f6c075685259d9bb09df550544e3170cf3f1a255fcd904fe4b30367a9046f63"
+          },
+          {
+            "generation": 2,
+            "size": 128,
+            "readbackMilliseconds": 26.156,
+            "pixelCheck": "PASS",
+            "rgbaSha256": "e8b0196056e0b8733409e0062c099fa2ac89d2fab9cb619a9c3b099008b9a956"
+          },
+          {
+            "generation": 3,
+            "size": 192,
+            "readbackMilliseconds": 26.571,
+            "pixelCheck": "PASS",
+            "rgbaSha256": "aae33f005da68facb3a7822a1d277407048ff989b2e755bc77d874dce00ca579"
+          }
+        ],
+        "offscreenReadback": "PASS",
+        "bridgeAbi": "notAvailable",
+        "normalTeardown": "PASS",
+        "blocker": "NG1 external texture state/queue synchronization requires a same-build native bridge; offscreen success does not qualify NG3/NG5/NG6.",
+        "validationWarnings": 0,
+        "validationErrors": 0,
+        "validationMessages": []
+      },
+      "stockVsBridgeOffscreenHashesEqual": true,
+      "vulkanD3D11Capability": {
+        "SchemaVersion": "doroti.windows.vulkan-capability/v3",
+        "Status": "PASS",
+        "Failure": null,
+        "Loader": {
+          "path": "C:\\WINDOWS\\system32\\vulkan-1.dll",
+          "Machine": "Amd64",
+          "Length": 1740728,
+          "Sha256": "0419974f00e82a3d619077ba414da265a774f8db9d45ad93bc1843f44b2c2c1f"
+        },
+        "LoaderApiVersion": "1.4.350",
+        "Packages": {
+          "vulkan": "2.23.0.0",
+          "khr": "2.23.0.0",
+          "requestedVersion": "2.23.0"
+        },
+        "Instance": {
+          "requiredExtensions": [],
+          "validationLayerAvailable": true,
+          "validationEnabled": true,
+          "validationWarnings": 0,
+          "validationErrors": 0,
+          "validationMessages": []
+        },
+        "Device": {
+          "Name": "AMD Radeon 780M Graphics",
+          "type": "IntegratedGpu",
+          "vendorId": "0x1002",
+          "deviceId": "0x1900",
+          "DriverVersion": 8388939,
+          "apiVersion": "1.3.302",
+          "QueueFamily": 0,
+          "Luid": "D71D010000000000",
+          "luidValid": true,
+          "requiredExtensions": [
+            "VK_KHR_external_memory",
+            "VK_KHR_external_memory_win32",
+            "VK_KHR_get_memory_requirements2",
+            "VK_KHR_dedicated_allocation"
+          ],
+          "extensions": [
+            "VK_AMD_anti_lag",
+            "VK_AMD_buffer_marker",
+            "VK_AMD_device_coherent_memory",
+            "VK_AMD_display_native_hdr",
+            "VK_AMD_draw_indirect_count",
+            "VK_AMD_gcn_shader",
+            "VK_AMD_gpa_interface",
+            "VK_AMD_gpu_shader_half_float",
+            "VK_AMD_gpu_shader_int16",
+            "VK_AMD_memory_overallocation_behavior",
+            "VK_AMD_mixed_attachment_samples",
+            "VK_AMD_shader_ballot",
+            "VK_AMD_shader_core_properties",
+            "VK_AMD_shader_core_properties2",
+            "VK_AMD_shader_early_and_late_fragment_tests",
+            "VK_AMD_shader_explicit_vertex_parameter",
+            "VK_AMD_shader_image_load_store_lod",
+            "VK_AMD_shader_info",
+            "VK_AMD_shader_trinary_minmax",
+            "VK_EXT_4444_formats",
+            "VK_EXT_attachment_feedback_loop_layout",
+            "VK_EXT_border_color_swizzle",
+            "VK_EXT_calibrated_timestamps",
+            "VK_EXT_color_write_enable",
+            "VK_EXT_conditional_rendering",
+            "VK_EXT_conservative_rasterization",
+            "VK_EXT_custom_border_color",
+            "VK_EXT_depth_clamp_control",
+            "VK_EXT_depth_clamp_zero_one",
+            "VK_EXT_depth_clip_control",
+            "VK_EXT_depth_clip_enable",
+            "VK_EXT_depth_range_unrestricted",
+            "VK_EXT_descriptor_buffer",
+            "VK_EXT_descriptor_indexing",
+            "VK_EXT_device_address_binding_report",
+            "VK_EXT_device_fault",
+            "VK_EXT_dynamic_rendering_unused_attachments",
+            "VK_EXT_extended_dynamic_state",
+            "VK_EXT_extended_dynamic_state2",
+            "VK_EXT_extended_dynamic_state3",
+            "VK_EXT_external_memory_host",
+            "VK_EXT_fragment_shader_interlock",
+            "VK_EXT_frame_boundary",
+            "VK_EXT_full_screen_exclusive",
+            "VK_EXT_global_priority",
+            "VK_EXT_global_priority_query",
+            "VK_EXT_graphics_pipeline_library",
+            "VK_EXT_hdr_metadata",
+            "VK_EXT_host_query_reset",
+            "VK_EXT_image_robustness",
+            "VK_EXT_image_sliced_view_of_3d",
+            "VK_EXT_image_view_min_lod",
+            "VK_EXT_index_type_uint8",
+            "VK_EXT_inline_uniform_block",
+            "VK_EXT_line_rasterization",
+            "VK_EXT_load_store_op_none",
+            "VK_EXT_memory_budget",
+            "VK_EXT_memory_priority",
+            "VK_EXT_mesh_shader",
+            "VK_EXT_mutable_descriptor_type",
+            "VK_EXT_nested_command_buffer",
+            "VK_EXT_non_seamless_cube_map",
+            "VK_EXT_pageable_device_local_memory",
+            "VK_EXT_pipeline_creation_cache_control",
+            "VK_EXT_pipeline_creation_feedback",
+            "VK_EXT_pipeline_library_group_handles",
+            "VK_EXT_post_depth_coverage",
+            "VK_EXT_primitive_topology_list_restart",
+            "VK_EXT_primitives_generated_query",
+            "VK_EXT_private_data",
+            "VK_EXT_provoking_vertex",
+            "VK_EXT_queue_family_foreign",
+            "VK_EXT_robustness2",
+            "VK_EXT_sample_locations",
+            "VK_EXT_sampler_filter_minmax",
+            "VK_EXT_scalar_block_layout",
+            "VK_EXT_separate_stencil_usage",
+            "VK_EXT_shader_atomic_float",
+            "VK_EXT_shader_atomic_float2",
+            "VK_EXT_shader_demote_to_helper_invocation",
+            "VK_EXT_shader_image_atomic_int64",
+            "VK_EXT_shader_module_identifier",
+            "VK_EXT_shader_object",
+            "VK_EXT_shader_stencil_export",
+            "VK_EXT_shader_subgroup_ballot",
+            "VK_EXT_shader_subgroup_vote",
+            "VK_EXT_shader_viewport_index_layer",
+            "VK_EXT_subgroup_size_control",
+            "VK_EXT_texel_buffer_alignment",
+            "VK_EXT_tooling_info",
+            "VK_EXT_transform_feedback",
+            "VK_EXT_vertex_attribute_divisor",
+            "VK_EXT_vertex_input_dynamic_state",
+            "VK_EXT_ycbcr_image_arrays",
+            "VK_GOOGLE_decorate_string",
+            "VK_GOOGLE_hlsl_functionality1",
+            "VK_GOOGLE_user_type",
+            "VK_KHR_16bit_storage",
+            "VK_KHR_8bit_storage",
+            "VK_KHR_acceleration_structure",
+            "VK_KHR_bind_memory2",
+            "VK_KHR_buffer_device_address",
+            "VK_KHR_calibrated_timestamps",
+            "VK_KHR_compute_shader_derivatives",
+            "VK_KHR_cooperative_matrix",
+            "VK_KHR_copy_commands2",
+            "VK_KHR_create_renderpass2",
+            "VK_KHR_dedicated_allocation",
+            "VK_KHR_deferred_host_operations",
+            "VK_KHR_depth_stencil_resolve",
+            "VK_KHR_descriptor_update_template",
+            "VK_KHR_device_group",
+            "VK_KHR_draw_indirect_count",
+            "VK_KHR_driver_properties",
+            "VK_KHR_dynamic_rendering",
+            "VK_KHR_dynamic_rendering_local_read",
+            "VK_KHR_external_fence",
+            "VK_KHR_external_fence_win32",
+            "VK_KHR_external_memory",
+            "VK_KHR_external_memory_win32",
+            "VK_KHR_external_semaphore",
+            "VK_KHR_external_semaphore_win32",
+            "VK_KHR_format_feature_flags2",
+            "VK_KHR_fragment_shader_barycentric",
+            "VK_KHR_fragment_shading_rate",
+            "VK_KHR_get_memory_requirements2",
+            "VK_KHR_global_priority",
+            "VK_KHR_image_format_list",
+            "VK_KHR_imageless_framebuffer",
+            "VK_KHR_index_type_uint8",
+            "VK_KHR_line_rasterization",
+            "VK_KHR_load_store_op_none",
+            "VK_KHR_maintenance1",
+            "VK_KHR_maintenance2",
+            "VK_KHR_maintenance3",
+            "VK_KHR_maintenance4",
+            "VK_KHR_maintenance5",
+            "VK_KHR_maintenance6",
+            "VK_KHR_maintenance7",
+            "VK_KHR_map_memory2",
+            "VK_KHR_multiview",
+            "VK_KHR_pipeline_binary",
+            "VK_KHR_pipeline_executable_properties",
+            "VK_KHR_pipeline_library",
+            "VK_KHR_push_descriptor",
+            "VK_KHR_ray_query",
+            "VK_KHR_ray_tracing_maintenance1",
+            "VK_KHR_ray_tracing_pipeline",
+            "VK_KHR_ray_tracing_position_fetch",
+            "VK_KHR_relaxed_block_layout",
+            "VK_KHR_sampler_mirror_clamp_to_edge",
+            "VK_KHR_sampler_ycbcr_conversion",
+            "VK_KHR_separate_depth_stencil_layouts",
+            "VK_KHR_shader_atomic_int64",
+            "VK_KHR_shader_clock",
+            "VK_KHR_shader_draw_parameters",
+            "VK_KHR_shader_expect_assume",
+            "VK_KHR_shader_float_controls",
+            "VK_KHR_shader_float_controls2",
+            "VK_KHR_shader_float16_int8",
+            "VK_KHR_shader_integer_dot_product",
+            "VK_KHR_shader_maximal_reconvergence",
+            "VK_KHR_shader_non_semantic_info",
+            "VK_KHR_shader_quad_control",
+            "VK_KHR_shader_subgroup_extended_types",
+            "VK_KHR_shader_subgroup_rotate",
+            "VK_KHR_shader_subgroup_uniform_control_flow",
+            "VK_KHR_shader_terminate_invocation",
+            "VK_KHR_spirv_1_4",
+            "VK_KHR_storage_buffer_storage_class",
+            "VK_KHR_swapchain",
+            "VK_KHR_swapchain_mutable_format",
+            "VK_KHR_synchronization2",
+            "VK_KHR_timeline_semaphore",
+            "VK_KHR_uniform_buffer_standard_layout",
+            "VK_KHR_variable_pointers",
+            "VK_KHR_vertex_attribute_divisor",
+            "VK_KHR_video_decode_av1",
+            "VK_KHR_video_decode_h264",
+            "VK_KHR_video_decode_h265",
+            "VK_KHR_video_decode_queue",
+            "VK_KHR_video_queue",
+            "VK_KHR_vulkan_memory_model",
+            "VK_KHR_win32_keyed_mutex",
+            "VK_KHR_workgroup_memory_explicit_layout",
+            "VK_KHR_zero_initialize_workgroup_memory",
+            "VK_VALVE_mutable_descriptor_type"
+          ]
+        },
+        "ExternalMemory": {
+          "Format": "B8G8R8A8Unorm",
+          "Tiling": "Optimal",
+          "Usage": "TransferDstBit",
+          "HandleType": "D3D11TextureBit",
+          "Features": "DedicatedOnlyBit, ImportableBit",
+          "CompatibleHandleTypes": "D3D11TextureBit",
+          "Importable": true,
+          "DedicatedOnly": true,
+          "CompatibleHandleType": true
+        },
+        "Presentation": {
+          "mode": "CompositionSwapchain",
+          "visibleOwner": "top-level HWND DirectComposition Vulkan Presentation target",
+          "topology": "top-level-dcomp-vulkan-presentation-synchronous",
+          "bufferCount": 3,
+          "activeSwapchains": 0,
+          "bufferReuseAuthority": "presentation-buffer-availability",
+          "movingOriginPolicy": "fixed-origin-pregeometry-present-dwm-moving-origin-pregeometry-present-submit",
+          "rasterPlacement": "top-level-capacity-origin"
+        },
+        "Surface": null,
+        "PresentationCommitPolicy": {
+          "policy": "available-buffer-after-latest-check-synchronous-copy-present-submit",
+          "availableBufferAfterLatestCheck": true,
+          "synchronousVulkanCopyFenceCompletion": true,
+          "presentAfterCopyFenceCompletion": true,
+          "availabilityEventReuseAuthority": true,
+          "retirementMode": "presentation-buffer-availability",
+          "outstandingImages": 0,
+          "activeSwapchains": 0
+        },
+        "WsiStress": null,
+        "NegativeContracts": {
+          "missingLoader": "fail-fast",
+          "nonSystemLoader": "fail-fast unless explicit validation-only override",
+          "missingExtension": "fail-fast",
+          "softwareDevice": "fail-fast",
+          "multiGpuWithoutOverride": "fail-fast"
+        },
+        "EvidenceBoundary": "Vulkan external-memory capability, exact adapter LUID, and logical-device extension enablement only. Native D3D11 texture creation/import, three-buffer availability behavior, product rendering, physical scan-out, input, IME, and UIA are not verified."
+      }
+    }
+  ],
+  "firstInteropFailures": [
+    {
+      "path": "Doroti/artifacts/native-graphite/runs/20260909T095001833Z/graphite-0.json",
+      "error": "System.InvalidOperationException: External texture surface failed.\r\n   at Doroti.Validation.WindowsVulkanCapability.Program.ProbeExternalTexture(Vk vk, PhysicalDevice physicalDevice, Device device, Queue queue, UInt32 family, SKGraphiteContext context, Int32 size) in C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\windows-vulkan-capability\\Program.GraphiteInterop.cs:line 90\r\n   at Doroti.Validation.WindowsVulkanCapability.Program.ProbeGraphiteDevice(Options options, Dictionary`2 report) in C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\windows-vulkan-capability\\Program.Graphite.cs:line 167\r\n   at Doroti.Validation.WindowsVulkanCapability.Program.RunGraphiteProbe(Options options, String[] args) in C:\\Users\\parti\\Labo\\DorotiLab\\Doroti\\validation\\windows-vulkan-capability\\Program.Graphite.cs:line 67",
+      "validationErrors": 0,
+      "validationWarnings": 0
+    }
+  ],
+  "contractBaselines": {
+    "linux-qt-contract": {
+      "command": [
+        "dotnet",
+        "run",
+        "--project",
+        "Doroti/validation/linux-qt-contract",
+        "-c",
+        "Release",
+        "--no-launch-profile"
+      ],
+      "timeoutSeconds": 1200,
+      "exitCode": 0,
+      "elapsedSeconds": 8.297582399998646
+    },
+    "fcr7-material-widget": {
+      "command": [
+        "dotnet",
+        "run",
+        "--project",
+        "Doroti/validation/fcr7-material-widget",
+        "-c",
+        "Release",
+        "--no-launch-profile"
+      ],
+      "timeoutSeconds": 1200,
+      "exitCode": 0,
+      "elapsedSeconds": 41.81360219999988
+    }
+  },
+  "currentTargets": [
+    {
+      "schema": "doroti-target/v2",
+      "packageId": "Doroti.Target.Android.Maui.android-arm64",
+      "targetFramework": "net10.0-android",
+      "rid": "android-arm64",
+      "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKGLTextureView",
+      "graphicsBackend": "Android/MauiSKGLTextureView/OpenGL-ES-Skia",
+      "softwareFallback": false
+    },
+    {
+      "schema": "doroti-target/v2",
+      "packageId": "Doroti.Target.Android.Maui.android-x64",
+      "targetFramework": "net10.0-android",
+      "rid": "android-x64",
+      "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKGLTextureView",
+      "graphicsBackend": "Android/MauiSKGLTextureView/OpenGL-ES-Skia",
+      "softwareFallback": false
+    },
+    {
+      "schema": "doroti-target/v2",
+      "packageId": "Doroti.Target.iOS.Maui.ios-arm64",
+      "targetFramework": "net10.0-ios",
+      "rid": "ios-arm64",
+      "nativeViewType": "Doroti.Host.Maui.DorotiIosMetalViewHandler+DorotiIosMetalView",
+      "graphicsBackend": "UIKit-iOS/SKMetalView/Metal-Skia",
+      "softwareFallback": false
+    },
+    {
+      "schema": "doroti-target/v2",
+      "packageId": "Doroti.Target.iOS.Maui.iossimulator-arm64",
+      "targetFramework": "net10.0-ios",
+      "rid": "iossimulator-arm64",
+      "nativeViewType": "Doroti.Host.Maui.DorotiIosMetalViewHandler+DorotiIosMetalView",
+      "graphicsBackend": "UIKit-iOS/SKMetalView/Metal-Skia",
+      "softwareFallback": false
+    },
+    {
+      "schema": "doroti-target/v2",
+      "packageId": "Doroti.Target.iOS.Maui.iossimulator-x64",
+      "targetFramework": "net10.0-ios",
+      "rid": "iossimulator-x64",
+      "nativeViewType": "Doroti.Host.Maui.DorotiIosMetalViewHandler+DorotiIosMetalView",
+      "graphicsBackend": "UIKit-iOS-Simulator/SKMetalView/Metal-Skia",
+      "softwareFallback": false
+    },
+    {
+      "schemaVersion": "doroti.target-package/v1",
+      "packageId": "Doroti.Target.Linux.Qt.linux-x64",
+      "packageVersion": "0.2.0-beta",
+      "rid": "linux-x64",
+      "host": "qt6-c-abi",
+      "graphicsBackend": "qt6/QOpenGLWindow/Ganesh-OpenGL-Skia",
+      "processOwner": "managed",
+      "nativeAbi": "doroti.qt-host/v2",
+      "requiredCapabilities": [
+        "window.lifecycle",
+        "view.lifecycle-metrics",
+        "view.frame-dispatch",
+        "input.events",
+        "text.input",
+        "platform.services",
+        "graphics.scene",
+        "accessibility.semantics"
+      ],
+      "verificationStatus": "notVerified"
+    },
+    {
+      "schema": "doroti-target/v2",
+      "packageId": "Doroti.Target.MacCatalyst.Maui.maccatalyst-arm64",
+      "targetFramework": "net10.0-maccatalyst",
+      "rid": "maccatalyst-arm64",
+      "nativeViewType": "SkiaSharp.Views.Maui.Handlers.SKGLViewHandler+MauiSKMetalView",
+      "graphicsBackend": "UIKit-MacCatalyst/SKMetalView/Metal-Skia",
+      "softwareFallback": false
+    },
+    {
+      "schema": "doroti-target/v2",
+      "packageId": "Doroti.Target.MacOS.Maui.osx-arm64",
+      "targetFramework": "net10.0-macos",
+      "rid": "osx-arm64",
+      "nativeViewType": "Doroti.Host.Maui.DorotiMacOSMetalView",
+      "graphicsBackend": "AppKit/MTKView/Metal-Skia",
+      "softwareFallback": false
+    },
+    {
+      "schemaVersion": "doroti.target-package/v1",
+      "packageId": "Doroti.Target.Web.browser-wasm",
+      "packageVersion": "0.2.0-beta",
+      "rid": "browser-wasm",
+      "host": "managed-render-worker",
+      "defaultRenderer": "worker-direct-webgpu",
+      "graphicsBackend": "worker-direct-webgpu-graphite-dawn-or-worker-direct-webgl2",
+      "blazorWebAssemblyVersion": "10.0.11",
+      "skiaSharpVersion": "4.154.0-preview.1.26454.9",
+      "skiaSharpManagedPackage": "SkiaSharp",
+      "skiaSharpNativePackage": "SkiaSharp.NativeAssets.WebAssembly",
+      "bootLoader": "_framework/dotnet.js",
+      "frameworkPreloadPlaceholderId": "webassembly",
+      "hostComponents": [
+        "Doroti.Host.Web.DorotiWebWorkerSurface"
+      ],
+      "rendererModes": [
+        "worker-direct-webgpu",
+        "worker-direct-webgl"
+      ],
+      "workerRuntimeOwnership": "single-managed-runtime; bootstrap-main-or-render-worker; framework-and-skia-on-render-worker",
+      "flutterRevision": "56b8e1a851a594b1a154f8ea93270807dab22b9a",
+      "managedCallbackAbi": "doroti.browser-managed-callbacks/v1",
+      "javaScriptPluginAbi": "doroti.browser-js-plugin/v1",
+      "resourceBasePolicy": "document-base-uri",
+      "resourceKinds": [
+        "asset",
+        "font",
+        "localization"
+      ],
+      "supportedPublishModes": [
+        "interpreter",
+        "aot-build-probe",
+        "persistent-dotnet-web-worker"
+      ],
+      "requiredCapabilities": [
+        "window.lifecycle",
+        "view.lifecycle-metrics",
+        "view.frame-dispatch",
+        "input.events",
+        "text.input",
+        "platform.services",
+        "platform.environment",
+        "platform.messaging",
+        "graphics.scene",
+        "graphics.text",
+        "graphics.image",
+        "accessibility.semantics"
+      ],
+      "unsupportedModes": [
+        "software-canvas-2d",
+        "software-webgl-renderer",
+        "native-desktop-plugin",
+        "trimmed-generated-product"
+      ]
+    },
+    {
+      "schema": "doroti-target/v2",
+      "packageId": "Doroti.Target.Windows.Maui.win-x64",
+      "targetFramework": "net10.0-windows10.0.19041.0",
+      "rid": "win-x64",
+      "nativeViewType": "Microsoft.UI.Xaml.Controls.SwapChainPanel",
+      "graphicsBackend": "winui3/SwapChainPanel/Doroti-owned-D3D12-Skia",
+      "softwareFallback": false
+    },
+    {
+      "schema": "doroti-target/v2",
+      "packageId": "Doroti.Target.Windows.WindowsAppSdk.win-x64",
+      "targetFramework": "net10.0-windows10.0.19041.0",
+      "rid": "win-x64",
+      "nativeViewType": "Win32.ChildHwnd",
+      "graphicsBackend": "windowsappsdk-2.4/HwndExactCpp/managed-Vulkan-Composition-Swapchain-Skia",
+      "defaultRenderer": "Vulkan",
+      "optionalRenderers": [
+        "AngleD3D11"
+      ],
+      "defaultAdapter": "HwndExactCpp",
+      "adapterCapabilities": [
+        "HwndExactCpp"
+      ],
+      "cutoverDecision": "Vulkan is the default; Acrylic is available when requested by the app through WindowBackdropMode.acrylic; broader GPU/DPI/refresh qualification remains incomplete",
+      "nativeArtifactPolicy": "app-directory/exact-version/sha256/win-x64/no-PATH-fallback",
+      "softwareFallback": false
+    }
+  ],
+  "os": {
+    "Caption": "Microsoft Windows 11 Pro",
+    "Version": "10.0.26200",
+    "BuildNumber": "26200",
+    "OSArchitecture": "64비트"
+  },
+  "gpus": [
+    {
+      "Name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "DriverVersion": "32.0.16.1062",
+      "PNPDeviceID": "PCI\\VEN_10DE&DEV_28E0&SUBSYS_37B81043&REV_A1\\4&34A818A4&0&0009"
+    },
+    {
+      "Name": "AMD Radeon 780M Graphics",
+      "DriverVersion": "32.0.13031.3015",
+      "PNPDeviceID": "PCI\\VEN_1002&DEV_1900&SUBSYS_37B81043&REV_CC\\4&98C338A&0&0041"
+    }
+  ],
+  "packageNativeAssets": [
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.android\\4.154.0-preview.1.26454.9\\runtimes\\android-arm\\native\\libSkiaSharp.so",
+      "sha256": "2fbba726ea954f5e7de93b649e20b015f150e2111f057aa3c7258dbb17f50cad",
+      "package": "skiasharp.nativeassets.android",
+      "bytes": 6916860
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.android\\4.154.0-preview.1.26454.9\\runtimes\\android-arm64\\native\\libSkiaSharp.so",
+      "sha256": "63af1ec283b86965542bca1400ae446e6a179a7be5b6187e69aa5fa0bd49e180",
+      "package": "skiasharp.nativeassets.android",
+      "bytes": 10341904
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.android\\4.154.0-preview.1.26454.9\\runtimes\\android-x64\\native\\libSkiaSharp.so",
+      "sha256": "9bb141c1ee6b40781044a4e13779c6f19a0b45554dc6030b5f1cf49b24f7e7b8",
+      "package": "skiasharp.nativeassets.android",
+      "bytes": 11099936
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.android\\4.154.0-preview.1.26454.9\\runtimes\\android-x86\\native\\libSkiaSharp.so",
+      "sha256": "4c956857b026878354a08eefbcd96c35a6ab27e5a391123312bf9f84ea500824",
+      "package": "skiasharp.nativeassets.android",
+      "bytes": 11613272
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.ios\\4.154.0-preview.1.26454.9\\runtimes\\ios\\native\\libSkiaSharp.framework\\libSkiaSharp",
+      "sha256": "1d63ea0f38620b8057a0e02f14f185aa3dd964a69d633e9eceab070afaf3b45a",
+      "package": "skiasharp.nativeassets.ios",
+      "bytes": 14921776
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.ios\\4.154.0-preview.1.26454.9\\runtimes\\iossimulator\\native\\libSkiaSharp.framework\\libSkiaSharp",
+      "sha256": "243427e3d65210a56b80d578f29fd6f404517fac75a17a48133124535f692e3d",
+      "package": "skiasharp.nativeassets.ios",
+      "bytes": 14872128
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-arm\\native\\libSkiaSharp.so",
+      "sha256": "f37768ff4a2933fa7e7a79fb8697d5064ccda31d45017603a0038deb110ef98a",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 9218740
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-arm64\\native\\libSkiaSharp.so",
+      "sha256": "0068bc9820a445d2108d68ede933a4bd5424cd520e9c2588fdc63f47087e09f4",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 12852120
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-bionic-arm64\\native\\libSkiaSharp.so",
+      "sha256": "2853693075fd5b8e87da52e728e3eb8c651e870d51bf269223ca82cc53f20463",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 13106696
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-bionic-x64\\native\\libSkiaSharp.so",
+      "sha256": "17f16a5d59ddf008c4221a12b66c4e37d81df847cef588be72e703439e7a2fd7",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 12988224
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-loongarch64\\native\\libSkiaSharp.so",
+      "sha256": "fc882257fac71e2a0d1777e63887b1a6020a2a77ebf0ea0f62106fd13762c025",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 12255184
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-musl-arm\\native\\libSkiaSharp.so",
+      "sha256": "8f0c6f231a5e46b04ce127e16c18141c981f95c93695bd00d9051d7d0ac9827f",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 9248300
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-musl-arm64\\native\\libSkiaSharp.so",
+      "sha256": "832ebd44d04afc66246bab04942cda49af63f134137a33d6ea440a6c2780f115",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 12966488
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-musl-loongarch64\\native\\libSkiaSharp.so",
+      "sha256": "6908ba1b0abf651bf72a37b6cea4a335eb6fa3fd997b91a10e6d69493db0dd30",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 12623160
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-musl-riscv64\\native\\libSkiaSharp.so",
+      "sha256": "a78200a60c32233a6f4cd50e2f992309f533fc10b0a7cd08f3d768a424b86deb",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 11921840
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-musl-x64\\native\\libSkiaSharp.so",
+      "sha256": "28101595fe9d2bdf708c02fde3e4a5412155d969ae0b6c86cb5f1d55e3f09004",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 13067416
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-riscv64\\native\\libSkiaSharp.so",
+      "sha256": "a462290874f0a5888ac923edfaa2b0da9c06a9f795e40a4a2d702f5f469b44ad",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 11749024
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-x64\\native\\libSkiaSharp.so",
+      "sha256": "3a7778cce23720da6503e0ca845b423ad366cfe7e6a6b9ad6eea052fc0c91e92",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 12941848
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.linux\\4.154.0-preview.1.26454.9\\runtimes\\linux-x86\\native\\libSkiaSharp.so",
+      "sha256": "c2159d70daef62eeb5f6fac8c49054065536d2cda2f36d08b4810e50a761faab",
+      "package": "skiasharp.nativeassets.linux",
+      "bytes": 13975952
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.maccatalyst\\4.154.0-preview.1.26454.9\\runtimes\\maccatalyst\\native\\libSkiaSharp.framework.zip",
+      "sha256": "c50e334777d8824ded90a58467a5cc334f7b06e5a5923ac046325f657f4b3193",
+      "package": "skiasharp.nativeassets.maccatalyst",
+      "bytes": 6915111
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.macos\\4.154.0-preview.1.26454.9\\runtimes\\osx\\native\\libSkiaSharp.dylib",
+      "sha256": "1b6cd33d2ac5206311f663cb385c9a38ce389e9fadd50b2bc00716e2fecf9063",
+      "package": "skiasharp.nativeassets.macos",
+      "bytes": 17367104
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\4.154.0-preview.1.26454.9\\buildTransitive\\netstandard1.0\\libSkiaSharp.a\\3.1.34\\mt\\libSkiaSharp.a",
+      "sha256": "dc0e361618f8a931817fdc03331693a710a670545988fac816fbdfca2ed3374d",
+      "package": "skiasharp.nativeassets.webassembly",
+      "bytes": 16338164
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\4.154.0-preview.1.26454.9\\buildTransitive\\netstandard1.0\\libSkiaSharp.a\\3.1.34\\mt,simd\\libSkiaSharp.a",
+      "sha256": "50cea38d536ba487496579a536a8beefa60ea98f971d8d4ee00b46402b48e872",
+      "package": "skiasharp.nativeassets.webassembly",
+      "bytes": 16631840
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\4.154.0-preview.1.26454.9\\buildTransitive\\netstandard1.0\\libSkiaSharp.a\\3.1.34\\st\\libSkiaSharp.a",
+      "sha256": "2228d9736ecdefab1ea6401add0ed28543103d67504128e346e2c333faa37d75",
+      "package": "skiasharp.nativeassets.webassembly",
+      "bytes": 16401010
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\4.154.0-preview.1.26454.9\\buildTransitive\\netstandard1.0\\libSkiaSharp.a\\3.1.34\\st,simd\\libSkiaSharp.a",
+      "sha256": "335b92090f1f5b05f8b7d724f7490139ade54650709c67fb9a3bb85fa5305033",
+      "package": "skiasharp.nativeassets.webassembly",
+      "bytes": 16693974
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\4.154.0-preview.1.26454.9\\buildTransitive\\netstandard1.0\\libSkiaSharp.a\\3.1.56\\mt\\libSkiaSharp.a",
+      "sha256": "933cbff4aed0d0f23f109b23ce420a6dd09b6c10483149116e058e8c6f2786cd",
+      "package": "skiasharp.nativeassets.webassembly",
+      "bytes": 18692232
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\4.154.0-preview.1.26454.9\\buildTransitive\\netstandard1.0\\libSkiaSharp.a\\3.1.56\\mt,simd\\libSkiaSharp.a",
+      "sha256": "889e14711422852557cc2a9bdb896756b24dec50975235404b660626dcb1d9f2",
+      "package": "skiasharp.nativeassets.webassembly",
+      "bytes": 18931384
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\4.154.0-preview.1.26454.9\\buildTransitive\\netstandard1.0\\libSkiaSharp.a\\3.1.56\\st\\libSkiaSharp.a",
+      "sha256": "d3e8492fb2472bc5629ed106e6fd5355e1d24d09a7ec23b92c6b39f784be6876",
+      "package": "skiasharp.nativeassets.webassembly",
+      "bytes": 18769380
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\4.154.0-preview.1.26454.9\\buildTransitive\\netstandard1.0\\libSkiaSharp.a\\3.1.56\\st,simd\\libSkiaSharp.a",
+      "sha256": "612f10311dd5097761468e2c0adf10ad1d0cb9e34950b026fcc174379dae7fe1",
+      "package": "skiasharp.nativeassets.webassembly",
+      "bytes": 19008276
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\4.154.0-preview.1.26454.9\\buildTransitive\\netstandard1.0\\libSkiaSharp.a\\5.0.6\\mt\\libSkiaSharp.a",
+      "sha256": "864e689a65745dc9719a3f3ef96e4293575de888d589f69f72016ff988c10da3",
+      "package": "skiasharp.nativeassets.webassembly",
+      "bytes": 18847034
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\4.154.0-preview.1.26454.9\\buildTransitive\\netstandard1.0\\libSkiaSharp.a\\5.0.6\\mt,simd\\libSkiaSharp.a",
+      "sha256": "6bff8ade3a47672c281b4f42f3a39a8dcdf980058a373ad055d3fd66fff1f015",
+      "package": "skiasharp.nativeassets.webassembly",
+      "bytes": 19138308
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\4.154.0-preview.1.26454.9\\buildTransitive\\netstandard1.0\\libSkiaSharp.a\\5.0.6\\st\\libSkiaSharp.a",
+      "sha256": "3d3f46cfcdedd75e8ece8de3b2cf87c4ead97361597f5f1863e2c71579327776",
+      "package": "skiasharp.nativeassets.webassembly",
+      "bytes": 18893456
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.webassembly\\4.154.0-preview.1.26454.9\\buildTransitive\\netstandard1.0\\libSkiaSharp.a\\5.0.6\\st,simd\\libSkiaSharp.a",
+      "sha256": "499b152832c30074517eb53313eaa7abb97a51947522d823f208823c84f5cf80",
+      "package": "skiasharp.nativeassets.webassembly",
+      "bytes": 19184486
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.win32\\4.154.0-preview.1.26454.9\\runtimes\\win-arm64\\native\\libSkiaSharp.dll",
+      "sha256": "c6deec4b45ab40a2b72eb5936944a102e8cbb2a1e10aee84b855db9889b6dff6",
+      "package": "skiasharp.nativeassets.win32",
+      "bytes": 11561784
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.win32\\4.154.0-preview.1.26454.9\\runtimes\\win-arm64\\native\\libSkiaSharp.pdb",
+      "sha256": "b04fa76b89ad2296ff4d62d0c859902cc27deacd52dcb5ba6cc6ca3ad4faa74d",
+      "package": "skiasharp.nativeassets.win32",
+      "bytes": 96014336
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.win32\\4.154.0-preview.1.26454.9\\runtimes\\win-x64\\native\\libSkiaSharp.dll",
+      "sha256": "07ce51fd59e099b9561b0327223c27b21aa5605b5b8f4484dd297fdb8c8725a1",
+      "package": "skiasharp.nativeassets.win32",
+      "bytes": 13456696
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.win32\\4.154.0-preview.1.26454.9\\runtimes\\win-x64\\native\\libSkiaSharp.pdb",
+      "sha256": "f3b085b02ca0e113347753693d5f103c665ce2e10f92dcb2ddf36d1e746bd018",
+      "package": "skiasharp.nativeassets.win32",
+      "bytes": 99291136
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.win32\\4.154.0-preview.1.26454.9\\runtimes\\win-x86\\native\\libSkiaSharp.dll",
+      "sha256": "91c73fb8477c39fad86e614db63953d63e9057e3bc4270357540d7f692bac84f",
+      "package": "skiasharp.nativeassets.win32",
+      "bytes": 11690296
+    },
+    {
+      "path": "C:\\Users\\parti\\.nuget\\packages\\skiasharp.nativeassets.win32\\4.154.0-preview.1.26454.9\\runtimes\\win-x86\\native\\libSkiaSharp.pdb",
+      "sha256": "5113e65a4fcb2337ea899aa6da111a7bb6b6b5ad7a9d2e3e487dafe3f574072d",
+      "package": "skiasharp.nativeassets.win32",
+      "bytes": 102199296
+    }
+  ],
+  "evidenceFiles": [
+    {
+      "path": "Doroti/artifacts/native-graphite/runs/20260909T095414367Z/graphite-0.json",
+      "sha256": "296964997992928b7487fdc6c66d5c0c3a69a4234db477bf37809458e53fa1b0"
+    },
+    {
+      "path": "Doroti/artifacts/native-graphite/runs/20260909T095414367Z/graphite-1.json",
+      "sha256": "f92a1e16be7722660ce6629dec368f3f6f4264f3af1e4db091481f9c01bee990"
+    },
+    {
+      "path": "Doroti/artifacts/native-graphite/runs/20260909T095655847Z/graphite-0.json",
+      "sha256": "346a37a6bfe18890393062522da2165aca55ba007d54952a244f9b7eb64827cf"
+    },
+    {
+      "path": "Doroti/artifacts/native-graphite/runs/20260909T095655847Z/graphite-1.json",
+      "sha256": "f85a9d0749de8333857c91741cea0c9446970ebaa7156b87d7ba5819f44cc5f2"
+    },
+    {
+      "path": "Doroti/artifacts/native-graphite/baseline/fcr7-material-widget.log",
+      "sha256": "5263ca8fb2ec8a45ca7c04f60da69ba8ddd362c81aa8ac55dcf0444b6f6f43e6"
+    },
+    {
+      "path": "Doroti/artifacts/native-graphite/baseline/linux-qt-contract.log",
+      "sha256": "5532786497e27c5a771c5e430bacbe3c014d020e827da661d874ebd4f508ff67"
+    },
+    {
+      "path": "Doroti/artifacts/native-graphite/native-symbols.log",
+      "sha256": "3c1d0c3c12949b39f0d7ae571b385deb62684848a0235410f149777effba9996"
+    }
+  ]
+}

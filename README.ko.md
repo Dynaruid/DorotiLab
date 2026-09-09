@@ -24,8 +24,8 @@ Doroti는 Flutter를 WebView에 넣지 않으며 플랫폼 UI control tree로 UI
 - 공용 Material/Cupertino widget, element, layout, paint, semantics, state 기반
 - 플랫폼 중립 C# 앱 library와 `macos`(AppKit), `maccatalyst`(UIKit)를 분리한 고정 target runner project
 - 하나의 public target-neutral `Program` startup, host 소유 native 초기화, runner-local generated bootstrap code
-- Windows 기본값인 self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host와 managed hardware-D3D11 ANGLE/EGL Skia 경로. Windows MAUI는 명시적 독립 backend로 유지
-- Web WebGL2를 통한 strict Skia GPU rendering
+- Windows 기본값인 self-contained Windows App SDK 2.4 `HwndExactCpp` child-HWND host와 managed Vulkan/Ganesh Skia·Windows Presentation 경로. Windows MAUI는 명시적 독립 backend로 유지
+- Web 기본값인 Graphite/Dawn WebGPU와 명시적으로 선택하는 WebGL2 경로
 - native AppKit macOS/osx-arm64와 별도로 유지되는 Mac Catalyst를 포함한 고정 runner 빌드
 - Linux x64의 Qt 6 `QOpenGLWindow`, versioned C ABI v2, Qt framebuffer 직접 Skia rendering
 - 두 Apple desktop runner/binding을 포함하는 package-only template(총 12개 project)
@@ -42,8 +42,8 @@ Doroti는 Flutter를 WebView에 넣지 않으며 플랫폼 UI control tree로 UI
                  │
                  ▼
          target host + GPU surface
-  Windows App SDK/ANGLE · Windows MAUI · AppKit · Mac Catalyst
-                 WebGL2 · Linux Qt/Skia GL
+  Windows App SDK/Vulkan · Windows MAUI · AppKit · Mac Catalyst
+             WebGPU / WebGL2 · Linux Qt/Skia GL
 ```
 
 Flutter source는 fidelity 작업에서 동작 reference가 필요할 때 사용합니다. Compiler output은 격리된 candidate이며 제품 source of truth가 아닙니다.
@@ -60,7 +60,7 @@ pwsh -File ./Doroti/eng/doroti.ps1 run -App ./DorotiTestbedApp -Platform windows
 
 Windows 명령은 기본적으로 Windows App SDK/`HwndExactCpp`를 선택합니다. 독립 Windows MAUI runner가 필요할 때만 `-WindowsBackend Maui`를 명시합니다.
 
-Windows App SDK 기본 presenter는 이제 `Vulkan`이며, ANGLE은 `DOROTI_WINDOWS_PRESENTER=AngleD3D11`로 선택합니다. GPU 선택 기본값은 시스템 기본 장치를 따르는 `NoPreference`입니다. `DOROTI_WINDOWS_GPU_PREFERENCE`를 `LowPowerPreference` 또는 `HighPerformancePreference`로 설정하면 Vulkan과 ANGLE에 Windows/DXGI 선호도를 적용합니다. Vulkan에서 장치를 직접 선택하려면 `DOROTI_WINDOWS_VULKAN_DEVICE`에 정확하거나 유일한 장치 이름 일부를 지정합니다. Windows 11 24H2 이상에서 앱은 실험 플래그 없이 `new WindowBackdropOptions(WindowBackdropMode.acrylic)`으로 아크릴을 요청할 수 있습니다. Backdrop 미지정과 `system`은 불투명 창을 유지하며 데모는 이미 Acrylic을 요청합니다. Vulkan은 System32 Vulkan 1.1, dedicated D3D11-texture external memory, Windows Presentation을 사용하며 자동 presenter fallback은 없습니다. Web은 `auto`를 포함해 SkiaSharp WASM의 `worker-direct-webgl`이 기본값이며 별도 CanvasKit backend는 제거했습니다. 이번 기본값 변경이 기존 검증 기록을 바꾸거나 남은 GPU/DPI/주사율/IME/접근성 검증을 완료한 것은 아닙니다.
+Windows App SDK 기본 presenter는 이제 `Vulkan`이며, ANGLE은 `DOROTI_WINDOWS_PRESENTER=AngleD3D11`로 선택합니다. GPU 선택 기본값은 시스템 기본 장치를 따르는 `NoPreference`입니다. `DOROTI_WINDOWS_GPU_PREFERENCE`를 `LowPowerPreference` 또는 `HighPerformancePreference`로 설정하면 Vulkan과 ANGLE에 Windows/DXGI 선호도를 적용합니다. Vulkan에서 장치를 직접 선택하려면 `DOROTI_WINDOWS_VULKAN_DEVICE`에 정확하거나 유일한 장치 이름 일부를 지정합니다. Windows 11 24H2 이상에서 앱은 실험 플래그 없이 `new WindowBackdropOptions(WindowBackdropMode.acrylic)`으로 아크릴을 요청할 수 있습니다. Backdrop 미지정과 `system`은 불투명 창을 유지하며 데모는 이미 Acrylic을 요청합니다. Vulkan은 System32 Vulkan 1.1, dedicated D3D11-texture external memory, Windows Presentation을 사용하며 자동 presenter fallback은 없습니다. Web은 `auto`를 포함해 SkiaSharp WASM의 `worker-direct-webgpu`(Graphite/Dawn)가 기본값이며 `worker-direct-webgl`은 명시적으로 선택합니다. 네이티브 Graphite 전환은 NG0/NG1 검증 중이며 [실행 보고서](Doroti/docs/validation/native-graphite-2026-09-09.md)에 진행 범위를 기록합니다. 이번 기본값 변경이 기존 검증 기록을 바꾸거나 남은 GPU/DPI/주사율/IME/접근성 검증을 완료한 것은 아닙니다.
 `-LastSuccessful`(또는 `-NoBuild`)은 runner, configuration, RID와 source/native input fingerprint가 일치하는 이전 성공 artifact만 재사용하며, 기록이 없거나 stale이면 fail-closed합니다. `-NoRestore`는 build는 수행하고 restore만 생략합니다.
 
 ## Repository 구성

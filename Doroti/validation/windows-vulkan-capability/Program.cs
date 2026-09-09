@@ -38,6 +38,7 @@ internal static unsafe partial class Program
     private static int Main(string[] args)
     {
         var options = Options.Parse(args);
+        if (args.Contains("--graphite")) return RunGraphiteProbe(options, args);
         CapabilityReport report;
         try
         {
@@ -991,7 +992,7 @@ internal static unsafe partial class Program
         public object? QueueIdleRetirementWaitMilliseconds { get; init; }
     }
 
-    private static Instance CreateInstance(Vk vk, IReadOnlyList<string> extensions, bool validation)
+    private static Instance CreateInstance(Vk vk, IReadOnlyList<string> extensions, bool validation, bool synchronizationValidation = false)
     {
         var appName = (byte*)SilkMarshal.StringToPtr("Doroti Vulkan capability");
         var extensionPointers = (byte**)SilkMarshal.StringArrayToPtr(extensions);
@@ -1015,6 +1016,14 @@ internal static unsafe partial class Program
                 EnabledLayerCount = checked((uint)layerNames.Length),
                 PpEnabledLayerNames = layerPointers,
             };
+            var synchronizationFeature = ValidationFeatureEnableEXT.SynchronizationValidationExt;
+            var validationFeatures = new ValidationFeaturesEXT
+            {
+                SType = StructureType.ValidationFeaturesExt,
+                EnabledValidationFeatureCount = 1,
+                PEnabledValidationFeatures = &synchronizationFeature,
+            };
+            if (synchronizationValidation) info.PNext = &validationFeatures;
             Check(vk.CreateInstance(&info, null, out var instance), "vkCreateInstance");
             return instance;
         }
