@@ -60,6 +60,8 @@ public sealed class DorotiMacOSMetalSurface : View, IMauiSkiaSurface
     private event Action<KeyData>? Key;
     private event Action<bool>? FocusChanged;
     private event Action<DorotiResizeEpoch?>? SurfaceSizeChanged;
+    internal event Action? GpuResourcesReleasing;
+    internal void RaiseGpuResourcesReleasing() => GpuResourcesReleasing?.Invoke();
 
     internal ulong ViewId => _viewId;
 

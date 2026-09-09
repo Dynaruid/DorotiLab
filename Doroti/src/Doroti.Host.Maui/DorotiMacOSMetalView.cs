@@ -3,6 +3,7 @@ using AppKit;
 using CoreAnimation;
 using CoreGraphics;
 using Doroti.Ui;
+using Doroti.Skia.Rendering;
 using Foundation;
 using Metal;
 using MetalKit;
@@ -20,7 +21,12 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private readonly IMTLDevice _metalDevice;
     private readonly IMTLCommandQueue _commandQueue;
     private readonly GRMtlBackendContext _backendContext;
+    internal static readonly bool UseGraphite = Environment.GetEnvironmentVariable("DOROTI_MACOS_GRAPHITE") == "1";
+    internal static string GraphicsBackendId => UseGraphite ? "AppKit/MTKView/Graphite-Metal" : "AppKit/MTKView/Metal-Skia";
     private GRContext? _grContext;
+    private SkiaGraphiteSession? _graphite;
+    private DorotiMacOSMetalSurface? _resourceOwner;
+    private bool _frameBackpressure;
     private DorotiMacOSMetalSurface? _owner;
     private readonly Dictionary<long, long> _pressedKeys = [];
     private NSTrackingArea? _trackingArea;
@@ -79,7 +85,10 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
 
     internal void Connect(DorotiMacOSMetalSurface owner)
     {
+        if (_resourcesReleased || _releaseRequested)
+            throw new InvalidOperationException("A disconnected Metal view requires a fresh handler/native view.");
         _owner = owner ?? throw new ArgumentNullException(nameof(owner));
+        _resourceOwner = owner;
         _releaseRequested = false;
         AttachWindowObservers();
         PublishDrawableMetrics(DrawableSize, force: true);
@@ -103,6 +112,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         lock (_resourceGate)
         {
             _releaseRequested = true;
+            _graphite?.StopAcceptingFrames();
             if (_inFlight == 0) ReleaseGpuResources();
         }
     }
@@ -249,9 +259,14 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     {
         _ = view;
         var owner = _owner;
-        var drawable = CurrentDrawable;
         var size = DrawableSize;
-        if (owner is null || size.Width <= 0 || size.Height <= 0) return;
+        if (owner is null || _releaseRequested || size.Width <= 0 || size.Height <= 0) return;
+        if (UseGraphite && _inFlight >= 3)
+        {
+            _frameBackpressure = true;
+            return;
+        }
+        var drawable = CurrentDrawable;
         if (drawable?.Texture is null)
         {
             // The first AppKit invalidation can arrive before CAMetalLayer has
@@ -264,20 +279,29 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         var generation = Interlocked.Read(ref _surfaceGeneration);
         MauiPaintCompletion? completion = null;
         var commandBufferTracked = false;
+        SkiaGraphiteSession.Frame? graphiteFrame = null;
+        var graphiteSubmissionAttempted = false;
         try
         {
-            if (_grContext is null)
+            if (UseGraphite && _graphite is null)
+            {
+                _graphite = SkiaGraphiteSession.CreateMetal(_metalDevice.Handle, _commandQueue.Handle,
+                    Interlocked.Increment(ref _contextGeneration));
+            }
+            if (!UseGraphite && _grContext is null)
             {
                 _grContext = GRContext.CreateMetal(_backendContext) ??
                     throw new InvalidOperationException("Skia Metal GRContext creation failed.");
                 Interlocked.Increment(ref _contextGeneration);
             }
-            var textureInfo = new GRMtlTextureInfo(drawable.Texture);
-            using var renderTarget = new GRBackendRenderTarget(
-                checked((int)size.Width), checked((int)size.Height), textureInfo);
-            using var surface = SKSurface.Create(_grContext, renderTarget,
-                GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888) ??
-                throw new InvalidOperationException("Skia Metal SKSurface creation failed.");
+            using var renderTarget = UseGraphite ? null : new GRBackendRenderTarget(
+                checked((int)size.Width), checked((int)size.Height), new GRMtlTextureInfo(drawable.Texture));
+            if (UseGraphite)
+                graphiteFrame = _graphite!.BeginMetalFrame(checked((int)size.Width), checked((int)size.Height), drawable.Texture.Handle);
+            using var ganeshSurface = UseGraphite ? null : SKSurface.Create(_grContext, renderTarget!,
+                GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888)
+                ?? throw new InvalidOperationException("Skia Metal SKSurface creation failed.");
+            var surface = graphiteFrame?.Surface ?? ganeshSurface!;
             var scale = Window?.Screen?.BackingScaleFactor ?? NSScreen.MainScreen?.BackingScaleFactor ?? 1;
             _logicalWidth = Bounds.Width;
             _logicalHeight = Bounds.Height;
@@ -285,26 +309,36 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
             _pixelHeight = size.Height;
             _density = (double)scale;
             PublishDrawableMetrics(size);
-            var paint = new MauiSkiaPaintContext(surface, _grContext,
+            generation = Interlocked.Read(ref _surfaceGeneration);
+            var paint = new MauiSkiaPaintContext(surface, (object?)_graphite ?? _grContext,
                 checked((int)size.Width), checked((int)size.Height), (double)scale, generation,
-                GetType().FullName ?? nameof(DorotiMacOSMetalView), "AppKit/MTKView/Metal-Skia");
+                GetType().FullName ?? nameof(DorotiMacOSMetalView), GraphicsBackendId);
             completion = owner.RaisePaint(paint);
-            if (paint.SkipPresent) return;
-            surface.Canvas.Flush();
-            surface.Flush();
-            // Ganesh flush records work for the Metal backend, while submit
-            // commits that work to the shared queue. The presentation command
-            // buffer must be enqueued after the raster command buffers or an
-            // old/unfinished drawable can become visible for one refresh.
-            _grContext.Flush(submit: true, synchronous: false);
+            if (paint.SkipPresent || generation != Interlocked.Read(ref _surfaceGeneration))
+            {
+                graphiteFrame?.CancelRecording();
+                return;
+            }
+            if (graphiteFrame is not null)
+            {
+                graphiteSubmissionAttempted = true;
+                graphiteFrame.Submit();
+            }
+            else
+            {
+                surface.Canvas.Flush();
+                surface.Flush();
+                _grContext!.Flush(submit: true, synchronous: false);
+            }
 
             using var commandBuffer = _commandQueue.CommandBuffer() ??
                 throw new InvalidOperationException("Metal command buffer creation failed.");
             var transactionPresentation = _drawingLayout;
             if (!transactionPresentation) commandBuffer.PresentDrawable(drawable);
-            TrackCommandBuffer(commandBuffer, owner, completion, generation);
+            TrackCommandBuffer(commandBuffer, owner, completion, generation, graphiteFrame, drawable);
             commandBufferTracked = true;
             commandBuffer.Commit();
+            graphiteFrame = null; // Ownership transferred to the completion callback.
             Interlocked.Increment(ref _commandBuffersCommitted);
             commandBufferTracked = false;
             if (transactionPresentation)
@@ -321,43 +355,72 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         catch (Exception exception)
         {
             if (commandBufferTracked) CancelCommandBufferTracking();
+            if (graphiteFrame is not null)
+            {
+                if (!graphiteSubmissionAttempted) graphiteFrame.CancelRecording();
+                else
+                {
+                    // Retain submitted resources until a same-queue terminal
+                    // marker, including rejected/failed submission attempts.
+                    using var marker = _commandQueue.CommandBuffer();
+                    if (marker is not null)
+                    {
+                        TrackCommandBuffer(marker, owner, null, generation, graphiteFrame, drawable);
+                        marker.Commit();
+                        Interlocked.Increment(ref _commandBuffersCommitted);
+                    }
+                }
+            }
             owner.RaiseFailure(exception, completion);
         }
     }
 
     private void TrackCommandBuffer(IMTLCommandBuffer buffer, DorotiMacOSMetalSurface owner,
-        MauiPaintCompletion? completion, long generation)
+        MauiPaintCompletion? completion, long generation,
+        SkiaGraphiteSession.Frame? graphiteFrame, ICAMetalDrawable drawable)
     {
-        lock (_resourceGate) _inFlight++;
         buffer.AddCompletedHandler(completedBuffer =>
         {
-            try
+            var status = completedBuffer.Status;
+            var error = completedBuffer.Error?.LocalizedDescription;
+            BeginInvokeOnMainThread(() =>
             {
-                var stale = generation != Interlocked.Read(ref _surfaceGeneration) ||
-                            !ReferenceEquals(owner, _owner);
-                if (stale) Interlocked.Increment(ref _staleCompletions);
-                if (completedBuffer.Status == MTLCommandBufferStatus.Completed)
+                try
                 {
-                    Interlocked.Increment(ref _commandBuffersCompleted);
-                    if (completion is { } value) owner.RaisePresent(value, stale);
+                    var stale = generation != Interlocked.Read(ref _surfaceGeneration) ||
+                                !ReferenceEquals(owner, _owner);
+                    if (stale) Interlocked.Increment(ref _staleCompletions);
+                    if (status == MTLCommandBufferStatus.Completed)
+                    {
+                        Interlocked.Increment(ref _commandBuffersCompleted);
+                        if (completion is { } value) owner.RaisePresent(value, stale);
+                    }
+                    else
+                    {
+                        Interlocked.Increment(ref _commandBuffersErrored);
+                        owner.RaiseFailure(new InvalidOperationException(
+                            error ?? status.ToString()),
+                            completion);
+                    }
                 }
-                else
+                finally
                 {
-                    Interlocked.Increment(ref _commandBuffersErrored);
-                    owner.RaiseFailure(new InvalidOperationException(
-                        completedBuffer.Error?.LocalizedDescription ?? completedBuffer.Status.ToString()),
-                        completion);
+                    graphiteFrame?.CompleteGpuWork();
+                    GC.KeepAlive(drawable);
+                    lock (_resourceGate)
+                    {
+                        _inFlight--;
+                        if (_releaseRequested && _inFlight == 0) ReleaseGpuResources();
+                    }
+                    if (_frameBackpressure && !_releaseRequested)
+                    {
+                        _frameBackpressure = false;
+                        RequestFrame();
+                    }
                 }
-            }
-            finally
-            {
-                lock (_resourceGate)
-                {
-                    _inFlight--;
-                    if (_releaseRequested && _inFlight == 0) ReleaseGpuResources();
-                }
-            }
+            });
         });
+        lock (_resourceGate) _inFlight++;
     }
 
     private void CancelCommandBufferTracking()
@@ -534,7 +597,7 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
         ContextGeneration = Interlocked.Read(ref _contextGeneration),
         SurfaceGeneration = Interlocked.Read(ref _surfaceGeneration),
         NativeViewType = GetType().FullName ?? nameof(DorotiMacOSMetalView),
-        GraphicsBackend = "AppKit/MTKView/Metal-Skia",
+        GraphicsBackend = GraphicsBackendId,
         MetalDevice = _metalDevice.Name,
         PixelFormat = ColorPixelFormat.ToString(),
         CommandBuffersCommitted = Interlocked.Read(ref _commandBuffersCommitted),
@@ -553,12 +616,16 @@ public sealed class DorotiMacOSMetalView : MTKView, IMTKViewDelegate
     private void ReleaseGpuResources()
     {
         if (_resourcesReleased) return;
-        _resourcesReleased = true;
+        _resourceOwner?.RaiseGpuResourcesReleasing();
+        _resourceOwner = null;
+        _graphite?.Dispose();
+        _graphite = null;
         _grContext?.Dispose();
         _grContext = null;
         _backendContext.Dispose();
         _commandQueue.Dispose();
         _metalDevice.Dispose();
+        _resourcesReleased = true;
     }
 }
 #endif

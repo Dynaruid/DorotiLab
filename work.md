@@ -1,10 +1,12 @@
 # 네이티브 Graphite Vulkan·Metal 전환 작업계획
 
-작성일: 2026-09-09. 상태: **전체 전환 PARTIAL — NG0·NG1 Windows 진단/동일 Skia native bridge 구현·실행, NG7 현재 문서 일부 정리. 제품 host 전환 미완료**.
+작성일: 2026-09-09. 상태: **전체 전환 PARTIAL — Windows native bridge 검증에 이어 공통 Metal session·macOS AppKit Graphite 후보 구현, 실제 Material 출력·pkg 생성·분리 경로 실행 검증. 5개 OS 기본값 전환 미완료**.
 
 ## 0. 후속 구현 실행 현황 (2026-09-09)
 
-이번 `work.md의 전체작업` 요청으로 구현을 시작했다. 아래 최초 계획의 단계와 수용 기준을 유지한다. [상세 실행 보고서](Doroti/docs/validation/native-graphite-2026-09-09.md)와 [버전 관리되는 결과·hash·첫 실패](history/26-09-09/native-graphite-execution.json)에 근거를 남겼다.
+### 0.1 앞선 Windows 실행 기록
+
+앞선 `work.md의 전체작업` 요청으로 구현을 시작했다. 아래 최초 계획의 단계와 수용 기준을 유지한다. [상세 실행 보고서](Doroti/docs/validation/native-graphite-2026-09-09.md)와 [버전 관리되는 결과·hash·첫 실패](history/26-09-09/native-graphite-execution.json)에 근거를 남겼다.
 
 - **NG0 PARTIAL:** baseline commit/diff, OS/GPU/driver, target manifest, 고정 NuGet의 native asset inventory/hash, 실제 probe 로딩 경로, budget·in-flight 한도를 기록했다. 현재 Vulkan/D3D11 capability는 RTX 4060 Laptop·Radeon 780M 모두 PASS다. 실제 앱 장면/성능/메모리/물리 기준선과 최종 지원 정책은 미완료다.
 - **NG1 PARTIAL:** 기존 검증 프로젝트에 Graphite probe를 구현했다. context/recorder, color/text/gradient/offscreen draw, raster upload, 비동기 readback과 정상 종료를 실행했다. 고정 Skia 안에 texture state 조회/갱신·wait/signal semaphore·GPU 작업 polling C ABI를 통합하고 win-x64 DLL을 재빌드했다. 두 GPU에서 각각 36프레임의 외부 texture → Vulkan copy → 동일 wrapper 재사용이 PASS, synchronization validation 경고/오류 0이다. 원본/재빌드의 작은 offscreen 장면 hash도 일치한다. 텍스트/gradient 시각 승인, 출력 자원 반환, device loss/미완료 작업 종료, Metal, feature/extension 전달 및 RID 패키징은 아직 미검증/미구현이다.
@@ -13,6 +15,18 @@
 - FCR-7 Material/widget 계약과 Linux Qt ABI/keyboard/clipboard 계약 PASS. 각 검증에 외부 20분 timeout을 적용했다. Web browser·실기기·physical scan-out·성능 개선은 `notVerified`다.
 
 실행/복구 명령은 [native bridge README](Doroti/native/graphite/README.md)에 있다. 시험 DLL은 별도 probe 프로세스에만 명시적으로 로드하며 NuGet cache나 제품 산출물을 교체하지 않는다. 아래 `[ ]`는 부분 증거만으로 체크하지 않은 **전체 완료 조건**이다.
+
+### 0.2 이번 Apple 환경 후속 구현
+
+현재 환경은 **Apple M1·macOS 26.6.2·Xcode 26.6·.NET 10.0.400**이다. 이전 Windows 실행의 Apple 환경 미확보 상태를 그대로 적용하지 않았다. [Apple 상세 보고서](Doroti/docs/validation/native-graphite-apple-2026-09-09.md), [공통 session 계약](Doroti/docs/architecture/native-graphite-session.md), [버전 관리되는 실행 결과](history/26-09-09/native-graphite-apple-execution.json)에 추가 근거를 기록한다.
+
+- **NG1 PARTIAL:** 고정 macOS native asset의 실제 Graphite/Metal context 생성, 외부 texture 36프레임 재사용·async readback·색상/이미지/offscreen/runtime shader 픽셀 검증 PASS. 창 probe에서 Graphite 명령 버퍼 44개 완료, resize 20회·최소화/복원·숨김/복귀·진행 중 종료 후 자원 반환 PASS. Metal API Validation 활성 로그에 오류/경고 없음. device loss·전체 플랫폼 ABI/배포 gate는 남아 있다.
+- **NG2 PARTIAL:** `SkiaGraphiteSession`에 단일 owner/thread·generation, context/recorder 예산, view별 image provider/cache, bounded frames, recorder surface·async readback, GPU 완료 후 반환을 구현했다. native Metal RuntimeEffects ID와 AppKit renderer cache 해제를 연결했다. Vulkan session·전체 image export/cache·Web browser 검증은 미완료다.
+- **NG4 PARTIAL:** `DOROTI_MACOS_GRAPHITE=1`로 실제 macOS 제품 host의 Graphite 후보를 명시적으로 선택할 수 있다. MTKView·입력·transaction presentation 구조를 보존했다. Material 샘플에서 Ganesh/Graphite 모두 새 장면 2회·재표시 2회·명령 버퍼 5개 완료, 오류와 CPU readback/copy 0을 확인했다. iOS/Catalyst handler 전환·실기기·제품 전체 lifecycle은 미완료다.
+- **NG7 PARTIAL:** canonical `build/run/publish` 실행 및 macOS `.pkg` 생성 PASS. 패키지를 별도 디렉터리에 풀어 Graphite 앱을 실행해 first-content/replay를 확인했다. 시스템 설치·clean publish·기본값 승격을 완료로 간주하지 않는다. README 양 언어판과 새 보고서를 동기화했다.
+- Runtime shader·FCR-7 전체 계약·Web host 빌드 PASS. Windows/Linux/Android 제품 전환, 실제 WebGPU/WebGL 브라우저 회귀, 성능·메모리 비교와 사람의 물리 화면/입력 승인은 미완료다. Android 연결 장치가 없고 등록된 iPhone 12는 unavailable 상태다.
+
+기본값은 계속 기존 경로다. macOS 후보를 사용하지 않으려면 `DOROTI_MACOS_GRAPHITE` 옵션을 제거한다. 아래 checkbox는 각 항목 전체 완료 조건이므로 일부 Apple 증거만으로 체크하지 않는다.
 
 ## 1. 목표와 검토 결론
 
@@ -34,7 +48,7 @@ Windows의 `Graphite → Vulkan`은 **Skia의 GPU 렌더링 API**를 뜻한다. 
 
 ## 2. 현재 코드 기준선
 
-판정 근거는 2026-09-09 checkout의 소스다. 문서나 과거 PASS를 현재 실행 결과로 간주하지 않는다.
+아래 표는 최초 2026-09-09 checkout의 기준선이다. 이후 추가된 macOS 명시적 Graphite 후보는 0.2절에 기록한다. 문서나 과거 PASS를 현재 실행 결과로 간주하지 않는다.
 
 | 대상 | 현재 확인한 구조 | 변경량·주의점 |
 | --- | --- | --- |
@@ -211,13 +225,13 @@ Windows의 `Graphite → Vulkan`은 **Skia의 GPU 렌더링 API**를 뜻한다. 
 | 검증 축 | 필요한 증거 | 현재 상태 |
 | --- | --- | --- |
 | 패키지/API | RID별 native backend 포함·ABI·loader·실제 context 생성 | Windows stock/bridge probe context PASS; 전체 RID 패키징 notVerified |
-| GPU interop | Vulkan validation/Metal validation, texture 상태·제출 순서·자원 반환 | Windows 두 GPU external-copy/synchronization validation PASS; platform present/Metal notVerified |
-| 공통 기능 | FCR-7 Material, retained rendering, image pipeline, RuntimeEffects, paragraph/text·clip·alpha·blur | 기존 FCR-7 계약 PASS; native Graphite 제품 연결 notVerified |
+| GPU interop | Vulkan validation/Metal validation, texture 상태·제출 순서·자원 반환 | Windows 두 GPU external-copy PASS; M1 Metal texture/창 probe 완료·반환 PASS; Windows platform present·device loss 미검증 |
+| 공통 기능 | FCR-7 Material, retained rendering, image pipeline, RuntimeEffects, paragraph/text·clip·alpha·blur | FCR-7·Runtime shader 계약 PASS; macOS Graphite Material first-content/replay PASS; 전체 효과·image export 미검증 |
 | 프레임 계약 | generation·DPR·resize·replay/superseded·중복 terminal 없음·bounded queue | notVerified |
 | native lifecycle | 장치/표면 재생성, 시작/종료, background, 최소화/복귀, 다중 view | notVerified |
 | 플랫폼 기능 | Windows Acrylic/UIA, Linux Wayland/X11/Orca, Apple VoiceOver, Android TalkBack·IME | notVerified |
-| 배포 | canonical `Doroti/eng/doroti.ps1` 경로의 build/publish/run, 템플릿 재생성, 서명/실기기 설치 | notVerified |
-| Web 회귀 | 기존 WebGPU 기본/명시 WebGL, 공통 surface/effects/cache 변경 영향 | notVerified |
+| 배포 | canonical `Doroti/eng/doroti.ps1` 경로의 build/publish/run, 템플릿 재생성, 서명/실기기 설치 | macOS build/run/publish·pkg 분리 경로 실행 PASS; clean 설치·전체 RID 미검증 |
+| Web 회귀 | 기존 WebGPU 기본/명시 WebGL, 공통 surface/effects/cache 변경 영향 | Web host 빌드 PASS; 실제 browser notVerified |
 | 성능·메모리 | 같은 target/work·장면·DPR·GPU/전력 조건의 기존 Ganesh 대비 측정 | notVerified |
 | 물리 확인 | 사람이 수행한 스크롤·창 resize·DPI 경계·터치/IME, 실제 화면 관찰 | notVerified |
 
@@ -239,4 +253,4 @@ Windows의 `Graphite → Vulkan`은 **Skia의 GPU 렌더링 API**를 뜻한다. 
 - [ ] Web 기존 경로 회귀가 없고 Framework 작업 대상·동작 의미가 유지된다.
 - [ ] 이전 제품 경로 정리와 README/ADR/manifest/템플릿 동기화가 끝났으며 과거 실패 증거가 보존된다.
 
-현재 완료 증거는 **소스·고정 API 검토, Windows Graphite probe와 동일 Skia native bridge 빌드, 두 GPU의 제한된 offscreen/외부 copy 검증, 기존 FCR-7·Qt 계약 및 현재 문서 정리**다. NG1 전체 수명·배포 gate와 NG2–NG6 제품 전환은 미완료이며, native 화면 출력·publish·성능·실기기 검증은 `notVerified`다. 전체 전환 완료로 기록하지 않는다.
+현재 완료 증거는 **기존 Windows probe/bridge 검증, 공통 Metal session과 macOS AppKit 명시적 Graphite 후보, M1 texture·창 probe·Material 제품 출력·pkg 생성/분리 경로 실행, Runtime shader·FCR-7 계약과 Web 빌드**다. NG1 전체 수명·Vulkan ABI/배포 gate, 나머지 제품 host 전환·기본값 승격·이전 경로 정리는 미완료다. iOS/Android 실기기·실제 Web browser·성능·물리 확인은 `notVerified`이며, 전체 전환 완료로 기록하지 않는다.

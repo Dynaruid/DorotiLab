@@ -51,6 +51,8 @@ dotnet run --project ./DorotiTestbedApp/windowsappsdk/DorotiTestbedApp.WindowsAp
 Apple Silicon, macOS 14 이상과 호환되는 Xcode/macOS workload가 필요합니다.
 `macos`는 native AppKit runner입니다.
 
+Graphite/Metal 실험 후보는 아래 `dotnet run` 명령에 `-e DOROTI_MACOS_GRAPHITE=1`을 추가해 선택합니다. 기본값은 Ganesh/Metal이며, 후보의 실행 범위와 미검증 항목은 [Apple 전환 보고서](../Doroti/docs/validation/native-graphite-apple-2026-09-09.md)에 있습니다. 해당 옵션을 빼면 기존 경로로 복귀합니다.
+
 ```powershell
 dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64 `
   -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none

@@ -51,6 +51,8 @@ For the independent MAUI backend, replace the project in this command with
 Requires Apple Silicon, macOS 14 or later, and compatible Xcode/macOS workloads.
 The `macos` runner uses native AppKit.
 
+Add `-e DOROTI_MACOS_GRAPHITE=1` to the `dotnet run` command below to select the experimental Graphite/Metal candidate. Ganesh/Metal remains the default. See the [Apple execution report](../Doroti/docs/validation/native-graphite-apple-2026-09-09.md) for verified scope and remaining gates. Omit the option to return to the existing path.
+
 ```powershell
 dotnet run --project ./DorotiTestbedApp/macos/DorotiTestbedApp.MacOS.csproj -c Release -r osx-arm64 `
   -e DOROTI_TESTBED_MODE=sample -e DOROTI_RESIZE_FIXTURE=none

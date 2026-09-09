@@ -2,6 +2,7 @@ using System.Text.Json;
 using AppKit;
 using CoreGraphics;
 using Doroti.Skia.Rendering;
+using Doroti.Skia.RuntimeEffects;
 using Doroti.Ui;
 using Foundation;
 using SkiaSharp;
@@ -20,15 +21,20 @@ internal sealed class DorotiMetalSurface : View, IDisposable
     private readonly SkiaSceneRenderer _renderer;
     private readonly Picture _picture;
     private readonly Paragraph _paragraph;
+    private readonly FragmentShader _shader;
     private readonly Scene _scene;
     private DorotiMetalView? _nativeView;
-    private bool _submitted;
+    private long _submittedGeneration;
+    private long _frameworkFrame;
     private bool _disposed;
     private bool _automationStarted;
     private long _presented;
     private long _replayed;
     private long _failed;
     private int _evidenceWritePending;
+    private readonly SemaphoreSlim _evidenceGate = new(1, 1);
+    private string? _firstFailure;
+    private bool _automationComplete;
 
     public DorotiMetalSurface()
     {
@@ -38,8 +44,8 @@ internal sealed class DorotiMetalSurface : View, IDisposable
             new UiColor(0xfff7f2fa),
             new UiColor(0xff141218),
             "macOS/Maui/AppKit-Main/osx-arm64",
-            "Metal-AppKit",
-            "AppKit/MTKView/Metal-Skia");
+            DorotiMetalView.UseGraphite ? DorotiSkiaRuntimeEffects.NativeGraphiteMetalBackend : DorotiSkiaRuntimeEffects.AppKitMetalBackend,
+            DorotiMetalView.UseGraphite ? "AppKit/MTKView/Graphite-Metal" : "AppKit/MTKView/Ganesh-Metal");
 
         var recorder = new PictureRecorder();
         var canvas = new Canvas(recorder);
@@ -60,6 +66,9 @@ internal sealed class DorotiMetalSurface : View, IDisposable
                 strokeWidth = 12,
                 strokeCap = StrokeCap.round,
             });
+        _shader = FragmentProgram.fromSource(
+            "half4 main(float2 p) { return half4(0.4, 0.2, 0.8, 1); }", "appkit-graphite-runtime-effect").fragmentShader();
+        canvas.drawRect(UiRect.fromLTWH(72, 382, 96, 32), new UiPaint { shader = _shader });
         _paragraph = new Paragraph(
             "Doroti AppKit / Metal",
             260,
@@ -79,19 +88,25 @@ internal sealed class DorotiMetalSurface : View, IDisposable
         _nativeView = nativeView;
         _host.AttachInvalidate(nativeView.RequestFrame);
         _renderer.AttachSurface(nativeView.RequestFrame);
-        if (_submitted) return;
-        _submitted = true;
-        _renderer.Submit(ViewId, _scene, DartUiInvocation.Managed("appkit-metal-spike#initial-scene"));
+        nativeView.RequestFrame();
     }
 
     internal SkiaPaintCompletion? Paint(
         SKSurface surface,
         int pixelWidth,
         int pixelHeight,
-        long surfaceGeneration)
+        long surfaceGeneration,
+        double scale)
     {
         if (_disposed) return null;
-        _host.SetSurfaceGeneration(surfaceGeneration);
+        _host.SetViewport(pixelWidth, pixelHeight, scale, surfaceGeneration);
+        if (_submittedGeneration != surfaceGeneration)
+        {
+            _submittedGeneration = surfaceGeneration;
+            var token = new DorotiSceneBuildToken(_host.ViewEpoch, ++_frameworkFrame, pixelWidth, pixelHeight);
+            _renderer.Submit(ViewId, new DorotiSceneSubmission(_scene, token),
+                DartUiInvocation.Managed("appkit-metal-spike#viewport-scene"));
+        }
         return _renderer.Paint(surface, pixelWidth, pixelHeight);
     }
 
@@ -100,7 +115,7 @@ internal sealed class DorotiMetalSurface : View, IDisposable
         if (_disposed) return;
         if (stale)
         {
-            Interlocked.Increment(ref _failed);
+            _renderer.SupersedePaint(completion, "stale Metal completion rejected");
         }
         else
         {
@@ -114,8 +129,8 @@ internal sealed class DorotiMetalSurface : View, IDisposable
 
     internal void FailPaint(SkiaPaintCompletion? completion, string reason)
     {
-        _ = completion;
-        _ = reason;
+        _firstFailure ??= reason;
+        if (completion is { } value) _renderer.FailPaint(value, reason);
         if (_disposed) return;
         Interlocked.Increment(ref _failed);
         QueueEvidenceWrite();
@@ -135,7 +150,20 @@ internal sealed class DorotiMetalSurface : View, IDisposable
             if (_automationStarted) return;
             _automationStarted = true;
         }
-        _ = RunAutomationAsync();
+        _ = RunAutomationGuardedAsync();
+    }
+
+    private async Task RunAutomationGuardedAsync()
+    {
+        try { await RunAutomationAsync().ConfigureAwait(false); }
+        catch (Exception exception)
+        {
+            _firstFailure ??= exception.ToString();
+            Interlocked.Increment(ref _failed);
+            await WriteEvidenceAsync().ConfigureAwait(false);
+            Environment.ExitCode = 1;
+            await OnMainThreadAsync(() => NSApplication.SharedApplication.Terminate(NSApplication.SharedApplication)).ConfigureAwait(false);
+        }
     }
 
     private async Task RunAutomationAsync()
@@ -162,6 +190,14 @@ internal sealed class DorotiMetalSurface : View, IDisposable
         await OnMainThreadAsync(() => NSApplication.SharedApplication.Unhide(NSApplication.SharedApplication)).ConfigureAwait(false);
         _nativeView?.RequestFrame();
         await Task.Delay(500).ConfigureAwait(false);
+        Task? shutdown = null;
+        await OnMainThreadAsync(() =>
+        {
+            _nativeView?.Draw();
+            shutdown = _nativeView?.ShutdownAsync();
+        }).ConfigureAwait(false);
+        if (shutdown is not null) await shutdown.WaitAsync(TimeSpan.FromSeconds(10)).ConfigureAwait(false);
+        _automationComplete = true;
         await WriteEvidenceAsync().ConfigureAwait(false);
         await OnMainThreadAsync(() => _nativeView?.Window?.Close()).ConfigureAwait(false);
         await Task.Delay(100).ConfigureAwait(false);
@@ -211,40 +247,50 @@ internal sealed class DorotiMetalSurface : View, IDisposable
     {
         var path = Environment.GetEnvironmentVariable("DOROTI_APPKIT_SPIKE_EVIDENCE");
         if (string.IsNullOrWhiteSpace(path)) return;
-        var renderer = _renderer.Diagnostics;
-        var native = _nativeView?.CaptureDiagnostics();
-        var evidence = new
+        await _evidenceGate.WaitAsync().ConfigureAwait(false);
+        try
         {
-            schema = "doroti-appkit-metal-spike/v1",
-            timestampUtc = DateTimeOffset.UtcNow,
-            identity = "macOS | net10.0-macos | osx-arm64 | AppKit-Main",
-            backend = "AppKit/MTKView/Metal-Skia",
-            backendPackage = "Microsoft.Maui.Platforms.MacOS/0.1.0-preview.12.26368.2",
-            backendSourceCommit = "229f764fd688754497fe5822213e7b13b4e9caa3",
-            mauiVersion = "10.0.90",
-            skiaSharpVersion = "4.152.0-rc.1.26426.14",
-            native,
-            frame = new
+            var renderer = _renderer.Diagnostics;
+            object? native = null;
+            await OnMainThreadAsync(() => native = _nativeView?.CaptureDiagnostics()).ConfigureAwait(false);
+            var evidence = new
             {
-                submitted = renderer.Submitted,
-                presented = Interlocked.Read(ref _presented),
-                replayed = Interlocked.Read(ref _replayed),
-                superseded = renderer.Superseded,
-                failed = Interlocked.Read(ref _failed),
-                dropped = renderer.Dropped,
-            },
-            softwareFallbackFrames = 0,
-            cpuReadbacks = 0,
-            fullFrameCopies = 0,
-        };
-        var json = JsonSerializer.Serialize(evidence, new JsonSerializerOptions { WriteIndented = true });
-        await Task.Run(() =>
-        {
-            var directory = System.IO.Path.GetDirectoryName(path);
-            if (!string.IsNullOrWhiteSpace(directory)) Directory.CreateDirectory(directory);
-            File.WriteAllText(path, json);
-        }).ConfigureAwait(false);
+                schema = "doroti-appkit-metal-spike/v2",
+                status = _firstFailure is not null ? "FAIL" : _automationComplete ? "PASS" : "RUNNING",
+                firstFailure = _firstFailure,
+                physicalScanOut = "notVerified",
+                performance = "notVerified",
+                timestampUtc = DateTimeOffset.UtcNow,
+                identity = "macOS | net10.0-macos | osx-arm64 | AppKit-Main",
+                backend = DorotiMetalView.UseGraphite ? "AppKit/MTKView/Graphite-Metal" : "AppKit/MTKView/Ganesh-Metal",
+                skiaIdentity = GraphiteMetalContract.Identity(),
+                native,
+                frame = new
+                {
+                    sceneAccepted = renderer.SceneAccepted,
+                    platformSubmitted = renderer.Submitted,
+                    presented = Interlocked.Read(ref _presented),
+                    replayed = Interlocked.Read(ref _replayed),
+                    superseded = renderer.Superseded,
+                    failed = Interlocked.Read(ref _failed),
+                    dropped = renderer.Dropped,
+                },
+                softwareFallbackFrames = 0,
+                cpuReadbacks = 0,
+                fullFrameCopies = 0,
+            };
+            var json = JsonSerializer.Serialize(evidence, new JsonSerializerOptions { WriteIndented = true });
+            await Task.Run(() =>
+            {
+                var directory = System.IO.Path.GetDirectoryName(path);
+                if (!string.IsNullOrWhiteSpace(directory)) Directory.CreateDirectory(directory);
+                File.WriteAllText(path, json);
+            }).ConfigureAwait(false);
+        }
+        finally { _evidenceGate.Release(); }
     }
+
+    internal void ReleaseRendererResources() => _renderer.InvalidateGpuContextResources();
 
     public void Dispose()
     {
@@ -255,5 +301,6 @@ internal sealed class DorotiMetalSurface : View, IDisposable
         _scene.Dispose();
         _picture.Dispose();
         _paragraph.Dispose();
+        _shader.dispose();
     }
 }

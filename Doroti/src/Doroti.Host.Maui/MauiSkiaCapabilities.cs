@@ -16,6 +16,15 @@ internal sealed class MauiSkiaCapabilities :
 {
     private readonly MauiHostAdapter _host;
     private readonly SkiaSceneRenderer _renderer;
+#if MACOS
+    private DorotiMacOSMetalSurface? _metalSurface;
+
+    internal void AttachNativeLifecycle(DorotiMacOSMetalSurface surface)
+    {
+        _metalSurface = surface;
+        surface.GpuResourcesReleasing += _renderer.InvalidateGpuContextResources;
+    }
+#endif
 
     internal MauiSkiaCapabilities(
         ulong viewId,
@@ -31,8 +40,8 @@ internal sealed class MauiSkiaCapabilities :
             darkBackgroundColor,
 #if MACOS
             "macos/mtkview",
-            DorotiSkiaRuntimeEffects.AppKitMetalBackend,
-            "AppKit/MTKView/Metal-Skia",
+            DorotiMacOSMetalView.UseGraphite ? DorotiSkiaRuntimeEffects.NativeGraphiteMetalBackend : DorotiSkiaRuntimeEffects.AppKitMetalBackend,
+            DorotiMacOSMetalView.GraphicsBackendId,
             // AppKit Ganesh offscreen snapshots can expose a transparent
             // picture before its raster work is visible to the main surface.
             enablePictureRasterCache: false);
@@ -141,7 +150,15 @@ internal sealed class MauiSkiaCapabilities :
     public ValueTask RegisterFontAsync(ReadOnlyMemory<byte> bytes, string? family, CancellationToken cancellationToken = default) =>
         _renderer.RegisterFontAsync(bytes, family, cancellationToken);
 
-    public void Dispose() => _renderer.Dispose();
+    public void Dispose()
+    {
+#if MACOS
+        if (_metalSurface is { } surface)
+            surface.GpuResourcesReleasing -= _renderer.InvalidateGpuContextResources;
+        _metalSurface = null;
+#endif
+        _renderer.Dispose();
+    }
 
     private sealed class HostBridge(MauiHostAdapter host) : ISkiaSceneRendererHost
     {

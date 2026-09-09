@@ -1,6 +1,6 @@
 # Native Graphite interop qualification
 
-Status: **NG1 PARTIAL; diagnostic win-x64 asset only**. Product hosts still use their existing native renderers. See [execution evidence](../../docs/validation/native-graphite-2026-09-09.md).
+Status: **NG1 PARTIAL; rebuilt bridge asset remains diagnostic win-x64 only**. Product defaults still use their existing native renderers. The stock macOS asset now has a validated Metal probe and an explicit AppKit Graphite candidate (`DOROTI_MACOS_GRAPHITE=1`); it does not use this Vulkan bridge. See [Windows execution evidence](../../docs/validation/native-graphite-2026-09-09.md) and [Apple follow-up](../../docs/validation/native-graphite-apple-2026-09-09.md).
 
 The central SkiaSharp package is `4.154.0-preview.1.26454.9`, repository revision `143a933a753dbfeca1909524b2c06c546c5c3e20`. Its Skia submodule is `cc43af052d3d98e605bee4ddc98671dafded1c57`. `build-windows.py` checks out that exact Skia revision, syncs its pinned DEPS, includes `doroti_graphite_interop.inc` inside `src/c/sk_graphite_vulkan.cpp`, and builds the complete `libSkiaSharp.dll`. The bridge never links a second Skia instance. Both managed APIs resolve to the selected DLL in an isolated probe process.
 
@@ -36,7 +36,7 @@ The pinned `VulkanCaps` requires `INPUT_ATTACHMENT` together with `COLOR_ATTACHM
 - The original context C ABI cannot pass enabled feature/extension chains. This probe enables **no optional device features or extensions**. A product bridge must forward the exact enabled chain and extension list, with validated allocator/callback ownership; supported features must not be reported as enabled features.
 - No final-target-state API, native completion callback binding, device-loss recovery, outstanding-work shutdown qualification, or presentation-terminal binding is claimed by ABI 1. The polling path qualifies only the tested same-queue copy.
 - Windows D3D11 dedicated-image copy and Windows Presentation slot return must be joined to Graphite and validated separately. Linux/Android WSI, split queues, acquire/present semaphore consumption and swapchain destruction remain open.
-- Metal drawable ordering/retention, Apple capability checks, Android lifecycle and all other RID rebuilds remain open. Do not promote this DLL into the product feed or share its C++ pointers with another Skia DLL.
+- The Apple follow-up qualifies the tested M1 Metal drawable ordering and completion release with the stock asset. Apple device loss/iOS/Catalyst qualification, Android lifecycle and other Vulkan RID rebuilds remain open. Do not promote this DLL into the product feed or share its C++ pointers with another Skia DLL.
 - The build manifest is provenance for a local diagnostic build, not a reproducible RID package or clean-publish PASS. Native dependencies, licenses and managed/native ABI must be included in the eventual package workflow.
 
 Skia source licensing is the pinned checkout's `LICENSE`; upstream native-package notices are in `SkiaSharp.NativeAssets.Win32/4.154.0-preview.1.26454.9/LICENSE.txt` and `THIRD-PARTY-NOTICES.txt`. Preserve them with any future redistributed asset. The local build does not redistribute or relicense upstream source.

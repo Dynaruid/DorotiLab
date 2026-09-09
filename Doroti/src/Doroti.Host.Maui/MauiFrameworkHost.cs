@@ -25,7 +25,7 @@ public sealed class MauiFrameworkHost : IDisposable
 #elif ANDROID
         $"{AndroidRuntimeIdentifier}/Android/MauiSKGLTextureView/OpenGL-ES-Skia";
 #elif MACOS
-        "osx-arm64/AppKit/MTKView/Metal-Skia";
+        $"osx-arm64/{DorotiMacOSMetalView.GraphicsBackendId}";
 #else
 #error Doroti.Host.Maui requires an explicit platform identity.
 #endif
@@ -68,6 +68,9 @@ public sealed class MauiFrameworkHost : IDisposable
         var host = new MauiHostAdapter(viewId, surface, textInput, configuration.logicalSize, semantics);
         var graphics = new MauiSkiaCapabilities(
             viewId, host, configuration.backgroundColor, configuration.darkBackgroundColor);
+#if MACOS
+        if (surface is DorotiMacOSMetalSurface metalSurface) graphics.AttachNativeLifecycle(metalSurface);
+#endif
         var messages = new MauiPlatformMessageCapability();
         var capabilities = new DorotiViewCapabilities(_targetIdentity)
             .Register<IViewHostCapability>(DorotiCapabilityIds.WindowLifecycle, host)

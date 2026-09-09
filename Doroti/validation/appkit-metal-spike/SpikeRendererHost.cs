@@ -13,6 +13,8 @@ internal sealed class SpikeRendererHost : ISkiaSceneRendererHost
 
     public long InputSequence => 0;
     public long SurfaceGeneration => Interlocked.Read(ref _surfaceGeneration);
+    public DorotiViewEpoch ViewEpoch { get; private set; } = new(1, 1, 1, 0, 0, 0, 0, 1, 1, 0);
+    public DorotiResizeEpoch ResizeTarget { get; private set; } = new(1, 0, 0, 0, 0, 1, 0);
     public PlatformConfiguration Configuration { get; } = new(
         [new Doroti.Ui.Locale("en", "US")],
         Brightness.light,
@@ -42,6 +44,14 @@ internal sealed class SpikeRendererHost : ISkiaSceneRendererHost
 
     public void SetSurfaceGeneration(long generation) =>
         Interlocked.Exchange(ref _surfaceGeneration, generation);
+
+    public void SetViewport(int width, int height, double scale, long generation)
+    {
+        SetSurfaceGeneration(generation);
+        ViewEpoch = new(1, generation, generation, width / scale, height / scale,
+            width, height, scale, scale, 0);
+        ResizeTarget = new(generation, width / scale, height / scale, width, height, scale, 0);
+    }
 
     public void UpdateSemantics(SemanticsUpdate update) => _ = update;
     public void ClearSemantics() { }

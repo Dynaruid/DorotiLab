@@ -1,5 +1,7 @@
 # Native Graphite NG0/NG1 execution — 2026-09-09
 
+This report preserves the earlier Windows execution. The later Mac execution, shared Metal session and explicit AppKit product candidate are recorded in the [Apple follow-up](native-graphite-apple-2026-09-09.md). The matrix below describes the Windows run, not the later cumulative state.
+
 **Overall: PARTIAL. The five-OS product migration is not complete.** The native backend defaults and central NuGet versions have not been promoted. Windows native interop now has executable probes and a locally rebuilt same-Skia bridge; NG1's complete output/lifecycle/package gate is still open. The original implementation plan is [work.md](../../../work.md).
 
 ## Implemented and executed
