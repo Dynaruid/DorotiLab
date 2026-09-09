@@ -4,6 +4,7 @@
     <AssemblyName>Doroti.Validation.Fcr7MaterialWidget</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Condition="$([MSBuild]::IsOSPlatform('Linux'))" />
     <PackageReference Include="SkiaSharp.Direct3D.Vortice" />
     <Compile Include="..\..\..\DorotiTestbedApp\src\MaterialSample\*.cs" Link="MaterialSample\%(Filename)%(Extension)" />
     <EmbeddedResource Include="..\..\..\reference\flutter_sample_app\assets\images\mae-mu-9002s2VnOAY-unsplash.webp" LogicalName="MaterialSample.image.webp" />

@@ -39,6 +39,11 @@ internal static unsafe partial class Program
     {
         var options = Options.Parse(args);
         if (args.Contains("--graphite")) return RunGraphiteProbe(options, args);
+        if (!OperatingSystem.IsWindows())
+        {
+            Console.Error.WriteLine("Only --graphite is portable; D3D11/Win32 qualification requires Windows.");
+            return 1;
+        }
         CapabilityReport report;
         try
         {
@@ -1473,6 +1478,8 @@ internal static unsafe partial class Program
 
         internal static NativeWindow Create()
         {
+            if (!OperatingSystem.IsWindows())
+                throw new PlatformNotSupportedException("The WSI stress window requires Windows.");
             var owner = new NativeWindow();
             owner._thread = new Thread(owner.ThreadMain)
             {

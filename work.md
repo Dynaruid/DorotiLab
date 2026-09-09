@@ -1,6 +1,6 @@
 # 네이티브 Graphite Vulkan·Metal 전환 작업계획
 
-작성일: 2026-09-09. 상태: **전체 전환 PARTIAL — Windows native bridge 검증에 이어 공통 Metal session·macOS AppKit Graphite 후보 구현, 실제 Material 출력·pkg 생성·분리 경로 실행 검증. 5개 OS 기본값 전환 미완료**.
+작성일: 2026-09-09. 상태: **전체 전환 PARTIAL — Windows native bridge 검증에 이어 공통 Metal session·macOS AppKit Graphite 후보 구현, 실제 Material 출력·pkg 생성·분리 경로 실행 검증. Linux ABI 2 Vulkan bridge·108프레임 진단과 SVGA3D GPU 기준선 재검증 추가. 5개 OS 기본값 전환 미완료**.
 
 ## 0. 후속 구현 실행 현황 (2026-09-09)
 
@@ -18,7 +18,7 @@
 
 ### 0.2 이번 Apple 환경 후속 구현
 
-현재 환경은 **Apple M1·macOS 26.6.2·Xcode 26.6·.NET 10.0.400**이다. 이전 Windows 실행의 Apple 환경 미확보 상태를 그대로 적용하지 않았다. [Apple 상세 보고서](Doroti/docs/validation/native-graphite-apple-2026-09-09.md), [공통 session 계약](Doroti/docs/architecture/native-graphite-session.md), [버전 관리되는 실행 결과](history/26-09-09/native-graphite-apple-execution.json)에 추가 근거를 기록한다.
+당시 Apple 후속 실행 환경은 **Apple M1·macOS 26.6.2·Xcode 26.6·.NET 10.0.400**이었다. 이전 Windows 실행의 Apple 환경 미확보 상태를 그대로 적용하지 않았다. [Apple 상세 보고서](Doroti/docs/validation/native-graphite-apple-2026-09-09.md), [공통 session 계약](Doroti/docs/architecture/native-graphite-session.md), [버전 관리되는 실행 결과](history/26-09-09/native-graphite-apple-execution.json)에 추가 근거를 기록한다.
 
 - **NG1 PARTIAL:** 고정 macOS native asset의 실제 Graphite/Metal context 생성, 외부 texture 36프레임 재사용·async readback·색상/이미지/offscreen/runtime shader 픽셀 검증 PASS. 창 probe에서 Graphite 명령 버퍼 44개 완료, resize 20회·최소화/복원·숨김/복귀·진행 중 종료 후 자원 반환 PASS. Metal API Validation 활성 로그에 오류/경고 없음. device loss·전체 플랫폼 ABI/배포 gate는 남아 있다.
 - **NG2 PARTIAL:** `SkiaGraphiteSession`에 단일 owner/thread·generation, context/recorder 예산, view별 image provider/cache, bounded frames, recorder surface·async readback, GPU 완료 후 반환을 구현했다. native Metal RuntimeEffects ID와 AppKit renderer cache 해제를 연결했다. Vulkan session·전체 image export/cache·Web browser 검증은 미완료다.
@@ -27,6 +27,19 @@
 - Runtime shader·FCR-7 전체 계약·Web host 빌드 PASS. Windows/Linux/Android 제품 전환, 실제 WebGPU/WebGL 브라우저 회귀, 성능·메모리 비교와 사람의 물리 화면/입력 승인은 미완료다. Android 연결 장치가 없고 등록된 iPhone 12는 unavailable 상태다.
 
 기본값은 계속 기존 경로다. macOS 후보를 사용하지 않으려면 `DOROTI_MACOS_GRAPHITE` 옵션을 제거한다. 아래 checkbox는 각 항목 전체 완료 조건이므로 일부 Apple 증거만으로 체크하지 않는다.
+
+### 0.3 이번 Linux 환경 후속 구현
+
+현재 작업 환경은 **Ubuntu 26.04·VMware SVGA II/vmwgfx·Qt 6.10.2·.NET 10.0.400**이다. [Linux 상세 보고서](Doroti/docs/validation/native-graphite-linux-2026-09-09.md)와 [실행 결과·hash·첫 실패](history/26-09-09/native-graphite-linux-execution.json)에 근거를 추가한다.
+
+- **GPU 가속 기록 재확인:** 사용자 지적에 따라 ADR-022/023과 8월 20일 기록을 대조했다. 현재도 `SVGA3D; ... LLVM`, `vmwgfx`, DRI3, direct rendering이 확인된다. 이는 llvmpipe가 아니며 **기존 OpenGL GPU 가속은 유효**하다. 실제 Wayland/XWayland Material 출력·각 20회 resize·정상 종료 PASS, software fallback·실패 프레임·전체 화면 CPU copy 0이다. 반면 현재 Vulkan이 노출하는 장치는 CPU llvmpipe 하나다. 두 API의 지원 증거를 혼동하지 않는다.
+- **NG0 PARTIAL:** Linux OS/GL/Vulkan·실제 loader/managed/native hash·target manifest·예산·frame 한도를 기록했다. 시스템 설치 없이 별도 디렉터리에 Clang/Ninja/Khronos validation layer를 준비했다. 물리 Vulkan·성능/메모리 기준선은 미검증이다.
+- **NG1 PARTIAL:** 같은 pinned Skia에 ABI 2 enabled Features/Features2 pNext·instance/device extension 전달과 VMA 연결을 추가하고 `libSkiaSharp.so`를 빌드했다. 실제 활성화한 robustBufferAccess·16-bit storage·maintenance1을 전달한 상태에서 3개 instance/device/context generation, 총 108개 외부 texture frame의 상태 조회/갱신·semaphore·copy fence·반환이 PASS다. validation 경고/오류 0, stock/rebuilt의 세 offscreen hash 일치. 모두 명시적 CPU Vulkan 진단이며 물리 GPU·제품 출력 증거가 아니다.
+- **NG1 오류 경로 보완:** 제출 직후 예외에서 wrapper가 GPU drain보다 먼저 해제되던 probe 수명 문제를 수정했다. 강제 제출 후 실패는 예상한 원문 오류와 exit 1을 보존하며 validation 0으로 종료했다. 모의 `VK_ERROR_DEVICE_LOST` 전달·IsDeviceLost·종료 PASS, 실제 장치 손실/복구는 미검증이다.
+- **NG2/NG7 검증·문서:** Linux native asset 참조가 누락된 Runtime shader/FCR-7 실행 프로젝트를 보완해 표준 명령 PASS. Qt ABI/keyboard/clipboard PASS. canonical Linux build/run/publish 및 별도 디렉터리 publish 실행 PASS. Windows managed probe cross-build PASS이며 Windows 실행 PASS가 아니다. README 양 언어판·work3의 현재/과거 Web 기본값 설명을 동기화했다.
+- **Web:** canonical build PASS. Chrome은 SVGA3D 기반 WebGL GPU 장치를 사용하며 실제 direct presenter와 Material 화면/테마/포인터/스크롤/상태 유지 6개 browser 계약 PASS. WebGPU requestAdapter는 null이고, 미지원 오류 표시·자동 WebGL fallback 금지 1개 계약 PASS. 전체 WebGPU 출력·물리 입력/접근성은 미검증이다.
+
+초기 누락 native library, workload 설치 중 canonical artifact 등록 거부, 동시 rebuild 충돌, 너무 이른 device-loss 주입과 브라우저 검증 도구 누락 기록을 보존한다. 이후 성공으로 첫 실패를 덮지 않는다. **공통 제품 Vulkan session·각 플랫폼 adapter/WSI·RID 제품 패키징·기본값 승격은 아직 미완료**이며, 이번 증거를 기존 제품 경로 삭제 근거로 사용하지 않는다.
 
 ## 1. 목표와 검토 결론
 
@@ -224,14 +237,14 @@ Windows의 `Graphite → Vulkan`은 **Skia의 GPU 렌더링 API**를 뜻한다. 
 
 | 검증 축 | 필요한 증거 | 현재 상태 |
 | --- | --- | --- |
-| 패키지/API | RID별 native backend 포함·ABI·loader·실제 context 생성 | Windows stock/bridge probe context PASS; 전체 RID 패키징 notVerified |
-| GPU interop | Vulkan validation/Metal validation, texture 상태·제출 순서·자원 반환 | Windows 두 GPU external-copy PASS; M1 Metal texture/창 probe 완료·반환 PASS; Windows platform present·device loss 미검증 |
+| 패키지/API | RID별 native backend 포함·ABI·loader·실제 context 생성 | Windows stock/bridge·Linux stock/ABI 2 diagnostic context PASS; 전체 RID 제품 패키징 notVerified |
+| GPU interop | Vulkan validation/Metal validation, texture 상태·제출 순서·자원 반환 | Windows 두 GPU external-copy PASS; M1 Metal texture/창 probe 완료·반환 PASS; Linux llvmpipe 3개 context/108 external frame·모의 loss PASS; Windows platform present·실제 device loss 미검증 |
 | 공통 기능 | FCR-7 Material, retained rendering, image pipeline, RuntimeEffects, paragraph/text·clip·alpha·blur | FCR-7·Runtime shader 계약 PASS; macOS Graphite Material first-content/replay PASS; 전체 효과·image export 미검증 |
 | 프레임 계약 | generation·DPR·resize·replay/superseded·중복 terminal 없음·bounded queue | notVerified |
-| native lifecycle | 장치/표면 재생성, 시작/종료, background, 최소화/복귀, 다중 view | notVerified |
+| native lifecycle | 장치/표면 재생성, 시작/종료, background, 최소화/복귀, 다중 view | Linux probe context 재생성·모의 loss PASS; 제품 전체 lifecycle notVerified |
 | 플랫폼 기능 | Windows Acrylic/UIA, Linux Wayland/X11/Orca, Apple VoiceOver, Android TalkBack·IME | notVerified |
-| 배포 | canonical `Doroti/eng/doroti.ps1` 경로의 build/publish/run, 템플릿 재생성, 서명/실기기 설치 | macOS build/run/publish·pkg 분리 경로 실행 PASS; clean 설치·전체 RID 미검증 |
-| Web 회귀 | 기존 WebGPU 기본/명시 WebGL, 공통 surface/effects/cache 변경 영향 | Web host 빌드 PASS; 실제 browser notVerified |
+| 배포 | canonical `Doroti/eng/doroti.ps1` 경로의 build/publish/run, 템플릿 재생성, 서명/실기기 설치 | macOS build/run/publish·pkg 및 Linux canonical build/run/publish·분리 경로 실행 PASS; clean 설치·전체 RID 미검증 |
+| Web 회귀 | 기존 WebGPU 기본/명시 WebGL, 공통 surface/effects/cache 변경 영향 | Web canonical build·Chrome/SVGA3D WebGL 6개·WebGPU unavailable/no-fallback 1개 계약 PASS; WebGPU 실제 출력 미검증 |
 | 성능·메모리 | 같은 target/work·장면·DPR·GPU/전력 조건의 기존 Ganesh 대비 측정 | notVerified |
 | 물리 확인 | 사람이 수행한 스크롤·창 resize·DPI 경계·터치/IME, 실제 화면 관찰 | notVerified |
 
@@ -253,4 +266,4 @@ Windows의 `Graphite → Vulkan`은 **Skia의 GPU 렌더링 API**를 뜻한다. 
 - [ ] Web 기존 경로 회귀가 없고 Framework 작업 대상·동작 의미가 유지된다.
 - [ ] 이전 제품 경로 정리와 README/ADR/manifest/템플릿 동기화가 끝났으며 과거 실패 증거가 보존된다.
 
-현재 완료 증거는 **기존 Windows probe/bridge 검증, 공통 Metal session과 macOS AppKit 명시적 Graphite 후보, M1 texture·창 probe·Material 제품 출력·pkg 생성/분리 경로 실행, Runtime shader·FCR-7 계약과 Web 빌드**다. NG1 전체 수명·Vulkan ABI/배포 gate, 나머지 제품 host 전환·기본값 승격·이전 경로 정리는 미완료다. iOS/Android 실기기·실제 Web browser·성능·물리 확인은 `notVerified`이며, 전체 전환 완료로 기록하지 않는다.
+현재 완료 증거는 **기존 Windows probe/bridge 검증, 공통 Metal session과 macOS AppKit 명시적 Graphite 후보, M1 texture·창 probe·Material 제품 출력·pkg 생성/분리 경로 실행, Runtime shader·FCR-7 계약과 Web 빌드**다. Linux ABI 2 진단 bridge·3개 context/108 external frame·모의 loss와 SVGA3D Qt GPU/분리 publish 재검증도 추가됐다. NG1 전체 수명·제품 Vulkan ABI/배포 gate, 나머지 제품 host 전환·기본값 승격·이전 경로 정리는 미완료다. iOS/Android 실기기·WebGPU 실제 browser 출력·성능·물리 확인은 `notVerified`이며, 전체 전환 완료로 기록하지 않는다.

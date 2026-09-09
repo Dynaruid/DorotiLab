@@ -1,6 +1,8 @@
 param(
     [Parameter(Mandatory)][string[]]$Device,
-    [string]$NativeLibrary
+    [string]$NativeLibrary,
+    [switch]$ExtendedContext,
+    [ValidateRange(1,10)][int]$ContextCycles = 1
 )
 $ErrorActionPreference = 'Stop'
 $repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../..'))
@@ -66,6 +68,8 @@ try {
         $baseline = Invoke-Bounded "baseline-$index" $exe ($common + @('--output',(Join-Path $resultRoot "baseline-$index.json")))
         $probeArgs = $common + @('--graphite','--output',(Join-Path $resultRoot "graphite-$index.json"))
         if ($NativeLibrary) { $probeArgs += @('--graphite-native',[IO.Path]::GetFullPath($NativeLibrary)) }
+        if ($ExtendedContext) { $probeArgs += '--graphite-extended-context' }
+        $probeArgs += @('--graphite-context-cycles', "$ContextCycles")
         $probe = Invoke-Bounded "graphite-$index" $exe $probeArgs
         if ($baseline -ne 0 -or $probe -ne 2) { $failed = $true }
         $index++

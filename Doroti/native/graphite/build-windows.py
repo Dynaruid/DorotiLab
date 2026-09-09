@@ -112,9 +112,9 @@ extra_ldflags=["/DEBUG:FULL", "/DEBUGTYPE:CV,FIXUP", "/guard:cf", "/DELAYLOAD:d3
     dll = out / "libSkiaSharp.dll"
     manifest = {"schema": "doroti.graphite-native-build/v1", "rid": "win-x64",
         "skiaRevision": SKIA_REVISION, "skiaSharpRevision": SKIASHARP_REVISION,
-        "bridgeAbi": 1, "productQualified": False,
+        "bridgeAbi": 2, "productQualified": False,
         "files": [{"path": str(p), "sha256": hashlib.sha256(p.read_bytes()).hexdigest()}
-                  for p in [dll, HERE / "doroti_graphite_interop.inc", out / "args.gn", root / "DEPS", root / "bin/gn.exe"]]}
+                  for p in [dll, root / "src/c/doroti_graphite_interop.inc", out / "args.gn", root / "DEPS", root / "bin/gn.exe"]]}
     (run_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
     print(run_dir / "manifest.json")
 

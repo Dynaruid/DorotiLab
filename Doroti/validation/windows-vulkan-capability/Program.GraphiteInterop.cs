@@ -30,7 +30,7 @@ internal static unsafe partial class Program
     }
 
     private static object ProbeExternalTexture(Vk vk, PhysicalDevice physicalDevice, VkDevice device,
-        Queue queue, uint family, SKGraphiteContext context, int size)
+        Queue queue, uint family, SKGraphiteContext context, int size, bool failAfterSubmit = false)
     {
         VkImage image = default;
         DeviceMemory imageMemory = default, bufferMemory = default;
@@ -38,6 +38,10 @@ internal static unsafe partial class Program
         CommandPool pool = default;
         Fence fence = default;
         Semaphore beforeGraphite = default, afterGraphite = default;
+        SKGraphiteRecorder? recorder = null;
+        SKGraphiteBackendTexture? backend = null;
+        SKSurface? surface = null;
+        SKGraphiteRecording? recording = null;
         vk.GetPhysicalDeviceMemoryProperties(physicalDevice, out var memoryProperties);
         uint FindMemory(uint allowed, MemoryPropertyFlags required)
         {
@@ -81,22 +85,22 @@ internal static unsafe partial class Program
             var semaphoreInfo = new SemaphoreCreateInfo { SType = StructureType.SemaphoreCreateInfo };
             Check(vk.CreateSemaphore(device, &semaphoreInfo, null, out beforeGraphite), "vkCreateSemaphore(before)");
             Check(vk.CreateSemaphore(device, &semaphoreInfo, null, out afterGraphite), "vkCreateSemaphore(after)");
-            using var recorder = context.CreateRecorder(64L * 1024 * 1024)
+            recorder = context.CreateRecorder(64L * 1024 * 1024)
                 ?? throw new InvalidOperationException("External recorder failed.");
-            using var backend = SKGraphiteBackendTexture.CreateVulkan(size, size,
+            backend = SKGraphiteBackendTexture.CreateVulkan(size, size,
                 new SKGraphiteVkTextureInfo { SampleCount = 1, Format = (int)Format.R8G8B8A8Unorm,
                     ImageTiling = (int)ImageTiling.Optimal, ImageUsageFlags = (uint)usage,
                     SharingMode = (int)SharingMode.Exclusive, AspectMask = (uint)ImageAspectFlags.ColorBit },
                 (int)ImageLayout.Undefined, family, (nint)image.Handle)
                 ?? throw new InvalidOperationException("External texture wrapping failed.");
-            using var surface = SKSurface.Create(recorder, backend, SKColorType.Rgba8888)
+            surface = SKSurface.Create(recorder, backend, SKColorType.Rgba8888)
                 ?? throw new InvalidOperationException("External texture surface failed.");
             var layouts = new List<string>();
             for (var frame = 0; frame < 12; frame++)
             {
                 var color = frame % 2 == 0 ? SKColors.Red : SKColors.Blue;
                 surface.Canvas.Clear(color);
-                using var recording = recorder.Snap() ?? throw new InvalidOperationException("External Snap failed.");
+                recording = recorder.Snap() ?? throw new InvalidOperationException("External Snap failed.");
                 var signalBefore = new SubmitInfo { SType = StructureType.SubmitInfo,
                     SignalSemaphoreCount = 1, PSignalSemaphores = &beforeGraphite };
                 Check(vk.QueueSubmit(queue, 1, &signalBefore, default), "vkQueueSubmit(signal-before)");
@@ -104,6 +108,8 @@ internal static unsafe partial class Program
                 if (!GraphiteInterop.doroti_graphite_vk_insert_recording(context.Handle, recording.Handle, 1, &waitHandle, 1, &signalHandle) ||
                     !context.Submit(new SKGraphiteSubmitInfo { Sync = false }))
                     throw new InvalidOperationException("External insert/submit failed.");
+                if (failAfterSubmit)
+                    throw new InvalidOperationException("Injected Graphite failure after asynchronous submit; diagnostic teardown must retain live resources until drain.");
                 if (!GraphiteInterop.doroti_graphite_vk_texture_get_state(backend.Handle, out var layout, out var actualFamily))
                     throw new InvalidOperationException("Cannot query actual texture state.");
                 if (actualFamily != family) throw new InvalidOperationException("Unexpected queue ownership.");
@@ -155,6 +161,8 @@ internal static unsafe partial class Program
                 if (GraphiteInterop.doroti_graphite_has_unfinished_gpu_work(context.Handle))
                     throw new InvalidOperationException("Graphite completion remained pending after the copy fence.");
                 Check(vk.ResetFences(device, 1, &fence), "vkResetFences");
+                recording.Dispose();
+                recording = null;
             }
             return new { size, frames = 12, persistentWrapper = true, wrapperRecreationsPerFrame = 0,
                 actualLayouts = layouts, returnLayout = "General", pixelCheck = "PASS",
@@ -165,6 +173,13 @@ internal static unsafe partial class Program
             // Failure cleanup is a diagnostic-only drain, never a per-frame path.
             // The parent runner imposes a hard process-tree timeout on driver hangs.
             _ = vk.DeviceWaitIdle(device);
+            // Keep wrappers and recording alive until the failure drain as well
+            // as on success; using declarations inside try dispose before finally.
+            context.CheckAsyncWorkCompletion();
+            recording?.Dispose();
+            surface?.Dispose();
+            backend?.Dispose();
+            recorder?.Dispose();
             if (fence.Handle != 0) vk.DestroyFence(device, fence, null);
             if (beforeGraphite.Handle != 0) vk.DestroySemaphore(device, beforeGraphite, null);
             if (afterGraphite.Handle != 0) vk.DestroySemaphore(device, afterGraphite, null);
