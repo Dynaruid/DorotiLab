@@ -3,6 +3,12 @@ using Doroti.Framework.Painting;
 using Doroti.Framework.Widgets;
 using Doroti.Ui;
 
+if (args is ["--caret-handle-alignment"])
+{
+    CaretHandleAlignmentContracts.Verify();
+    return;
+}
+
 if (args is ["--magnifier-shadows"])
 {
     MountedPickerContracts.VerifyMagnifierShadows();
@@ -236,6 +242,7 @@ VerifyParagraphTextColorPropagation(darkTheme);
 VerifyBrowserFallbackFontContract();
 VerifyBrowserInputAndFrontBufferContract();
 VerifyMobileSelectionOverlayContracts();
+CaretHandleAlignmentContracts.Verify();
 VerifyFrameworkLifecycleContracts();
 VerifyButtonStyleDispatch();
 Material3Contracts.Verify();

@@ -318,7 +318,11 @@ adb devices -l
 | Multiple targets | Supply the exact serial with `--device`, or `-Device` for the workspace CLI |
 | Signing conflict | If you can discard the app's data, run `adb -s device-serial uninstall dev.doroti.testbed` and reinstall |
 
-`android-x64` Release uses a JIT/interpreter compatibility path to avoid a Mono AOT startup issue.
+`android-x64` Release uses Mono AOT for all eligible methods, including Doroti's framework.
+The old AOT opt-out caused startup input-dispatch ANRs on the x64 emulator. Debug retains
+the SDK's interpreter default; dynamic code can still use JIT in Release's normal AOT mode.
+The first Release build takes longer and produces a larger APK. `-p:RunAOTCompilation=false`
+is available for explicit diagnostic comparisons. Android JNI marshal methods remain disabled.
 Validate arm64 Release AOT separately on a physical `android-arm64` device.
 
 ### Android build and deployment errors

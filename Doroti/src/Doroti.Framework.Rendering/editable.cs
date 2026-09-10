@@ -1528,6 +1528,13 @@ public class RenderEditable : RenderBox, RelayoutWhenSystemFontsChangeMixin, Con
         {
             global::Doroti.Ui.Offset caretOffset = this._textPainter.getOffsetForCaret(selection.extent, this._caretPrototype);
             global::Doroti.Ui.Offset startLocal = ((new global::Doroti.Ui.Offset(0.0, this.preferredLineHeight) + caretOffset) + paintOffset);
+            if (selection.isCollapsed && global::Doroti.Framework.Foundation.PlatformLibrary.defaultTargetPlatform == TargetPlatform.android)
+            {
+                // The Material insertion handle points at the caret's center, not
+                // its leading edge. Use the painted rect so custom cursor widths,
+                // offsets, scrolling, and physical-pixel snapping stay aligned.
+                startLocal = new Offset(getLocalRectForCaret(selection.extent).center.dx, startLocal.dy);
+            }
             return new List<TextSelectionPoint> { new TextSelectionPoint(startLocal, null) };
         }
         else

@@ -318,7 +318,11 @@ adb devices -l
 | 대상이 여러 개 | `--device`에 정확한 serial 지정; workspace CLI에서는 `-Device` |
 | 설치 서명 충돌 | 앱 데이터 삭제를 감수할 수 있을 때 `adb -s device-serial uninstall dev.doroti.testbed` 후 재설치 |
 
-`android-x64` Release는 Mono AOT 시작 문제를 피하는 JIT/인터프리터 호환 경로입니다.
+`android-x64` Release는 Doroti 프레임워크를 포함한 사전 컴파일 가능한 메서드에 Mono AOT를 사용합니다.
+기존 AOT 비활성화 설정은 x64 에뮬레이터의 시작 시 입력 응답 지연(ANR)을 유발했습니다.
+Debug는 SDK의 인터프리터 기본값을 유지하며, Release의 normal AOT 모드에서도 동적 코드는 JIT로 실행할 수 있습니다.
+첫 Release 빌드는 더 오래 걸리고 APK 크기가 커집니다. 진단 비교 시에는 `-p:RunAOTCompilation=false`를 명시할 수 있습니다.
+Android JNI marshal methods는 계속 비활성화되어 있습니다.
 arm64 Release AOT는 `android-arm64` 실기기에서 별도로 확인합니다.
 
 ### Android 빌드·배포 오류
